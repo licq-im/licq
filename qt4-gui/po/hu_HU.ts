@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>@default</name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE alapértelmezés</translation>
-    </message>
-</context>
-<context>
     <name>Groups</name>
     <message>
         <location filename="../src/helpers/licqstrings.cpp" line="108"/>
@@ -44,17 +37,6 @@
         <location filename="../src/helpers/licqstrings.cpp" line="121"/>
         <source>Unknown</source>
         <translation type="unfinished">Ismeretlen</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::</name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE alapértelmezés</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">semmi</translation>
     </message>
 </context>
 <context>
@@ -103,30 +85,6 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Licq - Add User</source>
-        <translation type="obsolete">Licq - Felhasználó hozáadása</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Új felhasználó UIN:</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">Felhasználó figyelmeztetése</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>New User Id:</source>
-        <translation type="obsolete">Új azonosító:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation type="unfinished"></translation>
@@ -154,38 +112,6 @@
 </context>
 <context>
     <name>LicqQtGui::AuthUserDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Authorize which user (Id):</source>
-        <translation type="obsolete">Ezen felhasználó engedélyezése (Id):</translation>
-    </message>
-    <message>
-        <source>Refuse authorization to %1</source>
-        <translation type="obsolete">Felhasználó visszautasítása %1</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Ezen felhasználó engedélyezése (iCQ szám):</translation>
-    </message>
-    <message>
-        <source>Grant authorization to %1</source>
-        <translation type="obsolete">Felhasználó engedélyezése %1</translation>
-    </message>
-    <message>
-        <source>Licq - Grant Authorisation</source>
-        <translation type="obsolete">Licq - Felhasználó engedélyezése</translation>
-    </message>
-    <message>
-        <source>Licq - Refuse Authorisation</source>
-        <translation type="obsolete">Licq - Felhasználó visszautasítása</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="83"/>
         <source>Response</source>
@@ -222,10 +148,6 @@
 <context>
     <name>LicqQtGui::AwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="180"/>
         <source>I&apos;m currently %1, %a.
 You can leave me a message.
@@ -243,10 +165,6 @@ Hagyhatsz üzenetet.
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="165"/>
         <source>&amp;Edit Items</source>
         <translation>&amp;Szerkeszt</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="97"/>
@@ -270,1589 +188,7 @@ Hagyhatsz üzenetet.
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CContactBar</name>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Bejelentkezve</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactList</name>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Egyéb felhasználók</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactUserData</name>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Szülinap&amp;nbsp;Ma!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Azonnali válasz:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;T: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;IP: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;U: </translation>
-    </message>
-    <message>
-        <source> weeks</source>
-        <translation type="obsolete"> hét</translation>
-    </message>
-    <message>
-        <source> week</source>
-        <translation type="obsolete"> hét</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete"> nap</translation>
-    </message>
-    <message>
-        <source> day</source>
-        <translation type="obsolete"> nap</translation>
-    </message>
-    <message>
-        <source> hours</source>
-        <translation type="obsolete"> órája</translation>
-    </message>
-    <message>
-        <source> hour</source>
-        <translation type="obsolete"> órája</translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation type="obsolete"> perce</translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation type="obsolete"> perce</translation>
-    </message>
-    <message>
-        <source>0 minutes</source>
-        <translation type="obsolete">0 perc</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Bejelentkezve: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Idle: </translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEditFileListDlg</name>
-    <message>
-        <source>&amp;Up</source>
-        <translation type="obsolete">&amp;Fel</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">&amp;Kész</translation>
-    </message>
-    <message>
-        <source>&amp;Down</source>
-        <translation type="obsolete">&amp;Le</translation>
-    </message>
-    <message>
-        <source>Licq - Files to send</source>
-        <translation type="obsolete">Licq - Fájl(ok) küldése</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Töröl</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFileDlg</name>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">KB</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">MB</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>Byte</source>
-        <translation type="obsolete">Byte</translation>
-    </message>
-    <message>
-        <source>ETA:</source>
-        <translation type="obsolete">Maradt:</translation>
-    </message>
-    <message>
-        <source>%1/%2</source>
-        <translation type="obsolete">%1/%2</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Megnyit</translation>
-    </message>
-    <message>
-        <source>Not enough resources.
-</source>
-        <translation type="obsolete">Nincs elegendő erőforrás.
-</translation>
-    </message>
-    <message>
-        <source>Connecting to remote...</source>
-        <translation type="obsolete">Kapcsolódás...</translation>
-    </message>
-    <message>
-        <source>Bytes</source>
-        <translation type="obsolete">Byte</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="obsolete">Fájl:</translation>
-    </message>
-    <message>
-        <source>Retry</source>
-        <translation type="obsolete">Újra</translation>
-    </message>
-    <message>
-        <source>Time:</source>
-        <translation type="obsolete">Idő:</translation>
-    </message>
-    <message>
-        <source>Licq - File Transfer (%1)</source>
-        <translation type="obsolete">Licq - Fájl átvitel (%1)</translation>
-    </message>
-    <message>
-        <source>Connection error.
-</source>
-        <translation type="obsolete">Kapcsolódási hiba.</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected.</source>
-        <translation type="obsolete">A másik felhasználó bontotta a kapcsolatot.</translation>
-    </message>
-    <message>
-        <source>Sent %1 to %2 successfully.</source>
-        <translation type="obsolete">%1 sikeresen elküldve neki: %2</translation>
-    </message>
-    <message>
-        <source>Waiting for connection...</source>
-        <translation type="obsolete">Kapcsolódásra várva...</translation>
-    </message>
-    <message>
-        <source>File already exists and appears incomplete.</source>
-        <translation type="obsolete">Ez a fájl már létezik, és még nincs befejezve.</translation>
-    </message>
-    <message>
-        <source>File already exists and is at least as big as the incoming file.</source>
-        <translation type="obsolete">Ez a fájl már létezik, és legalább akkor mint a küldött fájl.</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>Resume</source>
-        <translation type="obsolete">Folytat</translation>
-    </message>
-    <message>
-        <source>Unable to create a thread.
-See Network Window for details.</source>
-        <translation type="obsolete">Nem sikerült létrehozni folyamatot.
-Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
-    </message>
-    <message>
-        <source>Handshaking error.
-</source>
-        <translation type="obsolete">Kapcsolódás hiba.
-</translation>
-    </message>
-    <message>
-        <source>O&amp;pen Dir</source>
-        <translation type="obsolete">&amp;Könyvtár megnyitása</translation>
-    </message>
-    <message>
-        <source>Handshake Error.
-See Network Window for details.</source>
-        <translation type="obsolete">
-Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
-    </message>
-    <message>
-        <source>File name:</source>
-        <translation type="obsolete">Fájlnév:</translation>
-    </message>
-    <message>
-        <source>Bind error.
-</source>
-        <translation type="obsolete">Csatolási hiba.&quot;</translation>
-    </message>
-    <message>
-        <source>Sending file...</source>
-        <translation type="obsolete">Fájl küldése...</translation>
-    </message>
-    <message>
-        <source>File I/O error: %1.</source>
-        <translation type="obsolete">Fájl I/O hiba: %1.</translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-
-See Network Window for details.</source>
-        <translation type="obsolete">Fájl I/O hiba:
-%1
-
-Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled.</source>
-        <translation type="obsolete">Fájl átvitel megszakítva.</translation>
-    </message>
-    <message>
-        <source>Receiving file...</source>
-        <translation type="obsolete">Fájl fogadása...</translation>
-    </message>
-    <message>
-        <source>Current:</source>
-        <translation type="obsolete">Mostani:</translation>
-    </message>
-    <message>
-        <source>Open error - unable to open file for writing.</source>
-        <translation type="obsolete">Nem tudom kiírni a fájlt.</translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="obsolete">Felülír</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel Transfer</source>
-        <translation type="obsolete">Küldés &amp;megszakítása</translation>
-    </message>
-    <message>
-        <source>Unable to bind to a port.
-See Network Window for details.</source>
-        <translation type="obsolete">Nem sikerült megnyitni a portot.
-Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
-    </message>
-    <message>
-        <source>Received %1 from %2 successfully.</source>
-        <translation type="obsolete">%1 fájlból %2 fájl sikeresen letöltve.</translation>
-    </message>
-    <message>
-        <source>Unable to reach remote host.
-See Network Window for details.</source>
-        <translation type="obsolete">Nem sikerült elérni a távoli számítógépet.
-Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
-    </message>
-    <message>
-        <source>File transfer complete.</source>
-        <translation type="obsolete">Fájl átvitel befejezve.</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFloatyView</name>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 Lebegő (%2)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CForwardDlg</name>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation type="obsolete">Üzenet</translation>
-    </message>
-    <message>
-        <source>Forward %1 To User</source>
-        <translation type="obsolete">%1 továbbítása a felhasználónak</translation>
-    </message>
-    <message>
-        <source>Drag the user to forward to here:</source>
-        <translation type="obsolete">Húzd a Felhasználót hogy továbbíthasd ide:</translation>
-    </message>
-    <message>
-        <source>Unable to forward this message type (%d).</source>
-        <translation type="obsolete">Nem sikerült továbbítani ezt az üzenettípust (%d).</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>Forwarded message:
-</source>
-        <translation type="obsolete">Továbbított üzenet:
-</translation>
-    </message>
-    <message>
-        <source>&amp;Forward</source>
-        <translation type="obsolete">&amp;Továbbít</translation>
-    </message>
-    <message>
-        <source>Forwarded URL:
-</source>
-        <translation type="obsolete">Továbbított URL:
-</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CJoinChatDlg</name>
-    <message>
-        <source>&amp;Join</source>
-        <translation type="obsolete">&amp;Belép</translation>
-    </message>
-    <message>
-        <source>Select chat to join:</source>
-        <translation type="obsolete">Belépés ide:</translation>
-    </message>
-    <message>
-        <source>Invite to Join Chat</source>
-        <translation type="obsolete">Csevegésbe meghívás</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>&amp;Invite</source>
-        <translation type="obsolete">&amp;Meghív</translation>
-    </message>
-    <message>
-        <source>Select chat to invite:</source>
-        <translation type="obsolete">Hívd meg ide:</translation>
-    </message>
-    <message>
-        <source>Join Multiparty Chat</source>
-        <translation type="obsolete">Belépés többfelhasználós csevegésbe</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CLicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq info</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq figyelmeztetés</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMSendDlg</name>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">semmi</translation>
-    </message>
-    <message>
-        <source>Sending mass message to %1...</source>
-        <translation type="obsolete">Üzenet küldése neki: %1...</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
-    <message>
-        <source>Sending mass URL to %1...</source>
-        <translation type="obsolete">URL küldése neki: %1...</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">hiba</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Contact List</source>
-        <translation type="obsolete">Felhasználó Lista küldése több címzettnek</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient URL</source>
-        <translation type="obsolete">URL küldése több címzettnek</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE alapértelmezés</translation>
-    </message>
-    <message>
-        <source>Sending mass list to %1...</source>
-        <translation type="obsolete">Lista küldése neki: %1...</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Message</source>
-        <translation type="obsolete">Üzenet küldése több címzettnek</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMUserView</name>
-    <message>
-        <source>Crop</source>
-        <translation type="obsolete">Kívág</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Töröl</translation>
-    </message>
-    <message>
-        <source>Drag&apos;n&apos;Drop didn&apos;t work</source>
-        <translation type="obsolete">A Drag&apos;n&apos;Drop nem vált be</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Eltávolít</translation>
-    </message>
-    <message>
-        <source>Add Group</source>
-        <translation type="obsolete">Csoport hozzáadása</translation>
-    </message>
-    <message>
-        <source>Add All</source>
-        <translation type="obsolete">Mindet hozzáad</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMainWindow</name>
-    <message>
-        <source> </source>
-        <translation type="obsolete"> </translation>
-    </message>
-    <message>
-        <source>s</source>
-        <translation type="obsolete">s</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nem</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Igen</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation type="obsolete">Küld</translation>
-    </message>
-    <message>
-        <source>Online to User</source>
-        <translation type="obsolete">Neki &apos;Bejelentkezve&apos; állapot</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Távollét</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Segítség</translation>
-    </message>
-    <message>
-        <source>&amp;Info</source>
-        <translation type="obsolete">&amp;Info</translation>
-    </message>
-    <message>
-        <source>U&amp;tilities</source>
-        <translation type="obsolete">&amp;Eszközök</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">&amp;Kilépés</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Beállítások...</translation>
-    </message>
-    <message>
-        <source>R&amp;andom Chat</source>
-        <translation type="obsolete">Véletlenszerű csevegés</translation>
-    </message>
-    <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Hiba az engedély küldésekor.</translation>
-    </message>
-    <message>
-        <source>&amp;Random Chat Group</source>
-        <translation type="obsolete">&amp;Véletlenszerű csevegés</translation>
-    </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;álnév&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;E-mail&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;keresztnév&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;telefonszám&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;vezetéknév&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;üzenetek száma&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;teljes név&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;utojára bejelentkezve&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;bejelentkezve ekkor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;állapot&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;állapot rövidítve&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;iCQ szám&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;honlap&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">A Licq nem tudta elindítani a bongésződet és megnyitni a címet.
-Indítsd újra a böngésződet, és nyisd meg a címet kézzel.</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Uptime: %1
-</translation>
-    </message>
-    <message>
-        <source>Re&amp;quest Authorization</source>
-        <translation type="obsolete">Engedély &amp;kérése</translation>
-    </message>
-    <message>
-        <source>Check %1 Response</source>
-        <translation type="obsolete">%1 válasz ellenőrzése</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Te most ezzel a számmal vagy bejelentkezve:
-iCQ szám: %1
-Könyvtár: %2
-Indítsd újra a programot a &apos;-b&apos; kapcsolóval hogy új könyvtárat
-választhass és regisztrálj egy új Felhasználót.</translation>
-    </message>
-    <message>
-        <source>Server Group</source>
-        <translation type="obsolete">Szerver oldali csoport</translation>
-    </message>
-    <message>
-        <source>Auto Request Secure</source>
-        <translation type="obsolete">Biztonságos kapcsolat létrehozás automatikusan</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Nem sikerült megnyitni az ikon fájlt
-%1.</translation>
-    </message>
-    <message>
-        <source>Send &amp;Authorization</source>
-        <translation type="obsolete">&amp;Engedély küldése</translation>
-    </message>
-    <message>
-        <source>Auto Accept Chats</source>
-        <translation type="obsolete">Csevegést azonnal elfogad</translation>
-    </message>
-    <message>
-        <source>Auto Accept Files</source>
-        <translation type="obsolete">Fájlokat azonnal elfogad</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">Nem &amp;Elérhető</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">&amp;Névjegy</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">&amp;Csoport</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Tippek</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Nulláz</translation>
-    </message>
-    <message>
-        <source>Custom Auto Response...</source>
-        <translation type="obsolete">Egyéni válaszok...</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Csatlakozáskor értesít</translation>
-    </message>
-    <message>
-        <source>Set &amp;Auto Response...</source>
-        <translation type="obsolete">Azonnali válasz beállítása...</translation>
-    </message>
-    <message>
-        <source>Remove From List</source>
-        <translation type="obsolete">Eltávolítja a Listáról</translation>
-    </message>
-    <message>
-        <source>System Message</source>
-        <translation type="obsolete">Rendszerüzenet</translation>
-    </message>
-    <message>
-        <source>%1 msg%2</source>
-        <translation type="obsolete">%1 üzenet%2</translation>
-    </message>
-    <message>
-        <source>&amp;Popup All Messages</source>
-        <translation type="obsolete">Minden üzenet megjelenítése</translation>
-    </message>
-    <message>
-        <source>Accept in Not Available</source>
-        <translation type="obsolete">&apos;Nem vagyok itt&apos;-ben is fogad</translation>
-    </message>
-    <message>
-        <source>View &amp;History</source>
-        <translation type="obsolete">Előzmények megtekintése</translation>
-    </message>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Egyéb felhasználók</translation>
-    </message>
-    <message>
-        <source>Edit User Group</source>
-        <translation type="obsolete">Felhasználó csoportja(i)</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">A regisztrálás sikeres volt
-az iCQ számod (UIN): %1
-Most állítsd be a személyes adataidat.</translation>
-    </message>
-    <message>
-        <source>Unknown Packets</source>
-        <translation type="obsolete">Ismeretlen csomagok</translation>
-    </message>
-    <message>
-        <source>Send &amp;URL</source>
-        <translation type="obsolete">&amp;URL küldése</translation>
-    </message>
-    <message>
-        <source>Send &amp;SMS</source>
-        <translation type="obsolete">&amp;SMS küldése</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Mégsem</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; További információért, látogass el a Licq honlapjára (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&amp;Mini Mode</source>
-        <translation type="obsolete">&amp;Mini mód</translation>
-    </message>
-    <message>
-        <source>Errors</source>
-        <translation type="obsolete">Hibák</translation>
-    </message>
-    <message>
-        <source>Close &amp;Secure Channel</source>
-        <translation type="obsolete">Biztonságos &amp;kapcsolat bezárása</translation>
-    </message>
-    <message>
-        <source>No msgs</source>
-        <translation type="obsolete">Nincs üzenet</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Uptime: %1
-
-</translation>
-    </message>
-    <message>
-        <source>Misc Modes</source>
-        <translation type="obsolete">További állapotok</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Démon statisztikák</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Démon statisztikák
-(Mai/Összes)
-</translation>
-    </message>
-    <message>
-        <source>SysMsg</source>
-        <translation type="obsolete">Rendszerüzenet</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Rendszer</translation>
-    </message>
-    <message>
-        <source>Send Authorization Re&amp;quest</source>
-        <translation type="obsolete">Engedély kérése</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Utolsó nullázás %1
-
-</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Biztosan el akarod távolítani őt: 
-%1 (%2)
- innen: &apos;%3&apos; ?</translation>
-    </message>
-    <message>
-        <source>Do you really want to add
-%1 (%2)
-to your ignore list?</source>
-        <translation type="obsolete">Biztosan hozzá akarod adni őt:
-%1 (%2)
-a Felhasználó Listádba?</translation>
-    </message>
-    <message>
-        <source>Packets</source>
-        <translation type="obsolete">Csomagok</translation>
-    </message>
-    <message>
-        <source>&amp;Save All Users</source>
-        <translation type="obsolete">&amp;Felhasználók mentése</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb to User</source>
-        <translation type="obsolete">Neki &apos;Ne zavarj&apos; állapot</translation>
-    </message>
-    <message>
-        <source>Update All Users</source>
-        <translation type="obsolete">Minden Felhasználó frissítése</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Tippek a Licq Qt-GUI Plugin használatához&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Az Állapot megváltoztatásához kattints az Állapot címkére.&lt;/li&gt;&lt;li&gt;Az Azonnali válasz megváltoztatásához kattints duplán az Állapot címkére.&lt;/li&gt;&lt;li&gt;A Rendszerüzenetek megtekintéséhez kattints duplán az üzenet címkére.&lt;/li&gt;&lt;li&gt;A Csoport nézet megváltoztatásához kattints jobb gombbal az üzenet címkére.&lt;/li&gt;&lt;li&gt;A következő billentyűparancsokat használhatod a Felhasználó Listából:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Mini-mód be/ki&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Kijelentkezett Felhasználók megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Kilépés&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Eltűntet&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Következő üzenet megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Üzenet megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Üzenet küldése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;URL küldése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Csevegés kezdeményezése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Fájl küldése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Azonnali válasz megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Összes üzenet megjelenítése&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Felhasználó Lista ablakának újrarajzolása&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Felhasználó eltávolítása az aktuális csoportból&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Felhasználó eltávolítása a Felhasználó Listából&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;A legtöbb szövegbevitelnél leütheted a Ctrl-Enter billentyűket az &quot;Ok&quot; vagy &quot;Elfogad&quot; gombra kattintás helyett.   Például az Üzenet ablakban.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</translation>
-    </message>
-    <message>
-        <source>&amp;Redraw User Window</source>
-        <translation type="obsolete">Ablak újrarajzolása</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDE támogatás)
-</translation>
-    </message>
-    <message>
-        <source>Occupied to User</source>
-        <translation type="obsolete">Neki &apos;Dolgozom&apos; állapot</translation>
-    </message>
-    <message>
-        <source>Logon failed.
-See network window for details.</source>
-        <translation type="obsolete">Hiba a bejelentkezéskor.
-Nyisd meg a Hálózat Info ablakot a részletekért</translation>
-    </message>
-    <message>
-        <source>Accept in Away</source>
-        <translation type="obsolete">&apos;Távollét&apos;-ben is fogad</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Láthatatlanság lista</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Látók listája :))</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">A regisztráció során hiba lépett fel. Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
-    </message>
-    <message>
-        <source>Send &amp;Chat Request</source>
-        <translation type="obsolete">&amp;Csevegés kezdeményezése</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Felhasználó regisztrálása</translation>
-    </message>
-    <message>
-        <source>Show Offline &amp;Users</source>
-        <translation type="obsolete">Kijelentkezett Felhasználók megjelenítése</translation>
-    </message>
-    <message>
-        <source>%1 message%2</source>
-        <translation type="obsolete">%1 üzenet%2</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Tiltás lista</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>Warnings</source>
-        <translation type="obsolete">Figyelmeztetések</translation>
-    </message>
-    <message>
-        <source>Debug Level</source>
-        <translation type="obsolete">Debug szint</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Új Felhasználók</translation>
-    </message>
-    <message>
-        <source>&amp;Network Window</source>
-        <translation type="obsolete">&amp;Hálózat Info</translation>
-    </message>
-    <message>
-        <source>&amp;View Event</source>
-        <translation type="obsolete">&amp;Esemény megjelenítése</translation>
-    </message>
-    <message>
-        <source>&amp;Plugin Manager...</source>
-        <translation type="obsolete">&amp;Plugin rendező...</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Dolgozom</translation>
-    </message>
-    <message>
-        <source>Set All</source>
-        <translation type="obsolete">Mindet beállít</translation>
-    </message>
-    <message>
-        <source>&amp;View System Messages</source>
-        <translation type="obsolete">&amp;Rendszerüzenetek megtekintése</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">&amp;Csoportok megtekintése</translation>
-    </message>
-    <message>
-        <source>Send &amp;Message</source>
-        <translation type="obsolete">&amp;Üzenet küldése</translation>
-    </message>
-    <message>
-        <source>Update Current Group</source>
-        <translation type="obsolete">Aktuális Csoport frissítése</translation>
-    </message>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
-        <source>Right click - Status menu
-Double click - Set auto response</source>
-        <translation type="obsolete">Jobb klikk - Állapot menü
-Dupla klikk - Azonnali válasz beállítása</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Maintainer: Jon Keating
-Contributions by Dirk A. Mueller
-Original Author: Graham Roff
-
-http://www.licq.org
-#licq on irc.freenode.net
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Licq verzió %1%8.
-Qt GUI plugin verzió %2.
-Forgatva: %7
-%6
-Fejlesztő: Jon Keating
-Közreműködő: Dirk A. Mueller
-Szerző: Graham Roff
-
-http://www.licq.org
-ircen: irc.freenode.net #licq 
-
-%3 (%4)
-%5 felhasználó.</translation>
-    </message>
-    <message>
-        <source>&amp;Add User</source>
-        <translation type="obsolete">Felhasználó &amp;hozzáadása</translation>
-    </message>
-    <message>
-        <source>Accept in Do Not Disturb</source>
-        <translation type="obsolete">&apos;Ne zavarj&apos;-ban is fogad</translation>
-    </message>
-    <message>
-        <source>Use Real Ip (LAN)</source>
-        <translation type="obsolete">Valós IP használata (LAN)</translation>
-    </message>
-    <message>
-        <source>&amp;Statistics</source>
-        <translation type="obsolete">&amp;Statisztikák</translation>
-    </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Bejelentkezve</translation>
-    </message>
-    <message>
-        <source>Clear All</source>
-        <translation type="obsolete">Mindet &amp;törli</translation>
-    </message>
-    <message>
-        <source>&amp;Status</source>
-        <translation type="obsolete">&amp;Állapot</translation>
-    </message>
-    <message>
-        <source>&amp;System</source>
-        <translation type="obsolete">&amp;Rendszer</translation>
-    </message>
-    <message>
-        <source>Accept in Occupied</source>
-        <translation type="obsolete">&apos;Dolgozom&apos;-ban is fogad</translation>
-    </message>
-    <message>
-        <source>Send Contact &amp;List</source>
-        <translation type="obsolete">Felhasználó Lista küldése</translation>
-    </message>
-    <message>
-        <source>Status Info</source>
-        <translation type="obsolete">Állapot Info</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Ne Zavarj</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Biztosan el akarod távolítani őt: 
-%1 (%2)
- a Felhasználó Listádból?</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-    <message>
-        <source>A&amp;uthorize User</source>
-        <translation type="obsolete">Felhasználó en&amp;gedélyezése</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Szabad vagyok</translation>
-    </message>
-    <message>
-        <source>Right click - User groups
-Double click - Show next message</source>
-        <translation type="obsolete">Jobb klikk - Csoportok
-Dupla klikk - Következő üzenet</translation>
-    </message>
-    <message>
-        <source>No messages</source>
-        <translation type="obsolete">Nincs üzenet</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Láthatatlan</translation>
-    </message>
-    <message>
-        <source>Send &amp;File Transfer</source>
-        <translation type="obsolete">&amp;Fájl küldése</translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Felhasználói funkciók</translation>
-    </message>
-    <message>
-        <source>Check Auto Response</source>
-        <translation type="obsolete">Azonnali válasz ellenőrzése</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1.</source>
-        <translation type="obsolete">Nem sikerül megnyitni a bővített ikon fájt
-%1.</translation>
-    </message>
-    <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Engedély megadva.</translation>
-    </message>
-    <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Rendszer funkciók</translation>
-    </message>
-    <message>
-        <source>Edit &amp;Groups</source>
-        <translation type="obsolete">Cso&amp;portok szerkesztése</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Összes felhasználó</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">&amp;Felület választó...</translation>
-    </message>
-    <message>
-        <source>&amp;Security/Password Options</source>
-        <translation type="obsolete">Bizton&amp;ság/Jelszó beállítása</translation>
-    </message>
-    <message>
-        <source>Request &amp;Secure Channel</source>
-        <translation type="obsolete">Bi&amp;ztonságos kapcsolat létrehozása</translation>
-    </message>
-    <message>
-        <source>S&amp;earch for User</source>
-        <translation type="obsolete">Felhasználó kere&amp;sése</translation>
-    </message>
-    <message>
-        <source>Not Available to User</source>
-        <translation type="obsolete">Neki &apos;Nem elérhető&apos; állapot</translation>
-    </message>
-    <message>
-        <source>Toggle &amp;Floaty</source>
-        <translation type="obsolete">Lebegő mód</translation>
-    </message>
-    <message>
-        <source>Sa&amp;ve Settings</source>
-        <translation type="obsolete">Beállítások &amp;mentése</translation>
-    </message>
-    <message>
-        <source>Away to User</source>
-        <translation type="obsolete">Neki &apos;Távollét&apos; állapot</translation>
-    </message>
-    <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">A Licq nem talált megfelelő bongészőt egy belső hiba következtében.</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Elérhető</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMessageViewWidget</name>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 tőle: %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 neki: %2</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CQtLogWindow</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Mentés</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Nem sikerült megnyitni a következő fájlt:
-%1</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">&amp;Töröl</translation>
-    </message>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq Hálózati Üzenetek</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRandomChatDlg</name>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="obsolete">Férfit keres</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Játékok</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20-as</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30-as</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40-es</translation>
-    </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="obsolete">Nőt keres</translation>
-    </message>
-    <message>
-        <source>Random chat search timed out.</source>
-        <translation type="obsolete">A csevegő partner keresése közben időtúllépés következett be.</translation>
-    </message>
-    <message>
-        <source>Random chat search had an error.</source>
-        <translation type="obsolete">A csevegő partner keresése közben hiba történt.</translation>
-    </message>
-    <message>
-        <source>No random chat user found in that group.</source>
-        <translation type="obsolete">Nem találtam partnert ebben a csoportban.</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 felett</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romantika</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>Searching for Random Chat Partner...</source>
-        <translation type="obsolete">Csevegő partner keresése...</translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="obsolete">&amp;Keresés</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Tanulók</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Általános</translation>
-    </message>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Véletlenszerű csevegés</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRefuseDlg</name>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 Visszautasítás</translation>
-    </message>
-    <message>
-        <source>Refusal message for %1 with </source>
-        <translation type="obsolete">Visszautasítás: %1 </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Mégsem</translation>
-    </message>
-    <message>
-        <source>Refuse</source>
-        <translation type="obsolete">Visszautasít</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CSetRandomChatGroupDlg</name>
-    <message>
-        <source>&amp;Set</source>
-        <translation type="obsolete">B&amp;eállít</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">kész</translation>
-    </message>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="obsolete">Férfit keres</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Játékok</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">hiba</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20-as</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30-as</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40-es</translation>
-    </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="obsolete">Nőt keres</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(semmi)</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">időtúlépés</translation>
-    </message>
-    <message>
-        <source>Set Random Chat Group</source>
-        <translation type="obsolete">Csevegő csoport beállítása</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">hiba</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 felett</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romantika</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Tanulók</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Általános</translation>
-    </message>
-    <message>
-        <source>Setting Random Chat Group...</source>
-        <translation type="obsolete">Csevegő csoport beállítása...</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CTimeZoneField</name>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Ismeretlen</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUserView</name>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source> day</source>
-        <translation type="obsolete"> nap</translation>
-    </message>
-    <message>
-        <source>Thai</source>
-        <translation type="obsolete">Thai</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete"> nap</translation>
-    </message>
-    <message>
-        <source> hour</source>
-        <translation type="obsolete"> órája</translation>
-    </message>
-    <message>
-        <source> week</source>
-        <translation type="obsolete"> hét</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;IP: </translation>
-    </message>
-    <message>
-        <source>Greek</source>
-        <translation type="obsolete">Görög</translation>
-    </message>
-    <message>
-        <source>Tamil</source>
-        <translation type="obsolete">Tamil</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="obsolete">Cirill</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Idle: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Azonnali válasz:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source> hours</source>
-        <translation type="obsolete"> órája</translation>
-    </message>
-    <message>
-        <source> weeks</source>
-        <translation type="obsolete"> hét</translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation type="obsolete"> perce</translation>
-    </message>
-    <message>
-        <source>0 minutes</source>
-        <translation type="obsolete">0 perc</translation>
-    </message>
-    <message>
-        <source>Baltic</source>
-        <translation type="obsolete">Balti</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="obsolete">Arab</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="obsolete">Héber</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="obsolete">Kórea</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Bejelentkezve</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-    <message>
-        <source>Western European</source>
-        <translation type="obsolete">Nyugat-Európa</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="obsolete">Eszperantó</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;T: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;U: </translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="obsolete">Közép-Európa</translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation type="obsolete"> perce</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Szülinap&amp;nbsp;Ma!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Japanese</source>
-        <translation type="obsolete">Japán</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="obsolete">Ukrán</translation>
-    </message>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 Lebegő (%2)</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="obsolete">Kínai</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="obsolete">Török</translation>
-    </message>
-    <message>
-        <source>Unicode</source>
-        <translation type="obsolete">Unicode</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="obsolete">Kínai Tradicionális</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Bejelentkezve: </translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUtilityDlg</name>
-    <message>
-        <source>GUI</source>
-        <translation type="obsolete">GUI</translation>
-    </message>
-    <message>
-        <source>&amp;Run</source>
-        <translation type="obsolete">&amp;Futtat</translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation type="obsolete">Kész</translation>
-    </message>
-    <message>
-        <source>Done:</source>
-        <translation type="obsolete">Kész:</translation>
-    </message>
-    <message>
-        <source>Edit:</source>
-        <translation type="obsolete">Szerkesztés:</translation>
-    </message>
-    <message>
-        <source>Command Window</source>
-        <translation type="obsolete">Parancs végrehajtás</translation>
-    </message>
-    <message>
-        <source>Licq Utility: %1</source>
-        <translation type="obsolete">Licq eszköz: %1</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
-    <message>
-        <source>User Fields</source>
-        <translation type="obsolete">Egyéb</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Leírás:</translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation type="obsolete">Belső</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Parancs:</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>Running:</source>
-        <translation type="obsolete">Elindítva:</translation>
-    </message>
-    <message>
-        <source>Failed:</source>
-        <translation type="obsolete">Hiba:</translation>
-    </message>
-    <message>
-        <source>Terminal</source>
-        <translation type="obsolete">Terminál</translation>
-    </message>
-    <message>
-        <source>Window:</source>
-        <translation type="obsolete">Ablak:</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::ChatDlg</name>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">No</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Igen</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="202"/>
         <source>Beep</source>
@@ -2094,65 +430,9 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
         <source>Other Users</source>
         <translation type="unfinished">Egyéb felhasználók</translation>
     </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Csatlakozáskor értesít</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Látók listája :))</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Láthatatlanság lista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Tiltás lista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Új Felhasználók</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ContactUserData</name>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Szülinap&amp;nbsp;Ma!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Azonnali válasz:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;T: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;IP: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;U: </translation>
-    </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
         <source> weeks</source>
@@ -2197,14 +477,6 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
         <location filename="../src/contactlist/contactuserdata.cpp" line="816"/>
         <source>0 minutes</source>
         <translation type="unfinished">0 perc</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Bejelentkezve: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Idle: </translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="702"/>
@@ -2338,48 +610,7 @@ Hagyhatsz üzenetet.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CustomAwayMsgDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Töröl</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Tippek</translation>
-    </message>
-    <message>
-        <source>Set Custom Auto Response for %1</source>
-        <translation type="obsolete">%1 Felhasználónak azonnali üzenet beállítása</translation>
-    </message>
-    <message>
-        <source>I am currently %1.
-You can leave me a message.</source>
-        <translation type="obsolete">Sajnálom, de most éppen: %1.
-Hagyhatsz üzenetet.</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::DockIcon</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;%1 rendszerüzenet&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 üzenet</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;%1 üzenet</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/dockicon.cpp" line="140"/>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
@@ -2409,14 +640,6 @@ Hagyhatsz üzenetet.</translation>
         <translation type="unfinished">Nem megadott</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editcategorydlg.cpp" line="56"/>
         <source>Personal Interests</source>
         <translation type="unfinished"></translation>
@@ -2434,14 +657,6 @@ Hagyhatsz üzenetet.</translation>
 </context>
 <context>
     <name>LicqQtGui::EditFileDlg</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Mentés</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/editfiledlg.cpp" line="82"/>
         <location filename="../src/dialogs/editfiledlg.cpp" line="109"/>
@@ -2497,10 +712,6 @@ Hagyhatsz üzenetet.</translation>
 <context>
     <name>LicqQtGui::EditGrpDlg</name>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
         <source>Add</source>
         <translation>Hozzáad</translation>
@@ -2521,10 +732,6 @@ Hagyhatsz üzenetet.</translation>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="262"/>
         <source>Edit Name</source>
         <translation>Név szerkesztése</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Új Felhasználók beállítása</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="167"/>
@@ -2555,29 +762,9 @@ ezt a csoportot: &apos;%1&apos;?</translation>
         <translation>anonymous</translation>
     </message>
     <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Az a csoport, amihez az új Felhasználókat hozzáadom. Az összes új Felhasználót az Új Felhasználók csoportba rakom, de a szerveren ehhez a csoporthoz fog tartozni.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="85"/>
         <source>Save the name of a group being modified.</source>
         <translation>A megváltozott csoport név elmentése.</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Új Felhasználó</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Alapértelmezetté tesz</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Alap:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">A alapértelmezett csoport</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="74"/>
@@ -2588,10 +775,6 @@ ezt a csoportot: &apos;%1&apos;?</translation>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
         <source>Shift Down</source>
         <translation>Shift Le</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Minden Felhasználó</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="50"/>
@@ -3251,17 +1434,9 @@ The key isn&apos;t deleted from your keyring.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="105"/>
         <source>&amp;No Key</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
     </message>
 </context>
 <context>
@@ -3299,10 +1474,6 @@ The key isn&apos;t deleted from your keyring.</source>
 </context>
 <context>
     <name>LicqQtGui::HintsDlg</name>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Close</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/hintsdlg.cpp" line="39"/>
         <source>Licq - Hints</source>
@@ -3437,14 +1608,6 @@ Leírás: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 tőle: %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 neki: %2</translation>
-    </message>
-    <message>
         <location filename="../src/widgets/historyview.cpp" line="353"/>
         <source>from</source>
         <translation type="unfinished"></translation>
@@ -3453,42 +1616,6 @@ Leírás: %2</translation>
         <location filename="../src/widgets/historyview.cpp" line="353"/>
         <source>to</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_KDEStyle</name>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;%1 üzenet</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 üzenet</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
-        <translation type="obsolete">&lt;br&gt;Bal klikk - Fő ablak&lt;br&gt;Középső klikk - Következő üzenet&lt;br&gt;Jobb klikk - Rendszer menü</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;%1 rendszerüzenet&lt;/b&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_Themed</name>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Nem sikerült betölteni a dokkolós téma képet
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Nem sikerült betölteni a dokkolós téma fájlt
-(%1)
-:%2</translation>
     </message>
 </context>
 <context>
@@ -3564,16 +1691,6 @@ Leírás: %2</translation>
         <translation>Biztonságos kapcsolat bezárása...</translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;ForestGreen&quot;&gt;Secure channel established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;ForestGreen&quot;&gt;A biztonságos kapcsolat létrejött.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="107"/>
         <source>Ready to request channel</source>
         <translation>Készen állok a kapcsolat létrehozására</translation>
@@ -3584,12 +1701,6 @@ Leírás: %2</translation>
 Rebuild Licq with OpenSSL support.</source>
         <translation>A Licq nem támogatja az OpenSSL-t.
 Forgasd újra OpenSSL támogatással.</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;blue&quot;&gt;Secure channel closed.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;ForestGreen&quot;&gt;A biztonságos kapcsolat bezárult.&lt;/font&gt;
-</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="52"/>
@@ -3615,16 +1726,6 @@ TLSv1 protokollal.
         <translation>Készen állok a kapcsolat bezárására</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Could not connect to remote client.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Nem sikerült csatlakozni a távoli géphez.&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel already established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Már létrehoztam egy biztonságos kapcsolatot.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="71"/>
         <source>The remote uses Licq %1, however it
 has no secure channel support compiled in.
@@ -3634,19 +1735,9 @@ nem támogatja a biztonságos kapcsolatokat.
 Így ez nem fog működni.</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel not established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Még nem hoztam létre biztonságos kapcsolatot.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="64"/>
         <source>The remote uses Licq %1/SSL.</source>
         <translation>A távoli gépen Licq %1/SSL fut</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Remote client does not support OpenSSL.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;A távoli gép nem támogatja az OpenSSL-t.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="138"/>
@@ -3728,14 +1819,6 @@ from your contact list?</source>
  a Felhasználó Listádból?</translation>
     </message>
     <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Biztosan el akarod távolítani őt: 
-%1 (%2)
- innen: &apos;%3&apos; ?</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="1063"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
@@ -3750,34 +1833,7 @@ Would you like to try loading the old one?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::LicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq info</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq figyelmeztetés</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::LogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq Hálózati Üzenetek</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Mentés</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">&amp;Töröl</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
@@ -3819,10 +1875,6 @@ Would you like to try loading the old one?</source>
 </context>
 <context>
     <name>LicqQtGui::MMSendDlg</name>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/mmsenddlg.cpp" line="92"/>
         <source>Multiple Recipient Message</source>
@@ -3894,10 +1946,6 @@ Would you like to try loading the old one?</source>
 </context>
 <context>
     <name>LicqQtGui::MainWindow</name>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="188"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
@@ -3980,142 +2028,6 @@ Dupla klikk - Azonnali válasz beállítása</translation>
 See network window for details.</source>
         <translation type="unfinished">Hiba a bejelentkezéskor.
 Nyisd meg a Hálózat Info ablakot a részletekért</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Biztosan el akarod távolítani őt: 
-%1 (%2)
- a Felhasználó Listádból?</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Biztosan el akarod távolítani őt: 
-%1 (%2)
- innen: &apos;%3&apos; ?</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Maintainer: Jon Keating
-Contributions by Dirk A. Mueller
-Original Author: Graham Roff
-
-http://www.licq.org
-#licq on irc.freenode.net
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Licq verzió %1%8.
-Qt GUI plugin verzió %2.
-Forgatva: %7
-%6
-Fejlesztő: Jon Keating
-Közreműködő: Dirk A. Mueller
-Szerző: Graham Roff
-
-http://www.licq.org
-ircen: irc.freenode.net #licq 
-
-%3 (%4)
-%5 felhasználó.</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDE támogatás)
-</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1.</source>
-        <translation type="obsolete">Nem sikerül megnyitni a bővített ikon fájt
-%1.</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Nem sikerült megnyitni az ikon fájlt
-%1.</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Démon statisztikák
-(Mai/Összes)
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Uptime: %1
-</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Utolsó nullázás %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Nulláz</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Démon statisztikák</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Uptime: %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; További információért, látogass el a Licq honlapjára (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">A Licq nem talált megfelelő bongészőt egy belső hiba következtében.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">A Licq nem tudta elindítani a bongésződet és megnyitni a címet.
-Indítsd újra a böngésződet, és nyisd meg a címet kézzel.</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="670"/>
@@ -4240,907 +2152,11 @@ Indítsd újra a böngésződet, és nyisd meg a címet kézzel.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::MsgView</name>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">K</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">Idő</translation>
-    </message>
-    <message>
-        <source>Cancelled Event</source>
-        <translation type="obsolete">Esemény megszakítva</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">Közvetlen</translation>
-    </message>
-    <message>
-        <source>Event Type</source>
-        <translation type="obsolete">Esemény típusa</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="obsolete">Szerver</translation>
-    </message>
-    <message>
-        <source>Urgent</source>
-        <translation type="obsolete">Sürgős</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Beállítások</translation>
-    </message>
-    <message>
-        <source>Multiple Recipients</source>
-        <translation type="obsolete">Több címzett</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::OptionsDlg</name>
-    <message>
-        <source>IP</source>
-        <translation type="obsolete">IP</translation>
-    </message>
-    <message>
-        <source>	to</source>
-        <translation type="obsolete">	eddig:</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>Fax</source>
-        <translation type="obsolete">Fax</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="obsolete">Automatikus</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Távollét</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Font</translation>
-    </message>
-    <message>
-        <source>N/A:</source>
-        <translation type="obsolete">Nem elérhető:</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation type="obsolete">Bal</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Mentés</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">semmi</translation>
-    </message>
-    <message>
-        <source>Show Extended Icons</source>
-        <translation type="obsolete">Bővített ikonok megjelenítése</translation>
-    </message>
-    <message>
-        <source>Blink All Events</source>
-        <translation type="obsolete">Minden eseménynél villog</translation>
-    </message>
-    <message>
-        <source>Away:</source>
-        <translation type="obsolete">Távollét:</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">E-mail</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation type="obsolete">Font:</translation>
-    </message>
-    <message>
-        <source>HTTPS</source>
-        <translation type="obsolete">HTTPS</translation>
-    </message>
-    <message>
-        <source>Never</source>
-        <translation type="obsolete">Soha</translation>
-    </message>
-    <message>
-        <source>Phone</source>
-        <translation type="obsolete">Telefon</translation>
-    </message>
-    <message>
-        <source>Proxy</source>
-        <translation type="obsolete">Proxy</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="obsolete">Jobb</translation>
-    </message>
-    <message>
-        <source>Text:</source>
-        <translation type="obsolete">Szöveg:</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Cím</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Szélesség</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">File átvitel érkezésének paramétere</translation>
-    </message>
-    <message>
-        <source>Firewall</source>
-        <translation type="obsolete">Tűzfal</translation>
-    </message>
-    <message>
-        <source>Use proxy server</source>
-        <translation type="obsolete">Proxy szerver használata</translation>
-    </message>
-    <message>
-        <source>Show Grid Lines</source>
-        <translation type="obsolete">Segédvonalak megjelenítése</translation>
-    </message>
-    <message>
-        <source>Override the skin setting for the frame style of the user window:
-   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Sunken)
- + 240 (Shadow)</source>
-        <translation type="obsolete">Felülbírálja a felület beállításait a keretre vonatkozóan a fő ablakban
-   0 (Nincs keret), 1 (Doboz), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Süllyesztett)
- + 240 (Árnyékolt)</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Csevegés érkezésének paramétere</translation>
-    </message>
-    <message>
-        <source>Auto Away Messages</source>
-        <translation type="obsolete">Automatikus távollét üzenete(i)</translation>
-    </message>
-    <message>
-        <source>Turns on or off the display of headers above each column in the user list</source>
-        <translation type="obsolete">Az oszlopok címének megjelenítése a Felhasználó Listában</translation>
-    </message>
-    <message>
-        <source>Auto close the user function window after a succesful event</source>
-        <translation type="obsolete">A fő ablak bezárása egy sikeres esemény után</translation>
-    </message>
-    <message>
-        <source>Start Hidden</source>
-        <translation type="obsolete">Elrejtve indít</translation>
-    </message>
-    <message>
-        <source>Auto Away:</source>
-        <translation type="obsolete">Automatikus &apos;Távollét&apos; állapot:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;not available&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Ennyi perc inaktivitás után automatikusan felveszed a &quot;Nem elérhető&quot; státuszt. Állítsd 0-ra a tiltáshoz.</translation>
-    </message>
-    <message>
-        <source>Blink Urgent Events</source>
-        <translation type="obsolete">Sürgős eseménynél villog</translation>
-    </message>
-    <message>
-        <source>Ignore Mass Messages</source>
-        <translation type="obsolete">Több címzettel ellátott üzenetek tiltása</translation>
-    </message>
-    <message>
-        <source>Show the &quot;--online--&quot; and &quot;--offline--&quot; bars in the contact list</source>
-        <translation type="obsolete">A &quot;--Bejelentkezve--&quot; és a &quot;--Kijelentkezve--&quot; vonalak megjelenítése a Felhasználó Listában</translation>
-    </message>
-    <message>
-        <source>ICQ Server Port:</source>
-        <translation type="obsolete">iCQ szerver port:</translation>
-    </message>
-    <message>
-        <source>Start main window hidden. Only the dock icon will be visible.</source>
-        <translation type="obsolete">A Fő ablak elrejtve indul, és csak a Dokkolt Ikon lesz látható.</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Bejelentkezéskori figyelmeztetés paramétere</translation>
-    </message>
-    <message>
-        <source>TCP port range for incoming connections.</source>
-        <translation type="obsolete">TCP port tartomány a bejövő kapcsolatoknak.</translation>
-    </message>
-    <message>
-        <source>Accept Modes</source>
-        <translation type="obsolete">Állapotban fogad</translation>
-    </message>
-    <message>
-        <source>Online Notify:</source>
-        <translation type="obsolete">Bejelentkezéskor:</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Nem elérhető</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Alkalmaz</translation>
-    </message>
-    <message>
-        <source>Determines if new users are automatically added to your list or must first request authorization.</source>
-        <translation type="obsolete">Szabályozza, hogy a Felhasználók hozzáadásakor azonnal bekerüljenek a Listába,vagy előbb kérjek engedélyt.</translation>
-    </message>
-    <message>
-        <source>Show the name of the current group in the messages label when there are no new messages</source>
-        <translation type="obsolete">Az aktuális csoport nevének megjelenítése a az üzenet fejlécében, ha nincsen új üzenet</translation>
-    </message>
-    <message>
-        <source>Ignore Web Panel</source>
-        <translation type="obsolete">Webről küldött üzenetek tiltása</translation>
-    </message>
-    <message>
-        <source>Sets which default encoding should be used for newly added contacts.</source>
-        <translation type="obsolete">Beállítja, hogy milyen karakter kódolást használjon az újonnan hozzáadott Felhasználóknál.</translation>
-    </message>
-    <message>
-        <source>Show the current chat history in Send Window</source>
-        <translation type="obsolete">Az előzmények megjelenítése az üzenetküldő ablakban</translation>
-    </message>
-    <message>
-        <source>Use Font Styles</source>
-        <translation type="obsolete">Font stílusok használata</translation>
-    </message>
-    <message>
-        <source>Preset slot:</source>
-        <translation type="obsolete">Előre beállított:</translation>
-    </message>
-    <message>
-        <source>Automatically send messages through the server if direct connection fails</source>
-        <translation type="obsolete">Az üzeneteket automatikusan a szerveren keresztül küldje ha a közvetlen kapcsolat meghiúsul</translation>
-    </message>
-    <message>
-        <source>Licq Options</source>
-        <translation type="obsolete">Licq beállítások</translation>
-    </message>
-    <message>
-        <source>status + new messages</source>
-        <translation type="obsolete">állapot + új üzenetek</translation>
-    </message>
-    <message>
-        <source>Show Column Headers</source>
-        <translation type="obsolete">Oszlop címek megjelenítése</translation>
-    </message>
-    <message>
-        <source>Bold Message Label on Incoming Msg</source>
-        <translation type="obsolete">A beérkező üzenet fejléce legyen félkövér</translation>
-    </message>
-    <message>
-        <source>Column %1</source>
-        <translation type="obsolete">Oszlop %1</translation>
-    </message>
-    <message>
-        <source>Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf and a shorter 64x48 icon for use in the Gnome/KDE panel.</source>
-        <translation type="obsolete">A hagyományos 64x64 méretű ikon és a kisebb, 64x48 (KDE/Gnome) méretű ikon közötti választás</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Eseménykori parancs végrehajtása &quot;Dolgozom&quot; státuszban is</translation>
-    </message>
-    <message>
-        <source>Auto Offline:</source>
-        <translation type="obsolete">Automatikus &apos;Kijelentkezve&apos; állapot:</translation>
-    </message>
-    <message>
-        <source>Online Time</source>
-        <translation type="obsolete">Bejelentkezés időtartama</translation>
-    </message>
-    <message>
-        <source>Lets you drag around the main window with your mouse</source>
-        <translation type="obsolete">A Fő ablak mozgatását engedélyezi</translation>
-    </message>
-    <message>
-        <source>OnEvent in DND</source>
-        <translation type="obsolete">&quot;Nem zavarj&quot;-ban is indít</translation>
-    </message>
-    <message>
-        <source>OnEvent in N/A</source>
-        <translation type="obsolete">&quot;Nem elérhető&quot;-ben is indít</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Üzenet érkezésének paramétere</translation>
-    </message>
-    <message>
-        <source>Message Sent:</source>
-        <translation type="obsolete">Üzenet elküldve:</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="obsolete">Közép</translation>
-    </message>
-    <message>
-        <source>Proxy Server Port:</source>
-        <translation type="obsolete">Proxy szerver portja:</translation>
-    </message>
-    <message>
-        <source>Allow scroll bar</source>
-        <translation type="obsolete">Gördítősáv engedélyezése</translation>
-    </message>
-    <message>
-        <source>OnEvent in Away</source>
-        <translation type="obsolete">&quot;Távollét&quot;-ben is indít</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation type="obsolete">Hálózat</translation>
-    </message>
-    <message>
-        <source>Only urgent events will blink</source>
-        <translation type="obsolete">Csak sürgős üzenetek villogjanak</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">Formátum</translation>
-    </message>
-    <message>
-        <source>The fonts used</source>
-        <translation type="obsolete">A használt font</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically go offline.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Ennyi perc inaktivitás után automatikusan felveszed a &quot;Kijelentkezve&quot; státuszt. Állítsd 0-ra a tiltáshoz.</translation>
-    </message>
-    <message>
-        <source>Auto send through server</source>
-        <translation type="obsolete">Szerveren keresztüli küldés</translation>
-    </message>
-    <message>
-        <source>Use Dock Icon</source>
-        <translation type="obsolete">Dokkolt ikon használata</translation>
-    </message>
-    <message>
-        <source>Chat Request:</source>
-        <translation type="obsolete">Csevegés kérése:</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Bejelentkezve</translation>
-    </message>
-    <message>
-        <source>Server settings</source>
-        <translation type="obsolete">Szerver beállítások</translation>
-    </message>
-    <message>
-        <source>Auto Logon:</source>
-        <translation type="obsolete">Azonnali bejelentkezés:</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation type="obsolete">Fő ablak</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Állapot</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation type="obsolete">Téma:</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">alapértelmezett (%1)</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-    <message>
-        <source>Port Range:</source>
-        <translation type="obsolete">Port tartomány, ettől:</translation>
-    </message>
-    <message>
-        <source>Allow dragging main window</source>
-        <translation type="obsolete">A Fő ablak mozgatásának engedélyezése</translation>
-    </message>
-    <message>
-        <source>Show the message info label in bold font if there are incoming messages</source>
-        <translation type="obsolete">Az üzenet info félkövér legyen, ha van beérkező üzenet</translation>
-    </message>
-    <message>
-        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you first send an event to them</source>
-        <translation type="obsolete">Amennyiben nincs bejelölve, a Felhasználó automatikusan törlődik az &quot;Új Felhasználók&quot; csoportból, amikor az először küldesz neki valamit</translation>
-    </message>
-    <message>
-        <source>Tabbed Chatting</source>
-        <translation type="obsolete">Fülek használata</translation>
-    </message>
-    <message>
-        <source>Default Encoding:</source>
-        <translation type="obsolete">Alapértelmezett kódolás:</translation>
-    </message>
-    <message>
-        <source>OnEvent</source>
-        <translation type="obsolete">Eseménykor</translation>
-    </message>
-    <message>
-        <source>Localization</source>
-        <translation type="obsolete">Nyelvi beállítások</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Parancs:</translation>
-    </message>
-    <message>
-        <source>Edit Font:</source>
-        <translation type="obsolete">Szerkesztés fontja:</translation>
-    </message>
-    <message>
-        <source>Hot key: </source>
-        <translation type="obsolete">Billentyűparancs:</translation>
-    </message>
-    <message>
-        <source>I can receive direct connections</source>
-        <translation type="obsolete">Képes vagyok közvetlen kapcsolatok fogadására</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Beállítások</translation>
-    </message>
-    <message>
-        <source>Miscellaneous</source>
-        <translation type="obsolete">Egyéb</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Eseménykori parancs végrehajtása &quot;Ne zavarj&quot; státuszban is</translation>
-    </message>
-    <message>
-        <source>Determines if mass messages are ignored or not.</source>
-        <translation type="obsolete">Több címzettel ellátott üzenetek megjelenítését szabályozza.</translation>
-    </message>
-    <message>
-        <source>Last online</source>
-        <translation type="obsolete">Utoljára bejelentkezve</translation>
-    </message>
-    <message>
-        <source>Frame Style: </source>
-        <translation type="obsolete">Keret stílus:</translation>
-    </message>
-    <message>
-        <source>The alignment of the column</source>
-        <translation type="obsolete">Az oszlop tájolása</translation>
-    </message>
-    <message>
-        <source>status</source>
-        <translation type="obsolete">állapot</translation>
-    </message>
-    <message>
-        <source>Auto Position the Reply Window</source>
-        <translation type="obsolete">A válasz ablak automatikus elhelyezése</translation>
-    </message>
-    <message>
-        <source>Make the user window transparent when there is no scroll bar</source>
-        <translation type="obsolete">A Felhasználó lista átlátszóvá tételeamikor nincsen gördítősáv</translation>
-    </message>
-    <message>
-        <source>Default Icon</source>
-        <translation type="obsolete">Alapértelmezett ikon</translation>
-    </message>
-    <message>
-        <source>Check Clipboard For Urls/Files</source>
-        <translation type="obsolete">A vágólap figyelése URL-ek/Fájlok miatt</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Paraméterek</translation>
-    </message>
-    <message>
-        <source>Show birthday, invisible, and custom auto response icons to the right of users in the list</source>
-        <translation type="obsolete">Szülinap, láthatatlan stb... ikonok megjelenítése a Felhasználó Listában</translation>
-    </message>
-    <message>
-        <source>Additional &amp;sorting:</source>
-        <translation type="obsolete">További rendezés:</translation>
-    </message>
-    <message>
-        <source>Transparent when possible</source>
-        <translation type="obsolete">Átlátszó</translation>
-    </message>
-    <message>
-        <source>Default Auto Response Messages</source>
-        <translation type="obsolete">Alapértelmezett azonnali válasz</translation>
-    </message>
-    <message>
-        <source>File Transfer:</source>
-        <translation type="obsolete">Fájl átvitel:</translation>
-    </message>
-    <message>
-        <source>OnEvents Enabled</source>
-        <translation type="obsolete">Eseménykor akció engedélyezése</translation>
-    </message>
-    <message>
-        <source>Paranoia</source>
-        <translation type="obsolete">Paranoia</translation>
-    </message>
-    <message>
-        <source>Auto-Raise on Incoming Msg</source>
-        <translation type="obsolete">Bejövő üzenetnél felbukkanás</translation>
-    </message>
-    <message>
-        <source>Position a new reply window just underneath the message view window</source>
-        <translation type="obsolete">A válasz ablak az üzenet ablak alá helyezése</translation>
-    </message>
-    <message>
-        <source>Terminal:</source>
-        <translation type="obsolete">Parancsértelmező:</translation>
-    </message>
-    <message>
-        <source>Automatically log on when first starting up.</source>
-        <translation type="obsolete">Indításnál azonnali bejelentkezés.</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Bejelentkezéskor figyelmeztetés (ez különbözik attól, ahogy a Mirabilis kliens működik)</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;away&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Ennyi perc inaktivitás után automatikusan felveszed a &quot;Távollét&quot; státuszt. Állítsd 0-ra a tiltáshoz.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;A parancs, amit egy esemény érkezésekor kell indítani.&lt;br&gt;Az alábbi paramétereket lehet a programnak küldeni. &lt;br&gt;A paraméterek értelemszerűen a lista alapján&lt;br&gt; a megfelelő információval lesznek helyettesítve: &lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>ICQ Server:</source>
-        <translation type="obsolete">iCQ szerver:</translation>
-    </message>
-    <message>
-        <source>Determines if email pager messages are ignored or not.</source>
-        <translation type="obsolete">Az E-mail üzenetek megjelenítését szabályozza.</translation>
-    </message>
-    <message>
-        <source>Use authorization</source>
-        <translation type="obsolete">Engedélyek használata</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Eseménykori parancs végrehajtása &quot;Nem elérhető&quot; státuszban is</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Dolgozom</translation>
-    </message>
-    <message>
-        <source>Show User Dividers</source>
-        <translation type="obsolete">Felhasználó elválasztók megjelenítése</translation>
-    </message>
-    <message>
-        <source>OnEvent in Occupied</source>
-        <translation type="obsolete">&quot;Dolgozom&quot;-ban is indít</translation>
-    </message>
-    <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Itt adhatod meg, mi jelenjen meg az oszlopokban.
-A következő jelöléseket használhatod:
-</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Rendszerüzenet érkezésének paramétere</translation>
-    </message>
-    <message>
-        <source>Manual &quot;New User&quot; group handling</source>
-        <translation type="obsolete">Manuális &quot;Új Felhasználó&quot; csoport szabályozás</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Üzenet küldésének paramétere</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Font választása</translation>
-    </message>
-    <message>
-        <source>Auto-Popup Incoming Msg</source>
-        <translation type="obsolete">Bejövő üzenet azonnali megjelenítése</translation>
-    </message>
-    <message>
-        <source>64 x 48 Dock Icon</source>
-        <translation type="obsolete">64 x 48 Dokkolt ikon</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>Startup</source>
-        <translation type="obsolete">Indításnál</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Állapot:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Jelszó:</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">alapértelmezett</translation>
-    </message>
-    <message>
-        <source>Use italics and bold in the user list to indicate special characteristics such as online notify and visible list</source>
-        <translation type="obsolete">Használjon fékövér, illetve dőlt betűket a Felhasználó Listában, hogy jelezze ki van Bejelentkezve, Kijelentkezve stb...</translation>
-    </message>
-    <message>
-        <source>Use System Background Color</source>
-        <translation type="obsolete">Használja a rendszer hátterszínét</translation>
-    </message>
-    <message>
-        <source>Proxy Type:</source>
-        <translation type="obsolete">Proxy típusa</translation>
-    </message>
-    <message>
-        <source>Auto N/A:</source>
-        <translation type="obsolete">Automatikus &apos;Nem elérhető&apos; állapot:</translation>
-    </message>
-    <message>
-        <source>Themed Icon</source>
-        <translation type="obsolete">Téma ikonja</translation>
-    </message>
-    <message>
-        <source>Auto Close Function Window</source>
-        <translation type="obsolete">A Fő ablak automatikus bezárása</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Eseménykori parancs végrehajtása &quot;Távollét&quot; státuszban is</translation>
-    </message>
-    <message>
-        <source>Docking</source>
-        <translation type="obsolete">Dokkol</translation>
-    </message>
-    <message>
-        <source>I am behind a firewall</source>
-        <translation type="obsolete">Tűzfal mögött vagyok</translation>
-    </message>
-    <message>
-        <source>Determines if web panel messages are ignored or not.</source>
-        <translation type="obsolete">A webről küldött üzenetek megjelenítését szabályozza.</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">A &quot;Parancs&quot; futtatásának engedélyezése a megadott esemény bekövetkeztekor</translation>
-    </message>
-    <message>
-        <source>System Msg:</source>
-        <translation type="obsolete">Rendszerüzenet:</translation>
-    </message>
-    <message>
-        <source>Show group name if no messages</source>
-        <translation type="obsolete">Csoport nevének megjelenítése, ha nincs üzenet</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Szabad vagyok</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Szabad vagyok</translation>
-    </message>
-    <message>
-        <source>When double-clicking on a user to send a message check for urls/files in the clipboard</source>
-        <translation type="obsolete">Amikor duplán klikkelsz egy Felhasználóra, hogy üzenetet küldj neki, ellenőrizze a vágólapot URL-ek/Fájlok miatt</translation>
-    </message>
-    <message>
-        <source>Show all encodings</source>
-        <translation type="obsolete">Az összes kódolás megjelenítése</translation>
-    </message>
-    <message>
-        <source>Online Notify when Logging On</source>
-        <translation type="obsolete">Figyelmeztetés bejelentkezéskor</translation>
-    </message>
-    <message>
-        <source>Popup info</source>
-        <translation type="obsolete">Felbukkanó info</translation>
-    </message>
-    <message>
-        <source>Cellular</source>
-        <translation type="obsolete">Mobil</translation>
-    </message>
-    <message>
-        <source>Extensions</source>
-        <translation type="obsolete">Kiterjesztések</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Ne zavarj</translation>
-    </message>
-    <message>
-        <source>All incoming events will blink</source>
-        <translation type="obsolete">Minden beérkező eseménynél villog</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation type="obsolete">Felhasználónév:</translation>
-    </message>
-    <message>
-        <source>Url Viewer:</source>
-        <translation type="obsolete">Böngésző:</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Üzenet:</translation>
-    </message>
-    <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">A Felhasználó Lista táblázatszerű megjelenítése</translation>
-    </message>
-    <message>
-        <source>Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings.</source>
-        <translation type="obsolete">Az összes elérhető kódolás megjelenítése a Karakter Kódolás menüben. Egyébként, csak a leggyakoribbakat mutatja. </translation>
-    </message>
-    <message>
-        <source>Column Configuration</source>
-        <translation type="obsolete">Oszlop beállítás</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Láthatatlan</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;none:&lt;/b&gt; - Don&apos;t sort online users by Status&lt;br&gt;
-&lt;b&gt;status&lt;/b&gt; - Sort online users by status&lt;br&gt;
-&lt;b&gt;status + last event&lt;/b&gt; - Sort online users by status and by last event&lt;br&gt;
-&lt;b&gt;status + new messages&lt;/b&gt; - Sort online users by status and number of new messages</source>
-        <translation type="obsolete">&lt;b&gt;none:&lt;/b&gt; - A Felhasználókat nem rendezi állapot szerint&lt;br&gt;
-&lt;b&gt;status&lt;/b&gt; - A Felhasználókat állapot szerint rendezi&lt;br&gt;
-&lt;b&gt;status + last event&lt;/b&gt; - A Felhasználókat állapot és utoljára küldött esemény szerint rendezi&lt;br&gt;
-&lt;b&gt;status + new messages&lt;/b&gt; - A Felhasználókat állapot és az új üzenetek száma szerint rendezi</translation>
-    </message>
-    <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Minden bejövő üzenetet automatikusan nyisson meg, ha &quot;Belejentkeztünk&quot;, vagy &quot;Szabadok vagyunk&quot;</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Általános</translation>
-    </message>
-    <message>
-        <source>Ignore Email Pager</source>
-        <translation type="obsolete">E-mail üzenetek tiltása</translation>
-    </message>
-    <message>
-        <source>Chatmode Messageview</source>
-        <translation type="obsolete">Csevegés szerű üzenet megjelenítés</translation>
-    </message>
-    <message>
-        <source>Controls whether or not the dockable icon should be displayed.</source>
-        <translation type="obsolete">A dokkolt ikon megjelenítését szabályozza.</translation>
-    </message>
-    <message>
-        <source>status + last event</source>
-        <translation type="obsolete">állapot + utolsó esemény</translation>
-    </message>
-    <message>
-        <source>Proxy Server:</source>
-        <translation type="obsolete">Proxy szerver:</translation>
-    </message>
-    <message>
-        <source>Raise the main window on incoming messages</source>
-        <translation type="obsolete">A fő ablak megnyitása beérkező üzenetnél</translation>
-    </message>
-    <message>
-        <source>Contact List</source>
-        <translation type="obsolete">Felhasználó Lista</translation>
-    </message>
-    <message>
-        <source>System default (%1)</source>
-        <translation type="obsolete">Alapértelmezett (%1)</translation>
-    </message>
-    <message>
-        <source>The width of the column</source>
-        <translation type="obsolete">Az oszlop szélessége</translation>
-    </message>
-    <message>
-        <source>Previous Message</source>
-        <translation type="obsolete">Előző üzenet</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list</source>
-        <translation type="obsolete">Font választása a rendszer listájából</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">A szöveg, ami az oszlop fejlécében fog szerepelni</translation>
-    </message>
-    <message>
-        <source>Store your contacts on the server so they are accessible from different locations and/or programs</source>
-        <translation type="obsolete">Szerver oldali Felhasználó Lista használata, így az elérhető lesz különböző helyekről és/vagy programokból</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">URL érkezésének paramétere</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Egy URL megnézéséhet szükséges parancs. Maga az URL lesz a program paramétere</translation>
-    </message>
-    <message>
-        <source>Hotkey pops up the next pending message
-Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
-changes here require a Restart to take effect!
-</source>
-        <translation type="obsolete">A billentyűparancs, ami a következő beérkezett üzenet előhozza. Írd ide a billentyűk nevét. Például: &quot;shift+f10&quot;, vagy &quot;none&quot; a billentyűparancs letiltásához.
-A változtatások után újra kell indítani a programot!
-</translation>
-    </message>
-    <message>
-        <source>Allow the vertical scroll bar in the user list</source>
-        <translation type="obsolete">A függőleges gördítősáv engedélyezése a Felhasználó Listában</translation>
-    </message>
-    <message>
-        <source>The command to run to start your terminal program.</source>
-        <translation type="obsolete">A terminál elindításáhot szükséget parancs.</translation>
-    </message>
-    <message>
-        <source>Use tabs in Send Window</source>
-        <translation type="obsolete">Fülek használata a Csevegő ablakban</translation>
-    </message>
-    <message>
-        <source>Font used in message editor etc.</source>
-        <translation type="obsolete">Az üzenet küldésekor használt font.</translation>
-    </message>
-    <message>
-        <source>Ignore New Users</source>
-        <translation type="obsolete">Új Felhasználók tiltása</translation>
-    </message>
-    <message>
-        <source>Use server side contact list</source>
-        <translation type="obsolete">Szerver oldali Felhasználó Lista használata</translation>
-    </message>
-    <message>
-        <source>Alignment</source>
-        <translation type="obsolete">Tájolás</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Becenév</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Név</translation>
-    </message>
-    <message>
-        <source>Chat</source>
-        <translation type="obsolete">Csevegés</translation>
-    </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="260"/>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Előnézet</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="obsolete">%1</translation>
     </message>
 </context>
 <context>
@@ -5151,21 +2167,9 @@ A változtatások után újra kell indítani a programot!
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Password:</source>
-        <translation type="obsolete">Jelszó:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
         <source>Currently only one account per protocol is supported.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="74"/>
@@ -5241,18 +2245,6 @@ base directory and then register a new user.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">A regisztrálás sikeres volt
-az iCQ számod (UIN): %1
-Most állítsd be a személyes adataidat.</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">A regisztráció során hiba lépett fel. Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="70"/>
         <source>Protocol</source>
         <translation type="unfinished"></translation>
@@ -5314,32 +2306,6 @@ Most állítsd be a személyes adataidat.</translation>
         <translation>Engedélyez</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation type="obsolete">Beállítás</translation>
-    </message>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Betöltve</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Állapot</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Kivesz</translation>
-    </message>
-    <message>
-        <source>Licq Plugin %1 %2
-</source>
-        <translation type="obsolete">Licq Plugin %1 %2
-</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Elérhető</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="111"/>
         <source>Refresh</source>
         <translation>Frissít</translation>
@@ -5349,14 +2315,6 @@ Most állítsd be a személyes adataidat.</translation>
         <location filename="../src/dialogs/plugindlg.cpp" line="99"/>
         <source>Description</source>
         <translation>Leírás</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Részletek</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Letilt</translation>
     </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
@@ -5382,336 +2340,11 @@ Most állítsd be a személyes adataidat.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::QFileDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nem</translation>
-    </message>
-    <message>
-        <source>Dir</source>
-        <translation type="obsolete">Kvtár</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Igen</translation>
-    </message>
-    <message>
-        <source>Back</source>
-        <translation type="obsolete">Vissza</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Dátum</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Fájl</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Név</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Megnyit</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Mentés</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Méret</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">Rendez</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Típus</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Megnyit</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Mentés</translation>
-    </message>
-    <message>
-        <source>ERROR</source>
-        <translation type="obsolete">HIBA</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hiba</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Size</source>
-        <translation type="obsolete">&amp;Méret szerint rendez</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Date</source>
-        <translation type="obsolete">&amp;Dátum szerint rendez</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Name</source>
-        <translation type="obsolete">&amp;Név szerint rendez</translation>
-    </message>
-    <message>
-        <source>New Folder 1</source>
-        <translation type="obsolete">Új könyvtár 1</translation>
-    </message>
-    <message>
-        <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="obsolete">&lt;qt&gt;Biztosan törölni akarod őt: %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
-    </message>
-    <message>
-        <source>the directory</source>
-        <translation type="obsolete">a könyvtár</translation>
-    </message>
-    <message>
-        <source>File &amp;type:</source>
-        <translation type="obsolete">Fájl &amp;típus</translation>
-    </message>
-    <message>
-        <source>File &amp;name:</source>
-        <translation type="obsolete">Fájl &amp;név:</translation>
-    </message>
-    <message>
-        <source>Delete %1</source>
-        <translation type="obsolete">%1 törlése</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Mégsem</translation>
-    </message>
-    <message>
-        <source>R&amp;eload</source>
-        <translation type="obsolete">Ú&amp;jratölt</translation>
-    </message>
-    <message>
-        <source>New Folder</source>
-        <translation type="obsolete">Új könyvtár</translation>
-    </message>
-    <message>
-        <source>&amp;Unsorted</source>
-        <translation type="obsolete">&amp;Rendezetlen</translation>
-    </message>
-    <message>
-        <source>Look &amp;in:</source>
-        <translation type="obsolete">Belené&amp;z:</translation>
-    </message>
-    <message>
-        <source>Preview File Contents</source>
-        <translation type="obsolete">Tartalom előnézet</translation>
-    </message>
-    <message>
-        <source>New Folder %1</source>
-        <translation type="obsolete">Új könyvtár %1</translation>
-    </message>
-    <message>
-        <source>Read-write</source>
-        <translation type="obsolete">Írható-Olvasható</translation>
-    </message>
-    <message>
-        <source>Read-only</source>
-        <translation type="obsolete">Csak olvasható</translation>
-    </message>
-    <message>
-        <source>Find Directory</source>
-        <translation type="obsolete">Könyvtár keresése</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">Jogok</translation>
-    </message>
-    <message>
-        <source>Show &amp;hidden files</source>
-        <translation type="obsolete">&amp;Rejtett fájlokat mutat</translation>
-    </message>
-    <message>
-        <source>Save as</source>
-        <translation type="obsolete">Mentés másként</translation>
-    </message>
-    <message>
-        <source>Inaccessible</source>
-        <translation type="obsolete">Elérhetetlen</translation>
-    </message>
-    <message>
-        <source>%1
-File not found.
-Check path and filename.</source>
-        <translation type="obsolete">%1
-Fájl nem található.
-Ellenőrizd az elérési utat, és a nevet.</translation>
-    </message>
-    <message>
-        <source>List View</source>
-        <translation type="obsolete">Lista nézet</translation>
-    </message>
-    <message>
-        <source>Special</source>
-        <translation type="obsolete">Egyedi</translation>
-    </message>
-    <message>
-        <source>Write-only</source>
-        <translation type="obsolete">Írható</translation>
-    </message>
-    <message>
-        <source>the symlink</source>
-        <translation type="obsolete">a szimlink</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Töröl</translation>
-    </message>
-    <message>
-        <source>All files (*)</source>
-        <translation type="obsolete">Minden fájl (*)</translation>
-    </message>
-    <message>
-        <source>Directories</source>
-        <translation type="obsolete">Könyvtárak</translation>
-    </message>
-    <message>
-        <source>Symlink to Special</source>
-        <translation type="obsolete">Szimbolikus link egyedire</translation>
-    </message>
-    <message>
-        <source>&amp;Rename</source>
-        <translation type="obsolete">&amp;Átnevez</translation>
-    </message>
-    <message>
-        <source>One directory up</source>
-        <translation type="obsolete">Egy szinttel feljebb</translation>
-    </message>
-    <message>
-        <source>Preview File Info</source>
-        <translation type="obsolete">Fájl info</translation>
-    </message>
-    <message>
-        <source>the file</source>
-        <translation type="obsolete">a fájl</translation>
-    </message>
-    <message>
-        <source>Create New Folder</source>
-        <translation type="obsolete">Új könyvtár</translation>
-    </message>
-    <message>
-        <source>Symlink to File</source>
-        <translation type="obsolete">Szimbolikus link fájlra</translation>
-    </message>
-    <message>
-        <source>Symlink to Directory</source>
-        <translation type="obsolete">Szimbolikus link könyvtárra</translation>
-    </message>
-    <message>
-        <source>Detail View</source>
-        <translation type="obsolete">Részletek</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::QFontDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Font</source>
-        <translation type="obsolete">&amp;Font</translation>
-    </message>
-    <message>
-        <source>&amp;Size</source>
-        <translation type="obsolete">&amp;Méret</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Alkalmaz</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Bezár</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">&amp;Szín</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Mégsem</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Minta</translation>
-    </message>
-    <message>
-        <source>Font st&amp;yle</source>
-        <translation type="obsolete">Font &amp;stílus</translation>
-    </message>
-    <message>
-        <source>Scr&amp;ipt</source>
-        <translation type="obsolete">Scr&amp;ipt</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Font választása</translation>
-    </message>
-    <message>
-        <source>&amp;Underline</source>
-        <translation type="obsolete">&amp;Aláhúzás</translation>
-    </message>
-    <message>
-        <source>Effects</source>
-        <translation type="obsolete">Hatások</translation>
-    </message>
-    <message>
-        <source>Stri&amp;keout</source>
-        <translation type="obsolete">Á&amp;thúzott</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::QWizard</name>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Segítség</translation>
-    </message>
-    <message>
-        <source>&lt; Back</source>
-        <translation type="obsolete">&lt; Vissza</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Mégsem</translation>
-    </message>
-    <message>
-        <source>Finish</source>
-        <translation type="obsolete">Befejez</translation>
-    </message>
-    <message>
-        <source>Next &gt;</source>
-        <translation type="obsolete">Következő &gt;</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::RandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Véletlenszerű csevegés</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
     </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="68"/>
@@ -5811,104 +2444,9 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
         <source>Licq - %1 Refusal</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 Visszautasítás</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RegisterUserDlg</name>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">iCQ szám:</translation>
-    </message>
-    <message>
-        <source>&amp;Save Password</source>
-        <translation type="obsolete">Jelszó &amp;mentése</translation>
-    </message>
-    <message>
-        <source>Please enter your password in both input fields.</source>
-        <translation type="obsolete">Kérlek, írd be a jelszavadat mindkét mezőbe.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">A regisztrálás sikeres. Most jelentkezz be, és frissítsd a személyes adataidat.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Helytelen jelszó, 1 és 8 között kell lennie a betűk számának.</translation>
-    </message>
-    <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Egy valós iCQ számot kell, hogy beírj, ahhoz, hogy egy már létező Felhasználót regisztrálhass</translation>
-    </message>
-    <message>
-        <source>Now please click &apos;Finish&apos; to start the registration process.</source>
-        <translation type="obsolete">Kérlek kattints a &apos;Befejezés&apos; gombra,hogy elkezdhessük a regisztrációt</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Felhasználó regisztrálása folyamatban...</translation>
-    </message>
-    <message>
-        <source>Now please press the &apos;Back&apos; button and try again.</source>
-        <translation type="obsolete">Kérlek kattints a &apos;Vissza&apos; gombraés próbáld újra</translation>
-    </message>
-    <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">Létező Felhasználó &amp;regisztrálása</translation>
-    </message>
-    <message>
-        <source>The passwords don&apos;t seem to match.</source>
-        <translation type="obsolete">A jelszavak nem egyeznek.</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">UIN regisztráció - 2 oldal</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">UIN regisztráció - 3 oldal</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Jelszó:</translation>
-    </message>
-    <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">Helytelen UIN.  Próbáld újra.</translation>
-    </message>
-    <message>
-        <source>Verify:</source>
-        <translation type="obsolete">Jelszó mégegyszer:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Licq Felhasználó regisztrálása</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Üdvözöllek a Regisztráció Varázslóban.
-
-Itt hozhatsz létre új Felhasználót, vagy állíthatod be a Licq-t, hogy egy már létezőt használjon.
-
-Amennyiben újat hoznál létre, írj be egy jelszót, és kattints a &quot;Befejezés&quot; gombra.
-Amennyiben már van iCQ számod, a írd be a számod, és a jelszavad, majd kattints az &quot;OK&quot; gombra
-
-Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">UIN regisztráció</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/registeruser.cpp" line="119"/>
         <source>&amp;Remember Password</source>
@@ -6000,10 +2538,6 @@ After you are online, you can send your personal details to the server.</source>
 <context>
     <name>LicqQtGui::ReqAuthDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/reqauthdlg.cpp" line="55"/>
         <source>Request authorization from (UIN):</source>
         <translation>Engedély kérése tőle (UIN):</translation>
@@ -6018,17 +2552,9 @@ After you are online, you can send your personal details to the server.</source>
         <source>Request</source>
         <translation>Kérés</translation>
     </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::SearchUserDlg</name>
-    <message>
-        <source>60+</source>
-        <translation type="obsolete">60+</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="91"/>
         <source>Male</source>
@@ -6041,21 +2567,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Keresés újrakezdése</translation>
     </message>
     <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">&amp;Kész</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">iC&amp;Q szám</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="145"/>
         <source>City:</source>
         <translation>Város:</translation>
-    </message>
-    <message>
-        <source>UIN#:</source>
-        <translation type="obsolete">iCQ szám:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
@@ -6099,10 +2613,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Mégsem</translation>
     </message>
     <message>
-        <source>18 - 22</source>
-        <translation type="obsolete">18 - 22</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="90"/>
         <source>Female</source>
         <translation>Nő</translation>
@@ -6111,10 +2621,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="140"/>
         <source>Language:</source>
         <translation>Nyelv:</translation>
-    </message>
-    <message>
-        <source>23 - 29</source>
-        <translation type="obsolete">23 - 29</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="138"/>
@@ -6132,10 +2638,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Keresztnév:</translation>
     </message>
     <message>
-        <source>30 - 39</source>
-        <translation type="obsolete">30 - 39</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="137"/>
         <source>Last Name:</source>
         <translation>Vezetéknév:</translation>
@@ -6146,17 +2648,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Ország:</translation>
     </message>
     <message>
-        <source>40 - 49</source>
-        <translation type="obsolete">40 - 49</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="407"/>
         <source>Search failed.</source>
         <translation>Keresés megszakadt.</translation>
-    </message>
-    <message>
-        <source>50 - 59</source>
-        <translation type="obsolete">50 - 59</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="149"/>
@@ -6167,10 +2661,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="159"/>
         <source>Return Online Users Only</source>
         <translation>Csak bejelentkezett felhasználók kiírása</translation>
-    </message>
-    <message>
-        <source>A&amp;lert User</source>
-        <translation type="obsolete">Felhasználó figyelme&amp;ztetése</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="427"/>
@@ -6187,10 +2677,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="424"/>
         <source>&amp;Add User</source>
         <translation>Felhasználó &amp;hozzáadása</translation>
-    </message>
-    <message>
-        <source>&amp;Whitepages</source>
-        <translation type="obsolete">Fehér Oldalak</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="202"/>
@@ -6252,14 +2738,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="173"/>
         <source>Status</source>
         <translation type="unfinished">Állapot</translation>
-    </message>
-    <message>
-        <source>Sex &amp; Age</source>
-        <translation type="obsolete">Nem &amp; Kor</translation>
-    </message>
-    <message>
-        <source>Authorize</source>
-        <translation type="obsolete">Engedély</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="360"/>
@@ -6345,66 +2823,7 @@ After you are online, you can send your personal details to the server.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::SearchUserView</name>
-    <message>
-        <source>?</source>
-        <translation type="obsolete">?</translation>
-    </message>
-    <message>
-        <source>F</source>
-        <translation type="obsolete">F</translation>
-    </message>
-    <message>
-        <source>M</source>
-        <translation type="obsolete">N</translation>
-    </message>
-    <message>
-        <source>UIN</source>
-        <translation type="obsolete">iCQ szám</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Név</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Becenév</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">E-mail</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Bejelentkezve</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Állapot</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-    <message>
-        <source>Sex &amp; Age</source>
-        <translation type="obsolete">Nem &amp; Kor</translation>
-    </message>
-    <message>
-        <source>Authorize</source>
-        <translation type="obsolete">Engedély</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Ismeretlen</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::SecurityDlg</name>
-    <message>
-        <source>&amp;Uin:</source>
-        <translation type="obsolete">iC&amp;Q szám:</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="166"/>
         <source>Timeout while setting security options.</source>
@@ -6416,25 +2835,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>hiba</translation>
     </message>
     <message>
-        <source>ICQ Security Options [Setting...]</source>
-        <translation type="obsolete">iCQ Biztonsági beállítások [Beállítás...]</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="171"/>
         <source>Internal error while setting security options.</source>
         <translation>Belső hiba történt a biztonsági beállítások megváltoztatásakor</translation>
-    </message>
-    <message>
-        <source>&amp;Local changes only</source>
-        <translation type="obsolete">Csak &amp;helyi változtatások</translation>
-    </message>
-    <message>
-        <source>Password/UIN settings</source>
-        <translation type="obsolete">Jelszó/UIN beállítások</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options</source>
-        <translation type="obsolete">iCQ Biztonsági beállítások</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="114"/>
@@ -6449,29 +2852,9 @@ hogy ezt megváltoztathasd.</translation>
         <translation>időtúllépés</translation>
     </message>
     <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Ide írd be mégegyszer az iCQ jelszavadat.</translation>
-    </message>
-    <message>
-        <source>If checked, password/UIN changes will apply only on your local computer.  Useful if your password is incorrectly saved in Licq.</source>
-        <translation type="obsolete">Amennyiben bejelölted, a jelszó/iCQ szám változtatások csak erre a gépre lesznek érvényesek. Hasznos, ha például a jelszavadat hibásan mentette el a Licq.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Helytelen jelszó, 1 és 8 között kell lennie a betűk számának.</translation>
-    </message>
-    <message>
-        <source>Timeout while changing password.</source>
-        <translation type="obsolete">Időtúllépés a jelszó megváltoztatásakor.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="63"/>
         <source>Options</source>
         <translation>Beállítások</translation>
-    </message>
-    <message>
-        <source>Web Presence allows users to see if you are online through your web indicator.</source>
-        <translation type="obsolete">A Webes figyelő engedélyezi, hogy az emberek egy honlapról is megnézhessék, hogy be vagy-e jelentkezve.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="160"/>
@@ -6479,70 +2862,14 @@ hogy ezt megváltoztathasd.</translation>
         <translation>hiba</translation>
     </message>
     <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Jelszavak nem egyeznek, próbál újra.</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Engedély szükséges</translation>
-    </message>
-    <message>
-        <source>Internal error while changing password.</source>
-        <translation type="obsolete">Belső hiba történt a jelszó megváltoztatásakor</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Jelszó:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="89"/>
         <source>&amp;Update</source>
         <translation>&amp;Frissít</translation>
     </message>
     <message>
-        <source>Changing password failed.</source>
-        <translation type="obsolete">Jelszó megváltoztatása nem sikerült.</translation>
-    </message>
-    <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; is checked.</source>
-        <translation type="obsolete">Írd be az iCQ számot, amit használni akarsz Csak akkor érhető ez el, ha a &quot;Csak helyi változtatások&quot; be van jelölve.</translation>
-    </message>
-    <message>
-        <source>Hide IP stops users from seeing your IP address. It doesn&apos;t guarantee it will be hidden though.</source>
-        <translation type="obsolete">Az IP rejtése meggátolja, hogy felfedd az IP-det mások előtt. Azonban ez nem garantálja, hogy nem fogják megtudni.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;Jelszó mégegyszer:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="161"/>
         <source>Setting security options failed.</source>
         <translation>Hiba történt a biztonsági beállítások megváltoztatásakor.</translation>
-    </message>
-    <message>
-        <source>Web Presence</source>
-        <translation type="obsolete">Webes figyelő</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...</source>
-        <translation type="obsolete">iCQ Biztonsági beállítások [Beállítás...</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Ide írd be az iCQ jelszavadat.</translation>
-    </message>
-    <message>
-        <source>Determines whether regular ICQ clients require your authorization to add you to their contact list.</source>
-        <translation type="obsolete">Szabályozza, hogy az iCQ klienseknek kelljen-e engedélyt kérniük ahhoz, hogy felvehessenek a Felhasználó Listájukba.</translation>
-    </message>
-    <message>
-        <source>Hide IP</source>
-        <translation type="obsolete">IP rejtése</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="72"/>
@@ -6897,14 +3224,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Egy URL megnézéséhet szükséges parancs. Maga az URL lesz a program paramétere</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE alapértelmezés</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="198"/>
         <location filename="../src/settings/chat.cpp" line="202"/>
         <source>Terminal:</source>
@@ -7145,10 +3464,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">A Felhasználó Lista táblázatszerű megjelenítése</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="81"/>
         <source>Show column headers</source>
         <translation type="unfinished"></translation>
@@ -7360,10 +3675,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <location filename="../src/settings/contactlist.cpp" line="225"/>
         <source>Title</source>
         <translation type="unfinished">Cím</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">A szöveg, ami az oszlop fejlécében fog szerepelni</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="228"/>
@@ -7595,10 +3906,6 @@ If not checked user will only be added to the new group.</source>
         <translation type="unfinished">Az üzenet info félkövér legyen, ha van beérkező üzenet</translation>
     </message>
     <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Minden bejövő üzenetet automatikusan nyisson meg, ha &quot;Belejentkeztünk&quot;, vagy &quot;Szabadok vagyunk&quot;</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="72"/>
         <source>Auto-focus message</source>
         <translation type="unfinished"></translation>
@@ -7718,10 +4025,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <location filename="../src/settings/events.cpp" line="163"/>
         <source>Command:</source>
         <translation type="unfinished">Parancs:</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;A parancs, amit egy esemény érkezésekor kell indítani.&lt;br&gt;Az alábbi paramétereket lehet a programnak küldeni. &lt;br&gt;A paraméterek értelemszerűen a lista alapján&lt;br&gt; a megfelelő információval lesznek helyettesítve: &lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="177"/>
@@ -7997,10 +4300,6 @@ Works with many different window managers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Font választása</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Editing:</source>
         <translation type="unfinished"></translation>
@@ -8009,14 +4308,6 @@ Works with many different window managers.</source>
         <location filename="../src/settings/general.cpp" line="139"/>
         <source>Used in message editor etc.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">alapértelmezett (%1)</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">alapértelmezett</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="94"/>
@@ -8776,10 +5067,6 @@ Ikoncsomag &apos;%2&apos; letiltva</translation>
 <context>
     <name>LicqQtGui::ShowAwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="147"/>
         <source>error</source>
         <translation>hiba</translation>
@@ -8808,113 +5095,6 @@ Ikoncsomag &apos;%2&apos; letiltva</translation>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="85"/>
         <source>%1 Response for %2</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hiba</translation>
-    </message>
-    <message>
-        <source>Skin:</source>
-        <translation type="obsolete">Felület</translation>
-    </message>
-    <message>
-        <source>&amp;Edit Skin</source>
-        <translation type="obsolete">&amp;Felület szerkesztése</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available extended icon sets</source>
-        <translation type="obsolete">Válaszd ki a neked tetsző bővített ikoncsomagot</translation>
-    </message>
-    <message>
-        <source>Skin selection</source>
-        <translation type="obsolete">Felület választék</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Alkalmaz</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1</source>
-        <translation type="obsolete">Nem sikerült megnyitni az ikon fájlt
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1
-Extended Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Nem sikerült megynyitni a bővített ikon fájlt
-%1
-Bővített ikoncsomag &apos;%2&apos; letiltva.</translation>
-    </message>
-    <message>
-        <source>Icons:</source>
-        <translation type="obsolete">Ikonok</translation>
-    </message>
-    <message>
-        <source>S&amp;kins:</source>
-        <translation type="obsolete">&amp;Felületek</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available icon sets</source>
-        <translation type="obsolete">Válaszd ki a neked tetsző ikoncsomagot</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Előnézet</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1</source>
-        <translation type="obsolete">Nem sikerült megynyitni a bővített ikon fájlt
-%1</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Mégsem</translation>
-    </message>
-    <message>
-        <source>&amp;Icons:</source>
-        <translation type="obsolete">&amp;Ikonok</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">Licq felület választó</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1
-Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Nem sikerült megnyitni az ikon fájlt
-%1
-Ikoncsomag &apos;%2&apos; letiltva</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available skins</source>
-        <translation type="obsolete">Válaszd ki a neked tetsző felületet</translation>
-    </message>
-    <message>
-        <source>E&amp;xtended Icons:</source>
-        <translation type="obsolete">&amp;Bővített ikonok:</translation>
-    </message>
-    <message>
-        <source>Extended Icons:</source>
-        <translation type="obsolete">Bővített ikonok:</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Rendszer</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Bejelentkezve</translation>
     </message>
 </context>
 <context>
@@ -9009,17 +5189,9 @@ reset your statistics?</source>
         <translation type="unfinished">Mindet &amp;törli</translation>
     </message>
     <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Rendszer funkciók</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Felhasználói funkciók</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="99"/>
@@ -9102,38 +5274,6 @@ reset your statistics?</source>
         <translation type="unfinished">&amp;Állapot</translation>
     </message>
     <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Bejelentkezve</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Távollét</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">Nem &amp;Elérhető</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Dolgozom</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Ne Zavarj</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Szabad vagyok</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Láthatatlan</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>&amp;Group</source>
         <translation type="unfinished">&amp;Csoport</translation>
@@ -9182,14 +5322,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="203"/>
         <source>&amp;Thread Group View</source>
         <translation type="unfinished">&amp;Csoportok megtekintése</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Beállítások...</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">&amp;Felület választó...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="208"/>
@@ -9259,55 +5391,9 @@ reset your statistics?</source>
         <source>View &amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Bejelentkezve</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Távollét</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">Nem &amp;Elérhető</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Dolgozom</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Ne Zavarj</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Szabad vagyok</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Láthatatlan</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Nem sikerült betölteni a dokkolós téma fájlt
-(%1)
-:%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Nem sikerült betölteni a dokkolós téma képet
-%1</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="77"/>
         <source>Unable to load dock theme file:
@@ -9516,38 +5602,10 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::UserEventCommon</name>
     <message>
-        <source>Time:</source>
-        <translation type="obsolete">Idő:</translation>
-    </message>
-    <message>
-        <source>Change user text encoding</source>
-        <translation type="obsolete">Az aktuális karakter kódolás beállítása</translation>
-    </message>
-    <message>
-        <source>This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language.</source>
-        <translation type="obsolete">Ezzel a gombbal választhatod ki a karakter kódolást, amit majd ezzel a Felhasználóval használni fogsz. Ez szükséges ahhoz, hogy több féle nyelven tudjál kommunikálni.</translation>
-    </message>
-    <message>
-        <source>Show User Info</source>
-        <translation type="obsolete">Felhasználó info</translation>
-    </message>
-    <message>
-        <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
-        <translation type="obsolete">Nem sikerült betölteni a kódolást &lt;b&gt;%1&lt;/b&gt;. A üzenetek valószínűleg olvashatatlanok lesznek.</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Állapot:</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="117"/>
         <location filename="../src/userevents/usereventcommon.cpp" line="295"/>
         <source>Unknown</source>
         <translation>Ismeretlen</translation>
-    </message>
-    <message>
-        <source>Show User History</source>
-        <translation type="obsolete">Felhasználó </translation>
     </message>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="256"/>
@@ -9616,357 +5674,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventtabdlg.cpp" line="176"/>
         <source>[UNKNOWN_USER]</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::UserInfoDlg</name>
-    <message>
-        <source>IP:</source>
-        <translation type="obsolete">IP</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation type="obsolete">Most</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation type="obsolete">Kor:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation type="obsolete">Fax:</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation type="obsolete">Férfi</translation>
-    </message>
-    <message>
-        <source>UIN:</source>
-        <translation type="obsolete">iCQ szám:</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation type="obsolete">Irsz.:</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">kész</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation type="obsolete">Nap:</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">&amp;Utolsó</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menü</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation type="obsolete">&amp;Több</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Mentés</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation type="obsolete">&amp;Munka</translation>
-    </message>
-    <message>
-        <source>&amp;Filter: </source>
-        <translation type="obsolete">&amp;Szűrés: </translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation type="obsolete">Város:</translation>
-    </message>
-    <message>
-        <source>P&amp;rev</source>
-        <translation type="obsolete">E&amp;lőző</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Név:</translation>
-    </message>
-    <message>
-        <source>Nex&amp;t</source>
-        <translation type="obsolete">K&amp;övetkező</translation>
-    </message>
-    <message>
-        <source>S&amp;end</source>
-        <translation type="obsolete">F&amp;eltölt</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">hiba</translation>
-    </message>
-    <message>
-        <source>Last Online:</source>
-        <translation type="obsolete">Utoljára bejelentkezve:</translation>
-    </message>
-    <message>
-        <source>Keep Alias on Update</source>
-        <translation type="obsolete">Becenév megtartása Frissítésnél</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation type="obsolete">Szerver frissítése...</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation type="obsolete">Év:</translation>
-    </message>
-    <message>
-        <source>Last Sent Event:</source>
-        <translation type="obsolete">Utoljára küldött esemény:</translation>
-    </message>
-    <message>
-        <source>Last Checked Auto Response:</source>
-        <translation type="obsolete">Utoljára küldve azonnali válasz:</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">&amp;Leírás</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to retrieve your settings.</source>
-        <translation type="obsolete">Kapcsolódva kell, hogy legyél az iCQ hálózathoz,
-hogy lekérdezhesd a beállításaidat.</translation>
-    </message>
-    <message>
-        <source>Cellular:</source>
-        <translation type="obsolete">Mobil:</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 neki: %2</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation type="obsolete">E-mail 1:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation type="obsolete">E-mail 2:</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">időtúllépés</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation type="obsolete">Honlap:</translation>
-    </message>
-    <message>
-        <source>Online Since:</source>
-        <translation type="obsolete">Bejelentkezett:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation type="obsolete">Időzóna:</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation type="obsolete">Leírás:</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation type="obsolete">Becenév:</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation type="obsolete">Régi E-mail:</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation type="obsolete">Nő</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation type="obsolete">Hónap:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation type="obsolete">Telefon:</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation type="obsolete">Állam:</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Kijelentkezve</translation>
-    </message>
-    <message>
-        <source>Last Received Event:</source>
-        <translation type="obsolete">Utoljára fogadott esemény:</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation type="obsolete">Engedély nem szükséges</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Fogadva&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Elküldve&lt;/font&gt;] %3/%4 egyezik</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Fogadott&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Küldött&lt;/font&gt;] %3 to %4 of %5</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">Ország:</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">hiba</translation>
-    </message>
-    <message>
-        <source>server</source>
-        <translation type="obsolete">szerver</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Engedély kell</translation>
-    </message>
-    <message>
-        <source>INVALID USER</source>
-        <translation type="obsolete">ÉRVÉNYTELEN FELHASZNÁLÓ</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation type="obsolete">Szülinap:</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation type="obsolete">Ismeretlen (%1)</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation type="obsolete">Részleg:</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="obsolete">Beosztás:</translation>
-    </message>
-    <message>
-        <source>Sorry, history is disabled for this person.</source>
-        <translation type="obsolete">Bocs, az előzmények tiltva vannak erre a személyre.</translation>
-    </message>
-    <message>
-        <source>Licq - Info </source>
-        <translation type="obsolete">Licq - Info</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Állapot:</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation type="obsolete">Cím:</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation type="obsolete">Frissítés...</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to change your settings.</source>
-        <translation type="obsolete">Kapcsolódva kell, hogy legyél az iCQ hálózathoz,
-hogy megváltoztathasd a beállításaidat.</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation type="obsolete">Nyelv 3:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation type="obsolete">Nyelv 1:</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation type="obsolete">Nyelv 2:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation type="obsolete">Nem megadott</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">&amp;Frissít</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Ismeretlen</translation>
-    </message>
-    <message>
-        <source>&amp;Retrieve</source>
-        <translation type="obsolete">&amp;Lekérdez</translation>
-    </message>
-    <message>
-        <source>Rever&amp;se</source>
-        <translation type="obsolete">Meg&amp;fordít</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 tőle: %2</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation type="obsolete">Nem:</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">&amp;Általános</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">&amp;Előzmények</translation>
-    </message>
-    <message>
-        <source>Normally Licq overwrites the Alias when updating user details.
-Check this if you want to keep your changes to the Alias.</source>
-        <translation type="obsolete">Frissítésnél a Licq felülír minden adatot, köztük a becenevet is.
-Kapcsold be ezt, ha meg akarod tartani a beceneveket.</translation>
-    </message>
-    <message>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation type="obsolete">Hiba az előzmények betöltése közben: %1
-Leírás: %2</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Leírás:</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(semmi)</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Típus</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Nem elérhető</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Töröl</translation>
     </message>
 </context>
 <context>
@@ -10194,14 +5901,6 @@ to your ignore list?</source>
         <translation type="unfinished">Biztosan hozzá akarod adni őt:
 %1 (%2)
 a Felhasználó Listádba?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Igen</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nem</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="164"/>
@@ -10947,10 +6646,6 @@ Select another picture?</source>
         <translation>Licq Felhasználó kiválasztás</translation>
     </message>
     <message>
-        <source>%1 (%2)</source>
-        <translation type="obsolete">%1 (%2)</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/userselectdlg.cpp" line="84"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Mégsem</translation>
@@ -10973,12 +6668,6 @@ Select another picture?</source>
         <location filename="../src/userevents/usersendchatevent.cpp" line="149"/>
         <source>Invite</source>
         <translation>Meghív</translation>
-    </message>
-    <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">Csevegés %2 Felhasználóval visszautasítva:
-%3</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendchatevent.cpp" line="75"/>
@@ -11006,10 +6695,6 @@ Select another picture?</source>
 <context>
     <name>LicqQtGui::UserSendCommon</name>
     <message>
-        <source>No</source>
-        <translation type="obsolete">Nem</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="149"/>
         <source>SMS</source>
         <translation>SMS</translation>
@@ -11020,17 +6705,9 @@ Select another picture?</source>
         <translation>URL</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">Yes</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1149"/>
         <source>done</source>
         <translation>kész</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menü</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="201"/>
@@ -11043,10 +6720,6 @@ Select another picture?</source>
         <location filename="../src/userevents/usersendcommon.cpp" line="1162"/>
         <source>error</source>
         <translation>hiba</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Bezár</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1159"/>
@@ -11081,10 +6754,6 @@ Select another picture?</source>
         <translation>Sürgős</translation>
     </message>
     <message>
-        <source>Send anyway</source>
-        <translation type="obsolete">Mindenképpen elküld!</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1395"/>
         <source>Drag Users Here
 Right Click for Options</source>
@@ -11105,10 +6774,6 @@ Jobb klikk a műveletekhez</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="1079"/>
         <source>via server</source>
         <translation>szerveren keresztül</translation>
-    </message>
-    <message>
-        <source>U&amp;rgent</source>
-        <translation type="obsolete">Sü&amp;rgős</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1217"/>
@@ -11132,12 +6797,6 @@ küldjem a szerveren keresztül?</translation>
         <translation>&amp;Mégsem</translation>
     </message>
     <message>
-        <source>Warning: Message can&apos;t be sent securely
-through the server!</source>
-        <translation type="obsolete">Figyelem: Az üzenetet nem lehet titkosítva elküldeni
-a szerveren keresztül!</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1078"/>
         <source>Sending </source>
         <translation>Küldés </translation>
@@ -11156,18 +6815,6 @@ a szerveren keresztül!</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source> to Contact List</source>
         <translation> Felhasználó Listába</translation>
-    </message>
-    <message>
-        <source>%1 refused %2, send through server</source>
-        <translation type="obsolete">%1 visszautasította ezt: %2, küld szerveren keresztül</translation>
-    </message>
-    <message>
-        <source>M&amp;ultiple recipients</source>
-        <translation type="obsolete">T&amp;öbb címzett</translation>
-    </message>
-    <message>
-        <source>Se&amp;nd through server</source>
-        <translation type="obsolete">&amp;Szerveren keresztüli küldés</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="247"/>
@@ -11288,12 +6935,6 @@ Send anyway?</source>
         <translation> - Fájl átvitel</translation>
     </message>
     <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">Fájl átvitel meghiúsult vele: %2
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendfileevent.cpp" line="162"/>
         <location filename="../src/userevents/usersendfileevent.cpp" line="164"/>
         <source>Select files to send</source>
@@ -11321,14 +6962,6 @@ Send anyway?</source>
 <context>
     <name>LicqQtGui::UserSendMsgEvent</name>
     <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nem</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Igen</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendmsgevent.cpp" line="58"/>
         <source> - Message</source>
         <translation> - Üzenet</translation>
@@ -11343,14 +6976,6 @@ Biztosan el akarod ezt küldeni?</translation>
 </context>
 <context>
     <name>LicqQtGui::UserSendSmsEvent</name>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nem</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Igen</translation>
-    </message>
     <message>
         <location filename="../src/userevents/usersendsmsevent.cpp" line="86"/>
         <source> - SMS</source>
@@ -11403,10 +7028,6 @@ Biztosan el akarod ezt küldeni?</translation>
         <location filename="../src/userevents/userviewevent.cpp" line="720"/>
         <source>&amp;Join</source>
         <translation>&amp;Belép</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menü</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="742"/>
@@ -11514,16 +7135,6 @@ Kérés megszakítva.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">A Licq nem talált megfelelő bongészőt egy belső hiba következtében.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">A Licq nem tudta elindítani a bongésződet és megnyitni a címet.
-Indítsd újra a böngésződet, és nyisd meg a címet kézzel.</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/userviewevent.cpp" line="755"/>
         <location filename="../src/userevents/userviewevent.cpp" line="767"/>
         <location filename="../src/userevents/userviewevent.cpp" line="779"/>
@@ -11625,33 +7236,7 @@ Indítsd újra a böngésződet, és nyisd meg a címet kézzel.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::VerifyDlg</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::WharfIcon</name>
-    <message>
-        <source>Left click - Show main window
-Middle click - Show next message
-Right click - System menu</source>
-        <translation type="obsolete">Bal klikk - Fő ablak
-Középső klikk - Következő üzenet
-Jobb klikk - Rendszer menü</translation>
-    </message>
-</context>
-<context>
     <name>QMessageBox</name>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq hiba</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq figyelmeztetés</translation>
-    </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="63"/>
         <location filename="../src/core/messagebox.cpp" line="68"/>
@@ -11663,10 +7248,6 @@ Jobb klikk - Rendszer menü</translation>
         <location filename="../src/core/messagebox.cpp" line="95"/>
         <source>Licq Question</source>
         <translation>Licq kérdés</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq info</translation>
     </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="78"/>

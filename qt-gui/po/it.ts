@@ -13,20 +13,8 @@
         <translation>Licq - Aggiungi Utente</translation>
     </message>
     <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Nuovo UIN Utente:</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">&amp;Avvisa Utente</translation>
-    </message>
-    <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Annulla</translation>
-    </message>
-    <message>
-        <source>New User Id:</source>
-        <translation type="obsolete">Nuovo Id Utente</translation>
     </message>
     <message>
         <source>Protocol:</source>
@@ -50,10 +38,6 @@
     <message>
         <source>Refuse authorization to %1</source>
         <translation>Rifiuta autorizzazione a %1</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Autorizza utente (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -476,10 +460,6 @@ Guarda la  Finestra id Rete per i dettagli.</translation>
 <context>
     <name>CMMSendDlg</name>
     <message>
-        <source>none</source>
-        <translation type="obsolete">nessuno</translation>
-    </message>
-    <message>
         <source>Sending mass message to %1...</source>
         <translation>Invio messaggio di massa a %1...</translation>
     </message>
@@ -582,16 +562,8 @@ Guarda la  Finestra id Rete per i dettagli.</translation>
         <translation>Chat C&amp;asuale</translation>
     </message>
     <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Errore durante l&apos;invio autorizzazione.</translation>
-    </message>
-    <message>
         <source>&amp;Random Chat Group</source>
         <translation>&amp;Chat di Gruppo Casuale</translation>
-    </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">CMainWindow::&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;Nome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Telefono&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;Ip utente&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Cognome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# messaggi pendenti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Nome Completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;Ultima volta online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online da&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;porta utente&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;stato completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;stato abbreviato&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
@@ -612,18 +584,6 @@ Dovrai far partire il tuo browser e aprire l&apos;URL manualmente.</translation>
     <message>
         <source>Check %1 Response</source>
         <translation>Controlla la Risposta %1</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Sei correntemente registrato come
-UIN: %1
-Base Directory: %2
-Riesegui licq con l&apos;optzione -b per selezionare un nuovo
-base directory e registrare poi un nuovo utente.</translation>
     </message>
     <message>
         <source>Server Group</source>
@@ -668,10 +628,6 @@ base directory e registrare poi un nuovo utente.</translation>
         <translation>Risposta Automatica Personalizzata...</translation>
     </message>
     <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Attualmente in Linea</translation>
-    </message>
-    <message>
         <source>Set &amp;Auto Response...</source>
         <translation>Setta Risposta &amp;Automatica...</translation>
     </message>
@@ -702,14 +658,6 @@ base directory e registrare poi un nuovo utente.</translation>
     <message>
         <source>Edit User Group</source>
         <translation>Modifica Gruppo Utente</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Registrazione ottenuta, il tuo user identification
-number (UIN) è %1.
-Ora  aggiorna i tuoi dati personali</translation>
     </message>
     <message>
         <source>Unknown Packets</source>
@@ -820,12 +768,6 @@ alla tua lista ignorati?</translation>
         <translation>Aggiorna Tutti gli Utenti</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Consigli per usare&lt;br&gt;Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Cambia la tua stato col click destro sull&apos;etichetta di stato.&lt;/li&gt;&lt;li&gt;Cambia la tua autorisposta col doppio-click sull&apos;etichetta distato.&lt;/li&gt;&lt;li&gt;Vedi i messaggi di sistema col doppio click sull&apos;etichetta deimessaggi.&lt;/li&gt;&lt;li&gt;Cambia gruppo col click destro sull&apos;etichetta messaggi.&lt;/li&gt;&lt;li&gt;Usa i seguenti tasti rapidi dalla lista contatti:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M: &lt;/tt&gt;Spunta su modalità minima&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Spunta mostra utenti offline&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X :&lt;/tt&gt;Uscita&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Nascondi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Vedi il prossimo messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Vedi messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Invia Messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Invia Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Invia richiesta chat&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Invia File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Controlla Autorisposta&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Fuori tutti messaggi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ridisegna la finestra utente&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Cancella utente dal gruppo corrente&lt;li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Cancella utente dalla lista contatti&lt;li&gt;&lt;li&gt;Tieni premuto control mentre clicchi su funzione di chiusura della finestra per rimuovere l&apos;utente dalla lista contatti.&lt;/li&gt;&lt;li&gt;Premi Ctrl-Enter dalla maggior parte di campi per selezionare &quot;Ok&quot;o &quot;Accept&quot;. Per esempio nell&apos;invio scheda della finestra utente.&lt;/li&gt;&lt;li&gt;qui c&apos;è una completa lista delle optioni utente %, che possono essere usate &lt;b&gt;Su Evento&lt;/b&gt;   parametri, &lt;b&gt;autoresposte&lt;/b&gt;, e &lt;b&gt;utilità&lt;/b&gt;:
-</translation>
-    </message>
-    <message>
         <source>&amp;Redraw User Window</source>
         <translation>&amp;Ridisegna Finestra Utente</translation>
     </message>
@@ -850,24 +792,8 @@ Controlla la finestra di rete per dettagli.</translation>
         <translation>Accetta in Assente</translation>
     </message>
     <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Lista Invisibili</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Lista Visibili</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Registrazione fallita.  Controlla la finestra di rete per dettagli.</translation>
-    </message>
-    <message>
         <source>Send &amp;Chat Request</source>
         <translation>Invia Richiesta &amp;Chat</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Reg&amp;istra Utente</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
@@ -878,20 +804,12 @@ Controlla la finestra di rete per dettagli.</translation>
         <translation>%1 messaggio%2</translation>
     </message>
     <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Lista Ignorati</translation>
-    </message>
-    <message>
         <source>Warnings</source>
         <translation>Avvertimenti</translation>
     </message>
     <message>
         <source>Debug Level</source>
         <translation>Livello di Debug</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Nuovi Utenti</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1064,20 +982,12 @@ Doppio click - Mostra prossimo messaggio</translation>
 %1.</translation>
     </message>
     <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Autorizzazione concessa.</translation>
-    </message>
-    <message>
         <source>System Functions</source>
         <translation>Funzioni di Sistema</translation>
     </message>
     <message>
         <source>Edit &amp;Groups</source>
         <translation>Modifica &amp;Gruppi</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Tutti gli Utenti</translation>
     </message>
     <message>
         <source>&amp;Security/Password Options</source>
@@ -1513,22 +1423,6 @@ Doppio click - Mostra prossimo messaggio</translation>
         <translation>settimana</translation>
     </message>
     <message>
-        <source>Greek</source>
-        <translation type="obsolete">Greco</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="obsolete">Cirillico</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt; Inattiva: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;AutoRisposta:&lt;/u&gt;</translation>
-    </message>
-    <message>
         <source> hours</source>
         <translation>ore</translation>
     </message>
@@ -1545,76 +1439,12 @@ Doppio click - Mostra prossimo messaggio</translation>
         <translation>0 minuti</translation>
     </message>
     <message>
-        <source>Baltic</source>
-        <translation type="obsolete">Baltico</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="obsolete">Arabo</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="obsolete">Ebraico</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="obsolete">Coreano</translation>
-    </message>
-    <message>
         <source>Online</source>
         <translation>In Linea</translation>
     </message>
     <message>
-        <source>Western European</source>
-        <translation type="obsolete">Europeo Occidentale</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt; C </translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="obsolete">Centroeuropeo</translation>
-    </message>
-    <message>
         <source> minute</source>
         <translation>minuto</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Compleanno&amp;nbsp;Oggi!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Japanese</source>
-        <translation type="obsolete">Giapponese</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="obsolete">Ucraino</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="obsolete">Cinese</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Auto&amp;nbsp;Risposta&amp;nbsp;Personalizzata</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Connessione&amp;nbsp;sicura</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="obsolete">Turco</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="obsolete">Cinese Tradizionale</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Loggato dentro: </translation>
     </message>
     <message>
         <source>%1 Floaty (%2)</source>
@@ -2061,10 +1891,6 @@ Mi puoi lasciare un messaggio.</translation>
         <translation>Modifica Nome</translation>
     </message>
     <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Imposta Nuovi Utenti</translation>
-    </message>
-    <message>
         <source>Cancel</source>
         <translation>Annulla</translation>
     </message>
@@ -2087,28 +1913,8 @@ il gruppo &apos;%1&apos;?</translation>
         <translation>Nessun nome</translation>
     </message>
     <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Il gruppo a cui i nuovi utenti saranno automaticamente aggiunti. Tutti i nuovi utenti saranno nel locale gruppo di sistema New Users ma per l&apos;archivio sulla listadel server saranno inseriti nel gruppo specifico.</translation>
-    </message>
-    <message>
         <source>Save the name of a group being modified.</source>
         <translation>Salva nome gruppo modificato.</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Nuovo Utente:</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Seleziona Default</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Predefinito:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Gruppo con cui avvii inizialmente</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -2117,10 +1923,6 @@ il gruppo &apos;%1&apos;?</translation>
     <message>
         <source>Shift Down</source>
         <translation>Sposta Giù</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Tutti gli Utenti</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -3162,14 +2964,6 @@ Potrebbe non funzionare.</translation>
         <translation>Su evento in Occupato</translation>
     </message>
     <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Il formato della stringa usato per definire che cosa apparirà in ogni colonna.
-I seguenti parametri possono esssere usati: 
-</translation>
-    </message>
-    <message>
         <source>Parameter for received system messages</source>
         <translation>Parametro per la ricezione di un messaggio di sistema</translation>
     </message>
@@ -3921,40 +3715,12 @@ Ora  aggiorna i tuoi dati personali</translation>
         <translation>Abilita</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation type="obsolete">Configura</translation>
-    </message>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Caricati</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Stato</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Scarica</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Disponibile</translation>
-    </message>
-    <message>
         <source>Refresh</source>
         <translation>Aggiorna</translation>
     </message>
     <message>
         <source>Description</source>
         <translation>Descrizione</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Dettagli</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Disabilita</translation>
     </message>
     <message>
         <source>Version</source>
@@ -3983,268 +3749,10 @@ Ora  aggiorna i tuoi dati personali</translation>
     </message>
 </context>
 <context>
-    <name>QFileDialog</name>
-    <message>
-        <source>Back</source>
-        <translation type="obsolete">Indietro</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Data</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Apri</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Salva</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Dimensioni</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">Ordina</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tipo</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;O Apri</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Salva</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Size</source>
-        <translation type="obsolete">Ordina per Dimen&amp;sioni</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Date</source>
-        <translation type="obsolete">Ordina per &amp;Data</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Name</source>
-        <translation type="obsolete">Ordina per &amp;Nome</translation>
-    </message>
-    <message>
-        <source>New Folder 1</source>
-        <translation type="obsolete">Nuova Cartella 1</translation>
-    </message>
-    <message>
-        <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="obsolete">&lt;qt&gt;Vuoi Veramente cancellare %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
-    </message>
-    <message>
-        <source>the directory</source>
-        <translation type="obsolete">la cartella</translation>
-    </message>
-    <message>
-        <source>File &amp;type:</source>
-        <translation type="obsolete">&amp;tipo File:</translation>
-    </message>
-    <message>
-        <source>File &amp;name:</source>
-        <translation type="obsolete">&amp;nome File:</translation>
-    </message>
-    <message>
-        <source>Delete %1</source>
-        <translation type="obsolete">Cancella %1</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Annulla</translation>
-    </message>
-    <message>
-        <source>New Folder</source>
-        <translation type="obsolete">Nuova Cartella</translation>
-    </message>
-    <message>
-        <source>&amp;Unsorted</source>
-        <translation type="obsolete">&amp;U Disordinati</translation>
-    </message>
-    <message>
-        <source>Look &amp;in:</source>
-        <translation type="obsolete">Guarda &amp;in</translation>
-    </message>
-    <message>
-        <source>Preview File Contents</source>
-        <translation type="obsolete">Anteprima Contenuto File</translation>
-    </message>
-    <message>
-        <source>New Folder %1</source>
-        <translation type="obsolete">Nuova Cartella %1</translation>
-    </message>
-    <message>
-        <source>Read-write</source>
-        <translation type="obsolete">Sola-scrittura</translation>
-    </message>
-    <message>
-        <source>Read-only</source>
-        <translation type="obsolete">Sola-Lettura</translation>
-    </message>
-    <message>
-        <source>Find Directory</source>
-        <translation type="obsolete">Trova Cartella</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">Attributi</translation>
-    </message>
-    <message>
-        <source>Show &amp;hidden files</source>
-        <translation type="obsolete">Mostra file nascosti &amp;h</translation>
-    </message>
-    <message>
-        <source>Save as</source>
-        <translation type="obsolete">Salva come</translation>
-    </message>
-    <message>
-        <source>Inaccessible</source>
-        <translation type="obsolete">Inaccessibile</translation>
-    </message>
-    <message>
-        <source>%1
-File not found.
-Check path and filename.</source>
-        <translation type="obsolete">%1
-File non trovato
-Controlla percorso e nome file.</translation>
-    </message>
-    <message>
-        <source>List View</source>
-        <translation type="obsolete">Vista lista</translation>
-    </message>
-    <message>
-        <source>Special</source>
-        <translation type="obsolete">Speciale</translation>
-    </message>
-    <message>
-        <source>Write-only</source>
-        <translation type="obsolete">Sola-scrittura</translation>
-    </message>
-    <message>
-        <source>the symlink</source>
-        <translation type="obsolete">il link simbolico</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;D Cancella</translation>
-    </message>
-    <message>
-        <source>All files (*)</source>
-        <translation type="obsolete">Tutti il files (*)</translation>
-    </message>
-    <message>
-        <source>Directories</source>
-        <translation type="obsolete">Cartelle</translation>
-    </message>
-    <message>
-        <source>Symlink to Special</source>
-        <translation type="obsolete">Link simbolico allo speciale</translation>
-    </message>
-    <message>
-        <source>&amp;Rename</source>
-        <translation type="obsolete">&amp;Rinomina</translation>
-    </message>
-    <message>
-        <source>One directory up</source>
-        <translation type="obsolete">Una cartella su</translation>
-    </message>
-    <message>
-        <source>Preview File Info</source>
-        <translation type="obsolete">Anteprima Info File</translation>
-    </message>
-    <message>
-        <source>the file</source>
-        <translation type="obsolete">Il file</translation>
-    </message>
-    <message>
-        <source>Create New Folder</source>
-        <translation type="obsolete">Crea Nuova Cartella</translation>
-    </message>
-    <message>
-        <source>Symlink to File</source>
-        <translation type="obsolete">Link simbolico al File</translation>
-    </message>
-    <message>
-        <source>Symlink to Directory</source>
-        <translation type="obsolete">Link simbolico alla Cartella</translation>
-    </message>
-    <message>
-        <source>Detail View</source>
-        <translation type="obsolete">Vista Dettagli</translation>
-    </message>
-</context>
-<context>
-    <name>QFontDialog</name>
-    <message>
-        <source>&amp;Size</source>
-        <translation type="obsolete">Dimen&amp;sione</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Applica</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Chiudi</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">&amp;Colore</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Annulla</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Esempio</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Seleziona Font</translation>
-    </message>
-    <message>
-        <source>&amp;Underline</source>
-        <translation type="obsolete">Sottolineato &amp;u</translation>
-    </message>
-    <message>
-        <source>Effects</source>
-        <translation type="obsolete">Effetti</translation>
-    </message>
-    <message>
-        <source>Stri&amp;keout</source>
-        <translation type="obsolete">Sbarrato &amp;k</translation>
-    </message>
-</context>
-<context>
     <name>QMessageBox</name>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Errori Licq</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Avvertimenti Licq</translation>
-    </message>
     <message>
         <source>Licq Question</source>
         <translation>Licq Domanda</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Informazioni Licq</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -4256,113 +3764,30 @@ Controlla percorso e nome file.</translation>
     </message>
 </context>
 <context>
-    <name>QWizard</name>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Aiuto</translation>
-    </message>
-    <message>
-        <source>&lt; Back</source>
-        <translation type="obsolete">&lt; Indietro</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Annula</translation>
-    </message>
-    <message>
-        <source>Finish</source>
-        <translation type="obsolete">Fine</translation>
-    </message>
-    <message>
-        <source>Next &gt;</source>
-        <translation type="obsolete">Prossimo &gt;</translation>
-    </message>
-</context>
-<context>
     <name>RegisterUserDlg</name>
-    <message>
-        <source>&amp;Save Password</source>
-        <translation type="obsolete">&amp;Salva Password</translation>
-    </message>
     <message>
         <source>Please enter your password in both input fields.</source>
         <translation>Per favore metti la tua password in ambedue i campi di input.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Registrazione con successo. Ora accedi e aggiorna le tue informazioni personali.</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
         <translation>Password non valida , deve essere compresa fra 1 e 8 caratteri</translation>
     </message>
     <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Tu hai bisogno di mettere un UIN valido quando tenti di registrare un utente esistente. </translation>
-    </message>
-    <message>
         <source>Now please click &apos;Finish&apos; to start the registration process.</source>
         <translation>Ora clicca su &apos;Finish&apos; per iniziare il processo di registrazione.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Registrazione Utente in progresso...</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
         <translation>Per favore premi il bottone &apos;Back&apos; e tenta ancora.</translation>
     </message>
     <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">&amp;Registra Utente Esistente</translation>
-    </message>
-    <message>
         <source>The passwords don&apos;t seem to match.</source>
         <translation>Passwords non identiche</translation>
     </message>
     <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">Registrazione UIN - Passo 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">Registrazione UIN - Passo 3</translation>
-    </message>
-    <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">UIN Invalido. Tenta ancora.</translation>
-    </message>
-    <message>
         <source>Verify:</source>
         <translation>Verifica:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Licq Registrazione Utente</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Benvenuto nella Registration Wizard.
-
-Qui puoi registrare un nuovo utente, o configurare Licq per usare un UIN esistente.
-
-Se tu registri un nuovo uin, scegli una password e clicca &quot;Finish&quot;.
-Se hai già un uin, allora spunta &quot;Register Existing User&quot;,
-metti il tuo uin e la tua password, e clicca &quot;OK&quot;
-
-Premi  &quot;Next&quot; per procedere.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">Registrazione UIN</translation>
     </message>
     <message>
         <source>Welcome to the Registration Wizard.
@@ -5219,10 +4644,6 @@ Rete ICQ per recuperare i tuoi dettagli.</translation>
         <translation>Cellulare:</translation>
     </message>
     <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 a %2</translation>
-    </message>
-    <message>
         <source>Online Since:</source>
         <translation>Online da:</translation>
     </message>
@@ -5347,10 +4768,6 @@ ICQ per cambiare la tua configurazione.</translation>
     <message>
         <source>Rever&amp;se</source>
         <translation>Inver&amp;so</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 da %2</translation>
     </message>
     <message>
         <source>Gender:</source>

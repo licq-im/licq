@@ -63,10 +63,6 @@
         <source>&amp;Cancel</source>
         <translation>&amp;Скасувати</translation>
     </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">UIN користовача для авторизації:</translation>
-    </message>
 </context>
 <context>
     <name>AwayMsgDlg</name>
@@ -1912,30 +1908,6 @@ You can leave me a message.</source>
     <message>
         <source>Edit group name (hit enter to save).</source>
         <translation>Редагувати ім&apos;я групи (для збереження натисніть ввод).</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Встановити типовим</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">При старті типова група.</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Встановити нових користувачів</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Нові користувачі будуть автоматично додані до групи.  Усі нові користувачі будуть знаходитись у групі &quot;Нові користувачі&quot;, але на сервері вони будуть збережені у встановленій групі.</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Без обумовлення:</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Новий користувач:</translation>
     </message>
     <message>
         <source>&amp;Save</source>

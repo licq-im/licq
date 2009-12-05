@@ -1,103 +1,6 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-oletus</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">Licq-varoitus</translation>
-    </message>
-</context>
-<context>
     <name>@default</name>
-    <message>
-        <source>File(s): </source>
-        <translation type="obsolete">Tiedosto(t): </translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Selaa</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Muokkaa</translation>
-    </message>
-    <message>
-        <source> - File Transfer</source>
-        <translation type="obsolete"> - tiedostonsiirto</translation>
-    </message>
-    <message>
-        <source>Select files to send</source>
-        <translation type="obsolete">Valitse lähetettävät tiedostot</translation>
-    </message>
-    <message>
-        <source>You must specify a file to transfer!</source>
-        <translation type="obsolete">Sinun tulee valita tiedosto joka siirretään!</translation>
-    </message>
-    <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 kieltäytyi vastaanottamasta tiedostoa:
-%3</translation>
-    </message>
-    <message>
-        <source>Multiparty: </source>
-        <translation type="obsolete">Ryhmä: </translation>
-    </message>
-    <message>
-        <source>Invite</source>
-        <translation type="obsolete">Kutsu</translation>
-    </message>
-    <message>
-        <source> - Chat Request</source>
-        <translation type="obsolete"> - chat-pyyntö</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Tyhjennä</translation>
-    </message>
-    <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 kieltäytyi chatistä:
-%3</translation>
-    </message>
-    <message>
-        <source>Drag Users Here - Right Click for Options</source>
-        <translation type="obsolete">Raahaa käyttäjät tähän - valikko oikeasta napista</translation>
-    </message>
-    <message>
-        <source> - Contact List</source>
-        <translation type="obsolete"> - kontaktilista</translation>
-    </message>
-    <message>
-        <source>Phone : </source>
-        <translation type="obsolete">Puhelin : </translation>
-    </message>
-    <message>
-        <source>Chars left : </source>
-        <translation type="obsolete">Kirjaimia jäljellä : </translation>
-    </message>
-    <message>
-        <source> - SMS</source>
-        <translation type="obsolete"> - SMS</translation>
-    </message>
-    <message>
-        <source>You didn&apos;t edit the SMS.
-Do you really want to send it?</source>
-        <translation type="obsolete">Et muokannut SMS:ää.
-Haluatko varmasti lähettää sen?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Kyllä</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;En</translation>
-    </message>
     <message>
         <source>KDE default</source>
         <translation type="unfinished">KDE-oletus</translation>
@@ -105,14 +8,6 @@ Haluatko varmasti lähettää sen?</translation>
 </context>
 <context>
     <name>AddUserDlg</name>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">&amp;Ilmoita käyttäjälle</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Uuden käyttäjän UIN:</translation>
-    </message>
     <message>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
@@ -124,10 +19,6 @@ Haluatko varmasti lähettää sen?</translation>
     <message>
         <source>Licq - Add User</source>
         <translation>Licq - Lisää käyttäjä</translation>
-    </message>
-    <message>
-        <source>New User Id:</source>
-        <translation type="obsolete">Uuden käyttäjän id:</translation>
     </message>
     <message>
         <source>Protocol:</source>
@@ -147,10 +38,6 @@ Haluatko varmasti lähettää sen?</translation>
     <message>
         <source>Licq - Refuse Authorisation</source>
         <translation>Licq - Kiellä valtuutus</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Valtuuta käyttäjä (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -644,10 +531,6 @@ Katso tarkempia tietoja Verkkolokista.</translation>
         <translation>Licq (%1)</translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;käyttäjänimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;sähköposti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;etunimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;puhelinnumero&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;käyttäjän ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;sukunimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# odottavaa viestiä&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;koko nimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;viimeksi nähty onlinessa&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;ollut onlinessa # lähtien&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;käyttäjän portti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;tila kokonaisuudessaan&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;tila lyhennettynä&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webbisivu&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>System</source>
         <translation>Järjestelmä</translation>
     </message>
@@ -700,58 +583,14 @@ Tuplaklikkaus - Automaattisen vastauksen asetus</translation>
         <translation>Ei viestejä</translation>
     </message>
     <message>
-        <source>All Users</source>
-        <translation type="obsolete">Kaikki</translation>
-    </message>
-    <message>
         <source>Server Group</source>
         <translation>Palvelinryhmä</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Online-huomautus</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Näkyvissä-lista</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Näkymättömissä-lista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Huomiotta-lista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Uudet</translation>
     </message>
     <message>
         <source>Logon failed.
 See network window for details.</source>
         <translation>Kirjautuminen epäonnistui.
 Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Rekisteröityminen onnistui, käyttäjätunnusnumerosi
-(UIN) on %1.
-Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Virhe valtuutusta lähetettäessä.</translation>
-    </message>
-    <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Valtuutus myönnetty.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove
@@ -1003,10 +842,6 @@ ei voida avata.</translation>
         <translation>&amp;Tallenna kaikki käyttäjät</translation>
     </message>
     <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Rek&amp;isteröi käyttäjä</translation>
-    </message>
-    <message>
         <source>&amp;Hints</source>
         <translation>&amp;Vinkkejä</translation>
     </message>
@@ -1230,25 +1065,6 @@ ei voida avata.</translation>
         <source>%1: %2
 </source>
         <translation>%1: %2
-</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Olet tällä hetkellä rekisteröitynyt
-UIN-numerolla %1
-Päähakemisto: %1
-Käynnistä licq uudelleen parametrin -b kanssa,
-jolla voit valita uuden päähakemiston. Tämän jälkeen
-rekisteröi uusi käyttäjä.</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Vinkkejä Licq Qt-GUI Pluginnin&lt;br&gt;käyttöön&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Vaihda tilaasi painamalla hiiren oikeaa nappia tilailmaisimen päällä.&lt;/li&gt;&lt;li&gt;Vaihda automaattista vastaustasi tuplaklikkaamalla tilailmaisinta.&lt;/li&gt;&lt;li&gt;Näytä järjestelmäviestit tuplaklikkaamalla viesti-ilmaisinta.&lt;/li&gt;&lt;li&gt;Vaihda ryhmiä painamalla hiiren oikeaa näppäintä viesti-ilmaisimen päällä.&lt;/li&gt;&lt;li&gt;Käytä seuraavia kontaktilistan pikanäppäimiä:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Aseta mini-moodi (päälle/pois)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Näytä offline-käyttäjät (päälle/pois)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Ulos&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Piilota&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Näytä seuraava viesti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Näytä viesti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Lähetä viesti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Lähetä URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Lähetä chat-pyyntö&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Lähetä tiedosto&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Näytä automaattinen vastaus&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Ponnauta kaikki viestit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Piirrä käyttäjäikkuna uudelleen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Poista käyttäjä kyseisestä ryhmästä&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Poista käyttäjä kontaktilistalta&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Pidä control-nappia pohjassa sulkiessasi toimintaikkunan poistaaksesi käyttäjän kontaktilistalta.&lt;/li&gt;&lt;li&gt;Paina Ctrl-Enter useimmissa tektsikentissä valitseaksesi &quot;Ok&quot; tai &quot;Hyväksy&quot;, esimerkiksi käyttäjän toimintaikkunan lähetysosassa.&lt;/li&gt;&lt;li&gt;Tässä on täydellinen lista käyttäjän % optioista, joita voi käyttää &lt;b&gt;tapahtumien&lt;/b&gt; parametreissä, &lt;b&gt;automaattisessa vastauksessa&lt;/b&gt; ja &lt;b&gt;lisäohjelmissa&lt;b&gt;:
 </translation>
     </message>
     <message>
@@ -1609,58 +1425,6 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
         <translation>S</translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Syntymäpäivä&amp;nbsp; tänään!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Suojattu&amp;nbsp;yhteys</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Oma&amp;nbsp;automaattinen&amp;nbsp;vastaus</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automaattinen vastaus:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;S: </translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;P: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;O: </translation>
-    </message>
-    <message>
         <source> weeks</source>
         <translation> viikkoa</translation>
     </message>
@@ -1695,38 +1459,6 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     <message>
         <source>0 minutes</source>
         <translation>0 minuuttia</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Kirjautunut: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ollut poissa: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbps;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="obsolete">&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Päällä</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
     </message>
     <message>
         <source>Not In List</source>
@@ -2181,30 +1913,6 @@ Voit jättää minulle viestin.</translation>
         <translation>Muokkaa ryhmän nimeä (tallenna enterillä).</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Aseta oletus</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Oletusryhmä käynnistyessä.</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Aseta uudet käyttäjät</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Ryhmä johon lisätään automaattisesti uudet käyttäjät. Kaikki uudet käyttäjät ovat paikallisessa ryhmässä Uudet, ja ne kuuluvat omaan ryhmään myös palvelimen tietokannassa.</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Oletus:</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Uusi käyttäjä:</translation>
-    </message>
-    <message>
         <source>&amp;Save</source>
         <translation>&amp;Tallenna</translation>
     </message>
@@ -2215,10 +1923,6 @@ Voit jättää minulle viestin.</translation>
     <message>
         <source>&amp;Done</source>
         <translation>&amp;Valmis</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Kaikki käyttäjät</translation>
     </message>
     <message>
         <source>noname</source>
@@ -3322,14 +3026,6 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
         <translation>Muotoilu</translation>
     </message>
     <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Sarakkeen otsikkotekstin muotoilu.
-Voit käyttää seuraavia parametrejä:
-</translation>
-    </message>
-    <message>
         <source>Width</source>
         <translation>Leveys</translation>
     </message>
@@ -3903,10 +3599,6 @@ The following parameters can be used:</source>
 <context>
     <name>OwnerEditDlg</name>
     <message>
-        <source>Edit Owner</source>
-        <translation type="obsolete">Muokkaa omistajaa</translation>
-    </message>
-    <message>
         <source>User ID:</source>
         <translation>Käyttäjän ID:</translation>
     </message>
@@ -3917,10 +3609,6 @@ The following parameters can be used:</source>
     <message>
         <source>Protocol:</source>
         <translation>Protokolla:</translation>
-    </message>
-    <message>
-        <source>Currently only one owner per protocol is supported.</source>
-        <translation type="obsolete">Tällä hetkellä vain yksi protokolla per käyttäjä on tuettu.</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
@@ -3941,10 +3629,6 @@ The following parameters can be used:</source>
 </context>
 <context>
     <name>OwnerManagerDlg</name>
-    <message>
-        <source>Licq - Owner Manager</source>
-        <translation type="obsolete">Licq - Omistajan hallinta</translation>
-    </message>
     <message>
         <source>&amp;Add</source>
         <translation>&amp;Lisää</translation>
@@ -4017,10 +3701,6 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
 <context>
     <name>PluginDlg</name>
     <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Ladattu</translation>
-    </message>
-    <message>
         <source>Id</source>
         <translation>Id</translation>
     </message>
@@ -4033,36 +3713,12 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
         <translation>Versio</translation>
     </message>
     <message>
-        <source>Status</source>
-        <translation type="obsolete">Tila</translation>
-    </message>
-    <message>
         <source>Description</source>
         <translation>Kuvaus</translation>
     </message>
     <message>
         <source>Enable</source>
         <translation>Aseta päälle</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Aseta pois päältä</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Pura</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Tarkemmat tiedot</translation>
-    </message>
-    <message>
-        <source>Configure</source>
-        <translation type="obsolete">Konfiguroi</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Saatavilla</translation>
     </message>
     <message>
         <source>Load</source>
@@ -4106,18 +3762,6 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
         <translation>Licq-kysymys</translation>
     </message>
     <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq-tiedot</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq-varoitus</translation>
-    </message>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq-virhe</translation>
-    </message>
-    <message>
         <source>Yes</source>
         <translation>Kyllä</translation>
     </message>
@@ -4129,64 +3773,12 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
 <context>
     <name>RegisterUserDlg</name>
     <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Tervetuloa rekisteröitymisvelhoon.
-
-Voit rekisteröidä uuden käyttäjän täällä tai konfiguroida Licq:n käyttämään jo olemassa olevaa UIN:ia.
-
-Jos haluat rekisteröidä uuden UIN:in, keksi salasana ja paina &quot;Valmis&quot;.
-Jos sinulla on jo UIN, rastita &quot;Rekisteröi vanha käyttäjä&quot;,
-kirjoita UIN-numerosi ja salasanasi ja paina &quot;OK&quot;.
-
-Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">UIN:n rekisteröiminen</translation>
-    </message>
-    <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">&amp;Rekisteröi vanha käyttäjä</translation>
-    </message>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">Uin:</translation>
-    </message>
-    <message>
         <source>Password:</source>
         <translation>Salasana:</translation>
     </message>
     <message>
         <source>Verify:</source>
         <translation>Vahvistus:</translation>
-    </message>
-    <message>
-        <source>&amp;Save Password</source>
-        <translation type="obsolete">&amp;Tallenna salasana</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">UIN:n rekisteröinti - vaihe 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">UIN:n rekisteröinti - vaihe 3</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Licq-käyttäjän rekisteröinti</translation>
-    </message>
-    <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Sinun tulee antaa oikea UIN rekisteröitäessäsi jo olemassa olevan käyttäjän. </translation>
     </message>
     <message>
         <source>Please enter your password in both input fields.</source>
@@ -4203,18 +3795,6 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     <message>
         <source>Now please click &apos;Finish&apos; to start the registration process.</source>
         <translation>Paina &quot;Valmis&quot; aloittaaksesi rekisteröimisen.</translation>
-    </message>
-    <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">Virheellinen UIN.  Yritä uudelleen.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Rekisteröiminen onnistui.  Kirjaudu sisään ja päivitä henkilökohtaiset tietosi.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Rekisteröinti käynnissä...</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
@@ -4397,10 +3977,6 @@ After you are online, you can send your personal details to the server.</source>
     <message>
         <source>UIN#:</source>
         <translation>UIN#:</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">&amp;Uin#</translation>
     </message>
     <message>
         <source>&amp;Search</source>
@@ -4793,10 +4369,6 @@ Lisäkuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
 %1</translation>
     </message>
     <message>
-        <source>E&amp;moticons</source>
-        <translation type="obsolete">Hy&amp;miöt</translation>
-    </message>
-    <message>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
         <translation>Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista hymiövalikoimista</translation>
     </message>
@@ -5021,10 +4593,6 @@ Lisäkuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
         <translation>Käyttäjätunnus:</translation>
     </message>
     <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
         <source>IP:</source>
         <translation>IP:</translation>
     </message>
@@ -5087,10 +4655,6 @@ Lisäkuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
     <message>
         <source>Unknown</source>
         <translation>Tuntematon</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>Unknown (%1)</source>
@@ -5237,14 +4801,6 @@ Kuvaus: %2</translation>
     <message>
         <source>server</source>
         <translation>palvelin</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 käyttäjältä %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 käyttäjälle %2</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
@@ -5465,10 +5021,6 @@ Valitaanko toinen kuva?</translation>
         <source>Licq User Select</source>
         <translation>Licq-käyttäjän valinta</translation>
     </message>
-    <message>
-        <source>%1 (%2)</source>
-        <translation type="obsolete">%1 (%2)</translation>
-    </message>
 </context>
 <context>
     <name>UserSendChatEvent</name>
@@ -5624,10 +5176,6 @@ Lähetä...</translation>
     <message>
         <source>Cancel</source>
         <translation>Peruuta</translation>
-    </message>
-    <message>
-        <source>%1 refused %2, send through server</source>
-        <translation type="obsolete">%1 kieltäytyi %2, lähetä palvelimen kautta</translation>
     </message>
     <message>
         <source>Warning: Message can&apos;t be sent securely

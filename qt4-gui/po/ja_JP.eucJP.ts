@@ -40,13 +40,6 @@
     </message>
 </context>
 <context>
-    <name>LicqQtGui::</name>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">なし</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::AboutDlg</name>
     <message>
         <location filename="../src/dialogs/aboutdlg.cpp" line="41"/>
@@ -92,26 +85,6 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <source>Licq - Add User</source>
-        <translation type="obsolete">Licq - ユーザ追加</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">新ユーザUIN</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">ユーザ通知</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation type="unfinished"></translation>
@@ -139,38 +112,6 @@
 </context>
 <context>
     <name>LicqQtGui::AuthUserDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Refuse authorization to %1</source>
-        <translation type="obsolete">%1の承認を拒否する</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">どのユーザを承認(UIN):</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias (such as &quot;&gt;&quot; or &quot;&amp;&quot;</source>
-        <translation type="obsolete">&lt;h2&gt;自動応答メッセージ&lt;br&gt;作成のヒント&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;%による表記(メインのヒントページに詳細があります)を含めることができます。&lt;/li&gt;&lt;li&gt;パイプ(|)から始まる行はコマンドと見なされます。 その行に指定されたコマンドは外部コマンドに置き換えられます。 コマンドは/bin/shによって解釈されるのでシェルコマンドあるいはメタ文字を 使用することができます。セキュリティ上の理由から%による表現は エリアス(&quot;&gt;&quot;や&quot;&amp;&quot;)に含まれるメタ文字をシェルが解釈しないよう 自動的にシングルクオートで囲まれた形に変換されます。</translation>
-    </message>
-    <message>
-        <source>Grant authorization to %1</source>
-        <translation type="obsolete">%1を承認する</translation>
-    </message>
-    <message>
-        <source>Licq - Grant Authorisation</source>
-        <translation type="obsolete">承認を認める</translation>
-    </message>
-    <message>
-        <source>Licq - Refuse Authorisation</source>
-        <translation type="obsolete">Licq - 承認を拒否</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="83"/>
         <source>Response</source>
@@ -207,10 +148,6 @@
 <context>
     <name>LicqQtGui::AwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="180"/>
         <source>I&apos;m currently %1, %a.
 You can leave me a message.
@@ -228,10 +165,6 @@ You can leave me a message.
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="165"/>
         <source>&amp;Edit Items</source>
         <translation>アイテム編集</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="97"/>
@@ -255,1394 +188,7 @@ You can leave me a message.
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CContactBar</name>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">オンライン</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactList</name>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">全ユーザ</translation>
-    </message>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">他ユーザ</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;今日が&amp;nbsp;誕生日!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;安全&amp;nbsp;伝送路</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;自動&amp;nbsp;応答&amp;nbsp;設定</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">自動応答:</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEditFileListDlg</name>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">消去</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEmoticons</name>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">デフォルト</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFileDlg</name>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">KB</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">MB</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Byte</source>
-        <translation type="obsolete">バイト</translation>
-    </message>
-    <message>
-        <source>ETA:</source>
-        <translation type="obsolete">残り時間:</translation>
-    </message>
-    <message>
-        <source>%1/%2</source>
-        <translation type="obsolete">%1/%2</translation>
-    </message>
-    <message>
-        <source>Bytes</source>
-        <translation type="obsolete">バイト</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="obsolete">ファイル:</translation>
-    </message>
-    <message>
-        <source>Retry</source>
-        <translation type="obsolete">もう一度</translation>
-    </message>
-    <message>
-        <source>Time:</source>
-        <translation type="obsolete">時間:</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected</source>
-        <translation type="obsolete">相手が切断しました</translation>
-    </message>
-    <message>
-        <source>Licq - File Transfer (%1)</source>
-        <translation type="obsolete">Licq - ファイル転送(%1)</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected
-</source>
-        <translation type="obsolete">相手が切断しました
-</translation>
-    </message>
-    <message>
-        <source>Sent
-%1
-to %2 successfully
-</source>
-        <translation type="obsolete">%1を
-%2に
-送信成功</translation>
-    </message>
-    <message>
-        <source>Connecting to remote...
-</source>
-        <translation type="obsolete">相手に接続中...</translation>
-    </message>
-    <message>
-        <source>Received
-%1
-from %2 successfully
-</source>
-        <translation type="obsolete">%2を
-%1より
-受信に成功
-</translation>
-    </message>
-    <message>
-        <source>File already exists and appears incomplete.</source>
-        <translation type="obsolete">ファイルは既に存在し不完全の模様</translation>
-    </message>
-    <message>
-        <source>Batch:</source>
-        <translation type="obsolete">バッチ:</translation>
-    </message>
-    <message>
-        <source>File already exists and is at least as big as the incoming file.</source>
-        <translation type="obsolete">ファイルは既に存在し転送されるファイルよりサイズが大</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Waiting for connection...
-</source>
-        <translation type="obsolete">接続待ち...
-</translation>
-    </message>
-    <message>
-        <source>Sending file...
-</source>
-        <translation type="obsolete">ファイルを送り中...
-</translation>
-    </message>
-    <message>
-        <source>Resume</source>
-        <translation type="obsolete">再開</translation>
-    </message>
-    <message>
-        <source>Done %1
-</source>
-        <translation type="obsolete">終了 %1
-</translation>
-    </message>
-    <message>
-        <source>File name:</source>
-        <translation type="obsolete">ファイル名:</translation>
-    </message>
-    <message>
-        <source>Receiving file...
-</source>
-        <translation type="obsolete">ファイルを受信中...
-</translation>
-    </message>
-    <message>
-        <source>File I/O error: %1
-</source>
-        <translation type="obsolete">ファイルI/Oエラー: %1
-</translation>
-    </message>
-    <message>
-        <source>Handshake Error
-See Network Window for Details</source>
-        <translation type="obsolete">ハンドシェークエラー
-詳細はネットワークウィンドウを参照ください</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled
-</source>
-        <translation type="obsolete">ファイル転送キャンセル
-</translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-See Network Window for Details</source>
-        <translation type="obsolete">ファイルI/Oエラー:
-%1
-詳細はネットワークウィンドウを御覧ください</translation>
-    </message>
-    <message>
-        <source>Handshaking error
-</source>
-        <translation type="obsolete">ハンドシェイクエラー
-</translation>
-    </message>
-    <message>
-        <source>Current:</source>
-        <translation type="obsolete">現在</translation>
-    </message>
-    <message>
-        <source>Open error - unable to open file for writing.</source>
-        <translation type="obsolete">オープンエラー - ファイルに書き込めません</translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="obsolete">上書き</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel Transfer</source>
-        <translation type="obsolete">転送キャンセル</translation>
-    </message>
-    <message>
-        <source>File transfer complete
-</source>
-        <translation type="obsolete">ファイル転送完了
-</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">開く</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFloatyView</name>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 浮遊中 (%2)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFontDialog</name>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">フォント選択</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CForwardDlg</name>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation type="obsolete">メッセージ</translation>
-    </message>
-    <message>
-        <source>Forward %1 To User</source>
-        <translation type="obsolete">ユーザに %1 を転送</translation>
-    </message>
-    <message>
-        <source>Drag the user to forward to here:</source>
-        <translation type="obsolete">転送先ユーザをここにドラッグして下さい</translation>
-    </message>
-    <message>
-        <source>Unable to forward this message type (%d).</source>
-        <translation type="obsolete">このメッセージタイプ(%d)を転送することは無理です</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Forwarded message:
-</source>
-        <translation type="obsolete">転送されたメッセージ:
-</translation>
-    </message>
-    <message>
-        <source>&amp;Forward</source>
-        <translation type="obsolete">転送</translation>
-    </message>
-    <message>
-        <source>Forwarded URL:
-</source>
-        <translation type="obsolete">転送された URL:
-</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CJoinChatDlg</name>
-    <message>
-        <source>Select chat to join:</source>
-        <translation type="obsolete">参加するチャットを選択</translation>
-    </message>
-    <message>
-        <source>Invite to Join Chat</source>
-        <translation type="obsolete">チャットに誘う</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Select chat to invite:</source>
-        <translation type="obsolete">誘うチャットを選択</translation>
-    </message>
-    <message>
-        <source>Join Multiparty Chat</source>
-        <translation type="obsolete">複数人チャットに参加</translation>
-    </message>
-    <message>
-        <source>&amp;Join</source>
-        <translation type="obsolete">参加</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CLicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq情報</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq警告</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMSendDlg</name>
-    <message>
-        <source>Sending mass message to %1...</source>
-        <translation type="obsolete">%1にメッセージを送信中...</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>Sending mass URL to %1...</source>
-        <translation type="obsolete">%1にURLを送信中...</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">失敗</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Contact List</source>
-        <translation type="obsolete">複数人受信コンタクトリスト</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient URL</source>
-        <translation type="obsolete">複数人受信URL</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Sending mass list to %1...</source>
-        <translation type="obsolete">%1にリストを送信中...</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Message</source>
-        <translation type="obsolete">複数人受信メッセージ</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMUserView</name>
-    <message>
-        <source>Crop</source>
-        <translation type="obsolete">落す</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">クリア</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">除去</translation>
-    </message>
-    <message>
-        <source>Add Group</source>
-        <translation type="obsolete">グループを追加</translation>
-    </message>
-    <message>
-        <source>Add All</source>
-        <translation type="obsolete">全て加える</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMainWindow</name>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">No</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation type="obsolete">送信</translation>
-    </message>
-    <message>
-        <source>Online to User</source>
-        <translation type="obsolete">ユーザにオンライン</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">離席</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">ヘルプ</translation>
-    </message>
-    <message>
-        <source>&amp;Info</source>
-        <translation type="obsolete">情報</translation>
-    </message>
-    <message>
-        <source>U&amp;tilities</source>
-        <translation type="obsolete">ユーティリティ</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>R&amp;andom Chat</source>
-        <translation type="obsolete">ランダムチャット</translation>
-    </message>
-    <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">承認送信時にエラー</translation>
-    </message>
-    <message>
-        <source>&amp;Random Chat Group</source>
-        <translation type="obsolete">ランダムチャットのグループ</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">%1より上がっています
-</translation>
-    </message>
-    <message>
-        <source>Check %1 Response</source>
-        <translation type="obsolete">%1応答をチェック</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">あなたは現在UIN: %1
-で登録しています。
-基本ディレクトリ: %2
-別ディレクトリを選択するにはlicqに-bオプションを付けて
-再起動し、新ユーザとして登録してください。</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">アイコンファイルを開けません
-%1</translation>
-    </message>
-    <message>
-        <source>Send &amp;Authorization</source>
-        <translation type="obsolete">承認を送信</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">忙しい</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">Licqについて</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">グループ</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">ヒント</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">リセット</translation>
-    </message>
-    <message>
-        <source>Custom Auto Response...</source>
-        <translation type="obsolete">自動応答編集</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">オンライン通知</translation>
-    </message>
-    <message>
-        <source>Set &amp;Auto Response...</source>
-        <translation type="obsolete">自動応答をセット</translation>
-    </message>
-    <message>
-        <source>Remove From List</source>
-        <translation type="obsolete">リストから除去</translation>
-    </message>
-    <message>
-        <source>System Message</source>
-        <translation type="obsolete">システムメッセージ</translation>
-    </message>
-    <message>
-        <source>%1 msg%2</source>
-        <translation type="obsolete">%1 メッセージ%2</translation>
-    </message>
-    <message>
-        <source>&amp;Popup All Messages</source>
-        <translation type="obsolete">全メッセージをポップアップ</translation>
-    </message>
-    <message>
-        <source>Accept in Not Available</source>
-        <translation type="obsolete">忙しいとき受け付ける</translation>
-    </message>
-    <message>
-        <source>View &amp;History</source>
-        <translation type="obsolete">履歴を見る</translation>
-    </message>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">他ユーザ</translation>
-    </message>
-    <message>
-        <source>Edit User Group</source>
-        <translation type="obsolete">ユーザグループを編集</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">登録に成功しました。あなたのICQ番号(UIN)
-は %1 です。
-次にあなたの個人情報を設定してください。</translation>
-    </message>
-    <message>
-        <source>Unknown Packets</source>
-        <translation type="obsolete">未知パケット</translation>
-    </message>
-    <message>
-        <source>Send &amp;Url</source>
-        <translation type="obsolete">URL送信</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">さらに詳しい情報はLicqのホームページ(&lt;tt&gt;http://www.licq.org&lt;/tt&gt;)を御覧ください。</translation>
-    </message>
-    <message>
-        <source>&amp;Mini Mode</source>
-        <translation type="obsolete">ミニモード</translation>
-    </message>
-    <message>
-        <source>Errors</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Close &amp;Secure Channel</source>
-        <translation type="obsolete">安全路を閉じる</translation>
-    </message>
-    <message>
-        <source>No msgs</source>
-        <translation type="obsolete">メッセージなし</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Author: Graham Roff
-Contributions by Dirk A. Mueller
-http://www.licq.org
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Licq バージョン %1%8.
-Qt GUI プラグインバージョン %2.
-%7にコンパイル
-%6
-作者: Graham Roff
-Dirk A. Muellerさん Thanks.
-http://www.licq.org
-
-%3 (%4)
-コンタクト数 %5</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">%1より上がっています
-
-</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">デーモン統計
-
-</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">デーモン統計
-(Today/Total)
-</translation>
-    </message>
-    <message>
-        <source>SysMsg</source>
-        <translation type="obsolete">システムメッセージ</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">システム</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">最後のリセット %1
-
-</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">本当に
-%1 (%2)
-をグループ「%3」から削除しますか?</translation>
-    </message>
-    <message>
-        <source>Do you really want to add
-%1 (%2)
-to your ignore list?</source>
-        <translation type="obsolete">本当に
-%1 (%2)
-を無視リストに追加しますか?</translation>
-    </message>
-    <message>
-        <source>Packets</source>
-        <translation type="obsolete">パケット</translation>
-    </message>
-    <message>
-        <source>&amp;Save All Users</source>
-        <translation type="obsolete">全ユーザをセーブ</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb to User</source>
-        <translation type="obsolete">ユーザに対して邪魔しないで♪</translation>
-    </message>
-    <message>
-        <source>Update All Users</source>
-        <translation type="obsolete">全ユーザを更新</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Licq Qt-GUIプラグイン&lt;br&gt;使用のためのヒント&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;ステータスラベルを右クリックして自分のステータスを変えることができます。&lt;/li&gt;&lt;li&gt;ステータスラベルをダブルクリックすることで自分の自動応答メッセージを変えられます。&lt;/li&gt;&lt;li&gt;メッセージラベルをダブルクリックするとシステムメッセージを閲覧できます。&lt;/li&gt;&lt;li&gt;メッセージラベルを右クリックするとグループを変えることができます。&lt;/li&gt;&lt;li&gt;コンタクトリストからは下記のショートカットを使用できます。&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;ミニモードへ&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;オフラインユーザを隠す&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;終了&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;画面を隠す&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;次のメッセージを見る&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;メッセージを見る&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;メッセージを送信&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;URLを送信&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;チャットリクエストを送信Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;ファイルを送信Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;自動応答をチェック&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;全メッセージをポップアップ&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;ユーザウィンドウを再描画&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;現在のグループからユーザを削除&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;コンタクトリストからユーザを削除&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;コンタクトリストからユーザを削除する時は閉じるをクリックするまで   コントロールキーを押したままにしてください。&lt;/li&gt;&lt;li&gt;「OK」あるいは「受信」を選ぶときはコントロールキー押しながらエンターですみます。   その一例としては、ユーザ機能ウィンドウの送信タブがあげられます。&lt;/li&gt;&lt;li&gt;下記は&lt;b&gt;OnEvent&lt;/b&gt;パラメータ、&lt;b&gt;自動応答&lt;/b&gt;、&lt;b&gt;ユーティリティ&lt;/b&gt;として   使用できる%表記の一覧です。
-</translation>
-    </message>
-    <message>
-        <source>&amp;Redraw User Window</source>
-        <translation type="obsolete">ユーザウィンドウを再描画</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDEサポートあり)
-</translation>
-    </message>
-    <message>
-        <source>Occupied to User</source>
-        <translation type="obsolete">ユーザに対して用事中</translation>
-    </message>
-    <message>
-        <source>Logon failed.
-See network window for details.</source>
-        <translation type="obsolete">ログインに失敗しました。
-詳細はネットワークウィンドウを御覧ください。</translation>
-    </message>
-    <message>
-        <source>Accept in Away</source>
-        <translation type="obsolete">離席中に受け付ける</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">不可視リスト</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">可視リスト</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">登録に失敗しました。詳細はネットワークウィンドウを御覧ください</translation>
-    </message>
-    <message>
-        <source>Send &amp;Chat Request</source>
-        <translation type="obsolete">チャットリクエスト送信</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">登録済ユーザ</translation>
-    </message>
-    <message>
-        <source>Show Offline &amp;Users</source>
-        <translation type="obsolete">オフラインユーザも呈示</translation>
-    </message>
-    <message>
-        <source>%1 message%2</source>
-        <translation type="obsolete">%1 メッセージ%2</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">無視リスト</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>&amp;More Info</source>
-        <translation type="obsolete">その他の情報</translation>
-    </message>
-    <message>
-        <source>Warnings</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
-        <source>&amp;Work Info</source>
-        <translation type="obsolete">仕事の情報</translation>
-    </message>
-    <message>
-        <source>Debug Level</source>
-        <translation type="obsolete">デバッグレベル</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">新ユーザ</translation>
-    </message>
-    <message>
-        <source>&amp;Network Window</source>
-        <translation type="obsolete">ネットワークウィンドウ</translation>
-    </message>
-    <message>
-        <source>&amp;View Event</source>
-        <translation type="obsolete">イベントを見る</translation>
-    </message>
-    <message>
-        <source>&amp;Plugin Manager...</source>
-        <translation type="obsolete">プラグインマネージャ</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">用事中</translation>
-    </message>
-    <message>
-        <source>Set All</source>
-        <translation type="obsolete">全てセット</translation>
-    </message>
-    <message>
-        <source>&amp;View System Messages</source>
-        <translation type="obsolete">システムメッセージを見る</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">スレッドグループ表示</translation>
-    </message>
-    <message>
-        <source>Send &amp;Message</source>
-        <translation type="obsolete">メッセージ送信</translation>
-    </message>
-    <message>
-        <source>Update Current Group</source>
-        <translation type="obsolete">現グループを更新</translation>
-    </message>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
-        <source>Right click - Status menu
-Double click - Set auto response</source>
-        <translation type="obsolete">右クリック - ステータスメニュー
-ダブルクリック - 自動応答を設定</translation>
-    </message>
-    <message>
-        <source>&amp;Add User</source>
-        <translation type="obsolete">ユーザ追加</translation>
-    </message>
-    <message>
-        <source>Accept in Do Not Disturb</source>
-        <translation type="obsolete">じゃましないで♪の時受け付ける</translation>
-    </message>
-    <message>
-        <source>&amp;Security Options</source>
-        <translation type="obsolete">セキュリティオプション</translation>
-    </message>
-    <message>
-        <source>&amp;Statistics</source>
-        <translation type="obsolete">統計</translation>
-    </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">オンライン</translation>
-    </message>
-    <message>
-        <source>&amp;Away Modes</source>
-        <translation type="obsolete">離席モード</translation>
-    </message>
-    <message>
-        <source>Clear All</source>
-        <translation type="obsolete">全てクリア</translation>
-    </message>
-    <message>
-        <source>&amp;Status</source>
-        <translation type="obsolete">ステータス</translation>
-    </message>
-    <message>
-        <source>&amp;System</source>
-        <translation type="obsolete">システム</translation>
-    </message>
-    <message>
-        <source>Accept in Occupied</source>
-        <translation type="obsolete">用事中でも受け付ける</translation>
-    </message>
-    <message>
-        <source>Send Contact &amp;List</source>
-        <translation type="obsolete">コンタクトリスト送信</translation>
-    </message>
-    <message>
-        <source>Status Info</source>
-        <translation type="obsolete">ステータス情報</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">じゃましないで♪</translation>
-    </message>
-    <message>
-        <source>Change &amp;Password</source>
-        <translation type="obsolete">パスワードを変える</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">本当に
-%1 (%2)
-をコンタクトリストからはずしますか?</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-    <message>
-        <source>A&amp;uthorize User</source>
-        <translation type="obsolete">ユーザを承認</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">チャットできます</translation>
-    </message>
-    <message>
-        <source>Right click - User groups
-Double click - Show next message</source>
-        <translation type="obsolete">右クリック - ユーザグループ
-ダブルクリック - 次メッセージを表示</translation>
-    </message>
-    <message>
-        <source>No messages</source>
-        <translation type="obsolete">メッセージなし</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">不可視</translation>
-    </message>
-    <message>
-        <source>&amp;General Info</source>
-        <translation type="obsolete">一般の情報</translation>
-    </message>
-    <message>
-        <source>Send &amp;File Transfer</source>
-        <translation type="obsolete">ファイル転送送信</translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">ユーザ機能</translation>
-    </message>
-    <message>
-        <source>Check Auto Response</source>
-        <translation type="obsolete">自動応答をチェック</translation>
-    </message>
-    <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">承認は受け付けられました。</translation>
-    </message>
-    <message>
-        <source>System Functions</source>
-        <translation type="obsolete">システム機能</translation>
-    </message>
-    <message>
-        <source>Edit &amp;Groups</source>
-        <translation type="obsolete">グループを編集</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">全ユーザ</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">スキンブラウザ</translation>
-    </message>
-    <message>
-        <source>Request &amp;Secure Channel</source>
-        <translation type="obsolete">安全路を要求</translation>
-    </message>
-    <message>
-        <source>S&amp;earch for User</source>
-        <translation type="obsolete">ユーザを探す</translation>
-    </message>
-    <message>
-        <source>Next &amp;Server</source>
-        <translation type="obsolete">次のサーバ</translation>
-    </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;ユーザalias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;メールアドレス&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;名&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;電話番号&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IPアドレス&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;姓&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;たまっているメッセージ数&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;フルネーム&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;最後のオンライン&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;ユーザポートuser port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;フルステイタス&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;簡略ステイタス&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;ホームページ&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">過去ログ</translation>
-    </message>
-    <message>
-        <source>Not Available to User</source>
-        <translation type="obsolete">ユーザに対して忙しい</translation>
-    </message>
-    <message>
-        <source>Toggle &amp;Floaty</source>
-        <translation type="obsolete">浮遊モード</translation>
-    </message>
-    <message>
-        <source>Sa&amp;ve Settings</source>
-        <translation type="obsolete">設定をセーブ</translation>
-    </message>
-    <message>
-        <source>Away to User</source>
-        <translation type="obsolete">ユーザに対して離席</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">最後</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">利用可能</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMessageViewWidget</name>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">デフォルト</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CQtLogWindow</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">ファイル:%1
-が開けませんでした</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">クリア</translation>
-    </message>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licqネットワークログ</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRandomChatDlg</name>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">ゲーム</translation>
-    </message>
-    <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">男性を探す女性</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20そこそこ</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30そこそこ</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">女性を探す男性</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40そこそこ</translation>
-    </message>
-    <message>
-        <source>Random chat search timed out.</source>
-        <translation type="obsolete">ランダムチャット検索がタイムアウトしました</translation>
-    </message>
-    <message>
-        <source>Random chat search had an error.</source>
-        <translation type="obsolete">ランダムチャット検索にエラーが起こりました</translation>
-    </message>
-    <message>
-        <source>No random chat user found in that group.</source>
-        <translation type="obsolete">このグループにはランダムチャットユーザは見付かりませんでした</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50以上</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">ロマンス</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Searching for Random Chat Partner...</source>
-        <translation type="obsolete">ランダムチャットの相手を検索中...</translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="obsolete">探す</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">学生</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">一般</translation>
-    </message>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">ランダムチャット検索</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRefuseDlg</name>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 拒否</translation>
-    </message>
-    <message>
-        <source>Refusal message for %1 with </source>
-        <translation type="obsolete">%1への拒否メッセージと</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Refuse</source>
-        <translation type="obsolete">拒否</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CSetRandomChatGroupDlg</name>
-    <message>
-        <source>&amp;Set</source>
-        <translation type="obsolete">セット</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">ゲーム</translation>
-    </message>
-    <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">男性を探す女性</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20そこそこ</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30そこそこ</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">女性を探す男性</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40そこそこ</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(なし)</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">タイムアウト</translation>
-    </message>
-    <message>
-        <source>Set Random Chat Group</source>
-        <translation type="obsolete">ランダムにチャットグループをセット</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">失敗</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50以上</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">ロマンス</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">学生</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">一般</translation>
-    </message>
-    <message>
-        <source>Setting Random Chat Group...</source>
-        <translation type="obsolete">ランダムチャットグループを設定中...</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CTimeZoneField</name>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">未知</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUserView</name>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">ス</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">自動応答:</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">オンライン</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;今日が&amp;nbsp;誕生日!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 浮遊中 (%2)</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;自動&amp;nbsp;応答&amp;nbsp;設定</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;安全&amp;nbsp;伝送路</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUtilityDlg</name>
-    <message>
-        <source>GUI</source>
-        <translation type="obsolete">GUI</translation>
-    </message>
-    <message>
-        <source>&amp;Run</source>
-        <translation type="obsolete">実行</translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
-        <source>Done:</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
-        <source>Edit:</source>
-        <translation type="obsolete">編集:</translation>
-    </message>
-    <message>
-        <source>Edit final command</source>
-        <translation type="obsolete">最終コマンドを編集</translation>
-    </message>
-    <message>
-        <source>Command Window</source>
-        <translation type="obsolete">コマンドウィンドウ</translation>
-    </message>
-    <message>
-        <source>Licq Utility: %1</source>
-        <translation type="obsolete">Licqユーティリティ: %1</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>User Fields</source>
-        <translation type="obsolete">ユーザフィールド</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">説明</translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation type="obsolete">内部</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">コマンド:</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Running:</source>
-        <translation type="obsolete">実行中:</translation>
-    </message>
-    <message>
-        <source>Failed:</source>
-        <translation type="obsolete">失敗:</translation>
-    </message>
-    <message>
-        <source>Terminal</source>
-        <translation type="obsolete">ターミナル</translation>
-    </message>
-    <message>
-        <source>Window:</source>
-        <translation type="obsolete">ウィンドウ:</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::ChangePassDlg</name>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">パスワード</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">再入力</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">ICQパスワードを入力</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">再度ICQパスワード入力</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="obsolete">不正パスワードです。8文字以下。</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">パスワードが合致しません。もう一度お願いします</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::ChatDlg</name>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">いいえ</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="202"/>
         <source>Beep</source>
@@ -1667,10 +213,6 @@ Double click - Show next message</source>
         <location filename="../src/dialogs/chatdlg.cpp" line="242"/>
         <source>Toggles Bold font</source>
         <translation>太字消去</translation>
-    </message>
-    <message>
-        <source>ignores user color settings</source>
-        <translation type="obsolete">ユーザ色設定を無視</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="247"/>
@@ -1738,10 +280,6 @@ Double click - Show next message</source>
         <translation>ローカル - %1</translation>
     </message>
     <message>
-        <source>/%1.%2.chat</source>
-        <translation type="obsolete">/%1.%2.chat</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="133"/>
         <location filename="../src/dialogs/chatdlg.cpp" line="985"/>
         <source>Remote - Not connected</source>
@@ -1751,10 +289,6 @@ Double click - Show next message</source>
         <location filename="../src/dialogs/chatdlg.cpp" line="174"/>
         <source>&amp;Close Chat</source>
         <translation>チャットを閉じる</translation>
-    </message>
-    <message>
-        <source>Remote - %1</source>
-        <translation type="obsolete">相手 - %1</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="251"/>
@@ -1889,49 +423,9 @@ See Network Window for details.</source>
         <source>Other Users</source>
         <translation type="unfinished">他ユーザ</translation>
     </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">全ユーザ</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">オンライン通知</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">可視リスト</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">不可視リスト</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">無視リスト</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">新ユーザ</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;今日が&amp;nbsp;誕生日!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;安全&amp;nbsp;伝送路</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;自動&amp;nbsp;応答&amp;nbsp;設定</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">自動応答:</translation>
-    </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
         <source> weeks</source>
@@ -2109,48 +603,7 @@ You can leave me a message.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CustomAwayMsgDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">クリア</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">ヒント</translation>
-    </message>
-    <message>
-        <source>Set Custom Auto Response for %1</source>
-        <translation type="obsolete">自動応答を %1 とセット</translation>
-    </message>
-    <message>
-        <source>I am currently %1.
-You can leave me a message.</source>
-        <translation type="obsolete">私は現在 %1
-メッセージを残して下さい。</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::DockIcon</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;br&gt;%1 システムメッセージ&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 メッセージ</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;1 メッセージ</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/dockicon.cpp" line="140"/>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
@@ -2180,14 +633,6 @@ You can leave me a message.</source>
         <translation type="unfinished">無指定</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editcategorydlg.cpp" line="56"/>
         <source>Personal Interests</source>
         <translation type="unfinished"></translation>
@@ -2205,14 +650,6 @@ You can leave me a message.</source>
 </context>
 <context>
     <name>LicqQtGui::EditFileDlg</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/editfiledlg.cpp" line="82"/>
         <location filename="../src/dialogs/editfiledlg.cpp" line="109"/>
@@ -2268,17 +705,9 @@ You can leave me a message.</source>
 <context>
     <name>LicqQtGui::EditGrpDlg</name>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
         <source>Add</source>
         <translation>追加</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編集</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="92"/>
@@ -2321,18 +750,6 @@ the group &apos;%1&apos;?</source>
         <translation>ななしのごんべ</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">デフォルトをセット</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">デフォルト:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">スタートアップのデフォルトグループ</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="74"/>
         <source>Edit group name (hit enter to save).</source>
         <translation>名前編集(リターン押してセーブ)</translation>
@@ -2341,10 +758,6 @@ the group &apos;%1&apos;?</source>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
         <source>Shift Down</source>
         <translation>下へ</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">全ユーザ</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="50"/>
@@ -2558,17 +971,9 @@ the group &apos;%1&apos;?</source>
         <translation>承認は拒否されました</translation>
     </message>
     <message>
-        <source> (cancelled)</source>
-        <translation type="obsolete"> (キャンセル)</translation>
-    </message>
-    <message>
         <location filename="../src/helpers/eventdesc.cpp" line="72"/>
         <source>Unknown Event</source>
         <translation>未知のイベント</translation>
-    </message>
-    <message>
-        <source>User Info</source>
-        <translation type="obsolete">ユーザ情報</translation>
     </message>
     <message>
         <location filename="../src/helpers/eventdesc.cpp" line="36"/>
@@ -2974,10 +1379,6 @@ See Network Window for details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="142"/>
         <source>Do you want to remove the GPG key binding for the user %1?
 The key isn&apos;t deleted from your keyring.</source>
@@ -3017,17 +1418,9 @@ The key isn&apos;t deleted from your keyring.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="105"/>
         <source>&amp;No Key</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
     </message>
 </context>
 <context>
@@ -3065,10 +1458,6 @@ The key isn&apos;t deleted from your keyring.</source>
 </context>
 <context>
     <name>LicqQtGui::HintsDlg</name>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/hintsdlg.cpp" line="39"/>
         <source>Licq - Hints</source>
@@ -3214,42 +1603,6 @@ Description: %2</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::IconManager_KDEStyle</name>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;1 メッセージ</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 メッセージ</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
-        <translation type="obsolete">&lt;br&gt;左クリック - メインウィンドウを表示&lt;br&gt;真中クリック - 次メッセージを表示&lt;br&gt;右クリック - システムメニュー</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;br&gt;%1 システムメッセージ&lt;/b&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_Themed</name>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">ドックテーマファイルを開けません
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">ドックテーマファイル(%1)
-を開けません
-%2</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::InfoField</name>
     <message>
         <location filename="../src/widgets/infofield.cpp" line="62"/>
@@ -3322,27 +1675,11 @@ Description: %2</source>
         <translation>安全路を閉じています...</translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;ForestGreen&quot;&gt;Secure channel established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;ForestGreen&quot;&gt;安全路が確立されました&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="111"/>
         <source>Client does not support OpenSSL.
 Rebuild Licq with OpenSSL support.</source>
         <translation>クライアントはOpenSSLをサポートしていません
 OpenSSLをサポートするよう再構築してください</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;blue&quot;&gt;Secure channel closed.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;blue&quot;&gt;安全路が終了しました&lt;/font&gt;
-</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="52"/>
@@ -3363,16 +1700,6 @@ TLSバージョン1プロトコルを用います
 </translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Could not connect to remote client.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;相手と接続できませんでした&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel already established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;安全路はすでに確立されています&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="71"/>
         <source>The remote uses Licq %1, however it
 has no secure channel support compiled in.
@@ -3382,19 +1709,9 @@ This probably won&apos;t work.</source>
 うまく動かないでしょう。</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel not established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;安全路は確立されていません&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="64"/>
         <source>The remote uses Licq %1/SSL.</source>
         <translation>相手は Licq %1/SSLを使用</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Remote client does not support OpenSSL.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;相手はOpenSSLをサポートしていません&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="138"/>
@@ -3486,14 +1803,6 @@ from your contact list?</source>
 をコンタクトリストからはずしますか?</translation>
     </message>
     <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">本当に
-%1 (%2)
-をグループ「%3」から削除しますか?</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="1063"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
@@ -3507,38 +1816,7 @@ Would you like to try loading the old one?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::LicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq情報</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq警告</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::LogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licqネットワークログ</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">クリア</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
@@ -3579,10 +1857,6 @@ Would you like to try loading the old one?</source>
 </context>
 <context>
     <name>LicqQtGui::MMSendDlg</name>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/mmsenddlg.cpp" line="92"/>
         <source>Multiple Recipient Message</source>
@@ -3654,10 +1928,6 @@ Would you like to try loading the old one?</source>
 </context>
 <context>
     <name>LicqQtGui::MainWindow</name>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="188"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
@@ -3740,104 +2010,6 @@ Double click - Set auto response</source>
 See network window for details.</source>
         <translation type="unfinished">ログインに失敗しました。
 詳細はネットワークウィンドウを御覧ください。</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">本当に
-%1 (%2)
-をコンタクトリストからはずしますか?</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">本当に
-%1 (%2)
-をグループ「%3」から削除しますか?</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDEサポートあり)
-</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">アイコンファイルを開けません
-%1</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">デーモン統計
-(Today/Total)
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">%1より上がっています
-</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">最後のリセット %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">リセット</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">デーモン統計
-
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">%1より上がっています
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">さらに詳しい情報はLicqのホームページ(&lt;tt&gt;http://www.licq.org&lt;/tt&gt;)を御覧ください。</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="670"/>
@@ -3962,773 +2134,11 @@ from the &apos;%3&apos; group?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::MsgView</name>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">時間</translation>
-    </message>
-    <message>
-        <source>Cancelled Event</source>
-        <translation type="obsolete">キャンセルされたイベント</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">直接</translation>
-    </message>
-    <message>
-        <source>Event Type</source>
-        <translation type="obsolete">イベントタイプ</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="obsolete">サーバ</translation>
-    </message>
-    <message>
-        <source>Urgent</source>
-        <translation type="obsolete">緊急</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>Multiple Recipients</source>
-        <translation type="obsolete">複数の受信者</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::OptionsDlg</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="obsolete">自動</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">離席</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">フォント</translation>
-    </message>
-    <message>
-        <source>N/A:</source>
-        <translation type="obsolete">忙しい</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation type="obsolete">左</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">なし</translation>
-    </message>
-    <message>
-        <source>Show Extended Icons</source>
-        <translation type="obsolete">拡張アイコンを表示</translation>
-    </message>
-    <message>
-        <source>Flash Events</source>
-        <translation type="obsolete">イベントをフラッシュ</translation>
-    </message>
-    <message>
-        <source>Away:</source>
-        <translation type="obsolete">離席:</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation type="obsolete">フォント:</translation>
-    </message>
-    <message>
-        <source>Never</source>
-        <translation type="obsolete">永遠</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="obsolete">右</translation>
-    </message>
-    <message>
-        <source>Text:</source>
-        <translation type="obsolete">テキスト:</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">タイトル</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">幅</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">受信ファイル転送へのパラメータ</translation>
-    </message>
-    <message>
-        <source>Firewall</source>
-        <translation type="obsolete">防火壁</translation>
-    </message>
-    <message>
-        <source>Show Grid Lines</source>
-        <translation type="obsolete">グリッド線を表示</translation>
-    </message>
-    <message>
-        <source>Override the skin setting for the frame style of the user window:
-   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Sunken)
- + 240 (Shadow)</source>
-        <translation type="obsolete">ユーザウィンドウのフレームスタイルのスキン設定を上書きする:   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Sunken)
- + 240 (Shadow)</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">受信チャットリクエストへのパラメータ</translation>
-    </message>
-    <message>
-        <source>Auto Away Messages</source>
-        <translation type="obsolete">自動離席メッセージ</translation>
-    </message>
-    <message>
-        <source>Turns on or off the display of headers above each column in the user list</source>
-        <translation type="obsolete">ユーザリストのそれぞれのカラムの上のヘッダを自動でオンオフ切替え</translation>
-    </message>
-    <message>
-        <source>Auto Away:</source>
-        <translation type="obsolete">離席になるまでの時間:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;not available&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">自動的に「忙しい」になるまでの時間0だと忙しいにならない</translation>
-    </message>
-    <message>
-        <source>Ignore Mass Messages</source>
-        <translation type="obsolete">大量メッセージを無視</translation>
-    </message>
-    <message>
-        <source>Show the &quot;--online--&quot; and &quot;--offline--&quot; bars in the contact list</source>
-        <translation type="obsolete">コンタクトリスト中 &quot;--オンライン--&quot; および &quot;--オフライン--&quot; のバーを見せる </translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">オンライン通知のパラメータ</translation>
-    </message>
-    <message>
-        <source>TCP port range for incoming connections.</source>
-        <translation type="obsolete">受信コネクションのTCPポート番号</translation>
-    </message>
-    <message>
-        <source>Default port to connect to on the server (should be 4000)</source>
-        <translation type="obsolete">サーバ接続のデフォルトポート番号(4000であるべき)</translation>
-    </message>
-    <message>
-        <source>Accept Modes</source>
-        <translation type="obsolete">受信モード</translation>
-    </message>
-    <message>
-        <source>Online Notify:</source>
-        <translation type="obsolete">オンライン通知:</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">忙しい</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">適用</translation>
-    </message>
-    <message>
-        <source>Determines if new users are automatically added to your list or must first request authorization.</source>
-        <translation type="obsolete">新ユーザが自動で自分のリストに追加されるか 承認をリクエストするかを決定</translation>
-    </message>
-    <message>
-        <source>Show the name of the current group in the messages label when there are no new messages</source>
-        <translation type="obsolete">新しいメッセージが無い時メッセージラベル中に現在のグループ名を表示する</translation>
-    </message>
-    <message>
-        <source>Ignore Web Panel</source>
-        <translation type="obsolete">ウェブパネルを無視</translation>
-    </message>
-    <message>
-        <source>Use Font Styles</source>
-        <translation type="obsolete">フォントスタイルを使用</translation>
-    </message>
-    <message>
-        <source>Preset slot:</source>
-        <translation type="obsolete">既定値</translation>
-    </message>
-    <message>
-        <source>Licq Options</source>
-        <translation type="obsolete">Licqオプション</translation>
-    </message>
-    <message>
-        <source>Show online notify users who are offline even when offline users are hidden.</source>
-        <translation type="obsolete">オフラインユーザが隠されている時でもオンライン通知ユーザはオフラインでも表示する</translation>
-    </message>
-    <message>
-        <source>Show Column Headers</source>
-        <translation type="obsolete">カラムヘッダを表示</translation>
-    </message>
-    <message>
-        <source>Bold Message Label on Incoming Msg</source>
-        <translation type="obsolete">到着メッセージは太字ラベル</translation>
-    </message>
-    <message>
-        <source>Column %1</source>
-        <translation type="obsolete">カラム %1</translation>
-    </message>
-    <message>
-        <source>Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf and a shorter 64x48 icon for use in the Gnome/KDE panel.</source>
-        <translation type="obsolete">WindowMaker/Afterstepの時は 64x64 を設定しGnome/KDEパネルの時は 64x48 を設定して下さい</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">用事中の時イベント駆動</translation>
-    </message>
-    <message>
-        <source>Auto Offline:</source>
-        <translation type="obsolete">オフラインになるまでの時間</translation>
-    </message>
-    <message>
-        <source>OnEvent in DND</source>
-        <translation type="obsolete">邪魔しないで♪の時駆動</translation>
-    </message>
-    <message>
-        <source>OnEvent in N/A</source>
-        <translation type="obsolete">忙しいの時駆動</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">受信メッセージへのパラメータ</translation>
-    </message>
-    <message>
-        <source>List of servers to connect to (read-only for now)</source>
-        <translation type="obsolete">接続するサーバ(現在は読み込みだけ)</translation>
-    </message>
-    <message>
-        <source>Message Sent:</source>
-        <translation type="obsolete">送信メッセージ:</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="obsolete">中心</translation>
-    </message>
-    <message>
-        <source>Allow scroll bar</source>
-        <translation type="obsolete">スクロールバーを許可</translation>
-    </message>
-    <message>
-        <source>OnEvent in Away</source>
-        <translation type="obsolete">離席の時駆動</translation>
-    </message>
-    <message>
-        <source>Only urgent events will flash</source>
-        <translation type="obsolete">緊急イベントのみフラッシュ</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation type="obsolete">ネットワーク</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">フォーマット</translation>
-    </message>
-    <message>
-        <source>The fonts used</source>
-        <translation type="obsolete">使用フォント</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically go offline.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">自動的に「オフライン」になるまでの時間0だとオフラインにならない</translation>
-    </message>
-    <message>
-        <source>Locale</source>
-        <translation type="obsolete">ロケール</translation>
-    </message>
-    <message>
-        <source>Use Dock Icon</source>
-        <translation type="obsolete">ドックアイコンを使用</translation>
-    </message>
-    <message>
-        <source>Chat Request:</source>
-        <translation type="obsolete">チャットリクエスト</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">オンライン</translation>
-    </message>
-    <message>
-        <source>Flash Urgent Events</source>
-        <translation type="obsolete">緊急イベントをフラッシュ</translation>
-    </message>
-    <message>
-        <source>Server settings</source>
-        <translation type="obsolete">サーバ設定</translation>
-    </message>
-    <message>
-        <source>Auto Logon:</source>
-        <translation type="obsolete">自動ログオン:</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation type="obsolete">メインウィンドウ</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">ステータス</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation type="obsolete">テーマ:</translation>
-    </message>
-    <message>
-        <source>SOCKS5 support is built in but disabled.
-To enable it, set the SOCKS5_SERVER
-environment variable to &lt;server&gt;:&lt;port&gt;.</source>
-        <translation type="obsolete">SOCK5サポート機能はありますが稼働していません
-稼働させるには、SOCK5_SERVER環境変数に
-&lt;server&gt;:&lt;port&gt;を指定してください。</translation>
-    </message>
-    <message>
-        <source>Always show online notify users</source>
-        <translation type="obsolete">オンラインユーザをいつも表示</translation>
-    </message>
-    <message>
-        <source>To enable socks proxy support, install NEC Socks or Dante
-then configure the Licq daemon with &quot;--enable-socks5&quot;.</source>
-        <translation type="obsolete">プロキシサポートするにはNEC SocksまたはDanteをインストールし
-Licqデーモンを&quot;--enable-socks5&quot;を付けてconfigureしてください</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">デフォルト (%1)</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-    <message>
-        <source>Port Range:</source>
-        <translation type="obsolete">ポートの範囲:</translation>
-    </message>
-    <message>
-        <source>OnEvent</source>
-        <translation type="obsolete">イベントの時</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">コマンド:</translation>
-    </message>
-    <message>
-        <source>Edit Font:</source>
-        <translation type="obsolete">フォント編集:</translation>
-    </message>
-    <message>
-        <source>I can receive direct connections</source>
-        <translation type="obsolete">直接コネクションを受信できる</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>Miscellaneous</source>
-        <translation type="obsolete">その他いろいろ</translation>
-    </message>
-    <message>
-        <source>All incoming messages automatically open when received, if we are online (or free for chat)</source>
-        <translation type="obsolete">もしオンライン(あるいはチャット可能なら)全てのメッセージは到着後 自動的に開く</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">邪魔しないで♪の時イベント駆動</translation>
-    </message>
-    <message>
-        <source>Determines if mass messages are ignored or not.</source>
-        <translation type="obsolete">複数メッセージを無視するか決定</translation>
-    </message>
-    <message>
-        <source>Translation:</source>
-        <translation type="obsolete">翻訳:</translation>
-    </message>
-    <message>
-        <source>Frame Style: </source>
-        <translation type="obsolete">枠のスタイル</translation>
-    </message>
-    <message>
-        <source>The alignment of the column</source>
-        <translation type="obsolete">カラムの位置</translation>
-    </message>
-    <message>
-        <source>Make the user window transparent when there is no scroll bar</source>
-        <translation type="obsolete">スクロールバーが無いときはユーザウィンドウを透明にする</translation>
-    </message>
-    <message>
-        <source>Default Icon</source>
-        <translation type="obsolete">デフォルトアイコン</translation>
-    </message>
-    <message>
-        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you firstsend an event to them</source>
-        <translation type="obsolete">チェックされない時はユーザは自分がメッセージを</translation>
-    </message>
-    <message>
-        <source>The main window will raise on incoming messages</source>
-        <translation type="obsolete">メッセージ受信でメインウィンドウが上がる</translation>
-    </message>
-    <message>
-        <source>Check Clipboard For Urls/Files</source>
-        <translation type="obsolete">URLとファイルのためのクリップボードチェック</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">パラメータ</translation>
-    </message>
-    <message>
-        <source>Show birthday, invisible, and custom auto response icons to the right of users in the list</source>
-        <translation type="obsolete">リスト中のユーザの右側に誕生日、不可視、およびカスタム自動応答アイコンを表示する</translation>
-    </message>
-    <message>
-        <source>Transparent when possible</source>
-        <translation type="obsolete">できるだけ透明</translation>
-    </message>
-    <message>
-        <source>Default Auto Response Messages</source>
-        <translation type="obsolete">デフォルト自動応答メッセージ</translation>
-    </message>
-    <message>
-        <source>File Transfer:</source>
-        <translation type="obsolete">ファイル転送:</translation>
-    </message>
-    <message>
-        <source>OnEvents Enabled</source>
-        <translation type="obsolete">イベント駆動を稼働</translation>
-    </message>
-    <message>
-        <source>Paranoia</source>
-        <translation type="obsolete">凝った設定</translation>
-    </message>
-    <message>
-        <source>Auto-Raise on Incoming Msg</source>
-        <translation type="obsolete">到着メッセージ自動上げ</translation>
-    </message>
-    <message>
-        <source>Terminal:</source>
-        <translation type="obsolete">ターミナル:</translation>
-    </message>
-    <message>
-        <source>Automatically log on when first starting up.</source>
-        <translation type="obsolete">起動時に自動ログオン</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">ログオンした時オンライン通知駆動イベントを稼働(Mirabilisのクライアント仕様と違います)</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;away&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">自動的に「離席」になるまでの時間0だと離席にならない</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;イベントを受信したときに実行するコマンド&lt;br&gt;下より適切なパラメータが渡されます &lt;br&gt;パラメータは次の表現を含む事が できます &lt;br&gt; これは適切な情報に置き換え られます:&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Determines if email pager messages are ignored or not.</source>
-        <translation type="obsolete">メールページャメッセージを無視するか決定</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">忙しいの時イベント駆動</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">用事中</translation>
-    </message>
-    <message>
-        <source>Show User Dividers</source>
-        <translation type="obsolete">ユーザ間に線を表示</translation>
-    </message>
-    <message>
-        <source>OnEvent in Occupied</source>
-        <translation type="obsolete">用事中のとき駆動</translation>
-    </message>
-    <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">それぞれのカラムに表示されるかを決定するフォーマット文字列
-次のパラメータが使用される:
-</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">受信システムメッセージへのパラメータ</translation>
-    </message>
-    <message>
-        <source>Manual &quot;New User&quot; group handling</source>
-        <translation type="obsolete">新ユーザのグループを手動で</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">送信メッセージへのパラメータ</translation>
-    </message>
-    <message>
-        <source>Default Server Port:</source>
-        <translation type="obsolete">デフォルトサーバポート:</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">フォント選択</translation>
-    </message>
-    <message>
-        <source>The message info label will be bold if there are incoming messages</source>
-        <translation type="obsolete">メッセージ受信の時メッセージ情報ラベルが太字に</translation>
-    </message>
-    <message>
-        <source>Auto-Popup Incoming Msg</source>
-        <translation type="obsolete">到着メッセージ自動ポップアップ</translation>
-    </message>
-    <message>
-        <source>64 x 48 Dock Icon</source>
-        <translation type="obsolete">64 x 48ドックアイコン</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Startup</source>
-        <translation type="obsolete">スタートアップ</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">ステータス</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">デフォルト</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">デフォルト</translation>
-    </message>
-    <message>
-        <source>Use italics and bold in the user list to indicate special characteristics such as online notify and visible list</source>
-        <translation type="obsolete">オンライン通知や可視リスト等特別の性質を表すために斜字体と太字を使用する</translation>
-    </message>
-    <message>
-        <source>Use System Background Color</source>
-        <translation type="obsolete">システム背景色を使用</translation>
-    </message>
-    <message>
-        <source>Auto N/A:</source>
-        <translation type="obsolete">忙しいになるまでの時間</translation>
-    </message>
-    <message>
-        <source>Themed Icon</source>
-        <translation type="obsolete">アイコンテーマ</translation>
-    </message>
-    <message>
-        <source>Auto Close Function Window</source>
-        <translation type="obsolete">機能ウィンドウ自動閉</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">離席の時イベント駆動</translation>
-    </message>
-    <message>
-        <source>Docking</source>
-        <translation type="obsolete">ドッキング</translation>
-    </message>
-    <message>
-        <source>Determines if web panel messages are ignored or not.</source>
-        <translation type="obsolete">ウェブパネルのメッセージを無視するか決定</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">相当するイベントが発生した時「コマンド」を発動</translation>
-    </message>
-    <message>
-        <source>System Msg:</source>
-        <translation type="obsolete">システムメッセージ</translation>
-    </message>
-    <message>
-        <source>Show group name if no messages</source>
-        <translation type="obsolete">メッセージがないときグループ名を表示</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">チャットできます</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">チャットできます</translation>
-    </message>
-    <message>
-        <source>When double-clicking on a user to send a message check for urls/files in the clipboard</source>
-        <translation type="obsolete">メッセージを送信するためにユーザをダブルクリックした時クリップボード中のURL/filesをチェックする</translation>
-    </message>
-    <message>
-        <source>Online Notify when Logging On</source>
-        <translation type="obsolete">ログオンの時駆動</translation>
-    </message>
-    <message>
-        <source>Extensions</source>
-        <translation type="obsolete">拡張</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">邪魔しないで♪</translation>
-    </message>
-    <message>
-        <source>All incoming events will flash</source>
-        <translation type="obsolete">全ての受信イベントがフラッシュする</translation>
-    </message>
-    <message>
-        <source>Servers:</source>
-        <translation type="obsolete">サーバ</translation>
-    </message>
-    <message>
-        <source>Url Viewer:</source>
-        <translation type="obsolete">URLビューア:</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">メッセージ:</translation>
-    </message>
-    <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">ユーザリストの端にボックスを描く</translation>
-    </message>
-    <message>
-        <source>Sets the default behavior for auto closing the user function window after a succesful event</source>
-        <translation type="obsolete">自動で閉じる際のデフォルト挙動を設定イベント後のユーザ機能ウィンドウ</translation>
-    </message>
-    <message>
-        <source>Column Configuration</source>
-        <translation type="obsolete">カラム設定</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">不可視</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">一般</translation>
-    </message>
-    <message>
-        <source>Ignore Email Pager</source>
-        <translation type="obsolete">メールページャを無視</translation>
-    </message>
-    <message>
-        <source>Controls whether or not the dockable icon should be displayed.</source>
-        <translation type="obsolete">ドック可能アイコン表示かどうかをコントロール</translation>
-    </message>
-    <message>
-        <source>Sort Online Users by Status</source>
-        <translation type="obsolete">ステータスでオンラインユーザをソート</translation>
-    </message>
-    <message>
-        <source>Contact List</source>
-        <translation type="obsolete">コンタクトリスト</translation>
-    </message>
-    <message>
-        <source>The width of the column</source>
-        <translation type="obsolete">カラムの幅</translation>
-    </message>
-    <message>
-        <source>Previous Message</source>
-        <translation type="obsolete">前のメッセージ</translation>
-    </message>
-    <message>
-        <source>Sort all online users by their actual status</source>
-        <translation type="obsolete">実際のステータスでオンラインユーザをソート</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list</source>
-        <translation type="obsolete">システムリストからフォントを選択</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">リストボックスのカラムヘッダに表示される文字列</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">受信URLへのパラメータ</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">URLを表示するコマンド。URLをパラメータとして渡します</translation>
-    </message>
-    <message>
-        <source>Allow the vertical scroll bar in the user list</source>
-        <translation type="obsolete">ユーザリストに垂直スクロールバーを許可</translation>
-    </message>
-    <message>
-        <source>The command to run to start your terminal program.</source>
-        <translation type="obsolete">ターミナルプログラムを動かすコマンド</translation>
-    </message>
-    <message>
-        <source>Sets which translation table should be used for translating characters.</source>
-        <translation type="obsolete">文字翻訳に使用する翻訳テーブルを設定</translation>
-    </message>
-    <message>
-        <source>Font used in message editor etc.</source>
-        <translation type="obsolete">メッセージエディタ等で用いられるフォント</translation>
-    </message>
-    <message>
-        <source>Ignore New Users</source>
-        <translation type="obsolete">新ユーザを無視</translation>
-    </message>
-    <message>
-        <source>Alignment</source>
-        <translation type="obsolete">配置</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">パスワード:</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">メール</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">ニックネーム</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名前</translation>
-    </message>
-    <message>
-        <source>Chat</source>
-        <translation type="obsolete">チャット</translation>
-    </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="260"/>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="obsolete">to</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="obsolete">%1</translation>
     </message>
 </context>
 <context>
@@ -4739,21 +2149,9 @@ The following parameters can be used:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Password:</source>
-        <translation type="obsolete">パスワード:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
         <source>Currently only one account per protocol is supported.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="74"/>
@@ -4829,18 +2227,6 @@ base directory and then register a new user.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">登録に成功しました。あなたのICQ番号(UIN)
-は %1 です。
-次にあなたの個人情報を設定してください。</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">登録に失敗しました。詳細はネットワークウィンドウを御覧ください</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="70"/>
         <source>Protocol</source>
         <translation type="unfinished"></translation>
@@ -4859,73 +2245,6 @@ Now set your personal information.</source>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="145"/>
         <source>(Invalid ID)</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::PasswordDlg</name>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Set Password [Setting...</source>
-        <translation type="obsolete">パスワード設定 [設定中...</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">タイムアウト</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">再度ICQパスワード入力</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">失敗</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">パスワードが合致しません。もう一度お願いします</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="obsolete">不正パスワードです。8文字以下。</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">パスワード</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">パスワード</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">再入力</translation>
-    </message>
-    <message>
-        <source>Set Password</source>
-        <translation type="obsolete">パスワードをセット</translation>
-    </message>
-    <message>
-        <source>ICQ Password [Setting...]</source>
-        <translation type="obsolete">ICQパスワード [設定中...]</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">ICQパスワードを入力</translation>
-    </message>
-    <message>
-        <source>Licq - Set Password</source>
-        <translation type="obsolete">Licq - パスワードをセット</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">更新</translation>
     </message>
 </context>
 <context>
@@ -4969,32 +2288,6 @@ Now set your personal information.</source>
         <translation>使用する</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation type="obsolete">設定</translation>
-    </message>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">読み込み済</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">ステータス</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">アンロード</translation>
-    </message>
-    <message>
-        <source>Licq Plugin %1 %2
-</source>
-        <translation type="obsolete">Licq プラグイン %1 %2
-</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">利用可能</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="111"/>
         <source>Refresh</source>
         <translation>リフレッシュ</translation>
@@ -5004,14 +2297,6 @@ Now set your personal information.</source>
         <location filename="../src/dialogs/plugindlg.cpp" line="99"/>
         <source>Description</source>
         <translation>詳細</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">詳細</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">使用しない</translation>
     </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
@@ -5037,345 +2322,11 @@ Now set your personal information.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::QFileDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">いいえ</translation>
-    </message>
-    <message>
-        <source>Dir</source>
-        <translation type="obsolete">Dir</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
-    <message>
-        <source>Back</source>
-        <translation type="obsolete">戻る</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">日にち</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">ファイル</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名前</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">開く</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">サイズ</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">ソート</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">開く</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>ERROR</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Size</source>
-        <translation type="obsolete">サイズでソート</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Date</source>
-        <translation type="obsolete">日付でソート</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Name</source>
-        <translation type="obsolete">名前でソート</translation>
-    </message>
-    <message>
-        <source>New Folder 1</source>
-        <translation type="obsolete">新フォルダ1</translation>
-    </message>
-    <message>
-        <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="obsolete">&lt;qt&gt;本当に%1 &quot;%2&quot;を消しますか?&lt;/qt&gt;</translation>
-    </message>
-    <message>
-        <source>the directory</source>
-        <translation type="obsolete">ディレクトリ</translation>
-    </message>
-    <message>
-        <source>File &amp;type:</source>
-        <translation type="obsolete">ファイルタイプ:</translation>
-    </message>
-    <message>
-        <source>File &amp;name:</source>
-        <translation type="obsolete">ファイル名:</translation>
-    </message>
-    <message>
-        <source>Delete %1</source>
-        <translation type="obsolete">%1を消去</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>R&amp;eload</source>
-        <translation type="obsolete">リロード</translation>
-    </message>
-    <message>
-        <source>New Folder</source>
-        <translation type="obsolete">新フォルダ</translation>
-    </message>
-    <message>
-        <source>&amp;Unsorted</source>
-        <translation type="obsolete">仕分けなし</translation>
-    </message>
-    <message>
-        <source>Look &amp;in:</source>
-        <translation type="obsolete">見る</translation>
-    </message>
-    <message>
-        <source>Preview File Contents</source>
-        <translation type="obsolete">ファイル内容をプレビュー</translation>
-    </message>
-    <message>
-        <source>New Folder %1</source>
-        <translation type="obsolete">新フォルダ %1</translation>
-    </message>
-    <message>
-        <source>Read-write</source>
-        <translation type="obsolete">読み-書き</translation>
-    </message>
-    <message>
-        <source>Read-only</source>
-        <translation type="obsolete">読み専用</translation>
-    </message>
-    <message>
-        <source>Find Directory</source>
-        <translation type="obsolete">ディレクトリ見付ける</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">属性</translation>
-    </message>
-    <message>
-        <source>Show &amp;hidden files</source>
-        <translation type="obsolete">隠しファイルも表示</translation>
-    </message>
-    <message>
-        <source>Save as</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>Inaccessible</source>
-        <translation type="obsolete">アクセス不可</translation>
-    </message>
-    <message>
-        <source>%1
-File not found.
-Check path and filename.</source>
-        <translation type="obsolete">%1
-ファイルは見付かりませんでした
-パス名とファイル名をチェックしてください</translation>
-    </message>
-    <message>
-        <source>List View</source>
-        <translation type="obsolete">リストビュー</translation>
-    </message>
-    <message>
-        <source>Special</source>
-        <translation type="obsolete">特別</translation>
-    </message>
-    <message>
-        <source>Write-only</source>
-        <translation type="obsolete">書き専用</translation>
-    </message>
-    <message>
-        <source>the symlink</source>
-        <translation type="obsolete">the symlink</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">消去</translation>
-    </message>
-    <message>
-        <source>All files (*)</source>
-        <translation type="obsolete">全ファイル (*)</translation>
-    </message>
-    <message>
-        <source>Directories</source>
-        <translation type="obsolete">ディレクトリ</translation>
-    </message>
-    <message>
-        <source>Symlink to Special</source>
-        <translation type="obsolete">特別へsymlink</translation>
-    </message>
-    <message>
-        <source>&amp;Rename</source>
-        <translation type="obsolete">リネーム</translation>
-    </message>
-    <message>
-        <source>One directory up</source>
-        <translation type="obsolete">一つ上のディレクトリへ</translation>
-    </message>
-    <message>
-        <source>Preview File Info</source>
-        <translation type="obsolete">ファイル情報プレビュー</translation>
-    </message>
-    <message>
-        <source>the file</source>
-        <translation type="obsolete">ファイル</translation>
-    </message>
-    <message>
-        <source>Create New Folder</source>
-        <translation type="obsolete">新フォルダ作成</translation>
-    </message>
-    <message>
-        <source>Symlink to File</source>
-        <translation type="obsolete">ファイルへsymlink</translation>
-    </message>
-    <message>
-        <source>Symlink to Directory</source>
-        <translation type="obsolete">ディレクトリへsymlink</translation>
-    </message>
-    <message>
-        <source>Detail View</source>
-        <translation type="obsolete">詳細ビュー</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::QFontDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Font</source>
-        <translation type="obsolete">フォント</translation>
-    </message>
-    <message>
-        <source>&amp;Size</source>
-        <translation type="obsolete">サイズ</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">適用</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">色</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">サンプル</translation>
-    </message>
-    <message>
-        <source>Font st&amp;yle</source>
-        <translation type="obsolete">フォントスタイル</translation>
-    </message>
-    <message>
-        <source>Scr&amp;ipt</source>
-        <translation type="obsolete">スクリプト</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">フォント選択</translation>
-    </message>
-    <message>
-        <source>&amp;Underline</source>
-        <translation type="obsolete">下線</translation>
-    </message>
-    <message>
-        <source>Effects</source>
-        <translation type="obsolete">効果</translation>
-    </message>
-    <message>
-        <source>Stri&amp;keout</source>
-        <translation type="obsolete">線を引っ張る</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::QString</name>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">ファイル
-%1を開けませんでした</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::QWizard</name>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">ヘルプ</translation>
-    </message>
-    <message>
-        <source>&lt; Back</source>
-        <translation type="obsolete">&lt; 戻る</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>Finish</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
-        <source>Next &gt;</source>
-        <translation type="obsolete">次 &gt;</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::RandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">ランダムチャット検索</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
     </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="68"/>
@@ -5475,97 +2426,9 @@ Check path and filename.</source>
         <source>Licq - %1 Refusal</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 拒否</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RegisterUserDlg</name>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">Uin:</translation>
-    </message>
-    <message>
-        <source>Please enter your password in both input fields.</source>
-        <translation type="obsolete">両方のフィールドにパスワードを入力してください。</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">登録に成功しました。ログオンし個人情報をアップデートしてください。</translation>
-    </message>
-    <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">既存ユーザ登録をするには 正しいUINを入力する必要があります。 </translation>
-    </message>
-    <message>
-        <source>Now please click &apos;Finish&apos; to start the registration process.</source>
-        <translation type="obsolete">「終了」をクリックして 登録プロセスを開始してください。</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">ユーザ登録進行中...</translation>
-    </message>
-    <message>
-        <source>Now please press the &apos;Back&apos; button and try again.</source>
-        <translation type="obsolete">「戻る」を押して 再度入力してください。</translation>
-    </message>
-    <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">既存ユーザ登録</translation>
-    </message>
-    <message>
-        <source>The passwords don&apos;t seem to match.</source>
-        <translation type="obsolete">入力パスワードが合致しません</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">UIN登録 - ステップ2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">UIN登録 - ステップ3</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">パスワード:</translation>
-    </message>
-    <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">UINが正しくありません。もう一度お願いします</translation>
-    </message>
-    <message>
-        <source>Verify:</source>
-        <translation type="obsolete">再入力:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Licq ユーザ登録</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">登録ウィザードへようこそ!
-
-新規ユーザとして登録するか既存ユーザのUINを 設定できます。
-
-新UINを登録するときはパスワードを選んで 「終了」をクリックしてください。
-UINをお持ちの方は「既存ユーザ登録」をチェックし
-あなたのUINとパスワードを入力し「OK」をクリックしてください。
-
-「次へ」を押して進んで下さい</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">UIN登録</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/registeruser.cpp" line="119"/>
         <source>&amp;Remember Password</source>
@@ -5671,14 +2534,6 @@ After you are online, you can send your personal details to the server.</source>
         <source>Request</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::SearchUserDlg</name>
@@ -5694,21 +2549,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>検索リセット</translation>
     </message>
     <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">終了</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">UIN</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="145"/>
         <source>City:</source>
         <translation>都市:</translation>
-    </message>
-    <message>
-        <source>UIN#:</source>
-        <translation type="obsolete">UIN#</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
@@ -5730,10 +2573,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="271"/>
         <source>Searching (this can take awhile)...</source>
         <translation>検索中 (しばらくかかることもあります)...</translation>
-    </message>
-    <message>
-        <source>&amp;Email</source>
-        <translation type="obsolete">メール</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="395"/>
@@ -5801,10 +2640,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>オンラインユーザのみ</translation>
     </message>
     <message>
-        <source>A&amp;lert User</source>
-        <translation type="obsolete">ユーザに通知</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="427"/>
         <source>&amp;Add %1 Users</source>
         <translation>%1ユーザを追加</translation>
@@ -5821,10 +2656,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>ユーザ追加</translation>
     </message>
     <message>
-        <source>&amp;Whitepages</source>
-        <translation type="obsolete">ホワイトページ</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="202"/>
         <source>&amp;Search</source>
         <translation>検索</translation>
@@ -5839,14 +2670,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="139"/>
         <source>Gender:</source>
         <translation>性別:</translation>
-    </message>
-    <message>
-        <source>Minimum Age:</source>
-        <translation type="obsolete">最小年齢</translation>
-    </message>
-    <message>
-        <source>Maximum Age:</source>
-        <translation type="obsolete">最高年齢</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="63"/>
@@ -5982,62 +2805,11 @@ After you are online, you can send your personal details to the server.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::SearchUserView</name>
-    <message>
-        <source>UIN</source>
-        <translation type="obsolete">UIN</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名前</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">ニックネーム</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">メール</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">ステータス</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">オンライン</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">未知</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">いいえ</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::SecurityDlg</name>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="170"/>
         <source>error</source>
         <translation>エラー</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...]</source>
-        <translation type="obsolete">ICQセキュリティオプション [設定中...</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options</source>
-        <translation type="obsolete">ICQセキュリティオプション</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="114"/>
@@ -6057,62 +2829,14 @@ ICQ Network to change the settings.</source>
         <translation>オプション</translation>
     </message>
     <message>
-        <source>Web presence allows users to see if you are online through your web indicator.</source>
-        <translation type="obsolete">ウェブ存在はウェブインジケータからあなたがオンラインかどうかを知る手段を提供します</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="160"/>
         <source>failed</source>
         <translation>失敗</translation>
     </message>
     <message>
-        <source>Hiding ip stops users from seeing your ip.</source>
-        <translation type="obsolete">IPを隠すことで他人にIPを知られないで済む</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">承認が必要</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="89"/>
         <source>&amp;Update</source>
         <translation>更新</translation>
-    </message>
-    <message>
-        <source>Web Presence</source>
-        <translation type="obsolete">ウェブ上での存在</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...</source>
-        <translation type="obsolete">ICQセキュリティオプション [設定中...</translation>
-    </message>
-    <message>
-        <source>Determines whether regular ICQ clients require your authorization to add you to their contact list.</source>
-        <translation type="obsolete">通常のICQクライアントがあなたをコンタクトリストに加える際にあなたの承認を得る必要があるかどうかを決定</translation>
-    </message>
-    <message>
-        <source>Hide IP</source>
-        <translation type="obsolete">IP隠す</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">パスワード</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">ICQパスワードを入力</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">再度ICQパスワード入力</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">パスワードが合致しません。もう一度お願いします</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="161"/>
@@ -6128,10 +2852,6 @@ ICQ Network to change the settings.</source>
         <location filename="../src/dialogs/securitydlg.cpp" line="171"/>
         <source>Internal error while setting security options.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">再入力</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="72"/>
@@ -6486,10 +3206,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">URLを表示するコマンド。URLをパラメータとして渡します</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="198"/>
         <location filename="../src/settings/chat.cpp" line="202"/>
         <source>Terminal:</source>
@@ -6730,10 +3446,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">ユーザリストの端にボックスを描く</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="81"/>
         <source>Show column headers</source>
         <translation type="unfinished"></translation>
@@ -6942,10 +3654,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <location filename="../src/settings/contactlist.cpp" line="225"/>
         <source>Title</source>
         <translation type="unfinished">タイトル</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">リストボックスのカラムヘッダに表示される文字列</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="228"/>
@@ -7308,10 +4016,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;イベントを受信したときに実行するコマンド&lt;br&gt;下より適切なパラメータが渡されます &lt;br&gt;パラメータは次の表現を含む事が できます &lt;br&gt; これは適切な情報に置き換え られます:&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="177"/>
         <source>Parameters</source>
         <translation type="unfinished">パラメータ</translation>
@@ -7575,10 +4279,6 @@ Works with many different window managers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select Font</source>
-        <translation type="obsolete">フォント選択</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Editing:</source>
         <translation type="unfinished"></translation>
@@ -7587,14 +4287,6 @@ Works with many different window managers.</source>
         <location filename="../src/settings/general.cpp" line="139"/>
         <source>Used in message editor etc.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">デフォルト (%1)</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">デフォルト</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="94"/>
@@ -8351,10 +5043,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
 <context>
     <name>LicqQtGui::ShowAwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="147"/>
         <source>error</source>
         <translation>エラー</translation>
@@ -8383,61 +5071,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="135"/>
         <source>refused</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名前</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">完了</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="obsolete">編集</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Icons</source>
-        <translation type="obsolete">アイコン</translation>
-    </message>
-    <message>
-        <source>Skins</source>
-        <translation type="obsolete">スキン</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">適用</translation>
-    </message>
-    <message>
-        <source>A&amp;pply</source>
-        <translation type="obsolete">適用</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">LICQスキンブラウザ</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">キャンセル</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">システム</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">オンライン</translation>
     </message>
 </context>
 <context>
@@ -8532,17 +5165,9 @@ reset your statistics?</source>
         <translation type="unfinished">全てクリア</translation>
     </message>
     <message>
-        <source>System Functions</source>
-        <translation type="obsolete">システム機能</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">ユーザ機能</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="99"/>
@@ -8625,38 +5250,6 @@ reset your statistics?</source>
         <translation type="unfinished">ステータス</translation>
     </message>
     <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">オンライン</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">離席</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">忙しい</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">用事中</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">じゃましないで♪</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">チャットできます</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">不可視</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>&amp;Group</source>
         <translation type="unfinished">グループ</translation>
@@ -8705,14 +5298,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="203"/>
         <source>&amp;Thread Group View</source>
         <translation type="unfinished">スレッドグループ表示</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">オプション</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">スキンブラウザ</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="208"/>
@@ -8782,55 +5367,9 @@ reset your statistics?</source>
         <source>View &amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">オンライン</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">離席</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">忙しい</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">用事中</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">じゃましないで♪</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">チャットできます</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">不可視</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">ドックテーマファイル(%1)
-を開けません
-%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">ドックテーマファイルを開けません
-%1</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="77"/>
         <source>Unable to load dock theme file:
@@ -9039,30 +5578,10 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::UserEventCommon</name>
     <message>
-        <source>Time:</source>
-        <translation type="obsolete">時間</translation>
-    </message>
-    <message>
-        <source>Show User Info</source>
-        <translation type="obsolete">ユーザ情報を表示</translation>
-    </message>
-    <message>
-        <source>Secure channel information</source>
-        <translation type="obsolete">安全チャンネル情報</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">ステータス</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="117"/>
         <location filename="../src/userevents/usereventcommon.cpp" line="295"/>
         <source>Unknown</source>
         <translation>未知</translation>
-    </message>
-    <message>
-        <source>Show User History</source>
-        <translation type="obsolete">ユーザ履歴を表示</translation>
     </message>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="256"/>
@@ -9131,347 +5650,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventtabdlg.cpp" line="176"/>
         <source>[UNKNOWN_USER]</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::UserInfoDlg</name>
-    <message>
-        <source>to</source>
-        <translation type="obsolete">to</translation>
-    </message>
-    <message>
-        <source>IP:</source>
-        <translation type="obsolete">IP:</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation type="obsolete">今</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation type="obsolete">年:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation type="obsolete">Fax:</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation type="obsolete">男性</translation>
-    </message>
-    <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation type="obsolete">郵便番号:</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">完了</translation>
-    </message>
-    <message>
-        <source>from</source>
-        <translation type="obsolete">from</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation type="obsolete">日:</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">最後</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">メニュー</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation type="obsolete">さらに</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">セーブ</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation type="obsolete">仕事</translation>
-    </message>
-    <message>
-        <source>&amp;Filter: </source>
-        <translation type="obsolete">フィルタ: </translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation type="obsolete">都市:</translation>
-    </message>
-    <message>
-        <source>P&amp;rev</source>
-        <translation type="obsolete">前</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">名前:</translation>
-    </message>
-    <message>
-        <source>Nex&amp;t</source>
-        <translation type="obsolete">次</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">エラー</translation>
-    </message>
-    <message>
-        <source>Last Online:</source>
-        <translation type="obsolete">最後のオンライン:</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation type="obsolete">サーバを更新中...</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation type="obsolete">年:</translation>
-    </message>
-    <message>
-        <source>Last Sent Event:</source>
-        <translation type="obsolete">最後に送信したイベント</translation>
-    </message>
-    <message>
-        <source>Last Checked Auto Response:</source>
-        <translation type="obsolete">最後にチェックした自動応答</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">情報</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to retrieve your settings.</source>
-        <translation type="obsolete">あなたの設定をゲットするにはICQ
-ネットワークに接続されている必要があります</translation>
-    </message>
-    <message>
-        <source>Cellular:</source>
-        <translation type="obsolete">携帯電話:</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation type="obsolete">メール 1:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation type="obsolete">メール 2:</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">タイムアウト</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation type="obsolete">ホームページ:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation type="obsolete">タイムゾーン</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation type="obsolete">情報</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation type="obsolete">ニックネーム</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation type="obsolete">旧メール:</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation type="obsolete">女性</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation type="obsolete">月:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation type="obsolete">電話番号:</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation type="obsolete">州:</translation>
-    </message>
-    <message>
-        <source>Last Received Event:</source>
-        <translation type="obsolete">受信イベント:</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation type="obsolete">承認が必要でない</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;受信&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;送信&lt;/font&gt;] %4のうち%3がマッチ</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;受信&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;送信&lt;/font&gt;] %5のうち%3 から %4 まで</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">国:</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">失敗</translation>
-    </message>
-    <message>
-        <source>server</source>
-        <translation type="obsolete">サーバ</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">承認が必要</translation>
-    </message>
-    <message>
-        <source>INVALID USER</source>
-        <translation type="obsolete">正しくないユーザ</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation type="obsolete">誕生日:</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation type="obsolete">未知 (%1)</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation type="obsolete">部署名:</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="obsolete">役職:</translation>
-    </message>
-    <message>
-        <source>Sorry, history is disabled for this person.</source>
-        <translation type="obsolete">このユーザの履歴は見れません。</translation>
-    </message>
-    <message>
-        <source>Licq - Info </source>
-        <translation type="obsolete">Licq - 情報</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">ステータス</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation type="obsolete">住所:</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation type="obsolete">更新中...</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to change your settings.</source>
-        <translation type="obsolete">あなたの設定を変更するにはICQ
-ネットワークに接続されている必要があります</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation type="obsolete">言語3:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation type="obsolete">言語1:</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation type="obsolete">言語2:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation type="obsolete">無指定</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">更新</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">未知</translation>
-    </message>
-    <message>
-        <source>Retrieve</source>
-        <translation type="obsolete">ゲット</translation>
-    </message>
-    <message>
-        <source>Rever&amp;se</source>
-        <translation type="obsolete">逆順</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation type="obsolete">性別:</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">一般</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">過去ログ</translation>
-    </message>
-    <message>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation type="obsolete">履歴ファイル%1の読み込みに失敗
-詳細: %2</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">オフライン</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">説明</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(なし)</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">タイプ</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">忙しい</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">クリア</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">いいえ</translation>
     </message>
 </context>
 <context>
@@ -9699,10 +5877,6 @@ to your ignore list?</source>
         <translation type="unfinished">本当に
 %1 (%2)
 を無視リストに追加しますか?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">はい</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="164"/>
@@ -10476,12 +6650,6 @@ Select another picture?</source>
         <translation>誘う</translation>
     </message>
     <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">%2とのチャットは拒否されました:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendchatevent.cpp" line="75"/>
         <source> - Chat Request</source>
         <translation> - チャットリクエスト</translation>
@@ -10502,26 +6670,14 @@ Select another picture?</source>
 <context>
     <name>LicqQtGui::UserSendCommon</name>
     <message>
-        <source>No</source>
-        <translation type="obsolete">いいえ</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1149"/>
         <source>done</source>
         <translation>終了</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">メニュー</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="201"/>
@@ -10534,10 +6690,6 @@ Select another picture?</source>
         <location filename="../src/userevents/usersendcommon.cpp" line="1162"/>
         <source>error</source>
         <translation>エラー</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">閉じる</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1159"/>
@@ -10560,19 +6712,11 @@ Select another picture?</source>
         <translation>ファイル転送</translation>
     </message>
     <message>
-        <source>%1 refused %2, send through server.</source>
-        <translation type="obsolete">%1は%2を拒否。サーバ経由で送信</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="185"/>
         <location filename="../src/userevents/usersendcommon.cpp" line="532"/>
         <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source>Urgent</source>
         <translation>緊急</translation>
-    </message>
-    <message>
-        <source>Send anyway</source>
-        <translation type="obsolete">とりあえず送信</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1395"/>
@@ -10597,14 +6741,6 @@ Right Click for Options</source>
         <translation>サーバ経由</translation>
     </message>
     <message>
-        <source>U&amp;rgent</source>
-        <translation type="obsolete">緊急</translation>
-    </message>
-    <message>
-        <source>partial </source>
-        <translation type="obsolete">部分的</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1217"/>
         <source>%1 is in %2 mode:
 %3
@@ -10626,10 +6762,6 @@ send through server?</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <source>Warning: Message will not be sent securely!</source>
-        <translation type="obsolete">警告: メッセージは安全路で送信されません!</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1078"/>
         <source>Sending </source>
         <translation>送信中</translation>
@@ -10648,14 +6780,6 @@ send through server?</source>
         <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source> to Contact List</source>
         <translation>コンタクトリストへ</translation>
-    </message>
-    <message>
-        <source>M&amp;ultiple recipients</source>
-        <translation type="obsolete">複数受信者</translation>
-    </message>
-    <message>
-        <source>Se&amp;nd through server</source>
-        <translation type="obsolete">サーバ経由で送信</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="149"/>
@@ -10781,12 +6905,6 @@ Send anyway?</source>
         <translation> - ファイル転送</translation>
     </message>
     <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">%2とのファイル転送は拒否されました:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendfileevent.cpp" line="162"/>
         <location filename="../src/userevents/usersendfileevent.cpp" line="164"/>
         <source>Select files to send</source>
@@ -10818,14 +6936,6 @@ Send anyway?</source>
 </context>
 <context>
     <name>LicqQtGui::UserSendMsgEvent</name>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">いいえ</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
     <message>
         <location filename="../src/userevents/usersendmsgevent.cpp" line="58"/>
         <source> - Message</source>
@@ -10862,10 +6972,6 @@ Do you really want to send it?</source>
 Do you really want to send it?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">はい</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::UserSendUrlEvent</name>
@@ -10896,10 +7002,6 @@ Do you really want to send it?</source>
         <location filename="../src/userevents/userviewevent.cpp" line="720"/>
         <source>&amp;Join</source>
         <translation>参加</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">メニュー</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="742"/>
@@ -10970,10 +7072,6 @@ Request was cancelled.</source>
         <translation>
 --------------------
 リクエストはキャンセルされました</translation>
-    </message>
-    <message>
-        <source>View URL failed</source>
-        <translation type="obsolete">URLを閲覧できません</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="752"/>
@@ -11112,33 +7210,7 @@ Request was cancelled.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::VerifyDlg</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::WharfIcon</name>
-    <message>
-        <source>Left click - Show main window
-Middle click - Show next message
-Right click - System menu</source>
-        <translation type="obsolete">左クリック - メインウィンドウを表示
-真中クリック - 次メッセージを表示
-右クリック - システムメニュー</translation>
-    </message>
-</context>
-<context>
     <name>QMessageBox</name>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licqエラー</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq警告</translation>
-    </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="63"/>
         <location filename="../src/core/messagebox.cpp" line="68"/>
@@ -11150,10 +7222,6 @@ Right click - System menu</source>
         <location filename="../src/core/messagebox.cpp" line="95"/>
         <source>Licq Question</source>
         <translation>Licq質問</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq情報</translation>
     </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="78"/>

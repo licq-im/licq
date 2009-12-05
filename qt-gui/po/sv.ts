@@ -40,10 +40,6 @@
         <translation>Godkänn inte %1</translation>
     </message>
     <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Godkänn vilken användare (UIN):</translation>
-    </message>
-    <message>
         <source>Grant authorization to %1</source>
         <translation>Godkänn %1</translation>
     </message>
@@ -1921,18 +1917,6 @@ gruppen &apos;%1&apos;?</translation>
         <translation>namnlös</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Ange förvalt värde</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Förvalt värde:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Förvald grupp att starta i.</translation>
-    </message>
-    <message>
         <source>Edit group name (hit enter to save).</source>
         <translation>Redigera gruppnamn (slå retur för att spara).</translation>
     </message>
@@ -1947,18 +1931,6 @@ gruppen &apos;%1&apos;?</translation>
     <message>
         <source>Shift Up</source>
         <translation>Flytta upp</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Ange för nya användare</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Den grupp till vilken nya användare automatiskt kommer att läggas till. Alla nya användare kommer att hamna i den lokala gruppen &quot;Nya användare&quot; men när de sparas på servern kommer de också att sparas i den specificerade gruppen.</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Nya användare:</translation>
     </message>
     <message>
         <source>&amp;Save</source>

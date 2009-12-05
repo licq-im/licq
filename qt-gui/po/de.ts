@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<!DOCTYPE TS><TS>
 <context>
     <name>@default</name>
     <message>
@@ -44,10 +42,6 @@
     <message>
         <source>Refuse authorization to %1</source>
         <translation>Autorisierung für %1 ablehnen</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Benutzer autorisieren (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -1906,10 +1900,6 @@ Sie können mir eine Nachricht hinterlassen.</translation>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Neue Benutzer</translation>
-    </message>
-    <message>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -1931,28 +1921,8 @@ the group &apos;%1&apos;?</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Die Gruppe, zu der alle neuen Benutzer auf der Serverseitigen Kontaktliste hinzugefügt werden.</translation>
-    </message>
-    <message>
         <source>Save the name of a group being modified.</source>
         <translation>Speichert den Namen der gerade bearbeiteten Gruppe.</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Neue Benutzer:</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Als Standard einstellen</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Standard:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Die Gruppe, mit der standardmäßig gestartet wird.</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -2516,8 +2486,8 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
         <translation>IP</translation>
     </message>
     <message>
-        <source>	to</source>
-        <translation>	bis</translation>
+        <source><byte value="x9"/>to</source>
+        <translation><byte value="x9"/>bis</translation>
     </message>
     <message>
         <source>&amp;OK</source>

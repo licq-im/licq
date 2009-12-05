@@ -40,13 +40,6 @@
     </message>
 </context>
 <context>
-    <name>LicqQtGui::</name>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">keine</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::AboutDlg</name>
     <message>
         <location filename="../src/dialogs/aboutdlg.cpp" line="41"/>
@@ -92,22 +85,6 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <source>Licq - Add User</source>
-        <translation type="obsolete">Licq - Kullanıcı Ekle</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Yeni Kullanıcı UINi:</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">Kullanıcıyı &amp;Uyar</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation type="unfinished"></translation>
@@ -135,34 +112,6 @@
 </context>
 <context>
     <name>LicqQtGui::AuthUserDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Peki</translation>
-    </message>
-    <message>
-        <source>Refuse authorization to %1</source>
-        <translation type="obsolete">%1 için Yetki verME.</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Yetkilendireceğin kullanıcı (UIN):</translation>
-    </message>
-    <message>
-        <source>Grant authorization to %1</source>
-        <translation type="obsolete">%1 için yetki ver.</translation>
-    </message>
-    <message>
-        <source>Licq - Grant Authorisation</source>
-        <translation type="obsolete">Licq - Yetkilendir.</translation>
-    </message>
-    <message>
-        <source>Licq - Refuse Authorisation</source>
-        <translation type="obsolete">Licq - YetkilendirME.</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="83"/>
         <source>Response</source>
@@ -199,10 +148,6 @@
 <context>
     <name>LicqQtGui::AwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Peki</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="180"/>
         <source>I&apos;m currently %1, %a.
 You can leave me a message.
@@ -215,10 +160,6 @@ You can leave me a message.
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="165"/>
         <source>&amp;Edit Items</source>
         <translation>Düzenle</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="97"/>
@@ -247,1304 +188,7 @@ You can leave me a message.
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CContactList</name>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Diğer kişiler</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Bugün&amp;nbsp;Doğumgünü!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Güvenli&amp;nbsp;Bağlantı</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Özel&amp;nbsp;Oto-tepki</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">oto-tepki</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEmoticons</name>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Standard</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFileDlg</name>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">&amp;Peki</translation>
-    </message>
-    <message>
-        <source>%1/%2</source>
-        <translation type="obsolete">%1/%2</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="obsolete">Dosya:</translation>
-    </message>
-    <message>
-        <source>Retry</source>
-        <translation type="obsolete">Tekrar dene</translation>
-    </message>
-    <message>
-        <source>Time:</source>
-        <translation type="obsolete">Zaman:</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected</source>
-        <translation type="obsolete">Öteki taraf iletimi iptal etti</translation>
-    </message>
-    <message>
-        <source>Licq - File Transfer (%1)</source>
-        <translation type="obsolete">Licq - Dosya iletimi (%1)</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected
-</source>
-        <translation type="obsolete">Öteki taraf iletimi iptal etti
-</translation>
-    </message>
-    <message>
-        <source>Sent
-%1
-to %2 successfully
-</source>
-        <translation type="obsolete">%2 ye %1 başarıyla iletildi. </translation>
-    </message>
-    <message>
-        <source>Connecting to remote...
-</source>
-        <translation type="obsolete">Ötekine bağlanıyor...
-</translation>
-    </message>
-    <message>
-        <source>Received
-%1
-from %2 successfully
-</source>
-        <translation type="obsolete">%2 , %1  Başarıyla iletti.</translation>
-    </message>
-    <message>
-        <source>File already exists and appears incomplete.</source>
-        <translation type="obsolete">DOsya zaten var (gözüküyor) ancak tamamlanmamış (gibi).</translation>
-    </message>
-    <message>
-        <source>File already exists and is at least as big as the incoming file.</source>
-        <translation type="obsolete">Dosya zaten var (gözüküyor) ve neredeyse gelen dosya kadar büyük.</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
-    <message>
-        <source>Waiting for connection...
-</source>
-        <translation type="obsolete">Bağlantı bekleniyor...
-</translation>
-    </message>
-    <message>
-        <source>Sending file...
-</source>
-        <translation type="obsolete">Dosya iletiliyor...
-</translation>
-    </message>
-    <message>
-        <source>Resume</source>
-        <translation type="obsolete">Devam et</translation>
-    </message>
-    <message>
-        <source>Done %1
-</source>
-        <translation type="obsolete"> %1 Tamam
-</translation>
-    </message>
-    <message>
-        <source>File name:</source>
-        <translation type="obsolete">Dosya Adı:</translation>
-    </message>
-    <message>
-        <source>Receiving file...
-</source>
-        <translation type="obsolete">Dosya alınıyor...
-</translation>
-    </message>
-    <message>
-        <source>File I/O error: %1
-</source>
-        <translation type="obsolete">Dosya I/O Hatası: %1
-</translation>
-    </message>
-    <message>
-        <source>Handshake Error
-See Network Window for Details</source>
-        <translation type="obsolete">Bağlantı Hatası
-Bilgi için ağ penceresine bakın.</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled
-</source>
-        <translation type="obsolete">Dosya iletimi iptal edildi
-</translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-See Network Window for Details</source>
-        <translation type="obsolete">Dosya I/O Hatası:
-%1
-Bilgi için ağ penceresini açın</translation>
-    </message>
-    <message>
-        <source>Handshaking error
-</source>
-        <translation type="obsolete">Bağlantı Hatası
-</translation>
-    </message>
-    <message>
-        <source>Current:</source>
-        <translation type="obsolete">Şu anki</translation>
-    </message>
-    <message>
-        <source>Open error - unable to open file for writing.</source>
-        <translation type="obsolete">Açma Hatası : Dosyayı yazmak için açamıyorum.</translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="obsolete">Üzerine Yaz</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel Transfer</source>
-        <translation type="obsolete">İletimi iptal et</translation>
-    </message>
-    <message>
-        <source>File transfer complete
-</source>
-        <translation type="obsolete">Dosya iletimi tamamlandı
-</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFloatyView</name>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 hepüstte (%2)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFontDialog</name>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Yazı karakterini seç</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CForwardDlg</name>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation type="obsolete">Mesaj</translation>
-    </message>
-    <message>
-        <source>Forward %1 To User</source>
-        <translation type="obsolete">%1 i Kullanıcıya ilet</translation>
-    </message>
-    <message>
-        <source>Drag the user to forward to here:</source>
-        <translation type="obsolete">Kullanıcıya iletmek için, kullanıcıyı buraya sürükleyin.</translation>
-    </message>
-    <message>
-        <source>Unable to forward this message type (%d).</source>
-        <translation type="obsolete">Bu mesaj tipini (%d) iletemiyorum.</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
-    <message>
-        <source>Forwarded message:
-</source>
-        <translation type="obsolete">İletilecek mesaj:
-</translation>
-    </message>
-    <message>
-        <source>&amp;Forward</source>
-        <translation type="obsolete">&amp;İlet</translation>
-    </message>
-    <message>
-        <source>Forwarded URL:
-</source>
-        <translation type="obsolete">İletilecek URL:
-</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CJoinChatDlg</name>
-    <message>
-        <source>Select chat to join:</source>
-        <translation type="obsolete">Katılmak için sohbet seç</translation>
-    </message>
-    <message>
-        <source>Invite to Join Chat</source>
-        <translation type="obsolete">Sohbete katılmak için davet et</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
-    <message>
-        <source>Select chat to invite:</source>
-        <translation type="obsolete">Davet etmek için sohbet seç</translation>
-    </message>
-    <message>
-        <source>Join Multiparty Chat</source>
-        <translation type="obsolete">Çoklu sohbete katıl</translation>
-    </message>
-    <message>
-        <source>&amp;Join</source>
-        <translation type="obsolete">&amp;Katıl</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CLicqMessageBox</name>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq Information</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq Warnung</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMSendDlg</name>
-    <message>
-        <source>Sending mass message to %1...</source>
-        <translation type="obsolete">Mesaj seçilen kullanıcılara %1...</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Sending mass URL to %1...</source>
-        <translation type="obsolete">URL seçilen kullanıcılara iletiliyor: %1...</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">Başarısız</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient URL</source>
-        <translation type="obsolete">URL &apos;yi birkaç kullanıcıya gönder.</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Message</source>
-        <translation type="obsolete">Mesajı birkaç kullanıcya gönder</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMUserView</name>
-    <message>
-        <source>Crop</source>
-        <translation type="obsolete">Kes</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Temizle</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Add Group</source>
-        <translation type="obsolete">Grup ekle</translation>
-    </message>
-    <message>
-        <source>Add All</source>
-        <translation type="obsolete">Hepsini ekle</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMainWindow</name>
-    <message>
-        <source>s</source>
-        <translation type="obsolete">s</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">&amp;Peki</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Hayır</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Peki</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation type="obsolete">Gönder</translation>
-    </message>
-    <message>
-        <source>Online to User</source>
-        <translation type="obsolete">Kişi&apos;ye bağlı görün</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Uzaktayım</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>&amp;Info</source>
-        <translation type="obsolete">&amp;Bilgi</translation>
-    </message>
-    <message>
-        <source>U&amp;tilities</source>
-        <translation type="obsolete">Kolaylıklar</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">&amp;Çıkış</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Seçenekler...</translation>
-    </message>
-    <message>
-        <source>R&amp;andom Chat</source>
-        <translation type="obsolete">Rastgele sohbet</translation>
-    </message>
-    <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Yetki iletimi başarısız.</translation>
-    </message>
-    <message>
-        <source>&amp;Random Chat Group</source>
-        <translation type="obsolete">&amp;Rastgele sohbet grubu</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">%1 den beri aktif
-</translation>
-    </message>
-    <message>
-        <source>Check %1 Response</source>
-        <translation type="obsolete">%1 kişisinin tepkisini kontrol et.</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Şu anki kayıtlı kilgileriniz:
-UIN: %1
-Ana dizin: %2
-ICQ istemcinizi -b anahtarıyla tekrar başlatarak yeni bir dizin
-yaratıp, başka bir kullanıcı da ekleyebilirsiniz.</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">ikon dosyasını açamıyorumn%1.</translation>
-    </message>
-    <message>
-        <source>Send &amp;Authorization</source>
-        <translation type="obsolete">Yetkilendir</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Uygun Değil</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">Hakkında</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">&amp;Grup</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;İpuçları</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">Sıfırla</translation>
-    </message>
-    <message>
-        <source>Custom Auto Response...</source>
-        <translation type="obsolete">Özel otomatik yanıt.</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Bağlantı notu</translation>
-    </message>
-    <message>
-        <source>Set &amp;Auto Response...</source>
-        <translation type="obsolete">&amp;Otomatik yanıt belirle</translation>
-    </message>
-    <message>
-        <source>Remove From List</source>
-        <translation type="obsolete">Listeden sil</translation>
-    </message>
-    <message>
-        <source>System Message</source>
-        <translation type="obsolete">Sistem mesajı</translation>
-    </message>
-    <message>
-        <source>&amp;Popup All Messages</source>
-        <translation type="obsolete">Tüm iletileri göster</translation>
-    </message>
-    <message>
-        <source>Accept in Not Available</source>
-        <translation type="obsolete">Uygun Değil modunda kabul et.</translation>
-    </message>
-    <message>
-        <source>View &amp;History</source>
-        <translation type="obsolete">Geçmişe bak</translation>
-    </message>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Diğer kişiler</translation>
-    </message>
-    <message>
-        <source>Edit User Group</source>
-        <translation type="obsolete">Kişi grubunu düzenle</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Kayıt başarılı, kullanıcı bilgileriniz
- (UIN) : %1.
-Şimdi kişisel bilgilerinizi yazabilirsiniz.</translation>
-    </message>
-    <message>
-        <source>Unknown Packets</source>
-        <translation type="obsolete">Ne idüğü belirsiz paket</translation>
-    </message>
-    <message>
-        <source>Send &amp;Url</source>
-        <translation type="obsolete">URL gönder</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Vazgeç</translation>
-    </message>
-    <message>
-        <source>&amp;Mini Mode</source>
-        <translation type="obsolete">&amp;Ufacık</translation>
-    </message>
-    <message>
-        <source>Errors</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Close &amp;Secure Channel</source>
-        <translation type="obsolete">Güvenli bağlantıyı kopar.</translation>
-    </message>
-    <message>
-        <source>No msgs</source>
-        <translation type="obsolete">ileti yok</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">%1 den beri aktif
-
-</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Servis istatistikleri
-
-</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Servis istatistikleri
-(Bugün/Tümü)
-</translation>
-    </message>
-    <message>
-        <source>SysMsg</source>
-        <translation type="obsolete">Sistem Mesajı</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Sistem</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Son sıfırlama %1
-
-</translation>
-    </message>
-    <message>
-        <source>Do you really want to add
-%1 (%2)
-to your ignore list?</source>
-        <translation type="obsolete">%1 kişisini (%2)
- umursanmayanlar listesine almak istediğinize emin misiniz?</translation>
-    </message>
-    <message>
-        <source>Packets</source>
-        <translation type="obsolete">Paketler</translation>
-    </message>
-    <message>
-        <source>&amp;Save All Users</source>
-        <translation type="obsolete">Tüm Kişi&apos;leri sakla</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb to User</source>
-        <translation type="obsolete">Kişi&apos;ye rahatsız etme modunda görün.</translation>
-    </message>
-    <message>
-        <source>Update All Users</source>
-        <translation type="obsolete">Tüm kişileri güncelle</translation>
-    </message>
-    <message>
-        <source>&amp;Redraw User Window</source>
-        <translation type="obsolete">&amp;Hauptfenster neu zeichnen</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDE desteği ile)
-</translation>
-    </message>
-    <message>
-        <source>Occupied to User</source>
-        <translation type="obsolete">Kişi&apos;ye çalışıyor görün</translation>
-    </message>
-    <message>
-        <source>Logon failed.
-See network window for details.</source>
-        <translation type="obsolete">Oturum açma başarısız.
-Detaylar için Ağ penceresine bakın.</translation>
-    </message>
-    <message>
-        <source>Accept in Away</source>
-        <translation type="obsolete">Her mod için kabul et</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Görünmezler listesi</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Görebilir listesi</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Kayıt başarısız. Detaylar için ağ penceresine bakınız.</translation>
-    </message>
-    <message>
-        <source>Send &amp;Chat Request</source>
-        <translation type="obsolete">Sohbet isteği</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Kullanıcı kaydet</translation>
-    </message>
-    <message>
-        <source>Show Offline &amp;Users</source>
-        <translation type="obsolete">&amp;Bağlı olmayanları da göster</translation>
-    </message>
-    <message>
-        <source>%1 message%2</source>
-        <translation type="obsolete">%1 Mesaj%2</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Umursanmayanlar listesi</translation>
-    </message>
-    <message>
-        <source>&amp;More Info</source>
-        <translation type="obsolete">&amp;Daha fazla Bilgi</translation>
-    </message>
-    <message>
-        <source>Warnings</source>
-        <translation type="obsolete">Uyarılar</translation>
-    </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbrieviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;Kişi takma adı&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;E-İleti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;İsmi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Telefon Numarası&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IP-Adresi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Soyismi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;#  İletileriniz bekliyor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Adı Soyadı&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;Son bağlı olduğu tarih&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;Kişi kapısı&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;Tam durum&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;Kısaca durum&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;WEB Sayfası&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&amp;Work Info</source>
-        <translation type="obsolete">Çalışma bilgisi</translation>
-    </message>
-    <message>
-        <source>Debug Level</source>
-        <translation type="obsolete">Hata ayıklama seviyesi</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Yeni kişi</translation>
-    </message>
-    <message>
-        <source>&amp;Network Window</source>
-        <translation type="obsolete">&amp;Ağ penceresi</translation>
-    </message>
-    <message>
-        <source>&amp;View Event</source>
-        <translation type="obsolete">Olaya gözat</translation>
-    </message>
-    <message>
-        <source>&amp;Plugin Manager...</source>
-        <translation type="obsolete">&amp;Eklenti Yöneticisi...</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Author: Graham Roff
-Contributed by Dirk A. Mueller
-http://www.licq.org
-
-%3 (%4)
-%5 Contacts.</source>
-        <translation type="obsolete">Licq Sürüm %1%8.
-Qt-GUI-Eklenti Sürümü %2.
-Derlenme tarihi: %7
-%6
-Sahibi: Graham Roff
-Dağıtım: Dirk A. Mueller
-http://www.licq.org
-
-%3 (%4)
-%5 Kişi var.</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Çalışıyor</translation>
-    </message>
-    <message>
-        <source>Set All</source>
-        <translation type="obsolete">Hepsini seç</translation>
-    </message>
-    <message>
-        <source>&amp;View System Messages</source>
-        <translation type="obsolete">Sistem mesajını oku</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">Grup görüntüsü</translation>
-    </message>
-    <message>
-        <source>Right click - Durum menüsü
-Double click - Otomatik yan?t? belirle</source>
-        <translation type="obsolete">Ters-Tıkla Durum menüsüÇift-tıkla Otomatik yanıtı belirle</translation>
-    </message>
-    <message>
-        <source>Send &amp;Message</source>
-        <translation type="obsolete">İleti gönder</translation>
-    </message>
-    <message>
-        <source>Update Current Group</source>
-        <translation type="obsolete">Şu anki grubu güncelle</translation>
-    </message>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
-        <source>Right click - Status menu
-Double click - Set auto response</source>
-        <translation type="obsolete">Ters-tıkla Durum menüsü
-Çift-tıkla Otomatik yanıtı belirle</translation>
-    </message>
-    <message>
-        <source>&amp;Add User</source>
-        <translation type="obsolete">Kullanıcı Ekle</translation>
-    </message>
-    <message>
-        <source>Accept in Do Not Disturb</source>
-        <translation type="obsolete">Rahatsız etme modunda kabul et.</translation>
-    </message>
-    <message>
-        <source>&amp;Security Options</source>
-        <translation type="obsolete">Güvenlik seçenekleri</translation>
-    </message>
-    <message>
-        <source>&amp;Statistics</source>
-        <translation type="obsolete">İstatistikler</translation>
-    </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Bağlı</translation>
-    </message>
-    <message>
-        <source>&amp;Away Modes</source>
-        <translation type="obsolete">Uzaktayım çeşitleri</translation>
-    </message>
-    <message>
-        <source>Clear All</source>
-        <translation type="obsolete">Tümünü temizle</translation>
-    </message>
-    <message>
-        <source>&amp;Status</source>
-        <translation type="obsolete">Durum</translation>
-    </message>
-    <message>
-        <source>&amp;System</source>
-        <translation type="obsolete">Sistem</translation>
-    </message>
-    <message>
-        <source>Accept in Occupied</source>
-        <translation type="obsolete">Çalışma modunda kabul et</translation>
-    </message>
-    <message>
-        <source>Send Contact &amp;List</source>
-        <translation type="obsolete">İletişim listesi gönder</translation>
-    </message>
-    <message>
-        <source>Status Info</source>
-        <translation type="obsolete">Durum</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">Rahatsız Etme</translation>
-    </message>
-    <message>
-        <source>Change &amp;Password</source>
-        <translation type="obsolete">&amp;Parolayı değiştir</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">%1 kişisini (%2) iletişim listenizden silmek istediğinizden
-emin misiniz?</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">Bağlı değil</translation>
-    </message>
-    <message>
-        <source>A&amp;uthorize User</source>
-        <translation type="obsolete">Kişiyi Yetkilendir</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Sohbete Hazır</translation>
-    </message>
-    <message>
-        <source>No messages</source>
-        <translation type="obsolete">İleti yok</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Görünmes</translation>
-    </message>
-    <message>
-        <source>&amp;General Info</source>
-        <translation type="obsolete">Genel Bilgi</translation>
-    </message>
-    <message>
-        <source>Send &amp;File Transfer</source>
-        <translation type="obsolete">Dosya transferi isteği</translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Kişi fonksiyonları</translation>
-    </message>
-    <message>
-        <source>Check Auto Response</source>
-        <translation type="obsolete">Otomatik yanıtı kontrol et</translation>
-    </message>
-    <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Yetkilendirildi.</translation>
-    </message>
-    <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Sistem Fonksiyonları</translation>
-    </message>
-    <message>
-        <source>Edit &amp;Groups</source>
-        <translation type="obsolete">&amp;Grupları düzenle</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Tüm Kişi&apos;ler</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">Görünüm ara</translation>
-    </message>
-    <message>
-        <source>Request &amp;Secure Channel</source>
-        <translation type="obsolete">Güvenli bağlantı iste</translation>
-    </message>
-    <message>
-        <source>S&amp;earch for User</source>
-        <translation type="obsolete">Kişi ara</translation>
-    </message>
-    <message>
-        <source>Next &amp;Server</source>
-        <translation type="obsolete">Sonraki sunucu</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">&amp;Tarihçe</translation>
-    </message>
-    <message>
-        <source>Not Available to User</source>
-        <translation type="obsolete">Kişi&apos;ye uygun değil modunda görün</translation>
-    </message>
-    <message>
-        <source>Toggle &amp;Floaty</source>
-        <translation type="obsolete">Belli &amp; üstte</translation>
-    </message>
-    <message>
-        <source>Sa&amp;ve Settings</source>
-        <translation type="obsolete">&amp;Ayarları sakla</translation>
-    </message>
-    <message>
-        <source>Away to User</source>
-        <translation type="obsolete">Kişi&apos;ye uzakta görün.</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Tips für die Benutzung&lt;br&gt;des Licq Qt-GUI-Plugins&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Sie können Ihren Status durch einen Click mit der rechten Maustaste auf die Status-Anzeige ändern.&lt;/li&gt;&lt;li&gt;Durch einen Doppelclick auf die Status-Anzeige können Sie Ihre Auto-Antwort ändern.&lt;/li&gt;&lt;li&gt;System-Nachrichten sehen Sie durch einen Doppelclick auf die Nachrichten-Anzeige.&lt;/li&gt;&lt;li&gt;Wechseln Sie die Gruppe durch einen Rechtsclick auf die Nachrichten-Anzeige.&lt;/li&gt;&lt;li&gt;Nutzen Sie die folgenden Shortcuts aus der Kontaktliste:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Strg+M : &lt;/tt&gt;Mini-Modus ein-/ausschalten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+O : &lt;/tt&gt;Offline-Users anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+X : &lt;/tt&gt;Beenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+H : &lt;/tt&gt;Hauptfenster verstecken&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+I : &lt;/tt&gt;Nächste Nachricht anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+V : &lt;/tt&gt;Nachricht anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+S : &lt;/tt&gt;Nachricht versenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+U : &lt;/tt&gt;Url versenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+C : &lt;/tt&gt;Chat-Request senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+F : &lt;/tt&gt;Datei senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+A : &lt;/tt&gt;Auto-Antwort überprüfen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+P : &lt;/tt&gt;Alle Nachrichten automatisch öffnen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+L : &lt;/tt&gt;Fenster auffrischen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Entf : &lt;/tt&gt;Lösche User aus aktueller Gruppe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+Entf : &lt;/tt&gt;Lösche User aus der Kontaktliste&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Halten Sie im Funktions-Fenster die STRG-Taste während Sie auf &quot;Schließen&quot; clicken, um den User   von der Kontaktliste zu entfernen.&lt;/li&gt;&lt;li&gt;In den meisen Text-Feldern können Sie Strg+Enter drücken, um &quot;OK&quot; oder &quot;Annehmen&quot; auszuwählen,   zum Beispiel im Senden-Abschnitt des User-Funktionen Fenster.&lt;/li&gt;&lt;li&gt;Hier ist die komplette Liste der %-Optionen, die in &lt;b&gt;Ereignisse&lt;/b&gt; im Optionen-Menü,   &lt;b&gt;Auto-Antwort&lt;/b&gt; und &lt;b&gt;Utilities&lt;/b&gt; benutzt werden können:
-</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">HintsDlg::&lt;hr&gt;&lt;p&gt; Für mehr Informationen, siehe Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Verfügbar</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMessageViewWidget</name>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Standard</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMsgViewTips</name>
-    <message>
-        <source>Cancelled Event</source>
-        <translation type="obsolete">Vazgeçilmiş Olay</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">Doğrudan</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="obsolete">Sunucu</translation>
-    </message>
-    <message>
-        <source>Urgent</source>
-        <translation type="obsolete">İvedi</translation>
-    </message>
-    <message>
-        <source>Multiple Recipients</source>
-        <translation type="obsolete">Çaklu alıcı</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CQtLogWindow</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">Kaydet</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Dosya açarken hata:
-%1</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">Temizle</translation>
-    </message>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq Ağ kaydı</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRandomChatDlg</name>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Oyunlar</translation>
-    </message>
-    <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Abaza kadın</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20 civarı</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30 Civarı</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Abaza adam</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40 civarı</translation>
-    </message>
-    <message>
-        <source>Random chat search timed out.</source>
-        <translation type="obsolete">Rastgele sohbet kişi&apos;si aramasında zaman aşımı.</translation>
-    </message>
-    <message>
-        <source>Random chat search had an error.</source>
-        <translation type="obsolete">Rastgele sohbet kişi&apos;si bulurken hata oldu.</translation>
-    </message>
-    <message>
-        <source>No random chat user found in that group.</source>
-        <translation type="obsolete">Seçtiğiniz grupta rastgele sohbet kişi&apos;si bulunmuyor.</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 den büyük</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romantik</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Vazgeç</translation>
-    </message>
-    <message>
-        <source>Searching for Random Chat Partner...</source>
-        <translation type="obsolete">Rastgele sohbet kişi&apos;si aranıyor...</translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="obsolete">&amp;Ara</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Talebeler</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Genel</translation>
-    </message>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Rastgele sohbet kişi&apos;si bulucu</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRefuseDlg</name>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 reddetti</translation>
-    </message>
-    <message>
-        <source>Refusal message for %1 with </source>
-        <translation type="obsolete">%1 için red iletisi...  </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Vazgeç</translation>
-    </message>
-    <message>
-        <source>Refuse</source>
-        <translation type="obsolete">reddet</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CSetRandomChatGroupDlg</name>
-    <message>
-        <source>&amp;Set</source>
-        <translation type="obsolete">Seç</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">Oldu</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Oyunlar</translation>
-    </message>
-    <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Abaza kadın</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20 civarı</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30 civarı</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Abaza adam</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40 civarı</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Kapat</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(hiçbirşey)</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">Zaman aştı</translation>
-    </message>
-    <message>
-        <source>Set Random Chat Group</source>
-        <translation type="obsolete">Rastgele sohbet grubu oluştur</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">Başarısız</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 den büyük</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romantik</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Talabeler</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Genel</translation>
-    </message>
-    <message>
-        <source>Setting Random Chat Group...</source>
-        <translation type="obsolete">Rastgele sohbet grubu oluşturuluyor...</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUserView</name>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">oto-tepki</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Bağlı</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Bağlı değil</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Bugün&amp;nbsp;Doğumgünü!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;v0.%1.</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;v0.%1.</translation>
-    </message>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 hepüstte (%2)</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;v0.%1/SSL.</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;v0.%1/SSL.</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Özel&amp;nbsp;Oto-tepki</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Güvenli&amp;nbsp;Bağlantı</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUtilityDlg</name>
-    <message>
-        <source>GUI</source>
-        <translation type="obsolete">GAB</translation>
-    </message>
-    <message>
-        <source>&amp;Run</source>
-        <translation type="obsolete">Koştur</translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation type="obsolete">Oldu</translation>
-    </message>
-    <message>
-        <source>Done:</source>
-        <translation type="obsolete">Oldu:</translation>
-    </message>
-    <message>
-        <source>Edit:</source>
-        <translation type="obsolete">Düzenle:</translation>
-    </message>
-    <message>
-        <source>Edit final command</source>
-        <translation type="obsolete">komut sonu düzenle</translation>
-    </message>
-    <message>
-        <source>Command Window</source>
-        <translation type="obsolete">Komut penceresi</translation>
-    </message>
-    <message>
-        <source>Licq Utility: %1</source>
-        <translation type="obsolete">Licq-Faidelileri: %1</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">&amp;Kapa</translation>
-    </message>
-    <message>
-        <source>User Fields</source>
-        <translation type="obsolete">Kişi Alanları</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Açıklama:</translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation type="obsolete">Dahili</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Komut:</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Vazgeç</translation>
-    </message>
-    <message>
-        <source>Running:</source>
-        <translation type="obsolete">Koşuyor:</translation>
-    </message>
-    <message>
-        <source>Failed:</source>
-        <translation type="obsolete">Başarısız</translation>
-    </message>
-    <message>
-        <source>Terminal</source>
-        <translation type="obsolete">Terminal</translation>
-    </message>
-    <message>
-        <source>Window:</source>
-        <translation type="obsolete">Pencere:</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::ChangePassDlg</name>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Passwort:</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;erneut:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Tragen Sie hier Ihr ICQ Passwort ein.</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Geben Sie hier Ihr ICQ Passwort erneut ein.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="obsolete">Ungültiges Passwort. Es darf maximal 8 Zeichen haben.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Passworte stimmen nicht überein. Versuchen Sie es erneut.</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::ChatDlg</name>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Yoo</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Tabii</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="202"/>
         <source>Beep</source>
@@ -1569,10 +213,6 @@ emin misiniz?</translation>
         <location filename="../src/dialogs/chatdlg.cpp" line="242"/>
         <source>Toggles Bold font</source>
         <translation>Kalın karakterleri kullan</translation>
-    </message>
-    <message>
-        <source>ignores user color settings</source>
-        <translation type="obsolete">kişi&apos;nin renk seçimlerini umursama</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="247"/>
@@ -1640,10 +280,6 @@ emin misiniz?</translation>
         <translation>Yerel - %1</translation>
     </message>
     <message>
-        <source>/%1.%2.chat</source>
-        <translation type="obsolete">%1.%2.sohbet</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="133"/>
         <location filename="../src/dialogs/chatdlg.cpp" line="985"/>
         <source>Remote - Not connected</source>
@@ -1653,10 +289,6 @@ emin misiniz?</translation>
         <location filename="../src/dialogs/chatdlg.cpp" line="174"/>
         <source>&amp;Close Chat</source>
         <translation>sohbeti bitir.</translation>
-    </message>
-    <message>
-        <source>Remote - %1</source>
-        <translation type="obsolete">Uzak - %1</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="251"/>
@@ -1791,45 +423,9 @@ See Network Window for details.</source>
         <source>Other Users</source>
         <translation type="unfinished">Diğer kişiler</translation>
     </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Bağlantı notu</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Görebilir listesi</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Görünmezler listesi</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Umursanmayanlar listesi</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Yeni kişi</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Bugün&amp;nbsp;Doğumgünü!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Güvenli&amp;nbsp;Bağlantı</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Özel&amp;nbsp;Oto-tepki</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">oto-tepki</translation>
-    </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
         <source> weeks</source>
@@ -2007,35 +603,6 @@ Bana söyleyeceğin varsa dönünce bakacağım...</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CustomAwayMsgDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Tamam</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Temizle</translation>
-    </message>
-    <message>
-        <source>Set Custom Auto Response for %1</source>
-        <translation type="obsolete">%1 için oto-tepki oluştur.</translation>
-    </message>
-    <message>
-        <source>I am currently %1.
-You can leave me a message.</source>
-        <translation type="obsolete">şimdiki durumum: %1.
-Bana söyleyeceğin varsa dönünce bakacağım...</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Sakla</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;İpuçları</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::DockIcon</name>
     <message>
         <location filename="../src/dockicons/dockicon.cpp" line="140"/>
@@ -2083,14 +650,6 @@ Bana söyleyeceğin varsa dönünce bakacağım...</translation>
 </context>
 <context>
     <name>LicqQtGui::EditFileDlg</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Sakla</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">Kapalı</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/editfiledlg.cpp" line="82"/>
         <location filename="../src/dialogs/editfiledlg.cpp" line="109"/>
@@ -2146,21 +705,9 @@ Bana söyleyeceğin varsa dönünce bakacağım...</translation>
 <context>
     <name>LicqQtGui::EditGrpDlg</name>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
         <source>Add</source>
         <translation>Ekle</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzenle</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="92"/>
@@ -2173,18 +720,6 @@ Bana söyleyeceğin varsa dönünce bakacağım...</translation>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="262"/>
         <source>Edit Name</source>
         <translation>İsmi düzenle</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation type="obsolete">İleti</translation>
-    </message>
-    <message>
-        <source>Added to Contact List</source>
-        <translation type="obsolete">İletişim listesine eklendi</translation>
-    </message>
-    <message>
-        <source>Web Panel</source>
-        <translation type="obsolete">WWW-Paneli</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="167"/>
@@ -2205,14 +740,6 @@ the group &apos;%1&apos;?</source>
 istiyor musun?</translation>
     </message>
     <message>
-        <source>Plugin Event</source>
-        <translation type="obsolete">Eklenti olayı</translation>
-    </message>
-    <message>
-        <source>File Transfer</source>
-        <translation type="obsolete">Dosya alışerişi</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="67"/>
         <source>Remove</source>
         <translation>Sil</translation>
@@ -2223,41 +750,9 @@ istiyor musun?</translation>
         <translation>isimsiz</translation>
     </message>
     <message>
-        <source>Authorization Request</source>
-        <translation type="obsolete">Yetki isteği</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Öntanımlılara geri dön</translation>
-    </message>
-    <message>
-        <source>Authorization Refused</source>
-        <translation type="obsolete">YetkilendirilMedi</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Öntanımlı:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">başlangıç grubu.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="74"/>
         <source>Edit group name (hit enter to save).</source>
         <translation>Grup adını düzenle (saklamak için ENTER tuşla ).</translation>
-    </message>
-    <message>
-        <source>User Info</source>
-        <translation type="obsolete">Kişi-bilgisi</translation>
-    </message>
-    <message>
-        <source>Chat Request</source>
-        <translation type="obsolete">Sohbet isteği</translation>
-    </message>
-    <message>
-        <source>Authorization Granted</source>
-        <translation type="obsolete">Yetkilendirildi</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
@@ -2265,21 +760,9 @@ istiyor musun?</translation>
         <translation>Aşağı kay</translation>
     </message>
     <message>
-        <source>Email Pager</source>
-        <translation type="obsolete">eİleti baktırıcısı</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">TÜm kişi&apos;ler</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="50"/>
         <source>Licq - Edit Groups</source>
         <translation>Licq - Grupları düzenle</translation>
-    </message>
-    <message>
-        <source>Contact List</source>
-        <translation type="obsolete">İletişim listesi</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="68"/>
@@ -2447,10 +930,6 @@ istiyor musun?</translation>
 </context>
 <context>
     <name>LicqQtGui::EventDescription</name>
-    <message>
-        <source> (cancelled)</source>
-        <translation type="obsolete"> (iptal)</translation>
-    </message>
     <message>
         <location filename="../src/helpers/eventdesc.cpp" line="72"/>
         <source>Unknown Event</source>
@@ -2980,20 +1459,6 @@ The key isn&apos;t deleted from your keyring.</source>
 <context>
     <name>LicqQtGui::HintsDlg</name>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Kapat</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">HintsDlg::&lt;hr&gt;&lt;p&gt; Für mehr Informationen, siehe Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Tips für die Benutzung&lt;br&gt;des Licq Qt-GUI-Plugins&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Sie können Ihren Status durch einen Click mit der rechten Maustaste auf die Status-Anzeige ändern.&lt;/li&gt;&lt;li&gt;Durch einen Doppelclick auf die Status-Anzeige können Sie Ihre Auto-Antwort ändern.&lt;/li&gt;&lt;li&gt;System-Nachrichten sehen Sie durch einen Doppelclick auf die Nachrichten-Anzeige.&lt;/li&gt;&lt;li&gt;Wechseln Sie die Gruppe durch einen Rechtsclick auf die Nachrichten-Anzeige.&lt;/li&gt;&lt;li&gt;Nutzen Sie die folgenden Shortcuts aus der Kontaktliste:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Strg+M : &lt;/tt&gt;Mini-Modus ein-/ausschalten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+O : &lt;/tt&gt;Offline-Users anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+X : &lt;/tt&gt;Beenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+H : &lt;/tt&gt;Hauptfenster verstecken&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+I : &lt;/tt&gt;Nächste Nachricht anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+V : &lt;/tt&gt;Nachricht anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+S : &lt;/tt&gt;Nachricht versenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+U : &lt;/tt&gt;Url versenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+C : &lt;/tt&gt;Chat-Request senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+F : &lt;/tt&gt;Datei senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+A : &lt;/tt&gt;Auto-Antwort überprüfen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+P : &lt;/tt&gt;Alle Nachrichten automatisch öffnen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+L : &lt;/tt&gt;Fenster auffrischen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Entf : &lt;/tt&gt;Lösche User aus aktueller Gruppe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg+Entf : &lt;/tt&gt;Lösche User aus der Kontaktliste&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Halten Sie im Funktions-Fenster die STRG-Taste während Sie auf &quot;Schließen&quot; clicken, um den User   von der Kontaktliste zu entfernen.&lt;/li&gt;&lt;li&gt;In den meisen Text-Feldern können Sie Strg+Enter drücken, um &quot;OK&quot; oder &quot;Annehmen&quot; auszuwählen,   zum Beispiel im Senden-Abschnitt des User-Funktionen Fenster.&lt;/li&gt;&lt;li&gt;Hier ist die komplette Liste der %-Optionen, die in &lt;b&gt;Ereignisse&lt;/b&gt; im Optionen-Menü,   &lt;b&gt;Auto-Antwort&lt;/b&gt; und &lt;b&gt;Utilities&lt;/b&gt; benutzt werden können:
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/hintsdlg.cpp" line="39"/>
         <source>Licq - Hints</source>
         <translation>Licq - Tips</translation>
@@ -3138,32 +1603,6 @@ Beschreibung: %2</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::IconManager</name>
-    <message>
-        <source>The applet can be removed by
-disabling it in the options dialog</source>
-        <translation type="obsolete">Das Applet kann durch Ausschalten
-im Options-Dialog entfernt werden</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_Themed</name>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Dock Theme Bild kann nicht geladen werden
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Dock Theme Datei kann nicht geladen werden
-(%1)
-:%2</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::InfoField</name>
     <message>
         <location filename="../src/widgets/infofield.cpp" line="62"/>
@@ -3236,39 +1675,11 @@ im Options-Dialog entfernt werden</translation>
         <translation>Schließe sicheren Kanal...</translation>
     </message>
     <message>
-        <source>The remote uses Licq v0.%1, however it
-has no secure channel support compiled in.
-This probably won&apos;t work.</source>
-        <translation type="obsolete">Der entfernte Rechner verwendet Licq v0.%1,
-ohne Unterstützung für einen sicheren Kanal.
-Dies wird wahrscheinlich nicht funktionieren.</translation>
-    </message>
-    <message>
-        <source>The remote uses Licq v0.%1/SSL.</source>
-        <translation type="obsolete">Der entfernte Rechner verwendet Licq v0.%1/SSL.</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;chließen</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;ForestGreen&quot;&gt;Secure channel established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;ForestGreen&quot;&gt;Sicherer Kanal aufgebaut.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="111"/>
         <source>Client does not support OpenSSL.
 Rebuild Licq with OpenSSL support.</source>
         <translation>Der Client unterstützt kein OpenSSL
 Compilieren Sie Licq mit OpenSSL-Unterstützung neu.
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;blue&quot;&gt;Secure channel closed.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;blue&quot;&gt;Sicherer Kanal geschlossen.&lt;/font&gt;
 </translation>
     </message>
     <message>
@@ -3288,26 +1699,6 @@ Diffie-Hellman Schlüssel-Austausch und
 TLS-Protokoll Version 1 aufgebaut.
 
 </translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Could not connect to remote client.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Konnte nicht mit entferntem Client verbinden.&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel already established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Sicherer Kanal bereits aufgebaut.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel not established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Sicherer Kanal nicht aufgebaut.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Remote client does not support OpenSSL.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Entfernter Client unterstützt kein OpenSSL.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="138"/>
@@ -3423,26 +1814,7 @@ Would you like to try loading the old one?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::LicqMessageBox</name>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq Information</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq Warnung</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::LogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq Ağ kaydı</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">Temizle</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
@@ -3555,10 +1927,6 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MainWindow</name>
     <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="188"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
@@ -3639,70 +2007,6 @@ Double click - Set auto response</source>
 See network window for details.</source>
         <translation type="unfinished">Oturum açma başarısız.
 Detaylar için Ağ penceresine bakın.</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">%1 kişisini (%2) iletişim listenizden silmek istediğinizden
-emin misiniz?</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDE desteği ile)
-</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">ikon dosyasını açamıyorumn%1.</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Servis istatistikleri
-(Bugün/Tümü)
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">%1 den beri aktif
-</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Son sıfırlama %1
-
-</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">Sıfırla</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Servis istatistikleri
-
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">%1 den beri aktif
-
-</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">HintsDlg::&lt;hr&gt;&lt;p&gt; Für mehr Informationen, siehe Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="670"/>
@@ -3827,733 +2131,11 @@ emin misiniz?</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::MsgView</name>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">Zeit</translation>
-    </message>
-    <message>
-        <source>Event Type</source>
-        <translation type="obsolete">Ereignis Typ</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Optionen</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">Doğrudan</translation>
-    </message>
-    <message>
-        <source>Urgent</source>
-        <translation type="obsolete">İvedi</translation>
-    </message>
-    <message>
-        <source>Multiple Recipients</source>
-        <translation type="obsolete">Çaklu alıcı</translation>
-    </message>
-    <message>
-        <source>Cancelled Event</source>
-        <translation type="obsolete">Vazgeçilmiş Olay</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::OptionsDlg</name>
-    <message>
-        <source>	to</source>
-        <translation type="obsolete">	bis</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="obsolete">Auto</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Abwesend</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Zeichensatz</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation type="obsolete">Links</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Sichern</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">keine</translation>
-    </message>
-    <message>
-        <source>Show Extended Icons</source>
-        <translation type="obsolete">Zeige erweiterte Icons</translation>
-    </message>
-    <message>
-        <source>Flash Events</source>
-        <translation type="obsolete">Ereignisse blinken</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation type="obsolete">Zeichensatz:</translation>
-    </message>
-    <message>
-        <source>Never</source>
-        <translation type="obsolete">Niemals</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="obsolete">Rechts</translation>
-    </message>
-    <message>
-        <source>Text:</source>
-        <translation type="obsolete">Text:</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Titel</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Breite</translation>
-    </message>
-    <message>
-        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you firstsend an event to him</source>
-        <translation type="obsolete">Wenn nicht angekreuzt, wird ein User automatisch aus der Gruppe &quot;Neue User&quot; entfernt, sobald man ein Ereignis an ihn schickt</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Parameter für empfangene Datei-Übertragung</translation>
-    </message>
-    <message>
-        <source>Firewall</source>
-        <translation type="obsolete">Firewall</translation>
-    </message>
-    <message>
-        <source>Show Grid Lines</source>
-        <translation type="obsolete">Zeige Gitternetzlinien</translation>
-    </message>
-    <message>
-        <source>Override the skin setting for the frame style of the user window:
-   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Sunken)
- + 240 (Shadow)</source>
-        <translation type="obsolete">Skin-Einstellungen für Rahmen des User-Fensters abändern:
-   0 (Kein Rahmen), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Flach), 32 (Erhöht), 48 (Versunken)
- + 240 (Schatten)</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Parameter für empfangene Chaf-Anfragen</translation>
-    </message>
-    <message>
-        <source>Turns on or off the display of headers above each column in the user list</source>
-        <translation type="obsolete">Schaltet die Kopfzeile über den Spalten in der User-Liste ein oder aus.</translation>
-    </message>
-    <message>
-        <source>Auto Away:</source>
-        <translation type="obsolete">Automatisch Abwesend:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;not available&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Anzahl der Minuten, nach denen man automatisch als &apos;Nicht erreichbar&apos; markiert wird. Auf 0 setzen, um diese Funktion auszuschalten.</translation>
-    </message>
-    <message>
-        <source>Ignore Mass Messages</source>
-        <translation type="obsolete">Massen-Nachrichten ignorieren</translation>
-    </message>
-    <message>
-        <source>Show the &quot;--online--&quot; and &quot;--offline--&quot; bars in the contact list</source>
-        <translation type="obsolete">Zeige die &quot;--online--&quot; und &quot;--offline--&quot; Balken in der Kontaktliste</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Parameter für Online-Benachrichtigung</translation>
-    </message>
-    <message>
-        <source>TCP port range for incoming connections.</source>
-        <translation type="obsolete">TCP Port Bereich für ankommende Verbindungen.</translation>
-    </message>
-    <message>
-        <source>Default port to connect to on the server (should be 4000)</source>
-        <translation type="obsolete">Standard-Port auf dem Server (sollte 4000 sein)</translation>
-    </message>
-    <message>
-        <source>Accept Modes</source>
-        <translation type="obsolete">Akzeptanz Modi</translation>
-    </message>
-    <message>
-        <source>Online Notify:</source>
-        <translation type="obsolete">Online-Meldung:</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Nicht verfügbar</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Zuweisen</translation>
-    </message>
-    <message>
-        <source>Determines if new users are automatically added to your list or must first request authorization.</source>
-        <translation type="obsolete">Sollen neue User automatisch zur Liste hinzugefügt werden oder muessen sie erst Autorisierung beantragen?</translation>
-    </message>
-    <message>
-        <source>Show the name of the current group in the messages label when there are no new messages</source>
-        <translation type="obsolete">Zeige den Namen der aktuellen Gruppe im Nachrichten Label, wenn keine neuen Nachrichten</translation>
-    </message>
-    <message>
-        <source>Ignore Web Panel</source>
-        <translation type="obsolete">Web-Panel-Nachrichten ignorieren</translation>
-    </message>
-    <message>
-        <source>Use Font Styles</source>
-        <translation type="obsolete">Verwende Zeichensatz-Style</translation>
-    </message>
-    <message>
-        <source>Preset slot:</source>
-        <translation type="obsolete">Voreinstellung:</translation>
-    </message>
-    <message>
-        <source>Licq Options</source>
-        <translation type="obsolete">Licq Optionen</translation>
-    </message>
-    <message>
-        <source>Show online notify users who are offline even when offline users are hidden.</source>
-        <translation type="obsolete">Zeige Online-Benachrichtigungs-User, die offline sind,auch wenn Offline-User nicht angezeigt werden.</translation>
-    </message>
-    <message>
-        <source>Show Column Headers</source>
-        <translation type="obsolete">Spaltenüberschriften anzeigen</translation>
-    </message>
-    <message>
-        <source>Bold Message Label on Incoming Msg</source>
-        <translation type="obsolete">Fettes Nachrichten-Label bei eingehender Nachricht</translation>
-    </message>
-    <message>
-        <source>Column %1</source>
-        <translation type="obsolete">Spalte %1</translation>
-    </message>
-    <message>
-        <source>Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf and a shorter 64x48 icon for use in the Gnome/KDE panel.</source>
-        <translation type="obsolete">Wählt zwischen dem standard 64x64 Pixel Icon (Windowmaker/Afterstep) und dem kürzeren 64x48 Pixel Icon (KDE/GNOME).</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Ereignis-Kommando auch bei &apos;Beschäftigt&apos; ausführen</translation>
-    </message>
-    <message>
-        <source>Auto Offline:</source>
-        <translation type="obsolete">Automatsch Offline:</translation>
-    </message>
-    <message>
-        <source>OnEvent in DND</source>
-        <translation type="obsolete">Ereignis-Kommnado bei &apos;Nicht stören&apos;</translation>
-    </message>
-    <message>
-        <source>OnEvent in N/A</source>
-        <translation type="obsolete">Ereignis-Kommnado bei &apos;Nicht erreichbar&apos;</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Parameter für empfangene Nachrichten</translation>
-    </message>
-    <message>
-        <source>List of servers to connect to (read-only for now)</source>
-        <translation type="obsolete">Liste von ICQ-Servern zum verbinden (zur Zeit nur-lesbar)</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="obsolete">Zentrieren</translation>
-    </message>
-    <message>
-        <source>Allow scroll bar</source>
-        <translation type="obsolete">Erlaube Bildlaufleiste</translation>
-    </message>
-    <message>
-        <source>OnEvent in Away</source>
-        <translation type="obsolete">Ereignis-Kommnado bei &apos;Abwesend&apos;</translation>
-    </message>
-    <message>
-        <source>Only urgent events will flash</source>
-        <translation type="obsolete">Nur dringende Nachrichten blinkend</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation type="obsolete">Netzwerk</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">Format</translation>
-    </message>
-    <message>
-        <source>The fonts used</source>
-        <translation type="obsolete">Die verwendeten Schriftarten</translation>
-    </message>
-    <message>
-        <source>Locale</source>
-        <translation type="obsolete">Lokalisierung</translation>
-    </message>
-    <message>
-        <source>Use Dock Icon</source>
-        <translation type="obsolete">Verwende Dock Icon</translation>
-    </message>
-    <message>
-        <source>Chat Request:</source>
-        <translation type="obsolete">Chat-Anforderung:</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Flash Urgent Events</source>
-        <translation type="obsolete">Dringende Ereignisse blinken</translation>
-    </message>
-    <message>
-        <source>Server settings</source>
-        <translation type="obsolete">Server Einstellungen</translation>
-    </message>
-    <message>
-        <source>Auto Logon:</source>
-        <translation type="obsolete">Automatische Anmeldung:</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation type="obsolete">Hauptfenster</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation type="obsolete">Theme:</translation>
-    </message>
-    <message>
-        <source>SOCKS5 support is built in but disabled.
-To enable it, set the SOCKS5_SERVER
-environment variable to &lt;server&gt;:&lt;port&gt;.</source>
-        <translation type="obsolete">SOCKS5 Unterstützung ist mit eingebaut, aber abgeschaltet.
-Um sie zu aktivieren muß die SOCKS5_SERVER Umgebungsvariable auf &lt;server&gt;:&lt;port&gt; gesetzt werden.</translation>
-    </message>
-    <message>
-        <source>Always show online notify users</source>
-        <translation type="obsolete">Online-Benachrichtigungs-User immer zeigen</translation>
-    </message>
-    <message>
-        <source>To enable socks proxy support, install NEC Socks or Dante
-then configure the Licq daemon with &quot;--enable-socks5&quot;.</source>
-        <translation type="obsolete">Um SOCKS Proxy-Unterstützung einzuschalten, installieren Sie NEC Socks oder Dante
-Konfigurieren Sie dann den Licq-Daemon mit &quot;--enable-socks5&quot;.</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">standard (%1)</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Port Range:</source>
-        <translation type="obsolete">Port Bereich:</translation>
-    </message>
-    <message>
-        <source>OnEvent</source>
-        <translation type="obsolete">Ereignisse</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Kommando:</translation>
-    </message>
-    <message>
-        <source>Edit Font:</source>
-        <translation type="obsolete">Bearbeite Zeichensatz:</translation>
-    </message>
-    <message>
-        <source>I can receive direct connections</source>
-        <translation type="obsolete">Ich kann direkte Verbindungen empfangen</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Optionen</translation>
-    </message>
-    <message>
-        <source>Miscellaneous</source>
-        <translation type="obsolete">Verschiedenes</translation>
-    </message>
-    <message>
-        <source>All incoming messages automatically open when received, if we are online (or free for chat)</source>
-        <translation type="obsolete">Ankommende Nachrichten automatisch öffnen bei &apos;Online&apos; oder &apos;Frei für Chat&apos;.</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Ereignis-Kommando auch bei &apos;nicht stören&apos; ausführen</translation>
-    </message>
-    <message>
-        <source>Determines if mass messages are ignored or not.</source>
-        <translation type="obsolete">Nachrichten an mehr als einen Empfänger ignorieren</translation>
-    </message>
-    <message>
-        <source>Translation:</source>
-        <translation type="obsolete">Übersetzung:</translation>
-    </message>
-    <message>
-        <source>Frame Style: </source>
-        <translation type="obsolete">Rahmenstil:</translation>
-    </message>
-    <message>
-        <source>The alignment of the column</source>
-        <translation type="obsolete">Ausrichtung der Spalte</translation>
-    </message>
-    <message>
-        <source>Make the user window transparent when there is no scroll bar</source>
-        <translation type="obsolete">Mache das User-Fenster transparent, wenn kein Rollbalken vorhanden ist</translation>
-    </message>
-    <message>
-        <source>Default Icon</source>
-        <translation type="obsolete">Standard-Icon</translation>
-    </message>
-    <message>
-        <source>The main window will raise on incoming messages</source>
-        <translation type="obsolete">Das Hauptfenster bei eingehenden Nachrichten anzeigen</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Parameter</translation>
-    </message>
-    <message>
-        <source>Show birthday, invisible, and custom auto response icons to the right of users in the list</source>
-        <translation type="obsolete">Zeige Geburtstag, unsichtbar und angepaßte Auto-Antwort in der Liste rechts neben den Nutzern.</translation>
-    </message>
-    <message>
-        <source>Transparent when possible</source>
-        <translation type="obsolete">Transparent, wenn möglich</translation>
-    </message>
-    <message>
-        <source>Default Auto Response Messages</source>
-        <translation type="obsolete">Standard-Nachricht für automatische Antworten</translation>
-    </message>
-    <message>
-        <source>File Transfer:</source>
-        <translation type="obsolete">Datei-Übertragung:</translation>
-    </message>
-    <message>
-        <source>OnEvents Enabled</source>
-        <translation type="obsolete">Ereignis-Kommandos einschalten</translation>
-    </message>
-    <message>
-        <source>Paranoia</source>
-        <translation type="obsolete">Paranoia</translation>
-    </message>
-    <message>
-        <source>Auto-Raise on Incoming Msg</source>
-        <translation type="obsolete">Zeige Kontaktliste bei eingehender Nachricht</translation>
-    </message>
-    <message>
-        <source>Terminal:</source>
-        <translation type="obsolete">Terminal:</translation>
-    </message>
-    <message>
-        <source>Automatically log on when first starting up.</source>
-        <translation type="obsolete">Automatisch einloggen, wenn zum ersten mal gestartet.</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;away&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Anzahl der Minuten, nach denen man automatisch als &apos;Abwesend&apos; markiert wird. Auf 0 setzen, um diese Funktion auszuschalten.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Kommando, daß ausgeführt werden soll, wenn ein Ereignis auftritt.&lt;br&gt;Die unten stehenden Parameter werden übergeben.&lt;br&gt;Parameter können folgende Ausdrücke enthalten,&lt;br&gt;die durch die jeweilige Information ersetzt werden:&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Determines if email pager messages are ignored or not.</source>
-        <translation type="obsolete">eMail-Pager-Nachrichten ingnorieren</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Ereignis-Kommando auch bei &apos;nicht erreichbar&apos; ausführen</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Beschäftigt</translation>
-    </message>
-    <message>
-        <source>Show User Dividers</source>
-        <translation type="obsolete">Zeige User-Trenner</translation>
-    </message>
-    <message>
-        <source>OnEvent in Occupied</source>
-        <translation type="obsolete">Ereignis-Kommnado bei &apos;Beschäftigt&apos;</translation>
-    </message>
-    <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Der Format-String, der bestimmt, was in der Spalte angezeigt wird.
-Folgende Parameter können verwendet werden:
-</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Parameter für empfangene System-Mitteilung</translation>
-    </message>
-    <message>
-        <source>Manual &quot;New User&quot; group handling</source>
-        <translation type="obsolete">Manuelle &quot;Neue User&quot; Gruppen-Verwaltung</translation>
-    </message>
-    <message>
-        <source>Default Server Port:</source>
-        <translation type="obsolete">Standard Server-Port:</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Zeichensatz auswählen</translation>
-    </message>
-    <message>
-        <source>The message info label will be bold if there are incoming messages</source>
-        <translation type="obsolete">Das Nachrichten-Info Label ist fett, wenn ankommende Nachrichten vorhanden sind</translation>
-    </message>
-    <message>
-        <source>Auto-Popup Incoming Msg</source>
-        <translation type="obsolete">Auto-Öffnen eingehender Nachricht</translation>
-    </message>
-    <message>
-        <source>64 x 48 Dock Icon</source>
-        <translation type="obsolete">64 x 48 Dock Icon</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Abbruch</translation>
-    </message>
-    <message>
-        <source>Startup</source>
-        <translation type="obsolete">Startup</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">Standard</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Standard</translation>
-    </message>
-    <message>
-        <source>Use italics and bold in the user list to indicate special characteristics such as online notify and visible list</source>
-        <translation type="obsolete">Verwende kursiv und Fettdruck in der User-Liste, um spezielle Charakteristika, wie Online-Meldung und Visible-Liste darzustellen.</translation>
-    </message>
-    <message>
-        <source>Auto N/A:</source>
-        <translation type="obsolete">Automatisch nicht verfügbar</translation>
-    </message>
-    <message>
-        <source>Themed Icon</source>
-        <translation type="obsolete">Themed Icon</translation>
-    </message>
-    <message>
-        <source>Auto Close Function Window</source>
-        <translation type="obsolete">Schließe Funktionsfenster automatisch</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Ereignis-Kommando auch bei &apos;Abwesend&apos; ausführen</translation>
-    </message>
-    <message>
-        <source>Docking</source>
-        <translation type="obsolete">Andocken</translation>
-    </message>
-    <message>
-        <source>Determines if web panel messages are ignored or not.</source>
-        <translation type="obsolete">Nachrichten des Web-Panel ignorieren</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Erlaube das Auführen von &quot;Kommando&quot; wenn bestimmtes Ereignis eintritt.</translation>
-    </message>
-    <message>
-        <source>System Msg:</source>
-        <translation type="obsolete">System Nachricht:</translation>
-    </message>
-    <message>
-        <source>Show group name if no messages</source>
-        <translation type="obsolete">Zeige Gruppenname, wenn keine Nachrichten</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Frei für Chat</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Frei für Chat</translation>
-    </message>
-    <message>
-        <source>Online Notify when Logging On</source>
-        <translation type="obsolete">Online-Benachrichtigung bei Anmeldung</translation>
-    </message>
-    <message>
-        <source>Extensions</source>
-        <translation type="obsolete">Erweiterungen</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Nicht stören</translation>
-    </message>
-    <message>
-        <source>All incoming events will flash</source>
-        <translation type="obsolete">Hereinkommende Ereignisse blinken</translation>
-    </message>
-    <message>
-        <source>Servers:</source>
-        <translation type="obsolete">Server:</translation>
-    </message>
-    <message>
-        <source>Url Viewer:</source>
-        <translation type="obsolete">URL Betrachter:</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Nachricht:</translation>
-    </message>
-    <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Boxen um jedes Rechteck der User-Liste zeichnen</translation>
-    </message>
-    <message>
-        <source>Sets the default behavior for auto closing the user function window after a succesful event</source>
-        <translation type="obsolete">Setzt das Standardverhalten für das automatische Schließen des Funktionsfensters nach einem erfolgreichen Ereignis.</translation>
-    </message>
-    <message>
-        <source>Column Configuration</source>
-        <translation type="obsolete">Spalten-Konfiguration</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Unsichtbar</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Allgemein</translation>
-    </message>
-    <message>
-        <source>Ignore Email Pager</source>
-        <translation type="obsolete">eMail-Pager-Nachrichten ignorieren</translation>
-    </message>
-    <message>
-        <source>Controls whether or not the dockable icon should be displayed.</source>
-        <translation type="obsolete">Kontrolliert, ob das Dock-Icon angezeigt wird.</translation>
-    </message>
-    <message>
-        <source>Sort Online Users by Status</source>
-        <translation type="obsolete">Sortiere Online User nach ihrem Status</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent  when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Ausführen der Online-Benachrichtigung beim einloggen  (dies ist anders als beim Mirabilis-Client)</translation>
-    </message>
-    <message>
-        <source>Contact List</source>
-        <translation type="obsolete">Kontaktliste</translation>
-    </message>
-    <message>
-        <source>The width of the column</source>
-        <translation type="obsolete">Spaltenbreite</translation>
-    </message>
-    <message>
-        <source>Sort all online users by their actual status</source>
-        <translation type="obsolete">Sortiere alle Online-User nach ihrem aktuellen Status</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list</source>
-        <translation type="obsolete">Wählen Sie eine Schrift aus der Systemliste</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Die Zeichenkette, die im Kopf der List-Box erscheint</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Parameter für empfangene URLs</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Das Kommando, um eine URL anzuzeigen. Die URL wird als Parameter übergeben.</translation>
-    </message>
-    <message>
-        <source>Allow the vertical scroll bar in the user list</source>
-        <translation type="obsolete">Erlaube vertikale Bildlaufleiste</translation>
-    </message>
-    <message>
-        <source>The command to run to start your terminal program.</source>
-        <translation type="obsolete">Das Kommando, um Ihr Terminal-Programm zu starten.</translation>
-    </message>
-    <message>
-        <source>Sets which translation table should be used for translating characters.</source>
-        <translation type="obsolete">Stellt die Übersetzungstabelle für spezielle Zeichen ein.</translation>
-    </message>
-    <message>
-        <source>Font used in message editor etc.</source>
-        <translation type="obsolete">Zeichensatz für Nachrichteneditor usw.</translation>
-    </message>
-    <message>
-        <source>Ignore New Users</source>
-        <translation type="obsolete">Neue User ignorieren</translation>
-    </message>
-    <message>
-        <source>Alignment</source>
-        <translation type="obsolete">Ausrichtung</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Passwort:</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">eMail</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Alias</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Chat</source>
-        <translation type="obsolete">Sohbet</translation>
-    </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="260"/>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="obsolete">ilgili</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="obsolete">%1</translation>
     </message>
 </context>
 <context>
@@ -4562,10 +2144,6 @@ Folgende Parameter können verwendet werden:
         <location filename="../src/dialogs/ownereditdlg.cpp" line="50"/>
         <source>Edit Account</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Passwort:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
@@ -4646,18 +2224,6 @@ base directory and then register a new user.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Kayıt başarılı, kullanıcı bilgileriniz
- (UIN) : %1.
-Şimdi kişisel bilgilerinizi yazabilirsiniz.</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Kayıt başarısız. Detaylar için ağ penceresine bakınız.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="70"/>
         <source>Protocol</source>
         <translation type="unfinished"></translation>
@@ -4676,69 +2242,6 @@ Now set your personal information.</source>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="145"/>
         <source>(Invalid ID)</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::PasswordDlg</name>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">Fehler</translation>
-    </message>
-    <message>
-        <source>Set Password [Setting...</source>
-        <translation type="obsolete">Setze Passwort...</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">Zeitüberschreitung</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Geben Sie hier Ihr ICQ Passwort erneut ein.</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">fehlgeschlagen</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Passworte stimmen nicht überein. Versuchen Sie es erneut.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="obsolete">Ungültiges Passwort. Es darf maximal 8 Zeichen haben.</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">Passwort</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Abbruch</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Passwort:</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;erneut:</translation>
-    </message>
-    <message>
-        <source>Set Password</source>
-        <translation type="obsolete">Setze Passwort</translation>
-    </message>
-    <message>
-        <source>ICQ Password [Setting...]</source>
-        <translation type="obsolete">Setze ICQ Passwort...</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Tragen Sie hier Ihr ICQ Passwort ein.</translation>
-    </message>
-    <message>
-        <source>Licq - Set Password</source>
-        <translation type="obsolete">Licq - Setze Passwort</translation>
     </message>
 </context>
 <context>
@@ -4766,28 +2269,6 @@ Now set your personal information.</source>
         <translation>Ein</translation>
     </message>
     <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Geladen</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Entfernen</translation>
-    </message>
-    <message>
-        <source>Licq Plugin %1 %2
-</source>
-        <translation type="obsolete">Licq Plugin %1 %2
-</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Verfügbar</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="111"/>
         <source>Refresh</source>
         <translation>Erneut anzeigen</translation>
@@ -4797,14 +2278,6 @@ Now set your personal information.</source>
         <location filename="../src/dialogs/plugindlg.cpp" line="99"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Details</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Aus</translation>
     </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
@@ -4846,20 +2319,7 @@ Now set your personal information.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::QString</name>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Öffnen von Datei fehlgeschlagen:
-%1</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::RandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Rastgele sohbet kişi&apos;si bulucu</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
@@ -4963,95 +2423,9 @@ Now set your personal information.</source>
         <source>Licq - %1 Refusal</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 reddetti</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RegisterUserDlg</name>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
-        <source>Please enter your password in both input fields.</source>
-        <translation type="obsolete">Bitte geben Sie Ihr Passwort in beiden Eingabefeldern ein.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Erfolgreich registriert.  Melden Sie sich jetzt an, und aktualisieren Sie Ihre persvnlichen Informationen.</translation>
-    </message>
-    <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Sie müssen eine gültige UIN eingeben, um sich als existierender User zu registrieren. </translation>
-    </message>
-    <message>
-        <source>Now please click &apos;Finish&apos; to start the registration process.</source>
-        <translation type="obsolete">Drücken Sie &apos;Fertigstellen&apos;, um den Registrierungsprozeß zu starten.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">User Registrierung ...</translation>
-    </message>
-    <message>
-        <source>Now please press the &apos;Back&apos; button and try again.</source>
-        <translation type="obsolete">Drücken Sie &apos;Zurück&apos; um es erneut zu versuchen.</translation>
-    </message>
-    <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">Existierenden User registrieren</translation>
-    </message>
-    <message>
-        <source>The passwords don&apos;t seem to match.</source>
-        <translation type="obsolete">Die Passwörter stimmen nicht überein</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">UIN Registrierung - Schritt 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">UIN Registrierung - Schritt 3</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Passwort:</translation>
-    </message>
-    <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">Falsche UIN. Versuchen Sie erneut.</translation>
-    </message>
-    <message>
-        <source>Verify:</source>
-        <translation type="obsolete">Erneut eingeben:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Licq User Registrierung</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Willkommen beim Registrierungs-Assisstenten.
-
-Sie können hier einen neuen User registrieren, oder Licq so konfigurieren, daß es eine existierende UIN verwendet.
-
-Wenn Sie eine neue UIN registrieren, wählen Sie ein Passwort, und drücken Sie &apos;Fertigstellen&apos;.
-Wenn Sie bereits eine UIN besitzen, dann wählen Sie &apos;Registriere existierenden User&apos;,
-und drücken Sie &apos;Nächste&apos;, um fortzusetzen.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">UIN Registrierung</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/registeruser.cpp" line="119"/>
         <source>&amp;Remember Password</source>
@@ -5167,22 +2541,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Erneut suchen</translation>
     </message>
     <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">Fertig</translation>
-    </message>
-    <message>
-        <source>&amp;Name</source>
-        <translation type="obsolete">&amp;Name</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">&amp;UIN#</translation>
-    </message>
-    <message>
-        <source>UIN#:</source>
-        <translation type="obsolete">UIN#:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="220"/>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="314"/>
         <source>Enter search parameters and select &apos;Search&apos;</source>
@@ -5192,10 +2550,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="271"/>
         <source>Searching (this can take awhile)...</source>
         <translation>Suche (das kann eine Weile dauern)...</translation>
-    </message>
-    <message>
-        <source>&amp;Email</source>
-        <translation type="obsolete">&amp;eMail</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="393"/>
@@ -5226,10 +2580,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="407"/>
         <source>Search failed.</source>
         <translation>Suche fehlgeschlagen.</translation>
-    </message>
-    <message>
-        <source>A&amp;lert User</source>
-        <translation type="obsolete">Benachrichtige User</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="427"/>
@@ -5452,42 +2802,11 @@ After you are online, you can send your personal details to the server.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::SearchUserView</name>
-    <message>
-        <source>UIN</source>
-        <translation type="obsolete">UIN</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Alias</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">eMail</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::SecurityDlg</name>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="170"/>
         <source>error</source>
         <translation>Fehler</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...]</source>
-        <translation type="obsolete">Setze ICQ Sicherheits-Optionen...</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options</source>
-        <translation type="obsolete">ICQ Sicherheits-Optionen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="114"/>
@@ -5507,62 +2826,14 @@ um die Einstellungen zu ändern.</translation>
         <translation>Optionen</translation>
     </message>
     <message>
-        <source>Web presence allows users to see if you are online through your web indicator.</source>
-        <translation type="obsolete">Web Präsenz erlaubt es anderen Nutzern über den Web-Indikator festzustellen, ob Sie online sind.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="160"/>
         <source>failed</source>
         <translation>fehlgeschlagen</translation>
     </message>
     <message>
-        <source>Hiding ip stops users from seeing your ip.</source>
-        <translation type="obsolete">Andere User können Ihre IP nicht mehr sehen.</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Authorisierung benötigt</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Abbruch</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="89"/>
         <source>&amp;Update</source>
         <translation>Auffrischen</translation>
-    </message>
-    <message>
-        <source>Web Presence</source>
-        <translation type="obsolete">Web Präsenz</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...</source>
-        <translation type="obsolete">Setze ICQ Sicherheits-Optionen...</translation>
-    </message>
-    <message>
-        <source>Determines whether regular ICQ clients require your authorization to add you to their contact list.</source>
-        <translation type="obsolete">Bestimmt, ob normale ICQ Clients Ihre Authorisierung benötigen, um Sie zu ihrer Kontaktliste hinzuzufügen.</translation>
-    </message>
-    <message>
-        <source>Hide IP</source>
-        <translation type="obsolete">IP Verstecken</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Passwort:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Tragen Sie hier Ihr ICQ Passwort ein.</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Geben Sie hier Ihr ICQ Passwort erneut ein.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Passworte stimmen nicht überein. Versuchen Sie es erneut.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="161"/>
@@ -5578,10 +2849,6 @@ um die Einstellungen zu ändern.</translation>
         <location filename="../src/dialogs/securitydlg.cpp" line="171"/>
         <source>Internal error while setting security options.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;erneut:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="72"/>
@@ -5936,10 +3203,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Das Kommando, um eine URL anzuzeigen. Die URL wird als Parameter übergeben.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="198"/>
         <location filename="../src/settings/chat.cpp" line="202"/>
         <source>Terminal:</source>
@@ -6180,10 +3443,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Boxen um jedes Rechteck der User-Liste zeichnen</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="81"/>
         <source>Show column headers</source>
         <translation type="unfinished"></translation>
@@ -6392,10 +3651,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <location filename="../src/settings/contactlist.cpp" line="225"/>
         <source>Title</source>
         <translation type="unfinished">Titel</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Die Zeichenkette, die im Kopf der List-Box erscheint</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="228"/>
@@ -6758,10 +4013,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Kommando, daß ausgeführt werden soll, wenn ein Ereignis auftritt.&lt;br&gt;Die unten stehenden Parameter werden übergeben.&lt;br&gt;Parameter können folgende Ausdrücke enthalten,&lt;br&gt;die durch die jeweilige Information ersetzt werden:&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="177"/>
         <source>Parameters</source>
         <translation type="unfinished">Parameter</translation>
@@ -7033,14 +4284,6 @@ Works with many different window managers.</source>
         <location filename="../src/settings/general.cpp" line="139"/>
         <source>Used in message editor etc.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">standard (%1)</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">Standard</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="94"/>
@@ -7797,10 +5040,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
 <context>
     <name>LicqQtGui::ShowAwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="147"/>
         <source>error</source>
         <translation>Fehler</translation>
@@ -7829,49 +5068,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="135"/>
         <source>refused</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">Fertig</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="obsolete">&amp;Editieren</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
-    </message>
-    <message>
-        <source>Icons</source>
-        <translation type="obsolete">Icons</translation>
-    </message>
-    <message>
-        <source>Skins</source>
-        <translation type="obsolete">Skins</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">Übernehmen</translation>
-    </message>
-    <message>
-        <source>A&amp;pply</source>
-        <translation type="obsolete">Übernehmen</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">Licq Skin-Browser</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Sistem</translation>
     </message>
 </context>
 <context>
@@ -7966,17 +5162,9 @@ reset your statistics?</source>
         <translation type="unfinished">Tümünü temizle</translation>
     </message>
     <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Sistem Fonksiyonları</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Kişi fonksiyonları</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="99"/>
@@ -8059,38 +5247,6 @@ reset your statistics?</source>
         <translation type="unfinished">Durum</translation>
     </message>
     <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Bağlı</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Uzaktayım</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Uygun Değil</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Çalışıyor</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">Rahatsız Etme</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Sohbete Hazır</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">Bağlı değil</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Görünmes</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>&amp;Group</source>
         <translation type="unfinished">&amp;Grup</translation>
@@ -8139,14 +5295,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="203"/>
         <source>&amp;Thread Group View</source>
         <translation type="unfinished">Grup görüntüsü</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Seçenekler...</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">Görünüm ara</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="208"/>
@@ -8216,55 +5364,9 @@ reset your statistics?</source>
         <source>View &amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Bağlı</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Uzaktayım</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Uygun Değil</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Çalışıyor</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">Rahatsız Etme</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Sohbete Hazır</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">Bağlı değil</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Görünmes</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Dock Theme Datei kann nicht geladen werden
-(%1)
-:%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Dock Theme Bild kann nicht geladen werden
-%1</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="77"/>
         <source>Unable to load dock theme file:
@@ -8473,30 +5575,10 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::UserEventCommon</name>
     <message>
-        <source>Time:</source>
-        <translation type="obsolete">Zeit:</translation>
-    </message>
-    <message>
-        <source>Show User Info</source>
-        <translation type="obsolete">Zeige User-Info</translation>
-    </message>
-    <message>
-        <source>Secure channel information</source>
-        <translation type="obsolete">Informationen über sicheren Kanal</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="117"/>
         <location filename="../src/userevents/usereventcommon.cpp" line="295"/>
         <source>Unknown</source>
         <translation>unbekannt</translation>
-    </message>
-    <message>
-        <source>Show User History</source>
-        <translation type="obsolete">Zeige User-Verlauf</translation>
     </message>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="256"/>
@@ -8565,299 +5647,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventtabdlg.cpp" line="176"/>
         <source>[UNKNOWN_USER]</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::UserInfoDlg</name>
-    <message>
-        <source>to</source>
-        <translation type="obsolete">ilgili</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>IP:</source>
-        <translation type="obsolete">IP:</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation type="obsolete">Jetzt</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation type="obsolete">Alter:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation type="obsolete">Fax:</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation type="obsolete">Männlich</translation>
-    </message>
-    <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation type="obsolete">PLZ:</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
-        <source>from</source>
-        <translation type="obsolete">..dan</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation type="obsolete">Tag:</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menu</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation type="obsolete">Me&amp;hr</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Speichern</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation type="obsolete">&amp;Arbeit</translation>
-    </message>
-    <message>
-        <source>&amp;Filter: </source>
-        <translation type="obsolete">&amp;Filter: </translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation type="obsolete">Stadt:</translation>
-    </message>
-    <message>
-        <source>P&amp;rev</source>
-        <translation type="obsolete">Vorher</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Name:</translation>
-    </message>
-    <message>
-        <source>Nex&amp;t</source>
-        <translation type="obsolete">Nächster</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Update local or server information?</source>
-        <translation type="obsolete">Lokale oder Server information aktualisieren?</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation type="obsolete">Ändere Information auf dem Server...</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation type="obsolete">Jahr:</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">&amp;Über</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;chließen</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation type="obsolete">eMail 1:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation type="obsolete">eMail 2:</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">Zaman aştı</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation type="obsolete">Homepage:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation type="obsolete">Zeitzone:</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation type="obsolete">Über:</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation type="obsolete">Alias:</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation type="obsolete">Alte eMail:</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation type="obsolete">Weiblich</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation type="obsolete">Monat:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation type="obsolete">Telefon:</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="obsolete">Server</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation type="obsolete">Bundesstaat:</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation type="obsolete">Authorisierung nicht benötigt</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Empfangen&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Gesendet&lt;/font&gt;] %3 von %4 Übereinstimmungen</translation>
-    </message>
-    <message>
-        <source>Online:</source>
-        <translation type="obsolete">Online:</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Empfangen&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Gesendet&lt;/font&gt;] %3 bis %4 von %5</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">Land:</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">başarısız</translation>
-    </message>
-    <message>
-        <source>server</source>
-        <translation type="obsolete">Sunucu</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Authorisierung benötigt</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation type="obsolete">Geburtstag:</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation type="obsolete">Unbekannt (%1)</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation type="obsolete">Abteilung:</translation>
-    </message>
-    <message>
-        <source>Sorry, history is disabled for this person.</source>
-        <translation type="obsolete">Verlauf ist für diese Person ausgeschaltet.</translation>
-    </message>
-    <message>
-        <source>Licq - Info </source>
-        <translation type="obsolete">Licq - Info </translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation type="obsolete">Adresse:</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation type="obsolete">Ändern...</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation type="obsolete">Sprache 3:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation type="obsolete">Sprache 1:</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation type="obsolete">Sprache 2:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation type="obsolete">Nicht angegeben</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">&amp;Erneuern</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Unbekannt</translation>
-    </message>
-    <message>
-        <source>Rever&amp;se</source>
-        <translation type="obsolete">Umkehren</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation type="obsolete">Geschlecht:</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">A&amp;llgemein</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">&amp;Verlauf</translation>
-    </message>
-    <message>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation type="obsolete">Fehler beim laden der Verlaufs-Datei: %1
-Beschreibung: %2</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Açıklama:</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(hiçbirşey)</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Nicht verfügbar</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Temizle</translation>
     </message>
 </context>
 <context>
@@ -9084,10 +5873,6 @@ Beschreibung: %2</translation>
 to your ignore list?</source>
         <translation type="unfinished">%1 kişisini (%2)
  umursanmayanlar listesine almak istediğinize emin misiniz?</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Hayır</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="164"/>
@@ -9859,12 +6644,6 @@ Select another picture?</source>
         <translation>Davet et</translation>
     </message>
     <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 ile sohbet isteği reddedildi.:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendchatevent.cpp" line="75"/>
         <source> - Chat Request</source>
         <translation> - Sohbet isteği</translation>
@@ -9885,26 +6664,14 @@ Select another picture?</source>
 <context>
     <name>LicqQtGui::UserSendCommon</name>
     <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1149"/>
         <source>done</source>
         <translation>Tamam</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menü</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="201"/>
@@ -9917,10 +6684,6 @@ Select another picture?</source>
         <location filename="../src/userevents/usersendcommon.cpp" line="1162"/>
         <source>error</source>
         <translation>Hata</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">Kapat</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1159"/>
@@ -9943,10 +6706,6 @@ Select another picture?</source>
         <translation>Dosya Transferi</translation>
     </message>
     <message>
-        <source>%1 refused %2, send through server.</source>
-        <translation type="obsolete">%1  %2 yi reddetti, iletiyi sunucu aracılığı ile gönderin.</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1395"/>
         <source>Drag Users Here
 Right Click for Options</source>
@@ -9967,19 +6726,6 @@ Seçenekler için ters-tıkla</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="1079"/>
         <source>via server</source>
         <translation>Sunucu aracılığı ile</translation>
-    </message>
-    <message>
-        <source>U&amp;rgent</source>
-        <translation type="obsolete">İvedi</translation>
-    </message>
-    <message>
-        <source>Send to
-Contact List</source>
-        <translation type="obsolete">İletişim listesine gönder</translation>
-    </message>
-    <message>
-        <source>partial </source>
-        <translation type="obsolete">Kısmen </translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1205"/>
@@ -10007,19 +6753,6 @@ sunucu aracılığı ile gönderiyor musunuz?</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="148"/>
         <source>Contact List</source>
         <translation>İletişim listesi</translation>
-    </message>
-    <message>
-        <source>Send
-Urgent</source>
-        <translation type="obsolete">İvedi gönder</translation>
-    </message>
-    <message>
-        <source>M&amp;ultiple recipients</source>
-        <translation type="obsolete">Çoklu ileti</translation>
-    </message>
-    <message>
-        <source>Se&amp;nd through server</source>
-        <translation type="obsolete">Sunucu aracılığı ile gönder</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="149"/>
@@ -10164,12 +6897,6 @@ Send anyway?</source>
         <translation> - Transfer Detayı</translation>
     </message>
     <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">%2, transferi reddetti:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendfileevent.cpp" line="162"/>
         <location filename="../src/userevents/usersendfileevent.cpp" line="164"/>
         <source>Select files to send</source>
@@ -10201,14 +6928,6 @@ Send anyway?</source>
 </context>
 <context>
     <name>LicqQtGui::UserSendMsgEvent</name>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Hayır</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Evet</translation>
-    </message>
     <message>
         <location filename="../src/userevents/usersendmsgevent.cpp" line="58"/>
         <source> - Message</source>
@@ -10245,10 +6964,6 @@ Göndermek istediğinizden emin misiniz?</translation>
 Do you really want to send it?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Hayır</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::UserSendUrlEvent</name>
@@ -10279,10 +6994,6 @@ Do you really want to send it?</source>
         <location filename="../src/userevents/userviewevent.cpp" line="720"/>
         <source>&amp;Join</source>
         <translation>&amp;Katıl</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menü</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="742"/>
@@ -10353,10 +7064,6 @@ Request was cancelled.</source>
         <translation>
 --------------------
 İstek iptal edildi.</translation>
-    </message>
-    <message>
-        <source>View URL failed</source>
-        <translation type="obsolete">URL-Bakışı başarısız</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="752"/>
@@ -10495,24 +7202,7 @@ Request was cancelled.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::WharfIcon</name>
-    <message>
-        <source>Left click - Show main window
-Middle click - Show next message
-Right click - System menu</source>
-        <translation type="obsolete">Düz tıkla - Ana pencereyi gösterOrta tuşu tıkla - Sonraki mesajı gösterTers tıkla - Sistem menüsü</translation>
-    </message>
-</context>
-<context>
     <name>QMessageBox</name>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq Fehler</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq Warnung</translation>
-    </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="63"/>
         <location filename="../src/core/messagebox.cpp" line="68"/>
@@ -10524,10 +7214,6 @@ Right click - System menu</source>
         <location filename="../src/core/messagebox.cpp" line="95"/>
         <source>Licq Question</source>
         <translation>Licq Frage</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq Information</translation>
     </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="78"/>

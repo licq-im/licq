@@ -1,16 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">Padrão KDE</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">nenhum</translation>
-    </message>
-</context>
-<context>
     <name>@default</name>
     <message>
         <source>KDE default</source>
@@ -26,14 +15,6 @@
     <message>
         <source>Licq - Add User</source>
         <translation>Licq - Adicionar Usuário</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">UIN do Novo Usuário:</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">&amp;Alertar Usuário</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -57,10 +38,6 @@
     <message>
         <source>Refuse authorization to %1</source>
         <translation>Recusar autorização para %1</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Autorizar o seguinte usuário (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -484,10 +461,6 @@ Veja a Janela de Rede para detalhes.</translation>
 <context>
     <name>CMMSendDlg</name>
     <message>
-        <source>none</source>
-        <translation type="obsolete">nenhum</translation>
-    </message>
-    <message>
         <source>Sending mass message to %1...</source>
         <translation>Enviando mensagem em massa para %1...</translation>
     </message>
@@ -514,10 +487,6 @@ Veja a Janela de Rede para detalhes.</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Cancelar</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">Padrão KDE</translation>
     </message>
     <message>
         <source>Sending mass list to %1...</source>
@@ -618,16 +587,8 @@ Veja a Janela de Rede para detalhes.</translation>
         <translation>Chat &amp;Aleatório</translation>
     </message>
     <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Erro ao enviar autorização.</translation>
-    </message>
-    <message>
         <source>&amp;Random Chat Group</source>
         <translation>&amp;Grupo de Chat Aleatório</translation>
-    </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;apelido de usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;e-mail&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;primeiro nome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;número telefônico&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip do usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;último nome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# mensagens pendentes&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;nome completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;última vez que esteve online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online desde&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;porta do usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;status completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;status abreviado&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
@@ -648,18 +609,6 @@ Você precisa inicializar o navegador e abrir a URL manualmente.</translation>
     <message>
         <source>Check %1 Response</source>
         <translation>Verificar a Resposta de %1</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Você está registrado atualmente como
-UIN: %1
-Diretório Base: %2
-Re-execute o licq com a opção -b para selecionar um novo
-diretório base e então registrar mais um usário.</translation>
     </message>
     <message>
         <source>Server Group</source>
@@ -712,10 +661,6 @@ diretório base e então registrar mais um usário.</translation>
         <translation>Resposta Automática Personalizada...</translation>
     </message>
     <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Notificação Online</translation>
-    </message>
-    <message>
         <source>Set &amp;Auto Response...</source>
         <translation>Definir Resposta &amp;Automática...</translation>
     </message>
@@ -750,14 +695,6 @@ diretório base e então registrar mais um usário.</translation>
     <message>
         <source>Edit User Group</source>
         <translation>Editar Grupo do Usuário</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Registrado com sucesso,seu número de identificação
-de usuário (UIN) é %1.
-Agora configure suas informações pessoais.</translation>
     </message>
     <message>
         <source>Unknown Packets</source>
@@ -881,12 +818,6 @@ to your ignore list?</source>
         <translation>Atualizar Todos os Usuários</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Dicas de utilização&lt;br&gt;do plugin QT-GUI do Licq&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Mude seu status com um duplo clique no rótulo de status.&lt;/li&gt;&lt;li&gt;Mude sua resposta automática com um duplo clique no rótulo de status.&lt;/li&gt;&lt;li&gt;Visualize mensagens de sistema com um duplo clique no rótulo de mensagem.&lt;/li&gt;&lt;li&gt;Mude grupos clicando com o botão direito.no rótulo de mensagem&lt;/li&gt;&lt;li&gt;Use os seguintes atalhos para a lista de contatos:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Alterna para o modo-mini&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Exibe/Oculta usuários off-line&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Sair&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Esconder&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Visualiza a próxima mensagem&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Visualiza mensagem&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Envia mensagem&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Envia Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Envia solicitação de chat&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Envia arquivo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Checar resposta automática&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Mostrar todas as mensagens&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redesenhar janela de usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Remover o usuário do grupo corrente&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Remover usuário da lista de contatos&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Mantenha o control pressionado enquanto está clicando em fechar na janela de funções para remover o usuário da lista de contatos.&lt;/li&gt;&lt;li&gt;Pressione Ctrl-Enter na maioria das caixas de texto para selecionar &quot;Ok&quot; ou &quot;Aceitar&quot;.   Por exemlpo na aba de envio da janela de funções do usuário.&lt;/li&gt;&lt;li&gt;Aqui está a lista completa de opções % de usuário, que podem ser usadas em &lt;b&gt;parâmetros de AoEvento&lt;/b&gt;, &lt;b&gt;respostas automáticas&lt;/b&gt;, e &lt;b&gt;utilitários&lt;/b&gt;:
-</translation>
-    </message>
-    <message>
         <source>&amp;Redraw User Window</source>
         <translation>&amp;Redesenhar Janela de Usuário</translation>
     </message>
@@ -911,24 +842,8 @@ Veja a Janela de Rede para detalhes.</translation>
         <translation>Aceitar em Ausente</translation>
     </message>
     <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Lista de Invisíveis</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Lista Visível</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Registro falhou. Veja a Janela de Rede para detalhes.</translation>
-    </message>
-    <message>
         <source>Send &amp;Chat Request</source>
         <translation>Enviar Solicitação de &amp;Chat</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Reg&amp;istrar Usuário</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
@@ -937,10 +852,6 @@ Veja a Janela de Rede para detalhes.</translation>
     <message>
         <source>%1 message%2</source>
         <translation>%1 mensagem%2</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Lista de Ignorados</translation>
     </message>
     <message>
         <source>%1: %2
@@ -955,10 +866,6 @@ Veja a Janela de Rede para detalhes.</translation>
     <message>
         <source>Debug Level</source>
         <translation>Nível de Depuração</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Novos Usuários</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1135,20 +1042,12 @@ Duplo clique - Mostrar próxima mensagem</translation>
 %1.</translation>
     </message>
     <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Autorização Concedida.</translation>
-    </message>
-    <message>
         <source>System Functions</source>
         <translation>Funções de Sistema</translation>
     </message>
     <message>
         <source>Edit &amp;Groups</source>
         <translation>Editar &amp;Grupos</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Todos os Usuários</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1514,10 +1413,6 @@ Duplo clique - Mostrar próxima mensagem</translation>
         <translation>dia</translation>
     </message>
     <message>
-        <source>Thai</source>
-        <translation type="obsolete">Tailandês</translation>
-    </message>
-    <message>
         <source> days</source>
         <translation>dias</translation>
     </message>
@@ -1528,30 +1423,6 @@ Duplo clique - Mostrar próxima mensagem</translation>
     <message>
         <source> week</source>
         <translation>semana</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
-    </message>
-    <message>
-        <source>Greek</source>
-        <translation type="obsolete">Grego</translation>
-    </message>
-    <message>
-        <source>Tamil</source>
-        <translation type="obsolete">Tamil</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="obsolete">Cirilico</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Idle: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Resposta Automática:&lt;/u&gt;</translation>
     </message>
     <message>
         <source> hours</source>
@@ -1570,22 +1441,6 @@ Duplo clique - Mostrar próxima mensagem</translation>
         <translation>0 minutos</translation>
     </message>
     <message>
-        <source>Baltic</source>
-        <translation type="obsolete">Báltico</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="obsolete">Arábico</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="obsolete">Hebreu</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="obsolete">Coreano</translation>
-    </message>
-    <message>
         <source>Online</source>
         <translation>Online</translation>
     </message>
@@ -1594,96 +1449,12 @@ Duplo clique - Mostrar próxima mensagem</translation>
         <translation>Offline</translation>
     </message>
     <message>
-        <source>Western European</source>
-        <translation type="obsolete">Europeu (Oeste)</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="obsolete">Esperanto</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;C: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;P: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;O: </translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="obsolete">Centro-europeu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
-    </message>
-    <message>
         <source> minute</source>
         <translation>minuto</translation>
     </message>
     <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Aniversário&amp;nbsp;Hoje!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Japanese</source>
-        <translation type="obsolete">Japonês</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="obsolete">Ucraniano</translation>
-    </message>
-    <message>
         <source>%1 Floaty (%2)</source>
         <translation>%1 Flutuante (%2)</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="obsolete">Chinês</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Resposta&amp;nbsp;Automática&amp;nbsp;Personalizada</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Conexão&amp;nbsp;segura</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="obsolete">Turco</translation>
-    </message>
-    <message>
-        <source>Unicode</source>
-        <translation type="obsolete">Unicode</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="obsolete">Chinês Tradicional</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Logado: </translation>
     </message>
     <message>
         <source>Not In List</source>
@@ -2125,10 +1896,6 @@ Você pode me deixar uma mensagem.</translation>
         <translation>Editar Nome</translation>
     </message>
     <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Definir Novo Usuario</translation>
-    </message>
-    <message>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -2151,28 +1918,8 @@ o grupo &apos;%1&apos;?</translation>
         <translation>sem nome</translation>
     </message>
     <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">O grupo para o qual novos usuários serão automaticamente adicionados. Todos os novos usuários estãrão também no grupo de sistema local Novos Usuários, mas para o armazenamento no servidor serão armazenados no grupo especificado.</translation>
-    </message>
-    <message>
         <source>Save the name of a group being modified.</source>
         <translation>Salva o nome do grupo que está sendo modificado.</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Novo Usuário:</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Definir Padrão</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Padrão:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">O grupo padrão para inicialização.</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -2181,10 +1928,6 @@ o grupo &apos;%1&apos;?</translation>
     <message>
         <source>Shift Down</source>
         <translation>Mover Abaixo</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Todos os Usuários</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -3296,14 +3039,6 @@ Isso provavelmente não funcionará.</translation>
         <translation>AoEvento em Ocupado</translation>
     </message>
     <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">O texto de formato usado para definir o que aparecerá em cada coluna.
-Os seguintes parâmetros podem ser usados:
-</translation>
-    </message>
-    <message>
         <source>Parameter for received system messages</source>
         <translation>Parâmetro para mensagens de sistema recebidas</translation>
     </message>
@@ -3983,30 +3718,10 @@ Agora configure suas informações pessoais.</translation>
         <translation>Habilitado</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation type="obsolete">Configurar</translation>
-    </message>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Carregado</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Descarregar</translation>
-    </message>
-    <message>
         <source>Licq Plugin %1 %2
 </source>
         <translation>Plugin do Licq %1 - %2
 </translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Disponível</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -4015,14 +3730,6 @@ Agora configure suas informações pessoais.</translation>
     <message>
         <source>Description</source>
         <translation>Descrição</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Detalhes</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Desabilitado</translation>
     </message>
     <message>
         <source>Version</source>
@@ -4042,316 +3749,10 @@ Agora configure suas informações pessoais.</translation>
     </message>
 </context>
 <context>
-    <name>QFileDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Não</translation>
-    </message>
-    <message>
-        <source>Dir</source>
-        <translation type="obsolete">Dir</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Sim</translation>
-    </message>
-    <message>
-        <source>Back</source>
-        <translation type="obsolete">Voltar</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Data</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Arquivo</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Abrir</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Salvar</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Tamanho</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">Ordenar</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tipo</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Abrir</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Salvar</translation>
-    </message>
-    <message>
-        <source>ERROR</source>
-        <translation type="obsolete">ERRO</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Erro</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Size</source>
-        <translation type="obsolete">Ordenar por &amp;Tamanho</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Date</source>
-        <translation type="obsolete">Ordenar por &amp;Data</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Name</source>
-        <translation type="obsolete">Ordenar por &amp;Nome</translation>
-    </message>
-    <message>
-        <source>New Folder 1</source>
-        <translation type="obsolete">Nova Pasta 1</translation>
-    </message>
-    <message>
-        <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="obsolete">&lt;qt&gt;Deseja realmente remover %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
-    </message>
-    <message>
-        <source>the directory</source>
-        <translation type="obsolete">o diretório</translation>
-    </message>
-    <message>
-        <source>File &amp;type:</source>
-        <translation type="obsolete">&amp;Tipo do arquivo:</translation>
-    </message>
-    <message>
-        <source>File &amp;name:</source>
-        <translation type="obsolete">&amp;Nome do arquivo:</translation>
-    </message>
-    <message>
-        <source>Delete %1</source>
-        <translation type="obsolete">Remover %1</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <source>R&amp;eload</source>
-        <translation type="obsolete">R&amp;ecarregar</translation>
-    </message>
-    <message>
-        <source>New Folder</source>
-        <translation type="obsolete">Nova Pasta</translation>
-    </message>
-    <message>
-        <source>&amp;Unsorted</source>
-        <translation type="obsolete">&amp;Não Ordenado</translation>
-    </message>
-    <message>
-        <source>Look &amp;in:</source>
-        <translation type="obsolete">Procurar &amp;em:</translation>
-    </message>
-    <message>
-        <source>Preview File Contents</source>
-        <translation type="obsolete">Pré-visualizar Conteúdo do Arquivo</translation>
-    </message>
-    <message>
-        <source>New Folder %1</source>
-        <translation type="obsolete">Nova Pasta %1</translation>
-    </message>
-    <message>
-        <source>Read-write</source>
-        <translation type="obsolete">Leitura-e-escrita</translation>
-    </message>
-    <message>
-        <source>Read-only</source>
-        <translation type="obsolete">Somente-leitura</translation>
-    </message>
-    <message>
-        <source>Find Directory</source>
-        <translation type="obsolete">Encontrar Diretório</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">Atributos</translation>
-    </message>
-    <message>
-        <source>Show &amp;hidden files</source>
-        <translation type="obsolete">Mostrar ar&amp;quivos ocultos</translation>
-    </message>
-    <message>
-        <source>Save as</source>
-        <translation type="obsolete">Salvar como</translation>
-    </message>
-    <message>
-        <source>Inaccessible</source>
-        <translation type="obsolete">Inacessível</translation>
-    </message>
-    <message>
-        <source>%1
-File not found.
-Check path and filename.</source>
-        <translation type="obsolete">%1
-Arquivo não encontrado.
-Verifique o caminho e o nome do arquivo.</translation>
-    </message>
-    <message>
-        <source>List View</source>
-        <translation type="obsolete">Visão em Lista</translation>
-    </message>
-    <message>
-        <source>Special</source>
-        <translation type="obsolete">Especial</translation>
-    </message>
-    <message>
-        <source>Write-only</source>
-        <translation type="obsolete">Somente-escrita</translation>
-    </message>
-    <message>
-        <source>the symlink</source>
-        <translation type="obsolete">o link simbólico</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Remover</translation>
-    </message>
-    <message>
-        <source>All files (*)</source>
-        <translation type="obsolete">Todos os arquivos (*)</translation>
-    </message>
-    <message>
-        <source>Directories</source>
-        <translation type="obsolete">Diretórios</translation>
-    </message>
-    <message>
-        <source>Symlink to Special</source>
-        <translation type="obsolete">Link Simbólico para Especial</translation>
-    </message>
-    <message>
-        <source>&amp;Rename</source>
-        <translation type="obsolete">&amp;Renomear</translation>
-    </message>
-    <message>
-        <source>One directory up</source>
-        <translation type="obsolete">Um diretório acima</translation>
-    </message>
-    <message>
-        <source>Preview File Info</source>
-        <translation type="obsolete">Pré-visualizar Informação do Arquivo</translation>
-    </message>
-    <message>
-        <source>the file</source>
-        <translation type="obsolete">o arquivo</translation>
-    </message>
-    <message>
-        <source>Create New Folder</source>
-        <translation type="obsolete">Criar Nova Pasta</translation>
-    </message>
-    <message>
-        <source>Symlink to File</source>
-        <translation type="obsolete">Link Simbólico para Arquivo</translation>
-    </message>
-    <message>
-        <source>Symlink to Directory</source>
-        <translation type="obsolete">Link Simbólico para Diretório</translation>
-    </message>
-    <message>
-        <source>Detail View</source>
-        <translation type="obsolete">Visualizar Detalhe</translation>
-    </message>
-</context>
-<context>
-    <name>QFontDialog</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;Font</source>
-        <translation type="obsolete">&amp;Fonte</translation>
-    </message>
-    <message>
-        <source>&amp;Size</source>
-        <translation type="obsolete">&amp;Tamanho</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Aplicar</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Fechar</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">&amp;Cor</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Exemplo</translation>
-    </message>
-    <message>
-        <source>Font st&amp;yle</source>
-        <translation type="obsolete">Estilo de &amp;Fonte</translation>
-    </message>
-    <message>
-        <source>Scr&amp;ipt</source>
-        <translation type="obsolete">Scr&amp;ipt</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Selecionar Fonte</translation>
-    </message>
-    <message>
-        <source>&amp;Underline</source>
-        <translation type="obsolete">S&amp;ublinhado</translation>
-    </message>
-    <message>
-        <source>Effects</source>
-        <translation type="obsolete">Efeitos</translation>
-    </message>
-    <message>
-        <source>Stri&amp;keout</source>
-        <translation type="obsolete">Ris&amp;cado</translation>
-    </message>
-</context>
-<context>
     <name>QMessageBox</name>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Erro do Licq</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Alerta do Licq</translation>
-    </message>
     <message>
         <source>Licq Question</source>
         <translation>Questão do Licq</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Informação do Licq</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -4363,121 +3764,34 @@ Verifique o caminho e o nome do arquivo.</translation>
     </message>
 </context>
 <context>
-    <name>QWizard</name>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Ajuda</translation>
-    </message>
-    <message>
-        <source>&lt; Back</source>
-        <translation type="obsolete">&lt; Voltar</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <source>Finish</source>
-        <translation type="obsolete">Finalizar</translation>
-    </message>
-    <message>
-        <source>Next &gt;</source>
-        <translation type="obsolete">Próximo &gt;</translation>
-    </message>
-</context>
-<context>
     <name>RegisterUserDlg</name>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">Uin:</translation>
-    </message>
-    <message>
-        <source>&amp;Save Password</source>
-        <translation type="obsolete">&amp;Salvar Senha</translation>
-    </message>
     <message>
         <source>Please enter your password in both input fields.</source>
         <translation>Por favor digite sua senha em ambos os campos de entrada.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Registrado com sucesso. Agora efetue login e atualize sua informação pessoal.</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
         <translation>Senha inválida, precisa ter entre 1 e 8 caracteres.</translation>
     </message>
     <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Você deve digitar um UIN válido quando está tentando registrar um usuário existente. </translation>
-    </message>
-    <message>
         <source>Now please click &apos;Finish&apos; to start the registration process.</source>
         <translation>Agora clique em &apos;Finalizar&apos; para iniciar o processo de registro.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Registro de Usuário em Andamento...</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
         <translation>Agora pressione o botão &apos;Voltar&apos; e tente novamente.</translation>
     </message>
     <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">&amp;Registrar Usuário Existente</translation>
-    </message>
-    <message>
         <source>The passwords don&apos;t seem to match.</source>
         <translation>As senhas parecem ser diferentes.</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">Registro de UIN - Passo 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">Registro de UIN - Passo 3</translation>
     </message>
     <message>
         <source>Password:</source>
         <translation>Senha:</translation>
     </message>
     <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">UIN Inválido. Tente novamente.</translation>
-    </message>
-    <message>
         <source>Verify:</source>
         <translation>Verificar:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Registro de Usuáriodo Licq</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Bem vindo ao Assistente de Registro.
-
-Você pode registrar um novo usuário aqui, ou configurar  o Licq para usar um UIN existente.
-
-Se você está registrando um novo usuário, escolha uma senha e clique em &quot;Finalizar&quot;.
-Se você já possui um UIN, marqui a opção &quot;Registrar Usuário Existente&quot;,
-digite seu uin e sua senha, e clique em &quot;OK&quot;
-
-Pressione &quot;Próximo&quot; para proceder.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">Registro de UIN</translation>
     </message>
     <message>
         <source>Welcome to the Registration Wizard.
@@ -4564,10 +3878,6 @@ After you are online, you can send your personal details to the server.</source>
     <message>
         <source>&amp;Done</source>
         <translation>Pron&amp;to</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">&amp;Uin#</translation>
     </message>
     <message>
         <source>City:</source>
@@ -5264,10 +4574,6 @@ Definição de ícones &apos;%2&apos; foi desabilitada.</translation>
         <translation>Masculino</translation>
     </message>
     <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
         <source>Zip:</source>
         <translation>Cep:</translation>
     </message>
@@ -5362,10 +4668,6 @@ Rede ICQ para recuperar suas configurações.</translation>
         <translation>Celular:</translation>
     </message>
     <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 para %2</translation>
-    </message>
-    <message>
         <source>EMail 1:</source>
         <translation>E-mail 1:</translation>
     </message>
@@ -5432,10 +4734,6 @@ Rede ICQ para recuperar suas configurações.</translation>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
         <translation>[&lt;font color=&quot;%1&quot;&gt;Recebido&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Enviado&lt;/font&gt;] %3 de %4 encontrados</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
@@ -5534,10 +4832,6 @@ Rede ICQ para mudar suas configurações.</translation>
     <message>
         <source>Rever&amp;se</source>
         <translation>Rever&amp;so</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 de %2</translation>
     </message>
     <message>
         <source>Gender:</source>
@@ -5711,10 +5005,6 @@ Select another picture?</source>
         <translation>Selecionar Usuário do Licq</translation>
     </message>
     <message>
-        <source>%1 (%2)</source>
-        <translation type="obsolete">%1 (%2)</translation>
-    </message>
-    <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Cancelar</translation>
     </message>
@@ -5879,10 +5169,6 @@ através do servidor!</translation>
     <message>
         <source> to Contact List</source>
         <translation>para Lista de Contatos</translation>
-    </message>
-    <message>
-        <source>%1 refused %2, send through server</source>
-        <translation type="obsolete">%1 recusou %2, enviar através do servidor</translation>
     </message>
     <message>
         <source>M&amp;ultiple recipients</source>

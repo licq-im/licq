@@ -2,99 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>@default</name>
-    <message>
-        <source>File(s): </source>
-        <translation type="obsolete">Tiedosto(t): </translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Selaa</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Muokkaa</translation>
-    </message>
-    <message>
-        <source> - File Transfer</source>
-        <translation type="obsolete"> - tiedostonsiirto</translation>
-    </message>
-    <message>
-        <source>Select files to send</source>
-        <translation type="obsolete">Valitse lähetettävät tiedostot</translation>
-    </message>
-    <message>
-        <source>You must specify a file to transfer!</source>
-        <translation type="obsolete">Sinun tulee valita tiedosto joka siirretään!</translation>
-    </message>
-    <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 kieltäytyi vastaanottamasta tiedostoa:
-%3</translation>
-    </message>
-    <message>
-        <source>Multiparty: </source>
-        <translation type="obsolete">Ryhmä: </translation>
-    </message>
-    <message>
-        <source>Invite</source>
-        <translation type="obsolete">Kutsu</translation>
-    </message>
-    <message>
-        <source> - Chat Request</source>
-        <translation type="obsolete"> - chat-pyyntö</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Tyhjennä</translation>
-    </message>
-    <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 kieltäytyi chatistä:
-%3</translation>
-    </message>
-    <message>
-        <source>Drag Users Here - Right Click for Options</source>
-        <translation type="obsolete">Raahaa käyttäjät tähän - valikko oikeasta napista</translation>
-    </message>
-    <message>
-        <source> - Contact List</source>
-        <translation type="obsolete"> - kontaktilista</translation>
-    </message>
-    <message>
-        <source>Phone : </source>
-        <translation type="obsolete">Puhelin : </translation>
-    </message>
-    <message>
-        <source>Chars left : </source>
-        <translation type="obsolete">Kirjaimia jäljellä : </translation>
-    </message>
-    <message>
-        <source> - SMS</source>
-        <translation type="obsolete"> - SMS</translation>
-    </message>
-    <message>
-        <source>You didn&apos;t edit the SMS.
-Do you really want to send it?</source>
-        <translation type="obsolete">Et muokannut SMS:ää.
-Haluatko varmasti lähettää sen?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Kyllä</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;En</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-oletus</translation>
-    </message>
-</context>
-<context>
     <name>Groups</name>
     <message>
         <location filename="../src/helpers/licqstrings.cpp" line="108"/>
@@ -130,17 +37,6 @@ Haluatko varmasti lähettää sen?</translation>
         <location filename="../src/helpers/licqstrings.cpp" line="121"/>
         <source>Unknown</source>
         <translation type="unfinished">Tuntematon</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::</name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-oletus</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">Licq-varoitus</translation>
     </message>
 </context>
 <context>
@@ -189,38 +85,6 @@ Haluatko varmasti lähettää sen?</translation>
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">&amp;Ilmoita käyttäjälle</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Uuden käyttäjän UIN:</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Licq - Add User</source>
-        <translation type="obsolete">Licq - Lisää käyttäjä</translation>
-    </message>
-    <message>
-        <source>New User Id:</source>
-        <translation type="obsolete">Uuden käyttäjän id:</translation>
-    </message>
-    <message>
-        <source>Protocol:</source>
-        <translation type="obsolete">Protokolla:</translation>
-    </message>
-    <message>
-        <source>New User ID:</source>
-        <translation type="obsolete">Uuden käyttäjän ID:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation type="unfinished"></translation>
@@ -249,41 +113,9 @@ Haluatko varmasti lähettää sen?</translation>
 <context>
     <name>LicqQtGui::AuthUserDlg</name>
     <message>
-        <source>Licq - Grant Authorisation</source>
-        <translation type="obsolete">Licq - Myönnä valtuutus</translation>
-    </message>
-    <message>
-        <source>Licq - Refuse Authorisation</source>
-        <translation type="obsolete">Licq - Kiellä valtuutus</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Valtuuta käyttäjä (UIN):</translation>
-    </message>
-    <message>
-        <source>Grant authorization to %1</source>
-        <translation type="obsolete">Myönnä valtuutus käyttäjälle %1</translation>
-    </message>
-    <message>
-        <source>Refuse authorization to %1</source>
-        <translation type="obsolete">Kiellä valtuutus käyttäjältä %1</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="83"/>
         <source>Response</source>
         <translation>Vastaus</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Authorize which user (Id):</source>
-        <translation type="obsolete">Valtuuta käyttäjä (id):</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="49"/>
@@ -316,10 +148,6 @@ Haluatko varmasti lähettää sen?</translation>
 <context>
     <name>LicqQtGui::AwayMsgDlg</name>
     <message>
-        <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias.&lt;br&gt;Examples of popular uses include:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Will replace that line by the current date&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Show a fortune, as a tagline for example&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Run a script, passing the uin and alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Run the same script but ignore the output (for tracking auto response checks or something)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Useless, but shows how you can use shell script.&lt;/li&gt;&lt;/ul&gt;Of course, multiple &quot;|&quot; can appear in the auto response, and commands and regular text can be mixed line by line.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;Vinkkejä automaattisen&lt;br&gt;vastauksesi asettamiseen&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Voit käyttää mitä tahansa % laajennuksesta (laajennukset kuvailtu päävinkkisivulla).&lt;/li&gt;&lt;li&gt;Rivin alkaessa putkimerkillä (|) se ymmärretään komennoksi. Rivin sisältö korvataan komennon tuottamalla tulostuksella. Komennon käsittelee /bin/sh, joten komennossa voi käyttää konsolikäskyjä ja erikoismerkkejä. Turvallisuussyistä mikä tahansa % laajennuksesta annetaan komennolle parametriksi heittomerkkien sisällä, jottei konsoli käsittele käyttäjänimessä olevia erikoismerkkejä.&lt;br&gt;Yleisiä esimerkkejä:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Korvaa rivin sen hetkisellä päivämäärällä&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Näyttää onnenkeksin, esimerkiksi viimeiseksi riviksi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Ajaa skriptin antaen parametreiksi uin-numeron ja käyttäjänimen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Ajaa saman skriptin, mutta ei tulosta mitään (esimerkiksi automaattisen vastauksen kyselijöiden jäljittämiseen)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Hyödytön, mutta esimerkiksi näin voit käyttää konsoliskriptejä.&lt;/li&gt;&lt;/ul&gt;Monta &quot;|&quot;-merkkiä voi tietysti olla samaan aikaan yhdessä automaattisessa vastauksessa ja komentoja sekä normaalia tekstiä voi kirjoittaa monelle riville.&lt;/li&gt;&lt;hr&gt;&lt;p&gt;Katso lisää tietoa Licq:n WWW-sivulta (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="97"/>
         <source>&amp;Select</source>
         <translation>&amp;Valitse</translation>
@@ -328,14 +156,6 @@ Haluatko varmasti lähettää sen?</translation>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="96"/>
         <source>&amp;Hints</source>
         <translation>&amp;Vinkit</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="165"/>
@@ -365,1628 +185,6 @@ Voit jättää minulle viestin.
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="201"/>
         <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias.&lt;br&gt;Examples of popular uses include:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Will replace that line by the current date&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Show a fortune, as a tagline for example&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Run a script, passing the uin and alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Run the same script but ignore the output (for tracking auto response checks or something)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Useless, but shows how you can use shell script.&lt;/li&gt;&lt;/ul&gt;Of course, multiple &quot;|&quot; can appear in the auto response, and commands and regular text can be mixed line by line.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactBar</name>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactList</name>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Muut käyttäjät</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Syntymäpäivä&amp;nbsp; tänään!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbps;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="obsolete">&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Päällä</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Suojattu&amp;nbsp;yhteys</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Oma&amp;nbsp;automaattinen&amp;nbsp;vastaus</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automaattinen vastaus:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;S: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;P: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;O: </translation>
-    </message>
-    <message>
-        <source> weeks</source>
-        <translation type="obsolete"> viikkoa</translation>
-    </message>
-    <message>
-        <source> week</source>
-        <translation type="obsolete"> viikko</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete"> päivää</translation>
-    </message>
-    <message>
-        <source> day</source>
-        <translation type="obsolete"> päivä</translation>
-    </message>
-    <message>
-        <source> hours</source>
-        <translation type="obsolete"> tuntia</translation>
-    </message>
-    <message>
-        <source> hour</source>
-        <translation type="obsolete"> tunti</translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation type="obsolete"> minuuttia</translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation type="obsolete"> minuutti</translation>
-    </message>
-    <message>
-        <source>0 minutes</source>
-        <translation type="obsolete">0 minuuttia</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Kirjautunut: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ollut poissa: </translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEditFileListDlg</name>
-    <message>
-        <source>Licq - Files to send</source>
-        <translation type="obsolete">Licq - lähetettävät tiedostot</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">&amp;Valmis</translation>
-    </message>
-    <message>
-        <source>&amp;Up</source>
-        <translation type="obsolete">&amp;Ylös</translation>
-    </message>
-    <message>
-        <source>&amp;Down</source>
-        <translation type="obsolete">&amp;Alas</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Poista</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFileDlg</name>
-    <message>
-        <source>Licq - File Transfer (%1)</source>
-        <translation type="obsolete">Licq - Tiedostonsiirto (%1)</translation>
-    </message>
-    <message>
-        <source>Current:</source>
-        <translation type="obsolete">Tällä hetkellä:</translation>
-    </message>
-    <message>
-        <source>File name:</source>
-        <translation type="obsolete">Tiedostonimi:</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="obsolete">Tiedosto:</translation>
-    </message>
-    <message>
-        <source>Batch:</source>
-        <translation type="obsolete">Sarja:</translation>
-    </message>
-    <message>
-        <source>Time:</source>
-        <translation type="obsolete">Aika:</translation>
-    </message>
-    <message>
-        <source>ETA:</source>
-        <translation type="obsolete">Arvioitu jäljellä oleva aika:</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel Transfer</source>
-        <translation type="obsolete">&amp;Peruuta siirto</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled.</source>
-        <translation type="obsolete">Tiedostonsiirto peruutettu.</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Sulje</translation>
-    </message>
-    <message>
-        <source>%1/%2</source>
-        <translation type="obsolete">%1/%2</translation>
-    </message>
-    <message>
-        <source>Waiting for connection...</source>
-        <translation type="obsolete">Odotetaan yhteyttä...</translation>
-    </message>
-    <message>
-        <source>Receiving file...</source>
-        <translation type="obsolete">Tiedostoa vastaanotetaan...</translation>
-    </message>
-    <message>
-        <source>Sending file...</source>
-        <translation type="obsolete">Lähetetään tiedostoa...</translation>
-    </message>
-    <message>
-        <source>Received %1 from %2 successfully.</source>
-        <translation type="obsolete">Tiedoston %1 vastaanotto käyttäjältä %2 onnistui.</translation>
-    </message>
-    <message>
-        <source>Sent %1 to %2 successfully.</source>
-        <translation type="obsolete">Tiedoston %1 lähetys käyttäjälle %2 onnistui.</translation>
-    </message>
-    <message>
-        <source>File transfer complete.</source>
-        <translation type="obsolete">Tiedostonsiirto valmis.</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected.</source>
-        <translation type="obsolete">Vastapää sulki yhteyden.</translation>
-    </message>
-    <message>
-        <source>File I/O error: %1.</source>
-        <translation type="obsolete">Tiedosto-I/O-virhe: %1.</translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-
-See Network Window for details.</source>
-        <translation type="obsolete">Tiedosto-I/O-virhe:
-%1
-
-Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Handshaking error.
-</source>
-        <translation type="obsolete">Kättelyvirhe.
-</translation>
-    </message>
-    <message>
-        <source>Handshake Error.
-See Network Window for details.</source>
-        <translation type="obsolete">Kättelyvirhe.
-Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Connection error.
-</source>
-        <translation type="obsolete">Yhteysvirhe.
-</translation>
-    </message>
-    <message>
-        <source>Unable to reach remote host.
-See Network Window for details.</source>
-        <translation type="obsolete">Vastapäähän ei saada yhteyttä.
-Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Bind error.
-</source>
-        <translation type="obsolete">Sitomisvirhe.
-</translation>
-    </message>
-    <message>
-        <source>Unable to bind to a port.
-See Network Window for details.</source>
-        <translation type="obsolete">Porttia ei voida sitoa.
-Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Not enough resources.
-</source>
-        <translation type="obsolete">Resursseja ei tarpeeksi.
-</translation>
-    </message>
-    <message>
-        <source>Unable to create a thread.
-See Network Window for details.</source>
-        <translation type="obsolete">Säiettä ei voida luoda.
-Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Connecting to remote...</source>
-        <translation type="obsolete">Yhdistetään vastapäähän...</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">Mt</translation>
-    </message>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">kt</translation>
-    </message>
-    <message>
-        <source>Bytes</source>
-        <translation type="obsolete">tavua</translation>
-    </message>
-    <message>
-        <source>Byte</source>
-        <translation type="obsolete">tavu</translation>
-    </message>
-    <message>
-        <source>File already exists and is at least as big as the incoming file.</source>
-        <translation type="obsolete">Tiedosto on jo olemassa ja sen koko on yhtä suuri tai suurempi kuin vastaanotettavan tiedoston koko.</translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="obsolete">Ylikirjoita</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Peruuta</translation>
-    </message>
-    <message>
-        <source>File already exists and appears incomplete.</source>
-        <translation type="obsolete">Tiedosto on jo olemassa, mutta se ei näytä tulleen kokonaan.</translation>
-    </message>
-    <message>
-        <source>Resume</source>
-        <translation type="obsolete">Jatka</translation>
-    </message>
-    <message>
-        <source>Open error - unable to open file for writing.</source>
-        <translation type="obsolete">Avausvirhe - tiedostoa ei voida avata kirjoitusta varten.</translation>
-    </message>
-    <message>
-        <source>Retry</source>
-        <translation type="obsolete">Yritä uudelleen</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Avaa</translation>
-    </message>
-    <message>
-        <source>O&amp;pen Dir</source>
-        <translation type="obsolete">Avaa &amp;hakemisto</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFloatyView</name>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 kelluva (%2)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CForwardDlg</name>
-    <message>
-        <source>Message</source>
-        <translation type="obsolete">Viesti</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Unable to forward this message type (%d).</source>
-        <translation type="obsolete">Tätä viestityyppiä (%d) ei voida jatkolähettää.</translation>
-    </message>
-    <message>
-        <source>Forward %1 To User</source>
-        <translation type="obsolete">Jatkolähetä %1 käyttäjälle</translation>
-    </message>
-    <message>
-        <source>Drag the user to forward to here:</source>
-        <translation type="obsolete">Raahaa hiirellä tähän käyttäjä, jolle jatkolähetetään:</translation>
-    </message>
-    <message>
-        <source>&amp;Forward</source>
-        <translation type="obsolete">&amp;Jatkolähetä</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Forwarded message:
-</source>
-        <translation type="obsolete">Jatkolähetetty viesti:
-</translation>
-    </message>
-    <message>
-        <source>Forwarded URL:
-</source>
-        <translation type="obsolete">Jatkolähetetty URL:
-</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CJoinChatDlg</name>
-    <message>
-        <source>Select chat to invite:</source>
-        <translation type="obsolete">Valitse keskustelu, johon kutsutaan:</translation>
-    </message>
-    <message>
-        <source>Invite to Join Chat</source>
-        <translation type="obsolete">Kutsu keskusteluun</translation>
-    </message>
-    <message>
-        <source>&amp;Invite</source>
-        <translation type="obsolete">&amp;Kutsu</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Select chat to join:</source>
-        <translation type="obsolete">Valitse keskustelu johon haluat liittyä:</translation>
-    </message>
-    <message>
-        <source>Join Multiparty Chat</source>
-        <translation type="obsolete">Liity keskusteluun</translation>
-    </message>
-    <message>
-        <source>&amp;Join</source>
-        <translation type="obsolete">&amp;Liity</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CLicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq-tiedot</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq-varoitus</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMSendDlg</name>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Message</source>
-        <translation type="obsolete">Massaviesti</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient URL</source>
-        <translation type="obsolete">URLin massalähetys</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Contact List</source>
-        <translation type="obsolete">Kontaktilistan massalähetys</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">epäonnistui</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Sulje</translation>
-    </message>
-    <message>
-        <source>Sending mass message to %1...</source>
-        <translation type="obsolete">Massaviestiä lähetetään käyttäjälle %1...</translation>
-    </message>
-    <message>
-        <source>Sending mass URL to %1...</source>
-        <translation type="obsolete">Massa-URLia lähetetään käyttäjälle %1...</translation>
-    </message>
-    <message>
-        <source>Sending mass list to %1...</source>
-        <translation type="obsolete">Massalistaa lähetetään käyttäjälle %1...</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMUserView</name>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Poista</translation>
-    </message>
-    <message>
-        <source>Crop</source>
-        <translation type="obsolete">Rajaa</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Tyhjennä</translation>
-    </message>
-    <message>
-        <source>Add Group</source>
-        <translation type="obsolete">Lisää ryhmä</translation>
-    </message>
-    <message>
-        <source>Add All</source>
-        <translation type="obsolete">Lisää kaikki</translation>
-    </message>
-    <message>
-        <source>Drag&apos;n&apos;Drop didn&apos;t work</source>
-        <translation type="obsolete">Raahaa-ja-tiputa ei toiminut</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMainWindow</name>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;käyttäjänimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;sähköposti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;etunimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;puhelinnumero&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;käyttäjän ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;sukunimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# odottavaa viestiä&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;koko nimi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;viimeksi nähty onlinessa&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;ollut onlinessa # lähtien&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;käyttäjän portti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;tila kokonaisuudessaan&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;tila lyhennettynä&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webbisivu&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Järjestelmä</translation>
-    </message>
-    <message>
-        <source>&amp;System</source>
-        <translation type="obsolete">&amp;Järjestelmä</translation>
-    </message>
-    <message>
-        <source>Right click - User groups
-Double click - Show next message</source>
-        <translation type="obsolete">Oikea nappi - Käyttäjäryhmät
-Tuplaklikkaus - Näytä seuraava viesti</translation>
-    </message>
-    <message>
-        <source>Right click - Status menu
-Double click - Set auto response</source>
-        <translation type="obsolete">Oikea nappi - Tilavalikko
-Tuplaklikkaus - Automaattisen vastauksen asetus</translation>
-    </message>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Muut käyttäjät</translation>
-    </message>
-    <message>
-        <source>SysMsg</source>
-        <translation type="obsolete">JärjViesti</translation>
-    </message>
-    <message>
-        <source>System Message</source>
-        <translation type="obsolete">Järjestelmäviesti</translation>
-    </message>
-    <message>
-        <source>%1 msg%2</source>
-        <translation type="obsolete">%1 vst:%2</translation>
-    </message>
-    <message>
-        <source>s</source>
-        <translation type="obsolete">ä</translation>
-    </message>
-    <message>
-        <source>%1 message%2</source>
-        <translation type="obsolete">%1 viesti%2</translation>
-    </message>
-    <message>
-        <source>No msgs</source>
-        <translation type="obsolete">Ei vst</translation>
-    </message>
-    <message>
-        <source>No messages</source>
-        <translation type="obsolete">Ei viestejä</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Kaikki</translation>
-    </message>
-    <message>
-        <source>Server Group</source>
-        <translation type="obsolete">Palvelinryhmä</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Online-huomautus</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Näkyvissä-lista</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Näkymättömissä-lista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Huomiotta-lista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Uudet</translation>
-    </message>
-    <message>
-        <source>Logon failed.
-See network window for details.</source>
-        <translation type="obsolete">Kirjautuminen epäonnistui.
-Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Rekisteröityminen onnistui, käyttäjätunnusnumerosi
-(UIN) on %1.
-Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Virhe valtuutusta lähetettäessä.</translation>
-    </message>
-    <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Valtuutus myönnetty.</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Haluatko varmasti poistaa käyttäjän
-%1 (%2)
-kontaktilistaltasi?</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Peruuta</translation>
-    </message>
-    <message>
-        <source>Do you really want to add
-%1 (%2)
-to your ignore list?</source>
-        <translation type="obsolete">Haluatko varmasti lisätä käyttäjän
-%1 (%2)
-huomiotta-listaasi?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Kyllä</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Ei</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Haluatko varmasti poistaa käyttäjän
-%1 (%2)
-ryhmästä %3?</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Maintainer: Jon Keating
-Contributions by Dirk A. Mueller
-Original Author: Graham Roff
-
-http://www.licq.org
-#licq on irc.freenode.net
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Licq-versio %1%8.
-Qt GUI plugin -versio %2.
-Käännetty: %7
-%6
-Ylläpitäjä: Jon Keating
-Avustukset: Dirk A. Mueller
-Alkuperäinen kehittäjä: Graham Roff
-
-http://www.licq.org
-#licq serverillä irc.freenode.net
-
-%3 (%4)
-%5 kontaktia.</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDE-tuki mukana)</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1.</source>
-        <translation type="obsolete">Laajennusikonitiedostoa %1
-ei voida avata.</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Ikonitiedostoa %1
-ei voida avata.</translation>
-    </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Online</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Poissa</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Ei paikalla</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Va&amp;rattu</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Älä häiritse</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">&amp;Vapaa</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">O&amp;ffline</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Näkymätön</translation>
-    </message>
-    <message>
-        <source>Send &amp;Message</source>
-        <translation type="obsolete">Lähetä &amp;viesti</translation>
-    </message>
-    <message>
-        <source>Send &amp;URL</source>
-        <translation type="obsolete">Lähetä &amp;URL</translation>
-    </message>
-    <message>
-        <source>Send &amp;Chat Request</source>
-        <translation type="obsolete">Lähetä chat-&amp;pyyntö</translation>
-    </message>
-    <message>
-        <source>Send &amp;File Transfer</source>
-        <translation type="obsolete">Lähetä &amp;tiedosto</translation>
-    </message>
-    <message>
-        <source>Send Contact &amp;List</source>
-        <translation type="obsolete">Lähetä &amp;kontakti</translation>
-    </message>
-    <message>
-        <source>Send &amp;Authorization</source>
-        <translation type="obsolete">Lähetä v&amp;altuutus</translation>
-    </message>
-    <message>
-        <source>Send Authorization Re&amp;quest</source>
-        <translation type="obsolete">Lähetä valtuutusp&amp;yyntö</translation>
-    </message>
-    <message>
-        <source>Send &amp;SMS</source>
-        <translation type="obsolete">Lähetä tek&amp;stiviesti</translation>
-    </message>
-    <message>
-        <source>Request &amp;Secure Channel</source>
-        <translation type="obsolete">Pyydä &amp;suojattua yhteyttä</translation>
-    </message>
-    <message>
-        <source>&amp;Info</source>
-        <translation type="obsolete">T&amp;iedot</translation>
-    </message>
-    <message>
-        <source>View &amp;History</source>
-        <translation type="obsolete">Näytä &amp;historia</translation>
-    </message>
-    <message>
-        <source>Status Info</source>
-        <translation type="obsolete">Tilatiedot</translation>
-    </message>
-    <message>
-        <source>Unknown Packets</source>
-        <translation type="obsolete">Tuntemattomat paketit</translation>
-    </message>
-    <message>
-        <source>Errors</source>
-        <translation type="obsolete">Virheet</translation>
-    </message>
-    <message>
-        <source>Warnings</source>
-        <translation type="obsolete">Varoitukset</translation>
-    </message>
-    <message>
-        <source>Packets</source>
-        <translation type="obsolete">Paketit</translation>
-    </message>
-    <message>
-        <source>Set All</source>
-        <translation type="obsolete">Aseta kaikki</translation>
-    </message>
-    <message>
-        <source>Clear All</source>
-        <translation type="obsolete">Tyhjennä kaikki</translation>
-    </message>
-    <message>
-        <source>&amp;View System Messages</source>
-        <translation type="obsolete">Näytä järjestelmä&amp;viestit</translation>
-    </message>
-    <message>
-        <source>&amp;Security/Password Options</source>
-        <translation type="obsolete">Turvallisuus/&amp;salasana-asetukset</translation>
-    </message>
-    <message>
-        <source>&amp;Random Chat Group</source>
-        <translation type="obsolete">SokkoChatin &amp;ryhmä</translation>
-    </message>
-    <message>
-        <source>Debug Level</source>
-        <translation type="obsolete">Debug-taso</translation>
-    </message>
-    <message>
-        <source>&amp;Add User</source>
-        <translation type="obsolete">&amp;Lisää käyttäjä</translation>
-    </message>
-    <message>
-        <source>S&amp;earch for User</source>
-        <translation type="obsolete">&amp;Etsi käyttäjä</translation>
-    </message>
-    <message>
-        <source>A&amp;uthorize User</source>
-        <translation type="obsolete">Valt&amp;uuta käyttäjä</translation>
-    </message>
-    <message>
-        <source>Re&amp;quest Authorization</source>
-        <translation type="obsolete">Pyydä &amp;valtuutusta</translation>
-    </message>
-    <message>
-        <source>R&amp;andom Chat</source>
-        <translation type="obsolete">SokkoCh&amp;at</translation>
-    </message>
-    <message>
-        <source>&amp;Popup All Messages</source>
-        <translation type="obsolete">&amp;Ponnauta kaikki viestit</translation>
-    </message>
-    <message>
-        <source>Edit &amp;Groups</source>
-        <translation type="obsolete">Muokkaa &amp;ryhmiä</translation>
-    </message>
-    <message>
-        <source>Update All Users</source>
-        <translation type="obsolete">Päivitä kaikki käyttäjät</translation>
-    </message>
-    <message>
-        <source>Update Current Group</source>
-        <translation type="obsolete">Päivitä nykyinen ryhmä</translation>
-    </message>
-    <message>
-        <source>&amp;Redraw User Window</source>
-        <translation type="obsolete">Pii&amp;rrä käyttäjäikkuna uudelleen</translation>
-    </message>
-    <message>
-        <source>&amp;Save All Users</source>
-        <translation type="obsolete">&amp;Tallenna kaikki käyttäjät</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Rek&amp;isteröi käyttäjä</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Vinkkejä</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">Tieto&amp;a</translation>
-    </message>
-    <message>
-        <source>&amp;Statistics</source>
-        <translation type="obsolete">Tila&amp;stot</translation>
-    </message>
-    <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Järjestelmätoiminnot</translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Käyttäjätoiminnot</translation>
-    </message>
-    <message>
-        <source>&amp;Status</source>
-        <translation type="obsolete">&amp;Tila</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">&amp;Ryhmä</translation>
-    </message>
-    <message>
-        <source>Set &amp;Auto Response...</source>
-        <translation type="obsolete">&amp;Aseta autom. vastaus...</translation>
-    </message>
-    <message>
-        <source>&amp;Network Window</source>
-        <translation type="obsolete">Verkko&amp;loki</translation>
-    </message>
-    <message>
-        <source>&amp;Mini Mode</source>
-        <translation type="obsolete">&amp;Mini-moodi</translation>
-    </message>
-    <message>
-        <source>Show Offline &amp;Users</source>
-        <translation type="obsolete">Näytä o&amp;ffline-käyttäjät</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">Säikeis&amp;tä ryhmänäkymä</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Asetukset...</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">Ulkoa&amp;suselain...</translation>
-    </message>
-    <message>
-        <source>&amp;Plugin Manager...</source>
-        <translation type="obsolete">&amp;Plugin-hallinta...</translation>
-    </message>
-    <message>
-        <source>Sa&amp;ve Settings</source>
-        <translation type="obsolete">&amp;Tallenna asetukset</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">A&amp;pua</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">&amp;Ulos</translation>
-    </message>
-    <message>
-        <source>Accept in Away</source>
-        <translation type="obsolete">Hyväksy poissa-tilassa</translation>
-    </message>
-    <message>
-        <source>Accept in Not Available</source>
-        <translation type="obsolete">Hyväksy ei paikalla -tilassa</translation>
-    </message>
-    <message>
-        <source>Accept in Occupied</source>
-        <translation type="obsolete">Hyväksy varattu-tilassa</translation>
-    </message>
-    <message>
-        <source>Accept in Do Not Disturb</source>
-        <translation type="obsolete">Hyväksy älä häiritse -tilassa</translation>
-    </message>
-    <message>
-        <source>Auto Accept Files</source>
-        <translation type="obsolete">Vastaanota tiedostot automaattisesti</translation>
-    </message>
-    <message>
-        <source>Auto Accept Chats</source>
-        <translation type="obsolete">Hyväksy chat-pyynnöt automaattisesti</translation>
-    </message>
-    <message>
-        <source>Auto Request Secure</source>
-        <translation type="obsolete">Pyydä suojattua yhteyttä automaattisesti</translation>
-    </message>
-    <message>
-        <source>Use Real Ip (LAN)</source>
-        <translation type="obsolete">Käytä todellista ip:tä (LAN)</translation>
-    </message>
-    <message>
-        <source>Online to User</source>
-        <translation type="obsolete">&quot;Online&quot;:na käyttäjälle</translation>
-    </message>
-    <message>
-        <source>Away to User</source>
-        <translation type="obsolete">&quot;Poissa&quot; käyttäjälle</translation>
-    </message>
-    <message>
-        <source>Not Available to User</source>
-        <translation type="obsolete">&quot;Ei paikalla&quot; käyttäjälle</translation>
-    </message>
-    <message>
-        <source>Occupied to User</source>
-        <translation type="obsolete">&quot;Varattu&quot; käyttäjälle</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb to User</source>
-        <translation type="obsolete">&quot;Älä häiritse&quot; käyttäjälle</translation>
-    </message>
-    <message>
-        <source>&amp;View Event</source>
-        <translation type="obsolete">&amp;Näytä tapahtuma</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation type="obsolete">Lähetä</translation>
-    </message>
-    <message>
-        <source>Misc Modes</source>
-        <translation type="obsolete">Muut tilat</translation>
-    </message>
-    <message>
-        <source>U&amp;tilities</source>
-        <translation type="obsolete">Lisäohjelma&amp;t</translation>
-    </message>
-    <message>
-        <source>Check Auto Response</source>
-        <translation type="obsolete">Katso automaattinen vastaus</translation>
-    </message>
-    <message>
-        <source>Custom Auto Response...</source>
-        <translation type="obsolete">Oma automaattinen vastaus...</translation>
-    </message>
-    <message>
-        <source>Toggle &amp;Floaty</source>
-        <translation type="obsolete">Aseta &amp;kelluvaksi</translation>
-    </message>
-    <message>
-        <source>Edit User Group</source>
-        <translation type="obsolete">Muokkaa käyttäjäryhmää</translation>
-    </message>
-    <message>
-        <source>Remove From List</source>
-        <translation type="obsolete">Poista listalta</translation>
-    </message>
-    <message>
-        <source>Check %1 Response</source>
-        <translation type="obsolete">Katso %1-vastaus</translation>
-    </message>
-    <message>
-        <source>Close &amp;Secure Channel</source>
-        <translation type="obsolete">Katkaise &amp;suojattu yhteys</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Demonitilastot
-(tänään/yhteensä)
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Käynnistysaika %1
-</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Viimeisin nollaus %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Nollaa</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Demonitilastot
-
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Pystyssä päivästä %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Olet tällä hetkellä rekisteröitynyt
-UIN-numerolla %1
-Päähakemisto: %1
-Käynnistä licq uudelleen parametrin -b kanssa,
-jolla voit valita uuden päähakemiston. Tämän jälkeen
-rekisteröi uusi käyttäjä.</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Vinkkejä Licq Qt-GUI Pluginnin&lt;br&gt;käyttöön&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Vaihda tilaasi painamalla hiiren oikeaa nappia tilailmaisimen päällä.&lt;/li&gt;&lt;li&gt;Vaihda automaattista vastaustasi tuplaklikkaamalla tilailmaisinta.&lt;/li&gt;&lt;li&gt;Näytä järjestelmäviestit tuplaklikkaamalla viesti-ilmaisinta.&lt;/li&gt;&lt;li&gt;Vaihda ryhmiä painamalla hiiren oikeaa näppäintä viesti-ilmaisimen päällä.&lt;/li&gt;&lt;li&gt;Käytä seuraavia kontaktilistan pikanäppäimiä:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Aseta mini-moodi (päälle/pois)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Näytä offline-käyttäjät (päälle/pois)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Ulos&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Piilota&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Näytä seuraava viesti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Näytä viesti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Lähetä viesti&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Lähetä URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Lähetä chat-pyyntö&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Lähetä tiedosto&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Näytä automaattinen vastaus&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Ponnauta kaikki viestit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Piirrä käyttäjäikkuna uudelleen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Poista käyttäjä kyseisestä ryhmästä&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Poista käyttäjä kontaktilistalta&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Pidä control-nappia pohjassa sulkiessasi toimintaikkunan poistaaksesi käyttäjän kontaktilistalta.&lt;/li&gt;&lt;li&gt;Paina Ctrl-Enter useimmissa tektsikentissä valitseaksesi &quot;Ok&quot; tai &quot;Hyväksy&quot;, esimerkiksi käyttäjän toimintaikkunan lähetysosassa.&lt;/li&gt;&lt;li&gt;Tässä on täydellinen lista käyttäjän % optioista, joita voi käyttää &lt;b&gt;tapahtumien&lt;/b&gt; parametreissä, &lt;b&gt;automaattisessa vastauksessa&lt;/b&gt; ja &lt;b&gt;lisäohjelmissa&lt;b&gt;:
-</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Lisää tietoa saat Licq:n webbisivulta (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">Licq ei löydä selainohjelmaa sisäisen virheen vuoksi.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq ei voi käynnistää selaintasi ja avata URLia.
-Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
-        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt; on onlinessa</translation>
-    </message>
-    <message>
-        <source>Don&apos;t Show</source>
-        <translation type="obsolete">Älä näytä</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Paikalla</translation>
-    </message>
-    <message>
-        <source>Busy</source>
-        <translation type="obsolete">Varattu</translation>
-    </message>
-    <message>
-        <source>Phone &quot;Follow Me&quot;</source>
-        <translation type="obsolete">Puhelin &quot;seuraa minua&quot;</translation>
-    </message>
-    <message>
-        <source>&amp;Owner Manager</source>
-        <translation type="obsolete">&amp;Omistajan hallinta</translation>
-    </message>
-    <message>
-        <source>Update Info Plugin List</source>
-        <translation type="obsolete">Päivitä info-plugin-lista</translation>
-    </message>
-    <message>
-        <source>Update Status Plugin List</source>
-        <translation type="obsolete">Päivitä tila-plugin-lista</translation>
-    </message>
-    <message>
-        <source>Update Phone &quot;Follow Me&quot; Status</source>
-        <translation type="obsolete">Päivitä Puhelin &quot;seuraa minua&quot; -tila</translation>
-    </message>
-    <message>
-        <source>Update ICQphone Status</source>
-        <translation type="obsolete">Päivitä ICQphone:n tila</translation>
-    </message>
-    <message>
-        <source>Update File Server Status</source>
-        <translation type="obsolete">Päivitä tiedostopalvelimen tila</translation>
-    </message>
-    <message>
-        <source>Do you really want to reset your stats?</source>
-        <translation type="obsolete">Haluatko varmasti nollata tilastotietosi?</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMessageViewWidget</name>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 käyttäjältä %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 käyttäjälle %2</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CQtLogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq Verkkoloki</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Tallenna</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">Tyhj&amp;ennä</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Sulje</translation>
-    </message>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Ei voi avata tiedostoa:
-%1</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Random Chat -haku</translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="obsolete">Et&amp;si</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Yleinen</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romanssi</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Pelit</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Opiskelijat</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">Kaksikymppiset</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">Kolmikymppiset</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">Nelikymppiset</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 ja yli</translation>
-    </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="obsolete">Haetaan naista</translation>
-    </message>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="obsolete">Haetaan miestä</translation>
-    </message>
-    <message>
-        <source>Searching for Random Chat Partner...</source>
-        <translation type="obsolete">Etsitään Random Chatin kumppania...</translation>
-    </message>
-    <message>
-        <source>No random chat user found in that group.</source>
-        <translation type="obsolete">Random Chatin kumppania ei löytynyt tästä ryhmästä.</translation>
-    </message>
-    <message>
-        <source>Random chat search timed out.</source>
-        <translation type="obsolete">Random Chatin haku aikakatkaistiin.</translation>
-    </message>
-    <message>
-        <source>Random chat search had an error.</source>
-        <translation type="obsolete">Random Chatin haussa tapahtui virhe.</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRefuseDlg</name>
-    <message>
-        <source>Refusal message for %1 with </source>
-        <translation type="obsolete">Kieltäytymisviesti käyttäjälle %1 </translation>
-    </message>
-    <message>
-        <source>Refuse</source>
-        <translation type="obsolete">Kieltäydy</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Peruuta</translation>
-    </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 kieltäytyminen</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CSetRandomChatGroupDlg</name>
-    <message>
-        <source>Set Random Chat Group</source>
-        <translation type="obsolete">Aseta Random Chatin ryhmä</translation>
-    </message>
-    <message>
-        <source>&amp;Set</source>
-        <translation type="obsolete">&amp;Aseta</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Sulje</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(ei mitään)</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Yleinen</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romanssi</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Pelit</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Opiskelijat</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">Kaksikymppiset</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">Kolmikymppiset</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">Nelikymppiset</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 ja yli</translation>
-    </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="obsolete">Haetaan naista</translation>
-    </message>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="obsolete">Haetaan miestä</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Setting Random Chat Group...</source>
-        <translation type="obsolete">Asetetaan Random Chatin ryhmää...</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">epäonnistui</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">aikakatkaisu</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">virhe</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">valmis</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CTimeZoneField</name>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Tuntematon</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUserView</name>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 kelluva (%2)</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Syntymäpäivä&amp;nbsp; tänään!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Suojattu&amp;nbsp;yhteys</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Oma&amp;nbsp;automaattinen&amp;nbsp;vastaus</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automaattinen vastaus:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;S: </translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;P: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;O: </translation>
-    </message>
-    <message>
-        <source> weeks</source>
-        <translation type="obsolete"> viikkoa</translation>
-    </message>
-    <message>
-        <source> week</source>
-        <translation type="obsolete"> viikko</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete"> päivää</translation>
-    </message>
-    <message>
-        <source> day</source>
-        <translation type="obsolete"> päivä</translation>
-    </message>
-    <message>
-        <source> hours</source>
-        <translation type="obsolete"> tuntia</translation>
-    </message>
-    <message>
-        <source> hour</source>
-        <translation type="obsolete"> tunti</translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation type="obsolete"> minuuttia</translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation type="obsolete"> minuutti</translation>
-    </message>
-    <message>
-        <source>0 minutes</source>
-        <translation type="obsolete">0 minuuttia</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Kirjautunut: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ollut poissa: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbps;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="obsolete">&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Päällä</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUtilityDlg</name>
-    <message>
-        <source>Licq Utility: %1</source>
-        <translation type="obsolete">Licq-lisäohjelma: %1</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Komento:</translation>
-    </message>
-    <message>
-        <source>Window:</source>
-        <translation type="obsolete">Ikkuna:</translation>
-    </message>
-    <message>
-        <source>GUI</source>
-        <translation type="obsolete">GUI</translation>
-    </message>
-    <message>
-        <source>Terminal</source>
-        <translation type="obsolete">Konsoli</translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation type="obsolete">Sisäinen</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Kuvaus:</translation>
-    </message>
-    <message>
-        <source>Edit final command</source>
-        <translation type="obsolete">Muokkaa lopullista komentoa</translation>
-    </message>
-    <message>
-        <source>User Fields</source>
-        <translation type="obsolete">Käyttäjäkentät</translation>
-    </message>
-    <message>
-        <source>&amp;Run</source>
-        <translation type="obsolete">Suo&amp;rita</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Edit:</source>
-        <translation type="obsolete">Muokkaa:</translation>
-    </message>
-    <message>
-        <source>Running:</source>
-        <translation type="obsolete">Suoritetaan:</translation>
-    </message>
-    <message>
-        <source>Command Window</source>
-        <translation type="obsolete">Komentoikkuna</translation>
-    </message>
-    <message>
-        <source>Failed:</source>
-        <translation type="obsolete">Epäonnistui:</translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation type="obsolete">Valmis</translation>
-    </message>
-    <message>
-        <source>Done:</source>
-        <translation type="obsolete">Valmis:</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">Su&amp;lje</translation>
     </message>
 </context>
 <context>
@@ -2180,14 +378,6 @@ Katso tarkempia tietoja Verkkolokista.</translation>
         <translation>Haluatko tallentaa keskustelun?</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">Kyllä</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">En</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="1022"/>
         <source>Licq - Chat %1</source>
         <translation>Licq - Chat %1</translation>
@@ -2240,97 +430,9 @@ Katso tarkempia tietoja Verkkolokista.</translation>
         <source>Other Users</source>
         <translation type="unfinished">Muut käyttäjät</translation>
     </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Online-huomautus</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Näkyvissä-lista</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Näkymättömissä-lista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Huomiotta-lista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Uudet</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Syntymäpäivä&amp;nbsp; tänään!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbps;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Vapaa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Varattu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="obsolete">&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Päällä</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Suojattu&amp;nbsp;yhteys</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Oma&amp;nbsp;automaattinen&amp;nbsp;vastaus</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automaattinen vastaus:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;S: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;P: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;O: </translation>
-    </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
         <source> weeks</source>
@@ -2375,14 +477,6 @@ Katso tarkempia tietoja Verkkolokista.</translation>
         <location filename="../src/contactlist/contactuserdata.cpp" line="816"/>
         <source>0 minutes</source>
         <translation type="unfinished">0 minuuttia</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Kirjautunut: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ollut poissa: </translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="702"/>
@@ -2516,48 +610,7 @@ Voit jättää minulle viestin.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CustomAwayMsgDlg</name>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Vinkkejä</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Tyhjennä</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Set Custom Auto Response for %1</source>
-        <translation type="obsolete">Aseta oma automaattinen vastaus käyttäjälle %1</translation>
-    </message>
-    <message>
-        <source>I am currently %1.
-You can leave me a message.</source>
-        <translation type="obsolete">Olen tällä hetkellä %1.
-Voit jättää minulle viestin.</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::DockIcon</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;%1 järjestelmäviestiä&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 vstä</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;1 vst</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/dockicon.cpp" line="140"/>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
@@ -2587,14 +640,6 @@ Voit jättää minulle viestin.</translation>
         <translation>Määrittelemätön</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editcategorydlg.cpp" line="56"/>
         <source>Personal Interests</source>
         <translation type="unfinished"></translation>
@@ -2616,14 +661,6 @@ Voit jättää minulle viestin.</translation>
         <location filename="../src/dialogs/editfiledlg.cpp" line="100"/>
         <source>Licq File Editor - %1</source>
         <translation>Licq tiedostoeditori - %1</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Tallenna</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Sulje</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editfiledlg.cpp" line="82"/>
@@ -2717,30 +754,6 @@ Voit jättää minulle viestin.</translation>
         <translation>Muokkaa ryhmän nimeä (tallenna enterillä).</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Aseta oletus</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Oletusryhmä käynnistyessä.</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Aseta uudet käyttäjät</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Ryhmä johon lisätään automaattisesti uudet käyttäjät. Kaikki uudet käyttäjät ovat paikallisessa ryhmässä Uudet, ja ne kuuluvat omaan ryhmään myös palvelimen tietokannassa.</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Oletus:</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Uusi käyttäjä:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="83"/>
         <source>&amp;Save</source>
         <translation>&amp;Tallenna</translation>
@@ -2756,10 +769,6 @@ Voit jättää minulle viestin.</translation>
         <translation>&amp;Valmis</translation>
     </message>
     <message>
-        <source>All Users</source>
-        <translation type="obsolete">Kaikki käyttäjät</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="164"/>
         <source>noname</source>
         <translation>nimetön</translation>
@@ -2770,10 +779,6 @@ Voit jättää minulle viestin.</translation>
 the group &apos;%1&apos;?</source>
         <translation>Haluatko varmasti poistaa
 ryhmän &apos;%1&apos;?</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="167"/>
@@ -3430,17 +1435,9 @@ The key isn&apos;t deleted from your keyring.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="105"/>
         <source>&amp;No Key</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
     </message>
 </context>
 <context>
@@ -3482,10 +1479,6 @@ The key isn&apos;t deleted from your keyring.</source>
         <location filename="../src/dialogs/hintsdlg.cpp" line="39"/>
         <source>Licq - Hints</source>
         <translation>Licq - vinkit</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Sulje</translation>
     </message>
 </context>
 <context>
@@ -3616,14 +1609,6 @@ Kuvaus: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 käyttäjältä %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 käyttäjälle %2</translation>
-    </message>
-    <message>
         <location filename="../src/widgets/historyview.cpp" line="353"/>
         <source>from</source>
         <translation type="unfinished"></translation>
@@ -3632,42 +1617,6 @@ Kuvaus: %2</translation>
         <location filename="../src/widgets/historyview.cpp" line="353"/>
         <source>to</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_KDEStyle</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;%1 järjestelmäviestiä&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 vstä</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;1 vst</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
-        <translation type="obsolete">&lt;br&gt;Vasen nappi - Näytä pääikkuna&lt;br&gt;Keskinappi - Näytä seuraava viesti&lt;br&gt;Oikea nappi - Järjestelmävalikko</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_Themed</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Ei voi ladata telakointiteematiedostoa
-(%1)
-:%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Ei voi ladata telakointiteemakuvaa
-%1</translation>
     </message>
 </context>
 <context>
@@ -3777,10 +1726,6 @@ Tämä luultavasti ei toimi.</translation>
         <translation>&amp;Lähetä</translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Sulje</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="105"/>
         <source>Ready to close channel</source>
         <translation>Valmis sulkemaan suojattu yhteys</translation>
@@ -3806,38 +1751,6 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="143"/>
         <source>Closing secure channel...</source>
         <translation>Suljetaan suojattua yhteyttä...</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel already established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Suojattu yhteys muodostettu.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel not established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Suojattua yhteyttä ei muodostettu.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Remote client does not support OpenSSL.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Vastapää ei tue OpenSSL:ää.&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Could not connect to remote client.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Vastapäähän ei saatu yhteyttä.&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;ForestGreen&quot;&gt;Secure channel established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;ForestGreen&quot;&gt;Suojattu yhteys muodostettu.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;blue&quot;&gt;Secure channel closed.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;blue&quot;&gt;Suojattu yhteys suljettu.&lt;/font&gt;
-</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="169"/>
@@ -3905,14 +1818,6 @@ from your contact list?</source>
 kontaktilistaltasi?</translation>
     </message>
     <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Haluatko varmasti poistaa käyttäjän
-%1 (%2)
-ryhmästä %3?</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="1063"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
@@ -3927,34 +1832,7 @@ Would you like to try loading the old one?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::LicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq-tiedot</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq-varoitus</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::LogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq Verkkoloki</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Tallenna</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">Tyhj&amp;ennä</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
@@ -3995,10 +1873,6 @@ Would you like to try loading the old one?</source>
 </context>
 <context>
     <name>LicqQtGui::MMSendDlg</name>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/mmsenddlg.cpp" line="92"/>
         <source>Multiple Recipient Message</source>
@@ -4071,10 +1945,6 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MainWindow</name>
     <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="188"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
@@ -4107,10 +1977,6 @@ Tuplaklikkaus - Automaattisen vastauksen asetus</translation>
         <location filename="../src/core/mainwin.cpp" line="643"/>
         <source>Error! No owner set</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
-        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt; on onlinessa</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="710"/>
@@ -4160,151 +2026,6 @@ Tuplaklikkaus - Automaattisen vastauksen asetus</translation>
 See network window for details.</source>
         <translation type="unfinished">Kirjautuminen epäonnistui.
 Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Haluatko varmasti poistaa käyttäjän
-%1 (%2)
-kontaktilistaltasi?</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Peruuta</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Haluatko varmasti poistaa käyttäjän
-%1 (%2)
-ryhmästä %3?</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Maintainer: Jon Keating
-Contributions by Dirk A. Mueller
-Original Author: Graham Roff
-
-http://www.licq.org
-#licq on irc.freenode.net
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Licq-versio %1%8.
-Qt GUI plugin -versio %2.
-Käännetty: %7
-%6
-Ylläpitäjä: Jon Keating
-Avustukset: Dirk A. Mueller
-Alkuperäinen kehittäjä: Graham Roff
-
-http://www.licq.org
-#licq serverillä irc.freenode.net
-
-%3 (%4)
-%5 kontaktia.</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(KDE-tuki mukana)</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1.</source>
-        <translation type="obsolete">Laajennusikonitiedostoa %1
-ei voida avata.</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Ikonitiedostoa %1
-ei voida avata.</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Demonitilastot
-(tänään/yhteensä)
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Käynnistysaika %1
-</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Viimeisin nollaus %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Nollaa</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Do you really want to reset your stats?</source>
-        <translation type="obsolete">Haluatko varmasti nollata tilastotietosi?</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Demonitilastot
-
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Pystyssä päivästä %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Lisää tietoa saat Licq:n webbisivulta (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">Licq ei löydä selainohjelmaa sisäisen virheen vuoksi.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq ei voi käynnistää selaintasi ja avata URLia.
-Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="670"/>
@@ -4429,999 +2150,15 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::MsgView</name>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source>Event Type</source>
-        <translation type="obsolete">Tapahtumatyyppi</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Asetukset</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">Kello</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">Suora</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="obsolete">Palvelin</translation>
-    </message>
-    <message>
-        <source>Urgent</source>
-        <translation type="obsolete">Tärkeä</translation>
-    </message>
-    <message>
-        <source>Multiple Recipients</source>
-        <translation type="obsolete">Ryhmälähetys</translation>
-    </message>
-    <message>
-        <source>Cancelled Event</source>
-        <translation type="obsolete">Peruutettu tapahtuma</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::OptionsDlg</name>
-    <message>
-        <source>Licq Options</source>
-        <translation type="obsolete">Licq-asetukset</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Käytä</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Yleiset</translation>
-    </message>
-    <message>
-        <source>Contact List</source>
-        <translation type="obsolete">Kontaktilista</translation>
-    </message>
-    <message>
-        <source>OnEvent</source>
-        <translation type="obsolete">Tapahtumat</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation type="obsolete">Verkko</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Tila</translation>
-    </message>
-    <message>
-        <source>Miscellaneous</source>
-        <translation type="obsolete">Muut</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">ei mitään</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">oletus</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">oletus (%1)</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation type="obsolete">Pääikkuna</translation>
-    </message>
-    <message>
-        <source>Show group name if no messages</source>
-        <translation type="obsolete">Näytä ryhmän nimi, jos ei uusia viestejä</translation>
-    </message>
-    <message>
-        <source>Show the name of the current group in the messages label when there are no new messages</source>
-        <translation type="obsolete">Näytä nykyisen ryhmän nimi viesti-ilmaisimessa, kun uusia viestejä ei ole</translation>
-    </message>
-    <message>
-        <source>Auto Close Function Window</source>
-        <translation type="obsolete">Sulje toimintaikkuna automaattisesti</translation>
-    </message>
-    <message>
-        <source>Auto close the user function window after a succesful event</source>
-        <translation type="obsolete">Sulje käyttäjän toimintaikkuna automaattisesti onnistuneen tapahtuman jälkeen</translation>
-    </message>
-    <message>
-        <source>Auto-Popup Incoming Msg</source>
-        <translation type="obsolete">Ponnauta tulevat viestit automaattisesti</translation>
-    </message>
-    <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Avaa kaikki tulevat viestit automaattisesti jos olemme onlinessa (tai vapaana)</translation>
-    </message>
-    <message>
-        <source>Auto-Raise on Incoming Msg</source>
-        <translation type="obsolete">Nosta ikkuna esiin viestin tullessa</translation>
-    </message>
-    <message>
-        <source>Raise the main window on incoming messages</source>
-        <translation type="obsolete">Nosta pääikkuna esiin viestin tullessa</translation>
-    </message>
-    <message>
-        <source>Start Hidden</source>
-        <translation type="obsolete">Käynnistä piilotettuna</translation>
-    </message>
-    <message>
-        <source>Start main window hidden. Only the dock icon will be visible.</source>
-        <translation type="obsolete">Käynnistä pääikkuna piilotettuna. Ainoastaan telakointi-ikoni on näkyvissä.</translation>
-    </message>
-    <message>
-        <source>Bold Message Label on Incoming Msg</source>
-        <translation type="obsolete">Lihavoi viesti-ilmaisimen teksti viestin tullessa</translation>
-    </message>
-    <message>
-        <source>Show the message info label in bold font if there are incoming messages</source>
-        <translation type="obsolete">Lihavoi viesti-ilmaisimen teksti jos on uusia viestejä</translation>
-    </message>
-    <message>
-        <source>Manual &quot;New User&quot; group handling</source>
-        <translation type="obsolete">Manuaalinen &quot;Uudet käyttäjät&quot; -ryhmän käsittely</translation>
-    </message>
-    <message>
-        <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you first send an event to them</source>
-        <translation type="obsolete">Jos ei ole valittuna, käyttäjä poistetaan automaattisesti &quot;Uudet käyttäjät&quot; -ryhmästä, kun lähetät sille viestin ensimmäistä kertaa</translation>
-    </message>
-    <message>
-        <source>Check Clipboard For Urls/Files</source>
-        <translation type="obsolete">Tarkista, onko leikepöydällä URL:a tai tiedostoja</translation>
-    </message>
-    <message>
-        <source>When double-clicking on a user to send a message check for urls/files in the clipboard</source>
-        <translation type="obsolete">Kun tuplaklikkaat käyttäjää lähettääksesi viestin, tarkista onko leikepöydällä URL:a tai tiedostoja</translation>
-    </message>
-    <message>
-        <source>Auto Position the Reply Window</source>
-        <translation type="obsolete">Sijoita vastausikkuna automaattisesti</translation>
-    </message>
-    <message>
-        <source>Position a new reply window just underneath the message view window</source>
-        <translation type="obsolete">Sijoita uusi vastausikkuna aivan viesti-ikkunan alle</translation>
-    </message>
-    <message>
-        <source>Auto send through server</source>
-        <translation type="obsolete">Lähetä automaattisesti palvelimen kautta</translation>
-    </message>
-    <message>
-        <source>Automatically send messages through the server if direct connection fails</source>
-        <translation type="obsolete">Lähetä viestit automaattisesti palvelimen kautta, jos suoraa yhteyttä ei saada</translation>
-    </message>
-    <message>
-        <source>Allow dragging main window</source>
-        <translation type="obsolete">Salli raahaaminen pääikkunassa</translation>
-    </message>
-    <message>
-        <source>Lets you drag around the main window with your mouse</source>
-        <translation type="obsolete">Antaa sinun raahata hiirellä pääikkunan sisällä</translation>
-    </message>
-    <message>
-        <source>Chatmode Messageview</source>
-        <translation type="obsolete">Chat-tyylinen viestinäkymä</translation>
-    </message>
-    <message>
-        <source>Show the current chat history in Send Window</source>
-        <translation type="obsolete">Näytä keskusteluhistoria lähetysikkunassa</translation>
-    </message>
-    <message>
-        <source>Localization</source>
-        <translation type="obsolete">Lokalisointi</translation>
-    </message>
-    <message>
-        <source>Default Encoding:</source>
-        <translation type="obsolete">Oletusenkoodaus:</translation>
-    </message>
-    <message>
-        <source>Sets which default encoding should be used for newly added contacts.</source>
-        <translation type="obsolete">Asettaa oletusenkoodauksen uusille kontakteille.</translation>
-    </message>
-    <message>
-        <source>System default (%1)</source>
-        <translation type="obsolete">Järjestelmäoletus (%1)</translation>
-    </message>
-    <message>
-        <source>Show all encodings</source>
-        <translation type="obsolete">Näytä kaikki enkoodaukset</translation>
-    </message>
-    <message>
-        <source>Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings.</source>
-        <translation type="obsolete">Näytä kaikki saatavilla olevat enkoodaukset käyttäjän enkoodausvalikossa. Normaalisti tämä valikko näyttää vain tavallisimmat enkoodaukset.</translation>
-    </message>
-    <message>
-        <source>Docking</source>
-        <translation type="obsolete">Telakointi</translation>
-    </message>
-    <message>
-        <source>Use Dock Icon</source>
-        <translation type="obsolete">Käytä telakointi-ikonia</translation>
-    </message>
-    <message>
-        <source>Controls whether or not the dockable icon should be displayed.</source>
-        <translation type="obsolete">Määrää telakointi-ikonin näkyvyyden.</translation>
-    </message>
-    <message>
-        <source>Default Icon</source>
-        <translation type="obsolete">Oletusikoni</translation>
-    </message>
-    <message>
-        <source>64 x 48 Dock Icon</source>
-        <translation type="obsolete">64 x 48 telakointi-ikoni</translation>
-    </message>
-    <message>
-        <source>Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf and a shorter 64x48 icon for use in the Gnome/KDE panel.</source>
-        <translation type="obsolete">Käytetäänkö standardia 64x64 ikonia, jota käytetään WindowMaker/Afterstep:ssä vai pienempää 64x48 ikonia, jota käytetään Gnome/KDE:n palkissa.</translation>
-    </message>
-    <message>
-        <source>Themed Icon</source>
-        <translation type="obsolete">Teemaikoni</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation type="obsolete">Teema:</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Fontti</translation>
-    </message>
-    <message>
-        <source>The fonts used</source>
-        <translation type="obsolete">Käytetyt fontit</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation type="obsolete">Fontti:</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Valitse fontti</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list</source>
-        <translation type="obsolete">Valitse fontti järjestelmälistalta</translation>
-    </message>
-    <message>
-        <source>Edit Font:</source>
-        <translation type="obsolete">Muokkausfontti:</translation>
-    </message>
-    <message>
-        <source>Font used in message editor etc.</source>
-        <translation type="obsolete">Fontti, jota käytetään viestieditorissa jne.</translation>
-    </message>
-    <message>
-        <source>OnEvents Enabled</source>
-        <translation type="obsolete">Tapahtumakomennot päällä</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Komennon suoritus päälle tapahtuman tullessa.</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Komento:</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Komento joka ajetaan tapahtuman tullessa.&lt;br&gt;Sille annetaan tapahtuman mukaan alla olevat parametrit.&lt;br&gt;Parametrit voivat sisältää seuraavia erikoismerkkejä &lt;br&gt; jotka korvataan vastaavalla tiedolla:&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Parametrit</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Viesti:</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Parametri viestin tullessa</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Parametri URL:n tullessa</translation>
-    </message>
-    <message>
-        <source>Chat Request:</source>
-        <translation type="obsolete">Chat-pyyntö:</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Parametri chat-pyynnön tullessa</translation>
-    </message>
-    <message>
-        <source>File Transfer:</source>
-        <translation type="obsolete">Tiedostonsiirto:</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Parametri tiedoston tullessa</translation>
-    </message>
-    <message>
-        <source>Online Notify:</source>
-        <translation type="obsolete">Online-huomautus:</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Parametri online-huomautukseen</translation>
-    </message>
-    <message>
-        <source>System Msg:</source>
-        <translation type="obsolete">Järjestelmäviesti:</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Parametri järjestelmäviestien tullessa</translation>
-    </message>
-    <message>
-        <source>Message Sent:</source>
-        <translation type="obsolete">Viesti lähetetty:</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Parametri viestien lähdettyä</translation>
-    </message>
-    <message>
-        <source>Accept Modes</source>
-        <translation type="obsolete">Hyväksymistilat</translation>
-    </message>
-    <message>
-        <source>OnEvent in Away</source>
-        <translation type="obsolete">Tapahtumakomento &quot;Poissa&quot;-tilassa</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Poissa&quot;-tilassa</translation>
-    </message>
-    <message>
-        <source>OnEvent in N/A</source>
-        <translation type="obsolete">Tapahtumakomento &quot;Ei paikalla&quot; -tilassa</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Ei paikalla&quot; -tilassa</translation>
-    </message>
-    <message>
-        <source>OnEvent in Occupied</source>
-        <translation type="obsolete">Tapahtumakomento &quot;Varattu&quot;-tilassa</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Varattu&quot;-tilassa</translation>
-    </message>
-    <message>
-        <source>OnEvent in DND</source>
-        <translation type="obsolete">Tapahtumakomento &quot;Älä häiritse&quot; -tilassa</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Älä häiritse&quot; -tilassa</translation>
-    </message>
-    <message>
-        <source>Online Notify when Logging On</source>
-        <translation type="obsolete">Online-huomautus kirjauduttaessa sisään</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Aja online-huomautuksen tapahtumakomento kirjauduttaessa sisään (eri käytäntö kuin Mirabiliksen ohjelmassa)</translation>
-    </message>
-    <message>
-        <source>Server settings</source>
-        <translation type="obsolete">Palvelinasetukset</translation>
-    </message>
-    <message>
-        <source>ICQ Server:</source>
-        <translation type="obsolete">ICQ-palvelin:</translation>
-    </message>
-    <message>
-        <source>ICQ Server Port:</source>
-        <translation type="obsolete">ICQ-palvelimen portti:</translation>
-    </message>
-    <message>
-        <source>Firewall</source>
-        <translation type="obsolete">Palomuuri</translation>
-    </message>
-    <message>
-        <source>I am behind a firewall</source>
-        <translation type="obsolete">Olen palomuurin takana</translation>
-    </message>
-    <message>
-        <source>I can receive direct connections</source>
-        <translation type="obsolete">Voin vastaanottaa suoria yhteyksiä</translation>
-    </message>
-    <message>
-        <source>Port Range:</source>
-        <translation type="obsolete">Porttialue:</translation>
-    </message>
-    <message>
-        <source>TCP port range for incoming connections.</source>
-        <translation type="obsolete">TCP-porttialue tuleville yhteyksille.</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="obsolete">Automaattinen</translation>
-    </message>
-    <message>
-        <source>	to</source>
-        <translation type="obsolete">   porttiin</translation>
-    </message>
-    <message>
-        <source>Proxy</source>
-        <translation type="obsolete">Välityspalvelin</translation>
-    </message>
-    <message>
-        <source>Use proxy server</source>
-        <translation type="obsolete">Käytä välityspalvelinta</translation>
-    </message>
-    <message>
-        <source>Proxy Type:</source>
-        <translation type="obsolete">Välityspalvelimen tyyppi:</translation>
-    </message>
-    <message>
-        <source>HTTPS</source>
-        <translation type="obsolete">HTTPS</translation>
-    </message>
-    <message>
-        <source>Proxy Server:</source>
-        <translation type="obsolete">Välityspalvelin:</translation>
-    </message>
-    <message>
-        <source>Proxy Server Port:</source>
-        <translation type="obsolete">Välityspalvelimen portti:</translation>
-    </message>
-    <message>
-        <source>Use authorization</source>
-        <translation type="obsolete">Käytä autentikointia</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation type="obsolete">Käyttäjätunnus:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Salasana:</translation>
-    </message>
-    <message>
-        <source>Default Auto Response Messages</source>
-        <translation type="obsolete">Automaattiset oletusvastaukset</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Tila:</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Poissa</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Ei paikalla</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Kiireinen</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Älä häiritse</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Vapaa</translation>
-    </message>
-    <message>
-        <source>Preset slot:</source>
-        <translation type="obsolete">Valmiit vastaukset:</translation>
-    </message>
-    <message>
-        <source>Text:</source>
-        <translation type="obsolete">Teksti:</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Tallenna</translation>
-    </message>
-    <message>
-        <source>Startup</source>
-        <translation type="obsolete">Käynnistys</translation>
-    </message>
-    <message>
-        <source>Auto Logon:</source>
-        <translation type="obsolete">Automaattinen kirjautuminen:</translation>
-    </message>
-    <message>
-        <source>Automatically log on when first starting up.</source>
-        <translation type="obsolete">Kirjaudu automaattisesti sisään käynnistyksen yhteydessä.</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Vapaa</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Näkymätön</translation>
-    </message>
-    <message>
-        <source>Auto Away:</source>
-        <translation type="obsolete">Automaattisesti poissa:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;away&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Joutoaika minuuteissa, minkä jälkeen sinut siirretään automaattisesti tilaan &quot;poissa&quot;. Laita &quot;0&quot; jos et halua tätä ominaisuutta.</translation>
-    </message>
-    <message>
-        <source>Never</source>
-        <translation type="obsolete">Ei koskaan</translation>
-    </message>
-    <message>
-        <source>Auto N/A:</source>
-        <translation type="obsolete">Automaattisesti ei paikalla:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;not available&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Joutoaika minuuteissa, minkä jälkeen sinut siirretään automaattisesti tilaan &quot;ei paikalla&quot;. Laita &quot;0&quot; jos et halua tätä ominaisuutta.</translation>
-    </message>
-    <message>
-        <source>Auto Offline:</source>
-        <translation type="obsolete">Automaattisesti offline:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically go offline.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Joutoaika minuuteissa, minkä jälkeen sinut siirretään automaattisesti offlineen. Laita &quot;0&quot; jos et halua tätä ominaisuutta.</translation>
-    </message>
-    <message>
-        <source>Column Configuration</source>
-        <translation type="obsolete">Sarakkeiden konfigurointi</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Otsikko</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Merkkijono joka näkyy sarakkeen otsikkona</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">Muotoilu</translation>
-    </message>
-    <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Sarakkeen otsikkotekstin muotoilu.
-Voit käyttää seuraavia parametrejä:
-</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Leveys</translation>
-    </message>
-    <message>
-        <source>The width of the column</source>
-        <translation type="obsolete">Sarakkeen leveys</translation>
-    </message>
-    <message>
-        <source>Alignment</source>
-        <translation type="obsolete">Tasoitus</translation>
-    </message>
-    <message>
-        <source>The alignment of the column</source>
-        <translation type="obsolete">Sarakkeen tasoitus</translation>
-    </message>
-    <message>
-        <source>Column %1</source>
-        <translation type="obsolete">Sarake %1</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation type="obsolete">Vasen</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="obsolete">Oikea</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="obsolete">Keskitä</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Asetukset</translation>
-    </message>
-    <message>
-        <source>Use server side contact list</source>
-        <translation type="obsolete">Käytä palvelimen kontaktilistaa</translation>
-    </message>
-    <message>
-        <source>Store your contacts on the server so they are accessible from different locations and/or programs</source>
-        <translation type="obsolete">Tallenna kontaktisi palvelimelle jotta niitä voidaan käyttää myös muualta sekä muilla ohjelmilla</translation>
-    </message>
-    <message>
-        <source>Show Grid Lines</source>
-        <translation type="obsolete">Näytä ruudukko</translation>
-    </message>
-    <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Piirrä laatikot jokaisen solun ympärille käyttäjälistalla</translation>
-    </message>
-    <message>
-        <source>Show Column Headers</source>
-        <translation type="obsolete">Näytä sarakkeiden otsikot</translation>
-    </message>
-    <message>
-        <source>Turns on or off the display of headers above each column in the user list</source>
-        <translation type="obsolete">Asettaa jokaisen sarakkeen otsikon näkyviin tai pois näkyvistä kontaktilistalla</translation>
-    </message>
-    <message>
-        <source>Show User Dividers</source>
-        <translation type="obsolete">Näytä käyttäjäerottimet</translation>
-    </message>
-    <message>
-        <source>Show the &quot;--online--&quot; and &quot;--offline--&quot; bars in the contact list</source>
-        <translation type="obsolete">Näytä &quot;--online--&quot; ja &quot;--offline--&quot; palkit kontaktilistalla</translation>
-    </message>
-    <message>
-        <source>Always show online notify users</source>
-        <translation type="obsolete">Näytä aina online-huomatut käyttäjät</translation>
-    </message>
-    <message>
-        <source>Show online notify users who are offline even when offline users are hidden.</source>
-        <translation type="obsolete">Näytä online-huomatut käyttäjät aina vaikka he olisivat offlinessa.</translation>
-    </message>
-    <message>
-        <source>Transparent when possible</source>
-        <translation type="obsolete">Läpinäkyvyys aina kun mahdollista</translation>
-    </message>
-    <message>
-        <source>Make the user window transparent when there is no scroll bar</source>
-        <translation type="obsolete">Tee käyttäjäikkuna läpinäkyväksi kun vierityspalkkia ei ole</translation>
-    </message>
-    <message>
-        <source>Use Font Styles</source>
-        <translation type="obsolete">Käytä fonttityylejä</translation>
-    </message>
-    <message>
-        <source>Use italics and bold in the user list to indicate special characteristics such as online notify and visible list</source>
-        <translation type="obsolete">Käytä kursivointia sekä lihavointia käyttäjälistassa korostamaan erikoismerkityksiä kuten online-huomautusta tai &quot;Näkyvä&quot;-listassa olemista</translation>
-    </message>
-    <message>
-        <source>Blink All Events</source>
-        <translation type="obsolete">Vilkuta kaikkia tapahtumia</translation>
-    </message>
-    <message>
-        <source>All incoming events will blink</source>
-        <translation type="obsolete">Kaikki tulevat tapahtumat vilkkuvat</translation>
-    </message>
-    <message>
-        <source>Blink Urgent Events</source>
-        <translation type="obsolete">Vilkuta tärkeät tapahtumat</translation>
-    </message>
-    <message>
-        <source>Only urgent events will blink</source>
-        <translation type="obsolete">Vain tärkeät tapahtumat vilkkuvat</translation>
-    </message>
-    <message>
-        <source>Allow scroll bar</source>
-        <translation type="obsolete">Salli vierityspalkki</translation>
-    </message>
-    <message>
-        <source>Allow the vertical scroll bar in the user list</source>
-        <translation type="obsolete">Salli pystysuuntainen vierityspalkki käyttäjälistalla</translation>
-    </message>
-    <message>
-        <source>Show Extended Icons</source>
-        <translation type="obsolete">Näytä laajennusikonit</translation>
-    </message>
-    <message>
-        <source>Show birthday, invisible, and custom auto response icons to the right of users in the list</source>
-        <translation type="obsolete">Näytä syntymäpäivä-, näkymättömyys- ja oma automaattinen vastaus -ikoni käyttäjän oikealla puolella listalla</translation>
-    </message>
-    <message>
-        <source>Frame Style: </source>
-        <translation type="obsolete">Kehystyyppi: </translation>
-    </message>
-    <message>
-        <source>Override the skin setting for the frame style of the user window:
-   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Sunken)
- + 240 (Shadow)</source>
-        <translation type="obsolete">Korvaa nahan asetukset käyttäjäikkunan kehystyylille:
-  0 (ei kehystä), 1 (laatikko), 2 (paneeli), 3 (WinPaneeli)
-+ 16 (tyhjä), 32 (kohotettu), 48 (upotettu)
-+ 240 (varjo)</translation>
-    </message>
-    <message>
-        <source>Use System Background Color</source>
-        <translation type="obsolete">Käytä järjestelmän taustaväriä</translation>
-    </message>
-    <message>
-        <source>Hot key: </source>
-        <translation type="obsolete">Pikanäppäin: </translation>
-    </message>
-    <message>
-        <source>Hotkey pops up the next pending message
-Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
-changes here require a Restart to take effect!
-</source>
-        <translation type="obsolete">Pikanäppäin ponnauttaa seuraavan odottavan viestin
-Kirjoita pikanäppäin kirjaimellisesti kuten &quot;shift+f10&quot;. &quot;none&quot; = ei mitään
-Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</translation>
-    </message>
-    <message>
-        <source>Popup info</source>
-        <translation type="obsolete">Ponnahdustieto</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">Sähköposti</translation>
-    </message>
-    <message>
-        <source>Phone</source>
-        <translation type="obsolete">Puhelin</translation>
-    </message>
-    <message>
-        <source>Fax</source>
-        <translation type="obsolete">Fax</translation>
-    </message>
-    <message>
-        <source>Cellular</source>
-        <translation type="obsolete">Matkapuhelin</translation>
-    </message>
-    <message>
-        <source>IP</source>
-        <translation type="obsolete">IP</translation>
-    </message>
-    <message>
-        <source>Last online</source>
-        <translation type="obsolete">Viimeksi onlinessa</translation>
-    </message>
-    <message>
-        <source>Online Time</source>
-        <translation type="obsolete">Online-aika</translation>
-    </message>
-    <message>
-        <source>Idle Time</source>
-        <translation type="obsolete">Joutoaika</translation>
-    </message>
-    <message>
-        <source>Extensions</source>
-        <translation type="obsolete">Laajennukset</translation>
-    </message>
-    <message>
-        <source>Url Viewer:</source>
-        <translation type="obsolete">URLin näyttäjä:</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Komento joka ajetaan URL:n näyttämiseksi. URL annetaan parametriksi.</translation>
-    </message>
-    <message>
-        <source>Terminal:</source>
-        <translation type="obsolete">Terminaali:</translation>
-    </message>
-    <message>
-        <source>The command to run to start your terminal program.</source>
-        <translation type="obsolete">Komento joka ajetaan terminaaliohjelmasi käynnistämiseksi.</translation>
-    </message>
-    <message>
-        <source>Paranoia</source>
-        <translation type="obsolete">Estot</translation>
-    </message>
-    <message>
-        <source>Ignore New Users</source>
-        <translation type="obsolete">Älä huomioi uusia käyttäjiä</translation>
-    </message>
-    <message>
-        <source>Determines if new users are automatically added to your list or must first request authorization.</source>
-        <translation type="obsolete">Määrää lisätäänkö uudet käyttäjät automaattisesti listaasi vai vaaditaanko valtuutus ensin.</translation>
-    </message>
-    <message>
-        <source>Ignore Mass Messages</source>
-        <translation type="obsolete">Älä huomioi massaviestejä</translation>
-    </message>
-    <message>
-        <source>Determines if mass messages are ignored or not.</source>
-        <translation type="obsolete">Määrää huomioidaanko massaviestit vai ei.</translation>
-    </message>
-    <message>
-        <source>Ignore Web Panel</source>
-        <translation type="obsolete">Älä huomioi Web Panelia</translation>
-    </message>
-    <message>
-        <source>Determines if web panel messages are ignored or not.</source>
-        <translation type="obsolete">Määrää huomioidaanko web panel -viestit vai ei.</translation>
-    </message>
-    <message>
-        <source>Ignore Email Pager</source>
-        <translation type="obsolete">Älä huomioi Email Pageria</translation>
-    </message>
-    <message>
-        <source>Determines if email pager messages are ignored or not.</source>
-        <translation type="obsolete">Määrää huomioidaanko email pager -viestejä vai ei.</translation>
-    </message>
-    <message>
-        <source>Auto Away Messages</source>
-        <translation type="obsolete">Automaattiset &quot;Poissa&quot;-viestit</translation>
-    </message>
-    <message>
-        <source>Away:</source>
-        <translation type="obsolete">Poissa:</translation>
-    </message>
-    <message>
-        <source>N/A:</source>
-        <translation type="obsolete">Ei paikalla:</translation>
-    </message>
-    <message>
-        <source>Previous Message</source>
-        <translation type="obsolete">Edellinen viesti</translation>
-    </message>
-    <message>
-        <source>Tabbed Chatting</source>
-        <translation type="obsolete">Välilehdet viesti-ikkunassa</translation>
-    </message>
-    <message>
-        <source>Use tabs in Send Window</source>
-        <translation type="obsolete">Käytä välilehtiä viesti-ikkunassa</translation>
-    </message>
-    <message>
-        <source>Additional &amp;sorting:</source>
-        <translation type="obsolete">Lisäjärje&amp;stys:</translation>
-    </message>
-    <message>
-        <source>status</source>
-        <translation type="obsolete">tila</translation>
-    </message>
-    <message>
-        <source>status + last event</source>
-        <translation type="obsolete">tila + viimeisin tapahtuma</translation>
-    </message>
-    <message>
-        <source>status + new messages</source>
-        <translation type="obsolete">tila + uudet viestit</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;none:&lt;/b&gt; - Don&apos;t sort online users by Status&lt;br&gt;
-&lt;b&gt;status&lt;/b&gt; - Sort online users by status&lt;br&gt;
-&lt;b&gt;status + last event&lt;/b&gt; - Sort online users by status and by last event&lt;br&gt;
-&lt;b&gt;status + new messages&lt;/b&gt; - Sort online users by status and number of new messages</source>
-        <translation type="obsolete">&lt;b&gt;ei mitään:&lt;/b&gt; - Älä järjestä online-käyttäjiä tilan mukaan&lt;br&gt;
-&lt;b&gt;tila&lt;/b&gt; - Järjestä online-käyttäjät tilan mukaan&lt;br&gt;
-&lt;b&gt;tila + viimeisin tapahtuma&lt;/b&gt; - Järjestä online-käyttäjät tilan ja viimeisen tapahtuman mukaan&lt;br&gt;
-&lt;b&gt;tila + uudet viestit&lt;/b&gt; - Järjestä online-käyttäjät tilan ja tulleiden viestien lukumäärän mukaan</translation>
-    </message>
-    <message>
-        <source>Small Icon</source>
-        <translation type="obsolete">Pieni ikoni</translation>
-    </message>
-    <message>
-        <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
-        <translation type="obsolete">Käyttää freedesktop.org-standardia pienen ikonin telakoimisessa. Toimii monella eri ikkunanhallinnalla.</translation>
-    </message>
-    <message>
-        <source>Connection</source>
-        <translation type="obsolete">Yhteys</translation>
-    </message>
-    <message>
-        <source>Reconnect after Uin clash</source>
-        <translation type="obsolete">Yhdistä uudelleen Uin-varauksen jälkeen</translation>
-    </message>
-    <message>
-        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
-        <translation type="obsolete">Licq voi yhdistää uudelleen, jos sinun yhteytesi katkaistaan toisen ottaessa Uin käyttöösi eri koneesta. Aseta tämä päälle jos haluat Licq:n yhdistävän uudelleen automaattisesti.</translation>
-    </message>
-    <message>
-        <source>Auto Update</source>
-        <translation type="obsolete">Automaattinen päivitys</translation>
-    </message>
-    <message>
-        <source>Auto Update Info</source>
-        <translation type="obsolete">Automaattisen päivityksen tiedot</translation>
-    </message>
-    <message>
-        <source>Automatically update users&apos; server stored information.</source>
-        <translation type="obsolete">Päivitä käyttäjien tiedot palvelimelle automaattisesti.</translation>
-    </message>
-    <message>
-        <source>Auto Update Info Plugins</source>
-        <translation type="obsolete">Päivitä Info-pluginit automaattisesti</translation>
-    </message>
-    <message>
-        <source>Automatically update users&apos; Phone Book and Picture.</source>
-        <translation type="obsolete">Päivitä käyttäjien osoitekirja ja kuva automaattisesti.</translation>
-    </message>
-    <message>
-        <source>Auto Update Status Plugins</source>
-        <translation type="obsolete">Päivitä tila-pluginit automaattisesti</translation>
-    </message>
-    <message>
-        <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
-        <translation type="obsolete">Päivitä käyttäjien Puhelin &quot;Seuraa minua&quot;, tiedostopalvelimen ja ICQphonen tila.</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Käyttäjätunnus</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
-    </message>
-    <message>
-        <source>Chat</source>
-        <translation type="obsolete">Chat</translation>
-    </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="260"/>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Esikatselu</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="obsolete">%1</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::OwnerEditDlg</name>
-    <message>
-        <source>Edit Owner</source>
-        <translation type="obsolete">Muokkaa omistajaa</translation>
-    </message>
-    <message>
-        <source>User ID:</source>
-        <translation type="obsolete">Käyttäjän ID:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Salasana:</translation>
-    </message>
-    <message>
-        <source>Protocol:</source>
-        <translation type="obsolete">Protokolla:</translation>
-    </message>
-    <message>
-        <source>Currently only one owner per protocol is supported.</source>
-        <translation type="obsolete">Tällä hetkellä vain yksi protokolla per käyttäjä on tuettu.</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="50"/>
         <source>Edit Account</source>
@@ -5460,10 +2197,6 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
 </context>
 <context>
     <name>LicqQtGui::OwnerManagerDlg</name>
-    <message>
-        <source>Licq - Owner Manager</source>
-        <translation type="obsolete">Licq - Omistajan hallinta</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="79"/>
         <source>&amp;Add</source>
@@ -5510,18 +2243,6 @@ base directory and then register a new user.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Rekisteröityminen onnistui, käyttäjätunnusnumerosi
-(UIN) on %1.
-Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkolokista.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="70"/>
         <source>Protocol</source>
         <translation type="unfinished">Protokolla</translation>
@@ -5543,30 +2264,7 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::OwnerView</name>
-    <message>
-        <source>User ID</source>
-        <translation type="obsolete">Käyttäjän ID</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokolla</translation>
-    </message>
-    <message>
-        <source>(Invalid ID)</source>
-        <translation type="obsolete">(Virheellinen ID)</translation>
-    </message>
-    <message>
-        <source>Invalid Protocol</source>
-        <translation type="obsolete">Virheellinen protokolla</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::PluginDlg</name>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Ladattu</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
         <location filename="../src/dialogs/plugindlg.cpp" line="99"/>
@@ -5586,10 +2284,6 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
         <translation>Versio</translation>
     </message>
     <message>
-        <source>Status</source>
-        <translation type="obsolete">Tila</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
         <location filename="../src/dialogs/plugindlg.cpp" line="99"/>
         <source>Description</source>
@@ -5599,26 +2293,6 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
         <source>Enable</source>
         <translation>Aseta päälle</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Aseta pois päältä</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Pura</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Tarkemmat tiedot</translation>
-    </message>
-    <message>
-        <source>Configure</source>
-        <translation type="obsolete">Konfiguroi</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Saatavilla</translation>
     </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
@@ -5635,12 +2309,6 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
         <location filename="../src/dialogs/plugindlg.cpp" line="115"/>
         <source>Done</source>
         <translation>Valmis</translation>
-    </message>
-    <message>
-        <source>Licq Plugin %1 %2
-</source>
-        <translation type="obsolete">Licq Plugin %1 %2
-</translation>
     </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="255"/>
@@ -5672,17 +2340,9 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
 <context>
     <name>LicqQtGui::RandomChatDlg</name>
     <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Random Chat -haku</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
         <translation type="unfinished">Et&amp;si</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
     </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="68"/>
@@ -5782,105 +2442,9 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
         <source>Licq - %1 Refusal</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 kieltäytyminen</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RegisterUserDlg</name>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Tervetuloa rekisteröitymisvelhoon.
-
-Voit rekisteröidä uuden käyttäjän täällä tai konfiguroida Licq:n käyttämään jo olemassa olevaa UIN:ia.
-
-Jos haluat rekisteröidä uuden UIN:in, keksi salasana ja paina &quot;Valmis&quot;.
-Jos sinulla on jo UIN, rastita &quot;Rekisteröi vanha käyttäjä&quot;,
-kirjoita UIN-numerosi ja salasanasi ja paina &quot;OK&quot;.
-
-Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">UIN:n rekisteröiminen</translation>
-    </message>
-    <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">&amp;Rekisteröi vanha käyttäjä</translation>
-    </message>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">Uin:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Salasana:</translation>
-    </message>
-    <message>
-        <source>Verify:</source>
-        <translation type="obsolete">Vahvistus:</translation>
-    </message>
-    <message>
-        <source>&amp;Save Password</source>
-        <translation type="obsolete">&amp;Tallenna salasana</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">UIN:n rekisteröinti - vaihe 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">UIN:n rekisteröinti - vaihe 3</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Licq-käyttäjän rekisteröinti</translation>
-    </message>
-    <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Sinun tulee antaa oikea UIN rekisteröitäessäsi jo olemassa olevan käyttäjän. </translation>
-    </message>
-    <message>
-        <source>Please enter your password in both input fields.</source>
-        <translation type="obsolete">Kirjoita salasanasi molempiin kenttiin.</translation>
-    </message>
-    <message>
-        <source>The passwords don&apos;t seem to match.</source>
-        <translation type="obsolete">Salasanat eivät näytä täsmäävän.</translation>
-    </message>
-    <message>
-        <source>Now please press the &apos;Back&apos; button and try again.</source>
-        <translation type="obsolete">Paina &quot;Takaisin&quot; ja yritä uudelleen.</translation>
-    </message>
-    <message>
-        <source>Now please click &apos;Finish&apos; to start the registration process.</source>
-        <translation type="obsolete">Paina &quot;Valmis&quot; aloittaaksesi rekisteröimisen.</translation>
-    </message>
-    <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">Virheellinen UIN.  Yritä uudelleen.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Rekisteröiminen onnistui.  Kirjaudu sisään ja päivitä henkilökohtaiset tietosi.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Rekisteröinti käynnissä...</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Kelvoton salasana, pituus täytyy olla 1-8 kirjainta.</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/registeruser.cpp" line="119"/>
         <source>&amp;Remember Password</source>
@@ -5986,14 +2550,6 @@ After you are online, you can send your personal details to the server.</source>
         <source>Request</source>
         <translation>Pyydä</translation>
     </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::SearchUserDlg</name>
@@ -6027,30 +2583,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="89"/>
         <source>Unspecified</source>
         <translation>Ei määritelty</translation>
-    </message>
-    <message>
-        <source>18 - 22</source>
-        <translation type="obsolete">18 - 22</translation>
-    </message>
-    <message>
-        <source>23 - 29</source>
-        <translation type="obsolete">23 - 29</translation>
-    </message>
-    <message>
-        <source>30 - 39</source>
-        <translation type="obsolete">30 - 39</translation>
-    </message>
-    <message>
-        <source>40 - 49</source>
-        <translation type="obsolete">40 - 49</translation>
-    </message>
-    <message>
-        <source>50 - 59</source>
-        <translation type="obsolete">50 - 59</translation>
-    </message>
-    <message>
-        <source>60+</source>
-        <translation type="obsolete">60+</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="139"/>
@@ -6118,18 +2650,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Hae vain online-käyttäjiä</translation>
     </message>
     <message>
-        <source>&amp;Whitepages</source>
-        <translation type="obsolete">&amp;Valkoiset sivut</translation>
-    </message>
-    <message>
-        <source>UIN#:</source>
-        <translation type="obsolete">UIN#:</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">&amp;Uin#</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="202"/>
         <source>&amp;Search</source>
         <translation>Et&amp;si</translation>
@@ -6141,18 +2661,10 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Nollaa haku</translation>
     </message>
     <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">&amp;Valmis</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="220"/>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="314"/>
         <source>Enter search parameters and select &apos;Search&apos;</source>
         <translation>Anna hakuparametrit ja valitse &apos;Etsi&apos;</translation>
-    </message>
-    <message>
-        <source>A&amp;lert User</source>
-        <translation type="obsolete">I&amp;lmoita käyttäjälle</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="190"/>
@@ -6224,14 +2736,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="173"/>
         <source>Status</source>
         <translation type="unfinished">Tila</translation>
-    </message>
-    <message>
-        <source>Sex &amp; Age</source>
-        <translation type="obsolete">Sukupuoli &amp; ikä</translation>
-    </message>
-    <message>
-        <source>Authorize</source>
-        <translation type="obsolete">Valtuuta</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="360"/>
@@ -6317,69 +2821,6 @@ After you are online, you can send your personal details to the server.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::SearchUserView</name>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Käyttäjätunnus</translation>
-    </message>
-    <message>
-        <source>UIN</source>
-        <translation type="obsolete">UIN</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nimi</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">Sähköposti</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Tila</translation>
-    </message>
-    <message>
-        <source>Sex &amp; Age</source>
-        <translation type="obsolete">Sukupuoli &amp; ikä</translation>
-    </message>
-    <message>
-        <source>Authorize</source>
-        <translation type="obsolete">Valtuuta</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Tuntematon</translation>
-    </message>
-    <message>
-        <source>F</source>
-        <translation type="obsolete">N</translation>
-    </message>
-    <message>
-        <source>M</source>
-        <translation type="obsolete">M</translation>
-    </message>
-    <message>
-        <source>?</source>
-        <translation type="obsolete">?</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Ei</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Kyllä</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::SecurityDlg</name>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="63"/>
@@ -6387,85 +2828,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Asetukset</translation>
     </message>
     <message>
-        <source>Password/UIN settings</source>
-        <translation type="obsolete">Salasana/UIN -asetukset</translation>
-    </message>
-    <message>
-        <source>&amp;Uin:</source>
-        <translation type="obsolete">&amp;Uin:</translation>
-    </message>
-    <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; is checked.</source>
-        <translation type="obsolete">Kirjoita UIN jota haluat käyttää.  Käytössä vain jos &quot;Muutokset vain paikallisesti&quot; on valittuna.</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Salasana:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Kirjoita ICQ-salasanasi tähän.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;Vahvista:</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Vahvista ICQ-salasanasi tähän.</translation>
-    </message>
-    <message>
-        <source>&amp;Local changes only</source>
-        <translation type="obsolete">Muutokset vain paika&amp;llisesti</translation>
-    </message>
-    <message>
-        <source>If checked, password/UIN changes will apply only on your local computer.  Useful if your password is incorrectly saved in Licq.</source>
-        <translation type="obsolete">Jos tämä on rastittuna, salasana/UIN -muutokset tehdään vain tietokoneellesi. Tämä on hyödyllinen jos salasanasi on tallennettu väärin Licq:hon.</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Valtuutus tarvitaan</translation>
-    </message>
-    <message>
-        <source>Determines whether regular ICQ clients require your authorization to add you to their contact list.</source>
-        <translation type="obsolete">Määrää tuleeko tavallisten ICQ-ohjelmien vaatia sinulta valtuutusta, jotta he voisivat lisätä sinut kontaktilistaansa.</translation>
-    </message>
-    <message>
-        <source>Web Presence</source>
-        <translation type="obsolete">Näkyvyys webissä</translation>
-    </message>
-    <message>
-        <source>Web Presence allows users to see if you are online through your web indicator.</source>
-        <translation type="obsolete">Näkyvyys webissä mahdollistaa muiden nähdä webin kautta, oletko onlinessa.</translation>
-    </message>
-    <message>
-        <source>Hide IP</source>
-        <translation type="obsolete">Piilota IP</translation>
-    </message>
-    <message>
-        <source>Hide IP stops users from seeing your IP address. It doesn&apos;t guarantee it will be hidden though.</source>
-        <translation type="obsolete">Piilota IP estää muita käyttäjiä näkemästä IP-osoitettasi. Tämä ei kuitenkaan takaa sitä, että se on todella piilotettu.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="89"/>
         <source>&amp;Update</source>
         <translation>&amp;Päivitä</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options</source>
-        <translation type="obsolete">ICQ:n turvallisuusasetukset</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Kelvoton salasana, pituus täytyy olla 1-8 kirjainta.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Salasanat eivät täsmää, yritä uudelleen.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="114"/>
@@ -6473,10 +2838,6 @@ After you are online, you can send your personal details to the server.</source>
 ICQ Network to change the settings.</source>
         <translation>Muuttaaksesi näitä asetuksia sinulla
 tulee olla yhteys ICQ-verkkoon.</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...]</source>
-        <translation type="obsolete">ICQ:n turvallisuusasetukset [asetetaan...]</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="160"/>
@@ -6489,10 +2850,6 @@ tulee olla yhteys ICQ-verkkoon.</translation>
         <translation>Turvallisuusasetuksien asetus epäonnistui.</translation>
     </message>
     <message>
-        <source>Changing password failed.</source>
-        <translation type="obsolete">Salasanan vaihto epäonnistui.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="165"/>
         <source>timed out</source>
         <translation>aikakatkaisu</translation>
@@ -6503,10 +2860,6 @@ tulee olla yhteys ICQ-verkkoon.</translation>
         <translation>Aikakatkaisu turvallisuusasetuksia asetettaessa.</translation>
     </message>
     <message>
-        <source>Timeout while changing password.</source>
-        <translation type="obsolete">Aikakatkaisu salasanaa vaihdettaessa.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="170"/>
         <source>error</source>
         <translation>virhe</translation>
@@ -6515,14 +2868,6 @@ tulee olla yhteys ICQ-verkkoon.</translation>
         <location filename="../src/dialogs/securitydlg.cpp" line="171"/>
         <source>Internal error while setting security options.</source>
         <translation>Sisäinen virhe turvallisuusasetuksia asetettaessa.</translation>
-    </message>
-    <message>
-        <source>Internal error while changing password.</source>
-        <translation type="obsolete">Sisäinen virhe salasanaa vaihdettaessa.</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...</source>
-        <translation type="obsolete">ICQ:n turvallisuusasetukset [asetetaan...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="72"/>
@@ -6877,14 +3222,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Komento joka ajetaan URL:n näyttämiseksi. URL annetaan parametriksi.</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-oletus</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="198"/>
         <location filename="../src/settings/chat.cpp" line="202"/>
         <source>Terminal:</source>
@@ -7125,10 +3462,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Piirrä laatikot jokaisen solun ympärille käyttäjälistalla</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="81"/>
         <source>Show column headers</source>
         <translation type="unfinished"></translation>
@@ -7340,10 +3673,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <location filename="../src/settings/contactlist.cpp" line="225"/>
         <source>Title</source>
         <translation type="unfinished">Otsikko</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Merkkijono joka näkyy sarakkeen otsikkona</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="228"/>
@@ -7575,10 +3904,6 @@ If not checked user will only be added to the new group.</source>
         <translation type="unfinished">Lihavoi viesti-ilmaisimen teksti jos on uusia viestejä</translation>
     </message>
     <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Avaa kaikki tulevat viestit automaattisesti jos olemme onlinessa (tai vapaana)</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="72"/>
         <source>Auto-focus message</source>
         <translation type="unfinished"></translation>
@@ -7698,10 +4023,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <location filename="../src/settings/events.cpp" line="163"/>
         <source>Command:</source>
         <translation type="unfinished">Komento:</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Komento joka ajetaan tapahtuman tullessa.&lt;br&gt;Sille annetaan tapahtuman mukaan alla olevat parametrit.&lt;br&gt;Parametrit voivat sisältää seuraavia erikoismerkkejä &lt;br&gt; jotka korvataan vastaavalla tiedolla:&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="177"/>
@@ -7977,10 +4298,6 @@ Works with many different window managers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Valitse fontti</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Editing:</source>
         <translation type="unfinished"></translation>
@@ -7989,14 +4306,6 @@ Works with many different window managers.</source>
         <location filename="../src/settings/general.cpp" line="139"/>
         <source>Used in message editor etc.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">oletus (%1)</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">oletus</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="94"/>
@@ -8766,10 +5075,6 @@ Kuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
         <translation>Käyttäjän %1 vastaus käyttäjälle %2</translation>
     </message>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="135"/>
         <source>refused</source>
         <translation>kieltäytyi</translation>
@@ -8788,125 +5093,6 @@ Kuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="147"/>
         <source>error</source>
         <translation>virhe</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>Skin selection</source>
-        <translation type="obsolete">Nahan valinta</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Esikatselu</translation>
-    </message>
-    <message>
-        <source>S&amp;kins:</source>
-        <translation type="obsolete">&amp;Nahat:</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available skins</source>
-        <translation type="obsolete">Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista nahoista</translation>
-    </message>
-    <message>
-        <source>&amp;Icons:</source>
-        <translation type="obsolete">&amp;Kuvakkeet:</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available icon sets</source>
-        <translation type="obsolete">Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista kuvakevalikoimista</translation>
-    </message>
-    <message>
-        <source>E&amp;xtended Icons:</source>
-        <translation type="obsolete">&amp;Lisäkuvakkeet:</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available extended icon sets</source>
-        <translation type="obsolete">Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista lisäkuvakevalikoimista</translation>
-    </message>
-    <message>
-        <source>Skin:</source>
-        <translation type="obsolete">Nahka:</translation>
-    </message>
-    <message>
-        <source>Icons:</source>
-        <translation type="obsolete">Kuvakkeet:</translation>
-    </message>
-    <message>
-        <source>Extended Icons:</source>
-        <translation type="obsolete">Lisäkuvakkeet:</translation>
-    </message>
-    <message>
-        <source>&amp;Edit Skin</source>
-        <translation type="obsolete">&amp;Muokkaa nahkaa</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Käytä</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Peruuta</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Virhe</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1
-Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Ei voi avata kuvaketiedostoa
-%1
-Kuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1
-Extended Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Ei voi avata lisäkuvaketiedostoa
-%1
-Lisäkuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">Licq-nahkaselain</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1</source>
-        <translation type="obsolete">Ei voi avata kuvaketiedostoa
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1</source>
-        <translation type="obsolete">Ei voi avata lisäkuvaketiedostoa
-%1</translation>
-    </message>
-    <message>
-        <source>E&amp;moticons</source>
-        <translation type="obsolete">Hy&amp;miöt</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available emoticon icon sets</source>
-        <translation type="obsolete">Käytä tätä valintatyökalua valitseaksesi yhden saatavilla olevista hymiövalikoimista</translation>
-    </message>
-    <message>
-        <source>Emoticons:</source>
-        <translation type="obsolete">Hymiöt:</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Järjestelmä</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
     </message>
 </context>
 <context>
@@ -9001,17 +5187,9 @@ reset your statistics?</source>
         <translation type="unfinished">Tyhjennä kaikki</translation>
     </message>
     <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Järjestelmätoiminnot</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Käyttäjätoiminnot</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="99"/>
@@ -9094,38 +5272,6 @@ reset your statistics?</source>
         <translation type="unfinished">&amp;Tila</translation>
     </message>
     <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Online</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Poissa</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Ei paikalla</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Va&amp;rattu</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Älä häiritse</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">&amp;Vapaa</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">O&amp;ffline</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Näkymätön</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>&amp;Group</source>
         <translation type="unfinished">&amp;Ryhmä</translation>
@@ -9174,14 +5320,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="203"/>
         <source>&amp;Thread Group View</source>
         <translation type="unfinished">Säikeis&amp;tä ryhmänäkymä</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Asetukset...</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">Ulkoa&amp;suselain...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="208"/>
@@ -9251,55 +5389,9 @@ reset your statistics?</source>
         <source>View &amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Online</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Poissa</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Ei paikalla</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">Va&amp;rattu</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Älä häiritse</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">&amp;Vapaa</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">O&amp;ffline</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Näkymätön</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Ei voi ladata telakointiteematiedostoa
-(%1)
-:%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Ei voi ladata telakointiteemakuvaa
-%1</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="77"/>
         <source>Unable to load dock theme file:
@@ -9508,37 +5600,9 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::UserEventCommon</name>
     <message>
-        <source>Status:</source>
-        <translation type="obsolete">Tila:</translation>
-    </message>
-    <message>
-        <source>Time:</source>
-        <translation type="obsolete">Aika:</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="256"/>
         <source>Open / Close secure channel</source>
         <translation>Avaa / sulje suojattu yhteys</translation>
-    </message>
-    <message>
-        <source>Show User History</source>
-        <translation type="obsolete">Näytä käyttäjähistoria</translation>
-    </message>
-    <message>
-        <source>Show User Info</source>
-        <translation type="obsolete">Näytä käyttäjätiedot</translation>
-    </message>
-    <message>
-        <source>Change user text encoding</source>
-        <translation type="obsolete">Näytä käyttäjän tekstin koodaus</translation>
-    </message>
-    <message>
-        <source>This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language.</source>
-        <translation type="obsolete">Tämä nappi valitsee tekstien koodauksen, jota käytetään käyttäjän kanssa kommunikoidessa. Sinun tulee ehkä vaihtaa koodausta jotta voit kommunikoida eri kielellä.</translation>
-    </message>
-    <message>
-        <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
-        <translation type="obsolete">Koodausta &lt;b&gt;%1&lt;/b&gt; ei voi ladata. Viestien sisällöt voivat näyttää sekavilta.</translation>
     </message>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="117"/>
@@ -9608,447 +5672,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventtabdlg.cpp" line="176"/>
         <source>[UNKNOWN_USER]</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::UserInfoDlg</name>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">&amp;Päivitä</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Sulje</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Tallenna</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Valikko</translation>
-    </message>
-    <message>
-        <source>Licq - Info </source>
-        <translation type="obsolete">Licq - tiedot </translation>
-    </message>
-    <message>
-        <source>INVALID USER</source>
-        <translation type="obsolete">VIRHEELLINEN KÄYTTÄJÄ</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">&amp;Yleiset</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation type="obsolete">Käyttäjätunnus:</translation>
-    </message>
-    <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
-        <source>IP:</source>
-        <translation type="obsolete">IP:</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Tila:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation type="obsolete">Aikavyöhyke:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Nimi:</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation type="obsolete">Sähköposti 1:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation type="obsolete">Sähköposti 2:</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation type="obsolete">Vanha sähköposti:</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation type="obsolete">Osoite:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation type="obsolete">Puhelin:</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation type="obsolete">Osavaltio:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation type="obsolete">Faksi:</translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation type="obsolete">Kaupunki:</translation>
-    </message>
-    <message>
-        <source>Cellular:</source>
-        <translation type="obsolete">Matkapuhelin:</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation type="obsolete">Postinumero:</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">Maa:</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Tuntematon</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation type="obsolete">Tuntematon (%1)</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation type="obsolete">Nyt</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation type="obsolete">&amp;Lisätiedot</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation type="obsolete">Ikä:</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation type="obsolete">Sukupuoli:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation type="obsolete">Ei määritelty</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation type="obsolete">Nainen</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation type="obsolete">Mies</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation type="obsolete">Kotisivu:</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation type="obsolete">Syntymäpäivä:</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation type="obsolete"> Päivä:</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation type="obsolete"> Kuukausi:</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation type="obsolete"> Vuosi:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation type="obsolete">Kieli 1:</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation type="obsolete">Kieli 2:</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation type="obsolete">Kieli 3:</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Valtuutus vaaditaan</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation type="obsolete">Valtuutusta ei vaadita</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation type="obsolete">&amp;Työ</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation type="obsolete">Osasto:</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="obsolete">Titteli:</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">Tieto&amp;a</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation type="obsolete">Tietoa:</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">&amp;Viimeksi</translation>
-    </message>
-    <message>
-        <source>Last Online:</source>
-        <translation type="obsolete">Viimeksi onlinessa:</translation>
-    </message>
-    <message>
-        <source>Last Sent Event:</source>
-        <translation type="obsolete">Viimeisin lähetetty tapahtuma:</translation>
-    </message>
-    <message>
-        <source>Last Received Event:</source>
-        <translation type="obsolete">Viimeisin vastaanotettu tapahtuma:</translation>
-    </message>
-    <message>
-        <source>Last Checked Auto Response:</source>
-        <translation type="obsolete">Viimeisin autom. vastauksen tarkistus:</translation>
-    </message>
-    <message>
-        <source>Online Since:</source>
-        <translation type="obsolete">Onlineen tuloaika:</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">&amp;Historia</translation>
-    </message>
-    <message>
-        <source>Rever&amp;se</source>
-        <translation type="obsolete">&amp;Käännä ylösalaisin</translation>
-    </message>
-    <message>
-        <source>&amp;Filter: </source>
-        <translation type="obsolete">&amp;Suodata: </translation>
-    </message>
-    <message>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation type="obsolete">Virhe ladattaessa historiatiedostoa: %1
-Kuvaus: %2</translation>
-    </message>
-    <message>
-        <source>Sorry, history is disabled for this person.</source>
-        <translation type="obsolete">Valitettavasti historia ei ole asetettu päälle tälle henkilölle.</translation>
-    </message>
-    <message>
-        <source>server</source>
-        <translation type="obsolete">palvelin</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 käyttäjältä %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 käyttäjälle %2</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Vastaanotettu&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Lähetetty&lt;/font&gt;] %3 - %4 / %5</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Vastaanotettu&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Lähetetty&lt;/font&gt;] %3 %4 täsmäävästä</translation>
-    </message>
-    <message>
-        <source>Nex&amp;t</source>
-        <translation type="obsolete">&amp;Seuraava</translation>
-    </message>
-    <message>
-        <source>P&amp;rev</source>
-        <translation type="obsolete">&amp;Edellinen</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to retrieve your settings.</source>
-        <translation type="obsolete">Hakeaksesi asetuksesi sinulla tulee
-olla yhteys ICQ-verkkoon.</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation type="obsolete">Päivitetään...</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to change your settings.</source>
-        <translation type="obsolete">Muuttaaksesi asetuksiasi sinulla tulee
-olla yhteys ICQ-verkkoon.</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation type="obsolete">Päivitetään palvelinta...</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">virhe</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">valmis</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">epäonnistui</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">aikakatkaistu</translation>
-    </message>
-    <message>
-        <source>&amp;Retrieve</source>
-        <translation type="obsolete">&amp;Hae</translation>
-    </message>
-    <message>
-        <source>S&amp;end</source>
-        <translation type="obsolete">Läh&amp;etä</translation>
-    </message>
-    <message>
-        <source>Keep Alias on Update</source>
-        <translation type="obsolete">Säilytä käyttäjänimi päivitettäessä</translation>
-    </message>
-    <message>
-        <source>Normally Licq overwrites the Alias when updating user details.
-Check this if you want to keep your changes to the Alias.</source>
-        <translation type="obsolete">Normaalisti Licq ylikirjoittaa käyttäjänimen päivitettäessä käyttäjän tietoja.
-Valitse tämä jos haluat säilyttää tekemäsi muutokset käyttäjänimessä.</translation>
-    </message>
-    <message>
-        <source>Retrieve</source>
-        <translation type="obsolete">Hae palvelimelta</translation>
-    </message>
-    <message>
-        <source>ID:</source>
-        <translation type="obsolete">ID:</translation>
-    </message>
-    <message>
-        <source>Category:</source>
-        <translation type="obsolete">Kategoria:</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Kuvaus:</translation>
-    </message>
-    <message>
-        <source>User has an ICQ Homepage </source>
-        <translation type="obsolete">Käyttäjällä on ICQ-kotisivu </translation>
-    </message>
-    <message>
-        <source>User has no ICQ Homepage</source>
-        <translation type="obsolete">Käyttäjällä ei ole ICQ-kotisivua</translation>
-    </message>
-    <message>
-        <source>M&amp;ore II</source>
-        <translation type="obsolete">Lisätied&amp;ot II</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(ei mitään)</translation>
-    </message>
-    <message>
-        <source>Occupation:</source>
-        <translation type="obsolete">Ammatti:</translation>
-    </message>
-    <message>
-        <source>&amp;Phone</source>
-        <translation type="obsolete">&amp;Puhelin</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tyyppi</translation>
-    </message>
-    <message>
-        <source>Number/Gateway</source>
-        <translation type="obsolete">Numero/yhdyskäytävä</translation>
-    </message>
-    <message>
-        <source>Country/Provider</source>
-        <translation type="obsolete">Maa/tarjoaja</translation>
-    </message>
-    <message>
-        <source>Currently at:</source>
-        <translation type="obsolete">Tällä hetkellä:</translation>
-    </message>
-    <message>
-        <source>(</source>
-        <translation type="obsolete">(</translation>
-    </message>
-    <message>
-        <source>) </source>
-        <translation type="obsolete">) </translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>P&amp;icture</source>
-        <translation type="obsolete">&amp;Kuva</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Ei saatavilla</translation>
-    </message>
-    <message>
-        <source>Failed to Load</source>
-        <translation type="obsolete">Lataus epäonnistui</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Lisää</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Tyhjennä</translation>
-    </message>
-    <message>
-        <source>&amp;Browse</source>
-        <translation type="obsolete">&amp;Selaa</translation>
-    </message>
-    <message>
-        <source>Select your picture</source>
-        <translation type="obsolete">Valitse kuvasi</translation>
-    </message>
-    <message>
-        <source> is over %1 bytes.
-Select another picture?</source>
-        <translation type="obsolete"> on yli %1 tavua.
-Valitaanko toinen kuva?</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Kyllä</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Ei</translation>
     </message>
 </context>
 <context>
@@ -10276,10 +5899,6 @@ to your ignore list?</source>
         <translation type="unfinished">Haluatko varmasti lisätä käyttäjän
 %1 (%2)
 huomiotta-listaasi?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Kyllä</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="164"/>
@@ -11035,10 +6654,6 @@ Valitaanko toinen kuva?</translation>
         <source>Licq User Select</source>
         <translation>Licq-käyttäjän valinta</translation>
     </message>
-    <message>
-        <source>%1 (%2)</source>
-        <translation type="obsolete">%1 (%2)</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::UserSendChatEvent</name>
@@ -11069,12 +6684,6 @@ Valitaanko toinen kuva?</translation>
         <translation>Syytä ei annettu</translation>
     </message>
     <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 kieltäytyi chatistä:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendchatevent.cpp" line="98"/>
         <source>Chat with %1 refused:
 %2</source>
@@ -11084,22 +6693,6 @@ Valitaanko toinen kuva?</translation>
 </context>
 <context>
     <name>LicqQtGui::UserSendCommon</name>
-    <message>
-        <source>Se&amp;nd through server</source>
-        <translation type="obsolete">Palvelime&amp;n kautta</translation>
-    </message>
-    <message>
-        <source>U&amp;rgent</source>
-        <translation type="obsolete">Tä&amp;rkeä</translation>
-    </message>
-    <message>
-        <source>M&amp;ultiple recipients</source>
-        <translation type="obsolete">Ryh&amp;mälähetys</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Valikko</translation>
-    </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="144"/>
         <source>Message</source>
@@ -11135,10 +6728,6 @@ Valitaanko toinen kuva?</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="1176"/>
         <source>&amp;Send</source>
         <translation>Lähetä (&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">Sulje (&amp;C)</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1395"/>
@@ -11201,14 +6790,6 @@ send through server?</source>
 lähetetäänkö palvelimen kautta?</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">Kyllä</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Ei</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1217"/>
         <source>%1 is in %2 mode:
 %3
@@ -11233,20 +6814,6 @@ Lähetä...</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source>Cancel</source>
         <translation>Peruuta</translation>
-    </message>
-    <message>
-        <source>%1 refused %2, send through server</source>
-        <translation type="obsolete">%1 kieltäytyi %2, lähetä palvelimen kautta</translation>
-    </message>
-    <message>
-        <source>Warning: Message can&apos;t be sent securely
-through the server!</source>
-        <translation type="obsolete">Varoitus: viestiä ei voi lähettää suojatusti
-palvelimen kautta!</translation>
-    </message>
-    <message>
-        <source>Send anyway</source>
-        <translation type="obsolete">Lähetä kuitenkin</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="247"/>
@@ -11378,12 +6945,6 @@ Send anyway?</source>
         <translation>Syytä ei annettu</translation>
     </message>
     <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 kieltäytyi vastaanottamasta tiedostoa:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendfileevent.cpp" line="119"/>
         <location filename="../src/userevents/usersendfileevent.cpp" line="203"/>
         <source>%1 Files</source>
@@ -11411,14 +6972,6 @@ Do you really want to send it?</source>
         <translation>Et muokannut viestiä.
 Haluatko varmasti lähettää sen?</translation>
     </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Kyllä</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;En</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::UserSendSmsEvent</name>
@@ -11444,14 +6997,6 @@ Do you really want to send it?</source>
         <translation>Et muokannut SMS-viestiä.
 Haluatko varmasti lähettää sen?</translation>
     </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Kyllä</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;En</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::UserSendUrlEvent</name>
@@ -11473,10 +7018,6 @@ Haluatko varmasti lähettää sen?</translation>
 </context>
 <context>
     <name>LicqQtGui::UserViewEvent</name>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Valikko</translation>
-    </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="127"/>
         <source>Aut&amp;o Close</source>
@@ -11593,16 +7134,6 @@ Pyyntö peruttu.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">Licq ei löydä selainohjelmaa sisäisen virheen vuoksi.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq ei voi käynnistää selaintasi ja avata URLia.
-Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/userviewevent.cpp" line="755"/>
         <location filename="../src/userevents/userviewevent.cpp" line="767"/>
         <location filename="../src/userevents/userviewevent.cpp" line="779"/>
@@ -11704,24 +7235,6 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::VerifyDlg</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::WharfIcon</name>
-    <message>
-        <source>Left click - Show main window
-Middle click - Show next message
-Right click - System menu</source>
-        <translation type="obsolete">Vasen nappi - näytä pääikkuna
-Keskinappi - näytä seuraava viesti
-Oikea nappi - Järjestelmävalikko</translation>
-    </message>
-</context>
-<context>
     <name>QMessageBox</name>
     <message>
         <location filename="../src/core/messagebox.cpp" line="63"/>
@@ -11734,18 +7247,6 @@ Oikea nappi - Järjestelmävalikko</translation>
         <location filename="../src/core/messagebox.cpp" line="95"/>
         <source>Licq Question</source>
         <translation>Licq-kysymys</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq-tiedot</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq-varoitus</translation>
-    </message>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq-virhe</translation>
     </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="78"/>

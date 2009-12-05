@@ -40,10 +40,6 @@
         <translation>Rechazar autorización a %1</translation>
     </message>
     <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Autorizar usuario (UIN):</translation>
-    </message>
-    <message>
         <source>Grant authorization to %1</source>
         <translation>Conceder autorización a %1</translation>
     </message>
@@ -1914,18 +1910,6 @@ el grupo &apos;%1&apos;?</translation>
         <translation>sin_nombre</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Valores Por Defecto</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Por Defecto:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">El grupo en el que se empieza por defecto.</translation>
-    </message>
-    <message>
         <source>Edit group name (hit enter to save).</source>
         <translation>Editar nombre del grupo (pulse ENTER para guardarlo).</translation>
     </message>
@@ -1940,18 +1924,6 @@ el grupo &apos;%1&apos;?</translation>
     <message>
         <source>Shift Up</source>
         <translation>Mover Arriba</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Configurar Nuevos Usuarios</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">El grupo al cual serán añadidos automáticamente los nuevos usuarios.  Todos los nuevos usuarios pertenecen al grupo del sistema Nuevos Usuarios, pero en el servidor también serán almacenados en el grupo especificado.</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Nuevo Usuario:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -3624,10 +3596,6 @@ Se requiere que se reinicie la aplicación para que estos cambios tengan efecto!
     <message>
         <source>Marge has left the conversation.</source>
         <translation>Marge dejó la conversación.</translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="obsolete">a</translation>
     </message>
     <message>
         <source>The format string used to define what will appear in each column.

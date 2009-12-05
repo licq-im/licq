@@ -40,10 +40,6 @@
         <translation>Licq - Отказать в авторизации</translation>
     </message>
     <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">UIN пользователя для авторизации:</translation>
-    </message>
-    <message>
         <source>Grant authorization to %1</source>
         <translation>Авторизовать %1</translation>
     </message>
@@ -1913,30 +1909,6 @@ You can leave me a message.</source>
     <message>
         <source>Edit group name (hit enter to save).</source>
         <translation>Переименовать группу (Enter для сохранения).</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">По умолчанию</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Группа по умолчанию при запуске.</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Новые пользователи</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Группа, в которую будут добавляться новые пользователи. Все новые пользователи будут в локальной группе &apos;Новые пользователи&apos;, а в серверном списке контактов они будут сохраняться в указанной группе.</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">По умолчанию:</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Новые пользователи:</translation>
     </message>
     <message>
         <source>&amp;Save</source>

@@ -1,12 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">žádný</translation>
-    </message>
-</context>
-<context>
     <name>@default</name>
     <message>
         <source>KDE default</source>
@@ -18,14 +11,6 @@
     <message>
         <source>Licq - Add User</source>
         <translation>Licq - Přidat uživatele</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Nové UIN:</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">Upozornit uživ&amp;atele</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -53,10 +38,6 @@
     <message>
         <source>Refuse authorization to %1</source>
         <translation>Odmítnout žádost o autorizaci od %1</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Autorizovat uživatele (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -593,10 +574,6 @@ See Network Window for details.</source>
         <translation>&amp;Náhodný chat</translation>
     </message>
     <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Chyba při posílání autorizace.</translation>
-    </message>
-    <message>
         <source>&amp;Random Chat Group</source>
         <translation>Náhodná &amp;chatovací skupina</translation>
     </message>
@@ -613,18 +590,6 @@ See Network Window for details.</source>
     <message>
         <source>Check %1 Response</source>
         <translation>&amp;Ukaž %1 odpověď</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Momentálně jste registrovaný jako
-UIN: %1
-Adresář: %2
-Spusťte znovu licq z parametrem -b pro výběr jiného
-adresáře a poté se zaregistrujte jako nový uživatel.</translation>
     </message>
     <message>
         <source>Auto Request Secure</source>
@@ -673,10 +638,6 @@ adresáře a poté se zaregistrujte jako nový uživatel.</translation>
         <translation>V&amp;lastní Auto odpověď...</translation>
     </message>
     <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">&amp;Online upozornění</translation>
-    </message>
-    <message>
         <source>Set &amp;Auto Response...</source>
         <translation>Nastavit &amp;Auto odpověď...</translation>
     </message>
@@ -711,14 +672,6 @@ adresáře a poté se zaregistrujte jako nový uživatel.</translation>
     <message>
         <source>Edit User Group</source>
         <translation>&amp;Editovat skupiny</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Registrace úspěšně proběhla. Vaše uživatelské identifikační
-číslo (UIN) je %1.
-Nyní můžete nastavit své osobní údaje.</translation>
     </message>
     <message>
         <source>Unknown Packets</source>
@@ -858,24 +811,8 @@ Síťový záznam obsahuje detaily.</translation>
         <translation>Přijímat v Away</translation>
     </message>
     <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">I&amp;nvisible seznam</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Visi&amp;ble seznam</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Registrace se nezdařila. Síťový záznam obsahuje detaily.</translation>
-    </message>
-    <message>
         <source>Send &amp;Chat Request</source>
         <translation>Poslat žádost o &amp;chat</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Reg&amp;istrovat uživatele</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
@@ -884,10 +821,6 @@ Síťový záznam obsahuje detaily.</translation>
     <message>
         <source>%1 message%2</source>
         <translation>%1 zpráva%2</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">I&amp;gnore seznam</translation>
     </message>
     <message>
         <source>%1: %2
@@ -902,10 +835,6 @@ Síťový záznam obsahuje detaily.</translation>
     <message>
         <source>Debug Level</source>
         <translation>Stupeň ladění</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">New Users</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1044,20 +973,12 @@ Dvojklik - ukázat další zprávu</translation>
         <translation>&amp;Ukaž Auto odpověď</translation>
     </message>
     <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Autorizace potvrzena.</translation>
-    </message>
-    <message>
         <source>System Functions</source>
         <translation>Systémové funkce</translation>
     </message>
     <message>
         <source>Edit &amp;Groups</source>
         <translation>Editovat &amp;skupiny</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">All Users</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1461,14 +1382,6 @@ You will need to start the browser and open the URL manually.</source>
         <translation>S</translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Nečinný: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automatická odpověď:&lt;/u&gt;</translation>
-    </message>
-    <message>
         <source>Online</source>
         <translation>Online</translation>
     </message>
@@ -1477,28 +1390,8 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Offline</translation>
     </message>
     <message>
-        <source>Central European</source>
-        <translation type="obsolete">Střední Evropa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Narozeniny&amp;nbsp;Dnes!&lt;/b&gt;</translation>
-    </message>
-    <message>
         <source>%1 Floaty (%2)</source>
         <translation>%1 plovoucí (%2)</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Vlastní&amp;nbsp;automatická&amp;nbsp;odpověď</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Bezpečné&amp;nbsp;spojení</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Přihlášen: </translation>
     </message>
     <message>
         <source>Not In List</source>
@@ -1987,28 +1880,12 @@ the group &apos;%1&apos;?</source>
         <translation>noname</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Nastavit výchozí</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Výchozí:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Výchozí skupina při startu.</translation>
-    </message>
-    <message>
         <source>Edit group name (hit enter to save).</source>
         <translation>Editovat jméno skupiny (enter uloží).</translation>
     </message>
     <message>
         <source>Shift Down</source>
         <translation>Dolu</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Všichni</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -3078,14 +2955,6 @@ Bezpečné spojení pravděpodobně nebude fungovat.</translation>
         <translation>Provádět při Occupied</translation>
     </message>
     <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Řídící řetězec definuje, co bude obsahovat daný sloupec.
-Mohou být použity následující parametry:
-</translation>
-    </message>
-    <message>
         <source>Parameter for received system messages</source>
         <translation>Parametry předávané při obdržení systémové zprávy</translation>
     </message>
@@ -3266,10 +3135,6 @@ Mohou být použity následující parametry:
         <translation>Určuje, zda má být zobrazena doková ikona.</translation>
     </message>
     <message>
-        <source>Sort Online Users by Status</source>
-        <translation type="obsolete">Používat status pro řazení online uživatelů</translation>
-    </message>
-    <message>
         <source>Proxy Server:</source>
         <translation>Proxy server:</translation>
     </message>
@@ -3292,10 +3157,6 @@ Mohou být použity následující parametry:
     <message>
         <source>Previous Message</source>
         <translation>Předchozí zpráva</translation>
-    </message>
-    <message>
-        <source>Sort all online users by their actual status</source>
-        <translation type="obsolete">Používat status pro řazení všech online uživatelů</translation>
     </message>
     <message>
         <source>Select a font from the system list</source>
@@ -3822,30 +3683,10 @@ Nyní můžete nastavit své osobní údaje.</translation>
         <translation>Povolit</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation type="obsolete">Konfigurovat</translation>
-    </message>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Běžící pluginy</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Odebrat</translation>
-    </message>
-    <message>
         <source>Licq Plugin %1 %2
 </source>
         <translation>Licq Plugin %1 %2
 </translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Available</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -3854,14 +3695,6 @@ Nyní můžete nastavit své osobní údaje.</translation>
     <message>
         <source>Description</source>
         <translation>Popis</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Detaily</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Zakázat</translation>
     </message>
     <message>
         <source>Version</source>
@@ -3883,20 +3716,8 @@ Nyní můžete nastavit své osobní údaje.</translation>
 <context>
     <name>QMessageBox</name>
     <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq chyba</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq varování</translation>
-    </message>
-    <message>
         <source>Licq Question</source>
         <translation>Licq otázka</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq informace</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -3910,96 +3731,32 @@ Nyní můžete nastavit své osobní údaje.</translation>
 <context>
     <name>RegisterUserDlg</name>
     <message>
-        <source>Uin:</source>
-        <translation type="obsolete">Uin:</translation>
-    </message>
-    <message>
-        <source>&amp;Save Password</source>
-        <translation type="obsolete">&amp;Pamatovat heslo.</translation>
-    </message>
-    <message>
         <source>Please enter your password in both input fields.</source>
         <translation>Vložte heslo do obou vstupních políček.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Registrace úspěšně dokončena. Nyní se můžete přihlásit a nastavit své osobní údaje.</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
         <translation>Vadné heslo, musí mít 1-8 znaků.</translation>
     </message>
     <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Při registraci existujícího uživatele je potřeba vložit platné UIN. </translation>
-    </message>
-    <message>
         <source>Now please click &apos;Finish&apos; to start the registration process.</source>
         <translation>Nyní zvolte &apos;Finish&apos; pro spustění registrace.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Probíhá registrace uživatele...</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
         <translation>Nyní zvolte &apos;Back&apos; pro nový pokus.</translation>
     </message>
     <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">&amp;Registruj existujícího uživatele</translation>
-    </message>
-    <message>
         <source>The passwords don&apos;t seem to match.</source>
         <translation>Hesla se neshodují.</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">Registrace UIN - část 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">Registrace UIN - část 3</translation>
     </message>
     <message>
         <source>Password:</source>
         <translation>Heslo:</translation>
     </message>
     <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">Neplatné UIN.  Zkuste znovu.</translation>
-    </message>
-    <message>
         <source>Verify:</source>
         <translation>Kontrola:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Uživatelské registrace licq</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Vítejte v registračním průvodci.
-
-Můžete zde provést registraci nového uživatele, nebo nastavit používání existujícího UIN.
-
-Jestliže registrujete nové uin, zvolte heslo a klikněte &quot;Finish&quot;.
-Pokud již máte přiděleno uin, zapněte volbu &quot;Register Existing User&quot;,
-vložte své uin a heslo a klikněte &quot;OK&quot;
-
-Potvrďte &quot;Next&quot; pro další pokračování.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">Registrace UIN</translation>
     </message>
     <message>
         <source>Welcome to the Registration Wizard.
@@ -4082,10 +3839,6 @@ After you are online, you can send your personal details to the server.</source>
     <message>
         <source>&amp;Done</source>
         <translation>&amp;Konec</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">&amp;Uin#</translation>
     </message>
     <message>
         <source>City:</source>
@@ -4782,10 +4535,6 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
         <translation>Mužské</translation>
     </message>
     <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
         <source>Zip:</source>
         <translation>Zip:</translation>
     </message>
@@ -4880,10 +4629,6 @@ být přihlášen do ICQ sítě.</translation>
         <translation>Mobil:</translation>
     </message>
     <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 až %2</translation>
-    </message>
-    <message>
         <source>EMail 1:</source>
         <translation>EMail 1:</translation>
     </message>
@@ -4950,10 +4695,6 @@ být přihlášen do ICQ sítě.</translation>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
         <translation>[&lt;font color=&quot;%1&quot;&gt;Obdrženo&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Odesláno&lt;/font&gt;] %3 z %4 vyhovujících</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
@@ -5052,10 +4793,6 @@ být přihlášen do ICQ sítě.</translation>
     <message>
         <source>Rever&amp;se</source>
         <translation>&amp;Sestupně</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 od %2</translation>
     </message>
     <message>
         <source>Gender:</source>
@@ -5390,10 +5127,6 @@ through the server!</source>
         <translation> do seznamu uživatelů</translation>
     </message>
     <message>
-        <source>%1 refused %2, send through server</source>
-        <translation type="obsolete">%1 odmítl %2, posláno přes server</translation>
-    </message>
-    <message>
         <source>M&amp;ultiple recipients</source>
         <translation>&amp;Více příjemců</translation>
     </message>
@@ -5597,10 +5330,6 @@ Request was cancelled.</source>
         <translation>
 --------------------
 Požadavek zrušen.</translation>
-    </message>
-    <message>
-        <source>View URL failed</source>
-        <translation type="obsolete">Chyba při zobrazení URL</translation>
     </message>
     <message>
         <source>A&amp;dd User</source>

@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="be_BY">
 <context>
-    <name>@default</name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE па-змоўчаньню</translation>
-    </message>
-</context>
-<context>
     <name>Groups</name>
     <message>
         <location filename="../src/helpers/licqstrings.cpp" line="108"/>
@@ -95,10 +88,6 @@
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation>&amp;Пратакол:</translation>
-    </message>
-    <message>
-        <source>&amp;New User ID:</source>
-        <translation type="obsolete">&amp;Новы нумар:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="45"/>
@@ -765,30 +754,6 @@ You can leave me a message.</source>
         <translation>Рэдагаваць назву гурта (націсьніце на Ўвод дзеля захаваньня).</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Усталяваць па змоўчаньню</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Група па змоўчаньню пры старце.</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Новыя карыстальнікі</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Гурт, у які аўтаматычна дадаюца новыя карыстальнікі. Усе новыя карыстальнікі будуць дададзены да лакальнага гурта &quot;Новыя карыстальнікі&quot;. Таксама яны павінны быць захаваны ў адпаведны гурт на баку паслужніка.</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Па змоўчаньню:</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Новыя карыстальнікі:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="83"/>
         <source>&amp;Save</source>
         <translation>&amp;Захаваць</translation>
@@ -1397,26 +1362,6 @@ See Network Window for details.</source>
 <context>
     <name>LicqQtGui::GPGKeyManager</name>
     <message>
-        <source>Licq GPG Key Manager</source>
-        <translation type="obsolete">Licq Наладкі GPG-ключэй</translation>
-    </message>
-    <message>
-        <source>GPG Passphrase</source>
-        <translation type="obsolete">GPG пароль</translation>
-    </message>
-    <message>
-        <source>No passphrase set</source>
-        <translation type="obsolete">Пароль не ўсталяваны</translation>
-    </message>
-    <message>
-        <source>&amp;Set GPG Passphrase</source>
-        <translation type="obsolete">&amp;Усталяваць GPG пароль</translation>
-    </message>
-    <message>
-        <source>User Keys</source>
-        <translation type="obsolete">Ключы карыстальніка</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="81"/>
         <source>&amp;Add</source>
         <translation>&amp;Дадаць</translation>
@@ -1450,30 +1395,6 @@ See Network Window for details.</source>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="67"/>
         <source>Key ID</source>
         <translation>Нумар ключа</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">З&amp;ачыніць</translation>
-    </message>
-    <message>
-        <source>Set Passphrase</source>
-        <translation type="obsolete">Усталяваць пароль</translation>
-    </message>
-    <message>
-        <source>Not yet implemented. Use licq_gpg.conf.</source>
-        <translation type="obsolete">Не падтрымліваецца. Карыстайцеся licq_gpg.conf.</translation>
-    </message>
-    <message>
-        <source>Remove GPG key</source>
-        <translation type="obsolete">Выдаліць GPG ключ</translation>
-    </message>
-    <message>
-        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
-        <translation type="obsolete">Вы сапраўды жадаеце выдаліць GPG ключ? Ключ не будзе выдалены з сістэмы.</translation>
-    </message>
-    <message>
-        <source>Drag&amp;Drop user to add to list.</source>
-        <translation type="obsolete">Перанясіце карыстальніка каб дадаць ў сьпіс.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="142"/>
@@ -1900,14 +1821,6 @@ from your contact list?</source>
 з Вашага сьпісу кантактаў?</translation>
     </message>
     <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Вы ўпэўнены, што жадаеце выдаліць
-%1 (%2)
-з гурта &apos;%3&apos;?</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="1063"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
@@ -1924,10 +1837,6 @@ Would you like to try loading the old one?</source>
 </context>
 <context>
     <name>LicqQtGui::LogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq Лог сеткі</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
@@ -2124,14 +2033,6 @@ See network window for details.</source>
 Падрабязнасьці ў акенцы сеткі.</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="obsolete">&lt;h2&gt;Парады для карыстаньня&lt;br&gt;пашырэньня Qt-GUI дзеля Licq&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Ваш стан зьмяняецца пасьля кліку правай кнопкай на назве стану.&lt;/li&gt;&lt;li&gt;Аўтаматычны адказ зьмяняецца падвойным клікам на назве стану.&lt;/li&gt;&lt;li&gt;Прагляд сістэмных паведамленьняў ажыцяўляецца падвойным клікам на назве паведамленьня.&lt;/li&gt;&lt;li&gt;Клік правай кнопкай па назве паведамленьня  зьмяняе гурт.&lt;/li&gt;&lt;li&gt;Выкарыстоўвайце наступныя скарачэньні ў сьпісе кантактаў:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Пераключэньне Міні-рэжыму&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Паказваць/непаказваць неактыўных карыстальнікаў &lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Выхад&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Схаваць&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Прагляд наступнага паведамленьня&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Прагляд паведамленьня&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Даслаць паведамленьне&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Даслаць спасылку&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Даслаць запыт размовы&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Даслаць файл&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Праглядзець аўтаматычны адказ&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Адчыніць ўсе паведамленьні&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Абнавіць акенца сьпісу&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Выдаліць карыстальніка з цякучага гурта&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Выдаліць карыстальніка з сьпісу кантактаў&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Утрымлівайце control калі націскаеце на кнопку &quot;зачыніць&quot; у функцыянальным акенцы каб выдаліць карыстальніка з сьпісу кантактаў.&lt;/li&gt;&lt;li&gt;Націск Ctrl-Enter у большасьці выпадкаў прыводзіць да вызначэньня  &quot;Добра&quot; альбо &quot;Ужыць&quot;, напрыклад, у акенцы паведамленьня гэта прыводзіць да адсыланьня паведамленьня.&lt;/li&gt;&lt;li&gt;Ніжэй знаходзіцца поўны сьпіс %-зьменных, якія могуць быць выкарыстаны у якасьці параметраў &lt;b&gt;падзей&lt;/b&gt;,&lt;b&gt;аўтаматычных адказаў&lt;/b&gt; ды &lt;b&gt;дапасаваньнях&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Больш падрабязную інфармацыю можна знайсьці на старонцы Licq у сеціве (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="670"/>
         <source>is online</source>
         <translation>у сетцы</translation>
@@ -2269,34 +2170,9 @@ See network window for details.</source>
         <translation>Рэдагаваньне ўліковага запісу</translation>
     </message>
     <message>
-        <source>User ID:</source>
-        <translation type="obsolete">Ідэнтыфікатар
-карыстальніка:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Пароль:</translation>
-    </message>
-    <message>
-        <source>Protocol:</source>
-        <translation type="obsolete">Пратакол:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
         <source>Currently only one account per protocol is supported.</source>
         <translation>Зараз падтрымліваецца толькі адзін уліковы запіс дзеля кожнага пратаколу.</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Добра</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Скасаваць</translation>
-    </message>
-    <message>
-        <source>Save Password</source>
-        <translation type="obsolete">Захаваць пароль</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="74"/>
@@ -2470,17 +2346,9 @@ UIN (ідэнтыфікатарам карыстальніка): %1
         <source>(Unloaded)</source>
         <translation>(Не загружаны)</translation>
     </message>
-    <message>
-        <source>Plugin Manager</source>
-        <translation type="obsolete">Кіраваньне пашырэньнямі</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Пошук выпадковай размовы</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
@@ -2583,10 +2451,6 @@ UIN (ідэнтыфікатарам карыстальніка): %1
         <location filename="../src/dialogs/refusedlg.cpp" line="67"/>
         <source>Licq - %1 Refusal</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 Адмова</translation>
     </message>
 </context>
 <context>
@@ -2820,10 +2684,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Увядзіце дадзеныя дзеля пошуку і націсьніце &quot;Пошук&quot;</translation>
     </message>
     <message>
-        <source>A&amp;lert User</source>
-        <translation type="obsolete">Па&amp;ведаміць карыстальніка</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="185"/>
         <source>View &amp;Info</source>
         <translation>П&amp;раглядзець дадзеныя</translation>
@@ -2985,49 +2845,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Наладкі</translation>
     </message>
     <message>
-        <source>Password/UIN settings</source>
-        <translation type="obsolete">Наладкі паролю ды нумара</translation>
-    </message>
-    <message>
-        <source>&amp;Uin:</source>
-        <translation type="obsolete">&amp;Нумар:</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Пароль:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Увядзіце тут Ваш ICQ пароль.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">П&amp;адцьверджаньне:</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Увядзіце яшчэ раз Ваш пароль.</translation>
-    </message>
-    <message>
-        <source>&amp;Local changes only</source>
-        <translation type="obsolete">&amp;Змяніць толькі лакальна</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="89"/>
         <source>&amp;Update</source>
         <translation>А&amp;бнавіць</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options</source>
-        <translation type="obsolete">Наладкі бясьпекі ICQ</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Няспраўны пароль, ён павінен быць ад 1 да 8 сымбаляў.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Пароль не супадае, паспрабуйце яшчэ раз.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="114"/>
@@ -3047,10 +2867,6 @@ ICQ Network to change the settings.</source>
         <translation>Няўдалае ўсталяваньне наладак бясьпекі.</translation>
     </message>
     <message>
-        <source>Changing password failed.</source>
-        <translation type="obsolete">Няўдалая зьмена паролю.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="165"/>
         <source>timed out</source>
         <translation>скончыўся час</translation>
@@ -3061,10 +2877,6 @@ ICQ Network to change the settings.</source>
         <translation>Не хапіла часу каб усталяваць наладкі бясьпекі.</translation>
     </message>
     <message>
-        <source>Timeout while changing password.</source>
-        <translation type="obsolete">Не хапіла часу каб зьмяніць пароль.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="170"/>
         <source>error</source>
         <translation>памылка</translation>
@@ -3073,10 +2885,6 @@ ICQ Network to change the settings.</source>
         <location filename="../src/dialogs/securitydlg.cpp" line="171"/>
         <source>Internal error while setting security options.</source>
         <translation>Унутраная памылка пры ўсталяваньні наладак бясьпекі.</translation>
-    </message>
-    <message>
-        <source>Internal error while changing password.</source>
-        <translation type="obsolete">Унутраная памылка пры зьмене паролю.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="72"/>
@@ -3113,23 +2921,6 @@ if you are online through your web indicator.</source>
 It doesn&apos;t guarantee it will be hidden though.</source>
         <translation>&quot;Схаваць IP&quot; не дазваляе іншым карыстальнікам бачыць
 Ваш сеткавы адрас. Гэтая наладка не гарантуе вынік.</translation>
-    </message>
-    <message>
-        <source>Enter the UIN which you want to use.
-Only available if &quot;Local changes only&quot; is checked.</source>
-        <translation type="obsolete">Увядзіце той нумар, які Вы жадаеце выкарыстоўваць.
-Даступны толькі пры ўключанай наладцы &quot;Зьмяніць толькі лакальна&quot;.</translation>
-    </message>
-    <message>
-        <source>If checked, password/UIN changes will apply only on your local computer.
-Useful if your password is incorrectly saved in Licq.</source>
-        <translation type="obsolete">Калі актыўна, то зьмена нумару альбо паролю будзе
-ўжыта толькі на Вашым камп&apos;ютары.
-Выкарыстоўваецца, калі пароль няспраўна захоўваецца Licq.</translation>
-    </message>
-    <message>
-        <source>Failed to change the settings.</source>
-        <translation type="obsolete">Няўдалая зьмена наладкі.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="133"/>
@@ -3304,10 +3095,6 @@ Please create one first.</source>
         <translation>Паказваць размову ў адзін радок</translation>
     </message>
     <message>
-        <source>Send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
-        <translation type="obsolete">Дасылаць паведамленьні па націску на Enter, устаўляць новы радок націскам Ctrl+Enter</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="93"/>
         <source>Use double return</source>
         <translation>Выкарыстоўваць падвойны ўвод</translation>
@@ -3449,14 +3236,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <location filename="../src/settings/chat.cpp" line="211"/>
         <source>URI viewer:</source>
         <translation>Праглядач спасылак:</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Каманда, якая будзе выканана дзеля прагляду спасылкі. Камандзе будзе перадана спасылка ў якасьці аргумента.</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE па змоўчаньню</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="198"/>
@@ -3665,10 +3444,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation>Спраўджваць правапіс</translation>
     </message>
     <message>
-        <source>Mark misspelled word as you type.</source>
-        <translation type="obsolete">Пазначаць няспраўныя словы пры наборы.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="103"/>
         <source>Popup auto response</source>
         <translation type="unfinished"></translation>
@@ -3712,10 +3487,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <location filename="../src/settings/contactlist.cpp" line="77"/>
         <source>Show grid lines</source>
         <translation>Паказваць абмяжоўваючыя рысы</translation>
-    </message>
-    <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Маляваць межы навокал усіх элементаў у сьпісе кантактаў</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="81"/>
@@ -3935,10 +3706,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation>Заглаў&apos;е</translation>
     </message>
     <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Назва, якая будзе бачна ў сьпісе кантактаў як заглаў&apos;е</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="228"/>
         <source>Format</source>
         <translation>Фармат</translation>
@@ -4110,14 +3877,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation>Паводзіны сьпісу кантактаў</translation>
     </message>
     <message>
-        <source>Draw myesBox around each square in the user list</source>
-        <translation type="obsolete">Маляваць myesBox вакол кожнага квадрату ў сьпісе карыстальнікаў</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list myBox column header</source>
-        <translation type="obsolete">Радок, які павінен з&apos;яўляцца ў заглаў&apos;і слупка сьпісу myBox</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="78"/>
         <source>Draw the box around each square in the user list</source>
         <translation type="unfinished"></translation>
@@ -4175,14 +3934,6 @@ If not checked user will only be added to the new group.</source>
         <location filename="../src/settings/events.cpp" line="69"/>
         <source>Show the message info label in bold font if there are incoming messages</source>
         <translation>Патоўшчыць друкаваньне дзеля адпаведнага карыстальніка калі атрымана новае паведамленьне</translation>
-    </message>
-    <message>
-        <source>Auto-popup message</source>
-        <translation type="obsolete">Аўтаматычна адчыняць паведамленьне</translation>
-    </message>
-    <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Аўтаматычна адчыняць новыя паведамленьні ў акенцах калі вы маеце стан &quot;у сетцы&quot; альбо &quot;згодны размаўляць&quot;</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="72"/>
@@ -4583,14 +4334,6 @@ Works with many different window managers.</source>
         <translation>Выкарыстоўваецца дзеля звычайнага тэксту.</translation>
     </message>
     <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Абраць друкаваньне</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list.</source>
-        <translation type="obsolete">Абраць друкаваньне з сыстэмнага сьпісу.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Editing:</source>
         <translation>Рэдагаваньне:</translation>
@@ -4599,14 +4342,6 @@ Works with many different window managers.</source>
         <location filename="../src/settings/general.cpp" line="139"/>
         <source>Used in message editor etc.</source>
         <translation>Выкарыстоўваецца ў рэдактары паведамленьняў і інш.</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">па змоўчаньню (%1)</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">па змоўчаньню</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="94"/>
@@ -5321,10 +5056,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
 <context>
     <name>LicqQtGui::SettingsDlg</name>
     <message>
-        <source>Licq Settings</source>
-        <translation type="obsolete">Наладкі Licq</translation>
-    </message>
-    <message>
         <location filename="../src/settings/settingsdlg.cpp" line="63"/>
         <source>Licq - Settings</source>
         <translation type="unfinished"></translation>
@@ -5402,145 +5133,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="147"/>
         <source>error</source>
         <translation>памылка</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>Skin selection</source>
-        <translation type="obsolete">Вызначэньне зьнешняга выгляду</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Прадпрагляд</translation>
-    </message>
-    <message>
-        <source>S&amp;kins:</source>
-        <translation type="obsolete">&amp;Выгляд:</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available skins</source>
-        <translation type="obsolete">Абярыце адзін з даступных выглядаў</translation>
-    </message>
-    <message>
-        <source>&amp;Icons:</source>
-        <translation type="obsolete">В&amp;ыявы:</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available icon sets</source>
-        <translation type="obsolete">Абярыце адзін з даступных набораў выяваў</translation>
-    </message>
-    <message>
-        <source>E&amp;xtended Icons:</source>
-        <translation type="obsolete">&amp;Пашыраныя выявы:</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available extended icon sets</source>
-        <translation type="obsolete">Абярыце адзін з даступных набораў пашыраных выяваў</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available emoticon icon sets</source>
-        <translation type="obsolete">Абярыце адзін з даступных набораў эмацыйных выяваў (смайлаў)</translation>
-    </message>
-    <message>
-        <source>Skin:</source>
-        <translation type="obsolete">Выгляд:</translation>
-    </message>
-    <message>
-        <source>Icons:</source>
-        <translation type="obsolete">Выявы:</translation>
-    </message>
-    <message>
-        <source>Extended Icons:</source>
-        <translation type="obsolete">Пашыраныя выявы:</translation>
-    </message>
-    <message>
-        <source>Emoticons:</source>
-        <translation type="obsolete">Выявы эмоцыяў:</translation>
-    </message>
-    <message>
-        <source>&amp;Edit Skin</source>
-        <translation type="obsolete">&amp;Рэдагаваць выгляд</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Добра</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Ужыць</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Скасаваць</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Памылка</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1
-Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Немагчыма адчыніць файл выяваў:
-%1
- Набор выяваў &apos;%2&apos; будзе недасягальным.</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1
-Extended Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Немагчыма адчыніць файл пашыраных выяваў:
-%1
- Набор пашыраных выяваў &apos;%2&apos; будзе недасягальным.</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">Licq Наладкі зьнешняга выгляду</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1</source>
-        <translation type="obsolete">Немагчыма адчыніць файл выяваў:
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1</source>
-        <translation type="obsolete">Немагчыма адчыніць файл пашыраных выяваў:
-%1</translation>
-    </message>
-    <message>
-        <source>E&amp;moticons:</source>
-        <translation type="obsolete">Выявы &amp;эмоцыяў:</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Мяню</translation>
-    </message>
-    <message>
-        <source>Unable to load icons 
-%1.</source>
-        <translation type="obsolete">Немагчыма загрузіць выявы 
-%1.</translation>
-    </message>
-    <message>
-        <source>Unable to load extended icons 
-%1.</source>
-        <translation type="obsolete">Немагчыма загрузіць пашыраныя выявы 
-%1.</translation>
-    </message>
-    <message>
-        <source>Unable to load icons
-%1.</source>
-        <translation type="obsolete">Немагчыма загрузіць выявы
-%1.</translation>
-    </message>
-    <message>
-        <source>Unable to load extended icons
-%1.</source>
-        <translation type="obsolete">Немагчыма загрузіць пашыраныя выявы
-%1.</translation>
     </message>
 </context>
 <context>
@@ -5639,18 +5231,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation>Пр&amp;агляд сістэмных маведамленьняў...</translation>
-    </message>
-    <message>
-        <source>&amp;Owner Manager...</source>
-        <translation type="obsolete">&amp;Наладкі ўладароў...</translation>
-    </message>
-    <message>
-        <source>&amp;Security/Password Options...</source>
-        <translation type="obsolete">Наладкі &amp;бясьпекі/пароляў...</translation>
-    </message>
-    <message>
-        <source>&amp;Random Chat Group...</source>
-        <translation type="obsolete">&amp;Гурт выпадковай размовы...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="99"/>
@@ -5823,10 +5403,6 @@ reset your statistics?</source>
         <translation>&amp;Наладкі...</translation>
     </message>
     <message>
-        <source>Sk&amp;in Browser...</source>
-        <translation type="obsolete">З&amp;ьнешні выгляд...</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="209"/>
         <source>GPG &amp;Key Manager...</source>
         <translation>На&amp;ладкі GPG...</translation>
@@ -5857,20 +5433,6 @@ reset your statistics?</source>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Немагчыма загрузіць тэму дока з файла 
-(%1)
-:%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Немагчыма загрузіць малюнак дока з файла 
-(%1)</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="77"/>
         <source>Unable to load dock theme file:
@@ -6154,396 +5716,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventtabdlg.cpp" line="176"/>
         <source>[UNKNOWN_USER]</source>
         <translation>[НЕВЯДОМЫ_КАРЫСТАЛЬНІК]</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::UserInfoDlg</name>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">А&amp;бнавіць</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">З&amp;ачыніць</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Захаваць</translation>
-    </message>
-    <message>
-        <source>Retrieve</source>
-        <translation type="obsolete">Атрымаць</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Мяню</translation>
-    </message>
-    <message>
-        <source>Licq - Info </source>
-        <translation type="obsolete">Licq - Дадзеныя </translation>
-    </message>
-    <message>
-        <source>INVALID USER</source>
-        <translation type="obsolete">НЯВЕРНЫ КАРЫСТАЛЬНІК</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">А&amp;сноўныя</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation type="obsolete">Мянушка:</translation>
-    </message>
-    <message>
-        <source>Keep Alias on Update</source>
-        <translation type="obsolete">Захаваць мянушку пры абнаўленьні</translation>
-    </message>
-    <message>
-        <source>Normally Licq overwrites the Alias when updating user details.
-Check this if you want to keep your changes to the Alias.</source>
-        <translation type="obsolete">Звычайна Licq перазапісвае мянушку пры абнаўленьні дадзеных.
-Усталюйце гэтую наладку каб захаваць мянушку.</translation>
-    </message>
-    <message>
-        <source>ID:</source>
-        <translation type="obsolete">Нумар:</translation>
-    </message>
-    <message>
-        <source>IP:</source>
-        <translation type="obsolete">IP-адрас:</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Стан:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation type="obsolete">Часавая зона: </translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Імя:</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation type="obsolete">Паштовы адрас 1:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation type="obsolete">Паштовы адрас 2:</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation type="obsolete">Стары паштовы
-адрас:</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation type="obsolete">Адрас:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation type="obsolete">Тэлефон:</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation type="obsolete">Вобласць/Штат:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation type="obsolete">Факс:</translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation type="obsolete">Горад:</translation>
-    </message>
-    <message>
-        <source>Cellular:</source>
-        <translation type="obsolete">Мабільны
-тэлефон:</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation type="obsolete">Індэкс:</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">Краіна:</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Не вядома</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation type="obsolete">Невядомая (%1)</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation type="obsolete">Зараз</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation type="obsolete">&amp;Больш</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation type="obsolete">Узрост:</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation type="obsolete">Род:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation type="obsolete">Не вызначаны</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation type="obsolete">Жаночы</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation type="obsolete">Мужчынскі</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation type="obsolete">Хатняя старонка:</translation>
-    </message>
-    <message>
-        <source>Category:</source>
-        <translation type="obsolete">Катэгорыя:</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Апісаньне:</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation type="obsolete">Дзень народзінаў:</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation type="obsolete"> Дзень:</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation type="obsolete"> Месяц:</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation type="obsolete"> Год:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation type="obsolete">Асноўная мова :</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation type="obsolete">Другая мова:</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation type="obsolete">Трэцяя мова:</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Неабходна аўтарызацыя</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation type="obsolete">Аўтарызацыя не патрэбна</translation>
-    </message>
-    <message>
-        <source>User has an ICQ Homepage </source>
-        <translation type="obsolete">Карыстальнік мае старонку на паслужніку ICQ</translation>
-    </message>
-    <message>
-        <source>User has no ICQ Homepage</source>
-        <translation type="obsolete">Карыстальнік не мае старонцы на паслужніку ICQ</translation>
-    </message>
-    <message>
-        <source>M&amp;ore II</source>
-        <translation type="obsolete">Дада&amp;ткова</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(адсутнічае)</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation type="obsolete">&amp;Праца</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation type="obsolete">Аддзел:</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="obsolete">Пасада:</translation>
-    </message>
-    <message>
-        <source>Occupation:</source>
-        <translation type="obsolete">Напрамак
-дзейнасьці:</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">Зьв&amp;есткі</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation type="obsolete">Звесткі:</translation>
-    </message>
-    <message>
-        <source>&amp;Phone</source>
-        <translation type="obsolete">Т&amp;элефон</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Тып</translation>
-    </message>
-    <message>
-        <source>Number/Gateway</source>
-        <translation type="obsolete">Нумар/Шлюз</translation>
-    </message>
-    <message>
-        <source>Country/Provider</source>
-        <translation type="obsolete">Краіна/Аператар</translation>
-    </message>
-    <message>
-        <source>Currently at:</source>
-        <translation type="obsolete">Зараз:</translation>
-    </message>
-    <message>
-        <source>(</source>
-        <translation type="obsolete">(</translation>
-    </message>
-    <message>
-        <source>) </source>
-        <translation type="obsolete">) </translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>P&amp;icture</source>
-        <translation type="obsolete">Мал&amp;юнак</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Недасягальны</translation>
-    </message>
-    <message>
-        <source>Failed to Load</source>
-        <translation type="obsolete">Немагчыма загрузіць</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">Апо&amp;шні раз</translation>
-    </message>
-    <message>
-        <source>Last Online:</source>
-        <translation type="obsolete">У сетцы:</translation>
-    </message>
-    <message>
-        <source>Last Sent Event:</source>
-        <translation type="obsolete">Дасланае паведамленьне:</translation>
-    </message>
-    <message>
-        <source>Last Received Event:</source>
-        <translation type="obsolete">Атрыманае паведамленьне:</translation>
-    </message>
-    <message>
-        <source>Last Checked Auto Response:</source>
-        <translation type="obsolete">Прагледжаны аўта-адказ:</translation>
-    </message>
-    <message>
-        <source>Online Since:</source>
-        <translation type="obsolete">У сетцы з:</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Адключаны</translation>
-    </message>
-    <message>
-        <source>&amp;KDE Addressbook</source>
-        <translation type="obsolete">Адрасная кніга &amp;KDE</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="obsolete">Скрынка:</translation>
-    </message>
-    <message>
-        <source>&amp;Retrieve</source>
-        <translation type="obsolete">Атры&amp;маць</translation>
-    </message>
-    <message>
-        <source>S&amp;end</source>
-        <translation type="obsolete">Даслац&amp;ь</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Дадаць</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">А&amp;чысьціць</translation>
-    </message>
-    <message>
-        <source>&amp;Browse</source>
-        <translation type="obsolete">Прагл&amp;ядзець</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to retrieve your settings.</source>
-        <translation type="obsolete">Неабходна быць злучаным з паслужнікам
-каб атрымаць гэтыя звесткі.</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation type="obsolete">Абнаўленьне...</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to change your settings.</source>
-        <translation type="obsolete">Неабходна быць злучаным з паслужнікам
-каб зьмяніць гэтыя звесткі.</translation>
-    </message>
-    <message>
-        <source>Select your picture</source>
-        <translation type="obsolete">Вызначце Ваш малюнак</translation>
-    </message>
-    <message>
-        <source> is over %1 bytes.
-Select another picture?</source>
-        <translation type="obsolete"> больш за %1 байт.
-Абраць іншы малюнак?</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation type="obsolete">Абнаўленьне на паслужніку...</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">памылка</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">завершана</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">няўдала</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">скончыўся час</translation>
-    </message>
-    <message>
-        <source>Registration Date:</source>
-        <translation type="obsolete">Дата рэгістрацыі:</translation>
     </message>
 </context>
 <context>
@@ -7696,16 +6868,6 @@ Send...</source>
         <translation>Скасаваць</translation>
     </message>
     <message>
-        <source>Warning: Message can&apos;t be sent securely
-through the server!</source>
-        <translation type="obsolete">Увага: не магчыма бясьпечна адаслаць
-паведамленьне праз паслужнік!</translation>
-    </message>
-    <message>
-        <source>Send anyway</source>
-        <translation type="obsolete">Даслаць усёроўна</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="156"/>
         <source>Message type</source>
         <translation>Тып паведамленьня</translation>
@@ -8008,12 +7170,6 @@ Request was cancelled.</source>
         <location filename="../src/userevents/userviewevent.cpp" line="795"/>
         <source>&amp;View Email</source>
         <translation>Праглядзець по&amp;шту</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq няздолеў запусціць браўзер і адчыніць спасылку.
-Вам прыйдзецца гэта зрабіць самому(й).</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="500"/>

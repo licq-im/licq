@@ -64,10 +64,6 @@
         <source>&amp;Cancel</source>
         <translation>&amp;Скасаваць</translation>
     </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Аўтарызаваць карыстальніка:</translation>
-    </message>
 </context>
 <context>
     <name>AwayMsgDlg</name>
@@ -1912,30 +1908,6 @@ You can leave me a message.</source>
     <message>
         <source>Edit group name (hit enter to save).</source>
         <translation>Рэдагаваць назву гурта (націсьніце на Ўвод дзеля захаваньня)</translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Усталяваць па-змоўчаньню</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Гурт па-змоўчаньню падчас старту Licq</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Новыя карыстальнікі</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Гурт, у які аўтаматычна дадаюца новыя карыстальнікі.  Усе новыя карыстальнікі будуць дададзены да лакальнага гурта &quot;Новыя карыстальнікі&quot; але на старонцы сервера яны таксама павінны быць дададзены ў адпаведны гурт.</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Па-змоўчаньню:</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Новыя карыстальнікі:</translation>
     </message>
     <message>
         <source>&amp;Save</source>

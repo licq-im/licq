@@ -1,12 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">brak</translation>
-    </message>
-</context>
-<context>
     <name>@default</name>
     <message>
         <source>KDE default</source>
@@ -18,14 +11,6 @@
     <message>
         <source>Licq - Add User</source>
         <translation>Licq - dodaj użytkownika</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Nowy UIN:</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">&amp;Powiadom użytkownika</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -53,10 +38,6 @@
     <message>
         <source>Refuse authorization to %1</source>
         <translation>Odmów autoryzacji %1</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Autoryzuj użytkownika (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -171,10 +152,6 @@ Możesz zostawić mi wiadomość.
         <translation>MB</translation>
     </message>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <source>Byte</source>
         <translation>bajt</translation>
     </message>
@@ -207,44 +184,8 @@ Możesz zostawić mi wiadomość.
         <translation>Czas:</translation>
     </message>
     <message>
-        <source>Remote side disconnected</source>
-        <translation type="obsolete">Zdalny koniec rozłączył się</translation>
-    </message>
-    <message>
         <source>Licq - File Transfer (%1)</source>
         <translation>Licq - transfer plików (%1)</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected
-</source>
-        <translation type="obsolete">Zdalny koniec rozłączył się
-</translation>
-    </message>
-    <message>
-        <source>Sent
-%1
-to %2 successfully
-</source>
-        <translation type="obsolete">Wysyłanie
-%1
-do %2 zakończyło się pomyślnie
-</translation>
-    </message>
-    <message>
-        <source>Connecting to remote...
-</source>
-        <translation type="obsolete">Łączenie...
-</translation>
-    </message>
-    <message>
-        <source>Received
-%1
-from %2 successfully
-</source>
-        <translation type="obsolete">Odbieranie
-%1
-od %2 zakończyło się pomyślnie
-</translation>
     </message>
     <message>
         <source>File already exists and appears incomplete.</source>
@@ -263,68 +204,12 @@ od %2 zakończyło się pomyślnie
         <translation>Anuluj</translation>
     </message>
     <message>
-        <source>Waiting for connection...
-</source>
-        <translation type="obsolete">Oczekiwanie na połączenie...
-</translation>
-    </message>
-    <message>
-        <source>Sending file...
-</source>
-        <translation type="obsolete">Wysyłanie pliku...
-</translation>
-    </message>
-    <message>
         <source>Resume</source>
         <translation>Wznów</translation>
     </message>
     <message>
-        <source>Done %1
-</source>
-        <translation type="obsolete">Ukończone %1
-</translation>
-    </message>
-    <message>
         <source>File name:</source>
         <translation>Nazwa pliku:</translation>
-    </message>
-    <message>
-        <source>Receiving file...
-</source>
-        <translation type="obsolete">Odbieranie pliku...
-</translation>
-    </message>
-    <message>
-        <source>File I/O error: %1
-</source>
-        <translation type="obsolete">Błąd we/wy pliku: %1
-</translation>
-    </message>
-    <message>
-        <source>Handshake Error
-See Network Window for Details</source>
-        <translation type="obsolete">Błąd powitania
-Szczegóły w okienku sieciowym</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled
-</source>
-        <translation type="obsolete">Transfer plików anulowany
-</translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-See Network Window for Details</source>
-        <translation type="obsolete">Błąd we/wy pliku:
-%1
-Szczegóły w okienku sieciowym</translation>
-    </message>
-    <message>
-        <source>Handshaking error
-</source>
-        <translation type="obsolete">Błąd powitania
-</translation>
     </message>
     <message>
         <source>Current:</source>
@@ -341,12 +226,6 @@ Szczegóły w okienku sieciowym</translation>
     <message>
         <source>&amp;Cancel Transfer</source>
         <translation>&amp;Przerwij transfer</translation>
-    </message>
-    <message>
-        <source>File transfer complete
-</source>
-        <translation type="obsolete">Transfer plików zakończony
-</translation>
     </message>
     <message>
         <source>File transfer cancelled.</source>

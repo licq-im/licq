@@ -13,14 +13,6 @@
         <translation>Licq - Добавяне на нов потребител</translation>
     </message>
     <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Нов потребител (UIN):</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">Предупреди потребител</translation>
-    </message>
-    <message>
         <source>&amp;Cancel</source>
         <translation>Отказ</translation>
     </message>
@@ -46,10 +38,6 @@
     <message>
         <source>Refuse authorization to %1</source>
         <translation>Отказва ауторизация на %1</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Ауторизиране на потребител (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -570,10 +558,6 @@ See Network Window for details.</source>
         <translation>&amp;Информация</translation>
     </message>
     <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">Последен</translation>
-    </message>
-    <message>
         <source>U&amp;tilities</source>
         <translation>Инструменти</translation>
     </message>
@@ -768,18 +752,6 @@ to your ignore list?</source>
         <translation>Приемай в &apos;Няма ме за малко&apos;</translation>
     </message>
     <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Списък с невидими потребители</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Регистрацията се провали. За повече информация погледнете мрежовата статистика.</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Регистриране на потребител</translation>
-    </message>
-    <message>
         <source>Show Offline &amp;Users</source>
         <translation>Показвай и офлайн потребители</translation>
     </message>
@@ -788,28 +760,12 @@ to your ignore list?</source>
         <translation>%1 съобщение%2</translation>
     </message>
     <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Игнорирани потребители</translation>
-    </message>
-    <message>
-        <source>&amp;More Info</source>
-        <translation type="obsolete">Повече информация</translation>
-    </message>
-    <message>
         <source>Warnings</source>
         <translation>Предупреждения</translation>
     </message>
     <message>
-        <source>&amp;Work Info</source>
-        <translation type="obsolete">Информация/Работа</translation>
-    </message>
-    <message>
         <source>Debug Level</source>
         <translation>Ниво на трасиране</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Нови потребители</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -924,10 +880,6 @@ from your contact list?</source>
         <translation>Невидим</translation>
     </message>
     <message>
-        <source>&amp;General Info</source>
-        <translation type="obsolete">Обща информация</translation>
-    </message>
-    <message>
         <source>Send &amp;File Transfer</source>
         <translation>Изпращане на файл</translation>
     </message>
@@ -940,10 +892,6 @@ from your contact list?</source>
         <translation>Провери автоматичният отговор</translation>
     </message>
     <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Дадена ауторизация</translation>
-    </message>
-    <message>
         <source>System Functions</source>
         <translation>Системни функции</translation>
     </message>
@@ -952,24 +900,12 @@ from your contact list?</source>
         <translation>Редактиране на групи</translation>
     </message>
     <message>
-        <source>All Users</source>
-        <translation type="obsolete">Всички потребители</translation>
-    </message>
-    <message>
         <source>S&amp;kin Browser...</source>
         <translation>Скин мениджър</translation>
     </message>
     <message>
         <source>S&amp;earch for User</source>
         <translation>Търсене на потребител</translation>
-    </message>
-    <message>
-        <source>Next &amp;Server</source>
-        <translation type="obsolete">Следващ сървър</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">История</translation>
     </message>
     <message>
         <source>Not Available to User</source>
@@ -1279,20 +1215,12 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Игри</translation>
     </message>
     <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Жени търсещи мъже</translation>
-    </message>
-    <message>
         <source>20 Something</source>
         <translation>Около 20</translation>
     </message>
     <message>
         <source>30 Something</source>
         <translation>Около 30</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Мъже търсещи жени</translation>
     </message>
     <message>
         <source>40 Something</source>
@@ -1381,10 +1309,6 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Игри</translation>
     </message>
     <message>
-        <source>Women Seeking Men</source>
-        <translation type="obsolete">Жени търсещи мъже</translation>
-    </message>
-    <message>
         <source>error</source>
         <translation>грешка</translation>
     </message>
@@ -1395,10 +1319,6 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>30 Something</source>
         <translation>Около 30</translation>
-    </message>
-    <message>
-        <source>Men Seeking Women</source>
-        <translation type="obsolete">Мъже търсещи жени</translation>
     </message>
     <message>
         <source>40 Something</source>
@@ -1471,88 +1391,12 @@ You will need to start the browser and open the URL manually.</source>
 <context>
     <name>CUserView</name>
     <message>
-        <source>Thai</source>
-        <translation type="obsolete">Тайландски</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;I</translation>
-    </message>
-    <message>
-        <source>Greek</source>
-        <translation type="obsolete">Гръцки</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="obsolete">Кирилица</translation>
-    </message>
-    <message>
-        <source>Baltic</source>
-        <translation type="obsolete">Балтийски</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="obsolete">Арабски</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="obsolete">Еврейски</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="obsolete">Корейски</translation>
-    </message>
-    <message>
         <source>Online</source>
         <translation>Включен(а)</translation>
     </message>
     <message>
         <source>Offline</source>
         <translation>Изключен(а)</translation>
-    </message>
-    <message>
-        <source>Western European</source>
-        <translation type="obsolete">Западно Европейски</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="obsolete">Есперанто</translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="obsolete">Централно Европейски</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Рожден Ден!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Japanese</source>
-        <translation type="obsolete">Японски</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="obsolete">Украински</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="obsolete">Китайски</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="obsolete">Турски</translation>
-    </message>
-    <message>
-        <source>Unicode</source>
-        <translation type="obsolete">Уникод</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="obsolete">Традиционен Китайски</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>%1 Floaty (%2)</source>
@@ -1565,10 +1409,6 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>S</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
-        <translation type="obsolete">&lt;br&gt;Пише&amp;nbsp;&amp;nbsp;съобщение</translation>
     </message>
     <message>
         <source> weeks</source>
@@ -2051,10 +1891,6 @@ You can leave me a message.</source>
     <message>
         <source>Shift Down</source>
         <translation>Надолу</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Всички потребители</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2891,10 +2727,6 @@ Rebuild Licq with OpenSSL support.</source>
         <translation>Игнорирай E-Mail пейджъра</translation>
     </message>
     <message>
-        <source>Sort Online Users by Status</source>
-        <translation type="obsolete">Сортирай включените потребители по статусът им</translation>
-    </message>
-    <message>
         <source>Proxy Server:</source>
         <translation>Прокси хост:</translation>
     </message>
@@ -2905,10 +2737,6 @@ Rebuild Licq with OpenSSL support.</source>
     <message>
         <source>Previous Message</source>
         <translation>Предишно съобщение</translation>
-    </message>
-    <message>
-        <source>Sort all online users by their actual status</source>
-        <translation type="obsolete">Сортира всички включени потребители по техният реален статус</translation>
     </message>
     <message>
         <source>Select a font from the system list</source>
@@ -3822,49 +3650,6 @@ Now set your personal information.</source>
     </message>
 </context>
 <context>
-    <name>PasswordDlg</name>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">грешка</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Потвърдете Вашата ICQ парола тук.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Паролите не съвпадат. Опитайте отново.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be 8 characters or less.</source>
-        <translation type="obsolete">Паролата не може да бъде по-голяма от 8 символа.</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">Парола</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Отказ</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Парола:</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">П&amp;отвърждение:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Въведете вашата ICQ парола тук.</translation>
-    </message>
-    <message>
-        <source>Licq - Set Password</source>
-        <translation type="obsolete">Licq - Установяване на нова парола</translation>
-    </message>
-</context>
-<context>
     <name>PluginDlg</name>
     <message>
         <source>Id</source>
@@ -3891,30 +3676,10 @@ Now set your personal information.</source>
         <translation>Разреши</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation type="obsolete">Конфигурация</translation>
-    </message>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Зареден</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Статус</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Премахни</translation>
-    </message>
-    <message>
         <source>Licq Plugin %1 %2
 </source>
         <translation>Licq плъгин %1 %2
 </translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Достъпен</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -3923,14 +3688,6 @@ Now set your personal information.</source>
     <message>
         <source>Description</source>
         <translation>Описание</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Детайли</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Забрани</translation>
     </message>
     <message>
         <source>Version</source>
@@ -3952,20 +3709,8 @@ Now set your personal information.</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq Грешка</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq Предупреждение</translation>
-    </message>
-    <message>
         <source>Licq Question</source>
         <translation>Licq Въпрос</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq Информация</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -3977,66 +3722,22 @@ Now set your personal information.</source>
     </message>
 </context>
 <context>
-    <name>QString</name>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Файлът &apos;&apos;%1&apos; не може да бъде отворен!</translation>
-    </message>
-</context>
-<context>
     <name>RegisterUserDlg</name>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
     <message>
         <source>Please enter your password in both input fields.</source>
         <translation>Моля, въведете Вашата парола и на двете места.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Вие се регистрирахте успешно. Сега се свържете и обновете вашата персонална информация.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Регистриране ...</translation>
-    </message>
-    <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">Регистриран потребител</translation>
     </message>
     <message>
         <source>The passwords don&apos;t seem to match.</source>
         <translation>Паролите не съвпадат.</translation>
     </message>
     <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">UIN регистрация - стъпка 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">UIN регистрация - стъпка 3</translation>
-    </message>
-    <message>
         <source>Password:</source>
         <translation>Парола:</translation>
     </message>
     <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">Невалиден UIN.  Опитайте отново.</translation>
-    </message>
-    <message>
         <source>Verify:</source>
         <translation>Потвърждениe:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Licq регистрация на потребител</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">UIN регистрация</translation>
     </message>
     <message>
         <source>Welcome to the Registration Wizard.
@@ -4121,20 +3822,12 @@ After you are online, you can send your personal details to the server.</source>
 <context>
     <name>SearchUserDlg</name>
     <message>
-        <source>69+</source>
-        <translation type="obsolete">69+</translation>
-    </message>
-    <message>
         <source>Male</source>
         <translation>Мъжки</translation>
     </message>
     <message>
         <source>&amp;Done</source>
         <translation>Готово</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">&amp;UIN#</translation>
     </message>
     <message>
         <source>City:</source>
@@ -4531,36 +4224,12 @@ ICQ Network to change the settings.</source>
 <context>
     <name>SkinBrowserDlg</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Име</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">Готово</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="obsolete">Редактирай</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Грешки</translation>
     </message>
     <message>
-        <source>Icons</source>
-        <translation type="obsolete">Икони</translation>
-    </message>
-    <message>
-        <source>Skins</source>
-        <translation type="obsolete">Скинове</translation>
-    </message>
-    <message>
         <source>&amp;Apply</source>
         <translation>Приложи</translation>
-    </message>
-    <message>
-        <source>A&amp;pply</source>
-        <translation type="obsolete">Приложи</translation>
     </message>
     <message>
         <source>Licq Skin Browser</source>
@@ -4597,10 +4266,6 @@ ICQ Network to change the settings.</source>
     <message>
         <source>Use this combo box to select one of the available extended icon sets</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>E&amp;moticons</source>
-        <translation type="obsolete">Емотикони</translation>
     </message>
     <message>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
@@ -4861,10 +4526,6 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
         <translation>мъж</translation>
     </message>
     <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
         <source>Zip:</source>
         <translation>Пощ. код:</translation>
     </message>
@@ -4977,10 +4638,6 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
         <translation>Изключен(а)</translation>
     </message>
     <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
-    </message>
-    <message>
         <source>Country:</source>
         <translation>Държава:</translation>
     </message>
@@ -5039,10 +4696,6 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     <message>
         <source>&amp;Update</source>
         <translation>Обнови</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 от %2</translation>
     </message>
     <message>
         <source>Gender:</source>

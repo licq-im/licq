@@ -1380,10 +1380,6 @@ See Network Window for details.</source>
         <translation>Идентификатор ключа</translation>
     </message>
     <message>
-        <source>Licq GPG Key Manager</source>
-        <translation type="obsolete">Licq - менеджер ключей GPG</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="83"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
@@ -1852,10 +1848,6 @@ Would you like to try loading the old one?</source>
 %1</source>
         <translation>Ошибка при открытии файла:
 %1</translation>
-    </message>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq - Окно отладки</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="84"/>
@@ -2335,10 +2327,6 @@ base directory and then register a new user.</source>
         <translation>У модуля %1 нет файла настроек</translation>
     </message>
     <message>
-        <source>Plugin Manager</source>
-        <translation type="obsolete">Менеджер модулей</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="88"/>
         <source>Protocol Plugins</source>
         <translation>Модули протоколов</translation>
@@ -2403,10 +2391,6 @@ base directory and then register a new user.</source>
         <translation>Не найдено ни одного пользователя в этой группе.</translation>
     </message>
     <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Поиск случайного чата</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="130"/>
         <source>Random chat search had an error.</source>
         <translation>В процессе поиска случайного собеседника возникла ошибка.</translation>
@@ -2453,10 +2437,6 @@ base directory and then register a new user.</source>
         <location filename="../src/dialogs/refusedlg.cpp" line="63"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
-    </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq - Отказ в %1</translation>
     </message>
     <message>
         <location filename="../src/dialogs/refusedlg.cpp" line="48"/>
@@ -5089,10 +5069,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
 <context>
     <name>LicqQtGui::SettingsDlg</name>
     <message>
-        <source>Licq Settings</source>
-        <translation type="obsolete">Установки Licq</translation>
-    </message>
-    <message>
         <location filename="../src/settings/settingsdlg.cpp" line="63"/>
         <source>Licq - Settings</source>
         <translation type="unfinished"></translation>
@@ -5170,133 +5146,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="144"/>
         <source>timed out</source>
         <translation>время ожидания вышло</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Применить</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">О&amp;тмена</translation>
-    </message>
-    <message>
-        <source>&amp;Edit Skin</source>
-        <translation type="obsolete">&amp;Редактировать внешний вид</translation>
-    </message>
-    <message>
-        <source>E&amp;moticons:</source>
-        <translation type="obsolete">&amp;Эмотиконы:</translation>
-    </message>
-    <message>
-        <source>Emoticons:</source>
-        <translation type="obsolete">Эмотиконы:</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
-    </message>
-    <message>
-        <source>Extended Icons:</source>
-        <translation type="obsolete">Дополнительные:</translation>
-    </message>
-    <message>
-        <source>E&amp;xtended Icons:</source>
-        <translation type="obsolete">&amp;Дополнительные:</translation>
-    </message>
-    <message>
-        <source>Icons:</source>
-        <translation type="obsolete">Пиктограммы:</translation>
-    </message>
-    <message>
-        <source>&amp;Icons:</source>
-        <translation type="obsolete">&amp;Пиктограммы:</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">Licq - Выбор внешнего вида</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ок</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Предпросмотр</translation>
-    </message>
-    <message>
-        <source>Skin selection</source>
-        <translation type="obsolete">Выбор внешнего вида</translation>
-    </message>
-    <message>
-        <source>Skin:</source>
-        <translation type="obsolete">Внешний вид:</translation>
-    </message>
-    <message>
-        <source>S&amp;kins:</source>
-        <translation type="obsolete">&amp;Внешний вид:</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Система</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1</source>
-        <translation type="obsolete">Невозможно открыть файл дополнительных пиктограмм
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1
-Extended Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Невозможно открыть файл дополнительных пиктограмм
-%1
-Набор дополнительных пиктограмм &apos;%2&apos; отключен.</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1</source>
-        <translation type="obsolete">Ошибка при открытии файла пиктограмм
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1
-Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Невозможно открыть файл пиктограммы
-%1
-Набор пиктограмм &apos;%2&apos; отключен.</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available emoticon icon sets</source>
-        <translation type="obsolete">Используйте это выпадающее меню для выбора набора эмотиконов</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available extended icon sets</source>
-        <translation type="obsolete">Используйте это выпадающее меню для выбора набора дополнительных пиктограмм</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available icon sets</source>
-        <translation type="obsolete">Используйте это выпадающее меню для выбора набора пиктограмм</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available skins</source>
-        <translation type="obsolete">Используйте это выпадающее меню для выбора внешнего вида</translation>
-    </message>
-    <message>
-        <source>Unable to load icons
-%1.</source>
-        <translation type="obsolete">Невозможно загрузить пиктограммы
-%1.</translation>
-    </message>
-    <message>
-        <source>Unable to load extended icons
-%1.</source>
-        <translation type="obsolete">Невозможно загрузить дополнительные пиктограммы
-%1.</translation>
     </message>
 </context>
 <context>
@@ -5432,10 +5281,6 @@ reset your statistics?</source>
         <translation>Окно &amp;отладки...</translation>
     </message>
     <message>
-        <source>&amp;Owner Manager...</source>
-        <translation type="obsolete">&amp;Менеджер владельцев...</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="80"/>
         <source>Packets</source>
         <translation>Пакеты</translation>
@@ -5569,10 +5414,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="207"/>
         <source>S&amp;ettings...</source>
         <translation>&amp;Установки...</translation>
-    </message>
-    <message>
-        <source>Sk&amp;in Browser...</source>
-        <translation type="obsolete">&amp;Выбор внешнего вида...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="209"/>

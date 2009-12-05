@@ -40,13 +40,6 @@
     </message>
 </context>
 <context>
-    <name>LicqQtGui::</name>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">žádný</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::AboutDlg</name>
     <message>
         <location filename="../src/dialogs/aboutdlg.cpp" line="41"/>
@@ -92,26 +85,6 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <source>Licq - Add User</source>
-        <translation type="obsolete">Licq - Přidat uživatele</translation>
-    </message>
-    <message>
-        <source>New User UIN:</source>
-        <translation type="obsolete">Nové UIN:</translation>
-    </message>
-    <message>
-        <source>&amp;Alert User</source>
-        <translation type="obsolete">Upozornit uživ&amp;atele</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation type="unfinished"></translation>
@@ -139,34 +112,6 @@
 </context>
 <context>
     <name>LicqQtGui::AuthUserDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Refuse authorization to %1</source>
-        <translation type="obsolete">Odmítnout žádost o autorizaci od %1</translation>
-    </message>
-    <message>
-        <source>Authorize which user (UIN):</source>
-        <translation type="obsolete">Autorizovat uživatele (UIN):</translation>
-    </message>
-    <message>
-        <source>Grant authorization to %1</source>
-        <translation type="obsolete">Vyhovět žádosti o autorizaci od %1</translation>
-    </message>
-    <message>
-        <source>Licq - Grant Authorisation</source>
-        <translation type="obsolete">Licq - Udělení autorizace</translation>
-    </message>
-    <message>
-        <source>Licq - Refuse Authorisation</source>
-        <translation type="obsolete">Licq - Odmítnutí autorizace</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="83"/>
         <source>Response</source>
@@ -203,10 +148,6 @@
 <context>
     <name>LicqQtGui::AwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="96"/>
         <source>&amp;Hints</source>
         <translation>&amp;Hinty</translation>
@@ -215,10 +156,6 @@
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="165"/>
         <source>&amp;Edit Items</source>
         <translation>&amp;Editovat</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="97"/>
@@ -249,1303 +186,7 @@ You can leave me a message.
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CContactBar</name>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactList</name>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Ostatní uživatelé</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Narozeniny&amp;nbsp;Dnes!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Bezpečné&amp;nbsp;spojení</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Vlastní&amp;nbsp;automatická&amp;nbsp;odpověď</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automatická odpověď:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Přihlášen: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Nečinný: </translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEditFileListDlg</name>
-    <message>
-        <source>&amp;Up</source>
-        <translation type="obsolete">Na&amp;horu</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">H&amp;otovo</translation>
-    </message>
-    <message>
-        <source>&amp;Down</source>
-        <translation type="obsolete">Dol&amp;u</translation>
-    </message>
-    <message>
-        <source>Licq - Files to send</source>
-        <translation type="obsolete">Licq - soubory o odeslání</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">Sm&amp;až</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFileDlg</name>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">KB</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">MB</translation>
-    </message>
-    <message>
-        <source>Byte</source>
-        <translation type="obsolete">Byte</translation>
-    </message>
-    <message>
-        <source>ETA:</source>
-        <translation type="obsolete">ETA:</translation>
-    </message>
-    <message>
-        <source>%1/%2</source>
-        <translation type="obsolete">%1/%2</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Otevřít</translation>
-    </message>
-    <message>
-        <source>Not enough resources.
-</source>
-        <translation type="obsolete">Nedostatek prostředků.</translation>
-    </message>
-    <message>
-        <source>Connecting to remote...</source>
-        <translation type="obsolete">Vytvářím spojení...</translation>
-    </message>
-    <message>
-        <source>Bytes</source>
-        <translation type="obsolete">Bytů</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Zavřít</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="obsolete">Soubor:</translation>
-    </message>
-    <message>
-        <source>Retry</source>
-        <translation type="obsolete">Znovu</translation>
-    </message>
-    <message>
-        <source>Time:</source>
-        <translation type="obsolete">Čas:</translation>
-    </message>
-    <message>
-        <source>Licq - File Transfer (%1)</source>
-        <translation type="obsolete">Licq - Přenos souboru (%1)</translation>
-    </message>
-    <message>
-        <source>Connection error.
-</source>
-        <translation type="obsolete">Chyba při spojení.</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected.</source>
-        <translation type="obsolete">Druhá strana se odpojila.</translation>
-    </message>
-    <message>
-        <source>Sent %1 to %2 successfully.</source>
-        <translation type="obsolete">%1 odeslán v pořádku %2.</translation>
-    </message>
-    <message>
-        <source>Waiting for connection...</source>
-        <translation type="obsolete">Čekám na spojení...</translation>
-    </message>
-    <message>
-        <source>File already exists and appears incomplete.</source>
-        <translation type="obsolete">Soubor již existuje a zdá se být nekompletní.</translation>
-    </message>
-    <message>
-        <source>Batch:</source>
-        <translation type="obsolete">Celkem:</translation>
-    </message>
-    <message>
-        <source>File already exists and is at least as big as the incoming file.</source>
-        <translation type="obsolete">Soubor již existuje a je přinejmenším tak velký, jako ten příchozí.</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Resume</source>
-        <translation type="obsolete">Obnovit</translation>
-    </message>
-    <message>
-        <source>Unable to create a thread.
-See Network Window for details.</source>
-        <translation type="obsolete">Nemohu vytvořit vlákno programu, podrobnosti v síťovém záznamu.</translation>
-    </message>
-    <message>
-        <source>Handshaking error.
-</source>
-        <translation type="obsolete">Chyba při přihlašování.</translation>
-    </message>
-    <message>
-        <source>O&amp;pen Dir</source>
-        <translation type="obsolete">Otevřít &amp;adresář</translation>
-    </message>
-    <message>
-        <source>Handshake Error.
-See Network Window for details.</source>
-        <translation type="obsolete">Chyba při přihlašování. Podrobnosti v síťovém záznamu.</translation>
-    </message>
-    <message>
-        <source>File name:</source>
-        <translation type="obsolete">Jméno souboru:</translation>
-    </message>
-    <message>
-        <source>Sending file...</source>
-        <translation type="obsolete">Posílám soubor...</translation>
-    </message>
-    <message>
-        <source>File I/O error: %1.</source>
-        <translation type="obsolete">Chyba při čtení souboru: %1</translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-
-See Network Window for details.</source>
-        <translation type="obsolete">I/O chyba: Podívej se do síťového záznamu.</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled.</source>
-        <translation type="obsolete">Přenos souboru přerušen</translation>
-    </message>
-    <message>
-        <source>Receiving file...</source>
-        <translation type="obsolete">Přijímám soubor...</translation>
-    </message>
-    <message>
-        <source>Current:</source>
-        <translation type="obsolete">Aktuální:</translation>
-    </message>
-    <message>
-        <source>Open error - unable to open file for writing.</source>
-        <translation type="obsolete">Chyba při otvírání - soubor není možno otevřít pro zápis.</translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="obsolete">Přepsat</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel Transfer</source>
-        <translation type="obsolete">&amp;Zrušit přenos</translation>
-    </message>
-    <message>
-        <source>Unable to bind to a port.
-See Network Window for details.</source>
-        <translation type="obsolete">Nemohu použít port, podrobnosti v síťovém záznamu.</translation>
-    </message>
-    <message>
-        <source>Received %1 from %2 successfully.</source>
-        <translation type="obsolete">%1 úspěšně přijat od %2.</translation>
-    </message>
-    <message>
-        <source>Unable to reach remote host.
-See Network Window for details.</source>
-        <translation type="obsolete">Nemohu se připojit, podrobnosti v síťovém záznamu.</translation>
-    </message>
-    <message>
-        <source>File transfer complete.</source>
-        <translation type="obsolete">Přenos souboru dokončen</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFloatyView</name>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 plovoucí (%2)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CForwardDlg</name>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation type="obsolete">Zpráva</translation>
-    </message>
-    <message>
-        <source>Forward %1 To User</source>
-        <translation type="obsolete">Předat %1 uživateli:</translation>
-    </message>
-    <message>
-        <source>Drag the user to forward to here:</source>
-        <translation type="obsolete">Přetáhněte uživatele pro předání: </translation>
-    </message>
-    <message>
-        <source>Unable to forward this message type (%d).</source>
-        <translation type="obsolete">Nebylo možné předat zprávu tohoto typu (%d).</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Forwarded message:
-</source>
-        <translation type="obsolete">Předávaná zpráva:
-</translation>
-    </message>
-    <message>
-        <source>&amp;Forward</source>
-        <translation type="obsolete">&amp;Předat</translation>
-    </message>
-    <message>
-        <source>Forwarded URL:
-</source>
-        <translation type="obsolete">Předávané URL:
-</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CJoinChatDlg</name>
-    <message>
-        <source>&amp;Join</source>
-        <translation type="obsolete">Př&amp;idat se</translation>
-    </message>
-    <message>
-        <source>Select chat to join:</source>
-        <translation type="obsolete">Výběr chatu pro připojení</translation>
-    </message>
-    <message>
-        <source>Invite to Join Chat</source>
-        <translation type="obsolete">Pozvání k chatu</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>&amp;Invite</source>
-        <translation type="obsolete">Po&amp;zvat</translation>
-    </message>
-    <message>
-        <source>Select chat to invite:</source>
-        <translation type="obsolete">Výběr chatu pro pozvání:</translation>
-    </message>
-    <message>
-        <source>Join Multiparty Chat</source>
-        <translation type="obsolete">Připojit se k víceuživatelskému chatu</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CLicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq informace</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq varování</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMSendDlg</name>
-    <message>
-        <source>Sending mass message to %1...</source>
-        <translation type="obsolete">Posílám hromadnou zprávu uživatelům: %1...</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
-    <message>
-        <source>Sending mass URL to %1...</source>
-        <translation type="obsolete">Posílám hromadné URL uživatelům: %1...</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">nevyšlo</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Contact List</source>
-        <translation type="obsolete">Seznam uživatelů více příjemcům</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient URL</source>
-        <translation type="obsolete">URL pro více příjemců</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Sending mass list to %1...</source>
-        <translation type="obsolete">Posílám hromadný seznam uživatelům: %1...</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Message</source>
-        <translation type="obsolete">Zpráva více příjemcům</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMUserView</name>
-    <message>
-        <source>Crop</source>
-        <translation type="obsolete">Smazat ostatní</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Vyprázdnit</translation>
-    </message>
-    <message>
-        <source>Drag&apos;n&apos;Drop didn&apos;t work</source>
-        <translation type="obsolete">Drag&apos;n&apos;drop nejde.</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Odstranit</translation>
-    </message>
-    <message>
-        <source>Add Group</source>
-        <translation type="obsolete">Přidat skupinu</translation>
-    </message>
-    <message>
-        <source>Add All</source>
-        <translation type="obsolete">Přidat všechny</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMainWindow</name>
-    <message>
-        <source> </source>
-        <translation type="obsolete"> </translation>
-    </message>
-    <message>
-        <source>s</source>
-        <translation type="obsolete">(y)</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Ne</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ano</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation type="obsolete">Po&amp;slat</translation>
-    </message>
-    <message>
-        <source>Online to User</source>
-        <translation type="obsolete">Online pro uživatele</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Away</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">Nápo&amp;věda</translation>
-    </message>
-    <message>
-        <source>&amp;Info</source>
-        <translation type="obsolete">&amp;Info</translation>
-    </message>
-    <message>
-        <source>U&amp;tilities</source>
-        <translation type="obsolete">Nás&amp;troje</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">Kone&amp;c</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">Nastav&amp;ovat...</translation>
-    </message>
-    <message>
-        <source>R&amp;andom Chat</source>
-        <translation type="obsolete">&amp;Náhodný chat</translation>
-    </message>
-    <message>
-        <source>Error sending authorization.</source>
-        <translation type="obsolete">Chyba při posílání autorizace.</translation>
-    </message>
-    <message>
-        <source>&amp;Random Chat Group</source>
-        <translation type="obsolete">Náhodná &amp;chatovací skupina</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Připojen od %1
-</translation>
-    </message>
-    <message>
-        <source>Re&amp;quest Authorization</source>
-        <translation type="obsolete">Vyžaduj &amp;autorizaci</translation>
-    </message>
-    <message>
-        <source>Check %1 Response</source>
-        <translation type="obsolete">&amp;Ukaž %1 odpověď</translation>
-    </message>
-    <message>
-        <source>You are currently registered as
-UIN: %1
-Base Directory: %2
-Rerun licq with the -b option to select a new
-base directory and then register a new user.</source>
-        <translation type="obsolete">Momentálně jste registrovaný jako
-UIN: %1
-Adresář: %2
-Spusťte znovu licq z parametrem -b pro výběr jiného
-adresáře a poté se zaregistrujte jako nový uživatel.</translation>
-    </message>
-    <message>
-        <source>Auto Request Secure</source>
-        <translation type="obsolete">Automaticky vyžadovat bezpečný kanál</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Soubor ikon není možné otevřít
-%1.</translation>
-    </message>
-    <message>
-        <source>Send &amp;Authorization</source>
-        <translation type="obsolete">Poslat &amp;autorizaci</translation>
-    </message>
-    <message>
-        <source>Auto Accept Chats</source>
-        <translation type="obsolete">Automaticky přijímat Chat</translation>
-    </message>
-    <message>
-        <source>Auto Accept Files</source>
-        <translation type="obsolete">Automaticky přijímat soubory</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Not Available</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">O tom/&amp;něm/ní</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">&amp;Skupina</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Rady</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Vynulovat</translation>
-    </message>
-    <message>
-        <source>Custom Auto Response...</source>
-        <translation type="obsolete">V&amp;lastní Auto odpověď...</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">&amp;Online upozornění</translation>
-    </message>
-    <message>
-        <source>Set &amp;Auto Response...</source>
-        <translation type="obsolete">Nastavit &amp;Auto odpověď...</translation>
-    </message>
-    <message>
-        <source>Remove From List</source>
-        <translation type="obsolete">Odst&amp;ranit ze seznamu</translation>
-    </message>
-    <message>
-        <source>System Message</source>
-        <translation type="obsolete">Systémová zpráva</translation>
-    </message>
-    <message>
-        <source>%1 msg%2</source>
-        <translation type="obsolete">%1 zpráva %2</translation>
-    </message>
-    <message>
-        <source>&amp;Popup All Messages</source>
-        <translation type="obsolete">&amp;Otevřít všechny zprávy</translation>
-    </message>
-    <message>
-        <source>Accept in Not Available</source>
-        <translation type="obsolete">Přijímat v Not Available</translation>
-    </message>
-    <message>
-        <source>View &amp;History</source>
-        <translation type="obsolete">Ukaž &amp;Historii</translation>
-    </message>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Ostatní uživatelé</translation>
-    </message>
-    <message>
-        <source>Edit User Group</source>
-        <translation type="obsolete">&amp;Editovat skupiny</translation>
-    </message>
-    <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Registrace úspěšně proběhla. Vaše uživatelské identifikační
-číslo (UIN) je %1.
-Nyní můžete nastavit své osobní údaje.</translation>
-    </message>
-    <message>
-        <source>Unknown Packets</source>
-        <translation type="obsolete">Neznámé pakety</translation>
-    </message>
-    <message>
-        <source>Send &amp;URL</source>
-        <translation type="obsolete">Poslat &amp;URL</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Pro více informací navštivte domovskou stránku Licq (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&amp;Mini Mode</source>
-        <translation type="obsolete">&amp;Mini mód</translation>
-    </message>
-    <message>
-        <source>Errors</source>
-        <translation type="obsolete">Chyby</translation>
-    </message>
-    <message>
-        <source>Close &amp;Secure Channel</source>
-        <translation type="obsolete">Zavřít &amp;bezpečný kanál</translation>
-    </message>
-    <message>
-        <source>No msgs</source>
-        <translation type="obsolete">Žádné zprávy</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Připojen od %1
-
-</translation>
-    </message>
-    <message>
-        <source>Misc Modes</source>
-        <translation type="obsolete">Různé režimy</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Statistika daemona
-
-</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Statistika daemona
-(Dnes/Celkově)
-</translation>
-    </message>
-    <message>
-        <source>SysMsg</source>
-        <translation type="obsolete">Systémová zpráva</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Systém</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Posledni vynulovaní %1
-
-</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Chcete opravdu odstranit 
-%1 (%2)
- ze skupiny &apos;%3&apos; ?</translation>
-    </message>
-    <message>
-        <source>Do you really want to add
-%1 (%2)
-to your ignore list?</source>
-        <translation type="obsolete">Opravdu chcete přidat
-%1 (%2)
-do ignore seznamu?</translation>
-    </message>
-    <message>
-        <source>Packets</source>
-        <translation type="obsolete">Pakety</translation>
-    </message>
-    <message>
-        <source>&amp;Save All Users</source>
-        <translation type="obsolete">Uložit &amp;všechny uživatele</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb to User</source>
-        <translation type="obsolete">Do Not Disturb pro uživatele</translation>
-    </message>
-    <message>
-        <source>Update All Users</source>
-        <translation type="obsolete">Obnovit všechny uživatele</translation>
-    </message>
-    <message>
-        <source>&amp;Redraw User Window</source>
-        <translation type="obsolete">Přek&amp;reslit uživatelské okno</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(s KDE podporou)</translation>
-    </message>
-    <message>
-        <source>Occupied to User</source>
-        <translation type="obsolete">Occupied pro uživatele</translation>
-    </message>
-    <message>
-        <source>Logon failed.
-See network window for details.</source>
-        <translation type="obsolete">Přihlášení se nezdařilo.
-Síťový záznam obsahuje detaily.</translation>
-    </message>
-    <message>
-        <source>Accept in Away</source>
-        <translation type="obsolete">Přijímat v Away</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">I&amp;nvisible seznam</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Visi&amp;ble seznam</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Registrace se nezdařila. Síťový záznam obsahuje detaily.</translation>
-    </message>
-    <message>
-        <source>Send &amp;Chat Request</source>
-        <translation type="obsolete">Poslat žádost o &amp;chat</translation>
-    </message>
-    <message>
-        <source>Reg&amp;ister User</source>
-        <translation type="obsolete">Reg&amp;istrovat uživatele</translation>
-    </message>
-    <message>
-        <source>Show Offline &amp;Users</source>
-        <translation type="obsolete">Uka&amp;zovat Offline uživatele</translation>
-    </message>
-    <message>
-        <source>%1 message%2</source>
-        <translation type="obsolete">%1 zpráva%2</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">I&amp;gnore seznam</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>Warnings</source>
-        <translation type="obsolete">Varování</translation>
-    </message>
-    <message>
-        <source>Debug Level</source>
-        <translation type="obsolete">Stupeň ladění</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">New Users</translation>
-    </message>
-    <message>
-        <source>&amp;Network Window</source>
-        <translation type="obsolete">Síťový záz&amp;nam</translation>
-    </message>
-    <message>
-        <source>&amp;View Event</source>
-        <translation type="obsolete">Podí&amp;vat se na událost</translation>
-    </message>
-    <message>
-        <source>&amp;Plugin Manager...</source>
-        <translation type="obsolete">&amp;Pluginy...</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">O&amp;ccupied</translation>
-    </message>
-    <message>
-        <source>Set All</source>
-        <translation type="obsolete">Vybrat vše</translation>
-    </message>
-    <message>
-        <source>&amp;View System Messages</source>
-        <translation type="obsolete">Podí&amp;vat se na systémové zprávy</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">Ukáza&amp;t skupiny</translation>
-    </message>
-    <message>
-        <source>Send &amp;Message</source>
-        <translation type="obsolete">Po&amp;slat zprávu</translation>
-    </message>
-    <message>
-        <source>Update Current Group</source>
-        <translation type="obsolete">Obnovit aktuální skupinu</translation>
-    </message>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
-        <source>Right click - Status menu
-Double click - Set auto response</source>
-        <translation type="obsolete">Pravé tlačítko - status menu
-Dvojklik - nastavit auto odpověď</translation>
-    </message>
-    <message>
-        <source>&amp;Add User</source>
-        <translation type="obsolete">Přid&amp;at uživatele</translation>
-    </message>
-    <message>
-        <source>Accept in Do Not Disturb</source>
-        <translation type="obsolete">Přijímat v Do Not Disturb</translation>
-    </message>
-    <message>
-        <source>&amp;Statistics</source>
-        <translation type="obsolete">&amp;Statistiky</translation>
-    </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Online</translation>
-    </message>
-    <message>
-        <source>Clear All</source>
-        <translation type="obsolete">Zakázat vše</translation>
-    </message>
-    <message>
-        <source>&amp;Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>&amp;System</source>
-        <translation type="obsolete">&amp;Systém</translation>
-    </message>
-    <message>
-        <source>Accept in Occupied</source>
-        <translation type="obsolete">Přijímat v Occupied</translation>
-    </message>
-    <message>
-        <source>Send Contact &amp;List</source>
-        <translation type="obsolete">Poslat se&amp;znam uživatelů</translation>
-    </message>
-    <message>
-        <source>Status Info</source>
-        <translation type="obsolete">Status Info</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Do Not Disturb</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Chcete opravdu odstranit 
-%1 (%2)
- ze seznamu uživatelů?</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">O&amp;ffline</translation>
-    </message>
-    <message>
-        <source>A&amp;uthorize User</source>
-        <translation type="obsolete">A&amp;utorizovat uživatele</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Free for C&amp;hat</translation>
-    </message>
-    <message>
-        <source>Right click - User groups
-Double click - Show next message</source>
-        <translation type="obsolete">Pravé tlačítko - skupiny
-Dvojklik - ukázat další zprávu</translation>
-    </message>
-    <message>
-        <source>No messages</source>
-        <translation type="obsolete">Žádné zprávy</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Invisible</translation>
-    </message>
-    <message>
-        <source>Send &amp;File Transfer</source>
-        <translation type="obsolete">Poslat sou&amp;bor</translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Uživatelské &amp;funkce</translation>
-    </message>
-    <message>
-        <source>Check Auto Response</source>
-        <translation type="obsolete">&amp;Ukaž Auto odpověď</translation>
-    </message>
-    <message>
-        <source>Authorization granted.</source>
-        <translation type="obsolete">Autorizace potvrzena.</translation>
-    </message>
-    <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Systémové funkce</translation>
-    </message>
-    <message>
-        <source>Edit &amp;Groups</source>
-        <translation type="obsolete">Editovat &amp;skupiny</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">All Users</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">Procházet s&amp;kiny</translation>
-    </message>
-    <message>
-        <source>&amp;Security/Password Options</source>
-        <translation type="obsolete">&amp;Bezpečnost/Heslo</translation>
-    </message>
-    <message>
-        <source>Request &amp;Secure Channel</source>
-        <translation type="obsolete">Žádost o bezpečný &amp;kanál</translation>
-    </message>
-    <message>
-        <source>S&amp;earch for User</source>
-        <translation type="obsolete">Hl&amp;edat uživatele</translation>
-    </message>
-    <message>
-        <source>Not Available to User</source>
-        <translation type="obsolete">Not Available pro uživatele</translation>
-    </message>
-    <message>
-        <source>Toggle &amp;Floaty</source>
-        <translation type="obsolete">&amp;Plovoucí</translation>
-    </message>
-    <message>
-        <source>Sa&amp;ve Settings</source>
-        <translation type="obsolete">&amp;Uložit nastavení</translation>
-    </message>
-    <message>
-        <source>Away to User</source>
-        <translation type="obsolete">Away pro uživatele</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Available</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMessageViewWidget</name>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 od %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 až %2</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CQtLogWindow</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Uložit</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Nelze otevřít soubor:
-%1</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">&amp;Pročistit</translation>
-    </message>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq - Síťový záznam</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRandomChatDlg</name>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Games</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20 Something</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30 Something</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40 Something</translation>
-    </message>
-    <message>
-        <source>Random chat search timed out.</source>
-        <translation type="obsolete">Vypršel časový limit při hledání náhodného chatu.</translation>
-    </message>
-    <message>
-        <source>Random chat search had an error.</source>
-        <translation type="obsolete">Chyba při hledání náhodného chatu.</translation>
-    </message>
-    <message>
-        <source>No random chat user found in that group.</source>
-        <translation type="obsolete">Žádný uživatel pro náhodný chat v této skupině.</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 Plus</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romance</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Searching for Random Chat Partner...</source>
-        <translation type="obsolete">Hledám partnera pro náhodný chat...</translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="obsolete">&amp;Hledat</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Students</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">General</translation>
-    </message>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Hledání náhodného chatu</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRefuseDlg</name>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 odmítnutí</translation>
-    </message>
-    <message>
-        <source>Refusal message for %1 with </source>
-        <translation type="obsolete">Zamítací zpráva od %1: </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Refuse</source>
-        <translation type="obsolete">&amp;Odmítnout</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CSetRandomChatGroupDlg</name>
-    <message>
-        <source>&amp;Set</source>
-        <translation type="obsolete">Na&amp;stavit</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">hotovo</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Games</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">chyba</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">20 Something</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">30 Something</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">40 Something</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(none)</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">vypršel čas</translation>
-    </message>
-    <message>
-        <source>Set Random Chat Group</source>
-        <translation type="obsolete">Nastavení náhodné chatovací skupiny</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">nevyšlo</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">50 Plus</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romance</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Students</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">General</translation>
-    </message>
-    <message>
-        <source>Setting Random Chat Group...</source>
-        <translation type="obsolete">Nastavuji náhodnou chatovací skupinu...</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUserView</name>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Nečinný: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automatická odpověď:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="obsolete">Střední Evropa</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Narozeniny&amp;nbsp;Dnes!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 plovoucí (%2)</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Vlastní&amp;nbsp;automatická&amp;nbsp;odpověď</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Bezpečné&amp;nbsp;spojení</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Přihlášen: </translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CUtilityDlg</name>
-    <message>
-        <source>GUI</source>
-        <translation type="obsolete">GUI</translation>
-    </message>
-    <message>
-        <source>&amp;Run</source>
-        <translation type="obsolete">&amp;Spustit</translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation type="obsolete">&amp;Hotovo</translation>
-    </message>
-    <message>
-        <source>Done:</source>
-        <translation type="obsolete">Hotovo:</translation>
-    </message>
-    <message>
-        <source>Edit:</source>
-        <translation type="obsolete">Editovat:</translation>
-    </message>
-    <message>
-        <source>Edit final command</source>
-        <translation type="obsolete">&amp;Editovat příkaz</translation>
-    </message>
-    <message>
-        <source>Command Window</source>
-        <translation type="obsolete">Příkazové okno</translation>
-    </message>
-    <message>
-        <source>Licq Utility: %1</source>
-        <translation type="obsolete">Licq nástroj: %1</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
-    <message>
-        <source>User Fields</source>
-        <translation type="obsolete">Uživatelské položky</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Popis:</translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation type="obsolete">Interní</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Příkaz:</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Running:</source>
-        <translation type="obsolete">Provádí se:</translation>
-    </message>
-    <message>
-        <source>Failed:</source>
-        <translation type="obsolete">Nevyšlo:</translation>
-    </message>
-    <message>
-        <source>Terminal</source>
-        <translation type="obsolete">Terminál</translation>
-    </message>
-    <message>
-        <source>Window:</source>
-        <translation type="obsolete">Okno:</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::ChatDlg</name>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Ne</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ano</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="202"/>
         <source>Beep</source>
@@ -1780,45 +421,9 @@ See Network Window for details.</source>
         <source>Other Users</source>
         <translation type="unfinished">Ostatní uživatelé</translation>
     </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">&amp;Online upozornění</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Visi&amp;ble seznam</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">I&amp;nvisible seznam</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">I&amp;gnore seznam</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">New Users</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Narozeniny&amp;nbsp;Dnes!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Bezpečné&amp;nbsp;spojení</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Vlastní&amp;nbsp;automatická&amp;nbsp;odpověď</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automatická odpověď:&lt;/u&gt;</translation>
-    </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
         <source> weeks</source>
@@ -1863,14 +468,6 @@ See Network Window for details.</source>
         <location filename="../src/contactlist/contactuserdata.cpp" line="816"/>
         <source>0 minutes</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Přihlášen: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Nečinný: </translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="702"/>
@@ -2004,48 +601,7 @@ You can leave me a message.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CustomAwayMsgDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Pročistit</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Hinty</translation>
-    </message>
-    <message>
-        <source>Set Custom Auto Response for %1</source>
-        <translation type="obsolete">Nastavit speciální auto odpověď pro %1</translation>
-    </message>
-    <message>
-        <source>I am currently %1.
-You can leave me a message.</source>
-        <translation type="obsolete">I am currently %1.
-You can leave me a message.</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::DockIcon</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;%1 systémových zpráv&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 zpráv</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;1 zpráva</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/dockicon.cpp" line="140"/>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
@@ -2075,10 +631,6 @@ You can leave me a message.</translation>
         <translation type="unfinished">Nespecifikováno</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editcategorydlg.cpp" line="56"/>
         <source>Personal Interests</source>
         <translation type="unfinished"></translation>
@@ -2096,14 +648,6 @@ You can leave me a message.</translation>
 </context>
 <context>
     <name>LicqQtGui::EditFileDlg</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Uložit</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/editfiledlg.cpp" line="82"/>
         <location filename="../src/dialogs/editfiledlg.cpp" line="109"/>
@@ -2159,10 +703,6 @@ You can leave me a message.</translation>
 <context>
     <name>LicqQtGui::EditGrpDlg</name>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
         <source>Add</source>
         <translation>Přidat</translation>
@@ -2207,18 +747,6 @@ the group &apos;%1&apos;?</source>
         <translation>noname</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Nastavit výchozí</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Výchozí:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Výchozí skupina při startu.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="74"/>
         <source>Edit group name (hit enter to save).</source>
         <translation>Editovat jméno skupiny (enter uloží).</translation>
@@ -2227,10 +755,6 @@ the group &apos;%1&apos;?</source>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
         <source>Shift Down</source>
         <translation>Dolu</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Všichni</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="50"/>
@@ -2852,10 +1376,6 @@ See Network Window for details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="142"/>
         <source>Do you want to remove the GPG key binding for the user %1?
 The key isn&apos;t deleted from your keyring.</source>
@@ -2893,10 +1413,6 @@ The key isn&apos;t deleted from your keyring.</source>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="84"/>
         <source>Filter:</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="105"/>
@@ -2939,10 +1455,6 @@ The key isn&apos;t deleted from your keyring.</source>
 </context>
 <context>
     <name>LicqQtGui::HintsDlg</name>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/hintsdlg.cpp" line="39"/>
         <source>Licq - Hints</source>
@@ -3077,14 +1589,6 @@ Popis: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 od %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 až %2</translation>
-    </message>
-    <message>
         <location filename="../src/widgets/historyview.cpp" line="353"/>
         <source>from</source>
         <translation type="unfinished"></translation>
@@ -3093,42 +1597,6 @@ Popis: %2</translation>
         <location filename="../src/widgets/historyview.cpp" line="353"/>
         <source>to</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_KDEStyle</name>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;1 zpráva</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 zpráv</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
-        <translation type="obsolete">&lt;br&gt;Levé tlačítko - Ukaž hlavní okno&lt;br&gt;Prostřední tlačítko - Ukaž další zprávu&lt;br&gt;Pravé tlačítko - Systémové menu</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;%1 systémových zpráv&lt;/b&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::IconManager_Themed</name>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Nezdařilo se otevření souboru s obrázkem pro dokové téma
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Nezdařilo se otevření souboru s dokovým tématem
-(%1)
-:%2</translation>
     </message>
 </context>
 <context>
@@ -3204,27 +1672,11 @@ Popis: %2</translation>
         <translation>Uzavírám bezpečný kanál...</translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;ForestGreen&quot;&gt;Secure channel established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;ForestGreen&quot;&gt;Bezpečný kanál otevřen.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="111"/>
         <source>Client does not support OpenSSL.
 Rebuild Licq with OpenSSL support.</source>
         <translation>Klient nepodporuje OpenSSL.
 Překompilujte Licq s OpenSSL podporou.</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;blue&quot;&gt;Secure channel closed.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;blue&quot;&gt;Bezpečný kanál uzavřen.&lt;/font&gt;
-</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="52"/>
@@ -3245,16 +1697,6 @@ protokolem TLS verze 1.
 </translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Could not connect to remote client.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Nemohu se spojit se vzdáleným klientem.&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel already established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Bezpečný kanál již existuje.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="71"/>
         <source>The remote uses Licq %1, however it
 has no secure channel support compiled in.
@@ -3264,19 +1706,9 @@ nemá zkompilovanou podporu bezpečného kanálu.
 Bezpečné spojení pravděpodobně nebude fungovat.</translation>
     </message>
     <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel not established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Bezpečný kanál není otevřen.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="64"/>
         <source>The remote uses Licq %1/SSL.</source>
         <translation>Vzdálený klient používá Licq v0.%1/SSL.</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Remote client does not support OpenSSL.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Vzdálený klient nepodporuje OpenSSL.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="138"/>
@@ -3368,14 +1800,6 @@ from your contact list?</source>
  ze seznamu uživatelů?</translation>
     </message>
     <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Chcete opravdu odstranit 
-%1 (%2)
- ze skupiny &apos;%3&apos; ?</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="1063"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
@@ -3389,38 +1813,7 @@ Would you like to try loading the old one?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::LicqMessageBox</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq informace</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq varování</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::LogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq - Síťový záznam</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Uložit</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">&amp;Pročistit</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
@@ -3533,10 +1926,6 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MainWindow</name>
     <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="188"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
@@ -3618,99 +2007,6 @@ Dvojklik - nastavit auto odpověď</translation>
 See network window for details.</source>
         <translation type="unfinished">Přihlášení se nezdařilo.
 Síťový záznam obsahuje detaily.</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Chcete opravdu odstranit 
-%1 (%2)
- ze seznamu uživatelů?</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Chcete opravdu odstranit 
-%1 (%2)
- ze skupiny &apos;%3&apos; ?</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(s KDE podporou)</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Soubor ikon není možné otevřít
-%1.</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Statistika daemona
-(Dnes/Celkově)
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Připojen od %1
-</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Posledni vynulovaní %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Vynulovat</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Statistika daemona
-
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Připojen od %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Pro více informací navštivte domovskou stránku Licq (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="670"/>
@@ -3835,848 +2131,11 @@ from the &apos;%3&apos; group?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::MsgView</name>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">Čas</translation>
-    </message>
-    <message>
-        <source>Cancelled Event</source>
-        <translation type="obsolete">Zrušená událost</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">Přímý</translation>
-    </message>
-    <message>
-        <source>Event Type</source>
-        <translation type="obsolete">Typ události</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="obsolete">Server</translation>
-    </message>
-    <message>
-        <source>Urgent</source>
-        <translation type="obsolete">Urgentně</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Nastavení</translation>
-    </message>
-    <message>
-        <source>Multiple Recipients</source>
-        <translation type="obsolete">Více příjemců</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::OptionsDlg</name>
-    <message>
-        <source>IP</source>
-        <translation type="obsolete">IP</translation>
-    </message>
-    <message>
-        <source>	to</source>
-        <translation type="obsolete">	do</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>Fax</source>
-        <translation type="obsolete">Fax</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Away</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Písmo</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation type="obsolete">Vlevo</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Uložit</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">žádný</translation>
-    </message>
-    <message>
-        <source>Show Extended Icons</source>
-        <translation type="obsolete">Zobrazovat rozšířené ikony</translation>
-    </message>
-    <message>
-        <source>Blink All Events</source>
-        <translation type="obsolete">Blikání při všech událostech</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">Email</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation type="obsolete">Písmo:</translation>
-    </message>
-    <message>
-        <source>Never</source>
-        <translation type="obsolete">Nikdy</translation>
-    </message>
-    <message>
-        <source>Phone</source>
-        <translation type="obsolete">Telefon</translation>
-    </message>
-    <message>
-        <source>Proxy</source>
-        <translation type="obsolete">Proxy</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="obsolete">Vpravo</translation>
-    </message>
-    <message>
-        <source>Text:</source>
-        <translation type="obsolete">Text:</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Název</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Šířka</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Parametry předávané při obdržení souboru</translation>
-    </message>
-    <message>
-        <source>Firewall</source>
-        <translation type="obsolete">Firewall</translation>
-    </message>
-    <message>
-        <source>Use proxy server</source>
-        <translation type="obsolete">Používej proxy server</translation>
-    </message>
-    <message>
-        <source>Show Grid Lines</source>
-        <translation type="obsolete">Linkování mezi řádky</translation>
-    </message>
-    <message>
-        <source>Override the skin setting for the frame style of the user window:
-   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Sunken)
- + 240 (Shadow)</source>
-        <translation type="obsolete">Potlačit nastavení skinu pro styl rámu uživatelského okna:
-   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)
- + 16 (Plain), 32 (Raised), 48 (Sunken)
- + 240 (Shadow)</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Parametry předávané při obdržení žádosti o chat</translation>
-    </message>
-    <message>
-        <source>Auto Away Messages</source>
-        <translation type="obsolete">Automatická Away zpráva</translation>
-    </message>
-    <message>
-        <source>Turns on or off the display of headers above each column in the user list</source>
-        <translation type="obsolete">Zapíná nebo vypíná zobrazování záhlaví sloupců v seznamu uživatelů</translation>
-    </message>
-    <message>
-        <source>Start Hidden</source>
-        <translation type="obsolete">Skryté okno při startu</translation>
-    </message>
-    <message>
-        <source>Auto Away:</source>
-        <translation type="obsolete">Automatické Away:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;not available&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Pokud bude uživatel neaktivní po daný počet minut, bude automaticky označen jako &quot;not available&quot;.  Nastavení na hodnotu &quot;0&quot; funkci vypíná.</translation>
-    </message>
-    <message>
-        <source>Blink Urgent Events</source>
-        <translation type="obsolete">Blikání při urgentních událostech</translation>
-    </message>
-    <message>
-        <source>Ignore Mass Messages</source>
-        <translation type="obsolete">Ignorovat masové zprávy</translation>
-    </message>
-    <message>
-        <source>Show the &quot;--online--&quot; and &quot;--offline--&quot; bars in the contact list</source>
-        <translation type="obsolete">Ukazovat &quot;--online--&quot; a &quot;--offline--&quot; oddělovače v seznamu uživatelů</translation>
-    </message>
-    <message>
-        <source>ICQ Server Port:</source>
-        <translation type="obsolete">Port ICQ serveru:</translation>
-    </message>
-    <message>
-        <source>Start main window hidden. Only the dock icon will be visible.</source>
-        <translation type="obsolete">Při startu skryj okno. Bude vidět pouze ikonka v doku/na liště.</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Parametry předávané při online upozornění</translation>
-    </message>
-    <message>
-        <source>TCP port range for incoming connections.</source>
-        <translation type="obsolete">Rozsah TCP portů pro příchozí spojení.</translation>
-    </message>
-    <message>
-        <source>Accept Modes</source>
-        <translation type="obsolete">Akceptovací módy</translation>
-    </message>
-    <message>
-        <source>Online Notify:</source>
-        <translation type="obsolete">Online upozornění</translation>
-    </message>
-    <message>
-        <source>Idle Time</source>
-        <translation type="obsolete">Doba nečinnosti</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Not Available</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">Použív&amp;at</translation>
-    </message>
-    <message>
-        <source>Determines if new users are automatically added to your list or must first request authorization.</source>
-        <translation type="obsolete">Určuje, zda noví uživatelé jsou automaticky přidáváni do Vašeho seznamu, nebo je nejdříve vyžadována autorizace.</translation>
-    </message>
-    <message>
-        <source>Show the name of the current group in the messages label when there are no new messages</source>
-        <translation type="obsolete">Ukazovat jméno aktuální skupiny v políčku zpráv, pokud nejsou žádné nové zprávy</translation>
-    </message>
-    <message>
-        <source>Ignore Web Panel</source>
-        <translation type="obsolete">Ignorovat web panel</translation>
-    </message>
-    <message>
-        <source>Sets which default encoding should be used for newly added contacts.</source>
-        <translation type="obsolete">Implicitní kódování pro nové kontakty.</translation>
-    </message>
-    <message>
-        <source>Show the current chat history in Send Window</source>
-        <translation type="obsolete">Ukazuj aktuální historii chatu při psaní zpráv</translation>
-    </message>
-    <message>
-        <source>Use Font Styles</source>
-        <translation type="obsolete">Používat styly písma</translation>
-    </message>
-    <message>
-        <source>Preset slot:</source>
-        <translation type="obsolete">Název:</translation>
-    </message>
-    <message>
-        <source>Licq Options</source>
-        <translation type="obsolete">Licq nastavení</translation>
-    </message>
-    <message>
-        <source>Show online notify users who are offline even when offline users are hidden.</source>
-        <translation type="obsolete">Ukazovat uživatele s online upozorněním, kteří jsou offline, i v případě, že je zobrazování offline uživatelů vypnuto.</translation>
-    </message>
-    <message>
-        <source>Show Column Headers</source>
-        <translation type="obsolete">Zobrazovat záhlaví sloupců</translation>
-    </message>
-    <message>
-        <source>Bold Message Label on Incoming Msg</source>
-        <translation type="obsolete">Tučný font při obdržení zprávy</translation>
-    </message>
-    <message>
-        <source>Column %1</source>
-        <translation type="obsolete">Sloupec %1</translation>
-    </message>
-    <message>
-        <source>Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf and a shorter 64x48 icon for use in the Gnome/KDE panel.</source>
-        <translation type="obsolete">Vyberte mezi standardní velikostí ikony 64x64, která se používá ve WindowMakeru/Afterstepu, a velikostí 64x48, která se používá v Gnome/KDE panelu.</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Povolit spouštění příkazu pro režim &quot;occupied&quot;</translation>
-    </message>
-    <message>
-        <source>Auto Offline:</source>
-        <translation type="obsolete">Automatické Offline:</translation>
-    </message>
-    <message>
-        <source>Online Time</source>
-        <translation type="obsolete">Doba online</translation>
-    </message>
-    <message>
-        <source>Lets you drag around the main window with your mouse</source>
-        <translation type="obsolete">Umožní přesouvání hlavního okna pomocí myši</translation>
-    </message>
-    <message>
-        <source>OnEvent in DND</source>
-        <translation type="obsolete">Provádět při DND</translation>
-    </message>
-    <message>
-        <source>OnEvent in N/A</source>
-        <translation type="obsolete">Provádět při N/A</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Parametry předávané při obdržení zprávy</translation>
-    </message>
-    <message>
-        <source>Message Sent:</source>
-        <translation type="obsolete">Zpráva odeslána:</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="obsolete">Střed</translation>
-    </message>
-    <message>
-        <source>Proxy Server Port:</source>
-        <translation type="obsolete">Port proxy serveru:</translation>
-    </message>
-    <message>
-        <source>Allow scroll bar</source>
-        <translation type="obsolete">Povolit scroll bar</translation>
-    </message>
-    <message>
-        <source>OnEvent in Away</source>
-        <translation type="obsolete">Provádět při Away</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation type="obsolete">Síť</translation>
-    </message>
-    <message>
-        <source>Only urgent events will blink</source>
-        <translation type="obsolete">Pouze urgentní události budou blikat</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">Formát</translation>
-    </message>
-    <message>
-        <source>The fonts used</source>
-        <translation type="obsolete">Použité fonty</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically go offline.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Pokud bude uživatel neaktivní po daný počet minut, přejde automaticky do &quot;offline&quot;.  Nastavení na hodnotu &quot;0&quot; funkci vypíná.</translation>
-    </message>
-    <message>
-        <source>Auto send through server</source>
-        <translation type="obsolete">Automaticky posílat přes server</translation>
-    </message>
-    <message>
-        <source>Use Dock Icon</source>
-        <translation type="obsolete">Používat dokovou ikonu</translation>
-    </message>
-    <message>
-        <source>Chat Request:</source>
-        <translation type="obsolete">Žádost o chat:</translation>
-    </message>
-    <message>
-        <source>Server settings</source>
-        <translation type="obsolete">Nastavení serveru:</translation>
-    </message>
-    <message>
-        <source>Auto Logon:</source>
-        <translation type="obsolete">Automatické přihlášení:</translation>
-    </message>
-    <message>
-        <source>Main Window</source>
-        <translation type="obsolete">Hlavní okno</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation type="obsolete">Téma:</translation>
-    </message>
-    <message>
-        <source>Always show online notify users</source>
-        <translation type="obsolete">Vždy ukazovat uživatele s online upozorněním</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">výchozí (%1)</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Port Range:</source>
-        <translation type="obsolete">Rozsah portů:</translation>
-    </message>
-    <message>
-        <source>Allow dragging main window</source>
-        <translation type="obsolete">Povolit přesouvání hlavního okna</translation>
-    </message>
-    <message>
-        <source>Show the message info label in bold font if there are incoming messages</source>
-        <translation type="obsolete">Informace o nových zprávách tučným písmem.</translation>
-    </message>
-    <message>
-        <source>OnEvent</source>
-        <translation type="obsolete">Při události</translation>
-    </message>
-    <message>
-        <source>Localization</source>
-        <translation type="obsolete">Lokalizace</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Příkaz:</translation>
-    </message>
-    <message>
-        <source>Edit Font:</source>
-        <translation type="obsolete">Editační font:</translation>
-    </message>
-    <message>
-        <source>Hot key: </source>
-        <translation type="obsolete">Klávesová zkratka: </translation>
-    </message>
-    <message>
-        <source>I can receive direct connections</source>
-        <translation type="obsolete">Je možné navázat přímé spojení</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Nastavení</translation>
-    </message>
-    <message>
-        <source>Miscellaneous</source>
-        <translation type="obsolete">Různé</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Povolit spouštění příkazu pro režim &quot;do not disturb&quot;</translation>
-    </message>
-    <message>
-        <source>Determines if mass messages are ignored or not.</source>
-        <translation type="obsolete">Určuje, zda masové zprávy budou ignorovány.</translation>
-    </message>
-    <message>
-        <source>Last online</source>
-        <translation type="obsolete">Naposledy online</translation>
-    </message>
-    <message>
-        <source>Frame Style: </source>
-        <translation type="obsolete">Styl rámu: </translation>
-    </message>
-    <message>
-        <source>The alignment of the column</source>
-        <translation type="obsolete">Zarovnání sloupce</translation>
-    </message>
-    <message>
-        <source>Auto Position the Reply Window</source>
-        <translation type="obsolete">Automaticky umístit okno při odpovídání</translation>
-    </message>
-    <message>
-        <source>Make the user window transparent when there is no scroll bar</source>
-        <translation type="obsolete">Uživatelské okno bude transparentní, pokud nemá scroll bar</translation>
-    </message>
-    <message>
-        <source>Default Icon</source>
-        <translation type="obsolete">Výchozí ikona</translation>
-    </message>
-    <message>
-        <source>Check Clipboard For Urls/Files</source>
-        <translation type="obsolete">Zkontroluj schránku na URL/soubory</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Parametry</translation>
-    </message>
-    <message>
-        <source>Show birthday, invisible, and custom auto response icons to the right of users in the list</source>
-        <translation type="obsolete">Zobrazovat ikony pro narozeniny, invisible status a vlastní auto odpověď napravo od jména uživatele v seznamu</translation>
-    </message>
-    <message>
-        <source>Transparent when possible</source>
-        <translation type="obsolete">Pokud možno transparentní</translation>
-    </message>
-    <message>
-        <source>Default Auto Response Messages</source>
-        <translation type="obsolete">Výchozí Auto odpovědi</translation>
-    </message>
-    <message>
-        <source>File Transfer:</source>
-        <translation type="obsolete">Přenos souboru:</translation>
-    </message>
-    <message>
-        <source>OnEvents Enabled</source>
-        <translation type="obsolete">Při události provést příkaz</translation>
-    </message>
-    <message>
-        <source>Paranoia</source>
-        <translation type="obsolete">Paranoia</translation>
-    </message>
-    <message>
-        <source>Auto-Raise on Incoming Msg</source>
-        <translation type="obsolete">Automaticky do popředí při příchozí zprávě</translation>
-    </message>
-    <message>
-        <source>Position a new reply window just underneath the message view window</source>
-        <translation type="obsolete">Umísti nové odpovídací okno hned pod okno se zprávou</translation>
-    </message>
-    <message>
-        <source>Terminal:</source>
-        <translation type="obsolete">Terminál:</translation>
-    </message>
-    <message>
-        <source>Automatically log on when first starting up.</source>
-        <translation type="obsolete">Automaticky se přihlásit při startu aplikace.</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Při přihlašování provést příkaz pro online upozornění (to je rozdílné od způsobu, který používá Mirabilis klient)</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;away&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Pokud bude uživatel neaktivní po daný počet minut, bude automaticky označen jako &quot;away&quot;.  Nastavení na hodnotu &quot;0&quot; funkci vypíná.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Příkaz provedený při obdržení události.&lt;br&gt;Příkazu budou předány příslušné parametry z níže uvedených.&lt;br&gt;Parametry mohou obsahovat následující výrazy, &lt;br&gt;které budou nahrazeny příslušnými údaji:&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>ICQ Server:</source>
-        <translation type="obsolete">ICQ server:</translation>
-    </message>
-    <message>
-        <source>Determines if email pager messages are ignored or not.</source>
-        <translation type="obsolete">Určuje, zda zprávy email pageru budou ignorovány.</translation>
-    </message>
-    <message>
-        <source>Use authorization</source>
-        <translation type="obsolete">Používej autorizaci</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Povolit spouštění příkazu pro režim &quot;not available&quot;</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Occupied</translation>
-    </message>
-    <message>
-        <source>Show User Dividers</source>
-        <translation type="obsolete">Zobrazovat oddělovače uživatelů</translation>
-    </message>
-    <message>
-        <source>OnEvent in Occupied</source>
-        <translation type="obsolete">Provádět při Occupied</translation>
-    </message>
-    <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Řídící řetězec definuje, co bude obsahovat daný sloupec.
-Mohou být použity následující parametry:
-</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Parametry předávané při obdržení systémové zprávy</translation>
-    </message>
-    <message>
-        <source>Manual &quot;New User&quot; group handling</source>
-        <translation type="obsolete">Ruční úpravy &quot;New User&quot; skupiny</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Parametry odeslaných zpráv</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Výběr písma</translation>
-    </message>
-    <message>
-        <source>Auto-Popup Incoming Msg</source>
-        <translation type="obsolete">Automaticky otevřít okno při události</translation>
-    </message>
-    <message>
-        <source>64 x 48 Dock Icon</source>
-        <translation type="obsolete">64 x 48 doková ikona</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>Startup</source>
-        <translation type="obsolete">Při startu</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Heslo:</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">výchozí</translation>
-    </message>
-    <message>
-        <source>Use italics and bold in the user list to indicate special characteristics such as online notify and visible list</source>
-        <translation type="obsolete">Používat italiku a tučný font v seznamu uživatelů pro označení speciálních characteristik jako online upozornění a visible seznamu</translation>
-    </message>
-    <message>
-        <source>Use System Background Color</source>
-        <translation type="obsolete">Používat systémovou barvu pozadí</translation>
-    </message>
-    <message>
-        <source>Proxy Type:</source>
-        <translation type="obsolete">Typ proxy:</translation>
-    </message>
-    <message>
-        <source>Auto N/A:</source>
-        <translation type="obsolete">Automatické N/A:</translation>
-    </message>
-    <message>
-        <source>Themed Icon</source>
-        <translation type="obsolete">Ikona s tématem</translation>
-    </message>
-    <message>
-        <source>Auto Close Function Window</source>
-        <translation type="obsolete">Automaticky zavírat okna</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Povolit spouštění příkazu pro režim &quot;away&quot;</translation>
-    </message>
-    <message>
-        <source>Docking</source>
-        <translation type="obsolete">Parametry doku</translation>
-    </message>
-    <message>
-        <source>I am behind a firewall</source>
-        <translation type="obsolete">Jsem za firewallem/proxy</translation>
-    </message>
-    <message>
-        <source>Determines if web panel messages are ignored or not.</source>
-        <translation type="obsolete">Určuje, zda budou web panel zprávy ignorovány.</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Povolit spouštění příkazu, pokud nastane příslušná událost.</translation>
-    </message>
-    <message>
-        <source>System Msg:</source>
-        <translation type="obsolete">Systémová zpráva:</translation>
-    </message>
-    <message>
-        <source>Show group name if no messages</source>
-        <translation type="obsolete">Zobrazovat jméno skupiny, pokud nejsou zprávy</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Free for Chat</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Free For Chat</translation>
-    </message>
-    <message>
-        <source>When double-clicking on a user to send a message check for urls/files in the clipboard</source>
-        <translation type="obsolete">Při posílání zprávy dvojklikem na jeho jméno zkontroluj schránku, zda v ní nejsou URL nebo soubory</translation>
-    </message>
-    <message>
-        <source>Show all encodings</source>
-        <translation type="obsolete">Ukaž všechna kódování.</translation>
-    </message>
-    <message>
-        <source>Online Notify when Logging On</source>
-        <translation type="obsolete">Online upozornění při přihlášení</translation>
-    </message>
-    <message>
-        <source>Popup info</source>
-        <translation type="obsolete">Popup informace</translation>
-    </message>
-    <message>
-        <source>Cellular</source>
-        <translation type="obsolete">Mobil</translation>
-    </message>
-    <message>
-        <source>Extensions</source>
-        <translation type="obsolete">Doplňky</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Do Not Disturb</translation>
-    </message>
-    <message>
-        <source>All incoming events will blink</source>
-        <translation type="obsolete">Všechny příchozí události budou blikat</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation type="obsolete">Uživatel:</translation>
-    </message>
-    <message>
-        <source>Url Viewer:</source>
-        <translation type="obsolete">Prohlížeč pro Url:</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Zpráva:</translation>
-    </message>
-    <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Kreslit linky mezi jednotlivými uživateli v seznamu.</translation>
-    </message>
-    <message>
-        <source>Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings.</source>
-        <translation type="obsolete">Ukaž všechna kódování v dialogu zprávy (normálně pouze ta nejběžnější).</translation>
-    </message>
-    <message>
-        <source>Column Configuration</source>
-        <translation type="obsolete">Konfigurace sloupců</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Invisible</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Obecné</translation>
-    </message>
-    <message>
-        <source>Ignore Email Pager</source>
-        <translation type="obsolete">Ignorovat email pager</translation>
-    </message>
-    <message>
-        <source>Chatmode Messageview</source>
-        <translation type="obsolete">Chatovací režim zobrazení zpráv</translation>
-    </message>
-    <message>
-        <source>Controls whether or not the dockable icon should be displayed.</source>
-        <translation type="obsolete">Určuje, zda má být zobrazena doková ikona.</translation>
-    </message>
-    <message>
-        <source>Sort Online Users by Status</source>
-        <translation type="obsolete">Používat status pro řazení online uživatelů</translation>
-    </message>
-    <message>
-        <source>Proxy Server:</source>
-        <translation type="obsolete">Proxy server:</translation>
-    </message>
-    <message>
-        <source>Raise the main window on incoming messages</source>
-        <translation type="obsolete">Při nové zprávě okno do popředí</translation>
-    </message>
-    <message>
-        <source>Contact List</source>
-        <translation type="obsolete">Seznam uživatelů</translation>
-    </message>
-    <message>
-        <source>System default (%1)</source>
-        <translation type="obsolete">Systémové nastavení (%1).</translation>
-    </message>
-    <message>
-        <source>The width of the column</source>
-        <translation type="obsolete">Šířka sloupce</translation>
-    </message>
-    <message>
-        <source>Previous Message</source>
-        <translation type="obsolete">Předchozí zpráva</translation>
-    </message>
-    <message>
-        <source>Sort all online users by their actual status</source>
-        <translation type="obsolete">Používat status pro řazení všech online uživatelů</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list</source>
-        <translation type="obsolete">Výběr písma ze systémového seznamu</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Řetězec, který se objeví v záhlaví daného sloupce</translation>
-    </message>
-    <message>
-        <source>Store your contacts on the server so they are accessible from different locations and/or programs</source>
-        <translation type="obsolete">Ulož seznam kontaktů na serveru.</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Parametry předávané při obdržení URL</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Příkaz pro prohlížení URL. Dostane URL jako parametr.</translation>
-    </message>
-    <message>
-        <source>Allow the vertical scroll bar in the user list</source>
-        <translation type="obsolete">Povolit vertikální scroll bar v seznamu uživatelů</translation>
-    </message>
-    <message>
-        <source>The command to run to start your terminal program.</source>
-        <translation type="obsolete">Příkaz pro spuštění terminálu.</translation>
-    </message>
-    <message>
-        <source>Font used in message editor etc.</source>
-        <translation type="obsolete">Fonty používané v editoru zpráv atd.</translation>
-    </message>
-    <message>
-        <source>Ignore New Users</source>
-        <translation type="obsolete">Ignorovat nové uživatele</translation>
-    </message>
-    <message>
-        <source>Use server side contact list</source>
-        <translation type="obsolete">Používej seznam kontaktů ze serveru.</translation>
-    </message>
-    <message>
-        <source>Alignment</source>
-        <translation type="obsolete">Umístění</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Alias</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Jméno</translation>
-    </message>
-    <message>
-        <source>Chat</source>
-        <translation type="obsolete">Chat</translation>
-    </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="260"/>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Náhled</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="obsolete">%1</translation>
     </message>
 </context>
 <context>
@@ -4687,17 +2146,9 @@ Mohou být použity následující parametry:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Password:</source>
-        <translation type="obsolete">Heslo:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
         <source>Currently only one account per protocol is supported.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="74"/>
@@ -4773,18 +2224,6 @@ base directory and then register a new user.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Registrace úspěšně proběhla. Vaše uživatelské identifikační
-číslo (UIN) je %1.
-Nyní můžete nastavit své osobní údaje.</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Registrace se nezdařila. Síťový záznam obsahuje detaily.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="70"/>
         <source>Protocol</source>
         <translation type="unfinished"></translation>
@@ -4846,32 +2285,6 @@ Nyní můžete nastavit své osobní údaje.</translation>
         <translation>Povolit</translation>
     </message>
     <message>
-        <source>Configure</source>
-        <translation type="obsolete">Konfigurovat</translation>
-    </message>
-    <message>
-        <source>Loaded</source>
-        <translation type="obsolete">Běžící pluginy</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Unload</source>
-        <translation type="obsolete">Odebrat</translation>
-    </message>
-    <message>
-        <source>Licq Plugin %1 %2
-</source>
-        <translation type="obsolete">Licq Plugin %1 %2
-</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Available</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="111"/>
         <source>Refresh</source>
         <translation>Obnovit</translation>
@@ -4881,14 +2294,6 @@ Nyní můžete nastavit své osobní údaje.</translation>
         <location filename="../src/dialogs/plugindlg.cpp" line="99"/>
         <source>Description</source>
         <translation>Popis</translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="obsolete">Detaily</translation>
-    </message>
-    <message>
-        <source>Disable</source>
-        <translation type="obsolete">Zakázat</translation>
     </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
@@ -4915,10 +2320,6 @@ Nyní můžete nastavit své osobní údaje.</translation>
 </context>
 <context>
     <name>LicqQtGui::RandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Hledání náhodného chatu</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
@@ -5022,105 +2423,9 @@ Nyní můžete nastavit své osobní údaje.</translation>
         <source>Licq - %1 Refusal</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 odmítnutí</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RegisterUserDlg</name>
-    <message>
-        <source>Uin:</source>
-        <translation type="obsolete">Uin:</translation>
-    </message>
-    <message>
-        <source>&amp;Save Password</source>
-        <translation type="obsolete">&amp;Pamatovat heslo.</translation>
-    </message>
-    <message>
-        <source>Please enter your password in both input fields.</source>
-        <translation type="obsolete">Vložte heslo do obou vstupních políček.</translation>
-    </message>
-    <message>
-        <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation type="obsolete">Registrace úspěšně dokončena. Nyní se můžete přihlásit a nastavit své osobní údaje.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Vadné heslo, musí mít 1-8 znaků.</translation>
-    </message>
-    <message>
-        <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation type="obsolete">Při registraci existujícího uživatele je potřeba vložit platné UIN. </translation>
-    </message>
-    <message>
-        <source>Now please click &apos;Finish&apos; to start the registration process.</source>
-        <translation type="obsolete">Nyní zvolte &apos;Finish&apos; pro spustění registrace.</translation>
-    </message>
-    <message>
-        <source>User Registration in Progress...</source>
-        <translation type="obsolete">Probíhá registrace uživatele...</translation>
-    </message>
-    <message>
-        <source>Now please press the &apos;Back&apos; button and try again.</source>
-        <translation type="obsolete">Nyní zvolte &apos;Back&apos; pro nový pokus.</translation>
-    </message>
-    <message>
-        <source>&amp;Register Existing User</source>
-        <translation type="obsolete">&amp;Registruj existujícího uživatele</translation>
-    </message>
-    <message>
-        <source>The passwords don&apos;t seem to match.</source>
-        <translation type="obsolete">Hesla se neshodují.</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 2</source>
-        <translation type="obsolete">Registrace UIN - část 2</translation>
-    </message>
-    <message>
-        <source>UIN Registration - Step 3</source>
-        <translation type="obsolete">Registrace UIN - část 3</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Heslo:</translation>
-    </message>
-    <message>
-        <source>Invalid UIN.  Try again.</source>
-        <translation type="obsolete">Neplatné UIN.  Zkuste znovu.</translation>
-    </message>
-    <message>
-        <source>Verify:</source>
-        <translation type="obsolete">Kontrola:</translation>
-    </message>
-    <message>
-        <source>Licq User Registration</source>
-        <translation type="obsolete">Uživatelské registrace licq</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here, or configure Licq to use an existing UIN.
-
-If you are registering a new uin, choose a password and click &quot;Finish&quot;.
-If you already have a uin, then toggle &quot;Register Existing User&quot;,
-enter your uin and your password, and click &quot;OK&quot;
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Vítejte v registračním průvodci.
-
-Můžete zde provést registraci nového uživatele, nebo nastavit používání existujícího UIN.
-
-Jestliže registrujete nové uin, zvolte heslo a klikněte &quot;Finish&quot;.
-Pokud již máte přiděleno uin, zapněte volbu &quot;Register Existing User&quot;,
-vložte své uin a heslo a klikněte &quot;OK&quot;
-
-Potvrďte &quot;Next&quot; pro další pokračování.</translation>
-    </message>
-    <message>
-        <source>UIN Registration</source>
-        <translation type="obsolete">Registrace UIN</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/registeruser.cpp" line="119"/>
         <source>&amp;Remember Password</source>
@@ -5226,14 +2531,6 @@ After you are online, you can send your personal details to the server.</source>
         <source>Request</source>
         <translation>Vyžaduj</translation>
     </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Z&amp;ruš</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::SearchUserDlg</name>
@@ -5249,21 +2546,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Vynulovat hledání</translation>
     </message>
     <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">&amp;Konec</translation>
-    </message>
-    <message>
-        <source>&amp;Uin#</source>
-        <translation type="obsolete">&amp;Uin#</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="145"/>
         <source>City:</source>
         <translation>Město:</translation>
-    </message>
-    <message>
-        <source>UIN#:</source>
-        <translation type="obsolete">UIN#:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
@@ -5357,10 +2642,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Pouze online uživatele</translation>
     </message>
     <message>
-        <source>A&amp;lert User</source>
-        <translation type="obsolete">Upozornit uživate&amp;le</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="427"/>
         <source>&amp;Add %1 Users</source>
         <translation>Přid&amp;at %1 uživatele</translation>
@@ -5375,10 +2656,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="424"/>
         <source>&amp;Add User</source>
         <translation>Přid&amp;at uživatele</translation>
-    </message>
-    <message>
-        <source>&amp;Whitepages</source>
-        <translation type="obsolete">&amp;Bílé stránky</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="202"/>
@@ -5440,14 +2717,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="173"/>
         <source>Status</source>
         <translation type="unfinished">Status</translation>
-    </message>
-    <message>
-        <source>Sex &amp; Age</source>
-        <translation type="obsolete">Pohlaví a věk</translation>
-    </message>
-    <message>
-        <source>Authorize</source>
-        <translation type="obsolete">Autorizuj</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="360"/>
@@ -5533,57 +2802,6 @@ After you are online, you can send your personal details to the server.</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::SearchUserView</name>
-    <message>
-        <source>UIN</source>
-        <translation type="obsolete">UIN</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Jméno</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Alias</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">Email</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Sex &amp; Age</source>
-        <translation type="obsolete">Pohlaví a věk</translation>
-    </message>
-    <message>
-        <source>Authorize</source>
-        <translation type="obsolete">Autorizuj</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Neznámý</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Ne</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ano</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::SecurityDlg</name>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="166"/>
@@ -5596,25 +2814,9 @@ After you are online, you can send your personal details to the server.</source>
         <translation>chyba</translation>
     </message>
     <message>
-        <source>ICQ Security Options [Setting...]</source>
-        <translation type="obsolete">ICQ bezpečnostní nastavení [Nastavuji...]</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="171"/>
         <source>Internal error while setting security options.</source>
         <translation>Interní chyba při nastavování bezpečnosti.</translation>
-    </message>
-    <message>
-        <source>&amp;Local changes only</source>
-        <translation type="obsolete">Pouze &amp;lokální změny</translation>
-    </message>
-    <message>
-        <source>Password/UIN settings</source>
-        <translation type="obsolete">Nastavení UIN/Heslo</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options</source>
-        <translation type="obsolete">ICQ bezpečnostní nastavení</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="114"/>
@@ -5629,25 +2831,9 @@ připojení do ICQ sítě.</translation>
         <translation>vypršel čas</translation>
     </message>
     <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Kontrola správnosti hesla.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Vadné heslo, musí mít 1-8 znaků.</translation>
-    </message>
-    <message>
-        <source>Timeout while changing password.</source>
-        <translation type="obsolete">Vypršel čas při změně hesla.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="63"/>
         <source>Options</source>
         <translation>Nastavení</translation>
-    </message>
-    <message>
-        <source>Web Presence allows users to see if you are online through your web indicator.</source>
-        <translation type="obsolete">Webová prezence umožní ostatním vidět váš status prostřednictvím webového indikátoru.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="160"/>
@@ -5655,66 +2841,14 @@ připojení do ICQ sítě.</translation>
         <translation>nevyšlo</translation>
     </message>
     <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Hesla si neodpovídají.</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Autorizace požadována</translation>
-    </message>
-    <message>
-        <source>Internal error while changing password.</source>
-        <translation type="obsolete">Interní chyba při změně hesla.</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Zrušit</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Heslo:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="89"/>
         <source>&amp;Update</source>
         <translation>&amp;Obnovit</translation>
     </message>
     <message>
-        <source>Changing password failed.</source>
-        <translation type="obsolete">Změna hesla selhala.</translation>
-    </message>
-    <message>
-        <source>Hide IP stops users from seeing your IP address. It doesn&apos;t guarantee it will be hidden though.</source>
-        <translation type="obsolete">Skryj IP před ostatními uživateli. Tato funkce není garantována.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">K&amp;ontrola</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="161"/>
         <source>Setting security options failed.</source>
         <translation>Nastavení selhalo.</translation>
-    </message>
-    <message>
-        <source>Web Presence</source>
-        <translation type="obsolete">Webová prezence</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...</source>
-        <translation type="obsolete">ICQ bezpečnostní nastavení [Nastavuji...</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Vložte vaše heslo na ICQ.</translation>
-    </message>
-    <message>
-        <source>Determines whether regular ICQ clients require your authorization to add you to their contact list.</source>
-        <translation type="obsolete">Určuje, zda ostatní ICQ klienti potřebují Vaší autorizaci, aby si Vás mohli přidat do seznamu uživatelů.</translation>
-    </message>
-    <message>
-        <source>Hide IP</source>
-        <translation type="obsolete">Skrýt IP</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="72"/>
@@ -6069,10 +3203,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Příkaz pro prohlížení URL. Dostane URL jako parametr.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="198"/>
         <location filename="../src/settings/chat.cpp" line="202"/>
         <source>Terminal:</source>
@@ -6313,10 +3443,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Kreslit linky mezi jednotlivými uživateli v seznamu.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="81"/>
         <source>Show column headers</source>
         <translation type="unfinished"></translation>
@@ -6525,10 +3651,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <location filename="../src/settings/contactlist.cpp" line="225"/>
         <source>Title</source>
         <translation type="unfinished">Název</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Řetězec, který se objeví v záhlaví daného sloupce</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="228"/>
@@ -6891,10 +4013,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Příkaz provedený při obdržení události.&lt;br&gt;Příkazu budou předány příslušné parametry z níže uvedených.&lt;br&gt;Parametry mohou obsahovat následující výrazy, &lt;br&gt;které budou nahrazeny příslušnými údaji:&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="177"/>
         <source>Parameters</source>
         <translation type="unfinished">Parametry</translation>
@@ -7158,10 +4276,6 @@ Works with many different window managers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Výběr písma</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Editing:</source>
         <translation type="unfinished"></translation>
@@ -7170,14 +4284,6 @@ Works with many different window managers.</source>
         <location filename="../src/settings/general.cpp" line="139"/>
         <source>Used in message editor etc.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">výchozí (%1)</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">výchozí</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="94"/>
@@ -7935,10 +5041,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
 <context>
     <name>LicqQtGui::ShowAwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="147"/>
         <source>error</source>
         <translation>chyba</translation>
@@ -7967,85 +5069,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="85"/>
         <source>%1 Response for %2</source>
         <translation>%1 odpověď pro %2</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Chyba</translation>
-    </message>
-    <message>
-        <source>Skin:</source>
-        <translation type="obsolete">Skin</translation>
-    </message>
-    <message>
-        <source>&amp;Edit Skin</source>
-        <translation type="obsolete">&amp;Edituj Skin</translation>
-    </message>
-    <message>
-        <source>Skin selection</source>
-        <translation type="obsolete">Výběr skinu</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Použít</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1</source>
-        <translation type="obsolete">Nemohu otevřít soubor s ikonami
-%1</translation>
-    </message>
-    <message>
-        <source>Icons:</source>
-        <translation type="obsolete">Ikony:</translation>
-    </message>
-    <message>
-        <source>S&amp;kins:</source>
-        <translation type="obsolete">S&amp;kiny</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Náhled</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1</source>
-        <translation type="obsolete">Nemohu otevřít soubor s ikonami
-%1</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Z&amp;ruš</translation>
-    </message>
-    <message>
-        <source>&amp;Icons:</source>
-        <translation type="obsolete">&amp;Ikony:</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">Licq - Prochazení skinů</translation>
-    </message>
-    <message>
-        <source>E&amp;xtended Icons:</source>
-        <translation type="obsolete">Rozšíř&amp;ené ikony:</translation>
-    </message>
-    <message>
-        <source>Extended Icons:</source>
-        <translation type="obsolete">Rozšířené ikony:</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Systém</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
     </message>
 </context>
 <context>
@@ -8140,17 +5163,9 @@ reset your statistics?</source>
         <translation type="unfinished">Zakázat vše</translation>
     </message>
     <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Systémové funkce</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Uživatelské &amp;funkce</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="99"/>
@@ -8233,38 +5248,6 @@ reset your statistics?</source>
         <translation type="unfinished">Status</translation>
     </message>
     <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Online</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Away</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Not Available</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">O&amp;ccupied</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Do Not Disturb</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Free for C&amp;hat</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">O&amp;ffline</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Invisible</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>&amp;Group</source>
         <translation type="unfinished">&amp;Skupina</translation>
@@ -8313,14 +5296,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="203"/>
         <source>&amp;Thread Group View</source>
         <translation type="unfinished">Ukáza&amp;t skupiny</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">Nastav&amp;ovat...</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">Procházet s&amp;kiny</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="208"/>
@@ -8390,55 +5365,9 @@ reset your statistics?</source>
         <source>View &amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Online</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Away</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Not Available</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">O&amp;ccupied</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Do Not Disturb</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Free for C&amp;hat</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">O&amp;ffline</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Invisible</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Nezdařilo se otevření souboru s dokovým tématem
-(%1)
-:%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Nezdařilo se otevření souboru s obrázkem pro dokové téma
-%1</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="77"/>
         <source>Unable to load dock theme file:
@@ -8647,38 +5576,10 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::UserEventCommon</name>
     <message>
-        <source>Time:</source>
-        <translation type="obsolete">Čas:</translation>
-    </message>
-    <message>
-        <source>Change user text encoding</source>
-        <translation type="obsolete">Změň uživatelské kódování</translation>
-    </message>
-    <message>
-        <source>This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language.</source>
-        <translation type="obsolete">Toto tlačítko vybírá kódování text při komunikaci. Různé jazyky mohou používat různá kódování.</translation>
-    </message>
-    <message>
-        <source>Show User Info</source>
-        <translation type="obsolete">Zobrazit informace o uživateli</translation>
-    </message>
-    <message>
-        <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
-        <translation type="obsolete">Nemohu nahrát &lt;b&gt;%1&lt;/b&gt; kódování, zpráva může být nečitelná.</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="117"/>
         <location filename="../src/userevents/usereventcommon.cpp" line="295"/>
         <source>Unknown</source>
         <translation>Není známo</translation>
-    </message>
-    <message>
-        <source>Show User History</source>
-        <translation type="obsolete">Zobrazit historii</translation>
     </message>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="256"/>
@@ -8747,347 +5648,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventtabdlg.cpp" line="176"/>
         <source>[UNKNOWN_USER]</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::UserInfoDlg</name>
-    <message>
-        <source>IP:</source>
-        <translation type="obsolete">IP:</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation type="obsolete">Teď</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation type="obsolete">Věk:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation type="obsolete">Fax:</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation type="obsolete">Mužské</translation>
-    </message>
-    <message>
-        <source>UIN:</source>
-        <translation type="obsolete">UIN:</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation type="obsolete">Zip:</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">hotovo</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation type="obsolete">Den:</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">N&amp;aposledy</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menu</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation type="obsolete">Da&amp;lší</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Uložit</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation type="obsolete">P&amp;ráce</translation>
-    </message>
-    <message>
-        <source>&amp;Filter: </source>
-        <translation type="obsolete">&amp;Filter: </translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation type="obsolete">Město:</translation>
-    </message>
-    <message>
-        <source>P&amp;rev</source>
-        <translation type="obsolete">&amp;Předchozí</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Jméno:</translation>
-    </message>
-    <message>
-        <source>Nex&amp;t</source>
-        <translation type="obsolete">&amp;Další</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">chyba</translation>
-    </message>
-    <message>
-        <source>Last Online:</source>
-        <translation type="obsolete">Naposledy online:</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation type="obsolete">Obnovuji ze serveru...</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation type="obsolete">Rok:</translation>
-    </message>
-    <message>
-        <source>Last Sent Event:</source>
-        <translation type="obsolete">Poslední vyslaná událost:</translation>
-    </message>
-    <message>
-        <source>Last Checked Auto Response:</source>
-        <translation type="obsolete">Naposledy zkontrolována auto odpověď:</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">O &amp;něm/ní</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to retrieve your settings.</source>
-        <translation type="obsolete">Pro změnu Vašich nastavení musíte
-být přihlášen do ICQ sítě.</translation>
-    </message>
-    <message>
-        <source>Cellular:</source>
-        <translation type="obsolete">Mobil:</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 až %2</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation type="obsolete">EMail 1:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation type="obsolete">EMail 2:</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">vypršel čas</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation type="obsolete">Homepage:</translation>
-    </message>
-    <message>
-        <source>Online Since:</source>
-        <translation type="obsolete">Online od:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation type="obsolete">Zóna:</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation type="obsolete">Píše o sobě:</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation type="obsolete">Alias:</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation type="obsolete">Starý email</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation type="obsolete">Ženské</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation type="obsolete">Měsíc:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation type="obsolete">Telefon:</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation type="obsolete">Stát:</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Last Received Event:</source>
-        <translation type="obsolete">Poslední obdržená událost:</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation type="obsolete">Autorizace nepožadována</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Obdrženo&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Odesláno&lt;/font&gt;] %3 z %4 vyhovujících</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Obdrženo&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Odesláno&lt;/font&gt;] od %3 do %4 z %5</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">Země:</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">nevyšlo</translation>
-    </message>
-    <message>
-        <source>server</source>
-        <translation type="obsolete">server</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Autorizace požadována</translation>
-    </message>
-    <message>
-        <source>INVALID USER</source>
-        <translation type="obsolete">NEPLATNÝ UŽIVATEL</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation type="obsolete">Narozeniny:</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation type="obsolete">Neznámý (%1)</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation type="obsolete">Oddělení</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="obsolete">Pozice:</translation>
-    </message>
-    <message>
-        <source>Sorry, history is disabled for this person.</source>
-        <translation type="obsolete">Lituji, historie je vypnuta pro tohoto uživatele.</translation>
-    </message>
-    <message>
-        <source>Licq - Info </source>
-        <translation type="obsolete">Licq - Info </translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation type="obsolete">Adresa:</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation type="obsolete">Obnovuji...</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to change your settings.</source>
-        <translation type="obsolete">Pro změnu Vašich nastavení musíte
-být přihlášen do ICQ sítě.</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation type="obsolete">Jazyk 3:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation type="obsolete">Jazyk 1:</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation type="obsolete">Jazyk 2:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation type="obsolete">Nespecifikováno</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">&amp;Obnovit</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Není známo</translation>
-    </message>
-    <message>
-        <source>Retrieve</source>
-        <translation type="obsolete">Obdržet</translation>
-    </message>
-    <message>
-        <source>Rever&amp;se</source>
-        <translation type="obsolete">&amp;Sestupně</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 od %2</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation type="obsolete">Pohlaví:</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">Zá&amp;kladní</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">&amp;Historie</translation>
-    </message>
-    <message>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation type="obsolete">Chyba při nahrávání souboru historie: %1
-Popis: %2</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Popis:</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(none)</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Not Available</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Pročistit</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ano</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Ne</translation>
     </message>
 </context>
 <context>
@@ -9315,14 +5875,6 @@ to your ignore list?</source>
         <translation type="unfinished">Opravdu chcete přidat
 %1 (%2)
 do ignore seznamu?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ano</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Ne</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="164"/>
@@ -10096,12 +6648,6 @@ Select another picture?</source>
         <translation>Pozvat</translation>
     </message>
     <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">Chat s uživatelem %2 odmítnut:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendchatevent.cpp" line="75"/>
         <source> - Chat Request</source>
         <translation> - Žádost o chat</translation>
@@ -10122,26 +6668,14 @@ Select another picture?</source>
 <context>
     <name>LicqQtGui::UserSendCommon</name>
     <message>
-        <source>No</source>
-        <translation type="obsolete">Ne</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ano</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1149"/>
         <source>done</source>
         <translation>hotovo</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menu</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="201"/>
@@ -10154,10 +6688,6 @@ Select another picture?</source>
         <location filename="../src/userevents/usersendcommon.cpp" line="1162"/>
         <source>error</source>
         <translation>chyba</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Zavřít</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1159"/>
@@ -10192,10 +6722,6 @@ Select another picture?</source>
         <translation>Urgentně</translation>
     </message>
     <message>
-        <source>Send anyway</source>
-        <translation type="obsolete">Přesto odeslat</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1395"/>
         <source>Drag Users Here
 Right Click for Options</source>
@@ -10216,10 +6742,6 @@ Pravé tlačítko pro další volby</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="1079"/>
         <source>via server</source>
         <translation>přes server</translation>
-    </message>
-    <message>
-        <source>U&amp;rgent</source>
-        <translation type="obsolete">U&amp;rgentně</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1217"/>
@@ -10243,11 +6765,6 @@ poslat přes server?</translation>
         <translation>&amp;Zrušit</translation>
     </message>
     <message>
-        <source>Warning: Message can&apos;t be sent securely
-through the server!</source>
-        <translation type="obsolete">Varování: Zpáva nebude posílána se zabezpečením!</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1078"/>
         <source>Sending </source>
         <translation>Posílám </translation>
@@ -10266,18 +6783,6 @@ through the server!</source>
         <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source> to Contact List</source>
         <translation> do seznamu uživatelů</translation>
-    </message>
-    <message>
-        <source>%1 refused %2, send through server</source>
-        <translation type="obsolete">%1 odmítl %2, posláno přes server</translation>
-    </message>
-    <message>
-        <source>M&amp;ultiple recipients</source>
-        <translation type="obsolete">&amp;Více příjemců</translation>
-    </message>
-    <message>
-        <source>Se&amp;nd through server</source>
-        <translation type="obsolete">Poslat přes s&amp;erver</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="149"/>
@@ -10403,12 +6908,6 @@ Send anyway?</source>
         <translation> - Přenos souboru</translation>
     </message>
     <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">Přenos souboru s %2 odmítnut:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendfileevent.cpp" line="162"/>
         <location filename="../src/userevents/usersendfileevent.cpp" line="164"/>
         <source>Select files to send</source>
@@ -10436,14 +6935,6 @@ Send anyway?</source>
 <context>
     <name>LicqQtGui::UserSendMsgEvent</name>
     <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Ne</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ano</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendmsgevent.cpp" line="58"/>
         <source> - Message</source>
         <translation> - Zpráva</translation>
@@ -10458,14 +6949,6 @@ Chcete ji opravdu poslat?</translation>
 </context>
 <context>
     <name>LicqQtGui::UserSendSmsEvent</name>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Ne</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ano</translation>
-    </message>
     <message>
         <location filename="../src/userevents/usersendsmsevent.cpp" line="70"/>
         <source>Chars left : </source>
@@ -10517,10 +7000,6 @@ Do you really want to send it?</source>
         <location filename="../src/userevents/userviewevent.cpp" line="720"/>
         <source>&amp;Join</source>
         <translation>Připo&amp;jit</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Menu</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="742"/>
@@ -10591,10 +7070,6 @@ Request was cancelled.</source>
         <translation>
 --------------------
 Požadavek zrušen.</translation>
-    </message>
-    <message>
-        <source>View URL failed</source>
-        <translation type="obsolete">Chyba při zobrazení URL</translation>
     </message>
     <message>
         <location filename="../src/userevents/userviewevent.cpp" line="752"/>
@@ -10733,33 +7208,7 @@ Požadavek zrušen.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::VerifyDlg</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::WharfIcon</name>
-    <message>
-        <source>Left click - Show main window
-Middle click - Show next message
-Right click - System menu</source>
-        <translation type="obsolete">Levé tlačítko - ukázat hlavní okno
-Prostřední tlačítko - ukázat další zprávu
-Pravé tlačítko - systémové menu</translation>
-    </message>
-</context>
-<context>
     <name>QMessageBox</name>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq chyba</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq varování</translation>
-    </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="63"/>
         <location filename="../src/core/messagebox.cpp" line="68"/>
@@ -10771,10 +7220,6 @@ Pravé tlačítko - systémové menu</translation>
         <location filename="../src/core/messagebox.cpp" line="95"/>
         <source>Licq Question</source>
         <translation>Licq otázka</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq informace</translation>
     </message>
     <message>
         <location filename="../src/core/messagebox.cpp" line="78"/>

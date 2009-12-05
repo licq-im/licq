@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="sv_SE">
 <context>
-    <name>@default</name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE standard</translation>
-    </message>
-</context>
-<context>
     <name>Groups</name>
     <message>
         <location filename="../src/helpers/licqstrings.cpp" line="108"/>
@@ -92,21 +85,9 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation>&amp;Protokoll:</translation>
-    </message>
-    <message>
-        <source>&amp;New User ID:</source>
-        <translation type="obsolete">&amp;Nytt användarid:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="45"/>
@@ -132,37 +113,9 @@
 <context>
     <name>LicqQtGui::AuthUserDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>Refuse authorization to %1</source>
-        <translation type="obsolete">Godkänn inte %1</translation>
-    </message>
-    <message>
-        <source>Grant authorization to %1</source>
-        <translation type="obsolete">Godkänn %1</translation>
-    </message>
-    <message>
-        <source>Licq - Grant Authorisation</source>
-        <translation type="obsolete">Licq - godkänn</translation>
-    </message>
-    <message>
-        <source>Licq - Refuse Authorisation</source>
-        <translation type="obsolete">Licq - godkänn ej</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="83"/>
         <source>Response</source>
         <translation>Svar</translation>
-    </message>
-    <message>
-        <source>Authorize which user (Id):</source>
-        <translation type="obsolete">Godkänn vilken användare (ID):</translation>
     </message>
     <message>
         <location filename="../src/dialogs/authuserdlg.cpp" line="49"/>
@@ -195,10 +148,6 @@
 <context>
     <name>LicqQtGui::AwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="180"/>
         <source>I&apos;m currently %1, %a.
 You can leave me a message.
@@ -213,10 +162,6 @@ Du kan lämna ett meddelande.
         <translation>&amp;Redigera föremål</translation>
     </message>
     <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="97"/>
         <source>&amp;Select</source>
         <translation>&amp;Välj</translation>
@@ -225,10 +170,6 @@ Du kan lämna ett meddelande.
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="172"/>
         <source>Set %1 Response for %2</source>
         <translation>Ange %1 som svar till %2</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias.&lt;br&gt;Examples of popular uses include:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Will replace that line by the current date&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Show a fortune, as a tagline for example&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Run a script, passing the uin and alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Run the same script but ignore the output (for tracking auto response checks or something)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Useless, but shows how you can use shell script.&lt;/li&gt;&lt;/ul&gt;Of course, multiple &quot;|&quot; can appear in the auto response, and commands and regular text can be mixed line by line.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;Tips för användning av&lt;br&gt;Auto-svar&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Varje rad som börjar med en pipa (|) kommer att hanteras som ett kommando som ska köras. Raden kommer att ersättas med utmatningen från kommandot. Kommandot tolkas av /bin/sh så alla shell-kommandon och meta-tecken är tillåtna. Av säkerhetsskäl skickas alla %-uttryck till kommandot omgivna av enkla citattecken för att undvika att ev. meta-tecken i ett smeknamn tolkas av shellet.&lt;br&gt;Några exempel på populära användningsområden:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Kommer att ersätta den raden med dagens datum&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Visa en &quot;fortune&quot; som t.ex en &quot;tagline&quot;&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Kör ett skript och ger det variablerna uin och alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Kör samma skript men strunta i utmatningen (t.ex för att räkna auto-svars kontroller eller liknande) &lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;Du är speciell&quot;; fi&lt;/tt&gt;: Oanvändbart men visar hur du kan använda shell-skript.&lt;/li&gt;&lt;/ul&gt;Det kan naturligtvis förekomma flera &quot;|&quot; i ett autosvar och kommandon och vanlig text kan blandas rad för rad.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; Mer information hittar du på Licqs webbplats (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="96"/>
@@ -247,1400 +188,7 @@ Du kan lämna ett meddelande.
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CContactBar</name>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Ansluten</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Frånkopplad</translation>
-    </message>
-    <message>
-        <source>Not In List</source>
-        <translation type="obsolete">Ej i listan</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactList</name>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Alla användare</translation>
-    </message>
-    <message>
-        <source>Other Users</source>
-        <translation type="obsolete">Andra användare</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Anslutningsavisering</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Synlighetslista</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Osynlighetslista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Ignoreringslista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Nya användare</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Födelsedag&amp;nbsp;idag!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
-        <translation type="obsolete">&lt;br&gt;Skriver&amp;nbsp;ett&amp;nbsp;meddelande</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;Telefon&amp;nbsp;&amp;quot;Följ&amp;nbsp;Mig&amp;quot;&amp;nbsp;Tillgänglig</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;Telefon&amp;nbsp;&amp;quot;Följ&amp;nbsp;Mig&amp;quot;:&amp;nbsp;Upptagen</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Tillgänglig</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Upptagen</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="obsolete">&lt;br&gt;Filserver:&amp;nbsp;Aktiv</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Säker&amp;nbsp;anslutning</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Anpassat&amp;nbsp;autosvar</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Autosvar:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;T: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;A: </translation>
-    </message>
-    <message>
-        <source> weeks</source>
-        <translation type="obsolete"> veckor</translation>
-    </message>
-    <message>
-        <source> week</source>
-        <translation type="obsolete"> vecka</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete"> dagar</translation>
-    </message>
-    <message>
-        <source> day</source>
-        <translation type="obsolete"> dag</translation>
-    </message>
-    <message>
-        <source> hours</source>
-        <translation type="obsolete"> timmar</translation>
-    </message>
-    <message>
-        <source> hour</source>
-        <translation type="obsolete"> timme</translation>
-    </message>
-    <message>
-        <source> minutes</source>
-        <translation type="obsolete"> minuter</translation>
-    </message>
-    <message>
-        <source> minute</source>
-        <translation type="obsolete"> minut</translation>
-    </message>
-    <message>
-        <source>0 minutes</source>
-        <translation type="obsolete">0 minuter</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ansluten: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Inaktiv: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Lokal tid: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;ID: </translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEditFileListDlg</name>
-    <message>
-        <source>Licq - Files to send</source>
-        <translation type="obsolete">Licq - Filer att skicka</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">&amp;Klar</translation>
-    </message>
-    <message>
-        <source>&amp;Up</source>
-        <translation type="obsolete">&amp;Upp</translation>
-    </message>
-    <message>
-        <source>&amp;Down</source>
-        <translation type="obsolete">&amp;Ner</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Ta Bort</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CEmoticons</name>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Standard</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="obsolete">Inget</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFileDlg</name>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">KB</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">MB</translation>
-    </message>
-    <message>
-        <source>Byte</source>
-        <translation type="obsolete">Byte</translation>
-    </message>
-    <message>
-        <source>ETA:</source>
-        <translation type="obsolete">ETA:</translation>
-    </message>
-    <message>
-        <source>%1/%2</source>
-        <translation type="obsolete">%1/%2</translation>
-    </message>
-    <message>
-        <source>Bytes</source>
-        <translation type="obsolete">Bytes</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Stäng</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="obsolete">Fil:</translation>
-    </message>
-    <message>
-        <source>Retry</source>
-        <translation type="obsolete">Försök igen</translation>
-    </message>
-    <message>
-        <source>Time:</source>
-        <translation type="obsolete">Tid:</translation>
-    </message>
-    <message>
-        <source>Licq - File Transfer (%1)</source>
-        <translation type="obsolete">Filöverföring (%1)</translation>
-    </message>
-    <message>
-        <source>File already exists and appears incomplete.</source>
-        <translation type="obsolete">Filen finns redan, men ser ut att vara ofullständig.</translation>
-    </message>
-    <message>
-        <source>Batch:</source>
-        <translation type="obsolete">Bunt:</translation>
-    </message>
-    <message>
-        <source>File already exists and is at least as big as the incoming file.</source>
-        <translation type="obsolete">Filen finns redan och är åtminstone lika stor som den inkommande filen.</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Avbryt</translation>
-    </message>
-    <message>
-        <source>Resume</source>
-        <translation type="obsolete">Återuppta</translation>
-    </message>
-    <message>
-        <source>File name:</source>
-        <translation type="obsolete">Filnamn:</translation>
-    </message>
-    <message>
-        <source>Current:</source>
-        <translation type="obsolete">Nuvarande:</translation>
-    </message>
-    <message>
-        <source>Open error - unable to open file for writing.</source>
-        <translation type="obsolete">Öppnafel - kunde inte öppna fil för skrivning.</translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="obsolete">Skriv över</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel Transfer</source>
-        <translation type="obsolete">&amp;Avbryt Överföring</translation>
-    </message>
-    <message>
-        <source>File transfer cancelled.</source>
-        <translation type="obsolete">Filöverföring avbruten.</translation>
-    </message>
-    <message>
-        <source>Waiting for connection...</source>
-        <translation type="obsolete">Väntar på anslutning...</translation>
-    </message>
-    <message>
-        <source>Receiving file...</source>
-        <translation type="obsolete">Tar emot fil...</translation>
-    </message>
-    <message>
-        <source>Sending file...</source>
-        <translation type="obsolete">Skickar fil...</translation>
-    </message>
-    <message>
-        <source>Received %1 from %2 successfully.</source>
-        <translation type="obsolete">Emottog %1 från %2 utan problem.</translation>
-    </message>
-    <message>
-        <source>Sent %1 to %2 successfully.</source>
-        <translation type="obsolete">%1 skickad till %2 utan problem.</translation>
-    </message>
-    <message>
-        <source>File transfer complete.</source>
-        <translation type="obsolete">Filöverföring färdig.</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Remote side disconnected.</source>
-        <translation type="obsolete">Mottagaren kopplade ifrån.</translation>
-    </message>
-    <message>
-        <source>File I/O error: %1.</source>
-        <translation type="obsolete">I/O fel på fil: %1.</translation>
-    </message>
-    <message>
-        <source>File I/O Error:
-%1
-
-See Network Window for details.</source>
-        <translation type="obsolete">I/O fel på fil:
-%1
-
-Se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
-        <source>Handshaking error.
-</source>
-        <translation type="obsolete">Fel vid upprättandet av förbindelsen.</translation>
-    </message>
-    <message>
-        <source>Handshake Error.
-See Network Window for details.</source>
-        <translation type="obsolete">Fel vid upprättandet av förbindelsen. Se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
-        <source>Connection error.
-</source>
-        <translation type="obsolete">Anslutningsfel.</translation>
-    </message>
-    <message>
-        <source>Unable to reach remote host.
-See Network Window for details.</source>
-        <translation type="obsolete">Kan ej nå mottagar datorn.
-Se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
-        <source>Bind error.
-</source>
-        <translation type="obsolete">Bindningsfel.
-</translation>
-    </message>
-    <message>
-        <source>Unable to bind to a port.
-See Network Window for details.</source>
-        <translation type="obsolete">Kunde inte binda till port.
-Se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
-        <source>Not enough resources.
-</source>
-        <translation type="obsolete">Ej tillräckligt med resurser.</translation>
-    </message>
-    <message>
-        <source>Unable to create a thread.
-See Network Window for details.</source>
-        <translation type="obsolete">Kunde inte skapa en tråd.
-se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
-        <source>Connecting to remote...</source>
-        <translation type="obsolete">Ansluter till mottagare...</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Öppna</translation>
-    </message>
-    <message>
-        <source>O&amp;pen Dir</source>
-        <translation type="obsolete">Öppna &amp;katalog</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CFloatyView</name>
-    <message>
-        <source>%1 Floaty (%2)</source>
-        <translation type="obsolete">%1 flytande (%2)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CForwardDlg</name>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Message</source>
-        <translation type="obsolete">Meddelande</translation>
-    </message>
-    <message>
-        <source>Forward %1 To User</source>
-        <translation type="obsolete">Vidarebefodra %1 till användare</translation>
-    </message>
-    <message>
-        <source>Drag the user to forward to here:</source>
-        <translation type="obsolete">Dra användaren, som du vill vidarebfodra till, hit:</translation>
-    </message>
-    <message>
-        <source>Unable to forward this message type (%d).</source>
-        <translation type="obsolete">Kan inte vidarebefodra denna typ av meddelande (%d).</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
-        <source>Forwarded message:
-</source>
-        <translation type="obsolete">Vidarebefodrat meddelande:
-</translation>
-    </message>
-    <message>
-        <source>&amp;Forward</source>
-        <translation type="obsolete">&amp;Vidarebefodra</translation>
-    </message>
-    <message>
-        <source>Forwarded URL:
-</source>
-        <translation type="obsolete">Vidarebefodra URL:
-</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CLicqMessageBox</name>
-    <message>
-        <source>Licq</source>
-        <translation type="obsolete">Licq</translation>
-    </message>
-    <message>
-        <source>&amp;List</source>
-        <translation type="obsolete">&amp;Lista</translation>
-    </message>
-    <message>
-        <source>&amp;Next</source>
-        <translation type="obsolete">&amp;Nästa</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Clear All</source>
-        <translation type="obsolete">&amp;Rensa alla</translation>
-    </message>
-    <message>
-        <source>&amp;Next (%1)</source>
-        <translation type="obsolete">&amp;Nästa (%1)</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq Information</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq Varning</translation>
-    </message>
-    <message>
-        <source>Licq Critical</source>
-        <translation type="obsolete">Licq Kritisk</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMSendDlg</name>
-    <message>
-        <source>Sending mass message to %1...</source>
-        <translation type="obsolete">Skickar massmeddelande till %1...</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;täng</translation>
-    </message>
-    <message>
-        <source>Sending mass URL to %1...</source>
-        <translation type="obsolete">Skickar mass-URL till %1...</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">misslyckades</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Contact List</source>
-        <translation type="obsolete">Kontaktlista för flera användare</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient URL</source>
-        <translation type="obsolete">URL till flera mottagare</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
-        <source>Sending mass list to %1...</source>
-        <translation type="obsolete">Skickar masslista till %1...</translation>
-    </message>
-    <message>
-        <source>Multiple Recipient Message</source>
-        <translation type="obsolete">Meddelande till flera mottagare</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMMUserView</name>
-    <message>
-        <source>Crop</source>
-        <translation type="obsolete">Beskär</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Rensa</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Ta bort</translation>
-    </message>
-    <message>
-        <source>Add Group</source>
-        <translation type="obsolete">Lägg till grupp</translation>
-    </message>
-    <message>
-        <source>Add All</source>
-        <translation type="obsolete">Lägg till alla</translation>
-    </message>
-    <message>
-        <source>Drag&apos;n&apos;Drop didn&apos;t work</source>
-        <translation type="obsolete">Dra och släpp fungerade inte</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CMainWindow</name>
-    <message>
-        <source>s</source>
-        <translation type="obsolete">s</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nej</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ja</translation>
-    </message>
-    <message>
-        <source>Send</source>
-        <translation type="obsolete">Skicka</translation>
-    </message>
-    <message>
-        <source>Online to User</source>
-        <translation type="obsolete">Ansluten för användare</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Borta</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Hjälp</translation>
-    </message>
-    <message>
-        <source>&amp;Info</source>
-        <translation type="obsolete">&amp;Info</translation>
-    </message>
-    <message>
-        <source>U&amp;tilities</source>
-        <translation type="obsolete">&amp;Verktyg</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">A&amp;vsluta</translation>
-    </message>
-    <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Alternativ...</translation>
-    </message>
-    <message>
-        <source>R&amp;andom Chat</source>
-        <translation type="obsolete">Slump&amp;chatt</translation>
-    </message>
-    <message>
-        <source>&amp;Random Chat Group</source>
-        <translation type="obsolete">&amp;Slumpmässig chattgrupp</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Igång sedan %1
-</translation>
-    </message>
-    <message>
-        <source>Check %1 Response</source>
-        <translation type="obsolete">Kontrollera %1 svar</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Kunde inte öppna ikonfil
-%1.</translation>
-    </message>
-    <message>
-        <source>Send &amp;Authorization</source>
-        <translation type="obsolete">Skicka &amp;godkännande</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">&amp;Om</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">&amp;Grupp</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Tips</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Återställ</translation>
-    </message>
-    <message>
-        <source>Custom Auto Response...</source>
-        <translation type="obsolete">Anpassat autosvar...</translation>
-    </message>
-    <message>
-        <source>Set &amp;Auto Response...</source>
-        <translation type="obsolete">Ange &amp;autosvar...</translation>
-    </message>
-    <message>
-        <source>Remove From List</source>
-        <translation type="obsolete">Ta bort från listan</translation>
-    </message>
-    <message>
-        <source>System Message</source>
-        <translation type="obsolete">Systemmeddelande</translation>
-    </message>
-    <message>
-        <source>%1 msg%2</source>
-        <translation type="obsolete">%1 med.%2</translation>
-    </message>
-    <message>
-        <source>&amp;Popup All Messages</source>
-        <translation type="obsolete">&amp;Visa automatiskt alla meddelanden</translation>
-    </message>
-    <message>
-        <source>Accept in Not Available</source>
-        <translation type="obsolete">Tillåt i Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>View &amp;History</source>
-        <translation type="obsolete">Visa &amp;Historik</translation>
-    </message>
-    <message>
-        <source>Edit User Group</source>
-        <translation type="obsolete">Redigera användargrupper</translation>
-    </message>
-    <message>
-        <source>Unknown Packets</source>
-        <translation type="obsolete">Okända paket</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Avbryt</translation>
-    </message>
-    <message>
-        <source>&amp;Mini Mode</source>
-        <translation type="obsolete">&amp;Mini-läge</translation>
-    </message>
-    <message>
-        <source>Errors</source>
-        <translation type="obsolete">Fel</translation>
-    </message>
-    <message>
-        <source>No msgs</source>
-        <translation type="obsolete">Inga med</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Igång sedan %1
-
-</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Statistik för bakgrundsprocess
-
-</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Statistik för bakgrundsprocess
-(Idag/Totalt)
-</translation>
-    </message>
-    <message>
-        <source>SysMsg</source>
-        <translation type="obsolete">SysMed</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">System</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Senaste återställning %1
-
-</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Är du säker på att du vill ta bort
-%1 (%2)
-från gruppen &apos;%3&apos;?</translation>
-    </message>
-    <message>
-        <source>Do you really want to add
-%1 (%2)
-to your ignore list?</source>
-        <translation type="obsolete">Vill du verkligen lägga till
-%1 (%2)
-till din ignoreringslista?</translation>
-    </message>
-    <message>
-        <source>Packets</source>
-        <translation type="obsolete">Paket</translation>
-    </message>
-    <message>
-        <source>&amp;Save All Users</source>
-        <translation type="obsolete">&amp;Spara alla användare</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb to User</source>
-        <translation type="obsolete">Stör ej för användare</translation>
-    </message>
-    <message>
-        <source>Update All Users</source>
-        <translation type="obsolete">Uppdatera alla användare</translation>
-    </message>
-    <message>
-        <source>&amp;Redraw User Window</source>
-        <translation type="obsolete">&amp;Rita om användarfönstret</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(med KDE-stöd)
-</translation>
-    </message>
-    <message>
-        <source>Occupied to User</source>
-        <translation type="obsolete">Upptagen för användare</translation>
-    </message>
-    <message>
-        <source>Logon failed.
-See network window for details.</source>
-        <translation type="obsolete">Anslutning misslyckades.
-Se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
-        <source>Accept in Away</source>
-        <translation type="obsolete">Tillåt i borta</translation>
-    </message>
-    <message>
-        <source>Send &amp;Chat Request</source>
-        <translation type="obsolete">Skicka &amp;chattbegäran</translation>
-    </message>
-    <message>
-        <source>Show Offline &amp;Users</source>
-        <translation type="obsolete">Visa frånkopplade &amp;användare</translation>
-    </message>
-    <message>
-        <source>%1 message%2</source>
-        <translation type="obsolete">%1 meddelande%2</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>Warnings</source>
-        <translation type="obsolete">Varningar</translation>
-    </message>
-    <message>
-        <source>Debug Level</source>
-        <translation type="obsolete">Felsökningsnivå</translation>
-    </message>
-    <message>
-        <source>&amp;Network Window</source>
-        <translation type="obsolete">&amp;Nätverksfönstret</translation>
-    </message>
-    <message>
-        <source>&amp;View Event</source>
-        <translation type="obsolete">&amp;Visa Händelse</translation>
-    </message>
-    <message>
-        <source>&amp;Plugin Manager...</source>
-        <translation type="obsolete">&amp;Instickshanterare...</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">&amp;Upptagen</translation>
-    </message>
-    <message>
-        <source>Set All</source>
-        <translation type="obsolete">Ange alla</translation>
-    </message>
-    <message>
-        <source>&amp;View System Messages</source>
-        <translation type="obsolete">&amp;Visa systemmeddelanden</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">&amp;Trådad gruppvy</translation>
-    </message>
-    <message>
-        <source>Send &amp;Message</source>
-        <translation type="obsolete">Skicka &amp;meddelande</translation>
-    </message>
-    <message>
-        <source>Update Current Group</source>
-        <translation type="obsolete">Uppdatera aktuell grupp</translation>
-    </message>
-    <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
-        <source>Right click - Status menu
-Double click - Set auto response</source>
-        <translation type="obsolete">Högerklicka - Statusmeny
-Dubbelklicka - Sätt autosvar</translation>
-    </message>
-    <message>
-        <source>&amp;Add User</source>
-        <translation type="obsolete">&amp;Lägg till användare</translation>
-    </message>
-    <message>
-        <source>Accept in Do Not Disturb</source>
-        <translation type="obsolete">Tillåt i Stör ej</translation>
-    </message>
-    <message>
-        <source>&amp;Statistics</source>
-        <translation type="obsolete">&amp;Statistik</translation>
-    </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Ansluten</translation>
-    </message>
-    <message>
-        <source>Clear All</source>
-        <translation type="obsolete">Rensa alla</translation>
-    </message>
-    <message>
-        <source>&amp;Status</source>
-        <translation type="obsolete">&amp;Status</translation>
-    </message>
-    <message>
-        <source>&amp;System</source>
-        <translation type="obsolete">&amp;System</translation>
-    </message>
-    <message>
-        <source>Accept in Occupied</source>
-        <translation type="obsolete">Tillåt i Upptagen</translation>
-    </message>
-    <message>
-        <source>Send Contact &amp;List</source>
-        <translation type="obsolete">Skicka kontakt&amp;lista</translation>
-    </message>
-    <message>
-        <source>Status Info</source>
-        <translation type="obsolete">Statusinfo</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Stör ej</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Är du säker på att du vill ta bort
-%1 (%2)
-från din kontaktlista?</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">&amp;Frånkopplad</translation>
-    </message>
-    <message>
-        <source>A&amp;uthorize User</source>
-        <translation type="obsolete">&amp;Godkänn användare</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Chatt&amp;ledig</translation>
-    </message>
-    <message>
-        <source>Right click - User groups
-Double click - Show next message</source>
-        <translation type="obsolete">Högerklicka - Användargrupper
-Dubbelklicka - Visa nästa meddelande</translation>
-    </message>
-    <message>
-        <source>No messages</source>
-        <translation type="obsolete">Inga meddelanden</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Osynlig</translation>
-    </message>
-    <message>
-        <source>Send &amp;File Transfer</source>
-        <translation type="obsolete">Skicka &amp;fil</translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Användarfunktioner</translation>
-    </message>
-    <message>
-        <source>Check Auto Response</source>
-        <translation type="obsolete">Kontrollera autosvar</translation>
-    </message>
-    <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Systemfunktioner</translation>
-    </message>
-    <message>
-        <source>Edit &amp;Groups</source>
-        <translation type="obsolete">Redigera &amp;grupper</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">&amp;Temaväljare...</translation>
-    </message>
-    <message>
-        <source>Request &amp;Secure Channel</source>
-        <translation type="obsolete">Begär &amp;säker kanal</translation>
-    </message>
-    <message>
-        <source>S&amp;earch for User</source>
-        <translation type="obsolete">S&amp;ök efter användare</translation>
-    </message>
-    <message>
-        <source>Not Available to User</source>
-        <translation type="obsolete">Ej tillgänglig för användare</translation>
-    </message>
-    <message>
-        <source>Toggle &amp;Floaty</source>
-        <translation type="obsolete">Växla &amp;flytande</translation>
-    </message>
-    <message>
-        <source>Sa&amp;ve Settings</source>
-        <translation type="obsolete">S&amp;para inställningar</translation>
-    </message>
-    <message>
-        <source>Away to User</source>
-        <translation type="obsolete">Borta för användare</translation>
-    </message>
-    <message>
-        <source>Send &amp;URL</source>
-        <translation type="obsolete">Skicka &amp;länk</translation>
-    </message>
-    <message>
-        <source>Send Authorization Re&amp;quest</source>
-        <translation type="obsolete">Skicka begäran om &amp;godkännande</translation>
-    </message>
-    <message>
-        <source>Send &amp;SMS</source>
-        <translation type="obsolete">Skicka &amp;SMS</translation>
-    </message>
-    <message>
-        <source>&amp;Security/Password Options</source>
-        <translation type="obsolete">&amp;Säkerhet/Lösenords inställningar</translation>
-    </message>
-    <message>
-        <source>Re&amp;quest Authorization</source>
-        <translation type="obsolete">&amp;Begär godkännande</translation>
-    </message>
-    <message>
-        <source>Auto Accept Files</source>
-        <translation type="obsolete">Acceptera filer automatiskt</translation>
-    </message>
-    <message>
-        <source>Auto Accept Chats</source>
-        <translation type="obsolete">Acceptera chat automatiskt</translation>
-    </message>
-    <message>
-        <source>Auto Request Secure</source>
-        <translation type="obsolete">Begär säker kanal automatiskt</translation>
-    </message>
-    <message>
-        <source>Use Real Ip (LAN)</source>
-        <translation type="obsolete">Använd sant IP (LAN)</translation>
-    </message>
-    <message>
-        <source>Misc Modes</source>
-        <translation type="obsolete">Diverse inställningar</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt;För mer information, se Licq:s webbplats (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Server Group</source>
-        <translation type="obsolete">Server grupp</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Maintainer: Jon Keating
-Contributions by Dirk A. Mueller
-Original Author: Graham Roff
-
-http://www.licq.org
-#licq on irc.freenode.net
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Licq version %1%8.
-Qt GUI plugin version %2.
-Kompilerad %7
-%6
-Projektansvarig: Jon Keating
-Bidrag från Dirk A. Mueller
-Ursprunglig skapare : Graham Roff
-Svensk översättning : Samuel Blomqvist
-
-http://www.licq.org
-#licq på irc.freenode.net
-
-%3 (%4)
-%5 kontakter.
-</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1.</source>
-        <translation type="obsolete">Kunde inte öppna fil %1 med utökade ikoner.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">Licq kan inte hitta en webläsare pga. ett internt fel.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq kan inte starta din webbläsare och öppna länken.
-Du måste starta din webbläsare och öppna länken manuellt.</translation>
-    </message>
-    <message>
-        <source>Error! No owner set</source>
-        <translation type="obsolete">Fel! Ingen användare angiven</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
-        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt; är ansluten</translation>
-    </message>
-    <message>
-        <source>(Error! No owner set)</source>
-        <translation type="obsolete">Fel! Ingen användare angiven</translation>
-    </message>
-    <message>
-        <source>&amp;GPG Key Manager...</source>
-        <translation type="obsolete">&amp;GPG Nyckelhanterare...</translation>
-    </message>
-    <message>
-        <source>Don&apos;t Show</source>
-        <translation type="obsolete">Visa Inte</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation type="obsolete">Tillgänglig</translation>
-    </message>
-    <message>
-        <source>Busy</source>
-        <translation type="obsolete">Upptagen</translation>
-    </message>
-    <message>
-        <source>Phone &quot;Follow Me&quot;</source>
-        <translation type="obsolete">Telefon &quot;Följ Mig&quot;</translation>
-    </message>
-    <message>
-        <source>&amp;Owner Manager</source>
-        <translation type="obsolete">&amp;Ägarhanterare</translation>
-    </message>
-    <message>
-        <source>Use GPG Encryption</source>
-        <translation type="obsolete">Använd GPG-kryptering</translation>
-    </message>
-    <message>
-        <source>Update Info Plugin List</source>
-        <translation type="obsolete">Uppdatera &quot;Info Plugin&quot; listan</translation>
-    </message>
-    <message>
-        <source>Update Status Plugin List</source>
-        <translation type="obsolete">Uppdatera &quot;Status Plugin&quot; listan</translation>
-    </message>
-    <message>
-        <source>Update Phone &quot;Follow Me&quot; Status</source>
-        <translation type="obsolete">Uppdatera Telefon &quot;Följ Mig&quot; läge</translation>
-    </message>
-    <message>
-        <source>Update ICQphone Status</source>
-        <translation type="obsolete">Updatera ICQphone läge</translation>
-    </message>
-    <message>
-        <source>Update File Server Status</source>
-        <translation type="obsolete">Uppdatera FilSever läge</translation>
-    </message>
-    <message>
-        <source>Set GPG key</source>
-        <translation type="obsolete">Ange GPGnyckel</translation>
-    </message>
-    <message>
-        <source>Do you really want to reset your stats?</source>
-        <translation type="obsolete">Vill du verkligen nollställa din statistik?</translation>
-    </message>
-    <message>
-        <source> </source>
-        <translation type="obsolete"> </translation>
-    </message>
-    <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;användaralias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;e-post&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;förnamn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;användar-ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;efternamn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;lokal tid&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# väntande meddelanden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# väntande meddelande (om några)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;fullständigt namn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;senast sedd ansluten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;ansluten sedan&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;användar-port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;förkortad status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webbsida&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="obsolete">&lt;h2&gt;Tips för användning av&lt;br&gt;Licqs Qt-GUI-insticksprogram&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Ändra din status genom  högerklicka på statusetiketten.&lt;/li&gt;&lt;li&gt;Ändra ditt autosvar genom att dubbelklicka på statusetiketten.&lt;/li&gt;&lt;li&gt;Visa systemmeddelanden genom att dubbelklicka på meddelandeetiketten.&lt;/li&gt;&lt;li&gt;Ändra grupper genom att högerklicka på meddelandeetiketten.&lt;/li&gt;&lt;li&gt;Använd följande kortkommandon från kontaktlistan:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M: &lt;/tt&gt;Växla miniläge&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O: &lt;/tt&gt;Växla visa frånkopplade användare&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X: &lt;/tt&gt;Avsluta&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H: &lt;/tt&gt;Dölj&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I: &lt;/tt&gt;Visa nästa meddelande&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V: &lt;/tt&gt;Visa meddelande&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S: &lt;/tt&gt;Skicka meddelande&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U: &lt;/tt&gt;Skicka URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C: &lt;/tt&gt;Skicka chattförfrågan&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F: &lt;/tt&gt;Skicka fil&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A: &lt;/tt&gt;Kontrollera autosvar&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P: &lt;/tt&gt;Visa all meddelanden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L: &lt;/tt&gt;Rita om användarfönstret&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete: &lt;/tt&gt;Ta bort användare från aktuell grupp&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete: &lt;/tt&gt;Ta bort användre från kontaktlistan&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Håll ner control när du klickar på stäng i funktionsfönstret för att   ta bort användaren från din kontaktlista.&lt;/li&gt;&lt;li&gt;Tryck Ctrl-Enter i de flesta textinmatningsrutor för att välja &quot;Ok&quot; eller &quot;Acceptera&quot;.   Till exempel skickafliken i användarnas funktionsfönster.&lt;/li&gt;&lt;li&gt;Här är den kompletta listan av %-val som kan användas i &lt;b&gt;OnEvent&lt;/b&gt;   parametrar, &lt;b&gt;autosvar&lt;/b&gt; och &lt;b&gt;tillägg&lt;/b&gt;:</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CQtLogWindow</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Spara</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;täng</translation>
-    </message>
-    <message>
-        <source>Failed to open file:
-%1</source>
-        <translation type="obsolete">Kunde inte öppna fil:
-%1</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">&amp;Rensa</translation>
-    </message>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq nätverkslogg</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRandomChatDlg</name>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Spel</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">Omkring 20</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">Omkring 30</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">Omkring 40</translation>
-    </message>
-    <message>
-        <source>Random chat search timed out.</source>
-        <translation type="obsolete">Slumpchattsökningen dog ut.</translation>
-    </message>
-    <message>
-        <source>Random chat search had an error.</source>
-        <translation type="obsolete">Slumpchattökningen felade.</translation>
-    </message>
-    <message>
-        <source>No random chat user found in that group.</source>
-        <translation type="obsolete">Ingen slumpchattanvändare funnen i den gruppen.</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">Över 50</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romans</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
-        <source>Searching for Random Chat Partner...</source>
-        <translation type="obsolete">Söker efter Slumpchattpartner</translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="obsolete">&amp;Sök</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Studenter</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Allmänt</translation>
-    </message>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Slumpchattsökning</translation>
-    </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="obsolete">Söker kvinnor</translation>
-    </message>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="obsolete">Söker män</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CRefuseDlg</name>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 vägran</translation>
-    </message>
-    <message>
-        <source>Refusal message for %1 with </source>
-        <translation type="obsolete">Vägringsmeddelande för %1 med </translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Avbryt</translation>
-    </message>
-    <message>
-        <source>Refuse</source>
-        <translation type="obsolete">Vägra</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::CSetRandomChatGroupDlg</name>
-    <message>
-        <source>&amp;Set</source>
-        <translation type="obsolete">&amp;Ange</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">klar</translation>
-    </message>
-    <message>
-        <source>Games</source>
-        <translation type="obsolete">Spel</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">fel</translation>
-    </message>
-    <message>
-        <source>20 Something</source>
-        <translation type="obsolete">Omkring 20</translation>
-    </message>
-    <message>
-        <source>30 Something</source>
-        <translation type="obsolete">Omkring 30</translation>
-    </message>
-    <message>
-        <source>40 Something</source>
-        <translation type="obsolete">Omkring 40</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Stäng</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(ingen)</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">dog ut</translation>
-    </message>
-    <message>
-        <source>Set Random Chat Group</source>
-        <translation type="obsolete">Sätt slumpchattgrupp</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">misslyckades</translation>
-    </message>
-    <message>
-        <source>50 Plus</source>
-        <translation type="obsolete">Över 50</translation>
-    </message>
-    <message>
-        <source>Romance</source>
-        <translation type="obsolete">Romans</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
-        <source>Students</source>
-        <translation type="obsolete">Studenter</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Allmänt</translation>
-    </message>
-    <message>
-        <source>Setting Random Chat Group...</source>
-        <translation type="obsolete">Sätter slumpchattgrupp...</translation>
-    </message>
-    <message>
-        <source>Seeking Women</source>
-        <translation type="obsolete">Söker kvinnor</translation>
-    </message>
-    <message>
-        <source>Seeking Men</source>
-        <translation type="obsolete">Söker män</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::ChatDlg</name>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Nej</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ja</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="202"/>
         <source>Beep</source>
@@ -1882,105 +430,9 @@ Se nätverksfönstret för mer information.</translation>
         <source>Other Users</source>
         <translation type="unfinished">Andra användare</translation>
     </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Alla användare</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Anslutningsavisering</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Synlighetslista</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Osynlighetslista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Ignoreringslista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Nya användare</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ContactUserData</name>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Födelsedag&amp;nbsp;idag!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
-        <translation type="obsolete">&lt;br&gt;Skriver&amp;nbsp;ett&amp;nbsp;meddelande</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;Telefon&amp;nbsp;&amp;quot;Följ&amp;nbsp;Mig&amp;quot;&amp;nbsp;Tillgänglig</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;Telefon&amp;nbsp;&amp;quot;Följ&amp;nbsp;Mig&amp;quot;:&amp;nbsp;Upptagen</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Tillgänglig</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Upptagen</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="obsolete">&lt;br&gt;Filserver:&amp;nbsp;Aktiv</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Säker&amp;nbsp;anslutning</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Anpassat&amp;nbsp;autosvar</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Autosvar:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;T: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;M: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;A: </translation>
-    </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
         <source> weeks</source>
@@ -2025,22 +477,6 @@ Se nätverksfönstret för mer information.</translation>
         <location filename="../src/contactlist/contactuserdata.cpp" line="816"/>
         <source>0 minutes</source>
         <translation type="unfinished">0 minuter</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ansluten: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Inaktiv: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Lokal tid: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;ID: </translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="702"/>
@@ -2174,48 +610,7 @@ Du kan lämna ett meddelande.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::CustomAwayMsgDlg</name>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Rensa</translation>
-    </message>
-    <message>
-        <source>Set Custom Auto Response for %1</source>
-        <translation type="obsolete">Ange anpassat autosvar för %1</translation>
-    </message>
-    <message>
-        <source>I am currently %1.
-You can leave me a message.</source>
-        <translation type="obsolete">Jag är förnärvarande %1.
-Du kan lämna ett meddelande.</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
-        <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Tips</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::DockIcon</name>
-    <message>
-        <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;%1 systemmeddelande&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;%1 msgs</source>
-        <translation type="obsolete">&lt;br&gt;%1 med</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;1 msg</source>
-        <translation type="obsolete">&lt;br&gt;1 med</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/dockicon.cpp" line="140"/>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
@@ -2245,14 +640,6 @@ Du kan lämna ett meddelande.</translation>
         <translation>Ospecificerat</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editcategorydlg.cpp" line="56"/>
         <source>Personal Interests</source>
         <translation type="unfinished"></translation>
@@ -2270,14 +657,6 @@ Du kan lämna ett meddelande.</translation>
 </context>
 <context>
     <name>LicqQtGui::EditFileDlg</name>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Spara</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;täng</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/editfiledlg.cpp" line="82"/>
         <location filename="../src/dialogs/editfiledlg.cpp" line="109"/>
@@ -2333,10 +712,6 @@ Du kan lämna ett meddelande.</translation>
 <context>
     <name>LicqQtGui::EditGrpDlg</name>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
         <source>Add</source>
         <translation>Lägg till</translation>
@@ -2382,18 +757,6 @@ gruppen &apos;%1&apos;?</translation>
         <translation>namnlös</translation>
     </message>
     <message>
-        <source>Set Default</source>
-        <translation type="obsolete">Ange förvalt värde</translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="obsolete">Förvalt värde:</translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="obsolete">Förvald grupp att starta i.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="74"/>
         <source>Edit group name (hit enter to save).</source>
         <translation>Redigera gruppnamn (slå retur för att spara).</translation>
@@ -2412,18 +775,6 @@ gruppen &apos;%1&apos;?</translation>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="68"/>
         <source>Shift Up</source>
         <translation>Flytta upp</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="obsolete">Ange för nya användare</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="obsolete">Den grupp till vilken nya användare automatiskt kommer att läggas till. Alla nya användare kommer att hamna i den lokala gruppen &quot;Nya användare&quot; men när de sparas på servern kommer de också att sparas i den specificerade gruppen.</translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="obsolete">Nya användare:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="83"/>
@@ -3007,26 +1358,6 @@ se nätverksfönstret för mer information.</translation>
 <context>
     <name>LicqQtGui::GPGKeyManager</name>
     <message>
-        <source>Licq GPG Key Manager</source>
-        <translation type="obsolete">Licq GPG-nyckelhanterare</translation>
-    </message>
-    <message>
-        <source>GPG Passphrase</source>
-        <translation type="obsolete">GPG-lösenord</translation>
-    </message>
-    <message>
-        <source>No passphrase set</source>
-        <translation type="obsolete">Inget lösenord satt</translation>
-    </message>
-    <message>
-        <source>&amp;Set GPG Passphrase</source>
-        <translation type="obsolete">&amp;Sätt GPG-lösenord</translation>
-    </message>
-    <message>
-        <source>User Keys</source>
-        <translation type="obsolete">Användarnycklar</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="81"/>
         <source>&amp;Add</source>
         <translation>&amp;Lägg till</translation>
@@ -3060,30 +1391,6 @@ se nätverksfönstret för mer information.</translation>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="67"/>
         <source>Key ID</source>
         <translation>Nyckelid</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Stäng</translation>
-    </message>
-    <message>
-        <source>Set Passphrase</source>
-        <translation type="obsolete">Ange lösenord</translation>
-    </message>
-    <message>
-        <source>Not yet implemented. Use licq_gpg.conf.</source>
-        <translation type="obsolete">Inte implemenrat ännu. Använd licq_gpg.conf.</translation>
-    </message>
-    <message>
-        <source>Remove GPG key</source>
-        <translation type="obsolete">Ta bort GPG-nyckel</translation>
-    </message>
-    <message>
-        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
-        <translation type="obsolete">Vill du ta bort GPG-nyckeln? Nyckeln tas inte bort från din nyckelring.</translation>
-    </message>
-    <message>
-        <source>Drag&amp;Drop user to add to list.</source>
-        <translation type="obsolete">Dra&amp;Släpp användare för att lägga till i listan.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="142"/>
@@ -3125,17 +1432,9 @@ The key isn&apos;t deleted from your keyring.</source>
         <translation>Filter:</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/gpgkeyselect.cpp" line="105"/>
         <source>&amp;No Key</source>
         <translation>&amp;Ingen nyckel</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
     </message>
 </context>
 <context>
@@ -3173,10 +1472,6 @@ The key isn&apos;t deleted from your keyring.</source>
 </context>
 <context>
     <name>LicqQtGui::HintsDlg</name>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;täng</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/hintsdlg.cpp" line="39"/>
         <source>Licq - Hints</source>
@@ -3311,14 +1606,6 @@ Beskrivning: %2</translation>
         <translation>Bred</translation>
     </message>
     <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 från %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 till %2</translation>
-    </message>
-    <message>
         <location filename="../src/widgets/historyview.cpp" line="353"/>
         <source>from</source>
         <translation type="unfinished"></translation>
@@ -3402,27 +1689,11 @@ Beskrivning: %2</translation>
         <translation>Stänger säker kanal...</translation>
     </message>
     <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;täng</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;ForestGreen&quot;&gt;Secure channel established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;ForestGreen&quot;&gt;Säker kanal upprättad.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="111"/>
         <source>Client does not support OpenSSL.
 Rebuild Licq with OpenSSL support.</source>
         <translation>Klienten stöder inte OpenSSL.
 Återbygg Licq med OpenSSL-stöd.</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;blue&quot;&gt;Secure channel closed.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;blue&quot;&gt;Säker kanal stängd.&lt;/font&gt;
-</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="52"/>
@@ -3441,26 +1712,6 @@ med Diffie-Hellman nyckelväxling och
 TLS version 1 protokollet.
 
 </translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Could not connect to remote client.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Kunde inte ansluta till fjärrklient.&lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel already established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Säker kanal redan upprättad.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;yellow&quot;&gt;Secure channel not established.&lt;/font&gt;
-</source>
-        <translation type="obsolete">&lt;font color=&quot;yellow&quot;&gt;Säker kanal ej upprättad.&lt;/font&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&quot;red&quot;&gt;Remote client does not support OpenSSL.&lt;/font&gt;</source>
-        <translation type="obsolete">&lt;font color=&quot;red&quot;&gt;Fjärrklient stöder inte OpenSSL.&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="138"/>
@@ -3566,14 +1817,6 @@ from your contact list?</source>
 från din kontaktlista?</translation>
     </message>
     <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Är du säker på att du vill ta bort
-%1 (%2)
-från gruppen &apos;%3&apos;?</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="1063"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
@@ -3588,58 +1831,7 @@ Would you like to try loading the old one?</source>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::LicqMessageBox</name>
-    <message>
-        <source>Licq</source>
-        <translation type="obsolete">Licq</translation>
-    </message>
-    <message>
-        <source>&amp;List</source>
-        <translation type="obsolete">&amp;Lista</translation>
-    </message>
-    <message>
-        <source>&amp;Next</source>
-        <translation type="obsolete">&amp;Nästa</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Clear All</source>
-        <translation type="obsolete">&amp;Rensa alla</translation>
-    </message>
-    <message>
-        <source>&amp;Next (%1)</source>
-        <translation type="obsolete">&amp;Nästa (%1)</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq Information</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq Varning</translation>
-    </message>
-    <message>
-        <source>Licq Critical</source>
-        <translation type="obsolete">Licq Kritisk</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::LogWindow</name>
-    <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq nätverkslogg</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Spara</translation>
-    </message>
-    <message>
-        <source>C&amp;lear</source>
-        <translation type="obsolete">&amp;Rensa</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
@@ -3664,13 +1856,6 @@ Would you like to try loading the old one?</source>
         <location filename="../src/widgets/mledit.cpp" line="293"/>
         <source>Allow Tabulations</source>
         <translation type="unfinished">Tillåt tabbulering</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::MLEditWrap</name>
-    <message>
-        <source>Allow Tabulations</source>
-        <translation type="obsolete">Tillåt tabbulering</translation>
     </message>
 </context>
 <context>
@@ -3760,10 +1945,6 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MainWindow</name>
     <message>
-        <source>Licq (%1)</source>
-        <translation type="obsolete">Licq (%1)</translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="188"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation type="unfinished">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;användaralias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;e-post&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;förnamn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;användar-ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;efternamn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;lokal tid&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# väntande meddelanden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# väntande meddelande (om några)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;fullständigt namn&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;senast sedd ansluten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;ansluten sedan&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;användar-port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;förkortad status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webbsida&lt;/li&gt;&lt;/ul&gt;</translation>
@@ -3796,10 +1977,6 @@ Dubbelklicka - Sätt autosvar</translation>
         <location filename="../src/core/mainwin.cpp" line="643"/>
         <source>Error! No owner set</source>
         <translation type="unfinished">Fel! Ingen användare angiven</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
-        <translation type="obsolete">&lt;b&gt;%1&lt;/b&gt; är ansluten</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="710"/>
@@ -3849,161 +2026,6 @@ Dubbelklicka - Sätt autosvar</translation>
 See network window for details.</source>
         <translation type="unfinished">Anslutning misslyckades.
 Se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from your contact list?</source>
-        <translation type="obsolete">Är du säker på att du vill ta bort
-%1 (%2)
-från din kontaktlista?</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">OK</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Avbryt</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Är du säker på att du vill ta bort
-%1 (%2)
-från gruppen &apos;%3&apos;?</translation>
-    </message>
-    <message>
-        <source>(Error! No owner set)</source>
-        <translation type="obsolete">Fel! Ingen användare angiven</translation>
-    </message>
-    <message>
-        <source>Licq version %1%8.
-Qt GUI plugin version %2.
-Compiled on: %7
-%6
-Maintainer: Jon Keating
-Contributions by Dirk A. Mueller
-Original Author: Graham Roff
-
-http://www.licq.org
-#licq on irc.freenode.net
-
-%3 (%4)
-%5 contacts.</source>
-        <translation type="obsolete">Licq version %1%8.
-Qt GUI plugin version %2.
-Kompilerad %7
-%6
-Projektansvarig: Jon Keating
-Bidrag från Dirk A. Mueller
-Ursprunglig skapare : Graham Roff
-Svensk översättning : Samuel Blomqvist
-
-http://www.licq.org
-#licq på irc.freenode.net
-
-%3 (%4)
-%5 kontakter.
-</translation>
-    </message>
-    <message>
-        <source>(with KDE support)
-</source>
-        <translation type="obsolete">(med KDE-stöd)
-</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1.</source>
-        <translation type="obsolete">Kunde inte öppna fil %1 med utökade ikoner.</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1.</source>
-        <translation type="obsolete">Kunde inte öppna ikonfil
-%1.</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-(Today/Total)
-</source>
-        <translation type="obsolete">Statistik för bakgrundsprocess
-(Idag/Totalt)
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-</source>
-        <translation type="obsolete">Igång sedan %1
-</translation>
-    </message>
-    <message>
-        <source>Last reset %1
-
-</source>
-        <translation type="obsolete">Senaste återställning %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2 / %3
-</source>
-        <translation type="obsolete">%1: %2 / %3
-</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Återställ</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>Do you really want to reset your stats?</source>
-        <translation type="obsolete">Vill du verkligen nollställa din statistik?</translation>
-    </message>
-    <message>
-        <source>Daemon Statistics
-
-</source>
-        <translation type="obsolete">Statistik för bakgrundsprocess
-
-</translation>
-    </message>
-    <message>
-        <source>Up since %1
-
-</source>
-        <translation type="obsolete">Igång sedan %1
-
-</translation>
-    </message>
-    <message>
-        <source>%1: %2
-</source>
-        <translation type="obsolete">%1: %2
-</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="obsolete">&lt;h2&gt;Tips för användning av&lt;br&gt;Licqs Qt-GUI-insticksprogram&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Ändra din status genom  högerklicka på statusetiketten.&lt;/li&gt;&lt;li&gt;Ändra ditt autosvar genom att dubbelklicka på statusetiketten.&lt;/li&gt;&lt;li&gt;Visa systemmeddelanden genom att dubbelklicka på meddelandeetiketten.&lt;/li&gt;&lt;li&gt;Ändra grupper genom att högerklicka på meddelandeetiketten.&lt;/li&gt;&lt;li&gt;Använd följande kortkommandon från kontaktlistan:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M: &lt;/tt&gt;Växla miniläge&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O: &lt;/tt&gt;Växla visa frånkopplade användare&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X: &lt;/tt&gt;Avsluta&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H: &lt;/tt&gt;Dölj&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I: &lt;/tt&gt;Visa nästa meddelande&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V: &lt;/tt&gt;Visa meddelande&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S: &lt;/tt&gt;Skicka meddelande&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U: &lt;/tt&gt;Skicka URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C: &lt;/tt&gt;Skicka chattförfrågan&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F: &lt;/tt&gt;Skicka fil&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A: &lt;/tt&gt;Kontrollera autosvar&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P: &lt;/tt&gt;Visa all meddelanden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L: &lt;/tt&gt;Rita om användarfönstret&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete: &lt;/tt&gt;Ta bort användare från aktuell grupp&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete: &lt;/tt&gt;Ta bort användre från kontaktlistan&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Håll ner control när du klickar på stäng i funktionsfönstret för att   ta bort användaren från din kontaktlista.&lt;/li&gt;&lt;li&gt;Tryck Ctrl-Enter i de flesta textinmatningsrutor för att välja &quot;Ok&quot; eller &quot;Acceptera&quot;.   Till exempel skickafliken i användarnas funktionsfönster.&lt;/li&gt;&lt;li&gt;Här är den kompletta listan av %-val som kan användas i &lt;b&gt;OnEvent&lt;/b&gt;   parametrar, &lt;b&gt;autosvar&lt;/b&gt; och &lt;b&gt;tillägg&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt;För mer information, se Licq:s webbplats (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">Licq kan inte hitta en webläsare pga. ett internt fel.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq kan inte starta din webbläsare och öppna länken.
-Du måste starta din webbläsare och öppna länken manuellt.</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="670"/>
@@ -4128,930 +2150,11 @@ Du måste starta din webbläsare och öppna länken manuellt.</translation>
     </message>
 </context>
 <context>
-    <name>LicqQtGui::MsgView</name>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">Tid</translation>
-    </message>
-    <message>
-        <source>Cancelled Event</source>
-        <translation type="obsolete">Avbruten händelse</translation>
-    </message>
-    <message>
-        <source>Direct</source>
-        <translation type="obsolete">Direkt</translation>
-    </message>
-    <message>
-        <source>Event Type</source>
-        <translation type="obsolete">Händelsetyp</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="obsolete">Server</translation>
-    </message>
-    <message>
-        <source>Urgent</source>
-        <translation type="obsolete">Brådskande</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Alternativ</translation>
-    </message>
-    <message>
-        <source>Multiple Recipients</source>
-        <translation type="obsolete">Flera mottagare</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::OptionsDlg</name>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="obsolete">Auto</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Borta</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation type="obsolete">Vänster</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Spara</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">ingen</translation>
-    </message>
-    <message>
-        <source>Never</source>
-        <translation type="obsolete">Aldrig</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="obsolete">Höger</translation>
-    </message>
-    <message>
-        <source>Text:</source>
-        <translation type="obsolete">Text:</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Titel</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Bredd</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Parameter för mottagna filöverföringar</translation>
-    </message>
-    <message>
-        <source>Firewall</source>
-        <translation type="obsolete">Brandvägg</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Parameter för mottagna chattbegäran</translation>
-    </message>
-    <message>
-        <source>Turns on or off the display of headers above each column in the user list</source>
-        <translation type="obsolete">Växlar visandet av rubriker ovanför kolumnerna i användarlistan</translation>
-    </message>
-    <message>
-        <source>Auto Away:</source>
-        <translation type="obsolete">Sätt automatiskt &quot;Borta&quot; efter:</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;not available&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Antal minuter av inaktivitet innan status sätts till &quot;Ej tillgänglig&quot;. Ange &quot;0&quot; för att inaktivera.</translation>
-    </message>
-    <message>
-        <source>Show the &quot;--online--&quot; and &quot;--offline--&quot; bars in the contact list</source>
-        <translation type="obsolete">Visa &quot;--ansluten--&quot; och &quot;--frånkopplad--&quot; avgränsarna i kontaktlistan</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Parameter för anslutningsavisering</translation>
-    </message>
-    <message>
-        <source>TCP port range for incoming connections.</source>
-        <translation type="obsolete">TCP portområde för inkommande anslutningar.</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Använd</translation>
-    </message>
-    <message>
-        <source>Determines if new users are automatically added to your list or must first request authorization.</source>
-        <translation type="obsolete">Bestämmer om nya användare automatiskt skall läggas till din kontaktlista, eller om de först måste auktoriseras.</translation>
-    </message>
-    <message>
-        <source>Show the name of the current group in the messages label when there are no new messages</source>
-        <translation type="obsolete">Visa namnet på den aktuella gruppen i meddelande-etiketten när det inte finns några nya meddelanden</translation>
-    </message>
-    <message>
-        <source>Preset slot:</source>
-        <translation type="obsolete">Förutbestämt fack:</translation>
-    </message>
-    <message>
-        <source>Licq Options</source>
-        <translation type="obsolete">Licq-alternativ</translation>
-    </message>
-    <message>
-        <source>Show online notify users who are offline even when offline users are hidden.</source>
-        <translation type="obsolete">Visa frånkopplade &quot;online notify&quot; användare även om frånkopplade användare är gömda.</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i Upptagenläget</translation>
-    </message>
-    <message>
-        <source>Auto Offline:</source>
-        <translation type="obsolete">Frånkopplad efter: </translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Parameter för mottagna meddelanden</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="obsolete">Centrera</translation>
-    </message>
-    <message>
-        <source>Allow scroll bar</source>
-        <translation type="obsolete">Tillåt rullningslist</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation type="obsolete">Nätverk</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">Format</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically go offline.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Antal minuter av inaktivitet innan status sätts till &quot;frånkopplad&quot;. Ange &quot;0&quot; för att inaktivera.</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Ansluten</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Status</translation>
-    </message>
-    <message>
-        <source>Always show online notify users</source>
-        <translation type="obsolete">Visa alltid anslutningsaviserade användare</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">Förvalt värde (%1)</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Frånkopplad</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Kommando:</translation>
-    </message>
-    <message>
-        <source>I can receive direct connections</source>
-        <translation type="obsolete">Jag kan mottaga direkta förbindelser</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i Stör-ej-läget</translation>
-    </message>
-    <message>
-        <source>Determines if mass messages are ignored or not.</source>
-        <translation type="obsolete">Bestämmer om massmeddelanden ignoreras eller ej.</translation>
-    </message>
-    <message>
-        <source>The alignment of the column</source>
-        <translation type="obsolete">Justeringen av kolumnen</translation>
-    </message>
-    <message>
-        <source>Make the user window transparent when there is no scroll bar</source>
-        <translation type="obsolete">Gör användarfönstret genomskinligt när det inte är någon rullningslist</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Paramatrar</translation>
-    </message>
-    <message>
-        <source>Show birthday, invisible, and custom auto response icons to the right of users in the list</source>
-        <translation type="obsolete">Visa födelsedag, osynlighet, och anpassade autosvar ikoner till höger om användarna i listan</translation>
-    </message>
-    <message>
-        <source>Transparent when possible</source>
-        <translation type="obsolete">Genomskinlig om möjligt</translation>
-    </message>
-    <message>
-        <source>Default Auto Response Messages</source>
-        <translation type="obsolete">Förvalt autosvar</translation>
-    </message>
-    <message>
-        <source>Paranoia</source>
-        <translation type="obsolete">Paranoia</translation>
-    </message>
-    <message>
-        <source>Terminal:</source>
-        <translation type="obsolete">Terminal:</translation>
-    </message>
-    <message>
-        <source>Automatically log on when first starting up.</source>
-        <translation type="obsolete">Anslut automatiskt vid uppstart.</translation>
-    </message>
-    <message>
-        <source>Number of minutes of inactivity after which to automatically be marked &quot;away&quot;.  Set to &quot;0&quot; to disable.</source>
-        <translation type="obsolete">Antal minuter av inaktivitet innan status sätts till &quot;Borta&quot;. Ange &quot;0&quot; för att inaktivera.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Kommando som skall köras när en händelse mottages.&lt;br&gt;
-Det kommer att skickas releventa parametrar från nedan.&lt;br&gt;
-Parametrar kan innehålla följande uttryck &lt;br&gt; som ersätts med relevant information:&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Determines if email pager messages are ignored or not.</source>
-        <translation type="obsolete">Bestämmer om e-postmeddelanden ignoreras eller ej.</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i Ej-tillgänglig-läget</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Upptagen</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Parameter för mottagna systemmeddelanden</translation>
-    </message>
-    <message>
-        <source>Manual &quot;New User&quot; group handling</source>
-        <translation type="obsolete">Manuell hantering av gruppen &quot;Nya användare&quot;</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Välj teckensnitt</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
-        <source>Startup</source>
-        <translation type="obsolete">Uppstart</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">Förvalt värde</translation>
-    </message>
-    <message>
-        <source>Use italics and bold in the user list to indicate special characteristics such as online notify and visible list</source>
-        <translation type="obsolete">Använd kursiv- och fetstil i användarlistan för att indikera speciella egenskaper, såsom aviserings- och synlighetslista</translation>
-    </message>
-    <message>
-        <source>Auto N/A:</source>
-        <translation type="obsolete">Ej tillgänglig efter:</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i frånvaroläget</translation>
-    </message>
-    <message>
-        <source>Docking</source>
-        <translation type="obsolete">Dockning</translation>
-    </message>
-    <message>
-        <source>Determines if web panel messages are ignored or not.</source>
-        <translation type="obsolete">Besämmer om webbpanelmeddelanden ignoreras eller ej.</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Aktivera körning av &quot;Kommando&quot; när relevant händelse inträffar.</translation>
-    </message>
-    <message>
-        <source>Show group name if no messages</source>
-        <translation type="obsolete">Visa gruppnamn om meddelanden saknas</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Chattledig</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Chattledig</translation>
-    </message>
-    <message>
-        <source>Extensions</source>
-        <translation type="obsolete">Extensioner</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Stör ej</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Meddelande:</translation>
-    </message>
-    <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Rita rutor kring varje kvadrat i användarlistan</translation>
-    </message>
-    <message>
-        <source>Column Configuration</source>
-        <translation type="obsolete">Kolumnkonfiguration</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Osynlig</translation>
-    </message>
-    <message>
-        <source>Controls whether or not the dockable icon should be displayed.</source>
-        <translation type="obsolete">Styr huruvida den dockningsbara ikonen skall visas eller ej.</translation>
-    </message>
-    <message>
-        <source>Contact List</source>
-        <translation type="obsolete">Kontaktlista</translation>
-    </message>
-    <message>
-        <source>The width of the column</source>
-        <translation type="obsolete">Kolumnbredden</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Texten som skall visas i listrutans kolumnrubrik</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Parameter för mottagna URL:er</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Kommandot för att visa en URL. URL:en ges som parameter.</translation>
-    </message>
-    <message>
-        <source>Allow the vertical scroll bar in the user list</source>
-        <translation type="obsolete">Tillåt vertikal rullningslist i användarlistan</translation>
-    </message>
-    <message>
-        <source>The command to run to start your terminal program.</source>
-        <translation type="obsolete">Kommandot för att starta ditt terminalprogram.</translation>
-    </message>
-    <message>
-        <source>Alignment</source>
-        <translation type="obsolete">Justering</translation>
-    </message>
-    <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Öppna alla inkommande meddelanden automatiskt, när de kommer, om jag är online (eller chatledig)</translation>
-    </message>
-    <message>
-        <source>Raise the main window on incoming messages</source>
-        <translation type="obsolete">Visa huvudfönstret vid inkommande meddelanden</translation>
-    </message>
-    <message>
-        <source>Start main window hidden. Only the dock icon will be visible.</source>
-        <translation type="obsolete">Starta med huvudfönstret gömt. Endast docken kommer synas.</translation>
-    </message>
-    <message>
-        <source>Show the message info label in bold font if there are incoming messages</source>
-        <translation type="obsolete">Visa medelande ettiketten i fetstil när det finns inkommande meddelanden</translation>
-    </message>
-    <message>
-        <source>When double-clicking on a user to send a message check for urls/files in the clipboard</source>
-        <translation type="obsolete">Vid dubbelklickning på en användare för att skicka ett meddelande, kontrollera om urklippshanteraren innehåller URLer/filer</translation>
-    </message>
-    <message>
-        <source>Position a new reply window just underneath the message view window</source>
-        <translation type="obsolete">Positionera ett nytt svarsfönster strax under meddelandefönstret</translation>
-    </message>
-    <message>
-        <source>Auto send through server</source>
-        <translation type="obsolete">Skicka alltid via server</translation>
-    </message>
-    <message>
-        <source>Automatically send messages through the server if direct connection fails</source>
-        <translation type="obsolete">Skicka meddelanden via servern om en direktanslutning ej kan upprättas</translation>
-    </message>
-    <message>
-        <source>Allow dragging main window</source>
-        <translation type="obsolete">Tillåt flytt av huvudfönstret</translation>
-    </message>
-    <message>
-        <source>Lets you drag around the main window with your mouse</source>
-        <translation type="obsolete">Låter dig flytta huvudfönstret med muspekaren</translation>
-    </message>
-    <message>
-        <source>Show the current chat history in Send Window</source>
-        <translation type="obsolete">Visa den aktuella chathistoriken i skickafönstret</translation>
-    </message>
-    <message>
-        <source>Localization</source>
-        <translation type="obsolete">Lokalisering</translation>
-    </message>
-    <message>
-        <source>Sets which default encoding should be used for newly added contacts.</source>
-        <translation type="obsolete">Anger vilket fontsystem som skall anges som standard för nya kontakter.</translation>
-    </message>
-    <message>
-        <source>System default (%1)</source>
-        <translation type="obsolete">System standard (%1)</translation>
-    </message>
-    <message>
-        <source>Show all encodings</source>
-        <translation type="obsolete">Visa alla fontsystem</translation>
-    </message>
-    <message>
-        <source>Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings.</source>
-        <translation type="obsolete">Visa alla tillgängliga fontsystem i menyn för val av fontsystem för användare. Normalt visar menyn de vanligaste fontsystemen.</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Parametrar för skickade meddelanden</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Utför anslutnings notifiering OnEvent vid inloggning (detta är olikt det sätt Mirabilis klient arbetar)</translation>
-    </message>
-    <message>
-        <source>Proxy</source>
-        <translation type="obsolete">Proxy</translation>
-    </message>
-    <message>
-        <source>Use proxy server</source>
-        <translation type="obsolete">Använd proxy server</translation>
-    </message>
-    <message>
-        <source>HTTPS</source>
-        <translation type="obsolete">HTTPS</translation>
-    </message>
-    <message>
-        <source>Use authorization</source>
-        <translation type="obsolete">Använd autentsiering</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation type="obsolete">Användarnamn:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Lösenord:</translation>
-    </message>
-    <message>
-        <source>Use server side contact list</source>
-        <translation type="obsolete">Använd kontaktlista på servern</translation>
-    </message>
-    <message>
-        <source>Store your contacts on the server so they are accessible from different locations and/or programs</source>
-        <translation type="obsolete">Sparar dina kontakter på servern så att de är tillgängliga från flera platser och/eller program</translation>
-    </message>
-    <message>
-        <source>All incoming events will blink</source>
-        <translation type="obsolete">Låt alla inkommande händelser blinka</translation>
-    </message>
-    <message>
-        <source>Only urgent events will blink</source>
-        <translation type="obsolete">Låt bara brådskande händelser blinka</translation>
-    </message>
-    <message>
-        <source>Popup info</source>
-        <translation type="obsolete">Popup info</translation>
-    </message>
-    <message>
-        <source>Email</source>
-        <translation type="obsolete">E-post</translation>
-    </message>
-    <message>
-        <source>Phone</source>
-        <translation type="obsolete">Telefon</translation>
-    </message>
-    <message>
-        <source>Fax</source>
-        <translation type="obsolete">Fax</translation>
-    </message>
-    <message>
-        <source>Cellular</source>
-        <translation type="obsolete">Mobiltelefon</translation>
-    </message>
-    <message>
-        <source>Last online</source>
-        <translation type="obsolete">Senast ansluten</translation>
-    </message>
-    <message>
-        <source>Previous Message</source>
-        <translation type="obsolete">Tidigare meddelande</translation>
-    </message>
-    <message>
-        <source>I am behind a firewall</source>
-        <translation type="obsolete">Jag är bakom en brandvägg</translation>
-    </message>
-    <message>
-        <source>Use tabs in Send Window</source>
-        <translation type="obsolete">Använd flikar i skicka fönstret</translation>
-    </message>
-    <message>
-        <source>status</source>
-        <translation type="obsolete">status</translation>
-    </message>
-    <message>
-        <source>status + last event</source>
-        <translation type="obsolete">status + senaste händelse</translation>
-    </message>
-    <message>
-        <source>status + new messages</source>
-        <translation type="obsolete">status + nya meddelanden</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;none:&lt;/b&gt; - Don&apos;t sort online users by Status&lt;br&gt;
-&lt;b&gt;status&lt;/b&gt; - Sort online users by status&lt;br&gt;
-&lt;b&gt;status + last event&lt;/b&gt; - Sort online users by status and by last event&lt;br&gt;
-&lt;b&gt;status + new messages&lt;/b&gt; - Sort online users by status and number of new messages</source>
-        <translation type="obsolete">&lt;b&gt;ingen:&lt;/b&gt; - Sortera inte anslutna användare efter status&lt;br&gt;
-&lt;b&gt;status&lt;/b&gt; - Sortera anslutna användare efter status&lt;br&gt;
-&lt;b&gt;status + senaste händelse&lt;/b&gt; - Sortera anslutna användare efter status och senaste händelse&lt;br&gt;
-&lt;b&gt;status + new meddelanden&lt;/b&gt; - Sortera anslutna användare efter status och antal nya meddelanden</translation>
-    </message>
-    <message>
-        <source>Show recent messages</source>
-        <translation type="obsolete">Visa senaste meddelandena</translation>
-    </message>
-    <message>
-        <source>Show the last 5 messages when a Send Window is opened</source>
-        <translation type="obsolete">Visa senaster 5 meddelandena när Skicka fönstret öppnas</translation>
-    </message>
-    <message>
-        <source>Connection</source>
-        <translation type="obsolete">Anslutning</translation>
-    </message>
-    <message>
-        <source>Reconnect after Uin clash</source>
-        <translation type="obsolete">Återantlut efter UINkrock</translation>
-    </message>
-    <message>
-        <source>Protocol ID</source>
-        <translation type="obsolete">Protokoll ID</translation>
-    </message>
-    <message>
-        <source>Automatically update users&apos; server stored information.</source>
-        <translation type="obsolete">Uppdatera automatiskt användares sparade information på servern.</translation>
-    </message>
-    <message>
-        <source>Automatically update users&apos; Phone Book and Picture.</source>
-        <translation type="obsolete">Uppdatera automatiskt användares telefonbok och bild.</translation>
-    </message>
-    <message>
-        <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
-        <translation type="obsolete">Uppdatera automatiskt användares Telefon &quot;Följ Mig&quot;, Filserver och ICQphone status.</translation>
-    </message>
-    <message>
-        <source>Style:</source>
-        <translation type="obsolete">Stil:</translation>
-    </message>
-    <message>
-        <source>Colors</source>
-        <translation type="obsolete">Färger</translation>
-    </message>
-    <message>
-        <source>Send typing notifications</source>
-        <translation type="obsolete">Skicka skriver-meddelanden</translation>
-    </message>
-    <message>
-        <source>Send a notification to the user so they can see when you are typing a message to them</source>
-        <translation type="obsolete">Skicka ett skriver-meddelande till användaren så att de kan se att du håller på och skriver ett meddelande till dem</translation>
-    </message>
-    <message>
-        <source>Makes the Main window visible on all desktops</source>
-        <translation type="obsolete">Gör så att huvudfönstret syns på alla skrivbord</translation>
-    </message>
-    <message>
-        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
-        <translation type="obsolete">Licq can återansluta om du blivit frånkopplad på grund av att ditt Uin använts från en annan plats. Kryssa för detta om du vill att Licq ska återansluta automatiskt.</translation>
-    </message>
-    <message>
-        <source>Show user display picture</source>
-        <translation type="obsolete">Visa användarens bild</translation>
-    </message>
-    <message>
-        <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
-        <translation type="obsolete">Visa användarens bild istället för en statusikon, om användaren är ansluten och har en bild</translation>
-    </message>
-    <message>
-        <source>Single line chat mode</source>
-        <translation type="obsolete">Enrads chatt-läge</translation>
-    </message>
-    <message>
-        <source>Alias</source>
-        <translation type="obsolete">Alias</translation>
-    </message>
-    <message>
-        <source>Picture</source>
-        <translation type="obsolete">Bild</translation>
-    </message>
-    <message>
-        <source>Notice:</source>
-        <translation type="obsolete">Notis:</translation>
-    </message>
-    <message>
-        <source>This is a sent message</source>
-        <translation type="obsolete">Detta är ett meddelande som har skickats</translation>
-    </message>
-    <message>
-        <source>Have you gone to the Licq IRC Channel?</source>
-        <translation type="obsolete">Har du besökt Licqs IRC-kanal?</translation>
-    </message>
-    <message>
-        <source>No, where is it?</source>
-        <translation type="obsolete">Nej, var finns den?</translation>
-    </message>
-    <message>
-        <source>#Licq on irc.freenode.net</source>
-        <translation type="obsolete">#Licq på irc.freenode.net</translation>
-    </message>
-    <message>
-        <source>Cool, I&apos;ll see you there :)</source>
-        <translation type="obsolete">Läckert, vi syns där :)</translation>
-    </message>
-    <message>
-        <source>We&apos;ll be waiting!</source>
-        <translation type="obsolete">Vi väntar!</translation>
-    </message>
-    <message>
-        <source>Marge has left the conversation.</source>
-        <translation type="obsolete">Marge har lämnat diskussionen.</translation>
-    </message>
-    <message>
-        <source>This is a received message</source>
-        <translation type="obsolete">Detta är ett meddelande som har mottagits</translation>
-    </message>
-    <message>
-        <source>Columns</source>
-        <translation type="obsolete">Kolumner</translation>
-    </message>
-    <message>
-        <source>Fonts &amp; Locale</source>
-        <translation type="obsolete">Typsnitt &amp; Locale</translation>
-    </message>
-    <message>
-        <source>Contact Info</source>
-        <translation type="obsolete">Kontaktinformation</translation>
-    </message>
-    <message>
-        <source>Chat</source>
-        <translation type="obsolete">Chatt</translation>
-    </message>
-    <message>
-        <source>Chat Display</source>
-        <translation type="obsolete">Chattvisning</translation>
-    </message>
-    <message>
-        <source>History Display</source>
-        <translation type="obsolete">Historia</translation>
-    </message>
-    <message>
-        <source>Events</source>
-        <translation type="obsolete">Händelser</translation>
-    </message>
-    <message>
-        <source>Sounds</source>
-        <translation type="obsolete">Ljud</translation>
-    </message>
-    <message>
-        <source>ICQ</source>
-        <translation type="obsolete">ICQ</translation>
-    </message>
-    <message>
-        <source>Auto Responses</source>
-        <translation type="obsolete">Autosvar</translation>
-    </message>
-    <message>
-        <source>Use dock icon</source>
-        <translation type="obsolete">Använd dockikon</translation>
-    </message>
-    <message>
-        <source>Start hidden</source>
-        <translation type="obsolete">Starta gömd</translation>
-    </message>
-    <message>
-        <source>Default icon</source>
-        <translation type="obsolete">Standardikon</translation>
-    </message>
-    <message>
-        <source>64 x 48 dock icon</source>
-        <translation type="obsolete">64 x 48 dockikon</translation>
-    </message>
-    <message>
-        <source>Themed icon</source>
-        <translation type="obsolete">Temaikon</translation>
-    </message>
-    <message>
-        <source>Fonts</source>
-        <translation type="obsolete">Fonter</translation>
-    </message>
-    <message>
-        <source>General:</source>
-        <translation type="obsolete">Allmänt:</translation>
-    </message>
-    <message>
-        <source>Used for normal text.</source>
-        <translation type="obsolete">Använd för normal text.</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list.</source>
-        <translation type="obsolete">Välj et typsnitt från systemlistan.</translation>
-    </message>
-    <message>
-        <source>Editing:</source>
-        <translation type="obsolete">Redigera:</translation>
-    </message>
-    <message>
-        <source>Used in message editor etc.</source>
-        <translation type="obsolete">Används i meddelanderedigeraren m.m.</translation>
-    </message>
-    <message>
-        <source>Default encoding:</source>
-        <translation type="obsolete">Standardkodning:</translation>
-    </message>
-    <message>
-        <source>Full name</source>
-        <translation type="obsolete">Fullständigt namn</translation>
-    </message>
-    <message>
-        <source>IP address</source>
-        <translation type="obsolete">IP-adress</translation>
-    </message>
-    <message>
-        <source>Online time</source>
-        <translation type="obsolete">Tid ansluten</translation>
-    </message>
-    <message>
-        <source>Idle time</source>
-        <translation type="obsolete">Tid passiv</translation>
-    </message>
-    <message>
-        <source>Local time</source>
-        <translation type="obsolete">Lokal tid</translation>
-    </message>
-    <message>
-        <source>Automatic Update</source>
-        <translation type="obsolete">Automatisk uppdatering</translation>
-    </message>
-    <message>
-        <source>Contact information</source>
-        <translation type="obsolete">Kontaktinformation</translation>
-    </message>
-    <message>
-        <source>Info plugins</source>
-        <translation type="obsolete">Info insticksprogram</translation>
-    </message>
-    <message>
-        <source>Status plugins</source>
-        <translation type="obsolete">Status insticksprogram</translation>
-    </message>
-    <message>
-        <source>General Chat Options</source>
-        <translation type="obsolete">Allmäna chattinställningar</translation>
-    </message>
-    <message>
-        <source>Check clipboard For URIs/files</source>
-        <translation type="obsolete">Bevak urklippshanteraren efter URIer/filer</translation>
-    </message>
-    <message>
-        <source>Auto position the reply window</source>
-        <translation type="obsolete">Placera svarsfönstret automatiskt</translation>
-    </message>
-    <message>
-        <source>Send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
-        <translation type="obsolete">Skicka meddelanden med Enter och infoga ny rad med Ctrl+Enter, mottsatt det vanliga läget</translation>
-    </message>
-    <message>
-        <source>Use double return</source>
-        <translation type="obsolete">Använd dubbla returslag</translation>
-    </message>
-    <message>
-        <source>Auto close function window</source>
-        <translation type="obsolete">Stäng funktionsfönstret automatiskt</translation>
-    </message>
-    <message>
-        <source>URI viewer:</source>
-        <translation type="obsolete">URI-visare:</translation>
-    </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="260"/>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Date format:</source>
-        <translation type="obsolete">Datumformat:</translation>
-    </message>
-    <message>
-        <source>Insert extra space between messages.</source>
-        <translation type="obsolete">Infoga ett extra mellanrum mellan meddelanden.</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Förhandsgranska</translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="obsolete">till</translation>
-    </message>
-    <message>
-        <source>Proxy type:</source>
-        <translation type="obsolete">Proxytyp:</translation>
-    </message>
-    <message>
-        <source>Proxy server:</source>
-        <translation type="obsolete">Proxyserver:</translation>
-    </message>
-    <message>
-        <source>Proxy server port:</source>
-        <translation type="obsolete">Proxyserverns port:</translation>
-    </message>
-    <message>
-        <source>Server Settings</source>
-        <translation type="obsolete">Serverinställningar</translation>
-    </message>
-    <message>
-        <source>ICQ server:</source>
-        <translation type="obsolete">ICQ-server:</translation>
-    </message>
-    <message>
-        <source>ICQ server port:</source>
-        <translation type="obsolete">ICQ-serverns port:</translation>
-    </message>
-    <message>
-        <source>Auto Change Status</source>
-        <translation type="obsolete">Byt status automatiskt</translation>
-    </message>
-    <message>
-        <source>Show column headers</source>
-        <translation type="obsolete">Visa kolumnrubriker</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="obsolete">%1</translation>
-    </message>
-    <message>
-        <source>Number of columns</source>
-        <translation type="obsolete">Antal kolumner</translation>
-    </message>
-    <message>
-        <source>Insert horizontal line</source>
-        <translation type="obsolete">Infoga en horisontell linje</translation>
-    </message>
-    <message>
-        <source>Insert a line between each message.</source>
-        <translation type="obsolete">Infoga en linje mellan varje meddelande.</translation>
-    </message>
-    <message>
-        <source>Message received:</source>
-        <translation type="obsolete">Meddelande mottaget:</translation>
-    </message>
-    <message>
-        <source>History received:</source>
-        <translation type="obsolete">Historia mottagen:</translation>
-    </message>
-    <message>
-        <source>History sent:</source>
-        <translation type="obsolete">Historia skickat:</translation>
-    </message>
-    <message>
-        <source>Background color:</source>
-        <translation type="obsolete">Bakgrundsfärg:</translation>
-    </message>
-    <message>
-        <source>Blink on events</source>
-        <translation type="obsolete">Blinka vid händelser</translation>
     </message>
 </context>
 <context>
@@ -5062,29 +2165,9 @@ Parametrar kan innehålla följande uttryck &lt;br&gt; som ersätts med relevant
         <translation>Redigera konto</translation>
     </message>
     <message>
-        <source>User ID:</source>
-        <translation type="obsolete">Användar ID:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Lösenord:</translation>
-    </message>
-    <message>
-        <source>Protocol:</source>
-        <translation type="obsolete">Protokoll:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
         <source>Currently only one account per protocol is supported.</source>
         <translation>För närvarande kan endast ett konto per protokoll användas.</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="74"/>
@@ -5165,18 +2248,6 @@ Startaom licq med växeln -b för att välja en ny
 hemkatalog och registrera en ny användare.</translation>
     </message>
     <message>
-        <source>Successfully registered, your user identification
-number (UIN) is %1.
-Now set your personal information.</source>
-        <translation type="obsolete">Lyckad registrering, ditt användaridentifikationnummer
-(UIN) är %1.
-Fyll i din personliga information nu.</translation>
-    </message>
-    <message>
-        <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Registrering misslyckades. Se nätverksfönstret för mer information.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="70"/>
         <source>Protocol</source>
         <translation type="unfinished">Protokoll</translation>
@@ -5195,25 +2266,6 @@ Fyll i din personliga information nu.</translation>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="145"/>
         <source>(Invalid ID)</source>
         <translation type="unfinished">(Felaktigt ID)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::OwnerView</name>
-    <message>
-        <source>User ID</source>
-        <translation type="obsolete">AnvändarID</translation>
-    </message>
-    <message>
-        <source>Protocol</source>
-        <translation type="obsolete">Protokoll</translation>
-    </message>
-    <message>
-        <source>(Invalid ID)</source>
-        <translation type="obsolete">(Felaktigt ID)</translation>
-    </message>
-    <message>
-        <source>Invalid Protocol</source>
-        <translation type="obsolete">Felaktigt protokoll</translation>
     </message>
 </context>
 <context>
@@ -5292,10 +2344,6 @@ Fyll i din personliga information nu.</translation>
 </context>
 <context>
     <name>LicqQtGui::RandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Slumpchattsökning</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
@@ -5399,93 +2447,13 @@ Fyll i din personliga information nu.</translation>
         <source>Licq - %1 Refusal</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 vägran</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RegisterUserDlg</name>
     <message>
-        <source>Please enter your password in both input fields.</source>
-        <translation type="obsolete">Vargod ange ditt lösenord i båda textrutorna.</translation>
-    </message>
-    <message>
-        <source>Now please click &apos;Finish&apos; to start the registration process.</source>
-        <translation type="obsolete">Vargod klicka &apos;Sltuför&apos; för att starta registreringsprocessen.</translation>
-    </message>
-    <message>
-        <source>Now please press the &apos;Back&apos; button and try again.</source>
-        <translation type="obsolete">Vargod klicka på &apos;Tillbaka&apos;-knappen och försök igen.</translation>
-    </message>
-    <message>
-        <source>The passwords don&apos;t seem to match.</source>
-        <translation type="obsolete">Lösenorden verkar inte stämma överräns.</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">Lösenord:</translation>
-    </message>
-    <message>
-        <source>Verify:</source>
-        <translation type="obsolete">Bekräfra:</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Ogiltigt lösenord, måste vara mellan 1 och 8 tecken.</translation>
-    </message>
-    <message>
-        <source>Welcome to the Registration Wizard.
-
-You can register a new user here.
-
-Press &quot;Next&quot; to proceed.</source>
-        <translation type="obsolete">Välkommer till Registreringsguiden.
-
-Du kan registrera en ny användare här.
-
-Klicka &quot;Nästa&quot; för att fortsätta.</translation>
-    </message>
-    <message>
-        <source>Account Registration</source>
-        <translation type="obsolete">Kontoregistrering</translation>
-    </message>
-    <message>
-        <source>Enter a password to protect your account.</source>
-        <translation type="obsolete">Ange ett lösenord för att skydda ditt konto.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/registeruser.cpp" line="119"/>
         <source>&amp;Remember Password</source>
         <translation>&amp;Komihåg lösenord</translation>
-    </message>
-    <message>
-        <source>Account Registration - Step 2</source>
-        <translation type="obsolete">Kontoregistrering - Steg 2</translation>
-    </message>
-    <message>
-        <source>Account Registration - Step 3</source>
-        <translation type="obsolete">Kontoregistrering - Steg 3</translation>
-    </message>
-    <message>
-        <source>Licq Account Registration</source>
-        <translation type="obsolete">Licq Kontoregistrering</translation>
-    </message>
-    <message>
-        <source>Account Registration in Progress...</source>
-        <translation type="obsolete">Kontoregistrering pågår...</translation>
-    </message>
-    <message>
-        <source>Account registration has been successfuly completed.
-Your new user id is %1.
-You are now being automatically logged on.
-Click OK to edit your personal details.
-After you are online, you can send your personal details to the server.</source>
-        <translation type="obsolete">Kontoregistreringen har avslutats lyckosamt.
-Ditt nya användarID är %1.
-Du kommer nu att automatiskt loggas in.
-Klicka OK för att redigera dina personliga uppgifter.
-Efter att du anslutit kan du skicka dina personliga uppgifter till servern.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/registeruser.cpp" line="54"/>
@@ -5587,14 +2555,6 @@ After you are online, you can send your personal details to the server.</source>
         <source>Request</source>
         <translation>Begär</translation>
     </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::SearchUserDlg</name>
@@ -5603,14 +2563,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="313"/>
         <source>Reset Search</source>
         <translation>Återsätll sökning</translation>
-    </message>
-    <message>
-        <source>&amp;Done</source>
-        <translation type="obsolete">&amp;Klar</translation>
-    </message>
-    <message>
-        <source>UIN#:</source>
-        <translation type="obsolete">UIN#:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="220"/>
@@ -5654,10 +2606,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Sökning misslyckades.</translation>
     </message>
     <message>
-        <source>A&amp;lert User</source>
-        <translation type="obsolete">&amp;Varna användare</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="427"/>
         <source>&amp;Add %1 Users</source>
         <translation>&amp;Lägg till %1 användare</translation>
@@ -5693,30 +2641,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="89"/>
         <source>Unspecified</source>
         <translation>Ospecificerat</translation>
-    </message>
-    <message>
-        <source>18 - 22</source>
-        <translation type="obsolete">18 - 22</translation>
-    </message>
-    <message>
-        <source>23 - 29</source>
-        <translation type="obsolete">23 - 29</translation>
-    </message>
-    <message>
-        <source>30 - 39</source>
-        <translation type="obsolete">30 - 39</translation>
-    </message>
-    <message>
-        <source>40 - 49</source>
-        <translation type="obsolete">40 - 49</translation>
-    </message>
-    <message>
-        <source>50 - 59</source>
-        <translation type="obsolete">50 - 59</translation>
-    </message>
-    <message>
-        <source>60+</source>
-        <translation type="obsolete">60+</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="139"/>
@@ -5779,10 +2703,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>Visa endast anslutna användare</translation>
     </message>
     <message>
-        <source>&amp;Whitepages</source>
-        <translation type="obsolete">&amp;Vitasidorna</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="395"/>
         <source>%1 more users found. Narrow search.</source>
         <translation>%1 ytterligare användare funna. Begränsa din sökning.</translation>
@@ -5796,10 +2716,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="185"/>
         <source>View &amp;Info</source>
         <translation>Visa &amp;Information</translation>
-    </message>
-    <message>
-        <source>&amp;UIN#</source>
-        <translation type="obsolete">&amp;UIN#</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="172"/>
@@ -5825,14 +2741,6 @@ After you are online, you can send your personal details to the server.</source>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="173"/>
         <source>Status</source>
         <translation>Status</translation>
-    </message>
-    <message>
-        <source>Sex &amp; Age</source>
-        <translation type="obsolete">Kön &amp; Ålder</translation>
-    </message>
-    <message>
-        <source>Authorize</source>
-        <translation type="obsolete">Godkänn</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="360"/>
@@ -5925,14 +2833,6 @@ After you are online, you can send your personal details to the server.</source>
         <translation>fel</translation>
     </message>
     <message>
-        <source>ICQ Security Options [Setting...]</source>
-        <translation type="obsolete">ICQ säkerhetsalternativ [Inställningar...]</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options</source>
-        <translation type="obsolete">ICQ säkerhetsalternativ</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="114"/>
         <source>You need to be connected to the
 ICQ Network to change the settings.</source>
@@ -5954,65 +2854,9 @@ ICQ Network to change the settings.</source>
         <translation>misslyckades</translation>
     </message>
     <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;Avbryt</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="89"/>
         <source>&amp;Update</source>
         <translation>&amp;Uppdatera</translation>
-    </message>
-    <message>
-        <source>ICQ Security Options [Setting...</source>
-        <translation type="obsolete">ICQ säkerhetsalternativ [alternativ...</translation>
-    </message>
-    <message>
-        <source>Determines whether regular ICQ clients require your authorization to add you to their contact list.</source>
-        <translation type="obsolete">Avgör om vanliga ICQ-klienter behöver ditt godkännande för att lägga till dig i deras kontaktlistor.</translation>
-    </message>
-    <message>
-        <source>Password/UIN settings</source>
-        <translation type="obsolete">Lösenord/UIN inställningar</translation>
-    </message>
-    <message>
-        <source>&amp;Uin:</source>
-        <translation type="obsolete">&amp;Uin:</translation>
-    </message>
-    <message>
-        <source>&amp;Password:</source>
-        <translation type="obsolete">&amp;Lösenord:</translation>
-    </message>
-    <message>
-        <source>Enter your ICQ password here.</source>
-        <translation type="obsolete">Skriv ditt ICQ-lösenord här.</translation>
-    </message>
-    <message>
-        <source>Verify your ICQ password here.</source>
-        <translation type="obsolete">Bekräfta ditt ICQ-lösenord här.</translation>
-    </message>
-    <message>
-        <source>&amp;Local changes only</source>
-        <translation type="obsolete">Endast &amp;Lokala ändringar</translation>
-    </message>
-    <message>
-        <source>If checked, password/UIN changes will apply only on your local computer.  Useful if your password is incorrectly saved in Licq.</source>
-        <translation type="obsolete">Om ikryssad kommer lösenord/UIN ändringar endast att ske på din lokala dator. Användbart om ett felaktigt lösenord sparats av Licq.</translation>
-    </message>
-    <message>
-        <source>Web Presence allows users to see if you are online through your web indicator.</source>
-        <translation type="obsolete">Webbnärvaro tillåter användare att genom din webbindikator se om du är ansluten.</translation>
-    </message>
-    <message>
-        <source>Hide IP stops users from seeing your IP address. It doesn&apos;t guarantee it will be hidden though.</source>
-        <translation type="obsolete">Dölj IP förhindrar att användare ser din IP adress. Det garanterar dock inte att den är osynlig.</translation>
-    </message>
-    <message>
-        <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="obsolete">Ogiltigt lösenord, måste vara mellan 1 och 8 tecken.</translation>
-    </message>
-    <message>
-        <source>Passwords do not match, try again.</source>
-        <translation type="obsolete">Lösenorden är olika, försök igen.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="161"/>
@@ -6020,34 +2864,14 @@ ICQ Network to change the settings.</source>
         <translation>Misslyckades att spara säkerhetsinställningar.</translation>
     </message>
     <message>
-        <source>Changing password failed.</source>
-        <translation type="obsolete">Byte av lösenord misslyckades.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="166"/>
         <source>Timeout while setting security options.</source>
         <translation>Anslutningen dog ut när säkerhetsinställningarna skulle sparas.</translation>
     </message>
     <message>
-        <source>Timeout while changing password.</source>
-        <translation type="obsolete">Anslutnignen dog ut när lösenordet skulle bytas.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="171"/>
         <source>Internal error while setting security options.</source>
         <translation>Internt fel vid försök att spara säkerhetsinställningar.</translation>
-    </message>
-    <message>
-        <source>Internal error while changing password.</source>
-        <translation type="obsolete">Internt fel vid försök att ändra lösenord.</translation>
-    </message>
-    <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; is checked.</source>
-        <translation type="obsolete">Skriv det UIN som du vill använda. Endast tillgänglig om &quot;Endast lokala ändringar&quot; är ikryssad.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify:</source>
-        <translation type="obsolete">&amp;Bekräfta:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/securitydlg.cpp" line="72"/>
@@ -6254,10 +3078,6 @@ Please create one first.</source>
         <translation type="unfinished">Enrads chatt-läge</translation>
     </message>
     <message>
-        <source>Send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
-        <translation type="obsolete">Skicka meddelanden med Enter och infoga ny rad med Ctrl+Enter, mottsatt det vanliga läget</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="93"/>
         <source>Use double return</source>
         <translation type="unfinished">Använd dubbla returslag</translation>
@@ -6394,14 +3214,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <location filename="../src/settings/chat.cpp" line="211"/>
         <source>URI viewer:</source>
         <translation type="unfinished">URI-visare:</translation>
-    </message>
-    <message>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Kommandot för att visa en URL. URL:en ges som parameter.</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE standard</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="198"/>
@@ -6654,10 +3466,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Rita rutor kring varje kvadrat i användarlistan</translation>
-    </message>
-    <message>
         <location filename="../src/settings/contactlist.cpp" line="81"/>
         <source>Show column headers</source>
         <translation type="unfinished">Visa kolumnrubriker</translation>
@@ -6869,10 +3677,6 @@ Refer to the hints dialog for Qt URL handling rules.</source>
         <location filename="../src/settings/contactlist.cpp" line="225"/>
         <source>Title</source>
         <translation type="unfinished">Titel</translation>
-    </message>
-    <message>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Texten som skall visas i listrutans kolumnrubrik</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="228"/>
@@ -7104,10 +3908,6 @@ If not checked user will only be added to the new group.</source>
         <translation type="unfinished">Visa medelande ettiketten i fetstil när det finns inkommande meddelanden</translation>
     </message>
     <message>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Öppna alla inkommande meddelanden automatiskt, när de kommer, om jag är online (eller chatledig)</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="72"/>
         <source>Auto-focus message</source>
         <translation type="unfinished"></translation>
@@ -7227,12 +4027,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <location filename="../src/settings/events.cpp" line="163"/>
         <source>Command:</source>
         <translation type="unfinished">Kommando:</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Kommando som skall köras när en händelse mottages.&lt;br&gt;
-Det kommer att skickas releventa parametrar från nedan.&lt;br&gt;
-Parametrar kan innehålla följande uttryck &lt;br&gt; som ersätts med relevant information:&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="177"/>
@@ -7508,14 +4302,6 @@ Works with many different window managers.</source>
         <translation type="unfinished">Använd för normal text.</translation>
     </message>
     <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Välj teckensnitt</translation>
-    </message>
-    <message>
-        <source>Select a font from the system list.</source>
-        <translation type="obsolete">Välj et typsnitt från systemlistan.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Editing:</source>
         <translation type="unfinished">Redigera:</translation>
@@ -7524,14 +4310,6 @@ Works with many different window managers.</source>
         <location filename="../src/settings/general.cpp" line="139"/>
         <source>Used in message editor etc.</source>
         <translation type="unfinished">Används i meddelanderedigeraren m.m.</translation>
-    </message>
-    <message>
-        <source>default (%1)</source>
-        <translation type="obsolete">Förvalt värde (%1)</translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="obsolete">Förvalt värde</translation>
     </message>
     <message>
         <location filename="../src/settings/general.cpp" line="94"/>
@@ -8291,10 +5069,6 @@ Ikongrupp &apos;%2&apos; är ej tillgänglig.</translation>
 <context>
     <name>LicqQtGui::ShowAwayMsgDlg</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="147"/>
         <source>error</source>
         <translation>fel</translation>
@@ -8323,123 +5097,6 @@ Ikongrupp &apos;%2&apos; är ej tillgänglig.</translation>
         <location filename="../src/dialogs/showawaymsgdlg.cpp" line="135"/>
         <source>refused</source>
         <translation>vägrad</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::SkinBrowserDlg</name>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Fel</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Använd</translation>
-    </message>
-    <message>
-        <source>Licq Skin Browser</source>
-        <translation type="obsolete">Licq temabläddrare</translation>
-    </message>
-    <message>
-        <source>Skin selection</source>
-        <translation type="obsolete">Temaväljare</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Förhandsgranska</translation>
-    </message>
-    <message>
-        <source>S&amp;kins:</source>
-        <translation type="obsolete">&amp;Teman:</translation>
-    </message>
-    <message>
-        <source>&amp;Icons:</source>
-        <translation type="obsolete">&amp;Ikoner:</translation>
-    </message>
-    <message>
-        <source>E&amp;xtended Icons:</source>
-        <translation type="obsolete">&amp;Utökade ikoner:</translation>
-    </message>
-    <message>
-        <source>Skin:</source>
-        <translation type="obsolete">Tema:</translation>
-    </message>
-    <message>
-        <source>Icons:</source>
-        <translation type="obsolete">Ikoner:</translation>
-    </message>
-    <message>
-        <source>Extended Icons:</source>
-        <translation type="obsolete">Utökade ikoner:</translation>
-    </message>
-    <message>
-        <source>&amp;Edit Skin</source>
-        <translation type="obsolete">&amp;Redigera tema</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Av&amp;bryt</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1
-Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Kan inte öppna ikon fil
-%1
-Ikongrupp &apos;%2&apos; är ej tillgänglig.</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1
-Extended Iconset &apos;%2&apos; has been disabled.</source>
-        <translation type="obsolete">Kan inte öppna fil %1 med utökade ikoner.
-Gruppen utökadeikoner &apos;%2&apos; är ej tillgänglig.</translation>
-    </message>
-    <message>
-        <source>Unable to open icons file
-%1</source>
-        <translation type="obsolete">Kan inte öppna ikonfilen
-%1</translation>
-    </message>
-    <message>
-        <source>Unable to open extended icons file
-%1</source>
-        <translation type="obsolete">Kan inte öppna fil %1 med utökade ikoner</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available skins</source>
-        <translation type="obsolete">Använd denna meny för att välja ett av de tillgängliga temana</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available icon sets</source>
-        <translation type="obsolete">Använd denna meny för att välja ett av de tillgängliga ikonpacketen</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available extended icon sets</source>
-        <translation type="obsolete">Använd denna meny för att välja ett av de tillgängliga packeten med utökade ikoner</translation>
-    </message>
-    <message>
-        <source>Use this combo box to select one of the available emoticon icon sets</source>
-        <translation type="obsolete">Använd denna ruta för att välja ett av seten med humörikoner</translation>
-    </message>
-    <message>
-        <source>Emoticons:</source>
-        <translation type="obsolete">Humörikoner:</translation>
-    </message>
-    <message>
-        <source>E&amp;moticons:</source>
-        <translation type="obsolete">&amp;Humörikoner:</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">System</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Ansluten</translation>
     </message>
 </context>
 <context>
@@ -8534,17 +5191,9 @@ reset your statistics?</source>
         <translation type="unfinished">Rensa alla</translation>
     </message>
     <message>
-        <source>System Functions</source>
-        <translation type="obsolete">Systemfunktioner</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User Functions</source>
-        <translation type="obsolete">Användarfunktioner</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="99"/>
@@ -8627,38 +5276,6 @@ reset your statistics?</source>
         <translation type="unfinished">&amp;Status</translation>
     </message>
     <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Ansluten</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Borta</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">&amp;Upptagen</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Stör ej</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Chatt&amp;ledig</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">&amp;Frånkopplad</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Osynlig</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>&amp;Group</source>
         <translation type="unfinished">&amp;Grupp</translation>
@@ -8709,21 +5326,9 @@ reset your statistics?</source>
         <translation type="unfinished">&amp;Trådad gruppvy</translation>
     </message>
     <message>
-        <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Alternativ...</translation>
-    </message>
-    <message>
-        <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">&amp;Temaväljare...</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="208"/>
         <source>&amp;Plugin Manager...</source>
         <translation type="unfinished">&amp;Instickshanterare...</translation>
-    </message>
-    <message>
-        <source>&amp;GPG Key Manager...</source>
-        <translation type="obsolete">&amp;GPG Nyckelhanterare...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="213"/>
@@ -8788,55 +5393,9 @@ reset your statistics?</source>
         <source>View &amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Ansluten</translation>
-    </message>
-    <message>
-        <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Borta</translation>
-    </message>
-    <message>
-        <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>O&amp;ccupied</source>
-        <translation type="obsolete">&amp;Upptagen</translation>
-    </message>
-    <message>
-        <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Stör ej</translation>
-    </message>
-    <message>
-        <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Chatt&amp;ledig</translation>
-    </message>
-    <message>
-        <source>O&amp;ffline</source>
-        <translation type="obsolete">&amp;Frånkopplad</translation>
-    </message>
-    <message>
-        <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Osynlig</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file
-(%1)
-:%2</source>
-        <translation type="obsolete">Kunde inte ladda temafilen för docken
-(%1)
-:%2</translation>
-    </message>
-    <message>
-        <source>Unable to load dock theme image
-%1</source>
-        <translation type="obsolete">Kunde inte ladda temabilden för docken
-%1</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="77"/>
         <source>Unable to load dock theme file:
@@ -9056,18 +5615,6 @@ reset your statistics?</source>
         <translation>Öppna / Stäng säker kanal</translation>
     </message>
     <message>
-        <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
-        <translation type="obsolete">Kunde inte ladda fontsystem &lt;b&gt;%1&lt;/b&gt;. Meddelandet kan verka skadat.</translation>
-    </message>
-    <message>
-        <source>User current local time</source>
-        <translation type="obsolete">Användarens aktuella lokala tid</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Meny</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="252"/>
         <source>Open user menu</source>
         <translation>Öppna användarmenyn</translation>
@@ -9081,10 +5628,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventcommon.cpp" line="254"/>
         <source>Show user information</source>
         <translation>Visa användarens information</translation>
-    </message>
-    <message>
-        <source>Select the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language.</source>
-        <translation type="obsolete">Välj textkodning som ska användas vid kommunikation med denna användare. Du måste kanske ändra kodningen för att kunna kommunicera i ett annat språk.</translation>
     </message>
     <message>
         <location filename="../src/userevents/usereventcommon.cpp" line="114"/>
@@ -9133,439 +5676,6 @@ reset your statistics?</source>
         <location filename="../src/userevents/usereventtabdlg.cpp" line="176"/>
         <source>[UNKNOWN_USER]</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::UserInfoDlg</name>
-    <message>
-        <source>IP:</source>
-        <translation type="obsolete">IP:</translation>
-    </message>
-    <message>
-        <source>Now</source>
-        <translation type="obsolete">Nu</translation>
-    </message>
-    <message>
-        <source>Age:</source>
-        <translation type="obsolete">Ålder:</translation>
-    </message>
-    <message>
-        <source>Fax:</source>
-        <translation type="obsolete">Fax:</translation>
-    </message>
-    <message>
-        <source>Male</source>
-        <translation type="obsolete">Manlig</translation>
-    </message>
-    <message>
-        <source>Zip:</source>
-        <translation type="obsolete">Postnummer:</translation>
-    </message>
-    <message>
-        <source>done</source>
-        <translation type="obsolete">klar</translation>
-    </message>
-    <message>
-        <source> Day:</source>
-        <translation type="obsolete"> Dag:</translation>
-    </message>
-    <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">&amp;Sista</translation>
-    </message>
-    <message>
-        <source>&amp;Menu</source>
-        <translation type="obsolete">&amp;Meny</translation>
-    </message>
-    <message>
-        <source>&amp;More</source>
-        <translation type="obsolete">&amp;Mer</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Spara</translation>
-    </message>
-    <message>
-        <source>&amp;Work</source>
-        <translation type="obsolete">&amp;Arbete</translation>
-    </message>
-    <message>
-        <source>&amp;Filter: </source>
-        <translation type="obsolete">&amp;Filter: </translation>
-    </message>
-    <message>
-        <source>City:</source>
-        <translation type="obsolete">Stad:</translation>
-    </message>
-    <message>
-        <source>P&amp;rev</source>
-        <translation type="obsolete">&amp;Föregående</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Namn:</translation>
-    </message>
-    <message>
-        <source>Nex&amp;t</source>
-        <translation type="obsolete">&amp;Nästa</translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="obsolete">fel</translation>
-    </message>
-    <message>
-        <source>Last Online:</source>
-        <translation type="obsolete">Senast ansluten:</translation>
-    </message>
-    <message>
-        <source>Updating server...</source>
-        <translation type="obsolete">Uppdaterar server...</translation>
-    </message>
-    <message>
-        <source> Year:</source>
-        <translation type="obsolete"> År:</translation>
-    </message>
-    <message>
-        <source>Last Sent Event:</source>
-        <translation type="obsolete">Senast skickade händelse:</translation>
-    </message>
-    <message>
-        <source>Last Checked Auto Response:</source>
-        <translation type="obsolete">Senast visade autosvar:</translation>
-    </message>
-    <message>
-        <source>&amp;About</source>
-        <translation type="obsolete">&amp;Om</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Stäng</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to retrieve your settings.</source>
-        <translation type="obsolete">Du måste vara ansluten till
-ICQ-nätverket för att hämta dina inställningar.</translation>
-    </message>
-    <message>
-        <source>Cellular:</source>
-        <translation type="obsolete">Mobil:</translation>
-    </message>
-    <message>
-        <source>EMail 1:</source>
-        <translation type="obsolete">E-post 1:</translation>
-    </message>
-    <message>
-        <source>EMail 2:</source>
-        <translation type="obsolete">E-post 2:</translation>
-    </message>
-    <message>
-        <source>timed out</source>
-        <translation type="obsolete">dog ut</translation>
-    </message>
-    <message>
-        <source>Homepage:</source>
-        <translation type="obsolete">Hemsida:</translation>
-    </message>
-    <message>
-        <source>Timezone:</source>
-        <translation type="obsolete">Tidszon:</translation>
-    </message>
-    <message>
-        <source>About:</source>
-        <translation type="obsolete">Om:</translation>
-    </message>
-    <message>
-        <source>Alias:</source>
-        <translation type="obsolete">Alias:</translation>
-    </message>
-    <message>
-        <source>Old Email:</source>
-        <translation type="obsolete">Gammal e-post:</translation>
-    </message>
-    <message>
-        <source>Female</source>
-        <translation type="obsolete">Kvinnlig</translation>
-    </message>
-    <message>
-        <source> Month:</source>
-        <translation type="obsolete"> Månad:</translation>
-    </message>
-    <message>
-        <source>Phone:</source>
-        <translation type="obsolete">Telefon:</translation>
-    </message>
-    <message>
-        <source>State:</source>
-        <translation type="obsolete">Stat:</translation>
-    </message>
-    <message>
-        <source>Last Received Event:</source>
-        <translation type="obsolete">Senast mottagna händelse:</translation>
-    </message>
-    <message>
-        <source>Authorization Not Required</source>
-        <translation type="obsolete">Godkännande ej nödvändigt</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Mottaget&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Skickat&lt;/font&gt;] %3 utav %4 överränsstämmelser</translation>
-    </message>
-    <message>
-        <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
-        <translation type="obsolete">[&lt;font color=&quot;%1&quot;&gt;Mottaget&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Skickat&lt;/font&gt;] %3 till %4 utav %5</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">Land:</translation>
-    </message>
-    <message>
-        <source>failed</source>
-        <translation type="obsolete">misslyckades</translation>
-    </message>
-    <message>
-        <source>server</source>
-        <translation type="obsolete">server</translation>
-    </message>
-    <message>
-        <source>Authorization Required</source>
-        <translation type="obsolete">Godkännande nödvändigt</translation>
-    </message>
-    <message>
-        <source>Birthday:</source>
-        <translation type="obsolete">Födelsedag:</translation>
-    </message>
-    <message>
-        <source>Unknown (%1)</source>
-        <translation type="obsolete">Okänd (%1)</translation>
-    </message>
-    <message>
-        <source>Department:</source>
-        <translation type="obsolete">Avdelning:</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="obsolete">Befattning:</translation>
-    </message>
-    <message>
-        <source>Sorry, history is disabled for this person.</source>
-        <translation type="obsolete">Tyvärr, historik är inaktiverad för den här personen.</translation>
-    </message>
-    <message>
-        <source>Licq - Info </source>
-        <translation type="obsolete">Licq - information</translation>
-    </message>
-    <message>
-        <source>Status:</source>
-        <translation type="obsolete">Status:</translation>
-    </message>
-    <message>
-        <source>Address:</source>
-        <translation type="obsolete">Adress:</translation>
-    </message>
-    <message>
-        <source>Updating...</source>
-        <translation type="obsolete">Uppdaterar...</translation>
-    </message>
-    <message>
-        <source>You need to be connected to the
-ICQ Network to change your settings.</source>
-        <translation type="obsolete">Du måste vara ansluten till
-ICQ-nätverket för att ändra dina inställningar.</translation>
-    </message>
-    <message>
-        <source>Language 3:</source>
-        <translation type="obsolete">Språk 3:</translation>
-    </message>
-    <message>
-        <source>Language 1:</source>
-        <translation type="obsolete">Språk 1:</translation>
-    </message>
-    <message>
-        <source>Language 2:</source>
-        <translation type="obsolete">Språk 2:</translation>
-    </message>
-    <message>
-        <source>Unspecified</source>
-        <translation type="obsolete">Ospecificerat</translation>
-    </message>
-    <message>
-        <source>&amp;Update</source>
-        <translation type="obsolete">&amp;Uppdatera</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Okänd</translation>
-    </message>
-    <message>
-        <source>Rever&amp;se</source>
-        <translation type="obsolete">&amp;Omvänd</translation>
-    </message>
-    <message>
-        <source>Gender:</source>
-        <translation type="obsolete">Kön:</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">&amp;Allmänt</translation>
-    </message>
-    <message>
-        <source>&amp;History</source>
-        <translation type="obsolete">&amp;Historik</translation>
-    </message>
-    <message>
-        <source>Error loading history file: %1
-Description: %2</source>
-        <translation type="obsolete">Fel vid inhämtande av historikfil: %1
-Beskrivning: %2</translation>
-    </message>
-    <message>
-        <source>INVALID USER</source>
-        <translation type="obsolete">OGILTIG ANVÄNDARE</translation>
-    </message>
-    <message>
-        <source>Online Since:</source>
-        <translation type="obsolete">Ansluten sedan:</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Frånkopplad</translation>
-    </message>
-    <message>
-        <source>&amp;Retrieve</source>
-        <translation type="obsolete">&amp;Hämta</translation>
-    </message>
-    <message>
-        <source>S&amp;end</source>
-        <translation type="obsolete">&amp;Skicka</translation>
-    </message>
-    <message>
-        <source>Keep Alias on Update</source>
-        <translation type="obsolete">Behålla smeknamn vid updatering</translation>
-    </message>
-    <message>
-        <source>Normally Licq overwrites the Alias when updating user details.
-Check this if you want to keep your changes to the Alias.</source>
-        <translation type="obsolete">Normalt skriver Licq över smeknamnet när man updaterar användarinformationen.
-Markera här för att behålla ändringar av smeknamnet.</translation>
-    </message>
-    <message>
-        <source>Retrieve</source>
-        <translation type="obsolete">Hämta</translation>
-    </message>
-    <message>
-        <source>ID:</source>
-        <translation type="obsolete">ID:</translation>
-    </message>
-    <message>
-        <source>Category:</source>
-        <translation type="obsolete">Kategori:</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Beskrivning:</translation>
-    </message>
-    <message>
-        <source>User has an ICQ Homepage </source>
-        <translation type="obsolete">Användaren har en ICQ-hemsida </translation>
-    </message>
-    <message>
-        <source>User has no ICQ Homepage</source>
-        <translation type="obsolete">Användaren har ingen ICQ-hemsida</translation>
-    </message>
-    <message>
-        <source>M&amp;ore II</source>
-        <translation type="obsolete">&amp;Mera II</translation>
-    </message>
-    <message>
-        <source>(none)</source>
-        <translation type="obsolete">(ingen)</translation>
-    </message>
-    <message>
-        <source>Occupation:</source>
-        <translation type="obsolete">Sysselsättning:</translation>
-    </message>
-    <message>
-        <source>&amp;Phone</source>
-        <translation type="obsolete">&amp;Telefon</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Number/Gateway</source>
-        <translation type="obsolete">Nummer/nätsluss</translation>
-    </message>
-    <message>
-        <source>Country/Provider</source>
-        <translation type="obsolete">Land/Operatör</translation>
-    </message>
-    <message>
-        <source>Currently at:</source>
-        <translation type="obsolete">För tillfället vid:</translation>
-    </message>
-    <message>
-        <source>(</source>
-        <translation type="obsolete">(</translation>
-    </message>
-    <message>
-        <source>) </source>
-        <translation type="obsolete">) </translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>P&amp;icture</source>
-        <translation type="obsolete">&amp;Bild</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>Failed to Load</source>
-        <translation type="obsolete">Misslyckades att ladda</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="obsolete">E-post:</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Lägg till</translation>
-    </message>
-    <message>
-        <source>&amp;Clear</source>
-        <translation type="obsolete">&amp;Rensa</translation>
-    </message>
-    <message>
-        <source>&amp;Browse</source>
-        <translation type="obsolete">&amp;Bläddra</translation>
-    </message>
-    <message>
-        <source>Select your picture</source>
-        <translation type="obsolete">Välj din bild</translation>
-    </message>
-    <message>
-        <source> is over %1 bytes.
-Select another picture?</source>
-        <translation type="obsolete"> är mer än %1 bytes
-Välj en annan bild?</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ja</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Nej</translation>
-    </message>
-    <message>
-        <source>&amp;KDE Addressbook</source>
-        <translation type="obsolete">&amp;KDE-adressbok</translation>
     </message>
 </context>
 <context>
@@ -9793,14 +5903,6 @@ to your ignore list?</source>
         <translation type="unfinished">Vill du verkligen lägga till
 %1 (%2)
 till din ignoreringslista?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ja</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nej</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="164"/>
@@ -10586,12 +6688,6 @@ Välj en annan bild?</translation>
         <translation>Ingen anledning given</translation>
     </message>
     <message>
-        <source>Chat with %2 refused:
-%3</source>
-        <translation type="obsolete">%2 vägrade chatta med dig:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendchatevent.cpp" line="98"/>
         <source>Chat with %1 refused:
 %2</source>
@@ -10602,17 +6698,9 @@ Välj en annan bild?</translation>
 <context>
     <name>LicqQtGui::UserSendCommon</name>
     <message>
-        <source>No</source>
-        <translation type="obsolete">Nej</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
         <source>URL</source>
         <translation>URL</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Ja</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1149"/>
@@ -10630,10 +6718,6 @@ Välj en annan bild?</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="1162"/>
         <source>error</source>
         <translation>fel</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">S&amp;täng</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1159"/>
@@ -10731,16 +6815,6 @@ Skicka...</translation>
         <translation>till kontaktlistan</translation>
     </message>
     <message>
-        <source>Warning: Message can&apos;t be sent securely
-through the server!</source>
-        <translation type="obsolete">Varning: Meddelanden kan inte skickas säkert
-genom servern!</translation>
-    </message>
-    <message>
-        <source>Send anyway</source>
-        <translation type="obsolete">Skicka i alla fall</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="1153"/>
         <source>cancelled</source>
         <translation>avbruten</translation>
@@ -10754,10 +6828,6 @@ genom servern!</translation>
         <location filename="../src/userevents/usersendcommon.cpp" line="156"/>
         <source>Message type</source>
         <translation>Meddelandetyp</translation>
-    </message>
-    <message>
-        <source>Select type of message to send (Text, URL, File...)</source>
-        <translation type="obsolete">Välj meddelandetyp att skicka (Text, URL, Fil...)</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendcommon.cpp" line="161"/>
@@ -10879,12 +6949,6 @@ Send anyway?</source>
         <translation>Ingen anledning given</translation>
     </message>
     <message>
-        <source>File transfer with %2 refused:
-%3</source>
-        <translation type="obsolete">Filöverföring med %2 vägrad:
-%3</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/usersendfileevent.cpp" line="119"/>
         <location filename="../src/userevents/usersendfileevent.cpp" line="203"/>
         <source>%1 Files</source>
@@ -10900,14 +6964,6 @@ Send anyway?</source>
 </context>
 <context>
     <name>LicqQtGui::UserSendMsgEvent</name>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nej</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ja</translation>
-    </message>
     <message>
         <location filename="../src/userevents/usersendmsgevent.cpp" line="58"/>
         <source> - Message</source>
@@ -10944,14 +7000,6 @@ Skicka det i alla fall?</translation>
 Do you really want to send it?</source>
         <translation>Du har inte redigerat SMS:et.
 Vill du skicka det i alla fall?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ja</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nej</translation>
     </message>
 </context>
 <context>
@@ -11090,16 +7138,6 @@ Begäran avbröts.</translation>
         <translation>&amp;Visa E-post</translation>
     </message>
     <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete">Licq kan inte hitta en webläsare pga. ett internt fel.</translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq kan inte starta din webbläsare och öppna länken.
-Du måste starta din webbläsare och öppna länken manuellt.</translation>
-    </message>
-    <message>
         <location filename="../src/userevents/userviewevent.cpp" line="755"/>
         <location filename="../src/userevents/userviewevent.cpp" line="767"/>
         <location filename="../src/userevents/userviewevent.cpp" line="779"/>
@@ -11198,28 +7236,6 @@ Du måste starta din webbläsare och öppna länken manuellt.</translation>
         <location filename="../src/dialogs/utilitydlg.cpp" line="255"/>
         <source>C&amp;lose</source>
         <translation>&amp;Stäng</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::VerifyDlg</name>
-    <message>
-        <source>Retype the letters shown above:</source>
-        <translation type="obsolete">Skriv bokstäverna som visas ovan:</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;OK</translation>
-    </message>
-    <message>
-        <source>Licq - New Account Verification</source>
-        <translation type="obsolete">Licq - Verifiering av nytt konto</translation>
-    </message>
-</context>
-<context>
-    <name>MLEdit</name>
-    <message>
-        <source>Allow Tabulations</source>
-        <translation type="obsolete">Tillåt tabbulering</translation>
     </message>
 </context>
 <context>
