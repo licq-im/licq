@@ -109,23 +109,34 @@ bool IconManager::loadIcons(const QString& iconSet)
 
   char filename[MAX_FILENAME_LEN];
 
+  // Note: With Qt 4.6 the QPixmap cannot be reused without clearing it
+  //       between loads or icons will be mixed up.
   QPixmap p;
 
 #define LOAD_ICON(name, icon) \
     if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    { \
       myIconMap.insert(icon, p); \
+      p = QPixmap(); \
+    } \
     else \
       myIconMap.remove(icon);
 
 #define LOAD2_ICON(name, icon, deficon) \
     if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    { \
       myIconMap.insert(icon, p); \
+      p = QPixmap(); \
+    } \
     else \
       myIconMap.insert(icon, deficon);
 
 #define LOAD_STATUSICON(name, protocol, icon) \
     if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    { \
       myStatusIconMap.insert(QPair<ProtocolType, StatusIconType>(protocol, icon), p); \
+      p = QPixmap(); \
+    } \
     else \
       myStatusIconMap.remove(QPair<ProtocolType, StatusIconType>(protocol, icon));
 
@@ -227,7 +238,10 @@ bool IconManager::loadExtendedIcons(const QString& iconSet)
 
 #define LOAD_ICON(name, icon, deficon) \
     if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    { \
       myIconMap.insert(icon, p); \
+      p = QPixmap(); \
+    } \
     else \
       myIconMap.insert(icon, deficon);
 
