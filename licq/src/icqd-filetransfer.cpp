@@ -6,14 +6,12 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <ctype.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <string>

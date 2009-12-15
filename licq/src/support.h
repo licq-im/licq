@@ -7,9 +7,7 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -46,10 +44,6 @@ int scandir_alpha_r(const char *dir, struct dirent ***namelist,
 
 
 /* Cross-platform support functions */
-
-#ifndef HAVE_STRERROR
-char *strerror(int errnum);
-#endif
 
 int gethostbyname_r_portable(const char *, struct hostent *, char *, size_t);
 

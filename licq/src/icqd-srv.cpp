@@ -6,15 +6,14 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <cassert>
 #include <cctype>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
+#include <ctime>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -24,8 +23,6 @@
 
 // Localization
 #include "gettext.h"
-
-#include "time-fix.h"
 
 #include "licq_byteorder.h"
 #include "licq_icqd.h"
@@ -43,6 +40,7 @@
 #include "licq_countrycodes.h"
 #include "licq_protoplugind.h"
 #include "licq_proxy.h"
+#include "licq/version.h"
 
 using namespace std;
 
@@ -1607,7 +1605,7 @@ unsigned long CICQDaemon::icqSendSms(const char* id, unsigned long ppid,
     const char* number, const char* message)
 {
   UserId userId = LicqUser::makeUserId(id, ppid);
-  CEventSms* ue = new CEventSms(number, message, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
+  CEventSms* ue = new CEventSms(number, message, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, LICQ_VERSION);
   CPU_SendSms* p = new CPU_SendSms(number, message);
   gLog.Info(tr("%sSending SMS through server (#%hu/#%d)...\n"), L_SRVxSTR,
       p->Sequence(), p->SubSequence());

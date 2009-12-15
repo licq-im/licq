@@ -1,7 +1,5 @@
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #ifdef HAVE_LIBGPGME
 #include <gpgme.h>
@@ -13,7 +11,7 @@
 #include "licq_file.h"
 #include "licq_gpg.h"
 #include "licq_log.h"
-#include <licq_user.h>
+#include "licq_user.h"
 
 using namespace std;
 

@@ -6,10 +6,9 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
+#include <ctime>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -17,11 +16,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <cerrno>
 
 #include "licq_md5.h"
 
@@ -29,8 +24,6 @@ extern int errno;
 
 // Localization
 #include "gettext.h"
-
-#include "time-fix.h"
 
 #include "licq_byteorder.h"
 #include "licq_packets.h"
@@ -42,6 +35,7 @@ extern int errno;
 #include "licq_utility.h"
 #include "licq_color.h"
 #include "support.h"
+#include "licq/version.h"
 
 using namespace std;
 
@@ -1061,9 +1055,9 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   memcpy(data[7], ICQ_CAPABILITY_BART, CAP_LENGTH);
 
   // Send our licq version
-  data[3][12] = INT_VERSION / 1000;
-  data[3][13] = (INT_VERSION / 10) % 1000;
-  data[3][14] = INT_VERSION % 10;
+  data[3][12] = Licq::extractMajorVersion(LICQ_VERSION);
+  data[3][13] = Licq::extractMinorVersion(LICQ_VERSION);
+  data[3][14] = Licq::extractReleaseVersion(LICQ_VERSION);
 #ifdef USE_OPENSSL
   // If we support SSL
   data[3][15] = 1;
@@ -1198,9 +1192,9 @@ void CPU_SetStatusFamily::InitBuffer()
      use capabilities */
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 #ifdef USE_OPENSSL
-   buffer->PackUnsignedLongBE(LICQ_WITHSSL | INT_VERSION);
+   buffer->PackUnsignedLongBE(LICQ_WITHSSL | LICQ_VERSION);
 #else
-   buffer->PackUnsignedLongBE(LICQ_WITHOUTSSL | INT_VERSION);
+   buffer->PackUnsignedLongBE(LICQ_WITHOUTSSL | LICQ_VERSION);
 #endif
    // some kind of timestamp ?
   buffer->PackUnsignedLongBE(o->ClientStatusTimestamp());
@@ -4784,7 +4778,7 @@ void CPacketTcp::PostBuffer_v2()
   if (m_nVersion != 2)
   {
     buffer->PackChar('L');
-    buffer->PackUnsignedShort(INT_VERSION);
+    buffer->PackUnsignedShort(LICQ_VERSION);
   }
 }
 
@@ -4813,7 +4807,7 @@ void CPacketTcp::PostBuffer_v4()
 {
   buffer->PackUnsignedLong(m_nSequence);
   buffer->PackChar('L');
-  buffer->PackUnsignedShort(INT_VERSION);
+  buffer->PackUnsignedShort(LICQ_VERSION);
 }
 
 
@@ -4841,7 +4835,7 @@ void CPacketTcp::PostBuffer_v6()
 {
 // don't break ICQ2000
 //   buffer->PackChar('L');
-//   buffer->PackUnsignedShort(INT_VERSION);
+//   buffer->PackUnsignedShort(LICQ_VERSION);
 }
 
 void CPacketTcp::InitBuffer_v7()

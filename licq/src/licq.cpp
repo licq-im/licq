@@ -6,36 +6,23 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
-#include <stdlib.h>
+#include <cerrno>
+#include <csignal>
+#include <cstdlib>
+#include <cstring>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <getopt.h>
+#include <pwd.h>
+#include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <signal.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <dlfcn.h>
-#include <string.h>
-#include <string>
 
 using namespace std;
-
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
-
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
-#endif
-
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
 
 // Localization
 #include "gettext.h"
@@ -51,6 +38,7 @@ extern int errno;
 #include "licq_icqd.h"
 #include "licq_socket.h"
 #include "licq_protoplugind.h"
+#include "licq/version.h"
 
 #include "licq.conf.h"
 
@@ -283,7 +271,7 @@ bool CLicq::Init(int argc, char **argv)
         bFork = true;
         break;
       case 'v':  // show version
-        printf(tr("%s version %s, compiled on %s\n"), PACKAGE, VERSION, __DATE__);
+        printf(tr("%s version %s, compiled on %s\n"), PACKAGE, LICQ_VERSION_STRING, __DATE__);
         return false;
         break;
       }
@@ -479,7 +467,7 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.SetSection("licq");
   unsigned short nVersion;
   licqConf.ReadNum("Version", nVersion, 0);
-  if (nVersion < 1028)
+  if (nVersion < LICQ_MAKE_VERSION(1, 2, 8))
   {
     gLog.Info("%sUpgrading config file formats.\n", L_SBLANKxSTR);
     if (UpgradeLicq(licqConf))
@@ -491,9 +479,9 @@ bool CLicq::Init(int argc, char **argv)
       return false;
     }
   }
-  else if (nVersion < INT_VERSION)
+  else if (nVersion < LICQ_VERSION)
   {
-    licqConf.WriteNum("Version", (unsigned short)INT_VERSION);
+    licqConf.WriteNum("Version", (unsigned short)LICQ_VERSION);
     licqConf.FlushFile();
   }
 
@@ -591,7 +579,7 @@ CLicq::~CLicq()
 
 const char *CLicq::Version()
 {
-  static const char version[] = VERSION;
+  static const char version[] = LICQ_VERSION_STRING;
   return version;
 }
 
@@ -617,7 +605,7 @@ bool CLicq::UpgradeLicq(CIniFile &licqConf)
 
   // Set the new version number
   licqConf.SetSection("licq");
-  licqConf.WriteNum("Version", (unsigned short)INT_VERSION);  
+  licqConf.WriteNum("Version", (unsigned short)LICQ_VERSION);  
  
   // Create the owner section and fill it
   licqConf.SetSection("owners");
@@ -1272,7 +1260,7 @@ void CLicq::PrintUsage()
          " -p : load the given plugin library\n"
          " -l : load the given protocol plugin library\n"
          " -o : redirect stderr to <file>, which can be a device (ie /dev/ttyp4)\n"),
-         PACKAGE, VERSION);
+         PACKAGE, LICQ_VERSION_STRING);
 }
 
 

@@ -12,15 +12,9 @@
 // Modified by Andrew Frolov (dron@linuxer.net)
 // Further modified by Graham Roff
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <cerrno>
 #include <string.h>
 #include <iconv.h>
 #include <stdlib.h>

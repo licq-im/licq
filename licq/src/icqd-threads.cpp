@@ -12,9 +12,8 @@
 #include "licq_icqd.h"
 
 #include <cerrno>
+#include <ctime>
 #include <unistd.h>
-
-#include "time-fix.h"
 
 #include "licq_log.h"
 #include "licq_mutex.h"

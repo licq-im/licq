@@ -6,9 +6,7 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "licq_user.h"
 
@@ -2417,14 +2415,7 @@ int ICQUser::SystemTimeGMTOffset()
 {
   time_t t = time(NULL);
   struct tm *tzone = localtime(&t);
-#ifdef USE_GMTOFF
   return -(tzone->tm_gmtoff) + (tzone->tm_isdst == 1 ? 3600 : 0); // seconds _east_ of UTC
-#elif defined(USE_TIMEZONE)
-  return timezone;  // seconds _west_ of UTC
-#else
-#warning Unable to determine local timezone
-  return 0;
-#endif
 }
 
 char ICQUser::SystemTimezone()

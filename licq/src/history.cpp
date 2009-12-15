@@ -6,9 +6,7 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <cstdio>
 #include <string.h>
@@ -21,11 +19,7 @@
 // Localization
 #include "gettext.h"
 
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <cerrno>
 
 #include "licq_history.h"
 #include "licq_log.h"

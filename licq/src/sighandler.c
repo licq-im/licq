@@ -6,9 +6,7 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include "licq_sighandler.h"
 #include "licq_constants.h"
@@ -186,10 +184,6 @@ void licq_handle_sigabrt(int s)
   if (file != NULL)
     fclose(file);
 
-  #ifdef HAVE_PTHREAD_KILL_OTHER_THREADS_NP
-  // only available in LinuxThreads, not in NPTL
-  pthread_kill_other_threads_np();
-  #endif
 #endif
 
   char error[1024];

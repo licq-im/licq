@@ -6,15 +6,9 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <cerrno>
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>

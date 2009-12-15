@@ -11,9 +11,7 @@
 #ifndef SUPPORT_H
 #define SUPPORT_H
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <stdio.h>
 #include <unistd.h>
@@ -28,10 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netdb.h>
-#ifdef HAVE_ERRNO_H
 #include <errno.h>
-#endif
-extern int h_errno;
 
 #include "support.h"
 
@@ -266,29 +261,6 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
   return i;
 }
 
-
-/*=====STRERROR===============================================================*/
-
-#ifndef HAVE_STRERROR
-
-#ifdef HAVE_SYS_ERRLIST
-extern char *sys_errlist[];
-#endif
-
-char *strerror(int errnum)
-{
-#ifdef HAVE_SYS_ERRLIST
-	return sys_errlist[errnum];
-#else
-	static char buf[32];
-
-	sprintf(buf, "Unknown error: %u", errnum);
-
-	return buf;
-#endif
-}
-
-#endif	/* HAVE_STRERROR */
 
 int gethostbyname_r_portable(const char *szHostName, struct hostent *h, char *buf, size_t buflen)
 {

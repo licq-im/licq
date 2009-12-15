@@ -18,14 +18,13 @@
  * If anyone changes anything here try to update the README.FIFO
  *
  */
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <cctype>
 #include <string>
 #include <sys/types.h>
@@ -33,13 +32,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "time-fix.h"
-
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <cerrno>
 
 // Localization
 #include "gettext.h"

@@ -12,9 +12,7 @@
     and lftp (Copyright (c) 1999-2001 by Alexander V. Lukyanov (lav@yars.free.net))
 */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <arpa/inet.h>
 #include <stdlib.h>
@@ -27,12 +25,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-extern int h_errno;
-#endif
+#include <cerrno>
 
 // Localization
 #include "gettext.h"
@@ -90,12 +83,10 @@ char *ProxyServer::ErrorStr(char *buf, int buflen)
       break;
 
     case PROXY_ERROR_h_errno:
-#ifndef HAVE_HSTRERROR
-      sprintf(buf, tr("proxy hostname resolution failure (%d)"), h_errno);
-#else
       strncpy(buf, hstrerror(h_errno), buflen);
       buf[buflen - 1] = '\0';
-#endif
+      break;
+
     case PROXY_ERROR_none:
       strncpy(buf, tr("No proxy error detected"), buflen);
       buf[buflen - 1] = '\0';
@@ -109,6 +100,7 @@ char *ProxyServer::ErrorStr(char *buf, int buflen)
     default:
       strncpy(buf, tr("Unknown proxy error"), buflen);
       buf[buflen - 1] = '\0';
+      break;
   }
   
   return buf;

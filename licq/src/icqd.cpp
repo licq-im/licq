@@ -6,30 +6,23 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <cassert>
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "time-fix.h"
-
 // Localization
 #include "gettext.h"
 
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <cerrno>
 
 #include "licq_icq.h"
 #include "licq_user.h"
@@ -41,7 +34,7 @@ extern int errno;
 #include "licq_packets.h"
 #include "licq_plugind.h"
 #include "licq_proxy.h"
-#include "licq_gpg.h"    // ##
+#include "licq_gpg.h"
 #include "licq.h"
 #include "support.h"
 

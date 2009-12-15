@@ -24,7 +24,7 @@
 #include <pthread.h>
 
 #ifdef DEBUG_RW_MUTEX
-#include <errno.h>
+#include <cerrno>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

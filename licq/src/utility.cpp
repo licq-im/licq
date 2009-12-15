@@ -6,30 +6,18 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
+#include <cerrno>
+#include <ctime>
+#include <ctype.h>
+#include <dirent.h>
+#include <paths.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dirent.h>
-#include <ctype.h>
-#include <unistd.h>
 #include <sys/wait.h>
-#include <signal.h>
-#include "time-fix.h"
-
-#ifdef HAVE_PATHS_H
-#include <paths.h>
-#else
-#define _PATH_BSHELL "/bin/sh"
-#endif
-
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-#endif
+#include <unistd.h>
 
 // Localization
 #include "gettext.h"

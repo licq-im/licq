@@ -8,9 +8,7 @@
 
 /* Socket routine descriptions */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <arpa/inet.h>
 #include <stdio.h>
@@ -21,13 +19,7 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno;
-extern int h_errno;
-#endif
+#include <cerrno>
 
 // Localization
 #include "gettext.h"
@@ -242,12 +234,8 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
       break;
 
     case SOCK_ERROR_h_errno:
-#ifndef HAVE_HSTRERROR
-      sprintf(buf, tr("hostname resolution failure (%d)"), h_errno);
-#else
       strncpy(buf, hstrerror(h_errno), buflen);
       buf[buflen - 1] = '\0';
-#endif
       break;
 
     case SOCK_ERROR_desx:

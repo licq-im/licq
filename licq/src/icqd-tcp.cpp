@@ -6,24 +6,21 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifdef HAVE_CONFIG_H
 #include "config.h"
-#endif
 
+#include <ctime>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
 #include <ctype.h>
 #include <langinfo.h>
 
 // Localization
 #include "gettext.h"
-
-#include "time-fix.h"
 
 #include "licq_byteorder.h"
 #include "licq_icqd.h"
@@ -38,6 +35,7 @@
 #include "licq_gpg.h"
 #include "support.h"
 #include "licq_protoplugind.h"
+#include "licq/version.h"
 
 using namespace std;
 
@@ -78,7 +76,7 @@ unsigned long CICQDaemon::icqSendMessage(const UserId& userId, const string& mes
   }
   CEventMsg *e = NULL;
 
-  unsigned long f = INT_VERSION;
+  unsigned long f = LICQ_VERSION;
 
   ICQUser *u;
   char *cipher = NULL;
@@ -279,7 +277,7 @@ unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
 
   ICQEvent *result = NULL;
 
-  unsigned long f = INT_VERSION;
+  unsigned long f = LICQ_VERSION;
   if (!viaServer) f |= E_DIRECT;
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
@@ -367,7 +365,7 @@ unsigned long CICQDaemon::icqFileTransfer(const UserId& userId, const string& fi
 
   if (bServer)
   {
-    unsigned long f = INT_VERSION;
+    unsigned long f = LICQ_VERSION;
     //flags through server are a little different
     if (nLevel == ICQ_TCPxMSG_NORMAL)
       nLevel = ICQ_TCPxMSG_NORMAL2;
@@ -409,7 +407,7 @@ unsigned long CICQDaemon::icqFileTransfer(const UserId& userId, const string& fi
     }
     else
     {
-      unsigned long f = E_DIRECT | INT_VERSION;
+      unsigned long f = E_DIRECT | LICQ_VERSION;
       if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
       if (u->Secure()) f |= E_ENCRYPTED;
 
@@ -469,7 +467,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   CEventContactList *e = NULL;
   ICQEvent *result = NULL;
 
-  unsigned long f = INT_VERSION;
+  unsigned long f = LICQ_VERSION;
   if (online) f |= E_DIRECT;
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
@@ -856,7 +854,7 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
   ICQEvent *result = NULL;
   if (bServer)
   {
-    f = INT_VERSION;
+    f = LICQ_VERSION;
     
     //flags through server are a little different
     if (nLevel == ICQ_TCPxMSG_NORMAL)
@@ -884,7 +882,7 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
 	{
 		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, szChatUsers, nPort,
 						 nLevel, u, (u->Version() > 7));
-		f = E_DIRECT | INT_VERSION;
+		f = E_DIRECT | LICQ_VERSION;
 		if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
 		if (u->Secure()) f |= E_ENCRYPTED;
 		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),

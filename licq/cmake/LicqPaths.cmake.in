@@ -1,0 +1,11 @@
+# This file contains the installation paths used by the daemon. It is also used
+# by plugins when configured to build using the installed headers.
+
+set(Licq_INCLUDE_DIR "@Licq_INCLUDE_DIR@" CACHE PATH "Licq include directory")
+set(Licq_LOCALE_DIR "@Licq_LOCALE_DIR@" CACHE PATH "Licq locale directory")
+set(Licq_PLUGIN_DIR "@Licq_PLUGIN_DIR@" CACHE PATH "Licq plugin directory")
+set(Licq_SHARE_DIR "@Licq_SHARE_DIR@" CACHE PATH "Licq share directory")
+
+mark_as_advanced(Licq_LOCALE_DIR)
+mark_as_advanced(Licq_PLUGIN_DIR)
+mark_as_advanced(Licq_SHARE_DIR)
