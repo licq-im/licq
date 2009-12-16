@@ -1,7 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -10,11 +6,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#ifdef HAVE_ERRNO_H
 #include <cerrno>
-#else
-extern int errno;
-#endif
 
 #include "forwarder.h"
 #include "forwarder.conf.h"

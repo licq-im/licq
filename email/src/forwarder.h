@@ -1,10 +1,6 @@
 #ifndef LICQEMAIL_H
 #define LICQEMAIL_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <licq_types.h>
 
 class CICQDaemon;
