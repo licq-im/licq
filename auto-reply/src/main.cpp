@@ -1,12 +1,9 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 #include <unistd.h>
 #include "licq_plugin.h"
+#include "licq/version.h"
 #include "autoreply.h"
 
 CLicqAutoReply *licqAutoReply;
@@ -43,7 +40,7 @@ const char *LP_Description()
 
 const char *LP_Version()
 {
-  static const char version[] = VERSION;
+  static const char version[] = LICQ_VERSION_STRING;
   return version;
 }
 

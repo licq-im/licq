@@ -1,7 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -13,17 +9,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
-#ifdef HAVE_ERRNO_H
 #include <cerrno>
-#else
-extern int errno;
-#endif
-#ifdef HAVE_PATHS_H
 #include <paths.h>
-#else
-#define _PATH_BSHELL "/bin/sh"
-#endif
-
 
 #include "autoreply.h"
 #include "licq_log.h"
