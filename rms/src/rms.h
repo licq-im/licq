@@ -1,10 +1,6 @@
 #ifndef LICQRMS_H
 #define LICQRMS_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <list>
 
 #include <licq_socket.h>

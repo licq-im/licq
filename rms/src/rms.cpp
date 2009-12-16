@@ -1,7 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "rms.h"
 
 #include <cctype>
@@ -12,11 +8,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#ifdef HAVE_ERRNO_H
 #include <cerrno>
-#else
-extern int errno;
-#endif
 
 #include <licq_constants.h>
 #include <licq_icqd.h>
