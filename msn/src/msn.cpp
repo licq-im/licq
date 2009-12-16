@@ -16,10 +16,6 @@
 
 // written by Jon Keating <jon@licq.org>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <cctype>
 #include <cstdio>
 #include <list>

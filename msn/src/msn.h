@@ -19,10 +19,6 @@
 #ifndef __MSN_H
 #define __MSN_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <list>
 #include <pthread.h>
 #include <string>

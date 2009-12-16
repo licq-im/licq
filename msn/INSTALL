@@ -1,0 +1,9 @@
+Build instructions
+==================
+
+ 1. mkdir build
+ 2. cd build
+ 3. cmake ..
+  or if Licq is installed in a non-standard location or not at all
+ 3. cmake -DCMAKE_MODULE_PATH=<path-to>/FindLicq.cmake ..
+ 4. make install

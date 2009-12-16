@@ -16,10 +16,6 @@
 
 // written by Jon Keating <jon@licq.org>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "msn.h"
 #include "msnpacket.h"
 #include "licq_log.h"
