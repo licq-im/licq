@@ -46,6 +46,7 @@ char *strhebpatch(char *dest, const char *src)
 	short int mode = 0, imode;
 	const char *hmark = NULL, *lmark, *nmark, *nlmark;
 	char ch;
+  const char* srcstart = src;
 
 	if (src == NULL)
 		return NULL;
@@ -67,7 +68,8 @@ char *strhebpatch(char *dest, const char *src)
 			if (*src == 0  ||  iseng(*src))
 			{
 				lmark = src-1;
-				while ((!isheb(*lmark)) && (!ispunct(*lmark))) lmark--;
+        while (lmark > srcstart && !isheb(*lmark) && !ispunct(*lmark))
+          lmark--;
 				src = lmark;
 				imode = 0;
 				nmark = NULL;
@@ -112,6 +114,8 @@ char *strhebpatch(char *dest, const char *src)
 				hmark = NULL;
 				mode = 0;
 			}
+      if (*src == '\0')
+        *dest = '\0';
 		}
 		if (!*src++)
 			break;
@@ -162,6 +166,7 @@ char* hebrev(char* src)
 {
         char* temp_str = NULL;
 	char* temp = NULL;
+  char* arg = NULL;
         int i=0;
 	int size = 0;
 	if(src == NULL)
@@ -170,20 +175,20 @@ char* hebrev(char* src)
 	if((temp_str = (char*)malloc(strlen(src)+1))== NULL)
 		return NULL;
 
-	temp = GetArg(src, i);
-	while(temp != NULL)
+  arg = GetArg(src, i);
+	while(arg != NULL)
 	{
 		i++;
-		temp = hebrew(temp);
+  temp = hebrew(arg);
+  free(arg);
 		memcpy(temp_str + size , temp, strlen(temp));
 		size += strlen(temp) ;
 		temp_str[size++] = '\n';
 	
 		free(temp);
 		temp = NULL;
-		temp = GetArg(src, i);
+    arg = GetArg(src, i);
 	}
-	free(temp);
 	temp_str[size]= '\0';	
 	return temp_str;
 }
