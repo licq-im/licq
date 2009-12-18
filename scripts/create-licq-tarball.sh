@@ -14,8 +14,8 @@ TARDIR="."
 
 # What to name the tarball (REV is replaced with the svn revision)
 # Note: Don't add .tar.gz or .tar.bz2
-TARNAME="licq-1.3.6~rREV"
-#TARNAME="licq-1.3.6-rc1"
+TARNAME="licq-1.3.9~rREV"
+#TARNAME="licq-1.3.9-rc1"
 
 # Archives to create (1 = create; 0 = don't create)
 CREATE_GZ=0
@@ -168,20 +168,16 @@ test ${CREATE_BZ2} -ne 0 && exit_if_exists "${TARDIR}/${TARNAME}.tar.bz2"
 svnexport "trunk/licq" ""
 svnexport "trunk/admin" "admin"
 
-makecvs "."
-
-for plugin in auto-reply console email msn osd qt-gui rms; do
+for plugin in console osd qt-gui; do
    svnexport "trunk/${plugin}" "plugins/${plugin}"
    makecvs "plugins/${plugin}"
 done
 
 rm -f "${LICQDIR}/admin/Makefile.common"
 
-for plugin in licqweb; do
+for plugin in auto-reply email licqweb msn qt4-gui rms; do
    svnexport "trunk/${plugin}" "plugins/${plugin}"
 done
-
-svnexport "trunk/qt4-gui" "plugins/qt4-gui"
 
 echo "Creating tarball ${TARNAME}.tar"
 tar --owner "${OWNER}" --group "${GROUP}" -C "${TMPDIR}" -cf "${TMPDIR}/${TARNAME}.tar" "${DIRNAME}" || failed
