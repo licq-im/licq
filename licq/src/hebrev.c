@@ -143,15 +143,16 @@ char* GetArg(char* input, int index)
 	char *temp=NULL, *tmp=NULL;
 	char *arg=NULL, *arg2=NULL;
 	int i=0;
+  char* saveptr = NULL;
 
 	temp = (char*) malloc(strlen(input)+1);
 	tmp = temp;
 
 	strcpy(temp, input);
 
-	arg = strtok(temp, "\n");
+  arg = strtok_r(temp, "\n", &saveptr);
 	for(i = 0; (i < index) && (arg!=NULL); i++)
-		arg = strtok(NULL, "\n");
+    arg = strtok_r(NULL, "\n", &saveptr);
 
 	if(arg != NULL)
 	{
@@ -189,7 +190,9 @@ char* hebrev(char* src)
 		temp = NULL;
     arg = GetArg(src, i);
 	}
-	temp_str[size]= '\0';	
+  // Above loop adds a line break after last line that wasn't there in src
+  //   replace it with the null terminator
+  temp_str[--size]= '\0';
 	return temp_str;
 }
 
