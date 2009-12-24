@@ -8,6 +8,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
 # Includes
 include(CheckFunctionExists)
 include(CheckLibraryExists)
+include(CheckFileOffsetBits)
 
 # Options
 option(ENABLE_NLS "Enable translation of program messages" ON)
@@ -85,6 +86,10 @@ endif (USE_OPENSSL)
 find_package(Gpgme)
 if (GPGME_VANILLA_FOUND)
   set(HAVE_LIBGPGME 1)
+  check_file_offset_bits()
+  if (_FILE_OFFSET_BITS)
+      add_definitions(-D_FILE_OFFSET_BITS=${_FILE_OFFSET_BITS})
+  endif (_FILE_OFFSET_BITS)
 endif (GPGME_VANILLA_FOUND)
 
 # SOCKS5
