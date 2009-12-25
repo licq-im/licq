@@ -304,7 +304,7 @@ void CICQDaemon::protoRemoveUser(const UserId& userId)
   bool tempUser = u->NotInList();
   gUserManager.DropUser(u);
 
-  if (ppid == LICQ_PPID && tempUser)
+  if (ppid == LICQ_PPID && !tempUser)
     icqRemoveUser(accountId.c_str());
   else if(ppid != LICQ_PPID)
     PushProtoSignal(new CRemoveUserSignal(accountId.c_str()), ppid);
