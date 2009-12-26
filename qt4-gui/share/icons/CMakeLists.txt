@@ -10,6 +10,6 @@ set(icons_SHARE
 )
 
 install(DIRECTORY ${icons_SHARE}
-  DESTINATION ${INSTALL_DATA_DIR}/licq/${INSTALL_QTGUI_DIR}/icons
+  DESTINATION ${Licq_SHARE_DIR}/${INSTALL_QTGUI_DIR}/icons
   PATTERN ".svn" EXCLUDE
 )

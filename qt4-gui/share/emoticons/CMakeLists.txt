@@ -13,6 +13,6 @@ set(emoticons_SHARE
 )
 
 install(DIRECTORY ${emoticons_SHARE}
-  DESTINATION ${INSTALL_DATA_DIR}/licq/${INSTALL_QTGUI_DIR}/emoticons
+  DESTINATION ${Licq_SHARE_DIR}/${INSTALL_QTGUI_DIR}/emoticons
   PATTERN ".svn" EXCLUDE
 )

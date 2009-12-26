@@ -16,6 +16,6 @@ set(skins_SHARE
 )
 
 install(DIRECTORY ${skins_SHARE}
-  DESTINATION ${INSTALL_DATA_DIR}/licq/${INSTALL_QTGUI_DIR}/skins
+  DESTINATION ${Licq_SHARE_DIR}/${INSTALL_QTGUI_DIR}/skins
   PATTERN ".svn" EXCLUDE
 )

@@ -36,15 +36,7 @@ else (WITH_KDE)
   set(target licq_qt4-gui)
 endif (WITH_KDE)
 
-add_library(${target} MODULE ${objs})
+licq_add_plugin(${target} ${objs})
 add_dependencies(${target} ${SOURCE_DIRS})
 target_link_libraries(${target} ${LIBRARIES})
-set_target_properties(${target} PROPERTIES PREFIX "")
 set_target_properties(${target} PROPERTIES LINKER_LANGUAGE CXX)
-
-install(TARGETS ${target} DESTINATION ${INSTALL_LIB_DIR}/licq)
-
-if (APPLE)
-  set_target_properties(${target} PROPERTIES
-    LINK_FLAGS "-flat_namespace -undefined suppress")
-endif (APPLE)

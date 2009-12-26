@@ -82,7 +82,7 @@ if (QT_LRELEASE)
 
   # Install *.qm to <prefix>/share/licq/qt4-gui/locale
   install(FILES ${qms}
-    DESTINATION ${INSTALL_DATA_DIR}/licq/${INSTALL_QTGUI_DIR}/locale)
+    DESTINATION ${Licq_SHARE_DIR}/${INSTALL_QTGUI_DIR}/locale)
 else (QT_LRELEASE)
   message(STATUS "lrelease could not be found. You're losing the localisation.")
 endif (QT_LRELEASE)

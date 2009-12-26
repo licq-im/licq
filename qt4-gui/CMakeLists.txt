@@ -14,32 +14,16 @@ set(VERSION_RELEASE 8)
 # Use KDE support
 option(WITH_KDE "Compile with KDE support" OFF)
 
+# Licq
+find_package(Licq REQUIRED)
+include_directories(${Licq_INCLUDE_DIRS})
 
-# Install dirs
-set(INSTALL_LIB_DIR lib${LIB_SUFFIX} CACHE PATH
-  "Directory to install the plugin to. A relative path is relative to CMAKE_INSTALL_PREFIX.")
-mark_as_advanced(INSTALL_LIB_DIR)
-
-set(INSTALL_DATA_DIR share CACHE PATH
-  "Directory to install shared data to. A relative path is relative to CMAKE_INSTALL_PREFIX.")
-mark_as_advanced(INSTALL_DATA_DIR)
-
-set(INSTALL_QTGUI_DIR qt4-gui CACHE PATH
-  "Icons etc. will be installed to INSTALL_DATA_DIR/licq/INSTALL_QTGUI_DIR.")
+set(INSTALL_QTGUI_DIR qt4-gui CACHE STRING
+  "Icons etc. will be installed to ${Licq_SHARE_DIR}/INSTALL_QTGUI_DIR.")
 mark_as_advanced(INSTALL_QTGUI_DIR)
 
 
 # Configure compiler flags
-check_cxx_accepts_flag(-Wall CXX_ACCEPTS_WALL)
-if (CXX_ACCEPTS_WALL)
-  add_definitions(-Wall)
-endif (CXX_ACCEPTS_WALL)
-
-check_cxx_accepts_flag(-Wextra CXX_ACCEPTS_WEXTRA)
-if (CXX_ACCEPTS_WEXTRA)
-  add_definitions(-Wextra)
-endif (CXX_ACCEPTS_WEXTRA)
-
 check_cxx_accepts_flag(-fPIC CXX_ACCEPTS_FPIC)
 if (CXX_ACCEPTS_FPIC)
   add_definitions(-fPIC)
@@ -123,21 +107,6 @@ find_package(Boost 1.31.1 COMPONENTS smart_ptr)
 link_directories ( ${Boost_LIBRARY_DIRS} )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 set(LIBRARIES ${LIBRARIES} ${Boost_LIBRARIES})
-
-# Licq headers (see cmake --help-command find_path
-# for the reason we call find_path twice)
-find_path(LICQ_INCLUDE_DIR NAMES licq_icqd.h
-          PATHS ${CMAKE_SOURCE_DIR}/../../include
-                ${CMAKE_SOURCE_DIR}/../licq/include
-          NO_DEFAULT_PATHS)
-find_path(LICQ_INCLUDE_DIR NAMES licq_icqd.h)
-
-if (NOT LICQ_INCLUDE_DIR)
-  message(FATAL_ERROR "Licq header files not found. Please specify the location with -DLICQ_INCLUDE_DIR")
-endif (NOT LICQ_INCLUDE_DIR)
-
-message(STATUS "Found Licq include dir: ${LICQ_INCLUDE_DIR}")
-include_directories(${LICQ_INCLUDE_DIR})
 
 # Local includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)

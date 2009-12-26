@@ -1,1 +1,1 @@
-install(FILES licq.desktop DESTINATION ${INSTALL_DATA_DIR}/applications)
+install(FILES licq.desktop DESTINATION share/applications)

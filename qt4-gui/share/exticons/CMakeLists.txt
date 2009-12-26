@@ -6,6 +6,6 @@ set(exticons_SHARE
 )
 
 install(DIRECTORY ${exticons_SHARE}
-  DESTINATION ${INSTALL_DATA_DIR}/licq/${INSTALL_QTGUI_DIR}/exticons
+  DESTINATION ${Licq_SHARE_DIR}/${INSTALL_QTGUI_DIR}/exticons
   PATTERN ".svn" EXCLUDE
 )
