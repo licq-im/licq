@@ -49,7 +49,6 @@ add_executable(licq ${licq_SRCS})
 set_target_properties(licq PROPERTIES LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
 add_definitions(-D_REENTRANT)
 
-include_directories(${Boost_INCLUDE_DIR})
 include_directories(${GETTEXT_INCLUDE_DIR})
 include_directories(${GPGME_INCLUDES})
 include_directories(${ICONV_INCLUDE_DIR})

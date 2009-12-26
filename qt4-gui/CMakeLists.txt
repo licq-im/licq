@@ -102,12 +102,6 @@ set(LIBRARIES ${LIBRARIES}
   ${QT_QTGUI_LIBRARY}
   ${QT_QTXML_LIBRARY})
 
-# Check for boost, used in Licq includes so we must have it
-find_package(Boost 1.31.1 COMPONENTS smart_ptr)
-link_directories ( ${Boost_LIBRARY_DIRS} )
-include_directories ( ${Boost_INCLUDE_DIRS} )
-set(LIBRARIES ${LIBRARIES} ${Boost_LIBRARIES})
-
 # Local includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 

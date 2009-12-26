@@ -8,11 +8,6 @@ include(CheckFunctionExists)
 find_package(Licq REQUIRED)
 include_directories(${Licq_INCLUDE_DIRS})
 
-# Boost
-find_package(Boost 1.31.1 COMPONENTS smart_ptr)
-link_directories(${Boost_LIBRARY_DIRS})
-include_directories(${Boost_INCLUDE_DIRS})
-
 # strndup
 check_function_exists(strndup have_strndup)
 if (have_strndup)

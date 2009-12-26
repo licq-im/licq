@@ -34,9 +34,6 @@ if (NOT CMAKE_USE_PTHREADS_INIT)
   message(FATAL_ERROR "Could not find POSIX threads")
 endif (NOT CMAKE_USE_PTHREADS_INIT)
 
-# Boost
-find_package(Boost REQUIRED)
-
 # iconv
 find_package(Iconv REQUIRED)
 if (ICONV_SECOND_ARGUMENT_IS_CONST)
