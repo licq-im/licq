@@ -137,7 +137,7 @@ void COscarService::ClearQueue()
 unsigned long COscarService::SendEvent(const UserId& userId,
                                        unsigned short SubType, bool Request)
 {
-  LicqEvent* e = new LicqEvent(myDaemon, mySocketDesc, NULL, CONNECT_SERVER, userId);
+  LicqEvent* e = new LicqEvent(mySocketDesc, NULL, CONNECT_SERVER, userId);
   e->SetSubType(SubType);
   if (Request)
     myDaemon->PushEvent(e);

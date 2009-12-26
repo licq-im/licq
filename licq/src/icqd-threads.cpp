@@ -377,7 +377,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
   pthread_testcancel();
 
-  CICQDaemon *d = e->m_pDaemon;
+  CICQDaemon* d = gLicqDaemon;
 
   // Check if the socket is connected
   if (e->m_nSocketDesc == -1)

@@ -48,7 +48,7 @@ CExtendedAck::~CExtendedAck()
 unsigned long ICQEvent::s_nNextEventId = 1;
 
 //-----ICQEvent::constructor----------------------------------------------------
-LicqEvent::LicqEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
+LicqEvent::LicqEvent(int _nSocketDesc, CPacket *p,
     ConnectType _eConnect, const UserId& userId, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())
 {
@@ -87,7 +87,6 @@ LicqEvent::LicqEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   m_pSearchAck = NULL;
   m_pUnknownUser = NULL;
   m_nSubResult = ICQ_TCPxACK_ACCEPT;
-  m_pDaemon = _pDaemon;
   thread_plugin = pthread_self();
   thread_running = false;
 
@@ -126,7 +125,6 @@ LicqEvent::LicqEvent(const LicqEvent* e)
   m_nSocketDesc = e->m_nSocketDesc;
   m_pExtendedAck = NULL;
   m_pSearchAck = NULL;
-  m_pDaemon = e->m_pDaemon;
   m_pUnknownUser = NULL;
 
   thread_plugin = e->thread_plugin;

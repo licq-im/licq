@@ -1178,7 +1178,7 @@ void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
 void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
 #if 1
-  LicqEvent* e = new LicqEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
+  LicqEvent* e = new LicqEvent(m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
 
   if (e == NULL)  return;
  
@@ -1211,7 +1211,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const UserId& userId,
   }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, userId, ue);
+  LicqEvent* e = new LicqEvent(m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, userId, ue);
 
 	if (e == NULL)  return NULL;
 
@@ -1250,7 +1250,7 @@ ICQEvent* CICQDaemon::SendExpectEvent_Client(const ICQUser* pUser, CPacket* pack
   }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(this, pUser->SocketDesc(packet->Channel()), packet,
+  LicqEvent* e = new LicqEvent(pUser->SocketDesc(packet->Channel()), packet,
      CONNECT_USER, pUser->id(), ue);
 
   if (e == NULL) return NULL;

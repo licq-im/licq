@@ -229,7 +229,7 @@ public:
   ~LicqEvent();
 
 protected:
-  LicqEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
+  LicqEvent(int _nSocketDesc, CPacket *p, ConnectType _eConnect,
       const UserId& userId = USERID_NONE, CUserEvent* e = NULL);
   LicqEvent(const LicqEvent* e);
 
@@ -274,8 +274,6 @@ protected:
   CExtendedAck  *m_pExtendedAck;
   CSearchAck    *m_pSearchAck;
   LicqUser* m_pUnknownUser;
-
-  CICQDaemon    *m_pDaemon;
 
   unsigned long  m_nEventId;
   static unsigned long s_nNextEventId;

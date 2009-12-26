@@ -595,7 +595,7 @@ void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
   CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
   CEventMsg *m = new CEventMsg(szRNMsg, 0, TIME_NOW, 0);
   m->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, userId, m);
+  LicqEvent* e = new LicqEvent(0, pSend, CONNECT_SERVER, userId, m);
   e->thread_plugin = _tPlugin;  
   LicqSignal* s = new LicqSignal(SIGNAL_EVENTxID, 0, userId, e->EventId());
 

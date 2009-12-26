@@ -1593,7 +1593,7 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
   if (m_bShuttingDown) return NULL;
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(this, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
+  LicqEvent* e = new LicqEvent(m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
   if (e == NULL) return 0;
   e->m_NoAck = true;
 
@@ -1779,7 +1779,7 @@ void CICQDaemon::icqLogoff()
   if (nSD != -1)
   {
     CPU_Logoff p;
-    cancelledEvent = new LicqEvent(this, nSD, &p, CONNECT_SERVER);
+    cancelledEvent = new LicqEvent(nSD, &p, CONNECT_SERVER);
     cancelledEvent->m_pPacket = NULL;
     cancelledEvent->m_bCancelled = true;
     SendEvent(nSD, p, true);
