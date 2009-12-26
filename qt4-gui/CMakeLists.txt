@@ -4,7 +4,7 @@ include(CheckIncludeFile)
 include(TestCXXAcceptsFlag)
 include(CheckLibraryExists)
 
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # Qt-GUI version
 set(VERSION_MAJOR 1)
@@ -110,7 +110,7 @@ check_include_file(locale.h HAVE_LOCALE_H)
 
 
 # To find config.h
-include_directories(${CMAKE_BINARY_DIR})
+include_directories(BEFORE ${CMAKE_BINARY_DIR})
 
 # Generate config.h
 configure_file(${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_BINARY_DIR}/config.h)
