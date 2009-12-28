@@ -1,14 +1,27 @@
 Licq Console Plugin
+___________________
+
+
+QUICK INSTALLATION
+
+To get up and running quickly (assuming you are familiar with loading
+plugins for Licq), simple run
+
+mkdir build && cd build
+cmake ..
+make
+make install
+
+
+DESCRIPTION
 
 This is a console ui plugin for the Licq ICQ client.  It is considered beta
 at this point and does not have all the features that the qt-gui supports,
 however does offer a number of really cool text-mode things.  Multiple windows,
 contact list pane, log window...
 
-Building is simply a matter of
-./configure
-make
-make install
+
+RUNNING
 
 Running is simply a matter of running licq with the "-p console" switch.
 Remember that Licq will save the plugin being run so after running
@@ -48,9 +61,8 @@ Here is a list of key bindings when the userlist is activated:
           Escape      Exits the widget.
 
 
+PROBLEMS
 
 Address any questions to Philip Nelson <phatfil@optusnet.com.au>, uin 16385042, msn
 phatagrajag@hotmail.com or Jon Keating <jon@licq.org>, uin 16325723 or on irc in #licq
 on irc.freenode.net.
-
-

@@ -1,0 +1,13 @@
+set(console_SRCS
+  console.cpp
+  console_menu.cpp
+  console_print.cpp
+  console_tab.cpp
+  main.cpp
+  window.cpp
+)
+
+licq_add_plugin(licq_console ${console_SRCS})
+
+include_directories(${CDK_INCLUDE_DIR})
+target_link_libraries(licq_console cdk)

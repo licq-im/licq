@@ -1,14 +1,10 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <stdio.h>
-#ifdef HAVE_LOCALE_H
 #include <locale.h>
-#endif
 #include <unistd.h>
+
 #include "console.h"
-#include "licq_plugin.h"
+#include <licq/version.h>
+#include <licq_plugin.h>
 
 CLicqConsole *licqConsole;
 
@@ -28,7 +24,7 @@ const char *LP_Name()
 
 const char *LP_Version()
 {
-  static const char version[] = VERSION;
+  static const char version[] = LICQ_VERSION_STRING;
   return version;
 }
 

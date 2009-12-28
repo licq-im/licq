@@ -1,7 +1,3 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -12,11 +8,7 @@
 #include <vector>
 #include <list>
 #include <fstream>
-#ifdef HAVE_ERRNO_H
-#include <errno.h>
-#else
-extern int errno
-#endif
+#include <cerrno>
 
 #include "console.h"
 #include "licq_file.h"

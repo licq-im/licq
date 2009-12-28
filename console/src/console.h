@@ -1,10 +1,6 @@
 #ifndef LICQCON_H
 #define LICQCON_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <list>
 #include <string>
 #include <vector>
