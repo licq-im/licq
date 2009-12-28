@@ -166,16 +166,15 @@ test ${CREATE_GZ}  -ne 0 && exit_if_exists "${TARDIR}/${TARNAME}.tar.gz"
 test ${CREATE_BZ2} -ne 0 && exit_if_exists "${TARDIR}/${TARNAME}.tar.bz2"
 
 svnexport "trunk/licq" ""
-svnexport "trunk/admin" "admin"
 
-for plugin in console osd qt-gui; do
+for plugin in qt-gui; do
    svnexport "trunk/${plugin}" "plugins/${plugin}"
+   svnexport "trunk/admin" "plugins/${plugin}/admin"
    makecvs "plugins/${plugin}"
+   rm -f "${plugins}/${plugin}/admin/Makefile.common"
 done
 
-rm -f "${LICQDIR}/admin/Makefile.common"
-
-for plugin in auto-reply email licqweb msn qt4-gui rms; do
+for plugin in auto-reply console email licqweb msn osd qt4-gui rms; do
    svnexport "trunk/${plugin}" "plugins/${plugin}"
 done
 
