@@ -1,5 +1,5 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Copyright (C) YEAR Licq Developers
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: martinmaurer@gmx.at\n"
-"POT-Creation-Date: 2003-11-08 12:55+0100\n"
+"Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
+"POT-Creation-Date: 2009-12-28 08:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,66 +16,66 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/licq-osd.cpp:540
-msgid " checked your auto-response"
-msgstr ""
-
-#: src/licq-osd.cpp:565
-msgid "Message from "
-msgstr ""
-
-#: src/licq-osd.cpp:581
-msgid " logged on"
-msgstr ""
-
-#: src/licq-osd.cpp:583
-msgid " logged off"
-msgstr ""
-
-#: src/licq-osd.cpp:596
+#: src/licq-osd.cpp:631
 msgid " changed status to: "
 msgstr ""
 
-#: src/licq-osd.cpp:598
-msgid "do not disturb"
+#: src/licq-osd.cpp:571
+msgid " checked your auto-response"
+msgstr ""
+
+#: src/licq-osd.cpp:618
+msgid " logged off"
+msgstr ""
+
+#: src/licq-osd.cpp:616
+msgid " logged on"
 msgstr ""
 
 #: src/licq-osd.cpp:600
-msgid "occupied"
+msgid "Message from "
 msgstr ""
 
-#: src/licq-osd.cpp:602
-msgid "not available"
-msgstr ""
-
-#: src/licq-osd.cpp:604
-msgid "away"
-msgstr ""
-
-#: src/licq-osd.cpp:606
-msgid "online"
-msgstr ""
-
-#: src/licq-osd.cpp:608
-msgid "free for chat"
-msgstr ""
-
-#: src/licq-osd.cpp:610
-msgid "invisible"
-msgstr ""
-
-#: src/licq-osd.cpp:612
-msgid "offline"
-msgstr ""
-
-#: src/licq-osd.cpp:614
-msgid "unknown"
-msgstr ""
-
-#: src/my_xosd.cpp:155
+#: src/my_xosd.cpp:170
 msgid "System"
 msgstr ""
 
-#: src/my_xosd.cpp:155
+#: src/my_xosd.cpp:170
 msgid "XOSD plugin initialized"
+msgstr ""
+
+#: src/licq-osd.cpp:639
+msgid "away"
+msgstr ""
+
+#: src/licq-osd.cpp:633
+msgid "do not disturb"
+msgstr ""
+
+#: src/licq-osd.cpp:643
+msgid "free for chat"
+msgstr ""
+
+#: src/licq-osd.cpp:645
+msgid "invisible"
+msgstr ""
+
+#: src/licq-osd.cpp:637
+msgid "not available"
+msgstr ""
+
+#: src/licq-osd.cpp:635
+msgid "occupied"
+msgstr ""
+
+#: src/licq-osd.cpp:647
+msgid "offline"
+msgstr ""
+
+#: src/licq-osd.cpp:641
+msgid "online"
+msgstr ""
+
+#: src/licq-osd.cpp:649
+msgid "unknown"
 msgstr ""
