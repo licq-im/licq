@@ -1,5 +1,5 @@
-Licq ICQ Remote Management Service Plugin
-___________________________
+Licq Remote Management Service Plugin
+_____________________________________
 
 
 QUICK INSTALLATION
@@ -7,7 +7,8 @@ QUICK INSTALLATION
 To get up and running quickly (assuming you are familiar with loading
 plugins for Licq), simple run
 
-configure
+mkdir build && cd build
+cmake ..
 make
 make install
 
@@ -40,6 +41,3 @@ the various settings.
 PROBLEMS
 
 If there are any problems, report them to jon@licq.org.
-
-
-

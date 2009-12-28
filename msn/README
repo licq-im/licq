@@ -1,23 +1,14 @@
-Currently the MSN plugin isn't that useful.
-If you want to test it out there are a few things you must do.
+Licq MSN Plugin
+_______________
 
-Edit the owner.MSN_ file and put in your correct username and password.
-Edit the licq.conf file and put this in the [owners] section:
-NumOfOwners = 2
-Owner2.Id = <username>
-Owner2.PPID = MSN_
 
-Requirements: OpenSSL, Licq :)
+QUICK INSTALLATION
 
-After that you can successfully logon and receive messages.
-- Sending messages only works after you have received the initial 
-  message and the connection remains opened (there is a 5 minute timeout).
-- When you send a message, there is no GUI response (hence it not being 
-  that useful yet).
-- Changing status doesn't work, to log on select "Online" from the status menu.
-- The submenu's for each protocol do not work yet.
-- And I'm sure you'll find many more things, but it is still being 
-  worked on, so please wait.
+To get up and running quickly (assuming you are familiar with loading
+plugins for Licq), simple run
 
-Jon
-<jon@licq.org>
+mkdir build && cd build
+cmake ..
+make
+make install
+

@@ -8,7 +8,9 @@ Licq installation consists of two main steps:
 
 
 Requirements for the daemon:
+	- CMake
 	- A C++ compiler and libstc++-devel
+	- Boost
 	- GNU make
 
 	Optional it may be helpful to have these:
@@ -18,27 +20,16 @@ Requirements for the daemon:
 
 These are the installation instructions:
 
-     If there is no "configure" script or you downloaded sources from 
-     CVS then use `make -f Makefile.cvs' to create your configure script. 
-     You will need autoconf and automake for this to work:
-     ftp://ftp.gnu.org/gnu/autoconf/
-     ftp://ftp.gnu.org/gnu/automake/
-
-  1. `cd' to the directory where you unpacked Licq sources and type
-     `./configure' to configure the package for your system.
-
-     Running `configure' takes awhile.  While running, it prints some
-     messages telling which features it is checking for.
-
-     If you are curious as to what possible configurable options, see
-     `./configure --help' for a list of all possible options.
+  1. `cd' to the directory where you unpacked Licq sources, create a build
+     directory `mkdir build` and `cd build` to change to it. Then type
+     `cmake ..' to configure the package for your system.
 
   2. Type `make' to compile the package.
 
   3. Type `make install' to install the programs and any data files and
      documentation. You have to be 'root' for this to work. Per default 
      files are installed in /usr/local/* if you have not defined a different
-     --prefix=/some/directory.
+     -DCMAKE_INSTALL_PREFIX=/some/directory.
   
   4. `cd plugins' to the plugins directory and install a plugin of your choice.
      Read the included INSTALL and README files to learn how to do this. 

@@ -1,5 +1,5 @@
-Licq ICQ Auto Replyer Plugin
-___________________________
+Licq Auto Replyer Plugin
+________________________
 
 
 QUICK INSTALLATION
@@ -7,7 +7,8 @@ QUICK INSTALLATION
 To get up and running quickly (assuming you are familiar with loading
 plugins for Licq), simple run
 
-configure
+mkdir build && cd build
+cmake ..
 make
 make install
 
@@ -17,7 +18,7 @@ file appropriately.
 
 DESCRIPTION
 
-This program is an ICQ auto replyer.  It is a plugin for the Licq
+This program is an auto replyer.  It is a plugin for the Licq
 daemon and must run on it's own.
 This program is distributed under the GPL, see the accompanying COPYING
 file for more information.
@@ -47,6 +48,4 @@ the various settings.
 PROBLEMS
 
 If there are any problems, report them to 031233v@dragon.acadiau.ca or jon@licq.org
-
-
 

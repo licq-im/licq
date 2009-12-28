@@ -4,9 +4,8 @@ Licq now supports Secure Socket Layer connections between
 clients allowing for fully secure communication of messages, urls,
 chat requests...
 OpenSSL support will be built automatically if you have openssl 
-development packages installed.  To disable openssl support, run configure 
-with `--without-openssl'.  To specify paths to OpenSSL libraries or headers
-use `--with-openssl-lib=' and `--with-openssl-inc='.
+development packages installed.  To disable openssl support, run cmake 
+with `-DUSE_OPENSSL=OFF'.
 
 The current code requires your system to have a built-in randomness
 source at /dev/urandom (or another location, if you configured
@@ -15,4 +14,3 @@ an error number 24064064. Code to support EGD and .rnd files will be
 included in the next release.
 People on Solaris boxes can use solaris kernel module for 
 /dev/(u)random.  It can be found at http://www.freshmeat.net.
-

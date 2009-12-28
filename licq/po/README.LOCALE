@@ -4,8 +4,8 @@ Licq Daemon Translation Support
 1. Creating a new Translation File
 ==================================
 
-First update the main template by running "make update-po" inside 
-the licq/src/po directory.
+First update the main template by running "make translations_update" inside 
+your licq build directory.
 Afterwards rename licq.pot to a filename that matches your language, 
 for example ru.po for russian or de.po for german.
 Edit the headers of your newly created .po file to match your 
@@ -43,8 +43,8 @@ automatically keep track of copyright notices and other stuff.
 =====================================
 
 Once the .po file has been created, it must be converted into a gmo file.
-Edit the file LINGUAS and add your new translation to it. Afterwards run
-"make update-po". This will do the conversion for you.
+Edit the file CMakeLists.txt and add your new translation to it. Afterwards run
+"make translations". This will do the conversion for you.
 
 A simple "make install" will install your new translation into the 
 appropriate location.
@@ -54,10 +54,10 @@ appropriate location.
 3. Updating a Translation File
 ==============================
 
-Many text strings are beeing updated with each new Licq release, it is necessary
-to update the .po files.  This is done simply running "make update-po" in the 
-po directory. The new .po file can now be edited and any necessary 
-translations added.
+Many text strings are beeing updated with each new Licq release, it is
+necessary to update the .po files.  This is done simply running "make
+translations_update && make translations" in the build directory. The new .po
+file can now be edited and any necessary translations added.
 
 
 
@@ -67,7 +67,7 @@ translations added.
 Once you have created a new translation or updated an outdated one, please 
 contribute it to the public by sending your translation to the licq 
 development mailinglist.
-Please send your <language>.po file to licq-devel@licq.org
+Please send your <language>.po file to licq-devel@googlegroups.com
 
 
 Thanks to all translation contributors :-)
