@@ -49,6 +49,12 @@ add_executable(licq ${licq_SRCS})
 set_target_properties(licq PROPERTIES LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
 add_definitions(-D_REENTRANT)
 
+# To find public headers
+include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
+
+# To find config.h and licqversion.h
+include_directories(BEFORE ${PROJECT_BINARY_DIR}/include)
+
 include_directories(${GETTEXT_INCLUDE_DIR})
 include_directories(${GPGME_INCLUDES})
 include_directories(${ICONV_INCLUDE_DIR})
