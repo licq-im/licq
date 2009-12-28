@@ -13,13 +13,13 @@
 #include <locale.h>
 #include <unistd.h>
 
+#include <licq/version.h>
 #include <licq_plugin.h>
 #include <licq_icqd.h>
 #include <licq_events.h>
 #include <licq_file.h>
 #include <licq_log.h>
 
-#include "config.h"
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
 
@@ -114,7 +114,7 @@ const char *LP_ConfigFile(void)
 // displayed in plugin selector
 const char *LP_Version(void)
 {
-    static const char version[] = VERSION;
+    static const char version[] = LICQ_VERSION_STRING;
     return version;
 }
 
@@ -834,7 +834,7 @@ char* my_translate(const UserId& /* userId */, const char* msg, const char* user
 		tosize += fromsize + 4;
 		continue;
 	    }
-	    gLog.Warn("%sError in my_translate - stopping translation, error on %li. char\n", L_OSD_STR, msgptr-msg+1);
+	    gLog.Warn("%sError in my_translate - stopping translation, error on %d. char\n", L_OSD_STR, msgptr-msg+1);
 	    strcpy(result, msg); // return original string
 	    return result;
 	}
