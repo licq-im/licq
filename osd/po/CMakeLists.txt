@@ -33,7 +33,7 @@ foreach(lang ${po_FILES})
   set(gmoFiles ${gmoFiles} ${gmo})
 endforeach(lang)
 
-add_custom_target(translations ALL DEPENDS ${gmoFiles})
+add_custom_target(${licq_target_prefix}translations ALL DEPENDS ${gmoFiles})
 
 find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
 if (GETTEXT_XGETTEXT_EXECUTABLE)
@@ -59,5 +59,6 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
       ${po_source}
   )
 
-  add_custom_target(translations_update DEPENDS licq_osd_plugin.pot)
+  add_custom_target(${licq_target_prefix}translations_update
+    DEPENDS licq_osd_plugin.pot)
 endif (GETTEXT_XGETTEXT_EXECUTABLE)
