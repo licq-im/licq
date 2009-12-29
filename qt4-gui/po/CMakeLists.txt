@@ -78,7 +78,7 @@ if (QT_LRELEASE)
   endforeach(po)
 
   # translations: build all *.qm files
-  add_custom_target(translations ALL DEPENDS ${qms})
+  add_custom_target(${licq_target_prefix}translations ALL DEPENDS ${qms})
 
   # Install *.qm to <prefix>/share/licq/qt4-gui/locale
   install(FILES ${qms}
