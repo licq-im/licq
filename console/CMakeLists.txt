@@ -10,14 +10,14 @@ include_directories(${Licq_INCLUDE_DIRS})
 set(CURSES_NEED_NCURSES TRUE)
 find_package(Curses REQUIRED)
 
-# libcdk
+# CDK
 find_path(CDK_INCLUDE_DIR cdk.h PATH_SUFFIXES cdk)
 if (CDK_INCLUDE_DIR)
   find_library(CDK_LIBRARY cdk)
 endif (CDK_INCLUDE_DIR)
 
 if (NOT CDK_LIBRARY)
-  message(FATAL_ERROR "Could NOT find libcdk")
+  message(FATAL_ERROR "Could NOT find Curses Development Kit (CDK)")
 endif (NOT CDK_LIBRARY)
 
 add_subdirectory(src)
