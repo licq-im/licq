@@ -9,4 +9,4 @@ add_definitions(-DPACKAGE="licq_osd_plugin")
 add_definitions(-DLOCALEDIR="${Licq_LOCALE_DIR}")
 
 include_directories(${XOSD_INCLUDE_DIR})
-target_link_libraries(licq_osd xosd)
+target_link_libraries(licq_osd ${XOSD_LIBRARY})

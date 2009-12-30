@@ -10,4 +10,4 @@ set(console_SRCS
 licq_add_plugin(licq_console ${console_SRCS})
 
 include_directories(${CDK_INCLUDE_DIR})
-target_link_libraries(licq_console cdk)
+target_link_libraries(licq_console ${CDK_LIBRARY})
