@@ -1,7 +1,14 @@
 set(licq_CMAKE
   FindLicq.cmake
   LicqCommonCompilerFlags.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/LicqConfig.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/LicqPaths.cmake
+)
+
+configure_file(
+  LicqConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/LicqConfig.cmake
+  @ONLY
 )
 
 configure_file(

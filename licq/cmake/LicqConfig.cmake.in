@@ -1,0 +1,1 @@
+include("@Licq_SHARE_DIR@/cmake/FindLicq.cmake")
