@@ -93,14 +93,9 @@ else (NOT WITH_KDE)
     ${KDE4_KIO_LIBS})
 endif (NOT WITH_KDE)
 
-include_directories(${QT_INCLUDE_DIR}
-  ${QT_QTCORE_INCLUDE_DIR}
-  ${QT_QTGUI_INCLUDE_DIR}
-  ${QT_QTXML_INCLUDE_DIR})
-set(LIBRARIES ${LIBRARIES}
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
-  ${QT_QTXML_LIBRARY})
+set(QT_USE_QTXML 1)
+include(${QT_USE_FILE})
+set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
 
 # Local includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
