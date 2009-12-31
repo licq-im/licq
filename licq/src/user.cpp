@@ -3631,6 +3631,7 @@ void ICQOwner::SetPicture(const char *f)
     {
       gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
                                      szFilename, L_BLANKxSTR, strerror(errno));
+      close(source);
       return;
     }
 
