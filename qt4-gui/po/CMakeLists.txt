@@ -39,12 +39,12 @@ find_program(QT_LRELEASE
 # Update translations (note that [clean-]merge targets write to source directory)
 if (QT_LUPDATE)
   # merge: update all translations
-  add_custom_target(merge
+  add_custom_target(${licq_target_prefix}merge
     ${QT_LUPDATE} ${translate_files} -ts ${po_SRCS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   # clean-merge: update all translations and remove obsolete strings
-  add_custom_target(clean-merge
+  add_custom_target(${licq_target_prefix}clean-merge
     ${QT_LUPDATE} -noobsolete ${translate_files} -ts ${po_SRCS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -55,7 +55,7 @@ if (QT_LUPDATE)
     DEPENDS ${translate_files})
 
   # template: create po/template.ts
-  add_custom_target(template DEPENDS template.ts)
+  add_custom_target(${licq_target_prefix}template DEPENDS template.ts)
 else (QT_LUPDATE)
   message(STATUS "lupdate could not be found. You will not be able to update the translations.")
 endif (QT_LUPDATE)
