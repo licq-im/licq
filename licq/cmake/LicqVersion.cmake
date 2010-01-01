@@ -9,6 +9,23 @@ set(LICQ_VERSION_RELEASE 8)        # 0 <= release <=  9
 set(LICQ_VERSION_EXTRA "-dev")     # Any string
 set(LICQ_VERSION_PLUGIN_ABI 0)     # Increase when breaking plugin ABI
 
+# When building from a svn working copy, set the extra version to the current
+# revision, replacing any existing value.
+find_package(Subversion QUIET)
+if (Subversion_FOUND)
+  # The subversion_wc_info macro prints an error if the dir isn't a working
+  # copy. To avoid this, check if it is one before executing the macro.
+  execute_process(
+    COMMAND ${Subversion_SVN_EXECUTABLE} info ${PROJECT_SOURCE_DIR}
+    RESULT_VARIABLE licq_svn_result
+    OUTPUT_QUIET ERROR_QUIET)
+
+  if (${licq_svn_result} EQUAL 0)
+    subversion_wc_info(${PROJECT_SOURCE_DIR} Licq)
+    set(LICQ_VERSION_EXTRA "-r${Licq_WC_LAST_CHANGED_REV}")
+  endif (${licq_svn_result} EQUAL 0)
+endif (Subversion_FOUND)
+
 # licqversion.h content
 set(licq_version_file "${CMAKE_CURRENT_BINARY_DIR}/include/licq/licqversion.h")
 set(licq_old_version "")
