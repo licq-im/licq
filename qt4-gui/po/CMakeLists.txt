@@ -72,7 +72,7 @@ if (QT_LRELEASE)
     set(qm "${CMAKE_CURRENT_BINARY_DIR}/${qm}.qm")
     set(po "${CMAKE_CURRENT_SOURCE_DIR}/${po}")
     add_custom_command(OUTPUT ${qm}
-      COMMAND ${QT_LRELEASE} ${po} -qm ${qm}
+      COMMAND ${QT_LRELEASE} -silent ${po} -qm ${qm}
       DEPENDS ${po})
     set(qms ${qms} ${qm})
   endforeach(po)
