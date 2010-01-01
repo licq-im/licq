@@ -19,8 +19,8 @@
 #include "licq_icqd.h"
 #include "licq_user.h"
 #include "licq_protoplugin.h"
-#include "licq/version.h"
 
+#include "pluginversion.h"
 #include "msn.h"
 
 char *LProto_Name()
@@ -31,7 +31,7 @@ char *LProto_Name()
 
 char *LProto_Version()
 {
-  static char szVersion[] = LICQ_VERSION_STRING;
+  static char szVersion[] = PLUGIN_VERSION_STRING;
   return szVersion;
 }
 

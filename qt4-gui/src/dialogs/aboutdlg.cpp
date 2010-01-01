@@ -21,6 +21,7 @@
 #include "aboutdlg.h"
 
 #include "config.h"
+#include "pluginversion.h"
 
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
@@ -66,7 +67,7 @@ AboutDlg::AboutDlg(QWidget* parent)
     .arg(tr("Version"))
     .arg(gLicqDaemon->Version())
     .arg(CICQDaemon::CryptoEnabled() ? "/SSL" : "")
-    .arg(VERSION)
+    .arg(PLUGIN_VERSION_STRING)
 #ifdef USE_KDE
     .arg("/KDE")
 #else

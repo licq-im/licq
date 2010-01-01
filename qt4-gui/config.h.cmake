@@ -1,9 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* Licq Qt-GUI version */
-#define VERSION "@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_RELEASE@"
-
 /* Use KDE support */
 #cmakedefine USE_KDE 1
 

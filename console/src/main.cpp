@@ -3,7 +3,8 @@
 #include <unistd.h>
 
 #include "console.h"
-#include <licq/version.h>
+#include "pluginversion.h"
+
 #include <licq_plugin.h>
 
 CLicqConsole *licqConsole;
@@ -24,7 +25,7 @@ const char *LP_Name()
 
 const char *LP_Version()
 {
-  static const char version[] = LICQ_VERSION_STRING;
+  static const char version[] = PLUGIN_VERSION_STRING;
   return version;
 }
 

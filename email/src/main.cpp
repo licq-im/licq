@@ -3,8 +3,9 @@
 #include <cstdlib>
 #include <unistd.h>
 #include "licq_plugin.h"
-#include "licq/version.h"
+
 #include "forwarder.h"
+#include "pluginversion.h"
 
 CLicqForwarder *licqForwarder;
 
@@ -35,7 +36,7 @@ const char *LP_Description()
 
 const char *LP_Version()
 {
-  static const char version[] = LICQ_VERSION_STRING;
+  static const char version[] = PLUGIN_VERSION_STRING;
   return version;
 }
 

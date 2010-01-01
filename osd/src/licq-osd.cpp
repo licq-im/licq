@@ -13,7 +13,6 @@
 #include <locale.h>
 #include <unistd.h>
 
-#include <licq/version.h>
 #include <licq_plugin.h>
 #include <licq_icqd.h>
 #include <licq_events.h>
@@ -22,6 +21,7 @@
 
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
+#include "pluginversion.h"
 
 using namespace std;
 
@@ -114,7 +114,7 @@ const char *LP_ConfigFile(void)
 // displayed in plugin selector
 const char *LP_Version(void)
 {
-    static const char version[] = LICQ_VERSION_STRING;
+    static const char version[] = PLUGIN_VERSION_STRING;
     return version;
 }
 

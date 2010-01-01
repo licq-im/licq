@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "licq_plugin.h"
-#include "licq/version.h"
-#include "rms.h"
 
+#include "pluginversion.h"
+#include "rms.h"
 
 const char *LP_Usage()
 {
@@ -30,7 +30,7 @@ const char *LP_Description()
 
 const char *LP_Version()
 {
-  static const char version[] = LICQ_VERSION_STRING;
+  static const char version[] = PLUGIN_VERSION_STRING;
   return version;
 }
 

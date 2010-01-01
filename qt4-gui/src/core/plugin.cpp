@@ -19,6 +19,7 @@
  */
 
 #include "config.h"
+#include "pluginversion.h"
 
 #include <QApplication>
 #include <QString>
@@ -54,7 +55,7 @@ const char* LP_Description()
 
 const char* LP_Version()
 {
-  static const char version[] = VERSION;
+  static const char version[] = PLUGIN_VERSION_STRING;
   return version;
 }
 
@@ -139,7 +140,7 @@ int LP_Main(CICQDaemon* daemon)
 
   KCmdLineArgs::init(myArgc, myArgv,
                      "licq", "qt4-gui",
-                     ki18n(LP_Name()), VERSION);
+                     ki18n(LP_Name()), PLUGIN_VERSION_STRING);
 #endif
 
   LicqQtGui::LicqGui* licqQtGui = new LicqQtGui::LicqGui(myArgc, myArgv);

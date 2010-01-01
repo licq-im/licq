@@ -6,17 +6,17 @@ include(CheckLibraryExists)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
-# Qt-GUI version
-set(VERSION_MAJOR 1)
-set(VERSION_MINOR 3)
-set(VERSION_RELEASE 8)
-
 # Use KDE support
 option(WITH_KDE "Compile with KDE support" OFF)
 
 # Licq
 find_package(Licq REQUIRED)
 include_directories(${Licq_INCLUDE_DIRS})
+
+# Generate pluginversion.h
+include(version.cmake)
+licq_create_plugin_version_file(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(INSTALL_QTGUI_DIR qt4-gui CACHE STRING
   "Icons etc. will be installed to ${Licq_SHARE_DIR}/INSTALL_QTGUI_DIR.")
