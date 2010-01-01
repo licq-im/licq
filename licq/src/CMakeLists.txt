@@ -45,9 +45,8 @@ set(licq_SRCS
 
 add_executable(licq ${licq_SRCS})
 
-# Add linker and compiler flags for thread support
+# Add linker flags for thread support
 set_target_properties(licq PROPERTIES LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
-add_definitions(-D_REENTRANT)
 
 # To find public headers
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)

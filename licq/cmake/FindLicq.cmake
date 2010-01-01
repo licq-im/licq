@@ -70,19 +70,33 @@ macro (LICQ_ADD_PLUGIN _licq_plugin_name)
   add_library(${_licq_plugin_name} MODULE ${ARGN})
   set_target_properties(${_licq_plugin_name} PROPERTIES PREFIX "")
 
+  # Add linker flags for thread support
+  set(_link_flags "${CMAKE_THREAD_LIBS_INIT}")
+
   if (APPLE)
+    set(_link_flags "${_link_flags} -flat_namespace -undefined suppress")
+
+    # Write the list of symbols that should be exported from the plugin to a
+    # file and tell the linker about it. One symbol per line with a '_' prefix.
     string(REPLACE ";" "\n_" _symbols "${_licq_plugin_symbols}")
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/symbols.list" "_${_symbols}\n")
+    set(_symbols_list "${CMAKE_CURRENT_BINARY_DIR}/symbols.list")
+    file(WRITE ${_symbols_list} "_${_symbols}\n")
+    set(_link_flags
+      "${_link_flags} -Wl,-exported_symbols_list -Wl,'${_symbols_list}'")
 
-    set_target_properties(${_licq_plugin_name} PROPERTIES LINK_FLAGS
-      "-flat_namespace -undefined suppress -Wl,-exported_symbols_list -Wl,'${CMAKE_CURRENT_BINARY_DIR}/symbols.list'")
   elseif (CMAKE_COMPILER_IS_GNUCXX)
+    # Create a version script exporting the symbols that should be exported
+    # from the plugin and tell the linker about it.
     set(_symbols "{ global: ${_licq_plugin_symbols}; local: *; };")
-    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/symbols.script" "${_symbols}\n")
-
-    set_target_properties(${_licq_plugin_name} PROPERTIES LINK_FLAGS
-      "-Wl,--version-script -Wl,'${CMAKE_CURRENT_BINARY_DIR}/symbols.script'")
+    set(_version_script "${CMAKE_CURRENT_BINARY_DIR}/version.script")
+    file(WRITE ${_version_script} "${_symbols}\n")
+    set(_link_flags
+      "${_link_flags} -Wl,--version-script -Wl,'${_version_script}'")
   endif (APPLE)
+
+  set_target_properties(${_licq_plugin_name} PROPERTIES
+    LINK_FLAGS ${_link_flags})
+
   install(TARGETS ${_licq_plugin_name} DESTINATION ${Licq_PLUGIN_DIR})
 endmacro (LICQ_ADD_PLUGIN)
 

@@ -1,5 +1,12 @@
 include(TestCXXAcceptsFlag)
 
+# Pthreads is required for all plugins
+find_package(Threads REQUIRED)
+if (NOT CMAKE_USE_PTHREADS_INIT)
+  message(FATAL_ERROR "Could not find POSIX threads")
+endif (NOT CMAKE_USE_PTHREADS_INIT)
+add_definitions(-D_REENTRANT)
+
 # Boost is required for all plugins as it is used in Licq includes
 find_package(Boost 1.33.1 REQUIRED)
 link_directories(${Boost_LIBRARY_DIRS})

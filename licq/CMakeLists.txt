@@ -29,12 +29,6 @@ check_function_exists(readdir_r HAVE_READDIR_R)
 # dlopen
 find_package(Dlopen REQUIRED QUIET)
 
-# Pthreads
-find_package(Threads REQUIRED)
-if (NOT CMAKE_USE_PTHREADS_INIT)
-  message(FATAL_ERROR "Could not find POSIX threads")
-endif (NOT CMAKE_USE_PTHREADS_INIT)
-
 # iconv
 find_package(Iconv REQUIRED)
 if (ICONV_SECOND_ARGUMENT_IS_CONST)
