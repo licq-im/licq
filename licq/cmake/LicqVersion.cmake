@@ -13,15 +13,19 @@ set(LICQ_VERSION_PLUGIN_ABI 0)     # Increase when breaking plugin ABI
 # revision, replacing any existing value.
 find_package(Subversion QUIET)
 if (Subversion_FOUND)
+  if (NOT LICQ_VERSION_SOURCE_DIR)
+    set(LICQ_VERSION_SOURCE_DIR ${PROJECT_SOURCE_DIR})
+  endif (NOT LICQ_VERSION_SOURCE_DIR)
+
   # The subversion_wc_info macro prints an error if the dir isn't a working
   # copy. To avoid this, check if it is one before executing the macro.
   execute_process(
-    COMMAND ${Subversion_SVN_EXECUTABLE} info ${PROJECT_SOURCE_DIR}
+    COMMAND ${Subversion_SVN_EXECUTABLE} info ${LICQ_VERSION_SOURCE_DIR}
     RESULT_VARIABLE licq_svn_result
     OUTPUT_QUIET ERROR_QUIET)
 
   if (${licq_svn_result} EQUAL 0)
-    subversion_wc_info(${PROJECT_SOURCE_DIR} Licq)
+    subversion_wc_info(${LICQ_VERSION_SOURCE_DIR} Licq)
     set(LICQ_VERSION_EXTRA "-r${Licq_WC_LAST_CHANGED_REV}")
   endif (${licq_svn_result} EQUAL 0)
 endif (Subversion_FOUND)
@@ -34,12 +38,12 @@ set(licq_new_version
 #ifndef LICQ_LICQVERSION_H
 #define LICQ_LICQVERSION_H
 
-#define LICQ_VERSION_MAJOR ${LICQ_VERSION_MAJOR}u
-#define LICQ_VERSION_MINOR ${LICQ_VERSION_MINOR}u
-#define LICQ_VERSION_RELEASE ${LICQ_VERSION_RELEASE}u
+#define LICQ_VERSION_MAJOR ${LICQ_VERSION_MAJOR}
+#define LICQ_VERSION_MINOR ${LICQ_VERSION_MINOR}
+#define LICQ_VERSION_RELEASE ${LICQ_VERSION_RELEASE}
 #define LICQ_VERSION_EXTRA \"${LICQ_VERSION_EXTRA}\"
 #define LICQ_VERSION_STRING \"${LICQ_VERSION_MAJOR}.${LICQ_VERSION_MINOR}.${LICQ_VERSION_RELEASE}${LICQ_VERSION_EXTRA}\"
-#define LICQ_VERSION_PLUGIN_ABI ${LICQ_VERSION_PLUGIN_ABI}u
+#define LICQ_VERSION_PLUGIN_ABI ${LICQ_VERSION_PLUGIN_ABI}
 
 #endif
 ")
