@@ -1,6 +1,10 @@
 #ifndef PROTOPLUGIN_H
 #define PROTOPLUGIN_H
 
+#include <cstdlib>
+#include <list>
+#include <pthread.h>
+
 class CICQDaemon;
 
 #ifdef __cplusplus
