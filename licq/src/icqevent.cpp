@@ -45,10 +45,8 @@ CExtendedAck::~CExtendedAck()
 }
 
 
-unsigned long ICQEvent::s_nNextEventId = 1;
-
 //-----ICQEvent::constructor----------------------------------------------------
-LicqEvent::LicqEvent(int _nSocketDesc, CPacket *p,
+LicqEvent::LicqEvent(unsigned long id, int _nSocketDesc, CPacket *p,
     ConnectType _eConnect, const UserId& userId, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())
 {
@@ -90,9 +88,7 @@ LicqEvent::LicqEvent(int _nSocketDesc, CPacket *p,
   thread_plugin = pthread_self();
   thread_running = false;
 
-  // pthread_mutex_lock
-  m_nEventId = s_nNextEventId++;
-  // pthread_mutex_unlock
+  m_nEventId = id;
 }
 
 //-----ICQEvent::constructor----------------------------------------------------

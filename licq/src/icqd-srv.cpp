@@ -473,7 +473,7 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
   else
   {
     const LicqUser* u = gUserManager.fetchUser(userId);
-    if (!u) return 0;
+    if (u == NULL) return 0;
 
     int nCmd;
     switch (u->Status())
@@ -496,7 +496,7 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
     p = new CPU_ThroughServer(_szId, nCmd, 0);
   }
 
-  if (!p) return 0;
+  if (p == NULL) return 0;
 
   gLog.Info(tr("%sRequesting auto response from %s (%hu).\n"), L_SRVxSTR,
       USERID_TOSTR(userId), p->Sequence());
@@ -1529,7 +1529,7 @@ void CICQDaemon::icqClearServerList()
 }
 
 //-----icqSendThroughServer-----------------------------------------------------
-ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
+LicqEvent* CICQDaemon::icqSendThroughServer(unsigned long eventId, const char *szId,
     unsigned char format, const char *_sMessage, CUserEvent* ue, unsigned short nCharset,
   size_t nMsgLen)
 {
@@ -1563,7 +1563,7 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
   if (m_bShuttingDown) return NULL;
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
+  LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
   if (e == NULL) return 0;
   e->m_NoAck = true;
 
@@ -1749,7 +1749,8 @@ void CICQDaemon::icqLogoff()
   if (nSD != -1)
   {
     CPU_Logoff p;
-    cancelledEvent = new LicqEvent(nSD, &p, CONNECT_SERVER);
+    unsigned long eventId = getNextEventId();
+    cancelledEvent = new LicqEvent(eventId, nSD, &p, CONNECT_SERVER);
     cancelledEvent->m_pPacket = NULL;
     cancelledEvent->m_bCancelled = true;
     SendEvent(nSD, p, true);

@@ -835,9 +835,17 @@ protected:
             thread_ssbiservice,
             thread_shutdown;
 
+  unsigned long myNextEventId;
+  pthread_mutex_t myNextEventIdMutex;
+
   pthread_cond_t cond_serverack;
   pthread_mutex_t mutex_serverack;
   unsigned short m_nServerAck;
+
+  /**
+   * Get next available id to use for an event
+   */
+  unsigned long getNextEventId();
 
   void ChangeUserStatus(LicqUser* u, unsigned long s);
   bool AddUserEvent(LicqUser* user, CUserEvent* e);
@@ -880,12 +888,22 @@ protected:
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);
-  LicqEvent* SendExpectEvent_Server(const UserId& userId, CPacket *, CUserEvent *, bool = false);
+  LicqEvent* SendExpectEvent_Server(unsigned long eventId, const UserId& userId, CPacket *, CUserEvent *, bool = false);
 
-  ICQEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
-  { return SendExpectEvent_Server(USERID_NONE, packet, ue, extendedEvent); }
+  LicqEvent* SendExpectEvent_Server(const UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
+  { return SendExpectEvent_Server(getNextEventId(), userId, packet, ue, extendedEvent); }
 
-  ICQEvent* SendExpectEvent_Client(const LicqUser* user, CPacket* packet, CUserEvent* ue);
+  LicqEvent* SendExpectEvent_Server(unsigned long eventId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
+  { return SendExpectEvent_Server(eventId, USERID_NONE, packet, ue, extendedEvent); }
+
+  LicqEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
+  { return SendExpectEvent_Server(getNextEventId(), USERID_NONE, packet, ue, extendedEvent); }
+
+  LicqEvent* SendExpectEvent_Client(unsigned long eventId, const LicqUser* user, CPacket* packet, CUserEvent* ue);
+
+  LicqEvent* SendExpectEvent_Client(const LicqUser* user, CPacket* packet, CUserEvent* ue)
+  { return SendExpectEvent_Client(getNextEventId(), user, packet, ue); }
+
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, TCPSocket *);

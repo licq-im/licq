@@ -137,7 +137,8 @@ void COscarService::ClearQueue()
 unsigned long COscarService::SendEvent(const UserId& userId,
                                        unsigned short SubType, bool Request)
 {
-  LicqEvent* e = new LicqEvent(mySocketDesc, NULL, CONNECT_SERVER, userId);
+  unsigned long eventId = myDaemon->getNextEventId();
+  LicqEvent* e = new LicqEvent(eventId, mySocketDesc, NULL, CONNECT_SERVER, userId);
   e->SetSubType(SubType);
   if (Request)
     myDaemon->PushEvent(e);
@@ -148,7 +149,7 @@ unsigned long COscarService::SendEvent(const UserId& userId,
   pthread_cond_signal(&cond_sendqueue);
   pthread_mutex_unlock(&mutex_sendqueue);
 
-  return e->EventId();
+  return eventId;
 }
 
 bool COscarService::SendBARTFam(ICQEvent *e)

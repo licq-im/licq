@@ -354,6 +354,10 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   // start GPG helper
   gGPGHelper.Start();
 
+  // Init event id counter
+  myNextEventId = 1;
+  pthread_mutex_init(&myNextEventIdMutex, NULL);
+
   // Start up our threads
   pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
@@ -1126,6 +1130,15 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   }
 }
 
+unsigned long CICQDaemon::getNextEventId()
+{
+  pthread_mutex_lock(&myNextEventIdMutex);
+  unsigned long eventId = myNextEventId;
+  if (++myNextEventId == 0)
+    ++myNextEventId;
+  pthread_mutex_unlock(&myNextEventIdMutex);
+  return eventId;
+}
 
 //-----AddUserEvent-----------------------------------------------------------
 bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
@@ -1178,7 +1191,8 @@ void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
 void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
 #if 1
-  LicqEvent* e = new LicqEvent(m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
+  unsigned long eventId = getNextEventId();
+  LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
 
   if (e == NULL)  return;
  
@@ -1199,7 +1213,7 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 #endif
 }
 
-ICQEvent *CICQDaemon::SendExpectEvent_Server(const UserId& userId,
+LicqEvent* CICQDaemon::SendExpectEvent_Server(unsigned long eventId, const UserId& userId,
    CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
@@ -1211,7 +1225,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const UserId& userId,
   }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, userId, ue);
+  LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, userId, ue);
 
 	if (e == NULL)  return NULL;
 
@@ -1238,7 +1252,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const UserId& userId,
   return result;
 }
 
-ICQEvent* CICQDaemon::SendExpectEvent_Client(const ICQUser* pUser, CPacket* packet,
+ICQEvent* CICQDaemon::SendExpectEvent_Client(unsigned long eventId, const LicqUser* pUser, CPacket* packet,
    CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
@@ -1250,7 +1264,7 @@ ICQEvent* CICQDaemon::SendExpectEvent_Client(const ICQUser* pUser, CPacket* pack
   }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(pUser->SocketDesc(packet->Channel()), packet,
+  LicqEvent* e = new LicqEvent(eventId, pUser->SocketDesc(packet->Channel()), packet,
      CONNECT_USER, pUser->id(), ue);
 
   if (e == NULL) return NULL;
