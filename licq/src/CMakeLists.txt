@@ -56,6 +56,7 @@ set(licq_SRCS
 
 set(test_SRCS
   plugins/tests/generalplugintest.cpp
+  plugins/tests/plugintest.cpp
   plugins/tests/protocolplugintest.cpp
 
   utils/tests/dynamiclibrarytest.cpp

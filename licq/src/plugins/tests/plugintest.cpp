@@ -17,39 +17,50 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "../generalplugin.h"
-#include "licq_plugin.h"
+#include "../plugin.h"
 
 #include <gtest/gtest.h>
-#include <list>
-#include <pthread.h>
 
-// Deamon stuff
-pthread_cond_t LP_IdSignal = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t LP_IdMutex = PTHREAD_MUTEX_INITIALIZER;
-std::list<unsigned short> LP_Ids;
+extern "C" {
+
+// Daemon stuff
+extern pthread_cond_t LP_IdSignal;
+extern pthread_mutex_t LP_IdMutex;
+extern std::list<unsigned short> LP_Ids;
 
 // Plugin API functions
 #define STR_FUNC(name)                          \
-  const char* LP_ ## name()                     \
+  const char* Test_ ## name()                   \
   { static char name[] = #name; return name; }
 
 STR_FUNC(Name);
 STR_FUNC(Version);
-STR_FUNC(Status);
-STR_FUNC(Description);
-STR_FUNC(Usage);
-STR_FUNC(ConfigFile);
 
-bool LP_Init(int /*argc*/, char** /*argv*/)
+int Test_Main(CICQDaemon* /*daemon*/)
 {
-  return true;
+  return 5;
 }
 
-int LP_Main(CICQDaemon* /*daemon*/)
+void Test_Exit(int result)
 {
-  return 20;
+  int *p = (int *)malloc(sizeof(int));
+  *p = result;
+  pthread_mutex_lock(&LP_IdMutex);
+  LP_Ids.push_back(1);
+  pthread_mutex_unlock(&LP_IdMutex);
+  pthread_cond_signal(&LP_IdSignal);
+  pthread_exit(p);
 }
+
+void* Test_Main_tep(void* daemon)
+{
+  Test_Exit(Test_Main((CICQDaemon*)daemon));
+  return NULL;
+}
+
+extern unsigned short LP_Id;
+
+} // extern "C"
 
 using namespace LicqDaemon;
 
@@ -61,69 +72,69 @@ static char getPipeChar(const Plugin& plugin)
   return ch;
 }
 
-TEST(GeneralPlugin, load)
+TEST(Plugin, load)
 {
   boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
-  ASSERT_NO_THROW(GeneralPlugin plugin(lib));
+  ASSERT_NO_THROW(Plugin plugin(lib, "Test"));
 }
 
-TEST(GeneralPlugin, callApiFunctions)
+TEST(Plugin, callApiFunctions)
 {
   boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
+  Plugin plugin(lib, "Test");
 
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_STREQ("Status", plugin.getStatus());
-  EXPECT_STREQ("Description", plugin.getDescription());
-  EXPECT_STREQ("Usage", plugin.getUsage());
-  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
-  EXPECT_TRUE(plugin.getBuildDate());
-  EXPECT_TRUE(plugin.getBuildTime());
-
-  EXPECT_TRUE(plugin.init(0, 0));
 }
 
-TEST(GeneralPlugin, runPlugin)
+TEST(Plugin, getSetId)
 {
   boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
+  Plugin plugin(lib, "Test");
+
+  plugin.setId(1);
+  EXPECT_EQ(1, plugin.getId());
+  EXPECT_EQ(1, LP_Id);
+}
+
+TEST(Plugin, runPlugin)
+{
+  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  Plugin plugin(lib, "Test");
 
   plugin.startThread(0);
-  EXPECT_EQ(20, plugin.joinThread());
+  EXPECT_EQ(5, plugin.joinThread());
 }
 
-TEST(GeneralPlugin, enableDisable)
+TEST(Plugin, shutdown)
 {
   boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
+  Plugin plugin(lib, "Test");
 
-  plugin.enable();
-  EXPECT_EQ('1', getPipeChar(plugin));
-  plugin.disable();
-  EXPECT_EQ('0', getPipeChar(plugin));
+  plugin.shutdown();
+  EXPECT_EQ('X', getPipeChar(plugin));
 }
 
-TEST(GeneralPlugin, pushPopEvent)
+TEST(Plugin, pushPopSignal)
 {
   boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
+  Plugin plugin(lib, "Test");
 
-  LicqEvent* event = (LicqEvent*)20;
-  plugin.pushEvent(event);
-  plugin.pushEvent(event);
+  LicqSignal* signal = (LicqSignal*)10;
+  plugin.pushSignal(signal);
+  plugin.pushSignal(signal);
 
-  EXPECT_EQ('E', getPipeChar(plugin));
-  EXPECT_EQ(event, plugin.popEvent());
+  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ(signal, plugin.popSignal());
 
-  EXPECT_EQ('E', getPipeChar(plugin));
-  EXPECT_EQ(event, plugin.popEvent());
+  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ(signal, plugin.popSignal());
 }
 
-TEST(GeneralPlugin, popEventEmpty)
+TEST(Plugin, popSignalEmpty)
 {
   boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
+  Plugin plugin(lib, "Test");
 
-  EXPECT_EQ(NULL, plugin.popEvent());
+  EXPECT_EQ(NULL, plugin.popSignal());
 }

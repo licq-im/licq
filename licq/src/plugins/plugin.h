@@ -24,19 +24,28 @@
 #include "utils/pipe.h"
 
 #include <boost/exception/info.hpp>
+#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+#include <list>
+#include <pthread.h>
 #include <string>
 
 class CICQDaemon;
+class LicqSignal;
 
 namespace LicqDaemon
 {
 
-class Plugin
+class Plugin : private boost::noncopyable
 {
 public:
   typedef boost::
   error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
+
+  Plugin(boost::shared_ptr<DynamicLibrary> lib, const std::string& prefix);
+  virtual ~Plugin();
+
+  int getReadPipe() const;
 
   /**
    * Start the plugin in a new thread.
@@ -55,17 +64,25 @@ public:
   unsigned short getId() const;
   void setId(unsigned short id);
 
-protected:
-  Plugin(boost::shared_ptr<DynamicLibrary> lib, const std::string& prefix);
-  virtual ~Plugin();
+  /** Ask the plugin to shutdown. */
+  void shutdown();
 
+  void pushSignal(LicqSignal* signal);
+  LicqSignal* popSignal();
+
+protected:
   boost::shared_ptr<DynamicLibrary> myLib;
+  Pipe myPipe;
 
   template<typename SymbolType>
   void loadSymbol(const std::string& name, SymbolType*& symbol);
 
 private:
-  Pipe myPipe;
+  pthread_t myThread;
+
+  typedef std::list<LicqSignal*> SignalList;
+  SignalList mySignals;
+  pthread_mutex_t mySignalsMutex;
 
   // Function pointers
   int (*myMain)(CICQDaemon*);
@@ -76,9 +93,12 @@ private:
 
   // Unique plugin id
   unsigned short* myId;
-
-  pthread_t myThread;
 };
+
+inline int Plugin::getReadPipe() const
+{
+  return myPipe.getReadFd();
+}
 
 inline const char* Plugin::getName() const
 {

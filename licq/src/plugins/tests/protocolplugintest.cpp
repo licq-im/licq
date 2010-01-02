@@ -72,17 +72,7 @@ TEST(ProtocolPlugin, callApiFunctions)
   EXPECT_EQ(42, plugin.getSendFunctions());
 }
 
-TEST(ProtocolPlugin, id)
-{
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
-  ProtocolPlugin plugin(lib);
-
-  plugin.setId(1);
-  EXPECT_EQ(1, plugin.getId());
-  EXPECT_EQ(1, LP_Id);
-}
-
-TEST(ProtocolPlugin, run)
+TEST(ProtocolPlugin, runPlugin)
 {
   boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
   ProtocolPlugin plugin(lib);

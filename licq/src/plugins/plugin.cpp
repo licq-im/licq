@@ -19,9 +19,32 @@
 
 #include "plugin.h"
 
+#include "licq_constants.h"
+
 #include <pthread.h>
 
 using namespace LicqDaemon;
+
+Plugin::Plugin(boost::shared_ptr<DynamicLibrary> lib,
+               const std::string& prefix)
+  : myLib(lib)
+{
+  loadSymbol(prefix + "_Main", myMain);
+  loadSymbol(prefix + "_Main_tep", myMainThreadEntryPoint);
+  loadSymbol(prefix + "_Exit", myExit);
+  loadSymbol(prefix + "_Name", myName);
+  loadSymbol(prefix + "_Version", myVersion);
+
+  loadSymbol("LP_Id", myId);
+  *myId = -1;
+
+  ::pthread_mutex_init(&mySignalsMutex, NULL);
+}
+
+Plugin::~Plugin()
+{
+  ::pthread_mutex_destroy(&mySignalsMutex);
+}
 
 void Plugin::startThread(CICQDaemon* daemon)
 {
@@ -42,21 +65,28 @@ int Plugin::joinThread()
   return -1;
 }
 
-Plugin::Plugin(boost::shared_ptr<DynamicLibrary> lib,
-               const std::string& prefix)
-  : myLib(lib)
+void Plugin::shutdown()
 {
-  loadSymbol(prefix + "_Main", myMain);
-  loadSymbol(prefix + "_Main_tep", myMainThreadEntryPoint);
-  loadSymbol(prefix + "_Exit", myExit);
-  loadSymbol(prefix + "_Name", myName);
-  loadSymbol(prefix + "_Version", myVersion);
-
-  loadSymbol("LP_Id", myId);
-  *myId = -1;
+  myPipe.putChar(PLUGIN_SHUTDOWN);
 }
 
-Plugin::~Plugin()
+void Plugin::pushSignal(LicqSignal* signal)
 {
-  // Empty
+  ::pthread_mutex_lock(&mySignalsMutex);
+  mySignals.push_back(signal);
+  ::pthread_mutex_unlock(&mySignalsMutex);
+  myPipe.putChar(PLUGIN_SIGNAL);
+}
+
+LicqSignal* Plugin::popSignal()
+{
+  LicqSignal* signal = NULL;
+  ::pthread_mutex_lock(&mySignalsMutex);
+  if (!mySignals.empty())
+  {
+    signal = mySignals.front();
+    mySignals.pop_front();
+  }
+  ::pthread_mutex_unlock(&mySignalsMutex);
+  return signal;
 }

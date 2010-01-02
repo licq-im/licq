@@ -22,6 +22,8 @@
 
 #include "plugin.h"
 
+class LicqEvent;
+
 namespace LicqDaemon
 {
 
@@ -39,7 +41,18 @@ public:
   const char* getBuildDate() const;
   const char* getBuildTime() const;
 
+  void enable();
+  void disable();
+
+  void pushEvent(LicqEvent* event);
+  LicqEvent* popEvent();
+
 private:
+  typedef std::list<LicqEvent*> EventsList;
+  EventsList myEvents;
+  pthread_mutex_t myEventsMutex;
+
+  // Function pointers
   bool (*myInit)(int, char**);
   const char* (*myStatus)();
   const char* (*myDescription)();

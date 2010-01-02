@@ -19,6 +19,8 @@
 
 #include "generalplugin.h"
 
+#include "licq_constants.h"
+
 using namespace LicqDaemon;
 
 GeneralPlugin::GeneralPlugin(boost::shared_ptr<DynamicLibrary> lib)
@@ -40,9 +42,42 @@ GeneralPlugin::GeneralPlugin(boost::shared_ptr<DynamicLibrary> lib)
   {
     myConfigFile = NULL;
   }
+
+  ::pthread_mutex_init(&myEventsMutex, NULL);
 }
 
 GeneralPlugin::~GeneralPlugin()
 {
-  // Empty
+  ::pthread_mutex_destroy(&myEventsMutex);
+}
+
+void GeneralPlugin::enable()
+{
+  myPipe.putChar('1');
+}
+
+void GeneralPlugin::disable()
+{
+  myPipe.putChar('0');
+}
+
+void GeneralPlugin::pushEvent(LicqEvent* event)
+{
+  ::pthread_mutex_lock(&myEventsMutex);
+  myEvents.push_back(event);
+  ::pthread_mutex_unlock(&myEventsMutex);
+  myPipe.putChar(PLUGIN_EVENT);
+}
+
+LicqEvent* GeneralPlugin::popEvent()
+{
+  LicqEvent* event = NULL;
+  ::pthread_mutex_lock(&myEventsMutex);
+  if (!myEvents.empty())
+  {
+    event = myEvents.front();
+    myEvents.pop_front();
+  }
+  ::pthread_mutex_unlock(&myEventsMutex);
+  return event;
 }
