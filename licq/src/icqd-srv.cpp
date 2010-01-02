@@ -1237,16 +1237,6 @@ void CICQDaemon::icqSendInvisibleList()
   SendEvent_Server(p);
 }
 
-//-----ProtoToggleVisibleList------------------------------------------------
-void CICQDaemon::ProtoToggleVisibleList(const char* _szId, unsigned long _nPPID)
-{
-  const ICQUser* u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
-  if (u == NULL) return;
-  bool b = u->VisibleList();
-  gUserManager.DropUser(u);
-  visibleListSet(LicqUser::makeUserId(_szId, _nPPID), !b);
-}
-
 void CICQDaemon::visibleListSet(const UserId& userId, bool visible)
 {
   unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
@@ -1264,16 +1254,6 @@ void CICQDaemon::visibleListSet(const UserId& userId, bool visible)
       PushProtoSignal(new CAcceptUserSignal(accountId.c_str()), _nPPID);
 }
 
-//-----ProtoToggleInvisibleList-------------------------------------------------
-void CICQDaemon::ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID)
-{
-  const ICQUser* u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
-  if (u == NULL) return;
-  bool b = u->InvisibleList();
-  gUserManager.DropUser(u);
-  invisibleListSet(LicqUser::makeUserId(_szId, _nPPID), !b);
-}
-
 void CICQDaemon::invisibleListSet(const UserId& userId, bool invisible)
 {
   unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
@@ -1289,16 +1269,6 @@ void CICQDaemon::invisibleListSet(const UserId& userId, bool invisible)
       icqAddToInvisibleList(userId);
     else
       PushProtoSignal(new CBlockUserSignal(accountId.c_str()), _nPPID);
-}
-
-//-----icqToggleIgnoreList------------------------------------------------------
-void CICQDaemon::icqToggleIgnoreList(const char *_szId, unsigned long _nPPID)
-{
-  const ICQUser* u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
-  if (u == NULL) return;
-  bool b = u->IgnoreList();
-  gUserManager.DropUser(u);
-  ignoreListSet(LicqUser::makeUserId(_szId, _nPPID), b);
 }
 
 void CICQDaemon::ignoreListSet(const UserId& userId, bool b)
