@@ -64,7 +64,7 @@ public:
    *
    * @throws Exception If the library could not be loaded.
   */
-  DynamicLibrary(const std::string& filename);
+  explicit DynamicLibrary(const std::string& filename);
 
   /**
    * Closes the dynamic library.

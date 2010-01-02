@@ -1,3 +1,11 @@
+set(tested_SRCS
+  plugins/generalplugin.cpp
+  plugins/plugin.cpp
+  plugins/protocolplugin.cpp
+
+  utils/dynamiclibrary.cpp
+)
+
 set(licq_SRCS
   backgroundcodes.c
   buffer.cpp
@@ -42,7 +50,16 @@ set(licq_SRCS
   user.cpp
   utility.cpp
 
-  utils/dynamiclibrary.cpp
+  ${tested_SRCS}
+)
+
+set(test_SRCS
+  plugins/tests/generalplugintest.cpp
+  plugins/tests/protocolplugintest.cpp
+
+  utils/tests/dynamiclibrarytest.cpp
+
+  ${tested_SRCS}
 )
 
 add_executable(licq ${licq_SRCS})
@@ -55,6 +72,9 @@ include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
 # To find config.h and licqversion.h
 include_directories(BEFORE ${PROJECT_BINARY_DIR}/include)
+
+# To find local headers
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(${GETTEXT_INCLUDE_DIR})
 include_directories(${GPGME_INCLUDES})
@@ -72,5 +92,16 @@ target_link_libraries(licq ${SOCKS5_LIBRARIES})
 install(TARGETS licq RUNTIME DESTINATION bin)
 
 if (GTEST_FOUND)
-  add_subdirectory(utils/tests)
+  add_executable(unittests ${test_SRCS})
+  include_directories(${GTEST_INCLUDE_DIRS})
+
+  target_link_libraries(unittests ${GTEST_BOTH_LIBRARIES})
+  target_link_libraries(unittests ${DLOPEN_LIBRARIES})
+
+  # Add linker flags for thread support
+  set_target_properties(unittests PROPERTIES
+    LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
+
+  add_test(licq unittests)
+  add_dependencies(tests unittests)
 endif (GTEST_FOUND)
