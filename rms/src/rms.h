@@ -44,7 +44,6 @@ public:
   void ProcessEvent(LicqEvent* e);
   void ProcessServer();
   void ProcessLog();
-  void AddEventTag(const UserId& userId, unsigned long eventTag);
 
 friend class CRMSClient;
 
@@ -98,7 +97,6 @@ protected:
   char m_szText[MAX_TEXT_LENGTH + 1];
   char m_szLine[MAX_LINE_LENGTH + 1];
   unsigned short m_nTextPos;
-  UserId myEventUserId;
 
   int StateMachine();
   int ProcessCommand();
@@ -107,7 +105,6 @@ protected:
   unsigned long GetProtocol(const char *);
   void ParseUser(const char *);
   int ChangeStatus(unsigned long, unsigned long, const char *);
-  void AddEventTag(const UserId& userId, unsigned long);
 
   int Process_MESSAGE_text();
   int Process_URL_url();

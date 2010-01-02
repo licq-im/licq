@@ -171,15 +171,6 @@ protected slots:
   virtual void send();
   virtual void eventDoneReceived(const LicqEvent* e);
 
-  /**
-   * An event tag was generated
-   * Used by protocols that cannot return event id from event send function
-   *
-   * @param userId User event belongs to
-   * @param eventTag Id for event
-   */
-  void addEventTag(const UserId& userId, unsigned long eventTag);
-
   void cancelSend();
   void changeEventType(QAction* action);
   void clearNewEvents();

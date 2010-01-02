@@ -546,9 +546,6 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
   case SIGNAL_NEWxPROTO_PLUGIN:
     //ignore for now
     break;
-  case SIGNAL_EVENTxID:
-      AddEventTag(s->userId(), s->Argument());
-    break;
   default:
     gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());
@@ -556,28 +553,6 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
   }
   delete s;
 }
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::AddEventTag
- *-------------------------------------------------------------------------*/
-void CLicqConsole::AddEventTag(const UserId& userId, unsigned long _nEventTag)
-{
-  if (!USERID_ISVALID(userId) || !_nEventTag)
-    return;
-
-  CData *data;
-  unsigned short i;
-  for (i = 1; i <= MAX_CON; i++)
-  {
-    data = (CData *)winCon[i]->data;
-    if (data && data->userId == userId)
-    {
-      winCon[i]->event = _nEventTag;
-      break;
-    }
-  }
-} 
-    
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessEvent

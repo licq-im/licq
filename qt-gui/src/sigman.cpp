@@ -137,9 +137,6 @@ void CSignalManager::ProcessSignal(LicqSignal* s)
   case SIGNAL_NEWxPROTO_PLUGIN:
     emit signal_protocolPlugin(s->SubSignal());
     break;
-  case SIGNAL_EVENTxID:
-      emit signal_eventTag(userId, s->Argument());
-    break;
   case SIGNAL_SOCKET:
       emit signal_socket(userId, s->CID());
     break;

@@ -58,7 +58,6 @@ signals:
   void signal_ui_viewevent(const UserId& userId);
   void signal_ui_message(const UserId& userId);
   void signal_protocolPlugin(unsigned long);
-  void signal_eventTag(const UserId& userId, unsigned long convoId);
   void signal_socket(const UserId& userId, unsigned long convoId);
   void signal_convoJoin(const UserId& userId, unsigned long ppid, unsigned long convoId);
   void signal_convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId);

@@ -341,7 +341,6 @@ protected slots:
   void slot_logon();
   void slot_ui_viewevent(const UserId& userId);
   void slot_protocolPlugin(unsigned long);
-  void slot_eventTag(const UserId& userId, unsigned long);
   void slot_doneplugindlg();
   void slot_doneOptions();
   void slot_doneOwnerManager();

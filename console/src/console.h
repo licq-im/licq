@@ -112,7 +112,6 @@ public:
   char *CurrentGroupName();
   void SwitchToCon(unsigned short nCon);
   void CreateUserList();
-  void AddEventTag(const UserId& userId, unsigned long _nEventTag);
 
   void InputCommand(int cIn);
   void InputLogWindow(int cIn);

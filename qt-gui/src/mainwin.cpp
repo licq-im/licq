@@ -761,8 +761,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       this, SLOT(slot_ui_viewevent(const UserId&)));
    connect (licqSigMan, SIGNAL(signal_protocolPlugin(unsigned long)),
             this, SLOT(slot_protocolPlugin(unsigned long)));
-  connect(licqSigMan, SIGNAL(signal_eventTag(const UserId&, unsigned long)),
-      this, SLOT(slot_eventTag(const UserId &, unsigned long)));
   connect(licqSigMan, SIGNAL(signal_socket(const UserId&, unsigned long)),
       this, SLOT(slot_socket(const UserId&, unsigned long)));
   connect(licqSigMan, SIGNAL(signal_convoJoin(const UserId&, unsigned long, unsigned long)),
@@ -3169,24 +3167,6 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
     // let KDE IM interface know about the new protocol
     kdeIMInterface->addProtocol(QString(pName), nPPID);
 #endif
-}
-
-//-----slot_eventTag------------------------------------------------------------
-void CMainWindow::slot_eventTag(const UserId& userId, unsigned long _nEventTag)
-{
-  if (!USERID_ISVALID(userId) || !_nEventTag)
-    return;
-
-  QPtrListIterator<UserSendCommon> it(licqUserSend);
-
-  for(; it.current() != NULL; ++it)
-  {
-    if ((*it)->userId() == userId)
-    {
-      (*it)->AddEventTag(_nEventTag);
-      break;
-    }
-  }
 }
 
 //-----slot_doneOwnerFcn--------------------------------------------------------

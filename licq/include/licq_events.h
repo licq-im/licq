@@ -342,10 +342,6 @@ const unsigned long SIGNAL_ADDxSERVERxLIST       = 0x00000080;
 //! for all functions dealing with this new protocol.  The UIN and all
 //! other parameters are 0.
 const unsigned long SIGNAL_NEWxPROTO_PLUGIN      = 0x00000100;
-//! Returns the event tag of an event from a protocol plugin.
-//! The UI plugin will use this event tag to keep track of 
-//! all sent events.
-const unsigned long SIGNAL_EVENTxID              = 0x00000200;
 //! A user has joined a conversation. m_nArgument is the socket
 //! of the conversation that the user has joined.
 const unsigned long SIGNAL_CONVOxJOIN            = 0x00000400;

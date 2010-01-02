@@ -91,14 +91,6 @@ signals:
   void protocolPlugin(unsigned long);
 
   /**
-   * A new event is ongoing for a user
-   *
-   * @param userId User event is sent for
-   * @param eventTag Id of event
-   */
-  void eventTag(const UserId& userId, unsigned long eventTag);
-
-  /**
    * A conversation id has been associated with a user
    *
    * @param userId User id to associate conversation with

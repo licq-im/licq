@@ -106,10 +106,6 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
       emit protocolPlugin(sig->SubSignal());
       break;
 
-    case SIGNAL_EVENTxID:
-      emit eventTag(userId, sig->Argument());
-      break;
-
     case SIGNAL_SOCKET:
       emit socket(userId, sig->CID());
       break;

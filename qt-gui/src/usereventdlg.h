@@ -129,7 +129,6 @@ public:
   void SetConvoId(unsigned long n)  { m_nConvoId = n; }
 
   bool FindUserInConvo(const UserId& userId) const;
-  void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
   void gotTyping(unsigned short);
   void changeMsgWinSticky(bool _bStick);
    
