@@ -96,6 +96,13 @@ if (USE_SOCKS5)
   set(SOCKS5_LIBRARIES ${SOCKS5_LIBRARY})
 endif (USE_SOCKS5)
 
+# Google Test is optional
+find_package(GTest QUIET)
+if (GTEST_FOUND)
+  enable_testing()
+  add_custom_target(tests ALL COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
+endif (GTEST_FOUND)
+
 # Set up installation paths
 include(cmake/LicqDefaultPaths.cmake)
 

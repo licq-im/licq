@@ -41,6 +41,8 @@ set(licq_SRCS
   translate.cpp
   user.cpp
   utility.cpp
+
+  utils/dynamiclibrary.cpp
 )
 
 add_executable(licq ${licq_SRCS})
@@ -68,3 +70,7 @@ target_link_libraries(licq ${OPENSSL_LIBRARIES})
 target_link_libraries(licq ${SOCKS5_LIBRARIES})
 
 install(TARGETS licq RUNTIME DESTINATION bin)
+
+if (GTEST_FOUND)
+  add_subdirectory(utils/tests)
+endif (GTEST_FOUND)
