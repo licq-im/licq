@@ -689,10 +689,10 @@ protected:
   // ICQ protocol functions, only called from general proto functions and will
   //   be removed when ICQ is moved to separate protocol plugin
 
-  unsigned long icqSendMessage(const UserId& userId, const std::string& message,
+  void icqSendMessage(unsigned long eventId, const UserId& userId, const std::string& message,
       bool viaServer, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
-  unsigned long icqSendUrl(const UserId& userId, const std::string& url,
+  void icqSendUrl(unsigned long eventId, const UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
   unsigned long icqFileTransfer(const UserId& userId, const std::string& filename,
@@ -859,8 +859,9 @@ protected:
   void icqSendInvisibleList();
   void icqCreatePDINFO();
   void icqRequestSystemMsg();
-  ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, const char* _sMessage,
-    CUserEvent *, unsigned short = 0, size_t = 0);
+  LicqEvent* icqSendThroughServer(unsigned long eventId, const char *szId,
+      unsigned char format, const char* _sMessage, CUserEvent *,
+      unsigned short = 0, size_t = 0);
 
   void FailEvents(int sd, int err);
   ICQEvent *DoneServerEvent(unsigned long, EventResult);

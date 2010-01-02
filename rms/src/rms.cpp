@@ -1157,7 +1157,7 @@ int CRMSClient::Process_MESSAGE_text()
   m_nState = STATE_COMMAND;
 
   unsigned long m_nPPID = LicqUser::getUserProtocolId(myUserId);
-  if (m_nPPID == LICQ_PPID)
+  if (tags != 0)
   {
     fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
         tag, USERID_TOSTR(myUserId));

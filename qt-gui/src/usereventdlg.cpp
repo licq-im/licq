@@ -2885,7 +2885,7 @@ void UserSendMsgEvent::sendButton()
         chkSendServer->isChecked(),
       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
       chkMass->isChecked(), &icqColor, m_nConvoId);
-     if (m_nPPID == LICQ_PPID)
+    if (icqEventTag != 0)
        m_lnEventTag.push_back(icqEventTag);
 
      tmp = gTranslator.NToRN(messageRaw);

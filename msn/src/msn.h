@@ -69,7 +69,6 @@ struct SStartMessage
 {
   CMSNPacket *m_pPacket;
   ICQEvent *m_pEvent;
-  LicqSignal *m_pSignal;
   char *m_szUser;
   unsigned long m_nSeq;
   bool m_bConnecting,
@@ -121,7 +120,7 @@ private:
       const std::string& cookie, const std::string& user);
 
   void MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket);
-  void MSNSendMessage(const char* _szUser, const char* _szMsg,
+  void MSNSendMessage(unsigned long eventId, const char* _szUser, const std::string& message,
       pthread_t _tPlugin, unsigned long _nCID);
   void MSNSendTypingNotification(const char* _szUser, unsigned long _nCID);
   void MSNChangeStatus(unsigned long);

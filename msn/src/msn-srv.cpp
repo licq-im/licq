@@ -459,7 +459,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           gLog.Error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
           pStart = *it;
-          m_pDaemon->pushPluginSignal(pStart->m_pSignal);
           pStart->m_pEvent->m_eResult = EVENT_FAILED;
           m_pDaemon->PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);

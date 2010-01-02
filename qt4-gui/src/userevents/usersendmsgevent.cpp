@@ -202,7 +202,7 @@ void UserSendMsgEvent::send()
         myMassMessageCheck->isChecked(),
         &myIcqColor,
         myConvoId);
-    if (LicqUser::getUserProtocolId(myUsers.front()) == LICQ_PPID)
+    if (icqEventTag != 0)
       myEventTag.push_back(icqEventTag);
 
     tmp = gTranslator.NToRN(messageRaw);

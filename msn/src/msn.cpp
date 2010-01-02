@@ -615,7 +615,7 @@ void CMSN::ProcessSignal(CSignal *s)
     case PROTOxSENDxMSG:
     {
       CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
-      MSNSendMessage(sig->Id(), sig->Message(), sig->Thread(), sig->CID());
+      MSNSendMessage(sig->eventId(), sig->Id(), sig->message(), sig->Thread(), sig->CID());
       break;
     }
 

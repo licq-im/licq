@@ -289,9 +289,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       {
         if (pStart->m_pEvent)
           m_pEvents.push_back(pStart->m_pEvent);
-        if (pStart->m_pSignal)
-          m_pDaemon->pushPluginSignal(pStart->m_pSignal);
-        
+
         string strUser(pStart->m_szUser);
         Send_SB_Packet(strUser, pStart->m_pPacket, nSock, false);
         
@@ -347,7 +345,6 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         {
           gLog.Error("%sUser not online.\n", L_ERRORxSTR);
           pStart = *it;
-          m_pDaemon->pushPluginSignal(pStart->m_pSignal);
           pStart->m_pEvent->m_eResult = EVENT_FAILED;
           m_pDaemon->PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
@@ -561,7 +558,6 @@ void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
   SStartMessage *p = new SStartMessage;
   p->m_pPacket = _pPacket;
   p->m_pEvent = 0;
-  p->m_pSignal = 0;
   p->m_szUser = strdup(_szUser);
   p->m_nSeq = pSB->Sequence();
   p->m_bConnecting = false;
@@ -573,7 +569,7 @@ void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
   SendPacket(pSB);
 }
 
-void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
+void CMSN::MSNSendMessage(unsigned long eventId, const char* _szUser, const string& message,
     pthread_t _tPlugin, unsigned long _nCID)
 {
   string strUser(_szUser);
@@ -590,21 +586,19 @@ void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
   if (!u) return;
   UserId userId = u->id();
   gUserManager.DropUser(u);
-  
-  char *szRNMsg = gTranslator.NToRN(_szMsg);
+
+  char* szRNMsg = gTranslator.NToRN(message.c_str());
   CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
   CEventMsg *m = new CEventMsg(szRNMsg, 0, TIME_NOW, 0);
   m->m_eDir = D_SENDER;
-  LicqEvent* e = new LicqEvent(0, pSend, CONNECT_SERVER, userId, m);
+  LicqEvent* e = new LicqEvent(eventId, 0, pSend, CONNECT_SERVER, userId, m);
   e->thread_plugin = _tPlugin;  
-  LicqSignal* s = new LicqSignal(SIGNAL_EVENTxID, 0, userId, e->EventId());
 
   delete [] szRNMsg;
 
   if (nSocket > 0)
   {
     m_pEvents.push_back(e);
-    m_pDaemon->pushPluginSignal(s);
 
     Send_SB_Packet(strUser, pSend, nSocket, false);
   }
@@ -616,7 +610,6 @@ void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
     SStartMessage *p = new SStartMessage;
     p->m_pPacket = pSend;
     p->m_pEvent = e;
-    p->m_pSignal = s;
     p->m_szUser = strdup(_szUser);
     p->m_nSeq = pSB->Sequence();
     p->m_bConnecting = false;

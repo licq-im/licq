@@ -44,19 +44,18 @@ unsigned long CICQDaemon::sendMessage(const UserId& userId, const string& messag
     bool viaServer, unsigned short flags, bool multipleRecipients, CICQColor* color,
     unsigned long convoId)
 {
-  unsigned long nRet = 0;
+  unsigned long eventId = getNextEventId();
   unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
 
   if (_nPPID == LICQ_PPID)
-    nRet = icqSendMessage(userId, message, viaServer, flags, multipleRecipients, color);
+    icqSendMessage(eventId, userId, message, viaServer, flags, multipleRecipients, color);
   else
-    PushProtoSignal(new CSendMessageSignal(accountId.c_str(), message.c_str(), convoId), _nPPID);
+    PushProtoSignal(new CSendMessageSignal(eventId, userId, message, convoId), _nPPID);
 
-  return nRet;
+  return eventId;
 }
 
-unsigned long CICQDaemon::icqSendMessage(const UserId& userId, const string& message,
+void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, const string& message,
    bool viaServer, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
 {
@@ -150,14 +149,15 @@ unsigned long CICQDaemon::icqSendMessage(const UserId& userId, const string& mes
                  L_WARNxSTR, nMaxSize);
        szMessage[nMaxSize] = '\0';
      }
-     result = icqSendThroughServer(szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+     result = icqSendThroughServer(eventId, szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
                                    cipher ? cipher : szMessage, e, nCharset, nUTFLen);
      u = gUserManager.fetchUser(userId, LOCK_W);
   }
   else        // send direct
   {
     u = gUserManager.fetchUser(userId, LOCK_W);
-    if (u == NULL) return 0;
+    if (u == NULL)
+      return;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
@@ -165,7 +165,7 @@ unsigned long CICQDaemon::icqSendMessage(const UserId& userId, const string& mes
     gLog.Info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(u, p, e);
+    result = SendExpectEvent_Client(eventId, u, p, e);
   }
 
   
@@ -185,11 +185,6 @@ unsigned long CICQDaemon::icqSendMessage(const UserId& userId, const string& mes
     free(cipher);
   if (mDos)
     delete [] mDos;
-    
-  if (result != NULL)
-    return result->EventId();
-  else
-    return 0;
 }
 
 //-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
@@ -234,26 +229,25 @@ unsigned long CICQDaemon::sendUrl(const UserId& userId, const string& url,
     const string& message, bool viaServer, unsigned short flags,
     bool multipleRecipients, CICQColor* color)
 {
-  unsigned long nRet = 0;
+  unsigned long eventId = getNextEventId();
   unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
 
   if (_nPPID == LICQ_PPID)
-    nRet = icqSendUrl(userId, url, message, viaServer, flags, multipleRecipients, color);
+    icqSendUrl(eventId, userId, url, message, viaServer, flags, multipleRecipients, color);
   else
   {
-
+    eventId = 0;
   }
 
-  return nRet;
+  return eventId;
 }
 
-unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
+void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const string& url,
    const string& message, bool viaServer, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
   if (gUserManager.isOwner(userId))
-    return 0;
+    return;
 
   const string accountId = LicqUser::getUserAccountId(userId);
   const char* _szId = accountId.c_str();
@@ -292,13 +286,14 @@ unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
     gUserManager.DropUser(u);
 
     e = new CEventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    result = icqSendThroughServer(_szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m.c_str(), e, nCharset);
+    result = icqSendThroughServer(eventId, _szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m.c_str(), e, nCharset);
     u = gUserManager.fetchUser(userId, LOCK_W);
   }
   else
   {
     u = gUserManager.fetchUser(userId, LOCK_W);
-    if (u == NULL) return 0;
+    if (u == NULL)
+      return;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url.c_str(), description, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
@@ -306,7 +301,7 @@ unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
     gLog.Info(tr("%sSending %sURL to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(u, p, e);
+    result = SendExpectEvent_Client(eventId, u, p, e);
   }
   if (u != NULL)
   {
@@ -319,10 +314,6 @@ unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
 
   if (szDescDos)
     delete [] szDescDos;
-
-  if (result != NULL)
-    return result->EventId();
-  return 0;
 }
 
 
@@ -439,6 +430,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
    const StringList& users, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
+  unsigned long eventId = getNextEventId();
   if (szId == gUserManager.OwnerId(LICQ_PPID))
     return 0;
 
@@ -476,7 +468,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   if (!online) // send offline
   {
     e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    result = icqSendThroughServer(szId,
+    result = icqSendThroughServer(eventId, szId,
       ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
       m, e);
     u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
@@ -492,7 +484,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
     gLog.Info(tr("%sSending %scontact list to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(u, p, e);
+    result = SendExpectEvent_Client(eventId, u, p, e);
   }
   if (u != NULL)
   {
@@ -504,9 +496,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   delete []m;
-  if (result != NULL)
-    return result->EventId();
-  return 0;
+  return eventId;
 }
 
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------

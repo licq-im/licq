@@ -15,6 +15,8 @@
 #include "licq_log.h"
 #include "licq_user.h"
 
+using namespace std;
+
 //-----CSearchAck------------------------------------------------------------
 CSearchAck::CSearchAck(const UserId& userId)
   : myUserId(userId)
@@ -309,15 +311,13 @@ CRenameUserSignal::~CRenameUserSignal()
   // Empty
 }
 
-CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg, unsigned long nCID)
-  : CSignal(PROTOxSENDxMSG, szId, nCID)
+CSendMessageSignal::CSendMessageSignal(unsigned long eventId,
+    const UserId& userId, const string& message, unsigned long convoId)
+  : CSignal(PROTOxSENDxMSG, LicqUser::getUserAccountId(userId).c_str(), convoId),
+    myEventId(eventId),
+    myMessage(message)
 {
-  m_szMsg = szMsg ? strdup(szMsg) : 0;
-}
-
-CSendMessageSignal::~CSendMessageSignal()
-{
-  free(m_szMsg);
+  // Empty
 }
 
 CTypingNotificationSignal::CTypingNotificationSignal(const char *szId,
