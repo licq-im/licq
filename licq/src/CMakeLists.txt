@@ -4,6 +4,7 @@ set(tested_SRCS
   plugins/protocolplugin.cpp
 
   utils/dynamiclibrary.cpp
+  utils/pipe.cpp
 )
 
 set(licq_SRCS
@@ -58,6 +59,7 @@ set(test_SRCS
   plugins/tests/protocolplugintest.cpp
 
   utils/tests/dynamiclibrarytest.cpp
+  utils/tests/pipetest.cpp
 
   ${tested_SRCS}
 )

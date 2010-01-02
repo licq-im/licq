@@ -21,6 +21,7 @@
 #define LICQDAEMON_PLUGIN_H
 
 #include "utils/dynamiclibrary.h"
+#include "utils/pipe.h"
 
 #include <boost/exception/info.hpp>
 #include <boost/shared_ptr.hpp>
@@ -37,13 +38,21 @@ public:
   typedef boost::
   error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 
+  /**
+   * Start the plugin in a new thread.
+   */
   void startThread(CICQDaemon* daemon);
+
+  /**
+   * Wait for the plugin to stop.
+   * @returns The plugins exit code.
+   */
   int joinThread();
 
   const char* getName() const;
   const char* getVersion() const;
-  unsigned short getId() const;
 
+  unsigned short getId() const;
   void setId(unsigned short id);
 
 protected:
@@ -56,6 +65,8 @@ protected:
   void loadSymbol(const std::string& name, SymbolType*& symbol);
 
 private:
+  Pipe myPipe;
+
   // Function pointers
   int (*myMain)(CICQDaemon*);
   void* (*myMainThreadEntryPoint)(void*);
