@@ -1921,7 +1921,7 @@ ICQEvent *CICQDaemon::PopPluginEvent()
   return e;
 }
 
-void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
+void CICQDaemon::PushProtoSignal(LicqProtoSignal* s, unsigned long _nPPID)
 {
   ProtoPluginsListIter iter;
   bool bExists = false;
@@ -1946,10 +1946,10 @@ void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
   }
 }
 
-CSignal *CICQDaemon::PopProtoSignal()
+LicqProtoSignal* CICQDaemon::PopProtoSignal()
 {
   ProtoPluginsListIter iter;
-  CSignal *s = NULL;
+  LicqProtoSignal* s = NULL;
   pthread_mutex_lock(&licq->mutex_protoplugins);
   for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
        ++iter)

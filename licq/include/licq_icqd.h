@@ -636,7 +636,7 @@ public:
    */
   LicqSignal* popPluginSignal();
   ICQEvent *PopPluginEvent();
-  CSignal *PopProtoSignal();
+  LicqProtoSignal* PopProtoSignal();
 
   // ICQ options
   bool UseServerContactList() const             { return m_bUseSS; }
@@ -884,7 +884,7 @@ protected:
   void pushPluginSignal(LicqSignal* signal);
 
   void PushPluginEvent(ICQEvent *);
-  void PushProtoSignal(CSignal *, unsigned long);
+  void PushProtoSignal(LicqProtoSignal* s, unsigned long ppid);
 
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);

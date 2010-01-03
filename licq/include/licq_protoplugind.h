@@ -8,9 +8,9 @@
 
 class CICQDaemon;
 class CLicq;
-class CSignal;
+class LicqProtoSignal;
 
-typedef std::list<CSignal *>  ProtoSignalList;
+typedef std::list<LicqProtoSignal*> ProtoSignalList;
 
 class CProtoPlugin
 {
@@ -33,8 +33,8 @@ protected:
   CProtoPlugin(); //FIXME ICQ should be its own plugin
   ~CProtoPlugin();
 
-  void PushSignal(CSignal *);
-  CSignal *PopSignal();
+  void PushSignal(LicqProtoSignal* s);
+  LicqProtoSignal* PopSignal();
 
   void Shutdown();
 

@@ -224,253 +224,167 @@ LicqSignal::LicqSignal(const LicqSignal* s)
 }
 
 
-CSignal::CSignal(SIGNAL_TYPE e, const char *szId, unsigned long nCID)
-{
-  m_eType = e;
-  m_nCID = nCID;
-  if (szId)
-    m_szId = strdup(szId);
-  else
-    m_szId = 0;
-  thread_plugin = pthread_self();
-}
-
-CSignal::CSignal(CSignal *s)
-{
-  m_eType = s->m_eType;
-  m_nCID = s->m_nCID;
-  m_szId = s->m_szId ? strdup(s->m_szId) : 0;
-  thread_plugin = s->thread_plugin;
-}
-
-CSignal::~CSignal()
-{
-  free(m_szId);
-}
-
-CLogonSignal::CLogonSignal(unsigned long nLogonStatus)
-  : CSignal(PROTOxLOGON, 0)
-{
-  m_nLogonStatus = nLogonStatus;
-}
-
-CLogonSignal::~CLogonSignal()
+LicqProtoSignal::LicqProtoSignal(SIGNAL_TYPE type, const UserId& userId, unsigned long convoId)
+  : myType(type),
+    myUserId(userId),
+    myConvoId(convoId),
+    myCallerThread(pthread_self())
 {
   // Empty
 }
 
-CLogoffSignal::CLogoffSignal()
-  : CSignal(PROTOxLOGOFF, 0)
-{
-}
-
-CLogoffSignal::~CLogoffSignal()
-{
-  // Empty
-}
-
-CChangeStatusSignal::CChangeStatusSignal(unsigned long nStatus)
-  : CSignal(PROTOxCHANGE_STATUS, 0)
-{
-  m_nStatus = nStatus;
-}
-
-CChangeStatusSignal::~CChangeStatusSignal()
+LicqProtoSignal::LicqProtoSignal(LicqProtoSignal* s)
+  : myType(s->myType),
+    myUserId(s->myUserId),
+    myConvoId(s->myConvoId),
+    myCallerThread(s->myCallerThread)
 {
   // Empty
 }
 
-CAddUserSignal::CAddUserSignal(const char *szId, bool bAuthRequired)
-  : CSignal(PROTOxADD_USER, szId)
-{
-  m_bAuthRequired = bAuthRequired;
-}
-
-CAddUserSignal::~CAddUserSignal()
+LicqProtoLogonSignal::LicqProtoLogonSignal(unsigned long status)
+  : LicqProtoSignal(PROTOxLOGON, USERID_NONE),
+    myStatus(status)
 {
   // Empty
 }
 
-CRemoveUserSignal::CRemoveUserSignal(const char *szId)
-  : CSignal(PROTOxREM_USER, szId)
-{
-}
-
-CRemoveUserSignal::~CRemoveUserSignal()
+LicqProtoLogoffSignal::LicqProtoLogoffSignal()
+  : LicqProtoSignal(PROTOxLOGOFF, USERID_NONE)
 {
   // Empty
 }
 
-CRenameUserSignal::CRenameUserSignal(const char *szId)
-  : CSignal(PROTOxRENAME_USER, szId)
-{
-}
-
-CRenameUserSignal::~CRenameUserSignal()
+LicqProtoChangeStatusSignal::LicqProtoChangeStatusSignal(unsigned long status)
+  : LicqProtoSignal(PROTOxCHANGE_STATUS, USERID_NONE),
+    myStatus(status)
 {
   // Empty
 }
 
-CSendMessageSignal::CSendMessageSignal(unsigned long eventId,
+LicqProtoAddUserSignal::LicqProtoAddUserSignal(const UserId& userId, bool authRequired)
+  : LicqProtoSignal(PROTOxADD_USER, userId),
+    myAuthRequired(authRequired)
+{
+  // Empty
+}
+
+LicqProtoRemoveUserSignal::LicqProtoRemoveUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxREM_USER, userId)
+{
+  // Empty
+}
+
+LicqProtoRenameUserSignal::LicqProtoRenameUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxRENAME_USER, userId)
+{
+  // Empty
+}
+
+LicqProtoSendMessageSignal::LicqProtoSendMessageSignal(unsigned long eventId,
     const UserId& userId, const string& message, unsigned long convoId)
-  : CSignal(PROTOxSENDxMSG, LicqUser::getUserAccountId(userId).c_str(), convoId),
+  : LicqProtoSignal(PROTOxSENDxMSG, userId, convoId),
     myEventId(eventId),
     myMessage(message)
 {
   // Empty
 }
 
-CTypingNotificationSignal::CTypingNotificationSignal(const char *szId,
-  bool bActive, unsigned long nCID)
-    : CSignal(PROTOxSENDxTYPING_NOTIFICATION, szId, nCID), m_bActive(bActive)
-{
-}
-
-CTypingNotificationSignal::~CTypingNotificationSignal()
+LicqProtoTypingNotificationSignal::LicqProtoTypingNotificationSignal(
+    const UserId& userId, bool active, unsigned long convoId)
+  : LicqProtoSignal(PROTOxSENDxTYPING_NOTIFICATION, userId, convoId),
+    myActive(active)
 {
   // Empty
 }
 
-CGrantAuthSignal::CGrantAuthSignal(const char *szId, const char *szMsg)
-  : CSignal(PROTOxSENDxGRANTxAUTH, szId)
-{
-  m_szMsg = szMsg ? strdup(szMsg) : 0;
-}
-
-CGrantAuthSignal::~CGrantAuthSignal()
-{
-  free(m_szMsg);
-}
-
-CRefuseAuthSignal::CRefuseAuthSignal(const char *szId, const char *szMsg)
-  : CSignal(PROTOxSENDxREFUSExAUTH, szId)
-{
-  m_szMsg = szMsg ? strdup(szMsg) : 0;
-}
-
-CRefuseAuthSignal::~CRefuseAuthSignal()
-{
-  free(m_szMsg);
-}
-
-CRequestInfo::CRequestInfo(const char *szId)
-  : CSignal(PROTOxREQUESTxINFO, szId)
-{
-}
-
-CRequestInfo::~CRequestInfo()
+LicqProtoGrantAuthSignal::LicqProtoGrantAuthSignal(const UserId& userId, const string& message)
+  : LicqProtoSignal(PROTOxSENDxGRANTxAUTH, userId),
+    myMessage(message)
 {
   // Empty
 }
 
-CUpdateInfoSignal::CUpdateInfoSignal(const char *szAlias, const char *szFirstName,
-  const char *szLastName, const char *szEmail,
-  const char *szCity,
-  const char *szState, const char *szPhoneNumber,
-  const char *szFaxNumber, const char *szAddress,
-  const char *szCellNumber, const char *szZipCode)
-  : CSignal(PROTOxUPDATExINFO, 0)
-{
-  m_szAlias = szAlias ? strdup(szAlias) : 0;
-  m_szFirstName = szFirstName ? strdup(szFirstName) : 0;
-  m_szLastName = szLastName ? strdup(szLastName) : 0;
-  m_szEmail = szEmail ? strdup(szEmail) : 0;
-  m_szCity = szCity ? strdup(szCity) : 0;
-  m_szState = szState ? strdup(szState) : 0;
-  m_szPhoneNumber = szPhoneNumber ? strdup(szPhoneNumber) : 0;
-  m_szFaxNumber = szFaxNumber ? strdup(szFaxNumber) : 0;
-  m_szAddress = szAddress ? strdup(szAddress) : 0;
-  m_szCellNumber = szCellNumber ? strdup(szCellNumber) : 0;
-  m_szZipCode = szZipCode ? strdup(szZipCode) : 0;
-}
-
-CUpdateInfoSignal::~CUpdateInfoSignal()
-{
-  free(m_szAlias);
-  free(m_szFirstName);
-  free(m_szLastName);
-  free(m_szEmail);
-  free(m_szCity);
-  free(m_szState);
-  free(m_szPhoneNumber);
-  free(m_szFaxNumber);
-  free(m_szAddress);
-  free(m_szCellNumber);
-  free(m_szZipCode);
-}
-
-CRequestPicture::CRequestPicture(const char *szId)
-  : CSignal(PROTOxREQUESTxPICTURE, szId)
-{
-}
-
-CRequestPicture::~CRequestPicture()
-{
-}
-
-CBlockUserSignal::CBlockUserSignal(const char *szId)
-  : CSignal(PROTOxBLOCKxUSER, szId)
-{
-}
-
-CBlockUserSignal::~CBlockUserSignal()
+LicqProtoRefuseAuthSignal::LicqProtoRefuseAuthSignal(const UserId& userId, const string& message)
+  : LicqProtoSignal(PROTOxSENDxREFUSExAUTH, userId),
+    myMessage(message)
 {
   // Empty
 }
 
-CUnblockUserSignal::CUnblockUserSignal(const char *szId)
-  : CSignal(PROTOxUNBLOCKxUSER, szId)
-{
-}
-
-CUnblockUserSignal::~CUnblockUserSignal()
+LicqProtoRequestInfo::LicqProtoRequestInfo(const UserId& userId)
+  : LicqProtoSignal(PROTOxREQUESTxINFO, userId)
 {
   // Empty
 }
 
-CAcceptUserSignal::CAcceptUserSignal(const char *szId)
-  : CSignal(PROTOxACCEPTxUSER, szId)
-{
-}
-
-CAcceptUserSignal::~CAcceptUserSignal()
-{
-  // Empty
-}
-
-CUnacceptUserSignal::CUnacceptUserSignal(const char *szId)
-  : CSignal(PROTOxUNACCEPTxUSER, szId)
-{
-}
-
-CUnacceptUserSignal::~CUnacceptUserSignal()
-{
-  // Empty
-}
-
-CIgnoreUserSignal::CIgnoreUserSignal(const char *szId)
-  : CSignal(PROTOxIGNORExUSER, szId)
-{
-}
-
-CIgnoreUserSignal::~CIgnoreUserSignal()
+LicqProtoUpdateInfoSignal::LicqProtoUpdateInfoSignal(const string& alias,
+    const string& firstName, const string& lastName, const string& email,
+    const string& city, const string& state, const string& phoneNumber,
+    const string& faxNumber, const string& address, const string& cellNumber,
+    const string& zipCode)
+  : LicqProtoSignal(PROTOxUPDATExINFO, USERID_NONE),
+    myAlias(alias),
+    myFirstName(firstName),
+    myLastName(lastName),
+    myEmail(email),
+    myCity(city),
+    myState(state),
+    myPhoneNumber(phoneNumber),
+    myFaxNumber(faxNumber),
+    myAddress(address),
+    myCellNumber(cellNumber),
+    myZipCode(zipCode)
 {
   // Empty
 }
 
-CUnignoreUserSignal::CUnignoreUserSignal(const char *szId)
-  : CSignal(PROTOxUNIGNORExUSER, szId)
-{
-}
-
-CUnignoreUserSignal::~CUnignoreUserSignal()
+LicqProtoRequestPicture::LicqProtoRequestPicture(const UserId& userId)
+  : LicqProtoSignal(PROTOxREQUESTxPICTURE, userId)
 {
   // Empty
 }
 
-CSendFileSignal::CSendFileSignal(unsigned long eventId, const UserId& userId,
-    const string& filename, const string& message, ConstFileList& files)
-  : CSignal(PROTOxSENDxFILE, LicqUser::getUserAccountId(userId).c_str()),
+LicqProtoBlockUserSignal::LicqProtoBlockUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxBLOCKxUSER, userId)
+{
+  // Empty
+}
+
+LicqProtoUnblockUserSignal::LicqProtoUnblockUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxUNBLOCKxUSER, userId)
+{
+  // Empty
+}
+
+LicqProtoAcceptUserSignal::LicqProtoAcceptUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxACCEPTxUSER, userId)
+{
+  // Empty
+}
+
+LicqProtoUnacceptUserSignal::LicqProtoUnacceptUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxUNACCEPTxUSER, userId)
+{
+  // Empty
+}
+
+LicqProtoIgnoreUserSignal::LicqProtoIgnoreUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxIGNORExUSER, userId)
+{
+  // Empty
+}
+
+LicqProtoUnignoreUserSignal::LicqProtoUnignoreUserSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxUNIGNORExUSER, userId)
+{
+  // Empty
+}
+
+LicqProtoSendFileSignal::LicqProtoSendFileSignal(unsigned long eventId,
+    const UserId& userId, const string& filename, const string& message,
+    ConstFileList& files)
+  : LicqProtoSignal(PROTOxSENDxFILE, userId),
     myEventId(eventId),
     myFilename(filename),
     myMessage(message),
@@ -479,78 +393,57 @@ CSendFileSignal::CSendFileSignal(unsigned long eventId, const UserId& userId,
   // Empty
 }
 
-CSendChatSignal::CSendChatSignal(const char *szId, const char *szMessage)
-  : CSignal(PROTOxSENDxCHAT, szId)
-{
-  m_szMessage = (szMessage ? strdup(szMessage) : 0);
-}
-
-CSendChatSignal::~CSendChatSignal()
-{
-  free(m_szMessage);
-}
-
-CCancelEventSignal::CCancelEventSignal(const char *szId, unsigned long nFlag)
-  : CSignal(PROTOxCANCELxEVENT, szId)
-{
-  m_nFlag = nFlag;
-}
-
-CCancelEventSignal::~CCancelEventSignal()
+LicqProtoSendChatSignal::LicqProtoSendChatSignal(const UserId& userId, const string& message)
+  : LicqProtoSignal(PROTOxSENDxCHAT, userId),
+    myMessage(message)
 {
   // Empty
 }
 
-CSendEventReplySignal::CSendEventReplySignal(const char *szId,
-  const char *szMessage, bool bAccept, unsigned short nPort,
-  unsigned long nSequence, unsigned long nFlag1, unsigned long nFlag2,
-  bool bDirect)
-  : CSignal(PROTOxSENDxEVENTxREPLY, szId)
-{
-  m_szMessage = (szMessage ? strdup(szMessage) : 0);
-
-  m_bAccept = bAccept;
-  m_bDirect = bDirect;
-  m_nPort = nPort;
-  m_nSequence = nSequence;
-  m_nFlag = nFlag1;
-  m_nFlag2 = nFlag2;
-}
-
-CSendEventReplySignal::~CSendEventReplySignal()
-{
-  free(m_szMessage);
-}
-
-COpenedWindowSignal::COpenedWindowSignal(const char *szId)
-  : CSignal(PROTOxOPENEDxWINDOW, szId)
-{
-}
-
-COpenedWindowSignal::~COpenedWindowSignal()
+LicqProtoCancelEventSignal::LicqProtoCancelEventSignal(const UserId& userId, unsigned long flag)
+  : LicqProtoSignal(PROTOxCANCELxEVENT, userId),
+    myFlag(flag)
 {
   // Empty
 }
 
-CClosedWindowSignal::CClosedWindowSignal(const char *szId)
-  : CSignal(PROTOxCLOSEDxWINDOW, szId)
-{
-}
-
-CClosedWindowSignal::~CClosedWindowSignal()
+LicqProtoSendEventReplySignal::LicqProtoSendEventReplySignal(const UserId& userId,
+    const string& message, bool accept, unsigned short port,
+    unsigned long sequence, unsigned long flag1, unsigned long flag2,
+    bool direct)
+  : LicqProtoSignal(PROTOxSENDxEVENTxREPLY, userId),
+    myMessage(message),
+    myAccept(accept),
+    myPort(port),
+    mySequence(sequence),
+    myFlag1(flag1),
+    myFlag2(flag2),
+    myDirect(direct)
 {
   // Empty
 }
 
-COpenSecureSignal::COpenSecureSignal(unsigned long eventId, const UserId& userId)
-  : CSignal(PROTOxOPENxSECURE, LicqUser::getUserAccountId(userId).c_str()),
+LicqProtoOpenedWindowSignal::LicqProtoOpenedWindowSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxOPENEDxWINDOW, userId)
+{
+  // Empty
+}
+
+LicqProtoClosedWindowSignal::LicqProtoClosedWindowSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxCLOSEDxWINDOW, userId)
+{
+  // Empty
+}
+
+LicqProtoOpenSecureSignal::LicqProtoOpenSecureSignal(unsigned long eventId, const UserId& userId)
+  : LicqProtoSignal(PROTOxOPENxSECURE, LicqUser::getUserAccountId(userId).c_str()),
     myEventId(eventId)
 {
   // Empty
 }
 
-CCloseSecureSignal::CCloseSecureSignal(unsigned long eventId, const UserId& userId)
-  : CSignal(PROTOxCLOSExSECURE, LicqUser::getUserAccountId(userId).c_str()),
+LicqProtoCloseSecureSignal::LicqProtoCloseSecureSignal(unsigned long eventId, const UserId& userId)
+  : LicqProtoSignal(PROTOxCLOSExSECURE, LicqUser::getUserAccountId(userId).c_str()),
     myEventId(eventId)
 {
   // Empty

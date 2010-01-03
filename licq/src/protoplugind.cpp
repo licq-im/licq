@@ -13,8 +13,6 @@
 #include <cstdlib>
 #include <cstring>
 
-class CSignal;
-
 CProtoPlugin::CProtoPlugin(const char *_szLibName)
 {
   m_szLibName = _szLibName ? strdup(_szLibName) : 0;
@@ -50,7 +48,7 @@ bool CProtoPlugin::CompareThread(pthread_t t)
   return pthread_equal(t, thread_plugin);
 }
 
-void CProtoPlugin::PushSignal(CSignal *s)
+void CProtoPlugin::PushSignal(LicqProtoSignal* s)
 {
   pthread_mutex_lock(&mutex_signals);
   list_signals.push_back(s);
@@ -58,9 +56,9 @@ void CProtoPlugin::PushSignal(CSignal *s)
   write(pipe_plugin[PIPE_WRITE], "S", 1);
 }
 
-CSignal *CProtoPlugin::PopSignal()
+LicqProtoSignal* CProtoPlugin::PopSignal()
 {
-  CSignal *s = NULL;
+  LicqProtoSignal* s = NULL;
   pthread_mutex_lock(&mutex_signals);
   if (list_signals.size() != 0)
   {

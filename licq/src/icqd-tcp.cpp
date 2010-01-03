@@ -50,7 +50,7 @@ unsigned long CICQDaemon::sendMessage(const UserId& userId, const string& messag
   if (_nPPID == LICQ_PPID)
     icqSendMessage(eventId, userId, message, viaServer, flags, multipleRecipients, color);
   else
-    PushProtoSignal(new CSendMessageSignal(eventId, userId, message, convoId), _nPPID);
+    PushProtoSignal(new LicqProtoSendMessageSignal(eventId, userId, message, convoId), _nPPID);
 
   return eventId;
 }
@@ -328,7 +328,7 @@ unsigned long CICQDaemon::fileTransferPropose(const UserId& userId, const string
   if (nPPID == LICQ_PPID)
     icqFileTransfer(eventId, userId, filename, message, files, flags, viaServer);
   else
-    PushProtoSignal(new CSendFileSignal(eventId, userId, filename, message, files), nPPID);
+    PushProtoSignal(new LicqProtoSendFileSignal(eventId, userId, filename, message, files), nPPID);
 
   return eventId;
 }
@@ -708,11 +708,10 @@ unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
 void CICQDaemon::fileTransferCancel(const UserId& userId, unsigned long eventId)
 {
   unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
   if (nPPID == LICQ_PPID)
     icqFileTransferCancel(userId, (unsigned short)eventId);
   else
-    PushProtoSignal(new CCancelEventSignal(accountId.c_str(), eventId), nPPID);
+    PushProtoSignal(new LicqProtoCancelEventSignal(userId, eventId), nPPID);
 }
 
 void CICQDaemon::icqFileTransferCancel(const UserId& userId, unsigned short nSequence)
@@ -734,7 +733,6 @@ void CICQDaemon::fileTransferAccept(const UserId& userId, unsigned short port,
     bool viaServer)
 {
   unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
   if (nPPID == LICQ_PPID)
   {
     unsigned long nMsgId[] = { flag1, flag2 };
@@ -742,7 +740,7 @@ void CICQDaemon::fileTransferAccept(const UserId& userId, unsigned short port,
         nMsgId, viaServer, message, filename, filesize);
   }
   else
-    PushProtoSignal(new CSendEventReplySignal(accountId.c_str(), 0, true, port,
+    PushProtoSignal(new LicqProtoSendEventReplySignal(userId, string(), true, port,
         eventId, flag1, flag2, !viaServer), nPPID);
 }
 
@@ -778,7 +776,6 @@ void CICQDaemon::fileTransferRefuse(const UserId& userId, const string& message,
     bool viaServer)
 {
   unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
 
   if (nPPID == LICQ_PPID)
   {
@@ -786,7 +783,7 @@ void CICQDaemon::fileTransferRefuse(const UserId& userId, const string& message,
     icqFileTransferRefuse(userId, message, (unsigned short)eventId, msgId, viaServer);
   }
   else
-    PushProtoSignal(new CSendEventReplySignal(accountId.c_str(), message.c_str(),
+    PushProtoSignal(new LicqProtoSendEventReplySignal(userId, message,
         false, eventId, flag1, flag2, !viaServer), nPPID);
 }
 
@@ -990,7 +987,7 @@ unsigned long CICQDaemon::secureChannelOpen(const UserId& userId)
   if (nPPID == LICQ_PPID)
     icqOpenSecureChannel(eventId, userId);
   else
-    PushProtoSignal(new COpenSecureSignal(eventId, userId), nPPID);
+    PushProtoSignal(new LicqProtoOpenSecureSignal(eventId, userId), nPPID);
 
   return eventId;
 }
@@ -1048,7 +1045,7 @@ unsigned long CICQDaemon::secureChannelClose(const UserId& userId)
   if (nPPID == LICQ_PPID)
     icqCloseSecureChannel(eventId, userId);
   else
-    PushProtoSignal(new CCloseSecureSignal(eventId, userId), nPPID);
+    PushProtoSignal(new LicqProtoCloseSecureSignal(eventId, userId), nPPID);
 
   return eventId;
 }
@@ -1089,7 +1086,7 @@ void CICQDaemon::secureChannelCancelOpen(const UserId& userId, unsigned long eve
   if (nPPID == LICQ_PPID)
     icqOpenSecureChannelCancel(userId, (unsigned short)eventId);
   else
-    PushProtoSignal(new CCancelEventSignal(accountId.c_str(), eventId), nPPID);
+    PushProtoSignal(new LicqProtoCancelEventSignal(userId, eventId), nPPID);
 }
 
 
