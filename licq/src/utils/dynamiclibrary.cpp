@@ -45,7 +45,8 @@ std::string DynamicLibrary::Exception::getSystemError() const
 }
 
 DynamicLibrary::DynamicLibrary(const std::string& filename)
-  : myDlHandle(NULL)
+  : myName(filename),
+    myDlHandle(NULL)
 {
   // Clear any old error conditions
   ::dlerror();

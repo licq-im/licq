@@ -23,6 +23,7 @@
 #include "licq/exceptions/exception.h"
 
 #include <boost/noncopyable.hpp>
+#include <boost/shared_ptr.hpp>
 #include <string>
 
 namespace LicqDaemon
@@ -43,6 +44,8 @@ namespace LicqDaemon
 class DynamicLibrary : private boost::noncopyable
 {
 public:
+  typedef boost::shared_ptr<DynamicLibrary> Ptr;
+
   /**
    * The exception type thrown by DynamicLibrary.
    */
@@ -87,21 +90,28 @@ public:
   template<typename SymbolType>
   void getSymbol(const std::string& name, SymbolType** symbol);
 
+  const std::string& getName() const;
+
 private:
+  const std::string myName;
   void* myDlHandle;
 };
 
 template<>
 void DynamicLibrary::getSymbol(const std::string& name, void** symbol);
 
-} // namespace LicqDaemon
-
-
 template<typename SymbolType>
-inline void LicqDaemon::DynamicLibrary::getSymbol(
+inline void DynamicLibrary::getSymbol(
     const std::string& name, SymbolType** symbol)
 {
   getSymbol(name, reinterpret_cast<void**>(symbol));
 }
+
+inline const std::string& DynamicLibrary::getName() const
+{
+  return myName;
+}
+
+} // namespace LicqDaemon
 
 #endif

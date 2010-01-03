@@ -48,6 +48,12 @@ TEST(DynamicLibrary, getSymbol)
   EXPECT_NEAR(cos(3.14), -1.0, 0.01);
 }
 
+TEST(DynamicLibrary, getName)
+{
+  DynamicLibrary libm(LIBM);
+  EXPECT_EQ(LIBM, libm.getName());
+}
+
 TEST(DynamicLibrary, getMissingSymbolShouldFail)
 {
   DynamicLibrary libm(LIBM);
