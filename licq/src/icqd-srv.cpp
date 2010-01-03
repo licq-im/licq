@@ -455,15 +455,17 @@ unsigned long CICQDaemon::requestUserAutoResponse(const UserId& userId)
   unsigned long ppid = user->ppid();
   gUserManager.DropUser(user);
 
-  unsigned long nRet = 0;
+  unsigned long eventId = getNextEventId();
 
   if (ppid == LICQ_PPID)
-    nRet = icqFetchAutoResponseServer(accountId.c_str());
+    icqFetchAutoResponseServer(eventId, accountId.c_str());
+  else
+    eventId = 0;
 
-  return nRet;
+  return eventId;
 }
 
-unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
+void CICQDaemon::icqFetchAutoResponseServer(unsigned long eventId, const char *_szId)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CPU_CommonFamily *p = 0;
@@ -473,7 +475,8 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
   else
   {
     const LicqUser* u = gUserManager.fetchUser(userId);
-    if (u == NULL) return 0;
+    if (u == NULL)
+      return;
 
     int nCmd;
     switch (u->Status())
@@ -496,15 +499,13 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
     p = new CPU_ThroughServer(_szId, nCmd, 0);
   }
 
-  if (p == NULL) return 0;
+  if (p == NULL)
+    return;
 
   gLog.Info(tr("%sRequesting auto response from %s (%hu).\n"), L_SRVxSTR,
       USERID_TOSTR(userId), p->Sequence());
 
-  LicqEvent* result = SendExpectEvent_Server(userId, p, NULL);
-  if (result != NULL)
-    return result->EventId();
-  return 0;
+  SendExpectEvent_Server(eventId, userId, p, NULL);
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------

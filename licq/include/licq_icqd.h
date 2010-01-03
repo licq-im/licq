@@ -695,7 +695,7 @@ protected:
   void icqSendUrl(unsigned long eventId, const UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
-  unsigned long icqFileTransfer(const UserId& userId, const std::string& filename,
+  void icqFileTransfer(unsigned long eventId, const UserId& userId, const std::string& filename,
       const std::string& message, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(const UserId& userId, const std::string& message,
@@ -704,10 +704,10 @@ protected:
   void icqFileTransferAccept(const UserId& userId, unsigned short nPort,
       unsigned short nSequence, const unsigned long nMsgID[], bool viaServer,
       const std::string& message, const std::string& filename, unsigned long nFileSize);
-  unsigned long icqOpenSecureChannel(const UserId& userId);
-  unsigned long icqCloseSecureChannel(const UserId& userId);
+  void icqOpenSecureChannel(unsigned long eventId, const UserId& userId);
+  void icqCloseSecureChannel(unsigned long eventId, const UserId& userId);
   void icqOpenSecureChannelCancel(const UserId& userId, unsigned short nSequence);
-  unsigned long icqFetchAutoResponseServer(const char *);
+  void icqFetchAutoResponseServer(unsigned long eventId, const char *);
   unsigned long icqLogon(unsigned short logonStatus);
   unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const char *);

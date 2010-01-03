@@ -468,21 +468,15 @@ CUnignoreUserSignal::~CUnignoreUserSignal()
   // Empty
 }
 
-CSendFileSignal::CSendFileSignal(const char *szId, const char *szFile,
-                                 const char *szMessage, ConstFileList &_lFileList)
-  : CSignal(PROTOxSENDxFILE, szId)
+CSendFileSignal::CSendFileSignal(unsigned long eventId, const UserId& userId,
+    const string& filename, const string& message, ConstFileList& files)
+  : CSignal(PROTOxSENDxFILE, LicqUser::getUserAccountId(userId).c_str()),
+    myEventId(eventId),
+    myFilename(filename),
+    myMessage(message),
+    myFiles(files)
 {
-  m_szFile = (szFile ? strdup(szFile) : NULL);
-
-  m_szMessage = (szMessage ? strdup(szMessage) : NULL);
-
-  m_lFileList = _lFileList;
-}
-
-CSendFileSignal::~CSendFileSignal()
-{
-  free(m_szFile);
-  free(m_szMessage);
+  // Empty
 }
 
 CSendChatSignal::CSendChatSignal(const char *szId, const char *szMessage)
@@ -548,22 +542,16 @@ CClosedWindowSignal::~CClosedWindowSignal()
   // Empty
 }
 
-COpenSecureSignal::COpenSecureSignal(const char *szId)
-  : CSignal(PROTOxOPENxSECURE, szId)
-{
-}
-
-COpenSecureSignal::~COpenSecureSignal()
+COpenSecureSignal::COpenSecureSignal(unsigned long eventId, const UserId& userId)
+  : CSignal(PROTOxOPENxSECURE, LicqUser::getUserAccountId(userId).c_str()),
+    myEventId(eventId)
 {
   // Empty
 }
 
-CCloseSecureSignal::CCloseSecureSignal(const char *szId)
-  : CSignal(PROTOxCLOSExSECURE, szId)
-{
-}
-
-CCloseSecureSignal::~CCloseSecureSignal()
+CCloseSecureSignal::CCloseSecureSignal(unsigned long eventId, const UserId& userId)
+  : CSignal(PROTOxCLOSExSECURE, LicqUser::getUserAccountId(userId).c_str()),
+    myEventId(eventId)
 {
   // Empty
 }

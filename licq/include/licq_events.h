@@ -758,18 +758,19 @@ public:
 class CSendFileSignal : public CSignal
 {
 public:
-  CSendFileSignal(const char *_szUser, const char *_szFile,
-                  const char *_szMessage, ConstFileList &_lFileList);
-  virtual ~CSendFileSignal();
+  CSendFileSignal(unsigned long eventId, const UserId& userId, const std::string& filename,
+      const std::string& message, ConstFileList &files);
 
-  const char* GetFileName() const { return m_szFile; }
-  const char* GetMessage() const { return m_szMessage; }
-  ConstFileList GetFileList() const { return m_lFileList; }
+  unsigned long eventId() const { return myEventId; }
+  const std::string& filename() const { return myFilename; }
+  const std::string& message() const { return myMessage; }
+  ConstFileList files() const { return myFiles; }
 
 private:
-  char *m_szFile,
-       *m_szMessage;
-  ConstFileList m_lFileList;
+  unsigned long myEventId;
+  std::string myFilename;
+  std::string myMessage;
+  ConstFileList myFiles;
 };
 
 class CSendChatSignal : public CSignal
@@ -841,15 +842,21 @@ public:
 class COpenSecureSignal : public CSignal
 {
 public:
-  COpenSecureSignal(const char *);
-  virtual ~COpenSecureSignal();
+  COpenSecureSignal(unsigned long eventId, const UserId& userId);
+  unsigned long eventId() const { return myEventId; }
+
+private:
+  unsigned long myEventId;
 };
 
 class CCloseSecureSignal : public CSignal
 {
 public:
-  CCloseSecureSignal(const char *);
-  virtual ~CCloseSecureSignal();
+  CCloseSecureSignal(unsigned long eventId, const UserId& userId);
+  unsigned long eventId() const { return myEventId; }
+
+private:
+  unsigned long myEventId;
 };
 
 #endif

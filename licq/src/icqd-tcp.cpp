@@ -190,12 +190,16 @@ void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, con
 //-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
 {
+  unsigned long eventId = getNextEventId();
   UserId userId = LicqUser::makeUserId(_szId, _nPPID);
   if (_szId == gUserManager.OwnerId(LICQ_PPID))
     return 0;
 
   if (isalpha(_szId[0]))
-    return icqFetchAutoResponseServer(_szId);
+  {
+    icqFetchAutoResponseServer(eventId, _szId);
+    return eventId;
+  }
 
   ICQEvent *result;
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
@@ -214,13 +218,11 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
     CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(u);
     gLog.Info(tr("%sRequesting auto response from %s (#%hu).\n"), L_TCPxSTR,
 	      u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(u, p, NULL);
+    result = SendExpectEvent_Client(eventId, u, p, NULL);
   }
 
   gUserManager.DropUser(u);
-  if (result != NULL)
-    return result->EventId();
-  return 0;
+  return eventId;
 }
 
 
@@ -321,23 +323,21 @@ void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const s
 unsigned long CICQDaemon::fileTransferPropose(const UserId& userId, const string& filename,
     const string& message, ConstFileList& files, unsigned short flags, bool viaServer)
 {
-  unsigned long nRet = 0;
+  unsigned long eventId = getNextEventId();
   unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
   if (nPPID == LICQ_PPID)
-    nRet = icqFileTransfer(userId, filename, message, files, flags, viaServer);
+    icqFileTransfer(eventId, userId, filename, message, files, flags, viaServer);
   else
-    PushProtoSignal(new CSendFileSignal(accountId.c_str(), filename.c_str(),
-        message.c_str(), files), nPPID);
+    PushProtoSignal(new CSendFileSignal(eventId, userId, filename, message, files), nPPID);
 
-  return nRet;
+  return eventId;
 }
 
-unsigned long CICQDaemon::icqFileTransfer(const UserId& userId, const string& filename,
+void CICQDaemon::icqFileTransfer(unsigned long eventId, const UserId& userId, const string& filename,
     const string& message, ConstFileList &lFileList, unsigned short nLevel, bool bServer)
 {
   if (gUserManager.isOwner(userId))
-    return 0;
+    return;
 
   const char* szFilename = filename.c_str();
   const char* szDescription = message.c_str();
@@ -352,7 +352,8 @@ unsigned long CICQDaemon::icqFileTransfer(const UserId& userId, const string& fi
   CEventFile *e = NULL;
 
   LicqUser *u = gUserManager.fetchUser(userId, LOCK_W);
-  if (u == NULL) return 0;
+  if (u == NULL)
+    return;
 
   if (bServer)
   {
@@ -408,7 +409,7 @@ unsigned long CICQDaemon::icqFileTransfer(const UserId& userId, const string& fi
                 nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "", 
                 u->GetAlias(), -p->Sequence());
 
-      result = SendExpectEvent_Client(u, p, e);
+      result = SendExpectEvent_Client(eventId, u, p, e);
     }
   }
 
@@ -418,11 +419,6 @@ unsigned long CICQDaemon::icqFileTransfer(const UserId& userId, const string& fi
 
   if (szDosDesc)
     delete [] szDosDesc;
-
-  if (result)
-    return result->EventId();
-  else
-    return 0;
 }
 
 //-----CICQDaemon::sendContactList-------------------------------------------
@@ -476,7 +472,8 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   else
   {
     u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
-    if (u == NULL) return 0;
+    if (u == NULL)
+      return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
@@ -966,118 +963,119 @@ void CICQDaemon::icqChatRequestAccept(const char* id, unsigned short nPort,
 
 unsigned long CICQDaemon::secureChannelOpen(const UserId& userId)
 {
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
-
-  unsigned long nRet = 0;
-  if (nPPID == LICQ_PPID)
-    nRet = icqOpenSecureChannel(userId);
-  else
-    PushProtoSignal(new COpenSecureSignal(accountId.c_str()), nPPID);
-
-  return nRet;
-}
-
-unsigned long CICQDaemon::icqOpenSecureChannel(const UserId& userId)
-{
   if (gUserManager.isOwner(userId))
     return 0;
 
+  {
+    LicqUserReadGuard u(userId);
+    if (!u.isLocked())
+    {
+      gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
+          L_WARNxSTR, USERID_TOSTR(userId));
+      return 0;
+    }
+
+    // Check that the user doesn't already have a secure channel
+    if (u->Secure())
+    {
+      gLog.Warn(tr("%s%s (%s) already has a secure channel.\n"), L_WARNxSTR,
+          u->GetAlias(), USERID_TOSTR(userId));
+      return 0;
+    }
+  }
+
+  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
+
+  unsigned long eventId = getNextEventId();
+  if (nPPID == LICQ_PPID)
+    icqOpenSecureChannel(eventId, userId);
+  else
+    PushProtoSignal(new COpenSecureSignal(eventId, userId), nPPID);
+
+  return eventId;
+}
+
+void CICQDaemon::icqOpenSecureChannel(unsigned long eventId, const UserId& userId)
+{
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
 
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
-  {
-    gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
-        L_WARNxSTR, USERID_TOSTR(userId));
-    return 0;
-  }
-
-  // Check that the user doesn't already have a secure channel
-  if (u->Secure())
-  {
-    gLog.Warn(tr("%s%s (%s) already has a secure channel.\n"), L_WARNxSTR,
-        u->GetAlias(), USERID_TOSTR(userId));
-    gUserManager.DropUser(u);
-    return 0;
-  }
+    return;
 
   CPT_OpenSecureChannel *pkt = new CPT_OpenSecureChannel(u);
   gLog.Info(tr("%sSending request for secure channel to %s (#%hu).\n"), L_TCPxSTR,
             u->GetAlias(), -pkt->Sequence());
-  result = SendExpectEvent_Client(u, pkt, NULL);
+  result = SendExpectEvent_Client(eventId, u, pkt, NULL);
 
   u->SetSendServer(false);
 
   gUserManager.DropUser(u);
 
-  if (result != NULL)
-    return result->EventId();
-  return 0;
-
 #else // No OpenSSL
   gLog.Warn("%sicqOpenSecureChannel() to %s called when we do not support OpenSSL.\n",
       L_WARNxSTR, USERID_TOSTR(userId));
-  return 0;
+  return;
 
 #endif
 }
 
 unsigned long CICQDaemon::secureChannelClose(const UserId& userId)
 {
+  {
+    LicqUserReadGuard u(userId);
+    if (!u.isLocked())
+    {
+      gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
+          L_WARNxSTR, USERID_TOSTR(userId));
+      return 0;
+    }
+
+    // Check that the user have a secure channel to close
+    if (!u->Secure())
+    {
+      gLog.Warn(tr("%s%s (%s) does not have a secure channel.\n"), L_WARNxSTR,
+          u->GetAlias(), USERID_TOSTR(userId));
+      return 0;
+    }
+  }
+
   unsigned long nPPID = LicqUser::getUserProtocolId(userId);
   string accountId = LicqUser::getUserAccountId(userId);
 
-  unsigned long nRet = 0;
+  unsigned long eventId = getNextEventId();
   if (nPPID == LICQ_PPID)
-    nRet = icqCloseSecureChannel(userId);
+    icqCloseSecureChannel(eventId, userId);
   else
-    PushProtoSignal(new CCloseSecureSignal(accountId.c_str()), nPPID);
+    PushProtoSignal(new CCloseSecureSignal(eventId, userId), nPPID);
 
-  return nRet;
+  return eventId;
 }
 
 
-unsigned long CICQDaemon::icqCloseSecureChannel(const UserId& userId)
+void CICQDaemon::icqCloseSecureChannel(unsigned long eventId, const UserId& userId)
 {
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
 
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
-  {
-    gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
-        L_WARNxSTR, USERID_TOSTR(userId));
-    return 0;
-  }
-
-  // Check that the user doesn't already have a secure channel
-  if (!u->Secure())
-  {
-    gLog.Warn(tr("%s%s (%s) does not have a secure channel.\n"), L_WARNxSTR,
-        u->GetAlias(), USERID_TOSTR(userId));
-    gUserManager.DropUser(u);
-    return 0;
-  }
+    return;
 
   CPT_CloseSecureChannel *pkt = new CPT_CloseSecureChannel(u);
   gLog.Info(tr("%sClosing secure channel with %s (#%hu).\n"), L_TCPxSTR,
             u->GetAlias(), -pkt->Sequence());
-  result = SendExpectEvent_Client(u, pkt, NULL);
+  result = SendExpectEvent_Client(eventId, u, pkt, NULL);
 
   u->SetSendServer(false);
 
   gUserManager.DropUser(u);
 
-  if (result != NULL)
-    return result->EventId();
-  return 0;
-
 #else // No OpenSSL
   gLog.Warn("%sicqCloseSecureChannel() to %s called when we do not support OpenSSL.\n",
       L_WARNxSTR, USERID_TOSTR(userId));
-  return 0;
+  return;
 
 #endif
 }
