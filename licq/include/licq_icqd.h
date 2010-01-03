@@ -127,26 +127,26 @@ typedef std::vector<CDaemonStats> DaemonStatsList;
 class CConversation
 {
 public:
-  bool HasUser(const char *sz);
+  bool hasUser(const UserId& userId);
   bool IsEmpty() const                  { return m_vUsers.size() == 0; }
   int NumUsers() const                  { return m_vUsers.size(); }
 
   int Socket() const                    { return m_nSocket; }
   unsigned long CID() const             { return m_nCID; }
 
-  std::string GetUser(int n) const      { return m_vUsers[n]; }
+  const UserId& getUser(int n) const    { return m_vUsers[n]; }
 
 private:
   CConversation(int nSocket, unsigned long nPPID);
   ~CConversation();
 
-  bool AddUser(const char *sz);
-  bool RemoveUser(const char *sz);
+  bool addUser(const UserId& userId);
+  bool removeUser(const UserId& userId);
 
   int m_nSocket;
   unsigned long m_nPPID;
   unsigned long m_nCID;
-  std::vector<std::string> m_vUsers;
+  std::vector<UserId> m_vUsers;
 
   static unsigned long s_nCID;
   static pthread_mutex_t s_xMutex;
@@ -664,10 +664,10 @@ public:
 
   // Conversation functions
   CConversation *AddConversation(int nSocket, unsigned long nPPID);
-  bool AddUserConversation(unsigned long nCID, const char *szId);
-  bool AddUserConversation(int nSocket, const char *szId);
-  bool RemoveUserConversation(unsigned long nCID, const char *szId);
-  bool RemoveUserConversation(int nSocket, const char *szId);
+  bool addUserConversation(unsigned long nCID, const UserId& userId);
+  bool addUserConversation(int nSocket, const UserId& userId);
+  bool removeUserConversation(unsigned long nCID, const UserId& userId);
+  bool removeUserConversation(int nSocket, const UserId& userId);
   CConversation *FindConversation(int nSocket);
   CConversation *FindConversation(unsigned long nCID);
   bool RemoveConversation(unsigned long nCID);

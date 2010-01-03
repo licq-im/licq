@@ -92,31 +92,30 @@ CConversation::~CConversation()
   // Empty
 }
 
-bool CConversation::HasUser(const char *szUser)
+bool CConversation::hasUser(const UserId& userId)
 {
-  return (std::find(m_vUsers.begin(), m_vUsers.end(), szUser) != m_vUsers.end()); 
+  return (std::find(m_vUsers.begin(), m_vUsers.end(), userId) != m_vUsers.end());
 }
 
-bool CConversation::AddUser(const char *szUser)
+bool CConversation::addUser(const UserId& userId)
 {
-  if (!HasUser(szUser))
+  if (!hasUser(userId))
   {
-    m_vUsers.push_back(szUser);
+    m_vUsers.push_back(userId);
     return true;
   }
   else
     return false;
 }
 
-bool CConversation::RemoveUser(const char *szUser)
+bool CConversation::removeUser(const UserId& userId)
 {
-  if (HasUser(szUser))
+  if (hasUser(userId))
   {
-    string strUser(szUser);
-    vector<string>::iterator i;
+    vector<UserId>::iterator i;
     for (i = m_vUsers.begin(); i != m_vUsers.end(); ++i)
     {
-      if (*i == strUser)
+      if (*i == userId)
       {
         m_vUsers.erase(i);
         return true;
@@ -2075,7 +2074,7 @@ CConversation *CICQDaemon::AddConversation(int _nSocket, unsigned long _nPPID)
   return pNew;
 }
 
-bool CICQDaemon::AddUserConversation(unsigned long _nCID, const char *_szId)
+bool CICQDaemon::addUserConversation(unsigned long _nCID, const UserId& userId)
 {
   bool bAdded = false;
   ConversationList::iterator iter;
@@ -2085,7 +2084,7 @@ bool CICQDaemon::AddUserConversation(unsigned long _nCID, const char *_szId)
     if ((*iter)->CID() == _nCID)
     {
       bAdded = true;
-      (*iter)->AddUser(_szId);
+      (*iter)->addUser(userId);
       break;
     }
   }
@@ -2094,7 +2093,7 @@ bool CICQDaemon::AddUserConversation(unsigned long _nCID, const char *_szId)
   return bAdded;
 }
 
-bool CICQDaemon::AddUserConversation(int _nSocket, const char *_szId)
+bool CICQDaemon::addUserConversation(int _nSocket, const UserId& userId)
 {
   bool bAdded = false;
   ConversationList::iterator iter;
@@ -2104,7 +2103,7 @@ bool CICQDaemon::AddUserConversation(int _nSocket, const char *_szId)
     if ((*iter)->Socket() == _nSocket)
     {
       bAdded = true;
-      (*iter)->AddUser(_szId);
+      (*iter)->addUser(userId);
       break;
     }
   }
@@ -2113,7 +2112,7 @@ bool CICQDaemon::AddUserConversation(int _nSocket, const char *_szId)
   return bAdded;
 }
 
-bool CICQDaemon::RemoveUserConversation(unsigned long _nCID, const char *_szId)
+bool CICQDaemon::removeUserConversation(unsigned long _nCID, const UserId& userId)
 {
   bool bRemoved = false;
   ConversationList::iterator iter;
@@ -2122,7 +2121,7 @@ bool CICQDaemon::RemoveUserConversation(unsigned long _nCID, const char *_szId)
   {
     if ((*iter)->CID() == _nCID)
     {
-      bRemoved = (*iter)->RemoveUser(_szId);
+      bRemoved = (*iter)->removeUser(userId);
       break;
     }
   }
@@ -2131,7 +2130,7 @@ bool CICQDaemon::RemoveUserConversation(unsigned long _nCID, const char *_szId)
   return bRemoved;
 }
 
-bool CICQDaemon::RemoveUserConversation(int _nSocket, const char *_szId)
+bool CICQDaemon::removeUserConversation(int _nSocket, const UserId& userId)
 {
   bool bRemoved = false;
   ConversationList::iterator iter;
@@ -2140,7 +2139,7 @@ bool CICQDaemon::RemoveUserConversation(int _nSocket, const char *_szId)
   {
     if ((*iter)->Socket() == _nSocket)
     {
-      bRemoved = (*iter)->RemoveUser(_szId);
+      bRemoved = (*iter)->removeUser(userId);
       break;
     }
   }

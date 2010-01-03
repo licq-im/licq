@@ -49,10 +49,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       packet->SkipParameter(); // Seq
       packet->SkipParameter(); // current user to add
       packet->SkipParameter(); // total users in conversation
-      string strUser = packet->GetParameter();
+      UserId userId = LicqUser::makeUserId(packet->GetParameter(), MSN_PPID);
 
       bool newUser;
-      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
       LicqUser* u = gUserManager.fetchUser(userId, LOCK_R, true, &newUser);
       if (newUser)
       {
@@ -67,14 +66,14 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       // Add the user to the conversation
       if (!m_pDaemon->FindConversation(nSock))
         m_pDaemon->AddConversation(nSock, MSN_PPID);  
-      m_pDaemon->AddUserConversation(nSock, strUser.c_str());
-            
+      m_pDaemon->addUserConversation(nSock, userId);
+
       // Notify the plugins of the new CID
       m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
 
       m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
 
-      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
+      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, USERID_TOSTR(userId));
     }
     else if (strCmd == "ANS")
     {
@@ -197,16 +196,14 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           {
             for (int i = 0; i < pConv->NumUsers(); i++)
             {
-              string strUser = pConv->GetUser(i);
-              ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-              if (u)
-              {
-                e->m_pUserEvent->AddToHistory(u, D_SENDER);
-                u->SetLastSentEvent();
-                if (u->id() == e->userId())
-                  m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
-                gUserManager.DropUser(u);
-              }
+              LicqUserWriteGuard u(pConv->getUser(i));
+              if (!u.isLocked())
+                continue;
+
+              e->m_pUserEvent->AddToHistory(*u, D_SENDER);
+              u->SetLastSentEvent();
+              if (u->id() == e->userId())
+                m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, *u);
             }
           }
           else
@@ -254,8 +251,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     }
     else if (strCmd == "JOI")
     {
-      string strUser = packet->GetParameter();
-      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
+      UserId userId = LicqUser::makeUserId(packet->GetParameter(), MSN_PPID);
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, USERID_TOSTR(userId));
 
       SStartMessage *pStart = 0;
@@ -277,7 +273,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (!m_pDaemon->FindConversation(nSock))
           m_pDaemon->AddConversation(nSock, MSN_PPID);
 
-        m_pDaemon->AddUserConversation(nSock, strUser.c_str());
+        m_pDaemon->addUserConversation(nSock, userId);
 
         // Notify the plugins of the new CID
         m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
@@ -300,33 +296,32 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     else if (strCmd == "BYE")
     {
       // closed the window and connection
-      string strUser = packet->GetParameter();
-      gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, strUser.c_str());
+      UserId userId = LicqUser::makeUserId(packet->GetParameter(), MSN_PPID);
+      gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, USERID_TOSTR(userId));
 
-      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
       m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
-      m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
+      m_pDaemon->removeUserConversation(nSock, userId);
       CConversation *pConv = m_pDaemon->FindConversation(nSock);
-    
-      ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_W);
-      if (u)
+
+      int nThisSock = -1;
+
       {
-        u->ClearSocketDesc(ICQ_CHNxNONE);
-        if (pConv && !pConv->IsEmpty())
+        LicqUserWriteGuard u(userId);
+        if (u.isLocked())
         {
-          gUserManager.DropUser(u);
+          u->ClearSocketDesc(ICQ_CHNxNONE);
+          nThisSock = u->SocketDesc(ICQ_CHNxNONE);
         }
-        else
-        {
-          int nThisSock = u->SocketDesc(ICQ_CHNxNONE);
-          gUserManager.DropUser(u);
-          INetSocket *s = gSocketMan.FetchSocket(nThisSock);
-          gSocketMan.DropSocket(s);  
-          gSocketMan.CloseSocket(nSock);
-          if (pConv)
-            m_pDaemon->RemoveConversation(pConv->CID());
-        }
+      }
+
+      if (pConv == NULL || pConv->IsEmpty())
+      {
+        INetSocket* s = gSocketMan.FetchSocket(nThisSock);
+        gSocketMan.DropSocket(s);
+        gSocketMan.CloseSocket(nSock);
+        if (pConv != NULL)
+          m_pDaemon->RemoveConversation(pConv->CID());
       }
     }
     else if (strCmd == "217")
@@ -392,8 +387,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
 
     m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
-    string strUser = LicqUser::getUserAccountId(userId);
-    m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
+    m_pDaemon->removeUserConversation(nSock, userId);
     CConversation *pConv = m_pDaemon->FindConversation(nSock);
 
     {
@@ -402,11 +396,11 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
         u->ClearSocketDesc(ICQ_CHNxNONE);
     }
 
-    if (pConv->IsEmpty())
+    if (pConv == NULL || pConv->IsEmpty())
     {
       gSocketMan.DropSocket(s);
       gSocketMan.CloseSocket(nSock);
-      if (pConv)
+      if (pConv != NULL)
         m_pDaemon->RemoveConversation(pConv->CID());
     }
   }
@@ -643,14 +637,13 @@ void CMSN::killConversation(int sock)
     while (!convo->IsEmpty())
     {
       // Get first user in conversation
-      string accountId = convo->GetUser(0);
-      UserId userId = LicqUser::makeUserId(accountId, MSN_PPID);
+      UserId userId = convo->getUser(0);
 
       // Signal that user is removed
       m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, convoId));
 
       // Remove user from the conversation
-      m_pDaemon->RemoveUserConversation(convoId, accountId.c_str());
+      m_pDaemon->removeUserConversation(convoId, userId);
 
       // Clear socket from user if it's still is associated with this conversation
       LicqUserWriteGuard u(userId);
