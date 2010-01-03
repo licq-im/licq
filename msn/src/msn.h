@@ -69,7 +69,7 @@ struct SStartMessage
 {
   CMSNPacket *m_pPacket;
   ICQEvent *m_pEvent;
-  char *m_szUser;
+  UserId userId;
   unsigned long m_nSeq;
   bool m_bConnecting,
        m_bDataConnection;
@@ -100,7 +100,7 @@ public:
   pthread_mutex_t mutex_ServerSocket; // Ugly, but whatever.
 
 private:
-  void ProcessSignal(CSignal *);
+  void ProcessSignal(LicqProtoSignal* s);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);
   void ProcessNexusPacket(CMSNBuffer &);
@@ -109,7 +109,7 @@ private:
 
   // Network functions
   void SendPacket(CMSNPacket *);
-  void Send_SB_Packet(const std::string& user, CMSNPacket* p, int nSocket = -1,
+  void Send_SB_Packet(const UserId& userId, CMSNPacket* p, int nSocket = -1,
       bool bDelete = true);
   void MSNLogon(const char *, int, unsigned long);
   void MSNGetServer();
@@ -120,17 +120,17 @@ private:
       const std::string& cookie, const std::string& user);
 
   void MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket);
-  void MSNSendMessage(unsigned long eventId, const char* _szUser, const std::string& message,
+  void MSNSendMessage(unsigned long eventId, const UserId& userId, const std::string& message,
       pthread_t _tPlugin, unsigned long _nCID);
-  void MSNSendTypingNotification(const char* _szUser, unsigned long _nCID);
+  void MSNSendTypingNotification(const UserId& userId, unsigned long convoId);
   void MSNChangeStatus(unsigned long);
-  void MSNAddUser(const char* szUser);
-  void MSNRemoveUser(const char* szUser);
-  void MSNRenameUser(const char* szUser);
-  void MSNGrantAuth(const char* szUser);
-  void MSNUpdateUser(const char* szUser);
-  void MSNBlockUser(const char* szUser);
-  void MSNUnblockUser(const char* szUser);
+  void MSNAddUser(const UserId& userId);
+  void MSNRemoveUser(const UserId& userId);
+  void MSNRenameUser(const UserId& userId);
+  void MSNGrantAuth(const UserId& userId);
+  void MSNUpdateUser(const std::string& alias);
+  void MSNBlockUser(const UserId& userId);
+  void MSNUnblockUser(const UserId& userId);
   void MSNGetDisplayPicture(const std::string& user, const std::string& msnObject);
 
   // Internal functions

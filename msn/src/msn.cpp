@@ -537,7 +537,7 @@ void CMSN::ProcessPipe()
   {
   case 'S':  // A signal is pending
     {
-      CSignal *s = m_pDaemon->PopProtoSignal();
+      LicqProtoSignal* s = m_pDaemon->PopProtoSignal();
       ProcessSignal(s);
       break;
     }
@@ -549,30 +549,30 @@ void CMSN::ProcessPipe()
   }
 }
 
-void CMSN::ProcessSignal(CSignal *s)
+void CMSN::ProcessSignal(LicqProtoSignal* s)
 {
-  if (m_nServerSocket < 0 && s->Type() != PROTOxLOGON)
+  if (m_nServerSocket < 0 && s->type() != PROTOxLOGON)
   {
     delete s;
     return;
   }
 
-  switch (s->Type())
+  switch (s->type())
   {
     case PROTOxLOGON:
     {
       if (m_nServerSocket < 0)
       {
-        CLogonSignal *sig = static_cast<CLogonSignal *>(s);
-        MSNLogon(myServerAddress.c_str(), myServerPort, sig->LogonStatus());
+        LicqProtoLogonSignal* sig = static_cast<LicqProtoLogonSignal*>(s);
+        MSNLogon(myServerAddress.c_str(), myServerPort, sig->status());
       }
       break;
     }
     
     case PROTOxCHANGE_STATUS:
     {
-      CChangeStatusSignal *sig = static_cast<CChangeStatusSignal *>(s);
-      MSNChangeStatus(sig->Status());
+      LicqProtoChangeStatusSignal* sig = static_cast<LicqProtoChangeStatusSignal*>(s);
+      MSNChangeStatus(sig->status());
       break;
     }
     
@@ -584,78 +584,77 @@ void CMSN::ProcessSignal(CSignal *s)
     
     case PROTOxADD_USER:
     {
-      CAddUserSignal *sig = static_cast<CAddUserSignal *>(s);
-      MSNAddUser(sig->Id());
+      LicqProtoAddUserSignal* sig = static_cast<LicqProtoAddUserSignal*>(s);
+      MSNAddUser(sig->userId());
       break;
     }
     
     case PROTOxREM_USER:
     {
-      CRemoveUserSignal *sig = static_cast<CRemoveUserSignal *>(s);
-      MSNRemoveUser(sig->Id());
+      LicqProtoRemoveUserSignal* sig = static_cast<LicqProtoRemoveUserSignal*>(s);
+      MSNRemoveUser(sig->userId());
       break;
     }
     
     case PROTOxRENAME_USER:
     {
-      CRenameUserSignal *sig = static_cast<CRenameUserSignal *>(s);
-      MSNRenameUser(sig->Id());
+      LicqProtoRenameUserSignal* sig = static_cast<LicqProtoRenameUserSignal*>(s);
+      MSNRenameUser(sig->userId());
       break;
     }
 
     case PROTOxSENDxTYPING_NOTIFICATION:
     {
-      CTypingNotificationSignal *sig =
-        static_cast<CTypingNotificationSignal *>(s);
-      if (sig->Active())
-        MSNSendTypingNotification(sig->Id(), sig->CID());
+      LicqProtoTypingNotificationSignal* sig = static_cast<LicqProtoTypingNotificationSignal*>(s);
+      if (sig->active())
+        MSNSendTypingNotification(sig->userId(), sig->convoId());
       break;
     }
     
     case PROTOxSENDxMSG:
     {
-      CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
-      MSNSendMessage(sig->eventId(), sig->Id(), sig->message(), sig->Thread(), sig->CID());
+      LicqProtoSendMessageSignal* sig = static_cast<LicqProtoSendMessageSignal*>(s);
+      MSNSendMessage(sig->eventId(), sig->userId(), sig->message(), sig->callerThread(), sig->convoId());
       break;
     }
 
     case PROTOxSENDxGRANTxAUTH:
     {
-      CGrantAuthSignal *sig = static_cast<CGrantAuthSignal *>(s);
-      MSNGrantAuth(sig->Id());
+      LicqProtoGrantAuthSignal* sig = static_cast<LicqProtoGrantAuthSignal*>(s);
+      MSNGrantAuth(sig->userId());
       break;
     }
 
     case PROTOxSENDxREFUSExAUTH:
     {
-//      CRefuseAuthSignal *sig = static_cast<CRefuseAuthSignal *>(s);
+//      LicqProtoRefuseAuthSignal* sig = static_cast<LicqProtoRefuseAuthSignal*>(s);
       break;
     }
 
     case PROTOxREQUESTxINFO:
     {
-//      CRequestInfo *sig = static_cast<CRequestInfo *>(s);
+//      LicqProtoRequestInfo* sig = static_cast<LicqProtoRequestInfo*>(s);
       break;
     }
 
     case PROTOxUPDATExINFO:
     {
-      CUpdateInfoSignal *sig = static_cast<CUpdateInfoSignal *>(s);
-      MSNUpdateUser(sig->Alias());
+      LicqProtoUpdateInfoSignal* sig = static_cast<LicqProtoUpdateInfoSignal*>(s);
+      MSNUpdateUser(sig->alias());
       break;
     }
 
     case PROTOxBLOCKxUSER:
     {
-      CBlockUserSignal *sig = static_cast<CBlockUserSignal *>(s);
-      MSNBlockUser(sig->Id());
+      LicqProtoBlockUserSignal* sig = static_cast<LicqProtoBlockUserSignal*>(s);
+      MSNBlockUser(sig->userId());
       break;
     }
     
     case PROTOxUNBLOCKxUSER:
     {
-      CUnblockUserSignal *sig = static_cast<CUnblockUserSignal *>(s);
-      MSNUnblockUser(sig->Id());
+      LicqProtoUnblockUserSignal *sig = static_cast<LicqProtoUnblockUserSignal*>(s);
+      MSNUnblockUser(sig->userId());
       break;
     }
    

@@ -246,7 +246,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       if (pStart)
       {
 	pStart->m_bConnecting = true;
-	pReply = new CPS_MSNCall(pStart->m_szUser);
+        string accountId = LicqUser::getUserAccountId(pStart->userId);
+        pReply = new CPS_MSNCall(accountId.c_str());
 	pStart->m_nSeq = pReply->Sequence();
       }
       pthread_mutex_unlock(&mutex_StartList);
@@ -254,14 +255,15 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     else if (strCmd == "JOI")
     {
       string strUser = packet->GetParameter();
-      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
+      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
+      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, USERID_TOSTR(userId));
 
       SStartMessage *pStart = 0;
       StartList::iterator it;
       pthread_mutex_lock(&mutex_StartList);
       for (it = m_lStart.begin(); it != m_lStart.end(); it++)
       {
-        if (strcmp((*it)->m_szUser, strUser.c_str()) == 0) // case insensitive perhaps?
+        if ((*it)->userId == userId) // case insensitive perhaps?
         {
           pStart = *it;
           m_lStart.erase(it);
@@ -278,7 +280,6 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         m_pDaemon->AddUserConversation(nSock, strUser.c_str());
 
         // Notify the plugins of the new CID
-        UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
         m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
 
         // Notify the plugins
@@ -290,10 +291,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (pStart->m_pEvent)
           m_pEvents.push_back(pStart->m_pEvent);
 
-        string strUser(pStart->m_szUser);
-        Send_SB_Packet(strUser, pStart->m_pPacket, nSock, false);
-        
-        free(pStart->m_szUser);
+        Send_SB_Packet(pStart->userId, pStart->m_pPacket, nSock, false);
+
         delete pStart;
       }
       pthread_mutex_unlock(&mutex_StartList);
@@ -364,22 +363,24 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     
     if (pReply)
     {
-      string strTo(szUser);
-      Send_SB_Packet(strTo, pReply, nSock);
+      UserId userId = LicqUser::makeUserId(szUser, MSN_PPID);
+      Send_SB_Packet(userId, pReply, nSock);
     }
   }
   
   //delete packet;
 }
 
-void CMSN::Send_SB_Packet(const string &strUser, CMSNPacket *p, int nSocket, bool bDelete)
+void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool bDelete)
 {
-  const ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
-  if (!u) return;
-
-  int nSock = nSocket != -1 ? nSocket : u->SocketDesc(ICQ_CHNxNONE);
-  UserId userId = u->id();
-  gUserManager.DropUser(u);  
+  int nSock = nSocket;
+  if (nSocket == -1)
+  {
+    LicqUserReadGuard u(userId);
+    if (!u.isLocked())
+      return;
+    nSock = u->SocketDesc(ICQ_CHNxNONE);
+  }
   INetSocket *s = gSocketMan.FetchSocket(nSock);
   if (!s)
     s = gSocketMan.FetchSocket(nSocket);
@@ -387,30 +388,26 @@ void CMSN::Send_SB_Packet(const string &strUser, CMSNPacket *p, int nSocket, boo
   TCPSocket *sock = static_cast<TCPSocket *>(s);
   if (!sock->SendRaw(p->getBuffer()))
   {
-    gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, strUser.c_str());
+    gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, USERID_TOSTR(userId));
 
     m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
+    string strUser = LicqUser::getUserAccountId(userId);
     m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
     CConversation *pConv = m_pDaemon->FindConversation(nSock);
 
-    ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-    if (u)
     {
-      u->ClearSocketDesc(ICQ_CHNxNONE);
-      if (!pConv->IsEmpty())
-      {
-        gUserManager.DropUser(u);
-      }
-      else
-      {
-//        int nThisSock = u->SocketDesc(ICQ_CHNxNONE);
-        gUserManager.DropUser(u);
-        gSocketMan.DropSocket(s);
-        gSocketMan.CloseSocket(nSock);
-        if (pConv)
-          m_pDaemon->RemoveConversation(pConv->CID());
-      }
+      LicqUserWriteGuard u(userId);
+      if (u.isLocked())
+        u->ClearSocketDesc(ICQ_CHNxNONE);
+    }
+
+    if (pConv->IsEmpty())
+    {
+      gSocketMan.DropSocket(s);
+      gSocketMan.CloseSocket(nSock);
+      if (pConv)
+        m_pDaemon->RemoveConversation(pConv->CID());
     }
   }
   else
@@ -453,7 +450,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     return false;
   }
   //pStart->m_bConnecting = true;
-  TCPSocket* sock = new TCPSocket(LicqUser::makeUserId(pStart->m_szUser, MSN_PPID));
+  TCPSocket* sock = new TCPSocket(pStart->userId);
   pthread_mutex_unlock(&mutex_StartList);
 
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
@@ -471,19 +468,20 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   killConversation(nSocket);
 
   gSocketMan.AddSocket(sock);
-  ICQUser *u = gUserManager.FetchUser(pStart->m_szUser, MSN_PPID, LOCK_W);
-  if (u)
+
   {
-    if (pStart->m_bDataConnection)
-      sock->SetChannel(ICQ_CHNxINFO);
-    u->SetSocketDesc(sock);
-    gUserManager.DropUser(u);
+    LicqUserWriteGuard u(pStart->userId);
+    if (u.isLocked())
+    {
+      if (pStart->m_bDataConnection)
+        sock->SetChannel(ICQ_CHNxINFO);
+      u->SetSocketDesc(sock);
+    }
   }
   gSocketMan.DropSocket(sock);
   
   CMSNPacket *pReply = new CPS_MSN_SBStart(strCookie.c_str(), m_szUserName);
-  string strUser(pStart->m_szUser);
-  Send_SB_Packet(strUser, pReply, nSocket);  
+  Send_SB_Packet(pStart->userId, pReply, nSocket);
 
   return true;
 }
@@ -540,14 +538,15 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   }
   gUserManager.DropUser(u);
   gSocketMan.DropSocket(sock);
-  
-  Send_SB_Packet(strUser, pReply, nSocket);
-  
+
+  Send_SB_Packet(userId, pReply, nSocket);
+
   return true;
 }
 
 void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
 {
+  UserId userId = LicqUser::makeUserId(_szUser, MSN_PPID);
   //const ICQUser* u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   //if (!u) return;
   //gUserManager.DropUser(u);
@@ -558,7 +557,7 @@ void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
   SStartMessage *p = new SStartMessage;
   p->m_pPacket = _pPacket;
   p->m_pEvent = 0;
-  p->m_szUser = strdup(_szUser);
+  p->userId = userId;
   p->m_nSeq = pSB->Sequence();
   p->m_bConnecting = false;
   p->m_bDataConnection = true;
@@ -569,10 +568,9 @@ void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
   SendPacket(pSB);
 }
 
-void CMSN::MSNSendMessage(unsigned long eventId, const char* _szUser, const string& message,
+void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const string& message,
     pthread_t _tPlugin, unsigned long _nCID)
 {
-  string strUser(_szUser);
   int nSocket = -1;
   
   if (_nCID)
@@ -581,11 +579,6 @@ void CMSN::MSNSendMessage(unsigned long eventId, const char* _szUser, const stri
     if (pConv)
       nSocket = pConv->Socket();
   } 
-
-  const ICQUser* u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
-  if (!u) return;
-  UserId userId = u->id();
-  gUserManager.DropUser(u);
 
   char* szRNMsg = gTranslator.NToRN(message.c_str());
   CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
@@ -600,7 +593,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const char* _szUser, const stri
   {
     m_pEvents.push_back(e);
 
-    Send_SB_Packet(strUser, pSend, nSocket, false);
+    Send_SB_Packet(userId, pSend, nSocket, false);
   }
   else
   {
@@ -610,7 +603,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const char* _szUser, const stri
     SStartMessage *p = new SStartMessage;
     p->m_pPacket = pSend;
     p->m_pEvent = e;
-    p->m_szUser = strdup(_szUser);
+    p->userId = userId;
     p->m_nSeq = pSB->Sequence();
     p->m_bConnecting = false;
     p->m_bDataConnection = false;
@@ -622,9 +615,8 @@ void CMSN::MSNSendMessage(unsigned long eventId, const char* _szUser, const stri
   }  
 }
 
-void CMSN::MSNSendTypingNotification(const char* _szUser, unsigned long _nCID)
+void CMSN::MSNSendTypingNotification(const UserId& userId, unsigned long _nCID)
 {
-  string strUser(_szUser);
   CMSNPacket *pSend = new CPS_MSNTypingNotification(m_szUserName);
   int nSockDesc = -1;
   
@@ -636,7 +628,7 @@ void CMSN::MSNSendTypingNotification(const char* _szUser, unsigned long _nCID)
   } 
     
   if (nSockDesc > 0)
-    Send_SB_Packet(strUser, pSend, nSockDesc);
+    Send_SB_Packet(userId, pSend, nSockDesc);
 }
 
 void CMSN::killConversation(int sock)

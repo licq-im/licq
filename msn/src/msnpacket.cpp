@@ -596,7 +596,7 @@ CPS_MSNXfr::CPS_MSNXfr() : CMSNPacket()
   m_pBuffer->Pack("SB\r\n", 4);
 }
 
-CPS_MSNCall::CPS_MSNCall(char *szUser) : CMSNPacket()
+CPS_MSNCall::CPS_MSNCall(const char *szUser) : CMSNPacket()
 {
   m_szCommand = strdup("CAL");
   m_nSize += strlen(szUser);

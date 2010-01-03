@@ -277,7 +277,7 @@ public:
 class CPS_MSNCall : public CMSNPacket
 {
 public:
-  CPS_MSNCall(char *);
+  CPS_MSNCall(const char*);
   virtual ~CPS_MSNCall() { if (m_szUser) free(m_szUser); }
   
 protected:
