@@ -69,7 +69,7 @@ TEST(ProtocolPlugin, callApiFunctions)
   EXPECT_STREQ("Version", plugin.getVersion());
   EXPECT_EQ('P' << 24 | 'P' << 16 | 'I' << 8 | 'D', plugin.getProtocolId());
   EXPECT_TRUE(plugin.init());
-  EXPECT_EQ(42, plugin.getSendFunctions());
+  EXPECT_EQ(42u, plugin.getSendFunctions());
 }
 
 TEST(ProtocolPlugin, runPlugin)
