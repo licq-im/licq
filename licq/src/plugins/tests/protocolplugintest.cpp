@@ -56,25 +56,25 @@ using namespace LicqDaemon;
 
 TEST(ProtocolPlugin, load)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   ASSERT_NO_THROW(ProtocolPlugin plugin(lib));
 }
 
 TEST(ProtocolPlugin, callApiFunctions)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   ProtocolPlugin plugin(lib);
 
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_STREQ("PPID", plugin.getProtocolId());
+  EXPECT_EQ('P' << 24 | 'P' << 16 | 'I' << 8 | 'D', plugin.getProtocolId());
   EXPECT_TRUE(plugin.init());
   EXPECT_EQ(42, plugin.getSendFunctions());
 }
 
 TEST(ProtocolPlugin, runPlugin)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   ProtocolPlugin plugin(lib);
 
   plugin.startThread(0);

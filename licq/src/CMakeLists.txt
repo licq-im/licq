@@ -51,6 +51,9 @@ set(licq_SRCS
   user.cpp
   utility.cpp
 
+#  plugins/icqprotocolplugin.cpp
+  plugins/pluginmanager.cpp
+
   ${tested_SRCS}
 )
 

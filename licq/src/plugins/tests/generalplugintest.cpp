@@ -63,13 +63,13 @@ static char getPipeChar(const Plugin& plugin)
 
 TEST(GeneralPlugin, load)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   ASSERT_NO_THROW(GeneralPlugin plugin(lib));
 }
 
 TEST(GeneralPlugin, callApiFunctions)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   GeneralPlugin plugin(lib);
 
   EXPECT_STREQ("Name", plugin.getName());
@@ -86,7 +86,7 @@ TEST(GeneralPlugin, callApiFunctions)
 
 TEST(GeneralPlugin, runPlugin)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   GeneralPlugin plugin(lib);
 
   plugin.startThread(0);
@@ -95,7 +95,7 @@ TEST(GeneralPlugin, runPlugin)
 
 TEST(GeneralPlugin, enableDisable)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   GeneralPlugin plugin(lib);
 
   plugin.enable();
@@ -106,7 +106,7 @@ TEST(GeneralPlugin, enableDisable)
 
 TEST(GeneralPlugin, pushPopEvent)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   GeneralPlugin plugin(lib);
 
   LicqEvent* event = (LicqEvent*)20;
@@ -122,7 +122,7 @@ TEST(GeneralPlugin, pushPopEvent)
 
 TEST(GeneralPlugin, popEventEmpty)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   GeneralPlugin plugin(lib);
 
   EXPECT_EQ(NULL, plugin.popEvent());

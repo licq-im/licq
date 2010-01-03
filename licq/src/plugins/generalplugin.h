@@ -30,7 +30,9 @@ namespace LicqDaemon
 class GeneralPlugin : public Plugin
 {
 public:
-  explicit GeneralPlugin(boost::shared_ptr<DynamicLibrary> lib);
+  typedef boost::shared_ptr<GeneralPlugin> Ptr;
+
+  explicit GeneralPlugin(DynamicLibrary::Ptr lib);
   virtual ~GeneralPlugin();
 
   bool init(int argc, char** argv);
@@ -48,6 +50,8 @@ public:
   LicqEvent* popEvent();
 
 private:
+  int myArgc;
+  char** myArgv;
   typedef std::list<LicqEvent*> EventsList;
   EventsList myEvents;
   pthread_mutex_t myEventsMutex;
@@ -61,11 +65,6 @@ private:
   char* (*myBuildDate)();
   char* (*myBuildTime)();
 };
-
-inline bool GeneralPlugin::init(int argc, char** argv)
-{
-  return (*myInit)(argc, argv);
-}
 
 inline const char* GeneralPlugin::getStatus() const
 {

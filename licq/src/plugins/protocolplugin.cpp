@@ -21,12 +21,15 @@
 
 using namespace LicqDaemon;
 
-ProtocolPlugin::ProtocolPlugin(boost::shared_ptr<DynamicLibrary> lib)
+ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib)
   : Plugin(lib, "LProto")
 {
   loadSymbol("LProto_Init", myInit);
   loadSymbol("LProto_PPID", myPpid);
   loadSymbol("LProto_SendFuncs", mySendFunctions);
+
+  const char* ppid = (*myPpid)();
+  myProtocolId = ppid[0] << 24 | ppid[1] << 16 | ppid[2] << 8 | ppid[3];
 }
 
 ProtocolPlugin::~ProtocolPlugin()

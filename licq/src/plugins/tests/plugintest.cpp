@@ -74,13 +74,13 @@ static char getPipeChar(const Plugin& plugin)
 
 TEST(Plugin, load)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   ASSERT_NO_THROW(Plugin plugin(lib, "Test"));
 }
 
 TEST(Plugin, callApiFunctions)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   Plugin plugin(lib, "Test");
 
   EXPECT_STREQ("Name", plugin.getName());
@@ -89,7 +89,7 @@ TEST(Plugin, callApiFunctions)
 
 TEST(Plugin, getSetId)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   Plugin plugin(lib, "Test");
 
   plugin.setId(1);
@@ -99,7 +99,7 @@ TEST(Plugin, getSetId)
 
 TEST(Plugin, runPlugin)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   Plugin plugin(lib, "Test");
 
   plugin.startThread(0);
@@ -108,7 +108,7 @@ TEST(Plugin, runPlugin)
 
 TEST(Plugin, shutdown)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   Plugin plugin(lib, "Test");
 
   plugin.shutdown();
@@ -117,7 +117,7 @@ TEST(Plugin, shutdown)
 
 TEST(Plugin, pushPopSignal)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   Plugin plugin(lib, "Test");
 
   LicqSignal* signal = (LicqSignal*)10;
@@ -133,7 +133,7 @@ TEST(Plugin, pushPopSignal)
 
 TEST(Plugin, popSignalEmpty)
 {
-  boost::shared_ptr<DynamicLibrary> lib(new DynamicLibrary(""));
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   Plugin plugin(lib, "Test");
 
   EXPECT_EQ(NULL, plugin.popSignal());

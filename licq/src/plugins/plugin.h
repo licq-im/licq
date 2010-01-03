@@ -39,6 +39,8 @@ namespace LicqDaemon
 class Plugin : private boost::noncopyable
 {
 public:
+  typedef boost::shared_ptr<Plugin> Ptr;
+
   typedef boost::
   error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 

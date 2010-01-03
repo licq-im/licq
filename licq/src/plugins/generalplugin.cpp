@@ -21,10 +21,14 @@
 
 #include "licq_constants.h"
 
+#include <cstring>
+
 using namespace LicqDaemon;
 
-GeneralPlugin::GeneralPlugin(boost::shared_ptr<DynamicLibrary> lib)
-  : Plugin(lib, "LP")
+GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib)
+  : Plugin(lib, "LP"),
+    myArgc(0),
+    myArgv(NULL)
 {
   loadSymbol("LP_Init", myInit);
   loadSymbol("LP_Status", myStatus);
@@ -49,6 +53,26 @@ GeneralPlugin::GeneralPlugin(boost::shared_ptr<DynamicLibrary> lib)
 GeneralPlugin::~GeneralPlugin()
 {
   ::pthread_mutex_destroy(&myEventsMutex);
+
+  for (int i = 0; i < myArgc - 1; ++i)
+    ::free(myArgv[i]);
+  delete[] myArgv;
+}
+
+bool GeneralPlugin::init(int argc, char** argv)
+{
+  myArgc = argc + 2;
+  myArgv = new char*[myArgc];
+
+  myArgv[0] = ::strdup(myLib->getName().c_str());
+  for (int i = 0; i < argc; ++i)
+    myArgv[i + 1] = ::strdup(argv[i]);
+  myArgv[argc + 1] = NULL;
+
+  // Set optind to 0 so plugins can use getopt
+  optind = 0;
+
+  return (*myInit)(myArgc, myArgv);
 }
 
 void GeneralPlugin::enable()

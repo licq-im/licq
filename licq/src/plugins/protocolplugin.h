@@ -28,14 +28,18 @@ namespace LicqDaemon
 class ProtocolPlugin : public Plugin
 {
 public:
-  explicit ProtocolPlugin(boost::shared_ptr<DynamicLibrary> lib);
+  typedef boost::shared_ptr<ProtocolPlugin> Ptr;
+
+  explicit ProtocolPlugin(DynamicLibrary::Ptr lib);
   virtual ~ProtocolPlugin();
 
   bool init();
-  const char* getProtocolId() const;
+  unsigned long getProtocolId() const;
   unsigned long getSendFunctions() const;
 
 private:
+  unsigned long myProtocolId;
+
   bool (*myInit)();
   char* (*myPpid)();
   unsigned long (*mySendFunctions)();
@@ -46,9 +50,9 @@ inline bool ProtocolPlugin::init()
   return (*myInit)();
 }
 
-inline const char* ProtocolPlugin::getProtocolId() const
+inline unsigned long ProtocolPlugin::getProtocolId() const
 {
-  return (*myPpid)();
+  return myProtocolId;
 }
 
 inline unsigned long ProtocolPlugin::getSendFunctions() const
