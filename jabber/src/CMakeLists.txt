@@ -3,3 +3,4 @@ set(jabber_SRCS
 )
 
 licq_add_plugin(protocol_jabber ${jabber_SRCS})
+target_link_libraries(protocol_jabber ${gloox_LIBRARIES})

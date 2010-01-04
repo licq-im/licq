@@ -13,4 +13,10 @@ include(version.cmake)
 licq_create_plugin_version_file(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+# Find gloox
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(gloox REQUIRED gloox)
+add_definitions(${gloox_CFLAGS})
+include_directories(${gloox_INCLUDE_DIRS})
+
 add_subdirectory(src)
