@@ -1,9 +1,0 @@
-2002-1-20
-Licq CVS Update Announcement
-Thanks to Billy Biggs, there is now an anonymous CVS server available.
-The anonymous CVS server is read-only. If you have installed the cvs
-binary, you can use it to easily keep up to date with bleeding edge Licq
-development. This is only intended for those who have at least basic
-knowledge in CVS usage or those who want to figure it out on their own.
-All others are strongly recommended to use the regularly generated CVS
-snapshots.
