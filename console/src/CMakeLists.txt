@@ -9,5 +9,8 @@ set(console_SRCS
 
 licq_add_plugin(licq_console ${console_SRCS})
 
+include_directories(${CURSES_INCLUDE_DIR})
 include_directories(${CDK_INCLUDE_DIR})
+
+target_link_libraries(licq_console ${CURSES_LIBRARIES})
 target_link_libraries(licq_console ${CDK_LIBRARY})
