@@ -73,16 +73,6 @@ bool GeneralPlugin::init(int argc, char** argv)
   return (*myInit)(myArgc, myArgv);
 }
 
-void GeneralPlugin::enable()
-{
-  myPipe.putChar('1');
-}
-
-void GeneralPlugin::disable()
-{
-  myPipe.putChar('0');
-}
-
 void GeneralPlugin::pushEvent(LicqEvent* event)
 {
   MutexLocker locker(myEventsMutex);
@@ -134,4 +124,14 @@ const char* GeneralPlugin::getBuildDate() const
 const char* GeneralPlugin::getBuildTime() const
 {
   return (*myBuildTime)();
+}
+
+void GeneralPlugin::enable()
+{
+  myPipe.putChar('1');
+}
+
+void GeneralPlugin::disable()
+{
+  myPipe.putChar('0');
 }

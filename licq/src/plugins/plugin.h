@@ -60,11 +60,14 @@ public:
    */
   int joinThread();
 
+  /**
+   * @return True when called from the plugin's main thread.
+   */
+  bool isThisThread() const;
+
   void setId(unsigned short id);
 
-  /** Ask the plugin to shutdown. */
-  void shutdown();
-
+  void setSignalMask(unsigned long mask);
   void pushSignal(LicqSignal* signal);
   LicqSignal* popSignal();
 
@@ -73,6 +76,7 @@ public:
   const char* getName() const;
   const char* getVersion() const;
   const std::string& getLibraryName() const;
+  void shutdown();
 
 protected:
   boost::shared_ptr<DynamicLibrary> myLib;
@@ -84,6 +88,7 @@ protected:
 private:
   pthread_t myThread;
 
+  unsigned long mySignalMask;
   typedef std::list<LicqSignal*> SignalList;
   SignalList mySignals;
   Licq::Mutex mySignalsMutex;
@@ -107,6 +112,11 @@ inline int Plugin::getReadPipe() const
 inline void Plugin::setId(unsigned short id)
 {
   *myId = id;
+}
+
+inline void Plugin::setSignalMask(unsigned long mask)
+{
+  mySignalMask = mask;
 }
 
 template<typename SymbolType>

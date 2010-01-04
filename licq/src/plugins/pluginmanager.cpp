@@ -20,17 +20,20 @@
 #include "pluginmanager.h"
 
 #include "gettext.h"
+#include "licq_events.h"
 #include "licq_log.h"
 #include "licq/thread/mutexlocker.h"
 
 #include <boost/exception/get_error_info.hpp>
 #include <boost/foreach.hpp>
+#include <cassert>
 
 using Licq::MutexLocker;
 using namespace LicqDaemon;
 
-PluginManager::PluginManager()
-  : myNextPluginId(1)
+PluginManager::PluginManager() :
+  myDaemon(NULL),
+  myNextPluginId(1)
 {
   // Empty
 }
@@ -132,20 +135,123 @@ ProtocolPlugin::Ptr PluginManager::loadProtocolPlugin(const std::string& name)
   return ProtocolPlugin::Ptr();
 }
 
-void PluginManager::startPlugin(Plugin::Ptr plugin, CICQDaemon* daemon)
+void PluginManager::startPlugin(Plugin::Ptr plugin)
 {
+  assert(plugin);
+
+  Licq::Mutex* mutex;
   if (dynamic_cast<ProtocolPlugin*>(plugin.get()))
   {
+    mutex = &myProtocolPluginsMutex;
     gLog.Info(tr("%sStarting protocol plugin %s (version %s).\n"), L_INITxSTR,
               plugin->getName(), plugin->getVersion());
   }
   else
   {
+    mutex = &myGeneralPluginsMutex;
     gLog.Info(tr("%sStarting plugin %s (version %s).\n"), L_INITxSTR,
               plugin->getName(), plugin->getVersion());
   }
 
-  plugin->startThread(daemon);
+  assert(myDaemon != NULL);
+  MutexLocker locker(*mutex);
+  plugin->startThread(myDaemon);
+}
+
+void PluginManager::getGeneralPluginsList(Licq::GeneralPluginsList& plugins)
+{
+  plugins.clear();
+  MutexLocker locker(myGeneralPluginsMutex);
+  std::copy(myGeneralPlugins.begin(), myGeneralPlugins.end(),
+            plugins.begin());
+}
+
+void PluginManager::getProtocolPluginsList(Licq::ProtocolPluginsList& plugins)
+{
+  plugins.clear();
+  MutexLocker locker(myProtocolPluginsMutex);
+  std::copy(myProtocolPlugins.begin(), myProtocolPlugins.end(),
+            plugins.begin());
+}
+
+bool PluginManager::
+startGeneralPlugin(const std::string& name, int argc, char** argv)
+{
+  GeneralPlugin::Ptr plugin = loadGeneralPlugin(name, argc, argv);
+  if (plugin)
+  {
+    startPlugin(plugin);
+    return true;
+  }
+  return false;
+}
+
+bool PluginManager::startProtocolPlugin(const std::string& name)
+{
+  ProtocolPlugin::Ptr plugin = loadProtocolPlugin(name);
+  if (plugin)
+  {
+    startPlugin(plugin);
+    return true;
+  }
+  return false;
+}
+
+template<typename PluginsList>
+static int registerPlugin(PluginsList& plugins, unsigned long signalMask)
+{
+  BOOST_FOREACH(typename PluginsList::value_type plugin, plugins)
+  {
+    if (plugin->isThisThread())
+    {
+      plugin->setSignalMask(signalMask);
+      return plugin->getReadPipe();
+    }
+  }
+
+  gLog.Error(tr("%sInvalid thread in registration attempt.\n"),
+             L_ERRORxSTR);
+  return -1;
+}
+
+template<typename PluginsList>
+static void unregisterPlugin(PluginsList& plugins)
+{
+  BOOST_FOREACH(typename PluginsList::value_type plugin, plugins)
+  {
+    if (plugin->isThisThread())
+    {
+      plugin->setSignalMask(0);
+      return;
+    }
+  }
+
+  gLog.Error(tr("%sInvalid thread in unregistration attempt.\n"),
+             L_ERRORxSTR);
+}
+
+int PluginManager::registerGeneralPlugin(unsigned long signalMask)
+{
+  MutexLocker locker(myGeneralPluginsMutex);
+  return registerPlugin(myGeneralPlugins, signalMask);
+}
+
+void PluginManager::unregisterGeneralPlugin()
+{
+  MutexLocker locker(myGeneralPluginsMutex);
+  unregisterPlugin(myGeneralPlugins);
+}
+
+int PluginManager::registerProtocolPlugin()
+{
+  MutexLocker locker(myProtocolPluginsMutex);
+  return registerPlugin(myProtocolPlugins, SIGNAL_ALL);
+}
+
+void PluginManager::unregisterProtocolPlugin()
+{
+  MutexLocker locker(myProtocolPluginsMutex);
+  unregisterPlugin(myProtocolPlugins);
 }
 
 DynamicLibrary::Ptr PluginManager::loadPlugin(

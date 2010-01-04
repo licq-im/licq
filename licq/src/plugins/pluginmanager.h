@@ -23,6 +23,7 @@
 #include "generalplugin.h"
 #include "protocolplugin.h"
 
+#include "licq/pluginmanager.h"
 #include "licq/thread/mutex.h"
 #include "utils/dynamiclibrary.h"
 
@@ -32,22 +33,38 @@
 namespace LicqDaemon
 {
 
-class PluginManager : private boost::noncopyable
+class PluginManager : public Licq::PluginManager
 {
 public:
   PluginManager();
   ~PluginManager();
 
+  void setDaemon(CICQDaemon* daemon);
+
   GeneralPlugin::Ptr loadGeneralPlugin(
       const std::string& name, int argc, char** argv);
   ProtocolPlugin::Ptr loadProtocolPlugin(const std::string& name);
 
-  void startPlugin(Plugin::Ptr plugin, CICQDaemon* daemon);
+  void startPlugin(Plugin::Ptr plugin);
+
+  // From Licq::PluginManager
+  void getGeneralPluginsList(Licq::GeneralPluginsList& plugins);
+  void getProtocolPluginsList(Licq::ProtocolPluginsList& plugins);
+
+  bool startGeneralPlugin(const std::string& name, int argc, char** argv);
+  bool startProtocolPlugin(const std::string& name);
+
+  int registerGeneralPlugin(unsigned long signalMask);
+  void unregisterGeneralPlugin();
+
+  int registerProtocolPlugin();
+  void unregisterProtocolPlugin();
 
 private:
   DynamicLibrary::Ptr loadPlugin(
       const std::string& name, const std::string& prefix);
 
+  CICQDaemon* myDaemon;
   unsigned short myNextPluginId;
 
   typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
@@ -58,6 +75,11 @@ private:
   ProtocolPluginsList myProtocolPlugins;
   Licq::Mutex myProtocolPluginsMutex;
 };
+
+inline void PluginManager::setDaemon(CICQDaemon* daemon)
+{
+  myDaemon = daemon;
+}
 
 } // namespace LicqDaemon
 

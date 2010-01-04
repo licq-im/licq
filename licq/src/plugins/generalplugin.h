@@ -38,9 +38,6 @@ public:
 
   bool init(int argc, char** argv);
 
-  void enable();
-  void disable();
-
   void pushEvent(LicqEvent* event);
   LicqEvent* popEvent();
 
@@ -51,6 +48,8 @@ public:
   const char* getConfigFile() const;
   const char* getBuildDate() const;
   const char* getBuildTime() const;
+  void enable();
+  void disable();
 
 private:
   int myArgc;

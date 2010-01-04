@@ -1,6 +1,7 @@
 set(licq_HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/licqversion.h
   plugin.h
+  pluginmanager.h
   version.h
 )
 

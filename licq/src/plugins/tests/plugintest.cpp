@@ -104,6 +104,7 @@ TEST(Plugin, runPlugin)
   Plugin plugin(lib, "Test");
 
   plugin.startThread(0);
+  EXPECT_FALSE(plugin.isThisThread());
   EXPECT_EQ(5, plugin.joinThread());
 }
 

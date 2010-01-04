@@ -65,9 +65,9 @@ int Plugin::joinThread()
   return -1;
 }
 
-void Plugin::shutdown()
+bool Plugin::isThisThread() const
 {
-  myPipe.putChar(PLUGIN_SHUTDOWN);
+  return ::pthread_equal(myThread, ::pthread_self()) != 0;
 }
 
 void Plugin::pushSignal(LicqSignal* signal)
@@ -108,4 +108,9 @@ unsigned short Plugin::getId() const
 const std::string& Plugin::getLibraryName() const
 {
   return myLib->getName();
+}
+
+void Plugin::shutdown()
+{
+  myPipe.putChar(PLUGIN_SHUTDOWN);
 }

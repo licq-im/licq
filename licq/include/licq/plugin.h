@@ -29,20 +29,28 @@ namespace Licq
 class Plugin : private boost::noncopyable
 {
 public:
-  typedef boost::shared_ptr<const Plugin> Ptr;
-
   virtual ~Plugin() { /* Empty */ }
 
+  /// @return The plugin's unique id.
   virtual unsigned short getId() const = 0;
+
+  /// @return The plugin's name.
   virtual const char* getName() const = 0;
+
+  /// @return The plugin's version.
   virtual const char* getVersion() const = 0;
+
+  /// @return The name of the library from where the plugin was loaded.
   virtual const std::string& getLibraryName() const = 0;
+
+  /// Ask the plugin to shutdown.
+  virtual void shutdown() = 0;  
 };
 
 class GeneralPlugin : public virtual Plugin
 {
 public:
-  typedef boost::shared_ptr<const GeneralPlugin> Ptr;
+  typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
   virtual ~GeneralPlugin() { /* Empty */ }
 
@@ -52,12 +60,18 @@ public:
   virtual const char* getConfigFile() const = 0;
   virtual const char* getBuildDate() const = 0;
   virtual const char* getBuildTime() const = 0;
+
+  /// Ask the plugin to enable itself.
+  virtual void enable() = 0;
+
+  /// Ask the plugin to disable itself.
+  virtual void disable() = 0;
 };
 
 class ProtocolPlugin : public virtual Plugin
 {
 public:
-  typedef boost::shared_ptr<const ProtocolPlugin> Ptr;
+  typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
   virtual ~ProtocolPlugin() { /* Empty */ }
 
