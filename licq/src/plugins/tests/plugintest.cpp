@@ -85,6 +85,7 @@ TEST(Plugin, callApiFunctions)
 
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
+  EXPECT_EQ("", plugin.getLibraryName());
 }
 
 TEST(Plugin, getSetId)

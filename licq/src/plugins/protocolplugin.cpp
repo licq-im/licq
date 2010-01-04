@@ -36,3 +36,13 @@ ProtocolPlugin::~ProtocolPlugin()
 {
   // Empty
 }
+
+unsigned long ProtocolPlugin::getProtocolId() const
+{
+  return myProtocolId;
+}
+
+unsigned long ProtocolPlugin::getSendFunctions() const
+{
+  return (*mySendFunctions)();
+}

@@ -27,7 +27,8 @@ class LicqEvent;
 namespace LicqDaemon
 {
 
-class GeneralPlugin : public Plugin
+class GeneralPlugin : public Plugin,
+                      public Licq::GeneralPlugin
 {
 public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
@@ -36,18 +37,20 @@ public:
   virtual ~GeneralPlugin();
 
   bool init(int argc, char** argv);
-  const char* getStatus() const;
-  const char* getDescription() const;
-  const char* getUsage() const;
-  const char* getConfigFile() const;
-  const char* getBuildDate() const;
-  const char* getBuildTime() const;
 
   void enable();
   void disable();
 
   void pushEvent(LicqEvent* event);
   LicqEvent* popEvent();
+
+  // From Licq::GeneralPlugin
+  const char* getStatus() const;
+  const char* getDescription() const;
+  const char* getUsage() const;
+  const char* getConfigFile() const;
+  const char* getBuildDate() const;
+  const char* getBuildTime() const;
 
 private:
   int myArgc;
@@ -66,39 +69,6 @@ private:
   char* (*myBuildDate)();
   char* (*myBuildTime)();
 };
-
-inline const char* GeneralPlugin::getStatus() const
-{
-  return (*myStatus)();
-}
-
-inline const char* GeneralPlugin::getDescription() const
-{
-  return (*myDescription)();
-}
-
-inline const char* GeneralPlugin::getUsage() const
-{
-  return (*myUsage)();
-}
-
-inline const char* GeneralPlugin::getConfigFile() const
-{
-  if (myConfigFile)
-    return (*myConfigFile)();
-  else
-    return NULL;
-}
-
-inline const char* GeneralPlugin::getBuildDate() const
-{
-  return (*myBuildDate)();
-}
-
-inline const char* GeneralPlugin::getBuildTime() const
-{
-  return (*myBuildTime)();
-}
 
 } // namespace LicqDaemon
 

@@ -89,3 +89,23 @@ LicqSignal* Plugin::popSignal()
   }
   return NULL;
 }
+
+const char* Plugin::getName() const
+{
+  return (*myName)();
+}
+
+const char* Plugin::getVersion() const
+{
+  return (*myVersion)();
+}
+
+unsigned short Plugin::getId() const
+{
+  return *myId;
+}
+
+const std::string& Plugin::getLibraryName() const
+{
+  return myLib->getName();
+}

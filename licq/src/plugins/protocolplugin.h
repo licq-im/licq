@@ -25,7 +25,8 @@
 namespace LicqDaemon
 {
 
-class ProtocolPlugin : public Plugin
+class ProtocolPlugin : public Plugin,
+                       public Licq::ProtocolPlugin
 {
 public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
@@ -34,6 +35,8 @@ public:
   virtual ~ProtocolPlugin();
 
   bool init();
+
+  // From Licq::ProtocolPlugin
   unsigned long getProtocolId() const;
   unsigned long getSendFunctions() const;
 
@@ -48,16 +51,6 @@ private:
 inline bool ProtocolPlugin::init()
 {
   return (*myInit)();
-}
-
-inline unsigned long ProtocolPlugin::getProtocolId() const
-{
-  return myProtocolId;
-}
-
-inline unsigned long ProtocolPlugin::getSendFunctions() const
-{
-  return (*mySendFunctions)();
 }
 
 } // namespace LicqDaemon

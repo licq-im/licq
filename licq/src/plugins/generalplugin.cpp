@@ -102,3 +102,36 @@ LicqEvent* GeneralPlugin::popEvent()
   }
   return NULL;
 }
+
+const char* GeneralPlugin::getStatus() const
+{
+  return (*myStatus)();
+}
+
+const char* GeneralPlugin::getDescription() const
+{
+  return (*myDescription)();
+}
+
+const char* GeneralPlugin::getUsage() const
+{
+  return (*myUsage)();
+}
+
+const char* GeneralPlugin::getConfigFile() const
+{
+  if (myConfigFile)
+    return (*myConfigFile)();
+  else
+    return NULL;
+}
+
+const char* GeneralPlugin::getBuildDate() const
+{
+  return (*myBuildDate)();
+}
+
+const char* GeneralPlugin::getBuildTime() const
+{
+  return (*myBuildTime)();
+}

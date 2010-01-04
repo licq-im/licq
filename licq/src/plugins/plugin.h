@@ -20,12 +20,12 @@
 #ifndef LICQDAEMON_PLUGIN_H
 #define LICQDAEMON_PLUGIN_H
 
+#include "licq/plugin.h"
 #include "licq/thread/mutex.h"
 #include "utils/dynamiclibrary.h"
 #include "utils/pipe.h"
 
 #include <boost/exception/info.hpp>
-#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <list>
 #include <string>
@@ -36,7 +36,7 @@ class LicqSignal;
 namespace LicqDaemon
 {
 
-class Plugin : private boost::noncopyable
+class Plugin : public virtual Licq::Plugin
 {
 public:
   typedef boost::shared_ptr<Plugin> Ptr;
@@ -60,10 +60,6 @@ public:
    */
   int joinThread();
 
-  const char* getName() const;
-  const char* getVersion() const;
-
-  unsigned short getId() const;
   void setId(unsigned short id);
 
   /** Ask the plugin to shutdown. */
@@ -71,6 +67,12 @@ public:
 
   void pushSignal(LicqSignal* signal);
   LicqSignal* popSignal();
+
+  // From Licq::Plugin
+  unsigned short getId() const;
+  const char* getName() const;
+  const char* getVersion() const;
+  const std::string& getLibraryName() const;
 
 protected:
   boost::shared_ptr<DynamicLibrary> myLib;
@@ -100,21 +102,6 @@ private:
 inline int Plugin::getReadPipe() const
 {
   return myPipe.getReadFd();
-}
-
-inline const char* Plugin::getName() const
-{
-  return (*myName)();
-}
-
-inline const char* Plugin::getVersion() const
-{
-  return (*myVersion)();
-}
-
-inline unsigned short Plugin::getId() const
-{
-  return *myId;
 }
 
 inline void Plugin::setId(unsigned short id)
