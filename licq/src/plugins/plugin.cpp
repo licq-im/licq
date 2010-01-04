@@ -20,9 +20,11 @@
 #include "plugin.h"
 
 #include "licq_constants.h"
+#include "licq/thread/mutexlocker.h"
 
 #include <pthread.h>
 
+using Licq::MutexLocker;
 using namespace LicqDaemon;
 
 Plugin::Plugin(boost::shared_ptr<DynamicLibrary> lib,
@@ -37,13 +39,11 @@ Plugin::Plugin(boost::shared_ptr<DynamicLibrary> lib,
 
   loadSymbol("LP_Id", myId);
   *myId = -1;
-
-  ::pthread_mutex_init(&mySignalsMutex, NULL);
 }
 
 Plugin::~Plugin()
 {
-  ::pthread_mutex_destroy(&mySignalsMutex);
+  // Empty
 }
 
 void Plugin::startThread(CICQDaemon* daemon)
@@ -72,21 +72,20 @@ void Plugin::shutdown()
 
 void Plugin::pushSignal(LicqSignal* signal)
 {
-  ::pthread_mutex_lock(&mySignalsMutex);
+  MutexLocker locker(mySignalsMutex);
   mySignals.push_back(signal);
-  ::pthread_mutex_unlock(&mySignalsMutex);
+  locker.unlock();
   myPipe.putChar(PLUGIN_SIGNAL);
 }
 
 LicqSignal* Plugin::popSignal()
 {
-  LicqSignal* signal = NULL;
-  ::pthread_mutex_lock(&mySignalsMutex);
+  MutexLocker locker(mySignalsMutex);
   if (!mySignals.empty())
   {
-    signal = mySignals.front();
+    LicqSignal* signal = mySignals.front();
     mySignals.pop_front();
+    return signal;
   }
-  ::pthread_mutex_unlock(&mySignalsMutex);
-  return signal;
+  return NULL;
 }

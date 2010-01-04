@@ -52,9 +52,10 @@ public:
 private:
   int myArgc;
   char** myArgv;
+
   typedef std::list<LicqEvent*> EventsList;
   EventsList myEvents;
-  pthread_mutex_t myEventsMutex;
+  Licq::Mutex myEventsMutex;
 
   // Function pointers
   bool (*myInit)(int, char**);

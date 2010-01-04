@@ -20,6 +20,7 @@
 #ifndef LICQDAEMON_PLUGIN_H
 #define LICQDAEMON_PLUGIN_H
 
+#include "licq/thread/mutex.h"
 #include "utils/dynamiclibrary.h"
 #include "utils/pipe.h"
 
@@ -27,7 +28,6 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <list>
-#include <pthread.h>
 #include <string>
 
 class CICQDaemon;
@@ -84,7 +84,7 @@ private:
 
   typedef std::list<LicqSignal*> SignalList;
   SignalList mySignals;
-  pthread_mutex_t mySignalsMutex;
+  Licq::Mutex mySignalsMutex;
 
   // Function pointers
   int (*myMain)(CICQDaemon*);

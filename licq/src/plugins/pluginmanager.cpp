@@ -26,7 +26,7 @@
 #include <boost/exception/get_error_info.hpp>
 #include <boost/foreach.hpp>
 
-using namespace Licq;
+using Licq::MutexLocker;
 using namespace LicqDaemon;
 
 PluginManager::PluginManager()

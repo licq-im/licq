@@ -20,9 +20,11 @@
 #include "generalplugin.h"
 
 #include "licq_constants.h"
+#include "licq/thread/mutexlocker.h"
 
 #include <cstring>
 
+using Licq::MutexLocker;
 using namespace LicqDaemon;
 
 GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib)
@@ -46,14 +48,10 @@ GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib)
   {
     myConfigFile = NULL;
   }
-
-  ::pthread_mutex_init(&myEventsMutex, NULL);
 }
 
 GeneralPlugin::~GeneralPlugin()
 {
-  ::pthread_mutex_destroy(&myEventsMutex);
-
   for (int i = 0; i < myArgc - 1; ++i)
     ::free(myArgv[i]);
   delete[] myArgv;
@@ -87,21 +85,20 @@ void GeneralPlugin::disable()
 
 void GeneralPlugin::pushEvent(LicqEvent* event)
 {
-  ::pthread_mutex_lock(&myEventsMutex);
+  MutexLocker locker(myEventsMutex);
   myEvents.push_back(event);
-  ::pthread_mutex_unlock(&myEventsMutex);
+  locker.unlock();
   myPipe.putChar(PLUGIN_EVENT);
 }
 
 LicqEvent* GeneralPlugin::popEvent()
 {
-  LicqEvent* event = NULL;
-  ::pthread_mutex_lock(&myEventsMutex);
+  MutexLocker locker(myEventsMutex);
   if (!myEvents.empty())
   {
-    event = myEvents.front();
+    LicqEvent* event = myEvents.front();
     myEvents.pop_front();
+    return event;
   }
-  ::pthread_mutex_unlock(&myEventsMutex);
-  return event;
+  return NULL;
 }
