@@ -3,6 +3,8 @@ set(tested_SRCS
   plugins/plugin.cpp
   plugins/protocolplugin.cpp
 
+  thread/mutexlocker.cpp
+
   utils/dynamiclibrary.cpp
   utils/pipe.cpp
 )
@@ -61,6 +63,9 @@ set(test_SRCS
   plugins/tests/generalplugintest.cpp
   plugins/tests/plugintest.cpp
   plugins/tests/protocolplugintest.cpp
+
+  thread/tests/mutextest.cpp
+  thread/tests/mutexlockertest.cpp
 
   utils/tests/dynamiclibrarytest.cpp
   utils/tests/pipetest.cpp

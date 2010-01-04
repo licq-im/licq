@@ -23,11 +23,11 @@
 #include "generalplugin.h"
 #include "protocolplugin.h"
 
+#include "licq/thread/mutex.h"
 #include "utils/dynamiclibrary.h"
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-#include <pthread.h>
 
 namespace LicqDaemon
 {
@@ -52,11 +52,11 @@ private:
 
   typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
   GeneralPluginsList myGeneralPlugins;
-  pthread_mutex_t myGeneralPluginsMutex;
+  Licq::Mutex myGeneralPluginsMutex;
 
   typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
   ProtocolPluginsList myProtocolPlugins;
-  pthread_mutex_t myProtocolPluginsMutex;
+  Licq::Mutex myProtocolPluginsMutex;
 };
 
 } // namespace LicqDaemon

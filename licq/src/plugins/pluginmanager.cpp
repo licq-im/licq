@@ -21,23 +21,23 @@
 
 #include "gettext.h"
 #include "licq_log.h"
+#include "licq/thread/mutexlocker.h"
 
 #include <boost/exception/get_error_info.hpp>
 #include <boost/foreach.hpp>
 
+using namespace Licq;
 using namespace LicqDaemon;
 
 PluginManager::PluginManager()
   : myNextPluginId(1)
 {
-  ::pthread_mutex_init(&myGeneralPluginsMutex, NULL);
-  ::pthread_mutex_init(&myProtocolPluginsMutex, NULL);
+  // Empty
 }
 
 PluginManager::~PluginManager()
 {
-  ::pthread_mutex_destroy(&myGeneralPluginsMutex);
-  ::pthread_mutex_destroy(&myProtocolPluginsMutex);
+  // Empty
 }
 
 GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
@@ -63,10 +63,8 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     // Give plugin a unique ID
     plugin->setId(myNextPluginId++);
 
-    ::pthread_mutex_lock(&myGeneralPluginsMutex);
+    MutexLocker locker(myGeneralPluginsMutex);
     myGeneralPlugins.push_back(plugin);
-    ::pthread_mutex_unlock(&myGeneralPluginsMutex);
-
     return plugin;
   }
   catch (const DynamicLibrary::Exception& ex)
@@ -108,18 +106,14 @@ ProtocolPlugin::Ptr PluginManager::loadProtocolPlugin(const std::string& name)
     plugin->setId(myNextPluginId++);
 
     // Check if the plugin is already loaded
-    ::pthread_mutex_lock(&myProtocolPluginsMutex);
+    MutexLocker locker(myProtocolPluginsMutex);
     BOOST_FOREACH(ProtocolPlugin::Ptr proto, myProtocolPlugins)
     {
       if (proto->getProtocolId() == plugin->getProtocolId())
-      {
-        ::pthread_mutex_unlock(&myProtocolPluginsMutex);
         throw std::exception();
-      }
     }
-    myProtocolPlugins.push_back(plugin);
-    ::pthread_mutex_unlock(&myProtocolPluginsMutex);
 
+    myProtocolPlugins.push_back(plugin);
     return plugin;
   }
   catch (const DynamicLibrary::Exception& ex)
