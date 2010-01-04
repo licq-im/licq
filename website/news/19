@@ -1,8 +1,0 @@
-2000-8-15
-Updated Auto-Reply Plugin
-The program used to
-auto generate the reply can now be passed user arguments such as the
-alias, uin etc...It can also have the event text itself be passed to
-the standard input of the program.<BR>
-This allows for basically limitless customizability of the response
-based on the user and the sent text.

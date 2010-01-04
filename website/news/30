@@ -1,7 +1,0 @@
-2001-12-1
-Licq 1.0.4
-Workaround for reoccuring messages that were sent offline.<BR>
-Primary maintainer of Licq is now <A HREF="mailto:dirk@licq.org">Dirk Mueller</A>.<BR>
-Future releases of Licq will contain Mirabilis ICQ 2001b compatibility including
-TCP support.  Beta versions are already available via
-A HREF="http://www.rhrk.uni-kl.de/~dmuell/licq/">CVS Snapshot</A>.

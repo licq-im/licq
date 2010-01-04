@@ -1,5 +1,0 @@
-id=`cat last_id`
-let "id=id+1"
-echo "" > $id
-chmod 666 $id
-echo "New Item: $id"
