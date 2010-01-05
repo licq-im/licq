@@ -479,7 +479,7 @@ bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
       const bool isEnter = (key->key() == Qt::Key_Enter || key->key() == Qt::Key_Return);
       if (isEnter)
       {
-        if (key->modifiers() & Qt::ControlModifier)
+        if (key->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier))
           myMessageEdit->insertPlainText("\n");
         else
           mySendButton->animateClick();
