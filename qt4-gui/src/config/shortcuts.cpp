@@ -50,6 +50,7 @@ Config::Shortcuts::Shortcuts(QObject* parent)
   ADD_SHORTCUT(ChatEncodingMenu, "Chat.EncodingMenu", Qt::ALT + Qt::Key_O)
   ADD_SHORTCUT(ChatEventMenu, "Chat.EventMenu", Qt::ALT + Qt::Key_P)
   ADD_SHORTCUT(ChatHistory, "Chat.History", Qt::ALT + Qt::Key_H)
+  ADD_SHORTCUT(ChatPopupNextMessage, "Chat.PopupNextMessage", 0);
   ADD_SHORTCUT(ChatTab01, "Chat.Tab01", Qt::ALT + Qt::Key_1)
   ADD_SHORTCUT(ChatTab02, "Chat.Tab02", Qt::ALT + Qt::Key_2)
   ADD_SHORTCUT(ChatTab03, "Chat.Tab03", Qt::ALT + Qt::Key_3)

@@ -199,6 +199,10 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
     }
   }
 
+  myPopupNextMessage = new QAction("Popup Next Message", this);
+  addAction(myPopupNextMessage);
+  connect(myPopupNextMessage, SIGNAL(triggered()), LicqGui::instance(), SLOT(showNextEvent()));
+
   // We might be called from a slot so connect the signal only after all the
   // existing signals are handled.
   QTimer::singleShot(0, this, SLOT(connectSignal()));
@@ -241,6 +245,8 @@ void UserEventCommon::updateIcons()
 void UserEventCommon::updateShortcuts()
 {
   Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+
+  myPopupNextMessage->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatPopupNextMessage));
 
   myMenu->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatUserMenu));
   myHistory->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatHistory));

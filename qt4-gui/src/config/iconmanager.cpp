@@ -281,7 +281,7 @@ const QPixmap& IconManager::getIcon(IconType icon)
 
 const QPixmap& IconManager::iconForStatus(unsigned long fullStatus, const QString& id, unsigned long ppid)
 {
-  bool isAim = (ppid == LICQ_PPID) && (!id[0].isDigit());
+  bool isAim = (ppid == LICQ_PPID) && !id.isEmpty() && (!id[0].isDigit());
 
   ProtocolType protocol = (isAim ? ProtocolAim : static_cast<ProtocolType>(ppid));
   StatusIconType statusIcon = OnlineStatusIcon;

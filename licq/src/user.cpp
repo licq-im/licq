@@ -2982,7 +2982,7 @@ string LicqUser::normalizeId(const string& accountId, unsigned long ppid)
 
   // TODO Make the protocol plugin normalize the accountId
   // For AIM, account id is case insensitive and spaces should be ignored
-  if (ppid == LICQ_PPID && !isdigit(accountId[0]))
+  if (ppid == LICQ_PPID && !accountId.empty() && !isdigit(accountId[0]))
   {
     boost::erase_all(realId, " ");
     boost::to_lower(realId);

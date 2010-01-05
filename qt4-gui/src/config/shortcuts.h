@@ -47,6 +47,7 @@ public:
     ChatEncodingMenu,
     ChatEventMenu,
     ChatHistory,
+    ChatPopupNextMessage,
     ChatTab01,
     ChatTab02,
     ChatTab03,

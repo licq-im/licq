@@ -117,6 +117,7 @@ protected:
   QAction* myEmoticon;
   QAction* myForeColor;
   QAction* myBackColor;
+  QAction* myPopupNextMessage;
   InfoField* myTimezone;
   const QTextCodec* myCodec;
   QTimer* myTimeTimer;
