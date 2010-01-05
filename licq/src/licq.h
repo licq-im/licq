@@ -2,6 +2,7 @@
 #define LICQ_H
 
 #include "config.h"
+#include "plugins/pluginmanager.h"
 
 #include <pthread.h>
 #include <list>
@@ -21,12 +22,6 @@ public:
   bool Init(int argc, char **argv);
   int Main();
   const char *Version();
-  CPlugin *LoadPlugin(const char *, int, char **);
-  void StartPlugin(CPlugin *);
-
-  CProtoPlugin *LoadProtoPlugin(const char *);
-  void StartProtoPlugin(CProtoPlugin *);
-  void *FindFunction(void *, const char *);
 
   void ShutdownPlugins();
 
@@ -34,18 +29,31 @@ public:
   bool Install();
   void SaveLoadedPlugins();
 
+  LicqDaemon::PluginManager& getPluginManager();
+  const LicqDaemon::PluginManager& getPluginManager() const;
+
 protected:
   bool UpgradeLicq(CIniFile &);
 
-  CICQDaemon *licqDaemon;
-  unsigned short m_nNextId;
-  PluginsList list_plugins;
-  pthread_mutex_t mutex_plugins;
-  ProtoPluginsList list_protoplugins;
-  pthread_mutex_t mutex_protoplugins;
+  LicqDaemon::GeneralPlugin::Ptr
+  LoadPlugin(const char *, int, char **, bool keep = true);
+  LicqDaemon::ProtocolPlugin::Ptr
+  LoadProtoPlugin(const char *, bool keep = true);
 
-friend class CICQDaemon;
+  CICQDaemon *licqDaemon;
+
+private:
+  LicqDaemon::PluginManager myPluginManager;
 };
 
+inline LicqDaemon::PluginManager& CLicq::getPluginManager()
+{
+  return myPluginManager;
+}
+
+inline const LicqDaemon::PluginManager& CLicq::getPluginManager() const
+{
+  return myPluginManager;
+}
 
 #endif

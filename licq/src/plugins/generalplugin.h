@@ -23,6 +23,7 @@
 #include "plugin.h"
 
 class LicqEvent;
+class LicqSignal;
 
 namespace LicqDaemon
 {
@@ -37,6 +38,9 @@ public:
   virtual ~GeneralPlugin();
 
   bool init(int argc, char** argv);
+
+  void pushSignal(LicqSignal* signal);
+  LicqSignal* popSignal();
 
   void pushEvent(LicqEvent* event);
   LicqEvent* popEvent();
@@ -55,6 +59,10 @@ private:
   int myArgc;
   char** myArgv;
 
+  typedef std::list<LicqSignal*> SignalList;
+  SignalList mySignals;
+  Licq::Mutex mySignalsMutex;
+
   typedef std::list<LicqEvent*> EventsList;
   EventsList myEvents;
   Licq::Mutex myEventsMutex;
@@ -68,6 +76,8 @@ private:
   char* (*myBuildDate)();
   char* (*myBuildTime)();
 };
+
+typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
 
 } // namespace LicqDaemon
 

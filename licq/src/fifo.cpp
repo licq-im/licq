@@ -20,6 +20,7 @@
  */
 #include "config.h"
 
+#include <boost/foreach.hpp>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
@@ -219,18 +220,17 @@ static bool buffer_get_ids(CICQDaemon *d, char *buffer,
   
   if( found )
   { 
-    ProtoPluginsList l;
-    ProtoPluginsListIter it;
-
     found = false;
     *missing_protocol = false;
     
-    d->ProtoPluginList(l);
-    for( it = l.begin() ; !found && it != l.end() ; ++it)
+    Licq::ProtocolPluginsList plugins;
+    d->getPluginManager().getProtocolPluginsList(plugins);
+
+    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      if( !strcmp( (*it)->Name(), buffer) )
+      if ( !strcmp(plugin->getName(), buffer) )
       {
-        *nPPID = (*it)->PPID();
+        *nPPID = plugin->getProtocolId();
         found = true;
       }
     }
@@ -641,13 +641,13 @@ static int fifo_ui_message ( int argc, const char *const *argv, void *data)
 static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
-  PluginsList l;
-  PluginsListIter it;
 
-  d->PluginList(l);
-  for (it = l.begin(); it != l.end(); ++it)
+  Licq::GeneralPluginsList plugins;
+  d->getPluginManager().getGeneralPluginsList(plugins);
+
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    gLog.Info("[%3d] %s\n", (*it)->Id(), (*it)->Name());
+    gLog.Info("[%3d] %s\n", plugin->getId(), plugin->getName());
   }
   return 0;
 }
@@ -664,8 +664,7 @@ static int fifo_plugin_load(int argc, const char *const *argv, void *data)
     return -1;
   }
   
-  const char *sz[] = { "licq", NULL };
-  if (d->PluginLoad(argv[1], 1, const_cast<char**>(sz)))
+  if (d->getPluginManager().startGeneralPlugin(argv[1], 0, NULL))
     return 0;
   
   gLog.Info("Couldn't load plugin '%s'\n", argv[1]);
@@ -675,8 +674,6 @@ static int fifo_plugin_load(int argc, const char *const *argv, void *data)
 static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
-  PluginsList l;
-  PluginsListIter it;
 
   if( argc == 1 )
   {
@@ -684,13 +681,15 @@ static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
     return -1;
   }
   
-  d->PluginList(l);
-  for (it = l.begin(); it != l.end(); ++it)
+  Licq::GeneralPluginsList plugins;
+  d->getPluginManager().getGeneralPluginsList(plugins);
+
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    if (strcmp((*it)->Name(), argv[1]) == 0)
+    if (strcmp(plugin->getName(), argv[1]) == 0)
     {
-      d->PluginShutdown((*it)->Id());
-	  return 0;
+      plugin->shutdown();
+      return 0;
     }
   }
   gLog.Info("Couldn't find plugin '%s'\n", argv[1]);
@@ -700,13 +699,13 @@ static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
 static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
-  ProtoPluginsList l;
-  ProtoPluginsListIter it;
 
-  d->ProtoPluginList(l);
-  for (it = l.begin(); it != l.end(); ++it)
+  Licq::ProtocolPluginsList plugins;
+  d->getPluginManager().getProtocolPluginsList(plugins);
+
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    gLog.Info("[%3d] %s\n", (*it)->Id(), (*it)->Name());
+    gLog.Info("[%3d] %s\n", plugin->getId(), plugin->getName());
   }
   return 0;
 }
@@ -721,7 +720,7 @@ static int fifo_proto_plugin_load(int argc, const char *const *argv, void *data)
     return -1;
   }
   
-  if (d->ProtoPluginLoad(argv[1]))
+  if (d->getPluginManager().startProtocolPlugin(argv[1]))
     return 0;
   
   gLog.Info("Couldn't load protocol plugin '%s'\n", argv[1]);
@@ -731,8 +730,6 @@ static int fifo_proto_plugin_load(int argc, const char *const *argv, void *data)
 static int fifo_proto_plugin_unload(int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
-  ProtoPluginsList l;
-  ProtoPluginsListIter it;
 
   if (argc == 1)
   {
@@ -740,12 +737,14 @@ static int fifo_proto_plugin_unload(int argc, const char *const *argv, void *dat
     return -1;
   }
 
-  d->ProtoPluginList(l);
-  for (it = l.begin(); it != l.end(); ++it)
+  Licq::ProtocolPluginsList plugins;
+  d->getPluginManager().getProtocolPluginsList(plugins);
+
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if (strcmp((*it)->Name(), argv[1]) == 0)
+    if (strcmp(plugin->getName(), argv[1]) == 0)
     {
-      d->ProtoPluginShutdown((*it)->Id());
+      plugin->shutdown();
       return 0;
     }
   }

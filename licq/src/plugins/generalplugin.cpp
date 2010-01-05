@@ -52,25 +52,46 @@ GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib)
 
 GeneralPlugin::~GeneralPlugin()
 {
-  for (int i = 0; i < myArgc - 1; ++i)
+  for (int i = 0; i < myArgc; ++i)
     ::free(myArgv[i]);
   delete[] myArgv;
 }
 
 bool GeneralPlugin::init(int argc, char** argv)
 {
-  myArgc = argc + 2;
-  myArgv = new char*[myArgc];
+  myArgv = new char*[argc + 2];
+  myArgv[argc + 1] = NULL;
 
   myArgv[0] = ::strdup(myLib->getName().c_str());
   for (int i = 0; i < argc; ++i)
     myArgv[i + 1] = ::strdup(argv[i]);
-  myArgv[argc + 1] = NULL;
+
+  myArgc = argc + 1;
 
   // Set optind to 0 so plugins can use getopt
   optind = 0;
 
   return (*myInit)(myArgc, myArgv);
+}
+
+void GeneralPlugin::pushSignal(LicqSignal* signal)
+{
+  MutexLocker locker(mySignalsMutex);
+  mySignals.push_back(signal);
+  locker.unlock();
+  myPipe.putChar(PLUGIN_SIGNAL);
+}
+
+LicqSignal* GeneralPlugin::popSignal()
+{
+  MutexLocker locker(mySignalsMutex);
+  if (!mySignals.empty())
+  {
+    LicqSignal* signal = mySignals.front();
+    mySignals.pop_front();
+    return signal;
+  }
+  return NULL;
 }
 
 void GeneralPlugin::pushEvent(LicqEvent* event)

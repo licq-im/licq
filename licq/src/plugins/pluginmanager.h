@@ -21,6 +21,7 @@
 #define LICQDAEMON_PLUGINMANAGER_H
 
 #include "generalplugin.h"
+#include "plugineventhandler.h"
 #include "protocolplugin.h"
 
 #include "licq/pluginmanager.h"
@@ -42,14 +43,27 @@ public:
   void setDaemon(CICQDaemon* daemon);
 
   GeneralPlugin::Ptr loadGeneralPlugin(
-      const std::string& name, int argc, char** argv);
-  ProtocolPlugin::Ptr loadProtocolPlugin(const std::string& name);
+      const std::string& name, int argc, char** argv, bool keep = true);
+  ProtocolPlugin::Ptr loadProtocolPlugin(
+      const std::string& name, bool keep = true, bool icq = false);
 
-  void startPlugin(Plugin::Ptr plugin);
+  /// Start all plugins that have been loaded
+  void startAllPlugins();
+
+  /// Send shutdown signal to all the plugins
+  void shutdownAllPlugins();
+
+  unsigned short waitForPluginExit(unsigned int timeout = 0);
+
+  void cancelAllPlugins();
+
+  PluginEventHandler& getPluginEventHandler();
+
+  size_t getGeneralPluginsCount() const;
 
   // From Licq::PluginManager
-  void getGeneralPluginsList(Licq::GeneralPluginsList& plugins);
-  void getProtocolPluginsList(Licq::ProtocolPluginsList& plugins);
+  void getGeneralPluginsList(Licq::GeneralPluginsList& plugins) const;
+  void getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const;
 
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
@@ -63,22 +77,28 @@ public:
 private:
   DynamicLibrary::Ptr loadPlugin(
       const std::string& name, const std::string& prefix);
+  void startPlugin(Plugin::Ptr plugin);
 
   CICQDaemon* myDaemon;
   unsigned short myNextPluginId;
 
-  typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
   GeneralPluginsList myGeneralPlugins;
-  Licq::Mutex myGeneralPluginsMutex;
+  mutable Licq::Mutex myGeneralPluginsMutex;
 
-  typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
   ProtocolPluginsList myProtocolPlugins;
-  Licq::Mutex myProtocolPluginsMutex;
+  mutable Licq::Mutex myProtocolPluginsMutex;
+
+  PluginEventHandler myPluginEventHandler;
 };
 
 inline void PluginManager::setDaemon(CICQDaemon* daemon)
 {
   myDaemon = daemon;
+}
+
+inline PluginEventHandler& PluginManager::getPluginEventHandler()
+{
+  return myPluginEventHandler;
 }
 
 } // namespace LicqDaemon

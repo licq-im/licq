@@ -11,6 +11,7 @@
 #include "licq_user.h"
 
 #include <arpa/inet.h>
+#include <boost/foreach.hpp>
 #include <cassert>
 #include <cctype>
 #include <cerrno>
@@ -39,6 +40,7 @@
 #include "licq_packets.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
+#include "licq/pluginmanager.h"
 #include "support.h"
 
 using namespace std;
@@ -2639,14 +2641,13 @@ char* ICQUser::usprintf(const char* _szFormat, unsigned long nFlags) const
           break;
         case 'P':
         {
-          ProtoPluginsList pl;
-          ProtoPluginsListIter it;
-          gLicqDaemon->ProtoPluginList(pl);
-          for (it = pl.begin(); it != pl.end(); it++)
+          Licq::ProtocolPluginsList plugins;
+          gLicqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+          BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
           {
-            if (myPpid == (*it)->PPID())
+            if (myPpid == plugin->getProtocolId())
             {
-              strcpy(szTemp, (*it)->Name());
+              strcpy(szTemp, plugin->getName());
               sz = szTemp;
               break;
             }

@@ -117,26 +117,13 @@ TEST(Plugin, shutdown)
   EXPECT_EQ('X', getPipeChar(plugin));
 }
 
-TEST(Plugin, pushPopSignal)
+TEST(Plugin, signalmask)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   Plugin plugin(lib, "Test");
 
-  LicqSignal* signal = (LicqSignal*)10;
-  plugin.pushSignal(signal);
-  plugin.pushSignal(signal);
-
-  EXPECT_EQ('S', getPipeChar(plugin));
-  EXPECT_EQ(signal, plugin.popSignal());
-
-  EXPECT_EQ('S', getPipeChar(plugin));
-  EXPECT_EQ(signal, plugin.popSignal());
-}
-
-TEST(Plugin, popSignalEmpty)
-{
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  Plugin plugin(lib, "Test");
-
-  EXPECT_EQ(NULL, plugin.popSignal());
+  EXPECT_FALSE(plugin.wantSignal(1));
+  plugin.setSignalMask(0xf);
+  EXPECT_TRUE(plugin.wantSignal(1));
+  EXPECT_FALSE(plugin.wantSignal(0x10));
 }

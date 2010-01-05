@@ -104,6 +104,30 @@ TEST(GeneralPlugin, enableDisable)
   EXPECT_EQ('0', getPipeChar(plugin));
 }
 
+TEST(GeneralPlugin, pushPopSignal)
+{
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
+  GeneralPlugin plugin(lib);
+
+  LicqSignal* signal = (LicqSignal*)10;
+  plugin.pushSignal(signal);
+  plugin.pushSignal(signal);
+
+  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ(signal, plugin.popSignal());
+
+  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ(signal, plugin.popSignal());
+}
+
+TEST(GeneralPlugin, popSignalEmpty)
+{
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
+  GeneralPlugin plugin(lib);
+
+  EXPECT_EQ(NULL, plugin.popSignal());
+}
+
 TEST(GeneralPlugin, pushPopEvent)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));

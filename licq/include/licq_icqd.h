@@ -36,6 +36,11 @@ class COscarService;
 class CReverseConnectToUserData;
 class CMSN;
 
+namespace Licq
+{
+class PluginManager;
+}
+
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
 # if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
@@ -193,7 +198,10 @@ class CICQDaemon
 public:
   CICQDaemon(CLicq *);
   ~CICQDaemon();
+  // Replaced by getPluginManager().(un)registerGeneralPlugni().
+  LICQ_DEPRECATED
   int RegisterPlugin(unsigned long _nSignalMask);
+  LICQ_DEPRECATED
   void UnregisterPlugin();
   bool Start();
   const char* Version() const;
@@ -529,18 +537,37 @@ public:
 
   void CheckExport();
 
+  /**
+   * Get the plugin manager instance.
+   *
+   * @return The global plugin manager.
+   */
+  Licq::PluginManager& getPluginManager();
+  const Licq::PluginManager& getPluginManager() const;
+
+  LICQ_DEPRECATED
   void PluginList(PluginsList &l);
+  LICQ_DEPRECATED
   void PluginShutdown(int);
+  LICQ_DEPRECATED
   void PluginEnable(int);
+  LICQ_DEPRECATED
   void PluginDisable(int);
+  LICQ_DEPRECATED
   bool PluginLoad(const char *, int, char **);
 
 
+  LICQ_DEPRECATED
   void ProtoPluginList(ProtoPluginsList &);
+  LICQ_DEPRECATED
   void ProtoPluginShutdown(unsigned short);
+  LICQ_DEPRECATED
   bool ProtoPluginLoad(const char *);
+  LICQ_DEPRECATED
   int RegisterProtoPlugin();
+  LICQ_DEPRECATED
   void UnregisterProtoPlugin();
+  LICQ_DEPRECATED
   const char* ProtoPluginName(unsigned long ppid) const;
 
   EDaemonStatus Status() const                  { return m_eStatus; }

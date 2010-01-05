@@ -28,16 +28,18 @@ using Licq::MutexLocker;
 using namespace LicqDaemon;
 
 Plugin::Plugin(boost::shared_ptr<DynamicLibrary> lib,
-               const std::string& prefix)
-  : myLib(lib)
+               const std::string& prefix, bool prefixId) :
+  myLib(lib),
+  mySignalMask(0)
 {
-  loadSymbol(prefix + "_Main", myMain);
   loadSymbol(prefix + "_Main_tep", myMainThreadEntryPoint);
-  loadSymbol(prefix + "_Exit", myExit);
   loadSymbol(prefix + "_Name", myName);
   loadSymbol(prefix + "_Version", myVersion);
 
-  loadSymbol("LP_Id", myId);
+  if (prefixId)
+    loadSymbol(prefix + "_Id", myId);
+  else
+    loadSymbol("LP_Id", myId);
   *myId = -1;
 }
 
@@ -65,29 +67,19 @@ int Plugin::joinThread()
   return -1;
 }
 
+void Plugin::cancelThread()
+{
+  ::pthread_cancel(myThread);
+}
+
 bool Plugin::isThisThread() const
 {
-  return ::pthread_equal(myThread, ::pthread_self()) != 0;
+  return isThread(::pthread_self());
 }
 
-void Plugin::pushSignal(LicqSignal* signal)
+bool Plugin::isThread(const pthread_t& thread) const
 {
-  MutexLocker locker(mySignalsMutex);
-  mySignals.push_back(signal);
-  locker.unlock();
-  myPipe.putChar(PLUGIN_SIGNAL);
-}
-
-LicqSignal* Plugin::popSignal()
-{
-  MutexLocker locker(mySignalsMutex);
-  if (!mySignals.empty())
-  {
-    LicqSignal* signal = mySignals.front();
-    mySignals.pop_front();
-    return signal;
-  }
-  return NULL;
+  return ::pthread_equal(myThread, thread) != 0;
 }
 
 const char* Plugin::getName() const

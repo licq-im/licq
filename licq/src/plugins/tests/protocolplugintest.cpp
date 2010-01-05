@@ -54,6 +54,14 @@ int LProto_Main(CICQDaemon* /*daemon*/)
 
 using namespace LicqDaemon;
 
+static char getPipeChar(const Plugin& plugin)
+{
+  int fd = plugin.getReadPipe();
+  char ch;
+  read(fd, &ch, sizeof(ch));
+  return ch;
+}
+
 TEST(ProtocolPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
@@ -79,4 +87,28 @@ TEST(ProtocolPlugin, runPlugin)
 
   plugin.startThread(0);
   EXPECT_EQ(10, plugin.joinThread());
+}
+
+TEST(ProtocolPlugin, pushPopSignal)
+{
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
+  ProtocolPlugin plugin(lib);
+
+  LicqProtoSignal* signal = (LicqProtoSignal*)10;
+  plugin.pushSignal(signal);
+  plugin.pushSignal(signal);
+
+  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ(signal, plugin.popSignal());
+
+  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ(signal, plugin.popSignal());
+}
+
+TEST(ProtocolPlugin, popSignalEmpty)
+{
+  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
+  ProtocolPlugin plugin(lib);
+
+  EXPECT_EQ(NULL, plugin.popSignal());
 }

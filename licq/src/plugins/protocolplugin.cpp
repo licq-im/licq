@@ -19,14 +19,19 @@
 
 #include "protocolplugin.h"
 
+#include "licq_constants.h"
+#include "licq/thread/mutexlocker.h"
+
+using Licq::MutexLocker;
 using namespace LicqDaemon;
 
-ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib)
-  : Plugin(lib, "LProto")
+ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib, bool icq)
+  : Plugin(lib, icq ? "LProto_icq" : "LProto", icq)
 {
-  loadSymbol("LProto_Init", myInit);
-  loadSymbol("LProto_PPID", myPpid);
-  loadSymbol("LProto_SendFuncs", mySendFunctions);
+  std::string prefix = (icq ? "LProto_icq" : "LProto");
+  loadSymbol(prefix + "_Init", myInit);
+  loadSymbol(prefix + "_PPID", myPpid);
+  loadSymbol(prefix + "_SendFuncs", mySendFunctions);
 
   const char* ppid = (*myPpid)();
   myProtocolId = ppid[0] << 24 | ppid[1] << 16 | ppid[2] << 8 | ppid[3];
@@ -35,6 +40,26 @@ ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib)
 ProtocolPlugin::~ProtocolPlugin()
 {
   // Empty
+}
+
+void ProtocolPlugin::pushSignal(LicqProtoSignal* signal)
+{
+  MutexLocker locker(mySignalsMutex);
+  mySignals.push_back(signal);
+  locker.unlock();
+  myPipe.putChar(PLUGIN_SIGNAL);
+}
+
+LicqProtoSignal* ProtocolPlugin::popSignal()
+{
+  MutexLocker locker(mySignalsMutex);
+  if (!mySignals.empty())
+  {
+    LicqProtoSignal* signal = mySignals.front();
+    mySignals.pop_front();
+    return signal;
+  }
+  return NULL;
 }
 
 unsigned long ProtocolPlugin::getProtocolId() const

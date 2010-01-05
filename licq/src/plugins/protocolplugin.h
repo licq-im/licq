@@ -22,6 +22,8 @@
 
 #include "plugin.h"
 
+class LicqProtoSignal;
+
 namespace LicqDaemon
 {
 
@@ -31,10 +33,13 @@ class ProtocolPlugin : public Plugin,
 public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
-  explicit ProtocolPlugin(DynamicLibrary::Ptr lib);
+  explicit ProtocolPlugin(DynamicLibrary::Ptr lib, bool icq = false);
   virtual ~ProtocolPlugin();
 
   bool init();
+
+  void pushSignal(LicqProtoSignal* signal);
+  LicqProtoSignal* popSignal();
 
   // From Licq::ProtocolPlugin
   unsigned long getProtocolId() const;
@@ -42,6 +47,10 @@ public:
 
 private:
   unsigned long myProtocolId;
+
+  typedef std::list<LicqProtoSignal*> SignalList;
+  SignalList mySignals;
+  Licq::Mutex mySignalsMutex;
 
   bool (*myInit)();
   char* (*myPpid)();
@@ -52,6 +61,8 @@ inline bool ProtocolPlugin::init()
 {
   return (*myInit)();
 }
+
+typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
 
 } // namespace LicqDaemon
 

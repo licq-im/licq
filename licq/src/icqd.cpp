@@ -8,6 +8,7 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
 #include <cassert>
 #include <cctype>
 #include <cstdio>
@@ -477,27 +478,7 @@ bool CICQDaemon::Start()
  */
 int CICQDaemon::RegisterPlugin(unsigned long nSignalMask)
 {
-  PluginsListIter it;
-  int p = -1;
-
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (it = licq->list_plugins.begin();
-       it != licq->list_plugins.end();
-       it++)
-  {
-    if ((*it)->CompareThread(pthread_self()))
-    {
-      p = (*it)->Pipe();
-      (*it)->SetSignalMask(nSignalMask);
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_plugins);
-
-  if (p == -1)
-    gLog.Error("%sInvalid thread in registration attempt.\n", L_ERRORxSTR);
-
-  return p;
+  return getPluginManager().registerGeneralPlugin(nSignalMask);
 }
 
 
@@ -508,31 +489,27 @@ int CICQDaemon::RegisterPlugin(unsigned long nSignalMask)
  */
 void CICQDaemon::UnregisterPlugin()
 {
-  PluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin();
-       iter != licq->list_plugins.end();
-       ++iter)
-  {
-    if ((*iter)->CompareThread(pthread_self()))
-    {
-      //gLog.Info("%sUnregistering plugin %d.\n", L_ENDxSTR, (*iter)->Id());
-      (*iter)->SetSignalMask(0);
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_plugins);
+  getPluginManager().unregisterGeneralPlugin();
 }
 
+
+Licq::PluginManager& CICQDaemon::getPluginManager()
+{
+  return licq->getPluginManager();
+}
+
+const Licq::PluginManager& CICQDaemon::getPluginManager() const
+{
+  return licq->getPluginManager();
+}
 
 //---PluginList----------------------------------------------------------------
 /*! \brief Fetches the list of plugins */
 void CICQDaemon::PluginList(PluginsList &lPlugins)
 {
   lPlugins.erase(lPlugins.begin(), lPlugins.end());
-  pthread_mutex_lock(&licq->mutex_plugins);
-  lPlugins = licq->list_plugins;
-  pthread_mutex_unlock(&licq->mutex_plugins);
+  gLog.Error("%sCICQDaemon::PluginsList() no longer supported.\n",
+             L_ERRORxSTR);
 }
 
 
@@ -540,39 +517,39 @@ void CICQDaemon::PluginList(PluginsList &lPlugins)
 /*! \brief Unloads the given plugin */
 void CICQDaemon::PluginShutdown(int id)
 {
-  PluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
+  Licq::GeneralPluginsList plugins;
+  getPluginManager().getGeneralPluginsList(plugins);
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    if (id == (*iter)->Id()) (*iter)->Shutdown();
+    if (plugin->getId() == id)
+      plugin->shutdown();
   }
-  pthread_mutex_unlock(&licq->mutex_plugins);
 }
 
 //---PluginDisablen------------------------------------------------------------
 /*! \brief Disables the given plugin. */
 void CICQDaemon::PluginDisable(int id)
 {
-  PluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
+  Licq::GeneralPluginsList plugins;
+  getPluginManager().getGeneralPluginsList(plugins);
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    if (id == (*iter)->Id()) (*iter)->Disable();
+    if (plugin->getId() == id)
+      plugin->disable();
   }
-  pthread_mutex_unlock(&licq->mutex_plugins);
 }
 
 //---PluginEnable--------------------------------------------------------------
 /*! \brief Enables the given plugin. */
 void CICQDaemon::PluginEnable(int id)
 {
-  PluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
+  Licq::GeneralPluginsList plugins;
+  getPluginManager().getGeneralPluginsList(plugins);
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    if (id == (*iter)->Id()) (*iter)->Enable();
+    if (plugin->getId() == id)
+      plugin->enable();
   }
-  pthread_mutex_unlock(&licq->mutex_plugins);
 }
 
 
@@ -584,112 +561,54 @@ void CICQDaemon::PluginEnable(int id)
  */
 bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
 {
-  optind = 0;
-  CPlugin *p = licq->LoadPlugin(szPlugin, argc, argv);
-
-  if (p == NULL) return false;
-
-  pthread_mutex_lock(&licq->mutex_plugins);
-  licq->StartPlugin(p);
-  pthread_mutex_unlock(&licq->mutex_plugins);
-  return true;
+  return getPluginManager().startGeneralPlugin(szPlugin, argc, argv);
 }
 
 void CICQDaemon::ProtoPluginList(ProtoPluginsList &lPlugins)
 {
   lPlugins.erase(lPlugins.begin(), lPlugins.end());
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  lPlugins = licq->list_protoplugins;
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
+  gLog.Error("%sCICQDaemon::ProtoPluginList() no longer supported.\n",
+             L_ERRORxSTR);
 }
 
 bool CICQDaemon::ProtoPluginLoad(const char *szPlugin)
 {
-  // Check to make sure it's not already loaded
-  CProtoPlugin *p = licq->LoadProtoPlugin(szPlugin);
-  if (p == NULL) return false;
-
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  licq->StartProtoPlugin(p);
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
-
-  return true;
+  return getPluginManager().startProtocolPlugin(szPlugin);
 }
 
 int CICQDaemon::RegisterProtoPlugin()
 {
-  int p = -1;
-
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  ProtoPluginsListIter it;
-  for (it = licq->list_protoplugins.begin();
-       it != licq->list_protoplugins.end();
-       it++)
-  {
-    if ((*it)->CompareThread(pthread_self()))
-    {
-      p = (*it)->Pipe();
-      (*it)->SetSignals(true);
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
-
-  if (p == -1)
-    gLog.Error("%sInvalid thread in registration attempt.\n", L_ERRORxSTR);
-
-  return p;
+  return getPluginManager().registerProtocolPlugin();
 }
 
 void CICQDaemon::UnregisterProtoPlugin()
 {
-  ProtoPluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  for (iter = licq->list_protoplugins.begin();
-       iter != licq->list_protoplugins.end();
-       ++iter)
-  {
-    if ((*iter)->CompareThread(pthread_self()))
-    {
-      //gLog.Info("%sUnregistering plugin %d.\n", L_ENDxSTR, (*iter)->Id());
-      (*iter)->SetSignals(false);
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
+  getPluginManager().unregisterProtocolPlugin();
 }
 
 const char* CICQDaemon::ProtoPluginName(unsigned long _nPPID) const
 {
-  ProtoPluginsListIter it;
-  const char* p = 0;
-
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  for (it = licq->list_protoplugins.begin();
-       it != licq->list_protoplugins.end();
-       it++)
+  Licq::ProtocolPluginsList plugins;
+  getPluginManager().getProtocolPluginsList(plugins);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if ((*it)->PPID() == _nPPID)
-    {
-      p = (*it)->Name();
-      break;
-    }
+    if (plugin->getProtocolId() == _nPPID)
+      return plugin->getName();
   }
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
-  return p;
+  return NULL;
 }
 
 //---ProtoPluginShutdown-------------------------------------------------------
 /*! \brief Unloads the given proto plugin */
 void CICQDaemon::ProtoPluginShutdown(unsigned short _nId)
 {
-  ProtoPluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end(); ++iter)
+  Licq::ProtocolPluginsList plugins;
+  getPluginManager().getProtocolPluginsList(plugins);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if ((*iter)->Id() == _nId) (*iter)->Shutdown();
+    if (plugin->getId() == _nId)
+      plugin->shutdown();
   }
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
 }
 
 //---Version-------------------------------------------------------------------
@@ -1853,49 +1772,17 @@ void CICQDaemon::PushExtendedEvent(ICQEvent *e)
  *----------------------------------------------------------------------------*/
 void CICQDaemon::PushPluginEvent(ICQEvent *e)
 {
-  PluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
-  {
-    if ((*iter)->CompareThread(e->thread_plugin))
-    {
-      (*iter)->PushEvent(e);
-      break;
-    }
-  }
-  // If no plugin got the event, then just delete it
-  if (iter == licq->list_plugins.end()) delete e;
-  pthread_mutex_unlock(&licq->mutex_plugins);
+  licq->getPluginManager().getPluginEventHandler().pushGeneralEvent(e);
 }
 
 void CICQDaemon::pushPluginSignal(LicqSignal* s)
 {
-  PluginsListIter iter;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
-  {
-    if ( (*iter)->CompareMask(s->Signal()) )
-      (*iter)->pushSignal(new LicqSignal(s));
-  }
-  pthread_mutex_unlock(&licq->mutex_plugins);
-  delete s;
+  licq->getPluginManager().getPluginEventHandler().pushGeneralSignal(s);
 }
 
 LicqSignal* CICQDaemon::popPluginSignal()
 {
-  PluginsListIter iter;
-  LicqSignal* s = NULL;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
-  {
-    if ( (*iter)->CompareThread(pthread_self()) )
-    {
-      s = (*iter)->popSignal();
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_plugins);
-  return s;
+  return licq->getPluginManager().getPluginEventHandler().popGeneralSignal();
 }
 
 /*------------------------------------------------------------------------------
@@ -1905,62 +1792,18 @@ LicqSignal* CICQDaemon::popPluginSignal()
  *----------------------------------------------------------------------------*/
 ICQEvent *CICQDaemon::PopPluginEvent()
 {
-  PluginsListIter iter;
-  ICQEvent *e = NULL;
-  pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
-  {
-    if ( (*iter)->CompareThread(pthread_self()) )
-    {
-      e = (*iter)->PopEvent();
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_plugins);
-  return e;
+  return licq->getPluginManager().getPluginEventHandler().popGeneralEvent();
 }
 
 void CICQDaemon::PushProtoSignal(LicqProtoSignal* s, unsigned long _nPPID)
 {
-  ProtoPluginsListIter iter;
-  bool bExists = false;
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
-       ++iter)
-  {
-    if ((*iter)->PPID() == _nPPID)
-    {
-      bExists = true;
-      if ((*iter)->SendSignals())
-        (*iter)->PushSignal(s);
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
-
-  if (!bExists)
-  {
-    gLog.Info("%sInvalid protocol plugin requested (%ld).\n", L_ERRORxSTR, _nPPID);
-    delete s;
-  }
+  licq->getPluginManager()
+      .getPluginEventHandler().pushProtocolSignal(s, _nPPID);
 }
 
 LicqProtoSignal* CICQDaemon::PopProtoSignal()
 {
-  ProtoPluginsListIter iter;
-  LicqProtoSignal* s = NULL;
-  pthread_mutex_lock(&licq->mutex_protoplugins);
-  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
-       ++iter)
-  {
-    if ((*iter)->CompareThread(pthread_self()))
-    {
-      s = (*iter)->PopSignal();
-      break;
-    }
-  }
-  pthread_mutex_unlock(&licq->mutex_protoplugins);
-  return s;
+  return licq->getPluginManager().getPluginEventHandler().popProtocolSignal();
 }
 
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
@@ -2055,8 +1898,10 @@ bool CICQDaemon::AddProtocolPlugins()
     for (int i = 0; i < nNumProtoPlugins; i++)
     {
       sprintf(szKey, "ProtoPlugin%d", i + 1);
-      if (!licqConf.ReadStr(szKey, szData)) continue;
-      if (ProtoPluginLoad(szData) == false) return false;
+      if (!licqConf.ReadStr(szKey, szData))
+        continue;
+      if (!getPluginManager().startProtocolPlugin(szData))
+        return false;
     }
   }
   

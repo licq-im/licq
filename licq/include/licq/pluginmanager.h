@@ -36,8 +36,8 @@ class PluginManager : private boost::noncopyable
 public:
   virtual ~PluginManager() { /* Empty */ }
 
-  virtual void getGeneralPluginsList(GeneralPluginsList& plugins) = 0;
-  virtual void getProtocolPluginsList(ProtocolPluginsList& plugins) = 0;
+  virtual void getGeneralPluginsList(GeneralPluginsList& plugins) const = 0;
+  virtual void getProtocolPluginsList(ProtocolPluginsList& plugins) const = 0;
 
   virtual bool
   startGeneralPlugin(const std::string& name, int argc, char** argv) = 0;

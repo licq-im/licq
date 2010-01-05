@@ -31,7 +31,6 @@
 #include <string>
 
 class CICQDaemon;
-class LicqSignal;
 
 namespace LicqDaemon
 {
@@ -44,7 +43,8 @@ public:
   typedef boost::
   error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 
-  Plugin(boost::shared_ptr<DynamicLibrary> lib, const std::string& prefix);
+  Plugin(boost::shared_ptr<DynamicLibrary> lib, const std::string& prefix,
+         bool prefixId = false);
   virtual ~Plugin();
 
   int getReadPipe() const;
@@ -60,16 +60,19 @@ public:
    */
   int joinThread();
 
+  void cancelThread();
+
   /**
    * @return True when called from the plugin's main thread.
    */
   bool isThisThread() const;
 
+  bool isThread(const pthread_t& thread) const;
+
   void setId(unsigned short id);
 
   void setSignalMask(unsigned long mask);
-  void pushSignal(LicqSignal* signal);
-  LicqSignal* popSignal();
+  bool wantSignal(unsigned long signal);
 
   // From Licq::Plugin
   unsigned short getId() const;
@@ -87,16 +90,10 @@ protected:
 
 private:
   pthread_t myThread;
-
   unsigned long mySignalMask;
-  typedef std::list<LicqSignal*> SignalList;
-  SignalList mySignals;
-  Licq::Mutex mySignalsMutex;
 
   // Function pointers
-  int (*myMain)(CICQDaemon*);
   void* (*myMainThreadEntryPoint)(void*);
-  void (*myExit)(int);
   const char* (*myName)();
   const char* (*myVersion)();
 
@@ -117,6 +114,11 @@ inline void Plugin::setId(unsigned short id)
 inline void Plugin::setSignalMask(unsigned long mask)
 {
   mySignalMask = mask;
+}
+
+inline bool Plugin::wantSignal(unsigned long signal)
+{
+  return (signal & mySignalMask);
 }
 
 template<typename SymbolType>

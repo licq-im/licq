@@ -11,6 +11,11 @@ class CPacket;
 class CICQDaemon;
 class CUserEvent;
 
+namespace LicqDaemon
+{
+class PluginEventHandler;
+}
+
 //-----CExtendedAck----------------------------------------------------------
 
 /*! \brief Information on file and chat request responses.
@@ -281,6 +286,7 @@ protected:
 friend class CICQDaemon;
 friend class COscarService;
 friend class CMSN;
+friend class LicqDaemon::PluginEventHandler;
 friend void *ProcessRunningEvent_Client_tep(void *p);
 friend void *ProcessRunningEvent_Server_tep(void *p);
 friend void *OscarServiceSendQueue_tep(void *p);
