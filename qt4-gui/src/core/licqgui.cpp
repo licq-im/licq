@@ -1644,7 +1644,7 @@ void LicqGui::autoAway()
   // Go through each protocol, as the statuses may differ
   FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
   {
-    const unsigned long nPPID = (*_ppit)->PPID();
+    const unsigned long nPPID = (*_ppit)->getProtocolId();
 
     // Fetch current status
     unsigned short status = ICQ_STATUS_OFFLINE;
