@@ -42,7 +42,7 @@ public:
   /**
    * Get a protocol plugin based on the protocol id
    *
-   * @param ppid Protocol id
+   * @param protocolId Protocol id to get plugin for
    * @return Pointer to the plugin (if found) or an empty pointer if protocol id is unknown
    */
   virtual ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const = 0;
