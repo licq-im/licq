@@ -64,6 +64,7 @@ public:
   // From Licq::PluginManager
   void getGeneralPluginsList(Licq::GeneralPluginsList& plugins) const;
   void getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const;
+  Licq::ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const;
 
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);

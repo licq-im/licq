@@ -39,6 +39,14 @@ public:
   virtual void getGeneralPluginsList(GeneralPluginsList& plugins) const = 0;
   virtual void getProtocolPluginsList(ProtocolPluginsList& plugins) const = 0;
 
+  /**
+   * Get a protocol plugin based on the protocol id
+   *
+   * @param ppid Protocol id
+   * @return Pointer to the plugin (if found) or an empty pointer if protocol id is unknown
+   */
+  virtual ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const = 0;
+
   virtual bool
   startGeneralPlugin(const std::string& name, int argc, char** argv) = 0;
   virtual bool startProtocolPlugin(const std::string& name) = 0;

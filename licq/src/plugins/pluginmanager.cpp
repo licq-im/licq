@@ -312,6 +312,17 @@ getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const
             std::back_inserter(plugins));
 }
 
+Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(unsigned long protocolId) const
+{
+  MutexLocker locker(myProtocolPluginsMutex);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, myProtocolPlugins)
+  {
+    if (protocol->getProtocolId() == protocolId)
+      return protocol;
+  }
+  return Licq::ProtocolPlugin::Ptr();
+}
+
 bool PluginManager::
 startGeneralPlugin(const std::string& name, int argc, char** argv)
 {
