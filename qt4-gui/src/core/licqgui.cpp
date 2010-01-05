@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
 #include <list>
 #include <stdio.h> // for snprintf
 #include <unistd.h> // for getopt
@@ -72,6 +73,7 @@ extern "C"
 #include <licq_file.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
+#include <licq/pluginmanager.h>
 #include <licq_sar.h>
 #include <licq_user.h>
 
@@ -420,7 +422,7 @@ int LicqGui::Run(CICQDaemon* daemon)
   myLicqDaemon = daemon;
 
   // Register with the daemon, we want to receive all signals
-  int pipe = daemon->RegisterPlugin(SIGNAL_ALL);
+  int pipe = daemon->getPluginManager().registerGeneralPlugin(SIGNAL_ALL);
 
   // Create the configuration handlers
   Config::General::createInstance(this);
@@ -512,7 +514,7 @@ int LicqGui::Run(CICQDaemon* daemon)
 
   int r = exec();
 
-  daemon->UnregisterPlugin();
+  daemon->getPluginManager().unregisterGeneralPlugin();
 
   gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
   gLog.ModifyService(S_PLUGIN, 0);
@@ -600,10 +602,15 @@ void LicqGui::grabKey(const QString& key)
 
 void LicqGui::changeStatus(unsigned long status, bool invisible)
 {
-  FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
-  {
-    unsigned long ppid = (*_ppit)->PPID();
+  // Get a list of protocols first since we can't call changeStatus with list locked
+  list<unsigned long> protocols;
+  const OwnerMap* owners = gUserManager.LockOwnerList();
+  for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
+    protocols.push_back(i->first);
+  gUserManager.UnlockOwnerList();
 
+  BOOST_FOREACH(unsigned long ppid, protocols)
+  {
     // Keep invisible mode on protocols when changing global status
     bool protoInvisible = invisible;
     if (status != ICQ_STATUS_FxPRIVATE && myMainWindow->systemMenu()->getInvisibleStatus(ppid))
@@ -611,7 +618,6 @@ void LicqGui::changeStatus(unsigned long status, bool invisible)
 
     changeStatus(status, ppid, protoInvisible);
   }
-  FOR_EACH_PROTO_PLUGIN_END
 }
 
 void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisible)
@@ -761,15 +767,9 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int con
   unsigned long sendFuncs = 0xFFFFFFFF;
   if (ppid != LICQ_PPID)
   {
-    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-    {
-      if ((*_ppit)->PPID() == ppid)
-      {
-        sendFuncs = (*_ppit)->SendFunctions();
-        break;
-      }
-    }
-    FOR_EACH_PROTO_PLUGIN_END
+    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+    if (protocol.get() != NULL)
+      sendFuncs = protocol->getSendFunctions();
   }
 
   // Check if the protocol for this contact support the function we want to open
@@ -1007,15 +1007,18 @@ bool LicqGui::userDropEvent(const UserId& userId, const QMimeData& mimeData)
     QString text = mimeData.text();
 
     unsigned long dropPpid = 0;
-    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+    OwnerMap* owners = gUserManager.LockOwnerList();
+    for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
     {
-      if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
+      unsigned long ppid = i->first;
+
+      if (text.startsWith(PPIDSTRING(ppid)))
       {
-        dropPpid = (*_ppit)->PPID();
+        dropPpid = ppid;
         break;
       }
     }
-    FOR_EACH_PROTO_PLUGIN_END
+    gUserManager.UnlockOwnerList();
 
     if (dropPpid != 0 && text.length() > 4)
     {
@@ -1163,15 +1166,9 @@ void LicqGui::showDefaultEventDialog(const UserId& userId)
     unsigned long sendFuncs = 0xFFFFFFFF;
     if (ppid != LICQ_PPID)
     {
-      FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-      {
-        if ((*_ppit)->PPID() == ppid)
-        {
-          sendFuncs = (*_ppit)->SendFunctions();
-          break;
-        }
-      }
-      FOR_EACH_PROTO_PLUGIN_END
+      Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+      if (protocol.get() != NULL)
+        sendFuncs = protocol->getSendFunctions();
     }
 
     if (sendFuncs & PP_SEND_URL && (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
@@ -1210,19 +1207,21 @@ void LicqGui::showDefaultEventDialog(const UserId& userId)
 
 void LicqGui::showAllOwnerEvents()
 {
-  FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
+  // Get a list of owners first so we can unlock list before calling showViewEventDialog
+  list<UserId> users;
+  const OwnerMap* owners = gUserManager.LockOwnerList();
+  for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
   {
-    const ICQOwner* o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
-    if (o == NULL)
-      continue;
-    unsigned short nNumMsg = o->NewMessages();
-    UserId userId = o->id();
-    gUserManager.DropOwner(o);
-
-    if (nNumMsg > 0)
-      showViewEventDialog(userId);
+    i->second->Lock();
+    const LicqOwner* o = i->second;
+    if (o->NewMessages() > 0)
+      users.push_back(o->id());
+    i->second->Unlock();
   }
-  FOR_EACH_PROTO_PLUGIN_END
+  gUserManager.UnlockOwnerList();
+
+  BOOST_FOREACH(UserId& userId, users)
+    showViewEventDialog(userId);
 }
 
 void LicqGui::showNextEvent(const UserId& uid)
@@ -1236,20 +1235,21 @@ void LicqGui::showNextEvent(const UserId& uid)
   if (!USERID_ISVALID(userId))
   {
     // Do system messages first
-    FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
+    const OwnerMap* owners = gUserManager.LockOwnerList();
+    for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
     {
-      const ICQOwner* o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
-      if (o == NULL)
-        continue;
+      i->second->Lock();
+      const LicqOwner* o = i->second;
       unsigned short nNumMsg = o->NewMessages();
-      gUserManager.DropOwner(o);
+      i->second->Unlock();
       if (nNumMsg > 0)
       {
+        gUserManager.UnlockOwnerList();
         showAllOwnerEvents();
         return;
       }
     }
-    FOR_EACH_PROTO_PLUGIN_END
+    gUserManager.UnlockOwnerList();
 
     time_t t = time(NULL);
     FOR_EACH_USER_START(LOCK_R)

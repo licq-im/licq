@@ -33,6 +33,7 @@
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
+#include <licq/pluginmanager.h>
 #include <licq_user.h>
 
 #include "config/chat.h"
@@ -80,15 +81,9 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
   mySendFuncs = 0xFFFFFFFF;
   if (myPpid != LICQ_PPID)
   {
-    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-    {
-      if ((*_ppit)->PPID() == myPpid)
-      {
-        mySendFuncs = (*_ppit)->SendFunctions();
-        break;
-      }
-    }
-    FOR_EACH_PROTO_PLUGIN_END
+    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+    if (protocol.get() != NULL)
+      mySendFuncs = protocol->getSendFunctions();
   }
 
   myCodec = QTextCodec::codecForLocale();

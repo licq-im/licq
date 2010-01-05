@@ -22,12 +22,12 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
 #include <algorithm>
 #include <list>
 #include <string>
 
 #include <QDialogButtonBox>
-#include <QDir>
 #include <QString>
 #include <QStringList>
 #include <QTimer>
@@ -39,6 +39,7 @@
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
+#include <licq/pluginmanager.h>
 
 #include "core/mainwin.h"
 #include "core/messagebox.h"
@@ -133,6 +134,29 @@ PluginDlg::~PluginDlg()
   myInstance = NULL;
 }
 
+Licq::GeneralPlugin::Ptr PluginDlg::getGeneralPlugin(int id)
+{
+  Licq::GeneralPluginsList plugins;
+  gLicqDaemon->getPluginManager().getGeneralPluginsList(plugins);
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
+  {
+    if (plugin->getId() == id)
+      return plugin;
+  }
+  return Licq::GeneralPlugin::Ptr();
+}
+
+Licq::ProtocolPlugin::Ptr PluginDlg::getProtocolPlugin(int id)
+{
+  Licq::ProtocolPluginsList plugins;
+  gLicqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
+  {
+    if (plugin->getId() == id)
+      return plugin;
+  }
+  return Licq::ProtocolPlugin::Ptr();
+}
 
 void PluginDlg::slot_standard(QTableWidgetItem* item)
 {
@@ -149,6 +173,7 @@ void PluginDlg::slot_standard(QTableWidgetItem* item)
   int nRow = tblStandard->row(item);
   int nCol = tblStandard->column(item);
   int index = tblStandard->item(nRow, 0)->text().toInt();
+  Licq::GeneralPlugin::Ptr plugin = getGeneralPlugin(index);
 
   if (nCol == 3)
   {
@@ -156,22 +181,22 @@ void PluginDlg::slot_standard(QTableWidgetItem* item)
     if (state == true)
     {
       char* sz[] = { strdup("licq"), NULL };
-      QString plugin = tblStandard->item(nRow, 1)->text();
-      gLicqDaemon->PluginLoad(plugin.toLatin1(), 1, sz);
+      QString pluginName = tblStandard->item(nRow, 1)->text();
+      gLicqDaemon->getPluginManager().startGeneralPlugin(pluginName.toLatin1().data(), 1, sz);
       free(sz[0]);
     }
-    else
+    else if (plugin.get() != NULL)
     {
-      gLicqDaemon->PluginShutdown(index);
+      plugin->shutdown();
     }
   }
-  else if (nCol == 4)
+  else if (nCol == 4 && plugin.get() != NULL)
   {
     //Enable or Disable
     if (state == true)
-      gLicqDaemon->PluginEnable(index);
+      plugin->enable();
     else
-      gLicqDaemon->PluginDisable(index);
+      plugin->disable();
   }
 
   // Update cached state
@@ -197,35 +222,25 @@ void PluginDlg::slot_protocol(QTableWidgetItem* item)
   int nRow = tblProtocol->row(item);
   int nCol = tblProtocol->column(item);
   int index = tblProtocol->item(nRow, 0)->text().toInt();
+  Licq::ProtocolPlugin::Ptr plugin = getProtocolPlugin(index);
 
   if (nCol == 3)
   {
     //Load or Unload
     if (state == true)
     {
-      QString plugin = tblProtocol->item(nRow, 1)->text();
-      gLicqDaemon->ProtoPluginLoad(plugin.toLatin1());
+      QString pluginName = tblProtocol->item(nRow, 1)->text();
+      gLicqDaemon->getPluginManager().startProtocolPlugin(pluginName.toLatin1().data());
     }
-    else
+    else if (plugin.get() != NULL)
     {
-      unsigned long nPPID = 0;
-      ProtoPluginsList l;
-      ProtoPluginsListIter it;
-      gLicqDaemon->ProtoPluginList(l);
-      for (it = l.begin(); it != l.end(); it++)
-      {
-        if ((*it)->Id() == index)
-        {
-          nPPID = (*it)->PPID();
-          break;
-        }
-      }
+      unsigned long protocolId = plugin->getProtocolId();
 
       // Daemon doesn't notify when plugins are unloaded
       // so tell mainwin directly from here
-      gMainWindow->slot_pluginUnloaded(nPPID);
+      gMainWindow->slot_pluginUnloaded(protocolId);
 
-      gLicqDaemon->ProtoPluginShutdown(index);
+      plugin->shutdown();
     }
   }
 
@@ -239,25 +254,18 @@ void PluginDlg::slot_protocol(QTableWidgetItem* item)
 void PluginDlg::slot_stdConfig(int nRow, int /* nCol */)
 {
   int pluginIndex = tblStandard->item(nRow, 0)->text().toUShort();
+  Licq::GeneralPlugin::Ptr plugin = getGeneralPlugin(pluginIndex);
+  if (plugin.get() == NULL)
+    return;
 
-  PluginsList l;
-  PluginsListIter it;
-  gLicqDaemon->PluginList(l);
-  for (it = l.begin(); it != l.end(); it++)
+  if (plugin->getConfigFile() == NULL)
   {
-    if ((*it)->Id() == pluginIndex)
-      break;
-  }
-  if (it == l.end()) return;
-
-  if ((*it)->ConfigFile() == NULL)
-  {
-    InformUser(this, tr("Plugin %1 has no configuration file").arg((*it)->Name()));
+    InformUser(this, tr("Plugin %1 has no configuration file").arg(plugin->getName()));
     return;
   }
 
   QString f;
-  f.sprintf("%s%s", BASE_DIR, (*it)->ConfigFile());
+  f.sprintf("%s%s", BASE_DIR, plugin->getConfigFile());
   new EditFileDlg(f);
 }
 
@@ -270,54 +278,41 @@ void PluginDlg::slot_refresh()
   tblProtocol->setRowCount(0);
   mapCheckboxCache.clear();
 
-  list< string > lLoadedSPlugins;
-  list< string > lLoadedPPlugins;
-
   // Load up the standard loaded plugin info
-  PluginsList l;
-  PluginsListIter it;
+  Licq::GeneralPluginsList plugins;
+  gLicqDaemon->getPluginManager().getGeneralPluginsList(plugins);
   int i = 0;
-  gLicqDaemon->PluginList(l);
-  for (it = l.begin(); it != l.end(); it++)
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    lLoadedSPlugins.push_back((*it)->LibName());
-
     tblStandard->setRowCount(i+1);
-    tblStandard->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>((*it)->Id()))));
-    tblStandard->setItem(i, 1, new QTableWidgetItem(QString((*it)->Name())));
-    tblStandard->setItem(i, 2, new QTableWidgetItem(QString((*it)->Version())));
+    tblStandard->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>(plugin->getId()))));
+    tblStandard->setItem(i, 1, new QTableWidgetItem(QString(plugin->getName())));
+    tblStandard->setItem(i, 2, new QTableWidgetItem(QString(plugin->getVersion())));
     QTableWidgetItem* chkLoad = new QTableWidgetItem("");
     chkLoad->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);
     QTableWidgetItem* chkEnable = new QTableWidgetItem("");
     chkEnable->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);
     chkLoad->setCheckState(Qt::Checked);
-    QString strStatus((*it)->Status());
+    QString strStatus(plugin->getStatus());
     bool bEnabled = (strStatus.indexOf("enable", 0, Qt::CaseInsensitive) != -1) ||
                     (strStatus.indexOf("running", 0, Qt::CaseInsensitive) != -1);
     chkEnable->setCheckState((bEnabled ? Qt::Checked : Qt::Unchecked));
     tblStandard->setItem(i, 3, chkLoad);
     tblStandard->setItem(i, 4, chkEnable);
-    tblStandard->setItem(i, 5, new QTableWidgetItem(QString((*it)->Description())));
+    tblStandard->setItem(i, 5, new QTableWidgetItem(QString(plugin->getDescription())));
     mapCheckboxCache[chkLoad] = true;
     mapCheckboxCache[chkEnable] = bEnabled;
     i++;
   }
 
   // Load up the standard unloaded plugin info
-  QDir d(LIB_DIR, "licq_*.so", QDir::Name, QDir::Files | QDir::Readable);
-  QStringList s = d.entryList();
-  QStringList::Iterator sit;
-  for (sit = s.begin(); sit != s.end(); sit++)
+  list<string> unloadedPlugins;
+  gLicqDaemon->getPluginManager().getAvailableGeneralPlugins(unloadedPlugins, false);
+  BOOST_FOREACH(string plugin, unloadedPlugins)
   {
-    (*sit).remove(0, 5);
-    (*sit).truncate((*sit).length() - 3);
-    if (::find(lLoadedSPlugins.begin(), lLoadedSPlugins.end(),
-               (*sit).toAscii().constData()) != lLoadedSPlugins.end())
-      continue;
-
     tblStandard->setRowCount(i+1);
     tblStandard->setItem(i, 0, new QTableWidgetItem("*"));
-    tblStandard->setItem(i, 1, new QTableWidgetItem(*sit));
+    tblStandard->setItem(i, 1, new QTableWidgetItem(plugin.c_str()));
     tblStandard->setItem(i, 2, new QTableWidgetItem(""));
     QTableWidgetItem* chkLoad = new QTableWidgetItem("");
     chkLoad->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);
@@ -334,20 +329,18 @@ void PluginDlg::slot_refresh()
   }
 
   // Load up the protocol plugin info now
-  ProtoPluginsList p_l;
-  ProtoPluginsListIter p_it;
+  Licq::ProtocolPluginsList protocols;
+  gLicqDaemon->getPluginManager().getProtocolPluginsList(protocols);
   i = 0;
-  gLicqDaemon->ProtoPluginList(p_l);
-  for (p_it = p_l.begin(); p_it != p_l.end(); p_it++)
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    lLoadedPPlugins.push_back((*p_it)->LibName());
-    if (strcmp((*p_it)->Name(), "Licq") == 0)
+    if (strcmp(protocol->getName(), "Licq") == 0)
       continue;
 
     tblProtocol->setRowCount(i+1);
-    tblProtocol->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>((*p_it)->Id()))));
-    tblProtocol->setItem(i, 1, new QTableWidgetItem(QString((*p_it)->Name())));
-    tblProtocol->setItem(i, 2, new QTableWidgetItem(QString((*p_it)->Version())));
+    tblProtocol->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>(protocol->getId()))));
+    tblProtocol->setItem(i, 1, new QTableWidgetItem(QString(protocol->getName())));
+    tblProtocol->setItem(i, 2, new QTableWidgetItem(QString(protocol->getVersion())));
     QTableWidgetItem* chkLoad = new QTableWidgetItem("");
     chkLoad->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);
     chkLoad->setCheckState(Qt::Checked);
@@ -357,19 +350,13 @@ void PluginDlg::slot_refresh()
     i++;
   }
 
-  QDir d2(LIB_DIR, "protocol_*.so", QDir::Name, QDir::Files | QDir::Readable);
-  s = d2.entryList();
-  for (sit = s.begin(); sit != s.end(); sit++)
+  list<string> unloadedProtocols;
+  gLicqDaemon->getPluginManager().getAvailableProtocolPlugins(unloadedProtocols, false);
+  BOOST_FOREACH(string protocol, unloadedProtocols)
   {
-    (*sit).remove(0, 9);
-    (*sit).truncate((*sit).length() - 3);
-    if (::find(lLoadedPPlugins.begin(), lLoadedPPlugins.end(),
-               (*sit).toAscii().constData()) != lLoadedPPlugins.end())
-      continue;
-
     tblProtocol->setRowCount(i+1);
     tblProtocol->setItem(i, 0, new QTableWidgetItem("*"));
-    tblProtocol->setItem(i, 1, new QTableWidgetItem(*sit));
+    tblProtocol->setItem(i, 1, new QTableWidgetItem(protocol.c_str()));
     tblProtocol->setItem(i, 2, new QTableWidgetItem(""));
     QTableWidgetItem* chkLoad = new QTableWidgetItem("");
     chkLoad->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);

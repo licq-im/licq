@@ -31,7 +31,6 @@
 #include <QMenu>
 #include <QMouseEvent>
 
-#include <licq_icqd.h>
 #include <licq_user.h>
 
 #include "config/contactlist.h"
@@ -149,15 +148,17 @@ void MMUserView::dropEvent(QDropEvent* event)
     QString text = event->mimeData()->text();
 
     unsigned long ppid = 0;
-    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+    OwnerMap* owners = gUserManager.LockOwnerList();
+    for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
     {
-      if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
+      unsigned long protocolId = i->first;
+      if (text.startsWith(PPIDSTRING(protocolId)))
       {
-        ppid = (*_ppit)->PPID();
+        ppid = protocolId;
         break;
       }
     }
-    FOR_EACH_PROTO_PLUGIN_END;
+    gUserManager.UnlockOwnerList();
 
     if (ppid == 0)
       return;

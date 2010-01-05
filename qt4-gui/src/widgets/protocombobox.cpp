@@ -20,7 +20,10 @@
 
 #include "protocombobox.h"
 
+#include <boost/foreach.hpp>
+
 #include <licq_icqd.h>
+#include <licq/pluginmanager.h>
 
 #include "config/iconmanager.h"
 
@@ -42,11 +45,12 @@ ProtoComboBox::ProtoComboBox(bool skipExisting, QWidget* parent)
 void ProtoComboBox::fillComboBox(bool skipExisting)
 {
   QString id;
-  unsigned long ppid;
 
-  FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+  Licq::ProtocolPluginsList protocols;
+  gLicqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    ppid = (*_ppit)->PPID();
+    unsigned long ppid = protocol->getProtocolId();
     const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
     if (o == NULL)
       id = "0";
@@ -66,11 +70,10 @@ void ProtoComboBox::fillComboBox(bool skipExisting)
 
     addItem(
         IconManager::instance()->iconForStatus(ICQ_STATUS_ONLINE, id, ppid), // icon
-        (*_ppit)->Name(), // protocol name
+        protocol->getName(), // protocol name
         QString::number(ppid) // user data
         );
   }
-  FOR_EACH_PROTO_PLUGIN_END
 }
 
 unsigned long ProtoComboBox::currentPpid() const

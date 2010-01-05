@@ -20,7 +20,7 @@
 
 #include "userviewbase.h"
 
-#include <licq_icqd.h>
+#include <licq_user.h>
 
 #include "contactlist/contactlist.h"
 
@@ -216,15 +216,17 @@ void UserViewBase::dropEvent(QDropEvent* event)
         QString text = event->mimeData()->text();
 
         unsigned long dropPpid = 0;
-        FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+        OwnerMap* owners = gUserManager.LockOwnerList();
+        for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
         {
-          if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
+          unsigned long ppid = i->first;
+          if (text.startsWith(PPIDSTRING(ppid)))
           {
-            dropPpid = (*_ppit)->PPID();
+            dropPpid = ppid;
             break;
           }
         }
-        FOR_EACH_PROTO_PLUGIN_END;
+        gUserManager.UnlockOwnerList();
 
         if (dropPpid == 0)
           return;

@@ -33,6 +33,7 @@
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
+#include <licq/pluginmanager.h>
 #include <licq_user.h>
 
 #include "dialogs/awaymsgdlg.h"
@@ -267,15 +268,9 @@ void UserPages::Settings::load(const LicqUser* user)
   unsigned long sendFuncs = 0xFFFFFFFF;
   if (!isIcq)
   {
-    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-    {
-      if ((*_ppit)->PPID() == ppid)
-      {
-        sendFuncs = (*_ppit)->SendFunctions();
-        break;
-      }
-    }
-    FOR_EACH_PROTO_PLUGIN_END
+    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+    if (protocol.get() != NULL)
+      sendFuncs = protocol->getSendFunctions();
   }
 
   myAutoAcceptFileCheck->setEnabled(sendFuncs & PP_SEND_FILE);

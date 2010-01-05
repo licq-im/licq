@@ -27,6 +27,7 @@
 
 #include <licq_events.h>
 #include <licq_icqd.h>
+#include <licq/pluginmanager.h>
 #include <licq_user.h>
 #include <licq_utility.h>
 
@@ -276,15 +277,9 @@ void UserMenu::aboutToShowMenu()
 
   if (!isIcq)
   {
-    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-    {
-      if ((*_ppit)->PPID() == myPpid)
-      {
-        sendFuncs = (*_ppit)->SendFunctions();
-        break;
-      }
-    }
-    FOR_EACH_PROTO_PLUGIN_END
+    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+    if (protocol.get() != NULL)
+      sendFuncs = protocol->getSendFunctions();
   }
 
   mySendActions[SendMessage]->setVisible(sendFuncs & PP_SEND_MSG);

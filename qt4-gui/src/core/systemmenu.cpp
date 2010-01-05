@@ -26,6 +26,7 @@
 
 #include <licq_icqd.h>
 #include <licq_log.h>
+#include <licq/pluginmanager.h>
 #include <licq_user.h>
 
 #include "config/contactlist.h"
@@ -553,9 +554,17 @@ OwnerData::OwnerData(unsigned long ppid, SystemMenu* parent)
   : QObject(parent),
     myPpid(ppid)
 {
-  QString protoName = (myPpid == LICQ_PPID ?
-      "ICQ" :
-      gLicqDaemon->ProtoPluginName(myPpid));
+  QString protoName;
+  if (myPpid == LICQ_PPID)
+  {
+    protoName = "ICQ";
+  }
+  else
+  {
+    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+    if (protocol.get() != NULL)
+      protoName = protocol->getName();
+  }
 
   // System sub menu
   myOwnerAdmMenu = new QMenu(protoName);

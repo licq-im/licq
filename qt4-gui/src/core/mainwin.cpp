@@ -282,16 +282,17 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   */
 #endif
 
-  FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+  FOR_EACH_OWNER_START(LOCK_R)
   {
+    unsigned long ppid = pOwner->ppid();
 #ifdef USE_KDE
     // TODO
-    // kdeIMInterface->addProtocol((*_ppit)->Name(), (*_ppit)->PPID());
+    // kdeIMInterface->addProtocol(protocol->getName(), ppid);
 #endif
-    if ((*_ppit)->PPID() != LICQ_PPID) // XXX To be removed later
-      slot_protocolPlugin((*_ppit)->PPID());
+    if (ppid != LICQ_PPID) // XXX To be removed later
+      slot_protocolPlugin(ppid);
   }
-  FOR_EACH_PROTO_PLUGIN_END
+  FOR_EACH_OWNER_END
 
   // Check if MainWin should be sticky
   if (Config::General::instance()->mainwinSticky())
@@ -941,6 +942,8 @@ void MainWindow::updateStatus(unsigned long nPPID)
 
   IconManager* iconman = IconManager::instance();
 
+  int numOwners = gUserManager.NumOwners();
+
   const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
   if (o != NULL)
   {
@@ -964,10 +967,7 @@ void MainWindow::updateStatus(unsigned long nPPID)
         break;
     }
 
-    ProtoPluginsList protoList;
-    gLicqDaemon->ProtoPluginList(protoList);
-
-    if (protoList.size() < 2)
+    if (numOwners < 2)
     {
       // Only one protocol is loaded, show some text too
       myStatusField->clearPixmaps();
@@ -975,47 +975,23 @@ void MainWindow::updateStatus(unsigned long nPPID)
       myStatusField->setPrependPixmap(iconman->iconForStatus(o->StatusFull(),
             o->IdString(), o->PPID()));
       myStatusField->update();
-      gUserManager.DropOwner(o);
     }
-    else
-    {
-      gUserManager.DropOwner(o);
-
-      // Show icons for each protocol, w/o text
-      myStatusField->clearPrependPixmap();
-      myStatusField->setText("");
-      myStatusField->clearPixmaps();
-
-      FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-      {
-        unsigned long ppid = (*_ppit)->PPID();
-        o = gUserManager.FetchOwner(ppid, LOCK_R);
-        if (o == NULL)
-          continue;
-        myStatusField->addPixmap(iconman->iconForStatus(o->StatusFull(), o->IdString(), ppid));
-        gUserManager.DropOwner(o);
-      }
-      FOR_EACH_PROTO_PLUGIN_END
-
-      myStatusField->update();
-    }
+    gUserManager.DropOwner(o);
   }
-  else
+
+  if (numOwners > 1 || o == NULL)
   {
+    // Show icons for each protocol, w/o text
     myStatusField->clearPrependPixmap();
     myStatusField->setText("");
     myStatusField->clearPixmaps();
 
-    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+    FOR_EACH_OWNER_START(LOCK_R)
     {
-      unsigned long ppid = (*_ppit)->PPID();
-      o = gUserManager.FetchOwner(ppid, LOCK_R);
-      if (o == NULL)
-        continue;
-      myStatusField->addPixmap(iconman->iconForStatus(o->StatusFull(), o->IdString(), ppid));
-      gUserManager.DropOwner(o);
+      myStatusField->addPixmap(iconman->iconForStatus(pOwner->StatusFull(),
+          pOwner->accountId().c_str(), pOwner->ppid()));
     }
-    FOR_EACH_PROTO_PLUGIN_END
+    FOR_EACH_OWNER_END
 
     myStatusField->update();
   }

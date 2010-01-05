@@ -27,7 +27,6 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_icqd.h>
 #include <licq_user.h>
 
 #include "core/mainwin.h"
@@ -218,15 +217,17 @@ void KeyList::dropEvent(QDropEvent* event)
     return;
 
   unsigned long nPPID = 0;
-  FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+  OwnerMap* owners = gUserManager.LockOwnerList();
+  for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
   {
-    if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
+    unsigned long ppid = i->first;
+    if (text.startsWith(PPIDSTRING(ppid)))
     {
-      nPPID = (*_ppit)->PPID();
+      nPPID = ppid;
       break;
     }
   }
-  FOR_EACH_PROTO_PLUGIN_END;
+  gUserManager.UnlockOwnerList();
 
   if (nPPID == 0)
     return;

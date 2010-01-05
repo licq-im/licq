@@ -28,6 +28,7 @@
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
+#include <licq/pluginmanager.h>
 #include <licq_user.h>
 
 #include "config/iconmanager.h"
@@ -128,15 +129,15 @@ void OwnerManagerDlg::updateOwners()
 
   if (gUserManager.NumOwners() != 0)
   {
-    QString id, proto;
-    unsigned long ppid = 0;
-
     IconManager* iconman = IconManager::instance();
 
     FOR_EACH_OWNER_START(LOCK_R)
-      id = pOwner->IdString();
-      ppid = pOwner->PPID();
-      proto = gLicqDaemon->ProtoPluginName(ppid);
+      QString id = pOwner->accountId().c_str();
+      unsigned long ppid = pOwner->ppid();
+      QString proto;
+      Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+      if (protocol.get() != NULL)
+        proto = protocol->getName();
 
       QTreeWidgetItem* item = new QTreeWidgetItem(ownerView);
       item->setIcon(0, iconman->iconForStatus(ICQ_STATUS_ONLINE, id.toLatin1(), ppid));
