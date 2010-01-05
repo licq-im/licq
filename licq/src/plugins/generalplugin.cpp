@@ -24,6 +24,9 @@
 
 #include <cstring>
 
+// From licq.cpp
+extern char** global_argv;
+
 using Licq::MutexLocker;
 using namespace LicqDaemon;
 
@@ -62,7 +65,10 @@ bool GeneralPlugin::init(int argc, char** argv)
   myArgv = new char*[argc + 2];
   myArgv[argc + 1] = NULL;
 
-  myArgv[0] = ::strdup(myLib->getName().c_str());
+  // TODO: use licq or libname?
+  //myArgv[0] = ::strdup(myLib->getName().c_str());
+  myArgv[0] = ::strdup(global_argv[0]);
+
   for (int i = 0; i < argc; ++i)
     myArgv[i + 1] = ::strdup(argv[i]);
 

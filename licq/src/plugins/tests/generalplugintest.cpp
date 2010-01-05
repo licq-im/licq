@@ -29,6 +29,10 @@ pthread_cond_t LP_IdSignal = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t LP_IdMutex = PTHREAD_MUTEX_INITIALIZER;
 std::list<unsigned short> LP_Ids;
 
+// licq.cpp
+static const char* argv0 = "test";
+char** global_argv = const_cast<char**>(&argv0);
+
 // Plugin API functions
 #define STR_FUNC(name)                          \
   const char* LP_ ## name()                     \
