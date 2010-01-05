@@ -480,7 +480,10 @@ bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
       if (isEnter)
       {
         if (key->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier))
+        {
           myMessageEdit->insertPlainText("\n");
+          myMessageEdit->ensureCursorVisible();
+        }
         else
           mySendButton->animateClick();
         return true; // filter the event out
