@@ -5,6 +5,3 @@ set(helpers_SRCS
   support.cpp
   usercodec.cpp
 )
-
-set(helpers ${helpers_SRCS})
-add_library(helpers STATIC ${helpers})

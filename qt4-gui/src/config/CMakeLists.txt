@@ -9,9 +9,4 @@ set(config_SRCS
   skin.cpp
 )
 
-string(REGEX REPLACE ".cpp" ".h" config_HDRS "${config_SRCS}")
-
-qt4_wrap_cpp(config_MOC_SRCS ${config_HDRS})
-
-set(config ${config_SRCS} ${config_MOC_SRCS})
-add_library(config STATIC ${config})
+string(REGEX REPLACE ".cpp" ".h" config_MOC_HDRS "${config_SRCS}")

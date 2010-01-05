@@ -22,14 +22,6 @@ set(INSTALL_QTGUI_DIR qt4-gui CACHE STRING
   "Icons etc. will be installed to ${Licq_SHARE_DIR}/INSTALL_QTGUI_DIR.")
 mark_as_advanced(INSTALL_QTGUI_DIR)
 
-
-# Configure compiler flags
-check_cxx_accepts_flag(-fPIC CXX_ACCEPTS_FPIC)
-if (CXX_ACCEPTS_FPIC)
-  add_definitions(-fPIC)
-endif (CXX_ACCEPTS_FPIC)
-
-
 # Holds all libraries we should link to
 set(LIBRARIES)
 

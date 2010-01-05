@@ -19,8 +19,3 @@ set(core_SRCS
 
 string(REGEX REPLACE ".cpp" ".h" core_HDRS "${core_SRCS}")
 string(REGEX REPLACE "(wrap_kde_malloc.h|plugin.h)" "" core_MOC_HDRS "${core_HDRS}")
-
-qt4_wrap_cpp(core_MOC_SRCS ${core_MOC_HDRS})
-
-set(core ${core_SRCS} ${core_MOC_SRCS})
-add_library(core STATIC ${core})

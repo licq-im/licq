@@ -36,9 +36,4 @@ set(dialogs_SRCS
   utilitydlg.cpp
 )
 
-string(REGEX REPLACE ".cpp" ".h" dialogs_HDRS "${dialogs_SRCS}")
-
-qt4_wrap_cpp(dialogs_MOC_SRCS ${dialogs_HDRS})
-
-set(dialogs ${dialogs_SRCS} ${dialogs_MOC_SRCS})
-add_library(dialogs STATIC ${dialogs})
+string(REGEX REPLACE ".cpp" ".h" dialogs_MOC_HDRS "${dialogs_SRCS}")

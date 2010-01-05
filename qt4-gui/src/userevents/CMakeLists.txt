@@ -13,9 +13,4 @@ set(userevents_SRCS
   userviewevent.cpp
 )
 
-string(REGEX REPLACE ".cpp" ".h" userevents_HDRS "${userevents_SRCS}")
-
-qt4_wrap_cpp(userevents_MOC_SRCS ${userevents_HDRS})
-
-set(userevents ${userevents_SRCS} ${userevents_MOC_SRCS})
-add_library(userevents STATIC ${userevents})
+string(REGEX REPLACE ".cpp" ".h" userevents_MOC_HDRS "${userevents_SRCS}")

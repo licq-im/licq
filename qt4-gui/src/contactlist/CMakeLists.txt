@@ -13,9 +13,4 @@ set(contactlist_SRCS
   sortedcontactlistproxy.cpp
 )
 
-string(REGEX REPLACE ".cpp" ".h" contactlist_HDRS "${contactlist_SRCS}")
-
-qt4_wrap_cpp(contactlist_MOC_SRCS ${contactlist_HDRS})
-
-set(contactlist ${contactlist_SRCS} ${contactlist_MOC_SRCS})
-add_library(contactlist STATIC ${contactlist})
+string(REGEX REPLACE ".cpp" ".h" contactlist_MOC_HDRS "${contactlist_SRCS}")
