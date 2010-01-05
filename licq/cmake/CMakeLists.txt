@@ -1,4 +1,5 @@
 set(licq_CMAKE
+  cmake_uninstall.cmake.in
   FindLicq.cmake
   LicqCommonCompilerFlags.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/LicqConfig.cmake

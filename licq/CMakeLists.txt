@@ -117,6 +117,16 @@ configure_file(
 # Generate licqversion.h
 include(cmake/LicqVersion.cmake)
 
+# make uninstall (file added to top binary dir to work with build_all)
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+  "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+  @ONLY)
+
+add_custom_target(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
 add_subdirectory(cmake)
 add_subdirectory(include)
 add_subdirectory(po)

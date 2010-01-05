@@ -58,6 +58,18 @@ endif (NOT Licq_FOUND)
 # Add common (for daemon and plugin) compiler flags
 include(${_licq_cmake_dir}/LicqCommonCompilerFlags.cmake)
 
+# make uninstall
+if (NOT licq_target_prefix)
+  configure_file(
+    "${_licq_cmake_dir}/cmake_uninstall.cmake.in"
+    "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+    @ONLY)
+
+  add_custom_target(uninstall
+    "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+endif (NOT licq_target_prefix)
+
 # These symbols must be exported from the plugin
 set(_licq_plugin_symbols
   LP_Name LP_Version LP_Status LP_Description
