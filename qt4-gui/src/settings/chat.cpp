@@ -87,7 +87,7 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myChatLayout->addWidget(myTabbedChattingCheck, 1, 0);
 
   mySingleLineChatModeCheck = new QCheckBox(tr("Single line chat mode"));
-  mySingleLineChatModeCheck->setToolTip(tr("Send messages with Return and insert new lines with Ctrl+Return, opposite of the normal mode"));
+  mySingleLineChatModeCheck->setToolTip(tr("Send messages with Return and insert new lines with (Ctrl|Shift)+Return, opposite of the normal mode"));
   myChatLayout->addWidget(mySingleLineChatModeCheck, 0, 1);
 
   myUseDoubleReturnCheck = new QCheckBox(tr("Use double return"));
