@@ -55,9 +55,9 @@ class PluginManager;
 
 #define FOR_EACH_PROTO_PLUGIN_START(d)                             \
     {                                                              \
-      ProtoPluginsList _pl_;                                       \
-      ProtoPluginsListIter _ppit;                                  \
-      d->ProtoPluginList(_pl_);                                    \
+      Licq::ProtocolPluginsList _pl_;                              \
+      Licq::ProtocolPluginsList::iterator _ppit;                   \
+      d->getPluginManager().getProtocolPluginsList(_pl_);          \
       for (_ppit = _pl_.begin(); _ppit != _pl_.end(); _ppit++)     \
       { 
 
