@@ -30,12 +30,15 @@
 #include <cassert>
 #include <cerrno>
 #include <iterator>
+#include <glob.h>
 
 // Plugin variables
 pthread_cond_t LP_IdSignal = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t LP_IdMutex = PTHREAD_MUTEX_INITIALIZER;
 std::list<unsigned short> LP_Ids;
 
+using std::list;
+using std::string;
 using Licq::MutexLocker;
 using namespace LicqDaemon;
 
@@ -310,6 +313,66 @@ getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const
   MutexLocker locker(myProtocolPluginsMutex);
   std::copy(myProtocolPlugins.begin(), myProtocolPlugins.end(),
             std::back_inserter(plugins));
+}
+
+void PluginManager::getAvailableGeneralPlugins(list<string>& plugins,
+    bool includeLoaded) const
+{
+  getAvailablePlugins(plugins, "licq");
+
+  if (!includeLoaded)
+  {
+    MutexLocker locker(myGeneralPluginsMutex);
+    BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
+    {
+      string name = plugin->getLibraryName();
+      size_t pos = name.find_last_of('/');
+      name.erase(0, pos+6);
+      name.erase(name.size() - 3);
+      plugins.remove(name);
+    }
+  }
+}
+
+void PluginManager::getAvailableProtocolPlugins(list<string>& plugins,
+    bool includeLoaded) const
+{
+  getAvailablePlugins(plugins, "protocol");
+
+  if (!includeLoaded)
+  {
+    MutexLocker locker(myProtocolPluginsMutex);
+    BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
+    {
+      string name = plugin->getLibraryName();
+      // Special case, the internal ICQ plugin has no library
+      if (name.empty())
+        continue;
+      size_t pos = name.find_last_of('/');
+      name.erase(0, pos+10);
+      name.erase(name.size() - 3);
+      plugins.remove(name);
+    }
+  }
+}
+
+void PluginManager::getAvailablePlugins(list<string>& plugins, const string& prefix) const
+{
+  plugins.clear();
+
+  string pattern = LIB_DIR + prefix + "_*.so";
+  glob_t globbuf;
+  if (glob(pattern.c_str(), 0, NULL, &globbuf) != 0)
+    return;
+  for (size_t i = 0; i < globbuf.gl_pathc; ++i)
+  {
+    string name = globbuf.gl_pathv[i];
+    size_t pos = name.find_last_of('/');
+    name.erase(0, pos + prefix.size() + 2);
+    name.erase(name.size() - 3);
+    plugins.push_front(name);
+  }
+  globfree(&globbuf);
 }
 
 Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(unsigned long protocolId) const

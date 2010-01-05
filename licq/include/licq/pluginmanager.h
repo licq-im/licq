@@ -24,6 +24,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <list>
+#include <string>
 
 namespace Licq
 {
@@ -38,6 +39,22 @@ public:
 
   virtual void getGeneralPluginsList(GeneralPluginsList& plugins) const = 0;
   virtual void getProtocolPluginsList(ProtocolPluginsList& plugins) const = 0;
+
+  /**
+   * Get a list of all available general plugins
+   *
+   * @param plugins List to put names of all found plugins into
+   * @param includeLoaded False to exclude plugins already loaded
+   */
+  virtual void getAvailableGeneralPlugins(std::list<std::string>& plugins, bool includeLoaded = true) const = 0;
+
+  /**
+   * Get a list of all available protocol plugins
+   *
+   * @param plugins List to put names of all found plugins into
+   * @param includeLoaded False to exclude plugins already loaded
+   */
+  virtual void getAvailableProtocolPlugins(std::list<std::string>& plugins, bool includeLoaded = true) const = 0;
 
   /**
    * Get a protocol plugin based on the protocol id
