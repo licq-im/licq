@@ -122,8 +122,6 @@ const char MLE_HELP[] =
  *-------------------------------------------------------------------------*/
 CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
 {
-  CWindow::StartScreen();
-
   // oh yeah, add in a variable for the
   // status window text and colors.. that'd be cool
   char szFileName[MAX_FILENAME_LEN];
@@ -240,6 +238,8 @@ void CLicqConsole::Shutdown()
  *-------------------------------------------------------------------------*/
 int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 {
+  CWindow::StartScreen();
+
   // Register with the daemon, we want to receive all signals
   m_nPipe = _licqDaemon->getPluginManager().registerGeneralPlugin(SIGNAL_ALL);
   m_bExit = false;
