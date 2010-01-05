@@ -34,7 +34,7 @@ AC_DEFINE_UNQUOTED(INSTALL_SHAREDIR, "${install_datadir}/licq/", [Directory wher
 AC_ARG_ENABLE(
   hebrew,
   [  --enable-hebrew  include support for hebrew reverse string],
-  USE_HEBREW=yes, USE_HEBREW=no)
+  USE_HEBREW=$enableval, USE_HEBREW=no)
 if test "$USE_HEBREW" = "yes"; then 
   AC_DEFINE_UNQUOTED(USE_HEBREW, 1, [reverse string support])
 fi
