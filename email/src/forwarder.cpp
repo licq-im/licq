@@ -17,6 +17,7 @@
 #include "licq_constants.h"
 #include "licq_socket.h"
 #include "licq_translate.h"
+#include "licq/pluginmanager.h"
 
 extern "C" { const char *LP_Version(); }
 
@@ -50,7 +51,7 @@ CLicqForwarder::~CLicqForwarder()
 void CLicqForwarder::Shutdown()
 {
   gLog.Info("%sShutting down forwarder.\n", L_FORWARDxSTR);
-  licqDaemon->UnregisterPlugin();
+  licqDaemon->getPluginManager().unregisterGeneralPlugin();
 }
 
 
@@ -60,7 +61,8 @@ void CLicqForwarder::Shutdown()
 int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we only want the update user signal
-  m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER);
+  m_nPipe = _licqDaemon->getPluginManager().
+      registerGeneralPlugin(SIGNAL_UPDATExUSER);
   licqDaemon = _licqDaemon;
 
   // Create our snmp information

@@ -15,6 +15,7 @@
 #include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_icqd.h"
+#include "licq/pluginmanager.h"
 #include "event_data.h"
 
 #include "licq_languagecodes.h"
@@ -230,7 +231,7 @@ void CLicqConsole::Shutdown()
 {
   gLog.Info("%sShutting down console.\n", L_CONSOLExSTR);
   gLog.ModifyService(S_PLUGIN, 0);
-  licqDaemon->UnregisterPlugin();
+  licqDaemon->getPluginManager().unregisterGeneralPlugin();
 }
 
 
@@ -240,7 +241,7 @@ void CLicqConsole::Shutdown()
 int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we want to receive all signals
-  m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_ALL);
+  m_nPipe = _licqDaemon->getPluginManager().registerGeneralPlugin(SIGNAL_ALL);
   m_bExit = false;
   licqDaemon = _licqDaemon;
 

@@ -19,6 +19,7 @@
 #include "licq_icqd.h"
 #include "licq_user.h"
 #include "licq_protoplugin.h"
+#include "licq/pluginmanager.h"
 
 #include "pluginversion.h"
 #include "msn.h"
@@ -53,12 +54,12 @@ unsigned long LProto_Capabilities()
 
 int LProto_Main(CICQDaemon *_pDaemon)
 {
-  int nPipe = _pDaemon->RegisterProtoPlugin();  
+  int nPipe = _pDaemon->getPluginManager().registerProtocolPlugin();
 
   CMSN *pMSN = new CMSN(_pDaemon, nPipe);
   pMSN->Run();
 
-  _pDaemon->UnregisterProtoPlugin();
+  _pDaemon->getPluginManager().unregisterProtocolPlugin();
   
   delete pMSN;
   

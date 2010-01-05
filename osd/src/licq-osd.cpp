@@ -18,6 +18,7 @@
 #include <licq_events.h>
 #include <licq_file.h>
 #include <licq_log.h>
+#include <licq/pluginmanager.h>
 
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
@@ -330,7 +331,8 @@ bool LP_Init(int /* argc */, char** /* argv */)
 int LP_Main(CICQDaemon *_licqDaemon)
 {
     // register plugin at the licq daemon
-    int nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER | SIGNAL_LOGON| SIGNAL_LOGOFF);
+    int nPipe = _licqDaemon->getPluginManager().
+        registerGeneralPlugin(SIGNAL_UPDATExUSER | SIGNAL_LOGON| SIGNAL_LOGOFF);
     bool Exit=false; // exit plugin?
     char buf[16];
 
@@ -412,7 +414,7 @@ int LP_Main(CICQDaemon *_licqDaemon)
         Configured=false;
     }
     // unregister the plugin
-    _licqDaemon->UnregisterPlugin();
+    _licqDaemon->getPluginManager().unregisterGeneralPlugin();
 
     return 0;
 }

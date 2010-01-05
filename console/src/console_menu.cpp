@@ -1,9 +1,11 @@
 #include "console.h"
 
+#include <boost/foreach.hpp>
 #include <cctype>
 #include <string>
 
 #include "event_data.h"
+#include "licq/pluginmanager.h"
 
 using namespace std;
 
@@ -260,26 +262,28 @@ void CLicqConsole::MenuQuit(char *)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuPlugins(char* /* _szArg */)
 {
-  PluginsList l;
-  PluginsListIter it;
-  licqDaemon->PluginList(l);
-  ProtoPluginsList p1;
-  ProtoPluginsListIter pit;
-  licqDaemon->ProtoPluginList(p1);
+  Licq::GeneralPluginsList plugins;
+  licqDaemon->getPluginManager().getGeneralPluginsList(plugins);
+  Licq::ProtocolPluginsList protocols;
+  licqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+
   PrintBoxTop("Plugins", COLOR_BLUE, 70);
-  for (it = l.begin(); it != l.end(); it++)
+  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
     PrintBoxLeft();
-    winMain->wprintf("[%3d] %s v%s (%s %s) - %s", (*it)->Id(), (*it)->Name(),
-                     (*it)->Version(), (*it)->BuildDate(),
-                     (*it)->BuildTime(), (*it)->Status());
+    winMain->wprintf("[%3d] %s v%s (%s %s) - %s",
+                     plugin->getId(), plugin->getName(),
+                     plugin->getVersion(), plugin->getBuildDate(),
+                     plugin->getBuildTime(), plugin->getStatus());
     PrintBoxRight(70);
   }
-  for (pit = p1.begin(); pit != p1.end(); pit++)
+
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     PrintBoxLeft();
-    winMain->wprintf("[%3d] %s v%s", (*pit)->Id(), (*pit)->Name(),
-             (*pit)->Version());
+    winMain->wprintf("[%3d] %s v%s",
+                     protocol->getId(), protocol->getName(),
+                     protocol->getVersion());
     PrintBoxRight(70);
   }
   PrintBoxBottom(70);
@@ -534,12 +538,11 @@ void CLicqConsole::MenuStatus(char *_szArg)
   }
 
   //set same status for all protocols for now
-  ProtoPluginsList p1;
-  ProtoPluginsListIter it;
-  licqDaemon->ProtoPluginList(p1);
-  for (it = p1.begin(); it != p1.end(); it++)
+  Licq::ProtocolPluginsList protocols;
+  licqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    unsigned long nPPID = (*it)->PPID();
+    unsigned long nPPID = protocol->getProtocolId();
     UserId ownerId = gUserManager.ownerUserId(nPPID);
     if (bInvisible && nStatus != ICQ_STATUS_OFFLINE)
       nStatus |= ICQ_STATUS_FxPRIVATE;
@@ -593,14 +596,14 @@ UserId CLicqConsole::GetContactFromArg(char **p_szArg)
   {
     string::size_type s = strArg.find_last_of(" ");
     string strProtocol(strArg, nPos + 1, (s == string::npos) ? strArg.size() : s - nPos - 1);
-    ProtoPluginsList pl;
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(pl);
-    for (it = pl.begin(); it != pl.end(); it++)
+
+    Licq::ProtocolPluginsList protocols;
+    licqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
     {
-      if (strcasecmp((*it)->Name(), strProtocol.c_str()) == 0)
+      if (strcasecmp(protocol->getName(), strProtocol.c_str()) == 0)
       {
-        nPPID = (*it)->PPID();
+        nPPID = protocol->getProtocolId();
         szArg[strArg.find_last_of(".")] = '\0';
         string tmp(strArg, 0, nPos);
         tmp.append(strArg, s, strArg.size());

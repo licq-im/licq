@@ -1,5 +1,6 @@
 #include "rms.h"
 
+#include <boost/foreach.hpp>
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -17,6 +18,7 @@
 #include <licq_log.h>
 #include <licq_socket.h>
 #include <licq_user.h>
+#include <licq/pluginmanager.h>
 
 using namespace std;
 
@@ -172,7 +174,7 @@ CLicqRMS::~CLicqRMS()
 void CLicqRMS::Shutdown()
 {
   gLog.Info("%sShutting down remote manager server.\n", L_RMSxSTR);
-  licqDaemon->UnregisterPlugin();
+  licqDaemon->getPluginManager().unregisterGeneralPlugin();
 }
 
 
@@ -184,7 +186,7 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
   unsigned short nPort;
 
   // Register with the daemon, we only want the update user signal
-  m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_ALL);
+  m_nPipe = _licqDaemon->getPluginManager().registerGeneralPlugin(SIGNAL_ALL);
   licqDaemon = _licqDaemon;
   
   char filename[256];
@@ -481,14 +483,14 @@ CRMSClient::~CRMSClient()
 unsigned long CRMSClient::GetProtocol(const char *szData)
 {
   unsigned long nPPID = 0;
-  ProtoPluginsList pl;
-  ProtoPluginsListIter it;
-  licqDaemon->ProtoPluginList(pl);
-  for (it = pl.begin(); it != pl.end(); it++)
+
+  Licq::ProtocolPluginsList plugins;
+  licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if (strcasecmp((*it)->Name(), szData) == 0)
+    if (strcasecmp(plugin->getName(), szData) == 0)
     {
-      nPPID = (*it)->PPID();
+      nPPID = plugin->getProtocolId();
       break;
     }
   }
@@ -506,12 +508,11 @@ void CRMSClient::ParseUser(const char *szData)
   string::size_type nPos= strData.find_last_of(".");
   if (nPos == string::npos)
   {
-    ProtoPluginsList pl;
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(pl);
-    for (it = pl.begin(); it != pl.end(); it++)
+    Licq::ProtocolPluginsList plugins;
+    licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      myUserId = LicqUser::makeUserId(data_arg, (*it)->PPID());
+      myUserId = LicqUser::makeUserId(data_arg, plugin->getProtocolId());
       if (gUserManager.userExists(myUserId))
         break;
     }
@@ -796,15 +797,14 @@ int CRMSClient::Process_STATUS()
   // Show status
   if (data_arg[0] == '\0')
   {
-    ProtoPluginsList l;
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(l);
-    for (it = l.begin(); it != l.end(); it++)
+    Licq::ProtocolPluginsList plugins;
+    licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      ICQOwner *o = gUserManager.FetchOwner(plugin->getProtocolId(), LOCK_R);
       if (o)
       {
-        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->IdString(), (*it)->Name(), o->StatusStr());
+        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->IdString(), plugin->getName(), o->StatusStr());
         gUserManager.DropOwner(o);
       }
     }
@@ -818,12 +818,11 @@ int CRMSClient::Process_STATUS()
   if (nPos == string::npos)
   {
     unsigned long nStatus = StringToStatus(data_arg);
-    ProtoPluginsList l;
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(l);
-    for (it = l.begin(); it != l.end(); it++)
+    Licq::ProtocolPluginsList plugins;
+    licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      ChangeStatus((*it)->PPID(), nStatus, data_arg);
+      ChangeStatus(plugin->getProtocolId(), nStatus, data_arg);
     }
   }
   else

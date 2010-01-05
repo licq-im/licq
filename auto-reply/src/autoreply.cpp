@@ -18,6 +18,7 @@
 #include "licq_file.h"
 #include "licq_user.h"
 #include "licq_constants.h"
+#include "licq/pluginmanager.h"
 
 extern "C" { const char *LP_Version(); }
 
@@ -51,7 +52,7 @@ CLicqAutoReply::~CLicqAutoReply()
 void CLicqAutoReply::Shutdown()
 {
   gLog.Info("%sShutting down auto reply.\n", L_AUTOREPxSTR);
-  licqDaemon->UnregisterPlugin();
+  licqDaemon->getPluginManager().unregisterGeneralPlugin();
 }
 
 
@@ -61,7 +62,8 @@ void CLicqAutoReply::Shutdown()
 int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we only want the update user signal
-  m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER);
+  m_nPipe = _licqDaemon->getPluginManager().
+      registerGeneralPlugin(SIGNAL_UPDATExUSER);
   licqDaemon = _licqDaemon;
 
   char filename[256];
