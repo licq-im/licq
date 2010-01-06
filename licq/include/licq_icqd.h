@@ -16,12 +16,8 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
 #include "licq_onevent.h"
-#include "licq_plugind.h"
-#include "licq_protoplugind.h"
 #include "licq_user.h"
 
-class CProtoPlugin;
-class CPlugin;
 class CPacket;
 class CPacketTcp;
 class CLicq;
@@ -544,31 +540,6 @@ public:
    */
   Licq::PluginManager& getPluginManager();
   const Licq::PluginManager& getPluginManager() const;
-
-  LICQ_DEPRECATED
-  void PluginList(PluginsList &l);
-  LICQ_DEPRECATED
-  void PluginShutdown(int);
-  LICQ_DEPRECATED
-  void PluginEnable(int);
-  LICQ_DEPRECATED
-  void PluginDisable(int);
-  LICQ_DEPRECATED
-  bool PluginLoad(const char *, int, char **);
-
-
-  LICQ_DEPRECATED
-  void ProtoPluginList(ProtoPluginsList &);
-  LICQ_DEPRECATED
-  void ProtoPluginShutdown(unsigned short);
-  LICQ_DEPRECATED
-  bool ProtoPluginLoad(const char *);
-  LICQ_DEPRECATED
-  int RegisterProtoPlugin();
-  LICQ_DEPRECATED
-  void UnregisterProtoPlugin();
-  LICQ_DEPRECATED
-  const char* ProtoPluginName(unsigned long ppid) const;
 
   EDaemonStatus Status() const                  { return m_eStatus; }
 

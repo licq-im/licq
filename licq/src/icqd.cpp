@@ -33,7 +33,6 @@
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "licq_packets.h"
-#include "licq_plugind.h"
 #include "licq_proxy.h"
 #include "licq_gpg.h"
 #include "licq.h"
@@ -501,114 +500,6 @@ Licq::PluginManager& CICQDaemon::getPluginManager()
 const Licq::PluginManager& CICQDaemon::getPluginManager() const
 {
   return licq->getPluginManager();
-}
-
-//---PluginList----------------------------------------------------------------
-/*! \brief Fetches the list of plugins */
-void CICQDaemon::PluginList(PluginsList &lPlugins)
-{
-  lPlugins.erase(lPlugins.begin(), lPlugins.end());
-  gLog.Error("%sCICQDaemon::PluginsList() no longer supported.\n",
-             L_ERRORxSTR);
-}
-
-
-//---PluginShutdown------------------------------------------------------------
-/*! \brief Unloads the given plugin */
-void CICQDaemon::PluginShutdown(int id)
-{
-  Licq::GeneralPluginsList plugins;
-  getPluginManager().getGeneralPluginsList(plugins);
-  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
-  {
-    if (plugin->getId() == id)
-      plugin->shutdown();
-  }
-}
-
-//---PluginDisablen------------------------------------------------------------
-/*! \brief Disables the given plugin. */
-void CICQDaemon::PluginDisable(int id)
-{
-  Licq::GeneralPluginsList plugins;
-  getPluginManager().getGeneralPluginsList(plugins);
-  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
-  {
-    if (plugin->getId() == id)
-      plugin->disable();
-  }
-}
-
-//---PluginEnable--------------------------------------------------------------
-/*! \brief Enables the given plugin. */
-void CICQDaemon::PluginEnable(int id)
-{
-  Licq::GeneralPluginsList plugins;
-  getPluginManager().getGeneralPluginsList(plugins);
-  BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
-  {
-    if (plugin->getId() == id)
-      plugin->enable();
-  }
-}
-
-
-
-//---PluginLoad----------------------------------------------------------------
-/*! \brief Loads the given plugin. 
- *
- *  \return Returns true on success, else returns false.
- */
-bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
-{
-  return getPluginManager().startGeneralPlugin(szPlugin, argc, argv);
-}
-
-void CICQDaemon::ProtoPluginList(ProtoPluginsList &lPlugins)
-{
-  lPlugins.erase(lPlugins.begin(), lPlugins.end());
-  gLog.Error("%sCICQDaemon::ProtoPluginList() no longer supported.\n",
-             L_ERRORxSTR);
-}
-
-bool CICQDaemon::ProtoPluginLoad(const char *szPlugin)
-{
-  return getPluginManager().startProtocolPlugin(szPlugin);
-}
-
-int CICQDaemon::RegisterProtoPlugin()
-{
-  return getPluginManager().registerProtocolPlugin();
-}
-
-void CICQDaemon::UnregisterProtoPlugin()
-{
-  getPluginManager().unregisterProtocolPlugin();
-}
-
-const char* CICQDaemon::ProtoPluginName(unsigned long _nPPID) const
-{
-  Licq::ProtocolPluginsList plugins;
-  getPluginManager().getProtocolPluginsList(plugins);
-  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
-  {
-    if (plugin->getProtocolId() == _nPPID)
-      return plugin->getName();
-  }
-  return NULL;
-}
-
-//---ProtoPluginShutdown-------------------------------------------------------
-/*! \brief Unloads the given proto plugin */
-void CICQDaemon::ProtoPluginShutdown(unsigned short _nId)
-{
-  Licq::ProtocolPluginsList plugins;
-  getPluginManager().getProtocolPluginsList(plugins);
-  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
-  {
-    if (plugin->getId() == _nId)
-      plugin->shutdown();
-  }
 }
 
 //---Version-------------------------------------------------------------------

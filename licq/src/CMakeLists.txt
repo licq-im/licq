@@ -40,8 +40,6 @@ set(licq_SRCS
   onevent.cpp
   organizationcodes.c
   oscarservice.cpp
-  plugind.cpp
-  protoplugind.cpp
   providers.c
   proxy.cpp
   rtf.cc

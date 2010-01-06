@@ -34,7 +34,6 @@
 #include "licq_filetransfer.h"
 #include "licq_gpg.h"
 #include "support.h"
-#include "licq_protoplugind.h"
 #include "licq/version.h"
 
 using namespace std;

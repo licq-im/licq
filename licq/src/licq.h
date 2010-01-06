@@ -6,8 +6,6 @@
 
 #include <pthread.h>
 #include <list>
-#include "licq_plugind.h"
-#include "licq_protoplugind.h"
 
 extern char **global_argv;
 extern int global_argc;

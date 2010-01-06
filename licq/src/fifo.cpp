@@ -44,7 +44,6 @@
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "licq_packets.h"
-#include "licq_plugind.h"
 #include "licq.h"
 #include "support.h"
 
@@ -655,8 +654,6 @@ static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void 
 static int fifo_plugin_load(int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
-  PluginsList l;
-  PluginsListIter it;
 
   if (argc == 1)
   {

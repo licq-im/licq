@@ -38,7 +38,6 @@ using namespace std;
 #include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
-#include "licq_protoplugind.h"
 #include "licq/exceptions/exception.h"
 #include "licq/version.h"
 
