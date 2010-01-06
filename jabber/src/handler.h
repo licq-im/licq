@@ -17,42 +17,31 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef JABBER_H
-#define JABBER_H
+#ifndef HANDLER_H
+#define HANDLER_H
 
-class Client;
 class CICQDaemon;
-class Handler;
 
-class LicqProtoChangeStatusSignal;
-class LicqProtoLogonSignal;
-class LicqProtoSendMessageSignal;
-class LicqProtoSignal;
-
-#define JABBER_PPID 0x584D5050
-#define L_JABBERxSTR "[JAB] "
-
-class Jabber
+class Handler
 {
 public:
-  Jabber(CICQDaemon* daemon);
-  ~Jabber();
+  Handler(CICQDaemon* daemon);
+  ~Handler();
 
-  int run(int pipe);
+  void setStatus(unsigned long status);
+
+  void onConnect();
+  void onChangeStatus(unsigned long status);
+  void onDisconnect();
 
 private:
-  void processPipe(int pipe);
-  void processSignal(LicqProtoSignal* signal);
-
-  void doLogon(LicqProtoLogonSignal* signal);
-  void doChangeStatus(LicqProtoChangeStatusSignal* signal);
-  void doLogoff();
-  void doSendMessage(LicqProtoSendMessageSignal* signal);
-
   CICQDaemon* myDaemon;
-  Handler* myHandler;
-  bool myDoRun;
-  Client* myClient;
+  unsigned long myStatus;
 };
+
+inline void Handler::setStatus(unsigned long status)
+{
+  myStatus = status;
+}
 
 #endif

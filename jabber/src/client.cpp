@@ -18,6 +18,7 @@
  */
 
 #include "client.h"
+#include "handler.h"
 #include "jabber.h"
 
 #include <gloox/connectiontcpclient.h>
@@ -27,7 +28,9 @@
 #include <licq_log.h>
 #include <licq/licqversion.h>
 
-Client::Client(const std::string& username, const std::string& password) :
+Client::Client(Handler& handler, const std::string& username,
+               const std::string& password) :
+  myHandler(handler),
   myJid(username + "/Licq"),
   myClient(myJid, password)
 {
@@ -91,6 +94,7 @@ void Client::changeStatus(unsigned long status)
 
 void Client::onConnect()
 {
+  myHandler.onConnect();
 }
 
 bool Client::onTLSConnect(const gloox::CertInfo& /*info*/)
@@ -100,6 +104,7 @@ bool Client::onTLSConnect(const gloox::CertInfo& /*info*/)
 
 void Client::onDisconnect(gloox::ConnectionError /*error*/)
 {
+  myHandler.onDisconnect();
 }
 
 void Client::handlePresence(gloox::Stanza* /*stanza*/)

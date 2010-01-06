@@ -974,7 +974,7 @@ protected:
   friend class CUserManager;
   friend class CLicq;
   friend class CMSN;
-  friend class Jabber;
+  friend class Handler;
 };
 
 // Global pointer

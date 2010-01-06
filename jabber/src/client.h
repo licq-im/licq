@@ -30,12 +30,15 @@ namespace gloox
 class Client;
 }
 
+class Handler;
+
 class Client : public gloox::ConnectionListener,
                public gloox::PresenceHandler,
                public gloox::LogHandler
 {
 public:
-  Client(const std::string& user, const std::string& password);
+  Client(Handler& handler, const std::string& user,
+         const std::string& password);
   virtual ~Client();
 
   int getSocket();
@@ -57,6 +60,7 @@ public:
                  const std::string& message);
 
 private:
+  Handler& myHandler;
   gloox::JID myJid;
   gloox::Client myClient;
 };

@@ -18,6 +18,7 @@
  */
 
 #include "client.h"
+#include "handler.h"
 #include "jabber.h"
 
 #include <licq_log.h>
@@ -27,15 +28,17 @@
 
 Jabber::Jabber(CICQDaemon* daemon) :
   myDaemon(daemon),
+  myHandler(NULL),
   myDoRun(false),
   myClient(NULL)
 {
-  // Empty
+  myHandler = new Handler(daemon);
 }
 
 Jabber::~Jabber()
 {
   delete myClient;
+  delete myHandler;
 }
 
 int Jabber::run(int pipe)
@@ -126,7 +129,7 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
 
   if (myClient == NULL)
   {
-    LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
+    const LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
     if (owner == NULL)
     {
       gLog.Error("%sNo owner set\n", L_JABBERxSTR);
@@ -137,21 +140,14 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
     std::string password = owner->Password();
     gUserManager.DropOwner(owner);
 
-    myClient = new Client(username, password);
+    myHandler->setStatus(status);
+    myClient = new Client(*myHandler, username, password);
     if (!myClient->connect(status))
     {
       delete myClient;
       myClient = NULL;
       return;
     }
-
-    owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-    myDaemon->ChangeUserStatus(owner, status);
-    gUserManager.DropOwner(owner);
-
-    LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0,
-                                        USERID_NONE, JABBER_PPID);
-    myDaemon->pushPluginSignal(result);
   }
 }
 
@@ -159,14 +155,7 @@ void Jabber::doChangeStatus(LicqProtoChangeStatusSignal* signal)
 {
   assert(myClient != NULL);
   myClient->changeStatus(signal->status());
-
-  LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-  myDaemon->ChangeUserStatus(owner, signal->status());
-
-  LicqSignal* result = new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS,
-                                      owner->id(), JABBER_PPID);
-  gUserManager.DropOwner(owner);
-  myDaemon->pushPluginSignal(result);
+  myHandler->onChangeStatus(signal->status());
 }
 
 void Jabber::doLogoff()
@@ -176,21 +165,6 @@ void Jabber::doLogoff()
 
   delete myClient;
   myClient = NULL;
-
-  FOR_EACH_PROTO_USER_START(JABBER_PPID, LOCK_W)
-  {
-    if (!pUser->StatusOffline())
-      myDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
-  }
-  FOR_EACH_PROTO_USER_END;
-
-  LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-  myDaemon->ChangeUserStatus(owner, ICQ_STATUS_OFFLINE);
-  gUserManager.DropOwner(owner);
-
-  LicqSignal* result = new LicqSignal(SIGNAL_LOGOFF, 0,
-                                      USERID_NONE, JABBER_PPID);
-  myDaemon->pushPluginSignal(result);
 }
 
 void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
