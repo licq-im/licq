@@ -29,19 +29,43 @@
 namespace Licq
 {
 
+/// A list of pointers to GeneralPlugin instances.
 typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
+
+/// A list of pointers to ProtocolPlugin instances.
 typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
 
+/**
+ * The class responsible for handling plugins.
+ *
+ * Plugins use this to register and unregister themselves, starting other
+ * plugins and for getting information about active plugins.
+ *
+ * Get the global instance by calling CICQDaemon::getPluginManager().
+ */
 class PluginManager : private boost::noncopyable
 {
 public:
+  /**
+   * Get a list of all loaded general plugins.
+   *
+   * @param[out] plugins List to put pointers to plugins into.
+   * @see GeneralPlugin
+   */
   virtual void getGeneralPluginsList(GeneralPluginsList& plugins) const = 0;
+
+  /**
+   * Get a list of all loaded protocol plugins.
+   *
+   * @param[out] plugins List to put pointers to plugins into.
+   * @see ProtocolPlugin
+   */
   virtual void getProtocolPluginsList(ProtocolPluginsList& plugins) const = 0;
 
   /**
    * Get a list of all available general plugins
    *
-   * @param plugins List to put names of all found plugins into
+   * @param[out] plugins List to put names of all found plugins into
    * @param includeLoaded False to exclude plugins already loaded
    */
   virtual void getAvailableGeneralPlugins(std::list<std::string>& plugins,
@@ -50,28 +74,52 @@ public:
   /**
    * Get a list of all available protocol plugins
    *
-   * @param plugins List to put names of all found plugins into
+   * @param[out] plugins List to put names of all found plugins into
    * @param includeLoaded False to exclude plugins already loaded
    */
   virtual void getAvailableProtocolPlugins(std::list<std::string>& plugins,
                                            bool includeLoaded = true) const = 0;
 
   /**
-   * Get a protocol plugin based on the protocol id
+   * Get a protocol plugin based on the protocol id.
    *
-   * @param protocolId Protocol id to get plugin for
-   * @return Pointer to the plugin (if found) or an empty pointer if protocol
-   *         id is unknown
+   * @param protocolId Protocol id to get plugin for.
+   * @return Pointer to the ProtocolPlugin (if found) or an empty pointer if
+   *         protocol id is unknown.
    */
   virtual
   ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const = 0;
 
+  /**
+   * Load and start the general plugin @a name.
+   *
+   * @param name The plugin to start. May be an absolute path to an plugin or a
+   *        simple name in which case the plugin will be searched for in the
+   *        standard location.
+   * @param argc Number of arguments in @a argv.
+   * @param argv Arguments to pass to the plugin. The first argument (argv[0])
+   *        will be passed to the plugin as argv[1]. May be NULL, in which case
+   *        @a argc must be 0.
+   * @return True if the plugin was found and started successfully.
+   */
   virtual bool
   startGeneralPlugin(const std::string& name, int argc, char** argv) = 0;
+
+  /**
+   * Load and start the protocol plugin @a name.
+   *
+   * @param name The plugin to start. May be an absolute path to an plugin or a
+   *        simple name in which case the plugin will be searched for in the
+   *        standard location.
+   * @return True if the plugin was found and started successfully.
+   */
   virtual bool startProtocolPlugin(const std::string& name) = 0;
 
   /**
    * Registers current thread as new general plugin.
+   *
+   * General plugins must call this method when they have started to start
+   * receiving signals.
    *
    * @param signalMask A mask indicating which signals the plugin wish to
    *        receive. Use the constant SIGNAL_ALL to receive all signals.
@@ -81,11 +129,17 @@ public:
 
   /**
    * Unregisters current thread as a general plugin.
+   *
+   * General plugins must call this method before they shutdown to stop
+   * receiving signal.
    */
   virtual void unregisterGeneralPlugin() = 0;
 
   /**
    * Registers current thread as a new protocol plugin.
+   *
+   * Protocol plugins must call this method when they have started to start
+   * receiving signals.
    *
    * @return The pipe to listen on for notifications.
    */
@@ -93,6 +147,9 @@ public:
 
   /**
    * Unregisters current thread as a protocol plugin.
+   *
+   * Protocol plugins must call this method before they shutdown to stop
+   * receiving signal.
    */
   virtual void unregisterProtocolPlugin() = 0;
 

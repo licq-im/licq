@@ -775,7 +775,7 @@ public:
    * Remove user from a group
    *
    * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
-   * @pram groupId Id of group to leave
+   * @param groupId Id of group to leave
    * @return True if group was valid and user was a member
    */
   bool RemoveFromGroup(GroupType gtype, int groupId);
@@ -1203,7 +1203,7 @@ public:
   /**
    * Check if a user id is in the list
    *
-   * @param id User id to check
+   * @param userId User id to check
    * @return True if user id is in list, otherwise false
    */
   bool userExists(const UserId& userId);
@@ -1309,7 +1309,7 @@ public:
    * Call UnlockOwnerList when lock is no longer needed
    *
    * @param lockType Type of lock (LOCK_R or LOCK_W)
-   * @param Map of all owners indexed by protocol instance id
+   * @return Map of all owners indexed by protocol instance id
    */
   OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R);
 

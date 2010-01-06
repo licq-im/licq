@@ -53,8 +53,18 @@ public:
   /// Send shutdown signal to all the plugins
   void shutdownAllPlugins();
 
+  /**
+   * Wait for a plugin to exit.
+   *
+   * @param timeout If a plugin has not exited in @a timeout seconds, a
+   *        Licq::Exception is thrown.
+   * @throw Licq::Exception if there are no plugins to wait for or if the
+   *        timeout expires before a plugin exits.
+   * @return The id of the plugin that exited, or 0 for the daemon.
+   */
   unsigned short waitForPluginExit(unsigned int timeout = 0);
 
+  /// Cancel all plugins' threads.
   void cancelAllPlugins();
 
   PluginEventHandler& getPluginEventHandler();
@@ -64,8 +74,10 @@ public:
   // From Licq::PluginManager
   void getGeneralPluginsList(Licq::GeneralPluginsList& plugins) const;
   void getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const;
-  void getAvailableGeneralPlugins(std::list<std::string>& plugins, bool includeLoaded = true) const;
-  void getAvailableProtocolPlugins(std::list<std::string>& plugins, bool includeLoaded = true) const;
+  void getAvailableGeneralPlugins(std::list<std::string>& plugins,
+                                  bool includeLoaded = true) const;
+  void getAvailableProtocolPlugins(std::list<std::string>& plugins,
+                                   bool includeLoaded = true) const;
   Licq::ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const;
 
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
@@ -82,7 +94,8 @@ private:
       const std::string& name, const std::string& prefix);
   void startPlugin(Plugin::Ptr plugin);
 
-  void getAvailablePlugins(std::list<std::string>& plugins, const std::string& prefix) const;
+  void getAvailablePlugins(std::list<std::string>& plugins,
+                           const std::string& prefix) const;
 
   CICQDaemon* myDaemon;
   unsigned short myNextPluginId;

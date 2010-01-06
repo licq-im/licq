@@ -47,11 +47,10 @@ public:
          bool prefixId = false);
   virtual ~Plugin();
 
+  /// Get the read end of the pipe used to communicate with the plugin.
   int getReadPipe() const;
 
-  /**
-   * Start the plugin in a new thread.
-   */
+  /// Start the plugin in a new thread.
   void startThread(CICQDaemon* daemon);
 
   /**
@@ -60,18 +59,21 @@ public:
    */
   int joinThread();
 
+  /// Cancels the plugin's thread.
   void cancelThread();
 
-  /**
-   * @return True when called from the plugin's main thread.
-   */
+  /// @return True when called from the plugin's main thread.
   bool isThisThread() const;
 
+  /// Check if @a thread is the plugin's thread.
   bool isThread(const pthread_t& thread) const;
 
+  /// Set the plugin's unique id.
   void setId(unsigned short id);
 
   void setSignalMask(unsigned long mask);
+
+  /// Check if the plugin is interested in the @a signal.
   bool wantSignal(unsigned long signal);
 
   // From Licq::Plugin

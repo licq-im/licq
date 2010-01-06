@@ -58,7 +58,7 @@ public:
   /**
    * Set mutex name, used for debugging
    *
-   * @param new_name New name for mutex
+   * @param name New name for mutex
    */
   void setName(const std::string& name)
 #ifdef DEBUG_RW_MUTEX
