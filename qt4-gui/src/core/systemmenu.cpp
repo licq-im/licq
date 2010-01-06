@@ -329,6 +329,12 @@ void SystemMenu::updateShortcuts()
 
 void SystemMenu::addOwner(unsigned long ppid)
 {
+  // Make we actually have a plugin protocol loaded for the owner,
+  //   otherwise there is no point in including it in the menus.
+  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+  if (protocol.get() == NULL)
+    return;
+
   OwnerData* newOwner = new OwnerData(ppid, this);
   myOwnerAdmMenu->insertMenu(myOwnerAdmSeparator, newOwner->getOwnerAdmMenu());
   myStatusMenu->insertMenu(myStatusSeparator, newOwner->getStatusMenu());
