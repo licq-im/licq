@@ -180,10 +180,9 @@ void PluginDlg::slot_standard(QTableWidgetItem* item)
     //Load or Unload
     if (state == true)
     {
-      char* sz[] = { strdup("licq"), NULL };
       QString pluginName = tblStandard->item(nRow, 1)->text();
-      gLicqDaemon->getPluginManager().startGeneralPlugin(pluginName.toLatin1().data(), 1, sz);
-      free(sz[0]);
+      gLicqDaemon->getPluginManager().startGeneralPlugin(
+          pluginName.toLatin1().data(), NULL, 0);
     }
     else if (plugin.get() != NULL)
     {
