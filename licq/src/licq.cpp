@@ -144,7 +144,7 @@ void ssl_info_callback(SSL *s, int where, int ret)
  * Prints the @a error to stderr (by means of gLog), and if the user is running
  * X, tries to show a dialog with the error.
  */
-extern "C" void DisplayFatalError(const char* error, int useLicqLog)
+extern "C" void displayFatalError(const char* error, int useLicqLog)
 {
   if (useLicqLog)
     gLog.Error(error);
@@ -170,6 +170,12 @@ extern "C" void DisplayFatalError(const char* error, int useLicqLog)
       waitpid(child, &status, 0);
     }
   }
+}
+
+extern "C" void handleExitSignal(int signal)
+{
+  gLog.Info(tr("%sReceived signal %d, exiting.\n"), L_ENDxSTR, signal);
+  gLicqDaemon->Shutdown();
 }
 
 /*-----Helper functions for CLicq::UpgradeLicq-----------------------------*/
@@ -408,7 +414,7 @@ bool CLicq::Init(int argc, char **argv)
       }
 
       error[ERR_SIZE] = '\0';
-      DisplayFatalError(error, 1);
+      displayFatalError(error, 1);
 
       return false;
     }
@@ -441,7 +447,7 @@ bool CLicq::Init(int argc, char **argv)
       }
 
       error[ERR_SIZE] = '\0';
-      DisplayFatalError(error, 1);
+      displayFatalError(error, 1);
 
       return false;
     }

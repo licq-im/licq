@@ -17,7 +17,6 @@
 #include "licq_constants.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
-#include "licq_sighandler.h"
 #include "support.h"
 
 // Localization

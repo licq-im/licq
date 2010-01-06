@@ -15,7 +15,6 @@
 #include <locale>
 
 #include "licq.h"
-#include "licq_sighandler.h"
 
 #ifdef USE_SOCKS5
 #define SOCKS
@@ -34,6 +33,8 @@ char SHARE_DIR[MAX_FILENAME_LEN];
 char LIB_DIR[MAX_FILENAME_LEN];
 unsigned short DEBUG_LEVEL;
 
+// sighandler.c
+extern "C" void licq_install_signal_handlers();
 
 int main(int argc, char **argv)
 {
@@ -51,7 +52,7 @@ int main(int argc, char **argv)
    SOCKSinit(argv[0]);
 #endif
 
-  licq_signal_handler();
+  licq_install_signal_handlers();
 
   CLicq licq;
   if (!licq.Init(argc, argv))

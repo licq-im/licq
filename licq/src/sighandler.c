@@ -7,15 +7,15 @@
  */
 
 #include "config.h"
+#include "gettext.h"
 
-#include "licq_sighandler.h"
 #include "licq_constants.h"
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <time.h>
 #include <unistd.h>
 
 #if __GLIBC__ == 2 && __GLIBC_MINOR__ >= 1
@@ -26,27 +26,15 @@
 #include <execinfo.h>
 #endif
 
-// Localization
-#include "gettext.h"
+static void licq_handle_sigsegv(int);
+static void licq_handle_sigabrt(int);
+static void licq_handle_sigchld(int);
 
-void licq_handle_sigsegv(int);
-void licq_handle_sigabrt(int);
-void licq_handle_sigchld(int);
+// licq.cpp
+void displayFatalError(const char* error, int useLicqLog);
+void handleExitSignal(int signal);
 
-void DisplayFatalError(const char* error, int useLicqLog);
-
-/*
-void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
-{
-  struct sigaction sa;
-  memset(&sa, 0, sizeof(sa));
-  sa.sa_sigaction = f;
-  sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
-  sigaction(SIGSEGV, &sa, NULL);
-}
-*/
-
-void licq_signal_handler()
+void licq_install_signal_handlers()
 {
   signal(SIGSEGV, &licq_handle_sigsegv);
   signal(SIGABRT, &licq_handle_sigabrt);
@@ -54,13 +42,15 @@ void licq_signal_handler()
      disconnection will be handled, eventually */
   signal(SIGPIPE, SIG_IGN);
   signal(SIGCHLD, &licq_handle_sigchld);
-  /*struct sigaction sa;
-  memset(&sa, 0, sizeof(sa));
-  sa.sa_handler = f;
-  sa.sa_flags = SA_SIGINFO | SA_RESETHAND;
-  sigaction(SIGSEGV, &sa, NULL);*/
-}
 
+  struct sigaction sa;
+  sa.sa_handler = &handleExitSignal;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_RESETHAND;
+  sigaction(SIGHUP, &sa, NULL);
+  sigaction(SIGINT, &sa, NULL);
+  sigaction(SIGTERM, &sa, NULL);
+}
 
 
 void licq_handle_sigsegv(int s)
@@ -72,12 +62,10 @@ void licq_handle_sigsegv(int s)
   }
 
   fprintf(stderr, tr("Licq Segmentation Violation Detected.\n"));
-  /*fprintf(stderr, "Fault Address: [0x%08lX]\n", (unsigned long)si->si_addr); */
 
   // SIGABRT handler will print backtrace
   abort();
 }
-
 
 
 void licq_handle_sigabrt(int s)
@@ -211,9 +199,8 @@ void licq_handle_sigabrt(int s)
            , BASE_DIR
 #endif
     );
-  DisplayFatalError(error, 0);
+  displayFatalError(error, 0);
 }
-
 
 
 void licq_handle_sigchld(int s)
