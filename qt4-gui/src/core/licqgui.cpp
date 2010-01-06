@@ -24,6 +24,7 @@
 
 #include <boost/foreach.hpp>
 #include <list>
+#include <map>
 #include <stdio.h> // for snprintf
 #include <unistd.h> // for getopt
 
@@ -1641,19 +1642,18 @@ void LicqGui::autoAway()
 
   Config::General* generalConfig = Config::General::instance();
 
-  // Go through each protocol, as the statuses may differ
-  FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
+  // Check every owner as the statuses may differ
+  map<unsigned long, unsigned short> newStatuses;
+  const OwnerMap* owners = gUserManager.LockOwnerList();
+  for (OwnerMap::const_iterator iter = owners->begin(); iter != owners->end(); ++iter)
   {
-    const unsigned long nPPID = (*_ppit)->getProtocolId();
+    unsigned long nPPID = iter->first;
+    LicqOwner* o = iter->second;
 
     // Fetch current status
-    unsigned short status = ICQ_STATUS_OFFLINE;
-    const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
-    if (o != NULL)
-    {
-      status = o->Status();
-      gUserManager.DropOwner(o);
-    }
+    o->Lock();
+    unsigned short status = o->Status();
+    o->Unlock();
 
     SAutoAwayInfo& info = autoAwayInfo[nPPID];
 
@@ -1712,27 +1712,24 @@ void LicqGui::autoAway()
       info.isAutoAway = false;
 
     // Set auto response
+    QString autoResponse;
     if (wantedStatus == ICQ_STATUS_NA && generalConfig->autoNaMess())
     {
       SARList& sar = gSARManager.Fetch(SAR_NA);
-      ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_W);
-      if (o != NULL)
-      {
-        o->SetAutoResponse(QString(sar[generalConfig->autoNaMess() - 1]->AutoResponse()).toLocal8Bit());
-        gUserManager.DropOwner(o);
-      }
+      autoResponse = sar[generalConfig->autoNaMess() - 1]->AutoResponse();
       gSARManager.Drop();
     }
     else if (wantedStatus == ICQ_STATUS_AWAY && generalConfig->autoAwayMess())
     {
       SARList& sar = gSARManager.Fetch(SAR_AWAY);
-      ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_W);
-      if (o != NULL)
-      {
-        o->SetAutoResponse(QString(sar[generalConfig->autoAwayMess() - 1]->AutoResponse()).toLocal8Bit());
-        gUserManager.DropOwner(o);
-      }
+      autoResponse = sar[generalConfig->autoAwayMess() - 1]->AutoResponse();
       gSARManager.Drop();
+    }
+    if (!autoResponse.isNull())
+    {
+      o->Lock(LOCK_W);
+      o->SetAutoResponse(autoResponse.toLocal8Bit());
+      o->Unlock();
     }
 
     //gLog.Info("%sAuto-away changing status to %u (from %u, PPID 0x%lx).\n",
@@ -1740,9 +1737,15 @@ void LicqGui::autoAway()
 
     // Change status
     info.setAutoAwayStatus = wantedStatus;
-    changeStatus(wantedStatus, nPPID);
+    newStatuses[nPPID] = wantedStatus;
   }
-  FOR_EACH_PROTO_PLUGIN_END
+  gUserManager.UnlockOwnerList();
+
+  // Do the actual status change here, after we've released the lock on owner list
+  map<unsigned long, unsigned short>::const_iterator iter;
+  for (iter = newStatuses.begin(); iter != newStatuses.end(); ++iter)
+    changeStatus(iter->second, iter->first);
+
 #endif // USE_SCRNSAVER
 }
 

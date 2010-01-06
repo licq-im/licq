@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+#include <list>
 #include <map>
 #include <cctype>
 
@@ -110,6 +112,7 @@
 // #include "dcopclient.h"
 #endif
 
+using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MainWindow */
 
@@ -282,6 +285,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   */
 #endif
 
+  list<unsigned long> protocolIds;
   FOR_EACH_OWNER_START(LOCK_R)
   {
     unsigned long ppid = pOwner->ppid();
@@ -290,9 +294,12 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
     // kdeIMInterface->addProtocol(protocol->getName(), ppid);
 #endif
     if (ppid != LICQ_PPID) // XXX To be removed later
-      slot_protocolPlugin(ppid);
+      protocolIds.push_back(ppid);
   }
   FOR_EACH_OWNER_END
+
+  BOOST_FOREACH(unsigned long protocolId, protocolIds)
+    slot_protocolPlugin(protocolId);
 
   // Check if MainWin should be sticky
   if (Config::General::instance()->mainwinSticky())
