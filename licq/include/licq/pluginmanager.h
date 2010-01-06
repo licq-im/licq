@@ -35,8 +35,6 @@ typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
 class PluginManager : private boost::noncopyable
 {
 public:
-  virtual ~PluginManager() { /* Empty */ }
-
   virtual void getGeneralPluginsList(GeneralPluginsList& plugins) const = 0;
   virtual void getProtocolPluginsList(ProtocolPluginsList& plugins) const = 0;
 
@@ -46,7 +44,8 @@ public:
    * @param plugins List to put names of all found plugins into
    * @param includeLoaded False to exclude plugins already loaded
    */
-  virtual void getAvailableGeneralPlugins(std::list<std::string>& plugins, bool includeLoaded = true) const = 0;
+  virtual void getAvailableGeneralPlugins(std::list<std::string>& plugins,
+                                          bool includeLoaded = true) const = 0;
 
   /**
    * Get a list of all available protocol plugins
@@ -54,15 +53,18 @@ public:
    * @param plugins List to put names of all found plugins into
    * @param includeLoaded False to exclude plugins already loaded
    */
-  virtual void getAvailableProtocolPlugins(std::list<std::string>& plugins, bool includeLoaded = true) const = 0;
+  virtual void getAvailableProtocolPlugins(std::list<std::string>& plugins,
+                                           bool includeLoaded = true) const = 0;
 
   /**
    * Get a protocol plugin based on the protocol id
    *
    * @param protocolId Protocol id to get plugin for
-   * @return Pointer to the plugin (if found) or an empty pointer if protocol id is unknown
+   * @return Pointer to the plugin (if found) or an empty pointer if protocol
+   *         id is unknown
    */
-  virtual ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const = 0;
+  virtual
+  ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const = 0;
 
   virtual bool
   startGeneralPlugin(const std::string& name, int argc, char** argv) = 0;
@@ -93,6 +95,9 @@ public:
    * Unregisters current thread as a protocol plugin.
    */
   virtual void unregisterProtocolPlugin() = 0;
+
+protected:
+  virtual ~PluginManager() { /* Empty */ }
 };
 
 } // namespace Licq

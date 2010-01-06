@@ -29,8 +29,6 @@ namespace Licq
 class Plugin : private boost::noncopyable
 {
 public:
-  virtual ~Plugin() { /* Empty */ }
-
   /// @return The plugin's unique id.
   virtual unsigned short getId() const = 0;
 
@@ -44,15 +42,16 @@ public:
   virtual const std::string& getLibraryName() const = 0;
 
   /// Ask the plugin to shutdown.
-  virtual void shutdown() = 0;  
+  virtual void shutdown() = 0;
+
+protected:
+  virtual ~Plugin() { /* Empty */ }
 };
 
 class GeneralPlugin : public virtual Plugin
 {
 public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
-
-  virtual ~GeneralPlugin() { /* Empty */ }
 
   virtual const char* getStatus() const = 0;
   virtual const char* getDescription() const = 0;
@@ -66,6 +65,9 @@ public:
 
   /// Ask the plugin to disable itself.
   virtual void disable() = 0;
+
+protected:
+  virtual ~GeneralPlugin() { /* Empty */ }
 };
 
 class ProtocolPlugin : public virtual Plugin
@@ -73,10 +75,11 @@ class ProtocolPlugin : public virtual Plugin
 public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
-  virtual ~ProtocolPlugin() { /* Empty */ }
-
   virtual unsigned long getProtocolId() const = 0;
   virtual unsigned long getSendFunctions() const = 0;
+
+protected:
+  virtual ~ProtocolPlugin() { /* Empty */ }
 };
 
 } // namespace Licq
