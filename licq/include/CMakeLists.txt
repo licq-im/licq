@@ -26,13 +26,10 @@ set(licq_HEADERS
   licq_oscarservice.h
   licq_packets.h
   licq_plugin.h
-  licq_plugind.h
   licq_protoplugin.h
-  licq_protoplugind.h
   licq_providers.h
   licq_proxy.h
   licq_sar.h
-  licq_sighandler.h
   licq_socket.h
   licq_translate.h
   licq_types.h
