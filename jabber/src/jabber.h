@@ -17,45 +17,40 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "jabber.h"
-#include "pluginversion.h"
+#ifndef JABBER_H
+#define JABBER_H
 
-#include <licq_icqd.h>
-#include <licq_protoplugin.h>
-#include <licq/pluginmanager.h>
+class Client;
+class CICQDaemon;
 
-char* LProto_Name()
+class LicqProtoChangeStatusSignal;
+class LicqProtoLogonSignal;
+class LicqProtoSendMessageSignal;
+class LicqProtoSignal;
+
+#define JABBER_PPID 0x584D5050
+#define L_JABBERxSTR "[JAB] "
+
+class Jabber
 {
-  static char name[] = "Jabber";
-  return name;
-}
+public:
+  Jabber(CICQDaemon* daemon);
+  ~Jabber();
 
-char* LProto_Version()
-{
-  static char version[] = PLUGIN_VERSION_STRING;
-  return version;
-}
+  int run(int pipe);
 
-char* LProto_PPID()
-{
-  static char ppid[] = "XMPP";
-  return ppid;
-}
+private:
+  void processPipe(int pipe);
+  void processSignal(LicqProtoSignal* signal);
 
-bool LProto_Init()
-{
-  return true;
-}
+  void doLogon(LicqProtoLogonSignal* signal);
+  void doChangeStatus(LicqProtoChangeStatusSignal* signal);
+  void doLogoff();
+  void doSendMessage(LicqProtoSendMessageSignal* signal);
 
-unsigned long LProto_SendFuncs()
-{
-  return PP_SEND_MSG;
-}
+  CICQDaemon* myDaemon;
+  bool myDoRun;
+  Client* myClient;
+};
 
-int LProto_Main(CICQDaemon* daemon)
-{
-  int pipe = daemon->getPluginManager().registerProtocolPlugin();
-  int res = Jabber(daemon).run(pipe);
-  daemon->getPluginManager().unregisterProtocolPlugin();
-  return res;
-}
+#endif

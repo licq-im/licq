@@ -1,4 +1,6 @@
 set(jabber_SRCS
+  client.cpp
+  jabber.cpp
   plugin.cpp
 )
 
