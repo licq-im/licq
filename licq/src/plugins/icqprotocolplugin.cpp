@@ -35,7 +35,7 @@
 
 char* LProto_icq_Name()
 {
-  static char name[] = "Licq";
+  static char name[] = "ICQ";
   return name;
 }
 
