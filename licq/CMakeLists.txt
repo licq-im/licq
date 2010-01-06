@@ -117,6 +117,23 @@ configure_file(
 # Generate licqversion.h
 include(cmake/LicqVersion.cmake)
 
+# Doxygen is option
+find_package(Doxygen)
+
+if (DOXYGEN_FOUND)
+  set(DOXY_CONFIG ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+  message(STATUS "Generating ${DOXY_CONFIG}")
+  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in"
+    ${DOXY_CONFIG} @ONLY)
+
+  add_custom_target(docs
+    ${DOXYGEN_EXECUTABLE} ${DOXY_CONFIG}
+    DEPENDS ${DOXY_CONFIG}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Generating doxygen documentation" VERBATIM)
+endif (DOXYGEN_FOUND)
+
 # make uninstall (file added to top binary dir to work with build_all)
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
