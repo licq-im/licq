@@ -566,18 +566,18 @@ void CMSN::MSNChangeStatus(unsigned long status)
       case ICQ_STATUS_ONLINE:
       case ICQ_STATUS_FREEFORCHAT:
         msnStatus = "NLN";
-        status = (status & 0xFFFF000) | ICQ_STATUS_ONLINE;
+        status = (status & ICQ_STATUS_FxFLAGS) | ICQ_STATUS_ONLINE;
         break;
 
       case ICQ_STATUS_OCCUPIED:
       case ICQ_STATUS_DND:
         msnStatus = "BSY";
-        status = (status & 0xFFFF000) | ICQ_STATUS_OCCUPIED;
+        status = (status & ICQ_STATUS_FxFLAGS) | ICQ_STATUS_OCCUPIED;
         break;
 
       default:
         msnStatus = "AWY";
-        status = (status & 0xFFFF000) | ICQ_STATUS_AWAY;
+        status = (status & ICQ_STATUS_FxFLAGS) | ICQ_STATUS_AWAY;
         break;
     }
   }
