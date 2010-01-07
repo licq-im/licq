@@ -178,7 +178,7 @@ function sortContacts() {
 				imgsrc = "images/msg.png";
 			}
 			if (contact.status.indexOf('(') != -1) {
-				imgsrc = "images/licq.invisible.png";
+				imgsrc = "images/icq.invisible.png";
 				uclass = "invisible";
 			}
 			key = contact.id + '-' + contact.pp;
