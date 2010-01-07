@@ -384,39 +384,13 @@ CPS_MSNSendTicket::CPS_MSNSendTicket(const char *szTicket) : CMSNPacket()
   m_pBuffer->Pack("\r\n", 2);
 }
 
-CPS_MSNChangeStatus::CPS_MSNChangeStatus(unsigned long _nStatus) : CMSNPacket()
+CPS_MSNChangeStatus::CPS_MSNChangeStatus(string& status) : CMSNPacket()
 {
   m_szCommand = strdup("CHG");
   char szParams[] = " 268435500";
   m_nSize += strlen(szParams) + 3;
   InitBuffer();
-  
-  char szStatus[4];
-  
-  if (_nStatus & ICQ_STATUS_FxPRIVATE)
-    strcpy(szStatus, "HDN");
-  else
-  {
-    switch (_nStatus & 0x0000FFFF)
-    {
-      case ICQ_STATUS_ONLINE:
-      case ICQ_STATUS_FREEFORCHAT:
-        strcpy(szStatus, "NLN");
-        break;
-      
-      case ICQ_STATUS_OCCUPIED:
-      case ICQ_STATUS_DND:
-        strcpy(szStatus, "BSY");
-        break;
-      
-      default:
-        strcpy(szStatus, "AWY");
-        break;
-    } 
-  }
-  szStatus[3] = '\0';
-  
-  m_pBuffer->Pack(szStatus, strlen(szStatus));
+  m_pBuffer->Pack(status.c_str(), status.size());
   m_pBuffer->Pack(szParams, strlen(szParams));
   m_pBuffer->Pack("\r\n", 2);
 }

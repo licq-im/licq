@@ -164,7 +164,7 @@ protected:
 class CPS_MSNChangeStatus : public CMSNPacket
 {
 public:
-  CPS_MSNChangeStatus(unsigned long);
+  CPS_MSNChangeStatus(std::string& status);
 };
 
 class CPS_MSNLogoff : public CMSNPacket
