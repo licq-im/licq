@@ -96,7 +96,7 @@ public:
    * @return True if invisibility is checked
    */
   bool getInvisibleStatus() const
-  { return myStatusInvisibleAction->isChecked(); }
+  { return myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked(); }
 
   /**
    * Get user protocol invisibility status from the status menu
