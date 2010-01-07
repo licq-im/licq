@@ -565,7 +565,7 @@ void CMSN::MSNChangeStatus(unsigned long status)
   }
   else
   {
-    switch (status & 0x0000FFFF)
+    switch (status & ~ICQ_STATUS_FxFLAGS)
     {
       case ICQ_STATUS_ONLINE:
       case ICQ_STATUS_FREEFORCHAT:
