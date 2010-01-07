@@ -26,14 +26,13 @@ foreach (dir ${SOURCE_DIRS})
 
   # Get list of header files that should be moc:ed
   get_directory_property(${dir}_MOC_HDRS DIRECTORY ${dir} DEFINITION ${dir}_MOC_HDRS)
-  set(moc_HDRS)
-  foreach (file ${${dir}_MOC_HDRS})
-    list(APPEND moc_HDRS "${dir}/${file}")
-  endforeach (file)
 
-  # Create moc files
-  qt4_wrap_cpp(${dir}_MOC_SRCS ${moc_HDRS})
-  list(APPEND mocs ${${dir}_MOC_SRCS})
+  # Add targets for creating moc files
+  foreach (file ${${dir}_MOC_HDRS})
+    set(outfile "${dir}/moc_${file}.cpp")
+    qt4_generate_moc("${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${file}" ${outfile})
+    list(APPEND mocs ${outfile})
+  endforeach (file)
 endforeach (dir)
 
 if (WITH_KDE)
