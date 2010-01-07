@@ -28,10 +28,10 @@ define('CODE_LOG', '103');
 session_set_cookie_params(0, substr($_SERVER['REQUEST_URI'], 0, strrchr($_SERVER['REQUEST_URI'], '/')));
 session_start();
 if ($_GET['uin'] || $_GET['password']) {
+	$uin = stripslashes($_GET['uin']);
+	$password = stripslashes($_GET['password']);
 	$_SESSION['uin'] = $uin;
 	$_SESSION['password'] = $password;
-	$uin = $_GET['uin'];
-	$password = $_GET['password'];
 } else {
 	$uin = $_SESSION['uin'];
 	$password = $_SESSION['password'];
