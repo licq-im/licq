@@ -143,9 +143,6 @@ void MMSendDlg::slot_done(const LicqEvent* e)
   if (e != NULL)
   {
     // Let other dialogs know a message was sent
-    // TODO: This will currently only work with ICQ protocol since we don't yet
-    //       have an event available here for other protocols that we can
-    //       forward.
     emit eventSent(e);
   }
 
