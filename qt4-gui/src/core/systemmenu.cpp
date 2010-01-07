@@ -608,7 +608,7 @@ OwnerData::OwnerData(unsigned long ppid, SystemMenu* parent)
   ADD_STATUS(myStatusOccupiedAction,
       LicqStrings::getStatus(ICQ_STATUS_OCCUPIED, false),
       ICQ_STATUS_OCCUPIED,
-      true);
+      myPpid != JABBER_PPID);
   ADD_STATUS(myStatusDoNotDisturbAction,
       LicqStrings::getStatus(ICQ_STATUS_DND, false),
       ICQ_STATUS_DND,
@@ -621,7 +621,7 @@ OwnerData::OwnerData(unsigned long ppid, SystemMenu* parent)
       LicqStrings::getStatus(ICQ_STATUS_OFFLINE, false),
       ICQ_STATUS_OFFLINE,
       true);
-  if (true)
+  if (myPpid != JABBER_PPID)
   {
     myStatusMenu->addSeparator();
     myStatusInvisibleAction = myStatusMenu->addAction(

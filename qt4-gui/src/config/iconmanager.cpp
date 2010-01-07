@@ -162,6 +162,14 @@ bool IconManager::loadIcons(const QString& iconSet)
   LOAD_STATUSICON("MSNOccupied",ProtocolMsn, OccupiedStatusIcon)
   LOAD_STATUSICON("MSNPrivate", ProtocolMsn, PrivateStatusIcon)
 
+  // XMPP status icons
+  LOAD_STATUSICON("XMPPOnline",	ProtocolXmpp, OnlineStatusIcon)
+  LOAD_STATUSICON("XMPPFFC",	ProtocolXmpp, FreeForChatStatusIcon)
+  LOAD_STATUSICON("XMPPOffline",ProtocolXmpp, OfflineStatusIcon)
+  LOAD_STATUSICON("XMPPAway",	ProtocolXmpp, AwayStatusIcon)
+  LOAD_STATUSICON("XMPPNA",	ProtocolXmpp, NotAvailableStatusIcon)
+  LOAD_STATUSICON("XMPPDND",	ProtocolXmpp, DoNotDisturbStatusIcon)
+
   // Message icons
   LOAD_ICON("Message",          StandardMessageIcon);
   LOAD2_ICON("Url",             UrlMessageIcon, myIconMap.value(StandardMessageIcon));

@@ -120,8 +120,9 @@ public:
   enum ProtocolType
   {
     ProtocolIcq = LICQ_PPID,
-    ProtocolMsn = MSN_PPID,
     ProtocolAim,
+    ProtocolMsn = MSN_PPID,
+    ProtocolXmpp = JABBER_PPID,
   };
 
   /**

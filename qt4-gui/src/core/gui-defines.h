@@ -46,6 +46,7 @@
 
 // Defined here until there is a way to get constant from daemon
 #define MSN_PPID 0x4D534E5F
+#define JABBER_PPID 0x584D5050
 
 namespace LicqQtGui
 {
