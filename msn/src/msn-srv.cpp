@@ -276,7 +276,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       if (strStatus == "NLN")
         nStatus = ICQ_STATUS_ONLINE;
       else if (strStatus == "BSY")
-        nStatus = ICQ_STATUS_DND;
+        nStatus = ICQ_STATUS_OCCUPIED;
       else if (strStatus == "HDN")
       {
         nStatus = ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE;
