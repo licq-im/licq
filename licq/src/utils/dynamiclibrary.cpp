@@ -20,7 +20,6 @@
 #include "config.h"
 #include "dynamiclibrary.h"
 
-#include <boost/exception/errinfo_api_function.hpp>
 #include <boost/exception/info.hpp>
 #include <boost/exception/get_error_info.hpp>
 #include <cassert>
@@ -33,10 +32,9 @@ typedef
 boost::error_info<struct tag_errinfo_sys_error, std::string> errinfo_sys_error;
 
 DynamicLibrary::Exception::
-Exception(const char* apiFunction, const char* error)
+Exception(const char* error)
 {
-  *this << boost::errinfo_api_function(apiFunction)
-        << errinfo_sys_error(error);
+  *this << errinfo_sys_error(error);
 }
 
 std::string DynamicLibrary::Exception::getSystemError() const
@@ -57,7 +55,7 @@ DynamicLibrary::DynamicLibrary(const std::string& filename)
     myDlHandle = ::dlopen(filename.c_str(), DLOPEN_POLICY);
 
   if (myDlHandle == NULL)
-    LICQ_THROW(Exception("dlopen", ::dlerror()));
+    LICQ_THROW(Exception(::dlerror()));
 }
 
 DynamicLibrary::~DynamicLibrary() throw()
@@ -77,5 +75,5 @@ DynamicLibrary::getSymbol(const std::string& name, void** symbol)
 
   const char* error = ::dlerror();
   if (error != NULL)
-    LICQ_THROW(Exception("dlsym", error));
+    LICQ_THROW(Exception(error));
 }

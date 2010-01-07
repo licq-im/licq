@@ -52,7 +52,7 @@ public:
   class Exception : public Licq::Exception
   {
   public:
-    Exception(const char* apiFunction, const char* error);
+    Exception(const char* error);
 
     /// @returns The error string as returned from the system.
     std::string getSystemError() const;
