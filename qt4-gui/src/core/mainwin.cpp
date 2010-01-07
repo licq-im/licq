@@ -398,7 +398,9 @@ void MainWindow::updateSkin()
     myMenuBar->addMenu(mySystemMenu);
     myMenuBar->setMinimumWidth(mySystemMenu->width());
     myMenuBar->show();
+#ifndef Q_WS_MAC
     skin->AdjustForMenuBar(myMenuBar->height());
+#endif
   }
   else
   {
