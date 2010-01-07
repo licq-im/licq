@@ -28,6 +28,9 @@
 /* Define if readdir_r function is available */
 #cmakedefine HAVE_READDIR_R 1
 
+/* Define if backtrace function is available */
+#cmakedefine HAVE_BACKTRACE 1
+
 /* Directory where plugins go */
 #define INSTALL_LIBDIR "@Licq_PLUGIN_DIR@/"
 

@@ -8,19 +8,17 @@
 
 #include "config.h"
 #include "gettext.h"
-
 #include "licq_constants.h"
+
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-
-#if __GLIBC__ == 2 && __GLIBC_MINOR__ >= 1
-#define HAVE_BACKTRACE
-#endif
 
 #ifdef HAVE_BACKTRACE
 #include <execinfo.h>
@@ -103,9 +101,11 @@ void licq_handle_sigabrt(int s)
     fprintf(cmdfile, "detach\n");
     fclose(cmdfile);
 
-    char command[64 + MAX_FILENAME_LEN];
-    snprintf(command, 64 + MAX_FILENAME_LEN,
-             "gdb --batch-silent -x %s --pid %u", cmd, getpid());
+    fprintf(stderr, "\nUsing gdb to save backtrace to %s/licq.backtrace.gdb\n",
+            BASE_DIR);
+
+    char parentPid[16];
+    snprintf(parentPid, 16, "%u", getpid());
 
     pid_t child = fork();
     if (child == 0)
@@ -113,10 +113,22 @@ void licq_handle_sigabrt(int s)
       if (setsid() < 0)
         exit(EXIT_FAILURE);
 
-      fprintf(stderr, "\nUsing gdb to save backtrace to %s/licq.backtrace.gdb\n"
-              "Running: %s\n", BASE_DIR, command);
-      int ret = system(command);
-      fprintf(stderr, "gdb exited with exit code %d\n\n", ret);
+      int ret = execlp("gdb", "gdb",
+#ifdef __APPLE__
+                       "-batch",
+#else
+                       "--batch-silent",
+#endif
+                       "-x", cmd, "--pid", parentPid, NULL);
+      fprintf(stderr, "Failed to start gdb: %s\n", strerror(errno));
+      exit(ret);
+    }
+    else if (child > 0)
+    {
+      int status;
+      waitpid(child, &status, 0);
+
+      fprintf(stderr, "gdb exited with exit code %d\n\n", status);
 
       // Include time in file
       char filename[MAX_FILENAME_LEN];
@@ -127,13 +139,6 @@ void licq_handle_sigabrt(int s)
         fprintf(file, "\ntime: %lu\n", (unsigned long)time(NULL));
         fclose(file);
       }
-
-      exit(ret);
-    }
-    else if (child > 0)
-    {
-      int status;
-      waitpid(child, &status, 0);
     }
 
     unlink(cmd);

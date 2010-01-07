@@ -25,6 +25,7 @@ include(cmake/LicqCommonCompilerFlags.cmake)
 
 # Functions
 check_function_exists(readdir_r HAVE_READDIR_R)
+check_function_exists(backtrace HAVE_BACKTRACE)
 
 # dlopen
 find_package(Dlopen REQUIRED QUIET)
