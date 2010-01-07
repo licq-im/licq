@@ -26,6 +26,7 @@ class Handler;
 
 class LicqProtoChangeStatusSignal;
 class LicqProtoLogonSignal;
+class LicqProtoRequestInfo;
 class LicqProtoSendMessageSignal;
 class LicqProtoSignal;
 
@@ -48,6 +49,7 @@ private:
   void doChangeStatus(LicqProtoChangeStatusSignal* signal);
   void doLogoff();
   void doSendMessage(LicqProtoSendMessageSignal* signal);
+  void doGetInfo(LicqProtoRequestInfo* signal);
 
   CICQDaemon* myDaemon;
   Handler* myHandler;

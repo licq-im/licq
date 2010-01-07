@@ -32,7 +32,8 @@ Client::Client(Handler& handler, const std::string& username,
                const std::string& password) :
   myHandler(handler),
   myJid(username + "/Licq"),
-  myClient(myJid, password)
+  myClient(myJid, password),
+  myVCardManager(&myClient)
 {
   myClient.registerConnectionListener(this);
   myClient.registerPresenceHandler(this);
@@ -107,6 +108,11 @@ void Client::onDisconnect(gloox::ConnectionError /*error*/)
   myHandler.onDisconnect();
 }
 
+void Client::getVCard(const std::string& user)
+{
+  myVCardManager.fetchVCard(gloox::JID(user), this);
+}
+
 void Client::handlePresence(gloox::Stanza* /*stanza*/)
 {
 }
@@ -178,4 +184,18 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
       gLog.Error("%s[%s] %s\n", L_JABBERxSTR, areaStr, message.c_str());
       break;
   }
+}
+
+void Client::handleVCard(const gloox::JID& jid, gloox::VCard* vcard)
+{
+    (void)jid;
+    delete vcard;
+}
+
+void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
+     const gloox::JID& jid, gloox::StanzaError se)
+{
+    (void)context;
+    (void)jid;
+    (void)se;
 }

@@ -24,6 +24,8 @@
 #include <gloox/connectionlistener.h>
 #include <gloox/loghandler.h>
 #include <gloox/presencehandler.h>
+#include <gloox/vcardmanager.h>
+#include <gloox/vcardhandler.h>
 
 namespace gloox
 {
@@ -34,7 +36,8 @@ class Handler;
 
 class Client : public gloox::ConnectionListener,
                public gloox::PresenceHandler,
-               public gloox::LogHandler
+               public gloox::LogHandler,
+               public gloox::VCardHandler
 {
 public:
   Client(Handler& handler, const std::string& user,
@@ -46,6 +49,7 @@ public:
 
   bool connect(unsigned long status);
   void changeStatus(unsigned long status);
+  void getVCard(const std::string& user);
 
   // gloox::ConnectionListener
   void onConnect();
@@ -59,10 +63,17 @@ public:
   void handleLog(gloox::LogLevel level, gloox::LogArea area,
                  const std::string& message);
 
+  // gloox::VCardHandler
+  void handleVCard(const gloox::JID& jid, gloox::VCard* vcard);
+  void handleVCardResult(gloox::VCardHandler::VCardContext context,
+                         const gloox::JID& jid,
+                         gloox::StanzaError se = gloox::StanzaErrorUndefined);
+
 private:
   Handler& myHandler;
   gloox::JID myJid;
   gloox::Client myClient;
+  gloox::VCardManager myVCardManager;
 };
 
 #endif

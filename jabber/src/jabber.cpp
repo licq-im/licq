@@ -23,6 +23,7 @@
 
 #include <licq_log.h>
 #include <licq_icqd.h>
+#include <licq_user.h>
 
 #include <sys/select.h>
 
@@ -115,6 +116,9 @@ void Jabber::processSignal(LicqProtoSignal* signal)
     case PROTOxSENDxMSG:
       doSendMessage(static_cast<LicqProtoSendMessageSignal*>(signal));
       break;
+    case PROTOxREQUESTxINFO:
+      doGetInfo(static_cast<LicqProtoRequestInfo*>(signal));
+      break;
     default:
       gLog.Info("%sUnkown signal %u\n", L_JABBERxSTR, signal->type());
       break;
@@ -170,4 +174,9 @@ void Jabber::doLogoff()
 void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
 {
   (void)signal;
+}
+
+void Jabber::doGetInfo(LicqProtoRequestInfo* signal)
+{
+  myClient->getVCard(LicqUser::getUserAccountId(signal->userId()));
 }
