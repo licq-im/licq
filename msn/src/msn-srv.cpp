@@ -134,10 +134,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       packet->SkipParameter();
       string strVersion = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
-      
-      pReply = new CPS_MSNChangeStatus(m_nStatus);
-      SendPacket(pReply);
-      
+
+      MSNChangeStatus(m_nStatus);
+
       // Send our local list now
       //FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
       //{
@@ -145,8 +144,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       //  SendPacket(pReply);
       //}
       //FOR_EACH_PROTO_USER_END
-      
-      pReply = 0;
     }
     else if (strCmd == "LST")
     {
@@ -554,11 +551,40 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
   m_nStatus = _nStatus;
 }
 
-void CMSN::MSNChangeStatus(unsigned long _nStatus)
+void CMSN::MSNChangeStatus(unsigned long status)
 {
-  CMSNPacket *pSend = new CPS_MSNChangeStatus(_nStatus);
+  string msnStatus;
+  if ((status & ICQ_STATUS_FxPRIVATE) != 0)
+  {
+    msnStatus = "HDN";
+    status = ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE;
+  }
+  else
+  {
+    switch (status & 0x0000FFFF)
+    {
+      case ICQ_STATUS_ONLINE:
+      case ICQ_STATUS_FREEFORCHAT:
+        msnStatus = "NLN";
+        status = (status & 0xFFFF000) | ICQ_STATUS_ONLINE;
+        break;
+
+      case ICQ_STATUS_OCCUPIED:
+      case ICQ_STATUS_DND:
+        msnStatus = "BSY";
+        status = (status & 0xFFFF000) | ICQ_STATUS_OCCUPIED;
+        break;
+
+      default:
+        msnStatus = "AWY";
+        status = (status & 0xFFFF000) | ICQ_STATUS_AWAY;
+        break;
+    }
+  }
+
+  CMSNPacket* pSend = new CPS_MSNChangeStatus(msnStatus);
   SendPacket(pSend);
-  m_nStatus = _nStatus;
+  m_nStatus = status;
 }
 
 void CMSN::MSNLogoff(bool bDisconnected)
