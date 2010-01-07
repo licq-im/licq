@@ -305,7 +305,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
       if (strStatus == "NLN")
         nStatus = ICQ_STATUS_ONLINE;
-        
+      else if(strStatus == "BSY")
+        nStatus = ICQ_STATUS_OCCUPIED;
+
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
