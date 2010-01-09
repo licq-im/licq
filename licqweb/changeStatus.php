@@ -34,6 +34,7 @@ if (!rmsLogin("$uin\r\n", "$password\r\n")) {
 
 $statusMap = array(
 	"Online" => "online",
+	"FreeForChat" => "ffc",
 	"Away" => "away",
 	"Occupied" => "occupied",
 	"NotAvailable" => "na",
