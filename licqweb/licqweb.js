@@ -165,7 +165,7 @@ function sortContacts() {
 			var contact = sortedContacts[status][i];
 			var uclass = contact.status;
 			var pp = "";
-			if (contact.pp.toLowerCase() == "licq" &&
+			if (contact.pp.toLowerCase() == "icq" &&
 				(aimLower.indexOf(contact.id.charAt(0), 0) != -1 ||
 				aimUpper.indexOf(contact.id.charAt(0), 0) != -1)) {
 				pp = "aim";
