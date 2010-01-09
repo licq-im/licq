@@ -353,7 +353,7 @@ function _updateOwners() {
 function showSelectStatus(e, id, pp) {
 	var statusMenu = document.getElementById('statusMenu');
 	var statuss = new Array();
-	statuss["ICQ"] = new Array('Online', 'Away', 'Occupied', 'Do Not Disturb', 'Not Available', 'Free For Chat', 'Offline');
+	statuss["ICQ"] = new Array('Online', 'Free For Chat', 'Away', 'Not Available', 'Do Not Disturb', 'Occupied', 'Offline');
 	statuss["MSN"] = new Array('Online', 'Away', 'Occupied', 'Offline');
 	var statushtml = "";
 	for (var i = 0; i < statuss[pp].length; ++i) {
