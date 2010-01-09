@@ -252,7 +252,7 @@ public:
    * @return True if protocol inivisibility is checked
    */
   bool getInvisibleStatus() const
-  { return myStatusInvisibleAction->isChecked(); }
+  { return myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked(); }
 
 private slots:
   void aboutToShowStatusMenu();
