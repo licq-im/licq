@@ -355,6 +355,7 @@ function showSelectStatus(e, id, pp) {
 	var statuss = new Array();
 	statuss["ICQ"] = new Array('Online', 'Free For Chat', 'Away', 'Not Available', 'Do Not Disturb', 'Occupied', 'Offline');
 	statuss["MSN"] = new Array('Online', 'Away', 'Occupied', 'Offline');
+	statuss["Jabber"] = new Array('Online', 'Free For Chat', 'Away', 'Not Available', 'Do Not Disturb', 'Offline');
 	var statushtml = "";
 	for (var i = 0; i < statuss[pp].length; ++i) {
     statushtml += "<div onclick=\"changeStatus('" + pp + "', '" + statuss[pp][i] + "')\"><img src=\"images/" + pp.toLowerCase() + "." + statuss[pp][i].toLowerCase().replace(/ /g,"") + ".png\">" + statuss[pp][i] + "</div>";
