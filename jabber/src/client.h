@@ -23,7 +23,9 @@
 #include <gloox/client.h>
 #include <gloox/connectionlistener.h>
 #include <gloox/loghandler.h>
+#include <gloox/messagehandler.h>
 #include <gloox/presencehandler.h>
+#include <gloox/rosterlistener.h>
 #include <gloox/vcardmanager.h>
 #include <gloox/vcardhandler.h>
 
@@ -35,6 +37,8 @@ class Client;
 class Handler;
 
 class Client : public gloox::ConnectionListener,
+               public gloox::RosterListener,
+               public gloox::MessageHandler,
                public gloox::PresenceHandler,
                public gloox::LogHandler,
                public gloox::VCardHandler
@@ -49,12 +53,38 @@ public:
 
   bool connect(unsigned long status);
   void changeStatus(unsigned long status);
+  void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);
 
   // gloox::ConnectionListener
   void onConnect();
   bool onTLSConnect(const gloox::CertInfo& info);
   void onDisconnect(gloox::ConnectionError error);
+
+  // gloox::RosterListener
+  void handleItemAdded(const gloox::JID& jid);
+  void handleItemSubscribed(const gloox::JID& jid);
+  void handleItemRemoved(const gloox::JID& jid);
+  void handleItemUpdated(const gloox::JID& jid);
+  void handleItemUnsubscribed(const gloox::JID& jid);
+  void handleRoster(const gloox::Roster& roster);
+  void handleRosterPresence(const gloox::RosterItem& item,
+                            const std::string& resource,
+                            gloox::Presence presence,
+                            const std::string& msg);
+  void handleSelfPresence(const gloox::RosterItem& item,
+                          const std::string& resource,
+                          gloox::Presence presence,
+                          const std::string& msg);
+  bool handleSubscriptionRequest(const gloox::JID& jid,
+                                 const std::string& msg);
+  bool handleUnsubscriptionRequest(const gloox::JID& jid,
+                                   const std::string& msg);
+  void handleNonrosterPresence(gloox::Stanza* stanza);
+  void handleRosterError(gloox::Stanza* stanza);
+
+  // gloox::MessageHandler
+  void handleMessage(gloox::Stanza* stanza, gloox::MessageSession* session);
 
   // gloox::PresenceHandler
   void handlePresence(gloox::Stanza* stanza);
@@ -67,7 +97,7 @@ public:
   void handleVCard(const gloox::JID& jid, gloox::VCard* vcard);
   void handleVCardResult(gloox::VCardHandler::VCardContext context,
                          const gloox::JID& jid,
-                         gloox::StanzaError se = gloox::StanzaErrorUndefined);
+                         gloox::StanzaError error);
 
 private:
   Handler& myHandler;

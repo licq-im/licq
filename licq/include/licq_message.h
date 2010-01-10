@@ -105,6 +105,7 @@ protected:
 
 friend class CICQDaemon;
 friend class CMSN;
+friend class Jabber;
 friend class CUserHistory;
   friend class LicqUser;
 };

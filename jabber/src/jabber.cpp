@@ -173,10 +173,22 @@ void Jabber::doLogoff()
 
 void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
 {
-  (void)signal;
+  assert(myClient != NULL);
+  myClient->sendMessage(LicqUser::getUserAccountId(signal->userId()),
+                        signal->message());
+
+  CEventMsg* message = new CEventMsg(signal->message().c_str(), 0, TIME_NOW, 0);
+  message->m_eDir = D_SENDER;
+
+  LicqEvent* event = new LicqEvent(signal->eventId(), 0, NULL, CONNECT_SERVER,
+                                   signal->userId(), message);
+  event->thread_plugin = signal->callerThread();
+  event->m_eResult = EVENT_ACKED;
+  myDaemon->PushPluginEvent(event);
 }
 
 void Jabber::doGetInfo(LicqProtoRequestInfo* signal)
 {
+  assert(myClient != NULL);
   myClient->getVCard(LicqUser::getUserAccountId(signal->userId()));
 }

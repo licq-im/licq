@@ -83,3 +83,51 @@ void Handler::onDisconnect()
                                       USERID_NONE, JABBER_PPID);
   myDaemon->pushPluginSignal(result);
 }
+
+void Handler::onUserAdded(const std::string& id,
+                          const std::string& name)
+{
+  TRACE();
+
+  UserId userId = LicqUser::makeUserId(id, JABBER_PPID);
+
+  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
+  if (user == NULL)
+  {
+    gUserManager.addUser(userId, true, false);
+    user = gUserManager.fetchUser(userId, LOCK_W);
+    assert(user != NULL);
+    user->setAlias(name);
+  }
+
+  user->SetUserEncoding("UTF-8");
+  if (!user->KeepAliasOnUpdate())
+    user->setAlias(name);
+
+  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+                                            USER_GENERAL, user->id()));
+  gUserManager.DropUser(user);
+}
+
+void Handler::onUserRemoved(const std::string& /*item*/)
+{
+  TRACE();
+}
+
+void Handler::onMessage(const std::string& from, const std::string& message)
+{
+  TRACE();
+
+  
+  CEventMsg* event = new CEventMsg(
+      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, ::time(0), 0);
+
+  UserId userId = LicqUser::makeUserId(from, JABBER_PPID);
+  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
+
+  if (user)
+    user->SetTyping(0);
+  if (myDaemon->AddUserEvent(user, event))
+    myDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, user);
+  gUserManager.DropUser(user);
+}

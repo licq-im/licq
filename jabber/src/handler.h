@@ -20,6 +20,8 @@
 #ifndef HANDLER_H
 #define HANDLER_H
 
+#include <string>
+
 class CICQDaemon;
 
 class Handler
@@ -33,6 +35,11 @@ public:
   void onConnect();
   void onChangeStatus(unsigned long status);
   void onDisconnect();
+
+  void onUserAdded(const std::string& id, const std::string& name);
+  void onUserRemoved(const std::string& id);
+
+  void onMessage(const std::string& from, const std::string& message);
 
 private:
   CICQDaemon* myDaemon;

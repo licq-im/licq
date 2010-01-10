@@ -23,6 +23,7 @@
 
 #include <gloox/connectiontcpclient.h>
 #include <gloox/disco.h>
+#include <gloox/rostermanager.h>
 
 #include <licq_icq.h>
 #include <licq_log.h>
@@ -36,6 +37,8 @@ Client::Client(Handler& handler, const std::string& username,
   myVCardManager(&myClient)
 {
   myClient.registerConnectionListener(this);
+  myClient.rosterManager()->registerRosterListener(this, false);
+  myClient.registerMessageHandler(this);
   myClient.registerPresenceHandler(this);
   myClient.logInstance().registerLogHandler(
       gloox::LogLevelDebug, gloox::LogAreaAll, this);
@@ -93,6 +96,17 @@ void Client::changeStatus(unsigned long status)
   myClient.setPresence(presence);
 }
 
+void Client::sendMessage(const std::string& user, const std::string& message)
+{
+  gloox::Stanza* stanza = gloox::Stanza::createMessageStanza(user, message);
+  myClient.send(stanza);
+}
+
+void Client::getVCard(const std::string& user)
+{
+  myVCardManager.fetchVCard(gloox::JID(user), this);
+}
+
 void Client::onConnect()
 {
   myHandler.onConnect();
@@ -108,9 +122,74 @@ void Client::onDisconnect(gloox::ConnectionError /*error*/)
   myHandler.onDisconnect();
 }
 
-void Client::getVCard(const std::string& user)
+void Client::handleItemAdded(const gloox::JID& jid)
 {
-  myVCardManager.fetchVCard(gloox::JID(user), this);
+  myHandler.onUserAdded(jid.bare(), "");
+}
+
+void Client::handleItemSubscribed(const gloox::JID& /*jid*/)
+{
+}
+
+void Client::handleItemRemoved(const gloox::JID& jid)
+{
+  myHandler.onUserRemoved(jid.bare());
+}
+
+void Client::handleItemUpdated(const gloox::JID& /*jid*/)
+{
+}
+
+void Client::handleItemUnsubscribed(const gloox::JID& /*jid*/)
+{
+}
+
+void Client::handleRoster(const gloox::Roster& roster)
+{
+  for (gloox::Roster::const_iterator it = roster.begin();
+       it != roster.end(); ++it)
+    myHandler.onUserAdded(it->first, it->second->name());
+}
+
+void Client::handleRosterPresence(const gloox::RosterItem& /*item*/,
+                                  const std::string& /*resource*/,
+                                  gloox::Presence /*presence*/,
+                                  const std::string& /*msg*/)
+{
+}
+
+void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
+                                const std::string& /*resource*/,
+                                gloox::Presence /*presence*/,
+                                const std::string& /*msg*/)
+{
+}
+
+bool Client::handleSubscriptionRequest(const gloox::JID& /*jid*/,
+                                       const std::string& /*msg*/)
+{
+  return false;
+}
+
+bool Client::handleUnsubscriptionRequest(const gloox::JID& /*jid*/,
+                                         const std::string& /*msg*/)
+{
+  return false;
+}
+
+void Client::handleNonrosterPresence(gloox::Stanza* /*stanza*/)
+{
+}
+
+void Client::handleRosterError(gloox::Stanza* /*stanza*/)
+{
+}
+
+void Client::handleMessage(gloox::Stanza* stanza,
+                           gloox::MessageSession* /*session*/)
+{
+  if (!stanza->body().empty())
+    myHandler.onMessage(stanza->from().bare(), stanza->body());
 }
 
 void Client::handlePresence(gloox::Stanza* /*stanza*/)
@@ -188,14 +267,14 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
 
 void Client::handleVCard(const gloox::JID& jid, gloox::VCard* vcard)
 {
-    (void)jid;
-    delete vcard;
+  (void)jid;
+  delete vcard;
 }
 
 void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
-     const gloox::JID& jid, gloox::StanzaError se)
+                               const gloox::JID& jid, gloox::StanzaError error)
 {
-    (void)context;
-    (void)jid;
-    (void)se;
+  (void)context;
+  (void)jid;
+  (void)error;
 }

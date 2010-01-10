@@ -286,6 +286,7 @@ protected:
 friend class CICQDaemon;
 friend class COscarService;
 friend class CMSN;
+friend class Jabber;
 friend class LicqDaemon::PluginEventHandler;
 friend void *ProcessRunningEvent_Client_tep(void *p);
 friend void *ProcessRunningEvent_Server_tep(void *p);
