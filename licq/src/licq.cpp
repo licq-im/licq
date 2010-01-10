@@ -519,25 +519,21 @@ bool CLicq::Init(int argc, char **argv)
         if (!licqConf.readString(szKey, pluginName))
           continue;
 
-        // Make upgrade from 1.3.x and older easier by automatically switching from kde/qt-gui to kde4/qt4-gui
-        if (pluginName == "qt-gui")
-        {
-          pluginName = "qt4-gui";
-          gLog.Info("%sPlugin qt-gui is no longer available, will load qt4-gui instead.\n", L_SBLANKxSTR);
-        }
-        else if (pluginName == "kde-gui")
-        {
-          // Check if we can replace kde-gui with kde4-gui, otherwise qt4-gui is good enough
-          string path = string(LIB_DIR) + "licq_kde4-gui.so";
-          struct stat statbuf;
-          if (stat(path.c_str(), &statbuf) == 0)
-            pluginName = "kde4-gui";
-          else
-            pluginName = "qt4-gui";
-          }
-          gLog.Info("%sPlugin kde-gui is no longer available, will load %s instead.\n", L_SBLANKxSTR, pluginName.c_str());
+        bool loaded = LoadPlugin(pluginName.c_str(), argc, argv);
 
-        if (!LoadPlugin(pluginName.c_str(), argc, argv))
+        // Make upgrade from 1.3.x and older easier by automatically switching from kde/qt-gui to kde4/qt4-gui
+        if (!loaded && pluginName == "kde-gui")
+        {
+          gLog.Warn(tr("%sPlugin kde-gui is no longer available, trying to load kde4-gui instead.\n"), L_WARNxSTR);
+          loaded = LoadPlugin("kde4-gui", argc, argv);
+        }
+        if (!loaded && (pluginName == "qt-gui" || pluginName == "kde-gui"))
+        {
+          gLog.Warn(tr("%sPlugin %s is no longer available, trying to load qt4-gui instead.\n"), L_WARNxSTR, pluginName.c_str());
+          loaded = LoadPlugin("qt4-gui", argc, argv);
+        }
+
+        if (!loaded)
           return false;
       }
     }
