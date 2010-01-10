@@ -539,8 +539,7 @@ bool CLicq::Init(int argc, char **argv)
     }
     else  // If no plugins, try some defaults one by one
     {
-      const char* plugins[] =
-        {"qt4-gui", "kde4-gui", "qt-gui", "kde-gui", "jons-gtk-gui", "console"};
+      const char* plugins[] = {"qt4-gui", "kde4-gui", "console"};
       unsigned short i = 0, size = sizeof(plugins) / sizeof(char*);
 
       GeneralPlugin::Ptr plugin;
