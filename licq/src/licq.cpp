@@ -510,14 +510,35 @@ bool CLicq::Init(int argc, char **argv)
   if (!bHelp && !bCmdLinePlugins)
   {
     unsigned short nNumPlugins = 0;
-    char szData[MAX_FILENAME_LEN];
+    string pluginName;
     if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumPlugins", nNumPlugins) && nNumPlugins > 0)
     {
       for (int i = 0; i < nNumPlugins; i++)
       {
         sprintf(szKey, "Plugin%d", i + 1);
-        if (!licqConf.ReadStr(szKey, szData)) continue;
-        if (!LoadPlugin(szData, argc, argv)) return false;
+        if (!licqConf.readString(szKey, pluginName))
+          continue;
+
+        // Make upgrade from 1.3.x and older easier by automatically switching from kde/qt-gui to kde4/qt4-gui
+        if (pluginName == "qt-gui")
+        {
+          pluginName = "qt4-gui";
+          gLog.Info("%sPlugin qt-gui is no longer available, will load qt4-gui instead.\n", L_SBLANKxSTR);
+        }
+        else if (pluginName == "kde-gui")
+        {
+          // Check if we can replace kde-gui with kde4-gui, otherwise qt4-gui is good enough
+          string path = string(LIB_DIR) + "licq_kde4-gui.so";
+          struct stat statbuf;
+          if (stat(path.c_str(), &statbuf) == 0)
+            pluginName = "kde4-gui";
+          else
+            pluginName = "qt4-gui";
+          }
+          gLog.Info("%sPlugin kde-gui is no longer available, will load %s instead.\n", L_SBLANKxSTR, pluginName.c_str());
+
+        if (!LoadPlugin(pluginName.c_str(), argc, argv))
+          return false;
       }
     }
     else  // If no plugins, try some defaults one by one
