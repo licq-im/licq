@@ -135,13 +135,12 @@ function requestViewEvent(id, pp) {
 function sortContacts() {
 	//sort by status/messages
 	var sortedContacts = new Array();
-	var statuss = {'Online': 0, 'Occupied': 1, 'DoNotDisturb': 2, 'Away': 3, 'NotAvailable': 4};
+	var statuss = {'FreeForChat': 0, 'Online': 1, 'Away': 2, 'NotAvailable': 3, 'DoNotDisturb': 4, 'Occupied': 5};
+	if (showOffline) {
+		statuss['Offline'] = 6;
+	}
 	for (var status in statuss) {
 		sortedContacts[status] = new Array();
-	}
-	if (showOffline) {
-		statuss['Offline'] = 5;
-		sortedContacts['Offline'] = new Array();
 	}
 	for (var pp in contacts) {
 		for (var id in contacts[pp]) {
@@ -359,7 +358,7 @@ function _updateOwners() {
 function showSelectStatus(e, id, pp) {
 	var statusMenu = document.getElementById('statusMenu');
 	var statuss = new Array();
-  statuss["Licq"] = new Array('Online', 'Away', 'Occupied', 'Do Not Disturb', 'Not Available', 'Offline');
+	statuss["Licq"] = new Array('Online', 'Free For Chat', 'Away', 'Not Available', 'Occupied', 'Do Not Disturb', 'Offline');
 	statuss["MSN"] = new Array('Online', 'Away', 'Occupied', 'Offline');
 	var statushtml = "";
 	for (var i = 0; i < statuss[pp].length; ++i) {
