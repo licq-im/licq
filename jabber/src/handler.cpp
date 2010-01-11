@@ -117,6 +117,22 @@ void Handler::onUserRemoved(const std::string& /*item*/)
   TRACE();
 }
 
+void Handler::onUserStatusChange(const std::string& id, const unsigned long newStatus)
+{
+  TRACE();
+
+  UserId userId = LicqUser::makeUserId(id, JABBER_PPID);
+
+  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
+  assert(user != NULL);
+  user->SetStatus(newStatus);
+
+  myDaemon->pushPluginSignal(
+      new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, user->id(), JABBER_PPID));
+
+  gUserManager.DropUser(user);
+}
+
 void Handler::onMessage(const std::string& from, const std::string& message)
 {
   TRACE();

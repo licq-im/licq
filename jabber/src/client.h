@@ -106,6 +106,9 @@ private:
   gloox::Client myClient;
   gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;
+
+  unsigned long presenceToStatus(gloox::Presence presence);
+  gloox::Presence statusToPresence(unsigned long status);
 };
 
 #endif
