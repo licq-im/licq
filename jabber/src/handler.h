@@ -20,6 +20,7 @@
 #ifndef HANDLER_H
 #define HANDLER_H
 
+#include <list>
 #include <string>
 
 class CICQDaemon;
@@ -36,7 +37,8 @@ public:
   void onChangeStatus(unsigned long status);
   void onDisconnect();
 
-  void onUserAdded(const std::string& id, const std::string& name);
+  void onUserAdded(const std::string& id, const std::string& name,
+                   const std::list<std::string>& groups);
   void onUserRemoved(const std::string& id);
 
   void onMessage(const std::string& from, const std::string& message);

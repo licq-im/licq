@@ -85,7 +85,8 @@ void Handler::onDisconnect()
 }
 
 void Handler::onUserAdded(const std::string& id,
-                          const std::string& name)
+                          const std::string& name,
+                          const std::list<std::string>& /*groups*/)
 {
   TRACE();
 
@@ -99,6 +100,8 @@ void Handler::onUserAdded(const std::string& id,
     assert(user != NULL);
     user->setAlias(name);
   }
+
+  // TODO: Add group handling
 
   user->SetUserEncoding("UTF-8");
   if (!user->KeepAliasOnUpdate())

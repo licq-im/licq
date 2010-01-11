@@ -34,10 +34,11 @@ Client::Client(Handler& handler, const std::string& username,
   myHandler(handler),
   myJid(username + "/Licq"),
   myClient(myJid, password),
+  myRosterManager(myClient.rosterManager()),
   myVCardManager(&myClient)
 {
   myClient.registerConnectionListener(this);
-  myClient.rosterManager()->registerRosterListener(this, false);
+  myRosterManager->registerRosterListener(this, false);
   myClient.registerMessageHandler(this);
   myClient.registerPresenceHandler(this);
   myClient.logInstance().registerLogHandler(
@@ -124,7 +125,8 @@ void Client::onDisconnect(gloox::ConnectionError /*error*/)
 
 void Client::handleItemAdded(const gloox::JID& jid)
 {
-  myHandler.onUserAdded(jid.bare(), "");
+  myHandler.onUserAdded(jid.bare(), "",
+      myRosterManager->getRosterItem(jid)->groups());
 }
 
 void Client::handleItemSubscribed(const gloox::JID& /*jid*/)
@@ -148,7 +150,7 @@ void Client::handleRoster(const gloox::Roster& roster)
 {
   for (gloox::Roster::const_iterator it = roster.begin();
        it != roster.end(); ++it)
-    myHandler.onUserAdded(it->first, it->second->name());
+    myHandler.onUserAdded(it->first, it->second->name(), it->second->groups());
 }
 
 void Client::handleRosterPresence(const gloox::RosterItem& /*item*/,

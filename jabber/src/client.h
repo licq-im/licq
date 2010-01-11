@@ -32,6 +32,7 @@
 namespace gloox
 {
 class Client;
+class RosterManager;
 }
 
 class Handler;
@@ -103,6 +104,7 @@ private:
   Handler& myHandler;
   gloox::JID myJid;
   gloox::Client myClient;
+  gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;
 };
 
