@@ -86,7 +86,7 @@ void Handler::onDisconnect()
 
 void Handler::onUserAdded(const std::string& id,
                           const std::string& name,
-                          const std::list<std::string>& /*groups*/)
+                          const std::list<std::string>& groups)
 {
   TRACE();
 
@@ -101,7 +101,16 @@ void Handler::onUserAdded(const std::string& id,
     user->setAlias(name);
   }
 
-  // TODO: Add group handling
+  UserGroupList glist;
+  for (std::list<std::string>::const_iterator it = groups.begin();
+      it != groups.end(); ++it)
+  {
+    int groupId = gUserManager.GetGroupFromName(*it);
+    if (groupId == 0)
+      continue; // TODO: Implement virtual group creation in the daemon
+    glist.insert(groupId);
+  }
+  user->SetGroups(glist);
 
   user->SetUserEncoding("UTF-8");
   if (!user->KeepAliasOnUpdate())
