@@ -416,12 +416,31 @@ bool CUserManager::Load()
       groupId = i;
     }
 
-    licqConf.SetFlags(INI_FxFATAL | INI_FxERROR | INI_FxWARN);
-
     LicqGroup* newGroup = new LicqGroup(groupId, groupName);
-    newGroup->setIcqGroupId(icqGroupId);
     newGroup->setSortIndex(sortIndex);
+
+    list<string> serverIdKeys;
+    sprintf(key, "Group%d.ServerId.", i);
+    licqConf.getKeyList(serverIdKeys, key);
+    BOOST_FOREACH(const string& serverIdKey, serverIdKeys)
+    {
+      size_t keylen = serverIdKey.size();
+      unsigned long protocolId = serverIdKey[keylen-4] << 24 |
+          serverIdKey[keylen-3] << 16 | serverIdKey[keylen-2] << 8 |
+          serverIdKey[keylen-1];
+      unsigned long serverId;
+      licqConf.ReadNum(serverIdKey, serverId, 0);
+      newGroup->setServerId(protocolId, serverId);
+    }
+
+    // ServerId per protocol didn't exist in 1.3.x and older.
+    // This will preserve ICQ group ids when reading old config.
+    if (serverIdKeys.size() == 0 && icqGroupId != 0)
+      newGroup->setServerId(LICQ_PPID, icqGroupId);
+
     (*groups)[groupId] = newGroup;
+
+    licqConf.SetFlags(INI_FxFATAL | INI_FxERROR | INI_FxWARN);
   }
   m_bAllowSave = true;
   UnlockGroupList();
@@ -1039,24 +1058,11 @@ void CUserManager::SaveGroups()
   GroupMap::size_type count = myGroups.size();
   licqConf.WriteNum("NumOfGroups", static_cast<unsigned int>(count));
 
-  char key[MAX_KEYxNAME_LEN];
   int i = 1;
   for (GroupMap::iterator group = myGroups.begin(); group != myGroups.end(); ++group)
   {
     group->second->Lock(LOCK_R);
-
-    sprintf(key, "Group%d.name", i);
-    licqConf.WriteStr(key, group->second->name().c_str());
-
-    sprintf(key, "Group%d.id", i);
-    licqConf.WriteNum(key, group->second->id());
-
-    sprintf(key, "Group%d.IcqServerId", i);
-    licqConf.WriteNum(key, group->second->icqGroupId());
-
-    sprintf(key, "Group%d.Sorting", i);
-    licqConf.WriteNum(key, group->second->sortIndex());
-
+    group->second->save(licqConf, i);
     group->second->Unlock();
     ++i;
   }
@@ -1511,8 +1517,7 @@ void CUserManager::SetDefaultUserEncoding(const char* defaultEncoding)
 LicqGroup::LicqGroup(int id, const string& name)
   : myId(id),
     myName(name),
-    mySortIndex(0),
-    myIcqGroupId(0)
+    mySortIndex(0)
 {
   char strId[8];
   snprintf(strId, 7, "%u", myId);
@@ -1523,6 +1528,43 @@ LicqGroup::LicqGroup(int id, const string& name)
 
 LicqGroup::~LicqGroup()
 {
+}
+
+void LicqGroup::save(CIniFile& file, int num) const
+{
+  char key[MAX_KEYxNAME_LEN];
+
+  sprintf(key, "Group%d.id", num);
+  file.WriteNum(key, myId);
+
+  sprintf(key, "Group%d.name", num);
+  file.writeString(key, myName);
+
+  sprintf(key, "Group%d.Sorting", num);
+  file.WriteNum(key, mySortIndex);
+
+  map<unsigned long, unsigned long>::const_iterator i;
+  for (i = myServerIds.begin(); i != myServerIds.end(); ++i)
+  {
+    char *pidstr = PPIDSTRING(i->first);
+    sprintf(key, "Group%d.ServerId.%s", num, pidstr);
+    delete [] pidstr;
+    file.WriteNum(key, i->second);
+  }
+}
+
+unsigned long LicqGroup::serverId(unsigned long protocolId) const
+{
+  map<unsigned long, unsigned long>::const_iterator iter;
+  iter = myServerIds.find(protocolId);
+  if (iter == myServerIds.end())
+    return 0;
+  return iter->second;
+}
+
+void LicqGroup::setServerId(unsigned long protocolId, unsigned long serverId)
+{
+  myServerIds[protocolId] = serverId;
 }
 
 bool compare_groups(const LicqGroup* first, const LicqGroup* second)

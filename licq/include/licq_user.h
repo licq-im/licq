@@ -1124,11 +1124,20 @@ public:
   int sortIndex() const { return mySortIndex; }
 
   /**
+   * Group id for this group at the server side
+   *
+   * @param protocolId Id of protocol to get group id for
+   * @return Server side group id or 0 if not set or not known
+   */
+  unsigned long serverId(unsigned long protocolId) const;
+
+  /**
    * Group id for this group in the ICQ server side list
    *
    * @return ICQ server group id or 0 if not set or not known
    */
-  unsigned short icqGroupId() const { return myIcqGroupId; }
+  LICQ_DEPRECATED // Use serverId() instead
+  unsigned short icqGroupId() const { return serverId(LICQ_PPID); }
 
   /**
    * Set group name
@@ -1145,17 +1154,35 @@ public:
   void setSortIndex(int sortIndex) { mySortIndex = sortIndex; }
 
   /**
+   * Set server side id for this group
+   *
+   * @param protocolId Id of protocol to set group id for
+   * @param serverId Id for this group on server side list
+   */
+  void setServerId(unsigned long protocolId, unsigned long serverId);
+
+  /**
    * Set group id in ICQ server side list
    *
    * @param icqGroupId ICQ server group id
    */
-  void setIcqGroupId(unsigned short icqGroupId) { myIcqGroupId = icqGroupId; }
+  LICQ_DEPRECATED // Use setServerId() instead
+  void setIcqGroupId(unsigned short icqGroupId) { setServerId(LICQ_PPID, icqGroupId); }
+
+  /**
+   * Save group to file
+   * Note: This function should only be called by UserManager
+   *
+   * @param file Open file to write group data to
+   * @param num Number of group entry to write to file
+   */
+  void save(CIniFile& file, int num) const;
 
 private:
   int myId;
   std::string myName;
   int mySortIndex;
-  unsigned short myIcqGroupId;
+  std::map<unsigned long, unsigned long> myServerIds;
 };
 
 /**
