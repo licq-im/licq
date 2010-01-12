@@ -1,6 +1,7 @@
 #ifndef INIFILE_H
 #define INIFILE_H
 
+#include <list>
 #include <string>
 #include <boost/any.hpp>
 
@@ -48,6 +49,14 @@ public:
 
   bool SetSection(const char *_szSectionName);
   bool CreateSection(const char *_szSectionName);
+
+  /**
+   * Get a list of keys from the current section
+   *
+   * @param ret List to return keys in
+   * @param prefix Prefix that keys must match to be returned
+   */
+  void getKeyList(std::list<std::string>& ret, const std::string& prefix);
 
   /**
    * Read a value from the configuration file

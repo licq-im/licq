@@ -705,6 +705,23 @@ bool CIniFile::ReadStr(const string& key, char *szData,
   return (true);
 }
 
+void CIniFile::getKeyList(list<string>& ret, const string& prefix)
+{
+  char *key, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
+  ResetSection();
+  size_t prefixLen = prefix.size();
+
+  while (true)
+  {
+    szLine = ReadLine(szLineBuffer, MAX_LINE_LEN);
+    key = GetKeyFromLine(szKeyBuffer, szLine);
+    if (key == NULL)
+      return;
+    if (strlen(key) >= prefixLen && strncmp(key, prefix.c_str(), prefixLen) == 0)
+      ret.push_back(key);
+  }
+}
+
 //-----ReadNum-----------------------------------------------------------------
 /*! \brief Reads numeric data from a key.
  *
