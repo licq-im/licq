@@ -101,8 +101,9 @@ void Client::onDisconnect(gloox::ConnectionError /*error*/)
 
 void Client::handleItemAdded(const gloox::JID& jid)
 {
-  myHandler.onUserAdded(jid.bare(), "",
-      myRosterManager->getRosterItem(jid)->groups());
+  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
+
+  myHandler.onUserAdded(jid.bare(), ri->name(), ri->groups());
 }
 
 void Client::handleItemSubscribed(const gloox::JID& /*jid*/)
