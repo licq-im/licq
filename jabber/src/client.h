@@ -24,7 +24,6 @@
 #include <gloox/connectionlistener.h>
 #include <gloox/loghandler.h>
 #include <gloox/messagehandler.h>
-#include <gloox/presencehandler.h>
 #include <gloox/rosterlistener.h>
 #include <gloox/vcardmanager.h>
 #include <gloox/vcardhandler.h>
@@ -40,7 +39,6 @@ class Handler;
 class Client : public gloox::ConnectionListener,
                public gloox::RosterListener,
                public gloox::MessageHandler,
-               public gloox::PresenceHandler,
                public gloox::LogHandler,
                public gloox::VCardHandler
 {
@@ -86,9 +84,6 @@ public:
 
   // gloox::MessageHandler
   void handleMessage(gloox::Stanza* stanza, gloox::MessageSession* session);
-
-  // gloox::PresenceHandler
-  void handlePresence(gloox::Stanza* stanza);
 
   // gloox::LogHandler
   void handleLog(gloox::LogLevel level, gloox::LogArea area,

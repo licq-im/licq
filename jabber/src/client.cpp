@@ -40,7 +40,6 @@ Client::Client(Handler& handler, const std::string& username,
   myClient.registerConnectionListener(this);
   myRosterManager->registerRosterListener(this, false);
   myClient.registerMessageHandler(this);
-  myClient.registerPresenceHandler(this);
   myClient.logInstance().registerLogHandler(
       gloox::LogLevelDebug, gloox::LogAreaAll, this);
 
@@ -171,10 +170,6 @@ void Client::handleMessage(gloox::Stanza* stanza,
 {
   if (!stanza->body().empty())
     myHandler.onMessage(stanza->from().bare(), stanza->body());
-}
-
-void Client::handlePresence(gloox::Stanza* /*stanza*/)
-{
 }
 
 void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
