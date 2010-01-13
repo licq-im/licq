@@ -2824,7 +2824,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
         {
           LicqGroup* g = groups->begin()->second;
           g->Lock(LOCK_R);
-          m_nGSID = g->icqGroupId();
+          m_nGSID = g->serverId(LICQ_PPID);
           g->Unlock();
         }
         gUserManager.UnlockGroupList();
@@ -2994,7 +2994,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
               {
                 LicqGroup* g = groups->begin()->second;
                 g->Lock(LOCK_R);
-                m_nGSID = g->icqGroupId();
+                m_nGSID = g->serverId(LICQ_PPID);
                 g->Unlock();
               }
               gUserManager.UnlockGroupList();
@@ -3095,7 +3095,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       FOR_EACH_GROUP_START(LOCK_R)
       {
-        buffer->PackUnsignedShortBE(pGroup->icqGroupId());
+        buffer->PackUnsignedShortBE(pGroup->serverId(LICQ_PPID));
       }
       FOR_EACH_GROUP_END
     }
@@ -3360,7 +3360,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
         for (i = groups->begin(); i != groups->end(); ++i)
         {
           i->second->Lock(LOCK_R);
-          buffer->PackUnsignedShortBE(i->second->icqGroupId());
+          buffer->PackUnsignedShortBE(i->second->serverId(LICQ_PPID));
           i->second->Unlock();
         }
         gUserManager.UnlockGroupList();

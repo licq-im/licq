@@ -874,7 +874,7 @@ int CUserManager::AddGroup(const string& name, unsigned short icqGroupId)
     ;
 
   LicqGroup* newGroup = new LicqGroup(gid, name);
-  newGroup->setIcqGroupId(icqGroupId);
+  newGroup->setServerId(LICQ_PPID, icqGroupId);
   newGroup->setSortIndex(groups->size());
   (*groups)[gid] = newGroup;
 
@@ -1018,7 +1018,7 @@ bool CUserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
   }
 
   group->setName(name);
-  unsigned short icqGroupId = group->icqGroupId();
+  unsigned short icqGroupId = group->serverId(LICQ_PPID);
   DropGroup(group);
 
   LockGroupList(LOCK_R);
@@ -1089,7 +1089,7 @@ unsigned short CUserManager::GetIDFromGroup(int groupId)
   if (group == NULL)
     return 0;
 
-  unsigned short icqGroupId = group->icqGroupId();
+  unsigned short icqGroupId = group->serverId(LICQ_PPID);
   DropGroup(group);
 
   return icqGroupId;
@@ -1106,7 +1106,7 @@ int CUserManager::GetGroupFromID(unsigned short icqGroupId)
   for (iter = groups->begin(); iter != groups->end(); ++iter)
   {
     iter->second->Lock(LOCK_R);
-    if (iter->second->icqGroupId() == icqGroupId)
+    if (iter->second->serverId(LICQ_PPID) == icqGroupId)
       groupId = iter->first;
     iter->second->Unlock();
   }
@@ -1148,7 +1148,7 @@ void CUserManager::ModifyGroupID(int groupId, unsigned short icqGroupId)
   if (group == NULL)
     return;
 
-  group->setIcqGroupId(icqGroupId);
+  group->setServerId(LICQ_PPID, icqGroupId);
   DropGroup(group);
 
   LockGroupList(LOCK_R);
@@ -1210,7 +1210,7 @@ unsigned short CUserManager::GenerateSID()
       // Check our groups too!
       FOR_EACH_GROUP_START(LOCK_R)
       {
-        unsigned short icqGroupId = pGroup->icqGroupId();
+        unsigned short icqGroupId = pGroup->serverId(LICQ_PPID);
         if (icqGroupId == nSID)
         {
           if (nSID == 0x7FFF)

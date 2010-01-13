@@ -103,7 +103,7 @@ void CICQDaemon::CheckExport()
   GroupNameMap groups;
   FOR_EACH_GROUP_START(LOCK_R)
   {
-    if (pGroup->icqGroupId() == 0)
+    if (pGroup->serverId(LICQ_PPID) == 0)
       groups[pGroup->id()] = pGroup->name();
   }
   FOR_EACH_GROUP_END
@@ -188,7 +188,7 @@ void CICQDaemon::icqUpdateServerGroups()
 
   FOR_EACH_GROUP_START(LOCK_R)
   {
-    unsigned int gid = pGroup->icqGroupId();
+    unsigned int gid = pGroup->serverId(LICQ_PPID);
     if (gid != 0)
     {
       const char* gname = pGroup->name().c_str();
