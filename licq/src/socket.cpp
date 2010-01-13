@@ -500,7 +500,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
     }
 
 #ifdef IPV6_PORTRANGE
-    int i = IPV6_PORTRANGE_HIGH;
+    i = IPV6_PORTRANGE_HIGH;
     if (setsockopt(m_nDescriptor, IPPROTO_IPV6, IPV6_PORTRANGE, &i, sizeof(i)) < 0)
     {
       m_nErrorType = SOCK_ERROR_errno;
