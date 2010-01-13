@@ -116,9 +116,13 @@ void Handler::onUserAdded(const std::string& id,
   if (!user->KeepAliasOnUpdate())
     user->setAlias(name);
 
-  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-                                            USER_GENERAL, user->id()));
+  // Remove this line when SetGroups call above saves contact groups itself.
+  user->SaveLicqInfo();
+
   gUserManager.DropUser(user);
+
+  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+                                            USER_GENERAL, userId));
 }
 
 void Handler::onUserRemoved(const std::string& /*item*/)
