@@ -1,4 +1,5 @@
 set(licq_HEADERS
+  condition.h
   mutex.h
   mutexlocker.h
 )
