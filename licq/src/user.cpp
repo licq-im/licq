@@ -595,10 +595,11 @@ bool CUserManager::addUser(const UserId& uid,
   return true;
 }
 
-void CUserManager::removeUser(const UserId& userId)
+void CUserManager::removeUser(const UserId& userId, bool removeFromServer)
 {
   // Remove the user from the server side list first
-  gLicqDaemon->protoRemoveUser(userId);
+  if (removeFromServer)
+    gLicqDaemon->protoRemoveUser(userId);
 
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchUser here.

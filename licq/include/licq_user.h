@@ -1291,7 +1291,7 @@ public:
    *
    * @param userId Id of user to remove
    */
-  void removeUser(const UserId& userId);
+  void removeUser(const UserId& userId, bool removeFromServer = true);
 
   LICQ_DEPRECATED // use removeUser() instead
   void RemoveUser(const char* accountId, unsigned long ppid)
