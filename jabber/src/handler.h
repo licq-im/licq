@@ -21,6 +21,7 @@
 #define HANDLER_H
 
 #include <list>
+#include <set>
 #include <string>
 
 class CICQDaemon;
@@ -41,6 +42,7 @@ public:
                    const std::list<std::string>& groups);
   void onUserRemoved(const std::string& id);
   void onUserStatusChange(const std::string& id, const unsigned long newStatus);
+  void onRosterReceived(const std::set<std::string>& ids);
 
   void onMessage(const std::string& from, const std::string& message);
 

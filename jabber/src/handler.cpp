@@ -146,6 +146,24 @@ void Handler::onUserStatusChange(const std::string& id, const unsigned long newS
   gUserManager.DropUser(user);
 }
 
+void Handler::onRosterReceived(const std::set<std::string>& ids)
+{
+  TRACE();
+
+  std::list<UserId> todel;
+  std::list<UserId>::const_iterator it;
+
+  FOR_EACH_PROTO_USER_START(JABBER_PPID, LOCK_R)
+  {
+    if (ids.count(pUser->accountId()) == 0)
+      todel.push_back(pUser->id());
+  }
+  FOR_EACH_PROTO_USER_END;
+
+  for (it = todel.begin(); it != todel.end(); ++it)
+    gUserManager.removeUser(*it, false);
+}
+
 void Handler::onMessage(const std::string& from, const std::string& message)
 {
   TRACE();

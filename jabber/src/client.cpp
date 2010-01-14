@@ -125,9 +125,16 @@ void Client::handleItemUnsubscribed(const gloox::JID& /*jid*/)
 
 void Client::handleRoster(const gloox::Roster& roster)
 {
-  for (gloox::Roster::const_iterator it = roster.begin();
-       it != roster.end(); ++it)
+  std::set<std::string> jidlist;
+  gloox::Roster::const_iterator it;
+
+  for (it = roster.begin(); it != roster.end(); ++it)
+  {
     myHandler.onUserAdded(it->first, it->second->name(), it->second->groups());
+    jidlist.insert(it->first);
+  }
+
+  myHandler.onRosterReceived(jidlist);
 }
 
 void Client::handleRosterPresence(const gloox::RosterItem& item,
