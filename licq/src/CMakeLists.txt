@@ -3,6 +3,7 @@ set(tested_SRCS
   plugins/plugin.cpp
   plugins/protocolplugin.cpp
 
+  thread/condition.cpp
   thread/mutexlocker.cpp
 
   utils/dynamiclibrary.cpp
@@ -51,8 +52,8 @@ set(licq_SRCS
   user.cpp
   utility.cpp
 
-  plugins/plugineventhandler.cpp
   plugins/icqprotocolplugin.cpp
+  plugins/plugineventhandler.cpp
   plugins/pluginmanager.cpp
 
   ${tested_SRCS}
@@ -63,6 +64,7 @@ set(test_SRCS
   plugins/tests/plugintest.cpp
   plugins/tests/protocolplugintest.cpp
 
+  thread/tests/conditiontest.cpp
   thread/tests/mutextest.cpp
   thread/tests/mutexlockertest.cpp
 
