@@ -67,32 +67,35 @@ public:
   void unlock();
 
 private:
-  pthread_mutex_t myMytex;
+  pthread_mutex_t myMutex;
+
+  // Condition needs to access myMutex
+  friend class Condition;
 };
 
 inline Mutex::Mutex()
 {
-  ::pthread_mutex_init(&myMytex, NULL);
+  ::pthread_mutex_init(&myMutex, NULL);
 }
 
 inline Mutex::~Mutex()
 {
-  :: pthread_mutex_destroy(&myMytex);
+  :: pthread_mutex_destroy(&myMutex);
 }
 
 inline void Mutex::lock()
 {
-  ::pthread_mutex_lock(&myMytex);
+  ::pthread_mutex_lock(&myMutex);
 }
 
 inline bool Mutex::tryLock()
 {
-  return ::pthread_mutex_trylock(&myMytex) == 0;
+  return ::pthread_mutex_trylock(&myMutex) == 0;
 }
 
 inline void Mutex::unlock()
 {
-  ::pthread_mutex_unlock(&myMytex);
+  ::pthread_mutex_unlock(&myMutex);
 }
 
 } // namespace Licq
