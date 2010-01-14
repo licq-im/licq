@@ -1,6 +1,7 @@
 set(tested_SRCS
   plugins/generalplugin.cpp
   plugins/plugin.cpp
+  plugins/pluginthread.cpp
   plugins/protocolplugin.cpp
 
   thread/condition.cpp
@@ -62,6 +63,7 @@ set(licq_SRCS
 set(test_SRCS
   plugins/tests/generalplugintest.cpp
   plugins/tests/plugintest.cpp
+  plugins/tests/pluginthreadtest.cpp
   plugins/tests/protocolplugintest.cpp
 
   thread/tests/conditiontest.cpp

@@ -33,7 +33,8 @@ class ProtocolPlugin : public Plugin,
 public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
-  explicit ProtocolPlugin(DynamicLibrary::Ptr lib, bool icq = false);
+  ProtocolPlugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
+                 bool icq = false);
   virtual ~ProtocolPlugin();
 
   bool init();
@@ -46,6 +47,9 @@ public:
   unsigned long getSendFunctions() const;
 
 private:
+  // From Plugin
+  bool initThreadEntry();
+
   unsigned long myProtocolId;
 
   typedef std::list<LicqProtoSignal*> SignalList;
@@ -56,11 +60,6 @@ private:
   char* (*myPpid)();
   unsigned long (*mySendFunctions)();
 };
-
-inline bool ProtocolPlugin::init()
-{
-  return (*myInit)();
-}
 
 typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
 

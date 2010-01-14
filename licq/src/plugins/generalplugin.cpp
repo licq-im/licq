@@ -30,10 +30,11 @@ extern char** global_argv;
 using Licq::MutexLocker;
 using namespace LicqDaemon;
 
-GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib)
-  : Plugin(lib, "LP"),
-    myArgc(0),
-    myArgv(NULL)
+GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
+                             PluginThread::Ptr pluginThread) :
+  Plugin(lib, pluginThread, "LP"),
+  myArgc(0),
+  myArgv(NULL)
 {
   loadSymbol("LP_Init", myInit);
   loadSymbol("LP_Status", myStatus);
@@ -74,10 +75,7 @@ bool GeneralPlugin::init(int argc, char** argv)
 
   myArgc = argc + 1;
 
-  // Set optind to 0 so plugins can use getopt
-  optind = 0;
-
-  return (*myInit)(myArgc, myArgv);
+  return callInitInThread();
 }
 
 void GeneralPlugin::pushSignal(LicqSignal* signal)
@@ -161,4 +159,12 @@ void GeneralPlugin::enable()
 void GeneralPlugin::disable()
 {
   myPipe.putChar('0');
+}
+
+bool GeneralPlugin::initThreadEntry()
+{
+  // Set optind to 0 so plugins can use getopt
+  optind = 0;
+
+  return (*myInit)(myArgc, myArgv);
 }

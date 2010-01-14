@@ -34,7 +34,7 @@ class GeneralPlugin : public Plugin,
 public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
-  explicit GeneralPlugin(DynamicLibrary::Ptr lib);
+  GeneralPlugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread);
   virtual ~GeneralPlugin();
 
   bool init(int argc, char** argv);
@@ -56,6 +56,9 @@ public:
   void disable();
 
 private:
+  // From Plugin
+  bool initThreadEntry();
+
   int myArgc;
   char** myArgv;
 

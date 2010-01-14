@@ -37,8 +37,6 @@ pthread_cond_t LP_IdSignal = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t LP_IdMutex = PTHREAD_MUTEX_INITIALIZER;
 std::list<unsigned short> LP_Ids;
 
-using std::list;
-using std::string;
 using Licq::MutexLocker;
 using namespace LicqDaemon;
 
@@ -59,14 +57,15 @@ PluginManager::~PluginManager()
 GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     const std::string& name, int argc, char** argv, bool keep)
 {
-  DynamicLibrary::Ptr lib = loadPlugin(name, "licq");
+  PluginThread::Ptr pluginThread(new PluginThread());
+  DynamicLibrary::Ptr lib = loadPlugin(pluginThread, name, "licq");
   if (!lib)
     return GeneralPlugin::Ptr();
 
   try
   {
     // Create plugin and resolve all symbols
-    GeneralPlugin::Ptr plugin(new GeneralPlugin(lib));
+    GeneralPlugin::Ptr plugin(new GeneralPlugin(lib, pluginThread));
 
     // Let the plugin initialize itself
     if (!plugin->init(argc, argv))
@@ -105,14 +104,15 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
 ProtocolPlugin::Ptr PluginManager::
 loadProtocolPlugin(const std::string& name, bool keep, bool icq)
 {
-  DynamicLibrary::Ptr lib = loadPlugin(name, "protocol");
+  PluginThread::Ptr pluginThread(new PluginThread());
+  DynamicLibrary::Ptr lib = loadPlugin(pluginThread, name, "protocol");
   if (!lib)
     return ProtocolPlugin::Ptr();
 
   try
   {
     // Create plugin and resolve all symbols
-    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(lib, icq));
+    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(lib, pluginThread, icq));
 
     // Let the plugin initialize itself
     if (!plugin->init())
@@ -315,8 +315,8 @@ getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const
             std::back_inserter(plugins));
 }
 
-void PluginManager::getAvailableGeneralPlugins(list<string>& plugins,
-    bool includeLoaded) const
+void PluginManager::getAvailableGeneralPlugins(
+    std::list<std::string>& plugins, bool includeLoaded) const
 {
   getAvailablePlugins(plugins, "licq");
 
@@ -325,7 +325,7 @@ void PluginManager::getAvailableGeneralPlugins(list<string>& plugins,
     MutexLocker locker(myGeneralPluginsMutex);
     BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
     {
-      string name = plugin->getLibraryName();
+      std::string name = plugin->getLibraryName();
       size_t pos = name.find_last_of('/');
       name.erase(0, pos+6);
       name.erase(name.size() - 3);
@@ -334,8 +334,8 @@ void PluginManager::getAvailableGeneralPlugins(list<string>& plugins,
   }
 }
 
-void PluginManager::getAvailableProtocolPlugins(list<string>& plugins,
-    bool includeLoaded) const
+void PluginManager::getAvailableProtocolPlugins(
+    std::list<std::string>& plugins, bool includeLoaded) const
 {
   getAvailablePlugins(plugins, "protocol");
 
@@ -344,7 +344,7 @@ void PluginManager::getAvailableProtocolPlugins(list<string>& plugins,
     MutexLocker locker(myProtocolPluginsMutex);
     BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
     {
-      string name = plugin->getLibraryName();
+      std::string name = plugin->getLibraryName();
       // Special case, the internal ICQ plugin has no library
       if (name.empty())
         continue;
@@ -356,17 +356,19 @@ void PluginManager::getAvailableProtocolPlugins(list<string>& plugins,
   }
 }
 
-void PluginManager::getAvailablePlugins(list<string>& plugins, const string& prefix) const
+void PluginManager::getAvailablePlugins(
+    std::list<std::string>& plugins, const std::string& prefix) const
 {
   plugins.clear();
 
-  string pattern = LIB_DIR + prefix + "_*.so";
+  const std::string pattern = LIB_DIR + prefix + "_*.so";
   glob_t globbuf;
   if (glob(pattern.c_str(), 0, NULL, &globbuf) != 0)
     return;
+
   for (size_t i = 0; i < globbuf.gl_pathc; ++i)
   {
-    string name = globbuf.gl_pathv[i];
+    std::string name = globbuf.gl_pathv[i];
     size_t pos = name.find_last_of('/');
     name.erase(0, pos + prefix.size() + 2);
     name.erase(name.size() - 3);
@@ -375,7 +377,8 @@ void PluginManager::getAvailablePlugins(list<string>& plugins, const string& pre
   globfree(&globbuf);
 }
 
-Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(unsigned long protocolId) const
+Licq::ProtocolPlugin::Ptr PluginManager::getProtocolPlugin(
+    unsigned long protocolId) const
 {
   MutexLocker locker(myProtocolPluginsMutex);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, myProtocolPlugins)
@@ -469,7 +472,8 @@ void PluginManager::unregisterProtocolPlugin()
 }
 
 DynamicLibrary::Ptr PluginManager::loadPlugin(
-    const std::string& name, const std::string& prefix)
+    PluginThread::Ptr pluginThread, const std::string& name,
+    const std::string& prefix)
 {
   std::string path;
   if (!name.empty() && name[0] != '/' && name[0] != '.')
@@ -479,7 +483,9 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
 
   try
   {
-    DynamicLibrary::Ptr lib(new DynamicLibrary(path));
+    // Since some libraries do special things when starting, we load them in
+    // the same thread as they will later be executed in.
+    DynamicLibrary::Ptr lib = pluginThread->loadPlugin(path);
     return lib;
   }
   catch (const DynamicLibrary::Exception& ex)

@@ -57,25 +57,43 @@ int LP_Main(CICQDaemon* /*daemon*/)
 
 using namespace LicqDaemon;
 
-static char getPipeChar(const Plugin& plugin)
+struct GeneralPluginFixture : public ::testing::Test
 {
-  int fd = plugin.getReadPipe();
-  char ch;
-  read(fd, &ch, sizeof(ch));
-  return ch;
-}
+  DynamicLibrary::Ptr myLib;
+  PluginThread::Ptr myThread;
+  GeneralPlugin plugin;
+
+  GeneralPluginFixture() :
+    myLib(new DynamicLibrary("")),
+    myThread(new PluginThread()),
+    plugin(myLib, myThread)
+  {
+    // Empty
+  }
+
+  ~GeneralPluginFixture()
+  {
+    myThread->cancel();
+  }
+
+  char getPipeChar()
+  {
+    int fd = plugin.getReadPipe();
+    char ch;
+    read(fd, &ch, sizeof(ch));
+    return ch;
+  }
+};
 
 TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  ASSERT_NO_THROW(GeneralPlugin plugin(lib));
+  PluginThread::Ptr thread(new PluginThread());
+  ASSERT_NO_THROW(GeneralPlugin plugin(lib, thread));
 }
 
-TEST(GeneralPlugin, callApiFunctions)
+TEST_F(GeneralPluginFixture, callApiFunctions)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
-
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
   EXPECT_STREQ("Status", plugin.getStatus());
@@ -88,70 +106,57 @@ TEST(GeneralPlugin, callApiFunctions)
   EXPECT_TRUE(plugin.init(0, 0));
 }
 
-TEST(GeneralPlugin, runPlugin)
+TEST_F(GeneralPluginFixture, init)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
+  EXPECT_TRUE(plugin.init(0, NULL));
+}
 
+TEST_F(GeneralPluginFixture, runPlugin)
+{
   plugin.startThread(0);
   EXPECT_EQ(20, plugin.joinThread());
 }
 
-TEST(GeneralPlugin, enableDisable)
+TEST_F(GeneralPluginFixture, enableDisable)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
-
   plugin.enable();
-  EXPECT_EQ('1', getPipeChar(plugin));
+  EXPECT_EQ('1', getPipeChar());
   plugin.disable();
-  EXPECT_EQ('0', getPipeChar(plugin));
+  EXPECT_EQ('0', getPipeChar());
 }
 
-TEST(GeneralPlugin, pushPopSignal)
+TEST_F(GeneralPluginFixture, pushPopSignal)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
-
   LicqSignal* signal = (LicqSignal*)10;
   plugin.pushSignal(signal);
   plugin.pushSignal(signal);
 
-  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ('S', getPipeChar());
   EXPECT_EQ(signal, plugin.popSignal());
 
-  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ('S', getPipeChar());
   EXPECT_EQ(signal, plugin.popSignal());
 }
 
-TEST(GeneralPlugin, popSignalEmpty)
+TEST_F(GeneralPluginFixture, popSignalEmpty)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
-
   EXPECT_EQ(NULL, plugin.popSignal());
 }
 
-TEST(GeneralPlugin, pushPopEvent)
+TEST_F(GeneralPluginFixture, pushPopEvent)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
-
   LicqEvent* event = (LicqEvent*)20;
   plugin.pushEvent(event);
   plugin.pushEvent(event);
 
-  EXPECT_EQ('E', getPipeChar(plugin));
+  EXPECT_EQ('E', getPipeChar());
   EXPECT_EQ(event, plugin.popEvent());
 
-  EXPECT_EQ('E', getPipeChar(plugin));
+  EXPECT_EQ('E', getPipeChar());
   EXPECT_EQ(event, plugin.popEvent());
 }
 
-TEST(GeneralPlugin, popEventEmpty)
+TEST_F(GeneralPluginFixture, popEventEmpty)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  GeneralPlugin plugin(lib);
-
   EXPECT_EQ(NULL, plugin.popEvent());
 }

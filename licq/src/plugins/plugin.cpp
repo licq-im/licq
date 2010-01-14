@@ -27,9 +27,11 @@
 using Licq::MutexLocker;
 using namespace LicqDaemon;
 
-Plugin::Plugin(boost::shared_ptr<DynamicLibrary> lib,
+Plugin::Plugin(DynamicLibrary::Ptr lib,
+               PluginThread::Ptr pluginThread,
                const std::string& prefix, bool prefixId) :
   myLib(lib),
+  myThread(pluginThread),
   mySignalMask(0)
 {
   loadSymbol(prefix + "_Main_tep", myMainThreadEntryPoint);
@@ -50,13 +52,13 @@ Plugin::~Plugin()
 
 void Plugin::startThread(CICQDaemon* daemon)
 {
-  ::pthread_create(&myThread, NULL, myMainThreadEntryPoint, daemon);
+  myThread->startPlugin(myMainThreadEntryPoint, daemon);
 }
 
 int Plugin::joinThread()
 {
-  void* result;
-  if (::pthread_join(myThread, &result) == 0)
+  void* result = myThread->join();
+  if (result != NULL && result != PTHREAD_CANCELED)
   {
     int* retval = reinterpret_cast<int*>(result);
     int value = *retval;
@@ -69,17 +71,7 @@ int Plugin::joinThread()
 
 void Plugin::cancelThread()
 {
-  ::pthread_cancel(myThread);
-}
-
-bool Plugin::isThisThread() const
-{
-  return isThread(::pthread_self());
-}
-
-bool Plugin::isThread(const pthread_t& thread) const
-{
-  return ::pthread_equal(myThread, thread) != 0;
+  myThread->cancel();
 }
 
 const char* Plugin::getName() const
@@ -105,4 +97,14 @@ const std::string& Plugin::getLibraryName() const
 void Plugin::shutdown()
 {
   myPipe.putChar(PLUGIN_SHUTDOWN);
+}
+
+bool Plugin::callInitInThread()
+{
+  return myThread->initPlugin(&Plugin::initThreadEntry, this);
+}
+
+bool Plugin::initThreadEntry(void* plugin)
+{
+  return static_cast<Plugin*>(plugin)->initThreadEntry();
 }

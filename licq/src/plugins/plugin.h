@@ -20,6 +20,8 @@
 #ifndef LICQDAEMON_PLUGIN_H
 #define LICQDAEMON_PLUGIN_H
 
+#include "pluginthread.h"
+
 #include "licq/plugin.h"
 #include "licq/thread/mutex.h"
 #include "utils/dynamiclibrary.h"
@@ -43,8 +45,8 @@ public:
   typedef boost::
   error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 
-  Plugin(boost::shared_ptr<DynamicLibrary> lib, const std::string& prefix,
-         bool prefixId = false);
+  Plugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
+         const std::string& prefix, bool prefixId = false);
   virtual ~Plugin();
 
   /// Get the read end of the pipe used to communicate with the plugin.
@@ -84,14 +86,19 @@ public:
   void shutdown();
 
 protected:
-  boost::shared_ptr<DynamicLibrary> myLib;
+  bool callInitInThread();
+
+  DynamicLibrary::Ptr myLib;
   Pipe myPipe;
 
   template<typename SymbolType>
   void loadSymbol(const std::string& name, SymbolType*& symbol);
 
 private:
-  pthread_t myThread;
+  static bool initThreadEntry(void* plugin);
+  virtual bool initThreadEntry() = 0;
+
+  PluginThread::Ptr myThread;
   unsigned long mySignalMask;
 
   // Function pointers
@@ -106,6 +113,16 @@ private:
 inline int Plugin::getReadPipe() const
 {
   return myPipe.getReadFd();
+}
+
+inline bool Plugin::isThisThread() const
+{
+  return isThread(::pthread_self());
+}
+
+inline bool Plugin::isThread(const pthread_t& thread) const
+{
+  return myThread->isThread(thread);
 }
 
 inline void Plugin::setId(unsigned short id)

@@ -22,6 +22,7 @@
 
 #include "generalplugin.h"
 #include "plugineventhandler.h"
+#include "pluginthread.h"
 #include "protocolplugin.h"
 
 #include "licq/pluginmanager.h"
@@ -90,8 +91,10 @@ public:
   void unregisterProtocolPlugin();
 
 private:
-  DynamicLibrary::Ptr loadPlugin(
-      const std::string& name, const std::string& prefix);
+  DynamicLibrary::Ptr loadPlugin(PluginThread::Ptr pluginThread,
+                                 const std::string& name,
+                                 const std::string& prefix);
+
   void startPlugin(Plugin::Ptr plugin);
 
   void getAvailablePlugins(std::list<std::string>& plugins,

@@ -54,25 +54,43 @@ int LProto_Main(CICQDaemon* /*daemon*/)
 
 using namespace LicqDaemon;
 
-static char getPipeChar(const Plugin& plugin)
+struct ProtocolPluginFixture : public ::testing::Test
 {
-  int fd = plugin.getReadPipe();
-  char ch;
-  read(fd, &ch, sizeof(ch));
-  return ch;
-}
+  DynamicLibrary::Ptr myLib;
+  PluginThread::Ptr myThread;
+  ProtocolPlugin plugin;
+
+  ProtocolPluginFixture() :
+    myLib(new DynamicLibrary("")),
+    myThread(new PluginThread()),
+    plugin(myLib, myThread)
+  {
+    // Empty
+  }
+
+  ~ProtocolPluginFixture()
+  {
+    myThread->cancel();
+  }
+
+  char getPipeChar()
+  {
+    int fd = plugin.getReadPipe();
+    char ch;
+    read(fd, &ch, sizeof(ch));
+    return ch;
+  }
+};
 
 TEST(ProtocolPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  ASSERT_NO_THROW(ProtocolPlugin plugin(lib));
+  PluginThread::Ptr thread(new PluginThread());
+  ASSERT_NO_THROW(ProtocolPlugin plugin(lib, thread));
 }
 
-TEST(ProtocolPlugin, callApiFunctions)
+TEST_F(ProtocolPluginFixture, callApiFunctions)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  ProtocolPlugin plugin(lib);
-
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
   EXPECT_EQ('P' << 24 | 'P' << 16 | 'I' << 8 | 'D', plugin.getProtocolId());
@@ -80,35 +98,31 @@ TEST(ProtocolPlugin, callApiFunctions)
   EXPECT_EQ(42u, plugin.getSendFunctions());
 }
 
-TEST(ProtocolPlugin, runPlugin)
+TEST_F(ProtocolPluginFixture, init)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  ProtocolPlugin plugin(lib);
+  EXPECT_TRUE(plugin.init());
+}
 
+TEST_F(ProtocolPluginFixture, runPlugin)
+{
   plugin.startThread(0);
   EXPECT_EQ(10, plugin.joinThread());
 }
 
-TEST(ProtocolPlugin, pushPopSignal)
+TEST_F(ProtocolPluginFixture, pushPopSignal)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  ProtocolPlugin plugin(lib);
-
   LicqProtoSignal* signal = (LicqProtoSignal*)10;
   plugin.pushSignal(signal);
   plugin.pushSignal(signal);
 
-  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ('S', getPipeChar());
   EXPECT_EQ(signal, plugin.popSignal());
 
-  EXPECT_EQ('S', getPipeChar(plugin));
+  EXPECT_EQ('S', getPipeChar());
   EXPECT_EQ(signal, plugin.popSignal());
 }
 
-TEST(ProtocolPlugin, popSignalEmpty)
+TEST_F(ProtocolPluginFixture, popSignalEmpty)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  ProtocolPlugin plugin(lib);
-
   EXPECT_EQ(NULL, plugin.popSignal());
 }

@@ -25,8 +25,10 @@
 using Licq::MutexLocker;
 using namespace LicqDaemon;
 
-ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib, bool icq)
-  : Plugin(lib, icq ? "LProto_icq" : "LProto", icq)
+ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
+                               PluginThread::Ptr pluginThread,
+                               bool icq) :
+  Plugin(lib, pluginThread, icq ? "LProto_icq" : "LProto", icq)
 {
   std::string prefix = (icq ? "LProto_icq" : "LProto");
   loadSymbol(prefix + "_Init", myInit);
@@ -40,6 +42,11 @@ ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib, bool icq)
 ProtocolPlugin::~ProtocolPlugin()
 {
   // Empty
+}
+
+bool ProtocolPlugin::init()
+{
+  return callInitInThread();
 }
 
 void ProtocolPlugin::pushSignal(LicqProtoSignal* signal)
@@ -70,4 +77,9 @@ unsigned long ProtocolPlugin::getProtocolId() const
 unsigned long ProtocolPlugin::getSendFunctions() const
 {
   return (*mySendFunctions)();
+}
+
+bool ProtocolPlugin::initThreadEntry()
+{
+  return (*myInit)();
 }

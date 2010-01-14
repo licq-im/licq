@@ -64,64 +64,83 @@ extern unsigned short LP_Id;
 
 using namespace LicqDaemon;
 
-static char getPipeChar(const Plugin& plugin)
+class PluginTest : public Plugin
 {
-  int fd = plugin.getReadPipe();
-  char ch;
-  read(fd, &ch, sizeof(ch));
-  return ch;
-}
+public:
+  PluginTest(DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
+    Plugin(lib, thread, "Test") { /* Empty */ }
+
+private:
+  bool initThreadEntry()
+  {
+    return true;
+  }
+};
+
+struct PluginFixture : public ::testing::Test
+{
+  DynamicLibrary::Ptr myLib;
+  PluginThread::Ptr myThread;
+  PluginTest plugin;
+
+  PluginFixture() :
+    myLib(new DynamicLibrary("")),
+    myThread(new PluginThread()),
+    plugin(myLib, myThread)
+  {
+    // Empty
+  }
+
+  ~PluginFixture()
+  {
+    myThread->cancel();
+  }
+
+  char getPipeChar()
+  {
+    int fd = plugin.getReadPipe();
+    char ch;
+    read(fd, &ch, sizeof(ch));
+    return ch;
+  }
+};
 
 TEST(Plugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  ASSERT_NO_THROW(Plugin plugin(lib, "Test"));
+  PluginThread::Ptr thread(new PluginThread());
+  ASSERT_NO_THROW(PluginTest plugin(lib, thread));
 }
 
-TEST(Plugin, callApiFunctions)
+TEST_F(PluginFixture, callApiFunctions)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  Plugin plugin(lib, "Test");
-
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
   EXPECT_EQ("", plugin.getLibraryName());
 }
 
-TEST(Plugin, getSetId)
+TEST_F(PluginFixture, getSetId)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  Plugin plugin(lib, "Test");
-
   plugin.setId(1);
   EXPECT_EQ(1, plugin.getId());
   EXPECT_EQ(1, LP_Id);
 }
 
-TEST(Plugin, runPlugin)
+TEST_F(PluginFixture, runPlugin)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  Plugin plugin(lib, "Test");
-
   plugin.startThread(0);
   EXPECT_FALSE(plugin.isThisThread());
   EXPECT_EQ(5, plugin.joinThread());
 }
 
-TEST(Plugin, shutdown)
+TEST_F(PluginFixture, shutdown)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  Plugin plugin(lib, "Test");
-
   plugin.shutdown();
-  EXPECT_EQ('X', getPipeChar(plugin));
+  EXPECT_EQ('X', getPipeChar());
 }
 
-TEST(Plugin, signalmask)
+TEST_F(PluginFixture, signalmask)
 {
-  DynamicLibrary::Ptr lib(new DynamicLibrary(""));
-  Plugin plugin(lib, "Test");
-
   EXPECT_FALSE(plugin.wantSignal(1));
   plugin.setSignalMask(0xf);
   EXPECT_TRUE(plugin.wantSignal(1));
