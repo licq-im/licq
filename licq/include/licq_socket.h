@@ -114,20 +114,6 @@ public:
    */
   uint16_t getRemotePort() const        { return getAddrPort(&myRemoteAddr); };
 
-
-  LICQ_DEPRECATED // Use getLocalIpInt() instead
-  unsigned long  LocalIp() const        { return getLocalIpInt(); }
-  LICQ_DEPRECATED // Use getLocalIpString() instead
-  char *LocalIpStr(char *buf) const;
-  LICQ_DEPRECATED // Use getRemoteIpInt() instead
-  unsigned long  RemoteIp() const       { return getRemoteIpInt(); }
-  LICQ_DEPRECATED // Use getRemoteIpString() instead
-  char *RemoteIpStr(char *buf) const;
-  LICQ_DEPRECATED // Use getLocalPort() instead
-  unsigned short LocalPort()            { return getLocalPort(); }
-  LICQ_DEPRECATED // Use getRemotePort() instead
-  unsigned short RemotePort()           { return getRemotePort(); }
-
   void ResetSocket();
   void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
   bool RecvBufferFull()   { return m_xRecvBuffer.Full(); };

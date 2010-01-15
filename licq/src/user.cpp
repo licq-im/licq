@@ -732,45 +732,6 @@ bool CUserManager::userExists(const UserId& userId)
   return exists;
 }
 
-// This differs by FetchOwner by requiring an Id.  This isn't used to
-// fetch an owner, but for interal use only to see if the given id and ppid
-// is an owner.  (It can be used to fetch an owner by calling FetchUser with
-// an owner's id and ppid.
-LicqOwner* CUserManager::FindOwner(const char* accountId, unsigned long ppid)
-{
-/*
-  // Strip spaces if ICQ protocol
-  char *szId = new char[strlen(accountId)];
-  if (ppid == LICQ_PPID)
-  {
-    for (int i = 0; i < strlen(accountId); i++)
-      if (accountId[i] != ' ')
-        *szId++ = accountId[i];
-  }
-  else
-    strcpy(szId, accountId);
-*/
-
-  ICQOwner *o = NULL;
-  bool found = false;
-
-  LockOwnerList(LOCK_R);
-  OwnerMap::iterator iter = myOwners.find(ppid);
-  if (iter != myOwners.end())
-  {
-    o = iter->second;
-    o->Lock(LOCK_R);
-    if (o->accountId() == accountId /* || o->accountId() == szId */)
-      found = true;
-    o->Unlock();
-  }
-  UnlockOwnerList();
-
-  //delete [] szId;
-
-  return (found ? o : NULL);
-}
-
 UserId CUserManager::ownerUserId(unsigned long ppid)
 {
   const ICQOwner* owner = FetchOwner(ppid, LOCK_R);
@@ -2979,33 +2940,6 @@ char* ICQUser::usprintf(const char* _szFormat, unsigned long nFlags) const
   _sz[nPos] = '\0';
 
   return _sz;
-}
-
-//Return value must be delete []'d
-char* LicqUser::MakeRealId(const string& accountId, unsigned long ppid,
-                                char *&szRealId)
-{
-  if (accountId.empty())
-  {
-    szRealId = new char[1];
-    szRealId[0] = '\0';
-    return szRealId;
-  }
-
-  szRealId = new char[accountId.length() + 1];
-
-  int j = 0;
-  if (ppid == LICQ_PPID && !isdigit(accountId[0]))
-  {
-    for (unsigned int i = 0; i < accountId.length(); i++)
-      if (accountId[i] != ' ')
-        szRealId[j++] = tolower(accountId[i]);
-    szRealId[j] = '\0';
-  }
-  else
-    strcpy(szRealId, accountId.c_str());
-
-  return szRealId;
 }
 
 string LicqUser::normalizeId(const string& accountId, unsigned long ppid)

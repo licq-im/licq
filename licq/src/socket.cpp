@@ -193,20 +193,6 @@ uint16_t INetSocket::getAddrPort(const struct sockaddr* addr)
   }
 }
 
-char *INetSocket::LocalIpStr(char *buf) const
-{
-  string str = getLocalIpString();
-  strcpy(buf, str.c_str());
-  return buf;
-}
-
-char *INetSocket::RemoteIpStr(char *buf) const
-{
-  string str = getRemoteIpString();
-  strcpy(buf, str.c_str());
-  return buf;
-}
-
 //-----INetSocket::Error------------------------------------------------------
 int INetSocket::Error()
 {

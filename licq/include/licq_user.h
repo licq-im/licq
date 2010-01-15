@@ -552,10 +552,6 @@ public:
   char* usprintf(const char* szFormat, unsigned long nFlags = 0) const;
 
   // General Info
-  LICQ_DEPRECATED // User setAlias() instead
-  void SetAlias (const char *n)
-  { setAlias(n); }
-
   void setAlias(const std::string& alias);
   void SetTimezone (const char n)            {  m_nTimezone = n; saveUserInfo();  }
   void SetAuthorization (bool n)             {  m_bAuthorization = n; saveUserInfo();  }
@@ -685,7 +681,6 @@ public:
   bool Away() const;
   static const char* StatusToStatusStr(unsigned short n, bool b);
   static const char* StatusToStatusStrShort(unsigned short n, bool b);
-  static LICQ_DEPRECATED char* MakeRealId(const std::string& accountId, unsigned long ppid, char *&);
 
   /**
    * Normalize an account id
@@ -1238,8 +1233,6 @@ public:
   bool IsOnList(const char* accountId, unsigned long ppid)
   { return accountId == NULL ? false: userExists(LicqUser::makeUserId(accountId, ppid)); }
 
-  LICQ_DEPRECATED LicqOwner* FindOwner(const char* idstring, unsigned long ppid);
-
   /**
    * Get user id for an owner
    *
@@ -1258,10 +1251,6 @@ public:
    * @return True if user id is valid and user is an owner
    */
   bool isOwner(const UserId& userId);
-
-  LICQ_DEPRECATED // Use LicqUser::makeUserId instead
-  UserId getUserFromAccount(const char* accountId, unsigned long ppid)
-  { return accountId == NULL ? USERID_NONE : LicqUser::makeUserId(accountId, ppid); }
 
   // ICQ Protocol only (from original Licq)
   void DropUser(const LicqUser* user);
@@ -1292,10 +1281,6 @@ public:
    * @param userId Id of user to remove
    */
   void removeUser(const UserId& userId, bool removeFromServer = true);
-
-  LICQ_DEPRECATED // use removeUser() instead
-  void RemoveUser(const char* accountId, unsigned long ppid)
-  { if (accountId != NULL) removeUser(LicqUser::makeUserId(accountId, ppid)); }
 
   /**
    * Lock user list for access
