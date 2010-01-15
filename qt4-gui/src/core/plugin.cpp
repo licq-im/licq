@@ -125,16 +125,6 @@ bool LP_Init(int argc, char** argv)
 int LP_Main(CICQDaemon* daemon)
 {
 #ifdef USE_KDE
-  // Since plugin is loaded in Licq daemon before thread is spawned, any code
-  // executed during library init is run as the daemon thread. KDE library
-  // init functions calls Qt functions causing theMainThread in
-  // QCoreApplication to be set to daemon thread. When we later get called here
-  // with our own thread Qt will complain that we're not running from the main
-  // thread.
-  // This is a hack using the undocumented call in QInternal to switch main
-  // thread in QCoreApplication.
-  QInternal::callFunction(QInternal::SetCurrentThreadToMainThread, NULL);
-
   // Don't use the KDE crash handler (drkonqi).
   setenv("KDE_DEBUG", "true", 0);
 
