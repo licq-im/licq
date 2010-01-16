@@ -178,6 +178,15 @@ public:
   const QPixmap& iconForStatus(unsigned long fullStatus, const QString& id = "0", unsigned long ppid = LICQ_PPID);
 
   /**
+   * Get icon for a user
+   *
+   * @param user An already locked object of LicqUser type
+   * @return The requested icon if loaded, otherwise a null pixmap
+   */
+  const QPixmap& iconForUser(LicqUser* user)
+  { return iconForStatus(user->StatusFull(), user->IdString(), user->ppid()); }
+
+  /**
    * Get icon for an event type
    *
    * @param subCommand Message sub command to get icon for
