@@ -3437,17 +3437,17 @@ LicqOwner::LicqOwner(const string& accountId, unsigned long ppid)
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s", BASE_DIR, p);
   filename[MAX_FILENAME_LEN - 1] = '\0';
 
-  // Make sure owner.Licq is mode 0600
-  if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
-  {
-    gLog.Warn(tr("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"),
-                 L_WARNxSTR, filename);
-  }
-
   m_fConf.SetFileName(filename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
   m_fConf.ReloadFile();
   m_fConf.SetFlags(0);
+
+  // Make sure config file is mode 0600
+  if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
+  {
+    gLog.Warn(tr("%sUnable to set %s to mode 0600. Your password is vulnerable if stored locally.\n"),
+                 L_WARNxSTR, filename);
+  }
 
   // And finally our favorite function
   LoadInfo();
