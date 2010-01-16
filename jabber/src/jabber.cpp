@@ -159,7 +159,6 @@ void Jabber::doChangeStatus(LicqProtoChangeStatusSignal* signal)
 {
   assert(myClient != NULL);
   myClient->changeStatus(signal->status());
-  myHandler->onChangeStatus(signal->status());
 }
 
 void Jabber::doLogoff()

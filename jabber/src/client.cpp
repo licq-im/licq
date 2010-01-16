@@ -147,10 +147,12 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
-                                const std::string& /*resource*/,
-                                gloox::Presence /*presence*/,
+                                const std::string& resource,
+                                gloox::Presence presence,
                                 const std::string& /*msg*/)
 {
+  if (resource == myClient.resource())
+    myHandler.onChangeStatus(presenceToStatus(presence));
 }
 
 bool Client::handleSubscriptionRequest(const gloox::JID& /*jid*/,
