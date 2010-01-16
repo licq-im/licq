@@ -75,8 +75,7 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
   myReadSplitter->setOpaqueResize();
   myMainWidget->addWidget(myReadSplitter);
 
-  QShortcut* a = new QShortcut(Qt::Key_Escape, this);
-  connect(a, SIGNAL(activated()), SLOT(closeDialog()));
+  QShortcut* shortcutEscape = new QShortcut(Qt::Key_Escape, this);
 
   myMessageList = new MessageList();
   myReadSplitter->addWidget(myMessageList);
@@ -87,11 +86,6 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
 
   myReadSplitter->setStretchFactor(0, 0);
   myReadSplitter->setStretchFactor(1, 1);
-
-  connect(myMessageList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-      SLOT(printMessage(QTreeWidgetItem*)));
-  connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
-      SLOT(sentEvent(const LicqEvent*)));
 
   myActionsBox = new QGroupBox();
   myMainWidget->addSpacing(10);
@@ -108,11 +102,6 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
   myRead2Button->setEnabled(false);
   myRead3Button->setEnabled(false);
   myRead4Button->setEnabled(false);
-
-  connect(myRead1Button, SIGNAL(clicked()), SLOT(read1()));
-  connect(myRead2Button, SIGNAL(clicked()), SLOT(read2()));
-  connect(myRead3Button, SIGNAL(clicked()), SLOT(read3()));
-  connect(myRead4Button, SIGNAL(clicked()), SLOT(read4()));
 
   h_action_lay->addWidget(myRead1Button);
   h_action_lay->addWidget(myRead2Button);
@@ -133,13 +122,11 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
 
   myReadNextButton = new QPushButton(tr("Nex&t"));
   myReadNextButton->setEnabled(false);
-  connect(myReadNextButton, SIGNAL(clicked()), SLOT(readNext()));
   h_lay->addWidget(myReadNextButton);
   setTabOrder(myRead4Button, myReadNextButton);
 
   myCloseButton = new SkinnableButton(tr("&Close"));
   myCloseButton->setToolTip(tr("Normal Click - Close Window\n<CTRL>+Click - also delete User"));
-  connect(myCloseButton, SIGNAL(clicked()), SLOT(closeDialog()));
   h_lay->addWidget(myCloseButton);
   setTabOrder(myReadNextButton, myCloseButton);
 
@@ -192,11 +179,22 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
     if (u != NULL)
       gUserManager.DropUser(u);
 
-  connect(this, SIGNAL(encodingChanged()), SLOT(setEncoding()));
-
   QSize dialogSize = Config::Chat::instance()->viewDialogSize();
   if (dialogSize.isValid())
     resize(dialogSize);
+
+  connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
+      SLOT(sentEvent(const LicqEvent*)));
+  connect(myMessageList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+      SLOT(printMessage(QTreeWidgetItem*)));
+  connect(myRead1Button, SIGNAL(clicked()), SLOT(read1()));
+  connect(myRead2Button, SIGNAL(clicked()), SLOT(read2()));
+  connect(myRead3Button, SIGNAL(clicked()), SLOT(read3()));
+  connect(myRead4Button, SIGNAL(clicked()), SLOT(read4()));
+  connect(myReadNextButton, SIGNAL(clicked()), SLOT(readNext()));
+  connect(myCloseButton, SIGNAL(clicked()), SLOT(closeDialog()));
+  connect(shortcutEscape, SIGNAL(activated()), SLOT(closeDialog()));
+  connect(this, SIGNAL(encodingChanged()), SLOT(setEncoding()));
 }
 
 UserViewEvent::~UserViewEvent()
