@@ -249,7 +249,7 @@ public:
    * @return Event id
    */
   unsigned long protoSetStatus(const UserId& ownerId, unsigned short newStatus,
-      const std::string& message = std::string());
+      const std::string& message = std::string("__unset__"));
 
   /**
    * Notify a user that we've started/stopped typing

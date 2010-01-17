@@ -696,7 +696,8 @@ unsigned long CICQDaemon::protoSetStatus(const UserId& ownerId, unsigned short n
 
     isOffline = u->StatusOffline();
     ppid = u->ppid();
-    dynamic_cast<LicqOwner*>(*u)->SetAutoResponse(message.c_str());
+    if (message != "__unset__")
+      dynamic_cast<LicqOwner*>(*u)->SetAutoResponse(message.c_str());
   }
 
   unsigned long nRet = 0;
