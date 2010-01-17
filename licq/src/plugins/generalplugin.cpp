@@ -34,7 +34,8 @@ GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
                              PluginThread::Ptr pluginThread) :
   Plugin(lib, pluginThread, "LP"),
   myArgc(0),
-  myArgv(NULL)
+  myArgv(NULL),
+  myArgvCopy(NULL)
 {
   loadSymbol("LP_Init", myInit);
   loadSymbol("LP_Status", myStatus);
@@ -59,12 +60,17 @@ GeneralPlugin::~GeneralPlugin()
   for (int i = 0; i < myArgc; ++i)
     ::free(myArgv[i]);
   delete[] myArgv;
+  delete[] myArgvCopy;
 }
 
 bool GeneralPlugin::init(int argc, char** argv)
 {
-  myArgv = new char*[argc + 2];
-  myArgv[argc + 1] = NULL;
+  const size_t size = argc + 2;
+
+  myArgv = new char*[size];
+  myArgvCopy = new char*[size];
+
+  myArgv[size - 1] = NULL;
 
   // TODO: use licq or libname?
   //myArgv[0] = ::strdup(myLib->getName().c_str());
@@ -74,6 +80,11 @@ bool GeneralPlugin::init(int argc, char** argv)
     myArgv[i + 1] = ::strdup(argv[i]);
 
   myArgc = argc + 1;
+
+  // We need to create a copy of myArgv and pass that to the plugin, since
+  // e.g. KDE changes the pointers in argv (e.g. to strip the path in argv[0])
+  // and that messes up free, causing SIGSEGV in the destructor.
+  ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
 
   return callInitInThread();
 }
@@ -166,5 +177,5 @@ bool GeneralPlugin::initThreadEntry()
   // Set optind to 0 so plugins can use getopt
   optind = 0;
 
-  return (*myInit)(myArgc, myArgv);
+  return (*myInit)(myArgc, myArgvCopy);
 }

@@ -61,6 +61,7 @@ private:
 
   int myArgc;
   char** myArgv;
+  char** myArgvCopy;
 
   typedef std::list<LicqSignal*> SignalList;
   SignalList mySignals;
