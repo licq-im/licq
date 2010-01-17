@@ -46,6 +46,8 @@ public:
 
   void onMessage(const std::string& from, const std::string& message);
 
+  std::string getStatusMessage(unsigned long status);
+
 private:
   CICQDaemon* myDaemon;
   unsigned long myStatus;

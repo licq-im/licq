@@ -181,3 +181,20 @@ void Handler::onMessage(const std::string& from, const std::string& message)
     myDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, user);
   gUserManager.DropUser(user);
 }
+
+std::string Handler::getStatusMessage(unsigned long status)
+{
+  std::string msg = std::string();
+  LicqOwner* owner = NULL;
+
+  if ((status & ~ICQ_STATUS_FxFLAGS) != ICQ_STATUS_ONLINE)
+    owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
+
+  if (owner != NULL)
+  {
+    msg = owner->AutoResponse();
+    gUserManager.DropOwner(owner);
+  }
+
+  return msg;
+}

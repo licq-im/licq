@@ -70,7 +70,8 @@ bool Client::connect(unsigned long status)
 
 void Client::changeStatus(unsigned long status)
 {
-  myClient.setPresence(statusToPresence(status));
+  std::string msg = myHandler.getStatusMessage(status);
+  myClient.setPresence(statusToPresence(status), 0, msg);
 }
 
 void Client::sendMessage(const std::string& user, const std::string& message)
