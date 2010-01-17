@@ -36,6 +36,7 @@
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/messagebox.h"
+#include "core/signalmanager.h"
 
 #include "helpers/support.h"
 
@@ -102,6 +103,8 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   connect(modifyButton, SIGNAL(clicked()), SLOT(modifyOwner()));
   connect(removeButton, SIGNAL(clicked()), SLOT(removeOwner()));
   connect(closeButton, SIGNAL(clicked()), SLOT(close()));
+  connect(LicqGui::instance()->signalManager(),
+      SIGNAL(changedOwners(const UserId&, bool)), SLOT(updateOwners()));
 
   // Add the owners to the list now
   updateOwners();
@@ -163,8 +166,7 @@ void OwnerManagerDlg::listClicked(QTreeWidgetItem* item)
 
 void OwnerManagerDlg::addOwner()
 {
-  OwnerEditDlg* d = new OwnerEditDlg(0, this);
-  connect(d, SIGNAL(destroyed()), SLOT(updateOwners()));
+  new OwnerEditDlg(0, this);
 }
 
 void OwnerManagerDlg::registerOwner()
@@ -197,7 +199,6 @@ void OwnerManagerDlg::registerDone(bool success, const QString& /* newId */, uns
 
   if (success)
   {
-    updateOwners();
     LicqGui::instance()->showInfoDialog(mnuUserGeneral, gUserManager.ownerUserId(newPpid));
   }
 }
@@ -225,5 +226,4 @@ void OwnerManagerDlg::removeOwner()
 
   gUserManager.RemoveOwner(item->data(0, Qt::UserRole).toString().toULong());
   gLicqDaemon->SaveConf();
-  updateOwners();
 }
