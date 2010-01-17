@@ -127,7 +127,10 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
       break;
 
     case SIGNAL_OWNERxLIST:
-      emit changedOwners(userId, sig->SubSignal() == LIST_OWNER_ADDED);
+      if (sig->SubSignal() == LIST_OWNER_ADDED)
+        emit ownerAdded(userId);
+      if (sig->SubSignal() == LIST_OWNER_REMOVED)
+        emit ownerRemoved(userId);
       break;
 
     default:

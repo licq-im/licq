@@ -119,9 +119,18 @@ signals:
   void newOwner(const QString& accountId, unsigned long ppid);
 
   /**
-   * The owner list has changed
+   * An owner was added
+   *
+   * @param userId User id of the owner
    */
-  void changedOwners(const UserId& userId, bool added);
+  void ownerAdded(const UserId& userId);
+
+  /**
+   * An owner was removed
+   *
+   * @param userId User id of the owner
+   */
+  void ownerRemoved(const UserId& userId);
 
 private:
   int myPipe;

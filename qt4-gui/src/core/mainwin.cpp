@@ -218,6 +218,12 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(updatedStatus(unsigned long)),
       SLOT(updateStatus()));
   connect(LicqGui::instance()->signalManager(),
+      SIGNAL(ownerAdded(const UserId&)),
+      SLOT(updateStatus()));
+  connect(LicqGui::instance()->signalManager(),
+      SIGNAL(ownerRemoved(const UserId&)),
+      SLOT(updateStatus()));
+  connect(LicqGui::instance()->signalManager(),
       SIGNAL(doneOwnerFcn(const LicqEvent*)),
       SLOT(slot_doneOwnerFcn(const LicqEvent*)));
   connect(LicqGui::instance()->signalManager(),
@@ -227,8 +233,11 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(protocolPlugin(unsigned long)),
       SLOT(slot_protocolPlugin(unsigned long)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(changedOwners(const UserId&, bool)),
-      SLOT(updateStatus()));
+      SIGNAL(ownerAdded(const UserId&)),
+      mySystemMenu, SLOT(addOwner(const UserId&)));
+  connect(LicqGui::instance()->signalManager(),
+      SIGNAL(ownerRemoved(const UserId&)),
+      mySystemMenu, SLOT(removeOwner(const UserId&)));
 
   if (conf->mainwinRect().isValid())
     setGeometry(conf->mainwinRect());
