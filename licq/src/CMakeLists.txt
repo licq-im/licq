@@ -6,6 +6,7 @@ set(tested_SRCS
 
   thread/condition.cpp
   thread/mutexlocker.cpp
+  thread/readwritemutex.cpp
 
   utils/dynamiclibrary.cpp
   utils/pipe.cpp
@@ -69,6 +70,7 @@ set(test_SRCS
   thread/tests/conditiontest.cpp
   thread/tests/mutextest.cpp
   thread/tests/mutexlockertest.cpp
+  thread/tests/readwritemutextest.cpp
 
   utils/tests/dynamiclibrarytest.cpp
   utils/tests/pipetest.cpp
