@@ -296,8 +296,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
     // TODO
     // kdeIMInterface->addProtocol(protocol->getName(), ppid);
 #endif
-    if (ppid != LICQ_PPID) // XXX To be removed later
-      protocolIds.push_back(ppid);
+    protocolIds.push_back(ppid);
   }
   FOR_EACH_OWNER_END
 

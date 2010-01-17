@@ -237,14 +237,8 @@ SystemMenu::SystemMenu(QWidget* parent)
   connect(this, SIGNAL(aboutToShow()), SLOT(aboutToShowMenu()));
   connect(myFollowMeMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowFollowMeMenu()));
 
-  // Add ICQ owner sub menus but hide status sub menu until more owners are added
-  addOwner(LICQ_PPID);
-  myOwnerData[LICQ_PPID]->getStatusMenu()->menuAction()->setVisible(false);
+  // Sub menus are hidden until we got at least two owners
   myStatusSeparator->setVisible(false);
-  QMenu* icqOwnerAdm = myOwnerData[LICQ_PPID]->getOwnerAdmMenu();
-  icqOwnerAdm->menuAction()->setVisible(false);
-  foreach (a, icqOwnerAdm->actions())
-    myOwnerAdmMenu->insertAction(myOwnerAdmSeparator, a);
 }
 
 SystemMenu::~SystemMenu()
@@ -329,6 +323,9 @@ void SystemMenu::updateShortcuts()
 
 void SystemMenu::addOwner(unsigned long ppid)
 {
+  if (myOwnerData.count(ppid) > 0)
+    return;
+
   // Make we actually have a plugin protocol loaded for the owner,
   //   otherwise there is no point in including it in the menus.
   Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
@@ -336,39 +333,55 @@ void SystemMenu::addOwner(unsigned long ppid)
     return;
 
   OwnerData* newOwner = new OwnerData(ppid, this);
-  myOwnerAdmMenu->insertMenu(myOwnerAdmSeparator, newOwner->getOwnerAdmMenu());
-  myStatusMenu->insertMenu(myStatusSeparator, newOwner->getStatusMenu());
+  QMenu* ownerAdmin = newOwner->getOwnerAdmMenu();
+  QMenu* ownerStatus = newOwner->getStatusMenu();
+  myOwnerAdmMenu->insertMenu(myOwnerAdmSeparator, ownerAdmin);
+  myStatusMenu->insertMenu(myStatusSeparator, ownerStatus);
 
-  myOwnerData.insert(ppid, newOwner);
-
-  if (myOwnerData.size() > 1)
+  if (myOwnerData.size() < 1)
   {
-    // Multiple owners, show the sub menu for ICQ status as well
-    myOwnerData[LICQ_PPID]->getStatusMenu()->menuAction()->setVisible(true);
+    // There are no other owners, hide the sub menus
+    ownerStatus->menuAction()->setVisible(false);
+    ownerAdmin->menuAction()->setVisible(false);
+
+    foreach (QAction* a, ownerAdmin->actions())
+      myOwnerAdmMenu->insertAction(myOwnerAdmSeparator, a);
+  }
+
+  if (myOwnerData.size() == 1)
+  {
+    // Adding the second owner, show the sub menus for the first owner as well
+    OwnerData* firstOwner = myOwnerData.begin().value();
+    firstOwner->getStatusMenu()->menuAction()->setVisible(true);
     myStatusSeparator->setVisible(true);
 
-    QMenu* icqOwnerAdm = myOwnerData[LICQ_PPID]->getOwnerAdmMenu();
-    icqOwnerAdm->menuAction()->setVisible(true);
-    foreach (QAction* a, icqOwnerAdm->actions())
+    QMenu* firstOwnerAdm = firstOwner->getOwnerAdmMenu();
+    firstOwnerAdm->menuAction()->setVisible(true);
+    foreach (QAction* a, firstOwnerAdm->actions())
       myOwnerAdmMenu->removeAction(a);
   }
+
+  myOwnerData.insert(ppid, newOwner);
 }
 
 void SystemMenu::removeOwner(unsigned long ppid)
 {
   OwnerData* data = myOwnerData.take(ppid);
-  if (data != NULL)
-    delete data;
+  if (data == NULL)
+    return;
 
-  if (myOwnerData.size() < 2)
+  delete data;
+
+  if (myOwnerData.size() == 1)
   {
-    // Only ICQ left, hide the owner specific sub menu
-    myOwnerData[LICQ_PPID]->getStatusMenu()->menuAction()->setVisible(false);
+    // Only one owner left, hide the sub menus
+    OwnerData* lastOwner = myOwnerData.begin().value();
+    lastOwner->getStatusMenu()->menuAction()->setVisible(false);
     myStatusSeparator->setVisible(false);
 
-    QMenu* icqOwnerAdm = myOwnerData[LICQ_PPID]->getOwnerAdmMenu();
-    icqOwnerAdm->menuAction()->setVisible(false);
-    foreach (QAction* a, icqOwnerAdm->actions())
+    QMenu* lastOwnerAdm = lastOwner->getOwnerAdmMenu();
+    lastOwnerAdm->menuAction()->setVisible(false);
+    foreach (QAction* a, lastOwnerAdm->actions())
       myOwnerAdmMenu->insertAction(myOwnerAdmSeparator, a);
   }
 }
