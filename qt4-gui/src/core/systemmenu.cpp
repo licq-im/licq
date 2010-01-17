@@ -250,6 +250,7 @@ SystemMenu::~SystemMenu()
 
 void SystemMenu::setIcqEntriesVisible(bool visible)
 {
+  myHasIcqOwner = visible;
   myIcqFollowMeAction->setVisible(visible);
   myIcqFollowMeSeparator->setVisible(visible);
   myIcqSecurityAction->setVisible(visible);
@@ -494,7 +495,7 @@ void SystemMenu::setFollowMeStatus(QAction* action)
 void SystemMenu::setMainStatus(QAction* action)
 {
   unsigned long status = action->data().toUInt();
-  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE);
+  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myHasIcqOwner);
   bool changeNow = !Config::General::instance()->delayStatusChange();
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
@@ -732,7 +733,7 @@ void OwnerData::viewHistory()
 void OwnerData::setStatus(QAction* action)
 {
   int status = action->data().toInt();
-  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE);
+  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myPpid == LICQ_PPID);
   bool changeNow = !Config::General::instance()->delayStatusChange();
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 

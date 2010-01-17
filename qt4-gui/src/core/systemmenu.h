@@ -215,6 +215,7 @@ private:
   QAction* myIcqFollowMeSeparator;
 
   QMap<UserId, SystemMenuPrivate::OwnerData*> myOwnerData;
+  bool myHasIcqOwner;
 };
 
 namespace SystemMenuPrivate
