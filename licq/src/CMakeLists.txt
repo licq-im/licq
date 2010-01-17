@@ -38,7 +38,6 @@ set(licq_SRCS
   main.cpp
   md5.cpp
   message.cpp
-  mutex.cpp
   occupationcodes.c
   onevent.cpp
   organizationcodes.c

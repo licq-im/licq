@@ -297,7 +297,7 @@ protected:
   unsigned short HashValue(int _nSd);
   std::vector < std::list<INetSocket *> > m_vlTable;
 
-  ReadWriteMutex myMutex;
+  Licq::ReadWriteMutex myMutex;
 };
 
 

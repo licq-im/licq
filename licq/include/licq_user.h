@@ -1506,9 +1506,9 @@ public:
   unsigned short NumOwners();
 
 protected:
-  ReadWriteMutex myGroupListMutex;
-  ReadWriteMutex myUserListMutex;
-  ReadWriteMutex myOwnerListMutex;
+  Licq::ReadWriteMutex myGroupListMutex;
+  Licq::ReadWriteMutex myUserListMutex;
+  Licq::ReadWriteMutex myOwnerListMutex;
 
   GroupMap myGroups;
   UserMap myUsers;
