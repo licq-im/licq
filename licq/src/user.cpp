@@ -382,7 +382,15 @@ bool CUserManager::Load()
     licqConf.ReadStr(sOwnerPPIDKey, sOwnerPPID);
     nPPID = (sOwnerPPID[0] << 24) | (sOwnerPPID[1] << 16) |
             (sOwnerPPID[2] << 8) | (sOwnerPPID[3]);
+#if 0
     AddOwner(sOwnerID, nPPID);
+#else
+    ICQOwner *o = new ICQOwner(sOwnerID, nPPID);
+
+    LockOwnerList(LOCK_W);
+    myOwners[nPPID] = o;
+    UnlockOwnerList();
+#endif
   }
 
   unsigned int nGroups;
