@@ -153,10 +153,8 @@ private slots:
 
   /**
    * Our status has changed
-   *
-   * @param ppid Protocl intstance id of owner that got status change
    */
-  void updateStatus(unsigned long ppid = 0);
+  void updateStatus();
 
   /**
    * Update shortcuts

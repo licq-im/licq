@@ -216,7 +216,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SLOT(slot_updatedUser(const UserId&, unsigned long, int)));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(updatedStatus(unsigned long)),
-      SLOT(updateStatus(unsigned long)));
+      SLOT(updateStatus()));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(doneOwnerFcn(const LicqEvent*)),
       SLOT(slot_doneOwnerFcn(const LicqEvent*)));
@@ -226,6 +226,9 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(protocolPlugin(unsigned long)),
       SLOT(slot_protocolPlugin(unsigned long)));
+  connect(LicqGui::instance()->signalManager(),
+      SIGNAL(changedOwners(const UserId&, bool)),
+      SLOT(updateStatus()));
 
   if (conf->mainwinRect().isValid())
     setGeometry(conf->mainwinRect());
@@ -935,7 +938,7 @@ void MainWindow::updateGroups(bool initial)
   updateCurrentGroup();
 }
 
-void MainWindow::updateStatus(unsigned long nPPID)
+void MainWindow::updateStatus()
 {
   if (LicqGui::instance()->dockIcon() != NULL)
     LicqGui::instance()->dockIcon()->updateIconStatus();
@@ -943,67 +946,57 @@ void MainWindow::updateStatus(unsigned long nPPID)
   if (myStatusField == NULL)
     return;
 
+  IconManager* iconman = IconManager::instance();
   Config::Skin* skin = Config::Skin::active();
   QColor theColor = skin->offlineColor;
 
-  if (nPPID == 0)
-    nPPID = LICQ_PPID;
+  myStatusField->clearPixmaps();
+  myStatusField->clearPrependPixmap();
+  myStatusField->setText(QString::null);
 
-  IconManager* iconman = IconManager::instance();
-
-  int numOwners = gUserManager.NumOwners();
-
-  const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
-  if (o != NULL)
+  OwnerMap* ol = gUserManager.LockOwnerList(LOCK_R);
+  OwnerMap::const_iterator it = ol->begin();
+  LicqOwner* o;
+  switch (ol->size())
   {
-    unsigned long status = o->Status();
-
-    switch (status)
-    {
-      case ICQ_STATUS_OFFLINE:
-        theColor = skin->offlineColor;
-        break;
-      case ICQ_STATUS_ONLINE:
-      case ICQ_STATUS_FREEFORCHAT:
-        theColor = skin->onlineColor;
-        break;
-      case ICQ_STATUS_AWAY:
-      case ICQ_STATUS_NA:
-      case ICQ_STATUS_OCCUPIED:
-      case ICQ_STATUS_DND:
-      default:
-        theColor = skin->awayColor;
-        break;
-    }
-
-    if (numOwners < 2)
-    {
-      // Only one protocol is loaded, show some text too
-      myStatusField->clearPixmaps();
+    case 0:
+      break;
+    case 1:
+      o = it->second;
+      o->Lock();
       myStatusField->setText(LicqStrings::getStatus(o));
-      myStatusField->setPrependPixmap(iconman->iconForStatus(o->StatusFull(),
-            o->IdString(), o->PPID()));
-      myStatusField->update();
-    }
-    gUserManager.DropOwner(o);
+      myStatusField->setPrependPixmap(iconman->iconForUser(o));
+      switch (o->Status())
+      {
+        case ICQ_STATUS_OFFLINE:
+          theColor = skin->offlineColor;
+          break;
+        case ICQ_STATUS_ONLINE:
+        case ICQ_STATUS_FREEFORCHAT:
+          theColor = skin->onlineColor;
+          break;
+        case ICQ_STATUS_AWAY:
+        case ICQ_STATUS_NA:
+        case ICQ_STATUS_OCCUPIED:
+        case ICQ_STATUS_DND:
+        default:
+          theColor = skin->awayColor;
+          break;
+      }
+      o->Unlock();
+      break;
+    default:
+      for (; it != ol->end(); it++)
+      {
+        o = it->second;
+        o->Lock();
+        myStatusField->addPixmap(iconman->iconForUser(o));
+        o->Unlock();
+      }
   }
+  gUserManager.UnlockOwnerList();
 
-  if (numOwners > 1 || o == NULL)
-  {
-    // Show icons for each protocol, w/o text
-    myStatusField->clearPrependPixmap();
-    myStatusField->setText("");
-    myStatusField->clearPixmaps();
-
-    FOR_EACH_OWNER_START(LOCK_R)
-    {
-      myStatusField->addPixmap(iconman->iconForStatus(pOwner->StatusFull(),
-          pOwner->accountId().c_str(), pOwner->ppid()));
-    }
-    FOR_EACH_OWNER_END
-
-    myStatusField->update();
-  }
+  myStatusField->update();
 
   // set the color if it isn't set by the skin
   if (!skin->lblStatus.foreground.isValid() && theColor.isValid())
