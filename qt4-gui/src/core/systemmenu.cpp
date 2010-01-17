@@ -576,16 +576,9 @@ OwnerData::OwnerData(unsigned long ppid, SystemMenu* parent)
     myPpid(ppid)
 {
   QString protoName;
-  if (myPpid == LICQ_PPID)
-  {
-    protoName = "ICQ";
-  }
-  else
-  {
-    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
-    if (protocol.get() != NULL)
-      protoName = protocol->getName();
-  }
+  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+  if (protocol.get() != NULL)
+    protoName = protocol->getName();
 
   // System sub menu
   myOwnerAdmMenu = new QMenu(protoName);

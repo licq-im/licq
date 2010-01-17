@@ -512,7 +512,7 @@ void LicqKIMIface::addProtocol(const QString& name, unsigned long PPID)
     if (name.isEmpty()) return;
 
     // normalize name for KIMIface usage
-    QString protocol = (name == "Licq" ? "ICQ" : name.upper());
+  QString protocol = name.upper();
     protocol.append("Protocol");
 
     // set mapping of name to PPID

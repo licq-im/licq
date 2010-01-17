@@ -333,7 +333,7 @@ void PluginDlg::slot_refresh()
   i = 0;
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    if (strcmp(protocol->getName(), "Licq") == 0)
+    if (strcmp(protocol->getName(), "ICQ") == 0)
       continue;
 
     tblProtocol->setRowCount(i+1);
