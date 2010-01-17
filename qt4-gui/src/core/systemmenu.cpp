@@ -321,13 +321,14 @@ void SystemMenu::updateShortcuts()
   myShowHeaderAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleShowHeader));
 }
 
-void SystemMenu::addOwner(unsigned long ppid)
+void SystemMenu::addOwner(const UserId& userId)
 {
-  if (myOwnerData.count(ppid) > 0)
+  if (myOwnerData.count(userId) > 0)
     return;
 
   // Make we actually have a plugin protocol loaded for the owner,
   //   otherwise there is no point in including it in the menus.
+  unsigned long ppid = LicqUser::getUserProtocolId(userId);
   Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
   if (protocol.get() == NULL)
     return;
@@ -361,12 +362,12 @@ void SystemMenu::addOwner(unsigned long ppid)
       myOwnerAdmMenu->removeAction(a);
   }
 
-  myOwnerData.insert(ppid, newOwner);
+  myOwnerData.insert(userId, newOwner);
 }
 
-void SystemMenu::removeOwner(unsigned long ppid)
+void SystemMenu::removeOwner(const UserId& userId)
 {
-  OwnerData* data = myOwnerData.take(ppid);
+  OwnerData* data = myOwnerData.take(userId);
   if (data == NULL)
     return;
 
@@ -386,9 +387,9 @@ void SystemMenu::removeOwner(unsigned long ppid)
   }
 }
 
-bool SystemMenu::getInvisibleStatus(unsigned long ppid) const
+bool SystemMenu::getInvisibleStatus(const UserId& userId) const
 {
-  OwnerData* data = myOwnerData.value(ppid);
+  OwnerData* data = myOwnerData.value(userId);
   if (data == NULL)
     return getInvisibleStatus();
 

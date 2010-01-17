@@ -1032,7 +1032,9 @@ void MainWindow::slot_logon()
 
 void MainWindow::slot_protocolPlugin(unsigned long nPPID)
 {
-  mySystemMenu->addOwner(nPPID);
+  UserId userId = gUserManager.ownerUserId(nPPID);
+  if (USERID_ISVALID(userId))
+    mySystemMenu->addOwner(userId);
 
   updateStatus();
 
@@ -1102,7 +1104,9 @@ void MainWindow::setMiniMode(bool miniMode)
 
 void MainWindow::slot_pluginUnloaded(unsigned long _nPPID)
 {
-  mySystemMenu->removeOwner(_nPPID);
+  UserId userId = gUserManager.ownerUserId(_nPPID);
+  if (USERID_ISVALID(userId))
+    mySystemMenu->removeOwner(userId);
 
 #ifdef USE_KDE
   // TODO

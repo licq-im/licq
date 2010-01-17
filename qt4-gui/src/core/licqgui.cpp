@@ -603,18 +603,21 @@ void LicqGui::grabKey(const QString& key)
 
 void LicqGui::changeStatus(unsigned long status, bool invisible)
 {
-  // Get a list of protocols first since we can't call changeStatus with list locked
-  list<unsigned long> protocols;
-  const OwnerMap* owners = gUserManager.LockOwnerList();
-  for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
-    protocols.push_back(i->first);
-  gUserManager.UnlockOwnerList();
-
-  BOOST_FOREACH(unsigned long ppid, protocols)
+  // Get a list of owners first since we can't call changeStatus with list locked
+  list<UserId> owners;
+  FOR_EACH_OWNER_START(LOCK_R)
   {
+    owners.push_back(pOwner->id());
+  }
+  FOR_EACH_OWNER_END
+
+  BOOST_FOREACH(const UserId& userId, owners)
+  {
+    unsigned long ppid = LicqUser::getUserProtocolId(userId);
+
     // Keep invisible mode on protocols when changing global status
     bool protoInvisible = invisible;
-    if (status != ICQ_STATUS_FxPRIVATE && myMainWindow->systemMenu()->getInvisibleStatus(ppid))
+    if (status != ICQ_STATUS_FxPRIVATE && myMainWindow->systemMenu()->getInvisibleStatus(userId))
       protoInvisible = true;
 
     changeStatus(status, ppid, protoInvisible);

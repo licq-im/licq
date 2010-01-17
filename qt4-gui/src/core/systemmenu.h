@@ -25,6 +25,8 @@
 #include <QMap>
 #include <QMenu>
 
+#include <licq_types.h>
+
 class QActionGroup;
 
 namespace LicqQtGui
@@ -61,20 +63,6 @@ public:
   void updateGroups();
 
   /**
-   * Add menu entries for a new owner
-   *
-   * @param ppid Protocol id of the new owner
-   */
-  void addOwner(unsigned long ppid);
-
-  /**
-   * Remove an owner from the menu
-   *
-   * @param ppid Protocol id of the owner to remove
-   */
-  void removeOwner(unsigned long ppid);
-
-  /**
    * Get the status sub menu
    *
    * @return The status sub menu from the system menu
@@ -104,7 +92,22 @@ public:
    * @param ppid Protocol to get status for
    * @return True if protocol inivisibility is checked
    */
-  bool getInvisibleStatus(unsigned long ppid) const;
+  bool getInvisibleStatus(const UserId& userId) const;
+
+public slots:
+  /**
+   * Add menu entries for a new owner
+   *
+   * @param userId User id for the new owner
+   */
+  void addOwner(const UserId& userId);
+
+  /**
+   * Remove an owner from the menu
+   *
+   * @param userId User id of the owner to remove
+   */
+  void removeOwner(const UserId& userId);
 
 private slots:
   /**
@@ -199,7 +202,7 @@ private:
   QAction* myGroupSeparator;
   QAction* myStatusSeparator;
 
-  QMap<unsigned long, SystemMenuPrivate::OwnerData*> myOwnerData;
+  QMap<UserId, SystemMenuPrivate::OwnerData*> myOwnerData;
 };
 
 namespace SystemMenuPrivate
