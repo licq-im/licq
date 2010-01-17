@@ -90,8 +90,8 @@ SystemMenu::SystemMenu(QWidget* parent)
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmSeparator = myOwnerAdmMenu->addSeparator();
   myAccountManagerAction = myOwnerAdmMenu->addAction(tr("&Account Manager..."), this, SLOT(showOwnerManagerDlg()));
-  myOwnerAdmMenu->addAction(tr("ICQ &Security Options..."), this, SLOT(showSecurityDlg()));
-  myOwnerAdmMenu->addAction(tr("ICQ &Random Chat Group..."), this, SLOT(showRandomChatGroupDlg()));
+  myIcqSecurityAction = myOwnerAdmMenu->addAction(tr("ICQ &Security Options..."), this, SLOT(showSecurityDlg()));
+  myIcqRandomChatGroupAction = myOwnerAdmMenu->addAction(tr("ICQ &Random Chat Group..."), this, SLOT(showRandomChatGroupDlg()));
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmMenu->addMenu(myDebugMenu);
 
@@ -101,7 +101,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserSearchAction = myUserAdmMenu->addAction(tr("S&earch for User..."), this, SLOT(showSearchUserDlg()));
   myUserAutorizeAction = myUserAdmMenu->addAction(tr("A&uthorize User..."), this, SLOT(showAuthUserDlg()));
   myUserReqAutorizeAction = myUserAdmMenu->addAction(tr("Re&quest Authorization..."), this, SLOT(showReqAuthDlg()));
-  myUserAdmMenu->addAction(tr("R&andom Chat..."), this, SLOT(showRandomChatSearchDlg()));
+  myIcqRandomChatAction = myUserAdmMenu->addAction(tr("ICQ R&andom Chat..."), this, SLOT(showRandomChatSearchDlg()));
   myUserAdmMenu->addSeparator();
   myUserPopupAllAction = myUserAdmMenu->addAction(tr("&Popup All Messages..."), LicqGui::instance(), SLOT(showAllEvents()));
   myEditGroupsAction = myUserAdmMenu->addAction(tr("Edit &Groups..."), this, SLOT(showEditGrpDlg()));
@@ -112,7 +112,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserAdmMenu->addAction(tr("&Save All Users"), this, SLOT(saveAllUsers()));
 
   // Sub menu Follow Me
-  myFollowMeMenu = new QMenu(tr("Phone \"Follow Me\""));
+  myFollowMeMenu = new QMenu(tr("ICQ Phone \"Follow Me\""));
   myFollowMeActions = new QActionGroup(this);
   connect(myFollowMeActions, SIGNAL(triggered(QAction*)), SLOT(setFollowMeStatus(QAction*)));
 #define ADD_PFM(text, data) \
@@ -130,8 +130,8 @@ SystemMenu::SystemMenu(QWidget* parent)
   myStatusActions = new QActionGroup(this);
   connect(myStatusActions, SIGNAL(triggered(QAction*)), SLOT(setMainStatus(QAction*)));
   myStatusSeparator = myStatusMenu->addSeparator();
-  myStatusMenu->addMenu(myFollowMeMenu);
-  myStatusMenu->addSeparator();
+  myIcqFollowMeAction = myStatusMenu->addMenu(myFollowMeMenu);
+  myIcqFollowMeSeparator = myStatusMenu->addSeparator();
 #define ADD_MAINSTATUS(var, text, data) \
     var = myStatusActions->addAction(text); \
     var->setData(data); \
@@ -239,10 +239,22 @@ SystemMenu::SystemMenu(QWidget* parent)
 
   // Sub menus are hidden until we got at least two owners
   myStatusSeparator->setVisible(false);
+
+  // Hide ICQ specific menus until we actually get an ICQ owner
+  setIcqEntriesVisible(false);
 }
 
 SystemMenu::~SystemMenu()
 {
+}
+
+void SystemMenu::setIcqEntriesVisible(bool visible)
+{
+  myIcqFollowMeAction->setVisible(visible);
+  myIcqFollowMeSeparator->setVisible(visible);
+  myIcqSecurityAction->setVisible(visible);
+  myIcqRandomChatGroupAction->setVisible(visible);
+  myIcqRandomChatAction->setVisible(visible);
 }
 
 void SystemMenu::updateIcons()
@@ -362,6 +374,9 @@ void SystemMenu::addOwner(const UserId& userId)
       myOwnerAdmMenu->removeAction(a);
   }
 
+  if (ppid == LICQ_PPID)
+    setIcqEntriesVisible(true);
+
   myOwnerData.insert(userId, newOwner);
 }
 
@@ -372,6 +387,10 @@ void SystemMenu::removeOwner(const UserId& userId)
     return;
 
   delete data;
+
+  unsigned long ppid = LicqUser::getUserProtocolId(userId);
+  if (ppid == LICQ_PPID)
+    setIcqEntriesVisible(false);
 
   if (myOwnerData.size() == 1)
   {

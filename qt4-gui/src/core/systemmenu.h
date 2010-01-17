@@ -146,6 +146,13 @@ private slots:
   void showGPGKeyManager();
 
 private:
+  /**
+   * Show or hide ICQ specific entries in the system menu
+   *
+   * @param visible True if ICQ entries should be visible
+   */
+  void setIcqEntriesVisible(bool visible);
+
   // Actions on top menu
   QAction* mySetArAction;
   QAction* myLogWinAction;
@@ -161,11 +168,14 @@ private:
 
   // Actions on system menu
   QAction* myAccountManagerAction;
+  QAction* myIcqSecurityAction;
+  QAction* myIcqRandomChatGroupAction;
 
   // Actions on user menu
   QAction* myUserSearchAction;
   QAction* myUserAutorizeAction;
   QAction* myUserReqAutorizeAction;
+  QAction* myIcqRandomChatAction;
   QAction* myUserPopupAllAction;
   QAction* myEditGroupsAction;
   QAction* myRedrawContactListAction;
@@ -176,6 +186,7 @@ private:
   QAction* myShowHeaderAction;
 
   // Actions on status menu
+  QAction* myIcqFollowMeAction;
   QAction* myStatusOnlineAction;
   QAction* myStatusAwayAction;
   QAction* myStatusNotAvailableAction;
@@ -201,6 +212,7 @@ private:
   QAction* myOwnerAdmSeparator;
   QAction* myGroupSeparator;
   QAction* myStatusSeparator;
+  QAction* myIcqFollowMeSeparator;
 
   QMap<UserId, SystemMenuPrivate::OwnerData*> myOwnerData;
 };
