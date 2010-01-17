@@ -60,8 +60,14 @@ if (NOT WITH_KDE)
   endif (HUNSPELL_FOUND)
 
 else (NOT WITH_KDE)
+  # Stop KDE4 from adding an uninstall target
+  set(_kde4_uninstall_rule_created TRUE)
+
   find_package(KDE4 REQUIRED)
   set(USE_KDE ${KDE4_FOUND})
+
+  # Unset variables set by FindKDE4Internal
+  set(LIBRARY_OUTPUT_PATH)
 
   # FindKDE4Internal adds "-Wl,--no-undefined" to the linker command
   # line. This doesn't work for use, since all symbols from the daemon
