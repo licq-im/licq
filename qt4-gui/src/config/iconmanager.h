@@ -183,7 +183,7 @@ public:
    * @param user An already locked object of LicqUser type
    * @return The requested icon if loaded, otherwise a null pixmap
    */
-  const QPixmap& iconForUser(LicqUser* user)
+  const QPixmap& iconForUser(const LicqUser* user)
   { return iconForStatus(user->StatusFull(), user->IdString(), user->ppid()); }
 
   /**
