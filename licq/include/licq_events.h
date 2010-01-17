@@ -362,6 +362,8 @@ const unsigned long SIGNAL_SOCKET                = 0x00010000;
 const unsigned long SIGNAL_VERIFY_IMAGE          = 0x00020000;
 //! A new user has been successfully registered.
 const unsigned long SIGNAL_NEW_OWNER             = 0x00040000;
+//! Some change has been made to the list of owners.
+const unsigned long SIGNAL_OWNERxLIST            = 0x00080000;
 //! Used by a UI plugin to tell the daemon that all signals should be
 //! sent to the UI plugin.
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
@@ -415,6 +417,14 @@ const unsigned long LIST_ADD                     = LIST_CONTACT_ADDED;
 const unsigned long LIST_REMOVE                  = LIST_CONTACT_REMOVED;
 const unsigned long LIST_ALL                     = LIST_INVALIDATE;
 
+/**
+ * Sub signals for SIGNAL_OWNERxLIST
+ */
+enum SubSignals_OWNERxLIST
+{
+  LIST_OWNER_ADDED = 1,       /**< An owner was added to the list */
+  LIST_OWNER_REMOVED = 2,     /**< An owner was removed from the list */
+};
 
 /*! \brief Plugin notification messages
 
