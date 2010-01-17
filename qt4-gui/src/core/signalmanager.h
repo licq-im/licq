@@ -118,6 +118,11 @@ signals:
   void verifyImage(unsigned long);
   void newOwner(const QString& accountId, unsigned long ppid);
 
+  /**
+   * The owner list has changed
+   */
+  void changedOwners(const UserId& userId, bool added);
+
 private:
   int myPipe;
   QSocketNotifier* sn;

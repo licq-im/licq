@@ -126,6 +126,10 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
       emit newOwner(accountId, ppid);
       break;
 
+    case SIGNAL_OWNERxLIST:
+      emit changedOwners(userId, sig->SubSignal() == LIST_OWNER_ADDED);
+      break;
+
     default:
       gLog.Warn("%sInternal error: SignalManager::ProcessSignal(): "
           "Unknown signal command received from daemon: %ld.\n",
