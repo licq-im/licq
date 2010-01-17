@@ -245,9 +245,11 @@ public:
    *
    * @param ownerId Owner of protocol to change
    * @param newStatus The status to change to
+   * @param message The status message to be set for the status
    * @return Event id
    */
-  unsigned long protoSetStatus(const UserId& ownerId, unsigned short newStatus);
+  unsigned long protoSetStatus(const UserId& ownerId, unsigned short newStatus,
+      const std::string& message = std::string());
 
   /**
    * Notify a user that we've started/stopped typing

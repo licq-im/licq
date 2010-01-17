@@ -683,18 +683,20 @@ void CICQDaemon::icqRequestService(unsigned short nFam)
 }
 
 //-----icqSetStatus-------------------------------------------------------------
-unsigned long CICQDaemon::protoSetStatus(const UserId& ownerId, unsigned short newStatus)
+unsigned long CICQDaemon::protoSetStatus(const UserId& ownerId, unsigned short newStatus,
+    const std::string& message)
 {
   bool isOffline;
   unsigned long ppid;
 
   {
-    LicqUserReadGuard u(ownerId);
+    LicqUserWriteGuard u(ownerId);
     if (!u.isLocked() || u->User())
       return 0;
 
     isOffline = u->StatusOffline();
     ppid = u->ppid();
+    dynamic_cast<LicqOwner*>(*u)->SetAutoResponse(message.c_str());
   }
 
   unsigned long nRet = 0;
