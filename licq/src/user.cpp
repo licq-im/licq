@@ -374,6 +374,7 @@ bool CUserManager::Load()
 
   //TODO Check for loaded plugins before the owner, so we can see
   //which owner(s) to load
+  LockOwnerList(LOCK_W);
   for (unsigned short i = 1; i <= nOwners; i++)
   {
     sprintf(sOwnerIDKey, "Owner%d.Id", i);
@@ -382,16 +383,12 @@ bool CUserManager::Load()
     licqConf.ReadStr(sOwnerPPIDKey, sOwnerPPID);
     nPPID = (sOwnerPPID[0] << 24) | (sOwnerPPID[1] << 16) |
             (sOwnerPPID[2] << 8) | (sOwnerPPID[3]);
-#if 0
-    AddOwner(sOwnerID, nPPID);
-#else
-    ICQOwner *o = new ICQOwner(sOwnerID, nPPID);
 
-    LockOwnerList(LOCK_W);
+    LicqOwner* o = new LicqOwner(sOwnerID, nPPID);
+
     myOwners[nPPID] = o;
-    UnlockOwnerList();
-#endif
   }
+  UnlockOwnerList();
 
   unsigned int nGroups;
   licqConf.SetSection("groups");
