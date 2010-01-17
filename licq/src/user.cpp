@@ -344,6 +344,9 @@ void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
   LockOwnerList(LOCK_W);
   myOwners[_nPPID] = o;
   UnlockOwnerList();
+
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
+        LIST_OWNER_ADDED, LicqUser::makeUserId(_szId, _nPPID)));
 }
 
 /*---------------------------------------------------------------------------
@@ -644,9 +647,13 @@ void CUserManager::RemoveOwner(unsigned long ppid)
   o->Lock(LOCK_W);
   myOwners.erase(iter);
   o->RemoveFiles();
+  UserId id = o->id();
   UnlockOwnerList();
   o->Unlock();
   delete o;
+
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
+        LIST_OWNER_REMOVED, id));
 }
 
 LicqUser* CUserManager::fetchUser(const UserId& userId,
