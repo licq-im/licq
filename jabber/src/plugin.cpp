@@ -49,7 +49,7 @@ bool LProto_Init()
 
 unsigned long LProto_SendFuncs()
 {
-  return PP_SEND_MSG;
+  return PP_SEND_MSG | PP_SEND_STATUSxMSG;
 }
 
 int LProto_Main(CICQDaemon* daemon)
