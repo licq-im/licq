@@ -107,7 +107,9 @@ void Handler::onUserAdded(const std::string& id,
   {
     int groupId = gUserManager.GetGroupFromName(*it);
     if (groupId == 0)
-      continue; // TODO: Implement virtual group creation in the daemon
+      groupId = gUserManager.AddGroup(*it);
+    if (groupId == 0)
+      continue;
     glist.insert(groupId);
   }
   user->SetGroups(glist);
