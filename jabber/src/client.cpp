@@ -116,8 +116,11 @@ void Client::handleItemRemoved(const gloox::JID& jid)
   myHandler.onUserRemoved(jid.bare());
 }
 
-void Client::handleItemUpdated(const gloox::JID& /*jid*/)
+void Client::handleItemUpdated(const gloox::JID& jid)
 {
+  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
+
+  myHandler.onUserAdded(jid.bare(), ri->name(), ri->groups());
 }
 
 void Client::handleItemUnsubscribed(const gloox::JID& /*jid*/)
