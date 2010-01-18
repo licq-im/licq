@@ -265,13 +265,10 @@ void UserPages::Settings::load(const LicqUser* user)
   myStatusOccupiedRadio->setEnabled(isIcq);
   myStatusDndRadio->setEnabled(isIcq);
 
-  unsigned long sendFuncs = 0xFFFFFFFF;
-  if (!isIcq)
-  {
-    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
-    if (protocol.get() != NULL)
-      sendFuncs = protocol->getSendFunctions();
-  }
+  unsigned long sendFuncs = 0;
+  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+  if (protocol.get() != NULL)
+    sendFuncs = protocol->getSendFunctions();
 
   myAutoAcceptFileCheck->setEnabled(sendFuncs & PP_SEND_FILE);
   myAutoAcceptChatCheck->setEnabled(sendFuncs & PP_SEND_CHAT);

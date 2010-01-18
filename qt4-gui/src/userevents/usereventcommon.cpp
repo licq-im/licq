@@ -77,14 +77,11 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
     gUserManager.DropUser(user);
   }
 
-  // Find out what's supported for this protocol
-  mySendFuncs = 0xFFFFFFFF;
-  if (myPpid != LICQ_PPID)
-  {
-    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
-    if (protocol.get() != NULL)
-      mySendFuncs = protocol->getSendFunctions();
-  }
+  // Find out what's supported for the protocol
+  mySendFuncs = 0;
+  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+  if (protocol.get() != NULL)
+    mySendFuncs = protocol->getSendFunctions();
 
   myCodec = QTextCodec::codecForLocale();
   myIsOwner = gUserManager.isOwner(myUsers.front());

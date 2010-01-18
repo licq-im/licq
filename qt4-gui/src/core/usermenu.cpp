@@ -272,15 +272,12 @@ void UserMenu::aboutToShowMenu()
     mySendActions[SendKey]->setIcon(IconManager::instance()->getIcon(IconManager::SecureOffIcon));
   }
 
-  unsigned long sendFuncs = 0xFFFFFFFF;
+  unsigned long sendFuncs = 0;
   bool isIcq = myPpid == LICQ_PPID;
 
-  if (!isIcq)
-  {
-    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
-    if (protocol.get() != NULL)
-      sendFuncs = protocol->getSendFunctions();
-  }
+  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+  if (protocol.get() != NULL)
+    sendFuncs = protocol->getSendFunctions();
 
   mySendActions[SendMessage]->setVisible(sendFuncs & PP_SEND_MSG);
   mySendActions[SendUrl]->setVisible(sendFuncs & PP_SEND_URL);

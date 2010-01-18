@@ -768,13 +768,10 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int con
   gUserManager.DropUser(user);
 
   // Find out what's supported for this protocol
-  unsigned long sendFuncs = 0xFFFFFFFF;
-  if (ppid != LICQ_PPID)
-  {
-    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
-    if (protocol.get() != NULL)
-      sendFuncs = protocol->getSendFunctions();
-  }
+  unsigned long sendFuncs = 0;
+  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+  if (protocol.get() != NULL)
+    sendFuncs = protocol->getSendFunctions();
 
   // Check if the protocol for this contact support the function we want to open
   if ((fcn == MessageEvent && !(sendFuncs & PP_SEND_MSG)) ||
@@ -1167,13 +1164,10 @@ void LicqGui::showDefaultEventDialog(const UserId& userId)
     }
 
     // Check which message types are supported for this protocol
-    unsigned long sendFuncs = 0xFFFFFFFF;
-    if (ppid != LICQ_PPID)
-    {
-      Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
-      if (protocol.get() != NULL)
-        sendFuncs = protocol->getSendFunctions();
-    }
+    unsigned long sendFuncs = 0;
+    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+    if (protocol.get() != NULL)
+      sendFuncs = protocol->getSendFunctions();
 
     if (sendFuncs & PP_SEND_URL && (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
     {
