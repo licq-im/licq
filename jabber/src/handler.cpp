@@ -127,9 +127,12 @@ void Handler::onUserAdded(const std::string& id,
                                             USER_GENERAL, userId));
 }
 
-void Handler::onUserRemoved(const std::string& /*item*/)
+void Handler::onUserRemoved(const std::string& item)
 {
   TRACE();
+
+  UserId userId = LicqUser::makeUserId(id, JABBER_PPID);
+  gUserManager.removeUser(userId, false);
 }
 
 void Handler::onUserStatusChange(const std::string& id, const unsigned long newStatus)
