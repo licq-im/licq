@@ -64,6 +64,7 @@ ContactUserData::ContactUserData(const LicqUser* licqUser, QObject* parent)
     myEvents(0),
     myFlash(false),
     mySubGroup(ContactListModel::OfflineSubGroup),
+    myVisibility(false),
     myOnlCounter(0),
     myCarCounter(0),
     myAnimating(false),
