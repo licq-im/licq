@@ -58,7 +58,18 @@ bool LProto_icq_Init()
 
 unsigned long LProto_icq_SendFuncs()
 {
-  return 0;
+  return
+    PP_SEND_MSG |
+    PP_SEND_URL |
+    PP_SEND_FILE |
+    PP_SEND_CHAT |
+    PP_SEND_CONTACT |
+    PP_SEND_AUTH |
+    PP_SEND_AUTHxREQ |
+    PP_SEND_SMS |
+    PP_SEND_SECURE |
+    PP_SEND_DIRECT |
+    PP_SEND_STATUSxMSG;
 }
 
 int LProto_icq_Main(CICQDaemon* daemon)
