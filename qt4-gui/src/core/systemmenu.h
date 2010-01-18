@@ -278,6 +278,7 @@ private slots:
   void toggleInvisibleStatus();
 
 private:
+  QString myId;
   unsigned long myPpid;
 
   QMenu* myStatusMenu;

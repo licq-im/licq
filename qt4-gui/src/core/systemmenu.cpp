@@ -600,6 +600,13 @@ OwnerData::OwnerData(unsigned long ppid, SystemMenu* parent)
   if (protocol.get() != NULL)
     protoName = protocol->getName();
 
+  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
+  if (o != NULL)
+  {
+    myId = o->accountId().c_str();
+    gUserManager.DropOwner(o);
+  }
+
   // System sub menu
   myOwnerAdmMenu = new QMenu(protoName);
   myOwnerAdmInfoAction = myOwnerAdmMenu->addAction(tr("&Info..."), this, SLOT(viewInfo()));
@@ -681,22 +688,19 @@ void OwnerData::updateIcons()
   myOwnerAdmInfoAction->setIcon(iconman->getIcon(IconManager::InfoIcon));
   myOwnerAdmHistoryAction->setIcon(iconman->getIcon(IconManager::HistoryIcon));
 
-  if (myStatusOnlineAction != NULL)
-    myStatusOnlineAction->setIcon(iconman->iconForStatus(ICQ_STATUS_ONLINE, "0", myPpid));
-  if (myStatusAwayAction != NULL)
-    myStatusAwayAction->setIcon(iconman->iconForStatus(ICQ_STATUS_AWAY, "0", myPpid));
-  if (myStatusNotAvailableAction != NULL)
-    myStatusNotAvailableAction->setIcon(iconman->iconForStatus(ICQ_STATUS_NA, "0", myPpid));
-  if (myStatusOccupiedAction != NULL)
-    myStatusOccupiedAction->setIcon(iconman->iconForStatus(ICQ_STATUS_OCCUPIED, "0", myPpid));
-  if (myStatusDoNotDisturbAction != NULL)
-    myStatusDoNotDisturbAction->setIcon(iconman->iconForStatus(ICQ_STATUS_DND, "0", myPpid));
-  if (myStatusFreeForChatAction != NULL)
-    myStatusFreeForChatAction->setIcon(iconman->iconForStatus(ICQ_STATUS_FREEFORCHAT, "0", myPpid));
-  if (myStatusOfflineAction != NULL)
-    myStatusOfflineAction->setIcon(iconman->iconForStatus(ICQ_STATUS_OFFLINE, "0", myPpid));
-  if (myStatusInvisibleAction != NULL)
-    myStatusInvisibleAction->setIcon(iconman->iconForStatus(ICQ_STATUS_FxPRIVATE, "0", myPpid));
+#define SET_ICON(action, status) \
+  if (action != NULL) \
+    action->setIcon(iconman->iconForStatus(status, myId, myPpid))
+
+  SET_ICON(myStatusOnlineAction, ICQ_STATUS_ONLINE);
+  SET_ICON(myStatusAwayAction, ICQ_STATUS_AWAY);
+  SET_ICON(myStatusNotAvailableAction, ICQ_STATUS_NA);
+  SET_ICON(myStatusOccupiedAction, ICQ_STATUS_OCCUPIED);
+  SET_ICON(myStatusDoNotDisturbAction, ICQ_STATUS_DND);
+  SET_ICON(myStatusFreeForChatAction, ICQ_STATUS_FREEFORCHAT);
+  SET_ICON(myStatusOfflineAction, ICQ_STATUS_OFFLINE);
+  SET_ICON(myStatusInvisibleAction, ICQ_STATUS_FxPRIVATE);
+#undef SET_ICON
 }
 
 void OwnerData::aboutToShowStatusMenu()
