@@ -855,9 +855,17 @@ int CUserManager::AddGroup(const string& name, unsigned short icqGroupId)
   SaveGroups();
   UnlockGroupList();
 
+  bool icqOnline = false;
+  LicqOwner* icqOwner = FetchOwner(LICQ_PPID, LOCK_R);
+  if (icqOwner != NULL)
+  {
+    icqOnline = !icqOwner->StatusOffline();
+    DropOwner(icqOwner);
+  }
+
   if (gLicqDaemon != NULL)
   {
-    if (icqGroupId == 0)
+    if (icqGroupId == 0 && icqOnline)
       gLicqDaemon->icqAddGroup(name.c_str());
     else
       gLog.Info(tr("%sAdded group %s (%u) to list from server.\n"),
