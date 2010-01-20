@@ -25,7 +25,11 @@
 
 #include <QWidget>
 
-class LicqUser;
+namespace Licq
+{
+class User;
+}
+
 
 namespace LicqQtGui
 {
@@ -46,9 +50,9 @@ public:
   bool tabIsSelected(QWidget* tab);
   bool tabExists(QWidget* tab);
   void updateConvoLabel(UserEventCommon* tab);
-  void updateTabLabel(const LicqUser* u);
-  void updateTabLabel(UserEventCommon* tab, const LicqUser* u = NULL);
-  void setTyping(const LicqUser* u, int convoId);
+  void updateTabLabel(const Licq::User* u);
+  void updateTabLabel(UserEventCommon* tab, const Licq::User* u = NULL);
+  void setTyping(const Licq::User* u, int convoId);
 
 #ifdef USE_KDE
   virtual void setIcon(const QPixmap& icon);

@@ -50,8 +50,12 @@ set(licq_SRCS
   socket.cpp
   support.c
   translate.cpp
-  user.cpp
   utility.cpp
+
+  contactlist/group.cpp
+  contactlist/owner.cpp
+  contactlist/user.cpp
+  contactlist/usermanager.cpp
 
   plugins/icqprotocolplugin.cpp
   plugins/plugineventhandler.cpp

@@ -7,5 +7,6 @@ set(licq_HEADERS
 
 install(FILES ${licq_HEADERS} DESTINATION "${Licq_INCLUDE_DIR}/licq")
 
+add_subdirectory(contactlist)
 add_subdirectory(exceptions)
 add_subdirectory(thread)

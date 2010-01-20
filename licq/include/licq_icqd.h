@@ -21,7 +21,6 @@ header file containing all the main procedures to interface with the ICQ server 
 class CPacket;
 class CPacketTcp;
 class CLicq;
-class CUserManager;
 class CICQEventTag;
 class CICQColor;
 class TCPSocket;
@@ -967,13 +966,13 @@ protected:
   friend void *OscarServiceSendQueue_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend void *ConnectToServer_tep(void *s);
-  friend class LicqUser;
+  friend class Licq::User;
   friend class CSocketManager;
   friend class COscarService;
   friend class CChatManager;
   friend class CFileTransferManager;
   friend class COnEventManager;
-  friend class CUserManager;
+  friend class Licq::UserManager;
   friend class CLicq;
   friend class CMSN;
   friend class Handler;

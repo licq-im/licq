@@ -11,10 +11,17 @@
 #include <string>
 
 // Forward declarations of commonly used classes
-class LicqUser;
-class LicqOwner;
-class LicqGroup;
+namespace Licq
+{
+class Group;
+class Owner;
+class User;
+}
 
+// Declare old class names for convenience until all code has been update for new names
+typedef Licq::Group LicqGroup;
+typedef Licq::Owner LicqOwner;
+typedef Licq::User LicqUser;
 
 // Define a type for user id so other code doesn't have to hardcode the real type everywhere
 typedef std::string UserId;
@@ -25,6 +32,18 @@ typedef std::string UserId;
 // Get a printable string, for use in log printouts etc
 #define USERID_TOSTR(x) ((x).c_str())
 
+
+// Convenience function to convert protocolId to a string
+// ret must be able to hold at least 5 characters
+inline char* protocolId_toStr(char* ret, unsigned long protocolId)
+{
+  ret[0] = ((protocolId & 0xFF000000) >> 24);
+  ret[1] = ((protocolId & 0x00FF0000) >> 16);
+  ret[2] = ((protocolId & 0x0000FF00) >> 8);
+  ret[3] = ((protocolId & 0x000000FF));
+  ret[4] = '\0';
+  return ret;
+}
 
 // Group types used in contact list
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
@@ -40,12 +59,13 @@ const int GROUP_NEW_USERS       = 5;
 // The amount of registered system groups
 const int NUM_GROUPS_SYSTEM_ALL = 6;
 
+#define LICQ_PPID 0x4C696371  // "Licq"
 
 // Types used for contact list
-typedef std::map<UserId, class LicqUser*> UserMap;
-typedef std::map<unsigned long, class LicqOwner*> OwnerMap;
+typedef std::map<UserId, class Licq::User*> UserMap;
+typedef std::map<unsigned long, class Licq::Owner*> OwnerMap;
 typedef std::set<int> UserGroupList;
-typedef std::map<int, LicqGroup*> GroupMap;
+typedef std::map<int, Licq::Group*> GroupMap;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 
 #endif
