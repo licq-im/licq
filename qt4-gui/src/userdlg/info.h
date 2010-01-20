@@ -41,7 +41,6 @@ class QVBoxLayout;
 
 class ICQUserPhoneBook;
 class ICQUserCategory;
-class LicqUser;
 
 
 namespace LicqQtGui

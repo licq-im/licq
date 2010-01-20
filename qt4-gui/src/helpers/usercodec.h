@@ -28,7 +28,7 @@
 class QTextCodec;
 
 class CChatUser;
-class LicqUser;
+
 
 namespace LicqQtGui
 {

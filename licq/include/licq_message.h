@@ -34,8 +34,6 @@ const unsigned long E_CANCELLED     = 0x00080000;
 const unsigned long E_ENCRYPTED     = 0x00100000;
 const unsigned long E_UNKNOWN       = 0x80000000;
 
-class LicqUser;
-
 
 //=====CUserEvent===============================================================
 class CUserEvent

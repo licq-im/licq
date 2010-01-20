@@ -28,7 +28,6 @@
 #include "contactitem.h"
 #include "contactlist.h"
 
-class LicqGroup;
 
 namespace LicqQtGui
 {

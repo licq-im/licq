@@ -33,7 +33,6 @@
 
 class QImage;
 
-class LicqUser;
 
 namespace LicqQtGui
 {

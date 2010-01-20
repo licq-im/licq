@@ -25,7 +25,6 @@
 
 #include <licq_types.h>
 
-class LicqUser;
 
 namespace LicqQtGui
 {

@@ -28,7 +28,6 @@
 class QCheckBox;
 class QLineEdit;
 
-class LicqUser;
 
 namespace LicqQtGui
 {

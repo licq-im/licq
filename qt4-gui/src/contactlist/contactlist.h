@@ -27,8 +27,6 @@
 #include <licq_icq.h>
 #include <licq_types.h>
 
-class LicqUser;
-
 // Allow UserId to be used in QVariant and QSet
 Q_DECLARE_METATYPE(UserId)
 uint qHash(const UserId& userId);

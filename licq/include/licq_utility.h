@@ -6,8 +6,6 @@
 
 #include "licq_types.h"
 
-class LicqUser;
-
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
 # if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))

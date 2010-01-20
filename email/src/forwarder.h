@@ -5,7 +5,6 @@
 
 class CICQDaemon;
 class TCPSocket;
-class LicqUser;
 class CUserEvent;
 class LicqSignal;
 class LicqEvent;

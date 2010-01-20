@@ -23,7 +23,6 @@
 
 #include "userviewbase.h"
 
-class LicqUser;
 
 namespace LicqQtGui
 {

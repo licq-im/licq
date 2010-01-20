@@ -34,8 +34,6 @@ class QMenu;
 class QToolBar;
 class QVBoxLayout;
 
-class LicqUser;
-
 
 namespace LicqQtGui
 {
