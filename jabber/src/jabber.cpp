@@ -122,6 +122,28 @@ void Jabber::processSignal(LicqProtoSignal* signal)
     case PROTOxADD_USER:
       doAddUser(static_cast<LicqProtoAddUserSignal*>(signal));
       break;
+    case PROTOxREM_USER:
+    case PROTOxRENAME_USER:
+    case PROTOxCHANGE_USER_GROUPS:
+    case PROTOxSENDxTYPING_NOTIFICATION:
+    case PROTOxSENDxGRANTxAUTH:
+    case PROTOxSENDxREFUSExAUTH:
+    case PROTOxUPDATExINFO:
+    case PROTOxREQUESTxPICTURE:
+    case PROTOxBLOCKxUSER:
+    case PROTOxUNBLOCKxUSER:
+    case PROTOxACCEPTxUSER:
+    case PROTOxUNACCEPTxUSER:
+    case PROTOxIGNORExUSER:
+    case PROTOxUNIGNORExUSER:
+    case PROTOxSENDxFILE:
+    case PROTOxSENDxCHAT:
+    case PROTOxCANCELxEVENT:
+    case PROTOxSENDxEVENTxREPLY:
+    case PROTOxOPENEDxWINDOW:
+    case PROTOxCLOSEDxWINDOW:
+    case PROTOxOPENxSECURE:
+    case PROTOxCLOSExSECURE:
     default:
       gLog.Info("%sUnkown signal %u\n", L_JABBERxSTR, signal->type());
       break;
