@@ -127,7 +127,7 @@ void Handler::onUserAdded(const std::string& id,
                                             USER_GENERAL, userId));
 }
 
-void Handler::onUserRemoved(const std::string& item)
+void Handler::onUserRemoved(const std::string& id)
 {
   TRACE();
 
