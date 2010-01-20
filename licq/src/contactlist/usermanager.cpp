@@ -820,6 +820,23 @@ int UserManager::GetGroupFromName(const string& name)
   return id;
 }
 
+std::string UserManager::GetGroupNameFromGroup(int groupId)
+{
+  const GroupMap* groups = LockGroupList(LOCK_R);
+  GroupMap::const_iterator iter;
+  std::string name;
+  for (iter = groups->begin(); iter != groups->end(); ++iter)
+  {
+    iter->second->Lock(LOCK_R);
+    if (iter->second->id() == groupId)
+      name = iter->second->name();
+    iter->second->Unlock();
+  }
+  UnlockGroupList();
+
+  return name;
+}
+
 void UserManager::ModifyGroupID(const string& name, unsigned short icqGroupId)
 {
   int id = GetGroupFromName(name);

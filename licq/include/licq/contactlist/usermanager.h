@@ -446,6 +446,14 @@ public:
    */
   int GetGroupFromName(const std::string& name);
 
+  /**
+   * Get group name from the given group ID
+   *
+   * @param groupId Internal group ID
+   * @return Group name
+   */
+  std::string GetGroupNameFromGroup(int groupId);
+
   unsigned short GenerateSID();
 
   /**
