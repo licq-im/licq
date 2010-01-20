@@ -13,7 +13,6 @@ class CICQColor;
 class CBuffer;
 class INetSocket;
 
-typedef std::list<std::string> StringList;
 typedef std::map<int, std::string> GroupNameMap;
 
 // values of extra info to identify plugin request

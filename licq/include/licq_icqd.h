@@ -60,8 +60,6 @@ class PluginManager;
       }                                                            \
     }
 
-typedef std::list<std::string> StringList;
-
 /* Forward declarations for friend functions */
 void *Ping_tep(void *p);
 void *UpdateUsers_tep(void *p);

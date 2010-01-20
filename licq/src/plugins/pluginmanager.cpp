@@ -316,7 +316,7 @@ getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const
 }
 
 void PluginManager::getAvailableGeneralPlugins(
-    std::list<std::string>& plugins, bool includeLoaded) const
+    StringList& plugins, bool includeLoaded) const
 {
   getAvailablePlugins(plugins, "licq");
 
@@ -335,7 +335,7 @@ void PluginManager::getAvailableGeneralPlugins(
 }
 
 void PluginManager::getAvailableProtocolPlugins(
-    std::list<std::string>& plugins, bool includeLoaded) const
+    StringList& plugins, bool includeLoaded) const
 {
   getAvailablePlugins(plugins, "protocol");
 
@@ -357,7 +357,7 @@ void PluginManager::getAvailableProtocolPlugins(
 }
 
 void PluginManager::getAvailablePlugins(
-    std::list<std::string>& plugins, const std::string& prefix) const
+    StringList& plugins, const std::string& prefix) const
 {
   plugins.clear();
 

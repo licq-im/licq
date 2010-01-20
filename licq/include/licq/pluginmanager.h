@@ -68,7 +68,7 @@ public:
    * @param[out] plugins List to put names of all found plugins into
    * @param includeLoaded False to exclude plugins already loaded
    */
-  virtual void getAvailableGeneralPlugins(std::list<std::string>& plugins,
+  virtual void getAvailableGeneralPlugins(StringList& plugins,
                                           bool includeLoaded = true) const = 0;
 
   /**
@@ -77,7 +77,7 @@ public:
    * @param[out] plugins List to put names of all found plugins into
    * @param includeLoaded False to exclude plugins already loaded
    */
-  virtual void getAvailableProtocolPlugins(std::list<std::string>& plugins,
+  virtual void getAvailableProtocolPlugins(StringList& plugins,
                                            bool includeLoaded = true) const = 0;
 
   /**

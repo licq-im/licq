@@ -75,9 +75,9 @@ public:
   // From Licq::PluginManager
   void getGeneralPluginsList(Licq::GeneralPluginsList& plugins) const;
   void getProtocolPluginsList(Licq::ProtocolPluginsList& plugins) const;
-  void getAvailableGeneralPlugins(std::list<std::string>& plugins,
+  void getAvailableGeneralPlugins(StringList& plugins,
                                   bool includeLoaded = true) const;
-  void getAvailableProtocolPlugins(std::list<std::string>& plugins,
+  void getAvailableProtocolPlugins(StringList& plugins,
                                    bool includeLoaded = true) const;
   Licq::ProtocolPlugin::Ptr getProtocolPlugin(unsigned long protocolId) const;
 
@@ -97,7 +97,7 @@ private:
 
   void startPlugin(Plugin::Ptr plugin);
 
-  void getAvailablePlugins(std::list<std::string>& plugins,
+  void getAvailablePlugins(StringList& plugins,
                            const std::string& prefix) const;
 
   CICQDaemon* myDaemon;

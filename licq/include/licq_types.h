@@ -6,6 +6,7 @@
 #ifndef LICQ_TYPES_H
 #define LICQ_TYPES_H
 
+#include <list>
 #include <map>
 #include <set>
 #include <string>
@@ -17,6 +18,9 @@ class Group;
 class Owner;
 class User;
 }
+
+// Declare a convenient name for the list of strings
+typedef std::list<std::string> StringList;
 
 // Declare old class names for convenience until all code has been update for new names
 typedef Licq::Group LicqGroup;
