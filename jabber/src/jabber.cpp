@@ -119,6 +119,9 @@ void Jabber::processSignal(LicqProtoSignal* signal)
     case PROTOxREQUESTxINFO:
       doGetInfo(static_cast<LicqProtoRequestInfo*>(signal));
       break;
+    case PROTOxADD_USER:
+      doAddUser(static_cast<LicqProtoAddUserSignal*>(signal));
+      break;
     default:
       gLog.Info("%sUnkown signal %u\n", L_JABBERxSTR, signal->type());
       break;
@@ -190,4 +193,10 @@ void Jabber::doGetInfo(LicqProtoRequestInfo* signal)
 {
   assert(myClient != NULL);
   myClient->getVCard(LicqUser::getUserAccountId(signal->userId()));
+}
+
+void Jabber::doAddUser(LicqProtoAddUserSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->addUser(LicqUser::getUserAccountId(signal->userId()));
 }

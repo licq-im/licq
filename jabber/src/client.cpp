@@ -85,6 +85,11 @@ void Client::getVCard(const std::string& user)
   myVCardManager.fetchVCard(gloox::JID(user), this);
 }
 
+void Client::addUser(const std::string& user)
+{
+  myRosterManager->add(gloox::JID(user), user, gloox::StringList());
+}
+
 void Client::onConnect()
 {
   myHandler.onConnect();

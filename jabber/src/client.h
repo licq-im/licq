@@ -54,6 +54,7 @@ public:
   void changeStatus(unsigned long status);
   void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);
+  void addUser(const std::string& user);
 
   // gloox::ConnectionListener
   void onConnect();
