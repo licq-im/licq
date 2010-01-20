@@ -349,7 +349,7 @@ bool CLicqForwarder::ForwardEvent_Email(const LicqUser* u, const CUserEvent* e)
   time_t t = e->Time();
 
   // Fill in the strings
-  if (!u->User())
+  if (!u->isUser())
   {
     sprintf(szTo, "To: %s <%s>", u->GetAlias(), m_szSMTPTo);
     sprintf (szFrom, "From: ICQ System Message <support@icq.com>");

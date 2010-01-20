@@ -952,7 +952,7 @@ unsigned long CICQDaemon::getNextEventId()
 //-----AddUserEvent-----------------------------------------------------------
 bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 {
-  if (u->User())
+  if (u->isUser())
     e->AddToHistory(u, D_RECEIVER);
   // Don't log a user event if this user is on the ignore list
   if (u->IgnoreList() ||

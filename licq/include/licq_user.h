@@ -859,7 +859,7 @@ public:
   // Crypto
   bool Secure() const                           { return m_bSecure; }
 
-  virtual bool User() const                     { return true; }
+  virtual bool isUser() const                   { return true; }
 
 protected:
   void loadUserInfo();
@@ -1057,7 +1057,7 @@ public:
   virtual void SaveLicqInfo();
   virtual void SetStatusOffline();
 
-  virtual bool User() const                     { return false; }
+  virtual bool isUser() const                   { return false; }
 protected:
   char *m_szPassword;
   bool m_bException,

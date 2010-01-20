@@ -1584,7 +1584,7 @@ void CLicqConsole::UserCommand_View(const UserId& userId, char *)
     szTime[16] = '\0';
     winMain->wprintf("%B%s from %b%s%B (%b%s%B) [%b%c%c%c%B]:\n%b%s\n",
                      e->Description(),
-                     u->User() ? u->GetAlias() : "Server",
+                     u->isUser() ? u->GetAlias() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
                      e->Text());

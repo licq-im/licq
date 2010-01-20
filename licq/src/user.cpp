@@ -1739,7 +1739,7 @@ void ICQUser::LoadLicqInfo()
   m_nRegisteredTime = nLast;
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
-  if (User()) // Only allow to keep a modified alias for user uins
+  if (isUser()) // Only allow to keep a modified alias for user uins
     m_fConf.ReadBool("KeepAliasOnUpdate", m_bKeepAliasOnUpdate, false);
   else
     m_bKeepAliasOnUpdate = false;
@@ -2234,7 +2234,7 @@ int ICQUser::Birthday(unsigned short nRange) const
 
   if (birthMonth == 0 || birthDay == 0)
   {
-    if (StatusBirthday() && User()) return 0;
+    if (StatusBirthday() && isUser()) return 0;
     return -1;
   }
 

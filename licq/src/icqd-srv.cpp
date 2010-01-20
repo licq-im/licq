@@ -691,7 +691,7 @@ unsigned long CICQDaemon::protoSetStatus(const UserId& ownerId, unsigned short n
 
   {
     LicqUserWriteGuard u(ownerId);
-    if (!u.isLocked() || u->User())
+    if (!u.isLocked() || u->isUser())
       return 0;
 
     isOffline = u->StatusOffline();
@@ -5575,7 +5575,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetAuthorization( !msg.UnpackChar() );
           unsigned char nStatus = msg.UnpackChar(); // Web aware status
 
-                if (!u->User())
+                if (!u->isUser())
                 {
             static_cast<ICQOwner *>(u)->SetWebAware(nStatus);
             /* this unpack is inside the if statement since it appears only

@@ -971,7 +971,7 @@ int CRMSClient::Process_HISTORY()
       return fflush(fs);
     }
 
-    if (u->User())
+    if (u->isUser())
     {
       userAlias = u->getAlias();
       const LicqOwner* o = gUserManager.FetchOwner(u->ppid(), LOCK_R);
