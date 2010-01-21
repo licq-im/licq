@@ -1135,6 +1135,16 @@ void UserManager::setUserInGroup(const UserId& userId,
 
   // Update user object
   u->SetInGroup(groupType, groupId, inGroup);
+  StringList groupNames;
+  std::string groupName;
+  UserGroupList groups = u->GetGroups();
+  UserGroupList::const_iterator it;
+  for (it = groups.begin(); it != groups.end(); it++)
+  {
+    groupName = GetGroupNameFromGroup(*it);
+    if (!groupName.empty())
+      groupNames.push_back(groupName);
+  }
   string accountId = u->accountId();
   unsigned long ppid = u->ppid();
   gUserManager.DropUser(u);
@@ -1155,11 +1165,15 @@ void UserManager::setUserInGroup(const UserId& userId,
     }
     else
     {
-      // Server group currently only supported for ICQ protocol
-      // Server group can only be changed, not removed
-      if (ppid == LICQ_PPID && inGroup)
-        gLicqDaemon->icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
-            ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
+      if (ppid == LICQ_PPID)
+      {
+        if (inGroup) // Server group can only be changed, not removed
+          gLicqDaemon->icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
+              ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
+      }
+      else
+        gLicqDaemon->PushProtoSignal(
+            new LicqProtoChangeUserGroupsSignal(userId, groupNames), ppid);
     }
   }
 
