@@ -97,6 +97,11 @@ void Client::changeUserGroups(const std::string& user, const gloox::StringList& 
   myRosterManager->synchronize();
 }
 
+void Client::removeUser(const std::string& user)
+{
+  myRosterManager->remove(gloox::JID(user));
+}
+
 void Client::onConnect()
 {
   myHandler.onConnect();

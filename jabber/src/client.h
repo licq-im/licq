@@ -56,6 +56,7 @@ public:
   void getVCard(const std::string& user);
   void addUser(const std::string& user);
   void changeUserGroups(const std::string& user, const gloox::StringList& groups);
+  void removeUser(const std::string& user);
 
   // gloox::ConnectionListener
   void onConnect();

@@ -126,6 +126,8 @@ void Jabber::processSignal(LicqProtoSignal* signal)
       doChangeUserGroups(static_cast<LicqProtoChangeUserGroupsSignal*>(signal));
       break;
     case PROTOxREM_USER:
+      doRemoveUser(static_cast<LicqProtoRemoveUserSignal*>(signal));
+      break;
     case PROTOxRENAME_USER:
     case PROTOxSENDxTYPING_NOTIFICATION:
     case PROTOxSENDxGRANTxAUTH:
@@ -230,4 +232,10 @@ void Jabber::doChangeUserGroups(LicqProtoChangeUserGroupsSignal* signal)
   assert(myClient != NULL);
   myClient->changeUserGroups(LicqUser::getUserAccountId(signal->userId()),
       signal->groups());
+}
+
+void Jabber::doRemoveUser(LicqProtoRemoveUserSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->removeUser(LicqUser::getUserAccountId(signal->userId()));
 }
