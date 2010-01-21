@@ -129,6 +129,8 @@ void Jabber::processSignal(LicqProtoSignal* signal)
       doRemoveUser(static_cast<LicqProtoRemoveUserSignal*>(signal));
       break;
     case PROTOxRENAME_USER:
+      doRenameUser(static_cast<LicqProtoRenameUserSignal*>(signal));
+      break;
     case PROTOxSENDxTYPING_NOTIFICATION:
     case PROTOxSENDxGRANTxAUTH:
     case PROTOxSENDxREFUSExAUTH:
@@ -238,4 +240,16 @@ void Jabber::doRemoveUser(LicqProtoRemoveUserSignal* signal)
 {
   assert(myClient != NULL);
   myClient->removeUser(LicqUser::getUserAccountId(signal->userId()));
+}
+
+void Jabber::doRenameUser(LicqProtoRenameUserSignal* signal)
+{
+  assert(myClient != NULL);
+  LicqUser* u = gUserManager.fetchUser(signal->userId());
+  if (u == NULL)
+    return;
+  std::string newName = u->GetAlias();
+  gUserManager.DropUser(u);
+
+  myClient->renameUser(LicqUser::getUserAccountId(signal->userId()), newName);
 }

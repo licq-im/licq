@@ -102,6 +102,13 @@ void Client::removeUser(const std::string& user)
   myRosterManager->remove(gloox::JID(user));
 }
 
+void Client::renameUser(const std::string& user, const std::string& newName)
+{
+  gloox::RosterItem* item = myRosterManager->getRosterItem(gloox::JID(user));
+  item->setName(newName);
+  myRosterManager->synchronize();
+}
+
 void Client::onConnect()
 {
   myHandler.onConnect();

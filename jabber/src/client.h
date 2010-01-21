@@ -57,6 +57,7 @@ public:
   void addUser(const std::string& user);
   void changeUserGroups(const std::string& user, const gloox::StringList& groups);
   void removeUser(const std::string& user);
+  void renameUser(const std::string& user, const std::string& newName);
 
   // gloox::ConnectionListener
   void onConnect();
