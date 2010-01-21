@@ -55,6 +55,7 @@ public:
   void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);
   void addUser(const std::string& user);
+  void changeUserGroups(const std::string& user, const gloox::StringList& groups);
 
   // gloox::ConnectionListener
   void onConnect();

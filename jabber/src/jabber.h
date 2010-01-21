@@ -26,6 +26,7 @@ class Handler;
 
 class LicqProtoAddUserSignal;
 class LicqProtoChangeStatusSignal;
+class LicqProtoChangeUserGroupsSignal;
 class LicqProtoLogonSignal;
 class LicqProtoRequestInfo;
 class LicqProtoSendMessageSignal;
@@ -52,6 +53,7 @@ private:
   void doSendMessage(LicqProtoSendMessageSignal* signal);
   void doGetInfo(LicqProtoRequestInfo* signal);
   void doAddUser(LicqProtoAddUserSignal* signal);
+  void doChangeUserGroups(LicqProtoChangeUserGroupsSignal* signal);
 
   CICQDaemon* myDaemon;
   Handler* myHandler;
