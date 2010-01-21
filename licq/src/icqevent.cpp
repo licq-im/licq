@@ -281,6 +281,14 @@ LicqProtoRenameUserSignal::LicqProtoRenameUserSignal(const UserId& userId)
   // Empty
 }
 
+LicqProtoChangeUserGroupsSignal::LicqProtoChangeUserGroupsSignal(const UserId& userId,
+    const StringList& groups)
+  : LicqProtoSignal(PROTOxCHANGE_USER_GROUPS, userId),
+  myGroups(groups)
+{
+  // Empty
+}
+
 LicqProtoSendMessageSignal::LicqProtoSendMessageSignal(unsigned long eventId,
     const UserId& userId, const string& message, unsigned long convoId)
   : LicqProtoSignal(PROTOxSENDxMSG, userId, convoId),

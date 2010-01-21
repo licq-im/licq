@@ -494,6 +494,8 @@ enum SIGNAL_TYPE
   PROTOxREM_USER,
   //! The user requested this protocol to rename the user on the server's list.
   PROTOxRENAME_USER,
+  //! The user requested this protocol to change the groups the user is in.
+  PROTOxCHANGE_USER_GROUPS,
   //! The user requested this protocol to send a message.
   PROTOxSENDxMSG,
   //! The user has started typing and wants to let the remote user know about
@@ -623,6 +625,18 @@ class LicqProtoRenameUserSignal : public LicqProtoSignal
 {
 public:
   LicqProtoRenameUserSignal(const UserId& userId);
+};
+
+class LicqProtoChangeUserGroupsSignal : public LicqProtoSignal
+{
+public:
+  LicqProtoChangeUserGroupsSignal(const UserId& userId, const StringList& groups);
+
+  //! Names of the groups the user should be in.
+  StringList groups() const { return myGroups; }
+
+private:
+  StringList myGroups;
 };
 
 /*! \brief Signal to a protocol plugin to send a messasge
