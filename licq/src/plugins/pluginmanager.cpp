@@ -38,6 +38,7 @@ pthread_mutex_t LP_IdMutex = PTHREAD_MUTEX_INITIALIZER;
 std::list<unsigned short> LP_Ids;
 
 using Licq::MutexLocker;
+using Licq::StringList;
 using namespace LicqDaemon;
 
 PluginManager::PluginManager() :

@@ -630,13 +630,13 @@ public:
 class LicqProtoChangeUserGroupsSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoChangeUserGroupsSignal(const UserId& userId, const StringList& groups);
+  LicqProtoChangeUserGroupsSignal(const UserId& userId, const Licq::StringList& groups);
 
   //! Names of the groups the user should be in.
-  StringList groups() const { return myGroups; }
+  Licq::StringList groups() const { return myGroups; }
 
 private:
-  StringList myGroups;
+  Licq::StringList myGroups;
 };
 
 /*! \brief Signal to a protocol plugin to send a messasge

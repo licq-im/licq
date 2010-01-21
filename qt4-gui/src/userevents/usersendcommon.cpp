@@ -87,6 +87,7 @@
 #include "usersendurlevent.h"
 
 using namespace std;
+using Licq::StringList;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendCommon */
 

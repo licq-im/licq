@@ -38,6 +38,7 @@
 #include "licq/version.h"
 
 using namespace std;
+using Licq::StringList;
 
 unsigned short ReversePort(unsigned short p)
 {

@@ -49,6 +49,7 @@
 
 #include "views/mmuserview.h"
 
+using Licq::StringList;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMSendDlg */
 

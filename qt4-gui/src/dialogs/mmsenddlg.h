@@ -46,7 +46,7 @@ public:
 
   int go_message(const QString& msg);
   int go_url(const QString& url, const QString& desc);
-  int go_contact(StringList& users);
+  int go_contact(Licq::StringList& users);
 
 signals:
   /**
@@ -60,7 +60,7 @@ signals:
 
 private:
   QString s1, s2;
-  StringList* myUsers;
+  Licq::StringList* myUsers;
 
   unsigned long m_nEventType;
   QGroupBox* grpSending;

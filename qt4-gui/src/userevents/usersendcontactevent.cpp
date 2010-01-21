@@ -43,6 +43,7 @@
 
 #include "usereventtabdlg.h"
 
+using Licq::StringList;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendContactEvent */
 

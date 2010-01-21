@@ -42,6 +42,7 @@
 #include "licq/version.h"
 
 using namespace std;
+using Licq::StringList;
 
 void CICQDaemon::protoAddUser(const string& accountId, unsigned long ppid, int groupId)
 {

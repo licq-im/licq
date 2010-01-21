@@ -11,16 +11,29 @@
 #include <set>
 #include <string>
 
-// Forward declarations of commonly used classes
 namespace Licq
 {
+// Forward declarations of commonly used classes
 class Group;
 class Owner;
 class User;
-}
 
 // Declare a convenient name for the list of strings
 typedef std::list<std::string> StringList;
+
+// Convenience function to convert protocolId to a string
+// ret must be able to hold at least 5 characters
+inline char* protocolId_toStr(char* ret, unsigned long protocolId)
+{
+  ret[0] = ((protocolId & 0xFF000000) >> 24);
+  ret[1] = ((protocolId & 0x00FF0000) >> 16);
+  ret[2] = ((protocolId & 0x0000FF00) >> 8);
+  ret[3] = ((protocolId & 0x000000FF));
+  ret[4] = '\0';
+  return ret;
+}
+
+}
 
 // Declare old class names for convenience until all code has been update for new names
 typedef Licq::Group LicqGroup;
@@ -35,19 +48,6 @@ typedef std::string UserId;
 #define USERID_NONE ("")
 // Get a printable string, for use in log printouts etc
 #define USERID_TOSTR(x) ((x).c_str())
-
-
-// Convenience function to convert protocolId to a string
-// ret must be able to hold at least 5 characters
-inline char* protocolId_toStr(char* ret, unsigned long protocolId)
-{
-  ret[0] = ((protocolId & 0xFF000000) >> 24);
-  ret[1] = ((protocolId & 0x00FF0000) >> 16);
-  ret[2] = ((protocolId & 0x0000FF00) >> 8);
-  ret[3] = ((protocolId & 0x000000FF));
-  ret[4] = '\0';
-  return ret;
-}
 
 // Group types used in contact list
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };

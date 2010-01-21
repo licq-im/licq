@@ -16,6 +16,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
 #include "licq_onevent.h"
+#include "licq_types.h"
 #include "licq_user.h"
 
 class CPacket;
@@ -420,7 +421,7 @@ public:
   // ICQ functions still public as they don't have any general proto functions
   //   to call them yet and needs to be callable from plugins for now
 
-  unsigned long icqSendContactList(const char *szId, const StringList& users,
+  unsigned long icqSendContactList(const char *szId, const Licq::StringList& users,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
 

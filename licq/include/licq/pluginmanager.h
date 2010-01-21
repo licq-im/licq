@@ -26,6 +26,8 @@
 #include <list>
 #include <string>
 
+#include "../licq_types.h"
+
 namespace Licq
 {
 

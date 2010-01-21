@@ -37,6 +37,7 @@
 #include "licq/version.h"
 
 using namespace std;
+using Licq::StringList;
 
 //-----ICQ::sendMessage--------------------------------------------------------
 unsigned long CICQDaemon::sendMessage(const UserId& userId, const string& message,

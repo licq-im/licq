@@ -16,6 +16,7 @@
 #include "licq_user.h"
 
 using namespace std;
+using Licq::StringList;
 
 //-----CSearchAck------------------------------------------------------------
 CSearchAck::CSearchAck(const UserId& userId)

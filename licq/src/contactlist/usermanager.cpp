@@ -1191,5 +1191,5 @@ void UserManager::SetDefaultUserEncoding(const char* defaultEncoding)
 char* PPIDSTRING(unsigned long ppid)
 {
   char* ret = new char[5];
-  return protocolId_toStr(ret, ppid);
+  return Licq::protocolId_toStr(ret, ppid);
 }
