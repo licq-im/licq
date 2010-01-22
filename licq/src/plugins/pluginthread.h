@@ -33,6 +33,12 @@ namespace LicqDaemon
 
 class Plugin;
 
+/**
+ * The PluginThread class starts a new thread and loads, initializes and starts
+ * the plugin in that thread. By loading the plugin in the same thread as it is
+ * later run in we hope to avoid problems with libraries' initialization
+ * routines not being run in the "main" thread.
+ */
 class PluginThread : private boost::noncopyable
 {
 public:
@@ -43,7 +49,13 @@ public:
   PluginThread();
   ~PluginThread();
 
+  /**
+   * Wait for the thread to exit.
+   * @return The thread's exit value. If the thread has been canceled, the
+   * return value is PTHREAD_CANCELED.
+   */
   void* join();
+
   void cancel();
   bool isThread(const pthread_t& thread) const;
 
