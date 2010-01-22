@@ -30,6 +30,6 @@ TEST(Condition, waitWithTimeout)
 
   mutex.lock();
   EXPECT_FALSE(condition.wait(mutex, 0));
-  EXPECT_FALSE(condition.wait(mutex, 999));
+  EXPECT_FALSE(condition.wait(mutex, 200));
   mutex.unlock();
 }
