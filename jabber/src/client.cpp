@@ -289,9 +289,10 @@ void Client::handleVCard(const gloox::JID& jid, gloox::VCard* vcard)
 void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
                                const gloox::JID& jid, gloox::StanzaError error)
 {
-  (void)context;
-  (void)jid;
-  (void)error;
+  if (error != gloox::StanzaErrorUndefined)
+    gLog.Warn("%s%s VCard for user %s failed with error %u\n", L_JABBERxSTR,
+        context == gloox::VCardHandler::StoreVCard ? "Storing" : "Fetching",
+        jid.bare().c_str(), error);
 }
 
 unsigned long Client::presenceToStatus(gloox::Presence presence)
