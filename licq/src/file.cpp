@@ -597,26 +597,30 @@ bool CIniFile::SetSection(const char *_szSection)
   }
 
   // Loop until we hit the end of the file or the start of the section
-  char *sz, szLineBuffer[MAX_LINE_LEN], szSectionBuffer[MAX_SECTIONxNAME_LEN];
-  do
+  char* sz = NULL, szLineBuffer[MAX_LINE_LEN], szSectionBuffer[MAX_SECTIONxNAME_LEN];
+  while (ReadLine(szLineBuffer, MAX_LINE_LEN) != NULL)
   {
-    sz = GetSectionFromLine(szSectionBuffer,
-                            ReadLine(szLineBuffer, MAX_LINE_LEN));
-    if (sz == NULL)
+    if ((sz = GetSectionFromLine(szSectionBuffer, szLineBuffer)) != NULL &&
+        strcmp(sz, _szSection) == 0)
+      break;
+    else
+      sz = NULL;
+  }
+
+  if (sz == NULL)
+  {
+    if (GetFlag(INI_FxALLOWxCREATE))
     {
-      if (GetFlag(INI_FxALLOWxCREATE))
-      {
-        CreateSection(_szSection);
-        return (SetSection(_szSection));
-      }
-      else
-      {
+      CreateSection(_szSection);
+      return SetSection(_szSection);
+    }
+    else
+    {
+      if (GetFlag(INI_FxWARN))
         Warn(INI_ExNOSECTION, _szSection);
-        return(false);
-      }
+      return false; 
     }
   }
-  while (strcmp(sz, _szSection) != 0);
 
   // If we get here it means we found the section
 
