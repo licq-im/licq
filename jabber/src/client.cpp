@@ -48,6 +48,7 @@ Client::Client(Handler& handler, const std::string& username,
 
 Client::~Client()
 {
+  myVCardManager.cancelVCardOperations(this);
   myClient.disconnect();
 }
 
