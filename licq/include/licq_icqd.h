@@ -121,6 +121,7 @@ typedef std::vector<CDaemonStats> DaemonStatsList;
 // We will save the statistics to disk
 #define SAVE_STATS
 
+#define KEEP_AUTORESPONSE "__unset__"
 
 //====Conversations=============================================================
 class CConversation
@@ -247,7 +248,7 @@ public:
    * @return Event id
    */
   unsigned long protoSetStatus(const UserId& ownerId, unsigned short newStatus,
-      const std::string& message = std::string("__unset__"));
+      const std::string& message = KEEP_AUTORESPONSE);
 
   /**
    * Notify a user that we've started/stopped typing
