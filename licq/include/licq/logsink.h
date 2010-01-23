@@ -22,6 +22,7 @@
 
 #include "log.h"
 
+#include <boost/shared_ptr.hpp>
 #include <ctime>
 #include <iosfwd>
 #include <string>
@@ -33,6 +34,8 @@ namespace Licq
 class LogSink
 {
 public:
+  typedef boost::shared_ptr<LogSink> Ptr;
+
   struct Message
   {
     Log::Level level;
