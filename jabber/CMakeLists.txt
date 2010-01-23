@@ -15,7 +15,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Find gloox
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(gloox REQUIRED gloox<=0.9.9.99)
+pkg_check_modules(gloox REQUIRED gloox>=1.0)
 add_definitions(${gloox_CFLAGS})
 include_directories(${gloox_INCLUDE_DIRS})
 link_directories(${gloox_LIBRARY_DIRS})

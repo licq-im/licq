@@ -23,6 +23,7 @@
 
 #include <gloox/connectiontcpclient.h>
 #include <gloox/disco.h>
+#include <gloox/message.h>
 #include <gloox/rostermanager.h>
 
 #include <licq_icq.h>
@@ -77,8 +78,8 @@ void Client::changeStatus(unsigned long status)
 
 void Client::sendMessage(const std::string& user, const std::string& message)
 {
-  gloox::Stanza* stanza = gloox::Stanza::createMessageStanza(user, message);
-  myClient.send(stanza);
+  gloox::Message msg(gloox::Message::Chat, user, message);
+  myClient.send(msg);
 }
 
 void Client::getVCard(const std::string& user)
@@ -168,7 +169,7 @@ void Client::handleRoster(const gloox::Roster& roster)
 
 void Client::handleRosterPresence(const gloox::RosterItem& item,
                                   const std::string& /*resource*/,
-                                  gloox::Presence presence,
+                                  gloox::Presence::PresenceType presence,
                                   const std::string& /*msg*/)
 {
   myHandler.onUserStatusChange(gloox::JID(item.jid()).bare(),
@@ -177,7 +178,7 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
                                 const std::string& resource,
-                                gloox::Presence presence,
+                                gloox::Presence::PresenceType presence,
                                 const std::string& /*msg*/)
 {
   if (resource == myClient.resource())
@@ -196,19 +197,19 @@ bool Client::handleUnsubscriptionRequest(const gloox::JID& /*jid*/,
   return false;
 }
 
-void Client::handleNonrosterPresence(gloox::Stanza* /*stanza*/)
+void Client::handleNonrosterPresence(const gloox::Presence& /*presence*/)
 {
 }
 
-void Client::handleRosterError(gloox::Stanza* /*stanza*/)
+void Client::handleRosterError(const gloox::IQ& /*iq*/)
 {
 }
 
-void Client::handleMessage(gloox::Stanza* stanza,
+void Client::handleMessage(const gloox::Message& msg,
                            gloox::MessageSession* /*session*/)
 {
-  if (!stanza->body().empty())
-    myHandler.onMessage(stanza->from().bare(), stanza->body());
+  if (!msg.body().empty())
+    myHandler.onMessage(msg.from().bare(), msg.body());
 }
 
 void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
@@ -250,6 +251,15 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
     case gloox::LogAreaClassS5BManager:
       areaStr = "SOCKS5";
       break;
+    case gloox::LogAreaClassSOCKS5Bytestream:
+      areaStr = "SOCKS5 bytestream";
+      break;
+    case gloox::LogAreaClassConnectionBOSH:
+      areaStr = "BOSH";
+      break;
+    case gloox::LogAreaClassConnectionTLS:
+      areaStr = "TLS";
+      break;
     case gloox::LogAreaXmlIncoming:
       areaStr = "XML in";
       break;
@@ -280,7 +290,7 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
   }
 }
 
-void Client::handleVCard(const gloox::JID& jid, gloox::VCard* vcard)
+void Client::handleVCard(const gloox::JID& jid, const gloox::VCard* vcard)
 {
   (void)jid;
   delete vcard;
@@ -295,31 +305,33 @@ void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
         jid.bare().c_str(), error);
 }
 
-unsigned long Client::presenceToStatus(gloox::Presence presence)
+unsigned long Client::presenceToStatus(gloox::Presence::PresenceType presence)
 {
   unsigned long status;
 
   switch (presence)
   {
-    case gloox::PresenceUnknown:
+    case gloox::Presence::Invalid:
+    case gloox::Presence::Probe:
+    case gloox::Presence::Error:
       status = ICQ_STATUS_OFFLINE;
       break;
-    case gloox::PresenceAvailable:
+    case gloox::Presence::Available:
       status = ICQ_STATUS_ONLINE;
       break;
-    case gloox::PresenceChat:
+    case gloox::Presence::Chat:
       status = ICQ_STATUS_FREEFORCHAT;
       break;
-    case gloox::PresenceAway:
+    case gloox::Presence::Away:
       status = ICQ_STATUS_AWAY;
       break;
-    case gloox::PresenceDnd:
+    case gloox::Presence::DND:
       status = ICQ_STATUS_DND;
       break;
-    case gloox::PresenceXa:
+    case gloox::Presence::XA:
       status = ICQ_STATUS_NA;
       break;
-    case gloox::PresenceUnavailable:
+    case gloox::Presence::Unavailable:
       status = ICQ_STATUS_OFFLINE;
       break;
   }
@@ -327,33 +339,33 @@ unsigned long Client::presenceToStatus(gloox::Presence presence)
   return status;
 }
 
-gloox::Presence Client::statusToPresence(unsigned long status)
+gloox::Presence::PresenceType Client::statusToPresence(unsigned long status)
 {
-  gloox::Presence presence;
+  gloox::Presence::PresenceType presence;
 
   switch (status & ~ICQ_STATUS_FxFLAGS)
   {
     case ICQ_STATUS_ONLINE:
-      presence = gloox::PresenceAvailable;
+      presence = gloox::Presence::Available;
       break;
     case ICQ_STATUS_AWAY:
-      presence = gloox::PresenceAway;
+      presence = gloox::Presence::Away;
       break;
     case ICQ_STATUS_DND:
     case ICQ_STATUS_OCCUPIED:
-      presence = gloox::PresenceDnd;
+      presence = gloox::Presence::DND;
       break;
     case ICQ_STATUS_NA:
-      presence = gloox::PresenceXa;
+      presence = gloox::Presence::XA;
       break;
     case ICQ_STATUS_FREEFORCHAT:
-      presence = gloox::PresenceChat;
+      presence = gloox::Presence::Chat;
       break;
     case ICQ_STATUS_OFFLINE:
-      presence = gloox::PresenceUnavailable;
+      presence = gloox::Presence::Unavailable;
       break;
     default:
-      presence = gloox::PresenceUnknown;
+      presence = gloox::Presence::Invalid;
   }
 
   return presence;

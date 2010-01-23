@@ -73,28 +73,28 @@ public:
   void handleRoster(const gloox::Roster& roster);
   void handleRosterPresence(const gloox::RosterItem& item,
                             const std::string& resource,
-                            gloox::Presence presence,
+                            gloox::Presence::PresenceType presence,
                             const std::string& msg);
   void handleSelfPresence(const gloox::RosterItem& item,
                           const std::string& resource,
-                          gloox::Presence presence,
+                          gloox::Presence::PresenceType presence,
                           const std::string& msg);
   bool handleSubscriptionRequest(const gloox::JID& jid,
                                  const std::string& msg);
   bool handleUnsubscriptionRequest(const gloox::JID& jid,
                                    const std::string& msg);
-  void handleNonrosterPresence(gloox::Stanza* stanza);
-  void handleRosterError(gloox::Stanza* stanza);
+  void handleNonrosterPresence(const gloox::Presence& presence);
+  void handleRosterError(const gloox::IQ& iq);
 
   // gloox::MessageHandler
-  void handleMessage(gloox::Stanza* stanza, gloox::MessageSession* session);
+  void handleMessage(const gloox::Message& msg, gloox::MessageSession* session);
 
   // gloox::LogHandler
   void handleLog(gloox::LogLevel level, gloox::LogArea area,
                  const std::string& message);
 
   // gloox::VCardHandler
-  void handleVCard(const gloox::JID& jid, gloox::VCard* vcard);
+  void handleVCard(const gloox::JID& jid, const gloox::VCard* vcard);
   void handleVCardResult(gloox::VCardHandler::VCardContext context,
                          const gloox::JID& jid,
                          gloox::StanzaError error);
@@ -106,8 +106,8 @@ private:
   gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;
 
-  unsigned long presenceToStatus(gloox::Presence presence);
-  gloox::Presence statusToPresence(unsigned long status);
+  unsigned long presenceToStatus(gloox::Presence::PresenceType presence);
+  gloox::Presence::PresenceType statusToPresence(unsigned long status);
 };
 
 #endif
