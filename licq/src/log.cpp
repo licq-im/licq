@@ -104,7 +104,7 @@ void CLogService_StdErr::LogMessage(const char *_szPrefix,
                                     const unsigned short _nLogType)
 {
   if (m_bUseColor)
-    fprintf(stderr, "%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType == L_MESSAGE ? L_INFO : _nLogType]);
+    fprintf(stderr, "%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType]);
   else
     fprintf(stderr, "%s", _szPrefix);
   fprintf(stderr, "%s", _szMessage);
@@ -396,22 +396,6 @@ void CLogServer::Packet(unsigned short _nServiceTypes, const char *_szFormat, ..
    va_list argp;
    va_start(argp, _szFormat);
    Log(_nServiceTypes, L_PACKET, _szFormat, argp);
-   va_end(argp);
-}
-
-
-void CLogServer::Message(const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(L_MESSAGE, _szFormat, argp);
-   va_end(argp);
-}
-void CLogServer::Message(unsigned short _nServiceTypes, const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(_nServiceTypes, L_MESSAGE, _szFormat, argp);
    va_end(argp);
 }
 

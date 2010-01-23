@@ -111,9 +111,6 @@ void LogWindow::log(int fd)
 
   if (nNextLogType == L_ERROR)
     CriticalUser(NULL, str);
-
-  else if (nNextLogType == L_MESSAGE)
-    InformUser(NULL, str);
 }
 
 void LogWindow::save()

@@ -19,10 +19,8 @@ const unsigned short L_ERROR    = 0x0004;
 const unsigned short L_WARN     = 0x0008;
 // Packet: packet dumps
 const unsigned short L_PACKET   = 0x0010;
-// Message: popup messages from plugins to be displayed to the user
-const unsigned short L_MESSAGE  = 0x8000;
 
-const unsigned short L_MOST     = L_INFO | L_UNKNOWN | L_ERROR | L_WARN | L_MESSAGE;
+const unsigned short L_MOST     = L_INFO | L_UNKNOWN | L_ERROR | L_WARN;
 const unsigned short L_ALL      = L_MOST | L_PACKET;
 const unsigned short L_NONE     = 0;
 
@@ -197,16 +195,6 @@ public:
 #endif
 ;
   void Packet(unsigned short _nServiceTypes, const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 3, 4)))
-#endif
-;
-  void Message(const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-  void Message(unsigned short _nServiceTypes, const char *_szFormat, ...)
 #ifdef __GNUC__
     __attribute__ ((format (printf, 3, 4)))
 #endif
