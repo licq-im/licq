@@ -329,27 +329,12 @@ void CLogServer::Info(const char *_szFormat, ...)
   Log(L_INFO, _szFormat, argp);
   va_end(argp);
 }
-void CLogServer::Info(unsigned short _nServiceTypes, const char *_szFormat, ...)
-{
-  va_list argp;
-  va_start(argp, _szFormat);
-  Log(_nServiceTypes, L_INFO, _szFormat, argp);
-  va_end(argp);
-}
-
 
 void CLogServer::Unknown(const char *_szFormat, ...)
 {
    va_list argp;
    va_start(argp, _szFormat);
    Log(L_UNKNOWN, _szFormat, argp);
-   va_end(argp);
-}
-void CLogServer::Unknown(unsigned short _nServiceTypes, const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(_nServiceTypes, L_UNKNOWN, _szFormat, argp);
    va_end(argp);
 }
 
@@ -360,13 +345,6 @@ void CLogServer::Error(const char *_szFormat, ...)
    Log(L_ERROR, _szFormat, argp);
    va_end(argp);
 }
-void CLogServer::Error(unsigned short _nServiceTypes, const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(_nServiceTypes, L_ERROR, _szFormat, argp);
-   va_end(argp);
-}
 
 void CLogServer::Warn(const char *_szFormat, ...)
 {
@@ -375,14 +353,6 @@ void CLogServer::Warn(const char *_szFormat, ...)
    Log(L_WARN, _szFormat, argp);
    va_end(argp);
 }
-void CLogServer::Warn(unsigned short _nServiceTypes, const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(_nServiceTypes, L_WARN, _szFormat, argp);
-   va_end(argp);
-}
-
 
 void CLogServer::Packet(const char *_szFormat, ...)
 {
@@ -391,21 +361,8 @@ void CLogServer::Packet(const char *_szFormat, ...)
    Log(L_PACKET, _szFormat, argp);
    va_end(argp);
 }
-void CLogServer::Packet(unsigned short _nServiceTypes, const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(_nServiceTypes, L_PACKET, _szFormat, argp);
-   va_end(argp);
-}
-
 
 void CLogServer::Log(const unsigned short _nLogType, const char *_szFormat, va_list argp)
-{
-  CLogServer::Log(S_ALL, _nLogType, _szFormat, argp);
-}
-
-void CLogServer::Log(const unsigned short _nServiceTypes, const unsigned short _nLogType, const char *_szFormat, va_list argp)
 {
   static char szTime[32];
   static struct tm stm;
@@ -426,7 +383,7 @@ void CLogServer::Log(const unsigned short _nServiceTypes, const unsigned short _
   vector<CLogService *>::iterator iter;
   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
   {
-    if ((*iter)->LogType(_nLogType) && ((*iter)->ServiceType() & _nServiceTypes))
+    if ((*iter)->LogType(_nLogType))
         (*iter)->LogMessage(szTime, szMsgMax, _nLogType);
   }  
   pthread_mutex_unlock(&mutex);

@@ -154,19 +154,9 @@ public:
     __attribute__ ((format (printf, 2, 3)))
 #endif
 ;
-  void Info(unsigned short _nServiceTypes, const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 3, 4)))
-#endif
-;
   void Unknown(const char *, ...)
 #ifdef __GNUC__
     __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-  void Unknown(unsigned short _nServiceTypes, const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 3, 4)))
 #endif
 ;
   void Error(const char *_szFormat, ...)
@@ -174,29 +164,14 @@ public:
     __attribute__ ((format (printf, 2, 3)))
 #endif
 ;
-  void Error(unsigned short _nServiceTypes, const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 3, 4)))
-#endif
-;
   void Warn(const char *_szFormat, ...)
 #ifdef __GNUC__
     __attribute__ ((format (printf, 2, 3)))
 #endif
 ;
-  void Warn(unsigned short _nServiceTypes, const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 3, 4)))
-#endif
-;
   void Packet(const char *_szFormat, ...)
 #ifdef __GNUC__
     __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-  void Packet(unsigned short _nServiceTypes, const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 3, 4)))
 #endif
 ;
 
@@ -206,11 +181,6 @@ protected:
   void Log(const unsigned short _nLogType, const char *_szFormat, va_list argp)
 #ifdef __GNUC__
     __attribute__ ((format (printf, 3, 0)))
-#endif
-;
-  void Log(const unsigned short _nServiceTypes, const unsigned short _nLogType, const char *_szFormat, va_list argp)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 4, 0)))
 #endif
 ;
 };
