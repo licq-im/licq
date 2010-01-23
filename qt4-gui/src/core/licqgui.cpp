@@ -37,6 +37,7 @@
 #include <QMimeData>
 #include <QSessionManager>
 #include <QStyle>
+#include <QTextCodec>
 #include <QTranslator>
 #include <QUrl>
 
@@ -98,6 +99,7 @@ extern "C"
 #endif
 
 #include "helpers/support.h"
+#include "helpers/usercodec.h"
 
 #include "userdlg/userdlg.h"
 
@@ -601,7 +603,7 @@ void LicqGui::grabKey(const QString& key)
 }
 #endif /* defined(Q_WS_X11) */
 
-void LicqGui::changeStatus(unsigned long status, bool invisible)
+void LicqGui::changeStatus(unsigned long status, bool invisible, const QString& autoMessage)
 {
   // Get a list of owners first since we can't call changeStatus with list locked
   list<UserId> owners;
@@ -620,11 +622,11 @@ void LicqGui::changeStatus(unsigned long status, bool invisible)
     if (status != ICQ_STATUS_FxPRIVATE && myMainWindow->systemMenu()->getInvisibleStatus(userId))
       protoInvisible = true;
 
-    changeStatus(status, ppid, protoInvisible);
+    changeStatus(status, ppid, protoInvisible, autoMessage);
   }
 }
 
-void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisible)
+void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisible, const QString& autoMessage)
 {
   const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
   if (o == NULL)
@@ -654,7 +656,8 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
   UserId ownerId = o->id();
   gUserManager.DropOwner(o);
 
-  myLicqDaemon->protoSetStatus(ownerId, status);
+  const QTextCodec* codec = UserCodec::defaultEncoding();
+  myLicqDaemon->protoSetStatus(ownerId, status, (autoMessage.isNull() ? KEEP_AUTORESPONSE : codec->fromUnicode(autoMessage).data()));
 }
 
 bool LicqGui::removeUserFromList(const UserId& userId, QWidget* parent)

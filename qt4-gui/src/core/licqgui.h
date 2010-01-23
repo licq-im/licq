@@ -164,8 +164,9 @@ public:
    *
    * @param status New status
    * @param invisible True to set status with invisible mode active
+   * @param autoMessage Auto response message to set
    */
-  void changeStatus(unsigned long status, bool invisible = false);
+  void changeStatus(unsigned long status, bool invisible = false, const QString& autoMessage = QString());
 
   /**
    * Set new status for an owner
@@ -173,8 +174,9 @@ public:
    * @param status New status
    * @param ppid Protocol id
    * @param invisible True to set status with invisible mode active
+   * @param autoMessage Auto response message to set
    */
-  void changeStatus(unsigned long status, unsigned long ppid, bool invisible = false);
+  void changeStatus(unsigned long status, unsigned long ppid, bool invisible = false, const QString& autoMessage = QString());
 
   /**
    * Invoke the desktop-aware URL viewer

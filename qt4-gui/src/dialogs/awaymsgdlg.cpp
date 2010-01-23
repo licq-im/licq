@@ -240,20 +240,11 @@ void AwayMsgDlg::ok()
 {
   myAutoCloseCounter = -1;
 
-  if (myPpid == 0)
-    LicqGui::instance()->changeStatus(myStatus, myInvisible);
-  else
-    LicqGui::instance()->changeStatus(myStatus, myPpid, myInvisible);
-
   QString s = myAwayMsg->toPlainText().trimmed();
-
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-  if (o != NULL)
-  {
-    const QTextCodec* codec = UserCodec::defaultEncoding();
-    o->SetAutoResponse(codec->fromUnicode(s));
-    gUserManager.DropOwner(o);
-  }
+  if (myPpid == 0)
+    LicqGui::instance()->changeStatus(myStatus, myInvisible, s);
+  else
+    LicqGui::instance()->changeStatus(myStatus, myPpid, myInvisible, s);
 
   close();
 }
