@@ -232,9 +232,12 @@ public:
    * Constructor
    *
    * @param ppid Protocol id for this owner
+   * @param protoName Name of protocol to show in menus
+   * @param sendFunctions Send function capabilities for protocol
    * @param parent Parent widget
    */
-  OwnerData(unsigned long ppid, SystemMenu* parent);
+  OwnerData(unsigned long ppid, const QString& protoName,
+      unsigned long sendFunctions, SystemMenu* parent);
 
   /**
    * Destructor
@@ -270,6 +273,14 @@ public:
   bool getInvisibleStatus() const
   { return myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked(); }
 
+  /**
+   * Get away message usage for protocol
+   *
+   * @return True if away messages are supported
+   */
+  bool useAwayMessage() const
+  { return myUseAwayMessage; }
+
 private slots:
   void aboutToShowStatusMenu();
   void viewInfo();
@@ -280,6 +291,7 @@ private slots:
 private:
   QString myId;
   unsigned long myPpid;
+  bool myUseAwayMessage;
 
   QMenu* myStatusMenu;
   QMenu* myOwnerAdmMenu;

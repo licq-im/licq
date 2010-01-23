@@ -346,7 +346,8 @@ void SystemMenu::addOwner(const UserId& userId)
   if (protocol.get() == NULL)
     return;
 
-  OwnerData* newOwner = new OwnerData(ppid, this);
+  OwnerData* newOwner = new OwnerData(ppid, protocol->getName(),
+      protocol->getSendFunctions(), this);
   QMenu* ownerAdmin = newOwner->getOwnerAdmMenu();
   QMenu* ownerStatus = newOwner->getStatusMenu();
   myOwnerAdmMenu->insertMenu(myOwnerAdmSeparator, ownerAdmin);
@@ -495,7 +496,14 @@ void SystemMenu::setFollowMeStatus(QAction* action)
 void SystemMenu::setMainStatus(QAction* action)
 {
   unsigned long status = action->data().toUInt();
-  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myHasIcqOwner);
+  bool withMsg = false;
+  if (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE)
+  {
+    // Only popup away message dialog if we have at least one owner with away message support
+    foreach (OwnerData* data, myOwnerData.values())
+      if (data->useAwayMessage())
+        withMsg = true;
+  }
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
   if (withMsg)
@@ -589,21 +597,13 @@ void SystemMenu::showGPGKeyManager()
 }
 
 
-OwnerData::OwnerData(unsigned long ppid, SystemMenu* parent)
+OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
+    unsigned long sendFunctions, SystemMenu* parent)
   : QObject(parent),
     myPpid(ppid)
 {
-  QString protoName;
-  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
-  if (protocol.get() != NULL)
-    protoName = protocol->getName();
-
-  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
-  if (o != NULL)
-  {
-    myId = o->accountId().c_str();
-    gUserManager.DropOwner(o);
-  }
+  myId = gUserManager.OwnerId(ppid).c_str();
+  myUseAwayMessage = ((sendFunctions & PP_SEND_STATUSxMSG) != 0);
 
   // System sub menu
   myOwnerAdmMenu = new QMenu(protoName);
@@ -735,7 +735,7 @@ void OwnerData::viewHistory()
 void OwnerData::setStatus(QAction* action)
 {
   int status = action->data().toInt();
-  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myPpid == LICQ_PPID);
+  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myUseAwayMessage);
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
   if (withMsg)
