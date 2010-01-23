@@ -70,7 +70,6 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   iniFile.SetSection("functions");
   iniFile.ReadStr("MsgPopupKey", szTemp, "none");
   myMsgPopupKey = (strcmp(szTemp, "none") != 0 ? QString::fromLatin1(szTemp) : QString());
-  iniFile.ReadBool("DelayStatusChange", myDelayStatusChange, false);
 
   iniFile.SetSection("appearance");
   iniFile.ReadBool("UseDoubleReturn", myUseDoubleReturn, false);
@@ -151,7 +150,6 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
 {
   iniFile.SetSection("functions");
   iniFile.WriteStr("MsgPopupKey", myMsgPopupKey.isEmpty() ? "none" : myMsgPopupKey.toLatin1());
-  iniFile.WriteBool("DelayStatusChange", myDelayStatusChange);
 
   iniFile.SetSection("appearance");
   iniFile.WriteBool("UseDoubleReturn", myUseDoubleReturn);
@@ -241,14 +239,6 @@ void Config::General::setUseDoubleReturn(bool useDoubleReturn)
     return;
 
   myUseDoubleReturn = useDoubleReturn;
-}
-
-void Config::General::setDelayStatusChange(bool delayStatusChange)
-{
-  if (delayStatusChange == myDelayStatusChange)
-    return;
-
-  myDelayStatusChange = delayStatusChange;
 }
 
 void Config::General::setMsgPopupKey(const QString& msgPopupKey)

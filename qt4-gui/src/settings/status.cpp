@@ -62,13 +62,6 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
   myPageStatusLayout = new QVBoxLayout(w);
   myPageStatusLayout->setContentsMargins(0, 0, 0, 0);
 
-  myGeneralBox = new QGroupBox(tr("General Status Options"));
-  myGeneralLayout = new QVBoxLayout(myGeneralBox);
-
-  myDelayStatusChangeCheck = new QCheckBox(tr("Delay status changes"));
-  myDelayStatusChangeCheck->setToolTip(tr("Set status after closing the away message dialog instead of setting it directly."));
-  myGeneralLayout->addWidget(myDelayStatusChangeCheck);
-
   myAutoLogonBox = new QGroupBox(tr("Startup"));
   myAutoLogonLayout = new QVBoxLayout(myAutoLogonBox);
 
@@ -126,7 +119,6 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
 
   buildAutoStatusCombos(1);
 
-  myPageStatusLayout->addWidget(myGeneralBox);
   myPageStatusLayout->addWidget(myAutoLogonBox);
   myPageStatusLayout->addWidget(myAutoAwayBox);
   myPageStatusLayout->addStretch(1);
@@ -271,7 +263,6 @@ void Settings::Status::load()
 {
   Config::General* generalConfig = Config::General::instance();
 
-  myDelayStatusChangeCheck->setChecked(generalConfig->delayStatusChange());
   myAutoAwaySpin->setValue(generalConfig->autoAwayTime());
   myAutoNaSpin->setValue(generalConfig->autoNaTime());
   myAutoOfflineSpin->setValue(generalConfig->autoOfflineTime());
@@ -286,7 +277,6 @@ void Settings::Status::apply()
   Config::General* generalConfig = Config::General::instance();
   generalConfig->blockUpdates(true);
 
-  generalConfig->setDelayStatusChange(myDelayStatusChangeCheck->isChecked());
   generalConfig->setAutoAwayTime(myAutoAwaySpin->value());
   generalConfig->setAutoNaTime(myAutoNaSpin->value());
   generalConfig->setAutoOfflineTime(myAutoOfflineSpin->value());

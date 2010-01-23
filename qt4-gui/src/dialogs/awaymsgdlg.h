@@ -44,10 +44,9 @@ public:
    * @param autoClose True if dialog should close after a timeout
    * @param ppid Protocol to set status for or 0 to change globaly
    * @param invisible True if new status is also invisible
-   * @param setStatus True if status should be set when dialog is closed
    */
   static void showAwayMsgDlg(unsigned short status, bool autoClose = false,
-      unsigned long ppid = 0, bool invisible = false, bool setStatus = false);
+      unsigned long ppid = 0, bool invisible = false);
 
   static void showAutoResponseHints(QWidget* parent = 0);
 
@@ -57,7 +56,7 @@ private:
   AwayMsgDlg(QWidget* parent = 0);
   ~AwayMsgDlg();
   void selectAutoResponse(unsigned short status, bool autoClose = false,
-      unsigned long ppid = 0, bool invisible = false, bool setStatus = false);
+      unsigned long ppid = 0, bool invisible = false);
 
   MLEdit* myAwayMsg;
   QMenu* myMenu;

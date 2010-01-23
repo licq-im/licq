@@ -57,14 +57,14 @@ using namespace LicqQtGui;
 AwayMsgDlg* AwayMsgDlg::myInstance = NULL;
 
 void AwayMsgDlg::showAwayMsgDlg(unsigned short status, bool autoClose,
-    unsigned long ppid, bool invisible, bool setStatus)
+    unsigned long ppid, bool invisible)
 {
   if (myInstance == NULL)
     myInstance = new AwayMsgDlg();
   else
     myInstance->raise();
 
-  myInstance->selectAutoResponse(status, autoClose, ppid, invisible, setStatus);
+  myInstance->selectAutoResponse(status, autoClose, ppid, invisible);
 }
 
 AwayMsgDlg::AwayMsgDlg(QWidget* parent)
@@ -112,7 +112,7 @@ AwayMsgDlg::~AwayMsgDlg()
 }
 
 void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
-    unsigned long ppid, bool invisible, bool setStatus)
+    unsigned long ppid, bool invisible)
 {
   switch (status & 0x00FF)
   {
@@ -125,7 +125,6 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
   myStatus = status;
   myInvisible = invisible;
   myPpid = ppid;
-  mySetStatus = setStatus;
 
   // Fill in the select menu
   myMenu->clear();
@@ -241,13 +240,10 @@ void AwayMsgDlg::ok()
 {
   myAutoCloseCounter = -1;
 
-  if (mySetStatus)
-  {
-    if (myPpid == 0)
-      LicqGui::instance()->changeStatus(myStatus, myInvisible);
-    else
-      LicqGui::instance()->changeStatus(myStatus, myPpid, myInvisible);
-  }
+  if (myPpid == 0)
+    LicqGui::instance()->changeStatus(myStatus, myInvisible);
+  else
+    LicqGui::instance()->changeStatus(myStatus, myPpid, myInvisible);
 
   QString s = myAwayMsg->toPlainText().trimmed();
 

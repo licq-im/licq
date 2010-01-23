@@ -496,13 +496,11 @@ void SystemMenu::setMainStatus(QAction* action)
 {
   unsigned long status = action->data().toUInt();
   bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myHasIcqOwner);
-  bool changeNow = !Config::General::instance()->delayStatusChange();
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
   if (withMsg)
-    AwayMsgDlg::showAwayMsgDlg(status, true, 0, invisible, !changeNow);
-
-  if (changeNow || !withMsg)
+    AwayMsgDlg::showAwayMsgDlg(status, true, 0, invisible);
+  else
     LicqGui::instance()->changeStatus(status, invisible);
 }
 
@@ -738,13 +736,11 @@ void OwnerData::setStatus(QAction* action)
 {
   int status = action->data().toInt();
   bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myPpid == LICQ_PPID);
-  bool changeNow = !Config::General::instance()->delayStatusChange();
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
   if (withMsg)
-    AwayMsgDlg::showAwayMsgDlg(status, true, myPpid, invisible, !changeNow);
-
-  if (changeNow || !withMsg)
+    AwayMsgDlg::showAwayMsgDlg(status, true, myPpid, invisible);
+  else
     LicqGui::instance()->changeStatus(status, myPpid, invisible);
 }
 
