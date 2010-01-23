@@ -1,5 +1,8 @@
 set(licq_HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/licqversion.h
+
+  log.h
+  logsink.h
   plugin.h
   pluginmanager.h
   version.h

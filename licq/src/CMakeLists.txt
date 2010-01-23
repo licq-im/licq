@@ -9,6 +9,8 @@ set(tested_SRCS
   thread/readwritemutex.cpp
 
   utils/dynamiclibrary.cpp
+  utils/log.cpp
+  utils/logsink.cpp
   utils/pipe.cpp
 )
 
@@ -76,6 +78,8 @@ set(test_SRCS
   thread/tests/readwritemutextest.cpp
 
   utils/tests/dynamiclibrarytest.cpp
+  utils/tests/logtest.cpp
+  utils/tests/logsinktest.cpp
   utils/tests/pipetest.cpp
 
   ${tested_SRCS}
@@ -111,10 +115,13 @@ target_link_libraries(licq ${SOCKS5_LIBRARIES})
 install(TARGETS licq RUNTIME DESTINATION bin)
 
 if (GTEST_FOUND)
-  add_executable(unittests ${test_SRCS})
   include_directories(${GTEST_INCLUDE_DIRS})
+  include_directories(${GMOCK_INCLUDE_DIRS})
 
-  target_link_libraries(unittests ${GTEST_BOTH_LIBRARIES})
+  add_executable(unittests ${test_SRCS})
+
+  target_link_libraries(unittests ${GTEST_LIBRARIES})
+  target_link_libraries(unittests ${GMOCK_LIBRARIES})
   target_link_libraries(unittests ${DLOPEN_LIBRARIES})
 
   # Add linker flags for thread support

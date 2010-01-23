@@ -106,7 +106,7 @@ if (GTEST_FOUND)
   # Google Mock
   add_subdirectory(3rdparty/gmock)
   set(GMOCK_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gmock/include")
-  set(GMOCK_LIBRARIES "gmock")
+  set(GMOCK_LIBRARIES gmock gmock_main)
 else (GTEST_FOUND)
   message(STATUS "Google test NOT found; unit tests will not be built")
 endif (GTEST_FOUND)
