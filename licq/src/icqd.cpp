@@ -467,31 +467,6 @@ bool CICQDaemon::Start()
   return true;
 }
 
-
-//---RegisterPlugin------------------------------------------------------------
-/*! \brief Registers current thread as new plugin
- *
- * Registers the current thread as a new plugin. 
- *
- * \return Returns the pipe to listen on for notification.
- */
-int CICQDaemon::RegisterPlugin(unsigned long nSignalMask)
-{
-  return getPluginManager().registerGeneralPlugin(nSignalMask);
-}
-
-
-//---UnregisterPlugin----------------------------------------------------------
-/*! \brief Unregisters current plugin thread
- *
- * Unregisters the current plugin thread.
- */
-void CICQDaemon::UnregisterPlugin()
-{
-  getPluginManager().unregisterGeneralPlugin();
-}
-
-
 Licq::PluginManager& CICQDaemon::getPluginManager()
 {
   return licq->getPluginManager();

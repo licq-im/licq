@@ -18,6 +18,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_onevent.h"
 #include "licq_types.h"
 #include "licq_user.h"
+#include "licq/daemon.h"
 
 class CPacket;
 class CPacketTcp;
@@ -31,11 +32,6 @@ class ProxyServer;
 class COscarService;
 class CReverseConnectToUserData;
 class CMSN;
-
-namespace Licq
-{
-class PluginManager;
-}
 
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
@@ -188,16 +184,11 @@ typedef ContactUserList::iterator ContactUserListIter;
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
-class CICQDaemon
+class CICQDaemon : public Licq::Daemon
 {
 public:
   CICQDaemon(CLicq *);
   ~CICQDaemon();
-  // Replaced by getPluginManager().(un)registerGeneralPlugni().
-  LICQ_DEPRECATED
-  int RegisterPlugin(unsigned long _nSignalMask);
-  LICQ_DEPRECATED
-  void UnregisterPlugin();
   bool Start();
   const char* Version() const;
   pthread_t *Shutdown();
@@ -534,14 +525,6 @@ public:
 
   void CheckExport();
 
-  /**
-   * Get the plugin manager instance.
-   *
-   * @return The global plugin manager.
-   */
-  Licq::PluginManager& getPluginManager();
-  const Licq::PluginManager& getPluginManager() const;
-
   EDaemonStatus Status() const                  { return m_eStatus; }
 
   void pluginUIViewEvent(const UserId& userId)
@@ -682,6 +665,10 @@ public:
      unsigned long nMsgID2, unsigned short nSequence,
      TCPSocket *pSock);
   bool WaitForReverseConnection(unsigned short id, const char* userId);
+
+  // From Licq::Daemon
+  Licq::PluginManager& getPluginManager();
+  const Licq::PluginManager& getPluginManager() const;
 
 protected:
 
