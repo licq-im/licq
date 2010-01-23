@@ -102,6 +102,11 @@ find_package(GTest QUIET)
 if (GTEST_FOUND)
   enable_testing()
   add_custom_target(tests ALL COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
+
+  # Google Mock
+  add_subdirectory(3rdparty/gmock)
+  set(GMOCK_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gmock/include")
+  set(GMOCK_LIBRARIES "gmock")
 else (GTEST_FOUND)
   message(STATUS "Google test NOT found; unit tests will not be built")
 endif (GTEST_FOUND)
