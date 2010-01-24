@@ -44,6 +44,7 @@ Client::Client(Handler& handler, const std::string& username,
   myClient.logInstance().registerLogHandler(
       gloox::LogLevelDebug, gloox::LogAreaAll, this);
 
+  myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
 }
 
