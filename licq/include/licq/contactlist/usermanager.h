@@ -211,6 +211,20 @@ public:
   Owner* FetchOwner(unsigned long ppid, unsigned short lockType);
 
   /**
+   * Find and lock an owner object based on userId
+   *
+   * Note: Currently this is just a convenience wrapper but if/when Licq
+   *   starts supporting multiple owners per protocol this call will be needed
+   *   to be able to get any owner.
+   *
+   * @param userId User id of owner
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @return The locked owner object if owner exists, otherwise NULL
+   */
+  Owner* fetchOwner(const UserId& userId, unsigned short lockType)
+  { return FetchOwner(User::getUserProtocolId(userId), lockType); }
+
+  /**
    * Release owner lock
    */
   void DropOwner(const Owner* owner);
@@ -577,6 +591,76 @@ public:
   { }
   UserWriteGuard(WriteMutexGuard<User>* guard)
     : WriteMutexGuard<User>(guard)
+  { }
+};
+
+/**
+ * Read mutex guard for Licq::Owner
+ */
+class OwnerReadGuard : public ReadMutexGuard<Owner>
+{
+public:
+  /**
+   * Constructor, will fetch and lock an owner based on user id
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerReadGuard(const UserId& userId)
+    : ReadMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_R))
+  { }
+
+  /**
+   * Constructor, will fetch and lock an owner based on protocolId
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerReadGuard(unsigned long protocolId)
+    : ReadMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_R))
+  { }
+
+  // Derived constructors
+  OwnerReadGuard(Owner* owner, bool locked = true)
+    : ReadMutexGuard<Owner>(owner, locked)
+  { }
+  OwnerReadGuard(ReadMutexGuard<Owner>* guard)
+    : ReadMutexGuard<Owner>(guard)
+  { }
+};
+
+/**
+ * Write mutex guard for Licq::Owner
+ */
+class OwnerWriteGuard : public WriteMutexGuard<Owner>
+{
+public:
+  /**
+   * Constructor, will fetch and lock an owner based on user id
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerWriteGuard(const UserId& userId)
+    : WriteMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_W))
+  { }
+
+  /**
+   * Constructor, will fetch and lock an owner based on protocolId
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerWriteGuard(unsigned long protocolId)
+    : WriteMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_W))
+  { }
+
+  // Derived constructors
+  OwnerWriteGuard(Owner* owner, bool locked = true)
+    : WriteMutexGuard<Owner>(owner, locked)
+  { }
+  OwnerWriteGuard(WriteMutexGuard<Owner>* guard)
+    : WriteMutexGuard<Owner>(guard)
   { }
 };
 
