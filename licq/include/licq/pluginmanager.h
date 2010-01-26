@@ -21,7 +21,7 @@
 #define LICQ_PLUGINMANAGER_H
 
 #include "plugin.h"
-#include "../licq_types.h"
+#include "licq_types.h"
 
 #include <boost/noncopyable.hpp>
 #include <list>
