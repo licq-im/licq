@@ -61,7 +61,6 @@ TEST(LogDistributor, shouldNotLogWhenEmpty)
   EXPECT_FALSE(distributor.isLogging(Log::Info));
   EXPECT_FALSE(distributor.isLogging(Log::Warning));
   EXPECT_FALSE(distributor.isLogging(Log::Error));
-  EXPECT_FALSE(distributor.isLogging(Log::Fatal));
   EXPECT_FALSE(distributor.isLogging(Log::Debug));
   EXPECT_FALSE(distributor.isLoggingPackets());
 }

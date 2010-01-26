@@ -19,7 +19,19 @@
 
 #include "log.h"
 
+#include <cstdio>
 #include <sys/time.h>
+
+void Licq::Log::log(Licq::Log::Level level, const char* format, va_list args)
+{
+  const size_t size = 2046;
+  char msg[size];
+
+  ::vsnprintf(msg, size, format, args);
+  msg[size - 1] = '\0';
+
+  log(level, std::string(msg));
+}
 
 using Licq::LogSink;
 using namespace LicqDaemon;

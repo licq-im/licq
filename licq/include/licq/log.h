@@ -21,8 +21,14 @@
 #define LICQ_LOG_H
 
 #include <boost/format.hpp>
+#include <boost/shared_ptr.hpp>
+#include <cstdarg>
 #include <stdint.h>
 #include <string>
+
+#ifdef __GNUC__
+#define LICQ_FORMAT(x, y) __attribute__((format (printf, x, y)))
+#endif
 
 namespace Licq
 {
@@ -30,6 +36,8 @@ namespace Licq
 class Log
 {
 public:
+  typedef boost::shared_ptr<Log> Ptr;
+
   enum Level
   {
     /// Unknown packets or bytes.
@@ -44,33 +52,33 @@ public:
     /// Critical errors which should be brought to the attention of the user.
     Error,
 
-    /// Fatal errors after which Licq is unable to continue running.
-    Fatal,
-
     /// Debugging aid.
     Debug
   };
 
   virtual void log(Level level, const std::string& msg) = 0;
   void log(Level level, const boost::format& msg) { log(level, msg.str()); }
+  void log(Level level, const char* format, va_list args) LICQ_FORMAT(3, 0);
 
   void unknown(const std::string& msg) { log(Unknown, msg); }
   void unknown(const boost::format& msg) { log(Unknown, msg); }
+  inline void unknown(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void info(const std::string& msg) { log(Info, msg); }
   void info(const boost::format& msg) { log(Info, msg); }
+  inline void info(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void warning(const std::string& msg) { log(Warning, msg); }
   void warning(const boost::format& msg) { log(Warning, msg); }
+  inline void warning(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void error(const std::string& msg) { log(Error, msg); }
   void error(const boost::format& msg) { log(Error, msg); }
-
-  void fatal(const std::string& msg) { log(Fatal, msg); }
-  void fatal(const boost::format& msg) { log(Fatal, msg); }
+  inline void error(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void debug(const std::string& msg) { log(Debug, msg); }
   void debug(const boost::format& msg) { log(Debug, msg); }
+  inline void debug(const char* format, ...) LICQ_FORMAT(2, 3);
 
   virtual void packet(const std::string& msg, const uint8_t* data,
                       size_t size) = 0;
@@ -80,6 +88,46 @@ public:
 protected:
   virtual ~Log() { /* Empty */ }
 };
+
+inline void Log::unknown(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  log(Unknown, format, args);
+  va_end(args);
+}
+
+inline void Log::info(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  log(Info, format, args);
+  va_end(args);
+}
+
+inline void Log::warning(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  log(Warning, format, args);
+  va_end(args);
+}
+
+inline void Log::error(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  log(Error, format, args);
+  va_end(args);
+}
+
+inline void Log::debug(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  log(Debug, format, args);
+  va_end(args);
+}
 
 } // namespace Licq
 

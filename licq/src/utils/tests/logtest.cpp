@@ -66,9 +66,6 @@ public:
       case Licq::Log::Error:
         myLog.error(msg);
         break;
-      case Licq::Log::Fatal:
-        myLog.fatal(msg);
-        break;
       case Licq::Log::Debug:
         myLog.debug(msg);
         break;
@@ -88,12 +85,17 @@ TEST_P(LogFixture, correctLevelWithBoostFormatLog)
   log(msg % GetParam());
 }
 
+TEST_P(LogFixture, correctLevelWithPrintfFormat)
+{
+  const char* msg = "message";
+  log(msg);
+}
+
 INSTANTIATE_TEST_CASE_P(logLevels, LogFixture,
                         ::testing::Values(Licq::Log::Unknown,
                                           Licq::Log::Info,
                                           Licq::Log::Warning,
                                           Licq::Log::Error,
-                                          Licq::Log::Fatal,
                                           Licq::Log::Debug));
 
 TEST(Log, shouldNotLogIfIsLoggingReturnsFalse)
