@@ -155,6 +155,7 @@ UserMenu::UserMenu(QWidget* parent)
   myCustomArAction = addAction(tr("Custom Auto Response..."), this, SLOT(customAutoResponse()));
   myCustomArAction->setCheckable(true);
   addSeparator();
+  myMakePermanentAction = addAction(tr("Add to List"), this, SLOT(makePermanent()));
   myToggleFloatyAction = addAction(tr("Toggle &Floaty"), this, SLOT(toggleFloaty()));
   addMenu(myGroupsMenu);
   myRemoveUserAction = addAction(tr("Remove From List"), this, SLOT(removeContact()));
@@ -230,6 +231,7 @@ void UserMenu::aboutToShowMenu()
   int status = (u == NULL ? ICQ_STATUS_OFFLINE : u->Status());
 
   myCheckArAction->setEnabled(status != ICQ_STATUS_OFFLINE);
+  myMakePermanentAction->setVisible(u == NULL ? false : u->NotInList());
 
   if (status == ICQ_STATUS_OFFLINE || status == ICQ_STATUS_ONLINE)
     myCheckArAction->setText(tr("Check Auto Response"));
@@ -372,6 +374,11 @@ void UserMenu::checkAutoResponse()
 void UserMenu::customAutoResponse()
 {
   new CustomAutoRespDlg(myUserId);
+}
+
+void UserMenu::makePermanent()
+{
+  gUserManager.makeUserPermanent(myUserId);
 }
 
 void UserMenu::toggleFloaty()
