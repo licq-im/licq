@@ -329,6 +329,38 @@ bool UserManager::addUser(const UserId& uid,
   return true;
 }
 
+bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
+    int groupId)
+{
+  if (!USERID_ISVALID(userId))
+    return false;
+
+  if (isOwner(userId))
+    return false;
+
+  {
+    UserWriteGuard user(userId);
+    if (!user.isLocked())
+      return false;
+
+    // Check if user is already permanent
+    if (!user->NotInList())
+      return false;
+
+    user->SetPermanent();
+  }
+
+  // Add user to server side list
+  if (addToServer)
+    gLicqDaemon->protoAddUser(userId, groupId);
+
+  // Set initial group membership, also sets server group for user
+  if (groupId != 0)
+    setUserInGroup(userId, GROUPS_USER, groupId, true, addToServer);
+
+  return true;
+}
+
 void UserManager::removeUser(const UserId& userId, bool removeFromServer)
 {
   // Remove the user from the server side list first
