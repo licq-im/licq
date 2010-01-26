@@ -207,11 +207,10 @@ public:
    * Plugins should call gUserManager.addUser() instead as this function will
    * not add the user to the local contact list or notify plugins.
    *
-   * @param accountId Account id of user to add
-   * @param ppid Protocol instance id of user
+   * @param userId User to add
    * @param groupId Initial group, only used for ICQ contacts
    */
-  void protoAddUser(const std::string& accountId, unsigned long ppid, int groupId);
+  void protoAddUser(const UserId& userId, int groupId);
 
   /**
    * Remove a user from the server side list

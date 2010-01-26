@@ -44,9 +44,10 @@
 using namespace std;
 using Licq::StringList;
 
-void CICQDaemon::protoAddUser(const string& accountId, unsigned long ppid, int groupId)
+void CICQDaemon::protoAddUser(const UserId& userId, int groupId)
 {
-  UserId userId = LicqUser::makeUserId(accountId, ppid);
+  string accountId = Licq::User::getUserAccountId(userId);
+  unsigned long ppid = Licq::User::getUserProtocolId(userId);
   if (ppid == LICQ_PPID)
     icqAddUser(accountId.c_str(), false, groupId);
   else

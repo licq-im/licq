@@ -320,7 +320,7 @@ bool UserManager::addUser(const UserId& uid,
 
   // Add user to server side list
   if (permanent && addToServer)
-    gLicqDaemon->protoAddUser(accountId.c_str(), ppid, groupId);
+    gLicqDaemon->protoAddUser(uid, groupId);
 
   // Set initial group membership, also sets server group for user
   if (groupId != 0)
