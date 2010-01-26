@@ -30,7 +30,9 @@ namespace Licq
 {
 
 /**
- * A read/write mutex
+ * A read/write mutex.
+ *
+ * @ingroup thread
  */
 class ReadWriteMutex : private boost::noncopyable
 {

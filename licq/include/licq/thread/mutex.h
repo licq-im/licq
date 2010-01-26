@@ -27,11 +27,17 @@ namespace Licq
 {
 
 /**
+ * @defgroup thread Thread
+ * Helper classes for synchronizing threads and protecting shared data.
+ */
+
+/**
  * A mutual exclusion device.
  *
  * It is useful for protecting shared data structures from concurrent
  * modifications, and implementing critical sections and monitors.
  *
+ * @ingroup thread
  */
 class Mutex : private boost::noncopyable
 {

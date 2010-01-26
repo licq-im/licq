@@ -32,6 +32,8 @@ namespace Licq
  * 
  * Create a locker (in a limited scope) and the locker will lock the mutex when
  * constructed and unlock it when destructed.
+ *
+ * @ingroup thread
  */
 class MutexLocker : private boost::noncopyable
 {

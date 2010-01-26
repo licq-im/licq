@@ -28,6 +28,9 @@
 namespace Licq
 {
 
+/**
+ * @ingroup thread
+ */
 class Condition : private boost::noncopyable
 {
 public:
