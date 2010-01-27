@@ -65,10 +65,20 @@ void Client::recv()
   myClient.recv();
 }
 
+void Client::setPassword(const std::string& password)
+{
+  myClient.setPassword(password);
+}
+
 bool Client::connect(unsigned long status)
 {
   changeStatus(status);
   return myClient.connect(false);
+}
+
+bool Client::isConnected()
+{
+  return myClient.authed();
 }
 
 void Client::changeStatus(unsigned long status)

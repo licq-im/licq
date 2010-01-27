@@ -50,7 +50,9 @@ public:
   int getSocket();
   void recv();
 
+  void setPassword(const std::string& password);
   bool connect(unsigned long status);
+  bool isConnected();
   void changeStatus(unsigned long status);
   void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);

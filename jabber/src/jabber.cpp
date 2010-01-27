@@ -57,14 +57,17 @@ int Jabber::run(int pipe)
     if (myClient != NULL)
     {
       sock = myClient->getSocket();
-      FD_SET(sock, &readFds);
-      if (sock > pipe)
-        nfds = sock + 1;
+      if (sock != -1)
+      {
+        FD_SET(sock, &readFds);
+        if (sock > pipe)
+          nfds = sock + 1;
+      }
     }
 
     if (::select(nfds, &readFds, NULL, NULL, NULL) > 0)
     {
-      if (myClient != NULL && FD_ISSET(sock, &readFds))
+      if (sock != -1 && FD_ISSET(sock, &readFds))
         myClient->recv();
       if (FD_ISSET(pipe, &readFds))
         processPipe(pipe);
@@ -162,21 +165,26 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
   if (status == ICQ_STATUS_OFFLINE)
     return;
 
-  if (myClient == NULL)
+  const LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
+  if (owner == NULL)
   {
-    const LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
-    if (owner == NULL)
-    {
-      gLog.Error("%sNo owner set\n", L_JABBERxSTR);
-      return;
-    }
+    gLog.Error("%sNo owner set\n", L_JABBERxSTR);
+    return;
+  }
 
-    std::string username = owner->IdString();
-    std::string password = owner->Password();
-    gUserManager.DropOwner(owner);
+  std::string username = owner->IdString();
+  std::string password = owner->Password();
+  gUserManager.DropOwner(owner);
 
-    myHandler->setStatus(status);
+  myHandler->setStatus(status);
+
+  if (myClient == NULL)
     myClient = new Client(*myHandler, username, password);
+  else
+    myClient->setPassword(password);
+
+  if (!myClient->isConnected())
+  {
     if (!myClient->connect(status))
     {
       delete myClient;
