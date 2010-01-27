@@ -76,6 +76,7 @@ set(test_SRCS
   thread/tests/mutextest.cpp
   thread/tests/mutexlockertest.cpp
   thread/tests/readwritemutextest.cpp
+  thread/tests/threadspecificdatatest.cpp
 
   utils/tests/dynamiclibrarytest.cpp
   utils/tests/logtest.cpp
