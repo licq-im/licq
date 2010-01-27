@@ -93,6 +93,7 @@ private slots:
   void checkInvisible();
   void checkAutoResponse();
   void customAutoResponse();
+  void makePermanent();
   void toggleFloaty();
   void removeContact();
   void selectKey();
@@ -157,6 +158,7 @@ private:
   QAction* myCheckInvisibleAction;
   QAction* myCheckArAction;
   QAction* myCustomArAction;
+  QAction* myMakePermanentAction;
   QAction* myToggleFloatyAction;
   QAction* myRemoveUserAction;
   QAction* mySetKeyAction;

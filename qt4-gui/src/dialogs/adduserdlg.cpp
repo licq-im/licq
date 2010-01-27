@@ -103,26 +103,12 @@ void AddUserDlg::ok()
   bool notify = myNotify->isChecked();
   bool added = false;
 
-  if (!accountId.isEmpty() && USERID_ISVALID(userId))
+  if (USERID_ISVALID(userId))
   {
-    const LicqUser* u = gUserManager.fetchUser(userId);
-
-    if (u == NULL)
-      added = (gUserManager.addUser(userId, true, true, group) != 0);
+    if (gUserManager.userExists(userId))
+      added = gUserManager.makeUserPermanent(userId, true, group);
     else
-    {
-      bool notInList = u->NotInList();
-      gUserManager.DropUser(u);
-
-      if (notInList)
-      {
-        gUserManager.setUserInGroup(userId, GROUPS_USER, group, true, true);
-        LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
-        user->SetPermanent();
-        gUserManager.DropUser(user);
-        added = true;
-      }
-    }
+      added = gUserManager.addUser(userId, true, true, group);
   }
 
   if (added && notify)
