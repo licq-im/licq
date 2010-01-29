@@ -222,6 +222,9 @@ void OwnerManagerDlg::removeOwner()
   if (item == NULL)
     return;
 
+  if (!QueryYesNo(this, tr("Do you really want to remove account %1?").arg(item->text(1))))
+    return;
+
   gUserManager.RemoveOwner(item->data(0, Qt::UserRole).toString().toULong());
   gLicqDaemon->SaveConf();
   updateOwners();
