@@ -145,10 +145,17 @@ public slots:
 
   void setShowOffline(bool showOffline);
   void setAlwaysShowONU(bool alwaysShowONU);
-  void setThreadView(bool threadView);
   void setMode2View(bool mode2View);
   void setShowEmptyGroups(bool showEmptyGroups);
-  void setGroup(GroupType groupType, int groupId);
+
+  /**
+   * Set current group to display
+   *
+   * @param groupType GROUPS_SYSTEM for system groups or GROUPS_USER for normal groups
+   * @param groupId Id of group to display
+   * @param threadView True to use threaded view (only used for system group 0)
+   */
+  void setGroup(GroupType groupType, int groupId, bool threadView = false);
 
   void setShowGridLines(bool showGridLines);
   void setUseFontStyles(bool useFontStyles);
@@ -182,7 +189,6 @@ public slots:
 
   // Toggle functions for convenience
   void toggleShowOffline() { setShowOffline(!myShowOffline); }
-  void toggleThreadView() { setThreadView(!myThreadView); }
   void toggleShowHeader() { setShowHeader(!myShowHeader); }
 
 signals:

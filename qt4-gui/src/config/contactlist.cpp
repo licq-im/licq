@@ -367,16 +367,6 @@ void Config::ContactList::setShowOffline(bool showOffline)
   changeCurrentList();
 }
 
-void Config::ContactList::setThreadView(bool threadView)
-{
-  if (threadView == myThreadView)
-    return;
-
-  myThreadView = threadView;
-
-  changeCurrentList();
-}
-
 void Config::ContactList::setMode2View(bool mode2View)
 {
   if (mode2View == myMode2View)
@@ -397,13 +387,14 @@ void Config::ContactList::setShowEmptyGroups(bool showEmptyGroups)
   changeCurrentList();
 }
 
-void Config::ContactList::setGroup(GroupType groupType, int groupId)
+void Config::ContactList::setGroup(GroupType groupType, int groupId, bool threadView)
 {
-  if (groupType == myGroupType && groupId == myGroupId)
+  if (groupType == myGroupType && groupId == myGroupId && threadView == myThreadView)
     return;
 
   myGroupType = groupType;
   myGroupId = groupId;
+  myThreadView = threadView;
 
   changeCurrentList();
 }

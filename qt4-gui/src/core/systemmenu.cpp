@@ -169,6 +169,11 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserGroupActions = new QActionGroup(this);
   connect(myGroupMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowGroupMenu()));
   connect(myUserGroupActions, SIGNAL(triggered(QAction*)), SLOT(setCurrentGroup(QAction*)));
+  // Special entry for threaded view of all users
+  a = myUserGroupActions->addAction(tr("All Groups (Threaded)"));
+  a->setData(ContactListModel::SystemGroupOffset - 1);
+  a->setCheckable(true);
+  myGroupMenu->addAction(a);
 #define ADD_SYSTEMGROUP(group) \
     a = myUserGroupActions->addAction(LicqStrings::getSystemGroupName(group)); \
     a->setData(ContactListModel::SystemGroupOffset + group); \
@@ -201,8 +206,6 @@ SystemMenu::SystemMenu(QWidget* parent)
   myMiniModeAction->setCheckable(true);
   myShowOfflineAction = addAction(tr("Show Offline &Users"), Config::ContactList::instance(), SLOT(setShowOffline(bool)));
   myShowOfflineAction->setCheckable(true);
-  myThreadViewAction = addAction(tr("&Thread Group View"), Config::ContactList::instance(), SLOT(setThreadView(bool)));
-  myThreadViewAction->setCheckable(true);
   myShowEmptyGroupsAction = addAction(tr("Sh&ow Empty Groups"), Config::ContactList::instance(), SLOT(setShowEmptyGroups(bool)));
   myShowEmptyGroupsAction->setCheckable(true);
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
@@ -287,7 +290,7 @@ void SystemMenu::updateGroups()
 
   // Clear old groups but leave system groups as they never change
   foreach (a, myUserGroupActions->actions())
-    if (a->data().toInt() < ContactListModel::SystemGroupOffset)
+    if (a->data().toInt() < ContactListModel::SystemGroupOffset-1)
       delete a;
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
@@ -311,7 +314,6 @@ void SystemMenu::updateShortcuts()
   myLogWinAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinNetworkLog));
   myMiniModeAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleMiniMode));
   myShowOfflineAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleShowOffline));
-  myThreadViewAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleThreadView));
   myShowEmptyGroupsAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleEmptyGroups));
   myOptionsAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinSettings));
   myShutdownAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinExit));
@@ -421,7 +423,6 @@ void SystemMenu::aboutToShowMenu()
 {
   myMiniModeAction->setChecked(Config::General::instance()->miniMode());
   myShowOfflineAction->setChecked(Config::ContactList::instance()->showOffline());
-  myThreadViewAction->setChecked(Config::ContactList::instance()->threadView());
   myShowEmptyGroupsAction->setChecked(Config::ContactList::instance()->showEmptyGroups());
 }
 
@@ -444,7 +445,11 @@ void SystemMenu::aboutToShowGroupMenu()
 {
   int gid = Config::ContactList::instance()->groupId();
   if (Config::ContactList::instance()->groupType() == GROUPS_SYSTEM)
+  {
+    if (gid == GROUP_ALL_USERS && Config::ContactList::instance()->threadView())
+      gid = -1;
     gid += ContactListModel::SystemGroupOffset;
+  }
 
   foreach (QAction* a, myUserGroupActions->actions())
     if (a->data().toInt() == gid)
@@ -480,7 +485,9 @@ void SystemMenu::setCurrentGroup(QAction* action)
 {
   int id = action->data().toInt();
 
-  if (id < ContactListModel::SystemGroupOffset)
+  if (id == ContactListModel::SystemGroupOffset - 1)
+    Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS, true);
+  else if (id < ContactListModel::SystemGroupOffset)
     Config::ContactList::instance()->setGroup(GROUPS_USER, id);
   else
     Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, id - ContactListModel::SystemGroupOffset);

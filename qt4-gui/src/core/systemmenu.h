@@ -158,7 +158,6 @@ private:
   QAction* myLogWinAction;
   QAction* myMiniModeAction;
   QAction* myShowOfflineAction;
-  QAction* myThreadViewAction;
   QAction* myShowEmptyGroupsAction;
   QAction* myOptionsAction;
   QAction* myPluginManagerAction;

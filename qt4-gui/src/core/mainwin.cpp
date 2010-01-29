@@ -780,20 +780,36 @@ void MainWindow::setCurrentGroup(int index)
 {
   int groupId = myUserGroupsBox->itemData(index).toInt();
   GroupType groupType = GROUPS_USER;
-  if (groupId >= ContactListModel::SystemGroupOffset)
+  bool threadView = false;
+
+  if (groupId == ContactListModel::SystemGroupOffset - 1)
+  {
+    groupType = GROUPS_SYSTEM;
+    groupId = GROUP_ALL_USERS;
+    threadView = true;
+  }
+  else if (groupId >= ContactListModel::SystemGroupOffset)
   {
     groupType = GROUPS_SYSTEM;
     groupId -= ContactListModel::SystemGroupOffset;
   }
 
-  Config::ContactList::instance()->setGroup(groupType, groupId);
+  Config::ContactList::instance()->setGroup(groupType, groupId, threadView);
 }
 
 void MainWindow::nextGroup()
 {
   GroupType curGroupType = Config::ContactList::instance()->groupType();
   int curGroup = Config::ContactList::instance()->groupId();
+  bool threadView = Config::ContactList::instance()->threadView();
   int groupId = 0;
+
+  // Threaded view is selected, set all users
+  if (curGroupType == GROUPS_SYSTEM && curGroup == GROUP_ALL_USERS && threadView)
+  {
+    Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS);
+    return;
+  }
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
@@ -845,8 +861,8 @@ void MainWindow::nextGroup()
     groupId = i;
   }
 
-  // Last system group is currently selected or selection not found, set all users
-  Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS);
+  // Last system group is currently selected or selection not found, set thread view
+  Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS, true);
 }
 
 
@@ -854,7 +870,16 @@ void MainWindow::prevGroup()
 {
   GroupType curGroupType = Config::ContactList::instance()->groupType();
   int curGroup = Config::ContactList::instance()->groupId();
+  bool threadView = Config::ContactList::instance()->threadView();
   int groupId = 0;
+
+  // All users is selected, set thread view
+
+  if (curGroupType == GROUPS_SYSTEM && curGroup == GROUP_ALL_USERS && !threadView)
+  {
+    Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS, true);
+    return;
+  }
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
@@ -896,7 +921,7 @@ void MainWindow::prevGroup()
     groupId = i;
   }
 
-  // If current selection is all users or selection not faund, set last system group
+  // If current selection is thread view or selection not found, set last system group
   Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, NUM_GROUPS_SYSTEM_ALL - 1);
 }
 void MainWindow::updateCurrentGroup()
@@ -905,7 +930,11 @@ void MainWindow::updateCurrentGroup()
   int group = Config::ContactList::instance()->groupId();
 
   if (groupType == GROUPS_SYSTEM)
+  {
+    if (group == GROUP_ALL_USERS && Config::ContactList::instance()->threadView())
+      group = -1;
     group += ContactListModel::SystemGroupOffset;
+  }
 
   // Update the combo box
   int index = myUserGroupsBox->findData(group);
@@ -930,6 +959,8 @@ void MainWindow::updateGroups(bool initial)
 
   // update the combo box
   myUserGroupsBox->clear();
+  myUserGroupsBox->addItem(tr("All Groups (Threaded)"),
+      ContactListModel::SystemGroupOffset - 1);
   myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(GROUP_ALL_USERS),
       ContactListModel::SystemGroupOffset);
 
