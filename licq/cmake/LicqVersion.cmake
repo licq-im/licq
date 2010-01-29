@@ -25,8 +25,15 @@ if (Subversion_FOUND)
     OUTPUT_QUIET ERROR_QUIET)
 
   if (${licq_svn_result} EQUAL 0)
+    # Work-around for old FindSubversion.cmake
+    set(_Licq_SAVED_LC_ALL "$ENV{LC_ALL}")
+    set(ENV{LC_ALL} C)
+
     subversion_wc_info(${LICQ_VERSION_SOURCE_DIR} Licq)
     set(LICQ_VERSION_EXTRA "-r${Licq_WC_LAST_CHANGED_REV}")
+
+    # restore the previous LC_ALL
+    set(ENV{LC_ALL} ${_Licq_SAVED_LC_ALL})    
   endif (${licq_svn_result} EQUAL 0)
 endif (Subversion_FOUND)
 
