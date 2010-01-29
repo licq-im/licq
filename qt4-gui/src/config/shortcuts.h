@@ -90,7 +90,6 @@ public:
     MainwinToggleMiniMode,
     MainwinToggleShowHeader,
     MainwinToggleShowOffline,
-    MainwinToggleThreadView,
     MainwinUserCheckAutoresponse,
     MainwinUserSendChatRequest,
     MainwinUserSendMessage,
