@@ -10,6 +10,7 @@ set(tested_SRCS
 
   utils/dynamiclibrary.cpp
   utils/log.cpp
+  utils/logdistributor.cpp
   utils/logsink.cpp
   utils/pipe.cpp
 )
@@ -37,6 +38,7 @@ set(licq_SRCS
   languagecodes.c
   licq.cpp
   log.cpp
+  logservice.cpp
   main.cpp
   md5.cpp
   message.cpp
@@ -63,6 +65,8 @@ set(licq_SRCS
   plugins/plugineventhandler.cpp
   plugins/pluginmanager.cpp
 
+  utils/streamlogsink.cpp
+
   ${tested_SRCS}
 )
 
@@ -79,6 +83,7 @@ set(test_SRCS
   thread/tests/threadspecificdatatest.cpp
 
   utils/tests/dynamiclibrarytest.cpp
+  utils/tests/logdistributortest.cpp
   utils/tests/logtest.cpp
   utils/tests/logsinktest.cpp
   utils/tests/pipetest.cpp

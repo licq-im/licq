@@ -17,34 +17,40 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQ_DAEMON_H
-#define LICQ_DAEMON_H
+#ifndef LICQDAEMON_LOGSERVICE_H
+#define LICQDAEMON_LOGSERVICE_H
 
-#include <boost/noncopyable.hpp>
+#include "licq/logservice.h"
+#include "licq/thread/threadspecificdata.h"
+#include "utils/log.h"
+#include "utils/logdistributor.h"
 
-namespace Licq
+namespace LicqDaemon
 {
 
-class LogService;
-class PluginManager;
-
-class Daemon : private boost::noncopyable
+class LogService : public Licq::LogService
 {
 public:
-  /**
-   * Get the plugin manager instance.
-   *
-   * @return The global plugin manager.
-   */
-  virtual PluginManager& getPluginManager() = 0;
-  virtual const PluginManager& getPluginManager() const = 0;
+  static LogService& instance();
 
-  virtual LogService& getLogService() = 0;
+  LogService();
+  ~LogService();
 
-protected:
-  virtual ~Daemon() { /* Empty */ }
+  Log& getLog() { return myLog; }
+  Log* getPluginLog() const;
+
+  // From Licq::LogService
+  Licq::Log::Ptr createLog(const std::string& name);
+  void createPluginLog(const std::string& name);
+  void registerLogSink(Licq::LogSink::Ptr logSink);
+  void unregisterLogSink(Licq::LogSink::Ptr logSink);
+
+private:
+  LogDistributor myLogDistributor;
+  Log myLog;
+  Licq::ThreadSpecificData<Log> myPluginLogs;
 };
 
-} // namespace Licq
+} // namespace LicqDaemon
 
 #endif

@@ -2,6 +2,7 @@
 #define LICQ_H
 
 #include "config.h"
+#include "logservice.h"
 #include "plugins/pluginmanager.h"
 
 #include <pthread.h>
@@ -27,8 +28,9 @@ public:
   bool Install();
   void SaveLoadedPlugins();
 
-  LicqDaemon::PluginManager& getPluginManager();
-  const LicqDaemon::PluginManager& getPluginManager() const;
+  inline LicqDaemon::PluginManager& getPluginManager();
+  inline const LicqDaemon::PluginManager& getPluginManager() const;
+  inline LicqDaemon::LogService& getLogService();
 
 protected:
   bool UpgradeLicq(CIniFile &);
@@ -37,10 +39,11 @@ protected:
   LoadPlugin(const char *, int, char **, bool keep = true);
   LicqDaemon::ProtocolPlugin::Ptr
   LoadProtoPlugin(const char *, bool keep = true);
-
+  
   CICQDaemon *licqDaemon;
 
 private:
+  LicqDaemon::LogService myLogService;
   LicqDaemon::PluginManager myPluginManager;
 };
 
@@ -52,6 +55,11 @@ inline LicqDaemon::PluginManager& CLicq::getPluginManager()
 inline const LicqDaemon::PluginManager& CLicq::getPluginManager() const
 {
   return myPluginManager;
+}
+
+inline LicqDaemon::LogService& CLicq::getLogService()
+{
+  return myLogService;
 }
 
 #endif

@@ -31,6 +31,9 @@
 namespace Licq
 {
 
+/**
+ * A LogSink receives log messages from a Log.
+ */
 class LogSink
 {
 public:

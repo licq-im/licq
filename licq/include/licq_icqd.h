@@ -662,6 +662,7 @@ public:
   // From Licq::Daemon
   Licq::PluginManager& getPluginManager();
   const Licq::PluginManager& getPluginManager() const;
+  Licq::LogService& getLogService();
 
 protected:
 

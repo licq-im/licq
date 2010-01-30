@@ -471,6 +471,11 @@ const Licq::PluginManager& CICQDaemon::getPluginManager() const
   return licq->getPluginManager();
 }
 
+Licq::LogService& CICQDaemon::getLogService()
+{
+  return licq->getLogService();
+}
+
 //---Version-------------------------------------------------------------------
 /*! \brief Returns the version of Licq */
 const char* CICQDaemon::Version() const

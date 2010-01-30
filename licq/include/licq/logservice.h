@@ -17,32 +17,28 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQ_DAEMON_H
-#define LICQ_DAEMON_H
+#ifndef LICQ_LOGSERVICE_H
+#define LICQ_LOGSERVICE_H
+
+#include "log.h"
+#include "logsink.h"
 
 #include <boost/noncopyable.hpp>
 
 namespace Licq
 {
 
-class LogService;
-class PluginManager;
-
-class Daemon : private boost::noncopyable
+class LogService : private boost::noncopyable
 {
 public:
-  /**
-   * Get the plugin manager instance.
-   *
-   * @return The global plugin manager.
-   */
-  virtual PluginManager& getPluginManager() = 0;
-  virtual const PluginManager& getPluginManager() const = 0;
+  virtual Log::Ptr createLog(const std::string& name) = 0;
+  virtual void createPluginLog(const std::string& name) = 0;
 
-  virtual LogService& getLogService() = 0;
+  virtual void registerLogSink(LogSink::Ptr logSink) = 0;
+  virtual void unregisterLogSink(LogSink::Ptr logSink) = 0;
 
 protected:
-  virtual ~Daemon() { /* Empty */ }
+  virtual ~LogService() { /* Empty */ }
 };
 
 } // namespace Licq

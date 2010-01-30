@@ -3,6 +3,7 @@ set(licq_HEADERS
 
   daemon.h
   log.h
+  logservice.h
   logsink.h
   plugin.h
   pluginmanager.h
