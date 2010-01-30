@@ -1060,16 +1060,7 @@ void LicqGui::viewUrl(const QString& url)
   else
     KToolInvocation::invokeBrowser(url);
 #else
-  bool useCustomUrlBrowser(Config::Chat::instance()->useCustomUrlBrowser());
-
-  if (useCustomUrlBrowser || (!useCustomUrlBrowser && !QDesktopServices::openUrl(QUrl(url))))
-  {
-    if (!myLicqDaemon->getUrlViewer())
-      myLicqDaemon->setUrlViewer(DEFAULT_URL_VIEWER);
-    if (!myLicqDaemon->ViewUrl(url.toLocal8Bit().data()))
-      WarnUser(NULL, tr("Licq is unable to start your browser and open the URL.\n"
-            "You will need to start the browser and open the URL manually."));
-  }
+  QDesktopServices::openUrl(QUrl(url));
 #endif
 }
 

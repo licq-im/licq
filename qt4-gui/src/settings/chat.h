@@ -115,10 +115,7 @@ private:
   QLabel* myDefaultEncodingLabel;
   QComboBox* myDefaultEncodingCombo;
 
-  QCheckBox* myUseCustomUrlViewer;
-  QLabel* myUrlViewerLabel;
   QLabel* myTerminalLabel;
-  QComboBox* myUrlViewerCombo;
   QLineEdit* myTerminalEdit;
 
   // Widget for chat display settings

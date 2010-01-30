@@ -734,10 +734,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         myRead1Button->setText(tr("&Reply"));
         myRead2Button->setText(tr("&Quote"));
         myRead3Button->setText(tr("&Forward"));
-#ifndef USE_KDE
-        if (gLicqDaemon->getUrlViewer() != NULL)
-#endif
-          myRead4Button->setText(tr("&View"));
+        myRead4Button->setText(tr("&View"));
         break;
 
       case ICQ_CMDxSUB_AUTHxREQUEST:

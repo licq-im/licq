@@ -92,7 +92,6 @@ public:
 #endif
   bool histVertSpacing() const { return myHistVertSpacing; }
   bool reverseHistory() const { return myReverseHistory; }
-  bool useCustomUrlBrowser() const { return myUseCustomUrlBrowser; }
   bool noSoundInActiveChat() const { return myNoSoundInActiveChat; }
   unsigned short chatMsgStyle() const { return myChatMsgStyle; }
   unsigned short histMsgStyle() const { return myHistMsgStyle; }
@@ -148,7 +147,6 @@ public slots:
 #endif
   void setHistVertSpacing(bool histVertSpacing);
   void setReverseHistory(bool reverseHistory);
-  void setUseCustomUrlBrowser(bool customUrlBrowser);
   void setNoSoundInActiveChat(bool noSoundInActiveChat);
   void setChatMsgStyle(unsigned short chatMsgStyle);
   void setHistMsgStyle(unsigned short histMsgStyle);

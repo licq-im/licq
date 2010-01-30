@@ -31,7 +31,6 @@
 #define QTGUI_CONFIGFILE QTGUI_DIR "config.ini"
 
 #define MAX_COLUMNCOUNT 4
-#define DEFAULT_URL_VIEWER "viewurl-mozilla.sh"
 
 #ifdef USE_KDE
 # define PLUGIN_NAME "kde4-gui"
