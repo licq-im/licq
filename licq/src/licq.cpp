@@ -894,16 +894,5 @@ bool CLicq::Install()
   usersConf.WriteNum("NumOfUsers", 0ul);
   usersConf.FlushFile();
 
-  snprintf (cmd, sizeof(cmd) - 1, "%s/owner.Licq", BASE_DIR);
-  CIniFile licqConf(INI_FxALLOWxCREATE);
-  licqConf.LoadFile(cmd);
-  licqConf.SetSection("user");
-  licqConf.WriteStr("Alias", "None");
-  licqConf.WriteStr("Password", "");
-  licqConf.WriteNum("Uin", 0ul);
-  licqConf.WriteBool("WebPresence", false);
-  licqConf.WriteBool("HideIP", false);
-  licqConf.FlushFile();
-
   return(true);
 }
