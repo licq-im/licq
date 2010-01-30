@@ -250,6 +250,8 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   {
     winCon[i] = new CWindow(LINES - 5, COLS - USER_WIN_WIDTH - 1, 2, USER_WIN_WIDTH + 1,
                             SCROLLBACK_BUFFER, true);
+    if (winCon[i]->CDKScreen() == NULL)
+      return 0;
     scrollok(winCon[i]->Win(), true);
     winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
     winCon[i]->data = NULL;
@@ -263,6 +265,8 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   winConStatus->SetActive(true);
   winBar = new CWindow(LINES - 5, 1, 2, COLS - USER_WIN_WIDTH - 1, false);
   winUsers = new CWindow(LINES - 5, USER_WIN_WIDTH, 2, 0, false, true);
+  if (winUsers->CDKScreen() == NULL)
+    return 0;
   winBar->SetActive(true);
   winUsers->SetActive(true);
 
