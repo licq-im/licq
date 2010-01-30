@@ -69,6 +69,9 @@ public:
       case Licq::Log::Debug:
         myLog.debug(msg);
         break;
+      case Licq::Log::Packet:
+        FAIL() << "Invalid level: Packet";
+        break;
     }
   }
 };

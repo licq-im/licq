@@ -60,7 +60,7 @@ void Log::packet(const std::string& msg, const uint8_t* data, size_t size)
     return;
 
   LogSink::Packet packet;
-  fill(packet.message, Debug, msg);
+  fill(packet.message, Packet, msg);
 
   packet.data.reserve(size);
   packet.data.assign(data, data + size);
