@@ -132,6 +132,14 @@ inline void Log::debug(const char* format, ...)
   va_end(args);
 }
 
+class PluginLog
+{
+public:
+  Log* operator->();
+};
+
+extern PluginLog pLog;
+
 } // namespace Licq
 
 #endif
