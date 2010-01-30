@@ -547,12 +547,6 @@ public:
   unsigned long icqSendSms(const char* id, unsigned long ppid,
       const char* number, const char* message);
 
-  // NOT MT SAFE
-  const char* getUrlViewer() const;
-  void setUrlViewer(const char *s);
-
-  bool ViewUrl(const char *url);
-
   // ICQ Server options
   const char* ICQServer() const                 { return m_szICQServer; }
   void SetICQServer(const char *s) {  SetString(&m_szICQServer, s);  }
@@ -738,9 +732,8 @@ protected:
   EDaemonStatus m_eStatus;
   char m_szConfigFile[MAX_FILENAME_LEN];
 
-  char *m_szUrlViewer,
-       *m_szTerminal,
-       *m_szRejectFile;
+  char* m_szTerminal;
+  char* m_szRejectFile;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
   bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;

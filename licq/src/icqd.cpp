@@ -238,12 +238,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
      gTranslator.setTranslationMap (TranslationTableFileNameFull);
   }
 
-  // Url viewer
-  m_szUrlViewer = NULL;
-  licqConf.ReadStr("UrlViewer", temp, "none");
-  m_szUrlViewer = (char *)malloc(strlen(temp) + 1);
-  strcpy(m_szUrlViewer, temp);
-
   // Terminal
   m_szTerminal = NULL;
   licqConf.ReadStr("Terminal", temp, "xterm -T Licq -e ");
@@ -487,7 +481,6 @@ const char* CICQDaemon::Version() const
 //-----ICQ::destructor----------------------------------------------------------
 CICQDaemon::~CICQDaemon()
 {
-  if(m_szUrlViewer)   free(m_szUrlViewer);
   if(m_szRejectFile)  delete []m_szRejectFile;
   if(m_szICQServer)   free(m_szICQServer);
   if(m_szProxyHost)   free(m_szProxyHost);
@@ -571,7 +564,6 @@ void CICQDaemon::SaveConf()
 
 
   // Utility tab
-  licqConf.WriteStr("UrlViewer", m_szUrlViewer);
   const char* pc = gTranslator.getMapName();
   if (pc == NULL)
     pc = "none";
@@ -670,60 +662,6 @@ bool CICQDaemon::haveGpgSupport() const
 
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
 void CICQDaemon::SetAlwaysOnlineNotify(bool b)  { m_bAlwaysOnlineNotify = b; }
-
-const char* CICQDaemon::getUrlViewer() const
-{
-  if ((strcmp(m_szUrlViewer, "none") == 0) || (strlen(m_szUrlViewer) == 0))
-    return (NULL);
-  else
-    return (m_szUrlViewer);
-}
-
-void CICQDaemon::setUrlViewer(const char *s)
-{
-  SetString(&m_szUrlViewer, s);
-}
-
-
-bool CICQDaemon::ViewUrl(const char *u)
-{
-  if (getUrlViewer() == NULL) return false;
-
-  char **arglist = (char**)malloc( 3*sizeof(char*));
-  arglist[0] = m_szUrlViewer;
-  arglist[1] = (char*)u;
-  arglist[2] = NULL;
-
-  int pp[2];  
-  if (pipe(pp) < 0) return false;
-
-  switch (fork()) {
-  case -1:    
-    close(pp[0]);
-    close(pp[1]);
-    return false;
-  case 0:
-    close(pp[0]);
-
-    // set close-on-exec flag
-    fcntl(pp[1], F_SETFD, 1);
-
-    execvp(arglist[0], arglist);
-
-    // send a message indicating the failure
-    write(pp[1], (char *) &errno, sizeof errno);
-    _exit(-1);
-  }
-  free(arglist);
-
-  close(pp[1]);
-  int err;
-  int n = read(pp[0], (char *) &err, sizeof err);
-  close(pp[0]);
-
-  return (n == 0);
-}
-
 
 int CICQDaemon::StartTCPServer(TCPSocket *s)
 {
