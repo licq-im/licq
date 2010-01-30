@@ -3027,7 +3027,7 @@ Podría no funcionar.</translation>
         <translation>Alineamiento</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Cerrar automáticamente la ventana de funciones de usuario luego de un evento exitoso.</translation>
     </message>
     <message>

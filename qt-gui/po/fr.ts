@@ -2921,7 +2921,7 @@ Rebuild Licq with OpenSSL support.</source>
         <translation type="unfinished">Général</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

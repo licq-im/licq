@@ -2568,7 +2568,7 @@ Potrebbe non funzionare.</translation>
         <translation>Mostra o nasconde le intestazioni nella lista utenti</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Chiudi automaticamente la finestra utente dopo un evento con successo</translation>
     </message>
     <message>

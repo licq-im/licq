@@ -2615,7 +2615,7 @@ Ez így nem fog menni.</translation>
         <translation>Az oszlopok címének megjelenítése a Felhasználó Listában</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>A fő ablak bezárása egy sikeres esemény után</translation>
     </message>
     <message>

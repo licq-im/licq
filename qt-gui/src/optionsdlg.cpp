@@ -797,7 +797,7 @@ QWidget* OptionsDlg::new_appearance_options()
                                           "messages label when there are no new messages"));
   chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxMainWin);
   QWhatsThis::add(chkAutoClose, tr("Auto close the user function window "
-                                   "after a succesful event"));
+                                   "after a successful event"));
   chkAutoPopup = new QCheckBox(tr("Auto-Popup Incoming Msg"), boxMainWin);
   QWhatsThis::add(chkAutoPopup, tr("Open all incoming messages automatically "
                                            "when received if we are "

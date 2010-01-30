@@ -2550,7 +2550,7 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
         <translation>Sulje toimintaikkuna automaattisesti</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Sulje käyttäjän toimintaikkuna automaattisesti onnistuneen tapahtuman jälkeen</translation>
     </message>
     <message>

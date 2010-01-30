@@ -2553,7 +2553,7 @@ Rebuild Licq with OpenSSL support.</source>
         <translation>Автоматично закривати функціональне вікно</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Автоматично закривати функціональне вікно користувача після успішної події</translation>
     </message>
     <message>

@@ -2553,7 +2553,7 @@ Rebuild Licq with OpenSSL support.</source>
         <translation>Аўтаматычна зачыняць акенцы</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Аўтаматычна зачыняць карыстальніцкія акенцы пасля пасьпяховага завяршэньня дзеяньня</translation>
     </message>
     <message>

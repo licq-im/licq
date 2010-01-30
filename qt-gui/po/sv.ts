@@ -3046,7 +3046,7 @@ Parametrar kan innehålla följande uttryck &lt;br&gt; som ersätts med relevant
         <translation>Justering</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Stäng automatiskt fönstret för användarfunktioner efter en lyckad händelse</translation>
     </message>
     <message>

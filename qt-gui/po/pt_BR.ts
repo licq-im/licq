@@ -2615,7 +2615,7 @@ Isso provavelmente não funcionará.</translation>
         <translation>Desliga a exibição de cabeçalhos acima de cada coluna da lsita de usuários</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Fechar automaticamente a janela de funções de usuário depois de um evento bem sucedido</translation>
     </message>
     <message>

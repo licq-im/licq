@@ -2621,7 +2621,7 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
         <translation>Schaltet die Spaltenüberschriften in der Kontaktliste ein oder aus.</translation>
     </message>
     <message>
-        <source>Auto close the user function window after a succesful event</source>
+        <source>Auto close the user function window after a successful event</source>
         <translation>Das Funktionsfenster soll nach einem erfolgreichen Ereignis automatisch geschlossen werden</translation>
     </message>
     <message>
