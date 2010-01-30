@@ -53,7 +53,10 @@ public:
     Error,
 
     /// Debugging aid.
-    Debug
+    Debug,
+
+    /// Packets.
+    Packet
   };
 
   virtual void log(Level level, const std::string& msg) = 0;
