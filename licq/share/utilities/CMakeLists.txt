@@ -6,7 +6,6 @@ set(utility_FILES
   hostname.utility
   kmail.utility
   mutt.utility
-  netscape.utility
   nmap.utility
   pine.utility
   ping.utility
