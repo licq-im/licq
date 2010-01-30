@@ -41,8 +41,6 @@ using namespace std;
 #include "licq/exceptions/exception.h"
 #include "licq/version.h"
 
-#include "licq.conf.h"
-
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
@@ -877,11 +875,16 @@ bool CLicq::Install()
 
   // Create licq.conf
   snprintf(cmd, sizeof(cmd) - 1, "%s/licq.conf", BASE_DIR);
-  FILE *f = fopen(cmd, "w");
-  chmod(cmd, 00600);
-  fprintf(f, "%s", LICQ_CONF);
-  fclose(f);
-
+  CIniFile mainConf(INI_FxALLOWxCREATE);
+  mainConf.LoadFile(cmd);
+  mainConf.SetSection("licq");
+  mainConf.WriteNum("Version", (unsigned short)LICQ_VERSION);
+  mainConf.SetSection("plugins");
+  mainConf.SetSection("network");
+  mainConf.SetSection("onevent");
+  mainConf.SetSection("groups");
+  mainConf.SetSection("owners");
+  mainConf.FlushFile();
 
   // Create users.conf
   snprintf(cmd, sizeof(cmd) - 1, "%s/users.conf", BASE_DIR);

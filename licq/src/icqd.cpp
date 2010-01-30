@@ -211,7 +211,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
 
   // Error log file
-  licqConf.ReadStr("Errors", m_szErrorFile, "licq.log");
+  licqConf.ReadStr("Errors", m_szErrorFile, "log.errors");
   licqConf.ReadNum("ErrorTypes", m_nErrorTypes, L_ERROR | L_UNKNOWN);
   if (strcmp(m_szErrorFile, "none") != 0)
   {
@@ -276,7 +276,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   unsigned short nOnEventCmdType;
 
   licqConf.SetSection("onevent");
-  licqConf.ReadNum("Enable", nOnEventCmdType, 0);
+  licqConf.ReadNum("Enable", nOnEventCmdType, 1);
   licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, false);
   m_xOnEventManager.SetCommandType(nOnEventCmdType);
 
