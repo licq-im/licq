@@ -90,7 +90,7 @@ public:
   template<typename SymbolType>
   void getSymbol(const std::string& name, SymbolType** symbol);
 
-  const std::string& getName() const;
+  const std::string& getName() const { return myName; }
 
 private:
   const std::string myName;
@@ -105,11 +105,6 @@ inline void DynamicLibrary::getSymbol(
     const std::string& name, SymbolType** symbol)
 {
   getSymbol(name, reinterpret_cast<void**>(symbol));
-}
-
-inline const std::string& DynamicLibrary::getName() const
-{
-  return myName;
 }
 
 } // namespace LicqDaemon

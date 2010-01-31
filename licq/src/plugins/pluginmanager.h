@@ -41,7 +41,7 @@ public:
   PluginManager();
   ~PluginManager();
 
-  void setDaemon(CICQDaemon* daemon);
+  void setDaemon(CICQDaemon* daemon) { myDaemon = daemon; }
 
   GeneralPlugin::Ptr loadGeneralPlugin(
       const std::string& name, int argc, char** argv, bool keep = true);
@@ -68,7 +68,7 @@ public:
   /// Cancel all plugins' threads.
   void cancelAllPlugins();
 
-  PluginEventHandler& getPluginEventHandler();
+  inline PluginEventHandler& getPluginEventHandler();
 
   size_t getGeneralPluginsCount() const;
 
@@ -111,11 +111,6 @@ private:
 
   PluginEventHandler myPluginEventHandler;
 };
-
-inline void PluginManager::setDaemon(CICQDaemon* daemon)
-{
-  myDaemon = daemon;
-}
 
 inline PluginEventHandler& PluginManager::getPluginEventHandler()
 {

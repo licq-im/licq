@@ -48,15 +48,15 @@ public:
   /**
    * Reads one byte using read().
    */
-  char getChar();
+  inline char getChar();
 
   /**
    * Writes one byte using write().
    */
-  void putChar(char ch);
+  void putChar(char ch) { write(&ch, sizeof(ch)); }
 
-  int getReadFd() const;
-  int getWriteFd() const;
+  int getReadFd() const { return myFds[0]; }
+  int getWriteFd() const { return myFds[1]; }
 
 private:
   int myFds[2];
@@ -67,21 +67,6 @@ inline char Pipe::getChar()
   char ch;
   read(&ch, sizeof(ch));
   return ch;
-}
-
-inline void Pipe::putChar(char ch)
-{
-  write(&ch, sizeof(ch));
-}
-
-inline int Pipe::getReadFd() const
-{
-  return myFds[0];
-}
-
-inline int Pipe::getWriteFd() const
-{
-  return myFds[1];
 }
 
 } // namespace LicqDaemon

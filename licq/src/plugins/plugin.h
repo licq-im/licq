@@ -49,7 +49,7 @@ public:
   virtual ~Plugin();
 
   /// Get the read end of the pipe used to communicate with the plugin.
-  int getReadPipe() const;
+  int getReadPipe() const { return myPipe.getReadFd(); }
 
   /// Start the plugin in a new thread.
   void startThread(CICQDaemon* daemon);
@@ -64,18 +64,18 @@ public:
   void cancelThread();
 
   /// @return True when called from the plugin's main thread.
-  bool isThisThread() const;
+  bool isThisThread() const { return isThread(::pthread_self()); }
 
   /// Check if @a thread is the plugin's thread.
-  bool isThread(const pthread_t& thread) const;
+  inline bool isThread(const pthread_t& thread) const;
 
   /// Set the plugin's unique id.
-  void setId(unsigned short id);
+  void setId(unsigned short id) { *myId = id; }
 
-  void setSignalMask(unsigned long mask);
+  void setSignalMask(unsigned long mask) { mySignalMask = mask; }
 
   /// Check if the plugin is interested in the @a signal.
-  bool wantSignal(unsigned long signal);
+  inline bool wantSignal(unsigned long signal);
 
   // From Licq::Plugin
   unsigned short getId() const;
@@ -91,7 +91,7 @@ protected:
   Pipe myPipe;
 
   template<typename SymbolType>
-  void loadSymbol(const std::string& name, SymbolType*& symbol);
+  inline void loadSymbol(const std::string& name, SymbolType*& symbol);
 
 private:
   static bool initThreadEntry(void* plugin);
@@ -109,29 +109,9 @@ private:
   unsigned short* myId;
 };
 
-inline int Plugin::getReadPipe() const
-{
-  return myPipe.getReadFd();
-}
-
-inline bool Plugin::isThisThread() const
-{
-  return isThread(::pthread_self());
-}
-
 inline bool Plugin::isThread(const pthread_t& thread) const
 {
   return myThread->isThread(thread);
-}
-
-inline void Plugin::setId(unsigned short id)
-{
-  *myId = id;
-}
-
-inline void Plugin::setSignalMask(unsigned long mask)
-{
-  mySignalMask = mask;
 }
 
 inline bool Plugin::wantSignal(unsigned long signal)
