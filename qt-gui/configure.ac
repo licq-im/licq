@@ -150,7 +150,6 @@ AC_PATH_QT_LRELEASE
 AC_PATH_KDE_LIBRARIES
 AC_PATH_DCOP
 AC_PATH_KDE_CONFIG
-LICQ_CHECK_GPGME
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
@@ -186,10 +185,5 @@ fi
 echo "Qt includes    : $ac_cv_header_qtinc"
 echo "Qt libraries   : $ac_qt_libdir, $ac_qt_libname"
 echo "Qt moc         : $MOC"
-if test "$WITH_GPGME" = yes; then
-  echo "GPG            : enabled."
-else
-  echo "GPG            : disabled."
-fi
 echo ""
 
