@@ -21,8 +21,6 @@
 #include "licq_log.h"
 #include "licq_message.h"
 
-#include <openssl/md5.h>
-
 #include <cstring>
 #include <string>
 #include <list>

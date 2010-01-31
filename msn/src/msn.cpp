@@ -19,7 +19,6 @@
 #include <cctype>
 #include <cstdio>
 #include <list>
-#include <openssl/md5.h>
 #include <pthread.h>
 #include <sys/select.h>
 #include <sys/time.h>

@@ -19,9 +19,9 @@
 #include "msn.h"
 #include "msnpacket.h"
 #include "licq_log.h"
+#include "licq_md5.h"
 #include "licq_message.h"
 
-#include <openssl/md5.h>
 #include <unistd.h>
 
 #include <cassert>
@@ -418,7 +418,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         string strToHash = m_strMSPAuth + "9" + m_szPassword;
         unsigned char szDigest[16];
         char szHexOut[32];
-        MD5((const unsigned char *)strToHash.c_str(), strToHash.size(), szDigest);
+        md5((const uint8_t*)strToHash.c_str(), strToHash.size(), szDigest);
         for (int i = 0; i < 16; i++)
           sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
     

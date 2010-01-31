@@ -22,9 +22,6 @@
 #include "licq_message.h"
 #include "licq_translate.h"
 
-
-#include <openssl/md5.h>
-
 #include <string>
 #include <list>
 #include <vector>
