@@ -22,6 +22,9 @@
 
 #include "plugin.h"
 
+#include <list>
+#include <queue>
+
 class LicqProtoSignal;
 
 namespace LicqDaemon
@@ -52,8 +55,7 @@ private:
 
   unsigned long myProtocolId;
 
-  typedef std::list<LicqProtoSignal*> SignalList;
-  SignalList mySignals;
+  std::queue<LicqProtoSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 
   bool (*myInit)();

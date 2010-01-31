@@ -92,7 +92,7 @@ bool GeneralPlugin::init(int argc, char** argv)
 void GeneralPlugin::pushSignal(LicqSignal* signal)
 {
   MutexLocker locker(mySignalsMutex);
-  mySignals.push_back(signal);
+  mySignals.push(signal);
   locker.unlock();
   myPipe.putChar(PLUGIN_SIGNAL);
 }
@@ -103,7 +103,7 @@ LicqSignal* GeneralPlugin::popSignal()
   if (!mySignals.empty())
   {
     LicqSignal* signal = mySignals.front();
-    mySignals.pop_front();
+    mySignals.pop();
     return signal;
   }
   return NULL;
@@ -112,7 +112,7 @@ LicqSignal* GeneralPlugin::popSignal()
 void GeneralPlugin::pushEvent(LicqEvent* event)
 {
   MutexLocker locker(myEventsMutex);
-  myEvents.push_back(event);
+  myEvents.push(event);
   locker.unlock();
   myPipe.putChar(PLUGIN_EVENT);
 }
@@ -123,7 +123,7 @@ LicqEvent* GeneralPlugin::popEvent()
   if (!myEvents.empty())
   {
     LicqEvent* event = myEvents.front();
-    myEvents.pop_front();
+    myEvents.pop();
     return event;
   }
   return NULL;

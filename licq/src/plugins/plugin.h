@@ -29,7 +29,6 @@
 
 #include <boost/exception/info.hpp>
 #include <boost/shared_ptr.hpp>
-#include <list>
 #include <string>
 
 class CICQDaemon;

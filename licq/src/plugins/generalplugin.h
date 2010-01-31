@@ -22,6 +22,9 @@
 
 #include "plugin.h"
 
+#include <list>
+#include <queue>
+
 class LicqEvent;
 class LicqSignal;
 
@@ -63,12 +66,10 @@ private:
   char** myArgv;
   char** myArgvCopy;
 
-  typedef std::list<LicqSignal*> SignalList;
-  SignalList mySignals;
+  std::queue<LicqSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 
-  typedef std::list<LicqEvent*> EventsList;
-  EventsList myEvents;
+  std::queue<LicqEvent*> myEvents;
   Licq::Mutex myEventsMutex;
 
   // Function pointers

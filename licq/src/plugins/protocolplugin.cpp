@@ -52,7 +52,7 @@ bool ProtocolPlugin::init()
 void ProtocolPlugin::pushSignal(LicqProtoSignal* signal)
 {
   MutexLocker locker(mySignalsMutex);
-  mySignals.push_back(signal);
+  mySignals.push(signal);
   locker.unlock();
   myPipe.putChar(PLUGIN_SIGNAL);
 }
@@ -63,7 +63,7 @@ LicqProtoSignal* ProtocolPlugin::popSignal()
   if (!mySignals.empty())
   {
     LicqProtoSignal* signal = mySignals.front();
-    mySignals.pop_front();
+    mySignals.pop();
     return signal;
   }
   return NULL;

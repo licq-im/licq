@@ -20,6 +20,7 @@
 #include "../plugin.h"
 
 #include <gtest/gtest.h>
+#include <list>
 
 extern "C" {
 
