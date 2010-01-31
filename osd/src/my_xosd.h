@@ -74,7 +74,7 @@ int my_xosd_display(std::string username, std::string message, std::string colou
 // how long after our logon or logoff should no message be displayed
 // this is some sort of a hack:
 // when we logon we get all the users who are online at the moment
-// as an logon event. Usually you dont want to show all of them in a row
+// as an logon event. Usually you don't want to show all of them in a row
 // (especially when wait = true), but only the ones who log on / off while
 // you are online.
 #define QUIETTIMEOUT 10

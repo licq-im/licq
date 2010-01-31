@@ -75,10 +75,8 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
     initCDKColor();
     cdkscreen = initCDKScreen(win);
     if (cdkscreen == NULL)
-    {
+      // Just print error here, caller must check CDKScreen() for NULL to determine if we failed
       printf("Couldn't create cdk screen!\n");
-      exit(1);
-    }
   }
 
   sLastContact = USERID_NONE;

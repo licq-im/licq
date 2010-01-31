@@ -14,10 +14,10 @@ Any bugfixes between releases will be done on the project page.
 INSTALL:
 
 - make sure you have a recent libxosd (http://www.ignavus.net/software.html)
-- untar it to the plugin directory of the licq sources (dont have to be compiled/configured)
+- untar it to the plugin directory of the licq sources (don't have to be compiled/configured)
 - ./build
 - ./configure --prefix=yourprefix
-  you dont have to specify a prefix if you didnt when you compiled licq. This information is only
+  you don't have to specify a prefix if you didnt when you compiled licq. This information is only
   used for the make install step below
 - make
 - stop licq
