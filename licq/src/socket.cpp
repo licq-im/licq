@@ -394,7 +394,7 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyS
   struct addrinfo* ai;
   for (ai = addrs; ai != NULL; ai = ai->ai_next)
   {
-    memcpy(&myRemoteAddr, ai->ai_addr, sizeof(myRemoteAddrStorage));
+    memcpy(&myRemoteAddr, ai->ai_addr, ai->ai_addrlen);
 
     // We didn't use getaddrinfo to lookup port so set in manually
     if (myRemoteAddr.sa_family == AF_INET)
@@ -422,7 +422,7 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyS
 #endif
 
     // Try to connect, exit loop if successful
-    if (connect(m_nDescriptor, (struct sockaddr*)&myRemoteAddr, sizeof(myRemoteAddrStorage)) != -1)
+    if (connect(m_nDescriptor, (struct sockaddr*)&myRemoteAddr, ai->ai_addrlen) != -1)
       break;
 
     // Failed to connect, close socket and try next
