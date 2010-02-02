@@ -23,6 +23,7 @@
 #include "mutex.h"
 
 #include <boost/noncopyable.hpp>
+#include <climits>
 #include <pthread.h>
 
 namespace Licq
@@ -34,7 +35,7 @@ namespace Licq
 class Condition : private boost::noncopyable
 {
 public:
-  static const unsigned int WAIT_FOREVER = -1;
+  static const unsigned int WAIT_FOREVER = UINT_MAX;
 
   Condition();
   ~Condition();
