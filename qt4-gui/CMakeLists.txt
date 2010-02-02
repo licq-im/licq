@@ -1,5 +1,7 @@
 project(Qt4-GUI)
 cmake_minimum_required(VERSION 2.4.2)
+cmake_policy(SET CMP0003 NEW)
+
 include(CheckIncludeFile)
 include(TestCXXAcceptsFlag)
 include(CheckLibraryExists)
