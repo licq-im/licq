@@ -880,10 +880,14 @@ bool CLicq::Install()
   mainConf.SetSection("licq");
   mainConf.WriteNum("Version", (unsigned short)LICQ_VERSION);
   mainConf.SetSection("plugins");
+  mainConf.WriteNum("NumPlugins", 0);
+  mainConf.WriteNum("NumProtoPlugins", 0);
   mainConf.SetSection("network");
   mainConf.SetSection("onevent");
   mainConf.SetSection("groups");
+  mainConf.WriteNum("NumOfGroups", 0);
   mainConf.SetSection("owners");
+  mainConf.WriteNum("NumOfOwners", 0);
   mainConf.FlushFile();
 
   // Create users.conf
