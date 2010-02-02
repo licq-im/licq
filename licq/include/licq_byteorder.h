@@ -63,19 +63,35 @@
 #  define IS_BIG_ENDIAN
 # endif
 
-// BSD defines bswap functions: swap16, swap32, swap64
-# define BSWAP_16(x) swap16(x)
-# define BSWAP_32(x) swap32(x)
-# define BSWAP_64(x) swap64(x)
+# if defined(__OpenBSD__)
+// OpenBSD defines bswap functions: swap16, swap32, swap64
+#  define BSWAP_16(x) swap16(x)
+#  define BSWAP_32(x) swap32(x)
+#  define BSWAP_64(x) swap64(x)
 
-// BSD defines conversion functions: betoh16, betoh32, betoh64, letoh16, letoh32, letoh64
-# define BE_16(x) betoh16(x)
-# define BE_32(x) betoh32(x)
-# define BE_64(x) betoh64(x)
-# define LE_16(x) letoh16(x)
-# define LE_32(x) letoh32(x)
-# define LE_64(x) letoh64(x)
+// OpenBSD defines conversion functions: betoh16, betoh32, betoh64, letoh16,
+// letoh32, letoh64
+#  define BE_16(x) betoh16(x)
+#  define BE_32(x) betoh32(x)
+#  define BE_64(x) betoh64(x)
+#  define LE_16(x) letoh16(x)
+#  define LE_32(x) letoh32(x)
+#  define LE_64(x) letoh64(x)
+# else
+// The other BSD's defines bswap functions: bswap16, bswap32, bswap64
+#  define BSWAP_16(x) bswap16(x)
+#  define BSWAP_32(x) bswap32(x)
+#  define BSWAP_64(x) bswap64(x)
 
+// The other BSD's defines conversion functions: be16toh, be32toh, be64toh,
+// le16toh, le32toh, le64toh
+#  define BE_16(x) be16toh(x)
+#  define BE_32(x) be32toh(x)
+#  define BE_64(x) be64toh(x)
+#  define LE_16(x) le16toh(x)
+#  define LE_32(x) le32toh(x)
+#  define LE_64(x) le64toh(x)
+# endif
 
 // Solaris header for endian and byte swap
 #elif defined(__sun) || defined(sun)
