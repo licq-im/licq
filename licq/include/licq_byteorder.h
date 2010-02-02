@@ -53,6 +53,7 @@
 // Compiler gives us __*BSD__ variables to check for
 #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 # include <machine/endian.h>
+# include <sys/endian.h>
 
 // BSD defines endian by setting _BYTE_ORDER to _BIG_ENDIAN or _LITTLE_ENDIAN
 # if _BYTE_ORDER == _LITTLE_ENDIAN
