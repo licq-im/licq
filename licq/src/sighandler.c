@@ -119,7 +119,7 @@ void licq_handle_sigabrt(int s)
 #else
                        "--batch-silent",
 #endif
-                       "-x", cmd, "--pid", parentPid, NULL);
+          "-x", cmd, "--pid", parentPid, (char *)NULL);
       fprintf(stderr, "Failed to start gdb: %s\n", strerror(errno));
       exit(ret);
     }
