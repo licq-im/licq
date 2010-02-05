@@ -797,7 +797,7 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
     gLog.Warn(tr("%sCannot accept new connection:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
     return false;
   }
-  if (newDesc < FD_SETSIZE)
+  if (newDesc < static_cast<int>(FD_SETSIZE))
   {
     newSocket.m_nDescriptor = newDesc;
     newSocket.SetLocalAddress();
