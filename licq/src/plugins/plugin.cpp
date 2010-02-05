@@ -42,7 +42,7 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
     loadSymbol(prefix + "_Id", myId);
   else
     loadSymbol("LP_Id", myId);
-  *myId = -1;
+  *myId = INVALID_ID;
 }
 
 Plugin::~Plugin()

@@ -266,7 +266,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
 
   gLog.Error(tr("%sInvalid plugin id (%d) in exit signal.\n"),
              L_ERRORxSTR, exitId);
-  return -1;
+  return Plugin::INVALID_ID;
 }
 
 void PluginManager::cancelAllPlugins()

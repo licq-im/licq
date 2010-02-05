@@ -29,6 +29,7 @@
 
 #include <boost/exception/info.hpp>
 #include <boost/shared_ptr.hpp>
+#include <climits>
 #include <string>
 
 class CICQDaemon;
@@ -39,6 +40,8 @@ namespace LicqDaemon
 class Plugin : public virtual Licq::Plugin
 {
 public:
+  static const unsigned short INVALID_ID = USHRT_MAX;
+
   typedef boost::shared_ptr<Plugin> Ptr;
 
   typedef boost::
