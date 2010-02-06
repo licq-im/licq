@@ -8,6 +8,7 @@ set(licq_HEADERS
   logsink.h
   plugin.h
   pluginmanager.h
+  types.h
   version.h
 )
 
