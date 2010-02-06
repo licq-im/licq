@@ -19,8 +19,8 @@
 // Localization
 #include "gettext.h"
 
+#include "licq/byteorder.h"
 #include "licq_buffer.h"
-#include "licq_byteorder.h"
 #include "licq_log.h"
 #include "support.h"
 

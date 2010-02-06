@@ -22,7 +22,7 @@
 // Localization
 #include "gettext.h"
 
-#include "licq_byteorder.h"
+#include "licq/byteorder.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_packets.h"

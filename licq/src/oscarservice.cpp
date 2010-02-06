@@ -20,7 +20,7 @@
 // Localization
 #include "gettext.h"
 
-#include "licq_byteorder.h"
+#include "licq/byteorder.h"
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "licq_socket.h"
