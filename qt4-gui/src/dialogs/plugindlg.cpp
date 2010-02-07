@@ -182,7 +182,7 @@ void PluginDlg::slot_standard(QTableWidgetItem* item)
     {
       QString pluginName = tblStandard->item(nRow, 1)->text();
       gLicqDaemon->getPluginManager().startGeneralPlugin(
-          pluginName.toLatin1().data(), NULL, 0);
+          pluginName.toLatin1().data(), 0, NULL);
     }
     else if (plugin.get() != NULL)
     {
