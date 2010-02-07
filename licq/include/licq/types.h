@@ -33,13 +33,6 @@ inline char* protocolId_toStr(char* ret, unsigned long protocolId)
   return ret;
 }
 
-}
-
-// Declare old class names for convenience until all code has been update for new names
-typedef Licq::Group LicqGroup;
-typedef Licq::Owner LicqOwner;
-typedef Licq::User LicqUser;
-
 // Define a type for user id so other code doesn't have to hardcode the real type everywhere
 typedef std::string UserId;
 // Test for a valid user id
@@ -71,5 +64,7 @@ typedef std::map<unsigned long, class Licq::Owner*> OwnerMap;
 typedef std::set<int> UserGroupList;
 typedef std::map<int, Licq::Group*> GroupMap;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
+
+} // namespace Licq
 
 #endif
