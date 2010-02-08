@@ -28,6 +28,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netdb.h>
+#include <pthread.h>
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #endif
@@ -304,16 +305,22 @@ int gethostbyname_r_portable(const char *szHostName, struct hostent *h, char *bu
   int herror = 0;
   h_buf = gethostbyname_r(szHostName, h, buf, buflen, &herror);
   return herror;
-// Default to thread unsafe version
+// Default to mutex version
 #else
-#warning "I don't know how to do reentrant gethostbyname on this machine."
-#warning "Using thread-unsafe version."
   (void)buf;
   (void)buflen;
+
+  static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+  pthread_mutex_lock(&mutex);
+
   struct hostent *h_buf;
   h_buf = gethostbyname(szHostName);
-  if (h_buf != NULL) memcpy(h, h_buf, sizeof(struct hostent));
-  return (h_buf == NULL ? h_errno : 0);
+  if (h_buf != NULL)
+    memcpy(h, h_buf, sizeof(struct hostent));
+  int retval = (h_buf == NULL ? h_errno : 0);
+
+  pthread_mutex_unlock(&mutex);
+  return retval;
 #endif
 }
 
