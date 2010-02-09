@@ -7,6 +7,7 @@
 #include <string>
 
 #include "licq/thread/mutex.h"
+#include "licq/types.h"
 #include "licq_file.h"
 
 // Structure for holding a user identity for a key
@@ -31,7 +32,7 @@ public:
   CGPGHelper();
   ~CGPGHelper();
   char *Decrypt(const char *);
-  char *Encrypt(const char *, const char *, unsigned long);
+  char* Encrypt(const char* plain, const Licq::UserId& userId);
   void Start();
 
   /**

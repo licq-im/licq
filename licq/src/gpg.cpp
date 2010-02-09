@@ -8,11 +8,12 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "licq/contactlist/user.h"
+#include "licq/contactlist/usermanager.h"
 #include "licq/thread/mutexlocker.h"
 #include "licq_file.h"
 #include "licq_gpg.h"
 #include "licq_log.h"
-#include "licq_user.h"
 
 using namespace std;
 using Licq::MutexLocker;
@@ -88,8 +89,7 @@ char *CGPGHelper::Decrypt(const char *szCipher)
 }
 
 
-char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
-                          unsigned long nPPID)
+char* CGPGHelper::Encrypt(const char* szPlain, const Licq::UserId& userId)
 {
 #ifdef HAVE_LIBGPGME
   if (!mCtx) return 0;
@@ -97,20 +97,23 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
 
   char szUser[MAX_LINE_LEN], buf[MAX_LINE_LEN];
   buf[0] = '\0';
-  sprintf(szUser, "%s.%lu", szId, nPPID);
+  sprintf(szUser, "%s.%lu", Licq::User::getUserAccountId(userId).c_str(),
+      Licq::User::getUserProtocolId(userId));
   mKeysIni.SetSection("keys");
 
-  const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-  if (u != NULL)
   {
-    const char *tmp = u->GPGKey();
-    if ( tmp && tmp[0]!='\0' )
-      strncpy( buf, tmp, MAX_LINE_LEN-1 );
-    gUserManager.DropUser( u );
+    Licq::UserReadGuard u(userId);
+    if (u.isLocked())
+    {
+      const char *tmp = u->GPGKey();
+      if ( tmp && tmp[0]!='\0' )
+        strncpy( buf, tmp, MAX_LINE_LEN-1 );
+    }
   }
+
   if ( !buf[0] && !mKeysIni.ReadStr(szUser, buf) ) return 0;
-	
-  gLog.Info("[GPG] Encrypting message to %s.\n", szId);
+
+  gLog.Info("[GPG] Encrypting message to %s.\n", USERID_TOSTR(userId));
 
   MutexLocker lock(myMutex);
   gpgme_key_t rcps[2];
@@ -153,8 +156,7 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
   return szCipher;
 #else
   (void)szPlain;
-  (void)szId;
-  (void)nPPID;
+  (void)userId;
   return 0;
 #endif
 }

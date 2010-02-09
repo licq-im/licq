@@ -86,7 +86,7 @@ void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, con
     bool useGpg = u->UseGPG();
     gUserManager.DropUser(u);
     if (useGpg && !bUserOffline)
-      cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
+      cipher = gGPGHelper.Encrypt(mDos, userId);
   }
 
   if (cipher) f |= E_ENCRYPTED;
