@@ -8,7 +8,6 @@ set(licq_HEADERS
   licq_events.h
   licq_file.h
   licq_filetransfer.h
-  licq_gpg.h
   licq_history.h
   licq_homepagecodes.h
   licq_icq.h

@@ -23,6 +23,7 @@
 #include "gettext.h"
 
 #include "licq/byteorder.h"
+#include "licq/gpghelper.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_packets.h"
@@ -32,7 +33,6 @@
 #include "licq_log.h"
 #include "licq_chat.h"
 #include "licq_filetransfer.h"
-#include "licq_gpg.h"
 #include "support.h"
 #include "licq/version.h"
 
@@ -86,7 +86,7 @@ void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, con
     bool useGpg = u->UseGPG();
     gUserManager.DropUser(u);
     if (useGpg && !bUserOffline)
-      cipher = gGPGHelper.Encrypt(mDos, userId);
+      cipher = Licq::gGpgHelper.Encrypt(mDos, userId);
   }
 
   if (cipher) f |= E_ENCRYPTED;

@@ -21,7 +21,7 @@ set(licq_SRCS
   countrycodes.c
   fifo.cpp
   file.cpp
-  gpg.cpp
+  gpghelper.cpp
   hebrev.c
   history.cpp
   homepagecodes.c

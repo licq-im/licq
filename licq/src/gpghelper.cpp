@@ -1,9 +1,6 @@
-
+#include "gpghelper.h"
 #include "config.h"
 
-#ifdef HAVE_LIBGPGME
-#include <gpgme.h>
-#endif
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -11,27 +8,24 @@
 #include "licq/contactlist/user.h"
 #include "licq/contactlist/usermanager.h"
 #include "licq/thread/mutexlocker.h"
-#include "licq_file.h"
-#include "licq_gpg.h"
 #include "licq_log.h"
 
 using namespace std;
+using namespace LicqDaemon;
+using Licq::GpgKey;
+using Licq::GpgUid;
 using Licq::MutexLocker;
 
-CGPGHelper gGPGHelper;
+// Declare our global GpgHelper (internal for deamon)
+LicqDaemon::GpgHelper LicqDaemon::gGpgHelper;
 
-const char CGPGHelper::pgpSig[] = "-----BEGIN PGP MESSAGE-----";
+// Initialize global Licq::GpgHelper to refer to the internal GpgHelper
+Licq::GpgHelper& Licq::gGpgHelper(LicqDaemon::gGpgHelper);
 
-// These variables are local to the GPGHelper but are not in the header file
-// to reduce dependancies for other classes and plugins
-#ifdef HAVE_LIBGPGME
-static gpgme_ctx_t mCtx;
-static gpgme_error_t PassphraseCallback(void *, const char *, const char*, int, int);
-#endif
-static char* mGPGPassphrase;
+const char Licq::GpgHelper::pgpSig[] = "-----BEGIN PGP MESSAGE-----";
 
 
-CGPGHelper::CGPGHelper()
+GpgHelper::GpgHelper()
   : mKeysIni(INI_FxALLOWxCREATE)
 {
 #ifdef HAVE_LIBGPGME
@@ -41,7 +35,7 @@ CGPGHelper::CGPGHelper()
 }
 
 
-CGPGHelper::~CGPGHelper()
+GpgHelper::~GpgHelper()
 {
 #ifdef HAVE_LIBGPGME
   if (mCtx) gpgme_release(mCtx);
@@ -51,7 +45,7 @@ CGPGHelper::~CGPGHelper()
 }
 
 
-char *CGPGHelper::Decrypt(const char *szCipher)
+char* GpgHelper::Decrypt(const char *szCipher)
 {
 #ifdef HAVE_LIBGPGME
   if (!mCtx) return 0;
@@ -88,8 +82,7 @@ char *CGPGHelper::Decrypt(const char *szCipher)
 #endif
 }
 
-
-char* CGPGHelper::Encrypt(const char* szPlain, const Licq::UserId& userId)
+char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
 {
 #ifdef HAVE_LIBGPGME
   if (!mCtx) return 0;
@@ -161,7 +154,7 @@ char* CGPGHelper::Encrypt(const char* szPlain, const Licq::UserId& userId)
 #endif
 }
 
-list<GpgKey>* CGPGHelper::getKeyList() const
+list<GpgKey>* GpgHelper::getKeyList() const
 {
   list<GpgKey>* keyList = new list<GpgKey>();
 #ifdef HAVE_LIBGPGME
@@ -200,7 +193,7 @@ list<GpgKey>* CGPGHelper::getKeyList() const
   return keyList;
 }
 
-void CGPGHelper::Start()
+void GpgHelper::Start()
 {
 #ifdef HAVE_LIBGPGME
   char buf[MAX_LINE_LEN];
@@ -219,15 +212,16 @@ void CGPGHelper::Start()
   gpgme_new(&mCtx);
   gpgme_set_protocol(mCtx, GPGME_PROTOCOL_OpenPGP);
   gpgme_set_armor(mCtx, 1);
-  gpgme_set_passphrase_cb(mCtx, PassphraseCallback, 0);
+  gpgme_set_passphrase_cb(mCtx, PassphraseCallback, this);
 #endif
 }
 
 #ifdef HAVE_LIBGPGME
-gpgme_error_t PassphraseCallback(void *, const char *, const char *, int, int fd)
+gpgme_error_t GpgHelper::PassphraseCallback(void* helperPtr, const char *, const char *, int, int fd)
 {
+  GpgHelper* helper = static_cast<GpgHelper*>(helperPtr);
   const char nl = '\n';
-  const char* const pf = mGPGPassphrase;
+  const char* const pf = helper->mGPGPassphrase;
   if (pf == 0)
   {
     write(fd, &nl, 1);
@@ -238,3 +232,4 @@ gpgme_error_t PassphraseCallback(void *, const char *, const char *, int, int fd
   return GPG_ERR_NO_ERROR;
 }
 #endif
+

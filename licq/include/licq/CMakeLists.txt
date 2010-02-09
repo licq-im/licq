@@ -3,6 +3,7 @@ set(licq_HEADERS
 
   byteorder.h
   daemon.h
+  gpghelper.h
   log.h
   logservice.h
   logsink.h

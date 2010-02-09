@@ -33,7 +33,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq_gpg.h>
+#include <licq/gpghelper.h>
 #include <licq_user.h>
 #include <licq_events.h>
 
@@ -251,8 +251,8 @@ void KeyView::initKeyList()
   maxItemVal = -1;
   maxItem = NULL;
 
-  auto_ptr<list<GpgKey> > keyList(gGPGHelper.getKeyList());
-  list<GpgKey>::const_iterator i;
+  auto_ptr<list<Licq::GpgKey> > keyList(Licq::gGpgHelper.getKeyList());
+  list<Licq::GpgKey>::const_iterator i;
   for (i = keyList->begin(); i != keyList->end(); ++i)
   {
     // There shouldn't be any key without a user id in list, but make just in case
@@ -260,7 +260,7 @@ void KeyView::initKeyList()
       continue;
 
     // First user id is primary uid
-    list<GpgUid>::const_iterator uid = i->uids.begin();
+    list<Licq::GpgUid>::const_iterator uid = i->uids.begin();
 
     QStringList cols;
     cols << QString::fromUtf8(uid->name.c_str());

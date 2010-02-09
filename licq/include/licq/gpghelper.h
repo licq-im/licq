@@ -1,14 +1,14 @@
+#ifndef LICQ_GPGHELPER_H
+#define LICQ_GPGHELPER_H
 
-#ifndef _LICQ_GPG_H_INCLUDED_
-#define _LICQ_GPG_H_INCLUDED_
-
+#include <boost/noncopyable.hpp>
 #include <list>
-#include <pthread.h>
 #include <string>
 
-#include "licq/thread/mutex.h"
-#include "licq/types.h"
-#include "licq_file.h"
+#include "types.h"
+
+namespace Licq
+{
 
 // Structure for holding a user identity for a key
 struct GpgUid
@@ -25,15 +25,12 @@ struct GpgKey
   std::string keyid;
 };
 
-class CGPGHelper
+class GpgHelper : private boost::noncopyable
 {
 public:
   static const char pgpSig[];
-  CGPGHelper();
-  ~CGPGHelper();
-  char *Decrypt(const char *);
-  char* Encrypt(const char* plain, const Licq::UserId& userId);
-  void Start();
+  virtual char* Decrypt(const char* cipher) = 0;
+  virtual char* Encrypt(const char* plain, const Licq::UserId& userId) = 0;
 
   /**
    * Get a list of keys
@@ -46,14 +43,15 @@ public:
    *
    * @return A list of keys, must be deleted by caller
    */
-  std::list<GpgKey>* getKeyList() const;
+  virtual std::list<GpgKey>*  getKeyList() const = 0;
 
 protected:
-  CIniFile mKeysIni;
-  mutable Licq::Mutex myMutex;
+  virtual ~GpgHelper()
+  { /* Empty */ }
 };
 
+extern GpgHelper& gGpgHelper;
 
-extern CGPGHelper gGPGHelper;
+} // namespace Licq
 
-#endif //_LICQ_GPG_H_INCLUDED_
+#endif

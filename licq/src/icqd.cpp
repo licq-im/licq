@@ -34,13 +34,15 @@
 #include "licq_translate.h"
 #include "licq_packets.h"
 #include "licq_proxy.h"
-#include "licq_gpg.h"
+
+#include "gpghelper.h"
 #include "licq.h"
 #include "support.h"
 
 #include "licq_icqd.h"
 
 using namespace std;
+using namespace LicqDaemon;
 
 std::list <CReverseConnectToUserData *> CICQDaemon::m_lReverseConnect;
 pthread_mutex_t CICQDaemon::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
@@ -345,7 +347,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   srand(time(NULL));
 
   // start GPG helper
-  gGPGHelper.Start();
+  gGpgHelper.Start();
 
   // Init event id counter
   myNextEventId = 1;

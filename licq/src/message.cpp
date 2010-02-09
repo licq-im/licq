@@ -16,11 +16,11 @@
 // Localization
 #include "gettext.h"
 
+#include "licq/gpghelper.h"
 #include "licq_message.h"
 #include "licq_user.h"
 #include "licq_translate.h"
 #include "licq_icqd.h"
-#include "licq_gpg.h"
 #include "support.h"
 
 #ifdef USE_HEBREW
@@ -148,8 +148,8 @@ CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
 {
   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
 
-  if (strstr(m_szMessage, CGPGHelper::pgpSig) == m_szMessage)
-    if (char *plaintext = gGPGHelper.Decrypt(m_szMessage))
+  if (strstr(m_szMessage, Licq::GpgHelper::pgpSig) == m_szMessage)
+    if (char *plaintext = Licq::gGpgHelper.Decrypt(m_szMessage))
     {
       m_nFlags |= E_ENCRYPTED;
       free(m_szMessage);
