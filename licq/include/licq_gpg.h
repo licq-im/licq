@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <string>
 
+#include "licq/thread/mutex.h"
 #include "licq_file.h"
 
 // Structure for holding a user identity for a key
@@ -48,17 +49,7 @@ public:
 
 protected:
   CIniFile mKeysIni;
-};
-
-class CGPGMEMutex
-{
-public:
-  ~CGPGMEMutex();
-  CGPGMEMutex();
-  bool Lock();
-
-protected:
-  static pthread_mutex_t mutex;
+  mutable Licq::Mutex myMutex;
 };
 
 

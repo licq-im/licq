@@ -8,12 +8,14 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "licq/thread/mutexlocker.h"
 #include "licq_file.h"
 #include "licq_gpg.h"
 #include "licq_log.h"
 #include "licq_user.h"
 
 using namespace std;
+using Licq::MutexLocker;
 
 CGPGHelper gGPGHelper;
 
@@ -56,8 +58,7 @@ char *CGPGHelper::Decrypt(const char *szCipher)
   size_t nRead = 0;
   gpgme_data_t cipher, plain;
 
-  CGPGMEMutex mutex;
-  if (!mutex.Lock()) return 0;
+  MutexLocker lock(myMutex);
   if (gpgme_data_new(&cipher) != GPG_ERR_NO_ERROR) return 0;
   char *buf = strdup(szCipher);
   gpgme_error_t err;
@@ -111,8 +112,7 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
 	
   gLog.Info("[GPG] Encrypting message to %s.\n", szId);
 
-  CGPGMEMutex mutex;
-  if (!mutex.Lock()) return 0;
+  MutexLocker lock(myMutex);
   gpgme_key_t rcps[2];
   gpgme_data_t plain = 0, cipher = 0;
   gpgme_error_t err;
@@ -163,8 +163,7 @@ list<GpgKey>* CGPGHelper::getKeyList() const
 {
   list<GpgKey>* keyList = new list<GpgKey>();
 #ifdef HAVE_LIBGPGME
-  CGPGMEMutex mutex;
-  if (!mutex.Lock()) return keyList;
+  MutexLocker lock(myMutex);
 
   int err = gpgme_op_keylist_start(mCtx, NULL, 0);
 
@@ -237,25 +236,3 @@ gpgme_error_t PassphraseCallback(void *, const char *, const char *, int, int fd
   return GPG_ERR_NO_ERROR;
 }
 #endif
-
-
-
-/*** GPGME lock for thread safety ***/
-
-pthread_mutex_t CGPGMEMutex::mutex;
-
-CGPGMEMutex::~CGPGMEMutex()
-{
-  pthread_mutex_unlock(&mutex);
-}
-
-CGPGMEMutex::CGPGMEMutex()
-{
-  pthread_mutex_init(&mutex, 0);
-}
-
-bool CGPGMEMutex::Lock()
-{
-  return pthread_mutex_lock(&mutex) == 0;
-}
-
