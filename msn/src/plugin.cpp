@@ -16,8 +16,8 @@
 
 // written by Jon Keating <jon@licq.org>
 
+#include "licq_icq.h"
 #include "licq_icqd.h"
-#include "licq_user.h"
 #include "licq_protoplugin.h"
 #include "licq/pluginmanager.h"
 

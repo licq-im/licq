@@ -11,6 +11,7 @@
 extern char **global_argv;
 extern int global_argc;
 
+class CICQDaemon;
 class CIniFile;
 
 class CLicq

@@ -14,6 +14,8 @@
 
 #include <locale>
 
+#include "licq_constants.h"
+
 #include "licq.h"
 
 #ifdef USE_SOCKS5

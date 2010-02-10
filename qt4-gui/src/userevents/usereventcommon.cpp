@@ -34,6 +34,7 @@
 
 #include <licq_icqd.h>
 #include <licq/pluginmanager.h>
+#include <licq_events.h>
 #include <licq_user.h>
 
 #include "config/chat.h"

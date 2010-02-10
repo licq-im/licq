@@ -38,6 +38,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
+#include <licq_constants.h>
 #include <licq_icqd.h>
 #include <licq/pluginmanager.h>
 
