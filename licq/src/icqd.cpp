@@ -37,6 +37,7 @@
 
 #include "gpghelper.h"
 #include "licq.h"
+#include "plugins/pluginmanager.h"
 #include "support.h"
 
 #include "licq_icqd.h"
@@ -465,12 +466,12 @@ bool CICQDaemon::Start()
 
 Licq::PluginManager& CICQDaemon::getPluginManager()
 {
-  return licq->getPluginManager();
+  return gPluginManager;
 }
 
 const Licq::PluginManager& CICQDaemon::getPluginManager() const
 {
-  return licq->getPluginManager();
+  return gPluginManager;
 }
 
 Licq::LogService& CICQDaemon::getLogService()
@@ -1583,17 +1584,17 @@ void CICQDaemon::PushExtendedEvent(ICQEvent *e)
  *----------------------------------------------------------------------------*/
 void CICQDaemon::PushPluginEvent(ICQEvent *e)
 {
-  licq->getPluginManager().getPluginEventHandler().pushGeneralEvent(e);
+  gPluginManager.getPluginEventHandler().pushGeneralEvent(e);
 }
 
 void CICQDaemon::pushPluginSignal(LicqSignal* s)
 {
-  licq->getPluginManager().getPluginEventHandler().pushGeneralSignal(s);
+  gPluginManager.getPluginEventHandler().pushGeneralSignal(s);
 }
 
 LicqSignal* CICQDaemon::popPluginSignal()
 {
-  return licq->getPluginManager().getPluginEventHandler().popGeneralSignal();
+  return gPluginManager.getPluginEventHandler().popGeneralSignal();
 }
 
 /*------------------------------------------------------------------------------
@@ -1603,18 +1604,17 @@ LicqSignal* CICQDaemon::popPluginSignal()
  *----------------------------------------------------------------------------*/
 ICQEvent *CICQDaemon::PopPluginEvent()
 {
-  return licq->getPluginManager().getPluginEventHandler().popGeneralEvent();
+  return gPluginManager.getPluginEventHandler().popGeneralEvent();
 }
 
 void CICQDaemon::PushProtoSignal(LicqProtoSignal* s, unsigned long _nPPID)
 {
-  licq->getPluginManager()
-      .getPluginEventHandler().pushProtocolSignal(s, _nPPID);
+  gPluginManager.getPluginEventHandler().pushProtocolSignal(s, _nPPID);
 }
 
 LicqProtoSignal* CICQDaemon::PopProtoSignal()
 {
-  return licq->getPluginManager().getPluginEventHandler().popProtocolSignal();
+  return gPluginManager.getPluginEventHandler().popProtocolSignal();
 }
 
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
@@ -1711,7 +1711,7 @@ bool CICQDaemon::AddProtocolPlugins()
       sprintf(szKey, "ProtoPlugin%d", i + 1);
       if (!licqConf.ReadStr(szKey, szData))
         continue;
-      if (!getPluginManager().startProtocolPlugin(szData))
+      if (!gPluginManager.startProtocolPlugin(szData))
         return false;
     }
   }

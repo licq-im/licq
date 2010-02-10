@@ -23,6 +23,7 @@
 extern "C" { const char *LP_Version(); }
 
 using namespace std;
+using Licq::gPluginManager;
 
 const char L_AUTOREPxSTR[]  = "[RPL] ";
 const unsigned short SUBJ_CHARS = 20;
@@ -52,7 +53,7 @@ CLicqAutoReply::~CLicqAutoReply()
 void CLicqAutoReply::Shutdown()
 {
   gLog.Info("%sShutting down auto reply.\n", L_AUTOREPxSTR);
-  licqDaemon->getPluginManager().unregisterGeneralPlugin();
+  gPluginManager.unregisterGeneralPlugin();
 }
 
 
@@ -62,8 +63,7 @@ void CLicqAutoReply::Shutdown()
 int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we only want the update user signal
-  m_nPipe = _licqDaemon->getPluginManager().
-      registerGeneralPlugin(SIGNAL_UPDATExUSER);
+  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
   licqDaemon = _licqDaemon;
 
   char filename[256];

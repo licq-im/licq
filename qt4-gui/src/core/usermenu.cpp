@@ -277,7 +277,7 @@ void UserMenu::aboutToShowMenu()
   unsigned long sendFuncs = 0;
   bool isIcq = myPpid == LICQ_PPID;
 
-  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myPpid);
   if (protocol.get() != NULL)
     sendFuncs = protocol->getSendFunctions();
 

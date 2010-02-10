@@ -128,6 +128,7 @@ extern "C"
 using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
+using Licq::gPluginManager;
 
 #if defined(USE_SCRNSAVER)
 static XErrorHandler old_handler = 0;
@@ -425,7 +426,7 @@ int LicqGui::Run(CICQDaemon* daemon)
   myLicqDaemon = daemon;
 
   // Register with the daemon, we want to receive all signals
-  int pipe = daemon->getPluginManager().registerGeneralPlugin(SIGNAL_ALL);
+  int pipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
 
   // Create the configuration handlers
   Config::General::createInstance(this);
@@ -517,7 +518,7 @@ int LicqGui::Run(CICQDaemon* daemon)
 
   int r = exec();
 
-  daemon->getPluginManager().unregisterGeneralPlugin();
+  gPluginManager.unregisterGeneralPlugin();
 
   gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
   gLog.ModifyService(S_PLUGIN, 0);
@@ -772,7 +773,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int con
 
   // Find out what's supported for this protocol
   unsigned long sendFuncs = 0;
-  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+  Licq::ProtocolPlugin::Ptr protocol = gPluginManager.getProtocolPlugin(ppid);
   if (protocol.get() != NULL)
     sendFuncs = protocol->getSendFunctions();
 
@@ -1159,7 +1160,7 @@ void LicqGui::showDefaultEventDialog(const UserId& userId)
 
     // Check which message types are supported for this protocol
     unsigned long sendFuncs = 0;
-    Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+    Licq::ProtocolPlugin::Ptr protocol = gPluginManager.getProtocolPlugin(ppid);
     if (protocol.get() != NULL)
       sendFuncs = protocol->getSendFunctions();
 

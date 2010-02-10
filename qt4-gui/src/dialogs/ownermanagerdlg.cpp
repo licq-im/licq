@@ -140,7 +140,7 @@ void OwnerManagerDlg::updateOwners()
       QString id = pOwner->accountId().c_str();
       unsigned long ppid = pOwner->ppid();
       QString proto;
-      Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+      Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
       if (protocol.get() != NULL)
         proto = protocol->getName();
 

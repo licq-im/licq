@@ -344,7 +344,7 @@ void SystemMenu::addOwner(const UserId& userId)
   // Make we actually have a plugin protocol loaded for the owner,
   //   otherwise there is no point in including it in the menus.
   unsigned long ppid = LicqUser::getUserProtocolId(userId);
-  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
   if (protocol.get() == NULL)
     return;
 

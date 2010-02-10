@@ -21,9 +21,10 @@
 #include "pluginversion.h"
 
 #include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_protoplugin.h>
 #include <licq/pluginmanager.h>
+
+using Licq::gPluginManager;
 
 char* LProto_Name()
 {
@@ -55,8 +56,8 @@ unsigned long LProto_SendFuncs()
 
 int LProto_Main(CICQDaemon* daemon)
 {
-  int pipe = daemon->getPluginManager().registerProtocolPlugin();
+  int pipe = gPluginManager.registerProtocolPlugin();
   int res = Jabber(daemon).run(pipe);
-  daemon->getPluginManager().unregisterProtocolPlugin();
+  gPluginManager.unregisterProtocolPlugin();
   return res;
 }

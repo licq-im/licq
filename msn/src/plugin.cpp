@@ -17,12 +17,13 @@
 // written by Jon Keating <jon@licq.org>
 
 #include "licq_icq.h"
-#include "licq_icqd.h"
 #include "licq_protoplugin.h"
 #include "licq/pluginmanager.h"
 
 #include "pluginversion.h"
 #include "msn.h"
+
+using Licq::gPluginManager;
 
 char *LProto_Name()
 {
@@ -54,13 +55,13 @@ unsigned long LProto_Capabilities()
 
 int LProto_Main(CICQDaemon *_pDaemon)
 {
-  int nPipe = _pDaemon->getPluginManager().registerProtocolPlugin();
+  int nPipe = gPluginManager.registerProtocolPlugin();
 
   CMSN *pMSN = new CMSN(_pDaemon, nPipe);
   pMSN->Run();
 
-  _pDaemon->getPluginManager().unregisterProtocolPlugin();
-  
+  gPluginManager.unregisterProtocolPlugin();
+
   delete pMSN;
   
   return 0;

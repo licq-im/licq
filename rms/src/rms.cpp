@@ -21,6 +21,7 @@
 #include <licq/pluginmanager.h>
 
 using namespace std;
+using Licq::gPluginManager;
 
 extern "C" { const char *LP_Version(); }
 
@@ -174,7 +175,7 @@ CLicqRMS::~CLicqRMS()
 void CLicqRMS::Shutdown()
 {
   gLog.Info("%sShutting down remote manager server.\n", L_RMSxSTR);
-  licqDaemon->getPluginManager().unregisterGeneralPlugin();
+  gPluginManager.unregisterGeneralPlugin();
 }
 
 
@@ -186,7 +187,7 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
   unsigned short nPort;
 
   // Register with the daemon, we only want the update user signal
-  m_nPipe = _licqDaemon->getPluginManager().registerGeneralPlugin(SIGNAL_ALL);
+  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
   licqDaemon = _licqDaemon;
   
   char filename[256];
@@ -485,7 +486,7 @@ unsigned long CRMSClient::GetProtocol(const char *szData)
   unsigned long nPPID = 0;
 
   Licq::ProtocolPluginsList plugins;
-  licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+  gPluginManager.getProtocolPluginsList(plugins);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
     if (strcasecmp(plugin->getName(), szData) == 0)
@@ -509,7 +510,7 @@ void CRMSClient::ParseUser(const char *szData)
   if (nPos == string::npos)
   {
     Licq::ProtocolPluginsList plugins;
-    licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+    gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
       myUserId = LicqUser::makeUserId(data_arg, plugin->getProtocolId());
@@ -798,7 +799,7 @@ int CRMSClient::Process_STATUS()
   if (data_arg[0] == '\0')
   {
     Licq::ProtocolPluginsList plugins;
-    licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+    gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
       ICQOwner *o = gUserManager.FetchOwner(plugin->getProtocolId(), LOCK_R);
@@ -819,7 +820,7 @@ int CRMSClient::Process_STATUS()
   {
     unsigned long nStatus = StringToStatus(data_arg);
     Licq::ProtocolPluginsList plugins;
-    licqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+    gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
       ChangeStatus(plugin->getProtocolId(), nStatus, data_arg);

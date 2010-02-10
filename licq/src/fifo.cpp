@@ -38,6 +38,7 @@
 // Localization
 #include "gettext.h"
 
+#include "licq/pluginmanager.h"
 #include "licq_icq.h"
 #include "licq_user.h"
 #include "licq_constants.h"
@@ -50,6 +51,7 @@
 #include "licq_icqd.h"
 
 using std::string;
+using Licq::gPluginManager;
 
 #define ReportMissingParams(cmdname) \
   (gLog.Info("%s `%s': missing arguments. try `help %s'\n",  \
@@ -187,9 +189,8 @@ static bool buffer_is_uin(const char *buffer)
   return (len>0 && len <= MAX_UIN_DIGITS) && *buffer=='\0';
 }
 
-static bool buffer_get_ids(CICQDaemon *d, char *buffer, 
-                           char **szId, unsigned long *nPPID, 
-                           bool *missing_protocol)
+static bool buffer_get_ids(char* buffer, char** szId, unsigned long* nPPID,
+    bool* missing_protocol)
 {
   bool found = false;
   char *write = buffer;
@@ -223,7 +224,7 @@ static bool buffer_get_ids(CICQDaemon *d, char *buffer,
     *missing_protocol = false;
     
     Licq::ProtocolPluginsList plugins;
-    d->getPluginManager().getProtocolPluginsList(plugins);
+    gPluginManager.getProtocolPluginsList(plugins);
 
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
@@ -252,10 +253,8 @@ static bool buffer_get_ids(CICQDaemon *d, char *buffer,
  *
  * \returns true on success
  */
-static bool atoid( const char *buff, bool bOnList, 
-                   char **szId, unsigned long *nPPID,
-                   CICQDaemon *daemon)
-{ 
+static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nPPID)
+{
   char *_szId = 0;
   unsigned long _nPPID = 0;
   bool ret = false, missing_protocol=true;
@@ -272,7 +271,7 @@ static bool atoid( const char *buff, bool bOnList,
     _szId = s;
     ret = true;
   }
-  else if( buffer_get_ids(daemon, s, &_szId, &_nPPID, &missing_protocol) )
+  else if (buffer_get_ids(s, &_szId, &_nPPID, &missing_protocol))
   {
     ret = false;
 
@@ -389,7 +388,7 @@ static int fifo_message ( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if( atoid(argv[1], false, &szId, &nPPID, d) )
+  if (atoid(argv[1], false, &szId, &nPPID))
     d->sendMessage(LicqUser::makeUserId(szId, nPPID), argv[2], true, 0);
 
   else
@@ -414,7 +413,7 @@ static int fifo_url ( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if( atoid(argv[1], false, &szId, &nPPID, d) )
+  if (atoid(argv[1], false, &szId, &nPPID))
   {
     szDescr = (argc > 3) ? argv[3] : "" ;
     d->sendUrl(LicqUser::makeUserId(szId, nPPID), argv[2], szDescr, true, false);
@@ -440,7 +439,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if (atoid(argv[1], false, &szId, &nPPID, d) )
+  if (atoid(argv[1], false, &szId, &nPPID))
   { 
     if( nPPID == LICQ_PPID )
     {
@@ -518,9 +517,8 @@ static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
 }
 
 // adduser <buddy>
-static int fifo_adduser ( int argc, const char *const *argv, void *data)
-{ 
-  CICQDaemon *d = (CICQDaemon *) data;
+static int fifo_adduser(int argc, const char* const* argv, void* /* data */)
+{
   unsigned long nPPID;
   char *szId = 0;
 
@@ -530,7 +528,7 @@ static int fifo_adduser ( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  if( atoid(argv[1], false, &szId, &nPPID, d) )
+  if (atoid(argv[1], false, &szId, &nPPID))
   {
     UserId userId = LicqUser::makeUserId(szId, nPPID);
     gUserManager.addUser(userId);
@@ -552,7 +550,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
 
   if ( argc == 1 )
     ReportMissingParams(argv[0]);
-  else if( !atoid(argv[1], true, &szId, &nPPID, d) )
+  else if (!atoid(argv[1], true, &szId, &nPPID))
     ReportBadBuddy(argv[0],argv[1]);
   else if( nPPID != LICQ_PPID )
      gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
@@ -596,8 +594,8 @@ static int fifo_ui_viewevent ( int argc, const char *const *argv, void *data)
     szId = strdup("0");
     nPPID = 0;
   }
-  else if( !atoid(argv[1], true, &szId, &nPPID, d) )
-  {  
+  else if (!atoid(argv[1], true, &szId, &nPPID))
+  {
     ReportBadBuddy(argv[0],argv[1]);
     free(szId);
 
@@ -625,7 +623,7 @@ static int fifo_ui_message ( int argc, const char *const *argv, void *data)
     ReportMissingParams(argv[0]);
     nRet = -1;
   }
-  else if( atoid(argv[1], true, &szId, &nPPID, d) )
+  else if (atoid(argv[1], true, &szId, &nPPID))
     d->pluginUIMessage(LicqUser::makeUserId(szId, nPPID));
   else
   {
@@ -637,12 +635,10 @@ static int fifo_ui_message ( int argc, const char *const *argv, void *data)
   return nRet;
 }
 
-static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void *data)
+static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
-
   Licq::GeneralPluginsList plugins;
-  d->getPluginManager().getGeneralPluginsList(plugins);
+  gPluginManager.getGeneralPluginsList(plugins);
 
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
@@ -651,35 +647,31 @@ static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void 
   return 0;
 }
 
-static int fifo_plugin_load(int argc, const char *const *argv, void *data)
+static int fifo_plugin_load(int argc, const char* const* argv, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
-
   if (argc == 1)
   {
     ReportMissingParams(argv[0]);
     return -1;
   }
-  
-  if (d->getPluginManager().startGeneralPlugin(argv[1], 0, NULL))
+
+  if (gPluginManager.startGeneralPlugin(argv[1], 0, NULL))
     return 0;
   
   gLog.Info("Couldn't load plugin '%s'\n", argv[1]);
   return -1;
 }
 
-static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
+static int fifo_plugin_unload(int argc, const char* const* argv, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
-
   if( argc == 1 )
   {
     ReportMissingParams(argv[0]);
     return -1;
   }
-  
+
   Licq::GeneralPluginsList plugins;
-  d->getPluginManager().getGeneralPluginsList(plugins);
+  gPluginManager.getGeneralPluginsList(plugins);
 
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
@@ -693,12 +685,10 @@ static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
   return -1;
 }
 
-static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */, void *data)
+static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
-
   Licq::ProtocolPluginsList plugins;
-  d->getPluginManager().getProtocolPluginsList(plugins);
+  gPluginManager.getProtocolPluginsList(plugins);
 
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
@@ -707,27 +697,23 @@ static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */,
   return 0;
 }
 
-static int fifo_proto_plugin_load(int argc, const char *const *argv, void *data)
+static int fifo_proto_plugin_load(int argc, const char* const* argv, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
-
   if (argc == 1)
   {
     ReportMissingParams(argv[0]);
     return -1;
   }
-  
-  if (d->getPluginManager().startProtocolPlugin(argv[1]))
+
+  if (gPluginManager.startProtocolPlugin(argv[1]))
     return 0;
   
   gLog.Info("Couldn't load protocol plugin '%s'\n", argv[1]);
   return -1;
 }
 
-static int fifo_proto_plugin_unload(int argc, const char *const *argv, void *data)
+static int fifo_proto_plugin_unload(int argc, const char* const* argv, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
-
   if (argc == 1)
   {
     ReportMissingParams(argv[0]);
@@ -735,7 +721,7 @@ static int fifo_proto_plugin_unload(int argc, const char *const *argv, void *dat
   }
 
   Licq::ProtocolPluginsList plugins;
-  d->getPluginManager().getProtocolPluginsList(plugins);
+  gPluginManager.getProtocolPluginsList(plugins);
 
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {

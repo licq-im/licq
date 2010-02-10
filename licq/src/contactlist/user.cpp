@@ -26,6 +26,7 @@ using std::vector;
 using Licq::ICQUserPhoneBook;
 using Licq::SecureChannelSupport_et;
 using Licq::User;
+using Licq::gPluginManager;
 
 
 ICQUserPhoneBook::ICQUserPhoneBook()
@@ -1336,7 +1337,7 @@ char* User::usprintf(const char* _szFormat, unsigned long nFlags) const
         case 'P':
         {
           Licq::ProtocolPluginsList plugins;
-          gLicqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+          gPluginManager.getProtocolPluginsList(plugins);
           BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
           {
             if (myPpid == plugin->getProtocolId())

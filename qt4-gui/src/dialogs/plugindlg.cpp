@@ -39,7 +39,6 @@
 #include <QVBoxLayout>
 
 #include <licq_constants.h>
-#include <licq_icqd.h>
 #include <licq/pluginmanager.h>
 
 #include "core/mainwin.h"
@@ -52,6 +51,7 @@
 using std::string;
 using std::list;
 using std::find;
+using Licq::gPluginManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::PluginDlg */
 
@@ -138,7 +138,7 @@ PluginDlg::~PluginDlg()
 Licq::GeneralPlugin::Ptr PluginDlg::getGeneralPlugin(int id)
 {
   Licq::GeneralPluginsList plugins;
-  gLicqDaemon->getPluginManager().getGeneralPluginsList(plugins);
+  gPluginManager.getGeneralPluginsList(plugins);
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
     if (plugin->getId() == id)
@@ -150,7 +150,7 @@ Licq::GeneralPlugin::Ptr PluginDlg::getGeneralPlugin(int id)
 Licq::ProtocolPlugin::Ptr PluginDlg::getProtocolPlugin(int id)
 {
   Licq::ProtocolPluginsList plugins;
-  gLicqDaemon->getPluginManager().getProtocolPluginsList(plugins);
+  gPluginManager.getProtocolPluginsList(plugins);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
     if (plugin->getId() == id)
@@ -182,8 +182,7 @@ void PluginDlg::slot_standard(QTableWidgetItem* item)
     if (state == true)
     {
       QString pluginName = tblStandard->item(nRow, 1)->text();
-      gLicqDaemon->getPluginManager().startGeneralPlugin(
-          pluginName.toLatin1().data(), 0, NULL);
+      gPluginManager.startGeneralPlugin(pluginName.toLatin1().data(), 0, NULL);
     }
     else if (plugin.get() != NULL)
     {
@@ -230,7 +229,7 @@ void PluginDlg::slot_protocol(QTableWidgetItem* item)
     if (state == true)
     {
       QString pluginName = tblProtocol->item(nRow, 1)->text();
-      gLicqDaemon->getPluginManager().startProtocolPlugin(pluginName.toLatin1().data());
+      gPluginManager.startProtocolPlugin(pluginName.toLatin1().data());
     }
     else if (plugin.get() != NULL)
     {
@@ -280,7 +279,7 @@ void PluginDlg::slot_refresh()
 
   // Load up the standard loaded plugin info
   Licq::GeneralPluginsList plugins;
-  gLicqDaemon->getPluginManager().getGeneralPluginsList(plugins);
+  gPluginManager.getGeneralPluginsList(plugins);
   int i = 0;
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
@@ -307,7 +306,7 @@ void PluginDlg::slot_refresh()
 
   // Load up the standard unloaded plugin info
   list<string> unloadedPlugins;
-  gLicqDaemon->getPluginManager().getAvailableGeneralPlugins(unloadedPlugins, false);
+  gPluginManager.getAvailableGeneralPlugins(unloadedPlugins, false);
   BOOST_FOREACH(string plugin, unloadedPlugins)
   {
     tblStandard->setRowCount(i+1);
@@ -330,7 +329,7 @@ void PluginDlg::slot_refresh()
 
   // Load up the protocol plugin info now
   Licq::ProtocolPluginsList protocols;
-  gLicqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+  gPluginManager.getProtocolPluginsList(protocols);
   i = 0;
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
@@ -351,7 +350,7 @@ void PluginDlg::slot_refresh()
   }
 
   list<string> unloadedProtocols;
-  gLicqDaemon->getPluginManager().getAvailableProtocolPlugins(unloadedProtocols, false);
+  gPluginManager.getAvailableProtocolPlugins(unloadedProtocols, false);
   BOOST_FOREACH(string protocol, unloadedProtocols)
   {
     tblProtocol->setRowCount(i+1);

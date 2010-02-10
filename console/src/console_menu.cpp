@@ -8,6 +8,7 @@
 #include "licq/pluginmanager.h"
 
 using namespace std;
+using Licq::gPluginManager;
 
 const unsigned short NUM_COMMANDS = 24;
 const struct SCommand aCommands[NUM_COMMANDS] =
@@ -263,9 +264,9 @@ void CLicqConsole::MenuQuit(char *)
 void CLicqConsole::MenuPlugins(char* /* _szArg */)
 {
   Licq::GeneralPluginsList plugins;
-  licqDaemon->getPluginManager().getGeneralPluginsList(plugins);
+  gPluginManager.getGeneralPluginsList(plugins);
   Licq::ProtocolPluginsList protocols;
-  licqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+  gPluginManager.getProtocolPluginsList(protocols);
 
   PrintBoxTop("Plugins", COLOR_BLUE, 70);
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
@@ -539,7 +540,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
 
   //set same status for all protocols for now
   Licq::ProtocolPluginsList protocols;
-  licqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+  gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     unsigned long nPPID = protocol->getProtocolId();
@@ -598,7 +599,7 @@ UserId CLicqConsole::GetContactFromArg(char **p_szArg)
     string strProtocol(strArg, nPos + 1, (s == string::npos) ? strArg.size() : s - nPos - 1);
 
     Licq::ProtocolPluginsList protocols;
-    licqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+    gPluginManager.getProtocolPluginsList(protocols);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
     {
       if (strcasecmp(protocol->getName(), strProtocol.c_str()) == 0)

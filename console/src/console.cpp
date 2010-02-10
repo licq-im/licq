@@ -25,6 +25,7 @@
 #undef clear
 
 using namespace std;
+using Licq::gPluginManager;
 
 extern "C" const char *LP_Version();
 
@@ -229,7 +230,7 @@ void CLicqConsole::Shutdown()
 {
   gLog.Info("%sShutting down console.\n", L_CONSOLExSTR);
   gLog.ModifyService(S_PLUGIN, 0);
-  licqDaemon->getPluginManager().unregisterGeneralPlugin();
+  gPluginManager.unregisterGeneralPlugin();
 }
 
 
@@ -241,7 +242,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   CWindow::StartScreen();
 
   // Register with the daemon, we want to receive all signals
-  m_nPipe = _licqDaemon->getPluginManager().registerGeneralPlugin(SIGNAL_ALL);
+  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
   m_bExit = false;
   licqDaemon = _licqDaemon;
 

@@ -22,7 +22,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <licq_icqd.h>
 #include <licq/pluginmanager.h>
 
 #include "config/iconmanager.h"
@@ -47,7 +46,7 @@ void ProtoComboBox::fillComboBox(bool skipExisting)
   QString id;
 
   Licq::ProtocolPluginsList protocols;
-  gLicqDaemon->getPluginManager().getProtocolPluginsList(protocols);
+  Licq::gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     unsigned long ppid = protocol->getProtocolId();

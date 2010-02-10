@@ -266,7 +266,7 @@ void UserPages::Settings::load(const LicqUser* user)
   myStatusDndRadio->setEnabled(isIcq);
 
   unsigned long sendFuncs = 0;
-  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(ppid);
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
   if (protocol.get() != NULL)
     sendFuncs = protocol->getSendFunctions();
 

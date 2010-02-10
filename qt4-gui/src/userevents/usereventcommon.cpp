@@ -32,7 +32,6 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
 #include <licq/pluginmanager.h>
 #include <licq_events.h>
 #include <licq_user.h>
@@ -80,7 +79,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
 
   // Find out what's supported for the protocol
   mySendFuncs = 0;
-  Licq::ProtocolPlugin::Ptr protocol = gLicqDaemon->getPluginManager().getProtocolPlugin(myPpid);
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myPpid);
   if (protocol.get() != NULL)
     mySendFuncs = protocol->getSendFunctions();
 

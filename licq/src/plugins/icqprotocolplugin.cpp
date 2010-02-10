@@ -35,6 +35,8 @@
 
 #include "licq_protoplugin.h"
 
+using Licq::gPluginManager;
+
 char* LProto_icq_Name()
 {
   static char name[] = "ICQ";
@@ -74,9 +76,9 @@ unsigned long LProto_icq_SendFuncs()
     PP_SEND_STATUSxMSG;
 }
 
-int LProto_icq_Main(CICQDaemon* daemon)
+int LProto_icq_Main(CICQDaemon* /* daemon */)
 {
-  int fd = daemon->getPluginManager().registerProtocolPlugin();
+  int fd = gPluginManager.registerProtocolPlugin();
   if (fd == -1)
     return -1;
 
@@ -103,6 +105,6 @@ int LProto_icq_Main(CICQDaemon* daemon)
     }
   }
 
-  daemon->getPluginManager().unregisterProtocolPlugin();
+  gPluginManager.unregisterProtocolPlugin();
   return 0;
 }

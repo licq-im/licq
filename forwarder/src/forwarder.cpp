@@ -21,6 +21,8 @@
 
 extern "C" { const char *LP_Version(); }
 
+using Licq::gPluginManager;
+
 const char L_FORWARDxSTR[]  = "[FOR] ";
 const unsigned short SUBJ_CHARS = 20;
 
@@ -51,7 +53,7 @@ CLicqForwarder::~CLicqForwarder()
 void CLicqForwarder::Shutdown()
 {
   gLog.Info("%sShutting down forwarder.\n", L_FORWARDxSTR);
-  licqDaemon->getPluginManager().unregisterGeneralPlugin();
+  gPluginManager.unregisterGeneralPlugin();
 }
 
 
@@ -61,8 +63,7 @@ void CLicqForwarder::Shutdown()
 int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we only want the update user signal
-  m_nPipe = _licqDaemon->getPluginManager().
-      registerGeneralPlugin(SIGNAL_UPDATExUSER);
+  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
   licqDaemon = _licqDaemon;
 
   // Create our snmp information

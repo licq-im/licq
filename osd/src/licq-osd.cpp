@@ -25,6 +25,7 @@
 #include "pluginversion.h"
 
 using namespace std;
+using Licq::gPluginManager;
 
 //#if CVSLICQ==1
 //#warning compiling for licq>=1.2.8
@@ -331,8 +332,7 @@ bool LP_Init(int /* argc */, char** /* argv */)
 int LP_Main(CICQDaemon *_licqDaemon)
 {
     // register plugin at the licq daemon
-    int nPipe = _licqDaemon->getPluginManager().
-        registerGeneralPlugin(SIGNAL_UPDATExUSER | SIGNAL_LOGON| SIGNAL_LOGOFF);
+  int nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER | SIGNAL_LOGON| SIGNAL_LOGOFF);
     bool Exit=false; // exit plugin?
     char buf[16];
 
@@ -414,7 +414,7 @@ int LP_Main(CICQDaemon *_licqDaemon)
         Configured=false;
     }
     // unregister the plugin
-    _licqDaemon->getPluginManager().unregisterGeneralPlugin();
+  gPluginManager.unregisterGeneralPlugin();
 
     return 0;
 }
