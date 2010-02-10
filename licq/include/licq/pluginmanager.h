@@ -27,6 +27,20 @@
 #include <list>
 #include <string>
 
+
+#define FOR_EACH_PROTO_PLUGIN_START()                           \
+    {                                                           \
+      Licq::ProtocolPluginsList _pl_;                           \
+      Licq::ProtocolPluginsList::iterator _ppit;                \
+      gPluginManager().getProtocolPluginsList(_pl_);            \
+      for (_ppit = _pl_.begin(); _ppit != _pl_.end(); _ppit++)  \
+      {
+
+#define FOR_EACH_PROTO_PLUGIN_END                               \
+      }                                                         \
+    }
+
+
 namespace Licq
 {
 

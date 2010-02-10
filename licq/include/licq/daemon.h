@@ -26,19 +26,10 @@ namespace Licq
 {
 
 class LogService;
-class PluginManager;
 
 class Daemon : private boost::noncopyable
 {
 public:
-  /**
-   * Get the plugin manager instance.
-   *
-   * @return The global plugin manager.
-   */
-  virtual PluginManager& getPluginManager() = 0;
-  virtual const PluginManager& getPluginManager() const = 0;
-
   virtual LogService& getLogService() = 0;
 
 protected:

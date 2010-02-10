@@ -464,16 +464,6 @@ bool CICQDaemon::Start()
   return true;
 }
 
-Licq::PluginManager& CICQDaemon::getPluginManager()
-{
-  return gPluginManager;
-}
-
-const Licq::PluginManager& CICQDaemon::getPluginManager() const
-{
-  return gPluginManager;
-}
-
 Licq::LogService& CICQDaemon::getLogService()
 {
   return licq->getLogService();

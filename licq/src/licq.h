@@ -3,10 +3,11 @@
 
 #include "config.h"
 #include "logservice.h"
-#include "plugins/pluginmanager.h"
 
 #include <pthread.h>
 #include <list>
+
+#include "licq/plugin.h"
 
 extern char **global_argv;
 extern int global_argc;
@@ -29,16 +30,14 @@ public:
   bool Install();
   void SaveLoadedPlugins();
 
-  inline LicqDaemon::PluginManager& getPluginManager();
-  inline const LicqDaemon::PluginManager& getPluginManager() const;
   inline LicqDaemon::LogService& getLogService();
 
 protected:
   bool UpgradeLicq(CIniFile &);
 
-  LicqDaemon::GeneralPlugin::Ptr
+  Licq::GeneralPlugin::Ptr
   LoadPlugin(const char *, int, char **, bool keep = true);
-  LicqDaemon::ProtocolPlugin::Ptr
+  Licq::ProtocolPlugin::Ptr
   LoadProtoPlugin(const char *, bool keep = true);
   
   CICQDaemon *licqDaemon;
@@ -46,16 +45,6 @@ protected:
 private:
   LicqDaemon::LogService myLogService;
 };
-
-inline LicqDaemon::PluginManager& CLicq::getPluginManager()
-{
-  return LicqDaemon::gPluginManager;
-}
-
-inline const LicqDaemon::PluginManager& CLicq::getPluginManager() const
-{
-  return LicqDaemon::gPluginManager;
-}
 
 inline LicqDaemon::LogService& CLicq::getLogService()
 {

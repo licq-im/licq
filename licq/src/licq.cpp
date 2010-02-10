@@ -697,7 +697,7 @@ bool CLicq::UpgradeLicq(CIniFile &licqConf)
  *
  * Loads the given plugin using the given command line arguments.
  *---------------------------------------------------------------------------*/
-LicqDaemon::GeneralPlugin::Ptr CLicq::
+GeneralPlugin::Ptr CLicq::
 LoadPlugin(const char *_szName, int argc, char **argv, bool keep)
 {
   // Set up the argument vector
@@ -719,7 +719,7 @@ LoadPlugin(const char *_szName, int argc, char **argv, bool keep)
 }
 
 
-LicqDaemon::ProtocolPlugin::Ptr CLicq::
+ProtocolPlugin::Ptr CLicq::
 LoadProtoPlugin(const char *_szName, bool keep)
 {
   return gPluginManager.loadProtocolPlugin(_szName, keep);
