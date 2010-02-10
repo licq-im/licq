@@ -23,7 +23,7 @@
 #include <cstring>
 #include <string>
 
-#include "licq_md5.h"
+#include <licq/md5.h>
 
 #include "msn_constants.h"
 
@@ -429,7 +429,7 @@ CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
   char szHexOut[33];
   snprintf(szSource, 64, "%sQ1P7W2E4J9R8U3S5", szHash);
   szSource[64] = '\0';
-  md5((const uint8_t*)szSource, strlen(szSource), szDigest);
+  Licq::md5((const uint8_t*)szSource, strlen(szSource), szDigest);
 
   for (int i = 0; i < 16; i++)
   {

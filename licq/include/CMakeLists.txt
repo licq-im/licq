@@ -15,7 +15,6 @@ set(licq_HEADERS
   licq_interestcodes.h
   licq_languagecodes.h
   licq_log.h
-  licq_md5.h
   licq_message.h
   licq_mutex.h
   licq_occupationcodes.h

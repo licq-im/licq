@@ -20,9 +20,9 @@
 
 #include <cstring> // for memcpy()
 
-#include "licq_md5.h"
+#include "licq/md5.h"
 
-void md5(const uint8_t* buf, size_t len, uint8_t* digest)
+void Licq::md5(const uint8_t* buf, size_t len, uint8_t* digest)
 {
   Md5Context context;
 
@@ -47,7 +47,7 @@ void byteSwap(uint32_t* buf, unsigned words)
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
-void md5Init(struct Md5Context* ctx)
+void Licq::md5Init(struct Md5Context* ctx)
 {
   ctx->buf[0] = 0x67452301;
   ctx->buf[1] = 0xefcdab89;
@@ -60,7 +60,7 @@ void md5Init(struct Md5Context* ctx)
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void md5Update(struct Md5Context* ctx, uint8_t const* buf, size_t len)
+void Licq::md5Update(struct Md5Context* ctx, uint8_t const* buf, size_t len)
 {
   // Space available in ctx->in (at least 1)
   uint32_t t = 64 - (ctx->bytes & 0x3f);
@@ -98,7 +98,7 @@ void md5Update(struct Md5Context* ctx, uint8_t const* buf, size_t len)
  * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void md5Final(struct Md5Context* ctx, uint8_t digest[16])
+void Licq::md5Final(struct Md5Context* ctx, uint8_t digest[16])
 {
   // Number of bytes in ctx->in
   int count = ctx->bytes & 0x3f;
@@ -149,7 +149,7 @@ void md5Final(struct Md5Context* ctx, uint8_t digest[16])
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-void md5Transform(uint32_t buf[4], const uint32_t in[16])
+void Licq::md5Transform(uint32_t buf[4], const uint32_t in[16])
 {
   register uint32_t a, b, c, d;
 

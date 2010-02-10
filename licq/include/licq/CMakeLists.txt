@@ -7,6 +7,7 @@ set(licq_HEADERS
   log.h
   logservice.h
   logsink.h
+  md5.h
   plugin.h
   pluginmanager.h
   types.h

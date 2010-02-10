@@ -18,14 +18,13 @@
 
 #include <cerrno>
 
-#include "licq_md5.h"
-
 #include <boost/scoped_array.hpp>
 
 // Localization
 #include "gettext.h"
 
 #include "licq/byteorder.h"
+#include "licq/md5.h"
 #include "licq_packets.h"
 #include "licq_socket.h"
 #include "licq_icq.h"
@@ -829,7 +828,7 @@ CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char
   toHash += szPass;
   toHash += "AOL Instant Messenger (SM)";
   unsigned char szDigest[MD5_DIGEST_LENGTH];
-  md5((const unsigned char *)toHash.c_str(), toHash.size(), szDigest);
+  Licq::md5((const unsigned char*)toHash.c_str(), toHash.size(), szDigest);
 
   unsigned int uinlen = strlen(szUin);
 
