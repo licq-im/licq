@@ -41,6 +41,13 @@ using Licq::MutexLocker;
 using Licq::StringList;
 using namespace LicqDaemon;
 
+// Declare global PluginManager (internal for daemon)
+LicqDaemon::PluginManager LicqDaemon::gPluginManager;
+
+// Initialize global Licq::PluginManager to refer to the internal PluginManager
+Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
+
+
 PluginManager::PluginManager() :
   myDaemon(NULL),
   myNextPluginId(1),

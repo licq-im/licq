@@ -45,17 +45,16 @@ protected:
 
 private:
   LicqDaemon::LogService myLogService;
-  LicqDaemon::PluginManager myPluginManager;
 };
 
 inline LicqDaemon::PluginManager& CLicq::getPluginManager()
 {
-  return myPluginManager;
+  return LicqDaemon::gPluginManager;
 }
 
 inline const LicqDaemon::PluginManager& CLicq::getPluginManager() const
 {
-  return myPluginManager;
+  return LicqDaemon::gPluginManager;
 }
 
 inline LicqDaemon::LogService& CLicq::getLogService()

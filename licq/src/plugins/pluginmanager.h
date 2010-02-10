@@ -112,6 +112,8 @@ private:
   PluginEventHandler myPluginEventHandler;
 };
 
+extern PluginManager gPluginManager;
+
 inline PluginEventHandler& PluginManager::getPluginEventHandler()
 {
   return myPluginEventHandler;

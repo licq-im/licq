@@ -41,9 +41,12 @@ using namespace std;
 #include "licq/exceptions/exception.h"
 #include "licq/version.h"
 
+#include "plugins/pluginmanager.h"
+
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using LicqDaemon::gPluginManager;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
 
@@ -328,7 +331,7 @@ bool CLicq::Init(int argc, char **argv)
 
   // FIXME: ICQ should be put into its own plugin. This is just a dummy
   // plugin. It can't really be stopped...
-  myPluginManager.loadProtocolPlugin("", true, true);
+  gPluginManager.loadProtocolPlugin("", true, true);
 
   // Load up the plugins
   vector <char *>::iterator iter;
@@ -581,7 +584,7 @@ bool CLicq::Init(int argc, char **argv)
 
   // Create the daemon
   licqDaemon = new CICQDaemon(this);
-  myPluginManager.setDaemon(licqDaemon);
+  gPluginManager.setDaemon(licqDaemon);
 
   return true;
 }
@@ -711,15 +714,15 @@ LoadPlugin(const char *_szName, int argc, char **argv, bool keep)
     while (++argcndx < argc && strcmp(argv[argcndx], "--") != 0)
       argccnt++;
   }
-  return myPluginManager
-      .loadGeneralPlugin(_szName, argccnt, &argv[argcndx - argccnt], keep);
+  return gPluginManager.loadGeneralPlugin(_szName, argccnt,
+      &argv[argcndx - argccnt], keep);
 }
 
 
 LicqDaemon::ProtocolPlugin::Ptr CLicq::
 LoadProtoPlugin(const char *_szName, bool keep)
 {
-  return myPluginManager.loadProtocolPlugin(_szName, keep);
+  return gPluginManager.loadProtocolPlugin(_szName, keep);
 }
 
 
@@ -727,7 +730,7 @@ int CLicq::Main()
 {
   int nResult = 0;
 
-  if (myPluginManager.getGeneralPluginsCount() == 0)
+  if (gPluginManager.getGeneralPluginsCount() == 0)
   {
     gLog.Warn(tr("%sNo plugins specified on the command-line (-p option).\n"
                  "%sSee the README for more information.\n"),
@@ -738,7 +741,7 @@ int CLicq::Main()
   if (!licqDaemon->Start()) return 1;
 
   // Run the plugins
-  myPluginManager.startAllPlugins();
+  gPluginManager.startAllPlugins();
 
   gLog.ModifyService(S_STDERR, DEBUG_LEVEL);
 
@@ -749,10 +752,10 @@ int CLicq::Main()
     while (true)
     {
       if (bDaemonShutdown)
-        myPluginManager.waitForPluginExit(MAX_WAIT_PLUGIN);
+        gPluginManager.waitForPluginExit(MAX_WAIT_PLUGIN);
       else
       {
-        if (myPluginManager.waitForPluginExit() == 0)
+        if (gPluginManager.waitForPluginExit() == 0)
         {
           bDaemonShutdown = true;
           continue;
@@ -764,13 +767,13 @@ int CLicq::Main()
   {
     // Empty
   }
-  
-  myPluginManager.cancelAllPlugins();
+
+  gPluginManager.cancelAllPlugins();
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);
 
-  return myPluginManager.getGeneralPluginsCount();
+  return gPluginManager.getGeneralPluginsCount();
 }
 
 
@@ -808,7 +811,7 @@ void CLicq::SaveLoadedPlugins()
   licqConf.SetSection("plugins");
 
   Licq::GeneralPluginsList general;
-  myPluginManager.getGeneralPluginsList(general);
+  gPluginManager.getGeneralPluginsList(general);
 
   licqConf.WriteNum("NumPlugins", (unsigned short)general.size());
 
@@ -820,7 +823,7 @@ void CLicq::SaveLoadedPlugins()
   }
 
   Licq::ProtocolPluginsList protocols;
-  myPluginManager.getProtocolPluginsList(protocols);
+  gPluginManager.getProtocolPluginsList(protocols);
 
   licqConf.WriteNum("NumProtoPlugins", (unsigned short)(protocols.size() - 1));
 
@@ -841,10 +844,10 @@ void CLicq::SaveLoadedPlugins()
 void CLicq::ShutdownPlugins()
 {
   // Save plugins
-  if (myPluginManager.getGeneralPluginsCount() > 0)
+  if (gPluginManager.getGeneralPluginsCount() > 0)
     SaveLoadedPlugins();
 
-  myPluginManager.shutdownAllPlugins();
+  gPluginManager.shutdownAllPlugins();
 }
 
 

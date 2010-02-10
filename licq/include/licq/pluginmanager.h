@@ -158,6 +158,8 @@ protected:
   virtual ~PluginManager() { /* Empty */ }
 };
 
+extern PluginManager& gPluginManager;
+
 } // namespace Licq
 
 #endif
