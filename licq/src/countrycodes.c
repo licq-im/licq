@@ -253,7 +253,7 @@ const struct SCountry gCountries[NUM_COUNTRIES] =
   { tr_NOOP("Vanuatu"), 678, 678, 230 },
   { tr_NOOP("Vatican City"), 379, 39, 231 },
   { tr_NOOP("Venezuela"), 58, 58, 232 },
-  { tr_NOOP("Viet Nam"), 84, 84, 233 },
+  { tr_NOOP("Vietnam"), 84, 84, 233 },
   { tr_NOOP("Virgin Islands of the United States"), 123, 1, 234 },
   { tr_NOOP("Wales"), 441, 44, 235 },
   { tr_NOOP("Wallis and Futuna Islands"), 681, 681, 236 },
