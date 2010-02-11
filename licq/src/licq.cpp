@@ -31,7 +31,6 @@ using namespace std;
 #include "licq_icq.h"
 #include "licq.h"
 #include "licq_log.h"
-#include "licq_countrycodes.h"
 #include "licq_utility.h"
 #include "support.h"
 #include "licq_sar.h"
