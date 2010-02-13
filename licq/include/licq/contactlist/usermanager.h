@@ -22,7 +22,7 @@ namespace Licq
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \
     Licq::User* pUser;                                   \
-    const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
+    const Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
     for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
@@ -33,7 +33,7 @@ namespace Licq
 #define FOR_EACH_PROTO_USER_START(x, y)                  \
   {                                                      \
     Licq::User* pUser;                                   \
-    const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
+    const Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
     for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
@@ -45,7 +45,7 @@ namespace Licq
 
 #define FOR_EACH_OWNER_START(x)                           \
   {                                                       \
-    OwnerMap* _ol_ = gUserManager.LockOwnerList(LOCK_R);  \
+    Licq::OwnerMap* _ol_ = Licq::gUserManager.LockOwnerList(LOCK_R); \
     for (OwnerMap::const_iterator _i_ = _ol_->begin();    \
          _i_ != _ol_->end(); _i_++)                       \
     {                                                     \
@@ -57,12 +57,12 @@ namespace Licq
       }                                                   \
       pOwner->Unlock();                                   \
     }                                                     \
-    gUserManager.UnlockOwnerList();                       \
+    Licq::gUserManager.UnlockOwnerList();                 \
   }                                                       \
 
 #define FOR_EACH_OWNER_BREAK                              \
         {                                                 \
-          gUserManager.DropOwner(pOwner->PPID());         \
+          Licq::gUserManager.DropOwner(pOwner->PPID());   \
           break;                                          \
         }
 
@@ -70,39 +70,39 @@ namespace Licq
       }                                  \
       pUser->Unlock();                   \
     }                                    \
-    gUserManager.UnlockUserList();       \
+    Licq::gUserManager.UnlockUserList(); \
   }
 
 #define FOR_EACH_PROTO_USER_END FOR_EACH_USER_END
 
 #define FOR_EACH_USER_BREAK              \
         {                                \
-          gUserManager.DropUser(pUser);  \
+          Licq::gUserManager.DropUser(pUser); \
           break;                         \
         }
 
 #define FOR_EACH_PROTO_USER_BREAK        \
         {                                \
-          gUserManager.DropUser(pUser);  \
+          Licq::gUserManager.DropUser(pUser); \
           break;                         \
         }
 
 #define FOR_EACH_PROTO_USER_CONTINUE     \
         {                                \
-          gUserManager.DropUser(pUser);  \
+          Licq::gUserManager.DropUser(pUser); \
           continue;                      \
         }
 
 #define FOR_EACH_USER_CONTINUE           \
         {                                \
-          gUserManager.DropUser(pUser);  \
+          Licq::gUserManager.DropUser(pUser); \
           continue;                      \
         }
 
 #define FOR_EACH_GROUP_START(x)                          \
   {                                                      \
     Licq::Group* pGroup;                                 \
-    GroupMap* _gl_ = gUserManager.LockGroupList(LOCK_R); \
+    Licq::GroupMap* _gl_ = Licq::gUserManager.LockGroupList(LOCK_R); \
     for (GroupMap::iterator _i_ = _gl_->begin();         \
          _i_ != _gl_->end(); ++_i_)                      \
     {                                                    \
@@ -144,7 +144,7 @@ namespace Licq
       }                                  \
       pGroup->Unlock();                  \
     }                                    \
-    gUserManager.UnlockGroupList();      \
+    Licq::gUserManager.UnlockGroupList(); \
   }
 
 
@@ -153,7 +153,7 @@ namespace Licq
 #define FOR_EACH_PROTO_ID_START(x)                       \
   {                                                      \
     char *szId;                                          \
-    UserMap* _ul_ = gUserManager.LockUserList(LOCK_R);   \
+    Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
     for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
