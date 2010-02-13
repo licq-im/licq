@@ -433,17 +433,19 @@ void CLicqConsole::MenuAdd(char *szArg)
 
   // Try to change groups
   bool bAlert = false;
+  char* accountId = szArg;
 
   while (*szArg != '\0' && *szArg != ' ') szArg++;
   if (*szArg == ' ')
   {
+    *szArg = '\0';
     while (*szArg == ' ') szArg++;
     if (strcasecmp(szArg, "alert") == 0)
       bAlert = true;
   }
-  UserId userId = LicqUser::makeUserId(szArg, LICQ_PPID);
+  UserId userId = LicqUser::makeUserId(accountId, LICQ_PPID);
 
-  if (gUserManager.addUser(userId) == 0)
+  if (!gUserManager.addUser(userId))
   {
     winMain->wprintf("%CAdding user %s failed (duplicate user or invalid uin).\n",
         COLOR_RED, USERID_TOSTR(userId));
