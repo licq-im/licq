@@ -2,6 +2,7 @@
 
 #include <boost/foreach.hpp>
 #include <cctype>
+#include <cstring>
 #include <string>
 
 #include "event_data.h"
@@ -425,7 +426,17 @@ void CLicqConsole::MenuGroup(char *_szArg)
 //TODO: fix this for other protocols
 void CLicqConsole::MenuAdd(char *szArg)
 {
-  if (szArg == NULL)
+  char* accountId = NULL;
+  char* param = NULL;
+
+  if (szArg != NULL)
+  {
+    char* tokptr;
+    accountId = strtok_r(szArg, " ", &tokptr);
+    param = strtok_r(NULL, " ", &tokptr);
+  }
+
+  if (accountId == NULL)
   {
     winMain->wprintf("%CSpecify a UIN to add.\n", COLOR_RED);
     return;
@@ -433,16 +444,9 @@ void CLicqConsole::MenuAdd(char *szArg)
 
   // Try to change groups
   bool bAlert = false;
-  char* accountId = szArg;
+  if (param != NULL && strcasecmp(param, "alert") == 0)
+    bAlert = true;
 
-  while (*szArg != '\0' && *szArg != ' ') szArg++;
-  if (*szArg == ' ')
-  {
-    *szArg = '\0';
-    while (*szArg == ' ') szArg++;
-    if (strcasecmp(szArg, "alert") == 0)
-      bAlert = true;
-  }
   UserId userId = LicqUser::makeUserId(accountId, LICQ_PPID);
 
   if (!gUserManager.addUser(userId))
