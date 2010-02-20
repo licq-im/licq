@@ -27,8 +27,10 @@
 #include <gloox/rostermanager.h>
 
 #include <licq_icq.h>
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/licqversion.h>
+
+using Licq::gLog;
 
 Client::Client(Handler& handler, const std::string& username,
                const std::string& password) :
@@ -290,13 +292,13 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
   {
     default:
     case gloox::LogLevelDebug:
-      gLog.Info("%s[%s] %s\n", L_JABBERxSTR, areaStr, message.c_str());
+      gLog.info("[%s] %s", areaStr, message.c_str());
       break;
     case gloox::LogLevelWarning:
-      gLog.Warn("%s[%s] %s\n", L_JABBERxSTR, areaStr, message.c_str());
+      gLog.warning("[%s] %s", areaStr, message.c_str());
       break;
     case gloox::LogLevelError:
-      gLog.Error("%s[%s] %s\n", L_JABBERxSTR, areaStr, message.c_str());
+      gLog.error("[%s] %s", areaStr, message.c_str());
       break;
   }
 }
@@ -311,9 +313,11 @@ void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
                                const gloox::JID& jid, gloox::StanzaError error)
 {
   if (error != gloox::StanzaErrorUndefined)
-    gLog.Warn("%s%s VCard for user %s failed with error %u\n", L_JABBERxSTR,
+  {
+    gLog.warning("%s VCard for user %s failed with error %u",
         context == gloox::VCardHandler::StoreVCard ? "Storing" : "Fetching",
         jid.bare().c_str(), error);
+  }
 }
 
 unsigned long Client::presenceToStatus(gloox::Presence::PresenceType presence)

@@ -35,7 +35,6 @@ class LicqProtoSendMessageSignal;
 class LicqProtoSignal;
 
 #define JABBER_PPID 0x584D5050
-#define L_JABBERxSTR "[JAB] "
 
 class Jabber
 {

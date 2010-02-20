@@ -20,10 +20,10 @@
 #include "handler.h"
 #include "jabber.h"
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq_icqd.h>
 
-#define TRACE() gLog.Info("%sIn Handler::%s()\n", L_JABBERxSTR, __func__)
+#define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
 Handler::Handler(CICQDaemon* daemon) :
   myDaemon(daemon),

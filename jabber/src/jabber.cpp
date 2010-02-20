@@ -21,11 +21,13 @@
 #include "handler.h"
 #include "jabber.h"
 
-#include <licq_log.h>
 #include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/log.h>
 
 #include <sys/select.h>
+
+using Licq::gLog;
 
 Jabber::Jabber(CICQDaemon* daemon) :
   myDaemon(daemon),
@@ -95,7 +97,7 @@ void Jabber::processPipe(int pipe)
       myDoRun = false;
       break;
     default:
-      gLog.Error("%sUnkown command %c\n", L_JABBERxSTR, ch);
+      gLog.error("Unkown command %c", ch);
       break;
   }
 }
@@ -104,7 +106,7 @@ void Jabber::processSignal(LicqProtoSignal* signal)
 {
   assert(signal != NULL);
 
-  gLog.Info("%sGot signal %u\n", L_JABBERxSTR, signal->type());
+  gLog.info("Got signal %u", signal->type());
   switch (signal->type())
   {
     case PROTOxLOGON:
@@ -154,7 +156,7 @@ void Jabber::processSignal(LicqProtoSignal* signal)
     case PROTOxOPENxSECURE:
     case PROTOxCLOSExSECURE:
     default:
-      gLog.Info("%sUnkown signal %u\n", L_JABBERxSTR, signal->type());
+      gLog.info("Unkown signal %u", signal->type());
       break;
   }
 }
@@ -168,7 +170,7 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
   const LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
   if (owner == NULL)
   {
-    gLog.Error("%sNo owner set\n", L_JABBERxSTR);
+    gLog.error("No owner set");
     return;
   }
 
