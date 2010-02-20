@@ -51,7 +51,7 @@ TEST(LogSink, shortPacketToString)
 {
   const uint8_t data[] = { 'a', 0, 'b', 1, 'c' };
   const std::string result =
-      "0000: 61 00 62 01 63                                     " +
+      "     0000: 61 00 62 01 63                                     " +
       std::string("a.b.c");
   checkPacketString(data, result);
 }
@@ -63,9 +63,9 @@ TEST(LogSink, longPacketToString)
     data[i] = 'a' + i * 2;
 
   const std::string result =
-      "0000: 61 63 65 67 69 6B 6D 6F  71 73 75 77 79 7B 7D 7F   " +
+      "     0000: 61 63 65 67 69 6B 6D 6F  71 73 75 77 79 7B 7D 7F   " +
       std::string("acegikmoqsuwy{}.\n") +
-      "0010: 81 83 85 87 89 8B 8D 8F  91 93 95 97 99 9B 9D      " +
+      "     0010: 81 83 85 87 89 8B 8D 8F  91 93 95 97 99 9B 9D      " +
       std::string(15, '.');
   checkPacketString(data, result);
 }
@@ -73,18 +73,18 @@ TEST(LogSink, longPacketToString)
 TEST(LogSink, tooLongPacketToString)
 {
   uint8_t data[512 * 16 + 20];
-  for (size_t i = 0; i < sizeof(data); ++i)
-    data[i] = 0;
+  ::memset(data, 0, sizeof(data));
 
   std::ostringstream result;
   for (size_t line = 0; line < 512; ++line)
   {
-    result << std::hex << std::uppercase << std::setw(4) << std::setfill('0')
+    result << std::string(5, ' ')
+           << std::hex << std::uppercase << std::setw(4) << std::setfill('0')
            << line * 16 << ": "
            << "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00   "
            << std::string(16, '.')
            << "\n";
   }
-  result << "2000 - 2013: ...";
+  result << "     2000 - 2013: ...";
   checkPacketString(data, result.str());
 }

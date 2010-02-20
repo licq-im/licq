@@ -26,7 +26,10 @@ std::ostream& operator<<(std::ostream& os, const Licq::LogSink::Packet& packet)
 {
   const size_t bytesPerRow = 16;
   const size_t maxRows = 512;
-  const size_t bytesToPrint = std::min(bytesPerRow * maxRows, packet.data.size());
+  const size_t bytesToPrint =
+      std::min(bytesPerRow * maxRows, packet.data.size());
+
+  const std::string prefix(5, ' ');
 
   char ascii[bytesPerRow + 1];
   ascii[bytesPerRow] = '\0';
@@ -43,7 +46,7 @@ std::ostream& operator<<(std::ostream& os, const Licq::LogSink::Packet& packet)
 
     // Print the address at the start of the row
     if (pos == 0)
-      os << setw(4) << setfill('0') << addr << ':';
+      os << prefix << setw(4) << setfill('0') << addr << ':';
     // Or an extra space in the middle
     else if (pos == (bytesPerRow / 2))
       os << ' ';
@@ -85,7 +88,7 @@ std::ostream& operator<<(std::ostream& os, const Licq::LogSink::Packet& packet)
   // Print the address range for bytes not printed
   if (bytesToPrint != packet.data.size())
   {
-    os << "\n" << setw(4) << setfill('0') << bytesToPrint
+    os << "\n" << prefix << setw(4) << setfill('0') << bytesToPrint
        << " - " << setw(4) << packet.data.size() - 1 << ": ...";
   }
 
