@@ -8,6 +8,9 @@
 #include <pthread.h>
 
 #include "licq_constants.h"
+#include "licq/log.h"
+
+using Licq::gLog;
 
 // Info: basic information about what's going on
 const unsigned short L_INFO     = 0x0001;
@@ -147,47 +150,14 @@ public:
   unsigned short ServiceLogTypes(unsigned short _nServiceType);
   void SetServiceData(unsigned short _nServiceType, void *_pData);
 
-  bool LoggingPackets()  {  return CLogService::LoggingPackets() > 0;  }
-
-  void Info(const char *, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-  void Unknown(const char *, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-  void Error(const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-  void Warn(const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-  void Packet(const char *_szFormat, ...)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 2, 3)))
-#endif
-;
-
 protected:
   std::vector <CLogService *> m_vxLogServices;
   pthread_mutex_t mutex;
-  void Log(const unsigned short _nLogType, const char *_szFormat, va_list argp)
-#ifdef __GNUC__
-    __attribute__ ((format (printf, 3, 0)))
-#endif
-;
 };
 
 
 // Define an external log server to be started in log.cpp
-extern CLogServer gLog;
+extern CLogServer gOldLog;
 
 
 #endif

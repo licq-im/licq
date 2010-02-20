@@ -132,13 +132,73 @@ inline void Log::debug(const char* format, ...)
   va_end(args);
 }
 
-class PluginLog
+class ThreadLog : public Log
 {
+private:
+  Log* getLog();
+
 public:
-  Log* operator->();
+  // From Log
+  inline void log(Level level, const std::string& msg);
+  inline void packet(const std::string& msg, const uint8_t* data, size_t size);
+
+  // Old log functions, considered deprecated
+  inline void Info(const char* format, ...) LICQ_FORMAT(2, 3);
+  inline void Unknown(const char* format, ...) LICQ_FORMAT(2, 3);
+  inline void Error(const char* format, ...) LICQ_FORMAT(2, 3);
+  inline void Warn(const char* format, ...) LICQ_FORMAT(2, 3);
 };
 
-extern PluginLog pLog;
+inline void ThreadLog::log(Level level, const std::string& msg)
+{
+  getLog()->log(level, msg);
+}
+
+inline void ThreadLog::packet(const std::string& msg, const uint8_t* data,
+                              size_t size)
+{
+  getLog()->packet(msg, data, size);
+}
+
+inline void ThreadLog::Info(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  Log::log(Log::Info, format, args);
+  va_end(args);
+}
+
+inline void ThreadLog::Unknown(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  Log::log(Log::Unknown, format, args);
+  va_end(args);
+}
+
+inline void ThreadLog::Error(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  Log::log(Log::Error, format, args);
+  va_end(args);
+}
+
+inline void ThreadLog::Warn(const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  Log::log(Log::Warning, format, args);
+  va_end(args);
+}
+
+/**
+ * The global log.
+ *
+ * By default this is the global log, but threads can change it to a thread
+ * specific log by calling LogService::createThreadLog().
+ */
+extern ThreadLog gLog;
 
 } // namespace Licq
 

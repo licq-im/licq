@@ -19,7 +19,7 @@
 
 using namespace std;
 
-CLogServer gLog;
+CLogServer gOldLog;
 
 const char *COLOR_NORMAL = "[39m";
 const char *COLOR_PREFIX = "[32m";
@@ -321,71 +321,3 @@ void CLogServer::SetServiceData(unsigned short _nServiceType, void *_pData)
   }
   pthread_mutex_unlock(&mutex);
 }
-
-void CLogServer::Info(const char *_szFormat, ...)
-{
-  va_list argp;
-  va_start(argp, _szFormat);
-  Log(L_INFO, _szFormat, argp);
-  va_end(argp);
-}
-
-void CLogServer::Unknown(const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(L_UNKNOWN, _szFormat, argp);
-   va_end(argp);
-}
-
-void CLogServer::Error(const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(L_ERROR, _szFormat, argp);
-   va_end(argp);
-}
-
-void CLogServer::Warn(const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(L_WARN, _szFormat, argp);
-   va_end(argp);
-}
-
-void CLogServer::Packet(const char *_szFormat, ...)
-{
-   va_list argp;
-   va_start(argp, _szFormat);
-   Log(L_PACKET, _szFormat, argp);
-   va_end(argp);
-}
-
-void CLogServer::Log(const unsigned short _nLogType, const char *_szFormat, va_list argp)
-{
-  static char szTime[32];
-  static struct tm stm;
-  static char szMsgMax[MAX_MSG_SIZE];
-
-  pthread_mutex_lock(&mutex);
-
-  // Create a time string for the log
-  time_t t = time(NULL);
-  localtime_r(&t, &stm);
-  strftime(szTime, 32, "%T: ", &stm);
-
-  vsnprintf(szMsgMax, MAX_MSG_SIZE, _szFormat, argp);
-  szMsgMax[MAX_MSG_SIZE - 2] = '\n';
-  szMsgMax[MAX_MSG_SIZE - 1] = '\0';
-
-  // Log the event to each server
-  vector<CLogService *>::iterator iter;
-  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
-  {
-    if ((*iter)->LogType(_nLogType))
-        (*iter)->LogMessage(szTime, szMsgMax, _nLogType);
-  }  
-  pthread_mutex_unlock(&mutex);
-}
-

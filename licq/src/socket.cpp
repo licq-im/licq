@@ -279,29 +279,21 @@ INetSocket::~INetSocket()
 //-----INetSocket::dumpPacket---------------------------------------------------
 void INetSocket::DumpPacket(CBuffer *b, direction d)
 {
-  char *szPacket;
-
-  // This speeds things up if no one is logging packets
-  if (!gLog.LoggingPackets()) return;
-
-  switch(d)
+  switch (d)
   {
   case D_SENDER:
-    gLog.Packet("%sPacket (%sv%lu, %lu bytes) sent:\n%s(%s:%d -> %s:%d)\n%s\n",
-     L_PACKETxSTR, m_szID, Version(), b->getDataSize(), L_BLANKxSTR,
-          getLocalIpString().c_str(), getLocalPort(),
-          getRemoteIpString().c_str(), getRemotePort(),
-          b->print(szPacket));
+    b->log("Packet (%sv%lu, %lu bytes) sent:\n(%s:%d -> %s:%d)",
+           m_szID, Version(), b->getDataSize(),
+           getLocalIpString().c_str(), getLocalPort(),
+           getRemoteIpString().c_str(), getRemotePort());
     break;
   case D_RECEIVER:
-     gLog.Packet("%sPacket (%sv%lu, %lu bytes) received:\n%s(%s:%d <- %s:%d)\n%s\n",
-      L_PACKETxSTR, m_szID, Version(), b->getDataSize(), L_BLANKxSTR,
-          getLocalIpString().c_str(), getLocalPort(),
-          getRemoteIpString().c_str(), getRemotePort(),
-          b->print(szPacket));
+    b->log("Packet (%sv%lu, %lu bytes) received:\n(%s:%d <- %s:%d)",
+           m_szID, Version(), b->getDataSize(),
+           getLocalIpString().c_str(), getLocalPort(),
+           getRemoteIpString().c_str(), getRemotePort());
      break;
   }
-  delete[] szPacket;
 }
 
 

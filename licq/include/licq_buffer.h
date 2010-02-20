@@ -86,6 +86,16 @@ public:
    char *PackChar(char data);
    void Copy(CBuffer *);
    char *print(char *&);
+
+   /**
+    * Log the packet with the given message.
+    */
+   void log(const char* format, ...)
+#ifdef __GNUC__
+      __attribute__((format (printf, 2, 3)))
+#endif
+   ;
+
    void Clear();
    void Reset();
    bool Empty();

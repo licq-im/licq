@@ -19,13 +19,13 @@
 
 #include "logservice.h"
 
-Licq::PluginLog Licq::pLog;
+Licq::ThreadLog Licq::gLog;
 
-Licq::Log* Licq::PluginLog::operator->()
+Licq::Log* Licq::ThreadLog::getLog()
 {
   using LicqDaemon::LogService;
 
-  Log* log = LogService::instance().getPluginLog();
+  Log* log = LogService::instance().getThreadLog();
   if (log != NULL)
     return log;
 

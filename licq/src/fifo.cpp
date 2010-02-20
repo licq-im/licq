@@ -511,7 +511,7 @@ static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
   if( (nRet = (argc == 1)) )
     ReportMissingParams(argv[0]);
   else
-    gLog.ModifyService( S_STDERR, atoi(argv[1]));
+    gOldLog.ModifyService( S_STDERR, atoi(argv[1]));
 
   return -nRet;
 }

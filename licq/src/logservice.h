@@ -37,18 +37,18 @@ public:
   ~LogService();
 
   Log& getLog() { return myLog; }
-  Log* getPluginLog() const;
+  Log* getThreadLog() const;
 
   // From Licq::LogService
   Licq::Log::Ptr createLog(const std::string& name);
-  void createPluginLog(const std::string& name);
+  void createThreadLog(const std::string& name);
   void registerLogSink(Licq::LogSink::Ptr logSink);
   void unregisterLogSink(Licq::LogSink::Ptr logSink);
 
 private:
   LogDistributor myLogDistributor;
   Log myLog;
-  Licq::ThreadSpecificData<Log> myPluginLogs;
+  Licq::ThreadSpecificData<Log> myThreadLogs;
 };
 
 } // namespace LicqDaemon

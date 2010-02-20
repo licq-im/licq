@@ -63,8 +63,9 @@ set(licq_SRCS
 
   plugins/icqprotocolplugin.cpp
   plugins/plugineventhandler.cpp
-  plugins/pluginlog.cpp
   plugins/pluginmanager.cpp
+
+  thread/threadlog.cpp
 
   utils/streamlogsink.cpp
 

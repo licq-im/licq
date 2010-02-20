@@ -16,6 +16,7 @@
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <getopt.h>
+#include <iostream>
 #include <pwd.h>
 #include <string>
 #include <sys/stat.h>
@@ -39,7 +40,7 @@ using namespace std;
 #include "licq_socket.h"
 #include "licq/exceptions/exception.h"
 #include "licq/version.h"
-
+#include "utils/streamlogsink.h"
 #include "plugins/pluginmanager.h"
 
 using namespace std;
@@ -196,14 +197,19 @@ int SelectHistoryUtility(const struct dirent *d)
 char **global_argv = NULL;
 int global_argc = 0;
 
-CLicq::CLicq()
+CLicq::CLicq() :
+  myConsoleLogLevel(0)
 {
-  DEBUG_LEVEL = 0;
   licqDaemon = NULL;
 }
 
 bool CLicq::Init(int argc, char **argv)
 {
+  myConsoleLog.reset(new LicqDaemon::StreamLogSink(std::cerr));
+  myConsoleLog->setLogLevel(Licq::Log::Error, true);
+  myConsoleLog->setLogLevel(Licq::Log::Warning, true);
+  myLogService.registerLogSink(myConsoleLog);
+
   char *szRedirect = NULL;
   char szFilename[MAX_FILENAME_LEN];
   vector <char *> vszPlugins;
@@ -243,8 +249,8 @@ bool CLicq::Init(int argc, char **argv)
         BASE_DIR[MAX_FILENAME_LEN - 1] = '\0';
         bBaseDir = true;
         break;
-      case 'd':  // DEBUG_LEVEL
-        DEBUG_LEVEL = atol(optarg);
+      case 'd':  // debug level
+        myConsoleLogLevel = atol(optarg);
         break;
       case 'c':  // use color
         bUseColor = false;
@@ -289,9 +295,12 @@ bool CLicq::Init(int argc, char **argv)
   if(!isatty(STDERR_FILENO))
     bUseColor = false;
 
-  // Initialise the log server for standard output and dump all initial errors
-  // and warnings to it regardless of DEBUG_LEVEL
-  gLog.AddService(new CLogService_StdErr(DEBUG_LEVEL | L_ERROR | L_WARN, bUseColor));
+  // Dump all initial errors and warnings to the console log regardless of the
+  // requested debug level.
+  myConsoleLog->setLogLevels(myConsoleLogLevel);
+  myConsoleLog->setLogLevel(Licq::Log::Warning, true);
+  myConsoleLog->setLogLevel(Licq::Log::Error, true);
+  myConsoleLog->setUseColors(bUseColor);
 
   // Redirect stdout and stderr if asked to
   if (szRedirect) {
@@ -594,6 +603,8 @@ CLicq::~CLicq()
   //...
   // Kill the daemon
   if (licqDaemon != NULL) delete licqDaemon;
+
+  myLogService.unregisterLogSink(myConsoleLog);
 }
 
 
@@ -742,7 +753,8 @@ int CLicq::Main()
   // Run the plugins
   gPluginManager.startAllPlugins();
 
-  gLog.ModifyService(S_STDERR, DEBUG_LEVEL);
+  // Reset to requested log level
+  myConsoleLog->setLogLevels(myConsoleLogLevel);
 
   try
   {

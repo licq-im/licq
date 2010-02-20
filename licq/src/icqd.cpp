@@ -228,7 +228,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
       delete l;
     }
     else
-      gLog.AddService(l);
+      gOldLog.AddService(l);
   }
 
   // Loading translation table from file
@@ -2132,9 +2132,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     }
     else // invalid parse or unknown event
     {
-      char *buf;
-      gLog.Warn(tr("%sInvalid %s:\n%s\n"), L_WARNxSTR, szType, packet.print(buf));
-      delete [] buf;
+      gLog.warning(tr("Invalid %s, see packet log for details"), szType);
+      packet.log(tr("Invalid %s:"), szType);
     }
   }
 

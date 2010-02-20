@@ -33,7 +33,6 @@ extern "C" {
 char BASE_DIR[MAX_FILENAME_LEN];
 char SHARE_DIR[MAX_FILENAME_LEN];
 char LIB_DIR[MAX_FILENAME_LEN];
-unsigned short DEBUG_LEVEL;
 
 // sighandler.c
 extern "C" void licq_install_signal_handlers();

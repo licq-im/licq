@@ -15,6 +15,11 @@ extern int global_argc;
 class CICQDaemon;
 class CIniFile;
 
+namespace LicqDaemon
+{
+class StreamLogSink;
+}
+
 class CLicq
 {
 public:
@@ -44,6 +49,8 @@ protected:
 
 private:
   LicqDaemon::LogService myLogService;
+  boost::shared_ptr<LicqDaemon::StreamLogSink> myConsoleLog;
+  int myConsoleLogLevel;
 };
 
 inline LicqDaemon::LogService& CLicq::getLogService()

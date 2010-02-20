@@ -18,54 +18,10 @@
  */
 
 #include "logservice.h"
-#include "licq_log.h"
 
 #include <cassert>
 
 using namespace LicqDaemon;
-
-namespace
-{
-
-class OldLogServiceProxy : public CLogService
-{
-public:
-  OldLogServiceProxy(Log& log) :
-    CLogService(L_ALL),
-    myLog(log)
-  {
-    m_nServiceType = 0xff;
-  }
-
-  // From CLogService
-  void LogMessage(const char* /*prefix*/, const char* msg,
-                  unsigned short type)
-  {
-    Log::Level level = Log::Unknown;
-    switch (type)
-    {
-      case L_INFO:
-        level = Log::Info;
-        break;
-      case L_UNKNOWN:
-        level = Log::Unknown;
-        break;
-      case L_ERROR:
-        level = Log::Error;
-        break;
-      case L_WARN:
-        level = Log::Warning;
-        break;
-    }
-
-    myLog.log(level, msg);
-  }
-
-private:
-  Log& myLog;
-};
-
-}
 
 static LogService* gLogService = NULL;
 
@@ -80,21 +36,17 @@ LogService::LogService() :
 {
   assert(gLogService == NULL);
   gLogService = this;
-
-  gLog.AddService(new OldLogServiceProxy(myLog));
 }
 
 LogService::~LogService()
 {
-  gLog.ModifyService(0xff, L_NONE);
-
   assert(gLogService == this);
   gLogService = NULL;
 }
 
-Log* LogService::getPluginLog() const
+Log* LogService::getThreadLog() const
 {
-  return myPluginLogs.get();
+  return myThreadLogs.get();
 }
 
 Log::Ptr LogService::createLog(const std::string& name)
@@ -102,9 +54,9 @@ Log::Ptr LogService::createLog(const std::string& name)
   return Log::Ptr(new Log(name, myLogDistributor));
 }
 
-void LogService::createPluginLog(const std::string& name)
+void LogService::createThreadLog(const std::string& name)
 {
-  myPluginLogs.set(new Log(name, myLogDistributor));
+  myThreadLogs.set(new Log(name, myLogDistributor));
 }
 
 void LogService::registerLogSink(Licq::LogSink::Ptr logSink)

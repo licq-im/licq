@@ -32,7 +32,7 @@ class LogService : private boost::noncopyable
 {
 public:
   virtual Log::Ptr createLog(const std::string& name) = 0;
-  virtual void createPluginLog(const std::string& name) = 0;
+  virtual void createThreadLog(const std::string& name) = 0;
 
   virtual void registerLogSink(LogSink::Ptr logSink) = 0;
   virtual void unregisterLogSink(LogSink::Ptr logSink) = 0;

@@ -139,13 +139,7 @@ void Encrypt_Server(CBuffer* /* buffer */)
 #if ICQ_VERSION == 2
 // No encryption in V2
 #elif ICQ_VERSION == 4
-  // This speeds things up if no one is logging packets
-  if (gLog.LoggingPackets())
-  {
-    char *b;
-    gLog.Packet(tr("%sUnencrypted Packet:\n%s\n"), L_PACKETxSTR, buffer->print(b));
-    delete [] b;
-  }
+  buffer->log(tr("Unencrypted Packet:"));
 
   unsigned long nCheckSum = 0;
   unsigned long l = buffer->getDataSize();
@@ -200,13 +194,7 @@ void Encrypt_Server(CBuffer* /* buffer */)
     l = buffer->getDataSize();
   }
 
-  if (gLog.LoggingPackets())
-  {
-    char *b;
-    gLog.Packet(tr("%sUnencrypted Packet (%lu bytes):\n%s\n"), L_PACKETxSTR, l,
-                buffer->print(b));
-    delete [] b;
-  }
+  buffer->log(tr("Unencrypted Packet (%lu bytes):"), l);
 
   // Calculate checkcode
   unsigned long chk1 = ( buf[8] << 24) |
@@ -361,13 +349,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
       offset = 0;
   }
 
-  if (gLog.LoggingPackets())
-  {
-    char *b;
-    gLog.Packet(tr("%sUnencrypted (ICQ) TCP Packet (%lu bytes):\n%s\n"), L_PACKETxSTR, size,
-       pkt->print(b));
-    delete [] b;
-  }
+  pkt->log(tr("Unencrypted (ICQ) TCP Packet (%lu bytes):"), size);
 
   // Fuck AOL
   if (version > 6)
@@ -501,13 +483,7 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
     }
   }
 
-  if (gLog.LoggingPackets())
-  {
-    char *b;
-    gLog.Packet(tr("%sDecrypted (ICQ) TCP Packet (%lu bytes):\n%s\n"), L_PACKETxSTR, size,
-       pkt->print(b));
-    delete [] b;
-  }
+  pkt->log(tr("Decrypted (ICQ) TCP Packet (%lu bytes):"), size);
 
   return true;
 }
