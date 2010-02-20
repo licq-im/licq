@@ -29,7 +29,8 @@ using namespace LicqDaemon;
 // Ascii escape char
 const char Esc = 0x1B;
 
-// Ascii color codes
+// ANSI color codes
+// http://en.wikipedia.org/wiki/ANSI_escape_code
 enum ForgroundColors
 {
   ForgroundBlack = 30,
@@ -39,8 +40,17 @@ enum ForgroundColors
   ForgroundBlue,
   ForgroundMagenta,
   ForgroundCyan,
-  ForgroundWhite
+  ForgroundWhite,
+  // 38 is reserved
+  ForgroundDefault = 39
 };
+
+static std::string getPrefixColor()
+{
+  std::ostringstream color;
+  color << Esc << '[' << ForgroundGreen << 'm';
+  return color.str();
+}
 
 static std::string getColor(Log::Level level)
 {
@@ -53,7 +63,7 @@ static std::string getColor(Log::Level level)
       color << ForgroundMagenta;
       break;
     case Log::Info:
-      color << 0; // All attributes off
+      color << ForgroundDefault;
       break;
     case Log::Warning:
       color << ForgroundYellow;
@@ -138,11 +148,16 @@ void StreamLogSink::setLogLevels(int levels)
 
 void StreamLogSink::log(const Message& message)
 {
+  std::string color;
+
   if (myUseColors)
-    myStream << getColor(message.level);
+  {
+    myStream << getPrefixColor();
+    color = getColor(message.level);
+  }
 
   std::ostringstream ss;
-  ss << message.time << " [";
+  ss << message.time << color << " [";
 
   switch (message.level)
   {
@@ -173,7 +188,7 @@ void StreamLogSink::log(const Message& message)
   size_t end = message.text.find_first_of('\n');
   myStream << message.text.substr(0, end) << '\n';
 
-  header = std::string(header.size(), ' ');
+  const std::string prefix = std::string(header.size() - color.size(), ' ');
 
   while (end != std::string::npos && end != (message.text.size() - 1))
   {
@@ -186,7 +201,7 @@ void StreamLogSink::log(const Message& message)
     else
       count = message.text.size() - start;
 
-    myStream << header << message.text.substr(start, count) << '\n';
+    myStream << prefix << message.text.substr(start, count) << '\n';
   }
 
   if (myUseColors)
