@@ -458,7 +458,7 @@ void SystemMenu::aboutToShowGroupMenu()
 
 void SystemMenu::aboutToShowDebugMenu()
 {
-  int logTypes = gLog.ServiceLogTypes(S_STDERR);
+  int logTypes = gOldLog.ServiceLogTypes(S_STDERR);
 
   foreach (QAction* a, myDebugMenu->actions())
     if (a->isCheckable())
@@ -471,14 +471,14 @@ void SystemMenu::changeDebug(QAction* action)
 
   if (level == L_ALL || level == L_NONE)
   {
-    gLog.ModifyService(S_STDERR, level);
+    gOldLog.ModifyService(S_STDERR, level);
     return;
   }
 
   if (action->isChecked())
-    gLog.AddLogTypeToService(S_STDERR, level);
+    gOldLog.AddLogTypeToService(S_STDERR, level);
   else
-    gLog.RemoveLogTypeFromService(S_STDERR, level);
+    gOldLog.RemoveLogTypeFromService(S_STDERR, level);
 }
 
 void SystemMenu::setCurrentGroup(QAction* action)

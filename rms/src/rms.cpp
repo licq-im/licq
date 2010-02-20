@@ -1327,7 +1327,7 @@ int CRMSClient::Process_LOG()
   if (licqRMS->log == NULL)
   {
     licqRMS->log = new CLogService_Plugin(new CPluginLog, 0);
-    gLog.AddService(licqRMS->log);
+    gOldLog.AddService(licqRMS->log);
   }
 
   licqRMS->log->SetLogTypes(lt);

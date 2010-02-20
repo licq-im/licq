@@ -443,7 +443,7 @@ int LicqGui::Run(CICQDaemon* daemon)
   mySignalManager = new SignalManager(pipe);
   myLogWindow = new LogWindow;
 
-  gLog.AddService(new CLogService_Plugin(myLogWindow, L_MOST));
+  gOldLog.AddService(new CLogService_Plugin(myLogWindow, L_MOST));
 
   // Check for qt-gui directory in current base dir
   if (!QDir(QString("%1/%2").arg(BASE_DIR).arg(QTGUI_DIR)).exists())
@@ -521,7 +521,7 @@ int LicqGui::Run(CICQDaemon* daemon)
   gPluginManager.unregisterGeneralPlugin();
 
   gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
-  gLog.ModifyService(S_PLUGIN, 0);
+  gOldLog.ModifyService(S_PLUGIN, 0);
 
   return r;
 }

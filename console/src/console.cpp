@@ -229,7 +229,7 @@ CLicqConsole::~CLicqConsole()
 void CLicqConsole::Shutdown()
 {
   gLog.Info("%sShutting down console.\n", L_CONSOLExSTR);
-  gLog.ModifyService(S_PLUGIN, 0);
+  gOldLog.ModifyService(S_PLUGIN, 0);
   gPluginManager.unregisterGeneralPlugin();
 }
 
@@ -273,10 +273,10 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 
   log = new CPluginLog;
   unsigned long lt = L_MOST;
-  if (gLog.ServiceLogTypes(S_STDERR) & L_PACKET)
+  if (gOldLog.ServiceLogTypes(S_STDERR) & L_PACKET)
     lt |= L_PACKET;
-  gLog.AddService(new CLogService_Plugin(log, lt));
-  gLog.ModifyService(S_STDERR, L_NONE);
+  gOldLog.AddService(new CLogService_Plugin(log, lt));
+  gOldLog.ModifyService(S_STDERR, L_NONE);
 
   winMain = winCon[1];
   winLog = winCon[0];
