@@ -2,6 +2,7 @@ set(tested_SRCS
   logging/log.cpp
   logging/logdistributor.cpp
   logging/logsink.cpp
+  logging/pluginlogsink.cpp
 
   plugins/generalplugin.cpp
   plugins/plugin.cpp
@@ -76,6 +77,7 @@ set(test_SRCS
   logging/tests/logdistributortest.cpp
   logging/tests/logsinktest.cpp
   logging/tests/logtest.cpp
+  logging/tests/pluginlogsinktest.cpp
 
   plugins/tests/generalplugintest.cpp
   plugins/tests/plugintest.cpp
