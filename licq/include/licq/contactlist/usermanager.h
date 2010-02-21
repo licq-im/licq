@@ -271,6 +271,14 @@ public:
   unsigned long icqOwnerUin();
 
   /**
+   * Notify plugins about changes for a user
+   *
+   * @param userId User that has changed
+   * @param subSignal Sub signal for changes
+   */
+  void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);
+
+  /**
    * Add a user to the contact list
    *
    * @param userId User to add

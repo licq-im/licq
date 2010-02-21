@@ -14,6 +14,7 @@ using Licq::Group;
 using Licq::Owner;
 using Licq::User;
 using Licq::UserManager;
+using Licq::UserId;
 
 
 class UserManager Licq::gUserManager;
@@ -545,6 +546,11 @@ unsigned long UserManager::icqOwnerUin()
   return strtoul(OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
 }
 
+void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSignal)
+{
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, subSignal, userId));
+}
+
 Group* UserManager::FetchGroup(int group, unsigned short lockType)
 {
   GroupMap* groups = LockGroupList(LOCK_R);
@@ -671,8 +677,7 @@ void UserManager::RemoveGroup(int groupId)
   FOR_EACH_USER_START(LOCK_W)
   {
     if (pUser->RemoveFromGroup(GROUPS_USER, groupId))
-      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-          USER_GROUPS, pUser->id()));
+      notifyUserUpdated(pUser->id(), USER_GROUPS);
   }
   FOR_EACH_USER_END;
 
@@ -1211,8 +1216,7 @@ void UserManager::setUserInGroup(const UserId& userId,
 
   // Notify plugins
   if (gLicqDaemon != NULL)
-    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-        (groupType == GROUPS_USER ? USER_GROUPS : USER_SETTINGS), userId));
+    notifyUserUpdated(userId, (groupType == GROUPS_USER ? USER_GROUPS : USER_SETTINGS));
 }
 
 void UserManager::SetDefaultUserEncoding(const char* defaultEncoding)
