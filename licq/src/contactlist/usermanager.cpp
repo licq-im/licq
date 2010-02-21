@@ -671,8 +671,8 @@ void UserManager::RemoveGroup(int groupId)
   FOR_EACH_USER_START(LOCK_W)
   {
     if (pUser->RemoveFromGroup(GROUPS_USER, groupId))
-      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
-          pUser->id()));
+      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+          USER_GROUPS, pUser->id()));
   }
   FOR_EACH_USER_END;
 
@@ -1211,7 +1211,8 @@ void UserManager::setUserInGroup(const UserId& userId,
 
   // Notify plugins
   if (gLicqDaemon != NULL)
-    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, userId));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+        (groupType == GROUPS_USER ? USER_GROUPS : USER_SETTINGS), userId));
 }
 
 void UserManager::SetDefaultUserEncoding(const char* defaultEncoding)

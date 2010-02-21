@@ -2403,7 +2403,7 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       if (e)
         ProcessDoneEvent(e);
 
-        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_ABOUT, userId));
+        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, userId));
       }
 
     break;
@@ -4173,7 +4173,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         }
 
         u->SaveLicqInfo();
-        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
+        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, u->id()));
         gUserManager.DropUser(u);
       }
 
@@ -5602,7 +5602,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
         case ICQ_CMDxMETA_MORExINFO:
@@ -5655,7 +5656,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_MORE, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
         case ICQ_CMDxMETA_EMAILxINFO:
@@ -5694,7 +5695,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EXT, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
         case ICQ_CMDxMETA_HOMEPAGExINFO:
@@ -5729,7 +5730,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_HP, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
           break;
         }
 
@@ -5777,8 +5778,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_WORK, u->id()));
-          break;
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
+                break;
 
         case ICQ_CMDxMETA_ABOUT:
         {
@@ -5799,7 +5800,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_ABOUT, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
         case ICQ_CMDxMETA_INTERESTSxINFO:
@@ -5829,7 +5830,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_MORE2, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
         case ICQ_CMDxMETA_PASTxINFO:
@@ -5876,7 +5877,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 u->saveUserInfo();
           u->SaveLicqInfo();
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_MORE2, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
         default:
@@ -5899,7 +5900,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           }
         }
 
-            pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EXT, u->id()));
+            pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
         gUserManager.DropUser(u);
       }
 
@@ -6170,7 +6171,9 @@ void CICQDaemon::ProcessUserList()
 
     // Save GSID, SID and group memberships
     u->SaveLicqInfo();
-    pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
+    pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+    pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, u->id()));
+    pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SETTINGS, u->id()));
   }
 
   receivedUserList.clear();

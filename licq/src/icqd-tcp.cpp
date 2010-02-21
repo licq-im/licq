@@ -3176,7 +3176,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             u->SavePhoneBookInfo();
                   delete [] pb;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PHONExBOOK, u->id()));
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
 

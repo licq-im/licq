@@ -749,9 +749,8 @@ void User::SetPermanent()
   saveAll();
 
   // Notify the plugins of the change
-  // Send a USER_BASIC, don't want a new signal just for this.
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-      USER_BASIC, myId, 0));
+      USER_SETTINGS, myId, 0));
 }
 
 void User::SetDefaults()

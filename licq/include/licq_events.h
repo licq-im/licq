@@ -378,22 +378,27 @@ const unsigned long LOGOFF_RATE                  = 0x00000001;
 //! combination is invalid.
 const unsigned long LOGOFF_PASSWORD              = 0x00000002;
 
+
 // User information update constants
-const unsigned long USER_STATUS                 = 1;
+
+// User status has changed, e.g. online, offline, away, etc.
+const unsigned long USER_STATUS                 = 1;    // Status has changed
+// Number of unread events for user has changed
 const unsigned long USER_EVENTS                 = 2;
+// Basic user info has changed, e.g. name, alias
 const unsigned long USER_BASIC                  = 3;
-const unsigned long USER_EXT                    = 4;
-const unsigned long USER_GENERAL                = 5;
-const unsigned long USER_MORE                   = 6;
-const unsigned long USER_WORK                   = 7;
-const unsigned long USER_ABOUT                  = 8;
+// Additional user info has changed, e.g. email, about, phonebook, etc.
+const unsigned long USER_INFO                   = 4;
+// Group membership for user has changed (does not include system groups)
+const unsigned long USER_GROUPS                 = 5;
+// Settings for user has changed, e.g. send through server, auto accept, invisible, etc.
+const unsigned long USER_SETTINGS               = 6;
+// Encryption has been enabled/disabled or key has been added/removed
 const unsigned long USER_SECURITY               = 9;
-const unsigned long USER_MORE2                  = 10;
-const unsigned long USER_HP                     = 11;
-const unsigned long USER_PHONExBOOK             = 12;
 const unsigned long USER_PICTURE                = 13;
 const unsigned long USER_TYPING                 = 14;
 const unsigned long USER_PLUGIN_STATUS          = 15; // Which Plugin?
+
 
 /**
  * Sub signals for SIGNAL_UPDATExLIST
