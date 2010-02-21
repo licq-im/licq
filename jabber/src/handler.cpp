@@ -123,8 +123,8 @@ void Handler::onUserAdded(const std::string& id,
 
   gUserManager.DropUser(user);
 
-  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-                                            USER_GENERAL, userId));
+  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, userId));
+  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, userId));
 }
 
 void Handler::onUserRemoved(const std::string& id)

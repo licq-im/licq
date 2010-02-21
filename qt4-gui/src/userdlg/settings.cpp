@@ -400,7 +400,8 @@ void UserPages::Settings::userUpdated(const LicqUser* user, unsigned long subSig
 {
   switch (subSignal)
   {
-    case USER_GENERAL:
+    case USER_GROUPS:
+    case USER_SETTINGS:
       load(user);
       break;
   }

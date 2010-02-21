@@ -1501,8 +1501,6 @@ void LicqGui::userUpdated(const UserId& userId, unsigned long subSignal, int arg
     }
     case USER_STATUS:
     case USER_BASIC:
-    case USER_GENERAL:
-    case USER_EXT:
     case USER_SECURITY:
     case USER_TYPING:
     {

@@ -476,9 +476,9 @@ void UserEventCommon::updatedUser(const UserId& userId, unsigned long subSignal,
         setWindowIcon(IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
       break;
 
-    case USER_GENERAL: // Fall through
-    case USER_SECURITY:
     case USER_BASIC:
+    case USER_INFO: // For time zone
+    case USER_SECURITY:
       updateWidgetInfo(u);
       break;
 

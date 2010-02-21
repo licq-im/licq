@@ -1723,27 +1723,16 @@ void UserPages::Info::userUpdated(const LicqUser* user, unsigned long subSignal)
 {
   switch (subSignal)
   {
-  case USER_GENERAL:
-  case USER_BASIC:
-  case USER_EXT:
-      loadPageGeneral(user);
-    break;
-  case USER_MORE:
-  case USER_HP:
+    case USER_INFO:
       loadPageMore(user);
-    break;
-  case USER_MORE2:
       loadPageMore2(user);
-    break;
-  case USER_WORK:
       loadPageWork(user);
-    break;
-  case USER_ABOUT:
       loadPageAbout(user);
-    break;
-  case USER_PHONExBOOK:
       loadPagePhoneBook(user);
-    break;
+      // fall through
+    case USER_BASIC:
+      loadPageGeneral(user);
+      break;
   case USER_PICTURE:
       loadPagePicture(user);
     break;

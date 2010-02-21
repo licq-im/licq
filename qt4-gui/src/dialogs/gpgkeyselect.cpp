@@ -159,7 +159,7 @@ void GPGKeySelect::slot_ok()
 
 void GPGKeySelect::updateIcon()
 {
-  gMainWindow->slot_updatedUser(myUserId, USER_GENERAL, 0);
+  gMainWindow->slot_updatedUser(myUserId, USER_SECURITY, 0);
   return;
 }
 

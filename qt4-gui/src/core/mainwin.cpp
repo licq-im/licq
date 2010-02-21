@@ -640,16 +640,15 @@ void MainWindow::slot_updatedUser(const UserId& userId, unsigned long subSignal,
       // TODO
       // kdeIMInterface->userStatusChanged(id, ppid);
 #endif
-    case USER_BASIC:
-    case USER_GENERAL:
-    case USER_EXT:
+    case USER_BASIC: // for alias
+    case USER_SETTINGS: // for online notify
     case USER_SECURITY:
     case USER_TYPING:
     {
       if (gUserManager.isOwner(userId))
       {
         if (subSignal == USER_STATUS ||
-            subSignal == USER_EXT)
+            subSignal == USER_SETTINGS)
           break;
 
         myCaption = "Licq (|)";

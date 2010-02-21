@@ -313,6 +313,6 @@ void KeyListItem::unsetKey()
     u->SetUseGPG(false);
     u->SetGPGKey("");
     gUserManager.DropUser(u);
-    gMainWindow->slot_updatedUser(myUserId, USER_GENERAL, 0);
+    gMainWindow->slot_updatedUser(myUserId, USER_SECURITY, 0);
   }
 }
