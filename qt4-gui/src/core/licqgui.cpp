@@ -375,7 +375,7 @@ void LicqGui::loadFloatiesConfig()
 void LicqGui::saveConfig()
 {
   // Tell the daemon to save its options
-  myLicqDaemon->SaveConf();
+  gLicqDaemon->SaveConf();
 
   // Save all our options
   char filename[MAX_FILENAME_LEN];
@@ -421,10 +421,8 @@ void LicqGui::saveConfig()
   licqConf.FlushFile();
 }
 
-int LicqGui::Run(CICQDaemon* daemon)
+int LicqGui::Run(CICQDaemon* /* daemon */)
 {
-  myLicqDaemon = daemon;
-
   // Register with the daemon, we want to receive all signals
   int pipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
 
@@ -658,7 +656,7 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
   gUserManager.DropOwner(o);
 
   const QTextCodec* codec = UserCodec::defaultEncoding();
-  myLicqDaemon->protoSetStatus(ownerId, status, (autoMessage.isNull() ? KEEP_AUTORESPONSE : codec->fromUnicode(autoMessage).data()));
+  gLicqDaemon->protoSetStatus(ownerId, status, (autoMessage.isNull() ? KEEP_AUTORESPONSE : codec->fromUnicode(autoMessage).data()));
 }
 
 bool LicqGui::removeUserFromList(const UserId& userId, QWidget* parent)

@@ -81,8 +81,6 @@ public:
   int Run(CICQDaemon* daemon);
 
   // Functions to get daemon and gui resources
-  CICQDaemon* licqDaemon() { return myLicqDaemon; }
-  MainWindow* mainWindow() { return myMainWindow; }
   SignalManager* signalManager() { return mySignalManager; }
   LogWindow* logWindow() { return myLogWindow; }
   ContactListModel* contactList() { return myContactList; }
@@ -331,8 +329,6 @@ private:
 
   void createFloaty(const UserId& userId, unsigned short x = 0, unsigned short y = 0,
       unsigned short w = 0);
-
-  CICQDaemon* myLicqDaemon;
 
   QString mySkin;
   QString myIcons;
