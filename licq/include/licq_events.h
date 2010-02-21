@@ -382,7 +382,7 @@ const unsigned long LOGOFF_PASSWORD              = 0x00000002;
 // User information update constants
 
 // User status has changed, e.g. online, offline, away, etc.
-const unsigned long USER_STATUS                 = 1;    // Status has changed
+const unsigned long USER_STATUS                 = 1;
 // Number of unread events for user has changed
 const unsigned long USER_EVENTS                 = 2;
 // Basic user info has changed, e.g. name, alias
