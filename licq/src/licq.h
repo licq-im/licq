@@ -2,7 +2,7 @@
 #define LICQ_H
 
 #include "config.h"
-#include "logservice.h"
+#include "logging/logservice.h"
 
 #include <pthread.h>
 #include <list>

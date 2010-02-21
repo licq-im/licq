@@ -1,4 +1,8 @@
 set(tested_SRCS
+  logging/log.cpp
+  logging/logdistributor.cpp
+  logging/logsink.cpp
+
   plugins/generalplugin.cpp
   plugins/plugin.cpp
   plugins/pluginthread.cpp
@@ -9,9 +13,6 @@ set(tested_SRCS
   thread/readwritemutex.cpp
 
   utils/dynamiclibrary.cpp
-  utils/log.cpp
-  utils/logdistributor.cpp
-  utils/logsink.cpp
   utils/pipe.cpp
 )
 
@@ -38,7 +39,6 @@ set(licq_SRCS
   languagecodes.c
   licq.cpp
   log.cpp
-  logservice.cpp
   main.cpp
   md5.cpp
   message.cpp
@@ -61,18 +61,22 @@ set(licq_SRCS
   contactlist/user.cpp
   contactlist/usermanager.cpp
 
+  logging/logservice.cpp
+  logging/streamlogsink.cpp
+  logging/threadlog.cpp
+
   plugins/icqprotocolplugin.cpp
   plugins/plugineventhandler.cpp
   plugins/pluginmanager.cpp
-
-  thread/threadlog.cpp
-
-  utils/streamlogsink.cpp
 
   ${tested_SRCS}
 )
 
 set(test_SRCS
+  logging/tests/logdistributortest.cpp
+  logging/tests/logsinktest.cpp
+  logging/tests/logtest.cpp
+
   plugins/tests/generalplugintest.cpp
   plugins/tests/plugintest.cpp
   plugins/tests/pluginthreadtest.cpp
@@ -85,9 +89,6 @@ set(test_SRCS
   thread/tests/threadspecificdatatest.cpp
 
   utils/tests/dynamiclibrarytest.cpp
-  utils/tests/logdistributortest.cpp
-  utils/tests/logtest.cpp
-  utils/tests/logsinktest.cpp
   utils/tests/pipetest.cpp
 
   ${tested_SRCS}

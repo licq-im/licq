@@ -40,7 +40,8 @@ using namespace std;
 #include "licq_socket.h"
 #include "licq/exceptions/exception.h"
 #include "licq/version.h"
-#include "utils/streamlogsink.h"
+
+#include "logging/streamlogsink.h"
 #include "plugins/pluginmanager.h"
 
 using namespace std;

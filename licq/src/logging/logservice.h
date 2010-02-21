@@ -22,8 +22,8 @@
 
 #include "licq/logservice.h"
 #include "licq/thread/threadspecificdata.h"
-#include "utils/log.h"
-#include "utils/logdistributor.h"
+#include "logging/log.h"
+#include "logging/logdistributor.h"
 
 namespace LicqDaemon
 {
