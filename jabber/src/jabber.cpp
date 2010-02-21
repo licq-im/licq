@@ -224,6 +224,14 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
                                    signal->userId(), message);
   event->thread_plugin = signal->callerThread();
   event->m_eResult = EVENT_ACKED;
+
+  if (event->m_pUserEvent)
+  {
+    Licq::User* user = gUserManager.fetchUser(signal->userId(), LOCK_W);
+    event->m_pUserEvent->AddToHistory(user, D_SENDER);
+    gUserManager.DropUser(user);
+  }
+
   myDaemon->PushPluginEvent(event);
 }
 
