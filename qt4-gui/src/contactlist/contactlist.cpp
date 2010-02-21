@@ -193,21 +193,6 @@ void ContactListModel::userUpdated(const UserId& userId, unsigned long subSignal
   user->update(subSignal, argument);
 }
 
-void ContactListModel::updateUser(const UserId& userId)
-{
-  ContactUserData* userData = findUser(userId);
-  if (userData == NULL)
-    return;
-
-  LicqUserReadGuard u(userId);
-  if (!u.isLocked())
-    return;
-
-  userData->update(*u, 0);
-  userDataChanged(userData);
-  updateUserGroups(userData, *u);
-}
-
 void ContactListModel::configUpdated()
 {
   // Update number of columns

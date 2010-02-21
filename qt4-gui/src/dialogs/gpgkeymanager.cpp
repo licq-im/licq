@@ -22,6 +22,8 @@
 #include "config.h"
 
 #include <QDialogButtonBox>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QMenu>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -29,7 +31,6 @@
 #include <licq_events.h>
 #include <licq_user.h>
 
-#include "core/mainwin.h"
 #include "core/messagebox.h"
 
 #include "helpers/support.h"
@@ -313,6 +314,8 @@ void KeyListItem::unsetKey()
     u->SetUseGPG(false);
     u->SetGPGKey("");
     gUserManager.DropUser(u);
-    gMainWindow->slot_updatedUser(myUserId, USER_SECURITY, 0);
+
+    // Notify all plugins (including ourselves)
+    gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
   }
 }

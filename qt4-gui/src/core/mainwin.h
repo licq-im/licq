@@ -103,7 +103,6 @@ public slots:
    */
   void slot_updatedList(unsigned long subSignal);
 
-  void slot_updatedUser(const UserId& userId, unsigned long subSignal, int argument);
   void slot_pluginUnloaded(unsigned long ppid);
   void updateGroups(bool initial = false);
 
@@ -182,6 +181,7 @@ private slots:
   void slot_protocolPlugin(unsigned long);
   void slot_doneOwnerFcn(const LicqEvent* event);
   void slot_updateContactList();
+  void slot_updatedUser(const UserId& userId, unsigned long subSignal, int argument);
 
   /**
    * Open add user dialog

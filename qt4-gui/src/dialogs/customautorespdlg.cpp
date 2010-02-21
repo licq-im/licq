@@ -25,9 +25,8 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include <licq_events.h>
 #include <licq_user.h>
-
-#include "core/licqgui.h"
 
 #include "helpers/licqstrings.h"
 #include "helpers/support.h"
@@ -102,9 +101,8 @@ void CustomAutoRespDlg::ok()
     u->SetCustomAutoResponse(s.toLocal8Bit());
     gUserManager.DropUser(u);
 
-    // Daemon doesn't send signal when autoresponse is changed so we must tell
-    // contact list to update since custom autoresponse affects extended icons
-    LicqGui::instance()->updateUserData(myUserId);
+    // Notify all plugins (including ourselves)
+    gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
   }
   close();
 }
@@ -117,9 +115,8 @@ void CustomAutoRespDlg::clear()
     u->ClearCustomAutoResponse();
     gUserManager.DropUser(u);
 
-    // Daemon doesn't send signal when autoresponse is changed so we must tell
-    // contact list to update since custom autoresponse affects extended icons
-    LicqGui::instance()->updateUserData(myUserId);
+    // Notify all plugins (including ourselves)
+    gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
   }
   close();
 }

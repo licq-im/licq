@@ -62,7 +62,6 @@ private:
   QTreeWidget* keySelect;
   QCheckBox* useGPG;
   UserId myUserId;
-  void updateIcon();
   QLineEdit* filterText;
 
 private slots:

@@ -198,14 +198,6 @@ public:
   virtual ~ContactListModel();
 
   /**
-   * Refresh data and group membership for a user
-   * As the daemon does not signal some things the main window must use this function to notify us.
-   *
-   * @param userId Licq user id
-   */
-  void updateUser(const UserId& userId);
-
-  /**
    * Add a user to the contact list
    *
    * @param licqUser The user to add

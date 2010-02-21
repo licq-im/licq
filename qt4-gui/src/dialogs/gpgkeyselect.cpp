@@ -37,7 +37,6 @@
 #include <licq_user.h>
 #include <licq_events.h>
 
-#include "core/mainwin.h"
 
 #include "helpers/support.h"
 
@@ -150,17 +149,13 @@ void GPGKeySelect::slot_ok()
       u->SetGPGKey(curItem->text(2).toAscii());
       u->SetUseGPG(useGPG->isChecked());
       gUserManager.DropUser(u);
-      updateIcon();
+
+      // Notify all plugins (including ourselves)
+      gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
     }
   }
 
   close();
-}
-
-void GPGKeySelect::updateIcon()
-{
-  gMainWindow->slot_updatedUser(myUserId, USER_SECURITY, 0);
-  return;
 }
 
 void GPGKeySelect::slotNoKey()
@@ -170,7 +165,9 @@ void GPGKeySelect::slotNoKey()
   {
     u->SetGPGKey( "" );
     gUserManager.DropUser( u );
-    updateIcon();
+
+    // Notify all plugins (including ourselves)
+    gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
   }
 
   close();

@@ -70,14 +70,6 @@ public:
   void update(unsigned long subSignal, int argument);
 
   /**
-   * Update user information from daemon
-   *
-   * @param licqUser Licq user to read information from
-   * @param subSignal Information to update or 0 to update everything
-   */
-  void update(const LicqUser* licqUser, unsigned long subSignal);
-
-  /**
    * Update all data related to the gui configuration
    */
   void configUpdated();
@@ -167,6 +159,14 @@ signals:
   void updateUserGroups(ContactUserData* user, const LicqUser* licqUser);
 
 private:
+  /**
+   * Update user information from daemon
+   *
+   * @param licqUser Licq user to read information from
+   * @param subSignal Information to update or 0 to update everything
+   */
+  void update(const LicqUser* licqUser, unsigned long subSignal);
+
   /**
    * Update sub group membership
    */

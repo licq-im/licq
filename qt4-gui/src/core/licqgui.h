@@ -152,14 +152,6 @@ public:
   void toggleFloaty(const UserId& userId);
 
   /**
-   * Trigger contact data to be reread from daemon
-   * Needed since daemon won't generate signals for some changes.
-   *
-   * @param userId Contact id
-   */
-  void updateUserData(const UserId& userId);
-
-  /**
    * Set new status for all owners
    *
    * @param status New status

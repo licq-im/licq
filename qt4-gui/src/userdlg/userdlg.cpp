@@ -220,8 +220,11 @@ void UserDlg::apply()
   myUserInfo->apply2(myUserId);
   myUserSettings->apply2(myUserId);
 
-  // Make sure GUI is updated
-  LicqGui::instance()->updateUserData(myUserId);
+  // Notify all plugins (including ourselves)
+  gUserManager.notifyUserUpdated(myUserId, USER_BASIC);
+  gUserManager.notifyUserUpdated(myUserId, USER_GROUPS);
+  gUserManager.notifyUserUpdated(myUserId, USER_INFO);
+  gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
 }
 
 void UserDlg::userUpdated(const UserId& userId, unsigned long subSignal)

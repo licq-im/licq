@@ -1544,11 +1544,6 @@ void LicqGui::userUpdated(const UserId& userId, unsigned long subSignal, int arg
   }
 }
 
-void LicqGui::updateUserData(const UserId& userId)
-{
-  myContactList->updateUser(userId);
-}
-
 void LicqGui::convoSet(const UserId& userId, unsigned long convoId)
 {
   for (int i = 0; i < myUserSendList.size(); ++i)

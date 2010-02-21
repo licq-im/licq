@@ -510,14 +510,15 @@ void UserMenu::toggleMiscMode(QAction* action)
       {
         u->SetUseGPG(newState);
         gUserManager.DropUser(u);
+
+        // Notify all plugins (including ourselves)
+        gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
       }
       else
       {
         gUserManager.DropUser(u);
         new GPGKeySelect(myUserId);
       }
-      // update icon
-      LicqGui::instance()->updateUserData(myUserId);
       return;
     }
 
@@ -546,6 +547,9 @@ void UserMenu::toggleMiscMode(QAction* action)
       break;
   }
   gUserManager.DropUser(u);
+
+  // Notify all plugins (including ourselves)
+  gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
 }
 
 void UserMenu::utility(QAction* action)
