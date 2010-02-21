@@ -172,13 +172,12 @@ void Handler::onRosterReceived(const std::set<std::string>& ids)
 void Handler::onMessage(const std::string& from, const std::string& message)
 {
   TRACE();
-
   
   CEventMsg* event = new CEventMsg(
       message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, ::time(0), 0);
 
   UserId userId = LicqUser::makeUserId(from, JABBER_PPID);
-  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
+  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W, true);
 
   if (user)
     user->SetTyping(0);
