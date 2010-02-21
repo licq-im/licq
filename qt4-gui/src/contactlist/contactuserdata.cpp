@@ -89,7 +89,7 @@ ContactUserData::ContactUserData(const LicqUser* licqUser, QObject* parent)
     myAnimateTimer->setInterval(FLASH_TIME);
   }
 
-  updateAll(licqUser);
+  update(licqUser, 0);
 }
 
 ContactUserData::~ContactUserData()
@@ -108,82 +108,105 @@ ContactUserData::~ContactUserData()
 
 void ContactUserData::update(unsigned long subSignal, int argument)
 {
-  switch (subSignal)
+  if (subSignal == USER_EVENTS && argument == 0)
   {
-    case USER_EVENTS:
-      if (argument == 0)
-      {
-        // User fetched our auto response message
-        myCarCounter = ((5*1000/FLASH_TIME)+1)&(-2);
-        startAnimation();
-        return;
-      }
-      break;
-
-    case USER_STATUS:
-      if (argument == 1)
-      {
-        // User came online
-        myOnlCounter = 5*1000/FLASH_TIME; // run about 5 seconds
-        startAnimation();
-        // Fall trough to actually update status
-      }
-      break;
-
-//    case USER_BASIC:
-//    case USER_GENERAL:
-//    case USER_EXT:
-//    case USER_SECURITY:
-//    case USER_TYPING:
+    // User fetched our auto response message
+    myCarCounter = ((5*1000/FLASH_TIME)+1)&(-2);
+    startAnimation();
+    return;
   }
 
-  // TODO: Add better handling of subsignals so we don't have to update everything so often
-
-
+  if (subSignal == USER_STATUS && argument == 1)
   {
-    LicqUserReadGuard u(myUserId);
-    if (u.isLocked())
-    {
-      // Group membership is handled by ContactList so send it a signal to update
-      emit updateUserGroups(this, *u);
-
-      // No specific handling for this signal so reread everything from the daemon
-      updateAll(*u);
-    }
+    // User came online
+    myOnlCounter = 5*1000/FLASH_TIME; // run about 5 seconds
+    startAnimation();
+    // Fall trough to actually update status
   }
 
+  LicqUserReadGuard u(myUserId);
+  {
+    if (!u.isLocked())
+      return;
+
+    update(*u, subSignal);
+  }
   emit dataChanged(this);
 }
 
-void ContactUserData::updateAll(const LicqUser* u)
+void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
 {
-  myStatus = u->Status();
-  myStatusFull = u->StatusFull();
-  myStatusInvisible = u->StatusInvisible();
-  myStatusTyping = u->GetTyping() == ICQ_TYPING_ACTIVE;
-  myPhoneFollowMeStatus = u->PhoneFollowMeStatus();
-  myIcqPhoneStatus = u->ICQphoneStatus();
-  mySharedFilesStatus = u->SharedFilesStatus();
-  myCustomAR = u->CustomAutoResponse()[0] != '\0';
-  mySecure = u->Secure();
-  myUrgent = false;
-  myBirthday = (u->Birthday() == 0);
-  myPhone = !u->getUserInfoString("PhoneNumber").empty();
-  myCellular = !u->getCellularNumber().empty();
-  myGPGKey = (u->GPGKey() != 0) && (strcmp(u->GPGKey(), "") != 0);
-  myGPGKeyEnabled = u->UseGPG();
+  if (subSignal == 0 || subSignal == USER_STATUS)
+  {
+    myStatus = u->Status();
+    myStatusFull = u->StatusFull();
+    myStatusInvisible = u->StatusInvisible();
+    myTouched = u->Touched();
+  }
 
-  myNotInList = u->NotInList();
-  myNewUser = u->NewUser();
-  myAwaitingAuth = u->GetAwaitingAuth();
-  myInIgnoreList = u->IgnoreList();
-  myInOnlineNotify = u->OnlineNotify();
-  myInInvisibleList = u->InvisibleList();
-  myInVisibleList = u->VisibleList();
-  myTouched = u->Touched();
+  if (subSignal == 0 || subSignal == USER_TYPING)
+    myStatusTyping = u->GetTyping() == ICQ_TYPING_ACTIVE;
+
+  if (subSignal == 0 || subSignal == USER_PLUGIN_STATUS)
+  {
+    myPhoneFollowMeStatus = u->PhoneFollowMeStatus();
+    myIcqPhoneStatus = u->ICQphoneStatus();
+    mySharedFilesStatus = u->SharedFilesStatus();
+  }
+
+  if (subSignal == 0 || subSignal == USER_INFO)
+  {
+    myBirthday = (u->Birthday() == 0);
+    myPhone = !u->getUserInfoString("PhoneNumber").empty();
+    myCellular = !u->getCellularNumber().empty();
+  }
+
+  if (subSignal == 0 || subSignal == USER_SECURITY)
+  {
+    mySecure = u->Secure();
+    myGPGKey = (u->GPGKey() != 0) && (strcmp(u->GPGKey(), "") != 0);
+    myGPGKeyEnabled = u->UseGPG();
+  }
+
+  if (subSignal == 0 || subSignal == USER_SETTINGS)
+  {
+    myCustomAR = u->CustomAutoResponse()[0] != '\0';
+    myNotInList = u->NotInList();
+    myNewUser = u->NewUser();
+    myAwaitingAuth = u->GetAwaitingAuth();
+    myInIgnoreList = u->IgnoreList();
+    myInOnlineNotify = u->OnlineNotify();
+    myInInvisibleList = u->InvisibleList();
+    myInVisibleList = u->VisibleList();
+  }
+
+  if (subSignal == 0 || subSignal == USER_EVENTS)
+    updateEvents(u);
+
+  if (subSignal == 0 || subSignal == USER_SETTINGS || subSignal == USER_GROUPS)
+    // Group membership is handled by ContactList so send it a signal to update
+    emit updateUserGroups(this, u);
+
+  if (subSignal == 0 || subSignal == USER_PICTURE)
+    updatePicture(u);
+
+
+  if (subSignal == USER_GROUPS || subSignal == USER_PICTURE)
+    return;
 
   updateExtendedStatus();
 
+  if (subSignal == USER_TYPING || subSignal == USER_SECURITY)
+    return;
+
+  updateSubGroup();
+  updateText(u);
+  updateSorting();
+  updateVisibility();
+}
+
+void ContactUserData::updateSubGroup()
+{
   // Set sub group to put user in
   ContactListModel::SubGroupType newSubGroup = ContactListModel::OnlineSubGroup;
 
@@ -200,18 +223,10 @@ void ContactUserData::updateAll(const LicqUser* u)
       user->group()->updateSubGroup(mySubGroup, newSubGroup, myEvents);
     mySubGroup = newSubGroup;
   }
+}
 
-  myNewMessages = u->NewMessages();
-  if (myEvents != myNewMessages)
-  {
-    foreach (ContactUser* user, myUserInstances)
-      user->group()->updateNumEvents(myNewMessages - myEvents, mySubGroup);
-
-    myEvents = myNewMessages;
-  }
-
-  updateText(u);
-
+void ContactUserData::updatePicture(const Licq::User* u)
+{
   if (myUserIcon != NULL)
   {
     delete myUserIcon;
@@ -227,6 +242,19 @@ void ContactUserData::updateAll(const LicqUser* u)
       delete myUserIcon;
       myUserIcon = NULL;
     }
+  }
+}
+
+void ContactUserData::updateEvents(const Licq::User* u)
+{
+  myUrgent = false;
+  myNewMessages = u->NewMessages();
+  if (myEvents != myNewMessages)
+  {
+    foreach (ContactUser* user, myUserInstances)
+      user->group()->updateNumEvents(myNewMessages - myEvents, mySubGroup);
+
+    myEvents = myNewMessages;
   }
 
   myEventSubCommand = 0;
@@ -275,9 +303,6 @@ void ContactUserData::updateAll(const LicqUser* u)
       startAnimation();
     }
   }
-
-  updateSorting();
-  updateVisibility();
 }
 
 void ContactUserData::updateExtendedStatus()

@@ -203,7 +203,7 @@ void ContactListModel::updateUser(const UserId& userId)
   if (!u.isLocked())
     return;
 
-  userData->updateAll(*u);
+  userData->update(*u, 0);
   userDataChanged(userData);
   updateUserGroups(userData, *u);
 }
