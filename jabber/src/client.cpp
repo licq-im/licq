@@ -48,6 +48,10 @@ Client::Client(Handler& handler, const std::string& username,
 
   myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
+
+  // TODO: Fix in a more generic way
+  if (myClient.server() == "chat.facebook.com")
+    myClient.setTls(gloox::TLSDisabled);
 }
 
 Client::~Client()
