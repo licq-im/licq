@@ -181,7 +181,6 @@ void ContactUserData::updateAll(const LicqUser* u)
   myInInvisibleList = u->InvisibleList();
   myInVisibleList = u->VisibleList();
   myTouched = u->Touched();
-  myNewMessages = u->NewMessages();
 
   updateExtendedStatus();
 
@@ -202,12 +201,13 @@ void ContactUserData::updateAll(const LicqUser* u)
     mySubGroup = newSubGroup;
   }
 
-  if (myEvents != u->NewMessages())
+  myNewMessages = u->NewMessages();
+  if (myEvents != myNewMessages)
   {
     foreach (ContactUser* user, myUserInstances)
-      user->group()->updateNumEvents(u->NewMessages() - myEvents, mySubGroup);
+      user->group()->updateNumEvents(myNewMessages - myEvents, mySubGroup);
 
-    myEvents = u->NewMessages();
+    myEvents = myNewMessages;
   }
 
   updateText(u);
@@ -231,9 +231,9 @@ void ContactUserData::updateAll(const LicqUser* u)
 
   myEventSubCommand = 0;
 
-  if (u->NewMessages() > 0)
+  if (myNewMessages > 0)
   {
-    for (unsigned short i = 0; i < u->NewMessages(); i++)
+    for (unsigned short i = 0; i < myNewMessages; i++)
     {
       switch (u->EventPeek(i)->SubCommand())
       {
@@ -262,7 +262,7 @@ void ContactUserData::updateAll(const LicqUser* u)
     }
   }
   Config::ContactList::FlashMode flash = Config::ContactList::instance()->flash();
-  bool shouldFlash = ((u->NewMessages() > 0 &&  flash == Config::ContactList::FlashAll) ||
+  bool shouldFlash = ((myNewMessages > 0 &&  flash == Config::ContactList::FlashAll) ||
       (myUrgent && flash == Config::ContactList::FlashUrgent));
 
   if (shouldFlash != myFlash)
