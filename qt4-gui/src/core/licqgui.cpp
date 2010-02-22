@@ -75,6 +75,7 @@ extern "C"
 #include <licq_file.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
+#include <licq_log.h>
 #include <licq/pluginmanager.h>
 #include <licq_sar.h>
 #include <licq_user.h>
@@ -441,7 +442,11 @@ int LicqGui::Run(CICQDaemon* /* daemon */)
   mySignalManager = new SignalManager(pipe);
   myLogWindow = new LogWindow;
 
-  gOldLog.AddService(new CLogService_Plugin(myLogWindow, L_MOST));
+  using Licq::Log;
+  myLogWindow->pluginLogSink()->setLogLevel(Log::Unknown, true);
+  myLogWindow->pluginLogSink()->setLogLevel(Log::Info, true);
+  myLogWindow->pluginLogSink()->setLogLevel(Log::Warning, true);
+  myLogWindow->pluginLogSink()->setLogLevel(Log::Error, true);
 
   // Check for qt-gui directory in current base dir
   if (!QDir(QString("%1/%2").arg(BASE_DIR).arg(QTGUI_DIR)).exists())
@@ -519,7 +524,6 @@ int LicqGui::Run(CICQDaemon* /* daemon */)
   gPluginManager.unregisterGeneralPlugin();
 
   gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
-  gOldLog.ModifyService(S_PLUGIN, 0);
 
   return r;
 }

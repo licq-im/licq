@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-#include <licq_log.h>
+#include <licq/pluginlogsink.h>
 
 class QShowEvent;
 class QSocketNotifier;
@@ -31,16 +31,20 @@ namespace LicqQtGui
 {
 class MLEdit;
 
-class LogWindow : public QDialog, public CPluginLog
+class LogWindow : public QDialog
 {
   Q_OBJECT
 
 public:
   LogWindow(QWidget* parent = 0);
+  ~LogWindow();
+
+  Licq::PluginLogSink::Ptr pluginLogSink() { return myLogSink; }
 
 private:
   MLEdit* outputBox;
   QSocketNotifier* sn;
+  Licq::PluginLogSink::Ptr myLogSink;
 
 private slots:
   void log(int fd);

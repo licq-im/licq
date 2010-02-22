@@ -38,6 +38,8 @@
 #include <QFileDialog>
 #endif
 
+#include <licq/daemon.h>
+#include <licq/logservice.h>
 #include <licq_icq.h>
 
 #include "core/messagebox.h"
@@ -48,6 +50,7 @@
 
 #undef connect
 
+using Licq::PluginLogSink;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LogWindow */
 
@@ -90,26 +93,50 @@ LogWindow::LogWindow(QWidget* parent)
 
   adjustSize();
 
-  sn = new QSocketNotifier(Pipe(), QSocketNotifier::Read, this);
+  myLogSink.reset(new PluginLogSink());
+  Licq::gDaemon->getLogService().registerLogSink(myLogSink);
+
+  sn = new QSocketNotifier(myLogSink->getReadPipe(), QSocketNotifier::Read, this);
   connect(sn, SIGNAL(activated(int)), SLOT(log(int)));
+}
+
+LogWindow::~LogWindow()
+{
+  Licq::gDaemon->getLogService().unregisterLogSink(myLogSink);  
 }
 
 void LogWindow::log(int fd)
 {
-  char buf[4];
-  read(fd, buf, 1);
+  using Licq::LogSink;
 
-  QString str = QString::fromUtf8(NextLogMsg());
+  char buf;
+  read(fd, &buf, sizeof(buf));
+
+  QString str;
+  Licq::Log::Level level = Licq::Log::Unknown;
+
+  switch (buf)
+  {
+    case PluginLogSink::TYPE_MESSAGE:
+    {
+      LogSink::Message::Ptr message = myLogSink->popMessage();
+      str = QString::fromUtf8(message->text.c_str());
+      level = message->level;
+      break;
+    }
+    case PluginLogSink::TYPE_PACKET:
+    {
+      LogSink::Packet::Ptr packet = myLogSink->popPacket();
+      str = QString::fromUtf8(packet->message.text.c_str());
+      level = packet->message.level;
+      break;
+    }
+  }
 
   outputBox->appendNoNewLine(str);
   outputBox->GotoEnd();
 
-  /* The next call will block, so we need to clear the log so that processing
-     can continue */
-  unsigned short nNextLogType = NextLogType();
-  ClearLog();
-
-  if (nNextLogType == L_ERROR)
+  if (level == Licq::Log::Error)
     CriticalUser(NULL, str);
 }
 

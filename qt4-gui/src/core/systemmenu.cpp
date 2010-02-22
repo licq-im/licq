@@ -56,6 +56,9 @@
 #include "licqgui.h"
 #include "mainwin.h"
 
+const int LOG_SET_ALL = -1;
+const int LOG_CLEAR_ALL = -2;
+
 using namespace LicqQtGui;
 using namespace LicqQtGui::SystemMenuPrivate;
 /* TRANSLATOR LicqQtGui::SystemMenu */
@@ -74,14 +77,15 @@ SystemMenu::SystemMenu(QWidget* parent)
     a = myDebugMenu->addAction(text); \
     a->setCheckable(checkable); \
     a->setData(data);
-  ADD_DEBUG(tr("Status Info"), L_INFO, true)
-  ADD_DEBUG(tr("Unknown Packets"), L_UNKNOWN, true)
-  ADD_DEBUG(tr("Errors"), L_ERROR, true)
-  ADD_DEBUG(tr("Warnings"), L_WARN, true)
-  ADD_DEBUG(tr("Packets"), L_PACKET, true)
+  ADD_DEBUG(tr("Status Info"), Licq::Log::Info, true)
+  ADD_DEBUG(tr("Unknown Packets"), Licq::Log::Unknown, true)
+  ADD_DEBUG(tr("Errors"), Licq::Log::Error, true)
+  ADD_DEBUG(tr("Warnings"), Licq::Log::Warning, true)
+  ADD_DEBUG(tr("Debug"), Licq::Log::Debug, true)
+  ADD_DEBUG(tr("Packets"), Licq::Log::Packet, true)
   myDebugMenu->addSeparator();
-  ADD_DEBUG(tr("Set All"), L_ALL, false)
-  ADD_DEBUG(tr("Clear All"), L_NONE, false)
+  ADD_DEBUG(tr("Set All"), LOG_SET_ALL, false)
+  ADD_DEBUG(tr("Clear All"), LOG_CLEAR_ALL, false)
 #undef ADD_DEBUG
 
   // Sub menu System Functions
@@ -458,27 +462,35 @@ void SystemMenu::aboutToShowGroupMenu()
 
 void SystemMenu::aboutToShowDebugMenu()
 {
-  int logTypes = gOldLog.ServiceLogTypes(S_STDERR);
+  using Licq::Log;
 
-  foreach (QAction* a, myDebugMenu->actions())
-    if (a->isCheckable())
-      a->setChecked((a->data().toUInt() & logTypes) != 0);
+  Licq::PluginLogSink::Ptr sink =
+      LicqGui::instance()->logWindow()->pluginLogSink();
+
+  foreach (QAction* action, myDebugMenu->actions())
+  {
+    if (action->isCheckable())
+    {
+      Log::Level level = static_cast<Log::Level>(action->data().toInt());
+      action->setChecked(sink->isLogging(level));
+    }
+  }
 }
 
 void SystemMenu::changeDebug(QAction* action)
 {
-  int level = action->data().toUInt();
+  Licq::PluginLogSink::Ptr sink =
+      LicqGui::instance()->logWindow()->pluginLogSink();
 
-  if (level == L_ALL || level == L_NONE)
+  int data = action->data().toInt();
+  if (data == LOG_SET_ALL || data == LOG_CLEAR_ALL)
   {
-    gOldLog.ModifyService(S_STDERR, level);
+    sink->setAllLogLevels(data == LOG_SET_ALL);
     return;
   }
 
-  if (action->isChecked())
-    gOldLog.AddLogTypeToService(S_STDERR, level);
-  else
-    gOldLog.RemoveLogTypeFromService(S_STDERR, level);
+  Licq::Log::Level level = static_cast<Licq::Log::Level>(data);
+  sink->setLogLevel(level, action->isChecked());
 }
 
 void SystemMenu::setCurrentGroup(QAction* action)
