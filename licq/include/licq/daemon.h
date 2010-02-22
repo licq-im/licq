@@ -30,6 +30,8 @@ class LogService;
 class Daemon : private boost::noncopyable
 {
 public:
+  static Daemon& instance();
+
   virtual LogService& getLogService() = 0;
 
 protected:

@@ -131,6 +131,10 @@ bool CConversation::removeUser(const UserId& userId)
 
 CICQDaemon *gLicqDaemon = NULL;
 
+Licq::Daemon& Licq::Daemon::instance()
+{
+  return *gLicqDaemon;
+}
 
 
 //-----CICQDaemon::constructor--------------------------------------------------
