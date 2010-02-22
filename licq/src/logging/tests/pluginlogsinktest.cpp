@@ -50,6 +50,19 @@ TEST(PluginLogSink, setLogLevel)
   EXPECT_TRUE(sink.isLogging(Log::Warning));  
 }
 
+TEST(PluginLogSink, setAllLogLevels)
+{
+  PluginLogSink sink;
+  sink.setAllLogLevels(true);
+
+  EXPECT_TRUE(sink.isLogging(Log::Unknown));
+  EXPECT_TRUE(sink.isLogging(Log::Info));
+  EXPECT_TRUE(sink.isLogging(Log::Warning));
+  EXPECT_TRUE(sink.isLogging(Log::Error));
+  EXPECT_TRUE(sink.isLogging(Log::Debug));
+  EXPECT_TRUE(sink.isLogging(Log::Packet));
+}
+
 TEST(PluginLogSink, correctTypeOnFd)
 {
   PluginLogSink sink;

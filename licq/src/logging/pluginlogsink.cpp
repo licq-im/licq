@@ -99,6 +99,15 @@ void PluginLogSink::setLogLevel(Log::Level level, bool enable)
     myPrivate->myLogLevels &= ~(1 << level);
 }
 
+void PluginLogSink::setAllLogLevels(bool enable)
+{
+  MutexLocker locker(myPrivate->myMutex);
+  if (enable)
+    myPrivate->myLogLevels = 0x3f;
+  else
+    myPrivate->myLogLevels = 0;
+}
+
 bool PluginLogSink::isLogging(Log::Level level)
 {
   MutexLocker locker(myPrivate->myMutex);

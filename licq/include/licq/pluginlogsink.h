@@ -47,6 +47,7 @@ public:
   void popFirstPacket();
 
   void setLogLevel(Log::Level level, bool enable);
+  void setAllLogLevels(bool enable);
  
   // From LogSink
   bool isLogging(Log::Level level);
