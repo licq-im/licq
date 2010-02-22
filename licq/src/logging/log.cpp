@@ -48,10 +48,10 @@ void Log::log(Level level, const std::string& msg)
   if (!mySink.isLogging(level))
     return;
 
-  LogSink::Message message;
-  fill(message, level, msg);
+  LogSink::Message* message = new LogSink::Message();
+  fill(*message, level, msg);
 
-  mySink.log(message);
+  mySink.log(LogSink::Message::Ptr(message));
 }
 
 void Log::packet(const std::string& msg, const uint8_t* data, size_t size)
@@ -59,13 +59,13 @@ void Log::packet(const std::string& msg, const uint8_t* data, size_t size)
   if (!mySink.isLogging(Packet))
     return;
 
-  LogSink::Packet packet;
-  fill(packet.message, Packet, msg);
+  LogSink::Packet* packet = new LogSink::Packet();
+  fill(packet->message, Packet, msg);
 
-  packet.data.reserve(size);
-  packet.data.assign(data, data + size);
+  packet->data.reserve(size);
+  packet->data.assign(data, data + size);
 
-  mySink.logPacket(packet);
+  mySink.logPacket(LogSink::Packet::Ptr(packet));
 }
 
 void Log::fill(LogSink::Message& message, Level level, const std::string& text)

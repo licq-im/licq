@@ -45,10 +45,12 @@ public:
 
   // From Licq::LogSink
   bool isLogging(Licq::Log::Level level);
-  void log(const Message& message);
-  void logPacket(const Packet& packet);
+  void log(Message::Ptr message);
+  void logPacket(Packet::Ptr packet);
 
 private:
+  void logMessage(const Message& message);
+
   std::ostream& myStream;
   bool myUseColors;
   int myLogLevels;

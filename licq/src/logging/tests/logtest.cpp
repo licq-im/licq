@@ -26,6 +26,7 @@ using ::testing::_;
 using ::testing::AllOf;
 using ::testing::ElementsAreArray;
 using ::testing::Field;
+using ::testing::Pointee;
 using ::testing::Return;
 using ::testing::StrictMock;
 
@@ -41,10 +42,10 @@ public:
     myLog("test", myLogSink)
   {
     EXPECT_CALL(myLogSink,
-                log(AllOf(Field(&Licq::LogSink::Message::level,
-                                GetParam()),
-                          Field(&Licq::LogSink::Message::sender,
-                                "test"))));
+                log(Pointee(AllOf(Field(&Licq::LogSink::Message::level,
+                                        GetParam()),
+                                  Field(&Licq::LogSink::Message::sender,
+                                        "test")))));
     EXPECT_CALL(myLogSink, isLogging(GetParam()))
         .WillOnce(Return(true));
   }
@@ -119,8 +120,8 @@ TEST(Log, packet)
   EXPECT_CALL(logSink, isLogging(Licq::Log::Packet))
       .Times(2)
       .WillRepeatedly(Return(true));
-  EXPECT_CALL(logSink, logPacket(Field(&Licq::LogSink::Packet::data,
-                                       ElementsAreArray(packet))))
+  EXPECT_CALL(logSink, logPacket(Pointee(Field(&Licq::LogSink::Packet::data,
+                                               ElementsAreArray(packet)))))
       .Times(2);
 
   Log log("test", logSink);

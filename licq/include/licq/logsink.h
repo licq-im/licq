@@ -41,6 +41,8 @@ public:
 
   struct Message
   {
+    typedef boost::shared_ptr<const Message> Ptr;
+
     Log::Level level;
     std::string sender;
     std::string text;
@@ -53,6 +55,8 @@ public:
 
   struct Packet
   {
+    typedef boost::shared_ptr<const Packet> Ptr;
+
     Message message;
     std::vector<uint8_t> data;
   };
@@ -67,13 +71,13 @@ public:
    * Called every time a new log messages is generated. But only if the sink
    * isLogging() the message's log level.
    */
-  virtual void log(const Message& message) = 0;
+  virtual void log(Message::Ptr message) = 0;
 
   /**
    * Called every time a packet dump is generated. But only if the sink
    * isLogging(Log::Packet).
    */
-  virtual void logPacket(const Packet& /*packet*/) { /* Empty */ }
+  virtual void logPacket(Packet::Ptr /*packet*/) { /* Empty */ }
 
 protected:
   virtual ~LogSink() { /* Empty */ }

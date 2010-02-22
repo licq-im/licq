@@ -40,19 +40,16 @@ public:
 
   int getReadPipe();
 
-  const Message* getFirstMessage();
-  void popFirstMessage();
-
-  const Packet* getFirstPacket();
-  void popFirstPacket();
+  Message::Ptr popMessage();
+  Packet::Ptr popPacket();
 
   void setLogLevel(Log::Level level, bool enable);
   void setAllLogLevels(bool enable);
  
   // From LogSink
   bool isLogging(Log::Level level);
-  void log(const Message& message);
-  void logPacket(const Packet& packet);
+  void log(Message::Ptr message);
+  void logPacket(Packet::Ptr packet);
 
 private:
   class Private;

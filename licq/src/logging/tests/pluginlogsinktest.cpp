@@ -66,9 +66,9 @@ TEST(PluginLogSink, setAllLogLevels)
 TEST(PluginLogSink, correctTypeOnFd)
 {
   PluginLogSink sink;
-  sink.log(LogSink::Message());
-  sink.logPacket(LogSink::Packet());
-  sink.log(LogSink::Message());
+  sink.log(LogSink::Message::Ptr(new LogSink::Message()));
+  sink.logPacket(LogSink::Packet::Ptr(new LogSink::Packet()));
+  sink.log(LogSink::Message::Ptr(new LogSink::Message()));
 
   int fd = sink.getReadPipe();
   fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
@@ -81,45 +81,42 @@ TEST(PluginLogSink, correctTypeOnFd)
   EXPECT_EQ(PluginLogSink::TYPE_MESSAGE, res[2]);
 }
 
-TEST(PluginLogSink, getAndPopWorksWhenEmpty)
+TEST(PluginLogSink, popWorksWhenEmpty)
 {
   PluginLogSink sink;
 
-  EXPECT_EQ((const LogSink::Message*)NULL, sink.getFirstMessage());
-  sink.popFirstMessage();
-
-  EXPECT_EQ((const LogSink::Packet*)NULL, sink.getFirstPacket());
-  sink.popFirstPacket();
+  EXPECT_EQ(LogSink::Message::Ptr(), sink.popMessage());
+  EXPECT_EQ(LogSink::Packet::Ptr(), sink.popPacket());
 }
 
 TEST(PluginLogSink, logMessage)
 {
   PluginLogSink sink;
 
-  LogSink::Message message;
-  message.text = "test";
-  sink.log(message);
+  LogSink::Message* message = new LogSink::Message();
+  message->text = "test";
+  sink.log(LogSink::Message::Ptr(message));
+  message = NULL;
 
-  const LogSink::Message* first = sink.getFirstMessage();
-  ASSERT_NE((const LogSink::Message*)NULL, first);
+  LogSink::Message::Ptr first = sink.popMessage();
+  ASSERT_NE(LogSink::Message::Ptr(), first);
   EXPECT_EQ("test", first->text);
 
-  EXPECT_EQ(first, sink.getFirstMessage());
-  sink.popFirstMessage();
+  EXPECT_EQ(LogSink::Message::Ptr(), sink.popMessage());
 }
 
 TEST(PluginLogSink, logPacket)
 {
   PluginLogSink sink;
 
-  LogSink::Packet packet;
-  packet.message.text = "test";
-  sink.logPacket(packet);
+  LogSink::Packet* packet = new LogSink::Packet();
+  packet->message.text = "test";
+  sink.logPacket(LogSink::Packet::Ptr(packet));
+  packet = NULL;
 
-  const LogSink::Packet* first = sink.getFirstPacket();
-  ASSERT_NE((const LogSink::Packet*)NULL, first);
+  LogSink::Packet::Ptr first = sink.popPacket();
+  ASSERT_NE(LogSink::Packet::Ptr(), first);
   EXPECT_EQ("test", first->message.text);
 
-  EXPECT_EQ(first, sink.getFirstPacket());
-  sink.popFirstPacket();
+  EXPECT_EQ(LogSink::Packet::Ptr(), sink.popPacket());
 }

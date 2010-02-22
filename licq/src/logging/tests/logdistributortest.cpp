@@ -72,7 +72,7 @@ TEST_F(LogDistributorFixture, registerSinkWorks)
 
   distributor.registerSink(mySink1);
 
-  LogSink::Message msg;
+  LogSink::Message::Ptr msg(new LogSink::Message());
   distributor.log(msg);
 }
 
@@ -84,7 +84,7 @@ TEST_F(LogDistributorFixture, sameSinkIsOnlyRegisteredOnce)
   distributor.registerSink(mySink1);
   distributor.registerSink(mySink1);
 
-  LogSink::Message msg;
+  LogSink::Message::Ptr msg(new LogSink::Message());
   distributor.log(msg);
 }
 
@@ -97,7 +97,7 @@ TEST_F(LogDistributorFixture, unregisterSinkWorks)
   distributor.registerSink(mySink2);
   distributor.unregisterSink(mySink1);
 
-  LogSink::Message msg;
+  LogSink::Message::Ptr msg(new LogSink::Message());
   distributor.log(msg);
 }
 
@@ -119,12 +119,15 @@ TEST_F(LogDistributorFixture, logsAreSentToAllActiveSinks)
   distributor.registerSink(mySink1);
   distributor.registerSink(mySink2);
 
-  LogSink::Message msg;
-  msg.level = Log::Info;
-  distributor.log(msg);
+  LogSink::Message* msg1 = new LogSink::Message();
+  msg1->level = Log::Info;
+  distributor.log(LogSink::Message::Ptr(msg1));
+  msg1 = NULL;
 
-  msg.level = Log::Debug;
-  distributor.log(msg);
+  LogSink::Message* msg2 = new LogSink::Message();
+  msg2->level = Log::Debug;
+  distributor.log(LogSink::Message::Ptr(msg2));
+  msg2 = NULL;
 }
 
 TEST_F(LogDistributorFixture, logPacketWorks)
@@ -139,6 +142,6 @@ TEST_F(LogDistributorFixture, logPacketWorks)
   distributor.registerSink(mySink2);
   distributor.registerSink(mySink1);
 
-  LogSink::Packet packet;
+  LogSink::Packet::Ptr packet(new LogSink::Packet());
   distributor.logPacket(packet);
 }

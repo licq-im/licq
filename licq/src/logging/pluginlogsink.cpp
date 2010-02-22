@@ -40,8 +40,8 @@ public:
   Mutex myMutex;
   int myLogLevels;
 
-  std::deque<Message> myMessages;
-  std::deque<Packet> myPackets;
+  std::deque<Message::Ptr> myMessages;
+  std::deque<Packet::Ptr> myPackets;
 };
 
 PluginLogSink::PluginLogSink() :
@@ -60,34 +60,26 @@ int PluginLogSink::getReadPipe()
   return myPrivate->myPipe.getReadFd();
 }
 
-const LogSink::Message* PluginLogSink::getFirstMessage()
+LogSink::Message::Ptr PluginLogSink::popMessage()
 {
   MutexLocker locker(myPrivate->myMutex);
-  if (!myPrivate->myMessages.empty())
-    return &myPrivate->myMessages.front();
-  return NULL;
+  if (myPrivate->myMessages.empty())
+    return Message::Ptr();
+
+  Message::Ptr message = myPrivate->myMessages.front();
+  myPrivate->myMessages.pop_front();
+  return message;
 }
 
-void PluginLogSink::popFirstMessage()
+LogSink::Packet::Ptr PluginLogSink::popPacket()
 {
   MutexLocker locker(myPrivate->myMutex);
-  if (!myPrivate->myMessages.empty())
-    myPrivate->myMessages.pop_front();
-}
+  if (myPrivate->myPackets.empty())
+    return Packet::Ptr();
 
-const LogSink::Packet* PluginLogSink::getFirstPacket()
-{
-  MutexLocker locker(myPrivate->myMutex);
-  if (!myPrivate->myPackets.empty())
-    return &myPrivate->myPackets.front();
-  return NULL;
-}
-
-void PluginLogSink::popFirstPacket()
-{
-  MutexLocker locker(myPrivate->myMutex);
-  if (!myPrivate->myPackets.empty())
-    myPrivate->myPackets.pop_front();
+  Packet::Ptr packet = myPrivate->myPackets.front();
+  myPrivate->myPackets.pop_front();
+  return packet;
 }
 
 void PluginLogSink::setLogLevel(Log::Level level, bool enable)
@@ -114,14 +106,14 @@ bool PluginLogSink::isLogging(Log::Level level)
   return myPrivate->myLogLevels & (1 << level);
 }
 
-void PluginLogSink::log(const Message& message)
+void PluginLogSink::log(Message::Ptr message)
 {
   MutexLocker locker(myPrivate->myMutex);
   myPrivate->myMessages.push_back(message);
   myPrivate->myPipe.putChar(TYPE_MESSAGE);
 }
 
-void PluginLogSink::logPacket(const Packet& packet)
+void PluginLogSink::logPacket(Packet::Ptr packet)
 {
   MutexLocker locker(myPrivate->myMutex);
   myPrivate->myPackets.push_back(packet);

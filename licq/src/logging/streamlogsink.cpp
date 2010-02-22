@@ -139,7 +139,25 @@ void StreamLogSink::setLogLevels(int levels)
   setLogLevel(Log::Packet, levels & 0x10);
 }
 
-void StreamLogSink::log(const Message& message)
+void StreamLogSink::log(Message::Ptr message)
+{
+  logMessage(*message);
+}
+
+void StreamLogSink::logPacket(Packet::Ptr packet)
+{
+  logMessage(packet->message);
+
+  if (myUseColors)
+    myStream << getColor(packet->message.level);
+
+  myStream << *packet << '\n';
+
+  if (myStream)
+    myStream << getResetColor();
+}
+
+void StreamLogSink::logMessage(const Message& message)
 {
   std::string color;
 
@@ -198,18 +216,5 @@ void StreamLogSink::log(const Message& message)
   }
 
   if (myUseColors)
-    myStream << getResetColor();
-}
-
-void StreamLogSink::logPacket(const Packet& packet)
-{
-  log(packet.message);
-
-  if (myUseColors)
-    myStream << getColor(packet.message.level);
-
-  myStream << packet << '\n';
-
-  if (myStream)
     myStream << getResetColor();
 }
