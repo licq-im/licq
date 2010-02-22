@@ -30,8 +30,7 @@ class PluginLogSink::Private
 {
 public:
   Private() :
-    myLogLevels(0),
-    myLogPackets(false)
+    myLogLevels(0)
   {
     // Empty
   }
@@ -40,7 +39,6 @@ public:
 
   Mutex myMutex;
   int myLogLevels;
-  bool myLogPackets;
 
   std::deque<Message> myMessages;
   std::deque<Packet> myPackets;
@@ -101,22 +99,10 @@ void PluginLogSink::setLogLevel(Log::Level level, bool enable)
     myPrivate->myLogLevels &= ~(1 << level);
 }
 
-void PluginLogSink::setLogPackets(bool enable)
-{
-  MutexLocker locker(myPrivate->myMutex);
-  myPrivate->myLogPackets = enable;
-}
-
 bool PluginLogSink::isLogging(Log::Level level)
 {
   MutexLocker locker(myPrivate->myMutex);
   return myPrivate->myLogLevels & (1 << level);
-}
-
-bool PluginLogSink::isLoggingPackets()
-{
-  MutexLocker locker(myPrivate->myMutex);
-  return myPrivate->myLogPackets;
 }
 
 void PluginLogSink::log(const Message& message)

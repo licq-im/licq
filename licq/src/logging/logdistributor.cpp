@@ -52,17 +52,6 @@ bool LogDistributor::isLogging(Licq::Log::Level level)
   return false;
 }
 
-bool LogDistributor::isLoggingPackets()
-{
-  MutexLocker locker(myMutex);
-  BOOST_FOREACH(LogSink::Ptr sink, mySinks)
-  {
-    if (sink->isLoggingPackets())
-      return true;
-  }
-  return false;
-}
-
 void LogDistributor::log(const Message& message)
 {
   MutexLocker locker(myMutex);
@@ -78,7 +67,7 @@ void LogDistributor::logPacket(const Packet& packet)
   MutexLocker locker(myMutex);
   BOOST_FOREACH(LogSink::Ptr sink, mySinks)
   {
-    if (sink->isLoggingPackets())
+    if (sink->isLogging(Licq::Log::Packet))
       sink->logPacket(packet);
   }
 }

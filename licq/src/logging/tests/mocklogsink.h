@@ -28,7 +28,6 @@ class MockLogSink : public Licq::LogSink
 {
 public:
   MOCK_METHOD1(isLogging, bool(Licq::Log::Level level));
-  MOCK_METHOD0(isLoggingPackets, bool());
   MOCK_METHOD1(log, void(const Message& message));
   MOCK_METHOD1(logPacket, void(const Packet& packet));
 };

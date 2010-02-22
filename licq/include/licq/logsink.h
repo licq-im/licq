@@ -64,11 +64,6 @@ public:
   virtual bool isLogging(Log::Level level) = 0;
 
   /**
-   * @return True if the sink is interested in packet dumps; otherwise false.
-   */
-  virtual bool isLoggingPackets() { return false; }
-
-  /**
    * Called every time a new log messages is generated. But only if the sink
    * isLogging() the message's log level.
    */
@@ -76,7 +71,7 @@ public:
 
   /**
    * Called every time a packet dump is generated. But only if the sink
-   * isLoggingPackets().
+   * isLogging(Log::Packet).
    */
   virtual void logPacket(const Packet& /*packet*/) { /* Empty */ }
 

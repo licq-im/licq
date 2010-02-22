@@ -111,22 +111,12 @@ TEST(Log, shouldNotLogIfIsLoggingReturnsFalse)
   log.info("foobar");
 }
 
-TEST(Log, shouldNotLogPacketIfIsLoggingPacketsReturnsFalse)
-{
-  StrictMock<MockLogSink> logSink;
-  EXPECT_CALL(logSink, isLoggingPackets())
-      .WillOnce(Return(false));
-
-  Log log("test", logSink);
-  log.packet("foobar", NULL, 0);
-}
-
 TEST(Log, packet)
 {
   const uint8_t packet[] = { 1, 2, 3, 4 };
 
   StrictMock<MockLogSink> logSink;
-  EXPECT_CALL(logSink, isLoggingPackets())
+  EXPECT_CALL(logSink, isLogging(Licq::Log::Packet))
       .Times(2)
       .WillRepeatedly(Return(true));
   EXPECT_CALL(logSink, logPacket(Field(&Licq::LogSink::Packet::data,

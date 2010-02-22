@@ -110,8 +110,7 @@ static std::ostream& operator<<(
 StreamLogSink::StreamLogSink(std::ostream& stream) :
   myStream(stream),
   myUseColors(true),
-  myLogLevels(0),
-  myLogPackets(false)
+  myLogLevels(0)
 {
   // Empty
 }
@@ -129,21 +128,15 @@ bool StreamLogSink::isLogging(Log::Level level)
   return myLogLevels & (1 << level);
 }
 
-bool StreamLogSink::isLoggingPackets()
-{
-  return myLogPackets;
-}
-
 void StreamLogSink::setLogLevels(int levels)
 {
   myLogLevels = 0;
-  myLogPackets = false;
 
   setLogLevel(Log::Info, levels & 0x1);
   setLogLevel(Log::Unknown, levels & 0x2);
   setLogLevel(Log::Error, levels & 0x4);
   setLogLevel(Log::Warning, levels & 0x8);
-  setLogPackets(levels & 0x10);
+  setLogLevel(Log::Packet, levels & 0x10);
 }
 
 void StreamLogSink::log(const Message& message)

@@ -50,7 +50,6 @@ public:
 
   // From Licq::LogSink
   bool isLogging(Licq::Log::Level level);
-  bool isLoggingPackets();
   void log(const Message& message);
   void logPacket(const Packet& packet);
 

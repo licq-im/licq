@@ -56,7 +56,7 @@ void Log::log(Level level, const std::string& msg)
 
 void Log::packet(const std::string& msg, const uint8_t* data, size_t size)
 {
-  if (!mySink.isLoggingPackets())
+  if (!mySink.isLogging(Packet))
     return;
 
   LogSink::Packet packet;

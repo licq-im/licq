@@ -22,12 +22,16 @@
 
 #include "logsink.h"
 
+#include <boost/shared_ptr.hpp>
+
 namespace Licq
 {
 
 class PluginLogSink : public LogSink
 {
 public:
+  typedef boost::shared_ptr<PluginLogSink> Ptr;
+
   enum { TYPE_MESSAGE = 'M' };
   enum { TYPE_PACKET = 'P' };
 
@@ -43,11 +47,9 @@ public:
   void popFirstPacket();
 
   void setLogLevel(Log::Level level, bool enable);
-  void setLogPackets(bool enable);
-
+ 
   // From LogSink
   bool isLogging(Log::Level level);
-  bool isLoggingPackets();
   void log(const Message& message);
   void logPacket(const Packet& packet);
 

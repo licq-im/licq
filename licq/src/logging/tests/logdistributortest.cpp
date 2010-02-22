@@ -62,7 +62,7 @@ TEST(LogDistributor, shouldNotLogWhenEmpty)
   EXPECT_FALSE(distributor.isLogging(Log::Warning));
   EXPECT_FALSE(distributor.isLogging(Log::Error));
   EXPECT_FALSE(distributor.isLogging(Log::Debug));
-  EXPECT_FALSE(distributor.isLoggingPackets());
+  EXPECT_FALSE(distributor.isLogging(Log::Packet));
 }
 
 TEST_F(LogDistributorFixture, registerSinkWorks)
@@ -129,11 +129,11 @@ TEST_F(LogDistributorFixture, logsAreSentToAllActiveSinks)
 
 TEST_F(LogDistributorFixture, logPacketWorks)
 {
-  EXPECT_CALL(myMockSink1, isLoggingPackets())
+  EXPECT_CALL(myMockSink1, isLogging(Log::Packet))
       .WillOnce(Return(true));
   EXPECT_CALL(myMockSink1, logPacket(_));
 
-  EXPECT_CALL(myMockSink2, isLoggingPackets())
+  EXPECT_CALL(myMockSink2, isLogging(Log::Packet))
       .WillOnce(Return(false));
 
   distributor.registerSink(mySink2);

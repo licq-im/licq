@@ -34,7 +34,6 @@ TEST(PluginLogSink, notLoggingAnythingByDefault)
   EXPECT_FALSE(sink.isLogging(Log::Error));
   EXPECT_FALSE(sink.isLogging(Log::Debug));
   EXPECT_FALSE(sink.isLogging(Log::Packet));
-  EXPECT_FALSE(sink.isLoggingPackets());
 }
 
 TEST(PluginLogSink, setLogLevel)
@@ -49,17 +48,6 @@ TEST(PluginLogSink, setLogLevel)
   sink.setLogLevel(Log::Info, false);
   EXPECT_FALSE(sink.isLogging(Log::Info));
   EXPECT_TRUE(sink.isLogging(Log::Warning));  
-}
-
-TEST(PluginLogSink, setLogPackets)
-{
-  PluginLogSink sink;
-
-  sink.setLogPackets(true);
-  EXPECT_TRUE(sink.isLoggingPackets());
-
-  sink.setLogPackets(false);
-  EXPECT_FALSE(sink.isLoggingPackets());
 }
 
 TEST(PluginLogSink, correctTypeOnFd)
