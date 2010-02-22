@@ -30,13 +30,13 @@ class LogService;
 class Daemon : private boost::noncopyable
 {
 public:
-  static Daemon& instance();
-
   virtual LogService& getLogService() = 0;
 
 protected:
   virtual ~Daemon() { /* Empty */ }
 };
+
+extern Daemon* gDaemon;
 
 } // namespace Licq
 

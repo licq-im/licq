@@ -130,12 +130,7 @@ bool CConversation::removeUser(const UserId& userId)
 }
 
 CICQDaemon *gLicqDaemon = NULL;
-
-Licq::Daemon& Licq::Daemon::instance()
-{
-  return *gLicqDaemon;
-}
-
+Licq::Daemon* Licq::gDaemon = NULL;
 
 //-----CICQDaemon::constructor--------------------------------------------------
 CICQDaemon::CICQDaemon(CLicq *_licq)
@@ -144,6 +139,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   licq = _licq;
   gLicqDaemon = this;
+  Licq::gDaemon = this;
 
   // Initialise the data values
   m_nIgnoreTypes = 0;
@@ -491,6 +487,7 @@ CICQDaemon::~CICQDaemon()
   if(m_szTerminal)    free(m_szTerminal);
   if(fifo_fs)         fclose(fifo_fs);
   gLicqDaemon = NULL;
+  Licq::gDaemon = NULL;
 }
 
 
