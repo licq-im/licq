@@ -288,7 +288,7 @@ void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const s
     gUserManager.DropUser(u);
 
     e = new CEventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    result = icqSendThroughServer(eventId, _szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m.c_str(), e, nCharset);
+    result = icqSendThroughServer(eventId, _szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
     u = gUserManager.fetchUser(userId, LOCK_W);
   }
   else

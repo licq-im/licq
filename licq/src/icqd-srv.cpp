@@ -498,7 +498,7 @@ void CICQDaemon::icqFetchAutoResponseServer(unsigned long eventId, const char *_
     }
     gUserManager.DropUser(u);
 
-    p = new CPU_ThroughServer(_szId, nCmd, 0);
+    p = new CPU_ThroughServer(_szId, nCmd, string());
   }
 
   if (p == NULL)
@@ -1008,7 +1008,7 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(const UserId& userId, const string&
     sz = gTranslator.NToRN(message.c_str());
     gTranslator.ClientToServer(sz);
   }
-  CPU_ThroughServer *p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxREFUSED, sz);
+  CPU_ThroughServer* p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxREFUSED, sz == NULL ? string() : sz);
   gLog.Info(tr("%sRefusing authorization to user %s (#%hu)...\n"), L_SRVxSTR,
      szId, p->Sequence());
   delete [] sz;
@@ -1531,7 +1531,7 @@ void CICQDaemon::icqClearServerList()
 
 //-----icqSendThroughServer-----------------------------------------------------
 LicqEvent* CICQDaemon::icqSendThroughServer(unsigned long eventId, const char *szId,
-    unsigned char format, const char *_sMessage, CUserEvent* ue, unsigned short nCharset,
+    unsigned char format, const string& message, CUserEvent* ue, unsigned short nCharset,
   size_t nMsgLen)
 {
   ICQEvent* result;
@@ -1543,7 +1543,7 @@ LicqEvent* CICQDaemon::icqSendThroughServer(unsigned long eventId, const char *s
       bOffline = u->StatusOffline();
   }
 
-  CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage, nCharset, bOffline, nMsgLen);
+  CPU_ThroughServer* p = new CPU_ThroughServer(szId, format, message, nCharset, bOffline, nMsgLen);
 
   switch (format)
   {

@@ -825,7 +825,7 @@ protected:
   void icqCreatePDINFO();
   void icqRequestSystemMsg();
   LicqEvent* icqSendThroughServer(unsigned long eventId, const char *szId,
-      unsigned char format, const char* _sMessage, CUserEvent *,
+      unsigned char format, const std::string& message, CUserEvent *,
       unsigned short = 0, size_t = 0);
 
   void FailEvents(int sd, int err);

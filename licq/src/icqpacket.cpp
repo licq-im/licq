@@ -1478,7 +1478,7 @@ CPU_CheckInvisible::CPU_CheckInvisible(const char *szId)
 
 //-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(const char *szId,
-    unsigned char msgType, const char* szMessage,
+    unsigned char msgType, const string& message,
                                      unsigned short nCharset, bool bOffline,
                                      size_t nLen)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
@@ -1489,7 +1489,7 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
   if (nLen)
     msgLen = nLen;
   else
-    msgLen = szMessage ? strlen(szMessage) : 0;
+    msgLen = message.size();
   int nUinLen = strlen(szId);
   unsigned short nFormat = 0;
   int nTypeLen = 0, nTLVType = 0;
@@ -1544,8 +1544,8 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
 		tlvData.PackUnsignedShortBE(msgLen + 4);
                 tlvData.PackUnsignedShortBE(nCharset);
  		tlvData.PackUnsignedShortBE(0);
-		tlvData.Pack(szMessage, msgLen);
- 		break;
+      tlvData.Pack(message.c_str(), msgLen);
+      break;
 
 	case 4:
  		nTLVType = 0x05;
@@ -1553,92 +1553,14 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
       tlvData.PackUnsignedLong(gUserManager.icqOwnerUin());
 		tlvData.PackChar(msgType);
 		tlvData.PackChar(0); // message flags
-		tlvData.PackLNTS(szMessage);
- 		break;
-	}
+      tlvData.PackLNTS(message.c_str());
+      break;
+  }
 
 	buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
         if (bOffline)
 	  buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
 }
-
-CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,
-																		 unsigned char msgType, char *szMessage)
-  : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
-{
-	m_nSubCommand = msgType;
-
-  int msgLen = szMessage ? strlen(szMessage) : 0;
-  char uin[13];
-  uin[12] = '\0';
-  int nUinLen = snprintf(uin, 12, "%lu", nDestinationUin);
-  unsigned short nFormat = 0;
-  int nTypeLen = 0, nTLVType = 0;
-  CBuffer tlvData;
-
-  switch (msgType)
-  {
-  case ICQ_CMDxSUB_MSG:
-  	nTypeLen = 13+msgLen;
-  	nFormat = 1;
-  	break;
-
-  case ICQ_CMDxSUB_URL:
-  case ICQ_CMDxSUB_CONTACTxLIST:
-  case ICQ_CMDxSUB_AUTHxGRANTED:
-  case ICQ_CMDxSUB_AUTHxREFUSED:
-  case ICQ_CMDxSUB_AUTHxREQUEST:
-  case ICQ_CMDxSUB_ADDEDxTOxLIST:
-  	nTypeLen = 9+msgLen;
-  	nFormat = 4;
-  	break;
-
-  default:
-  	nUinLen = nTypeLen = msgLen = 0;
-  	gLog.Warn("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
-		return;
-  }
-
-  m_nSize += 11 + nTypeLen + nUinLen + 8; // 11 all bytes pre-tlv
-	//  8 fom tlv type, tlv len, and last 4 bytes
-
-	InitBuffer();
-
-	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
-	buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
-	buffer->PackUnsignedShortBE(nFormat); // message format
-	buffer->PackChar(nUinLen);
-	buffer->Pack(uin, nUinLen);
-
-	tlvData.Create(nTypeLen);
-
-	switch (nFormat)
-	{
-	case 1:
- 		nTLVType = 0x02;
-
- 		tlvData.PackUnsignedLongBE(0x05010001);
-		tlvData.PackUnsignedShortBE(0x0101);
- 		tlvData.PackChar(0x01);
-		tlvData.PackUnsignedShortBE(msgLen + 4);
- 		tlvData.PackUnsignedLongBE(0);
-		tlvData.Pack(szMessage, msgLen);
- 		break;
-
-	case 4:
- 		nTLVType = 0x05;
-
-    tlvData.PackUnsignedLong(gUserManager.icqOwnerUin());
-		tlvData.PackChar(msgType);
-		tlvData.PackChar(0); // message flags
-		tlvData.PackLNTS(szMessage);
- 		break;
-	}
-
-	buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
-	buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
-}
-
 
 //-----Type2Message-------------------------------------------------------------
 CPU_Type2Message::CPU_Type2Message(const ICQUser* u, bool _bAck, bool _bDirectInfo,
