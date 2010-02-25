@@ -191,7 +191,7 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
   licqDaemon = _licqDaemon;
   
   char filename[256];
-  sprintf (filename, "%s/licq_rms.conf", BASE_DIR);
+  sprintf(filename, "%slicq_rms.conf", BASE_DIR);
   CIniFile conf;
   if (conf.LoadFile(filename))
   {

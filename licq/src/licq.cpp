@@ -380,7 +380,7 @@ bool CLicq::Init(int argc, char **argv)
   // When Licq is killed (normally or abnormally) the file will be closed by the operating
   // system and the lock released.
   char szConf[MAX_FILENAME_LEN], szKey[32];
-  snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
+  snprintf(szConf, MAX_FILENAME_LEN, "%slicq.pid", BASE_DIR);
   szConf[MAX_FILENAME_LEN - 1] = '\0';
 
   // Never close pidFile!
@@ -471,7 +471,7 @@ bool CLicq::Init(int argc, char **argv)
 
   // Open the config file
   CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
-  snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  snprintf(szConf, MAX_FILENAME_LEN, "%slicq.conf", BASE_DIR);
   szConf[MAX_FILENAME_LEN - 1] = '\0';
   if (licqConf.LoadFile(szConf) == false)
     return false;
@@ -625,7 +625,7 @@ bool CLicq::UpgradeLicq(CIniFile &licqConf)
 {  
   CIniFile ownerFile(INI_FxERROR);
   string strBaseDir = BASE_DIR;
-  string strOwnerFile = strBaseDir + "/owner.uin";
+  string strOwnerFile = strBaseDir + "owner.uin";
   if (!ownerFile.LoadFile(strOwnerFile.c_str()))
     return false;
 
@@ -651,14 +651,14 @@ bool CLicq::UpgradeLicq(CIniFile &licqConf)
   licqConf.FlushFile();
   
   // Rename owner.uin to owner.Licq
-  string strNewOwnerFile = strBaseDir + "/owner.Licq";
+  string strNewOwnerFile = strBaseDir + "owner.Licq";
   if (rename(strOwnerFile.c_str(), strNewOwnerFile.c_str()))
     return false;
 
   // Update all the user files and update users.conf
   struct dirent **UinFiles;
-  string strUserDir = strBaseDir + "/users";
-  string strUsersConf = strBaseDir + "/users.conf";
+  string strUserDir = strBaseDir + USER_DIR;
+  string strUsersConf = strBaseDir + "users.conf";
   int n = scandir_alpha_r(strUserDir.c_str(), &UinFiles, SelectUserUtility);
   if (n != 0)
   {
@@ -685,7 +685,7 @@ bool CLicq::UpgradeLicq(CIniFile &licqConf)
   
   // Rename the history files
   struct dirent **HistoryFiles;
-  string strHistoryDir = strBaseDir + "/history";
+  string strHistoryDir = strBaseDir + HISTORY_DIR;
   int nNumHistory = scandir_alpha_r(strHistoryDir.c_str(), &HistoryFiles,
     SelectHistoryUtility);
   if (nNumHistory)
@@ -817,7 +817,7 @@ void CLicq::SaveLoadedPlugins()
   char szKey[20];
 
   CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
-  sprintf(szConf, "%s/licq.conf", BASE_DIR);
+  sprintf(szConf, "%slicq.conf", BASE_DIR);
   licqConf.LoadFile(szConf);
 
   licqConf.SetSection("plugins");
@@ -875,13 +875,13 @@ bool CLicq::Install()
     fprintf(stderr, "Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
     return (false);
   }
-  snprintf(cmd, sizeof(cmd) - 1, "%s/%s", BASE_DIR, HISTORY_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%s%s", BASE_DIR, HISTORY_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
     fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd, strerror(errno));
     return (false);
   }
-  snprintf(cmd, sizeof(cmd) - 1, "%s/%s", BASE_DIR, USER_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%s%s", BASE_DIR, USER_DIR);
   if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
   {
     fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd, strerror(errno));
@@ -889,7 +889,7 @@ bool CLicq::Install()
   }
 
   // Create licq.conf
-  snprintf(cmd, sizeof(cmd) - 1, "%s/licq.conf", BASE_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%slicq.conf", BASE_DIR);
   CIniFile mainConf(INI_FxALLOWxCREATE);
   mainConf.LoadFile(cmd);
   mainConf.SetSection("licq");
@@ -906,7 +906,7 @@ bool CLicq::Install()
   mainConf.FlushFile();
 
   // Create users.conf
-  snprintf(cmd, sizeof(cmd) - 1, "%s/users.conf", BASE_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%susers.conf", BASE_DIR);
   CIniFile usersConf(INI_FxALLOWxCREATE);
   usersConf.LoadFile(cmd);
   usersConf.SetSection("users");

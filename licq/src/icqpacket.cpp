@@ -1891,7 +1891,7 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
 {
   char szFilename[MAX_FILENAME_LEN];
   szFilename[MAX_FILENAME_LEN - 1] = '\0';
- snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/owner.pic", BASE_DIR);
+  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%sowner.pic", BASE_DIR);
 
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned long nLen = 0, nFileLen = 0;
@@ -5491,7 +5491,7 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
 {
   char szFilename[MAX_FILENAME_LEN];
   szFilename[MAX_FILENAME_LEN - 1] = '\0';
-  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/owner.pic", BASE_DIR);
+  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%sowner.pic", BASE_DIR);
 
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned long nLen = 0, nFileLen = 0;

@@ -6072,7 +6072,7 @@ void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
  
       // Save it in a file
       char szFilename[MAX_FILENAME_LEN];
-      snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, "Licq_verify.jpg");
+      snprintf(szFilename, MAX_FILENAME_LEN, "%s%s", BASE_DIR, "Licq_verify.jpg");
       FILE *fp = fopen(szFilename, "w");
       if (fp == 0)
       {

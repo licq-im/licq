@@ -380,7 +380,7 @@ void COscarService::ProcessBARTFam(CBuffer &packet, unsigned short SubType,
             {
               char Filename[MAX_FILENAME_LEN];
               Filename[MAX_FILENAME_LEN - 1] = '\0';
-              snprintf(Filename, MAX_FILENAME_LEN - 1, "%s/%s/%s.pic",
+              snprintf(Filename, MAX_FILENAME_LEN - 1, "%s%s/%s.pic",
                        BASE_DIR, USER_DIR, u->IdString());
               int FD = open(Filename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
               if (FD == -1)

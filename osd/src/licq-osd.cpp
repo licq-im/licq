@@ -229,7 +229,7 @@ bool LP_Init(int /* argc */, char** /* argv */)
 	gLog.Info("%sOSD Plugin initializing\n", L_OSD_STR);
 
 	filename=BASE_DIR;
-	filename+="/licq_osd.conf";
+    filename += "licq_osd.conf";
 	CIniFile conf;
 	if (!conf.LoadFile(filename.c_str())) // no configfile found
 	{

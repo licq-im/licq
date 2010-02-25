@@ -217,7 +217,7 @@ void RegisterUserDlg::gotCaptcha(unsigned long /* ppid */)
   disconnect(LicqGui::instance()->signalManager(),
       SIGNAL(verifyImage(unsigned long)), this, SLOT(gotCaptcha(unsigned long)));
   setEnabled(true);
-  myCaptchaImage->setPixmap(QPixmap(QString(BASE_DIR) + "/Licq_verify.jpg"));
+  myCaptchaImage->setPixmap(QPixmap(QString(BASE_DIR) + "Licq_verify.jpg"));
   myGotCaptcha = true;
   next();
 }

@@ -87,11 +87,11 @@ void licq_handle_sigabrt(int s)
    * it in BASE_DIR/licq.backtrace.gdb.
    */
   char cmd[MAX_FILENAME_LEN];
-  snprintf(cmd, MAX_FILENAME_LEN, "%s/licqcmd.gdb", BASE_DIR);
+  snprintf(cmd, MAX_FILENAME_LEN, "%slicqcmd.gdb", BASE_DIR);
   FILE* cmdfile = fopen(cmd, "w");
   if (cmdfile != NULL)
   {
-    fprintf(cmdfile, "set logging file %s/licq.backtrace.gdb\n", BASE_DIR);
+    fprintf(cmdfile, "set logging file %slicq.backtrace.gdb\n", BASE_DIR);
     fprintf(cmdfile, "set pagination off\n");
     fprintf(cmdfile, "set logging overwrite\n");
     fprintf(cmdfile, "set logging redirect on\n");
@@ -101,7 +101,7 @@ void licq_handle_sigabrt(int s)
     fprintf(cmdfile, "detach\n");
     fclose(cmdfile);
 
-    fprintf(stderr, "\nUsing gdb to save backtrace to %s/licq.backtrace.gdb\n",
+    fprintf(stderr, "\nUsing gdb to save backtrace to %slicq.backtrace.gdb\n",
             BASE_DIR);
 
     char parentPid[16];
@@ -132,7 +132,7 @@ void licq_handle_sigabrt(int s)
 
       // Include time in file
       char filename[MAX_FILENAME_LEN];
-      snprintf(filename, MAX_FILENAME_LEN, "%s/licq.backtrace.gdb", BASE_DIR);
+      snprintf(filename, MAX_FILENAME_LEN, "%slicq.backtrace.gdb", BASE_DIR);
       FILE* file = fopen(filename, "a");
       if (file != NULL)
       {
@@ -146,7 +146,7 @@ void licq_handle_sigabrt(int s)
 
 #ifdef HAVE_BACKTRACE
   char filename[MAX_FILENAME_LEN];
-  snprintf(filename, MAX_FILENAME_LEN, "%s/licq.backtrace", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN, "%slicq.backtrace", BASE_DIR);
   FILE* file = fopen(filename, "w");
   if (file != NULL)
     fprintf(file, "time: %lu\n", time(NULL));
@@ -190,10 +190,10 @@ void licq_handle_sigabrt(int s)
            "To help us debug the error, please include a full description of "
            "what you did when the error occurred. Additionally, please include "
            "the following files (if they exist):\n"
-           "%s/licq.backtrace\n"
-           "%s/licq.backtrace.gdb\n"
+           "%slicq.backtrace\n"
+           "%slicq.backtrace.gdb\n"
 #ifdef DEBUG_RW_MUTEX
-           "%s/licq.debug_rw_mutex\n"
+           "%slicq.debug_rw_mutex\n"
 #endif
            "\n"
            "Thanks, "

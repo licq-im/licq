@@ -77,7 +77,7 @@ void CUserHistory::SetFile(const char *_sz, const char *_szId,
   {
     char temp[MAX_FILENAME_LEN];
     char *p = PPIDSTRING(_nPPID);
-    snprintf(temp, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR,
+    snprintf(temp, MAX_FILENAME_LEN, "%s%s/%s.%s.%s", BASE_DIR,
              HISTORY_DIR, _szId, p, HISTORY_EXT);
     delete [] p;
     temp[sizeof(temp) - 1] = '\0';

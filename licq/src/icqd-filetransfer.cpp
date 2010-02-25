@@ -250,7 +250,7 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 
   if (szDirectory == NULL)
   {
-    snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, myId);
+    snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s%s", BASE_DIR, myId);
     m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
     if (access(BASE_DIR, F_OK) < 0 && mkdir(m_szDirectory, 0700) == -1 &&
         errno != EEXIST)

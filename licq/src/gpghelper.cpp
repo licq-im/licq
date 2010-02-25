@@ -197,7 +197,7 @@ void GpgHelper::Start()
 {
 #ifdef HAVE_LIBGPGME
   char buf[MAX_LINE_LEN];
-  snprintf(buf, MAX_LINE_LEN, "%s/licq_gpg.conf", BASE_DIR);
+  snprintf(buf, MAX_LINE_LEN, "%slicq_gpg.conf", BASE_DIR);
   mKeysIni.LoadFile(buf);
 
   mKeysIni.SetSection("gpg");

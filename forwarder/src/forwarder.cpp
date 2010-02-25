@@ -69,7 +69,7 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
   // Create our snmp information
   m_nSMTPPort = 25; //getservicebyname("snmp");
   char filename[256];
-  sprintf (filename, "%s/licq_forwarder.conf", BASE_DIR);
+  sprintf(filename, "%slicq_forwarder.conf", BASE_DIR);
   CIniFile conf;
   if (!conf.LoadFile(filename))
   {
@@ -154,7 +154,7 @@ bool CLicqForwarder::CreateDefaultConfig()
   // Create licq_forwarder.conf
   char cmd[MAX_FILENAME_LEN + 128];
   cmd[sizeof(cmd) - 1] = '\0';
-  snprintf(cmd, sizeof(cmd) - 1, "%s/licq_forwarder.conf", BASE_DIR);
+  snprintf(cmd, sizeof(cmd) - 1, "%slicq_forwarder.conf", BASE_DIR);
   if (FILE *f = fopen(cmd, "w"))
   {
     fprintf(f, "%s", FORWARDER_CONF);

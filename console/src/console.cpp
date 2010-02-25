@@ -126,7 +126,7 @@ CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
   // oh yeah, add in a variable for the
   // status window text and colors.. that'd be cool
   char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%s/licq_console.conf", BASE_DIR);
+  sprintf(szFileName, "%slicq_console.conf", BASE_DIR);
   CIniFile licqConf;
   if(!licqConf.LoadFile(szFileName))
   {
@@ -379,7 +379,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 void CLicqConsole::DoneOptions()
 {
   char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%s/licq_console.conf", BASE_DIR);
+  sprintf(szFileName, "%slicq_console.conf", BASE_DIR);
   CIniFile licqConf(INI_FxALLOWxCREATE);
   if(!licqConf.LoadFile(szFileName))
     return;

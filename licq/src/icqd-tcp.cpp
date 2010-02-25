@@ -3042,7 +3042,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
 
             char szFilename[MAX_FILENAME_LEN];
             szFilename[MAX_FILENAME_LEN - 1] = '\0';
-            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%s.pic",
+            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s%s/%s.pic",
                                              BASE_DIR, USER_DIR, u->IdString());
 
             if (remove(szFilename) != 0 && errno != ENOENT)
@@ -3190,7 +3190,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
 
             char szFilename[MAX_FILENAME_LEN];
             szFilename[MAX_FILENAME_LEN - 1] = '\0';
-            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%s.pic",
+            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s%s/%s.pic",
                                              BASE_DIR, USER_DIR, u->IdString());
 
             int nFD = open(szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);

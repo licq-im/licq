@@ -165,7 +165,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   receivedUserList.clear();
 
   // Begin parsing the config file
-  snprintf(m_szConfigFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, "licq.conf");
+  snprintf(m_szConfigFile, MAX_FILENAME_LEN, "%s%s", BASE_DIR, "licq.conf");
   m_szConfigFile[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(m_szConfigFile);
@@ -206,7 +206,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   if (strcmp(temp, "none") != 0)
   {
     m_szRejectFile = new char[MAX_FILENAME_LEN];
-    snprintf(m_szRejectFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, temp);
+    snprintf(m_szRejectFile, MAX_FILENAME_LEN, "%s%s", BASE_DIR, temp);
     m_szRejectFile[MAX_FILENAME_LEN - 1] = '\0';
   }
   else
@@ -218,7 +218,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadNum("ErrorTypes", m_nErrorTypes, L_ERROR | L_UNKNOWN);
   if (strcmp(m_szErrorFile, "none") != 0)
   {
-    snprintf(temp, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, m_szErrorFile);
+    snprintf(temp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, m_szErrorFile);
     temp[MAX_FILENAME_LEN - 1] = '\0';
     CLogService_File *l = new CLogService_File(m_nErrorTypes);
     if (!l->SetLogFile(temp, "a"))
@@ -393,7 +393,7 @@ bool CICQDaemon::Start()
 
 #ifdef USE_FIFO
   // Open the fifo
-  snprintf(sz, MAX_FILENAME_LEN, "%s/licq_fifo", BASE_DIR);
+  snprintf(sz, MAX_FILENAME_LEN, "%slicq_fifo", BASE_DIR);
   sz[MAX_FILENAME_LEN - 1] = '\0';
   gLog.Info(tr("%sOpening fifo.\n"), L_INITxSTR);
   fifo_fd = open(sz, O_RDWR);
@@ -1685,7 +1685,7 @@ bool CICQDaemon::AddProtocolPlugins()
 {
   char szConf[MAX_FILENAME_LEN];
   CIniFile licqConf(INI_FxWARN);
-  snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  snprintf(szConf, MAX_FILENAME_LEN, "%slicq.conf", BASE_DIR);
   szConf[MAX_FILENAME_LEN - 1] = '\0';
   if (licqConf.LoadFile(szConf) == false)
     return false;

@@ -81,7 +81,7 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
   
   // Config file
   char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%s/licq_msn.conf", BASE_DIR);
+  sprintf(szFileName, "%slicq_msn.conf", BASE_DIR);
   CIniFile msnConf;
   if (!msnConf.LoadFile(szFileName))
   {
@@ -119,7 +119,7 @@ CMSN::~CMSN()
     
   // Config file
   char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%s/licq_msn.conf", BASE_DIR);
+  sprintf(szFileName, "%slicq_msn.conf", BASE_DIR);
   CIniFile msnConf;
   if (msnConf.LoadFile(szFileName))
   {

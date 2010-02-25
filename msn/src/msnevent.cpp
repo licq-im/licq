@@ -43,7 +43,6 @@ CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
   m_eState = STATE_WAITING_ACK;
   m_nFileDesc = -1;
   m_strFileName = BASE_DIR;
-  m_strFileName += "/";
   m_strFileName += USER_DIR;
   m_strFileName += "/" +_strId + ".pic";
   m_nFilePos = 0;

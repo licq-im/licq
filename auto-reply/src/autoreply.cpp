@@ -67,7 +67,7 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
   licqDaemon = _licqDaemon;
 
   char filename[256];
-  sprintf (filename, "%s/licq_autoreply.conf", BASE_DIR);
+  sprintf(filename, "%slicq_autoreply.conf", BASE_DIR);
   CIniFile conf;
   conf.LoadFile(filename);
   conf.SetSection("Reply");

@@ -369,7 +369,7 @@ void UserViewEvent::read1()
 
       // Create the HTML
       QString url = BASE_DIR;
-      url += "/.msn_email.html";
+      url += ".msn_email.html";
 
       QString strUser = p->To();
       QString strHTML = QString(

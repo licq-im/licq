@@ -449,10 +449,10 @@ int LicqGui::Run(CICQDaemon* /* daemon */)
   myLogWindow->pluginLogSink()->setLogLevel(Log::Error, true);
 
   // Check for qt-gui directory in current base dir
-  if (!QDir(QString("%1/%2").arg(BASE_DIR).arg(QTGUI_DIR)).exists())
+  if (!QDir(QString("%1%2").arg(BASE_DIR).arg(QTGUI_DIR)).exists())
   {
     QDir d;
-    d.mkdir(QString("%1/%2").arg(BASE_DIR).arg(QTGUI_DIR));
+    d.mkdir(QString("%1%2").arg(BASE_DIR).arg(QTGUI_DIR));
   }
 
   loadGuiConfig();
