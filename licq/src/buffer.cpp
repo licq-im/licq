@@ -442,11 +442,11 @@ char *CBuffer::Pack(CBuffer *buf)
 
 char *CBuffer::PackLNTS(const char *data)
 {
-	int size = strlen(data) + 1;
-	if (!size) return getDataPosWrite();
-	PackUnsignedShort(size);
-	Pack(data, size);
-	return getDataPosWrite() - size;
+  int size = (data == NULL ? 1 : strlen(data) + 1);
+  PackUnsignedShort(size);
+  if (data != NULL)
+    Pack(data, size);
+  return getDataPosWrite() - size;
 }
 
 char *CBuffer::PackString(const char *data, unsigned short max)
