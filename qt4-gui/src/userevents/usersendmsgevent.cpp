@@ -29,6 +29,7 @@
 
 #include <licq_icqd.h>
 #include <licq_translate.h>
+#include <licq_user.h>
 
 #include "config/chat.h"
 

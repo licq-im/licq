@@ -29,6 +29,7 @@
 #include <vector>
 
 #include <licq/md5.h>
+#include <licq_user.h>
 
 using namespace std;
 

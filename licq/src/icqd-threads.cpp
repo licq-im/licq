@@ -19,6 +19,8 @@
 #include "licq_mutex.h"
 #include "licq_packets.h"
 #include "licq_oscarservice.h"
+#include <licq_user.h>
+
 #include "licq.h"
 
 // Localization

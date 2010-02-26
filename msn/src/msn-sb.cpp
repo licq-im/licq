@@ -26,6 +26,8 @@
 #include <list>
 #include <vector>
 
+#include <licq_user.h>
+
 using namespace std;
 
 void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)

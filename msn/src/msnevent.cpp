@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <licq_user.h>
+
 using namespace std;
 
 CMSNDataEvent::CMSNDataEvent(CMSN *p)

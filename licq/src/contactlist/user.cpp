@@ -15,6 +15,7 @@
 #include "licq_log.h"
 #include "licq_socket.h"
 #include <licq/icqcodes.h>
+#include "licq/contactlist/usermanager.h"
 #include "licq/pluginmanager.h"
 
 using boost::any_cast;
@@ -26,6 +27,7 @@ using Licq::ICQUserPhoneBook;
 using Licq::SecureChannelSupport_et;
 using Licq::User;
 using Licq::gPluginManager;
+using Licq::gUserManager;
 
 
 ICQUserPhoneBook::ICQUserPhoneBook()

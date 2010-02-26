@@ -22,6 +22,7 @@
 
 #include <licq/log.h>
 #include <licq_icqd.h>
+#include <licq_user.h>
 
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 

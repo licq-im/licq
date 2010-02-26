@@ -28,6 +28,8 @@
 #include "licq_packets.h"
 #include "licq_buffer.h"
 #include "licq_log.h"
+#include <licq_user.h>
+
 #include "support.h"
 
 using namespace std;

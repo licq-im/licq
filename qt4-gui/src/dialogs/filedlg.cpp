@@ -46,6 +46,7 @@
 #include <licq_log.h>
 #include <licq_packets.h>
 #include <licq_translate.h>
+#include <licq_user.h>
 
 #include "core/messagebox.h"
 

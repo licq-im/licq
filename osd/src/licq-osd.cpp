@@ -18,6 +18,7 @@
 #include <licq_events.h>
 #include <licq_file.h>
 #include <licq_log.h>
+#include <licq_user.h>
 #include <licq/pluginmanager.h>
 
 #include "my_xosd.h"

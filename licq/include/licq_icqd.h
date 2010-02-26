@@ -17,7 +17,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_filetransfer.h"
 #include "licq_onevent.h"
 #include "licq_types.h"
-#include "licq_user.h"
+#include "licq/contactlist/user.h" // For SetString
 #include "licq/daemon.h"
 
 class CPacket;
@@ -32,6 +32,11 @@ class ProxyServer;
 class COscarService;
 class CReverseConnectToUserData;
 class CMSN;
+
+namespace Licq
+{
+class UserManager;
+}
 
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED

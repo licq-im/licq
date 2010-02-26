@@ -37,6 +37,7 @@
 #endif
 
 #include <licq_icqd.h>
+#include <licq_user.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
