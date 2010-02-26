@@ -31,8 +31,7 @@
 #include <QPushButton>
 #include <QTextCodec>
 
-#include <licq_countrycodes.h>
-#include <licq_providers.h>
+#include <licq/icqcodes.h>
 
 #include "config/iconmanager.h"
 

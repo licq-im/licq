@@ -1,11 +1,333 @@
+// -*- c-basic-offset: 2 -*-
+/* ----------------------------------------------------------------------------
+ * Licq - A ICQ Client for Unix
+ * Copyright (C) 1998 - 2009 Licq developers
+ *
+ * This program is licensed under the terms found in the LICENSE file.
+ */
 #include "config.h"
-
-#include "gettext.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#include "licq_homepagecodes.h"
+#include <licq/icqcodes.h>
+
+#include "gettext.h"
+
+
+const struct SCategory gBackgrounds[NUM_BACKGROUNDS] =
+{
+  { tr_NOOP("Elementary School"), 300, 0 },
+  { tr_NOOP("High School"), 301, 1 },
+  { tr_NOOP("College"), 302, 2 },
+  { tr_NOOP("University"), 303, 3 },
+  { tr_NOOP("Military"), 304, 4 },
+  { tr_NOOP("Past Work Place"), 305, 5 },
+  { tr_NOOP("Past Organization"), 306, 6 },
+  { tr_NOOP("Other"), 399, 7 }
+};
+
+
+const struct SCategory *GetBackgroundByCode(unsigned short _nCode)
+{
+   // do a simple linear search as there aren't too many interests
+   unsigned short i = 0;
+   while (i < NUM_BACKGROUNDS && gBackgrounds[i].nCode != _nCode) i++;
+   if (i == NUM_BACKGROUNDS) return NULL;
+   return &gBackgrounds[i];
+}
+
+const struct SCategory *GetBackgroundByIndex(unsigned short _nIndex)
+{
+   if (_nIndex >= NUM_BACKGROUNDS) return NULL;
+   return (&gBackgrounds[_nIndex]);
+}
+
+const struct SCategory *GetBackgroundByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_BACKGROUNDS &&
+          strcasecmp(gBackgrounds[i].szName, _szName))
+   {
+     i++;
+   }
+   if (i == NUM_BACKGROUNDS) return NULL;
+   return &gBackgrounds[i];
+}
+
+
+const struct SCountry gCountries[NUM_COUNTRIES] =
+{
+  { tr_NOOP("Unspecified"), COUNTRY_UNSPECIFIED, 0, 0 },
+  { tr_NOOP("Afghanistan"), 93, 93, 1 },
+  { tr_NOOP("Albania"), 355, 355, 2 },
+  { tr_NOOP("Algeria"), 213, 213, 3 },
+  { tr_NOOP("American Samoa"), 684, 684, 4 },
+  { tr_NOOP("Andorra"), 376, 376, 5 },
+  { tr_NOOP("Angola"), 244, 244, 6 },
+  { tr_NOOP("Anguilla"), 101, 1, 7 },
+  { tr_NOOP("Antigua and Barbuda"), 1021, 1, 8 },
+  { tr_NOOP("Antigua"), 102, 1, 9 },
+  { tr_NOOP("Antilles"), 5902, 590, 10 },
+  { tr_NOOP("Argentina"), 54, 54, 11 },
+  { tr_NOOP("Armenia"), 374, 374, 12 },
+  { tr_NOOP("Aruba"), 297, 297, 13 },
+  { tr_NOOP("Ascension Island"), 247, 247, 14 },
+  { tr_NOOP("Australia"), 61, 61, 15 },
+  { tr_NOOP("Austria"), 43, 43, 16 },
+  { tr_NOOP("Azerbaijan"), 994, 994, 17 },
+  { tr_NOOP("Bahamas"), 103, 1, 18 },
+  { tr_NOOP("Bahrain"), 973, 973, 19 },
+  { tr_NOOP("Bangladesh"), 880, 880, 20 },
+  { tr_NOOP("Barbados"), 104, 1, 21 },
+  { tr_NOOP("Barbuda"), 120, 1, 22 },
+  { tr_NOOP("Belarus"), 375, 375, 23 },
+  { tr_NOOP("Belgium"), 32, 32, 24 },
+  { tr_NOOP("Belize"), 501, 501, 25 },
+  { tr_NOOP("Benin"), 229, 229, 26 },
+  { tr_NOOP("Bermuda"), 105, 1, 27 },
+  { tr_NOOP("Bhutan"), 975, 975, 28 },
+  { tr_NOOP("Bolivia"), 591, 591, 29 },
+  { tr_NOOP("Bosnia and Herzegovina"), 387, 387, 30 },
+  { tr_NOOP("Botswana"), 267, 267, 31 },
+  { tr_NOOP("Brazil"), 55, 55, 32 },
+  { tr_NOOP("British Virgin Islands"), 106, 1, 33 },
+  { tr_NOOP("Brunei"), 673, 673, 34 },
+  { tr_NOOP("Bulgaria"), 359, 359, 35 },
+  { tr_NOOP("Burkina Faso"), 226, 226, 36 },
+  { tr_NOOP("Burundi"), 257, 257, 37 },
+  { tr_NOOP("Cambodia"), 855, 855, 38 },
+  { tr_NOOP("Cameroon"), 237, 237, 39 },
+  { tr_NOOP("Canada"), 107, 1, 40 },
+  { tr_NOOP("Canary Islands"), 178, 1, 41 },
+  { tr_NOOP("Cape Verde Islands"), 238, 238, 42 },
+  { tr_NOOP("Cayman Islands"), 108, 1, 43 },
+  { tr_NOOP("Central African Republic"), 236, 236, 44 },
+  { tr_NOOP("Chad"), 235, 235, 45 },
+  { tr_NOOP("Chile, Republic of"), 56, 56, 46 },
+  { tr_NOOP("China"), 86, 86, 47 },
+  { tr_NOOP("Christmas Island"), 672, 672, 48 },
+  { tr_NOOP("Cocos (Keeling) Islands"), 6102, 61, 49 },
+  { tr_NOOP("Cocos-Keeling Islands"), 6101, 61, 50 },
+  { tr_NOOP("Colombia"), 57, 57, 51 },
+  { tr_NOOP("Comoros"), 2691, 269, 52 },
+  { tr_NOOP("Congo, (Republic of the)"), 242, 242, 53 },
+  { tr_NOOP("Congo, Democratic Republic of (Zaire)"), 243, 243, 54 },
+  { tr_NOOP("Cook Islands"), 682, 682, 55 },
+  { tr_NOOP("Costa Rica"), 506, 506, 56 },
+  { tr_NOOP("Cote d'Ivoire"), 225, 225, 57 },
+  { tr_NOOP("Croatia"), 385, 385, 58 },
+  { tr_NOOP("Cuba"), 53, 53, 59 },
+  { tr_NOOP("Cyprus"), 357, 357, 60 },
+  { tr_NOOP("Czech Republic"), 42, 420, 61 },
+  { tr_NOOP("Denmark"), 45, 45, 62 },
+  { tr_NOOP("Diego Garcia"), 246, 246, 63 },
+  { tr_NOOP("Djibouti"), 253, 253, 64 },
+  { tr_NOOP("Dominica"), 109, 1, 65 },
+  { tr_NOOP("Dominican Republic"), 110, 1, 66 },
+  { tr_NOOP("Ecuador"), 593, 593, 67 },
+  { tr_NOOP("Egypt"), 20, 20, 68 },
+  { tr_NOOP("El Salvador"), 503, 503, 69 },
+  { tr_NOOP("Equatorial Guinea"), 240, 240, 70 },
+  { tr_NOOP("Eritrea"), 291, 291, 71 },
+  { tr_NOOP("Estonia"), 372, 372, 72 },
+  { tr_NOOP("Ethiopia"), 251, 251, 73 },
+  { tr_NOOP("Faeroe Islands"), 298, 298, 74 },
+  { tr_NOOP("Falkland Islands"), 500, 500, 75 },
+  { tr_NOOP("Fiji"), 679, 679, 76 },
+  { tr_NOOP("Finland"), 358, 358, 77 },
+  { tr_NOOP("France"), 33, 33, 78 },
+  { tr_NOOP("French Antilles"), 5901, 590, 79 },
+  { tr_NOOP("French Guiana"), 594, 594, 80 },
+  { tr_NOOP("French Polynesia"), 689, 689, 81 },
+  { tr_NOOP("Gabon"), 241, 241, 82 },
+  { tr_NOOP("Gambia"), 220, 220, 83 },
+  { tr_NOOP("Georgia"), 995, 995, 84 },
+  { tr_NOOP("Germany"), 49, 49, 85 },
+  { tr_NOOP("Ghana"), 233, 233, 86 },
+  { tr_NOOP("Gibraltar"), 350, 350, 87 },
+  { tr_NOOP("Greece"), 30, 30, 88 },
+  { tr_NOOP("Greenland"), 299, 299, 89 },
+  { tr_NOOP("Grenada"), 111, 1, 90 },
+  { tr_NOOP("Guadeloupe"), 590, 590, 91 },
+  { tr_NOOP("Guam, US Territory of"), 671, 671, 92 },
+  { tr_NOOP("Guatemala"), 502, 502, 93 },
+  { tr_NOOP("Guinea"), 224, 224, 94 },
+  { tr_NOOP("Guinea-Bissau"), 245, 245, 95 },
+  { tr_NOOP("Guyana"), 592, 592, 96 },
+  { tr_NOOP("Haiti"), 509, 509, 97 },
+  { tr_NOOP("Honduras"), 504, 504, 98 },
+  { tr_NOOP("Hong Kong"), 852, 852, 99 },
+  { tr_NOOP("Hungary"), 36, 36, 100 },
+  { tr_NOOP("Iceland"), 354, 354, 101 },
+  { tr_NOOP("India"), 91, 91, 102 },
+  { tr_NOOP("Indonesia"), 62, 62, 103 },
+  { tr_NOOP("Iran (Islamic Republic of)"), 98, 98, 104 },
+  { tr_NOOP("Iraq"), 964, 964, 105 },
+  { tr_NOOP("Ireland"), 353, 353, 106 },
+  { tr_NOOP("Israel"), 972, 972, 107 },
+  { tr_NOOP("Italy"), 39, 39, 108 },
+  { tr_NOOP("Jamaica"), 112, 1, 109 },
+  { tr_NOOP("Japan"), 81, 81, 110 },
+  { tr_NOOP("Jordan"), 962, 962, 111 },
+  { tr_NOOP("Kazakhstan"), 705, 7, 112 },
+  { tr_NOOP("Kenya"), 254, 254, 113 },
+  { tr_NOOP("Kiribati"), 686, 686, 114 },
+  { tr_NOOP("Korea (North Korea), Democratic People's Republic of"), 850, 850, 115 },
+  { tr_NOOP("Korea (South Korea), Republic of"), 82, 82, 116 },
+  { tr_NOOP("Kuwait"), 965, 965, 117 },
+  { tr_NOOP("Kyrgyzstan"), 706, 7, 118 },
+  { tr_NOOP("Lao People's Democratic Republic"), 856, 856, 119 },
+  { tr_NOOP("Latvia"), 371, 371, 120 },
+  { tr_NOOP("Lebanon"), 961, 961, 121 },
+  { tr_NOOP("Lesotho"), 266, 266, 122 },
+  { tr_NOOP("Liberia"), 231, 231, 123 },
+  { tr_NOOP("Libyan Arab Jamahiriya"), 218, 218, 124 },
+  { tr_NOOP("Liechtenstein"), 4101, 41, 125 },
+  { tr_NOOP("Lithuania"), 370, 370, 126 },
+  { tr_NOOP("Luxembourg"), 352, 352, 127 },
+  { tr_NOOP("Macau"), 853, 853, 128 },
+  { tr_NOOP("Macedonia (F.Y.R.O.M.)"), 389, 389, 129 },
+  { tr_NOOP("Madagascar"), 261, 261, 130 },
+  { tr_NOOP("Malawi"), 265, 265, 131 },
+  { tr_NOOP("Malaysia"), 60, 60, 132 },
+  { tr_NOOP("Maldives"), 960, 960, 133 },
+  { tr_NOOP("Mali"), 223, 223, 134 },
+  { tr_NOOP("Malta"), 356, 356, 135 },
+  { tr_NOOP("Marshall Islands"), 692, 692, 136 },
+  { tr_NOOP("Martinique"), 596, 596, 137 },
+  { tr_NOOP("Mauritania"), 222, 222, 138 },
+  { tr_NOOP("Mauritius"), 230, 230, 139 },
+  { tr_NOOP("Mayotte Island"), 269, 269, 140 },
+  { tr_NOOP("Mexico"), 52, 52, 141 },
+  { tr_NOOP("Micronesia, Federated States of"), 691, 691, 142 },
+  { tr_NOOP("Moldova, Republic of"), 373, 373, 143 },
+  { tr_NOOP("Monaco"), 377, 377, 144 },
+  { tr_NOOP("Mongolia"), 976, 976, 145 },
+  { tr_NOOP("Montserrat"), 113, 1, 146 },
+  { tr_NOOP("Morocco"), 212, 212, 147 },
+  { tr_NOOP("Mozambique"), 258, 258, 148 },
+  { tr_NOOP("Myanmar"), 95, 95, 149 },
+  { tr_NOOP("Namibia"), 264, 264, 150 },
+  { tr_NOOP("Nauru"), 674, 674, 151 },
+  { tr_NOOP("Nepal"), 977, 977, 152 },
+  { tr_NOOP("Netherlands Antilles"), 599, 599, 153 },
+  { tr_NOOP("Netherlands"), 31, 31, 154 },
+  { tr_NOOP("Nevis"), 114, 1, 155 },
+  { tr_NOOP("New Caledonia"), 687, 687, 156 },
+  { tr_NOOP("New Zealand"), 64, 64, 157 },
+  { tr_NOOP("Nicaragua"), 505, 505, 158 },
+  { tr_NOOP("Niger"), 227, 227, 159 },
+  { tr_NOOP("Nigeria"), 234, 234, 160 },
+  { tr_NOOP("Niue"), 683, 683, 161 },
+  { tr_NOOP("Norfolk Island"), 6722, 672, 162 },
+  { tr_NOOP("Norway"), 47, 47, 163 },
+  { tr_NOOP("Oman"), 968, 968, 164 },
+  { tr_NOOP("Pakistan"), 92, 92, 165 },
+  { tr_NOOP("Palau"), 680, 680, 166 },
+  { tr_NOOP("Panama"), 507, 507, 167 },
+  { tr_NOOP("Papua New Guinea"), 675, 675, 168 },
+  { tr_NOOP("Paraguay"), 595, 595, 169 },
+  { tr_NOOP("Peru"), 51, 51, 170 },
+  { tr_NOOP("Philippines"), 63, 63, 171 },
+  { tr_NOOP("Poland"), 48, 48, 172 },
+  { tr_NOOP("Portugal"), 351, 351, 173 },
+  { tr_NOOP("Puerto Rico, Common Wealth of"), 121, 1, 174 },
+  { tr_NOOP("Qatar"), 974, 974, 175 },
+  { tr_NOOP("Reunion Island"), 262, 262, 176 },
+  { tr_NOOP("Romania"), 40, 40, 177 },
+  { tr_NOOP("Rota Island"), 6701, 670, 178 },
+  { tr_NOOP("Russia"), 7, 7, 179 },
+  { tr_NOOP("Rwanda"), 250, 250, 180 },
+  { tr_NOOP("Saint Kitts and Nevis"), 1141, 1, 181 },
+  { tr_NOOP("Saint Lucia"), 122, 1, 182 },
+  { tr_NOOP("Saipan Island"), 670, 670, 183 },
+  { tr_NOOP("San Marino"), 378, 378, 184 },
+  { tr_NOOP("Sao Tome & Principe"), 239, 239, 185 },
+  { tr_NOOP("Saudi Arabia"), 966, 966, 186 },
+  { tr_NOOP("Scotland"), 442, 44, 187 },
+  { tr_NOOP("Senegal"), 221, 221, 188 },
+  { tr_NOOP("Seychelles"), 248, 248, 189 },
+  { tr_NOOP("Sierra Leone"), 232, 232, 190 },
+  { tr_NOOP("Singapore"), 65, 65, 191 },
+  { tr_NOOP("Slovakia"), 4201, 421, 192 },
+  { tr_NOOP("Slovenia"), 386, 386, 193 },
+  { tr_NOOP("Solomon Islands"), 677, 677, 194 },
+  { tr_NOOP("Somalia"), 252, 252, 195 },
+  { tr_NOOP("South Africa"), 27, 27, 196 },
+  { tr_NOOP("Spain"), 34, 34, 197 },
+  { tr_NOOP("Sri Lanka"), 94, 94, 198 },
+  { tr_NOOP("St. Helena"), 290, 290, 199 },
+  { tr_NOOP("St. Kitts"), 115, 1, 200 },
+  { tr_NOOP("St. Pierre and Miquelon"), 508, 508, 201 },
+  { tr_NOOP("St. Vincent and the Grenadines"), 116, 1, 202 },
+  { tr_NOOP("Sudan"), 249, 249, 203 },
+  { tr_NOOP("Suriname"), 597, 597, 204 },
+  { tr_NOOP("Swaziland"), 268, 268, 205 },
+  { tr_NOOP("Sweden"), 46, 46, 206 },
+  { tr_NOOP("Switzerland"), 41, 41, 207 },
+  { tr_NOOP("Syrian Arab Republic"), 963, 963, 208 },
+  { tr_NOOP("Taiwan"), 886, 886, 209 },
+  { tr_NOOP("Tajikistan"), 708, 7, 210 },
+  { tr_NOOP("Tanzania, United Republic of"), 255, 255, 211 },
+  { tr_NOOP("Thailand"), 66, 66, 212 },
+  { tr_NOOP("Tinian Island"), 6702, 670, 213 },
+  { tr_NOOP("Togo"), 228, 228, 214 },
+  { tr_NOOP("Tokelau"), 690, 690, 215 },
+  { tr_NOOP("Tonga"), 676, 676, 216 },
+  { tr_NOOP("Trinidad and Tobago"), 117, 1, 217 },
+  { tr_NOOP("Tunisia"), 216, 216, 218 },
+  { tr_NOOP("Turkey"), 90, 90, 219 },
+  { tr_NOOP("Turkmenistan"), 709, 993, 220 },
+  { tr_NOOP("Turks and Caicos Islands"), 118, 1, 221 },
+  { tr_NOOP("Tuvalu"), 688, 688, 222 },
+  { tr_NOOP("Uganda"), 256, 256, 223 },
+  { tr_NOOP("Ukraine"), 380, 380, 224 },
+  { tr_NOOP("United Arab Emirates"), 971, 971, 225 },
+  { tr_NOOP("United Kingdom of Great Britain"), 44, 44, 226 },
+  { tr_NOOP("Uruguay"), 598, 598, 227 },
+  { tr_NOOP("USA"), 1, 1, 228 },
+  { tr_NOOP("Uzbekistan"), 711, 998, 229 },
+  { tr_NOOP("Vanuatu"), 678, 678, 230 },
+  { tr_NOOP("Vatican City"), 379, 39, 231 },
+  { tr_NOOP("Venezuela"), 58, 58, 232 },
+  { tr_NOOP("Vietnam"), 84, 84, 233 },
+  { tr_NOOP("Virgin Islands of the United States"), 123, 1, 234 },
+  { tr_NOOP("Wales"), 441, 44, 235 },
+  { tr_NOOP("Wallis and Futuna Islands"), 681, 681, 236 },
+  { tr_NOOP("Western Samoa"), 685, 685, 237 },
+  { tr_NOOP("Yemen"), 967, 967, 238 },
+  { tr_NOOP("Yugoslavia - Montenegro"), 382, 381, 239 },
+  { tr_NOOP("Yugoslavia - Serbia"), 3811, 381, 240 },
+  { tr_NOOP("Yugoslavia"), 381, 381, 241 },
+  { tr_NOOP("Zambia"), 260, 260, 242 },
+  { tr_NOOP("Zimbabwe"), 263, 263, 243 }
+};
+
+const struct SCountry *GetCountryByCode(unsigned short _nCountryCode)
+{
+   // do a simple linear search as there aren't too many countries
+   unsigned short i = 0;
+   while (i < NUM_COUNTRIES && gCountries[i].nCode != _nCountryCode) i++;
+   if (i == NUM_COUNTRIES) return NULL;
+   return &gCountries[i];
+}
+
+const struct SCountry *GetCountryByIndex(unsigned short _nIndex)
+{
+   if (_nIndex >= NUM_COUNTRIES) return NULL;
+   return (&gCountries[_nIndex]);
+}
+
+const struct SCountry *GetCountryByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_COUNTRIES && strcasecmp(gCountries[i].szName, _szName)) i++;
+   if (i == NUM_COUNTRIES) return NULL;
+   return &gCountries[i];
+}
+
+
 const struct SHomepageCat gHomepageCategories[NUM_HOMEPAGECATS] =
 {
   { tr_NOOP("Age Groups"), 50, 0 },
@@ -3022,4 +3344,353 @@ const struct SHomepageCat *GetHomepageCatByName(const char *_szName)
       return (&gHomepageCategories[i]);
   }
   return NULL;
+}
+
+
+const struct SCategory gInterests[NUM_INTERESTS] =
+{
+  { tr_NOOP("50's"), 137, 0 },
+  { tr_NOOP("60's"), 134, 1 },
+  { tr_NOOP("70's"), 135, 2 },
+  { tr_NOOP("80's"), 136, 3 },
+  { tr_NOOP("Art"), 100, 4 },
+  { tr_NOOP("Astronomy"), 128, 5 },
+  { tr_NOOP("Audio and Visual"), 147, 6 },
+  { tr_NOOP("Business"), 125, 7 },
+  { tr_NOOP("Business Services"), 146, 8 },
+  { tr_NOOP("Cars"), 101, 9 },
+  { tr_NOOP("Celebrity Fans"), 102, 10 },
+  { tr_NOOP("Clothing"), 130, 11 },
+  { tr_NOOP("Collections"), 103, 12 },
+  { tr_NOOP("Computers"), 104, 13 },
+  { tr_NOOP("Consumer Electronics"), 140, 14 },
+  { tr_NOOP("Culture"), 105, 15 },
+  { tr_NOOP("Ecology"), 122, 16 },
+  { tr_NOOP("Entertainment"), 139, 17 },
+  { tr_NOOP("Finance and Corporate"), 138, 18 },
+  { tr_NOOP("Fitness"), 106, 19 },
+  { tr_NOOP("Games"), 107, 20 },
+  { tr_NOOP("Government"), 124, 21 },
+  { tr_NOOP("Health and Beauty"), 142, 22 },
+  { tr_NOOP("Hobbies"), 108, 23 },
+  { tr_NOOP("Household Products"), 144, 24 },
+  { tr_NOOP("Home Automation"), 150, 25 },
+  { tr_NOOP("ICQ - Help"), 109, 26 },
+  { tr_NOOP("Internet"), 110, 27 },
+  { tr_NOOP("Lifestyle"), 111, 28 },
+  { tr_NOOP("Mail Order Catalog"), 145, 29 },
+  { tr_NOOP("Media"), 143, 30 },
+  { tr_NOOP("Movies and TV"), 112, 31 },
+  { tr_NOOP("Music"), 113, 32 },
+  { tr_NOOP("Mystics"), 126, 33 },
+  { tr_NOOP("News and Media"), 123, 34 },
+  { tr_NOOP("Outdoors"), 114, 35 },
+  { tr_NOOP("Parenting"), 115, 36 },
+  { tr_NOOP("Parties"), 131, 37 },
+  { tr_NOOP("Pets and Animals"), 116, 38 },
+  { tr_NOOP("Publishing"), 149, 39 },
+  { tr_NOOP("Religion"), 117, 40 },
+  { tr_NOOP("Retail Stores"), 141, 41 },
+  { tr_NOOP("Science"), 118, 42 },
+  { tr_NOOP("Skills"), 119, 43 },
+  { tr_NOOP("Social science"), 133, 44 },
+  { tr_NOOP("Space"), 129, 45 },
+  { tr_NOOP("Sporting and Athletic"), 148, 46 },
+  { tr_NOOP("Sports"), 120, 47 },
+  { tr_NOOP("Travel"), 127, 48 },
+  { tr_NOOP("Web Design"), 121, 49 },
+  { tr_NOOP("Women"), 132, 50 }
+};
+
+const struct SCategory *GetInterestByCode(unsigned short _nCode)
+{
+   // do a simple linear search as there aren't too many interests
+   unsigned short i = 0;
+   while (i < NUM_INTERESTS && gInterests[i].nCode != _nCode) i++;
+   if (i == NUM_INTERESTS) return NULL;
+   return &gInterests[i];
+}
+
+const struct SCategory *GetInterestByIndex(unsigned short _nIndex)
+{
+   if (_nIndex >= NUM_INTERESTS) return NULL;
+   return (&gInterests[_nIndex]);
+}
+
+const struct SCategory *GetInterestByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_INTERESTS && strcasecmp(gInterests[i].szName, _szName)) i++;
+   if (i == NUM_INTERESTS) return NULL;
+   return &gInterests[i];
+}
+
+
+const struct SLanguage gLanguages[NUM_LANGUAGES] =
+{
+  { tr_NOOP("Unspecified"), LANGUAGE_UNSPECIFIED, 0 },
+  { tr_NOOP("Afrikaans"), 55, 1 },
+  { tr_NOOP("Albanian"), 58, 2 },
+  { tr_NOOP("Arabic"), 1, 3 },
+  { tr_NOOP("Armenian"), 59, 4 },
+  { tr_NOOP("Azerbaijani"), 68, 5 },
+  { tr_NOOP("Belorussian"), 72, 6 },
+  { tr_NOOP("Bhojpuri"), 2, 7 },
+  { tr_NOOP("Bosnian"), 56, 8 },
+  { tr_NOOP("Bulgarian"), 3, 9 },
+  { tr_NOOP("Burmese"), 4, 10 },
+  { tr_NOOP("Cantonese"), 5, 11 },
+  { tr_NOOP("Catalan"), 6, 12 },
+  { tr_NOOP("Chamorro"), 61, 13 },
+  { tr_NOOP("Chinese"), 7, 14 },
+  { tr_NOOP("Croatian"), 8, 15 },
+  { tr_NOOP("Czech"), 9, 16 },
+  { tr_NOOP("Danish"), 10, 17 },
+  { tr_NOOP("Dutch"), 11, 18 },
+  { tr_NOOP("English"), 12, 19 },
+  { tr_NOOP("Esperanto"), 13, 20 },
+  { tr_NOOP("Estonian"), 14, 21 },
+  { tr_NOOP("Farsi"), 15, 22 },
+  { tr_NOOP("Finnish"), 16, 23 },
+  { tr_NOOP("French"), 17, 24 },
+  { tr_NOOP("Gaelic"), 18, 25 },
+  { tr_NOOP("German"), 19, 26 },
+  { tr_NOOP("Greek"), 20, 27 },
+  { tr_NOOP("Gujarati"), 70, 28 },
+  { tr_NOOP("Hebrew"), 21, 29 },
+  { tr_NOOP("Hindi"), 22, 30 },
+  { tr_NOOP("Hungarian"), 23, 31 },
+  { tr_NOOP("Icelandic"), 24, 32 },
+  { tr_NOOP("Indonesian"), 25, 33 },
+  { tr_NOOP("Italian"), 26, 34 },
+  { tr_NOOP("Japanese"), 27, 35 },
+  { tr_NOOP("Khmer"), 28, 36 },
+  { tr_NOOP("Korean"), 29, 37 },
+  { tr_NOOP("Kurdish"), 69, 38 },
+  { tr_NOOP("Lao"), 30, 39 },
+  { tr_NOOP("Latvian"), 31, 40 },
+  { tr_NOOP("Lithuanian"), 32, 41 },
+  { tr_NOOP("Macedonian"), 65, 42 },
+  { tr_NOOP("Malay"), 33, 43 },
+  { tr_NOOP("Mandarin"), 63, 44 },
+  { tr_NOOP("Mongolian"), 62, 45 },
+  { tr_NOOP("Norwegian"), 34, 46 },
+  { tr_NOOP("Persian"), 57, 47 },
+  { tr_NOOP("Polish"), 35, 48 },
+  { tr_NOOP("Portuguese"), 36, 49 },
+  { tr_NOOP("Punjabi"), 60, 50 },
+  { tr_NOOP("Romanian"), 37, 51 },
+  { tr_NOOP("Russian"), 38, 52 },
+  { tr_NOOP("Serbian"), 39, 53 },
+  { tr_NOOP("Sindhi"), 66, 54 },
+  { tr_NOOP("Slovak"), 40, 55 },
+  { tr_NOOP("Slovenian"), 41, 56 },
+  { tr_NOOP("Somali"), 42, 57 },
+  { tr_NOOP("Spanish"), 43, 58 },
+  { tr_NOOP("Swahili"), 44, 59 },
+  { tr_NOOP("Swedish"), 45, 60 },
+  { tr_NOOP("Tagalog"), 46, 61 },
+  { tr_NOOP("Taiwanese"), 64, 62 },
+  { tr_NOOP("Tamil"), 71, 63 },
+  { tr_NOOP("Tatar"), 47, 64 },
+  { tr_NOOP("Thai"), 48, 65 },
+  { tr_NOOP("Turkish"), 49, 66 },
+  { tr_NOOP("Ukrainian"), 50, 67 },
+  { tr_NOOP("Urdu"), 51, 68 },
+  { tr_NOOP("Vietnamese"), 52, 69 },
+  { tr_NOOP("Welsh"), 67, 70 },
+  { tr_NOOP("Yiddish"), 53, 71 },
+  { tr_NOOP("Yoruba"), 54, 72 }
+};
+
+const struct SLanguage *GetLanguageByCode(unsigned short _nLanguageCode)
+{
+   // do a simple linear search as there aren't too many countries
+   unsigned short i = 0;
+   while (i < NUM_LANGUAGES && gLanguages[i].nCode != _nLanguageCode) i++;
+   if (i == NUM_LANGUAGES) return NULL;
+   return &gLanguages[i];
+}
+
+const struct SLanguage *GetLanguageByIndex(unsigned short _nIndex)
+{
+   if (_nIndex >= NUM_LANGUAGES) return NULL;
+   return (&gLanguages[_nIndex]);
+}
+
+const struct SLanguage *GetLanguageByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_LANGUAGES && strcasecmp(gLanguages[i].szName, _szName)) i++;
+   if (i == NUM_LANGUAGES) return NULL;
+   return &gLanguages[i];
+}
+
+
+const struct SOccupation gOccupations[NUM_OCCUPATIONS] =
+{
+  { tr_NOOP("Unspecified"), OCCUPATION_UNSPECIFIED, 0 },
+  { tr_NOOP("Academic"), 1, 1 },
+  { tr_NOOP("Administrative"), 2, 2 },
+  { tr_NOOP("Art/Entertainment"), 3, 3 },
+  { tr_NOOP("College Student"), 4, 4 },
+  { tr_NOOP("Community & Social"), 6, 5 },
+  { tr_NOOP("Computers"), 5, 6 },
+  { tr_NOOP("Education"), 7, 7 },
+  { tr_NOOP("Engineering"), 8, 8 },
+  { tr_NOOP("Financial Services"), 9, 9 },
+  { tr_NOOP("Government"), 10, 10 },
+  { tr_NOOP("High School Student"), 11, 11 },
+  { tr_NOOP("Home"), 12, 12 },
+  { tr_NOOP("ICQ - Providing Help"), 13, 13 },
+  { tr_NOOP("Law"), 14, 14 },
+  { tr_NOOP("Managerial"), 15, 15 },
+  { tr_NOOP("Manufacturing"), 16, 16 },
+  { tr_NOOP("Medical/Health"), 17, 17 },
+  { tr_NOOP("Military"), 18, 18 },
+  { tr_NOOP("Non-Government Organization"), 19, 19 },
+  { tr_NOOP("Other Services"), 99, 20 },
+  { tr_NOOP("Professional"), 20, 21 },
+  { tr_NOOP("Retail"), 21, 22 },
+  { tr_NOOP("Retired"), 22, 23 },
+  { tr_NOOP("Science & Research"), 23, 24 },
+  { tr_NOOP("Sports"), 24, 25 },
+  { tr_NOOP("Technical"), 25, 26 },
+  { tr_NOOP("University Student"), 26, 27 },
+  { tr_NOOP("Web Building"), 27, 28 }
+};
+
+const struct SOccupation *GetOccupationByCode(unsigned short _nOccupationCode)
+{
+   // do a simple linear search as there aren't too many occupations
+   unsigned short i = 0;
+   while (i < NUM_OCCUPATIONS && gOccupations[i].nCode != _nOccupationCode) i++;
+   if (i == NUM_OCCUPATIONS) return NULL;
+   return &gOccupations[i];
+}
+
+const struct SOccupation *GetOccupationByIndex(unsigned short _nIndex)
+{
+   if (_nIndex >= NUM_OCCUPATIONS) return NULL;
+   return (&gOccupations[_nIndex]);
+}
+
+const struct SOccupation *GetOccupationByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_OCCUPATIONS && strcasecmp(gOccupations[i].szName, _szName)) i++;
+   if (i == NUM_OCCUPATIONS) return NULL;
+   return &gOccupations[i];
+}
+
+
+const struct SCategory gOrganizations[NUM_ORGANIZATIONS] =
+{
+  { tr_NOOP("Alumni Org."), 200, 0 },
+  { tr_NOOP("Charity Org."), 201, 1},
+  { tr_NOOP("Club/Social Org."), 202, 2 },
+  { tr_NOOP("Community Org."), 203, 3 },
+  { tr_NOOP("Cultural Org."), 204, 4 },
+  { tr_NOOP("Fan Clubs"), 205, 5 },
+  { tr_NOOP("Fraternity/Sorority"), 206, 6 },
+  { tr_NOOP("Hobbyists Org."), 207, 7 },
+  { tr_NOOP("International Org."), 208, 8 },
+  { tr_NOOP("Nature and Environment Org."), 209, 9 },
+  { tr_NOOP("Professional Org."), 210, 10 },
+  { tr_NOOP("Scientific/Technical Org."), 211, 11 },
+  { tr_NOOP("Self Improvement Group"), 212, 12 },
+  { tr_NOOP("Spiritual/Religious Org."), 213, 13 },
+  { tr_NOOP("Sports Org."), 214, 14 },
+  { tr_NOOP("Support Org."), 215, 15 },
+  { tr_NOOP("Trade and Business Org."), 216, 16 },
+  { tr_NOOP("Union"), 217, 17 },
+  { tr_NOOP("Voluntary Org."), 218, 18 },
+  { tr_NOOP("Other"), 299, 19 }
+};
+
+const struct SCategory *GetOrganizationByCode(unsigned short _nCode)
+{
+   // do a simple linear search as there aren't too many countries
+   unsigned short i = 0;
+   while (i < NUM_ORGANIZATIONS && gOrganizations[i].nCode != _nCode) i++;
+   if (i == NUM_ORGANIZATIONS) return NULL;
+   return &gOrganizations[i];
+}
+
+const struct SCategory *GetOrganizationByIndex(unsigned short _nIndex)
+{
+   if (_nIndex >= NUM_ORGANIZATIONS) return NULL;
+   return (&gOrganizations[_nIndex]);
+}
+
+const struct SCategory *GetOrganizationByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_ORGANIZATIONS &&
+          strcasecmp(gOrganizations[i].szName, _szName))
+   {
+     i++;
+   }
+   if (i == NUM_ORGANIZATIONS) return NULL;
+   return &gOrganizations[i];
+}
+
+
+const struct SProvider gProviders[NUM_PROVIDERS] =
+{
+  { tr_NOOP("(Brazil) Access"), tr_NOOP("@email.pageacess.com.br"), 0 },
+  { tr_NOOP("(Brazil) E-Trim"), tr_NOOP("@etrim.com.br"), 1 },
+  { tr_NOOP("(Canada) BC Tel Mobility"), tr_NOOP("@message.bctm.com"), 2 },
+  { tr_NOOP("(Canada) Select Communication"), tr_NOOP("@selectcomm.ab.ca"), 3 },
+  { tr_NOOP("(Canada) TeleLink"), tr_NOOP("@ds5k.telelink.com"), 4 },
+  { tr_NOOP("(Canada) Bell Mobility"), tr_NOOP("@pager.mobility.com"), 5 },
+  { tr_NOOP("(India) MessageIndia"), tr_NOOP("@messageindia.com"), 6 },
+  { tr_NOOP("(India) MobiLink"), tr_NOOP("@MobilinkIndia.com"), 7 },
+  { tr_NOOP("(India) PageLink"), tr_NOOP("@pagelink-india.com"), 8 },
+  { tr_NOOP("(Malaysia) EasyCall"), tr_NOOP("@easycall.com.my"), 9 },
+  { tr_NOOP("(Mexico) WebLink Wireless (PageMart) (Traditional)"), tr_NOOP("@pagemart.net"), 10 },
+  { tr_NOOP("(Mexico) WebLink Wireless (PageMart) (Advanced)"), tr_NOOP("@airmessage.net"), 11 },
+  { tr_NOOP("(Russia) F1"), tr_NOOP("@pager.oryol.ru"), 12 },
+  { tr_NOOP("(Russia) FCN (Full Cry Neva)"), tr_NOOP("@pager.fcn.ru"), 13 },
+  { tr_NOOP("(Russia) Multi-Page"), tr_NOOP("@pager.multi-page.ru"), 14 },
+  { tr_NOOP("(Russia) Mobile Telecom"), tr_NOOP("@pager.mtelecom.ru"), 15 },
+  { tr_NOOP("(Russia) Mobile Telecom (subject)"), tr_NOOP("@notify.mtelecom.ru"), 16 },
+  { tr_NOOP("(Singapore) Hutchinson Paging SG"), tr_NOOP("@hutch.com.sg"), 17 },
+  { tr_NOOP("(Singapore) M1"), tr_NOOP("@m1.com.sg"), 18 },
+  { tr_NOOP("(Ukraine) U-Page (Eurotext)"), tr_NOOP("@eurotext.kiev.ua"), 19 },
+  { tr_NOOP("(USA) Ameritech/SBC"), tr_NOOP("@paging.acswireless.com"), 20 },
+  { tr_NOOP("(USA) Arch"), tr_NOOP("@epage.arch.com"), 21 },
+  { tr_NOOP("(USA) AT&T"), tr_NOOP("@mobile.att.net"), 22 },
+  { tr_NOOP("(USA) Infinitel"), tr_NOOP("@alphame.com"), 23 },
+  { tr_NOOP("(USA) Metrocall"), tr_NOOP("@page.metrocall.com"), 24 },
+  { tr_NOOP("(USA) PageNet"), tr_NOOP("@pagenet.net"), 25 },
+  { tr_NOOP("(USA) ProComWireless"), tr_NOOP("@page.procomwireless.com"), 26 },
+  { tr_NOOP("(USA) SkyTel/MCI"), tr_NOOP("@skytel.com"), 27 },
+  { tr_NOOP("(USA) TeleBeep"), tr_NOOP("@page.pnet5.com"), 28 },
+  { tr_NOOP("(USA) TeleTouch"), tr_NOOP("@pageme.teletouch.com"), 29 },
+  { tr_NOOP("(USA) WebLink Wireless (PageMart) (Traditional)"), tr_NOOP("@pagemart.net"), 30 },
+  { tr_NOOP("(USA) WebLink Wireless (PageMart) (Advanced)"), tr_NOOP("@airmessage.net"), 31 }
+};
+
+const struct SProvider *GetProviderByGateway(const char *_szGateway)
+{
+   unsigned short i = 0;
+   while (i < NUM_PROVIDERS && strcasecmp(gProviders[i].szGateway, _szGateway))
+     i++;
+   if (i == NUM_PROVIDERS) return NULL;
+   return &gProviders[i];
+}
+
+const struct SProvider *GetProviderByIndex(unsigned short _nIndex)
+{
+   if (_nIndex >= NUM_PROVIDERS) return NULL;
+   return (&gProviders[_nIndex]);
+}
+
+const struct SProvider *GetProviderByName(const char *_szName)
+{
+   unsigned short i = 0;
+   while (i < NUM_PROVIDERS && strcasecmp(gProviders[i].szName, _szName)) i++;
+   if (i == NUM_PROVIDERS) return NULL;
+   return &gProviders[i];
 }

@@ -26,9 +26,7 @@
 #include <QLineEdit>
 #include <QTextCodec>
 
-#include <licq_interestcodes.h>
-#include <licq_organizationcodes.h>
-#include <licq_backgroundcodes.h>
+#include <licq/icqcodes.h>
 
 #include "helpers/usercodec.h"
 #include "helpers/support.h"

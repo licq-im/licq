@@ -18,15 +18,13 @@ set(tested_SRCS
 )
 
 set(licq_SRCS
-  backgroundcodes.c
   buffer.cpp
-  countrycodes.c
   fifo.cpp
   file.cpp
   gpghelper.cpp
   hebrev.c
   history.cpp
-  homepagecodes.c
+  icqcodes.c
   icqcolor.cpp
   icqd-chat.cpp
   icqd.cpp
@@ -36,18 +34,13 @@ set(licq_SRCS
   icqd-threads.cpp
   icqevent.cpp
   icqpacket.cpp
-  interestcodes.c
-  languagecodes.c
   licq.cpp
   log.cpp
   main.cpp
   md5.cpp
   message.cpp
-  occupationcodes.c
   onevent.cpp
-  organizationcodes.c
   oscarservice.cpp
-  providers.c
   proxy.cpp
   rtf.cc
   sar.cpp

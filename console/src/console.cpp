@@ -15,11 +15,11 @@
 #include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_icqd.h"
+#include <licq/icqcodes.h>
 #include "licq/pluginmanager.h"
+
 #include "event_data.h"
 
-#include "licq_languagecodes.h"
-#include "licq_countrycodes.h"
 
 // Undefine what stupid ncurses defines as wclear(WINDOW *)
 #undef clear

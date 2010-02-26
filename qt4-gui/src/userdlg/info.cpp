@@ -53,17 +53,10 @@
 #include <QFileDialog>
 #endif
 
-#include <licq_backgroundcodes.h>
-#include <licq_countrycodes.h>
-#include <licq_homepagecodes.h>
-#include <licq_interestcodes.h>
+#include <licq/icqcodes.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
-#include <licq_languagecodes.h>
 #include <licq_log.h>
-#include <licq_occupationcodes.h>
-#include <licq_organizationcodes.h>
-#include <licq_providers.h>
 #include <licq_user.h>
 
 #include "config/iconmanager.h"

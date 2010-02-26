@@ -1,30 +1,22 @@
 set(licq_HEADERS
-  licq_backgroundcodes.h
   licq_buffer.h
   licq_chat.h
   licq_color.h
   licq_constants.h
-  licq_countrycodes.h
   licq_events.h
   licq_file.h
   licq_filetransfer.h
   licq_history.h
-  licq_homepagecodes.h
   licq_icq.h
   licq_icqd.h
-  licq_interestcodes.h
-  licq_languagecodes.h
   licq_log.h
   licq_message.h
   licq_mutex.h
-  licq_occupationcodes.h
   licq_onevent.h
-  licq_organizationcodes.h
   licq_oscarservice.h
   licq_packets.h
   licq_plugin.h
   licq_protoplugin.h
-  licq_providers.h
   licq_proxy.h
   licq_sar.h
   licq_socket.h

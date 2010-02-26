@@ -9,13 +9,12 @@
 
 #include "gettext.h"
 #include "licq_constants.h"
-#include "licq_countrycodes.h"
 #include "licq_events.h"
 #include "licq_file.h"
 #include "licq_icqd.h"
 #include "licq_log.h"
-#include "licq_occupationcodes.h"
 #include "licq_socket.h"
+#include <licq/icqcodes.h>
 #include "licq/pluginmanager.h"
 
 using boost::any_cast;

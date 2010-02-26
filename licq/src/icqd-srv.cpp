@@ -37,7 +37,6 @@
 #include "licq_filetransfer.h"
 #include "support.h"
 #include "licq_message.h"
-#include "licq_countrycodes.h"
 #include "licq_proxy.h"
 #include "licq/version.h"
 
