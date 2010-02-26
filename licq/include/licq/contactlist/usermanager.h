@@ -237,9 +237,6 @@ public:
    */
   bool userExists(const UserId& userId);
 
-  bool IsOnList(const char* accountId, unsigned long ppid)
-  { return accountId == NULL ? false: userExists(User::makeUserId(accountId, ppid)); }
-
   /**
    * Get user id for an owner
    *
@@ -501,10 +498,6 @@ public:
   void setUserInGroup(const UserId& userId, GroupType groupType,
       int groupId, bool inGroup, bool updateServer = true);
 
-  void SetUserInGroup(const char* id, unsigned long ppid, GroupType groupType,
-      int groupId, bool inGroup, bool updateServer = true)
-  { if (id != NULL) setUserInGroup(User::makeUserId(id, ppid), groupType, groupId, inGroup, updateServer); }
-
   /**
    * Add user to a group and update server group
    *
@@ -514,9 +507,6 @@ public:
   void addUserToGroup(const UserId& userId, int groupId)
   { setUserInGroup(userId, GROUPS_USER, groupId, true, true); }
 
-  void AddUserToGroup(const char* id, unsigned long ppid, int groupId)
-  { SetUserInGroup(id, ppid, GROUPS_USER, groupId, true, true); }
-
   /**
    * Remove user from a group
    *
@@ -525,9 +515,6 @@ public:
    */
   void removeUserFromGroup(const UserId& userId, int groupId)
   { setUserInGroup(userId, GROUPS_USER, groupId, false); }
-
-  void RemoveUserFromGroup(const char* id, unsigned long ppid, int groupId)
-  { SetUserInGroup(id, ppid, GROUPS_USER, groupId, false); }
 
   void SaveAllUsers();
 

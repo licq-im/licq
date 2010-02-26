@@ -265,7 +265,7 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
   else if( (s=strdup(buff)) == 0 )
     ret  = false;
   else if ( buffer_is_uin(buff) && 
-           ((bOnList && gUserManager.IsOnList(buff, LICQ_PPID)) || !bOnList  ))
+      ((bOnList && gUserManager.userExists(Licq::User::makeUserId(buff, LICQ_PPID))) || !bOnList))
   {
     _nPPID = LICQ_PPID;
     _szId = s;
