@@ -1,6 +1,7 @@
 #ifndef LICQ_CONTACTLIST_USERMANAGER_H
 #define LICQ_CONTACTLIST_USERMANAGER_H
 
+#include <boost/noncopyable.hpp>
 #include <list>
 #include <string>
 
@@ -10,8 +11,6 @@
 
 class CICQDaemon;
 
-namespace Licq
-{
 
 /*---------------------------------------------------------------------------
  * FOR_EACH_USER
@@ -172,6 +171,10 @@ namespace Licq
           continue;                      \
         }
 
+
+namespace Licq
+{
+
 /**
  * The amount of registered system groups, excluding the 'All Users' group.
  *
@@ -182,13 +185,9 @@ const int NUM_GROUPS_SYSTEM     = NUM_GROUPS_SYSTEM_ALL - 1;
 extern const char *GroupsSystemNames[NUM_GROUPS_SYSTEM_ALL];
 
 
-class UserManager
+class UserManager : private boost::noncopyable
 {
 public:
-  UserManager();
-  ~UserManager();
-  bool Load();
-
   /**
    * Find and lock an user object
    *
@@ -198,17 +197,17 @@ public:
    * @param retWasAdded If not null, will be set to true if user was added
    * @return The locked user object if user exist or was created, otherwise NULL
    */
-  User* fetchUser(const UserId& userId, unsigned short lockType = LOCK_R,
-      bool addUser = false, bool* retWasAdded = NULL);
+  virtual User* fetchUser(const UserId& userId, unsigned short lockType = LOCK_R,
+      bool addUser = false, bool* retWasAdded = NULL) = 0;
 
   // For protocol plugins
-  void AddOwner(const char *, unsigned long);
-  void RemoveOwner(unsigned long);
+  virtual void AddOwner(const char *, unsigned long) = 0;
+  virtual void RemoveOwner(unsigned long) = 0;
 
   User* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType)
   { return idstring == NULL ? NULL : fetchUser(User::makeUserId(idstring, ppid), lockType); }
 
-  Owner* FetchOwner(unsigned long ppid, unsigned short lockType);
+  virtual Owner* FetchOwner(unsigned long ppid, unsigned short lockType) = 0;
 
   /**
    * Find and lock an owner object based on userId
@@ -227,7 +226,7 @@ public:
   /**
    * Release owner lock
    */
-  void DropOwner(const Owner* owner);
+  virtual void DropOwner(const Owner* owner) = 0;
 
   /**
    * Check if a user id is in the list
@@ -235,7 +234,7 @@ public:
    * @param userId User id to check
    * @return True if user id is in list, otherwise false
    */
-  bool userExists(const UserId& userId);
+  virtual bool userExists(const UserId& userId) = 0;
 
   /**
    * Get user id for an owner
@@ -243,10 +242,10 @@ public:
    * @param ppid Protocol id
    * @return User id of owner or empty string if no such owner exists
    */
-  UserId ownerUserId(unsigned long ppid);
+  virtual UserId ownerUserId(unsigned long ppid) = 0;
 
   // Get account id for an owner
-  std::string OwnerId(unsigned long ppid);
+  virtual std::string OwnerId(unsigned long ppid) = 0;
 
   /**
    * Check if user is an owner
@@ -254,10 +253,10 @@ public:
    * @param userId Id of user to check
    * @return True if user id is valid and user is an owner
    */
-  bool isOwner(const UserId& userId);
+  virtual bool isOwner(const UserId& userId) = 0;
 
   // ICQ Protocol only (from original Licq)
-  void DropUser(const User* user);
+  virtual void DropUser(const User* user) = 0;
 
   /**
    * Convenience function to get icq owner as an unsigned long
@@ -265,7 +264,7 @@ public:
    *
    * @return Icq owner
    */
-  unsigned long icqOwnerUin();
+  virtual unsigned long icqOwnerUin() = 0;
 
   /**
    * Notify plugins about changes for a user
@@ -273,7 +272,7 @@ public:
    * @param userId User that has changed
    * @param subSignal Sub signal for changes
    */
-  void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);
+  virtual void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal) = 0;
 
   /**
    * Add a user to the contact list
@@ -284,8 +283,8 @@ public:
    * @param groupId Initial group to place user in or zero for no group
    * @return false if user id is invalid or user is already in list, otherwise true
    */
-  bool addUser(const UserId& userId, bool permanent = true,
-      bool addToServer = true, unsigned short groupId = 0);
+  virtual bool addUser(const UserId& userId, bool permanent = true,
+      bool addToServer = true, unsigned short groupId = 0) = 0;
 
   /**
    * Add a temporary user to the list
@@ -296,14 +295,14 @@ public:
    * @param groupId Initial group to place user in or zero for no group
    * @return True if user exists and was temporary, otherwise false
    */
-  bool makeUserPermanent(const UserId& userId, bool addToServer = true, int groupId = 0);
+  virtual bool makeUserPermanent(const UserId& userId, bool addToServer = true, int groupId = 0) = 0;
 
   /**
    * Remove a user from the list
    *
    * @param userId Id of user to remove
    */
-  void removeUser(const UserId& userId, bool removeFromServer = true);
+  virtual void removeUser(const UserId& userId, bool removeFromServer = true) = 0;
 
   /**
    * Lock user list for access
@@ -312,18 +311,12 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @return Map of all users indexed by user id
    */
-  UserMap* LockUserList(unsigned short lockType = LOCK_R);
+  virtual UserMap* LockUserList(unsigned short lockType = LOCK_R) = 0;
 
   /**
    * Release user list lock
    */
-  void UnlockUserList();
-
-  /**
-   * Save user list to configuration file
-   * Note: This function assumes that the user list is already locked.
-   */
-  void saveUserList() const;
+  virtual void UnlockUserList() = 0;
 
   /**
    * Lock group list for access
@@ -332,12 +325,12 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @return Map of all user groups indexed by group ids
    */
-  GroupMap* LockGroupList(unsigned short lockType = LOCK_R);
+  virtual GroupMap* LockGroupList(unsigned short lockType = LOCK_R) = 0;
 
   /**
    * Release group list lock
    */
-  void UnlockGroupList();
+  virtual void UnlockGroupList() = 0;
 
   /**
    * Lock owner list for access
@@ -346,12 +339,12 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @return Map of all owners indexed by protocol instance id
    */
-  OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R);
+  virtual OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R) = 0;
 
   /**
    * Release owner list lock
    */
-  void UnlockOwnerList();
+  virtual void UnlockOwnerList() = 0;
 
   /**
    * Find and lock a group
@@ -361,14 +354,14 @@ public:
    * @param lockType Type of lock to get
    * @return The group if found no NULL if groupId was invalid
    */
-  Group* FetchGroup(int groupId, unsigned short lockType = LOCK_R);
+  virtual Group* FetchGroup(int groupId, unsigned short lockType = LOCK_R) = 0;
 
   /**
    * Release the lock for a group preivously returned by FetchGroup()
    *
    * @param group The group to unlock
    */
-  void DropGroup(const Group* group);
+  virtual void DropGroup(const Group* group) = 0;
 
   /**
    * Check if a group id is valid
@@ -377,7 +370,7 @@ public:
    * @param groupId Id of group to check for
    * @return True if the group exists
    */
-  bool groupExists(GroupType gtype, int groupId);
+  virtual bool groupExists(GroupType gtype, int groupId) = 0;
 
   /**
    * Add a user group
@@ -386,14 +379,14 @@ public:
    * @param icqGroupId ICQ server group id
    * @return Id of new group or zero if group could not be created
    */
-  int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
+  virtual int AddGroup(const std::string& name, unsigned short icqGroupId = 0) = 0;
 
   /**
    * Remove a user group
    *
    * @param groupId Id of group to remove
    */
-  void RemoveGroup(int groupId);
+  virtual void RemoveGroup(int groupId) = 0;
 
   /**
    * Rename a user group
@@ -403,20 +396,20 @@ public:
    * @param sendUpdate True if server group should be updated
    * @return True if group was successfully renamed
    */
-  bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
+  virtual bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true) = 0;
 
   /**
    * Get number of user groups
    *
    * @return Number of user groups
    */
-  unsigned int NumGroups();
+  virtual unsigned int NumGroups() = 0;
 
   /**
    * Save user group list to configuration file
    * Note: This function assumes that user group list is already locked.
    */
-  void SaveGroups();
+  virtual void SaveGroups() = 0;
 
   /**
    * Move sorting position for a group
@@ -426,7 +419,7 @@ public:
    * @param groupId Id of group to move
    * @param newIndex New sorting index where 0 is the top position
    */
-  void ModifyGroupSorting(int groupId, int newIndex);
+  virtual void ModifyGroupSorting(int groupId, int newIndex) = 0;
 
   /**
    * Change ICQ server group id for a user group
@@ -434,7 +427,7 @@ public:
    * @param name Name of group to change
    * @param icqGroupId ICQ server group id to set
    */
-  void ModifyGroupID(const std::string& name, unsigned short icqGroupId);
+  virtual void ModifyGroupID(const std::string& name, unsigned short icqGroupId) = 0;
 
   /**
    * Change ICQ server group id for a user group
@@ -442,7 +435,7 @@ public:
    * @param groupId Id of group to change
    * @param icqGroupId ICQ server group id to set
    */
-  void ModifyGroupID(int groupId, unsigned short icqGroupId);
+  virtual void ModifyGroupID(int groupId, unsigned short icqGroupId) = 0;
 
   /**
    * Get ICQ group id from group name
@@ -450,7 +443,7 @@ public:
    * @param name Group name
    * @return Id for ICQ server group or 0 if not found
    */
-  unsigned short GetIDFromGroup(const std::string& name);
+  virtual unsigned short GetIDFromGroup(const std::string& name) = 0;
 
   /**
    * Get ICQ group id from group
@@ -458,7 +451,7 @@ public:
    * @param groupId Group
    * @return Id for iCQ server group or 0 if groupId was invalid
    */
-  unsigned short GetIDFromGroup(int groupId);
+  virtual unsigned short GetIDFromGroup(int groupId) = 0;
 
   /**
    * Get group id from ICQ server group id
@@ -466,7 +459,7 @@ public:
    * @param icqGroupId ICQ server group id
    * @return Id for group or 0 if not found
    */
-  int GetGroupFromID(unsigned short icqGroupId);
+  virtual int GetGroupFromID(unsigned short icqGroupId) = 0;
 
   /**
    * Find id for group with a given name
@@ -474,7 +467,7 @@ public:
    * @param name Name of the group
    * @return Id for the group or 0 if there is no group with that name
    */
-  int GetGroupFromName(const std::string& name);
+  virtual int GetGroupFromName(const std::string& name) = 0;
 
   /**
    * Get group name from the given group ID
@@ -482,9 +475,7 @@ public:
    * @param groupId Internal group ID
    * @return Group name
    */
-  std::string GetGroupNameFromGroup(int groupId);
-
-  unsigned short GenerateSID();
+  virtual std::string GetGroupNameFromGroup(int groupId) = 0;
 
   /**
    * Set user group membership and (optionally) update server
@@ -495,8 +486,8 @@ public:
    * @param inGroup True to add user to group or false to remove
    * @param updateServer True if server list should be updated
    */
-  void setUserInGroup(const UserId& userId, GroupType groupType,
-      int groupId, bool inGroup, bool updateServer = true);
+  virtual void setUserInGroup(const UserId& userId, GroupType groupType,
+      int groupId, bool inGroup, bool updateServer = true) = 0;
 
   /**
    * Add user to a group and update server group
@@ -516,35 +507,19 @@ public:
   void removeUserFromGroup(const UserId& userId, int groupId)
   { setUserInGroup(userId, GROUPS_USER, groupId, false); }
 
-  void SaveAllUsers();
+  virtual void SaveAllUsers() = 0;
+  virtual const char* DefaultUserEncoding() = 0;
+  virtual void SetDefaultUserEncoding(const char* defaultEncoding) = 0;
 
-  char* DefaultUserEncoding() { return m_szDefaultEncoding; }
-  void SetDefaultUserEncoding(const char* defaultEncoding);
-
-  bool UpdateUsersInGroups();
-
-  unsigned short NumUsers();
-  unsigned short NumOwners();
+  virtual unsigned short NumUsers() = 0;
+  virtual unsigned short NumOwners() = 0;
 
 protected:
-  ReadWriteMutex myGroupListMutex;
-  ReadWriteMutex myUserListMutex;
-  ReadWriteMutex myOwnerListMutex;
-
-  GroupMap myGroups;
-  UserMap myUsers;
-  OwnerMap myOwners;
-  unsigned short m_nUserListLockType;
-  unsigned short myGroupListLockType;
-  unsigned short m_nOwnerListLockType;
-  bool m_bAllowSave;
-  char* m_szDefaultEncoding;
-
-  friend class ::CICQDaemon;
+  virtual ~UserManager() { /* Empty */ }
 };
 
 
-extern class UserManager gUserManager;
+extern UserManager& gUserManager;
 
 /**
  * Read mutex guard for Licq::User

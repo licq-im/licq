@@ -33,7 +33,7 @@ class COscarService;
 class CReverseConnectToUserData;
 class CMSN;
 
-namespace Licq
+namespace LicqDaemon
 {
 class UserManager;
 }
@@ -943,7 +943,7 @@ protected:
   friend class CChatManager;
   friend class CFileTransferManager;
   friend class COnEventManager;
-  friend class Licq::UserManager;
+  friend class LicqDaemon::UserManager;
   friend class CLicq;
   friend class CMSN;
   friend class Handler;

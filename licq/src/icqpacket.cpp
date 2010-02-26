@@ -30,14 +30,23 @@
 #include "licq_icq.h"
 #include "licq_translate.h"
 #include "licq_log.h"
-#include "licq_user.h"
 #include "licq_utility.h"
 #include "licq_color.h"
 #include "support.h"
 #include "licq/version.h"
 
+#include "contactlist/usermanager.h"
+
 using namespace std;
+using Licq::USPRINTF_NTORN;
+using Licq::USPRINTF_PIPEISCMD;
 using Licq::StringList;
+using LicqDaemon::gUserManager;
+
+// TODO: Remove when no longer needed
+typedef Licq::Owner ICQOwner;
+typedef Licq::User ICQUser;
+
 
 unsigned short ReversePort(unsigned short p)
 {
@@ -1813,11 +1822,11 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
 {
 
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  const ICQUserPhoneBook* book = o->GetPhoneBook();
+  const Licq::ICQUserPhoneBook* book = o->GetPhoneBook();
 
   unsigned long num_entries;
   unsigned long nLen = 4 + 4;
-  const struct PhoneBookEntry *entry;
+  const struct Licq::PhoneBookEntry* entry;
   for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
   {
     nLen += 4 + strlen(entry->szDescription) + 4 + strlen(entry->szAreaCode)
@@ -5412,11 +5421,11 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
 {
 
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  ICQUserPhoneBook *book = o->GetPhoneBook();
+  Licq::ICQUserPhoneBook* book = o->GetPhoneBook();
 
   unsigned long num_entries;
   unsigned long nLen = 4 + 4;
-  const struct PhoneBookEntry *entry;
+  const struct Licq::PhoneBookEntry* entry;
   for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
   {
     nLen += 4 + strlen(entry->szDescription) + 4 + strlen(entry->szAreaCode)

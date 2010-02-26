@@ -1,4 +1,4 @@
-#include "licq/contactlist/usermanager.h"
+#include "usermanager.h"
 
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
@@ -13,11 +13,15 @@ using std::string;
 using Licq::Group;
 using Licq::Owner;
 using Licq::User;
-using Licq::UserManager;
 using Licq::UserId;
+using namespace LicqDaemon;
 
+// Declare global UserManager (internal for daemon)
+LicqDaemon::UserManager LicqDaemon::gUserManager;
 
-class UserManager Licq::gUserManager;
+// Initialize global Licq::UserManager to refer to the internal UserManager
+Licq::UserManager& Licq::gUserManager(LicqDaemon::gUserManager);
+
 
 /* This array is provided for plugin writers' convenience only.
  * No translation is done here. Thus, if your plugin wishes to translate
@@ -264,7 +268,7 @@ void UserManager::saveUserList() const
     sprintf(key, "User%i", count);
 
     char ps[5];
-    protocolId_toStr(ps, ppid);
+    Licq::protocolId_toStr(ps, ppid);
     usersConf.writeString(key, accountId + "." + ps);
   }
   usersConf.WriteNum("NumOfUsers", count);
@@ -340,7 +344,7 @@ bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
     return false;
 
   {
-    UserWriteGuard user(userId);
+    Licq::UserWriteGuard user(userId);
     if (!user.isLocked())
       return false;
 
@@ -1172,7 +1176,7 @@ void UserManager::setUserInGroup(const UserId& userId,
 
   // Update user object
   u->SetInGroup(groupType, groupId, inGroup);
-  StringList groupNames;
+  Licq::StringList groupNames;
   std::string groupName;
   UserGroupList groups = u->GetGroups();
   UserGroupList::const_iterator it;
@@ -1219,11 +1223,15 @@ void UserManager::setUserInGroup(const UserId& userId,
     notifyUserUpdated(userId, (groupType == GROUPS_USER ? USER_GROUPS : USER_SETTINGS));
 }
 
+const char* UserManager::DefaultUserEncoding()
+{
+  return m_szDefaultEncoding;
+}
+
 void UserManager::SetDefaultUserEncoding(const char* defaultEncoding)
 {
   SetString(&m_szDefaultEncoding, defaultEncoding);
 }
-
 
 char* PPIDSTRING(unsigned long ppid)
 {

@@ -23,6 +23,10 @@ void* MonitorSockets_tep(void *);
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp
 extern "C" void SetString(char **, const char *);
 
+namespace LicqDaemon
+{
+class UserManager;
+}
 
 namespace Licq
 {
@@ -815,7 +819,7 @@ protected:
 
   static pthread_mutex_t mutex_nNumUserEvents;
 
-  friend class UserManager;
+  friend class LicqDaemon::UserManager;
   friend class ::CICQDaemon;
   friend class ::CMSN;
   friend class ::CSocketManager;

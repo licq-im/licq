@@ -35,12 +35,12 @@ using namespace std;
 #include "licq_utility.h"
 #include "support.h"
 #include "licq_sar.h"
-#include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
 #include "licq/exceptions/exception.h"
 #include "licq/version.h"
 
+#include "contactlist/usermanager.h"
 #include "logging/streamlogsink.h"
 #include "plugins/pluginmanager.h"
 
@@ -585,7 +585,7 @@ bool CLicq::Init(int argc, char **argv)
 #endif
 
   // Start things going
-  if (!gUserManager.Load())
+  if (!LicqDaemon::gUserManager.Load())
     return false;
   gSARManager.Load();
   sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
