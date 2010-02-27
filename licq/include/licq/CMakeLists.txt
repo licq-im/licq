@@ -13,6 +13,7 @@ set(licq_HEADERS
   pluginlogsink.h
   pluginmanager.h
   types.h
+  userid.h
   version.h
 )
 

@@ -106,7 +106,7 @@ char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
 
   if ( !buf[0] && !mKeysIni.ReadStr(szUser, buf) ) return 0;
 
-  gLog.Info("[GPG] Encrypting message to %s.\n", USERID_TOSTR(userId));
+  gLog.Info("[GPG] Encrypting message to %s.\n", userId.toString().c_str());
 
   MutexLocker lock(myMutex);
   gpgme_key_t rcps[2];

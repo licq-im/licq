@@ -26,6 +26,7 @@ using std::vector;
 using Licq::ICQUserPhoneBook;
 using Licq::SecureChannelSupport_et;
 using Licq::User;
+using Licq::UserId;
 using Licq::gPluginManager;
 using Licq::gUserManager;
 
@@ -255,32 +256,6 @@ bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
   }
 
   return true;
-}
-
-UserId User::makeUserId(const string& accountId, unsigned long ppid)
-{
-  // ppid is always four ascii charaters, use them plus the normalized account id as our user ids
-  char ppidstr[5];
-  ppidstr[0] = ((ppid & 0xFF000000) >> 24);
-  ppidstr[1] = ((ppid & 0x00FF0000) >> 16);
-  ppidstr[2] = ((ppid & 0x0000FF00) >> 8);
-  ppidstr[3] = ((ppid & 0x000000FF));
-  ppidstr[4] = '\0';
-  return ppidstr + normalizeId(accountId, ppid);
-}
-
-string User::getUserAccountId(const UserId& userId)
-{
-  if (userId.size() < 4)
-    return "";
-  return userId.substr(4);
-}
-
-unsigned long User::getUserProtocolId(const UserId& userId)
-{
-  if (userId.size() < 4)
-    return 0;
-  return userId[0] << 24 | userId[1] << 16 | userId[2] << 8 | userId[3];
 }
 
 unsigned short User::s_nNumUserEvents = 0;
@@ -604,7 +579,7 @@ void User::RemoveFiles()
 
 void User::Init()
 {
-  myRealAccountId = normalizeId(myAccountId, myPpid);
+  myRealAccountId = myId.accountId();
 
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
@@ -1633,7 +1608,7 @@ char* User::usprintf(const char* _szFormat, unsigned long nFlags) const
   return _sz;
 }
 
-string User::normalizeId(const string& accountId, unsigned long ppid)
+string UserId::normalizeId(const string& accountId, unsigned long ppid)
 {
   if (accountId.empty())
     return string();

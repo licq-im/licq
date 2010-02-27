@@ -577,5 +577,5 @@ bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, 
 
 uint qHash(const UserId& userId)
 {
-  return qHash(userId.c_str());
+  return qHash(userId.toString().c_str());
 }

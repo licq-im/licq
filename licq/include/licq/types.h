@@ -17,6 +17,7 @@ namespace Licq
 class Group;
 class Owner;
 class User;
+class UserId;
 
 // Declare a convenient name for the list of strings
 typedef std::list<std::string> StringList;
@@ -32,15 +33,6 @@ inline char* protocolId_toStr(char* ret, unsigned long protocolId)
   ret[4] = '\0';
   return ret;
 }
-
-// Define a type for user id so other code doesn't have to hardcode the real type everywhere
-typedef std::string UserId;
-// Test for a valid user id
-#define USERID_ISVALID(x) ((x).size() > 4)
-// Value to use in assignment to get an undefined (invalid) user id
-#define USERID_NONE ("")
-// Get a printable string, for use in log printouts etc
-#define USERID_TOSTR(x) ((x).c_str())
 
 // Group types used in contact list
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };

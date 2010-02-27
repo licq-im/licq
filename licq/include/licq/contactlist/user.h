@@ -13,6 +13,7 @@
 #include "licq_icq.h"
 #include "licq_mutex.h"
 #include "../types.h"
+#include "../userid.h"
 
 class CICQDaemon;
 class CMSN;
@@ -175,7 +176,8 @@ public:
    * @param ppid Protocol id for user
    * @return a unique user id for referring to the user
    */
-  static UserId makeUserId(const std::string& accountId, unsigned long ppid);
+  static UserId makeUserId(const std::string& accountId, unsigned long ppid)
+  { return UserId(accountId, ppid); }
 
   /**
    * Get account id from user a id
@@ -183,7 +185,8 @@ public:
    * @param userId User id
    * @return account id for user
    */
-  static std::string getUserAccountId(const UserId& userId);
+  static std::string getUserAccountId(const UserId& userId)
+  { return userId.accountId(); }
 
   /**
    * Get protocol id from user a id
@@ -191,7 +194,8 @@ public:
    * @param userId User id
    * @return protocol id for user
    */
-  static unsigned long getUserProtocolId(const UserId& userId);
+  static unsigned long getUserProtocolId(const UserId& userId)
+  { return userId.protocolId(); }
 
 
   /**
@@ -498,15 +502,6 @@ public:
   bool Away() const;
   static const char* StatusToStatusStr(unsigned short n, bool b);
   static const char* StatusToStatusStrShort(unsigned short n, bool b);
-
-  /**
-   * Normalize an account id
-   *
-   * @param accountId Account id
-   * @param ppid Protocol instance id
-   * @return Normalized account id
-   */
-  static std::string normalizeId(const std::string& accountId, unsigned long ppid);
 
   int Birthday(unsigned short nDayRange = 0) const;
 
