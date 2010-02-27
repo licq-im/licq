@@ -12,7 +12,7 @@
 #include "licq_history.h"
 #include "licq_icq.h"
 #include "licq_mutex.h"
-#include "licq_types.h"
+#include "../types.h"
 
 class CICQDaemon;
 class CMSN;

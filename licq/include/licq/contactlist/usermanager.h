@@ -5,9 +5,9 @@
 #include <list>
 #include <string>
 
-#include "licq/contactlist/group.h"
-#include "licq/contactlist/owner.h"
-#include "licq/contactlist/user.h"
+#include "group.h"
+#include "owner.h"
+#include "user.h"
 
 class CICQDaemon;
 
@@ -22,7 +22,7 @@ class CICQDaemon;
   {                                                      \
     Licq::User* pUser;                                   \
     const Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
-    for (UserMap::const_iterator _i_ = _ul_->begin();    \
+    for (Licq::UserMap::const_iterator _i_ = _ul_->begin(); \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
       pUser = _i_->second;                               \
@@ -33,7 +33,7 @@ class CICQDaemon;
   {                                                      \
     Licq::User* pUser;                                   \
     const Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
-    for (UserMap::const_iterator _i_ = _ul_->begin();    \
+    for (Licq::UserMap::const_iterator _i_ = _ul_->begin(); \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
       pUser = _i_->second;                               \
@@ -153,7 +153,7 @@ class CICQDaemon;
   {                                                      \
     char *szId;                                          \
     Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
-    for (UserMap::const_iterator _i_ = _ul_->begin();    \
+    for (Licq::UserMap::const_iterator _i_ = _ul_->begin(); \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
       if (_i_->first.second != x)                        \

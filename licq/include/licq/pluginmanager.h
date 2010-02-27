@@ -20,12 +20,12 @@
 #ifndef LICQ_PLUGINMANAGER_H
 #define LICQ_PLUGINMANAGER_H
 
-#include "plugin.h"
-#include "licq_types.h"
-
 #include <boost/noncopyable.hpp>
 #include <list>
 #include <string>
+
+#include "plugin.h"
+#include "types.h"
 
 
 #define FOR_EACH_PROTO_PLUGIN_START()                           \

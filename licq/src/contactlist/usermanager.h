@@ -45,15 +45,15 @@ public:
 
   // From Licq::UserManager
 
-  Licq::User* fetchUser(const UserId& userId, unsigned short lockType = LOCK_R,
+  Licq::User* fetchUser(const Licq::UserId& userId, unsigned short lockType = LOCK_R,
       bool addUser = false, bool* retWasAdded = NULL);
   void AddOwner(const char *, unsigned long);
   void RemoveOwner(unsigned long);
 
   Licq::Owner* FetchOwner(unsigned long ppid, unsigned short lockType);
   void DropOwner(const Licq::Owner* owner);
-  bool userExists(const UserId& userId);
-  UserId ownerUserId(unsigned long ppid);
+  bool userExists(const Licq::UserId& userId);
+  Licq::UserId ownerUserId(unsigned long ppid);
   std::string OwnerId(unsigned long ppid);
   bool isOwner(const Licq::UserId& userId);
   void DropUser(const Licq::User* user);
@@ -63,7 +63,7 @@ public:
       bool addToServer = true, unsigned short groupId = 0);
   bool makeUserPermanent(const Licq::UserId& userId, bool addToServer = true, int groupId = 0);
   void removeUser(const Licq::UserId& userId, bool removeFromServer = true);
-  UserMap* LockUserList(unsigned short lockType = LOCK_R);
+  Licq::UserMap* LockUserList(unsigned short lockType = LOCK_R);
   void UnlockUserList();
   Licq::GroupMap* LockGroupList(unsigned short lockType = LOCK_R);
   void UnlockGroupList();
