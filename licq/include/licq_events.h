@@ -5,7 +5,8 @@
 #include <string>
 
 #include "licq_message.h"
-#include "licq_types.h"
+#include "licq/types.h" // StringList
+#include "licq/userid.h"
 
 class CPacket;
 class CICQDaemon;
@@ -15,6 +16,12 @@ namespace LicqDaemon
 {
 class PluginEventHandler;
 }
+
+namespace Licq
+{
+class User;
+}
+
 
 //-----CExtendedAck----------------------------------------------------------
 
@@ -82,7 +89,7 @@ public:
    *
    * @return User id of search match
    */
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
 
   //! If non-zero, the number of search results that were found that could not
   //! be displayed.  The server has a 40 user limit on search results.  This
@@ -100,9 +107,9 @@ public:
   ~CSearchAck();
 
 protected:
-  CSearchAck(const UserId& userId);
+  CSearchAck(const Licq::UserId& userId);
 
-  UserId myUserId;
+  Licq::UserId myUserId;
   char *m_szAlias;
   char *m_szFirstName;
   char *m_szLastName;
@@ -202,7 +209,7 @@ public:
    *
    * @return User id for event if relevant
    */
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
 
   //!Special structure containing information relevant if this is a
   //!search event.
@@ -221,12 +228,12 @@ public:
   //!with the relevant fields set.  This is helpful in searches for example
   //!to avoid having to add the user to the list before checking their
   //!other information.
-  const LicqUser* UnknownUser() const { return m_pUnknownUser; }
+  const Licq::User* UnknownUser() const { return m_pUnknownUser; }
 
   // Returns the event and transfers ownership to the calling function
   CUserEvent *GrabUserEvent();
   CSearchAck *GrabSearchAck();
-  LicqUser* GrabUnknownUser();
+  Licq::User* GrabUnknownUser();
 
   //!Compare this event to the id to see if the plugin matches a waiting
   //!event with the event that the daemon has signaled to the plugin.
@@ -236,7 +243,7 @@ public:
 
 protected:
   LicqEvent(unsigned long id, int _nSocketDesc, CPacket* p, ConnectType _eConnect,
-      const UserId& userId = USERID_NONE, CUserEvent* e = NULL);
+      const Licq::UserId& userId = Licq::UserId(), CUserEvent* e = NULL);
   LicqEvent(const LicqEvent* e);
 
   // Daemon only
@@ -270,7 +277,7 @@ protected:
   unsigned short m_nSubType;
   unsigned short m_nExtraInfo;
   int            m_nSocketDesc;
-  UserId         myUserId;
+  Licq::UserId myUserId;
   CPacket        *m_pPacket;
   pthread_t      thread_send;
   bool           thread_running;
@@ -279,7 +286,7 @@ protected:
   CUserEvent    *m_pUserEvent;
   CExtendedAck  *m_pExtendedAck;
   CSearchAck    *m_pSearchAck;
-  LicqUser* m_pUnknownUser;
+  Licq::User* m_pUnknownUser;
 
   unsigned long  m_nEventId;
 
@@ -452,7 +459,7 @@ public:
    * @param cid Conversation id, if applicable
    */
   LicqSignal(unsigned long signal, unsigned long subSignal,
-      const UserId& userId = USERID_NONE, int argument = 0, unsigned long cid = 0);
+      const Licq::UserId& userId = Licq::UserId(), int argument = 0, unsigned long cid = 0);
 
   /**
    * Copy constructor
@@ -471,7 +478,7 @@ public:
    *
    * @return user id if relevant, otherwise zero
    */
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
 
   int Argument() const { return myArgument; }
   unsigned long CID() const { return myCid; }
@@ -479,7 +486,7 @@ public:
 protected:
   const unsigned long mySignal;
   const unsigned long mySubSignal;
-  const UserId myUserId;
+  const Licq::UserId myUserId;
   const int myArgument;
   const unsigned long myCid;
 };
@@ -556,7 +563,7 @@ enum SIGNAL_TYPE
 class LicqProtoSignal
 {
 public:
-  LicqProtoSignal(SIGNAL_TYPE type, const UserId& userId, unsigned long convoId = 0);
+  LicqProtoSignal(SIGNAL_TYPE type, const Licq::UserId& userId, unsigned long convoId = 0);
   LicqProtoSignal(LicqProtoSignal* s);
 
   // Base class needs a virtual destructor or derived objects might not be properly deleted
@@ -565,7 +572,7 @@ public:
   //! The signal is being sent to the plugin.
   SIGNAL_TYPE type() const { return myType; }
   //! The user id that this signal is being used for.
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
   //! The conversation id to use (gets the socket).
   unsigned long convoId() const { return myConvoId; }
   //! The calling thread.
@@ -573,7 +580,7 @@ public:
 
 private:
   SIGNAL_TYPE myType;
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned long myConvoId;
   pthread_t myCallerThread;
 };
@@ -611,7 +618,7 @@ private:
 class LicqProtoAddUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoAddUserSignal(const UserId& userId, bool authRequired);
+  LicqProtoAddUserSignal(const Licq::UserId& userId, bool authRequired);
 
   //! True if authorization is required to add this user.
   bool authRequired() const { return myAuthRequired; }
@@ -623,19 +630,19 @@ private:
 class LicqProtoRemoveUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoRemoveUserSignal(const UserId& userId);
+  LicqProtoRemoveUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoRenameUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoRenameUserSignal(const UserId& userId);
+  LicqProtoRenameUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoChangeUserGroupsSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoChangeUserGroupsSignal(const UserId& userId, const Licq::StringList& groups);
+  LicqProtoChangeUserGroupsSignal(const Licq::UserId& userId, const Licq::StringList& groups);
 
   //! Names of the groups the user should be in.
   Licq::StringList groups() const { return myGroups; }
@@ -653,7 +660,7 @@ private:
 class LicqProtoSendMessageSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoSendMessageSignal(unsigned long eventId, const UserId& userId,
+  LicqProtoSendMessageSignal(unsigned long eventId, const Licq::UserId& userId,
       const std::string& message, unsigned long convoId = 0);
 
   /// Id to use for event generated by this signal
@@ -669,7 +676,7 @@ private:
 class LicqProtoTypingNotificationSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoTypingNotificationSignal(const UserId& userId, bool active, unsigned long convoId = 0);
+  LicqProtoTypingNotificationSignal(const Licq::UserId& userId, bool active, unsigned long convoId = 0);
 
   bool active() const { return myActive; }
 
@@ -680,7 +687,7 @@ private:
 class LicqProtoGrantAuthSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoGrantAuthSignal(const UserId& userId, const std::string& message);
+  LicqProtoGrantAuthSignal(const Licq::UserId& userId, const std::string& message);
 
   const std::string& message() const { return myMessage; }
 
@@ -691,7 +698,7 @@ private:
 class LicqProtoRefuseAuthSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoRefuseAuthSignal(const UserId& userId, const std::string& message);
+  LicqProtoRefuseAuthSignal(const Licq::UserId& userId, const std::string& message);
 
   const std::string& message() const { return myMessage; }
 
@@ -702,7 +709,7 @@ private:
 class LicqProtoRequestInfo : public LicqProtoSignal
 {
 public:
-  LicqProtoRequestInfo(const UserId& userId);
+  LicqProtoRequestInfo(const Licq::UserId& userId);
 };
 
 class LicqProtoUpdateInfoSignal : public LicqProtoSignal
@@ -744,49 +751,49 @@ private:
 class LicqProtoRequestPicture : public LicqProtoSignal
 {
 public:
-  LicqProtoRequestPicture(const UserId& userId);
+  LicqProtoRequestPicture(const Licq::UserId& userId);
 };
 
 class LicqProtoBlockUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoBlockUserSignal(const UserId& userId);
+  LicqProtoBlockUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoUnblockUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoUnblockUserSignal(const UserId& userId);
+  LicqProtoUnblockUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoAcceptUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoAcceptUserSignal(const UserId& userId);
+  LicqProtoAcceptUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoUnacceptUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoUnacceptUserSignal(const UserId& userId);
+  LicqProtoUnacceptUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoIgnoreUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoIgnoreUserSignal(const UserId& userId);
+  LicqProtoIgnoreUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoUnignoreUserSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoUnignoreUserSignal(const UserId& userId);
+  LicqProtoUnignoreUserSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoSendFileSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoSendFileSignal(unsigned long eventId, const UserId& userId, const std::string& filename,
+  LicqProtoSendFileSignal(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
       const std::string& message, ConstFileList &files);
 
   unsigned long eventId() const { return myEventId; }
@@ -804,7 +811,7 @@ private:
 class LicqProtoSendChatSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoSendChatSignal(const UserId& userId, const std::string& message);
+  LicqProtoSendChatSignal(const Licq::UserId& userId, const std::string& message);
 
   const std::string& message() const { return myMessage; }
 
@@ -815,7 +822,7 @@ private:
 class LicqProtoCancelEventSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoCancelEventSignal(const UserId& userId, unsigned long flag);
+  LicqProtoCancelEventSignal(const Licq::UserId& userId, unsigned long flag);
 
   unsigned long flag() const { return myFlag; }
 
@@ -826,7 +833,7 @@ private:
 class LicqProtoSendEventReplySignal : public LicqProtoSignal
 {
 public:
-  LicqProtoSendEventReplySignal(const UserId& userId, const std::string& message,
+  LicqProtoSendEventReplySignal(const Licq::UserId& userId, const std::string& message,
       bool accepted, unsigned short port, unsigned long sequence = 0,
       unsigned long flag1 = 0, unsigned long flag2 = 0, bool direct = false);
 
@@ -851,19 +858,19 @@ private:
 class LicqProtoOpenedWindowSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoOpenedWindowSignal(const UserId& userId);
+  LicqProtoOpenedWindowSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoClosedWindowSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoClosedWindowSignal(const UserId& userId);
+  LicqProtoClosedWindowSignal(const Licq::UserId& userId);
 };
 
 class LicqProtoOpenSecureSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoOpenSecureSignal(unsigned long eventId, const UserId& userId);
+  LicqProtoOpenSecureSignal(unsigned long eventId, const Licq::UserId& userId);
   unsigned long eventId() const { return myEventId; }
 
 private:
@@ -873,7 +880,7 @@ private:
 class LicqProtoCloseSecureSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoCloseSecureSignal(unsigned long eventId, const UserId& userId);
+  LicqProtoCloseSecureSignal(unsigned long eventId, const Licq::UserId& userId);
   unsigned long eventId() const { return myEventId; }
 
 private:

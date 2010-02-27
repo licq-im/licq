@@ -11,7 +11,7 @@
 #include "licq_buffer.h"
 #include "licq_constants.h"
 #include "licq_mutex.h"
-#include "licq_types.h"
+#include "licq/userid.h"
 
 class ProxyServer;
 
@@ -56,14 +56,14 @@ typedef enum SocketError_et_
 class INetSocket
 {
 public:
-  INetSocket(const UserId& userId);
+  INetSocket(const Licq::UserId& userId);
   virtual ~INetSocket();
 
   bool Connected()          { return(m_nDescriptor > 0);  }
   int Descriptor()          { return(m_nDescriptor);      }
   bool DestinationSet()     { return myRemoteAddr.sa_family != AF_UNSPEC; }
-  const UserId& userId() const { return myUserId; }
-  void setUserId(const UserId& userId) { myUserId = userId; }
+  const Licq::UserId& userId() const { return myUserId; }
+  void setUserId(const Licq::UserId& userId) { myUserId = userId; }
   unsigned long Version()     { return (m_nVersion); }
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
 
@@ -207,7 +207,7 @@ protected:
   unsigned short m_nVersion;
   SocketError_et m_nErrorType;
   ProxyServer *m_xProxy;
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned char m_nChannel;
 };
 
@@ -216,7 +216,7 @@ protected:
 class TCPSocket : public INetSocket
 {
 public:
-  TCPSocket(const UserId& userId);
+  TCPSocket(const Licq::UserId& userId);
   TCPSocket();
   virtual ~TCPSocket();
 
@@ -252,7 +252,7 @@ protected:
 class SrvSocket : public INetSocket
 {
 public:
-  SrvSocket(const UserId& userId);
+  SrvSocket(const Licq::UserId& userId);
   virtual ~SrvSocket();
 
   // Abstract base class overloads
@@ -271,7 +271,7 @@ public:
 class UDPSocket : public INetSocket
 {
 public:
-  UDPSocket(const UserId& userId);
+  UDPSocket(const Licq::UserId& userId);
   virtual ~UDPSocket();
 
   // Abstract base class overloads

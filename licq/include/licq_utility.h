@@ -4,7 +4,11 @@
 #include <cstdio>
 #include <vector>
 
-#include "licq_types.h"
+namespace Licq
+{
+class User;
+class UserId;
+}
 
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
@@ -49,7 +53,7 @@ public:
   const char *Title()  { return m_szTitle; }
   const char *Default()  { return m_szDefault; }
   const char *FullDefault()  { return m_szFullDefault; }
-  bool SetFields(const LicqUser* u);
+  bool SetFields(const Licq::User* u);
 protected:
   char *m_szTitle;
   char *m_szDefault;
@@ -67,7 +71,7 @@ public:
   ~CUtility();
 
   const char *Name()  { return m_szName; }
-  const char* Command(LicqUser*) { return m_szCommand; }
+  const char* Command(Licq::User*) { return m_szCommand; }
   const char *Description()  { return m_szDescription; }
   EWinType WinType()  { return m_eWinType; }
 
@@ -77,7 +81,7 @@ public:
    * @param userId Id of user to populate fields from
    * @return True if user data was sucessfully read
    */
-  bool setFields(const UserId& userId);
+  bool setFields(const Licq::UserId& userId);
 
   void SetUserFields(const std::vector<const char *> &_vszUserFields);
   void SetBackgroundTask()  { strcat(m_szFullCommand, " &"); }

@@ -7,7 +7,12 @@
 
 #include "licq_packets.h"
 #include "licq_socket.h"
-#include "licq_types.h"
+
+namespace Licq
+{
+class User;
+class UserId;
+}
 
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
@@ -212,7 +217,7 @@ public:
 
   // Accessors
   const char *Name() { return m_szName; }
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
   unsigned short Port() { return m_nPort; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -224,7 +229,7 @@ public:
   virtual ~CPChat_Color();
 
 protected:
-  UserId myUserId;
+  Licq::UserId myUserId;
   char *m_szName;
   unsigned short m_nPort;
   int m_nColorForeRed;
@@ -243,7 +248,7 @@ class CChatClient
 {
 public:
   CChatClient();
-  CChatClient(const LicqUser* u);
+  CChatClient(const Licq::User* u);
   CChatClient(const CChatClient &);
   CChatClient& operator=(const CChatClient &);
   ~CChatClient();
@@ -257,7 +262,7 @@ public:
 
   unsigned long m_nVersion;
   unsigned short m_nPort;
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned long m_nIp;
   unsigned long m_nIntIp;
   char m_nMode;
@@ -297,7 +302,7 @@ public:
 
   // Accessors
   const char *Name() { return m_szName; }
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
   unsigned short Session() { return m_nSession; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -318,7 +323,7 @@ public:
   ChatClientList &ChatClients()  { return chatClients; }
 
 protected:
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned short m_nSession;
   char *m_szName;
   int m_nColorForeRed;
@@ -476,7 +481,7 @@ extern "C"
 class CChatUser
 {
 public:
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
   unsigned long ToKick()       { return nToKick; }
   const char *Name()           { return chatname; }
   int *ColorFg()               { return colorFore; }
@@ -497,7 +502,7 @@ public:
 protected:
   CChatUser();
 
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned long nToKick;
   char chatname[32];
   int colorFore[3], colorBack[3];
@@ -617,7 +622,7 @@ protected:
   static pthread_mutex_t waiting_thread_cancel_mutex;
 
   int pipe_events[2], pipe_thread[2];
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned short m_nSession;
   ChatUserList chatUsers;
   ChatUserList chatUsersClosed;

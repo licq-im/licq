@@ -5,10 +5,9 @@
 #include <list>
 #include <string>
 
-#include "types.h"
-
 namespace Licq
 {
+class UserId;
 
 // Structure for holding a user identity for a key
 struct GpgUid

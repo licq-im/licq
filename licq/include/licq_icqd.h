@@ -16,9 +16,10 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
 #include "licq_onevent.h"
-#include "licq_types.h"
 #include "licq/contactlist/user.h" // For SetString
 #include "licq/daemon.h"
+#include "licq/types.h" // For GroupType, UserCategoryMap
+#include "licq/userid.h"
 
 class CPacket;
 class CPacketTcp;
@@ -116,26 +117,26 @@ typedef std::vector<CDaemonStats> DaemonStatsList;
 class CConversation
 {
 public:
-  bool hasUser(const UserId& userId);
+  bool hasUser(const Licq::UserId& userId);
   bool IsEmpty() const                  { return m_vUsers.size() == 0; }
   int NumUsers() const                  { return m_vUsers.size(); }
 
   int Socket() const                    { return m_nSocket; }
   unsigned long CID() const             { return m_nCID; }
 
-  const UserId& getUser(int n) const    { return m_vUsers[n]; }
+  const Licq::UserId& getUser(int n) const    { return m_vUsers[n]; }
 
 private:
   CConversation(int nSocket, unsigned long nPPID);
   ~CConversation();
 
-  bool addUser(const UserId& userId);
-  bool removeUser(const UserId& userId);
+  bool addUser(const Licq::UserId& userId);
+  bool removeUser(const Licq::UserId& userId);
 
   int m_nSocket;
   unsigned long m_nPPID;
   unsigned long m_nCID;
-  std::vector<UserId> m_vUsers;
+  std::vector<Licq::UserId> m_vUsers;
 
   static unsigned long s_nCID;
   static pthread_mutex_t s_xMutex;
@@ -203,7 +204,7 @@ public:
    * @param userId User to add
    * @param groupId Initial group, only used for ICQ contacts
    */
-  void protoAddUser(const UserId& userId, int groupId);
+  void protoAddUser(const Licq::UserId& userId, int groupId);
 
   /**
    * Remove a user from the server side list
@@ -212,7 +213,7 @@ public:
    *
    * @param userId Id of user to remove
    */
-  void protoRemoveUser(const UserId& userId);
+  void protoRemoveUser(const Licq::UserId& userId);
 
   /**
    * Update user alias on server contact list
@@ -220,7 +221,7 @@ public:
    *
    * @param userId User to update
    */
-  void updateUserAlias(const UserId& userId);
+  void updateUserAlias(const Licq::UserId& userId);
 
   /**
    * Set status for a protocol
@@ -230,7 +231,7 @@ public:
    * @param message The status message to be set for the status
    * @return Event id
    */
-  unsigned long protoSetStatus(const UserId& ownerId, unsigned short newStatus,
+  unsigned long protoSetStatus(const Licq::UserId& ownerId, unsigned short newStatus,
       const std::string& message = KEEP_AUTORESPONSE);
 
   /**
@@ -240,7 +241,7 @@ public:
    * @param active True if we've started typing, false if we've stopped
    * @param nSocket ?
    */
-  void sendTypingNotification(const UserId& userId, bool active, int nSocket = -1);
+  void sendTypingNotification(const Licq::UserId& userId, bool active, int nSocket = -1);
 
   /**
    * Send a normal message to a user
@@ -254,7 +255,7 @@ public:
    * @param convoId Conversation ID for group messages (Non-ICQ only)
    * @return Event id
    */
-  unsigned long sendMessage(const UserId& userId, const std::string& message,
+  unsigned long sendMessage(const Licq::UserId& userId, const std::string& message,
       bool viaServer, unsigned short flags, bool multipleRecipients = false,
       CICQColor* color = NULL, unsigned long convoId = 0);
 
@@ -270,7 +271,7 @@ public:
    * @param color The color of the text and background (ICQ only)
    * @return Event id
    */
-  unsigned long sendUrl(const UserId& userId, const std::string& url,
+  unsigned long sendUrl(const Licq::UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short flags,
       bool multipleRecipients = false, CICQColor* color = NULL);
 
@@ -280,7 +281,7 @@ public:
    * @param userId User to fetch auto response for
    * @return id of event for ICQ users, zero for other protocols
    */
-  unsigned long requestUserAutoResponse(const UserId& userId);
+  unsigned long requestUserAutoResponse(const Licq::UserId& userId);
 
   /**
    * Initiate a file transfer to a user
@@ -293,7 +294,7 @@ public:
    * @param viaServer True to send via server or false to use direct connection (ICQ only)
    * @return Event id
    */
-  unsigned long fileTransferPropose(const UserId& userId, const std::string& filename,
+  unsigned long fileTransferPropose(const Licq::UserId& userId, const std::string& filename,
       const std::string& message, ConstFileList& files, unsigned short flags,
       bool viaServer);
 
@@ -307,7 +308,7 @@ public:
    * @param flag2 ?
    * @param viaServer True to send via server or false to use direct connection
    */
-  void fileTransferRefuse(const UserId& userId, const std::string& message,
+  void fileTransferRefuse(const Licq::UserId& userId, const std::string& message,
       unsigned long eventId, unsigned long flag1, unsigned long flag2,
       bool viaServer = true);
 
@@ -317,7 +318,7 @@ public:
    * @param userId User to cancel transfer for
    * @param eventId Event id of transfer to cancel
    */
-  void fileTransferCancel(const UserId& userId, unsigned long eventId);
+  void fileTransferCancel(const Licq::UserId& userId, unsigned long eventId);
 
   /**
    * Accept a proposed file transfer
@@ -332,7 +333,7 @@ public:
    * @param filesize File size from file transfer event (ICQ only)
    * @param viaServer True to send via server or false to use direct connection
    */
-  void fileTransferAccept(const UserId& userId, unsigned short port,
+  void fileTransferAccept(const Licq::UserId& userId, unsigned short port,
       unsigned long eventId = 0, unsigned long flag1 = 0, unsigned long flag2 = 0,
       const std::string& message = "", const std::string filename = "",
       unsigned long filesize = 0, bool viaServer = true);
@@ -344,7 +345,7 @@ public:
    * @param message Message to send with grant
    * @return Event id
    */
-  unsigned long authorizeGrant(const UserId& userId, const std::string& message);
+  unsigned long authorizeGrant(const Licq::UserId& userId, const std::string& message);
 
   /**
    * Refuse authorization for a user to add us
@@ -353,7 +354,7 @@ public:
    * @param message Message to send with grant
    * @return Event id
    */
-  unsigned long authorizeRefuse(const UserId& userId, const std::string& message);
+  unsigned long authorizeRefuse(const Licq::UserId& userId, const std::string& message);
 
   /**
    * Request user information from server
@@ -361,7 +362,7 @@ public:
    * @param userId User to get information for
    * @return id of event for ICQ users, zero for other protocols
    */
-  unsigned long requestUserInfo(const UserId& userId);
+  unsigned long requestUserInfo(const Licq::UserId& userId);
 
   unsigned long ProtoSetGeneralInfo(unsigned long nPPID, const char *szAlias,
     const char *szFirstName, const char *szLastName, const char *szEmailPrimary,
@@ -375,7 +376,7 @@ public:
    * @param userId User to get picture for
    * @return id of event for ICQ users, zero for other protocols
    */
-  unsigned long requestUserPicture(const UserId& userId);
+  unsigned long requestUserPicture(const Licq::UserId& userId);
 
   /**
    * Enable encrypted communication towards a user
@@ -383,7 +384,7 @@ public:
    * @param userId User to enable encryption for
    * @return Event id
    */
-  unsigned long secureChannelOpen(const UserId& userId);
+  unsigned long secureChannelOpen(const Licq::UserId& userId);
 
   /**
    * Disable encrypted communication towards a user
@@ -391,7 +392,7 @@ public:
    * @param userId User to disable encryption for
    * @return Event id
    */
-  unsigned long secureChannelClose(const UserId& userId);
+  unsigned long secureChannelClose(const Licq::UserId& userId);
 
   /**
    * Cancel encrypted communication about to be enabled
@@ -399,7 +400,7 @@ public:
    * @param userId User to cancel encryption for
    * @param eventId Event of open request to cancel
    */
-  void secureChannelCancelOpen(const UserId& userId, unsigned long eventId);
+  void secureChannelCancelOpen(const Licq::UserId& userId, unsigned long eventId);
 
 
   // ICQ functions still public as they don't have any general proto functions
@@ -461,9 +462,9 @@ public:
                            char nBirthDay, char nLanguage1,
                            char nLanguage2, char nLanguage3);
   unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
-  unsigned long icqSetInterestsInfo(const UserCategoryMap& interests);
-  unsigned long icqSetOrgBackInfo(const UserCategoryMap& orgs,
-      const UserCategoryMap& background);
+  unsigned long icqSetInterestsInfo(const Licq::UserCategoryMap& interests);
+  unsigned long icqSetOrgBackInfo(const Licq::UserCategoryMap& orgs,
+      const Licq::UserCategoryMap& background);
   unsigned long icqSetHomepageInfo(bool bCatetory, unsigned short nCategory,
                                 const char *szHomepageDesc, bool bICQHomepage);
   unsigned long icqSetAbout(const char *szAbout);
@@ -480,10 +481,10 @@ public:
                             const char *szCoPos, const char *szKeyword,
                             bool bOnlineOnly);
   unsigned long icqSearchByUin(unsigned long);
-  unsigned long icqAuthorizeGrant(const UserId& userId, const std::string& message);
-  unsigned long icqAuthorizeRefuse(const UserId& userId, const std::string& message);
+  unsigned long icqAuthorizeGrant(const Licq::UserId& userId, const std::string& message);
+  unsigned long icqAuthorizeRefuse(const Licq::UserId& userId, const std::string& message);
   void icqRequestAuth(const char* id, const char *_szMessage);
-  void icqAlertUser(const UserId& userId);
+  void icqAlertUser(const Licq::UserId& userId);
   void icqUpdatePhoneBookTimestamp();
   void icqUpdatePictureTimestamp();
   void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
@@ -497,7 +498,7 @@ public:
    * @param userId User to change visible status for
    * @param visible True to add user to visible list or false to remove
    */
-  void visibleListSet(const UserId& userId, bool visible);
+  void visibleListSet(const Licq::UserId& userId, bool visible);
 
   /**
    * Set invisible list status for a contact
@@ -505,7 +506,7 @@ public:
    * @param userId User to change invisible status for
    * @param invisible True to add user to invisible list or false to remove
    */
-  void invisibleListSet(const UserId& userId, bool invisible);
+  void invisibleListSet(const Licq::UserId& userId, bool invisible);
 
   /**
    * Set ignore list status for a contact
@@ -513,20 +514,20 @@ public:
    * @param userId User to set ignore status for
    * @param ignore True to add user to ignore list or false to remove
    */
-  void ignoreListSet(const UserId& userId, bool ignore);
+  void ignoreListSet(const Licq::UserId& userId, bool ignore);
 
   void CheckExport();
 
   EDaemonStatus Status() const                  { return m_eStatus; }
 
-  void pluginUIViewEvent(const UserId& userId)
+  void pluginUIViewEvent(const Licq::UserId& userId)
   { pushPluginSignal(new LicqSignal(SIGNAL_UI_VIEWEVENT, 0, userId)); }
 
-  void pluginUIMessage(const UserId& userId)
+  void pluginUIMessage(const Licq::UserId& userId)
   { pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId)); }
 
   void UpdateAllUsers();
-  void UpdateAllUsersInGroup(GroupType, unsigned short);
+  void UpdateAllUsersInGroup(Licq::GroupType, unsigned short);
   void CancelEvent(unsigned long );
   void CancelEvent(ICQEvent *);
   bool OpenConnectionToUser(const char* id, TCPSocket *sock,
@@ -632,21 +633,21 @@ public:
 
   // Conversation functions
   CConversation *AddConversation(int nSocket, unsigned long nPPID);
-  bool addUserConversation(unsigned long nCID, const UserId& userId);
-  bool addUserConversation(int nSocket, const UserId& userId);
-  bool removeUserConversation(unsigned long nCID, const UserId& userId);
-  bool removeUserConversation(int nSocket, const UserId& userId);
+  bool addUserConversation(unsigned long nCID, const Licq::UserId& userId);
+  bool addUserConversation(int nSocket, const Licq::UserId& userId);
+  bool removeUserConversation(unsigned long nCID, const Licq::UserId& userId);
+  bool removeUserConversation(int nSocket, const Licq::UserId& userId);
   CConversation *FindConversation(int nSocket);
   CConversation *FindConversation(unsigned long nCID);
   bool RemoveConversation(unsigned long nCID);
 
   // Common message handler
-  void ProcessMessage(LicqUser* user, CBuffer& packet, char* message,
+  void ProcessMessage(Licq::User* user, CBuffer& packet, char* message,
      unsigned short nMsgType, unsigned long nMask,
       const unsigned long nMsgID[], unsigned short nSequence,
      bool bIsAck, bool &bNewUser);
 
-  bool ProcessPluginMessage(CBuffer& packet, LicqUser* user, unsigned char nChannel,
+  bool ProcessPluginMessage(CBuffer& packet, Licq::User* user, unsigned char nChannel,
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
      TCPSocket *pSock);
@@ -660,24 +661,24 @@ protected:
   // ICQ protocol functions, only called from general proto functions and will
   //   be removed when ICQ is moved to separate protocol plugin
 
-  void icqSendMessage(unsigned long eventId, const UserId& userId, const std::string& message,
+  void icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
       bool viaServer, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
-  void icqSendUrl(unsigned long eventId, const UserId& userId, const std::string& url,
+  void icqSendUrl(unsigned long eventId, const Licq::UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
-  void icqFileTransfer(unsigned long eventId, const UserId& userId, const std::string& filename,
+  void icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
       const std::string& message, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
-  void icqFileTransferRefuse(const UserId& userId, const std::string& message,
+  void icqFileTransferRefuse(const Licq::UserId& userId, const std::string& message,
       unsigned short nSequence, const unsigned long nMsgID[], bool viaServer);
-  void icqFileTransferCancel(const UserId& userId, unsigned short nSequence);
-  void icqFileTransferAccept(const UserId& userId, unsigned short nPort,
+  void icqFileTransferCancel(const Licq::UserId& userId, unsigned short nSequence);
+  void icqFileTransferAccept(const Licq::UserId& userId, unsigned short nPort,
       unsigned short nSequence, const unsigned long nMsgID[], bool viaServer,
       const std::string& message, const std::string& filename, unsigned long nFileSize);
-  void icqOpenSecureChannel(unsigned long eventId, const UserId& userId);
-  void icqCloseSecureChannel(unsigned long eventId, const UserId& userId);
-  void icqOpenSecureChannelCancel(const UserId& userId, unsigned short nSequence);
+  void icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId);
+  void icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId);
+  void icqOpenSecureChannelCancel(const Licq::UserId& userId, unsigned short nSequence);
   void icqFetchAutoResponseServer(unsigned long eventId, const char *);
   unsigned long icqLogon(unsigned short logonStatus);
   unsigned long icqRequestLogonSalt();
@@ -703,17 +704,17 @@ protected:
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(const std::string& accountId, const std::string& newAlias);
-  void icqExportUsers(const std::list<UserId>& users, unsigned short);
+  void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();
   void icqTypingNotification(const char *_szId, bool _bActive);
   void icqRequestService(unsigned short nFam);
-  void icqAddToVisibleList(const UserId& userId);
-  void icqRemoveFromVisibleList(const UserId& userId);
-  void icqAddToInvisibleList(const UserId& userId);
-  void icqRemoveFromInvisibleList(const UserId& userId);
-  void icqAddToIgnoreList(const UserId& userId);
-  void icqRemoveFromIgnoreList(const UserId& userId);
+  void icqAddToVisibleList(const Licq::UserId& userId);
+  void icqRemoveFromVisibleList(const Licq::UserId& userId);
+  void icqAddToInvisibleList(const Licq::UserId& userId);
+  void icqRemoveFromInvisibleList(const Licq::UserId& userId);
+  void icqAddToIgnoreList(const Licq::UserId& userId);
+  void icqRemoveFromIgnoreList(const Licq::UserId& userId);
   void icqClearServerList();
 
 
@@ -817,10 +818,10 @@ protected:
    */
   unsigned long getNextEventId();
 
-  void ChangeUserStatus(LicqUser* u, unsigned long s);
-  bool AddUserEvent(LicqUser* user, CUserEvent* e);
-  void RejectEvent(const UserId& userId, CUserEvent* e);
-  LicqUser* FindUserForInfoUpdate(const UserId& userId, LicqEvent* e, const char*);
+  void ChangeUserStatus(Licq::User* u, unsigned long s);
+  bool AddUserEvent(Licq::User* user, CUserEvent* e);
+  void RejectEvent(const Licq::UserId& userId, CUserEvent* e);
+  Licq::User* FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e, const char*);
   std::string FindUserByCellular(const char* cellular);
 
   void icqRegisterFinish();
@@ -859,20 +860,20 @@ protected:
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);
-  LicqEvent* SendExpectEvent_Server(unsigned long eventId, const UserId& userId, CPacket *, CUserEvent *, bool = false);
+  LicqEvent* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, CPacket *, CUserEvent *, bool = false);
 
-  LicqEvent* SendExpectEvent_Server(const UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
+  LicqEvent* SendExpectEvent_Server(const Licq::UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
   { return SendExpectEvent_Server(getNextEventId(), userId, packet, ue, extendedEvent); }
 
   LicqEvent* SendExpectEvent_Server(unsigned long eventId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
-  { return SendExpectEvent_Server(eventId, USERID_NONE, packet, ue, extendedEvent); }
+  { return SendExpectEvent_Server(eventId, Licq::UserId(), packet, ue, extendedEvent); }
 
   LicqEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
-  { return SendExpectEvent_Server(getNextEventId(), USERID_NONE, packet, ue, extendedEvent); }
+  { return SendExpectEvent_Server(getNextEventId(), Licq::UserId(), packet, ue, extendedEvent); }
 
-  LicqEvent* SendExpectEvent_Client(unsigned long eventId, const LicqUser* user, CPacket* packet, CUserEvent* ue);
+  LicqEvent* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, CPacket* packet, CUserEvent* ue);
 
-  LicqEvent* SendExpectEvent_Client(const LicqUser* user, CPacket* packet, CUserEvent* ue)
+  LicqEvent* SendExpectEvent_Client(const Licq::User* user, CPacket* packet, CUserEvent* ue)
   { return SendExpectEvent_Client(getNextEventId(), user, packet, ue); }
 
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
@@ -918,8 +919,8 @@ protected:
                                unsigned short, unsigned short);
 
   // Protected plugin related stuff
-  unsigned long icqRequestInfoPlugin(LicqUser* user, bool, const char *);
-  unsigned long icqRequestStatusPlugin(LicqUser* user, bool, const char *);
+  unsigned long icqRequestInfoPlugin(Licq::User* user, bool, const char *);
+  unsigned long icqRequestStatusPlugin(Licq::User* user, bool, const char *);
   void icqUpdateInfoTimestamp(const char *);
 
   void StupidChatLinkageFix();

@@ -30,6 +30,7 @@
 #include "licq_icq.h"
 #include "licq_translate.h"
 #include "licq_log.h"
+#include "licq_types.h"
 #include "licq_utility.h"
 #include "licq_color.h"
 #include "support.h"

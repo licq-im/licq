@@ -11,9 +11,20 @@
 using std::list;
 using std::string;
 using Licq::Group;
+using Licq::GroupMap;
+using Licq::GroupType;
 using Licq::Owner;
+using Licq::OwnerMap;
 using Licq::User;
 using Licq::UserId;
+using Licq::UserGroupList;
+using Licq::UserMap;
+using Licq::GROUP_IGNORE_LIST;
+using Licq::GROUP_INVISIBLE_LIST;
+using Licq::GROUP_VISIBLE_LIST;
+using Licq::GROUPS_USER;
+using Licq::GROUPS_SYSTEM;
+using Licq::NUM_GROUPS_SYSTEM_ALL;
 using namespace LicqDaemon;
 
 // Declare global UserManager (internal for daemon)
@@ -281,7 +292,7 @@ void UserManager::saveUserList() const
 bool UserManager::addUser(const UserId& uid,
     bool permanent, bool addToServer, unsigned short groupId)
 {
-  if (!USERID_ISVALID(uid))
+  if (!uid.isValid())
     return false;
 
   if (isOwner(uid))
@@ -336,7 +347,7 @@ bool UserManager::addUser(const UserId& uid,
 bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
     int groupId)
 {
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return false;
 
   if (isOwner(userId))
@@ -431,7 +442,7 @@ User* UserManager::fetchUser(const UserId& userId,
 
   User* user = NULL;
 
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return NULL;
 
   // Check for an owner first
@@ -510,7 +521,7 @@ UserId UserManager::ownerUserId(unsigned long ppid)
 {
   const Owner* owner = FetchOwner(ppid, LOCK_R);
   if (owner == NULL)
-    return USERID_NONE;
+    return UserId();
 
   UserId ret = owner->id();
   DropOwner(owner);
@@ -636,7 +647,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
           L_SRVxSTR, name.c_str(), icqGroupId);
 
     // Send signal to let plugins know of the new group
-    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_ADDED, USERID_NONE, gid));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_ADDED, UserId(), gid));
   }
 
   return gid;
@@ -688,7 +699,7 @@ void UserManager::RemoveGroup(int groupId)
   UnlockGroupList();
 
   // Send signal to let plugins know of the removed group
-  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REMOVED, USERID_NONE, groupId));
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REMOVED, UserId(), groupId));
 
   // Send signal to let plugins know that sorting indexes may have changed
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED));
@@ -771,7 +782,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
       gLicqDaemon->icqRenameGroup(name.c_str(), icqGroupId);
 
     // Send signal to let plugins know the group has changed
-    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, USERID_NONE, groupId));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, UserId(), groupId));
   }
 
   return true;

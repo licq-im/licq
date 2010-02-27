@@ -6,12 +6,15 @@
 
 #include <boost/shared_array.hpp>
 
-#include "licq_types.h"
-
 class CBuffer;
 class CPacket;
 class LicqEvent;
 class ProxyServer;
+
+namespace Licq
+{
+class UserId;
+}
 
 enum EOscarServiceStatus {STATUS_UNINITIALIZED, STATUS_SERVICE_REQ_SENT,
                           STATUS_SERVICE_REQ_ACKED, STATUS_CONNECTED,
@@ -27,7 +30,7 @@ public:
   ~COscarService();
   bool Initialize();
   bool ProcessPacket(CBuffer &packet);
-  unsigned long SendEvent(const UserId& userId, unsigned short SubType, bool Request);
+  unsigned long SendEvent(const Licq::UserId& userId, unsigned short SubType, bool Request);
   void ClearQueue();
 
   void SetConnectCredential(char *Server, unsigned short Port,

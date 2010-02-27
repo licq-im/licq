@@ -27,6 +27,7 @@
 #include "licq_events.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
+#include <licq/userid.h>
 
 #include "msnbuffer.h"
 #include "msnevent.h"
@@ -69,7 +70,7 @@ struct SStartMessage
 {
   CMSNPacket *m_pPacket;
   ICQEvent *m_pEvent;
-  UserId userId;
+  Licq::UserId userId;
   unsigned long m_nSeq;
   bool m_bConnecting,
        m_bDataConnection;
@@ -109,7 +110,7 @@ private:
 
   // Network functions
   void SendPacket(CMSNPacket *);
-  void Send_SB_Packet(const UserId& userId, CMSNPacket* p, int nSocket = -1,
+  void Send_SB_Packet(const Licq::UserId& userId, CMSNPacket* p, int nSocket = -1,
       bool bDelete = true);
   void MSNLogon(const char *, int, unsigned long);
   void MSNGetServer();
@@ -120,17 +121,17 @@ private:
       const std::string& cookie, const std::string& user);
 
   void MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket);
-  void MSNSendMessage(unsigned long eventId, const UserId& userId, const std::string& message,
+  void MSNSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
       pthread_t _tPlugin, unsigned long _nCID);
-  void MSNSendTypingNotification(const UserId& userId, unsigned long convoId);
+  void MSNSendTypingNotification(const Licq::UserId& userId, unsigned long convoId);
   void MSNChangeStatus(unsigned long);
-  void MSNAddUser(const UserId& userId);
-  void MSNRemoveUser(const UserId& userId);
-  void MSNRenameUser(const UserId& userId);
-  void MSNGrantAuth(const UserId& userId);
+  void MSNAddUser(const Licq::UserId& userId);
+  void MSNRemoveUser(const Licq::UserId& userId);
+  void MSNRenameUser(const Licq::UserId& userId);
+  void MSNGrantAuth(const Licq::UserId& userId);
   void MSNUpdateUser(const std::string& alias);
-  void MSNBlockUser(const UserId& userId);
-  void MSNUnblockUser(const UserId& userId);
+  void MSNBlockUser(const Licq::UserId& userId);
+  void MSNUnblockUser(const Licq::UserId& userId);
   void MSNGetDisplayPicture(const std::string& user, const std::string& msnObject);
 
   // Internal functions
