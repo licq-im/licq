@@ -42,7 +42,6 @@
 #include <QTextCodec>
 
 #include <licq_filetransfer.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_packets.h>
 #include <licq_translate.h>
@@ -145,7 +144,7 @@ FileDlg::FileDlg(const UserId& userId, QWidget* parent)
   hbox->addWidget(btnCancel);
 
   //TODO fix this
-  ftman = new CFileTransferManager(gLicqDaemon, myId.toLatin1().data());
+  ftman = new CFileTransferManager(myId.toLatin1().data());
   ftman->SetUpdatesEnabled(2);
   sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));

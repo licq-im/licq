@@ -34,7 +34,6 @@ public:
 
 protected:
   CMSN *m_pMSN;
-  CICQDaemon *m_pDaemon;
 
   int m_nSocketDesc;
   unsigned long m_nEvent;

@@ -593,7 +593,6 @@ bool CLicq::Init(int argc, char **argv)
 
   // Create the daemon
   licqDaemon = new CICQDaemon(this);
-  gPluginManager.setDaemon(licqDaemon);
 
   return true;
 }

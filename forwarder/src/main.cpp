@@ -88,9 +88,9 @@ bool LP_Init(int argc, char **argv)
 }
 
 
-int LP_Main(CICQDaemon *_licqDaemon)
+int LP_Main()
 {
-  int nResult = licqForwarder->Run(_licqDaemon);
+  int nResult = licqForwarder->Run();
   licqForwarder->Shutdown();
   delete licqForwarder;
   return nResult;

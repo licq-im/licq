@@ -62,7 +62,6 @@ typedef std::list<const char *> ConstFileList;
 
 #include "licq_packets.h"
 #include "licq_socket.h"
-class CICQDaemon;
 
 
 // FileTransferEvent codes
@@ -199,7 +198,7 @@ typedef std::list<class CFileTransferManager *> FileTransferManagerList;
 class CFileTransferManager
 {
 public:
-  CFileTransferManager(CICQDaemon* d, const char* accountId);
+  CFileTransferManager(const char* accountId);
   ~CFileTransferManager();
 
   bool ReceiveFiles(const char *szDirectory);
@@ -255,7 +254,6 @@ protected:
   bool m_bThreadRunning;
   pthread_t m_tThread;
 
-  CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
   FileTransferEventList ftEvents;
   pthread_t thread_ft;

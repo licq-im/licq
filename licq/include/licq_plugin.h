@@ -75,11 +75,10 @@ bool LP_Init(int, char **);
  * Main
  *
  * This function is called to actually run the plugin.  It is run in it's own
- * thread so may block.  It is passed a pointer to the licq daemon with which
- * it *must* register before sending any requests.  It returns an integer
- * return code.
+ * thread so may block. It *must* register with the daemon before sending any
+ * requests. It returns an integer return code.
  *----------------------------------------------------------------------------*/
-int LP_Main(CICQDaemon *);
+int LP_Main();
 
 
 /*------------------------------------------------------------------------------
@@ -115,9 +114,9 @@ unsigned short LP_Id;
 
 
 
-void *LP_Main_tep(void *p)
+void *LP_Main_tep(void* /* argument */)
 {
-  LP_Exit(LP_Main((CICQDaemon *)p));
+  LP_Exit(LP_Main());
   return NULL;
 }
 

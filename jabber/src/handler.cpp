@@ -26,8 +26,7 @@
 
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
-Handler::Handler(CICQDaemon* daemon) :
-  myDaemon(daemon),
+Handler::Handler() :
   myStatus(ICQ_STATUS_OFFLINE)
 {
   // Empty
@@ -43,12 +42,12 @@ void Handler::onConnect()
   TRACE();
 
   LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-  myDaemon->ChangeUserStatus(owner, myStatus);
+  gLicqDaemon->ChangeUserStatus(owner, myStatus);
   gUserManager.DropOwner(owner);
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0,
                                       USERID_NONE, JABBER_PPID);
-  myDaemon->pushPluginSignal(result);
+  gLicqDaemon->pushPluginSignal(result);
 }
 
 void Handler::onChangeStatus(unsigned long status)
@@ -56,13 +55,13 @@ void Handler::onChangeStatus(unsigned long status)
   TRACE();
 
   LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-  myDaemon->ChangeUserStatus(owner, status);
+  gLicqDaemon->ChangeUserStatus(owner, status);
 
   LicqSignal* result = new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS,
                                       owner->id(), JABBER_PPID);
   gUserManager.DropOwner(owner);
 
-  myDaemon->pushPluginSignal(result);
+  gLicqDaemon->pushPluginSignal(result);
 }
 
 void Handler::onDisconnect()
@@ -72,17 +71,17 @@ void Handler::onDisconnect()
   FOR_EACH_PROTO_USER_START(JABBER_PPID, LOCK_W)
   {
     if (!pUser->StatusOffline())
-      myDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+      gLicqDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_PROTO_USER_END;
 
   LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-  myDaemon->ChangeUserStatus(owner, ICQ_STATUS_OFFLINE);
+  gLicqDaemon->ChangeUserStatus(owner, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner(owner);
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGOFF, 0,
                                       USERID_NONE, JABBER_PPID);
-  myDaemon->pushPluginSignal(result);
+  gLicqDaemon->pushPluginSignal(result);
 }
 
 void Handler::onUserAdded(const std::string& id,
@@ -124,8 +123,8 @@ void Handler::onUserAdded(const std::string& id,
 
   gUserManager.DropUser(user);
 
-  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, userId));
-  myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, userId));
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, userId));
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, userId));
 }
 
 void Handler::onUserRemoved(const std::string& id)
@@ -146,7 +145,7 @@ void Handler::onUserStatusChange(const std::string& id, const unsigned long newS
   assert(user != NULL);
   user->SetStatus(newStatus);
 
-  myDaemon->pushPluginSignal(
+  gLicqDaemon->pushPluginSignal(
       new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, user->id(), JABBER_PPID));
 
   gUserManager.DropUser(user);
@@ -182,8 +181,8 @@ void Handler::onMessage(const std::string& from, const std::string& message)
 
   if (user)
     user->SetTyping(0);
-  if (myDaemon->AddUserEvent(user, event))
-    myDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, user);
+  if (gLicqDaemon->AddUserEvent(user, event))
+    gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, user);
   gUserManager.DropUser(user);
 }
 

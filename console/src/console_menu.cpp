@@ -255,7 +255,7 @@ void CLicqConsole::MenuHelp(char *_szArg)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuQuit(char *)
 {
-  licqDaemon->Shutdown();
+  gLicqDaemon->Shutdown();
 }
 
 
@@ -461,7 +461,7 @@ void CLicqConsole::MenuAdd(char *szArg)
 
   if (bAlert)
   {
-    licqDaemon->icqAlertUser(userId);
+    gLicqDaemon->icqAlertUser(userId);
     winMain->wprintf("%C%AAlerted user %s they were added.\n",
         m_cColorInfo->nColor, m_cColorInfo->nAttr, USERID_TOSTR(userId));
   }
@@ -553,7 +553,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
     UserId ownerId = gUserManager.ownerUserId(nPPID);
     if (bInvisible && nStatus != ICQ_STATUS_OFFLINE)
       nStatus |= ICQ_STATUS_FxPRIVATE;
-    licqDaemon->protoSetStatus(ownerId, nStatus);
+    gLicqDaemon->protoSetStatus(ownerId, nStatus);
   }
 }
 

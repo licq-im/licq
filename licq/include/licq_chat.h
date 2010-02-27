@@ -8,7 +8,6 @@
 #include "licq_packets.h"
 #include "licq_socket.h"
 #include "licq_types.h"
-class CICQDaemon;
 
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
@@ -557,7 +556,7 @@ typedef std::list<pthread_t> ThreadList;
 class CChatManager
 {
 public:
-  CChatManager(CICQDaemon *d, unsigned long nUin,
+  CChatManager(unsigned long nUin,
      const char *fontFamily = "courier",
      unsigned char fontEncoding = ENCODING_DEFAULT,
      unsigned char fontStyle = STYLE_DONTCARE | STYLE_DEFAULTxPITCH,
@@ -617,7 +616,6 @@ protected:
   static pthread_mutex_t cmList_mutex;
   static pthread_mutex_t waiting_thread_cancel_mutex;
 
-  CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
   UserId myUserId;
   unsigned short m_nSession;

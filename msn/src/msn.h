@@ -80,7 +80,7 @@ typedef std::list<SStartMessage*> StartList;
 class CMSN
 {
 public:
-  CMSN(CICQDaemon *, int);
+  CMSN(int);
   ~CMSN();
 
   void Run();
@@ -165,7 +165,6 @@ private:
   unsigned short myServerPort;
 
   // Variables
-  CICQDaemon *m_pDaemon;
   bool m_bExit;
   int m_nPipe;
   int m_nServerSocket;

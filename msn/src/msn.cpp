@@ -63,9 +63,8 @@ CSocketManager gSocketMan;
 
 void *MSNPing_tep(void *);
 
-CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
+CMSN::CMSN(int _nPipe) : m_vlPacketBucket(211)
 {
-  m_pDaemon = _pDaemon;
   m_bExit = false;
   m_bWaitingPingReply = m_bCanPing = false;
   m_nPipe = _nPipe;
@@ -363,7 +362,7 @@ string CMSN::Decode(const string &strIn)
 
 unsigned long CMSN::SocketToCID(int _nSocket)
 {
-  CConversation *pConv = m_pDaemon->FindConversation(_nSocket);
+  CConversation *pConv = gLicqDaemon->FindConversation(_nSocket);
   return pConv ? pConv->CID() : 0;
 }
 
@@ -536,7 +535,7 @@ void CMSN::ProcessPipe()
   {
   case 'S':  // A signal is pending
     {
-      LicqProtoSignal* s = m_pDaemon->PopProtoSignal();
+      LicqProtoSignal* s = gLicqDaemon->PopProtoSignal();
       ProcessSignal(s);
       break;
     }
@@ -683,9 +682,9 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
       // Close the socket
       gSocketMan.CloseSocket(pData->getSocket());
 
-      CConversation *pConv = m_pDaemon->FindConversation(pData->getSocket());
+      CConversation *pConv = gLicqDaemon->FindConversation(pData->getSocket());
       if (pConv)
-        m_pDaemon->RemoveConversation(pConv->CID());
+        gLicqDaemon->RemoveConversation(pConv->CID());
 
       m_lMSNEvents.erase(it);
       delete pData;
@@ -741,5 +740,5 @@ CMSNDataEvent *CMSN::FetchStartDataEvent(const string &_strUser)
 
 void CMSN::pushPluginSignal(LicqSignal* p)
 {
-  m_pDaemon->pushPluginSignal(p);
+  gLicqDaemon->pushPluginSignal(p);
 }

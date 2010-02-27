@@ -53,11 +53,11 @@ unsigned long LProto_Capabilities()
   return 0;
 }
 
-int LProto_Main(CICQDaemon *_pDaemon)
+int LProto_Main()
 {
   int nPipe = gPluginManager.registerProtocolPlugin();
 
-  CMSN *pMSN = new CMSN(_pDaemon, nPipe);
+  CMSN* pMSN = new CMSN(nPipe);
   pMSN->Run();
 
   gPluginManager.unregisterProtocolPlugin();

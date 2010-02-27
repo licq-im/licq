@@ -60,11 +60,10 @@ void CLicqAutoReply::Shutdown()
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::Run
  *-------------------------------------------------------------------------*/
-int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
+int CLicqAutoReply::Run()
 {
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
-  licqDaemon = _licqDaemon;
 
   char filename[256];
   sprintf(filename, "%slicq_autoreply.conf", BASE_DIR);
@@ -88,7 +87,7 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_AUTOREPxSTR);
     else
-      licqDaemon->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), s);
+      gLicqDaemon->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), s);
     free(m_szStatus);
     m_szStatus = NULL;
   }
@@ -128,14 +127,14 @@ void CLicqAutoReply::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-      LicqSignal* s = licqDaemon->popPluginSignal();
+      LicqSignal* s = gLicqDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
   case 'E':  // An event is pending (should never happen)
   {
-    ICQEvent *e = licqDaemon->PopPluginEvent();
+      LicqEvent* e = gLicqDaemon->PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -200,7 +199,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
 	    user_event = e->UserEvent();
-      licqDaemon->sendMessage(e->userId(), user_event->Text(), m_bSendThroughServer,
+      gLicqDaemon->sendMessage(e->userId(), user_event->Text(), m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }
@@ -282,7 +281,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
 
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
-  unsigned long tag = licqDaemon->sendMessage(userId, szText, m_bSendThroughServer,
+  unsigned long tag = gLicqDaemon->sendMessage(userId, szText, m_bSendThroughServer,
      ICQ_TCPxMSG_URGENT);
   delete []szText;
   delete [] szCommand;

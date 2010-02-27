@@ -50,7 +50,7 @@ bool LP_Init(int /*argc*/, char** /*argv*/)
   return true;
 }
 
-int LP_Main(CICQDaemon* /*daemon*/)
+int LP_Main()
 {
   return 20;
 }

@@ -177,7 +177,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
         }
         u->setUserInfoString("Email1", strUser);
         string strURL = "http://members.msn.com/"+strUser;
@@ -185,7 +185,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         u->SetNewUser(false);
         u->SetEnableSave(true);
         u->SaveLicqInfo();
-        m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
+        gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
         gUserManager.DropUser(u);
       }
     }
@@ -211,11 +211,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
       
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
-        if (m_pDaemon->AddUserEvent(o, e))
+        if (gLicqDaemon->AddUserEvent(o, e))
         {
           e->AddToHistory(o, D_RECEIVER);
           gUserManager.DropOwner(o);
-          m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+          gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
           gUserManager.DropOwner(o);
@@ -232,7 +232,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
             string strDecodedNick = Decode(strNick);
             u->setAlias(strDecodedNick);
           }
-          m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
           gUserManager.DropUser(u);
         }
       }
@@ -285,7 +285,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       else
         nStatus = ICQ_STATUS_AWAY;
         
-      m_pDaemon->ChangeUserStatus(o, nStatus);
+      gLicqDaemon->ChangeUserStatus(o, nStatus);
       m_nStatus = nStatus;
       gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR, ICQUser::StatusToStatusStr(o->Status(), bHidden));
       gUserManager.DropOwner(o);
@@ -318,7 +318,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
         }
 
 	// Get the display picture here, so it can be shown with the notify
@@ -332,11 +332,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 	}
 
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
-        m_pDaemon->ChangeUserStatus(u, nStatus);
+        gLicqDaemon->ChangeUserStatus(u, nStatus);
 
-        if ((m_pDaemon->m_bAlwaysOnlineNotify || strCmd == "NLN") &&
+        if ((gLicqDaemon->m_bAlwaysOnlineNotify || strCmd == "NLN") &&
             nStatus == ICQ_STATUS_ONLINE && u->OnlineNotify())
-          m_pDaemon->m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
+          gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
       }
       gUserManager.DropUser(u);
     }
@@ -349,7 +349,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (u.isLocked())
         {
           gLog.Info("%s%s logged off.\n", L_MSNxSTR, u->getAlias().c_str());
-          m_pDaemon->ChangeUserStatus(*u, ICQ_STATUS_OFFLINE);
+          gLicqDaemon->ChangeUserStatus(*u, ICQ_STATUS_OFFLINE);
         }
       }
 
@@ -433,11 +433,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           szHexOut, m_nSessionStart);
           
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
-        if (m_pDaemon->AddUserEvent(o, pEmailAlert))
+        if (gLicqDaemon->AddUserEvent(o, pEmailAlert))
         {
           pEmailAlert->AddToHistory(o, D_RECEIVER);
           gUserManager.DropOwner(o);
-          m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+          gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
           gUserManager.DropOwner(o);
@@ -463,7 +463,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           gLog.Error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
           pStart = *it;
           pStart->m_pEvent->m_eResult = EVENT_FAILED;
-          m_pDaemon->PushPluginEvent(pStart->m_pEvent);
+          gLicqDaemon->PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
           break; 
         }
@@ -623,14 +623,14 @@ void CMSN::MSNLogoff(bool bDisconnected)
       pUser->ClearSocketDesc();
     }
     if (!pUser->StatusOffline())
-      m_pDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+      gLicqDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_PROTO_USER_END
     
   ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);      
-  m_pDaemon->ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
+  gLicqDaemon->ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner(o);
-  //m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, 0));
+  //gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, 0));
 }
 
 void CMSN::MSNAddUser(const UserId& userId)

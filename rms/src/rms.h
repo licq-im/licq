@@ -6,7 +6,6 @@
 #include <licq_socket.h>
 #include <licq_types.h>
 
-class CICQDaemon;
 class TCPSocket;
 class CUserEvent;
 class LicqSignal;
@@ -24,7 +23,7 @@ class CLicqRMS
 public:
   CLicqRMS(bool, unsigned short);
   ~CLicqRMS();
-  int Run(CICQDaemon *);
+  int Run();
   void Shutdown();
   bool Enabled() { return m_bEnabled; }
 

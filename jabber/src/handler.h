@@ -24,12 +24,11 @@
 #include <set>
 #include <string>
 
-class CICQDaemon;
 
 class Handler
 {
 public:
-  Handler(CICQDaemon* daemon);
+  Handler();
   ~Handler();
 
   void setStatus(unsigned long status);
@@ -49,7 +48,6 @@ public:
   std::string getStatusMessage(unsigned long status);
 
 private:
-  CICQDaemon* myDaemon;
   unsigned long myStatus;
 };
 

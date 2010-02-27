@@ -80,9 +80,9 @@ bool LP_Init(int argc, char **argv)
 }
 
 
-int LP_Main(CICQDaemon *_licqDaemon)
+int LP_Main()
 {
-  int nResult = licqRMS->Run(_licqDaemon);
+  int nResult = licqRMS->Run();
   licqRMS->Shutdown();
   delete licqRMS;
   return nResult;

@@ -192,7 +192,7 @@ FileTransferManagerList CFileTransferManager::ftmList;
 pthread_mutex_t CFileTransferManager::thread_cancel_mutex
                                                    = PTHREAD_MUTEX_INITIALIZER;
 
-CFileTransferManager::CFileTransferManager(CICQDaemon* d, const char* accountId)
+CFileTransferManager::CFileTransferManager(const char* accountId)
   : m_bThreadRunning(false)
 {
   // Create the plugin notification pipe
@@ -204,7 +204,6 @@ CFileTransferManager::CFileTransferManager(CICQDaemon* d, const char* accountId)
   else
     myId[0] = '\0';
   m_nSession = rand();
-  licqDaemon = d;
 
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   strncpy(m_szLocalName, o->GetAlias(), sizeof(m_szLocalName) - 1);
@@ -229,7 +228,7 @@ CFileTransferManager::CFileTransferManager(CICQDaemon* d, const char* accountId)
 //-----CFileTransferManager::StartFileTransferServer-----------------------------------------
 bool CFileTransferManager::StartFileTransferServer()
 {
-  if (licqDaemon->StartTCPServer(&ftServer) == -1)
+  if (gLicqDaemon->StartTCPServer(&ftServer) == -1)
   {
     gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;
@@ -353,7 +352,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   if (bTryDirect)
   {
     gLog.Info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
-    bSuccess = licqDaemon->OpenConnectionToUser(myId, &ftSock, nPort);
+    bSuccess = gLicqDaemon->OpenConnectionToUser(myId, &ftSock, nPort);
    }
 
   bool bResult = false;
@@ -364,7 +363,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
     gUserManager.DropOwner(o);
 
     // try reverse connect
-    int nId = licqDaemon->RequestReverseConnection(myId, 0, nIp, LocalPort(),
+    int nId = gLicqDaemon->RequestReverseConnection(myId, 0, nIp, LocalPort(),
                                                                         nPort);
 
     if (nId != -1)
@@ -476,22 +475,22 @@ bool CFileTransferManager::ProcessPacket()
 
       if (nId != 0)
       {
-        pthread_mutex_lock(&licqDaemon->mutex_reverseconnect);
+        pthread_mutex_lock(&gLicqDaemon->mutex_reverseconnect);
         std::list<CReverseConnectToUserData *>::iterator iter;
         bool bFound = false;
-        for (iter = licqDaemon->m_lReverseConnect.begin();
-                          iter != licqDaemon->m_lReverseConnect.end();  ++iter)
+        for (iter = gLicqDaemon->m_lReverseConnect.begin();
+            iter != gLicqDaemon->m_lReverseConnect.end();  ++iter)
         {
           if ((*iter)->nId == nId && (*iter)->myIdString == myId)
           {
             bFound = true;
             (*iter)->bSuccess = true;
             (*iter)->bFinished = true;
-            pthread_cond_broadcast(&licqDaemon->cond_reverseconnect_done);
+            pthread_cond_broadcast(&gLicqDaemon->cond_reverseconnect_done);
             break;
           }
         }
-        pthread_mutex_unlock(&licqDaemon->mutex_reverseconnect);
+        pthread_mutex_unlock(&gLicqDaemon->mutex_reverseconnect);
 
         if (bFound)
         {
@@ -1277,7 +1276,6 @@ void *FileWaitForSignal_tep(void *arg)
 {
   pthread_detach(pthread_self());
 
-  CICQDaemon *d;
   unsigned short nPort;
   struct SFileReverseConnectInfo *rc = (struct SFileReverseConnectInfo *)arg;
   pthread_mutex_t *cancel_mutex = &CFileTransferManager::thread_cancel_mutex;
@@ -1286,14 +1284,13 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_cleanup_push(FileWaitForSignal_cleanup, arg);
     pthread_testcancel();
   pthread_cleanup_pop(0);
-  d = rc->m->licqDaemon;
   string id = rc->m->Id();
   nPort = rc->m->m_nPort;
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   gLog.Info("%sFile Transfer: Waiting for reverse connection.\n", L_TCPxSTR);
-  bool bConnected = d->WaitForReverseConnection(rc->nId, id.c_str());
+  bool bConnected = gLicqDaemon->WaitForReverseConnection(rc->nId, id.c_str());
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);
@@ -1319,7 +1316,7 @@ void *FileWaitForSignal_tep(void *arg)
   gLog.Info("%sFile Transfer: Reverse connection failed, trying direct.\n",
                                                                     L_TCPxSTR);
   TCPSocket s;
-  bConnected = d->OpenConnectionToUser(id.c_str(), &s, nPort);
+  bConnected = gLicqDaemon->OpenConnectionToUser(id.c_str(), &s, nPort);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);

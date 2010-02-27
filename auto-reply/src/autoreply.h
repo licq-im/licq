@@ -3,7 +3,6 @@
 
 #include <licq_types.h>
 
-class CICQDaemon;
 class CUserEvent;
 class LicqSignal;
 class LicqEvent;
@@ -13,7 +12,7 @@ class CLicqAutoReply
 public:
   CLicqAutoReply(bool, bool, char *);
   ~CLicqAutoReply();
-  int Run(CICQDaemon *);
+  int Run();
   void Shutdown();
   bool Enabled() { return m_bEnabled; }
 
@@ -24,8 +23,6 @@ protected:
   char m_szProgram[512], m_szArguments[512];
   bool m_bPassMessage, m_bFailOnExitCode, m_bAbortDeleteOnExitCode,
        m_bSendThroughServer;
-
-  CICQDaemon *licqDaemon;
 
   void ProcessPipe();
   void ProcessSignal(LicqSignal* s);

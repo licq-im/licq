@@ -29,13 +29,12 @@
 
 using Licq::gLog;
 
-Jabber::Jabber(CICQDaemon* daemon) :
-  myDaemon(daemon),
+Jabber::Jabber() :
   myHandler(NULL),
   myDoRun(false),
   myClient(NULL)
 {
-  myHandler = new Handler(daemon);
+  myHandler = new Handler();
 }
 
 Jabber::~Jabber()
@@ -88,7 +87,7 @@ void Jabber::processPipe(int pipe)
   {
     case PLUGIN_SIGNAL:
     {
-      LicqProtoSignal* signal = myDaemon->PopProtoSignal();
+      LicqProtoSignal* signal = gLicqDaemon->PopProtoSignal();
       processSignal(signal);
       delete signal;
     }
@@ -231,7 +230,7 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
     event->m_pUserEvent->AddToHistory(*user, D_SENDER);
   }
 
-  myDaemon->PushPluginEvent(event);
+  gLicqDaemon->PushPluginEvent(event);
 }
 
 void Jabber::doGetInfo(LicqProtoRequestInfo* signal)

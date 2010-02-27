@@ -36,7 +36,6 @@
 
 class QMimeData;
 
-class CICQDaemon;
 class LicqEvent;
 
 namespace LicqQtGui
@@ -78,7 +77,7 @@ public:
   LicqGui(int& argc, char** argv);
   ~LicqGui();
 
-  int Run(CICQDaemon* daemon);
+  int Run();
 
   // Functions to get daemon and gui resources
   SignalManager* signalManager() { return mySignalManager; }

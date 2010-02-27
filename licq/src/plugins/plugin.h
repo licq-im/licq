@@ -55,7 +55,7 @@ public:
   int getReadPipe() const { return myPipe.getReadFd(); }
 
   /// Start the plugin in a new thread.
-  void startThread(CICQDaemon* daemon);
+  void startThread();
 
   /**
    * Wait for the plugin to stop.

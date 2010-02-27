@@ -47,7 +47,7 @@ unsigned long LProto_SendFuncs()
   return 42;
 }
 
-int LProto_Main(CICQDaemon* /*daemon*/)
+int LProto_Main()
 {
   return 10;
 }

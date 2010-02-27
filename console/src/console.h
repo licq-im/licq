@@ -60,7 +60,7 @@ class CLicqConsole
 public:
   CLicqConsole(int, char **);
   ~CLicqConsole();
-  int Run(CICQDaemon *);
+  int Run();
   void Shutdown();
 
 protected:
@@ -91,7 +91,6 @@ protected:
   std::list<CFileTransferManager*> m_lFileStat;
   MacroList listMacros;
 
-  CICQDaemon *licqDaemon;
   CWindow *winMain, *winStatus, *winPrompt, *winLog, *winCon[MAX_CON + 1],
           *winConStatus, *winUsers, *winBar;
   CDKSCROLL *cdkUserList;

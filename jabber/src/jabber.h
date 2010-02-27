@@ -21,7 +21,6 @@
 #define JABBER_H
 
 class Client;
-class CICQDaemon;
 class Handler;
 
 class LicqProtoAddUserSignal;
@@ -39,7 +38,7 @@ class LicqProtoSignal;
 class Jabber
 {
 public:
-  Jabber(CICQDaemon* daemon);
+  Jabber();
   ~Jabber();
 
   int run(int pipe);
@@ -58,7 +57,6 @@ private:
   void doRemoveUser(LicqProtoRemoveUserSignal* signal);
   void doRenameUser(LicqProtoRenameUserSignal* signal);
 
-  CICQDaemon* myDaemon;
   Handler* myHandler;
   bool myDoRun;
   Client* myClient;

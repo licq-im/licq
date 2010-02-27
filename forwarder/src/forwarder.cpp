@@ -60,11 +60,10 @@ void CLicqForwarder::Shutdown()
 /*---------------------------------------------------------------------------
  * CLicqForwarder::Run
  *-------------------------------------------------------------------------*/
-int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
+int CLicqForwarder::Run()
 {
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
-  licqDaemon = _licqDaemon;
 
   // Create our snmp information
   m_nSMTPPort = 25; //getservicebyname("snmp");
@@ -117,7 +116,7 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_FORWARDxSTR);
     else
-      licqDaemon->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), s);
+      gLicqDaemon->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), s);
     free(m_szStatus);
     m_szStatus = NULL;
   }
@@ -175,14 +174,14 @@ void CLicqForwarder::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-      LicqSignal* s = licqDaemon->popPluginSignal();
+      LicqSignal* s = gLicqDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
   case 'E':  // An event is pending (should never happen)
   {
-    ICQEvent *e = licqDaemon->PopPluginEvent();
+      LicqEvent* e = gLicqDaemon->PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -328,7 +327,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(const LicqUser* u, const CUserEvent* e)
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
           u->GetAlias(), u->IdString(), szTime, e->Text());
-  unsigned long tag = licqDaemon->sendMessage(LicqUser::makeUserId(myUserId, LICQ_PPID), szText, true, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = gLicqDaemon->sendMessage(LicqUser::makeUserId(myUserId, LICQ_PPID), szText, true, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
   {

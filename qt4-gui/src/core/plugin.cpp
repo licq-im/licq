@@ -122,7 +122,7 @@ bool LP_Init(int argc, char** argv)
   return true;
 }
 
-int LP_Main(CICQDaemon* daemon)
+int LP_Main()
 {
 #ifdef USE_KDE
   // Don't use the KDE crash handler (drkonqi).
@@ -135,7 +135,7 @@ int LP_Main(CICQDaemon* daemon)
 
   LicqQtGui::LicqGui* licqQtGui = new LicqQtGui::LicqGui(myArgc, myArgv);
 
-  int result = licqQtGui->Run(daemon);
+  int result = licqQtGui->Run();
 
   delete licqQtGui;
 

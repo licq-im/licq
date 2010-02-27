@@ -41,8 +41,6 @@ public:
   PluginManager();
   ~PluginManager();
 
-  void setDaemon(CICQDaemon* daemon) { myDaemon = daemon; }
-
   GeneralPlugin::Ptr loadGeneralPlugin(
       const std::string& name, int argc, char** argv, bool keep = true);
   ProtocolPlugin::Ptr loadProtocolPlugin(
@@ -100,7 +98,6 @@ private:
   void getAvailablePlugins(Licq::StringList& plugins,
                            const std::string& prefix) const;
 
-  CICQDaemon* myDaemon;
   unsigned short myNextPluginId;
 
   GeneralPluginsList myGeneralPlugins;

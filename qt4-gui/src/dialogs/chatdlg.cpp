@@ -62,7 +62,6 @@
 #endif
 
 #include <licq_chat.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_translate.h>
 
@@ -356,7 +355,7 @@ ChatDlg::ChatDlg(const UserId& userId, QWidget* parent)
 
   unsigned char encoding = UserCodec::charsetForName(codec->name());
   //TODO in daemon
-  chatman = new CChatManager(gLicqDaemon,
+  chatman = new CChatManager(
       myId.toULong(), fi.family().toLocal8Bit(), encoding, style,
       fi.pointSize(), fi.bold(), fi.italic(), fi.underline(), fi.strikeOut());
 

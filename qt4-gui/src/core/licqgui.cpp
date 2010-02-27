@@ -422,7 +422,7 @@ void LicqGui::saveConfig()
   licqConf.FlushFile();
 }
 
-int LicqGui::Run(CICQDaemon* /* daemon */)
+int LicqGui::Run()
 {
   // Register with the daemon, we want to receive all signals
   int pipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);

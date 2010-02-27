@@ -49,7 +49,6 @@ Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 
 
 PluginManager::PluginManager() :
-  myDaemon(NULL),
   myNextPluginId(1),
   myPluginEventHandler(myGeneralPlugins, myGeneralPluginsMutex,
                        myProtocolPlugins, myProtocolPluginsMutex)
@@ -530,6 +529,5 @@ void PluginManager::startPlugin(Plugin::Ptr plugin)
               plugin->getName(), plugin->getVersion());
   }
 
-  assert(myDaemon != NULL);
-  plugin->startThread(myDaemon);
+  plugin->startThread();
 }

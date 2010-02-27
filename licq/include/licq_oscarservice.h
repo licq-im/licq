@@ -8,7 +8,6 @@
 
 #include "licq_types.h"
 
-class CICQDaemon;
 class CBuffer;
 class CPacket;
 class LicqEvent;
@@ -24,7 +23,7 @@ void *OscarServiceSendQueue_tep(void *p);
 class COscarService
 {
 public:
-  COscarService(CICQDaemon *Daemon, unsigned short Fam);
+  COscarService(unsigned short Fam);
   ~COscarService();
   bool Initialize();
   bool ProcessPacket(CBuffer &packet);
@@ -39,7 +38,6 @@ public:
   unsigned short GetFam() { return myFam; }
 
 protected:
-  CICQDaemon *myDaemon;
   unsigned short myFam;
   int mySocketDesc;
   ProxyServer *myProxy;

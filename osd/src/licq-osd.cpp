@@ -330,7 +330,7 @@ bool LP_Init(int /* argc */, char** /* argv */)
 
 
 // run method of plugin
-int LP_Main(CICQDaemon *_licqDaemon)
+int LP_Main()
 {
     // register plugin at the licq daemon
   int nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER | SIGNAL_LOGON| SIGNAL_LOGOFF);
@@ -362,7 +362,7 @@ int LP_Main(CICQDaemon *_licqDaemon)
 	case 'S':  // A signal is pending
 	    {
 		// read the actual signal from the daemon
-        LicqSignal* s = _licqDaemon->popPluginSignal();
+        LicqSignal* s = gLicqDaemon->popPluginSignal();
 		if (s)
 		{
 		    ProcessSignal(s);
@@ -378,7 +378,7 @@ int LP_Main(CICQDaemon *_licqDaemon)
 	case 'E':
 	    {
 		gLog.Warn("%sEvent received - should not happen in this plugin\n", L_WARNxSTR);
-		ICQEvent *e = _licqDaemon->PopPluginEvent();
+        LicqEvent* e = gLicqDaemon->PopPluginEvent();
 		if (e)
 		{
 		    delete e;

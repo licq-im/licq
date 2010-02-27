@@ -76,7 +76,7 @@ unsigned long LProto_icq_SendFuncs()
     PP_SEND_STATUSxMSG;
 }
 
-int LProto_icq_Main(CICQDaemon* /* daemon */)
+int LProto_icq_Main()
 {
   int fd = gPluginManager.registerProtocolPlugin();
   if (fd == -1)

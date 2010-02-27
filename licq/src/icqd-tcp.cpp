@@ -3995,9 +3995,9 @@ bool CICQDaemon::CryptoEnabled()
 
 void CICQDaemon::StupidChatLinkageFix()
 {
-  CChatManager *chatman = new CChatManager(NULL, 0);
+  CChatManager* chatman = new CChatManager(0);
   delete chatman;
-  CFileTransferManager *ftman = new CFileTransferManager(NULL, 0);
+  CFileTransferManager* ftman = new CFileTransferManager(0);
   delete ftman;
 }
 

@@ -37,7 +37,7 @@ extern std::list<unsigned short> LP_Ids;
 STR_FUNC(Name);
 STR_FUNC(Version);
 
-int Test_Main(CICQDaemon* /*daemon*/)
+int Test_Main()
 {
   return 5;
 }
@@ -53,9 +53,9 @@ void Test_Exit(int result)
   pthread_exit(p);
 }
 
-void* Test_Main_tep(void* daemon)
+void* Test_Main_tep()
 {
-  Test_Exit(Test_Main((CICQDaemon*)daemon));
+  Test_Exit(Test_Main());
   return NULL;
 }
 

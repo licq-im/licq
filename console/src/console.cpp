@@ -237,14 +237,13 @@ void CLicqConsole::Shutdown()
 /*---------------------------------------------------------------------------
  * CLicqConsole::Run
  *-------------------------------------------------------------------------*/
-int CLicqConsole::Run(CICQDaemon *_licqDaemon)
+int CLicqConsole::Run()
 {
   CWindow::StartScreen();
 
   // Register with the daemon, we want to receive all signals
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
   m_bExit = false;
-  licqDaemon = _licqDaemon;
 
   // Create the windows
   for (unsigned short i = 0; i <= MAX_CON; i++)
@@ -473,14 +472,14 @@ void CLicqConsole::ProcessPipe()
   {
   case 'S':  // A signal is pending
     {
-      LicqSignal* s = licqDaemon->popPluginSignal();
+      LicqSignal* s = gLicqDaemon->popPluginSignal();
       ProcessSignal(s);
       break;
     }
 
   case 'E':  // An event is pending
     {
-      ICQEvent *e = licqDaemon->PopPluginEvent();
+      LicqEvent* e = gLicqDaemon->PopPluginEvent();
       ProcessEvent(e);
       break;
     }
@@ -547,7 +546,7 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
     PrintStatus();
     break;
   case SIGNAL_ADDxSERVERxLIST:
-      licqDaemon->updateUserAlias(s->userId());
+      gLicqDaemon->updateUserAlias(s->userId());
       break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     //ignore for now
@@ -822,7 +821,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             // For now don't check for a chat subcommand..
             // Invoke a file transfer manager here
             const CEventFile* f = dynamic_cast<const CEventFile *>(ue);
-            CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
+            CFileTransferManager *ftman = new CFileTransferManager(
                 LicqUser::getUserAccountId(e->userId()).c_str());
             m_lFileStat.push_back(ftman);
 
@@ -1537,7 +1536,7 @@ void CLicqConsole::InputInfo(int cIn)
         {
       winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
-          winMain->event = licqDaemon->requestUserInfo(data->userId);
+          winMain->event = gLicqDaemon->requestUserInfo(data->userId);
       winMain->state = STATE_PENDING;
       return;
         }
@@ -1697,7 +1696,7 @@ void CLicqConsole::UserCommand_FetchAutoResponse(const UserId& userId, char *)
   unsigned long nPPID = u->ppid();
   gUserManager.DropUser(u);
 
-  winMain->event = licqDaemon->icqFetchAutoResponse(szId.c_str(), nPPID);
+  winMain->event = gLicqDaemon->icqFetchAutoResponse(szId.c_str(), nPPID);
   // InputMessage just to catch the cancel key
   winMain->fProcessInput = &CLicqConsole::InputMessage;
   winMain->data = NULL;
@@ -1904,7 +1903,7 @@ void CLicqConsole::InputMessage(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-      licqDaemon->CancelEvent(winMain->event);
+        gLicqDaemon->CancelEvent(winMain->event);
     return;
 
   case STATE_MLE:
@@ -1935,7 +1934,7 @@ void CLicqConsole::InputMessage(int cIn)
       winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = licqDaemon->sendMessage(data->userId, data->szMsg,
+      winMain->event = gLicqDaemon->sendMessage(data->userId, data->szMsg,
           !bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
       break;
@@ -1950,7 +1949,7 @@ void CLicqConsole::InputMessage(int cIn)
     {
       winMain->wprintf("%C%ASending message through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        winMain->event = licqDaemon->sendMessage(data->userId, data->szMsg,
+        winMain->event = gLicqDaemon->sendMessage(data->userId, data->szMsg,
             true, false);
       winMain->state = STATE_PENDING;
     }
@@ -1998,7 +1997,7 @@ void CLicqConsole::InputSendFile(int cIn)
   {
   case STATE_PENDING:
     if(cIn == CANCEL_KEY)
-      licqDaemon->CancelEvent(winMain->event);
+        gLicqDaemon->CancelEvent(winMain->event);
     return;
 
   case STATE_LE:
@@ -2069,7 +2068,7 @@ void CLicqConsole::InputSendFile(int cIn)
       ConstFileList lFileList;
       lFileList.push_back(strdup(data->szFileName));
 
-      winMain->event = licqDaemon->fileTransferPropose(data->userId,
+      winMain->event = gLicqDaemon->fileTransferPropose(data->userId,
               data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
                        !bDirect);
       break;
@@ -2169,7 +2168,7 @@ void CLicqConsole::InputUrl(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-      licqDaemon->CancelEvent(winMain->event);
+        gLicqDaemon->CancelEvent(winMain->event);
     return;
 
   case STATE_LE:
@@ -2210,7 +2209,7 @@ void CLicqConsole::InputUrl(int cIn)
       winMain->wprintf("%C%ASending URL %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = licqDaemon->sendUrl(data->userId, data->szUrl,
+      winMain->event = gLicqDaemon->sendUrl(data->userId, data->szUrl,
           data->szDesc, !bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
       break;
@@ -2225,7 +2224,7 @@ void CLicqConsole::InputUrl(int cIn)
     {
       winMain->wprintf("%C%ASending URL through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        winMain->event = licqDaemon->sendUrl(data->userId, data->szUrl,
+        winMain->event = gLicqDaemon->sendUrl(data->userId, data->szUrl,
             data->szDesc, true, false);
       winMain->state = STATE_PENDING;
     }
@@ -2275,7 +2274,7 @@ void CLicqConsole::InputSms(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-      licqDaemon->CancelEvent(winMain->event);
+        gLicqDaemon->CancelEvent(winMain->event);
     return;
 
   case STATE_MLE:
@@ -2304,7 +2303,7 @@ void CLicqConsole::InputSms(int cIn)
       const LicqUser* u = gUserManager.fetchUser(data->userId);
       winMain->wprintf("%C%ASending SMS to %s ...", m_cColorInfo->nColor,
           m_cColorInfo->nAttr, u->getCellularNumber().c_str());
-        winMain->event = licqDaemon->icqSendSms(u->accountId().c_str(), u->ppid(),
+        winMain->event = gLicqDaemon->icqSendSms(u->accountId().c_str(), u->ppid(),
           u->getCellularNumber().c_str(), data->szMsg);
       gUserManager.DropUser(u);
       winMain->state = STATE_PENDING;
@@ -2354,13 +2353,13 @@ void CLicqConsole::InputAuthorize(int cIn)
       {
         winMain->wprintf("%C%AGranting authorizing to %s...", m_cColorInfo->nColor,
             m_cColorInfo->nAttr, USERID_TOSTR(data->userId));
-        winMain->event = licqDaemon->authorizeGrant(data->userId, data->szMsg);
+        winMain->event = gLicqDaemon->authorizeGrant(data->userId, data->szMsg);
       }
       else
       {
         winMain->wprintf("%C%ARefusing authorizing to %s...", m_cColorInfo->nColor,
             m_cColorInfo->nAttr, USERID_TOSTR(data->userId));
-        winMain->event = licqDaemon->authorizeRefuse(data->userId, data->szMsg);
+        winMain->event = gLicqDaemon->authorizeRefuse(data->userId, data->szMsg);
       }
 
       winMain->fProcessInput = &CLicqConsole::InputCommand;
@@ -2542,7 +2541,7 @@ void CLicqConsole::InputSearch(int cIn)
       if (cIn == CANCEL_KEY)
       {
         if (winMain->event != 0)
-          licqDaemon->CancelEvent(winMain->event);
+          gLicqDaemon->CancelEvent(winMain->event);
       }
       return;
     }
@@ -2568,7 +2567,7 @@ void CLicqConsole::InputSearch(int cIn)
             winMain->wprintf("%C%ASearching:\n",
                              m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
-            winMain->event = licqDaemon->icqSearchByUin(strtoul(data->szId, (char **)NULL, 10));
+            winMain->event = gLicqDaemon->icqSearchByUin(strtoul(data->szId, (char **)NULL, 10));
             winMain->state = STATE_PENDING;
 
             return;
@@ -2840,9 +2839,9 @@ void CLicqConsole::InputSearch(int cIn)
           winMain->wprintf("%C%ASearching:\n",
                            m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
-          /*winMain->event = licqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
+          /*winMain->event = gLicqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
            data->szLastName, data->szEmail);*/
-          winMain->event = licqDaemon->icqSearchWhitePages(data->szFirstName,
+          winMain->event = gLicqDaemon->icqSearchWhitePages(data->szFirstName,
                            data->szLastName, data->szAlias, data->szEmail,
                            data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
                            data->szCity, data->szState, data->nCountryCode,
@@ -2894,7 +2893,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
       if(cIn == CANCEL_KEY)
       {
         if(winMain->event != 0)
-          licqDaemon->CancelEvent(winMain->event);
+          gLicqDaemon->CancelEvent(winMain->event);
       }
       return;
     }
@@ -3010,7 +3009,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             owner->SetPassword(data->szPassword1);
             gUserManager.DropOwner(owner);
-            licqDaemon->SaveConf();
+            gLicqDaemon->SaveConf();
 
             winMain->wprintf("Save password? (y/N) ");
             winMain->state = STATE_QUERY;
@@ -3033,7 +3032,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
     if (data->szOption[0] == '1')
     {
       winMain->wprintf("\nRegistering you as a new user...\n");
-      licqDaemon->icqRegister(data->szPassword1);
+      gLicqDaemon->icqRegister(data->szPassword1);
       winMain->state = STATE_PENDING;
     }
     else
@@ -3091,7 +3090,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
 
           // Make the ftman
-          CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
+          CFileTransferManager *ftman = new CFileTransferManager(
               szId.c_str());
           ftman->SetUpdatesEnabled(1);
           m_lFileStat.push_back(ftman);
@@ -3103,7 +3102,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           // Accept the file
           const char *home = getenv("HOME");
           ftman->ReceiveFiles(home);
-          licqDaemon->fileTransferAccept(data->userId,
+          gLicqDaemon->fileTransferAccept(data->userId,
               ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
               f->MessageID()[1], f->FileDescription(), f->Filename(),
               f->FileSize(), !f->IsDirect());
@@ -3136,7 +3135,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
       data->szReason[data->nPos - 1] = '\0';
 
       // XXX hack
-      licqDaemon->fileTransferRefuse(data->userId,
+      gLicqDaemon->fileTransferRefuse(data->userId,
           data->szReason, f->Sequence(), 0, 0, false);
 
       // We are done now
@@ -3162,7 +3161,7 @@ void CLicqConsole::UserCommand_Secure(const UserId& userId, char *szStatus)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
 
-  if(!licqDaemon->CryptoEnabled())
+  if (!gLicqDaemon->CryptoEnabled())
   {
     winMain->wprintf("%CYou need to recompile Licq with OpenSSL for this "
                      "feature to work!\n", COLOR_RED);
@@ -3197,14 +3196,14 @@ void CLicqConsole::UserCommand_Secure(const UserId& userId, char *szStatus)
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = licqDaemon->secureChannelOpen(userId);
+    winMain->event = gLicqDaemon->secureChannelOpen(userId);
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
     winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = licqDaemon->secureChannelClose(userId);
+    winMain->event = gLicqDaemon->secureChannelClose(userId);
   }
   else
   {

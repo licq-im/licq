@@ -34,9 +34,8 @@
 
 using namespace std;
 
-COscarService::COscarService(CICQDaemon *Daemon, unsigned short Fam)
+COscarService::COscarService(unsigned short Fam)
 {
-  myDaemon = Daemon;
   myFam = Fam;
   mySocketDesc = -1;
   myProxy = NULL;
@@ -139,11 +138,11 @@ void COscarService::ClearQueue()
 unsigned long COscarService::SendEvent(const UserId& userId,
                                        unsigned short SubType, bool Request)
 {
-  unsigned long eventId = myDaemon->getNextEventId();
+  unsigned long eventId = gLicqDaemon->getNextEventId();
   LicqEvent* e = new LicqEvent(eventId, mySocketDesc, NULL, CONNECT_SERVER, userId);
   e->SetSubType(SubType);
   if (Request)
-    myDaemon->PushEvent(e);
+    gLicqDaemon->PushEvent(e);
   else
     e->SetNoAck(true);
   pthread_mutex_lock(&mutex_sendqueue);
@@ -337,9 +336,9 @@ void COscarService::ProcessBARTFam(CBuffer &packet, unsigned short SubType,
       gLog.Warn(tr("%sError #%02x.%02x in BART request (%ld) for service 0x%02X.\n"),
                     L_WARNxSTR, err, suberr, RequestId, myFam);
 
-      ICQEvent *e = myDaemon->DoneServerEvent(RequestId, EVENT_ERROR);
+      LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_ERROR);
       if (e)
-        myDaemon->ProcessDoneEvent(e);
+        gLicqDaemon->ProcessDoneEvent(e);
       break;
     }
 
@@ -402,19 +401,19 @@ void COscarService::ProcessBARTFam(CBuffer &packet, unsigned short SubType,
               u->SetEnableSave(true);
             }
             u->SavePictureInfo();
-            myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+            gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
 
-            ICQEvent *e = myDaemon->DoneServerEvent(RequestId, EVENT_SUCCESS);
+            LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_SUCCESS);
             if (e)
-              myDaemon->ProcessDoneEvent(e);
+              gLicqDaemon->ProcessDoneEvent(e);
           }
           else
           {
             gLog.Warn(tr("%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or hashlength (%d).\n"),
                       L_WARNxSTR, u->GetAlias(), HashType, HashLength);
-            ICQEvent *e = myDaemon->DoneServerEvent(RequestId, EVENT_FAILED);
+            LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_FAILED);
             if (e)
-              myDaemon->ProcessDoneEvent(e);
+              gLicqDaemon->ProcessDoneEvent(e);
           }
           break;
         }
@@ -423,9 +422,9 @@ void COscarService::ProcessBARTFam(CBuffer &packet, unsigned short SubType,
         {
           gLog.Warn(tr("%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"),
                     L_WARNxSTR, u->GetAlias(), IconType);
-          ICQEvent *e = myDaemon->DoneServerEvent(RequestId, EVENT_FAILED);
+          LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_FAILED);
           if (e)
-            myDaemon->ProcessDoneEvent(e);
+            gLicqDaemon->ProcessDoneEvent(e);
           break;
         }
       }
@@ -441,8 +440,8 @@ void COscarService::ProcessBARTFam(CBuffer &packet, unsigned short SubType,
 bool COscarService::Initialize()
 {
   ChangeStatus(STATUS_SERVICE_REQ_SENT);
-  myDaemon->icqRequestService(myFam);
-  
+  gLicqDaemon->icqRequestService(myFam);
+
   if (!WaitForStatus(STATUS_SERVICE_REQ_ACKED))
   {
     gLog.Warn(tr("%sGive up waiting for redirect reply while initializing service 0x%02X.\n"),
@@ -455,7 +454,7 @@ bool COscarService::Initialize()
   SrvSocket* s = new SrvSocket(gUserManager.ownerUserId(LICQ_PPID));
   gLog.Info(tr("%sConnecting to separate server for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
-  if (myDaemon->GetProxy() == NULL)
+  if (gLicqDaemon->GetProxy() == NULL)
   {
     if (myProxy != NULL)
     {
@@ -466,7 +465,7 @@ bool COscarService::Initialize()
   else
   {
     if (myProxy == NULL)
-      myProxy = myDaemon->CreateProxy();
+      myProxy = gLicqDaemon->CreateProxy();
   }
   if (!s->connectTo(string(myServer), myPort, myProxy))
   {
@@ -479,7 +478,7 @@ bool COscarService::Initialize()
   gSocketManager.AddSocket(s);
   gSocketManager.DropSocket(s);
   // Alert the select thread that there is a new socket
-  write(myDaemon->pipe_newsocket[PIPE_WRITE], "S", 1);
+  write(gLicqDaemon->pipe_newsocket[PIPE_WRITE], "S", 1);
       
   CPU_SendCookie *p1 = new CPU_SendCookie(myCookie.get(), myCookieLen, myFam);
   gLog.Info(tr("%sSending cookie for service 0x%02X.\n"),
@@ -573,8 +572,7 @@ void *OscarServiceSendQueue_tep(void *p)
   pthread_detach(pthread_self());
   
   COscarService *os = (COscarService *)p;
-  CICQDaemon *d = os->myDaemon;
-  
+
   while (true)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
@@ -594,12 +592,12 @@ void *OscarServiceSendQueue_tep(void *p)
         continue;
       }
 
-      if (d->Status() != STATUS_ONLINE)
+      if (gLicqDaemon->Status() != STATUS_ONLINE)
       {
         gLog.Warn(tr("%sCan't send event for service 0x%02X because we are not online.\n"),
                   L_WARNxSTR, os->myFam);
-        if (d->DoneEvent(e, EVENT_ERROR) != NULL)
-          d->ProcessDoneEvent(e);
+        if (gLicqDaemon->DoneEvent(e, EVENT_ERROR) != NULL)
+          gLicqDaemon->ProcessDoneEvent(e);
         else
           delete e;
         pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -614,8 +612,8 @@ void *OscarServiceSendQueue_tep(void *p)
         {
           gLog.Warn(tr("%sInitialization of socket for service 0x%02X failed, failing event\n"),
                     L_WARNxSTR, os->myFam);
-          if (d->DoneEvent(e, EVENT_ERROR) != NULL)
-            d->ProcessDoneEvent(e);
+          if (gLicqDaemon->DoneEvent(e, EVENT_ERROR) != NULL)
+            gLicqDaemon->ProcessDoneEvent(e);
           else
             delete e;
           pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -640,8 +638,8 @@ void *OscarServiceSendQueue_tep(void *p)
  
       if (!Sent)
       {
-        if (d->DoneEvent(e, EVENT_ERROR) != NULL)
-          d->ProcessDoneEvent(e);
+        if (gLicqDaemon->DoneEvent(e, EVENT_ERROR) != NULL)
+          gLicqDaemon->ProcessDoneEvent(e);
         else
           delete e;
       }

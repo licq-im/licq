@@ -21,7 +21,7 @@ bool LProto_Init();
 
 unsigned long LProto_SendFuncs();
 
-int LProto_Main(CICQDaemon *);
+int LProto_Main();
 
 /*--------INTERNAL USE ONLY------------*/
 
@@ -41,9 +41,9 @@ void LProto_Exit(int _nResult)
   pthread_exit(p);
 }
 
-void *LProto_Main_tep(void *p)
+void *LProto_Main_tep(void* /* argument */)
 {
-  LProto_Exit(LProto_Main((CICQDaemon *)p));
+  LProto_Exit(LProto_Main());
   return 0;
 }
 

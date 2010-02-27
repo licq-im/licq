@@ -450,7 +450,7 @@ bool CICQDaemon::Start()
 
   if (UseServerSideBuddyIcons())
   {
-    m_xBARTService = new COscarService(this, ICQ_SNACxFAM_BART);
+    m_xBARTService = new COscarService(ICQ_SNACxFAM_BART);
     nResult = pthread_create(&thread_ssbiservice, NULL,
                              &OscarServiceSendQueue_tep, m_xBARTService);
     if (nResult != 0)
@@ -795,7 +795,7 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
 {
   if (b && m_xBARTService == NULL)
   {
-    m_xBARTService = new COscarService(this, ICQ_SNACxFAM_BART);
+    m_xBARTService = new COscarService(ICQ_SNACxFAM_BART);
     int nResult = pthread_create(&thread_ssbiservice, NULL,
                                  &OscarServiceSendQueue_tep, m_xBARTService);
     if (nResult != 0)

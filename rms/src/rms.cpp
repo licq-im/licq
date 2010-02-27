@@ -26,7 +26,6 @@ using Licq::gPluginManager;
 extern "C" { const char *LP_Version(); }
 
 CLicqRMS *licqRMS = NULL;
-static CICQDaemon *licqDaemon = NULL;
 
 const char L_RMSxSTR[]  = "[RMS] ";
 
@@ -182,14 +181,13 @@ void CLicqRMS::Shutdown()
 /*---------------------------------------------------------------------------
  * CLicqRMS::Run
  *-------------------------------------------------------------------------*/
-int CLicqRMS::Run(CICQDaemon *_licqDaemon)
+int CLicqRMS::Run()
 {
   unsigned short nPort;
 
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
-  licqDaemon = _licqDaemon;
-  
+
   char filename[256];
   sprintf(filename, "%slicq_rms.conf", BASE_DIR);
   CIniFile conf;
@@ -202,9 +200,10 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
 
   server = new TCPSocket();
 
-  if (licqDaemon->TCPPortsLow() != 0 && nPort == 0)
+  if (gLicqDaemon->TCPPortsLow() != 0 && nPort == 0)
   {
-    if (!licqDaemon->StartTCPServer(server)) return 1;
+    if (!gLicqDaemon->StartTCPServer(server))
+      return 1;
   }
   else
   {
@@ -291,14 +290,14 @@ void CLicqRMS::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-      LicqSignal* s = licqDaemon->popPluginSignal();
+      LicqSignal* s = gLicqDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
   case 'E':  // An event is pending (should never happen)
   {
-    ICQEvent *e = licqDaemon->PopPluginEvent();
+      LicqEvent* e = gLicqDaemon->PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -852,7 +851,7 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
   {
     fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, szStatus);
     fflush(fs);
-    licqDaemon->protoSetStatus(ownerId, ICQ_STATUS_OFFLINE);
+    gLicqDaemon->protoSetStatus(ownerId, ICQ_STATUS_OFFLINE);
     fprintf(fs, "%d [0] Event done.\n", CODE_STATUSxDONE);
     return 0;
   }
@@ -861,7 +860,7 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     bool b = o->StatusOffline();
     gUserManager.DropOwner(o);
-    unsigned long tag = licqDaemon->protoSetStatus(ownerId, nStatus);
+    unsigned long tag = gLicqDaemon->protoSetStatus(ownerId, nStatus);
     if (b)
       fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, szStatus);
     else
@@ -888,7 +887,7 @@ int CRMSClient::Process_QUIT()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_TERM()
 {
-  licqDaemon->Shutdown();
+  gLicqDaemon->Shutdown();
   return -1;
 }
 
@@ -1114,7 +1113,7 @@ int CRMSClient::Process_MESSAGE_text()
 {
   //XXX Give a tag...
   m_szText[strlen(m_szText) - 1] = '\0';
-  unsigned long tag = licqDaemon->sendMessage(myUserId, m_szText,
+  unsigned long tag = gLicqDaemon->sendMessage(myUserId, m_szText,
       true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
@@ -1174,7 +1173,7 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  unsigned long tag = licqDaemon->sendUrl(myUserId, m_szLine,
+  unsigned long tag = gLicqDaemon->sendUrl(myUserId, m_szLine,
       m_szText, true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
@@ -1243,7 +1242,7 @@ int CRMSClient::Process_SMS_message()
 {
   char id[16];
   snprintf(id, 16, "%lu", m_nUin);
-  unsigned long tag = licqDaemon->icqSendSms(id, LICQ_PPID, m_szLine, m_szText);
+  unsigned long tag = gLicqDaemon->icqSendSms(id, LICQ_PPID, m_szLine, m_szText);
 
   fprintf(fs, "%d [%lu] Sending SMS to %lu (%s).\n", CODE_COMMANDxSTART,
      tag, m_nUin, m_szLine);
@@ -1536,7 +1535,7 @@ int CRMSClient::Process_SECURE()
 {
   unsigned long nUin = 0;
 
-  if(!licqDaemon->CryptoEnabled())
+  if (!gLicqDaemon->CryptoEnabled())
   {
     fprintf(fs, "%d Licq secure channel not compiled. Please recompile with OpenSSL.\n", CODE_SECURExNOTCOMPILED);
     return fflush(fs);
@@ -1562,13 +1561,13 @@ int CRMSClient::Process_SECURE()
   if (strncasecmp(data_arg, "open", 4) == 0)
   {
     fprintf(fs, "%d Opening secure connection.\n", CODE_SECURExOPEN);
-    licqDaemon->secureChannelOpen(userId);
+    gLicqDaemon->secureChannelOpen(userId);
   }
   else
   if (strncasecmp(data_arg, "close", 5) == 0)
   {
     fprintf(fs, "%d Closing secure connection.\n", CODE_SECURExCLOSE);
-    licqDaemon->secureChannelClose(userId);
+    gLicqDaemon->secureChannelClose(userId);
   }
   else
   {

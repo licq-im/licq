@@ -55,11 +55,11 @@ unsigned long LProto_SendFuncs()
   return PP_SEND_MSG | PP_SEND_STATUSxMSG;
 }
 
-int LProto_Main(CICQDaemon* daemon)
+int LProto_Main()
 {
   int pipe = gPluginManager.registerProtocolPlugin();
-  daemon->getLogService().createThreadLog("jabber");
-  int res = Jabber(daemon).run(pipe);
+  gLicqDaemon->getLogService().createThreadLog("jabber");
+  int res = Jabber().run(pipe);
   gPluginManager.unregisterProtocolPlugin();
   return res;
 }

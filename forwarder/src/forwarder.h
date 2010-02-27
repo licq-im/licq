@@ -3,7 +3,6 @@
 
 #include <licq_types.h>
 
-class CICQDaemon;
 class TCPSocket;
 class CUserEvent;
 class LicqSignal;
@@ -17,7 +16,7 @@ class CLicqForwarder
 public:
   CLicqForwarder(bool, bool, char *);
   ~CLicqForwarder();
-  int Run(CICQDaemon *);
+  int Run();
   void Shutdown();
   bool Enabled() { return m_bEnabled; }
 
@@ -32,7 +31,6 @@ protected:
   char myUserId[16];
   unsigned short m_nForwardType;
 
-  CICQDaemon *licqDaemon;
   TCPSocket *tcp;
 
 public:

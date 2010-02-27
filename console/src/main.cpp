@@ -70,9 +70,9 @@ bool LP_Init(int argc, char **argv)
 }
 
 
-int LP_Main(CICQDaemon *_licqDaemon)
+int LP_Main()
 {
-  int nResult = licqConsole->Run(_licqDaemon);
+  int nResult = licqConsole->Run();
   licqConsole->Shutdown();
   delete licqConsole;
   return nResult;

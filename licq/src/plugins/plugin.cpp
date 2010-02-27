@@ -50,9 +50,9 @@ Plugin::~Plugin()
   // Empty
 }
 
-void Plugin::startThread(CICQDaemon* daemon)
+void Plugin::startThread()
 {
-  myThread->startPlugin(myMainThreadEntryPoint, daemon);
+  myThread->startPlugin(myMainThreadEntryPoint, NULL);
 }
 
 int Plugin::joinThread()

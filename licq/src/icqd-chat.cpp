@@ -644,7 +644,7 @@ pthread_mutex_t CChatManager::waiting_thread_cancel_mutex
                                                   = PTHREAD_MUTEX_INITIALIZER;
 
 
-CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
+CChatManager::CChatManager(unsigned long nUin,
   const char *fontFamily, unsigned char fontEncoding, unsigned char fontStyle,
   unsigned short fontSize, bool fontBold, bool fontItalic, bool fontUnderline,
   bool fontStrikeOut, int fr, int fg, int fb, int br, int bg, int bb)
@@ -658,7 +658,6 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
 
 //  m_nSession = rand();
-  licqDaemon = d;
 
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   strncpy(m_szName, o->GetAlias(), 32);
@@ -698,7 +697,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
 //-----CChatManager::StartChatServer-----------------------------------------
 bool CChatManager::StartChatServer()
 {
-  if (licqDaemon->StartTCPServer(&chatServer) == -1)
+  if (gLicqDaemon->StartTCPServer(&chatServer) == -1)
   {
     gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;
@@ -777,7 +776,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   if (bTryDirect)
   {
     gLog.Info("%sChat: Connecting to server.\n", L_TCPxSTR);
-    bSuccess = licqDaemon->OpenConnectionToUser("chat", c->m_nIp, c->m_nIntIp,
+    bSuccess = gLicqDaemon->OpenConnectionToUser("chat", c->m_nIp, c->m_nIntIp,
                                             &u->sock, c->m_nPort, bSendIntIp);
   }
 
@@ -788,7 +787,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
     gUserManager.DropOwner(o);
 
     // try reverse connect
-    int nId = licqDaemon->RequestReverseConnection(LicqUser::getUserAccountId(c->myUserId).c_str(), c->m_nSession,
+    int nId = gLicqDaemon->RequestReverseConnection(LicqUser::getUserAccountId(c->myUserId).c_str(), c->m_nSession,
                                                  nIp, LocalPort(), c->m_nPort);
     if (nId != -1)
     {
@@ -945,10 +944,10 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
       bool bFound = false;
       {
-        pthread_mutex_lock(&licqDaemon->mutex_reverseconnect);
+        pthread_mutex_lock(&gLicqDaemon->mutex_reverseconnect);
         std::list<CReverseConnectToUserData *>::iterator iter;
-        for (iter = licqDaemon->m_lReverseConnect.begin();
-                         iter != licqDaemon->m_lReverseConnect.end();  ++iter)
+        for (iter = gLicqDaemon->m_lReverseConnect.begin();
+            iter != gLicqDaemon->m_lReverseConnect.end();  ++iter)
         {
           if ((*iter)->myIdString == LicqUser::getUserAccountId(u->userId()))
           {
@@ -957,11 +956,11 @@ bool CChatManager::ProcessPacket(CChatUser *u)
             (*iter)->bFinished = true;
             u->m_pClient->m_nSession = (*iter)->nData;
             u->m_pClient->m_nPort = (*iter)->nPort;
-            pthread_cond_broadcast(&licqDaemon->cond_reverseconnect_done);
+            pthread_cond_broadcast(&gLicqDaemon->cond_reverseconnect_done);
             break;
           }
         }
-        pthread_mutex_unlock(&licqDaemon->mutex_reverseconnect);
+        pthread_mutex_unlock(&gLicqDaemon->mutex_reverseconnect);
       }
 
       if (bFound)
@@ -2432,7 +2431,6 @@ void *ChatWaitForSignal_tep(void *arg)
 {
   pthread_detach(pthread_self());
 
-  CICQDaemon *d;
   struct SChatReverseConnectInfo *rc = (struct SChatReverseConnectInfo *)arg;
   pthread_mutex_t *cancel_mutex = &CChatManager::waiting_thread_cancel_mutex;
 
@@ -2440,12 +2438,11 @@ void *ChatWaitForSignal_tep(void *arg)
   pthread_cleanup_push(ChatWaitForSignal_cleanup, arg);
     pthread_testcancel();
   pthread_cleanup_pop(0);
-  d = rc->m->licqDaemon;
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   gLog.Info("%sChat: Waiting for reverse connection.\n", L_TCPxSTR);
-  bool bConnected = d->WaitForReverseConnection(rc->nId, LicqUser::getUserAccountId(rc->u->userId()).c_str());
+  bool bConnected = gLicqDaemon->WaitForReverseConnection(rc->nId, LicqUser::getUserAccountId(rc->u->userId()).c_str());
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);
@@ -2500,7 +2497,7 @@ void *ChatWaitForSignal_tep(void *arg)
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
     gLog.Info("%sChat: Reverse connection failed, trying direct.\n", L_TCPxSTR);
-    bool bSuccess = d->OpenConnectionToUser("chat", nIp, nIntIp, &rc->u->sock,
+    bool bSuccess = gLicqDaemon->OpenConnectionToUser("chat", nIp, nIntIp, &rc->u->sock,
                                             nPort, bSendIntIp);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     if (bSuccess)

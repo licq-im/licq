@@ -88,9 +88,9 @@ bool LP_Init(int argc, char **argv)
 }
 
 
-int LP_Main(CICQDaemon *_licqDaemon)
+int LP_Main()
 {
-  int nResult = licqAutoReply->Run(_licqDaemon);
+  int nResult = licqAutoReply->Run();
   licqAutoReply->Shutdown();
   delete licqAutoReply;
   return nResult;
