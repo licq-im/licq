@@ -201,7 +201,11 @@ public:
       bool addUser = false, bool* retWasAdded = NULL) = 0;
 
   // For protocol plugins
-  virtual void AddOwner(const char *, unsigned long) = 0;
+  virtual void addOwner(const UserId& userId) = 0;
+
+  void AddOwner(const char* accountId, unsigned long protocolId)
+  { if (accountId != 0) addOwner(UserId(accountId, protocolId)); }
+
   virtual void RemoveOwner(unsigned long) = 0;
 
   User* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType)

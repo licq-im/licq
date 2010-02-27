@@ -20,7 +20,7 @@ public:
    * @param accountId User account id
    * @param ppid Protocol instance id
    */
-  Owner(const std::string& accountId, unsigned long ppid);
+  Owner(const UserId& id);
 
   virtual ~Owner();
   bool Exception() const                        { return m_bException; }

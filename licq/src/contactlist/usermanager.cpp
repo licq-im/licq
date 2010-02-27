@@ -68,16 +68,16 @@ UserManager::~UserManager()
     free(m_szDefaultEncoding);
 }
 
-void UserManager::AddOwner(const char *_szId, unsigned long _nPPID)
+void UserManager::addOwner(const UserId& userId)
 {
-  Owner* o = new Owner(_szId, _nPPID);
+  Owner* o = new Owner(userId);
 
   LockOwnerList(LOCK_W);
-  myOwners[_nPPID] = o;
+  myOwners[userId.protocolId()] = o;
   UnlockOwnerList();
 
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
-        LIST_OWNER_ADDED, User::makeUserId(_szId, _nPPID)));
+      LIST_OWNER_ADDED, userId));
 }
 
 /*---------------------------------------------------------------------------
@@ -115,7 +115,8 @@ bool UserManager::Load()
     nPPID = (sOwnerPPID[0] << 24) | (sOwnerPPID[1] << 16) |
             (sOwnerPPID[2] << 8) | (sOwnerPPID[3]);
 
-    Owner* o = new Owner(sOwnerID, nPPID);
+    UserId ownerId(sOwnerID, nPPID);
+    Owner* o = new Owner(ownerId);
 
     myOwners[nPPID] = o;
   }
@@ -233,9 +234,10 @@ bool UserManager::Load()
     szId[sz - szFile] = '\0';
     nPPID = (*(sz+1)) << 24 | (*(sz+2)) << 16 | (*(sz+3)) << 8 | (*(sz+4));
 
-    u = new User(szId, nPPID, string(filename));
+    UserId userId(szId, nPPID);
+    u = new User(userId, string(filename));
     u->AddToContactList();
-    myUsers[u->id()] = u;
+    myUsers[userId] = u;
   }
   UnlockUserList();
 
@@ -295,10 +297,7 @@ bool UserManager::addUser(const UserId& uid,
     return false;
   }
 
-  string accountId = User::getUserAccountId(uid);
-  unsigned long ppid = User::getUserProtocolId(uid);
-
-  User* pUser = new User(accountId, ppid, !permanent);
+  User* pUser = new User(uid, !permanent);
   pUser->Lock(LOCK_W);
 
   if (permanent)
@@ -464,7 +463,7 @@ User* UserManager::fetchUser(const UserId& userId,
       LockUserList(LOCK_W);
 
       // Create a temporary user
-      user = new User(User::getUserAccountId(userId), User::getUserProtocolId(userId), true);
+      user = new User(userId, true);
 
       // Store the user in the lookup map
       myUsers[userId] = user;

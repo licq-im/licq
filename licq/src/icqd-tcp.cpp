@@ -38,6 +38,7 @@
 
 using namespace std;
 using Licq::StringList;
+using Licq::User;
 
 //-----ICQ::sendMessage--------------------------------------------------------
 unsigned long CICQDaemon::sendMessage(const UserId& userId, const string& message,
@@ -1682,7 +1683,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
   {
-    u = new LicqUser(LicqUser::getUserAccountId(userId), LICQ_PPID);
+    u = new User(userId);
     u->SetSocketDesc(pSock);
     bNewUser = true;
   }

@@ -42,6 +42,7 @@
 
 using namespace std;
 using Licq::StringList;
+using Licq::User;
 
 void CICQDaemon::protoAddUser(const UserId& userId, int groupId)
 {
@@ -1984,7 +1985,7 @@ LicqUser* CICQDaemon::FindUserForInfoUpdate(const UserId& userId, LicqEvent* e,
     // Check if we need to create the user
     if (e->m_pUnknownUser == NULL)
     {
-      e->m_pUnknownUser = new LicqUser(LicqUser::getUserAccountId(userId), LicqUser::getUserProtocolId(userId));
+      e->m_pUnknownUser = new User(userId);
     }
     // If not, validate the uin
     else if (e->m_pUnknownUser->id() == userId)
@@ -3164,7 +3165,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
         if (u == NULL)
         {
-          u = new ICQUser(szId, LICQ_PPID);
+              u = new User(userId);
           bNewUser = true;
         }
 
@@ -3213,7 +3214,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           u = gUserManager.fetchUser(userId, LOCK_W);
       if (u == NULL)
       {
-        u = new ICQUser(szId, LICQ_PPID);
+            u = new User(userId);
         bNewUser = true;
       }
 

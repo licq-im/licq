@@ -47,7 +47,7 @@ public:
 
   Licq::User* fetchUser(const Licq::UserId& userId, unsigned short lockType = LOCK_R,
       bool addUser = false, bool* retWasAdded = NULL);
-  void AddOwner(const char *, unsigned long);
+  void addOwner(const Licq::UserId& userId);
   void RemoveOwner(unsigned long);
 
   Licq::Owner* FetchOwner(unsigned long ppid, unsigned short lockType);

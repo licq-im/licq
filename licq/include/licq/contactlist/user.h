@@ -201,20 +201,18 @@ public:
   /**
    * Constructor to create a user object for an existing contact
    *
-   * @param accountId User account id string, protocol specific format
-   * @param ppid Protocol id for user
+   * @param id User id
    * @param filename Filename to read user data from
    */
-  User(const std::string& accountId, unsigned long ppid, const std::string& filename);
+  User(const UserId& id, const std::string& filename);
 
   /**
    * Constructor to create a user object for a new contact
    *
-   * @param accountId User account id string, protocol specific format
-   * @param ppid Protocol id for user
+   * @param id User id
    * @param temporary False if user is added permanently to list
    */
-  User(const std::string& accountId, unsigned long ppid, bool temporary = false);
+  User(const UserId& id, bool temporary = false);
 
   virtual ~User();
   void RemoveFiles();
@@ -240,21 +238,21 @@ public:
    *
    * @return account id
    */
-  const std::string& accountId() const          { return myAccountId; }
+  const std::string& accountId() const          { return myId.accountId(); }
 
   /**
    * Get protocol instance this user belongs to
    *
    * @return protocol instance id
    */
-  unsigned long ppid() const                    { return myPpid; }
+  unsigned long ppid() const                    { return myId.protocolId(); }
 
   /**
    * Get normalized account id that can be used when comparing ids
    *
    * @return normalized account id
    */
-  const std::string& realAccountId() const      { return myRealAccountId; }
+  const std::string& realAccountId() const      { return accountId(); }
 
   // Old deprecated functions to get account id and protocol id, do not use in new code
   const char* IdString() const { return accountId().c_str(); }
@@ -723,9 +721,6 @@ protected:
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 
   const UserId myId;
-  const std::string myAccountId;
-  const unsigned long myPpid;
-  std::string myRealAccountId;
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;

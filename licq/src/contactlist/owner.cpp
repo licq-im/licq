@@ -13,8 +13,8 @@ using std::string;
 using Licq::Owner;
 
 
-Owner::Owner(const string& accountId, unsigned long ppid)
-  : User(accountId, ppid, true)
+Owner::Owner(const UserId& id)
+  : User(id, true)
 {
   // Pretend to be temporary to LicqUser constructior so it doesn't setup m_fConf
   // Restore NotInList flag to proper value when we get here
@@ -30,7 +30,7 @@ Owner::Owner(const string& accountId, unsigned long ppid)
 
   // Get data from the config file
   char p[5];
-  protocolId_toStr(p, ppid);
+  protocolId_toStr(p, myId.protocolId());
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s", BASE_DIR, p);
   filename[MAX_FILENAME_LEN - 1] = '\0';
 
@@ -65,10 +65,10 @@ Owner::Owner(const string& accountId, unsigned long ppid)
 
   m_fConf.CloseFile();
 
-  gLog.Info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myAccountId.c_str());
+  gLog.Info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myId.toString().c_str());
 
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/owner.%s.%s.history", BASE_DIR, HISTORY_DIR,
-      myAccountId.c_str(), p);
+      myId.accountId().c_str(), p);
     SetHistoryFile(filename);
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)

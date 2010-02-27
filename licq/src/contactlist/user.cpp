@@ -261,10 +261,8 @@ bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
 unsigned short User::s_nNumUserEvents = 0;
 pthread_mutex_t User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
-User::User(const string& accountId, unsigned long ppid, const string& filename)
-  : myId(makeUserId(accountId, ppid)),
-    myAccountId(accountId),
-    myPpid(ppid)
+User::User(const UserId& id, const string& filename)
+  : myId(id)
 {
   Init();
   m_fConf.SetFlags(INI_FxWARN);
@@ -279,10 +277,8 @@ User::User(const string& accountId, unsigned long ppid, const string& filename)
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
-User::User(const string& accountId, unsigned long ppid, bool temporary)
-  : myId(makeUserId(accountId, ppid)),
-    myAccountId(accountId),
-    myPpid(ppid)
+User::User(const UserId& id, bool temporary)
+  : myId(id)
 {
   Init();
   SetDefaults();
@@ -291,9 +287,9 @@ User::User(const string& accountId, unsigned long ppid, bool temporary)
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
-    protocolId_toStr(p, ppid);
+    protocolId_toStr(p, myId.protocolId());
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
-        myAccountId.c_str(), p);
+        myId.accountId().c_str(), p);
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
     m_fConf.SetFileName(szFilename);
     m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
@@ -310,8 +306,8 @@ void User::AddToContactList()
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
-    protocolId_toStr(p, myPpid);
-    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR, myAccountId.c_str(),
+    protocolId_toStr(p, myId.protocolId());
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR, myId.accountId().c_str(),
              p, HISTORYxOLD_EXT);
 
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
@@ -563,9 +559,9 @@ void User::RemoveFiles()
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
-    protocolId_toStr(p, myPpid);
+    protocolId_toStr(p, myId.protocolId());
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR,
-        myAccountId.c_str(), p, HISTORYxOLD_EXT);
+        myId.accountId().c_str(), p, HISTORYxOLD_EXT);
 
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
     if (rename(m_fHistory.FileName(), szFilename) == -1)
@@ -579,8 +575,6 @@ void User::RemoveFiles()
 
 void User::Init()
 {
-  myRealAccountId = myId.accountId();
-
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
@@ -703,7 +697,7 @@ void User::Init()
   m_nGSID = 0;
   m_szClientInfo = NULL;
 
-  myMutex.setName(myAccountId);
+  myMutex.setName(myId.toString());
 }
 
 void User::SetPermanent()
@@ -714,9 +708,9 @@ void User::SetPermanent()
   // Create the user file
   char szFilename[MAX_FILENAME_LEN];
   char p[5];
-  protocolId_toStr(p, myPpid);
+  protocolId_toStr(p, myId.protocolId());
   snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
-      myAccountId.c_str(), p);
+      myId.accountId().c_str(), p);
   szFilename[MAX_FILENAME_LEN - 1] = '\0';
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
@@ -732,7 +726,7 @@ void User::SetPermanent()
 void User::SetDefaults()
 {
   char szTemp[12];
-  setAlias(myAccountId);
+  setAlias(myId.accountId());
   SetHistoryFile("default");
   SetSystemGroups(0);
   myGroups.clear();
@@ -955,7 +949,7 @@ void User::setAlias(const string& alias)
     if (!firstName.empty())
       myAlias = firstName;
     else
-      myAlias = myAccountId;
+      myAlias = myId.accountId();
   }
   else
     myAlias = alias;
@@ -980,7 +974,7 @@ bool User::Away() const
 
 void User::SetHistoryFile(const char *s)
 {
-  m_fHistory.SetFile(s, myAccountId.c_str(), myPpid);
+  m_fHistory.SetFile(s, myId.accountId().c_str(), myId.protocolId());
   SaveLicqInfo();
 }
 
@@ -1315,7 +1309,7 @@ char* User::usprintf(const char* _szFormat, unsigned long nFlags) const
           gPluginManager.getProtocolPluginsList(plugins);
           BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
           {
-            if (myPpid == plugin->getProtocolId())
+            if (myId.protocolId() == plugin->getProtocolId())
             {
               strcpy(szTemp, plugin->getName());
               sz = szTemp;
