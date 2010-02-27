@@ -889,9 +889,9 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
     wattroff(winMain->Win(), A_BOLD);
   }
   else if (!USERID_ISVALID(userId ))
-    UserCommand_SetAutoResponse(0, sz);
+    UserCommand_SetAutoResponse(USERID_NONE, sz);
   else
-    UserCommand_FetchAutoResponse(0, sz);
+    UserCommand_FetchAutoResponse(USERID_NONE, sz);
 }
 
 

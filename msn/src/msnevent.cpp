@@ -143,7 +143,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	  CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
 					       m_nBaseId-3, nIdentifier, nAckId,
 					       nDataSize[1], nDataSize[0]);
-	  m_pMSN->Send_SB_Packet(m_strId, pAck, m_nSocketDesc);
+	  m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
 	  m_eState = STATE_GOT_SID;
 	}
       }
@@ -157,7 +157,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
 					   m_nBaseId-2, nIdentifier, nAckId,
 					   nDataSize[1], nDataSize[0]);
-      m_pMSN->Send_SB_Packet(m_strId, pAck, m_nSocketDesc);
+      m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
       m_eState = STATE_RECV_DATA;
 
       gLog.Info("%sDisplay Picture: Got data start message (%ld)\n",
@@ -230,7 +230,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
 					     m_nBaseId-1, nIdentifier, nAckId,
 					     nDataSize[1], nDataSize[0]);
-	m_pMSN->Send_SB_Packet(m_strId, pAck, m_nSocketDesc);
+	m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
 
         // Send a bye command
         CMSNPacket *pBye = new CPS_MSNP2PBye(m_strId.c_str(),
@@ -238,7 +238,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 					     m_strCallId.c_str(),
 	  				     m_nBaseId, nAckId,
 					     nDataSize[1], nDataSize[0]);
-        m_pMSN->Send_SB_Packet(m_strId, pBye, m_nSocketDesc);        
+        m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pBye, m_nSocketDesc);
 	return 0;
       }
 

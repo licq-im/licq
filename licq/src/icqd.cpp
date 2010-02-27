@@ -1649,9 +1649,9 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
     icqChatRequestCancel(LicqUser::getUserAccountId(e->userId()).c_str(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
-    icqFileTransferCancel(LicqUser::getUserAccountId(e->userId()).c_str(), e->m_nSequence);
+    icqFileTransferCancel(e->userId(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)
-    icqOpenSecureChannelCancel(LicqUser::getUserAccountId(e->userId()).c_str(), e->m_nSequence);
+    icqOpenSecureChannelCancel(e->userId(), e->m_nSequence);
 
   ProcessDoneEvent(e);
 }

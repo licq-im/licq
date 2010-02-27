@@ -511,7 +511,7 @@ UserId UserManager::ownerUserId(unsigned long ppid)
 {
   const Owner* owner = FetchOwner(ppid, LOCK_R);
   if (owner == NULL)
-    return "";
+    return USERID_NONE;
 
   UserId ret = owner->id();
   DropOwner(owner);

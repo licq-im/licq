@@ -445,14 +445,14 @@ LicqProtoClosedWindowSignal::LicqProtoClosedWindowSignal(const UserId& userId)
 }
 
 LicqProtoOpenSecureSignal::LicqProtoOpenSecureSignal(unsigned long eventId, const UserId& userId)
-  : LicqProtoSignal(PROTOxOPENxSECURE, LicqUser::getUserAccountId(userId).c_str()),
+  : LicqProtoSignal(PROTOxOPENxSECURE, userId),
     myEventId(eventId)
 {
   // Empty
 }
 
 LicqProtoCloseSecureSignal::LicqProtoCloseSecureSignal(unsigned long eventId, const UserId& userId)
-  : LicqProtoSignal(PROTOxCLOSExSECURE, LicqUser::getUserAccountId(userId).c_str()),
+  : LicqProtoSignal(PROTOxCLOSExSECURE, userId),
     myEventId(eventId)
 {
   // Empty
