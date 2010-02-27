@@ -207,7 +207,7 @@ public:
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
   void SaveLastUser(const UserId& userId);
-  UserId GetContactFromArg(char **);
+  bool GetContactFromArg(char **, UserId& userId);
 };
 
 

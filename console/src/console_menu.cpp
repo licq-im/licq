@@ -587,15 +587,15 @@ void CLicqConsole::MenuUins(char *)
 /*---------------------------------------------------------------------------
  * CLicqConsole::GetContactFromArg
  *-------------------------------------------------------------------------*/
-UserId CLicqConsole::GetContactFromArg(char **p_szArg)
+bool CLicqConsole::GetContactFromArg(char **p_szArg, UserId& userId)
 {
   char *szAlias, *szCmd;
   char *szArg = *p_szArg;
   unsigned long nPPID = 0;
-  UserId userId = USERID_NONE;
+  userId = USERID_NONE;
 
   if (szArg == NULL) {
-    return USERID_NONE;
+    return true;
   }
   string strArg(szArg);
   string::size_type nPos = strArg.find_last_of(".");
@@ -628,7 +628,7 @@ UserId CLicqConsole::GetContactFromArg(char **p_szArg)
     if (szCmd == NULL)
     {
       winMain->wprintf("%CUnbalanced quotes.\n", COLOR_RED);
-      return USERID_NONE;
+      return false;
     }
     *szCmd++ = '\0';
     szCmd = strchr(szCmd, ' ');
@@ -636,15 +636,14 @@ UserId CLicqConsole::GetContactFromArg(char **p_szArg)
   else if (szArg[0] == '#')
   {
     *p_szArg = NULL;
-    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-    userId = o->id();
-    gUserManager.DropOwner(o);
-    return userId;
+    userId = gUserManager.ownerUserId(LICQ_PPID);
+    return true;
   }
   else if (szArg[0] == '$')
   {
     *p_szArg = NULL;
-    return winMain->sLastContact;
+    userId = winMain->sLastContact;
+    return true;
   }
   else
   {
@@ -678,10 +677,11 @@ UserId CLicqConsole::GetContactFromArg(char **p_szArg)
   if (!USERID_ISVALID(userId))
   {
     winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
-    return "-";
+    userId = USERID_NONE;
+    return false;
   }
   SaveLastUser(userId);
-  return userId;
+  return true;
 }
 
 
@@ -692,10 +692,10 @@ UserId CLicqConsole::GetContactFromArg(char **p_szArg)
 void CLicqConsole::MenuMessage(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (!USERID_ISVALID(userId))
     winMain->wprintf("%CYou must specify a user to send a message to.\n", COLOR_RED);
   else
@@ -710,13 +710,11 @@ void CLicqConsole::MenuMessage(char *szArg)
 void CLicqConsole::MenuInfo(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (gUserManager.isOwner(userId))
-    winMain->wprintf("%CSetting personal info not implemented yet.\n", COLOR_RED);
-  else if (!USERID_ISVALID(userId))
     UserCommand_Info(gUserManager.ownerUserId(LICQ_PPID), sz);
   else
     UserCommand_Info(userId, sz);
@@ -730,10 +728,10 @@ void CLicqConsole::MenuInfo(char *szArg)
 void CLicqConsole::MenuUrl(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (gUserManager.isOwner(userId))
     winMain->wprintf("%CYou can't send URLs to yourself!\n", COLOR_RED);
   else if (!USERID_ISVALID(userId))
@@ -750,10 +748,10 @@ void CLicqConsole::MenuUrl(char *szArg)
 void CLicqConsole::MenuSms(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (!USERID_ISVALID(userId))
     winMain->wprintf("%CInvalid user\n", COLOR_RED);
   else
@@ -767,7 +765,9 @@ void CLicqConsole::MenuSms(char *szArg)
 void CLicqConsole::MenuView(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
+    return;
 
   if (USERID_ISVALID(userId))
   {
@@ -812,10 +812,10 @@ void CLicqConsole::MenuView(char *szArg)
 void CLicqConsole::MenuSecure(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (gUserManager.isOwner(userId))
     winMain->wprintf("%CYou can't establish a secure connection to yourself!\n", COLOR_RED);
   else if (!USERID_ISVALID(userId))
@@ -831,10 +831,10 @@ void CLicqConsole::MenuSecure(char *szArg)
 void CLicqConsole::MenuFile(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (gUserManager.isOwner(userId))
     winMain->wprintf("%CYou can't send files to yourself!\n", COLOR_RED);
   else if (!USERID_ISVALID(userId))
@@ -867,10 +867,10 @@ void CLicqConsole::MenuFile(char *szArg)
 void CLicqConsole::MenuAutoResponse(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (gUserManager.isOwner(userId))
   {
     wattron(winMain->Win(), A_BOLD);
@@ -901,10 +901,10 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
 void CLicqConsole::MenuRemove(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (gUserManager.isOwner(userId))
     winMain->wprintf("%CYou can't remove yourself!\n", COLOR_RED);
   else if (!USERID_ISVALID(userId))
@@ -920,10 +920,10 @@ void CLicqConsole::MenuRemove(char *szArg)
 void CLicqConsole::MenuHistory(char *szArg)
 {
   char *sz = szArg;
-  UserId userId = GetContactFromArg(&sz);
-
-  if (userId == "-")
+  UserId userId;
+  if (!GetContactFromArg(&sz, userId))
     return;
+
   if (!USERID_ISVALID(userId))
     winMain->wprintf("%CYou must specify a user to view history.\n", COLOR_RED);
   else
