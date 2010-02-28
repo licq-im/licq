@@ -173,8 +173,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
     mySendServerCheck->setChecked(u->SendServer() ||
         (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
 
-    if (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) ||
-        (u->Port() == 0 && u->SocketDesc(ICQ_CHNxNONE) == -1))
+    if (u->InvisibleList() || (u->Port() == 0 && u->SocketDesc(ICQ_CHNxNONE) == -1))
       canSendDirect = false;
 
     gUserManager.DropUser(u);

@@ -1011,7 +1011,7 @@ void CICQDaemon::icqSendVisibleList()
   StringList users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
-    if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST) )
+    if (pUser->VisibleList())
       users.push_back(pUser->IdString());
   }
   FOR_EACH_PROTO_USER_END
@@ -1027,7 +1027,7 @@ void CICQDaemon::icqSendInvisibleList()
   StringList users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
-    if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) )
+    if (pUser->InvisibleList())
       users.push_back(pUser->IdString());
   }
   FOR_EACH_PROTO_USER_END
