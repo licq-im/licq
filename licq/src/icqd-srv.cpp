@@ -663,12 +663,7 @@ unsigned long CICQDaemon::requestUserPicture(const UserId& userId)
   unsigned long nRet = 0;
 
   if (ppid == LICQ_PPID)
-  {
-    if (UseServerSideBuddyIcons() && iconHashSize > 0)
-      nRet = m_xBARTService->SendEvent(userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
-    else
-      nRet = icqRequestPicture(accountId.c_str(), sendServer);
-  }
+    nRet = icqRequestPicture(userId, sendServer, iconHashSize);
   else
     PushProtoSignal(new LicqProtoRequestPicture(userId), ppid);
 

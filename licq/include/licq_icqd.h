@@ -429,7 +429,7 @@ public:
   unsigned long icqRequestInfoPluginList(const char *szId,
      bool bServer = false);
   unsigned long icqRequestPhoneBook(const char *szId, bool bServer = false);
-  unsigned long icqRequestPicture(const char *szId, bool bServer = false);
+  unsigned long icqRequestPicture(const Licq::UserId& userId, bool bServer, size_t iconHashSize);
   unsigned long icqRequestStatusPluginList(const char *szId,
      bool bServer = false);
   unsigned long icqRequestSharedFiles(const char *szId, bool bServer = false);

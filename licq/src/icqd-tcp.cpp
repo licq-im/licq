@@ -25,6 +25,7 @@
 #include "licq/byteorder.h"
 #include "licq/gpghelper.h"
 #include "licq_icqd.h"
+#include "licq_oscarservice.h"
 #include "licq_translate.h"
 #include "licq_packets.h"
 #include "licq_socket.h"
@@ -566,13 +567,17 @@ unsigned long CICQDaemon::icqRequestPhoneBook(const char *szId,
 }
 
 //-----CICQDaemon::sendPictureReq-----------------------------------------------
-unsigned long CICQDaemon::icqRequestPicture(const char *szId, bool bServer)
+unsigned long CICQDaemon::icqRequestPicture(const UserId& userId, bool bServer, size_t iconHashSize)
 {
-  if (szId == gUserManager.OwnerId(LICQ_PPID))
-    return 0;
+  if (UseServerSideBuddyIcons() && iconHashSize > 0)
+    return m_xBARTService->SendEvent(userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
 
-  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
-  if (u == NULL) return 0;
+  if (gUserManager.isOwner(userId))
+     return 0;
+
+  Licq::UserWriteGuard u(userId);
+  if (!u.isLocked())
+    return 0;
 
   if (bServer)
     gLog.Info("%sRequesting Picture from %s through server.\n",
@@ -580,11 +585,7 @@ unsigned long CICQDaemon::icqRequestPicture(const char *szId, bool bServer)
   else
     gLog.Info("%sRequesting Picture from %s.\n", L_TCPxSTR, u->GetAlias());
 
-  unsigned long result = icqRequestInfoPlugin(u, bServer, PLUGIN_PICTURE);
-
-  gUserManager.DropUser(u);
-
-  return result;
+  return icqRequestInfoPlugin(*u, bServer, PLUGIN_PICTURE);
 }
 
 //-----CICQDaemon::sendStatusPluginReq------------------------------------------
