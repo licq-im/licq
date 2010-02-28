@@ -41,6 +41,7 @@ set(licq_SRCS
   message.cpp
   onevent.cpp
   oscarservice.cpp
+  protocolmanager.cpp
   proxy.cpp
   rtf.cc
   sar.cpp

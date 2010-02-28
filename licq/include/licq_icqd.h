@@ -36,6 +36,7 @@ class CMSN;
 
 namespace LicqDaemon
 {
+class ProtocolManager;
 class UserManager;
 }
 
@@ -944,6 +945,7 @@ protected:
   friend class CChatManager;
   friend class CFileTransferManager;
   friend class COnEventManager;
+  friend class LicqDaemon::ProtocolManager;
   friend class LicqDaemon::UserManager;
   friend class CLicq;
   friend class CMSN;
