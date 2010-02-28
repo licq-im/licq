@@ -36,8 +36,9 @@
 #include <KDE/KFileDialog>
 #endif
 
-#include <licq_icqd.h>
+#include <licq_events.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -51,6 +52,7 @@
 
 #include "usereventtabdlg.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendFileEvent */
 
@@ -213,7 +215,7 @@ void UserSendFileEvent::send()
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
+  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   if (myFileEdit->text().trimmed().isEmpty())
   {
@@ -223,7 +225,7 @@ void UserSendFileEvent::send()
 
   unsigned long icqEventTag;
   //TODO in daemon
-  icqEventTag = gLicqDaemon->fileTransferPropose(
+  icqEventTag = gProtocolManager.fileTransferPropose(
       myUsers.front(),
       myCodec->fromUnicode(myFileEdit->text()).data(),
       myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),

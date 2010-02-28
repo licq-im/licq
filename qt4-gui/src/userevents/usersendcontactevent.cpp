@@ -28,6 +28,7 @@
 
 #include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "config/chat.h"
 
@@ -44,6 +45,7 @@
 #include "usereventtabdlg.h"
 
 using Licq::StringList;
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendContactEvent */
 
@@ -133,7 +135,7 @@ void UserSendContactEvent::send()
   const LicqUser* user = gUserManager.fetchUser(myUsers.front());
   QString accountId = user->accountId().c_str();
   gUserManager.DropUser(user);
-  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
+  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   StringList users;
 

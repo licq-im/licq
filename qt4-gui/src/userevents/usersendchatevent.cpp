@@ -29,6 +29,7 @@
 
 #include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "config/chat.h"
 
@@ -44,6 +45,7 @@
 
 #include "usereventtabdlg.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendChatEvent */
 
@@ -162,7 +164,7 @@ void UserSendChatEvent::send()
   // Take care of typing notification now`
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
+  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   unsigned long icqEventTag;
 

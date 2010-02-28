@@ -32,12 +32,14 @@
 #include <licq_events.h>
 #include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "core/licqgui.h"
 #include "core/signalmanager.h"
 
 #include "helpers/support.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::KeyRequestDlg */
 
@@ -148,12 +150,12 @@ void KeyRequestDlg::startSend()
 
 void KeyRequestDlg::openConnection()
 {
-  myIcqEventTag = gLicqDaemon->secureChannelOpen(myUserId);
+  myIcqEventTag = gProtocolManager.secureChannelOpen(myUserId);
 }
 
 void KeyRequestDlg::closeConnection()
 {
-  myIcqEventTag = gLicqDaemon->secureChannelClose(myUserId);
+  myIcqEventTag = gProtocolManager.secureChannelClose(myUserId);
 }
 
 void KeyRequestDlg::doneEvent(const LicqEvent* e)

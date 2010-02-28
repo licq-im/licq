@@ -27,9 +27,10 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
+#include <licq_events.h>
 #include <licq_translate.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "config/chat.h"
 
@@ -45,6 +46,7 @@
 #include "usereventcommon.h"
 #include "usereventtabdlg.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendMsgEvent */
 
@@ -106,7 +108,7 @@ void UserSendMsgEvent::send()
   if (mySendTypingTimer->isActive())
     mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
+  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   // do nothing if a command is already being processed
   unsigned long icqEventTag = 0;
@@ -195,7 +197,7 @@ void UserSendMsgEvent::send()
       m->go_message(message);
     }
 
-    icqEventTag = gLicqDaemon->sendMessage(
+    icqEventTag = gProtocolManager.sendMessage(
         myUsers.front(),
         messageRaw.data(),
         mySendServerCheck->isChecked(),

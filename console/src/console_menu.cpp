@@ -7,9 +7,11 @@
 
 #include "event_data.h"
 #include "licq/pluginmanager.h"
+#include <licq/protocolmanager.h>
 
 using namespace std;
 using Licq::gPluginManager;
+using Licq::gProtocolManager;
 
 const unsigned short NUM_COMMANDS = 24;
 const struct SCommand aCommands[NUM_COMMANDS] =
@@ -553,7 +555,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
     UserId ownerId = gUserManager.ownerUserId(nPPID);
     if (bInvisible && nStatus != ICQ_STATUS_OFFLINE)
       nStatus |= ICQ_STATUS_FxPRIVATE;
-    gLicqDaemon->protoSetStatus(ownerId, nStatus);
+    gProtocolManager.setStatus(ownerId, nStatus);
   }
 }
 

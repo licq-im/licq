@@ -28,14 +28,15 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
 
 #include "widgets/mledit.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::AuthUserDlg */
 
@@ -117,10 +118,7 @@ void AuthUserDlg::ok()
   if (USERID_ISVALID(myUserId))
   {
     const QTextCodec* codec = UserCodec::codecForUserId(myUserId);
-    if (myGrant)
-      gLicqDaemon->authorizeGrant(myUserId, codec->fromUnicode(myResponse->toPlainText()).data());
-    else
-      gLicqDaemon->authorizeRefuse(myUserId, codec->fromUnicode(myResponse->toPlainText()).data());
+    gProtocolManager.authorizeReply(myUserId, myGrant, codec->fromUnicode(myResponse->toPlainText()).data());
     close();
   }
 }

@@ -42,6 +42,7 @@
 #include <licq_events.h>
 #include <licq_icqd.h>
 #include <licq_message.h>
+#include <licq/protocolmanager.h>
 
 #include "config/chat.h"
 #include "config/iconmanager.h"
@@ -65,6 +66,7 @@
 
 #include "usersendmsgevent.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserViewEvent */
 
@@ -460,7 +462,7 @@ void UserViewEvent::read2()
 
       if (fileDlg->ReceiveFiles())
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->fileTransferAccept(
+        gProtocolManager.fileTransferAccept(
             myUsers.front(),
             fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0], f->MessageID()[1],
             f->FileDescription(), f->Filename(), f->FileSize(), !f->IsDirect());
@@ -526,7 +528,7 @@ void UserViewEvent::read3()
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->fileTransferRefuse(
+        gProtocolManager.fileTransferRefuse(
             myUsers.front(),
             myCodec->fromUnicode(r->RefuseMessage()).data(), myCurrentEvent->Sequence(),
             f->MessageID()[0], f->MessageID()[1], !f->IsDirect());

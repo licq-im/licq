@@ -19,9 +19,11 @@
 #include <licq_socket.h>
 #include <licq_user.h>
 #include <licq/pluginmanager.h>
+#include <licq/protocolmanager.h>
 
 using namespace std;
 using Licq::gPluginManager;
+using Licq::gProtocolManager;
 
 extern "C" { const char *LP_Version(); }
 
@@ -851,7 +853,7 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
   {
     fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, szStatus);
     fflush(fs);
-    gLicqDaemon->protoSetStatus(ownerId, ICQ_STATUS_OFFLINE);
+    gProtocolManager.setStatus(ownerId, ICQ_STATUS_OFFLINE);
     fprintf(fs, "%d [0] Event done.\n", CODE_STATUSxDONE);
     return 0;
   }
@@ -860,7 +862,7 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     bool b = o->StatusOffline();
     gUserManager.DropOwner(o);
-    unsigned long tag = gLicqDaemon->protoSetStatus(ownerId, nStatus);
+    unsigned long tag = gProtocolManager.setStatus(ownerId, nStatus);
     if (b)
       fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, szStatus);
     else
@@ -1113,7 +1115,7 @@ int CRMSClient::Process_MESSAGE_text()
 {
   //XXX Give a tag...
   m_szText[strlen(m_szText) - 1] = '\0';
-  unsigned long tag = gLicqDaemon->sendMessage(myUserId, m_szText,
+  unsigned long tag = gProtocolManager.sendMessage(myUserId, m_szText,
       true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
@@ -1173,7 +1175,7 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  unsigned long tag = gLicqDaemon->sendUrl(myUserId, m_szLine,
+  unsigned long tag = gProtocolManager.sendUrl(myUserId, m_szLine,
       m_szText, true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
@@ -1561,13 +1563,13 @@ int CRMSClient::Process_SECURE()
   if (strncasecmp(data_arg, "open", 4) == 0)
   {
     fprintf(fs, "%d Opening secure connection.\n", CODE_SECURExOPEN);
-    gLicqDaemon->secureChannelOpen(userId);
+    gProtocolManager.secureChannelOpen(userId);
   }
   else
   if (strncasecmp(data_arg, "close", 5) == 0)
   {
     fprintf(fs, "%d Closing secure connection.\n", CODE_SECURExCLOSE);
-    gLicqDaemon->secureChannelClose(userId);
+    gProtocolManager.secureChannelClose(userId);
   }
   else
   {

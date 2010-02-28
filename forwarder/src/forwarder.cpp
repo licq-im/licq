@@ -18,10 +18,12 @@
 #include "licq_socket.h"
 #include "licq_translate.h"
 #include "licq/pluginmanager.h"
+#include <licq/protocolmanager.h>
 
 extern "C" { const char *LP_Version(); }
 
 using Licq::gPluginManager;
+using Licq::gProtocolManager;
 
 const char L_FORWARDxSTR[]  = "[FOR] ";
 const unsigned short SUBJ_CHARS = 20;
@@ -116,7 +118,7 @@ int CLicqForwarder::Run()
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_FORWARDxSTR);
     else
-      gLicqDaemon->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), s);
+      gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);
     free(m_szStatus);
     m_szStatus = NULL;
   }
@@ -327,7 +329,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(const LicqUser* u, const CUserEvent* e)
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
           u->GetAlias(), u->IdString(), szTime, e->Text());
-  unsigned long tag = gLicqDaemon->sendMessage(LicqUser::makeUserId(myUserId, LICQ_PPID), szText, true, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = gProtocolManager.sendMessage(UserId(myUserId, LICQ_PPID), szText, true, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
   {

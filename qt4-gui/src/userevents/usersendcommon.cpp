@@ -52,6 +52,7 @@
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_translate.h>
+#include <licq/protocolmanager.h>
 
 #include "config/chat.h"
 #include "config/emoticons.h"
@@ -88,6 +89,7 @@
 
 using namespace std;
 using Licq::StringList;
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendCommon */
 
@@ -862,7 +864,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
           messageRaw = ue->Message();
         }
 
-        icqEventTag = gLicqDaemon->sendMessage(myUsers.front(), messageRaw.data(),
+        icqEventTag = gProtocolManager.sendMessage(myUsers.front(), messageRaw.data(),
             !online, level, false, &myIcqColor);
 
         myEventTag.push_back(icqEventTag);
@@ -881,7 +883,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
     {
       const CEventUrl* ue = dynamic_cast<const CEventUrl*>(e->UserEvent());
 
-      icqEventTag = gLicqDaemon->sendUrl(myUsers.front(), ue->Url(),
+      icqEventTag = gProtocolManager.sendUrl(myUsers.front(), ue->Url(),
           ue->Description(), !online, level, false, &myIcqColor);
 
       break;
@@ -928,7 +930,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
       ConstFileList filelist(ue->FileList());
 
       //TODO in the daemon
-      icqEventTag = gLicqDaemon->fileTransferPropose(myUsers.front(),
+      icqEventTag = gProtocolManager.fileTransferPropose(myUsers.front(),
           ue->Filename(), ue->FileDescription(), filelist, level, !online);
 
       break;
@@ -1318,7 +1320,7 @@ void UserSendCommon::clearNewEvents()
 
 void UserSendCommon::closeDialog()
 {
-  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
+  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   if (Config::Chat::instance()->msgChatView())
   {
@@ -1477,7 +1479,7 @@ void UserSendCommon::messageTextChanged()
     return;
 
   myTempMessage = myMessageEdit->toPlainText();
-  gLicqDaemon->sendTypingNotification(myUsers.front(), true, myConvoId);
+  gProtocolManager.sendTypingNotification(myUsers.front(), true, myConvoId);
   disconnect(myMessageEdit, SIGNAL(textChanged()), this, SLOT(messageTextChanged()));
   mySendTypingTimer->start(5000);
 }
@@ -1497,14 +1499,14 @@ void UserSendCommon::textChangedTimeout()
     myTempMessage = str;
     // Hack to not keep sending the typing notification to ICQ
     if (myPpid != LICQ_PPID)
-      gLicqDaemon->sendTypingNotification(myUsers.front(), true, myConvoId);
+      gProtocolManager.sendTypingNotification(myUsers.front(), true, myConvoId);
   }
   else
   {
     if (mySendTypingTimer->isActive())
       mySendTypingTimer->stop();
     connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-    gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
+    gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
   }
 }
 

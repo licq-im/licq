@@ -17,6 +17,7 @@
 #include "licq_icqd.h"
 #include <licq/icqcodes.h>
 #include "licq/pluginmanager.h"
+#include <licq/protocolmanager.h>
 
 #include "event_data.h"
 
@@ -26,6 +27,7 @@
 
 using namespace std;
 using Licq::gPluginManager;
+using Licq::gProtocolManager;
 
 extern "C" const char *LP_Version();
 
@@ -546,7 +548,7 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
     PrintStatus();
     break;
   case SIGNAL_ADDxSERVERxLIST:
-      gLicqDaemon->updateUserAlias(s->userId());
+      gProtocolManager.updateUserAlias(s->userId());
       break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     //ignore for now
@@ -1536,7 +1538,7 @@ void CLicqConsole::InputInfo(int cIn)
         {
       winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
-          winMain->event = gLicqDaemon->requestUserInfo(data->userId);
+          winMain->event = gProtocolManager.requestUserInfo(data->userId);
       winMain->state = STATE_PENDING;
       return;
         }
@@ -1934,7 +1936,7 @@ void CLicqConsole::InputMessage(int cIn)
       winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = gLicqDaemon->sendMessage(data->userId, data->szMsg,
+      winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg,
           !bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
       break;
@@ -1949,7 +1951,7 @@ void CLicqConsole::InputMessage(int cIn)
     {
       winMain->wprintf("%C%ASending message through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        winMain->event = gLicqDaemon->sendMessage(data->userId, data->szMsg,
+        winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg,
             true, false);
       winMain->state = STATE_PENDING;
     }
@@ -2068,7 +2070,7 @@ void CLicqConsole::InputSendFile(int cIn)
       ConstFileList lFileList;
       lFileList.push_back(strdup(data->szFileName));
 
-      winMain->event = gLicqDaemon->fileTransferPropose(data->userId,
+      winMain->event = gProtocolManager.fileTransferPropose(data->userId,
               data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
                        !bDirect);
       break;
@@ -2209,7 +2211,7 @@ void CLicqConsole::InputUrl(int cIn)
       winMain->wprintf("%C%ASending URL %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = gLicqDaemon->sendUrl(data->userId, data->szUrl,
+      winMain->event = gProtocolManager.sendUrl(data->userId, data->szUrl,
           data->szDesc, !bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
       break;
@@ -2224,7 +2226,7 @@ void CLicqConsole::InputUrl(int cIn)
     {
       winMain->wprintf("%C%ASending URL through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        winMain->event = gLicqDaemon->sendUrl(data->userId, data->szUrl,
+        winMain->event = gProtocolManager.sendUrl(data->userId, data->szUrl,
             data->szDesc, true, false);
       winMain->state = STATE_PENDING;
     }
@@ -2353,14 +2355,13 @@ void CLicqConsole::InputAuthorize(int cIn)
       {
         winMain->wprintf("%C%AGranting authorizing to %s...", m_cColorInfo->nColor,
             m_cColorInfo->nAttr, USERID_TOSTR(data->userId));
-        winMain->event = gLicqDaemon->authorizeGrant(data->userId, data->szMsg);
       }
       else
       {
         winMain->wprintf("%C%ARefusing authorizing to %s...", m_cColorInfo->nColor,
             m_cColorInfo->nAttr, USERID_TOSTR(data->userId));
-        winMain->event = gLicqDaemon->authorizeRefuse(data->userId, data->szMsg);
       }
+      winMain->event = gProtocolManager.authorizeReply(data->userId, data->bUrgent, data->szMsg);
 
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       if (winMain->data != NULL)                           
@@ -3102,7 +3103,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           // Accept the file
           const char *home = getenv("HOME");
           ftman->ReceiveFiles(home);
-          gLicqDaemon->fileTransferAccept(data->userId,
+          gProtocolManager.fileTransferAccept(data->userId,
               ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
               f->MessageID()[1], f->FileDescription(), f->Filename(),
               f->FileSize(), !f->IsDirect());
@@ -3135,7 +3136,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
       data->szReason[data->nPos - 1] = '\0';
 
       // XXX hack
-      gLicqDaemon->fileTransferRefuse(data->userId,
+      gProtocolManager.fileTransferRefuse(data->userId,
           data->szReason, f->Sequence(), 0, 0, false);
 
       // We are done now
@@ -3196,14 +3197,14 @@ void CLicqConsole::UserCommand_Secure(const UserId& userId, char *szStatus)
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = gLicqDaemon->secureChannelOpen(userId);
+    winMain->event = gProtocolManager.secureChannelOpen(userId);
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
     winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = gLicqDaemon->secureChannelClose(userId);
+    winMain->event = gProtocolManager.secureChannelClose(userId);
   }
   else
   {

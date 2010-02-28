@@ -8,6 +8,8 @@
 #include "licq_log.h"
 #include "licq_events.h"
 
+#include "../protocolmanager.h"
+
 using std::list;
 using std::string;
 using Licq::Group;
@@ -335,7 +337,7 @@ bool UserManager::addUser(const UserId& uid,
 
   // Add user to server side list
   if (permanent && addToServer)
-    gLicqDaemon->protoAddUser(uid, groupId);
+    gProtocolManager.addUser(uid, groupId);
 
   // Set initial group membership, also sets server group for user
   if (groupId != 0)
@@ -367,7 +369,7 @@ bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
 
   // Add user to server side list
   if (addToServer)
-    gLicqDaemon->protoAddUser(userId, groupId);
+    gProtocolManager.addUser(userId, groupId);
 
   // Set initial group membership, also sets server group for user
   if (groupId != 0)
@@ -380,7 +382,7 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
 {
   // Remove the user from the server side list first
   if (removeFromServer)
-    gLicqDaemon->protoRemoveUser(userId);
+    gProtocolManager.removeUser(userId);
 
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchUser here.
@@ -1206,13 +1208,13 @@ void UserManager::setUserInGroup(const UserId& userId,
     if (groupType == GROUPS_SYSTEM)
     {
       if (groupId == GROUP_VISIBLE_LIST)
-        gLicqDaemon->visibleListSet(userId, inGroup);
+        gProtocolManager.visibleListSet(userId, inGroup);
 
       else if (groupId == GROUP_INVISIBLE_LIST)
-        gLicqDaemon->invisibleListSet(userId, inGroup);
+        gProtocolManager.invisibleListSet(userId, inGroup);
 
       else if (groupId == GROUP_IGNORE_LIST)
-        gLicqDaemon->ignoreListSet(userId, inGroup);
+        gProtocolManager.ignoreListSet(userId, inGroup);
     }
     else
     {

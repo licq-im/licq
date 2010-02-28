@@ -54,6 +54,7 @@
 #endif
 
 #include <licq/icqcodes.h>
+#include <licq/protocolmanager.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
@@ -75,7 +76,8 @@
 #include "core/mainwin.h"
 #endif
 
-
+using Licq::OwnerWriteGuard;
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserPages::Info */
 
@@ -142,7 +144,7 @@ void UserPages::Info::apply(LicqUser* user)
 void UserPages::Info::apply2(const UserId& /* userId */)
 {
   if (myAliasHasChanged)
-    gLicqDaemon->updateUserAlias(myUserId);
+    gProtocolManager.updateUserAlias(myUserId);
   myAliasHasChanged = false;
 
 #ifdef USE_KABC
@@ -1530,11 +1532,11 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   }
   else if (page == UserDlg::PicturePage)
   {
-    icqEventTag = gLicqDaemon->requestUserPicture(myUserId);
+    icqEventTag = gProtocolManager.requestUserPicture(myUserId);
   }
   else
   {
-    icqEventTag = gLicqDaemon->requestUserInfo(myUserId);
+    icqEventTag = gProtocolManager.requestUserInfo(myUserId);
   }
 
   return icqEventTag;
@@ -1542,11 +1544,20 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
 
 unsigned long UserPages::Info::send(UserDlg::UserPage page)
 {
-  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
-  if (o == NULL)
-    return 0;
-    unsigned short status = o->Status();
-    gUserManager.DropOwner(o);
+  unsigned short status;
+  UserId ownerId;
+
+  {
+    OwnerWriteGuard owner(myPpid);
+    if (!owner.isLocked())
+      return 0;
+    status = owner->Status();
+    ownerId = owner->id();
+
+    // Owner info is read from owner so make sure it's updated
+    if (page == UserDlg::GeneralPage)
+      savePageGeneral(*owner);
+  }
 
     if(status == ICQ_STATUS_OFFLINE) {
     InformUser(dynamic_cast<UserDlg*>(parent()),
@@ -1554,33 +1565,18 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     return 0;
   }
 
-  unsigned short i, cc, occupation;
+  unsigned short cc, i, occupation;
   unsigned long icqEventTag;
 
   switch (page)
   {
     case UserDlg::GeneralPage:
-    i = cmbCountry->currentIndex();
-    cc = GetCountryByIndex(i)->nCode;
     gLicqDaemon->icqSetEmailInfo(
         codec->fromUnicode(nfoEmailSecondary->text()),
         codec->fromUnicode(nfoEmailOld->text()));
-    icqEventTag = gLicqDaemon->ProtoSetGeneralInfo(
-          myPpid,
-        nfoAlias->text().toLocal8Bit(),
-        codec->fromUnicode(nfoFirstName->text()),
-        codec->fromUnicode(nfoLastName->text()),
-        codec->fromUnicode(nfoEmailPrimary->text()),
-        codec->fromUnicode(nfoCity->text()),
-        codec->fromUnicode(nfoState->text()),
-        codec->fromUnicode(nfoPhone->text()),
-        codec->fromUnicode(nfoFax->text()),
-        codec->fromUnicode(nfoAddress->text()),
-        codec->fromUnicode(nfoCellular->text()),
-        codec->fromUnicode(nfoZipCode->text()),
-        cc,
-        false);
-  break;
+
+      icqEventTag = gProtocolManager.updateOwnerInfo(ownerId);
+      break;
 
     case UserDlg::MorePage:
     icqEventTag = gLicqDaemon->icqSetMoreInfo(

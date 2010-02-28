@@ -19,11 +19,13 @@
 #include "licq_user.h"
 #include "licq_constants.h"
 #include "licq/pluginmanager.h"
+#include <licq/protocolmanager.h>
 
 extern "C" { const char *LP_Version(); }
 
 using namespace std;
 using Licq::gPluginManager;
+using Licq::gProtocolManager;
 
 const char L_AUTOREPxSTR[]  = "[RPL] ";
 const unsigned short SUBJ_CHARS = 20;
@@ -87,7 +89,7 @@ int CLicqAutoReply::Run()
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_AUTOREPxSTR);
     else
-      gLicqDaemon->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), s);
+      gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);
     free(m_szStatus);
     m_szStatus = NULL;
   }
@@ -199,7 +201,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
 	    user_event = e->UserEvent();
-      gLicqDaemon->sendMessage(e->userId(), user_event->Text(), m_bSendThroughServer,
+      gProtocolManager.sendMessage(e->userId(), user_event->Text(), m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }
@@ -281,7 +283,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
 
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
-  unsigned long tag = gLicqDaemon->sendMessage(userId, szText, m_bSendThroughServer,
+  unsigned long tag = gProtocolManager.sendMessage(userId, szText, m_bSendThroughServer,
      ICQ_TCPxMSG_URGENT);
   delete []szText;
   delete [] szCommand;

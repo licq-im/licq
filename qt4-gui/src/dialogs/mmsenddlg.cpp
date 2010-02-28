@@ -40,6 +40,7 @@
 #include <licq_icqd.h>
 #include <licq_translate.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "core/licqgui.h"
 #include "core/signalmanager.h"
@@ -50,6 +51,7 @@
 #include "views/mmuserview.h"
 
 using Licq::StringList;
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMSendDlg */
 
@@ -230,7 +232,7 @@ void MMSendDlg::SendNext()
           messageRaw = codec->fromUnicode(s1);
         }
 
-        icqEventTag = gLicqDaemon->sendMessage(userId, messageRaw.data(),
+        icqEventTag = gProtocolManager.sendMessage(userId, messageRaw.data(),
             true, ICQ_TCPxMSG_NORMAL, true);
 
         tmp = gTranslator.NToRN(messageRaw);
@@ -248,7 +250,7 @@ void MMSendDlg::SendNext()
       const QTextCodec* codec = UserCodec::codecForUser(u);
       gUserManager.DropUser(u);
 
-      icqEventTag = gLicqDaemon->sendUrl(userId, s2.toLatin1().data(),
+      icqEventTag = gProtocolManager.sendUrl(userId, s2.toLatin1().data(),
           codec->fromUnicode(s1).data(), true, ICQ_TCPxMSG_NORMAL, true);
       break;
     }

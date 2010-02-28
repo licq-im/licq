@@ -77,6 +77,7 @@ extern "C"
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq/pluginmanager.h>
+#include <licq/protocolmanager.h>
 #include <licq_sar.h>
 #include <licq_user.h>
 
@@ -130,6 +131,7 @@ using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
 using Licq::gPluginManager;
+using Licq::gProtocolManager;
 
 #if defined(USE_SCRNSAVER)
 static XErrorHandler old_handler = 0;
@@ -660,7 +662,8 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
   gUserManager.DropOwner(o);
 
   const QTextCodec* codec = UserCodec::defaultEncoding();
-  gLicqDaemon->protoSetStatus(ownerId, status, (autoMessage.isNull() ? KEEP_AUTORESPONSE : codec->fromUnicode(autoMessage).data()));
+  gProtocolManager.setStatus(ownerId, status,
+      (autoMessage.isNull() ? gProtocolManager.KeepAutoResponse : codec->fromUnicode(autoMessage).data()));
 }
 
 bool LicqGui::removeUserFromList(const UserId& userId, QWidget* parent)

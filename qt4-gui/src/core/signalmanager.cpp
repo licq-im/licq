@@ -28,9 +28,11 @@
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_user.h>
+#include <licq/protocolmanager.h>
 
 #include "dialogs/ownereditdlg.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 
 SignalManager::SignalManager(int pipe)
@@ -99,7 +101,7 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
 
     case SIGNAL_ADDxSERVERxLIST:
       //TODO
-      gLicqDaemon->updateUserAlias(userId);
+      gProtocolManager.updateUserAlias(userId);
       break;
 
     case SIGNAL_NEWxPROTO_PLUGIN:

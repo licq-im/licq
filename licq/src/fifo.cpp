@@ -39,6 +39,7 @@
 #include "gettext.h"
 
 #include "licq/pluginmanager.h"
+#include "licq/protocolmanager.h"
 #include "licq_icq.h"
 #include "licq_user.h"
 #include "licq_constants.h"
@@ -52,6 +53,7 @@
 
 using std::string;
 using Licq::gPluginManager;
+using Licq::gProtocolManager;
 
 #define ReportMissingParams(cmdname) \
   (gLog.Info("%s `%s': missing arguments. try `help %s'\n",  \
@@ -323,9 +325,8 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
 }
 
 // status 
-static int fifo_status( int argc, const char *const *argv, void *data)
+static int fifo_status( int argc, const char *const *argv, void* /* data */)
 {
-  CICQDaemon *d= (CICQDaemon *) data;
   const char *szStatus = argv[1];
   unsigned long nStatus;
 
@@ -345,7 +346,7 @@ static int fifo_status( int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  d->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), nStatus);
+  gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), nStatus);
 
   // Now set the auto response
   if( argc > 2 )
@@ -376,9 +377,8 @@ static int fifo_auto_response( int argc, const char *const *argv, void* /* data 
 }
 
 // message <buddy> <message>
-static int fifo_message ( int argc, const char *const *argv, void *data)
+static int fifo_message ( int argc, const char *const *argv, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;;
   unsigned long nPPID;
   char *szId = 0;
 
@@ -389,7 +389,7 @@ static int fifo_message ( int argc, const char *const *argv, void *data)
   }
 
   if (atoid(argv[1], false, &szId, &nPPID))
-    d->sendMessage(LicqUser::makeUserId(szId, nPPID), argv[2], true, 0);
+    gProtocolManager.sendMessage(UserId(szId, nPPID), argv[2], true, 0);
 
   else
     ReportBadBuddy(argv[0], argv[1]);
@@ -400,10 +400,9 @@ static int fifo_message ( int argc, const char *const *argv, void *data)
 }
 
 // url <buddy> <url> [<description>]
-static int fifo_url ( int argc, const char *const *argv, void *data)
+static int fifo_url ( int argc, const char *const *argv, void* /* data */)
 {
   const char *szDescr;
-  CICQDaemon *d = (CICQDaemon *) data;
   unsigned long nPPID;
   char *szId = 0;
 
@@ -416,7 +415,7 @@ static int fifo_url ( int argc, const char *const *argv, void *data)
   if (atoid(argv[1], false, &szId, &nPPID))
   {
     szDescr = (argc > 3) ? argv[3] : "" ;
-    d->sendUrl(LicqUser::makeUserId(szId, nPPID), argv[2], szDescr, true, false);
+    gProtocolManager.sendUrl(UserId(szId, nPPID), argv[2], szDescr, true, false);
   }
   else
     ReportBadBuddy(argv[0],argv[1]);
@@ -541,9 +540,8 @@ static int fifo_adduser(int argc, const char* const* argv, void* /* data */)
 }
 
 // userinfo <buddy>
-static int fifo_userinfo ( int argc, const char *const *argv, void *data)
+static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
   unsigned long nPPID;
   char *szId = 0; 
   int ret = -1; 
@@ -564,7 +562,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
     {
       UserId userId = u->id();
       gUserManager.DropUser(u);
-      d->requestUserInfo(userId);
+      gProtocolManager.requestUserInfo(userId);
       ret = 0;
     }
   }
