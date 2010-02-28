@@ -44,16 +44,6 @@ using namespace std;
 using Licq::StringList;
 using Licq::User;
 
-void CICQDaemon::protoAddUser(const UserId& userId, int groupId)
-{
-  string accountId = Licq::User::getUserAccountId(userId);
-  unsigned long ppid = Licq::User::getUserProtocolId(userId);
-  if (ppid == LICQ_PPID)
-    icqAddUser(accountId.c_str(), false, groupId);
-  else
-    PushProtoSignal(new LicqProtoAddUserSignal(userId, false), ppid);
-}
-
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
 {
@@ -295,23 +285,6 @@ void CICQDaemon::icqCreatePDINFO()
   SendEvent_Server(pPDInfo);
 }
 
-//-----icqRemoveUser-------------------------------------------------------
-void CICQDaemon::protoRemoveUser(const UserId& userId)
-{
-  const LicqUser* u = gUserManager.fetchUser(userId);
-  if (u == NULL)
-    return;
-  unsigned long ppid = u->ppid();
-  string accountId = u->accountId();
-  bool tempUser = u->NotInList();
-  gUserManager.DropUser(u);
-
-  if (ppid == LICQ_PPID && !tempUser)
-    icqRemoveUser(accountId.c_str());
-  else if(ppid != LICQ_PPID)
-    PushProtoSignal(new LicqProtoRemoveUserSignal(userId), ppid);
-}
-
 void CICQDaemon::icqRemoveUser(const char *_szId)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
@@ -407,22 +380,6 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
-void CICQDaemon::updateUserAlias(const UserId& userId)
-{
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user == NULL)
-    return;
-  string accountId = user->accountId();
-  unsigned long ppid = user->ppid();
-  string newAlias = user->GetAlias();
-  gUserManager.DropUser(user);
-
-  if (ppid == LICQ_PPID)
-    icqRenameUser(accountId, newAlias);
-  else
-    PushProtoSignal(new LicqProtoRenameUserSignal(userId), ppid);
-}
-
 void CICQDaemon::icqRenameUser(const string& accountId, const string& newAlias)
 {
   if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1) return;
@@ -446,25 +403,6 @@ void CICQDaemon::icqAlertUser(const UserId& userId)
   CPU_ThroughServer *p = new CPU_ThroughServer(id, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info(tr("%sAlerting user they were added (#%hu)...\n"), L_SRVxSTR, p->Sequence());
   SendExpectEvent_Server(userId, p, NULL);
-}
-
-unsigned long CICQDaemon::requestUserAutoResponse(const UserId& userId)
-{
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user == NULL)
-    return 0;
-  string accountId = user->accountId();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
-  unsigned long eventId = getNextEventId();
-
-  if (ppid == LICQ_PPID)
-    icqFetchAutoResponseServer(eventId, accountId.c_str());
-  else
-    eventId = 0;
-
-  return eventId;
 }
 
 void CICQDaemon::icqFetchAutoResponseServer(unsigned long eventId, const char *_szId)
@@ -613,24 +551,6 @@ void CICQDaemon::icqRelogon()
 //  m_eStatus = STATUS_OFFLINE_FORCED;
 }
 
-unsigned long CICQDaemon::requestUserInfo(const UserId& userId)
-{
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user == NULL)
-    return 0;
-  string accountId = user->accountId();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
-  unsigned long nRet = 0;
-  if (ppid == LICQ_PPID)
-    nRet = icqRequestMetaInfo(accountId.c_str());
-  else
-    PushProtoSignal(new LicqProtoRequestInfo(userId), ppid);
-
-  return nRet;
-}
-
 //-----icqRequestMetaInfo----------------------------------------------------
 unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
 {
@@ -649,27 +569,6 @@ unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
   return 0;
 }
 
-unsigned long CICQDaemon::requestUserPicture(const UserId& userId)
-{
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user == NULL)
-    return 0;
-  string accountId = user->accountId();
-  unsigned long ppid = user->ppid();
-  size_t iconHashSize = strlen(user->BuddyIconHash());
-  bool sendServer = (user->SocketDesc(ICQ_CHNxINFO) < 0);
-  gUserManager.DropUser(user);
-
-  unsigned long nRet = 0;
-
-  if (ppid == LICQ_PPID)
-    nRet = icqRequestPicture(userId, sendServer, iconHashSize);
-  else
-    PushProtoSignal(new LicqProtoRequestPicture(userId), ppid);
-
-  return nRet;
-}
-
 //-----icqRequestService--------------------------------------------------------
 void CICQDaemon::icqRequestService(unsigned short nFam)
 {
@@ -677,54 +576,6 @@ void CICQDaemon::icqRequestService(unsigned short nFam)
   gLog.Info(tr("%sRequesting service socket for FAM 0x%02X (#%hu/#%d)...\n"),
             L_SRVxSTR, nFam, p->Sequence(), p->SubSequence());
   SendEvent_Server(p);
-}
-
-//-----icqSetStatus-------------------------------------------------------------
-unsigned long CICQDaemon::protoSetStatus(const UserId& ownerId, unsigned short newStatus,
-    const std::string& message)
-{
-  bool isOffline;
-  unsigned long ppid;
-
-  {
-    LicqUserWriteGuard u(ownerId);
-    if (!u.isLocked() || u->isUser())
-      return 0;
-
-    isOffline = u->StatusOffline();
-    ppid = u->ppid();
-    if (message != KEEP_AUTORESPONSE)
-      dynamic_cast<LicqOwner*>(*u)->SetAutoResponse(message.c_str());
-  }
-
-  unsigned long nRet = 0;
-
-  if (newStatus == ICQ_STATUS_OFFLINE)
-  {
-    if (isOffline)
-      return 0;
-
-    if (ppid == LICQ_PPID)
-      icqLogoff();
-    else
-      PushProtoSignal(new LicqProtoLogoffSignal(), ppid);
-  }
-  else if(isOffline)
-  {
-    if (ppid == LICQ_PPID)
-      nRet = icqLogon(newStatus);
-    else
-      PushProtoSignal(new LicqProtoLogonSignal(newStatus), ppid);
-  }
-  else
-  {
-    if (ppid == LICQ_PPID)
-      nRet = icqSetStatus(newStatus);
-    else
-      PushProtoSignal(new LicqProtoChangeStatusSignal(newStatus), ppid);
-  }
-
-  return nRet;
 }
 
 unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
@@ -802,29 +653,6 @@ unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
   return 0;
 }
 
-//-----icqSetGeneralInfo----------------------------------------------------
-unsigned long CICQDaemon::ProtoSetGeneralInfo(unsigned long nPPID,
-                          const char *szAlias, const char *szFirstName,
-                          const char *szLastName, const char *szEmailPrimary,
-                          const char *szCity,
-                          const char *szState, const char *szPhoneNumber,
-                          const char *szFaxNumber, const char *szAddress,
-                          const char *szCellularNumber, const char *szZipCode,
-                          unsigned short nCountryCode, bool bHideEmail)
-{
-  unsigned long nRet = 0;
-  if (nPPID == LICQ_PPID)
-    nRet = icqSetGeneralInfo(szAlias, szFirstName, szLastName, szEmailPrimary,
-      szCity, szState, szPhoneNumber, szFaxNumber, szAddress,
-      szCellularNumber, szZipCode, nCountryCode, bHideEmail);
-  else
-    PushProtoSignal(new LicqProtoUpdateInfoSignal(szAlias, szFirstName, szLastName, szEmailPrimary,
-      szCity, szState, szPhoneNumber, szFaxNumber, szAddress,
-      szCellularNumber, szZipCode), nPPID);
-      
-  return nRet;
-}
-                          
 unsigned long CICQDaemon::icqSetGeneralInfo(
                           const char *szAlias, const char *szFirstName,
                           const char *szLastName, const char *szEmailPrimary,
@@ -955,19 +783,6 @@ unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
   return 0;
 }
 
-//-----icqAuthorizeGrant-------------------------------------------------------
-unsigned long CICQDaemon::authorizeGrant(const UserId& userId, const string& message)
-{
-  unsigned long nRet = 0;
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (nPPID == LICQ_PPID)
-    nRet = icqAuthorizeGrant(userId, message);
-  else
-    PushProtoSignal(new LicqProtoGrantAuthSignal(userId, message), nPPID);
-  return nRet;
-}
-
 unsigned long CICQDaemon::icqAuthorizeGrant(const UserId& userId, const string& /* message */)
 {
   const string accountId = LicqUser::getUserAccountId(userId);
@@ -977,20 +792,6 @@ unsigned long CICQDaemon::icqAuthorizeGrant(const UserId& userId, const string& 
   SendEvent_Server(p);
 
   return 0;
-}
-
-//-----icqAuthorizeRefuse------------------------------------------------------
-unsigned long CICQDaemon::authorizeRefuse(const UserId& userId, const string& message)
-{
-  unsigned long nRet = 0;
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (nPPID == LICQ_PPID)
-    nRet = icqAuthorizeRefuse(userId, message);
-  else
-    PushProtoSignal(new LicqProtoRefuseAuthSignal(userId, message), nPPID);
-
-  return nRet;
 }
 
 unsigned long CICQDaemon::icqAuthorizeRefuse(const UserId& userId, const string& message)
@@ -1234,58 +1035,6 @@ void CICQDaemon::icqSendInvisibleList()
   CSrvPacketTcp* p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxINVISIBxLIST);
   gLog.Info(tr("%sSending invisible list (#%hu)...\n"), L_SRVxSTR, p->Sequence());
   SendEvent_Server(p);
-}
-
-void CICQDaemon::visibleListSet(const UserId& userId, bool visible)
-{
-  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (!visible)
-    if (_nPPID == LICQ_PPID)
-      icqRemoveFromVisibleList(userId);
-    else
-      PushProtoSignal(new LicqProtoUnacceptUserSignal(userId), _nPPID);
-  else
-    if (_nPPID == LICQ_PPID)
-      icqAddToVisibleList(userId);
-    else
-      PushProtoSignal(new LicqProtoAcceptUserSignal(userId), _nPPID);
-}
-
-void CICQDaemon::invisibleListSet(const UserId& userId, bool invisible)
-{
-  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (!invisible)
-    if (_nPPID == LICQ_PPID)
-      icqRemoveFromInvisibleList(userId);
-    else
-      PushProtoSignal(new LicqProtoUnblockUserSignal(userId), _nPPID);
-  else
-    if (_nPPID == LICQ_PPID)
-      icqAddToInvisibleList(userId);
-    else
-      PushProtoSignal(new LicqProtoBlockUserSignal(userId), _nPPID);
-}
-
-void CICQDaemon::ignoreListSet(const UserId& userId, bool b)
-{
-  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (_nPPID == LICQ_PPID)
-  {
-    if (b)
-      icqAddToIgnoreList(userId);
-    else
-      icqRemoveFromIgnoreList(userId);
-  }
-  else
-  {
-    if (b)
-      PushProtoSignal(new LicqProtoIgnoreUserSignal(userId), _nPPID);
-    else
-      PushProtoSignal(new LicqProtoUnignoreUserSignal(userId), _nPPID);
-  }
 }
 
 //-----icqAddToVisibleList------------------------------------------------------
@@ -1875,24 +1624,6 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   FOR_EACH_PROTO_USER_END
 }
 
-void CICQDaemon::sendTypingNotification(const UserId& userId, bool active, int nSocket)
-{
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user == NULL)
-    return;
-  string accountId = user->accountId();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
-  //TODO: Make for each plugin
-  if (!m_bSendTN)
-    return;
-
-  if (ppid == LICQ_PPID)
-    icqTypingNotification(accountId.c_str(), active);
-  else
-    PushProtoSignal(new LicqProtoTypingNotificationSignal(userId, active, nSocket), ppid);
-}
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----ConnectToServer---------------------------------------------------------

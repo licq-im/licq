@@ -41,21 +41,6 @@ using namespace std;
 using Licq::StringList;
 using Licq::User;
 
-//-----ICQ::sendMessage--------------------------------------------------------
-unsigned long CICQDaemon::sendMessage(const UserId& userId, const string& message,
-    bool viaServer, unsigned short flags, bool multipleRecipients, CICQColor* color,
-    unsigned long convoId)
-{
-  unsigned long eventId = getNextEventId();
-  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (_nPPID == LICQ_PPID)
-    icqSendMessage(eventId, userId, message, viaServer, flags, multipleRecipients, color);
-  else
-    PushProtoSignal(new LicqProtoSendMessageSignal(eventId, userId, message, convoId), _nPPID);
-
-  return eventId;
-}
 
 void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, const string& message,
    bool viaServer, unsigned short nLevel, bool bMultipleRecipients,
@@ -227,25 +212,6 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
   return eventId;
 }
 
-
-//-----CICQDaemon::sendUrl-----------------------------------------------------
-unsigned long CICQDaemon::sendUrl(const UserId& userId, const string& url,
-    const string& message, bool viaServer, unsigned short flags,
-    bool multipleRecipients, CICQColor* color)
-{
-  unsigned long eventId = getNextEventId();
-  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (_nPPID == LICQ_PPID)
-    icqSendUrl(eventId, userId, url, message, viaServer, flags, multipleRecipients, color);
-  else
-  {
-    eventId = 0;
-  }
-
-  return eventId;
-}
-
 void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const string& url,
    const string& message, bool viaServer, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
@@ -318,21 +284,6 @@ void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const s
 
   if (szDescDos)
     delete [] szDescDos;
-}
-
-
-//-----CICQDaemon::sendFile---------------------------------------------------
-unsigned long CICQDaemon::fileTransferPropose(const UserId& userId, const string& filename,
-    const string& message, ConstFileList& files, unsigned short flags, bool viaServer)
-{
-  unsigned long eventId = getNextEventId();
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  if (nPPID == LICQ_PPID)
-    icqFileTransfer(eventId, userId, filename, message, files, flags, viaServer);
-  else
-    PushProtoSignal(new LicqProtoSendFileSignal(eventId, userId, filename, message, files), nPPID);
-
-  return eventId;
 }
 
 void CICQDaemon::icqFileTransfer(unsigned long eventId, const UserId& userId, const string& filename,
@@ -706,16 +657,6 @@ unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
   return result;
 }
 
-//-----CICQDaemon::fileCancel-------------------------------------------------------------------------
-void CICQDaemon::fileTransferCancel(const UserId& userId, unsigned long eventId)
-{
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  if (nPPID == LICQ_PPID)
-    icqFileTransferCancel(userId, (unsigned short)eventId);
-  else
-    PushProtoSignal(new LicqProtoCancelEventSignal(userId, eventId), nPPID);
-}
-
 void CICQDaemon::icqFileTransferCancel(const UserId& userId, unsigned short nSequence)
 {
   // add to history ??
@@ -726,24 +667,6 @@ void CICQDaemon::icqFileTransferCancel(const UserId& userId, unsigned short nSeq
   CPT_CancelFile p(nSequence, u);
   AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   gUserManager.DropUser(u);
-}
-
-//-----CICQDaemon::fileAccept-----------------------------------------------------------------------------
-void CICQDaemon::fileTransferAccept(const UserId& userId, unsigned short port,
-    unsigned long eventId, unsigned long flag1, unsigned long flag2,
-    const string& message, const string filename, unsigned long filesize,
-    bool viaServer)
-{
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  if (nPPID == LICQ_PPID)
-  {
-    unsigned long nMsgId[] = { flag1, flag2 };
-    icqFileTransferAccept(userId, port, (unsigned short)eventId,
-        nMsgId, viaServer, message, filename, filesize);
-  }
-  else
-    PushProtoSignal(new LicqProtoSendEventReplySignal(userId, string(), true, port,
-        eventId, flag1, flag2, !viaServer), nPPID);
 }
 
 void CICQDaemon::icqFileTransferAccept(const UserId& userId, unsigned short nPort,
@@ -771,22 +694,6 @@ void CICQDaemon::icqFileTransferAccept(const UserId& userId, unsigned short nPor
   }
 
   gUserManager.DropUser(u);
-}
-
-void CICQDaemon::fileTransferRefuse(const UserId& userId, const string& message,
-    unsigned long eventId, unsigned long flag1, unsigned long flag2,
-    bool viaServer)
-{
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-
-  if (nPPID == LICQ_PPID)
-  {
-    unsigned long msgId[] = { flag1, flag2 };
-    icqFileTransferRefuse(userId, message, (unsigned short)eventId, msgId, viaServer);
-  }
-  else
-    PushProtoSignal(new LicqProtoSendEventReplySignal(userId, message,
-        false, eventId, flag1, flag2, !viaServer), nPPID);
 }
 
 void CICQDaemon::icqFileTransferRefuse(const UserId& userId, const string& message,
@@ -960,40 +867,6 @@ void CICQDaemon::icqChatRequestAccept(const char* id, unsigned short nPort,
  * OpenSSL stuff
  *-------------------------------------------------------------------------*/
 
-unsigned long CICQDaemon::secureChannelOpen(const UserId& userId)
-{
-  if (gUserManager.isOwner(userId))
-    return 0;
-
-  {
-    LicqUserReadGuard u(userId);
-    if (!u.isLocked())
-    {
-      gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
-          L_WARNxSTR, USERID_TOSTR(userId));
-      return 0;
-    }
-
-    // Check that the user doesn't already have a secure channel
-    if (u->Secure())
-    {
-      gLog.Warn(tr("%s%s (%s) already has a secure channel.\n"), L_WARNxSTR,
-          u->GetAlias(), USERID_TOSTR(userId));
-      return 0;
-    }
-  }
-
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-
-  unsigned long eventId = getNextEventId();
-  if (nPPID == LICQ_PPID)
-    icqOpenSecureChannel(eventId, userId);
-  else
-    PushProtoSignal(new LicqProtoOpenSecureSignal(eventId, userId), nPPID);
-
-  return eventId;
-}
-
 void CICQDaemon::icqOpenSecureChannel(unsigned long eventId, const UserId& userId)
 {
 #ifdef USE_OPENSSL
@@ -1020,39 +893,6 @@ void CICQDaemon::icqOpenSecureChannel(unsigned long eventId, const UserId& userI
 #endif
 }
 
-unsigned long CICQDaemon::secureChannelClose(const UserId& userId)
-{
-  {
-    LicqUserReadGuard u(userId);
-    if (!u.isLocked())
-    {
-      gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
-          L_WARNxSTR, USERID_TOSTR(userId));
-      return 0;
-    }
-
-    // Check that the user have a secure channel to close
-    if (!u->Secure())
-    {
-      gLog.Warn(tr("%s%s (%s) does not have a secure channel.\n"), L_WARNxSTR,
-          u->GetAlias(), USERID_TOSTR(userId));
-      return 0;
-    }
-  }
-
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
-
-  unsigned long eventId = getNextEventId();
-  if (nPPID == LICQ_PPID)
-    icqCloseSecureChannel(eventId, userId);
-  else
-    PushProtoSignal(new LicqProtoCloseSecureSignal(eventId, userId), nPPID);
-
-  return eventId;
-}
-
-
 void CICQDaemon::icqCloseSecureChannel(unsigned long eventId, const UserId& userId)
 {
 #ifdef USE_OPENSSL
@@ -1078,19 +918,6 @@ void CICQDaemon::icqCloseSecureChannel(unsigned long eventId, const UserId& user
 
 #endif
 }
-
-//-----CICQDaemon::keyCancel-------------------------------------------------------------------------
-void CICQDaemon::secureChannelCancelOpen(const UserId& userId, unsigned long eventId)
-{
-  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
-  string accountId = LicqUser::getUserAccountId(userId);
-
-  if (nPPID == LICQ_PPID)
-    icqOpenSecureChannelCancel(userId, (unsigned short)eventId);
-  else
-    PushProtoSignal(new LicqProtoCancelEventSignal(userId, eventId), nPPID);
-}
-
 
 void CICQDaemon::icqOpenSecureChannelCancel(const UserId& userId,
   unsigned short nSequence)
