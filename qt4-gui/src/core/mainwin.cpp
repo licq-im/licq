@@ -539,7 +539,7 @@ void MainWindow::removeUserFromGroup()
   // Get currently selected user
   UserId userId = myUserView->currentUserId();
 
-  gUserManager.setUserInGroup(userId, GROUPS_USER, gid, false);
+  gUserManager.setUserInGroup(userId, gtype, gid, false);
 }
 
 void MainWindow::callUserFunction(QAction* action)
