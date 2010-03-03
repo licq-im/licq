@@ -108,6 +108,7 @@ if (BUILD_TESTS)
 
   enable_testing()
   add_custom_target(tests ALL COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
+  include(CTest)
 
   # Google Mock
   add_subdirectory(3rdparty/gmock)
