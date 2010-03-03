@@ -113,7 +113,7 @@ TEST_F(GeneralPluginFixture, init)
 
 TEST_F(GeneralPluginFixture, runPlugin)
 {
-  plugin.startThread(0);
+  plugin.startThread();
   EXPECT_EQ(20, plugin.joinThread());
 }
 

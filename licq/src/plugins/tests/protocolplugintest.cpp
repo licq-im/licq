@@ -105,7 +105,7 @@ TEST_F(ProtocolPluginFixture, init)
 
 TEST_F(ProtocolPluginFixture, runPlugin)
 {
-  plugin.startThread(0);
+  plugin.startThread();
   EXPECT_EQ(10, plugin.joinThread());
 }
 

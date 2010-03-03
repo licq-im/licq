@@ -129,7 +129,7 @@ TEST_F(PluginFixture, getSetId)
 
 TEST_F(PluginFixture, runPlugin)
 {
-  plugin.startThread(0);
+  plugin.startThread();
   EXPECT_FALSE(plugin.isThisThread());
   EXPECT_EQ(5, plugin.joinThread());
 }
