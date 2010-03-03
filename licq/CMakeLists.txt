@@ -17,6 +17,7 @@ option(USE_HEBREW "Include support for hebrew reverse string" OFF)
 option(USE_OPENSSL "Enable secure communication channels" ON)
 option(USE_SOCKS5 "Enable socks5 support" OFF)
 option(BUILD_PLUGINS "Build all plugins" OFF)
+option(BUILD_TESTS "Build all unit tests" ON)
 
 set(DLOPEN_POLICY RTLD_NOW CACHE STRING "2nd dlopen parameter")
 mark_as_advanced(DLOPEN_POLICY)
@@ -97,9 +98,14 @@ if (USE_SOCKS5)
   set(SOCKS5_LIBRARIES ${SOCKS5_LIBRARY})
 endif (USE_SOCKS5)
 
-# Google Test is optional
-find_package(GTest QUIET)
-if (GTEST_FOUND)
+# Google Test is needed for unit tests
+if (BUILD_TESTS)
+  find_package(GTest)
+  if (NOT GTEST_FOUND)
+    message(FATAL_ERROR
+      "Google Test NOT found; disable unit tests by setting BUILD_TESTS=OFF")
+  endif (NOT GTEST_FOUND)
+
   enable_testing()
   add_custom_target(tests ALL COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
 
@@ -107,9 +113,9 @@ if (GTEST_FOUND)
   add_subdirectory(3rdparty/gmock)
   set(GMOCK_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gmock/include")
   set(GMOCK_LIBRARIES gmock gmock_main)
-else (GTEST_FOUND)
-  message(STATUS "Google test NOT found; unit tests will not be built")
-endif (GTEST_FOUND)
+else (BUILD_TESTS)
+  message(STATUS "Unit tests disabled")
+endif (BUILD_TESTS)
 
 # Set up installation paths
 include(cmake/LicqDefaultPaths.cmake)

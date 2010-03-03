@@ -122,7 +122,7 @@ target_link_libraries(licq ${SOCKS5_LIBRARIES})
 
 install(TARGETS licq RUNTIME DESTINATION bin)
 
-if (GTEST_FOUND)
+if (BUILD_TESTS)
   include_directories(${GTEST_INCLUDE_DIRS})
   include_directories(${GMOCK_INCLUDE_DIRS})
 
@@ -138,4 +138,4 @@ if (GTEST_FOUND)
 
   add_test(licq unittests)
   add_dependencies(tests unittests)
-endif (GTEST_FOUND)
+endif (BUILD_TESTS)
