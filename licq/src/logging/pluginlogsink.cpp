@@ -30,7 +30,8 @@ class PluginLogSink::Private
 {
 public:
   Private() :
-    myLogLevels(0)
+    myLogLevels(0),
+    myLogPackets(false)
   {
     // Empty
   }
