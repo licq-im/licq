@@ -26,10 +26,10 @@ using Licq::LogSink;
 
 TEST(LogSink, emptyPacketToString)
 {
-  LogSink::Packet packet;
+  LogSink::Message message;
 
   std::ostringstream ss;
-  ss << packet;
+  Licq::packetToString(ss, message);
 
   EXPECT_EQ("", ss.str());
 }
@@ -38,11 +38,11 @@ template<size_t N>
 static void checkPacketString(const uint8_t (&data)[N],
                               const std::string& result)
 {
-  LogSink::Packet packet;
-  packet.data.assign(data, data + sizeof(data));
+  LogSink::Message message;
+  message.packet.assign(data, data + sizeof(data));
 
   std::ostringstream ss;
-  ss << packet;
+  Licq::packetToString(ss, message);
 
   EXPECT_EQ(result, ss.str());
 }

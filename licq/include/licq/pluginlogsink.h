@@ -32,24 +32,21 @@ class PluginLogSink : public LogSink
 public:
   typedef boost::shared_ptr<PluginLogSink> Ptr;
 
-  enum { TYPE_MESSAGE = 'M' };
-  enum { TYPE_PACKET = 'P' };
-
   PluginLogSink();
   ~PluginLogSink();
 
   int getReadPipe();
 
   Message::Ptr popMessage();
-  Packet::Ptr popPacket();
 
   void setLogLevel(Log::Level level, bool enable);
+  void setLogPackets(bool enable);
   void setAllLogLevels(bool enable);
  
   // From LogSink
   bool isLogging(Log::Level level);
+  bool isLoggingPackets();
   void log(Message::Ptr message);
-  void logPacket(Packet::Ptr packet);
 
 private:
   class Private;

@@ -22,12 +22,14 @@
 #include <iomanip>
 #include <ostream>
 
-std::ostream& operator<<(std::ostream& os, const Licq::LogSink::Packet& packet)
+std::ostream& Licq::packetToString(
+    std::ostream& os, const Licq::LogSink::Message& message)
 {
+  const std::vector<uint8_t>& packet = message.packet;
+
   const size_t bytesPerRow = 16;
   const size_t maxRows = 512;
-  const size_t bytesToPrint =
-      std::min(bytesPerRow * maxRows, packet.data.size());
+  const size_t bytesToPrint = std::min(bytesPerRow * maxRows, packet.size());
 
   const std::string prefix(5, ' ');
 
@@ -51,7 +53,7 @@ std::ostream& operator<<(std::ostream& os, const Licq::LogSink::Packet& packet)
     else if (pos == (bytesPerRow / 2))
       os << ' ';
 
-    const uint8_t byte = packet.data[addr];
+    const uint8_t byte = packet[addr];
 
     // Print the byte in hex
     os << ' ' << setw(2) << static_cast<uint16_t>(byte);
@@ -86,10 +88,10 @@ std::ostream& operator<<(std::ostream& os, const Licq::LogSink::Packet& packet)
   }
 
   // Print the address range for bytes not printed
-  if (bytesToPrint != packet.data.size())
+  if (bytesToPrint != packet.size())
   {
     os << "\n" << prefix << setw(4) << setfill('0') << bytesToPrint
-       << " - " << setw(4) << packet.data.size() - 1 << ": ...";
+       << " - " << setw(4) << packet.size() - 1 << ": ...";
   }
 
   // Restore flags

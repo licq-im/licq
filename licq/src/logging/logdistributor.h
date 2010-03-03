@@ -50,8 +50,8 @@ public:
 
   // From Licq::LogSink
   bool isLogging(Licq::Log::Level level);
+  bool isLoggingPackets();
   void log(Message::Ptr message);
-  void logPacket(Packet::Ptr packet);
 
 private:
   Licq::Mutex myMutex;

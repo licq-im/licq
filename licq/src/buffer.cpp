@@ -811,14 +811,10 @@ void CBuffer::log(const char* format, ...)
   va_list args;
   va_start(args, format);
 
-  const size_t size = 2046;
-  char msg[size];
-
-  ::vsnprintf(msg, size, format, args);
-  msg[size - 1] = '\0';
+  gLog.packet(Licq::Log::Debug,
+              reinterpret_cast<const uint8_t*>(getDataStart()),
+              getDataSize(),
+              format, args);
 
   va_end(args);
-
-  gLog.packet(msg, reinterpret_cast<const uint8_t*>(getDataStart()),
-              getDataSize());
 }

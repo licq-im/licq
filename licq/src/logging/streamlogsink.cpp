@@ -74,9 +74,6 @@ static std::string getColor(Log::Level level)
     case Log::Debug:
       color << ForgroundGreen;
       break;
-    case Log::Packet:
-      color << ForgroundBlue;
-      break;
   }
 
   color << "m";
@@ -110,7 +107,8 @@ static std::ostream& operator<<(
 StreamLogSink::StreamLogSink(std::ostream& stream) :
   myStream(stream),
   myUseColors(true),
-  myLogLevels(0)
+  myLogLevels(0),
+  myLogPackets(false)
 {
   // Empty
 }
@@ -123,54 +121,49 @@ void StreamLogSink::setLogLevel(Log::Level level, bool enable)
     myLogLevels &= ~(1 << level);
 }
 
+void StreamLogSink::setLogPackets(bool enable)
+{
+  myLogPackets = enable;
+}
+
 bool StreamLogSink::isLogging(Log::Level level)
 {
   return myLogLevels & (1 << level);
 }
 
+bool StreamLogSink::isLoggingPackets()
+{
+  return myLogPackets;
+}
+
 void StreamLogSink::setLogLevels(int levels)
 {
   myLogLevels = 0;
+  myLogPackets = false;
 
   setLogLevel(Log::Info, levels & 0x1);
   setLogLevel(Log::Unknown, levels & 0x2);
   setLogLevel(Log::Error, levels & 0x4);
   setLogLevel(Log::Warning, levels & 0x8);
-  setLogLevel(Log::Packet, levels & 0x10);
+
+  setLogLevel(Log::Debug, levels & 0x10);
+  setLogPackets(levels & 0x10);
 }
 
 void StreamLogSink::log(Message::Ptr message)
-{
-  logMessage(*message);
-}
-
-void StreamLogSink::logPacket(Packet::Ptr packet)
-{
-  logMessage(packet->message);
-
-  if (myUseColors)
-    myStream << getColor(packet->message.level);
-
-  myStream << *packet << '\n';
-
-  if (myStream)
-    myStream << getResetColor();
-}
-
-void StreamLogSink::logMessage(const Message& message)
 {
   std::string color;
 
   if (myUseColors)
   {
     myStream << getPrefixColor();
-    color = getColor(message.level);
+    color = getColor(message->level);
   }
 
   std::ostringstream ss;
-  ss << message.time << color << " [";
+  ss << message->time << color << " [";
 
-  switch (message.level)
+  switch (message->level)
   {
     case Log::Unknown:
       ss << "UNK";
@@ -187,33 +180,33 @@ void StreamLogSink::logMessage(const Message& message)
     case Log::Debug:
       ss << "DBG";
       break;
-    case Log::Packet:
-      ss << "PKT";
-      break;
   }
 
-  ss << "] " << message.sender << ": ";
-  std::string header = ss.str();
+  ss << "] " << message->sender << ": ";
+  const std::string header = ss.str();
   myStream << header;
 
-  size_t end = message.text.find_first_of('\n');
-  myStream << message.text.substr(0, end) << '\n';
+  size_t end = message->text.find_first_of('\n');
+  myStream << message->text.substr(0, end) << '\n';
 
   const std::string prefix = std::string(header.size() - color.size(), ' ');
 
-  while (end != std::string::npos && end != (message.text.size() - 1))
+  while (end != std::string::npos && end != (message->text.size() - 1))
   {
     size_t start = end + 1;
     size_t count;
 
-    end = message.text.find_first_of('\n', start);
+    end = message->text.find_first_of('\n', start);
     if (end != std::string::npos)
       count = end - start;
     else
-      count = message.text.size() - start;
+      count = message->text.size() - start;
 
-    myStream << prefix << message.text.substr(start, count) << '\n';
+    myStream << prefix << message->text.substr(start, count) << '\n';
   }
+
+  if (myLogPackets && !message->packet.empty())
+    Licq::packetToString(myStream, *message) << '\n';
 
   if (myUseColors)
     myStream << getResetColor();

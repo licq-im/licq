@@ -70,9 +70,6 @@ public:
       case Licq::Log::Debug:
         myLog.debug(msg);
         break;
-      case Licq::Log::Packet:
-        FAIL() << "Invalid level: Packet";
-        break;
     }
   }
 };
@@ -106,10 +103,11 @@ TEST(Log, shouldNotLogIfIsLoggingReturnsFalse)
 {
   StrictMock<MockLogSink> logSink;
   EXPECT_CALL(logSink, isLogging(Licq::Log::Info))
-      .WillOnce(Return(false));
+      .WillRepeatedly(Return(false));
 
   Log log("test", logSink);
   log.info("foobar");
+  log.packet(Licq::Log::Info, 0, 0, "foobar");
 }
 
 TEST(Log, packet)
@@ -117,14 +115,18 @@ TEST(Log, packet)
   const uint8_t packet[] = { 1, 2, 3, 4 };
 
   StrictMock<MockLogSink> logSink;
-  EXPECT_CALL(logSink, isLogging(Licq::Log::Packet))
+  EXPECT_CALL(logSink, isLogging(Licq::Log::Info))
       .Times(2)
       .WillRepeatedly(Return(true));
-  EXPECT_CALL(logSink, logPacket(Pointee(Field(&Licq::LogSink::Packet::data,
-                                               ElementsAreArray(packet)))))
+  EXPECT_CALL(logSink, isLoggingPackets())
+      .Times(2)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(logSink, log(Pointee(Field(&Licq::LogSink::Message::packet,
+                                         ElementsAreArray(packet)))))
       .Times(2);
 
   Log log("test", logSink);
-  log.packet(std::string("message"), packet, sizeof(packet));
-  log.packet(boost::format("message %1%") % 1, packet, sizeof(packet));
+  log.packet(Licq::Log::Info, packet, sizeof(packet), std::string("message"));
+  log.packet(Licq::Log::Info, packet, sizeof(packet),
+             boost::format("message %1%") % 1);
 }

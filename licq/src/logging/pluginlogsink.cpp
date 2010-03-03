@@ -39,9 +39,9 @@ public:
 
   Mutex myMutex;
   int myLogLevels;
+  bool myLogPackets;
 
   std::deque<Message::Ptr> myMessages;
-  std::deque<Packet::Ptr> myPackets;
 };
 
 PluginLogSink::PluginLogSink() :
@@ -71,17 +71,6 @@ LogSink::Message::Ptr PluginLogSink::popMessage()
   return message;
 }
 
-LogSink::Packet::Ptr PluginLogSink::popPacket()
-{
-  MutexLocker locker(myPrivate->myMutex);
-  if (myPrivate->myPackets.empty())
-    return Packet::Ptr();
-
-  Packet::Ptr packet = myPrivate->myPackets.front();
-  myPrivate->myPackets.pop_front();
-  return packet;
-}
-
 void PluginLogSink::setLogLevel(Log::Level level, bool enable)
 {
   MutexLocker locker(myPrivate->myMutex);
@@ -89,6 +78,12 @@ void PluginLogSink::setLogLevel(Log::Level level, bool enable)
     myPrivate->myLogLevels |= (1 << level);
   else
     myPrivate->myLogLevels &= ~(1 << level);
+}
+
+void PluginLogSink::setLogPackets(bool enable)
+{
+  MutexLocker locker(myPrivate->myMutex);
+  myPrivate->myLogPackets = enable;
 }
 
 void PluginLogSink::setAllLogLevels(bool enable)
@@ -106,16 +101,15 @@ bool PluginLogSink::isLogging(Log::Level level)
   return myPrivate->myLogLevels & (1 << level);
 }
 
+bool PluginLogSink::isLoggingPackets()
+{
+  MutexLocker locker(myPrivate->myMutex);
+  return myPrivate->myLogPackets;
+}
+
 void PluginLogSink::log(Message::Ptr message)
 {
   MutexLocker locker(myPrivate->myMutex);
   myPrivate->myMessages.push_back(message);
-  myPrivate->myPipe.putChar(TYPE_MESSAGE);
-}
-
-void PluginLogSink::logPacket(Packet::Ptr packet)
-{
-  MutexLocker locker(myPrivate->myMutex);
-  myPrivate->myPackets.push_back(packet);
-  myPrivate->myPipe.putChar(TYPE_PACKET);
+  myPrivate->myPipe.putChar('M');
 }

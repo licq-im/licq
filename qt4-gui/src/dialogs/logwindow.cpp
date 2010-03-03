@@ -22,8 +22,10 @@
 
 #include "config.h"
 
+#include <sstream>
 #include <unistd.h>
 
+#include <QDateTime>
 #include <QDialogButtonBox>
 #include <QFile>
 #include <QPushButton>
@@ -112,31 +114,33 @@ void LogWindow::log(int fd)
   char buf;
   read(fd, &buf, sizeof(buf));
 
-  QString str;
-  Licq::Log::Level level = Licq::Log::Unknown;
+  LogSink::Message::Ptr message = myLogSink->popMessage();
 
-  switch (buf)
+  QDateTime dt;
+  dt.setTime_t(message->time.sec);
+  dt.setTime(dt.time().addMSecs(message->time.msec));
+
+  QString str;
+  str += dt.time().toString("hh:mm:ss.zzz");
+  str += " ";
+  str += QString::fromUtf8(message->sender.c_str());
+  str += ": ";
+  str += QString::fromUtf8(message->text.c_str());
+
+  if (!str.endsWith('\n'))
+    str += '\n';
+
+  if (myLogSink->isLoggingPackets() && !message->packet.empty())
   {
-    case PluginLogSink::TYPE_MESSAGE:
-    {
-      LogSink::Message::Ptr message = myLogSink->popMessage();
-      str = QString::fromUtf8(message->text.c_str());
-      level = message->level;
-      break;
-    }
-    case PluginLogSink::TYPE_PACKET:
-    {
-      LogSink::Packet::Ptr packet = myLogSink->popPacket();
-      str = QString::fromUtf8(packet->message.text.c_str());
-      level = packet->message.level;
-      break;
-    }
+    std::ostringstream ss;
+    Licq::packetToString(ss, *message);
+    str += QString::fromUtf8(ss.str().c_str()) + '\n';
   }
 
   outputBox->appendNoNewLine(str);
   outputBox->GotoEnd();
 
-  if (level == Licq::Log::Error)
+  if (message->level == Licq::Log::Error)
     CriticalUser(NULL, str);
 }
 

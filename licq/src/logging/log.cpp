@@ -22,7 +22,7 @@
 #include <cstdio>
 #include <sys/time.h>
 
-void Licq::Log::log(Licq::Log::Level level, const char* format, va_list args)
+static inline std::string vaToString(const char* format, va_list args)
 {
   const size_t size = 2046;
   char msg[size];
@@ -30,7 +30,18 @@ void Licq::Log::log(Licq::Log::Level level, const char* format, va_list args)
   ::vsnprintf(msg, size, format, args);
   msg[size - 1] = '\0';
 
-  log(level, std::string(msg));
+  return std::string(msg);
+}
+
+void Licq::Log::log(Licq::Log::Level level, const char* format, va_list args)
+{
+  log(level, vaToString(format, args));
+}
+
+void Licq::Log::packet(Licq::Log::Level level, const uint8_t* data,
+                       size_t size, const char* format, va_list args)
+{
+  packet(level, data, size, vaToString(format, args));
 }
 
 using Licq::LogSink;
@@ -54,18 +65,22 @@ void Log::log(Level level, const std::string& msg)
   mySink.log(LogSink::Message::Ptr(message));
 }
 
-void Log::packet(const std::string& msg, const uint8_t* data, size_t size)
+void Log::packet(Level level, const uint8_t* data, size_t size,
+                 const std::string& msg)
 {
-  if (!mySink.isLogging(Packet))
+  if (!mySink.isLogging(level))
     return;
 
-  LogSink::Packet* packet = new LogSink::Packet();
-  fill(packet->message, Packet, msg);
+  LogSink::Message* message = new LogSink::Message();
+  fill(*message, level, msg);
 
-  packet->data.reserve(size);
-  packet->data.assign(data, data + size);
+  if (mySink.isLoggingPackets())
+  {
+    message->packet.reserve(size);
+    message->packet.assign(data, data + size);
+  }
 
-  mySink.logPacket(LogSink::Packet::Ptr(packet));
+  mySink.log(LogSink::Message::Ptr(message));
 }
 
 void Log::fill(LogSink::Message& message, Level level, const std::string& text)

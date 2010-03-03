@@ -39,9 +39,10 @@ public:
 
   // From Licq::Log
   void log(Level level, const std::string& msg);
-  void packet(const std::string& msg, const uint8_t* data, size_t size);
+  void packet(Level level, const uint8_t* data, size_t size,
+              const std::string& msg);
 
-  // Bring in the boost::format variants
+  // Bring in the other variants
   using Licq::Log::log;
   using Licq::Log::packet;
 

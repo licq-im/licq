@@ -53,10 +53,7 @@ public:
     Error,
 
     /// Debugging aid.
-    Debug,
-
-    /// Packets.
-    Packet
+    Debug
   };
 
   virtual void log(Level level, const std::string& msg) = 0;
@@ -83,10 +80,15 @@ public:
   void debug(const boost::format& msg) { log(Debug, msg); }
   inline void debug(const char* format, ...) LICQ_FORMAT(2, 3);
 
-  virtual void packet(const std::string& msg, const uint8_t* data,
-                      size_t size) = 0;
-  void packet(const boost::format& msg, const uint8_t* data, size_t size)
-  { packet(msg.str(), data, size); }
+  virtual void packet(Level level, const uint8_t* data, size_t size,
+                      const std::string& msg) = 0;
+  void packet(Level level, const uint8_t* data, size_t size,
+              const char* format, va_list args) LICQ_FORMAT(5, 0);
+  void packet(Level level, const uint8_t* data, size_t size,
+              const boost::format& msg)
+      { packet(level, data, size, msg.str()); }
+  inline void packet(Level level, const uint8_t* data, size_t size,
+                     const char* format, ...) LICQ_FORMAT(5, 6);
 
 protected:
   virtual ~Log() { /* Empty */ }
@@ -132,6 +134,15 @@ inline void Log::debug(const char* format, ...)
   va_end(args);
 }
 
+inline void Log::packet(Level level, const uint8_t* data, size_t size,
+                        const char* format, ...)
+{
+  va_list args;
+  va_start(args, format);
+  packet(level, data, size, format, args);
+  va_end(args);
+}
+
 class ThreadLog : public Log
 {
 private:
@@ -140,7 +151,12 @@ private:
 public:
   // From Log
   inline void log(Level level, const std::string& msg);
-  inline void packet(const std::string& msg, const uint8_t* data, size_t size);
+  inline void packet(Level level, const uint8_t* data, size_t size,
+                     const std::string& msg);
+
+  // Bring in the other variants
+  using Log::log;
+  using Log::packet;
 
   // Old log functions, considered deprecated
   inline void Info(const char* format, ...) LICQ_FORMAT(2, 3);
@@ -154,10 +170,10 @@ inline void ThreadLog::log(Level level, const std::string& msg)
   getLog()->log(level, msg);
 }
 
-inline void ThreadLog::packet(const std::string& msg, const uint8_t* data,
-                              size_t size)
+inline void ThreadLog::packet(Level level, const uint8_t* data,
+                              size_t size, const std::string& msg)
 {
-  getLog()->packet(msg, data, size);
+  getLog()->packet(level, data, size, msg);
 }
 
 inline void ThreadLog::Info(const char* format, ...)

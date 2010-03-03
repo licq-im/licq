@@ -58,6 +58,7 @@
 
 const int LOG_SET_ALL = -1;
 const int LOG_CLEAR_ALL = -2;
+const int LOG_PACKETS = -3;
 
 using namespace LicqQtGui;
 using namespace LicqQtGui::SystemMenuPrivate;
@@ -82,7 +83,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   ADD_DEBUG(tr("Errors"), Licq::Log::Error, true)
   ADD_DEBUG(tr("Warnings"), Licq::Log::Warning, true)
   ADD_DEBUG(tr("Debug"), Licq::Log::Debug, true)
-  ADD_DEBUG(tr("Packets"), Licq::Log::Packet, true)
+  ADD_DEBUG(tr("Raw Packets"), LOG_PACKETS, true)
   myDebugMenu->addSeparator();
   ADD_DEBUG(tr("Set All"), LOG_SET_ALL, false)
   ADD_DEBUG(tr("Clear All"), LOG_CLEAR_ALL, false)
@@ -471,8 +472,13 @@ void SystemMenu::aboutToShowDebugMenu()
   {
     if (action->isCheckable())
     {
-      Log::Level level = static_cast<Log::Level>(action->data().toInt());
-      action->setChecked(sink->isLogging(level));
+      if (action->data().toInt() == LOG_PACKETS)
+        action->setChecked(sink->isLoggingPackets());
+      else
+      {
+        Log::Level level = static_cast<Log::Level>(action->data().toInt());
+        action->setChecked(sink->isLogging(level));
+      }
     }
   }
 }
@@ -482,15 +488,22 @@ void SystemMenu::changeDebug(QAction* action)
   Licq::PluginLogSink::Ptr sink =
       LicqGui::instance()->logWindow()->pluginLogSink();
 
-  int data = action->data().toInt();
+  const int data = action->data().toInt();
   if (data == LOG_SET_ALL || data == LOG_CLEAR_ALL)
   {
-    sink->setAllLogLevels(data == LOG_SET_ALL);
-    return;
+    const bool enable = data == LOG_SET_ALL;
+    sink->setAllLogLevels(enable);
+    sink->setLogPackets(enable);
   }
-
-  Licq::Log::Level level = static_cast<Licq::Log::Level>(data);
-  sink->setLogLevel(level, action->isChecked());
+  else if (data == LOG_PACKETS)
+  {
+    sink->setLogPackets(action->isChecked());
+  }
+  else
+  {
+    Licq::Log::Level level = static_cast<Licq::Log::Level>(data);
+    sink->setLogLevel(level, action->isChecked());
+  }
 }
 
 void SystemMenu::setCurrentGroup(QAction* action)

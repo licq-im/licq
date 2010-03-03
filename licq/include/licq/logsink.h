@@ -46,19 +46,14 @@ public:
     Log::Level level;
     std::string sender;
     std::string text;
+
     struct Time
     {
       time_t sec;
       unsigned int msec;
     } time;
-  };
 
-  struct Packet
-  {
-    typedef boost::shared_ptr<const Packet> Ptr;
-
-    Message message;
-    std::vector<uint8_t> data;
+    std::vector<uint8_t> packet;
   };
 
   /**
@@ -68,22 +63,20 @@ public:
   virtual bool isLogging(Log::Level level) = 0;
 
   /**
+   * @return True if the sink is interested in logging the raw packet data, in
+   * which case Message::packet will contain the packet.
+   */
+  virtual bool isLoggingPackets() = 0;
+
+  /**
    * Called every time a new log messages is generated. But only if the sink
    * isLogging() the message's log level.
    */
   virtual void log(Message::Ptr message) = 0;
 
-  /**
-   * Called every time a packet dump is generated. But only if the sink
-   * isLogging(Log::Packet).
-   */
-  virtual void logPacket(Packet::Ptr /*packet*/) { /* Empty */ }
-
 protected:
   virtual ~LogSink() { /* Empty */ }
 };
-
-} // namespace Licq
 
 /**
  * Pretty-prints @a packet to the stream @a os.
@@ -91,6 +84,9 @@ protected:
  * @param packet The packet to print.
  * @return @a os
  */
-std::ostream& operator<<(std::ostream& os, const Licq::LogSink::Packet& packet);
+std::ostream& packetToString(
+    std::ostream& os, const Licq::LogSink::Message& message);
+
+} // namespace Licq
 
 #endif

@@ -40,13 +40,14 @@ public:
 
   void setUseColors(bool useColors) { myUseColors = useColors; }
   void setLogLevel(Licq::Log::Level level, bool enable);
+  void setLogPackets(bool enable);
 
   void setLogLevels(int levels);
 
   // From Licq::LogSink
   bool isLogging(Licq::Log::Level level);
+  bool isLoggingPackets();
   void log(Message::Ptr message);
-  void logPacket(Packet::Ptr packet);
 
 private:
   void logMessage(const Message& message);
@@ -54,6 +55,7 @@ private:
   std::ostream& myStream;
   bool myUseColors;
   int myLogLevels;
+  bool myLogPackets;
 };
 
 } // namespace LicqDaemon
