@@ -33,6 +33,8 @@
 
 #include <licq_log.h>
 #include <licq_plugin.h>
+#include <licq/daemon.h>
+#include <licq/logservice.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -124,6 +126,8 @@ bool LP_Init(int argc, char** argv)
 
 int LP_Main()
 {
+  Licq::gDaemon->getLogService().createThreadLog("qt4-gui");
+
 #ifdef USE_KDE
   // Don't use the KDE crash handler (drkonqi).
   setenv("KDE_DEBUG", "true", 0);
