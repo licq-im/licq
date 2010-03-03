@@ -524,6 +524,7 @@ void CMSN::Run()
   
   // Close out now
   pthread_cancel(m_tMSNPing);
+  pthread_join(m_tMSNPing, NULL);
   MSNLogoff();
 }
 

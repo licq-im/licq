@@ -752,8 +752,6 @@ void CMSN::MSNPing()
 
 void *MSNPing_tep(void *p)
 {
-  pthread_detach(pthread_self());
-  
   CMSN *pMSN = (CMSN *)p;
   
   struct timeval tv;
