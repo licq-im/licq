@@ -531,6 +531,7 @@ void CMSN::Run()
   // Close out now
   pthread_cancel(m_tMSNPing);
   MSNLogoff();
+  pthread_join(m_tMSNPing, NULL);
 }
 
 void CMSN::ProcessPipe()
