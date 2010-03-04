@@ -23,7 +23,7 @@
 #include <boost/noncopyable.hpp>
 #include <string>
 
-#include "../licq_filetransfer.h" // ConstFileList
+#include "licq_filetransfer.h" // ConstFileList
 
 class CICQColor;
 
