@@ -44,7 +44,7 @@ set(licq_SRCS
   protocolmanager.cpp
   proxy.cpp
   rtf.cc
-  sar.cpp
+  sarmanager.cpp
   sighandler.c
   socket.cpp
   support.c

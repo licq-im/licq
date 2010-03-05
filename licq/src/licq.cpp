@@ -34,7 +34,6 @@ using namespace std;
 #include "licq_log.h"
 #include "licq_utility.h"
 #include "support.h"
-#include "licq_sar.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
 #include "licq/exceptions/exception.h"
@@ -43,10 +42,12 @@ using namespace std;
 #include "contactlist/usermanager.h"
 #include "logging/streamlogsink.h"
 #include "plugins/pluginmanager.h"
+#include "sarmanager.h"
 
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
@@ -587,7 +588,7 @@ bool CLicq::Init(int argc, char **argv)
   // Start things going
   if (!LicqDaemon::gUserManager.Load())
     return false;
-  gSARManager.Load();
+  gSarManager.initialize();
   sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
   gUtilityManager.LoadUtilities(szFilename);
 
