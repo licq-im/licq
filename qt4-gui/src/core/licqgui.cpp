@@ -78,7 +78,7 @@ extern "C"
 #include <licq_log.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
-#include <licq_sar.h>
+#include <licq/sarmanager.h>
 #include <licq_user.h>
 
 #include "config/chat.h"
@@ -130,6 +130,8 @@ extern "C"
 using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
+using Licq::SarManager;
+using Licq::gSarManager;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 
@@ -1705,15 +1707,15 @@ void LicqGui::autoAway()
     QString autoResponse;
     if (wantedStatus == ICQ_STATUS_NA && generalConfig->autoNaMess())
     {
-      SARList& sar = gSARManager.Fetch(SAR_NA);
-      autoResponse = sar[generalConfig->autoNaMess() - 1]->AutoResponse();
-      gSARManager.Drop();
+      const Licq::SarList& sars(gSarManager.getList(SarManager::NotAvailableList));
+      autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
+      gSarManager.releaseList();
     }
     else if (wantedStatus == ICQ_STATUS_AWAY && generalConfig->autoAwayMess())
     {
-      SARList& sar = gSARManager.Fetch(SAR_AWAY);
-      autoResponse = sar[generalConfig->autoAwayMess() - 1]->AutoResponse();
-      gSARManager.Drop();
+      const Licq::SarList& sars(gSarManager.getList(SarManager::AwayList));
+      autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
+      gSarManager.releaseList();
     }
     if (!autoResponse.isNull())
     {

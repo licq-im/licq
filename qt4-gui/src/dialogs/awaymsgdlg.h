@@ -67,7 +67,6 @@ private:
   bool myInvisible;
   unsigned long myPpid;
   bool mySetStatus;
-  short mySAR;
   int myAutoCloseCounter;
 
   bool eventFilter(QObject* watched, QEvent* event);

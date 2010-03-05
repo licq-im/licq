@@ -34,9 +34,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include <licq/sarmanager.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
-#include <licq_sar.h>
 #include <licq_user.h>
 
 #include "core/licqgui.h"
@@ -51,6 +51,8 @@
 
 #include "hintsdlg.h"
 
+using Licq::SarManager;
+using Licq::gSarManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::AwayMsgDlg */
 
@@ -125,44 +127,40 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
   myStatus = status;
   myInvisible = invisible;
   myPpid = ppid;
+  SarManager::List sarList;
 
   // Fill in the select menu
   myMenu->clear();
   switch (myStatus)
   {
     case ICQ_STATUS_NA:
-      mySAR = SAR_NA;
+      sarList = SarManager::NotAvailableList;
       break;
     case ICQ_STATUS_OCCUPIED:
-      mySAR = SAR_OCCUPIED;
+      sarList = SarManager::OccupiedList;
       break;
     case ICQ_STATUS_DND:
-      mySAR = SAR_DND;
+      sarList = SarManager::DoNotDisturbList;
       break;
     case ICQ_STATUS_FREEFORCHAT:
-      mySAR = SAR_FFC;
+      sarList = SarManager::FreeForChatList;
       break;
     case ICQ_STATUS_AWAY: // Fall through
     default:
-      mySAR = SAR_AWAY;
+      sarList = SarManager::AwayList;
   }
 
-  if (mySAR >= 0)
+  const Licq::SarList& sars(gSarManager.getList(sarList));
+  for (Licq::SarList::const_iterator i = sars.begin(); i != sars.end(); ++i)
   {
-    SARList& sar = gSARManager.Fetch(mySAR);
-    for (unsigned i = 0; i < sar.size(); i++)
-    {
-      QAction* a = myMenu->addAction(
-          QString::fromLocal8Bit(sar[i]->Name()),
-          this, SLOT(selectMessage()));
-      a->setData(i);
-    }
-    gSARManager.Drop();
+    QAction* a = myMenu->addAction(QString::fromLocal8Bit(i->name.c_str()), this, SLOT(selectMessage()));
+    a->setData(QString::fromLocal8Bit(i->text.c_str()));
   }
+  gSarManager.releaseList();
 
   myMenu->addSeparator();
   QAction* a = myMenu->addAction(tr("&Edit Items"), this, SLOT(selectMessage()));
-  a->setData(999);
+  a->setData(QString());
 
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
@@ -283,16 +281,10 @@ void AwayMsgDlg::selectMessage()
   if (a == NULL)
     return;
 
-  unsigned int result = a->data().toUInt();
+  QString text = a->data().toString();
 
-  if (result == 999) // User chose "Edit Items"
+  if (text.isNull()) // User chose "Edit Items"
     SettingsDlg::show(SettingsDlg::RespMsgPage);
   else
-  {
-    SARList& sar = gSARManager.Fetch(mySAR);
-    if (result < sar.size())
-      myAwayMsg->setText(QString::fromLocal8Bit(sar[result]->AutoResponse()));
-
-    gSARManager.Drop();
-  }
+    myAwayMsg->setText(text);
 }

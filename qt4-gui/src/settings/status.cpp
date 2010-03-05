@@ -32,7 +32,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-#include <licq_sar.h>
+#include <licq/sarmanager.h>
 
 #include "config/general.h"
 
@@ -42,6 +42,8 @@
 
 #include "settingsdlg.h"
 
+using Licq::SarManager;
+using Licq::gSarManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Status */
 
@@ -141,11 +143,11 @@ QWidget* Settings::Status::createPageRespMsg(QWidget* parent)
   myDefRespMsgLayout->addWidget(mySarGroupLabel, 0, 0);
 
   mySarGroupCombo = new QComboBox();
-  mySarGroupCombo->addItem(tr("Away"), SAR_AWAY);
-  mySarGroupCombo->addItem(tr("Not Available"), SAR_NA);
-  mySarGroupCombo->addItem(tr("Occupied"), SAR_OCCUPIED);
-  mySarGroupCombo->addItem(tr("Do Not Disturb"), SAR_DND);
-  mySarGroupCombo->addItem(tr("Free For Chat"), SAR_FFC);
+  mySarGroupCombo->addItem(tr("Away"), SarManager::AwayList);
+  mySarGroupCombo->addItem(tr("Not Available"), SarManager::NotAvailableList);
+  mySarGroupCombo->addItem(tr("Occupied"), SarManager::OccupiedList);
+  mySarGroupCombo->addItem(tr("Do Not Disturb"), SarManager::DoNotDisturbList);
+  mySarGroupCombo->addItem(tr("Free For Chat"), SarManager::FreeForChatList);
   connect(mySarGroupCombo, SIGNAL(activated(int)), SLOT(sarGroupChanged(int)));
   myDefRespMsgLayout->addWidget(mySarGroupCombo, 0, 1);
 
@@ -177,7 +179,7 @@ QWidget* Settings::Status::createPageRespMsg(QWidget* parent)
 
   myDefRespMsgLayout->setColumnStretch(2, 1);
 
-  sarGroupChanged(SAR_AWAY);
+  sarGroupChanged(SarManager::AwayList);
 
   return w;
 }
@@ -200,17 +202,19 @@ void Settings::Status::buildAutoStatusCombos(bool firstTime)
 
   myAutoAwayMessCombo->clear();
   myAutoAwayMessCombo->addItem(tr("Previous Message"),0);
-  SARList &sara = gSARManager.Fetch(SAR_AWAY);
-  for (unsigned i = 0; i < sara.size(); i++)
-    myAutoAwayMessCombo->addItem(sara[i]->Name(),i+1);
-  gSARManager.Drop();
+  const Licq::SarList& sarsAway(gSarManager.getList(SarManager::AwayList));
+  int count = 0;
+  for (Licq::SarList::const_iterator i = sarsAway.begin(); i != sarsAway.end(); ++i)
+    myAutoAwayMessCombo->addItem(QString::fromLocal8Bit(i->name.c_str()), ++count);
+  gSarManager.releaseList();
 
   myAutoNaMessCombo->clear();
   myAutoNaMessCombo->addItem(tr("Previous Message"),0);
-  SARList &sarn = gSARManager.Fetch(SAR_NA);
-  for (unsigned i = 0; i < sarn.size(); i++)
-    myAutoNaMessCombo->addItem(sarn[i]->Name(),i+1);
-  gSARManager.Drop();
+  const Licq::SarList& sarsNa(gSarManager.getList(SarManager::NotAvailableList));
+  count = 0;
+  for (Licq::SarList::const_iterator i = sarsNa.begin(); i != sarsNa.end(); ++i)
+    myAutoNaMessCombo->addItem(QString::fromLocal8Bit(i->name.c_str()), ++count);
+  gSarManager.releaseList();
 
   myAutoAwayMessCombo->setCurrentIndex(selectedAway);
   myAutoNaMessCombo->setCurrentIndex(selectedNA);
@@ -221,9 +225,9 @@ void Settings::Status::sarMsgChanged(int msg)
   if (msg < 0)
     return;
 
-  SARList &sar = gSARManager.Fetch(mySarGroupCombo->currentIndex());
-  mySartextEdit->setText(QString::fromLocal8Bit(sar[msg]->AutoResponse()));
-  gSARManager.Drop();
+  const Licq::SarList& sars(gSarManager.getList(static_cast<SarManager::List>(mySarGroupCombo->currentIndex())));
+  mySartextEdit->setText(QString::fromLocal8Bit(sars[msg].text.c_str()));
+  gSarManager.releaseList();
 }
 
 void Settings::Status::sarGroupChanged(int group)
@@ -232,24 +236,21 @@ void Settings::Status::sarGroupChanged(int group)
     return;
 
   mySarMsgCombo->clear();
-  SARList &sar = gSARManager.Fetch(group);
-  for (SARListIter i = sar.begin(); i != sar.end(); i++)
-    mySarMsgCombo->addItem(QString::fromLocal8Bit((*i)->Name()));
-  gSARManager.Drop();
+  const Licq::SarList& sars(gSarManager.getList(static_cast<SarManager::List>(group)));
+  for (Licq::SarList::const_iterator i = sars.begin(); i != sars.end(); ++i)
+    mySarMsgCombo->addItem(QString::fromLocal8Bit(i->name.c_str()));
+  gSarManager.releaseList();
 
   sarMsgChanged(0);
 }
 
 void Settings::Status::saveSar()
 {
-  SARList& sar = gSARManager.Fetch(mySarGroupCombo->currentIndex());
-  delete sar[mySarMsgCombo->currentIndex()];
-  sar[mySarMsgCombo->currentIndex()] =
-    new CSavedAutoResponse(mySarMsgCombo->currentText().toLocal8Bit().data(),
-        mySartextEdit->toPlainText().toLocal8Bit().data());
-
-  gSARManager.Drop();
-  gSARManager.Save();
+  Licq::SarList& sars(gSarManager.getList(static_cast<SarManager::List>(mySarGroupCombo->currentIndex())));
+  Licq::SavedAutoResponse& sar(sars[mySarMsgCombo->currentIndex()]);
+  sar.name = mySarMsgCombo->currentText().toLocal8Bit().data();
+  sar.text = mySartextEdit->toPlainText().toLocal8Bit().data();
+  gSarManager.releaseList(true);
 
   buildAutoStatusCombos(0);
 }
