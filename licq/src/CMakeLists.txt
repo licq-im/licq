@@ -39,7 +39,7 @@ set(licq_SRCS
   main.cpp
   md5.cpp
   message.cpp
-  onevent.cpp
+  oneventmanager.cpp
   oscarservice.cpp
   protocolmanager.cpp
   proxy.cpp

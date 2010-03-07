@@ -30,7 +30,7 @@
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
-#include <licq_onevent.h>
+#include <licq/oneventmanager.h>
 #include <licq_user.h>
 
 #include "config/chat.h"
@@ -43,6 +43,8 @@
 #include "settingsdlg.h"
 
 
+using Licq::OnEventManager;
+using Licq::gOnEventManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Events */
 
@@ -315,18 +317,18 @@ void Settings::Events::load()
   myIgnoreWebPanelCheck->setChecked(gLicqDaemon->Ignore(IGNORE_WEBPANEL));
   myIgnoreEmailPagerCheck->setChecked(gLicqDaemon->Ignore(IGNORE_EMAILPAGER));
 
-  COnEventManager* oem = gLicqDaemon->OnEventManager();
-  myOnEventsCheck->setChecked(oem->CommandType() != ON_EVENT_IGNORE);
-  oem->Lock();
-  mySndPlayerEdit->setFileName(oem->command().c_str());
-  mySndMsgEdit->setFileName(oem->parameter(ON_EVENT_MSG).c_str());
-  mySndUrlEdit->setFileName(oem->parameter(ON_EVENT_URL).c_str());
-  mySndChatEdit->setFileName(oem->parameter(ON_EVENT_CHAT).c_str());
-  mySndFileEdit->setFileName(oem->parameter(ON_EVENT_FILE).c_str());
-  mySndNotifyEdit->setFileName(oem->parameter(ON_EVENT_NOTIFY).c_str());
-  mySndSysMsgEdit->setFileName(oem->parameter(ON_EVENT_SYSMSG).c_str());
-  mySndMsgSentEdit->setFileName(oem->parameter(ON_EVENT_MSGSENT).c_str());
-  oem->Unlock();
+  gOnEventManager.lock();
+  myOnEventsCheck->setChecked(gOnEventManager.enabled());
+  mySndPlayerEdit->setFileName(gOnEventManager.command().c_str());
+  mySndMsgEdit->setFileName(gOnEventManager.parameter(OnEventManager::OnEventMessage).c_str());
+  mySndUrlEdit->setFileName(gOnEventManager.parameter(OnEventManager::OnEventUrl).c_str());
+  mySndChatEdit->setFileName(gOnEventManager.parameter(OnEventManager::OnEventChat).c_str());
+  mySndFileEdit->setFileName(gOnEventManager.parameter(OnEventManager::OnEventFile).c_str());
+  mySndNotifyEdit->setFileName(gOnEventManager.parameter(OnEventManager::OnEventOnline).c_str());
+  mySndSysMsgEdit->setFileName(gOnEventManager.parameter(OnEventManager::OnEventSysMsg).c_str());
+  mySndMsgSentEdit->setFileName(gOnEventManager.parameter(OnEventManager::OnEventMsgSent).c_str());
+  myAlwaysOnlineNotifyCheck->setChecked(gOnEventManager.alwaysOnlineNotify());
+  gOnEventManager.unlock();
 
   //TODO make general for all plugins
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
@@ -338,7 +340,6 @@ void Settings::Events::load()
     myOnEventDndCheck->setChecked(o->AcceptInDND());
     gUserManager.DropOwner(o);
   }
-  myAlwaysOnlineNotifyCheck->setChecked(gLicqDaemon->AlwaysOnlineNotify());
 }
 
 void Settings::Events::apply()
@@ -371,17 +372,18 @@ void Settings::Events::apply()
   gLicqDaemon->SetIgnore(IGNORE_WEBPANEL, myIgnoreWebPanelCheck->isChecked());
   gLicqDaemon->SetIgnore(IGNORE_EMAILPAGER, myIgnoreEmailPagerCheck->isChecked());
 
-  COnEventManager* oem = gLicqDaemon->OnEventManager();
-  oem->SetCommandType(myOnEventsCheck->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
-
-  oem->setCommand(mySndPlayerEdit->fileName().toLatin1().data());
-  oem->setParameter(ON_EVENT_MSG, mySndMsgEdit->fileName().toLatin1().data());
-  oem->setParameter(ON_EVENT_URL, mySndUrlEdit->fileName().toLatin1().data());
-  oem->setParameter(ON_EVENT_CHAT, mySndChatEdit->fileName().toLatin1().data());
-  oem->setParameter(ON_EVENT_FILE, mySndFileEdit->fileName().toLatin1().data());
-  oem->setParameter(ON_EVENT_NOTIFY, mySndNotifyEdit->fileName().toLatin1().data());
-  oem->setParameter(ON_EVENT_SYSMSG, mySndSysMsgEdit->fileName().toLatin1().data());
-  oem->setParameter(ON_EVENT_MSGSENT, mySndMsgSentEdit->fileName().toLatin1().data());
+  gOnEventManager.lock();
+  gOnEventManager.setEnabled(myOnEventsCheck->isChecked());
+  gOnEventManager.setCommand(mySndPlayerEdit->fileName().toLatin1().data());
+  gOnEventManager.setParameter(OnEventManager::OnEventMessage, mySndMsgEdit->fileName().toLatin1().data());
+  gOnEventManager.setParameter(OnEventManager::OnEventUrl, mySndUrlEdit->fileName().toLatin1().data());
+  gOnEventManager.setParameter(OnEventManager::OnEventChat, mySndChatEdit->fileName().toLatin1().data());
+  gOnEventManager.setParameter(OnEventManager::OnEventFile, mySndFileEdit->fileName().toLatin1().data());
+  gOnEventManager.setParameter(OnEventManager::OnEventOnline, mySndNotifyEdit->fileName().toLatin1().data());
+  gOnEventManager.setParameter(OnEventManager::OnEventSysMsg, mySndSysMsgEdit->fileName().toLatin1().data());
+  gOnEventManager.setParameter(OnEventManager::OnEventMsgSent, mySndMsgSentEdit->fileName().toLatin1().data());
+  gOnEventManager.setAlwaysOnlineNotify(myAlwaysOnlineNotifyCheck->isChecked());
+  gOnEventManager.unlock(true);
 
   //TODO Make general for all plugins
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
@@ -396,7 +398,6 @@ void Settings::Events::apply()
     o->SaveLicqInfo();
     gUserManager.DropOwner(o);
   }
-  gLicqDaemon->SetAlwaysOnlineNotify(myAlwaysOnlineNotifyCheck->isChecked());
 
   chatConfig->blockUpdates(false);
   contactListConfig->blockUpdates(false);

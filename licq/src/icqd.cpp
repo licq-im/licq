@@ -25,6 +25,7 @@
 
 #include <cerrno>
 
+#include <licq/oneventmanager.h>
 #include "licq_icq.h"
 #include "licq_user.h"
 #include "licq_oscarservice.h"
@@ -44,6 +45,8 @@
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::OnEventManager;
+using Licq::gOnEventManager;
 
 std::list <CReverseConnectToUserData *> CICQDaemon::m_lReverseConnect;
 pthread_mutex_t CICQDaemon::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
@@ -273,50 +276,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadBool("UseBART", m_bUseBART, true); // server side buddy icons
   licqConf.ReadBool("SendTypingNotification", m_bSendTN, true);
   licqConf.ReadBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
-
-  // -----OnEvent configuration-----
-  string onEventCommand, onEventParams[MAX_ON_EVENT];
-  unsigned short nOnEventCmdType;
-
-  licqConf.SetSection("onevent");
-  licqConf.ReadNum("Enable", nOnEventCmdType, 1);
-  licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, false);
-  m_xOnEventManager.SetCommandType(nOnEventCmdType);
-
-  // Prepare default values for onEvent
-  char DEF_MESSAGE[MAX_FILENAME_LEN];
-  char DEF_URL[MAX_FILENAME_LEN];
-  char DEF_CHAT[MAX_FILENAME_LEN];
-  char DEF_FILE[MAX_FILENAME_LEN];
-  char DEF_NOTIFY[MAX_FILENAME_LEN];
-  char DEF_SYSMSG[MAX_FILENAME_LEN];
-  char DEF_MSGSENT[MAX_FILENAME_LEN];
-  strcpy(DEF_MESSAGE, SHARE_DIR);
-  strcpy(DEF_URL, SHARE_DIR);
-  strcpy(DEF_CHAT, SHARE_DIR);
-  strcpy(DEF_FILE, SHARE_DIR);
-  strcpy(DEF_NOTIFY, SHARE_DIR);
-  strcpy(DEF_SYSMSG, SHARE_DIR);
-  strcpy(DEF_MSGSENT, SHARE_DIR);
-  // be paranoid, don't let it overflow
-  unsigned short MAX_APPEND = (MAX_FILENAME_LEN - strlen(SHARE_DIR) - 1);  // max chars to append via strncat()
-  strncat(DEF_MESSAGE, "sounds/icq/Message.wav", MAX_APPEND);
-  strncat(DEF_URL,     "sounds/icq/URL.wav", MAX_APPEND);
-  strncat(DEF_CHAT,    "sounds/icq/Chat.wav", MAX_APPEND);
-  strncat(DEF_FILE,    "sounds/icq/File.wav", MAX_APPEND);
-  strncat(DEF_NOTIFY,  "sounds/icq/Online.wav", MAX_APPEND);
-  strncat(DEF_SYSMSG,  "sounds/icq/System.wav", MAX_APPEND);
-  strncat(DEF_MSGSENT, "sounds/icq/Message.wav", MAX_APPEND);
-
-  licqConf.readString("Command", onEventCommand, "play");
-  licqConf.readString("Message", onEventParams[ON_EVENT_MSG], DEF_MESSAGE);
-  licqConf.readString("Url", onEventParams[ON_EVENT_URL], DEF_URL);
-  licqConf.readString("Chat", onEventParams[ON_EVENT_CHAT], DEF_CHAT);
-  licqConf.readString("File", onEventParams[ON_EVENT_FILE], DEF_FILE);
-  licqConf.readString("OnlineNotify", onEventParams[ON_EVENT_NOTIFY], DEF_NOTIFY);
-  licqConf.readString("SysMsg", onEventParams[ON_EVENT_SYSMSG], DEF_SYSMSG);
-  licqConf.readString("MsgSent", onEventParams[ON_EVENT_MSGSENT], DEF_MSGSENT);
-  m_xOnEventManager.setParameters(onEventCommand, onEventParams);
 
   // Statistics
   m_nResetTime = 0;
@@ -601,22 +560,6 @@ void CICQDaemon::SaveConf()
   licqConf.WriteBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
   licqConf.WriteStr("DefaultUserEncoding", gUserManager.DefaultUserEncoding());
 
-  // save the sound stuff
-  licqConf.SetSection("onevent");
-  COnEventManager *oem = OnEventManager();
-  licqConf.WriteNum("Enable", oem->CommandType());
-  licqConf.WriteBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify);
-  oem->Lock();
-  licqConf.writeString("Command", oem->command());
-  licqConf.writeString("Message", oem->parameter(ON_EVENT_MSG));
-  licqConf.writeString("Url", oem->parameter(ON_EVENT_URL));
-  licqConf.writeString("Chat",oem->parameter(ON_EVENT_CHAT));
-  licqConf.writeString("File",oem->parameter(ON_EVENT_FILE));
-  licqConf.writeString("OnlineNotify", oem->parameter(ON_EVENT_NOTIFY));
-  licqConf.writeString("SysMsg", oem->parameter(ON_EVENT_SYSMSG));
-  licqConf.writeString("MsgSent", oem->parameter(ON_EVENT_MSGSENT));
-  oem->Unlock();
-
   licqConf.FlushFile();
 
   licqConf.SetSection("owners");
@@ -660,7 +603,6 @@ bool CICQDaemon::haveGpgSupport() const
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
-void CICQDaemon::SetAlwaysOnlineNotify(bool b)  { m_bAlwaysOnlineNotify = b; }
 
 int CICQDaemon::StartTCPServer(TCPSocket *s)
 {
@@ -1847,7 +1789,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 {
   char *szType = NULL;
   CUserEvent *pEvent = NULL;
-  unsigned short nEventType = 0;
+  OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
 
   // for acks
   unsigned short nPort;
@@ -1885,7 +1827,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     SendEvent_Server(p);
 
     szType = strdup(tr("Message"));
-    nEventType = ON_EVENT_MSG;
+      onEventType = OnEventManager::OnEventMessage;
     pEvent = e;
     break;
   }
@@ -1909,7 +1851,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     {
       CEventChat *e = new CEventChat(message, szChatClients, nPort, nSequence,
                                      TIME_NOW, nFlags, 0, nMsgID[0], nMsgID[1]);
-      nEventType = ON_EVENT_CHAT;
+        onEventType = OnEventManager::OnEventChat;
       pEvent = e;
     }
 
@@ -1939,7 +1881,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         CEventFile* e = new CEventFile(filename.c_str(), message, nFileSize,
                                      filelist, nSequence, TIME_NOW, nFlags,
                                      0, nMsgID[0], nMsgID[1]);
-      nEventType = ON_EVENT_FILE;
+        onEventType = OnEventManager::OnEventFile;
       pEvent = e;
     }
     else
@@ -1961,7 +1903,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     SendEvent_Server(p);
 
     szType = strdup(tr("URL"));
-    nEventType = ON_EVENT_URL;
+      onEventType = OnEventManager::OnEventUrl;
     pEvent = e;
     break;
   }
@@ -1977,7 +1919,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     SendEvent_Server(p);
 
     szType = strdup(tr("Contact list"));
-    nEventType = ON_EVENT_MSG;
+      onEventType = OnEventManager::OnEventMessage;
     pEvent = e;
     break;
   }
@@ -2129,7 +2071,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
             u->IdString());
 
       if (AddUserEvent(u, pEvent))
-        m_xOnEventManager.Do(nEventType, u);
+        gOnEventManager.performOnEvent(onEventType, u);
     }
     else // invalid parse or unknown event
     {

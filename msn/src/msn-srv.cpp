@@ -29,9 +29,12 @@
 #include <vector>
 
 #include <licq/md5.h>
+#include <licq/oneventmanager.h>
 #include <licq_user.h>
 
 using namespace std;
+using Licq::OnEventManager;
+using Licq::gOnEventManager;
 
 
 void CMSN::ProcessServerPacket(CMSNBuffer *packet)
@@ -214,8 +217,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (gLicqDaemon->AddUserEvent(o, e))
         {
           e->AddToHistory(o, D_RECEIVER);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, o);
           gUserManager.DropOwner(o);
-          gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
           gUserManager.DropOwner(o);
@@ -334,9 +337,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
         gLicqDaemon->ChangeUserStatus(u, nStatus);
 
-        if ((gLicqDaemon->m_bAlwaysOnlineNotify || strCmd == "NLN") &&
-            nStatus == ICQ_STATUS_ONLINE && u->OnlineNotify())
-          gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
+        if (strCmd == "NLN" && nStatus == ICQ_STATUS_ONLINE)
+          gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, u);
       }
       gUserManager.DropUser(u);
     }
@@ -436,8 +438,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (gLicqDaemon->AddUserEvent(o, pEmailAlert))
         {
           pEmailAlert->AddToHistory(o, D_RECEIVER);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, o);
           gUserManager.DropOwner(o);
-          gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
           gUserManager.DropOwner(o);

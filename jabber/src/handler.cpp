@@ -21,8 +21,12 @@
 #include "jabber.h"
 
 #include <licq/log.h>
+#include <licq/oneventmanager.h>
 #include <licq_icqd.h>
 #include <licq_user.h>
+
+using Licq::OnEventManager;
+using Licq::gOnEventManager;
 
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
@@ -182,7 +186,7 @@ void Handler::onMessage(const std::string& from, const std::string& message)
   if (user)
     user->SetTyping(0);
   if (gLicqDaemon->AddUserEvent(user, event))
-    gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, user);
+    gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, user);
   gUserManager.DropUser(user);
 }
 

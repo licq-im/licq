@@ -25,6 +25,7 @@
 #include "gettext.h"
 
 #include "licq/byteorder.h"
+#include <licq/oneventmanager.h>
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_oscarservice.h"
@@ -41,8 +42,10 @@
 #include "licq/version.h"
 
 using namespace std;
+using Licq::OnEventManager;
 using Licq::StringList;
 using Licq::User;
+using Licq::gOnEventManager;
 
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
@@ -1347,7 +1350,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     {
       e->m_pUserEvent->AddToHistory(u, D_SENDER);
       u->SetLastSentEvent();
-      m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
+      gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, u);
       gUserManager.DropUser(u);
     }
     m_sStats[STATS_EventsSent].Inc();
@@ -2553,11 +2556,8 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     u->SetClientInfoTimestamp(nInfoPluginTimestamp);
     u->SetClientStatusTimestamp(nStatusPluginTimestamp);
 
-    // We are no longer able to differentiate oncoming users from the
-    // users that are on when we sign on.. so try the online since flag
-    if ((m_bAlwaysOnlineNotify || (u->OnlineSince()+60 >= time(NULL))) &&
-        nOldStatus == ICQ_STATUS_OFFLINE && u->OnlineNotify())
-      m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
+      if (nOldStatus == ICQ_STATUS_OFFLINE)
+        gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, u);
     gUserManager.DropUser(u);
     break;
   }
@@ -2787,7 +2787,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       u->SetTyping(ICQ_TYPING_INACTIVEx0);
       
       if (AddUserEvent(u, e))
-        m_xOnEventManager.Do(ON_EVENT_MSG, u);
+            gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
           pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
       gUserManager.DropUser(u);
       break;
@@ -3080,7 +3080,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       char *szType = NULL;
-      unsigned short nTypeEvent = 0;
+      OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
       CUserEvent *eEvent = NULL;
 
       switch(nTypeMsg)
@@ -3089,7 +3089,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         {
           CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
           szType = strdup(tr("Message"));
-          nTypeEvent = ON_EVENT_MSG;
+          onEventType = OnEventManager::OnEventMessage;
           eEvent = e;
           break;
         }
@@ -3104,7 +3104,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
           szType = strdup(tr("URL"));
-          nTypeEvent = ON_EVENT_URL;
+          onEventType = OnEventManager::OnEventUrl;
           eEvent = e;
           break;
         }
@@ -3290,7 +3290,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           }
 
           szType = strdup(tr("Contacts"));
-          nTypeEvent = ON_EVENT_MSG;
+          onEventType = OnEventManager::OnEventMessage;
           eEvent = e;
           break;
         }
@@ -3355,7 +3355,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             
 	    if (szType) free(szType);
 	    if (AddUserEvent(u, eEvent))
-	      m_xOnEventManager.Do(nTypeEvent, u);
+                  gOnEventManager.performOnEvent(onEventType, u);
                 pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
 	    gUserManager.DropUser(u);
             break;
@@ -3382,8 +3382,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	    if (AddUserEvent(o, eEvent))
 	    {
                 eEvent->AddToHistory(o, D_RECEIVER);
+                  gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, o);
 	      gUserManager.DropOwner(o);
-	      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
 	    }
 	    else
 	      gUserManager.DropOwner(o);
@@ -3402,7 +3402,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         gLog.Info(tr("%sSMS from %s - %s (%s).\n"), L_SBLANKxSTR, eSms->Number(),
             u->GetAlias(), idSms.c_str());
 	      if (AddUserEvent(u, eEvent))
-	        m_xOnEventManager.Do(ON_EVENT_SMS, u);
+                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, u);
 	      gUserManager.DropUser(u);
 	    }
 	    else
@@ -3412,9 +3412,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	      if (AddUserEvent(o, eEvent))
 	      {
                   eEvent->AddToHistory(o, D_RECEIVER);
+                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, o);
 	        gUserManager.DropOwner(o);
-	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
-	      }
+	          }
 	      else
 	        gUserManager.DropOwner(o);
 	    }
@@ -4118,8 +4118,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       if (AddUserEvent(o, e))
       {
         e->AddToHistory(o, D_RECEIVER);
+        gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, o);
         gUserManager.DropOwner(o);
-        m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
       }
       else
         gUserManager.DropOwner(o);
@@ -4170,8 +4170,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       if (AddUserEvent(o, eEvent))
       {
         eEvent->AddToHistory(o, D_RECEIVER);
+        gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, o);
         gUserManager.DropOwner(o);
-        m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
       }
       else
         gUserManager.DropOwner(o);
@@ -4194,8 +4194,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       if (AddUserEvent(o, e))
       {
         e->AddToHistory(o, D_RECEIVER);
+        gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, o);
         gUserManager.DropOwner(o);
-        m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
       }
       else
         gUserManager.DropOwner(o);
@@ -4322,7 +4322,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       // 2 byte length little endian + string
       msg.UnpackString(szMessage, msg.getDataMaxSize());      
       char *szType = NULL;
-      unsigned short nTypeEvent = 0;
+          OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
       CUserEvent *eEvent = NULL;
             
       switch(nTypeMsg)
@@ -4331,7 +4331,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	{
           CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
 	  szType = strdup(tr("Message"));
-	  nTypeEvent = ON_EVENT_MSG;
+              onEventType = OnEventManager::OnEventMessage;
 	  eEvent = e;
 	  break;
 	}
@@ -4347,7 +4347,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    break;
 	  }
 	  szType = strdup(tr("URL"));
-	  nTypeEvent = ON_EVENT_URL;
+              onEventType = OnEventManager::OnEventUrl;
 	  eEvent = e;
 	  break;
 	}
@@ -4528,7 +4528,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 	  szType = strdup(tr("Contacts"));
-	  nTypeEvent = ON_EVENT_MSG;
+              onEventType = OnEventManager::OnEventMessage;
 	  eEvent = e;
 	  break;
 	}
@@ -4587,7 +4587,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
             if (szType) free(szType);
     	    if (AddUserEvent(u, eEvent))
-    	      m_xOnEventManager.Do(nTypeEvent, u);
+                  gOnEventManager.performOnEvent(onEventType, u);
     	    gUserManager.DropUser(u);
 	    break;
 	  }
@@ -4618,8 +4618,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             if (AddUserEvent(o, eEvent))
 	    {
                   eEvent->AddToHistory(o, D_RECEIVER);
+                  gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, o);
                   gUserManager.DropOwner(o);
-              m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
 	    }
 	    else
                   gUserManager.DropOwner(o);
@@ -4636,7 +4636,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                   gLog.Info(tr("%sOffline SMS from %s - %s (%s).\n"), L_SBLANKxSTR,
                       eSms->Number(), u->GetAlias(), id);
 	      if (AddUserEvent(u, eEvent))
-	        m_xOnEventManager.Do(ON_EVENT_SMS, u);
+                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, u);
 	      gUserManager.DropUser(u);
 	    }
 	    else
@@ -4646,8 +4646,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	      if (AddUserEvent(o, eEvent))
 	      {
 	            eEvent->AddToHistory(o, D_RECEIVER);
+                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, o);
                     gUserManager.DropOwner(o);
-	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
 	      }
 	      else
                     gUserManager.DropOwner(o);

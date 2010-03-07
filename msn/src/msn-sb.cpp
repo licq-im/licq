@@ -27,8 +27,12 @@
 #include <vector>
 
 #include <licq_user.h>
+#include <licq/oneventmanager.h>
 
 using namespace std;
+using Licq::OnEventManager;
+using Licq::gOnEventManager;
+
 
 void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 {
@@ -123,7 +127,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (u)
           u->SetTyping(0);
         if (gLicqDaemon->AddUserEvent(u, e))
-          gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, u);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
         gUserManager.DropUser(u);
       }
       else if (strncmp(strType.c_str(), "text/x-msmsgsinvite", 19) == 0)
@@ -202,7 +206,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
               e->m_pUserEvent->AddToHistory(*u, D_SENDER);
               u->SetLastSentEvent();
               if (u->id() == e->userId())
-                gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, *u);
+                gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
             }
           }
           else
@@ -212,7 +216,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
             {
               e->m_pUserEvent->AddToHistory(u, D_SENDER);
               u->SetLastSentEvent();
-              gLicqDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
+              gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, u);
               gUserManager.DropUser(u);
             }
           }

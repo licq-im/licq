@@ -15,7 +15,6 @@ header file containing all the main procedures to interface with the ICQ server 
 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
-#include "licq_onevent.h"
 #include "licq/contactlist/user.h" // For SetString
 #include "licq/daemon.h"
 #include "licq/types.h" // For GroupType, UserCategoryMap
@@ -359,11 +358,6 @@ public:
   bool Ignore(unsigned short n) const           { return m_nIgnoreTypes & n; }
   void SetIgnore(unsigned short, bool);
 
-  COnEventManager *OnEventManager()  { return &m_xOnEventManager; }
-  // NOT MT SAFE
-  bool AlwaysOnlineNotify() const               { return m_bAlwaysOnlineNotify; }
-  void SetAlwaysOnlineNotify(bool);
-
   /**
    * Get the next queued signal for a plugin
    * Checks calling thread to determine which plugin queue to pop
@@ -486,7 +480,6 @@ protected:
 
 
   CLicq *licq;
-  COnEventManager m_xOnEventManager;
   int pipe_newsocket[2], fifo_fd;
   FILE *fifo_fs;
   EDaemonStatus m_eStatus;
@@ -509,7 +502,6 @@ protected:
        m_bLoggingOn,
        m_bRegistering,
        m_bOnlineNotifies,
-       m_bAlwaysOnlineNotify,
        m_bTCPEnabled,
        m_bFirewall,
        m_bVerify,
@@ -710,7 +702,6 @@ protected:
   friend class COscarService;
   friend class CChatManager;
   friend class CFileTransferManager;
-  friend class COnEventManager;
   friend class LicqDaemon::ProtocolManager;
   friend class LicqDaemon::UserManager;
   friend class CLicq;

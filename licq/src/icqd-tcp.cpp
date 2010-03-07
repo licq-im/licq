@@ -24,6 +24,7 @@
 
 #include "licq/byteorder.h"
 #include "licq/gpghelper.h"
+#include <licq/oneventmanager.h>
 #include "licq_icqd.h"
 #include "licq_oscarservice.h"
 #include "licq_translate.h"
@@ -38,8 +39,10 @@
 #include "licq/version.h"
 
 using namespace std;
+using Licq::OnEventManager;
 using Licq::StringList;
 using Licq::User;
+using Licq::gOnEventManager;
 
 
 void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, const string& message,
@@ -1684,9 +1687,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         }
 
         if (!AddUserEvent(u, e)) break;
-        m_xOnEventManager.Do(ON_EVENT_MSG, u);
-        break;
-      }
+          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
+          break;
+        }
       case ICQ_CMDxTCP_READxNAxMSG:
       case ICQ_CMDxTCP_READxDNDxMSG:
       case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
@@ -1787,9 +1790,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         }
 
         if (!AddUserEvent(u, e)) break;
-        m_xOnEventManager.Do(ON_EVENT_URL, u);
-        break;
-      }
+          gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, u);
+          break;
+        }
 
       // Contact List
       case ICQ_CMDxSUB_CONTACTxLIST:
@@ -1857,10 +1860,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         }
 
         if (!AddUserEvent(u, e)) break;
-        m_xOnEventManager.Do(ON_EVENT_MSG, u);
-
-        break;
-      }
+          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
+          break;
+        }
 
       // Chat Request
       case ICQ_CMDxSUB_CHAT:
@@ -1906,9 +1908,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         }
 
         if (!AddUserEvent(u, e)) break;
-        m_xOnEventManager.Do(ON_EVENT_CHAT, u);
-        break;
-      }
+          gOnEventManager.performOnEvent(OnEventManager::OnEventChat, u);
+          break;
+        }
 
       // File transfer
       case ICQ_CMDxSUB_FILE:
@@ -1960,9 +1962,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         }
 
         if (!AddUserEvent(u, e)) break;
-        m_xOnEventManager.Do(ON_EVENT_FILE, u);
-        break;
-      }
+          gOnEventManager.performOnEvent(OnEventManager::OnEventFile, u);
+          break;
+        }
 
 			// Yuck, ICBM
 			// XXX If we are in DND or OCC, don't accept the message!
@@ -2035,9 +2037,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					}
 
 					if (!AddUserEvent(u, e)) break;
-					m_xOnEventManager.Do(ON_EVENT_FILE, u);
-					break;
-				}
+                gOnEventManager.performOnEvent(OnEventManager::OnEventFile, u);
+                break;
+              }
 				case ICQ_CMDxSUB_CHAT:
 				{
 					char szChatClients[1024];
@@ -2067,9 +2069,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					}
 
 					if (!AddUserEvent(u, e)) break;
-					m_xOnEventManager.Do(ON_EVENT_CHAT, u);
-					break;
-				}
+                gOnEventManager.performOnEvent(OnEventManager::OnEventChat, u);
+                break;
+              }
 				case ICQ_CMDxSUB_URL:
 				{
               gLog.Info(tr("%sURL from %s (%s).\n"), L_TCPxSTR, u->GetAlias(), USERID_TOSTR(userId));
@@ -2097,9 +2099,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					}
 
 					if (!AddUserEvent(u, e)) break;
-					m_xOnEventManager.Do(ON_EVENT_URL, u);
-					break;
-				}
+                gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, u);
+                break;
+              }
 				case ICQ_CMDxSUB_CONTACTxLIST:
 				{
               gLog.Info(tr("%sContact list from %s (%s).\n"), L_TCPxSTR,
@@ -2129,9 +2131,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					}
 
 					if (!AddUserEvent(u, e)) break;
-					m_xOnEventManager.Do(ON_EVENT_MSG, u);					
-					break;
-				}
+                gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
+                break;
+              }
           } // switch nICBMCommand
           delete [] szMessage;
 

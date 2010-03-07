@@ -41,12 +41,14 @@ using namespace std;
 
 #include "contactlist/usermanager.h"
 #include "logging/streamlogsink.h"
+#include "oneventmanager.h"
 #include "plugins/pluginmanager.h"
 #include "sarmanager.h"
 
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
 
@@ -588,6 +590,7 @@ bool CLicq::Init(int argc, char **argv)
   // Start things going
   if (!LicqDaemon::gUserManager.Load())
     return false;
+  gOnEventManager.initialize();
   gSarManager.initialize();
   sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
   gUtilityManager.LoadUtilities(szFilename);
