@@ -14,7 +14,7 @@ typedef Licq::User LicqUser;
 
 using Licq::UserId;
 #define USERID_ISVALID(x) ((x).isValid())
-#define USERID_NONE (Licq::UserId())
+#define USERID_NONE Licq::UserId()
 #define USERID_TOSTR(x) ((x).toString().c_str())
 
 typedef Licq::GroupType GroupType;
