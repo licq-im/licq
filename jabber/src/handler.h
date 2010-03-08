@@ -21,6 +21,7 @@
 #define HANDLER_H
 
 #include <list>
+#include <map>
 #include <set>
 #include <string>
 
@@ -49,6 +50,8 @@ public:
 
 private:
   unsigned long myStatus;
+  unsigned long myNextConvoId;
+  std::map<std::string, unsigned long> myConvoIds;
 };
 
 inline void Handler::setStatus(unsigned long status)

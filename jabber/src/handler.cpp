@@ -31,7 +31,8 @@ using Licq::gOnEventManager;
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
 Handler::Handler() :
-  myStatus(ICQ_STATUS_OFFLINE)
+  myStatus(ICQ_STATUS_OFFLINE),
+  myNextConvoId(1)
 {
   // Empty
 }
@@ -176,9 +177,13 @@ void Handler::onRosterReceived(const std::set<std::string>& ids)
 void Handler::onMessage(const std::string& from, const std::string& message)
 {
   TRACE();
-  
+
+  if (myConvoIds.find(from) == myConvoIds.end())
+    myConvoIds[from] = myNextConvoId++;
+
   CEventMsg* event = new CEventMsg(
-      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, ::time(0), 0);
+      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, ::time(0),
+      0, myConvoIds[from]);
 
   UserId userId = LicqUser::makeUserId(from, JABBER_PPID);
   LicqUser* user = gUserManager.fetchUser(userId, LOCK_W, true);
