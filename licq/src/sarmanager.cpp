@@ -136,6 +136,9 @@ void SarManager::initialize()
 
   for (int i = 0; i < NumLists; ++i)
   {
+    if (mySarLists[i].size() > 0)
+      continue;
+
     for (int j = 0; j < NumDefaults; ++j)
     {
       if (DefaultNames[i][j] == NULL)
@@ -146,6 +149,8 @@ void SarManager::initialize()
       mySarLists[i].push_back(sar);
     }
   }
+
+  writeConfig();
 }
 
 Licq::SarList& SarManager::getList(List list)
@@ -157,24 +162,27 @@ Licq::SarList& SarManager::getList(List list)
 void SarManager::releaseList(bool save)
 {
   if (save)
-  {
-    for (int i = 0; i < NumLists; ++i)
-    {
-      mySarFile.SetSection(SectionNames[i]);
-      mySarFile.WriteNum("NumSAR", mySarLists[i].size());
-      int count = 0;
-      for (SarList::const_iterator j = mySarLists[i].begin(); j != mySarLists[i].end(); ++j)
-      {
-        ++count;
-        char key[20];
-        sprintf(key, "SAR%i.Name", count);
-        mySarFile.writeString(key, j->name);
-        sprintf(key, "SAR%i.Text", count);
-        mySarFile.writeString(key, j->text);
-      }
-    }
-    mySarFile.FlushFile();
-  }
+    writeConfig();
 
   myMutex.unlock();
+}
+
+void SarManager::writeConfig()
+{
+  for (int i = 0; i < NumLists; ++i)
+  {
+    mySarFile.SetSection(SectionNames[i]);
+    mySarFile.WriteNum("NumSAR", mySarLists[i].size());
+    int count = 0;
+    for (SarList::const_iterator j = mySarLists[i].begin(); j != mySarLists[i].end(); ++j)
+    {
+      ++count;
+      char key[20];
+      sprintf(key, "SAR%i.Name", count);
+      mySarFile.writeString(key, j->name);
+      sprintf(key, "SAR%i.Text", count);
+      mySarFile.writeString(key, j->text);
+    }
+  }
+  mySarFile.FlushFile();
 }

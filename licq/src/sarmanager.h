@@ -44,6 +44,11 @@ public:
   void releaseList(bool save = false);
 
 private:
+  /**
+   * Save configuration to file
+   */
+  void writeConfig();
+
   static const char* const SectionNames[NumLists];
   static const int NumDefaults = 7;
   static const char* const DefaultNames[NumLists][NumDefaults];
