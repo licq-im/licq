@@ -22,6 +22,8 @@
 
 #include <cstring>
 
+#include <QHash>
+
 #include <licq_events.h>
 #include <licq_log.h>
 #include <licq_user.h>
