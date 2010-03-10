@@ -20,7 +20,6 @@
 #ifndef LICQ_LOG_H
 #define LICQ_LOG_H
 
-#include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
 #include <cstdarg>
 #include <stdint.h>
@@ -57,36 +56,27 @@ public:
   };
 
   virtual void log(Level level, const std::string& msg) = 0;
-  void log(Level level, const boost::format& msg) { log(level, msg.str()); }
   void log(Level level, const char* format, va_list args) LICQ_FORMAT(3, 0);
 
   void unknown(const std::string& msg) { log(Unknown, msg); }
-  void unknown(const boost::format& msg) { log(Unknown, msg); }
   inline void unknown(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void info(const std::string& msg) { log(Info, msg); }
-  void info(const boost::format& msg) { log(Info, msg); }
   inline void info(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void warning(const std::string& msg) { log(Warning, msg); }
-  void warning(const boost::format& msg) { log(Warning, msg); }
   inline void warning(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void error(const std::string& msg) { log(Error, msg); }
-  void error(const boost::format& msg) { log(Error, msg); }
   inline void error(const char* format, ...) LICQ_FORMAT(2, 3);
 
   void debug(const std::string& msg) { log(Debug, msg); }
-  void debug(const boost::format& msg) { log(Debug, msg); }
   inline void debug(const char* format, ...) LICQ_FORMAT(2, 3);
 
   virtual void packet(Level level, const uint8_t* data, size_t size,
                       const std::string& msg) = 0;
   void packet(Level level, const uint8_t* data, size_t size,
               const char* format, va_list args) LICQ_FORMAT(5, 0);
-  void packet(Level level, const uint8_t* data, size_t size,
-              const boost::format& msg)
-      { packet(level, data, size, msg.str()); }
   inline void packet(Level level, const uint8_t* data, size_t size,
                      const char* format, ...) LICQ_FORMAT(5, 6);
 

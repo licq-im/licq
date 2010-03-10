@@ -80,12 +80,6 @@ TEST_P(LogFixture, correctLevelWithStdStringLog)
   log(msg);
 }
 
-TEST_P(LogFixture, correctLevelWithBoostFormatLog)
-{
-  boost::format msg("message level %1%");
-  log(msg % GetParam());
-}
-
 TEST_P(LogFixture, correctLevelWithPrintfFormat)
 {
   const char* msg = "message";
@@ -116,17 +110,13 @@ TEST(Log, packet)
 
   StrictMock<MockLogSink> logSink;
   EXPECT_CALL(logSink, isLogging(Licq::Log::Info))
-      .Times(2)
-      .WillRepeatedly(Return(true));
+      .WillOnce(Return(true));
   EXPECT_CALL(logSink, isLoggingPackets())
-      .Times(2)
-      .WillRepeatedly(Return(true));
+      .WillOnce(Return(true));
   EXPECT_CALL(logSink, log(Pointee(Field(&Licq::LogSink::Message::packet,
                                          ElementsAreArray(packet)))))
-      .Times(2);
+      .Times(1);
 
   Log log("test", logSink);
   log.packet(Licq::Log::Info, packet, sizeof(packet), std::string("message"));
-  log.packet(Licq::Log::Info, packet, sizeof(packet),
-             boost::format("message %1%") % 1);
 }
