@@ -32,6 +32,11 @@ public:
   UserManager();
   ~UserManager();
 
+  /**
+   * Shut down the user manager
+   */
+  void shutdown();
+
   bool Load();
   unsigned short GenerateSID();
   bool UpdateUsersInGroups();

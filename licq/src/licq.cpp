@@ -51,6 +51,7 @@ using Licq::ProtocolPlugin;
 using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
+using LicqDaemon::gUserManager;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
 
@@ -787,6 +788,8 @@ int CLicq::Main()
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);
+
+  gUserManager.shutdown();
 
   return gPluginManager.getGeneralPluginsCount();
 }

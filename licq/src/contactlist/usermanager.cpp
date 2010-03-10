@@ -65,17 +65,25 @@ UserManager::UserManager()
 
 UserManager::~UserManager()
 {
+  // Empty
+}
+
+void UserManager::shutdown()
+{
   UserMap::iterator iter;
   for (iter = myUsers.begin(); iter != myUsers.end(); ++iter)
     delete iter->second;
+  myUsers.clear();
 
   GroupMap::iterator g_iter;
   for (g_iter = myGroups.begin(); g_iter != myGroups.end(); ++g_iter)
     delete g_iter->second;
+  myGroups.clear();
 
   OwnerMap::iterator o_iter;
   for (o_iter = myOwners.begin(); o_iter != myOwners.end(); ++o_iter)
     delete o_iter->second;
+  myOwners.clear();
 
   if (m_szDefaultEncoding != NULL)
     free(m_szDefaultEncoding);
