@@ -38,18 +38,6 @@ TEST(ThreadSpecificData, setAndGet)
   data.set(0);
 }
 
-TEST(ThreadSpecificData, isSet)
-{
-  ThreadSpecificData<int> data;
-  EXPECT_FALSE(data.isSet());
-
-  data.set(new int());
-  EXPECT_TRUE(data.isSet());
-
-  data.set(0);
-  EXPECT_FALSE(data.isSet());
-}
-
 struct DeleteLogger
 {
   static int myCount;

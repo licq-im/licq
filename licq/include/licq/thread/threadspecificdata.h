@@ -55,11 +55,6 @@ public:
    */
   inline T* get() const;
 
-  /**
-   * @return True if data is set; otherwise false.
-   */
-  bool isSet() const { return get() != 0; }
-
 private:
   static inline void deleter(void* data);
   pthread_key_t myKey;
