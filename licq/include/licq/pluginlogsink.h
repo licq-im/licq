@@ -37,7 +37,7 @@ public:
 
   int getReadPipe();
 
-  Message::Ptr popMessage();
+  Message::Ptr popMessage(bool readPipe = true);
 
   void setLogLevel(Log::Level level, bool enable);
   void setLogPackets(bool enable);

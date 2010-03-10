@@ -62,24 +62,43 @@ TEST(PluginLogSink, setAllLogLevels)
   EXPECT_TRUE(sink.isLogging(Log::Debug));
 }
 
+static ssize_t charsInPipe(int fd)
+{
+  ::fcntl(fd, F_SETFL, ::fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+
+  char res[10];
+  return ::read(fd, &res, 10);
+}
+
 TEST(PluginLogSink, readPipeActiveWhenNewMessages)
 {
   PluginLogSink sink;
   sink.log(LogSink::Message::Ptr(new LogSink::Message()));
   sink.log(LogSink::Message::Ptr(new LogSink::Message()));
 
-  int fd = sink.getReadPipe();
-  fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
+  ASSERT_EQ(2, charsInPipe(sink.getReadPipe()));
+}
 
-  char res[3];
-  ASSERT_EQ(2, read(sink.getReadPipe(), &res, 3));
+TEST(PluginLogSink, readPipeInPopMessage)
+{
+  PluginLogSink sink;
+  sink.log(LogSink::Message::Ptr(new LogSink::Message()));
+  sink.log(LogSink::Message::Ptr(new LogSink::Message()));
+  sink.log(LogSink::Message::Ptr(new LogSink::Message()));
+
+  sink.popMessage();
+  sink.popMessage(true);
+  sink.popMessage(false);
+
+  ASSERT_EQ(1, charsInPipe(sink.getReadPipe()));
 }
 
 TEST(PluginLogSink, popWorksWhenEmpty)
 {
   PluginLogSink sink;
 
-  EXPECT_EQ(LogSink::Message::Ptr(), sink.popMessage());
+  EXPECT_FALSE(sink.popMessage(false));
+  EXPECT_FALSE(sink.popMessage(true));
 }
 
 TEST(PluginLogSink, logMessage)

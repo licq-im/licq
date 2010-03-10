@@ -79,9 +79,9 @@ protected:
 };
 
 /**
- * Pretty-prints @a packet to the stream @a os.
+ * Pretty-prints packet to the stream @a os.
  * @param os The stream to print to.
- * @param packet The packet to print.
+ * @param message The message with the packet to print.
  * @return @a os
  */
 std::ostream& packetToString(

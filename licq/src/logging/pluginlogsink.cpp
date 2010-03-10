@@ -61,11 +61,14 @@ int PluginLogSink::getReadPipe()
   return myPrivate->myPipe.getReadFd();
 }
 
-LogSink::Message::Ptr PluginLogSink::popMessage()
+LogSink::Message::Ptr PluginLogSink::popMessage(bool readPipe)
 {
   MutexLocker locker(myPrivate->myMutex);
   if (myPrivate->myMessages.empty())
     return Message::Ptr();
+
+  if (readPipe)
+    myPrivate->myPipe.getChar();
 
   Message::Ptr message = myPrivate->myMessages.front();
   myPrivate->myMessages.pop_front();

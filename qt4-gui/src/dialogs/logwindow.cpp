@@ -107,12 +107,9 @@ LogWindow::~LogWindow()
   Licq::gDaemon->getLogService().unregisterLogSink(myLogSink);  
 }
 
-void LogWindow::log(int fd)
+void LogWindow::log(int /*fd*/)
 {
   using Licq::LogSink;
-
-  char buf;
-  read(fd, &buf, sizeof(buf));
 
   LogSink::Message::Ptr message = myLogSink->popMessage();
 
