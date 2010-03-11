@@ -16,14 +16,14 @@ const char *LP_Usage()
 
 const char *LP_Name()
 {
-  static const char name[] = "ICQ Remote Management Server";
+  static const char name[] = "RMS";
   return name;
 }
 
 
 const char *LP_Description()
 {
-  static const char desc[] = "ICQ remote management server for telnet ICQ access.";
+  static const char desc[] = "ICQ remote management server for telnet ICQ access";
   return desc;
 }
 
@@ -43,7 +43,7 @@ const char *LP_ConfigFile()
 
 const char *LP_Status()
 {
-  static const char enabled[] = "RMS  enabled";
+  static const char enabled[] = "RMS enabled";
   static const char disabled[] = "RMS disabled";
   return licqRMS->Enabled() ? enabled : disabled;
 }

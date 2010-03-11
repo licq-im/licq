@@ -102,7 +102,7 @@ const char *LP_Usage(void) // when licq --help is called
 
 const char *LP_Name(void) // plugin name as seen in the licq load plugins menupoint
 {
-    static const char name[] = "OSD Plugin";
+    static const char name[] = "OSD";
     return name;
 }
 
