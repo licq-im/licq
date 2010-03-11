@@ -17,8 +17,6 @@
 // written by Jon Keating <jon@licq.org>
 
 #include "licq_icq.h"
-#include <licq/daemon.h>
-#include <licq/logservice.h>
 #include "licq_protoplugin.h"
 #include "licq/pluginmanager.h"
 
@@ -57,8 +55,6 @@ unsigned long LProto_Capabilities()
 
 int LProto_Main()
 {
-  Licq::gDaemon->getLogService().createThreadLog("msn");
-
   int nPipe = gPluginManager.registerProtocolPlugin();
 
   CMSN* pMSN = new CMSN(nPipe);

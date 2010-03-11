@@ -22,8 +22,6 @@
 
 #include <licq_icqd.h>
 #include <licq_protoplugin.h>
-#include <licq/daemon.h>
-#include <licq/logservice.h>
 #include <licq/pluginmanager.h>
 
 using Licq::gPluginManager;
@@ -58,8 +56,6 @@ unsigned long LProto_SendFuncs()
 
 int LProto_Main()
 {
-  Licq::gDaemon->getLogService().createThreadLog("jabber");
-
   int pipe = gPluginManager.registerProtocolPlugin();
   int res = Jabber().run(pipe);
   gPluginManager.unregisterProtocolPlugin();

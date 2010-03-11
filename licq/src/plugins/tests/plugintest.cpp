@@ -134,6 +134,21 @@ TEST_F(PluginFixture, runPlugin)
   EXPECT_EQ(5, plugin.joinThread());
 }
 
+static bool CallbackCalled = false;
+static void startCallback(Plugin&)
+{
+  CallbackCalled = true;
+}
+
+TEST_F(PluginFixture, runPluginWithCallback)
+{
+  CallbackCalled = false;
+  plugin.startThread(&startCallback);
+  EXPECT_FALSE(plugin.isThisThread());
+  EXPECT_EQ(5, plugin.joinThread());
+  EXPECT_TRUE(CallbackCalled);
+}
+
 TEST_F(PluginFixture, shutdown)
 {
   plugin.shutdown();

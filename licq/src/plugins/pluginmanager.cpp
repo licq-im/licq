@@ -18,16 +18,20 @@
  */
 
 #include "pluginmanager.h"
-
 #include "gettext.h"
-#include "licq_events.h"
-#include "licq_log.h"
-#include "licq/exceptions/exception.h"
-#include "licq/thread/mutexlocker.h"
 
+#include <licq_events.h>
+#include <licq_log.h>
+#include <licq/daemon.h>
+#include <licq/exceptions/exception.h>
+#include <licq/logservice.h>
+#include <licq/thread/mutexlocker.h>
+
+#include <algorithm>
 #include <boost/exception/get_error_info.hpp>
 #include <boost/foreach.hpp>
 #include <cassert>
+#include <cctype>
 #include <cerrno>
 #include <iterator>
 #include <glob.h>
@@ -516,6 +520,14 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
   return DynamicLibrary::Ptr();
 }
 
+// Called in the plugin's thread just before the main entry point
+static void startPluginCallback(Plugin& plugin)
+{
+  std::string name = plugin.getName();
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  Licq::gDaemon->getLogService().createThreadLog(name);
+}
+
 void PluginManager::startPlugin(Plugin::Ptr plugin)
 {
   if (dynamic_cast<ProtocolPlugin*>(plugin.get()))
@@ -529,5 +541,5 @@ void PluginManager::startPlugin(Plugin::Ptr plugin)
               plugin->getName(), plugin->getVersion());
   }
 
-  plugin->startThread();
+  plugin->startThread(startPluginCallback);
 }

@@ -54,8 +54,12 @@ public:
   /// Get the read end of the pipe used to communicate with the plugin.
   int getReadPipe() const { return myPipe.getReadFd(); }
 
-  /// Start the plugin in a new thread.
-  void startThread();
+  /**
+   * Start the plugin in a new thread.
+   * @param startCallback will be called in the plugin's thread just before the
+   * plugin's main entry point is called.
+   */
+  void startThread(void (*startCallback)(Plugin& plugin) = NULL);
 
   /**
    * Wait for the plugin to stop.
@@ -100,8 +104,11 @@ private:
   static bool initThreadEntry(void* plugin);
   virtual bool initThreadEntry() = 0;
 
+  static void* startThreadEntry(void* plugin);
+
   PluginThread::Ptr myThread;
   unsigned long mySignalMask;
+  void (*myStartCallback)(Plugin& plugin);
 
   // Function pointers
   void* (*myMainThreadEntryPoint)(void*);

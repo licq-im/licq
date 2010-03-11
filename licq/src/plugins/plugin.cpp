@@ -22,6 +22,7 @@
 #include "licq_constants.h"
 #include "licq/thread/mutexlocker.h"
 
+#include <cassert>
 #include <pthread.h>
 
 using Licq::MutexLocker;
@@ -32,7 +33,8 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
                const std::string& prefix, bool prefixId) :
   myLib(lib),
   myThread(pluginThread),
-  mySignalMask(0)
+  mySignalMask(0),
+  myStartCallback(NULL)
 {
   loadSymbol(prefix + "_Main_tep", myMainThreadEntryPoint);
   loadSymbol(prefix + "_Name", myName);
@@ -50,9 +52,11 @@ Plugin::~Plugin()
   // Empty
 }
 
-void Plugin::startThread()
+void Plugin::startThread(void (*startCallback)(Plugin& plugin))
 {
-  myThread->startPlugin(myMainThreadEntryPoint, NULL);
+  assert(myStartCallback == NULL);
+  myStartCallback = startCallback;
+  myThread->startPlugin(startThreadEntry, this);
 }
 
 int Plugin::joinThread()
@@ -107,4 +111,14 @@ bool Plugin::callInitInThread()
 bool Plugin::initThreadEntry(void* plugin)
 {
   return static_cast<Plugin*>(plugin)->initThreadEntry();
+}
+
+void* Plugin::startThreadEntry(void* plugin)
+{
+  Plugin* thisPlugin = static_cast<Plugin*>(plugin);
+
+  if (thisPlugin->myStartCallback)
+    (*thisPlugin->myStartCallback)(*thisPlugin);
+
+  return thisPlugin->myMainThreadEntryPoint(NULL);
 }
