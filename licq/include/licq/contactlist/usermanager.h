@@ -45,7 +45,7 @@ class CICQDaemon;
 #define FOR_EACH_OWNER_START(x)                           \
   {                                                       \
     Licq::OwnerMap* _ol_ = Licq::gUserManager.LockOwnerList(LOCK_R); \
-    for (OwnerMap::const_iterator _i_ = _ol_->begin();    \
+    for (Licq::OwnerMap::const_iterator _i_ = _ol_->begin(); \
          _i_ != _ol_->end(); _i_++)                       \
     {                                                     \
       Licq::Owner* pOwner = _i_->second;                  \
