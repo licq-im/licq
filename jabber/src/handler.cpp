@@ -85,7 +85,7 @@ void Handler::onDisconnect()
   gUserManager.DropOwner(owner);
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGOFF, 0,
-                                      USERID_NONE, JABBER_PPID);
+      gUserManager.ownerUserId(JABBER_PPID));
   gLicqDaemon->pushPluginSignal(result);
 }
 
