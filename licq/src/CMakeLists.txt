@@ -22,7 +22,6 @@ set(tested_SRCS
 set(licq_SRCS
   buffer.cpp
   fifo.cpp
-  file.cpp
   gpghelper.cpp
   hebrev.c
   history.cpp
