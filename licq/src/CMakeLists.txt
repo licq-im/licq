@@ -1,4 +1,6 @@
 set(tested_SRCS
+  inifile.cpp
+
   logging/log.cpp
   logging/logdistributor.cpp
   logging/logsink.cpp
@@ -68,6 +70,8 @@ set(licq_SRCS
 )
 
 set(test_SRCS
+  tests/inifiletest.cpp
+
   logging/tests/logdistributortest.cpp
   logging/tests/logsinktest.cpp
   logging/tests/logtest.cpp
@@ -86,6 +90,10 @@ set(test_SRCS
 
   utils/tests/dynamiclibrarytest.cpp
   utils/tests/pipetest.cpp
+
+  # Needed or IniFile won't find gLog
+  logging/logservice.cpp
+  logging/threadlog.cpp
 
   ${tested_SRCS}
 )

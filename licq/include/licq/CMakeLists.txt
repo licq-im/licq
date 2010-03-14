@@ -5,6 +5,7 @@ set(licq_HEADERS
   daemon.h
   gpghelper.h
   icqcodes.h
+  inifile.h
   log.h
   logservice.h
   logsink.h
