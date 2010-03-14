@@ -124,5 +124,5 @@ TEST_F(ProtocolPluginFixture, pushPopSignal)
 
 TEST_F(ProtocolPluginFixture, popSignalEmpty)
 {
-  EXPECT_EQ(NULL, plugin.popSignal());
+  EXPECT_EQ(static_cast<LicqProtoSignal*>(NULL), plugin.popSignal());
 }
