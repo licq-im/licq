@@ -107,7 +107,7 @@ TEST(IniFile, getDefault)
 
   unsigned unsignedRet(0);
   EXPECT_FALSE(ini.get("missing", unsignedRet, 10));
-  EXPECT_EQ(10, unsignedRet);
+  EXPECT_EQ(10u, unsignedRet);
 
   bool boolRet(false);
   EXPECT_FALSE(ini.get("missing", boolRet, true));
@@ -127,7 +127,7 @@ TEST(IniFile, getDefault)
 
   unsigned unsignedRet2(0);
   EXPECT_FALSE(ini.get("missing", unsignedRet2, 10));
-  EXPECT_EQ(10, unsignedRet2);
+  EXPECT_EQ(10u, unsignedRet2);
 
   bool boolRet2(false);
   EXPECT_FALSE(ini.get("missing", boolRet2, true));
@@ -150,7 +150,7 @@ TEST(IniFile, get)
   EXPECT_TRUE(ini.get("param4", strRet));
   EXPECT_EQ("test", strRet);
   EXPECT_TRUE(ini.get("param2", unsignedRet));
-  EXPECT_EQ(1, unsignedRet);
+  EXPECT_EQ(1u, unsignedRet);
   EXPECT_TRUE(ini.get("param3", signedRet));
   EXPECT_EQ(-10, signedRet);
   EXPECT_TRUE(ini.get("param2", boolRet));
@@ -202,19 +202,19 @@ TEST(IniFile, getKeyList)
   // No section set should return nothing
   list<string> ret;
   ini.getKeyList(ret, "");
-  EXPECT_EQ(0, ret.size());
+  EXPECT_EQ(0u, ret.size());
   ret.clear();
 
   // Get all parameters for Section1
   ini.setSection("Section1");
   ini.getKeyList(ret, "");
-  EXPECT_EQ(3, ret.size());
+  EXPECT_EQ(3u, ret.size());
   EXPECT_EQ("param1", *ret.begin());
   ret.clear();
 
   // Verify prefix parameter
   ini.getKeyList(ret, "param");
-  EXPECT_EQ(2, ret.size());
+  EXPECT_EQ(2u, ret.size());
   EXPECT_EQ("param1", *ret.begin());
   ret.clear();
 }

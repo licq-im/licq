@@ -93,7 +93,8 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
 {
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_EQ('P' << 24 | 'P' << 16 | 'I' << 8 | 'D', plugin.getProtocolId());
+  unsigned long ppid = 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D';
+  EXPECT_EQ(ppid, plugin.getProtocolId());
   EXPECT_TRUE(plugin.init());
   EXPECT_EQ(42u, plugin.getSendFunctions());
 }
