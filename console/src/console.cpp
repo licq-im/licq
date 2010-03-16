@@ -2473,8 +2473,6 @@ char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn,
  *-------------------------------------------------------------------------*/
 char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
 {
-  static int nLinePos[MAX_CON + 1] = {0};
-
   // Now check for keys
   switch (cIn)
   {
@@ -2491,9 +2489,41 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
         break;
       int yp, xp;
       getyx(winMain->Win(), yp, xp);
+
       if (xp == 0)
       {
-        mvwdelch(winMain->Win(), yp - 1, nLinePos[m_nCon]);
+        int newX = 0;
+
+        int ymax, xmax;
+        getmaxyx(winMain->Win(), ymax, xmax);
+
+        // If the previous char is a new line we need to calculate the length
+        // of the line to determine where to put the cursor.
+        if (sz[n - 1] == '\n')
+        {
+          if (n >= 2)
+          {
+            // Find previous new line
+            int pos;
+            for (pos = n - 2; pos >= 0; --pos)
+            {
+              if (sz[pos] == '\n')
+                break;
+            }
+
+            // The length of the string between the new lines
+            int length = n - 2 - pos;
+
+            newX = length % xmax;
+          }
+        }
+        else
+        {
+          // Word-wrap, put pointer at end of line, removing the last char.
+          newX = xmax - 1;
+        }
+
+        mvwdelch(winMain->Win(), yp - 1, newX);
       }
       else
         mvwdelch(winMain->Win(), yp, xp - 1);
@@ -2505,8 +2535,6 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
   case '\r':
     {
       // Print the new line
-      int yp;
-      getyx(winMain->Win(), yp, nLinePos[m_nCon]);
       *winMain << '\n';
       // Check if the line only contains a '.'
       sz[n] = '\0';
