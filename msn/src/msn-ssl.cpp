@@ -22,6 +22,9 @@
 
 #include "msn.h"
 #include "msnpacket.h"
+
+#include <licq_events.h>
+#include <licq_icqd.h>
 #include "licq_log.h"
 #include "licq_message.h"
 
@@ -112,6 +115,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   else if (strFirstLine == "HTTP/1.1 401 Unauthorized")
   {
     gLog.Error("%sInvalid password.\n", L_MSNxSTR);
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, LicqUser::makeUserId(m_szUserName, MSN_PPID), MSN_PPID));
   }
   else
   {

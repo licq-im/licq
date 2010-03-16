@@ -1898,7 +1898,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
     m_szRegisterPasswd = 0;
   }
 
-  pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, 0, USERID_NONE, LICQ_PPID));
+  pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, 0, gUserManager.ownerUserId(LICQ_PPID), LICQ_PPID));
 
   // Mark all users as offline, this also updates the last seen
   // online field
@@ -6287,13 +6287,13 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   case 0x1D:
   case 0x18:
     gLog.Error(tr("%sRate limit exceeded.\n"), L_ERRORxSTR);
-      pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_RATE, USERID_NONE, LICQ_PPID));
+      pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_RATE, gUserManager.ownerUserId(LICQ_PPID), LICQ_PPID));
       break;
 
   case 0x04:
   case 0x05:
     gLog.Error(tr("%sInvalid UIN and password combination.\n"), L_ERRORxSTR);
-      pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, USERID_NONE, LICQ_PPID));
+      pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, gUserManager.ownerUserId(LICQ_PPID), LICQ_PPID));
       break;
 
   case 0x0C:

@@ -313,9 +313,6 @@ typedef LicqEvent ICQEvent;
  *    1 the user is now secure, if it's 0, the user is no longer secure.
  *    USER_TYPING - Indicates the typing status of the user has changed.
  *
- *  SIGNAL_LOGOFF - Indicates that we logged off.  All parameters are 0.
-
- *
  *  SIGNAL_ONEVENT - FIXME: MISSING DESCRIPTION
  *-------------------------------------------------------------------------*/
 /** Indicates that the user list has changed in some way */
@@ -325,7 +322,7 @@ const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
 //! network.  Argument is the Protocol ID.  All other arguments are
 //! 0.
 const unsigned long SIGNAL_LOGON                 = 0x00000004;
-//! Indicates that we have logged off.  All parameters are 0.
+//! Indicates that we have logged off.  UserId is owner. Argument is ppid.
 const unsigned long SIGNAL_LOGOFF                = 0x00000008;
 const unsigned long SIGNAL_ONEVENT               = 0x00000010;
 //! The UIN is that of the user we want to view the oldest event of
