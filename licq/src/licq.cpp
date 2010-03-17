@@ -188,7 +188,7 @@ static bool setupBaseDirPath(const char* path)
  * Prints the @a error to stderr (by means of gLog), and if the user is running
  * X, tries to show a dialog with the error.
  */
-extern "C" void displayFatalError(const char* error, int useLicqLog)
+void displayFatalError(const char* error, int useLicqLog)
 {
   if (useLicqLog)
     gLog.Error(error);
@@ -216,7 +216,7 @@ extern "C" void displayFatalError(const char* error, int useLicqLog)
   }
 }
 
-extern "C" void handleExitSignal(int signal)
+void handleExitSignal(int signal)
 {
   gLog.Info(tr("%sReceived signal %d, exiting.\n"), L_ENDxSTR, signal);
   gLicqDaemon->Shutdown();

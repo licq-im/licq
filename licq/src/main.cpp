@@ -34,8 +34,8 @@ char BASE_DIR[MAX_FILENAME_LEN];
 char SHARE_DIR[MAX_FILENAME_LEN];
 char LIB_DIR[MAX_FILENAME_LEN];
 
-// sighandler.c
-extern "C" void licq_install_signal_handlers();
+// sighandler.cpp
+void licq_install_signal_handlers();
 
 int main(int argc, char **argv)
 {
