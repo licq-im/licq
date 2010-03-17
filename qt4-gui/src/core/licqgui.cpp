@@ -252,11 +252,11 @@ void LicqGui::loadGuiConfig()
   snprintf(szTemp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, QTGUI_CONFIGFILE);
   szTemp[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf;
-  licqConf.SetFlags(INI_FxALLOWxCREATE);
   if (!licqConf.LoadFile(szTemp))
   {
     // File doesn't exist so define sections and write them now
     // so saving won't generate warnings later
+    licqConf.SetFlags(INI_FxALLOWxCREATE);
     licqConf.ReloadFile();
     licqConf.CreateSection("appearance");
     licqConf.CreateSection("functions");
@@ -264,12 +264,15 @@ void LicqGui::loadGuiConfig()
     licqConf.CreateSection("locale");
     licqConf.CreateSection("floaties");
     licqConf.CreateSection("geometry");
+    licqConf.CreateSection("extensions");
+    licqConf.CreateSection("shortcuts");
     licqConf.FlushFile();
 
     // Now try to load the old config file, set the original config file back
     // in case of error or if user doesn't want to load it.
     snprintf(szTemp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, "licq_qt-gui.conf");
     szTemp[MAX_FILENAME_LEN - 1] = '\0';
+    licqConf.SetFlags(0);
     if (!licqConf.LoadFile(szTemp) ||
         !QueryYesNo(NULL,
           tr("There was an error loading the default configuration file.\n"
