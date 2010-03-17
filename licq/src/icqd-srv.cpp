@@ -395,6 +395,9 @@ void CICQDaemon::icqRenameUser(const string& accountId, const string& newAlias)
 
 void CICQDaemon::icqAlertUser(const UserId& userId)
 {
+  if (userId.protocolId() != LICQ_PPID)
+    return;
+
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
   sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->getFirstName().c_str(),

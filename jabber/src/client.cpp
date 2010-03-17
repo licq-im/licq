@@ -109,11 +109,15 @@ void Client::addUser(const std::string& user)
   myRosterManager->add(gloox::JID(user), user, gloox::StringList());
 }
 
-void Client::changeUserGroups(const std::string& user, const gloox::StringList& groups)
+void Client::changeUserGroups(const std::string& user,
+                              const gloox::StringList& groups)
 {
   gloox::RosterItem* item = myRosterManager->getRosterItem(gloox::JID(user));
-  item->setGroups(groups);
-  myRosterManager->synchronize();
+  if (item != NULL)
+  {
+    item->setGroups(groups);
+    myRosterManager->synchronize();
+  }
 }
 
 void Client::removeUser(const std::string& user)
