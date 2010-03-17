@@ -145,6 +145,45 @@ void ssl_info_callback(SSL *s, int where, int ret)
 #endif
 /*-----End of OpenSSL code-------------------------------------------------*/
 
+// Sets up BASE_DIR to be the absolute path to the user's config base
+// directory. BASE_DIR will both start and end with a slash (/).
+static bool setupBaseDirPath(const char* path)
+{
+  const size_t len = ::strlen(path);
+
+  // Add slash to the end if needed
+  const char* slash = (len > 0 && path[len - 1] != '/') ? "/" : "";
+
+  int ret;
+  if (len > 0 && path[0] == '/')
+    ret = ::snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s%s", path, slash);
+  else
+  {
+    // Get current working directory
+    char cwd[MAX_FILENAME_LEN];
+    if (::getcwd(cwd, MAX_FILENAME_LEN) == NULL)
+    {
+      ::fprintf(stderr, tr("Could not get current working directory\n"));
+      return false;
+    }
+
+    // Tidy up path if it is a "simple" relative path
+    if (::strncmp(path, "./", 2) == 0)
+      path += 2;
+
+    // Construct an absolute path
+    ret = ::snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/%s%s", cwd, path, slash);
+  }
+
+  if (ret <= 0 || ret >= MAX_FILENAME_LEN)
+  {
+    ::fprintf(stderr, tr("Could not create config base directory path\n"));
+    return false;
+  }
+
+  return true;
+}
+
 /**
  * Prints the @a error to stderr (by means of gLog), and if the user is running
  * X, tries to show a dialog with the error.
@@ -250,8 +289,8 @@ bool CLicq::Init(int argc, char **argv)
         bHelp = true;
         break;
       case 'b':  // base directory
-        snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/", optarg);
-        BASE_DIR[MAX_FILENAME_LEN - 1] = '\0';
+        if (!setupBaseDirPath(optarg))
+          return false;
         bBaseDir = true;
         break;
       case 'd':  // debug level
@@ -321,14 +360,19 @@ bool CLicq::Init(int argc, char **argv)
   // if no base directory set on the command line then get it from HOME
   if (!bBaseDir)
   {
-     char *home;
-     if ((home = getenv("HOME")) == NULL)
-     {
-       gLog.Error("%sLicq: $HOME not set, unable to determine config base directory.\n", L_ERRORxSTR);
-       return false;
-     }
-     snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/.licq/", home);
-     BASE_DIR[MAX_FILENAME_LEN - 1] = '\0';
+    const char* home = ::getenv("HOME");
+    if (home == NULL || home[0] != '/')
+    {
+      gLog.error(tr("$HOME not set or invalid; "
+                    "unable to determine config base directory"));
+      return false;
+    }
+    int ret = ::snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/.licq/", home);
+    if (ret <= 0 || ret >= MAX_FILENAME_LEN)
+    {
+      gLog.error(tr("Could not create config base directory path"));
+      return false;
+    }
   }
 
   // check if user has conf files installed, install them if not
@@ -478,7 +522,10 @@ bool CLicq::Init(int argc, char **argv)
   snprintf(szConf, MAX_FILENAME_LEN, "%slicq.conf", BASE_DIR);
   szConf[MAX_FILENAME_LEN - 1] = '\0';
   if (licqConf.LoadFile(szConf) == false)
+  {
+    gLog.error("Could not load config file '%s'", szConf);
     return false;
+  }
 
   // Verify the version
   licqConf.SetSection("licq");
