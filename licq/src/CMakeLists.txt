@@ -46,7 +46,7 @@ set(licq_SRCS
   proxy.cpp
   rtf.cc
   sarmanager.cpp
-  sighandler.c
+  sighandler.cpp
   socket.cpp
   support.c
   translate.cpp
