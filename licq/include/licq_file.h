@@ -39,10 +39,15 @@ public:
   ~CIniFile() {}
 
   bool LoadFile(const char *_szFilename)
-  { setFilename(_szFilename); return loadFile(); }
+  { setFilename(_szFilename); return ReloadFile(); }
 
   bool ReloadFile()
-  { return loadFile(); }
+  {
+    bool ret = loadFile();
+    if (!ret && GetFlag(INI_FxALLOWxCREATE))
+      return writeFile(true);
+    return ret;
+  }
 
   bool FlushFile()
   { return writeFile(GetFlag(INI_FxALLOWxCREATE)); }
