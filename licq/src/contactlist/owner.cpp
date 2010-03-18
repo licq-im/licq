@@ -37,6 +37,8 @@ Owner::Owner(const UserId& id)
   m_fConf.SetFileName(filename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
   m_fConf.ReloadFile();
+  m_fConf.CreateSection("user");
+  m_fConf.FlushFile();
   m_fConf.SetFlags(0);
 
   // Make sure config file is mode 0600
