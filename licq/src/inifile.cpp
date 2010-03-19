@@ -455,6 +455,7 @@ bool IniFile::set(const string& key, const string& data)
     pos = myConfigData.find('\n', start);
     string::size_type len = (pos == string::npos ? string::npos : pos - start);
     myConfigData.replace(start, len, safeData);
+    mySectionEnd += safeData.size() - len;
   }
   else
   {
