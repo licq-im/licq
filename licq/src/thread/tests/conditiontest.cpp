@@ -33,3 +33,42 @@ TEST(Condition, waitWithTimeout)
   EXPECT_FALSE(condition.wait(mutex, 200));
   mutex.unlock();
 }
+
+struct ThreadData
+{
+  Mutex myMutex;
+  Condition myCondition;
+};
+
+static void* threadEntry(void* ptr)
+{
+  ThreadData* data = static_cast<ThreadData*>(ptr);
+  data->myMutex.lock();
+
+  // Notify main thread that this thread is running
+  data->myCondition.signal();
+
+  // Wait for thread to be cancelled
+  data->myCondition.wait(data->myMutex);
+
+  return NULL;
+}
+
+TEST(Condition, mutexUnlockedWhenCancelled)
+{
+  ThreadData data;
+  data.myMutex.lock();
+
+  // Create thread and wait for it to start
+  pthread_t thread;
+  pthread_create(&thread, NULL, threadEntry, &data);
+  data.myCondition.wait(data.myMutex);
+  data.myMutex.unlock();
+
+  // Cancel thread
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+
+  EXPECT_TRUE(data.myMutex.tryLock());
+  data.myMutex.unlock();
+}

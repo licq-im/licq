@@ -24,11 +24,20 @@
 
 using namespace Licq;
 
+static void conditionCleanup(void* arg)
+{
+  Mutex* mutex = static_cast<Mutex*>(arg);
+  mutex->unlock();
+}
+
 bool Condition::wait(Mutex& mutex, unsigned int msec)
 {
   if (msec == WAIT_FOREVER)
   {
+    // Unlock mutex if thread is cancelled while waiting
+    pthread_cleanup_push(&conditionCleanup, &mutex);
     ::pthread_cond_wait(&myCondition, &mutex.myMutex);
+    pthread_cleanup_pop(0);
     return true;
   }
 
@@ -46,6 +55,10 @@ bool Condition::wait(Mutex& mutex, unsigned int msec)
     abstime.tv_sec += 1;
   }
 
-  int ret = ::pthread_cond_timedwait(&myCondition, &mutex.myMutex, &abstime);
+  int ret;
+  // Unlock mutex if thread is cancelled while waiting
+  pthread_cleanup_push(&conditionCleanup, &mutex);
+  ret = ::pthread_cond_timedwait(&myCondition, &mutex.myMutex, &abstime);
+  pthread_cleanup_pop(0);
   return (ret == 0);
 }
