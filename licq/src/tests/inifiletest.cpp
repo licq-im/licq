@@ -154,9 +154,9 @@ TEST(IniFile, get)
   EXPECT_TRUE(ini.get("param3", signedRet));
   EXPECT_EQ(-10, signedRet);
   EXPECT_TRUE(ini.get("param2", boolRet));
-  EXPECT_EQ(true, boolRet);
+  EXPECT_TRUE(boolRet);
   EXPECT_TRUE(ini.get("param1", boolRet));
-  EXPECT_EQ(false, boolRet);
+  EXPECT_FALSE(boolRet);
 
   // Verify that same parameter in different sections aren't mixed
   EXPECT_TRUE(ini.setSection("Section2"));
