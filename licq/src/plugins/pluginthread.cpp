@@ -130,17 +130,20 @@ PluginThread::PluginThread() :
 
 PluginThread::~PluginThread()
 {
+  stop();
   join();
   delete myData;
 }
 
-void* PluginThread::join()
+void PluginThread::stop()
 {
   MutexLocker locker(myData->myMutex);
   myData->myState = PluginThread::Data::STATE_STOPPED;
   myData->myCondition.signal();
-  locker.unlock();
+}
 
+void* PluginThread::join()
+{
   void* result;
   if (::pthread_join(myThread, &result) == 0)
     return result;

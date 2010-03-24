@@ -50,6 +50,11 @@ public:
   ~PluginThread();
 
   /**
+   * Stop thread if startPluin() hasn't been called. Mostly for unit test.
+   */
+  void stop();
+
+  /**
    * Wait for the thread to exit.
    * @return The thread's exit value. If the thread has been canceled, the
    * return value is PTHREAD_CANCELED.

@@ -42,6 +42,7 @@ static void* start(void* argument)
 
 TEST_F(PluginThreadFixture, join)
 {
+  thread.stop();
   EXPECT_EQ(thread.join(), (void*)NULL);
 }
 
