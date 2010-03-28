@@ -364,6 +364,18 @@ bool IniFile::get(const string& key, string& data, const string& defValue) const
   return true;
 }
 
+bool IniFile::get(const string& key, unsigned long& data, unsigned long defValue) const
+{
+  string strData;
+  if (!get(key, strData))
+  {
+    data = defValue;
+    return false;
+  }
+  data = strtoul(strData.c_str(), (char**)NULL, 10);
+  return true;
+}
+
 bool IniFile::get(const string& key, int& data, int defValue) const
 {
   string strData;
@@ -464,6 +476,13 @@ bool IniFile::set(const string& key, const string& data)
     mySectionEnd += key.size() + safeData.size() + 2;
   }
   return true;
+}
+
+bool IniFile::set(const string& key, unsigned long data)
+{
+  char strData[32];
+  snprintf(strData, sizeof(strData), "%lu", data);
+  return set(key, string(strData));
 }
 
 bool IniFile::set(const string& key, int data)

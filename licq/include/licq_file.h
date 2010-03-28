@@ -123,12 +123,7 @@ public:
   }
 
   bool ReadNum(const std::string& key, unsigned long &data, unsigned long defValue = 0)
-  {
-    unsigned retInt;
-    bool ret = get(key, retInt, defValue);
-    data = retInt;
-    return ret;
-  }
+  { return get(key, data, defValue); }
 
   bool ReadNum(const std::string& key, signed long &data, signed long defValue = 0)
   {
@@ -193,7 +188,7 @@ public:
   { return set(key, std::string(data)); }
 
   bool WriteNum(const std::string& key, unsigned long data)
-  { return set(key, static_cast<unsigned>(data)); }
+  { return set(key, data); }
   bool WriteNum(const std::string& key, signed long data)
   { return set(key, static_cast<int>(data)); }
   bool WriteNum(const std::string& key, unsigned int data)

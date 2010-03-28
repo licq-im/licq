@@ -120,6 +120,16 @@ public:
       const std::string& defValue = "") const;
 
   /**
+   * Get an unsigned long value from the configuration
+   *
+   * @param key Key of value to get
+   * @param data Integer to put value in
+   * @param defValue Default value to set if key doesn't exist
+   * @return True if value was found or false if default value was used
+   */
+  bool get(const std::string& key, unsigned long& data, unsigned long defValue = 0) const;
+
+  /**
    * Get a signed value from the configuration
    *
    * @param key Key of value to get
@@ -178,6 +188,15 @@ public:
    */
   bool set(const char* key, const char* data)
   { return set(key, std::string(data)); }
+
+  /**
+   * Set an unsigned long value in the configuration
+   *
+   * @param key Key of value to set
+   * @param data Value to set
+   * @return True if value was set, false on error
+   */
+  bool set(const std::string& key, unsigned long data);
 
   /**
    * Set a signed value in the configuration
