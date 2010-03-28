@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include <licq_file.h>
+#include <licq/inifile.h>
 #include <licq_log.h>
 
 #include "config/contactlist.h"
@@ -93,28 +93,28 @@ IconManager::IconManager(const QString& iconSet, const QString& extendedIconSet,
 
 bool IconManager::loadIcons(const QString& iconSet)
 {
-  CIniFile fIconsConf;
-
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + ICONS_DIR + iconSet + "/";
   QString iconPath = QString::fromLocal8Bit(BASE_DIR) + subdir;
-  if (!fIconsConf.LoadFile((iconPath + iconListName).toLocal8Bit()))
+  Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().data());
+  if (!iconsConf.loadFile())
   {
     iconPath = QString::fromLocal8Bit(SHARE_DIR) + subdir;
-    if (!fIconsConf.LoadFile((iconPath + iconListName).toLocal8Bit()))
+    iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().data());
+    if (!iconsConf.loadFile())
       return false;
   }
 
-  fIconsConf.SetSection("icons");
+  iconsConf.setSection("icons");
 
-  char filename[MAX_FILENAME_LEN];
+  std::string filename;
 
   // Note: With Qt 4.6 the QPixmap cannot be reused without clearing it
   //       between loads or icons will be mixed up.
   QPixmap p;
 
 #define LOAD_ICON(name, icon) \
-    if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    if (iconsConf.get(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename.c_str()))) \
     { \
       myIconMap.insert(icon, p); \
       p = QPixmap(); \
@@ -123,7 +123,7 @@ bool IconManager::loadIcons(const QString& iconSet)
       myIconMap.remove(icon);
 
 #define LOAD2_ICON(name, icon, deficon) \
-    if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    if (iconsConf.get(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename.c_str()))) \
     { \
       myIconMap.insert(icon, p); \
       p = QPixmap(); \
@@ -132,7 +132,7 @@ bool IconManager::loadIcons(const QString& iconSet)
       myIconMap.insert(icon, deficon);
 
 #define LOAD_STATUSICON(name, protocol, icon) \
-    if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    if (iconsConf.get(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename.c_str()))) \
     { \
       myStatusIconMap.insert(QPair<ProtocolType, StatusIconType>(protocol, icon), p); \
       p = QPixmap(); \
@@ -226,26 +226,26 @@ bool IconManager::loadIcons(const QString& iconSet)
 
 bool IconManager::loadExtendedIcons(const QString& iconSet)
 {
-  CIniFile fIconsConf;
-
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + EXTICONS_DIR + iconSet + "/";
   QString iconPath = QString::fromLocal8Bit(BASE_DIR) + subdir;
-  if (!fIconsConf.LoadFile((iconPath + iconListName).toLocal8Bit()))
+  Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().data());
+  if (!iconsConf.loadFile())
   {
     iconPath = QString::fromLocal8Bit(SHARE_DIR) + subdir;
-    if (!fIconsConf.LoadFile((iconPath + iconListName).toLocal8Bit()))
+    iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().data());
+    if (!iconsConf.loadFile())
       return false;
   }
 
-  fIconsConf.SetSection("icons");
+  iconsConf.setSection("icons");
 
-  char filename[MAX_FILENAME_LEN];
+  std::string filename;
 
   QPixmap p;
 
 #define LOAD_ICON(name, icon, deficon) \
-    if (fIconsConf.ReadStr(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename))) \
+    if (iconsConf.get(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename.c_str()))) \
     { \
       myIconMap.insert(icon, p); \
       p = QPixmap(); \

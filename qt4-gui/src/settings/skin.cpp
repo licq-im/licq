@@ -31,6 +31,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq/inifile.h>
 #include <licq_log.h>
 #include <licq_constants.h>
 
@@ -281,9 +282,8 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
     {
       iconsPath.cd(iconset);
       QString iconsFile = QString("%1/%2.icons").arg(iconsPath.path()).arg(iconset);
-      char sFileName[MAX_FILENAME_LEN] = "";
-      CIniFile fIconsConf;
-      if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
+      Licq::IniFile iconsConf(iconsFile.toLocal8Bit().data());
+      if (!iconsConf.loadFile())
       {
         WarnUser(dynamic_cast<SettingsDlg*>(parent()),
             tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.")
@@ -292,9 +292,10 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
         iconsPath.cdUp();
         continue;
       }
-      fIconsConf.SetSection("icons");
-      fIconsConf.ReadStr(exampleIcon.toAscii().data(), sFileName, "");
-      QString pmFile = QString("%1/%2").arg(iconsPath.path()).arg(sFileName);
+      iconsConf.setSection("icons", false);
+      std::string filename;
+      iconsConf.get(exampleIcon.toAscii().data(), filename, "");
+      QString pmFile = QString("%1/%2").arg(iconsPath.path()).arg(filename.c_str());
       iconCombo->addItem(QPixmap(pmFile), iconset);
       if (iconset == current)
         iconCombo->setCurrentIndex(iconCombo->count() - 1);
@@ -306,18 +307,18 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
     {
       iconsUserPath.cd(iconset);
       QString iconsFile = QString("%1/%2.icons").arg(iconsUserPath.path()).arg(iconset);
-      char sFileName[MAX_FILENAME_LEN] = "";
-      CIniFile fIconsConf;
-      if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
+      Licq::IniFile iconsConf(iconsFile.toLocal8Bit().data());
+      if (iconsConf.loadFile())
       {
         WarnUser(dynamic_cast<SettingsDlg*>(parent()),
             tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.").arg(iconsFile).arg(iconset));
         iconsUserPath.cdUp();
         continue;
       }
-      fIconsConf.SetSection("icons");
-      fIconsConf.ReadStr(exampleIcon.toAscii().data(), sFileName, "");
-      QString pmFile = QString("%1/%2").arg(iconsUserPath.path()).arg(sFileName);
+      iconsConf.setSection("icons", false);
+      std::string filename;
+      iconsConf.get(exampleIcon.toAscii().data(), filename, "");
+      QString pmFile = QString("%1/%2").arg(iconsUserPath.path()).arg(filename.c_str());
       // Check for duplicates
       int num = iconCombo->count();
       bool dup = false;
@@ -391,24 +392,26 @@ IconList Settings::Skin::loadIcons(const QString& iconSet, const QString& subdir
     const QStringList& iconNames)
 {
   IconList icons;
-  QString subpath = QTGUI_DIR + subdir + iconSet + "/" + iconSet + ".icons";
-  QString iconsFile = QString::fromLocal8Bit(BASE_DIR) + subpath;
-  char sFileName[MAX_FILENAME_LEN] = "";
-  CIniFile fIconsConf;
-  if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
+  QString iconListName = iconSet + ".icons";
+  QString subpath = QString(QTGUI_DIR) + subdir + iconSet + "/";
+  QString iconsPath = QString::fromLocal8Bit(BASE_DIR) + subpath;
+  Licq::IniFile iconsFile((iconsPath + iconListName).toLocal8Bit().data());
+  if (!iconsFile.loadFile())
   {
-    iconsFile = QString::fromLocal8Bit(SHARE_DIR) + subpath;
-    if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
+    iconsPath = QString::fromLocal8Bit(SHARE_DIR) + subpath;
+    iconsFile.setFilename((iconsPath + iconListName).toLocal8Bit().data());
+    if (!iconsFile.loadFile())
     {
-      WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to open icons file\n%1").arg(iconsFile));
+      WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to open icons file\n%1").arg(iconsPath + iconListName));
       return icons;
     }
   }
-  fIconsConf.SetSection("icons");
+  iconsFile.setSection("icons", false);
   foreach (const QString& iconName, iconNames)
   {
-    fIconsConf.ReadStr(iconName.toAscii().data(), sFileName, "");
-    QString pmFile = iconsFile.left(iconsFile.length()-iconSet.length()-6) + QString::fromAscii(sFileName);
+    std::string filename;
+    iconsFile.get(iconName.toAscii().data(), filename, "");
+    QString pmFile = iconsPath + QString::fromAscii(filename.c_str());
     QPixmap pm(pmFile);
     if (! pm.isNull())
       icons.append(pm);

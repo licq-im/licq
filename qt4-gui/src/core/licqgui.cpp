@@ -72,7 +72,7 @@ extern "C"
 #endif /* defined(Q_WS_X11) */
 
 #include <licq_events.h>
-#include <licq_file.h>
+#include <licq/inifile.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
@@ -257,67 +257,46 @@ LicqGui::~LicqGui()
 
 void LicqGui::loadGuiConfig()
 {
-  char szTemp[MAX_FILENAME_LEN];
-
   gLog.Info("%s%s configuration.\n", L_INITxSTR, PLUGIN_NAME);
-  snprintf(szTemp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, QTGUI_CONFIGFILE);
-  szTemp[MAX_FILENAME_LEN - 1] = '\0';
-  CIniFile licqConf;
-  if (!licqConf.LoadFile(szTemp))
+  Licq::IniFile guiConf(QTGUI_CONFIGFILE);
+  if (!guiConf.loadFile())
   {
-    // File doesn't exist so define sections and write them now
-    // so saving won't generate warnings later
-    licqConf.SetFlags(INI_FxALLOWxCREATE);
-    licqConf.ReloadFile();
-    licqConf.CreateSection("appearance");
-    licqConf.CreateSection("functions");
-    licqConf.CreateSection("startup");
-    licqConf.CreateSection("locale");
-    licqConf.CreateSection("floaties");
-    licqConf.CreateSection("geometry");
-    licqConf.CreateSection("extensions");
-    licqConf.CreateSection("shortcuts");
-    licqConf.FlushFile();
-
-    // Now try to load the old config file, set the original config file back
-    // in case of error or if user doesn't want to load it.
-    snprintf(szTemp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, "licq_qt-gui.conf");
-    szTemp[MAX_FILENAME_LEN - 1] = '\0';
-    licqConf.SetFlags(0);
-    if (!licqConf.LoadFile(szTemp) ||
+    // No config file, try to load the old config file
+    guiConf.setFilename("licq_qt-gui.conf");
+    if (!guiConf.loadFile() ||
         !QueryYesNo(NULL,
           tr("There was an error loading the default configuration file.\n"
             "Would you like to try loading the old one?")))
     {
-      snprintf(szTemp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, QTGUI_CONFIGFILE);
-      szTemp[MAX_FILENAME_LEN - 1] = '\0';
-      licqConf.LoadFile(szTemp);
+      // No old file either, or user didn't want to load it, revert to newer file
+      guiConf.setFilename(QTGUI_CONFIGFILE);
     }
   }
 
   // Let configuration classes load their settings
-  Config::General::instance()->loadConfiguration(licqConf);
-  Config::Chat::instance()->loadConfiguration(licqConf);
-  Config::ContactList::instance()->loadConfiguration(licqConf);
-  Config::Shortcuts::instance()->loadConfiguration(licqConf);
+  Config::General::instance()->loadConfiguration(guiConf);
+  Config::Chat::instance()->loadConfiguration(guiConf);
+  Config::ContactList::instance()->loadConfiguration(guiConf);
+  Config::Shortcuts::instance()->loadConfiguration(guiConf);
 
   // Load icons
-  licqConf.SetSection("appearance");
+  guiConf.setSection("appearance");
+  std::string s;
 
   if (myIcons.isEmpty())
   {
-    licqConf.ReadStr("Icons", szTemp, "ami");
-    myIcons = szTemp;
+    guiConf.get("Icons", s, "ami");
+    myIcons = s.c_str();
   }
   if (myExtendedIcons.isEmpty())
   {
-    licqConf.ReadStr("ExtendedIcons", szTemp, "basic");
-    myExtendedIcons = szTemp;
+    guiConf.get("ExtendedIcons", s, "basic");
+    myExtendedIcons = s.c_str();
   }
   IconManager::createInstance(myIcons, myExtendedIcons, this);
 
   // Load Emoticons
-  licqConf.ReadStr("Emoticons", szTemp, Emoticons::DEFAULT_THEME.toLatin1());
+  guiConf.get("Emoticons", s, Emoticons::DEFAULT_THEME.toLatin1().data());
   QStringList emoticonsDirs;
   emoticonsDirs += QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
   emoticonsDirs += QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
@@ -326,19 +305,19 @@ void LicqGui::loadGuiConfig()
   emoticonsDirs += KGlobal::dirs()->findDirs("emoticons", "");
 #endif
   Emoticons::self()->setBasedirs(emoticonsDirs);
-  if (!Emoticons::self()->setTheme(Emoticons::translateThemeName(szTemp)))
-    gLog.Error("%sLoading emoticons theme '%s'\n", L_ERRORxSTR, szTemp);
+  if (!Emoticons::self()->setTheme(Emoticons::translateThemeName(s.c_str())))
+    gLog.Error("%sLoading emoticons theme '%s'\n", L_ERRORxSTR, s.c_str());
 
   // Load skin
   if (mySkin.isEmpty())
   {
-    licqConf.ReadStr("Skin", szTemp, "basic");
-    mySkin = szTemp;
+    guiConf.get("Skin", s, "basic");
+    mySkin = s.c_str();
   }
   bool skinFrameTransparent;
-  licqConf.ReadBool("Transparent", skinFrameTransparent, false);
+  guiConf.get("Transparent", skinFrameTransparent, false);
   unsigned skinFrameStyle;
-  licqConf.ReadNum("FrameStyle", skinFrameStyle, 51);
+  guiConf.get("FrameStyle", skinFrameStyle, 51);
 
   Config::Skin::createInstance(mySkin, this);
   Config::Skin::active()->setFrameStyle(skinFrameStyle);
@@ -347,33 +326,32 @@ void LicqGui::loadGuiConfig()
 
 void LicqGui::loadFloatiesConfig()
 {
-  char szTemp[MAX_FILENAME_LEN];
-  snprintf(szTemp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, QTGUI_CONFIGFILE);
-  szTemp[MAX_FILENAME_LEN - 1] = '\0';
-  CIniFile licqConf;
-  licqConf.LoadFile(szTemp);
+  Licq::IniFile guiConf(QTGUI_CONFIGFILE);
+  if (!guiConf.loadFile())
+    return;
 
+  std::string s;
   char key[16];
   int nFloaties = 0, xPosF, yPosF, wValF;
-  licqConf.SetSection("floaties");
-  licqConf.ReadNum("Num", nFloaties, 0);
+  guiConf.setSection("floaties");
+  guiConf.get("Num", nFloaties, 0);
   for (int i = 0; i < nFloaties; i++)
   {
     sprintf(key, "Floaty%d.Ppid", i);
     unsigned long ppid;
-    licqConf.ReadNum(key, ppid, LICQ_PPID);
+    guiConf.get(key, ppid, LICQ_PPID);
     sprintf(key, "Floaty%d.Uin", i);
-    licqConf.ReadStr(key, szTemp, "");
-    if (szTemp[0] == '\0')
+    guiConf.get(key, s, "");
+    if (s.empty())
       continue;
-    UserId userId = LicqUser::makeUserId(szTemp, ppid);
+    UserId userId(s, ppid);
 
     sprintf(key, "Floaty%d.X", i);
-    licqConf.ReadNum(key, xPosF, 0);
+    guiConf.get(key, xPosF, 0);
     sprintf(key, "Floaty%d.Y", i);
-    licqConf.ReadNum(key, yPosF, 0);
+    guiConf.get(key, yPosF, 0);
     sprintf(key, "Floaty%d.W", i);
-    licqConf.ReadNum(key, wValF, 80);
+    guiConf.get(key, wValF, 80);
 
     if (USERID_ISVALID(userId))
       createFloaty(userId, xPosF, yPosF, wValF);
@@ -386,47 +364,42 @@ void LicqGui::saveConfig()
   gLicqDaemon->SaveConf();
 
   // Save all our options
-  char filename[MAX_FILENAME_LEN];
-  snprintf(filename, MAX_FILENAME_LEN, "%s%s", BASE_DIR, QTGUI_CONFIGFILE);
-  filename[MAX_FILENAME_LEN - 1] = '\0';
-  CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
+  Licq::IniFile guiConf(QTGUI_CONFIGFILE);
+  guiConf.loadFile();
 
-  if (!licqConf.LoadFile(filename))
-    return;
+  Config::General::instance()->saveConfiguration(guiConf);
+  Config::Chat::instance()->saveConfiguration(guiConf);
+  Config::ContactList::instance()->saveConfiguration(guiConf);
+  Config::Shortcuts::instance()->saveConfiguration(guiConf);
 
-  Config::General::instance()->saveConfiguration(licqConf);
-  Config::Chat::instance()->saveConfiguration(licqConf);
-  Config::ContactList::instance()->saveConfiguration(licqConf);
-  Config::Shortcuts::instance()->saveConfiguration(licqConf);
+  guiConf.setSection("appearance");
+  guiConf.set("Skin", Config::Skin::active()->skinName().toLocal8Bit());
+  guiConf.set("Icons", IconManager::instance()->iconSet().toLocal8Bit());
+  guiConf.set("ExtendedIcons", IconManager::instance()->extendedIconSet().toLocal8Bit());
+  guiConf.set("Emoticons", Emoticons::untranslateThemeName(Emoticons::self()->theme()).toLatin1());
 
-  licqConf.SetSection("appearance");
-  licqConf.WriteStr("Skin", Config::Skin::active()->skinName().toLocal8Bit());
-  licqConf.WriteStr("Icons", IconManager::instance()->iconSet().toLocal8Bit());
-  licqConf.WriteStr("ExtendedIcons", IconManager::instance()->extendedIconSet().toLocal8Bit());
-  licqConf.WriteStr("Emoticons", Emoticons::untranslateThemeName(Emoticons::self()->theme()).toLatin1());
-
-  licqConf.WriteBool("Transparent", Config::Skin::active()->frame.transparent);
-  licqConf.WriteNum("FrameStyle", Config::Skin::active()->frame.frameStyle);
+  guiConf.set("Transparent", Config::Skin::active()->frame.transparent);
+  guiConf.set("FrameStyle", Config::Skin::active()->frame.frameStyle);
 
   char key[32];
-  licqConf.SetSection("floaties");
-  licqConf.WriteNum("Num", FloatyView::floaties.size());
+  guiConf.setSection("floaties");
+  guiConf.set("Num", FloatyView::floaties.size());
   for (int i = 0; i < FloatyView::floaties.size(); i++)
   {
     FloatyView* iter = FloatyView::floaties.at(i);
     sprintf(key, "Floaty%d.Ppid", i);
-    licqConf.WriteNum(key, LicqUser::getUserProtocolId(iter->userId()));
+    guiConf.set(key, iter->userId().protocolId());
     sprintf(key, "Floaty%d.Uin", i);
-    licqConf.writeString(key, LicqUser::getUserAccountId(iter->userId()));
+    guiConf.set(key, iter->userId().accountId());
     sprintf(key, "Floaty%d.X", i);
-    licqConf.WriteNum(key, (iter->x() > 0 ? iter->x() : 0));
+    guiConf.set(key, (iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);
-    licqConf.WriteNum(key, (iter->y() > 0 ? iter->y() : 0));
+    guiConf.set(key, (iter->y() > 0 ? iter->y() : 0));
     sprintf(key, "Floaty%d.W", i);
-    licqConf.WriteNum(key, iter->width());
+    guiConf.set(key, iter->width());
   }
 
-  licqConf.FlushFile();
+  guiConf.writeFile();
 }
 
 int LicqGui::Run()

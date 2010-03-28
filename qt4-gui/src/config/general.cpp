@@ -31,7 +31,7 @@
 #include <QStyle>
 #endif
 
-#include <licq_file.h>
+#include <licq/inifile.h>
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Config::General */
@@ -63,76 +63,67 @@ Config::General::General(QObject* parent)
   myDefaultFixedFont.setFamily("Monospace");
 }
 
-void Config::General::loadConfiguration(CIniFile& iniFile)
+void Config::General::loadConfiguration(Licq::IniFile& iniFile)
 {
-  char szTemp[255];
+  std::string s;
 
-  iniFile.SetSection("functions");
-  iniFile.ReadStr("MsgPopupKey", szTemp, "none");
-  myMsgPopupKey = (strcmp(szTemp, "none") != 0 ? QString::fromLatin1(szTemp) : QString());
+  iniFile.setSection("functions");
+  iniFile.get("MsgPopupKey", s, "none");
+  myMsgPopupKey = (s != "none" ? QString::fromLatin1(s.c_str()) : QString());
 
-  iniFile.SetSection("appearance");
-  iniFile.ReadBool("UseDoubleReturn", myUseDoubleReturn, false);
+  iniFile.setSection("appearance");
+  iniFile.get("UseDoubleReturn", myUseDoubleReturn, false);
 
 #ifndef USE_KDE
-  iniFile.ReadStr("QtStyle", szTemp, "default");
-  if (strcmp(szTemp, "default") != 0)
-    setGuiStyle(szTemp);
+  iniFile.get("QtStyle", s, "default");
+  if (s == "default")
+    setGuiStyle(s.c_str());
 #endif
 
-  iniFile.ReadStr("Font", szTemp, "default");
-  if (strcmp(szTemp, "default") == 0)
-    szTemp[0] = '\0';
-  setNormalFont(szTemp);
-  iniFile.ReadStr("EditFont", szTemp, "default");
-  if (strcmp(szTemp, "default") == 0)
-    szTemp[0] = '\0';
-  setEditFont(szTemp);
-  iniFile.ReadStr("HistoryFont", szTemp, "default");
-  if (strcmp(szTemp, "default") == 0)
-    szTemp[0] = '\0';
-  setHistoryFont(szTemp);
-  iniFile.ReadStr("FixedFont", szTemp, "default");
-  if (strcmp(szTemp, "default") == 0)
-    szTemp[0] = '\0';
-  setFixedFont(szTemp);
+  iniFile.get("Font", s, "default");
+  setNormalFont(s == "default" ? "" : s.c_str());
+  iniFile.get("EditFont", s, "default");
+  setEditFont(s == "default" ? "" : s.c_str());
+  iniFile.get("HistoryFont", s, "default");
+  setHistoryFont(s == "default" ? "" : s.c_str());
+  iniFile.get("FixedFont", s, "default");
+  setFixedFont(s == "default" ? "" : s.c_str());
 
-  iniFile.ReadBool("InMiniMode", myMiniMode, false);
-  iniFile.ReadBool("ShowGroupIfNoMsg", myShowGroupIfNoMsg, true);
-  iniFile.ReadBool("BoldOnMsg", myBoldOnMsg, true);
-  iniFile.ReadBool("EnableMainwinMouseMovement", myMainwinDraggable, true);
-  iniFile.ReadBool("MainWinSticky", myMainwinSticky, false);
-  iniFile.ReadBool("AutoRaise", myAutoRaiseMainwin, true);
-  iniFile.ReadBool("Hidden", myMainwinStartHidden, false);
+  iniFile.get("InMiniMode", myMiniMode, false);
+  iniFile.get("ShowGroupIfNoMsg", myShowGroupIfNoMsg, true);
+  iniFile.get("BoldOnMsg", myBoldOnMsg, true);
+  iniFile.get("EnableMainwinMouseMovement", myMainwinDraggable, true);
+  iniFile.get("MainWinSticky", myMainwinSticky, false);
+  iniFile.get("AutoRaise", myAutoRaiseMainwin, true);
+  iniFile.get("Hidden", myMainwinStartHidden, false);
 
   int dockMode;
-  iniFile.ReadNum("UseDock", dockMode, DockTray);
+  iniFile.get("UseDock", dockMode, DockTray);
   myDockMode = static_cast<DockMode>(dockMode);
 #ifndef USE_KDE
-  iniFile.ReadBool("Dock64x48", myDefaultIconFortyEight, false);
-  char szDockTheme[64];
-  iniFile.ReadStr("DockTheme", szDockTheme, "");
-  myThemedIconTheme = szDockTheme;
+  iniFile.get("Dock64x48", myDefaultIconFortyEight, false);
+  iniFile.get("DockTheme", s, "");
+  myThemedIconTheme = s.c_str();
 #endif
-  iniFile.ReadBool("TrayBlink", myTrayBlink, true);
-  iniFile.ReadBool("TrayMsgOnlineNotify", myTrayMsgOnlineNotify, true);
+  iniFile.get("TrayBlink", myTrayBlink, true);
+  iniFile.get("TrayMsgOnlineNotify", myTrayMsgOnlineNotify, true);
 
-  iniFile.SetSection("startup");
-  iniFile.ReadNum("Logon", myAutoLogon, 0);
+  iniFile.setSection("startup");
+  iniFile.get("Logon", myAutoLogon, 0);
   if (myAutoLogon > 16)
     myAutoLogon = 0;
-  iniFile.ReadNum("AutoAway", myAutoAwayTime, 5);
-  iniFile.ReadNum("AutoNA", myAutoNaTime, 10);
-  iniFile.ReadNum("AutoOffline", myAutoOfflineTime, 0);
-  iniFile.ReadNum("AutoAwayMess", myAutoAwayMess, 0);
-  iniFile.ReadNum("AutoNAMess", myAutoNaMess, 0);
+  iniFile.get("AutoAway", myAutoAwayTime, 5);
+  iniFile.get("AutoNA", myAutoNaTime, 10);
+  iniFile.get("AutoOffline", myAutoOfflineTime, 0);
+  iniFile.get("AutoAwayMess", myAutoAwayMess, 0);
+  iniFile.get("AutoNAMess", myAutoNaMess, 0);
 
-  iniFile.SetSection("geometry");
+  iniFile.setSection("geometry");
   int xPos, yPos, wVal, hVal;
-  iniFile.ReadNum("MainWindow.X", xPos, 0);
-  iniFile.ReadNum("MainWindow.Y", yPos, 0);
-  iniFile.ReadNum("MainWindow.W", wVal, 0);
-  iniFile.ReadNum("MainWindow.H", hVal, 0);
+  iniFile.get("MainWindow.X", xPos, 0);
+  iniFile.get("MainWindow.Y", yPos, 0);
+  iniFile.get("MainWindow.W", wVal, 0);
+  iniFile.get("MainWindow.H", hVal, 0);
   if (xPos > QApplication::desktop()->width() - 16)
     xPos = 0;
   if (yPos > QApplication::desktop()->height() - 16)
@@ -146,58 +137,58 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   emit styleChanged();
 }
 
-void Config::General::saveConfiguration(CIniFile& iniFile) const
+void Config::General::saveConfiguration(Licq::IniFile& iniFile) const
 {
-  iniFile.SetSection("functions");
-  iniFile.WriteStr("MsgPopupKey", myMsgPopupKey.isEmpty() ? "none" : myMsgPopupKey.toLatin1());
+  iniFile.setSection("functions");
+  iniFile.set("MsgPopupKey", myMsgPopupKey.isEmpty() ? "none" : myMsgPopupKey.toLatin1());
 
-  iniFile.SetSection("appearance");
-  iniFile.WriteBool("UseDoubleReturn", myUseDoubleReturn);
+  iniFile.setSection("appearance");
+  iniFile.set("UseDoubleReturn", myUseDoubleReturn);
 
 #ifndef USE_KDE
   QString currentStyle = qApp->style()->objectName();
-  iniFile.WriteStr("QtStyle", currentStyle.isEmpty() ||
+  iniFile.set("QtStyle", currentStyle.isEmpty() ||
       currentStyle == myDefaultStyle ? "default" : currentStyle.toLatin1());
 #endif
 
-  iniFile.WriteStr("Font", qApp->font() == myDefaultFont ?
+  iniFile.set("Font", qApp->font() == myDefaultFont ?
       "default" : qApp->font().toString().toLatin1());
-  iniFile.WriteStr("EditFont", myEditFont == myDefaultFont ?
+  iniFile.set("EditFont", myEditFont == myDefaultFont ?
       "default" : myEditFont.toString().toLatin1());
-  iniFile.WriteStr("HistoryFont", myHistoryFont == myDefaultFont ?
+  iniFile.set("HistoryFont", myHistoryFont == myDefaultFont ?
       "default" : myHistoryFont.toString().toLatin1());
-  iniFile.WriteStr("FixedFont", myFixedFont == myDefaultFixedFont ?
+  iniFile.set("FixedFont", myFixedFont == myDefaultFixedFont ?
       "default" : myFixedFont.toString().toLatin1());
 
-  iniFile.WriteBool("InMiniMode", myMiniMode);
-  iniFile.WriteBool("ShowGroupIfNoMsg", myShowGroupIfNoMsg);
-  iniFile.WriteBool("BoldOnMsg", myBoldOnMsg);
-  iniFile.WriteBool("EnableMainwinMouseMovement", myMainwinDraggable);
-  iniFile.WriteBool("MainWinSticky", myMainwinSticky);
-  iniFile.WriteBool("AutoRaise", myAutoRaiseMainwin);
-  iniFile.WriteBool("Hidden", myMainwinStartHidden);
+  iniFile.set("InMiniMode", myMiniMode);
+  iniFile.set("ShowGroupIfNoMsg", myShowGroupIfNoMsg);
+  iniFile.set("BoldOnMsg", myBoldOnMsg);
+  iniFile.set("EnableMainwinMouseMovement", myMainwinDraggable);
+  iniFile.set("MainWinSticky", myMainwinSticky);
+  iniFile.set("AutoRaise", myAutoRaiseMainwin);
+  iniFile.set("Hidden", myMainwinStartHidden);
 
-  iniFile.WriteNum("UseDock", static_cast<int>(myDockMode));
+  iniFile.set("UseDock", static_cast<int>(myDockMode));
 #ifndef USE_KDE
-  iniFile.WriteBool("Dock64x48", myDefaultIconFortyEight);
-  iniFile.WriteStr("DockTheme", myThemedIconTheme.toLatin1());
+  iniFile.set("Dock64x48", myDefaultIconFortyEight);
+  iniFile.set("DockTheme", myThemedIconTheme.toLatin1());
 #endif
-  iniFile.WriteBool("TrayBlink", myTrayBlink);
-  iniFile.WriteBool("TrayMsgOnlineNotify", myTrayMsgOnlineNotify);
+  iniFile.set("TrayBlink", myTrayBlink);
+  iniFile.set("TrayMsgOnlineNotify", myTrayMsgOnlineNotify);
 
-  iniFile.SetSection("startup");
-  iniFile.WriteNum("Logon", myAutoLogon);
-  iniFile.WriteNum("AutoAway", myAutoAwayTime);
-  iniFile.WriteNum("AutoNA", myAutoNaTime);
-  iniFile.WriteNum("AutoOffline", myAutoOfflineTime);
-  iniFile.WriteNum("AutoAwayMess", myAutoAwayMess);
-  iniFile.WriteNum("AutoNAMess", myAutoNaMess);
+  iniFile.setSection("startup");
+  iniFile.set("Logon", myAutoLogon);
+  iniFile.set("AutoAway", myAutoAwayTime);
+  iniFile.set("AutoNA", myAutoNaTime);
+  iniFile.set("AutoOffline", myAutoOfflineTime);
+  iniFile.set("AutoAwayMess", myAutoAwayMess);
+  iniFile.set("AutoNAMess", myAutoNaMess);
 
-  iniFile.SetSection("geometry");
-  iniFile.WriteNum("MainWindow.X", myMainwinRect.x());
-  iniFile.WriteNum("MainWindow.Y", myMainwinRect.y());
-  iniFile.WriteNum("MainWindow.W", myMainwinRect.width());
-  iniFile.WriteNum("MainWindow.H", myMainwinRect.height());
+  iniFile.setSection("geometry");
+  iniFile.set("MainWindow.X", myMainwinRect.x());
+  iniFile.set("MainWindow.Y", myMainwinRect.y());
+  iniFile.set("MainWindow.W", myMainwinRect.width());
+  iniFile.set("MainWindow.H", myMainwinRect.height());
 }
 
 void Config::General::blockUpdates(bool block)

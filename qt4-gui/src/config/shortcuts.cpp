@@ -20,7 +20,7 @@
 
 #include "shortcuts.h"
 
-#include <licq_file.h>
+#include <licq/inifile.h>
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Config::Shortcuts */
@@ -108,15 +108,15 @@ Config::Shortcuts::Shortcuts(QObject* parent)
 #undef ADD_SHORTCUT
 }
 
-void Config::Shortcuts::loadConfiguration(CIniFile& iniFile)
+void Config::Shortcuts::loadConfiguration(Licq::IniFile& iniFile)
 {
-  iniFile.SetSection("shortcuts");
+  iniFile.setSection("shortcuts");
 
   QMap<ShortcutType, QString>::iterator i;
   for (i = myConfigKeysMap.begin(); i != myConfigKeysMap.end(); ++i)
   {
     std::string s;
-    iniFile.readString(i.value().toAscii().data(), s);
+    iniFile.get(i.value().toAscii().data(), s);
     if (s.empty())
       myShortcutsMap[i.key()] = QKeySequence(myDefaultShortcutsMap[i.key()]);
     else if(s == "None")
@@ -128,13 +128,13 @@ void Config::Shortcuts::loadConfiguration(CIniFile& iniFile)
   emit shortcutsChanged();
 }
 
-void Config::Shortcuts::saveConfiguration(CIniFile& iniFile) const
+void Config::Shortcuts::saveConfiguration(Licq::IniFile& iniFile) const
 {
-  iniFile.SetSection("shortcuts");
+  iniFile.setSection("shortcuts");
 
   QMap<ShortcutType, QString>::const_iterator i;
   for (i = myConfigKeysMap.begin(); i != myConfigKeysMap.end(); ++i)
-    iniFile.writeString(i.value().toAscii().data(),
+    iniFile.set(i.value().toAscii().data(),
         myShortcutsMap[i.key()].isEmpty() ? "None" :
         myShortcutsMap[i.key()].toString(QKeySequence::PortableText).toLatin1().data());
 }

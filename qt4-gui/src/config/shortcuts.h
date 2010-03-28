@@ -25,7 +25,10 @@
 #include <QObject>
 #include <QMap>
 
-class CIniFile;
+namespace Licq
+{
+class IniFile;
+}
 
 namespace LicqQtGui
 {
@@ -144,12 +147,12 @@ public slots:
   /**
    * Load configuration from file
    */
-  void loadConfiguration(CIniFile& iniFile);
+  void loadConfiguration(Licq::IniFile& iniFile);
 
   /**
    * Save configuration to file
    */
-  void saveConfiguration(CIniFile& iniFile) const;
+  void saveConfiguration(Licq::IniFile& iniFile) const;
 
   /**
    * Set a keyboard shortcut

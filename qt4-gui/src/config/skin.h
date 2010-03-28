@@ -30,7 +30,10 @@
 #include <QPixmap>
 #include <QRect>
 
-class CIniFile;
+namespace Licq
+{
+class IniFile;
+}
 
 namespace LicqQtGui
 {
@@ -57,7 +60,7 @@ public:
   QPixmap mask;
 
   virtual ~FrameSkin() {}
-  virtual void loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir);
+  virtual void loadSkin(const Licq::IniFile& skinFile, const QString& name, const QString& baseSkinDir);
 };
 
 class ShapeSkin
@@ -68,7 +71,7 @@ public:
   QColor background;
 
   virtual ~ShapeSkin() { }
-  virtual void loadSkin(CIniFile& skinFile, const QString& name);
+  virtual void loadSkin(const Licq::IniFile& skinFile, const QString& name);
   QRect borderToRect(const QWidget* w) const;
   void AdjustForMenuBar(int h1, int h2);
 };
@@ -82,7 +85,7 @@ public:
   QString caption;
 
   virtual ~ButtonSkin() { }
-  virtual void loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir);
+  virtual void loadSkin(const Licq::IniFile& skinFile, const QString& name, const QString& baseSkinDir);
 
 private:
   using ShapeSkin::loadSkin;
@@ -97,7 +100,7 @@ public:
   int margin;
 
   virtual ~LabelSkin() { }
-  virtual void loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir);
+  virtual void loadSkin(const Licq::IniFile& skinFile, const QString& name, const QString& baseSkinDir);
 
 private:
   using ShapeSkin::loadSkin;

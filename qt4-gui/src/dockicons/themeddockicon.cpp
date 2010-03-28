@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QPainter>
 
+#include <licq/inifile.h>
 #include <licq_user.h>
 
 #include "config/general.h"
@@ -53,7 +54,7 @@ void ThemedDockIcon::updateConfig()
   cleanup();
 
   // Open the config file and read it
-  char temp[MAX_FILENAME_LEN];
+  std::string temp;
   QString baseDockDir;
 
   if (myTheme[0] == '/')
@@ -70,13 +71,12 @@ void ThemedDockIcon::updateConfig()
   filename.append(myTheme);
   filename.append(".dock");
 
-  CIniFile dockFile(INI_FxWARN);
+  Licq::IniFile dockFile(filename.data());
 
-  if (!dockFile.LoadFile(filename))
+  if (!dockFile.loadFile())
   {
-    WarnUser(NULL, tr("Unable to load dock theme file:\n(%1)\n%2")
-        .arg(filename.data())
-        .arg(strerror(dockFile.Error())));
+    WarnUser(NULL, tr("Unable to load dock theme file:\n(%1)")
+        .arg(filename.data()));
     myIcon->hide();
     return;
   }
@@ -84,15 +84,15 @@ void ThemedDockIcon::updateConfig()
   myIcon->show();
 
   // Message icons
-  if (dockFile.SetSection("background"))
+  if (dockFile.setSection("background", false))
   {
 #define READDOCK(parm, var) \
-    dockFile.ReadStr((parm), temp, "none"); \
-    if (strcmp(temp, "none") == 0) \
+    dockFile.get((parm), temp, "none"); \
+    if (temp == "none") \
       WarnUser(NULL, tr("Dock theme unspecified image: %1").arg((parm))); \
     else \
     { \
-      (var) = new QPixmap(baseDockDir + temp); \
+      (var) = new QPixmap(baseDockDir + QString::fromLocal8Bit(temp.c_str())); \
       if ((var)->isNull()) \
       { \
         WarnUser(NULL, tr("Unable to load dock theme image: %1").arg((parm))); \
@@ -101,9 +101,9 @@ void ThemedDockIcon::updateConfig()
       } \
       else \
       { \
-        dockFile.ReadStr(parm "Mask", temp, "none"); \
-        if (strcmp(temp, "none") != 0) \
-          (var)->setMask(QBitmap(baseDockDir + temp)); \
+        dockFile.get(parm "Mask", temp, "none"); \
+        if (temp != "none") \
+          (var)->setMask(QBitmap(baseDockDir + QString::fromLocal8Bit(temp.c_str()))); \
       } \
     }
 
@@ -115,17 +115,17 @@ void ThemedDockIcon::updateConfig()
   }
 
   // Status icons
-  if (dockFile.SetSection("status"))
+  if (dockFile.setSection("status", false))
   {
     QBitmap mask;
-    dockFile.ReadStr("Mask", temp, "none");
-    if (strcmp(temp, "none") != 0)
-      mask = QBitmap(baseDockDir + temp);
+    dockFile.get("Mask", temp, "none");
+    if (temp != "none")
+      mask = QBitmap(baseDockDir + QString::fromLocal8Bit(temp.c_str()));
 #define READDOCK(parm, var) \
-    dockFile.ReadStr((parm), temp, "none"); \
-    if (strcmp(temp, "none") != 0) \
+    dockFile.get((parm), temp, "none"); \
+    if (temp != "none") \
     { \
-      (var) = new QPixmap(baseDockDir + temp); \
+      (var) = new QPixmap(baseDockDir + QString::fromLocal8Bit(temp.c_str())); \
       if ((var)->isNull()) \
       { \
         WarnUser(NULL, tr("Unable to load dock theme image: %1").arg((parm))); \
@@ -147,8 +147,6 @@ void ThemedDockIcon::updateConfig()
     READDOCK("FFC", pixFFC);
 #undef READDOCK
   }
-
-  dockFile.CloseFile();
 
   updateStatusIcon();
   updateIconMessages(myNewMsg, mySysMsg);
