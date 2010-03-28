@@ -464,8 +464,8 @@ void SkinBrowserPreviewArea::setPixmapList(const IconList& iconList)
 void SkinBrowserPreviewArea::paintEvent(QPaintEvent* /* event */)
 {
   QPainter p(this);
-  unsigned short int X = 0;
-  unsigned short int Y = 0;
+  int X = 0;
+  int Y = 0;
   foreach (const QPixmap& icon, myIconList)
   {
     p.drawPixmap(X, Y, icon, 0, 0, 16, 16);

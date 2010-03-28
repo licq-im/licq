@@ -69,7 +69,7 @@ MMUserView::MMUserView(const UserId& userId, ContactListModel* contactList, QWid
   dynamic_cast<SortedContactListProxy*>(myListProxy)->sort(0);
   header()->setVisible(Config::ContactList::instance()->showHeader());
 
-  for (unsigned short i = 0; i < Config::ContactList::instance()->columnCount(); i++)
+  for (int i = 0; i < Config::ContactList::instance()->columnCount(); i++)
     setColumnWidth(i, Config::ContactList::instance()->columnWidth(i));
 }
 

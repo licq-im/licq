@@ -85,7 +85,7 @@ public:
   int columnCount() const { return myColumnCount; }
   const QString& columnHeading(int column) { return myColumnHeading[column]; }
   const QString& columnFormat(int column) { return myColumnFormat[column]; }
-  unsigned short columnWidth(int column) { return myColumnWidth[column]; }
+  int columnWidth(int column) { return myColumnWidth[column]; }
   AlignmentMode columnAlignment(int column) { return myColumnAlignment[column]; }
 
   bool showOffline() const { return myShowOffline; }
@@ -101,8 +101,8 @@ public:
   bool useFontStyles() const { return myUseFontStyles; }
   bool showHeader() const { return myShowHeader; }
   bool showDividers() const { return myShowDividers; }
-  unsigned short sortByStatus() const { return mySortByStatus; }
-  unsigned short sortColumn() const { return mySortColumn; }
+  int sortByStatus() const { return mySortByStatus; }
+  int sortColumn() const { return mySortColumn; }
   bool sortColumnAscending() const { return mySortColumnAscending; }
   bool showExtendedIcons() const { return myShowExtendedIcons; }
   bool showPhoneIcons() const { return myShowPhoneIcons; }
@@ -141,7 +141,7 @@ public slots:
   // Set functions
   void setColumnCount(int columnCount);
   void setColumn(int column, const QString& heading, const QString& format,
-      unsigned short width, AlignmentMode alignment);
+      int width, AlignmentMode alignment);
 
   void setShowOffline(bool showOffline);
   void setAlwaysShowONU(bool alwaysShowONU);
@@ -161,8 +161,8 @@ public slots:
   void setUseFontStyles(bool useFontStyles);
   void setShowHeader(bool showHeader);
   void setShowDividers(bool showDividers);
-  void setSortByStatus(unsigned short sortByStatus);
-  void setSortColumn(unsigned short column, bool ascending = true);
+  void setSortByStatus(int sortByStatus);
+  void setSortColumn(int column, bool ascending = true);
   void setGroupState(int group, bool online, bool expanded);
   void setShowExtendedIcons(bool showExtendedIcons);
   void setShowPhoneIcons(bool showPhoneIcons);
@@ -226,10 +226,10 @@ private:
   bool myBlockUpdates;
 
   // Contact list layout
-  unsigned short myColumnCount;
+  int myColumnCount;
   QString myColumnHeading[MAX_COLUMNCOUNT];
   QString myColumnFormat[MAX_COLUMNCOUNT];
-  unsigned short myColumnWidth[MAX_COLUMNCOUNT];
+  int myColumnWidth[MAX_COLUMNCOUNT];
   AlignmentMode myColumnAlignment[MAX_COLUMNCOUNT];
 
   // Contact list contents
@@ -257,10 +257,10 @@ private:
   bool myDragMovesUser;
 
   // Contact list sorting
-  unsigned short mySortByStatus;
+  int mySortByStatus;
 
   // Contact list state
-  unsigned short mySortColumn;
+  int mySortColumn;
   bool mySortColumnAscending;
   int myGroupStates[2];
 

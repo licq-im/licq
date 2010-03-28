@@ -236,7 +236,7 @@ void Settings::General::load()
   myDockDefaultRadio->setChecked(generalConfig->dockMode() == Config::General::DockDefault);
   myDockFortyEightCheck->setChecked(generalConfig->defaultIconFortyEight());
   myDockThemedRadio->setChecked(generalConfig->dockMode() == Config::General::DockThemed);
-  for (unsigned short i = 0; i < myDockThemeCombo->count(); ++i)
+  for (int i = 0; i < myDockThemeCombo->count(); ++i)
   {
     if (myDockThemeCombo->itemText(i) == generalConfig->themedIconTheme())
     {

@@ -237,7 +237,7 @@ QWidget* Settings::ContactList::createPageColumns(QWidget* parent)
   myColAlignLabel->setToolTip(tr("The alignment of the column"));
   myColumnsLayout->addWidget(myColAlignLabel, 0, 4);
 
-  for (unsigned short i = 0; i < MAX_COLUMNCOUNT; i++)
+  for (int i = 0; i < MAX_COLUMNCOUNT; i++)
   {
     myColNumberRadio[i] = new QRadioButton(QString::number(i+1));
     myColNumberRadio[i]->setToolTip(tr("Number of columns"));
@@ -336,7 +336,7 @@ void Settings::ContactList::numColumnsChanged()
   // Starting from the top, rows should be enabled
   bool enableRow = true;
 
-  for (unsigned short i = 0; i < MAX_COLUMNCOUNT; ++i)
+  for (int i = 0; i < MAX_COLUMNCOUNT; ++i)
   {
     myColTitleEdit[i]->setEnabled(enableRow);
     myColFormatEdit[i]->setEnabled(enableRow);
@@ -457,7 +457,7 @@ void Settings::ContactList::apply()
   contactListConfig->setUseSystemBackground(mySysBackCheck->isChecked());
   contactListConfig->setDragMovesUser(myDragMovesUserCheck->isChecked());
 
-  for (unsigned short i = 0; i < MAX_COLUMNCOUNT; ++i)
+  for (int i = 0; i < MAX_COLUMNCOUNT; ++i)
   {
     contactListConfig->setColumn(i,
         myColTitleEdit[i]->text(),

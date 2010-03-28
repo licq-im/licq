@@ -105,7 +105,7 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("AutoRaise", myAutoRaiseMainwin, true);
   iniFile.ReadBool("Hidden", myMainwinStartHidden, false);
 
-  unsigned short dockMode;
+  int dockMode;
   iniFile.ReadNum("UseDock", dockMode, DockTray);
   myDockMode = static_cast<DockMode>(dockMode);
 #ifndef USE_KDE
@@ -128,7 +128,7 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadNum("AutoNAMess", myAutoNaMess, 0);
 
   iniFile.SetSection("geometry");
-  short xPos, yPos, wVal, hVal;
+  int xPos, yPos, wVal, hVal;
   iniFile.ReadNum("MainWindow.X", xPos, 0);
   iniFile.ReadNum("MainWindow.Y", yPos, 0);
   iniFile.ReadNum("MainWindow.W", wVal, 0);
@@ -177,7 +177,7 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("AutoRaise", myAutoRaiseMainwin);
   iniFile.WriteBool("Hidden", myMainwinStartHidden);
 
-  iniFile.WriteNum("UseDock", static_cast<unsigned short>(myDockMode));
+  iniFile.WriteNum("UseDock", static_cast<int>(myDockMode));
 #ifndef USE_KDE
   iniFile.WriteBool("Dock64x48", myDefaultIconFortyEight);
   iniFile.WriteStr("DockTheme", myThemedIconTheme.toLatin1());
@@ -194,10 +194,10 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteNum("AutoNAMess", myAutoNaMess);
 
   iniFile.SetSection("geometry");
-  iniFile.WriteNum("MainWindow.X", static_cast<short>(myMainwinRect.x()));
-  iniFile.WriteNum("MainWindow.Y", static_cast<short>(myMainwinRect.y()));
-  iniFile.WriteNum("MainWindow.W", static_cast<short>(myMainwinRect.width()));
-  iniFile.WriteNum("MainWindow.H", static_cast<short>(myMainwinRect.height()));
+  iniFile.WriteNum("MainWindow.X", myMainwinRect.x());
+  iniFile.WriteNum("MainWindow.Y", myMainwinRect.y());
+  iniFile.WriteNum("MainWindow.W", myMainwinRect.width());
+  iniFile.WriteNum("MainWindow.H", myMainwinRect.height());
 }
 
 void Config::General::blockUpdates(bool block)
@@ -502,7 +502,7 @@ void Config::General::setTrayMsgOnlineNotify(bool trayMsgOnlineNotify)
   myTrayMsgOnlineNotify = trayMsgOnlineNotify;
 }
 
-void Config::General::setAutoLogon(unsigned short autoLogon)
+void Config::General::setAutoLogon(int autoLogon)
 {
   if (autoLogon == myAutoLogon)
     return;
@@ -510,7 +510,7 @@ void Config::General::setAutoLogon(unsigned short autoLogon)
   myAutoLogon = autoLogon;
 }
 
-void Config::General::setAutoAwayTime(unsigned short autoAwayTime)
+void Config::General::setAutoAwayTime(int autoAwayTime)
 {
   if (autoAwayTime == myAutoAwayTime)
     return;
@@ -518,7 +518,7 @@ void Config::General::setAutoAwayTime(unsigned short autoAwayTime)
   myAutoAwayTime = autoAwayTime;
 }
 
-void Config::General::setAutoNaTime(unsigned short autoNaTime)
+void Config::General::setAutoNaTime(int autoNaTime)
 {
   if (autoNaTime == myAutoNaTime)
     return;
@@ -526,7 +526,7 @@ void Config::General::setAutoNaTime(unsigned short autoNaTime)
   myAutoNaTime = autoNaTime;
 }
 
-void Config::General::setAutoOfflineTime(unsigned short autoOfflineTime)
+void Config::General::setAutoOfflineTime(int autoOfflineTime)
 {
   if (autoOfflineTime == myAutoOfflineTime)
     return;
@@ -534,7 +534,7 @@ void Config::General::setAutoOfflineTime(unsigned short autoOfflineTime)
   myAutoOfflineTime = autoOfflineTime;
 }
 
-void Config::General::setAutoAwayMess(unsigned short autoAwayMess)
+void Config::General::setAutoAwayMess(int autoAwayMess)
 {
   if (autoAwayMess == myAutoAwayMess)
     return;
@@ -542,7 +542,7 @@ void Config::General::setAutoAwayMess(unsigned short autoAwayMess)
   myAutoAwayMess = autoAwayMess;
 }
 
-void Config::General::setAutoNaMess(unsigned short autoNaMess)
+void Config::General::setAutoNaMess(int autoNaMess)
 {
   if (autoNaMess == myAutoNaMess)
     return;

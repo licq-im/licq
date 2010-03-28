@@ -103,6 +103,6 @@ void FloatyView::mouseMoveEvent(QMouseEvent* event)
 void FloatyView::configUpdated()
 {
   // Set column widths
-  for (unsigned short i = 0; i < Config::ContactList::instance()->columnCount(); i++)
+  for (int i = 0; i < Config::ContactList::instance()->columnCount(); i++)
     setColumnWidth(i, Config::ContactList::instance()->columnWidth(i));
 }

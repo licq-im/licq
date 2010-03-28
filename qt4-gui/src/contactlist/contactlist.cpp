@@ -522,7 +522,7 @@ QVariant ContactListModel::headerData(int section, Qt::Orientation orientation, 
   if (orientation != Qt::Horizontal)
     return QVariant();
 
-  if (role == Qt::DisplayRole && static_cast<unsigned short>(section) < myColumnCount)
+  if (role == Qt::DisplayRole && section < myColumnCount)
     return Config::ContactList::instance()->columnHeading(section);
 
   return QVariant();

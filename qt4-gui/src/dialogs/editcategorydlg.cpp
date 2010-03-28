@@ -43,7 +43,7 @@ EditCategoryDlg::EditCategoryDlg(UserCat cat, const UserCategoryMap& category, Q
 
   QString title = "Licq - Edit @ Category";
 
-  unsigned short tableSize, i = 0;
+  unsigned short tableSize;
 
   switch (myUserCat)
   {
@@ -74,6 +74,7 @@ EditCategoryDlg::EditCategoryDlg(UserCat cat, const UserCategoryMap& category, Q
 
   QGridLayout* top_lay = new QGridLayout(this);
 
+  int i = 0;
   UserCategoryMap::const_iterator it = category.begin();
   for (; i < myNumCats ; i++)
   {
@@ -95,7 +96,7 @@ EditCategoryDlg::EditCategoryDlg(UserCat cat, const UserCategoryMap& category, Q
       descr = "";
     }
 
-    for (unsigned short j = 0; j < tableSize ; j++)
+    for (int j = 0; j < tableSize ; j++)
     {
       myCats[i]->addItem(getEntry(j)->szName);
       if (getEntry(j)->nCode == selection_id)

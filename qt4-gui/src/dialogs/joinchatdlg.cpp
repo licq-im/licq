@@ -118,7 +118,7 @@ ChatDlg* JoinChatDlg::JoinedChat()
   if (lstChats->currentItem() == NULL)
     return NULL;
 
-  unsigned short n = 0;
+  int n = 0;
   ChatDlgList::iterator iter;
   for (iter = originalChats.begin();
        iter != originalChats.end() && n < lstChats->currentRow();

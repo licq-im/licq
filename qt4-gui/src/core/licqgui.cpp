@@ -337,7 +337,7 @@ void LicqGui::loadGuiConfig()
   }
   bool skinFrameTransparent;
   licqConf.ReadBool("Transparent", skinFrameTransparent, false);
-  unsigned short skinFrameStyle;
+  unsigned skinFrameStyle;
   licqConf.ReadNum("FrameStyle", skinFrameStyle, 51);
 
   Config::Skin::createInstance(mySkin, this);
@@ -354,10 +354,10 @@ void LicqGui::loadFloatiesConfig()
   licqConf.LoadFile(szTemp);
 
   char key[16];
-  unsigned short nFloaties = 0, xPosF, yPosF, wValF;
+  int nFloaties = 0, xPosF, yPosF, wValF;
   licqConf.SetSection("floaties");
   licqConf.ReadNum("Num", nFloaties, 0);
-  for (unsigned short i = 0; i < nFloaties; i++)
+  for (int i = 0; i < nFloaties; i++)
   {
     sprintf(key, "Floaty%d.Ppid", i);
     unsigned long ppid;
@@ -410,8 +410,8 @@ void LicqGui::saveConfig()
 
   char key[32];
   licqConf.SetSection("floaties");
-  licqConf.WriteNum("Num", (unsigned short)FloatyView::floaties.size());
-  for (unsigned short i = 0; i < FloatyView::floaties.size(); i++)
+  licqConf.WriteNum("Num", FloatyView::floaties.size());
+  for (int i = 0; i < FloatyView::floaties.size(); i++)
   {
     FloatyView* iter = FloatyView::floaties.at(i);
     sprintf(key, "Floaty%d.Ppid", i);
@@ -419,11 +419,11 @@ void LicqGui::saveConfig()
     sprintf(key, "Floaty%d.Uin", i);
     licqConf.writeString(key, LicqUser::getUserAccountId(iter->userId()));
     sprintf(key, "Floaty%d.X", i);
-    licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
+    licqConf.WriteNum(key, (iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);
-    licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
+    licqConf.WriteNum(key, (iter->y() > 0 ? iter->y() : 0));
     sprintf(key, "Floaty%d.W", i);
-    licqConf.WriteNum(key, (unsigned short)iter->width());
+    licqConf.WriteNum(key, iter->width());
   }
 
   licqConf.FlushFile();
@@ -509,7 +509,7 @@ int LicqGui::Run()
   connect(&myAutoAwayTimer, SIGNAL(timeout()), SLOT(autoAway()));
 
   // automatically logon if requested in conf file
-  unsigned short autoLogon = Config::General::instance()->autoLogon();
+  int autoLogon = Config::General::instance()->autoLogon();
   if (autoLogon > 0)
   {
     bool invisible = (autoLogon >= 10);
@@ -1332,7 +1332,7 @@ void LicqGui::toggleFloaty(const UserId& userId)
 }
 
 void LicqGui::createFloaty(const UserId& userId,
-   unsigned short x, unsigned short y, unsigned short w)
+   int x, int y, int w)
 {
   if (!USERID_ISVALID(userId) || !gUserManager.userExists(userId))
     return;

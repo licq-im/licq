@@ -374,7 +374,7 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
   if (icon != NULL)
   {
     // Draw the icon
-    unsigned short iconWidth = qMax(icon->width(), 18);
+    int iconWidth = qMax(icon->width(), 18);
     arg.p->drawPixmap(
         (iconWidth - icon->width()) / 2,
         (arg.height - icon->height()) / 2,

@@ -326,8 +326,7 @@ private:
   void loadGuiConfig();
   void loadFloatiesConfig();
 
-  void createFloaty(const UserId& userId, unsigned short x = 0, unsigned short y = 0,
-      unsigned short w = 0);
+  void createFloaty(const UserId& userId, int x = 0, int y = 0, int w = 0);
 
   QString mySkin;
   QString myIcons;

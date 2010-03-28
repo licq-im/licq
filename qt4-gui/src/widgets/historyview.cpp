@@ -92,7 +92,7 @@ QSize HistoryView::sizeHint() const
   return QSize(400, 150);
 }
 
-void HistoryView::setHistoryConfig(unsigned short msgStyle,
+void HistoryView::setHistoryConfig(int msgStyle,
     const QString& dateFormat, bool extraSpacing, bool reverse)
 {
   myUseBuffer = true;
@@ -104,7 +104,7 @@ void HistoryView::setHistoryConfig(unsigned short msgStyle,
   myShowNotices = false;
 }
 
-void HistoryView::setChatConfig(unsigned short msgStyle, const QString& dateFormat,
+void HistoryView::setChatConfig(int msgStyle, const QString& dateFormat,
     bool extraSpacing, bool appendLineBreak, bool showNotices)
 {
   myUseBuffer = false;

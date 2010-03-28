@@ -423,7 +423,7 @@ bool ContactUserData::updateText(const LicqUser* licqUser)
 
   myAlias = QString::fromUtf8(licqUser->getAlias().c_str());
 
-  for (unsigned short i = 0; i < Config::ContactList::instance()->columnCount(); i++)
+  for (int i = 0; i < Config::ContactList::instance()->columnCount(); i++)
   {
     QString format = Config::ContactList::instance()->columnFormat(i);
     format.replace("%a", "@_USER_ALIAS_@");

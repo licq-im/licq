@@ -199,7 +199,7 @@ void KeyView::resizeEvent(QResizeEvent* event)
 {
   QTreeWidget::resizeEvent(event);
 
-  unsigned short totalWidth = 0;
+  int totalWidth = 0;
   int nNumCols = columnCount();
   for (int i = 0; i < nNumCols - 1; i++)
     totalWidth += columnWidth(i);

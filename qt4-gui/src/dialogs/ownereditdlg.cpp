@@ -62,7 +62,7 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   edtPassword->setEchoMode(QLineEdit::Password);
   connect(edtPassword, SIGNAL(returnPressed()), SLOT(slot_ok()));
 
-  unsigned short i = 0;
+  int i = 0;
   QLabel* lbl;
 
 #define ADDWIDGET(name, widget) \

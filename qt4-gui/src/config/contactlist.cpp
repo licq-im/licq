@@ -67,11 +67,11 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("SystemBackground", myUseSystemBackground, false);
   iniFile.ReadBool("DragMovesUser", myDragMovesUser, true);
 
-  unsigned short flash;
+  int flash;
   iniFile.ReadNum("Flash", flash, FlashUrgent);
   myFlash = static_cast<FlashMode>(flash);
 
-  unsigned short groupType;
+  int groupType;
   iniFile.ReadNum("StartUpGroupId", myGroupId, GROUP_ALL_USERS);
   iniFile.ReadNum("StartUpGroupType", groupType, GROUPS_SYSTEM);
   myGroupType = static_cast<GroupType>(groupType);
@@ -84,10 +84,10 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   }
 
   iniFile.ReadNum("NumColumns", myColumnCount, 1);
-  for (unsigned short i = 0; i < myColumnCount; i++)
+  for (int i = 0; i < myColumnCount; i++)
   {
     char s[32];
-    unsigned short us;
+    int us;
 
     QString key = QString("Column%1.").arg(i + 1);
     iniFile.ReadStr((key + "Title").toLatin1().data(), s, "Alias");
@@ -139,21 +139,21 @@ void Config::ContactList::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("ShowExtIcons", myShowExtendedIcons);
   iniFile.WriteBool("ShowPhoneIcons", myShowPhoneIcons);
   iniFile.WriteBool("ShowUserIcons", myShowUserIcons);
-  iniFile.WriteNum("Flash", static_cast<unsigned short>(myFlash));
+  iniFile.WriteNum("Flash", static_cast<int>(myFlash));
   iniFile.WriteBool("ScrollBar", myAllowScrollBar);
   iniFile.WriteBool("SystemBackground", myUseSystemBackground);
   iniFile.WriteBool("DragMovesUser", myDragMovesUser);
   iniFile.WriteNum("StartUpGroupId", myGroupId);
-  iniFile.WriteNum("StartUpGroupType", static_cast<unsigned short>(myGroupType));
+  iniFile.WriteNum("StartUpGroupType", static_cast<int>(myGroupType));
 
   iniFile.WriteNum("NumColumns", myColumnCount);
-  for (unsigned short i = 0; i < myColumnCount; i++)
+  for (int i = 0; i < myColumnCount; i++)
   {
     QString key = QString("Column%1.").arg(i + 1);
     iniFile.WriteStr((key + "Title").toLatin1().data(), myColumnHeading[i].toLocal8Bit().data());
     iniFile.WriteStr((key + "Format").toLatin1().data(), myColumnFormat[i].toLocal8Bit().data());
     iniFile.WriteNum((key + "Width").toLatin1().data(), myColumnWidth[i]);
-    iniFile.WriteNum((key + "Align").toLatin1().data(), static_cast<unsigned short>(myColumnAlignment[i]));
+    iniFile.WriteNum((key + "Align").toLatin1().data(), static_cast<int>(myColumnAlignment[i]));
   }
 
   iniFile.WriteBool("showPopPicture", myPopupPicture);
@@ -207,7 +207,7 @@ void Config::ContactList::setColumnCount(int columnCount)
 }
 
 void Config::ContactList::setColumn(int column, const QString& heading,
-    const QString& format, unsigned short width, AlignmentMode alignment)
+    const QString& format, int width, AlignmentMode alignment)
 {
   if (column < 0 || column >= MAX_COLUMNCOUNT)
     return;
@@ -229,7 +229,7 @@ void Config::ContactList::setColumn(int column, const QString& heading,
   }
 }
 
-void Config::ContactList::setSortByStatus(unsigned short sortByStatus)
+void Config::ContactList::setSortByStatus(int sortByStatus)
 {
   if (sortByStatus == mySortByStatus)
     return;
@@ -399,7 +399,7 @@ void Config::ContactList::setGroup(GroupType groupType, int groupId, bool thread
   changeCurrentList();
 }
 
-void Config::ContactList::setSortColumn(unsigned short column, bool ascending)
+void Config::ContactList::setSortColumn(int column, bool ascending)
 {
   mySortColumn = column;
   mySortColumnAscending = ascending;

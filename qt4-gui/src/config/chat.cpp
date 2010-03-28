@@ -106,7 +106,7 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("ShowAllEncodings", myShowAllEncodings, false);
 
   iniFile.SetSection("geometry");
-  short xPos, yPos, wVal, hVal;
+  int xPos, yPos, wVal, hVal;
   iniFile.ReadNum("EventDialog.X", xPos, 0);
   iniFile.ReadNum("EventDialog.Y", yPos, 0);
   iniFile.ReadNum("EventDialog.W", wVal, 0);
@@ -173,14 +173,14 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("ShowAllEncodings", myShowAllEncodings);
 
   iniFile.SetSection("geometry");
-  iniFile.WriteNum("EventDialog.X", static_cast<short>(myTabDialogRect.x()));
-  iniFile.WriteNum("EventDialog.Y", static_cast<short>(myTabDialogRect.y()));
-  iniFile.WriteNum("EventDialog.W", static_cast<short>(myTabDialogRect.width()));
-  iniFile.WriteNum("EventDialog.H", static_cast<short>(myTabDialogRect.height()));
-  iniFile.WriteNum("ViewEventDialog.W", static_cast<short>(myViewDialogSize.width()));
-  iniFile.WriteNum("ViewEventDialog.H", static_cast<short>(myViewDialogSize.height()));
-  iniFile.WriteNum("SendEventDialog.W", static_cast<short>(mySendDialogSize.width()));
-  iniFile.WriteNum("SendEventDialog.H", static_cast<short>(mySendDialogSize.height()));
+  iniFile.WriteNum("EventDialog.X", myTabDialogRect.x());
+  iniFile.WriteNum("EventDialog.Y", myTabDialogRect.y());
+  iniFile.WriteNum("EventDialog.W", myTabDialogRect.width());
+  iniFile.WriteNum("EventDialog.H", myTabDialogRect.height());
+  iniFile.WriteNum("ViewEventDialog.W", myViewDialogSize.width());
+  iniFile.WriteNum("ViewEventDialog.H", myViewDialogSize.height());
+  iniFile.WriteNum("SendEventDialog.W", mySendDialogSize.width());
+  iniFile.WriteNum("SendEventDialog.H", mySendDialogSize.height());
 }
 
 void Config::Chat::blockUpdates(bool block)
@@ -205,7 +205,7 @@ void Config::Chat::setAutoClose(bool autoClose)
   myAutoClose = autoClose;
 }
 
-void Config::Chat::setAutoPopup(unsigned short autoPopup)
+void Config::Chat::setAutoPopup(int autoPopup)
 {
   if (autoPopup == myAutoPopup)
     return;
@@ -407,7 +407,7 @@ void Config::Chat::setNoSoundInActiveChat(bool noSoundInActiveChat)
   myNoSoundInActiveChat = noSoundInActiveChat;
 }
 
-void Config::Chat::setChatMsgStyle(unsigned short chatMsgStyle)
+void Config::Chat::setChatMsgStyle(int chatMsgStyle)
 {
   if (chatMsgStyle == myChatMsgStyle)
     return;
@@ -415,7 +415,7 @@ void Config::Chat::setChatMsgStyle(unsigned short chatMsgStyle)
   myChatMsgStyle = chatMsgStyle;
 }
 
-void Config::Chat::setHistMsgStyle(unsigned short histMsgStyle)
+void Config::Chat::setHistMsgStyle(int histMsgStyle)
 {
   if (histMsgStyle == myHistMsgStyle)
     return;

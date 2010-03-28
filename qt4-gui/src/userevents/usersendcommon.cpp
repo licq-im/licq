@@ -1307,7 +1307,7 @@ void UserSendCommon::clearNewEvents()
               idList.push_back(e->Id());
           }
 
-          for (unsigned short i = 0; i < idList.size(); i++)
+          for (std::vector<int>::size_type i = 0; i < idList.size(); i++)
             u->EventClearId(idList[i]);
         }
       }

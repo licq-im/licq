@@ -179,7 +179,7 @@ void Config::Skin::setFrameTransparent(bool transparent)
   emit frameChanged();
 }
 
-void Config::Skin::setFrameStyle(unsigned short frameStyle)
+void Config::Skin::setFrameStyle(unsigned frameStyle)
 {
   if (frameStyle == frame.frameStyle)
     return;
@@ -253,7 +253,7 @@ void Config::Skin::SetDefaultValues()
 }
 
 
-void Config::Skin::AdjustForMenuBar(unsigned short h)
+void Config::Skin::AdjustForMenuBar(int h)
 {
   frame.border.AdjustForMenuBar(myMenuBarHeight, h);
   lblStatus.AdjustForMenuBar(myMenuBarHeight, h);
@@ -291,7 +291,7 @@ void Config::FrameSkin::loadSkin(CIniFile& skinFile, const QString& name, const 
 
 void Config::ShapeSkin::loadSkin(CIniFile& skinFile, const QString& name)
 {
-  signed short x1, y1, x2, y2;
+  int x1, y1, x2, y2;
   skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
   skinFile.ReadNum((name + ".rect.x1").toLatin1().data(), x1);
   skinFile.ReadNum((name + ".rect.y1").toLatin1().data(), y1);
@@ -348,7 +348,7 @@ void Config::LabelSkin::loadSkin(CIniFile& skinFile, const QString& name, const 
   skinFile.SetFlags(0);
 }
 
-void Config::ShapeSkin::AdjustForMenuBar(unsigned short h_old, unsigned short h_new)
+void Config::ShapeSkin::AdjustForMenuBar(int h_old, int h_new)
 {
   if (rect.top() >= 0)
     rect.setTop(rect.top() + h_new - h_old);
@@ -356,7 +356,7 @@ void Config::ShapeSkin::AdjustForMenuBar(unsigned short h_old, unsigned short h_
     rect.setBottom(rect.bottom() + h_new - h_old);
 }
 
-void Config::Border::AdjustForMenuBar(unsigned short h_old, unsigned short h_new)
+void Config::Border::AdjustForMenuBar(int h_old, int h_new)
 {
   top += (h_new - h_old);
 }

@@ -105,12 +105,12 @@ public:
   bool trayBlink() const { return myTrayBlink; }
   bool trayMsgOnlineNotify() const { return myTrayMsgOnlineNotify; }
 
-  unsigned short autoLogon() const { return myAutoLogon; }
-  unsigned short autoAwayTime() const { return myAutoAwayTime; }
-  unsigned short autoNaTime() const { return myAutoNaTime; }
-  unsigned short autoOfflineTime() const { return myAutoOfflineTime; }
-  unsigned short autoAwayMess() const { return myAutoAwayMess; }
-  unsigned short autoNaMess() const { return myAutoNaMess; }
+  int autoLogon() const { return myAutoLogon; }
+  int autoAwayTime() const { return myAutoAwayTime; }
+  int autoNaTime() const { return myAutoNaTime; }
+  int autoOfflineTime() const { return myAutoOfflineTime; }
+  int autoAwayMess() const { return myAutoAwayMess; }
+  int autoNaMess() const { return myAutoNaMess; }
 
 public slots:
   /**
@@ -152,12 +152,12 @@ public slots:
   void setTrayBlink(bool trayBlink);
   void setTrayMsgOnlineNotify(bool trayMsgOnlineNotify);
 
-  void setAutoLogon(unsigned short autoLogon);
-  void setAutoAwayTime(unsigned short autoAwayTime);
-  void setAutoNaTime(unsigned short autoNaTime);
-  void setAutoOfflineTime(unsigned short autoOfflineTime);
-  void setAutoAwayMess(unsigned short autoAwayMess);
-  void setAutoNaMess(unsigned short autoNaMess);
+  void setAutoLogon(int autoLogon);
+  void setAutoAwayTime(int autoAwayTime);
+  void setAutoNaTime(int autoNaTime);
+  void setAutoOfflineTime(int autoOfflineTime);
+  void setAutoAwayMess(int autoAwayMess);
+  void setAutoNaMess(int autoNaMess);
 
   // Toggle functions for convenience
   void toggleMiniMode();
@@ -225,7 +225,6 @@ private:
   bool myAutoRaiseMainwin;
   bool myMainwinStartHidden;
   bool myFrameTransparent;
-  unsigned short myFrameStyle;
   QRect myMainwinRect;
 
   // Dock configuration
@@ -238,12 +237,12 @@ private:
   bool myTrayMsgOnlineNotify;
 
   // Auto status configuration
-  unsigned short myAutoLogon;
-  unsigned short myAutoAwayTime;
-  unsigned short myAutoNaTime;
-  unsigned short myAutoOfflineTime;
-  unsigned short myAutoAwayMess;
-  unsigned short myAutoNaMess;
+  int myAutoLogon;
+  int myAutoAwayTime;
+  int myAutoNaTime;
+  int myAutoOfflineTime;
+  int myAutoAwayMess;
+  int myAutoNaMess;
 };
 
 } // namespace Config

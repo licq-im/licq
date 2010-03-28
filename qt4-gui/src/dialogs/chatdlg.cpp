@@ -951,7 +951,7 @@ void ChatDlg::chatClose(CChatUser* u)
   else
   {
     // Remove the user from the list box
-    for (unsigned short i = 0; i < lstUsers->count(); i++)
+    for (int i = 0; i < lstUsers->count(); i++)
     {
       if (lstUsers->item(i)->text() == u->Name())
       {
@@ -1021,7 +1021,7 @@ void ChatDlg::UpdateRemotePane()
   setWindowTitle(tr("Licq - Chat %1").arg(ChatClients()));
 
   ChatUserWindowsList::iterator iter;
-  unsigned int i;
+  int i;
   for (i = 0, iter = chatUserWindows.begin(); iter != chatUserWindows.end();
        i++, iter++)
   {

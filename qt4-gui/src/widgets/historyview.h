@@ -48,9 +48,9 @@ public:
   HistoryView(bool historyMode = false, const UserId& userId = USERID_NONE, QWidget* parent = 0);
   virtual ~HistoryView();
 
-  void setHistoryConfig(unsigned short msgStyle, const QString& dateFormat,
+  void setHistoryConfig(int msgStyle, const QString& dateFormat,
       bool extraSpacing, bool reverse);
-  void setChatConfig(unsigned short msgStyle, const QString& dateFormat,
+  void setChatConfig(int msgStyle, const QString& dateFormat,
       bool extraSpacing, bool appendLineBreak, bool showNotices);
   void setColors(const QString& back, const QString& rcv, const QString& snt,
       const QString& rcvHist = QString(), const QString& sntHist = QString(),
@@ -85,7 +85,7 @@ private:
   void internalAddMsg(QString s);
 
   UserId myUserId;
-  unsigned short myMsgStyle;
+  int myMsgStyle;
   QString myDateFormat;
   bool myExtraSpacing;
   bool myReverse;

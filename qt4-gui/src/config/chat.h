@@ -66,7 +66,7 @@ public:
 
   // Get functions
   bool autoClose() const { return myAutoClose; }
-  unsigned short autoPopup() const { return myAutoPopup; }
+  int autoPopup() const { return myAutoPopup; }
   bool autoFocus() const { return myAutoFocus; }
   bool manualNewUser() const { return myManualNewUser; }
   bool sendFromClipboard() const { return mySendFromClipboard; }
@@ -93,8 +93,8 @@ public:
   bool histVertSpacing() const { return myHistVertSpacing; }
   bool reverseHistory() const { return myReverseHistory; }
   bool noSoundInActiveChat() const { return myNoSoundInActiveChat; }
-  unsigned short chatMsgStyle() const { return myChatMsgStyle; }
-  unsigned short histMsgStyle() const { return myHistMsgStyle; }
+  int chatMsgStyle() const { return myChatMsgStyle; }
+  int histMsgStyle() const { return myHistMsgStyle; }
   const QString& chatDateFormat() const { return myChatDateFormat; }
   const QString& histDateFormat() const { return myHistDateFormat; }
   const QString& recvHistoryColor() const { return myRecvHistoryColor; }
@@ -121,7 +121,7 @@ public slots:
 
   // Set functions
   void setAutoClose(bool autoClose);
-  void setAutoPopup(unsigned short autoPopup);
+  void setAutoPopup(int autoPopup);
   void setAutoFocus(bool autoFocus);
   void setManualNewUser(bool manualNewUser);
   void setSendFromClipboard(bool sendFromClipboard);
@@ -148,8 +148,8 @@ public slots:
   void setHistVertSpacing(bool histVertSpacing);
   void setReverseHistory(bool reverseHistory);
   void setNoSoundInActiveChat(bool noSoundInActiveChat);
-  void setChatMsgStyle(unsigned short chatMsgStyle);
-  void setHistMsgStyle(unsigned short histMsgStyle);
+  void setChatMsgStyle(int chatMsgStyle);
+  void setHistMsgStyle(int histMsgStyle);
   void setChatDateFormat(const QString& chatDateFormat);
   void setHistDateFormat(const QString& histDateFormat);
   void setRecvHistoryColor(const QString& recvHistoryColor);
@@ -174,7 +174,7 @@ private:
   bool myColorsHaveChanged;
 
   bool myAutoFocus;
-  unsigned short myAutoPopup;
+  int myAutoPopup;
   bool myAutoClose;
   bool myManualNewUser;
   bool mySendFromClipboard;
@@ -203,8 +203,8 @@ private:
   bool myUseCustomUrlBrowser;
   bool myNoSoundInActiveChat;
 
-  unsigned short myChatMsgStyle;
-  unsigned short myHistMsgStyle;
+  int myChatMsgStyle;
+  int myHistMsgStyle;
 
   QString myChatDateFormat;
   QString myHistDateFormat;

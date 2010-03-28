@@ -171,7 +171,7 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
     }
 
     gUserManager.DropUser(u);
-    for (unsigned short i = 0; i < myMessageList->columnCount(); i++)
+    for (int i = 0; i < myMessageList->columnCount(); i++)
       myMessageList->resizeColumnToContents(i);
     myMessageList->setCurrentItem(e, 0);
     myMessageList->scrollToItem(e);
