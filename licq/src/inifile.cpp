@@ -261,8 +261,13 @@ bool IniFile::setSection(const string& section, bool allowAdd)
     if (pos == string::npos)
       mySectionEnd = myConfigData.size();
     else
-      // mySectionEnd points to first character of next section header
       mySectionEnd = pos + 1;
+
+    // Don't include empty lines between sections as part of this section
+    while (mySectionEnd > mySectionStart && myConfigData[mySectionEnd-2] == '\n')
+      --mySectionEnd;
+
+    // mySectionEnd points to first character of line after section end
 
     return true;
   }
