@@ -28,7 +28,6 @@
 #include <licq/oneventmanager.h>
 #include "licq_icq.h"
 #include "licq_user.h"
-#include "licq_oscarservice.h"
 #include "licq_constants.h"
 #include "licq_file.h"
 #include "licq_log.h"
@@ -38,6 +37,7 @@
 
 #include "gpghelper.h"
 #include "licq.h"
+#include "oscarservice.h"
 #include "plugins/pluginmanager.h"
 #include "support.h"
 

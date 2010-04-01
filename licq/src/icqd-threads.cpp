@@ -18,10 +18,10 @@
 #include "licq_log.h"
 #include "licq_mutex.h"
 #include "licq_packets.h"
-#include "licq_oscarservice.h"
 #include <licq_user.h>
 
 #include "licq.h"
+#include "oscarservice.h"
 
 // Localization
 #include "gettext.h"

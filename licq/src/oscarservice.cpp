@@ -6,7 +6,7 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#include "licq_oscarservice.h"
+#include "oscarservice.h"
 
 #include <boost/scoped_array.hpp>
 #include <cerrno>
