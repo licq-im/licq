@@ -281,18 +281,18 @@ void UserMenu::aboutToShowMenu()
   if (protocol.get() != NULL)
     sendFuncs = protocol->getSendFunctions();
 
-  mySendActions[SendMessage]->setVisible(sendFuncs & PP_SEND_MSG);
-  mySendActions[SendUrl]->setVisible(sendFuncs & PP_SEND_URL);
-  mySendActions[SendChat]->setVisible(sendFuncs & PP_SEND_CHAT);
-  mySendActions[SendFile]->setVisible(sendFuncs & PP_SEND_FILE);
-  mySendActions[SendContact]->setVisible(sendFuncs & PP_SEND_CONTACT);
-  mySendActions[SendAuthorize]->setVisible(sendFuncs & PP_SEND_AUTH);
-  mySendActions[SendReqAuthorize]->setVisible(sendFuncs & PP_SEND_AUTHxREQ);
-  mySendActions[SendSms]->setVisible(sendFuncs & PP_SEND_SMS);
-  mySendActions[SendKey]->setVisible(sendFuncs & PP_SEND_SECURE);
-  myMiscModesActions[ModeAutoFileAccept]->setVisible(sendFuncs & PP_SEND_FILE);
-  myMiscModesActions[ModeAutoChatAccept]->setVisible(sendFuncs & PP_SEND_CHAT);
-  myMiscModesActions[ModeAutoSecure]->setVisible(sendFuncs & PP_SEND_SECURE);
+  mySendActions[SendMessage]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendMsg);
+  mySendActions[SendUrl]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendUrl);
+  mySendActions[SendChat]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendChat);
+  mySendActions[SendFile]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendFile);
+  mySendActions[SendContact]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendContact);
+  mySendActions[SendAuthorize]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendAuth);
+  mySendActions[SendReqAuthorize]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendAuthReq);
+  mySendActions[SendSms]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendSms);
+  mySendActions[SendKey]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendSecure);
+  myMiscModesActions[ModeAutoFileAccept]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendFile);
+  myMiscModesActions[ModeAutoChatAccept]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendChat);
+  myMiscModesActions[ModeAutoSecure]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendSecure);
 
   // ICQ Protocol only
   mySendActions[RequestUpdateInfoPlugin]->setVisible(isIcq);

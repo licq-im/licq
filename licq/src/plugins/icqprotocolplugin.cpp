@@ -36,6 +36,7 @@
 #include "licq_protoplugin.h"
 
 using Licq::gPluginManager;
+using Licq::ProtocolPlugin;
 
 char* LProto_icq_Name()
 {
@@ -62,18 +63,12 @@ bool LProto_icq_Init()
 
 unsigned long LProto_icq_SendFuncs()
 {
-  return
-    PP_SEND_MSG |
-    PP_SEND_URL |
-    PP_SEND_FILE |
-    PP_SEND_CHAT |
-    PP_SEND_CONTACT |
-    PP_SEND_AUTH |
-    PP_SEND_AUTHxREQ |
-    PP_SEND_SMS |
-    PP_SEND_SECURE |
-    PP_SEND_DIRECT |
-    PP_SEND_STATUSxMSG;
+  return ProtocolPlugin::CanSendMsg | ProtocolPlugin::CanSendUrl |
+      ProtocolPlugin::CanSendFile | ProtocolPlugin::CanSendChat |
+      ProtocolPlugin::CanSendContact | ProtocolPlugin::CanSendAuth |
+      ProtocolPlugin::CanSendAuthReq | ProtocolPlugin::CanSendSms |
+      ProtocolPlugin::CanSendSecure | ProtocolPlugin::CanSendDirect |
+      ProtocolPlugin::CanHoldStatusMsg;
 }
 
 int LProto_icq_Main()

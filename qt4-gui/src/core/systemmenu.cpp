@@ -635,7 +635,7 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
     myPpid(ppid)
 {
   myId = gUserManager.OwnerId(ppid).c_str();
-  myUseAwayMessage = ((sendFunctions & PP_SEND_STATUSxMSG) != 0);
+  myUseAwayMessage = ((sendFunctions & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
 
   // System sub menu
   myOwnerAdmMenu = new QMenu(protoName);

@@ -270,9 +270,9 @@ void UserPages::Settings::load(const LicqUser* user)
   if (protocol.get() != NULL)
     sendFuncs = protocol->getSendFunctions();
 
-  myAutoAcceptFileCheck->setEnabled(sendFuncs & PP_SEND_FILE);
-  myAutoAcceptChatCheck->setEnabled(sendFuncs & PP_SEND_CHAT);
-  myAutoSecureCheck->setEnabled(gLicqDaemon->CryptoEnabled() && (sendFuncs & PP_SEND_SECURE));
+  myAutoAcceptFileCheck->setEnabled(sendFuncs & Licq::ProtocolPlugin::CanSendFile);
+  myAutoAcceptChatCheck->setEnabled(sendFuncs & Licq::ProtocolPlugin::CanSendChat);
+  myAutoSecureCheck->setEnabled(gLicqDaemon->CryptoEnabled() && (sendFuncs & Licq::ProtocolPlugin::CanSendSecure));
 
   myGroupsTable->clearContents();
   myGroupsTable->setRowCount(0);

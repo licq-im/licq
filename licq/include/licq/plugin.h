@@ -97,13 +97,32 @@ protected:
 class ProtocolPlugin : public virtual Plugin
 {
 public:
+  enum Capabilities
+  {
+    CanSendMsg          = 1<<0,
+    CanSendUrl          = 1<<1,
+    CanSendFile         = 1<<2,
+    CanSendChat         = 1<<3,
+    CanSendContact      = 1<<4,
+    CanSendAuth         = 1<<5,
+    CanSendAuthReq      = 1<<6,
+    CanSendSms          = 1<<7,
+    CanSendSecure       = 1<<8,
+    CanSendDirect       = 1<<9,
+    CanHoldStatusMsg     = 1<<10,
+  };
+
   /// A smart pointer to a ProtocolPlugin instance.
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
   /// Get the protocol's unique identifier.
   virtual unsigned long getProtocolId() const = 0;
 
-  /// Get a mask of supported send functions.
+  /**
+   * Get protocol plugin supported features
+   *
+   * @return A mask of bits from Capabilities enum
+   */
   virtual unsigned long getSendFunctions() const = 0;
 
 protected:

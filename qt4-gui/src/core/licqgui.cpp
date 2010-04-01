@@ -761,12 +761,12 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int con
     sendFuncs = protocol->getSendFunctions();
 
   // Check if the protocol for this contact support the function we want to open
-  if ((fcn == MessageEvent && !(sendFuncs & PP_SEND_MSG)) ||
-      (fcn == UrlEvent && !(sendFuncs & PP_SEND_URL)) ||
-      (fcn == ChatEvent && !(sendFuncs & PP_SEND_CHAT)) ||
-      (fcn == FileEvent && !(sendFuncs & PP_SEND_FILE )) ||
-      (fcn == ContactEvent && !(sendFuncs & PP_SEND_CONTACT)) ||
-      (fcn == SmsEvent && !(sendFuncs & PP_SEND_SMS)))
+  if ((fcn == MessageEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendMsg)) ||
+      (fcn == UrlEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendUrl)) ||
+      (fcn == ChatEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendChat)) ||
+      (fcn == FileEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendFile )) ||
+      (fcn == ContactEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendContact)) ||
+      (fcn == SmsEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendSms)))
     return NULL;
 
 
@@ -1147,7 +1147,8 @@ void LicqGui::showDefaultEventDialog(const UserId& userId)
     if (protocol.get() != NULL)
       sendFuncs = protocol->getSendFunctions();
 
-    if (sendFuncs & PP_SEND_URL && (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
+    if (sendFuncs & Licq::ProtocolPlugin::CanSendUrl &&
+        (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
     {
       UserEventCommon* ec = showEventDialog(UrlEvent, userId);
       if (!ec || ec->objectName() != "UserSendUrlEvent")
@@ -1159,7 +1160,8 @@ void LicqGui::showDefaultEventDialog(const UserId& userId)
       clip->clear(mode);
       return;
     }
-    else if (sendFuncs & PP_SEND_FILE && (c.left(5) == "file:" || c.left(1) == "/"))
+    else if (sendFuncs & Licq::ProtocolPlugin::CanSendFile &&
+        (c.left(5) == "file:" || c.left(1) == "/"))
     {
       UserEventCommon* ec = showEventDialog(FileEvent, userId);
       if (!ec || ec->objectName() != "UserSendFileEvent")

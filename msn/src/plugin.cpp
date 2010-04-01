@@ -45,7 +45,9 @@ const char *LProto_Description()
 
 unsigned long LProto_SendFuncs()
 {
-  return (PP_SEND_MSG | PP_SEND_AUTH | PP_SEND_AUTHxREQ);
+  return Licq::ProtocolPlugin::CanSendMsg |
+      Licq::ProtocolPlugin::CanSendAuth |
+      Licq::ProtocolPlugin::CanSendAuthReq;
 }
 
 unsigned long LProto_Capabilities()

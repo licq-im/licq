@@ -128,7 +128,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
   myToolBar->addSeparator();
 
   mySecure = myToolBar->addAction(tr("Secure Channel"), this, SLOT(switchSecurity()));
-  if (!(mySendFuncs & PP_SEND_SECURE))
+  if (!(mySendFuncs & Licq::ProtocolPlugin::CanSendSecure))
     mySecure->setEnabled(false);
 
   myTimeTimer = NULL;

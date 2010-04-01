@@ -52,6 +52,7 @@
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_translate.h>
+#include <licq/plugin.h>
 #include <licq/protocolmanager.h>
 
 #include "config/chat.h"
@@ -144,12 +145,12 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
     }
 
   // Populated menu for switching event type
-  ADD_SENDTYPE(PP_SEND_MSG, MessageEvent, tr("Message"));
-  ADD_SENDTYPE(PP_SEND_URL, UrlEvent, tr("URL"));
-  ADD_SENDTYPE(PP_SEND_CHAT, ChatEvent, tr("Chat Request"));
-  ADD_SENDTYPE(PP_SEND_FILE, FileEvent, tr("File Transfer"));
-  ADD_SENDTYPE(PP_SEND_CONTACT, ContactEvent, tr("Contact List"));
-  ADD_SENDTYPE(PP_SEND_SMS, SmsEvent, tr("SMS"));
+  ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendMsg, MessageEvent, tr("Message"));
+  ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendUrl, UrlEvent, tr("URL"));
+  ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendChat, ChatEvent, tr("Chat Request"));
+  ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendFile, FileEvent, tr("File Transfer"));
+  ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendContact, ContactEvent, tr("Contact List"));
+  ADD_SENDTYPE(Licq::ProtocolPlugin::CanSendSms, SmsEvent, tr("SMS"));
 
 #undef ADD_SENDTYPE
 
@@ -164,7 +165,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
   mySendServerCheck = myToolBar->addAction(tr("Send through server"));
   mySendServerCheck->setCheckable(true);
 
-  bool canSendDirect = (mySendFuncs & PP_SEND_DIRECT);
+  bool canSendDirect = (mySendFuncs & Licq::ProtocolPlugin::CanSendDirect);
 
   const LicqUser* u = gUserManager.fetchUser(myUsers.front());
 
@@ -731,27 +732,27 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
   switch (type)
   {
     case MessageEvent:
-      if (mySendFuncs & PP_SEND_MSG)
+      if (mySendFuncs & Licq::ProtocolPlugin::CanSendMsg)
         e = new UserSendMsgEvent(userId, parent);
       break;
     case UrlEvent:
-      if (mySendFuncs & PP_SEND_URL)
+      if (mySendFuncs & Licq::ProtocolPlugin::CanSendUrl)
         e = new UserSendUrlEvent(userId, parent);
       break;
     case ChatEvent:
-      if (mySendFuncs & PP_SEND_CHAT)
+      if (mySendFuncs & Licq::ProtocolPlugin::CanSendChat)
         e = new UserSendChatEvent(userId, parent);
       break;
     case FileEvent:
-      if (mySendFuncs & PP_SEND_FILE)
+      if (mySendFuncs & Licq::ProtocolPlugin::CanSendFile)
         e = new UserSendFileEvent(userId, parent);
       break;
     case ContactEvent:
-      if (mySendFuncs & PP_SEND_CONTACT)
+      if (mySendFuncs & Licq::ProtocolPlugin::CanSendContact)
         e = new UserSendContactEvent(userId, parent);
       break;
     case SmsEvent:
-      if (mySendFuncs & PP_SEND_SMS)
+      if (mySendFuncs & Licq::ProtocolPlugin::CanSendSms)
         e = new UserSendSmsEvent(userId, parent);
       break;
     default:

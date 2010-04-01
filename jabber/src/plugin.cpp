@@ -51,7 +51,8 @@ bool LProto_Init()
 
 unsigned long LProto_SendFuncs()
 {
-  return PP_SEND_MSG | PP_SEND_STATUSxMSG;
+  return Licq::ProtocolPlugin::CanSendMsg |
+      Licq::ProtocolPlugin::CanHoldStatusMsg;
 }
 
 int LProto_Main()

@@ -619,20 +619,4 @@ const char XtraAwayCaps[XTRA_AWAY_COUNT][0x10] =
   { 0xDD, 0xCF, 0x0E, 0xA9, 0x71, 0x95, 0x40, 0x48, 0xA9, 0xC6, 0x41, 0x32, 0x06, 0xD6, 0xF2, 0x80 }
 };
 
-
-// For protocol plugins
-
-// Sending capabilities
-const unsigned long PP_SEND_MSG         = 0x00000001;
-const unsigned long PP_SEND_URL         = 0x00000002;
-const unsigned long PP_SEND_FILE        = 0x00000004;
-const unsigned long PP_SEND_CHAT        = 0x00000008;
-const unsigned long PP_SEND_CONTACT     = 0x00000010;
-const unsigned long PP_SEND_AUTH        = 0x00000020;
-const unsigned long PP_SEND_AUTHxREQ    = 0x00000040;
-const unsigned long PP_SEND_SMS         = 0x00000080;
-const unsigned long PP_SEND_SECURE      = 0x00000100;
-const unsigned long PP_SEND_DIRECT      = 0x00000200;
-const unsigned long PP_SEND_STATUSxMSG  = 0x00000400;
-
 #endif
