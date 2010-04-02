@@ -111,39 +111,6 @@ typedef std::vector<CDaemonStats> DaemonStatsList;
 // We will save the statistics to disk
 #define SAVE_STATS
 
-//====Conversations=============================================================
-class CConversation
-{
-public:
-  bool hasUser(const Licq::UserId& userId);
-  bool IsEmpty() const                  { return m_vUsers.size() == 0; }
-  int NumUsers() const                  { return m_vUsers.size(); }
-
-  int Socket() const                    { return m_nSocket; }
-  unsigned long CID() const             { return m_nCID; }
-
-  const Licq::UserId& getUser(int n) const    { return m_vUsers[n]; }
-
-private:
-  CConversation(int nSocket, unsigned long nPPID);
-  ~CConversation();
-
-  bool addUser(const Licq::UserId& userId);
-  bool removeUser(const Licq::UserId& userId);
-
-  int m_nSocket;
-  unsigned long m_nPPID;
-  unsigned long m_nCID;
-  std::vector<Licq::UserId> m_vUsers;
-
-  static unsigned long s_nCID;
-  static pthread_mutex_t s_xMutex;
-
-friend class CICQDaemon;
-};
-
-typedef std::list<CConversation *> ConversationList;
-
 /**
  * Internal template class for storing and processing received contact list.
  */
@@ -392,16 +359,6 @@ public:
   time_t Uptime() const                         { return time(NULL) - m_nStartTime; }
   void ResetStats();
 
-  // Conversation functions
-  CConversation *AddConversation(int nSocket, unsigned long nPPID);
-  bool addUserConversation(unsigned long nCID, const Licq::UserId& userId);
-  bool addUserConversation(int nSocket, const Licq::UserId& userId);
-  bool removeUserConversation(unsigned long nCID, const Licq::UserId& userId);
-  bool removeUserConversation(int nSocket, const Licq::UserId& userId);
-  CConversation *FindConversation(int nSocket);
-  CConversation *FindConversation(unsigned long nCID);
-  bool RemoveConversation(unsigned long nCID);
-
   // Common message handler
   void ProcessMessage(Licq::User* user, CBuffer& packet, char* message,
      unsigned short nMsgType, unsigned long nMask,
@@ -546,9 +503,6 @@ protected:
   static pthread_cond_t  cond_reverseconnect_done;
 
   ContactUserList receivedUserList;
-
-  ConversationList m_lConversations;
-  pthread_mutex_t mutex_conversations;
 
   std::list <ICQEvent *> m_lxRunningEvents;
   mutable pthread_mutex_t mutex_runningevents;
