@@ -1,4 +1,5 @@
 set(tested_SRCS
+  conversation.cpp
   inifile.cpp
 
   logging/log.cpp
@@ -69,6 +70,7 @@ set(licq_SRCS
 )
 
 set(test_SRCS
+  tests/conversationtest.cpp
   tests/inifiletest.cpp
 
   logging/tests/logdistributortest.cpp
