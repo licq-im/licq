@@ -52,6 +52,7 @@
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_translate.h>
+#include <licq/conversation.h>
 #include <licq/plugin.h>
 #include <licq/protocolmanager.h>
 
@@ -91,6 +92,7 @@
 using namespace std;
 using Licq::StringList;
 using Licq::gProtocolManager;
+using Licq::gConvoManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendCommon */
 
@@ -354,7 +356,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
 
       // If the user closed the chat window, we have to make sure we aren't
       // using the old nConvoId
-      if (gLicqDaemon->FindConversation(myConvoId) == 0)
+      if (gConvoManager.get(myConvoId) == NULL)
         myConvoId = 0;
 
       // Fetch the user again since we dropped it above
@@ -377,9 +379,9 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
 
       if (u->SocketDesc(ICQ_CHNxNONE) != 1)
       {
-        CConversation* pConv = gLicqDaemon->FindConversation(u->SocketDesc(ICQ_CHNxNONE));
-        if (pConv != 0)
-          myConvoId = pConv->CID();
+        Licq::Conversation* convo = gConvoManager.getFromSocket(u->SocketDesc(ICQ_CHNxNONE));
+        if (convo != NULL)
+          myConvoId = convo->id();
       }
     }
 

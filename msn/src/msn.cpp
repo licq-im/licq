@@ -29,11 +29,13 @@
 
 #include "licq_log.h"
 #include "licq_message.h"
+#include <licq/conversation.h>
 
 #include "msn.h"
 #include "msnpacket.h"
 
 using namespace std;
+using Licq::gConvoManager;
 
 #ifndef HAVE_STRNDUP
 
@@ -362,8 +364,8 @@ string CMSN::Decode(const string &strIn)
 
 unsigned long CMSN::SocketToCID(int _nSocket)
 {
-  CConversation *pConv = gLicqDaemon->FindConversation(_nSocket);
-  return pConv ? pConv->CID() : 0;
+  Licq::Conversation* convo = gConvoManager.getFromSocket(_nSocket);
+  return (convo != NULL ? convo->id() : 0);
 }
 
 string CMSN::Encode(const string &strIn)
@@ -683,9 +685,9 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
       // Close the socket
       gSocketMan.CloseSocket(pData->getSocket());
 
-      CConversation *pConv = gLicqDaemon->FindConversation(pData->getSocket());
-      if (pConv)
-        gLicqDaemon->RemoveConversation(pConv->CID());
+      Licq::Conversation* convo = gConvoManager.getFromSocket(pData->getSocket());
+      if (convo != NULL)
+        gConvoManager.remove(convo->id());
 
       m_lMSNEvents.erase(it);
       delete pData;
