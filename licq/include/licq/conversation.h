@@ -94,23 +94,6 @@ public:
    */
   virtual bool removeUser(const UserId& userId) = 0;
 
-
-  // Temporary to keep old CConversation working
-  bool IsEmpty() const
-  { return isEmpty(); }
-  int NumUsers() const
-  { return numUsers(); }
-  int Socket() const
-  { return socketId(); }
-  unsigned long CID() const
-  { return id(); }
-  const Licq::UserId& getUser(int n) const
-  {
-    ConversationUsers users;
-    getUsers(users);
-    return users[n];
-  }
-
 protected:
   virtual ~Conversation() { /* Empty */ }
 };
