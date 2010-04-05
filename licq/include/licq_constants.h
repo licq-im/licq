@@ -3,7 +3,6 @@
 #define CONSTANTS_H
 
 // Directory constants
-const char DEFAULT_HOME_DIR[]                      = ".licq";
 const char USER_DIR[]                              = "users";
 const char HISTORY_DIR[]                           = "history";
 const char HISTORY_EXT[]                           = "history";
