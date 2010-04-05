@@ -21,6 +21,7 @@
 #define LICQ_PLUGINLOGSINK_H
 
 #include "logsink.h"
+#include "macro.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -49,9 +50,7 @@ public:
   void log(Message::Ptr message);
 
 private:
-  class Private;
-  Private* const myPrivate;
-  friend class Private;
+  LICQ_DECLARE_PRIVATE();
 };
 
 } // namespace Licq

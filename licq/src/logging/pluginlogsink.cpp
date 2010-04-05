@@ -46,74 +46,74 @@ public:
 };
 
 PluginLogSink::PluginLogSink() :
-  myPrivate(new Private())
+  d(new Private())
 {
   // Empty
 }
 
 PluginLogSink::~PluginLogSink()
 {
-  delete myPrivate;
+  delete d;
 }
 
 int PluginLogSink::getReadPipe()
 {
-  return myPrivate->myPipe.getReadFd();
+  return d->myPipe.getReadFd();
 }
 
 LogSink::Message::Ptr PluginLogSink::popMessage(bool readPipe)
 {
-  MutexLocker locker(myPrivate->myMutex);
-  if (myPrivate->myMessages.empty())
+  MutexLocker locker(d->myMutex);
+  if (d->myMessages.empty())
     return Message::Ptr();
 
   if (readPipe)
-    myPrivate->myPipe.getChar();
+    d->myPipe.getChar();
 
-  Message::Ptr message = myPrivate->myMessages.front();
-  myPrivate->myMessages.pop_front();
+  Message::Ptr message = d->myMessages.front();
+  d->myMessages.pop_front();
   return message;
 }
 
 void PluginLogSink::setLogLevel(Log::Level level, bool enable)
 {
-  MutexLocker locker(myPrivate->myMutex);
+  MutexLocker locker(d->myMutex);
   if (enable)
-    myPrivate->myLogLevels |= (1 << level);
+    d->myLogLevels |= (1 << level);
   else
-    myPrivate->myLogLevels &= ~(1 << level);
+    d->myLogLevels &= ~(1 << level);
 }
 
 void PluginLogSink::setLogPackets(bool enable)
 {
-  MutexLocker locker(myPrivate->myMutex);
-  myPrivate->myLogPackets = enable;
+  MutexLocker locker(d->myMutex);
+  d->myLogPackets = enable;
 }
 
 void PluginLogSink::setAllLogLevels(bool enable)
 {
-  MutexLocker locker(myPrivate->myMutex);
+  MutexLocker locker(d->myMutex);
   if (enable)
-    myPrivate->myLogLevels = 0x3f;
+    d->myLogLevels = 0x3f;
   else
-    myPrivate->myLogLevels = 0;
+    d->myLogLevels = 0;
 }
 
 bool PluginLogSink::isLogging(Log::Level level)
 {
-  MutexLocker locker(myPrivate->myMutex);
-  return myPrivate->myLogLevels & (1 << level);
+  MutexLocker locker(d->myMutex);
+  return d->myLogLevels & (1 << level);
 }
 
 bool PluginLogSink::isLoggingPackets()
 {
-  MutexLocker locker(myPrivate->myMutex);
-  return myPrivate->myLogPackets;
+  MutexLocker locker(d->myMutex);
+  return d->myLogPackets;
 }
 
 void PluginLogSink::log(Message::Ptr message)
 {
-  MutexLocker locker(myPrivate->myMutex);
-  myPrivate->myMessages.push_back(message);
-  myPrivate->myPipe.putChar('M');
+  MutexLocker locker(d->myMutex);
+  d->myMessages.push_back(message);
+  d->myPipe.putChar('M');
 }

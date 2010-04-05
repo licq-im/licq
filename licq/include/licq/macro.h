@@ -26,4 +26,9 @@
 #define LICQ_FORMAT(x, y)
 #endif
 
+#define LICQ_DECLARE_PRIVATE() \
+  class Private; \
+  Private* const d; \
+  friend class Private
+
 #endif
