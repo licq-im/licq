@@ -239,6 +239,7 @@ private:
   std::string::size_type mySectionStart;
   std::string::size_type mySectionEnd;
   std::string myFilename;
+  bool myIsModified;
 };
 
 } // namespace Licq

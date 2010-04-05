@@ -38,7 +38,8 @@ using Licq::IniFile;
 IniFile::IniFile(const string& filename)
   : myConfigData("\n"),
     mySectionStart(string::npos),
-    mySectionEnd(string::npos)
+    mySectionEnd(string::npos),
+    myIsModified(true)
 {
   if (!filename.empty())
     setFilename(filename);
@@ -55,6 +56,9 @@ void IniFile::setFilename(const std::string& filename)
     myFilename = BASE_DIR + filename;
   else
     myFilename = filename;
+
+  // If filename has changed we most likely want to allow write
+  myIsModified = true;
 }
 
 bool IniFile::loadFile()
@@ -158,12 +162,19 @@ void IniFile::loadRawConfiguration(const string& rawConfig)
   }
 
   // TODO: Validate the config data so we can reject broken config files
+
+  // We currently have no changes to write
+  myIsModified = false;
 }
 
 bool IniFile::writeFile(bool allowCreate)
 {
   if (myFilename.empty())
     return false;
+
+  // If data hasn't been modified there is no point in generating disk I/O
+  if (!myIsModified)
+    return true;
 
   // First get stats for old file
   struct stat st;
@@ -218,6 +229,8 @@ bool IniFile::writeFile(bool allowCreate)
     return false;
   }
 
+  // Changes are written, mark data as unchanged
+  myIsModified = false;
   return true;
 }
 
@@ -287,6 +300,10 @@ bool IniFile::setSection(const string& section, bool allowAdd)
   myConfigData.append("[" + section + "]\n");
   mySectionStart = myConfigData.size();
   mySectionEnd = myConfigData.size();
+
+  // We've added a section, mark data as changed
+  myIsModified = true;
+
   return true;
 }
 
@@ -471,6 +488,11 @@ bool IniFile::set(const string& key, const string& data)
     string::size_type start = pos + key.size() + 2;
     pos = myConfigData.find('\n', start);
     string::size_type len = (pos == string::npos ? string::npos : pos - start);
+
+    if (safeData == myConfigData.substr(start, len))
+      // New data is same as old, no point in continuing
+      return true;
+
     myConfigData.replace(start, len, safeData);
     mySectionEnd += safeData.size() - len;
   }
@@ -480,6 +502,10 @@ bool IniFile::set(const string& key, const string& data)
     myConfigData.insert(mySectionEnd, key + '=' + safeData + '\n');
     mySectionEnd += key.size() + safeData.size() + 2;
   }
+
+  // Data has changed
+  myIsModified = true;
+
   return true;
 }
 
