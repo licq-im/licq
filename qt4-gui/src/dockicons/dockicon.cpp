@@ -88,7 +88,7 @@ void DockIcon::updateIconStatus()
       myPpid = pOwner->PPID();
       myFullStatus = pOwner->StatusFull();
       myStatus = pOwner->Status();
-      myInvisible = pOwner->StatusInvisible();
+      myInvisible = pOwner->isInvisible();
     }
   }
   FOR_EACH_OWNER_END

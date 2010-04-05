@@ -123,7 +123,7 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
     if (!owner.isLocked())
       return 0;
 
-    isOffline = owner->StatusOffline();
+    isOffline = !owner->isOnline();
     if (message != KeepAutoResponse)
       owner->SetAutoResponse(message.c_str());
   }

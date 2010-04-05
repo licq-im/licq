@@ -60,7 +60,7 @@ QString LicqStrings::getStatus(const LicqUser* user, bool useInvisible)
   if (user == NULL)
     return QString();
 
-  return getStatus(user->Status(), useInvisible && user->StatusInvisible());
+  return getStatus(user->Status(), useInvisible && user->isInvisible());
 }
 
 QString LicqStrings::getShortStatus(unsigned short status, bool invisible)
@@ -97,7 +97,7 @@ QString LicqStrings::getShortStatus(const LicqUser* user, bool useInvisible)
   if (user == NULL)
     return QString();
 
-  return getShortStatus(user->Status(), useInvisible && user->StatusInvisible());
+  return getShortStatus(user->Status(), useInvisible && user->isInvisible());
 }
 
 QString LicqStrings::getSystemGroupName(unsigned long group)

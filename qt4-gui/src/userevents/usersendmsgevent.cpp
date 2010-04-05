@@ -133,7 +133,7 @@ void UserSendMsgEvent::send()
   bool userOffline = true;
   if (u != NULL)
   {
-    userOffline = u->StatusOffline();
+    userOffline = !u->isOnline();
     gUserManager.DropUser(u);
   }
 

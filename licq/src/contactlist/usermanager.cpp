@@ -644,7 +644,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
   Owner* icqOwner = FetchOwner(LICQ_PPID, LOCK_R);
   if (icqOwner != NULL)
   {
-    icqOnline = !icqOwner->StatusOffline();
+    icqOnline = icqOwner->isOnline();
     DropOwner(icqOwner);
   }
 

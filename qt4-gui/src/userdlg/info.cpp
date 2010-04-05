@@ -1315,7 +1315,7 @@ QWidget* UserPages::Info::createPageCounters(QWidget* parent)
 
 void UserPages::Info::loadPageCounters(const LicqUser* u)
 {
-  if (!u->StatusOffline())
+  if (u->isOnline())
     nfoLastOnline->setText(tr("Now"));
   else
     nfoLastOnline->setDateTime(u->LastOnline());
@@ -1325,10 +1325,10 @@ void UserPages::Info::loadPageCounters(const LicqUser* u)
   nfoLastCheckedAR->setDateTime(u->LastCheckedAutoResponse());
   nfoRegDate->setDateTime(u->RegisteredTime());
 
-  if (u->StatusOffline())
-    nfoOnlineSince->setText(tr("Offline"));
-  else
+  if (u->isOnline())
     nfoOnlineSince->setDateTime(u->OnlineSince());
+  else
+    nfoOnlineSince->setText(tr("Offline"));
 }
 
 #ifdef USE_KABC

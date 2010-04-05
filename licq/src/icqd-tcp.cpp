@@ -73,7 +73,7 @@ void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, con
   u = gUserManager.fetchUser(userId);
   if (u)
   {
-    bUserOffline = u->StatusOffline();
+    bUserOffline = !u->isOnline();
     bool useGpg = u->UseGPG();
     gUserManager.DropUser(u);
     if (useGpg && !bUserOffline)
@@ -1613,12 +1613,12 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     }
     //fprintf(stderr, "%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
     /*if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
-        !((ns & ICQ_STATUS_FxPRIVATE) && u->StatusOffline()))*/
+        !((ns & ICQ_STATUS_FxPRIVATE) && !u->isOnline()))*/
     if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
         !(ns == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
-        ns != (u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
+        ns != (u->Status() | (u->isInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
     {
-      bool r = u->OfflineOnDisconnect() || u->StatusOffline();
+      bool r = u->OfflineOnDisconnect() || !u->isOnline();
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
       gLog.Info(tr("%s%s (%s) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
          u->IdString(), u->StatusStr());

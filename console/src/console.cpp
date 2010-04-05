@@ -1879,7 +1879,7 @@ static bool SendDirect(const UserId& userId, char c)
   if (u != NULL)
   {
     if (u->SocketDesc(ICQ_CHNxNONE) == -1 &&
-        (u->Ip() == 0 || u->Port() == 0 || u->StatusOffline()))
+        (u->Ip() == 0 || u->Port() == 0 || !u->isOnline()))
       bDirect = false;
     else if (u->SendServer() && c != 'd' && c != 'u')
       bDirect = false;

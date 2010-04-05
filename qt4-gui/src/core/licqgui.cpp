@@ -617,7 +617,7 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
 
   if (status == ICQ_STATUS_FxPRIVATE)
   {
-    if (o->StatusOffline())
+    if (!o->isOnline())
     {
       gUserManager.DropOwner(o);
       return;
@@ -632,7 +632,7 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
   }
   else if(status != ICQ_STATUS_OFFLINE)
   {
-    if (o->StatusInvisible() || invisible)
+    if (o->isInvisible() || invisible)
       status |= ICQ_STATUS_FxPRIVATE;
   }
 

@@ -477,7 +477,7 @@ void ProcessSignal(LicqSignal* s)
 			want_osd=false;
 		    else if ((status&ICQ_STATUS_FREEFORCHAT) && (!(config.ShowInModes&ICQ_STATUS_FREEFORCHAT)))
 			want_osd=false;
-		    else if ((o->StatusInvisible()) && (!(config.ShowInModes&OSD_STATUS_INVISIBLE))) // is reached when a user gets invisible
+          else if ((o->isInvisible()) && (!(config.ShowInModes&OSD_STATUS_INVISIBLE))) // is reached when a user gets invisible
 			want_osd=false;
 
 		    if (!want_osd) {
@@ -493,7 +493,7 @@ void ProcessSignal(LicqSignal* s)
 			    want_osd_msgs_only=true;
 			else if ((status&ICQ_STATUS_FREEFORCHAT) && (config.ShowMsgsInModes&ICQ_STATUS_FREEFORCHAT))
 			    want_osd_msgs_only=true;
-			else if ((o->StatusInvisible()) && (config.ShowMsgsInModes&OSD_STATUS_INVISIBLE)) // is reached when a user gets invisible
+            else if ((o->isInvisible()) && (config.ShowMsgsInModes&OSD_STATUS_INVISIBLE)) // is reached when a user gets invisible
 			    want_osd_msgs_only=true;
 
 			if (want_osd_msgs_only) {
@@ -516,7 +516,7 @@ void ProcessSignal(LicqSignal* s)
 		    notify=u->OnlineNotify();
 		    ignore=u->InvisibleList() || u->IgnoreList();
 		    status=u->Status();
-		    invisible=u->StatusInvisible();
+          invisible = u->isInvisible();
 			userencoding=u->UserEncoding(); // needed in translate function
             secure=u->Secure();
 

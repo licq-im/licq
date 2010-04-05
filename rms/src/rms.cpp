@@ -860,7 +860,7 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
   else
   {
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
-    bool b = o->StatusOffline();
+    bool b = !o->isOnline();
     gUserManager.DropOwner(o);
     unsigned long tag = gProtocolManager.setStatus(ownerId, nStatus);
     if (b)
@@ -1067,7 +1067,7 @@ int CRMSClient::Process_LIST()
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->GetInGroup(nGroup == 0 ? GROUPS_SYSTEM : GROUPS_USER, nGroup) &&
-        ((pUser->StatusOffline() && n&2) || (!pUser->StatusOffline() && n&1)))
+        ((!pUser->isOnline() && n&2) || (pUser->isOnline() && n&1)))
     {
       ubuf = pUser->usprintf(format);
       fprintf(fs, "%d %s\n", CODE_LISTxUSER, ubuf);

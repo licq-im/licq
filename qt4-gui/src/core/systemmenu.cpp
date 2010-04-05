@@ -749,7 +749,7 @@ void OwnerData::aboutToShowStatusMenu()
   }
 
   if (myStatusInvisibleAction != NULL && status != ICQ_STATUS_OFFLINE)
-    myStatusInvisibleAction->setChecked(o->StatusInvisible());
+    myStatusInvisibleAction->setChecked(o->isInvisible());
 
   gUserManager.DropOwner(o);
 }

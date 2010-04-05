@@ -1019,8 +1019,8 @@ void *UpdateUsers_tep(void *p)
           bSent = true;
           bBART = true;
         }
-        
-        if (!pUser->StatusOffline() && !pUser->UserUpdated() &&
+
+        if (pUser->isOnline() && !pUser->UserUpdated() &&
             //Don't bother clients that we know don't support plugins
             pUser->Version() >= 7 &&
             //Old versions of Licq

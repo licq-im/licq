@@ -711,12 +711,14 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
     
   if (s == ICQ_STATUS_OFFLINE)
   {
-    if (!u->StatusOffline()) arg = -1;
+    if (u->isOnline())
+      arg = -1;
     u->SetStatusOffline();
   }
   else
   {
-    if (u->StatusOffline()) arg = 1;
+    if (!u->isOnline())
+      arg = 1;
     u->SetStatus(s);
     
     //This is the v6 way of telling us phone follow me status

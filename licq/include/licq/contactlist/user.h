@@ -479,14 +479,28 @@ public:
   // Dynamic info fields for protocol plugins
   bool SetPPField(const std::string &, const std::string &);
 
-  // Status
+
+  /**
+   * Convenience function to check if if user is online
+   *
+   * @return True if user is online
+   */
+  bool isOnline() const
+  { return (unsigned short)m_nStatus != ICQ_STATUS_OFFLINE; }
+
+  /**
+   * Convenience function to check if user is invisible
+   *
+   * @return True if user is online and invisible
+   */
+  bool isInvisible() const
+  { return isOnline() ? m_nStatus & ICQ_STATUS_FxPRIVATE : false; }
+
   unsigned short Status() const;
   unsigned long StatusFull() const              { return m_nStatus; }
-  bool StatusInvisible() const                  { return StatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE; }
   bool StatusWebPresence() const                { return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE; }
   bool StatusHideIp() const                     { return m_nStatus & ICQ_STATUS_FxHIDExIP; }
   bool StatusBirthday() const                   { return m_nStatus & ICQ_STATUS_FxBIRTHDAY; }
-  bool StatusOffline() const                    { return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE; }
   unsigned long PhoneFollowMeStatus() const     { return m_nPhoneFollowMeStatus; }
   unsigned long ICQphoneStatus() const          { return m_nICQphoneStatus; }
   unsigned long SharedFilesStatus() const       { return m_nSharedFilesStatus; }

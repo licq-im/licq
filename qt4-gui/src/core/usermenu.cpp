@@ -260,8 +260,8 @@ void UserMenu::aboutToShowMenu()
 
   myCustomArAction->setChecked(u->CustomAutoResponse()[0] != '\0');
 
-  mySendActions[SendChat]->setEnabled(!u->StatusOffline());
-  mySendActions[SendFile]->setEnabled(!u->StatusOffline());
+  mySendActions[SendChat]->setEnabled(u->isOnline());
+  mySendActions[SendFile]->setEnabled(u->isOnline());
   mySendActions[SendSms]->setEnabled(!u->getCellularNumber().empty());
   if (u->Secure())
   {

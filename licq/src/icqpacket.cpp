@@ -4543,7 +4543,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
         case ICQ_STATUS_FREEFORCHAT:
         default: m_nMsgType |= ICQ_TCPxMSG_FxONLINE; break;
       }
-      if (o->StatusInvisible())
+      if (o->isInvisible())
         m_nMsgType |= ICQ_TCPxMSG_FxINVISIBLE;
       break;
     }

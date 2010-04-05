@@ -624,7 +624,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
       gSocketMan.CloseSocket(pUser->SocketDesc(ICQ_CHNxNONE), false, true);
       pUser->ClearSocketDesc();
     }
-    if (!pUser->StatusOffline())
+    if (pUser->isOnline())
       gLicqDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_PROTO_USER_END

@@ -851,7 +851,7 @@ const char* User::UserEncoding() const
 unsigned short User::Status() const
 // guarantees to return a unique status that switch can be run on
 {
-   if (StatusOffline()) return ICQ_STATUS_OFFLINE;
+   if (!isOnline()) return ICQ_STATUS_OFFLINE;
    else if (m_nStatus & ICQ_STATUS_DND) return ICQ_STATUS_DND;
    else if (m_nStatus & ICQ_STATUS_OCCUPIED) return ICQ_STATUS_OCCUPIED;
    else if (m_nStatus & ICQ_STATUS_NA) return ICQ_STATUS_NA;
@@ -863,7 +863,7 @@ unsigned short User::Status() const
 
 void User::SetStatusOffline()
 {
-  if (!StatusOffline())
+  if (isOnline())
   {
     m_nLastCounters[LAST_ONLINE] = time(NULL);
     SaveLicqInfo();
@@ -1133,12 +1133,12 @@ unsigned short User::LicqVersion() const
 
 const char* User::StatusStr() const
 {
-  return StatusToStatusStr(m_nStatus, StatusInvisible());
+  return StatusToStatusStr(m_nStatus, isInvisible());
 }
 
 const char* User::StatusStrShort() const
 {
-  return StatusToStatusStrShort(m_nStatus, StatusInvisible());
+  return StatusToStatusStrShort(m_nStatus, isInvisible());
 }
 
 const char* User::StatusToStatusStr(unsigned short n, bool b)

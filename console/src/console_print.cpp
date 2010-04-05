@@ -292,7 +292,7 @@ void CLicqConsole::CreateUserList()
         (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
       FOR_EACH_USER_CONTINUE
 
-    if (!m_bShowOffline && pUser->StatusOffline() )
+    if (!m_bShowOffline && !pUser->isOnline())
     {
       FOR_EACH_USER_CONTINUE;
     }
@@ -300,11 +300,11 @@ void CLicqConsole::CreateUserList()
     s = new SUser;
     sprintf(s->szKey, "%05u%010lu", pUser->Status(), pUser->Touched() ^ 0xFFFFFFFF);
     s->userId = pUser->id();
-    s->bOffline = pUser->StatusOffline();
+    s->bOffline = !pUser->isOnline();
 
     unsigned short nStatus = pUser->Status();
 
-    if(pUser->StatusInvisible())
+    if (pUser->isInvisible())
     {
       szTmp = pUser->usprintf(m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
@@ -625,7 +625,7 @@ void CLicqConsole::PrintInfo_General(const UserId& userId)
                    u->GetTimezone() % 2 ? "30" : "00");
   winMain->wprintf("%C%ALast Seen: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
     ctime(&nLast));
-  if (!u->StatusOffline())
+  if (u->isOnline())
   {
     winMain->wprintf("%C%AOnline Since: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
       (nOnSince ? ctime(&nOnSince) : "Unknown"));

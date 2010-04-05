@@ -599,9 +599,9 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned long s = o->AddStatusFlags(newStatus);
   unsigned long pfm = o->PhoneFollowMeStatus();
-  bool Invisible = o->StatusInvisible();
+  bool Invisible = o->isInvisible();
   bool goInvisible = (newStatus & ICQ_STATUS_FxPRIVATE);
-  bool isLogon = o->StatusOffline();
+  bool isLogon = !o->isOnline();
   int nPDINFO = o->GetPDINFO();
   gUserManager.DropOwner(o);
 
@@ -927,7 +927,7 @@ void CICQDaemon::icqUpdatePhoneBookTimestamp()
 {
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   o->SetClientInfoTimestamp(time(NULL));
-  bool bOffline = o->StatusOffline();
+  bool bOffline = !o->isOnline();
   gUserManager.DropOwner(o);
 
   if (!bOffline)
@@ -939,7 +939,7 @@ void CICQDaemon::icqUpdatePictureTimestamp()
 {
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   o->SetClientInfoTimestamp(time(NULL));
-  bool bOffline = o->StatusOffline();
+  bool bOffline = !o->isOnline();
   gUserManager.DropOwner(o);
 
   if (!bOffline)
@@ -952,7 +952,7 @@ void CICQDaemon::icqSetPhoneFollowMeStatus(unsigned long nNewStatus)
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   o->SetClientStatusTimestamp(time(NULL));
   o->SetPhoneFollowMeStatus(nNewStatus);
-  bool bOffline = o->StatusOffline();
+  bool bOffline = !o->isOnline();
   gUserManager.DropOwner(o);
 
   if (!bOffline)
@@ -981,7 +981,8 @@ void CICQDaemon::icqUpdateContactList()
       n = 0;
     }
     // Reset all users to offline
-    if (!pUser->StatusOffline()) ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+    if (pUser->isOnline())
+      ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_PROTO_USER_END
   if (n != 0)
@@ -1291,7 +1292,7 @@ LicqEvent* CICQDaemon::icqSendThroughServer(unsigned long eventId, const char *s
   {
     LicqUserReadGuard u(userId);
     if (u.isLocked())
-      bOffline = u->StatusOffline();
+      bOffline = !u->isOnline();
   }
 
   CPU_ThroughServer* p = new CPU_ThroughServer(szId, format, message, nCharset, bOffline, nMsgLen);
@@ -1625,7 +1626,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   // online field
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
-    if (!pUser->StatusOffline())
+    if (pUser->isOnline())
       ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_PROTO_USER_END
@@ -2042,7 +2043,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       m_nDesiredStatus |= ICQ_STATUS_FxPFMxAVAILABLE;
     ChangeUserStatus(o, m_nDesiredStatus);
     o->SetOnlineSince(nOnlineSince);
-    gLog.Info(tr("%sServer says we're now: %s\n"), L_SRVxSTR, ICQUser::StatusToStatusStr(o->Status(), o->StatusInvisible()));
+    gLog.Info(tr("%sServer says we're now: %s\n"), L_SRVxSTR, ICQUser::StatusToStatusStr(o->Status(), o->isInvisible()));
 
     gUserManager.DropOwner(o);
 
@@ -2212,7 +2213,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         nUserIP = LE_32(nUserIP);
       }
     }
-    if( u->StatusOffline() || nUserIP )
+    if (!u->isOnline() || nUserIP )
       u->SetIp(nUserIP);
 
     if (packet.getTLVLen(0x0002) == 4)
@@ -2959,9 +2960,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       // Special status to us?
       if (!bIsAck && !bNewUser && nStatus != ICQ_STATUS_OFFLINE &&
           !(nStatus == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
-          nStatus != (u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
+          nStatus != (u->Status() | (u->isInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
       {
-        bool r = u->OfflineOnDisconnect() || u->StatusOffline();
+        bool r = u->OfflineOnDisconnect() || !u->isOnline();
         ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | nStatus);
         gLog.Info(tr("%s%s (%s) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
           u->IdString(), u->StatusStr());

@@ -78,7 +78,7 @@ void Handler::onDisconnect()
 
   FOR_EACH_PROTO_USER_START(JABBER_PPID, LOCK_W)
   {
-    if (!pUser->StatusOffline())
+    if (pUser->isOnline())
       gLicqDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_PROTO_USER_END;

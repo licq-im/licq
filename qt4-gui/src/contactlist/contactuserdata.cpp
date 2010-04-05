@@ -140,7 +140,7 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
   {
     myStatus = u->Status();
     myStatusFull = u->StatusFull();
-    myStatusInvisible = u->StatusInvisible();
+    myStatusInvisible = u->isInvisible();
     myTouched = u->Touched();
   }
 
@@ -754,7 +754,7 @@ QString ContactUserData::tooltip() const
   if (config->popupAuth() && u->GetAwaitingAuth())
     s += "<br>" + tr("Awaiting authorization");
 
-  if (!u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
+  if (u->isOnline() && u->ClientInfo() && *u->ClientInfo())
     s += "<br>" + codec->toUnicode(u->ClientInfo());
 
   if (u->AutoResponse() && *u->AutoResponse() &&
@@ -803,7 +803,7 @@ QString ContactUserData::tooltip() const
     s += "<br>" + tr("O: ") + t.toString();
   }
 
-  if (config->popupOnlineSince() && !u->StatusOffline())
+  if (config->popupOnlineSince() && u->isOnline())
   {
     time_t nLoggedIn = (time(0) > u->OnlineSince() ? time(0) - u->OnlineSince() : 0);
     unsigned long nWeek, nDay, nHour, nMinute;

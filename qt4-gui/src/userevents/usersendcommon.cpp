@@ -174,7 +174,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
   if (u != NULL)
   {
     mySendServerCheck->setChecked(u->SendServer() ||
-        (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
+        (!u->isOnline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
 
     if (u->InvisibleList() || (u->Port() == 0 && u->SocketDesc(ICQ_CHNxNONE) == -1))
       canSendDirect = false;
@@ -810,7 +810,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
       bool userOffline = true;
       if (u != 0)
       {
-        userOffline = u->StatusOffline();
+        userOffline = !u->isOnline();
         gUserManager.DropUser(u);
       }
       const CEventMsg* ue = dynamic_cast<const CEventMsg*>(e->UserEvent());
@@ -981,7 +981,7 @@ void UserSendCommon::userUpdated(const UserId& userId, unsigned long subSignal, 
       else
         mySendServerCheck->setEnabled(true);
 
-      if (u->StatusOffline())
+      if (!u->isOnline())
         mySendServerCheck->setChecked(true);
 
       break;
