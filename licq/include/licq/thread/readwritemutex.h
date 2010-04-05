@@ -22,6 +22,7 @@
 
 #include "condition.h"
 #include "mutex.h"
+#include "../macro.h"
 
 #include <boost/noncopyable.hpp>
 #include <string>
@@ -75,9 +76,7 @@ public:
   void setName(const std::string& name);
 
 private:
-  class Private;
-  Private* const myPrivate;
-  friend class Private;
+  LICQ_DECLARE_PRIVATE();
 
   int myNumReaders;
   bool myHasWriter;

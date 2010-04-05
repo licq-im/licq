@@ -28,7 +28,10 @@
 
 #define LICQ_DECLARE_PRIVATE() \
   class Private; \
-  Private* const d; \
+  Private* const myPrivate; \
   friend class Private
+
+#define LICQ_D() Private* const d = myPrivate
+#define LICQ_D_CONST() const Private* const d = myPrivate
 
 #endif

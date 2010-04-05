@@ -85,22 +85,24 @@ ReadWriteMutex::~ReadWriteMutex()
 void ReadWriteMutex::lockRead()
 {
   MutexLocker locker(myMutex);
+  LICQ_D();
 
   while (myHasWriter)
-    myPrivate->waitRead();
+    d->waitRead();
 
-  myPrivate->setReader();
+  d->setReader();
   ++myNumReaders;
 }
 
 void ReadWriteMutex::unlockRead()
 {
   MutexLocker locker(myMutex);
+  LICQ_D();
 
   assert(myNumReaders > 0);
   if (myNumReaders > 0)
   {
-    myPrivate->unsetReader();
+    d->unsetReader();
     if (--myNumReaders == 0)
       myLockFree.signal();
   }
@@ -109,22 +111,24 @@ void ReadWriteMutex::unlockRead()
 void ReadWriteMutex::lockWrite()
 {
   MutexLocker locker(myMutex);
+  LICQ_D();
 
   while (myHasWriter || myNumReaders > 0)
-    myPrivate->waitWrite();
+    d->waitWrite();
 
-  myPrivate->setWriter();
+  d->setWriter();
   myHasWriter = true;
 }
 
 void ReadWriteMutex::unlockWrite()
 {
   MutexLocker locker(myMutex);
+  LICQ_D();
 
   assert(myHasWriter);
   if (myHasWriter)
   {
-    myPrivate->unsetWriter();
+    d->unsetWriter();
     myHasWriter = false;
     myLockFree.broadcast();
   }
@@ -132,5 +136,8 @@ void ReadWriteMutex::unlockWrite()
 
 void ReadWriteMutex::setName(const std::string& name)
 {
-  myPrivate->setName(name);
+  MutexLocker locker(myMutex);
+  LICQ_D();
+
+  d->setName(name);
 }

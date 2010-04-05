@@ -46,23 +46,25 @@ public:
 };
 
 PluginLogSink::PluginLogSink() :
-  d(new Private())
+  myPrivate(new Private())
 {
   // Empty
 }
 
 PluginLogSink::~PluginLogSink()
 {
-  delete d;
+  delete myPrivate;
 }
 
 int PluginLogSink::getReadPipe()
 {
+  LICQ_D();
   return d->myPipe.getReadFd();
 }
 
 LogSink::Message::Ptr PluginLogSink::popMessage(bool readPipe)
 {
+  LICQ_D();
   MutexLocker locker(d->myMutex);
   if (d->myMessages.empty())
     return Message::Ptr();
@@ -77,6 +79,7 @@ LogSink::Message::Ptr PluginLogSink::popMessage(bool readPipe)
 
 void PluginLogSink::setLogLevel(Log::Level level, bool enable)
 {
+  LICQ_D();
   MutexLocker locker(d->myMutex);
   if (enable)
     d->myLogLevels |= (1 << level);
@@ -86,12 +89,14 @@ void PluginLogSink::setLogLevel(Log::Level level, bool enable)
 
 void PluginLogSink::setLogPackets(bool enable)
 {
+  LICQ_D();
   MutexLocker locker(d->myMutex);
   d->myLogPackets = enable;
 }
 
 void PluginLogSink::setAllLogLevels(bool enable)
 {
+  LICQ_D();
   MutexLocker locker(d->myMutex);
   if (enable)
     d->myLogLevels = 0x3f;
@@ -101,18 +106,21 @@ void PluginLogSink::setAllLogLevels(bool enable)
 
 bool PluginLogSink::isLogging(Log::Level level)
 {
+  LICQ_D();
   MutexLocker locker(d->myMutex);
   return d->myLogLevels & (1 << level);
 }
 
 bool PluginLogSink::isLoggingPackets()
 {
+  LICQ_D();
   MutexLocker locker(d->myMutex);
   return d->myLogPackets;
 }
 
 void PluginLogSink::log(Message::Ptr message)
 {
+  LICQ_D();
   MutexLocker locker(d->myMutex);
   d->myMessages.push_back(message);
   d->myPipe.putChar('M');
