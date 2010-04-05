@@ -20,14 +20,12 @@
 #ifndef LICQ_LOG_H
 #define LICQ_LOG_H
 
+#include "macro.h"
+
 #include <boost/shared_ptr.hpp>
 #include <cstdarg>
 #include <stdint.h>
 #include <string>
-
-#ifdef __GNUC__
-#define LICQ_FORMAT(x, y) __attribute__((format (printf, x, y)))
-#endif
 
 namespace Licq
 {

@@ -10,6 +10,7 @@ set(licq_HEADERS
   log.h
   logservice.h
   logsink.h
+  macro.h
   md5.h
   oneventmanager.h
   plugin.h
