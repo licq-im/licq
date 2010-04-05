@@ -103,7 +103,7 @@ if (BUILD_TESTS)
   find_package(GTest)
   if (NOT GTEST_FOUND)
     message(FATAL_ERROR
-      "Google Test NOT found; disable unit tests by setting BUILD_TESTS=OFF")
+      "Google Test NOT found; disable unit tests by running cmake with -DBUILD_TESTS=OFF")
   endif (NOT GTEST_FOUND)
 
   enable_testing()
