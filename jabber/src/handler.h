@@ -1,6 +1,9 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Erik Johansson <erijo@licq.org>
+ * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ *
+ * Please refer to the COPYRIGHT file distributed with this source
+ * distribution for the names of the individual contributors.
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
