@@ -848,6 +848,80 @@ const char* User::UserEncoding() const
     return m_szEncoding;
 }
 
+void User::setStatus(unsigned status)
+{
+  myStatus = status;
+
+  // Build ICQ status equivalent for compatibility with old code
+  m_nStatus &= (ICQ_STATUS_FxFLAGS & ~ICQ_STATUS_FxPFMxAVAILABLE);
+  if (status == OfflineStatus)
+    m_nStatus = ICQ_STATUS_OFFLINE;
+  if (status & InvisibleStatus)
+    m_nStatus |= ICQ_STATUS_FxPRIVATE;
+  if (status & AwayStatus)
+    m_nStatus |= ICQ_STATUS_AWAY;
+  if (status & NotAvailableStatus)
+    m_nStatus |= ICQ_STATUS_NA;
+  if (status & OccupiedStatus)
+    m_nStatus |= ICQ_STATUS_OCCUPIED;
+  if (status & DoNotDisturbStatus)
+    m_nStatus |= ICQ_STATUS_DND;
+  if (status & FreeForChatStatus)
+    m_nStatus |= ICQ_STATUS_FREEFORCHAT;
+}
+
+void User::SetStatus(unsigned long n)
+{
+  m_nStatus = n;
+
+  // Build status from ICQ flags
+  myStatus = statusFromIcqStatus(m_nStatus & 0xFFFF);
+  if (myStatus != OfflineStatus && m_nIdleSince != 0)
+    myStatus |= IdleStatus;
+}
+
+unsigned short User::icqStatusFromStatus(unsigned status)
+{
+  if (status == OfflineStatus)
+    return ICQ_STATUS_OFFLINE;
+  if (status & DoNotDisturbStatus)
+    return ICQ_STATUS_DND;
+  if (status & OccupiedStatus)
+    return ICQ_STATUS_OCCUPIED;
+  if (status & NotAvailableStatus)
+    return ICQ_STATUS_NA;
+  if (status & AwayStatus)
+    return ICQ_STATUS_AWAY;
+  if (status & FreeForChatStatus)
+    return ICQ_STATUS_FREEFORCHAT;
+  if (status & InvisibleStatus)
+   return ICQ_STATUS_FxPRIVATE;
+  return ICQ_STATUS_ONLINE;
+}
+
+unsigned User::statusFromIcqStatus(unsigned short icqStatus)
+{
+  // Build status from ICQ flags
+  if (icqStatus == ICQ_STATUS_OFFLINE)
+    return OfflineStatus;
+
+  unsigned status = OnlineStatus;
+  if (icqStatus & ICQ_STATUS_FxPRIVATE)
+    status |= InvisibleStatus;
+  if (icqStatus & ICQ_STATUS_AWAY)
+    status |= AwayStatus;
+  if (icqStatus & ICQ_STATUS_NA)
+    status |= NotAvailableStatus;
+  if (icqStatus & ICQ_STATUS_OCCUPIED)
+    status |= OccupiedStatus;
+  if (icqStatus & ICQ_STATUS_DND)
+    status |= DoNotDisturbStatus;
+  if (icqStatus & ICQ_STATUS_FREEFORCHAT)
+    status |= FreeForChatStatus;
+
+  return status;
+}
+
 unsigned short User::Status() const
 // guarantees to return a unique status that switch can be run on
 {
@@ -1163,6 +1237,33 @@ const char* User::StatusToStatusStrShort(unsigned short n, bool b)
   else if (n & ICQ_STATUS_FREEFORCHAT) return b ? tr("(FFC)") : tr("FFC");
   else if (n << 24 == 0x00) return b ? tr("(On)") : tr("On");
   else return "???";
+}
+
+string User::statusToString(unsigned status, bool full, bool markInvisible)
+{
+  string str;
+  if (status == OfflineStatus)
+    str = (full ? tr("Offline") : tr("Off"));
+  else if (status & DoNotDisturbStatus)
+    str = (full ? tr("Do Not Disturb") : tr("DND"));
+  else if (status & OccupiedStatus)
+    str = (full ? tr("Occupied") : tr("Occ"));
+  else if (status & NotAvailableStatus)
+    str = (full ? tr("Not Available") : tr("N/A"));
+  else if (status & AwayStatus)
+    str = (full ? tr("Away") : tr("Away"));
+  else if (status & FreeForChatStatus)
+    str = (full ? tr("Free For Chat") : tr("FFC"));
+  else if (!markInvisible && status & InvisibleStatus)
+    str = (full ? tr("Invisible") : tr("Inv"));
+  else if (status & IdleStatus)
+    str = (full ? tr("Idle") : tr("Idle"));
+  else
+    str = (full ? tr("Online") : tr("On"));
+
+  if (markInvisible && status & InvisibleStatus)
+    return '(' + str + ')';
+  return str;
 }
 
 char* User::IpStr(char* rbuf) const

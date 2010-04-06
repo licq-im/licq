@@ -480,13 +480,49 @@ public:
   bool SetPPField(const std::string &, const std::string &);
 
 
+  enum StatusFlags
+  {
+    // Status flags (multiple can be set if supported by protocol)
+    OnlineStatus        = 1<<0,         // Always set unless offline
+    IdleStatus          = 1<<1,
+    InvisibleStatus     = 1<<2,
+
+    // Away flags (maximum one should be set)
+    AwayStatus          = 1<<8,
+    NotAvailableStatus  = 1<<9,
+    OccupiedStatus      = 1<<10,
+    DoNotDisturbStatus  = 1<<11,
+    FreeForChatStatus   = 1<<12,
+
+    // Convenience constants and masks for testing
+    OfflineStatus       = 0,
+    AwayStatuses        = AwayStatus | NotAvailableStatus | OccupiedStatus | DoNotDisturbStatus,
+    MessageStatuses     = AwayStatuses | FreeForChatStatus,
+  };
+
+  /**
+   * Get current status for user
+   *
+   * @return Mask of flags from StatusFlags
+   */
+  unsigned status() const
+  { return myStatus; }
+
+  /**
+   * Set status
+   * Note: This should only be called from protocol plugin owning the user
+   *
+   * @param status New status for user
+   */
+  void setStatus(unsigned status);
+
   /**
    * Convenience function to check if if user is online
    *
    * @return True if user is online
    */
   bool isOnline() const
-  { return (unsigned short)m_nStatus != ICQ_STATUS_OFFLINE; }
+  { return (myStatus & OnlineStatus) != 0; }
 
   /**
    * Convenience function to check if user is invisible
@@ -494,9 +530,15 @@ public:
    * @return True if user is online and invisible
    */
   bool isInvisible() const
-  { return isOnline() ? m_nStatus & ICQ_STATUS_FxPRIVATE : false; }
+  { return (myStatus & InvisibleStatus) != 0; }
 
+  // Functions for use during transition from ICQ status
+  static unsigned short icqStatusFromStatus(unsigned status);
+  static unsigned statusFromIcqStatus(unsigned short icqStatus);
+
+  /// Get switch-able version of ICQ status
   unsigned short Status() const;
+  /// Get ICQ status flags (mask of ICQ_STATUS_xxx flags)
   unsigned long StatusFull() const              { return m_nStatus; }
   bool StatusWebPresence() const                { return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE; }
   bool StatusHideIp() const                     { return m_nStatus & ICQ_STATUS_FxHIDExIP; }
@@ -504,7 +546,8 @@ public:
   unsigned long PhoneFollowMeStatus() const     { return m_nPhoneFollowMeStatus; }
   unsigned long ICQphoneStatus() const          { return m_nICQphoneStatus; }
   unsigned long SharedFilesStatus() const       { return m_nSharedFilesStatus; }
-  void SetStatus(unsigned long n)  {  m_nStatus = n;  }
+  /// Set ICQ status flags (also updates generic status flags)
+  void SetStatus(unsigned long n);
   void SetPhoneFollowMeStatus(unsigned long n)  { m_nPhoneFollowMeStatus = n; SaveLicqInfo(); }
   void SetICQphoneStatus(unsigned long n)       { m_nICQphoneStatus = n; }
   void SetSharedFilesStatus(unsigned long n)    { m_nSharedFilesStatus = n; }  
@@ -514,6 +557,16 @@ public:
   bool Away() const;
   static const char* StatusToStatusStr(unsigned short n, bool b);
   static const char* StatusToStatusStrShort(unsigned short n, bool b);
+
+  /**
+   * Convert status to a string
+   *
+   * @param status Status to convert
+   * @param full False to get a short abbreviation
+   * @param markInvisible False to handle invisible as a separate status
+   * @return A string representing the status
+   */
+  static std::string statusToString(unsigned status, bool full = true, bool markInvisible = true);
 
   int Birthday(unsigned short nDayRange = 0) const;
 
@@ -753,6 +806,7 @@ protected:
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
   unsigned short m_nTyping;
   unsigned long m_nStatus;
+  unsigned myStatus;
   UserGroupList myGroups;               /**< List of user groups */
   unsigned long mySystemGroups;         /**< Bitmask for system groups */
   unsigned short m_nSequence;
