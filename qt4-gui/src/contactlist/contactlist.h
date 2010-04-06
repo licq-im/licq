@@ -85,7 +85,6 @@ public:
     AccountIdRole,                      // Account id for user (UserItems only)
     PpidRole,                           // Protocol id for user (UserItems only)
     StatusRole,                         // Contact status (UserItems only)
-    FullStatusRole,                     // Contact full status (UserItems only)
     ExtendedStatusRole,                 // Various status flags needed by the delegate (UserItems only)
     UserIconRole,                       // User picture for use as icon (UserItems only)
     CarAnimationRole,                   // Auto response read animation counter (UserItems only)
@@ -113,20 +112,6 @@ public:
     OnlineSubGroup = 0,
     OfflineSubGroup,
     NotInListSubGroup,
-  };
-
-  /**
-   * Contact status (returned for StatusRole)
-   */
-  enum StatusType
-  {
-    OfflineStatus = ICQ_STATUS_OFFLINE,
-    OnlineStatus = ICQ_STATUS_ONLINE,
-    AwayStatus = ICQ_STATUS_AWAY,
-    DoNotDisturbStatus = ICQ_STATUS_DND,
-    NotAvailableStatus = ICQ_STATUS_NA,
-    OccupiedStatus = ICQ_STATUS_OCCUPIED,
-    FreeForChatStatus = ICQ_STATUS_FREEFORCHAT
   };
 
   /**

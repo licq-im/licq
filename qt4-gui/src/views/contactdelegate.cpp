@@ -27,12 +27,15 @@
 #include <QLineEdit>
 #include <QPainter>
 
+#include <licq/contactlist/user.h>
+
 #include "config/contactlist.h"
 #include "config/iconmanager.h"
 #include "config/skin.h"
 
 #include "userviewbase.h"
 
+using Licq::User;
 using namespace LicqQtGui;
 
 ContactDelegate::ContactDelegate(UserViewBase* userView, QObject* parent)
@@ -106,8 +109,7 @@ void ContactDelegate::paint(QPainter* p, const QStyleOptionViewItem& option,
       (index.data(ContactListModel::ItemTypeRole).toInt()),
     Config::Skin::active(),
     option.state & QStyle::State_Enabled ? QPalette::Normal : QPalette::Disabled,
-    static_cast<ContactListModel::StatusType>
-      (index.data(ContactListModel::StatusRole).toUInt()),
+    index.data(ContactListModel::StatusRole).toUInt(),
     index.data(ContactListModel::ExtendedStatusRole).toUInt(),
     QString::null
   };
@@ -268,22 +270,14 @@ void ContactDelegate::prepareForeground(Parameters& arg, QVariant animate) const
         else if (arg.extStatus & ContactListModel::AwaitingAuthStatus)
           textColor = arg.skin->awaitingAuthColor;
         else
-          switch (arg.status)
-          {
-            case ContactListModel::AwayStatus:
-            case ContactListModel::OccupiedStatus:
-            case ContactListModel::DoNotDisturbStatus:
-            case ContactListModel::NotAvailableStatus:
-              textColor = arg.skin->awayColor;
-              break;
-            case ContactListModel::OfflineStatus:
-              textColor = arg.skin->offlineColor;
-              break;
-            case ContactListModel::OnlineStatus:
-            case ContactListModel::FreeForChatStatus:
-            default:
-              textColor = arg.skin->onlineColor;
-          }
+        {
+          if (arg.status == User::OfflineStatus)
+            textColor = arg.skin->offlineColor;
+          else if (arg.status & (User::AwayStatuses | User::IdleStatus))
+            textColor = arg.skin->awayColor;
+          else
+            textColor = arg.skin->onlineColor;
+        }
         break;
       }
 
@@ -359,7 +353,7 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
           arg.index.data(ContactListModel::EventSubCommandRole).toUInt());
     else
       icon = &iconman->iconForStatus(
-          arg.index.data(ContactListModel::StatusRole).toUInt(),
+          User::icqStatusFromStatus(arg.index.data(ContactListModel::StatusRole).toUInt()),
           arg.index.data(ContactListModel::AccountIdRole).toString(),
           arg.index.data(ContactListModel::PpidRole).toUInt());
   }
@@ -476,7 +470,7 @@ void ContactDelegate::drawExtIcons(Parameters& arg) const
           drawExtIcon(arg, IconManager::GpgKeyDisabledIcon);
       }
 
-      if (arg.status != ContactListModel::OfflineStatus)
+      if (arg.status != User::OfflineStatus)
       {
         if (Config::ContactList::instance()->showPhoneIcons())
         {

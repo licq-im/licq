@@ -20,6 +20,8 @@
 
 #include "mode2contactlistproxy.h"
 
+#include <licq/contactlist/user.h>
+
 #include "contactbar.h"
 #include "contactlist.h"
 #include "contactgroup.h"
@@ -122,7 +124,7 @@ void Mode2ContactListProxy::sourceDataChanged(const QModelIndex& topLeft, const 
       int groupRow = myUserData[cu].groupRow;
       bool wasOnline = ((groupRow & 1) == 0);
 
-      bool isOnline = (topLeft.data(ContactListModel::StatusRole) != ContactListModel::OfflineStatus);
+      bool isOnline = (topLeft.data(ContactListModel::StatusRole) != Licq::User::OfflineStatus);
       if (isOnline == wasOnline)
       {
         // Status hasn't changed, just forward signal with correct row in the proxy model
@@ -181,7 +183,7 @@ void Mode2ContactListProxy::addUser(const QModelIndex& userIndex, bool emitSigna
 {
   // Get data for the user we want to add
   ContactUser* cu = static_cast<ContactUser*>(userIndex.internalPointer());
-  bool isOnline = (userIndex.data(ContactListModel::StatusRole) != ContactListModel::OfflineStatus);
+  bool isOnline = (userIndex.data(ContactListModel::StatusRole) != Licq::User::OfflineStatus);
   bool isVisible = userIndex.data(ContactListModel::VisibilityRole).toBool();
   int unreadEvents = userIndex.data(ContactListModel::UnreadEventsRole).toInt();
 

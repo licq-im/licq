@@ -244,8 +244,7 @@ private:
   UserId myUserId;
   QString myAccountId;
   unsigned long myPpid;
-  unsigned short myStatus;
-  unsigned long myStatusFull;
+  unsigned myStatus;
   int myEvents;
   bool myStatusInvisible, myStatusTyping, myCustomAR, mySecure, myFlash;
   bool myBirthday, myPhone, myCellular, myGPGKey, myGPGKeyEnabled;

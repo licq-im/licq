@@ -39,7 +39,6 @@
 
 #include "core/gui-defines.h"
 
-#include "helpers/licqstrings.h"
 #include "helpers/usercodec.h"
 
 #include "contactgroup.h"
@@ -49,6 +48,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ContactUserData */
 
 using std::string;
+using Licq::User;
 
 #define FLASH_TIME 500
 
@@ -60,7 +60,7 @@ int ContactUserData::myAnimatorCount = 0;
 
 
 ContactUserData::ContactUserData(const LicqUser* licqUser, QObject* parent)
-  : myStatus(ICQ_STATUS_OFFLINE),
+  : myStatus(User::OfflineStatus),
     myEvents(0),
     myFlash(false),
     mySubGroup(ContactListModel::OfflineSubGroup),
@@ -138,8 +138,7 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
 {
   if (subSignal == 0 || subSignal == USER_STATUS)
   {
-    myStatus = u->Status();
-    myStatusFull = u->StatusFull();
+    myStatus = u->status();
     myStatusInvisible = u->isInvisible();
     myTouched = u->Touched();
   }
@@ -213,7 +212,7 @@ void ContactUserData::updateSubGroup()
   if (myNotInList)
     newSubGroup = ContactListModel::NotInListSubGroup;
 
-  else if (myStatus == ICQ_STATUS_OFFLINE)
+  else if (myStatus == User::OfflineStatus)
     newSubGroup = ContactListModel::OfflineSubGroup;
 
   // If status has changed update the sub groups of all groups
@@ -376,28 +375,19 @@ void ContactUserData::updateSorting()
 {
   // Set status sort order
   int sort = 9;
-  switch (myStatus)
-  {
-    case ICQ_STATUS_FREEFORCHAT:
-    case ICQ_STATUS_ONLINE:
-      sort = 0;
-      break;
-    case ICQ_STATUS_OCCUPIED:
-      sort = 1;
-      break;
-    case ICQ_STATUS_DND:
-      sort = 2;
-      break;
-    case ICQ_STATUS_AWAY:
-      sort = 3;
-      break;
-    case ICQ_STATUS_NA:
-      sort = 4;
-      break;
-    case ICQ_STATUS_OFFLINE:
-      sort = 5;
-      break;
-  }
+  if (myStatus & User::OccupiedStatus)
+    sort = 1;
+  else if (myStatus & User::DoNotDisturbStatus)
+    sort = 2;
+  else if (myStatus & User::AwayStatus)
+    sort = 3;
+  else if (myStatus & User::NotAvailableStatus)
+    sort = 4;
+  else if (myStatus == User::OfflineStatus)
+    sort = 5;
+  else
+    sort = 0;
+
   // Set sorting
   mySortKey = "";
   switch (Config::ContactList::instance()->sortByStatus())
@@ -464,7 +454,7 @@ void ContactUserData::updateVisibility()
   bool visibility = false;
 
   // Only hide contacts who are offline
-  if (myStatus != ContactListModel::OfflineStatus)
+  if (myStatus != User::OfflineStatus)
     visibility = true;
 
   // Don't hide contacts with unread events
@@ -654,9 +644,6 @@ QVariant ContactUserData::data(int column, int role) const
     case ContactListModel::StatusRole:
       return myStatus;
 
-    case ContactListModel::FullStatusRole:
-      return static_cast<unsigned int>(myStatusFull);
-
     case ContactListModel::ExtendedStatusRole:
       return myExtendedStatus;
 
@@ -712,7 +699,7 @@ QString ContactUserData::tooltip() const
       s += QString("<center><img src=\"%1\"></center>").arg(file);
   }
 
-  s += LicqStrings::getStatus(myStatus, myStatusInvisible);
+  s += User::statusToString(myStatus).c_str();
 
   if (config->popupAlias() && !u->getAlias().empty())
     s += "<br>" + QString::fromUtf8(u->getAlias().c_str());
@@ -727,7 +714,7 @@ QString ContactUserData::tooltip() const
   if (myBirthday)
     s += "<br><b>" + tr("Birthday Today!") + "</b>";
 
-  if (myStatus != ICQ_STATUS_OFFLINE)
+  if (myStatus != User::OfflineStatus)
   {
     if (myStatusTyping)
       s += "<br>" + tr("Typing a message");
@@ -758,8 +745,7 @@ QString ContactUserData::tooltip() const
     s += "<br>" + codec->toUnicode(u->ClientInfo());
 
   if (u->AutoResponse() && *u->AutoResponse() &&
-      myStatus != ICQ_STATUS_OFFLINE &&
-      myStatus != ICQ_STATUS_ONLINE)
+      myStatus & User::MessageStatuses)
     s += "<br><u>" + tr("Auto Response:") + "</u><br>&nbsp;&nbsp;&nbsp;" +
       codec->toUnicode(u->AutoResponse()).trimmed()
       .replace("\n", "<br>&nbsp;&nbsp;&nbsp;");

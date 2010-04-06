@@ -131,7 +131,7 @@ private:
     ContactListModel::ItemType itemType;
     Config::Skin* skin;
     QPalette::ColorGroup cg;
-    ContactListModel::StatusType status;
+    unsigned status;
     unsigned extStatus;
     QString text;
   } Parameters;
