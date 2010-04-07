@@ -573,7 +573,7 @@ void UserMenu::toggleSystemGroup(QAction* action)
 {
   int gid = action->data().toInt();
 
-  if (gid == GROUP_IGNORE_LIST && !action->isChecked())
+  if (gid == GROUP_IGNORE_LIST && action->isChecked())
   {
     const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
     if (u == NULL)
