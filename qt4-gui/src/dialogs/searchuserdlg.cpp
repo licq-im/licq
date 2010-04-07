@@ -443,8 +443,7 @@ void SearchUserDlg::addUser()
 {
   foreach (QTreeWidgetItem* current, foundView->selectedItems())
   {
-    QString id = current->data(0, Qt::UserRole).toString();
-    UserId userId = LicqUser::makeUserId(id.toLatin1().data(), ppid);
+    UserId userId = current->data(0, Qt::UserRole).value<UserId>();
 
     new AddUserDlg(userId, this);
   }
