@@ -3253,11 +3253,11 @@ void CMainWindow::FillUserGroup()
 
 void CMainWindow::UserGroupToggled(int id)
 {
-  bool add = mnuGroup->isItemChecked(id);
+  bool remove = mnuGroup->isItemChecked(id);
   GroupType gtype = (id < 1000 ? GROUPS_USER : GROUPS_SYSTEM);
   int groupId = (id < 1000 ? myGroupIds[id] : id - 1000);
 
-  if (gtype == GROUPS_SYSTEM && groupId == GROUP_IGNORE_LIST && add)
+  if (gtype == GROUPS_SYSTEM && groupId == GROUP_IGNORE_LIST && !remove)
   {
     const LicqUser* u = gUserManager.fetchUser(myMenuUserId);
     if (u == NULL)
@@ -3273,7 +3273,7 @@ void CMainWindow::UserGroupToggled(int id)
       return;
   }
 
-  if (add)
+  if (remove)
     RemoveUserFromGroup(gtype, groupId, myMenuUserId, this);
   else
     gUserManager.setUserInGroup(myMenuUserId, gtype, groupId, true, false);
