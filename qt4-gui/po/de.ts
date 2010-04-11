@@ -969,7 +969,7 @@ the group &apos;%1&apos;?</source>
     <message>
         <location filename="../src/helpers/eventdesc.cpp" line="37"/>
         <source>File Transfer</source>
-        <translation>Datei-Übertagung</translation>
+        <translation>Datei-Übertragung</translation>
     </message>
     <message>
         <location filename="../src/helpers/eventdesc.cpp" line="43"/>
