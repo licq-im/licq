@@ -51,6 +51,7 @@
 
 #include "hintsdlg.h"
 
+using Licq::User;
 using Licq::SarManager;
 using Licq::gSarManager;
 using namespace LicqQtGui;
@@ -58,15 +59,14 @@ using namespace LicqQtGui;
 
 AwayMsgDlg* AwayMsgDlg::myInstance = NULL;
 
-void AwayMsgDlg::showAwayMsgDlg(unsigned short status, bool autoClose,
-    unsigned long ppid, bool invisible)
+void AwayMsgDlg::showAwayMsgDlg(unsigned status, bool autoClose, unsigned long ppid)
 {
   if (myInstance == NULL)
     myInstance = new AwayMsgDlg();
   else
     myInstance->raise();
 
-  myInstance->selectAutoResponse(status, autoClose, ppid, invisible);
+  myInstance->selectAutoResponse(status, autoClose, ppid);
 }
 
 AwayMsgDlg::AwayMsgDlg(QWidget* parent)
@@ -113,42 +113,29 @@ AwayMsgDlg::~AwayMsgDlg()
   myInstance = NULL;
 }
 
-void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
-    unsigned long ppid, bool invisible)
+void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned long ppid)
 {
-  switch (status & 0x00FF)
-  {
-    case ICQ_STATUS_ONLINE: // Fall through
-    case ICQ_STATUS_OFFLINE:
-      status = (status & 0xFF00) | ICQ_STATUS_AWAY;
-      break;
-  }
+  // If requested status doesn't support message, set away
+  if ((status & User::MessageStatuses) == 0)
+    status |= User::AwayStatus;
+  status |= User::OnlineStatus;
 
   myStatus = status;
-  myInvisible = invisible;
   myPpid = ppid;
   SarManager::List sarList;
 
   // Fill in the select menu
   myMenu->clear();
-  switch (myStatus)
-  {
-    case ICQ_STATUS_NA:
-      sarList = SarManager::NotAvailableList;
-      break;
-    case ICQ_STATUS_OCCUPIED:
-      sarList = SarManager::OccupiedList;
-      break;
-    case ICQ_STATUS_DND:
-      sarList = SarManager::DoNotDisturbList;
-      break;
-    case ICQ_STATUS_FREEFORCHAT:
-      sarList = SarManager::FreeForChatList;
-      break;
-    case ICQ_STATUS_AWAY: // Fall through
-    default:
-      sarList = SarManager::AwayList;
-  }
+  if (myStatus & User::DoNotDisturbStatus)
+    sarList = SarManager::DoNotDisturbList;
+  else if (myStatus & User::OccupiedStatus)
+    sarList = SarManager::OccupiedList;
+  else if (myStatus & User::NotAvailableStatus)
+    sarList = SarManager::NotAvailableList;
+  else if (myStatus & User::FreeForChatStatus)
+    sarList = SarManager::FreeForChatList;
+  else // if (myStatus & User::AwayStatus)
+    sarList = SarManager::AwayList;
 
   const Licq::SarList& sars(gSarManager.getList(sarList));
   for (Licq::SarList::const_iterator i = sars.begin(); i != sars.end(); ++i)
@@ -166,8 +153,10 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
   if (o == NULL)
     return;
 
+  QString statusStr = User::statusToString(myStatus, true, false).c_str();
+
   setWindowTitle(QString(tr("Set %1 Response for %2"))
-      .arg(LicqStrings::getStatus(myStatus, false))
+      .arg(statusStr)
       .arg(QString::fromUtf8(o->GetAlias())));
 
   const QTextCodec* codec = UserCodec::defaultEncoding();
@@ -177,7 +166,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
     myAwayMsg->setText(tr("I'm currently %1, %a.\n"
           "You can leave me a message.\n"
           "(%m messages pending from you).")
-        .arg(LicqStrings::getStatus(myStatus, false)));
+        .arg(statusStr));
   gUserManager.DropOwner(o);
 
   myAwayMsg->setFocus();
@@ -238,11 +227,14 @@ void AwayMsgDlg::ok()
 {
   myAutoCloseCounter = -1;
 
+  unsigned short icqStatus = User::icqStatusFromStatus(myStatus);
+  bool invisible = (myStatus & User::InvisibleStatus) != 0;
+
   QString s = myAwayMsg->toPlainText().trimmed();
   if (myPpid == 0)
-    LicqGui::instance()->changeStatus(myStatus, myInvisible, s);
+    LicqGui::instance()->changeStatus(icqStatus, invisible, s);
   else
-    LicqGui::instance()->changeStatus(myStatus, myPpid, myInvisible, s);
+    LicqGui::instance()->changeStatus(icqStatus, myPpid, invisible, s);
 
   close();
 }

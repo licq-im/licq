@@ -1053,7 +1053,7 @@ void MainWindow::showAwayMsgDlg()
   if (o == NULL)
     return;
 
-  int status = o->Status();
+  unsigned status = o->status();
   gUserManager.DropOwner(o);
 
   AwayMsgDlg::showAwayMsgDlg(status);

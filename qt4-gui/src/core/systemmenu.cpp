@@ -60,6 +60,7 @@ const int LOG_SET_ALL = -1;
 const int LOG_CLEAR_ALL = -2;
 const int LOG_PACKETS = -3;
 
+using Licq::User;
 using namespace LicqQtGui;
 using namespace LicqQtGui::SystemMenuPrivate;
 /* TRANSLATOR LicqQtGui::SystemMenu */
@@ -137,35 +138,21 @@ SystemMenu::SystemMenu(QWidget* parent)
   myStatusSeparator = myStatusMenu->addSeparator();
   myIcqFollowMeAction = myStatusMenu->addMenu(myFollowMeMenu);
   myIcqFollowMeSeparator = myStatusMenu->addSeparator();
-#define ADD_MAINSTATUS(var, text, data) \
-    var = myStatusActions->addAction(text); \
-    var->setData(data); \
+#define ADD_MAINSTATUS(var, status) \
+    var = myStatusActions->addAction(User::statusToString(status).c_str()); \
+    var->setData(status); \
     myStatusMenu->addAction(var);
-  ADD_MAINSTATUS(myStatusOnlineAction,
-      LicqStrings::getStatus(ICQ_STATUS_ONLINE, false),
-      ICQ_STATUS_ONLINE)
-  ADD_MAINSTATUS(myStatusAwayAction,
-      LicqStrings::getStatus(ICQ_STATUS_AWAY, false),
-      ICQ_STATUS_AWAY)
-  ADD_MAINSTATUS(myStatusNotAvailableAction,
-      LicqStrings::getStatus(ICQ_STATUS_NA, false),
-      ICQ_STATUS_NA)
-  ADD_MAINSTATUS(myStatusOccupiedAction,
-      LicqStrings::getStatus(ICQ_STATUS_OCCUPIED, false),
-      ICQ_STATUS_OCCUPIED)
-  ADD_MAINSTATUS(myStatusDoNotDisturbAction,
-      LicqStrings::getStatus(ICQ_STATUS_DND, false),
-      ICQ_STATUS_DND)
-  ADD_MAINSTATUS(myStatusFreeForChatAction,
-      LicqStrings::getStatus(ICQ_STATUS_FREEFORCHAT, false),
-      ICQ_STATUS_FREEFORCHAT)
-  ADD_MAINSTATUS(myStatusOfflineAction,
-      LicqStrings::getStatus(ICQ_STATUS_OFFLINE, false),
-      ICQ_STATUS_OFFLINE)
+  ADD_MAINSTATUS(myStatusOnlineAction, User::OnlineStatus);
+  ADD_MAINSTATUS(myStatusAwayAction, User::AwayStatus);
+  ADD_MAINSTATUS(myStatusNotAvailableAction, User::NotAvailableStatus);
+  ADD_MAINSTATUS(myStatusOccupiedAction, User::OccupiedStatus);
+  ADD_MAINSTATUS(myStatusDoNotDisturbAction, User::DoNotDisturbStatus);
+  ADD_MAINSTATUS(myStatusFreeForChatAction, User::FreeForChatStatus);
+  ADD_MAINSTATUS(myStatusOfflineAction, User::OfflineStatus);
 #undef ADD_MAINSTATUS
   myStatusMenu->addSeparator();
   myStatusInvisibleAction = myStatusMenu->addAction(
-      LicqStrings::getStatus(ICQ_STATUS_FxPRIVATE, false),
+      User::statusToString(User::InvisibleStatus, true, false).c_str(),
       this, SLOT(toggleMainInvisibleStatus()));
   myStatusInvisibleAction->setCheckable(true);
 
@@ -527,9 +514,9 @@ void SystemMenu::setFollowMeStatus(QAction* action)
 
 void SystemMenu::setMainStatus(QAction* action)
 {
-  unsigned long status = action->data().toUInt();
+  unsigned status = action->data().toUInt();
   bool withMsg = false;
-  if (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE)
+  if (status & User::MessageStatuses)
   {
     // Only popup away message dialog if we have at least one owner with away message support
     foreach (OwnerData* data, myOwnerData.values())
@@ -538,10 +525,14 @@ void SystemMenu::setMainStatus(QAction* action)
   }
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
+  unsigned short icqStatus = User::icqStatusFromStatus(status);
+  if (invisible)
+    status |= User::InvisibleStatus;
+
   if (withMsg)
-    AwayMsgDlg::showAwayMsgDlg(status, true, 0, invisible);
+    AwayMsgDlg::showAwayMsgDlg(status, true, 0);
   else
-    LicqGui::instance()->changeStatus(status, invisible);
+    LicqGui::instance()->changeStatus(icqStatus, invisible);
 }
 
 void SystemMenu::toggleMainInvisibleStatus()
@@ -646,11 +637,11 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
   myStatusMenu = new QMenu(protoName);
   myStatusActions = new QActionGroup(this);
   connect(myStatusActions, SIGNAL(triggered(QAction*)), SLOT(setStatus(QAction*)));
- #define ADD_STATUS(var, text, data, cond) \
+ #define ADD_STATUS(var, status, cond) \
     if (cond) \
     { \
-      var = myStatusActions->addAction(text); \
-      var->setData(data); \
+      var = myStatusActions->addAction(User::statusToString(status).c_str()); \
+      var->setData(status); \
       var->setCheckable(true); \
       myStatusMenu->addAction(var); \
     } \
@@ -658,39 +649,18 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
     { \
       var = NULL; \
     }
-  ADD_STATUS(myStatusOnlineAction,
-      LicqStrings::getStatus(ICQ_STATUS_ONLINE, false),
-      ICQ_STATUS_ONLINE,
-      true);
-  ADD_STATUS(myStatusAwayAction,
-      LicqStrings::getStatus(ICQ_STATUS_AWAY, false),
-      ICQ_STATUS_AWAY,
-      true);
-  ADD_STATUS(myStatusNotAvailableAction,
-      LicqStrings::getStatus(ICQ_STATUS_NA, false),
-      ICQ_STATUS_NA,
-      myPpid != MSN_PPID);
-  ADD_STATUS(myStatusOccupiedAction,
-      LicqStrings::getStatus(ICQ_STATUS_OCCUPIED, false),
-      ICQ_STATUS_OCCUPIED,
-      myPpid != JABBER_PPID);
-  ADD_STATUS(myStatusDoNotDisturbAction,
-      LicqStrings::getStatus(ICQ_STATUS_DND, false),
-      ICQ_STATUS_DND,
-      myPpid != MSN_PPID);
-  ADD_STATUS(myStatusFreeForChatAction,
-      LicqStrings::getStatus(ICQ_STATUS_FREEFORCHAT, false),
-      ICQ_STATUS_FREEFORCHAT,
-      myPpid != MSN_PPID);
-  ADD_STATUS(myStatusOfflineAction,
-      LicqStrings::getStatus(ICQ_STATUS_OFFLINE, false),
-      ICQ_STATUS_OFFLINE,
-      true);
+  ADD_STATUS(myStatusOnlineAction, User::OnlineStatus, true);
+  ADD_STATUS(myStatusAwayAction, User::AwayStatus, true);
+  ADD_STATUS(myStatusNotAvailableAction, User::NotAvailableStatus, myPpid != MSN_PPID);
+  ADD_STATUS(myStatusOccupiedAction, User::OccupiedStatus, myPpid != JABBER_PPID);
+  ADD_STATUS(myStatusDoNotDisturbAction, User::DoNotDisturbStatus, myPpid != MSN_PPID);
+  ADD_STATUS(myStatusFreeForChatAction, User::FreeForChatStatus, myPpid != MSN_PPID);
+  ADD_STATUS(myStatusOfflineAction, User::OfflineStatus, true);
   if (myPpid != JABBER_PPID)
   {
     myStatusMenu->addSeparator();
     myStatusInvisibleAction = myStatusMenu->addAction(
-        LicqStrings::getStatus(ICQ_STATUS_FxPRIVATE, false),
+        User::statusToString(User::InvisibleStatus, true, false).c_str(),
         this, SLOT(toggleInvisibleStatus()));
     myStatusInvisibleAction->setCheckable(true);
   }
@@ -739,16 +709,17 @@ void OwnerData::aboutToShowStatusMenu()
   if (o == NULL)
     return;
 
-  int status = o->Status();
+  unsigned status = o->status();
 
   // Update protocol status
   foreach (QAction* a, myStatusActions->actions())
   {
-    if (a->data().toInt() == status)
+    unsigned s = a->data().toUInt();
+    if (status == s || status & s)
       a->setChecked(true);
   }
 
-  if (myStatusInvisibleAction != NULL && status != ICQ_STATUS_OFFLINE)
+  if (myStatusInvisibleAction != NULL && status != User::OfflineStatus)
     myStatusInvisibleAction->setChecked(o->isInvisible());
 
   gUserManager.DropOwner(o);
@@ -766,14 +737,18 @@ void OwnerData::viewHistory()
 
 void OwnerData::setStatus(QAction* action)
 {
-  int status = action->data().toInt();
-  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE && myUseAwayMessage);
+  unsigned status = action->data().toUInt();
+  bool withMsg = (myUseAwayMessage && status & User::MessageStatuses);
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
+  unsigned short icqStatus = User::icqStatusFromStatus(status);
+  if (invisible)
+    status |= User::InvisibleStatus;
+
   if (withMsg)
-    AwayMsgDlg::showAwayMsgDlg(status, true, myPpid, invisible);
+    AwayMsgDlg::showAwayMsgDlg(status, true, myPpid);
   else
-    LicqGui::instance()->changeStatus(status, myPpid, invisible);
+    LicqGui::instance()->changeStatus(icqStatus, myPpid, invisible);
 }
 
 void OwnerData::toggleInvisibleStatus()
