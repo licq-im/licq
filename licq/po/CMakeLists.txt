@@ -6,6 +6,10 @@ set(po_FILES
 
 find_package(Gettext REQUIRED)
 
+if (NOT (GETTEXT_MSGMERGE_EXECUTABLE AND GETTEXT_MSGFMT_EXECUTABLE))
+  message(FATAL_ERROR "Gettext message catalog tools NOT found")
+endif (NOT (GETTEXT_MSGMERGE_EXECUTABLE AND GETTEXT_MSGFMT_EXECUTABLE))
+
 foreach(lang ${po_FILES})
   set(po  "${CMAKE_CURRENT_SOURCE_DIR}/${lang}.po")
   set(gmo "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo")
