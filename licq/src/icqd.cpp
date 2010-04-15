@@ -2470,6 +2470,9 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         u->Unlock();
         gUserManager.addUser(u->id(), false);
         bNewUser = false;
+
+        // Fetch the just added user and use it from here on
+        u = gUserManager.fetchUser(u->id(), LOCK_W);
       }
       else
         gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
