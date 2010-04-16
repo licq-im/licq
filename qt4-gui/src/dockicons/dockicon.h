@@ -23,6 +23,8 @@
 
 #include <QObject>
 
+#include <licq/userid.h>
+
 class QPixmap;
 
 
@@ -121,15 +123,12 @@ protected:
   DockIconWidget* myIcon;
   int myNewMsg;
   int mySysMsg;
-  unsigned long myFullStatus;
-  unsigned short myStatus;
-  bool myInvisible;
+  unsigned myStatus;
   QPixmap* myStatusIcon;
   QPixmap* myEventIcon;
 
 private:
-  QString myId;
-  unsigned long myPpid;
+  Licq::UserId myUserId;
 };
 
 } // namespace LicqQtGui

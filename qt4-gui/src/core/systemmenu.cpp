@@ -263,14 +263,14 @@ void SystemMenu::updateIcons()
   myUserAutorizeAction->setIcon(iconman->getIcon(IconManager::AuthorizeMessageIcon));
   myUserReqAutorizeAction->setIcon(iconman->getIcon(IconManager::ReqAuthorizeMessageIcon));
 
-  myStatusOnlineAction->setIcon(iconman->iconForStatus(ICQ_STATUS_ONLINE));
-  myStatusAwayAction->setIcon(iconman->iconForStatus(ICQ_STATUS_AWAY));
-  myStatusNotAvailableAction->setIcon(iconman->iconForStatus(ICQ_STATUS_NA));
-  myStatusOccupiedAction->setIcon(iconman->iconForStatus(ICQ_STATUS_OCCUPIED));
-  myStatusDoNotDisturbAction->setIcon(iconman->iconForStatus(ICQ_STATUS_DND));
-  myStatusFreeForChatAction->setIcon(iconman->iconForStatus(ICQ_STATUS_FREEFORCHAT));
-  myStatusOfflineAction->setIcon(iconman->iconForStatus(ICQ_STATUS_OFFLINE));
-  myStatusInvisibleAction->setIcon(iconman->iconForStatus(ICQ_STATUS_FxPRIVATE));
+  myStatusOnlineAction->setIcon(iconman->iconForStatus(User::OnlineStatus));
+  myStatusAwayAction->setIcon(iconman->iconForStatus(User::AwayStatus));
+  myStatusNotAvailableAction->setIcon(iconman->iconForStatus(User::NotAvailableStatus));
+  myStatusOccupiedAction->setIcon(iconman->iconForStatus(User::OccupiedStatus));
+  myStatusDoNotDisturbAction->setIcon(iconman->iconForStatus(User::DoNotDisturbStatus));
+  myStatusFreeForChatAction->setIcon(iconman->iconForStatus(User::FreeForChatStatus));
+  myStatusOfflineAction->setIcon(iconman->iconForStatus(User::OfflineStatus));
+  myStatusInvisibleAction->setIcon(iconman->iconForStatus(User::InvisibleStatus, UserId(), true));
 
   foreach (OwnerData* data, myOwnerData.values())
     data->updateIcons();
@@ -625,7 +625,7 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
   : QObject(parent),
     myPpid(ppid)
 {
-  myId = gUserManager.OwnerId(ppid).c_str();
+  myUserId = gUserManager.ownerUserId(ppid);
   myUseAwayMessage = ((sendFunctions & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
 
   // System sub menu
@@ -690,16 +690,16 @@ void OwnerData::updateIcons()
 
 #define SET_ICON(action, status) \
   if (action != NULL) \
-    action->setIcon(iconman->iconForStatus(status, myId, myPpid))
+    action->setIcon(iconman->iconForStatus(status, myUserId, true))
 
-  SET_ICON(myStatusOnlineAction, ICQ_STATUS_ONLINE);
-  SET_ICON(myStatusAwayAction, ICQ_STATUS_AWAY);
-  SET_ICON(myStatusNotAvailableAction, ICQ_STATUS_NA);
-  SET_ICON(myStatusOccupiedAction, ICQ_STATUS_OCCUPIED);
-  SET_ICON(myStatusDoNotDisturbAction, ICQ_STATUS_DND);
-  SET_ICON(myStatusFreeForChatAction, ICQ_STATUS_FREEFORCHAT);
-  SET_ICON(myStatusOfflineAction, ICQ_STATUS_OFFLINE);
-  SET_ICON(myStatusInvisibleAction, ICQ_STATUS_FxPRIVATE);
+  SET_ICON(myStatusOnlineAction, User::OnlineStatus);
+  SET_ICON(myStatusAwayAction, User::AwayStatus);
+  SET_ICON(myStatusNotAvailableAction, User::NotAvailableStatus);
+  SET_ICON(myStatusOccupiedAction, User::OccupiedStatus);
+  SET_ICON(myStatusDoNotDisturbAction, User::DoNotDisturbStatus);
+  SET_ICON(myStatusFreeForChatAction, User::FreeForChatStatus);
+  SET_ICON(myStatusOfflineAction, User::OfflineStatus);
+  SET_ICON(myStatusInvisibleAction, User::InvisibleStatus);
 #undef SET_ICON
 }
 
@@ -727,12 +727,12 @@ void OwnerData::aboutToShowStatusMenu()
 
 void OwnerData::viewInfo()
 {
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, gUserManager.ownerUserId(myPpid));
+  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUserId);
 }
 
 void OwnerData::viewHistory()
 {
-  new HistoryDlg(gUserManager.ownerUserId(myPpid));
+  new HistoryDlg(myUserId);
 }
 
 void OwnerData::setStatus(QAction* action)

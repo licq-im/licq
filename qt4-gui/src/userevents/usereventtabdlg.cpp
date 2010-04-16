@@ -252,7 +252,7 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const LicqUser* u)
   }
   else // use status icon
   {
-    icon = IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID());
+    icon = IconManager::instance()->iconForUser(u);
 
     if (u->GetTyping() == ICQ_TYPING_ACTIVE)
       myTabs->setTabColor(tab, Config::Chat::instance()->tabTypingColor());

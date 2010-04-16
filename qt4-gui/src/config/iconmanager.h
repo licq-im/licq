@@ -105,18 +105,6 @@ public:
     PSTNIcon,
   };
 
-  enum StatusIconType
-  {
-    OnlineStatusIcon = ICQ_STATUS_ONLINE,
-    OfflineStatusIcon = ICQ_STATUS_OFFLINE,
-    AwayStatusIcon = ICQ_STATUS_AWAY,
-    DoNotDisturbStatusIcon = ICQ_STATUS_DND,
-    OccupiedStatusIcon = ICQ_STATUS_OCCUPIED,
-    NotAvailableStatusIcon = ICQ_STATUS_NA,
-    FreeForChatStatusIcon = ICQ_STATUS_FREEFORCHAT,
-    PrivateStatusIcon = ICQ_STATUS_FxPRIVATE,
-  };
-
   enum ProtocolType
   {
     ProtocolIcq = LICQ_PPID,
@@ -170,12 +158,13 @@ public:
   /**
    * Get icon for a protocol status
    *
-   * @param fullStatus Status to get icon for, should be full to include invisible flag
-   * @param id Contact id, used to differentiate between ICQ and AIM
-   * @param ppid Id of protocol to use icon set for
+   * @param status Status to get icon for
+   * @param userId Contact id, used to get protocol to get icon for
+   * @param allowInvisible True to allow invisible regardles if extended icons are used
    * @return The requested icon if loaded, otherwise a null pixmap
    */
-  const QPixmap& iconForStatus(unsigned long fullStatus, const QString& id = "0", unsigned long ppid = LICQ_PPID);
+  const QPixmap& iconForStatus(unsigned status, const Licq::UserId& userId = Licq::UserId(),
+      bool allowInvisible = false);
 
   /**
    * Get icon for a user
@@ -184,7 +173,7 @@ public:
    * @return The requested icon if loaded, otherwise a null pixmap
    */
   const QPixmap& iconForUser(const LicqUser* user)
-  { return iconForStatus(user->StatusFull(), user->IdString(), user->ppid()); }
+  { return iconForStatus(user->status(), user->id()); }
 
   /**
    * Get icon for an event type
@@ -244,7 +233,7 @@ private:
   QMap<IconType, QPixmap> myIconMap;
 
   // Map of status icons for different protocols
-  QMap<QPair<ProtocolType, StatusIconType>, QPixmap> myStatusIconMap;
+  QMap<QPair<ProtocolType, unsigned>, QPixmap> myStatusIconMap;
 
   // Null icon that can be returned as default
   QPixmap myEmptyIcon;

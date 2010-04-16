@@ -686,7 +686,7 @@ void MainWindow::slot_updatedUser(const UserId& userId, unsigned long subSignal,
         if (LicqGui::instance()->dockIcon() != NULL && u->OnlineNotify())
         {
           QString alias = QString::fromUtf8(u->GetAlias());
-          QPixmap px = IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID());
+          QPixmap px = IconManager::instance()->iconForUser(u);
           LicqGui::instance()->dockIcon()->popupMessage(alias, tr("is online"), px, 4000);
         }
       }

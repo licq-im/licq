@@ -145,7 +145,7 @@ void OwnerManagerDlg::updateOwners()
         proto = protocol->getName();
 
       QTreeWidgetItem* item = new QTreeWidgetItem(ownerView);
-      item->setIcon(0, iconman->iconForStatus(ICQ_STATUS_ONLINE, id.toLatin1(), ppid));
+      item->setIcon(0, iconman->iconForStatus(Licq::User::OnlineStatus, pOwner->id()));
       item->setText(0, proto.isNull() ? tr("(Invalid Protocol)") : proto);
       item->setData(0, Qt::UserRole, QString::number(ppid));
       item->setText(1, id.isNull() ? tr("(Invalid ID)") : id);

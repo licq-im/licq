@@ -31,6 +31,7 @@
 
 #include "dockiconwidget.h"
 
+using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::DockIcon */
 
@@ -39,8 +40,7 @@ DockIcon::DockIcon()
     myIcon(NULL),
     myNewMsg(0),
     mySysMsg(0),
-    myStatus(0),
-    myInvisible(false)
+    myStatus(User::OfflineStatus)
 {
   // Get icon set updates
   connect(IconManager::instance(), SIGNAL(statusIconsChanged()), SLOT(updateStatusIcon()));
@@ -71,24 +71,18 @@ DockIcon::~DockIcon()
 void DockIcon::updateIconStatus()
 {
   // Default if there is no owner, just show status as offline
-  myId = "0";
-  myPpid = LICQ_PPID;
-  myFullStatus = ICQ_STATUS_OFFLINE;
-  myStatus = ICQ_STATUS_OFFLINE;
-  myInvisible = false;
+  myUserId = UserId();;
+  myStatus = User::OfflineStatus;
 
   FOR_EACH_OWNER_START(LOCK_R)
   {
     // Any account is better than no account
     //   and try and get account with "best" status
-    // TODO: This numerical comparison is not perfect, for example Do Not Disturb will be prefered over Free For Chat
-    if (myId == "0" || pOwner->Status() < myStatus)
+    unsigned status = pOwner->status();
+    if (!myUserId.isValid() || (status != User::OfflineStatus && status < myStatus))
     {
-      myId = pOwner->IdString();
-      myPpid = pOwner->PPID();
-      myFullStatus = pOwner->StatusFull();
-      myStatus = pOwner->Status();
-      myInvisible = pOwner->isInvisible();
+      myUserId = pOwner->id();
+      myStatus = status;
     }
   }
   FOR_EACH_OWNER_END
@@ -100,7 +94,7 @@ void DockIcon::updateIconStatus()
 void DockIcon::updateStatusIcon()
 {
   myStatusIcon = const_cast<QPixmap*>
-    (&IconManager::instance()->iconForStatus(myFullStatus, myId, myPpid));
+    (&IconManager::instance()->iconForStatus(myStatus, myUserId));
 }
 
 void DockIcon::updateIconMessages(int newMsg, int sysMsg)
@@ -127,7 +121,7 @@ void DockIcon::updateEventIcon()
 void DockIcon::updateToolTip()
 {
   QString s = QString("<nobr>%1</nobr>")
-      .arg(LicqStrings::getStatus(myStatus, myInvisible));
+      .arg(User::statusToString(myStatus).c_str());
 
   if (mySysMsg)
     s += "<br><b>" + tr("%1 system messages").arg(mySysMsg) + "</b>";

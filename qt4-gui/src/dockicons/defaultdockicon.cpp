@@ -44,6 +44,7 @@
 #include "xpm/dock/offline.xpm"
 #include "xpm/dock/online.xpm"
 
+using Licq::User;
 using namespace LicqQtGui;
 
 DefaultDockIcon::DefaultDockIcon(QMenu* menu)
@@ -76,19 +77,34 @@ void DefaultDockIcon::updateStatusIcon()
     drawIcon64(myStatusIcon);
 
   QPixmap m;
-  if (myInvisible)
-    m = QPixmap(invisible_xpm);
-  else
-    switch (myStatus)
-    {
-      case ICQ_STATUS_ONLINE: m = QPixmap(online_xpm); break;
-      case ICQ_STATUS_AWAY: m = QPixmap(away_xpm); break;
-      case ICQ_STATUS_NA: m = QPixmap(na_xpm); break;
-      case ICQ_STATUS_OCCUPIED: m = QPixmap(occupied_xpm); break;
-      case ICQ_STATUS_DND: m = QPixmap(dnd_xpm); break;
-      case ICQ_STATUS_FREEFORCHAT: m = QPixmap(ffc_xpm); break;
-      case ICQ_STATUS_OFFLINE: m = QPixmap(offline_xpm); break;
-    }
+  switch (User::singleStatus(myStatus))
+  {
+    case User::OfflineStatus:
+      m = QPixmap(offline_xpm);
+      break;
+    case User::InvisibleStatus:
+      m = QPixmap(invisible_xpm);
+      break;
+    case User::NotAvailableStatus:
+      m = QPixmap(na_xpm);
+      break;
+    case User::AwayStatus:
+      m = QPixmap(away_xpm);
+      break;
+    case User::DoNotDisturbStatus:
+      m = QPixmap(dnd_xpm);
+      break;
+    case User::OccupiedStatus:
+      m = QPixmap(occupied_xpm);
+      break;
+    case User::FreeForChatStatus:
+      m = QPixmap(ffc_xpm);
+      break;
+    case User::OnlineStatus:
+    default:
+      m = QPixmap(online_xpm);
+      break;
+  }
 
   QPixmap* face = myIcon->face();
   QPainter painter(face);

@@ -353,9 +353,8 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
           arg.index.data(ContactListModel::EventSubCommandRole).toUInt());
     else
       icon = &iconman->iconForStatus(
-          User::icqStatusFromStatus(arg.index.data(ContactListModel::StatusRole).toUInt()),
-          arg.index.data(ContactListModel::AccountIdRole).toString(),
-          arg.index.data(ContactListModel::PpidRole).toUInt());
+          arg.index.data(ContactListModel::StatusRole).toUInt(),
+          arg.index.data(ContactListModel::UserIdRole).value<UserId>());
   }
   else if (arg.itemType == ContactListModel::GroupItem)
   {

@@ -321,15 +321,15 @@ QPixmap LicqKIMIface::icon(const QString& uid)
 
     if (licqID.isEmpty()) return QPixmap();
 
-    QString id;
-    unsigned long fullStatus = 0;
+  Licq::UserId userId;
+  unsigned status = 0;
     bool found = false;
 
     FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    id = pUser->IdString();
+    userId = pUser->id();
     if (!id.isEmpty() && id == licqID)
     {
-        fullStatus = pUser->StatusFull();
+      status = pUser->status();
         found = true;
         FOR_EACH_PROTO_USER_BREAK
     }
@@ -337,7 +337,7 @@ QPixmap LicqKIMIface::icon(const QString& uid)
 
     if (!found) return QPixmap();
 
-    return CMainWindow::iconForStatus(fullStatus, id.latin1(), PPID);
+  return CMainWindow::iconForStatus(status, userId);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

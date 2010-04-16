@@ -288,7 +288,7 @@ private slots:
   void toggleInvisibleStatus();
 
 private:
-  QString myId;
+  Licq::UserId myUserId;
   unsigned long myPpid;
   bool myUseAwayMessage;
 

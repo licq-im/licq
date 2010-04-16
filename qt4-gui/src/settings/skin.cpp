@@ -539,7 +539,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   lblStatus = new SkinnableLabel(skin->lblStatus, NULL, &w);
   lblStatus->setGeometry(skin->lblStatus.borderToRect(&w));
   lblStatus->setText(LicqStrings::getStatus(ICQ_STATUS_ONLINE, false));
-  lblStatus->setPrependPixmap(IconManager::instance()->iconForStatus(ICQ_STATUS_ONLINE));
+  lblStatus->setPrependPixmap(IconManager::instance()->iconForStatus(Licq::User::OnlineStatus));
 
   // Userview
   UserView userView(LicqGui::instance()->contactList(), &w);

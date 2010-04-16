@@ -35,6 +35,7 @@
 
 #include "dockiconwidget.h"
 
+using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ThemedDockIcon */
 
@@ -163,33 +164,34 @@ void ThemedDockIcon::updateIconStatus()
 
   QPixmap* p = NULL;
 
-  if (myInvisible)
-    p = pixInvisible;
-  else
-    switch (myStatus)
-    {
-      case ICQ_STATUS_ONLINE:
-        p = pixOnline;
-        break;
-      case ICQ_STATUS_AWAY:
-        p = pixAway;
-        break;
-      case ICQ_STATUS_NA:
-        p = pixNA;
-        break;
-      case ICQ_STATUS_OCCUPIED:
-        p = pixOccupied;
-        break;
-      case ICQ_STATUS_DND:
-        p = pixDND;
-        break;
-      case ICQ_STATUS_FREEFORCHAT:
-        p = pixFFC;
-        break;
-      case ICQ_STATUS_OFFLINE:
-        p = pixOffline;
-        break;
-    }
+  switch (User::singleStatus(myStatus))
+  {
+    case User::InvisibleStatus:
+      p = pixInvisible;
+      break;
+    case User::AwayStatus:
+      p = pixAway;
+      break;
+    case User::NotAvailableStatus:
+      p = pixNA;
+      break;
+    case User::OccupiedStatus:
+      p = pixOccupied;
+      break;
+    case User::DoNotDisturbStatus:
+      p = pixDND;
+      break;
+    case User::FreeForChatStatus:
+      p = pixFFC;
+      break;
+    case User::OfflineStatus:
+      p = pixOffline;
+      break;
+    case User::OnlineStatus:
+    default:
+      p = pixOnline;
+      break;
+  }
 
   QPixmap* face = myIcon->face();
   if (face != NULL && p != NULL)

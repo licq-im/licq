@@ -138,7 +138,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
   if (u != NULL)
   {
     if (u->NewMessages() == 0)
-      setWindowIcon(IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
+      setWindowIcon(IconManager::instance()->iconForUser(u));
     else
     {
       setWindowIcon(IconManager::instance()->iconForEvent(ICQ_CMDxSUB_MSG));
@@ -473,7 +473,7 @@ void UserEventCommon::updatedUser(const UserId& userId, unsigned long subSignal,
   {
     case USER_STATUS:
       if (u->NewMessages() == 0)
-        setWindowIcon(IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
+        setWindowIcon(IconManager::instance()->iconForUser(u));
       break;
 
     case USER_BASIC:
@@ -484,7 +484,7 @@ void UserEventCommon::updatedUser(const UserId& userId, unsigned long subSignal,
 
     case USER_EVENTS:
       if (u->NewMessages() == 0)
-        setWindowIcon(IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
+        setWindowIcon(IconManager::instance()->iconForUser(u));
       else
       {
         setWindowIcon(IconManager::instance()->iconForEvent(ICQ_CMDxSUB_MSG));

@@ -22,6 +22,7 @@
 
 #include <boost/foreach.hpp>
 
+#include <licq/contactlist/usermanager.h>
 #include <licq/pluginmanager.h>
 
 #include "config/iconmanager.h"
@@ -50,25 +51,12 @@ void ProtoComboBox::fillComboBox(bool skipExisting)
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     unsigned long ppid = protocol->getProtocolId();
-    const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
-    if (o == NULL)
-      id = "0";
-    else
-    {
-      if (skipExisting)
-      {
-        gUserManager.DropOwner(o);
-        continue;
-      }
-      else
-      {
-        id = o->IdString();
-        gUserManager.DropOwner(o);
-      }
-    }
+    Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
+    if (userId.isValid() && skipExisting)
+      continue;
 
     addItem(
-        IconManager::instance()->iconForStatus(ICQ_STATUS_ONLINE, id, ppid), // icon
+        IconManager::instance()->iconForStatus(Licq::User::OnlineStatus, userId), // icon
         protocol->getName(), // protocol name
         QString::number(ppid) // user data
         );

@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <cctype>
+
 #include <licq/inifile.h>
 #include <licq_log.h>
 
@@ -71,6 +73,7 @@
 #include "xpm/phonebook/pstn.xpm"
 #include "xpm/phonebook/sms.xpm"
 
+using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::IconManager */
 
@@ -134,41 +137,43 @@ bool IconManager::loadIcons(const QString& iconSet)
 #define LOAD_STATUSICON(name, protocol, icon) \
     if (iconsConf.get(name, filename) && p.load(iconPath + QString::fromLocal8Bit(filename.c_str()))) \
     { \
-      myStatusIconMap.insert(QPair<ProtocolType, StatusIconType>(protocol, icon), p); \
+      myStatusIconMap.insert(QPair<ProtocolType, unsigned>(protocol, icon), p); \
       p = QPixmap(); \
     } \
     else \
-      myStatusIconMap.remove(QPair<ProtocolType, StatusIconType>(protocol, icon));
+      myStatusIconMap.remove(QPair<ProtocolType, unsigned>(protocol, icon));
 
   // ICQ/Default status icons
-  LOAD_STATUSICON("Online",     ProtocolIcq, OnlineStatusIcon)
-  LOAD_STATUSICON("FFC",        ProtocolIcq, FreeForChatStatusIcon)
-  LOAD_STATUSICON("Offline",    ProtocolIcq, OfflineStatusIcon)
-  LOAD_STATUSICON("Away",       ProtocolIcq, AwayStatusIcon)
-  LOAD_STATUSICON("NA",         ProtocolIcq, NotAvailableStatusIcon)
-  LOAD_STATUSICON("Occupied",   ProtocolIcq, OccupiedStatusIcon)
-  LOAD_STATUSICON("DND",        ProtocolIcq, DoNotDisturbStatusIcon)
-  LOAD_STATUSICON("Private",    ProtocolIcq, PrivateStatusIcon)
+  LOAD_STATUSICON("Online",     ProtocolIcq, User::OnlineStatus)
+  LOAD_STATUSICON("FFC",        ProtocolIcq, User::FreeForChatStatus)
+  LOAD_STATUSICON("Offline",    ProtocolIcq, User::OfflineStatus)
+  LOAD_STATUSICON("Away",       ProtocolIcq, User::AwayStatus)
+  LOAD_STATUSICON("NA",         ProtocolIcq, User::NotAvailableStatus)
+  LOAD_STATUSICON("Occupied",   ProtocolIcq, User::OccupiedStatus)
+  LOAD_STATUSICON("DND",        ProtocolIcq, User::DoNotDisturbStatus)
+  LOAD_STATUSICON("Private",    ProtocolIcq, User::InvisibleStatus)
+  LOAD_STATUSICON("Idle",       ProtocolIcq, User::IdleStatus)
 
   // AIM status icons
-  LOAD_STATUSICON("AIMOnline",  ProtocolAim, OnlineStatusIcon)
-  LOAD_STATUSICON("AIMOffline", ProtocolAim, OfflineStatusIcon)
-  LOAD_STATUSICON("AIMAway",    ProtocolAim, AwayStatusIcon)
+  LOAD_STATUSICON("AIMOnline",  ProtocolAim, User::OnlineStatus)
+  LOAD_STATUSICON("AIMOffline", ProtocolAim, User::OfflineStatus)
+  LOAD_STATUSICON("AIMAway",    ProtocolAim, User::AwayStatus)
 
   // MSN status icons
-  LOAD_STATUSICON("MSNOnline",  ProtocolMsn, OnlineStatusIcon)
-  LOAD_STATUSICON("MSNOffline", ProtocolMsn, OfflineStatusIcon)
-  LOAD_STATUSICON("MSNAway",    ProtocolMsn, AwayStatusIcon)
-  LOAD_STATUSICON("MSNOccupied",ProtocolMsn, OccupiedStatusIcon)
-  LOAD_STATUSICON("MSNPrivate", ProtocolMsn, PrivateStatusIcon)
+  LOAD_STATUSICON("MSNOnline",  ProtocolMsn, User::OnlineStatus)
+  LOAD_STATUSICON("MSNOffline", ProtocolMsn, User::OfflineStatus)
+  LOAD_STATUSICON("MSNAway",    ProtocolMsn, User::AwayStatus)
+  LOAD_STATUSICON("MSNOccupied",ProtocolMsn, User::OccupiedStatus)
+  LOAD_STATUSICON("MSNPrivate", ProtocolMsn, User::InvisibleStatus)
+  LOAD_STATUSICON("MSNIdle",    ProtocolMsn, User::IdleStatus)
 
   // XMPP status icons
-  LOAD_STATUSICON("XMPPOnline",	ProtocolXmpp, OnlineStatusIcon)
-  LOAD_STATUSICON("XMPPFFC",	ProtocolXmpp, FreeForChatStatusIcon)
-  LOAD_STATUSICON("XMPPOffline",ProtocolXmpp, OfflineStatusIcon)
-  LOAD_STATUSICON("XMPPAway",	ProtocolXmpp, AwayStatusIcon)
-  LOAD_STATUSICON("XMPPNA",	ProtocolXmpp, NotAvailableStatusIcon)
-  LOAD_STATUSICON("XMPPDND",	ProtocolXmpp, DoNotDisturbStatusIcon)
+  LOAD_STATUSICON("XMPPOnline",	ProtocolXmpp, User::OnlineStatus)
+  LOAD_STATUSICON("XMPPFFC",	ProtocolXmpp, User::FreeForChatStatus)
+  LOAD_STATUSICON("XMPPOffline",ProtocolXmpp, User::OfflineStatus)
+  LOAD_STATUSICON("XMPPAway",	ProtocolXmpp, User::AwayStatus)
+  LOAD_STATUSICON("XMPPNA",	ProtocolXmpp, User::NotAvailableStatus)
+  LOAD_STATUSICON("XMPPDND",	ProtocolXmpp, User::DoNotDisturbStatus)
 
   // Message icons
   LOAD_ICON("Message",          StandardMessageIcon);
@@ -287,65 +292,28 @@ const QPixmap& IconManager::getIcon(IconType icon)
   return myEmptyIcon;
 }
 
-const QPixmap& IconManager::iconForStatus(unsigned long fullStatus, const QString& id, unsigned long ppid)
+const QPixmap& IconManager::iconForStatus(unsigned status, const Licq::UserId& userId, bool allowInvisible)
 {
-  bool isAim = (ppid == LICQ_PPID) && !id.isEmpty() && (!id[0].isDigit());
+  ProtocolType protocol = static_cast<ProtocolType>(userId.protocolId());
+  if (protocol == ProtocolIcq && userId.accountId().size() > 0 && !isdigit(userId.accountId()[0]))
+    protocol = ProtocolAim;
 
-  ProtocolType protocol = (isAim ? ProtocolAim : static_cast<ProtocolType>(ppid));
-  StatusIconType statusIcon = OnlineStatusIcon;
+  if (Config::ContactList::instance()->showExtendedIcons() && !allowInvisible)
+    // Extended icons shows if user is invisible so skip it here
+    status &= ~User::InvisibleStatus;
 
-  // cut off the flags, since we should not mind about them
-  fullStatus &= ~ICQ_STATUS_FxFLAGS;
+  // Make sure we don't have multiple flags in status word
+  status = User::singleStatus(status);
 
-  if (fullStatus != ICQ_STATUS_OFFLINE &&
-      (fullStatus & ICQ_STATUS_FxPRIVATE) &&
-      !Config::ContactList::instance()->showExtendedIcons())
-    statusIcon = PrivateStatusIcon;
-
-  else if (fullStatus == ICQ_STATUS_OFFLINE)
-    statusIcon = OfflineStatusIcon;
-
-  else
-  {
-    if (protocol == ProtocolMsn)
-    {
-      if (fullStatus & (ICQ_STATUS_DND | ICQ_STATUS_OCCUPIED))
-        statusIcon = OccupiedStatusIcon;
-
-      else if (fullStatus & (ICQ_STATUS_NA | ICQ_STATUS_AWAY))
-        statusIcon = AwayStatusIcon;
-    }
-    else if (protocol == ProtocolAim)
-    {
-      if (fullStatus & (ICQ_STATUS_DND | ICQ_STATUS_OCCUPIED | ICQ_STATUS_NA | ICQ_STATUS_AWAY))
-        statusIcon = AwayStatusIcon;
-    }
-    else
-    {
-      if (fullStatus & ICQ_STATUS_DND)
-        statusIcon = DoNotDisturbStatusIcon;
-
-      else if (fullStatus & ICQ_STATUS_OCCUPIED)
-        statusIcon = OccupiedStatusIcon;
-
-      else if (fullStatus & ICQ_STATUS_NA)
-        statusIcon = NotAvailableStatusIcon;
-
-      else if (fullStatus & ICQ_STATUS_AWAY)
-        statusIcon = AwayStatusIcon;
-
-      else if ((fullStatus & ICQ_STATUS_FREEFORCHAT) &&
-          myStatusIconMap.contains(
-            QPair<ProtocolType, StatusIconType>(ProtocolIcq, FreeForChatStatusIcon)))
-        statusIcon = FreeForChatStatusIcon;
-    }
-  }
-
-  if (myStatusIconMap.contains(QPair<ProtocolType, StatusIconType>(protocol, statusIcon)))
-    return myStatusIconMap[QPair<ProtocolType, StatusIconType>(protocol, statusIcon)];
+  if (myStatusIconMap.contains(QPair<ProtocolType, unsigned>(protocol, status)))
+    return myStatusIconMap[QPair<ProtocolType, unsigned>(protocol, status)];
 
   // No protocol specific icon existed so use default (same as ICQ)
-  return myStatusIconMap[QPair<ProtocolType, StatusIconType>(ProtocolIcq, statusIcon)];
+  if (myStatusIconMap.contains(QPair<ProtocolType, unsigned>(ProtocolIcq, status)))
+    return myStatusIconMap[QPair<ProtocolType, unsigned>(ProtocolIcq, status)];
+
+  // Icon is missing in default as well, use default online
+  return myStatusIconMap[QPair<ProtocolType, unsigned>(ProtocolIcq, User::OnlineStatus)];
 }
 
 const QPixmap& IconManager::iconForEvent(unsigned short subCommand)
