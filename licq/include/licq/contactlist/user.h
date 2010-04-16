@@ -568,6 +568,14 @@ public:
    */
   static std::string statusToString(unsigned status, bool full = true, bool markInvisible = true);
 
+  /**
+   * Get the most relevant status flag from a status
+   *
+   * @param status Status to convert
+   * @return A status with (maximum) one flag set
+   */
+  static unsigned singleStatus(unsigned status);
+
   int Birthday(unsigned short nDayRange = 0) const;
 
   // Message/History functions

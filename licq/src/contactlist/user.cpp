@@ -1239,11 +1239,34 @@ const char* User::StatusToStatusStrShort(unsigned short n, bool b)
   else return "???";
 }
 
+unsigned User::singleStatus(unsigned status)
+{
+  if (status == OfflineStatus)
+    return OfflineStatus;
+  if (status & InvisibleStatus)
+    return InvisibleStatus;
+  if (status & DoNotDisturbStatus)
+    return DoNotDisturbStatus;
+  if (status & OccupiedStatus)
+    return OccupiedStatus;
+  if (status & NotAvailableStatus)
+    return NotAvailableStatus;
+  if (status & AwayStatus)
+    return AwayStatus;
+  if (status & FreeForChatStatus)
+    return FreeForChatStatus;
+  if (status & IdleStatus)
+    return IdleStatus;
+  return OnlineStatus;
+}
+
 string User::statusToString(unsigned status, bool full, bool markInvisible)
 {
   string str;
   if (status == OfflineStatus)
     str = (full ? tr("Offline") : tr("Off"));
+  else if (!markInvisible && status & InvisibleStatus)
+    str = (full ? tr("Invisible") : tr("Inv"));
   else if (status & DoNotDisturbStatus)
     str = (full ? tr("Do Not Disturb") : tr("DND"));
   else if (status & OccupiedStatus)
@@ -1254,8 +1277,6 @@ string User::statusToString(unsigned status, bool full, bool markInvisible)
     str = (full ? tr("Away") : tr("Away"));
   else if (status & FreeForChatStatus)
     str = (full ? tr("Free For Chat") : tr("FFC"));
-  else if (!markInvisible && status & InvisibleStatus)
-    str = (full ? tr("Invisible") : tr("Inv"));
   else if (status & IdleStatus)
     str = (full ? tr("Idle") : tr("Idle"));
   else
