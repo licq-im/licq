@@ -1002,7 +1002,7 @@ void MainWindow::updateStatus()
     case 1:
       o = it->second;
       o->Lock();
-      myStatusField->setText(LicqStrings::getStatus(o));
+      myStatusField->setText(Licq::User::statusToString(o->status()).c_str());
       myStatusField->setPrependPixmap(iconman->iconForUser(o));
       switch (o->Status())
       {

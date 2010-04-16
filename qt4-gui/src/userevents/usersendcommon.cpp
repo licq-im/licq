@@ -1212,7 +1212,7 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
 
     msg = tr("%1 is in %2 mode:\n%3\nSend...")
       .arg(QString::fromUtf8(u->GetAlias()))
-      .arg(LicqStrings::getStatus(u))
+        .arg(Licq::User::statusToString(u->status()).c_str())
       .arg(myCodec->toUnicode(u->AutoResponse()));
 
     u->SetShowAwayMsg(false);

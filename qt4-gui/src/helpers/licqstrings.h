@@ -34,12 +34,6 @@ namespace LicqQtGui
 class LicqStrings
 {
 public:
-  static QString getStatus(unsigned short status, bool invisible);
-  static QString getStatus(const Licq::User* user, bool useInvisible = true);
-
-  static QString getShortStatus(unsigned short status, bool invisible);
-  static QString getShortStatus(const Licq::User* user, bool useInvisible = true);
-
   static QString getSystemGroupName(unsigned long group);
 };
 

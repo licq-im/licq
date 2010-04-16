@@ -538,7 +538,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Status Label
   lblStatus = new SkinnableLabel(skin->lblStatus, NULL, &w);
   lblStatus->setGeometry(skin->lblStatus.borderToRect(&w));
-  lblStatus->setText(LicqStrings::getStatus(ICQ_STATUS_ONLINE, false));
+  lblStatus->setText(Licq::User::statusToString(Licq::User::OnlineStatus).c_str());
   lblStatus->setPrependPixmap(IconManager::instance()->iconForStatus(Licq::User::OnlineStatus));
 
   // Userview

@@ -288,7 +288,7 @@ void UserPages::Info::loadPageGeneral(const LicqUser* u)
   }
   nfoIp->setText(ip);
   tznZone->setData(u->GetTimezone());
-  nfoStatus->setText(LicqStrings::getStatus(u));
+  nfoStatus->setText(Licq::User::statusToString(u->status()).c_str());
   unsigned int countryCode = u->getUserInfoUint("Country");
   if (m_bOwner)
   {

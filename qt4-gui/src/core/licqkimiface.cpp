@@ -209,7 +209,7 @@ QString LicqKIMIface::presenceString(const QString& uid)
 /*        kdDebug() << pUser->GetAlias()
                     << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
                     << "KABC ID=" << kabcID << endl;*/
-        status = LicqStrings::getStatus(pUser);
+      status = Licq::User::statusToString(pUser->status()).c_str();
         FOR_EACH_PROTO_USER_BREAK
     }
     FOR_EACH_PROTO_USER_END

@@ -52,6 +52,7 @@
 #include "messagebox.h"
 #include "signalmanager.h"
 
+using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserMenu */
 
@@ -237,7 +238,7 @@ void UserMenu::aboutToShowMenu()
     myCheckArAction->setText(tr("Check Auto Response"));
   else
     myCheckArAction->setText(tr("Check %1 Response")
-        .arg(LicqStrings::getShortStatus(u, false)));
+        .arg(User::statusToString(u->status(), false, false).c_str()));
 
   if (u == NULL)
     return;

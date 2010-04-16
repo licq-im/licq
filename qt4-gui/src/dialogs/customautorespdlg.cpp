@@ -79,9 +79,12 @@ CustomAutoRespDlg::CustomAutoRespDlg(const UserId& userId, QWidget* parent)
   if (u->CustomAutoResponse()[0] != '\0')
     myMessage->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
   else
-    if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
+  {
+    unsigned status = Licq::User::statusFromIcqStatus(u->StatusToUser());
+    if (status != Licq::User::OfflineStatus)
       myMessage->setText(tr("I am currently %1.\nYou can leave me a message.")
-          .arg(LicqStrings::getStatus(u->StatusToUser(), false)));
+          .arg(Licq::User::statusToString(status, true, false).c_str()));
+  }
 
   gUserManager.DropUser(u);
 
