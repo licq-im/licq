@@ -41,7 +41,7 @@
 
 #include "userdlg.h"
 
-
+using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserPages::Settings */
 
@@ -244,13 +244,13 @@ void UserPages::Settings::load(const LicqUser* user)
   myUseGpgCheck->setChecked(user->UseGPG());
   myUseRealIpCheck->setChecked(user->SendRealIp());
 
-  unsigned short statusToUser = user->StatusToUser();
-  myStatusNoneRadio->setChecked(statusToUser == ICQ_STATUS_OFFLINE);
-  myStatusOnlineRadio->setChecked(statusToUser == ICQ_STATUS_ONLINE);
-  myStatusAwayRadio->setChecked(statusToUser == ICQ_STATUS_AWAY);
-  myStatusNaRadio->setChecked(statusToUser == ICQ_STATUS_NA);
-  myStatusOccupiedRadio->setChecked(statusToUser == ICQ_STATUS_OCCUPIED);
-  myStatusDndRadio->setChecked(statusToUser == ICQ_STATUS_DND);
+  unsigned statusToUser = user->statusToUser();
+  myStatusNoneRadio->setChecked(statusToUser == User::OfflineStatus);
+  myStatusOnlineRadio->setChecked(statusToUser == User::OnlineStatus);
+  myStatusAwayRadio->setChecked(statusToUser & User::AwayStatus);
+  myStatusNaRadio->setChecked(statusToUser & User::NotAvailableStatus);
+  myStatusOccupiedRadio->setChecked(statusToUser & User::OccupiedStatus);
+  myStatusDndRadio->setChecked(statusToUser & User::DoNotDisturbStatus);
 
   for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
     mySystemGroupCheck[i]->setChecked(user->GetInGroup(GROUPS_SYSTEM, i));
@@ -330,18 +330,18 @@ void UserPages::Settings::apply(LicqUser* user)
   user->SetSendRealIp(myUseRealIpCheck->isChecked());
 
   // Set status to user
-  unsigned short statusToUser = ICQ_STATUS_OFFLINE;
+  unsigned statusToUser = User::OfflineStatus;
   if (myStatusOnlineRadio->isChecked())
-    statusToUser = ICQ_STATUS_ONLINE;
+    statusToUser = User::OnlineStatus;
   if (myStatusAwayRadio->isChecked())
-    statusToUser = ICQ_STATUS_AWAY;
+    statusToUser = User::AwayStatus | User::OnlineStatus;
   if (myStatusNaRadio->isChecked())
-    statusToUser = ICQ_STATUS_NA;
+    statusToUser = User::NotAvailableStatus | User::OnlineStatus;
   if (myStatusOccupiedRadio->isChecked())
-    statusToUser = ICQ_STATUS_OCCUPIED;
+    statusToUser = User::OccupiedStatus | User::OnlineStatus;
   if (myStatusDndRadio->isChecked())
-    statusToUser = ICQ_STATUS_DND;
-  user->SetStatusToUser(statusToUser);
+    statusToUser = User::DoNotDisturbStatus | User::OnlineStatus;
+  user->setStatusToUser(statusToUser);
 
   // Set auto response (empty string will disable custom auto response)
   user->SetCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit());

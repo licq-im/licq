@@ -253,11 +253,11 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeAutoSecure]->setEnabled(gLicqDaemon->CryptoEnabled());
   myMiscModesActions[ModeUseGpg]->setChecked(u->UseGPG());
   myMiscModesActions[ModeUseRealIp]->setChecked(u->SendRealIp());
-  myMiscModesActions[ModeStatusOnline]->setChecked(u->StatusToUser() == ICQ_STATUS_ONLINE);
-  myMiscModesActions[ModeStatusAway]->setChecked(u->StatusToUser() == ICQ_STATUS_AWAY);
-  myMiscModesActions[ModeStatusNa]->setChecked(u->StatusToUser() == ICQ_STATUS_NA);
-  myMiscModesActions[ModeStatusOccupied]->setChecked(u->StatusToUser() == ICQ_STATUS_OCCUPIED);
-  myMiscModesActions[ModeStatusDnd]->setChecked(u->StatusToUser() == ICQ_STATUS_DND);
+  myMiscModesActions[ModeStatusOnline]->setChecked(u->statusToUser() == User::OnlineStatus);
+  myMiscModesActions[ModeStatusAway]->setChecked(u->statusToUser() & User::AwayStatus);
+  myMiscModesActions[ModeStatusNa]->setChecked(u->statusToUser() & User::NotAvailableStatus);
+  myMiscModesActions[ModeStatusOccupied]->setChecked(u->statusToUser() & User::OccupiedStatus);
+  myMiscModesActions[ModeStatusDnd]->setChecked(u->statusToUser() & User::DoNotDisturbStatus);
 
   myCustomArAction->setChecked(u->CustomAutoResponse()[0] != '\0');
 
@@ -528,23 +528,23 @@ void UserMenu::toggleMiscMode(QAction* action)
       break;
 
     case ModeStatusOnline:
-      u->SetStatusToUser(newState ? ICQ_STATUS_ONLINE : ICQ_STATUS_OFFLINE);
+      u->setStatusToUser(newState ? User::OnlineStatus : User::OfflineStatus);
       break;
 
     case ModeStatusAway:
-      u->SetStatusToUser(newState ? ICQ_STATUS_AWAY : ICQ_STATUS_OFFLINE);
+      u->setStatusToUser(newState ? User::AwayStatus | User::OnlineStatus : User::OfflineStatus);
       break;
 
     case ModeStatusNa:
-      u->SetStatusToUser(newState ? ICQ_STATUS_NA : ICQ_STATUS_OFFLINE);
+      u->setStatusToUser(newState ? User::NotAvailableStatus | User::OnlineStatus : User::OfflineStatus);
       break;
 
     case ModeStatusOccupied:
-      u->SetStatusToUser(newState ? ICQ_STATUS_OCCUPIED : ICQ_STATUS_OFFLINE);
+      u->setStatusToUser(newState ? User::OccupiedStatus | User::OnlineStatus : User::OfflineStatus);
       break;
 
     case ModeStatusDnd:
-      u->SetStatusToUser(newState ? ICQ_STATUS_DND : ICQ_STATUS_OFFLINE);
+      u->setStatusToUser(newState ? User::DoNotDisturbStatus | User::OnlineStatus : User::OfflineStatus);
       break;
   }
   gUserManager.DropUser(u);

@@ -364,6 +364,7 @@ public:
   bool AcceptInOccupied() const                 { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
   bool AcceptInDND() const                      { return m_nAutoAccept & ACCEPT_IN_DND; }
   unsigned short StatusToUser() const           { return m_nStatusToUser; }
+  unsigned statusToUser() const                 { return statusFromIcqStatus(m_nStatusToUser); }
   bool KeepAliasOnUpdate() const                { return m_bKeepAliasOnUpdate; }
   char *CustomAutoResponse() const              { return m_szCustomAutoResponse; }
   bool NotInList() const                        { return m_bNotInList; }
@@ -465,6 +466,7 @@ public:
   void SetUseGPG(bool b)                        { m_bUseGPG = b; SaveLicqInfo(); }
   void SetGPGKey(const char *c)                 { SetString(&m_szGPGKey, c); SaveLicqInfo(); }
   void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
+  void setStatusToUser(unsigned s) { SetStatusToUser(icqStatusFromStatus(s)); }
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
   void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
