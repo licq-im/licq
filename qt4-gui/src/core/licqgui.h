@@ -155,17 +155,17 @@ public:
    * @param invisible True to set status with invisible mode active
    * @param autoMessage Auto response message to set
    */
-  void changeStatus(unsigned long status, bool invisible = false, const QString& autoMessage = QString());
+  void changeStatus(unsigned status, bool invisible = false, const QString& autoMessage = QString());
 
   /**
    * Set new status for an owner
    *
    * @param status New status
-   * @param ppid Protocol id
+   * @param userId Owner to change status for
    * @param invisible True to set status with invisible mode active
    * @param autoMessage Auto response message to set
    */
-  void changeStatus(unsigned long status, unsigned long ppid, bool invisible = false, const QString& autoMessage = QString());
+  void changeStatus(unsigned status, const Licq::UserId& userId, bool invisible = false, const QString& autoMessage = QString());
 
   /**
    * Invoke the desktop-aware URL viewer

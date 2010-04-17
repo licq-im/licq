@@ -227,14 +227,16 @@ void AwayMsgDlg::ok()
 {
   myAutoCloseCounter = -1;
 
-  unsigned short icqStatus = User::icqStatusFromStatus(myStatus);
   bool invisible = (myStatus & User::InvisibleStatus) != 0;
 
   QString s = myAwayMsg->toPlainText().trimmed();
   if (myPpid == 0)
-    LicqGui::instance()->changeStatus(icqStatus, invisible, s);
+    LicqGui::instance()->changeStatus(myStatus, invisible, s);
   else
-    LicqGui::instance()->changeStatus(icqStatus, myPpid, invisible, s);
+  {
+    Licq::UserId userId = gUserManager.ownerUserId(myPpid);
+    LicqGui::instance()->changeStatus(myStatus, userId, invisible, s);
+  }
 
   close();
 }

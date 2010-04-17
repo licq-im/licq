@@ -525,19 +525,18 @@ void SystemMenu::setMainStatus(QAction* action)
   }
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
-  unsigned short icqStatus = User::icqStatusFromStatus(status);
   if (invisible)
     status |= User::InvisibleStatus;
 
   if (withMsg)
     AwayMsgDlg::showAwayMsgDlg(status, true, 0);
   else
-    LicqGui::instance()->changeStatus(icqStatus, invisible);
+    LicqGui::instance()->changeStatus(status, invisible);
 }
 
 void SystemMenu::toggleMainInvisibleStatus()
 {
-  LicqGui::instance()->changeStatus(ICQ_STATUS_FxPRIVATE, myStatusInvisibleAction->isChecked());
+  LicqGui::instance()->changeStatus(User::InvisibleStatus, myStatusInvisibleAction->isChecked());
 }
 
 void SystemMenu::updateAllUsers()
@@ -741,17 +740,16 @@ void OwnerData::setStatus(QAction* action)
   bool withMsg = (myUseAwayMessage && status & User::MessageStatuses);
   bool invisible = (myStatusInvisibleAction != NULL && myStatusInvisibleAction->isChecked());
 
-  unsigned short icqStatus = User::icqStatusFromStatus(status);
   if (invisible)
     status |= User::InvisibleStatus;
 
   if (withMsg)
     AwayMsgDlg::showAwayMsgDlg(status, true, myPpid);
   else
-    LicqGui::instance()->changeStatus(icqStatus, myPpid, invisible);
+    LicqGui::instance()->changeStatus(status, myUserId, invisible);
 }
 
 void OwnerData::toggleInvisibleStatus()
 {
-  LicqGui::instance()->changeStatus(ICQ_STATUS_FxPRIVATE, myPpid, myStatusInvisibleAction->isChecked());
+  LicqGui::instance()->changeStatus(User::InvisibleStatus, myUserId, myStatusInvisibleAction->isChecked());
 }

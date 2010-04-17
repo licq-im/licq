@@ -131,6 +131,7 @@ using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
 using Licq::SarManager;
+using Licq::User;
 using Licq::gSarManager;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
@@ -489,12 +490,12 @@ int LicqGui::Run()
     switch (autoLogon % 10)
     {
       case 0: break;
-      case 1: changeStatus(ICQ_STATUS_ONLINE, invisible); break;
-      case 2: changeStatus(ICQ_STATUS_AWAY, invisible); break;
-      case 3: changeStatus(ICQ_STATUS_NA, invisible); break;
-      case 4: changeStatus(ICQ_STATUS_OCCUPIED, invisible); break;
-      case 5: changeStatus(ICQ_STATUS_DND, invisible); break;
-      case 6: changeStatus(ICQ_STATUS_FREEFORCHAT, invisible); break;
+      case 1: changeStatus(User::OnlineStatus, invisible); break;
+      case 2: changeStatus(User::AwayStatus, invisible); break;
+      case 3: changeStatus(User::NotAvailableStatus, invisible); break;
+      case 4: changeStatus(User::OccupiedStatus, invisible); break;
+      case 5: changeStatus(User::DoNotDisturbStatus, invisible); break;
+      case 6: changeStatus(User::FreeForChatStatus, invisible); break;
       default: gLog.Warn("%sInvalid auto online id: %d.\n", L_WARNxSTR, autoLogon);
     }
   }
@@ -586,7 +587,7 @@ void LicqGui::grabKey(const QString& key)
 }
 #endif /* defined(Q_WS_X11) */
 
-void LicqGui::changeStatus(unsigned long status, bool invisible, const QString& autoMessage)
+void LicqGui::changeStatus(unsigned status, bool invisible, const QString& autoMessage)
 {
   // Get a list of owners first since we can't call changeStatus with list locked
   list<UserId> owners;
@@ -598,49 +599,58 @@ void LicqGui::changeStatus(unsigned long status, bool invisible, const QString& 
 
   BOOST_FOREACH(const UserId& userId, owners)
   {
-    unsigned long ppid = LicqUser::getUserProtocolId(userId);
-
-    // Keep invisible mode on protocols when changing global status
-    bool protoInvisible = invisible;
-    if (status != ICQ_STATUS_FxPRIVATE && myMainWindow->systemMenu()->getInvisibleStatus(userId))
-      protoInvisible = true;
-
-    changeStatus(status, ppid, protoInvisible, autoMessage);
+    changeStatus(status, userId, invisible, autoMessage);
   }
 }
 
-void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisible, const QString& autoMessage)
+void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool invisible, const QString& autoMessage)
 {
-  const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
-  if (o == NULL)
-    return;
+  unsigned oldStatus;
 
-  if (status == ICQ_STATUS_FxPRIVATE)
   {
-    if (!o->isOnline())
-    {
-      gUserManager.DropOwner(o);
+    Licq::OwnerReadGuard o(userId);
+    if (!o.isLocked())
       return;
-    }
 
-    status = o->StatusFull();
-
-    if (invisible)
-      status |= ICQ_STATUS_FxPRIVATE;
-    else
-      status &= (~ICQ_STATUS_FxPRIVATE);
+    oldStatus = o->status();
   }
-  else if(status != ICQ_STATUS_OFFLINE)
+
+  if (status == User::InvisibleStatus)
   {
-    if (o->isInvisible() || invisible)
-      status |= ICQ_STATUS_FxPRIVATE;
+    // Don't try to toggle invisible if we're offline
+    if (oldStatus == User::OfflineStatus)
+      return;
+
+    // Just set invisible status, keep the rest
+    status = oldStatus;
+    if (invisible)
+      status |= User::InvisibleStatus;
+    else
+      status &= ~User::InvisibleStatus;
+  }
+  else if (status != User::OfflineStatus)
+  {
+    // Normal status change, keep flags
+    status |= User::OnlineStatus;
+    if (invisible || oldStatus & User::InvisibleStatus)
+      status |= User::InvisibleStatus;
+    if (oldStatus & User::IdleStatus)
+      status |= User::IdleStatus;
+
+    if (oldStatus == User::OfflineStatus)
+    {
+      // When going online, keep oldinvisible flag from status menu
+      if (myMainWindow->systemMenu()->getInvisibleStatus(userId))
+        status |= User::InvisibleStatus;
+    }
   }
 
-  UserId ownerId = o->id();
-  gUserManager.DropOwner(o);
+  unsigned long icqStatus = User::icqStatusFromStatus(status);
+  if (status & User::InvisibleStatus)
+    icqStatus |= ICQ_STATUS_FxPRIVATE;
 
   const QTextCodec* codec = UserCodec::defaultEncoding();
-  gProtocolManager.setStatus(ownerId, status,
+  gProtocolManager.setStatus(userId, icqStatus,
       (autoMessage.isNull() ? gProtocolManager.KeepAutoResponse : codec->fromUnicode(autoMessage).data()));
 }
 
@@ -1574,8 +1584,8 @@ struct SAutoAwayInfo
   SAutoAwayInfo() : isAutoAway(false) {}
   bool isAutoAway;
 
-  unsigned short preAutoAwayStatus;
-  unsigned short setAutoAwayStatus;
+  unsigned preAutoAwayStatus;
+  unsigned setAutoAwayStatus;
 };
 
 void LicqGui::autoAway()
@@ -1613,7 +1623,7 @@ void LicqGui::autoAway()
   Config::General* generalConfig = Config::General::instance();
 
   // Check every owner as the statuses may differ
-  map<unsigned long, unsigned short> newStatuses;
+  map<unsigned long, unsigned> newStatuses;
   const OwnerMap* owners = gUserManager.LockOwnerList();
   for (OwnerMap::const_iterator iter = owners->begin(); iter != owners->end(); ++iter)
   {
@@ -1622,7 +1632,7 @@ void LicqGui::autoAway()
 
     // Fetch current status
     o->Lock();
-    unsigned short status = o->Status();
+    unsigned status = o->status();
     o->Unlock();
 
     SAutoAwayInfo& info = autoAwayInfo[nPPID];
@@ -1641,16 +1651,16 @@ void LicqGui::autoAway()
       continue;
 
     bool returnFromAutoAway = false;
-    unsigned short wantedStatus;
+    unsigned wantedStatus;
     if (generalConfig->autoOfflineTime() > 0 &&
         idleTime > (unsigned long)(generalConfig->autoOfflineTime() * 60000))
-      wantedStatus = ICQ_STATUS_OFFLINE;
+      wantedStatus = User::OfflineStatus;
     else if (generalConfig->autoNaTime() > 0 &&
         idleTime > (unsigned long)(generalConfig->autoNaTime() * 60000))
-      wantedStatus = ICQ_STATUS_NA;
+      wantedStatus = User::OnlineStatus | User::NotAvailableStatus;
     else if (generalConfig->autoAwayTime() > 0 &&
         idleTime > (unsigned long)(generalConfig->autoAwayTime() * 60000))
-      wantedStatus = ICQ_STATUS_AWAY;
+      wantedStatus = User::OnlineStatus | User::AwayStatus;
     else
     {
       // The user is active and we're not auto away
@@ -1662,11 +1672,11 @@ void LicqGui::autoAway()
     }
 
     // MSN does not support NA
-    if (nPPID == MSN_PPID && wantedStatus == ICQ_STATUS_NA)
-      wantedStatus = ICQ_STATUS_AWAY;
+    if (nPPID == MSN_PPID && wantedStatus & User::NotAvailableStatus)
+      wantedStatus = User::OnlineStatus | User::AwayStatus;
 
     // Never change from NA to away unless we are returning from auto away
-    if (status == ICQ_STATUS_NA && wantedStatus == ICQ_STATUS_AWAY && !returnFromAutoAway)
+    if (status & User::NotAvailableStatus && wantedStatus & User::AwayStatus && !returnFromAutoAway)
       continue;
 
     if (status == wantedStatus)
@@ -1683,13 +1693,13 @@ void LicqGui::autoAway()
 
     // Set auto response
     QString autoResponse;
-    if (wantedStatus == ICQ_STATUS_NA && generalConfig->autoNaMess())
+    if (wantedStatus & User::NotAvailableStatus && generalConfig->autoNaMess())
     {
       const Licq::SarList& sars(gSarManager.getList(SarManager::NotAvailableList));
       autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
       gSarManager.releaseList();
     }
-    else if (wantedStatus == ICQ_STATUS_AWAY && generalConfig->autoAwayMess())
+    else if (wantedStatus & User::AwayStatus && generalConfig->autoAwayMess())
     {
       const Licq::SarList& sars(gSarManager.getList(SarManager::AwayList));
       autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
@@ -1712,7 +1722,7 @@ void LicqGui::autoAway()
   gUserManager.UnlockOwnerList();
 
   // Do the actual status change here, after we've released the lock on owner list
-  map<unsigned long, unsigned short>::const_iterator iter;
+  map<unsigned long, unsigned>::const_iterator iter;
   for (iter = newStatuses.begin(); iter != newStatuses.end(); ++iter)
     changeStatus(iter->second, iter->first);
 
