@@ -1431,25 +1431,18 @@ void LicqGui::userUpdated(const UserId& userId, unsigned long subSignal, int arg
         const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
         if (o != NULL)
         {
-          switch (o->Status())
-          {
-            case ICQ_STATUS_ONLINE:
-            case ICQ_STATUS_FREEFORCHAT:
-              popCheck = 1;
-              break;
-            case ICQ_STATUS_AWAY:
-              popCheck = 2;
-              break;
-            case ICQ_STATUS_NA:
-              popCheck = 3;
-              break;
-            case ICQ_STATUS_OCCUPIED:
-              popCheck = 4;
-              break;
-            case ICQ_STATUS_DND:
-              popCheck = 5;
-              break;
-          }
+          unsigned status = o->status();
+          if (status & User::DoNotDisturbStatus)
+            popCheck = 5;
+          else if (status & User::OccupiedStatus)
+            popCheck = 4;
+          else if (status & User::NotAvailableStatus)
+            popCheck = 3;
+          else if (status & User::AwayStatus)
+            popCheck = 2;
+          else if (status & User::OnlineStatus)
+            popCheck = 1;
+
           gUserManager.DropOwner(o);
         }
 
@@ -1647,7 +1640,7 @@ void LicqGui::autoAway()
     }
 
     // If we are offline, and it isn't auto offline, we shouldn't do anything
-    if (status == ICQ_STATUS_OFFLINE && !info.isAutoAway)
+    if (status == User::OfflineStatus && !info.isAutoAway)
       continue;
 
     bool returnFromAutoAway = false;

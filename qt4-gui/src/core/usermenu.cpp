@@ -229,16 +229,16 @@ void UserMenu::aboutToShowMenu()
 {
   const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
 
-  int status = (u == NULL ? ICQ_STATUS_OFFLINE : u->Status());
+  unsigned status = (u == NULL ? static_cast<unsigned>(User::OfflineStatus) : u->status());
 
-  myCheckArAction->setEnabled(status != ICQ_STATUS_OFFLINE);
+  myCheckArAction->setEnabled(status != User::OfflineStatus);
   myMakePermanentAction->setVisible(u == NULL ? false : u->NotInList());
 
-  if (status == ICQ_STATUS_OFFLINE || status == ICQ_STATUS_ONLINE)
-    myCheckArAction->setText(tr("Check Auto Response"));
-  else
+  if (status & User::MessageStatuses)
     myCheckArAction->setText(tr("Check %1 Response")
         .arg(User::statusToString(u->status(), false, false).c_str()));
+  else
+    myCheckArAction->setText(tr("Check Auto Response"));
 
   if (u == NULL)
     return;

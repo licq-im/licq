@@ -1492,10 +1492,10 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
   if (o == NULL)
     return 0;
-  unsigned short status = o->Status();
+  unsigned status = o->status();
   gUserManager.DropOwner(o);
 
-  if(status == ICQ_STATUS_OFFLINE)
+  if(status == Licq::User::OfflineStatus)
   {
     InformUser(dynamic_cast<UserDlg*>(parent()),
         tr("You need to be connected to the\nICQ Network to retrieve your settings."));
@@ -1544,14 +1544,14 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
 
 unsigned long UserPages::Info::send(UserDlg::UserPage page)
 {
-  unsigned short status;
+  unsigned status;
   UserId ownerId;
 
   {
     OwnerWriteGuard owner(myPpid);
     if (!owner.isLocked())
       return 0;
-    status = owner->Status();
+    status = owner->status();
     ownerId = owner->id();
 
     // Owner info is read from owner so make sure it's updated
@@ -1559,7 +1559,8 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
       savePageGeneral(*owner);
   }
 
-    if(status == ICQ_STATUS_OFFLINE) {
+    if (status == Licq::User::OfflineStatus)
+    {
     InformUser(dynamic_cast<UserDlg*>(parent()),
         tr("You need to be connected to the\nICQ Network to change your settings."));
     return 0;

@@ -1004,23 +1004,12 @@ void MainWindow::updateStatus()
       o->Lock();
       myStatusField->setText(Licq::User::statusToString(o->status()).c_str());
       myStatusField->setPrependPixmap(iconman->iconForUser(o));
-      switch (o->Status())
-      {
-        case ICQ_STATUS_OFFLINE:
-          theColor = skin->offlineColor;
-          break;
-        case ICQ_STATUS_ONLINE:
-        case ICQ_STATUS_FREEFORCHAT:
-          theColor = skin->onlineColor;
-          break;
-        case ICQ_STATUS_AWAY:
-        case ICQ_STATUS_NA:
-        case ICQ_STATUS_OCCUPIED:
-        case ICQ_STATUS_DND:
-        default:
-          theColor = skin->awayColor;
-          break;
-      }
+      if (o->status() == Licq::User::OfflineStatus)
+        theColor = skin->offlineColor;
+      else if (o->status() & Licq::User::AwayStatuses)
+        theColor = skin->awayColor;
+      else
+        theColor = skin->onlineColor;
       o->Unlock();
       break;
     default:

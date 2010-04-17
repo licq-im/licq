@@ -108,7 +108,7 @@ void SecurityDlg::ok()
     return;
   }
 
-  if (o->Status() == ICQ_STATUS_OFFLINE)
+  if (o->status() == Licq::User::OfflineStatus)
   {
     gUserManager.DropOwner(o);
     InformUser(this, tr("You need to be connected to the\n"

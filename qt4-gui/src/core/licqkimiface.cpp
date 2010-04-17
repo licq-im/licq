@@ -237,28 +237,14 @@ int LicqKIMIface::presenceStatus(const QString& uid)
 /*        kdDebug() << pUser->GetAlias()
                     << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
                     << "KABC ID=" << kabcID << endl;*/
-        switch (pUser->Status())
-        {
-            case ICQ_STATUS_OFFLINE:
-                status = 1; // offline
-                break;
 
-            case ICQ_STATUS_ONLINE:
-            case ICQ_STATUS_FREEFORCHAT:
-                status = 4; // online
-                break;
+      if (pUser->status() == Licq::User::OfflineStatus)
+        status = 1; // offline
+      else if (pUser->status() & Licq::User::AwayStatuses)
+        status = 3; // away
+      else
+        status = 4; // online
 
-            case ICQ_STATUS_AWAY:
-            case ICQ_STATUS_NA:
-            case ICQ_STATUS_DND:
-            case ICQ_STATUS_OCCUPIED:
-                status = 3; // away
-                break;
-
-            default:
-                status = 0; // unknown
-                break;
-        }
         FOR_EACH_PROTO_USER_BREAK
     }
     FOR_EACH_PROTO_USER_END
