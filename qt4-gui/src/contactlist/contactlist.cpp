@@ -366,20 +366,35 @@ void ContactListModel::addUser(const LicqUser* licqUser)
 
 void ContactListModel::updateUserGroups(ContactUserData* user, const LicqUser* licqUser)
 {
+  bool userIgnored = licqUser->IgnoreList();
+
   // Check which user groups the user should be member of
   for (int i = 0; i < myUserGroups.size(); ++i)
   {
     ContactGroup* group = myUserGroups.at(i);
     int gid = group->groupId();
-    bool shouldBeMember = (gid != 0 && licqUser->GetInGroup(GROUPS_USER, gid)) ||
-        (gid == 0 && licqUser->GetGroups().empty() && !licqUser->IgnoreList());
+    bool shouldBeMember;
+    if (userIgnored)
+      shouldBeMember = false;
+    else if (gid != 0 && licqUser->GetInGroup(GROUPS_USER, gid))
+      shouldBeMember = true;
+    else if (gid == 0 && licqUser->GetGroups().empty())
+      shouldBeMember = true;
+    else
+      shouldBeMember = false;
+
     updateUserGroup(user, group, shouldBeMember);
   }
 
   // Check which system groups the user should be member of
   for (int i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
-    updateUserGroup(user, mySystemGroups[i], licqUser->GetInGroup(GROUPS_SYSTEM, i));
+    bool shouldBeMember;
+    if (userIgnored)
+      shouldBeMember = (i == GROUP_IGNORE_LIST);
+    else
+      shouldBeMember = licqUser->GetInGroup(GROUPS_SYSTEM, i);
+    updateUserGroup(user, mySystemGroups[i], shouldBeMember);
   }
 }
 
