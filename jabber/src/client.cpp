@@ -29,10 +29,11 @@
 #include <gloox/message.h>
 #include <gloox/rostermanager.h>
 
-#include <licq_icq.h>
+#include <licq/contactlist/user.h>
 #include <licq/log.h>
 #include <licq/licqversion.h>
 
+using Licq::User;
 using Licq::gLog;
 
 Client::Client(Handler& handler, const std::string& username,
@@ -79,7 +80,7 @@ void Client::setPassword(const std::string& password)
   myClient.setPassword(password);
 }
 
-bool Client::connect(unsigned long status)
+bool Client::connect(unsigned status)
 {
   changeStatus(status);
   return myClient.connect(false);
@@ -90,7 +91,7 @@ bool Client::isConnected()
   return myClient.authed();
 }
 
-void Client::changeStatus(unsigned long status)
+void Client::changeStatus(unsigned status)
 {
   std::string msg = myHandler.getStatusMessage(status);
   myClient.setPresence(statusToPresence(status), 0, msg);
@@ -334,68 +335,50 @@ void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
   }
 }
 
-unsigned long Client::presenceToStatus(gloox::Presence::PresenceType presence)
+unsigned Client::presenceToStatus(gloox::Presence::PresenceType presence)
 {
-  unsigned long status;
-
   switch (presence)
   {
     case gloox::Presence::Invalid:
     case gloox::Presence::Probe:
     case gloox::Presence::Error:
-      status = ICQ_STATUS_OFFLINE;
-      break;
-    case gloox::Presence::Available:
-      status = ICQ_STATUS_ONLINE;
-      break;
-    case gloox::Presence::Chat:
-      status = ICQ_STATUS_FREEFORCHAT;
-      break;
-    case gloox::Presence::Away:
-      status = ICQ_STATUS_AWAY;
-      break;
-    case gloox::Presence::DND:
-      status = ICQ_STATUS_DND;
-      break;
-    case gloox::Presence::XA:
-      status = ICQ_STATUS_NA;
-      break;
     case gloox::Presence::Unavailable:
-      status = ICQ_STATUS_OFFLINE;
-      break;
-  }
+      return User::OfflineStatus;
 
-  return status;
+    case gloox::Presence::Chat:
+      return User::OnlineStatus | User::FreeForChatStatus;
+
+    case gloox::Presence::Away:
+      return User::OnlineStatus | User::AwayStatus;
+
+    case gloox::Presence::DND:
+      return User::OnlineStatus | User::DoNotDisturbStatus;
+
+    case gloox::Presence::XA:
+      return User::OnlineStatus | User::NotAvailableStatus;
+
+    case gloox::Presence::Available:
+    default:
+      return User::OnlineStatus;
+  }
 }
 
-gloox::Presence::PresenceType Client::statusToPresence(unsigned long status)
+gloox::Presence::PresenceType Client::statusToPresence(unsigned status)
 {
-  gloox::Presence::PresenceType presence;
+  if (status == User::OfflineStatus)
+    return gloox::Presence::Unavailable;
 
-  switch (status & ~ICQ_STATUS_FxFLAGS)
-  {
-    case ICQ_STATUS_ONLINE:
-      presence = gloox::Presence::Available;
-      break;
-    case ICQ_STATUS_AWAY:
-      presence = gloox::Presence::Away;
-      break;
-    case ICQ_STATUS_DND:
-    case ICQ_STATUS_OCCUPIED:
-      presence = gloox::Presence::DND;
-      break;
-    case ICQ_STATUS_NA:
-      presence = gloox::Presence::XA;
-      break;
-    case ICQ_STATUS_FREEFORCHAT:
-      presence = gloox::Presence::Chat;
-      break;
-    case ICQ_STATUS_OFFLINE:
-      presence = gloox::Presence::Unavailable;
-      break;
-    default:
-      presence = gloox::Presence::Invalid;
-  }
+  if (status & User::AwayStatus)
+    return gloox::Presence::Away;
 
-  return presence;
+  if (status & User::NotAvailableStatus)
+    return gloox::Presence::XA;
+
+  if (status & (User::OccupiedStatus | User::DoNotDisturbStatus))
+    return gloox::Presence::DND;
+
+  if (status & User::FreeForChatStatus)
+    return gloox::Presence::Chat;
+
+  return gloox::Presence::Available;
 }

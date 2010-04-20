@@ -54,9 +54,9 @@ public:
   void recv();
 
   void setPassword(const std::string& password);
-  bool connect(unsigned long status);
+  bool connect(unsigned status);
   bool isConnected();
-  void changeStatus(unsigned long status);
+  void changeStatus(unsigned status);
   void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);
   void addUser(const std::string& user);
@@ -111,8 +111,8 @@ private:
   gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;
 
-  unsigned long presenceToStatus(gloox::Presence::PresenceType presence);
-  gloox::Presence::PresenceType statusToPresence(unsigned long status);
+  unsigned presenceToStatus(gloox::Presence::PresenceType presence);
+  gloox::Presence::PresenceType statusToPresence(unsigned status);
 };
 
 #endif

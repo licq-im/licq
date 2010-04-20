@@ -165,8 +165,8 @@ void Jabber::processSignal(LicqProtoSignal* signal)
 
 void Jabber::doLogon(LicqProtoLogonSignal* signal)
 {
-  unsigned long status = signal->status();
-  if (status == ICQ_STATUS_OFFLINE)
+  unsigned status = Licq::User::statusFromIcqStatus(signal->status());
+  if (status == Licq::User::OfflineStatus)
     return;
 
   const LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
@@ -201,7 +201,7 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
 void Jabber::doChangeStatus(LicqProtoChangeStatusSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->changeStatus(signal->status());
+  myClient->changeStatus(Licq::User::statusFromIcqStatus(signal->status()));
 }
 
 void Jabber::doLogoff()

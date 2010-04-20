@@ -35,31 +35,27 @@ public:
   Handler();
   ~Handler();
 
-  void setStatus(unsigned long status);
+  void setStatus(unsigned status)
+  { myStatus = status; }
 
   void onConnect();
-  void onChangeStatus(unsigned long status);
+  void onChangeStatus(unsigned status);
   void onDisconnect();
 
   void onUserAdded(const std::string& id, const std::string& name,
                    const std::list<std::string>& groups);
   void onUserRemoved(const std::string& id);
-  void onUserStatusChange(const std::string& id, const unsigned long newStatus);
+  void onUserStatusChange(const std::string& id, unsigned status);
   void onRosterReceived(const std::set<std::string>& ids);
 
   void onMessage(const std::string& from, const std::string& message);
 
-  std::string getStatusMessage(unsigned long status);
+  std::string getStatusMessage(unsigned status);
 
 private:
-  unsigned long myStatus;
+  unsigned myStatus;
   unsigned long myNextConvoId;
   std::map<std::string, unsigned long> myConvoIds;
 };
-
-inline void Handler::setStatus(unsigned long status)
-{
-  myStatus = status;
-}
 
 #endif

@@ -28,13 +28,14 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
+using std::string;
 using Licq::OnEventManager;
 using Licq::gOnEventManager;
 
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
 Handler::Handler() :
-  myStatus(ICQ_STATUS_OFFLINE),
+  myStatus(Licq::User::OfflineStatus),
   myNextConvoId(1)
 {
   // Empty
@@ -50,7 +51,7 @@ void Handler::onConnect()
   TRACE();
 
   LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-  gLicqDaemon->ChangeUserStatus(owner, myStatus);
+  gLicqDaemon->ChangeUserStatus(owner, Licq::User::icqStatusFromStatus(myStatus));
   gUserManager.DropOwner(owner);
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0,
@@ -58,18 +59,13 @@ void Handler::onConnect()
   gLicqDaemon->pushPluginSignal(result);
 }
 
-void Handler::onChangeStatus(unsigned long status)
+void Handler::onChangeStatus(unsigned status)
 {
   TRACE();
 
-  LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_W);
-  gLicqDaemon->ChangeUserStatus(owner, status);
-
-  LicqSignal* result = new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS,
-                                      owner->id(), JABBER_PPID);
-  gUserManager.DropOwner(owner);
-
-  gLicqDaemon->pushPluginSignal(result);
+  unsigned long icqStatus = Licq::User::icqStatusFromStatus(status);
+  Licq::OwnerWriteGuard o(JABBER_PPID);
+  gLicqDaemon->ChangeUserStatus(*o, icqStatus);
 }
 
 void Handler::onDisconnect()
@@ -143,20 +139,16 @@ void Handler::onUserRemoved(const std::string& id)
   gUserManager.removeUser(userId, false);
 }
 
-void Handler::onUserStatusChange(const std::string& id, const unsigned long newStatus)
+void Handler::onUserStatusChange(const string& id, unsigned status)
 {
   TRACE();
 
-  UserId userId = LicqUser::makeUserId(id, JABBER_PPID);
+  Licq::UserWriteGuard u(Licq::UserId(id, JABBER_PPID));
+  if (!u.isLocked())
+    return;
 
-  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
-  assert(user != NULL);
-  user->SetStatus(newStatus);
-
-  gLicqDaemon->pushPluginSignal(
-      new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, user->id(), JABBER_PPID));
-
-  gUserManager.DropUser(user);
+  unsigned long icqStatus = Licq::User::icqStatusFromStatus(status);
+  gLicqDaemon->ChangeUserStatus(*u, icqStatus);
 }
 
 void Handler::onRosterReceived(const std::set<std::string>& ids)
@@ -198,19 +190,14 @@ void Handler::onMessage(const std::string& from, const std::string& message)
   gUserManager.DropUser(user);
 }
 
-std::string Handler::getStatusMessage(unsigned long status)
+std::string Handler::getStatusMessage(unsigned status)
 {
-  std::string msg = std::string();
-  LicqOwner* owner = NULL;
+  if ((status & Licq::User::MessageStatuses) == 0)
+    return string();
 
-  if ((status & ~ICQ_STATUS_FxFLAGS) != ICQ_STATUS_ONLINE)
-    owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(JABBER_PPID);
+  if (!o.isLocked())
+    return string();
 
-  if (owner != NULL)
-  {
-    msg = owner->AutoResponse();
-    gUserManager.DropOwner(owner);
-  }
-
-  return msg;
+  return o->AutoResponse();
 }
