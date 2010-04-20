@@ -15,6 +15,7 @@
 #include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_icqd.h"
+#include <licq/contactlist/user.h>
 #include <licq/icqcodes.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
@@ -26,6 +27,7 @@
 #undef clear
 
 using namespace std;
+using Licq::User;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 
@@ -34,19 +36,19 @@ extern "C" const char *LP_Version();
 const unsigned short NUM_STATUS = 13;
 const struct SStatus aStatus[NUM_STATUS] =
   {
-    { "online", ICQ_STATUS_ONLINE },
-    { "away", ICQ_STATUS_AWAY },
-    { "na", ICQ_STATUS_NA },
-    { "dnd", ICQ_STATUS_DND },
-    { "occupied", ICQ_STATUS_OCCUPIED },
-    { "ffc", ICQ_STATUS_FREEFORCHAT },
-    { "offline", ICQ_STATUS_OFFLINE },
-    { "*online", ICQ_STATUS_ONLINE },
-    { "*away", ICQ_STATUS_AWAY },
-    { "*na", ICQ_STATUS_NA },
-    { "*dnd", ICQ_STATUS_DND },
-    { "*occupied", ICQ_STATUS_OCCUPIED },
-    { "*ffc", ICQ_STATUS_FREEFORCHAT }
+    { "online",     User::OnlineStatus },
+    { "away",       User::OnlineStatus | User::AwayStatus },
+    { "na",         User::OnlineStatus | User::NotAvailableStatus },
+    { "dnd",        User::OnlineStatus | User::DoNotDisturbStatus },
+    { "occupied",   User::OnlineStatus | User::OccupiedStatus },
+    { "ffc",        User::OnlineStatus | User::FreeForChatStatus },
+    { "offline",    User::OfflineStatus },
+    { "*online",    User::OnlineStatus | User::InvisibleStatus },
+    { "*away",      User::OnlineStatus | User::InvisibleStatus | User::AwayStatus },
+    { "*na",        User::OnlineStatus | User::InvisibleStatus | User::NotAvailableStatus },
+    { "*dnd",       User::OnlineStatus | User::InvisibleStatus | User::DoNotDisturbStatus },
+    { "*occupied",  User::OnlineStatus | User::InvisibleStatus | User::OccupiedStatus },
+    { "*ffc",       User::OnlineStatus | User::InvisibleStatus | User::FreeForChatStatus }
   };
 
 const unsigned short NUM_VARIABLES = 15;
@@ -790,7 +792,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
         {
           u = gUserManager.fetchUser(e->userId());
           win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
-                       u->GetAlias(), u->StatusStr(), u->AutoResponse());
+              u->GetAlias(), u->statusString().c_str(), u->AutoResponse());
           gUserManager.DropUser(u);
         }
         else if (e->SubResult() == ICQ_TCPxACK_REFUSE)

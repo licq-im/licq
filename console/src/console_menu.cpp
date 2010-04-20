@@ -6,6 +6,7 @@
 #include <string>
 
 #include "event_data.h"
+#include <licq/contactlist/user.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
 
@@ -515,8 +516,8 @@ void CLicqConsole::MenuAuthorize(char *szArg)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuStatus(char *_szArg)
 {
-  unsigned short nStatus = ICQ_STATUS_ONLINE, i;
-  bool bInvisible = false;
+  unsigned status = Licq::User::OnlineStatus;
+  unsigned long i;
 
   if (_szArg == NULL)
   {
@@ -524,18 +525,12 @@ void CLicqConsole::MenuStatus(char *_szArg)
     return;
   }
 
-  // Check if we are going invisible or not
-  if (_szArg[0] == '*')
-  {
-    bInvisible = true;
-    //_szArg++;
-  }
   // Find the status
   for (i = 0; i < NUM_STATUS; i++)
   {
     if (strcasecmp(_szArg, aStatus[i].szName) == 0)
     {
-      nStatus = aStatus[i].nId;
+      status = aStatus[i].nId;
       break;
     }
   }
@@ -553,7 +548,8 @@ void CLicqConsole::MenuStatus(char *_szArg)
   {
     unsigned long nPPID = protocol->getProtocolId();
     UserId ownerId = gUserManager.ownerUserId(nPPID);
-    if (bInvisible && nStatus != ICQ_STATUS_OFFLINE)
+    unsigned long nStatus = Licq::User::icqStatusFromStatus(status);
+    if (status & Licq::User::InvisibleStatus)
       nStatus |= ICQ_STATUS_FxPRIVATE;
     gProtocolManager.setStatus(ownerId, nStatus);
   }

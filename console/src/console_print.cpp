@@ -7,6 +7,7 @@
 #include <licq_filetransfer.h>
 
 using namespace std;
+using Licq::User;
 
 //======Utilities============================================================
 char *EncodeFileSize(unsigned long nSize)
@@ -172,7 +173,7 @@ void CLicqConsole::PrintStatus()
     winStatus->wprintf("%C%A[ %C%s %C(%C%s%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", 29,
                        A_BOLD, 5,  o->GetAlias(), 29,
                        5, o->IdString(), 29,
-                       53, o->StatusStr(), 29,
+        53, o->statusString().c_str(), 29,
                        53, CurrentGroupName(), 29,
                        53, szMsgStr, 29, 53,
                        szLastUser, 29);
@@ -302,31 +303,29 @@ void CLicqConsole::CreateUserList()
     s->userId = pUser->id();
     s->bOffline = !pUser->isOnline();
 
-    unsigned short nStatus = pUser->Status();
+    unsigned status = pUser->status();
 
-    if (pUser->isInvisible())
+    if (status & User::InvisibleStatus)
     {
       szTmp = pUser->usprintf(m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
-
-    else if(nStatus == ICQ_STATUS_OFFLINE)
+    else if (status == User::OfflineStatus)
     {
       szTmp = pUser->usprintf(m_szOfflineFormat);
       s->color = m_cColorOffline;
     }
-    else if(nStatus == ICQ_STATUS_DND || nStatus == ICQ_STATUS_OCCUPIED ||
-            nStatus == ICQ_STATUS_NA || nStatus == ICQ_STATUS_AWAY)
+    else if (status & User::AwayStatuses)
     {
       szTmp = pUser->usprintf(m_szAwayFormat);
       s->color = m_cColorAway;
     }
-    else if(nStatus == ICQ_STATUS_FREEFORCHAT)
+    else if (status & User::FreeForChatStatus)
     {
       szTmp = pUser->usprintf(m_szOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
-    else if(nStatus == ICQ_STATUS_ONLINE)
+    else
     {
       szTmp = pUser->usprintf(m_szOnlineFormat);
       s->color = m_cColorOnline;
@@ -591,7 +590,7 @@ void CLicqConsole::PrintInfo_General(const UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) General Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                   A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
+      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%C%AName: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getFullName().c_str());
   winMain->wprintf("%C%AIp: %Z%s:%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
@@ -658,7 +657,7 @@ void CLicqConsole::PrintInfo_More(const UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) More Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                   A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
+      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   unsigned int age = u->getUserInfoUint("Age");
   if (age == AGE_UNSPECIFIED)
@@ -709,7 +708,7 @@ void CLicqConsole::PrintInfo_Work(const UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) Work Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                   A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
+      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%C%ACompany Name: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("CompanyName").c_str());
   winMain->wprintf("%C%ACompany Department: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("CompanyDepartment").c_str());
@@ -760,7 +759,7 @@ void CLicqConsole::PrintInfo_About(const UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) About Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                    A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
+      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%s\n", u->getUserInfoString("About").c_str());
 
