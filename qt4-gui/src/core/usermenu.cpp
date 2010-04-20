@@ -236,7 +236,7 @@ void UserMenu::aboutToShowMenu()
 
   if (status & User::MessageStatuses)
     myCheckArAction->setText(tr("Check %1 Response")
-        .arg(User::statusToString(u->status(), false, false).c_str()));
+        .arg(u->statusString(false, false).c_str()));
   else
     myCheckArAction->setText(tr("Check Auto Response"));
 

@@ -83,7 +83,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const UserId& userId, bool fetch, QWidget* parent
   chkShowAgain->setChecked(u->ShowAwayMsg());
 
   setWindowTitle(QString(tr("%1 Response for %2"))
-      .arg(Licq::User::statusToString(u->status(), true, false).c_str())
+      .arg(u->statusString(true, false).c_str())
       .arg(QString::fromUtf8(u->GetAlias())));
 
   if (fetch)
