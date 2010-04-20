@@ -101,11 +101,6 @@ bool MainContactListProxy::filterAcceptsRow(int source_row, const QModelIndex& s
     }
     case ContactListModel::UserItem:
     {
-      // Filter ignored users from all groups except "Ignore List"
-      if ((item.data(ContactListModel::ExtendedStatusRole).toUInt() & ContactListModel::IgnoreStatus) &&
-          item.data(ContactListModel::GroupIdRole).toInt() != ContactListModel::SystemGroupOffset + GROUP_IGNORE_LIST)
-        return false;
-
       // Filter offline users unless "Show Offline Users" are enabled
       if (!Config::ContactList::instance()->showOffline() &&
           !item.data(ContactListModel::VisibilityRole).toBool())
