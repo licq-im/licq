@@ -561,6 +561,16 @@ public:
   static const char* StatusToStatusStrShort(unsigned short n, bool b);
 
   /**
+   * Convert user status to a string
+   *
+   * @param full False to get a short abbreviation
+   * @param markInvisible False to handle invisible as a separate status
+   * @return A string representing the status of the user
+   */
+  std::string statusString(bool full = true, bool markInvisible = true) const
+  { return statusToString(status(), full, markInvisible); }
+
+  /**
    * Convert status to a string
    *
    * @param status Status to convert
