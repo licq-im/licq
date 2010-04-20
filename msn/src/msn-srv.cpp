@@ -35,6 +35,7 @@
 using namespace std;
 using Licq::OnEventManager;
 using Licq::gOnEventManager;
+using Licq::User;
 
 
 void CMSN::ProcessServerPacket(CMSNBuffer *packet)
@@ -86,7 +87,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         gSocketMan.CloseSocket(m_nServerSocket, false, true);
   
         // Make the new connection
-        MSNLogon(host.c_str(), port, m_nStatus);
+        MSNLogon(host.c_str(), port, myStatus);
       }
     }
     else if (strCmd == "USR")
@@ -140,7 +141,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strVersion = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
 
-      MSNChangeStatus(m_nStatus);
+      MSNChangeStatus(myStatus);
 
       // Send our local list now
       //FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
@@ -272,26 +273,26 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     {
       packet->SkipParameter(); // seq
       string strStatus = packet->GetParameter();
-      ICQOwner* o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
-      unsigned long nStatus;
-      bool bHidden = false;
-      
+      unsigned status;
+
       if (strStatus == "NLN")
-        nStatus = ICQ_STATUS_ONLINE;
+        status = User::OnlineStatus;
       else if (strStatus == "BSY")
-        nStatus = ICQ_STATUS_OCCUPIED;
+        status = User::OnlineStatus | User::OccupiedStatus;
       else if (strStatus == "HDN")
-      {
-        nStatus = ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE;
-        bHidden = true;
-      }
+        status = User::OnlineStatus | User::InvisibleStatus;
+      else if (strStatus == "IDL")
+        status = User::OnlineStatus | User::IdleStatus;
       else
-        nStatus = ICQ_STATUS_AWAY;
-        
-      gLicqDaemon->ChangeUserStatus(o, nStatus);
-      m_nStatus = nStatus;
-      gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR, ICQUser::StatusToStatusStr(o->Status(), bHidden));
-      gUserManager.DropOwner(o);
+        status = User::OnlineStatus | User::AwayStatus;
+
+      gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR,
+          User::statusToString(status, true, false).c_str());
+      myStatus = status;
+
+      unsigned long icqStatus = User::icqStatusFromStatus(status);
+      Licq::OwnerWriteGuard o(MSN_PPID);
+      gLicqDaemon->ChangeUserStatus(*o, icqStatus);
     }
     else if (strCmd == "ILN" || strCmd == "NLN")
     {
@@ -304,12 +305,15 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strMSNObject = packet->GetParameter();
       string strDecodedObject = strMSNObject.size() ? Decode(strMSNObject) :"";
 
-      unsigned short nStatus = ICQ_STATUS_AWAY;
-
+      unsigned status;
       if (strStatus == "NLN")
-        nStatus = ICQ_STATUS_ONLINE;
-      else if(strStatus == "BSY")
-        nStatus = ICQ_STATUS_OCCUPIED;
+        status = User::OnlineStatus;
+      else if (strStatus == "BSY")
+        status = User::OnlineStatus | User::OccupiedStatus;
+      else if (strStatus == "IDL")
+        status = User::OnlineStatus | User::IdleStatus;
+      else
+        status = User::OnlineStatus | User::AwayStatus;
 
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
@@ -335,9 +339,10 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 	}
 
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
+        unsigned short nStatus = User::icqStatusFromStatus(status);
         gLicqDaemon->ChangeUserStatus(u, nStatus);
 
-        if (strCmd == "NLN" && nStatus == ICQ_STATUS_ONLINE)
+        if (strCmd == "NLN" && status == User::OnlineStatus)
           gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, u);
       }
       gUserManager.DropUser(u);
@@ -517,12 +522,12 @@ void CMSN::SendPacket(CMSNPacket *p)
 
 void CMSN::MSNLogon(const char *_szServer, int _nPort)
 {
-  MSNLogon(_szServer, _nPort, m_nOldStatus);
+  MSNLogon(_szServer, _nPort, myOldStatus);
 }
 
-void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
+void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned status)
 {
-  if (_nStatus == ICQ_STATUS_OFFLINE)
+  if (status == User::OfflineStatus)
     return;
 
   const ICQOwner* o = gUserManager.FetchOwner(MSN_PPID, LOCK_R);
@@ -553,43 +558,36 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
   
   CMSNPacket *pHello = new CPS_MSNVersion();
   SendPacket(pHello);
-  m_nStatus = _nStatus;
+  myStatus = status;
 }
 
-void CMSN::MSNChangeStatus(unsigned long status)
+void CMSN::MSNChangeStatus(unsigned status)
 {
   string msnStatus;
-  if ((status & ICQ_STATUS_FxPRIVATE) != 0)
+  if (status & User::InvisibleStatus)
   {
     msnStatus = "HDN";
-    status = ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE;
+    status = User::OnlineStatus | User::InvisibleStatus;
+  }
+  else if (status & User::FreeForChatStatus || status == User::OnlineStatus)
+  {
+    msnStatus = "NLN";
+    status = User::OnlineStatus;
+  }
+  else if (status & (User::OccupiedStatus | User::DoNotDisturbStatus))
+  {
+    msnStatus = "BSY";
+    status = User::OnlineStatus | User::OccupiedStatus;
   }
   else
   {
-    switch (status & ~ICQ_STATUS_FxFLAGS)
-    {
-      case ICQ_STATUS_ONLINE:
-      case ICQ_STATUS_FREEFORCHAT:
-        msnStatus = "NLN";
-        status = (status & ICQ_STATUS_FxFLAGS) | ICQ_STATUS_ONLINE;
-        break;
-
-      case ICQ_STATUS_OCCUPIED:
-      case ICQ_STATUS_DND:
-        msnStatus = "BSY";
-        status = (status & ICQ_STATUS_FxFLAGS) | ICQ_STATUS_OCCUPIED;
-        break;
-
-      default:
-        msnStatus = "AWY";
-        status = (status & ICQ_STATUS_FxFLAGS) | ICQ_STATUS_AWAY;
-        break;
-    }
+    msnStatus = "AWY";
+    status = User::OnlineStatus | User::AwayStatus;
   }
 
   CMSNPacket* pSend = new CPS_MSNChangeStatus(msnStatus);
   SendPacket(pSend);
-  m_nStatus = status;
+  myStatus = status;
 }
 
 void CMSN::MSNLogoff(bool bDisconnected)
@@ -601,10 +599,10 @@ void CMSN::MSNLogoff(bool bDisconnected)
     CMSNPacket *pSend = new CPS_MSNLogoff();
     SendPacket(pSend);
   }
-  
-  m_nOldStatus = m_nStatus;
-  m_nStatus = ICQ_STATUS_OFFLINE;
- 
+
+  myOldStatus = myStatus;
+  myStatus = User::OfflineStatus;
+
   // Don't try to send any more pings
   m_bCanPing = false;
 
@@ -729,7 +727,7 @@ void CMSN::MSNUnblockUser(const UserId& userId)
 void CMSN::MSNGetDisplayPicture(const string &strUser, const string &strMSNObject)
 {
   // If we are invisible, this will result in an error, so don't allow it
-  if (m_nStatus & ICQ_STATUS_FxPRIVATE)
+  if (myStatus & User::InvisibleStatus)
     return;
 
   const char *szUser = const_cast<const char *>(strUser.c_str());

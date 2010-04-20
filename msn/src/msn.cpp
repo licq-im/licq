@@ -74,8 +74,8 @@ CMSN::CMSN(int _nPipe) : m_vlPacketBucket(211)
   m_pPacketBuf = 0;
   m_pNexusBuff = 0;
   m_pSSLPacket = 0;
-  m_nStatus = ICQ_STATUS_OFFLINE;
-  m_nOldStatus = ICQ_STATUS_ONLINE;
+  myStatus = Licq::User::OfflineStatus;
+  myOldStatus = Licq::User::OnlineStatus;
   m_szUserName = 0;
   m_szPassword = 0;
   m_nSessionStart = 0;
@@ -460,7 +460,7 @@ void CMSN::Run()
             m_nServerSocket = -1;
             gSocketMan.DropSocket(sock);
             gSocketMan.CloseSocket(nSD);
-            MSNLogon(myServerAddress.c_str(), myServerPort, m_nStatus);
+            MSNLogon(myServerAddress.c_str(), myServerPort, myStatus);
           }
         }
         
@@ -565,7 +565,7 @@ void CMSN::ProcessSignal(LicqProtoSignal* s)
       if (m_nServerSocket < 0)
       {
         LicqProtoLogonSignal* sig = static_cast<LicqProtoLogonSignal*>(s);
-        MSNLogon(myServerAddress.c_str(), myServerPort, sig->status());
+        MSNLogon(myServerAddress.c_str(), myServerPort, Licq::User::statusFromIcqStatus(sig->status()));
       }
       break;
     }
@@ -573,7 +573,7 @@ void CMSN::ProcessSignal(LicqProtoSignal* s)
     case PROTOxCHANGE_STATUS:
     {
       LicqProtoChangeStatusSignal* sig = static_cast<LicqProtoChangeStatusSignal*>(s);
-      MSNChangeStatus(sig->status());
+      MSNChangeStatus(Licq::User::statusFromIcqStatus(sig->status()));
       break;
     }
     

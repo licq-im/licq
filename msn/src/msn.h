@@ -112,7 +112,7 @@ private:
   void SendPacket(CMSNPacket *);
   void Send_SB_Packet(const Licq::UserId& userId, CMSNPacket* p, int nSocket = -1,
       bool bDelete = true);
-  void MSNLogon(const char *, int, unsigned long);
+  void MSNLogon(const char *, int, unsigned status);
   void MSNGetServer();
   void MSNAuthenticateRedirect(const std::string& host, const std::string& param);
   void MSNAuthenticate(char *);
@@ -124,7 +124,7 @@ private:
   void MSNSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
       pthread_t _tPlugin, unsigned long _nCID);
   void MSNSendTypingNotification(const Licq::UserId& userId, unsigned long convoId);
-  void MSNChangeStatus(unsigned long);
+  void MSNChangeStatus(unsigned status);
   void MSNAddUser(const Licq::UserId& userId);
   void MSNRemoveUser(const Licq::UserId& userId);
   void MSNRenameUser(const Licq::UserId& userId);
@@ -182,9 +182,9 @@ private:
        m_bCanPing;
   
   // Server variables
-  unsigned long m_nStatus,
-                m_nOldStatus,
-                m_nSessionStart;
+  unsigned myStatus;
+  unsigned myOldStatus;
+  unsigned long m_nSessionStart;
   std::string m_strMSPAuth,
          m_strSID,
          m_strKV;
