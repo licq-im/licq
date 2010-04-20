@@ -26,6 +26,7 @@
 #include "pluginversion.h"
 
 using namespace std;
+using Licq::User;
 using Licq::gPluginManager;
 
 //#if CVSLICQ==1
@@ -43,13 +44,6 @@ using Licq::gPluginManager;
 // this string is prepended to all the OSD debug  messages
 #define L_OSD_STR "[OSD] "
 
-// licq does not define an invisible status constant
-// so I chose one which won't be taken most likely
-// by licq sources: include/licq_icq.h
-#define OSD_STATUS_INVISIBLE 0x8000
-// licq defines ICQ_STATUS_ONLINE as 0, that's not andable so we use our own
-#define OSD_STATUS_ONLINE 0x4000
-
 struct Config {
     unsigned long Showmessages; //=SHOWLOGON;
     unsigned long Showlogon; //=SHOWLOGON;
@@ -57,8 +51,8 @@ struct Config {
     unsigned long ShowAutoResponseCheck; //=SHOWAUTORESPONSECHECK;
     unsigned long quiettimeout; //=QUIETTIMEOUT;
     string pluginfont;
-    unsigned long ShowInModes;
-    unsigned long ShowMsgsInModes;
+  unsigned showInModes;
+  unsigned showMsgsInModes;
     string colour;
     string controlcolour;
     bool osd_wait;
@@ -198,24 +192,24 @@ void verifyconfig(string pluginfont, unsigned long /* timeout */,
 }
 
 
-unsigned long parseShowInModesStr(char *ShowInModesStr)
+unsigned parseShowInModesStr(char *ShowInModesStr)
 {
-    unsigned long ShowInModes=0;
+  unsigned showInModes = 0;
     if (strstr(ShowInModesStr, "Online"))
-	ShowInModes|=OSD_STATUS_ONLINE;
+    showInModes |= User::OnlineStatus;
     if (strstr(ShowInModesStr, "FreeForChat"))
-	ShowInModes|=ICQ_STATUS_FREEFORCHAT;
+    showInModes |= User::FreeForChatStatus;
     if (strstr(ShowInModesStr, "Away"))
-	ShowInModes|=ICQ_STATUS_AWAY;
+    showInModes |= User::AwayStatus;
     if (strstr(ShowInModesStr, "NA"))
-	ShowInModes|=ICQ_STATUS_NA;
+    showInModes |= User::NotAvailableStatus;
     if (strstr(ShowInModesStr, "Occupied"))
-	ShowInModes|=ICQ_STATUS_OCCUPIED;
+    showInModes |= User::OccupiedStatus;
     if (strstr(ShowInModesStr, "DND"))
-	ShowInModes|=ICQ_STATUS_DND;
+    showInModes |= User::DoNotDisturbStatus;
     if (strstr(ShowInModesStr, "Invisible"))
-	ShowInModes|=OSD_STATUS_INVISIBLE;
-    return ShowInModes;
+    showInModes |= User::InvisibleStatus;
+  return showInModes;
 }
 
 // called once on Load of the plugin
@@ -306,8 +300,8 @@ bool LP_Init(int /* argc */, char** /* argv */)
 
 	conf.CloseFile();
 
-	config.ShowInModes=parseShowInModesStr(ShowInModesStr);
-	config.ShowMsgsInModes=parseShowInModesStr(ShowMsgsInModesStr);
+    config.showInModes = parseShowInModesStr(ShowInModesStr);
+    config.showMsgsInModes = parseShowInModesStr(ShowMsgsInModesStr);
 
 	setlocale(LC_ALL, "");
 
@@ -426,11 +420,10 @@ void ProcessSignal(LicqSignal* s)
     string username;
     bool notify=false;
     bool ignore=false;
-    bool invisible=false;
   bool want_osd = true; // if we are in DND,... we maybe don't want OSD
     bool want_osd_msgs_only=false; // though we don't want OSD we want msgs
     bool secure=false;
-    unsigned long status=0;
+  unsigned status = User::OnlineStatus;
   const char* userencoding = NULL;
   const CUserEvent* e = NULL;
 
@@ -462,39 +455,39 @@ void ProcessSignal(LicqSignal* s)
         o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
         if (o != NULL)
         {
-		    status=o->Status();
+          status = o->status();
 		    //want_osd=true;
 
-		    if ((status&ICQ_STATUS_DND) && (!(config.ShowInModes&ICQ_STATUS_DND)))
+          if ((status & User::DoNotDisturbStatus) && (!(config.showInModes & User::DoNotDisturbStatus)))
 			want_osd=false;
-		    else if ((status&ICQ_STATUS_OCCUPIED) && (!(config.ShowInModes&ICQ_STATUS_OCCUPIED)))
+          else if ((status & User::OccupiedStatus) && (!(config.showInModes & User::OccupiedStatus)))
 			want_osd=false;
-		    else if ((status&ICQ_STATUS_NA) && (!(config.ShowInModes&ICQ_STATUS_NA)))
+          else if ((status & User::NotAvailableStatus) && (!(config.showInModes & User::NotAvailableStatus)))
 			want_osd=false;
-		    else if ((status&ICQ_STATUS_AWAY) && (!(config.ShowInModes&ICQ_STATUS_AWAY)))
+          else if ((status & User::AwayStatus) && (!(config.showInModes & User::AwayStatus)))
 			want_osd=false;
-		    else if ((status==0) && (!(config.ShowInModes&OSD_STATUS_ONLINE)))
+          else if ((status & User::FreeForChatStatus) && (!(config.showInModes & User::FreeForChatStatus)))
 			want_osd=false;
-		    else if ((status&ICQ_STATUS_FREEFORCHAT) && (!(config.ShowInModes&ICQ_STATUS_FREEFORCHAT)))
+          else if ((status & User::InvisibleStatus) && (!(config.showInModes & User::InvisibleStatus)))
 			want_osd=false;
-          else if ((o->isInvisible()) && (!(config.ShowInModes&OSD_STATUS_INVISIBLE))) // is reached when a user gets invisible
-			want_osd=false;
+          else if (!(config.showInModes & User::OnlineStatus))
+            want_osd = false;
 
 		    if (!want_osd) {
-			if ((status&ICQ_STATUS_DND) && (config.ShowMsgsInModes&ICQ_STATUS_DND))
+            if ((status & User::DoNotDisturbStatus) && (config.showMsgsInModes & User::DoNotDisturbStatus))
 			    want_osd_msgs_only=true;
-			else if ((status&ICQ_STATUS_OCCUPIED) && (config.ShowMsgsInModes&ICQ_STATUS_OCCUPIED))
+            else if ((status & User::OccupiedStatus) && (config.showMsgsInModes & User::OccupiedStatus))
 			    want_osd_msgs_only=true;
-			else if ((status&ICQ_STATUS_NA) && (config.ShowMsgsInModes&ICQ_STATUS_NA))
+            else if ((status & User::NotAvailableStatus) && (config.showMsgsInModes & User::NotAvailableStatus))
 			    want_osd_msgs_only=true;
-			else if ((status&ICQ_STATUS_AWAY) && (config.ShowMsgsInModes&ICQ_STATUS_AWAY))
+            else if ((status & User::AwayStatus) && (config.showMsgsInModes & User::AwayStatus))
 			    want_osd_msgs_only=true;
-			else if ((status==0) && (config.ShowMsgsInModes&OSD_STATUS_ONLINE))
+            else if ((status & User::FreeForChatStatus) && (config.showMsgsInModes & User::FreeForChatStatus))
 			    want_osd_msgs_only=true;
-			else if ((status&ICQ_STATUS_FREEFORCHAT) && (config.ShowMsgsInModes&ICQ_STATUS_FREEFORCHAT))
+            else if ((status & User::InvisibleStatus) && (config.showMsgsInModes & User::InvisibleStatus))
 			    want_osd_msgs_only=true;
-            else if ((o->isInvisible()) && (config.ShowMsgsInModes&OSD_STATUS_INVISIBLE)) // is reached when a user gets invisible
-			    want_osd_msgs_only=true;
+            else if (config.showMsgsInModes & User::OnlineStatus)
+              want_osd_msgs_only = true;
 
 			if (want_osd_msgs_only) {
 			    want_osd=true;
@@ -515,8 +508,7 @@ void ProcessSignal(LicqSignal* s)
 		    username=u->GetAlias();
 		    notify=u->OnlineNotify();
 		    ignore=u->InvisibleList() || u->IgnoreList();
-		    status=u->Status();
-          invisible = u->isInvisible();
+          status = u->status();
 			userencoding=u->UserEncoding(); // needed in translate function
             secure=u->Secure();
 
@@ -632,24 +624,24 @@ void ProcessSignal(LicqSignal* s)
 		    {
 			string msg = username;
 			msg+=_(" changed status to: ");
-			if (status&ICQ_STATUS_DND)
+            if (status == User::OfflineStatus)
+              msg += _("offline");
+            else if (status & User::DoNotDisturbStatus)
 			    msg+=_("do not disturb");
-			else if (status&ICQ_STATUS_OCCUPIED)
+            else if (status & User::OccupiedStatus)
 			    msg+=_("occupied");
-			else if (status&ICQ_STATUS_NA)
+            else if (status & User::NotAvailableStatus)
 			    msg+=_("not available");
-			else if (status&ICQ_STATUS_AWAY)
+            else if (status & User::AwayStatus)
 			    msg+=_("away");
-			else if (status==ICQ_STATUS_ONLINE)
-			    msg+=_("online");
-			else if (status&ICQ_STATUS_FREEFORCHAT)
+            else if (status & User::FreeForChatStatus)
 			    msg+=_("free for chat");
-			else if (invisible)
+            else if (status & User::InvisibleStatus)
 			    msg+=_("invisible");
-			else if (status==ICQ_STATUS_OFFLINE)
-			    msg+=_("offline");
-			else // shouldnt be reached
-			    msg+=_("unknown");
+            else if (status & User::IdleStatus)
+              msg += _("idle");
+            else
+              msg += _("online");
 //			my_xosd_settimeout(config.timeout);
 			my_xosd_display("", msg, config.controlcolour);
 		    }
