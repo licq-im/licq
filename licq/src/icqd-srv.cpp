@@ -289,7 +289,7 @@ void CICQDaemon::icqCreatePDINFO()
   SendEvent_Server(pPDInfo);
 }
 
-void CICQDaemon::icqRemoveUser(const char *_szId)
+void CICQDaemon::icqRemoveUser(const char *_szId, bool ignored)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   // Remove from the SSList and update groups
@@ -306,7 +306,7 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
     unsigned short nSID = u->GetSID();
     unsigned short nVisibleSID = u->GetVisibleSID();
     unsigned short nInvisibleSID = u->GetInvisibleSID();
-    bool bIgnored = u->IgnoreList();
+    bool bIgnored = (u->IgnoreList() | ignored);
     u->SetGSID(0);
     u->SetVisibleSID(0);
     u->SetInvisibleSID(0);
@@ -1173,7 +1173,7 @@ void CICQDaemon::icqRemoveFromIgnoreList(const UserId& userId)
 
   string accountId = LicqUser::getUserAccountId(userId);
   const char* _szId = accountId.c_str();
-  icqRemoveUser(_szId);
+  icqRemoveUser(_szId, true);
   icqAddUser(_szId, false);
 }
 
