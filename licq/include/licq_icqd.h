@@ -657,7 +657,7 @@ public:
   void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUserServer(const char *_szId, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddGroup(const char *);
-  void icqRemoveUser(const char *);
+  void icqRemoveUser(const char *, bool ignored = false);
   void icqRemoveGroup(const char *);
   void icqChangeGroup(const char *_szId, unsigned long _nPPID,
                       unsigned short _nNewGroup, unsigned short _nOldGSID,
