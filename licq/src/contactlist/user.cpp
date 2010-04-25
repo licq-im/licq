@@ -602,7 +602,7 @@ void User::Init()
   myUserInfo["HideEmail"] = false;
   m_nTimezone = TIMEZONE_UNKNOWN;
   m_bAuthorization = false;
-  m_nTyping = ICQ_TYPING_INACTIVEx0;
+  myIsTyping = false;
   m_bNotInList = false;
   myOnEventsBlocked = false;
 
@@ -959,7 +959,7 @@ void User::SetStatusOffline()
     SaveLicqInfo();
   }
 
-  SetTyping(ICQ_TYPING_INACTIVEx0);
+  setIsTyping(false);
   SetUserUpdated(false);
   SetStatus(ICQ_STATUS_OFFLINE);
 }

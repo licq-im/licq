@@ -321,7 +321,7 @@ public:
   unsigned short GetInvisibleSID() const        { return m_nSID[INV_SID]; }
   unsigned short GetVisibleSID() const          { return m_nSID[VIS_SID]; }
   unsigned short GetGSID() const                { return m_nGSID; }
-  unsigned short GetTyping() const              { return m_nTyping; }
+
   //!Retrieves the user's auto response message that was last seen.
   const char* AutoResponse() const              { return m_szAutoResponse; }
   //!Retrieves the encoding Licq uses for this user
@@ -469,7 +469,7 @@ public:
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
   void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
-  void SetTyping(unsigned short nTyping)    { m_nTyping = nTyping; }
+
   void SetClientInfo(const char *s)
   {
     free(m_szClientInfo);
@@ -480,6 +480,22 @@ public:
   // Dynamic info fields for protocol plugins
   bool SetPPField(const std::string &, const std::string &);
 
+  /**
+   * Is user writing a message?
+   *
+   * @return True if user is currently typing a message
+   */
+  bool isTyping() const
+  { return myIsTyping; }
+
+  /**
+   * Set typing flag for user
+   * This function should only be called by protocol plugins
+   *
+   * @param True if user is currently typing a message
+   */
+  void setIsTyping(bool isTyping)
+  { myIsTyping = isTyping; }
 
   enum StatusFlags
   {
@@ -832,7 +848,7 @@ protected:
   unsigned long m_nOurClientStatusTimestamp;
   bool m_bUserUpdated;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
-  unsigned short m_nTyping;
+  bool myIsTyping;
   unsigned long m_nStatus;
   unsigned myStatus;
   UserGroupList myGroups;               /**< List of user groups */

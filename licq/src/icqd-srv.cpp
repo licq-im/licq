@@ -2605,7 +2605,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
     gLog.Info(tr("%s%s went offline.\n"), L_SRVxSTR, u->GetAlias());
     u->SetClientTimestamp(0);
-    u->SetTyping(ICQ_TYPING_INACTIVEx0); 
+      u->setIsTyping(false);
       changeUserStatus(u, User::OfflineStatus);
       pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
     gUserManager.DropUser(u); 
@@ -2786,8 +2786,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
 
           u = gUserManager.fetchUser(userId, LOCK_W, !Ignore(IGNORE_NEWUSERS));
-      u->SetTyping(ICQ_TYPING_INACTIVEx0);
-      
+          u->setIsTyping(false);
+
       if (AddUserEvent(u, e))
             gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
           pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
@@ -2946,8 +2946,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         bNewUser = true;
       }
 
-      u->SetTyping(ICQ_TYPING_INACTIVEx0);
-      
+          u->setIsTyping(false);
+
       if (msgTxt.getTLVLen(0x0004) == 4)
       {
         unsigned long Ip = BE_32(msgTxt.UnpackUnsignedLongTLV(0x0004));
@@ -3353,8 +3353,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	      gLog.Info(tr("%s%s through server from %s (%s).\n"), L_SBLANKxSTR,
 	    					szType, u->GetAlias(), u->IdString());
 
-            u->SetTyping(ICQ_TYPING_INACTIVEx0);
-            
+                u->setIsTyping(false);
+
 	    if (szType) free(szType);
 	    if (AddUserEvent(u, eEvent))
                   gOnEventManager.performOnEvent(onEventType, u);
@@ -3634,7 +3634,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         L_WARNxSTR, szId);
       break;
     }
-    u->SetTyping(nTyping);
+      u->setIsTyping(nTyping == ICQ_TYPING_ACTIVE);
       pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
     gUserManager.DropUser(u);
     delete [] szId;

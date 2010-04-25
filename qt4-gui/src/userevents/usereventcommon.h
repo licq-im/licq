@@ -73,7 +73,7 @@ public:
    * @return True if user is in conversation
    */
   bool isUserInConvo(const UserId& userId) const;
-  void setTyping(unsigned short type);
+  void setTyping(bool isTyping);
 
 public slots:
   /**

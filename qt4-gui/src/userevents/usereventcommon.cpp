@@ -151,7 +151,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
     // restore prefered encoding
     myCodec = UserCodec::codecForUser(u);
 
-    setTyping(u->GetTyping());
+    setTyping(u->isTyping());
     gUserManager.DropUser(u);
   }
 
@@ -261,9 +261,9 @@ bool UserEventCommon::isUserInConvo(const UserId& userId) const
   return found;
 }
 
-void UserEventCommon::setTyping(unsigned short type)
+void UserEventCommon::setTyping(bool isTyping)
 {
-  if (type == ICQ_TYPING_ACTIVE)
+  if (isTyping)
   {
     if (myTypingTimer->isActive())
       myTypingTimer->stop();
@@ -424,7 +424,7 @@ void UserEventCommon::updateTyping()
 
   //FIXME Which user?
   LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
-  u->SetTyping(ICQ_TYPING_INACTIVEx0);
+  u->setIsTyping(false);
   myTimezone->setPalette(QPalette());
   UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
   if (Config::Chat::instance()->tabbedChatting() && tabDlg != NULL)

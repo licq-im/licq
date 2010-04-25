@@ -145,7 +145,7 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
   }
 
   if (subSignal == 0 || subSignal == USER_TYPING)
-    myStatusTyping = u->GetTyping() == ICQ_TYPING_ACTIVE;
+    myStatusTyping = u->isTyping();
 
   if (subSignal == 0 || subSignal == USER_PLUGIN_STATUS)
   {

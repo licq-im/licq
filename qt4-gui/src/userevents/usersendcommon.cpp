@@ -673,9 +673,9 @@ void UserSendCommon::convoLeave(const UserId& userId)
     // Remove the typing notification if active
     if (u != 0)
     {
-      if (u->GetTyping() == ICQ_TYPING_ACTIVE)
+      if (u->isTyping())
       {
-        u->SetTyping(ICQ_TYPING_INACTIVEx0);
+        u->setIsTyping(false);
         myTimezone->setPalette(QPalette());
         UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
         if (Config::Chat::instance()->tabbedChatting() && tabDlg != NULL)

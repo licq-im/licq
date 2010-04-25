@@ -173,7 +173,7 @@ void Handler::onMessage(const std::string& from, const std::string& message)
   LicqUser* user = gUserManager.fetchUser(userId, LOCK_W, true);
 
   if (user)
-    user->SetTyping(0);
+    user->setIsTyping(false);
   if (gLicqDaemon->AddUserEvent(user, event))
     gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, user);
   gUserManager.DropUser(user);

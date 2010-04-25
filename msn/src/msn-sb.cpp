@@ -111,7 +111,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
         if (u)
         {
-          u->SetTyping(ICQ_TYPING_ACTIVE);
+          u->setIsTyping(true);
           gUserManager.DropUser(u);
           gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
               USER_TYPING, u->id(), SocketToCID(nSock)));
@@ -131,7 +131,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE, time(0), 0, SocketToCID(nSock));
         ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
         if (u)
-          u->SetTyping(0);
+          u->setIsTyping(false);
         if (gLicqDaemon->AddUserEvent(u, e))
           gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
         gUserManager.DropUser(u);

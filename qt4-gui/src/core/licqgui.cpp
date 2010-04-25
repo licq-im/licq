@@ -1510,13 +1510,13 @@ void LicqGui::userUpdated(const UserId& userId, unsigned long subSignal, int arg
           {
             // For protocols that use the convo id
             if (item->convoId() == (unsigned long)(argument) && item->ppid() == ppid)
-              item->setTyping(u->GetTyping());
+              item->setTyping(u->isTyping());
           }
           else
           {
             // For protocols that don't use a convo id
             if (item->userId() == userId)
-              item->setTyping(u->GetTyping());
+              item->setTyping(u->isTyping());
           }
         }
       }

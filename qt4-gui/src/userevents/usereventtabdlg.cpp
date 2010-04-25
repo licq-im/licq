@@ -249,13 +249,13 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const LicqUser* u)
     myTabs->setTabColor(tab, QColor("blue"));
 
     // to clear it..
-    tab->setTyping(u->GetTyping());
+    tab->setTyping(u->isTyping());
   }
   else // use status icon
   {
     icon = IconManager::instance()->iconForUser(u);
 
-    if (u->GetTyping() == ICQ_TYPING_ACTIVE)
+    if (u->isTyping())
       myTabs->setTabColor(tab, Config::Chat::instance()->tabTypingColor());
     else
       myTabs->setTabColor(tab, QColor());
@@ -277,7 +277,7 @@ void UserEventTabDlg::setTyping(const LicqUser* u, int convoId)
 
     if (tab->convoId() == static_cast<unsigned long>(convoId) &&
         tab->isUserInConvo(u->id()))
-      tab->setTyping(u->GetTyping());
+      tab->setTyping(u->isTyping());
   }
 }
 
