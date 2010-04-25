@@ -982,7 +982,7 @@ void CICQDaemon::icqUpdateContactList()
     }
     // Reset all users to offline
     if (pUser->isOnline())
-      ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+      changeUserStatus(pUser, User::OfflineStatus);
   }
   FOR_EACH_PROTO_USER_END
   if (n != 0)
@@ -1609,10 +1609,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   pthread_mutex_unlock(&mutex_extendedevents);
 #endif
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-  if (o)
-    ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
-  gUserManager.DropOwner(o);
+  changeUserStatus(gUserManager.ownerUserId(LICQ_PPID), User::OfflineStatus);
 
   if (m_szRegisterPasswd)
   {
@@ -1627,7 +1624,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
     if (pUser->isOnline())
-      ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+      changeUserStatus(pUser, User::OfflineStatus);
   }
   FOR_EACH_PROTO_USER_END
 }
@@ -2609,7 +2606,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     gLog.Info(tr("%s%s went offline.\n"), L_SRVxSTR, u->GetAlias());
     u->SetClientTimestamp(0);
     u->SetTyping(ICQ_TYPING_INACTIVEx0); 
-    ChangeUserStatus(u, ICQ_STATUS_OFFLINE); 
+      changeUserStatus(u, User::OfflineStatus);
       pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
     gUserManager.DropUser(u); 
     break;

@@ -1462,7 +1462,7 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
     {
       u->ClearSocketDesc(nChannel);
       if (u->OfflineOnDisconnect())
-        gLicqDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
+        gLicqDaemon->changeUserStatus(u, Licq::User::OfflineStatus);
       gUserManager.DropUser(u);
     }
   }
