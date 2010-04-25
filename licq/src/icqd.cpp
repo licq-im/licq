@@ -46,6 +46,7 @@
 using namespace std;
 using namespace LicqDaemon;
 using Licq::OnEventManager;
+using Licq::User;
 using Licq::gOnEventManager;
 
 std::list <CReverseConnectToUserData *> CICQDaemon::m_lReverseConnect;
@@ -703,13 +704,18 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
 //-----ChangeUserStatus-------------------------------------------------------
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 {
-  unsigned long oldstatus = u->StatusFull();
+  changeUserStatus(u, User::statusFromIcqStatus(s), s);
+}
+
+void CICQDaemon::changeUserStatus(User* u, unsigned status, unsigned long s)
+{
+  unsigned oldStatus = u->status();
   int arg = 0;
-  
-  if (oldstatus == ICQ_STATUS_OFFLINE)
+
+  if (oldStatus == User::OfflineStatus)
     u->SetUserUpdated(false);
-    
-  if (s == ICQ_STATUS_OFFLINE)
+
+  if (status == User::OfflineStatus)
   {
     if (u->isOnline())
       arg = -1;
@@ -719,8 +725,11 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   {
     if (!u->isOnline())
       arg = 1;
-    u->SetStatus(s);
-    
+    if (s != 0)
+      u->SetStatus(s);
+    else
+      u->setStatus(status);
+
     //This is the v6 way of telling us phone follow me status
     if (s & ICQ_STATUS_FxPFM)
     {
@@ -736,11 +745,18 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   // Say that we know their status for sure
   u->SetOfflineOnDisconnect(false);
 
-  if(oldstatus != s)
+  if(oldStatus != status)
   {
     u->Touch();
     pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, u->id(), arg));
   }
+}
+
+void CICQDaemon::changeUserStatus(const Licq::UserId& userId, unsigned status)
+{
+  Licq::UserWriteGuard u(userId);
+  if (u.isLocked())
+    changeUserStatus(*u, status);
 }
 
 unsigned long CICQDaemon::getNextEventId()

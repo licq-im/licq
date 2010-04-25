@@ -532,6 +532,26 @@ protected:
   unsigned long getNextEventId();
 
   void ChangeUserStatus(Licq::User* u, unsigned long s);
+
+  /**
+   * Change status for a user (or owner) and signal plugins
+   * This function is used by protocol plugins to report status changes
+   *
+   * @Param u User to change status for (must be write locked)
+   * @param status New status for user
+   * @param icqStatus ICQ phone flags (only used by ICQ protocol)
+   */
+  void changeUserStatus(Licq::User* u, unsigned status, unsigned long icqStatus = 0);
+
+  /**
+   * Change status for a user (or owner) and signal plugins
+   * This function is used by protocol plugins to report status changes
+   *
+   * @Param userId User to change status for
+   * @param status New status for user
+   */
+  void changeUserStatus(const Licq::UserId& userId, unsigned status);
+
   bool AddUserEvent(Licq::User* user, CUserEvent* e);
   void RejectEvent(const Licq::UserId& userId, CUserEvent* e);
   Licq::User* FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e, const char*);
