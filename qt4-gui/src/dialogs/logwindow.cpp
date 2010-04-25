@@ -42,7 +42,6 @@
 
 #include <licq/daemon.h>
 #include <licq/logservice.h>
-#include <licq_icq.h>
 
 #include "core/messagebox.h"
 

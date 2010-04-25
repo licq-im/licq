@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include <licq_icq.h>
 #include <licq_message.h>
 
 #include <QAction>

@@ -24,7 +24,6 @@
 #include <QAbstractItemModel>
 #include <QList>
 
-#include <licq_icq.h>
 #include <licq_types.h>
 
 // Allow UserId to be used in QVariant and QSet

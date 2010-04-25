@@ -21,7 +21,6 @@
 
 #include "licq_translate.h"
 #include "licq_log.h"
-#include "licq_icq.h"
 
 using namespace std;
 

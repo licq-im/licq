@@ -28,7 +28,6 @@
 #include <QPair>
 #include <QPixmap>
 
-#include <licq_icq.h>
 #include <licq_user.h>
 
 #include "core/gui-defines.h"

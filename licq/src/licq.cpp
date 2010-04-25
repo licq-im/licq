@@ -29,7 +29,6 @@ using namespace std;
 // Localization
 #include "gettext.h"
 
-#include "licq_icq.h"
 #include "licq.h"
 #include "licq_log.h"
 #include "licq_utility.h"
