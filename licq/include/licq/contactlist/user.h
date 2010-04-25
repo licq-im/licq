@@ -10,7 +10,6 @@
 #include "licq_buffer.h"
 #include "licq_file.h"
 #include "licq_history.h"
-#include "licq_icq.h"
 #include "licq_mutex.h"
 #include "../types.h"
 #include "../userid.h"
@@ -542,9 +541,9 @@ public:
   unsigned short Status() const;
   /// Get ICQ status flags (mask of ICQ_STATUS_xxx flags)
   unsigned long StatusFull() const              { return m_nStatus; }
-  bool StatusWebPresence() const                { return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE; }
-  bool StatusHideIp() const                     { return m_nStatus & ICQ_STATUS_FxHIDExIP; }
-  bool StatusBirthday() const                   { return m_nStatus & ICQ_STATUS_FxBIRTHDAY; }
+  bool StatusWebPresence() const;
+  bool StatusHideIp() const;
+  bool StatusBirthday() const;
   unsigned long PhoneFollowMeStatus() const     { return m_nPhoneFollowMeStatus; }
   unsigned long ICQphoneStatus() const          { return m_nICQphoneStatus; }
   unsigned long SharedFilesStatus() const       { return m_nSharedFilesStatus; }

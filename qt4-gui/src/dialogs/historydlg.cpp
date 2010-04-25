@@ -35,6 +35,7 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
+#include <licq_icq.h>
 #include <licq_message.h>
 #include <licq_user.h>
 

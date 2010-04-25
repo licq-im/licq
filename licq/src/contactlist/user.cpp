@@ -11,6 +11,7 @@
 #include "licq_constants.h"
 #include "licq_events.h"
 #include "licq_file.h"
+#include <licq_icq.h>
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_socket.h"
@@ -933,6 +934,21 @@ unsigned short User::Status() const
    else if (m_nStatus & ICQ_STATUS_FREEFORCHAT) return ICQ_STATUS_FREEFORCHAT;
    else if ((m_nStatus & 0xFF) == 0x00) return ICQ_STATUS_ONLINE;
    else return (ICQ_STATUS_OFFLINE - 1);
+}
+
+bool User::StatusWebPresence() const
+{
+  return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;
+}
+
+bool User::StatusHideIp() const
+{
+  return m_nStatus & ICQ_STATUS_FxHIDExIP;
+}
+
+bool User::StatusBirthday() const
+{
+  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;
 }
 
 void User::SetStatusOffline()
