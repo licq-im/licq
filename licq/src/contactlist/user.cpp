@@ -1287,6 +1287,52 @@ string User::statusToString(unsigned status, bool full, bool markInvisible)
   return str;
 }
 
+bool User::stringToStatus(const string& strStatus, unsigned& retStatus)
+{
+  string str2;
+  bool invisible;
+  if (strStatus[0] == '*')
+  {
+    str2 = strStatus.substr(1);
+    invisible = true;
+  }
+  else if (strStatus[0] == '(' && strStatus[strStatus.size()-1] == ')')
+  {
+    str2 = strStatus.substr(1, strStatus.size()-2);
+    invisible = true;
+  }
+  else
+  {
+    str2 = strStatus;
+    invisible = false;
+  }
+
+  if (strcasecmp(str2.c_str(), "offline") == 0 || strcasecmp(str2.c_str(), "off") == 0)
+    retStatus = OfflineStatus;
+  else if (strcasecmp(str2.c_str(), "online") == 0 || strcasecmp(str2.c_str(), "on") == 0)
+    retStatus = OnlineStatus;
+  else if (strcasecmp(str2.c_str(), "away") == 0)
+    retStatus = OnlineStatus | AwayStatus;
+  else if (strcasecmp(str2.c_str(), "not available") == 0 || strcasecmp(str2.c_str(), "na") == 0 || strcasecmp(str2.c_str(), "n/a") == 0)
+    retStatus = OnlineStatus | NotAvailableStatus;
+  else if (strcasecmp(str2.c_str(), "do not disturb") == 0 || strcasecmp(str2.c_str(), "dnd") == 0)
+    retStatus = OnlineStatus | DoNotDisturbStatus;
+  else if (strcasecmp(str2.c_str(), "occupied") == 0 || strcasecmp(str2.c_str(), "occ") == 0)
+    retStatus = OnlineStatus | OccupiedStatus;
+  else if (strcasecmp(str2.c_str(), "free for chat") == 0 || strcasecmp(str2.c_str(), "ffc") == 0)
+    retStatus = OnlineStatus | FreeForChatStatus;
+  else if (strcasecmp(str2.c_str(), "idle") == 0)
+    retStatus = OnlineStatus | IdleStatus;
+  else if (strcasecmp(str2.c_str(), "invisible") == 0 || strcasecmp(str2.c_str(), "inv") == 0)
+    retStatus = OnlineStatus | InvisibleStatus;
+  else
+    return false;
+
+  if (invisible)
+    retStatus |= InvisibleStatus;
+  return true;
+}
+
 char* User::IpStr(char* rbuf) const
 {
   char ip[32], buf[32];

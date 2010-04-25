@@ -581,6 +581,15 @@ public:
   static std::string statusToString(unsigned status, bool full = true, bool markInvisible = true);
 
   /**
+   * Parse status from a string
+   *
+   * @param strStatus String to parse
+   * @param retStatus Variable to put parsed status in
+   * @return True if strStatus was a valid status, false if parse failed
+   */
+  static bool stringToStatus(const std::string& strStatus, unsigned& retStatus);
+
+  /**
    * Get the most relevant status flag from a status
    *
    * @param status Status to convert
