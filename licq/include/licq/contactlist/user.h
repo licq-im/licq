@@ -526,12 +526,13 @@ public:
   { return myStatus; }
 
   /**
-   * Set status
-   * Note: This should only be called from protocol plugin owning the user
+   * Change status for a user (or owner) and signal plugins
+   * This function is used by protocol plugins to report status changes
    *
-   * @param status New status for user
+   * @param newStatus New status for user
+   * @param icqStatus ICQ phone flags (only used by ICQ protocol)
    */
-  void setStatus(unsigned status);
+  void statusChanged(unsigned newStatus, unsigned long icqStatus = 0);
 
   /**
    * Convenience function to check if if user is online
@@ -563,8 +564,6 @@ public:
   unsigned long PhoneFollowMeStatus() const     { return m_nPhoneFollowMeStatus; }
   unsigned long ICQphoneStatus() const          { return m_nICQphoneStatus; }
   unsigned long SharedFilesStatus() const       { return m_nSharedFilesStatus; }
-  /// Set ICQ status flags (also updates generic status flags)
-  void SetStatus(unsigned long n);
   void SetPhoneFollowMeStatus(unsigned long n)  { m_nPhoneFollowMeStatus = n; SaveLicqInfo(); }
   void SetICQphoneStatus(unsigned long n)       { m_nICQphoneStatus = n; }
   void SetSharedFilesStatus(unsigned long n)    { m_nSharedFilesStatus = n; }  
@@ -830,6 +829,17 @@ protected:
   void SetOnlineSince(time_t t)     { m_nOnlineSince = t; }
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
+
+  /**
+   * Set status
+   * Note: This function is internal for user/owner, plugins use changeStatus()
+   *
+   * @param status New status for user
+   */
+  void setStatus(unsigned status);
+
+  /// Set ICQ status flags (also updates generic status flags)
+  void SetStatus(unsigned long n);
 
   const UserId myId;
 

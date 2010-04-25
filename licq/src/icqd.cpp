@@ -704,59 +704,7 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
 //-----ChangeUserStatus-------------------------------------------------------
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 {
-  changeUserStatus(u, User::statusFromIcqStatus(s), s);
-}
-
-void CICQDaemon::changeUserStatus(User* u, unsigned status, unsigned long s)
-{
-  unsigned oldStatus = u->status();
-  int arg = 0;
-
-  if (oldStatus == User::OfflineStatus)
-    u->SetUserUpdated(false);
-
-  if (status == User::OfflineStatus)
-  {
-    if (u->isOnline())
-      arg = -1;
-    u->SetStatusOffline();
-  }
-  else
-  {
-    if (!u->isOnline())
-      arg = 1;
-    if (s != 0)
-      u->SetStatus(s);
-    else
-      u->setStatus(status);
-
-    //This is the v6 way of telling us phone follow me status
-    if (s & ICQ_STATUS_FxPFM)
-    {
-      if (s & ICQ_STATUS_FxPFMxAVAILABLE)
-        u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxACTIVE);
-      else
-        u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxBUSY);
-    }
-    else if (u->Version() < 7)
-      u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxINACTIVE);
-  }
-
-  // Say that we know their status for sure
-  u->SetOfflineOnDisconnect(false);
-
-  if(oldStatus != status)
-  {
-    u->Touch();
-    pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, u->id(), arg));
-  }
-}
-
-void CICQDaemon::changeUserStatus(const Licq::UserId& userId, unsigned status)
-{
-  Licq::UserWriteGuard u(userId);
-  if (u.isLocked())
-    changeUserStatus(*u, status);
+  u->statusChanged(User::statusFromIcqStatus(s), s);
 }
 
 unsigned long CICQDaemon::getNextEventId()

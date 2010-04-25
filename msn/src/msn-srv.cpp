@@ -290,7 +290,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           User::statusToString(status, true, false).c_str());
       myStatus = status;
 
-      gLicqDaemon->changeUserStatus(gUserManager.ownerUserId(MSN_PPID), status);
+      gUserManager.ownerStatusChanged(MSN_PPID, status);
     }
     else if (strCmd == "ILN" || strCmd == "NLN")
     {
@@ -337,7 +337,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 	}
 
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
-        gLicqDaemon->changeUserStatus(u, status);
+        u->statusChanged(status);
 
         if (strCmd == "NLN" && status == User::OnlineStatus)
           gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, u);
@@ -353,7 +353,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (u.isLocked())
         {
           gLog.Info("%s%s logged off.\n", L_MSNxSTR, u->getAlias().c_str());
-          gLicqDaemon->changeUserStatus(*u, User::OfflineStatus);
+          u->statusChanged(User::OfflineStatus);
         }
       }
 
@@ -620,11 +620,11 @@ void CMSN::MSNLogoff(bool bDisconnected)
       pUser->ClearSocketDesc();
     }
     if (pUser->isOnline())
-      gLicqDaemon->changeUserStatus(pUser, User::OfflineStatus);
+      pUser->statusChanged(User::OfflineStatus);
   }
   FOR_EACH_PROTO_USER_END
 
-  gLicqDaemon->changeUserStatus(gUserManager.ownerUserId(MSN_PPID), User::OfflineStatus);
+  gUserManager.ownerStatusChanged(MSN_PPID, User::OfflineStatus);
 }
 
 void CMSN::MSNAddUser(const UserId& userId)

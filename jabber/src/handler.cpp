@@ -50,7 +50,7 @@ void Handler::onConnect()
 {
   TRACE();
 
-  gLicqDaemon->changeUserStatus(gUserManager.ownerUserId(JABBER_PPID), myStatus);
+  gUserManager.ownerStatusChanged(JABBER_PPID, myStatus);
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0,
                                       USERID_NONE, JABBER_PPID);
@@ -61,7 +61,7 @@ void Handler::onChangeStatus(unsigned status)
 {
   TRACE();
 
-  gLicqDaemon->changeUserStatus(gUserManager.ownerUserId(JABBER_PPID), status);
+  gUserManager.ownerStatusChanged(JABBER_PPID, status);
 }
 
 void Handler::onDisconnect()
@@ -71,11 +71,11 @@ void Handler::onDisconnect()
   FOR_EACH_PROTO_USER_START(JABBER_PPID, LOCK_W)
   {
     if (pUser->isOnline())
-      gLicqDaemon->changeUserStatus(pUser, Licq::User::OfflineStatus);
+      pUser->statusChanged(Licq::User::OfflineStatus);
   }
   FOR_EACH_PROTO_USER_END;
 
-  gLicqDaemon->changeUserStatus(gUserManager.ownerUserId(JABBER_PPID), Licq::User::OfflineStatus);
+  gUserManager.ownerStatusChanged(JABBER_PPID, Licq::User::OfflineStatus);
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGOFF, 0,
       gUserManager.ownerUserId(JABBER_PPID));
@@ -137,7 +137,7 @@ void Handler::onUserStatusChange(const string& id, unsigned status)
 {
   TRACE();
 
-  gLicqDaemon->changeUserStatus(Licq::UserId(id, JABBER_PPID), status);
+  gUserManager.userStatusChanged(Licq::UserId(id, JABBER_PPID), status);
 }
 
 void Handler::onRosterReceived(const std::set<std::string>& ids)

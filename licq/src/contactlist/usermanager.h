@@ -91,6 +91,8 @@ public:
   std::string GetGroupNameFromGroup(int groupId);
   void setUserInGroup(const Licq::UserId& userId, Licq::GroupType groupType,
       int groupId, bool inGroup, bool updateServer = true);
+  void userStatusChanged(const Licq::UserId& userId, unsigned newStatus);
+  void ownerStatusChanged(unsigned long protocolId, unsigned newStatus);
   void SaveAllUsers();
   const char* DefaultUserEncoding();
   void SetDefaultUserEncoding(const char* defaultEncoding);

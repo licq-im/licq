@@ -849,6 +849,51 @@ const char* User::UserEncoding() const
     return m_szEncoding;
 }
 
+void User::statusChanged(unsigned newStatus, unsigned long s)
+{
+  unsigned oldStatus = status();
+  int arg = 0;
+
+  if (myStatus == User::OfflineStatus)
+    SetUserUpdated(false);
+
+  if (newStatus == User::OfflineStatus)
+  {
+    if (isOnline())
+      arg = -1;
+    SetStatusOffline();
+  }
+  else
+  {
+    if (!isOnline())
+      arg = 1;
+    if (s != 0)
+      SetStatus(s);
+    else
+      setStatus(newStatus);
+
+    //This is the v6 way of telling us phone follow me status
+    if (s & ICQ_STATUS_FxPFM)
+    {
+      if (s & ICQ_STATUS_FxPFMxAVAILABLE)
+        SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxACTIVE);
+      else
+        SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxBUSY);
+    }
+    else if (Version() < 7)
+      SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxINACTIVE);
+  }
+
+  // Say that we know their status for sure
+  SetOfflineOnDisconnect(false);
+
+  if (oldStatus != newStatus)
+  {
+    Touch();
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, myId, arg));
+  }
+}
+
 void User::setStatus(unsigned status)
 {
   myStatus = status;
