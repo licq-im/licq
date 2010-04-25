@@ -103,7 +103,7 @@ protected:
   bool AddLineToText();
   unsigned long GetProtocol(const char *);
   void ParseUser(const char *);
-  int ChangeStatus(unsigned long, unsigned long, const char *);
+  int changeStatus(unsigned long, const char *);
 
   int Process_MESSAGE_text();
   int Process_URL_url();

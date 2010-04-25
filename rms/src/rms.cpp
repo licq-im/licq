@@ -819,12 +819,11 @@ int CRMSClient::Process_STATUS()
   string::size_type nPos = strData.find_last_of(".");
   if (nPos == string::npos)
   {
-    unsigned long nStatus = StringToStatus(data_arg);
     Licq::ProtocolPluginsList plugins;
     gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      ChangeStatus(plugin->getProtocolId(), nStatus, data_arg);
+      changeStatus(plugin->getProtocolId(), data_arg);
     }
   }
   else
@@ -833,27 +832,27 @@ int CRMSClient::Process_STATUS()
     string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
     unsigned long nPPID = GetProtocol(strProtocol.c_str());
     char *szStatus = strdup(strStatus.c_str());
-    unsigned long nStatus = StringToStatus(szStatus);
-    ChangeStatus(nPPID, nStatus, szStatus);
+    changeStatus(nPPID, szStatus);
     free(szStatus);
   }
   fprintf(fs, "%d Done setting status\n", CODE_STATUSxDONE);
   return fflush(fs);
 }
 
-int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const char *szStatus)
+int CRMSClient::changeStatus(unsigned long nPPID, const char *szStatus)
 {
-  if (nStatus == INT_MAX)
+  unsigned status;
+  if (!Licq::User::stringToStatus(szStatus, status))
   {
     fprintf(fs, "%d Invalid status.\n", CODE_INVALIDxSTATUS);
     return -1;
   }
   UserId ownerId = gUserManager.ownerUserId(nPPID);
-  if (nStatus == ICQ_STATUS_OFFLINE)
+  if (status == Licq::User::OfflineStatus)
   {
     fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, szStatus);
     fflush(fs);
-    gProtocolManager.setStatus(ownerId, ICQ_STATUS_OFFLINE);
+    gProtocolManager.setStatus(ownerId, Licq::User::OfflineStatus);
     fprintf(fs, "%d [0] Event done.\n", CODE_STATUSxDONE);
     return 0;
   }
@@ -862,7 +861,7 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     bool b = !o->isOnline();
     gUserManager.DropOwner(o);
-    unsigned long tag = gProtocolManager.setStatus(ownerId, nStatus);
+    unsigned long tag = gProtocolManager.setStatus(ownerId, status);
     if (b)
       fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, szStatus);
     else

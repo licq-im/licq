@@ -80,7 +80,7 @@ public:
   // From Licq::ProtocolManager
   void updateUserAlias(const Licq::UserId& userId);
   unsigned long setStatus(const Licq::UserId& ownerId,
-      unsigned short newStatus, const std::string& message = KeepAutoResponse);
+      unsigned newStatus, const std::string& message = KeepAutoResponse);
   void sendTypingNotification(const Licq::UserId& userId, bool active, int nSocket = -1);
   unsigned long sendMessage(const Licq::UserId& userId, const std::string& message,
       bool viaServer, unsigned short flags, bool multipleRecipients = false,

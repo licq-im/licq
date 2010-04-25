@@ -565,7 +565,7 @@ void CMSN::ProcessSignal(LicqProtoSignal* s)
       if (m_nServerSocket < 0)
       {
         LicqProtoLogonSignal* sig = static_cast<LicqProtoLogonSignal*>(s);
-        MSNLogon(myServerAddress.c_str(), myServerPort, Licq::User::statusFromIcqStatus(sig->status()));
+        MSNLogon(myServerAddress.c_str(), myServerPort, sig->status());
       }
       break;
     }
@@ -573,7 +573,7 @@ void CMSN::ProcessSignal(LicqProtoSignal* s)
     case PROTOxCHANGE_STATUS:
     {
       LicqProtoChangeStatusSignal* sig = static_cast<LicqProtoChangeStatusSignal*>(s);
-      MSNChangeStatus(Licq::User::statusFromIcqStatus(sig->status()));
+      MSNChangeStatus(sig->status());
       break;
     }
     

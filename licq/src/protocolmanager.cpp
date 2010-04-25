@@ -22,6 +22,7 @@
 #include <licq_events.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
+#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/userid.h>
 
@@ -31,6 +32,7 @@ using namespace std;
 using namespace LicqDaemon;
 using Licq::OwnerReadGuard;
 using Licq::OwnerWriteGuard;
+using Licq::User;
 using Licq::UserId;
 using Licq::UserReadGuard;
 using Licq::gUserManager;
@@ -114,7 +116,7 @@ void ProtocolManager::updateUserAlias(const UserId& userId)
 }
 
 unsigned long ProtocolManager::setStatus(const UserId& ownerId,
-    unsigned short newStatus, const string& message)
+    unsigned newStatus, const string& message)
 {
   bool isOffline;
 
@@ -129,8 +131,11 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
   }
 
   unsigned long eventId = 0;
+  unsigned long icqStatus = User::icqStatusFromStatus(newStatus);
+  if (newStatus & User::InvisibleStatus)
+    icqStatus |= ICQ_STATUS_FxPRIVATE;
 
-  if (newStatus == ICQ_STATUS_OFFLINE)
+  if (newStatus == User::OfflineStatus)
   {
     if (isOffline)
       return 0;
@@ -143,14 +148,14 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
   else if(isOffline)
   {
     if (ownerId.protocolId() == LICQ_PPID)
-      eventId = gLicqDaemon->icqLogon(newStatus);
+      eventId = gLicqDaemon->icqLogon(icqStatus);
     else
       pushProtoSignal(new LicqProtoLogonSignal(newStatus), ownerId);
   }
   else
   {
     if (ownerId.protocolId() == LICQ_PPID)
-      eventId = gLicqDaemon->icqSetStatus(newStatus);
+      eventId = gLicqDaemon->icqSetStatus(icqStatus);
     else
       pushProtoSignal(new LicqProtoChangeStatusSignal(newStatus), ownerId);
   }

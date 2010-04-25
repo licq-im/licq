@@ -58,7 +58,7 @@ public:
    * @return Event id
    */
   virtual unsigned long setStatus(const UserId& ownerId,
-      unsigned short newStatus, const std::string& message = KeepAutoResponse) = 0;
+      unsigned newStatus, const std::string& message = KeepAutoResponse) = 0;
 
   /**
    * Notify a user that we've started/stopped typing

@@ -243,7 +243,7 @@ LicqProtoSignal::LicqProtoSignal(LicqProtoSignal* s)
   // Empty
 }
 
-LicqProtoLogonSignal::LicqProtoLogonSignal(unsigned long status)
+LicqProtoLogonSignal::LicqProtoLogonSignal(unsigned status)
   : LicqProtoSignal(PROTOxLOGON, USERID_NONE),
     myStatus(status)
 {
@@ -256,7 +256,7 @@ LicqProtoLogoffSignal::LicqProtoLogoffSignal()
   // Empty
 }
 
-LicqProtoChangeStatusSignal::LicqProtoChangeStatusSignal(unsigned long status)
+LicqProtoChangeStatusSignal::LicqProtoChangeStatusSignal(unsigned status)
   : LicqProtoSignal(PROTOxCHANGE_STATUS, USERID_NONE),
     myStatus(status)
 {

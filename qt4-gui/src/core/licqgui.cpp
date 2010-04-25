@@ -645,12 +645,8 @@ void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool inv
     }
   }
 
-  unsigned long icqStatus = User::icqStatusFromStatus(status);
-  if (status & User::InvisibleStatus)
-    icqStatus |= ICQ_STATUS_FxPRIVATE;
-
   const QTextCodec* codec = UserCodec::defaultEncoding();
-  gProtocolManager.setStatus(userId, icqStatus,
+  gProtocolManager.setStatus(userId, status,
       (autoMessage.isNull() ? gProtocolManager.KeepAutoResponse : codec->fromUnicode(autoMessage).data()));
 }
 

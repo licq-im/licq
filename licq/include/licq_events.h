@@ -585,13 +585,13 @@ private:
 class LicqProtoLogonSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoLogonSignal(unsigned long status);
+  LicqProtoLogonSignal(unsigned status);
 
   //! The requested initial status.
-  unsigned long status() const { return myStatus; }
+  unsigned status() const { return myStatus; }
 
 private:
-  unsigned long myStatus;
+  unsigned myStatus;
 };
 
 class LicqProtoLogoffSignal : public LicqProtoSignal
@@ -603,13 +603,13 @@ public:
 class LicqProtoChangeStatusSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoChangeStatusSignal(unsigned long status);
+  LicqProtoChangeStatusSignal(unsigned status);
 
   //! The requested status.
-  unsigned long status() const { return myStatus; }
+  unsigned status() const { return myStatus; }
 
 private:
-  unsigned long myStatus;
+  unsigned myStatus;
 };
 
 class LicqProtoAddUserSignal : public LicqProtoSignal

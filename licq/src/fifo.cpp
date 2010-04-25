@@ -148,39 +148,6 @@ struct command_t
 
 static int process_tok(const command_t *table,const char *tok);
 
-unsigned long StringToStatus(const char* _szStatus)
-{
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  unsigned long nStatus = 0;
-  int i =0;
-  static struct 
-  {
-    const char *const name;
-    const unsigned long nStatus;
-  } table[]=
-  {
-    { "online",   ICQ_STATUS_ONLINE      },
-    { "away",     ICQ_STATUS_AWAY        },
-    { "na",       ICQ_STATUS_NA          },
-    { "occupied", ICQ_STATUS_OCCUPIED    },
-    { "dnd",      ICQ_STATUS_DND         },
-    { "ffc",      ICQ_STATUS_FREEFORCHAT },
-    { "offline",  ICQ_STATUS_OFFLINE     },
-    { NULL,       0                      }
-  };
-  gUserManager.DropOwner(o);
-  if (_szStatus[0] == '*')
-  {
-    _szStatus++;
-    nStatus |= ICQ_STATUS_FxPRIVATE;
-  }
-  for( i=0; table[i].name && strcasecmp(table[i].name,_szStatus)  ; i++)
-    ;
-
-  return table[i].name ? nStatus|table[i].nStatus : INT_MAX ;
-}
-
-
 static bool buffer_is_uin(const char *buffer)
 {
   unsigned len = 0;
@@ -328,7 +295,6 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
 static int fifo_status( int argc, const char *const *argv, void* /* data */)
 {
   const char *szStatus = argv[1];
-  unsigned long nStatus;
 
   if( argc == 1 )
   {
@@ -337,16 +303,15 @@ static int fifo_status( int argc, const char *const *argv, void* /* data */)
   }
 
   // Determine the status to go to
-  nStatus = StringToStatus(const_cast<char *>(szStatus));
-
-  if (nStatus == INT_MAX)
+  unsigned status;
+  if (!Licq::User::stringToStatus(szStatus, status))
   {
     gLog.Warn(tr("%s%s %s: command with invalid status \"%s\".\n"),
               L_WARNxSTR,L_FIFOxSTR,argv[0],szStatus);
     return -1;
   }
 
-  gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), nStatus);
+  gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), status);
 
   // Now set the auto response
   if( argc > 2 )

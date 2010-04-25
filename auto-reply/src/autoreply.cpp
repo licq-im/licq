@@ -18,6 +18,7 @@
 #include "licq_file.h"
 #include "licq_user.h"
 #include "licq_constants.h"
+#include <licq/contactlist/user.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
 
@@ -85,8 +86,8 @@ int CLicqAutoReply::Run()
   // Log on if necessary
   if (m_szStatus != NULL)
   {
-    unsigned long s = StringToStatus(m_szStatus);
-    if (s == INT_MAX)
+    unsigned s;
+    if (!Licq::User::stringToStatus(m_szStatus, s))
       gLog.Warn("%sInvalid startup status.\n", L_AUTOREPxSTR);
     else
       gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);

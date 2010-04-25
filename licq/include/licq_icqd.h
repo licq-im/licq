@@ -669,7 +669,6 @@ extern CICQDaemon *gLicqDaemon;
 
 // Helper functions for the daemon
 bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
-unsigned long StringToStatus(const char* status);
 unsigned short VersionToUse(unsigned short);
 
 // Data structure for passing information to the reverse connection thread

@@ -548,10 +548,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
   {
     unsigned long nPPID = protocol->getProtocolId();
     UserId ownerId = gUserManager.ownerUserId(nPPID);
-    unsigned long nStatus = Licq::User::icqStatusFromStatus(status);
-    if (status & Licq::User::InvisibleStatus)
-      nStatus |= ICQ_STATUS_FxPRIVATE;
-    gProtocolManager.setStatus(ownerId, nStatus);
+    gProtocolManager.setStatus(ownerId, status);
   }
 }
 

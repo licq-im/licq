@@ -165,7 +165,7 @@ void Jabber::processSignal(LicqProtoSignal* signal)
 
 void Jabber::doLogon(LicqProtoLogonSignal* signal)
 {
-  unsigned status = Licq::User::statusFromIcqStatus(signal->status());
+  unsigned status = signal->status();
   if (status == Licq::User::OfflineStatus)
     return;
 
@@ -201,7 +201,7 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
 void Jabber::doChangeStatus(LicqProtoChangeStatusSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->changeStatus(Licq::User::statusFromIcqStatus(signal->status()));
+  myClient->changeStatus(signal->status());
 }
 
 void Jabber::doLogoff()
