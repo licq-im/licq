@@ -117,7 +117,7 @@ private slots:
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
    */
-  void updatedUser(const UserId& userId, unsigned long subSignal, int argument);
+  void updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument);
 
   /**
    * A message was sent. Add to history if it was for the current user

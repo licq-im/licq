@@ -40,8 +40,6 @@
 #include <QResizeEvent>
 #include <QWidget>
 
-#include <licq_types.h>
-
 class QAction;
 class QMenu;
 class QPixmap;
@@ -50,6 +48,11 @@ class QStyle;
 class QTextEdit;
 
 class LicqEvent;
+
+namespace Licq
+{
+class UserId;
+}
 
 namespace LicqQtGui
 {
@@ -181,14 +184,14 @@ private slots:
   void slot_protocolPlugin(unsigned long);
   void slot_doneOwnerFcn(const LicqEvent* event);
   void slot_updateContactList();
-  void slot_updatedUser(const UserId& userId, unsigned long subSignal, int argument);
+  void slot_updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument);
 
   /**
    * Open add user dialog
    *
    * @param userId User to add
    */
-  void addUser(const UserId& userId);
+  void addUser(const Licq::UserId& userId);
 
   void setMiniMode(bool miniMode);
   void setMainwinSticky(bool sticky = true);

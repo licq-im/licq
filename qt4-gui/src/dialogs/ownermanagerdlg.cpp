@@ -104,9 +104,9 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   connect(removeButton, SIGNAL(clicked()), SLOT(removeOwner()));
   connect(closeButton, SIGNAL(clicked()), SLOT(close()));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerAdded(const UserId&)), SLOT(updateOwners()));
+      SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateOwners()));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerRemoved(const UserId&)), SLOT(updateOwners()));
+      SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateOwners()));
 
   // Add the owners to the list now
   updateOwners();

@@ -301,7 +301,7 @@ public slots:
    * @param argument Additional data, usage depend on sub signal type
    * @param userId Id for affected user, if applicable
    */
-  void listUpdated(unsigned long subSignal, int argument, const UserId& userId);
+  void listUpdated(unsigned long subSignal, int argument, const Licq::UserId& userId);
 
   /**
    * The data for a user has changed in the daemon
@@ -310,7 +310,7 @@ public slots:
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
    */
-  void userUpdated(const UserId& userId, unsigned long subSignal, int argument);
+  void userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument);
 
   /**
    * Reload the entire contact list from the daemon
@@ -385,7 +385,7 @@ private slots:
    * @param user The model user to update groups for
    * @param licqUser The daemon user to get group membership from
    */
-  void updateUserGroups(ContactUserData* user, const LicqUser* licqUser);
+  void updateUserGroups(ContactUserData* user, const Licq::User* licqUser);
 
 private:
   /**

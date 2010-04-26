@@ -100,14 +100,14 @@ public slots:
    *
    * @param userId User id for the new owner
    */
-  void addOwner(const UserId& userId);
+  void addOwner(const Licq::UserId& userId);
 
   /**
    * Remove an owner from the menu
    *
    * @param userId User id of the owner to remove
    */
-  void removeOwner(const UserId& userId);
+  void removeOwner(const Licq::UserId& userId);
 
 private slots:
   /**

@@ -156,7 +156,7 @@ signals:
   /**
    * Signal emitted when the user group memberships (may) have changed
    */
-  void updateUserGroups(ContactUserData* user, const LicqUser* licqUser);
+  void updateUserGroups(ContactUserData* user, const Licq::User* licqUser);
 
 private:
   /**

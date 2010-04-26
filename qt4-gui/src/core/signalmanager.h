@@ -22,12 +22,15 @@
 
 #include <QObject>
 
-#include <licq_types.h>
-
 class QSocketNotifier;
 
 class LicqSignal;
 class LicqEvent;
+
+namespace Licq
+{
+class UserId;
+}
 
 namespace LicqQtGui
 {
@@ -48,7 +51,7 @@ signals:
    * @param argument Additional data, usage depend on sub signal type
    * @param userId Id for affected user, if applicable
    */
-  void updatedList(unsigned long subSignal, int argument, const UserId& userId);
+  void updatedList(unsigned long subSignal, int argument, const Licq::UserId& userId);
 
   /**
    * Data for a user has changed
@@ -58,7 +61,7 @@ signals:
    * @param argument Additional data, usage depend on sub signal type
    * @param cid Conversation id
    */
-  void updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
+  void updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
 
   /**
    * Status has changed
@@ -79,7 +82,7 @@ signals:
    *
    * @param userId User to show event for
    */
-  void ui_viewevent(const UserId& userId);
+  void ui_viewevent(const Licq::UserId& userId);
 
   /**
    * Open a message dialog for a user
@@ -87,7 +90,7 @@ signals:
    *
    * @param userId User to open dialog for
    */
-  void ui_message(const UserId& userId);
+  void ui_message(const Licq::UserId& userId);
   void protocolPlugin(unsigned long);
 
   /**
@@ -96,7 +99,7 @@ signals:
    * @param userId User id to associate conversation with
    * @param convoId Conversation id
    */
-  void socket(const UserId& userId, unsigned long convoId);
+  void socket(const Licq::UserId& userId, unsigned long convoId);
 
   /**
    * Someone joined an ongoing conversation
@@ -105,7 +108,7 @@ signals:
    * @param ppid Protocol of conversation
    * @param convoId Id of conversation
    */
-  void convoJoin(const UserId& userId, unsigned long ppid, unsigned long convoId);
+  void convoJoin(const Licq::UserId& userId, unsigned long ppid, unsigned long convoId);
 
   /**
    * Someone left an ongoing conversation
@@ -114,7 +117,7 @@ signals:
    * @param ppid Protocol of conversation
    * @param convoId Id of conversation
    */
-  void convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId);
+  void convoLeave(const Licq::UserId& userId, unsigned long ppid, unsigned long convoId);
   void verifyImage(unsigned long);
   void newOwner(const QString& accountId, unsigned long ppid);
 
@@ -123,14 +126,14 @@ signals:
    *
    * @param userId User id of the owner
    */
-  void ownerAdded(const UserId& userId);
+  void ownerAdded(const Licq::UserId& userId);
 
   /**
    * An owner was removed
    *
    * @param userId User id of the owner
    */
-  void ownerRemoved(const UserId& userId);
+  void ownerRemoved(const Licq::UserId& userId);
 
 private:
   int myPipe;

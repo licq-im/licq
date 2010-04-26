@@ -85,7 +85,7 @@ signals:
    *
    * @param userId User id of contact
    */
-  void userDoubleClicked(const UserId& userId);
+  void userDoubleClicked(const Licq::UserId& userId);
 
 protected slots:
   /**

@@ -162,7 +162,7 @@ protected slots:
   void updateTyping();
   void showUserMenu();
   void showEncodingsMenu();
-  void updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
+  void updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
 
 signals:
   /**
@@ -170,7 +170,7 @@ signals:
    *
    * @param userId User for this dialog
    */
-  void finished(const UserId& userId);
+  void finished(const Licq::UserId& userId);
   void encodingChanged();
 };
 

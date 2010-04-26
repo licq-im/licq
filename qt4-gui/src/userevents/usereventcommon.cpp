@@ -350,8 +350,8 @@ void UserEventCommon::pushToolTip(QAction* action, const QString& tooltip)
 void UserEventCommon::connectSignal()
 {
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
-      SLOT(updatedUser(const UserId&, unsigned long, int, unsigned long)));
+      SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)));
 }
 
 void UserEventCommon::setEncoding(QAction* action)
@@ -447,7 +447,7 @@ void UserEventCommon::showEncodingsMenu()
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myEncoding))->showMenu();
 }
 
-void UserEventCommon::updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
+void UserEventCommon::updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   if (!isUserInConvo(userId))
   {

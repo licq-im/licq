@@ -259,8 +259,8 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
 
   // Catch received messages so we can add them to history
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
-      SLOT(updatedUser(const UserId&, unsigned long, int)));
+      SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(const Licq::UserId&, unsigned long, int)));
 }
 
 HistoryDlg::~HistoryDlg()
@@ -268,7 +268,7 @@ HistoryDlg::~HistoryDlg()
   LicqUser::ClearHistory(myHistoryList);
 }
 
-void HistoryDlg::updatedUser(const UserId& userId, unsigned long subSignal, int argument)
+void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument)
 {
   if (userId != myUserId)
     return;

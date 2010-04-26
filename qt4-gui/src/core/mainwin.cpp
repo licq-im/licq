@@ -209,19 +209,19 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       "<li><tt>%w - </tt>webpage</li></ul>");
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedList(unsigned long, int, const UserId&)),
+      SIGNAL(updatedList(unsigned long, int, const Licq::UserId&)),
       SLOT(slot_updatedList(unsigned long)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
-      SLOT(slot_updatedUser(const UserId&, unsigned long, int)));
+      SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
+      SLOT(slot_updatedUser(const Licq::UserId&, unsigned long, int)));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(updatedStatus(unsigned long)),
       SLOT(updateStatus()));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerAdded(const UserId&)),
+      SIGNAL(ownerAdded(const Licq::UserId&)),
       SLOT(updateStatus()));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerRemoved(const UserId&)),
+      SIGNAL(ownerRemoved(const Licq::UserId&)),
       SLOT(updateStatus()));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(doneOwnerFcn(const LicqEvent*)),
@@ -233,11 +233,11 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(protocolPlugin(unsigned long)),
       SLOT(slot_protocolPlugin(unsigned long)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerAdded(const UserId&)),
-      mySystemMenu, SLOT(addOwner(const UserId&)));
+      SIGNAL(ownerAdded(const Licq::UserId&)),
+      mySystemMenu, SLOT(addOwner(const Licq::UserId&)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerRemoved(const UserId&)),
-      mySystemMenu, SLOT(removeOwner(const UserId&)));
+      SIGNAL(ownerRemoved(const Licq::UserId&)),
+      mySystemMenu, SLOT(removeOwner(const Licq::UserId&)));
 
   if (conf->mainwinRect().isValid())
     setGeometry(conf->mainwinRect());
@@ -281,19 +281,19 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   /* TODO
   kdeIMInterface = new LicqKIMIface(KApplication::dcopClient()->appId(), this);
   connect(kdeIMInterface,
-      SIGNAL(sendMessage(const char*, unsigned long, const QString&)),
-      LicqGui::instance(), SLOT(sendMsg(const char*, unsigned long, const QString&)));
+      SIGNAL(sendMessage(const Licq::UserId&, unsigned long, const QString&)),
+      LicqGui::instance(), SLOT(sendMsg(const Licq::UserId&, unsigned long, const QString&)));
   connect(kdeIMInterface,
-      SIGNAL(sendFileTransfer(const char*, unsigned long,
+      SIGNAL(sendFileTransfer(const Licq::UserId&, unsigned long,
           const QString&, const QString&)),
-      LicqGui::instance(), SLOT(sendFileTransfer(const char*, unsigned long,
+      LicqGui::instance(), SLOT(sendFileTransfer(const Licq::UserId&, unsigned long,
           const QString&, const QString&)));
   connect(kdeIMInterface,
-      SIGNAL(sendChatRequest(const char*, unsigned long)),
-      LicqGui::instance(), SLOT(sendChatRequest(const char*, unsigned long)));
+      SIGNAL(sendChatRequest(const Licq::UserId&, unsigned long)),
+      LicqGui::instance(), SLOT(sendChatRequest(const Licq::UserId&, unsigned long)));
   connect(kdeIMInterface,
-      SIGNAL(addUser(const UserId&)),
-      SLOT(addUser(const UserId&)));
+      SIGNAL(addUser(const Licq::UserId&)),
+      SLOT(addUser(const Licq::UserId&)));
   */
 #endif
 
@@ -467,8 +467,8 @@ void MainWindow::updateSkin()
 void MainWindow::CreateUserView()
 {
   myUserView = new UserView(LicqGui::instance()->contactList(), this);
-  connect (myUserView, SIGNAL(userDoubleClicked(const UserId&)),
-      LicqGui::instance(), SLOT(showDefaultEventDialog(const UserId&)));
+  connect (myUserView, SIGNAL(userDoubleClicked(const Licq::UserId&)),
+      LicqGui::instance(), SLOT(showDefaultEventDialog(const Licq::UserId&)));
 }
 
 void MainWindow::resizeEvent(QResizeEvent* /* e */)
@@ -616,7 +616,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent* m)
   }
 }
 
-void MainWindow::slot_updatedUser(const UserId& userId, unsigned long subSignal, int argument)
+void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument)
 {
   switch(subSignal)
   {
@@ -1203,7 +1203,7 @@ void MainWindow::showAutoResponseHints(QWidget* parent)
   AwayMsgDlg::showAutoResponseHints(parent);
 }
 
-void MainWindow::addUser(const UserId& userId)
+void MainWindow::addUser(const Licq::UserId& userId)
 {
   if (!USERID_ISVALID(userId))
     return;

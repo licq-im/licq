@@ -153,7 +153,7 @@ private slots:
    * @param userId Id for affected user
    * @param subSignal Sub signal telling what the change was
    */
-  void userUpdated(const UserId& userId, unsigned long subSignal);
+  void userUpdated(const Licq::UserId& userId, unsigned long subSignal);
 
   /**
    * Server request has finished

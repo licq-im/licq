@@ -90,7 +90,7 @@ ContactListModel::~ContactListModel()
     delete mySystemGroups[i];
 }
 
-void ContactListModel::listUpdated(unsigned long subSignal, int argument, const UserId& userId)
+void ContactListModel::listUpdated(unsigned long subSignal, int argument, const Licq::UserId& userId)
 {
   switch(subSignal)
   {
@@ -177,7 +177,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
   }
 }
 
-void ContactListModel::userUpdated(const UserId& userId, unsigned long subSignal, int argument)
+void ContactListModel::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument)
 {
   // Skip events for owners
   if (gUserManager.isOwner(userId))
@@ -357,14 +357,14 @@ void ContactListModel::addUser(const LicqUser* licqUser)
   ContactUserData* newUser = new ContactUserData(licqUser, this);
   connect(newUser, SIGNAL(dataChanged(const ContactUserData*)),
       SLOT(userDataChanged(const ContactUserData*)));
-  connect(newUser, SIGNAL(updateUserGroups(ContactUserData*, const LicqUser*)),
-      SLOT(updateUserGroups(ContactUserData*, const LicqUser*)));
+  connect(newUser, SIGNAL(updateUserGroups(ContactUserData*, const Licq::User*)),
+      SLOT(updateUserGroups(ContactUserData*, const Licq::User*)));
 
   myUsers.append(newUser);
   updateUserGroups(newUser, licqUser);
 }
 
-void ContactListModel::updateUserGroups(ContactUserData* user, const LicqUser* licqUser)
+void ContactListModel::updateUserGroups(ContactUserData* user, const Licq::User* licqUser)
 {
   bool userIgnored = licqUser->IgnoreList();
 

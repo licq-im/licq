@@ -328,7 +328,7 @@ void SystemMenu::updateShortcuts()
   myShowHeaderAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleShowHeader));
 }
 
-void SystemMenu::addOwner(const UserId& userId)
+void SystemMenu::addOwner(const Licq::UserId& userId)
 {
   if (myOwnerData.count(userId) > 0)
     return;
@@ -376,7 +376,7 @@ void SystemMenu::addOwner(const UserId& userId)
   myOwnerData.insert(userId, newOwner);
 }
 
-void SystemMenu::removeOwner(const UserId& userId)
+void SystemMenu::removeOwner(const Licq::UserId& userId)
 {
   OwnerData* data = myOwnerData.take(userId);
   if (data == NULL)

@@ -122,8 +122,8 @@ UserDlg::UserDlg(const UserId& userId, QWidget* parent)
   resetCaption();
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
-      SLOT(userUpdated(const UserId&, unsigned long)));
+      SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
+      SLOT(userUpdated(const Licq::UserId&, unsigned long)));
 
   QDialog::show();
 }
@@ -227,7 +227,7 @@ void UserDlg::apply()
   gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
 }
 
-void UserDlg::userUpdated(const UserId& userId, unsigned long subSignal)
+void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
 {
   if (userId != myUserId)
     return;

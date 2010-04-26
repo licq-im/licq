@@ -186,7 +186,7 @@ public slots:
    *
    * @param userId Contact id or negative for any contact
    */
-  void showNextEvent(const UserId& userId = USERID_NONE);
+  void showNextEvent(const Licq::UserId& userId = Licq::UserId());
 
   /**
    * Open dialogs for all owner events
@@ -198,7 +198,7 @@ public slots:
    */
   void showAllEvents();
 
-  void showDefaultEventDialog(const UserId& userId);
+  void showDefaultEventDialog(const Licq::UserId& userId);
 
   /**
    * Open a send message dialog and set message text
@@ -206,7 +206,7 @@ public slots:
    * @param userId User to send message to
    * @param message Text to put in input area
    */
-  void sendMsg(const UserId& userId, const QString& message);
+  void sendMsg(const Licq::UserId& userId, const QString& message);
 
   /**
    * Open a file transfer dialog for a specified file
@@ -215,14 +215,14 @@ public slots:
    * @param filename Path to file to sendof
    * @param description Text to put in description area
    */
-  void sendFileTransfer(const UserId& userId, const QString& filename, const QString& description);
+  void sendFileTransfer(const Licq::UserId& userId, const QString& filename, const QString& description);
 
   /**
    * Open a chat request dialog
    *
    * @param userId User to open chat request dialog for
    */
-  void sendChatRequest(const UserId& userId);
+  void sendChatRequest(const Licq::UserId& userId);
 
   /**
    * Act on object being dropped on a user
@@ -232,7 +232,7 @@ public slots:
    * @param mimeData Dropped data
    * @return true if data was accepted
    */
-  bool userDropEvent(const UserId& userId, const QMimeData& mimeData);
+  bool userDropEvent(const Licq::UserId& userId, const QMimeData& mimeData);
 
 signals:
   /**
@@ -257,21 +257,21 @@ private slots:
    *
    * @param userId User dialog was opened for
    */
-  void userEventFinished(const UserId& userId);
+  void userEventFinished(const Licq::UserId& userId);
 
   /**
    * A send user event dialog has finished
    *
    * @param userId User dialog was opened for
    */
-  void sendEventFinished(const UserId& userId);
+  void sendEventFinished(const Licq::UserId& userId);
 
   /**
    * Open a message dialog
    *
    * @param userId User to open dialog for
    */
-  void showMessageDialog(const UserId& userId);
+  void showMessageDialog(const Licq::UserId& userId);
 
   /**
    * Act on changes to the contact list
@@ -280,7 +280,7 @@ private slots:
    * @param argument Additional data, usage depend on sub signal type
    * @param userId Id for affected user, if applicable
    */
-  void listUpdated(unsigned long subSignal, int argument, const UserId& userId);
+  void listUpdated(unsigned long subSignal, int argument, const Licq::UserId& userId);
 
   /**
    * Act on changes to a contact
@@ -290,7 +290,7 @@ private slots:
    * @param argument Additional data, usage depend on sub signal type
    * @param cid Conversation id
    */
-  void userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
+  void userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
 
   /**
    * Set conversation id for user event dialog
@@ -298,7 +298,7 @@ private slots:
    * @param userId User to find dialog for
    * @param convoId Conversation id to set
    */
-  void convoSet(const UserId& userId, unsigned long convoId);
+  void convoSet(const Licq::UserId& userId, unsigned long convoId);
 
   /**
    * Someone joined an ongoing conversation
@@ -307,7 +307,7 @@ private slots:
    * @param ppid Protocol of conversation
    * @param convoId Id of conversation
    */
-  void convoJoin(const UserId& userId, unsigned long ppid, unsigned long convoId);
+  void convoJoin(const Licq::UserId& userId, unsigned long ppid, unsigned long convoId);
 
   /**
    * Someone left an ongoing conversation
@@ -316,7 +316,7 @@ private slots:
    * @param ppid Protocol of conversation
    * @param convoId Id of conversation
    */
-  void convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId);
+  void convoLeave(const Licq::UserId& userId, unsigned long ppid, unsigned long convoId);
   void autoAway();
   void updateDockIcon();
 
