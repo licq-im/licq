@@ -23,9 +23,12 @@
 
 #include <QTreeView>
 
-#include <licq_types.h>
-
 class QAbstractProxyModel;
+
+namespace Licq
+{
+class UserId;
+}
 
 namespace LicqQtGui
 {

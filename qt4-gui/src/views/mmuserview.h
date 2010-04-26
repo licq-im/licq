@@ -22,6 +22,8 @@
 
 #include "userviewbase.h"
 
+#include <licq/userid.h>
+
 class QMenu;
 
 
@@ -33,12 +35,12 @@ class MMUserView : public UserViewBase
 {
   Q_OBJECT
 public:
-  MMUserView(const UserId& userId, ContactListModel* contactList, QWidget* parent = 0);
+  MMUserView(const Licq::UserId& userId, ContactListModel* contactList, QWidget* parent = 0);
   virtual ~MMUserView();
 
-  const std::set<UserId>& contacts() const;
+  const std::set<Licq::UserId>& contacts() const;
 
-  void add(const UserId& userId);
+  void add(const Licq::UserId& userId);
   void removeFirst();
 
 public slots:
@@ -46,7 +48,7 @@ public slots:
 
 private:
   QMenu* myMenu;
-  UserId myUserId;
+  Licq::UserId myUserId;
 
   virtual void mousePressEvent(QMouseEvent* event);
   virtual void keyPressEvent(QKeyEvent* event);

@@ -23,12 +23,15 @@
 
 #include <QObject>
 
-#include <licq_types.h>
-
 class QTextCodec;
 
 class CChatUser;
 
+namespace Licq
+{
+class User;
+class UserId;
+}
 
 namespace LicqQtGui
 {
@@ -48,11 +51,11 @@ public:
   // Retrieves the default codec
   static const QTextCodec* defaultEncoding();
   // Retrieves the codec for an LicqUser object
-  static const QTextCodec* codecForUser(const LicqUser* u);
+  static const QTextCodec* codecForUser(const Licq::User* u);
   // Retrieves the codec for an CChatUser object
   static const QTextCodec* codecForCChatUser(CChatUser* u);
   // Retrieves the codec for a proto user
-  static const QTextCodec* codecForUserId(const UserId& userId);
+  static const QTextCodec* codecForUserId(const Licq::UserId& userId);
 
   static QByteArray encodingForMib(int mib);
   static QString nameForEncoding(const QByteArray& encoding);

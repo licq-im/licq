@@ -24,6 +24,7 @@
 
 #include <licq_icq.h>
 #include <licq_message.h>
+#include <licq_user.h>
 
 #include <QAction>
 #include <QActionGroup>

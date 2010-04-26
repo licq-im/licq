@@ -22,7 +22,10 @@
 
 #include <QDialog>
 
-#include <licq_types.h>
+namespace Licq
+{
+class UserId;
+}
 
 namespace LicqQtGui
 {
@@ -40,7 +43,7 @@ public:
    * @param t Type of event to refuse
    * @param parent Parent widget
    */
-  RefuseDlg(const UserId& userId, const QString& t, QWidget* parent = NULL);
+  RefuseDlg(const Licq::UserId& userId, const QString& t, QWidget* parent = NULL);
   QString RefuseMessage();
 
 private:

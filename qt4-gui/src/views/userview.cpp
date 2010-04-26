@@ -25,6 +25,8 @@
 #include <QMouseEvent>
 #include <QTimer>
 
+#include <licq_types.h>
+
 #include "config/contactlist.h"
 #include "config/iconmanager.h"
 #include "config/skin.h"
@@ -362,10 +364,10 @@ void UserView::mouseMoveEvent(QMouseEvent* event)
   if ((event->buttons() & Qt::LeftButton) && !myMousePressPos.isNull() &&
       (QPoint(event->pos() - myMousePressPos).manhattanLength() >= QApplication::startDragDistance()))
   {
-    char* p = PPIDSTRING(ppid);
+    char p[5];
+    Licq::protocolId_toStr(p, ppid);
     QString data(p);
     data += id;
-    delete [] p;
 
     QDrag* drag = new QDrag(this);
     QMimeData* mimeData = new QMimeData;

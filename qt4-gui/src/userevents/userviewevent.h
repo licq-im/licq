@@ -51,7 +51,7 @@ public:
    * @param userId User to open dialog for
    * @param parent Parent widget
    */
-  UserViewEvent(const UserId& userId, QWidget* parent = 0);
+  UserViewEvent(const Licq::UserId& userId, QWidget* parent = 0);
   virtual ~UserViewEvent();
 
 protected:
@@ -92,7 +92,7 @@ private:
    * @param argument Signal specific argument
    * @param cid Conversation id
    */
-  virtual void userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
+  virtual void userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
 
 private slots:
   void autoClose();

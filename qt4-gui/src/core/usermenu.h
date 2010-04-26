@@ -25,7 +25,7 @@
 #include <QMap>
 #include <QMenu>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 #include "gui-defines.h"
 
@@ -62,7 +62,7 @@ public:
    *
    * @param userId Contact id
    */
-  void setUser(const UserId& userId);
+  void setUser(const Licq::UserId& userId);
 
   /**
    * Change which contact the menu will be displayed for.
@@ -79,7 +79,7 @@ public:
    * @param id Contact id
    * @param ppid Contact protocol id
    */
-  void popup(QPoint pos, const UserId& userId);
+  void popup(QPoint pos, const Licq::UserId& userId);
 
 private slots:
   /**
@@ -111,7 +111,7 @@ private slots:
 
 private:
   // Current contact
-  UserId myUserId;
+  Licq::UserId myUserId;
   QString myId;
   unsigned long myPpid;
 

@@ -103,20 +103,15 @@ static const int col_array[] =
 
 
 // ---------------------------------------------------------------------------
-ChatDlg::ChatDlg(const UserId& userId, QWidget* parent)
+ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent),
     myAudio(true)
 {
   Support::setWidgetProps(this, "ChatDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user != NULL)
-  {
-    myId = user->accountId().c_str();
-    myPpid = user->ppid();
-    gUserManager.DropUser(user);
-  }
+  myId = userId.accountId().c_str();
+  myPpid = userId.protocolId();
 
   sn = NULL;
 
@@ -739,7 +734,7 @@ void ChatDlg::slot_chat()
         QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
 
         if (n.isEmpty())
-          n = USERID_TOSTR(u->userId());
+          n = u->userId().toString().c_str();
         chatClose(u);
         InformUser(this, tr("%1 closed connection.").arg(n));
         break;

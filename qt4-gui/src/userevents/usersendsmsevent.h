@@ -39,7 +39,7 @@ public:
    * @param userId User to open dialog for
    * @param parent Parent widget
    */
-  UserSendSmsEvent(const UserId& userId, QWidget* parent = 0);
+  UserSendSmsEvent(const Licq::UserId& userId, QWidget* parent = 0);
   virtual ~UserSendSmsEvent();
 
 private:

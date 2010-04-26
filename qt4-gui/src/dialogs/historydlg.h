@@ -26,7 +26,7 @@
 #include <QDialog>
 
 #include <licq_history.h>
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class QCalendarWidget;
 class QCheckBox;
@@ -57,7 +57,7 @@ public:
    * @param userId Contact id
    * @param parent Parent widget
    */
-  HistoryDlg(const UserId& userId, QWidget* parent = 0);
+  HistoryDlg(const Licq::UserId& userId, QWidget* parent = 0);
 
   /**
    * Desstructor
@@ -146,7 +146,7 @@ private:
    */
   void showHistory();
 
-  UserId myUserId;
+  Licq::UserId myUserId;
   bool myIsOwner;
   QString myContactName;
   QString myOwnerName;

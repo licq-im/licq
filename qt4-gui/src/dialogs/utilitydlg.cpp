@@ -42,7 +42,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UtilityDlg */
 
-UtilityDlg::UtilityDlg(CUtility* u, const UserId& userId)
+UtilityDlg::UtilityDlg(CUtility* u, const Licq::UserId& userId)
   : myUserId(userId)
 {
   setObjectName("UtilityDialog");

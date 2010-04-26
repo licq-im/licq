@@ -23,7 +23,7 @@
 
 #include <QDialog>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 namespace LicqQtGui
 {
@@ -34,11 +34,11 @@ class CustomAutoRespDlg : public QDialog
   Q_OBJECT
 
 public:
-  CustomAutoRespDlg(const UserId& userId, QWidget* parent = 0);
+  CustomAutoRespDlg(const Licq::UserId& userId, QWidget* parent = 0);
 
 private:
   MLEdit* myMessage;
-  UserId myUserId;
+  Licq::UserId myUserId;
 
 private slots:
   void ok();

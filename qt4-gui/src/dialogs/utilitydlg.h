@@ -24,7 +24,7 @@
 
 #include <QDialog>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class QCheckBox;
 class QGroupBox;
@@ -47,12 +47,12 @@ class UtilityDlg : public QDialog
   Q_OBJECT
 
 public:
-  UtilityDlg(CUtility* u, const UserId& userId);
+  UtilityDlg(CUtility* u, const Licq::UserId& userId);
   ~UtilityDlg();
 
 private:
   CUtility* m_xUtility;
-  UserId myUserId;
+  Licq::UserId myUserId;
   bool m_bIntWin, m_bStdOutClosed, m_bStdErrClosed;
   CUtilityInternalWindow* intwin;
 

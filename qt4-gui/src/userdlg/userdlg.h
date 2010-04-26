@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 #include <QDialog>
 #include <QMap>
@@ -72,7 +72,7 @@ public:
    * @param userId User id
    * @param parent Parent widget
    */
-  UserDlg(const UserId& userId, QWidget* parent = 0);
+  UserDlg(const Licq::UserId& userId, QWidget* parent = 0);
 
   /**
    * Destructor
@@ -113,7 +113,7 @@ public:
    *
    * @ return User id
    */
-  const UserId& userId() const { return myUserId; }
+  const Licq::UserId& userId() const { return myUserId; }
 
 signals:
   void finished(UserDlg* userDlg);
@@ -173,7 +173,7 @@ private slots:
   void resetCaption();
 
 private:
-  UserId myUserId;
+  Licq::UserId myUserId;
   bool myIsOwner;
   unsigned long myIcqEventTag;
   QString myBasicTitle;

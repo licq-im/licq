@@ -26,8 +26,6 @@
 #include <QTimer>
 #include <QVariant>
 
-#include <licq_types.h>
-
 #include "contactitem.h"
 #include "contactlist.h"
 
@@ -54,7 +52,7 @@ public:
    * @param licqUser Licq user that this object will represent
    * @param parent Object to use as parent for those objects that needs it
    */
-  ContactUserData(const LicqUser* licqUser, QObject* parent);
+  ContactUserData(const Licq::User* licqUser, QObject* parent);
 
   /**
    * Destructor, will remove the user from all groups
@@ -77,7 +75,7 @@ public:
   /**
    * Get licq user id
    */
-  const UserId& userId() const
+  const Licq::UserId& userId() const
   { return myUserId; }
 
   /**
@@ -165,7 +163,7 @@ private:
    * @param licqUser Licq user to read information from
    * @param subSignal Information to update or 0 to update everything
    */
-  void update(const LicqUser* licqUser, unsigned long subSignal);
+  void update(const Licq::User* licqUser, unsigned long subSignal);
 
   /**
    * Update sub group membership
@@ -207,7 +205,7 @@ private:
    * @param licqUser Licq user to read information from
    * @return True if any data was actually changed
    */
-  bool updateText(const LicqUser* licqUser);
+  bool updateText(const Licq::User* licqUser);
 
   /**
    * Update visibility status
@@ -241,7 +239,7 @@ private slots:
   void animate();
 
 private:
-  UserId myUserId;
+  Licq::UserId myUserId;
   QString myAccountId;
   unsigned long myPpid;
   unsigned myStatus;

@@ -96,7 +96,7 @@ ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long /* ppid */, QWidget* par
 void ReqAuthDlg::ok()
 {
   QString id = edtUin->text();
-  UserId userId = LicqUser::makeUserId(id.toLatin1().data(), LICQ_PPID);
+  Licq::UserId userId(id.toLatin1().data(), LICQ_PPID);
 
   if (!id.isEmpty())
   {

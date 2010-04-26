@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class QLabel;
 class QPushButton;
@@ -42,11 +42,11 @@ public:
    * @param userId User to request key for
    * @param parent Parent widget
    */
-  KeyRequestDlg(const UserId& userId, QWidget* parent = 0);
+  KeyRequestDlg(const Licq::UserId& userId, QWidget* parent = 0);
   ~KeyRequestDlg();
 
 private:
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned long myIcqEventTag;
   bool myOpen;
 

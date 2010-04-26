@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class QCheckBox;
 
@@ -43,11 +43,11 @@ public:
    * @param fetch True if away response should be fetch, false to use cached message
    * @param parent Parent widget
    */
-  ShowAwayMsgDlg(const UserId& userId, bool fetch = false, QWidget* parent = 0);
+  ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch = false, QWidget* parent = 0);
   ~ShowAwayMsgDlg();
 
 private:
-  UserId myUserId;
+  Licq::UserId myUserId;
   unsigned long icqEventTag;
   MLEdit* mleAwayMsg;
   QCheckBox* chkShowAgain;

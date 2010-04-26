@@ -26,7 +26,7 @@
 #include <list>
 #include <string>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class QActionGroup;
 class QHBoxLayout;
@@ -34,6 +34,10 @@ class QMenu;
 class QToolBar;
 class QVBoxLayout;
 
+namespace Licq
+{
+class User;
+}
 
 namespace LicqQtGui
 {
@@ -51,7 +55,7 @@ public:
    * @param parent Parent widget
    * @param name Object name to set for widget
    */
-  UserEventCommon(const UserId& userId, QWidget* parent = 0, const char* name = 0);
+  UserEventCommon(const Licq::UserId& userId, QWidget* parent = 0, const char* name = 0);
   virtual ~UserEventCommon();
 
   /**
@@ -59,11 +63,11 @@ public:
    *
    * @return (First) user associated with with dialog
    */
-  const UserId& userId() const { return myUsers.front(); }
+  const Licq::UserId& userId() const { return myUsers.front(); }
   const QString& id() const { return myId; }
   unsigned long ppid() const { return myPpid; }
   unsigned long convoId() { return myConvoId; }
-  const std::list<UserId>& convoUsers() const { return myUsers; }
+  const std::list<Licq::UserId>& convoUsers() const { return myUsers; }
   void setConvoId(unsigned long n) { myConvoId = n; }
 
   /**
@@ -72,7 +76,7 @@ public:
    * @param userId Id of user to check
    * @return True if user is in conversation
    */
-  bool isUserInConvo(const UserId& userId) const;
+  bool isUserInConvo(const Licq::UserId& userId) const;
   void setTyping(bool isTyping);
 
 public slots:
@@ -90,7 +94,7 @@ protected:
   unsigned long myPpid;
   unsigned long myConvoId;
   time_t myRemoteTimeOffset;
-  std::list<UserId> myUsers;
+  std::list<Licq::UserId> myUsers;
   unsigned long mySendFuncs;
 
   // ID of the higest event we've processed. Helps determine
@@ -122,7 +126,7 @@ protected:
   QTimer* myTypingTimer;
 
   void flashTaskbar();
-  void updateWidgetInfo(const LicqUser* u);
+  void updateWidgetInfo(const Licq::User* u);
   void pushToolTip(QAction* action, const QString& tooltip);
 
   /**
@@ -134,7 +138,7 @@ protected:
    * @param argument Signal specific argument
    * @param cid Conversation id
    */
-  virtual void userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
+  virtual void userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
 
   /**
    * Overloaded to get events when this window/tab looses and gains focus

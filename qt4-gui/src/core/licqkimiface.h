@@ -27,7 +27,7 @@
 #include <QPair>
 #include <QPixmap>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 // KDE includes
 #include "kimiface.h"
@@ -273,7 +273,7 @@ signals:
      * Asks for adding a user to the contact list
    * @param userId User to add
    */
-  void addUser(const UserId& userId);
+  void addUser(const Licq::UserId& userId);
 
 private:
     /**

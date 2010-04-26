@@ -22,6 +22,7 @@
 
 using namespace LicqQtGui;
 using std::set;
+using Licq::UserId;
 
 
 MultiContactProxy::MultiContactProxy(ContactListModel* contactList, QObject* parent)
@@ -73,7 +74,7 @@ void MultiContactProxy::crop(const QModelIndexList& indexes)
   invalidateFilter();
 }
 
-void MultiContactProxy::addGroup(GroupType groupType, unsigned long groupId)
+void MultiContactProxy::addGroup(Licq::GroupType groupType, unsigned long groupId)
 {
   QModelIndex groupIndex = dynamic_cast<ContactListModel*>(sourceModel())->groupIndex(groupType, groupId);
   int numUsers = sourceModel()->rowCount(groupIndex);
@@ -92,7 +93,7 @@ void MultiContactProxy::addGroup(GroupType groupType, unsigned long groupId)
 
 QModelIndex MultiContactProxy::rootIndex() const
 {
-  return mapFromSource(dynamic_cast<ContactListModel*>(sourceModel())->groupIndex(GROUPS_SYSTEM, 0));
+  return mapFromSource(dynamic_cast<ContactListModel*>(sourceModel())->groupIndex(Licq::GROUPS_SYSTEM, 0));
 }
 
 bool MultiContactProxy::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const

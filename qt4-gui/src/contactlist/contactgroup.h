@@ -28,6 +28,10 @@
 #include "contactitem.h"
 #include "contactlist.h"
 
+namespace Licq
+{
+class Group;
+}
 
 namespace LicqQtGui
 {
@@ -57,7 +61,7 @@ public:
    *
    * @param group Group object from daemon
    */
-  ContactGroup(const LicqGroup* group);
+  ContactGroup(const Licq::Group* group);
 
   /**
    * Destructor, will delete all user instances in the group

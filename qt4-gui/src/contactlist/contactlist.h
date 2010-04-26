@@ -24,11 +24,17 @@
 #include <QAbstractItemModel>
 #include <QList>
 
-#include <licq_types.h>
+#include <licq/types.h>
+#include <licq/userid.h>
+
+namespace Licq
+{
+class User;
+}
 
 // Allow UserId to be used in QVariant and QSet
-Q_DECLARE_METATYPE(UserId)
-uint qHash(const UserId& userId);
+Q_DECLARE_METATYPE(Licq::UserId)
+uint qHash(const Licq::UserId& userId);
 
 namespace LicqQtGui
 {
@@ -186,14 +192,14 @@ public:
    *
    * @param licqUser The user to add
    */
-  void addUser(const LicqUser* licqUser);
+  void addUser(const Licq::User* licqUser);
 
   /**
    * Remove a user from the contact list
    *
    * @param userId Licq user id
    */
-  void removeUser(const UserId& userId);
+  void removeUser(const Licq::UserId& userId);
 
   /**
    * Get a model index for a group or user that other components can use.
@@ -272,7 +278,7 @@ public:
    * @param column The column to return an index for
    * @return An index for the given user and column from the "All Users" group
    */
-  QModelIndex userIndex(const UserId& userId, int column) const;
+  QModelIndex userIndex(const Licq::UserId& userId, int column) const;
 
   /**
    * Get index for a group to use as root item for a view
@@ -282,7 +288,7 @@ public:
    * @param id Id of the group or 0 to get special group
    * @return An index for the group or an invalid index if the group does not exist
    */
-  QModelIndex groupIndex(GroupType type, int id) const;
+  QModelIndex groupIndex(Licq::GroupType type, int id) const;
 
   /**
    * Get index for a group. This function uses model id for groups
@@ -401,7 +407,7 @@ private:
    * @param userId Licq user id
    * @return The user object or NULL if it was not found
    */
-  ContactUserData* findUser(const UserId& userId) const;
+  ContactUserData* findUser(const Licq::UserId& userId) const;
 
   /**
    * Check if a user is member of a group and add/remove the user to/from the group if needed
@@ -421,7 +427,7 @@ private:
   int groupRow(ContactGroup* group) const;
 
   QList<ContactGroup*> myUserGroups;
-  ContactGroup* mySystemGroups[NUM_GROUPS_SYSTEM_ALL];
+  ContactGroup* mySystemGroups[Licq::NUM_GROUPS_SYSTEM_ALL];
   QList<ContactUserData*> myUsers;
   int myColumnCount;
   bool myBlockUpdates;

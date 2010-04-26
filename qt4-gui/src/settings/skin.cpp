@@ -512,7 +512,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Group Combo Box
   cmbUserGroups = new SkinnableComboBox(skin->cmbGroups, &w);
   cmbUserGroups->setGeometry(skin->cmbGroups.borderToRect(&w));
-  cmbUserGroups->addItem(LicqStrings::getSystemGroupName(GROUP_ALL_USERS));
+  cmbUserGroups->addItem(LicqStrings::getSystemGroupName(Licq::GROUP_ALL_USERS));
 
   // The Menu Button
   if (!skin->frame.hasMenuBar)
@@ -533,7 +533,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Message Label
   lblMsg = new SkinnableLabel(skin->lblMsg, NULL, &w);
   lblMsg->setGeometry(skin->lblMsg.borderToRect(&w));
-  lblMsg->setText(LicqStrings::getSystemGroupName(GROUP_NEW_USERS));
+  lblMsg->setText(LicqStrings::getSystemGroupName(Licq::GROUP_NEW_USERS));
 
   // Status Label
   lblStatus = new SkinnableLabel(skin->lblStatus, NULL, &w);

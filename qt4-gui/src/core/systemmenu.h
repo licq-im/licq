@@ -25,7 +25,7 @@
 #include <QMap>
 #include <QMenu>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class QActionGroup;
 
@@ -92,7 +92,7 @@ public:
    * @param ppid Protocol to get status for
    * @return True if protocol inivisibility is checked
    */
-  bool getInvisibleStatus(const UserId& userId) const;
+  bool getInvisibleStatus(const Licq::UserId& userId) const;
 
 public slots:
   /**
@@ -213,7 +213,7 @@ private:
   QAction* myStatusSeparator;
   QAction* myIcqFollowMeSeparator;
 
-  QMap<UserId, SystemMenuPrivate::OwnerData*> myOwnerData;
+  QMap<Licq::UserId, SystemMenuPrivate::OwnerData*> myOwnerData;
   bool myHasIcqOwner;
 };
 

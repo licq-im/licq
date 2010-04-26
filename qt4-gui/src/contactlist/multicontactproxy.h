@@ -21,9 +21,9 @@
 #ifndef MULTICONTACTPROXY_H
 #define MULTICONTACTPROXY_H
 
-#include <licq_types.h>
-
 #include <set>
+
+#include <licq/userid.h>
 
 #include "contactlist.h"
 #include "sortedcontactlistproxy.h"
@@ -68,14 +68,14 @@ public:
    *
    * @param userId User id
    */
-  void add(const UserId& userId);
+  void add(const Licq::UserId& userId);
 
   /**
    * Remove a contact from the list
    *
    * @param userId User id
    */
-  void remove(const UserId& userId);
+  void remove(const Licq::UserId& userId);
 
   /**
    * Remove a list of contacts from the list
@@ -97,14 +97,14 @@ public:
    * @param groupType System or user group
    * @param groupId Group id
    */
-  void addGroup(GroupType groupType, unsigned long groupId);
+  void addGroup(Licq::GroupType groupType, unsigned long groupId);
 
   /**
    * Return the current list of contacts
    *
    * @return A set containing the contacts
    */
-  const std::set<UserId>& contacts() const
+  const std::set<Licq::UserId>& contacts() const
   { return myContacts; }
 
   /**
@@ -125,7 +125,7 @@ private:
    */
   bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
-  std::set<UserId> myContacts;
+  std::set<Licq::UserId> myContacts;
 };
 
 } // namespace LicqQtGui

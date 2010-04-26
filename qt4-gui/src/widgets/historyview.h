@@ -24,7 +24,7 @@
 
 #include "mlview.h"
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class CUserEvent;
 class LicqEvent;
@@ -45,7 +45,7 @@ public:
    * @param userId User to display chat history for
    * @param parent Parent widget
    */
-  HistoryView(bool historyMode = false, const UserId& userId = USERID_NONE, QWidget* parent = 0);
+  HistoryView(bool historyMode = false, const Licq::UserId& userId = Licq::UserId(), QWidget* parent = 0);
   virtual ~HistoryView();
 
   void setHistoryConfig(int msgStyle, const QString& dateFormat,
@@ -62,7 +62,7 @@ public:
    *
    * @param userId New user
    */
-  void setOwner(const UserId& userId);
+  void setOwner(const Licq::UserId& userId);
 
   void updateContent();
   void clear();
@@ -74,7 +74,7 @@ public:
   virtual QSize sizeHint() const;
 
 public slots:
-  void addMsg(const CUserEvent* event, const UserId& userId = USERID_NONE);
+  void addMsg(const CUserEvent* event, const Licq::UserId& userId = Licq::UserId());
   void addMsg(const LicqEvent* event);
   void setColors();
 
@@ -84,7 +84,7 @@ signals:
 private:
   void internalAddMsg(QString s);
 
-  UserId myUserId;
+  Licq::UserId myUserId;
   int myMsgStyle;
   QString myDateFormat;
   bool myExtraSpacing;

@@ -21,6 +21,8 @@
 #ifndef USERVIEW_H
 #define USERVIEW_H
 
+#include <licq/userid.h>
+
 #include "contactlist/contactlist.h"
 
 #include "userviewbase.h"
@@ -56,7 +58,7 @@ public:
    *
    * @return id of current user
    */
-  UserId currentUserId() const;
+  Licq::UserId currentUserId() const;
 
   /**
    * Set skin colors
@@ -139,7 +141,7 @@ private:
    */
   void spanRowRange(const QModelIndex& parent, int start, int end);
 
-  UserId myRemovedUser;
+  Licq::UserId myRemovedUser;
   QTimer* myRemovedUserTimer;
 
 private slots:

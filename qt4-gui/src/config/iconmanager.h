@@ -28,7 +28,9 @@
 #include <QPair>
 #include <QPixmap>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
+#include <licq/types.h>
+#include <licq/userid.h>
 
 #include "core/gui-defines.h"
 
@@ -171,7 +173,7 @@ public:
    * @param user An already locked object of LicqUser type
    * @return The requested icon if loaded, otherwise a null pixmap
    */
-  const QPixmap& iconForUser(const LicqUser* user)
+  const QPixmap& iconForUser(const Licq::User* user)
   { return iconForStatus(user->status(), user->id()); }
 
   /**

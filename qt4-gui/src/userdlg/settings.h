@@ -25,7 +25,7 @@
 
 #include <QObject>
 
-#include <licq_types.h>
+#include <licq/types.h>
 
 class QCheckBox;
 class QGridLayout;
@@ -37,6 +37,11 @@ class QTableWidget;
 class QVBoxLayout;
 class QWidget;
 
+namespace Licq
+{
+class User;
+class UserId;
+}
 
 namespace LicqQtGui
 {
@@ -53,8 +58,8 @@ public:
   Settings(bool isOwner, UserDlg* parent);
   virtual ~Settings() {}
 
-  void load(const LicqUser* user);
-  void apply(LicqUser* user);
+  void load(const Licq::User* user);
+  void apply(Licq::User* user);
 
   /**
    * Save user data for pages
@@ -62,7 +67,7 @@ public:
    *
    * @param userId User id
    */
-  void apply2(const UserId& userId);
+  void apply2(const Licq::UserId& userId);
 
   /**
    * User was updated
@@ -70,7 +75,7 @@ public:
    * @param user User locked for read access
    * @param subSignal Sub signal telling what the change was
    */
-  void userUpdated(const LicqUser* user, unsigned long subSignal);
+  void userUpdated(const Licq::User* user, unsigned long subSignal);
 
 private slots:
   /**
@@ -128,7 +133,7 @@ private:
   QRadioButton* myStatusDndRadio;
   QGroupBox* mySysGroupBox;
   QVBoxLayout* mySysGroupLayout;
-  QCheckBox* mySystemGroupCheck[NUM_GROUPS_SYSTEM_ALL];
+  QCheckBox* mySystemGroupCheck[Licq::NUM_GROUPS_SYSTEM_ALL];
   QGroupBox* myAutoRespBox;
   QHBoxLayout* myAutoRespLayout;
   MLEdit* myAutoRespEdit;

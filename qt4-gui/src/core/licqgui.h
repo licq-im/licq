@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QTimer>
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class QMimeData;
 
@@ -102,7 +102,7 @@ public:
    * @param parent Parent window to use for confirmation box or NULL to use mainwin
    * @return true if contact was removed
    */
-  bool removeUserFromList(const UserId& userId, QWidget* parent = NULL);
+  bool removeUserFromList(const Licq::UserId& userId, QWidget* parent = NULL);
 
   /**
    * Show contact info dialog
@@ -112,14 +112,14 @@ public:
    * @param toggle True to close dialog if already open
    * @param updateNow True to make the dialog contents update
    */
-  void showInfoDialog(int fcn, const UserId& userId, bool toggle = false, bool updateNow = false);
+  void showInfoDialog(int fcn, const Licq::UserId& userId, bool toggle = false, bool updateNow = false);
 
   /**
    * Show contact view event dialog (used when chat mode is disabled)
    *
    * @param userId Contact id
    */
-  UserViewEvent* showViewEventDialog(const UserId& userid);
+  UserViewEvent* showViewEventDialog(const Licq::UserId& userid);
 
   /**
    * Show contact event dialog
@@ -129,7 +129,7 @@ public:
    * @param convoId Conversation id
    * @param autoPopup True if the dialog was triggered automatically, false if triggered by the user
    */
-  UserEventCommon* showEventDialog(int fcn, const UserId& userId, int convoId = -1, bool autoPopup = false);
+  UserEventCommon* showEventDialog(int fcn, const Licq::UserId& userId, int convoId = -1, bool autoPopup = false);
 
   /**
    * Replace event dialog
@@ -139,14 +139,14 @@ public:
    * @param newDialog New event dialog
    * @param userId Contact id
    */
-  void replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, const UserId& userId);
+  void replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, const Licq::UserId& userId);
 
   /**
    * Toggle floaty for a contact
    *
    * @param userId Contact id
    */
-  void toggleFloaty(const UserId& userId);
+  void toggleFloaty(const Licq::UserId& userId);
 
   /**
    * Set new status for all owners
@@ -326,7 +326,7 @@ private:
   void loadGuiConfig();
   void loadFloatiesConfig();
 
-  void createFloaty(const UserId& userId, int x = 0, int y = 0, int w = 0);
+  void createFloaty(const Licq::UserId& userId, int x = 0, int y = 0, int w = 0);
 
   QString mySkin;
   QString myIcons;

@@ -42,6 +42,7 @@
 #include <licq_events.h>
 #include <licq_icqd.h>
 #include <licq_message.h>
+#include <licq_user.h>
 #include <licq/protocolmanager.h>
 
 #include "config/chat.h"

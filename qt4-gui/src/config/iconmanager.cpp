@@ -27,6 +27,7 @@
 #include <licq_icq.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
+#include <licq/contactlist/user.h>
 
 #include "config/contactlist.h"
 
