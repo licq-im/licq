@@ -10,7 +10,7 @@
 #include "licq_buffer.h"
 #include "licq_file.h"
 #include "licq_history.h"
-#include "licq_mutex.h"
+#include "../thread/lockable.h"
 #include "../types.h"
 #include "../userid.h"
 

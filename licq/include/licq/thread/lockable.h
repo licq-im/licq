@@ -1,7 +1,7 @@
-#ifndef RDWR_H
-#define RDWR_H
+#ifndef LICQ_LOCKABLE_H
+#define LICQ_LOCKABLE_H
 
-#include "licq/thread/readwritemutex.h"
+#include "readwritemutex.h"
 
 #include <pthread.h>
 #include <string>
@@ -10,6 +10,9 @@
 const unsigned short LOCK_N = 0;
 const unsigned short LOCK_R = 1;
 const unsigned short LOCK_W = 2;
+
+namespace Licq
+{
 
 /**
  * Interface class for objects that need a public available read write mutex for data access
@@ -217,5 +220,7 @@ private:
 
   T* myObject;
 };
+
+} // namespace Licq
 
 #endif

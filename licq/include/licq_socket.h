@@ -10,7 +10,7 @@
 
 #include "licq_buffer.h"
 #include "licq_constants.h"
-#include "licq_mutex.h"
+#include <licq/thread/readwritemutex.h>
 #include "licq/userid.h"
 
 class ProxyServer;

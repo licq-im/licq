@@ -16,7 +16,6 @@
 #include <unistd.h>
 
 #include "licq_log.h"
-#include "licq_mutex.h"
 #include "licq_packets.h"
 #include <licq_user.h>
 

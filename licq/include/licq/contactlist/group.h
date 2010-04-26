@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-#include "licq_mutex.h"
+#include "../thread/lockable.h"
 
 class CIniFile;
 

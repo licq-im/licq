@@ -11,7 +11,6 @@ set(licq_HEADERS
   licq_icqd.h
   licq_log.h
   licq_message.h
-  licq_mutex.h
   licq_packets.h
   licq_plugin.h
   licq_protoplugin.h
