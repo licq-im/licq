@@ -75,7 +75,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
       printf("Couldn't create cdk screen!\n");
   }
 
-  sLastContact = USERID_NONE;
+  sLastContact = Licq::UserId();
   nLastHistory = 1;
 }
 

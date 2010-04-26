@@ -1,11 +1,15 @@
 #ifndef LICQAUTOREPLY_H
 #define LICQAUTOREPLY_H
 
-#include <licq_types.h>
 
 class CUserEvent;
 class LicqSignal;
 class LicqEvent;
+
+namespace Licq
+{
+class UserId;
+}
 
 class CLicqAutoReply
 {
@@ -34,7 +38,7 @@ protected:
    * @param userId Affected user
    * @param eventId Id of event
    */
-  void processUserEvent(const UserId& userId, unsigned long eventId);
+  void processUserEvent(const Licq::UserId& userId, unsigned long eventId);
 
   /**
    * Make auto reply for an event
@@ -43,7 +47,7 @@ protected:
    * @Param event Event to reply to
    * @return True if a reply was sent
    */
-  bool autoReplyEvent(const UserId& userId, const CUserEvent* event);
+  bool autoReplyEvent(const Licq::UserId& userId, const CUserEvent* event);
 
   bool POpen(const char *cmd);
   int PClose();

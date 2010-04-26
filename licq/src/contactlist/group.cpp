@@ -3,7 +3,7 @@
 #include <cstdio> // snprintf
 
 #include "licq_file.h"
-#include "licq_types.h"
+#include <licq/types.h>
 
 using std::map;
 using std::string;
@@ -43,7 +43,7 @@ void Group::save(CIniFile& file, int num) const
   for (i = myServerIds.begin(); i != myServerIds.end(); ++i)
   {
     char pidstr[5];
-    protocolId_toStr(pidstr, i->first);
+    Licq::protocolId_toStr(pidstr, i->first);
     sprintf(key, "Group%d.ServerId.%s", num, pidstr);
     file.WriteNum(key, i->second);
   }

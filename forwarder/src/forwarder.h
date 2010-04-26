@@ -1,12 +1,16 @@
 #ifndef LICQEMAIL_H
 #define LICQEMAIL_H
 
-#include <licq_types.h>
-
 class TCPSocket;
 class CUserEvent;
 class LicqSignal;
 class LicqEvent;
+
+namespace Licq
+{
+class User;
+class UserId;
+}
 
 #define FORWARD_EMAIL 0
 #define FORWARD_ICQ 1
@@ -38,10 +42,10 @@ public:
   void ProcessSignal(LicqSignal* s);
   void ProcessEvent(LicqEvent* e);
 
-  void ProcessUserEvent(const UserId& userId, unsigned long nId);
-  bool ForwardEvent(const LicqUser* u, const CUserEvent* e);
-  bool ForwardEvent_ICQ(const LicqUser* u, const CUserEvent* e);
-  bool ForwardEvent_Email(const LicqUser* u, const CUserEvent* e);
+  void ProcessUserEvent(const Licq::UserId& userId, unsigned long nId);
+  bool ForwardEvent(const Licq::User* u, const CUserEvent* e);
+  bool ForwardEvent_ICQ(const Licq::User* u, const CUserEvent* e);
+  bool ForwardEvent_Email(const Licq::User* u, const CUserEvent* e);
 
 private:
   bool CreateDefaultConfig();

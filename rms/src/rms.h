@@ -4,7 +4,7 @@
 #include <list>
 
 #include <licq_socket.h>
-#include <licq_types.h>
+#include <licq/userid.h>
 
 class TCPSocket;
 class CUserEvent;
@@ -92,7 +92,7 @@ protected:
   bool m_bNotify;
 
   unsigned long m_nUin;
-  UserId myUserId;
+  Licq::UserId myUserId;
   char m_szText[MAX_TEXT_LENGTH + 1];
   char m_szLine[MAX_LINE_LENGTH + 1];
   unsigned short m_nTextPos;

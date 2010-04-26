@@ -7,7 +7,7 @@ extern "C" {
 #include <cdk.h>
 }
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 #undef COLOR_GREEN
 #define COLOR_GREEN 24
@@ -65,7 +65,7 @@ public:
   unsigned long event;
   InputState state;
   CData *data;
-  UserId sLastContact;
+  Licq::UserId sLastContact;
   unsigned short nLastHistory;
 protected:
   WINDOW *win;

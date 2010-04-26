@@ -30,7 +30,6 @@
 #include "licq_icq.h"
 #include "licq_translate.h"
 #include "licq_log.h"
-#include "licq_types.h"
 #include "licq_utility.h"
 #include "licq_color.h"
 #include "support.h"
@@ -39,9 +38,14 @@
 #include "contactlist/usermanager.h"
 
 using namespace std;
+using Licq::GroupMap;
+using Licq::GROUPS_USER;
 using Licq::USPRINTF_NTORN;
 using Licq::USPRINTF_PIPEISCMD;
 using Licq::StringList;
+using Licq::UserCategoryMap;
+using Licq::UserGroupList;
+using Licq::UserId;
 using LicqDaemon::gUserManager;
 
 // TODO: Remove when no longer needed
@@ -2659,8 +2663,8 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
   list<UserId>::const_iterator i;
   for (i = users.begin(); i != users.end(); ++i)
   {
-    const LicqUser* pUser = gUserManager.fetchUser(*i);
-    if (pUser)
+    Licq::UserReadGuard pUser(*i);
+    if (pUser.isLocked())
     {
       nSize += pUser->accountId().size();
       nSize += 10;
@@ -2672,7 +2676,6 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       if (szUnicode)
         free(szUnicode);
     }
-    gUserManager.DropUser(pUser);
   }
 
   m_nSize += nSize;
@@ -2687,19 +2690,18 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     m_nSID = gUserManager.GenerateSID();
 
     // Save the SID
-    LicqUser* u = gUserManager.fetchUser(*i, LOCK_W);
-    if (u == NULL)
+    Licq::UserWriteGuard u(*i);
+    if (!u.isLocked())
     {
       gLog.Warn("%sTrying to export invalid user %s to server\n", L_ERRORxSTR,
-          USERID_TOSTR(*i));
+          i->toString().c_str());
       continue;
     }
 
     if (u->ppid() != LICQ_PPID)
     {
       gLog.Warn("%sTrying to export non ICQ user %s to ICQ server\n", L_ERRORxSTR,
-          USERID_TOSTR(*i));
-      gUserManager.DropUser(u);
+          i->toString().c_str());
       continue;
     }
 
@@ -2730,10 +2732,10 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
         GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
         if (groups->size() > 0)
         {
-          LicqGroup* g = groups->begin()->second;
-          g->Lock(LOCK_R);
+          Licq::Group* g = groups->begin()->second;
+          g->lockRead();
           m_nGSID = g->serverId(LICQ_PPID);
-          g->Unlock();
+          g->unlockRead();
         }
         gUserManager.UnlockGroupList();
 
@@ -2749,7 +2751,6 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     }
 
     string accountId = u->accountId();
-    gUserManager.DropUser(u);
 
     SetExtraInfo(m_nGSID);
 
@@ -2900,10 +2901,10 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
               GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
               if (groups->size() > 0)
               {
-                LicqGroup* g = groups->begin()->second;
-                g->Lock(LOCK_R);
+                Licq::Group* g = groups->begin()->second;
+                g->lockRead();
                 m_nGSID = g->serverId(LICQ_PPID);
-                g->Unlock();
+                g->unlockRead();
               }
               gUserManager.UnlockGroupList();
             }

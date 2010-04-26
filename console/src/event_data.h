@@ -1,15 +1,15 @@
 #ifndef EVENT_DATA_H
 #define EVENT_DATA_H
 
-#include <licq_types.h>
+#include <licq/userid.h>
 
 // Data structures for input routines
 class CData
 {
 public:
-  CData(const UserId& id)
+  CData(const Licq::UserId& id)
   { userId = id; nPos = 0; szQuery[0] = '\0'; }
-  UserId userId;
+  Licq::UserId userId;
   unsigned short nPos;
   char szQuery[80];
 };
@@ -18,7 +18,7 @@ public:
 class DataMsg : public CData
 {
 public:
-  DataMsg(const UserId& id) : CData(id)
+  DataMsg(const Licq::UserId& id) : CData(id)
     { szMsg[0] = '\0'; bUrgent = false; bServer = false; }
   char szMsg[1024];
   bool bUrgent;
@@ -29,7 +29,7 @@ public:
 class DataSendFile : public CData
 {
 public:
-  DataSendFile(const UserId& id) : CData(id)
+  DataSendFile(const Licq::UserId& id) : CData(id)
     { szFileName[0] = '\0'; szDescription[0] = '\0'; bUrgent = false; }
   char szFileName[512];
   char szDescription[512];
@@ -49,7 +49,7 @@ public:
 class DataUrl : public CData
 {
 public:
-  DataUrl(const UserId& id) : CData(id)
+  DataUrl(const Licq::UserId& id) : CData(id)
     { szUrl[0] = '\0'; szDesc[0] = '\0'; bUrgent = false; bServer = false; }
   char szUrl[1024];
   char szDesc[1024];
@@ -60,14 +60,14 @@ public:
 class DataSms : public CData
 {
 public:
-  DataSms(const UserId& id) : CData(id)
+  DataSms(const Licq::UserId& id) : CData(id)
     { szMsg[0] = '\0'; }
   char szMsg[1024];
 };
 class DataRegWizard : public CData
 {
 public:
-  DataRegWizard(const UserId& id = USERID_NONE) : CData(id)
+  DataRegWizard(const Licq::UserId& id = USERID_NONE) : CData(id)
     {  szOption[0] = '\0'; szPassword1[0] = '\0'; szPassword2[0] = '\0'; szUin[0] = '\0'; nState = 0; }
   char szOption[80];
   char szPassword1[80];
@@ -79,7 +79,7 @@ public:
 class DataUserSelect : public CData
 {
 public:
-  DataUserSelect(const UserId& id) : CData(id)
+  DataUserSelect(const Licq::UserId& id) : CData(id)
     {  szPassword[0] = '\0'; }
   char szPassword[80];
 };
@@ -116,7 +116,7 @@ public:
 class DataFileChatOffer : public CData
 {
 public:
-  DataFileChatOffer(CEventFile *_f, const UserId& id) : CData(id)
+  DataFileChatOffer(CEventFile *_f, const Licq::UserId& id) : CData(id)
     { szReason[0] = '\0'; f = _f; }
   CEventFile *f;
   char szReason[256];
