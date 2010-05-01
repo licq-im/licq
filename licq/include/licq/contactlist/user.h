@@ -670,6 +670,14 @@ public:
   bool GetInGroup(GroupType gtype, int groupId) const;
 
   /**
+   * Check if user is member of a group
+   *
+   * @param groupId Id of a user group to check
+   * @return True if group exists and user is member
+   */
+  bool isInGroup(int groupId) const;
+
+  /**
    * Convenience function to set membership of user for a group
    *
    * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
@@ -677,6 +685,14 @@ public:
    * @param member True to add user to group, false to remove user from group
    */
   void SetInGroup(GroupType gtype, int groupId, bool member);
+
+  /**
+   * Convenience function to set membership of user for a group
+   *
+   * @param groupId Id of user group
+   * @param member True to add user to group, false to remove user from group
+   */
+  void setInGroup(int groupId, bool member);
 
   /**
    * Add user to a group
@@ -687,6 +703,13 @@ public:
   void AddToGroup(GroupType gtype, int groupId);
 
   /**
+   * Add user to a group
+   *
+   * @param groupId Id of user group to add
+   */
+  void addToGroup(int groupId);
+
+  /**
    * Remove user from a group
    *
    * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
@@ -694,6 +717,14 @@ public:
    * @return True if group was valid and user was a member
    */
   bool RemoveFromGroup(GroupType gtype, int groupId);
+
+  /**
+   * Remove user from a group
+   *
+   * @param groupId Id of user group to leave
+   * @return True if group was valid and user was a member
+   */
+  bool removeFromGroup(int groupId);
 
   // Short cuts to above functions
   bool InvisibleList() const    { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }

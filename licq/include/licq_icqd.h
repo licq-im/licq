@@ -261,6 +261,7 @@ public:
 
   void UpdateAllUsers();
   void UpdateAllUsersInGroup(Licq::GroupType, unsigned short);
+  void updateAllUsersInGroup(int groupId);
   void CancelEvent(unsigned long );
   void CancelEvent(ICQEvent *);
   bool OpenConnectionToUser(const char* id, TCPSocket *sock,

@@ -221,6 +221,30 @@ public:
    */
   virtual void secureChannelCancelOpen(const UserId& userId, unsigned long eventId) = 0;
 
+  /**
+   * Add/remove a user to/from visible list
+   *
+   * @param userId User to change visible status for
+   * @param visible True to add user to visible list or false to remove
+   */
+  virtual void visibleListSet(const Licq::UserId& userId, bool visible) = 0;
+
+  /**
+   * Add/remove a user to/from invisible list
+   *
+   * @param userId User to change invisible status for
+   * @param invisible True to add user to invisible list or false to remove
+   */
+  virtual void invisibleListSet(const Licq::UserId& userId, bool invisible) = 0;
+
+  /**
+   * Add/remove a user to/from ignore list
+   *
+   * @param userId User to set ignore status for
+   * @param ignore True to add user to ignore list or false to remove
+   */
+  virtual void ignoreListSet(const Licq::UserId& userId, bool ignore) = 0;
+
 protected:
   virtual ~ProtocolManager() { /* Empty */ }
 };

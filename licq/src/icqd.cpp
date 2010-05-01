@@ -1536,6 +1536,18 @@ void CICQDaemon::UpdateAllUsersInGroup(GroupType g, unsigned short nGroup)
   FOR_EACH_USER_END
 }
 
+void CICQDaemon::updateAllUsersInGroup(int groupId)
+{
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->isInGroup(groupId))
+    {
+      icqRequestMetaInfo(pUser->IdString());
+    }
+  }
+  FOR_EACH_USER_END
+}
+
 //-----AddProtocolPlugins-------------------------------------------------------
 bool CICQDaemon::AddProtocolPlugins()
 {

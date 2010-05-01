@@ -52,31 +52,6 @@ public:
    */
   void removeUser(const Licq::UserId& userId);
 
-  /**
-   * Set visible list status for a contact
-   *
-   * @param userId User to change visible status for
-   * @param visible True to add user to visible list or false to remove
-   */
-  void visibleListSet(const Licq::UserId& userId, bool visible);
-
-  /**
-   * Set invisible list status for a contact
-   *
-   * @param userId User to change invisible status for
-   * @param invisible True to add user to invisible list or false to remove
-   */
-  void invisibleListSet(const Licq::UserId& userId, bool invisible);
-
-  /**
-   * Set ignore list status for a contact
-   *
-   * @param userId User to set ignore status for
-   * @param ignore True to add user to ignore list or false to remove
-   */
-  void ignoreListSet(const Licq::UserId& userId, bool ignore);
-
-
   // From Licq::ProtocolManager
   void updateUserAlias(const Licq::UserId& userId);
   unsigned long setStatus(const Licq::UserId& ownerId,
@@ -107,6 +82,9 @@ public:
   unsigned long secureChannelOpen(const Licq::UserId& userId);
   unsigned long secureChannelClose(const Licq::UserId& userId);
   void secureChannelCancelOpen(const Licq::UserId& userId, unsigned long eventId);
+  void visibleListSet(const Licq::UserId& userId, bool visible);
+  void invisibleListSet(const Licq::UserId& userId, bool invisible);
+  void ignoreListSet(const Licq::UserId& userId, bool ignore);
 
 private:
   /**

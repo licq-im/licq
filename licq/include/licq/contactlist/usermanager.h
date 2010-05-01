@@ -377,6 +377,14 @@ public:
   virtual bool groupExists(GroupType gtype, int groupId) = 0;
 
   /**
+   * Check if a group id is valid
+   *
+   * @param groupId Id of user group to check for
+   * @return True if the group exists
+   */
+  virtual bool groupExists(int groupId) = 0;
+
+  /**
    * Add a user group
    *
    * @param name Group name, must be unique
@@ -494,13 +502,24 @@ public:
       int groupId, bool inGroup, bool updateServer = true) = 0;
 
   /**
+   * Set user group membership and (optionally) update server
+   *
+   * @param userId Id of user
+   * @param groupId Id of user group
+   * @param inGroup True to add user to group or false to remove
+   * @param updateServer True if server list should be updated
+   */
+  virtual void setUserInGroup(const UserId& userId, int groupId,
+      bool inGroup, bool updateServer = true) = 0;
+
+  /**
    * Add user to a group and update server group
    *
    * @param userId User id
    * @param groupId Group id
    */
   void addUserToGroup(const UserId& userId, int groupId)
-  { setUserInGroup(userId, GROUPS_USER, groupId, true, true); }
+  { setUserInGroup(userId, groupId, true); }
 
   /**
    * Remove user from a group
@@ -509,7 +528,7 @@ public:
    * @param groupId Group id
    */
   void removeUserFromGroup(const UserId& userId, int groupId)
-  { setUserInGroup(userId, GROUPS_USER, groupId, false); }
+  { setUserInGroup(userId, groupId, false); }
 
   /**
    * Convenience function to change status for a user (or owner) and signal plugins

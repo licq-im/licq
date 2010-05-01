@@ -77,6 +77,7 @@ public:
   Licq::Group* FetchGroup(int groupId, unsigned short lockType = LOCK_R);
   void DropGroup(const Licq::Group* group);
   bool groupExists(Licq::GroupType gtype, int groupId);
+  bool groupExists(int groupId);
   int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
   void RemoveGroup(int groupId);
   bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
@@ -91,6 +92,8 @@ public:
   std::string GetGroupNameFromGroup(int groupId);
   void setUserInGroup(const Licq::UserId& userId, Licq::GroupType groupType,
       int groupId, bool inGroup, bool updateServer = true);
+  void setUserInGroup(const Licq::UserId& userId, int groupId,
+      bool inGroup, bool updateServer = true);
   void userStatusChanged(const Licq::UserId& userId, unsigned newStatus);
   void ownerStatusChanged(unsigned long protocolId, unsigned newStatus);
   void SaveAllUsers();

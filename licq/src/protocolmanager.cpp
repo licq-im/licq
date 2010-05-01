@@ -35,6 +35,7 @@ using Licq::OwnerWriteGuard;
 using Licq::User;
 using Licq::UserId;
 using Licq::UserReadGuard;
+using Licq::UserWriteGuard;
 using Licq::gUserManager;
 
 
@@ -438,6 +439,11 @@ void ProtocolManager::secureChannelCancelOpen(const UserId& userId, unsigned lon
 
 void ProtocolManager::visibleListSet(const UserId& userId, bool visible)
 {
+  {
+    UserWriteGuard u(userId);
+    u->SetVisibleList(visible);
+  }
+
   if (visible)
     if (userId.protocolId() == LICQ_PPID)
       gLicqDaemon->icqAddToVisibleList(userId);
@@ -448,10 +454,17 @@ void ProtocolManager::visibleListSet(const UserId& userId, bool visible)
       gLicqDaemon->icqRemoveFromVisibleList(userId);
     else
       pushProtoSignal(new LicqProtoUnacceptUserSignal(userId), userId);
+
+  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
 }
 
 void ProtocolManager::invisibleListSet(const UserId& userId, bool invisible)
 {
+  {
+    UserWriteGuard u(userId);
+    u->SetInvisibleList(invisible);
+  }
+
   if (invisible)
     if (userId.protocolId() == LICQ_PPID)
       gLicqDaemon->icqAddToInvisibleList(userId);
@@ -462,10 +475,17 @@ void ProtocolManager::invisibleListSet(const UserId& userId, bool invisible)
       gLicqDaemon->icqRemoveFromInvisibleList(userId);
     else
       pushProtoSignal(new LicqProtoUnblockUserSignal(userId), userId);
+
+  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
 }
 
 void ProtocolManager::ignoreListSet(const UserId& userId, bool ignore)
 {
+  {
+    UserWriteGuard u(userId);
+    u->SetIgnoreList(ignore);
+  }
+
   if (ignore)
     if (userId.protocolId() == LICQ_PPID)
       gLicqDaemon->icqAddToIgnoreList(userId);
@@ -476,4 +496,6 @@ void ProtocolManager::ignoreListSet(const UserId& userId, bool ignore)
       gLicqDaemon->icqRemoveFromIgnoreList(userId);
     else
       pushProtoSignal(new LicqProtoUnignoreUserSignal(userId), userId);
+
+  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
 }

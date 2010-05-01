@@ -2189,7 +2189,12 @@ bool User::GetInGroup(GroupType gtype, int groupId) const
     return (mySystemGroups & (1L << (groupId -1))) != 0;
   }
   else
-    return myGroups.count(groupId) > 0;
+    return isInGroup(groupId);
+}
+
+bool User::isInGroup(int groupId) const
+{
+  return myGroups.count(groupId) > 0;
 }
 
 void User::SetInGroup(GroupType g, int _nGroup, bool _bIn)
@@ -2200,34 +2205,53 @@ void User::SetInGroup(GroupType g, int _nGroup, bool _bIn)
     RemoveFromGroup(g, _nGroup);
 }
 
+void User::setInGroup(int groupId, bool member)
+{
+  if (member)
+    addToGroup(groupId);
+  else
+    removeFromGroup(groupId);
+}
+
 void User::AddToGroup(GroupType gtype, int groupId)
+{
+  if (gtype == GROUPS_USER)
+    return addToGroup(groupId);
+
+  if (groupId <= 0)
+    return;
+
+  mySystemGroups |= (1L << (groupId - 1));
+  SaveLicqInfo();
+}
+
+void User::addToGroup(int groupId)
 {
   if (groupId <= 0)
     return;
 
-  if (gtype == GROUPS_SYSTEM)
-    mySystemGroups |= (1L << (groupId - 1));
-  else
-    myGroups.insert(groupId);
+  myGroups.insert(groupId);
   SaveLicqInfo();
 }
 
 bool User::RemoveFromGroup(GroupType gtype, int groupId)
 {
+  if (gtype == GROUPS_USER)
+    return removeFromGroup(groupId);
+
   if (groupId <= 0)
     return false;
 
-  bool inGroup;
-  if (gtype == GROUPS_SYSTEM)
-  {
-    unsigned long mask = 1L << (groupId - 1);
-    inGroup = mySystemGroups & mask;
-    mySystemGroups &= ~mask;
-  }
-  else
-  {
-    inGroup = myGroups.erase(groupId);
-  }
+  unsigned long mask = 1L << (groupId - 1);
+  bool inGroup = mySystemGroups & mask;
+  mySystemGroups &= ~mask;
+  SaveLicqInfo();
+  return inGroup;
+}
+
+bool User::removeFromGroup(int groupId)
+{
+  bool inGroup = myGroups.erase(groupId);
   SaveLicqInfo();
   return inGroup;
 }

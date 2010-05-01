@@ -21,6 +21,7 @@ using Licq::User;
 using Licq::UserId;
 using Licq::UserGroupList;
 using Licq::UserMap;
+using Licq::UserWriteGuard;
 using Licq::GROUP_IGNORE_LIST;
 using Licq::GROUP_INVISIBLE_LIST;
 using Licq::GROUP_VISIBLE_LIST;
@@ -606,6 +607,11 @@ bool UserManager::groupExists(GroupType gtype, int groupId)
     return false;
 
   // Does the user group exist in the list?
+  return groupExists(groupId);
+}
+
+bool UserManager::groupExists(int groupId)
+{
   GroupMap* groups = LockGroupList(LOCK_R);
   GroupMap::const_iterator iter = groups->find(groupId);
   bool found = (iter != groups->end());
@@ -1177,17 +1183,42 @@ void UserManager::UnlockOwnerList()
 void UserManager::setUserInGroup(const UserId& userId,
     GroupType groupType, int groupId, bool inGroup, bool updateServer)
 {
-  // User group 0 is invalid and system group 0 is All Users
+  if (groupType == GROUPS_USER)
+    return setUserInGroup(userId, groupId, inGroup, updateServer);
+
+  if (groupId == GROUP_VISIBLE_LIST)
+    return gProtocolManager.visibleListSet(userId, inGroup);
+
+  if (groupId == GROUP_INVISIBLE_LIST)
+    return gProtocolManager.invisibleListSet(userId, inGroup);
+
+  if (groupId == GROUP_IGNORE_LIST)
+    return gProtocolManager.ignoreListSet(userId, inGroup);
+
+  // Just a flag in local user
+  {
+    UserWriteGuard u(userId);
+    if (!u.isLocked())
+      return;
+    u->SetInGroup(GROUPS_SYSTEM, groupId, inGroup);
+  }
+  notifyUserUpdated(userId, USER_SETTINGS);
+}
+
+void UserManager::setUserInGroup(const UserId& userId, int groupId,
+      bool inGroup, bool updateServer)
+{
+  // User group 0 is invalid
   if (groupId == 0)
     return;
 
   User* u = gUserManager.fetchUser(userId, LOCK_W);
-  if (u == NULL)
+  if (u == NULL) 
     return;
 
   int gsid = u->GetGSID();
 
-  if (groupType == GROUPS_USER && !inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
+  if (!inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
   {
     // Don't remove user from local group if member of the same server group
     gUserManager.DropUser(u);
@@ -1195,7 +1226,7 @@ void UserManager::setUserInGroup(const UserId& userId,
   }
 
   // Update user object
-  u->SetInGroup(groupType, groupId, inGroup);
+  u->setInGroup(groupId, inGroup);
   Licq::StringList groupNames;
   std::string groupName;
   UserGroupList groups = u->GetGroups();
@@ -1213,34 +1244,20 @@ void UserManager::setUserInGroup(const UserId& userId,
   // Notify server
   if (updateServer && gLicqDaemon != NULL)
   {
-    if (groupType == GROUPS_SYSTEM)
+    if (ppid == LICQ_PPID)
     {
-      if (groupId == GROUP_VISIBLE_LIST)
-        gProtocolManager.visibleListSet(userId, inGroup);
-
-      else if (groupId == GROUP_INVISIBLE_LIST)
-        gProtocolManager.invisibleListSet(userId, inGroup);
-
-      else if (groupId == GROUP_IGNORE_LIST)
-        gProtocolManager.ignoreListSet(userId, inGroup);
+      if (inGroup) // Server group can only be changed, not removed
+        gLicqDaemon->icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
+            ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
     else
-    {
-      if (ppid == LICQ_PPID)
-      {
-        if (inGroup) // Server group can only be changed, not removed
-          gLicqDaemon->icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
-              ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
-      }
-      else
-        gLicqDaemon->PushProtoSignal(
-            new LicqProtoChangeUserGroupsSignal(userId, groupNames), ppid);
-    }
+      gLicqDaemon->PushProtoSignal(
+          new LicqProtoChangeUserGroupsSignal(userId, groupNames), ppid);
   }
 
   // Notify plugins
   if (gLicqDaemon != NULL)
-    notifyUserUpdated(userId, (groupType == GROUPS_USER ? USER_GROUPS : USER_SETTINGS));
+    notifyUserUpdated(userId, USER_GROUPS);
 }
 
 void UserManager::userStatusChanged(const UserId& userId, unsigned newStatus)
