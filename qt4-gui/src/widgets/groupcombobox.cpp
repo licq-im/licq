@@ -22,19 +22,12 @@
 
 #include <licq_user.h>
 
-#include "helpers/licqstrings.h"
-
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::GroupComboBox */
 
-GroupComboBox::GroupComboBox(bool withAllUsers, QWidget* parent)
+GroupComboBox::GroupComboBox(QWidget* parent)
   : QComboBox(parent)
 {
-  // Assumes that GROUP_ALL_USERS always equals 0
-  if (withAllUsers)
-    addItem(LicqStrings::getSystemGroupName(GROUP_ALL_USERS),
-        QString::number(GROUP_ALL_USERS));
-
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
     addItem(pGroup->name().c_str(), QString::number(pGroup->id()));
