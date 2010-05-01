@@ -113,10 +113,12 @@ void MMUserView::clear()
 
 void MMUserView::addCurrentGroup()
 {
-  GroupType groupType = Config::ContactList::instance()->groupType();
-  unsigned long groupId = Config::ContactList::instance()->groupId();
+  int groupId = Config::ContactList::instance()->groupId();
 
-  dynamic_cast<MultiContactProxy*>(myListProxy)->addGroup(groupType, groupId);
+  if (groupId == ContactListModel::AllGroupsGroupId)
+    groupId = ContactListModel::AllUsersGroupId;
+
+  dynamic_cast<MultiContactProxy*>(myListProxy)->addGroup(groupId);
 
   // Make sure current user isn't added
   dynamic_cast<MultiContactProxy*>(myListProxy)->remove(myUserId);
@@ -125,7 +127,7 @@ void MMUserView::addCurrentGroup()
 void MMUserView::addAll()
 {
   // Add all contacts from "All users" group
-  dynamic_cast<MultiContactProxy*>(myListProxy)->addGroup(GROUPS_SYSTEM, GROUP_ALL_USERS);
+  dynamic_cast<MultiContactProxy*>(myListProxy)->addGroup(ContactListModel::AllUsersGroupId);
 
   // Make sure current user isn't added
   dynamic_cast<MultiContactProxy*>(myListProxy)->remove(myUserId);

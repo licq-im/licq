@@ -71,7 +71,7 @@ void Mode2ContactListProxy::reset()
   myColumnCount = sourceModel()->columnCount();
 
   // Get bars from All Users system group
-  QModelIndex allUsersIndex = dynamic_cast<ContactListModel*>(sourceModel())->groupIndex(ContactListModel::SystemGroupOffset + Licq::GROUP_ALL_USERS);
+  QModelIndex allUsersIndex = dynamic_cast<ContactListModel*>(sourceModel())->allUsersGroupIndex();
   for (int i = 0; i < NumBars; ++i)
     myBars[i] = static_cast<ContactBar*>(allUsersIndex.child(i, 0).internalPointer());
 

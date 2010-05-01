@@ -54,7 +54,7 @@ void SingleContactProxy::slot_dataChanged(const QModelIndex& topLeft, const QMod
 {
   // Check if this affects us
   int groupId = topLeft.data(ContactListModel::GroupIdRole).toInt();
-  if (groupId == ContactListModel::SystemGroupOffset)
+  if (groupId == ContactListModel::AllUsersGroupId)
     if (topLeft.row() <= mySourceIndex[0].row() && bottomRight.row() >= mySourceIndex[0].row())
       emit dataChanged(createIndex(0, 0, 0), createIndex(0, myContactList->columnCount() - 1, 0));
 }

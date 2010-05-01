@@ -74,9 +74,9 @@ void MultiContactProxy::crop(const QModelIndexList& indexes)
   invalidateFilter();
 }
 
-void MultiContactProxy::addGroup(Licq::GroupType groupType, unsigned long groupId)
+void MultiContactProxy::addGroup(int groupId)
 {
-  QModelIndex groupIndex = dynamic_cast<ContactListModel*>(sourceModel())->groupIndex(groupType, groupId);
+  QModelIndex groupIndex = dynamic_cast<ContactListModel*>(sourceModel())->groupIndex(groupId);
   int numUsers = sourceModel()->rowCount(groupIndex);
   for (int i = 0; i < numUsers; ++i)
   {
@@ -93,7 +93,7 @@ void MultiContactProxy::addGroup(Licq::GroupType groupType, unsigned long groupI
 
 QModelIndex MultiContactProxy::rootIndex() const
 {
-  return mapFromSource(dynamic_cast<ContactListModel*>(sourceModel())->groupIndex(Licq::GROUPS_SYSTEM, 0));
+  return mapFromSource(dynamic_cast<ContactListModel*>(sourceModel())->allUsersGroupIndex());
 }
 
 bool MultiContactProxy::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
@@ -105,7 +105,7 @@ bool MultiContactProxy::filterAcceptsRow(int source_row, const QModelIndex& sour
     case ContactListModel::GroupItem:
     {
       // We only want the "All users" group
-      if (item.data(ContactListModel::GroupIdRole).toInt() != ContactListModel::SystemGroupOffset)
+      if (item.data(ContactListModel::GroupIdRole).toInt() != ContactListModel::AllUsersGroupId)
         return false;
 
       break;

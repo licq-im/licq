@@ -45,17 +45,17 @@ ContactListModel::ContactListModel(QObject* parent)
 {
   ContactGroup* group;
 #define CREATE_SYSTEMGROUP(gid, showMask, hideMask) \
-  group = new ContactGroup(SystemGroupOffset + gid, LicqStrings::getSystemGroupName(gid), showMask, hideMask); \
+  group = new ContactGroup(gid, groupName(gid), showMask, hideMask); \
   connectGroup(group); \
   myGroups.append(group);
 
-  CREATE_SYSTEMGROUP(GROUP_ALL_USERS, 0, 0);
+  CREATE_SYSTEMGROUP(AllUsersGroupId, tr("All Users"), 0, 0);
   myAllUsersGroup = group;
-  CREATE_SYSTEMGROUP(GROUP_ONLINE_NOTIFY, OnlineNotifyStatus, IgnoreStatus);
-  CREATE_SYSTEMGROUP(GROUP_VISIBLE_LIST, VisibleListStatus, IgnoreStatus);
-  CREATE_SYSTEMGROUP(GROUP_INVISIBLE_LIST, InvisibleListStatus, IgnoreStatus);
-  CREATE_SYSTEMGROUP(GROUP_IGNORE_LIST, IgnoreStatus, 0);
-  CREATE_SYSTEMGROUP(GROUP_NEW_USERS, NewUserStatus, IgnoreStatus);
+  CREATE_SYSTEMGROUP(OnlineNotifyGroupId, OnlineNotifyStatus, IgnoreStatus);
+  CREATE_SYSTEMGROUP(VisibleListGroupId, VisibleListStatus, IgnoreStatus);
+  CREATE_SYSTEMGROUP(InvisibleListGroupId, InvisibleListStatus, IgnoreStatus);
+  CREATE_SYSTEMGROUP(IgnoreListGroupId, IgnoreStatus, 0);
+  CREATE_SYSTEMGROUP(NewUsersGroupId, NewUserStatus, IgnoreStatus);
 #undef CREATE_SYSTEMGROUP
 
   // reloadAll will compare column count to old value so must set an initial
@@ -548,14 +548,6 @@ QModelIndex ContactListModel::userIndex(const UserId& userId, int column) const
   return QModelIndex();
 }
 
-QModelIndex ContactListModel::groupIndex(GroupType type, int id) const
-{
-  if (type == GROUPS_SYSTEM)
-    id += SystemGroupOffset;
-
-  return groupIndex(id);
-}
-
 QModelIndex ContactListModel::groupIndex(int id) const
 {
   for (int i = 0; i < myGroups.size(); ++i)
@@ -566,6 +558,38 @@ QModelIndex ContactListModel::groupIndex(int id) const
   }
 
   return QModelIndex();
+}
+
+QString ContactListModel::groupName(int groupId) const
+{
+  switch (groupId)
+  {
+    case OnlineNotifyGroupId:
+      return tr("Online Notify");
+    case VisibleListGroupId:
+      return tr("Visible List");
+    case InvisibleListGroupId:
+      return tr("Invisible List");
+    case IgnoreListGroupId:
+      return tr("Ignore List");
+    case NewUsersGroupId:
+      return tr("New Users");
+
+    case AllUsersGroupId:
+      return tr("All Users");
+    case AllGroupsGroupId:
+      return tr("All Groups (Threaded)");
+  }
+
+  // Not a system group, find name from user groups
+  for (int i = 0; i < myGroups.size(); ++i)
+  {
+    ContactGroup* group = myGroups.at(i);
+    if (group->groupId() == groupId)
+      return group->name();
+  }
+
+  return QString();
 }
 
 bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, int role)

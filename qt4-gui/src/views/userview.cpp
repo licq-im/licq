@@ -87,21 +87,19 @@ UserId UserView::currentUserId() const
 
 void UserView::updateRootIndex()
 {
-  bool threadView = Config::ContactList::instance()->threadView();
   bool mode2View = Config::ContactList::instance()->mode2View();
-  GroupType groupType = Config::ContactList::instance()->groupType();
   int groupId = Config::ContactList::instance()->groupId();
 
   QModelIndex newRoot = QModelIndex();
 
-  if (threadView && groupType == GROUPS_SYSTEM && groupId == GROUP_ALL_USERS)
+  if (groupId == ContactListModel::AllGroupsGroupId)
   {
     // Hide the system groups that exist in the model but should not be displayed in threaded view
     dynamic_cast<MainContactListProxy*>(myListProxy)->setThreadedView(true, mode2View);
   }
   else
   {
-    newRoot = myContactList->groupIndex(groupType, groupId);
+    newRoot = myContactList->groupIndex(groupId);
     if (newRoot.isValid())
     {
       // Turn off group filtering first, otherwise we cannot switch from threaded view to a system group

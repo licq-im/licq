@@ -25,8 +25,6 @@
 
 #include <QObject>
 
-#include <licq/types.h>
-
 #include "core/gui-defines.h"
 
 namespace Licq
@@ -93,10 +91,8 @@ public:
 
   bool showOffline() const { return myShowOffline; }
   bool alwaysShowONU() const { return myAlwaysShowONU; }
-  bool threadView() const { return myThreadView; }
   bool mode2View() const { return myMode2View; }
   bool showEmptyGroups() const { return myShowEmptyGroups; }
-  Licq::GroupType groupType() { return myGroupType; }
   int groupId() { return myGroupId; }
   bool groupState(int group, bool online) const;
 
@@ -154,11 +150,9 @@ public slots:
   /**
    * Set current group to display
    *
-   * @param groupType GROUPS_SYSTEM for system groups or GROUPS_USER for normal groups
    * @param groupId Id of group to display
-   * @param threadView True to use threaded view (only used for system group 0)
    */
-  void setGroup(Licq::GroupType groupType, int groupId, bool threadView = false);
+  void setGroup(int groupId);
 
   void setShowGridLines(bool showGridLines);
   void setUseFontStyles(bool useFontStyles);
@@ -238,10 +232,8 @@ private:
   // Contact list contents
   bool myShowOffline;
   bool myAlwaysShowONU;
-  bool myThreadView;
   bool myMode2View;
   bool myShowEmptyGroups;
-  Licq::GroupType myGroupType;
   int myGroupId;
 
   // Contact list look

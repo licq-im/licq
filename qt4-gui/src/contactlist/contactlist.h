@@ -24,7 +24,6 @@
 #include <QAbstractItemModel>
 #include <QList>
 
-#include <licq/types.h>
 #include <licq/userid.h>
 
 namespace Licq
@@ -169,11 +168,24 @@ public:
   static const unsigned long NewUserStatus              = 1 << NewUserStatusBit;
   static const unsigned long AwaitingAuthStatus         = 1 << AwaitingAuthStatusBit;
 
-  /**
-   * Offset on group id for system groups
-   */
+  // Constants for system groups
   static const int SystemGroupOffset = 1000;
   static const int OtherUsersGroupId = 0;
+
+  // "Normal" system groups
+  // Note: These constants are used by Config::Contactlist and written to config file
+  //       Changing existing numbers will make old config files be read wrong
+  static const int OnlineNotifyGroupId                  = SystemGroupOffset + 0;
+  static const int VisibleListGroupId                   = SystemGroupOffset + 1;
+  static const int InvisibleListGroupId                 = SystemGroupOffset + 2;
+  static const int IgnoreListGroupId                    = SystemGroupOffset + 3;
+  static const int NewUsersGroupId                      = SystemGroupOffset + 4;
+  static const int NumSystemGroups                      = 5;
+  static const int LastSystemGroup                      = SystemGroupOffset + NumSystemGroups - 1;
+  static const int AllUsersGroupId                      = SystemGroupOffset + 100;
+
+  // Not real group but need unique id in menus
+  static const int AllGroupsGroupId                     = SystemGroupOffset + 101;
 
   /**
    * Constructor
@@ -283,22 +295,27 @@ public:
 
   /**
    * Get index for a group to use as root item for a view
-   * Requesting group id 0 will return either the all users group (if type is system) or other users group (if type is user)
    *
-   * @param type The type of group (user or system)
-   * @param id Id of the group or 0 to get special group
-   * @return An index for the group or an invalid index if the group does not exist
-   */
-  QModelIndex groupIndex(Licq::GroupType type, int id) const;
-
-  /**
-   * Get index for a group. This function uses model id for groups
-   * Requesting group id 0 will return other users group.
-   *
-   * @param id Id of the group or 0 to get other users group
+   * @param id Id of the group
    * @return An index for the group or an invalid index if the group does not exist
    */
   QModelIndex groupIndex(int id) const;
+
+  /**
+   * Get index for the All Users group
+   *
+   * @return Index for "All Users" group
+   */
+  QModelIndex allUsersGroupIndex() const
+  { return groupIndex(AllUsersGroupId); }
+
+  /**
+   * Convenience function to get name of a group
+   *
+   * @param groupId Id of user group or system group
+   * @return Name of group
+   */
+  QString groupName(int groupId) const;
 
 public slots:
   /**

@@ -30,6 +30,7 @@
 #include <licq_user.h>
 
 #include "config/contactlist.h"
+#include "contactlist/contactlist.h"
 #include "helpers/support.h"
 
 #include "widgets/groupcombobox.h"
@@ -62,7 +63,7 @@ AddUserDlg::AddUserDlg(const UserId& userId, QWidget* parent)
   lblGroup->setBuddy(myGroup);
 
   // Get current active group and set as default
-  if (Config::ContactList::instance()->groupType() == GROUPS_USER)
+  if (Config::ContactList::instance()->groupId() < ContactListModel::SystemGroupOffset)
     myGroup->setCurrentGroupId(Config::ContactList::instance()->groupId());
 
   layDialog->addWidget(lblGroup, line, 0);

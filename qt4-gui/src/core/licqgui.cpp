@@ -1754,3 +1754,41 @@ void LicqGui::updateDockIcon()
   connect(myDockIcon, SIGNAL(middleClicked()), SLOT(showNextEvent()));
 }
 
+void LicqGui::setUserInGroup(const UserId& userId, int groupId, bool inGroup, bool updateServer)
+{
+  // Normal user group
+  if (groupId < ContactListModel::SystemGroupOffset)
+    return gUserManager.setUserInGroup(userId, groupId, inGroup, updateServer);
+
+  // Groups that require server update
+  if (groupId == ContactListModel::VisibleListGroupId)
+    return gProtocolManager.visibleListSet(userId, inGroup);
+  if (groupId == ContactListModel::InvisibleListGroupId)
+    return gProtocolManager.invisibleListSet(userId, inGroup);
+  if (groupId == ContactListModel::IgnoreListGroupId)
+    return gProtocolManager.ignoreListSet(userId, inGroup);
+
+  // If we got here, the "group" is just a flag for local user
+
+  {
+    Licq::UserWriteGuard u(userId);
+    if (!u.isLocked())
+      return;
+
+    switch (groupId)
+    {
+      case ContactListModel::OnlineNotifyGroupId:
+        u->SetOnlineNotify(inGroup);
+        break;
+      case ContactListModel::NewUsersGroupId:
+        u->SetNewUser(inGroup);
+        break;
+      default:
+        // Invalid group
+        return;
+    }
+  }
+
+  // Notify everyone of the change
+  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
+}

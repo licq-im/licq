@@ -82,6 +82,12 @@ public:
   { return myGroupId; }
 
   /**
+   * Get name of the group
+   */
+  const QString& name() const
+  { return myName; }
+
+  /**
    * Get number of items in this group (users and separator bars)
    */
   int rowCount() const;

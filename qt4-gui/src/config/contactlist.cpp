@@ -22,10 +22,13 @@
 
 #include "config.h"
 
+#include <licq/contactlist/usermanager.h>
 #include <licq/inifile.h>
-#include <licq_user.h>
+
+#include "contactlist/contactlist.h"
 
 using namespace LicqQtGui;
+/* TRANSLATOR LicqQtGui::Config::ContactList */
 
 Config::ContactList* Config::ContactList::myInstance = NULL;
 
@@ -55,7 +58,6 @@ void Config::ContactList::loadConfiguration(Licq::IniFile& iniFile)
   iniFile.get("SortByStatus", mySortByStatus, 1);
   iniFile.get("SortColumn", mySortColumn, 0);
   iniFile.get("SortColumnAscending", mySortColumnAscending, true);
-  iniFile.get("UseThreadView", myThreadView, true);
   iniFile.get("UseMode2View", myMode2View, false);
   iniFile.get("ShowEmptyGroups", myShowEmptyGroups, true);
   iniFile.get("TVGroupStates", myGroupStates[0], 0xFFFFFFFE);
@@ -71,17 +73,42 @@ void Config::ContactList::loadConfiguration(Licq::IniFile& iniFile)
   iniFile.get("Flash", flash, FlashUrgent);
   myFlash = static_cast<FlashMode>(flash);
 
-  int groupType;
-  iniFile.get("StartUpGroupId", myGroupId, GROUP_ALL_USERS);
-  iniFile.get("StartUpGroupType", groupType, GROUPS_SYSTEM);
-  myGroupType = static_cast<GroupType>(groupType);
+  if (!iniFile.get("GroupId", myGroupId, ContactListModel::AllGroupsGroupId))
+  {
+    // Group id missing, see if old parameters exist
+
+    int oldGroupId; // 0=All, 1=OnlineNotify, 2=Visible, 3=Invisible, 4=Ignore, 5=NewUsers
+    int oldGroupType; // 0=System, 1=User
+    bool oldThreadView;
+    iniFile.get("UseThreadView", oldThreadView, true);
+    iniFile.get("StartUpGroupId", oldGroupId, 0);
+    iniFile.get("StartUpGroupType", oldGroupType, 0);
+
+    if (oldGroupType == 0 && oldGroupId == 0 && oldThreadView)
+      // Threaded view
+      myGroupId = ContactListModel::AllGroupsGroupId;
+    else if (oldGroupType != 0)
+      // User group
+      myGroupId = oldGroupId;
+    else if (oldGroupId == 0)
+      myGroupId = ContactListModel::AllUsersGroupId;
+    else if (oldGroupId == 1)
+      myGroupId = ContactListModel::OnlineNotifyGroupId;
+    else if (oldGroupId == 2)
+      myGroupId = ContactListModel::VisibleListGroupId;
+    else if (oldGroupId == 3)
+      myGroupId = ContactListModel::InvisibleListGroupId;
+    else if (oldGroupId == 4)
+      myGroupId = ContactListModel::IgnoreListGroupId;
+    else if (oldGroupId == 5)
+      myGroupId = ContactListModel::NewUsersGroupId;
+  }
 
   // Check that the group actually exists
-  if (!gUserManager.groupExists(myGroupType, myGroupId))
-  {
-    myGroupId = GROUP_ALL_USERS;
-    myGroupType = GROUPS_SYSTEM;
-  }
+  if (myGroupId <= 0 || (myGroupId >= ContactListModel::SystemGroupOffset &&
+      myGroupId != ContactListModel::AllUsersGroupId && myGroupId != ContactListModel::AllGroupsGroupId) ||
+      (myGroupId < ContactListModel::SystemGroupOffset && !Licq::gUserManager.groupExists(myGroupId)))
+    myGroupId = ContactListModel::AllGroupsGroupId;
 
   iniFile.get("NumColumns", myColumnCount, 1);
   for (int i = 0; i < myColumnCount; i++)
@@ -131,7 +158,6 @@ void Config::ContactList::saveConfiguration(Licq::IniFile& iniFile) const
   iniFile.set("SortColumnAscending", mySortColumnAscending);
   iniFile.set("ShowOfflineUsers", myShowOffline);
   iniFile.set("AlwaysShowONU", myAlwaysShowONU);
-  iniFile.set("UseThreadView", myThreadView);
   iniFile.set("UseMode2View", myMode2View);
   iniFile.set("ShowEmptyGroups", myShowEmptyGroups);
   iniFile.set("TVGroupStates", myGroupStates[0]);
@@ -143,8 +169,7 @@ void Config::ContactList::saveConfiguration(Licq::IniFile& iniFile) const
   iniFile.set("ScrollBar", myAllowScrollBar);
   iniFile.set("SystemBackground", myUseSystemBackground);
   iniFile.set("DragMovesUser", myDragMovesUser);
-  iniFile.set("StartUpGroupId", myGroupId);
-  iniFile.set("StartUpGroupType", static_cast<int>(myGroupType));
+  iniFile.set("GroupId", myGroupId);
 
   iniFile.set("NumColumns", myColumnCount);
   for (int i = 0; i < myColumnCount; i++)
@@ -387,14 +412,12 @@ void Config::ContactList::setShowEmptyGroups(bool showEmptyGroups)
   changeCurrentList();
 }
 
-void Config::ContactList::setGroup(GroupType groupType, int groupId, bool threadView)
+void Config::ContactList::setGroup(int groupId)
 {
-  if (groupType == myGroupType && groupId == myGroupId && threadView == myThreadView)
+  if (groupId == myGroupId)
     return;
 
-  myGroupType = groupType;
   myGroupId = groupId;
-  myThreadView = threadView;
 
   changeCurrentList();
 }

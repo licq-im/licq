@@ -174,6 +174,16 @@ public:
    */
   void viewUrl(const QString& url);
 
+  /**
+   * Set group membership for a user
+   *
+   * @param userId User id
+   * @param groupId Group id (user group or system group)
+   * @param inGroup True to add user to group or false to remove
+   * @param updateServer True if server list should be updated
+   */
+  void setUserInGroup(const Licq::UserId& userId, int groupId, bool inGroup, bool updateServer = true);
+
 public slots:
   /**
    * Write current configuration to file

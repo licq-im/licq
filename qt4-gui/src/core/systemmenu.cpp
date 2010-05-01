@@ -50,7 +50,6 @@
 #include "dialogs/securitydlg.h"
 #include "dialogs/gpgkeymanager.h"
 
-#include "helpers/licqstrings.h"
 #include "settings/settingsdlg.h"
 
 #include "licqgui.h"
@@ -69,6 +68,7 @@ using namespace LicqQtGui::SystemMenuPrivate;
 SystemMenu::SystemMenu(QWidget* parent)
   : QMenu(parent)
 {
+  ContactListModel* list = LicqGui::instance()->contactList();
   QAction* a;
 
   // Sub menu Debug
@@ -161,20 +161,16 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserGroupActions = new QActionGroup(this);
   connect(myGroupMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowGroupMenu()));
   connect(myUserGroupActions, SIGNAL(triggered(QAction*)), SLOT(setCurrentGroup(QAction*)));
-  // Special entry for threaded view of all users
-  a = myUserGroupActions->addAction(tr("All Groups (Threaded)"));
-  a->setData(ContactListModel::SystemGroupOffset - 1);
-  a->setCheckable(true);
-  myGroupMenu->addAction(a);
 #define ADD_SYSTEMGROUP(group) \
-    a = myUserGroupActions->addAction(LicqStrings::getSystemGroupName(group)); \
-    a->setData(ContactListModel::SystemGroupOffset + group); \
+    a = myUserGroupActions->addAction(list->groupName(group)); \
+    a->setData(group); \
     a->setCheckable(true); \
     myGroupMenu->addAction(a);
-  ADD_SYSTEMGROUP(GROUP_ALL_USERS);
+  ADD_SYSTEMGROUP(ContactListModel::AllGroupsGroupId);
+  ADD_SYSTEMGROUP(ContactListModel::AllUsersGroupId);
   myGroupMenu->addSeparator();
   myGroupSeparator = myGroupMenu->addSeparator();
-  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = ContactListModel::SystemGroupOffset; i <= ContactListModel::LastSystemGroup; ++i)
   {
     ADD_SYSTEMGROUP(i);
   }
@@ -282,7 +278,7 @@ void SystemMenu::updateGroups()
 
   // Clear old groups but leave system groups as they never change
   foreach (a, myUserGroupActions->actions())
-    if (a->data().toInt() < ContactListModel::SystemGroupOffset-1)
+    if (a->data().toInt() < ContactListModel::SystemGroupOffset)
       delete a;
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
@@ -436,12 +432,6 @@ void SystemMenu::aboutToShowFollowMeMenu()
 void SystemMenu::aboutToShowGroupMenu()
 {
   int gid = Config::ContactList::instance()->groupId();
-  if (Config::ContactList::instance()->groupType() == GROUPS_SYSTEM)
-  {
-    if (gid == GROUP_ALL_USERS && Config::ContactList::instance()->threadView())
-      gid = -1;
-    gid += ContactListModel::SystemGroupOffset;
-  }
 
   foreach (QAction* a, myUserGroupActions->actions())
     if (a->data().toInt() == gid)
@@ -497,12 +487,7 @@ void SystemMenu::setCurrentGroup(QAction* action)
 {
   int id = action->data().toInt();
 
-  if (id == ContactListModel::SystemGroupOffset - 1)
-    Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS, true);
-  else if (id < ContactListModel::SystemGroupOffset)
-    Config::ContactList::instance()->setGroup(GROUPS_USER, id);
-  else
-    Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, id - ContactListModel::SystemGroupOffset);
+  Config::ContactList::instance()->setGroup(id);
 }
 
 void SystemMenu::setFollowMeStatus(QAction* action)
@@ -546,11 +531,11 @@ void SystemMenu::updateAllUsers()
 
 void SystemMenu::updateAllUsersInGroup()
 {
-  gLicqDaemon->UpdateAllUsersInGroup
-  (
-      Config::ContactList::instance()->groupType(),
-      Config::ContactList::instance()->groupId()
-  );
+  int groupId = Config::ContactList::instance()->groupId();
+
+  if (groupId < ContactListModel::SystemGroupOffset)
+    gLicqDaemon->updateAllUsersInGroup(groupId);
+  // TODO: Not implemented for system groups
 }
 
 void SystemMenu::saveAllUsers()

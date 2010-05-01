@@ -94,10 +94,9 @@ public:
   /**
    * Add all contacts from a group
    *
-   * @param groupType System or user group
    * @param groupId Group id
    */
-  void addGroup(Licq::GroupType groupType, unsigned long groupId);
+  void addGroup(int groupId);
 
   /**
    * Return the current list of contacts

@@ -25,9 +25,8 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
+#include "config/contactlist.h"
 #include "config/iconmanager.h"
-#include "contactlist/contactlist.h"
-#include "helpers/licqstrings.h"
 #include "views/userview.h"
 
 #include "licqgui.h"
@@ -40,6 +39,7 @@ using namespace LicqQtGui;
 GroupMenu::GroupMenu(QWidget* parent)
   : QMenu(parent)
 {
+  ContactListModel* list = LicqGui::instance()->contactList();
   QAction* a;
 
   // Sub menu Add to Group
@@ -52,10 +52,10 @@ GroupMenu::GroupMenu(QWidget* parent)
   connect(mySystemGroupActions, SIGNAL(triggered(QAction*)), SLOT(addUsersToGroup(QAction*)));
 
   // System groups
-  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = ContactListModel::SystemGroupOffset; i <= ContactListModel::LastSystemGroup; ++i)
   {
-    a = mySystemGroupActions->addAction(LicqStrings::getSystemGroupName(i));
-    a->setData(i + ContactListModel::SystemGroupOffset);
+    a = mySystemGroupActions->addAction(list->groupName(i));
+    a->setData(i);
   }
 
   myGroupSeparator = myGroupsMenu->addSeparator();
@@ -114,12 +114,12 @@ void GroupMenu::aboutToShowMenu()
     a->setVisible(a->data().toInt() != myGroupId);
 
   // Actions that are only available for user groups
-  bool special = (myGroupId >= ContactListModel::SystemGroupOffset || myGroupId == 0);
-  myRenameAction->setEnabled(!special);
-  myRemoveGroupAction->setEnabled(!special);
+  bool userGroup = (myGroupId < ContactListModel::SystemGroupOffset);
+  myRenameAction->setEnabled(userGroup);
+  myRemoveGroupAction->setEnabled(userGroup);
 
   mySortIndex = 0;
-  if (!special)
+  if (userGroup)
   {
     LicqGroup* group = gUserManager.FetchGroup(myGroupId, LOCK_R);
     if (group != NULL)
@@ -130,8 +130,8 @@ void GroupMenu::aboutToShowMenu()
     }
   }
 
-  myMoveUpAction->setEnabled(!special && mySortIndex > 0);
-  myMoveDownAction->setEnabled(!special && static_cast<unsigned int>(mySortIndex) < gUserManager.NumGroups()-1);
+  myMoveUpAction->setEnabled(userGroup && mySortIndex > 0);
+  myMoveDownAction->setEnabled(userGroup && static_cast<unsigned int>(mySortIndex) < gUserManager.NumGroups()-1);
 }
 
 void GroupMenu::setGroup(int groupId, bool online)
@@ -176,12 +176,7 @@ void GroupMenu::removeGroup()
 
 void GroupMenu::addUsersToGroup(QAction* action)
 {
-  // Group id used by model
   int groupId = action->data().toInt();
-
-  // Group id used by daemon
-  GroupType gtype = (groupId < ContactListModel::SystemGroupOffset ? GROUPS_USER : GROUPS_SYSTEM);
-  int gid = (groupId < ContactListModel::SystemGroupOffset ? groupId - 1 : groupId - ContactListModel::SystemGroupOffset);
 
   ContactListModel* list = LicqGui::instance()->contactList();
   QModelIndex groupIndex = list->groupIndex(myGroupId);
@@ -193,6 +188,7 @@ void GroupMenu::addUsersToGroup(QAction* action)
 
     UserId userId = userIndex.data(ContactListModel::UserIdRole).value<UserId>();
 
-    gUserManager.setUserInGroup(userId, gtype, gid, true, gtype == GROUPS_SYSTEM);
+    // Call function that knows how to handle system groups
+    LicqGui::instance()->setUserInGroup(userId, groupId, true, groupId >= ContactListModel::SystemGroupOffset);
   }
 }
