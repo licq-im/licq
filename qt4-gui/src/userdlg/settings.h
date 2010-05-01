@@ -25,8 +25,6 @@
 
 #include <QObject>
 
-#include <licq/types.h>
-
 class QCheckBox;
 class QGridLayout;
 class QGroupBox;
@@ -133,7 +131,11 @@ private:
   QRadioButton* myStatusDndRadio;
   QGroupBox* mySysGroupBox;
   QVBoxLayout* mySysGroupLayout;
-  QCheckBox* mySystemGroupCheck[Licq::NUM_GROUPS_SYSTEM_ALL];
+  QCheckBox* myOnlineNotifyCheck;
+  QCheckBox* myVisibleListCheck;
+  QCheckBox* myInvisibleListCheck;
+  QCheckBox* myIgnoreListCheck;
+  QCheckBox* myNewUserCheck;
   QGroupBox* myAutoRespBox;
   QHBoxLayout* myAutoRespLayout;
   MLEdit* myAutoRespEdit;

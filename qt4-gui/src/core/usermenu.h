@@ -150,7 +150,12 @@ private:
     ModeStatusAway,
     ModeStatusNa,
     ModeStatusOccupied,
-    ModeStatusDnd
+    ModeStatusDnd,
+    ModeOnlineNotify,
+    ModeVisibleList,
+    ModeInvisibleList,
+    ModeIgnoreList,
+    ModeNewUser,
   };
 
   // Actions not in any sub menu

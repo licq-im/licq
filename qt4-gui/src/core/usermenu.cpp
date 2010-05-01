@@ -45,8 +45,6 @@
 #include "dialogs/showawaymsgdlg.h"
 #include "dialogs/utilitydlg.h"
 
-#include "helpers/licqstrings.h"
-
 #include "gui-defines.h"
 #include "licqgui.h"
 #include "messagebox.h"
@@ -59,6 +57,7 @@ using namespace LicqQtGui;
 UserMenu::UserMenu(QWidget* parent)
   : QMenu(parent)
 {
+  ContactListModel* list = LicqGui::instance()->contactList();
   QAction* a;
 
   // Sub menu Send
@@ -133,12 +132,17 @@ UserMenu::UserMenu(QWidget* parent)
   connect(myServerGroupActions, SIGNAL(triggered(QAction*)), SLOT(setServerGroup(QAction*)));
 
   // System groups
-  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
-  {
-    a = mySystemGroupActions->addAction(LicqStrings::getSystemGroupName(i));
-    a->setData(i);
-    a->setCheckable(true);
-  }
+#define ADD_SYSTEMGROUP(gid, data) \
+    a = mySystemGroupActions->addAction(list->groupName(gid)); \
+    myMiscModesActions.insert(data, a);\
+    a->setCheckable(true); \
+    a->setData(gid);
+  ADD_SYSTEMGROUP(ContactListModel::OnlineNotifyGroupId, ModeOnlineNotify);
+  ADD_SYSTEMGROUP(ContactListModel::VisibleListGroupId, ModeVisibleList);
+  ADD_SYSTEMGROUP(ContactListModel::InvisibleListGroupId, ModeInvisibleList);
+  ADD_SYSTEMGROUP(ContactListModel::IgnoreListGroupId, ModeIgnoreList);
+  ADD_SYSTEMGROUP(ContactListModel::NewUsersGroupId, ModeNewUser);
+#undef ADD_SYSTEMGROUP
 
   myServerGroupsMenu = new QMenu(tr("Server Group"));
   myGroupsMenu->addMenu(myServerGroupsMenu);
@@ -294,6 +298,11 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeAutoFileAccept]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendFile);
   myMiscModesActions[ModeAutoChatAccept]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendChat);
   myMiscModesActions[ModeAutoSecure]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendSecure);
+  myMiscModesActions[ModeOnlineNotify]->setChecked(u->OnlineNotify());
+  myMiscModesActions[ModeVisibleList]->setChecked(u->VisibleList());
+  myMiscModesActions[ModeInvisibleList]->setChecked(u->InvisibleList());
+  myMiscModesActions[ModeIgnoreList]->setChecked(u->IgnoreList());
+  myMiscModesActions[ModeNewUser]->setChecked(u->NewUser());
 
   // ICQ Protocol only
   mySendActions[RequestUpdateInfoPlugin]->setVisible(isIcq);
@@ -317,14 +326,12 @@ void UserMenu::aboutToShowMenu()
   foreach (QAction* a, myUserGroupActions->actions())
   {
     int gid = a->data().toInt();
-    bool inGroup = u->GetInGroup(GROUPS_USER, gid);
+    bool inGroup = u->isInGroup(gid);
     a->setChecked(inGroup);
 
     // Don't allow leaving group if contact is member of the same group at the server side
     a->setEnabled(!inGroup || gid != serverGroup);
   }
-  foreach (QAction* a, mySystemGroupActions->actions())
-    a->setChecked(u->GetInGroup(GROUPS_SYSTEM, a->data().toInt()));
   foreach (QAction* a, myServerGroupActions->actions())
     a->setChecked(a->data().toInt() == serverGroup);
 
@@ -566,15 +573,14 @@ void UserMenu::utility(QAction* action)
 void UserMenu::toggleUserGroup(QAction* action)
 {
   int gid = action->data().toInt();
-  gUserManager.setUserInGroup(myUserId, GROUPS_USER, gid,
-      action->isChecked(), false);
+  gUserManager.setUserInGroup(myUserId, gid, action->isChecked(), false);
 }
 
 void UserMenu::toggleSystemGroup(QAction* action)
 {
   int gid = action->data().toInt();
 
-  if (gid == GROUP_IGNORE_LIST && action->isChecked())
+  if (gid == ContactListModel::IgnoreListGroupId && action->isChecked())
   {
     const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
     if (u == NULL)
@@ -588,12 +594,11 @@ void UserMenu::toggleSystemGroup(QAction* action)
       return;
   }
 
-  gUserManager.setUserInGroup(myUserId, GROUPS_SYSTEM, gid,
-      action->isChecked(), true);
+  LicqGui::instance()->setUserInGroup(myUserId, gid, action->isChecked(), true);
 }
 
 void UserMenu::setServerGroup(QAction* action)
 {
   int gid = action->data().toInt();
-  gUserManager.setUserInGroup(myUserId, GROUPS_USER, gid, true, true);
+  gUserManager.setUserInGroup(myUserId, gid, true, true);
 }

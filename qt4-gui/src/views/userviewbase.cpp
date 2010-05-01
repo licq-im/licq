@@ -245,7 +245,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
           else
             moveUser = Config::ContactList::instance()->dragMovesUser();
 
-          gUserManager.setUserInGroup(dropUserId, GROUPS_USER, gid, true, moveUser);
+          gUserManager.setUserInGroup(dropUserId, gid, true, moveUser);
 
           // If we are moving user we now need to remove it from the old group.
           // However, since the drop event doesn't contain the originating
@@ -262,7 +262,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
               UserGroupList::const_iterator i;
               for (i = userGroups.begin(); i != userGroups.end(); ++i)
                 if (*i != gid)
-                  gUserManager.setUserInGroup(dropUserId, GROUPS_USER, *i, false, false);
+                  gUserManager.setUserInGroup(dropUserId, *i, false, false);
             }
           }
         }

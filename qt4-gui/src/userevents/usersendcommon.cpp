@@ -1065,11 +1065,14 @@ void UserSendCommon::send()
     if (u != NULL)
     {
       if (u->NewUser())
+      {
+        u->SetNewUser(false);
         newUser = true;
+      }
       gUserManager.DropUser(u);
     }
     if (newUser)
-      gUserManager.setUserInGroup(myUsers.front(), GROUPS_SYSTEM, GROUP_NEW_USERS, false);
+      gUserManager.notifyUserUpdated(myUsers.front(), USER_SETTINGS);
   }
 
   unsigned long icqEventTag = 0;

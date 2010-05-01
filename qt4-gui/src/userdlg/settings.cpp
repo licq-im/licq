@@ -34,6 +34,7 @@
 
 #include <licq_icqd.h>
 #include <licq/pluginmanager.h>
+#include <licq/protocolmanager.h>
 #include <licq_user.h>
 
 #include "dialogs/awaymsgdlg.h"
@@ -41,6 +42,7 @@
 
 #include "userdlg.h"
 
+using Licq::gProtocolManager;
 using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserPages::Settings */
@@ -153,25 +155,25 @@ QWidget* UserPages::Settings::createPageStatus(QWidget* parent)
   mySysGroupBox = new QGroupBox(tr("System Groups"));
   mySysGroupLayout = new QVBoxLayout(mySysGroupBox);
 
-  mySystemGroupCheck[GROUP_ONLINE_NOTIFY] = new QCheckBox(tr("Online notify"));
-  mySystemGroupCheck[GROUP_ONLINE_NOTIFY]->setToolTip(tr("Notify when this contact comes online."));
-  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_ONLINE_NOTIFY]);
+  myOnlineNotifyCheck = new QCheckBox(tr("Online notify"));
+  myOnlineNotifyCheck->setToolTip(tr("Notify when this contact comes online."));
+  mySysGroupLayout->addWidget(myOnlineNotifyCheck);
 
-  mySystemGroupCheck[GROUP_VISIBLE_LIST] = new QCheckBox(tr("Visible List"));
-  mySystemGroupCheck[GROUP_VISIBLE_LIST]->setToolTip(tr("Contact will see you online even if you're invisible."));
-  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_VISIBLE_LIST]);
+  myVisibleListCheck = new QCheckBox(tr("Visible List"));
+  myVisibleListCheck->setToolTip(tr("Contact will see you online even if you're invisible."));
+  mySysGroupLayout->addWidget(myVisibleListCheck);
 
-  mySystemGroupCheck[GROUP_INVISIBLE_LIST] = new QCheckBox(tr("Invisible List"));
-  mySystemGroupCheck[GROUP_INVISIBLE_LIST]->setToolTip(tr("Contact will always see you as offline."));
-  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_INVISIBLE_LIST]);
+  myInvisibleListCheck = new QCheckBox(tr("Invisible List"));
+  myInvisibleListCheck->setToolTip(tr("Contact will always see you as offline."));
+  mySysGroupLayout->addWidget(myInvisibleListCheck);
 
-  mySystemGroupCheck[GROUP_IGNORE_LIST] = new QCheckBox(tr("Ignore List"));
-  mySystemGroupCheck[GROUP_IGNORE_LIST]->setToolTip(tr("Ignore any events from this contact."));
-  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_IGNORE_LIST]);
+  myIgnoreListCheck = new QCheckBox(tr("Ignore List"));
+  myIgnoreListCheck->setToolTip(tr("Ignore any events from this contact."));
+  mySysGroupLayout->addWidget(myIgnoreListCheck);
 
-  mySystemGroupCheck[GROUP_NEW_USERS] = new QCheckBox(tr("New Users"));
-  mySystemGroupCheck[GROUP_NEW_USERS]->setToolTip(tr("Contact was recently added to the list."));
-  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_NEW_USERS]);
+  myNewUserCheck = new QCheckBox(tr("New Users"));
+  myNewUserCheck->setToolTip(tr("Contact was recently added to the list."));
+  mySysGroupLayout->addWidget(myNewUserCheck);
 
   mySysGroupLayout->addStretch(1);
 
@@ -252,8 +254,11 @@ void UserPages::Settings::load(const LicqUser* user)
   myStatusOccupiedRadio->setChecked(statusToUser & User::OccupiedStatus);
   myStatusDndRadio->setChecked(statusToUser & User::DoNotDisturbStatus);
 
-  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
-    mySystemGroupCheck[i]->setChecked(user->GetInGroup(GROUPS_SYSTEM, i));
+  myOnlineNotifyCheck->setChecked(user->OnlineNotify());
+  myVisibleListCheck->setChecked(user->VisibleList());
+  myInvisibleListCheck->setChecked(user->InvisibleList());
+  myIgnoreListCheck->setChecked(user->IgnoreList());
+  myNewUserCheck->setChecked(user->NewUser());
 
   unsigned int ppid = user->PPID();
   bool isIcq = (ppid == LICQ_PPID);
@@ -302,7 +307,7 @@ void UserPages::Settings::load(const LicqUser* user)
     connect(serverRadio, SIGNAL(toggled(bool)), localCheck, SLOT(setDisabled(bool)));
     connect(serverRadio, SIGNAL(clicked(bool)), localCheck, SLOT(setChecked(bool)));
 
-    localCheck->setChecked(user->GetInGroup(GROUPS_USER, gid));
+    localCheck->setChecked(user->isInGroup(gid));
     serverRadio->setChecked(gid == serverGroup);
 
     ++i;
@@ -328,6 +333,10 @@ void UserPages::Settings::apply(LicqUser* user)
   user->SetAutoSecure(myAutoSecureCheck->isChecked());
   user->SetUseGPG(myUseGpgCheck->isChecked());
   user->SetSendRealIp(myUseRealIpCheck->isChecked());
+
+  // System groups wich doesn't require server update
+  user->SetOnlineNotify(myOnlineNotifyCheck->isChecked());
+  user->SetNewUser(myNewUserCheck->isChecked());
 
   // Set status to user
   unsigned statusToUser = User::OfflineStatus;
@@ -361,7 +370,9 @@ void UserPages::Settings::apply2(const UserId& userId)
   if (u->GetSID() != 0)
     serverGroup = gUserManager.GetGroupFromID(u->GetGSID());
   const UserGroupList& userGroups = u->GetGroups();
-  unsigned long systemGroups = u->GetSystemGroups();
+  bool visibleList = u->VisibleList();
+  bool invisibleList = u->InvisibleList();
+  bool ignoreList = u->IgnoreList();
 
   gUserManager.DropUser(u);
 
@@ -373,7 +384,7 @@ void UserPages::Settings::apply2(const UserId& userId)
     if (dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked())
     {
       if (gid != serverGroup)
-        gUserManager.setUserInGroup(userId, GROUPS_USER, gid, true, true);
+        gUserManager.setUserInGroup(userId, gid, true, true);
     }
   }
 
@@ -384,16 +395,16 @@ void UserPages::Settings::apply2(const UserId& userId)
 
     bool inLocal = dynamic_cast<QCheckBox*>(myGroupsTable->cellWidget(i, 1))->isChecked();
     if ((userGroups.count(gid) > 0) != inLocal)
-      gUserManager.setUserInGroup(userId, GROUPS_USER, gid, inLocal, false);
+      gUserManager.setUserInGroup(userId, gid, inLocal, false);
   }
 
   // Set system groups
-  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
-  {
-    bool inGroup = mySystemGroupCheck[i]->isChecked();
-    if (((systemGroups & (1L << (i - 1))) != 0) != inGroup)
-      gUserManager.setUserInGroup(userId, GROUPS_SYSTEM, i, inGroup, true);
-  }
+  if (myVisibleListCheck->isChecked() != visibleList)
+    gProtocolManager.visibleListSet(userId, myVisibleListCheck->isChecked());
+  if (myInvisibleListCheck->isChecked() != invisibleList)
+    gProtocolManager.invisibleListSet(userId, myInvisibleListCheck->isChecked());
+  if (myIgnoreListCheck->isChecked() != ignoreList)
+    gProtocolManager.ignoreListSet(userId, myIgnoreListCheck->isChecked());
 }
 
 void UserPages::Settings::userUpdated(const LicqUser* user, unsigned long subSignal)
