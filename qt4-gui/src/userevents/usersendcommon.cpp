@@ -71,7 +71,6 @@
 #include "dialogs/keyrequestdlg.h"
 
 #include "helpers/eventdesc.h"
-#include "helpers/licqstrings.h"
 #include "helpers/usercodec.h"
 
 #include "views/mmuserview.h"

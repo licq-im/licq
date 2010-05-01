@@ -27,8 +27,6 @@
 #include "config/general.h"
 #include "config/iconmanager.h"
 
-#include "helpers/licqstrings.h"
-
 #include "dockiconwidget.h"
 
 using Licq::User;

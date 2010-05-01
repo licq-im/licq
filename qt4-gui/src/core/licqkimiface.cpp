@@ -36,7 +36,6 @@
 #include <licq_user.h>
 
 // local includes
-#include "helpers/licqstrings.h"
 #include "helpers/usercodec.h"
 #include "mainwin.h"
 

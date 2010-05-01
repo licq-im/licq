@@ -39,13 +39,14 @@
 #include "config/emoticons.h"
 #include "config/skin.h"
 
+#include "contactlist/contactlist.h"
+
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "dialogs/editfiledlg.h"
 
-#include "helpers/licqstrings.h"
 #include "helpers/support.h"
 
 #include "widgets/skinnablebutton.h"
@@ -493,6 +494,8 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   QMenuBar* menu = NULL;
   SkinnableComboBox* cmbUserGroups = NULL;
 
+  ContactListModel* list = LicqGui::instance()->contactList();
+
   QWidget w;
   w.setFixedWidth(188); // this is (75x130) * 2.5
   w.setFixedHeight(325);
@@ -512,7 +515,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Group Combo Box
   cmbUserGroups = new SkinnableComboBox(skin->cmbGroups, &w);
   cmbUserGroups->setGeometry(skin->cmbGroups.borderToRect(&w));
-  cmbUserGroups->addItem(LicqStrings::getSystemGroupName(Licq::GROUP_ALL_USERS));
+  cmbUserGroups->addItem(list->groupName(ContactListModel::AllUsersGroupId));
 
   // The Menu Button
   if (!skin->frame.hasMenuBar)
@@ -533,7 +536,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Message Label
   lblMsg = new SkinnableLabel(skin->lblMsg, NULL, &w);
   lblMsg->setGeometry(skin->lblMsg.borderToRect(&w));
-  lblMsg->setText(LicqStrings::getSystemGroupName(Licq::GROUP_NEW_USERS));
+  lblMsg->setText(list->groupName(ContactListModel::NewUsersGroupId));
 
   // Status Label
   lblStatus = new SkinnableLabel(skin->lblStatus, NULL, &w);

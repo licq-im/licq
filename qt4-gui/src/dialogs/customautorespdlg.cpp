@@ -28,7 +28,6 @@
 #include <licq_events.h>
 #include <licq_user.h>
 
-#include "helpers/licqstrings.h"
 #include "helpers/support.h"
 
 #include "widgets/mledit.h"

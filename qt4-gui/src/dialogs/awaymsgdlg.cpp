@@ -41,7 +41,6 @@
 
 #include "core/licqgui.h"
 
-#include "helpers/licqstrings.h"
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
 

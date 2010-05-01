@@ -64,7 +64,6 @@
 #include "core/messagebox.h"
 #include "dialogs/editcategorydlg.h"
 #include "dialogs/phonedlg.h"
-#include "helpers/licqstrings.h"
 #include "helpers/usercodec.h"
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"

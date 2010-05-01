@@ -29,7 +29,6 @@
 #include <licq_user.h>
 
 #include "config/contactlist.h"
-#include "helpers/licqstrings.h"
 
 #include "contactbar.h"
 #include "contactgroup.h"

@@ -40,7 +40,6 @@
 #include "core/licqgui.h"
 #include "core/signalmanager.h"
 
-#include "helpers/licqstrings.h"
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
 

@@ -92,7 +92,6 @@
 #include "dialogs/statsdlg.h"
 #include "dialogs/userselectdlg.h"
 
-#include "helpers/licqstrings.h"
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
 

@@ -37,7 +37,6 @@
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
-#include "helpers/licqstrings.h"
 #include "helpers/support.h"
 
 using namespace LicqQtGui;
