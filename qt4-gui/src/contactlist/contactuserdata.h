@@ -81,8 +81,14 @@ public:
   /**
    * Get user status
    */
-  unsigned short status() const
+  unsigned status() const
   { return myStatus; }
+
+  /**
+   * Get extended status bits
+   */
+  unsigned extendedStatus() const
+  { return myExtendedStatus; }
 
   /**
    * Get current sub group

@@ -28,12 +28,14 @@
 
 using namespace LicqQtGui;
 
-ContactGroup::ContactGroup(int id, const QString& name)
+ContactGroup::ContactGroup(int id, const QString& name, unsigned showMask, unsigned hideMask)
   : ContactItem(ContactListModel::GroupItem),
     myGroupId(id),
     myName(name),
     myEvents(0),
-    myVisibleContacts(0)
+    myVisibleContacts(0),
+    myShowMask(showMask),
+    myHideMask(hideMask)
 {
   // Put "Other Users" last when sorting
   if (myGroupId == ContactListModel::OtherUsersGroupId)
@@ -53,7 +55,9 @@ ContactGroup::ContactGroup(const LicqGroup* group)
     myName(QString::fromLocal8Bit(group->name().c_str())),
     mySortKey(group->sortIndex()),
     myEvents(0),
-    myVisibleContacts(0)
+    myVisibleContacts(0),
+    myShowMask(0),
+    myHideMask(ContactListModel::IgnoreStatus)
 {
   for (int i = 0; i < 3; ++i)
     myBars[i] = new ContactBar(static_cast<ContactListModel::SubGroupType>(i), this);
@@ -177,6 +181,20 @@ void ContactGroup::removeUser(ContactUser* user, ContactListModel::SubGroupType 
   // Update group and bar as counters may have changed
   emit barDataChanged(myBars[subGroup], subGroup);
   emit dataChanged(this);
+}
+
+bool ContactGroup::acceptUser(unsigned extendedStatus)
+{
+  // User must not match any bits in the hide mask
+  if (myHideMask != 0 && (extendedStatus & myHideMask))
+    return false;
+
+  // User must match at least one bit in the show mask
+  if (myShowMask != 0 && !(extendedStatus & myShowMask))
+    return false;
+
+  // Default, accept user
+  return true;
 }
 
 void ContactGroup::updateSubGroup(ContactListModel::SubGroupType oldSubGroup, ContactListModel::SubGroupType newSubGroup, int eventCounter)

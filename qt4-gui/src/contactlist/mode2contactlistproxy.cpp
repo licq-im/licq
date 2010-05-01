@@ -81,10 +81,6 @@ void Mode2ContactListProxy::reset()
   {
     QModelIndex groupIndex = sourceModel()->index(srcGroupRow, 0);
 
-    // Skip the system groups since they'll be filtered by the next proxy anyway
-    if (groupIndex.data(ContactListModel::GroupIdRole).toInt() >= ContactListModel::SystemGroupOffset)
-      continue;
-
     addGroup(groupIndex);
   }
   QAbstractProxyModel::reset();
@@ -96,17 +92,11 @@ void Mode2ContactListProxy::sourceDataChanged(const QModelIndex& topLeft, const 
   {
     case ContactListModel::GroupItem:
     {
-      if (topLeft.data(ContactListModel::GroupIdRole).toInt() >= ContactListModel::SystemGroupOffset)
-        // Only system groups have changed, we don't have them so ignore signal
-        return;
-
-      // If signal includes system groups, make sure forwarded signal only contains normal groups
+      int firstRow = topLeft.row() * 2;
       int lastRow = bottomRight.row() * 2 + 1;
-      if (lastRow >= myGroups.size())
-        lastRow = myGroups.size() - 1;
 
       // One or more groups have changed, emit signal for both online and offline proxy groups
-      emit dataChanged(createIndex(topLeft.row() * 2 + NumBars, topLeft.column(), myGroups.at(topLeft.row() * 2)),
+      emit dataChanged(createIndex(firstRow + NumBars, topLeft.column(), myGroups.at(firstRow)),
           createIndex(lastRow + NumBars, bottomRight.column(), myGroups.at(lastRow)));
       return;
     }
@@ -302,10 +292,8 @@ void Mode2ContactListProxy::sourceRowsInserted(const QModelIndex& parent, int st
     return;
   }
 
-  // New user(s) added, add them to appropriate group (unless it was in a system group)
-  if (parent.data(ContactListModel::GroupIdRole).toInt() < ContactListModel::SystemGroupOffset)
-    for (int row = start; row <= end; ++row)
-      addUser(sourceModel()->index(row, 0, parent));
+  for (int row = start; row <= end; ++row)
+    addUser(sourceModel()->index(row, 0, parent));
 }
 
 void Mode2ContactListProxy::sourceRowsAboutToBeRemoved(const QModelIndex& parent, int start, int end)

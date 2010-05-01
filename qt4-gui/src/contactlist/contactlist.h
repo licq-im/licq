@@ -427,8 +427,8 @@ private:
    */
   int groupRow(ContactGroup* group) const;
 
-  QList<ContactGroup*> myUserGroups;
-  ContactGroup* mySystemGroups[Licq::NUM_GROUPS_SYSTEM_ALL];
+  QList<ContactGroup*> myGroups;
+  ContactGroup* myAllUsersGroup;
   QList<ContactUserData*> myUsers;
   int myColumnCount;
   bool myBlockUpdates;
