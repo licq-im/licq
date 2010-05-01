@@ -303,7 +303,7 @@ void ContactListModel::reloadAll()
   configUpdated();
 
   // Add all groups
-  ContactGroup* newGroup = new ContactGroup(0, tr("Other Users"));
+  ContactGroup* newGroup = new ContactGroup(OtherUsersGroupId, tr("Other Users"));
   connectGroup(newGroup);
   myUserGroups.append(newGroup);
 
@@ -376,9 +376,9 @@ void ContactListModel::updateUserGroups(ContactUserData* user, const Licq::User*
     bool shouldBeMember;
     if (userIgnored)
       shouldBeMember = false;
-    else if (gid != 0 && licqUser->GetInGroup(GROUPS_USER, gid))
-      shouldBeMember = true;
-    else if (gid == 0 && licqUser->GetGroups().empty())
+    else if (gid == OtherUsersGroupId)
+      shouldBeMember = licqUser->GetGroups().empty();
+    else if (gid > 0 && licqUser->GetInGroup(GROUPS_USER, gid))
       shouldBeMember = true;
     else
       shouldBeMember = false;
@@ -525,7 +525,9 @@ Qt::ItemFlags ContactListModel::flags(const QModelIndex& index) const
     f |= Qt::ItemIsEditable;
 
   // Group names are editable in first column unless it's a system group
-  if (itemType == GroupItem && index.column() == 0 && index.row() != 0 && index.row() < myUserGroups.size())
+  if (itemType == GroupItem && index.column() == 0 &&
+      index.row() >= 0 && index.row() < myUserGroups.size() &&
+      myUserGroups[index.row()]->groupId() != OtherUsersGroupId)
     f |= Qt::ItemIsEditable;
 
   return f;

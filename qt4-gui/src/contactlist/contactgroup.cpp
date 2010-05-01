@@ -23,6 +23,7 @@
 #include <licq_user.h>
 
 #include "contactbar.h"
+#include "contactlist.h"
 #include "contactuser.h"
 
 using namespace LicqQtGui;
@@ -34,11 +35,11 @@ ContactGroup::ContactGroup(int id, const QString& name)
     myEvents(0),
     myVisibleContacts(0)
 {
-  if (myGroupId != 0)
-    mySortKey = myGroupId;
-  else
-    // Put "Other Users" last when sorting
+  // Put "Other Users" last when sorting
+  if (myGroupId == ContactListModel::OtherUsersGroupId)
     mySortKey = 65535;
+  else
+    mySortKey = myGroupId;
 
   update();
 
@@ -71,7 +72,8 @@ ContactGroup::~ContactGroup()
 void ContactGroup::update()
 {
   // System groups and "Other users" aren't present in daemon group list
-  if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
+  if (myGroupId == ContactListModel::OtherUsersGroupId ||
+      myGroupId >= ContactListModel::SystemGroupOffset)
     return;
 
   {
@@ -89,7 +91,8 @@ void ContactGroup::update()
 void ContactGroup::updateSortKey()
 {
   // System groups and "Other users" aren't present in daemon group list
-  if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
+  if (myGroupId == ContactListModel::OtherUsersGroupId ||
+      myGroupId >= ContactListModel::SystemGroupOffset)
     return;
 
   LicqGroupReadGuard g(myGroupId);
@@ -260,7 +263,8 @@ bool ContactGroup::setData(const QVariant& value, int role)
     return false;
 
   // Don't allow system groups or "Other users" to be renamed this way
-  if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
+  if (myGroupId == ContactListModel::OtherUsersGroupId ||
+      myGroupId >= ContactListModel::SystemGroupOffset)
     return false;
 
   QString newName = value.toString();

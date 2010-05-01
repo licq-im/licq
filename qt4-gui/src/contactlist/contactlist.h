@@ -173,6 +173,7 @@ public:
    * Offset on group id for system groups
    */
   static const int SystemGroupOffset = 1000;
+  static const int OtherUsersGroupId = 0;
 
   /**
    * Constructor
