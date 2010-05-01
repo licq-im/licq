@@ -28,7 +28,6 @@
 #include "contactlist/contactlist.h"
 
 using namespace LicqQtGui;
-/* TRANSLATOR LicqQtGui::Config::ContactList */
 
 Config::ContactList* Config::ContactList::myInstance = NULL;
 

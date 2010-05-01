@@ -49,7 +49,7 @@ ContactListModel::ContactListModel(QObject* parent)
   connectGroup(group); \
   myGroups.append(group);
 
-  CREATE_SYSTEMGROUP(AllUsersGroupId, tr("All Users"), 0, 0);
+  CREATE_SYSTEMGROUP(AllUsersGroupId, 0, 0);
   myAllUsersGroup = group;
   CREATE_SYSTEMGROUP(OnlineNotifyGroupId, OnlineNotifyStatus, IgnoreStatus);
   CREATE_SYSTEMGROUP(VisibleListGroupId, VisibleListStatus, IgnoreStatus);
