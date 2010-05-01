@@ -180,6 +180,8 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
     myInVisibleList = u->VisibleList();
   }
 
+  updateExtendedStatus();
+
   if (subSignal == 0 || subSignal == USER_EVENTS)
     updateEvents(u);
 
@@ -193,8 +195,6 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
 
   if (subSignal == USER_GROUPS || subSignal == USER_PICTURE)
     return;
-
-  updateExtendedStatus();
 
   if (subSignal == USER_TYPING || subSignal == USER_SECURITY)
     return;
