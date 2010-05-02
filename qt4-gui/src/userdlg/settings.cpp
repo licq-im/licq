@@ -37,6 +37,7 @@
 #include <licq/protocolmanager.h>
 #include <licq_user.h>
 
+#include "contactlist/contactlist.h"
 #include "dialogs/awaymsgdlg.h"
 #include "widgets/mledit.h"
 
@@ -155,23 +156,23 @@ QWidget* UserPages::Settings::createPageStatus(QWidget* parent)
   mySysGroupBox = new QGroupBox(tr("System Groups"));
   mySysGroupLayout = new QVBoxLayout(mySysGroupBox);
 
-  myOnlineNotifyCheck = new QCheckBox(tr("Online notify"));
+  myOnlineNotifyCheck = new QCheckBox(ContactListModel::systemGroupName(ContactListModel::OnlineNotifyGroupId));
   myOnlineNotifyCheck->setToolTip(tr("Notify when this contact comes online."));
   mySysGroupLayout->addWidget(myOnlineNotifyCheck);
 
-  myVisibleListCheck = new QCheckBox(tr("Visible List"));
+  myVisibleListCheck = new QCheckBox(ContactListModel::systemGroupName(ContactListModel::VisibleListGroupId));
   myVisibleListCheck->setToolTip(tr("Contact will see you online even if you're invisible."));
   mySysGroupLayout->addWidget(myVisibleListCheck);
 
-  myInvisibleListCheck = new QCheckBox(tr("Invisible List"));
+  myInvisibleListCheck = new QCheckBox(ContactListModel::systemGroupName(ContactListModel::InvisibleListGroupId));
   myInvisibleListCheck->setToolTip(tr("Contact will always see you as offline."));
   mySysGroupLayout->addWidget(myInvisibleListCheck);
 
-  myIgnoreListCheck = new QCheckBox(tr("Ignore List"));
+  myIgnoreListCheck = new QCheckBox(ContactListModel::systemGroupName(ContactListModel::IgnoreListGroupId));
   myIgnoreListCheck->setToolTip(tr("Ignore any events from this contact."));
   mySysGroupLayout->addWidget(myIgnoreListCheck);
 
-  myNewUserCheck = new QCheckBox(tr("New Users"));
+  myNewUserCheck = new QCheckBox(ContactListModel::systemGroupName(ContactListModel::NewUsersGroupId));
   myNewUserCheck->setToolTip(tr("Contact was recently added to the list."));
   mySysGroupLayout->addWidget(myNewUserCheck);
 

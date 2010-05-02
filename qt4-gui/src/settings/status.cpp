@@ -33,6 +33,7 @@
 #include <QVBoxLayout>
 
 #include <licq/sarmanager.h>
+#include <licq/contactlist/user.h>
 
 #include "config/general.h"
 
@@ -43,6 +44,7 @@
 #include "settingsdlg.h"
 
 using Licq::SarManager;
+using Licq::User;
 using Licq::gSarManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Status */
@@ -68,13 +70,13 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
   myAutoLogonLayout = new QVBoxLayout(myAutoLogonBox);
 
   myAutoLogonCombo = new QComboBox();
-  myAutoLogonCombo->addItem(tr("Offline"));
-  myAutoLogonCombo->addItem(tr("Online"));
-  myAutoLogonCombo->addItem(tr("Away"));
-  myAutoLogonCombo->addItem(tr("Not Available"));
-  myAutoLogonCombo->addItem(tr("Occupied"));
-  myAutoLogonCombo->addItem(tr("Do Not Disturb"));
-  myAutoLogonCombo->addItem(tr("Free for Chat"));
+  myAutoLogonCombo->addItem(User::statusToString(User::OfflineStatus).c_str());
+  myAutoLogonCombo->addItem(User::statusToString(User::OnlineStatus).c_str());
+  myAutoLogonCombo->addItem(User::statusToString(User::AwayStatus).c_str());
+  myAutoLogonCombo->addItem(User::statusToString(User::NotAvailableStatus).c_str());
+  myAutoLogonCombo->addItem(User::statusToString(User::OccupiedStatus).c_str());
+  myAutoLogonCombo->addItem(User::statusToString(User::DoNotDisturbStatus).c_str());
+  myAutoLogonCombo->addItem(User::statusToString(User::FreeForChatStatus).c_str());
   myAutoLogonCombo->setToolTip(tr("Automatically log on when first starting up."));
   myAutoLogonLayout->addWidget(myAutoLogonCombo);
 
@@ -143,11 +145,11 @@ QWidget* Settings::Status::createPageRespMsg(QWidget* parent)
   myDefRespMsgLayout->addWidget(mySarGroupLabel, 0, 0);
 
   mySarGroupCombo = new QComboBox();
-  mySarGroupCombo->addItem(tr("Away"), SarManager::AwayList);
-  mySarGroupCombo->addItem(tr("Not Available"), SarManager::NotAvailableList);
-  mySarGroupCombo->addItem(tr("Occupied"), SarManager::OccupiedList);
-  mySarGroupCombo->addItem(tr("Do Not Disturb"), SarManager::DoNotDisturbList);
-  mySarGroupCombo->addItem(tr("Free For Chat"), SarManager::FreeForChatList);
+  mySarGroupCombo->addItem(User::statusToString(User::AwayStatus).c_str(), SarManager::AwayList);
+  mySarGroupCombo->addItem(User::statusToString(User::NotAvailableStatus).c_str(), SarManager::NotAvailableList);
+  mySarGroupCombo->addItem(User::statusToString(User::OccupiedStatus).c_str(), SarManager::OccupiedList);
+  mySarGroupCombo->addItem(User::statusToString(User::DoNotDisturbStatus).c_str(), SarManager::DoNotDisturbList);
+  mySarGroupCombo->addItem(User::statusToString(User::FreeForChatStatus).c_str(), SarManager::FreeForChatList);
   connect(mySarGroupCombo, SIGNAL(activated(int)), SLOT(sarGroupChanged(int)));
   myDefRespMsgLayout->addWidget(mySarGroupCombo, 0, 1);
 
