@@ -39,7 +39,6 @@ using namespace LicqQtGui;
 GroupMenu::GroupMenu(QWidget* parent)
   : QMenu(parent)
 {
-  ContactListModel* list = LicqGui::instance()->contactList();
   QAction* a;
 
   // Sub menu Add to Group
@@ -54,7 +53,7 @@ GroupMenu::GroupMenu(QWidget* parent)
   // System groups
   for (int i = ContactListModel::SystemGroupOffset; i <= ContactListModel::LastSystemGroup; ++i)
   {
-    a = mySystemGroupActions->addAction(list->groupName(i));
+    a = mySystemGroupActions->addAction(ContactListModel::systemGroupName(i));
     a->setData(i);
   }
 

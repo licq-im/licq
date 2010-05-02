@@ -494,8 +494,6 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   QMenuBar* menu = NULL;
   SkinnableComboBox* cmbUserGroups = NULL;
 
-  ContactListModel* list = LicqGui::instance()->contactList();
-
   QWidget w;
   w.setFixedWidth(188); // this is (75x130) * 2.5
   w.setFixedHeight(325);
@@ -515,7 +513,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Group Combo Box
   cmbUserGroups = new SkinnableComboBox(skin->cmbGroups, &w);
   cmbUserGroups->setGeometry(skin->cmbGroups.borderToRect(&w));
-  cmbUserGroups->addItem(list->groupName(ContactListModel::AllUsersGroupId));
+  cmbUserGroups->addItem(ContactListModel::systemGroupName(ContactListModel::AllUsersGroupId));
 
   // The Menu Button
   if (!skin->frame.hasMenuBar)
@@ -536,7 +534,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Message Label
   lblMsg = new SkinnableLabel(skin->lblMsg, NULL, &w);
   lblMsg->setGeometry(skin->lblMsg.borderToRect(&w));
-  lblMsg->setText(list->groupName(ContactListModel::NewUsersGroupId));
+  lblMsg->setText(ContactListModel::systemGroupName(ContactListModel::NewUsersGroupId));
 
   // Status Label
   lblStatus = new SkinnableLabel(skin->lblStatus, NULL, &w);

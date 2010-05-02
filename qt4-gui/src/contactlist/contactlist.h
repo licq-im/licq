@@ -188,6 +188,14 @@ public:
   static const int AllGroupsGroupId                     = SystemGroupOffset + 101;
 
   /**
+   * Get display name for system groups
+   *
+   * @param groupId Id of a system group
+   * @return Name of group
+   */
+  static QString systemGroupName(int groupId);
+
+  /**
    * Constructor
    * Will get the current list from the daemon and connect to the signal manager for updates.
    *

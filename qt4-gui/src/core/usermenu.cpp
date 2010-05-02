@@ -57,7 +57,6 @@ using namespace LicqQtGui;
 UserMenu::UserMenu(QWidget* parent)
   : QMenu(parent)
 {
-  ContactListModel* list = LicqGui::instance()->contactList();
   QAction* a;
 
   // Sub menu Send
@@ -133,7 +132,7 @@ UserMenu::UserMenu(QWidget* parent)
 
   // System groups
 #define ADD_SYSTEMGROUP(gid, data) \
-    a = mySystemGroupActions->addAction(list->groupName(gid)); \
+    a = mySystemGroupActions->addAction(ContactListModel::systemGroupName(gid)); \
     myMiscModesActions.insert(data, a);\
     a->setCheckable(true); \
     a->setData(gid);

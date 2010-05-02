@@ -930,10 +930,8 @@ void MainWindow::updateGroups(bool initial)
   // update the combo box
   myUserGroupsBox->clear();
 
-  ContactListModel* list = LicqGui::instance()->contactList();
-
 #define ADD_SYSTEMGROUP(groupId) \
-  myUserGroupsBox->addItem(list->groupName(groupId), groupId);
+  myUserGroupsBox->addItem(ContactListModel::systemGroupName(groupId), groupId);
 
   ADD_SYSTEMGROUP(ContactListModel::AllGroupsGroupId);
   ADD_SYSTEMGROUP(ContactListModel::AllUsersGroupId);

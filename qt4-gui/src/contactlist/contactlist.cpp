@@ -38,13 +38,36 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ContactListModel */
 
+QString ContactListModel::systemGroupName(int groupId)
+{
+  switch (groupId)
+  {
+    case OnlineNotifyGroupId:
+      return tr("Online Notify");
+    case VisibleListGroupId:
+      return tr("Visible List");
+    case InvisibleListGroupId:
+      return tr("Invisible List");
+    case IgnoreListGroupId:
+      return tr("Ignore List");
+    case NewUsersGroupId:
+      return tr("New Users");
+
+    case AllUsersGroupId:
+      return tr("All Users");
+    case AllGroupsGroupId:
+      return tr("All Groups (Threaded)");
+  }
+  return QString();
+}
+
 ContactListModel::ContactListModel(QObject* parent)
   : QAbstractItemModel(parent),
     myBlockUpdates(false)
 {
   ContactGroup* group;
 #define CREATE_SYSTEMGROUP(gid, showMask, hideMask) \
-  group = new ContactGroup(gid, groupName(gid), showMask, hideMask); \
+  group = new ContactGroup(gid, systemGroupName(gid), showMask, hideMask); \
   connectGroup(group); \
   myGroups.append(group);
 
@@ -561,26 +584,6 @@ QModelIndex ContactListModel::groupIndex(int id) const
 
 QString ContactListModel::groupName(int groupId) const
 {
-  switch (groupId)
-  {
-    case OnlineNotifyGroupId:
-      return tr("Online Notify");
-    case VisibleListGroupId:
-      return tr("Visible List");
-    case InvisibleListGroupId:
-      return tr("Invisible List");
-    case IgnoreListGroupId:
-      return tr("Ignore List");
-    case NewUsersGroupId:
-      return tr("New Users");
-
-    case AllUsersGroupId:
-      return tr("All Users");
-    case AllGroupsGroupId:
-      return tr("All Groups (Threaded)");
-  }
-
-  // Not a system group, find name from user groups
   for (int i = 0; i < myGroups.size(); ++i)
   {
     ContactGroup* group = myGroups.at(i);
