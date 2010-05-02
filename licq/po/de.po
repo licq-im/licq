@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-11-22 21:26+0100\n"
+"POT-Creation-Date: 2010-05-02 10:41+0200\n"
 "PO-Revision-Date: 2009-02-20 11:27+0100\n"
 "Last-Translator: Arne Schmitz <arne.schmitz@gmx.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -1015,8 +1015,9 @@ msgid "Venezuela"
 msgstr "Venezuela"
 
 #: src/countrycodes.c:256
-msgid "Viet Nam"
-msgstr "Vietnam"
+#, fuzzy
+msgid "Vietnam"
+msgstr "Vietnamesisch"
 
 #: src/countrycodes.c:257
 msgid "Virgin Islands of the United States"
@@ -1627,12 +1628,12 @@ msgstr "%s%s von neuem Benutzer (%s), wird ignoriert.\n"
 msgid "%s%s from new user (%s).\n"
 msgstr "%s%s von neuem Benutzer (%s).\n"
 
-#: src/icqd.cpp:2475
+#: src/icqd.cpp:2478
 #, c-format
 msgid "%s%s from %s (%s).\n"
 msgstr "%s%s von %s (%s).\n"
 
-#: src/icqd.cpp:2484
+#: src/icqd.cpp:2487
 #, c-format
 msgid ""
 "%sInvalid %s:\n"
@@ -3551,7 +3552,7 @@ msgstr "%sSpezielle %s Antwort von %s (#%hu)%s.\n"
 msgid "DnD"
 msgstr "Nicht stören"
 
-#: src/icqd-tcp.cpp:2795 src/user.cpp:2488
+#: src/icqd-tcp.cpp:2795 src/user.cpp:2524
 msgid "Occupied"
 msgstr "Beschäftigt"
 
@@ -4063,17 +4064,28 @@ msgstr ""
 msgid "%sLicq: Already running at pid %d.\n"
 msgstr "%sLicq: Läuft bereits mit der PID %d.\n"
 
-#: src/licq.cpp:928
+#: src/licq.cpp:536
+#, c-format
+msgid ""
+"%sPlugin kde-gui is no longer available, trying to load kde4-gui instead.\n"
+msgstr ""
+
+#: src/licq.cpp:541
+#, c-format
+msgid "%sPlugin %s is no longer available, trying to load qt4-gui instead.\n"
+msgstr ""
+
+#: src/licq.cpp:945
 #, c-format
 msgid "%sStarting plugin %s (version %s).\n"
 msgstr "%sStarte Plugin %s (Version %s).\n"
 
-#: src/licq.cpp:1077
+#: src/licq.cpp:1094
 #, c-format
 msgid "%sStarting protocol plugin %s (version %s).\n"
 msgstr "%sStarte Protokoll-Plugin %s (Version %s).\n"
 
-#: src/licq.cpp:1105
+#: src/licq.cpp:1122
 #, c-format
 msgid ""
 "%sNo plugins specified on the command-line (-p option).\n"
@@ -4082,17 +4094,17 @@ msgstr ""
 "%sKeine Plugins auf der Kommandozeile angegeben (-p Option).\n"
 "%sSchauen Sie in die README für mehr Informationen.\n"
 
-#: src/licq.cpp:1203 src/licq.cpp:1217
+#: src/licq.cpp:1220 src/licq.cpp:1234
 #, c-format
 msgid "%sPlugin %s exited with code %d.\n"
 msgstr "%sPlugin %s kehrte mit Rückgabe-Code %d zurück.\n"
 
-#: src/licq.cpp:1230 src/licq.cpp:1244
+#: src/licq.cpp:1247 src/licq.cpp:1261
 #, c-format
 msgid "%sPlugin %s failed to exit.\n"
 msgstr "%sPlugin %s beendete nicht richtig.\n"
 
-#: src/licq.cpp:1259
+#: src/licq.cpp:1276
 #, c-format
 msgid ""
 "%s version %s.\n"
@@ -4401,7 +4413,7 @@ msgstr "%sVerbindungsaufbau zu %s:%i...\n"
 msgid "%sFailed to set port range for socket.\n"
 msgstr "%sKonnte Port für Socket nicht festlegen.\n"
 
-#: src/socket.cpp:511
+#: src/socket.cpp:521
 #, c-format
 msgid ""
 "%sFailed to start local server using IPv6 socket (falling back to IPv4):\n"
@@ -4411,11 +4423,11 @@ msgstr ""
 "um):\n"
 "%s%s\n"
 
-#: src/socket.cpp:706
+#: src/socket.cpp:716
 msgid "server socket was closed!!!\n"
 msgstr "Server Socket wurde geschlossen!\n"
 
-#: src/socket.cpp:710
+#: src/socket.cpp:720
 #, c-format
 msgid ""
 "%serror during receiving from server socket :-((\n"
@@ -4424,7 +4436,7 @@ msgstr ""
 "%sFehler beim Empfangen vom Server Socket :-(\n"
 "%s%s\n"
 
-#: src/socket.cpp:813
+#: src/socket.cpp:823
 #, c-format
 msgid ""
 "%sCannot accept new connection:\n"
@@ -4433,7 +4445,7 @@ msgstr ""
 "%sKann neue Verbindung nicht annehmen:\n"
 "%s%s\n"
 
-#: src/socket.cpp:824
+#: src/socket.cpp:834
 #, c-format
 msgid "%sCannot accept new connection, too many descriptors in use.\n"
 msgstr ""
@@ -4464,27 +4476,27 @@ msgstr ""
 "ID '%s'.\n"
 "%sBitte überprüfe \"%s/users.conf\".\n"
 
-#: src/user.cpp:846
+#: src/user.cpp:882
 #, c-format
 msgid "%sGroup %s is already in list.\n"
 msgstr "%sGruppe %s ist bereits auf der Liste.\n"
 
-#: src/user.cpp:870
+#: src/user.cpp:906
 #, c-format
 msgid "%sAdded group %s (%u) to list from server.\n"
 msgstr "%s%s (%u) zur serverseitigen Kontaktliste hinzugefügt.\n"
 
-#: src/user.cpp:990
+#: src/user.cpp:1026
 #, c-format
 msgid "%sGroup name %s is already in list.\n"
 msgstr "%sGruppenname %s ist bereits auf der Liste.\n"
 
-#: src/user.cpp:997
+#: src/user.cpp:1033
 #, c-format
 msgid "%sRenaming request for invalid group %u.\n"
 msgstr "%sUmbenennung für ungültige Gruppe %u.\n"
 
-#: src/user.cpp:1624
+#: src/user.cpp:1660
 #, c-format
 msgid ""
 "%sFailed to rename old history file (%s):\n"
@@ -4493,12 +4505,12 @@ msgstr ""
 "%sAlte Verlaufsdatei (%s) konnte nicht umbenannt werden:\n"
 "%s%s\n"
 
-#: src/user.cpp:1651 src/user.cpp:2517 src/user.cpp:2719 src/user.cpp:2730
-#: src/user.cpp:2745 src/user.cpp:2770
+#: src/user.cpp:1687 src/user.cpp:2553 src/user.cpp:2755 src/user.cpp:2766
+#: src/user.cpp:2781 src/user.cpp:2806
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: src/user.cpp:1883
+#: src/user.cpp:1919
 #, c-format
 msgid ""
 "%sFailed to rename history file (%s):\n"
@@ -4507,166 +4519,166 @@ msgstr ""
 "%sVerlaufsdatei (%s) konnte nicht umbenannt werden:\n"
 "%s%s\n"
 
-#: src/user.cpp:2486
+#: src/user.cpp:2522
 msgid "(Offline)"
 msgstr "(Offline)"
 
-#: src/user.cpp:2486
+#: src/user.cpp:2522
 msgid "Offline"
 msgstr "Offline"
 
-#: src/user.cpp:2487
+#: src/user.cpp:2523
 msgid "(Do Not Disturb)"
 msgstr "(Nicht stören)"
 
-#: src/user.cpp:2487
+#: src/user.cpp:2523
 msgid "Do Not Disturb"
 msgstr "Nicht stören"
 
-#: src/user.cpp:2488
+#: src/user.cpp:2524
 msgid "(Occupied)"
 msgstr "(Beschäftigt)"
 
-#: src/user.cpp:2489
+#: src/user.cpp:2525
 msgid "(Not Available)"
 msgstr "(Nicht verfügbar)"
 
-#: src/user.cpp:2489
+#: src/user.cpp:2525
 msgid "Not Available"
 msgstr "Nicht verfügbar"
 
-#: src/user.cpp:2490 src/user.cpp:2503
+#: src/user.cpp:2526 src/user.cpp:2539
 msgid "(Away)"
 msgstr "(Abwesend)"
 
-#: src/user.cpp:2490 src/user.cpp:2503
+#: src/user.cpp:2526 src/user.cpp:2539
 msgid "Away"
 msgstr "Abwesend"
 
-#: src/user.cpp:2491
+#: src/user.cpp:2527
 msgid "(Free for Chat)"
 msgstr "(Frei für Chat)"
 
-#: src/user.cpp:2491
+#: src/user.cpp:2527
 msgid "Free for Chat"
 msgstr "Frei für Chat"
 
-#: src/user.cpp:2492
+#: src/user.cpp:2528
 msgid "(Online)"
 msgstr "(Online)"
 
-#: src/user.cpp:2492
+#: src/user.cpp:2528
 msgid "Online"
 msgstr "Online"
 
-#: src/user.cpp:2499
+#: src/user.cpp:2535
 msgid "(Off)"
 msgstr "(Off)"
 
-#: src/user.cpp:2499
+#: src/user.cpp:2535
 msgid "Off"
 msgstr "Off"
 
-#: src/user.cpp:2500
+#: src/user.cpp:2536
 msgid "(DND)"
 msgstr "(DND)"
 
-#: src/user.cpp:2500
+#: src/user.cpp:2536
 msgid "DND"
 msgstr "DND"
 
-#: src/user.cpp:2501
+#: src/user.cpp:2537
 msgid "(Occ)"
 msgstr "(Besch)"
 
-#: src/user.cpp:2501
+#: src/user.cpp:2537
 msgid "Occ"
 msgstr "Besch"
 
-#: src/user.cpp:2502
+#: src/user.cpp:2538
 msgid "(N/A)"
 msgstr "(N/v)"
 
-#: src/user.cpp:2502
+#: src/user.cpp:2538
 msgid "N/A"
 msgstr "N/v"
 
-#: src/user.cpp:2504
+#: src/user.cpp:2540
 msgid "(FFC)"
 msgstr "(FfC)"
 
-#: src/user.cpp:2504
+#: src/user.cpp:2540
 msgid "FFC"
 msgstr "FfC"
 
-#: src/user.cpp:2505
+#: src/user.cpp:2541
 msgid "(On)"
 msgstr "(On)"
 
-#: src/user.cpp:2505
+#: src/user.cpp:2541
 msgid "On"
 msgstr "On"
 
-#: src/user.cpp:2557
+#: src/user.cpp:2593
 msgid "Invalid"
 msgstr "Ungültig"
 
-#: src/user.cpp:2721
+#: src/user.cpp:2757
 #, c-format
 msgid "GMT%c%i%c0"
 msgstr "GMT%c%i%c0"
 
-#: src/user.cpp:2760
+#: src/user.cpp:2796
 msgid "Never"
 msgstr "Nie"
 
-#: src/user.cpp:2794
+#: src/user.cpp:2830
 #, c-format
 msgid "%d days "
 msgstr "%d Tage "
 
-#: src/user.cpp:2796
+#: src/user.cpp:2832
 #, c-format
 msgid "%d day "
 msgstr "%d Tag "
 
-#: src/user.cpp:2803
+#: src/user.cpp:2839
 #, c-format
 msgid "%d hours "
 msgstr "%d Stunden "
 
-#: src/user.cpp:2805
+#: src/user.cpp:2841
 #, c-format
 msgid "%d hour "
 msgstr "%d Stunde "
 
-#: src/user.cpp:2812
+#: src/user.cpp:2848
 #, c-format
 msgid "%d minutes"
 msgstr "%d Minuten"
 
-#: src/user.cpp:2814
+#: src/user.cpp:2850
 #, c-format
 msgid "%d minute"
 msgstr "%d Minute"
 
-#: src/user.cpp:2819
+#: src/user.cpp:2855
 msgid "Active"
 msgstr "Aktiv"
 
-#: src/user.cpp:3474
+#: src/user.cpp:3510
 #, c-format
 msgid "%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"
 msgstr ""
 "%s%s kann nicht auf Modus 0600 gesetzt werden. Ihr ICQ Passwort ist evtl. "
 "für andere Benutzer lesbar.\n"
 
-#: src/user.cpp:3502
+#: src/user.cpp:3540
 #, c-format
 msgid "%sOwner configuration for %s.\n"
 msgstr "%sBenutzerkonfiguration für %s.\n"
 
-#: src/user.cpp:3510
+#: src/user.cpp:3548
 #, c-format
 msgid ""
 "%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
@@ -4698,6 +4710,9 @@ msgstr ""
 #: src/utility.cpp:138
 msgid "none"
 msgstr "nichts"
+
+#~ msgid "Viet Nam"
+#~ msgstr "Vietnam"
 
 #~ msgid ""
 #~ "%sYour IP stack or SOCKS client is a piece of crap.\n"

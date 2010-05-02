@@ -115,7 +115,7 @@ You can leave me a message.
     </message>
     <message>
         <source>&amp;Done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">終了</translation>
     </message>
     <message>
         <source>&amp;Up</source>
@@ -3612,7 +3612,7 @@ The following parameters can be used:</source>
     </message>
     <message>
         <source>&amp;Done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">終了</translation>
     </message>
     <message>
         <source>From the Account Manager dialog you are able to add and register your accounts.

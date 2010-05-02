@@ -2420,7 +2420,7 @@ Ova opcija neće raditi.</translation>
     <name>KeyView</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ime</translation>
     </message>
 </context>
 <context>
@@ -3461,7 +3461,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ime</translation>
     </message>
     <message>
         <source>Date Format:</source>

@@ -4448,7 +4448,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     <name>UserEventCommon</name>
     <message>
         <source>Status:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État:</translation>
     </message>
     <message>
         <source>Time:</source>
@@ -4527,7 +4527,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>Status:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">État:</translation>
     </message>
     <message>
         <source>Timezone:</source>

@@ -486,7 +486,7 @@ See Network Window for details.</source>
     <name>CMMUserView</name>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eliminar</translation>
     </message>
     <message>
         <source>Crop</source>
@@ -3643,7 +3643,7 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aceitar</translation>
     </message>
     <message>
         <source>Licq Plugin %1 %2
