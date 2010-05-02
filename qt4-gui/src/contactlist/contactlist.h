@@ -180,7 +180,8 @@ public:
   static const int InvisibleListGroupId                 = SystemGroupOffset + 2;
   static const int IgnoreListGroupId                    = SystemGroupOffset + 3;
   static const int NewUsersGroupId                      = SystemGroupOffset + 4;
-  static const int NumSystemGroups                      = 5;
+  static const int AwaitingAuthGroupId                  = SystemGroupOffset + 5;
+  static const int NumSystemGroups                      = 6;
   static const int LastSystemGroup                      = SystemGroupOffset + NumSystemGroups - 1;
   static const int AllUsersGroupId                      = SystemGroupOffset + 100;
 

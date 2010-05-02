@@ -52,6 +52,8 @@ QString ContactListModel::systemGroupName(int groupId)
       return tr("Ignore List");
     case NewUsersGroupId:
       return tr("New Users");
+    case AwaitingAuthGroupId:
+      return tr("Awaiting Authorization");
 
     case AllUsersGroupId:
       return tr("All Users");
@@ -78,6 +80,7 @@ ContactListModel::ContactListModel(QObject* parent)
   CREATE_SYSTEMGROUP(InvisibleListGroupId, InvisibleListStatus, IgnoreStatus);
   CREATE_SYSTEMGROUP(IgnoreListGroupId, IgnoreStatus, 0);
   CREATE_SYSTEMGROUP(NewUsersGroupId, NewUserStatus, IgnoreStatus);
+  CREATE_SYSTEMGROUP(AwaitingAuthGroupId, AwaitingAuthStatus, IgnoreStatus);
 #undef CREATE_SYSTEMGROUP
 
   // reloadAll will compare column count to old value so must set an initial
