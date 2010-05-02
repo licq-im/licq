@@ -1,5 +1,5 @@
 AC_PREREQ(2.57)
-AC_INIT(licq_osd_plugin, 1.3.8, martinmaurer@gmx.at)
+AC_INIT(licq_osd_plugin, 1.3.9, martinmaurer@gmx.at)
 AC_DEFINE([INT_VERSION], [], [Description])
 AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_SYSTEM

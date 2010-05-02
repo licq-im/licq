@@ -5,7 +5,7 @@ AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
 dnl All versioning is done via the following line
-AM_INIT_AUTOMAKE(Licq-Console, 1.3.8)
+AM_INIT_AUTOMAKE(Licq-Console, 1.3.9)
 AM_CONFIG_HEADER(config.h)
 
 dnl Chuck #defines for PACKAGE and VERSION into config.h
