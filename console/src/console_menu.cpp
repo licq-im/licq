@@ -374,32 +374,28 @@ void CLicqConsole::MenuGroup(char *_szArg)
     return;
   }
 
-  GroupType nGroupType;
   unsigned short nCurrentGroup;
 
   // Try to change groups
   if (_szArg[0] == '*')
   {
     _szArg++;
-    nGroupType = GROUPS_SYSTEM;
     nCurrentGroup = atol(_szArg);
 
-    if (nCurrentGroup > NUM_GROUPS_SYSTEM || nCurrentGroup == 0)
+    if (nCurrentGroup > NumSystemGroups || nCurrentGroup == 0)
     {
-      winMain->wprintf("%CInvalid group number (0 - %d)\n", COLOR_RED,
-                       NUM_GROUPS_SYSTEM);
+      winMain->wprintf("%CInvalid group number (1 - %d)\n", COLOR_RED,
+                       NumSystemGroups);
       return;
     }
-    m_nCurrentGroup = nCurrentGroup;
-    m_nGroupType = nGroupType;
+    myCurrentGroup = nCurrentGroup + SystemGroupOffset;
     winMain->wprintf("%C%ASwitching to group *%d (%s).\n",
                      m_cColorInfo->nColor, m_cColorInfo->nAttr,
-                     m_nCurrentGroup,
-                     GroupsSystemNames[m_nCurrentGroup]);
+                     myCurrentGroup,
+                     GroupsSystemNames[myCurrentGroup - SystemGroupOffset]);
   }
   else
   {
-    nGroupType = GROUPS_USER;
     nCurrentGroup = atol(_szArg);
     LicqGroup* group = gUserManager.FetchGroup(nCurrentGroup, LOCK_R);
 
@@ -408,12 +404,11 @@ void CLicqConsole::MenuGroup(char *_szArg)
       winMain->wprintf("%CInvalid group number\n", COLOR_RED);
       return;
     }
-    m_nCurrentGroup = nCurrentGroup;
-    m_nGroupType = nGroupType;
+    myCurrentGroup = nCurrentGroup;
     winMain->wprintf("%C%ASwitching to group %d (%s).\n",
                      m_cColorInfo->nColor, m_cColorInfo->nAttr,
-                     m_nCurrentGroup,
-                     m_nCurrentGroup == 0 ? "All Users" : group->name().c_str());
+                     myCurrentGroup,
+                     myCurrentGroup == 0 ? "All Users" : group->name().c_str());
     gUserManager.DropGroup(group);
   }
 

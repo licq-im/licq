@@ -33,6 +33,15 @@ using Licq::gProtocolManager;
 
 extern "C" const char *LP_Version();
 
+const char* CLicqConsole::GroupsSystemNames[NumSystemGroups+1] = {
+  "All Users",
+  "Online Notify",
+  "Visible List",
+  "Invisible List",
+  "Ignore List",
+  "New Users"
+};
+
 const unsigned short NUM_STATUS = 13;
 const struct SStatus aStatus[NUM_STATUS] =
   {
@@ -144,10 +153,10 @@ CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
 
   licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
-  licqConf.ReadNum("CurrentGroup", m_nCurrentGroup, 0);
-  unsigned short nGroupType;
-  licqConf.ReadNum("GroupType", nGroupType, (unsigned short)GROUPS_USER);
-  m_nGroupType = (GroupType)nGroupType;
+  unsigned short currentGroup, groupType;
+  licqConf.ReadNum("CurrentGroup", currentGroup, 0);
+  licqConf.ReadNum("GroupType", groupType, 0);
+  myCurrentGroup = currentGroup + groupType * SystemGroupOffset;
   licqConf.ReadNum("ColorOnline", m_nColorOnline, 5);
   licqConf.ReadNum("ColorAway", m_nColorAway, 0);
   licqConf.ReadNum("ColorOffline", m_nColorOffline, 1);
@@ -390,8 +399,8 @@ void CLicqConsole::DoneOptions()
   licqConf.SetSection("appearance");
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
-  licqConf.WriteNum("CurrentGroup", m_nCurrentGroup);
-  licqConf.WriteNum("GroupType", (unsigned short)m_nGroupType);
+  licqConf.WriteNum("CurrentGroup", myCurrentGroup % SystemGroupOffset);
+  licqConf.WriteNum("GroupType", myCurrentGroup / SystemGroupOffset);
   licqConf.WriteNum("ColorOnline", m_nColorOnline);
   licqConf.WriteNum("ColorAway", m_nColorAway);
   licqConf.WriteNum("ColorOffline", m_nColorOffline);
@@ -533,10 +542,10 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
       LicqUser* u = gUserManager.fetchUser(s->userId(), LOCK_R);
       if (u != NULL)
       {
-        bool isInGroup = u->GetInGroup(m_nGroupType, m_nCurrentGroup);
+        bool isInGroup = userIsInGroup(u, myCurrentGroup);
         gUserManager.DropUser(u);
 
-        if (isInGroup || (m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0))
+        if (isInGroup || myCurrentGroup == 0)
         {
           CreateUserList();
           PrintUsers();
@@ -1459,27 +1468,47 @@ char *CLicqConsole::CurrentGroupName()
 {
   static char szGroupName[64];
 
-  if (m_nGroupType == GROUPS_USER)
+  if (myCurrentGroup < SystemGroupOffset)
   {
-    if (m_nCurrentGroup == 0)
+    if (myCurrentGroup == 0)
       strcpy(szGroupName, "All Users");
     else
     {
-      LicqGroup* group = gUserManager.FetchGroup(m_nCurrentGroup, LOCK_R);
-      if (group == NULL)
+      Licq::GroupReadGuard group(myCurrentGroup);
+      if (!group.isLocked())
         strcpy(szGroupName, "Invalid Group");
       else
         strcpy(szGroupName, group->name().c_str());
-      gUserManager.DropGroup(group);
     }
   }
   else
   {
-    strcpy(szGroupName, GroupsSystemNames[m_nCurrentGroup]);
+    if (myCurrentGroup <= NumSystemGroups)
+      strcpy(szGroupName, GroupsSystemNames[myCurrentGroup - SystemGroupOffset]);
+    else
+      strcpy(szGroupName, "Invalid Group");
   }
   return szGroupName;
 }
 
+bool CLicqConsole::userIsInGroup(const User* user, int groupId)
+{
+  if (groupId < SystemGroupOffset)
+    return user->isInGroup(groupId);
+
+  if (groupId == OnlineNotifyGroupId)
+    return user->OnlineNotify();
+  if (groupId == VisibleListGroupId)
+    return user->VisibleList();
+  if (groupId == InvisibleListGroupId)
+    return user->InvisibleList();
+  if (groupId == IgnoreListGroupId)
+    return user->IgnoreList();
+  if (groupId == NewUsersGroupId)
+    return user->NewUser();
+
+  return false;
+}
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Info

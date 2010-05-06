@@ -221,7 +221,7 @@ void CLicqConsole::PrintGroups()
   waddch(winMain->Win(), ACS_RTEE);
   waddch(winMain->Win(), '\n');
 
-  for (unsigned short i = 1; i <= NUM_GROUPS_SYSTEM; i++)
+  for (int i = 1; i <= NumSystemGroups; i++)
   {
     PrintBoxLeft();
     winMain->wprintf("%A%C*%2d. %-19s",
@@ -288,9 +288,8 @@ void CLicqConsole::CreateUserList()
   FOR_EACH_USER_START(LOCK_R)
   {
     // Only show users on the current group and not on the ignore list
-    if ((!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
-        (m_nGroupType != GROUPS_USER || m_nCurrentGroup != 0)) ||
-        (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
+    if ((!userIsInGroup(pUser, myCurrentGroup) && myCurrentGroup != AllUsersGroupId) ||
+        (pUser->IgnoreList() && myCurrentGroup != IgnoreListGroupId) )
       FOR_EACH_USER_CONTINUE
 
     if (!m_bShowOffline && !pUser->isOnline())
@@ -331,7 +330,7 @@ void CLicqConsole::CreateUserList()
       s->color = m_cColorOnline;
     }
 
-    if (pUser->NewUser() && !(m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_NEW_USERS))
+    if (pUser->NewUser() && myCurrentGroup != NewUsersGroupId)
       s->color = m_cColorNew;
 
     // Create the line to printout now

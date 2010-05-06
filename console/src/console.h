@@ -63,6 +63,18 @@ public:
   int Run();
   void Shutdown();
 
+  static const int SystemGroupOffset = 10000;
+  static const int AllUsersGroupId = 0;
+  static const int OnlineNotifyGroupId = SystemGroupOffset + 1;
+  static const int VisibleListGroupId = SystemGroupOffset + 2;
+  static const int InvisibleListGroupId = SystemGroupOffset + 3;
+  static const int IgnoreListGroupId = SystemGroupOffset + 4;
+  static const int NewUsersGroupId = SystemGroupOffset + 5;
+  static const int NumSystemGroups = 5;
+  static const char* GroupsSystemNames[NumSystemGroups+1];
+
+  bool userIsInGroup(const Licq::User* user, int groupId);
+
 protected:
   int m_nPipe;
   bool m_bExit;
@@ -84,8 +96,8 @@ protected:
   char m_szCommandChar[30];
   short m_nBackspace;
 
-  unsigned short m_nCurrentGroup, m_nCon;
-  GroupType m_nGroupType;
+  int myCurrentGroup;
+  unsigned short m_nCon;
   std::list<char*> m_lCmdHistory;
   std::list<char*>::iterator m_lCmdHistoryIter;
   std::list<CFileTransferManager*> m_lFileStat;
