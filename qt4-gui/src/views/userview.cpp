@@ -25,7 +25,7 @@
 #include <QMouseEvent>
 #include <QTimer>
 
-#include <licq_types.h>
+#include <licq/types.h>
 
 #include "config/contactlist.h"
 #include "config/iconmanager.h"
@@ -34,6 +34,7 @@
 #include "contactlist/maincontactlistproxy.h"
 #include "contactlist/mode2contactlistproxy.h"
 
+using Licq::UserId;
 using namespace LicqQtGui;
 
 UserView::UserView(ContactListModel* contactList, QWidget* parent)
@@ -76,11 +77,11 @@ UserView::~UserView()
 UserId UserView::currentUserId() const
 {
   if (!currentIndex().isValid())
-    return USERID_NONE;
+    return UserId();
 
   if (static_cast<ContactListModel::ItemType>
       (currentIndex().data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::UserItem)
-    return USERID_NONE;
+    return UserId();
 
   return currentIndex().data(ContactListModel::UserIdRole).value<UserId>();
 }
@@ -185,7 +186,7 @@ void UserView::applySkin()
 
 void UserView::rowsAboutToBeRemoved(const QModelIndex& parent, int start, int end)
 {
-  if (currentIndex().isValid() && !USERID_ISVALID(myRemovedUser))
+  if (currentIndex().isValid() && !myRemovedUser.isValid())
   {
     // Check all the removed rows and see if anyone of them is the currently select user
     for (int i = start; i <= end; ++i)
@@ -218,7 +219,7 @@ void UserView::rowsInserted(const QModelIndex& parent, int start, int end)
   if (!parent.isValid())
     expandGroups();
 
-  if (USERID_ISVALID(myRemovedUser) && (!parent.isValid() || isExpanded(parent)))
+  if (myRemovedUser.isValid() && (!parent.isValid() || isExpanded(parent)))
   {
     // We have a user remembered that was just removed, check if he returned
     for (int i = start; i <= end; ++i)
@@ -254,7 +255,7 @@ void UserView::rowsInserted(const QModelIndex& parent, int start, int end)
 
 void UserView::forgetRemovedUser()
 {
-  myRemovedUser = USERID_NONE;
+  myRemovedUser = UserId();
 }
 
 void UserView::reset()
