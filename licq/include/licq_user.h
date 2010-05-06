@@ -5,7 +5,6 @@
 #include "licq/contactlist/owner.h"
 #include "licq/contactlist/user.h"
 #include "licq/contactlist/usermanager.h"
-#include "licq/types.h"
 #include "licq/userid.h"
 
 // Added for plugin convenience

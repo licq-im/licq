@@ -12,7 +12,6 @@
 #include "licq_file.h"
 #include "licq_history.h"
 #include "../thread/lockable.h"
-#include "../types.h"
 #include "../userid.h"
 
 class CICQDaemon;
@@ -83,6 +82,7 @@ typedef enum
 } UserCat;
 
 typedef std::vector <class CUserEvent*> UserEventList;
+typedef std::map<unsigned int, std::string> UserCategoryMap;
 typedef std::map<std::string, boost::any> PropertyMap;
 typedef std::set<int> UserGroupList;
 

@@ -1,11 +1,11 @@
 #ifndef ICQEVENT_H
 #define ICQEVENT_H
 
+#include <list>
 #include <pthread.h>
 #include <string>
 
 #include "licq_message.h"
-#include "licq/types.h" // StringList
 #include "licq/userid.h"
 
 class CPacket;
@@ -20,6 +20,8 @@ class PluginEventHandler;
 namespace Licq
 {
 class User;
+
+typedef std::list<std::string> StringList;
 }
 
 

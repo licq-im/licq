@@ -25,7 +25,6 @@
 #include <string>
 
 #include "plugin.h"
-#include "types.h"
 
 
 #define FOR_EACH_PROTO_PLUGIN_START()                           \
@@ -43,6 +42,7 @@
 
 namespace Licq
 {
+typedef std::list<std::string> StringList;
 
 /// A list of pointers to GeneralPlugin instances.
 typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;

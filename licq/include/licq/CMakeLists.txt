@@ -18,7 +18,6 @@ set(licq_HEADERS
   pluginmanager.h
   protocolmanager.h
   sarmanager.h
-  types.h
   userid.h
   version.h
 )

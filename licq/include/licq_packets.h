@@ -10,6 +10,12 @@
 #include "licq/contactlist/user.h"
 #include "licq/userid.h"
 
+namespace Licq
+{
+typedef std::list<std::string> StringList;
+typedef std::map<unsigned int, std::string> UserCategoryMap;
+}
+
 class CICQColor;
 class CBuffer;
 class INetSocket;
