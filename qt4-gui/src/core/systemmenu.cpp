@@ -68,7 +68,6 @@ using namespace LicqQtGui::SystemMenuPrivate;
 SystemMenu::SystemMenu(QWidget* parent)
   : QMenu(parent)
 {
-  ContactListModel* list = LicqGui::instance()->contactList();
   QAction* a;
 
   // Sub menu Debug
@@ -162,7 +161,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   connect(myGroupMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowGroupMenu()));
   connect(myUserGroupActions, SIGNAL(triggered(QAction*)), SLOT(setCurrentGroup(QAction*)));
 #define ADD_SYSTEMGROUP(group) \
-    a = myUserGroupActions->addAction(list->groupName(group)); \
+    a = myUserGroupActions->addAction(ContactListModel::systemGroupName(group)); \
     a->setData(group); \
     a->setCheckable(true); \
     myGroupMenu->addAction(a);
