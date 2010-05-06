@@ -17,7 +17,6 @@ set(licq_HEADERS
   licq_proxy.h
   licq_socket.h
   licq_translate.h
-  licq_types.h
   licq_user.h
   licq_utility.h
 )

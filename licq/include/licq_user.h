@@ -1,14 +1,32 @@
 #ifndef USER_H
 #define USER_H
 
-#include "licq_types.h"
 #include "licq/contactlist/group.h"
 #include "licq/contactlist/owner.h"
 #include "licq/contactlist/user.h"
 #include "licq/contactlist/usermanager.h"
+#include "licq/types.h"
+#include "licq/userid.h"
 
 // Added for plugin convenience
 #include "licq_constants.h"
+
+
+// Compatibility with old UserId definition
+using Licq::UserId;
+#define USERID_ISVALID(x) ((x).isValid())
+#define USERID_NONE Licq::UserId()
+#define USERID_TOSTR(x) ((x).toString().c_str())
+
+// Old types
+typedef Licq::Group LicqGroup;
+typedef Licq::Owner LicqOwner;
+typedef Licq::User LicqUser;
+typedef Licq::UserMap UserMap;
+typedef Licq::OwnerMap OwnerMap;
+typedef Licq::UserGroupList UserGroupList;
+typedef Licq::GroupMap GroupMap;
+typedef Licq::UserCategoryMap UserCategoryMap;
 
 
 // Make Licq::User constants and structs visible to old code that needs them
