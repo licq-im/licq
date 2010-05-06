@@ -968,8 +968,8 @@ void MainWindow::updateStatus()
   myStatusField->clearPrependPixmap();
   myStatusField->setText(QString::null);
 
-  OwnerMap* ol = gUserManager.LockOwnerList(LOCK_R);
-  OwnerMap::const_iterator it = ol->begin();
+  Licq::OwnerMap* ol = gUserManager.LockOwnerList(LOCK_R);
+  Licq::OwnerMap::const_iterator it = ol->begin();
   LicqOwner* o;
   switch (ol->size())
   {

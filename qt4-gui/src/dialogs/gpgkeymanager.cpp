@@ -218,8 +218,8 @@ void KeyList::dropEvent(QDropEvent* event)
     return;
 
   unsigned long nPPID = 0;
-  OwnerMap* owners = gUserManager.LockOwnerList();
-  for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
+  Licq::OwnerMap* owners = gUserManager.LockOwnerList();
+  for (Licq::OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
   {
     unsigned long ppid = i->first;
     if (text.startsWith(PPIDSTRING(ppid)))

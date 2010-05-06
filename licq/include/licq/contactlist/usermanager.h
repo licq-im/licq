@@ -3,6 +3,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <list>
+#include <map>
 #include <string>
 
 #include "group.h"
@@ -102,7 +103,7 @@ class CICQDaemon;
   {                                                      \
     Licq::Group* pGroup;                                 \
     Licq::GroupMap* _gl_ = Licq::gUserManager.LockGroupList(LOCK_R); \
-    for (GroupMap::iterator _i_ = _gl_->begin();         \
+    for (Licq::GroupMap::iterator _i_ = _gl_->begin();         \
          _i_ != _gl_->end(); ++_i_)                      \
     {                                                    \
       pGroup = _i_->second;                              \
@@ -174,6 +175,10 @@ class CICQDaemon;
 
 namespace Licq
 {
+
+typedef std::map<UserId, class Licq::User*> UserMap;
+typedef std::map<int, Licq::Group*> GroupMap;
+typedef std::map<unsigned long, class Licq::Owner*> OwnerMap;
 
 class UserManager : private boost::noncopyable
 {

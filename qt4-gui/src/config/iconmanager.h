@@ -29,7 +29,6 @@
 #include <QPixmap>
 
 #include <licq/contactlist/user.h>
-#include <licq/types.h>
 #include <licq/userid.h>
 
 #include "core/gui-defines.h"

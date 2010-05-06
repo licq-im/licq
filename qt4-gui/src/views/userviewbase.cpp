@@ -216,8 +216,8 @@ void UserViewBase::dropEvent(QDropEvent* event)
         QString text = event->mimeData()->text();
 
         unsigned long dropPpid = 0;
-        OwnerMap* owners = gUserManager.LockOwnerList();
-        for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
+        Licq::OwnerMap* owners = gUserManager.LockOwnerList();
+        for (Licq::OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
         {
           unsigned long ppid = i->first;
           if (text.startsWith(PPIDSTRING(ppid)))

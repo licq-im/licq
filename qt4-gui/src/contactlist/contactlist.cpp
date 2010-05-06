@@ -340,8 +340,8 @@ void ContactListModel::reloadAll()
   connectGroup(newGroup);
   myGroups.append(newGroup);
 
-  const GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
-  for (GroupMap::const_iterator i = groups->begin(); i != groups->end(); ++i)
+  const Licq::GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
+  for (Licq::GroupMap::const_iterator i = groups->begin(); i != groups->end(); ++i)
   {
     LicqGroupReadGuard pGroup(i->second, false);
     ContactGroup* group = new ContactGroup(*pGroup);

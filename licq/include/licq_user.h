@@ -22,9 +22,6 @@ using Licq::UserId;
 typedef Licq::Group LicqGroup;
 typedef Licq::Owner LicqOwner;
 typedef Licq::User LicqUser;
-typedef Licq::UserMap UserMap;
-typedef Licq::OwnerMap OwnerMap;
-typedef Licq::GroupMap GroupMap;
 typedef Licq::UserCategoryMap UserCategoryMap;
 
 

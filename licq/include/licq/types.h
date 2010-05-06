@@ -12,11 +12,6 @@
 
 namespace Licq
 {
-// Forward declarations of commonly used classes
-class Group;
-class Owner;
-class User;
-class UserId;
 
 // Declare a convenient name for the list of strings
 typedef std::list<std::string> StringList;
@@ -36,9 +31,6 @@ inline char* protocolId_toStr(char* ret, unsigned long protocolId)
 #define LICQ_PPID 0x4C696371  // "Licq"
 
 // Types used for contact list
-typedef std::map<UserId, class Licq::User*> UserMap;
-typedef std::map<unsigned long, class Licq::Owner*> OwnerMap;
-typedef std::map<int, Licq::Group*> GroupMap;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 
 } // namespace Licq
