@@ -25,7 +25,7 @@
 #include <QMouseEvent>
 #include <QTimer>
 
-#include <licq/types.h>
+#include <licq/userid.h>
 
 #include "config/contactlist.h"
 #include "config/iconmanager.h"

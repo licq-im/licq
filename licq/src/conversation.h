@@ -23,6 +23,7 @@
 #include <licq/conversation.h>
 
 #include <list>
+#include <map>
 
 #include <licq/thread/mutex.h>
 #include <licq/userid.h>
