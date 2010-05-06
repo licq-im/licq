@@ -22,6 +22,8 @@
 
 #include "userviewbase.h"
 
+#include <set>
+
 #include <licq/userid.h>
 
 class QMenu;

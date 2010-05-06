@@ -370,7 +370,7 @@ void UserPages::Settings::apply2(const UserId& userId)
   int serverGroup = 0;
   if (u->GetSID() != 0)
     serverGroup = gUserManager.GetGroupFromID(u->GetGSID());
-  const UserGroupList& userGroups = u->GetGroups();
+  const Licq::UserGroupList& userGroups = u->GetGroups();
   bool visibleList = u->VisibleList();
   bool invisibleList = u->InvisibleList();
   bool ignoreList = u->IgnoreList();

@@ -24,7 +24,6 @@ typedef Licq::Owner LicqOwner;
 typedef Licq::User LicqUser;
 typedef Licq::UserMap UserMap;
 typedef Licq::OwnerMap OwnerMap;
-typedef Licq::UserGroupList UserGroupList;
 typedef Licq::GroupMap GroupMap;
 typedef Licq::UserCategoryMap UserCategoryMap;
 

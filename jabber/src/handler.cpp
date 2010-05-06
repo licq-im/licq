@@ -99,7 +99,7 @@ void Handler::onUserAdded(const std::string& id,
     user->setAlias(name);
   }
 
-  UserGroupList glist;
+  Licq::UserGroupList glist;
   for (std::list<std::string>::const_iterator it = groups.begin();
       it != groups.end(); ++it)
   {

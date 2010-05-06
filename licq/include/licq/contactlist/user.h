@@ -4,6 +4,7 @@
 #include <boost/any.hpp>
 #include <boost/noncopyable.hpp>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -83,6 +84,7 @@ typedef enum
 
 typedef std::vector <class CUserEvent*> UserEventList;
 typedef std::map<std::string, boost::any> PropertyMap;
+typedef std::set<int> UserGroupList;
 
 struct PhoneBookEntry
 {

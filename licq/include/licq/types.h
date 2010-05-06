@@ -8,7 +8,6 @@
 
 #include <list>
 #include <map>
-#include <set>
 #include <string>
 
 namespace Licq
@@ -39,7 +38,6 @@ inline char* protocolId_toStr(char* ret, unsigned long protocolId)
 // Types used for contact list
 typedef std::map<UserId, class Licq::User*> UserMap;
 typedef std::map<unsigned long, class Licq::Owner*> OwnerMap;
-typedef std::set<int> UserGroupList;
 typedef std::map<int, Licq::Group*> GroupMap;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 

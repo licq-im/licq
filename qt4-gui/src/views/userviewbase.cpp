@@ -256,10 +256,10 @@ void UserViewBase::dropEvent(QDropEvent* event)
             const LicqUser* u = gUserManager.fetchUser(dropUserId);
             if (u != NULL)
             {
-              UserGroupList userGroups = u->GetGroups();
+              Licq::UserGroupList userGroups = u->GetGroups();
               gUserManager.DropUser(u);
 
-              UserGroupList::const_iterator i;
+              Licq::UserGroupList::const_iterator i;
               for (i = userGroups.begin(); i != userGroups.end(); ++i)
                 if (*i != gid)
                   gUserManager.setUserInGroup(dropUserId, *i, false, false);
