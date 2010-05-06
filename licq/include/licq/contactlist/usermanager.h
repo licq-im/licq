@@ -175,16 +175,6 @@ class CICQDaemon;
 namespace Licq
 {
 
-/**
- * The amount of registered system groups, excluding the 'All Users' group.
- *
- * @deprecated Scheduled for removal, use NUM_GROUPS_SYSTEM_ALL instead.
- */
-const int NUM_GROUPS_SYSTEM     = NUM_GROUPS_SYSTEM_ALL - 1;
-
-extern const char *GroupsSystemNames[NUM_GROUPS_SYSTEM_ALL];
-
-
 class UserManager : private boost::noncopyable
 {
 public:
@@ -370,15 +360,6 @@ public:
   /**
    * Check if a group id is valid
    *
-   * @param gtype Group type
-   * @param groupId Id of group to check for
-   * @return True if the group exists
-   */
-  virtual bool groupExists(GroupType gtype, int groupId) = 0;
-
-  /**
-   * Check if a group id is valid
-   *
    * @param groupId Id of user group to check for
    * @return True if the group exists
    */
@@ -488,18 +469,6 @@ public:
    * @return Group name
    */
   virtual std::string GetGroupNameFromGroup(int groupId) = 0;
-
-  /**
-   * Set user group membership and (optionally) update server
-   *
-   * @param userId User id
-   * @param groupType Group type
-   * @param groupId Group id
-   * @param inGroup True to add user to group or false to remove
-   * @param updateServer True if server list should be updated
-   */
-  virtual void setUserInGroup(const UserId& userId, GroupType groupType,
-      int groupId, bool inGroup, bool updateServer = true) = 0;
 
   /**
    * Set user group membership and (optionally) update server

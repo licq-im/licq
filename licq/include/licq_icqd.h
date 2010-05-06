@@ -17,7 +17,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_filetransfer.h"
 #include "licq/contactlist/user.h" // For SetString
 #include "licq/daemon.h"
-#include "licq/types.h" // For GroupType, UserCategoryMap
+#include "licq/types.h" // For UserCategoryMap
 #include "licq/userid.h"
 
 class CPacket;
@@ -260,7 +260,6 @@ public:
   { pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId)); }
 
   void UpdateAllUsers();
-  void UpdateAllUsersInGroup(Licq::GroupType, unsigned short);
   void updateAllUsersInGroup(int groupId);
   void CancelEvent(unsigned long );
   void CancelEvent(ICQEvent *);

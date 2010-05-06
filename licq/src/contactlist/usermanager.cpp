@@ -14,7 +14,6 @@ using std::list;
 using std::string;
 using Licq::Group;
 using Licq::GroupMap;
-using Licq::GroupType;
 using Licq::Owner;
 using Licq::OwnerMap;
 using Licq::User;
@@ -22,12 +21,6 @@ using Licq::UserId;
 using Licq::UserGroupList;
 using Licq::UserMap;
 using Licq::UserWriteGuard;
-using Licq::GROUP_IGNORE_LIST;
-using Licq::GROUP_INVISIBLE_LIST;
-using Licq::GROUP_VISIBLE_LIST;
-using Licq::GROUPS_USER;
-using Licq::GROUPS_SYSTEM;
-using Licq::NUM_GROUPS_SYSTEM_ALL;
 using namespace LicqDaemon;
 
 // Declare global UserManager (internal for daemon)
@@ -36,19 +29,6 @@ LicqDaemon::UserManager LicqDaemon::gUserManager;
 // Initialize global Licq::UserManager to refer to the internal UserManager
 Licq::UserManager& Licq::gUserManager(LicqDaemon::gUserManager);
 
-
-/* This array is provided for plugin writers' convenience only.
- * No translation is done here. Thus, if your plugin wishes to translate
- * these names, replicate the array into your plugin and do it there.
- */
-const char* Licq::GroupsSystemNames[NUM_GROUPS_SYSTEM_ALL] = {
-  "All Users",
-  "Online Notify",
-  "Visible List",
-  "Invisible List",
-  "Ignore List",
-  "New Users"
-};
 
 UserManager::UserManager()
   : m_szDefaultEncoding(NULL)
@@ -594,20 +574,6 @@ void UserManager::DropGroup(const Group* group)
 {
   if (group != NULL)
     group->Unlock();
-}
-
-bool UserManager::groupExists(GroupType gtype, int groupId)
-{
-  // Is it a valid system group?
-  if (gtype == GROUPS_SYSTEM)
-    return (groupId < NUM_GROUPS_SYSTEM_ALL);
-
-  // Is it an invalid group type?
-  if (gtype != GROUPS_USER)
-    return false;
-
-  // Does the user group exist in the list?
-  return groupExists(groupId);
 }
 
 bool UserManager::groupExists(int groupId)
@@ -1178,31 +1144,6 @@ void UserManager::UnlockOwnerList()
       assert(false);
       break;
   }
-}
-
-void UserManager::setUserInGroup(const UserId& userId,
-    GroupType groupType, int groupId, bool inGroup, bool updateServer)
-{
-  if (groupType == GROUPS_USER)
-    return setUserInGroup(userId, groupId, inGroup, updateServer);
-
-  if (groupId == GROUP_VISIBLE_LIST)
-    return gProtocolManager.visibleListSet(userId, inGroup);
-
-  if (groupId == GROUP_INVISIBLE_LIST)
-    return gProtocolManager.invisibleListSet(userId, inGroup);
-
-  if (groupId == GROUP_IGNORE_LIST)
-    return gProtocolManager.ignoreListSet(userId, inGroup);
-
-  // Just a flag in local user
-  {
-    UserWriteGuard u(userId);
-    if (!u.isLocked())
-      return;
-    u->SetInGroup(GROUPS_SYSTEM, groupId, inGroup);
-  }
-  notifyUserUpdated(userId, USER_SETTINGS);
 }
 
 void UserManager::setUserInGroup(const UserId& userId, int groupId,

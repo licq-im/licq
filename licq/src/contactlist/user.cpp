@@ -380,7 +380,16 @@ void User::LoadLicqInfo()
   unsigned long nLast;
   unsigned short nPPFieldCount;
   m_fConf.SetSection("user");
-  m_fConf.ReadNum("Groups.System", mySystemGroups, 0);
+
+  // Get deprecated parameter and use as default if new values aren't available
+  unsigned long oldSystemGroups;
+  m_fConf.ReadNum("Groups.System", oldSystemGroups, 0);
+
+  m_fConf.get("OnVisibleList", myOnVisibleList, oldSystemGroups & 1<<1);
+  m_fConf.get("OnInvisibleList", myOnInvisibleList, oldSystemGroups & 1<<2);
+  m_fConf.get("OnIgnoreList", myOnIgnoreList, oldSystemGroups & 1<<3);
+  m_fConf.get("OnlineNotify", myOnlineNotify, oldSystemGroups & 1<<0);
+  m_fConf.get("NewUser", myNewUser, oldSystemGroups & 1<<4);
   m_fConf.ReadStr("Ip", szTemp, "0.0.0.0");
   struct in_addr in;
   m_nIp = inet_pton(AF_INET, szTemp, &in);
@@ -729,10 +738,13 @@ void User::SetDefaults()
   char szTemp[12];
   setAlias(myId.accountId());
   SetHistoryFile("default");
-  SetSystemGroups(0);
+  myOnVisibleList = false;
+  myOnInvisibleList = false;
+  myOnIgnoreList = false;
   myGroups.clear();
   SetNewUser(true);
   SetAuthorization(false);
+  myOnlineNotify = false;
 
   szTemp[0] = '\0';
   SetCustomAutoResponse(szTemp);
@@ -1974,7 +1986,11 @@ void User::SaveLicqInfo()
    char buf[64];
    m_fConf.SetSection("user");
    m_fConf.WriteStr("History", HistoryName());
-   m_fConf.WriteNum("Groups.System", GetSystemGroups());
+   m_fConf.set("OnVisibleList", myOnVisibleList);
+   m_fConf.set("OnInvisibleList", myOnInvisibleList);
+   m_fConf.set("OnIgnoreList", myOnIgnoreList);
+   m_fConf.set("OnlineNotify", myOnlineNotify);
+   m_fConf.set("NewUser", myNewUser);
    m_fConf.WriteStr("Ip", ip_ntoa(m_nIp, buf));
    m_fConf.WriteStr("IntIp", ip_ntoa(m_nIntIp, buf));
    m_fConf.WriteNum("Port", Port());
@@ -2178,31 +2194,9 @@ void User::EventClearId(int id)
   }
 }
 
-bool User::GetInGroup(GroupType gtype, int groupId) const
-{
-  if (gtype == GROUPS_SYSTEM)
-  {
-    if (groupId < 0)
-      return false;
-    if (groupId == 0)
-      return true;
-    return (mySystemGroups & (1L << (groupId -1))) != 0;
-  }
-  else
-    return isInGroup(groupId);
-}
-
 bool User::isInGroup(int groupId) const
 {
   return myGroups.count(groupId) > 0;
-}
-
-void User::SetInGroup(GroupType g, int _nGroup, bool _bIn)
-{
-  if (_bIn)
-    AddToGroup(g, _nGroup);
-  else
-    RemoveFromGroup(g, _nGroup);
 }
 
 void User::setInGroup(int groupId, bool member)
@@ -2213,18 +2207,6 @@ void User::setInGroup(int groupId, bool member)
     removeFromGroup(groupId);
 }
 
-void User::AddToGroup(GroupType gtype, int groupId)
-{
-  if (gtype == GROUPS_USER)
-    return addToGroup(groupId);
-
-  if (groupId <= 0)
-    return;
-
-  mySystemGroups |= (1L << (groupId - 1));
-  SaveLicqInfo();
-}
-
 void User::addToGroup(int groupId)
 {
   if (groupId <= 0)
@@ -2232,21 +2214,6 @@ void User::addToGroup(int groupId)
 
   myGroups.insert(groupId);
   SaveLicqInfo();
-}
-
-bool User::RemoveFromGroup(GroupType gtype, int groupId)
-{
-  if (gtype == GROUPS_USER)
-    return removeFromGroup(groupId);
-
-  if (groupId <= 0)
-    return false;
-
-  unsigned long mask = 1L << (groupId - 1);
-  bool inGroup = mySystemGroups & mask;
-  mySystemGroups &= ~mask;
-  SaveLicqInfo();
-  return inGroup;
 }
 
 bool User::removeFromGroup(int groupId)

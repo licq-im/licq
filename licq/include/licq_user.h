@@ -53,8 +53,6 @@ typedef Licq::UserWriteGuard LicqUserWriteGuard;
 typedef Licq::GroupReadGuard LicqGroupReadGuard;
 typedef Licq::GroupWriteGuard LicqGroupWriteGuard;
 typedef Licq::UserManager CUserManager;
-using Licq::NUM_GROUPS_SYSTEM;
-using Licq::GroupsSystemNames;
 
 
 // Returned value must be cleared with delete[]

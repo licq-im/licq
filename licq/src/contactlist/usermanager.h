@@ -76,7 +76,6 @@ public:
   void UnlockOwnerList();
   Licq::Group* FetchGroup(int groupId, unsigned short lockType = LOCK_R);
   void DropGroup(const Licq::Group* group);
-  bool groupExists(Licq::GroupType gtype, int groupId);
   bool groupExists(int groupId);
   int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
   void RemoveGroup(int groupId);
@@ -90,8 +89,6 @@ public:
   int GetGroupFromID(unsigned short icqGroupId);
   int GetGroupFromName(const std::string& name);
   std::string GetGroupNameFromGroup(int groupId);
-  void setUserInGroup(const Licq::UserId& userId, Licq::GroupType groupType,
-      int groupId, bool inGroup, bool updateServer = true);
   void setUserInGroup(const Licq::UserId& userId, int groupId,
       bool inGroup, bool updateServer = true);
   void userStatusChanged(const Licq::UserId& userId, unsigned newStatus);

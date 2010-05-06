@@ -34,20 +34,6 @@ inline char* protocolId_toStr(char* ret, unsigned long protocolId)
   return ret;
 }
 
-// Group types used in contact list
-enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
-
-// System groups
-const int GROUP_ALL_USERS       = 0;
-const int GROUP_ONLINE_NOTIFY   = 1;
-const int GROUP_VISIBLE_LIST    = 2;
-const int GROUP_INVISIBLE_LIST  = 3;
-const int GROUP_IGNORE_LIST     = 4;
-const int GROUP_NEW_USERS       = 5;
-
-// The amount of registered system groups
-const int NUM_GROUPS_SYSTEM_ALL = 6;
-
 #define LICQ_PPID 0x4C696371  // "Licq"
 
 // Types used for contact list

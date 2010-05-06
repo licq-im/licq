@@ -1523,19 +1523,6 @@ void CICQDaemon::UpdateAllUsers()
   FOR_EACH_USER_END
 }
 
-
-void CICQDaemon::UpdateAllUsersInGroup(GroupType g, unsigned short nGroup)
-{
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    if (pUser->GetInGroup(g, nGroup))
-    {
-      icqRequestMetaInfo(pUser->IdString());
-    }
-  }
-  FOR_EACH_USER_END
-}
-
 void CICQDaemon::updateAllUsersInGroup(int groupId)
 {
   FOR_EACH_USER_START(LOCK_R)

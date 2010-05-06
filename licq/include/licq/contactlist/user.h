@@ -640,34 +640,11 @@ public:
   const UserGroupList& GetGroups() const { return myGroups; }
 
   /**
-   * Get system groups this user is member of
-   *
-   * @return Bitmask of server groups
-   */
-  unsigned long GetSystemGroups() const { return mySystemGroups; }
-
-  /**
    * Set user groups this user is member of
    *
    * @param groups List of groups
    */
   void SetGroups(const UserGroupList& groups) { myGroups = groups; }
-
-  /**
-   * Set system groups this user is member of
-   *
-   * @param groups Bitmask of server groups
-   */
-  void SetSystemGroups(unsigned long groups)    { mySystemGroups = groups; }
-
-  /**
-   * Check if user is member of a group
-   *
-   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
-   * @param groupId Id of group to check
-   * @return True if group exists and user is member
-   */
-  bool GetInGroup(GroupType gtype, int groupId) const;
 
   /**
    * Check if user is member of a group
@@ -680,27 +657,10 @@ public:
   /**
    * Convenience function to set membership of user for a group
    *
-   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
-   * @param groupId Id of group
-   * @param member True to add user to group, false to remove user from group
-   */
-  void SetInGroup(GroupType gtype, int groupId, bool member);
-
-  /**
-   * Convenience function to set membership of user for a group
-   *
    * @param groupId Id of user group
    * @param member True to add user to group, false to remove user from group
    */
   void setInGroup(int groupId, bool member);
-
-  /**
-   * Add user to a group
-   *
-   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
-   * @param groupId Id of group to add
-   */
-  void AddToGroup(GroupType gtype, int groupId);
 
   /**
    * Add user to a group
@@ -712,31 +672,22 @@ public:
   /**
    * Remove user from a group
    *
-   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
-   * @param groupId Id of group to leave
-   * @return True if group was valid and user was a member
-   */
-  bool RemoveFromGroup(GroupType gtype, int groupId);
-
-  /**
-   * Remove user from a group
-   *
    * @param groupId Id of user group to leave
    * @return True if group was valid and user was a member
    */
   bool removeFromGroup(int groupId);
 
   // Short cuts to above functions
-  bool InvisibleList() const    { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
-  bool VisibleList() const      { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
-  bool OnlineNotify() const     { return GetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY); }
-  bool IgnoreList() const       { return GetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST); }
-  bool NewUser() const          { return GetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS); }
-  void SetInvisibleList(bool s)  { SetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST, s); }
-  void SetVisibleList(bool s)    { SetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST, s); }
-  void SetOnlineNotify(bool s)   { SetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY, s); }
-  void SetIgnoreList(bool s)     { SetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST, s); }
-  void SetNewUser(bool s)        { SetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS, s); }
+  bool InvisibleList() const    { return myOnInvisibleList; }
+  bool VisibleList() const      { return myOnVisibleList; }
+  bool OnlineNotify() const     { return myOnlineNotify; }
+  bool IgnoreList() const       { return myOnIgnoreList; }
+  bool NewUser() const          { return myNewUser; }
+  void SetInvisibleList(bool s) { myOnInvisibleList = s;; }
+  void SetVisibleList(bool s)   { myOnVisibleList = s; }
+  void SetOnlineNotify(bool s)  { myOnlineNotify = s; }
+  void SetIgnoreList(bool s)    { myOnIgnoreList = s; }
+  void SetNewUser(bool s)       { myNewUser = s; }
 
   /**
    * Enable/disable on event blocking for this user
@@ -893,7 +844,6 @@ protected:
   unsigned long m_nStatus;
   unsigned myStatus;
   UserGroupList myGroups;               /**< List of user groups */
-  unsigned long mySystemGroups;         /**< Bitmask for system groups */
   unsigned short m_nSequence;
   unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   char m_nMode;
@@ -902,8 +852,12 @@ protected:
   char *m_szEncoding;
   bool m_bSupportsUTF8;
   char *m_szCustomAutoResponse;
-  bool m_bOnlineNotify,
-       m_bSendIntIp,
+  bool myOnlineNotify;
+  bool myOnVisibleList;
+  bool myOnInvisibleList;
+  bool myOnIgnoreList;
+  bool myNewUser;
+  bool m_bSendIntIp,
        m_bSendServer,
        m_bEnableSave,
        m_bShowAwayMsg,
