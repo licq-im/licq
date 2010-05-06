@@ -350,7 +350,7 @@ bool UserManager::addUser(const UserId& uid,
 
   // Set initial group membership, also sets server group for user
   if (groupId != 0)
-    setUserInGroup(uid, GROUPS_USER, groupId, true, permanent && addToServer);
+    setUserInGroup(uid, groupId, true, permanent && addToServer);
 
   return true;
 }
@@ -382,7 +382,7 @@ bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
 
   // Set initial group membership, also sets server group for user
   if (groupId != 0)
-    setUserInGroup(userId, GROUPS_USER, groupId, true, addToServer);
+    setUserInGroup(userId, groupId, true, addToServer);
 
   return true;
 }
@@ -706,7 +706,7 @@ void UserManager::RemoveGroup(int groupId)
   // Remove group from users
   FOR_EACH_USER_START(LOCK_W)
   {
-    if (pUser->RemoveFromGroup(GROUPS_USER, groupId))
+    if (pUser->removeFromGroup(groupId))
       notifyUserUpdated(pUser->id(), USER_GROUPS);
   }
   FOR_EACH_USER_END;
@@ -1040,7 +1040,7 @@ bool UserManager::UpdateUsersInGroups()
       int nInGroup = gUserManager.GetGroupFromID(nGSID);
       if (nInGroup != 0)
       {
-        pUser->AddToGroup(GROUPS_USER, nInGroup);
+        pUser->addToGroup(nInGroup);
         bDid = true;
       }
     }

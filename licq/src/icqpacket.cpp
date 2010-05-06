@@ -39,7 +39,6 @@
 
 using namespace std;
 using Licq::GroupMap;
-using Licq::GROUPS_USER;
 using Licq::USPRINTF_NTORN;
 using Licq::USPRINTF_PIPEISCMD;
 using Licq::StringList;
@@ -2742,7 +2741,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
         if (m_nGSID == 0)
           m_nGSID = 1; // Must never actually reach this point
 
-        u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(m_nGSID));
+        u->addToGroup(gUserManager.GetGroupFromID(m_nGSID));
       }
 
       u->SetGSID(m_nGSID);
@@ -2936,7 +2935,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
-      u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(m_nGSID));
+      u->addToGroup(gUserManager.GetGroupFromID(m_nGSID));
       gUserManager.DropUser(u);
 
       break;

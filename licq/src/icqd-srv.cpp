@@ -3887,9 +3887,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       {
         // First update their gsid/sid
         u->SetSID(sid);
-        u->RemoveFromGroup(GROUPS_USER, gUserManager.GetGroupFromID(u->GetGSID()));
+        u->removeFromGroup(gUserManager.GetGroupFromID(u->GetGSID()));
         u->SetGSID(gsid);
-        u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(gsid));
+        u->addToGroup(gUserManager.GetGroupFromID(gsid));
 
         // Now the the tlv of attributes to attach to the user
         TLVList tlvList = packet.getTLVList();
@@ -4052,8 +4052,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               ICQUser* u = gUserManager.FetchUser(pending.c_str(), LICQ_PPID, LOCK_W);
               if (u)
               {
-                u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(
-                              e->ExtraInfo()));
+                u->addToGroup(gUserManager.GetGroupFromID(e->ExtraInfo()));
                 pushPluginSignal(new LicqSignal(SIGNAL_ADDxSERVERxLIST, 0, u->id()));
                 gUserManager.DropUser(u);
               }
@@ -5877,7 +5876,7 @@ void CICQDaemon::ProcessUserList()
     u->SetIgnoreList(data->inIgnoreList);
 
     if (isOnList)
-      u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(data->groupId));
+      u->addToGroup(gUserManager.GetGroupFromID(data->groupId));
 
     u->SetAwaitingAuth(data->awaitingAuth);
 

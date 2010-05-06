@@ -463,7 +463,7 @@ void User::LoadLicqInfo()
       int groupId;
       m_fConf.ReadNum(szTemp, groupId, 0);
       if (groupId > 0)
-        AddToGroup(GROUPS_USER, groupId);
+        addToGroup(groupId);
     }
   }
   else
@@ -473,7 +473,7 @@ void User::LoadLicqInfo()
     m_fConf.ReadNum("Groups.User", oldGroups, 0);
     for (int i = 0; i <= 31; ++i)
       if (oldGroups & (1L << i))
-        AddToGroup(GROUPS_USER, i+1);
+        addToGroup(i+1);
   }
 
   m_bSupportsUTF8 = false;
