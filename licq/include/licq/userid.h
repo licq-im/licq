@@ -22,6 +22,12 @@
 
 #include <string>
 
+// Known Protocol IDs
+// Should be local per protocol but defined here as they can also be useful for plugins
+#define LICQ_PPID 0x4C696371    // "Licq" (ICQ & AIM)
+#define MSN_PPID 0x4D534E5F     // "MSN_" (MSN)
+#define JABBER_PPID 0x584D5050  // "XMPP" (Jabber)
+
 namespace Licq
 {
 

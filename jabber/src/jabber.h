@@ -36,8 +36,6 @@ class LicqProtoRequestInfo;
 class LicqProtoSendMessageSignal;
 class LicqProtoSignal;
 
-#define JABBER_PPID 0x584D5050
-
 class Jabber
 {
 public:

@@ -32,7 +32,6 @@
 #include "msnbuffer.h"
 #include "msnevent.h"
 
-#define MSN_PPID 0x4D534E5F
 #define L_MSNxSTR "[MSN] "
 
 const char CONTACT_LIST[] = "FL";

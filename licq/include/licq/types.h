@@ -16,8 +16,6 @@ namespace Licq
 // Declare a convenient name for the list of strings
 typedef std::list<std::string> StringList;
 
-#define LICQ_PPID 0x4C696371  // "Licq"
-
 // Types used for contact list
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 
