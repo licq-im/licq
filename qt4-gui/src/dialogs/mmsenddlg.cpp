@@ -42,7 +42,6 @@
 #include <licq_user.h>
 #include <licq/protocolmanager.h>
 
-#include "core/licqgui.h"
 #include "core/signalmanager.h"
 
 #include "helpers/support.h"
@@ -78,8 +77,8 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
   v->addWidget(buttons);
 
   connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(slot_done(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+      SLOT(slot_done(const LicqEvent*)));
 
   barSend->setMaximum(mmv->contacts().size());
   barSend->setValue(0);

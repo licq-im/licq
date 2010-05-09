@@ -86,7 +86,7 @@ UserSendFileEvent::UserSendFileEvent(const UserId& userId, QWidget* parent)
 
   myBaseTitle += tr(" - File Transfer");
 
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
     tabDlg->setWindowTitle(myBaseTitle);
 

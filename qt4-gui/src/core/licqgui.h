@@ -66,24 +66,13 @@ class LicqGui : public QApplication
   Q_OBJECT
 
 public:
-  /**
-   * Get the singleton instance
-   *
-   * @return The instance
-   */
-  static LicqGui* instance()
-  { return myInstance; }
-
   LicqGui(int& argc, char** argv);
   ~LicqGui();
 
   int Run();
 
   // Functions to get daemon and gui resources
-  SignalManager* signalManager() { return mySignalManager; }
   LogWindow* logWindow() { return myLogWindow; }
-  ContactListModel* contactList() { return myContactList; }
-  UserMenu* userMenu() { return myUserMenu; }
   GroupMenu* groupMenu() { return myGroupMenu; }
   DockIcon* dockIcon() { return myDockIcon; }
   UserEventTabDlg* userEventTabDlg() { return myUserEventTabDlg; }
@@ -331,8 +320,6 @@ private slots:
   void updateDockIcon();
 
 private:
-  static LicqGui* myInstance;
-
   void loadGuiConfig();
   void loadFloatiesConfig();
 
@@ -364,6 +351,8 @@ private:
   int grabKeysym;
   QTimer myAutoAwayTimer;
 };
+
+extern LicqGui* gLicqGui;
 
 } // namespace LicqQtGui
 

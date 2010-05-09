@@ -90,8 +90,8 @@ RandomChatDlg::~RandomChatDlg()
 void RandomChatDlg::okPressed()
 {
   myOkButton->setEnabled(false);
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(userEventDone(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+      SLOT(userEventDone(const LicqEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(myGroupsList->currentRow())
   {
@@ -133,7 +133,7 @@ void RandomChatDlg::userEventDone(const LicqEvent* event)
       //TODO when CSearchAck changes
       UserId userId = event->SearchAck()->userId();
       gUserManager.addUser(userId, false);
-      LicqGui::instance()->showEventDialog(ChatEvent, userId);
+      gLicqGui->showEventDialog(ChatEvent, userId);
       close();
       return;
   }
@@ -219,8 +219,8 @@ void SetRandomChatGroupDlg::okPressed()
 {
   myOkButton->setEnabled(false);
   myCancelButton = new QPushButton(tr("&Cancel"), this);
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(userEventDone(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+      SLOT(userEventDone(const LicqEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(myGroupsList->currentRow())
   {

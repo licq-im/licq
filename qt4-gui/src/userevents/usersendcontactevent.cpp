@@ -32,6 +32,8 @@
 
 #include "config/chat.h"
 
+#include "contactlist/contactlist.h"
+
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 
@@ -72,12 +74,12 @@ UserSendContactEvent::UserSendContactEvent(const UserId& userId, QWidget* parent
 
   w->setToolTip(tr("Drag Users Here - Right Click for Options"));
 
-  myContactsList = new MMUserView(myUsers.front(), LicqGui::instance()->contactList());
+  myContactsList = new MMUserView(myUsers.front(), gGuiContactList);
   lay->addWidget(myContactsList);
 
   myBaseTitle += tr(" - Contact List");
 
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
     tabDlg->setWindowTitle(myBaseTitle);
 

@@ -38,6 +38,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ContactListModel */
 
+ContactListModel* LicqQtGui::gGuiContactList = NULL;
+
 QString ContactListModel::systemGroupName(int groupId)
 {
   switch (groupId)
@@ -67,6 +69,9 @@ ContactListModel::ContactListModel(QObject* parent)
   : QAbstractItemModel(parent),
     myBlockUpdates(false)
 {
+  assert(gGuiContactList == NULL);
+  gGuiContactList = this;
+
   ContactGroup* group;
 #define CREATE_SYSTEMGROUP(gid, showMask, hideMask) \
   group = new ContactGroup(gid, systemGroupName(gid), showMask, hideMask); \
@@ -116,6 +121,8 @@ ContactListModel::~ContactListModel()
 
   while (!myGroups.isEmpty())
     delete myGroups.takeFirst();
+
+  gGuiContactList = NULL;
 }
 
 void ContactListModel::listUpdated(unsigned long subSignal, int argument, const Licq::UserId& userId)

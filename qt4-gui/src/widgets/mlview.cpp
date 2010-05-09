@@ -361,7 +361,7 @@ void MLView::setHandleLinks(bool enable)
 void MLView::setSource(const QUrl& url)
 {
   if (m_handleLinks && !url.scheme().isEmpty())
-    LicqGui::instance()->viewUrl(url.toString());
+    gLicqGui->viewUrl(url.toString());
 }
 
 bool MLView::hasMarkedText() const

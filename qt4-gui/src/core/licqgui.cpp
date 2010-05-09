@@ -154,7 +154,7 @@ static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
 #endif /* defined(USE_SCRNSAVER) */
 
 
-LicqGui* LicqGui::myInstance = NULL;
+LicqGui* LicqQtGui::gLicqGui = NULL;
 
 LicqGui::LicqGui(int& argc, char** argv) :
 #ifdef USE_KDE
@@ -167,7 +167,8 @@ LicqGui::LicqGui(int& argc, char** argv) :
   myUserEventTabDlg(NULL),
   grabKeysym(0)
 {
-  myInstance = this;
+  assert(gLicqGui == NULL);
+  gLicqGui = this;
 
   int i = 1;
 

@@ -146,6 +146,8 @@ private slots:
   void process();
 };
 
+extern SignalManager* gGuiSignalManager;
+
 } // namespace LicqQtGui
 
 #endif

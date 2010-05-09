@@ -115,7 +115,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
   layt->addWidget(myTimezone);
 
   myMenu = myToolBar->addAction(tr("Menu"), this, SLOT(showUserMenu()));
-  myMenu->setMenu(LicqGui::instance()->userMenu());
+  myMenu->setMenu(gUserMenu);
   if (myIsOwner)
     myMenu->setEnabled(false);
 
@@ -194,7 +194,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
 
   myPopupNextMessage = new QAction("Popup Next Message", this);
   addAction(myPopupNextMessage);
-  connect(myPopupNextMessage, SIGNAL(triggered()), LicqGui::instance(), SLOT(showNextEvent()));
+  connect(myPopupNextMessage, SIGNAL(triggered()), gLicqGui, SLOT(showNextEvent()));
 
   // We might be called from a slot so connect the signal only after all the
   // existing signals are handled.
@@ -220,7 +220,7 @@ UserEventCommon::~UserEventCommon()
   emit finished(myUsers.front());
 
   if (myDeleteUser && !myIsOwner)
-    LicqGui::instance()->removeUserFromList(myUsers.front(), this);
+    gLicqGui->removeUserFromList(myUsers.front(), this);
 
   myUsers.clear();
 }
@@ -321,7 +321,7 @@ void UserEventCommon::updateWidgetInfo(const LicqUser* u)
     tmp = " (" + tmp + ")";
   myBaseTitle = QString::fromUtf8(u->GetAlias()) + tmp;
 
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
   {
     tabDlg->setWindowTitle(myBaseTitle);
@@ -349,7 +349,7 @@ void UserEventCommon::pushToolTip(QAction* action, const QString& tooltip)
 
 void UserEventCommon::connectSignal()
 {
-  connect(LicqGui::instance()->signalManager(),
+  connect(gGuiSignalManager,
       SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
       SLOT(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)));
 }
@@ -399,7 +399,7 @@ void UserEventCommon::showHistory()
 
 void UserEventCommon::showUserInfo()
 {
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUsers.front(), true);
+  gLicqGui->showInfoDialog(mnuUserGeneral, myUsers.front(), true);
 }
 
 void UserEventCommon::switchSecurity()
@@ -426,7 +426,7 @@ void UserEventCommon::updateTyping()
   LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
   u->setIsTyping(false);
   myTimezone->setPalette(QPalette());
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (Config::Chat::instance()->tabbedChatting() && tabDlg != NULL)
     tabDlg->updateTabLabel(u);
   gUserManager.DropUser(u);
@@ -437,7 +437,7 @@ void UserEventCommon::showUserMenu()
   // Tell menu which contact to use and show it immediately.
   // Menu is normally delayed but if we use InstantPopup mode we won't get
   //   this signal so we can't tell menu which contact to use.
-  LicqGui::instance()->userMenu()->setUser(myUsers.front());
+  gUserMenu->setUser(myUsers.front());
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myMenu))->showMenu();
 }
 
@@ -456,7 +456,7 @@ void UserEventCommon::updatedUser(const Licq::UserId& userId, unsigned long subS
       myUsers.push_back(userId);
 
       // Now update the tab label
-      UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+      UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
       if (tabDlg != NULL)
         tabDlg->updateConvoLabel(this);
     }

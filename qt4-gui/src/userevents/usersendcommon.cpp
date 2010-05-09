@@ -116,7 +116,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
   QShortcut* a = new QShortcut(Qt::Key_Escape, this);
   connect(a, SIGNAL(activated()), SLOT(cancelSend()));
 
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && parent == tabDlg)
   {
     a = new QShortcut(Qt::ALT + Qt::Key_Left, this);
@@ -387,7 +387,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
 
     gUserManager.DropUser(u);
 
-    connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
+    connect(gLicqGui, SIGNAL(eventSent(const LicqEvent*)),
         myHistoryView, SLOT(addMsg(const LicqEvent*)));
     //myViewSplitter->setResizeMode(myHistoryView, QSplitter::FollowSizeHint);
   }
@@ -466,7 +466,7 @@ void UserSendCommon::closeEvent(QCloseEvent* event)
   if (event->isAccepted())
   {
     // This widget is about to be destroyed so remove us from the tab dialog
-    UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+    UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
     if (tabDlg != NULL && tabDlg->tabExists(this))
       tabDlg->removeTab(this);
   }
@@ -648,7 +648,7 @@ void UserSendCommon::convoJoin(const UserId& userId)
     myUsers.push_back(userId);
 
   // Now update the tab label
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL)
     tabDlg->updateConvoLabel(this);
 }
@@ -677,7 +677,7 @@ void UserSendCommon::convoLeave(const UserId& userId)
       {
         u->setIsTyping(false);
         myTimezone->setPalette(QPalette());
-        UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+        UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
         if (Config::Chat::instance()->tabbedChatting() && tabDlg != NULL)
           tabDlg->updateTabLabel(u);
       }
@@ -704,7 +704,7 @@ void UserSendCommon::convoLeave(const UserId& userId)
   if (Config::Chat::instance()->msgChatView())
   {
     // Now update the tab label
-    UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+    UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
     if (tabDlg != NULL)
       tabDlg->updateConvoLabel(this);
   }
@@ -725,7 +725,7 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
   UserSendCommon* e = 0;
   QWidget* parent = 0;
 
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabExists(this))
     parent = tabDlg;
 
@@ -780,7 +780,7 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
       e->move(p);
     }
 
-    LicqGui::instance()->replaceEventDialog(this, e, userId);
+    gLicqGui->replaceEventDialog(this, e, userId);
     emit msgTypeChanged(this, e);
 
     if (parent == 0)
@@ -1091,7 +1091,7 @@ void UserSendCommon::send()
     myProgressMsg += "...";
     QString title = myBaseTitle + " [" + myProgressMsg + "]";
 
-    UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+    UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
     if (tabDlg != NULL && tabDlg->tabIsSelected(this))
       tabDlg->setWindowTitle(title);
 
@@ -1106,8 +1106,8 @@ void UserSendCommon::send()
     disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(send()));
     connect(mySendButton, SIGNAL(clicked()), SLOT(cancelSend()));
 
-    connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(eventDoneReceived(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+        SLOT(eventDoneReceived(const LicqEvent*)));
   }
 }
 
@@ -1117,7 +1117,7 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
   {
     QString title = myBaseTitle + " [" + myProgressMsg + tr("error") + "]";
 
-    UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+    UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
     if (tabDlg != NULL && tabDlg->tabIsSelected(this))
       tabDlg->setWindowTitle(title);
 
@@ -1167,7 +1167,7 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
   }
   title = myBaseTitle + " [" + myProgressMsg + result + "]";
 
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
     tabDlg->setWindowTitle(title);
 
@@ -1189,8 +1189,8 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
 
   if (myEventTag.size() == 0)
   {
-    disconnect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(const LicqEvent*)), this, SLOT(eventDoneReceived(const LicqEvent*)));
+    disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+        this, SLOT(eventDoneReceived(const LicqEvent*)));
   }
 
   if (myMessageEdit != NULL)
@@ -1273,7 +1273,7 @@ void UserSendCommon::cancelSend()
   if (icqEventTag == 0)
     return closeDialog(); // if we're not sending atm, let ESC close the window
 
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
     tabDlg->setWindowTitle(myBaseTitle);
 
@@ -1295,7 +1295,7 @@ void UserSendCommon::clearNewEvents()
     u = gUserManager.fetchUser(*it, LOCK_W);
     if (u != NULL)
     {
-      UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+      UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
       if (Config::Chat::instance()->msgChatView() &&
           isActiveWindow() &&
           (tabDlg == NULL || (!tabDlg->tabExists(this) || tabDlg->tabIsSelected(this))))
@@ -1393,8 +1393,7 @@ void UserSendCommon::massMessageToggled(bool b)
 
     layMR->addWidget(new QLabel(tr("Drag Users Here\nRight Click for Options")));
 
-    myMassMessageList = new MMUserView(myUsers.front(),
-        LicqGui::instance()->contactList());
+    myMassMessageList = new MMUserView(myUsers.front(), gGuiContactList);
     myMassMessageList->setFixedWidth(gMainWindow->getUserView()->width());
     layMR->addWidget(myMassMessageList);
   }
@@ -1405,7 +1404,7 @@ void UserSendCommon::massMessageToggled(bool b)
 
 void UserSendCommon::messageAdded()
 {
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (isActiveWindow() &&
       (!Config::Chat::instance()->tabbedChatting() ||
        (tabDlg != NULL && tabDlg->tabIsSelected(this))))
@@ -1414,7 +1413,7 @@ void UserSendCommon::messageAdded()
 
 void UserSendCommon::resetTitle()
 {
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
     tabDlg->setWindowTitle(myBaseTitle);
 
@@ -1557,6 +1556,6 @@ void UserSendCommon::dropEvent(QDropEvent* event)
 {
   event->ignore();
 
-  if (LicqGui::instance()->userDropEvent(myUsers.front(), *event->mimeData()))
+  if (gLicqGui->userDropEvent(myUsers.front(), *event->mimeData()))
     event->acceptProposedAction();
 }

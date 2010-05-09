@@ -61,8 +61,8 @@ SearchUserDlg::SearchUserDlg()
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Licq - User Search"));
 
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(searchResult(const LicqEvent*)), SLOT(searchResult(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(searchResult(const LicqEvent*)),
+      SLOT(searchResult(const LicqEvent*)));
 
   QVBoxLayout* lay = new QVBoxLayout(this);
 
@@ -434,7 +434,7 @@ void SearchUserDlg::viewInfo()
     UserId userId = current->data(0, Qt::UserRole).value<UserId>();
 
     gUserManager.addUser(userId, false);
-    LicqGui::instance()->showInfoDialog(mnuUserGeneral, userId, false, true);
+    gLicqGui->showInfoDialog(mnuUserGeneral, userId, false, true);
   }
 }
 

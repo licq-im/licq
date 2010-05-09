@@ -460,6 +460,8 @@ private:
   bool myBlockUpdates;
 };
 
+extern ContactListModel* gGuiContactList;
+
 } // namespace LicqQtGui
 
 #endif

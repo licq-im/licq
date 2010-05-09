@@ -103,10 +103,8 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   connect(modifyButton, SIGNAL(clicked()), SLOT(modifyOwner()));
   connect(removeButton, SIGNAL(clicked()), SLOT(removeOwner()));
   connect(closeButton, SIGNAL(clicked()), SLOT(close()));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateOwners()));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateOwners()));
+  connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateOwners()));
+  connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateOwners()));
 
   // Add the owners to the list now
   updateOwners();
@@ -201,7 +199,7 @@ void OwnerManagerDlg::registerDone(bool success, const QString& /* newId */, uns
 
   if (success)
   {
-    LicqGui::instance()->showInfoDialog(mnuUserGeneral, gUserManager.ownerUserId(newPpid));
+    gLicqGui->showInfoDialog(mnuUserGeneral, gUserManager.ownerUserId(newPpid));
   }
 }
 

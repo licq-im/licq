@@ -151,7 +151,7 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
   {
     QPushButton* menuButton = new QPushButton(tr("&Menu"));
     connect(menuButton, SIGNAL(pressed()), SLOT(showUserMenu()));
-    menuButton->setMenu(LicqGui::instance()->userMenu());
+    menuButton->setMenu(gUserMenu);
     buttonsLayout->addWidget(menuButton);
   }
   QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Close);
@@ -254,11 +254,11 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
   calenderClicked();
 
   // Catch sent messages and add them to history
-  connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
+  connect(gLicqGui, SIGNAL(eventSent(const LicqEvent*)),
       SLOT(eventSent(const LicqEvent*)));
 
   // Catch received messages so we can add them to history
-  connect(LicqGui::instance()->signalManager(),
+  connect(gGuiSignalManager,
       SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
       SLOT(updatedUser(const Licq::UserId&, unsigned long, int)));
 }
@@ -510,7 +510,7 @@ void HistoryDlg::searchTextChanged(const QString& text)
 
 void HistoryDlg::showUserMenu()
 {
-  LicqGui::instance()->userMenu()->setUser(myUserId);
+  gUserMenu->setUser(myUserId);
 }
 
 void HistoryDlg::nextDate()

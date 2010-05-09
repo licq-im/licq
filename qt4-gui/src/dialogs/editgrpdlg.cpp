@@ -33,7 +33,6 @@
 #include <licq_events.h>
 #include <licq_user.h>
 
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
@@ -92,7 +91,7 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   lay->addWidget(buttons);
 
   RefreshList();
-  connect(LicqGui::instance()->signalManager(),
+  connect(gGuiSignalManager,
       SIGNAL(updatedList(unsigned long, int, const Licq::UserId&)),
       SLOT(listUpdated(unsigned long)));
 

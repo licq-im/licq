@@ -42,7 +42,6 @@
 #include "contactlist/contactlist.h"
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "dialogs/editfiledlg.h"
@@ -543,7 +542,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   lblStatus->setPrependPixmap(IconManager::instance()->iconForStatus(Licq::User::OnlineStatus));
 
   // Userview
-  UserView userView(LicqGui::instance()->contactList(), &w);
+  UserView userView(gGuiContactList, &w);
   userView.setGeometry(skin->frame.border.left, skin->frame.border.top,
                         w.width() - skin->frameWidth(), w.height() - skin->frameHeight());
 

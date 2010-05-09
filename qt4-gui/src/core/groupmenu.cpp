@@ -177,17 +177,16 @@ void GroupMenu::addUsersToGroup(QAction* action)
 {
   int groupId = action->data().toInt();
 
-  ContactListModel* list = LicqGui::instance()->contactList();
-  QModelIndex groupIndex = list->groupIndex(myGroupId);
-  int userCount = list->rowCount(groupIndex);
+  QModelIndex groupIndex = gGuiContactList->groupIndex(myGroupId);
+  int userCount = gGuiContactList->rowCount(groupIndex);
 
   for (int i = 0; i < userCount; ++i)
   {
-    QModelIndex userIndex = list->index(i, 0, groupIndex);
+    QModelIndex userIndex = gGuiContactList->index(i, 0, groupIndex);
 
     UserId userId = userIndex.data(ContactListModel::UserIdRole).value<UserId>();
 
     // Call function that knows how to handle system groups
-    LicqGui::instance()->setUserInGroup(userId, groupId, true, groupId >= ContactListModel::SystemGroupOffset);
+    gLicqGui->setUserInGroup(userId, groupId, true, groupId >= ContactListModel::SystemGroupOffset);
   }
 }

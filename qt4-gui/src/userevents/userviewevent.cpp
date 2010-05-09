@@ -186,7 +186,7 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
   if (dialogSize.isValid())
     resize(dialogSize);
 
-  connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
+  connect(gLicqGui, SIGNAL(eventSent(const LicqEvent*)),
       SLOT(sentEvent(const LicqEvent*)));
   connect(myMessageList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
       SLOT(printMessage(QTreeWidgetItem*)));
@@ -404,7 +404,7 @@ void UserViewEvent::read1()
       // but before it is executed.
       url.prepend("file://");
 
-      LicqGui::instance()->viewUrl(url);
+      gLicqGui->viewUrl(url);
 
       break;
     }
@@ -561,7 +561,7 @@ void UserViewEvent::read4()
   switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
-      LicqGui::instance()->showEventDialog(ChatEvent, myUsers.front());
+      gLicqGui->showEventDialog(ChatEvent, myUsers.front());
       break;
 
     case ICQ_CMDxSUB_CHAT:  // join to current chat
@@ -591,7 +591,7 @@ void UserViewEvent::read4()
     }
 
     case ICQ_CMDxSUB_URL:   // view a url
-      LicqGui::instance()->viewUrl(dynamic_cast<CEventUrl*>(myCurrentEvent)->Url());
+      gLicqGui->viewUrl(dynamic_cast<CEventUrl*>(myCurrentEvent)->Url());
       break;
 
     case ICQ_CMDxSUB_AUTHxREQUEST: // Fall through
@@ -614,7 +614,7 @@ void UserViewEvent::read4()
       const LicqUser* user = gUserManager.fetchUser(userId, LOCK_R, true);
       gUserManager.DropUser(user);
 
-      LicqGui::instance()->showInfoDialog(mnuUserGeneral, userId, false, true);
+      gLicqGui->showInfoDialog(mnuUserGeneral, userId, false, true);
       break;
     }
   } // switch

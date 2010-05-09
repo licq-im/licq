@@ -34,7 +34,6 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
@@ -189,8 +188,8 @@ bool RegisterUserDlg::validateCurrentPage()
     // Disable dialog while we're waiting for server to respond
     setEnabled(false);
     button(CancelButton)->setEnabled(true);
-    connect(LicqGui::instance()->signalManager(),
-        SIGNAL(verifyImage(unsigned long)), SLOT(gotCaptcha(unsigned long)));
+    connect(gGuiSignalManager, SIGNAL(verifyImage(unsigned long)),
+        SLOT(gotCaptcha(unsigned long)));
     gLicqDaemon->icqRegister(myPasswordField->text().toLatin1().data());
     return false;
   }
@@ -203,8 +202,8 @@ bool RegisterUserDlg::validateCurrentPage()
     // Disable dialog while we're waiting for server to respond
     setEnabled(false);
     button(CancelButton)->setEnabled(true);
-    connect(LicqGui::instance()->signalManager(),
-        SIGNAL(newOwner(const QString&, unsigned long)), SLOT(gotNewOwner(const QString&, unsigned long)));
+    connect(gGuiSignalManager, SIGNAL(newOwner(const QString&, unsigned long)),
+        SLOT(gotNewOwner(const QString&, unsigned long)));
     gLicqDaemon->icqVerify(myCaptchaField->text().toLatin1().data());
     return false;
   }
@@ -215,8 +214,8 @@ bool RegisterUserDlg::validateCurrentPage()
 void RegisterUserDlg::gotCaptcha(unsigned long /* ppid */)
 {
   // We got the image so reenable the dialog, set the image and go to next page
-  disconnect(LicqGui::instance()->signalManager(),
-      SIGNAL(verifyImage(unsigned long)), this, SLOT(gotCaptcha(unsigned long)));
+  disconnect(gGuiSignalManager, SIGNAL(verifyImage(unsigned long)),
+      this, SLOT(gotCaptcha(unsigned long)));
   setEnabled(true);
   myCaptchaImage->setPixmap(QPixmap(QString(BASE_DIR) + "Licq_verify.jpg"));
   myGotCaptcha = true;
@@ -226,8 +225,8 @@ void RegisterUserDlg::gotCaptcha(unsigned long /* ppid */)
 void RegisterUserDlg::gotNewOwner(const QString& id, unsigned long ppid)
 {
   // We got the new owner
-  disconnect(LicqGui::instance()->signalManager(),
-      SIGNAL(newOwner(const QString&, unsigned long)), this, SLOT(gotNewOwner(const QString&, unsigned long)));
+  disconnect(gGuiSignalManager, SIGNAL(newOwner(const QString&, unsigned long)),
+      this, SLOT(gotNewOwner(const QString&, unsigned long)));
 
   // Save "Remember password" setting
   ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_W);

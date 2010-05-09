@@ -37,7 +37,6 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
-#include "core/licqgui.h"
 #include "core/signalmanager.h"
 
 #include "helpers/support.h"
@@ -94,8 +93,8 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const UserId& userId, bool fetch, QWidget* parent
     QString myId = u->accountId().c_str();
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
-    connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneEvent(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+        SLOT(doneEvent(const LicqEvent*)));
     icqEventTag = gLicqDaemon->icqFetchAutoResponse(
         myId.toLatin1(), myPpid, bSendServer);
   }

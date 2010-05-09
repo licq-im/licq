@@ -230,11 +230,11 @@ void AwayMsgDlg::ok()
 
   QString s = myAwayMsg->toPlainText().trimmed();
   if (myPpid == 0)
-    LicqGui::instance()->changeStatus(myStatus, invisible, s);
+    gLicqGui->changeStatus(myStatus, invisible, s);
   else
   {
     Licq::UserId userId = gUserManager.ownerUserId(myPpid);
-    LicqGui::instance()->changeStatus(myStatus, userId, invisible, s);
+    gLicqGui->changeStatus(myStatus, userId, invisible, s);
   }
 
   close();

@@ -35,9 +35,14 @@
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
 
+SignalManager* LicqQtGui::gGuiSignalManager = NULL;
+
 SignalManager::SignalManager(int pipe)
   : myPipe(pipe)
 {
+  assert(gGuiSignalManager == NULL);
+  gGuiSignalManager = this;
+
   sn = new QSocketNotifier(myPipe, QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(process()));
   sn->setEnabled(true);
@@ -46,6 +51,8 @@ SignalManager::SignalManager(int pipe)
 SignalManager::~SignalManager()
 {
   delete sn;
+
+  gGuiSignalManager = NULL;
 }
 
 void SignalManager::ProcessSignal(LicqSignal* sig)

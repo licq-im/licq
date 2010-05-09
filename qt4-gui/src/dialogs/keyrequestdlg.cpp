@@ -34,7 +34,6 @@
 #include <licq_user.h>
 #include <licq/protocolmanager.h>
 
-#include "core/licqgui.h"
 #include "core/signalmanager.h"
 
 #include "helpers/support.h"
@@ -132,8 +131,8 @@ KeyRequestDlg::~KeyRequestDlg()
 
 void KeyRequestDlg::startSend()
 {
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneEvent(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+      SLOT(doneEvent(const LicqEvent*)));
   btnSend->setEnabled(false);
 
   if (myOpen)

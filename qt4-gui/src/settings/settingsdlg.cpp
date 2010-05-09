@@ -112,7 +112,7 @@ void SettingsDlg::showPage(SettingsPage page)
 void SettingsDlg::ok()
 {
   apply();
-  LicqGui::instance()->saveConfig();
+  gLicqGui->saveConfig();
   close();
 }
 

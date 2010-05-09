@@ -140,14 +140,14 @@ void UserViewBase::popupMenu(QPoint point, QModelIndex item)
   {
     UserId userId = item.data(ContactListModel::UserIdRole).value<UserId>();
 
-    LicqGui::instance()->userMenu()->popup(point, userId);
+    gUserMenu->popup(point, userId);
   }
   else if (itemType == ContactListModel::GroupItem)
   {
     int id = item.data(ContactListModel::GroupIdRole).toInt();
     bool online = (item.data(ContactListModel::SortPrefixRole).toInt() < 2);
 
-    LicqGui::instance()->groupMenu()->popup(point, id, online);
+    gLicqGui->groupMenu()->popup(point, id, online);
   }
 }
 
@@ -202,7 +202,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
       UserId userId = dropIndex.data(ContactListModel::UserIdRole).value<UserId>();
 
       // Drops for user is handled by common function
-      if (!LicqGui::instance()->userDropEvent(userId, *event->mimeData()))
+      if (!gLicqGui->userDropEvent(userId, *event->mimeData()))
         return;
 
       break;

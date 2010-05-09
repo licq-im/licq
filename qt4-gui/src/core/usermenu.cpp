@@ -54,9 +54,14 @@ using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserMenu */
 
+UserMenu* LicqQtGui::gUserMenu = NULL;
+
 UserMenu::UserMenu(QWidget* parent)
   : QMenu(parent)
 {
+  assert(gUserMenu == NULL);
+  gUserMenu = this;
+
   QAction* a;
 
   // Sub menu Send
@@ -177,6 +182,11 @@ UserMenu::UserMenu(QWidget* parent)
   updateGroups();
 
   connect(IconManager::instance(), SIGNAL(iconsChanged()), SLOT(updateIcons()));
+}
+
+UserMenu::~UserMenu()
+{
+  gUserMenu = NULL;
 }
 
 void UserMenu::updateIcons()
@@ -364,7 +374,7 @@ void UserMenu::popup(QPoint pos, const UserId& userId)
 
 void UserMenu::viewEvent()
 {
-  LicqGui::instance()->showViewEventDialog(myUserId);
+  gLicqGui->showViewEventDialog(myUserId);
 }
 
 void UserMenu::checkInvisible()
@@ -390,12 +400,12 @@ void UserMenu::makePermanent()
 
 void UserMenu::toggleFloaty()
 {
-  LicqGui::instance()->toggleFloaty(myUserId);
+  gLicqGui->toggleFloaty(myUserId);
 }
 
 void UserMenu::removeContact()
 {
-  LicqGui::instance()->removeUserFromList(myUserId);
+  gLicqGui->removeUserFromList(myUserId);
 }
 
 void UserMenu::selectKey()
@@ -421,7 +431,7 @@ void UserMenu::viewHistory()
 
 void UserMenu::viewInfoGeneral()
 {
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUserId);
+  gLicqGui->showInfoDialog(mnuUserGeneral, myUserId);
 }
 
 void UserMenu::send(QAction* action)
@@ -468,7 +478,7 @@ void UserMenu::send(QAction* action)
       break;
 
     default:
-      LicqGui::instance()->showEventDialog(index, myUserId);
+      gLicqGui->showEventDialog(index, myUserId);
   }
 }
 
@@ -593,7 +603,7 @@ void UserMenu::toggleSystemGroup(QAction* action)
       return;
   }
 
-  LicqGui::instance()->setUserInGroup(myUserId, gid, action->isChecked(), true);
+  gLicqGui->setUserInGroup(myUserId, gid, action->isChecked(), true);
 }
 
 void UserMenu::setServerGroup(QAction* action)

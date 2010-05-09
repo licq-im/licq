@@ -126,6 +126,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
 {
   Support::setWidgetProps(this, "MainWindow");
   setAttribute(Qt::WA_AlwaysShowToolTips, true);
+
+  assert(gMainWindow == NULL);
   gMainWindow = this;
 
   Config::General* conf = Config::General::instance();
@@ -210,35 +212,25 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       "<li><tt>%u - </tt>uin</li>"
       "<li><tt>%w - </tt>webpage</li></ul>");
 
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedList(unsigned long, int, const Licq::UserId&)),
+  connect(gGuiSignalManager, SIGNAL(updatedList(unsigned long, int, const Licq::UserId&)),
       SLOT(slot_updatedList(unsigned long)));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
+  connect(gGuiSignalManager, SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
       SLOT(slot_updatedUser(const Licq::UserId&, unsigned long, int)));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedStatus(unsigned long)),
+  connect(gGuiSignalManager, SIGNAL(updatedStatus(unsigned long)),
       SLOT(updateStatus()));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerAdded(const Licq::UserId&)),
+  connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)),
       SLOT(updateStatus()));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerRemoved(const Licq::UserId&)),
+  connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
       SLOT(updateStatus()));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneOwnerFcn(const LicqEvent*)),
+  connect(gGuiSignalManager, SIGNAL(doneOwnerFcn(const LicqEvent*)),
       SLOT(slot_doneOwnerFcn(const LicqEvent*)));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(logon()),
+  connect(gGuiSignalManager, SIGNAL(logon()),
       SLOT(slot_logon()));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(protocolPlugin(unsigned long)),
+  connect(gGuiSignalManager, SIGNAL(protocolPlugin(unsigned long)),
       SLOT(slot_protocolPlugin(unsigned long)));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerAdded(const Licq::UserId&)),
+  connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)),
       mySystemMenu, SLOT(addOwner(const Licq::UserId&)));
-  connect(LicqGui::instance()->signalManager(),
-      SIGNAL(ownerRemoved(const Licq::UserId&)),
+  connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
       mySystemMenu, SLOT(removeOwner(const Licq::UserId&)));
 
   if (conf->mainwinRect().isValid())
@@ -284,15 +276,15 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   kdeIMInterface = new LicqKIMIface(KApplication::dcopClient()->appId(), this);
   connect(kdeIMInterface,
       SIGNAL(sendMessage(const Licq::UserId&, unsigned long, const QString&)),
-      LicqGui::instance(), SLOT(sendMsg(const Licq::UserId&, unsigned long, const QString&)));
+      gLicqGui, SLOT(sendMsg(const Licq::UserId&, unsigned long, const QString&)));
   connect(kdeIMInterface,
       SIGNAL(sendFileTransfer(const Licq::UserId&, unsigned long,
           const QString&, const QString&)),
-      LicqGui::instance(), SLOT(sendFileTransfer(const Licq::UserId&, unsigned long,
+      gLicqGui, SLOT(sendFileTransfer(const Licq::UserId&, unsigned long,
           const QString&, const QString&)));
   connect(kdeIMInterface,
       SIGNAL(sendChatRequest(const Licq::UserId&, unsigned long)),
-      LicqGui::instance(), SLOT(sendChatRequest(const Licq::UserId&, unsigned long)));
+      gLicqGui, SLOT(sendChatRequest(const Licq::UserId&, unsigned long)));
   connect(kdeIMInterface,
       SIGNAL(addUser(const Licq::UserId&)),
       SLOT(addUser(const Licq::UserId&)));
@@ -438,7 +430,7 @@ void MainWindow::updateSkin()
     myMessageField = new SkinnableLabel(skin->lblMsg,
         mySystemMenu->getGroupMenu(), this);
     connect(myMessageField, SIGNAL(doubleClicked()),
-        LicqGui::instance(), SLOT(showNextEvent()));
+        gLicqGui, SLOT(showNextEvent()));
     connect(myMessageField, SIGNAL(wheelDown()), SLOT(nextGroup()));
     connect(myMessageField, SIGNAL(wheelUp()), SLOT(prevGroup()));
     myMessageField->setToolTip(tr("Right click - User groups\n"
@@ -468,9 +460,9 @@ void MainWindow::updateSkin()
 
 void MainWindow::CreateUserView()
 {
-  myUserView = new UserView(LicqGui::instance()->contactList(), this);
+  myUserView = new UserView(gGuiContactList, this);
   connect (myUserView, SIGNAL(userDoubleClicked(const Licq::UserId&)),
-      LicqGui::instance(), SLOT(showDefaultEventDialog(const Licq::UserId&)));
+      gLicqGui, SLOT(showDefaultEventDialog(const Licq::UserId&)));
 }
 
 void MainWindow::resizeEvent(QResizeEvent* /* e */)
@@ -530,7 +522,7 @@ void MainWindow::closeEvent(QCloseEvent* e)
 {
   e->ignore();
 
-  if (LicqGui::instance()->dockIcon() != NULL)
+  if (gLicqGui->dockIcon() != NULL)
     hide();
   else
     slot_shutdown();
@@ -540,7 +532,7 @@ void MainWindow::removeUserFromList()
 {
   UserId userId = myUserView->currentUserId();
 
-  LicqGui::instance()->removeUserFromList(userId, this);
+  gLicqGui->removeUserFromList(userId, this);
 }
 
 void MainWindow::removeUserFromGroup()
@@ -558,7 +550,7 @@ void MainWindow::removeUserFromGroup()
   // Get currently selected user
   UserId userId = myUserView->currentUserId();
 
-  LicqGui::instance()->setUserInGroup(userId, groupId, false);
+  gLicqGui->setUserInGroup(userId, groupId, false);
 }
 
 void MainWindow::callUserFunction(QAction* action)
@@ -567,9 +559,9 @@ void MainWindow::callUserFunction(QAction* action)
   UserId userId = myUserView->currentUserId();
 
   if (index == -1)
-    LicqGui::instance()->showViewEventDialog(userId);
+    gLicqGui->showViewEventDialog(userId);
   else
-    LicqGui::instance()->showEventDialog(index, userId);
+    gLicqGui->showEventDialog(index, userId);
 }
 
 void MainWindow::checkUserAutoResponse()
@@ -588,7 +580,7 @@ void MainWindow::showUserHistory()
 
 void MainWindow::hide()
 {
-  if (LicqGui::instance()->dockIcon() != NULL)
+  if (gLicqGui->dockIcon() != NULL)
     QWidget::hide();
 }
 
@@ -681,11 +673,11 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
           Config::General::instance()->trayMsgOnlineNotify())
       {
         // User on notify list went online -> show popup at systray icon
-        if (LicqGui::instance()->dockIcon() != NULL && u->OnlineNotify())
+        if (gLicqGui->dockIcon() != NULL && u->OnlineNotify())
         {
           QString alias = QString::fromUtf8(u->GetAlias());
           QPixmap px = IconManager::instance()->iconForUser(u);
-          LicqGui::instance()->dockIcon()->popupMessage(alias, tr("is online"), px, 4000);
+          gLicqGui->dockIcon()->popupMessage(alias, tr("is online"), px, 4000);
         }
       }
 
@@ -769,8 +761,8 @@ void MainWindow::updateEvents()
     myMessageField->update();
   }
 
-  if (LicqGui::instance()->dockIcon() != NULL)
-    LicqGui::instance()->dockIcon()->updateIconMessages(nNumUserEvents, nNumOwnerEvents);
+  if (gLicqGui->dockIcon() != NULL)
+    gLicqGui->dockIcon()->updateIconMessages(nNumUserEvents, nNumOwnerEvents);
 }
 
 void MainWindow::setCurrentGroup(int index)
@@ -954,8 +946,8 @@ void MainWindow::updateGroups(bool initial)
 
 void MainWindow::updateStatus()
 {
-  if (LicqGui::instance()->dockIcon() != NULL)
-    LicqGui::instance()->dockIcon()->updateIconStatus();
+  if (gLicqGui->dockIcon() != NULL)
+    gLicqGui->dockIcon()->updateIconStatus();
 
   if (myStatusField == NULL)
     return;

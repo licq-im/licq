@@ -33,7 +33,6 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
-#include "core/licqgui.h"
 #include "core/signalmanager.h"
 #include "core/usermenu.h"
 #include "helpers/support.h"
@@ -68,7 +67,7 @@ UserDlg::UserDlg(const UserId& userId, QWidget* parent)
   {
     QPushButton* myUserMenuButton = new QPushButton(tr("Menu"));
     connect(myUserMenuButton, SIGNAL(pressed()), SLOT(showUserMenu()));
-    myUserMenuButton->setMenu(LicqGui::instance()->userMenu());
+    myUserMenuButton->setMenu(gUserMenu);
     buttonsLayout->addWidget(myUserMenuButton);
   }
 
@@ -121,7 +120,7 @@ UserDlg::UserDlg(const UserId& userId, QWidget* parent)
   }
   resetCaption();
 
-  connect(LicqGui::instance()->signalManager(),
+  connect(gGuiSignalManager,
       SIGNAL(updatedUser(const Licq::UserId&, unsigned long, int, unsigned long)),
       SLOT(userUpdated(const Licq::UserId&, unsigned long)));
 
@@ -174,8 +173,8 @@ void UserDlg::retrieve()
   {
     setCursor(Qt::WaitCursor);
     myProgressMsg = tr("Updating...");
-    connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneFunction(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+        SLOT(doneFunction(const LicqEvent*)));
     setWindowTitle(myBasicTitle + " [" + myProgressMsg + "]");
   }
 }
@@ -188,8 +187,8 @@ void UserDlg::send()
   {
     myProgressMsg = tr("Updating server...");
     setCursor(Qt::WaitCursor);
-    connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneFunction(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+        SLOT(doneFunction(const LicqEvent*)));
     setWindowTitle(myBasicTitle + " [" + myProgressMsg +"]");
   }
 }
@@ -276,13 +275,13 @@ void UserDlg::doneFunction(const LicqEvent* event)
   QTimer::singleShot(5000, this, SLOT(resetCaption()));
   setCursor(Qt::ArrowCursor);
   myIcqEventTag = 0;
-  disconnect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(const LicqEvent*)), this, SLOT(doneFunction(const LicqEvent*)));
+  disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+      this, SLOT(doneFunction(const LicqEvent*)));
 }
 
 void UserDlg::showUserMenu()
 {
-  LicqGui::instance()->userMenu()->setUser(myUserId);
+  gUserMenu->setUser(myUserId);
 }
 
 void UserDlg::resetCaption()

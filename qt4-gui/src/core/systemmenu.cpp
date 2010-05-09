@@ -91,7 +91,7 @@ SystemMenu::SystemMenu(QWidget* parent)
 
   // Sub menu System Functions
   myOwnerAdmMenu = new QMenu(tr("S&ystem Functions"));
-  myOwnerAdmMenu->addAction(tr("&View System Messages..."), LicqGui::instance(), SLOT(showAllOwnerEvents()));
+  myOwnerAdmMenu->addAction(tr("&View System Messages..."), gLicqGui, SLOT(showAllOwnerEvents()));
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmSeparator = myOwnerAdmMenu->addSeparator();
   myAccountManagerAction = myOwnerAdmMenu->addAction(tr("&Account Manager..."), this, SLOT(showOwnerManagerDlg()));
@@ -108,12 +108,12 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserReqAutorizeAction = myUserAdmMenu->addAction(tr("Re&quest Authorization..."), this, SLOT(showReqAuthDlg()));
   myIcqRandomChatAction = myUserAdmMenu->addAction(tr("ICQ R&andom Chat..."), this, SLOT(showRandomChatSearchDlg()));
   myUserAdmMenu->addSeparator();
-  myUserPopupAllAction = myUserAdmMenu->addAction(tr("&Popup All Messages..."), LicqGui::instance(), SLOT(showAllEvents()));
+  myUserPopupAllAction = myUserAdmMenu->addAction(tr("&Popup All Messages..."), gLicqGui, SLOT(showAllEvents()));
   myEditGroupsAction = myUserAdmMenu->addAction(tr("Edit &Groups..."), this, SLOT(showEditGrpDlg()));
   myUserAdmMenu->addSeparator();
   myUserAdmMenu->addAction(tr("Update All Users"), this, SLOT(updateAllUsers()));
   myUserAdmMenu->addAction(tr("Update Current Group"), this, SLOT(updateAllUsersInGroup()));
-  myRedrawContactListAction = myUserAdmMenu->addAction(tr("&Redraw User Window"), LicqGui::instance()->contactList(), SLOT(reloadAll()));
+  myRedrawContactListAction = myUserAdmMenu->addAction(tr("&Redraw User Window"), gGuiContactList, SLOT(reloadAll()));
   myUserAdmMenu->addAction(tr("&Save All Users"), this, SLOT(saveAllUsers()));
 
   // Sub menu Follow Me
@@ -188,7 +188,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   addMenu(myGroupMenu);
   mySetArAction = addAction(tr("Set &Auto Response..."), gMainWindow, SLOT(showAwayMsgDlg()));
   addSeparator();
-  myLogWinAction = addAction(tr("&Network Window..."), LicqGui::instance()->logWindow(), SLOT(show()));
+  myLogWinAction = addAction(tr("&Network Window..."), gLicqGui->logWindow(), SLOT(show()));
   myMiniModeAction = addAction(tr("&Mini Mode"), Config::General::instance(), SLOT(setMiniMode(bool)));
   myMiniModeAction->setCheckable(true);
   myShowOfflineAction = addAction(tr("Show Offline &Users"), Config::ContactList::instance(), SLOT(setShowOffline(bool)));
@@ -201,7 +201,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   if (!gLicqDaemon->haveGpgSupport())
     myKeyManagerAction->setVisible(false);
   addSeparator();
-  mySaveOptionsAction = addAction(tr("Sa&ve Settings"), LicqGui::instance(), SLOT(saveConfig()));
+  mySaveOptionsAction = addAction(tr("Sa&ve Settings"), gLicqGui, SLOT(saveConfig()));
   addMenu(myHelpMenu);
   myShutdownAction = addAction(tr("E&xit"), gMainWindow, SLOT(slot_shutdown()));
 
@@ -209,7 +209,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   // placed here to be groupped with other system actions.
   myPopupMessageAction = new QAction("Popup Next Message", gMainWindow);
   gMainWindow->addAction(myPopupMessageAction);
-  connect(myPopupMessageAction, SIGNAL(triggered()), LicqGui::instance(), SLOT(showNextEvent()));
+  connect(myPopupMessageAction, SIGNAL(triggered()), gLicqGui, SLOT(showNextEvent()));
   myHideMainwinAction = new QAction("Hide Mainwindow", gMainWindow);
   gMainWindow->addAction(myHideMainwinAction);
   connect(myHideMainwinAction, SIGNAL(triggered()), gMainWindow, SLOT(hide()));
@@ -441,8 +441,7 @@ void SystemMenu::aboutToShowDebugMenu()
 {
   using Licq::Log;
 
-  Licq::PluginLogSink::Ptr sink =
-      LicqGui::instance()->logWindow()->pluginLogSink();
+  Licq::PluginLogSink::Ptr sink = gLicqGui->logWindow()->pluginLogSink();
 
   foreach (QAction* action, myDebugMenu->actions())
   {
@@ -461,8 +460,7 @@ void SystemMenu::aboutToShowDebugMenu()
 
 void SystemMenu::changeDebug(QAction* action)
 {
-  Licq::PluginLogSink::Ptr sink =
-      LicqGui::instance()->logWindow()->pluginLogSink();
+  Licq::PluginLogSink::Ptr sink = gLicqGui->logWindow()->pluginLogSink();
 
   const int data = action->data().toInt();
   if (data == LOG_SET_ALL || data == LOG_CLEAR_ALL)
@@ -515,12 +513,12 @@ void SystemMenu::setMainStatus(QAction* action)
   if (withMsg)
     AwayMsgDlg::showAwayMsgDlg(status, true, 0);
   else
-    LicqGui::instance()->changeStatus(status, invisible);
+    gLicqGui->changeStatus(status, invisible);
 }
 
 void SystemMenu::toggleMainInvisibleStatus()
 {
-  LicqGui::instance()->changeStatus(User::InvisibleStatus, myStatusInvisibleAction->isChecked());
+  gLicqGui->changeStatus(User::InvisibleStatus, myStatusInvisibleAction->isChecked());
 }
 
 void SystemMenu::updateAllUsers()
@@ -710,7 +708,7 @@ void OwnerData::aboutToShowStatusMenu()
 
 void OwnerData::viewInfo()
 {
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUserId);
+  gLicqGui->showInfoDialog(mnuUserGeneral, myUserId);
 }
 
 void OwnerData::viewHistory()
@@ -730,10 +728,10 @@ void OwnerData::setStatus(QAction* action)
   if (withMsg)
     AwayMsgDlg::showAwayMsgDlg(status, true, myPpid);
   else
-    LicqGui::instance()->changeStatus(status, myUserId, invisible);
+    gLicqGui->changeStatus(status, myUserId, invisible);
 }
 
 void OwnerData::toggleInvisibleStatus()
 {
-  LicqGui::instance()->changeStatus(User::InvisibleStatus, myUserId, myStatusInvisibleAction->isChecked());
+  gLicqGui->changeStatus(User::InvisibleStatus, myUserId, myStatusInvisibleAction->isChecked());
 }

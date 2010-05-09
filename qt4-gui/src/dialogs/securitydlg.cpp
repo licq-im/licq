@@ -32,7 +32,6 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
@@ -127,8 +126,8 @@ void SecurityDlg::ok()
     gUserManager.DropOwner(o);
     btnUpdate->setEnabled(false);
 
-    connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneUserFcn(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+        SLOT(doneUserFcn(const LicqEvent*)));
 
     setWindowTitle(title + " [" + tr("Setting...") + "]");
 
@@ -151,8 +150,8 @@ void SecurityDlg::doneUserFcn(const LicqEvent* e)
   QString result = QString::null;
   btnUpdate->setEnabled(true);
 
-  disconnect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(const LicqEvent*)), this, SLOT(doneUserFcn(const LicqEvent*)));
+  disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
+      this, SLOT(doneUserFcn(const LicqEvent*)));
 
   switch (e->Result())
   {

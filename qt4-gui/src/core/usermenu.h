@@ -51,6 +51,8 @@ public:
    */
   UserMenu(QWidget* parent = 0);
 
+  ~UserMenu();
+
   /**
    * Update the list of groups from the daemon. This must be called when the
    * list of groups is changed.
@@ -188,6 +190,8 @@ private:
   QMap<SendModes, QAction*> mySendActions;
   QMap<MiscModes, QAction*> myMiscModesActions;
 };
+
+extern UserMenu* gUserMenu;
 
 } // namespace LicqQtGui
 
