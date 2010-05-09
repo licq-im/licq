@@ -38,7 +38,6 @@
 #include "config/chat.h"
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "dialogs/mmsenddlg.h"
@@ -46,8 +45,6 @@
 
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
-
-#include "usereventtabdlg.h"
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
@@ -68,10 +65,6 @@ UserSendUrlEvent::UserSendUrlEvent(const UserId& userId, QWidget* parent)
   myUrlEdit->installEventFilter(this);
 
   myBaseTitle += tr(" - URL");
-
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
   myEventTypeGroup->actions().at(UrlEvent)->setChecked(true);

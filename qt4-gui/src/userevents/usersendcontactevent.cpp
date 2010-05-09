@@ -35,7 +35,6 @@
 #include "contactlist/contactlist.h"
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 
 #include "dialogs/mmsenddlg.h"
 #include "dialogs/showawaymsgdlg.h"
@@ -43,8 +42,6 @@
 #include "views/mmuserview.h"
 
 #include "widgets/mledit.h"
-
-#include "usereventtabdlg.h"
 
 using Licq::StringList;
 using Licq::gProtocolManager;
@@ -78,10 +75,6 @@ UserSendContactEvent::UserSendContactEvent(const UserId& userId, QWidget* parent
   lay->addWidget(myContactsList);
 
   myBaseTitle += tr(" - Contact List");
-
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
   myEventTypeGroup->actions().at(ContactEvent)->setChecked(true);

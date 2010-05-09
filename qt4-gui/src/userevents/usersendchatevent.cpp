@@ -26,6 +26,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QTextCodec>
+#include <QTimer>
 
 #include <licq_icqd.h>
 #include <licq_user.h>
@@ -34,7 +35,6 @@
 #include "config/chat.h"
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "dialogs/chatdlg.h"
@@ -42,8 +42,6 @@
 
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
-
-#include "usereventtabdlg.h"
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
@@ -76,10 +74,6 @@ UserSendChatEvent::UserSendChatEvent(const UserId& userId, QWidget* parent)
   h_lay->addWidget(myBrowseButton);
 
   myBaseTitle += tr(" - Chat Request");
-
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
   myEventTypeGroup->actions().at(ChatEvent)->setChecked(true);

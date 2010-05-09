@@ -34,13 +34,10 @@
 #include <licq/protocolmanager.h>
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
-
-#include "usereventtabdlg.h"
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
@@ -87,10 +84,6 @@ UserSendSmsEvent::UserSendSmsEvent(const UserId& userId, QWidget* parent)
   }
 
   myBaseTitle += tr(" - SMS");
-
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
   myEventTypeGroup->actions().at(SmsEvent)->setChecked(true);

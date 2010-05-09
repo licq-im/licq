@@ -41,7 +41,6 @@
 #include <licq/protocolmanager.h>
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "dialogs/filedlg.h"
@@ -49,8 +48,6 @@
 
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
-
-#include "usereventtabdlg.h"
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
@@ -85,10 +82,6 @@ UserSendFileEvent::UserSendFileEvent(const UserId& userId, QWidget* parent)
   h_lay->addWidget(myEditButton);
 
   myBaseTitle += tr(" - File Transfer");
-
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
   myEventTypeGroup->actions().at(FileEvent)->setChecked(true);

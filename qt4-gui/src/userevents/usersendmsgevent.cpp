@@ -35,16 +35,12 @@
 #include "config/chat.h"
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 
 #include "dialogs/mmsenddlg.h"
 #include "dialogs/showawaymsgdlg.h"
 
 #include "widgets/mledit.h"
-
-#include "usereventcommon.h"
-#include "usereventtabdlg.h"
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
@@ -59,10 +55,6 @@ UserSendMsgEvent::UserSendMsgEvent(const UserId& userId, QWidget* parent)
     myMessageEdit->setMinimumHeight(150);
 
   myBaseTitle += tr(" - Message");
-
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
   myEventTypeGroup->actions().at(MessageEvent)->setChecked(true);
