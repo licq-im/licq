@@ -614,9 +614,9 @@ void CMSN::MSNLogoff(bool bDisconnected)
   // Close user sockets and update the daemon
   FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_W)
   {
-    if (pUser->SocketDesc(ICQ_CHNxNONE) != -1)
+    if (pUser->normalSocketDesc() != -1)
     {
-      gSocketMan.CloseSocket(pUser->SocketDesc(ICQ_CHNxNONE), false, true);
+      gSocketMan.CloseSocket(pUser->normalSocketDesc(), false, true);
       pUser->ClearSocketDesc();
     }
     if (pUser->isOnline())

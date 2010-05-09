@@ -86,9 +86,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const UserId& userId, bool fetch, QWidget* parent
 
   if (fetch)
   {
-    bool bSendServer =
-      (u->SocketDesc(ICQ_CHNxNONE) <= 0 &&
-       u->Version() > 6);
+    bool bSendServer = (u->normalSocketDesc() <= 0 && u->Version() > 6);
     unsigned long myPpid = u->ppid();
     QString myId = u->accountId().c_str();
     gUserManager.DropUser(u);

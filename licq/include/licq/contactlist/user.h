@@ -751,6 +751,11 @@ public:
   void ClearSocketDesc(unsigned char nChannel = 0x00);
   void SetSocketDesc(TCPSocket *);
 
+  // Convenience functions so plugins don't need to know ICQ_CHNx constants
+  int normalSocketDesc() const                  { return m_nNormalSocketDesc; }
+  int infoSocketDesc() const                    { return m_nInfoSocketDesc; }
+  void clearNormalSocketDesc();
+
   // Events functions
   static unsigned short getNumUserEvents();
   static void incNumUserEvents();

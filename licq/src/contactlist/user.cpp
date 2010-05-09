@@ -1221,6 +1221,11 @@ void User::ClearSocketDesc(unsigned char nChannel)
     gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, myId, 0));
 }
 
+void User::clearNormalSocketDesc()
+{
+  ClearSocketDesc(ICQ_CHNxNONE);
+}
+
 unsigned short User::ConnectionVersion() const
 {
   // If we are already connected, use that version

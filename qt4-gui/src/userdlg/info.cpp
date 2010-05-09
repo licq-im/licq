@@ -55,7 +55,6 @@
 
 #include <licq/icqcodes.h>
 #include <licq/protocolmanager.h>
-#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_user.h>
@@ -1525,7 +1524,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
     const LicqUser* u = gUserManager.fetchUser(myUserId);
     if (u == NULL)
       return 0;
-      bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
+      bool bSendServer = (u->infoSocketDesc() < 0);
       gUserManager.DropUser(u);
       icqEventTag = gLicqDaemon->icqRequestPhoneBook(myId.toLatin1(), bSendServer);
   }

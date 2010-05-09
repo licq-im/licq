@@ -322,8 +322,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         LicqUserWriteGuard u(userId);
         if (u.isLocked())
         {
-          u->ClearSocketDesc(ICQ_CHNxNONE);
-          nThisSock = u->SocketDesc(ICQ_CHNxNONE);
+          u->clearNormalSocketDesc();
+          nThisSock = u->normalSocketDesc();
         }
       }
 
@@ -386,7 +386,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
     LicqUserReadGuard u(userId);
     if (!u.isLocked())
       return;
-    nSock = u->SocketDesc(ICQ_CHNxNONE);
+    nSock = u->normalSocketDesc();
   }
   INetSocket *s = gSocketMan.FetchSocket(nSock);
   if (!s)
@@ -406,7 +406,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
     {
       LicqUserWriteGuard u(userId);
       if (u.isLocked())
-        u->ClearSocketDesc(ICQ_CHNxNONE);
+        u->clearNormalSocketDesc();
     }
 
     if (convo == NULL || convo->isEmpty())
@@ -659,8 +659,8 @@ void CMSN::killConversation(int sock)
 
       // Clear socket from user if it's still is associated with this conversation
       LicqUserWriteGuard u(userId);
-      if (u.isLocked() && u->SocketDesc(ICQ_CHNxNONE) == sock)
-        u->ClearSocketDesc(ICQ_CHNxNONE);
+      if (u.isLocked() && u->normalSocketDesc() == sock)
+        u->clearNormalSocketDesc();
     }
     gConvoManager.remove(convoId);
   }

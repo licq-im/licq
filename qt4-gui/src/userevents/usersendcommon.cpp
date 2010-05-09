@@ -174,9 +174,9 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
   if (u != NULL)
   {
     mySendServerCheck->setChecked(u->SendServer() ||
-        (!u->isOnline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
+        (!u->isOnline() && u->normalSocketDesc() == -1));
 
-    if (u->InvisibleList() || (u->Port() == 0 && u->SocketDesc(ICQ_CHNxNONE) == -1))
+    if (u->InvisibleList() || (u->Port() == 0 && u->normalSocketDesc() == -1))
       canSendDirect = false;
 
     gUserManager.DropUser(u);
@@ -377,9 +377,9 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
 //         }
 //       }
 
-      if (u->SocketDesc(ICQ_CHNxNONE) != 1)
+      if (u->normalSocketDesc() != 1)
       {
-        Licq::Conversation* convo = gConvoManager.getFromSocket(u->SocketDesc(ICQ_CHNxNONE));
+        Licq::Conversation* convo = gConvoManager.getFromSocket(u->normalSocketDesc());
         if (convo != NULL)
           myConvoId = convo->id();
       }
