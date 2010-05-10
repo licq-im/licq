@@ -26,9 +26,34 @@
 
 using namespace std;
 
-// Endianness utility routines: Unlike Real Internet Protocols, this
-// heap of dung uses little-endian byte sex.  With the new v7 and above
-// this heap of SHIT uses little-endian and big-endian byte sex.
+
+COscarTLV::COscarTLV(unsigned short type, unsigned short length, const char* data)
+  : myType(type), myLen(length)
+{
+  if (myLen > 0)
+  {
+    myData = boost::shared_array<unsigned char>(new  unsigned char[myLen]);
+    memcpy(myData.get(), data, myLen);
+  }
+}
+
+COscarTLV::COscarTLV(const COscarTLV& c)
+{
+  myType = c.myType;
+  myLen = c.myLen;
+  myData = boost::shared_array<unsigned char>(new unsigned char[c.myLen]);
+  memcpy(myData.get(), c.myData.get(), c.myLen);
+}
+
+void COscarTLV::setData(unsigned char* data, unsigned short length)
+{
+  if (length > 0)
+  {
+    myLen = length;
+    myData = boost::shared_array<unsigned char>(new unsigned char[length]);
+    memcpy(myData.get(), data, length);
+  }
+}
 
 
 //=====Buffer================================================================

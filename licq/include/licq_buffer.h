@@ -1,7 +1,6 @@
 #ifndef LICQ_BUFFER_H
 #define LICQ_BUFFER_H
 
-#include <cstring>
 #include <map>
 #include <string>
 
@@ -13,37 +12,16 @@
 class COscarTLV
 {
 public:
-  COscarTLV(unsigned short type = 0, unsigned short length = 0, const char* data = NULL) : myType(type), myLen(length)
-  {
-    if (myLen > 0)
-    {
-      myData = boost::shared_array<unsigned char>(new  unsigned char[myLen]);
-      memcpy(myData.get(), data, myLen);
-    }
-  }
+  COscarTLV(unsigned short type = 0, unsigned short length = 0, const char* data = NULL);
 
-  COscarTLV(const COscarTLV &c)
-  {
-    myType = c.myType;
-    myLen = c.myLen;
-    myData = boost::shared_array<unsigned char>(new unsigned char[c.myLen]);
-    memcpy(myData.get(), c.myData.get(), c.myLen);
-  }
+  COscarTLV(const COscarTLV& c);
 
   unsigned short getType() const                     { return myType; }
   unsigned short getLength() const                   { return myLen; }
   boost::shared_array<unsigned char> getData() const { return myData; }
 
   void setType(unsigned short type) { myType = type; }
-  void setData(unsigned char *data, unsigned short length)
-  {
-    if (length > 0)
-    {
-      myLen = length;
-      myData = boost::shared_array<unsigned char>(new unsigned char[length]);
-      memcpy(myData.get(), data, length);
-    }
-  }
+  void setData(unsigned char* data, unsigned short length);
 
 private:
   unsigned short myType;
