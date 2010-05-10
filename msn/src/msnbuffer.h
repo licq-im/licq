@@ -19,7 +19,7 @@
 #ifndef __MSNBUFFER_H
 #define __MSNBUFFER_H
 
-#include "licq_buffer.h"
+#include <licq/buffer.h>
 
 #include <string>
 #include <list>
@@ -31,14 +31,14 @@ struct SHeader
 };
 
 
-class CMSNBuffer : public CBuffer
+class CMSNBuffer : public Licq::Buffer
 {
 public:
-  CMSNBuffer() : CBuffer() { }
-  CMSNBuffer(unsigned long n) : CBuffer(n) { }
+  CMSNBuffer() : Licq::Buffer() { }
+  CMSNBuffer(unsigned long n) : Licq::Buffer(n) { }
   virtual ~CMSNBuffer() { ClearHeaders(); }
   CMSNBuffer(CMSNBuffer &);
-  CMSNBuffer(CBuffer &);
+  CMSNBuffer(Licq::Buffer&);
 
   bool ParseHeaders();
   std::string GetValue(const std::string& key);

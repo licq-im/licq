@@ -1,6 +1,7 @@
 set(licq_HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/licqversion.h
 
+  buffer.h
   byteorder.h
   conversation.h
   daemon.h

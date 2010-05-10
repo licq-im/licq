@@ -2851,7 +2851,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   unsigned short nExportSize = 0;
   ICQUser *u = 0;
   char *szUnicodeName = 0;
-  TLVList tlvs;
+  Licq::TlvList tlvs;
   CBuffer tlvBuffer;
 
   m_nSID = gUserManager.GenerateSID();
@@ -2922,7 +2922,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       // We need to iterate two times since we don't have a dynamic CBuffer
       unsigned short extraTlvSize = 0;
-      TLVListIter tlv_iter;
+      Licq::TlvList::iterator tlv_iter;
       for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
         extraTlvSize += tlv_iter->second->getLength() + 4;
 
@@ -3043,10 +3043,10 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
     const ICQUser* u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_R);
     if (u)
     {
-      TLVList tlvs = u->GetTLVList();
+      Licq::TlvList tlvs = u->GetTLVList();
 
       unsigned short extraTlvSize = 0;
-      TLVListIter tlv_iter;
+      Licq::TlvList::iterator tlv_iter;
       for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
         extraTlvSize += tlv_iter->second->getLength() + 4;
 
@@ -3185,11 +3185,11 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
         // Get all the TLV's attached to this user, otherwise the server will delete
         // all of the ones that we don't send
-        TLVList tlvs = u->GetTLVList();
+        Licq::TlvList tlvs = u->GetTLVList();
 
         // We need to iterate two times since we don't have a dynamic CBuffer
         unsigned short extraTlvSize = 0;
-        TLVListIter tlv_iter;
+        Licq::TlvList::iterator tlv_iter;
         for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
           extraTlvSize += tlv_iter->second->getLength() + 4;
 

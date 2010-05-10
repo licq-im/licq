@@ -23,7 +23,7 @@
 using namespace std;
 
 CMSNBuffer::CMSNBuffer(CMSNBuffer &b)
-  : CBuffer(b)
+  : Licq::Buffer(b)
 {
   m_nDataSize = b.getDataMaxSize();
   if (m_nDataSize)
@@ -39,7 +39,7 @@ CMSNBuffer::CMSNBuffer(CMSNBuffer &b)
   m_pDataPosWrite = m_pDataStart + (b.getDataPosWrite() - b.getDataStart());
 }
 
-CMSNBuffer::CMSNBuffer(CBuffer &b)
+CMSNBuffer::CMSNBuffer(Licq::Buffer& b)
 {
   m_nDataSize = b.getDataMaxSize();
   if (m_nDataSize)

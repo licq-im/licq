@@ -1105,7 +1105,7 @@ void User::setAlias(const string& alias)
   if (!myAlias.empty())
   {
     size_t aliasLen = myAlias.size();
-    TLVPtr aliasTLV(new COscarTLV(0x131, aliasLen, myAlias.c_str()));
+    Licq::TlvPtr aliasTLV(new Licq::OscarTlv(0x131, aliasLen, myAlias.c_str()));
     AddTLV(aliasTLV);
   }
 
@@ -2265,7 +2265,7 @@ string User::GetPPField(const string &_sName)
   return string("");
 }
 
-void User::AddTLV(TLVPtr tlv)
+void User::AddTLV(Licq::TlvPtr tlv)
 {
   myTLVs[tlv->getType()] = tlv;
 }
@@ -2275,11 +2275,11 @@ void User::RemoveTLV(unsigned long type)
   myTLVs.erase(type);
 }
 
-void User::SetTLVList(TLVList& tlvs)
+void User::SetTLVList(Licq::TlvList& tlvs)
 {
   myTLVs.clear();
 
-  for (TLVListIter it = tlvs.begin(); it != tlvs.end(); it++)
+  for (Licq::TlvList::iterator it = tlvs.begin(); it != tlvs.end(); it++)
     myTLVs[it->first] = it->second;
 }
 

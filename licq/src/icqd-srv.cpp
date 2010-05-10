@@ -3725,8 +3725,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
             CUserProperties* data = iter->second;
 
-            TLVList list = packet.getTLVList();
-            for (TLVListIter it = list.begin(); it != list.end(); it++)
+            Licq::TlvList list = packet.getTlvList();
+            for (Licq::TlvList::iterator it = list.begin(); it != list.end(); it++)
               data->tlvs[it->first] = it->second;
 
 #define COPYTLV(type, var) \
@@ -3892,13 +3892,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         u->addToGroup(gUserManager.GetGroupFromID(gsid));
 
         // Now the the tlv of attributes to attach to the user
-        TLVList tlvList = packet.getTLVList();
-        TLVListIter iter;
+        Licq::TlvList tlvList = packet.getTlvList();
+        Licq::TlvList::iterator iter;
         for (iter = tlvList.begin(); iter != tlvList.end(); ++iter)
-        {
-          TLVPtr tlv = iter->second;
-          u->AddTLV(tlv);
-        }
+          u->AddTLV(iter->second);
 
         u->SaveLicqInfo();
         pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, u->id()));

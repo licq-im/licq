@@ -140,7 +140,7 @@ private:
 
   bool awaitingAuth;
 
-  TLVList tlvs;
+  Licq::TlvList tlvs;
 
 friend class CICQDaemon;
 };

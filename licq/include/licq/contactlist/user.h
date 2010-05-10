@@ -8,9 +8,9 @@
 #include <string>
 #include <vector>
 
-#include "licq_buffer.h"
 #include "licq_file.h"
 #include "licq_history.h"
+#include "../buffer.h"
 #include "../thread/lockable.h"
 #include "../userid.h"
 
@@ -739,11 +739,11 @@ public:
   char* PortStr(char* rbuf) const;
 
   // User TLV List handling
-  void AddTLV(TLVPtr);
+  void AddTLV(TlvPtr);
   void RemoveTLV(unsigned long);
-  void SetTLVList(TLVList& tlvs);
-  TLVList GetTLVList()                          { return myTLVs; }
-  const TLVList GetTLVList() const              { return myTLVs; }
+  void SetTLVList(TlvList& tlvs);
+  TlvList GetTLVList()                          { return myTLVs; }
+  const TlvList GetTLVList() const              { return myTLVs; }
 
 
   // Don't call these:
@@ -915,7 +915,7 @@ protected:
   // We use a map to allow fast access to the TLV by type, even though the
   // actual type is in SOscarTLV as well. Which should make it obvious
   // that the TLV handling should be fixed in licq_buffer.h/buffer.cpp
-  TLVList myTLVs;
+  TlvList myTLVs;
 
   UserEventList m_vcMessages;
 

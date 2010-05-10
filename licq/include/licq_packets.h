@@ -14,10 +14,11 @@ namespace Licq
 {
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
+class Buffer;
 }
 
 class CICQColor;
-class CBuffer;
+typedef Licq::Buffer CBuffer;
 class INetSocket;
 
 typedef std::map<int, std::string> GroupNameMap;

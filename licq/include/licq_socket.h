@@ -8,12 +8,16 @@
 #include <vector>
 #include <list>
 
-#include "licq_buffer.h"
+#include <licq/buffer.h>
 #include "licq_constants.h"
 #include <licq/thread/readwritemutex.h>
 #include "licq/userid.h"
 
 class ProxyServer;
+
+// Temporary to keep old code working until this header has also been ported
+typedef Licq::Buffer CBuffer;
+
 
 // IPv6 is implemented in socket classes but Licq support must be considered experimental for now
 // Uncomment the following line to disable IPv6 socket usage

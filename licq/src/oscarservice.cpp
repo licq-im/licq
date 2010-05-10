@@ -17,22 +17,21 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-// Localization
-#include "gettext.h"
-
+#include <licq/buffer.h>
 #include "licq/byteorder.h"
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "licq_socket.h"
 #include "licq_proxy.h"
 #include "licq_packets.h"
-#include "licq_buffer.h"
 #include "licq_log.h"
 #include <licq_user.h>
 
+#include "gettext.h"
 #include "support.h"
 
 using namespace std;
+using Licq::Buffer;
 
 COscarService::COscarService(unsigned short Fam)
 {
@@ -100,7 +99,7 @@ bool COscarService::SendPacket(CPacket *p)
 {
   INetSocket *s = gSocketManager.FetchSocket(mySocketDesc);
   if (s == NULL) return false;
-  CBuffer *b = p->Finalize(s);
+  Buffer *b = p->Finalize(s);
   if (!s->Send(b))
   {
     char ErrorBuf[128];
@@ -180,7 +179,7 @@ bool COscarService::SendBARTFam(ICQEvent *e)
   return false;
 }
 
-bool COscarService::ProcessPacket(CBuffer &packet)
+bool COscarService::ProcessPacket(Buffer& packet)
 {
   unsigned short Len;
   unsigned short Sequence;
@@ -228,7 +227,7 @@ bool COscarService::ProcessPacket(CBuffer &packet)
   return true;
 }
 
-void COscarService::ProcessNewChannel(CBuffer &packet)
+void COscarService::ProcessNewChannel(Buffer& packet)
 {
   unsigned long Version = packet.UnpackUnsignedLongBE();
   
@@ -239,7 +238,7 @@ void COscarService::ProcessNewChannel(CBuffer &packet)
   }
 }
               
-void COscarService::ProcessDataChannel(CBuffer &packet)
+void COscarService::ProcessDataChannel(Buffer& packet)
 {
   unsigned short Family, SubType, Flags;
   unsigned long RequestId;
@@ -277,7 +276,7 @@ void COscarService::ProcessDataChannel(CBuffer &packet)
   }
 }
 
-void COscarService::ProcessServiceFam(CBuffer &packet, unsigned short SubType,
+void COscarService::ProcessServiceFam(Buffer& packet, unsigned short SubType,
                                       unsigned long RequestId)
 {
   switch (SubType)
@@ -320,7 +319,7 @@ void COscarService::ProcessServiceFam(CBuffer &packet, unsigned short SubType,
   }
 }
 
-void COscarService::ProcessBARTFam(CBuffer &packet, unsigned short SubType,
+void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
                                    unsigned long RequestId)
 {
   switch (SubType)

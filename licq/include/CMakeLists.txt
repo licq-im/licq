@@ -1,5 +1,4 @@
 set(licq_HEADERS
-  licq_buffer.h
   licq_chat.h
   licq_color.h
   licq_constants.h
