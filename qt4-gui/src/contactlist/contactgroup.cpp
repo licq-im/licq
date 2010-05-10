@@ -139,47 +139,43 @@ int ContactGroup::indexOf(ContactUser* user) const
 
 void ContactGroup::addUser(ContactUser* user, ContactListModel::SubGroupType subGroup)
 {
-  // Signal that we are about to add a row
+  // Insert user in model
   emit beginInsert(this, rowCount());
-
   myUsers.append(user);
-  myBars[subGroup]->countIncrease();
-  myEvents += user->numEvents();
-  myBars[subGroup]->updateNumEvents(user->numEvents());
-  if (user->visibility())
-  {
-    myVisibleContacts++;
-    myBars[subGroup]->updateVisibility(true);
-  }
-
-  // Signal that we're done adding
   emit endInsert();
 
-  // Update group and bar as counters may have changed
-  emit barDataChanged(myBars[subGroup], subGroup);
+  // Update group data
+  myEvents += user->numEvents();
+  if (user->visibility())
+    myVisibleContacts++;
   emit dataChanged(this);
+
+  // Update bar data
+  myBars[subGroup]->countIncrease();
+  myBars[subGroup]->updateNumEvents(user->numEvents());
+  if (user->visibility())
+    myBars[subGroup]->updateVisibility(true);
+  emit barDataChanged(myBars[subGroup], subGroup);
 }
 
 void ContactGroup::removeUser(ContactUser* user, ContactListModel::SubGroupType subGroup)
 {
-  // Signal that we are about to remove a row
-  emit beginRemove(this, indexOf(user));
-
-  myUsers.removeAll(user);
+  // Update bar data
   myBars[subGroup]->countDecrease();
-  myEvents -= user->numEvents();
   myBars[subGroup]->updateNumEvents(-user->numEvents());
   if (user->visibility())
-  {
-    myVisibleContacts--;
     myBars[subGroup]->updateVisibility(false);
-  }
+  emit barDataChanged(myBars[subGroup], subGroup);
 
-  // Signal that we're done removing
+  // Remove user from model
+  emit beginRemove(this, indexOf(user));
+  myUsers.removeAll(user);
   emit endRemove();
 
-  // Update group and bar as counters may have changed
-  emit barDataChanged(myBars[subGroup], subGroup);
+  // Update group data
+  myEvents -= user->numEvents();
+  if (user->visibility())
+    myVisibleContacts--;
   emit dataChanged(this);
 }
 
@@ -213,22 +209,26 @@ void ContactGroup::updateNumEvents(int counter, ContactListModel::SubGroupType s
   if (counter == 0)
     return;
 
-  myEvents += counter;
+  // Update bar data
   myBars[subGroup]->updateNumEvents(counter);
-
   emit barDataChanged(myBars[subGroup], subGroup);
+
+  // Update group data
+  myEvents += counter;
   emit dataChanged(this);
 }
 
 void ContactGroup::updateVisibility(bool increase, ContactListModel::SubGroupType subGroup)
 {
+  // Update bar data
+  myBars[subGroup]->updateVisibility(increase);
+  emit barDataChanged(myBars[subGroup], subGroup);
+
+  // Update group data
   if (increase)
     myVisibleContacts++;
   else
     myVisibleContacts--;
-  myBars[subGroup]->updateVisibility(increase);
-
-  emit barDataChanged(myBars[subGroup], subGroup);
   emit dataChanged(this);
 }
 

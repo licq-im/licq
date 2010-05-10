@@ -172,11 +172,6 @@ private:
   void update(const Licq::User* licqUser, unsigned long subSignal);
 
   /**
-   * Update sub group membership
-   */
-  void updateSubGroup();
-
-  /**
    * Update user picture
    *
    * @param u User to get picture from

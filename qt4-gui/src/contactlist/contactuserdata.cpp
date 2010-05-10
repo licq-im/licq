@@ -126,17 +126,18 @@ void ContactUserData::update(unsigned long subSignal, int argument)
   }
 
   LicqUserReadGuard u(myUserId);
-  {
-    if (!u.isLocked())
-      return;
+  if (!u.isLocked())
+    return;
 
-    update(*u, subSignal);
-  }
-  emit dataChanged(this);
+  update(*u, subSignal);
 }
 
 void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
 {
+  // Save some old values so we know if we got changes to signal
+  ContactListModel::SubGroupType oldSubGroup = mySubGroup;
+  bool oldVisibility = myVisibility;
+
   if (subSignal == 0 || subSignal == USER_STATUS)
   {
     myStatus = u->status();
@@ -185,44 +186,45 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
   if (subSignal == 0 || subSignal == USER_EVENTS)
     updateEvents(u);
 
-  if (subSignal == 0 || subSignal == USER_SETTINGS || subSignal == USER_GROUPS)
-    // Group membership is handled by ContactList so send it a signal to update
-    emit updateUserGroups(this, u);
-
   if (subSignal == 0 || subSignal == USER_PICTURE)
     updatePicture(u);
 
+  if (subSignal != USER_GROUPS && subSignal != USER_PICTURE &&
+      subSignal != USER_TYPING && subSignal != USER_SECURITY)
+  {
+    if (myNotInList)
+      mySubGroup = ContactListModel::NotInListSubGroup;
+    else if (myStatus == User::OfflineStatus)
+      mySubGroup = ContactListModel::OfflineSubGroup;
+    else
+      mySubGroup = ContactListModel::OnlineSubGroup;
 
-  if (subSignal == USER_GROUPS || subSignal == USER_PICTURE)
-    return;
+    updateText(u);
+    updateSorting();
+    updateVisibility();
+  }
 
-  if (subSignal == USER_TYPING || subSignal == USER_SECURITY)
-    return;
+  // Note: When we get called from constructor, noone is connected to our signals
+  //       and myUserInstances is empty so below code won't trigger anything strange
 
-  updateSubGroup();
-  updateText(u);
-  updateSorting();
-  updateVisibility();
-}
-
-void ContactUserData::updateSubGroup()
-{
-  // Set sub group to put user in
-  ContactListModel::SubGroupType newSubGroup = ContactListModel::OnlineSubGroup;
-
-  if (myNotInList)
-    newSubGroup = ContactListModel::NotInListSubGroup;
-
-  else if (myStatus == User::OfflineStatus)
-    newSubGroup = ContactListModel::OfflineSubGroup;
+  // Signal our own data changes before starting to touch groups and bars
+  if (subSignal != USER_GROUPS)
+    emit dataChanged(this);
 
   // If status has changed update the sub groups of all groups
-  if (newSubGroup != mySubGroup)
-  {
+  if (mySubGroup != oldSubGroup)
     foreach (ContactUser* user, myUserInstances)
-      user->group()->updateSubGroup(mySubGroup, newSubGroup, myEvents);
-    mySubGroup = newSubGroup;
-  }
+      user->group()->updateSubGroup(oldSubGroup, mySubGroup, myEvents);
+
+  // Update group visibility
+  if (myVisibility != oldVisibility)
+    foreach (ContactUser* user, myUserInstances)
+      user->group()->updateVisibility(myVisibility, mySubGroup);
+
+  // Add/remove us to/from groups
+  if (subSignal == 0 || subSignal == USER_SETTINGS || subSignal == USER_GROUPS)
+    // Group membership is handled by ContactList so send it a signal to update
+    emit updateUserGroups(this, u);
 }
 
 void ContactUserData::updatePicture(const Licq::User* u)
@@ -437,6 +439,8 @@ bool ContactUserData::updateText(const LicqUser* licqUser)
 
 void ContactUserData::configUpdated()
 {
+  bool oldVisibility = myVisibility;
+
   {
     LicqUserReadGuard u(myUserId);
     if (!u.isLocked())
@@ -448,37 +452,33 @@ void ContactUserData::configUpdated()
   }
 
   emit dataChanged(this);
+
+  // Update groups
+  if (myVisibility != oldVisibility)
+    foreach (ContactUser* user, myUserInstances)
+      user->group()->updateVisibility(myVisibility, mySubGroup);
 }
 
 void ContactUserData::updateVisibility()
 {
-  bool visibility = false;
+  myVisibility = false;
 
   // Only hide contacts who are offline
   if (myStatus != User::OfflineStatus)
-    visibility = true;
+    myVisibility = true;
 
   // Don't hide contacts with unread events
   if (myEvents > 0)
-    visibility = true;
+    myVisibility = true;
 
   // ... or the contact is in online notify list and option "Always show online notify users" is active
   if (Config::ContactList::instance()->alwaysShowONU() &&
       ((myExtendedStatus & ContactListModel::OnlineNotifyStatus) != 0))
-    visibility = true;
+    myVisibility = true;
 
   // ... or the contact is not added to the list
   if ((myExtendedStatus & ContactListModel::NotInListStatus) != 0)
-    visibility = true;
-
-  if (visibility == myVisibility)
-    return;
-
-  // Update groups
-  foreach (ContactUser* user, myUserInstances)
-    user->group()->updateVisibility(visibility, mySubGroup);
-
-  myVisibility = visibility;
+    myVisibility = true;
 }
 
 bool ContactUserData::setData(const QVariant& value, int role)
