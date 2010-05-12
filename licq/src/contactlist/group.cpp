@@ -3,7 +3,7 @@
 #include <cstdio> // snprintf
 
 #include "licq_file.h"
-#include <licq/types.h>
+#include <licq/userid.h>
 
 using std::map;
 using std::string;
