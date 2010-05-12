@@ -57,13 +57,15 @@
 #include <cstring>
 #include <list>
 
-// Order of declaration is significant here!
-typedef std::list<char *> FileList;
-typedef std::list<const char *> ConstFileList;
-
-#include "licq/packet.h"
 #include "licq_socket.h"
 
+namespace Licq
+{
+class Packet;
+}
+
+typedef std::list<char *> FileList;
+typedef std::list<const char *> ConstFileList;
 
 // FileTransferEvent codes
 const unsigned char FT_STARTxBATCH   = 1;
@@ -87,87 +89,6 @@ struct SFileReverseConnectInfo
   bool bTryDirect;
   CFileTransferManager *m;
 };
-
-//=====File=====================================================================
-class CPacketFile : public Licq::Packet
-{
-public:
-  CPacketFile();
-  virtual ~CPacketFile();
-
-  virtual unsigned short Sequence()    { return 0; };
-  virtual unsigned short SubSequence() { return 0; };
-  virtual unsigned short Command()     { return 0; };
-  virtual unsigned short SubCommand()  { return 0; };
-protected:
-   void InitBuffer()   { buffer = new CBuffer(m_nSize); };
-};
-
-//-----File_InitClient----------------------------------------------------------
-/* 00 00 00 00 00 01 00 00 00 45 78 00 00 64 00 00 00 08 00 38 35 36 32 30
-   30 30 00 */
-class CPFile_InitClient : public CPacketFile
-{
-public:
-  CPFile_InitClient(char *_szLocalName, unsigned long _nNumFiles,
-                    unsigned long _nTotalSize);
-  virtual ~CPFile_InitClient();
-};
-
-
-//-----File_InitServer----------------------------------------------------------
-/* 01 64 00 00 00 08 00 38 35 36 32 30 30 30 00 */
-class CPFile_InitServer : public CPacketFile
-{
-public:
-  CPFile_InitServer(char *_szLocalName);
-  virtual ~CPFile_InitServer();
-};
-
-
-//-----File_Info---------------------------------------------------------------
-/* 02 00 0D 00 63 75 72 72 65 6E 74 2E 64 69 66 66 00 01 00 00 45 78 00 00
-   00 00 00 00 64 00 00 00 */
-class CPFile_Info : public CPacketFile
-{
-public:
-  CPFile_Info(const char *_szFileName);
-  virtual ~CPFile_Info();
-
-  bool IsValid()  { return m_bValid; };
-  unsigned long GetFileSize()
-    { return m_nFileSize; };
-  const char *GetFileName()
-    { return m_szFileName; }
-  const char *ErrorStr()
-    { return strerror(m_nError); }
-protected:
-  bool m_bValid;
-  int m_nError;
-  char *m_szFileName;
-  unsigned long m_nFileSize;
-};
-
-
-//-----File_Start---------------------------------------------------------------
-/* 03 00 00 00 00 00 00 00 00 64 00 00 00 */
-class CPFile_Start : public CPacketFile
-{
-public:
-  CPFile_Start(unsigned long nFilePos, unsigned long nFile);
-  virtual ~CPFile_Start();
-};
-
-
-//-----File_SetSpeed---------------------------------------------------------------
-/* 03 00 00 00 00 00 00 00 00 64 00 00 00 */
-class CPFile_SetSpeed : public CPacketFile
-{
-public:
-  CPFile_SetSpeed(unsigned long nSpeed);
-  virtual ~CPFile_SetSpeed();
-};
-
 
 //=====FileTransferManager===================================================
 extern "C"

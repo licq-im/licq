@@ -6,7 +6,8 @@
 #include <pthread.h>
 #include <string>
 
-#include <licq_filetransfer.h>
+#include <licq_chat.h> // ChatClientList
+#include <licq_filetransfer.h> // FileList, ConstFileList
 #include <licq_icq.h>
 #include <licq/contactlist/user.h>
 #include <licq/userid.h>
@@ -1712,5 +1713,316 @@ public:
                        unsigned long nStatus);
   virtual unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
 };
+
+
+//=====File=====================================================================
+class CPacketFile : public Licq::Packet
+{
+public:
+  CPacketFile();
+  virtual ~CPacketFile();
+
+  virtual unsigned short Sequence()    { return 0; };
+  virtual unsigned short SubSequence() { return 0; };
+  virtual unsigned short Command()     { return 0; };
+  virtual unsigned short SubCommand()  { return 0; };
+protected:
+   void InitBuffer()   { buffer = new CBuffer(m_nSize); };
+};
+
+//-----File_InitClient----------------------------------------------------------
+/* 00 00 00 00 00 01 00 00 00 45 78 00 00 64 00 00 00 08 00 38 35 36 32 30
+   30 30 00 */
+class CPFile_InitClient : public CPacketFile
+{
+public:
+  CPFile_InitClient(char *_szLocalName, unsigned long _nNumFiles,
+                    unsigned long _nTotalSize);
+  virtual ~CPFile_InitClient();
+};
+
+//-----File_InitServer----------------------------------------------------------
+/* 01 64 00 00 00 08 00 38 35 36 32 30 30 30 00 */
+class CPFile_InitServer : public CPacketFile
+{
+public:
+  CPFile_InitServer(char *_szLocalName);
+  virtual ~CPFile_InitServer();
+};
+
+//-----File_Info---------------------------------------------------------------
+/* 02 00 0D 00 63 75 72 72 65 6E 74 2E 64 69 66 66 00 01 00 00 45 78 00 00
+   00 00 00 00 64 00 00 00 */
+class CPFile_Info : public CPacketFile
+{
+public:
+  CPFile_Info(const char *_szFileName);
+  virtual ~CPFile_Info();
+
+  bool IsValid()  { return m_bValid; };
+  unsigned long GetFileSize()
+    { return m_nFileSize; };
+  const char *GetFileName()
+    { return m_szFileName; }
+  const char *ErrorStr()
+    { return strerror(m_nError); }
+protected:
+  bool m_bValid;
+  int m_nError;
+  char *m_szFileName;
+  unsigned long m_nFileSize;
+};
+
+//-----File_Start---------------------------------------------------------------
+/* 03 00 00 00 00 00 00 00 00 64 00 00 00 */
+class CPFile_Start : public CPacketFile
+{
+public:
+  CPFile_Start(unsigned long nFilePos, unsigned long nFile);
+  virtual ~CPFile_Start();
+};
+
+//-----File_SetSpeed---------------------------------------------------------------
+/* 03 00 00 00 00 00 00 00 00 64 00 00 00 */
+class CPFile_SetSpeed : public CPacketFile
+{
+public:
+  CPFile_SetSpeed(unsigned long nSpeed);
+  virtual ~CPFile_SetSpeed();
+};
+
+
+//=====Chat=====================================================================
+class CPacketChat : public Licq::Packet
+{
+public:
+  virtual unsigned short Sequence()   { return 0; };
+  virtual unsigned short SubSequence()   { return 0; };
+  virtual unsigned short Command()    { return 0; };
+  virtual unsigned short SubCommand() { return 0; };
+protected:
+   void InitBuffer();
+};
+
+
+//-----ChatColor----------------------------------------------------------------
+  /* 64 00 00 00 FD FF FF FF 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 62 3D
+     FF FF FF 00 00 00 00 00 00 */
+class CPChat_Color : public CPacketChat  // First info packet after handshake
+{
+public:
+  CPChat_Color(const char *szLocalName, unsigned short nLocalPort,
+               int nColorForeRed, int nColorForeGreen, int nColorForeBlue,
+               int nColorBackRed, int nColorBackBlue, int nColorBackGreen);
+  CPChat_Color(CBuffer &);
+
+  // Accessors
+  const char *Name() { return m_szName; }
+  const Licq::UserId& userId() const { return myUserId; }
+  unsigned short Port() { return m_nPort; }
+  int ColorForeRed() { return m_nColorForeRed; }
+  int ColorForeGreen() { return m_nColorForeGreen; }
+  int ColorForeBlue() { return m_nColorForeBlue; }
+  int ColorBackRed() { return m_nColorBackRed; }
+  int ColorBackGreen() { return m_nColorBackGreen; }
+  int ColorBackBlue() { return m_nColorBackBlue; }
+
+  virtual ~CPChat_Color();
+
+protected:
+  Licq::UserId myUserId;
+  char *m_szName;
+  unsigned short m_nPort;
+  int m_nColorForeRed;
+  int m_nColorForeGreen;
+  int m_nColorForeBlue;
+  int m_nColorBackRed;
+  int m_nColorBackGreen;
+  int m_nColorBackBlue;
+};
+
+
+/* 64 00 00 00 50 A5 82 00 08 00 38 35 36 32 30 30 30 00 FF FF FF 00 00 00
+   00 00 03 00 00 00 DB 64 00 00 CF 60 AD 95 CF 60 AD 95 04 75 5A 0C 00 00
+   00 00 00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 00 */
+class CPChat_ColorFont : public CPacketChat  // Second info packet after handshake
+{
+public:
+  CPChat_ColorFont(const char *szLocalName, unsigned short nLocalPort,
+     unsigned short nSession,
+     int nColorForeRed, int nColorForeGreen, int nColorForeBlue,
+     int nColorBackRed, int nColorBackBlue, int nColorBackGreen,
+     unsigned long nFontSize,
+     bool bFontBold, bool bFontItalic, bool bFontUnderline, bool bFontStrikeOut,
+     const char *szFontFamily, unsigned char nFontEncoding,
+     unsigned char nFontStyle, ChatClientPList &clientList);
+
+  CPChat_ColorFont(CBuffer &);
+
+  virtual ~CPChat_ColorFont();
+
+  // Accessors
+  const char *Name() { return m_szName; }
+  const Licq::UserId& userId() const { return myUserId; }
+  unsigned short Session() { return m_nSession; }
+  int ColorForeRed() { return m_nColorForeRed; }
+  int ColorForeGreen() { return m_nColorForeGreen; }
+  int ColorForeBlue() { return m_nColorForeBlue; }
+  int ColorBackRed() { return m_nColorBackRed; }
+  int ColorBackGreen() { return m_nColorBackGreen; }
+  int ColorBackBlue() { return m_nColorBackBlue; }
+  unsigned short Port() { return m_nPort; }
+  unsigned long FontSize() { return m_nFontSize; }
+  bool FontBold() { return m_nFontFace & FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
+  unsigned long FontFace() { return m_nFontFace; }
+  const char *FontFamily() { return m_szFontFamily; }
+  unsigned char FontEncoding() { return m_nFontEncoding; }
+  unsigned char FontStyle() { return m_nFontStyle; }
+  ChatClientList &ChatClients()  { return chatClients; }
+
+protected:
+  Licq::UserId myUserId;
+  unsigned short m_nSession;
+  char *m_szName;
+  int m_nColorForeRed;
+  int m_nColorForeGreen;
+  int m_nColorForeBlue;
+  int m_nColorBackRed;
+  int m_nColorBackGreen;
+  int m_nColorBackBlue;
+  unsigned short m_nPort;
+  unsigned long m_nFontSize;
+  unsigned long m_nFontFace;
+  char *m_szFontFamily;
+  unsigned char m_nFontEncoding, m_nFontStyle;
+  ChatClientList chatClients;
+};
+
+
+//-----ChatFont-----------------------------------------------------------------
+/* 03 00 00 00 83 72 00 00 CF 60 AD 95 CF 60 AD 95 04 54 72 0C 00 00 00 00
+   00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 */
+class CPChat_Font : public CPacketChat
+{
+public:
+   CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
+               unsigned long nFontSize,
+               bool bFontBold, bool bFontItalic, bool bFontUnderline,
+               bool bFontStrikeOut, const char *szFontFamily,
+               unsigned char nFontEncoding, unsigned char nFontStyle);
+   CPChat_Font(CBuffer &);
+   virtual ~CPChat_Font();
+
+  unsigned short Port() { return m_nPort; }
+  unsigned short Session() { return m_nSession; }
+  unsigned long FontSize() { return m_nFontSize; }
+  bool FontBold() { return m_nFontFace & FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
+  unsigned long FontFace() { return m_nFontFace; }
+  const char *FontFamily() { return m_szFontFamily; }
+  unsigned char FontEncoding() { return m_nFontEncoding; }
+  unsigned char FontStyle() { return m_nFontStyle; }
+
+protected:
+  unsigned short m_nPort;
+  unsigned short m_nSession;
+  unsigned long m_nFontSize;
+  unsigned long m_nFontFace;
+  char *m_szFontFamily;
+  unsigned char m_nFontEncoding, m_nFontStyle;
+};
+
+
+/*
+class CPChat_ChangeFontFamily : public CPacketChat
+{
+public:
+  CPChat_ChangeFontFamily(const char *szFamily);
+  CPChat_ChangeFontFamily(CBuffer &);
+  virtual ~CPChat_ChangeFontFamily() { if (m_szFontFamily != NULL) free(m_szFontFamily); }
+
+  const char *FontFamily()  { return m_szFontFamily; }
+
+protected:
+  char *m_szFontFamily;
+};
+
+
+class CPChat_ChangeFontSize : public CPacketChat
+{
+public:
+  CPChat_ChangeFontSize(unsigned short);
+  CPChat_ChangeFontSize(CBuffer &);
+
+  unsigned short FontSize()  { return m_nFontSize; }
+
+protected:
+  unsigned short m_nFontSize;
+};
+
+
+
+class CPChat_ChangeFontFace : public CPacketChat
+{
+public:
+  CPChat_ChangeFontFace(bool bBold, bool bItalic, bool bUnderline);
+  CPChat_ChangeFontFace(CBuffer &);
+
+  bool FontBold() { return m_nFontFace & FONT_BOLD; }
+  bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
+  bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  unsigned long FontFace()  { return m_nFontFace; }
+
+protected:
+  unsigned long m_nFontFace;
+};
+
+
+class CPChat_ChangeColorBg : public CPacketChat
+{
+public:
+  CPChat_ChangeColorBg(int nRed, int nGreen, int nBlue);
+  CPChat_ChangeColorBg(CBuffer &);
+
+  int ColorBackRed() { return m_nColorBackRed; }
+  int ColorBackGreen() { return m_nColorBackGreen; }
+  int ColorBackBlue() { return m_nColorBackBlue; }
+
+protected:
+  int m_nColorBackRed;
+  int m_nColorBackGreen;
+  int m_nColorBackBlue;
+};
+
+
+class CPChat_ChangeColorFg : public CPacketChat
+{
+public:
+  CPChat_ChangeColorFg(int nRed, int nGreen, int nBlue);
+  CPChat_ChangeColorFg(CBuffer &);
+
+  int ColorForeRed() { return m_nColorForeRed; }
+  int ColorForeGreen() { return m_nColorForeGreen; }
+  int ColorForeBlue() { return m_nColorForeBlue; }
+
+protected:
+  int m_nColorForeRed;
+  int m_nColorForeGreen;
+  int m_nColorForeBlue;
+};
+
+
+
+class CPChat_Beep : public CPacketChat
+{
+public:
+  CPChat_Beep();
+};
+*/
 
 #endif
