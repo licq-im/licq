@@ -240,7 +240,8 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
   }
 
   // Mark all dates with activity so they are easier to find
-  for (HistoryListIter item = myHistoryList.begin(); item != myHistoryList.end(); ++item)
+  Licq::HistoryList::iterator item;
+  for (item = myHistoryList.begin(); item != myHistoryList.end(); ++item)
   {
     QDate date = QDateTime::fromTime_t((*item)->Time()).date();
     myCalendar->markDate(date);
@@ -322,7 +323,8 @@ void HistoryDlg::showHistory()
   QDateTime date;
 
   // Go through all entries in the list
-  for (HistoryListIter item = myHistoryList.begin(); item != myHistoryList.end(); ++item)
+  Licq::HistoryList::iterator item;
+  for (item = myHistoryList.begin(); item != myHistoryList.end(); ++item)
   {
     date.setTime_t((*item)->Time());
 
@@ -400,7 +402,8 @@ void HistoryDlg::find(bool backwards)
   {
     myCalendar->clearMatches();
 
-    for (HistoryListIter i = myHistoryList.begin(); i != myHistoryList.end(); ++i)
+    Licq::HistoryList::iterator i;
+    for (i = myHistoryList.begin(); i != myHistoryList.end(); ++i)
     {
       QString messageText;
       if ((*i)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
@@ -443,7 +446,7 @@ void HistoryDlg::find(bool backwards)
   }
 
   // Remember where we started so we can stop after checking all entries once
-  HistoryListIter startPos = mySearchPos;
+  Licq::HistoryList::iterator startPos = mySearchPos;
 
   while (true)
   {
@@ -516,7 +519,7 @@ void HistoryDlg::showUserMenu()
 void HistoryDlg::nextDate()
 {
   QDateTime date;
-  HistoryListIter item;
+  Licq::HistoryList::iterator item;
 
   // Find first entry in next date
   for (item = myHistoryList.begin(); item != myHistoryList.end(); ++item)
@@ -539,7 +542,7 @@ void HistoryDlg::nextDate()
 void HistoryDlg::previousDate()
 {
   QDateTime date;
-  HistoryListIter item;
+  Licq::HistoryList::iterator item;
 
   // Find first entry in next date
   for (item = myHistoryList.begin(); item != myHistoryList.end(); ++item)

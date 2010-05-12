@@ -25,7 +25,6 @@ set(licq_SRCS
   fifo.cpp
   gpghelper.cpp
   hebrev.c
-  history.cpp
   icqcodes.c
   icqcolor.cpp
   icqd-chat.cpp
@@ -56,6 +55,7 @@ set(licq_SRCS
   contactlist/group.cpp
   contactlist/owner.cpp
   contactlist/user.cpp
+  contactlist/userhistory.cpp
   contactlist/usermanager.cpp
 
   logging/logservice.cpp

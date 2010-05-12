@@ -1794,7 +1794,7 @@ void CLicqConsole::UserCommand_History(const UserId& userId, char *szArg)
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
     return;
-  HistoryList lHistory;
+  Licq::HistoryList lHistory;
   if (!u->GetHistory(lHistory))
   {
     winMain->wprintf("Error loading history.\n");

@@ -25,7 +25,7 @@
 
 #include <QDialog>
 
-#include <licq_history.h>
+#include <licq/contactlist/user.h>
 #include <licq/userid.h>
 
 class QCalendarWidget;
@@ -154,8 +154,8 @@ private:
   bool myUseHtml;
   bool myPatternChanged;
 
-  HistoryList myHistoryList;
-  HistoryListIter mySearchPos;
+  Licq::HistoryList myHistoryList;
+  Licq::HistoryList::iterator mySearchPos;
 
   Calendar* myCalendar;
   HistoryView* myHistoryView;

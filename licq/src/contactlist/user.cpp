@@ -303,7 +303,7 @@ void User::AddToContactList()
   m_bNotInList = false;
 
   // Check for old history file
-  if (access(m_fHistory.FileName(), F_OK) == -1)
+  if (access(myHistory.filename().c_str(), F_OK) == -1)
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
@@ -314,7 +314,7 @@ void User::AddToContactList()
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
     if (access(szFilename, F_OK) == 0)
     {
-      if (rename(szFilename, m_fHistory.FileName()) == -1)
+      if (rename(szFilename, myHistory.filename().c_str()) == -1)
       {
         gLog.Warn(tr("%sFailed to rename old history file (%s):\n%s%s\n"), L_WARNxSTR,
             szFilename, L_BLANKxSTR, strerror(errno));
@@ -492,7 +492,7 @@ void User::LoadLicqInfo()
     HistoryList hist;
     if (GetHistory(hist))
     {
-      HistoryListIter it;
+      HistoryList::iterator it;
       if (hist.size() < nNewMessages)
         it = hist.begin();
       else
@@ -565,7 +565,7 @@ void User::RemoveFiles()
 
   // Check for old history file and back up
   struct stat buf;
-  if (stat(m_fHistory.FileName(), &buf) == 0 && buf.st_size > 0)
+  if (stat(myHistory.filename().c_str(), &buf) == 0 && buf.st_size > 0)
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
@@ -574,11 +574,11 @@ void User::RemoveFiles()
         myId.accountId().c_str(), p, HISTORYxOLD_EXT);
 
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
-    if (rename(m_fHistory.FileName(), szFilename) == -1)
+    if (rename(myHistory.filename().c_str(), szFilename) == -1)
     {
       gLog.Warn(tr("%sFailed to rename history file (%s):\n%s%s\n"), L_WARNxSTR,
           szFilename, L_BLANKxSTR, strerror(errno));
-      remove(m_fHistory.FileName());
+      remove(myHistory.filename().c_str());
     }
   }
 }
@@ -1121,7 +1121,7 @@ bool User::Away() const
 
 void User::SetHistoryFile(const char *s)
 {
-  m_fHistory.SetFile(s, myId.accountId().c_str(), myId.protocolId());
+  myHistory.setFile(s, myId);
   SaveLicqInfo();
 }
 
@@ -2103,7 +2103,7 @@ void User::EventPush(CUserEvent *e)
 
 void User::WriteToHistory(const char *_szText)
 {
-  m_fHistory.Append(_szText);
+  myHistory.append(_szText);
 }
 
 void User::CancelEvent(unsigned short index)

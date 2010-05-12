@@ -9,10 +9,10 @@
 #include <vector>
 
 #include "licq_file.h"
-#include "licq_history.h"
 #include "../buffer.h"
 #include "../thread/lockable.h"
 #include "../userid.h"
+#include "userhistory.h"
 
 class CICQDaemon;
 class CMSN;
@@ -628,11 +628,11 @@ public:
   void EventPush(CUserEvent *);
   void WriteToHistory(const char *);
   void SetHistoryFile(const char *);
-  int GetHistory(HistoryList& history) const    { return m_fHistory.Load(history); }
-  static void ClearHistory(HistoryList &h)  { CUserHistory::Clear(h); }
-  void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
-  const char* HistoryName() const               { return m_fHistory.Description(); }
-  const char* HistoryFile() const               { return m_fHistory.FileName(); }
+  int GetHistory(HistoryList& history) const    { return myHistory.load(history); }
+  static void ClearHistory(HistoryList& h) { UserHistory::clear(h); }
+  void SaveHistory(const char *buf) { myHistory.save(buf); }
+  const char* HistoryName() const               { return myHistory.description().c_str(); }
+  const char* HistoryFile() const               { return myHistory.filename().c_str(); }
 
   /**
    * Get user groups this user is member of
@@ -833,7 +833,7 @@ protected:
   const UserId myId;
 
   CIniFile m_fConf;
-  CUserHistory m_fHistory;
+  UserHistory myHistory;
   int m_nNormalSocketDesc, m_nInfoSocketDesc, m_nStatusSocketDesc;
   time_t m_nTouched;
   time_t m_nLastCounters[4];

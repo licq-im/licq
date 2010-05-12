@@ -15,7 +15,6 @@
 #include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_file.h>
-#include <licq_history.h>
 #include <licq_log.h>
 #include <licq_socket.h>
 #include <licq_user.h>
@@ -956,7 +955,7 @@ int CRMSClient::Process_HISTORY()
   if (s != NULL)
     offset = atoi(s);
 
-  HistoryList history;
+  Licq::HistoryList history;
   string userAlias;
   string ownerAlias = "me";
 
@@ -991,7 +990,7 @@ int CRMSClient::Process_HISTORY()
   }
 
   int counter = 0;
-  HistoryListRIter it;
+  Licq::HistoryList::reverse_iterator it;
   for (it = history.rbegin(); it != history.rend(); ++it)
   {
     ++counter;

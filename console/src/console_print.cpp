@@ -531,10 +531,10 @@ void CLicqConsole::PrintHelp()
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintHistory
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
+void CLicqConsole::PrintHistory(Licq::HistoryList& lHistory, unsigned short nStart,
                                 unsigned short nEnd, const char *szFrom)
 {
-  HistoryListIter it = lHistory.begin();
+  Licq::HistoryList::iterator it = lHistory.begin();
   unsigned short n = 0;
   for (n = 0; n < nStart && it != lHistory.end(); n++, it++) ;
   while (n <= nEnd && it != lHistory.end())

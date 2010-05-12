@@ -150,7 +150,7 @@ public:
   void PrintVariable(unsigned short);
   void PrintUsers();
   void PrintHelp();
-  void PrintHistory(HistoryList &, unsigned short, unsigned short, const char *);
+  void PrintHistory(Licq::HistoryList&, unsigned short, unsigned short, const char *);
   void PrintInfo_General(const UserId& userId);
   void PrintInfo_More(const UserId& userId);
   void PrintInfo_Work(const UserId& userId);

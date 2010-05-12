@@ -5,7 +5,6 @@ set(licq_HEADERS
   licq_events.h
   licq_file.h
   licq_filetransfer.h
-  licq_history.h
   licq_icq.h
   licq_icqd.h
   licq_log.h

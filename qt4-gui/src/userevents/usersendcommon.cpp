@@ -228,13 +228,13 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
     if (u != NULL && Config::Chat::instance()->showHistory())
     {
       // Show the last SHOW_RECENT_NUM messages in the history
-      HistoryList lHistoryList;
+      Licq::HistoryList lHistoryList;
       if (u->GetHistory(lHistoryList))
       {
         // Rewind to the starting point. This will be the first message shown in the dialog.
         // Make sure we don't show the new messages waiting.
         unsigned short nNewMessages = u->NewMessages();
-        HistoryListIter lHistoryIter = lHistoryList.end();
+        Licq::HistoryList::iterator lHistoryIter = lHistoryList.end();
         for (size_t i = 0; i < (SHOW_RECENT_NUM + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
           lHistoryIter--;
 

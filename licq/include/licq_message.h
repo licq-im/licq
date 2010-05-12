@@ -12,6 +12,7 @@
 namespace Licq
 {
 class User;
+class UserHistory;
 }
 
 // Define for marking functions as deprecated
@@ -109,7 +110,7 @@ protected:
 friend class CICQDaemon;
 friend class CMSN;
 friend class Jabber;
-friend class CUserHistory;
+  friend class Licq::UserHistory;
   friend class Licq::User;
 };
 

@@ -8,6 +8,9 @@
 
 #include "config.h"
 
+#include <licq/contactlist/userhistory.h>
+
+#include <boost/foreach.hpp>
 #include <cstdio>
 #include <string.h>
 #include <unistd.h>
@@ -21,83 +24,56 @@
 
 #include <cerrno>
 
-#include "licq_history.h"
 #include "licq_log.h"
 #include "licq_constants.h"
-#include "licq_file.h"
 #include "licq_message.h"
 #include "licq_icq.h"
 #include "licq_user.h"
 
-//A sleazy hack
-extern char *PPIDSTRING(unsigned long);
-
 #define MAX_HISTORY_MSG_SIZE 8192
 
 using std::string;
+using Licq::UserId;
+using Licq::UserHistory;
 
-CUserHistory::CUserHistory()
+UserHistory::UserHistory()
 {
-  m_szFileName = m_szDescription = NULL;
 }
 
-CUserHistory::~CUserHistory()
+UserHistory::~UserHistory()
 {
-  if (m_szFileName != NULL) free(m_szFileName);
-  if (m_szDescription != NULL) free(m_szDescription);
 }
 
-//---SetFile-------------------------------------------------------------------
-/*! \brief Sets the name of the history file
- *
- * Obsolete, see CUserHistory::SetFile(const char *, const char *, unsigned long)
- */
-void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
+void UserHistory::setFile(const string& filename, const UserId& userId)
 {
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  SetFile(_sz, szUin, LICQ_PPID);
-}
-
-//---SetFile-------------------------------------------------------------------
-/*! \brief Sets the name of the history file
- *
- * Sets the name of the history file. A value "default" for _sz means to
- * use default history name which is <Id>.<Protocol Name>.history. A Value "none" for _sz means
- * no history file. All other values mean to use _sz as the history file name.
- */
-void CUserHistory::SetFile(const char *_sz, const char *_szId,
-                           unsigned long _nPPID)
-{
-  if (m_szFileName != NULL) free(m_szFileName);
-  if (m_szDescription != NULL) free(m_szDescription);
-
   // default history filename, compare only first 7 chars in case of spaces
-  if (strncmp(_sz, "default", 7) == 0)
+  if (filename == "default")
   {
-    char temp[MAX_FILENAME_LEN];
-    char *p = PPIDSTRING(_nPPID);
-    snprintf(temp, MAX_FILENAME_LEN, "%s%s/%s.%s.%s", BASE_DIR,
-             HISTORY_DIR, _szId, p, HISTORY_EXT);
-    delete [] p;
-    temp[sizeof(temp) - 1] = '\0';
-    m_szFileName = strdup(temp);
-    m_szDescription = strdup("default");
+    char p[5];
+    protocolId_toStr(p, userId.protocolId());
+    myFilename = BASE_DIR;
+    myFilename += HISTORY_DIR;
+    myFilename += '/';
+    myFilename += userId.accountId().c_str();
+    myFilename += '.';
+    myFilename += p;
+    myFilename += '.';
+    myFilename += HISTORY_EXT;
+    myDescription = "default";
   }
   // no history file
-  else if (strncmp(_sz, "none", 4) == 0)  // no history file
+  else if (filename == "none")
   {
-    m_szFileName = NULL;
-    m_szDescription = strdup("none");
+    myFilename = "";
+    myDescription = "none";
   }
   // use given name
   else
   {
-    m_szFileName = strdup(_sz);
-    m_szDescription = strdup(_sz);
+    myFilename = filename;
+    myDescription = filename;
   }
 }
-
 
 
 /* szResult[0] != ':' doubles to check if strlen(szResult) < 1 */
@@ -141,14 +117,12 @@ void CUserHistory::SetFile(const char *_sz, const char *_szId,
 	  szResult = fgets(sz, MAX_LINE_LEN, f); \
   }
 
-bool CUserHistory::Load(HistoryList &lHistory) const
+bool UserHistory::load(HistoryList& lHistory) const
 {
-  if (m_szFileName == NULL)
-  {
+  if (myFilename.empty())
     return false;
-  }
 
-  FILE *f = fopen(m_szFileName, "r");
+  FILE* f = fopen(myFilename.c_str(), "r");
   if (f == NULL)
   {
     if (errno == ENOENT)
@@ -158,7 +132,7 @@ bool CUserHistory::Load(HistoryList &lHistory) const
     else
     {
       gLog.Warn(tr("%sUnable to open history file (%s):\n%s%s.\n"), L_WARNxSTR,
-              m_szFileName, L_BLANKxSTR, strerror(errno));
+          myFilename.c_str(), L_BLANKxSTR, strerror(errno));
       return false;
     }
   }
@@ -388,7 +362,7 @@ bool CUserHistory::Load(HistoryList &lHistory) const
     }
     default:
       gLog.Warn(tr("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"),
-                L_WARNxSTR, m_szFileName, nSubCommand);
+          L_WARNxSTR, myFilename.c_str(), nSubCommand);
       break;
     }
     if (e != NULL)
@@ -405,9 +379,10 @@ bool CUserHistory::Load(HistoryList &lHistory) const
   return true;
 }
 
-void CUserHistory::Write(const char* buf, bool append)
+void UserHistory::write(const string& buf, bool append)
 {
-  if (m_szFileName == NULL || buf == NULL) return;
+  if (myFilename.empty() || buf.empty())
+    return;
 
   // Make sure history dir exists before trying to write a file in it
   char historydir[MAX_FILENAME_LEN];
@@ -418,29 +393,23 @@ void CUserHistory::Write(const char* buf, bool append)
     return;
   }
 
-  int fd = open(m_szFileName, O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 00600);
+  int fd = open(myFilename.c_str(), O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 00600);
   if (fd == -1)
   {
     gLog.Error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,
-               m_szFileName, L_BLANKxSTR, strerror(errno));
+        myFilename.c_str(), L_BLANKxSTR, strerror(errno));
     return;
   }
-  write(fd, buf, strlen(buf));
+  ::write(fd, buf.c_str(), buf.size());
   if (append)
-    write(fd, "\n", 1);
+    ::write(fd, "\n", 1);
   close(fd);
 }
 
-
-//---Clear---------------------------------------------------------------------
-/*! \brief Clears the history */
-void CUserHistory::Clear(HistoryList &hist)
+void UserHistory::clear(HistoryList& hist)
 {
-  HistoryListIter it = hist.begin();
-  while (it != hist.end())
-  {
-    delete *it;
-    ++it;
-  }
-  hist.erase(hist.begin(), hist.end());
+  BOOST_FOREACH(CUserEvent* event, hist)
+    delete event;
+
+  hist.clear();
 }
