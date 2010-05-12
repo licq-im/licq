@@ -32,10 +32,10 @@
 #include "licq_file.h"
 #include "licq_log.h"
 #include "licq_translate.h"
-#include "licq_packets.h"
 #include "licq_proxy.h"
 
 #include "gpghelper.h"
+#include "icqpacket.h"
 #include "licq.h"
 #include "oscarservice.h"
 #include "plugins/pluginmanager.h"

@@ -27,7 +27,6 @@
 #include <licq/oneventmanager.h>
 #include "licq_icqd.h"
 #include "licq_translate.h"
-#include "licq_packets.h"
 #include "licq_socket.h"
 #include "licq_user.h"
 #include "licq_events.h"
@@ -37,6 +36,7 @@
 #include "support.h"
 #include "licq/version.h"
 
+#include "icqpacket.h"
 #include "oscarservice.h"
 
 using namespace std;

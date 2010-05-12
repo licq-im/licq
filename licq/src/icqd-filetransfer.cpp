@@ -25,9 +25,10 @@
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "licq_icqd.h"
-#include "licq_packets.h"
 #include "licq_translate.h"
 #include "licq_user.h"
+
+#include "icqpacket.h"
 #include "support.h"
 
 #define DEBUG_THREADS(x)

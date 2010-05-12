@@ -1,14 +1,15 @@
-#ifndef ICQPACKET_H
-#define ICQPACKET_H
+#ifndef LICQDAEMON_ICQPACKET_H
+#define LICQDAEMON_ICQPACKET_H
 
 #include <list>
 #include <map>
 #include <pthread.h>
 #include <string>
 
-#include "licq_icq.h"
-#include "licq/contactlist/user.h"
-#include "licq/userid.h"
+#include <licq_filetransfer.h>
+#include <licq_icq.h>
+#include <licq/contactlist/user.h>
+#include <licq/userid.h>
 #include <licq/packet.h>
 
 namespace Licq
@@ -49,9 +50,6 @@ unsigned short ReversePort(unsigned short p);
 unsigned short LengthField(const char *szField);
 char *PipeInput(char *m_szMessage);
 
-
-// Order of inclusion is significant here!
-#include "licq_filetransfer.h"
 
 //
 // These classes, CPX_*, are general classes for different packets that do the

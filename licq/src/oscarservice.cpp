@@ -23,11 +23,11 @@
 #include "licq_events.h"
 #include "licq_socket.h"
 #include "licq_proxy.h"
-#include "licq_packets.h"
 #include "licq_log.h"
 #include <licq_user.h>
 
 #include "gettext.h"
+#include "icqpacket.h"
 #include "support.h"
 
 using namespace std;

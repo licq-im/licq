@@ -25,7 +25,6 @@
 
 #include "licq/byteorder.h"
 #include "licq/md5.h"
-#include "licq_packets.h"
 #include "licq_socket.h"
 #include "licq_icq.h"
 #include "licq_translate.h"
@@ -36,6 +35,7 @@
 #include "licq/version.h"
 
 #include "contactlist/usermanager.h"
+#include "icqpacket.h"
 
 using namespace std;
 using Licq::GroupMap;
