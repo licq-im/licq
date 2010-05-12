@@ -24,6 +24,7 @@
 
 #include <QList>
 
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq/pluginmanager.h>

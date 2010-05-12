@@ -12,6 +12,7 @@
 #include <cerrno>
 
 #include <licq_constants.h>
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_file.h>
 #include <licq_history.h>

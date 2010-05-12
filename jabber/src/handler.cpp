@@ -25,6 +25,7 @@
 
 #include <licq/log.h>
 #include <licq/oneventmanager.h>
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_user.h>
 

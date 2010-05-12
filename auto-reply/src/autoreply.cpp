@@ -13,6 +13,8 @@
 #include <paths.h>
 
 #include "autoreply.h"
+
+#include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_file.h"

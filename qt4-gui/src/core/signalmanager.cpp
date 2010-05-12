@@ -25,6 +25,7 @@
 #include <QApplication>
 #include <QSocketNotifier>
 
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_user.h>

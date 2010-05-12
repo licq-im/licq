@@ -37,6 +37,7 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_translate.h>
 #include <licq_user.h>

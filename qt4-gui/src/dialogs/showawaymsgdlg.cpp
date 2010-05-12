@@ -34,6 +34,7 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_user.h>
 

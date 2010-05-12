@@ -13,6 +13,7 @@
 #include "console.h"
 #include "licq_file.h"
 #include "licq_filetransfer.h"
+#include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include <licq/contactlist/user.h>

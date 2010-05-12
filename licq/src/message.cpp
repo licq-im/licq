@@ -17,6 +17,7 @@
 #include "gettext.h"
 
 #include "licq/gpghelper.h"
+#include <licq_icq.h>
 #include "licq_message.h"
 #include "licq_user.h"
 #include "licq_translate.h"

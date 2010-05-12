@@ -10,6 +10,7 @@
 
 #include "forwarder.h"
 #include "forwarder.conf.h"
+#include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_file.h"

@@ -20,6 +20,7 @@
 #include "protocolmanager.h"
 
 #include <licq_events.h>
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq/contactlist/user.h>
