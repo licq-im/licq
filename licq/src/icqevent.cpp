@@ -10,8 +10,8 @@
 
 #include <assert.h>
 
+#include <licq/packet.h>
 #include "licq_events.h"
-#include "licq_packets.h"
 #include "licq_log.h"
 #include "licq_user.h"
 
@@ -49,7 +49,7 @@ CExtendedAck::~CExtendedAck()
 
 
 //-----ICQEvent::constructor----------------------------------------------------
-LicqEvent::LicqEvent(unsigned long id, int _nSocketDesc, CPacket *p,
+LicqEvent::LicqEvent(unsigned long id, int _nSocketDesc, Licq::Packet* p,
     ConnectType _eConnect, const UserId& userId, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())
 {
@@ -148,7 +148,7 @@ LicqEvent::~LicqEvent()
 
 
 //-----ICQEvent::AttachPacket---------------------------------------------------
-void ICQEvent::AttachPacket(CPacket *p)
+void ICQEvent::AttachPacket(Licq::Packet* p)
 {
   m_pPacket = p;
   m_nChannel = p->Channel();

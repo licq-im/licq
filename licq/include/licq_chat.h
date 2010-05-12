@@ -5,7 +5,7 @@
 #include <deque>
 #include <list>
 
-#include "licq_packets.h"
+#include "licq/packet.h"
 #include "licq_socket.h"
 
 namespace Licq
@@ -192,7 +192,7 @@ struct SChatReverseConnectInfo
 };
 
 //=====Chat=====================================================================
-class CPacketChat : public CPacket
+class CPacketChat : public Licq::Packet
 {
 public:
   virtual unsigned short Sequence()   { return 0; };
@@ -661,7 +661,7 @@ protected:
       const char* id = NULL, bool bNotIter = true);
   bool SendBufferToClient(CBuffer *, unsigned char, CChatUser *);
   void SendBuffer_Raw(CBuffer *);
-  //void SendPacket(CPacket *);
+  //void SendPacket(Licq::Packet*);
 
 friend void *ChatManager_tep(void *);
 friend void *ChatWaitForSignal_tep(void *);

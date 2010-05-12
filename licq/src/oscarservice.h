@@ -6,13 +6,13 @@
 
 #include <boost/shared_array.hpp>
 
-class CPacket;
 class LicqEvent;
 class ProxyServer;
 
 namespace Licq
 {
 class Buffer;
+class Packet;
 class UserId;
 }
 
@@ -54,7 +54,7 @@ protected:
   pthread_mutex_t mutex_status;
   pthread_cond_t cond_status;
 
-  bool SendPacket(CPacket *packet);
+  bool SendPacket(Licq::Packet* packet);
   bool WaitForStatus(EOscarServiceStatus s);
   bool SendBARTFam(LicqEvent* event);
   void ProcessNewChannel(Licq::Buffer& packet);

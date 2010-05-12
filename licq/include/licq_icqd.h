@@ -19,7 +19,6 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq/daemon.h"
 #include "licq/userid.h"
 
-class CPacket;
 class CPacketTcp;
 class CLicq;
 class CICQEventTag;
@@ -36,10 +35,13 @@ namespace Licq
 {
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
+class Packet;
 }
 
 // To keep old code working
 typedef Licq::UserCategoryMap UserCategoryMap;
+typedef std::map<int, std::string> GroupNameMap;
+typedef Licq::Packet CPacket;
 
 namespace LicqDaemon
 {

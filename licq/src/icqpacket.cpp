@@ -503,17 +503,18 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
 
 
 
-unsigned long CPacket::s_nLocalIp = 0;
-unsigned long CPacket::s_nRealIp = 0;
-unsigned short CPacket::s_nLocalPort = 0;
-char CPacket::s_nMode = MODE_DIRECT;
+unsigned long Licq::Packet::s_nLocalIp = 0;
+unsigned long Licq::Packet::s_nRealIp = 0;
+unsigned short Licq::Packet::s_nLocalPort = 0;
+char Licq::Packet::s_nMode = MODE_DIRECT;
 
-CPacket::CPacket() : buffer(NULL)
+Licq::Packet::Packet()
+  : buffer(NULL)
 {
   // Empty
 }
 
-CPacket::~CPacket()
+Licq::Packet::~Packet()
 {
   delete buffer;
 }

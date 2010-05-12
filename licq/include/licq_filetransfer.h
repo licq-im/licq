@@ -54,13 +54,14 @@
  * which case the file will be saved as <filename>.<timestamp>
  *-------------------------------------------------------------------------*/
 
+#include <cstring>
 #include <list>
 
 // Order of declaration is significant here!
 typedef std::list<char *> FileList;
 typedef std::list<const char *> ConstFileList;
 
-#include "licq_packets.h"
+#include "licq/packet.h"
 #include "licq_socket.h"
 
 
@@ -88,7 +89,7 @@ struct SFileReverseConnectInfo
 };
 
 //=====File=====================================================================
-class CPacketFile : public CPacket
+class CPacketFile : public Licq::Packet
 {
 public:
   CPacketFile();
@@ -294,7 +295,7 @@ protected:
   void CloseConnection();
 
   bool SendBuffer(CBuffer *);
-  bool SendPacket(CPacket *);
+  bool SendPacket(Licq::Packet*);
 
 friend void *FileTransferManager_tep(void *);
 friend void *FileWaitForSignal_tep(void *);

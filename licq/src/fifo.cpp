@@ -44,7 +44,6 @@
 #include "licq_constants.h"
 #include "licq_log.h"
 #include "licq_translate.h"
-#include "licq_packets.h"
 #include "licq.h"
 #include "support.h"
 

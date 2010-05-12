@@ -9,6 +9,7 @@
 #include "licq_icq.h"
 #include "licq/contactlist/user.h"
 #include "licq/userid.h"
+#include <licq/packet.h>
 
 namespace Licq
 {
@@ -19,6 +20,7 @@ class Buffer;
 
 class CICQColor;
 typedef Licq::Buffer CBuffer;
+typedef Licq::Packet CPacket;
 class INetSocket;
 
 typedef std::map<int, std::string> GroupNameMap;
@@ -47,46 +49,6 @@ unsigned short ReversePort(unsigned short p);
 unsigned short LengthField(const char *szField);
 char *PipeInput(char *m_szMessage);
 
-//=====Packet===================================================================
-
-class CPacket
-{
-public:
-   virtual ~CPacket();
-
-   CBuffer *getBuffer()  { return buffer; };
-   virtual CBuffer *Finalize(INetSocket *) { return NULL; }
-
-   virtual unsigned short Sequence() = 0;
-   virtual unsigned short SubSequence() = 0;
-   virtual unsigned short Command() = 0;
-   virtual unsigned short SubCommand() = 0;
-
-   virtual unsigned char  Channel()   { return ICQ_CHNxNONE; }
-   virtual unsigned long  SNAC()      { return 0; }
-   virtual unsigned short ExtraInfo() { return 0; }
-
-
-   static void SetMode(char c) { s_nMode = c; }
-   static char Mode()  { return s_nMode; }
-   static void SetLocalIp(unsigned long n)  {  s_nLocalIp = n; }
-   static void SetLocalPort(unsigned short n)  {  s_nLocalPort = n; }
-   static void SetRealIp(unsigned long n)  {  s_nRealIp = n; }
-   static bool Firewall() { return s_nLocalIp != s_nRealIp; }
-   static unsigned long RealIp() { return s_nRealIp; }
-   static unsigned long LocalIp() { return s_nLocalIp; }
-
-protected:
-   CPacket();
-
-   CBuffer *buffer;
-   unsigned short m_nSize;
-
-   static unsigned long s_nLocalIp;
-   static unsigned long s_nRealIp;
-   static unsigned short s_nLocalPort;
-   static char s_nMode;
-};
 
 // Order of inclusion is significant here!
 #include "licq_filetransfer.h"

@@ -126,7 +126,7 @@ string MSN_Base64Decode(string const& strIn)
 unsigned short CMSNPacket::s_nSequence = 0;
 pthread_mutex_t CMSNPacket::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 
-CMSNPacket::CMSNPacket(bool _bPing) : CPacket()
+CMSNPacket::CMSNPacket(bool _bPing)
 {
   m_pBuffer = 0;
   m_szCommand = 0;

@@ -23,7 +23,7 @@
 #include <pthread.h>
 #include <string>
 
-#include "licq_packets.h"
+#include <licq/packet.h>
 
 #include "msnbuffer.h"
 
@@ -32,7 +32,7 @@ static const std::string base64_chars =
              "abcdefghijklmnopqrstuvwxyz"
              "0123456789+/";
 
-class CMSNPacket : public CPacket
+class CMSNPacket : public Licq::Packet
 {
 public:
   CMSNPacket(bool = false);

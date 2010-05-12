@@ -8,7 +8,6 @@
 #include "licq_message.h"
 #include "licq/userid.h"
 
-class CPacket;
 class CICQDaemon;
 class CUserEvent;
 
@@ -19,6 +18,7 @@ class PluginEventHandler;
 
 namespace Licq
 {
+class Packet;
 class User;
 
 typedef std::list<std::string> StringList;
@@ -244,7 +244,7 @@ public:
   ~LicqEvent();
 
 protected:
-  LicqEvent(unsigned long id, int _nSocketDesc, CPacket* p, ConnectType _eConnect,
+  LicqEvent(unsigned long id, int _nSocketDesc, Licq::Packet* p, ConnectType _eConnect,
       const Licq::UserId& userId = Licq::UserId(), CUserEvent* e = NULL);
   LicqEvent(const LicqEvent* e);
 
@@ -256,7 +256,7 @@ protected:
   void SetNoAck(bool NoAck)    { m_NoAck = NoAck; }
   bool IsCancelled() const     { return m_bCancelled; }
 
-  void AttachPacket(CPacket *p);
+  void AttachPacket(Licq::Packet* p);
 
   // Compare this event to another one
   bool CompareEvent(int, unsigned short) const;
@@ -280,7 +280,7 @@ protected:
   unsigned short m_nExtraInfo;
   int            m_nSocketDesc;
   Licq::UserId myUserId;
-  CPacket        *m_pPacket;
+  Licq::Packet* m_pPacket;
   pthread_t      thread_send;
   bool           thread_running;
   pthread_t      thread_plugin;
