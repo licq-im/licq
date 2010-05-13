@@ -3,7 +3,6 @@
 
 #include <boost/noncopyable.hpp>
 #include <list>
-#include <map>
 #include <string>
 
 #include "group.h"
@@ -118,15 +117,9 @@ class CICQDaemon;
 
 namespace Licq
 {
-// Lists for public API
 typedef std::list<User*> UserList;
 typedef std::list<Owner*> OwnerList;
 typedef std::list<Group*> GroupList;
-
-// Maps for internal user manager data
-typedef std::map<UserId, class Licq::User*> UserMap;
-typedef std::map<int, Licq::Group*> GroupMap;
-typedef std::map<unsigned long, class Licq::Owner*> OwnerMap;
 
 class UserManager : private boost::noncopyable
 {
@@ -250,48 +243,6 @@ public:
    * @param userId Id of user to remove
    */
   virtual void removeUser(const UserId& userId, bool removeFromServer = true) = 0;
-
-  /**
-   * Lock user list for access
-   * call UnlockUserList when lock is no longer needed
-   *
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
-   * @return Map of all users indexed by user id
-   */
-  virtual UserMap* LockUserList(unsigned short lockType = LOCK_R) = 0;
-
-  /**
-   * Release user list lock
-   */
-  virtual void UnlockUserList() = 0;
-
-  /**
-   * Lock group list for access
-   * Call UnlockGroupList when lock is no longer needed
-   *
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
-   * @return Map of all user groups indexed by group ids
-   */
-  virtual GroupMap* LockGroupList(unsigned short lockType = LOCK_R) = 0;
-
-  /**
-   * Release group list lock
-   */
-  virtual void UnlockGroupList() = 0;
-
-  /**
-   * Lock owner list for access
-   * Call UnlockOwnerList when lock is no longer needed
-   *
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
-   * @return Map of all owners indexed by protocol instance id
-   */
-  virtual OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R) = 0;
-
-  /**
-   * Release owner list lock
-   */
-  virtual void UnlockOwnerList() = 0;
 
   /**
    * Find and lock a group

@@ -15,15 +15,12 @@ using std::list;
 using std::string;
 using Licq::Group;
 using Licq::GroupListGuard;
-using Licq::GroupMap;
 using Licq::Owner;
 using Licq::OwnerListGuard;
-using Licq::OwnerMap;
 using Licq::User;
 using Licq::UserListGuard;
 using Licq::UserId;
 using Licq::UserGroupList;
-using Licq::UserMap;
 using Licq::UserWriteGuard;
 using namespace LicqDaemon;
 

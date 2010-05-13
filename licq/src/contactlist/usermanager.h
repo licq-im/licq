@@ -22,9 +22,14 @@
 
 #include <licq/contactlist/usermanager.h>
 
+#include <map>
+
 
 namespace LicqDaemon
 {
+typedef std::map<Licq::UserId, Licq::User*> UserMap;
+typedef std::map<int, Licq::Group*> GroupMap;
+typedef std::map<unsigned long, Licq::Owner*> OwnerMap;
 
 class UserManager : public Licq::UserManager
 {
@@ -47,6 +52,12 @@ public:
    */
   void saveUserList() const;
 
+  UserMap* LockUserList(unsigned short lockType = LOCK_R);
+  void UnlockUserList();
+  GroupMap* LockGroupList(unsigned short lockType = LOCK_R);
+  void UnlockGroupList();
+  OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R);
+  void UnlockOwnerList();
 
   // From Licq::UserManager
 
@@ -68,12 +79,6 @@ public:
       bool addToServer = true, unsigned short groupId = 0);
   bool makeUserPermanent(const Licq::UserId& userId, bool addToServer = true, int groupId = 0);
   void removeUser(const Licq::UserId& userId, bool removeFromServer = true);
-  Licq::UserMap* LockUserList(unsigned short lockType = LOCK_R);
-  void UnlockUserList();
-  Licq::GroupMap* LockGroupList(unsigned short lockType = LOCK_R);
-  void UnlockGroupList();
-  Licq::OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R);
-  void UnlockOwnerList();
   Licq::Group* FetchGroup(int groupId, unsigned short lockType = LOCK_R);
   void DropGroup(const Licq::Group* group);
   bool groupExists(int groupId);
@@ -105,9 +110,9 @@ private:
   Licq::ReadWriteMutex myUserListMutex;
   Licq::ReadWriteMutex myOwnerListMutex;
 
-  Licq::GroupMap myGroups;
-  Licq::UserMap myUsers;
-  Licq::OwnerMap myOwners;
+  GroupMap myGroups;
+  UserMap myUsers;
+  OwnerMap myOwners;
   unsigned short m_nUserListLockType;
   unsigned short myGroupListLockType;
   unsigned short m_nOwnerListLockType;

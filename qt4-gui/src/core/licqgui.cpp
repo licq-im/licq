@@ -130,7 +130,6 @@ extern "C"
 using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
-using Licq::OwnerMap;
 using Licq::SarManager;
 using Licq::User;
 using Licq::gSarManager;

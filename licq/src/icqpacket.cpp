@@ -38,13 +38,13 @@
 #include "icqpacket.h"
 
 using namespace std;
-using Licq::GroupMap;
 using Licq::USPRINTF_NTORN;
 using Licq::USPRINTF_PIPEISCMD;
 using Licq::StringList;
 using Licq::UserCategoryMap;
 using Licq::UserGroupList;
 using Licq::UserId;
+using LicqDaemon::GroupMap;
 using LicqDaemon::gUserManager;
 
 // TODO: Remove when no longer needed
