@@ -19,50 +19,41 @@ class CICQDaemon;
  * Macros to iterate through the entire list of users.  "pUser" will be a
  * pointer to the current user.
  *-------------------------------------------------------------------------*/
+#include <boost/foreach.hpp>
+
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \
-    Licq::User* pUser;                                   \
-    const Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
-    for (Licq::UserMap::const_iterator _i_ = _ul_->begin(); \
-         _i_ != _ul_->end(); _i_++)                      \
+    Licq::UserListGuard _ul_;                            \
+    BOOST_FOREACH(Licq::User* pUser, **_ul_)             \
     {                                                    \
-      pUser = _i_->second;                               \
       pUser->Lock(x);                                    \
       {
 
 #define FOR_EACH_PROTO_USER_START(x, y)                  \
   {                                                      \
-    Licq::User* pUser;                                   \
-    const Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
-    for (Licq::UserMap::const_iterator _i_ = _ul_->begin(); \
-         _i_ != _ul_->end(); _i_++)                      \
+    Licq::UserListGuard _ul_(x);                         \
+    BOOST_FOREACH(Licq::User* pUser, **_ul_)             \
     {                                                    \
-      pUser = _i_->second;                               \
-      if (pUser->ppid() != x)                            \
-        continue;                                        \
       pUser->Lock(y);                                    \
       {
 
 #define FOR_EACH_OWNER_START(x)                           \
-  {                                                       \
-    Licq::OwnerMap* _ol_ = Licq::gUserManager.LockOwnerList(LOCK_R); \
-    for (Licq::OwnerMap::const_iterator _i_ = _ol_->begin(); \
-         _i_ != _ol_->end(); _i_++)                       \
-    {                                                     \
-      Licq::Owner* pOwner = _i_->second;                  \
-      pOwner->Lock(x);                                    \
+  {                                                      \
+    Licq::OwnerListGuard _ol_;                           \
+    BOOST_FOREACH(Licq::Owner* pOwner, **_ol_)           \
+    {                                                    \
+      pOwner->Lock(x);                                   \
       {
 
 #define FOR_EACH_OWNER_END                                \
       }                                                   \
       pOwner->Unlock();                                   \
     }                                                     \
-    Licq::gUserManager.UnlockOwnerList();                 \
   }                                                       \
 
 #define FOR_EACH_OWNER_BREAK                              \
         {                                                 \
-          Licq::gUserManager.DropOwner(pOwner->PPID());   \
+          pOwner->Unlock();                               \
           break;                                          \
         }
 
@@ -70,62 +61,40 @@ class CICQDaemon;
       }                                  \
       pUser->Unlock();                   \
     }                                    \
-    Licq::gUserManager.UnlockUserList(); \
   }
 
 #define FOR_EACH_PROTO_USER_END FOR_EACH_USER_END
 
 #define FOR_EACH_USER_BREAK              \
         {                                \
-          Licq::gUserManager.DropUser(pUser); \
+          pUser->Unlock();               \
           break;                         \
         }
 
-#define FOR_EACH_PROTO_USER_BREAK        \
-        {                                \
-          Licq::gUserManager.DropUser(pUser); \
-          break;                         \
-        }
-
-#define FOR_EACH_PROTO_USER_CONTINUE     \
-        {                                \
-          Licq::gUserManager.DropUser(pUser); \
-          continue;                      \
-        }
+#define FOR_EACH_PROTO_USER_BREAK FOR_EACH_USER_BREAK
 
 #define FOR_EACH_USER_CONTINUE           \
         {                                \
-          Licq::gUserManager.DropUser(pUser); \
+          pUser->Unlock();               \
           continue;                      \
         }
 
+#define FOR_EACH_PROTO_USER_CONTINUE FOR_EACH_USER_CONTINUE
+
 #define FOR_EACH_GROUP_START(x)                          \
   {                                                      \
-    Licq::Group* pGroup;                                 \
-    Licq::GroupMap* _gl_ = Licq::gUserManager.LockGroupList(LOCK_R); \
-    for (Licq::GroupMap::iterator _i_ = _gl_->begin();         \
-         _i_ != _gl_->end(); ++_i_)                      \
+    Licq::GroupListGuard _gl_(false);                    \
+    BOOST_FOREACH(Licq::Group* pGroup, **_gl_)           \
     {                                                    \
-      pGroup = _i_->second;                              \
       pGroup->Lock(x);                                   \
       {
 
 #define FOR_EACH_GROUP_START_SORTED(x)                                  \
-  {                                                                     \
-    Licq::Group* pGroup;                                                \
-    std::list<Licq::Group*> _sortedGroups_;                             \
-    FOR_EACH_GROUP_START(LOCK_R)                                        \
-      _sortedGroups_.push_back(pGroup);                                 \
-      }                                                                 \
-      pGroup->Unlock();                                                 \
-     }                                                                  \
-    }                                                                   \
-    _sortedGroups_.sort(Licq::compare_groups);                          \
-    for (std::list<Licq::Group*>::iterator _i_ = _sortedGroups_.begin(); \
-        _i_ != _sortedGroups_.end(); ++_i_)                             \
-    {                                                                   \
-      pGroup = *_i_;                                                    \
-      pGroup->Lock(x);                                                  \
+  {                                                      \
+    Licq::GroupListGuard _gl_;                           \
+    BOOST_FOREACH(Licq::Group* pGroup, **_gl_)           \
+    {                                                    \
+      pGroup->Lock(x);                                   \
       {
 
 #define FOR_EACH_GROUP_CONTINUE          \
@@ -144,33 +113,7 @@ class CICQDaemon;
       }                                  \
       pGroup->Unlock();                  \
     }                                    \
-    Licq::gUserManager.UnlockGroupList(); \
   }
-
-
-
-
-#define FOR_EACH_PROTO_ID_START(x)                       \
-  {                                                      \
-    char *szId;                                          \
-    Licq::UserMap* _ul_ = Licq::gUserManager.LockUserList(LOCK_R); \
-    for (Licq::UserMap::const_iterator _i_ = _ul_->begin(); \
-         _i_ != _ul_->end(); _i_++)                      \
-    {                                                    \
-      if (_i_->first.second != x)                        \
-        continue;                                        \
-      szId = (*_i_)->IdString();                         \
-      {
-
-#define FOR_EACH_PROTO_ID_BREAK          \
-        {                                \
-          break;                         \
-        }
-
-#define FOR_EACH_PROTO_ID_CONTINUE       \
-        {                                \
-          continue;                      \
-        }
 
 
 namespace Licq
