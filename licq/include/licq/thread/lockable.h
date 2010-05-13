@@ -77,7 +77,7 @@ public:
    * @param object Object to guard mutex for
    * @param locked True if object is already locked or false if guard should lock
    */
-  ReadMutexGuard(T* object, bool locked = true)
+  ReadMutexGuard(T* object, bool locked = false)
     : myObject(object)
   {
     if (!locked)
@@ -156,7 +156,7 @@ public:
    * @param object Object to guard mutex for
    * @param locked True if object is already locked or false if guard should lock
    */
-  WriteMutexGuard(T* object, bool locked = true)
+  WriteMutexGuard(T* object, bool locked = false)
     : myObject(object)
   {
     if (!locked)

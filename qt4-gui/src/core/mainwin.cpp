@@ -788,7 +788,7 @@ void MainWindow::nextGroup()
     Licq::GroupListGuard groupList;
     BOOST_FOREACH(Licq::Group *g, **groupList)
     {
-      Licq::GroupReadGuard group(g, false);
+      Licq::GroupReadGuard group(g);
 
       // If current selection is all users, select first group in list
       if (groupId == 0 && curGroupId == ContactListModel::AllUsersGroupId)
@@ -856,7 +856,7 @@ void MainWindow::prevGroup()
     Licq::GroupListGuard groupList;
     BOOST_FOREACH(Licq::Group* g, **groupList)
     {
-      Licq::GroupReadGuard group(g, false);
+      Licq::GroupReadGuard group(g);
 
       // If current group is selected, set previous group
       if (curGroupId == group->id())
@@ -972,7 +972,7 @@ void MainWindow::updateStatus()
         break;
       case 1:
       {
-        Licq::OwnerReadGuard o(*it, false);
+        Licq::OwnerReadGuard o(*it);
         myStatusField->setText(Licq::User::statusToString(o->status()).c_str());
         myStatusField->setPrependPixmap(iconman->iconForUser(*o));
         if (o->status() == Licq::User::OfflineStatus)
@@ -986,7 +986,7 @@ void MainWindow::updateStatus()
       default:
         BOOST_FOREACH(Licq::Owner* owner, **ownerList)
         {
-          Licq::OwnerReadGuard o(owner, false);
+          Licq::OwnerReadGuard o(owner);
           myStatusField->addPixmap(iconman->iconForUser(*o));
         }
     }

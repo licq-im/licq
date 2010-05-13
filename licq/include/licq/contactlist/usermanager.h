@@ -450,11 +450,11 @@ public:
    * @param retWasAdded If not null, will be set to true if user was added
    */
   UserReadGuard(const UserId& userId, bool addUser = false, bool* retWasAdded = NULL)
-    : ReadMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded))
+    : ReadMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded), true)
   { }
 
   // Derived constructors
-  UserReadGuard(User* user, bool locked = true)
+  UserReadGuard(User* user, bool locked = false)
     : ReadMutexGuard<User>(user, locked)
   { }
   UserReadGuard(ReadMutexGuard<User>* guard)
@@ -477,11 +477,11 @@ public:
    * @param retWasAdded If not null, will be set to true if user was added
    */
   UserWriteGuard(const UserId& userId, bool addUser = false, bool* retWasAdded = NULL)
-    : WriteMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_W, addUser, retWasAdded))
+    : WriteMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_W, addUser, retWasAdded), true)
   { }
 
   // Derived constructors
-  UserWriteGuard(User* user, bool locked = true)
+  UserWriteGuard(User* user, bool locked = false)
     : WriteMutexGuard<User>(user, locked)
   { }
   UserWriteGuard(WriteMutexGuard<User>* guard)
@@ -502,7 +502,7 @@ public:
    * @param userId Id of owner to fetch
    */
   OwnerReadGuard(const UserId& userId)
-    : ReadMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_R))
+    : ReadMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_R), true)
   { }
 
   /**
@@ -512,11 +512,11 @@ public:
    * @param userId Id of owner to fetch
    */
   OwnerReadGuard(unsigned long protocolId)
-    : ReadMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_R))
+    : ReadMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_R), true)
   { }
 
   // Derived constructors
-  OwnerReadGuard(Owner* owner, bool locked = true)
+  OwnerReadGuard(Owner* owner, bool locked = false)
     : ReadMutexGuard<Owner>(owner, locked)
   { }
   OwnerReadGuard(ReadMutexGuard<Owner>* guard)
@@ -537,7 +537,7 @@ public:
    * @param userId Id of owner to fetch
    */
   OwnerWriteGuard(const UserId& userId)
-    : WriteMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_W))
+    : WriteMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_W), true)
   { }
 
   /**
@@ -547,11 +547,11 @@ public:
    * @param userId Id of owner to fetch
    */
   OwnerWriteGuard(unsigned long protocolId)
-    : WriteMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_W))
+    : WriteMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_W), true)
   { }
 
   // Derived constructors
-  OwnerWriteGuard(Owner* owner, bool locked = true)
+  OwnerWriteGuard(Owner* owner, bool locked = false)
     : WriteMutexGuard<Owner>(owner, locked)
   { }
   OwnerWriteGuard(WriteMutexGuard<Owner>* guard)
@@ -572,11 +572,11 @@ public:
    * @param groupId Id of group to fetch
    */
   GroupReadGuard(int groupId)
-    : ReadMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_R))
+    : ReadMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_R), true)
   { }
 
   // Derived constructors
-  GroupReadGuard(Group* group, bool locked = true)
+  GroupReadGuard(Group* group, bool locked = false)
     : ReadMutexGuard<Group>(group, locked)
   { }
   GroupReadGuard(ReadMutexGuard<Group>* guard)
@@ -597,11 +597,11 @@ public:
    * @param groupId Id of group to fetch
    */
   GroupWriteGuard(int groupId)
-    : WriteMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_W))
+    : WriteMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_W), true)
   { }
 
   // Derived constructors
-  GroupWriteGuard(Group* group, bool locked = true)
+  GroupWriteGuard(Group* group, bool locked = false)
     : WriteMutexGuard<Group>(group, locked)
   { }
   GroupWriteGuard(WriteMutexGuard<Group>* guard)

@@ -352,7 +352,7 @@ void ContactListModel::reloadAll()
     Licq::GroupListGuard groupList;
     BOOST_FOREACH(Licq::Group* g, **groupList)
     {
-      Licq::GroupReadGuard pGroup(g, false);
+      Licq::GroupReadGuard pGroup(g);
       ContactGroup* group = new ContactGroup(*pGroup);
       connectGroup(group);
       myGroups.append(group);

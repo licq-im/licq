@@ -1202,7 +1202,7 @@ void LicqGui::showAllOwnerEvents()
     Licq::OwnerListGuard ownerList;
     BOOST_FOREACH(Licq::Owner* owner, **ownerList)
     {
-      Licq::OwnerReadGuard o(owner, false);
+      Licq::OwnerReadGuard o(owner);
       if (o->NewMessages() > 0)
         users.push_back(o->id());
     }
@@ -1228,7 +1228,7 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
       BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
         {
-          Licq::OwnerReadGuard o(owner, false);
+          Licq::OwnerReadGuard o(owner);
           if (o->NewMessages() == 0)
             continue;
         }
