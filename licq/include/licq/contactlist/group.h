@@ -118,6 +118,53 @@ private:
  */
 bool compare_groups(const Group* first, const Group* second);
 
+
+/**
+ * Read mutex guard for Licq::Group
+ */
+class GroupReadGuard : public ReadMutexGuard<Group>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a group based on group id
+   * Note: Always check that the group was actually fetched before using
+   *
+   * @param groupId Id of group to fetch
+   */
+  GroupReadGuard(int groupId);
+
+  // Derived constructors
+  GroupReadGuard(Group* group, bool locked = false)
+    : ReadMutexGuard<Group>(group, locked)
+  { }
+  GroupReadGuard(ReadMutexGuard<Group>* guard)
+    : ReadMutexGuard<Group>(guard)
+  { }
+};
+
+/**
+ * Write mutex guard for Licq::Group
+ */
+class GroupWriteGuard : public WriteMutexGuard<Group>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a group based on group id
+   * Note: Always check that the group was actually fetched before using
+   *
+   * @param groupId Id of group to fetch
+   */
+  GroupWriteGuard(int groupId);
+
+  // Derived constructors
+  GroupWriteGuard(Group* group, bool locked = false)
+    : WriteMutexGuard<Group>(group, locked)
+  { }
+  GroupWriteGuard(WriteMutexGuard<Group>* guard)
+    : WriteMutexGuard<Group>(guard)
+  { }
+};
+
 } // namespace Licq
 
 #endif // LICQ_CONTACTLIST_GROUP_H

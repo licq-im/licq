@@ -931,6 +931,56 @@ protected:
 };
 
 
+/**
+ * Read mutex guard for Licq::User
+ */
+class UserReadGuard : public ReadMutexGuard<User>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a user based on user id
+   * Note: Always check that the user was actually fetched before using
+   *
+   * @param userId Id of user to fetch
+   * @param addUser True if user should be added (as temporary) if not found
+   * @param retWasAdded If not null, will be set to true if user was added
+   */
+  UserReadGuard(const UserId& userId, bool addUser = false, bool* retWasAdded = NULL);
+
+  // Derived constructors
+  UserReadGuard(User* user, bool locked = false)
+    : ReadMutexGuard<User>(user, locked)
+  { }
+  UserReadGuard(ReadMutexGuard<User>* guard)
+    : ReadMutexGuard<User>(guard)
+  { }
+};
+
+/**
+ * Write mutex guard for Licq::User
+ */
+class UserWriteGuard : public WriteMutexGuard<User>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a user based on user id
+   * Note: Always check that the user was actually fetched before using
+   *
+   * @param userId Id of user to fetch
+   * @param addUser True if user should be added (as temporary) if not found
+   * @param retWasAdded If not null, will be set to true if user was added
+   */
+  UserWriteGuard(const UserId& userId, bool addUser = false, bool* retWasAdded = NULL);
+
+  // Derived constructors
+  UserWriteGuard(User* user, bool locked = false)
+    : WriteMutexGuard<User>(user, locked)
+  { }
+  UserWriteGuard(WriteMutexGuard<User>* guard)
+    : WriteMutexGuard<User>(guard)
+  { }
+};
+
 } // namespace Licq
 
 #endif // LICQ_CONTACTLIST_USER_H

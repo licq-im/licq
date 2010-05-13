@@ -15,12 +15,17 @@ using std::list;
 using std::string;
 using Licq::Group;
 using Licq::GroupListGuard;
+using Licq::GroupReadGuard;
+using Licq::GroupWriteGuard;
 using Licq::Owner;
 using Licq::OwnerListGuard;
+using Licq::OwnerReadGuard;
+using Licq::OwnerWriteGuard;
 using Licq::User;
 using Licq::UserListGuard;
 using Licq::UserId;
 using Licq::UserGroupList;
+using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
 using namespace LicqDaemon;
 
@@ -1230,6 +1235,55 @@ char* PPIDSTRING(unsigned long ppid)
 {
   char* ret = new char[5];
   return Licq::protocolId_toStr(ret, ppid);
+}
+
+
+UserReadGuard::UserReadGuard(const UserId& userId, bool addUser, bool* retWasAdded)
+  : ReadMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded), true)
+{
+  // Empty
+}
+
+UserWriteGuard::UserWriteGuard(const UserId& userId, bool addUser, bool* retWasAdded)
+  : WriteMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_W, addUser, retWasAdded), true)
+{
+  // Empty
+}
+
+OwnerReadGuard::OwnerReadGuard(const UserId& userId)
+  : ReadMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_R), true)
+{
+  // Empty
+}
+
+OwnerReadGuard::OwnerReadGuard(unsigned long protocolId)
+  : ReadMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_R), true)
+{
+  // Empty
+}
+
+OwnerWriteGuard::OwnerWriteGuard(const UserId& userId)
+  : WriteMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_W), true)
+{
+  // Empty
+}
+
+OwnerWriteGuard::OwnerWriteGuard(unsigned long protocolId)
+  : WriteMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_W), true)
+{
+  // Empty
+}
+
+GroupReadGuard::GroupReadGuard(int groupId)
+  : ReadMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_R), true)
+{
+  // Empty
+}
+
+GroupWriteGuard::GroupWriteGuard(int groupId)
+  : WriteMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_W), true)
+{
+  // Empty
 }
 
 

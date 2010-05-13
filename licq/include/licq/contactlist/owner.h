@@ -66,6 +66,68 @@ protected:
   unsigned short m_nPDINFO;
 };
 
+/**
+ * Read mutex guard for Licq::Owner
+ */
+class OwnerReadGuard : public ReadMutexGuard<Owner>
+{
+public:
+  /**
+   * Constructor, will fetch and lock an owner based on user id
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerReadGuard(const UserId& userId);
+
+  /**
+   * Constructor, will fetch and lock an owner based on protocolId
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerReadGuard(unsigned long protocolId);
+
+  // Derived constructors
+  OwnerReadGuard(Owner* owner, bool locked = false)
+    : ReadMutexGuard<Owner>(owner, locked)
+  { }
+  OwnerReadGuard(ReadMutexGuard<Owner>* guard)
+    : ReadMutexGuard<Owner>(guard)
+  { }
+};
+
+/**
+ * Write mutex guard for Licq::Owner
+ */
+class OwnerWriteGuard : public WriteMutexGuard<Owner>
+{
+public:
+  /**
+   * Constructor, will fetch and lock an owner based on user id
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerWriteGuard(const UserId& userId);
+
+  /**
+   * Constructor, will fetch and lock an owner based on protocolId
+   * Note: Always check that the owner was actually fetched before using
+   *
+   * @param userId Id of owner to fetch
+   */
+  OwnerWriteGuard(unsigned long protocolId);
+
+  // Derived constructors
+  OwnerWriteGuard(Owner* owner, bool locked = false)
+    : WriteMutexGuard<Owner>(owner, locked)
+  { }
+  OwnerWriteGuard(WriteMutexGuard<Owner>* guard)
+    : WriteMutexGuard<Owner>(guard)
+  { }
+};
+
 } // namespace Licq
 
 #endif // LICQ_CONTACTLIST_OWNER_H
