@@ -15,6 +15,8 @@
 #include "licq_log.h"
 #include "licq_user.h"
 
+#include "contactlist/user.h"
+
 using namespace std;
 using Licq::StringList;
 
@@ -188,6 +190,10 @@ unsigned long ICQEvent::EventId() const
   return this == NULL ? 0 : m_nEventId;
 }
 
+const Licq::User* LicqEvent::UnknownUser() const
+{
+  return m_pUnknownUser;
+}
 
 // Returns the event and transfers ownership to the calling function
 CUserEvent *ICQEvent::GrabUserEvent()

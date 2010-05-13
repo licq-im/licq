@@ -1,4 +1,4 @@
-#include "licq/contactlist/user.h"
+#include "user.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
@@ -262,9 +262,10 @@ bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
 unsigned short User::s_nNumUserEvents = 0;
 pthread_mutex_t User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
-User::User(const UserId& id, const string& filename)
-  : myId(id)
+LicqDaemon::User::User(const UserId& id, const string& filename)
 {
+  myId = id;
+
   Init();
   m_fConf.SetFlags(INI_FxWARN);
   m_fConf.SetFileName(filename.c_str());
@@ -278,9 +279,10 @@ User::User(const UserId& id, const string& filename)
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
-User::User(const UserId& id, bool temporary)
-  : myId(id)
+LicqDaemon::User::User(const UserId& id, bool temporary)
 {
+  myId = id;
+
   Init();
   SetDefaults();
   m_bNotInList = temporary;
@@ -288,7 +290,7 @@ User::User(const UserId& id, bool temporary)
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
-    protocolId_toStr(p, myId.protocolId());
+    Licq::protocolId_toStr(p, myId.protocolId());
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
         myId.accountId().c_str(), p);
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
@@ -516,7 +518,7 @@ void User::LoadLicqInfo()
 }
 
 
-User::~User()
+LicqDaemon::User::~User()
 {
   unsigned long nId;
   while (m_vcMessages.size() > 0)

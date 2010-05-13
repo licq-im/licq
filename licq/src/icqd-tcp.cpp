@@ -36,14 +36,15 @@
 #include "support.h"
 #include "licq/version.h"
 
+#include "contactlist/user.h"
 #include "icqpacket.h"
 #include "oscarservice.h"
 
 using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
-using Licq::User;
 using Licq::gOnEventManager;
+using LicqDaemon::User;
 
 
 void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, const string& message,

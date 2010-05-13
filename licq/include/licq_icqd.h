@@ -46,6 +46,7 @@ typedef Licq::Packet CPacket;
 namespace LicqDaemon
 {
 class ProtocolManager;
+class User;
 class UserManager;
 }
 
@@ -662,6 +663,7 @@ protected:
   friend void *OscarServiceSendQueue_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend void *ConnectToServer_tep(void *s);
+  friend class LicqDaemon::User;
   friend class Licq::User;
   friend class CSocketManager;
   friend class COscarService;

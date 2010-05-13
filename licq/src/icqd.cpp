@@ -34,6 +34,7 @@
 #include "licq_translate.h"
 #include "licq_proxy.h"
 
+#include "contactlist/user.h"
 #include "gpghelper.h"
 #include "icqpacket.h"
 #include "licq.h"
@@ -46,7 +47,6 @@
 using namespace std;
 using namespace LicqDaemon;
 using Licq::OnEventManager;
-using Licq::User;
 using Licq::gOnEventManager;
 
 std::list <CReverseConnectToUserData *> CICQDaemon::m_lReverseConnect;

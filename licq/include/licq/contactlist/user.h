@@ -199,23 +199,6 @@ public:
   { return userId.protocolId(); }
 
 
-  /**
-   * Constructor to create a user object for an existing contact
-   *
-   * @param id User id
-   * @param filename Filename to read user data from
-   */
-  User(const UserId& id, const std::string& filename);
-
-  /**
-   * Constructor to create a user object for a new contact
-   *
-   * @param id User id
-   * @param temporary False if user is added permanently to list
-   */
-  User(const UserId& id, bool temporary = false);
-
-  virtual ~User();
   void RemoveFiles();
 
   void saveAll();
@@ -771,6 +754,8 @@ public:
   virtual bool isUser() const                   { return true; }
 
 protected:
+  virtual ~User() { /* Empty */ }
+
   void loadUserInfo();
 
   /**
@@ -830,7 +815,7 @@ protected:
   /// Set ICQ status flags (also updates generic status flags)
   void SetStatus(unsigned long n);
 
-  const UserId myId;
+  UserId myId;
 
   CIniFile m_fConf;
   UserHistory myHistory;

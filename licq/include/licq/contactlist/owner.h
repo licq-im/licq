@@ -11,18 +11,9 @@ namespace Licq
  *
  * Inherits LicqUser to hold all user information associated with the account.
  */
-class Owner : public User
+class Owner : public virtual User
 {
 public:
-  /**
-   * Constructor
-   *
-   * @param accountId User account id
-   * @param ppid Protocol instance id
-   */
-  Owner(const UserId& id);
-
-  virtual ~Owner();
   bool Exception() const                        { return m_bException; }
 
   // Owner specific functions
@@ -55,6 +46,8 @@ public:
 
   virtual bool isUser() const                   { return false; }
 protected:
+  virtual ~Owner() { /* Empty */ }
+
   char *m_szPassword;
   bool m_bException,
        m_bWebAware,

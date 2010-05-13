@@ -1,4 +1,4 @@
-#include "licq/contactlist/owner.h"
+#include "owner.h"
 
 #include <cerrno>
 #include <fcntl.h>
@@ -13,9 +13,10 @@
 
 using std::string;
 using Licq::Owner;
+using Licq::UserId;
 
 
-Owner::Owner(const UserId& id)
+LicqDaemon::Owner::Owner(const UserId& id)
   : User(id, true)
 {
   // Pretend to be temporary to LicqUser constructior so it doesn't setup m_fConf
@@ -32,7 +33,7 @@ Owner::Owner(const UserId& id)
 
   // Get data from the config file
   char p[5];
-  protocolId_toStr(p, myId.protocolId());
+  Licq::protocolId_toStr(p, myId.protocolId());
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s", BASE_DIR, p);
   filename[MAX_FILENAME_LEN - 1] = '\0';
 
@@ -75,7 +76,7 @@ Owner::Owner(const UserId& id)
       myId.accountId().c_str(), p);
     SetHistoryFile(filename);
 
-  if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)
+  if (m_nTimezone != SystemTimezone() && m_nTimezone != Licq::TIMEZONE_UNKNOWN)
   {
     gLog.Warn(tr("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
               "%sUpdate general info on server to fix.\n"),
@@ -84,7 +85,7 @@ Owner::Owner(const UserId& id)
   SetEnableSave(true);
 }
 
-Owner::~Owner()
+LicqDaemon::Owner::~Owner()
 {
   // Save the current auto response
   if (!m_fConf.ReloadFile())

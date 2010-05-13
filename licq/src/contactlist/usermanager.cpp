@@ -10,6 +10,8 @@
 #include "licq_events.h"
 
 #include "../protocolmanager.h"
+#include "owner.h"
+#include "user.h"
 
 using std::list;
 using std::string;
@@ -17,11 +19,9 @@ using Licq::Group;
 using Licq::GroupListGuard;
 using Licq::GroupReadGuard;
 using Licq::GroupWriteGuard;
-using Licq::Owner;
 using Licq::OwnerListGuard;
 using Licq::OwnerReadGuard;
 using Licq::OwnerWriteGuard;
-using Licq::User;
 using Licq::UserListGuard;
 using Licq::UserId;
 using Licq::UserGroupList;
@@ -431,7 +431,7 @@ void UserManager::RemoveOwner(unsigned long ppid)
         LIST_OWNER_REMOVED, id));
 }
 
-User* UserManager::fetchUser(const UserId& userId,
+Licq::User* UserManager::fetchUser(const UserId& userId,
     unsigned short lockType, bool addUser, bool* retWasAdded)
 {
   if (retWasAdded != NULL)
@@ -516,7 +516,7 @@ bool UserManager::userExists(const UserId& userId)
 
 UserId UserManager::ownerUserId(unsigned long ppid)
 {
-  const Owner* owner = FetchOwner(ppid, LOCK_R);
+  const Licq::Owner* owner = FetchOwner(ppid, LOCK_R);
   if (owner == NULL)
     return UserId();
 
@@ -527,7 +527,7 @@ UserId UserManager::ownerUserId(unsigned long ppid)
 
 string UserManager::OwnerId(unsigned long ppid)
 {
-  const Owner* owner = FetchOwner(ppid, LOCK_R);
+  const Licq::Owner* owner = FetchOwner(ppid, LOCK_R);
   if (owner == NULL)
     return "";
 
@@ -619,7 +619,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
   UnlockGroupList();
 
   bool icqOnline = false;
-  Owner* icqOwner = FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::Owner* icqOwner = FetchOwner(LICQ_PPID, LOCK_R);
   if (icqOwner != NULL)
   {
     icqOnline = icqOwner->isOnline();
@@ -903,7 +903,7 @@ unsigned short UserManager::GenerateSID()
   int nSID;
   unsigned short nOwnerPDINFO;
 
-  const Owner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const Licq::Owner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   nOwnerPDINFO = o->GetPDINFO();
   gUserManager.DropOwner(o);
 
@@ -961,13 +961,13 @@ unsigned short UserManager::GenerateSID()
   return nSID;
 }
 
-void UserManager::DropUser(const User* u)
+void UserManager::DropUser(const Licq::User* u)
 {
   if (u == NULL) return;
   u->Unlock();
 }
 
-Owner* UserManager::FetchOwner(unsigned long ppid, unsigned short lockType)
+Licq::Owner* UserManager::FetchOwner(unsigned long ppid, unsigned short lockType)
 {
   Owner* o = NULL;
 
@@ -983,7 +983,7 @@ Owner* UserManager::FetchOwner(unsigned long ppid, unsigned short lockType)
   return o;
 }
 
-void UserManager::DropOwner(const Owner* owner)
+void UserManager::DropOwner(const Licq::Owner* owner)
 {
   if (owner == NULL)
     return;
@@ -1159,7 +1159,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
   if (groupId == 0)
     return;
 
-  User* u = gUserManager.fetchUser(userId, LOCK_W);
+  Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL) 
     return;
 

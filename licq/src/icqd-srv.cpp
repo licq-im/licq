@@ -39,14 +39,17 @@
 #include "licq_proxy.h"
 #include "licq/version.h"
 
+#include "contactlist/owner.h"
+#include "contactlist/user.h"
 #include "icqpacket.h"
 #include "oscarservice.h"
 
 using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
-using Licq::User;
 using Licq::gOnEventManager;
+using LicqDaemon::Owner;
+using LicqDaemon::User;
 
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
@@ -5303,7 +5306,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
                 if (!u->isUser())
                 {
-            static_cast<ICQOwner *>(u)->SetWebAware(nStatus);
+                  dynamic_cast<Owner*>(u)->SetWebAware(nStatus);
             /* this unpack is inside the if statement since it appears only
                for the owner request */
                   u->setUserInfoBool("HideEmail", msg.UnpackChar());

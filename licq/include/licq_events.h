@@ -14,6 +14,7 @@ class CUserEvent;
 namespace LicqDaemon
 {
 class PluginEventHandler;
+class User;
 }
 
 namespace Licq
@@ -230,7 +231,7 @@ public:
   //!with the relevant fields set.  This is helpful in searches for example
   //!to avoid having to add the user to the list before checking their
   //!other information.
-  const Licq::User* UnknownUser() const { return m_pUnknownUser; }
+  const Licq::User* UnknownUser() const;
 
   // Returns the event and transfers ownership to the calling function
   CUserEvent *GrabUserEvent();
@@ -288,7 +289,7 @@ protected:
   CUserEvent    *m_pUserEvent;
   CExtendedAck  *m_pExtendedAck;
   CSearchAck    *m_pSearchAck;
-  Licq::User* m_pUnknownUser;
+  LicqDaemon::User* m_pUnknownUser;
 
   unsigned long  m_nEventId;
 

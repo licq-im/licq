@@ -27,13 +27,13 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/userid.h>
 
+#include "contactlist/user.h"
 #include "gettext.h"
 
 using namespace std;
 using namespace LicqDaemon;
 using Licq::OwnerReadGuard;
 using Licq::OwnerWriteGuard;
-using Licq::User;
 using Licq::UserId;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
