@@ -150,17 +150,21 @@ void MMUserView::dropEvent(QDropEvent* event)
     QString text = event->mimeData()->text();
 
     unsigned long ppid = 0;
-    Licq::OwnerMap* owners = gUserManager.LockOwnerList();
-    for (Licq::OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
+
     {
-      unsigned long protocolId = i->first;
-      if (text.startsWith(PPIDSTRING(protocolId)))
+      Licq::OwnerListGuard ownerList;
+      BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
-        ppid = protocolId;
-        break;
+        unsigned long protocolId = owner->ppid();
+        char ppidStr[5];
+        Licq::protocolId_toStr(ppidStr, protocolId);
+        if (text.startsWith(ppidStr))
+        {
+          ppid = protocolId;
+          break;
+        }
       }
     }
-    gUserManager.UnlockOwnerList();
 
     if (ppid == 0)
       return;

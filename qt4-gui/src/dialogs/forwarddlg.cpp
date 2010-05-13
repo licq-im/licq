@@ -147,17 +147,21 @@ void ForwardDlg::dropEvent(QDropEvent* de)
     return;
 
   unsigned long nPPID = 0;
-  Licq::OwnerMap* owners = gUserManager.LockOwnerList();
-  for (Licq::OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
+
   {
-    unsigned long ppid = i->first;
-    if (text.startsWith(PPIDSTRING(ppid)))
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
     {
-      nPPID = ppid;
-      break;
+      unsigned long ppid = owner->ppid();
+      char ppidStr[5];
+      Licq::protocolId_toStr(ppidStr, ppid);
+      if (text.startsWith(ppidStr))
+      {
+        nPPID = ppid;
+        break;
+      }
     }
   }
-  gUserManager.UnlockOwnerList();
 
   if (nPPID == 0 || text.length() <= 4)
     return;

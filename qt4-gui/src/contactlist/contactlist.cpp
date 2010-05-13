@@ -20,6 +20,7 @@
 
 #include "contactlist.h"
 
+#include <boost/foreach.hpp>
 #include <cstring>
 
 #include <QHash>
@@ -347,15 +348,16 @@ void ContactListModel::reloadAll()
   connectGroup(newGroup);
   myGroups.append(newGroup);
 
-  const Licq::GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
-  for (Licq::GroupMap::const_iterator i = groups->begin(); i != groups->end(); ++i)
   {
-    LicqGroupReadGuard pGroup(i->second, false);
-    ContactGroup* group = new ContactGroup(*pGroup);
-    connectGroup(group);
-    myGroups.append(group);
+    Licq::GroupListGuard groupList;
+    BOOST_FOREACH(Licq::Group* g, **groupList)
+    {
+      Licq::GroupReadGuard pGroup(g, false);
+      ContactGroup* group = new ContactGroup(*pGroup);
+      connectGroup(group);
+      myGroups.append(group);
+    }
   }
-  gUserManager.UnlockGroupList();
 
   // Add all users
   FOR_EACH_USER_START(LOCK_R)

@@ -784,28 +784,29 @@ void MainWindow::nextGroup()
     return;
   }
 
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    // If current selection is all users, select first group in list
-    if (groupId == 0 && curGroupId == ContactListModel::AllUsersGroupId)
+    Licq::GroupListGuard groupList;
+    BOOST_FOREACH(Licq::Group *g, **groupList)
     {
-      pGroup->Unlock();
-      gUserManager.UnlockGroupList();
-      Config::ContactList::instance()->setGroup(pGroup->id());
-      return;
-    }
+      Licq::GroupReadGuard group(g, false);
 
-    // If previous group is selected, select current group
-    if (groupId != 0 && curGroupId == groupId)
-    {
-      pGroup->Unlock();
-      gUserManager.UnlockGroupList();
-      Config::ContactList::instance()->setGroup(pGroup->id());
-      return;
+      // If current selection is all users, select first group in list
+      if (groupId == 0 && curGroupId == ContactListModel::AllUsersGroupId)
+      {
+        Config::ContactList::instance()->setGroup(group->id());
+        return;
+      }
+
+      // If previous group is selected, select current group
+      if (groupId != 0 && curGroupId == groupId)
+      {
+        Config::ContactList::instance()->setGroup(group->id());
+        return;
+      }
+
+      groupId = group->id();
     }
-    groupId = pGroup->id();
   }
-  FOR_EACH_GROUP_END
 
   // Last user group is currently selected, set first system group
   if (groupId != 0 && curGroupId == groupId)
@@ -851,23 +852,25 @@ void MainWindow::prevGroup()
     return;
   }
 
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    // If current group is selected, set previous group
-    if (curGroupId == pGroup->id())
+    Licq::GroupListGuard groupList;
+    BOOST_FOREACH(Licq::Group* g, **groupList)
     {
-      pGroup->Unlock();
-      gUserManager.UnlockGroupList();
-      if (groupId == 0)
-        Config::ContactList::instance()->setGroup(ContactListModel::AllUsersGroupId);
-      else
-        Config::ContactList::instance()->setGroup(groupId);
-      return;
-    }
+      Licq::GroupReadGuard group(g, false);
 
-    groupId = pGroup->id();
+      // If current group is selected, set previous group
+      if (curGroupId == group->id())
+      {
+        if (groupId == 0)
+          Config::ContactList::instance()->setGroup(ContactListModel::AllUsersGroupId);
+        else
+          Config::ContactList::instance()->setGroup(groupId);
+        return;
+      }
+
+      groupId = group->id();
+    }
   }
-  FOR_EACH_GROUP_END
 
   // If first system group is selected, set last user group
   if (groupId != 0 && curGroupId == ContactListModel::SystemGroupOffset + 0)
@@ -960,36 +963,34 @@ void MainWindow::updateStatus()
   myStatusField->clearPrependPixmap();
   myStatusField->setText(QString::null);
 
-  Licq::OwnerMap* ol = gUserManager.LockOwnerList(LOCK_R);
-  Licq::OwnerMap::const_iterator it = ol->begin();
-  LicqOwner* o;
-  switch (ol->size())
   {
-    case 0:
-      break;
-    case 1:
-      o = it->second;
-      o->Lock();
-      myStatusField->setText(Licq::User::statusToString(o->status()).c_str());
-      myStatusField->setPrependPixmap(iconman->iconForUser(o));
-      if (o->status() == Licq::User::OfflineStatus)
-        theColor = skin->offlineColor;
-      else if (o->status() & Licq::User::AwayStatuses)
-        theColor = skin->awayColor;
-      else
-        theColor = skin->onlineColor;
-      o->Unlock();
-      break;
-    default:
-      for (; it != ol->end(); it++)
+    Licq::OwnerListGuard ownerList;
+    Licq::OwnerList::const_iterator it = ownerList->begin();
+    switch (ownerList->size())
+    {
+      case 0:
+        break;
+      case 1:
       {
-        o = it->second;
-        o->Lock();
-        myStatusField->addPixmap(iconman->iconForUser(o));
-        o->Unlock();
+        Licq::OwnerReadGuard o(*it, false);
+        myStatusField->setText(Licq::User::statusToString(o->status()).c_str());
+        myStatusField->setPrependPixmap(iconman->iconForUser(*o));
+        if (o->status() == Licq::User::OfflineStatus)
+          theColor = skin->offlineColor;
+        else if (o->status() & Licq::User::AwayStatuses)
+          theColor = skin->awayColor;
+        else
+          theColor = skin->onlineColor;
+        break;
       }
+      default:
+        BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+        {
+          Licq::OwnerReadGuard o(owner, false);
+          myStatusField->addPixmap(iconman->iconForUser(*o));
+        }
+    }
   }
-  gUserManager.UnlockOwnerList();
 
   myStatusField->update();
 

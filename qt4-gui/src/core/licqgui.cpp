@@ -1003,18 +1003,21 @@ bool LicqGui::userDropEvent(const UserId& userId, const QMimeData& mimeData)
     QString text = mimeData.text();
 
     unsigned long dropPpid = 0;
-    OwnerMap* owners = gUserManager.LockOwnerList();
-    for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
-    {
-      unsigned long ppid = i->first;
 
-      if (text.startsWith(PPIDSTRING(ppid)))
+    {
+      Licq::OwnerListGuard ownerList;
+      BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
-        dropPpid = ppid;
-        break;
+        unsigned long ppid = owner->ppid();
+        char ppidStr[5];
+        Licq::protocolId_toStr(ppidStr, ppid);
+        if (text.startsWith(ppidStr))
+        {
+          dropPpid = ppid;
+          break;
+        }
       }
     }
-    gUserManager.UnlockOwnerList();
 
     if (dropPpid != 0 && text.length() > 4)
     {
@@ -1195,16 +1198,16 @@ void LicqGui::showAllOwnerEvents()
 {
   // Get a list of owners first so we can unlock list before calling showViewEventDialog
   list<UserId> users;
-  const OwnerMap* owners = gUserManager.LockOwnerList();
-  for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
+
   {
-    i->second->Lock();
-    const LicqOwner* o = i->second;
-    if (o->NewMessages() > 0)
-      users.push_back(o->id());
-    i->second->Unlock();
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard o(owner, false);
+      if (o->NewMessages() > 0)
+        users.push_back(o->id());
+    }
   }
-  gUserManager.UnlockOwnerList();
 
   BOOST_FOREACH(UserId& userId, users)
     showViewEventDialog(userId);
@@ -1221,21 +1224,19 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
   if (!USERID_ISVALID(userId))
   {
     // Do system messages first
-    const OwnerMap* owners = gUserManager.LockOwnerList();
-    for (OwnerMap::const_iterator i = owners->begin(); i != owners->end(); ++i)
     {
-      i->second->Lock();
-      const LicqOwner* o = i->second;
-      unsigned short nNumMsg = o->NewMessages();
-      i->second->Unlock();
-      if (nNumMsg > 0)
+      Licq::OwnerListGuard ownerList;
+      BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
-        gUserManager.UnlockOwnerList();
+        {
+          Licq::OwnerReadGuard o(owner, false);
+          if (o->NewMessages() == 0)
+            continue;
+        }
         showAllOwnerEvents();
         return;
       }
     }
-    gUserManager.UnlockOwnerList();
 
     time_t t = time(NULL);
     FOR_EACH_USER_START(LOCK_R)
@@ -1615,102 +1616,102 @@ void LicqGui::autoAway()
 
   // Check every owner as the statuses may differ
   map<unsigned long, unsigned> newStatuses;
-  const OwnerMap* owners = gUserManager.LockOwnerList();
-  for (OwnerMap::const_iterator iter = owners->begin(); iter != owners->end(); ++iter)
+
   {
-    unsigned long nPPID = iter->first;
-    LicqOwner* o = iter->second;
-
-    // Fetch current status
-    o->Lock();
-    unsigned status = o->status();
-    o->Unlock();
-
-    SAutoAwayInfo& info = autoAwayInfo[nPPID];
-
-    // Check no one changed the status behind our back
-    if (info.isAutoAway && info.setAutoAwayStatus != status)
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(Licq::Owner* o, **ownerList)
     {
-      gLog.Warn("%sSomeone changed the status behind our back (%u != %u; PPID: 0x%lx).\n",
-                L_WARNxSTR, info.setAutoAwayStatus, status, nPPID);
-      info.isAutoAway = false;
-      continue;
-    }
+      // Fetch current status
+      o->Lock();
+      unsigned long nPPID = o->ppid();
+      unsigned status = o->status();
+      o->Unlock();
 
-    // If we are offline, and it isn't auto offline, we shouldn't do anything
-    if (status == User::OfflineStatus && !info.isAutoAway)
-      continue;
+      SAutoAwayInfo& info = autoAwayInfo[nPPID];
 
-    bool returnFromAutoAway = false;
-    unsigned wantedStatus;
-    if (generalConfig->autoOfflineTime() > 0 &&
-        idleTime > (unsigned long)(generalConfig->autoOfflineTime() * 60000))
-      wantedStatus = User::OfflineStatus;
-    else if (generalConfig->autoNaTime() > 0 &&
-        idleTime > (unsigned long)(generalConfig->autoNaTime() * 60000))
-      wantedStatus = User::OnlineStatus | User::NotAvailableStatus;
-    else if (generalConfig->autoAwayTime() > 0 &&
-        idleTime > (unsigned long)(generalConfig->autoAwayTime() * 60000))
-      wantedStatus = User::OnlineStatus | User::AwayStatus;
-    else
-    {
-      // The user is active and we're not auto away
-      if (!info.isAutoAway)
+      // Check no one changed the status behind our back
+      if (info.isAutoAway && info.setAutoAwayStatus != status)
+      {
+        gLog.Warn("%sSomeone changed the status behind our back (%u != %u; PPID: 0x%lx).\n",
+                  L_WARNxSTR, info.setAutoAwayStatus, status, nPPID);
+        info.isAutoAway = false;
+        continue;
+      }
+
+      // If we are offline, and it isn't auto offline, we shouldn't do anything
+      if (status == User::OfflineStatus && !info.isAutoAway)
         continue;
 
-      returnFromAutoAway = true;
-      wantedStatus = info.preAutoAwayStatus;
+      bool returnFromAutoAway = false;
+      unsigned wantedStatus;
+      if (generalConfig->autoOfflineTime() > 0 &&
+          idleTime > (unsigned long)(generalConfig->autoOfflineTime() * 60000))
+        wantedStatus = User::OfflineStatus;
+      else if (generalConfig->autoNaTime() > 0 &&
+          idleTime > (unsigned long)(generalConfig->autoNaTime() * 60000))
+        wantedStatus = User::OnlineStatus | User::NotAvailableStatus;
+      else if (generalConfig->autoAwayTime() > 0 &&
+          idleTime > (unsigned long)(generalConfig->autoAwayTime() * 60000))
+        wantedStatus = User::OnlineStatus | User::AwayStatus;
+      else
+      {
+        // The user is active and we're not auto away
+        if (!info.isAutoAway)
+          continue;
+
+        returnFromAutoAway = true;
+        wantedStatus = info.preAutoAwayStatus;
+      }
+
+      // MSN does not support NA
+      if (nPPID == MSN_PPID && wantedStatus & User::NotAvailableStatus)
+        wantedStatus = User::OnlineStatus | User::AwayStatus;
+
+      // Never change from NA to away unless we are returning from auto away
+      if (status & User::NotAvailableStatus && wantedStatus & User::AwayStatus && !returnFromAutoAway)
+        continue;
+
+      if (status == wantedStatus)
+        continue;
+
+      // If we're not auto away, save current status
+      if (!info.isAutoAway)
+      {
+        info.isAutoAway = true;
+        info.preAutoAwayStatus = status;
+      }
+      else if (returnFromAutoAway)
+        info.isAutoAway = false;
+
+      // Set auto response
+      QString autoResponse;
+      if (wantedStatus & User::NotAvailableStatus && generalConfig->autoNaMess())
+      {
+        const Licq::SarList& sars(gSarManager.getList(SarManager::NotAvailableList));
+        autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
+        gSarManager.releaseList();
+      }
+      else if (wantedStatus & User::AwayStatus && generalConfig->autoAwayMess())
+      {
+        const Licq::SarList& sars(gSarManager.getList(SarManager::AwayList));
+        autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
+        gSarManager.releaseList();
+      }
+      if (!autoResponse.isNull())
+      {
+        o->Lock(LOCK_W);
+        o->SetAutoResponse(autoResponse.toLocal8Bit());
+        o->Unlock();
+      }
+
+      //gLog.Info("%sAuto-away changing status to %u (from %u, PPID 0x%lx).\n",
+      //          L_SRVxSTR, wantedStatus, status, nPPID);
+
+      // Change status
+      info.setAutoAwayStatus = wantedStatus;
+      newStatuses[nPPID] = wantedStatus;
     }
-
-    // MSN does not support NA
-    if (nPPID == MSN_PPID && wantedStatus & User::NotAvailableStatus)
-      wantedStatus = User::OnlineStatus | User::AwayStatus;
-
-    // Never change from NA to away unless we are returning from auto away
-    if (status & User::NotAvailableStatus && wantedStatus & User::AwayStatus && !returnFromAutoAway)
-      continue;
-
-    if (status == wantedStatus)
-      continue;
-
-    // If we're not auto away, save current status
-    if (!info.isAutoAway)
-    {
-      info.isAutoAway = true;
-      info.preAutoAwayStatus = status;
-    }
-    else if (returnFromAutoAway)
-      info.isAutoAway = false;
-
-    // Set auto response
-    QString autoResponse;
-    if (wantedStatus & User::NotAvailableStatus && generalConfig->autoNaMess())
-    {
-      const Licq::SarList& sars(gSarManager.getList(SarManager::NotAvailableList));
-      autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
-      gSarManager.releaseList();
-    }
-    else if (wantedStatus & User::AwayStatus && generalConfig->autoAwayMess())
-    {
-      const Licq::SarList& sars(gSarManager.getList(SarManager::AwayList));
-      autoResponse = QString::fromLocal8Bit(sars.begin()->text.c_str());
-      gSarManager.releaseList();
-    }
-    if (!autoResponse.isNull())
-    {
-      o->Lock(LOCK_W);
-      o->SetAutoResponse(autoResponse.toLocal8Bit());
-      o->Unlock();
-    }
-
-    //gLog.Info("%sAuto-away changing status to %u (from %u, PPID 0x%lx).\n",
-    //          L_SRVxSTR, wantedStatus, status, nPPID);
-
-    // Change status
-    info.setAutoAwayStatus = wantedStatus;
-    newStatuses[nPPID] = wantedStatus;
   }
-  gUserManager.UnlockOwnerList();
 
   // Do the actual status change here, after we've released the lock on owner list
   map<unsigned long, unsigned>::const_iterator iter;
