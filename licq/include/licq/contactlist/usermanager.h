@@ -175,7 +175,12 @@ class CICQDaemon;
 
 namespace Licq
 {
+// Lists for public API
+typedef std::list<User*> UserList;
+typedef std::list<Owner*> OwnerList;
+typedef std::list<Group*> GroupList;
 
+// Maps for internal user manager data
 typedef std::map<UserId, class Licq::User*> UserMap;
 typedef std::map<int, Licq::Group*> GroupMap;
 typedef std::map<unsigned long, class Licq::Owner*> OwnerMap;
@@ -709,6 +714,104 @@ public:
     : WriteMutexGuard<Group>(guard)
   { }
 };
+
+/**
+ * Mutex guard for accessing the user list
+ * The user list will be locked by creating a UserListGuard and unlocked when
+ * the guard is destroyed. This class also acts as a wrapper to hide the
+ * internals of the user manager.
+ *
+ * Note that the users in the list are not locked and any access beyond
+ * reading the id requires the user to be locked by the caller.
+ */
+class UserListGuard : private boost::noncopyable
+{
+public:
+  /**
+   * Constructor
+   * Will read-lock the user list in user manager
+   *
+   * @param protocolId Protocol id to get users for or zero to get all
+   */
+  UserListGuard(unsigned long protocolId = 0);
+
+  /**
+   * Destructor, will release lock on user list
+   */
+  ~UserListGuard();
+
+  // Access operators
+  const UserList* operator*() const { return &myUserList; }
+  const UserList* operator->() const { return &myUserList; }
+
+private:
+  UserList myUserList;
+};
+
+/**
+ * Mutex guard for accessing the owner list
+ * The owner list will be locked by creating a OwnerListGuard and unlocked when
+ * the guard is destroyed. This class also acts as a wrapper to hide the
+ * internals of the user manager.
+ *
+ * Note that the owners in the list are not locked and any access beyond
+ * reading the id requires the owner to be locked by the caller.
+ */
+class OwnerListGuard : private boost::noncopyable
+{
+public:
+  /**
+   * Constructor
+   * Will read-lock the owner list in user manager
+   */
+  OwnerListGuard();
+
+  /**
+   * Destructor, will release lock on group list
+   */
+  ~OwnerListGuard();
+
+  // Access operators
+  const OwnerList* operator*() const { return &myOwnerList; }
+  const OwnerList* operator->() const { return &myOwnerList; }
+
+private:
+  OwnerList myOwnerList;
+};
+
+/**
+ * Mutex guard for accessing the group list
+ * The group list will be locked by creating a GroupListGuard and unlocked when
+ * the guard is destroyed. This class also acts as a wrapper to hide the
+ * internals of the user manager.
+ *
+ * Note that the groups in the list are not locked and any access beyond
+ * reading the id requires the group to be locked by the caller.
+ */
+class GroupListGuard : private boost::noncopyable
+{
+public:
+  /**
+   * Constructor
+   * Will read-lock the group list in user manager
+   *
+   * @param sorted True if list should be sorted
+   */
+  GroupListGuard(bool sorted = true);
+
+  /**
+   * Destructor, will release lock on group list
+   */
+  ~GroupListGuard();
+
+  // Access operators
+  const GroupList* operator*() const { return &myGroupList; }
+  const GroupList* operator->() const { return &myGroupList; }
+
+private:
+  GroupList myGroupList;
+};
+
 
 } // namespace Licq
 

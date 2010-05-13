@@ -14,10 +14,13 @@
 using std::list;
 using std::string;
 using Licq::Group;
+using Licq::GroupListGuard;
 using Licq::GroupMap;
 using Licq::Owner;
+using Licq::OwnerListGuard;
 using Licq::OwnerMap;
 using Licq::User;
+using Licq::UserListGuard;
 using Licq::UserId;
 using Licq::UserGroupList;
 using Licq::UserMap;
@@ -1230,4 +1233,48 @@ char* PPIDSTRING(unsigned long ppid)
 {
   char* ret = new char[5];
   return Licq::protocolId_toStr(ret, ppid);
+}
+
+
+UserListGuard::UserListGuard(unsigned long protocolId)
+{
+  const UserMap* userMap = LicqDaemon::gUserManager.LockUserList();
+
+  for (UserMap::const_iterator i = userMap->begin(); i != userMap->end(); ++i)
+    if (protocolId == 0 || i->first.protocolId() == protocolId)
+      myUserList.push_back(i->second);
+}
+
+UserListGuard::~UserListGuard()
+{
+  LicqDaemon::gUserManager.UnlockUserList();
+}
+
+OwnerListGuard::OwnerListGuard()
+{
+  const OwnerMap* ownerMap = LicqDaemon::gUserManager.LockOwnerList();
+
+  for (OwnerMap::const_iterator i = ownerMap->begin(); i != ownerMap->end(); ++i)
+    myOwnerList.push_back(i->second);
+}
+
+OwnerListGuard::~OwnerListGuard()
+{
+  LicqDaemon::gUserManager.UnlockOwnerList();
+}
+
+GroupListGuard::GroupListGuard(bool sorted)
+{
+  const GroupMap* groupMap = LicqDaemon::gUserManager.LockGroupList();
+
+  for (GroupMap::const_iterator i = groupMap->begin(); i != groupMap->end(); ++i)
+    myGroupList.push_back(i->second);
+
+  if (sorted)
+    myGroupList.sort(Licq::compare_groups);
+}
+
+GroupListGuard::~GroupListGuard()
+{
+  LicqDaemon::gUserManager.UnlockGroupList();
 }
