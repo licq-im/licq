@@ -126,7 +126,6 @@ public:
   int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
   void RemoveGroup(int groupId);
   bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
-  void SaveGroups();
   void ModifyGroupSorting(int groupId, int newIndex);
   void ModifyGroupID(const std::string& name, unsigned short icqGroupId);
   void ModifyGroupID(int groupId, unsigned short icqGroupId);
@@ -147,6 +146,8 @@ public:
   unsigned int NumGroups();
 
 private:
+  void SaveGroups();
+
   Licq::ReadWriteMutex myGroupListMutex;
   Licq::ReadWriteMutex myUserListMutex;
   Licq::ReadWriteMutex myOwnerListMutex;

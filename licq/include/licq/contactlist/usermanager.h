@@ -286,12 +286,6 @@ public:
   virtual unsigned int NumGroups() = 0;
 
   /**
-   * Save user group list to configuration file
-   * Note: This function assumes that user group list is already locked.
-   */
-  virtual void SaveGroups() = 0;
-
-  /**
    * Move sorting position for a group
    * Sorting position for other groups may also be changed to make sure all
    * groups have unique sorting indexes.
