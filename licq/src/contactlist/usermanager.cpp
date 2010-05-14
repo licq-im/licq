@@ -10,12 +10,12 @@
 #include "licq_events.h"
 
 #include "../protocolmanager.h"
+#include "group.h"
 #include "owner.h"
 #include "user.h"
 
 using std::list;
 using std::string;
-using Licq::Group;
 using Licq::GroupListGuard;
 using Licq::GroupReadGuard;
 using Licq::GroupWriteGuard;
@@ -562,7 +562,7 @@ void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSigna
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, subSignal, userId));
 }
 
-Group* UserManager::FetchGroup(int group, unsigned short lockType)
+Licq::Group* UserManager::FetchGroup(int group, unsigned short lockType)
 {
   GroupMap* groups = LockGroupList(LOCK_R);
   GroupMap::const_iterator iter = groups->find(group);
@@ -576,7 +576,7 @@ Group* UserManager::FetchGroup(int group, unsigned short lockType)
   return g;
 }
 
-void UserManager::DropGroup(const Group* group)
+void UserManager::DropGroup(const Licq::Group* group)
 {
   if (group != NULL)
     group->Unlock();
@@ -643,7 +643,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
 
 void UserManager::RemoveGroup(int groupId)
 {
-  Group* group = FetchGroup(groupId, LOCK_R);
+  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_R));
   if (group == NULL)
     return;
 
@@ -695,7 +695,7 @@ void UserManager::RemoveGroup(int groupId)
 
 void UserManager::ModifyGroupSorting(int groupId, int newIndex)
 {
-  Group* group = FetchGroup(groupId, LOCK_R);
+  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_R));
   if (group == NULL)
     return;
 
@@ -748,7 +748,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
     return false;
   }
 
-  Group* group = FetchGroup(groupId, LOCK_W);
+  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_W));
   if (group == NULL)
   {
     gLog.Warn(tr("%sRenaming request for invalid group %u.\n"), L_WARNxSTR, groupId);
@@ -815,7 +815,7 @@ unsigned short UserManager::GetIDFromGroup(const string& name)
 
 unsigned short UserManager::GetIDFromGroup(int groupId)
 {
-  Group* group = gUserManager.FetchGroup(groupId, LOCK_R);
+  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_R));
   if (group == NULL)
     return 0;
 
@@ -885,7 +885,7 @@ void UserManager::ModifyGroupID(const string& name, unsigned short icqGroupId)
 
 void UserManager::ModifyGroupID(int groupId, unsigned short icqGroupId)
 {
-  Group* group = FetchGroup(groupId, LOCK_W);
+  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_W));
   if (group == NULL)
     return;
 
@@ -1322,7 +1322,7 @@ GroupListGuard::GroupListGuard(bool sorted)
     myGroupList.push_back(i->second);
 
   if (sorted)
-    myGroupList.sort(Licq::compare_groups);
+    myGroupList.sort(compare_groups);
 }
 
 GroupListGuard::~GroupListGuard()

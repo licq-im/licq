@@ -34,6 +34,7 @@
 #include "support.h"
 #include "licq/version.h"
 
+#include "contactlist/group.h"
 #include "contactlist/usermanager.h"
 #include "icqpacket.h"
 
@@ -44,6 +45,7 @@ using Licq::StringList;
 using Licq::UserCategoryMap;
 using Licq::UserGroupList;
 using Licq::UserId;
+using LicqDaemon::Group;
 using LicqDaemon::GroupMap;
 using LicqDaemon::gUserManager;
 
@@ -2732,7 +2734,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
         GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
         if (groups->size() > 0)
         {
-          Licq::Group* g = groups->begin()->second;
+          Group* g = groups->begin()->second;
           g->lockRead();
           m_nGSID = g->serverId(LICQ_PPID);
           g->unlockRead();
@@ -2901,7 +2903,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
               GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
               if (groups->size() > 0)
               {
-                Licq::Group* g = groups->begin()->second;
+                Group* g = groups->begin()->second;
                 g->lockRead();
                 m_nGSID = g->serverId(LICQ_PPID);
                 g->unlockRead();

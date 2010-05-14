@@ -2,12 +2,9 @@
 #define LICQ_CONTACTLIST_GROUP_H
 
 #include <boost/noncopyable.hpp>
-#include <map>
 #include <string>
 
 #include "../thread/lockable.h"
-
-class CIniFile;
 
 namespace Licq
 {
@@ -23,19 +20,6 @@ namespace Licq
 class Group : public Lockable, private boost::noncopyable
 {
 public:
-  /**
-   * Constructor, creates a new user group
-   *
-   * @param id Group id, must be unique
-   * @param name Group name
-   */
-  Group(int id, const std::string& name);
-
-  /**
-   * Destructor
-   */
-  virtual ~Group();
-
   /**
    * Get id for group. This is an id used locally by Licq and is persistant for
    * each group.
@@ -69,7 +53,7 @@ public:
    * @param protocolId Id of protocol to get group id for
    * @return Server side group id or 0 if not set or not known
    */
-  unsigned long serverId(unsigned long protocolId) const;
+  virtual unsigned long serverId(unsigned long protocolId) const = 0;
 
   /**
    * Set group name
@@ -91,33 +75,15 @@ public:
    * @param protocolId Id of protocol to set group id for
    * @param serverId Id for this group on server side list
    */
-  void setServerId(unsigned long protocolId, unsigned long serverId);
+  virtual void setServerId(unsigned long protocolId, unsigned long serverId) = 0;
 
-  /**
-   * Save group to file
-   * Note: This function should only be called by UserManager
-   *
-   * @param file Open file to write group data to
-   * @param num Number of group entry to write to file
-   */
-  void save(CIniFile& file, int num) const;
+protected:
+  virtual ~Group() { /* Empty */ }
 
-private:
   int myId;
   std::string myName;
   int mySortIndex;
-  std::map<unsigned long, unsigned long> myServerIds;
 };
-
-/**
- * Helper function for sorting group list
- *
- * @param first Left hand group to compare
- * @param second Right hand group to compare
- * @return True if first has a lower sorting index than second
- */
-bool compare_groups(const Group* first, const Group* second);
-
 
 /**
  * Read mutex guard for Licq::Group

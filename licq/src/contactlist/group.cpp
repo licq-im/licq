@@ -1,20 +1,20 @@
-#include "licq/contactlist/group.h"
+#include "group.h"
 
 #include <cstdio> // snprintf
 
-#include "licq_file.h"
+#include <licq/inifile.h>
 #include <licq/userid.h>
 
 using std::map;
 using std::string;
-
-using Licq::Group;
+using namespace LicqDaemon;
 
 Group::Group(int id, const string& name)
-  : myId(id),
-    myName(name),
-    mySortIndex(0)
 {
+  myId = id;
+  myName = name;
+  mySortIndex = 0;
+
   char strId[8];
   snprintf(strId, 7, "%u", myId);
   strId[7] = '\0';
@@ -26,18 +26,18 @@ Group::~Group()
 {
 }
 
-void Group::save(CIniFile& file, int num) const
+void Group::save(Licq::IniFile& file, int num) const
 {
-  char key[MAX_KEYxNAME_LEN];
+  char key[40];
 
   sprintf(key, "Group%d.id", num);
-  file.WriteNum(key, myId);
+  file.set(key, myId);
 
   sprintf(key, "Group%d.name", num);
-  file.writeString(key, myName);
+  file.set(key, myName);
 
   sprintf(key, "Group%d.Sorting", num);
-  file.WriteNum(key, mySortIndex);
+  file.set(key, mySortIndex);
 
   map<unsigned long, unsigned long>::const_iterator i;
   for (i = myServerIds.begin(); i != myServerIds.end(); ++i)
@@ -45,7 +45,7 @@ void Group::save(CIniFile& file, int num) const
     char pidstr[5];
     Licq::protocolId_toStr(pidstr, i->first);
     sprintf(key, "Group%d.ServerId.%s", num, pidstr);
-    file.WriteNum(key, i->second);
+    file.set(key, i->second);
   }
 }
 
@@ -64,7 +64,7 @@ void Group::setServerId(unsigned long protocolId, unsigned long serverId)
 }
 
 
-bool Licq::compare_groups(const Group* first, const Group* second)
+bool LicqDaemon::compare_groups(const Licq::Group* first, const Licq::Group* second)
 {
   return first->sortIndex() < second->sortIndex();
 }

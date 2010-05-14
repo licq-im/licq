@@ -27,11 +27,12 @@
 
 namespace LicqDaemon
 {
+class Group;
 class Owner;
 class User;
 
 typedef std::map<Licq::UserId, User*> UserMap;
-typedef std::map<int, Licq::Group*> GroupMap;
+typedef std::map<int, Group*> GroupMap;
 typedef std::map<unsigned long, Owner*> OwnerMap;
 
 class UserManager : public Licq::UserManager
