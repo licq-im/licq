@@ -26,10 +26,10 @@ using std::string;
 using std::vector;
 using Licq::ICQUserPhoneBook;
 using Licq::SecureChannelSupport_et;
-using Licq::User;
 using Licq::UserId;
 using Licq::gPluginManager;
 using Licq::gUserManager;
+using namespace LicqDaemon;
 
 
 ICQUserPhoneBook::ICQUserPhoneBook()
@@ -259,10 +259,10 @@ bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
   return true;
 }
 
-unsigned short User::s_nNumUserEvents = 0;
-pthread_mutex_t User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
+unsigned short Licq::User::s_nNumUserEvents = 0;
+pthread_mutex_t Licq::User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
-LicqDaemon::User::User(const UserId& id, const string& filename)
+User::User(const UserId& id, const string& filename)
 {
   myId = id;
 
@@ -279,7 +279,7 @@ LicqDaemon::User::User(const UserId& id, const string& filename)
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
-LicqDaemon::User::User(const UserId& id, bool temporary)
+User::User(const UserId& id, bool temporary)
 {
   myId = id;
 
@@ -299,7 +299,7 @@ LicqDaemon::User::User(const UserId& id, bool temporary)
   }
 }
 
-void User::AddToContactList()
+void Licq::User::AddToContactList()
 {
   m_bOnContactList = m_bEnableSave = true;
   m_bNotInList = false;
@@ -325,7 +325,7 @@ void User::AddToContactList()
   }
 }
 
-bool User::LoadInfo()
+bool Licq::User::LoadInfo()
 {
   if (!m_fConf.ReloadFile()) return (false);
   m_fConf.SetFlags(0);
@@ -339,7 +339,7 @@ bool User::LoadInfo()
   return true;
 }
 
-void User::loadUserInfo()
+void Licq::User::loadUserInfo()
 {
   // read in the fields, checking for errors each time
   m_fConf.SetSection("user");
@@ -356,12 +356,12 @@ void User::loadUserInfo()
   loadCategory(myOrganizations, m_fConf, "Organizations");
 }
 
-void User::LoadPhoneBookInfo()
+void Licq::User::LoadPhoneBookInfo()
 {
   m_PhoneBook->LoadFromDisk(m_fConf);
 }
 
-void User::LoadPictureInfo()
+void Licq::User::LoadPictureInfo()
 {
   char szTemp[MAX_LINE_LEN];
   m_fConf.SetSection("user");
@@ -374,7 +374,7 @@ void User::LoadPictureInfo()
   SetString(&m_szOurBuddyIconHash, szTemp );
 }
 
-void User::LoadLicqInfo()
+void Licq::User::LoadLicqInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_LINE_LEN];
@@ -518,7 +518,7 @@ void User::LoadLicqInfo()
 }
 
 
-LicqDaemon::User::~User()
+User::~User()
 {
   unsigned long nId;
   while (m_vcMessages.size() > 0)
@@ -561,7 +561,7 @@ LicqDaemon::User::~User()
 */
 }
 
-void User::RemoveFiles()
+void Licq::User::RemoveFiles()
 {
   remove(m_fConf.FileName());
 
@@ -585,7 +585,7 @@ void User::RemoveFiles()
   }
 }
 
-void User::Init()
+void Licq::User::Init()
 {
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
@@ -712,7 +712,7 @@ void User::Init()
   myMutex.setName(myId.toString());
 }
 
-void User::SetPermanent()
+void Licq::User::SetPermanent()
 {
   // Set the flags and check for history file to recover
   AddToContactList();
@@ -735,7 +735,7 @@ void User::SetPermanent()
       USER_SETTINGS, myId, 0));
 }
 
-void User::SetDefaults()
+void Licq::User::SetDefaults()
 {
   char szTemp[12];
   setAlias(myId.accountId());
@@ -752,7 +752,7 @@ void User::SetDefaults()
   SetCustomAutoResponse(szTemp);
 }
 
-string User::getUserInfoString(const string& key) const
+string Licq::User::getUserInfoString(const string& key) const
 {
   try
   {
@@ -768,7 +768,7 @@ string User::getUserInfoString(const string& key) const
   return string();
 }
 
-unsigned int User::getUserInfoUint(const string& key) const
+unsigned int Licq::User::getUserInfoUint(const string& key) const
 {
   try
   {
@@ -784,7 +784,7 @@ unsigned int User::getUserInfoUint(const string& key) const
   return 0;
 }
 
-bool User::getUserInfoBool(const string& key) const
+bool Licq::User::getUserInfoBool(const string& key) const
 {
   try
   {
@@ -800,7 +800,7 @@ bool User::getUserInfoBool(const string& key) const
   return false;
 }
 
-void User::setUserInfoString(const string& key, const string& value)
+void Licq::User::setUserInfoString(const string& key, const string& value)
 {
   PropertyMap::iterator i = myUserInfo.find(key);
   if (i == myUserInfo.end() || i->second.type() != typeid(string))
@@ -812,7 +812,7 @@ void User::setUserInfoString(const string& key, const string& value)
   saveUserInfo();
 }
 
-void User::setUserInfoUint(const string& key, unsigned int value)
+void Licq::User::setUserInfoUint(const string& key, unsigned int value)
 {
   PropertyMap::iterator i = myUserInfo.find(key);
   if (i == myUserInfo.end() || i->second.type() != typeid(unsigned int))
@@ -824,7 +824,7 @@ void User::setUserInfoUint(const string& key, unsigned int value)
   saveUserInfo();
 }
 
-void User::setUserInfoBool(const string& key, bool value)
+void Licq::User::setUserInfoBool(const string& key, bool value)
 {
   PropertyMap::iterator i = myUserInfo.find(key);
   if (i == myUserInfo.end() || i->second.type() != typeid(bool))
@@ -836,7 +836,7 @@ void User::setUserInfoBool(const string& key, bool value)
   saveUserInfo();
 }
 
-std::string User::getFullName() const
+std::string Licq::User::getFullName() const
 {
   string name = getFirstName();
   string lastName = getLastName();
@@ -845,7 +845,7 @@ std::string User::getFullName() const
   return name + lastName;
 }
 
-std::string User::getEmail() const
+std::string Licq::User::getEmail() const
 {
   string email = getUserInfoString("Email1");
   if (email.empty())
@@ -855,7 +855,7 @@ std::string User::getEmail() const
   return email;
 }
 
-const char* User::UserEncoding() const
+const char* Licq::User::UserEncoding() const
 {
   if (m_szEncoding == NULL || m_szEncoding[0] == '\0')
     return gUserManager.DefaultUserEncoding();
@@ -863,7 +863,7 @@ const char* User::UserEncoding() const
     return m_szEncoding;
 }
 
-void User::statusChanged(unsigned newStatus, unsigned long s)
+void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
 {
   unsigned oldStatus = status();
   int arg = 0;
@@ -908,7 +908,7 @@ void User::statusChanged(unsigned newStatus, unsigned long s)
   }
 }
 
-void User::setStatus(unsigned status)
+void Licq::User::setStatus(unsigned status)
 {
   myStatus = status;
 
@@ -930,7 +930,7 @@ void User::setStatus(unsigned status)
     m_nStatus |= ICQ_STATUS_FREEFORCHAT;
 }
 
-void User::SetStatus(unsigned long n)
+void Licq::User::SetStatus(unsigned long n)
 {
   m_nStatus = n;
 
@@ -940,7 +940,7 @@ void User::SetStatus(unsigned long n)
     myStatus |= IdleStatus;
 }
 
-unsigned short User::icqStatusFromStatus(unsigned status)
+unsigned short Licq::User::icqStatusFromStatus(unsigned status)
 {
   if (status == OfflineStatus)
     return ICQ_STATUS_OFFLINE;
@@ -959,7 +959,7 @@ unsigned short User::icqStatusFromStatus(unsigned status)
   return ICQ_STATUS_ONLINE;
 }
 
-unsigned User::statusFromIcqStatus(unsigned short icqStatus)
+unsigned Licq::User::statusFromIcqStatus(unsigned short icqStatus)
 {
   // Build status from ICQ flags
   if (icqStatus == ICQ_STATUS_OFFLINE)
@@ -982,7 +982,7 @@ unsigned User::statusFromIcqStatus(unsigned short icqStatus)
   return status;
 }
 
-unsigned short User::Status() const
+unsigned short Licq::User::Status() const
 // guarantees to return a unique status that switch can be run on
 {
    if (!isOnline()) return ICQ_STATUS_OFFLINE;
@@ -995,22 +995,22 @@ unsigned short User::Status() const
    else return (ICQ_STATUS_OFFLINE - 1);
 }
 
-bool User::StatusWebPresence() const
+bool Licq::User::StatusWebPresence() const
 {
   return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;
 }
 
-bool User::StatusHideIp() const
+bool Licq::User::StatusHideIp() const
 {
   return m_nStatus & ICQ_STATUS_FxHIDExIP;
 }
 
-bool User::StatusBirthday() const
+bool Licq::User::StatusBirthday() const
 {
   return m_nStatus & ICQ_STATUS_FxBIRTHDAY;
 }
 
-void User::SetStatusOffline()
+void Licq::User::SetStatusOffline()
 {
   if (isOnline())
   {
@@ -1025,7 +1025,7 @@ void User::SetStatusOffline()
 
 /* Birthday: checks to see if the users birthday is within the next nRange
    days.  Returns -1 if not, or the number of days until their bday */
-int User::Birthday(unsigned short nRange) const
+int Licq::User::Birthday(unsigned short nRange) const
 {
   static const unsigned char nMonthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
@@ -1082,7 +1082,7 @@ int User::Birthday(unsigned short nRange) const
   return nDays;
 }
 
-unsigned short User::Sequence(bool increment)
+unsigned short Licq::User::Sequence(bool increment)
 {
    if (increment)
       return (m_nSequence--);
@@ -1090,7 +1090,7 @@ unsigned short User::Sequence(bool increment)
       return (m_nSequence);
 }
 
-void User::setAlias(const string& alias)
+void Licq::User::setAlias(const string& alias)
 {
   if (alias.empty())
   {
@@ -1114,20 +1114,20 @@ void User::setAlias(const string& alias)
   saveUserInfo();
 }
 
-bool User::Away() const
+bool Licq::User::Away() const
 {
    unsigned short n = Status();
    return (n == ICQ_STATUS_AWAY || n == ICQ_STATUS_NA ||
            n == ICQ_STATUS_DND || n == ICQ_STATUS_OCCUPIED);
 }
 
-void User::SetHistoryFile(const char *s)
+void Licq::User::SetHistoryFile(const char *s)
 {
   myHistory.setFile(s, myId);
   SaveLicqInfo();
 }
 
-void User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
+void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 {
   if ((SocketDesc(ICQ_CHNxNONE) != -1 || SocketDesc(ICQ_CHNxINFO) != -1
        || SocketDesc(ICQ_CHNxSTATUS) != -1) &&
@@ -1148,7 +1148,7 @@ void User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   SaveLicqInfo();
 }
 
-int User::SocketDesc(unsigned char nChannel) const
+int Licq::User::SocketDesc(unsigned char nChannel) const
 {
   switch (nChannel)
   {
@@ -1164,7 +1164,7 @@ int User::SocketDesc(unsigned char nChannel) const
   return 0;
 }
 
-void User::SetSocketDesc(TCPSocket *s)
+void Licq::User::SetSocketDesc(TCPSocket *s)
 {
   if (s->Channel() == ICQ_CHNxNONE)
     m_nNormalSocketDesc = s->Descriptor();
@@ -1189,7 +1189,7 @@ void User::SetSocketDesc(TCPSocket *s)
   SetSendServer(false);
 }
 
-void User::ClearSocketDesc(unsigned char nChannel)
+void Licq::User::ClearSocketDesc(unsigned char nChannel)
 {
   switch (nChannel)
   {
@@ -1223,12 +1223,12 @@ void User::ClearSocketDesc(unsigned char nChannel)
     gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, myId, 0));
 }
 
-void User::clearNormalSocketDesc()
+void Licq::User::clearNormalSocketDesc()
 {
   ClearSocketDesc(ICQ_CHNxNONE);
 }
 
-unsigned short User::ConnectionVersion() const
+unsigned short Licq::User::ConnectionVersion() const
 {
   // If we are already connected, use that version
   if (m_nConnectionVersion != 0) return m_nConnectionVersion;
@@ -1236,19 +1236,19 @@ unsigned short User::ConnectionVersion() const
   return VersionToUse(m_nVersion);
 }
 
-int User::LocalTimeGMTOffset() const
+int Licq::User::LocalTimeGMTOffset() const
 {
   return GetTimezone() * 1800;
 }
 
-int User::SystemTimeGMTOffset()
+int Licq::User::SystemTimeGMTOffset()
 {
   time_t t = time(NULL);
   struct tm *tzone = localtime(&t);
   return -(tzone->tm_gmtoff) + (tzone->tm_isdst == 1 ? 3600 : 0); // seconds _east_ of UTC
 }
 
-char User::SystemTimezone()
+char Licq::User::SystemTimezone()
 {
   char nTimezone = SystemTimeGMTOffset() / 1800;
   if (nTimezone > 23)
@@ -1256,17 +1256,17 @@ char User::SystemTimezone()
   return nTimezone;
 }
 
-int User::LocalTimeOffset() const
+int Licq::User::LocalTimeOffset() const
 {
   return SystemTimeGMTOffset() - LocalTimeGMTOffset();
 }
 
-time_t User::LocalTime() const
+time_t Licq::User::LocalTime() const
 {
   return time(NULL) + LocalTimeOffset();
 }
 
-SecureChannelSupport_et User::SecureChannelSupport() const
+SecureChannelSupport_et Licq::User::SecureChannelSupport() const
 {
   if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
     return SECURE_CHANNEL_SUPPORTED;
@@ -1276,7 +1276,7 @@ SecureChannelSupport_et User::SecureChannelSupport() const
     return SECURE_CHANNEL_UNKNOWN;
 }
 
-unsigned short User::LicqVersion() const
+unsigned short Licq::User::LicqVersion() const
 {
   if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL ||
        (m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
@@ -1285,17 +1285,17 @@ unsigned short User::LicqVersion() const
   return LICQ_VERSION_UNKNOWN;
 }
 
-const char* User::StatusStr() const
+const char* Licq::User::StatusStr() const
 {
   return StatusToStatusStr(m_nStatus, isInvisible());
 }
 
-const char* User::StatusStrShort() const
+const char* Licq::User::StatusStrShort() const
 {
   return StatusToStatusStrShort(m_nStatus, isInvisible());
 }
 
-const char* User::StatusToStatusStr(unsigned short n, bool b)
+const char* Licq::User::StatusToStatusStr(unsigned short n, bool b)
 {
   if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Offline)") : tr("Offline");
   else if (n & ICQ_STATUS_DND) return b ? tr("(Do Not Disturb)") : tr("Do Not Disturb");
@@ -1307,7 +1307,7 @@ const char* User::StatusToStatusStr(unsigned short n, bool b)
   else return "Unknown";
 }
 
-const char* User::StatusToStatusStrShort(unsigned short n, bool b)
+const char* Licq::User::StatusToStatusStrShort(unsigned short n, bool b)
 {
   if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Off)") : tr("Off");
   else if (n & ICQ_STATUS_DND) return b ? tr("(DND)") : tr("DND");
@@ -1319,7 +1319,7 @@ const char* User::StatusToStatusStrShort(unsigned short n, bool b)
   else return "???";
 }
 
-unsigned User::singleStatus(unsigned status)
+unsigned Licq::User::singleStatus(unsigned status)
 {
   if (status == OfflineStatus)
     return OfflineStatus;
@@ -1340,7 +1340,7 @@ unsigned User::singleStatus(unsigned status)
   return OnlineStatus;
 }
 
-string User::statusToString(unsigned status, bool full, bool markInvisible)
+string Licq::User::statusToString(unsigned status, bool full, bool markInvisible)
 {
   string str;
   if (status == OfflineStatus)
@@ -1367,7 +1367,7 @@ string User::statusToString(unsigned status, bool full, bool markInvisible)
   return str;
 }
 
-bool User::stringToStatus(const string& strStatus, unsigned& retStatus)
+bool Licq::User::stringToStatus(const string& strStatus, unsigned& retStatus)
 {
   string str2;
   bool invisible;
@@ -1413,7 +1413,7 @@ bool User::stringToStatus(const string& strStatus, unsigned& retStatus)
   return true;
 }
 
-char* User::IpStr(char* rbuf) const
+char* Licq::User::IpStr(char* rbuf) const
 {
   char ip[32], buf[32];
 
@@ -1431,7 +1431,7 @@ char* User::IpStr(char* rbuf) const
 }
 
 
-char* User::PortStr(char* rbuf) const
+char* Licq::User::PortStr(char* rbuf) const
 {
   if (Port() > 0)               // Default to the given port
     sprintf(rbuf, "%d", Port());
@@ -1441,7 +1441,7 @@ char* User::PortStr(char* rbuf) const
   return rbuf;
 }
 
-char* User::IntIpStr(char* rbuf) const
+char* Licq::User::IntIpStr(char* rbuf) const
 {
   char buf[32];
   int socket = SocketDesc(ICQ_CHNxNONE);
@@ -1473,7 +1473,7 @@ char* User::IntIpStr(char* rbuf) const
 }
 
 
-char* User::usprintf(const char* _szFormat, unsigned long nFlags) const
+char* Licq::User::usprintf(const char* _szFormat, unsigned long nFlags) const
 {
   bool bLeft = false;
   unsigned long i = 0, j, nField = 0, nPos = 0;
@@ -1868,7 +1868,7 @@ string UserId::normalizeId(const string& accountId, unsigned long ppid)
   return realId;
 }
 
-void User::saveUserInfo()
+void Licq::User::saveUserInfo()
 {
   if (!EnableSave()) return;
 
@@ -1902,7 +1902,7 @@ void User::saveUserInfo()
   m_fConf.CloseFile();
 }
 
-void User::saveCategory(const UserCategoryMap& category, CIniFile& file, const string& key)
+void Licq::User::saveCategory(const UserCategoryMap& category, CIniFile& file, const string& key)
 {
   file.WriteNum(key + 'N', category.size());
 
@@ -1918,7 +1918,7 @@ void User::saveCategory(const UserCategoryMap& category, CIniFile& file, const s
   }
 }
 
-void User::loadCategory(UserCategoryMap& category, CIniFile& file, const string& key)
+void Licq::User::loadCategory(UserCategoryMap& category, CIniFile& file, const string& key)
 {
   category.clear();
   unsigned int count;
@@ -1947,14 +1947,14 @@ void User::loadCategory(UserCategoryMap& category, CIniFile& file, const string&
   }
 }
 
-void User::SavePhoneBookInfo()
+void Licq::User::SavePhoneBookInfo()
 {
   if (!EnableSave()) return;
 
   m_PhoneBook->SaveToDisk(m_fConf);
 }
 
-void User::SavePictureInfo()
+void Licq::User::SavePictureInfo()
 {
   if (!EnableSave()) return;
 
@@ -1980,7 +1980,7 @@ void User::SavePictureInfo()
   m_fConf.CloseFile();
 }
 
-void User::SaveLicqInfo()
+void Licq::User::SaveLicqInfo()
 {
    if (!EnableSave()) return;
 
@@ -2061,7 +2061,7 @@ void User::SaveLicqInfo()
    m_fConf.CloseFile();
 }
 
-void User::SaveNewMessagesInfo()
+void Licq::User::SaveNewMessagesInfo()
 {
    if (!EnableSave()) return;
 
@@ -2083,7 +2083,7 @@ void User::SaveNewMessagesInfo()
    m_fConf.CloseFile();
 }
 
-void User::saveAll()
+void Licq::User::saveAll()
 {
   SaveLicqInfo();
   saveUserInfo();
@@ -2091,7 +2091,7 @@ void User::saveAll()
   SavePictureInfo();
 }
 
-void User::EventPush(CUserEvent *e)
+void Licq::User::EventPush(CUserEvent *e)
 {
   m_vcMessages.push_back(e);
   incNumUserEvents();
@@ -2103,25 +2103,25 @@ void User::EventPush(CUserEvent *e)
       USER_EVENTS, myId, e->Id(), e->ConvoId()));
 }
 
-void User::WriteToHistory(const char *_szText)
+void Licq::User::WriteToHistory(const char *_szText)
 {
   myHistory.append(_szText);
 }
 
-void User::CancelEvent(unsigned short index)
+void Licq::User::CancelEvent(unsigned short index)
 {
   if (index < NewMessages())
     return;
   m_vcMessages[index]->Cancel();
 }
 
-const CUserEvent* User::EventPeek(unsigned short index) const
+const CUserEvent* Licq::User::EventPeek(unsigned short index) const
 {
   if (index >= NewMessages()) return (NULL);
   return (m_vcMessages[index]);
 }
 
-const CUserEvent* User::EventPeekId(int id) const
+const CUserEvent* Licq::User::EventPeekId(int id) const
 {
   if (m_vcMessages.size() == 0) return NULL;
   CUserEvent *e = NULL;
@@ -2137,19 +2137,19 @@ const CUserEvent* User::EventPeekId(int id) const
   return e;
 }
 
-const CUserEvent* User::EventPeekLast() const
+const CUserEvent* Licq::User::EventPeekLast() const
 {
   if (m_vcMessages.size() == 0) return (NULL);
   return (m_vcMessages[m_vcMessages.size() - 1]);
 }
 
-const CUserEvent* User::EventPeekFirst() const
+const CUserEvent* Licq::User::EventPeekFirst() const
 {
   if (m_vcMessages.size() == 0) return (NULL);
   return (m_vcMessages[0]);
 }
 
-CUserEvent *User::EventPop()
+CUserEvent *Licq::User::EventPop()
 {
   if (m_vcMessages.size() == 0) return NULL;
   CUserEvent *e = m_vcMessages[0];
@@ -2165,7 +2165,7 @@ CUserEvent *User::EventPop()
   return e;
 }
 
-void User::EventClear(unsigned short index)
+void Licq::User::EventClear(unsigned short index)
 {
   if (index >= m_vcMessages.size()) return;
 
@@ -2182,7 +2182,7 @@ void User::EventClear(unsigned short index)
       USER_EVENTS, myId, -id));
 }
 
-void User::EventClearId(int id)
+void Licq::User::EventClearId(int id)
 {
   UserEventList::iterator iter;
   for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
@@ -2201,12 +2201,12 @@ void User::EventClearId(int id)
   }
 }
 
-bool User::isInGroup(int groupId) const
+bool Licq::User::isInGroup(int groupId) const
 {
   return myGroups.count(groupId) > 0;
 }
 
-void User::setInGroup(int groupId, bool member)
+void Licq::User::setInGroup(int groupId, bool member)
 {
   if (member)
     addToGroup(groupId);
@@ -2214,7 +2214,7 @@ void User::setInGroup(int groupId, bool member)
     removeFromGroup(groupId);
 }
 
-void User::addToGroup(int groupId)
+void Licq::User::addToGroup(int groupId)
 {
   if (groupId <= 0)
     return;
@@ -2223,14 +2223,14 @@ void User::addToGroup(int groupId)
   SaveLicqInfo();
 }
 
-bool User::removeFromGroup(int groupId)
+bool Licq::User::removeFromGroup(int groupId)
 {
   bool inGroup = myGroups.erase(groupId);
   SaveLicqInfo();
   return inGroup;
 }
 
-unsigned short User::getNumUserEvents()
+unsigned short Licq::User::getNumUserEvents()
 {
   pthread_mutex_lock(&mutex_nNumUserEvents);
   unsigned short n = s_nNumUserEvents;
@@ -2238,27 +2238,27 @@ unsigned short User::getNumUserEvents()
   return n;
 }
 
-void User::incNumUserEvents()
+void Licq::User::incNumUserEvents()
 {
   pthread_mutex_lock(&mutex_nNumUserEvents);
   s_nNumUserEvents++;
   pthread_mutex_unlock(&mutex_nNumUserEvents);
 }
 
-void User::decNumUserEvents()
+void Licq::User::decNumUserEvents()
 {
   pthread_mutex_lock(&mutex_nNumUserEvents);
   s_nNumUserEvents--;
   pthread_mutex_unlock(&mutex_nNumUserEvents);
 }
 
-bool User::SetPPField(const string &_sName, const string &_sValue)
+bool Licq::User::SetPPField(const string &_sName, const string &_sValue)
 {
   m_mPPFields[_sName] = _sValue;
   return true;
 }
 
-string User::GetPPField(const string &_sName)
+string Licq::User::GetPPField(const string &_sName)
 {
   map<string,string>::iterator iter = m_mPPFields.find(_sName);
   if (iter != m_mPPFields.end())
@@ -2267,17 +2267,17 @@ string User::GetPPField(const string &_sName)
   return string("");
 }
 
-void User::AddTLV(Licq::TlvPtr tlv)
+void Licq::User::AddTLV(Licq::TlvPtr tlv)
 {
   myTLVs[tlv->getType()] = tlv;
 }
 
-void User::RemoveTLV(unsigned long type)
+void Licq::User::RemoveTLV(unsigned long type)
 {
   myTLVs.erase(type);
 }
 
-void User::SetTLVList(Licq::TlvList& tlvs)
+void Licq::User::SetTLVList(Licq::TlvList& tlvs)
 {
   myTLVs.clear();
 

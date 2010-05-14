@@ -12,11 +12,11 @@
 #include "licq_log.h"
 
 using std::string;
-using Licq::Owner;
 using Licq::UserId;
+using namespace LicqDaemon;
 
 
-LicqDaemon::Owner::Owner(const UserId& id)
+Owner::Owner(const UserId& id)
   : User(id, true)
 {
   // Pretend to be temporary to LicqUser constructior so it doesn't setup m_fConf
@@ -85,7 +85,7 @@ LicqDaemon::Owner::Owner(const UserId& id)
   SetEnableSave(true);
 }
 
-LicqDaemon::Owner::~Owner()
+Owner::~Owner()
 {
   // Save the current auto response
   if (!m_fConf.ReloadFile())
@@ -111,7 +111,7 @@ LicqDaemon::Owner::~Owner()
     free( m_szPassword );
 }
 
-unsigned long Owner::AddStatusFlags(unsigned long s) const
+unsigned long Licq::Owner::AddStatusFlags(unsigned long s) const
 {
   s &= 0x0000FFFF;
 
@@ -129,7 +129,7 @@ unsigned long Owner::AddStatusFlags(unsigned long s) const
   return s;
 }
 
-void Owner::SaveLicqInfo()
+void Licq::Owner::SaveLicqInfo()
 {
   if (!EnableSave()) return;
 
@@ -166,12 +166,12 @@ void Owner::SaveLicqInfo()
   m_fConf.CloseFile();
 }
 
-void Owner::SetStatusOffline()
+void Licq::Owner::SetStatusOffline()
 {
   SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
 }
 
-void Owner::SetPicture(const char *f)
+void Licq::Owner::SetPicture(const char *f)
 {
   char szFilename[MAX_FILENAME_LEN];
   szFilename[MAX_FILENAME_LEN - 1] = '\0';
