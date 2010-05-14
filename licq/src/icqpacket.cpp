@@ -8,6 +8,7 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
 #include <ctime>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -39,13 +40,13 @@
 #include "icqpacket.h"
 
 using namespace std;
+using Licq::Group;
 using Licq::USPRINTF_NTORN;
 using Licq::USPRINTF_PIPEISCMD;
 using Licq::StringList;
 using Licq::UserCategoryMap;
 using Licq::UserGroupList;
 using Licq::UserId;
-using LicqDaemon::Group;
 using LicqDaemon::GroupMap;
 using LicqDaemon::gUserManager;
 
@@ -2731,15 +2732,16 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       if (m_nGSID == 0)
       {
         // First group if none was specified
-        GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
-        if (groups->size() > 0)
         {
-          Group* g = groups->begin()->second;
-          g->lockRead();
-          m_nGSID = g->serverId(LICQ_PPID);
-          g->unlockRead();
+          Licq::GroupListGuard groups(false);
+          if (groups->size() > 0)
+          {
+            Group* g = *groups->begin();
+            g->lockRead();
+            m_nGSID = g->serverId(LICQ_PPID);
+            g->unlockRead();
+          }
         }
-        gUserManager.UnlockGroupList();
 
         if (m_nGSID == 0)
           m_nGSID = 1; // Must never actually reach this point
@@ -2900,15 +2902,14 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
           case 3:
             // Use the first group from the list
             {
-              GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
+              Licq::GroupListGuard groups;
               if (groups->size() > 0)
               {
-                Group* g = groups->begin()->second;
+                Group* g = *groups->begin();
                 g->lockRead();
                 m_nGSID = g->serverId(LICQ_PPID);
                 g->unlockRead();
               }
-              gUserManager.UnlockGroupList();
             }
             break;
 
@@ -3173,8 +3174,9 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   unsigned short nExtraLen = 0;
   unsigned short nNameLen = strlen(_szName);
   char *szUnicodeName = 0;
-  const GroupMap* groups = 0;
   CBuffer tlvBuffer;
+
+  Licq::GroupListGuard groups;
 
   switch (_nType)
   {
@@ -3219,10 +3221,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
       if (nGSID == 0)
       {
-        groups = gUserManager.LockGroupList(LOCK_R);
         nExtraLen += (groups->size() * 2);
-        if (nExtraLen == 0)
-          gUserManager.UnlockGroupList();
       }
       else
       {
@@ -3267,14 +3266,12 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
       if (nGSID == 0)
       {
-        GroupMap::const_iterator i;
-        for (i = groups->begin(); i != groups->end(); ++i)
+        BOOST_FOREACH(const Group* i, **groups)
         {
-          i->second->Lock(LOCK_R);
-          buffer->PackUnsignedShortBE(i->second->serverId(LICQ_PPID));
-          i->second->Unlock();
+          i->lockRead();
+          buffer->PackUnsignedShortBE(i->serverId(LICQ_PPID));
+          i->unlockRead();
         }
-        gUserManager.UnlockGroupList();
       }
       else
       {
