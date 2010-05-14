@@ -2,7 +2,6 @@ set(licq_HEADERS
   group.h
   owner.h
   user.h
-  userhistory.h
   usermanager.h
 )
 

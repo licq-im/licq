@@ -8,7 +8,7 @@
 
 #include "config.h"
 
-#include <licq/contactlist/userhistory.h>
+#include "userhistory.h"
 
 #include <boost/foreach.hpp>
 #include <cstdio>
@@ -34,7 +34,7 @@
 
 using std::string;
 using Licq::UserId;
-using Licq::UserHistory;
+using LicqDaemon::UserHistory;
 
 UserHistory::UserHistory()
 {
@@ -50,7 +50,7 @@ void UserHistory::setFile(const string& filename, const UserId& userId)
   if (filename == "default")
   {
     char p[5];
-    protocolId_toStr(p, userId.protocolId());
+    Licq::protocolId_toStr(p, userId.protocolId());
     myFilename = BASE_DIR;
     myFilename += HISTORY_DIR;
     myFilename += '/';
@@ -117,7 +117,7 @@ void UserHistory::setFile(const string& filename, const UserId& userId)
 	  szResult = fgets(sz, MAX_LINE_LEN, f); \
   }
 
-bool UserHistory::load(HistoryList& lHistory) const
+bool UserHistory::load(Licq::HistoryList& lHistory) const
 {
   if (myFilename.empty())
     return false;
@@ -406,7 +406,7 @@ void UserHistory::write(const string& buf, bool append)
   close(fd);
 }
 
-void UserHistory::clear(HistoryList& hist)
+void UserHistory::clear(Licq::HistoryList& hist)
 {
   BOOST_FOREACH(CUserEvent* event, hist)
     delete event;

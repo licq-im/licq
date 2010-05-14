@@ -3,6 +3,7 @@
 
 #include <boost/any.hpp>
 #include <boost/noncopyable.hpp>
+#include <list>
 #include <map>
 #include <set>
 #include <string>
@@ -12,9 +13,9 @@
 #include "../buffer.h"
 #include "../thread/lockable.h"
 #include "../userid.h"
-#include "userhistory.h"
 
 class CICQDaemon;
+class CUserEvent;
 class CMSN;
 class CSocketManager;
 class TCPSocket;
@@ -85,6 +86,7 @@ typedef std::vector <class CUserEvent*> UserEventList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 typedef std::map<std::string, boost::any> PropertyMap;
 typedef std::set<int> UserGroupList;
+typedef std::list<CUserEvent*> HistoryList;
 
 struct PhoneBookEntry
 {
@@ -199,7 +201,7 @@ public:
   { return userId.protocolId(); }
 
 
-  void RemoveFiles();
+  virtual void RemoveFiles() = 0;
 
   void saveAll();
   virtual void SaveLicqInfo();
@@ -609,13 +611,13 @@ public:
   void EventClear(unsigned short);
   void EventClearId(int);
   void EventPush(CUserEvent *);
-  void WriteToHistory(const char *);
-  void SetHistoryFile(const char *);
-  int GetHistory(HistoryList& history) const    { return myHistory.load(history); }
-  static void ClearHistory(HistoryList& h) { UserHistory::clear(h); }
-  void SaveHistory(const char *buf) { myHistory.save(buf); }
-  const char* HistoryName() const               { return myHistory.description().c_str(); }
-  const char* HistoryFile() const               { return myHistory.filename().c_str(); }
+  virtual void WriteToHistory(const char*) = 0;
+  virtual void SetHistoryFile(const char*) = 0;
+  virtual int GetHistory(HistoryList& history) const = 0;
+  static void ClearHistory(HistoryList& h);
+  virtual void SaveHistory(const char *buf) = 0;
+  virtual const char* HistoryName() const = 0;
+  virtual const char* HistoryFile() const = 0;
 
   /**
    * Get user groups this user is member of
@@ -788,7 +790,7 @@ protected:
   void Init();
   bool LoadInfo();
   void SetDefaults();
-  void AddToContactList();
+  virtual void AddToContactList() = 0;
 
   void SetSecure(bool s) { m_bSecure = s; }
   void SetOfflineOnDisconnect(bool b) { m_bOfflineOnDisconnect = b; }
@@ -818,7 +820,6 @@ protected:
   UserId myId;
 
   CIniFile m_fConf;
-  UserHistory myHistory;
   int m_nNormalSocketDesc, m_nInfoSocketDesc, m_nStatusSocketDesc;
   time_t m_nTouched;
   time_t m_nLastCounters[4];

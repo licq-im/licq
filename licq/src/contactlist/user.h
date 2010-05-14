@@ -22,6 +22,8 @@
 
 #include <licq/contactlist/user.h>
 
+#include "userhistory.h"
+
 namespace LicqDaemon
 {
 
@@ -45,6 +47,19 @@ public:
   User(const Licq::UserId& id, bool temporary = false);
 
   ~User();
+
+  // From Licq::User
+  void RemoveFiles();
+  void WriteToHistory(const char*);
+  void SetHistoryFile(const char*);
+  int GetHistory(Licq::HistoryList& history) const;
+  void SaveHistory(const char* buf);
+  const char* HistoryName() const;
+  const char* HistoryFile() const;
+  void AddToContactList();
+
+private:
+  UserHistory myHistory;
 };
 
 } // namespace LicqDaemon

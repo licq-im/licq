@@ -1,16 +1,15 @@
-#ifndef LICQ_CONTACTLIST_USERHISTORY_H
-#define LICQ_CONTACTLIST_USERHISTORY_H
+#ifndef LICQDAEMON_CONTACTLIST_USERHISTORY_H
+#define LICQDAEMON_CONTACTLIST_USERHISTORY_H
 
-#include <list>
+#include <string>
 
-#include "../userid.h"
+#include <licq/contactlist/user.h> // HistoryList
+#include <licq/userid.h>
 
 class CUserEvent;
 
-namespace Licq
+namespace LicqDaemon
 {
-
-typedef std::list<CUserEvent*> HistoryList;
 
 class UserHistory
 {
@@ -25,7 +24,7 @@ public:
    * @param filename "default", "none" or a filename
    * @param userId User id to use if default is requested
    */
-  void setFile(const std::string& filename, const UserId& userId = UserId());
+  void setFile(const std::string& filename, const Licq::UserId& userId = Licq::UserId());
 
   /**
    * Read history from file
@@ -34,14 +33,14 @@ public:
    * @param history List to put all history entries in
    * @return True if history was read
    */
-  bool load(HistoryList& history) const;
+  bool load(Licq::HistoryList& history) const;
 
   /**
    * Frees up memory used by a history list
    *
    * @param history List with history events to free
    */
-  static void clear(HistoryList& history);
+  static void clear(Licq::HistoryList& history);
 
   /**
    * Write to the history file, creating it if necessary

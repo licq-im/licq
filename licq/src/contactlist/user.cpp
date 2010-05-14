@@ -299,7 +299,7 @@ User::User(const UserId& id, bool temporary)
   }
 }
 
-void Licq::User::AddToContactList()
+void User::AddToContactList()
 {
   m_bOnContactList = m_bEnableSave = true;
   m_bNotInList = false;
@@ -309,7 +309,7 @@ void Licq::User::AddToContactList()
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
-    protocolId_toStr(p, myId.protocolId());
+    Licq::protocolId_toStr(p, myId.protocolId());
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR, myId.accountId().c_str(),
              p, HISTORYxOLD_EXT);
 
@@ -561,7 +561,7 @@ User::~User()
 */
 }
 
-void Licq::User::RemoveFiles()
+void User::RemoveFiles()
 {
   remove(m_fConf.FileName());
 
@@ -571,7 +571,7 @@ void Licq::User::RemoveFiles()
   {
     char szFilename[MAX_FILENAME_LEN];
     char p[5];
-    protocolId_toStr(p, myId.protocolId());
+    Licq::protocolId_toStr(p, myId.protocolId());
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR,
         myId.accountId().c_str(), p, HISTORYxOLD_EXT);
 
@@ -1121,10 +1121,35 @@ bool Licq::User::Away() const
            n == ICQ_STATUS_DND || n == ICQ_STATUS_OCCUPIED);
 }
 
-void Licq::User::SetHistoryFile(const char *s)
+void User::SetHistoryFile(const char *s)
 {
   myHistory.setFile(s, myId);
   SaveLicqInfo();
+}
+
+int User::GetHistory(Licq::HistoryList& history) const
+{
+  return myHistory.load(history);
+}
+
+void Licq::User::ClearHistory(HistoryList& h)
+{
+  UserHistory::clear(h);
+}
+
+void User::SaveHistory(const char* buf)
+{
+  myHistory.save(buf);
+}
+
+const char* User::HistoryName() const
+{
+  return myHistory.description().c_str();
+}
+
+const char* User::HistoryFile() const
+{
+  return myHistory.filename().c_str();
 }
 
 void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
@@ -2103,7 +2128,7 @@ void Licq::User::EventPush(CUserEvent *e)
       USER_EVENTS, myId, e->Id(), e->ConvoId()));
 }
 
-void Licq::User::WriteToHistory(const char *_szText)
+void User::WriteToHistory(const char* _szText)
 {
   myHistory.append(_szText);
 }

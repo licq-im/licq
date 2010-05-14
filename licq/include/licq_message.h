@@ -12,6 +12,10 @@
 namespace Licq
 {
 class User;
+}
+
+namespace LicqDaemon
+{
 class UserHistory;
 }
 
@@ -110,7 +114,7 @@ protected:
 friend class CICQDaemon;
 friend class CMSN;
 friend class Jabber;
-  friend class Licq::UserHistory;
+  friend class LicqDaemon::UserHistory;
   friend class Licq::User;
 };
 
