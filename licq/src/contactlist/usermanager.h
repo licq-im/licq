@@ -56,12 +56,41 @@ public:
    */
   void saveUserList() const;
 
-  UserMap* LockUserList(unsigned short lockType = LOCK_R);
-  void UnlockUserList();
-  GroupMap* LockGroupList(unsigned short lockType = LOCK_R);
-  void UnlockGroupList();
-  OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R);
-  void UnlockOwnerList();
+  /**
+   * Fetch and lock the user list map
+   *
+   * @return The internal map with all users
+   */
+  const UserMap& lockUserList();
+
+  /**
+   * Free lock on user list map
+   */
+  void unlockUserList();
+
+  /**
+   * Fetch and lock the owner list map
+   *
+   * @return The internal map with all owners
+   */
+  const OwnerMap& lockOwnerList();
+
+  /**
+   * Free lock on group list map
+   */
+  void unlockOwnerList();
+
+  /**
+   * Fetch and lock the group list map
+   *
+   * @return The internal map with all groups
+   */
+  const GroupMap& lockGroupList();
+
+  /**
+   * Free lock on group list map
+   */
+  void unlockGroupList();
 
   /**
    * Fetch and lock a group
@@ -125,9 +154,6 @@ private:
   GroupMap myGroups;
   UserMap myUsers;
   OwnerMap myOwners;
-  unsigned short m_nUserListLockType;
-  unsigned short myGroupListLockType;
-  unsigned short m_nOwnerListLockType;
   bool m_bAllowSave;
   char* m_szDefaultEncoding;
 };

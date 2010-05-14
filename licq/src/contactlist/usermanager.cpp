@@ -43,10 +43,6 @@ UserManager::UserManager()
   myGroupListMutex.setName("grouplist");
   myUserListMutex.setName("userlist");
   myOwnerListMutex.setName("ownerlist");
-
-  m_nOwnerListLockType = LOCK_N;
-  m_nUserListLockType = LOCK_N;
-  myGroupListLockType = LOCK_N;
 }
 
 
@@ -80,9 +76,9 @@ void UserManager::addOwner(const UserId& userId)
 {
   Owner* o = new Owner(userId);
 
-  LockOwnerList(LOCK_W);
+  myOwnerListMutex.lockWrite();
   myOwners[userId.protocolId()] = o;
-  UnlockOwnerList();
+  myOwnerListMutex.unlockWrite();
 
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
       LIST_OWNER_ADDED, userId));
@@ -113,7 +109,7 @@ bool UserManager::Load()
 
   //TODO Check for loaded plugins before the owner, so we can see
   //which owner(s) to load
-  LockOwnerList(LOCK_W);
+  myOwnerListMutex.lockWrite();
   for (unsigned short i = 1; i <= nOwners; i++)
   {
     sprintf(sOwnerIDKey, "Owner%d.Id", i);
@@ -128,13 +124,13 @@ bool UserManager::Load()
 
     myOwners[nPPID] = o;
   }
-  UnlockOwnerList();
+  myOwnerListMutex.unlockWrite();
 
   unsigned int nGroups;
   licqConf.SetSection("groups");
   licqConf.ReadNum("NumOfGroups", nGroups);
 
-  GroupMap* groups = LockGroupList(LOCK_W);
+  myGroupListMutex.lockWrite();
   m_bAllowSave = false;
   char key[MAX_KEYxNAME_LEN], groupName[MAX_LINE_LEN];
   int groupId, sortIndex;
@@ -186,12 +182,12 @@ bool UserManager::Load()
     if (serverIdKeys.size() == 0 && icqGroupId != 0)
       newGroup->setServerId(LICQ_PPID, icqGroupId);
 
-    (*groups)[groupId] = newGroup;
+    myGroups[groupId] = newGroup;
 
     licqConf.SetFlags(INI_FxFATAL | INI_FxERROR | INI_FxWARN);
   }
   m_bAllowSave = true;
-  UnlockGroupList();
+  myGroupListMutex.unlockWrite();
 
 
   char szTemp[MAX_LINE_LEN];
@@ -219,7 +215,7 @@ bool UserManager::Load()
   char *sz;
   User* u;
   usersConf.SetFlags(INI_FxWARN);
-  LockUserList(LOCK_W);
+  myUserListMutex.lockWrite();
   for (unsigned short i = 1; i<= nUsers; i++)
   {
     sprintf(sUserKey, "User%d", i);
@@ -247,7 +243,7 @@ bool UserManager::Load()
     u->AddToContactList();
     myUsers[userId] = u;
   }
-  UnlockUserList();
+  myUserListMutex.unlockWrite();
 
   return true;
 }
@@ -295,13 +291,13 @@ bool UserManager::addUser(const UserId& uid,
   if (isOwner(uid))
     return false;
 
-  LockUserList(LOCK_W);
+  myUserListMutex.lockWrite();
 
   // Make sure user isn't already in the list
   UserMap::const_iterator iter = myUsers.find(uid);
   if (iter != myUsers.end())
   {
-    UnlockUserList();
+    myUserListMutex.unlockWrite();
     return false;
   }
 
@@ -324,7 +320,7 @@ bool UserManager::addUser(const UserId& uid,
   if (permanent)
     saveUserList();
 
-  UnlockUserList();
+  myUserListMutex.unlockWrite();
 
   // Notify plugins that user was added
   // Send this before adding user to server side as protocol code may generate updated signals
@@ -381,11 +377,11 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
 
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchUser here.
-  LockUserList(LOCK_W);
+  myUserListMutex.lockWrite();
   UserMap::iterator iter = myUsers.find(userId);
   if (iter == myUsers.end())
   {
-    UnlockUserList();
+    myUserListMutex.unlockWrite();
     return;
   }
 
@@ -397,7 +393,7 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
     u->RemoveFiles();
     saveUserList();
   }
-  UnlockUserList();
+  myUserListMutex.unlockWrite();
   u->Unlock();
   delete u;
 
@@ -410,11 +406,11 @@ void UserManager::RemoveOwner(unsigned long ppid)
 {
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchOwner here.
-  LockOwnerList(LOCK_W);
+  myOwnerListMutex.lockWrite();
   OwnerMap::iterator iter = myOwners.find(ppid);
   if (iter == myOwners.end())
   {
-    UnlockOwnerList();
+    myOwnerListMutex.unlockWrite();
     return;
   }
 
@@ -423,7 +419,7 @@ void UserManager::RemoveOwner(unsigned long ppid)
   myOwners.erase(iter);
   o->RemoveFiles();
   UserId id = o->id();
-  UnlockOwnerList();
+  myOwnerListMutex.unlockWrite();
   o->Unlock();
   delete o;
 
@@ -443,7 +439,7 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
     return NULL;
 
   // Check for an owner first
-  LockOwnerList(LOCK_R);
+  myOwnerListMutex.lockRead();
   OwnerMap::iterator iter_o = myOwners.find(User::getUserProtocolId(userId));
   if (iter_o != myOwners.end())
   {
@@ -453,12 +449,16 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
       user->Lock(lockType);
     }
   }
-  UnlockOwnerList();
+  myOwnerListMutex.unlockRead();
 
   if (user != NULL)
     return user;
 
-  LockUserList(LOCK_R);
+  if (addUser)
+    myUserListMutex.lockWrite();
+  else
+    myUserListMutex.lockRead();
+
   UserMap::const_iterator iter = myUsers.find(userId);
   if (iter != myUsers.end())
     user = iter->second;
@@ -466,10 +466,6 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
     // If allowed by caller, add user if it wasn't found in list
     if (user == NULL && addUser)
     {
-      // Relock user list for writing
-      UnlockUserList();
-      LockUserList(LOCK_W);
-
       // Create a temporary user
       user = new User(userId, true);
 
@@ -486,7 +482,11 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
     // Lock the user and release the lock on the list
     if (user != NULL)
       user->Lock(lockType);
-    UnlockUserList();
+
+  if (addUser)
+    myUserListMutex.unlockWrite();
+  else
+    myUserListMutex.unlockRead();
 
   return user;
 }
@@ -495,22 +495,22 @@ bool UserManager::userExists(const UserId& userId)
 {
   bool exists = false;
 
-  LockOwnerList(LOCK_R);
+  myOwnerListMutex.lockRead();
   OwnerMap::iterator iter_o = myOwners.find(User::getUserProtocolId(userId));
   if (iter_o != myOwners.end())
   {
     if (iter_o->second->id() == userId)
       exists = true;
   }
-  UnlockOwnerList();
+  myOwnerListMutex.unlockRead();
   if (exists)
     return true;
 
-  LockUserList(LOCK_R);
+  myUserListMutex.lockRead();
   UserMap::const_iterator iter = myUsers.find(userId);
   if (iter != myUsers.end())
     exists = true;
-  UnlockUserList();
+  myUserListMutex.unlockRead();
   return exists;
 }
 
@@ -540,14 +540,14 @@ bool UserManager::isOwner(const UserId& userId)
 {
   bool exists = false;
 
-  LockOwnerList(LOCK_R);
+  myOwnerListMutex.lockRead();
   OwnerMap::iterator iter_o = myOwners.find(User::getUserProtocolId(userId));
   if (iter_o != myOwners.end())
   {
     if (iter_o->second->id() == userId)
       exists = true;
   }
-  UnlockOwnerList();
+  myOwnerListMutex.unlockRead();
 
   return exists;
 }
@@ -564,10 +564,10 @@ void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSigna
 
 Group* UserManager::fetchGroup(int group, bool writeLock)
 {
-  GroupMap* groups = LockGroupList(LOCK_R);
-  GroupMap::const_iterator iter = groups->find(group);
+  myGroupListMutex.lockRead();
+  GroupMap::const_iterator iter = myGroups.find(group);
   Group* g = NULL;
-  if (iter != groups->end())
+  if (iter != myGroups.end())
   {
     g = iter->second;
     if (writeLock)
@@ -575,16 +575,16 @@ Group* UserManager::fetchGroup(int group, bool writeLock)
     else
       g->lockRead();
   }
-  UnlockGroupList();
+  myGroupListMutex.unlockRead();
   return g;
 }
 
 bool UserManager::groupExists(int groupId)
 {
-  GroupMap* groups = LockGroupList(LOCK_R);
-  GroupMap::const_iterator iter = groups->find(groupId);
-  bool found = (iter != groups->end());
-  UnlockGroupList();
+  myGroupListMutex.lockRead();
+  GroupMap::const_iterator iter = myGroups.find(groupId);
+  bool found = (iter != myGroups.end());
+  myGroupListMutex.unlockRead();
   return found;
 }
 
@@ -600,20 +600,20 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
     return 0;
   }
 
-  GroupMap* groups = LockGroupList(LOCK_W);
+  myGroupListMutex.lockWrite();
 
   // Find first free group id
   int gid;
-  for (gid = 1; groups->count(gid) != 0 ; ++gid)
+  for (gid = 1; myGroups.count(gid) != 0 ; ++gid)
     ;
 
   Group* newGroup = new Group(gid, name);
   newGroup->setServerId(LICQ_PPID, icqGroupId);
-  newGroup->setSortIndex(groups->size());
-  (*groups)[gid] = newGroup;
+  newGroup->setSortIndex(myGroups.size());
+  myGroups[gid] = newGroup;
 
   SaveGroups();
-  UnlockGroupList();
+  myGroupListMutex.unlockWrite();
 
   bool icqOnline = false;
   Licq::Owner* icqOwner = FetchOwner(LICQ_PPID, LOCK_R);
@@ -652,18 +652,18 @@ void UserManager::RemoveGroup(int groupId)
   gLicqDaemon->icqRemoveGroup(name.c_str());
 
   // Lock it back up
-  GroupMap* g = LockGroupList(LOCK_W);
+  myGroupListMutex.lockWrite();
   group->lockWrite();
 
   // Erase the group
-  g->erase(groupId);
+  myGroups.erase(groupId);
   group->unlockWrite();
   delete group;
 
 
   // Decrease sorting index for higher groups so we don't leave a gap
   GroupMap::const_iterator iter;
-  for (iter = g->begin(); iter != g->end(); ++iter)
+  for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
     iter->second->Lock(LOCK_W);
     int si = iter->second->sortIndex();
@@ -681,7 +681,7 @@ void UserManager::RemoveGroup(int groupId)
   FOR_EACH_USER_END;
 
   SaveGroups();
-  UnlockGroupList();
+  myGroupListMutex.unlockWrite();
 
   // Send signal to let plugins know of the removed group
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REMOVED, UserId(), groupId));
@@ -704,10 +704,10 @@ void UserManager::ModifyGroupSorting(int groupId, int newIndex)
   int oldIndex = group->sortIndex();
   group->unlockRead();
 
-  GroupMap* g = LockGroupList(LOCK_R);
+  myGroupListMutex.lockRead();
 
   // Move all groups between new and old position one step
-  for (GroupMap::iterator i = g->begin(); i != g->end(); ++i)
+  for (GroupMap::iterator i = myGroups.begin(); i != myGroups.end(); ++i)
   {
     i->second->lockWrite();
     int si = i->second->sortIndex();
@@ -723,7 +723,7 @@ void UserManager::ModifyGroupSorting(int groupId, int newIndex)
   group->unlockWrite();
 
   SaveGroups();
-  UnlockGroupList();
+  myGroupListMutex.unlockRead();
 
   // Send signal to let plugins know that sorting indexes have changed
   if (gLicqDaemon != NULL)
@@ -756,9 +756,9 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
   unsigned short icqGroupId = group->serverId(LICQ_PPID);
   group->unlockWrite();
 
-  LockGroupList(LOCK_R);
+  myGroupListMutex.lockRead();
   SaveGroups();
-  UnlockGroupList();
+  myGroupListMutex.unlockRead();
 
   if (gLicqDaemon != NULL)
   {
@@ -824,51 +824,51 @@ unsigned short UserManager::GetIDFromGroup(int groupId)
 
 int UserManager::GetGroupFromID(unsigned short icqGroupId)
 {
-  const GroupMap* groups = LockGroupList(LOCK_R);
+  myGroupListMutex.lockRead();
   GroupMap::const_iterator iter;
   int groupId = 0;
-  for (iter = groups->begin(); iter != groups->end(); ++iter)
+  for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
     iter->second->Lock(LOCK_R);
     if (iter->second->serverId(LICQ_PPID) == icqGroupId)
       groupId = iter->first;
     iter->second->Unlock();
   }
-  UnlockGroupList();
+  myGroupListMutex.unlockRead();
 
   return groupId;
 }
 
 int UserManager::GetGroupFromName(const string& name)
 {
-  const GroupMap* groups = LockGroupList(LOCK_R);
+  myGroupListMutex.lockRead();
   GroupMap::const_iterator iter;
   int id = 0;
-  for (iter = groups->begin(); iter != groups->end(); ++iter)
+  for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
     iter->second->Lock(LOCK_R);
     if (iter->second->name() == name)
       id = iter->first;
     iter->second->Unlock();
   }
-  UnlockGroupList();
+  myGroupListMutex.unlockRead();
 
   return id;
 }
 
 std::string UserManager::GetGroupNameFromGroup(int groupId)
 {
-  const GroupMap* groups = LockGroupList(LOCK_R);
+  myGroupListMutex.lockRead();
   GroupMap::const_iterator iter;
   std::string name;
-  for (iter = groups->begin(); iter != groups->end(); ++iter)
+  for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
     iter->second->Lock(LOCK_R);
     if (iter->second->id() == groupId)
       name = iter->second->name();
     iter->second->Unlock();
   }
-  UnlockGroupList();
+  myGroupListMutex.unlockRead();
 
   return name;
 }
@@ -889,9 +889,9 @@ void UserManager::ModifyGroupID(int groupId, unsigned short icqGroupId)
   group->setServerId(LICQ_PPID, icqGroupId);
   group->unlockWrite();
 
-  LockGroupList(LOCK_R);
+  myGroupListMutex.lockRead();
   SaveGroups();
-  UnlockGroupList();
+  myGroupListMutex.unlockRead();
 }
 
 unsigned short UserManager::GenerateSID()
@@ -968,14 +968,14 @@ Licq::Owner* UserManager::FetchOwner(unsigned long ppid, unsigned short lockType
 {
   Owner* o = NULL;
 
-  LockOwnerList(LOCK_R);
+  myOwnerListMutex.lockRead();
   OwnerMap::iterator iter = myOwners.find(ppid);
   if (iter != myOwners.end())
   {
     o = iter->second;
     o->Lock(lockType);
   }
-  UnlockOwnerList();
+  myOwnerListMutex.unlockRead();
 
   return o;
 }
@@ -1021,9 +1021,9 @@ bool UserManager::UpdateUsersInGroups()
 
 unsigned short UserManager::NumUsers()
 {
-  //LockUserList(LOCK_R);
+  //myUserListMutex.lockRead();
   unsigned short n = myUsers.size();
-  //UnlockUserList();
+  //myUserListMutex.unlockRead();
   return n;
 }
 
@@ -1035,118 +1035,43 @@ unsigned short UserManager::NumOwners()
 
 unsigned int UserManager::NumGroups()
 {
-  //LockGroupList(LOCK_R);
+  //myGroupListMutex.lockRead();
   unsigned int n = myGroups.size();
-  //UnlockGroupList();
+  //myGroupListMutex.unlockRead();
   return n;
 }
 
-UserMap* UserManager::LockUserList(unsigned short _nLockType)
+const UserMap& UserManager::lockUserList()
 {
-  switch (_nLockType)
-  {
-    case LOCK_R:
-      myUserListMutex.lockRead();
-      break;
-    case LOCK_W:
-      myUserListMutex.lockWrite();
-      break;
-    default:
-      assert(false);
-      return NULL;
-  }
-  m_nUserListLockType = _nLockType;
-  return &myUsers;
+  myUserListMutex.lockRead();
+  return myUsers;
 }
 
-void UserManager::UnlockUserList()
+void UserManager::unlockUserList()
 {
-  unsigned short nLockType = m_nUserListLockType;
-  m_nUserListLockType = LOCK_R;
-  switch (nLockType)
-  {
-    case LOCK_R:
-      myUserListMutex.unlockRead();
-      break;
-    case LOCK_W:
-      myUserListMutex.unlockWrite();
-      break;
-    default:
-      assert(false);
-      break;
-  }
+  myUserListMutex.unlockRead();
 }
 
-GroupMap* UserManager::LockGroupList(unsigned short lockType)
+const GroupMap& UserManager::lockGroupList()
 {
-  switch (lockType)
-  {
-    case LOCK_R:
-      myGroupListMutex.lockRead();
-      break;
-    case LOCK_W:
-      myGroupListMutex.lockWrite();
-      break;
-    default:
-      assert(false);
-      return NULL;
-  }
-  myGroupListLockType = lockType;
-  return &myGroups;
+  myGroupListMutex.lockRead();
+  return myGroups;
 }
 
-void UserManager::UnlockGroupList()
+void UserManager::unlockGroupList()
 {
-  unsigned short lockType = myGroupListLockType;
-  myGroupListLockType = LOCK_R;
-  switch (lockType)
-  {
-    case LOCK_R:
-      myGroupListMutex.unlockRead();
-      break;
-    case LOCK_W:
-      myGroupListMutex.unlockWrite();
-      break;
-    default:
-      assert(false);
-      break;
-  }
+  myGroupListMutex.unlockRead();
 }
 
-OwnerMap* UserManager::LockOwnerList(unsigned short _nLockType)
+const OwnerMap& UserManager::lockOwnerList()
 {
-  switch (_nLockType)
-  {
-    case LOCK_R:
-      myOwnerListMutex.lockRead();
-      break;
-    case LOCK_W:
-      myOwnerListMutex.lockWrite();
-      break;
-    default:
-      assert(false);
-      return NULL;
-  }
-  m_nOwnerListLockType = _nLockType;
-  return &myOwners;
+  myOwnerListMutex.lockRead();
+  return myOwners;
 }
 
-void UserManager::UnlockOwnerList()
+void UserManager::unlockOwnerList()
 {
-  unsigned short nLockType = m_nOwnerListLockType;
-  m_nOwnerListLockType = LOCK_R;
-  switch (nLockType)
-  {
-    case LOCK_R:
-      myOwnerListMutex.unlockRead();
-      break;
-    case LOCK_W:
-      myOwnerListMutex.unlockWrite();
-      break;
-    default:
-      assert(false);
-      break;
-  }
+  myOwnerListMutex.unlockRead();
 }
 
 void UserManager::setUserInGroup(const UserId& userId, int groupId,
@@ -1286,36 +1211,36 @@ GroupWriteGuard::GroupWriteGuard(int groupId)
 
 UserListGuard::UserListGuard(unsigned long protocolId)
 {
-  const UserMap* userMap = LicqDaemon::gUserManager.LockUserList();
+  const UserMap& userMap = LicqDaemon::gUserManager.lockUserList();
 
-  for (UserMap::const_iterator i = userMap->begin(); i != userMap->end(); ++i)
+  for (UserMap::const_iterator i = userMap.begin(); i != userMap.end(); ++i)
     if (protocolId == 0 || i->first.protocolId() == protocolId)
       myUserList.push_back(i->second);
 }
 
 UserListGuard::~UserListGuard()
 {
-  LicqDaemon::gUserManager.UnlockUserList();
+  LicqDaemon::gUserManager.unlockUserList();
 }
 
 OwnerListGuard::OwnerListGuard()
 {
-  const OwnerMap* ownerMap = LicqDaemon::gUserManager.LockOwnerList();
+  const OwnerMap& ownerMap = LicqDaemon::gUserManager.lockOwnerList();
 
-  for (OwnerMap::const_iterator i = ownerMap->begin(); i != ownerMap->end(); ++i)
+  for (OwnerMap::const_iterator i = ownerMap.begin(); i != ownerMap.end(); ++i)
     myOwnerList.push_back(i->second);
 }
 
 OwnerListGuard::~OwnerListGuard()
 {
-  LicqDaemon::gUserManager.UnlockOwnerList();
+  LicqDaemon::gUserManager.unlockOwnerList();
 }
 
 GroupListGuard::GroupListGuard(bool sorted)
 {
-  const GroupMap* groupMap = LicqDaemon::gUserManager.LockGroupList();
+  const GroupMap& groupMap = LicqDaemon::gUserManager.lockGroupList();
 
-  for (GroupMap::const_iterator i = groupMap->begin(); i != groupMap->end(); ++i)
+  for (GroupMap::const_iterator i = groupMap.begin(); i != groupMap.end(); ++i)
     myGroupList.push_back(i->second);
 
   if (sorted)
@@ -1324,5 +1249,5 @@ GroupListGuard::GroupListGuard(bool sorted)
 
 GroupListGuard::~GroupListGuard()
 {
-  LicqDaemon::gUserManager.UnlockGroupList();
+  LicqDaemon::gUserManager.unlockGroupList();
 }
