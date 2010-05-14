@@ -1,7 +1,6 @@
 #ifndef LICQ_CONTACTLIST_USER_H
 #define LICQ_CONTACTLIST_USER_H
 
-#include <boost/any.hpp>
 #include <boost/noncopyable.hpp>
 #include <list>
 #include <map>
@@ -84,7 +83,6 @@ typedef enum
 
 typedef std::vector <class CUserEvent*> UserEventList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
-typedef std::map<std::string, boost::any> PropertyMap;
 typedef std::set<int> UserGroupList;
 typedef std::list<CUserEvent*> HistoryList;
 
@@ -205,7 +203,7 @@ public:
 
   void saveAll();
   virtual void SaveLicqInfo();
-  void saveUserInfo();
+  virtual void saveUserInfo() = 0;
   void SavePhoneBookInfo();
   void SavePictureInfo();
   void SaveNewMessagesInfo();
@@ -368,7 +366,7 @@ public:
    * @param key Name of property to get
    * @return Property value if string, otherwise empty
    */
-  std::string getUserInfoString(const std::string& key) const;
+  virtual std::string getUserInfoString(const std::string& key) const = 0;
 
   /**
    * Get numeric user info
@@ -376,7 +374,7 @@ public:
    * @param key Name of property to get
    * @return Property value if unsigned int, otherwise 0
    */
-  unsigned int getUserInfoUint(const std::string& key) const;
+  virtual unsigned int getUserInfoUint(const std::string& key) const = 0;
 
   /**
    * Get boolean user info
@@ -384,7 +382,7 @@ public:
    * @param key Name of property to get
    * @return Property value if bool, otherwise false
    */
-  bool getUserInfoBool(const std::string& key) const;
+  virtual bool getUserInfoBool(const std::string& key) const = 0;
 
   /**
    * Set string user info
@@ -392,7 +390,7 @@ public:
    * @param key Name of property to set, must already exist
    * @param value New value for property
    */
-  void setUserInfoString(const std::string& key, const std::string& value);
+  virtual void setUserInfoString(const std::string& key, const std::string& value) = 0;
 
   /**
    * Set numeric user info
@@ -400,7 +398,7 @@ public:
    * @param key Name of property to set, must already exist
    * @param value New value for property
    */
-  void setUserInfoUint(const std::string& key, unsigned int value);
+  virtual void setUserInfoUint(const std::string& key, unsigned int value) = 0;
 
   /**
    * Set bool user info
@@ -408,7 +406,7 @@ public:
    * @param key Name of property to set, must already exist
    * @param value New value for property
    */
-  void setUserInfoBool(const std::string& key, bool value);
+  virtual void setUserInfoBool(const std::string& key, bool value) = 0;
 
   // Picture info
   void SetPicturePresent(bool b)      { m_bPicturePresent = b; SavePictureInfo(); }
@@ -758,8 +756,6 @@ public:
 protected:
   virtual ~User() { /* Empty */ }
 
-  void loadUserInfo();
-
   /**
    * Save a category list
    *
@@ -784,11 +780,6 @@ protected:
   void LoadPictureInfo();
   void LoadLicqInfo();
 
-  /**
-   * Initialize all user object. Contains common code for all constructors
-   */
-  void Init();
-  bool LoadInfo();
   void SetDefaults();
   virtual void AddToContactList() = 0;
 
@@ -871,9 +862,6 @@ protected:
   std::string myAlias;
   char m_nTimezone;
   bool m_bAuthorization;
-
-  // myUserInfo holds user information like email, address, homepage etc...
-  PropertyMap myUserInfo;
 
   // More2 Info
   UserCategoryMap myInterests;

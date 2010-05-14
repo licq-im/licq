@@ -22,10 +22,15 @@
 
 #include <licq/contactlist/user.h>
 
+#include <boost/any.hpp>
+#include <map>
+#include <string>
+
 #include "userhistory.h"
 
 namespace LicqDaemon
 {
+typedef std::map<std::string, boost::any> PropertyMap;
 
 class User : public virtual Licq::User
 {
@@ -50,6 +55,13 @@ public:
 
   // From Licq::User
   void RemoveFiles();
+  void saveUserInfo();
+  std::string getUserInfoString(const std::string& key) const;
+  unsigned int getUserInfoUint(const std::string& key) const;
+  bool getUserInfoBool(const std::string& key) const;
+  void setUserInfoString(const std::string& key, const std::string& value);
+  void setUserInfoUint(const std::string& key, unsigned int value);
+  void setUserInfoBool(const std::string& key, bool value);
   void WriteToHistory(const char*);
   void SetHistoryFile(const char*);
   int GetHistory(Licq::HistoryList& history) const;
@@ -58,8 +70,22 @@ public:
   const char* HistoryFile() const;
   void AddToContactList();
 
+protected:
+  bool LoadInfo();
+
 private:
+  void loadUserInfo();
+
+  /**
+   * Initialize all user object. Contains common code for all constructors
+   */
+  void Init();
+
   UserHistory myHistory;
+
+  // myUserInfo holds user information like email, address, homepage etc...
+  PropertyMap myUserInfo;
+
 };
 
 } // namespace LicqDaemon

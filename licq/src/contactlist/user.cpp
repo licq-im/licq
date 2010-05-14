@@ -325,7 +325,7 @@ void User::AddToContactList()
   }
 }
 
-bool Licq::User::LoadInfo()
+bool User::LoadInfo()
 {
   if (!m_fConf.ReloadFile()) return (false);
   m_fConf.SetFlags(0);
@@ -339,12 +339,12 @@ bool Licq::User::LoadInfo()
   return true;
 }
 
-void Licq::User::loadUserInfo()
+void User::loadUserInfo()
 {
   // read in the fields, checking for errors each time
   m_fConf.SetSection("user");
   m_fConf.readString("Alias", myAlias, tr("Unknown"));
-  m_fConf.ReadNum("Timezone", m_nTimezone, TIMEZONE_UNKNOWN);
+  m_fConf.ReadNum("Timezone", m_nTimezone, Licq::TIMEZONE_UNKNOWN);
   m_fConf.ReadBool("Authorization", m_bAuthorization, false);
 
   PropertyMap::iterator i;
@@ -585,7 +585,7 @@ void User::RemoveFiles()
   }
 }
 
-void Licq::User::Init()
+void User::Init()
 {
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
@@ -611,7 +611,7 @@ void Licq::User::Init()
   myUserInfo["Zipcode"] = string();
   myUserInfo["Country"] = (unsigned int)COUNTRY_UNSPECIFIED;
   myUserInfo["HideEmail"] = false;
-  m_nTimezone = TIMEZONE_UNKNOWN;
+  m_nTimezone = Licq::TIMEZONE_UNKNOWN;
   m_bAuthorization = false;
   myIsTyping = false;
   m_bNotInList = false;
@@ -752,7 +752,7 @@ void Licq::User::SetDefaults()
   SetCustomAutoResponse(szTemp);
 }
 
-string Licq::User::getUserInfoString(const string& key) const
+string User::getUserInfoString(const string& key) const
 {
   try
   {
@@ -768,7 +768,7 @@ string Licq::User::getUserInfoString(const string& key) const
   return string();
 }
 
-unsigned int Licq::User::getUserInfoUint(const string& key) const
+unsigned int User::getUserInfoUint(const string& key) const
 {
   try
   {
@@ -784,7 +784,7 @@ unsigned int Licq::User::getUserInfoUint(const string& key) const
   return 0;
 }
 
-bool Licq::User::getUserInfoBool(const string& key) const
+bool User::getUserInfoBool(const string& key) const
 {
   try
   {
@@ -800,7 +800,7 @@ bool Licq::User::getUserInfoBool(const string& key) const
   return false;
 }
 
-void Licq::User::setUserInfoString(const string& key, const string& value)
+void User::setUserInfoString(const string& key, const string& value)
 {
   PropertyMap::iterator i = myUserInfo.find(key);
   if (i == myUserInfo.end() || i->second.type() != typeid(string))
@@ -812,7 +812,7 @@ void Licq::User::setUserInfoString(const string& key, const string& value)
   saveUserInfo();
 }
 
-void Licq::User::setUserInfoUint(const string& key, unsigned int value)
+void User::setUserInfoUint(const string& key, unsigned int value)
 {
   PropertyMap::iterator i = myUserInfo.find(key);
   if (i == myUserInfo.end() || i->second.type() != typeid(unsigned int))
@@ -824,7 +824,7 @@ void Licq::User::setUserInfoUint(const string& key, unsigned int value)
   saveUserInfo();
 }
 
-void Licq::User::setUserInfoBool(const string& key, bool value)
+void User::setUserInfoBool(const string& key, bool value)
 {
   PropertyMap::iterator i = myUserInfo.find(key);
   if (i == myUserInfo.end() || i->second.type() != typeid(bool))
@@ -1893,7 +1893,7 @@ string UserId::normalizeId(const string& accountId, unsigned long ppid)
   return realId;
 }
 
-void Licq::User::saveUserInfo()
+void User::saveUserInfo()
 {
   if (!EnableSave()) return;
 
