@@ -397,9 +397,9 @@ void CLicqConsole::MenuGroup(char *_szArg)
   else
   {
     nCurrentGroup = atol(_szArg);
-    LicqGroup* group = gUserManager.FetchGroup(nCurrentGroup, LOCK_R);
+    Licq::GroupReadGuard group(nCurrentGroup);
 
-    if (nCurrentGroup != 0 && group == NULL)
+    if (nCurrentGroup != 0 && !group.isLocked())
     {
       winMain->wprintf("%CInvalid group number\n", COLOR_RED);
       return;
@@ -409,7 +409,6 @@ void CLicqConsole::MenuGroup(char *_szArg)
                      m_cColorInfo->nColor, m_cColorInfo->nAttr,
                      myCurrentGroup,
                      myCurrentGroup == 0 ? "All Users" : group->name().c_str());
-    gUserManager.DropGroup(group);
   }
 
   PrintStatus();

@@ -63,6 +63,16 @@ public:
   OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R);
   void UnlockOwnerList();
 
+  /**
+   * Fetch and lock a group
+   *
+   * @param groupId Id of group to get
+   * @param writeLock True to lock group for writing, false for read lock
+   * @return Requested group if exist, otherwise NULL
+   */
+  Group* fetchGroup(int groupId, bool writeLock = false);
+
+
   // From Licq::UserManager
 
   Licq::User* fetchUser(const Licq::UserId& userId, unsigned short lockType = LOCK_R,
@@ -83,8 +93,6 @@ public:
       bool addToServer = true, unsigned short groupId = 0);
   bool makeUserPermanent(const Licq::UserId& userId, bool addToServer = true, int groupId = 0);
   void removeUser(const Licq::UserId& userId, bool removeFromServer = true);
-  Licq::Group* FetchGroup(int groupId, unsigned short lockType = LOCK_R);
-  void DropGroup(const Licq::Group* group);
   bool groupExists(int groupId);
   int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
   void RemoveGroup(int groupId);

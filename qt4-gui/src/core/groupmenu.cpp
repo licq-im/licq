@@ -120,12 +120,11 @@ void GroupMenu::aboutToShowMenu()
   mySortIndex = 0;
   if (userGroup)
   {
-    LicqGroup* group = gUserManager.FetchGroup(myGroupId, LOCK_R);
-    if (group != NULL)
+    Licq::GroupReadGuard group(myGroupId);
+    if (group.isLocked())
     {
       mySortIndex = group->sortIndex();
       myGroupName = QString::fromLocal8Bit(group->name().c_str());
-      gUserManager.DropGroup(group);
     }
   }
 

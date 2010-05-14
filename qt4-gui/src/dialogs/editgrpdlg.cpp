@@ -191,11 +191,14 @@ void EditGrpDlg::moveGroup(int delta)
   if (groupId == 0)
     return;
 
-  LicqGroup* group = gUserManager.FetchGroup(groupId, LOCK_R);
-  if (group == NULL)
-    return;
-  int oldSortIndex = group->sortIndex();
-  gUserManager.DropGroup(group);
+  int oldSortIndex;
+
+  {
+    Licq::GroupReadGuard group(groupId);
+    if (!group.isLocked())
+      return;
+    oldSortIndex = group->sortIndex();
+  }
 
   if (delta + oldSortIndex < 0)
     return;

@@ -562,7 +562,7 @@ void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSigna
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, subSignal, userId));
 }
 
-Licq::Group* UserManager::FetchGroup(int group, unsigned short lockType)
+Group* UserManager::fetchGroup(int group, bool writeLock)
 {
   GroupMap* groups = LockGroupList(LOCK_R);
   GroupMap::const_iterator iter = groups->find(group);
@@ -570,16 +570,13 @@ Licq::Group* UserManager::FetchGroup(int group, unsigned short lockType)
   if (iter != groups->end())
   {
     g = iter->second;
-    g->Lock(lockType);
+    if (writeLock)
+      g->lockWrite();
+    else
+      g->lockRead();
   }
   UnlockGroupList();
   return g;
-}
-
-void UserManager::DropGroup(const Licq::Group* group)
-{
-  if (group != NULL)
-    group->Unlock();
 }
 
 bool UserManager::groupExists(int groupId)
@@ -643,24 +640,24 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
 
 void UserManager::RemoveGroup(int groupId)
 {
-  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_R));
+  Group* group = fetchGroup(groupId);
   if (group == NULL)
     return;
 
   string name = group->name();
   int sortIndex = group->sortIndex();
-  DropGroup(group);
+  group->unlockRead();
 
   // Must be called when there are no locks on GroupID and Group lists
   gLicqDaemon->icqRemoveGroup(name.c_str());
 
   // Lock it back up
   GroupMap* g = LockGroupList(LOCK_W);
-  group->Lock(LOCK_W);
+  group->lockWrite();
 
   // Erase the group
   g->erase(groupId);
-  group->Unlock();
+  group->unlockWrite();
   delete group;
 
 
@@ -695,7 +692,7 @@ void UserManager::RemoveGroup(int groupId)
 
 void UserManager::ModifyGroupSorting(int groupId, int newIndex)
 {
-  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_R));
+  Group* group = fetchGroup(groupId);
   if (group == NULL)
     return;
 
@@ -705,25 +702,25 @@ void UserManager::ModifyGroupSorting(int groupId, int newIndex)
     newIndex = NumGroups() - 1;
 
   int oldIndex = group->sortIndex();
-  DropGroup(group);
+  group->unlockRead();
 
   GroupMap* g = LockGroupList(LOCK_R);
 
   // Move all groups between new and old position one step
   for (GroupMap::iterator i = g->begin(); i != g->end(); ++i)
   {
-    i->second->Lock(LOCK_W);
+    i->second->lockWrite();
     int si = i->second->sortIndex();
     if (newIndex < oldIndex && si >= newIndex && si < oldIndex)
       i->second->setSortIndex(si + 1);
     else if (newIndex > oldIndex && si > oldIndex && si <= newIndex)
       i->second->setSortIndex(si - 1);
-    i->second->Unlock();
+    i->second->unlockWrite();
   }
 
-  group->Lock(LOCK_W);
+  group->lockWrite();
   group->setSortIndex(newIndex);
-  group->Unlock();
+  group->unlockWrite();
 
   SaveGroups();
   UnlockGroupList();
@@ -748,7 +745,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
     return false;
   }
 
-  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_W));
+  Group* group = fetchGroup(groupId, true);
   if (group == NULL)
   {
     gLog.Warn(tr("%sRenaming request for invalid group %u.\n"), L_WARNxSTR, groupId);
@@ -757,7 +754,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
 
   group->setName(name);
   unsigned short icqGroupId = group->serverId(LICQ_PPID);
-  DropGroup(group);
+  group->unlockWrite();
 
   LockGroupList(LOCK_R);
   SaveGroups();
@@ -815,12 +812,12 @@ unsigned short UserManager::GetIDFromGroup(const string& name)
 
 unsigned short UserManager::GetIDFromGroup(int groupId)
 {
-  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_R));
+  Group* group = fetchGroup(groupId);
   if (group == NULL)
     return 0;
 
   unsigned short icqGroupId = group->serverId(LICQ_PPID);
-  DropGroup(group);
+  group->unlockRead();
 
   return icqGroupId;
 }
@@ -885,12 +882,12 @@ void UserManager::ModifyGroupID(const string& name, unsigned short icqGroupId)
 
 void UserManager::ModifyGroupID(int groupId, unsigned short icqGroupId)
 {
-  Group* group = dynamic_cast<Group*>(FetchGroup(groupId, LOCK_W));
+  Group* group = fetchGroup(groupId, true);
   if (group == NULL)
     return;
 
   group->setServerId(LICQ_PPID, icqGroupId);
-  DropGroup(group);
+  group->unlockWrite();
 
   LockGroupList(LOCK_R);
   SaveGroups();
@@ -1275,13 +1272,13 @@ OwnerWriteGuard::OwnerWriteGuard(unsigned long protocolId)
 }
 
 GroupReadGuard::GroupReadGuard(int groupId)
-  : ReadMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_R), true)
+  : ReadMutexGuard<Group>(LicqDaemon::gUserManager.fetchGroup(groupId), true)
 {
   // Empty
 }
 
 GroupWriteGuard::GroupWriteGuard(int groupId)
-  : WriteMutexGuard<Group>(gUserManager.FetchGroup(groupId, LOCK_W), true)
+  : WriteMutexGuard<Group>(LicqDaemon::gUserManager.fetchGroup(groupId, true), true)
 {
   // Empty
 }

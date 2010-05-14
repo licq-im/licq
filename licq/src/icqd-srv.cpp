@@ -4005,15 +4005,13 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               if (n < 1 && e->ExtraInfo() != 0)
                 break;
 
-
-              LicqGroup* group = gUserManager.FetchGroup(n, LOCK_R);
-              std::string groupName;
-              if (e->ExtraInfo() == 0 || group == NULL)
-                groupName = ""; // top level
-              else
-                groupName = group->name();
-              if (group != NULL)
-                gUserManager.DropGroup(group);
+              std::string groupName = "";
+              if (e->ExtraInfo() != 0)
+              {
+                Licq::GroupReadGuard group(n);
+                if (group.isLocked())
+                  groupName = group->name();
+              }
 
               // Start editing server list
               CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,

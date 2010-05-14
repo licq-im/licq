@@ -245,23 +245,6 @@ public:
   virtual void removeUser(const UserId& userId, bool removeFromServer = true) = 0;
 
   /**
-   * Find and lock a group
-   * After use, the lock must be released by calling DropGroup()
-   *
-   * @param groupId Id of group to fetch
-   * @param lockType Type of lock to get
-   * @return The group if found no NULL if groupId was invalid
-   */
-  virtual Group* FetchGroup(int groupId, unsigned short lockType = LOCK_R) = 0;
-
-  /**
-   * Release the lock for a group preivously returned by FetchGroup()
-   *
-   * @param group The group to unlock
-   */
-  virtual void DropGroup(const Group* group) = 0;
-
-  /**
    * Check if a group id is valid
    *
    * @param groupId Id of user group to check for
