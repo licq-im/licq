@@ -608,7 +608,7 @@ QString ContactListModel::groupName(int groupId) const
 
 bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-  if (!index.isValid() || static_cast<ContactItem*>(index.internalPointer())->itemType() != UserItem)
+  if (!index.isValid())
     return false;
 
   return static_cast<ContactItem*>(index.internalPointer())->setData(value, role);
