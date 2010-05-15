@@ -25,12 +25,14 @@
 #include "jabber.h"
 
 #include <licq_icqd.h>
-#include <licq_user.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
 #include <licq/log.h>
 
 #include <sys/select.h>
 
 using Licq::gLog;
+using std::string;
 
 Jabber::Jabber() :
   myHandler(NULL),
@@ -169,16 +171,19 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
   if (status == Licq::User::OfflineStatus)
     return;
 
-  const LicqOwner* owner = gUserManager.FetchOwner(JABBER_PPID, LOCK_R);
-  if (owner == NULL)
+  string username;
+  string password;
   {
-    gLog.error("No owner set");
-    return;
-  }
+    Licq::OwnerReadGuard owner(JABBER_PPID);
+    if (!owner.isLocked())
+    {
+      gLog.error("No owner set");
+      return;
+    }
 
-  std::string username = owner->IdString();
-  std::string password = owner->Password();
-  gUserManager.DropOwner(owner);
+    username = owner->accountId();
+    password = owner->Password();
+  }
 
   myHandler->setStatus(status);
 
@@ -216,8 +221,7 @@ void Jabber::doLogoff()
 void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->sendMessage(LicqUser::getUserAccountId(signal->userId()),
-                        signal->message());
+  myClient->sendMessage(signal->userId().accountId(), signal->message());
 
   CEventMsg* message = new CEventMsg(signal->message().c_str(), 0, TIME_NOW, 0);
   message->m_eDir = D_SENDER;
@@ -239,36 +243,38 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
 void Jabber::doGetInfo(LicqProtoRequestInfo* signal)
 {
   assert(myClient != NULL);
-  myClient->getVCard(LicqUser::getUserAccountId(signal->userId()));
+  myClient->getVCard(signal->userId().accountId());
 }
 
 void Jabber::doAddUser(LicqProtoAddUserSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->addUser(LicqUser::getUserAccountId(signal->userId()));
+  myClient->addUser(signal->userId().accountId());
 }
 
 void Jabber::doChangeUserGroups(LicqProtoChangeUserGroupsSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->changeUserGroups(LicqUser::getUserAccountId(signal->userId()),
+  myClient->changeUserGroups(signal->userId().accountId(),
       signal->groups());
 }
 
 void Jabber::doRemoveUser(LicqProtoRemoveUserSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->removeUser(LicqUser::getUserAccountId(signal->userId()));
+  myClient->removeUser(signal->userId().accountId());
 }
 
 void Jabber::doRenameUser(LicqProtoRenameUserSignal* signal)
 {
   assert(myClient != NULL);
-  LicqUser* u = gUserManager.fetchUser(signal->userId());
-  if (u == NULL)
-    return;
-  std::string newName = u->GetAlias();
-  gUserManager.DropUser(u);
+  string newName;
+  {
+    Licq::UserReadGuard u(signal->userId());
+    if (!u.isLocked())
+      return;
+    newName = u->getAlias();
+  }
 
-  myClient->renameUser(LicqUser::getUserAccountId(signal->userId()), newName);
+  myClient->renameUser(signal->userId().accountId(), newName);
 }

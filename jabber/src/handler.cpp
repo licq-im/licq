@@ -23,15 +23,17 @@
 #include "handler.h"
 #include "jabber.h"
 
+#include <licq/contactlist/usermanager.h>
 #include <licq/log.h>
 #include <licq/oneventmanager.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
-#include <licq_user.h>
 
 using std::string;
 using Licq::OnEventManager;
+using Licq::UserId;
 using Licq::gOnEventManager;
+using Licq::gUserManager;
 
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
@@ -53,8 +55,7 @@ void Handler::onConnect()
 
   gUserManager.ownerStatusChanged(JABBER_PPID, myStatus);
 
-  LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0,
-                                      USERID_NONE, JABBER_PPID);
+  LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0, UserId() , JABBER_PPID);
   gLicqDaemon->pushPluginSignal(result);
 }
 
@@ -89,16 +90,17 @@ void Handler::onUserAdded(const std::string& id,
 {
   TRACE();
 
-  UserId userId = LicqUser::makeUserId(id, JABBER_PPID);
-
-  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
-  if (user == NULL)
+  UserId userId(id, JABBER_PPID);
+  bool wasAdded = false;
+  if (!gUserManager.userExists(userId))
   {
     gUserManager.addUser(userId, true, false);
-    user = gUserManager.fetchUser(userId, LOCK_W);
-    assert(user != NULL);
-    user->setAlias(name);
+    wasAdded = true;
   }
+  Licq::UserWriteGuard user(userId);
+  assert(user.isLocked());
+  if (wasAdded)
+    user->setAlias(name);
 
   Licq::UserGroupList glist;
   for (std::list<std::string>::const_iterator it = groups.begin();
@@ -120,8 +122,6 @@ void Handler::onUserAdded(const std::string& id,
   // Remove this line when SetGroups call above saves contact groups itself.
   user->SaveLicqInfo();
 
-  gUserManager.DropUser(user);
-
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, userId));
   gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, userId));
 }
@@ -130,8 +130,7 @@ void Handler::onUserRemoved(const std::string& id)
 {
   TRACE();
 
-  UserId userId = LicqUser::makeUserId(id, JABBER_PPID);
-  gUserManager.removeUser(userId, false);
+  gUserManager.removeUser(UserId(id, JABBER_PPID), false);
 }
 
 void Handler::onUserStatusChange(const string& id, unsigned status)
@@ -170,14 +169,12 @@ void Handler::onMessage(const std::string& from, const std::string& message)
       message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, ::time(0),
       0, myConvoIds[from]);
 
-  UserId userId = LicqUser::makeUserId(from, JABBER_PPID);
-  LicqUser* user = gUserManager.fetchUser(userId, LOCK_W, true);
+  Licq::UserWriteGuard user(UserId(from, JABBER_PPID), true);
 
-  if (user)
+  if (user.isLocked())
     user->setIsTyping(false);
-  if (gLicqDaemon->AddUserEvent(user, event))
-    gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, user);
-  gUserManager.DropUser(user);
+  if (gLicqDaemon->AddUserEvent(*user, event))
+    gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *user);
 }
 
 std::string Handler::getStatusMessage(unsigned status)
