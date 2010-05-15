@@ -229,6 +229,9 @@ public:
    *
    * @return protocol instance id
    */
+  unsigned long protocolId() const
+  { return myId.protocolId(); }
+
   unsigned long ppid() const                    { return myId.protocolId(); }
 
   /**
