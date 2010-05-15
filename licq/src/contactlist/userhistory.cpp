@@ -11,24 +11,22 @@
 #include "userhistory.h"
 
 #include <boost/foreach.hpp>
+#include <cerrno>
 #include <cstdio>
-#include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <cstring>
 #include <fcntl.h>
 #include <string>
-
-// Localization
-#include "gettext.h"
-
-#include <cerrno>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "licq_message.h"
 #include "licq_icq.h"
-#include "licq_user.h"
+#include <licq/userid.h>
+
+#include "../gettext.h"
 
 #define MAX_HISTORY_MSG_SIZE 8192
 
@@ -221,7 +219,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
-        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
+        UserId userId(id, LICQ_PPID);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -244,7 +242,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
-        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
+        UserId userId(id, LICQ_PPID);
       GET_VALID_LINES;
         e = new CEventAuthGranted(userId, szMsg, nCommand, tTime, nFlags);
         free(id);
@@ -254,7 +252,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
-        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
+        UserId userId(id, LICQ_PPID);
       GET_VALID_LINES;
         e = new CEventAuthRefused(userId, szMsg, nCommand, tTime, nFlags);
         free(id);
@@ -264,7 +262,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
-        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
+        UserId userId(id, LICQ_PPID);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -320,7 +318,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
           id = &szResult[1];
         else if (!id.empty())
           {
-            UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
+            UserId userId(id, LICQ_PPID);
             vc.push_back(new CContact(userId, &szResult[1]));
           }
         b = !b;
