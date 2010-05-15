@@ -1153,12 +1153,6 @@ void UserManager::SetDefaultUserEncoding(const char* defaultEncoding)
   SetString(&m_szDefaultEncoding, defaultEncoding);
 }
 
-char* PPIDSTRING(unsigned long ppid)
-{
-  char* ret = new char[5];
-  return Licq::protocolId_toStr(ret, ppid);
-}
-
 
 UserReadGuard::UserReadGuard(const UserId& userId, bool addUser, bool* retWasAdded)
   : ReadMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded), true)

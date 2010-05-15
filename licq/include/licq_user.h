@@ -67,11 +67,6 @@ typedef Licq::GroupReadGuard LicqGroupReadGuard;
 typedef Licq::GroupWriteGuard LicqGroupWriteGuard;
 typedef Licq::UserManager CUserManager;
 
-
-// Returned value must be cleared with delete[]
-extern char* PPIDSTRING(unsigned long ppid);
-
-
 // Temporary until all occurenses of deprecated names ICQUser ICQOwner have been removed
 typedef LicqUser ICQUser;
 typedef LicqOwner ICQOwner;

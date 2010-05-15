@@ -32,9 +32,6 @@ extern char *hebrev (char* pszStr);
 
 using namespace std;
 
-// Hack
-extern char *PPIDSTRING(unsigned long);
-
 int CUserEvent::s_nId = 1;
 
 //----CUserEvent::constructor---------------------------------------------------
