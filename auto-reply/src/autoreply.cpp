@@ -17,9 +17,9 @@
 #include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
-#include "licq_file.h"
 #include "licq_constants.h"
 #include <licq/contactlist/usermanager.h>
+#include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
 
@@ -73,18 +73,17 @@ int CLicqAutoReply::Run()
 
   char filename[256];
   sprintf(filename, "%slicq_autoreply.conf", BASE_DIR);
-  CIniFile conf;
-  conf.LoadFile(filename);
-  conf.SetSection("Reply");
-  conf.ReadStr("Program", m_szProgram, "cat");
-  conf.ReadStr("Arguments", m_szArguments, "");
-  conf.ReadBool("PassMessage", m_bPassMessage, false);
-  conf.ReadBool("FailOnExitCode", m_bFailOnExitCode, false);
-  conf.ReadBool("AbortDeleteOnExitCode", m_bAbortDeleteOnExitCode, false);
-  conf.ReadBool("SendThroughServer", m_bSendThroughServer, true);
-  conf.ReadBool("StartEnabled", m_bEnabled, false);
-  conf.ReadBool("DeleteMessage", m_bDelete, false);
-  conf.CloseFile();
+  Licq::IniFile conf(filename);
+  conf.loadFile();
+  conf.setSection("Reply");
+  conf.get("Program", myProgram, "cat");
+  conf.get("Arguments", myArguments, "");
+  conf.get("PassMessage", m_bPassMessage, false);
+  conf.get("FailOnExitCode", m_bFailOnExitCode, false);
+  conf.get("AbortDeleteOnExitCode", m_bAbortDeleteOnExitCode, false);
+  conf.get("SendThroughServer", m_bSendThroughServer, true);
+  conf.get("StartEnabled", m_bEnabled, false);
+  conf.get("DeleteMessage", m_bDelete, false);
 
   // Log on if necessary
   if (m_szStatus != NULL)
@@ -246,22 +245,17 @@ void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
 
 bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* event)
 {
-  char *szCommand;
-  char buf[4096];
-  char *tmp;
-  sprintf(buf, "%s ", m_szProgram);
+  string command = myProgram + " ";
   {
     Licq::UserReadGuard u(userId);
-    tmp = u->usprintf(m_szArguments);
+    char* tmp = u->usprintf(myArguments.c_str());
+    command += tmp;
+    free(tmp);
   }
-  szCommand = new char[strlen(buf) + strlen(tmp) + 1];
-  strcpy(szCommand, buf);
-  strcat(szCommand, tmp);
-  free(tmp);
 
-  if (!POpen(szCommand))
+  if (!POpen(command.c_str()))
   {
-    gLog.Warn("%sCould not execute %s\n", L_AUTOREPxSTR, szCommand);
+    gLog.Warn("%sCould not execute %s\n", L_AUTOREPxSTR, command.c_str());
     return false;
   }
   if (m_bPassMessage)
@@ -284,8 +278,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
   if ((r = PClose()) != 0 && m_bFailOnExitCode)
   {
     gLog.Warn("%s%s returned abnormally: exit code %d\n", L_AUTOREPxSTR,
-     szCommand, r);
-    delete [] szCommand;
+        command.c_str(), r);
     return !m_bAbortDeleteOnExitCode;
   }
 
@@ -294,7 +287,6 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
   unsigned long tag = gProtocolManager.sendMessage(userId, szText, m_bSendThroughServer,
      ICQ_TCPxMSG_URGENT);
   delete []szText;
-  delete [] szCommand;
 
   Licq::UserReadGuard u(userId);
   if (!u.isLocked())

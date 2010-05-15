@@ -16,9 +16,9 @@
 #include <licq_plugin.h>
 #include <licq_icqd.h>
 #include <licq_events.h>
-#include <licq_file.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/inifile.h>
 #include <licq/pluginmanager.h>
 
 #include "my_xosd.h"
@@ -193,8 +193,7 @@ void verifyconfig(string pluginfont, unsigned long /* timeout */,
     }
 }
 
-
-unsigned parseShowInModesStr(char *ShowInModesStr)
+unsigned parseShowInModesStr(const char* ShowInModesStr)
 {
   unsigned showInModes = 0;
     if (strstr(ShowInModesStr, "Online"))
@@ -217,9 +216,8 @@ unsigned parseShowInModesStr(char *ShowInModesStr)
 // called once on Load of the plugin
 bool LP_Init(int /* argc */, char** /* argv */)
 {
-    char ShowInModesStr[MAX_LINE_LEN+1];
-    char ShowMsgsInModesStr[MAX_LINE_LEN+1];
-    char temp[MAX_LINE_LEN+1];
+  string showInModes;
+  string showMsgsInModes;
     string filename;
     try {
 	Configured=false;
@@ -227,9 +225,9 @@ bool LP_Init(int /* argc */, char** /* argv */)
 
 	filename=BASE_DIR;
     filename += "licq_osd.conf";
-	CIniFile conf;
-	if (!conf.LoadFile(filename.c_str())) // no configfile found
-	{
+    Licq::IniFile conf(filename);
+    if (!conf.loadFile()) // no configfile found
+    {
 	    FILE *f = fopen(filename.c_str(), "w");
 	    if (f) // create config file
 	    {
@@ -241,69 +239,40 @@ bool LP_Init(int /* argc */, char** /* argv */)
 		gLog.Error("%sConfigfile can not be created. Check the permissions on %s\n", L_ERRORxSTR, filename.c_str());
 		return 0;
 	    }
-	    if (!conf.LoadFile(filename.c_str())) // configfile cannot be read after creating it - this should not happen
-	    {
+      if (!conf.loadFile()) // configfile cannot be read after creating it - this should not happen
+      {
 		gLog.Error("%sConfigfile created but cannot be loaded. This should not happen.\n", L_ERRORxSTR);
 		return 0;
-	    }
-	}
-	conf.SetSection("Main");
-	conf.ReadBool("Wait", config.osd_wait, WAIT);
+      }
+    }
+    conf.setSection("Main");
+    conf.get("Wait", config.osd_wait, WAIT);
+    conf.get("Font", config.pluginfont, FONT);
+    conf.get("Timeout", config.timeout, DISPLAYTIMEOUT);
+    conf.get("HOffset", config.hoffset, HORIZONTAL_OFFSET);
+    conf.get("VOffset", config.voffset, VERTICAL_OFFSET);
+    conf.get("VPos", config.vpos, VPOS);
+    conf.get("HPos", config.hpos, HPOS);
+    conf.get("Lines", config.lines, LINES);
+    conf.get("Linelen", config.linelen, LINELEN);
+    conf.get("Quiettimeout", config.quiettimeout, QUIETTIMEOUT);
+    conf.get("Colour", config.colour, COLOUR);
+    conf.get("ControlColour", config.controlcolour, CONTROLCOLOUR);
+    conf.get("Showmessages", config.Showmessages, SHOWMESSAGES);
+    conf.get("ShowAutoResponseCheck", config.ShowAutoResponseCheck, SHOWAUTORESPONSECHECK);
+    conf.get("Showlogon", config.Showlogon, SHOWLOGON);
+    conf.get("DelayPerCharacter", config.DelayPerCharacter, DELAYPERCHARACTER);
+    conf.get("ShowStatusChange", config.ShowStatusChange, SHOWSTATUSCHANGE);
+    conf.get("ShadowOffset", config.shadowoffset, SHADOW_OFFSET);
+    conf.get("OutlineOffset", config.outlineoffset, OUTLINE_OFFSET);
+    conf.get("MarkSecureMessages", config.marksecuremessages, MARKSECUREMESSAGES);
+    conf.get("ShadowColour", config.shadowcolour, SHADOW_COLOUR);
+    conf.get("OutlineColour", config.outlinecolour, OUTLINE_COLOUR);
+    conf.get("ShowInModes", showInModes, SHOWINMODESSTR);
+    conf.get("ShowMsgsInModes", showMsgsInModes, SHOWMSGSINMODESSTR);
 
-	conf.ReadStr("Font", temp, FONT);
-	temp[MAX_LINE_LEN]=0;
-        config.pluginfont=temp;
-
-	conf.ReadNum("Timeout", config.timeout, DISPLAYTIMEOUT);
-	conf.ReadNum("HOffset", config.hoffset, HORIZONTAL_OFFSET);
-	conf.ReadNum("VOffset", config.voffset, VERTICAL_OFFSET);
-
-	conf.ReadStr("VPos", temp, VPOS);
-	temp[MAX_LINE_LEN]=0;
-        config.vpos=temp;
-
-	conf.ReadStr("HPos", temp, HPOS);
-	temp[MAX_LINE_LEN]=0;
-        config.hpos=temp;
-
-	conf.ReadNum("Lines", config.lines, LINES);
-	conf.ReadNum("Linelen", config.linelen, LINELEN);
-	conf.ReadNum("Quiettimeout", config.quiettimeout, QUIETTIMEOUT);
-
-	conf.ReadStr("Colour", temp, COLOUR);
-	temp[MAX_LINE_LEN]=0;
-        config.colour=temp;
-	conf.ReadStr("ControlColour", temp, CONTROLCOLOUR);
-	temp[MAX_LINE_LEN]=0;
-        config.controlcolour=temp;
-
-	conf.ReadNum("Showmessages", config.Showmessages, SHOWMESSAGES);
-	conf.ReadNum("ShowAutoResponseCheck", config.ShowAutoResponseCheck, SHOWAUTORESPONSECHECK);
-	conf.ReadNum("Showlogon", config.Showlogon, SHOWLOGON);
-	conf.ReadNum("DelayPerCharacter", config.DelayPerCharacter, DELAYPERCHARACTER);
-	conf.ReadNum("ShowStatusChange", config.ShowStatusChange, SHOWSTATUSCHANGE);
-	conf.ReadNum("ShadowOffset", config.shadowoffset, SHADOW_OFFSET);
-	conf.ReadNum("OutlineOffset", config.outlineoffset, OUTLINE_OFFSET);
-
-	conf.ReadBool("MarkSecureMessages", config.marksecuremessages, MARKSECUREMESSAGES);
-
-	conf.ReadStr("ShadowColour", temp, SHADOW_COLOUR);
-	temp[MAX_LINE_LEN]=0;
-        config.shadowcolour=temp;
-
-	conf.ReadStr("OutlineColour", temp, OUTLINE_COLOUR);
-	temp[MAX_LINE_LEN]=0;
-        config.outlinecolour=temp;
-
-	conf.ReadStr("ShowInModes", ShowInModesStr, SHOWINMODESSTR);
-        ShowInModesStr[MAX_LINE_LEN]=0;
-	conf.ReadStr("ShowMsgsInModes", ShowMsgsInModesStr, SHOWMSGSINMODESSTR);
-        ShowMsgsInModesStr[MAX_LINE_LEN]=0;
-
-	conf.CloseFile();
-
-    config.showInModes = parseShowInModesStr(ShowInModesStr);
-    config.showMsgsInModes = parseShowInModesStr(ShowMsgsInModesStr);
+    config.showInModes = parseShowInModesStr(showInModes.c_str());
+    config.showMsgsInModes = parseShowInModesStr(showMsgsInModes.c_str());
 
 	setlocale(LC_ALL, "");
 

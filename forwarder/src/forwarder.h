@@ -1,6 +1,10 @@
 #ifndef LICQEMAIL_H
 #define LICQEMAIL_H
 
+#include <string>
+
+#include <licq/userid.h>
+
 class TCPSocket;
 class CUserEvent;
 class LicqSignal;
@@ -9,7 +13,6 @@ class LicqEvent;
 namespace Licq
 {
 class User;
-class UserId;
 }
 
 #define FORWARD_EMAIL 0
@@ -30,10 +33,12 @@ protected:
   char *m_szStatus;
 
   unsigned short m_nSMTPPort;
-  char m_szSMTPHost[256], m_szSMTPTo[256], m_szSMTPFrom[256],
-       m_szSMTPDomain[256];
-  char myUserId[16];
-  unsigned short m_nForwardType;
+  std::string mySmtpHost;
+  std::string mySmtpTo;
+  std::string mySmtpFrom;
+  std::string mySmtpDomain;
+  Licq::UserId myUserId;
+  unsigned m_nForwardType;
 
   TCPSocket *tcp;
 

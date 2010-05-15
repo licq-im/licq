@@ -13,16 +13,17 @@
 #include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
-#include "licq_file.h"
 #include "licq_constants.h"
 #include "licq_socket.h"
 #include "licq_translate.h"
 #include <licq/contactlist/usermanager.h>
+#include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
 
 extern "C" { const char *LP_Version(); }
 
+using std::string;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
@@ -74,8 +75,8 @@ int CLicqForwarder::Run()
   m_nSMTPPort = 25; //getservicebyname("snmp");
   char filename[256];
   sprintf(filename, "%slicq_forwarder.conf", BASE_DIR);
-  CIniFile conf;
-  if (!conf.LoadFile(filename))
+  Licq::IniFile conf(filename);
+  if (!conf.loadFile())
   {
     if(!CreateDefaultConfig())
     {
@@ -83,36 +84,38 @@ int CLicqForwarder::Run()
       return 1;
     }
     gLog.Info("%sA default configuration file has been created: %s\n", L_FORWARDxSTR, filename);
-    conf.LoadFile(filename);
+    conf.loadFile();
   }
-  conf.SetFlags(INI_FxFATAL | INI_FxERROR);
-  conf.SetSection("Forward");
-  conf.ReadNum("Type", m_nForwardType, FORWARD_EMAIL);
+  conf.setSection("Forward");
+  conf.get("Type", m_nForwardType, FORWARD_EMAIL);
 
   switch (m_nForwardType)
   {
     case FORWARD_EMAIL:
-      conf.SetSection("SMTP");
-      conf.ReadStr("Host", m_szSMTPHost);
-      conf.ReadStr("To", m_szSMTPTo);
-      conf.ReadStr("From", m_szSMTPFrom);
-      conf.ReadStr("Domain", m_szSMTPDomain);
+      conf.setSection("SMTP");
+      conf.get("Host", mySmtpHost);
+      conf.get("To", mySmtpTo);
+      conf.get("From", mySmtpFrom);
+      conf.get("Domain", mySmtpDomain);
       break;
     case FORWARD_ICQ:
-      conf.SetSection("ICQ");
-      conf.ReadStr("Uin", myUserId, "");
-      if (myUserId[0] == '\0')
+    {
+      conf.setSection("ICQ");
+      string accountId;
+      conf.get("Uin", accountId, "");
+      if (accountId.empty())
       {
-        gLog.Error("%sInvalid ICQ forward UIN: %s\n", L_FORWARDxSTR, myUserId);
+        gLog.Error("%sInvalid ICQ forward UIN: %s\n", L_FORWARDxSTR, accountId.c_str());
         return 1;
       }
+      myUserId = UserId(accountId, LICQ_PPID);
       break;
+    }
     default:
       gLog.Error("%sInvalid forward type: %d\n", L_FORWARDxSTR, m_nForwardType);
       return 1;
       break;
   }
-  conf.CloseFile();
 
   // Log on if necessary
   if (m_szStatus != NULL)
@@ -330,15 +333,15 @@ bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const CUserEvent* e)
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
       u->getAlias().c_str(), u->accountId().c_str(), szTime, e->Text());
-  unsigned long tag = gProtocolManager.sendMessage(UserId(myUserId, LICQ_PPID), szText, true, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = gProtocolManager.sendMessage(myUserId, szText, true, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
   {
-    gLog.Warn("%sSending message to %s failed.\n", L_FORWARDxSTR, myUserId);
+    gLog.Warn("%sSending message to %s failed.\n", L_FORWARDxSTR, myUserId.toString().c_str());
     return false;
   }
   gLog.Info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR,
-      u->getAlias().c_str(), u->accountId().c_str(), myUserId);
+      u->getAlias().c_str(), u->accountId().c_str(), myUserId.toString().c_str());
   return true;
 }
 
@@ -355,7 +358,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
   // Fill in the strings
   if (!u->isUser())
   {
-    sprintf(szTo, "To: %s <%s>", u->getAlias().c_str(), m_szSMTPTo);
+    sprintf(szTo, "To: %s <%s>", u->getAlias().c_str(), mySmtpTo.c_str());
     sprintf (szFrom, "From: ICQ System Message <support@icq.com>");
     sprintf (szReplyTo, "Reply-To: Mirabilis <support@icq.com>");
   }
@@ -364,7 +367,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
     unsigned long protocolId = u->protocolId();
     {
       Licq::OwnerReadGuard o(protocolId);
-      sprintf(szTo, "To: %s <%s>", o->getAlias().c_str(), m_szSMTPTo);
+      sprintf(szTo, "To: %s <%s>", o->getAlias().c_str(), mySmtpTo.c_str());
     }
     if (protocolId == LICQ_PPID)
       sprintf (szFrom, "From: \"%s\" <%s@pager.icq.com>", u->getAlias().c_str(), u->accountId().c_str());
@@ -407,7 +410,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
 
 
   // Connect to the SMTP server
-  if (!tcp->DestinationSet() && !tcp->connectTo(m_szSMTPHost, m_nSMTPPort))
+  if (!tcp->DestinationSet() && !tcp->connectTo(mySmtpHost.c_str(), m_nSMTPPort))
   {
     char buf[128];
     gLog.Warn("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
@@ -435,7 +438,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
     return false;
   }
 
-  fprintf(fs, "HELO %s\r\n", m_szSMTPDomain);
+  fprintf(fs, "HELO %s\r\n", mySmtpDomain.c_str());
   fgets(fin, 256, fs);
   code = atoi(fin);
   if (code != 250)
@@ -445,7 +448,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
     return false;
   }
 
-  fprintf (fs, "MAIL From: %s\r\n", m_szSMTPFrom);
+  fprintf(fs, "MAIL From: %s\r\n", mySmtpFrom.c_str());
   fgets(fin, 256, fs);
   code = atoi(fin);
   if (code != 250)
@@ -455,7 +458,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
     return false;
   }
 
-  fprintf(fs, "RCPT TO: %s\r\n", m_szSMTPTo);
+  fprintf(fs, "RCPT TO: %s\r\n", mySmtpTo.c_str());
   fgets(fin, 256, fs);
   code = atoi(fin);
   if (code != 250)
@@ -501,7 +504,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
   tcp->CloseConnection();
 
   gLog.Info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR,
-      u->getAlias().c_str(), u->accountId().c_str(), m_szSMTPTo);
+      u->getAlias().c_str(), u->accountId().c_str(), mySmtpTo.c_str());
   return true;
 }
 

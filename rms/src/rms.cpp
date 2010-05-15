@@ -14,10 +14,10 @@
 #include <licq_constants.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
-#include <licq_file.h>
 #include <licq_log.h>
 #include <licq_socket.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/inifile.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 
@@ -187,19 +187,18 @@ void CLicqRMS::Shutdown()
  *-------------------------------------------------------------------------*/
 int CLicqRMS::Run()
 {
-  unsigned short nPort;
+  unsigned nPort;
 
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
 
   char filename[256];
   sprintf(filename, "%slicq_rms.conf", BASE_DIR);
-  CIniFile conf;
-  if (conf.LoadFile(filename))
+  Licq::IniFile conf(filename);
+  if (conf.loadFile())
   {
-    conf.SetSection("RMS");
-    conf.ReadNum("Port", nPort, 0);
-    conf.CloseFile();
+    conf.setSection("RMS");
+    conf.get("Port", nPort, 0);
   }
 
   server = new TCPSocket();

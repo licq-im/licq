@@ -1,6 +1,7 @@
 #ifndef LICQAUTOREPLY_H
 #define LICQAUTOREPLY_H
 
+#include <string>
 
 class CUserEvent;
 class LicqSignal;
@@ -24,7 +25,8 @@ protected:
   int m_nPipe;
   bool m_bExit, m_bEnabled, m_bDelete;
   char *m_szStatus;
-  char m_szProgram[512], m_szArguments[512];
+  std::string myProgram;
+  std::string myArguments;
   bool m_bPassMessage, m_bFailOnExitCode, m_bAbortDeleteOnExitCode,
        m_bSendThroughServer;
 
