@@ -18,7 +18,7 @@
 #include <licq_events.h>
 #include <licq_file.h>
 #include <licq_log.h>
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/pluginmanager.h>
 
 #include "my_xosd.h"
@@ -27,7 +27,9 @@
 
 using namespace std;
 using Licq::User;
+using Licq::UserId;
 using Licq::gPluginManager;
+using Licq::gUserManager;
 
 //#if CVSLICQ==1
 //#warning compiling for licq>=1.2.8
@@ -431,10 +433,6 @@ void ProcessSignal(LicqSignal* s)
     {
     case SIGNAL_UPDATExUSER:
 	{
-
-	    ICQUser *u;
-	    ICQOwner *o;
-
 	    // FIX: we seem to get others logged on messages before
 	    // our own one - so start quiettimeout in this case too
 	    if (!Online)
@@ -452,8 +450,8 @@ void ProcessSignal(LicqSignal* s)
 
             if (want_osd)
 	    {
-        o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-        if (o != NULL)
+        Licq::OwnerReadGuard o(LICQ_PPID);
+        if (o.isLocked())
         {
           status = o->status();
 		    //want_osd=true;
@@ -493,19 +491,17 @@ void ProcessSignal(LicqSignal* s)
 			    want_osd=true;
 			}
 		    }
-
-          gUserManager.DropOwner(o);
         }
 	    }
 
 	    if (want_osd)
 	    {
-        u = gUserManager.fetchUser(s->userId(), LOCK_R);
-		if (u)
-		{
+        Licq::UserReadGuard u(s->userId());
+        if (u.isLocked())
+        {
 		    // user alias as displayed in licq -
 		    // (if no alias known, ICQ number as string returned)
-		    username=u->GetAlias();
+          username = u->getAlias();
 		    notify=u->OnlineNotify();
 		    ignore=u->InvisibleList() || u->IgnoreList();
           status = u->status();
@@ -526,17 +522,14 @@ void ProcessSignal(LicqSignal* s)
 
 			if (e == NULL) // event not found
 			{
-              gLog.Warn("%sEvent for user %s not found\n", L_WARNxSTR, USERID_TOSTR(s->userId()));
+              gLog.Warn("%sEvent for user %s not found\n", L_WARNxSTR, s->userId().toString().c_str());
                             want_osd=false;
 			}
 		    }
-
-		    // free user object as we no longer need it
-		    gUserManager.DropUser(u);
 		}
 		else
 		{
-          gLog.Warn("%sUser %s not found\n", L_WARNxSTR, USERID_TOSTR(s->userId()));
+          gLog.Warn("%sUser %s not found\n", L_WARNxSTR, s->userId().toString().c_str());
 		    want_osd=false;
 		}
 	    }
