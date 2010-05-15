@@ -18,17 +18,18 @@
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_file.h"
-#include "licq_user.h"
 #include "licq_constants.h"
-#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
 
 extern "C" { const char *LP_Version(); }
 
 using namespace std;
+using Licq::UserId;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
+using Licq::gUserManager;
 
 const char L_AUTOREPxSTR[]  = "[RPL] ";
 const unsigned short SUBJ_CHARS = 20;
@@ -215,15 +216,19 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
 
 void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
 {
-  const LicqUser* u = gUserManager.fetchUser(userId);
-  if (u == NULL)
-  {
-    gLog.Warn("%sInvalid user id received from daemon (%s).\n", L_AUTOREPxSTR, USERID_TOSTR(userId));
-    return;
-  }
+  const CUserEvent* e;
 
-  const CUserEvent* e = u->EventPeekId(nId);
-  gUserManager.DropUser(u);
+  {
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+    {
+      gLog.Warn("%sInvalid user id received from daemon (%s).\n",
+          L_AUTOREPxSTR, userId.toString().c_str());
+      return;
+    }
+
+    e = u->EventPeekId(nId);
+  }
 
   if (e == NULL)
   {
@@ -234,9 +239,8 @@ void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
   bool r = autoReplyEvent(userId, e);
   if (m_bDelete && r)
   {
-    LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
+    Licq::UserWriteGuard u(userId);
     u->EventClearId(nId);
-    gUserManager.DropUser(u);
   }
 }
 
@@ -246,9 +250,10 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
   char buf[4096];
   char *tmp;
   sprintf(buf, "%s ", m_szProgram);
-  const LicqUser* u = gUserManager.fetchUser(userId);
-  tmp = u->usprintf(m_szArguments);
-  gUserManager.DropUser(u);
+  {
+    Licq::UserReadGuard u(userId);
+    tmp = u->usprintf(m_szArguments);
+  }
   szCommand = new char[strlen(buf) + strlen(tmp) + 1];
   strcpy(szCommand, buf);
   strcat(szCommand, tmp);
@@ -291,21 +296,21 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
   delete []szText;
   delete [] szCommand;
 
-  u = gUserManager.fetchUser(userId);
-  if (u == NULL) return false;
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
+    return false;
 
   if (tag == 0)
   {
     gLog.Warn("%sSending message to %s (%s) failed.\n", L_AUTOREPxSTR,
-        u->GetAlias(), u->accountId().c_str());
+        u->getAlias().c_str(), u->accountId().c_str());
   }
   else
   {
-    gLog.Info("%sSent autoreply to %s (%s).\n", L_AUTOREPxSTR, u->GetAlias(),
-        u->accountId().c_str());
+    gLog.Info("%sSent autoreply to %s (%s).\n", L_AUTOREPxSTR,
+        u->getAlias().c_str(), u->accountId().c_str());
   }
 
-  gUserManager.DropUser(u);
   return tag != 0;
 }
 
