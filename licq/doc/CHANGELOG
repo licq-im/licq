@@ -25,6 +25,7 @@ o Qt4-Gui: User count in group header was wrong if group contained ignored users
 o Qt4-Gui: Added confirmation dialog when removing an account 
 o Qt4-Gui: Shift+Return can be used to make new line in single line chat mode 
 o Qt4-Gui: Added shortcut to chat dialog for opening next unread message
+o Qt4-Gui: Renaming groups from contact list did not save the new group name
 
 
 New in 1.3.8
