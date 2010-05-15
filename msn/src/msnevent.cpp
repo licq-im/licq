@@ -9,9 +9,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 
 using namespace std;
+using Licq::UserId;
 
 CMSNDataEvent::CMSNDataEvent(CMSN *p)
 {
@@ -143,7 +144,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	  CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
 					       m_nBaseId-3, nIdentifier, nAckId,
 					       nDataSize[1], nDataSize[0]);
-	  m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
+          m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
 	  m_eState = STATE_GOT_SID;
 	}
       }
@@ -157,7 +158,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
 					   m_nBaseId-2, nIdentifier, nAckId,
 					   nDataSize[1], nDataSize[0]);
-      m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
+      m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
       m_eState = STATE_RECV_DATA;
 
       gLog.Info("%sDisplay Picture: Got data start message (%ld)\n",
@@ -218,19 +219,21 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	close(m_nFileDesc);
 	m_nFileDesc = -1;
 	m_eState = STATE_FINISHED;
-	ICQUser *u = gUserManager.FetchUser(m_strId.c_str(), MSN_PPID, LOCK_W);
-	if (u)
-	{
-	  u->SetPicturePresent(true);
-	  gUserManager.DropUser(u);
-          m_pMSN->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+
+        {
+          Licq::UserWriteGuard u(UserId(m_strId, MSN_PPID));
+          if (u.isLocked())
+          {
+            u->SetPicturePresent(true);
+            m_pMSN->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+          }
         }
 
 	// Ack that we got the data
 	CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
 					     m_nBaseId-1, nIdentifier, nAckId,
 					     nDataSize[1], nDataSize[0]);
-	m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
+        m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
 
         // Send a bye command
         CMSNPacket *pBye = new CPS_MSNP2PBye(m_strId.c_str(),
@@ -238,7 +241,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 					     m_strCallId.c_str(),
 	  				     m_nBaseId, nAckId,
 					     nDataSize[1], nDataSize[0]);
-        m_pMSN->Send_SB_Packet(Licq::User::makeUserId(m_strId, MSN_PPID), pBye, m_nSocketDesc);
+        m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pBye, m_nSocketDesc);
 	return 0;
       }
 

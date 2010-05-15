@@ -27,7 +27,7 @@
 #include <list>
 #include <vector>
 
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
 #include <licq/oneventmanager.h>
 
@@ -37,6 +37,7 @@ using Licq::Conversation;
 using Licq::OnEventManager;
 using Licq::gConvoManager;
 using Licq::gOnEventManager;
+using Licq::gUserManager;
 
 
 void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
@@ -57,19 +58,20 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       packet->SkipParameter(); // Seq
       packet->SkipParameter(); // current user to add
       packet->SkipParameter(); // total users in conversation
-      UserId userId = LicqUser::makeUserId(packet->GetParameter(), MSN_PPID);
+      UserId userId(packet->GetParameter(), MSN_PPID);
 
       bool newUser;
-      LicqUser* u = gUserManager.fetchUser(userId, LOCK_R, true, &newUser);
-      if (newUser)
       {
-        // MSN uses UTF-8 so we need to set this for all new users automatically
-        u->SetEnableSave(false);
-        u->SetUserEncoding("UTF-8");
-        u->SetEnableSave(true);
-        u->SaveLicqInfo();
+        Licq::UserWriteGuard u(userId, true, &newUser);
+        if (newUser)
+        {
+          // MSN uses UTF-8 so we need to set this for all new users automatically
+          u->SetEnableSave(false);
+          u->SetUserEncoding("UTF-8");
+          u->SetEnableSave(true);
+          u->SaveLicqInfo();
+        }
       }
-      gUserManager.DropUser(u);
 
       // Add the user to the conversation
       Conversation* convo = gConvoManager.getFromSocket(nSock);
@@ -82,7 +84,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 
       gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
 
-      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, USERID_TOSTR(userId));
+      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
     }
     else if (strCmd == "ANS")
     {
@@ -108,11 +110,10 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         packet->SkipRN();
         packet->SkipRN();
         packet->SkipRN();
-        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-        if (u)
+        Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
+        if (u.isLocked())
         {
           u->setIsTyping(true);
-          gUserManager.DropUser(u);
           gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
               USER_TYPING, u->id(), SocketToCID(nSock)));
         }
@@ -129,12 +130,11 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         szMsg[i] = '\0';
         
         CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE, time(0), 0, SocketToCID(nSock));
-        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-        if (u)
+        Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
+        if (u.isLocked())
           u->setIsTyping(false);
-        if (gLicqDaemon->AddUserEvent(u, e))
-          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
-        gUserManager.DropUser(u);
+        if (gLicqDaemon->AddUserEvent(*u, e))
+          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
       }
       else if (strncmp(strType.c_str(), "text/x-msmsgsinvite", 19) == 0)
       {
@@ -207,7 +207,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
             convo->getUsers(users);
             BOOST_FOREACH(const UserId& userId, users)
             {
-              LicqUserWriteGuard u(userId);
+              Licq::UserWriteGuard u(userId);
               if (!u.isLocked())
                 continue;
 
@@ -219,13 +219,12 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           }
           else
           {
-            LicqUser* u = gUserManager.fetchUser(e->userId(), LOCK_W);
-            if (u != NULL)
+            Licq::UserWriteGuard u(e->userId());
+            if (u.isLocked())
             {
-              e->m_pUserEvent->AddToHistory(u, D_SENDER);
+              e->m_pUserEvent->AddToHistory(*u, D_SENDER);
               u->SetLastSentEvent();
-              gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, u);
-              gUserManager.DropUser(u);
+              gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
             }
           }
           gLicqDaemon->m_sStats[STATS_EventsSent].Inc();
@@ -254,7 +253,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       if (pStart)
       {
 	pStart->m_bConnecting = true;
-        string accountId = LicqUser::getUserAccountId(pStart->userId);
+        string accountId = pStart->userId.accountId();
         pReply = new CPS_MSNCall(accountId.c_str());
 	pStart->m_nSeq = pReply->Sequence();
       }
@@ -262,8 +261,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     }
     else if (strCmd == "JOI")
     {
-      UserId userId = LicqUser::makeUserId(packet->GetParameter(), MSN_PPID);
-      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, USERID_TOSTR(userId));
+      UserId userId(packet->GetParameter(), MSN_PPID);
+      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
 
       SStartMessage *pStart = 0;
       StartList::iterator it;
@@ -307,8 +306,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     else if (strCmd == "BYE")
     {
       // closed the window and connection
-      UserId userId = LicqUser::makeUserId(packet->GetParameter(), MSN_PPID);
-      gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, USERID_TOSTR(userId));
+      UserId userId(packet->GetParameter(), MSN_PPID);
+      gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, userId.toString().c_str());
 
       gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
@@ -319,7 +318,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       int nThisSock = -1;
 
       {
-        LicqUserWriteGuard u(userId);
+        Licq::UserWriteGuard u(userId);
         if (u.isLocked())
         {
           u->clearNormalSocketDesc();
@@ -370,7 +369,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     
     if (pReply)
     {
-      UserId userId = LicqUser::makeUserId(szUser, MSN_PPID);
+      UserId userId(szUser, MSN_PPID);
       Send_SB_Packet(userId, pReply, nSock);
     }
   }
@@ -383,7 +382,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   int nSock = nSocket;
   if (nSocket == -1)
   {
-    LicqUserReadGuard u(userId);
+    Licq::UserReadGuard u(userId);
     if (!u.isLocked())
       return;
     nSock = u->normalSocketDesc();
@@ -395,7 +394,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   TCPSocket *sock = static_cast<TCPSocket *>(s);
   if (!sock->SendRaw(p->getBuffer()))
   {
-    gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, USERID_TOSTR(userId));
+    gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, userId.toString().c_str());
 
     gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
@@ -404,7 +403,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
       convo->removeUser(userId);
 
     {
-      LicqUserWriteGuard u(userId);
+      Licq::UserWriteGuard u(userId);
       if (u.isLocked())
         u->clearNormalSocketDesc();
     }
@@ -477,7 +476,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   gSocketMan.AddSocket(sock);
 
   {
-    LicqUserWriteGuard u(pStart->userId);
+    Licq::UserWriteGuard u(pStart->userId);
     if (u.isLocked())
     {
       if (pStart->m_bDataConnection)
@@ -496,7 +495,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
 bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionId,
     const string& strCookie, const string& strUser)
 {
-  UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
+  UserId userId(strUser, MSN_PPID);
   size_t sep = strServer.rfind(':');
   string host;
   int port;
@@ -529,21 +528,20 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   gSocketMan.AddSocket(sock);
   CMSNPacket *pReply = new CPS_MSN_SBAnswer(strSessionId.c_str(),
     strCookie.c_str(), m_szUserName);
-  bool bNewUser = false;
-  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W, true, &bNewUser);
-  if (!bNewUser)
+
   {
+    bool newUser = false;
+    Licq::UserWriteGuard u(userId, true, &newUser);
     u->SetSocketDesc(sock);
+    if (newUser)
+    {
+      u->SetEnableSave(false);
+      u->SetUserEncoding("UTF-8");
+      u->SetEnableSave(true);
+      u->SaveLicqInfo();
+    }
   }
-  else
-  {
-    u->SetEnableSave(false);
-    u->SetUserEncoding("UTF-8");
-    u->SetSocketDesc(sock);
-    u->SetEnableSave(true);
-    u->SaveLicqInfo();
-  }
-  gUserManager.DropUser(u);
+
   gSocketMan.DropSocket(sock);
 
   Send_SB_Packet(userId, pReply, nSocket);
@@ -553,10 +551,8 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
 
 void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
 {
-  UserId userId = LicqUser::makeUserId(_szUser, MSN_PPID);
-  //const ICQUser* u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
-  //if (!u) return;
-  //gUserManager.DropUser(u);
+  UserId userId(_szUser, MSN_PPID);
+  //if (!gUserManager.userExists(userId)) return;
 
   // Must connect to the SB and call the user
   CMSNPacket *pSB = new CPS_MSNXfr();
@@ -658,7 +654,7 @@ void CMSN::killConversation(int sock)
       convo->removeUser(userId);
 
       // Clear socket from user if it's still is associated with this conversation
-      LicqUserWriteGuard u(userId);
+      Licq::UserWriteGuard u(userId);
       if (u.isLocked() && u->normalSocketDesc() == sock)
         u->clearNormalSocketDesc();
     }
