@@ -11,13 +11,13 @@
 #include <cerrno>
 
 #include "console.h"
-#include "licq_file.h"
 #include "licq_filetransfer.h"
 #include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include <licq/contactlist/user.h>
 #include <licq/icqcodes.h>
+#include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
 
@@ -141,50 +141,50 @@ CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
   // status window text and colors.. that'd be cool
   char szFileName[MAX_FILENAME_LEN];
   sprintf(szFileName, "%slicq_console.conf", BASE_DIR);
-  CIniFile licqConf;
-  if(!licqConf.LoadFile(szFileName))
+  Licq::IniFile conf(szFileName);
+  if (!conf.loadFile())
   {
     FILE *f = fopen(szFileName, "w");
     fprintf(f, "[appearance]");
     fclose(f);
-    licqConf.LoadFile(szFileName);
+    conf.loadFile();
   }
 
-  licqConf.SetSection("appearance");
+  conf.setSection("appearance");
 
-  licqConf.ReadBool("ShowOfflineUsers", m_bShowOffline, true);
-  licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
-  unsigned short currentGroup, groupType;
-  licqConf.ReadNum("CurrentGroup", currentGroup, 0);
-  licqConf.ReadNum("GroupType", groupType, 0);
+  conf.get("ShowOfflineUsers", m_bShowOffline, true);
+  conf.get("ShowDividers", m_bShowDividers, true);
+  unsigned currentGroup, groupType;
+  conf.get("CurrentGroup", currentGroup, 0);
+  conf.get("GroupType", groupType, 0);
   myCurrentGroup = currentGroup + groupType * SystemGroupOffset;
-  licqConf.ReadNum("ColorOnline", m_nColorOnline, 5);
-  licqConf.ReadNum("ColorAway", m_nColorAway, 0);
-  licqConf.ReadNum("ColorOffline", m_nColorOffline, 1);
-  licqConf.ReadNum("ColorNew", m_nColorNew, 14);
-  licqConf.ReadNum("ColorGroupList", m_nColorGroupList, 13);
-  licqConf.ReadNum("ColorQuery", m_nColorQuery, 8);
-  licqConf.ReadNum("ColorInfo", m_nColorInfo, 13);
-  licqConf.ReadNum("ColorError", m_nColorError, 9);
-  licqConf.ReadStr("OnlineFormat", m_szOnlineFormat, "%a");
-  licqConf.ReadStr("OtherOnlineFormat", m_szOtherOnlineFormat, "%a [%S]");
-  licqConf.ReadStr("AwayFormat", m_szAwayFormat, "%a [%S]");
-  licqConf.ReadStr("OfflineFormat", m_szOfflineFormat, "%a");
-  licqConf.ReadStr("CommandCharacter", m_szCommandChar, "/");
-  licqConf.ReadNum("Backspace", m_nBackspace, KEY_BACKSPACE);
+  conf.get("ColorOnline", m_nColorOnline, 5);
+  conf.get("ColorAway", m_nColorAway, 0);
+  conf.get("ColorOffline", m_nColorOffline, 1);
+  conf.get("ColorNew", m_nColorNew, 14);
+  conf.get("ColorGroupList", m_nColorGroupList, 13);
+  conf.get("ColorQuery", m_nColorQuery, 8);
+  conf.get("ColorInfo", m_nColorInfo, 13);
+  conf.get("ColorError", m_nColorError, 9);
+  conf.get("OnlineFormat", myOnlineFormat, "%a");
+  conf.get("OtherOnlineFormat", myOtherOnlineFormat, "%a [%S]");
+  conf.get("AwayFormat", myAwayFormat, "%a [%S]");
+  conf.get("OfflineFormat", myOfflineFormat, "%a");
+  conf.get("CommandCharacter", myCommandChar, "/");
+  conf.get("Backspace", m_nBackspace, KEY_BACKSPACE);
 
-  if (licqConf.SetSection("macros"))
+  if (conf.setSection("macros"))
   {
     char sz[32];
-    unsigned short n = 0;
-    licqConf.ReadNum("NumMacros", n, 0);
+    unsigned n = 0;
+    conf.get("NumMacros", n, 0);
     for (unsigned short i = 1; i <= n; i++)
     {
       SMacro *mac = new SMacro;
       sprintf(sz, "Macro.%d", i);
-      licqConf.ReadStr(sz, mac->szMacro);
+      conf.get(sz, mac->macro);
       sprintf(sz, "Command.%d", i);
-      licqConf.ReadStr(sz, mac->szCommand);
+      conf.get(sz, mac->command);
       listMacros.push_back(mac);
     }
   }
@@ -213,11 +213,11 @@ CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
   aVariables[i++].pData = &m_cColorQuery;
   aVariables[i++].pData = &m_cColorInfo;
   aVariables[i++].pData = &m_cColorError;
-  aVariables[i++].pData = m_szOnlineFormat;
-  aVariables[i++].pData = m_szOtherOnlineFormat;
-  aVariables[i++].pData = m_szAwayFormat;
-  aVariables[i++].pData = m_szOfflineFormat;
-  aVariables[i++].pData = m_szCommandChar;
+  aVariables[i++].pData = &myOnlineFormat;
+  aVariables[i++].pData = &myOtherOnlineFormat;
+  aVariables[i++].pData = &myAwayFormat;
+  aVariables[i++].pData = &myOfflineFormat;
+  aVariables[i++].pData = &myCommandChar;
 
   m_bExit = false;
   cdkUserList = 0;
@@ -393,44 +393,42 @@ void CLicqConsole::DoneOptions()
 {
   char szFileName[MAX_FILENAME_LEN];
   sprintf(szFileName, "%slicq_console.conf", BASE_DIR);
-  CIniFile licqConf(INI_FxALLOWxCREATE);
-  if(!licqConf.LoadFile(szFileName))
-    return;
+  Licq::IniFile conf(szFileName);
+  conf.loadFile();
 
-  licqConf.SetSection("appearance");
-  licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
-  licqConf.WriteBool("ShowDividers", m_bShowDividers);
-  licqConf.WriteNum("CurrentGroup", myCurrentGroup % SystemGroupOffset);
-  licqConf.WriteNum("GroupType", myCurrentGroup / SystemGroupOffset);
-  licqConf.WriteNum("ColorOnline", m_nColorOnline);
-  licqConf.WriteNum("ColorAway", m_nColorAway);
-  licqConf.WriteNum("ColorOffline", m_nColorOffline);
-  licqConf.WriteNum("ColorNew", m_nColorNew);
-  licqConf.WriteNum("ColorGroupList", m_nColorGroupList);
-  licqConf.WriteNum("ColorQuery", m_nColorQuery);
-  licqConf.WriteNum("ColorInfo", m_nColorInfo);
-  licqConf.WriteNum("ColorError", m_nColorError);
-  licqConf.WriteStr("OnlineFormat", m_szOnlineFormat);
-  licqConf.WriteStr("OtherOnlineFormat", m_szOtherOnlineFormat);
-  licqConf.WriteStr("AwayFormat", m_szAwayFormat);
-  licqConf.WriteStr("OfflineFormat", m_szOfflineFormat);
-  licqConf.WriteStr("CommandCharacter", m_szCommandChar);
-  licqConf.WriteNum("Backspace", (unsigned long)m_nBackspace);
+  conf.setSection("appearance");
+  conf.set("ShowOfflineUsers", m_bShowOffline);
+  conf.set("ShowDividers", m_bShowDividers);
+  conf.set("CurrentGroup", myCurrentGroup % SystemGroupOffset);
+  conf.set("GroupType", myCurrentGroup / SystemGroupOffset);
+  conf.set("ColorOnline", m_nColorOnline);
+  conf.set("ColorAway", m_nColorAway);
+  conf.set("ColorOffline", m_nColorOffline);
+  conf.set("ColorNew", m_nColorNew);
+  conf.set("ColorGroupList", m_nColorGroupList);
+  conf.set("ColorQuery", m_nColorQuery);
+  conf.set("ColorInfo", m_nColorInfo);
+  conf.set("ColorError", m_nColorError);
+  conf.set("OnlineFormat", myOnlineFormat);
+  conf.set("OtherOnlineFormat", myOtherOnlineFormat);
+  conf.set("AwayFormat", myAwayFormat);
+  conf.set("OfflineFormat", myOfflineFormat);
+  conf.set("CommandCharacter", myCommandChar);
+  conf.set("Backspace", m_nBackspace);
 
-  licqConf.SetSection("macros");
+  conf.setSection("macros");
   char sz[32];
   unsigned short i = 1;
-  licqConf.WriteNum("NumMacros", (unsigned short)listMacros.size());
+  conf.set("NumMacros", (unsigned short)listMacros.size());
   for (MacroList::iterator iter = listMacros.begin(); iter != listMacros.end(); iter++, i++)
   {
     sprintf(sz, "Macro.%d", i);
-    licqConf.WriteStr(sz, (*iter)->szMacro);
+    conf.set(sz, (*iter)->macro);
     sprintf(sz, "Command.%d", i);
-    licqConf.WriteStr(sz, (*iter)->szCommand);
+    conf.set(sz, (*iter)->command);
   }
 
-  licqConf.FlushFile();
-  licqConf.CloseFile();
+  conf.writeFile();
 }
 
 /*---------------------------------------------------------------------------
@@ -1214,11 +1212,11 @@ void CLicqConsole::InputCommand(int cIn)
       szIn[nPos] = '\0';
       char *szArg = strchr(szIn, ' ');
       unsigned short nArgPos = 0;
-      if (szIn[0] == m_szCommandChar[0] && szArg == NULL)
+      if (szIn[0] == myCommandChar[0] && szArg == NULL)
       { // Command completion
         TabCommand(szIn, sTabCompletion);
       }
-      else if (szIn[0] != m_szCommandChar[0])
+      else if (szIn[0] != myCommandChar[0])
       { // User completion
         szArg = NULL;
         nArgPos = 0;
@@ -1236,7 +1234,7 @@ void CLicqConsole::InputCommand(int cIn)
         for (unsigned short i = 0; i < NUM_COMMANDS; i++)
         {
           char szTempCmd[20];
-          snprintf(szTempCmd, 20, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+          snprintf(szTempCmd, 20, "%c%s", myCommandChar[0], aCommands[i].szName);
           if (strncasecmp(szIn, szTempCmd, strlen(szIn)) == 0)
           {
             if (!aCommands[i].fProcessTab)
@@ -1346,7 +1344,7 @@ void CLicqConsole::InputCommand(int cIn)
       m_lCmdHistoryIter = m_lCmdHistory.end();
 
       bool valid = true;
-      if (szIn[0] != m_szCommandChar[0])
+      if (szIn[0] != myCommandChar[0])
       {
         valid = ParseMacro(szIn);
       }
@@ -1368,7 +1366,7 @@ void CLicqConsole::InputCommand(int cIn)
         for (i = 0; i < NUM_COMMANDS; i++)
         {
           char szTempCmd[20];
-          snprintf(szTempCmd, 20, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+          snprintf(szTempCmd, 20, "%c%s", myCommandChar[0], aCommands[i].szName);
 
           if (strncasecmp(szIn, szTempCmd, strlen(szIn)) == 0)
           {
@@ -1431,9 +1429,9 @@ bool CLicqConsole::ParseMacro(char *szMacro)
   MacroList::iterator iter;
   for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
   {
-    if (strcmp((*iter)->szMacro, szMacro) == 0)
+    if ((*iter)->macro == szMacro)
     {
-      sprintf(szMacro, "%c%s", m_szCommandChar[0], (*iter)->szCommand);
+      sprintf(szMacro, "%c%s", myCommandChar[0], (*iter)->command.c_str());
       break;
     }
   }

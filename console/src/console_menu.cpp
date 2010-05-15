@@ -316,11 +316,11 @@ void CLicqConsole::MenuDefine(char *szArg)
   {
     for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
     {
-      if (strcmp((*iter)->szMacro, szArg) == 0)
+      if ((*iter)->macro == szArg)
       {
         winMain->wprintf("%C%AErased macro \"%s -> %s\"\n",
          m_cColorInfo->nColor, m_cColorInfo->nAttr,
-         (*iter)->szMacro, (*iter)->szCommand);
+         (*iter)->macro.c_str(), (*iter)->command.c_str());
         delete *iter;
 #undef erase
         listMacros.erase(iter);
@@ -339,7 +339,7 @@ void CLicqConsole::MenuDefine(char *szArg)
   // See if this is a double macro definition
   for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
   {
-    if (strcmp((*iter)->szMacro, szArg) == 0)
+    if ((*iter)->macro == szArg)
     {
       delete *iter;
 #undef erase
@@ -350,13 +350,13 @@ void CLicqConsole::MenuDefine(char *szArg)
 
   // Set the macro
   SMacro *macro = new SMacro;
-  strcpy(macro->szMacro, szArg);
-  strcpy(macro->szCommand, szCmd);
+  macro->macro = szArg;
+  macro->command = szCmd;
   listMacros.push_back(macro);
 
   winMain->wprintf("%A%CAdded macro \"%s -> %s\"\n",
    m_cColorInfo->nAttr, m_cColorInfo->nColor,
-   macro->szMacro, macro->szCommand);
+      macro->macro.c_str(), macro->command.c_str());
 
   DoneOptions();
 }
@@ -1013,7 +1013,7 @@ void CLicqConsole::MenuSet(char *_szArg)
       return;
     }
     szValue[strlen(szValue) - 1] = '\0';
-    strncpy((char *)aVariables[nVariable].pData, &szValue[1], 30);
+    *((string*)aVariables[nVariable].pData) = &szValue[1];
     break;
 
   case INT:

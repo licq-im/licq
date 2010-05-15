@@ -49,8 +49,8 @@ struct SScrollUser
 
 struct SMacro
 {
-  char szMacro[32];
-  char szCommand[128];
+  std::string macro;
+  std::string command;
 };
 typedef std::list<SMacro*> MacroList;
 
@@ -84,17 +84,17 @@ protected:
 
   // Set'able variables
   bool m_bShowOffline, m_bShowDividers;
-  unsigned short m_nColorOnline, m_nColorOffline, m_nColorAway, m_nColorNew,
+  unsigned m_nColorOnline, m_nColorOffline, m_nColorAway, m_nColorNew,
     m_nColorGroupList, m_nColorQuery, m_nColorInfo, m_nColorError;
   const struct SColorMap *m_cColorOnline, *m_cColorOffline,
                    *m_cColorAway, *m_cColorGroupList, *m_cColorNew,
                    *m_cColorQuery, *m_cColorInfo, *m_cColorError;
-  char m_szOnlineFormat[30];
-  char m_szOtherOnlineFormat[30];
-  char m_szAwayFormat[30];
-  char m_szOfflineFormat[30];
-  char m_szCommandChar[30];
-  short m_nBackspace;
+  std::string myOnlineFormat;
+  std::string myOtherOnlineFormat;
+  std::string myAwayFormat;
+  std::string myOfflineFormat;
+  std::string myCommandChar;
+  int m_nBackspace;
 
   int myCurrentGroup;
   unsigned short m_nCon;

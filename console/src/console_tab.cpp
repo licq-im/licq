@@ -25,7 +25,7 @@ void CLicqConsole::TabCommand(char *_szPartialMatch,
   for (unsigned short i = 0; i < NUM_COMMANDS; i++)
   {
     char szTempCmd[20];
-    snprintf(szTempCmd, 20, "%c%s", m_szCommandChar[0], aCommands[i].szName);
+    snprintf(szTempCmd, 20, "%c%s", myCommandChar[0], aCommands[i].szName);
     if (strncasecmp(_szPartialMatch, szTempCmd, nLen) == 0)
     {
       if (szMatch == 0)

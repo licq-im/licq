@@ -254,7 +254,7 @@ void CLicqConsole::PrintVariable(unsigned short nVar)
     break;
 
   case STRING:
-    winMain->wprintf("\"%s\"\n", (char *)aVariables[nVar].pData);
+    winMain->wprintf("\"%s\"\n", ((string*)aVariables[nVar].pData)->c_str());
     break;
 
   case COLOR:
@@ -306,27 +306,27 @@ void CLicqConsole::CreateUserList()
 
     if (status & User::InvisibleStatus)
     {
-      szTmp = pUser->usprintf(m_szOtherOnlineFormat);
+      szTmp = pUser->usprintf(myOtherOnlineFormat.c_str());
       s->color = m_cColorOnline;
     }
     else if (status == User::OfflineStatus)
     {
-      szTmp = pUser->usprintf(m_szOfflineFormat);
+      szTmp = pUser->usprintf(myOfflineFormat.c_str());
       s->color = m_cColorOffline;
     }
     else if (status & User::AwayStatuses)
     {
-      szTmp = pUser->usprintf(m_szAwayFormat);
+      szTmp = pUser->usprintf(myAwayFormat.c_str());
       s->color = m_cColorAway;
     }
     else if (status & User::FreeForChatStatus)
     {
-      szTmp = pUser->usprintf(m_szOtherOnlineFormat);
+      szTmp = pUser->usprintf(myOtherOnlineFormat.c_str());
       s->color = m_cColorOnline;
     }
     else
     {
-      szTmp = pUser->usprintf(m_szOnlineFormat);
+      szTmp = pUser->usprintf(myOnlineFormat.c_str());
       s->color = m_cColorOnline;
     }
 
@@ -488,7 +488,7 @@ void CLicqConsole::PrintHelp()
   for (unsigned short i = 0; i < NUM_COMMANDS; i++)
   {
     waddch(winMain->Win(), ACS_VLINE);
-    winMain->wprintf(aCommands[i].szHelp, m_szCommandChar[0]);
+    winMain->wprintf(aCommands[i].szHelp, myCommandChar[0]);
     PrintBoxRight(48);
   }
 
@@ -854,7 +854,7 @@ void CLicqConsole::PrintMacros()
     winMain->wprintf("%A%C%-10s %Z->%A %-19s",
         A_BOLD,
         COLOR_WHITE,
-        (*iter)->szMacro, A_BOLD, A_BOLD, (*iter)->szCommand);
+        (*iter)->macro.c_str(), A_BOLD, A_BOLD, (*iter)->command.c_str());
     PrintBoxRight(40);
   }
 
