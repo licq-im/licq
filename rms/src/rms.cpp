@@ -17,13 +17,15 @@
 #include <licq_file.h>
 #include <licq_log.h>
 #include <licq_socket.h>
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 
 using namespace std;
+using Licq::UserId;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
+using Licq::gUserManager;
 
 extern "C" { const char *LP_Version(); }
 
@@ -363,9 +365,9 @@ void CLicqRMS::ProcessSignal(LicqSignal* s)
   case SIGNAL_UPDATExUSER:
     if (s->SubSignal() == USER_STATUS)
     {
-        LicqUser* u = gUserManager.fetchUser(s->userId(), LOCK_R);
-      if (u)
-      {
+        Licq::UserReadGuard u(s->userId());
+        if (u.isLocked())
+        {
         ClientList::iterator iter;
         for (iter = clients.begin(); iter != clients.end(); iter++)
         {
@@ -379,15 +381,14 @@ void CLicqRMS::ProcessSignal(LicqSignal* s)
             fflush((*iter)->fs);
           }
         }
-        gUserManager.DropUser(u);
       }
       break;
     }
     else if (s->SubSignal() == USER_EVENTS)
     {
-        LicqUser* u = gUserManager.fetchUser(s->userId(), LOCK_R);
-      if (u)
-      {
+        Licq::UserReadGuard u(s->userId());
+        if (u.isLocked())
+        {
         ClientList::iterator iter;
         for (iter = clients.begin(); iter != clients.end(); iter++)
         {
@@ -401,7 +402,6 @@ void CLicqRMS::ProcessSignal(LicqSignal* s)
             fflush((*iter)->fs);
           }
         }
-        gUserManager.DropUser(u);
       }
     }
   case SIGNAL_UPDATExLIST:
@@ -505,7 +505,7 @@ unsigned long CRMSClient::GetProtocol(const char *szData)
  *-------------------------------------------------------------------------*/
 void CRMSClient::ParseUser(const char *szData)
 {
-  myUserId = USERID_NONE;
+  myUserId = UserId();
   string strData(szData);
   string::size_type nPos= strData.find_last_of(".");
   if (nPos == string::npos)
@@ -514,7 +514,7 @@ void CRMSClient::ParseUser(const char *szData)
     gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      myUserId = LicqUser::makeUserId(data_arg, plugin->getProtocolId());
+      myUserId = UserId(data_arg, plugin->getProtocolId());
       if (gUserManager.userExists(myUserId))
         break;
     }
@@ -523,7 +523,7 @@ void CRMSClient::ParseUser(const char *szData)
   {
     string strId(strData, 0, strData.find_last_of("."));
     string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
-    myUserId = LicqUser::makeUserId(strId, GetProtocol(strProtocol.c_str()));
+    myUserId = UserId(strId, GetProtocol(strProtocol.c_str()));
   }
 }
 
@@ -634,17 +634,16 @@ int CRMSClient::StateMachine()
     }
     case STATE_PASSWORD:
     {
-      ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-      if (o == NULL)
+      Licq::OwnerReadGuard o(LICQ_PPID);
+      if (!o.isLocked())
         return -1;
 
-      bool ok = (strcmp(m_szCheckId, o->IdString()) == 0 &&
+      bool ok = (o->accountId() == m_szCheckId &&
          (strcmp(o->Password(), data_line) == 0));
       free(m_szCheckId);
       m_szCheckId = 0;
       if (!ok)
       {
-        gUserManager.DropOwner(o);
         gLog.Info("%sClient failed validation from %s.\n", L_RMSxSTR,
             sock.getRemoteIpString().c_str());
         fprintf(fs, "%d Invalid ID/Password.\n", CODE_INVALID);
@@ -654,9 +653,8 @@ int CRMSClient::StateMachine()
       gLog.Info("%sClient validated from %s.\n", L_RMSxSTR,
           sock.getRemoteIpString().c_str());
       fprintf(fs, "%d Hello %s.  Type HELP for assistance.\n", CODE_HELLO,
-         o->GetAlias());
+         o->getAlias().c_str());
       fflush(fs);
-      gUserManager.DropOwner(o);
       m_nState = STATE_COMMAND;
       break;
     }
@@ -749,34 +747,32 @@ int CRMSClient::Process_INFO()
   NEXT_WORD(data_arg);
   unsigned long nPPID = GetProtocol(data_arg);
 
-  UserId userId = LicqUser::makeUserId(szId, nPPID);
+  UserId userId = UserId(szId, nPPID);
 
   //XXX Handle the case when we have the owner
   if (szId == 0)
     m_nUin = strtoul(gUserManager.OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
 
   // Print the user info
-  const LicqUser* u = gUserManager.fetchUser(userId);
-  if (u == NULL)
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
 
-  fprintf(fs, "%d %s Alias: %s\n", CODE_USERxINFO, u->IdString(),
-    u->GetAlias());
-  fprintf(fs, "%d %s Status: %s\n", CODE_USERxINFO, u->IdString(),
+  fprintf(fs, "%d %s Alias: %s\n", CODE_USERxINFO, u->accountId().c_str(),
+      u->getAlias().c_str());
+  fprintf(fs, "%d %s Status: %s\n", CODE_USERxINFO, u->accountId().c_str(),
     u->StatusStr());
-  fprintf(fs, "%d %s First Name: %s\n", CODE_USERxINFO, u->IdString(),
+  fprintf(fs, "%d %s First Name: %s\n", CODE_USERxINFO, u->accountId().c_str(),
     u->getFirstName().c_str());
-  fprintf(fs, "%d %s Last Name: %s\n", CODE_USERxINFO, u->IdString(),
+  fprintf(fs, "%d %s Last Name: %s\n", CODE_USERxINFO, u->accountId().c_str(),
     u->getLastName().c_str());
-  fprintf(fs, "%d %s Email 1: %s\n", CODE_USERxINFO, u->IdString(),
+  fprintf(fs, "%d %s Email 1: %s\n", CODE_USERxINFO, u->accountId().c_str(),
     u->getUserInfoString("Email1").c_str());
-  fprintf(fs, "%d %s Email 2: %s\n", CODE_USERxINFO, u->IdString(),
+  fprintf(fs, "%d %s Email 2: %s\n", CODE_USERxINFO, u->accountId().c_str(),
     u->getUserInfoString("Email2").c_str());
-
-  gUserManager.DropUser(u);
 
   if (szId)
     free(szId);
@@ -803,11 +799,10 @@ int CRMSClient::Process_STATUS()
     gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      ICQOwner *o = gUserManager.FetchOwner(plugin->getProtocolId(), LOCK_R);
-      if (o)
+      Licq::OwnerReadGuard o(plugin->getProtocolId());
+      if (o.isLocked())
       {
-        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->IdString(), plugin->getName(), o->StatusStr());
-        gUserManager.DropOwner(o);
+        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->accountId().c_str(), plugin->getName(), o->StatusStr());
       }
     }
     fprintf(fs, "%d\n", CODE_STATUSxDONE);
@@ -858,9 +853,11 @@ int CRMSClient::changeStatus(unsigned long nPPID, const char *szStatus)
   }
   else
   {
-    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
-    bool b = !o->isOnline();
-    gUserManager.DropOwner(o);
+    bool b;
+    {
+      Licq::OwnerReadGuard o(nPPID);
+      b = !o->isOnline();
+    }
     unsigned long tag = gProtocolManager.setStatus(ownerId, status);
     if (b)
       fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, szStatus);
@@ -960,10 +957,10 @@ int CRMSClient::Process_HISTORY()
   string ownerAlias = "me";
 
   {
-    LicqUserReadGuard u(myUserId);
+    Licq::UserReadGuard u(myUserId);
     if (!u.isLocked())
     {
-      fprintf(fs, "%d Invalid User (%s).\n", CODE_INVALIDxUSER, USERID_TOSTR(myUserId));
+      fprintf(fs, "%d Invalid User (%s).\n", CODE_INVALIDxUSER, myUserId.toString().c_str());
       return fflush(fs);
     }
     if (!u->GetHistory(history))
@@ -975,12 +972,9 @@ int CRMSClient::Process_HISTORY()
     if (u->isUser())
     {
       userAlias = u->getAlias();
-      const LicqOwner* o = gUserManager.FetchOwner(u->ppid(), LOCK_R);
-      if (o != NULL)
-      {
+      Licq::OwnerReadGuard o(u->protocolId());
+      if (o.isLocked())
         ownerAlias = o->getAlias();
-        gUserManager.DropOwner(o);
-      }
     }
     else
     {
@@ -1118,7 +1112,7 @@ int CRMSClient::Process_MESSAGE_text()
       true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
-      tag, USERID_TOSTR(myUserId));
+      tag, myUserId.toString().c_str());
 
   tags.push_back(tag);
   m_nState = STATE_COMMAND;
@@ -1178,7 +1172,7 @@ int CRMSClient::Process_URL_text()
       m_szText, true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
-      tag, USERID_TOSTR(myUserId));
+      tag, myUserId.toString().c_str());
 
   tags.push_back(tag);
   m_nState = STATE_COMMAND;
@@ -1271,14 +1265,14 @@ int CRMSClient::Process_AR()
 {
   ParseUser(data_arg);
 
-  if (USERID_ISVALID(myUserId) && !gUserManager.userExists(myUserId))
+  if (myUserId.isValid() && !gUserManager.userExists(myUserId))
   {
     fprintf(fs, "%d Invalid User.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
 
   fprintf(fs, "%d Enter %sauto response, terminate with a . on a line by itself:\n",
-     CODE_ENTERxTEXT, USERID_ISVALID(myUserId) ? "custom " : "");
+     CODE_ENTERxTEXT, myUserId.isValid() ? "custom " : "");
 
   m_szText[0] = '\0';
   m_nTextPos = 0;
@@ -1289,17 +1283,15 @@ int CRMSClient::Process_AR()
 
 int CRMSClient::Process_AR_text()
 {
-  if (!USERID_ISVALID(myUserId))
+  if (!myUserId.isValid())
   {
-    ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+    Licq::OwnerWriteGuard o(LICQ_PPID);
     o->SetAutoResponse(m_szText);
-    gUserManager.DropOwner(o);
   }
   else
   {
-    LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
+    Licq::UserWriteGuard u(myUserId);
     u->SetCustomAutoResponse(m_szText);
-    gUserManager.DropUser(u);
   }
 
   fprintf(fs, "%d Auto response saved.\n", CODE_RESULTxSUCCESS);
@@ -1390,15 +1382,15 @@ int CRMSClient::Process_VIEW()
     }
     FOR_EACH_USER_END
   
-    if (!USERID_ISVALID(myUserId))
+    if (!myUserId.isValid())
     {
       fprintf(fs, "%d No new messages.\n", CODE_VIEWxNONE);
       return fflush(fs);
     }
   }
 
-  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
-  if (u == NULL)
+  Licq::UserWriteGuard u(myUserId);
+  if (!u.isLocked())
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
     return fflush(fs);
@@ -1406,7 +1398,6 @@ int CRMSClient::Process_VIEW()
 
   CUserEvent *e = u->EventPop();
   printUserEvent(e, u->getAlias());
-  gUserManager.DropUser(u);
 
   return fflush(fs);
 }
@@ -1482,7 +1473,7 @@ int CRMSClient::Process_ADDUSER()
   char *szId = strdup(data_arg);
   NEXT_WORD(data_arg);
   unsigned long nPPID = GetProtocol(data_arg);
-  UserId userId = LicqUser::makeUserId(szId, nPPID);
+  UserId userId(szId, nPPID);
 
   if (gUserManager.addUser(userId) != 0)
   {
@@ -1512,7 +1503,7 @@ int CRMSClient::Process_REMUSER()
 
   if (nUin >= 10000)
   {
-    gUserManager.removeUser(LicqUser::makeUserId(data_arg, LICQ_PPID));
+    gUserManager.removeUser(UserId(data_arg, LICQ_PPID));
     fprintf(fs, "%d User removed\n", CODE_REMUSERxDONE);
   }
   else
@@ -1548,7 +1539,7 @@ int CRMSClient::Process_SECURE()
     return fflush(fs);
   }
   char* id = strdup(data_arg);
-  UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
+  UserId userId(id, LICQ_PPID);
   nUin = strtoul(data_arg, (char**)NULL, 10);
   while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
   NEXT_WORD(data_arg);
@@ -1572,7 +1563,7 @@ int CRMSClient::Process_SECURE()
   }
   else
   {
-    const LicqUser* u = gUserManager.fetchUser(userId);
+    Licq::UserReadGuard u(userId);
    if (u->Secure() == 0)
    {
     fprintf(fs, "%d Status: secure connection is closed.\n", CODE_SECURExSTAT);
@@ -1581,7 +1572,6 @@ int CRMSClient::Process_SECURE()
    {
     fprintf(fs, "%d Status: secure connection is open.\n", CODE_SECURExSTAT);
    }
-   gUserManager.DropUser(u);
   }
 
   free(id);
