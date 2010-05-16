@@ -77,6 +77,10 @@ public:
 
   char* Pack(Buffer*);
    char *Pack(const char *data, int size);
+
+  char* pack(const std::string& data)
+  { return Pack(data.c_str(), data.size()); }
+
    char *PackLNTS(const char *);
    char *PackString(const char *data, unsigned short max = 0);
    char *PackUnsignedShort(unsigned short data);

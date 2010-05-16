@@ -160,32 +160,31 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
 
   if (pbe)
   {
-    cmbDescription->addItem(codec->toUnicode(pbe->szDescription));
+    cmbDescription->addItem(codec->toUnicode(pbe->description.c_str()));
     cmbDescription->setCurrentIndex(cmbDescription->count() - 1);
     cmbType->setCurrentIndex(pbe->nType);
-    const struct SCountry* c = GetCountryByName(pbe->szCountry);
+    const struct SCountry* c = GetCountryByName(pbe->country.c_str());
     if (c)
       cmbCountry->setCurrentIndex(c->nIndex);
-    leAreaCode->setText(codec->toUnicode(pbe->szAreaCode));
-    leNumber->setText(codec->toUnicode(pbe->szPhoneNumber));
+    leAreaCode->setText(codec->toUnicode(pbe->areaCode.c_str()));
+    leNumber->setText(codec->toUnicode(pbe->phoneNumber.c_str()));
     // avoid duplicating the pager number in the extension field
-    if (pbe->nType != TYPE_PAGER ||
-        strcmp(pbe->szPhoneNumber, pbe->szExtension) != 0)
+    if (pbe->nType != TYPE_PAGER || pbe->phoneNumber != pbe->extension)
     {
-      leExtension->setText(codec->toUnicode(pbe->szExtension));
+      leExtension->setText(codec->toUnicode(pbe->extension.c_str()));
     }
     if (pbe->nGatewayType == GATEWAY_BUILTIN)
     {
-      const struct SProvider* p = GetProviderByName(pbe->szGateway);
+      const struct SProvider* p = GetProviderByName(pbe->gateway.c_str());
       if (p)
         cmbProvider->setCurrentIndex(p->nIndex + 1);
-      else if (pbe->szGateway[0] != '\0')
-        leGateway->setText(codec->toUnicode(pbe->szGateway));
+      else if (!pbe->gateway.empty())
+        leGateway->setText(codec->toUnicode(pbe->gateway.c_str()));
       else
         leGateway->setText(tr("@"));
     }
     else
-      leGateway->setText(codec->toUnicode(pbe->szGateway));
+      leGateway->setText(codec->toUnicode(pbe->gateway.c_str()));
 
     cbRemove0s->setChecked(pbe->nRemoveLeading0s);
   }
@@ -246,76 +245,43 @@ void EditPhoneDlg::ok()
   struct PhoneBookEntry pbe;
   memset(&pbe, 0, sizeof(pbe));
 
-  QByteArray tmp = codec->fromUnicode(cmbDescription->currentText());
-  pbe.szDescription = new char[tmp.length() + 1];
-  memcpy(pbe.szDescription, tmp.data(), tmp.length() + 1);
+  pbe.description = codec->fromUnicode(cmbDescription->currentText()).data();
 
   if (leAreaCode->isEnabled())
-  {
-    tmp = codec->fromUnicode(leAreaCode->text());
-    pbe.szAreaCode = new char[tmp.length() + 1];
-    memcpy(pbe.szAreaCode, tmp.data(), tmp.length() + 1);
-  }
+    pbe.areaCode = codec->fromUnicode(leAreaCode->text()).data();
   else
-  {
-    pbe.szAreaCode = new char[1];
-    pbe.szAreaCode[0] = '\0';
-  }
+    pbe.areaCode = "";
 
-  tmp = codec->fromUnicode(leNumber->text());
-  pbe.szPhoneNumber = new char[tmp.length() + 1];
-  memcpy(pbe.szPhoneNumber, tmp.data(), tmp.length() + 1);
+  pbe.phoneNumber = codec->fromUnicode(leNumber->text()).data();
 
   pbe.nType = cmbType->currentIndex();
 
   if (leExtension->isEnabled())
-  {
-    tmp = codec->fromUnicode(leExtension->text());
-    pbe.szExtension = new char[tmp.length() + 1];
-    memcpy(pbe.szExtension, tmp.data(), tmp.length() + 1);
-  }
+    pbe.extension = codec->fromUnicode(leExtension->text()).data();
   else if (pbe.nType == TYPE_PAGER)
-  {
     // need to store the number in extension as well for some reason
-    pbe.szExtension = new char[tmp.length() + 1];
-    memcpy(pbe.szExtension, tmp.data(), tmp.length() + 1);
-  }
+    pbe.extension = pbe.phoneNumber;
   else
-  {
-    pbe.szExtension = new char[1];
-    pbe.szExtension[0] = '\0';
-  }
+    pbe.extension = "";
 
   if (cmbCountry->isEnabled() && cmbCountry->currentIndex() != 0)
-  {
-    tmp = codec->fromUnicode(cmbCountry->currentText());
-    pbe.szCountry = new char[tmp.length() + 1];
-    memcpy(pbe.szCountry, tmp.data(), tmp.length() + 1);
-  }
+    pbe.country = codec->fromUnicode(cmbCountry->currentText()).data();
   else
-  {
-    pbe.szCountry = new char[1];
-    pbe.szCountry[0] = '\0';
-  }
+    pbe.country = "";
 
   if (leGateway->isEnabled())
   {
-    tmp = codec->fromUnicode(leGateway->text());
-    pbe.szGateway = new char[tmp.length() + 1];
-    memcpy(pbe.szGateway, tmp.data(), tmp.length() + 1);
+    pbe.gateway = codec->fromUnicode(leGateway->text()).data();
     pbe.nGatewayType = GATEWAY_CUSTOM;
   }
   else if (cmbProvider->isEnabled())
   {
-    tmp = codec->fromUnicode(cmbProvider->currentText());
-    pbe.szGateway = new char[tmp.length() + 1];
-    memcpy(pbe.szGateway, tmp.data(), tmp.length() + 1);
+    pbe.gateway = codec->fromUnicode(cmbProvider->currentText()).data();
     pbe.nGatewayType = GATEWAY_BUILTIN;
   }
   else
   {
-    pbe.szGateway = new char[1];
-    pbe.szGateway[0] = '\0';
+    pbe.gateway = "";
     pbe.nGatewayType = GATEWAY_BUILTIN;
   }
 

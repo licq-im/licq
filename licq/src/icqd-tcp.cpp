@@ -2935,42 +2935,53 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
           {
             gLog.Info("%sPhone Book reply from %s.\n", szInfo, u->GetAlias());
                   struct PhoneBookEntry* pb = new PhoneBookEntry[nEntries];
+                  char* buf;
             for (unsigned long i = 0; i < nEntries; i ++)
             {
               unsigned long nLen = packet.UnpackUnsignedLong();
-              pb[i].szDescription = new char[nLen + 1];
+                    buf = new char[nLen + 1];
               for (unsigned long j = 0; j < nLen; j++)
-                packet >> pb[i].szDescription[j];
-              pb[i].szDescription[nLen] = '\0';
-              gTranslator.ServerToClient(pb[i].szDescription);
+                      packet >> buf[j];
+                    buf[nLen] = '\0';
+                    gTranslator.ServerToClient(buf);
+                    pb[i].description = buf;
+                    delete[] buf;
 
               nLen = packet.UnpackUnsignedLong();
-              pb[i].szAreaCode = new char[nLen + 1];
+                    buf = new char[nLen + 1];
               for (unsigned long j = 0; j < nLen; j++)
-                packet >> pb[i].szAreaCode[j];
-              pb[i].szAreaCode[nLen] = '\0';
-              gTranslator.ServerToClient(pb[i].szAreaCode);
+                      packet >> buf[j];
+                    buf[nLen] = '\0';
+                    gTranslator.ServerToClient(buf);
+                    pb[i].areaCode = buf;
+                    delete[] buf;
 
               nLen = packet.UnpackUnsignedLong();
-              pb[i].szPhoneNumber = new char[nLen + 1];
+                    buf = new char[nLen + 1];
               for (unsigned long j = 0; j < nLen; j++)
-                packet >> pb[i].szPhoneNumber[j];
-              pb[i].szPhoneNumber[nLen] = '\0';
-              gTranslator.ServerToClient(pb[i].szPhoneNumber);
+                      packet >> buf[j];
+                    buf[nLen] = '\0';
+                    gTranslator.ServerToClient(buf);
+                    pb[i].phoneNumber = buf;
+                    delete[] buf;
 
               nLen = packet.UnpackUnsignedLong();
-              pb[i].szExtension = new char[nLen + 1];
+                    buf = new char[nLen + 1];
               for (unsigned long j = 0; j < nLen; j++)
-                packet >> pb[i].szExtension[j];
-              pb[i].szExtension[nLen] = '\0';
-              gTranslator.ServerToClient(pb[i].szExtension);
+                      packet >> buf[j];
+                    buf[nLen] = '\0';
+                    gTranslator.ServerToClient(buf);
+                    pb[i].extension = buf;
+                    delete[] buf;
 
               nLen = packet.UnpackUnsignedLong();
-              pb[i].szCountry = new char[nLen + 1];
+                    buf = new char[nLen + 1];
               for (unsigned long j = 0; j < nLen; j++)
-                packet >> pb[i].szCountry[j];
-              pb[i].szCountry[nLen] = '\0';
-              gTranslator.ServerToClient(pb[i].szCountry);
+                      packet >> buf[j];
+                    buf[nLen] = '\0';
+                    gTranslator.ServerToClient(buf);
+                    pb[i].country = buf;
+                    delete[] buf;
 
               pb[i].nActive = packet.UnpackUnsignedLong();
             }
@@ -2981,11 +2992,13 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
               pb[i].nType = packet.UnpackUnsignedLong();
 
               unsigned long nLen = packet.UnpackUnsignedLong();
-              pb[i].szGateway = new char[nLen + 1];
+                    buf = new char[nLen + 1];
               for (unsigned long j = 0; j < nLen; j++)
-                packet >> pb[i].szGateway[j];
-              pb[i].szGateway[nLen] = '\0';
-              gTranslator.ServerToClient(pb[i].szGateway);
+                      packet >> buf[j];
+                    buf[nLen] = '\0';
+                    gTranslator.ServerToClient(buf);
+                    pb[i].gateway = buf;
+                    delete[] buf;
 
               pb[i].nGatewayType = packet.UnpackUnsignedLong();
               pb[i].nSmsAvailable = packet.UnpackUnsignedLong();
@@ -2998,12 +3011,6 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             for (unsigned long i = 0; i < nEntries; i++)
             {
               u->GetPhoneBook()->AddEntry(&pb[i]);
-              delete [] pb[i].szDescription;
-              delete [] pb[i].szAreaCode;
-              delete [] pb[i].szPhoneNumber;
-              delete [] pb[i].szExtension;
-              delete [] pb[i].szCountry;
-              delete [] pb[i].szGateway;
             }
             u->SetEnableSave(true);
             u->SavePhoneBookInfo();

@@ -1837,10 +1837,10 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
   const struct Licq::PhoneBookEntry* entry;
   for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
   {
-    nLen += 4 + strlen(entry->szDescription) + 4 + strlen(entry->szAreaCode)
-          + 4 + strlen(entry->szPhoneNumber) + 4 + strlen(entry->szExtension)
-          + 4 + strlen(entry->szCountry)     + 4 + 4 + 4
-          + 4 + strlen(entry->szGateway)     + 4 + 4 + 4 + 4;
+    nLen += 4 + entry->description.size() + 4 + entry->areaCode.size()
+        + 4 + entry->phoneNumber.size() + 4 + entry->extension.size()
+        + 4 + entry->country.size() + 4 + 4 + 4
+        + 4 + entry->gateway.size() + 4 + 4 + 4 + 4;
   }
 
   m_nSize += 2 + 2 + 4 + 4 + nLen;
@@ -1857,38 +1857,33 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
 
   for (unsigned long i = 0; book->Get(i, &entry); i++)
   {
-    unsigned long sLen = strlen(entry->szDescription);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szDescription, sLen);
+    buffer->PackUnsignedLong(entry->description.size());
+    buffer->pack(entry->description);
 
-    sLen = strlen(entry->szAreaCode);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szAreaCode, sLen);
+    buffer->PackUnsignedLong(entry->areaCode.size());
+    buffer->pack(entry->areaCode);
 
-    sLen = strlen(entry->szPhoneNumber);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szPhoneNumber, sLen);
+    buffer->PackUnsignedLong(entry->phoneNumber.size());
+    buffer->pack(entry->phoneNumber);
 
-    sLen = strlen(entry->szExtension);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szExtension, sLen);
+    buffer->PackUnsignedLong(entry->extension.size());
+    buffer->pack(entry->extension);
 
-    sLen = strlen(entry->szCountry);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szCountry, sLen);
+    buffer->PackUnsignedLong(entry->country.size());
+    buffer->pack(entry->country);
 
     buffer->PackUnsignedLong(entry->nActive);
   }
 
   for (unsigned long i = 0; book->Get(i, &entry); i++)
   {
-    unsigned long sLen = strlen(entry->szGateway);
+    unsigned long sLen = entry->gateway.size();
     buffer->PackUnsignedLong(4 + 4 + sLen + 4 + 4 + 4 + 4);
 
     buffer->PackUnsignedLong(entry->nType);
 
     buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szGateway, sLen);
+    buffer->pack(entry->gateway);
 
     buffer->PackUnsignedLong(entry->nGatewayType);
     buffer->PackUnsignedLong(entry->nSmsAvailable);
@@ -5429,10 +5424,10 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
   const struct Licq::PhoneBookEntry* entry;
   for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
   {
-    nLen += 4 + strlen(entry->szDescription) + 4 + strlen(entry->szAreaCode)
-          + 4 + strlen(entry->szPhoneNumber) + 4 + strlen(entry->szExtension)
-          + 4 + strlen(entry->szCountry)     + 4 + 4 + 4
-          + 4 + strlen(entry->szGateway)     + 4 + 4 + 4 + 4;
+    nLen += 4 + entry->description.size() + 4 + entry->areaCode.size()
+        + 4 + entry->phoneNumber.size() + 4 + entry->extension.size()
+        + 4 + entry->country.size() + 4 + 4 + 4
+        + 4 + entry->gateway.size() + 4 + 4 + 4 + 4;
   }
 
   m_nSize += 2 + 2 + 4 + 4 + nLen;
@@ -5450,38 +5445,33 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
 
   for (unsigned long i = 0; book->Get(i, &entry); i++)
   {
-    unsigned long sLen = strlen(entry->szDescription);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szDescription, sLen);
+    buffer->PackUnsignedLong(entry->description.size());
+    buffer->pack(entry->description);
 
-    sLen = strlen(entry->szAreaCode);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szAreaCode, sLen);
+    buffer->PackUnsignedLong(entry->areaCode.size());
+    buffer->pack(entry->areaCode);
 
-    sLen = strlen(entry->szPhoneNumber);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szPhoneNumber, sLen);
+    buffer->PackUnsignedLong(entry->phoneNumber.size());
+    buffer->pack(entry->phoneNumber);
 
-    sLen = strlen(entry->szExtension);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szExtension, sLen);
+    buffer->PackUnsignedLong(entry->extension.size());
+    buffer->pack(entry->extension);
 
-    sLen = strlen(entry->szCountry);
-    buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szCountry, sLen);
+    buffer->PackUnsignedLong(entry->country.size());
+    buffer->pack(entry->country);
 
     buffer->PackUnsignedLong(entry->nActive);
   }
 
   for (unsigned long i = 0; book->Get(i, &entry); i++)
   {
-    unsigned long sLen = strlen(entry->szGateway);
+    unsigned long sLen = entry->gateway.size();
     buffer->PackUnsignedLong(4 + 4 + sLen + 4 + 4 + 4 + 4);
 
     buffer->PackUnsignedLong(entry->nType);
 
     buffer->PackUnsignedLong(sLen);
-    buffer->Pack(entry->szGateway, sLen);
+    buffer->pack(entry->gateway);
 
     buffer->PackUnsignedLong(entry->nGatewayType);
     buffer->PackUnsignedLong(entry->nSmsAvailable);

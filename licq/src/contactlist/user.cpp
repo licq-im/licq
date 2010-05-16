@@ -25,6 +25,7 @@ using std::map;
 using std::string;
 using std::vector;
 using Licq::ICQUserPhoneBook;
+using Licq::IniFile;
 using Licq::SecureChannelSupport_et;
 using Licq::UserId;
 using Licq::gPluginManager;
@@ -44,12 +45,6 @@ ICQUserPhoneBook::~ICQUserPhoneBook()
 void ICQUserPhoneBook::AddEntry(const struct PhoneBookEntry *entry)
 {
   struct PhoneBookEntry new_entry = *entry;
-  new_entry.szDescription = strdup(entry->szDescription);
-  new_entry.szAreaCode = strdup(entry->szAreaCode);
-  new_entry.szPhoneNumber = strdup(entry->szPhoneNumber);
-  new_entry.szExtension = strdup(entry->szExtension);
-  new_entry.szCountry = strdup(entry->szCountry);
-  new_entry.szGateway = strdup(entry->szGateway);
 
   PhoneBookVector.push_back(new_entry);
 }
@@ -63,20 +58,7 @@ void ICQUserPhoneBook::SetEntry(const struct PhoneBookEntry *entry,
     return;
   }
 
-  free(PhoneBookVector[nEntry].szDescription);
-  free(PhoneBookVector[nEntry].szAreaCode);
-  free(PhoneBookVector[nEntry].szPhoneNumber);
-  free(PhoneBookVector[nEntry].szExtension);
-  free(PhoneBookVector[nEntry].szCountry);
-  free(PhoneBookVector[nEntry].szGateway);
-
   PhoneBookVector[nEntry] = *entry;
-  PhoneBookVector[nEntry].szDescription = strdup(entry->szDescription);
-  PhoneBookVector[nEntry].szAreaCode = strdup(entry->szAreaCode);
-  PhoneBookVector[nEntry].szPhoneNumber = strdup(entry->szPhoneNumber);
-  PhoneBookVector[nEntry].szExtension = strdup(entry->szExtension);
-  PhoneBookVector[nEntry].szCountry = strdup(entry->szCountry);
-  PhoneBookVector[nEntry].szGateway = strdup(entry->szGateway);
 }
 
 void ICQUserPhoneBook::ClearEntry(unsigned long nEntry)
@@ -87,13 +69,6 @@ void ICQUserPhoneBook::ClearEntry(unsigned long nEntry)
   vector<struct PhoneBookEntry>::iterator i = PhoneBookVector.begin();
   for (;nEntry > 0; nEntry--, ++i)
     ;
-
-  free((*i).szDescription);
-  free((*i).szAreaCode);
-  free((*i).szPhoneNumber);
-  free((*i).szExtension);
-  free((*i).szCountry);
-  free((*i).szGateway);
 
   PhoneBookVector.erase(i);
 }
@@ -123,135 +98,117 @@ bool ICQUserPhoneBook::Get(unsigned long nEntry,
   return true;
 }
 
-bool ICQUserPhoneBook::SaveToDisk(CIniFile &m_fConf)
+bool ICQUserPhoneBook::SaveToDisk(IniFile& conf)
 {
   char buff[40];
 
-  if (!m_fConf.ReloadFile())
+  if (!conf.loadFile())
   {
-    gLog.Error("%sError opening '%s' for reading.\n"
-               "%sSee log for details.\n", L_ERRORxSTR, m_fConf.FileName(),
-               L_BLANKxSTR);
+    gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+        L_ERRORxSTR, conf.filename().c_str(), L_BLANKxSTR);
     return false;
   }
 
-  m_fConf.SetSection("user");
+  conf.setSection("user");
 
-  m_fConf.WriteNum("PhoneEntries", (unsigned long)PhoneBookVector.size());
+  conf.set("PhoneEntries", (unsigned long)PhoneBookVector.size());
 
   for (unsigned long i = 0 ; i < PhoneBookVector.size(); i++)
   {
     snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
-    m_fConf.WriteStr(buff, PhoneBookVector[i].szDescription);
+    conf.set(buff, PhoneBookVector[i].description);
 
     snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
-    m_fConf.WriteStr(buff, PhoneBookVector[i].szAreaCode);
+    conf.set(buff, PhoneBookVector[i].areaCode);
 
     snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
-    m_fConf.WriteStr(buff, PhoneBookVector[i].szPhoneNumber);
+    conf.set(buff, PhoneBookVector[i].phoneNumber);
 
     snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
-    m_fConf.WriteStr(buff, PhoneBookVector[i].szExtension);
+    conf.set(buff, PhoneBookVector[i].extension);
 
     snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
-    m_fConf.WriteStr(buff, PhoneBookVector[i].szCountry);
+    conf.set(buff, PhoneBookVector[i].country);
 
     snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
-    m_fConf.WriteNum(buff, PhoneBookVector[i].nActive);
+    conf.set(buff, PhoneBookVector[i].nActive);
 
     snprintf(buff, sizeof(buff), "PhoneType%lu", i);
-    m_fConf.WriteNum(buff, PhoneBookVector[i].nType);
+    conf.set(buff, PhoneBookVector[i].nType);
 
     snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
-    m_fConf.WriteStr(buff, PhoneBookVector[i].szGateway);
+    conf.set(buff, PhoneBookVector[i].gateway);
 
     snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
-    m_fConf.WriteNum(buff, PhoneBookVector[i].nGatewayType);
+    conf.set(buff, PhoneBookVector[i].nGatewayType);
 
     snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
-    m_fConf.WriteNum(buff, PhoneBookVector[i].nSmsAvailable);
+    conf.set(buff, PhoneBookVector[i].nSmsAvailable);
 
     snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
-    m_fConf.WriteNum(buff, PhoneBookVector[i].nRemoveLeading0s);
+    conf.set(buff, PhoneBookVector[i].nRemoveLeading0s);
 
     snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
-    m_fConf.WriteNum(buff, PhoneBookVector[i].nPublish);
+    conf.set(buff, PhoneBookVector[i].nPublish);
   }
 
-  if (!m_fConf.FlushFile())
+  if (!conf.writeFile())
   {
-    gLog.Error("%sError opening '%s' for writing.\n"
-               "%sSee log for details.\n", L_ERRORxSTR,
-               m_fConf.FileName(), L_BLANKxSTR);
+    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+        L_ERRORxSTR, conf.filename().c_str(), L_BLANKxSTR);
     return false;
   }
 
-  m_fConf.CloseFile();
   return true;
 }
 
-bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
+bool ICQUserPhoneBook::LoadFromDisk(IniFile& conf)
 {
   char buff[40];
-  char szDescription[MAX_LINE_LEN];
-  char szAreaCode[MAX_LINE_LEN];
-  char szPhoneNumber[MAX_LINE_LEN];
-  char szExtension[MAX_LINE_LEN];
-  char szCountry[MAX_LINE_LEN];
-  char szGateway[MAX_LINE_LEN];
-  struct PhoneBookEntry entry = {
-                                  szDescription,
-                                  szAreaCode,
-                                  szPhoneNumber,
-                                  szExtension,
-                                  szCountry,
-                                  0, 0,
-                                  szGateway,
-                                  0, 0, 0, 0
-                                };
+  struct PhoneBookEntry entry;
 
   Clean();
-  m_fConf.SetSection("user");
+  conf.setSection("user");
 
   unsigned long nNumEntries;
-  m_fConf.ReadNum("PhoneEntries", nNumEntries);
+  conf.get("PhoneEntries", nNumEntries);
   for (unsigned long i = 0; i < nNumEntries; i++)
   {
     snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
-    m_fConf.ReadStr(buff, entry.szDescription, "");
+    conf.get(buff, entry.description, "");
 
     snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
-    m_fConf.ReadStr(buff, entry.szAreaCode, "");
+    conf.get(buff, entry.areaCode, "");
 
     snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
-    m_fConf.ReadStr(buff, entry.szPhoneNumber, "");
+    conf.get(buff, entry.phoneNumber, "");
 
     snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
-    m_fConf.ReadStr(buff, entry.szExtension, "");
+    conf.get(buff, entry.extension, "");
 
     snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
-    m_fConf.ReadStr(buff, entry.szCountry, "");
+    conf.get(buff, entry.country, "");
 
     snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
-    m_fConf.ReadNum(buff, entry.nActive, 0);
+    conf.get(buff, entry.nActive, 0);
 
     snprintf(buff, sizeof(buff), "PhoneType%lu", i);
-    m_fConf.ReadNum(buff, entry.nType, 0);
+    conf.get(buff, entry.nType, 0);
 
     snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
-    m_fConf.ReadStr(buff, entry.szGateway, "");
+    conf.get(buff, entry.gateway, "");
 
     snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
-    m_fConf.ReadNum(buff, entry.nGatewayType, 1);
+    conf.get(buff, entry.nGatewayType, 1);
 
     snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
-    m_fConf.ReadNum(buff, entry.nSmsAvailable, 0);
+    conf.get(buff, entry.nSmsAvailable, 0);
 
     snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
-    m_fConf.ReadNum(buff, entry.nRemoveLeading0s, 1);
+    conf.get(buff, entry.nRemoveLeading0s, 1);
 
     snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
-    m_fConf.ReadNum(buff, entry.nPublish, 2);
+    conf.get(buff, entry.nPublish, 2);
 
     AddEntry(&entry);
   }

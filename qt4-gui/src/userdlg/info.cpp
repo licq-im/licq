@@ -1061,23 +1061,23 @@ void UserPages::Info::updatePhoneBook()
   const struct PhoneBookEntry* entry;
   for (unsigned long i = 0; m_PhoneBook->Get(i, &entry); i++)
   {
-    QString description = codec->toUnicode(entry->szDescription);
+    QString description = codec->toUnicode(entry->description.c_str());
     QString number;
     QString country;
     if (entry->nType == TYPE_PAGER)
     {
       //Windows icq uses extension, try it first
-      if (entry->szExtension[0] != '\0')
-        number = codec->toUnicode(entry->szExtension);
+      if (!entry->extension.empty())
+        number = codec->toUnicode(entry->extension.c_str());
       else
-        number = codec->toUnicode(entry->szPhoneNumber);
+        number = codec->toUnicode(entry->phoneNumber.c_str());
 
       QString gateway;
       if (entry->nGatewayType == GATEWAY_BUILTIN)
       {
-        country = codec->toUnicode(entry->szGateway);
+        country = codec->toUnicode(entry->gateway.c_str());
 
-        const struct SProvider* sProvider = GetProviderByName(entry->szGateway);
+        const struct SProvider* sProvider = GetProviderByName(entry->gateway.c_str());
         if (sProvider != NULL)
           gateway = sProvider->szGateway;
         else
@@ -1086,29 +1086,28 @@ void UserPages::Info::updatePhoneBook()
       else
       {
         country = tr("Unknown");
-        gateway = codec->toUnicode(entry->szGateway);
+        gateway = codec->toUnicode(entry->gateway.c_str());
       }
 
       number += gateway;
     }
     else
     {
-      const struct SCountry* sCountry = GetCountryByName(entry->szCountry);
+      const struct SCountry* sCountry = GetCountryByName(entry->country.c_str());
       if (sCountry != NULL)
         number.sprintf("+%u ", sCountry->nPhone);
-      char* szAreaCode;
-      szAreaCode = entry->szAreaCode;
+      const char* szAreaCode = entry->areaCode.c_str();
       if (entry->nRemoveLeading0s)
         szAreaCode += strspn(szAreaCode, "0");
       if (szAreaCode[0] != '\0')
         number += tr("(") + codec->toUnicode(szAreaCode) + tr(") ");
-      else if (entry->szAreaCode[0] != '\0')
-        number += tr("(") + codec->toUnicode(entry->szAreaCode) + tr(") ");
-      number += codec->toUnicode(entry->szPhoneNumber);
-      if (entry->szExtension[0] != '\0')
-        number += tr("-") + codec->toUnicode(entry->szExtension);
+      else if (!entry->areaCode.empty())
+        number += tr("(") + codec->toUnicode(entry->areaCode.c_str()) + tr(") ");
+      number += codec->toUnicode(entry->phoneNumber.c_str());
+      if (!entry->extension.empty())
+        number += tr("-") + codec->toUnicode(entry->extension.c_str());
 
-      country = codec->toUnicode(entry->szCountry);
+      country = codec->toUnicode(entry->country.c_str());
     }
 
     if (m_bOwner)
@@ -1451,13 +1450,6 @@ void UserPages::Info::phoneBookUpdated(struct PhoneBookEntry pbe, int entryNum)
     m_PhoneBook->AddEntry(&pbe);
   else
     m_PhoneBook->SetEntry(&pbe, entryNum);
-
-  delete [] pbe.szDescription;
-  delete [] pbe.szAreaCode;
-  delete [] pbe.szPhoneNumber;
-  delete [] pbe.szExtension;
-  delete [] pbe.szCountry;
-  delete [] pbe.szGateway;
 
   updatePhoneBook();
 }

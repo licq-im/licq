@@ -88,14 +88,14 @@ typedef std::list<CUserEvent*> HistoryList;
 
 struct PhoneBookEntry
 {
-  char *szDescription;
-  char *szAreaCode;
-  char *szPhoneNumber;
-  char *szExtension;
-  char *szCountry;
+  std::string description;
+  std::string areaCode;
+  std::string phoneNumber;
+  std::string extension;
+  std::string country;
   unsigned long nActive;
   unsigned long nType;
-  char *szGateway;
+  std::string gateway;
   unsigned long nGatewayType;
   unsigned long nSmsAvailable;
   unsigned long nRemoveLeading0s;
@@ -145,8 +145,8 @@ public:
   bool Get(unsigned long nEntry, const struct PhoneBookEntry** entry) const;
 
 private:
-  bool SaveToDisk(CIniFile& m_fConf);
-  bool LoadFromDisk(CIniFile& m_fConf);
+  bool SaveToDisk(Licq::IniFile& conf);
+  bool LoadFromDisk(Licq::IniFile& conf);
 
   std::vector<struct PhoneBookEntry> PhoneBookVector;
 
