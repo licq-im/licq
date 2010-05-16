@@ -39,6 +39,9 @@ public:
   Owner(const Licq::UserId& id);
 
   ~Owner();
+
+  // From Licq::Owner
+  void SaveLicqInfo();
 };
 
 } // namespace LicqDaemon

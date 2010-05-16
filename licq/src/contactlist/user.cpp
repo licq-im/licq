@@ -10,12 +10,12 @@
 #include "gettext.h"
 #include "licq_constants.h"
 #include "licq_events.h"
-#include "licq_file.h"
 #include <licq_icq.h>
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_socket.h"
 #include <licq/icqcodes.h>
+#include <licq/inifile.h>
 #include "licq/contactlist/usermanager.h"
 #include "licq/pluginmanager.h"
 
@@ -224,16 +224,13 @@ User::User(const UserId& id, const string& filename)
   myId = id;
 
   Init();
-  m_fConf.SetFlags(INI_FxWARN);
-  m_fConf.SetFileName(filename.c_str());
+  myConf.setFilename(filename);
   if (!LoadInfo())
   {
     gLog.Error("%sUnable to load user info from '%s'.\n%sUsing default values.\n",
         L_ERRORxSTR, filename.c_str(), L_BLANKxSTR);
     SetDefaults();
   }
-  m_fConf.CloseFile();
-  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
 User::User(const UserId& id, bool temporary)
@@ -245,14 +242,17 @@ User::User(const UserId& id, bool temporary)
   m_bNotInList = temporary;
   if (!m_bNotInList)
   {
-    char szFilename[MAX_FILENAME_LEN];
     char p[5];
     Licq::protocolId_toStr(p, myId.protocolId());
-    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
-        myId.accountId().c_str(), p);
-    szFilename[MAX_FILENAME_LEN - 1] = '\0';
-    m_fConf.SetFileName(szFilename);
-    m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+
+    string filename = BASE_DIR;
+    filename += "/";
+    filename += USER_DIR;
+    filename += "/";
+    filename += myId.accountId();
+    filename += ".";
+    filename += p;
+    myConf.setFilename(filename);
   }
 }
 
@@ -284,9 +284,9 @@ void User::AddToContactList()
 
 bool User::LoadInfo()
 {
-  if (!m_fConf.ReloadFile()) return (false);
-  m_fConf.SetFlags(0);
-  m_fConf.SetSection("user");
+  if (!myConf.loadFile())
+    return false;
+  myConf.setSection("user");
 
   loadUserInfo();
   LoadPhoneBookInfo();
@@ -299,137 +299,133 @@ bool User::LoadInfo()
 void User::loadUserInfo()
 {
   // read in the fields, checking for errors each time
-  m_fConf.SetSection("user");
-  m_fConf.readString("Alias", myAlias, tr("Unknown"));
-  m_fConf.ReadNum("Timezone", m_nTimezone, Licq::TIMEZONE_UNKNOWN);
-  m_fConf.ReadBool("Authorization", m_bAuthorization, false);
+  myConf.setSection("user");
+  myConf.get("Alias", myAlias, tr("Unknown"));
+  int timezone;
+  myConf.get("Timezone", timezone, Licq::TIMEZONE_UNKNOWN);
+  m_nTimezone = timezone;
+  myConf.get("Authorization", m_bAuthorization, false);
 
   PropertyMap::iterator i;
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
-    m_fConf.readVar(i->first, i->second);
+    myConf.get(i->first, i->second);
 
-  loadCategory(myInterests, m_fConf, "Interests");
-  loadCategory(myBackgrounds, m_fConf, "Backgrounds");
-  loadCategory(myOrganizations, m_fConf, "Organizations");
+  loadCategory(myInterests, myConf, "Interests");
+  loadCategory(myBackgrounds, myConf, "Backgrounds");
+  loadCategory(myOrganizations, myConf, "Organizations");
 }
 
-void Licq::User::LoadPhoneBookInfo()
+void User::LoadPhoneBookInfo()
 {
-  m_PhoneBook->LoadFromDisk(m_fConf);
+  m_PhoneBook->LoadFromDisk(myConf);
 }
 
-void Licq::User::LoadPictureInfo()
+void User::LoadPictureInfo()
 {
-  char szTemp[MAX_LINE_LEN];
-  m_fConf.SetSection("user");
-  m_fConf.ReadBool("PicturePresent", m_bPicturePresent, false);
-  m_fConf.ReadNum("BuddyIconType", m_nBuddyIconType, 0);
-  m_fConf.ReadNum("BuddyIconHashType", m_nBuddyIconHashType, 0);
-  m_fConf.ReadStr("BuddyIconHash", szTemp, "");
-  SetString(&m_szBuddyIconHash, szTemp );
-  m_fConf.ReadStr("OurBuddyIconHash", szTemp, "");
-  SetString(&m_szOurBuddyIconHash, szTemp );
+  myConf.setSection("user");
+  myConf.get("PicturePresent", m_bPicturePresent, false);
+  myConf.get("BuddyIconType", myBuddyIconType, 0);
+  myConf.get("BuddyIconHashType", myBuddyIconHashType, 0);
+  myConf.get("BuddyIconHash", myBuddyIconHash, "");
+  myConf.get("OurBuddyIconHash", myOurBuddyIconHash, "");
 }
 
-void Licq::User::LoadLicqInfo()
+void User::LoadLicqInfo()
 {
   // read in the fields, checking for errors each time
-  char szTemp[MAX_LINE_LEN];
-  unsigned short nNewMessages;
+  string temp;
+  unsigned nNewMessages;
   unsigned long nLast;
-  unsigned short nPPFieldCount;
-  m_fConf.SetSection("user");
+  unsigned nPPFieldCount;
+  myConf.setSection("user");
 
   // Get deprecated parameter and use as default if new values aren't available
   unsigned long oldSystemGroups;
-  m_fConf.ReadNum("Groups.System", oldSystemGroups, 0);
+  myConf.get("Groups.System", oldSystemGroups, 0);
 
-  m_fConf.get("OnVisibleList", myOnVisibleList, oldSystemGroups & 1<<1);
-  m_fConf.get("OnInvisibleList", myOnInvisibleList, oldSystemGroups & 1<<2);
-  m_fConf.get("OnIgnoreList", myOnIgnoreList, oldSystemGroups & 1<<3);
-  m_fConf.get("OnlineNotify", myOnlineNotify, oldSystemGroups & 1<<0);
-  m_fConf.get("NewUser", myNewUser, oldSystemGroups & 1<<4);
-  m_fConf.ReadStr("Ip", szTemp, "0.0.0.0");
+  myConf.get("OnVisibleList", myOnVisibleList, oldSystemGroups & 1<<1);
+  myConf.get("OnInvisibleList", myOnInvisibleList, oldSystemGroups & 1<<2);
+  myConf.get("OnIgnoreList", myOnIgnoreList, oldSystemGroups & 1<<3);
+  myConf.get("OnlineNotify", myOnlineNotify, oldSystemGroups & 1<<0);
+  myConf.get("NewUser", myNewUser, oldSystemGroups & 1<<4);
+  myConf.get("Ip", temp, "0.0.0.0");
   struct in_addr in;
-  m_nIp = inet_pton(AF_INET, szTemp, &in);
+  m_nIp = inet_pton(AF_INET, temp.c_str(), &in);
   if (m_nIp > 0)
     m_nIp = in.s_addr;
-  m_fConf.ReadStr("IntIp", szTemp, "0.0.0.0");
-  m_nIntIp = inet_pton(AF_INET, szTemp, &in);
+  myConf.get("IntIp", temp, "0.0.0.0");
+  m_nIntIp = inet_pton(AF_INET, temp.c_str(), &in);
   if (m_nIntIp > 0)
     m_nIntIp = in.s_addr;
-  m_fConf.ReadNum("Port", m_nPort, 0);
-  //m_fConf.ReadBool("NewUser", m_bNewUser, false);
-  m_fConf.ReadNum("NewMessages", nNewMessages, 0);
-  m_fConf.ReadNum("LastOnline", nLast, 0);
-  m_nLastCounters[LAST_ONLINE] = nLast;
-  m_fConf.ReadNum("LastSent", nLast, 0);
-  m_nLastCounters[LAST_SENT_EVENT] = nLast;
-  m_fConf.ReadNum("LastRecv", nLast, 0);
-  m_nLastCounters[LAST_RECV_EVENT] = nLast;
-  m_fConf.ReadNum("LastCheckedAR", nLast, 0);
-  m_nLastCounters[LAST_CHECKED_AR] = nLast;
-  m_fConf.ReadNum("RegisteredTime", nLast, 0);
+  myConf.get("Port", m_nPort, 0);
+  myConf.get("NewMessages", nNewMessages, 0);
+  myConf.get("LastOnline", nLast, 0);
+  m_nLastCounters[Licq::LAST_ONLINE] = nLast;
+  myConf.get("LastSent", nLast, 0);
+  m_nLastCounters[Licq::LAST_SENT_EVENT] = nLast;
+  myConf.get("LastRecv", nLast, 0);
+  m_nLastCounters[Licq::LAST_RECV_EVENT] = nLast;
+  myConf.get("LastCheckedAR", nLast, 0);
+  m_nLastCounters[Licq::LAST_CHECKED_AR] = nLast;
+  myConf.get("RegisteredTime", nLast, 0);
   m_nRegisteredTime = nLast;
-  m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
-  m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
+  myConf.get("AutoAccept", myAutoAccept, 0);
+  unsigned icqStatusToUser;
+  myConf.get("StatusToUser", icqStatusToUser, ICQ_STATUS_OFFLINE);
+  m_nStatusToUser = icqStatusToUser;
   if (isUser()) // Only allow to keep a modified alias for user uins
-    m_fConf.ReadBool("KeepAliasOnUpdate", m_bKeepAliasOnUpdate, false);
+    myConf.get("KeepAliasOnUpdate", m_bKeepAliasOnUpdate, false);
   else
     m_bKeepAliasOnUpdate = false;
-  m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
-  m_fConf.ReadBool("SendIntIp", m_bSendIntIp, false);
-  SetCustomAutoResponse(szTemp);
-  m_fConf.ReadStr( "UserEncoding", szTemp, "" );
-  SetString( &m_szEncoding, szTemp );
-  m_fConf.ReadStr("History", szTemp, "default");
-  if (szTemp[0] == '\0') strcpy(szTemp, "default");
-  SetHistoryFile(szTemp);
-  m_fConf.ReadBool("AwaitingAuth", m_bAwaitingAuth, false);
-  m_fConf.ReadNum("SID", m_nSID[NORMAL_SID], 0);
-  m_fConf.ReadNum("InvisibleSID", m_nSID[INV_SID], 0);
-  m_fConf.ReadNum("VisibleSID", m_nSID[VIS_SID], 0);
-  m_fConf.ReadNum("GSID", m_nGSID, 0);
-  m_fConf.ReadNum("ClientTimestamp", m_nClientTimestamp, 0);
-  m_fConf.ReadNum("ClientInfoTimestamp", m_nClientInfoTimestamp, 0);
-  m_fConf.ReadNum("ClientStatusTimestamp", m_nClientStatusTimestamp, 0);
-  m_fConf.ReadNum("OurClientTimestamp", m_nOurClientTimestamp, 0);
-  m_fConf.ReadNum("OurClientInfoTimestamp", m_nOurClientInfoTimestamp, 0);
-  m_fConf.ReadNum("OurClientStatusTimestamp", m_nOurClientStatusTimestamp, 0);
-  m_fConf.ReadNum("PhoneFollowMeStatus", m_nPhoneFollowMeStatus,
-                  ICQ_PLUGIN_STATUSxINACTIVE);
-  m_fConf.ReadNum("ICQphoneStatus", m_nICQphoneStatus,
-                  ICQ_PLUGIN_STATUSxINACTIVE);
-  m_fConf.ReadNum("SharedFilesStatus", m_nSharedFilesStatus,
-                  ICQ_PLUGIN_STATUSxINACTIVE);
-  m_fConf.ReadBool("UseGPG", m_bUseGPG, false );
-  m_fConf.ReadStr("GPGKey", szTemp, "" );
-  SetString( &m_szGPGKey, szTemp );
-  m_fConf.ReadBool("SendServer", m_bSendServer, false);
-  m_fConf.ReadNum("PPFieldCount", nPPFieldCount, 0);
-  for (int i = 0; i < nPPFieldCount; i++)
+  myConf.get("CustomAutoRsp", myCustomAutoResponse, "");
+  myConf.get("SendIntIp", m_bSendIntIp, false);
+  myConf.get( "UserEncoding", myEncoding, "");
+  myConf.get("History", temp, "default");
+  if (temp.empty())
+    temp = "default";
+  SetHistoryFile(temp.c_str());
+  myConf.get("AwaitingAuth", m_bAwaitingAuth, false);
+  myConf.get("SID", m_nSID[Licq::NORMAL_SID], 0);
+  myConf.get("InvisibleSID", m_nSID[Licq::INV_SID], 0);
+  myConf.get("VisibleSID", m_nSID[Licq::VIS_SID], 0);
+  myConf.get("GSID", m_nGSID, 0);
+  myConf.get("ClientTimestamp", m_nClientTimestamp, 0);
+  myConf.get("ClientInfoTimestamp", m_nClientInfoTimestamp, 0);
+  myConf.get("ClientStatusTimestamp", m_nClientStatusTimestamp, 0);
+  myConf.get("OurClientTimestamp", m_nOurClientTimestamp, 0);
+  myConf.get("OurClientInfoTimestamp", m_nOurClientInfoTimestamp, 0);
+  myConf.get("OurClientStatusTimestamp", m_nOurClientStatusTimestamp, 0);
+  myConf.get("PhoneFollowMeStatus", m_nPhoneFollowMeStatus, ICQ_PLUGIN_STATUSxINACTIVE);
+  myConf.get("ICQphoneStatus", m_nICQphoneStatus, ICQ_PLUGIN_STATUSxINACTIVE);
+  myConf.get("SharedFilesStatus", m_nSharedFilesStatus, ICQ_PLUGIN_STATUSxINACTIVE);
+  myConf.get("UseGPG", m_bUseGPG, false );
+  myConf.get("GPGKey", myGpgKey, "");
+  myConf.get("SendServer", m_bSendServer, false);
+  myConf.get("PPFieldCount", nPPFieldCount, 0);
+  for (unsigned i = 0; i < nPPFieldCount; i++)
   {
     char szBuf[15];
-    char szTempName[MAX_LINE_LEN], szTempValue[MAX_LINE_LEN];
+    string tempName, tempValue;
     sprintf(szBuf, "PPField%d.Name", i+1);
-    m_fConf.ReadStr(szBuf, szTempName, "");
-    if (strcmp(szTempName, "") != 0)
+    myConf.get(szBuf, tempName, "");
+    if (!tempName.empty())
     {
       sprintf(szBuf, "PPField%d.Value", i+1);
-      m_fConf.ReadStr(szBuf, szTempValue, "");
-      if (strcmp(szTempValue, "") != 0)
-	m_mPPFields[szTempName] = szTempValue;
+      myConf.get(szBuf, tempValue, "");
+      if (!tempValue.empty())
+        m_mPPFields[tempName] = tempValue;
     }
   }
 
   unsigned int userGroupCount;
-  if (m_fConf.ReadNum("GroupCount", userGroupCount, 0))
+  if (myConf.get("GroupCount", userGroupCount, 0))
   {
     for (unsigned int i = 1; i <= userGroupCount; ++i)
     {
+      char szTemp[20];
       sprintf(szTemp, "Group%u", i);
       int groupId;
-      m_fConf.ReadNum(szTemp, groupId, 0);
+      myConf.get(szTemp, groupId, 0);
       if (groupId > 0)
         addToGroup(groupId);
     }
@@ -438,7 +434,7 @@ void Licq::User::LoadLicqInfo()
   {
     // Groupcount is missing in user config, try and read old group configuration
     unsigned int oldGroups;
-    m_fConf.ReadNum("Groups.User", oldGroups, 0);
+    myConf.get("Groups.User", oldGroups, 0);
     for (int i = 0; i <= 31; ++i)
       if (oldGroups & (1L << i))
         addToGroup(i+1);
@@ -448,10 +444,10 @@ void Licq::User::LoadLicqInfo()
 
   if (nNewMessages > 0)
   {
-    HistoryList hist;
+    Licq::HistoryList hist;
     if (GetHistory(hist))
     {
-      HistoryList::iterator it;
+      Licq::HistoryList::iterator it;
       if (hist.size() < nNewMessages)
         it = hist.begin();
       else
@@ -490,20 +486,8 @@ User::~User()
           USER_EVENTS, myId, nId));
   }
 
-  if ( m_szAutoResponse )
-      free( m_szAutoResponse );
-  if ( m_szEncoding )
-      free( m_szEncoding );
-  if ( m_szCustomAutoResponse )
-      free( m_szCustomAutoResponse );
   if ( m_szClientInfo )
       free( m_szClientInfo );
-  if ( m_szGPGKey )
-      free( m_szGPGKey );
-  if (m_szBuddyIconHash)
-    free(m_szBuddyIconHash);
-  if (m_szOurBuddyIconHash)
-    free(m_szOurBuddyIconHash);
 
   delete m_PhoneBook;
 /*
@@ -520,7 +504,7 @@ User::~User()
 
 void User::RemoveFiles()
 {
-  remove(m_fConf.FileName());
+  remove(myConf.filename().c_str());
 
   // Check for old history file and back up
   struct stat buf;
@@ -546,8 +530,8 @@ void User::Init()
 {
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
-  m_szAutoResponse = NULL;
-  m_szEncoding = strdup("");
+  myAutoResponse = "";
+  myEncoding = "";
   m_bSecure = false;
 
   // TODO: Only user data fields valid for protocol should be populated
@@ -618,17 +602,17 @@ void User::Init()
 
   // Picture
   m_bPicturePresent = false;
-  m_nBuddyIconType = 0;
-  m_nBuddyIconHashType = 0;
-  m_szBuddyIconHash = strdup("");
-  m_szOurBuddyIconHash = strdup("");
+  myBuddyIconType = 0;
+  myBuddyIconHashType = 0;
+  myBuddyIconHash = "";
+  myOurBuddyIconHash = "";
 
   // GPG key
-  m_szGPGKey = strdup("");
+  myGpgKey = "";
 
   // gui plugin compat
   SetStatus(ICQ_STATUS_OFFLINE);
-  SetAutoResponse("");
+  myAutoResponse = "";
   SetSendServer(false);
   SetSendIntIp(false);
   SetShowAwayMsg(false);
@@ -658,8 +642,8 @@ void User::Init()
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
   m_bKeepAliasOnUpdate = false;
   m_nStatus = ICQ_STATUS_OFFLINE;
-  m_nAutoAccept = 0;
-  m_szCustomAutoResponse = NULL;
+  myAutoAccept = 0;
+  myCustomAutoResponse = "";
   m_bConnectionInProgress = false;
   m_bAwaitingAuth = false;
   m_nSID[0] = m_nSID[1] = m_nSID[2] = 0;
@@ -669,20 +653,23 @@ void User::Init()
   myMutex.setName(myId.toString());
 }
 
-void Licq::User::SetPermanent()
+void User::SetPermanent()
 {
   // Set the flags and check for history file to recover
   AddToContactList();
 
   // Create the user file
-  char szFilename[MAX_FILENAME_LEN];
   char p[5];
-  protocolId_toStr(p, myId.protocolId());
-  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
-      myId.accountId().c_str(), p);
-  szFilename[MAX_FILENAME_LEN - 1] = '\0';
-  m_fConf.SetFileName(szFilename);
-  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+  Licq::protocolId_toStr(p, myId.protocolId());
+
+  string filename = BASE_DIR;
+  filename += "/";
+  filename += USER_DIR;
+  filename += "/";
+  filename += myId.accountId();
+  filename += ".";
+  filename += p;
+  myConf.setFilename(filename);
 
   // Save all the info now
   saveAll();
@@ -694,7 +681,6 @@ void Licq::User::SetPermanent()
 
 void Licq::User::SetDefaults()
 {
-  char szTemp[12];
   setAlias(myId.accountId());
   SetHistoryFile("default");
   myOnVisibleList = false;
@@ -705,8 +691,7 @@ void Licq::User::SetDefaults()
   SetAuthorization(false);
   myOnlineNotify = false;
 
-  szTemp[0] = '\0';
-  SetCustomAutoResponse(szTemp);
+  clearCustomAutoResponse();
 }
 
 string User::getUserInfoString(const string& key) const
@@ -812,12 +797,12 @@ std::string Licq::User::getEmail() const
   return email;
 }
 
-const char* Licq::User::UserEncoding() const
+string Licq::User::userEncoding() const
 {
-  if (m_szEncoding == NULL || m_szEncoding[0] == '\0')
+  if (myEncoding.empty())
     return gUserManager.DefaultUserEncoding();
   else
-    return m_szEncoding;
+    return myEncoding;
 }
 
 void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
@@ -1854,39 +1839,37 @@ void User::saveUserInfo()
 {
   if (!EnableSave()) return;
 
-  if (!m_fConf.ReloadFile())
+  if (!myConf.loadFile())
   {
      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
-  m_fConf.SetSection("user");
-  m_fConf.writeString("Alias", myAlias);
-  m_fConf.WriteBool("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
-  m_fConf.WriteNum("Timezone", m_nTimezone);
-  m_fConf.WriteBool("Authorization", m_bAuthorization);
+  myConf.setSection("user");
+  myConf.set("Alias", myAlias);
+  myConf.set("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
+  myConf.set("Timezone", m_nTimezone);
+  myConf.set("Authorization", m_bAuthorization);
 
   PropertyMap::const_iterator i;
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
-    m_fConf.writeVar(i->first, i->second);
+    myConf.set(i->first, i->second);
 
-  saveCategory(myInterests, m_fConf, "Interests");
-  saveCategory(myBackgrounds, m_fConf, "Backgrounds");
-  saveCategory(myOrganizations, m_fConf, "Organizations");
+  saveCategory(myInterests, myConf, "Interests");
+  saveCategory(myBackgrounds, myConf, "Backgrounds");
+  saveCategory(myOrganizations, myConf, "Organizations");
 
-  if (!m_fConf.FlushFile())
+  if (!myConf.writeFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
-
-  m_fConf.CloseFile();
 }
 
-void Licq::User::saveCategory(const UserCategoryMap& category, CIniFile& file, const string& key)
+void Licq::User::saveCategory(const UserCategoryMap& category, IniFile& file, const string& key)
 {
-  file.WriteNum(key + 'N', category.size());
+  file.set(key + 'N', category.size());
 
   UserCategoryMap::const_iterator i;
   unsigned int count = 0;
@@ -1894,17 +1877,17 @@ void Licq::User::saveCategory(const UserCategoryMap& category, CIniFile& file, c
   {
     char n[10];
     snprintf(n, sizeof(n), "%04X", count);
-    file.WriteNum(key + "Cat" + n, i->first);
-    file.writeString(key + "Desc" + n, i->second);
+    file.set(key + "Cat" + n, i->first);
+    file.set(key + "Desc" + n, i->second);
     ++count;
   }
 }
 
-void Licq::User::loadCategory(UserCategoryMap& category, CIniFile& file, const string& key)
+void Licq::User::loadCategory(UserCategoryMap& category, IniFile& file, const string& key)
 {
   category.clear();
   unsigned int count;
-  file.ReadNum(key + 'N', count, 0);
+  file.get(key + 'N', count, 0);
 
   if (count > MAX_CATEGORIES)
   {
@@ -1918,100 +1901,98 @@ void Licq::User::loadCategory(UserCategoryMap& category, CIniFile& file, const s
     snprintf(n, sizeof(n), "%04X", i);
 
     unsigned int cat;
-    if (!file.ReadNum(key + "Cat" + n, cat))
+    if (!file.get(key + "Cat" + n, cat))
       continue;
 
     string descr;
-    if (!file.readString(key + "Desc" + n, descr))
+    if (!file.get(key + "Desc" + n, descr))
       continue;
 
     category[cat] = descr;
   }
 }
 
-void Licq::User::SavePhoneBookInfo()
+void User::SavePhoneBookInfo()
 {
   if (!EnableSave()) return;
 
-  m_PhoneBook->SaveToDisk(m_fConf);
+  m_PhoneBook->SaveToDisk(myConf);
 }
 
-void Licq::User::SavePictureInfo()
+void User::SavePictureInfo()
 {
   if (!EnableSave()) return;
 
-  if (!m_fConf.ReloadFile())
+  if (!myConf.loadFile())
   {
      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
-  m_fConf.SetSection("user");
-  m_fConf.WriteBool("PicturePresent", m_bPicturePresent);
-  m_fConf.WriteNum("BuddyIconType", m_nBuddyIconType);
-  m_fConf.WriteNum("BuddyIconHashType", m_nBuddyIconHashType);
-  m_fConf.WriteStr("BuddyIconHash", m_szBuddyIconHash);
-  m_fConf.WriteStr("OurBuddyIconHash", m_szOurBuddyIconHash);
-  if (!m_fConf.FlushFile())
+  myConf.setSection("user");
+  myConf.set("PicturePresent", m_bPicturePresent);
+  myConf.set("BuddyIconType", myBuddyIconType);
+  myConf.set("BuddyIconHashType", myBuddyIconHashType);
+  myConf.set("BuddyIconHash", myBuddyIconHash);
+  myConf.set("OurBuddyIconHash", myOurBuddyIconHash);
+  if (!myConf.writeFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
-
-  m_fConf.CloseFile();
 }
 
-void Licq::User::SaveLicqInfo()
+void User::SaveLicqInfo()
 {
    if (!EnableSave()) return;
 
-   if (!m_fConf.ReloadFile())
-   {
+  if (!myConf.loadFile())
+  {
       gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
       return;
    }
    char buf[64];
-   m_fConf.SetSection("user");
-   m_fConf.WriteStr("History", HistoryName());
-   m_fConf.set("OnVisibleList", myOnVisibleList);
-   m_fConf.set("OnInvisibleList", myOnInvisibleList);
-   m_fConf.set("OnIgnoreList", myOnIgnoreList);
-   m_fConf.set("OnlineNotify", myOnlineNotify);
-   m_fConf.set("NewUser", myNewUser);
-   m_fConf.WriteStr("Ip", ip_ntoa(m_nIp, buf));
-   m_fConf.WriteStr("IntIp", ip_ntoa(m_nIntIp, buf));
-   m_fConf.WriteNum("Port", Port());
-   m_fConf.WriteNum("NewMessages", NewMessages());
-   m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());
-   m_fConf.WriteNum("LastSent", (unsigned long)LastSentEvent());
-   m_fConf.WriteNum("LastRecv", (unsigned long)LastReceivedEvent());
-   m_fConf.WriteNum("LastCheckedAR", (unsigned long)LastCheckedAutoResponse());
-   m_fConf.WriteNum("RegisteredTime", (unsigned long)RegisteredTime());
-   m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
-   m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
-   m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
-   m_fConf.WriteBool("SendIntIp", m_bSendIntIp);
-   m_fConf.WriteStr("UserEncoding", m_szEncoding);
-   m_fConf.WriteBool("AwaitingAuth", m_bAwaitingAuth);
-   m_fConf.WriteNum("SID", m_nSID[NORMAL_SID]);
-   m_fConf.WriteNum("InvisibleSID", m_nSID[INV_SID]);
-   m_fConf.WriteNum("VisibleSID", m_nSID[VIS_SID]);
-   m_fConf.WriteNum("GSID", m_nGSID);
-   m_fConf.WriteNum("ClientTimestamp", m_nClientTimestamp);
-   m_fConf.WriteNum("ClientInfoTimestamp", m_nClientInfoTimestamp);
-   m_fConf.WriteNum("ClientStatusTimestamp", m_nClientStatusTimestamp);
-   m_fConf.WriteNum("OurClientTimestamp", m_nOurClientTimestamp);
-   m_fConf.WriteNum("OurClientInfoTimestamp", m_nOurClientInfoTimestamp);
-   m_fConf.WriteNum("OurClientStatusTimestamp", m_nOurClientStatusTimestamp);
-   m_fConf.WriteNum("PhoneFollowMeStatus", m_nPhoneFollowMeStatus);
-   m_fConf.WriteNum("ICQphoneStatus", m_nICQphoneStatus);
-   m_fConf.WriteNum("SharedFilesStatus", m_nSharedFilesStatus);
-   m_fConf.WriteBool("UseGPG", m_bUseGPG );
-   m_fConf.WriteStr("GPGKey", m_szGPGKey );
-   m_fConf.WriteBool("SendServer", m_bSendServer);
-   m_fConf.WriteNum("PPFieldCount", (unsigned short)m_mPPFields.size());
+  myConf.setSection("user");
+  myConf.set("History", HistoryName());
+  myConf.set("OnVisibleList", myOnVisibleList);
+  myConf.set("OnInvisibleList", myOnInvisibleList);
+  myConf.set("OnIgnoreList", myOnIgnoreList);
+  myConf.set("OnlineNotify", myOnlineNotify);
+  myConf.set("NewUser", myNewUser);
+  myConf.set("Ip", ip_ntoa(m_nIp, buf));
+  myConf.set("IntIp", ip_ntoa(m_nIntIp, buf));
+  myConf.set("Port", Port());
+  myConf.set("NewMessages", NewMessages());
+  myConf.set("LastOnline", (unsigned long)LastOnline());
+  myConf.set("LastSent", (unsigned long)LastSentEvent());
+  myConf.set("LastRecv", (unsigned long)LastReceivedEvent());
+  myConf.set("LastCheckedAR", (unsigned long)LastCheckedAutoResponse());
+  myConf.set("RegisteredTime", (unsigned long)RegisteredTime());
+  myConf.set("AutoAccept", myAutoAccept);
+  myConf.set("StatusToUser", m_nStatusToUser);
+  myConf.set("CustomAutoRsp", customAutoResponse());
+  myConf.set("SendIntIp", m_bSendIntIp);
+  myConf.set("UserEncoding", myEncoding);
+  myConf.set("AwaitingAuth", m_bAwaitingAuth);
+  myConf.set("SID", m_nSID[Licq::NORMAL_SID]);
+  myConf.set("InvisibleSID", m_nSID[Licq::INV_SID]);
+  myConf.set("VisibleSID", m_nSID[Licq::VIS_SID]);
+  myConf.set("GSID", m_nGSID);
+  myConf.set("ClientTimestamp", m_nClientTimestamp);
+  myConf.set("ClientInfoTimestamp", m_nClientInfoTimestamp);
+  myConf.set("ClientStatusTimestamp", m_nClientStatusTimestamp);
+  myConf.set("OurClientTimestamp", m_nOurClientTimestamp);
+  myConf.set("OurClientInfoTimestamp", m_nOurClientInfoTimestamp);
+  myConf.set("OurClientStatusTimestamp", m_nOurClientStatusTimestamp);
+  myConf.set("PhoneFollowMeStatus", m_nPhoneFollowMeStatus);
+  myConf.set("ICQphoneStatus", m_nICQphoneStatus);
+  myConf.set("SharedFilesStatus", m_nSharedFilesStatus);
+  myConf.set("UseGPG", m_bUseGPG );
+  myConf.set("GPGKey", myGpgKey );
+  myConf.set("SendServer", m_bSendServer);
+  myConf.set("PPFieldCount", (unsigned short)m_mPPFields.size());
 
    map<string,string>::iterator iter;
    int i = 0;
@@ -2019,50 +2000,46 @@ void Licq::User::SaveLicqInfo()
    {
      char szBuf[25];
      sprintf(szBuf, "PPField%d.Name", ++i);
-     m_fConf.WriteStr(szBuf, iter->first.c_str());
+      myConf.set(szBuf, iter->first);
      sprintf(szBuf, "PPField%d.Value", i);
-     m_fConf.WriteStr(szBuf, iter->second.c_str());
+      myConf.set(szBuf, iter->second);
    }
 
-  m_fConf.WriteNum("GroupCount", static_cast<unsigned int>(myGroups.size()));
+  myConf.set("GroupCount", static_cast<unsigned int>(myGroups.size()));
   i = 1;
-  for (UserGroupList::iterator g = myGroups.begin(); g != myGroups.end(); ++g)
+  for (Licq::UserGroupList::iterator g = myGroups.begin(); g != myGroups.end(); ++g)
   {
     sprintf(buf, "Group%u", i);
-    m_fConf.WriteNum(buf, *g);
+    myConf.set(buf, *g);
     ++i;
   }
 
-   if (!m_fConf.FlushFile())
-   {
+  if (!myConf.writeFile())
+  {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
    }
-
-   m_fConf.CloseFile();
 }
 
-void Licq::User::SaveNewMessagesInfo()
+void User::SaveNewMessagesInfo()
 {
    if (!EnableSave()) return;
 
-   if (!m_fConf.ReloadFile())
-   {
+  if (!myConf.loadFile())
+  {
       gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
       return;
    }
-   m_fConf.SetSection("user");
-   m_fConf.WriteNum("NewMessages", NewMessages());
-   if (!m_fConf.FlushFile())
-   {
+  myConf.setSection("user");
+  myConf.set("NewMessages", NewMessages());
+  if (!myConf.writeFile())
+  {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
    }
-
-   m_fConf.CloseFile();
 }
 
 void Licq::User::saveAll()

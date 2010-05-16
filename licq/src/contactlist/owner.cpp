@@ -19,62 +19,61 @@ using namespace LicqDaemon;
 Owner::Owner(const UserId& id)
   : User(id, true)
 {
-  // Pretend to be temporary to LicqUser constructior so it doesn't setup m_fConf
+  // Pretend to be temporary to LicqUser constructior so it doesn't setup myConf
   // Restore NotInList flag to proper value when we get here
   m_bNotInList = false;
   m_bOnContactList = true;
 
-  char szTemp[MAX_LINE_LEN];
-  char filename[MAX_FILENAME_LEN];
   m_bException = false;
   m_bSavePassword = true;
-  m_szPassword = NULL;
-  m_nPDINFO = 0;
+  myPassword = "";
+  myPDINFO = 0;
 
   // Get data from the config file
   char p[5];
   Licq::protocolId_toStr(p, myId.protocolId());
-  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s", BASE_DIR, p);
-  filename[MAX_FILENAME_LEN - 1] = '\0';
-
-  m_fConf.SetFileName(filename);
-  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
-  m_fConf.ReloadFile();
-  m_fConf.CreateSection("user");
-  m_fConf.FlushFile();
-  m_fConf.SetFlags(0);
+  string filename = BASE_DIR;
+  filename += "/owner.";
+  filename += p;
+  myConf.setFilename(filename);
+  myConf.loadFile();
+  myConf.setSection("user");
+  myConf.writeFile();
 
   // Make sure config file is mode 0600
-  if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
+  if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) == -1)
   {
     gLog.Warn(tr("%sUnable to set %s to mode 0600. Your password is vulnerable if stored locally.\n"),
-                 L_WARNxSTR, filename);
+        L_WARNxSTR, filename.c_str());
   }
 
   // And finally our favorite function
   LoadInfo();
   // Owner encoding fixup to be UTF-8 by default
-  if (strcmp(m_szEncoding, "") == 0)
-    SetString(&m_szEncoding, "UTF-8");
-  m_fConf.ReadStr("Password", szTemp, "", false);
-  SetPassword(&szTemp[1]); // skip leading space since we didn't trim
-  m_fConf.ReadBool("WebPresence", m_bWebAware, false);
-  m_fConf.ReadBool("HideIP", m_bHideIp, false);
-  m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
-  m_fConf.ReadStr("AutoResponse", szTemp, "");
-  m_fConf.ReadNum("SSTime", m_nSSTime, 0L);
-  m_fConf.ReadNum("SSCount", m_nSSCount, 0);
-  m_fConf.ReadNum("PDINFO", m_nPDINFO, 0);
-
-  SetAutoResponse(szTemp);
-
-  m_fConf.CloseFile();
+  if (myEncoding.empty())
+    myEncoding = "UTF-8";
+  myConf.get("Password", myPassword, "");
+  myConf.get("WebPresence", m_bWebAware, false);
+  myConf.get("HideIP", m_bHideIp, false);
+  myConf.get("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
+  myConf.get("AutoResponse", myAutoResponse, "");
+  unsigned long sstime;
+  myConf.get("SSTime", sstime, 0);
+  m_nSSTime = sstime;
+  myConf.get("SSCount", mySsCount, 0);
+  myConf.get("PDINFO", myPDINFO, 0);
 
   gLog.Info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myId.toString().c_str());
 
-  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/owner.%s.%s.history", BASE_DIR, HISTORY_DIR,
-      myId.accountId().c_str(), p);
-    SetHistoryFile(filename);
+  filename = BASE_DIR;
+  filename += "/";
+  filename += HISTORY_DIR;
+  filename += "/owner.";
+  filename += myId.accountId();
+  filename += ".";
+  filename += p;
+  filename += ".history";
+  SetHistoryFile(filename.c_str());
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != Licq::TIMEZONE_UNKNOWN)
   {
@@ -88,27 +87,23 @@ Owner::Owner(const UserId& id)
 Owner::~Owner()
 {
   // Save the current auto response
-  if (!m_fConf.ReloadFile())
+  if (!myConf.loadFile())
   {
      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
-  m_fConf.SetSection("user");
-  m_fConf.WriteStr("AutoResponse", AutoResponse());
-  m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
-  m_fConf.WriteNum("SSCount", m_nSSCount);
-  m_fConf.WriteNum("PDINFO", m_nPDINFO);
-  if (!m_fConf.FlushFile())
+  myConf.setSection("user");
+  myConf.set("AutoResponse", myAutoResponse);
+  myConf.set("SSTime", (unsigned long)m_nSSTime);
+  myConf.set("SSCount", mySsCount);
+  myConf.set("PDINFO", myPDINFO);
+  if (!myConf.writeFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
-  m_fConf.CloseFile();
-
-  if ( m_szPassword )
-    free( m_szPassword );
 }
 
 unsigned long Licq::Owner::AddStatusFlags(unsigned long s) const
@@ -129,41 +124,39 @@ unsigned long Licq::Owner::AddStatusFlags(unsigned long s) const
   return s;
 }
 
-void Licq::Owner::SaveLicqInfo()
+void Owner::SaveLicqInfo()
 {
   if (!EnableSave()) return;
 
   User::SaveLicqInfo();
 
-  if (!m_fConf.ReloadFile())
+  if (!myConf.loadFile())
   {
      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
-  m_fConf.SetSection("user");
-  m_fConf.writeString("Uin", accountId());
-  m_fConf.WriteBool("WebPresence", WebAware());
-  m_fConf.WriteBool("HideIP", HideIp());
-  m_fConf.WriteBool("Authorization", GetAuthorization());
-  m_fConf.WriteNum("RCG", RandomChatGroup());
-  m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
-  m_fConf.WriteNum("SSCount", m_nSSCount);
-  m_fConf.WriteNum("PDINFO", m_nPDINFO);
+  myConf.setSection("user");
+  myConf.set("Uin", accountId());
+  myConf.set("WebPresence", WebAware());
+  myConf.set("HideIP", HideIp());
+  myConf.set("Authorization", GetAuthorization());
+  myConf.set("RCG", RandomChatGroup());
+  myConf.set("SSTime", (unsigned long)m_nSSTime);
+  myConf.set("SSCount", mySsCount);
+  myConf.set("PDINFO", myPDINFO);
 
   if (m_bSavePassword)
-    m_fConf.WriteStr("Password", Password());
+    myConf.set("Password", myPassword);
   else
-    m_fConf.WriteStr("Password", "");
+    myConf.set("Password", "");
 
-  if (!m_fConf.FlushFile())
+  if (!myConf.writeFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
-
-  m_fConf.CloseFile();
 }
 
 void Licq::Owner::SetStatusOffline()

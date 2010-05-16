@@ -2,13 +2,13 @@
 #define LICQ_CONTACTLIST_USER_H
 
 #include <boost/noncopyable.hpp>
+#include <cstring> // strdup
 #include <list>
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
 
-#include "licq_file.h"
 #include "../buffer.h"
 #include "../thread/lockable.h"
 #include "../userid.h"
@@ -25,11 +25,13 @@ extern "C" void SetString(char **, const char *);
 
 namespace LicqDaemon
 {
+class User;
 class UserManager;
 }
 
 namespace Licq
 {
+class IniFile;
 
 typedef enum EGender
 {
@@ -150,7 +152,7 @@ private:
 
   std::vector<struct PhoneBookEntry> PhoneBookVector;
 
-  friend class User;
+  friend class LicqDaemon::User;
 };
 
 
@@ -202,11 +204,11 @@ public:
   virtual void RemoveFiles() = 0;
 
   void saveAll();
-  virtual void SaveLicqInfo();
+  virtual void SaveLicqInfo() = 0;
   virtual void saveUserInfo() = 0;
-  void SavePhoneBookInfo();
-  void SavePictureInfo();
-  void SaveNewMessagesInfo();
+  virtual void SavePhoneBookInfo() = 0;
+  virtual void SavePictureInfo() = 0;
+  virtual void SaveNewMessagesInfo() = 0;
 
   /**
    * Get id for user. This is an id used locally by Licq and is persistant for
@@ -295,10 +297,10 @@ public:
 
   // Picture Info
   bool GetPicturePresent() const                { return m_bPicturePresent; }
-  unsigned short BuddyIconType() const          { return m_nBuddyIconType; }
-  char BuddyIconHashType() const                { return m_nBuddyIconHashType; }
-  const char* BuddyIconHash() const             { return m_szBuddyIconHash; }
-  const char* OurBuddyIconHash() const          { return m_szOurBuddyIconHash; }
+  unsigned buddyIconType() const                { return myBuddyIconType; }
+  char buddyIconHashType() const                { return myBuddyIconHashType; }
+  const std::string& buddyIconHash() const      { return myBuddyIconHash; }
+  const std::string& ourBuddyIconHash() const   { return myOurBuddyIconHash; }
 
   // Dynamic info fields for protocol plugins
   std::string GetPPField(const std::string &);
@@ -311,9 +313,9 @@ public:
   unsigned short GetGSID() const                { return m_nGSID; }
 
   //!Retrieves the user's auto response message that was last seen.
-  const char* AutoResponse() const              { return m_szAutoResponse; }
+  const std::string& autoResponse() const       { return myAutoResponse; }
   //!Retrieves the encoding Licq uses for this user
-  const char* UserEncoding() const;
+  std::string userEncoding() const;
   //!True if they have sent the UTF8 Cap
   bool SupportsUTF8() const                     { return m_bSupportsUTF8; }
   bool SendServer() const                       { return m_bSendServer; }
@@ -342,18 +344,18 @@ public:
   time_t IdleSince() const                      { return m_nIdleSince; }
   time_t RegisteredTime() const                 { return m_nRegisteredTime; }
   bool UseGPG() const                           { return m_bUseGPG; }
-  const char* GPGKey() const                    { return m_szGPGKey; }
-  bool AutoChatAccept() const                   { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
-  bool AutoFileAccept() const                   { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
-  bool AutoSecure() const                       { return m_nAutoAccept & AUTO_SECURE; }
-  bool AcceptInAway() const                     { return m_nAutoAccept & ACCEPT_IN_AWAY; }
-  bool AcceptInNA() const                       { return m_nAutoAccept & ACCEPT_IN_NA; }
-  bool AcceptInOccupied() const                 { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
-  bool AcceptInDND() const                      { return m_nAutoAccept & ACCEPT_IN_DND; }
+  const std::string& gpgKey() const             { return myGpgKey; }
+  bool AutoChatAccept() const                   { return myAutoAccept & AUTO_ACCEPT_CHAT; }
+  bool AutoFileAccept() const                   { return myAutoAccept & AUTO_ACCEPT_FILE; }
+  bool AutoSecure() const                       { return myAutoAccept & AUTO_SECURE; }
+  bool AcceptInAway() const                     { return myAutoAccept & ACCEPT_IN_AWAY; }
+  bool AcceptInNA() const                       { return myAutoAccept & ACCEPT_IN_NA; }
+  bool AcceptInOccupied() const                 { return myAutoAccept & ACCEPT_IN_OCCUPIED; }
+  bool AcceptInDND() const                      { return myAutoAccept & ACCEPT_IN_DND; }
   unsigned short StatusToUser() const           { return m_nStatusToUser; }
   unsigned statusToUser() const                 { return statusFromIcqStatus(m_nStatusToUser); }
   bool KeepAliasOnUpdate() const                { return m_bKeepAliasOnUpdate; }
-  char *CustomAutoResponse() const              { return m_szCustomAutoResponse; }
+  const std::string& customAutoResponse() const { return myCustomAutoResponse; }
   bool NotInList() const                        { return m_bNotInList; }
 
   char* usprintf(const char* szFormat, unsigned long nFlags = 0) const;
@@ -413,10 +415,10 @@ public:
 
   // Picture info
   void SetPicturePresent(bool b)      { m_bPicturePresent = b; SavePictureInfo(); }
-  void SetBuddyIconType(unsigned short s) { m_nBuddyIconType = s; }
-  void SetBuddyIconHashType(char s)   { m_nBuddyIconHashType = s; }
-  void SetBuddyIconHash(char *s)      { SetString(&m_szBuddyIconHash, s); }
-  void SetOurBuddyIconHash(char *s)   { SetString(&m_szOurBuddyIconHash, s); }
+  void setBuddyIconType(unsigned s)     { myBuddyIconType = s; }
+  void setBuddyIconHashType(char s)     { myBuddyIconHashType = s; }
+  void setBuddyIconHash(const std::string& s) { myBuddyIconHash = s; }
+  void setOurBuddyIconHash(const std::string& s) { myOurBuddyIconHash = s; }
 
   // Licq Info
   void SetAwaitingAuth(bool b)        { m_bAwaitingAuth = b; }
@@ -428,8 +430,8 @@ public:
   void SetSendServer(bool s)          { m_bSendServer = s; SaveLicqInfo(); }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned short s)  { m_nSequence = s; }
-  void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
-  void SetUserEncoding(const char* s) { SetString(&m_szEncoding, s); }
+  void setAutoResponse(const std::string& s) { myAutoResponse = s; }
+  void setUserEncoding(const std::string& s) { myEncoding = s; }
   void SetSupportsUTF8(bool b)        { m_bSupportsUTF8 = b; }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
   void SetMode(char s)                { m_nMode = s; }
@@ -443,27 +445,27 @@ public:
   void SetOurClientStatusTimestamp(unsigned long s) { m_nOurClientStatusTimestamp = s; }
   void SetUserUpdated(bool s)         { m_bUserUpdated = s; }
   void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
-  void SetAutoChatAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_CHAT : m_nAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
-  void SetAutoFileAccept(bool s)      { s ? m_nAutoAccept |= AUTO_ACCEPT_FILE : m_nAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
-  void SetAutoSecure(bool s)          { s ? m_nAutoAccept |= AUTO_SECURE : m_nAutoAccept &= ~AUTO_SECURE; SaveLicqInfo(); }
-  void SetAcceptInAway(bool s)        { s ? m_nAutoAccept |= ACCEPT_IN_AWAY : m_nAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
-  void SetAcceptInNA(bool s)          { s ? m_nAutoAccept |= ACCEPT_IN_NA : m_nAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
-  void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
-  void SetAcceptInDND(bool s)         { s ? m_nAutoAccept |= ACCEPT_IN_DND : m_nAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
+  void SetAutoChatAccept(bool s)      { s ? myAutoAccept |= AUTO_ACCEPT_CHAT : myAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
+  void SetAutoFileAccept(bool s)      { s ? myAutoAccept |= AUTO_ACCEPT_FILE : myAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
+  void SetAutoSecure(bool s)          { s ? myAutoAccept |= AUTO_SECURE : myAutoAccept &= ~AUTO_SECURE; SaveLicqInfo(); }
+  void SetAcceptInAway(bool s)        { s ? myAutoAccept |= ACCEPT_IN_AWAY : myAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
+  void SetAcceptInNA(bool s)          { s ? myAutoAccept |= ACCEPT_IN_NA : myAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
+  void SetAcceptInOccupied(bool s)    { s ? myAutoAccept |= ACCEPT_IN_OCCUPIED : myAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
+  void SetAcceptInDND(bool s)         { s ? myAutoAccept |= ACCEPT_IN_DND : myAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
   void SetUseGPG(bool b)                        { m_bUseGPG = b; SaveLicqInfo(); }
-  void SetGPGKey(const char *c)                 { SetString(&m_szGPGKey, c); SaveLicqInfo(); }
+  void setGpgKey(const std::string& c) { myGpgKey = c; SaveLicqInfo(); }
   void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
   void setStatusToUser(unsigned s) { SetStatusToUser(icqStatusFromStatus(s)); }
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
-  void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
-  void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
+  void setCustomAutoResponse(const std::string& s) { myCustomAutoResponse = s; SaveLicqInfo(); }
+  void clearCustomAutoResponse()            { setCustomAutoResponse(""); }
 
   void SetClientInfo(const char *s)
   {
     free(m_szClientInfo);
     m_szClientInfo = (s ? strdup(s) : NULL);
   }
-  void SetPermanent();
+  virtual void SetPermanent() = 0;
 
   // Dynamic info fields for protocol plugins
   bool SetPPField(const std::string &, const std::string &);
@@ -766,7 +768,7 @@ protected:
    * @param file User file, must already be open
    * @param key Base name of key in file for entries
    */
-  void saveCategory(const UserCategoryMap& category, CIniFile& file,
+  void saveCategory(const UserCategoryMap& category, Licq::IniFile& file,
       const std::string& key);
 
   /**
@@ -776,12 +778,8 @@ protected:
    * @param file User file, must already be open
    * @param key Base name of key in file for entries
    */
-  void loadCategory(UserCategoryMap& category, CIniFile& file,
+  void loadCategory(UserCategoryMap& category, Licq::IniFile& file,
       const std::string& key);
-
-  void LoadPhoneBookInfo();
-  void LoadPictureInfo();
-  void LoadLicqInfo();
 
   void SetDefaults();
   virtual void AddToContactList() = 0;
@@ -813,7 +811,6 @@ protected:
 
   UserId myId;
 
-  CIniFile m_fConf;
   int m_nNormalSocketDesc, m_nInfoSocketDesc, m_nStatusSocketDesc;
   time_t m_nTouched;
   time_t m_nLastCounters[4];
@@ -826,7 +823,7 @@ protected:
   unsigned long m_nOurClientTimestamp, m_nOurClientInfoTimestamp;
   unsigned long m_nOurClientStatusTimestamp;
   bool m_bUserUpdated;
-  unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
+  unsigned m_nPort, m_nLocalPort, m_nConnectionVersion;
   bool myIsTyping;
   unsigned long m_nStatus;
   unsigned myStatus;
@@ -835,10 +832,10 @@ protected:
   unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   char m_nMode;
   char *m_szClientInfo;
-  char *m_szAutoResponse;
-  char *m_szEncoding;
+  std::string myAutoResponse;
+  std::string myEncoding;
   bool m_bSupportsUTF8;
-  char *m_szCustomAutoResponse;
+  std::string myCustomAutoResponse;
   bool myOnlineNotify;
   bool myOnVisibleList;
   bool myOnInvisibleList;
@@ -854,12 +851,12 @@ protected:
        m_bNotInList;
   unsigned short m_nStatusToUser, m_nSendLevel;
   bool m_bKeepAliasOnUpdate;
-  unsigned short m_nAutoAccept;
+  unsigned myAutoAccept;
   bool myOnEventsBlocked;
 
   // GPG data
   bool m_bUseGPG;
-  char *m_szGPGKey;
+  std::string myGpgKey;
 
   // General Info
   std::string myAlias;
@@ -876,17 +873,18 @@ protected:
 
   // Picture Info
   bool m_bPicturePresent;
-  unsigned short m_nBuddyIconType;
-  char m_nBuddyIconHashType;
-  char *m_szBuddyIconHash, *m_szOurBuddyIconHash;
+  unsigned myBuddyIconType;
+  unsigned myBuddyIconHashType;
+  std::string myBuddyIconHash;
+  std::string myOurBuddyIconHash;
 
   // Dynamic info fields for protocol plugins
   std::map<std::string, std::string> m_mPPFields;
 
   // Server Side ID, Group SID
   bool m_bAwaitingAuth;
-  unsigned short m_nSID[3];
-  unsigned short m_nGSID;
+  unsigned m_nSID[3];
+  unsigned m_nGSID;
 
   // Extra TLVs attached to this user's SSI info
   // We use a map to allow fast access to the TLV by type, even though the

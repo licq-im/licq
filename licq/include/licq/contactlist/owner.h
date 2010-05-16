@@ -17,8 +17,8 @@ public:
   bool Exception() const                        { return m_bException; }
 
   // Owner specific functions
-  const char* Password() const                  { return(m_szPassword); }
-  void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
+  const std::string& password() const           { return myPassword; }
+  void setPassword(const std::string& s)        { myPassword = s; SaveLicqInfo(); }
   void SetWebAware(bool b)     {  m_bWebAware = b; SaveLicqInfo(); }
   virtual void SetWebAwareStatus(char c) { SetWebAware(c); }
   void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
@@ -33,30 +33,30 @@ public:
   // Server Side List functions
   time_t GetSSTime() const                      { return m_nSSTime; }
   void SetSSTime(time_t t)            { m_nSSTime = t; }
-  unsigned short GetSSCount() const             { return m_nSSCount; }
-  void SetSSCount(unsigned short n)   { m_nSSCount = n; }
-  unsigned short GetPDINFO() const              { return m_nPDINFO; }
-  void SetPDINFO(unsigned short n)    { m_nPDINFO = n; SaveLicqInfo(); }
+  unsigned short GetSSCount() const             { return mySsCount; }
+  void SetSSCount(unsigned short n)             { mySsCount = n; }
+  unsigned short GetPDINFO() const              { return myPDINFO; }
+  void SetPDINFO(unsigned short n)              { myPDINFO = n; SaveLicqInfo(); }
 
   void SetPicture(const char *f);
 
   // Virtual overloaded functions
-  virtual void SaveLicqInfo();
+  virtual void SaveLicqInfo() = 0;
   virtual void SetStatusOffline();
 
   virtual bool isUser() const                   { return false; }
 protected:
   virtual ~Owner() { /* Empty */ }
 
-  char *m_szPassword;
+  std::string myPassword;
   bool m_bException,
        m_bWebAware,
        m_bHideIp,
        m_bSavePassword;
   unsigned long  m_nRandomChatGroup;
-  unsigned short m_nSSCount;
+  unsigned mySsCount;
   time_t m_nSSTime;
-  unsigned short m_nPDINFO;
+  unsigned myPDINFO;
 };
 
 /**
