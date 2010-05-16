@@ -1,5 +1,33 @@
 Change log for Licq.
 
+New in 1.3.9
+o Various bugs in both Licq and plugins that caused crashes and hangings have been fixed 
+o Hebrew support was broken and could cause crashes 
+o Licq will automatically switch to qt4-gui if qt-gui fails to load on startup 
+o Sockets would become IPv6 only if system default was to not allow IPv4 
+o Build: --disable-hebrew caused hebrew support to be enabled 
+o Build: Wrong header files were included on FreeBSD 
+o Build: Various fixes to remove build warnings 
+o Console: Command to add contact was not working 
+o Console: Backspace across multiple lines wasn't handled correct 
+o ICQ: Deleting a contact would not update the server side list 
+o ICQ: Failed log on did not report it was ICQ protocol that failed
+o ICQ: Removing a user from the server ignore list was not possible 
+o MSN: Contacts with status Occupied were handled as Away 
+o MSN: Own status for Occupied was reported as Do Not Disturb 
+o MSN: Failed log on due to wrong password was not signaled to GUI
+o LicqWeb: Added option to set status Free For Chat 
+o Qt-Gui: Confirmation to ignore user never appeared 
+o Qt4-Gui: Added option to permanently add "Not in list" users 
+o Qt4-Gui: Adding user from search dialog did not pass on user id to add dialog 
+o Qt4-Gui: Confirmation to ignore user appeared when removing instead of adding 
+o Qt4-Gui: User count in group header was wrong if group contained ignored users 
+o Qt4-Gui: Added confirmation dialog when removing an account 
+o Qt4-Gui: Shift+Return can be used to make new line in single line chat mode 
+o Qt4-Gui: Added shortcut to chat dialog for opening next unread message
+o Qt4-Gui: Renaming groups from contact list did not save the new group name
+
+
 New in 1.3.8
 o Plugin API: Added GPG functions so plugins don't need to depend on gpgme anymore 
 o Qt4-Gui: Fixed a bug that could cause GUI to crash on startup 
