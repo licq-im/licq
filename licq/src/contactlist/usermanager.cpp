@@ -3,12 +3,13 @@
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
 
-#include "gettext.h"
+#include <licq_file.h>
 #include <licq_icq.h>
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_events.h"
 
+#include "../gettext.h"
 #include "../protocolmanager.h"
 #include "group.h"
 #include "owner.h"

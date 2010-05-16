@@ -77,7 +77,7 @@ void UserHistory::setFile(const string& filename, const UserId& userId)
 /* szResult[0] != ':' doubles to check if strlen(szResult) < 1 */
 #define GET_VALID_LINE_OR_BREAK \
   { \
-    if ((szResult = fgets(sz, MAX_LINE_LEN, f)) == NULL || szResult[0] != ':') \
+    if ((szResult = fgets(sz, sizeof(sz), f)) == NULL || szResult[0] != ':') \
       break; \
     szResult[strlen(szResult) - 1] = '\0'; \
   }
@@ -85,7 +85,7 @@ void UserHistory::setFile(const string& filename, const UserId& userId)
 #define GET_VALID_LINES \
   { \
     unsigned short nPos = 0; \
-    while ((szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') \
+    while ((szResult = fgets(sz, sizeof(sz), f)) != NULL && sz[0] == ':') \
     { \
       if (nPos < MAX_HISTORY_MSG_SIZE) \
       { \
@@ -107,12 +107,12 @@ void UserHistory::setFile(const string& filename, const UserId& userId)
 
 #define SKIP_VALID_LINES \
   { \
-    while ((szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') ; \
+    while ((szResult = fgets(sz, sizeof(sz), f)) != NULL && sz[0] == ':') ; \
   }
 
 #define SKIP_LINE \
   { \
-	  szResult = fgets(sz, MAX_LINE_LEN, f); \
+    szResult = fgets(sz, sizeof(sz), f); \
   }
 
 bool UserHistory::load(Licq::HistoryList& lHistory) const
@@ -136,21 +136,21 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
   }
 
   // Now read in a line at a time
-  char sz[MAX_LINE_LEN], *szResult, szMsg[MAX_HISTORY_MSG_SIZE + 1];
+  char sz[4096], *szResult, szMsg[MAX_HISTORY_MSG_SIZE + 1];
   unsigned long nFlags;
   unsigned short nCommand, nSubCommand;
   time_t tTime;
   char cDir;
   CUserEvent *e;
-  szResult = fgets(sz, MAX_LINE_LEN, f);
+  szResult = fgets(sz, sizeof(sz), f);
   while(true)
   {
     while (szResult != NULL && sz[0] != '[')
-      szResult = fgets(sz, MAX_LINE_LEN, f);
+      szResult = fgets(sz, sizeof(sz), f);
     if (szResult == NULL) break;
     // Zero unused part of sz to avoid interpreting garbage if sz is too
     // short
-    memset(sz + strlen(sz) + 1, '\0', MAX_LINE_LEN - strlen(sz) - 1);
+    memset(sz + strlen(sz) + 1, '\0', sizeof(sz) - strlen(sz) - 1);
     //"[ C | 0000 | 0000 | 0000 | 000... ]"
     cDir = sz[2];
     // Stick some \0's in to terminate strings

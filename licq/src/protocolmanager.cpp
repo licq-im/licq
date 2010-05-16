@@ -129,7 +129,7 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
 
     isOffline = !owner->isOnline();
     if (message != KeepAutoResponse)
-      owner->SetAutoResponse(message.c_str());
+      owner->setAutoResponse(message);
   }
 
   unsigned long eventId = 0;
@@ -353,7 +353,7 @@ unsigned long ProtocolManager::requestUserPicture(const UserId& userId)
     if (!user.isLocked())
       return 0;
 
-    iconHashSize = strlen(user->BuddyIconHash());
+    iconHashSize = user->buddyIconHash().size();
     sendServer = (user->SocketDesc(ICQ_CHNxINFO) < 0);
   }
 

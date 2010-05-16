@@ -20,6 +20,7 @@
 #include "oneventmanager.h"
 
 #include <licq_constants.h>
+#include <licq_file.h>
 #include <licq_icq.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>

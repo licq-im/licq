@@ -1012,8 +1012,8 @@ void *UpdateUsers_tep(void *p)
         }
 
         if (d->UseServerSideBuddyIcons() && d->AutoUpdateInfo() &&
-            strlen(pUser->BuddyIconHash()) > 0 &&
-            strcmp(pUser->BuddyIconHash(), pUser->OurBuddyIconHash()) != 0)
+            pUser->buddyIconHash().size() > 0 &&
+            pUser->buddyIconHash() != pUser->ourBuddyIconHash())
         {
           d->m_xBARTService->SendEvent(pUser->id(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
           bSent = true;

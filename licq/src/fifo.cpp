@@ -314,9 +314,8 @@ static int fifo_status( int argc, const char *const *argv, void* /* data */)
   // Now set the auto response
   if( argc > 2 )
   {
-    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-    o->SetAutoResponse(argv[2]);
-    gUserManager.DropOwner(o);
+    Licq::OwnerWriteGuard o(LICQ_PPID);
+    o->setAutoResponse(argv[2]);
   }
 
   return 0;
@@ -332,9 +331,8 @@ static int fifo_auto_response( int argc, const char *const *argv, void* /* data 
     return -1;
   }
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-  o->SetAutoResponse(argv[1]);
-  gUserManager.DropOwner(o);
+  Licq::OwnerWriteGuard o(LICQ_PPID);
+  o->setAutoResponse(argv[1]);
 
   return 0;
 }

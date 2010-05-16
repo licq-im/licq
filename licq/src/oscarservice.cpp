@@ -162,7 +162,7 @@ bool COscarService::SendBARTFam(ICQEvent *e)
       if (u == NULL)
         return false;
       CPU_RequestBuddyIcon *p = new CPU_RequestBuddyIcon(u->accountId().c_str(),
-          u->BuddyIconType(), u->BuddyIconHashType(), u->BuddyIconHash(), myFam);
+          u->buddyIconType(), u->buddyIconHashType(), u->buddyIconHash().c_str(), myFam);
       gLog.Info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
                 L_SRVxSTR, u->GetAlias(), p->Sequence(), p->SubSequence());
       gUserManager.DropUser(u);
@@ -372,7 +372,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
             packet.UnpackChar(); // HashType once more
             char HashLength2 = packet.UnpackChar(); // Hash once more
             packet.incDataPosRead(HashLength2); // Hash once more
-            u->SetOurBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
+            u->setOurBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
 
             gLog.Info(tr("%sBuddy icon reply for %s.\n"), L_SRVxSTR, u->GetAlias());
             unsigned short IconLen = packet.UnpackUnsignedShortBE();

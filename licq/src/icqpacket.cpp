@@ -805,20 +805,15 @@ CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char
   : CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxAUTHxLOGON)
 {
   // truncate password to MAX 8 characters
-  char szPass[MAX_LINE_LEN];
-  if (strlen(szPassword) > 8)
+  string pass = szPassword;
+  if (pass.size() > 8)
   {
     gLog.Warn(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
-    strncpy(szPass, szPassword, 8);
-    szPass[8] = '\0';
-  }
-  else
-  {
-    strcpy(szPass, szPassword);
+    pass.erase(8);
   }
 
   std::string toHash = szMD5Salt;
-  toHash += szPass;
+  toHash += pass;
   toHash += "AOL Instant Messenger (SM)";
   unsigned char szDigest[MD5_DIGEST_LENGTH];
   Licq::md5((const unsigned char*)toHash.c_str(), toHash.size(), szDigest);
@@ -860,15 +855,11 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
   // truncate password to MAX 8 characters
-  char szPass[MAX_LINE_LEN];
-  if (strlen(szPassword) > 8)
+  string pass = szPassword;
+  if (pass.size() > 8)
   {
     gLog.Warn(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
-    strncpy(szPass, szPassword, 8);
-  }
-  else
-  {
-    strcpy(szPass, szPassword);
+    pass.erase(8);
   }
 
   char szEncPass[16];
@@ -885,7 +876,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   m_nTcpVersion = ICQ_VERSION_TCP;
   
   unsigned int uinlen = strlen(szUin);
-  unsigned int pwlen = strlen(szPass);
+  unsigned int pwlen = pass.size();
 
   m_nSize = uinlen + pwlen + 74;
   InitBuffer();
@@ -894,7 +885,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   unsigned char xor_table[] = { 0xf3, 0x26, 0x81, 0xc4, 0x39, 0x86, 0xdb, 0x92,
                            0x71, 0xa3, 0xb9, 0xe6, 0x53, 0x7a, 0x95, 0x7c};
   for (j = 0; j < pwlen; j++)
-    szEncPass[j] = (szPass[j] ^ xor_table[j]);
+    szEncPass[j] = (pass[j] ^ xor_table[j]);
   szEncPass[j] = 0;
 
   buffer->PackUnsignedLongBE(0x00000001);
@@ -2344,14 +2335,14 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
         u->StatusToUser() != ICQ_STATUS_ONLINE)  ?
         u->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
     {
-      if (*u->CustomAutoResponse())
+      if (!u->customAutoResponse().empty())
       {
-        //m_szMessage = (char *)malloc(strlen(u->CustomAutoResponse()) + 512);
-        //pUser->usprintf(m_szMessage, u->CustomAutoResponse(), USPRINTF_NTORN);
+        //m_szMessage = (char *)malloc(u->customAutoResponse().size() + 512);
+        //pUser->usprintf(m_szMessage, u->customAutoResponse().c_str(), USPRINTF_NTORN);
         char *cus;
         char *def;
-        def = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-        cus = u->usprintf(u->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+        def = u->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+        cus = u->usprintf(u->customAutoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
         m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
         sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
         free(cus);
@@ -2359,7 +2350,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
       }
       else
       {
-        m_szMessage = u->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+        m_szMessage = u->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
       }
     }
     else
@@ -4561,11 +4552,11 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
           case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
           case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
           case ICQ_STATUS_DND:
-            m_nStatus = (*user->CustomAutoResponse() && _nSubCommand == ICQ_CMDxTCP_READxDNDxMSG)
+            m_nStatus = (!user->customAutoResponse().empty() && _nSubCommand == ICQ_CMDxTCP_READxDNDxMSG)
               ? ICQ_TCPxACK_DNDxCAR : ICQ_TCPxACK_DND;
             break;
           case ICQ_STATUS_OCCUPIED:
-            m_nStatus = (*user->CustomAutoResponse() && _nSubCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
+            m_nStatus = (!user->customAutoResponse().empty() && _nSubCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
               ? ICQ_TCPxACK_OCCUPIEDxCAR : ICQ_TCPxACK_OCCUPIED;
             break;
           case ICQ_STATUS_ONLINE:
@@ -5077,14 +5068,14 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
        pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
       pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
   {
-    if (*pUser->CustomAutoResponse())
+    if (!pUser->customAutoResponse().empty())
     {
-      //m_szMessage = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
-      //pUser->usprintf(m_szMessage, pUser->CustomAutoResponse(), USPRINTF_NTORN);
+      //m_szMessage = (char *)malloc(pUser->customAutoResponse().size() + 512);
+      //pUser->usprintf(m_szMessage, pUser->customAutoResponse().c_str(), USPRINTF_NTORN);
       char *cus;
       char *def;
-      def = pUser->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-      cus = pUser->usprintf(pUser->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      def = pUser->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      cus = pUser->usprintf(pUser->customAutoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
       m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
       sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
       free(cus);
@@ -5092,7 +5083,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
     }
     else
     {
-      m_szMessage = pUser->usprintf(o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      m_szMessage = pUser->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
     }
 
   }

@@ -1716,9 +1716,9 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   {
     if (bIsAck)
     {
-      if (strcmp(u->AutoResponse(), message))
+      if (u->autoResponse() != message)
       {
-        u->SetAutoResponse(message);
+        u->setAutoResponse(message);
         u->SetShowAwayMsg(*message);
         gLog.Info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
                   nMsgID[1]);

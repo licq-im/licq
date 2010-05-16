@@ -100,15 +100,15 @@ void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, con
       if (!gTranslator.isAscii(mDos))
       {
         u = gUserManager.fetchUser(userId);
-        if (u && u->UserEncoding())
-          szFromEncoding = strdup(u->UserEncoding());
+        if (u && !u->userEncoding().empty())
+          szFromEncoding = strdup(u->userEncoding().c_str());
 
         if (u && isdigit(u->IdString()[0]))
         {
           // ICQ Users can send a flag that says UTF8/16 is ok
           if (u->SupportsUTF8())
             nCharset = CHARSET_UNICODE;
-          else if (u->UserEncoding())
+          else if (!u->userEncoding().empty())
             nCharset = CHARSET_CUSTOM;
         }
         else if(u && !(isdigit(u->IdString()[0])))
@@ -256,7 +256,7 @@ void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const s
   {
     unsigned short nCharset = 0;
     u = gUserManager.fetchUser(userId);
-    if (u && u->UserEncoding())
+    if (u && !u->userEncoding().empty())
       nCharset = 3;
     gUserManager.DropUser(u);
 
@@ -2577,9 +2577,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     else
     {
       // Update the away message if it's changed
-      if (strcmp(u->AutoResponse(), message))
+      if (u->autoResponse() != message)
       {
-        u->SetAutoResponse(message);
+          u->setAutoResponse(message);
         u->SetShowAwayMsg(*message);
         gLog.Info(tr("%sAuto response from %s (#%hu)%s.\n"), L_TCPxSTR,
                   u->GetAlias(), -theSequence, l);

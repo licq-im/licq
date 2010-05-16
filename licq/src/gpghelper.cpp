@@ -98,7 +98,7 @@ char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
     Licq::UserReadGuard u(userId);
     if (u.isLocked())
     {
-      const char *tmp = u->GPGKey();
+      const char* tmp = u->gpgKey().c_str();
       if ( tmp && tmp[0]!='\0' )
         strncpy( buf, tmp, MAX_LINE_LEN-1 );
     }

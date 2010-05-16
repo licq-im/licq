@@ -1447,7 +1447,7 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
     gLog.Error("%sNo registered user, unable to process logon attempt.\n", L_ERRORxSTR);
     return 0;
   }
-  if (o->Password()[0] == '\0')
+  if (o->password().empty())
   {
     gUserManager.DropOwner(o);
     gLog.Error(tr("%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"), L_ERRORxSTR);
@@ -2101,9 +2101,9 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
     {
       gLog.Info(tr("%sReceived away message for %s.\n"), L_SRVxSTR, szId);
       ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
-      if (strcmp(szAwayMsg, u->AutoResponse()))
+      if (szAwayMsg != u->autoResponse())
       {
-        u->SetAutoResponse(szAwayMsg);
+        u->setAutoResponse(szAwayMsg);
         u->SetShowAwayMsg(*szAwayMsg);
       }
       gUserManager.DropUser(u);
@@ -2307,7 +2307,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
                        L_UNKNOWNxSTR, u->GetAlias(), u->IdString(),
                        (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS));
         nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
-        u->SetAutoResponse(NULL);
+        u->setAutoResponse("");
         u->SetShowAwayMsg(false);
 
         delete [] szClient;
@@ -2354,7 +2354,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Unknown("%sUnknown status flag for %s: 0x%08lX\n",
                        L_UNKNOWNxSTR, u->GetAlias(),
                        nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS);
-        u->SetAutoResponse(NULL);
+        u->setAutoResponse("");
         u->SetShowAwayMsg(false);
       }
     }
@@ -2541,9 +2541,9 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
             boost::scoped_array<char> HashHex(new char[HashLength*2 + 1]);
             
             BART_info.UnpackBinBlock(Hash.get(), HashLength);
-            u->SetBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
-            u->SetBuddyIconType(IconType);
-            u->SetBuddyIconHashType(HashType);
+              u->setBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
+              u->setBuddyIconType(IconType);
+              u->setBuddyIconHashType(HashType);
             u->SavePictureInfo();
           }
           break;
@@ -2765,7 +2765,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     
       if (nEncoding == 2) // utf-8 or utf-16?
       {
-        const char* szEncoding = ignore ? "" : u->UserEncoding();
+            const char* szEncoding = ignore ? "" : u->userEncoding().c_str();
         char* szTmpMsg = gTranslator.FromUTF16(szMessage, szEncoding, nMsgLen);
         delete [] szMessage;
         szMessage = szTmpMsg;
@@ -3557,9 +3557,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     else
     {
       // Update the away message if it's changed
-      if (strcmp(u->AutoResponse(), szMessage))
+      if (u->autoResponse() != szMessage)
       {
-        u->SetAutoResponse(szMessage);
+        u->setAutoResponse(szMessage);
         u->SetShowAwayMsg(*szMessage);
         gLog.Info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR,
           u->GetAlias(), nMsgID);
@@ -4685,7 +4685,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           o->SetEnableSave(false);
-          o->SetPassword(((CPU_SetPassword *)pEvent->m_pPacket)->m_szPassword);
+              o->setPassword(((CPU_SetPassword *)pEvent->m_pPacket)->m_szPassword);
           o->SetEnableSave(true);
           o->SaveLicqInfo();
               gUserManager.DropOwner(o);
@@ -5260,7 +5260,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           // Skip the alias if user wants to keep his own.
           if (!u->m_bKeepAliasOnUpdate || userId == gUserManager.ownerUserId(LICQ_PPID))
           {
-            char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
+                  char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->userEncoding().c_str()) : 0;
             gTranslator.ServerToClient(szUTFAlias);
                   u->setAlias(szUTFAlias);
             //printf("Alias: %s\n", szUTFAlias);
@@ -5739,7 +5739,7 @@ void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       if (o)
       {
-        o->SetPassword(m_szRegisterPasswd);
+        o->setPassword(m_szRegisterPasswd);
         gUserManager.DropOwner(o);
         free(m_szRegisterPasswd);
         m_szRegisterPasswd = 0;
@@ -5763,7 +5763,7 @@ void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
     {
       char *md5Salt = packet.UnpackStringBE();
       const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-      CPU_NewLogon *p = new CPU_NewLogon(o->Password(), o->IdString(), md5Salt);
+      CPU_NewLogon* p = new CPU_NewLogon(o->password().c_str(), o->accountId().c_str(), md5Salt);
       gUserManager.DropOwner(o);
       gLog.Info(tr("%sSending md5 hashed password.\n"), L_SRVxSTR);
       SendEvent_Server(p);

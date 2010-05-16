@@ -22,6 +22,7 @@
 // Localization
 #include "gettext.h"
 
+#include <licq_file.h>
 #include "licq_utility.h"
 #include "licq_log.h"
 #include "licq_user.h"
