@@ -165,13 +165,13 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
   if (subSignal == 0 || subSignal == USER_SECURITY)
   {
     mySecure = u->Secure();
-    myGPGKey = (u->GPGKey() != 0) && (strcmp(u->GPGKey(), "") != 0);
+    myGPGKey = !u->gpgKey().empty();
     myGPGKeyEnabled = u->UseGPG();
   }
 
   if (subSignal == 0 || subSignal == USER_SETTINGS)
   {
-    myCustomAR = u->CustomAutoResponse()[0] != '\0';
+    myCustomAR = !u->customAutoResponse().empty();
     myNotInList = u->NotInList();
     myNewUser = u->NewUser();
     myAwaitingAuth = u->GetAwaitingAuth();
@@ -745,10 +745,9 @@ QString ContactUserData::tooltip() const
   if (u->isOnline() && u->ClientInfo() && *u->ClientInfo())
     s += "<br>" + codec->toUnicode(u->ClientInfo());
 
-  if (u->AutoResponse() && *u->AutoResponse() &&
-      myStatus & User::MessageStatuses)
+  if (!u->autoResponse().empty() && myStatus & User::MessageStatuses)
     s += "<br><u>" + tr("Auto Response:") + "</u><br>&nbsp;&nbsp;&nbsp;" +
-      codec->toUnicode(u->AutoResponse()).trimmed()
+      codec->toUnicode(u->autoResponse().c_str()).trimmed()
       .replace("\n", "<br>&nbsp;&nbsp;&nbsp;");
 
   if (config->popupEmail())

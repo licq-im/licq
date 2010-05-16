@@ -92,7 +92,7 @@ const QTextCodec* UserCodec::defaultEncoding()
 
 const QTextCodec* UserCodec::codecForUser(const LicqUser* u)
 {
-  const char* preferred_encoding = u->UserEncoding();
+  const char* preferred_encoding = u->userEncoding().c_str();
 
   if (preferred_encoding && *preferred_encoding)
   {

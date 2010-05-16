@@ -377,7 +377,7 @@ void UserEventCommon::setEncoding(QAction* action)
     if (u != NULL)
     {
       u->SetEnableSave(false);
-      u->SetUserEncoding(encoding.toLatin1());
+      u->setUserEncoding(encoding.toLatin1().data());
       u->SetEnableSave(true);
       u->SaveLicqInfo();
       gUserManager.DropUser(u);

@@ -395,7 +395,7 @@ void ProcessSignal(LicqSignal* s)
     bool want_osd_msgs_only=false; // though we don't want OSD we want msgs
     bool secure=false;
   unsigned status = User::OnlineStatus;
-  const char* userencoding = NULL;
+  string userencoding;
   const CUserEvent* e = NULL;
 
     switch (s->Signal()) // signaltype
@@ -474,7 +474,7 @@ void ProcessSignal(LicqSignal* s)
 		    notify=u->OnlineNotify();
 		    ignore=u->InvisibleList() || u->IgnoreList();
           status = u->status();
-			userencoding=u->UserEncoding(); // needed in translate function
+          userencoding = u->userEncoding(); // needed in translate function
             secure=u->Secure();
 
           char* username_translated_temp = my_translate(s->userId(), username.c_str(), "UTF-8");
@@ -541,7 +541,7 @@ void ProcessSignal(LicqSignal* s)
 		    ((config.Showmessages==2)&&(notify))
 		   )
 		{
-          char* translated = my_translate(s->userId(), e->Text(), userencoding);
+          char* translated = my_translate(s->userId(), e->Text(), userencoding.c_str());
 		    string msg="";
 		    if (secure && config.marksecuremessages)
 			msg="(S) ";

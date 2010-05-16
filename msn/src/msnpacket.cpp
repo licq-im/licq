@@ -305,27 +305,27 @@ CPS_MSNGetServer::CPS_MSNGetServer() : CMSNPacket()
   m_pBuffer->Pack(szParams, strlen(szParams));
 };
 
-CPS_MSNAuthenticate::CPS_MSNAuthenticate(char *_szUserName, char *_szPassword, const char *szCookie)
+CPS_MSNAuthenticate::CPS_MSNAuthenticate(char *_szUserName, const string& password, const char *szCookie)
   : CMSNPacket()
 {
   //TODO make a real url encoder
-  char *szPassword = new char[strlen(_szPassword) * 3 + 1];
+  char *szPassword = new char[password.size() * 3 + 1];
   char *szUserName = new char[strlen(_szUserName) * 3 + 1];
-  memset(szPassword, 0, (strlen(_szPassword) * 3) + 1);
+  memset(szPassword, 0, (password.size() * 3) + 1);
   memset(szUserName, 0, (strlen(_szUserName) * 3) + 1);
   char *szPasswd = szPassword;
   char *szUser = szUserName;
   unsigned int i;
-  for (i = 0; i < strlen(_szPassword); i++)
+  for (i = 0; i < password.size(); i++)
   {
-    if (isalnum(_szPassword[i]))
+    if (isalnum(password[i]))
     {
-      *szPasswd = _szPassword[i];
+      *szPasswd = password[i];
       szPasswd += 1;
     }
     else
     {
-      sprintf(szPasswd, "%%%02X", _szPassword[i]); 
+      sprintf(szPasswd, "%%%02X", password[i]);
       szPasswd += 3;
     }
   }

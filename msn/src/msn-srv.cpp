@@ -177,7 +177,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       if (u.isLocked())
       {
         u->SetEnableSave(false);
-        u->SetUserEncoding("UTF-8"); 
+        u->setUserEncoding("UTF-8");
         u->SetInvisibleList(nLists & FLAG_BLOCK_LIST);
         
         if (!u->KeepAliasOnUpdate())
@@ -416,7 +416,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         string strFromAddr = packet->GetValue("From-Addr");
         string strSubject = packet->GetValue("Subject");
         
-        string strToHash = m_strMSPAuth + "9" + m_szPassword;
+        string strToHash = m_strMSPAuth + "9" + myPassword;
         unsigned char szDigest[16];
         char szHexOut[32];
         Licq::md5((const uint8_t*)strToHash.c_str(), strToHash.size(), szDigest);
@@ -528,7 +528,7 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned status)
     }
     m_szUserName = strdup(o->accountId().c_str());
     myOwnerId = o->id();
-    m_szPassword = strdup(o->Password());
+    myPassword = o->password();
   }
 
   SrvSocket* sock = new SrvSocket(myOwnerId);
@@ -627,7 +627,7 @@ void CMSN::MSNAddUser(const UserId& userId)
     if (u.isLocked())
     {
       u->SetEnableSave(false);
-      u->SetUserEncoding("UTF-8");
+      u->setUserEncoding("UTF-8");
       u->SetEnableSave(true);
       u->SaveLicqInfo();
     }

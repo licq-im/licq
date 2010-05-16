@@ -30,6 +30,7 @@
 #include "licq_log.h"
 #include "licq_message.h"
 #include <licq/conversation.h>
+#include <licq/inifile.h>
 
 #include "msn.h"
 #include "msnpacket.h"
@@ -77,30 +78,25 @@ CMSN::CMSN(int _nPipe) : m_vlPacketBucket(211)
   myStatus = Licq::User::OfflineStatus;
   myOldStatus = Licq::User::OnlineStatus;
   m_szUserName = 0;
-  m_szPassword = 0;
+  myPassword = "";
   m_nSessionStart = 0;
   
   // Config file
   char szFileName[MAX_FILENAME_LEN];
   sprintf(szFileName, "%slicq_msn.conf", BASE_DIR);
-  CIniFile msnConf;
-  if (!msnConf.LoadFile(szFileName))
+  Licq::IniFile msnConf(szFileName);
+  if (!msnConf.loadFile())
   {
     FILE *f = fopen(szFileName, "w");
     fprintf(f, "[network]");
     fclose(f);
-    msnConf.LoadFile(szFileName);
+    msnConf.loadFile();
   }  
 
-  char tmpStr[MAX_LINE_LEN];
-
-  msnConf.SetSection("network");
-  msnConf.ReadNum("ListVersion", m_nListVersion, 0);
-  msnConf.ReadStr("MsnServerAddress", tmpStr, MSN_DEFAULT_SERVER_ADDRESS);
-  myServerAddress = tmpStr;
-  msnConf.ReadNum("MsnServerPort", myServerPort, MSN_DEFAULT_SERVER_PORT);
-
-  msnConf.CloseFile();
+  msnConf.setSection("network");
+  msnConf.get("ListVersion", m_nListVersion, 0);
+  msnConf.get("MsnServerAddress", myServerAddress, MSN_DEFAULT_SERVER_ADDRESS);
+  msnConf.get("MsnServerPort", myServerPort, MSN_DEFAULT_SERVER_PORT);
 
   // pthread stuff now
   pthread_mutex_init(&mutex_StartList, 0);
@@ -115,20 +111,16 @@ CMSN::~CMSN()
     delete m_pPacketBuf;
   if (m_szUserName)
     free(m_szUserName);
-  if (m_szPassword)
-    free(m_szPassword);
-    
+
   // Config file
   char szFileName[MAX_FILENAME_LEN];
   sprintf(szFileName, "%slicq_msn.conf", BASE_DIR);
-  CIniFile msnConf;
-  if (msnConf.LoadFile(szFileName))
+  Licq::IniFile msnConf(szFileName);
+  if (msnConf.loadFile())
   {
-    msnConf.SetSection("network");
-    
-    msnConf.WriteNum("ListVersion", m_nListVersion);
-    msnConf.FlushFile();
-    msnConf.CloseFile();
+    msnConf.setSection("network");
+    msnConf.set("ListVersion", m_nListVersion);
+    msnConf.writeFile();
   }
 }
 

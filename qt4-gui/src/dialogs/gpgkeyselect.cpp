@@ -67,14 +67,14 @@ GPGKeySelect::GPGKeySelect(const UserId& userId, QWidget* parent)
 
   top_lay->addWidget(new QLabel(tr("Select a GPG key for user %1.")
         .arg(QString::fromUtf8(u->GetAlias()))));
-  if (strcmp(u->GPGKey(), "") == 0)
+  if (u->gpgKey().empty())
     top_lay->addWidget(new QLabel(tr("Current key: No key selected")));
   else
     top_lay->addWidget(new QLabel(tr("Current key: %1")
-          .arg(QString::fromLocal8Bit(u->GPGKey()))));
+          .arg(QString::fromLocal8Bit(u->gpgKey().c_str()))));
 
   useGPG = new QCheckBox(tr("Use GPG Encryption"));
-  useGPG->setChecked(u->UseGPG() || strcmp(u->GPGKey(), "") == 0);
+  useGPG->setChecked(u->UseGPG() || u->gpgKey().empty());
   top_lay->addWidget(useGPG);
 
   // Filter
@@ -146,7 +146,7 @@ void GPGKeySelect::slot_ok()
     LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
     if (u != NULL)
     {
-      u->SetGPGKey(curItem->text(2).toAscii());
+      u->setGpgKey(curItem->text(2).toAscii().data());
       u->SetUseGPG(useGPG->isChecked());
       gUserManager.DropUser(u);
 
@@ -163,7 +163,7 @@ void GPGKeySelect::slotNoKey()
   LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if ( u )
   {
-    u->SetGPGKey( "" );
+    u->setGpgKey( "" );
     gUserManager.DropUser( u );
 
     // Notify all plugins (including ourselves)
@@ -232,7 +232,7 @@ void KeyView::testViewItem(QTreeWidgetItem* item, const LicqUser* u)
       val++;
   }
 
-  if (item->text(2).contains(u->GPGKey(), Qt::CaseInsensitive))
+  if (item->text(2).contains(u->gpgKey().c_str(), Qt::CaseInsensitive))
     val += 10;
 
   if (val > maxItemVal)

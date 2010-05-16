@@ -637,8 +637,7 @@ int CRMSClient::StateMachine()
       if (!o.isLocked())
         return -1;
 
-      bool ok = (o->accountId() == m_szCheckId &&
-         (strcmp(o->Password(), data_line) == 0));
+      bool ok = (o->accountId() == m_szCheckId && o->password() == data_line);
       free(m_szCheckId);
       m_szCheckId = 0;
       if (!ok)
@@ -1285,12 +1284,12 @@ int CRMSClient::Process_AR_text()
   if (!myUserId.isValid())
   {
     Licq::OwnerWriteGuard o(LICQ_PPID);
-    o->SetAutoResponse(m_szText);
+    o->setAutoResponse(m_szText);
   }
   else
   {
     Licq::UserWriteGuard u(myUserId);
-    u->SetCustomAutoResponse(m_szText);
+    u->setCustomAutoResponse(m_szText);
   }
 
   fprintf(fs, "%d Auto response saved.\n", CODE_RESULTxSUCCESS);

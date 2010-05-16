@@ -868,7 +868,7 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
     waddch(winMain->Win(), '\n');
     ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     winMain->wprintf("%B%CAuto response:\n%b%s\n",
-                     COLOR_WHITE, o->AutoResponse());
+        COLOR_WHITE, o->autoResponse().c_str());
     gUserManager.DropOwner(o);
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)

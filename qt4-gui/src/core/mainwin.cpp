@@ -261,7 +261,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
     o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     if (o != NULL)
     {
-     if (o->Password()[0] == '\0')
+     if (o->password().empty())
      {
        gUserManager.DropOwner(o);
        new UserSelectDlg();

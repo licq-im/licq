@@ -159,8 +159,8 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
       .arg(QString::fromUtf8(o->GetAlias())));
 
   const QTextCodec* codec = UserCodec::defaultEncoding();
-  if (*o->AutoResponse())
-    myAwayMsg->setText(codec->toUnicode(o->AutoResponse()));
+  if (!o->autoResponse().empty())
+    myAwayMsg->setText(codec->toUnicode(o->autoResponse().c_str()));
   else
     myAwayMsg->setText(tr("I'm currently %1, %a.\n"
           "You can leave me a message.\n"

@@ -1216,7 +1216,7 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
     msg = tr("%1 is in %2 mode:\n%3\nSend...")
       .arg(QString::fromUtf8(u->GetAlias()))
         .arg(u->statusString().c_str())
-      .arg(myCodec->toUnicode(u->AutoResponse()));
+      .arg(myCodec->toUnicode(u->autoResponse().c_str()));
 
     u->SetShowAwayMsg(false);
     gUserManager.DropUser(u);

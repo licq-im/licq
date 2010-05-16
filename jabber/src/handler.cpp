@@ -115,7 +115,7 @@ void Handler::onUserAdded(const std::string& id,
   }
   user->SetGroups(glist);
 
-  user->SetUserEncoding("UTF-8");
+  user->setUserEncoding("UTF-8");
   if (!user->KeepAliasOnUpdate())
     user->setAlias(name);
 
@@ -186,5 +186,5 @@ std::string Handler::getStatusMessage(unsigned status)
   if (!o.isLocked())
     return string();
 
-  return o->AutoResponse();
+  return o->autoResponse();
 }

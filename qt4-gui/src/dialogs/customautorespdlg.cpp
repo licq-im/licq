@@ -75,8 +75,8 @@ CustomAutoRespDlg::CustomAutoRespDlg(const UserId& userId, QWidget* parent)
     return;
 
   setWindowTitle(tr("Set Custom Auto Response for %1").arg(QString::fromUtf8(u->GetAlias())));
-  if (u->CustomAutoResponse()[0] != '\0')
-    myMessage->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
+  if (!u->customAutoResponse().empty())
+    myMessage->setText(QString::fromLocal8Bit(u->customAutoResponse().c_str()));
   else
   {
     unsigned status = u->statusToUser();
@@ -100,7 +100,7 @@ void CustomAutoRespDlg::ok()
   LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u != NULL)
   {
-    u->SetCustomAutoResponse(s.toLocal8Bit());
+    u->setCustomAutoResponse(s.toLocal8Bit().data());
     gUserManager.DropUser(u);
 
     // Notify all plugins (including ourselves)
@@ -114,7 +114,7 @@ void CustomAutoRespDlg::clear()
   LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u != NULL)
   {
-    u->ClearCustomAutoResponse();
+    u->clearCustomAutoResponse();
     gUserManager.DropUser(u);
 
     // Notify all plugins (including ourselves)

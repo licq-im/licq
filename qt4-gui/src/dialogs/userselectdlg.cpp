@@ -95,7 +95,7 @@ UserSelectDlg::UserSelectDlg(QWidget* parent)
     return;
   }
   cmbUser->addItem(QString("%1 (%2)").arg(o->GetAlias()).arg(o->IdString()));
-  edtPassword->setText(o->Password());
+  edtPassword->setText(o->password().c_str());
   gUserManager.DropOwner(o);
 
   // Wait for dialog to finish before returning to caller
@@ -115,7 +115,7 @@ void UserSelectDlg::slot_ok()
     return;
   }
   o->SetSavePassword(chkSavePassword->isChecked());
-  o->SetPassword(edtPassword->text().toLatin1());
+  o->setPassword(edtPassword->text().toLatin1().data());
   gUserManager.DropOwner(o);
 
   close();

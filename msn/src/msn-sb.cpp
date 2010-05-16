@@ -67,7 +67,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         {
           // MSN uses UTF-8 so we need to set this for all new users automatically
           u->SetEnableSave(false);
-          u->SetUserEncoding("UTF-8");
+          u->setUserEncoding("UTF-8");
           u->SetEnableSave(true);
           u->SaveLicqInfo();
         }
@@ -536,7 +536,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     if (newUser)
     {
       u->SetEnableSave(false);
-      u->SetUserEncoding("UTF-8");
+      u->setUserEncoding("UTF-8");
       u->SetEnableSave(true);
       u->SaveLicqInfo();
     }

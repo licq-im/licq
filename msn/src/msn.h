@@ -162,7 +162,7 @@ private:
   // Config
   unsigned long m_nListVersion;
   std::string myServerAddress;
-  unsigned short myServerPort;
+  unsigned myServerPort;
 
   // Variables
   bool m_bExit;
@@ -194,8 +194,8 @@ private:
                   mutex_Bucket;
     
   char *m_szUserName,
-       *m_szPassword,
        *m_szCookie;
+  std::string myPassword;
 
   friend class CMSNDataEvent;
 };

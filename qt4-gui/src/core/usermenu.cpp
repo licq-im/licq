@@ -272,7 +272,7 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeStatusOccupied]->setChecked(u->statusToUser() & User::OccupiedStatus);
   myMiscModesActions[ModeStatusDnd]->setChecked(u->statusToUser() & User::DoNotDisturbStatus);
 
-  myCustomArAction->setChecked(u->CustomAutoResponse()[0] != '\0');
+  myCustomArAction->setChecked(!u->customAutoResponse().empty());
 
   mySendActions[SendChat]->setEnabled(u->isOnline());
   mySendActions[SendFile]->setEnabled(u->isOnline());
@@ -523,7 +523,7 @@ void UserMenu::toggleMiscMode(QAction* action)
 
     case ModeUseGpg:
     {
-      if (strcmp(u->GPGKey(), "") != 0)
+      if (!u->gpgKey().empty())
       {
         u->SetUseGPG(newState);
         gUserManager.DropUser(u);

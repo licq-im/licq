@@ -354,7 +354,7 @@ void UserPages::Settings::apply(LicqUser* user)
   user->setStatusToUser(statusToUser);
 
   // Set auto response (empty string will disable custom auto response)
-  user->SetCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit());
+  user->setCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit().data());
 }
 
 void UserPages::Settings::apply2(const UserId& userId)

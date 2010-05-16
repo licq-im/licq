@@ -200,7 +200,7 @@ void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strPa
 
   gSocketMan.AddSocket(sock);
   m_nSSLSocket = sock->Descriptor();
-  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, m_szPassword, m_szCookie);
+  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), m_szCookie);
   sock->SSLSend(pHello->getBuffer());
   gSocketMan.DropSocket(sock);
 }
@@ -232,7 +232,7 @@ void CMSN::MSNAuthenticate(char *szCookie)
   
   gSocketMan.AddSocket(sock);
   m_nSSLSocket = sock->Descriptor();
-  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, m_szPassword, szCookie);
+  CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), szCookie);
   sock->SSLSend(pHello->getBuffer());
   gSocketMan.DropSocket(sock);
 }

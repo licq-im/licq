@@ -307,7 +307,7 @@ int CLicqConsole::Run()
   else
   {
     ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-    if (o->Password()[0] == '\0')
+    if (o->password().empty())
     {
       gUserManager.DropOwner(o);
       UserSelect();
@@ -800,7 +800,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
         {
           u = gUserManager.fetchUser(e->userId());
           win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
-              u->GetAlias(), u->statusString().c_str(), u->AutoResponse());
+              u->getAlias().c_str(), u->statusString().c_str(), u->autoResponse().c_str());
           gUserManager.DropUser(u);
         }
         else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
@@ -892,7 +892,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
           u = gUserManager.fetchUser(e->userId());
           if (u != NULL && u->Away() && u->ShowAwayMsg())
           {
-            win->wprintf("%s\n", u->AutoResponse());
+            win->wprintf("%s\n", u->autoResponse().c_str());
           }
           gUserManager.DropUser(u);
         }
@@ -2152,7 +2152,7 @@ void CLicqConsole::InputAutoResponse(int cIn)
     {
       *sz = '\0';
       ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-      o->SetAutoResponse(data->szRsp);
+      o->setAutoResponse(data->szRsp);
       gUserManager.DropOwner(o);
       winMain->wprintf("%C%AAuto-response set.\n",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
@@ -3066,7 +3066,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             winMain->wprintf("Registration complete for user %s\n",data->szUin);
             gUserManager.AddOwner(data->szUin, LICQ_PPID);
             ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-            owner->SetPassword(data->szPassword1);
+            owner->setPassword(data->szPassword1);
             gUserManager.DropOwner(owner);
             gLicqDaemon->SaveConf();
 
@@ -3318,7 +3318,7 @@ void CLicqConsole::InputUserSelect(int cIn)
     {
       ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       o->SetSavePassword(tolower(cIn) == 'y');
-      o->SetPassword(data->szPassword);
+      o->setPassword(data->szPassword);
       gUserManager.DropOwner(o);
 
       if (winMain->data)

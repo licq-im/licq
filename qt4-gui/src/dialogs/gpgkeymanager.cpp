@@ -109,7 +109,7 @@ void GPGKeyManager::slot_add()
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (strcmp(pUser->GPGKey(), "") == 0)
+    if (pUser->gpgKey().empty())
     {
       luser tmp;
       tmp.userId = pUser->id();
@@ -154,7 +154,7 @@ void GPGKeyManager::initKeyList()
 {
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (strcmp(pUser->GPGKey(), "") != 0)
+    if (!pUser->gpgKey().empty())
     {
       new KeyListItem(lst_keyList, pUser);
     }
@@ -281,7 +281,7 @@ void KeyListItem::updateText(const LicqUser* u)
 {
   setText(0, QString::fromUtf8(u->GetAlias()));
   setText(1, u->UseGPG() ? tr("Yes") : tr("No"));
-  setText(2, u->GPGKey());
+  setText(2, u->gpgKey().c_str());
 }
 
 void KeyListItem::edit()
@@ -300,7 +300,7 @@ void KeyListItem::slot_done()
 
   if (u != NULL)
   {
-    if (strcmp(u->GPGKey(), "") == 0)
+    if (u->gpgKey().empty())
       delete this;
     else
       updateText(u);
@@ -316,7 +316,7 @@ void KeyListItem::unsetKey()
   if (u != NULL)
   {
     u->SetUseGPG(false);
-    u->SetGPGKey("");
+    u->setGpgKey("");
     gUserManager.DropUser(u);
 
     // Notify all plugins (including ourselves)

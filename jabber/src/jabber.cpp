@@ -182,7 +182,7 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
     }
 
     username = owner->accountId();
-    password = owner->Password();
+    password = owner->password();
   }
 
   myHandler->setStatus(status);

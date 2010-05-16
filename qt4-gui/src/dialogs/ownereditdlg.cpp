@@ -95,7 +95,7 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
     {
       edtId->setText(o->IdString());
       edtId->setEnabled(false);
-      edtPassword->setText(o->Password());
+      edtPassword->setText(o->password().c_str());
       chkSave->setChecked(o->SavePassword());
       gUserManager.DropOwner(o);
     }
@@ -135,7 +135,7 @@ void OwnerEditDlg::slot_ok()
   if (o == NULL)
     return;
 
-  o->SetPassword(pwd.toLocal8Bit());
+  o->setPassword(pwd.toLocal8Bit().data());
   o->SetSavePassword(chkSave->isChecked());
 
   gUserManager.DropOwner(o);

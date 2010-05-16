@@ -144,7 +144,7 @@ public:
 class CPS_MSNAuthenticate : public CMSNPacket
 {
 public:
-  CPS_MSNAuthenticate(char *, char *, const char *);
+  CPS_MSNAuthenticate(char *, const std::string& password, const char *);
   virtual ~CPS_MSNAuthenticate() { if (m_szCookie) free(m_szCookie); }
   
 protected:

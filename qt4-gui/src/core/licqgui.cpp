@@ -1699,7 +1699,7 @@ void LicqGui::autoAway()
       if (!autoResponse.isNull())
       {
         o->Lock(LOCK_W);
-        o->SetAutoResponse(autoResponse.toLocal8Bit());
+        o->setAutoResponse(autoResponse.toLocal8Bit().data());
         o->Unlock();
       }
 

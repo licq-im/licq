@@ -99,7 +99,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const UserId& userId, bool fetch, QWidget* parent
   }
   else
   {
-    mleAwayMsg->setText(codec->toUnicode(u->AutoResponse()));
+    mleAwayMsg->setText(codec->toUnicode(u->autoResponse().c_str()));
     gUserManager.DropUser(u);
   }
 
@@ -166,7 +166,7 @@ void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)
     const char* szAutoResp =
       (e->ExtendedAck() && !e->ExtendedAck()->Accepted()) ?
        e->ExtendedAck()->Response() :
-       u->AutoResponse();
+       u->autoResponse().c_str();
 
     if (u->ppid() == LICQ_PPID && QString(u->accountId().c_str())[0].isLetter())
     {
