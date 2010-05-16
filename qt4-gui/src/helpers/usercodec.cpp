@@ -82,7 +82,7 @@ UserCodec::encoding_t UserCodec::m_encodings[] = {
 
 const QTextCodec* UserCodec::defaultEncoding()
 {
-  const QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
+  const QTextCodec* codec = QTextCodec::codecForName(gUserManager.defaultUserEncoding().c_str());
 
   if (codec != NULL)
     return codec;

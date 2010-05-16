@@ -553,7 +553,7 @@ void Settings::Chat::load()
 
   mySendTNCheck->setChecked(gLicqDaemon->SendTypingNotification());
 
-  QByteArray defaultEncoding = gUserManager.DefaultUserEncoding();
+  QByteArray defaultEncoding = gUserManager.defaultUserEncoding().c_str();
   if (defaultEncoding.isEmpty())
     myDefaultEncodingCombo->setCurrentIndex(0);
   else
@@ -625,9 +625,9 @@ void Settings::Chat::apply()
   gLicqDaemon->SetTerminal(myTerminalEdit->text().toLocal8Bit());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
-    gUserManager.SetDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()));
+    gUserManager.setDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()).data());
   else
-    gUserManager.SetDefaultUserEncoding("");
+    gUserManager.setDefaultUserEncoding("");
   chatConfig->setShowAllEncodings(myShowAllEncodingsCheck->isChecked());
 
   chatConfig->blockUpdates(false);

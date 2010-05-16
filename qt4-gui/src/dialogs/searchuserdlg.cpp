@@ -243,7 +243,7 @@ void SearchUserDlg::startSearch()
 
   if (edtUin->text().trimmed().isEmpty())
   {
-    QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
+    QTextCodec* codec = QTextCodec::codecForName(gUserManager.defaultUserEncoding().c_str());
     if (codec == 0)
       codec = QTextCodec::codecForLocale();
     searchTag = gLicqDaemon->icqSearchWhitePages(
@@ -339,7 +339,7 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
 {
   QString text;
   QTreeWidgetItem* item = new QTreeWidgetItem(foundView);
-  QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
+  QTextCodec* codec = QTextCodec::codecForName(gUserManager.defaultUserEncoding().c_str());
   if (codec == NULL)
     codec = QTextCodec::codecForLocale();
 

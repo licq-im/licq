@@ -3,11 +3,11 @@
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
 
-#include <licq_file.h>
 #include <licq_icq.h>
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_events.h"
+#include <licq/inifile.h>
 
 #include "../gettext.h"
 #include "../protocolmanager.h"
@@ -38,7 +38,6 @@ Licq::UserManager& Licq::gUserManager(LicqDaemon::gUserManager);
 
 
 UserManager::UserManager()
-  : m_szDefaultEncoding(NULL)
 {
   // Set up the basic all users and new users group
   myGroupListMutex.setName("grouplist");
@@ -68,9 +67,6 @@ void UserManager::shutdown()
   for (o_iter = myOwners.begin(); o_iter != myOwners.end(); ++o_iter)
     delete o_iter->second;
   myOwners.clear();
-
-  if (m_szDefaultEncoding != NULL)
-    free(m_szDefaultEncoding);
 }
 
 void UserManager::addOwner(const UserId& userId)
@@ -96,61 +92,58 @@ bool UserManager::Load()
   char filename[MAX_FILENAME_LEN];
   filename[MAX_FILENAME_LEN - 1] = '\0';
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/licq.conf", BASE_DIR);
-  CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
-  licqConf.LoadFile(filename);
+  Licq::IniFile licqConf(filename);
+  licqConf.loadFile();
 
-  unsigned short nOwners;
-  licqConf.SetSection("owners");
-  licqConf.ReadNum("NumOfOwners", nOwners, 0);
+  unsigned nOwners;
+  licqConf.setSection("owners");
+  licqConf.get("NumOfOwners", nOwners, 0);
 
   m_bAllowSave = false;
-  char sOwnerIDKey[MAX_KEYxNAME_LEN], sOwnerID[MAX_KEYxNAME_LEN],
-       sOwnerPPIDKey[MAX_KEYxNAME_LEN], sOwnerPPID[MAX_KEYxNAME_LEN];
-  unsigned long nPPID;
 
   //TODO Check for loaded plugins before the owner, so we can see
   //which owner(s) to load
   myOwnerListMutex.lockWrite();
   for (unsigned short i = 1; i <= nOwners; i++)
   {
+    char sOwnerIDKey[20], sOwnerPPIDKey[20];
+    string accountId, ppidStr;
     sprintf(sOwnerIDKey, "Owner%d.Id", i);
-    licqConf.ReadStr(sOwnerIDKey, sOwnerID);
+    licqConf.get(sOwnerIDKey, accountId);
     sprintf(sOwnerPPIDKey, "Owner%d.PPID", i);
-    licqConf.ReadStr(sOwnerPPIDKey, sOwnerPPID);
-    nPPID = (sOwnerPPID[0] << 24) | (sOwnerPPID[1] << 16) |
-            (sOwnerPPID[2] << 8) | (sOwnerPPID[3]);
+    licqConf.get(sOwnerPPIDKey, ppidStr);
+    unsigned long protocolId = (ppidStr[0] << 24) | (ppidStr[1] << 16) | (ppidStr[2] << 8) | (ppidStr[3]);
 
-    UserId ownerId(sOwnerID, nPPID);
+    UserId ownerId(accountId, protocolId);
     Owner* o = new Owner(ownerId);
 
-    myOwners[nPPID] = o;
+    myOwners[protocolId] = o;
   }
   myOwnerListMutex.unlockWrite();
 
   unsigned int nGroups;
-  licqConf.SetSection("groups");
-  licqConf.ReadNum("NumOfGroups", nGroups);
+  licqConf.setSection("groups");
+  licqConf.get("NumOfGroups", nGroups);
 
   myGroupListMutex.lockWrite();
   m_bAllowSave = false;
-  char key[MAX_KEYxNAME_LEN], groupName[MAX_LINE_LEN];
-  int groupId, sortIndex;
-  unsigned short icqGroupId;
   for (unsigned int i = 1; i <= nGroups; i++)
   {
+    char key[40];
+    string groupName;
+    int groupId, sortIndex;
+    unsigned icqGroupId = 0;
     sprintf(key, "Group%d.name", i);
-    licqConf.ReadStr(key, groupName);
-
-    licqConf.SetFlags(0);
+    licqConf.get(key, groupName);
 
     sprintf(key, "Group%d.id", i);
-    licqConf.ReadNum(key, groupId, 0);
+    licqConf.get(key, groupId, 0);
 
     sprintf(key, "Group%d.Sorting", i);
-    bool newConfig = licqConf.ReadNum(key, sortIndex, i-1);
+    bool newConfig = licqConf.get(key, sortIndex, i-1);
 
     sprintf(key, "Group%d.IcqServerId", i);
-    licqConf.ReadNum(key, icqGroupId, 0);
+    licqConf.get(key, icqGroupId, 0);
 
     // Sorting and IcqServerId did not exist in older versions.
     // If they are missing, assume that we are reading an old configuration
@@ -174,7 +167,7 @@ bool UserManager::Load()
           serverIdKey[keylen-3] << 16 | serverIdKey[keylen-2] << 8 |
           serverIdKey[keylen-1];
       unsigned long serverId;
-      licqConf.ReadNum(serverIdKey, serverId, 0);
+      licqConf.get(serverIdKey, serverId, 0);
       newGroup->setServerId(protocolId, serverId);
     }
 
@@ -184,63 +177,48 @@ bool UserManager::Load()
       newGroup->setServerId(LICQ_PPID, icqGroupId);
 
     myGroups[groupId] = newGroup;
-
-    licqConf.SetFlags(INI_FxFATAL | INI_FxERROR | INI_FxWARN);
   }
   m_bAllowSave = true;
   myGroupListMutex.unlockWrite();
 
-
-  char szTemp[MAX_LINE_LEN];
-  licqConf.SetSection("network");
-  licqConf.SetFlags(0);
-  licqConf.ReadStr("DefaultUserEncoding", szTemp, "");
-  SetString(&m_szDefaultEncoding, szTemp);
-  licqConf.SetFlags(INI_FxERROR | INI_FxFATAL);
-  licqConf.CloseFile();
+  licqConf.setSection("network");
+  licqConf.get("DefaultUserEncoding", myDefaultEncoding, "");
 
   // Load users from users.conf
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/users.conf", BASE_DIR);
-  CIniFile usersConf(INI_FxFATAL | INI_FxERROR);
-  usersConf.LoadFile(filename);
+  Licq::IniFile usersConf(filename);
+  usersConf.loadFile();
 
-  unsigned short nUsers;
-  usersConf.SetSection("users");
-  usersConf.ReadNum("NumOfUsers", nUsers);
+  unsigned nUsers;
+  usersConf.setSection("users");
+  usersConf.get("NumOfUsers", nUsers);
   gLog.Info(tr("%sLoading %d users.\n"), L_INITxSTR, nUsers);
 
   // TODO: We need to only load users of protocol plugins that are loaded!
-  char sUserKey[MAX_KEYxNAME_LEN];
-  char szFile[MAX_LINE_LEN];
-  char szId[MAX_LINE_LEN];
-  char *sz;
-  User* u;
-  usersConf.SetFlags(INI_FxWARN);
   myUserListMutex.lockWrite();
   for (unsigned short i = 1; i<= nUsers; i++)
   {
+    string userFile;
+    char sUserKey[20];
     sprintf(sUserKey, "User%d", i);
-    if (!usersConf.ReadStr(sUserKey, szFile, ""))
+    if (!usersConf.get(sUserKey, userFile, ""))
     {
       gLog.Warn(tr("%sSkipping user %i, empty key.\n"), L_WARNxSTR, i);
       continue;
     }
-    snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR,
-             szFile);
-    sz = strrchr(szFile, '.');
-    if( !sz )
+    snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR, userFile.c_str());
+    size_t sz = userFile.find('.');
+    if (sz == string::npos)
     {
       gLog.Error(tr("%sFatal error reading protocol information for User%d with ID '%s'.\n"
-                    "%sPlease check \"%s/users.conf\".\n"), L_ERRORxSTR, i, szFile, 
-                    L_BLANKxSTR, BASE_DIR);
+          "%sPlease check \"%s/users.conf\".\n"), L_ERRORxSTR, i, userFile.c_str(), L_BLANKxSTR, BASE_DIR);
       exit(1);
     }
-    strncpy(szId, szFile, sz - szFile);
-    szId[sz - szFile] = '\0';
-    nPPID = (*(sz+1)) << 24 | (*(sz+2)) << 16 | (*(sz+3)) << 8 | (*(sz+4));
+    string accountId = userFile.substr(0, sz-1);
+    unsigned long protocolId = (userFile[sz+1] << 24) | (userFile[sz+2] << 16) | (userFile[sz+3] << 8) | userFile[sz+4];
 
-    UserId userId(szId, nPPID);
-    u = new User(userId, string(filename));
+    UserId userId(accountId, protocolId);
+    User* u = new User(userId, string(filename));
     u->AddToContactList();
     myUsers[userId] = u;
   }
@@ -253,11 +231,10 @@ void UserManager::saveUserList() const
 {
   string filename = string(BASE_DIR) + "/users.conf";
 
-  CIniFile usersConf(INI_FxERROR | INI_FxFATAL | INI_FxALLOWxCREATE);
-  usersConf.LoadFile(filename.c_str());
-  usersConf.SetSection("users");
+  Licq::IniFile usersConf(filename);
+  usersConf.loadFile();
+  usersConf.setSection("users");
 
-  char key[MAX_KEYxNAME_LEN];
   int count = 0;
   for (UserMap::const_iterator i = myUsers.begin(); i != myUsers.end(); ++i)
   {
@@ -272,15 +249,15 @@ void UserManager::saveUserList() const
       continue;
     ++count;
 
+    char key[20];
     sprintf(key, "User%i", count);
 
     char ps[5];
     Licq::protocolId_toStr(ps, ppid);
-    usersConf.writeString(key, accountId + "." + ps);
+    usersConf.set(key, accountId + "." + ps);
   }
-  usersConf.WriteNum("NumOfUsers", count);
-  usersConf.FlushFile();
-  usersConf.CloseFile();
+  usersConf.set("NumOfUsers", count);
+  usersConf.writeFile();
 }
 
 bool UserManager::addUser(const UserId& uid,
@@ -782,12 +759,12 @@ void UserManager::SaveGroups()
   char filename[MAX_FILENAME_LEN];
   snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
   filename[MAX_FILENAME_LEN - 1] = '\0';
-  CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
-  licqConf.LoadFile(filename);
+  Licq::IniFile licqConf(filename);
+  licqConf.loadFile();
 
-  licqConf.SetSection("groups");
+  licqConf.setSection("groups");
   GroupMap::size_type count = myGroups.size();
-  licqConf.WriteNum("NumOfGroups", static_cast<unsigned int>(count));
+  licqConf.set("NumOfGroups", static_cast<unsigned int>(count));
 
   int i = 1;
   for (GroupMap::iterator group = myGroups.begin(); group != myGroups.end(); ++group)
@@ -798,8 +775,7 @@ void UserManager::SaveGroups()
     ++i;
   }
 
-  licqConf.FlushFile();
-  licqConf.CloseFile();
+  licqConf.writeFile();
 }
 
 unsigned short UserManager::GetIDFromGroup(const string& name)
@@ -1144,14 +1120,14 @@ void UserManager::ownerStatusChanged(unsigned long protocolId, unsigned newStatu
     o->statusChanged(newStatus);
 }
 
-const char* UserManager::DefaultUserEncoding()
+const string& UserManager::defaultUserEncoding()
 {
-  return m_szDefaultEncoding;
+  return myDefaultEncoding;
 }
 
-void UserManager::SetDefaultUserEncoding(const char* defaultEncoding)
+void UserManager::setDefaultUserEncoding(const string& defaultEncoding)
 {
-  SetString(&m_szDefaultEncoding, defaultEncoding);
+  myDefaultEncoding = defaultEncoding;
 }
 
 

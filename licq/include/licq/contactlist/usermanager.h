@@ -399,8 +399,8 @@ public:
   virtual void ownerStatusChanged(unsigned long protocolId, unsigned newStatus) = 0;
 
   virtual void SaveAllUsers() = 0;
-  virtual const char* DefaultUserEncoding() = 0;
-  virtual void SetDefaultUserEncoding(const char* defaultEncoding) = 0;
+  virtual const std::string& defaultUserEncoding() = 0;
+  virtual void setDefaultUserEncoding(const std::string& defaultEncoding) = 0;
 
   virtual unsigned short NumUsers() = 0;
   virtual unsigned short NumOwners() = 0;

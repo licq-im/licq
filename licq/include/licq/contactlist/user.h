@@ -315,7 +315,7 @@ public:
   //!Retrieves the user's auto response message that was last seen.
   const std::string& autoResponse() const       { return myAutoResponse; }
   //!Retrieves the encoding Licq uses for this user
-  std::string userEncoding() const;
+  const std::string& userEncoding() const;
   //!True if they have sent the UTF8 Cap
   bool SupportsUTF8() const                     { return m_bSupportsUTF8; }
   bool SendServer() const                       { return m_bSendServer; }

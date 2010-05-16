@@ -797,10 +797,10 @@ std::string Licq::User::getEmail() const
   return email;
 }
 
-string Licq::User::userEncoding() const
+const string& Licq::User::userEncoding() const
 {
   if (myEncoding.empty())
-    return gUserManager.DefaultUserEncoding();
+    return gUserManager.defaultUserEncoding();
   else
     return myEncoding;
 }

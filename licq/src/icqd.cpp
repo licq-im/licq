@@ -507,7 +507,7 @@ void CICQDaemon::SaveConf()
   licqConf.WriteBool("UseBART", m_bUseBART); // server side buddy icons
   licqConf.WriteBool("SendTypingNotification", m_bSendTN); 
   licqConf.WriteBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
-  licqConf.WriteStr("DefaultUserEncoding", gUserManager.DefaultUserEncoding());
+  licqConf.set("DefaultUserEncoding", gUserManager.defaultUserEncoding());
 
   licqConf.FlushFile();
 

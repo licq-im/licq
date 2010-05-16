@@ -139,8 +139,8 @@ public:
   void userStatusChanged(const Licq::UserId& userId, unsigned newStatus);
   void ownerStatusChanged(unsigned long protocolId, unsigned newStatus);
   void SaveAllUsers();
-  const char* DefaultUserEncoding();
-  void SetDefaultUserEncoding(const char* defaultEncoding);
+  const std::string& defaultUserEncoding();
+  void setDefaultUserEncoding(const std::string& defaultEncoding);
   unsigned short NumUsers();
   unsigned short NumOwners();
   unsigned int NumGroups();
@@ -156,7 +156,7 @@ private:
   UserMap myUsers;
   OwnerMap myOwners;
   bool m_bAllowSave;
-  char* m_szDefaultEncoding;
+  std::string myDefaultEncoding;
 };
 
 extern UserManager gUserManager;
