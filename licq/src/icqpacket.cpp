@@ -3162,7 +3162,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   char *szUnicodeName = 0;
   CBuffer tlvBuffer;
 
-  Licq::GroupListGuard groups;
+  list<unsigned long> groupIds;
 
   switch (_nType)
   {
@@ -3207,6 +3207,14 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
       if (nGSID == 0)
       {
+        // Get group ids from list, we'll need them later
+        Licq::GroupListGuard groups;
+        BOOST_FOREACH(const Group* i, **groups)
+        {
+          i->lockRead();
+          groupIds.push_back(i->serverId(LICQ_PPID));
+          i->unlockRead();
+        }
         nExtraLen += (groups->size() * 2);
       }
       else
@@ -3252,12 +3260,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
       if (nGSID == 0)
       {
-        BOOST_FOREACH(const Group* i, **groups)
-        {
-          i->lockRead();
-          buffer->PackUnsignedShortBE(i->serverId(LICQ_PPID));
-          i->unlockRead();
-        }
+        BOOST_FOREACH(unsigned long id, groupIds)
+          buffer->PackUnsignedShortBE(id);
       }
       else
       {
