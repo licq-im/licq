@@ -207,14 +207,14 @@ bool UserManager::Load()
       continue;
     }
     snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR, userFile.c_str());
-    size_t sz = userFile.find('.');
+    size_t sz = userFile.rfind('.');
     if (sz == string::npos)
     {
       gLog.Error(tr("%sFatal error reading protocol information for User%d with ID '%s'.\n"
           "%sPlease check \"%s/users.conf\".\n"), L_ERRORxSTR, i, userFile.c_str(), L_BLANKxSTR, BASE_DIR);
       exit(1);
     }
-    string accountId = userFile.substr(0, sz-1);
+    string accountId = userFile.substr(0, sz);
     unsigned long protocolId = (userFile[sz+1] << 24) | (userFile[sz+2] << 16) | (userFile[sz+3] << 8) | userFile[sz+4];
 
     UserId userId(accountId, protocolId);
