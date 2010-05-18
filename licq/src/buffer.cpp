@@ -469,6 +469,8 @@ char* Buffer::PackLNTS(const char* data)
   PackUnsignedShort(size);
   if (data != NULL)
     Pack(data, size);
+  else
+    PackChar('\0');
   return getDataPosWrite() - size;
 }
 
