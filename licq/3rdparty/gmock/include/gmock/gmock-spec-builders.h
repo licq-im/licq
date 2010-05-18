@@ -112,7 +112,7 @@ template <typename F> class FunctionMockerBase;
 // expectations when InSequence() is used, and thus affect which
 // expectation gets picked.  Therefore, we sequence all mock function
 // calls to ensure the integrity of the mock objects' states.
-extern Mutex g_gmock_mutex;
+GTEST_DECLARE_STATIC_MUTEX_(g_gmock_mutex);
 
 // Abstract base class of FunctionMockerBase.  This is the
 // type-agnostic part of the function mocker interface.  Its pure
@@ -142,10 +142,10 @@ class DefaultActionSpec {
 
   // Constructs a DefaultActionSpec object from the information inside
   // the parenthesis of an ON_CALL() statement.
-  DefaultActionSpec(const char* file, int line,
+  DefaultActionSpec(const char* a_file, int a_line,
                     const ArgumentMatcherTuple& matchers)
-      : file_(file),
-        line_(line),
+      : file_(a_file),
+        line_(a_line),
         matchers_(matchers),
         // By default, extra_matcher_ should match anything.  However,
         // we cannot initialize it with _ as that triggers a compiler
@@ -196,6 +196,7 @@ class DefaultActionSpec {
                        "once in an ON_CALL().");
     return action_;
   }
+
  private:
   // Gives each clause in the ON_CALL() statement a name.
   enum Clause {
@@ -561,14 +562,15 @@ extern ThreadLocal<Sequence*> g_gmock_implicit_sequence;
 // This class is internal and mustn't be used by user code directly.
 class ExpectationBase {
  public:
-  ExpectationBase(const char* file, int line);
+  // source_text is the EXPECT_CALL(...) source that created this Expectation.
+  ExpectationBase(const char* file, int line, const string& source_text);
 
   virtual ~ExpectationBase();
 
   // Where in the source file was the expectation spec defined?
   const char* file() const { return file_; }
   int line() const { return line_; }
-
+  const char* source_text() const { return source_text_.c_str(); }
   // Returns the cardinality specified in the expectation spec.
   const Cardinality& cardinality() const { return cardinality_; }
 
@@ -581,6 +583,7 @@ class ExpectationBase {
   // expectation has occurred.
   // L >= g_gmock_mutex
   virtual void DescribeCallCountTo(::std::ostream* os) const = 0;
+
  protected:
   friend class ::testing::Expectation;
 
@@ -619,8 +622,8 @@ class ExpectationBase {
   bool cardinality_specified() const { return cardinality_specified_; }
 
   // Sets the cardinality of this expectation spec.
-  void set_cardinality(const Cardinality& cardinality) {
-    cardinality_ = cardinality;
+  void set_cardinality(const Cardinality& a_cardinality) {
+    cardinality_ = a_cardinality;
   }
 
   // The following group of methods should only be called after the
@@ -697,8 +700,9 @@ class ExpectationBase {
 
   // This group of fields are part of the spec and won't change after
   // an EXPECT_CALL() statement finishes.
-  const char* file_;  // The file that contains the expectation.
-  int line_;          // The line number of the expectation.
+  const char* file_;          // The file that contains the expectation.
+  int line_;                  // The line number of the expectation.
+  const string source_text_;  // The EXPECT_CALL(...) source text.
   // True iff the cardinality is specified explicitly.
   bool cardinality_specified_;
   Cardinality cardinality_;            // The cardinality of the expectation.
@@ -714,6 +718,8 @@ class ExpectationBase {
   // and can change as the mock function is called.
   int call_count_;  // How many times this expectation has been invoked.
   bool retired_;    // True iff this expectation has retired.
+
+  GTEST_DISALLOW_ASSIGN_(ExpectationBase);
 };  // class ExpectationBase
 
 // Impements an expectation for the given function type.
@@ -724,11 +730,13 @@ class TypedExpectation : public ExpectationBase {
   typedef typename Function<F>::ArgumentMatcherTuple ArgumentMatcherTuple;
   typedef typename Function<F>::Result Result;
 
-  TypedExpectation(FunctionMockerBase<F>* owner, const char* file, int line,
+  TypedExpectation(FunctionMockerBase<F>* owner,
+                   const char* a_file, int a_line, const string& a_source_text,
                    const ArgumentMatcherTuple& m)
-      : ExpectationBase(file, line),
+      : ExpectationBase(a_file, a_line, a_source_text),
         owner_(owner),
         matchers_(m),
+        extra_matcher_specified_(false),
         // By default, extra_matcher_ should match anything.  However,
         // we cannot initialize it with _ as that triggers a compiler
         // bug in Symbian's C++ compiler (cannot decide between two
@@ -760,11 +768,12 @@ class TypedExpectation : public ExpectationBase {
     last_clause_ = kWith;
 
     extra_matcher_ = m;
+    extra_matcher_specified_ = true;
     return *this;
   }
 
   // Implements the .Times() clause.
-  TypedExpectation& Times(const Cardinality& cardinality) {
+  TypedExpectation& Times(const Cardinality& a_cardinality) {
     if (last_clause_ ==kTimes) {
       ExpectSpecProperty(false,
                          ".Times() cannot appear "
@@ -777,7 +786,7 @@ class TypedExpectation : public ExpectationBase {
     }
     last_clause_ = kTimes;
 
-    ExpectationBase::SpecifyCardinality(cardinality);
+    ExpectationBase::SpecifyCardinality(a_cardinality);
     return *this;
   }
 
@@ -938,6 +947,15 @@ class TypedExpectation : public ExpectationBase {
         << " and "
         << (is_retired() ? "retired" : "active");
   }
+
+  void MaybeDescribeExtraMatcherTo(::std::ostream* os) {
+    if (extra_matcher_specified_) {
+      *os << "    Expected args: ";
+      extra_matcher_.DescribeTo(os);
+      *os << "\n";
+    }
+  }
+
  private:
   template <typename Function>
   friend class FunctionMockerBase;
@@ -975,8 +993,8 @@ class TypedExpectation : public ExpectationBase {
   // Describes the result of matching the arguments against this
   // expectation to the given ostream.
   // L >= g_gmock_mutex
-  void DescribeMatchResultTo(const ArgumentTuple& args,
-                             ::std::ostream* os) const {
+  void ExplainMatchResultTo(const ArgumentTuple& args,
+                            ::std::ostream* os) const {
     g_gmock_mutex.AssertHeld();
 
     if (is_retired()) {
@@ -984,15 +1002,15 @@ class TypedExpectation : public ExpectationBase {
           << "           Actual: it is retired\n";
     } else if (!Matches(args)) {
       if (!TupleMatches(matchers_, args)) {
-        DescribeMatchFailureTupleTo(matchers_, args, os);
+        ExplainMatchFailureTupleTo(matchers_, args, os);
       }
-      if (!extra_matcher_.Matches(args)) {
+      StringMatchResultListener listener;
+      if (!extra_matcher_.MatchAndExplain(args, &listener)) {
         *os << "    Expected args: ";
         extra_matcher_.DescribeTo(os);
         *os << "\n           Actual: don't match";
 
-        internal::ExplainMatchResultAsNeededTo<const ArgumentTuple&>(
-            extra_matcher_, args, os);
+        internal::PrintIfNotEmpty(listener.str(), os);
         *os << "\n";
       }
     } else if (!AllPrerequisitesAreSatisfied()) {
@@ -1010,7 +1028,7 @@ class TypedExpectation : public ExpectationBase {
       *os << "                   (end of pre-requisites)\n";
     } else {
       // This line is here just for completeness' sake.  It will never
-      // be executed as currently the DescribeMatchResultTo() function
+      // be executed as currently the ExplainMatchResultTo() function
       // is called only when the mock function call does NOT match the
       // expectation.
       *os << "The call matches the expectation.\n";
@@ -1034,7 +1052,7 @@ class TypedExpectation : public ExpectationBase {
       // we warn the user when the WillOnce() clauses ran out.
       ::std::stringstream ss;
       DescribeLocationTo(&ss);
-      ss << "Actions ran out.\n"
+      ss << "Actions ran out in " << source_text() << "...\n"
          << "Called " << count << " times, but only "
          << action_count << " WillOnce()"
          << (action_count == 1 ? " is" : "s are") << " specified - ";
@@ -1078,7 +1096,7 @@ class TypedExpectation : public ExpectationBase {
     }
 
     // Must be done after IncrementCount()!
-    *what << "Expected mock function call.\n";
+    *what << "Mock function call matches " << source_text() <<"...\n";
     return GetCurrentAction(mocker, args);
   }
 
@@ -1123,7 +1141,7 @@ class TypedExpectation : public ExpectationBase {
       ::std::stringstream ss;
       DescribeLocationTo(&ss);
       ss << "Too " << (too_many ? "many" : "few")
-         << " actions specified.\n"
+         << " actions specified in " << source_text() << "...\n"
          << "Expected to be ";
       cardinality().DescribeTo(&ss);
       ss << ", but has " << (too_many ? "" : "only ")
@@ -1141,6 +1159,7 @@ class TypedExpectation : public ExpectationBase {
   // statement finishes.
   FunctionMockerBase<F>* const owner_;
   ArgumentMatcherTuple matchers_;
+  bool extra_matcher_specified_;
   Matcher<const ArgumentTuple&> extra_matcher_;
   std::vector<Action<F> > actions_;
   bool repeated_action_specified_;  // True if a WillRepeatedly() was specified.
@@ -1149,6 +1168,8 @@ class TypedExpectation : public ExpectationBase {
   Clause last_clause_;
   mutable bool action_count_checked_;  // Under mutex_.
   mutable Mutex mutex_;  // Protects action_count_checked_.
+
+  GTEST_DISALLOW_COPY_AND_ASSIGN_(TypedExpectation);
 };  // class TypedExpectation
 
 // A MockSpec object is used by ON_CALL() or EXPECT_CALL() for
@@ -1186,9 +1207,10 @@ class MockSpec {
   // the newly created spec.
   internal::TypedExpectation<F>& InternalExpectedAt(
       const char* file, int line, const char* obj, const char* call) {
-    LogWithLocation(internal::INFO, file, line,
-        string("EXPECT_CALL(") + obj + ", " + call + ") invoked");
-    return function_mocker_->AddNewExpectation(file, line, matchers_);
+    const string source_text(string("EXPECT_CALL(") + obj + ", " + call + ")");
+    LogWithLocation(internal::INFO, file, line, source_text + " invoked");
+    return function_mocker_->AddNewExpectation(
+        file, line, source_text, matchers_);
   }
 
  private:
@@ -1212,6 +1234,8 @@ class MockSpec {
   internal::FunctionMockerBase<F>* const function_mocker_;
   // The argument matchers specified in the spec.
   ArgumentMatcherTuple matchers_;
+
+  GTEST_DISALLOW_ASSIGN_(MockSpec);
 };  // class MockSpec
 
 // MSVC warns about using 'this' in base member initializer list, so
@@ -1235,7 +1259,7 @@ class MockSpec {
 template <typename T>
 class ActionResultHolder {
  public:
-  explicit ActionResultHolder(T value) : value_(value) {}
+  explicit ActionResultHolder(T a_value) : value_(a_value) {}
 
   // The compiler-generated copy constructor and assignment operator
   // are exactly what we need, so we don't need to define them.
@@ -1269,6 +1293,9 @@ class ActionResultHolder {
 
  private:
   T value_;
+
+  // T could be a reference type, so = isn't supported.
+  GTEST_DISALLOW_ASSIGN_(ActionResultHolder);
 };
 
 // Specialization for T = void.
@@ -1417,6 +1444,7 @@ class FunctionMockerBase : public UntypedFunctionMockerBase {
     }
     return name;
   }
+
  protected:
   template <typename Function>
   friend class MockSpec;
@@ -1440,11 +1468,13 @@ class FunctionMockerBase : public UntypedFunctionMockerBase {
   // Adds and returns an expectation spec for this mock function.
   // L < g_gmock_mutex
   TypedExpectation<F>& AddNewExpectation(
-      const char* file, int line,
+      const char* file,
+      int line,
+      const string& source_text,
       const ArgumentMatcherTuple& m) {
     Mock::RegisterUseByOnCallOrExpectCall(MockObject(), file, line);
     const linked_ptr<TypedExpectation<F> > expectation(
-        new TypedExpectation<F>(this, file, line, m));
+        new TypedExpectation<F>(this, file, line, source_text, m));
     expectations_.push_back(expectation);
 
     // Adds this expectation into the implicit sequence if there is one.
@@ -1459,6 +1489,7 @@ class FunctionMockerBase : public UntypedFunctionMockerBase {
   // The current spec (either default action spec or expectation spec)
   // being described on this function mocker.
   MockSpec<F>& current_spec() { return current_spec_; }
+
  private:
   template <typename Func> friend class TypedExpectation;
 
@@ -1584,10 +1615,10 @@ class FunctionMockerBase : public UntypedFunctionMockerBase {
       *why << "\n";
       expectations_[i]->DescribeLocationTo(why);
       if (count > 1) {
-        *why << "tried expectation #" << i;
+        *why << "tried expectation #" << i << ": ";
       }
-      *why << "\n";
-      expectations_[i]->DescribeMatchResultTo(args, why);
+      *why << expectations_[i]->source_text() << "...\n";
+      expectations_[i]->ExplainMatchResultTo(args, why);
       expectations_[i]->DescribeCallCountTo(why);
     }
   }
@@ -1651,10 +1682,12 @@ bool FunctionMockerBase<F>::VerifyAndClearExpectationsLocked() {
     } else if (!exp->IsSatisfied()) {
       expectations_met = false;
       ::std::stringstream ss;
-      ss << "Actual function call count doesn't match this expectation.\n";
+      ss  << "Actual function call count doesn't match "
+          << exp->source_text() << "...\n";
       // No need to show the source file location of the expectation
       // in the description, as the Expect() call that follows already
       // takes care of it.
+      exp->MaybeDescribeExtraMatcherTo(&ss);
       exp->DescribeCallCountTo(&ss);
       Expect(false, exp->file(), exp->line(), ss.str());
     }

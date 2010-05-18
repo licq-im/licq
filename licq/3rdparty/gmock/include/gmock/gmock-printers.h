@@ -57,18 +57,20 @@
 //
 // We also provide some convenient wrappers:
 //
-//   // Prints a value as the given type to a string.
-//   string ::testing::internal::UniversalPrinter<T>::PrintToString(value);
+//   // Prints a value to a string.  For a (const or not) char
+//   // pointer, the NUL-terminated string (but not the pointer) is
+//   // printed.
+//   std::string ::testing::PrintToString(const T& value);
 //
 //   // Prints a value tersely: for a reference type, the referenced
-//   // value (but not the address) is printed; for a (const) char
+//   // value (but not the address) is printed; for a (const or not) char
 //   // pointer, the NUL-terminated string (but not the pointer) is
 //   // printed.
 //   void ::testing::internal::UniversalTersePrint(const T& value, ostream*);
 //
 //   // Prints value using the type inferred by the compiler.  The difference
 //   // from UniversalTersePrint() is that this function prints both the
-//   // pointer and the NUL-terminated string for a (const) char pointer.
+//   // pointer and the NUL-terminated string for a (const or not) char pointer.
 //   void ::testing::internal::UniversalPrint(const T& value, ostream*);
 //
 //   // Prints the fields of a tuple tersely to a string vector, one
@@ -409,12 +411,10 @@ inline void PrintTo(const ::string& s, ::std::ostream* os) {
 }
 #endif  // GTEST_HAS_GLOBAL_STRING
 
-#if GTEST_HAS_STD_STRING
 void PrintStringTo(const ::std::string&s, ::std::ostream* os);
 inline void PrintTo(const ::std::string& s, ::std::ostream* os) {
   PrintStringTo(s, os);
 }
-#endif  // GTEST_HAS_STD_STRING
 
 // Overloads for ::wstring and ::std::wstring.
 #if GTEST_HAS_GLOBAL_WSTRING
@@ -434,63 +434,10 @@ inline void PrintTo(const ::std::wstring& s, ::std::ostream* os) {
 // Overload for ::std::tr1::tuple.  Needed for printing function
 // arguments, which are packed as tuples.
 
-typedef ::std::vector<string> Strings;
-
-// This helper template allows PrintTo() for tuples and
-// UniversalTersePrintTupleFieldsToStrings() to be defined by
-// induction on the number of tuple fields.  The idea is that
-// TuplePrefixPrinter<N>::PrintPrefixTo(t, os) prints the first N
-// fields in tuple t, and can be defined in terms of
-// TuplePrefixPrinter<N - 1>.
-
-// The inductive case.
-template <size_t N>
-struct TuplePrefixPrinter {
-  // Prints the first N fields of a tuple.
-  template <typename Tuple>
-  static void PrintPrefixTo(const Tuple& t, ::std::ostream* os) {
-    TuplePrefixPrinter<N - 1>::PrintPrefixTo(t, os);
-    *os << ", ";
-    UniversalPrinter<typename ::std::tr1::tuple_element<N - 1, Tuple>::type>
-        ::Print(::std::tr1::get<N - 1>(t), os);
-  }
-
-  // Tersely prints the first N fields of a tuple to a string vector,
-  // one element for each field.
-  template <typename Tuple>
-  static void TersePrintPrefixToStrings(const Tuple& t, Strings* strings) {
-    TuplePrefixPrinter<N - 1>::TersePrintPrefixToStrings(t, strings);
-    ::std::stringstream ss;
-    UniversalTersePrint(::std::tr1::get<N - 1>(t), &ss);
-    strings->push_back(ss.str());
-  }
-};
-
-// Base cases.
-template <>
-struct TuplePrefixPrinter<0> {
-  template <typename Tuple>
-  static void PrintPrefixTo(const Tuple&, ::std::ostream*) {}
-
-  template <typename Tuple>
-  static void TersePrintPrefixToStrings(const Tuple&, Strings*) {}
-};
-template <>
-template <typename Tuple>
-void TuplePrefixPrinter<1>::PrintPrefixTo(const Tuple& t, ::std::ostream* os) {
-  UniversalPrinter<typename ::std::tr1::tuple_element<0, Tuple>::type>::
-      Print(::std::tr1::get<0>(t), os);
-}
-
 // Helper function for printing a tuple.  T must be instantiated with
 // a tuple type.
 template <typename T>
-void PrintTupleTo(const T& t, ::std::ostream* os) {
-  *os << "(";
-  TuplePrefixPrinter< ::std::tr1::tuple_size<T>::value>::
-      PrintPrefixTo(t, os);
-  *os << ")";
-}
+void PrintTupleTo(const T& t, ::std::ostream* os);
 
 // Overloaded PrintTo() for tuples of various arities.  We support
 // tuples of up-to 10 fields.  The following implementation works
@@ -600,14 +547,6 @@ class UniversalPrinter {
     PrintTo(value, os);
   }
 
-  // A convenient wrapper for Print() that returns the print-out as a
-  // string.
-  static string PrintToString(const T& value) {
-    ::std::stringstream ss;
-    Print(value, &ss);
-    return ss.str();
-  }
-
 #ifdef _MSC_VER
 #pragma warning(pop)           // Restores the warning state.
 #endif  // _MSC_VER
@@ -640,14 +579,6 @@ void UniversalPrintArray(const T* begin, size_t len, ::std::ostream* os) {
 // This overload prints a (const) char array compactly.
 void UniversalPrintArray(const char* begin, size_t len, ::std::ostream* os);
 
-// Prints an array of 'len' elements, starting at address 'begin', to a string.
-template <typename T>
-string UniversalPrintArrayToString(const T* begin, size_t len) {
-  ::std::stringstream ss;
-  UniversalPrintArray(begin, len, &ss);
-  return ss.str();
-}
-
 // Implements printing an array type T[N].
 template <typename T, size_t N>
 class UniversalPrinter<T[N]> {
@@ -656,12 +587,6 @@ class UniversalPrinter<T[N]> {
   // many.
   static void Print(const T (&a)[N], ::std::ostream* os) {
     UniversalPrintArray(a, N, os);
-  }
-
-  // A convenient wrapper for Print() that returns the print-out as a
-  // string.
-  static string PrintToString(const T (&a)[N]) {
-    return UniversalPrintArrayToString(a, N);
   }
 };
 
@@ -683,14 +608,6 @@ class UniversalPrinter<T&> {
 
     // Then prints the value itself.
     UniversalPrinter<T>::Print(value, os);
-  }
-
-  // A convenient wrapper for Print() that returns the print-out as a
-  // string.
-  static string PrintToString(const T& value) {
-    ::std::stringstream ss;
-    Print(value, &ss);
-    return ss.str();
   }
 
 #ifdef _MSC_VER
@@ -725,6 +642,64 @@ void UniversalPrint(const T& value, ::std::ostream* os) {
   UniversalPrinter<T>::Print(value, os);
 }
 
+typedef ::std::vector<string> Strings;
+
+// This helper template allows PrintTo() for tuples and
+// UniversalTersePrintTupleFieldsToStrings() to be defined by
+// induction on the number of tuple fields.  The idea is that
+// TuplePrefixPrinter<N>::PrintPrefixTo(t, os) prints the first N
+// fields in tuple t, and can be defined in terms of
+// TuplePrefixPrinter<N - 1>.
+
+// The inductive case.
+template <size_t N>
+struct TuplePrefixPrinter {
+  // Prints the first N fields of a tuple.
+  template <typename Tuple>
+  static void PrintPrefixTo(const Tuple& t, ::std::ostream* os) {
+    TuplePrefixPrinter<N - 1>::PrintPrefixTo(t, os);
+    *os << ", ";
+    UniversalPrinter<typename ::std::tr1::tuple_element<N - 1, Tuple>::type>
+        ::Print(::std::tr1::get<N - 1>(t), os);
+  }
+
+  // Tersely prints the first N fields of a tuple to a string vector,
+  // one element for each field.
+  template <typename Tuple>
+  static void TersePrintPrefixToStrings(const Tuple& t, Strings* strings) {
+    TuplePrefixPrinter<N - 1>::TersePrintPrefixToStrings(t, strings);
+    ::std::stringstream ss;
+    UniversalTersePrint(::std::tr1::get<N - 1>(t), &ss);
+    strings->push_back(ss.str());
+  }
+};
+
+// Base cases.
+template <>
+struct TuplePrefixPrinter<0> {
+  template <typename Tuple>
+  static void PrintPrefixTo(const Tuple&, ::std::ostream*) {}
+
+  template <typename Tuple>
+  static void TersePrintPrefixToStrings(const Tuple&, Strings*) {}
+};
+template <>
+template <typename Tuple>
+void TuplePrefixPrinter<1>::PrintPrefixTo(const Tuple& t, ::std::ostream* os) {
+  UniversalPrinter<typename ::std::tr1::tuple_element<0, Tuple>::type>::
+      Print(::std::tr1::get<0>(t), os);
+}
+
+// Helper function for printing a tuple.  T must be instantiated with
+// a tuple type.
+template <typename T>
+void PrintTupleTo(const T& t, ::std::ostream* os) {
+  *os << "(";
+  TuplePrefixPrinter< ::std::tr1::tuple_size<T>::value>::
+      PrintPrefixTo(t, os);
+  *os << ")";
+}
+
 // Prints the fields of a tuple tersely to a string vector, one
 // element for each field.  See the comment before
 // UniversalTersePrint() for how we define "tersely".
@@ -737,6 +712,14 @@ Strings UniversalTersePrintTupleFieldsToStrings(const Tuple& value) {
 }
 
 }  // namespace internal
+
+template <typename T>
+::std::string PrintToString(const T& value) {
+  ::std::stringstream ss;
+  internal::UniversalTersePrint(value, &ss);
+  return ss.str();
+}
+
 }  // namespace testing
 
 #endif  // GMOCK_INCLUDE_GMOCK_GMOCK_PRINTERS_H_
