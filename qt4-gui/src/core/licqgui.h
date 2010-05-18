@@ -189,8 +189,10 @@ public slots:
 
   /**
    * Open dialogs for all owner events
+   *
+   * @return True if there were any events to open
    */
-  void showAllOwnerEvents();
+  bool showAllOwnerEvents();
 
   /**
    * Open dialogs for all events

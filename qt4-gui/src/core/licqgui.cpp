@@ -1193,8 +1193,10 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
   showEventDialog(MessageEvent, userId, convoId);
 }
 
-void LicqGui::showAllOwnerEvents()
+bool LicqGui::showAllOwnerEvents()
 {
+  bool foundEvents = false;
+
   // Get a list of owners first so we can unlock list before calling showViewEventDialog
   list<UserId> users;
 
@@ -1204,12 +1206,17 @@ void LicqGui::showAllOwnerEvents()
     {
       Licq::OwnerReadGuard o(owner);
       if (o->NewMessages() > 0)
+      {
         users.push_back(o->id());
+        foundEvents = true;
+      }
     }
   }
 
   BOOST_FOREACH(UserId& userId, users)
     showViewEventDialog(userId);
+
+  return foundEvents;
 }
 
 void LicqGui::showNextEvent(const Licq::UserId& uid)
@@ -1223,19 +1230,8 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
   if (!USERID_ISVALID(userId))
   {
     // Do system messages first
-    {
-      Licq::OwnerListGuard ownerList;
-      BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-      {
-        {
-          Licq::OwnerReadGuard o(owner);
-          if (o->NewMessages() == 0)
-            continue;
-        }
-        showAllOwnerEvents();
-        return;
-      }
-    }
+    if (showAllOwnerEvents())
+      return;
 
     time_t t = time(NULL);
     FOR_EACH_USER_START(LOCK_R)
@@ -1281,16 +1277,7 @@ void LicqGui::showAllEvents()
     return;
 
   // Do system messages first
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  unsigned short numMsg = 0;
-  if (o != NULL)
-  {
-    numMsg = o->NewMessages();
-    gUserManager.DropOwner(o);
-  }
-
-  if (numMsg > 0)
-    showAllOwnerEvents();
+  showAllOwnerEvents();
 
   list<UserId> users;
   FOR_EACH_USER_START(LOCK_R)
