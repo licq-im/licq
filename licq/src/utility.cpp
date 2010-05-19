@@ -8,6 +8,8 @@
 
 #include "config.h"
 
+#include <licq/utility.h>
+
 #include <cerrno>
 #include <ctime>
 #include <ctype.h>
@@ -19,20 +21,22 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-// Localization
-#include "gettext.h"
+#include <licq/contactlist/user.h>
+#include <licq/inifile.h>
+#include <licq_log.h>
 
-#include <licq_file.h>
-#include "licq_utility.h"
-#include "licq_log.h"
-#include "licq_user.h"
+#include "gettext.h"
 #include "support.h"
 
-CUtilityManager gUtilityManager;
-
 using namespace std;
+using Licq::Utility;
+using Licq::UtilityInternalWindow;
+using Licq::UtilityManager;
+using Licq::UtilityUserField;
 
-//=====CUtilityManager==========================================================
+Licq::UtilityManager Licq::gUtilityManager;
+
+
 int SelectUtility(const struct dirent *d)
 {
   const char* pcDot = strrchr(d->d_name, '.');
@@ -40,242 +44,218 @@ int SelectUtility(const struct dirent *d)
   return (strcmp(pcDot, ".utility") == 0);
 }
 
-CUtilityManager::CUtilityManager()
+UtilityManager::UtilityManager()
 {
-  // does nothing for now
+  // Empty
 }
 
-CUtilityManager::~CUtilityManager()
+UtilityManager::~UtilityManager()
 {
-  std::vector <CUtility *>::iterator iter;
-  for (iter = m_vxUtilities.begin(); iter != m_vxUtilities.end(); ++iter)
+  std::vector<Utility*>::iterator iter;
+  for (iter = myUtilities.begin(); iter != myUtilities.end(); ++iter)
     delete *iter;
 }
 
-unsigned short CUtilityManager::LoadUtilities(const char *_szDir)
+int UtilityManager::loadUtilities(const string& dir)
 {
   struct dirent **namelist;
 
   gLog.Info(tr("%sLoading utilities.\n"), L_INITxSTR);
-  int n = scandir_alpha_r(_szDir, &namelist, SelectUtility);
+  int n = scandir_alpha_r(dir.c_str(), &namelist, SelectUtility);
   if (n < 0)
   {
     gLog.Error("%sError reading utility directory \"%s\":\n%s%s.\n", L_ERRORxSTR,
-              _szDir, L_BLANKxSTR, strerror(errno));
+        dir.c_str(), L_BLANKxSTR, strerror(errno));
     return (0);
   }
 
-  CUtility *p;
+  Utility* p;
   for (unsigned short i = 0; i < n; i++)
   {
     char szFile[MAX_FILENAME_LEN];
-    snprintf(szFile, MAX_FILENAME_LEN, "%s/%s", _szDir, namelist[i]->d_name);
+    snprintf(szFile, MAX_FILENAME_LEN, "%s/%s", dir.c_str(), namelist[i]->d_name);
     szFile[MAX_FILENAME_LEN - 1] = '\0';
     free (namelist[i]);
-    p = new CUtility(szFile);
-    if (p->Exception())
+    p = new Utility(szFile);
+    if (p->isFailed())
     {
       gLog.Warn(tr("%sWarning: unable to load utility \"%s\".\n"), L_WARNxSTR, namelist[i]->d_name);
       continue;
     }
-    m_vxUtilities.push_back(p);
+    myUtilities.push_back(p);
   }
   free(namelist);
 
-  return m_vxUtilities.size();
+  return myUtilities.size();
 }
 
 
-//=====CUtility==================================================================
-CUtility::CUtility(const char *_szFileName)
+Utility::Utility(const string& filename)
 {
   // Assumes the given filename is in the form <directory>/<pluginname>.plugin
-  bException = false;
-  CIniFile fUtility(INI_FxWARN);
-  if (!fUtility.LoadFile(_szFileName))
+  myIsFailed = false;
+  Licq::IniFile utilConf(filename);
+  if (!utilConf.loadFile())
   {
-    bException = true;
+    myIsFailed = true;
     return;
   }
 
-  fUtility.SetSection("utility");
-  char szTemp[MAX_LINE_LEN];
+  utilConf.setSection("utility");
 
   // Read in the window
-  fUtility.ReadStr("Window", szTemp, "GUI");
-  if (strcmp(szTemp, "GUI") == 0)
-    m_eWinType = UtilityWinGui;
-  else if (strcmp(szTemp, "TERM") == 0)
-    m_eWinType = UtilityWinTerm;
-  else if (strcmp(szTemp, "LICQ") == 0)
-    m_eWinType = UtilityWinLicq;
+  string window;
+  utilConf.get("Window", window, "GUI");
+  if (window == "GUI")
+    myWinType = WinGui;
+  else if (window ==  "TERM")
+    myWinType = WinTerm;
+  else if (window == "LICQ")
+    myWinType = WinLicq;
   else
   {
     gLog.Warn(tr("%sWarning: Invalid entry in plugin \"%s\":\nWindow = %s\n"),
-              L_WARNxSTR, _szFileName, szTemp);
-    bException = true;
+        L_WARNxSTR, filename.c_str(), window.c_str());
+    myIsFailed = true;
     return;
   }
 
   // Read in the command
-  if (!fUtility.ReadStr("Command", szTemp))
+  if (!utilConf.get("Command", myCommand))
   {
-    bException = true;
+    myIsFailed = true;
     return;
   }
-  m_szCommand = strdup(szTemp);
-  fUtility.ReadStr("Description", szTemp, tr("none"));
-  m_szDescription = strdup(szTemp);
-  m_szFullCommand = NULL;
+  utilConf.get("Description", myDescription, tr("none"));
 
   // Parse command for %# user fields
-  char *pcField = m_szCommand;
+  size_t pcField = 0;
   int nField, nCurField = 1;
-  while ((pcField = strchr(pcField, '%')) != NULL)
+  while ((pcField = myCommand.find('%', pcField)) != string::npos)
   {
-    char cField = *(pcField + 1);
+    char cField = myCommand[pcField + 1];
     if (isdigit(cField))
     {
       nField = cField - '0';
       if (nField == 0 || nField > nCurField)
       {
         gLog.Warn("%sWarning: Out-of-order user field id (%d) in plugin \"%s\".\n",
-                  L_WARNxSTR, nField, _szFileName);
+            L_WARNxSTR, nField, filename.c_str());
       }
       else if (nField == nCurField)
       {
-        char szTitle[MAX_LINE_LEN], szDefault[MAX_LINE_LEN];
-        sprintf(szTemp, "User%d.Title", nField);
-        fUtility.ReadStr(szTemp, szTitle, "User field");
-        sprintf(szTemp, "User%d.Default", nField);
-        fUtility.ReadStr(szTemp, szDefault, "");
-        m_vxUserField.push_back(new CUtilityUserField(szTitle, szDefault));
+        char key[30];
+        string title, defaultValue;
+        sprintf(key, "User%d.Title", nField);
+        utilConf.get(key, title, "User field");
+        sprintf(key, "User%d.Default", nField);
+        utilConf.get(key, defaultValue, "");
+        myUserFields.push_back(new UtilityUserField(title, defaultValue));
         nCurField = nField + 1;
       }
     }
-    pcField++;
-    if (*pcField == '\0') break;
-    pcField++;
+    pcField += 2;
   }
 
-  strncpy(szTemp, _szFileName, MAX_LINE_LEN - 1);
-  szTemp[MAX_LINE_LEN - 1] = '\0';
-  // Replace the terminating .plugin by '\0'plugin
-  pcField = strrchr(szTemp, '.');
-  if (pcField != NULL) *pcField = '\0';
-  // Find the beginning of the plugin name
-  pcField = strrchr(szTemp, '/');
-  if (pcField == NULL)
-    pcField = szTemp;
+  size_t startPos = filename.rfind('/');
+  size_t endPos = filename.rfind('.');
+  if (startPos == string::npos)
+    startPos = 0;
   else
-    pcField++;
-
-  m_szName = strdup(pcField);
+    ++startPos;
+  if (endPos == string::npos)
+    myName = filename.substr(startPos);
+  else
+    myName = filename.substr(startPos, endPos - startPos);
 }
 
 
-CUtility::~CUtility()
+Utility::~Utility()
 {
-  std::vector <CUtilityUserField *>::iterator iter;
-  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); ++iter)
+  std::vector<UtilityUserField *>::iterator iter;
+  for (iter = myUserFields.begin(); iter != myUserFields.end(); ++iter)
     delete *iter;
-
-  free(m_szName);
-  free(m_szCommand);
-  free(m_szDescription);
-  delete []m_szFullCommand;
 }
 
-bool CUtility::setFields(const UserId& userId)
+bool Utility::setFields(const UserId& userId)
 {
-  const LicqUser* u = gUserManager.fetchUser(userId);
-  if (u == NULL) return false;
-  if (m_szFullCommand != NULL) delete [] m_szFullCommand;
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
+    return false;
   char *szTmp;
-  szTmp = u->usprintf(m_szCommand, USPRINTF_NOFW|USPRINTF_LINEISCMD);
-  m_szFullCommand = new char[MAX_CMD_LEN];
-  strncpy(m_szFullCommand, szTmp, MAX_CMD_LEN);
-  m_szFullCommand[MAX_CMD_LEN - 1] = '\0';
+  szTmp = u->usprintf(myCommand.c_str(), USPRINTF_NOFW|USPRINTF_LINEISCMD);
+  myFullCommand = szTmp;
   free(szTmp);
-  vector<CUtilityUserField *>::iterator iter;
-  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); ++iter)
-    (*iter)->SetFields(u);
-  gUserManager.DropUser(u);
+  vector<UtilityUserField *>::iterator iter;
+  for (iter = myUserFields.begin(); iter != myUserFields.end(); ++iter)
+    (*iter)->setFields(*u);
   return true;
 }
 
-void CUtility::SetUserFields(const vector <const char *> &_vszUserFields)
+void Utility::setUserFields(const vector<string>& userFields)
 {
-  if ( _vszUserFields.size() != NumUserFields())
+  if (static_cast<int>(userFields.size()) != numUserFields())
   {
-    gLog.Warn("%sInternal error: CUtility::SetUserFields(): incorrect number of data fields (%d/%d).\n",
-              L_WARNxSTR, int(_vszUserFields.size()), NumUserFields());
+    gLog.Warn("%sInternal error: Utility::setUserFields(): incorrect number of data fields (%d/%d).\n",
+        L_WARNxSTR, int(userFields.size()), numUserFields());
     return;
   }
   // Do a quick check to see if there are any users fields at all
-  if (NumUserFields() == 0) return;
+  if (numUserFields() == 0)
+    return;
 
-  char *szTemp = strdup(m_szFullCommand);
-  char *pcFieldStart = szTemp, *pcFieldEnd;
-  m_szFullCommand[0] = '\0';
-  while ((pcFieldEnd = strchr(pcFieldStart, '%')) != NULL)
+  size_t pcField;
+  while ((pcField = myFullCommand.find('%')) != string::npos)
   {
-    *pcFieldEnd = '\0';
-    pcFieldEnd++;
-    strcat(m_szFullCommand, pcFieldStart);
-    // Anything non-digit at this point we just ignore
-    if (isdigit(*pcFieldEnd))
+    char c = myFullCommand[pcField+1];
+    if (isdigit(c))
+    {
       // We know that any user field numbers are valid from the constructor
-        strcat(m_szFullCommand, _vszUserFields[*pcFieldEnd - '1']);
-
-    pcFieldStart = pcFieldEnd;
-    if (pcFieldStart == '\0') break;
-    pcFieldStart++;
+      myFullCommand.replace(pcField, 2,  userFields[c - '1']);
+    }
+    else
+    {
+      // Anything non-digit at this point we just ignore
+      myFullCommand.erase(pcField, 2);
+    }
   }
-  strcat(m_szFullCommand, pcFieldStart);
-  free(szTemp);
 }
 
-//===========================================================================
 
-CUtilityUserField::CUtilityUserField(const char *_szTitle, const char *_szDefault)
+UtilityUserField::UtilityUserField(const string& title, const string& defaultValue)
+  : myTitle(title),
+    myDefaultValue(defaultValue)
 {
-  m_szTitle = strdup(_szTitle);
-  m_szDefault = strdup(_szDefault);
+  // Empty
 }
 
-CUtilityUserField::~CUtilityUserField()
+UtilityUserField::~UtilityUserField()
 {
-  free (m_szTitle);
-  free (m_szDefault);
+  // Empty
 }
 
-bool CUtilityUserField::SetFields(const ICQUser *u)
+bool UtilityUserField::setFields(const User* u)
 {
   char *szTmp;
-  szTmp = u->usprintf(m_szDefault, USPRINTF_NOFW|USPRINTF_LINEISCMD);
-  m_szFullDefault = new char[MAX_CMD_LEN];
-  strncpy(m_szFullDefault, szTmp, MAX_CMD_LEN);
-  m_szFullDefault[MAX_CMD_LEN - 1] = '\0';
+  szTmp = u->usprintf(myDefaultValue.c_str(), USPRINTF_NOFW|USPRINTF_LINEISCMD);
+  myFullDefault = szTmp;
   free(szTmp);
   return true;
 }
 
-//===========================================================================
 
-CUtilityInternalWindow::CUtilityInternalWindow()
+UtilityInternalWindow::UtilityInternalWindow()
 {
   fStdOut = fStdErr = NULL;
   pid = -1;
 }
 
-CUtilityInternalWindow::~CUtilityInternalWindow()
+UtilityInternalWindow::~UtilityInternalWindow()
 {
   if (Running()) PClose();
 }
 
-
-bool CUtilityInternalWindow::POpen(const char *cmd)
+bool UtilityInternalWindow::POpen(const string& command)
 {
   int pdes_out[2], pdes_err[2];
 
@@ -307,7 +287,7 @@ bool CUtilityInternalWindow::POpen(const char *cmd)
         close(pdes_err[1]);
       }
       close(pdes_err[0]);
-      execl(_PATH_BSHELL, "sh", "-c", cmd, NULL);
+      execl(_PATH_BSHELL, "sh", "-c", command.c_str(), NULL);
       _exit(127);
       /* NOTREACHED */
     }
@@ -327,7 +307,7 @@ bool CUtilityInternalWindow::POpen(const char *cmd)
 }
 
 
-int CUtilityInternalWindow::PClose()
+int UtilityInternalWindow::PClose()
 {
    int r, pstat;
    struct timeval tv = { 0, 200000 };

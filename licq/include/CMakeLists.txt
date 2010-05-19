@@ -15,7 +15,6 @@ set(licq_HEADERS
   licq_socket.h
   licq_translate.h
   licq_user.h
-  licq_utility.h
 )
 
 install(FILES ${licq_HEADERS} DESTINATION "${Licq_INCLUDE_DIR}/licq")

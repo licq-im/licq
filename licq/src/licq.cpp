@@ -24,25 +24,21 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-using namespace std;
-
-// Localization
-#include "gettext.h"
-
 #include "licq.h"
 #include "licq_log.h"
-#include "licq_utility.h"
-#include "support.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
 #include "licq/exceptions/exception.h"
+#include <licq/utility.h>
 #include "licq/version.h"
 
 #include "contactlist/usermanager.h"
+#include "gettext.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
 #include "plugins/pluginmanager.h"
 #include "sarmanager.h"
+#include "support.h"
 
 using namespace std;
 using Licq::GeneralPlugin;
@@ -51,6 +47,7 @@ using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
 using LicqDaemon::gUserManager;
+using Licq::gUtilityManager;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
 
@@ -640,7 +637,7 @@ bool CLicq::Init(int argc, char **argv)
   gOnEventManager.initialize();
   gSarManager.initialize();
   sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
-  gUtilityManager.LoadUtilities(szFilename);
+  gUtilityManager.loadUtilities(szFilename);
 
   // Create the daemon
   licqDaemon = new CICQDaemon(this);

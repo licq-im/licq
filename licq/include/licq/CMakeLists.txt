@@ -21,6 +21,7 @@ set(licq_HEADERS
   protocolmanager.h
   sarmanager.h
   userid.h
+  utility.h
   version.h
 )
 
