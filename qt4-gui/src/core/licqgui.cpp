@@ -729,11 +729,16 @@ UserViewEvent* LicqGui::showViewEventDialog(const UserId& userId)
     if (e->userId() == userId)
     {
       e->show();
-      if (Config::Chat::instance()->autoFocus() &&
-          (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon")))
+      if (Config::Chat::instance()->autoFocus())
       {
-        e->raise();
-        e->activateWindow();
+        // Don't change focus if another message window is already active
+        const QWidget* activeWin = QApplication::activeWindow();
+        if (activeWin == NULL || ((qobject_cast<const UserEventCommon*>(activeWin)) == NULL &&
+            (qobject_cast<const UserEventTabDlg*>(activeWin)) == NULL))
+        {
+          e->raise();
+          e->activateWindow();
+        }
       }
       return e;
     }
