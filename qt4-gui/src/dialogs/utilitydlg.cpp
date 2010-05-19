@@ -32,54 +32,62 @@
 #include <QSplitter>
 
 #include <licq_icqd.h>
-#include <licq_utility.h>
+#include <licq/utility.h>
 
 #include "core/messagebox.h"
 
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
 
+using Licq::Utility;
+using Licq::gUtilityManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UtilityDlg */
 
-UtilityDlg::UtilityDlg(CUtility* u, const Licq::UserId& userId)
+UtilityDlg::UtilityDlg(Utility* u, const Licq::UserId& userId)
   : myUserId(userId)
 {
   setObjectName("UtilityDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  m_xUtility = u;
+  myUtility = u;
   m_bIntWin = false;
-  intwin = NULL;
+  myInternalWindow = NULL;
   snOut = snErr = NULL;
 
-  m_xUtility->setFields(myUserId);
+  myUtility->setFields(myUserId);
 
   QGridLayout* lay = new QGridLayout(this);
   lay->setColumnStretch(2, 2);
   lay->setColumnMinimumWidth(1, 8);
-  setWindowTitle(QString(tr("Licq Utility: %1")).arg(m_xUtility->Name()));
+  setWindowTitle(QString(tr("Licq Utility: %1")).arg(myUtility->name().c_str()));
   lblUtility = new QLabel(tr("Command:"));
   lay->addWidget(lblUtility, 0, 0);
   nfoUtility = new InfoField(true);
   nfoUtility->setMinimumWidth(nfoUtility->sizeHint().width()*2);
   lay->addWidget(nfoUtility, 0, 2);
-  nfoUtility->setText(m_xUtility->FullCommand());
+  nfoUtility->setText(myUtility->fullCommand().c_str());
 
   lay->addWidget(new QLabel(tr("Window:")), 1, 0);
   nfoWinType = new InfoField(true);
   lay->addWidget(nfoWinType, 1, 2);
-  switch (m_xUtility->WinType())
+  switch (myUtility->winType())
   {
-    case UtilityWinGui: nfoWinType->setText(tr("GUI")); break;
-    case UtilityWinTerm: nfoWinType->setText(tr("Terminal")); break;
-    case UtilityWinLicq: nfoWinType->setText(tr("Internal")); break;
+    case Utility::WinGui:
+      nfoWinType->setText(tr("GUI"));
+      break;
+    case Utility::WinTerm:
+      nfoWinType->setText(tr("Terminal"));
+      break;
+    case Utility::WinLicq:
+      nfoWinType->setText(tr("Internal"));
+      break;
   }
 
   lay->addWidget(new QLabel(tr("Description:")), 2, 0);
   nfoDesc = new InfoField(true);
   lay->addWidget(nfoDesc, 2, 2);
-  nfoDesc->setText(m_xUtility->Description());
+  nfoDesc->setText(myUtility->description().c_str());
 
   chkEditFinal = new QCheckBox(tr("Edit final command"));
   lay->addWidget(chkEditFinal, 3, 0, 1, 3);
@@ -87,15 +95,15 @@ UtilityDlg::UtilityDlg(CUtility* u, const Licq::UserId& userId)
   boxFields = new QGroupBox(tr("User Fields"));
   lay->addWidget(boxFields, 4, 0, 1, 3);
   QHBoxLayout* layFields = new QHBoxLayout(boxFields);
-  for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
+  for (int i = 0; i < myUtility->numUserFields(); i++)
   {
     QString s;
-    s.sprintf("%s (%%%d): ", m_xUtility->UserField(i)->Title(), i+1);
+    s.sprintf("%s (%%%d): ", myUtility->userField(i)->title().c_str(), i+1);
     QLabel* lbl = new QLabel(s);
     lblFields.push_back(lbl);
     layFields->addWidget(lbl);
     QLineEdit* edt = new QLineEdit();
-    edt->setText(m_xUtility->UserField(i)->FullDefault());
+    edt->setText(myUtility->userField(i)->fullDefault().c_str());
     edt->setMinimumSize(edt->sizeHint());
     edtFields.push_back(edt);
     layFields->addWidget(edt);
@@ -110,7 +118,8 @@ UtilityDlg::UtilityDlg(CUtility* u, const Licq::UserId& userId)
   layFields->addWidget(splOutput);
 
   splOutput->hide();
-  if (m_xUtility->NumUserFields() == 0) boxFields->hide();
+  if (myUtility->numUserFields() == 0)
+    boxFields->hide();
 
   QDialogButtonBox* buttons = new QDialogButtonBox();
   lay->addWidget(buttons, 5, 0, 1, 3);
@@ -128,7 +137,7 @@ UtilityDlg::UtilityDlg(CUtility* u, const Licq::UserId& userId)
 
 UtilityDlg::~UtilityDlg()
 {
-  delete intwin;
+  delete myInternalWindow;
   delete snOut;
   delete snErr;
 }
@@ -164,19 +173,16 @@ void UtilityDlg::slot_run()
   if (nfoUtility->isReadOnly())
   {
     // Set the user fields
-    std::vector<const char*> vszFields(m_xUtility->NumUserFields());
+    std::vector<std::string> vszFields(myUtility->numUserFields());
     std::vector<QLineEdit*>::iterator iter;
     unsigned short i = 0;
     for (iter = edtFields.begin(); iter != edtFields.end(); iter++)
     {
       vszFields[i++] = strdup((*iter)->text().toLocal8Bit().data());
     }
-    m_xUtility->SetUserFields(vszFields);
-    std::vector<const char*>::iterator siter;
-    for(siter = vszFields.begin(); siter != vszFields.end(); siter++)
-      free(const_cast<char*>(*siter));
+    myUtility->setUserFields(vszFields);
 
-    nfoUtility->setText(m_xUtility->FullCommand());
+    nfoUtility->setText(myUtility->fullCommand().c_str());
     if (chkEditFinal->isChecked())
     {
       lblUtility->setText(tr("Edit:"));
@@ -192,53 +198,53 @@ void UtilityDlg::slot_run()
   // Run the command
   int nSystemResult = 0;
   QString cmd = nfoUtility->text();
-  switch(m_xUtility->WinType())
+  switch (myUtility->winType())
   {
-  case UtilityWinGui:
-  {
-    m_xUtility->SetBackgroundTask();
-    nSystemResult = system(cmd.toLocal8Bit().data());
-    break;
-  }
-  case UtilityWinTerm:
-  {
-    QString szCmd = gLicqDaemon->Terminal();
-    szCmd.append(" ").append(cmd).append(" &");
-    nSystemResult = system(szCmd.toLocal8Bit());
-    break;
-  }
-  case UtilityWinLicq:
-  {
-    for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
+    case Utility::WinGui:
     {
-      lblFields[i]->hide();
-      edtFields[i]->hide();
+      myUtility->setBackgroundTask();
+      nSystemResult = system(cmd.toLocal8Bit().data());
+      break;
     }
-    boxFields->setTitle(tr("Command Window"));
-    boxFields->show();
-    splOutput->show();
-    resize(width(), 300);
-    intwin = new CUtilityInternalWindow;
-    if (intwin->POpen(cmd.toLocal8Bit().data()))
+    case Utility::WinTerm:
     {
-      m_bStdOutClosed = m_bStdErrClosed = false;
-      snOut = new QSocketNotifier(fileno(intwin->StdOut()), QSocketNotifier::Read, this);
-      connect(snOut, SIGNAL(activated(int)), SLOT(slot_stdout()));
-      snErr = new QSocketNotifier(fileno(intwin->StdErr()), QSocketNotifier::Read, this);
-      connect(snErr, SIGNAL(activated(int)), SLOT(slot_stderr()));
-      nSystemResult = 0;
-      m_bIntWin = true;
+      QString szCmd = gLicqDaemon->Terminal();
+      szCmd.append(" ").append(cmd).append(" &");
+      nSystemResult = system(szCmd.toLocal8Bit());
+      break;
     }
-    else
-      nSystemResult = -1;
-    break;
-  }
+    case Utility::WinLicq:
+    {
+      for (int i = 0; i < myUtility->numUserFields(); i++)
+      {
+        lblFields[i]->hide();
+        edtFields[i]->hide();
+      }
+      boxFields->setTitle(tr("Command Window"));
+      boxFields->show();
+      splOutput->show();
+      resize(width(), 300);
+      myInternalWindow = new Licq::UtilityInternalWindow;
+      if (myInternalWindow->POpen(cmd.toLocal8Bit().data()))
+      {
+        m_bStdOutClosed = m_bStdErrClosed = false;
+        snOut = new QSocketNotifier(fileno(myInternalWindow->StdOut()), QSocketNotifier::Read, this);
+        connect(snOut, SIGNAL(activated(int)), SLOT(slot_stdout()));
+        snErr = new QSocketNotifier(fileno(myInternalWindow->StdErr()), QSocketNotifier::Read, this);
+        connect(snErr, SIGNAL(activated(int)), SLOT(slot_stderr()));
+        nSystemResult = 0;
+        m_bIntWin = true;
+      }
+      else
+        nSystemResult = -1;
+      break;
+    }
   } // switch
 
   if (nSystemResult == -1)
   {
     lblUtility->setText(tr("Failed:"));
-    m_xUtility->setFields(myUserId);
+    myUtility->setFields(myUserId);
   }
   else
   {
@@ -253,7 +259,7 @@ void UtilityDlg::CloseInternalWindow()
   m_bIntWin = false;
   lblUtility->setText(tr("Done:"));
   btnCancel->setText(tr("C&lose"));
-  intwin->PClose();
+  myInternalWindow->PClose();
 }
 
 
@@ -261,7 +267,7 @@ void UtilityDlg::CloseInternalWindow()
 void UtilityDlg::slot_stdout()
 {
   char buf[1024];
-  if (fgets(buf, 1024, intwin->StdOut()) == NULL)
+  if (fgets(buf, 1024, myInternalWindow->StdOut()) == NULL)
   {
     m_bStdOutClosed = true;
     disconnect(snOut, SIGNAL(activated(int)), this, SLOT(slot_stdout()));
@@ -284,7 +290,7 @@ void UtilityDlg::slot_stdout()
 void UtilityDlg::slot_stderr()
 {
   char buf[1024];
-  if (fgets(buf, 1024, intwin->StdErr()) == NULL)
+  if (fgets(buf, 1024, myInternalWindow->StdErr()) == NULL)
   {
     m_bStdErrClosed = true;
     disconnect(snErr, SIGNAL(activated(int)), this, SLOT(slot_stderr()));

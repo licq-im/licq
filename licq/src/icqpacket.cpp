@@ -21,23 +21,21 @@
 
 #include <boost/scoped_array.hpp>
 
-// Localization
-#include "gettext.h"
-
 #include "licq/byteorder.h"
 #include "licq/md5.h"
+#include <licq/utility.h>
 #include "licq_socket.h"
 #include "licq_icq.h"
 #include "licq_translate.h"
 #include "licq_log.h"
-#include "licq_utility.h"
 #include "licq_color.h"
-#include "support.h"
 #include "licq/version.h"
 
 #include "contactlist/group.h"
 #include "contactlist/usermanager.h"
+#include "gettext.h"
 #include "icqpacket.h"
+#include "support.h"
 
 using namespace std;
 using Licq::Group;
@@ -4986,7 +4984,7 @@ char *PipeInput(char *m_szMessage)
     char szCmd[1024];
     char szCmdOutput[4097];
     unsigned short i;
-    CUtilityInternalWindow win;
+    Licq::UtilityInternalWindow win;
 
     // Move over the '|'
     sz++;

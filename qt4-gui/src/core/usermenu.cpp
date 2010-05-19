@@ -29,7 +29,7 @@
 #include <licq_icqd.h>
 #include <licq/pluginmanager.h>
 #include <licq_user.h>
-#include <licq_utility.h>
+#include <licq/utility.h>
 
 #include "config/iconmanager.h"
 
@@ -119,9 +119,9 @@ UserMenu::UserMenu(QWidget* parent)
   // Sub menu Utilities
   myUtilitiesMenu = new QMenu(tr("U&tilities"));
   connect(myUtilitiesMenu, SIGNAL(triggered(QAction*)), SLOT(utility(QAction*)));
-  for (int i = 0; i < gUtilityManager.NumUtilities(); ++i)
+  for (int i = 0; i < Licq::gUtilityManager.numUtilities(); ++i)
   {
-    myUtilitiesMenu->addAction(gUtilityManager.Utility(i)->Name())->setData(i);
+    myUtilitiesMenu->addAction(Licq::gUtilityManager.utility(i)->name().c_str())->setData(i);
   }
 
   // Sub menu User Group
@@ -573,7 +573,7 @@ void UserMenu::utility(QAction* action)
 {
   int index = action->data().toUInt();
 
-  CUtility* u = gUtilityManager.Utility(index);
+  Licq::Utility* u = Licq::gUtilityManager.utility(index);
 
   if (u != NULL)
     new UtilityDlg(u, myUserId);

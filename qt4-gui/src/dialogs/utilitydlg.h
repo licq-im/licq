@@ -34,8 +34,12 @@ class QPushButton;
 class QSocketNotifier;
 class QSplitter;
 
-class CUtility;
-class CUtilityInternalWindow;
+
+namespace Licq
+{
+class Utility;
+class UtilityInternalWindow;
+}
 
 namespace LicqQtGui
 {
@@ -47,14 +51,14 @@ class UtilityDlg : public QDialog
   Q_OBJECT
 
 public:
-  UtilityDlg(CUtility* u, const Licq::UserId& userId);
+  UtilityDlg(Licq::Utility* u, const Licq::UserId& userId);
   ~UtilityDlg();
 
 private:
-  CUtility* m_xUtility;
+  Licq::Utility* myUtility;
   Licq::UserId myUserId;
   bool m_bIntWin, m_bStdOutClosed, m_bStdErrClosed;
-  CUtilityInternalWindow* intwin;
+  Licq::UtilityInternalWindow* myInternalWindow;
 
   QLabel* lblUtility;
   InfoField* nfoUtility;
