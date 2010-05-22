@@ -25,11 +25,11 @@
 #include <unistd.h>
 
 #include "licq.h"
-#include <licq_file.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
 #include "licq/exceptions/exception.h"
+#include <licq/inifile.h>
 #include <licq/utility.h>
 #include "licq/version.h"
 
@@ -515,23 +515,21 @@ bool CLicq::Init(int argc, char **argv)
   }
 
   // Open the config file
-  CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
-  snprintf(szConf, MAX_FILENAME_LEN, "%slicq.conf", BASE_DIR);
-  szConf[MAX_FILENAME_LEN - 1] = '\0';
-  if (licqConf.LoadFile(szConf) == false)
+  Licq::IniFile licqConf("licq.conf");
+  if (!licqConf.loadFile())
   {
     gLog.error("Could not load config file '%s'", szConf);
     return false;
   }
 
   // Verify the version
-  licqConf.SetSection("licq");
-  unsigned short nVersion;
-  licqConf.ReadNum("Version", nVersion, 0);
+  licqConf.setSection("licq");
+  unsigned nVersion;
+  licqConf.get("Version", nVersion, 0);
   if (nVersion < LICQ_MAKE_VERSION(1, 2, 8))
   {
     gLog.Info("%sUpgrading config file formats.\n", L_SBLANKxSTR);
-    if (UpgradeLicq(licqConf))
+    if (upgradeLicq128(licqConf))
       gLog.Info("%sUpgrade completed.\n", L_SBLANKxSTR);
     else
     {
@@ -542,23 +540,25 @@ bool CLicq::Init(int argc, char **argv)
   }
   else if (nVersion < LICQ_VERSION)
   {
-    licqConf.WriteNum("Version", (unsigned short)LICQ_VERSION);
-    licqConf.FlushFile();
+    licqConf.set("Version", LICQ_VERSION);
+    licqConf.writeFile();
   }
 
   // Find and load the protocol plugins before the UI plugins
   if (!bHelp && !bCmdLineProtoPlugins)
   {
-    unsigned short nNumProtoPlugins = 0;
-    char szData[MAX_FILENAME_LEN];
-    if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumProtoPlugins", nNumProtoPlugins) && nNumProtoPlugins > 0)
+    unsigned nNumProtoPlugins = 0;
+    if (licqConf.setSection("plugins", false) && licqConf.get("NumProtoPlugins", nNumProtoPlugins) && nNumProtoPlugins > 0)
     {
       char szKey[20];
-      for (int i = 0; i < nNumProtoPlugins; i++)
+      for (unsigned i = 0; i < nNumProtoPlugins; i++)
       {
+        string pluginName;
         sprintf(szKey, "ProtoPlugin%d", i+1);
-        if (!licqConf.ReadStr(szKey, szData)) continue;
-        if (LoadProtoPlugin(szData) == false) return false;
+        if (!licqConf.get(szKey, pluginName))
+          continue;
+        if (!LoadProtoPlugin(pluginName.c_str()))
+          return false;
       }
     }
   }
@@ -567,14 +567,14 @@ bool CLicq::Init(int argc, char **argv)
   // Find and load the plugins from the conf file
   if (!bHelp && !bCmdLinePlugins)
   {
-    unsigned short nNumPlugins = 0;
+    unsigned nNumPlugins = 0;
     string pluginName;
-    if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumPlugins", nNumPlugins) && nNumPlugins > 0)
+    if (licqConf.setSection("plugins", false) && licqConf.get("NumPlugins", nNumPlugins) && nNumPlugins > 0)
     {
-      for (int i = 0; i < nNumPlugins; i++)
+      for (unsigned i = 0; i < nNumPlugins; i++)
       {
         sprintf(szKey, "Plugin%d", i + 1);
-        if (!licqConf.readString(szKey, pluginName))
+        if (!licqConf.get(szKey, pluginName))
           continue;
 
         bool loaded = LoadPlugin(pluginName.c_str(), argc, argv);
@@ -607,9 +607,6 @@ bool CLicq::Init(int argc, char **argv)
         return false;
     }
   }
-
-  // Close the conf file
-  licqConf.CloseFile();
 
 #ifdef USE_OPENSSL
   // Initialize SSL
@@ -669,53 +666,49 @@ const char *CLicq::Version()
  *
  * Upgrades the config files to the current version.
  *---------------------------------------------------------------------------*/
-bool CLicq::UpgradeLicq(CIniFile &licqConf)
-{  
-  CIniFile ownerFile(INI_FxERROR);
+bool CLicq::upgradeLicq128(Licq::IniFile& licqConf)
+{
   string strBaseDir = BASE_DIR;
-  string strOwnerFile = strBaseDir + "owner.uin";
-  if (!ownerFile.LoadFile(strOwnerFile.c_str()))
+  Licq::IniFile ownerFile("owner.uin");
+  if (!ownerFile.loadFile())
     return false;
 
   // Get the UIN
   unsigned long nUin;
-  ownerFile.SetSection("user");
-  ownerFile.ReadNum("Uin", nUin, 0);
-  ownerFile.CloseFile();
+  ownerFile.setSection("user");
+  ownerFile.get("Uin", nUin, 0);
 
   // Set the new version number
-  licqConf.SetSection("licq");
-  licqConf.WriteNum("Version", (unsigned short)LICQ_VERSION);  
- 
+  licqConf.setSection("licq");
+  licqConf.set("Version", LICQ_VERSION);
+
   // Create the owner section and fill it
-  licqConf.SetSection("owners");
-  licqConf.WriteNum("NumOfOwners", (unsigned short)1);
-  licqConf.WriteNum("Owner1.Id", nUin);
-  licqConf.WriteStr("Owner1.PPID", "Licq");
-  
+  licqConf.setSection("owners");
+  licqConf.set("NumOfOwners", 1);
+  licqConf.set("Owner1.Id", nUin);
+  licqConf.set("Owner1.PPID", "Licq");
+
   // Add the protocol plugins info
-  licqConf.SetSection("plugins");
-  licqConf.WriteNum("NumProtoPlugins", (unsigned short)0);
-  licqConf.FlushFile();
-  
+  licqConf.setSection("plugins");
+  licqConf.set(string("NumProtoPlugins"), 0);
+  licqConf.writeFile();
+
   // Rename owner.uin to owner.Licq
-  string strNewOwnerFile = strBaseDir + "owner.Licq";
-  if (rename(strOwnerFile.c_str(), strNewOwnerFile.c_str()))
+  if (rename((strBaseDir + "owner.uin").c_str(), (strBaseDir + "owner.Licq").c_str()))
     return false;
 
   // Update all the user files and update users.conf
   struct dirent **UinFiles;
   string strUserDir = strBaseDir + USER_DIR;
-  string strUsersConf = strBaseDir + "users.conf";
   int n = scandir_alpha_r(strUserDir.c_str(), &UinFiles, SelectUserUtility);
   if (n != 0)
   {
-    CIniFile userConfFile(INI_FxERROR);
-    if (!userConfFile.LoadFile(strUsersConf.c_str()))
+    Licq::IniFile userConf("users.conf");
+    if (!userConf.loadFile())
       return false;
-    userConfFile.SetSection("users");  
-    userConfFile.WriteNum("NumOfUsers", (unsigned short)n);
-    for (unsigned short i = 0; i < n; i++)
+    userConf.setSection("users");
+    userConf.set("NumOfUsers", n);
+    for (int i = 0; i < n; i++)
     {
       char szKey[20];
       snprintf(szKey, sizeof(szKey), "User%d", i+1);
@@ -725,12 +718,11 @@ bool CLicq::UpgradeLicq(CIniFile &licqConf)
       string strNewFile = strUserDir + "/" + strNewName;
       if (rename(strFileName.c_str(), strNewFile.c_str()))
         return false;
-      userConfFile.WriteStr(szKey, strNewName.c_str());
+      userConf.set(szKey, strNewName);
     }
-    
-    userConfFile.FlushFile();
+    userConf.writeFile();
   }
-  
+
   // Rename the history files
   struct dirent **HistoryFiles;
   string strHistoryDir = strBaseDir + HISTORY_DIR;
@@ -863,31 +855,29 @@ void CLicq::PrintUsage()
 
 void CLicq::SaveLoadedPlugins()
 {
-  char szConf[MAX_FILENAME_LEN];
   char szKey[20];
 
-  CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
-  sprintf(szConf, "%slicq.conf", BASE_DIR);
-  licqConf.LoadFile(szConf);
+  Licq::IniFile licqConf("licq.conf");
+  licqConf.loadFile();
 
-  licqConf.SetSection("plugins");
+  licqConf.setSection("plugins");
 
   Licq::GeneralPluginsList general;
   gPluginManager.getGeneralPluginsList(general);
 
-  licqConf.WriteNum("NumPlugins", (unsigned short)general.size());
+  licqConf.set("NumPlugins", general.size());
 
   unsigned short i = 1;
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, general)
   {
     sprintf(szKey, "Plugin%d", i++);
-    licqConf.WriteStr(szKey, plugin->getLibraryName().c_str());
+    licqConf.set(szKey, plugin->getLibraryName());
   }
 
   Licq::ProtocolPluginsList protocols;
   gPluginManager.getProtocolPluginsList(protocols);
 
-  licqConf.WriteNum("NumProtoPlugins", (unsigned short)(protocols.size() - 1));
+  licqConf.set("NumProtoPlugins", (protocols.size() - 1));
 
   i = 1;
   BOOST_FOREACH(ProtocolPlugin::Ptr plugin, protocols)
@@ -895,11 +885,11 @@ void CLicq::SaveLoadedPlugins()
     if (!plugin->getLibraryName().empty())
     {
       sprintf(szKey, "ProtoPlugin%d", i++);
-      licqConf.WriteStr(szKey, plugin->getLibraryName().c_str());
+      licqConf.set(szKey, plugin->getLibraryName());
     }
   }
 
-  licqConf.FlushFile();
+  licqConf.writeFile();
 }
 
 
@@ -939,29 +929,27 @@ bool CLicq::Install()
   }
 
   // Create licq.conf
-  snprintf(cmd, sizeof(cmd) - 1, "%slicq.conf", BASE_DIR);
-  CIniFile mainConf(INI_FxALLOWxCREATE);
-  mainConf.LoadFile(cmd);
-  mainConf.SetSection("licq");
-  mainConf.WriteNum("Version", (unsigned short)LICQ_VERSION);
-  mainConf.SetSection("plugins");
-  mainConf.WriteNum("NumPlugins", 0);
-  mainConf.WriteNum("NumProtoPlugins", 0);
-  mainConf.SetSection("network");
-  mainConf.SetSection("onevent");
-  mainConf.SetSection("groups");
-  mainConf.WriteNum("NumOfGroups", 0);
-  mainConf.SetSection("owners");
-  mainConf.WriteNum("NumOfOwners", 0);
-  mainConf.FlushFile();
+  Licq::IniFile licqConf("licq.conf");
+  licqConf.loadFile();
+  licqConf.setSection("licq");
+  licqConf.set("Version", LICQ_VERSION);
+  licqConf.setSection("plugins");
+  licqConf.set(string("NumPlugins"), 0);
+  licqConf.set(string("NumProtoPlugins"), 0);
+  licqConf.setSection("network");
+  licqConf.setSection("onevent");
+  licqConf.setSection("groups");
+  licqConf.set(string("NumOfGroups"), 0);
+  licqConf.setSection("owners");
+  licqConf.set(string("NumOfOwners"), 0);
+  licqConf.writeFile();
 
   // Create users.conf
-  snprintf(cmd, sizeof(cmd) - 1, "%susers.conf", BASE_DIR);
-  CIniFile usersConf(INI_FxALLOWxCREATE);
-  usersConf.LoadFile(cmd);
-  usersConf.SetSection("users");
-  usersConf.WriteNum("NumOfUsers", 0ul);
-  usersConf.FlushFile();
+  Licq::IniFile usersConf("users.conf");
+  usersConf.loadFile();
+  usersConf.setSection("users");
+  usersConf.set(string("NumOfUsers"), 0);
+  usersConf.writeFile();
 
   return(true);
 }

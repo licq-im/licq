@@ -13,7 +13,11 @@ extern char **global_argv;
 extern int global_argc;
 
 class CICQDaemon;
-class CIniFile;
+
+namespace Licq
+{
+class IniFile;
+}
 
 namespace LicqDaemon
 {
@@ -38,7 +42,7 @@ public:
   inline LicqDaemon::LogService& getLogService();
 
 protected:
-  bool UpgradeLicq(CIniFile &);
+  bool upgradeLicq128(Licq::IniFile& licqConf);
 
   Licq::GeneralPlugin::Ptr
   LoadPlugin(const char *, int, char **, bool keep = true);
