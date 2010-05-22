@@ -975,7 +975,7 @@ void CICQDaemon::icqUpdateContactList()
   {
     n++;
     users.push_back(pUser->IdString());
-    if (n == m_nMaxUsersPerPacket)
+    if (n == myMaxUsersPerPacket)
     {
       CSrvPacketTcp *p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
       gLog.Info(tr("%sUpdating contact list (#%hu)...\n"), L_SRVxSTR, p->Sequence());
@@ -1193,7 +1193,7 @@ void CICQDaemon::icqClearServerList()
   {
     n++;
     users.push_back(pUser->IdString());
-    if (n == m_nMaxUsersPerPacket)
+    if (n == myMaxUsersPerPacket)
     {
       gUserManager.DropUser(pUser);
       CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxNORMAL);
@@ -1227,7 +1227,7 @@ void CICQDaemon::icqClearServerList()
       users.push_back(pUser->IdString());
     }
 
-    if (n == m_nMaxUsersPerPacket)
+    if (n == myMaxUsersPerPacket)
     {
       gUserManager.DropUser(pUser);
       CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxINVISIBLE);
@@ -1261,7 +1261,7 @@ void CICQDaemon::icqClearServerList()
       users.push_back(pUser->IdString());
     }
 
-    if (n == m_nMaxUsersPerPacket)
+    if (n == myMaxUsersPerPacket)
     {
       gUserManager.DropUser(pUser);
       CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxVISIBLE);
@@ -1638,11 +1638,11 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 
 int CICQDaemon::ConnectToLoginServer()
 {
-  if (m_bProxyEnabled)
+  if (myProxyEnabled)
     InitProxy();
 
   // Which protocol plugin?
-  int r = ConnectToServer(m_szICQServer, m_nICQServerPort);
+  int r = ConnectToServer(myIcqServer.c_str(), myIcqServerPort);
 
   write(pipe_newsocket[PIPE_WRITE], "S", 1);
 
@@ -1653,7 +1653,7 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 {
   SrvSocket* s = new SrvSocket(gUserManager.ownerUserId(LICQ_PPID));
 
-  if (m_bProxyEnabled)
+  if (myProxyEnabled)
   {
     if (m_xProxy == NULL)
     {
@@ -1898,7 +1898,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
       {
-        nPort = m_nICQServerPort;
+        nPort = myIcqServerPort;
       }
 
       switch (nFam)

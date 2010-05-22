@@ -11,6 +11,7 @@
 #include <boost/foreach.hpp>
 #include <cassert>
 #include <cctype>
+#include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -20,21 +21,17 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-// Localization
-#include "gettext.h"
-
-#include <cerrno>
-
+#include <licq/inifile.h>
 #include <licq/oneventmanager.h>
 #include "licq_icq.h"
 #include "licq_user.h"
 #include "licq_constants.h"
-#include "licq_file.h"
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "licq_proxy.h"
 
 #include "contactlist/user.h"
+#include "gettext.h"
 #include "gpghelper.h"
 #include "icqpacket.h"
 #include "licq.h"
@@ -88,7 +85,7 @@ Licq::Daemon* Licq::gDaemon = NULL;
 //-----CICQDaemon::constructor--------------------------------------------------
 CICQDaemon::CICQDaemon(CLicq *_licq)
 {
-  char temp[MAX_FILENAME_LEN];
+  string temp;
 
   licq = _licq;
   gLicqDaemon = this;
@@ -118,66 +115,50 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   receivedUserList.clear();
 
   // Begin parsing the config file
-  snprintf(m_szConfigFile, MAX_FILENAME_LEN, "%s%s", BASE_DIR, "licq.conf");
-  m_szConfigFile[MAX_FILENAME_LEN - 1] = '\0';
-  CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
-  licqConf.LoadFile(m_szConfigFile);
-  licqConf.SetFlags(0);
+  Licq::IniFile licqConf("licq.conf");
+  licqConf.loadFile();
 
-  licqConf.SetSection("network");
+  licqConf.setSection("network");
 
   // ICQ Server
-  char szICQServer[MAX_LINE_LEN];
+  licqConf.get("ICQServer", myIcqServer, DEFAULT_SERVER_HOST);
+  licqConf.get("ICQServerPort", myIcqServerPort, DEFAULT_SERVER_PORT);
 
-  licqConf.ReadStr("ICQServer", szICQServer, DEFAULT_SERVER_HOST);
-  m_szICQServer = (char *)malloc(strlen(szICQServer) + 1);
-  strcpy(m_szICQServer, szICQServer);
-  licqConf.ReadNum("ICQServerPort", m_nICQServerPort, DEFAULT_SERVER_PORT);
-
-  unsigned short nTCPPortsLow, nTCPPortsHigh;
-  licqConf.ReadNum("TCPPortsLow", nTCPPortsLow, 0);
-  licqConf.ReadNum("TCPPortsHigh", nTCPPortsHigh, 0);
+  unsigned nTCPPortsLow, nTCPPortsHigh;
+  licqConf.get("TCPPortsLow", nTCPPortsLow, 0);
+  licqConf.get("TCPPortsHigh", nTCPPortsHigh, 0);
   SetTCPPorts(nTCPPortsLow, nTCPPortsHigh);
-  licqConf.ReadBool("TCPEnabled", m_bTCPEnabled, true);
-  licqConf.ReadBool("Firewall", m_bFirewall, false);
+  licqConf.get("TCPEnabled", m_bTCPEnabled, true);
+  licqConf.get("Firewall", m_bFirewall, false);
   SetTCPEnabled(!m_bFirewall || (m_bFirewall && m_bTCPEnabled));
-  licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
-  licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
-  licqConf.ReadBool("AutoUpdateInfo", m_bAutoUpdateInfo, true);
-  licqConf.ReadBool("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins, true);
-  licqConf.ReadBool("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins,
-    true);
+  licqConf.get("MaxUsersPerPacket", myMaxUsersPerPacket, 100);
+  licqConf.get("IgnoreTypes", m_nIgnoreTypes, 0);
+  licqConf.get("AutoUpdateInfo", m_bAutoUpdateInfo, true);
+  licqConf.get("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins, true);
+  licqConf.get("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins, true);
   unsigned long nColor;
-  licqConf.ReadNum("ForegroundColor", nColor, 0x00000000);
+  licqConf.get("ForegroundColor", nColor, 0x00000000);
   CICQColor::SetDefaultForeground(nColor);
-  licqConf.ReadNum("BackgroundColor", nColor, 0x00FFFFFF);
+  licqConf.get("BackgroundColor", nColor, 0x00FFFFFF);
   CICQColor::SetDefaultBackground(nColor);
 
 
   // Rejects log file
-  licqConf.ReadStr("Rejects", temp, "log.rejects");
-  if (strcmp(temp, "none") != 0)
-  {
-    m_szRejectFile = new char[MAX_FILENAME_LEN];
-    snprintf(m_szRejectFile, MAX_FILENAME_LEN, "%s%s", BASE_DIR, temp);
-    m_szRejectFile[MAX_FILENAME_LEN - 1] = '\0';
-  }
-  else
-    m_szRejectFile = NULL;
-
+  licqConf.get("Rejects", myRejectFile, "log.rejects");
+  if (myRejectFile == "none")
+    myRejectFile = "";
 
   // Error log file
-  licqConf.ReadStr("Errors", m_szErrorFile, "log.errors");
-  licqConf.ReadNum("ErrorTypes", m_nErrorTypes, L_ERROR | L_UNKNOWN);
-  if (strcmp(m_szErrorFile, "none") != 0)
+  licqConf.get("Errors", myErrorFile, "log.errors");
+  licqConf.get("ErrorTypes", myErrorTypes, L_ERROR | L_UNKNOWN);
+  if (myErrorFile != "none")
   {
-    snprintf(temp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, m_szErrorFile);
-    temp[MAX_FILENAME_LEN - 1] = '\0';
-    CLogService_File *l = new CLogService_File(m_nErrorTypes);
-    if (!l->SetLogFile(temp, "a"))
+    string errorFile = BASE_DIR + myErrorFile;
+    CLogService_File *l = new CLogService_File(myErrorTypes);
+    if (!l->SetLogFile(errorFile.c_str(), "a"))
     {
       gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
-                  L_ERRORxSTR, temp, L_BLANKxSTR, strerror(errno));
+          L_ERRORxSTR, errorFile.c_str(), L_BLANKxSTR, strerror(errno));
       delete l;
     }
     else
@@ -185,47 +166,37 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   }
 
   // Loading translation table from file
-  licqConf.ReadStr("Translation", temp, "none");
-  if (strncmp(temp, "none", 4) != 0)
+  licqConf.get("Translation", temp, "none");
+  if (temp != "none")
   {
-     char TranslationTableFileNameFull[MAX_FILENAME_LEN];
-     snprintf(TranslationTableFileNameFull, MAX_FILENAME_LEN, "%s%s/%s", SHARE_DIR, TRANSLATION_DIR, temp);
-     TranslationTableFileNameFull[MAX_FILENAME_LEN - 1] = '\0';
-     gTranslator.setTranslationMap (TranslationTableFileNameFull);
+    string filename = SHARE_DIR;
+    filename += TRANSLATION_DIR;
+    filename += "/";
+    filename += temp;
+    gTranslator.setTranslationMap(temp.c_str());
   }
 
   // Terminal
-  m_szTerminal = NULL;
-  licqConf.ReadStr("Terminal", temp, "xterm -T Licq -e ");
-  m_szTerminal = (char *)malloc(strlen(temp) + 1);
-  strcpy(m_szTerminal, temp);
+  licqConf.get("Terminal", myTerminal, "xterm -T Licq -e ");
 
   // Proxy
   m_xProxy = NULL;
-  char t_str[MAX_LINE_LEN];
-
-  licqConf.ReadBool("ProxyEnabled", m_bProxyEnabled, false);
-  licqConf.ReadNum("ProxyServerType", m_nProxyType, PROXY_TYPE_HTTP);
-  licqConf.ReadStr("ProxyServer", t_str, "");
-  m_szProxyHost = (char *)malloc(strlen(t_str) + 1);
-  strcpy(m_szProxyHost, t_str);
-  licqConf.ReadNum("ProxyServerPort", m_nProxyPort, 0);
-  licqConf.ReadBool("ProxyAuthEnabled", m_bProxyAuthEnabled, false);
-  licqConf.ReadStr("ProxyLogin", t_str, "");
-  m_szProxyLogin = (char *)malloc(strlen(t_str) + 1);
-  strcpy(m_szProxyLogin, t_str);
-  licqConf.ReadStr("ProxyPassword", t_str, "");
-  m_szProxyPasswd = (char *)malloc(strlen(t_str) + 1);
-  strcpy(m_szProxyPasswd, t_str);
+  licqConf.get("ProxyEnabled", myProxyEnabled, false);
+  licqConf.get("ProxyServerType", myProxyType, PROXY_TYPE_HTTP);
+  licqConf.get("ProxyServer", myProxyHost, "");
+  licqConf.get("ProxyServerPort", myProxyPort, 0);
+  licqConf.get("ProxyAuthEnabled", myProxyAuthEnabled, false);
+  licqConf.get("ProxyLogin", myProxyLogin, "");
+  licqConf.get("ProxyPassword", myProxyPasswd, "");
 
   // Services
   m_xBARTService = NULL;
 
   // Misc
-  licqConf.ReadBool("UseSS", m_bUseSS, true); // server side list
-  licqConf.ReadBool("UseBART", m_bUseBART, true); // server side buddy icons
-  licqConf.ReadBool("SendTypingNotification", m_bSendTN, true);
-  licqConf.ReadBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
+  licqConf.get("UseSS", m_bUseSS, true); // server side list
+  licqConf.get("UseBART", m_bUseBART, true); // server side buddy icons
+  licqConf.get("SendTypingNotification", m_bSendTN, true);
+  licqConf.get("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
 
   // Statistics
   m_nResetTime = 0;
@@ -235,14 +206,14 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_sStats.push_back(CDaemonStats("Auto Response Checked", "ARC"));
 #ifdef SAVE_STATS
   DaemonStatsList::iterator iter;
-  if (licqConf.SetSection("stats"))
+  if (licqConf.setSection("stats"))
   {
     unsigned long t;
-    licqConf.ReadNum("Reset", t, 0);
+    licqConf.get("Reset", t, 0);
     m_nResetTime = t;
     for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
     {
-      licqConf.ReadNum(iter->m_szTag, iter->m_nTotal, 0);
+      licqConf.get(iter->m_szTag, iter->m_nTotal, 0);
       iter->Init();
     }
   }
@@ -387,12 +358,6 @@ const char* CICQDaemon::Version() const
 //-----ICQ::destructor----------------------------------------------------------
 CICQDaemon::~CICQDaemon()
 {
-  if(m_szRejectFile)  delete []m_szRejectFile;
-  if(m_szICQServer)   free(m_szICQServer);
-  if(m_szProxyHost)   free(m_szProxyHost);
-  if(m_szProxyLogin)  free(m_szProxyLogin);
-  if(m_szProxyPasswd) free(m_szProxyPasswd);
-  if(m_szTerminal)    free(m_szTerminal);
   if(fifo_fs)         fclose(fifo_fs);
   gLicqDaemon = NULL;
   Licq::gDaemon = NULL;
@@ -411,16 +376,17 @@ void CICQDaemon::FlushStats()
   if (iter == m_sStats.end()) return;
 
   // Save the stats
-  CIniFile licqConf(INI_FxALLOWxCREATE);
-  if (!licqConf.LoadFile(m_szConfigFile)) return;
-  licqConf.SetSection("stats");
-  licqConf.WriteNum("Reset", (unsigned long)m_nResetTime);
+  Licq::IniFile licqConf("licq.conf");
+  if (!licqConf.loadFile())
+    return;
+  licqConf.setSection("stats");
+  licqConf.set("Reset", (unsigned long)m_nResetTime);
   for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
   {
-    licqConf.WriteNum(iter->m_szTag, iter->m_nTotal);
+    licqConf.set(iter->m_szTag, iter->m_nTotal);
     iter->ClearDirty();
   }
-  licqConf.FlushFile();
+  licqConf.writeFile();
 #endif
 }
 
@@ -448,27 +414,27 @@ pthread_t *CICQDaemon::Shutdown()
 //-----SaveConf-----------------------------------------------------------------
 void CICQDaemon::SaveConf()
 {
-  CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
-  if (!licqConf.LoadFile(m_szConfigFile)) return;
+  Licq::IniFile licqConf("licq.conf");
+  if (!licqConf.loadFile())
+    return;
 
-  licqConf.SetSection("network");
+  licqConf.setSection("network");
 
   // ICQ Server
-  licqConf.WriteStr("ICQServer", m_szICQServer);
-  licqConf.WriteNum("ICQServerPort", m_nICQServerPort);
+  licqConf.set("ICQServer", myIcqServer);
+  licqConf.set("ICQServerPort", myIcqServerPort);
 
-  licqConf.WriteNum("TCPPortsLow", m_nTCPPortsLow);
-  licqConf.WriteNum("TCPPortsHigh", m_nTCPPortsHigh);
-  licqConf.WriteBool("TCPEnabled", m_bTCPEnabled);
-  licqConf.WriteBool("Firewall", m_bFirewall);
-  licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
-  licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
-  licqConf.WriteBool("AutoUpdateInfo", m_bAutoUpdateInfo);
-  licqConf.WriteBool("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins);
-  licqConf.WriteBool("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
-  licqConf.WriteNum("ForegroundColor", CICQColor::DefaultForeground());
-  licqConf.WriteNum("BackgroundColor", CICQColor::DefaultBackground());
-
+  licqConf.set("TCPPortsLow", m_nTCPPortsLow);
+  licqConf.set("TCPPortsHigh", m_nTCPPortsHigh);
+  licqConf.set("TCPEnabled", m_bTCPEnabled);
+  licqConf.set("Firewall", m_bFirewall);
+  licqConf.set("MaxUsersPerPacket", myMaxUsersPerPacket);
+  licqConf.set("IgnoreTypes", m_nIgnoreTypes);
+  licqConf.set("AutoUpdateInfo", m_bAutoUpdateInfo);
+  licqConf.set("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins);
+  licqConf.set("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
+  licqConf.set("ForegroundColor", CICQColor::DefaultForeground());
+  licqConf.set("BackgroundColor", CICQColor::DefaultBackground());
 
   // Utility tab
   const char* pc = gTranslator.getMapName();
@@ -480,39 +446,30 @@ void CICQDaemon::SaveConf()
     if (pc2 != NULL)
       pc = pc2++;
   }
-  licqConf.WriteStr("Translation", pc);
-  licqConf.WriteStr("Terminal", m_szTerminal);
-  licqConf.WriteStr("Errors", m_szErrorFile);
-  licqConf.WriteNum("ErrorTypes", m_nErrorTypes);
-  if (m_szRejectFile == NULL)
-    licqConf.WriteStr("Rejects", "none");
-  else
-  {
-    pc = strrchr(m_szRejectFile, '/');
-    pc++;
-    licqConf.WriteStr("Rejects", pc);
-  }
+  licqConf.set("Translation", pc);
+  licqConf.set("Terminal", myTerminal);
+  licqConf.set("Errors", myErrorFile);
+  licqConf.set("ErrorTypes", myErrorTypes);
+  licqConf.set("Rejects", (myRejectFile.empty() ? "none" : myRejectFile));
 
   // Proxy
-  licqConf.WriteBool("ProxyEnabled", m_bProxyEnabled);
-  licqConf.WriteNum("ProxyServerType", m_nProxyType);
-  licqConf.WriteStr("ProxyServer", m_szProxyHost);
-  licqConf.WriteNum("ProxyServerPort", m_nProxyPort);
-  licqConf.WriteBool("ProxyAuthEnabled", m_bProxyAuthEnabled);
-  licqConf.WriteStr("ProxyLogin", m_szProxyLogin);
-  licqConf.WriteStr("ProxyPassword", m_szProxyPasswd);
+  licqConf.set("ProxyEnabled", myProxyEnabled);
+  licqConf.set("ProxyServerType", myProxyType);
+  licqConf.set("ProxyServer", myProxyHost);
+  licqConf.set("ProxyServerPort", myProxyPort);
+  licqConf.set("ProxyAuthEnabled", myProxyAuthEnabled);
+  licqConf.set("ProxyLogin", myProxyLogin);
+  licqConf.set("ProxyPassword", myProxyPasswd);
 
   // Misc
-  licqConf.WriteBool("UseSS", m_bUseSS); // server side list
-  licqConf.WriteBool("UseBART", m_bUseBART); // server side buddy icons
-  licqConf.WriteBool("SendTypingNotification", m_bSendTN); 
-  licqConf.WriteBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
+  licqConf.set("UseSS", m_bUseSS); // server side list
+  licqConf.set("UseBART", m_bUseBART); // server side buddy icons
+  licqConf.set("SendTypingNotification", m_bSendTN);
+  licqConf.set("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
   licqConf.set("DefaultUserEncoding", gUserManager.defaultUserEncoding());
 
-  licqConf.FlushFile();
-
-  licqConf.SetSection("owners");
-  licqConf.WriteNum("NumOfOwners", (unsigned long)gUserManager.NumOwners());
+  licqConf.setSection("owners");
+  licqConf.set("NumOfOwners", (unsigned long)gUserManager.NumOwners());
 
   int n = 1;
   FOR_EACH_OWNER_START(LOCK_R)
@@ -531,13 +488,13 @@ void CICQDaemon::SaveConf()
     pOwner->SaveLicqInfo();
     if (strcmp(pOwner->IdString(), "0") != 0)
     {
-      licqConf.WriteStr(szOwnerId, pOwner->IdString());
-      licqConf.WriteStr(szOwnerPPID, szPPID);
+      licqConf.set(szOwnerId, pOwner->IdString());
+      licqConf.set(szOwnerPPID, szPPID);
     }
   }
   FOR_EACH_OWNER_END
 
-  licqConf.FlushFile();
+  licqConf.writeFile();
 }
 
 bool CICQDaemon::haveGpgSupport() const
@@ -550,8 +507,6 @@ bool CICQDaemon::haveGpgSupport() const
 }
 
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
 
 int CICQDaemon::StartTCPServer(TCPSocket *s)
 {
@@ -618,7 +573,7 @@ ProxyServer *CICQDaemon::CreateProxy()
 {
   ProxyServer *Proxy = NULL;
 
-  switch (m_nProxyType)
+  switch (myProxyType)
   {
     case PROXY_TYPE_HTTP :
       Proxy = new HTTPProxyServer();
@@ -629,21 +584,21 @@ ProxyServer *CICQDaemon::CreateProxy()
 
   if (Proxy != NULL)
   {
-    gLog.Info(tr("%sResolving proxy: %s:%d...\n"), L_INITxSTR, m_szProxyHost, m_nProxyPort);
-    if (!Proxy->SetProxyAddr(m_szProxyHost, m_nProxyPort))
+    gLog.Info(tr("%sResolving proxy: %s:%d...\n"), L_INITxSTR, myProxyHost.c_str(), myProxyPort);
+    if (!Proxy->SetProxyAddr(myProxyHost.c_str(), myProxyPort))
     {
       char buf[128];
 
       gLog.Warn(tr("%sUnable to resolve proxy server %s:\n%s%s.\n"), L_ERRORxSTR,
-                m_szProxyHost, L_BLANKxSTR, Proxy->ErrorStr(buf, 128));
+          myProxyHost.c_str(), L_BLANKxSTR, Proxy->ErrorStr(buf, 128));
       delete Proxy;
       Proxy = NULL;
     }
 
     if (Proxy)
     {
-      if (m_bProxyAuthEnabled)
-        Proxy->SetProxyAuth(m_szProxyLogin, m_szProxyPasswd);
+      if (myProxyAuthEnabled)
+        Proxy->SetProxyAuth(myProxyLogin.c_str(), myProxyPasswd.c_str());
 
       Proxy->InitProxy();
     }
@@ -741,18 +696,20 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 
 void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
 {
-  if (m_szRejectFile == NULL) return;
+  if (myRejectFile.empty())
+    return;
 
-  FILE *f = fopen(m_szRejectFile, "a");
+  string rejectFile = BASE_DIR + myRejectFile;
+  FILE *f = fopen(rejectFile.c_str(), "a");
   if (f == NULL)
   {
-    gLog.Warn(tr("%sUnable to open \"%s\" for writing.\n"), L_WARNxSTR, m_szRejectFile);
+    gLog.Warn(tr("%sUnable to open \"%s\" for writing.\n"), L_WARNxSTR, rejectFile.c_str());
   }
   else
   {
     fprintf(f, "Event from new user (%s) rejected: \n%s\n--------------------\n\n",
         LicqUser::getUserAccountId(userId).c_str(), e->Text());
-    chmod(m_szRejectFile, 00600);
+    chmod(rejectFile.c_str(), 00600);
     fclose(f);
   }
   delete e;
@@ -1538,24 +1495,21 @@ void CICQDaemon::updateAllUsersInGroup(int groupId)
 //-----AddProtocolPlugins-------------------------------------------------------
 bool CICQDaemon::AddProtocolPlugins()
 {
-  char szConf[MAX_FILENAME_LEN];
-  CIniFile licqConf(INI_FxWARN);
-  snprintf(szConf, MAX_FILENAME_LEN, "%slicq.conf", BASE_DIR);
-  szConf[MAX_FILENAME_LEN - 1] = '\0';
-  if (licqConf.LoadFile(szConf) == false)
+  Licq::IniFile licqConf("licq.conf");
+  if (!licqConf.loadFile())
     return false;
-    
-  unsigned short nNumProtoPlugins = 0;
-  char szData[MAX_FILENAME_LEN];
+
+  unsigned nNumProtoPlugins;
   char szKey[20];
-  licqConf.SetSection("plugins");
-  licqConf.ReadNum("NumProtoPlugins", nNumProtoPlugins, 0);
+  licqConf.setSection("plugins");
+  licqConf.get("NumProtoPlugins", nNumProtoPlugins, 0);
   if (nNumProtoPlugins > 0)
   {
-    for (int i = 0; i < nNumProtoPlugins; i++)
+    for (unsigned i = 0; i < nNumProtoPlugins; i++)
     {
+      string szData;
       sprintf(szKey, "ProtoPlugin%d", i + 1);
-      if (!licqConf.ReadStr(szKey, szData))
+      if (!licqConf.get(szKey, szData))
         continue;
       if (!gPluginManager.startProtocolPlugin(szData))
         return false;

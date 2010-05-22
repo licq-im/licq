@@ -286,10 +286,10 @@ public:
       const char* number, const char* message);
 
   // ICQ Server options
-  const char* ICQServer() const                 { return m_szICQServer; }
-  void SetICQServer(const char *s) {  SetString(&m_szICQServer, s);  }
-  unsigned short ICQServerPort() const          { return m_nICQServerPort; }
-  void SetICQServerPort(unsigned short p) {  m_nICQServerPort = p; }
+  const std::string& icqServer() const          { return myIcqServer; }
+  void setIcqServer(const std::string& s)       { myIcqServer = s;  }
+  unsigned icqServerPort() const                { return myIcqServerPort; }
+  void setIcqServerPort(unsigned p)             { myIcqServerPort = p; }
 
   // Firewall options
   bool TCPEnabled() const                       { return m_bTCPEnabled; }
@@ -301,21 +301,21 @@ public:
   // Proxy options
   void InitProxy();
   ProxyServer *CreateProxy();
-  bool ProxyEnabled() const                     { return m_bProxyEnabled; }
+  bool proxyEnabled() const                     { return myProxyEnabled; }
   ProxyServer *GetProxy() {  return m_xProxy;  }
-  void SetProxyEnabled(bool b) {  m_bProxyEnabled = b;  }
-  unsigned short ProxyType() const              { return m_nProxyType; }
-  void SetProxyType(unsigned short t) {  m_nProxyType = t;  }
-  const char* ProxyHost() const                 { return m_szProxyHost; }
-  void SetProxyHost(const char *s) {  SetString(&m_szProxyHost, s);  }
-  unsigned short ProxyPort() const              { return m_nProxyPort; }
-  void SetProxyPort(unsigned short p) {  m_nProxyPort = p;  }
-  bool ProxyAuthEnabled() const                 { return m_bProxyAuthEnabled; }
-  void SetProxyAuthEnabled(bool b) {  m_bProxyAuthEnabled = b;  }
-  const char* ProxyLogin() const                { return m_szProxyLogin; }
-  void SetProxyLogin(const char *s) {  SetString(&m_szProxyLogin, s);  }
-  const char* ProxyPasswd() const               { return m_szProxyPasswd; }
-  void SetProxyPasswd(const char *s) {  SetString(&m_szProxyPasswd, s);  }
+  void setProxyEnabled(bool b)                  { myProxyEnabled = b; }
+  unsigned proxyType() const                    { return myProxyType; }
+  void setProxyType(unsigned t)                 { myProxyType = t; }
+  const std::string& proxyHost() const          { return myProxyHost; }
+  void setProxyHost(const std::string& s)       { myProxyHost = s; }
+  unsigned proxyPort() const                    { return myProxyPort; }
+  void setProxyPort(unsigned short p)           { myProxyPort = p; }
+  bool proxyAuthEnabled() const                 { return myProxyAuthEnabled; }
+  void setProxyAuthEnabled(bool b)              { myProxyAuthEnabled = b; }
+  const std::string& proxyLogin() const         { return myProxyLogin; }
+  void setProxyLogin(const std::string& s)      { myProxyLogin = s; }
+  const std::string& proxyPasswd() const        { return myProxyPasswd; }
+  void setProxyPasswd(const std::string& s)     { myProxyPasswd = s; }
 
   unsigned short TCPPortsLow() const            { return m_nTCPPortsLow; }
   unsigned short TCPPortsHigh() const           { return m_nTCPPortsHigh; }
@@ -331,8 +331,8 @@ public:
   void SetAutoUpdateStatusPlugins(bool b) { m_bAutoUpdateStatusPlugins = b; }
 
   // NOT MT SAFE
-  const char* Terminal() const                  { return m_szTerminal; }
-  void SetTerminal(const char *s);
+  const std::string& terminal() const           { return myTerminal; }
+  void setTerminal(const std::string& s)        { myTerminal = s; }
   bool Ignore(unsigned short n) const           { return m_nIgnoreTypes & n; }
   void SetIgnore(unsigned short, bool);
 
@@ -451,19 +451,18 @@ protected:
   int pipe_newsocket[2], fifo_fd;
   FILE *fifo_fs;
   EDaemonStatus m_eStatus;
-  char m_szConfigFile[MAX_FILENAME_LEN];
 
-  char* m_szTerminal;
-  char* m_szRejectFile;
+  std::string myTerminal;
+  std::string myRejectFile;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
   bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
   unsigned short m_nTCPPortsLow,
                  m_nTCPPortsHigh,
-                 m_nMaxUsersPerPacket,
-                 m_nServerSequence,
-                 m_nErrorTypes;
-  char m_szErrorFile[64];
+                 m_nServerSequence;
+  unsigned myMaxUsersPerPacket;
+  unsigned myErrorTypes;
+  std::string myErrorFile;
   int m_nTCPSrvSocketDesc,
       m_nTCPSocketDesc;
   bool m_bShuttingDown,
@@ -482,17 +481,17 @@ protected:
   pthread_t m_nRegisterThreadId;
 
   // ICQ Server
-  char *m_szICQServer;
-  unsigned short m_nICQServerPort;
+  std::string myIcqServer;
+  unsigned myIcqServerPort;
 
   // Proxy
-  bool m_bProxyEnabled;
-  unsigned short m_nProxyType;
-  char *m_szProxyHost;
-  unsigned short m_nProxyPort;
-  bool m_bProxyAuthEnabled;
-  char *m_szProxyLogin;
-  char *m_szProxyPasswd;
+  bool myProxyEnabled;
+  unsigned myProxyType;
+  std::string myProxyHost;
+  unsigned myProxyPort;
+  bool myProxyAuthEnabled;
+  std::string myProxyLogin;
+  std::string myProxyPasswd;
   ProxyServer *m_xProxy;
 
   // Services
