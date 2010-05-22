@@ -3,7 +3,6 @@ set(licq_HEADERS
   licq_color.h
   licq_constants.h
   licq_events.h
-  licq_file.h
   licq_filetransfer.h
   licq_icq.h
   licq_icqd.h
