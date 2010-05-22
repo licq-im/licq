@@ -1601,12 +1601,12 @@ void LicqGui::autoAway()
   }
 
   const unsigned long idleTime = mit_info->idle;
-  static std::map<unsigned long, SAutoAwayInfo> autoAwayInfo;
+  static std::map<UserId, SAutoAwayInfo> autoAwayInfo;
 
   Config::General* generalConfig = Config::General::instance();
 
   // Check every owner as the statuses may differ
-  map<unsigned long, unsigned> newStatuses;
+  map<UserId, unsigned> newStatuses;
 
   {
     Licq::OwnerListGuard ownerList;
@@ -1614,17 +1614,17 @@ void LicqGui::autoAway()
     {
       // Fetch current status
       o->Lock();
-      unsigned long nPPID = o->ppid();
+      UserId userId = o->id();
       unsigned status = o->status();
       o->Unlock();
 
-      SAutoAwayInfo& info = autoAwayInfo[nPPID];
+      SAutoAwayInfo& info = autoAwayInfo[userId];
 
       // Check no one changed the status behind our back
       if (info.isAutoAway && info.setAutoAwayStatus != status)
       {
-        gLog.Warn("%sSomeone changed the status behind our back (%u != %u; PPID: 0x%lx).\n",
-                  L_WARNxSTR, info.setAutoAwayStatus, status, nPPID);
+        gLog.Warn("%sSomeone changed the status behind our back (%4x != %4x; Account: %s).\n",
+            L_WARNxSTR, info.setAutoAwayStatus, status, userId.toString().c_str());
         info.isAutoAway = false;
         continue;
       }
@@ -1655,7 +1655,7 @@ void LicqGui::autoAway()
       }
 
       // MSN does not support NA
-      if (nPPID == MSN_PPID && wantedStatus & User::NotAvailableStatus)
+      if (userId.protocolId() == MSN_PPID && wantedStatus & User::NotAvailableStatus)
         wantedStatus = User::OnlineStatus | User::AwayStatus;
 
       // Never change from NA to away unless we are returning from auto away
@@ -1696,16 +1696,16 @@ void LicqGui::autoAway()
       }
 
       //gLog.Info("%sAuto-away changing status to %u (from %u, PPID 0x%lx).\n",
-      //          L_SRVxSTR, wantedStatus, status, nPPID);
+      //    L_SRVxSTR, wantedStatus, status, userId.protocolId());
 
       // Change status
       info.setAutoAwayStatus = wantedStatus;
-      newStatuses[nPPID] = wantedStatus;
+      newStatuses[userId] = wantedStatus;
     }
   }
 
   // Do the actual status change here, after we've released the lock on owner list
-  map<unsigned long, unsigned>::const_iterator iter;
+  map<UserId, unsigned>::const_iterator iter;
   for (iter = newStatuses.begin(); iter != newStatuses.end(); ++iter)
     changeStatus(iter->second, iter->first);
 
