@@ -863,11 +863,11 @@ void Licq::User::setStatus(unsigned status)
   if (status & AwayStatus)
     m_nStatus |= ICQ_STATUS_AWAY;
   if (status & NotAvailableStatus)
-    m_nStatus |= ICQ_STATUS_NA;
+    m_nStatus |= ICQ_STATUS_NA | ICQ_STATUS_AWAY;
   if (status & OccupiedStatus)
-    m_nStatus |= ICQ_STATUS_OCCUPIED;
+    m_nStatus |= ICQ_STATUS_OCCUPIED | ICQ_STATUS_AWAY;
   if (status & DoNotDisturbStatus)
-    m_nStatus |= ICQ_STATUS_DND;
+    m_nStatus |= ICQ_STATUS_DND | ICQ_STATUS_AWAY | ICQ_STATUS_OCCUPIED;
   if (status & FreeForChatStatus)
     m_nStatus |= ICQ_STATUS_FREEFORCHAT;
 }
@@ -887,11 +887,11 @@ unsigned short Licq::User::icqStatusFromStatus(unsigned status)
   if (status == OfflineStatus)
     return ICQ_STATUS_OFFLINE;
   if (status & DoNotDisturbStatus)
-    return ICQ_STATUS_DND;
+    return ICQ_STATUS_DND | ICQ_STATUS_AWAY | ICQ_STATUS_OCCUPIED;
   if (status & OccupiedStatus)
-    return ICQ_STATUS_OCCUPIED;
+    return ICQ_STATUS_OCCUPIED | ICQ_STATUS_AWAY;
   if (status & NotAvailableStatus)
-    return ICQ_STATUS_NA;
+    return ICQ_STATUS_NA | ICQ_STATUS_AWAY;
   if (status & AwayStatus)
     return ICQ_STATUS_AWAY;
   if (status & FreeForChatStatus)
@@ -910,14 +910,14 @@ unsigned Licq::User::statusFromIcqStatus(unsigned short icqStatus)
   unsigned status = OnlineStatus;
   if (icqStatus & ICQ_STATUS_FxPRIVATE)
     status |= InvisibleStatus;
-  if (icqStatus & ICQ_STATUS_AWAY)
-    status |= AwayStatus;
-  if (icqStatus & ICQ_STATUS_NA)
-    status |= NotAvailableStatus;
-  if (icqStatus & ICQ_STATUS_OCCUPIED)
-    status |= OccupiedStatus;
   if (icqStatus & ICQ_STATUS_DND)
     status |= DoNotDisturbStatus;
+  else if (icqStatus & ICQ_STATUS_OCCUPIED)
+    status |= OccupiedStatus;
+  else if (icqStatus & ICQ_STATUS_NA)
+    status |= NotAvailableStatus;
+  else if (icqStatus & ICQ_STATUS_AWAY)
+    status |= AwayStatus;
   if (icqStatus & ICQ_STATUS_FREEFORCHAT)
     status |= FreeForChatStatus;
 
