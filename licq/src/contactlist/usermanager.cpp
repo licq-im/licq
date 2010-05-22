@@ -89,10 +89,7 @@ bool UserManager::Load()
   gLog.Info(tr("%sUser configuration.\n"), L_INITxSTR);
 
   // Load the group info from licq.conf
-  char filename[MAX_FILENAME_LEN];
-  filename[MAX_FILENAME_LEN - 1] = '\0';
-  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/licq.conf", BASE_DIR);
-  Licq::IniFile licqConf(filename);
+  Licq::IniFile licqConf("licq.conf");
   licqConf.loadFile();
 
   unsigned nOwners;
@@ -185,8 +182,7 @@ bool UserManager::Load()
   licqConf.get("DefaultUserEncoding", myDefaultEncoding, "");
 
   // Load users from users.conf
-  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/users.conf", BASE_DIR);
-  Licq::IniFile usersConf(filename);
+  Licq::IniFile usersConf("users.conf");
   usersConf.loadFile();
 
   unsigned nUsers;
@@ -206,7 +202,9 @@ bool UserManager::Load()
       gLog.Warn(tr("%sSkipping user %i, empty key.\n"), L_WARNxSTR, i);
       continue;
     }
-    snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR, userFile.c_str());
+    string filename = USER_DIR;
+    filename += '/';
+    filename += userFile;
     size_t sz = userFile.rfind('.');
     if (sz == string::npos)
     {
@@ -218,7 +216,7 @@ bool UserManager::Load()
     unsigned long protocolId = (userFile[sz+1] << 24) | (userFile[sz+2] << 16) | (userFile[sz+3] << 8) | userFile[sz+4];
 
     UserId userId(accountId, protocolId);
-    User* u = new User(userId, string(filename));
+    User* u = new User(userId, filename);
     u->AddToContactList();
     myUsers[userId] = u;
   }
@@ -229,9 +227,7 @@ bool UserManager::Load()
 
 void UserManager::saveUserList() const
 {
-  string filename = string(BASE_DIR) + "/users.conf";
-
-  Licq::IniFile usersConf(filename);
+  Licq::IniFile usersConf("users.conf");
   usersConf.loadFile();
   usersConf.setSection("users");
 
@@ -756,10 +752,7 @@ void UserManager::SaveGroups()
   if (!m_bAllowSave) return;
 
   // Load the group info from licq.conf
-  char filename[MAX_FILENAME_LEN];
-  snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
-  filename[MAX_FILENAME_LEN - 1] = '\0';
-  Licq::IniFile licqConf(filename);
+  Licq::IniFile licqConf("licq.conf");
   licqConf.loadFile();
 
   licqConf.setSection("groups");

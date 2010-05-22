@@ -22,7 +22,6 @@
 
 #include <licq/sarmanager.h>
 
-#include <licq_file.h>
 #include <licq/thread/mutex.h>
 
 namespace LicqDaemon
@@ -56,7 +55,6 @@ private:
 
   Licq::SarList mySarLists[NumLists];
   Licq::Mutex myMutex;
-  CIniFile mySarFile;
 };
 
 extern SarManager gSarManager;

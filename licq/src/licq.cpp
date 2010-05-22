@@ -25,6 +25,7 @@
 #include <unistd.h>
 
 #include "licq.h"
+#include <licq_file.h>
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"

@@ -21,7 +21,7 @@
 
 #include <cstdio> // sprintf
 
-#include <licq_constants.h> // BASE_DIR
+#include <licq/inifile.h>
 
 using namespace std;
 using namespace LicqDaemon;
@@ -102,24 +102,23 @@ SarManager::~SarManager()
 
 void SarManager::initialize()
 {
-  string filename = BASE_DIR;
-  filename += "sar.conf";
+  Licq::IniFile sarFile("sar.conf");
 
-  if (mySarFile.LoadFile(filename.c_str()))
+  if (sarFile.loadFile())
   {
     for (int i = 0; i < NumLists; ++i)
     {
-      mySarFile.SetSection(SectionNames[i]);
+      sarFile.setSection(SectionNames[i]);
       int count;
-      mySarFile.ReadNum("NumSAR", count, 0);
+      sarFile.get("NumSAR", count, 0);
       for (int j = 1; j <= count; ++j)
       {
         SavedAutoResponse sar;
         char key[20];
         sprintf(key, "SAR%i.Name", j);
-        mySarFile.readString(key, sar.name, "");
+        sarFile.get(key, sar.name, "");
         sprintf(key, "SAR%i.Text", j);
-        mySarFile.readString(key, sar.text, "");
+        sarFile.get(key, sar.text, "");
         if (sar.name.empty() && sar.text.empty())
           continue;
 
@@ -131,9 +130,6 @@ void SarManager::initialize()
   }
 
   // No existing config file, load up defaults
-  mySarFile.SetFlags(INI_FxALLOWxCREATE);
-  mySarFile.LoadFile(filename.c_str());
-
   for (int i = 0; i < NumLists; ++i)
   {
     if (mySarLists[i].size() > 0)
@@ -169,20 +165,23 @@ void SarManager::releaseList(bool save)
 
 void SarManager::writeConfig()
 {
+  Licq::IniFile sarFile("sar.conf");
+  sarFile.loadFile();
+
   for (int i = 0; i < NumLists; ++i)
   {
-    mySarFile.SetSection(SectionNames[i]);
-    mySarFile.WriteNum("NumSAR", mySarLists[i].size());
+    sarFile.setSection(SectionNames[i]);
+    sarFile.set("NumSAR", mySarLists[i].size());
     int count = 0;
     for (SarList::const_iterator j = mySarLists[i].begin(); j != mySarLists[i].end(); ++j)
     {
       ++count;
       char key[20];
       sprintf(key, "SAR%i.Name", count);
-      mySarFile.writeString(key, j->name);
+      sarFile.set(key, j->name);
       sprintf(key, "SAR%i.Text", count);
-      mySarFile.writeString(key, j->text);
+      sarFile.set(key, j->text);
     }
   }
-  mySarFile.FlushFile();
+  sarFile.writeFile();
 }

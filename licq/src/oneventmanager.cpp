@@ -20,11 +20,11 @@
 #include "oneventmanager.h"
 
 #include <licq_constants.h>
-#include <licq_file.h>
 #include <licq_icq.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/inifile.h>
 
 #include <cstdlib> // system, free
 #include <ctime> // time
@@ -54,27 +54,24 @@ OnEventManager::~OnEventManager()
 
 void OnEventManager::initialize()
 {
-  string filename = BASE_DIR;
-  filename += "licq.conf";
-  CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
-  licqConf.LoadFile(filename.c_str());
-  licqConf.SetFlags(0);
+  Licq::IniFile licqConf("licq.conf");
+  licqConf.loadFile();
 
   string soundDir = SHARE_DIR;
   soundDir += "sounds/icq/";
 
-  licqConf.SetSection("onevent");
-  licqConf.ReadBool("Enable", myEnabled, true);
-  licqConf.ReadBool("AlwaysOnlineNotify", myAlwaysOnlineNotify, false);
-  licqConf.readString("Command", myCommand, "play");
-  licqConf.readString("Message", myParameters[OnEventMessage], soundDir + "Message.wav");
-  licqConf.readString("Url", myParameters[OnEventUrl], soundDir + "URL.wav");
-  licqConf.readString("Chat", myParameters[OnEventChat], soundDir + "Chat.wav");
-  licqConf.readString("File", myParameters[OnEventFile], soundDir + "File.wav");
-  licqConf.readString("OnlineNotify", myParameters[OnEventOnline], soundDir + "Online.wav");
-  licqConf.readString("SysMsg", myParameters[OnEventSysMsg], soundDir + "System.wav");
-  licqConf.readString("MsgSent", myParameters[OnEventMsgSent], soundDir + "Message.wav");
-  licqConf.readString("Sms", myParameters[OnEventSms], soundDir + "Message.wav");
+  licqConf.setSection("onevent");
+  licqConf.get("Enable", myEnabled, true);
+  licqConf.get("AlwaysOnlineNotify", myAlwaysOnlineNotify, false);
+  licqConf.get("Command", myCommand, "play");
+  licqConf.get("Message", myParameters[OnEventMessage], soundDir + "Message.wav");
+  licqConf.get("Url", myParameters[OnEventUrl], soundDir + "URL.wav");
+  licqConf.get("Chat", myParameters[OnEventChat], soundDir + "Chat.wav");
+  licqConf.get("File", myParameters[OnEventFile], soundDir + "File.wav");
+  licqConf.get("OnlineNotify", myParameters[OnEventOnline], soundDir + "Online.wav");
+  licqConf.get("SysMsg", myParameters[OnEventSysMsg], soundDir + "System.wav");
+  licqConf.get("MsgSent", myParameters[OnEventMsgSent], soundDir + "Message.wav");
+  licqConf.get("Sms", myParameters[OnEventSms], soundDir + "Message.wav");
 }
 
 void OnEventManager::lock()
@@ -86,25 +83,23 @@ void OnEventManager::unlock(bool save)
 {
   if (save)
   {
-    string filename = BASE_DIR;
-    filename += "licq.conf";
-    CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
-    if (!licqConf.LoadFile(filename.c_str()))
+    Licq::IniFile licqConf("licq.conf");
+    if (!licqConf.loadFile())
       return;
 
-    licqConf.SetSection("onevent");
-    licqConf.WriteBool("Enable", myEnabled);
-    licqConf.WriteBool("AlwaysOnlineNotify", myAlwaysOnlineNotify);
-    licqConf.writeString("Command", myCommand);
-    licqConf.writeString("Message", myParameters[OnEventMessage]);
-    licqConf.writeString("Url", myParameters[OnEventUrl]);
-    licqConf.writeString("Chat", myParameters[OnEventChat]);
-    licqConf.writeString("File", myParameters[OnEventFile]);
-    licqConf.writeString("OnlineNotify", myParameters[OnEventOnline]);
-    licqConf.writeString("SysMsg", myParameters[OnEventSysMsg]);
-    licqConf.writeString("MsgSent", myParameters[OnEventMsgSent]);
-    licqConf.writeString("Sms", myParameters[OnEventSms]);
-    licqConf.FlushFile();
+    licqConf.setSection("onevent");
+    licqConf.set("Enable", myEnabled);
+    licqConf.set("AlwaysOnlineNotify", myAlwaysOnlineNotify);
+    licqConf.set("Command", myCommand);
+    licqConf.set("Message", myParameters[OnEventMessage]);
+    licqConf.set("Url", myParameters[OnEventUrl]);
+    licqConf.set("Chat", myParameters[OnEventChat]);
+    licqConf.set("File", myParameters[OnEventFile]);
+    licqConf.set("OnlineNotify", myParameters[OnEventOnline]);
+    licqConf.set("SysMsg", myParameters[OnEventSysMsg]);
+    licqConf.set("MsgSent", myParameters[OnEventMsgSent]);
+    licqConf.set("Sms", myParameters[OnEventSms]);
+    licqConf.writeFile();
   }
 
   myMutex.unlock();
