@@ -26,12 +26,11 @@ const char Licq::GpgHelper::pgpSig[] = "-----BEGIN PGP MESSAGE-----";
 
 
 GpgHelper::GpgHelper()
-  : mKeysIni(INI_FxALLOWxCREATE)
+  : myKeysIni("licq_gpg.conf")
 {
 #ifdef HAVE_LIBGPGME
   mCtx = 0;
 #endif
-  mGPGPassphrase = 0;
 }
 
 
@@ -40,8 +39,6 @@ GpgHelper::~GpgHelper()
 #ifdef HAVE_LIBGPGME
   if (mCtx) gpgme_release(mCtx);
 #endif
-  if (mGPGPassphrase) free(mGPGPassphrase);
-  mKeysIni.CloseFile();
 }
 
 
@@ -88,23 +85,19 @@ char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
   if (!mCtx) return 0;
   if (!szPlain) return 0;
 
-  char szUser[MAX_LINE_LEN], buf[MAX_LINE_LEN];
-  buf[0] = '\0';
-  sprintf(szUser, "%s.%lu", Licq::User::getUserAccountId(userId).c_str(),
-      Licq::User::getUserProtocolId(userId));
-  mKeysIni.SetSection("keys");
+  char iniKey[4096];
+  string key;
+  sprintf(iniKey, "%s.%lu", userId.accountId().c_str(), userId.protocolId());
+  myKeysIni.setSection("keys");
 
   {
     Licq::UserReadGuard u(userId);
     if (u.isLocked())
-    {
-      const char* tmp = u->gpgKey().c_str();
-      if ( tmp && tmp[0]!='\0' )
-        strncpy( buf, tmp, MAX_LINE_LEN-1 );
-    }
+      key = u->gpgKey();
   }
 
-  if ( !buf[0] && !mKeysIni.ReadStr(szUser, buf) ) return 0;
+  if (key.empty() && !myKeysIni.get(iniKey, key))
+    return 0;
 
   gLog.Info("[GPG] Encrypting message to %s.\n", userId.toString().c_str());
 
@@ -118,12 +111,12 @@ char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
   rcps[1] = 0;
   // Still use the old method, gpgme_get_key requires the fingerprint, which
   // actually isn't very helpful.
-  if (gpgme_op_keylist_start (mCtx, buf, 0) != GPG_ERR_NO_ERROR)
-    gLog.Error("%s[GPG] Couldn't use gpgme recipient: %s\n", L_ERRORxSTR, buf);
+  if (gpgme_op_keylist_start (mCtx, key.c_str(), 0) != GPG_ERR_NO_ERROR)
+    gLog.Error("%s[GPG] Couldn't use gpgme recipient: %s\n", L_ERRORxSTR, key.c_str());
   else
   {
     if (gpgme_op_keylist_next(mCtx, rcps) != GPG_ERR_NO_ERROR)
-      gLog.Error("%s[GPG] Couldn't get key: %s\n", L_ERRORxSTR, buf);
+      gLog.Error("%s[GPG] Couldn't get key: %s\n", L_ERRORxSTR, key.c_str());
     else
     {
       if (gpgme_data_new_from_mem(&plain, szPlain, strlen(szPlain), 0) == GPG_ERR_NO_ERROR &&
@@ -196,12 +189,10 @@ list<GpgKey>* GpgHelper::getKeyList() const
 void GpgHelper::Start()
 {
 #ifdef HAVE_LIBGPGME
-  char buf[MAX_LINE_LEN];
-  snprintf(buf, MAX_LINE_LEN, "%slicq_gpg.conf", BASE_DIR);
-  mKeysIni.LoadFile(buf);
+  myKeysIni.loadFile();
 
-  mKeysIni.SetSection("gpg");
-  mKeysIni.ReadStr("passphrase", buf, ""); mGPGPassphrase = strdup(buf);
+  myKeysIni.setSection("gpg");
+  myKeysIni.get("passphrase", myGpgPassphrase, "");
 
   const char *gpgme_ver = gpgme_check_version(0);
   gLog.Info("%s[GPG] gpgme library found: %s\n", L_INITxSTR, gpgme_ver);
@@ -221,13 +212,13 @@ gpgme_error_t GpgHelper::PassphraseCallback(void* helperPtr, const char *, const
 {
   GpgHelper* helper = static_cast<GpgHelper*>(helperPtr);
   const char nl = '\n';
-  const char* const pf = helper->mGPGPassphrase;
-  if (pf == 0)
+  const string& pf = helper->myGpgPassphrase;
+  if (pf.empty())
   {
     write(fd, &nl, 1);
     return GPG_ERR_CANCELED;
   }
-  write(fd, pf, strlen(pf));
+  write(fd, pf.c_str(), pf.size());
   write(fd, &nl, 1);
   return GPG_ERR_NO_ERROR;
 }

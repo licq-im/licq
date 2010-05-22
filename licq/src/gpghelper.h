@@ -1,7 +1,7 @@
 #ifndef LICQDAEMON_GPGHELPER_H
 #define LICQDAEMON_GPGHELPER_H
 
-#include "licq/gpghelper.h"
+#include <licq/gpghelper.h>
 
 #include "config.h"
 
@@ -9,8 +9,8 @@
 #include <gpgme.h>
 #endif
 
-#include "licq/thread/mutex.h"
-#include "licq_file.h"
+#include <licq/inifile.h>
+#include <licq/thread/mutex.h>
 
 namespace LicqDaemon
 {
@@ -33,8 +33,8 @@ private:
 
   gpgme_ctx_t mCtx;
 #endif
-  char* mGPGPassphrase;
-  CIniFile mKeysIni;
+  std::string myGpgPassphrase;
+  Licq::IniFile myKeysIni;
   mutable Licq::Mutex myMutex;
 };
 
