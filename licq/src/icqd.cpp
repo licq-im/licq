@@ -19,6 +19,7 @@
 #include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"
+#include <licq_proxy.h>
 #include "licq_translate.h"
 
 #include "contactlist/user.h"
@@ -32,12 +33,113 @@
 using namespace std;
 using namespace LicqDaemon;
 using Licq::OnEventManager;
+using Licq::gDaemon;
 using Licq::gOnEventManager;
 
 std::list <CReverseConnectToUserData *> CICQDaemon::m_lReverseConnect;
 pthread_mutex_t CICQDaemon::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t  CICQDaemon::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
 
+
+CICQDaemon *gLicqDaemon = NULL;
+
+CICQDaemon::CICQDaemon(CLicq* _licq)
+  : Licq::Daemon(_licq)
+{
+  gLicqDaemon = this;
+
+  // Initialise the data values
+  m_nIgnoreTypes = 0;
+  m_bAutoUpdateInfo = m_bAutoUpdateInfoPlugins = m_bAutoUpdateStatusPlugins
+                    = true;
+  m_nTCPSocketDesc = -1;
+  m_nTCPSrvSocketDesc = -1;
+  m_eStatus = STATUS_OFFLINE_MANUAL;
+  //just in case we need to sign on automatically
+  m_nDesiredStatus = ICQ_STATUS_ONLINE;
+  m_bRegistering = false;
+  m_nServerAck = 0;
+  m_bLoggingOn = false;
+  m_bOnlineNotifies = true;
+  m_bVerify = false;
+  m_bNeedSalt = true;
+  m_szRegisterPasswd = 0;
+  m_nRegisterThreadId = 0;
+
+  receivedUserList.clear();
+
+  // Begin parsing the config file
+  Licq::IniFile licqConf("licq.conf");
+  licqConf.loadFile();
+
+  licqConf.setSection("network");
+
+  // ICQ Server
+  licqConf.get("ICQServer", myIcqServer, DEFAULT_SERVER_HOST);
+  licqConf.get("ICQServerPort", myIcqServerPort, DEFAULT_SERVER_PORT);
+
+  licqConf.get("MaxUsersPerPacket", myMaxUsersPerPacket, 100);
+  licqConf.get("IgnoreTypes", m_nIgnoreTypes, 0);
+  licqConf.get("AutoUpdateInfo", m_bAutoUpdateInfo, true);
+  licqConf.get("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins, true);
+  licqConf.get("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins, true);
+  unsigned long nColor;
+  licqConf.get("ForegroundColor", nColor, 0x00000000);
+  CICQColor::SetDefaultForeground(nColor);
+  licqConf.get("BackgroundColor", nColor, 0x00FFFFFF);
+  CICQColor::SetDefaultBackground(nColor);
+
+  // Rejects log file
+  licqConf.get("Rejects", myRejectFile, "log.rejects");
+  if (myRejectFile == "none")
+    myRejectFile = "";
+
+  // Error log file
+  licqConf.get("Errors", myErrorFile, "log.errors");
+  licqConf.get("ErrorTypes", myErrorTypes, L_ERROR | L_UNKNOWN);
+  if (myErrorFile != "none")
+  {
+    string errorFile = BASE_DIR + myErrorFile;
+    CLogService_File *l = new CLogService_File(myErrorTypes);
+    if (!l->SetLogFile(errorFile.c_str(), "a"))
+    {
+      gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
+          L_ERRORxSTR, errorFile.c_str(), L_BLANKxSTR, strerror(errno));
+      delete l;
+    }
+    else
+      gOldLog.AddService(l);
+  }
+
+  // Proxy
+  m_xProxy = NULL;
+
+  // Services
+  m_xBARTService = NULL;
+
+  // Misc
+  licqConf.get("UseSS", m_bUseSS, true); // server side list
+  licqConf.get("UseBART", m_bUseBART, true); // server side buddy icons
+  licqConf.get("SendTypingNotification", m_bSendTN, true);
+  licqConf.get("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
+
+  // Pipes
+  pipe(pipe_newsocket);
+
+  // Start up our threads
+  pthread_mutex_init(&mutex_runningevents, NULL);
+  pthread_mutex_init(&mutex_extendedevents, NULL);
+  pthread_mutex_init(&mutex_sendqueue_server, NULL);
+  pthread_mutex_init(&mutex_modifyserverusers, NULL);
+  pthread_mutex_init(&mutex_cancelthread, NULL);
+  pthread_cond_init(&cond_serverack, NULL);
+  pthread_mutex_init(&mutex_serverack, NULL);
+}
+
+CICQDaemon::~CICQDaemon()
+{
+  gLicqDaemon = NULL;
+}
 
 bool CICQDaemon::startIcq()
 {
@@ -99,42 +201,47 @@ bool CICQDaemon::startIcq()
   return true;
 }
 
-int CICQDaemon::StartTCPServer(TCPSocket *s)
+void CICQDaemon::saveIcqConf(Licq::IniFile& licqConf)
 {
-  if (m_nTCPPortsLow == 0)
-  {
-    s->StartServer(0);
-  }
-  else
-  {
-    for (unsigned short p = m_nTCPPortsLow; p <= m_nTCPPortsHigh; p++)
-    {
-      if (s->StartServer(p)) break;
-    }
-  }
+  licqConf.setSection("network");
 
-  char sz[64];
-  if (s->Descriptor() != -1)
-  {
-    gLog.Info(tr("%sLocal TCP server started on port %d.\n"), L_TCPxSTR, s->getLocalPort());
-  }
-  else if (s->Error() == EADDRINUSE)
-  {
-    gLog.Warn(tr("%sNo ports available for local TCP server.\n"), L_WARNxSTR);
-  }
-  else
-  {
-    gLog.Warn(tr("%sFailed to start local TCP server:\n%s%s\n"), L_WARNxSTR,
-       L_BLANKxSTR, s->ErrorStr(sz, 64));
-  }
+  // ICQ Server
+  licqConf.set("ICQServer", myIcqServer);
+  licqConf.set("ICQServerPort", myIcqServerPort);
 
-  return s->Descriptor();
+  licqConf.set("MaxUsersPerPacket", myMaxUsersPerPacket);
+  licqConf.set("IgnoreTypes", m_nIgnoreTypes);
+  licqConf.set("AutoUpdateInfo", m_bAutoUpdateInfo);
+  licqConf.set("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins);
+  licqConf.set("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
+  licqConf.set("ForegroundColor", CICQColor::DefaultForeground());
+  licqConf.set("BackgroundColor", CICQColor::DefaultBackground());
+
+  licqConf.set("Errors", myErrorFile);
+  licqConf.set("ErrorTypes", myErrorTypes);
+  licqConf.set("Rejects", (myRejectFile.empty() ? "none" : myRejectFile));
+
+  // Misc
+  licqConf.set("UseSS", m_bUseSS); // server side list
+  licqConf.set("UseBART", m_bUseBART); // server side buddy icons
+  licqConf.set("SendTypingNotification", m_bSendTN);
+  licqConf.set("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
 }
 
 void CICQDaemon::SetDirectMode()
 {
-  bool bDirect = (!m_bFirewall || (m_bFirewall && m_bTCPEnabled));
+  bool bDirect = (!gDaemon->behindFirewall() || (gDaemon->behindFirewall() && gDaemon->tcpEnabled()));
   CPacket::SetMode(bDirect ? MODE_DIRECT : MODE_INDIRECT);
+}
+
+void CICQDaemon::InitProxy()
+{
+  if (m_xProxy != NULL)
+  {
+    delete m_xProxy;
+    m_xProxy = NULL;
+  }
+  m_xProxy = Licq::gDaemon->createProxy();
 }
 
 unsigned short VersionToUse(unsigned short v_in)
@@ -184,6 +291,11 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
   }
   else
     m_bUseBART = b;
+}
+
+void CICQDaemon::ChangeUserStatus(Licq::User* u, unsigned long s)
+{
+  u->statusChanged(Licq::User::statusFromIcqStatus(s), s);
 }
 
 bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
@@ -264,7 +376,7 @@ LicqEvent* CICQDaemon::SendExpectEvent_Server(unsigned long eventId, const UserI
    CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
-  if (m_bShuttingDown)
+  if (gDaemon->shuttingDown())
   {
     if (packet != NULL) delete packet;
     if (ue != NULL) delete ue;
@@ -303,7 +415,7 @@ ICQEvent* CICQDaemon::SendExpectEvent_Client(unsigned long eventId, const LicqUs
    CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
-  if (m_bShuttingDown)
+  if (gDaemon->shuttingDown())
   {
     if (packet != NULL) delete packet;
     if (ue != NULL) delete ue;

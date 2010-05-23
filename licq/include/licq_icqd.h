@@ -34,6 +34,7 @@ namespace Licq
 {
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
+class IniFile;
 class Packet;
 }
 
@@ -76,51 +77,6 @@ const unsigned short IGNORE_NEWUSERS   = 2;
 const unsigned short IGNORE_EMAILPAGER = 4;
 const unsigned short IGNORE_WEBPANEL   = 8;
 
-//-----Stats-----------------------------------------------------------------
-//! Keeps information about statistics of the daemon
-class CDaemonStats
-{
-public:
-  ~CDaemonStats();
-
-  // Accessors
-  //! Total number of events.
-  unsigned long Total() const   { return m_nTotal; }
-  //! Total number of events for the current day only.
-  unsigned long Today() const   { return m_nTotal - m_nOriginal; }
-  //! Name of the kind of statistic.
-  const char* Name() const      { return m_szName; }
-
-protected:
-  CDaemonStats();
-  CDaemonStats(const char *, const char *);
-
-  bool Dirty() const            { return m_nLastSaved != m_nTotal; }
-  void ClearDirty() { m_nLastSaved = m_nTotal; }
-
-  void Init();
-  void Reset();
-  void Inc() { m_nTotal++; }
-
-  unsigned long m_nTotal;
-
-  unsigned long m_nOriginal;
-  unsigned long m_nLastSaved;
-  char m_szTag[16];
-  char m_szName[32];
-
-friend class CICQDaemon;
-friend class CMSN;
-};
-
-typedef std::vector<CDaemonStats> DaemonStatsList;
-#define STATS_EventsSent 0
-#define STATS_EventsReceived 1
-#define STATS_EventsRejected 2
-#define STATS_AutoResponseChecked 3
-// We will save the statistics to disk
-#define SAVE_STATS
-
 /**
  * Internal template class for storing and processing received contact list.
  */
@@ -159,18 +115,7 @@ public:
   CICQDaemon(CLicq *);
   ~CICQDaemon();
   bool startIcq();
-  bool Start();
-  const char* Version() const;
-  pthread_t *Shutdown();
-  void SaveConf();
-
-  /**
-   * Check if GPG support is enabled
-   * This function allows plugins to check at runtime if GPG options are available
-   *
-   * @return True if GPG support is available in daemon
-   */
-  bool haveGpgSupport() const;
+  void saveIcqConf(Licq::IniFile& licqConf);
 
   // ICQ functions still public as they don't have any general proto functions
   //   to call them yet and needs to be callable from plugins for now
@@ -279,7 +224,6 @@ public:
   bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
      unsigned long nIntIp, TCPSocket *sock, unsigned short nPort,
      bool bSendIntIp);
-  int StartTCPServer(TCPSocket *);
 
   // SMS
   unsigned long icqSendSms(const char* id, unsigned long ppid,
@@ -292,34 +236,12 @@ public:
   void setIcqServerPort(unsigned p)             { myIcqServerPort = p; }
 
   // Firewall options
-  bool TCPEnabled() const                       { return m_bTCPEnabled; }
-  void SetTCPEnabled(bool b) { m_bTCPEnabled = b; SetDirectMode(); }
-  bool Firewall() const                         { return m_bFirewall; }
-  void SetFirewall(bool b) { m_bFirewall = b; SetDirectMode(); }
   void SetDirectMode();
 
   // Proxy options
   void InitProxy();
-  ProxyServer *CreateProxy();
-  bool proxyEnabled() const                     { return myProxyEnabled; }
   ProxyServer *GetProxy() {  return m_xProxy;  }
-  void setProxyEnabled(bool b)                  { myProxyEnabled = b; }
-  unsigned proxyType() const                    { return myProxyType; }
-  void setProxyType(unsigned t)                 { myProxyType = t; }
-  const std::string& proxyHost() const          { return myProxyHost; }
-  void setProxyHost(const std::string& s)       { myProxyHost = s; }
-  unsigned proxyPort() const                    { return myProxyPort; }
-  void setProxyPort(unsigned short p)           { myProxyPort = p; }
-  bool proxyAuthEnabled() const                 { return myProxyAuthEnabled; }
-  void setProxyAuthEnabled(bool b)              { myProxyAuthEnabled = b; }
-  const std::string& proxyLogin() const         { return myProxyLogin; }
-  void setProxyLogin(const std::string& s)      { myProxyLogin = s; }
-  const std::string& proxyPasswd() const        { return myProxyPasswd; }
-  void setProxyPasswd(const std::string& s)     { myProxyPasswd = s; }
 
-  unsigned short TCPPortsLow() const            { return m_nTCPPortsLow; }
-  unsigned short TCPPortsHigh() const           { return m_nTCPPortsHigh; }
-  void SetTCPPorts(unsigned short p, unsigned short r);
   static bool CryptoEnabled();
 
   bool AutoUpdateInfo() const                   { return m_bAutoUpdateInfo; }
@@ -331,20 +253,8 @@ public:
   void SetAutoUpdateStatusPlugins(bool b) { m_bAutoUpdateStatusPlugins = b; }
 
   // NOT MT SAFE
-  const std::string& terminal() const           { return myTerminal; }
-  void setTerminal(const std::string& s)        { myTerminal = s; }
   bool Ignore(unsigned short n) const           { return m_nIgnoreTypes & n; }
   void SetIgnore(unsigned short, bool);
-
-  /**
-   * Get the next queued signal for a plugin
-   * Checks calling thread to determine which plugin queue to pop
-   *
-   * @return The next queued signal or NULL if the queue is empty
-   */
-  LicqSignal* popPluginSignal();
-  ICQEvent *PopPluginEvent();
-  LicqProtoSignal* PopProtoSignal();
 
   // ICQ options
   bool UseServerContactList() const             { return m_bUseSS; }
@@ -358,17 +268,7 @@ public:
   // Misc functions
   bool ReconnectAfterUinClash() const           { return m_bReconnectAfterUinClash; }
   void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
-  bool AddProtocolPlugins();
   char *parseRTF(const char *);
-
-
-  // Statistics
-  CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
-  DaemonStatsList &AllStats() { return m_sStats; }
-  time_t ResetTime() const                      { return m_nResetTime; }
-  time_t StartTime() const                      { return m_nStartTime; }
-  time_t Uptime() const                         { return time(NULL) - m_nStartTime; }
-  void ResetStats();
 
   // Common message handler
   void ProcessMessage(Licq::User* user, CBuffer& packet, char* message,
@@ -381,9 +281,6 @@ public:
      unsigned long nMsgID2, unsigned short nSequence,
      TCPSocket *pSock);
   bool WaitForReverseConnection(unsigned short id, const char* userId);
-
-  // From Licq::Daemon
-  Licq::LogService& getLogService();
 
 protected:
 
@@ -447,30 +344,22 @@ protected:
   void icqClearServerList();
 
 
-  CLicq *licq;
-  int pipe_newsocket[2], fifo_fd;
-  FILE *fifo_fs;
+  int pipe_newsocket[2];
   EDaemonStatus m_eStatus;
 
-  std::string myTerminal;
   std::string myRejectFile;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
   bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
-  unsigned short m_nTCPPortsLow,
-                 m_nTCPPortsHigh,
-                 m_nServerSequence;
+  unsigned short m_nServerSequence;
   unsigned myMaxUsersPerPacket;
   unsigned myErrorTypes;
   std::string myErrorFile;
   int m_nTCPSrvSocketDesc,
       m_nTCPSocketDesc;
-  bool m_bShuttingDown,
-       m_bLoggingOn,
+  bool m_bLoggingOn,
        m_bRegistering,
        m_bOnlineNotifies,
-       m_bTCPEnabled,
-       m_bFirewall,
        m_bVerify,
        // NeedSalt is to let the daemon know when to make a salt request, which
        // should only happen when we first log on. After we get the credentials, we
@@ -485,13 +374,6 @@ protected:
   unsigned myIcqServerPort;
 
   // Proxy
-  bool myProxyEnabled;
-  unsigned myProxyType;
-  std::string myProxyHost;
-  unsigned myProxyPort;
-  bool myProxyAuthEnabled;
-  std::string myProxyLogin;
-  std::string myProxyPasswd;
   ProxyServer *m_xProxy;
 
   // Services
@@ -502,11 +384,6 @@ protected:
   bool m_bUseBART; // server side buddy icons
   bool m_bSendTN; // Send typing notifications
   bool m_bReconnectAfterUinClash; // reconnect after uin has been used from another location?
-
-  // Statistics
-  void FlushStats();
-  DaemonStatsList m_sStats;
-  time_t m_nStartTime, m_nResetTime;
 
   static std::list <CReverseConnectToUserData *> m_lReverseConnect;
   static pthread_mutex_t mutex_reverseconnect;
@@ -526,20 +403,11 @@ protected:
   pthread_t thread_monitorsockets,
             thread_ping,
             thread_updateusers,
-            thread_ssbiservice,
-            thread_shutdown;
-
-  unsigned long myNextEventId;
-  pthread_mutex_t myNextEventIdMutex;
+            thread_ssbiservice;
 
   pthread_cond_t cond_serverack;
   pthread_mutex_t mutex_serverack;
   unsigned short m_nServerAck;
-
-  /**
-   * Get next available id to use for an event
-   */
-  unsigned long getNextEventId();
 
   void ChangeUserStatus(Licq::User* u, unsigned long s);
 
@@ -570,16 +438,6 @@ protected:
   void ProcessDoneEvent(ICQEvent *);
   void PushEvent(ICQEvent *);
   void PushExtendedEvent(ICQEvent *);
-
-  /**
-   * Add a signal to the signal queues of all plugins.
-   *
-   * @param signal Signal to send
-   */
-  void pushPluginSignal(LicqSignal* signal);
-
-  void PushPluginEvent(ICQEvent *);
-  void PushProtoSignal(LicqProtoSignal* s, unsigned long ppid);
 
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);

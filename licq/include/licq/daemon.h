@@ -21,19 +21,200 @@
 #define LICQ_DAEMON_H
 
 #include <boost/noncopyable.hpp>
+#include <cstdio>
+
+#include <licq/thread/mutex.h>
+
+class CICQDaemon;
+class CLicq;
+class CMSN;
+class LicqEvent;
+class LicqProtoSignal;
+class LicqSignal;
+class ProxyServer;
+class TCPSocket;
+
+#define STATS_EventsSent 0
+#define STATS_EventsReceived 1
+#define STATS_EventsRejected 2
+#define STATS_AutoResponseChecked 3
+// We will save the statistics to disk
+#define SAVE_STATS
 
 namespace Licq
 {
 
+class Daemon;
 class LogService;
+
+
+class DaemonStats
+{
+public:
+  ~DaemonStats();
+
+  // Accessors
+  //! Total number of events.
+  unsigned long Total() const   { return m_nTotal; }
+  //! Total number of events for the current day only.
+  unsigned long Today() const   { return m_nTotal - m_nOriginal; }
+  //! Name of the kind of statistic.
+  const char* Name() const      { return m_szName; }
+
+protected:
+  DaemonStats();
+  DaemonStats(const char *, const char *);
+
+  bool Dirty() const            { return m_nLastSaved != m_nTotal; }
+  void ClearDirty() { m_nLastSaved = m_nTotal; }
+
+  void Init();
+  void Reset();
+  void Inc() { m_nTotal++; }
+
+  unsigned long m_nTotal;
+
+  unsigned long m_nOriginal;
+  unsigned long m_nLastSaved;
+  char m_szTag[16];
+  char m_szName[32];
+
+  friend class Licq::Daemon;
+  friend class ::CICQDaemon;
+  friend class ::CMSN;
+};
+
+typedef std::vector<DaemonStats> DaemonStatsList;
+
 
 class Daemon : private boost::noncopyable
 {
 public:
-  virtual LogService& getLogService() = 0;
+  Daemon(CLicq* licq);
+  bool Start();
+  pthread_t* Shutdown();
+  const char* Version() const;
+  void SaveConf();
+
+  bool shuttingDown() const                     { return myShuttingDown; }
+
+  /**
+   * Check if GPG support is enabled
+   * This function allows plugins to check at runtime if GPG options are available
+   *
+   * @return True if GPG support is available in daemon
+   */
+  bool haveGpgSupport() const;
+
+  LogService& getLogService();
+
+  // Firewall options
+  bool tcpEnabled() const                       { return myTcpEnabled; }
+  void setTcpEnabled(bool b);
+  bool behindFirewall() const                   { return myBehindFirewall; }
+  void setBehindFirewall(bool b);
+  unsigned tcpPortsLow() const                  { return myTcpPortsLow; }
+  unsigned tcpPortsHigh() const                 { return myTcpPortsHigh; }
+  void setTcpPorts(unsigned lowPort, unsigned highPort);
+
+  // Proxy options
+  ProxyServer* createProxy();
+  bool proxyEnabled() const                     { return myProxyEnabled; }
+  void setProxyEnabled(bool b)                  { myProxyEnabled = b; }
+  unsigned proxyType() const                    { return myProxyType; }
+  void setProxyType(unsigned t)                 { myProxyType = t; }
+  const std::string& proxyHost() const          { return myProxyHost; }
+  void setProxyHost(const std::string& s)       { myProxyHost = s; }
+  unsigned proxyPort() const                    { return myProxyPort; }
+  void setProxyPort(unsigned short p)           { myProxyPort = p; }
+  bool proxyAuthEnabled() const                 { return myProxyAuthEnabled; }
+  void setProxyAuthEnabled(bool b)              { myProxyAuthEnabled = b; }
+  const std::string& proxyLogin() const         { return myProxyLogin; }
+  void setProxyLogin(const std::string& s)      { myProxyLogin = s; }
+  const std::string& proxyPasswd() const        { return myProxyPasswd; }
+  void setProxyPasswd(const std::string& s)     { myProxyPasswd = s; }
+
+  const std::string& terminal() const           { return myTerminal; }
+  void setTerminal(const std::string& s)        { myTerminal = s; }
+
+  int StartTCPServer(TCPSocket *);
+
+  /**
+   * Add a signal to the signal queues of all plugins.
+   *
+   * @param signal Signal to send
+   */
+  void pushPluginSignal(LicqSignal* signal);
+
+  void PushPluginEvent(LicqEvent *);
+  void PushProtoSignal(LicqProtoSignal* s, unsigned long ppid);
+
+  /**
+   * Get the next queued signal for a plugin
+   * Checks calling thread to determine which plugin queue to pop
+   *
+   * @return The next queued signal or NULL if the queue is empty
+   */
+  LicqSignal* popPluginSignal();
+  LicqEvent *PopPluginEvent();
+  LicqProtoSignal* PopProtoSignal();
+
+  // Statistics
+  DaemonStats* Stats(unsigned short n)          { return n < 3 ? &m_sStats[n] : NULL; }
+  DaemonStatsList &AllStats()                   { return m_sStats; }
+  time_t ResetTime() const                      { return m_nResetTime; }
+  time_t StartTime() const                      { return m_nStartTime; }
+  time_t Uptime() const                         { return time(NULL) - m_nStartTime; }
+  void ResetStats();
 
 protected:
-  virtual ~Daemon() { /* Empty */ }
+  virtual ~Daemon();
+
+  /**
+   * Get next available id to use for an event
+   * TODO: Move to ProtocolManager when no longer used directy by ICQ code
+   */
+  unsigned long getNextEventId();
+
+  // Used by Shutdown_tep
+  CLicq* licq;
+
+  // Used by MonitorSockets_tep
+  int fifo_fd;
+  FILE* fifo_fs;
+
+  // Used by Ping_tep and Shutdown_tep
+  void FlushStats();
+
+  // Used by CICQDaemon
+  DaemonStatsList m_sStats;
+
+private:
+  bool myShuttingDown;
+  std::string myTerminal;
+
+  // Firewall
+  bool myTcpEnabled;
+  bool myBehindFirewall;
+  unsigned myTcpPortsLow;
+  unsigned myTcpPortsHigh;
+
+  // Proxy
+  bool myProxyEnabled;
+  unsigned myProxyType;
+  std::string myProxyHost;
+  unsigned myProxyPort;
+  bool myProxyAuthEnabled;
+  std::string myProxyLogin;
+  std::string myProxyPasswd;
+
+  unsigned long myNextEventId;
+  Licq::Mutex myNextEventIdMutex;
+
+  // Statistics
+  time_t m_nStartTime, m_nResetTime;
+
+  pthread_t thread_shutdown;
 };
 
 extern Daemon* gDaemon;

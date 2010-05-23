@@ -45,6 +45,7 @@
 #include "oscarservice.h"
 
 using namespace std;
+using Licq::gDaemon;
 using Licq::OnEventManager;
 using Licq::StringList;
 using Licq::gOnEventManager;
@@ -1316,7 +1317,8 @@ LicqEvent* CICQDaemon::icqSendThroughServer(unsigned long eventId, const char *s
   }
 
   // If we are already shutting down, don't start any events
-  if (m_bShuttingDown) return NULL;
+  if (gDaemon->shuttingDown())
+    return NULL;
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
   LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
@@ -1638,7 +1640,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 
 int CICQDaemon::ConnectToLoginServer()
 {
-  if (myProxyEnabled)
+  if (gDaemon->proxyEnabled())
     InitProxy();
 
   // Which protocol plugin?
@@ -1653,7 +1655,7 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 {
   SrvSocket* s = new SrvSocket(gUserManager.ownerUserId(LICQ_PPID));
 
-  if (myProxyEnabled)
+  if (gDaemon->proxyEnabled())
   {
     if (m_xProxy == NULL)
     {

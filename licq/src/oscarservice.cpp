@@ -464,7 +464,7 @@ bool COscarService::Initialize()
   else
   {
     if (myProxy == NULL)
-      myProxy = gLicqDaemon->CreateProxy();
+      myProxy = Licq::gDaemon->createProxy();
   }
   if (!s->connectTo(string(myServer), myPort, myProxy))
   {

@@ -203,7 +203,7 @@ int CLicqRMS::Run()
 
   server = new TCPSocket();
 
-  if (gLicqDaemon->TCPPortsLow() != 0 && nPort == 0)
+  if (gLicqDaemon->tcpPortsLow() != 0 && nPort == 0)
   {
     if (!gLicqDaemon->StartTCPServer(server))
       return 1;

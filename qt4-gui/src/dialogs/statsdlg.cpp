@@ -94,7 +94,7 @@ void StatsDlg::prepare()
     .arg(tr("Today"))
     .arg(tr("Total"));
 
-  DaemonStatsList::iterator iter;
+  Licq::DaemonStatsList::iterator iter;
 
   for (iter = gLicqDaemon->AllStats().begin();
       iter != gLicqDaemon->AllStats().end();

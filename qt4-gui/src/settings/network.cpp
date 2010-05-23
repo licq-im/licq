@@ -36,6 +36,7 @@
 
 #include "settingsdlg.h"
 
+using Licq::gDaemon;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Network */
 
@@ -236,12 +237,12 @@ void Settings::Network::useProxyToggled(bool useProxy)
 void Settings::Network::load()
 {
   myIcqServerEdit->setText(QString(gLicqDaemon->icqServer().c_str()));
-  myFirewallCheck->setChecked(gLicqDaemon->Firewall());
-  myTcpEnabledCheck->setChecked(gLicqDaemon->TCPEnabled());
-  myPortLowSpin->setValue(gLicqDaemon->TCPPortsLow());
-  myPortHighSpin->setValue(gLicqDaemon->TCPPortsHigh());
+  myFirewallCheck->setChecked(gDaemon->behindFirewall());
+  myTcpEnabledCheck->setChecked(gDaemon->tcpEnabled());
+  myPortLowSpin->setValue(gDaemon->tcpPortsLow());
+  myPortHighSpin->setValue(gDaemon->tcpPortsHigh());
 
-  if (!gLicqDaemon->Firewall())
+  if (!gDaemon->behindFirewall())
   {
     myTcpEnabledCheck->setEnabled(false);
     myPortLowSpin->setEnabled(false);
@@ -249,7 +250,7 @@ void Settings::Network::load()
   }
   else
   {
-    if (!gLicqDaemon->TCPEnabled())
+    if (!gDaemon->tcpEnabled())
     {
       myPortLowSpin->setEnabled(false);
       myPortHighSpin->setEnabled(false);
@@ -289,9 +290,9 @@ void Settings::Network::apply()
 {
   gLicqDaemon->setIcqServer(myIcqServerEdit->text().toLocal8Bit().data());
   gLicqDaemon->setIcqServerPort(myIcqServerPortSpin->value());
-  gLicqDaemon->SetTCPPorts(myPortLowSpin->value(), myPortHighSpin->value());
-  gLicqDaemon->SetTCPEnabled(myTcpEnabledCheck->isChecked());
-  gLicqDaemon->SetFirewall(myFirewallCheck->isChecked());
+  gDaemon->setTcpPorts(myPortLowSpin->value(), myPortHighSpin->value());
+  gDaemon->setTcpEnabled(myTcpEnabledCheck->isChecked());
+  gDaemon->setBehindFirewall(myFirewallCheck->isChecked());
   gLicqDaemon->setProxyEnabled(myProxyEnabledCheck->isChecked());
   gLicqDaemon->setProxyType(myProxyTypeCombo->currentIndex() + 1);
   gLicqDaemon->setProxyHost(myProxyHostEdit->text().toLocal8Bit().data());
