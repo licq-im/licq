@@ -2287,7 +2287,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         szExtraInfo[0]=0;
       szExtraInfo[27] = '\0';
 
-      u->SetClientInfo(szExtraInfo[0] ? szExtraInfo : NULL);
+        u->setClientInfo(szExtraInfo);
       u->SetVersion(tcpVersion);
       
       if (nOldStatus != nNewStatus)
@@ -2430,7 +2430,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       {
         u->SetSupportsUTF8(bUTF8);
         if (version != "")
-          u->SetClientInfo(version.c_str());
+            u->setClientInfo(version);
       }
     }
     

@@ -32,17 +32,6 @@
 #include "support.h"
 
 
-void SetString(char **szDest, const char *szSource)
-{
-  if (szDest == NULL)
-    return;
-  if (*szDest != NULL) free (*szDest);
-  if (szSource == NULL)
-    *szDest = strdup("");
-  else
-    *szDest = strdup(szSource);
-}
-
 char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen)
 {
   if (szDest == NULL || szSource == NULL)

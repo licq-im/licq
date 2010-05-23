@@ -742,8 +742,8 @@ QString ContactUserData::tooltip() const
   if (config->popupAuth() && u->GetAwaitingAuth())
     s += "<br>" + tr("Awaiting authorization");
 
-  if (u->isOnline() && u->ClientInfo() && *u->ClientInfo())
-    s += "<br>" + codec->toUnicode(u->ClientInfo());
+  if (u->isOnline() && !u->clientInfo().empty())
+    s += "<br>" + codec->toUnicode(u->clientInfo().c_str());
 
   if (!u->autoResponse().empty() && myStatus & User::MessageStatuses)
     s += "<br><u>" + tr("Auto Response:") + "</u><br>&nbsp;&nbsp;&nbsp;" +

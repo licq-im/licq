@@ -15,7 +15,6 @@ header file containing all the main procedures to interface with the ICQ server 
 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
-#include "licq/contactlist/user.h" // For SetString
 #include "licq/daemon.h"
 #include "licq/userid.h"
 

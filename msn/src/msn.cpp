@@ -29,6 +29,7 @@
 
 #include "licq_log.h"
 #include "licq_message.h"
+#include <licq/contactlist/user.h>
 #include <licq/conversation.h>
 #include <licq/inifile.h>
 

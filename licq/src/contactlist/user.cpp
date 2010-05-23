@@ -486,9 +486,6 @@ User::~User()
           USER_EVENTS, myId, nId));
   }
 
-  if ( m_szClientInfo )
-      free( m_szClientInfo );
-
   delete m_PhoneBook;
 /*
   // Destroy the mutex
@@ -648,7 +645,7 @@ void User::Init()
   m_bAwaitingAuth = false;
   m_nSID[0] = m_nSID[1] = m_nSID[2] = 0;
   m_nGSID = 0;
-  m_szClientInfo = NULL;
+  myClientInfo = "";
 
   myMutex.setName(myId.toString());
 }

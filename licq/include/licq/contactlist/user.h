@@ -20,8 +20,6 @@ class CSocketManager;
 class TCPSocket;
 void* MonitorSockets_tep(void *);
 
-// Cheap hack as I'm too lazy to move the relevant functions to user.cpp
-extern "C" void SetString(char **, const char *);
 
 namespace LicqDaemon
 {
@@ -325,7 +323,7 @@ public:
   unsigned short Sequence(bool = false);
   char Mode() const                             { return m_nMode; }
   unsigned long Version() const                 { return m_nVersion; }
-  const char* ClientInfo() const                { return m_szClientInfo; }
+  const std::string& clientInfo() const         { return myClientInfo; }
   unsigned long ClientTimestamp() const         { return m_nClientTimestamp; }
   unsigned long OurClientTimestamp() const      { return m_nOurClientTimestamp; }
   unsigned long ClientInfoTimestamp() const     { return m_nClientInfoTimestamp; }
@@ -436,7 +434,7 @@ public:
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
-  void SetClientInfo(char *s)         { SetString(&m_szClientInfo, s); }
+  void setClientInfo(const std::string& s)      { myClientInfo = s; }
   void SetClientTimestamp(unsigned long s) { m_nClientTimestamp = s; }
   void SetOurClientTimestamp(unsigned long s) { m_nOurClientTimestamp = s; }
   void SetClientInfoTimestamp(unsigned long s) { m_nClientInfoTimestamp = s; }
@@ -460,11 +458,6 @@ public:
   void setCustomAutoResponse(const std::string& s) { myCustomAutoResponse = s; SaveLicqInfo(); }
   void clearCustomAutoResponse()            { setCustomAutoResponse(""); }
 
-  void SetClientInfo(const char *s)
-  {
-    free(m_szClientInfo);
-    m_szClientInfo = (s ? strdup(s) : NULL);
-  }
   virtual void SetPermanent() = 0;
 
   // Dynamic info fields for protocol plugins
@@ -831,7 +824,7 @@ protected:
   unsigned short m_nSequence;
   unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   char m_nMode;
-  char *m_szClientInfo;
+  std::string myClientInfo;
   std::string myAutoResponse;
   std::string myEncoding;
   bool m_bSupportsUTF8;

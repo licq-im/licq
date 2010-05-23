@@ -24,8 +24,6 @@ const unsigned short MAX_UIN_DIGITS  = 13;
 
 /* Basic support functions */
 
-void SetString(char **szDest, const char *szSource);
-
 char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen);
 
 char *GetXmlTag(const char *szXmlSource, const char *szTagName);
