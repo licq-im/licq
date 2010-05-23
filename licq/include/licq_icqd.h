@@ -158,6 +158,7 @@ class CICQDaemon : public Licq::Daemon
 public:
   CICQDaemon(CLicq *);
   ~CICQDaemon();
+  bool startIcq();
   bool Start();
   const char* Version() const;
   pthread_t *Shutdown();
