@@ -15,6 +15,7 @@
 #include <ctime>
 #include <unistd.h>
 
+#include <licq/daemon.h>
 #include <licq/packet.h>
 #include <licq_icq.h>
 #include "licq_log.h"
@@ -31,6 +32,7 @@
 //#define DEBUG_THREADS(x) gLog.Info(x)
 
 using namespace std;
+using Licq::gDaemon;
 
 void cleanup_mutex(void *m)
 {
@@ -884,7 +886,7 @@ void *MonitorSockets_tep(void *p)
                 {
                   u->ClearSocketDesc(ICQ_CHNxNONE);
                   u->SetSecure(false);
-                  d->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+                  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
                 }
                 gUserManager.DropUser(u);
               }

@@ -209,12 +209,6 @@ public:
 
   EDaemonStatus Status() const                  { return m_eStatus; }
 
-  void pluginUIViewEvent(const Licq::UserId& userId)
-  { pushPluginSignal(new LicqSignal(SIGNAL_UI_VIEWEVENT, 0, userId)); }
-
-  void pluginUIMessage(const Licq::UserId& userId)
-  { pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId)); }
-
   void UpdateAllUsers();
   void updateAllUsersInGroup(int groupId);
   void CancelEvent(unsigned long );

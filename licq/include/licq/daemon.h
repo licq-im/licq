@@ -22,6 +22,8 @@
 
 #include <boost/noncopyable.hpp>
 #include <cstdio>
+#include <string>
+#include <vector>
 
 #include <licq/thread/mutex.h>
 
@@ -46,6 +48,7 @@ namespace Licq
 
 class Daemon;
 class LogService;
+class UserId;
 
 
 class DaemonStats
@@ -148,6 +151,10 @@ public:
 
   void PushPluginEvent(LicqEvent *);
   void PushProtoSignal(LicqProtoSignal* s, unsigned long ppid);
+
+  void pluginUIViewEvent(const Licq::UserId& userId);
+
+  void pluginUIMessage(const Licq::UserId& userId);
 
   /**
    * Get the next queued signal for a plugin

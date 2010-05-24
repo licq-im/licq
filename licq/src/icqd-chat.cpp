@@ -18,12 +18,15 @@
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include <licq_user.h>
+#include <licq/daemon.h>
 
 #include "icqpacket.h"
 #include "support.h"
 
 // Localization
 #include "gettext.h"
+
+using Licq::gDaemon;
 
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
@@ -698,7 +701,7 @@ CChatManager::CChatManager(unsigned long nUin,
 //-----CChatManager::StartChatServer-----------------------------------------
 bool CChatManager::StartChatServer()
 {
-  if (gLicqDaemon->StartTCPServer(&chatServer) == -1)
+  if (gDaemon->StartTCPServer(&chatServer) == -1)
   {
     gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;

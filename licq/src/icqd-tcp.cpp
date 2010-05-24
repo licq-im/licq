@@ -23,6 +23,7 @@
 #include "gettext.h"
 
 #include "licq/byteorder.h"
+#include <licq/daemon.h>
 #include "licq/gpghelper.h"
 #include <licq/oneventmanager.h>
 #include "licq_icqd.h"
@@ -43,6 +44,7 @@
 using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
+using Licq::gDaemon;
 using Licq::gOnEventManager;
 using LicqDaemon::User;
 
@@ -1723,7 +1725,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         m_sStats[STATS_AutoResponseChecked].Inc();
         u->SetLastCheckedAutoResponse();
 
-          pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
+          gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
         break;
       }
 
@@ -2196,7 +2198,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         }
 
         u->SetSendServer(false);
-          pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 1));
+          gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 1));
 
           gLog.Info(tr("%sSecure channel established with %s (%s).\n"),
               L_SSLxSTR, u->GetAlias(), USERID_TOSTR(userId));
@@ -2243,7 +2245,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
         pSock->SecureStop();
         u->SetSecure(false);
-          pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+          gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
         break;
 
 #else // We do not support OpenSSL
@@ -2461,7 +2463,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             gLog.Info(tr("%s%s (%s) does not support OpenSSL.\n"), L_TCPxSTR,
                 u->GetAlias(), USERID_TOSTR(userId));
           u->SetSecure(false);
-            pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+            gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
           // find the event, fail it
           e = DoneEvent(sockfd, theSequence, EVENT_FAILED);
         }
@@ -2478,7 +2480,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             // Close the connection as we are in trouble
             u->SetSecure(false);
             gUserManager.DropUser(u);
-              pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+              gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
             return false;
           }
 
@@ -2492,7 +2494,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               gLog.Info(tr("%sSecure channel established with %s (%s).\n"),
                   L_SSLxSTR, u->GetAlias(), USERID_TOSTR(userId));
             u->SetSecure(true);
-              pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 1));
+              gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 1));
           }
         }
 
@@ -2539,7 +2541,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
         pSock->SecureStop();
         u->SetSecure(false);
-          pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+          gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
         gUserManager.DropUser(u);
 
         // finish up
@@ -2890,7 +2892,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             u->SetEnableSave(true);
             u->SavePictureInfo();
 
-              pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+              gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
           }
           else if (memcmp(GUID, PLUGIN_QUERYxINFO, GUID_LENGTH) == 0)
           {
@@ -3016,7 +3018,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             u->SavePhoneBookInfo();
                   delete [] pb;
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
+                gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
                 break;
               }
 
@@ -3050,7 +3052,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             u->SetEnableSave(true);
             u->SavePictureInfo();
 
-                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+                gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
                 break;
               }
             }
@@ -3324,7 +3326,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
         }
 
         // Which plugin?
-            pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PLUGIN_STATUS, u->id(), 0));
+            gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PLUGIN_STATUS, u->id(), 0));
 
         ProcessDoneEvent(e);
         return false;

@@ -14,6 +14,7 @@
 #include <ctime>
 #include <sys/stat.h>
 
+#include <licq/daemon.h>
 #include <licq/oneventmanager.h>
 #include "licq_icq.h"
 #include "licq_user.h"
@@ -146,7 +147,7 @@ bool CICQDaemon::startIcq()
   int nResult = 0;
 
   TCPSocket* s = new TCPSocket();
-  m_nTCPSocketDesc = StartTCPServer(s);
+  m_nTCPSocketDesc = gDaemon->StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {
      gLog.Error(tr("%sUnable to allocate TCP port for local server (%s)!\n"),
@@ -1255,7 +1256,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     m_sStats[STATS_AutoResponseChecked].Inc();
     u->SetLastCheckedAutoResponse();
 
-        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
+        gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
       }
     u->Unlock();
     return;

@@ -48,6 +48,7 @@ using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
 using LicqDaemon::gUserManager;
+using Licq::gDaemon;
 using Licq::gUtilityManager;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
@@ -241,7 +242,6 @@ int global_argc = 0;
 CLicq::CLicq() :
   myConsoleLogLevel(0)
 {
-  licqDaemon = NULL;
 }
 
 bool CLicq::Init(int argc, char **argv)
@@ -638,7 +638,7 @@ bool CLicq::Init(int argc, char **argv)
   gUtilityManager.loadUtilities(szFilename);
 
   // Create the daemon
-  licqDaemon = new CICQDaemon(this);
+  new CICQDaemon(this);
 
   return true;
 }
@@ -648,7 +648,8 @@ CLicq::~CLicq()
   // Close the plugins
   //...
   // Kill the daemon
-  if (licqDaemon != NULL) delete licqDaemon;
+  if (gLicqDaemon != NULL)
+    delete gLicqDaemon;
 
   myLogService.unregisterLogSink(myConsoleLog);
 }
@@ -789,7 +790,8 @@ int CLicq::Main()
     return nResult;
   }
 
-  if (!licqDaemon->Start()) return 1;
+  if (!gDaemon->Start())
+    return 1;
 
   // Run the plugins
   gPluginManager.startAllPlugins();
@@ -822,7 +824,7 @@ int CLicq::Main()
 
   gPluginManager.cancelAllPlugins();
 
-  pthread_t *t = licqDaemon->Shutdown();
+  pthread_t* t = gDaemon->Shutdown();
   pthread_join(*t, NULL);
 
   gUserManager.shutdown();

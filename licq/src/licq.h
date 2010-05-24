@@ -12,8 +12,6 @@
 extern char **global_argv;
 extern int global_argc;
 
-class CICQDaemon;
-
 namespace Licq
 {
 class IniFile;
@@ -48,8 +46,6 @@ protected:
   LoadPlugin(const char *, int, char **, bool keep = true);
   Licq::ProtocolPlugin::Ptr
   LoadProtoPlugin(const char *, bool keep = true);
-  
-  CICQDaemon *licqDaemon;
 
 private:
   LicqDaemon::LogService myLogService;

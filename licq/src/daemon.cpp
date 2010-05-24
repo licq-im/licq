@@ -31,6 +31,7 @@
 #include <sys/types.h>
 
 #include <licq_constants.h>
+#include <licq_events.h>
 #include <licq_icq.h>
 #include <licq_log.h>
 #include <licq_proxy.h>
@@ -472,3 +473,14 @@ LicqProtoSignal* Licq::Daemon::PopProtoSignal()
 {
   return LicqDaemon::gPluginManager.getPluginEventHandler().popProtocolSignal();
 }
+
+void Licq::Daemon::pluginUIViewEvent(const Licq::UserId& userId)
+{
+  pushPluginSignal(new LicqSignal(SIGNAL_UI_VIEWEVENT, 0, userId));
+}
+
+void Licq::Daemon::pluginUIMessage(const Licq::UserId& userId)
+{
+  pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId));
+}
+

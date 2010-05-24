@@ -27,6 +27,7 @@
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_user.h"
+#include <licq/daemon.h>
 
 #include "icqpacket.h"
 #include "support.h"
@@ -44,6 +45,7 @@ const unsigned short FT_STATE_SENDINGxFILE = 7;
 const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
 using std::string;
+using Licq::gDaemon;
 
 
 //=====FILE==================================================================
@@ -230,7 +232,7 @@ CFileTransferManager::CFileTransferManager(const char* accountId)
 //-----CFileTransferManager::StartFileTransferServer-----------------------------------------
 bool CFileTransferManager::StartFileTransferServer()
 {
-  if (gLicqDaemon->StartTCPServer(&ftServer) == -1)
+  if (gDaemon->StartTCPServer(&ftServer) == -1)
   {
     gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;
