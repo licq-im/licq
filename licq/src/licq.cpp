@@ -39,6 +39,7 @@
 #include "oneventmanager.h"
 #include "plugins/pluginmanager.h"
 #include "sarmanager.h"
+#include "statistics.h"
 #include "support.h"
 
 using namespace std;
@@ -47,6 +48,7 @@ using Licq::ProtocolPlugin;
 using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
+using LicqDaemon::gStatistics;
 using LicqDaemon::gUserManager;
 using Licq::gDaemon;
 using Licq::gUtilityManager;
@@ -634,6 +636,7 @@ bool CLicq::Init(int argc, char **argv)
     return false;
   gOnEventManager.initialize();
   gSarManager.initialize();
+  gStatistics.initialize();
   sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
   gUtilityManager.loadUtilities(szFilename);
 

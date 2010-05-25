@@ -49,6 +49,7 @@ set(licq_SRCS
   sarmanager.cpp
   sighandler.cpp
   socket.cpp
+  statistics.cpp
   support.c
   translate.cpp
   utility.cpp
