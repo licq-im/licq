@@ -689,10 +689,11 @@ void *MonitorSockets_tep(void *p)
     if (d->pipe_newsocket[PIPE_READ] >= l) l = d->pipe_newsocket[PIPE_READ] + 1;
 
     // Add the fifo descriptor
-    if (d->fifo_fd != -1)
+    if (gDaemon->fifo_fd != -1)
     {
-      FD_SET(d->fifo_fd, &f);
-      if (d->fifo_fd >= l) l = d->fifo_fd + 1;
+      FD_SET(gDaemon->fifo_fd, &f);
+      if (gDaemon->fifo_fd >= l)
+        l = gDaemon->fifo_fd + 1;
     }
 
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
@@ -731,11 +732,11 @@ void *MonitorSockets_tep(void *p)
         }
 
         // Fifo event ----------------------------------------------------------
-        if (nCurrentSocket == d->fifo_fd)
-        {
+      if (nCurrentSocket == gDaemon->fifo_fd)
+      {
           DEBUG_THREADS("[MonitorSockets_tep] Data on FIFO.\n");
-          fgets(buf, 1024, d->fifo_fs);
-          d->ProcessFifo(buf);
+        fgets(buf, 1024, gDaemon->fifo_fs);
+        gDaemon->ProcessFifo(buf);
         continue;
       }
 
@@ -955,7 +956,7 @@ void *Shutdown_tep(void *p)
   gLog.Info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
-  d->licq->ShutdownPlugins();
+  gDaemon->licq->ShutdownPlugins();
 
   // Cancel the monitor sockets thread (deferred until ready)
   write(d->pipe_newsocket[PIPE_WRITE], "X", 1);

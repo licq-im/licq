@@ -34,6 +34,9 @@ class LicqSignal;
 class ProxyServer;
 class TCPSocket;
 
+void* MonitorSockets_tep(void* p);
+void* Shutdown_tep(void* p);
+
 namespace Licq
 {
 
@@ -130,6 +133,7 @@ protected:
   CLicq* licq;
 
   // Used by MonitorSockets_tep
+  void ProcessFifo(const char* buf);
   int fifo_fd;
   FILE* fifo_fs;
 
@@ -156,6 +160,9 @@ private:
   Licq::Mutex myNextEventIdMutex;
 
   pthread_t thread_shutdown;
+
+  friend void* ::MonitorSockets_tep(void* p);
+  friend void* ::Shutdown_tep(void* p);
 };
 
 extern Daemon* gDaemon;

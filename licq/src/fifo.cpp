@@ -841,7 +841,7 @@ static int process_tok(const command_t *table,const char *tok)
   return  bFound ? i -1 : CL_UNKNOWN;
 }
 
-void CICQDaemon::ProcessFifo(const char* _szBuf)
+void Licq::Daemon::ProcessFifo(const char* _szBuf)
 {
 #ifdef USE_FIFO
   int argc, index;

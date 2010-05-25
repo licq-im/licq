@@ -475,7 +475,6 @@ protected:
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);
   bool ProcessTcpPacket(TCPSocket *);
   bool ProcessTcpHandshake(TCPSocket *);
-  void ProcessFifo(const char* buf);
 
   static bool Handshake_Send(TCPSocket *, const char* id, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
