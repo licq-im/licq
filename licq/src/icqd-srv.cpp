@@ -27,6 +27,7 @@
 #include "licq/byteorder.h"
 #include <licq/daemon.h>
 #include <licq/oneventmanager.h>
+#include <licq/statistics.h>
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_socket.h"
@@ -1364,7 +1365,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, u);
       gUserManager.DropUser(u);
     }
-    m_sStats[STATS_EventsSent].Inc();
+    Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }
 
   // Process the event, first by channel

@@ -23,6 +23,7 @@
 
 #include "licq.h"
 #include "oscarservice.h"
+#include "statistics.h"
 
 // Localization
 #include "gettext.h"
@@ -32,6 +33,7 @@
 //#define DEBUG_THREADS(x) gLog.Info(x)
 
 using namespace std;
+using namespace LicqDaemon;
 using Licq::gDaemon;
 
 void cleanup_mutex(void *m)
@@ -631,7 +633,7 @@ void *Ping_tep(void *p)
   while (true)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    d->FlushStats();
+    gStatistics.flush();
     switch(d->m_eStatus)
     {
     case STATUS_ONLINE:
@@ -977,7 +979,7 @@ void *Shutdown_tep(void *p)
     gSocketManager.CloseSocket(d->m_nTCPSocketDesc);
 
   // Flush the stats
-  d->FlushStats();
+  gStatistics.flush();
 
   // Signal that we are shutdown
   pthread_mutex_lock(&LP_IdMutex);

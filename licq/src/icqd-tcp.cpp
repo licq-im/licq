@@ -26,6 +26,7 @@
 #include <licq/daemon.h>
 #include "licq/gpghelper.h"
 #include <licq/oneventmanager.h>
+#include <licq/statistics.h>
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_socket.h"
@@ -1722,7 +1723,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         CPT_AckGeneral p(newCommand, theSequence, true, false, u);
         AckTCP(p, pSock);
 
-        m_sStats[STATS_AutoResponseChecked].Inc();
+          Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
         u->SetLastCheckedAutoResponse();
 
           gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));

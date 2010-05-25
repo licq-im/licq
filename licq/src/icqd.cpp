@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 
 #include <licq/daemon.h>
+#include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include "licq_icq.h"
 #include "licq_user.h"
@@ -314,7 +315,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   }
   u->EventPush(e);
   //u->Touch();
-  m_sStats[STATS_EventsReceived].Inc();
+  Licq::gStatistics.increase(Licq::Statistics::EventsReceivedCounter);
 
   //pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
   return true;
@@ -339,7 +340,7 @@ void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
     fclose(f);
   }
   delete e;
-  m_sStats[STATS_EventsRejected].Inc();
+  Licq::gStatistics.increase(Licq::Statistics::EventsRejectedCounter);
 }
 
 /*----------------------------------------------------------------------------
@@ -789,7 +790,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
       gUserManager.DropUser(u);
     }
-    m_sStats[STATS_EventsSent].Inc();
+    Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }
 
   // Process the event
@@ -1253,7 +1254,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                                            nSequence, nMsgType, true, nLevel);
     SendEvent_Server(p);
 
-    m_sStats[STATS_AutoResponseChecked].Inc();
+        Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
     u->SetLastCheckedAutoResponse();
 
         gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));

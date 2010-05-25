@@ -28,8 +28,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
-#include <licq_user.h>
+#include <licq/statistics.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "core/messagebox.h"
 
@@ -68,8 +68,8 @@ StatsDlg::StatsDlg(QWidget* parent)
 void StatsDlg::prepare()
 {
   QDateTime utime, reset;
-  utime.setTime_t(gLicqDaemon->StartTime());
-  reset.setTime_t(gLicqDaemon->ResetTime());
+  utime.setTime_t(Licq::gStatistics.startTime());
+  reset.setTime_t(Licq::gStatistics.resetTime());
 
   QString text = QString(
       "<table width=100%>"
@@ -89,16 +89,12 @@ void StatsDlg::prepare()
     .arg(tr("Last reset"))
     .arg(reset.toString())
     .arg(tr("Number of users"))
-    .arg(gUserManager.NumUsers())
+    .arg(Licq::gUserManager.NumUsers())
     .arg(tr("Event Statistics"))
     .arg(tr("Today"))
     .arg(tr("Total"));
 
-  Licq::DaemonStatsList::iterator iter;
-
-  for (iter = gLicqDaemon->AllStats().begin();
-      iter != gLicqDaemon->AllStats().end();
-      iter++)
+  for (int i = 0; i < Licq::Statistics::NumCounters; ++i)
   {
     text += QString(
         "<tr>"
@@ -107,9 +103,9 @@ void StatsDlg::prepare()
         "<td align=center>/</td>"
         "<td align=left>%3</td>"
         "</tr>")
-      .arg(iter->Name())
-      .arg(iter->Today())
-      .arg(iter->Total());
+      .arg(Licq::gStatistics.name(i).c_str())
+      .arg(Licq::gStatistics.get(i, true))
+      .arg(Licq::gStatistics.get(i, false));
   }
 
   text += "</table>";
@@ -121,7 +117,7 @@ void StatsDlg::reset()
 {
   if (QueryYesNo(this, tr("Do you really want to\nreset your statistics?")))
   {
-    gLicqDaemon->ResetStats();
+    Licq::gStatistics.reset();
     prepare();
   }
 }

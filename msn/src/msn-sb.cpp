@@ -30,6 +30,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
 #include <licq/oneventmanager.h>
+#include <licq/statistics.h>
 
 using namespace std;
 using Licq::UserId;
@@ -227,7 +228,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
               gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
             }
           }
-          gLicqDaemon->m_sStats[STATS_EventsSent].Inc();
+          Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
         }
 	gLicqDaemon->PushPluginEvent(e);
       }
