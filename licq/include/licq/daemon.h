@@ -36,11 +36,6 @@ class LicqSignal;
 class ProxyServer;
 class TCPSocket;
 
-#define STATS_EventsSent 0
-#define STATS_EventsReceived 1
-#define STATS_EventsRejected 2
-#define STATS_AutoResponseChecked 3
-// We will save the statistics to disk
 #define SAVE_STATS
 
 namespace Licq
@@ -49,45 +44,6 @@ namespace Licq
 class Daemon;
 class LogService;
 class UserId;
-
-
-class DaemonStats
-{
-public:
-  ~DaemonStats();
-
-  // Accessors
-  //! Total number of events.
-  unsigned long Total() const   { return m_nTotal; }
-  //! Total number of events for the current day only.
-  unsigned long Today() const   { return m_nTotal - m_nOriginal; }
-  //! Name of the kind of statistic.
-  const char* Name() const      { return m_szName; }
-
-protected:
-  DaemonStats();
-  DaemonStats(const char *, const char *);
-
-  bool Dirty() const            { return m_nLastSaved != m_nTotal; }
-  void ClearDirty() { m_nLastSaved = m_nTotal; }
-
-  void Init();
-  void Reset();
-  void Inc() { m_nTotal++; }
-
-  unsigned long m_nTotal;
-
-  unsigned long m_nOriginal;
-  unsigned long m_nLastSaved;
-  char m_szTag[16];
-  char m_szName[32];
-
-  friend class Licq::Daemon;
-  friend class ::CICQDaemon;
-  friend class ::CMSN;
-};
-
-typedef std::vector<DaemonStats> DaemonStatsList;
 
 
 class Daemon : private boost::noncopyable
@@ -166,14 +122,6 @@ public:
   LicqEvent *PopPluginEvent();
   LicqProtoSignal* PopProtoSignal();
 
-  // Statistics
-  DaemonStats* Stats(unsigned short n)          { return n < 3 ? &m_sStats[n] : NULL; }
-  DaemonStatsList &AllStats()                   { return m_sStats; }
-  time_t ResetTime() const                      { return m_nResetTime; }
-  time_t StartTime() const                      { return m_nStartTime; }
-  time_t Uptime() const                         { return time(NULL) - m_nStartTime; }
-  void ResetStats();
-
 protected:
   virtual ~Daemon();
 
@@ -189,12 +137,6 @@ protected:
   // Used by MonitorSockets_tep
   int fifo_fd;
   FILE* fifo_fs;
-
-  // Used by Ping_tep and Shutdown_tep
-  void FlushStats();
-
-  // Used by CICQDaemon
-  DaemonStatsList m_sStats;
 
 private:
   bool myShuttingDown;
@@ -217,9 +159,6 @@ private:
 
   unsigned long myNextEventId;
   Licq::Mutex myNextEventIdMutex;
-
-  // Statistics
-  time_t m_nStartTime, m_nResetTime;
 
   pthread_t thread_shutdown;
 };

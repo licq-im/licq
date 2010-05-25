@@ -47,36 +47,6 @@
 
 using namespace std;
 using namespace LicqDaemon;
-using Licq::DaemonStats;
-
-DaemonStats::DaemonStats()
-{
-  m_nTotal = m_nOriginal = m_nLastSaved = 0;
-  m_szName[0] = m_szTag[0] = '\0';
-}
-
-DaemonStats::DaemonStats(const char *name, const char *tag)
-{
-  m_nTotal = m_nOriginal = m_nLastSaved = 0;
-  strcpy(m_szName, name);
-  strcpy(m_szTag, tag);
-}
-
-DaemonStats::~DaemonStats()
-{
-  // Empty
-}
-
-void DaemonStats::Reset()
-{
-  m_nTotal = m_nOriginal = 0;
-}
-
-void DaemonStats::Init()
-{
-  m_nOriginal = m_nLastSaved = m_nTotal;
-}
-
 
 Licq::Daemon* Licq::gDaemon = NULL;
 
@@ -125,29 +95,6 @@ Licq::Daemon::Daemon(CLicq* _licq)
 
   // Terminal
   licqConf.get("Terminal", myTerminal, "xterm -T Licq -e ");
-
-  // Statistics
-  m_nResetTime = 0;
-  m_sStats.push_back(DaemonStats("Events Sent", "Sent"));
-  m_sStats.push_back(DaemonStats("Events Received", "Recv"));
-  m_sStats.push_back(DaemonStats("Events Rejected", "Reject"));
-  m_sStats.push_back(DaemonStats("Auto Response Checked", "ARC"));
-#ifdef SAVE_STATS
-  DaemonStatsList::iterator iter;
-  if (licqConf.setSection("stats"))
-  {
-    unsigned long t;
-    licqConf.get("Reset", t, 0);
-    m_nResetTime = t;
-    for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
-    {
-      licqConf.get(iter->m_szTag, iter->m_nTotal, 0);
-      iter->Init();
-    }
-  }
-#endif
-  m_nStartTime = time(NULL);
-  if (m_nResetTime == 0) m_nResetTime = m_nStartTime;
 
   // Initialize the random number generator
   srand(time(NULL));
@@ -217,42 +164,6 @@ Licq::Daemon::~Daemon()
   if (fifo_fs != NULL)
     fclose(fifo_fs);
   Licq::gDaemon = NULL;
-}
-
-void Licq::Daemon::FlushStats()
-{
-#ifdef SAVE_STATS
-  // Verify we need to save anything
-  DaemonStatsList::iterator iter;
-  for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
-  {
-    if (iter->Dirty()) break;
-  }
-  if (iter == m_sStats.end()) return;
-
-  // Save the stats
-  Licq::IniFile licqConf("licq.conf");
-  if (!licqConf.loadFile())
-    return;
-  licqConf.setSection("stats");
-  licqConf.set("Reset", (unsigned long)m_nResetTime);
-  for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
-  {
-    licqConf.set(iter->m_szTag, iter->m_nTotal);
-    iter->ClearDirty();
-  }
-  licqConf.writeFile();
-#endif
-}
-
-void Licq::Daemon::ResetStats()
-{
-  DaemonStatsList::iterator iter;
-  for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
-  {
-    iter->Reset();
-  }
-  m_nResetTime = time(NULL);
 }
 
 pthread_t* Licq::Daemon::Shutdown()
