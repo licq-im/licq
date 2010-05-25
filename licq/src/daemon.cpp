@@ -26,9 +26,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 
 #include <licq_constants.h>
 #include <licq_events.h>
@@ -59,7 +56,6 @@ Licq::Daemon::Daemon(CLicq* _licq)
   Licq::gDaemon = this;
 
   myShuttingDown = false;
-  fifo_fs = NULL;
 
   // Begin parsing the config file
   Licq::IniFile licqConf("licq.conf");
@@ -109,44 +105,6 @@ Licq::Daemon::Daemon(CLicq* _licq)
 
 bool Licq::Daemon::Start()
 {
-  char sz[MAX_FILENAME_LEN];
-
-#ifdef USE_FIFO
-  // Open the fifo
-  snprintf(sz, MAX_FILENAME_LEN, "%slicq_fifo", BASE_DIR);
-  sz[MAX_FILENAME_LEN - 1] = '\0';
-  gLog.Info(tr("%sOpening fifo.\n"), L_INITxSTR);
-  fifo_fd = open(sz, O_RDWR);
-  if (fifo_fd == -1)
-  {
-    if (mkfifo(sz, 00600) == -1)
-      gLog.Warn(tr("%sUnable to create fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
-    else
-    {
-      fifo_fd = open(sz, O_RDWR);
-      if (fifo_fd == -1)
-        gLog.Warn(tr("%sUnable to open fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
-    }
-  }
-  fifo_fs = NULL;
-  if (fifo_fd != -1)
-  {
-    struct stat buf;
-    fstat(fifo_fd, &buf);
-    if (!S_ISFIFO(buf.st_mode))
-    {
-      gLog.Warn(tr("%s%s is not a FIFO, disabling fifo support.\n"), L_WARNxSTR, sz);
-      close(fifo_fd);
-      fifo_fd = -1;
-    }
-    else
-      fifo_fs = fdopen(fifo_fd, "r");
-  }
-#else
-  fifo_fs = NULL;
-  fifo_fd = -1;
-#endif
-
   return gLicqDaemon->startIcq();
 }
 
@@ -162,8 +120,6 @@ const char* Licq::Daemon::Version() const
 
 Licq::Daemon::~Daemon()
 {
-  if (fifo_fs != NULL)
-    fclose(fifo_fs);
   Licq::gDaemon = NULL;
 }
 

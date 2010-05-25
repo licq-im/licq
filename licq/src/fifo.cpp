@@ -20,7 +20,10 @@
  */
 #include "config.h"
 
+#include "fifo.h"
+
 #include <boost/foreach.hpp>
+#include <cerrno>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
@@ -33,28 +36,25 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <cerrno>
-
-// Localization
-#include "gettext.h"
-
 #include <licq/daemon.h>
 #include "licq/pluginmanager.h"
 #include "licq/protocolmanager.h"
 #include "licq_user.h"
 #include "licq_constants.h"
+#include <licq_icqd.h>
 #include "licq_log.h"
 #include "licq_translate.h"
+
+#include "gettext.h"
 #include "licq.h"
 #include "support.h"
-
-#include "licq_icqd.h"
 
 using std::string;
 using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
+using namespace LicqDaemon;
 
 #define ReportMissingParams(cmdname) \
   (gLog.Info("%s `%s': missing arguments. try `help %s'\n",  \
@@ -841,12 +841,75 @@ static int process_tok(const command_t *table,const char *tok)
   return  bFound ? i -1 : CL_UNKNOWN;
 }
 
-void Licq::Daemon::ProcessFifo(const char* _szBuf)
+// Declare global Fifo (internal for daemon)
+LicqDaemon::Fifo LicqDaemon::gFifo;
+
+Fifo::Fifo()
+  : fifo_fs(NULL)
+{
+  // Empty
+}
+
+Fifo::~Fifo()
+{
+  // Empty
+}
+
+void Fifo::initialize()
+{
+#ifdef USE_FIFO
+  string filename = BASE_DIR;
+  filename += "licq_fifo";
+
+  // Open the fifo
+  gLog.Info(tr("%sOpening fifo.\n"), L_INITxSTR);
+  fifo_fd = open(filename.c_str(), O_RDWR);
+  if (fifo_fd == -1)
+  {
+    if (mkfifo(filename.c_str(), 00600) == -1)
+      gLog.Warn(tr("%sUnable to create fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+    else
+    {
+      fifo_fd = open(filename.c_str(), O_RDWR);
+      if (fifo_fd == -1)
+        gLog.Warn(tr("%sUnable to open fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+    }
+  }
+  fifo_fs = NULL;
+  if (fifo_fd != -1)
+  {
+    struct stat buf;
+    fstat(fifo_fd, &buf);
+    if (!S_ISFIFO(buf.st_mode))
+    {
+      gLog.Warn(tr("%s%s is not a FIFO, disabling fifo support.\n"), L_WARNxSTR, filename.c_str());
+      close(fifo_fd);
+      fifo_fd = -1;
+    }
+    else
+      fifo_fs = fdopen(fifo_fd, "r");
+  }
+#else
+  fifo_fs = NULL;
+  fifo_fd = -1;
+#endif
+}
+
+void Fifo::shutdown()
+{
+  if (fifo_fs != NULL)
+  {
+    fclose(fifo_fs);
+    fifo_fs = NULL;
+  }
+}
+
+void Fifo::process(const string& buf)
 {
 #ifdef USE_FIFO
   int argc, index;
   char * argv[MAX_ARGV];
-  char *szBuf = strdup(_szBuf);
+  char *szBuf = strdup(buf.c_str());
 
   if( szBuf == NULL )
     return ;

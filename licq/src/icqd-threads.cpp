@@ -21,6 +21,7 @@
 #include "licq_log.h"
 #include <licq_user.h>
 
+#include "fifo.h"
 #include "licq.h"
 #include "oscarservice.h"
 #include "statistics.h"
@@ -689,11 +690,11 @@ void *MonitorSockets_tep(void *p)
     if (d->pipe_newsocket[PIPE_READ] >= l) l = d->pipe_newsocket[PIPE_READ] + 1;
 
     // Add the fifo descriptor
-    if (gDaemon->fifo_fd != -1)
+    if (gFifo.fifo_fd != -1)
     {
-      FD_SET(gDaemon->fifo_fd, &f);
-      if (gDaemon->fifo_fd >= l)
-        l = gDaemon->fifo_fd + 1;
+      FD_SET(gFifo.fifo_fd, &f);
+      if (gFifo.fifo_fd >= l)
+        l = gFifo.fifo_fd + 1;
     }
 
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
@@ -732,11 +733,11 @@ void *MonitorSockets_tep(void *p)
         }
 
         // Fifo event ----------------------------------------------------------
-      if (nCurrentSocket == gDaemon->fifo_fd)
+      if (nCurrentSocket == gFifo.fifo_fd)
       {
           DEBUG_THREADS("[MonitorSockets_tep] Data on FIFO.\n");
-        fgets(buf, 1024, gDaemon->fifo_fs);
-        gDaemon->ProcessFifo(buf);
+        fgets(buf, 1024, gFifo.fifo_fs);
+        gFifo.process(buf);
         continue;
       }
 

@@ -21,7 +21,6 @@
 #define LICQ_DAEMON_H
 
 #include <boost/noncopyable.hpp>
-#include <cstdio>
 #include <string>
 #include <vector>
 
@@ -34,7 +33,6 @@ class LicqSignal;
 class ProxyServer;
 class TCPSocket;
 
-void* MonitorSockets_tep(void* p);
 void* Shutdown_tep(void* p);
 
 namespace Licq
@@ -132,11 +130,6 @@ protected:
   // Used by Shutdown_tep
   CLicq* licq;
 
-  // Used by MonitorSockets_tep
-  void ProcessFifo(const char* buf);
-  int fifo_fd;
-  FILE* fifo_fs;
-
 private:
   bool myShuttingDown;
   std::string myTerminal;
@@ -161,7 +154,6 @@ private:
 
   pthread_t thread_shutdown;
 
-  friend void* ::MonitorSockets_tep(void* p);
   friend void* ::Shutdown_tep(void* p);
 };
 

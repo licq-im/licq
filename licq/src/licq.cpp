@@ -35,6 +35,7 @@
 #include "licq/version.h"
 
 #include "contactlist/usermanager.h"
+#include "fifo.h"
 #include "gettext.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
@@ -46,6 +47,7 @@
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using LicqDaemon::gFifo;
 using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
@@ -655,6 +657,8 @@ CLicq::~CLicq()
   if (gLicqDaemon != NULL)
     delete gLicqDaemon;
 
+  gFifo.shutdown();
+
   myLogService.unregisterLogSink(myConsoleLog);
 }
 
@@ -793,6 +797,8 @@ int CLicq::Main()
               L_WARNxSTR, L_BLANKxSTR);
     return nResult;
   }
+
+  gFifo.initialize();
 
   if (!gDaemon->Start())
     return 1;
