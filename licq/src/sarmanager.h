@@ -38,7 +38,7 @@ public:
    */
   void initialize();
 
-  // From Licq::AutoResponsManager
+  // From Licq::SarManager
   Licq::SarList& getList(List list);
   void releaseList(bool save = false);
 

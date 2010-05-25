@@ -32,7 +32,7 @@ using Licq::SavedAutoResponse;
 // Declare global SarManager (internal for daemon)
 LicqDaemon::SarManager LicqDaemon::gSarManager;
 
-// Declare global Licq::AutoResponsManager to refer to the internal SarManager
+// Declare global Licq::SarManager to refer to the internal SarManager
 Licq::SarManager& Licq::gSarManager(LicqDaemon::gSarManager);
 
 const char* const SarManager::SectionNames[SarManager::NumLists] =
