@@ -800,7 +800,7 @@ int CLicq::Main()
 
   gFifo.initialize();
 
-  if (!gDaemon->Start())
+  if (!gLicqDaemon->Start())
     return 1;
 
   // Run the plugins

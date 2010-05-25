@@ -46,7 +46,6 @@ class Daemon : private boost::noncopyable
 {
 public:
   Daemon(CLicq* licq);
-  bool Start();
   pthread_t* Shutdown();
   const char* Version() const;
   void SaveConf();

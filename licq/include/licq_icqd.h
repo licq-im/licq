@@ -114,7 +114,7 @@ class CICQDaemon : public Licq::Daemon
 public:
   CICQDaemon(CLicq *);
   ~CICQDaemon();
-  bool startIcq();
+  bool Start();
   void saveIcqConf(Licq::IniFile& licqConf);
 
   // ICQ functions still public as they don't have any general proto functions

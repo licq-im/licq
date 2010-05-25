@@ -143,7 +143,7 @@ CICQDaemon::~CICQDaemon()
   gLicqDaemon = NULL;
 }
 
-bool CICQDaemon::startIcq()
+bool CICQDaemon::Start()
 {
   int nResult = 0;
 

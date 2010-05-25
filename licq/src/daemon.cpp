@@ -103,11 +103,6 @@ Licq::Daemon::Daemon(CLicq* _licq)
   myNextEventId = 1;
 }
 
-bool Licq::Daemon::Start()
-{
-  return gLicqDaemon->startIcq();
-}
-
 Licq::LogService& Licq::Daemon::getLogService()
 {
   return licq->getLogService();
