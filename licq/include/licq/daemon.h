@@ -33,8 +33,6 @@ class LicqSignal;
 class ProxyServer;
 class TCPSocket;
 
-void* Shutdown_tep(void* p);
-
 namespace Licq
 {
 
@@ -123,11 +121,13 @@ public:
    */
   unsigned long getNextEventId();
 
+  /**
+   * Only called by Shutdown_tep
+   */
+  void shutdownPlugins();
+
 protected:
   virtual ~Daemon();
-
-  // Used by Shutdown_tep
-  CLicq* licq;
 
 private:
   bool myShuttingDown;
@@ -153,7 +153,7 @@ private:
 
   pthread_t thread_shutdown;
 
-  friend void* ::Shutdown_tep(void* p);
+  CLicq* licq;
 };
 
 extern Daemon* gDaemon;

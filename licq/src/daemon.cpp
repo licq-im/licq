@@ -347,3 +347,7 @@ void Licq::Daemon::pluginUIMessage(const Licq::UserId& userId)
   pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId));
 }
 
+void Licq::Daemon::shutdownPlugins()
+{
+  licq->ShutdownPlugins();
+}

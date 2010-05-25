@@ -957,7 +957,7 @@ void *Shutdown_tep(void *p)
   gLog.Info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
-  gDaemon->licq->ShutdownPlugins();
+  gDaemon->shutdownPlugins();
 
   // Cancel the monitor sockets thread (deferred until ready)
   write(d->pipe_newsocket[PIPE_WRITE], "X", 1);
