@@ -31,6 +31,7 @@
 #include "licq_message.h"
 #include <licq/contactlist/user.h>
 #include <licq/conversation.h>
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 
 #include "msn.h"
@@ -531,7 +532,7 @@ void CMSN::ProcessPipe()
   {
   case 'S':  // A signal is pending
     {
-      LicqProtoSignal* s = gLicqDaemon->PopProtoSignal();
+      LicqProtoSignal* s = Licq::gDaemon->PopProtoSignal();
       ProcessSignal(s);
       break;
     }
@@ -736,5 +737,5 @@ CMSNDataEvent *CMSN::FetchStartDataEvent(const string &_strUser)
 
 void CMSN::pushPluginSignal(LicqSignal* p)
 {
-  gLicqDaemon->pushPluginSignal(p);
+  Licq::gDaemon->pushPluginSignal(p);
 }

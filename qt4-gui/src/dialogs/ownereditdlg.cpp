@@ -29,7 +29,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <licq_icqd.h>
+#include <licq/daemon.h>
 #include <licq_user.h>
 
 #include "core/messagebox.h"
@@ -139,7 +139,7 @@ void OwnerEditDlg::slot_ok()
   o->SetSavePassword(chkSave->isChecked());
 
   gUserManager.DropOwner(o);
-  gLicqDaemon->SaveConf();
+  Licq::gDaemon->SaveConf();
 
   close();
 }

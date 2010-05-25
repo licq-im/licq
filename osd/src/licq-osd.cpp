@@ -14,10 +14,10 @@
 #include <unistd.h>
 
 #include <licq_plugin.h>
-#include <licq_icqd.h>
 #include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq/pluginmanager.h>
 
@@ -327,7 +327,7 @@ int LP_Main()
 	case 'S':  // A signal is pending
 	    {
 		// read the actual signal from the daemon
-        LicqSignal* s = gLicqDaemon->popPluginSignal();
+        LicqSignal* s = Licq::gDaemon->popPluginSignal();
 		if (s)
 		{
 		    ProcessSignal(s);
@@ -343,7 +343,7 @@ int LP_Main()
 	case 'E':
 	    {
 		gLog.Warn("%sEvent received - should not happen in this plugin\n", L_WARNxSTR);
-        LicqEvent* e = gLicqDaemon->PopPluginEvent();
+        LicqEvent* e = Licq::gDaemon->PopPluginEvent();
 		if (e)
 		{
 		    delete e;

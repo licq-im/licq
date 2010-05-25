@@ -27,6 +27,7 @@
 
 #include <licq_events.h>
 #include <licq_icqd.h>
+#include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq_user.h>
 #include <licq/utility.h>
@@ -105,7 +106,7 @@ UserMenu::UserMenu(QWidget* parent)
   ADD_MISCMODE(tr("Auto Accept Chats"), ModeAutoChatAccept)
   ADD_MISCMODE(tr("Auto Request Secure"), ModeAutoSecure)
   ADD_MISCMODE(tr("Use GPG Encryption"), ModeUseGpg)
-  if (!gLicqDaemon->haveGpgSupport())
+  if (!Licq::gDaemon->haveGpgSupport())
     a->setVisible(false);
   ADD_MISCMODE(tr("Use Real Ip (LAN)"), ModeUseRealIp)
   myMiscModesMenu->addSeparator();
@@ -170,7 +171,7 @@ UserMenu::UserMenu(QWidget* parent)
   myRemoveUserAction = addAction(tr("Remove From List"), this, SLOT(removeContact()));
   addSeparator();
   mySetKeyAction = addAction(tr("Set GPG key"), this, SLOT(selectKey()));
-  if (!gLicqDaemon->haveGpgSupport())
+  if (!Licq::gDaemon->haveGpgSupport())
     mySetKeyAction->setVisible(false);
   myCopyIdAction = addAction(tr("&Copy User ID"), this, SLOT(copyIdToClipboard()));
   myViewHistoryAction = addAction(tr("View &History"), this, SLOT(viewHistory()));

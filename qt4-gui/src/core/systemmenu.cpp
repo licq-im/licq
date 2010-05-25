@@ -27,6 +27,7 @@
 #include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
+#include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq_user.h>
 
@@ -199,7 +200,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
   myPluginManagerAction = addAction(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
   myKeyManagerAction = addAction(tr("GPG &Key Manager..."), this, SLOT(showGPGKeyManager()));
-  if (!gLicqDaemon->haveGpgSupport())
+  if (!Licq::gDaemon->haveGpgSupport())
     myKeyManagerAction->setVisible(false);
   addSeparator();
   mySaveOptionsAction = addAction(tr("Sa&ve Settings"), gLicqGui, SLOT(saveConfig()));

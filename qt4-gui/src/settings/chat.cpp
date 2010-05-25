@@ -36,6 +36,7 @@
 
 #include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/daemon.h>
 
 #include "config/chat.h"
 #include "config/general.h"
@@ -569,8 +570,8 @@ void Settings::Chat::load()
   }
   myShowAllEncodingsCheck->setChecked(chatConfig->showAllEncodings());
 
-  myTerminalEdit->setText(gLicqDaemon->terminal().empty() ?
-      tr("none") : QString(gLicqDaemon->terminal().c_str()));
+  myTerminalEdit->setText(Licq::gDaemon->terminal().empty() ?
+      tr("none") : QString(Licq::gDaemon->terminal().c_str()));
 
   updatePreviews();
 }
@@ -622,7 +623,7 @@ void Settings::Chat::apply()
 
   gLicqDaemon->SetSendTypingNotification(mySendTNCheck->isChecked());
 
-  gLicqDaemon->setTerminal(myTerminalEdit->text().toLocal8Bit().data());
+  Licq::gDaemon->setTerminal(myTerminalEdit->text().toLocal8Bit().data());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
     gUserManager.setDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()).data());

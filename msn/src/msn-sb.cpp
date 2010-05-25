@@ -27,8 +27,10 @@
 #include <list>
 #include <vector>
 
+#include <licq_icqd.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
+#include <licq/daemon.h>
 #include <licq/oneventmanager.h>
 #include <licq/statistics.h>
 
@@ -81,9 +83,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       convo->addUser(userId);
 
       // Notify the plugins of the new CID
-      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
+      Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
 
-      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
+      Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
 
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
     }
@@ -115,7 +117,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (u.isLocked())
         {
           u->setIsTyping(true);
-          gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+          Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
               USER_TYPING, u->id(), SocketToCID(nSock)));
         }
       }
@@ -230,7 +232,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           }
           Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
         }
-	gLicqDaemon->PushPluginEvent(e);
+	Licq::gDaemon->PushPluginEvent(e);
       }
       else
       {
@@ -287,10 +289,10 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         convo->addUser(userId);
 
         // Notify the plugins of the new CID
-        gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
+        Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
 
         // Notify the plugins
-        gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
+        Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
       }
 
       if (pStart)
@@ -310,7 +312,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       UserId userId(packet->GetParameter(), MSN_PPID);
       gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, userId.toString().c_str());
 
-      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
+      Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
       Conversation* convo = gConvoManager.getFromSocket(nSock);
       if (convo != NULL)
@@ -352,7 +354,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           gLog.Error("%sUser not online.\n", L_ERRORxSTR);
           pStart = *it;
           pStart->m_pEvent->m_eResult = EVENT_FAILED;
-          gLicqDaemon->PushPluginEvent(pStart->m_pEvent);
+          Licq::gDaemon->PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
           break; 
         }
@@ -397,7 +399,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   {
     gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, userId.toString().c_str());
 
-    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
+    Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
     Conversation* convo = gConvoManager.getFromSocket(nSock);
     if (convo != NULL)
@@ -649,7 +651,7 @@ void CMSN::killConversation(int sock)
     BOOST_FOREACH(const UserId& userId, users)
     {
       // Signal that user is removed
-      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, convoId));
+      Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, convoId));
 
       // Remove user from the conversation
       convo->removeUser(userId);

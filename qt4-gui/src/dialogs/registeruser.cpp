@@ -33,6 +33,7 @@
 
 #include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/daemon.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
@@ -234,7 +235,7 @@ void RegisterUserDlg::gotNewOwner(const QString& id, unsigned long ppid)
   {
     o->SetSavePassword(mySavePassword->isChecked());
     gUserManager.DropOwner(o);
-    gLicqDaemon->SaveConf();
+    Licq::gDaemon->SaveConf();
   }
 
   // Mark that we have finished

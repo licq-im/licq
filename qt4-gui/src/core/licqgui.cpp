@@ -74,8 +74,8 @@ extern "C"
 #include <licq_events.h>
 #include <licq/inifile.h>
 #include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
+#include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 #include <licq/sarmanager.h>
@@ -363,7 +363,7 @@ void LicqGui::loadFloatiesConfig()
 void LicqGui::saveConfig()
 {
   // Tell the daemon to save its options
-  gLicqDaemon->SaveConf();
+  Licq::gDaemon->SaveConf();
 
   // Save all our options
   Licq::IniFile guiConf(QTGUI_CONFIGFILE);

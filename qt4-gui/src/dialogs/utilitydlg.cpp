@@ -31,7 +31,7 @@
 #include <QSocketNotifier>
 #include <QSplitter>
 
-#include <licq_icqd.h>
+#include <licq/daemon.h>
 #include <licq/utility.h>
 
 #include "core/messagebox.h"
@@ -208,7 +208,7 @@ void UtilityDlg::slot_run()
     }
     case Utility::WinTerm:
     {
-      QString szCmd = gLicqDaemon->terminal().c_str();
+      QString szCmd = Licq::gDaemon->terminal().c_str();
       szCmd.append(" ").append(cmd).append(" &");
       nSystemResult = system(szCmd.toLocal8Bit());
       break;

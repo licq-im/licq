@@ -70,6 +70,7 @@
 #include <licq_log.h>
 #include <licq_translate.h>
 #include <licq_user.h>
+#include <licq/daemon.h>
 
 #include "config/contactlist.h"
 #include "config/general.h"
@@ -1019,7 +1020,7 @@ void MainWindow::showAwayMsgDlg()
 
 void MainWindow::slot_shutdown()
 {
-  gLicqDaemon->Shutdown();
+  Licq::gDaemon->Shutdown();
 }
 
 void MainWindow::slot_logon()

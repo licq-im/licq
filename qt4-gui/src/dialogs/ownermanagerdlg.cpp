@@ -27,7 +27,7 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
+#include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq_user.h>
 
@@ -228,5 +228,5 @@ void OwnerManagerDlg::removeOwner()
     return;
 
   gUserManager.RemoveOwner(item->data(0, Qt::UserRole).toString().toULong());
-  gLicqDaemon->SaveConf();
+  Licq::gDaemon->SaveConf();
 }

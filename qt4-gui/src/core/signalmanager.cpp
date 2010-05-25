@@ -25,10 +25,11 @@
 #include <QApplication>
 #include <QSocketNotifier>
 
+#include <licq_events.h>
 #include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_user.h>
+#include <licq/daemon.h>
 #include <licq/protocolmanager.h>
 
 #include "dialogs/ownereditdlg.h"
@@ -222,14 +223,14 @@ void SignalManager::process()
   {
     case 'S':  // A signal is pending
     {
-      LicqSignal* s = gLicqDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon->popPluginSignal();
       ProcessSignal(s);
       break;
     }
 
     case 'E':  // An event is pending
     {
-      ICQEvent* e = gLicqDaemon->PopPluginEvent();
+      ICQEvent* e = Licq::gDaemon->PopPluginEvent();
       ProcessEvent(e);
       break;
     }

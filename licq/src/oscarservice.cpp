@@ -19,6 +19,7 @@
 
 #include <licq/buffer.h>
 #include "licq/byteorder.h"
+#include <licq/daemon.h>
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "licq_socket.h"
@@ -32,6 +33,7 @@
 
 using namespace std;
 using Licq::Buffer;
+using Licq::gDaemon;
 
 COscarService::COscarService(unsigned short Fam)
 {
@@ -400,7 +402,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
               u->SetEnableSave(true);
             }
             u->SavePictureInfo();
-            gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+            gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
 
             LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_SUCCESS);
             if (e)

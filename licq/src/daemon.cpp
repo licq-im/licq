@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include <licq_icqd.h>
+#include <licq/daemon.h>
 
 #include <cerrno>
 #include <cstdio>
@@ -33,6 +33,7 @@
 #include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_icq.h>
+#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_proxy.h>
 #include <licq_translate.h>

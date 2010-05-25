@@ -28,6 +28,7 @@
 #include <QLabel>
 
 #include <licq_icqd.h>
+#include <licq/daemon.h>
 
 #include "helpers/support.h"
 
@@ -65,7 +66,7 @@ AboutDlg::AboutDlg(QWidget* parent)
       "</table>"
     )
     .arg(tr("Version"))
-    .arg(gLicqDaemon->Version())
+    .arg(Licq::gDaemon->Version())
     .arg(CICQDaemon::CryptoEnabled() ? "/SSL" : "")
     .arg(PLUGIN_VERSION_STRING)
 #ifdef USE_KDE

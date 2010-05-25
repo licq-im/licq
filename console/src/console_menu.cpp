@@ -6,7 +6,9 @@
 #include <string>
 
 #include "event_data.h"
+#include <licq_icqd.h>
 #include <licq/contactlist/user.h>
+#include <licq/daemon.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
 
@@ -258,7 +260,7 @@ void CLicqConsole::MenuHelp(char *_szArg)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuQuit(char *)
 {
-  gLicqDaemon->Shutdown();
+  Licq::gDaemon->Shutdown();
 }
 
 

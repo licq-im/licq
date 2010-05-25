@@ -25,6 +25,7 @@
 #include <licq_log.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/userid.h>
 
 #include "contactlist/user.h"
@@ -37,6 +38,7 @@ using Licq::OwnerWriteGuard;
 using Licq::UserId;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
+using Licq::gDaemon;
 using Licq::gUserManager;
 
 
@@ -62,12 +64,12 @@ ProtocolManager::~ProtocolManager()
 unsigned long ProtocolManager::getNextEventId()
 {
   // Event id generation is still owned by daemon as it's used directly by some ICQ functions
-  return gLicqDaemon->getNextEventId();
+  return gDaemon->getNextEventId();
 }
 
 void ProtocolManager::pushProtoSignal(LicqProtoSignal* s, const UserId& userId)
 {
-  gLicqDaemon->PushProtoSignal(s, userId.protocolId());
+  gDaemon->PushProtoSignal(s, userId.protocolId());
 }
 
 void ProtocolManager::addUser(const UserId& userId, int groupId)

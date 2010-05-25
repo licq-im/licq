@@ -16,6 +16,7 @@
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include <licq/contactlist/user.h>
+#include <licq/daemon.h>
 #include <licq/icqcodes.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
@@ -484,14 +485,14 @@ void CLicqConsole::ProcessPipe()
   {
   case 'S':  // A signal is pending
     {
-      LicqSignal* s = gLicqDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon->popPluginSignal();
       ProcessSignal(s);
       break;
     }
 
   case 'E':  // An event is pending
     {
-      LicqEvent* e = gLicqDaemon->PopPluginEvent();
+      LicqEvent* e = Licq::gDaemon->PopPluginEvent();
       ProcessEvent(e);
       break;
     }
@@ -3068,7 +3069,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             owner->setPassword(data->szPassword1);
             gUserManager.DropOwner(owner);
-            gLicqDaemon->SaveConf();
+            Licq::gDaemon->SaveConf();
 
             winMain->wprintf("Save password? (y/N) ");
             winMain->state = STATE_QUERY;

@@ -33,6 +33,7 @@
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
+#include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 #include <licq_user.h>
@@ -104,7 +105,7 @@ QWidget* UserPages::Settings::createPageSettings(QWidget* parent)
   myUseGpgCheck = new QCheckBox(tr("Use GPG encryption"));
   myUseGpgCheck->setToolTip(tr("Use GPG encryption for messages with this contact."));
   mySettingsLayout->addWidget(myUseGpgCheck, 3, 1);
-  if (!gLicqDaemon->haveGpgSupport())
+  if (!Licq::gDaemon->haveGpgSupport())
     myUseGpgCheck->setVisible(false);
 
   myUseRealIpCheck = new QCheckBox(tr("Use real ip (LAN)"));

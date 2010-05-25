@@ -24,10 +24,11 @@
 #include "handler.h"
 #include "jabber.h"
 
-#include <licq_icqd.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
+#include <licq/daemon.h>
 #include <licq/log.h>
+#include <licq_events.h>
 
 #include <sys/select.h>
 
@@ -92,7 +93,7 @@ void Jabber::processPipe(int pipe)
   {
     case PLUGIN_SIGNAL:
     {
-      LicqProtoSignal* signal = gLicqDaemon->PopProtoSignal();
+      LicqProtoSignal* signal = Licq::gDaemon->PopProtoSignal();
       processSignal(signal);
       delete signal;
     }
@@ -237,7 +238,7 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
     event->m_pUserEvent->AddToHistory(*user, D_SENDER);
   }
 
-  gLicqDaemon->PushPluginEvent(event);
+  Licq::gDaemon->PushPluginEvent(event);
 }
 
 void Jabber::doGetInfo(LicqProtoRequestInfo* signal)

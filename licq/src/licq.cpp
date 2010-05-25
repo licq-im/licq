@@ -28,6 +28,7 @@
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
+#include <licq/daemon.h>
 #include "licq/exceptions/exception.h"
 #include <licq/inifile.h>
 #include <licq/utility.h>
@@ -219,7 +220,7 @@ void displayFatalError(const char* error, int useLicqLog)
 void handleExitSignal(int signal)
 {
   gLog.Info(tr("%sReceived signal %d, exiting.\n"), L_ENDxSTR, signal);
-  gLicqDaemon->Shutdown();
+  gDaemon->Shutdown();
 }
 
 /*-----Helper functions for CLicq::UpgradeLicq-----------------------------*/

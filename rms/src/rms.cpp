@@ -17,6 +17,7 @@
 #include <licq_log.h>
 #include <licq_socket.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
@@ -203,9 +204,9 @@ int CLicqRMS::Run()
 
   server = new TCPSocket();
 
-  if (gLicqDaemon->tcpPortsLow() != 0 && nPort == 0)
+  if (Licq::gDaemon->tcpPortsLow() != 0 && nPort == 0)
   {
-    if (!gLicqDaemon->StartTCPServer(server))
+    if (!Licq::gDaemon->StartTCPServer(server))
       return 1;
   }
   else
@@ -293,14 +294,14 @@ void CLicqRMS::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-      LicqSignal* s = gLicqDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
   case 'E':  // An event is pending (should never happen)
   {
-      LicqEvent* e = gLicqDaemon->PopPluginEvent();
+      LicqEvent* e = Licq::gDaemon->PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -883,7 +884,7 @@ int CRMSClient::Process_QUIT()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_TERM()
 {
-  gLicqDaemon->Shutdown();
+  Licq::gDaemon->Shutdown();
   return -1;
 }
 

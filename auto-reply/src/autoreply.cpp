@@ -14,11 +14,12 @@
 
 #include "autoreply.h"
 
+#include <licq_events.h>
 #include <licq_icq.h>
 #include "licq_log.h"
-#include "licq_icqd.h"
 #include "licq_constants.h"
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
@@ -132,14 +133,14 @@ void CLicqAutoReply::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-      LicqSignal* s = gLicqDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
   case 'E':  // An event is pending (should never happen)
   {
-      LicqEvent* e = gLicqDaemon->PopPluginEvent();
+      LicqEvent* e = Licq::gDaemon->PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
