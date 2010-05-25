@@ -27,21 +27,16 @@
 
 #include <licq/thread/mutex.h>
 
-class CICQDaemon;
 class CLicq;
-class CMSN;
 class LicqEvent;
 class LicqProtoSignal;
 class LicqSignal;
 class ProxyServer;
 class TCPSocket;
 
-#define SAVE_STATS
-
 namespace Licq
 {
 
-class Daemon;
 class LogService;
 class UserId;
 
