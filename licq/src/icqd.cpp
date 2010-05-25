@@ -352,7 +352,7 @@ void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
 void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
 #if 1
-  unsigned long eventId = getNextEventId();
+  unsigned long eventId = gDaemon->getNextEventId();
   LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
 
   if (e == NULL)  return;
@@ -1449,6 +1449,22 @@ done:
   pthread_mutex_unlock(&mutex_reverseconnect);
   return bSuccess;
 }
+
+LicqEvent* CICQDaemon::SendExpectEvent_Server(const UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent)
+{
+  return SendExpectEvent_Server(gDaemon->getNextEventId(), userId, packet, ue, extendedEvent);
+}
+
+LicqEvent* CICQDaemon::SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent)
+{
+  return SendExpectEvent_Server(gDaemon->getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
+}
+
+LicqEvent* CICQDaemon::SendExpectEvent_Client(const Licq::User* user, CPacket* packet, CUserEvent* ue)
+{
+  return SendExpectEvent_Client(gDaemon->getNextEventId(), user, packet, ue);
+}
+
 
 CReverseConnectToUserData::CReverseConnectToUserData(const char* idString, unsigned long id,
       unsigned long data, unsigned long ip, unsigned short port,

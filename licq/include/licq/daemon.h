@@ -117,14 +117,14 @@ public:
   LicqEvent *PopPluginEvent();
   LicqProtoSignal* PopProtoSignal();
 
-protected:
-  virtual ~Daemon();
-
   /**
    * Get next available id to use for an event
    * TODO: Move to ProtocolManager when no longer used directy by ICQ code
    */
   unsigned long getNextEventId();
+
+protected:
+  virtual ~Daemon();
 
   // Used by Shutdown_tep
   CLicq* licq;

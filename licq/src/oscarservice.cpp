@@ -139,7 +139,7 @@ void COscarService::ClearQueue()
 unsigned long COscarService::SendEvent(const UserId& userId,
                                        unsigned short SubType, bool Request)
 {
-  unsigned long eventId = gLicqDaemon->getNextEventId();
+  unsigned long eventId = gDaemon->getNextEventId();
   LicqEvent* e = new LicqEvent(eventId, mySocketDesc, NULL, CONNECT_SERVER, userId);
   e->SetSubType(SubType);
   if (Request)

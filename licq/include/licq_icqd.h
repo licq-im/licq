@@ -438,19 +438,16 @@ protected:
   void SendEvent_Server(CPacket *packet);
   LicqEvent* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, CPacket *, CUserEvent *, bool = false);
 
-  LicqEvent* SendExpectEvent_Server(const Licq::UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
-  { return SendExpectEvent_Server(getNextEventId(), userId, packet, ue, extendedEvent); }
+  LicqEvent* SendExpectEvent_Server(const Licq::UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false);
 
   LicqEvent* SendExpectEvent_Server(unsigned long eventId, CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
   { return SendExpectEvent_Server(eventId, Licq::UserId(), packet, ue, extendedEvent); }
 
-  LicqEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
-  { return SendExpectEvent_Server(getNextEventId(), Licq::UserId(), packet, ue, extendedEvent); }
+  LicqEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false);
 
   LicqEvent* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, CPacket* packet, CUserEvent* ue);
 
-  LicqEvent* SendExpectEvent_Client(const Licq::User* user, CPacket* packet, CUserEvent* ue)
-  { return SendExpectEvent_Client(getNextEventId(), user, packet, ue); }
+  LicqEvent* SendExpectEvent_Client(const Licq::User* user, CPacket* packet, CUserEvent* ue);
 
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);

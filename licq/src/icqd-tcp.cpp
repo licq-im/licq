@@ -185,7 +185,7 @@ void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, con
 //-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
 {
-  unsigned long eventId = getNextEventId();
+  unsigned long eventId = gDaemon->getNextEventId();
   UserId userId = LicqUser::makeUserId(_szId, _nPPID);
   if (_szId == gUserManager.OwnerId(LICQ_PPID))
     return 0;
@@ -387,7 +387,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
    const StringList& users, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
-  unsigned long eventId = getNextEventId();
+  unsigned long eventId = gDaemon->getNextEventId();
   if (szId == gUserManager.OwnerId(LICQ_PPID))
     return 0;
 

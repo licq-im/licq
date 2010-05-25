@@ -1509,7 +1509,7 @@ void CICQDaemon::icqLogoff()
   if (nSD != -1)
   {
     CPU_Logoff p;
-    unsigned long eventId = getNextEventId();
+    unsigned long eventId = gDaemon->getNextEventId();
     cancelledEvent = new LicqEvent(eventId, nSD, &p, CONNECT_SERVER);
     cancelledEvent->m_pPacket = NULL;
     cancelledEvent->m_bCancelled = true;
