@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include <licq/daemon.h>
+#include "daemon.h"
 
 #include <cerrno>
 #include <cstdio>
@@ -29,7 +29,6 @@
 
 #include <licq_constants.h>
 #include <licq_events.h>
-#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_proxy.h>
@@ -46,14 +45,28 @@
 using namespace std;
 using namespace LicqDaemon;
 
-Licq::Daemon* Licq::gDaemon = NULL;
 
-Licq::Daemon::Daemon(CLicq* _licq)
+// Declare global Daemon (internal for daemon)
+LicqDaemon::Daemon LicqDaemon::gDaemon;
+
+// Declare global Licq::Daemon to refer to the internal Daemon
+Licq::Daemon* Licq::gDaemon(&LicqDaemon::gDaemon);
+
+Daemon::Daemon()
+{
+  // Empty
+}
+
+Daemon::~Daemon()
+{
+  // Empty
+}
+
+void Daemon::initialize(CLicq* _licq)
 {
   string temp;
 
   licq = _licq;
-  Licq::gDaemon = this;
 
   myShuttingDown = false;
 
@@ -103,22 +116,17 @@ Licq::Daemon::Daemon(CLicq* _licq)
   myNextEventId = 1;
 }
 
-Licq::LogService& Licq::Daemon::getLogService()
+Licq::LogService& Daemon::getLogService()
 {
   return licq->getLogService();
 }
 
-const char* Licq::Daemon::Version() const
+const char* Daemon::Version() const
 {
   return licq->Version();
 }
 
-Licq::Daemon::~Daemon()
-{
-  Licq::gDaemon = NULL;
-}
-
-pthread_t* Licq::Daemon::Shutdown()
+pthread_t* Daemon::Shutdown()
 {
   if (myShuttingDown)
     return(&thread_shutdown);
@@ -298,7 +306,7 @@ ProxyServer* Licq::Daemon::createProxy()
   return Proxy;
 }
 
-unsigned long Licq::Daemon::getNextEventId()
+unsigned long Daemon::getNextEventId()
 {
   Licq::MutexLocker eventIdGuard(myNextEventIdMutex);
   unsigned long eventId = myNextEventId;
@@ -347,7 +355,7 @@ void Licq::Daemon::pluginUIMessage(const Licq::UserId& userId)
   pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId));
 }
 
-void Licq::Daemon::shutdownPlugins()
+void Daemon::shutdownPlugins()
 {
   licq->ShutdownPlugins();
 }

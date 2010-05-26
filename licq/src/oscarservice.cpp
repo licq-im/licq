@@ -19,7 +19,6 @@
 
 #include <licq/buffer.h>
 #include "licq/byteorder.h"
-#include <licq/daemon.h>
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "licq_socket.h"
@@ -27,13 +26,14 @@
 #include "licq_log.h"
 #include <licq_user.h>
 
+#include "daemon.h"
 #include "gettext.h"
 #include "icqpacket.h"
 #include "support.h"
 
 using namespace std;
 using Licq::Buffer;
-using Licq::gDaemon;
+using LicqDaemon::gDaemon;
 
 COscarService::COscarService(unsigned short Fam)
 {
@@ -139,7 +139,7 @@ void COscarService::ClearQueue()
 unsigned long COscarService::SendEvent(const UserId& userId,
                                        unsigned short SubType, bool Request)
 {
-  unsigned long eventId = gDaemon->getNextEventId();
+  unsigned long eventId = gDaemon.getNextEventId();
   LicqEvent* e = new LicqEvent(eventId, mySocketDesc, NULL, CONNECT_SERVER, userId);
   e->SetSubType(SubType);
   if (Request)
@@ -402,7 +402,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
               u->SetEnableSave(true);
             }
             u->SavePictureInfo();
-            gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+            gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
 
             LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_SUCCESS);
             if (e)
@@ -466,7 +466,7 @@ bool COscarService::Initialize()
   else
   {
     if (myProxy == NULL)
-      myProxy = Licq::gDaemon->createProxy();
+      myProxy = gDaemon.createProxy();
   }
   if (!s->connectTo(string(myServer), myPort, myProxy))
   {

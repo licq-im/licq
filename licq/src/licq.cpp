@@ -28,13 +28,13 @@
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
-#include <licq/daemon.h>
 #include "licq/exceptions/exception.h"
 #include <licq/inifile.h>
 #include <licq/utility.h>
 #include "licq/version.h"
 
 #include "contactlist/usermanager.h"
+#include "daemon.h"
 #include "fifo.h"
 #include "gettext.h"
 #include "logging/streamlogsink.h"
@@ -47,13 +47,13 @@
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using LicqDaemon::gDaemon;
 using LicqDaemon::gFifo;
 using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
 using LicqDaemon::gStatistics;
 using LicqDaemon::gUserManager;
-using Licq::gDaemon;
 using Licq::gUtilityManager;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
@@ -222,7 +222,7 @@ void displayFatalError(const char* error, int useLicqLog)
 void handleExitSignal(int signal)
 {
   gLog.Info(tr("%sReceived signal %d, exiting.\n"), L_ENDxSTR, signal);
-  gDaemon->Shutdown();
+  gDaemon.Shutdown();
 }
 
 /*-----Helper functions for CLicq::UpgradeLicq-----------------------------*/
@@ -637,6 +637,7 @@ bool CLicq::Init(int argc, char **argv)
   // Start things going
   if (!LicqDaemon::gUserManager.Load())
     return false;
+  gDaemon.initialize(this);
   gOnEventManager.initialize();
   gSarManager.initialize();
   gStatistics.initialize();
@@ -644,7 +645,6 @@ bool CLicq::Init(int argc, char **argv)
   gUtilityManager.loadUtilities(szFilename);
 
   // Create the daemon
-  new Licq::Daemon(this);
   new CICQDaemon();
 
   return true;
@@ -657,8 +657,6 @@ CLicq::~CLicq()
   // Kill the daemon
   if (gLicqDaemon != NULL)
     delete gLicqDaemon;
-  if (gDaemon != NULL)
-    delete gDaemon;
 
   gFifo.shutdown();
 
@@ -837,7 +835,7 @@ int CLicq::Main()
 
   gPluginManager.cancelAllPlugins();
 
-  pthread_t* t = gDaemon->Shutdown();
+  pthread_t* t = gDaemon.Shutdown();
   pthread_join(*t, NULL);
 
   gUserManager.shutdown();

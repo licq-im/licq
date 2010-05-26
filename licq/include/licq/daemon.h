@@ -22,11 +22,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <string>
-#include <vector>
 
-#include <licq/thread/mutex.h>
-
-class CLicq;
 class LicqEvent;
 class LicqProtoSignal;
 class LicqSignal;
@@ -43,11 +39,8 @@ class UserId;
 class Daemon : private boost::noncopyable
 {
 public:
-  Daemon(CLicq* licq);
-  virtual ~Daemon();
-
-  pthread_t* Shutdown();
-  const char* Version() const;
+  virtual pthread_t* Shutdown() = 0;
+  virtual const char* Version() const = 0;
   void SaveConf();
 
   bool shuttingDown() const                     { return myShuttingDown; }
@@ -60,7 +53,7 @@ public:
    */
   bool haveGpgSupport() const;
 
-  LogService& getLogService();
+  virtual LogService& getLogService() = 0;
 
   // Firewall options
   bool tcpEnabled() const                       { return myTcpEnabled; }
@@ -117,18 +110,9 @@ public:
   LicqEvent *PopPluginEvent();
   LicqProtoSignal* PopProtoSignal();
 
-  /**
-   * Get next available id to use for an event
-   * TODO: Move to ProtocolManager when no longer used directy by ICQ code
-   */
-  unsigned long getNextEventId();
+protected:
+  ~Daemon() { /* Empty */ }
 
-  /**
-   * Only called by Shutdown_tep
-   */
-  void shutdownPlugins();
-
-private:
   bool myShuttingDown;
   std::string myTerminal;
 
@@ -146,13 +130,6 @@ private:
   bool myProxyAuthEnabled;
   std::string myProxyLogin;
   std::string myProxyPasswd;
-
-  unsigned long myNextEventId;
-  Licq::Mutex myNextEventIdMutex;
-
-  pthread_t thread_shutdown;
-
-  CLicq* licq;
 };
 
 extern Daemon* gDaemon;

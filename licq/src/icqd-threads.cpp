@@ -15,12 +15,12 @@
 #include <ctime>
 #include <unistd.h>
 
-#include <licq/daemon.h>
 #include <licq/packet.h>
 #include <licq_icq.h>
 #include "licq_log.h"
 #include <licq_user.h>
 
+#include "daemon.h"
 #include "fifo.h"
 #include "licq.h"
 #include "oscarservice.h"
@@ -35,7 +35,6 @@
 
 using namespace std;
 using namespace LicqDaemon;
-using Licq::gDaemon;
 
 void cleanup_mutex(void *m)
 {
@@ -890,7 +889,7 @@ void *MonitorSockets_tep(void *p)
                 {
                   u->ClearSocketDesc(ICQ_CHNxNONE);
                   u->SetSecure(false);
-                  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+                  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
                 }
                 gUserManager.DropUser(u);
               }
@@ -957,7 +956,7 @@ void *Shutdown_tep(void *p)
   gLog.Info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
-  gDaemon->shutdownPlugins();
+  gDaemon.shutdownPlugins();
 
   // Cancel the monitor sockets thread (deferred until ready)
   write(d->pipe_newsocket[PIPE_WRITE], "X", 1);

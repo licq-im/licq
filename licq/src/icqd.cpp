@@ -14,7 +14,6 @@
 #include <ctime>
 #include <sys/stat.h>
 
-#include <licq/daemon.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include "licq_icq.h"
@@ -25,6 +24,7 @@
 #include "licq_translate.h"
 
 #include "contactlist/user.h"
+#include "daemon.h"
 #include "gettext.h"
 #include "icqpacket.h"
 #include "oscarservice.h"
@@ -35,7 +35,6 @@
 using namespace std;
 using namespace LicqDaemon;
 using Licq::OnEventManager;
-using Licq::gDaemon;
 using Licq::gOnEventManager;
 
 std::list <CReverseConnectToUserData *> CICQDaemon::m_lReverseConnect;
@@ -147,7 +146,7 @@ bool CICQDaemon::Start()
   int nResult = 0;
 
   TCPSocket* s = new TCPSocket();
-  m_nTCPSocketDesc = gDaemon->StartTCPServer(s);
+  m_nTCPSocketDesc = gDaemon.StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {
      gLog.Error(tr("%sUnable to allocate TCP port for local server (%s)!\n"),
@@ -231,7 +230,7 @@ void CICQDaemon::saveIcqConf(Licq::IniFile& licqConf)
 
 void CICQDaemon::SetDirectMode()
 {
-  bool bDirect = (!gDaemon->behindFirewall() || (gDaemon->behindFirewall() && gDaemon->tcpEnabled()));
+  bool bDirect = (!gDaemon.behindFirewall() || (gDaemon.behindFirewall() && gDaemon.tcpEnabled()));
   CPacket::SetMode(bDirect ? MODE_DIRECT : MODE_INDIRECT);
 }
 
@@ -242,7 +241,7 @@ void CICQDaemon::InitProxy()
     delete m_xProxy;
     m_xProxy = NULL;
   }
-  m_xProxy = Licq::gDaemon->createProxy();
+  m_xProxy = gDaemon.createProxy();
 }
 
 unsigned short VersionToUse(unsigned short v_in)
@@ -351,7 +350,7 @@ void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
 void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
 #if 1
-  unsigned long eventId = gDaemon->getNextEventId();
+  unsigned long eventId = gDaemon.getNextEventId();
   LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
 
   if (e == NULL)  return;
@@ -377,7 +376,7 @@ LicqEvent* CICQDaemon::SendExpectEvent_Server(unsigned long eventId, const UserI
    CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
-  if (gDaemon->shuttingDown())
+  if (gDaemon.shuttingDown())
   {
     if (packet != NULL) delete packet;
     if (ue != NULL) delete ue;
@@ -416,7 +415,7 @@ ICQEvent* CICQDaemon::SendExpectEvent_Client(unsigned long eventId, const LicqUs
    CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
-  if (gDaemon->shuttingDown())
+  if (gDaemon.shuttingDown())
   {
     if (packet != NULL) delete packet;
     if (ue != NULL) delete ue;
@@ -1256,7 +1255,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
     u->SetLastCheckedAutoResponse();
 
-        gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
+        gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
       }
     u->Unlock();
     return;
@@ -1451,17 +1450,17 @@ done:
 
 LicqEvent* CICQDaemon::SendExpectEvent_Server(const UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent)
 {
-  return SendExpectEvent_Server(gDaemon->getNextEventId(), userId, packet, ue, extendedEvent);
+  return SendExpectEvent_Server(gDaemon.getNextEventId(), userId, packet, ue, extendedEvent);
 }
 
 LicqEvent* CICQDaemon::SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent)
 {
-  return SendExpectEvent_Server(gDaemon->getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
+  return SendExpectEvent_Server(gDaemon.getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
 }
 
 LicqEvent* CICQDaemon::SendExpectEvent_Client(const Licq::User* user, CPacket* packet, CUserEvent* ue)
 {
-  return SendExpectEvent_Client(gDaemon->getNextEventId(), user, packet, ue);
+  return SendExpectEvent_Client(gDaemon.getNextEventId(), user, packet, ue);
 }
 
 
