@@ -644,7 +644,8 @@ bool CLicq::Init(int argc, char **argv)
   gUtilityManager.loadUtilities(szFilename);
 
   // Create the daemon
-  new CICQDaemon(this);
+  new Licq::Daemon(this);
+  new CICQDaemon();
 
   return true;
 }
@@ -656,6 +657,8 @@ CLicq::~CLicq()
   // Kill the daemon
   if (gLicqDaemon != NULL)
     delete gLicqDaemon;
+  if (gDaemon != NULL)
+    delete gDaemon;
 
   gFifo.shutdown();
 

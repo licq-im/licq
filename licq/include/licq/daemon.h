@@ -44,6 +44,8 @@ class Daemon : private boost::noncopyable
 {
 public:
   Daemon(CLicq* licq);
+  virtual ~Daemon();
+
   pthread_t* Shutdown();
   const char* Version() const;
   void SaveConf();
@@ -125,9 +127,6 @@ public:
    * Only called by Shutdown_tep
    */
   void shutdownPlugins();
-
-protected:
-  virtual ~Daemon();
 
 private:
   bool myShuttingDown;

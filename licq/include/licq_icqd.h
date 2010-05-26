@@ -15,7 +15,6 @@ header file containing all the main procedures to interface with the ICQ server 
 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
-#include "licq/daemon.h"
 #include "licq/userid.h"
 
 class CPacketTcp;
@@ -109,10 +108,10 @@ typedef ContactUserList::iterator ContactUserListIter;
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
-class CICQDaemon : public Licq::Daemon
+class CICQDaemon
 {
 public:
-  CICQDaemon(CLicq *);
+  CICQDaemon();
   ~CICQDaemon();
   bool Start();
   void saveIcqConf(Licq::IniFile& licqConf);

@@ -45,8 +45,7 @@ pthread_cond_t  CICQDaemon::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
 
 CICQDaemon *gLicqDaemon = NULL;
 
-CICQDaemon::CICQDaemon(CLicq* _licq)
-  : Licq::Daemon(_licq)
+CICQDaemon::CICQDaemon()
 {
   gLicqDaemon = this;
 

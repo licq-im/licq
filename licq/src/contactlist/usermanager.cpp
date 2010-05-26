@@ -7,6 +7,7 @@
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_events.h"
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 
 #include "../gettext.h"
