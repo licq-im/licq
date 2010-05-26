@@ -43,6 +43,7 @@ std::list<unsigned short> LP_Ids;
 
 using Licq::MutexLocker;
 using Licq::StringList;
+using Licq::gDaemon;
 using namespace LicqDaemon;
 
 // Declare global PluginManager (internal for daemon)
@@ -525,7 +526,7 @@ static void startPluginCallback(Plugin& plugin)
 {
   std::string name = plugin.getName();
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  Licq::gDaemon->getLogService().createThreadLog(name);
+  gDaemon.getLogService().createThreadLog(name);
 }
 
 void PluginManager::startPlugin(Plugin::Ptr plugin)

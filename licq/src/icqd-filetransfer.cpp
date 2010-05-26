@@ -232,7 +232,7 @@ CFileTransferManager::CFileTransferManager(const char* accountId)
 //-----CFileTransferManager::StartFileTransferServer-----------------------------------------
 bool CFileTransferManager::StartFileTransferServer()
 {
-  if (gDaemon->StartTCPServer(&ftServer) == -1)
+  if (gDaemon.StartTCPServer(&ftServer) == -1)
   {
     gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;

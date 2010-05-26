@@ -483,9 +483,7 @@ User::~User()
     m_vcMessages.pop_back();
     decNumUserEvents();
 
-    if (gDaemon != NULL)
-      gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-          USER_EVENTS, myId, nId));
+    gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, nId));
   }
 
   delete m_PhoneBook;
@@ -674,8 +672,7 @@ void User::SetPermanent()
   saveAll();
 
   // Notify the plugins of the change
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-      USER_SETTINGS, myId, 0));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SETTINGS, myId, 0));
 }
 
 void Licq::User::SetDefaults()
@@ -845,7 +842,7 @@ void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
   if (oldStatus != newStatus)
   {
     Touch();
-    gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, myId, arg));
+    gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, myId, arg));
   }
 }
 
@@ -1143,8 +1140,8 @@ void Licq::User::SetSocketDesc(TCPSocket *s)
   if (m_bSecure != s->Secure())
   {
     m_bSecure = s->Secure();
-    if (gDaemon != NULL && m_bOnContactList)
-      gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY,
+    if (m_bOnContactList)
+      gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY,
           myId, m_bSecure ? 1 : 0));
   }
 
@@ -1185,8 +1182,8 @@ void Licq::User::ClearSocketDesc(unsigned char nChannel)
     m_bSecure = false;
   }
 
-  if (gDaemon != NULL && m_bOnContactList)
-    gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, myId, 0));
+  if (m_bOnContactList)
+    gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, myId, 0));
 }
 
 void Licq::User::clearNormalSocketDesc()
@@ -2057,7 +2054,7 @@ void Licq::User::EventPush(CUserEvent *e)
   Touch();
   SetLastReceivedEvent();
 
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
       USER_EVENTS, myId, e->Id(), e->ConvoId()));
 }
 
@@ -2117,7 +2114,7 @@ CUserEvent *Licq::User::EventPop()
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, e->Id()));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, e->Id()));
 
   return e;
 }
@@ -2135,7 +2132,7 @@ void Licq::User::EventClear(unsigned short index)
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, -id));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, -id));
 }
 
 void Licq::User::EventClearId(int id)
@@ -2150,7 +2147,7 @@ void Licq::User::EventClearId(int id)
       decNumUserEvents();
       SaveNewMessagesInfo();
 
-      gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, -id));
+      gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, -id));
       break;
     }
   }

@@ -50,7 +50,7 @@ using namespace LicqDaemon;
 LicqDaemon::Daemon LicqDaemon::gDaemon;
 
 // Declare global Licq::Daemon to refer to the internal Daemon
-Licq::Daemon* Licq::gDaemon(&LicqDaemon::gDaemon);
+Licq::Daemon& Licq::gDaemon(LicqDaemon::gDaemon);
 
 Daemon::Daemon()
 {

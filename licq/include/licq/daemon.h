@@ -132,7 +132,7 @@ protected:
   std::string myProxyPasswd;
 };
 
-extern Daemon* gDaemon;
+extern Daemon& gDaemon;
 
 } // namespace Licq
 

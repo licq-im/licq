@@ -79,7 +79,7 @@ void UserManager::addOwner(const UserId& userId)
   myOwners[userId.protocolId()] = o;
   myOwnerListMutex.unlockWrite();
 
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
       LIST_OWNER_ADDED, userId));
 }
 
@@ -300,7 +300,7 @@ bool UserManager::addUser(const UserId& uid,
 
   // Notify plugins that user was added
   // Send this before adding user to server side as protocol code may generate updated signals
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, uid, groupId));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, uid, groupId));
 
   // Add user to server side list
   if (permanent && addToServer)
@@ -374,7 +374,7 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
   delete u;
 
   // Notify plugins about the removed user
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, userId));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, userId));
 }
 
 // Need to call CICQDaemon::SaveConf() after this
@@ -399,7 +399,7 @@ void UserManager::RemoveOwner(unsigned long ppid)
   o->Unlock();
   delete o;
 
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
         LIST_OWNER_REMOVED, id));
 }
 
@@ -449,7 +449,7 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
       myUsers[userId] = user;
 
       // Notify plugins that we added user to list
-      gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId));
+      gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId));
 
       if (retWasAdded != NULL)
         *retWasAdded = true;
@@ -535,7 +535,7 @@ unsigned long UserManager::icqOwnerUin()
 
 void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSignal)
 {
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, subSignal, userId));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, subSignal, userId));
 }
 
 Group* UserManager::fetchGroup(int group, bool writeLock)
@@ -599,17 +599,14 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
     DropOwner(icqOwner);
   }
 
-  if (gDaemon != NULL)
-  {
-    if (icqGroupId == 0 && icqOnline)
-      gLicqDaemon->icqAddGroup(name.c_str());
-    else
-      gLog.Info(tr("%sAdded group %s (%u) to list from server.\n"),
-          L_SRVxSTR, name.c_str(), icqGroupId);
+  if (icqGroupId == 0 && icqOnline)
+    gLicqDaemon->icqAddGroup(name.c_str());
+  else
+    gLog.Info(tr("%sAdded group %s (%u) to list from server.\n"),
+        L_SRVxSTR, name.c_str(), icqGroupId);
 
-    // Send signal to let plugins know of the new group
-    gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_ADDED, UserId(), gid));
-  }
+  // Send signal to let plugins know of the new group
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_ADDED, UserId(), gid));
 
   return gid;
 }
@@ -660,10 +657,10 @@ void UserManager::RemoveGroup(int groupId)
   myGroupListMutex.unlockWrite();
 
   // Send signal to let plugins know of the removed group
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REMOVED, UserId(), groupId));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REMOVED, UserId(), groupId));
 
   // Send signal to let plugins know that sorting indexes may have changed
-  gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED));
 }
 
 void UserManager::ModifyGroupSorting(int groupId, int newIndex)
@@ -702,8 +699,7 @@ void UserManager::ModifyGroupSorting(int groupId, int newIndex)
   myGroupListMutex.unlockRead();
 
   // Send signal to let plugins know that sorting indexes have changed
-  if (gDaemon != NULL)
-    gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED));
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED));
 }
 
 bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
@@ -736,15 +732,12 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
   SaveGroups();
   myGroupListMutex.unlockRead();
 
-  if (gDaemon != NULL)
-  {
-    // If we rename a group on logon, don't send the rename packet
-    if (sendUpdate)
-      gLicqDaemon->icqRenameGroup(name.c_str(), icqGroupId);
+  // If we rename a group on logon, don't send the rename packet
+  if (sendUpdate)
+    gLicqDaemon->icqRenameGroup(name.c_str(), icqGroupId);
 
-    // Send signal to let plugins know the group has changed
-    gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, UserId(), groupId));
-  }
+  // Send signal to let plugins know the group has changed
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, UserId(), groupId));
 
   return true;
 }
@@ -1083,7 +1076,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
   gUserManager.DropUser(u);
 
   // Notify server
-  if (updateServer && gDaemon != NULL)
+  if (updateServer)
   {
     if (ppid == LICQ_PPID)
     {
@@ -1092,13 +1085,12 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
             ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
     else
-      gDaemon->PushProtoSignal(
+      gDaemon.PushProtoSignal(
           new LicqProtoChangeUserGroupsSignal(userId, groupNames), ppid);
   }
 
   // Notify plugins
-  if (gDaemon != NULL)
-    notifyUserUpdated(userId, USER_GROUPS);
+  notifyUserUpdated(userId, USER_GROUPS);
 }
 
 void UserManager::userStatusChanged(const UserId& userId, unsigned newStatus)

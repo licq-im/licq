@@ -701,7 +701,7 @@ CChatManager::CChatManager(unsigned long nUin,
 //-----CChatManager::StartChatServer-----------------------------------------
 bool CChatManager::StartChatServer()
 {
-  if (gDaemon->StartTCPServer(&chatServer) == -1)
+  if (gDaemon.StartTCPServer(&chatServer) == -1)
   {
     gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;
