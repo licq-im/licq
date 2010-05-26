@@ -93,7 +93,7 @@ void Jabber::processPipe(int pipe)
   {
     case PLUGIN_SIGNAL:
     {
-      LicqProtoSignal* signal = Licq::gDaemon->PopProtoSignal();
+      LicqProtoSignal* signal = Licq::gDaemon.PopProtoSignal();
       processSignal(signal);
       delete signal;
     }
@@ -238,7 +238,7 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
     event->m_pUserEvent->AddToHistory(*user, D_SENDER);
   }
 
-  Licq::gDaemon->PushPluginEvent(event);
+  Licq::gDaemon.PushPluginEvent(event);
 }
 
 void Jabber::doGetInfo(LicqProtoRequestInfo* signal)

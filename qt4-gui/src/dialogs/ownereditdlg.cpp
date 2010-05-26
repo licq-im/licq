@@ -139,7 +139,7 @@ void OwnerEditDlg::slot_ok()
   o->SetSavePassword(chkSave->isChecked());
 
   gUserManager.DropOwner(o);
-  Licq::gDaemon->SaveConf();
+  Licq::gDaemon.SaveConf();
 
   close();
 }

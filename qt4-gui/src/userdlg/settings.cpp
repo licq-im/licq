@@ -105,7 +105,7 @@ QWidget* UserPages::Settings::createPageSettings(QWidget* parent)
   myUseGpgCheck = new QCheckBox(tr("Use GPG encryption"));
   myUseGpgCheck->setToolTip(tr("Use GPG encryption for messages with this contact."));
   mySettingsLayout->addWidget(myUseGpgCheck, 3, 1);
-  if (!Licq::gDaemon->haveGpgSupport())
+  if (!Licq::gDaemon.haveGpgSupport())
     myUseGpgCheck->setVisible(false);
 
   myUseRealIpCheck = new QCheckBox(tr("Use real ip (LAN)"));

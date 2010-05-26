@@ -260,7 +260,7 @@ void CLicqConsole::MenuHelp(char *_szArg)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuQuit(char *)
 {
-  Licq::gDaemon->Shutdown();
+  Licq::gDaemon.Shutdown();
 }
 
 

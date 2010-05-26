@@ -204,9 +204,9 @@ int CLicqRMS::Run()
 
   server = new TCPSocket();
 
-  if (Licq::gDaemon->tcpPortsLow() != 0 && nPort == 0)
+  if (Licq::gDaemon.tcpPortsLow() != 0 && nPort == 0)
   {
-    if (!Licq::gDaemon->StartTCPServer(server))
+    if (!Licq::gDaemon.StartTCPServer(server))
       return 1;
   }
   else
@@ -294,14 +294,14 @@ void CLicqRMS::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-      LicqSignal* s = Licq::gDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon.popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
   case 'E':  // An event is pending (should never happen)
   {
-      LicqEvent* e = Licq::gDaemon->PopPluginEvent();
+      LicqEvent* e = Licq::gDaemon.PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -884,7 +884,7 @@ int CRMSClient::Process_QUIT()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_TERM()
 {
-  Licq::gDaemon->Shutdown();
+  Licq::gDaemon.Shutdown();
   return -1;
 }
 

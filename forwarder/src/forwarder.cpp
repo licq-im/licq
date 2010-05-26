@@ -183,14 +183,14 @@ void CLicqForwarder::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-      LicqSignal* s = Licq::gDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon.popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
   case 'E':  // An event is pending (should never happen)
   {
-      LicqEvent* e = Licq::gDaemon->PopPluginEvent();
+      LicqEvent* e = Licq::gDaemon.PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }

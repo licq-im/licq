@@ -57,7 +57,7 @@ void Handler::onConnect()
   gUserManager.ownerStatusChanged(JABBER_PPID, myStatus);
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0, UserId() , JABBER_PPID);
-  Licq::gDaemon->pushPluginSignal(result);
+  Licq::gDaemon.pushPluginSignal(result);
 }
 
 void Handler::onChangeStatus(unsigned status)
@@ -82,7 +82,7 @@ void Handler::onDisconnect()
 
   LicqSignal* result = new LicqSignal(SIGNAL_LOGOFF, 0,
       gUserManager.ownerUserId(JABBER_PPID));
-  Licq::gDaemon->pushPluginSignal(result);
+  Licq::gDaemon.pushPluginSignal(result);
 }
 
 void Handler::onUserAdded(const std::string& id,
@@ -123,8 +123,8 @@ void Handler::onUserAdded(const std::string& id,
   // Remove this line when SetGroups call above saves contact groups itself.
   user->SaveLicqInfo();
 
-  Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, userId));
-  Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, userId));
+  Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, userId));
+  Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, userId));
 }
 
 void Handler::onUserRemoved(const std::string& id)

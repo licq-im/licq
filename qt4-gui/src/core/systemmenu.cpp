@@ -200,7 +200,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
   myPluginManagerAction = addAction(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
   myKeyManagerAction = addAction(tr("GPG &Key Manager..."), this, SLOT(showGPGKeyManager()));
-  if (!Licq::gDaemon->haveGpgSupport())
+  if (!Licq::gDaemon.haveGpgSupport())
     myKeyManagerAction->setVisible(false);
   addSeparator();
   mySaveOptionsAction = addAction(tr("Sa&ve Settings"), gLicqGui, SLOT(saveConfig()));

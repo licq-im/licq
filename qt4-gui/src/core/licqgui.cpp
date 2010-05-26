@@ -363,7 +363,7 @@ void LicqGui::loadFloatiesConfig()
 void LicqGui::saveConfig()
 {
   // Tell the daemon to save its options
-  Licq::gDaemon->SaveConf();
+  Licq::gDaemon.SaveConf();
 
   // Save all our options
   Licq::IniFile guiConf(QTGUI_CONFIGFILE);

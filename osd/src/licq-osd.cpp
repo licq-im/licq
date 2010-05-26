@@ -327,7 +327,7 @@ int LP_Main()
 	case 'S':  // A signal is pending
 	    {
 		// read the actual signal from the daemon
-        LicqSignal* s = Licq::gDaemon->popPluginSignal();
+        LicqSignal* s = Licq::gDaemon.popPluginSignal();
 		if (s)
 		{
 		    ProcessSignal(s);
@@ -343,7 +343,7 @@ int LP_Main()
 	case 'E':
 	    {
 		gLog.Warn("%sEvent received - should not happen in this plugin\n", L_WARNxSTR);
-        LicqEvent* e = Licq::gDaemon->PopPluginEvent();
+        LicqEvent* e = Licq::gDaemon.PopPluginEvent();
 		if (e)
 		{
 		    delete e;

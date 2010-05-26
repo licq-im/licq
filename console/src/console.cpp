@@ -485,14 +485,14 @@ void CLicqConsole::ProcessPipe()
   {
   case 'S':  // A signal is pending
     {
-      LicqSignal* s = Licq::gDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon.popPluginSignal();
       ProcessSignal(s);
       break;
     }
 
   case 'E':  // An event is pending
     {
-      LicqEvent* e = Licq::gDaemon->PopPluginEvent();
+      LicqEvent* e = Licq::gDaemon.PopPluginEvent();
       ProcessEvent(e);
       break;
     }
@@ -3069,7 +3069,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             owner->setPassword(data->szPassword1);
             gUserManager.DropOwner(owner);
-            Licq::gDaemon->SaveConf();
+            Licq::gDaemon.SaveConf();
 
             winMain->wprintf("Save password? (y/N) ");
             winMain->state = STATE_QUERY;

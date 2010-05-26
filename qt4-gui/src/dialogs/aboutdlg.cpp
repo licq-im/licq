@@ -66,7 +66,7 @@ AboutDlg::AboutDlg(QWidget* parent)
       "</table>"
     )
     .arg(tr("Version"))
-    .arg(Licq::gDaemon->Version())
+    .arg(Licq::gDaemon.Version())
     .arg(CICQDaemon::CryptoEnabled() ? "/SSL" : "")
     .arg(PLUGIN_VERSION_STRING)
 #ifdef USE_KDE

@@ -1020,7 +1020,7 @@ void MainWindow::showAwayMsgDlg()
 
 void MainWindow::slot_shutdown()
 {
-  Licq::gDaemon->Shutdown();
+  Licq::gDaemon.Shutdown();
 }
 
 void MainWindow::slot_logon()

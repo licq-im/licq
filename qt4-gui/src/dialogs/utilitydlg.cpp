@@ -208,7 +208,7 @@ void UtilityDlg::slot_run()
     }
     case Utility::WinTerm:
     {
-      QString szCmd = Licq::gDaemon->terminal().c_str();
+      QString szCmd = Licq::gDaemon.terminal().c_str();
       szCmd.append(" ").append(cmd).append(" &");
       nSystemResult = system(szCmd.toLocal8Bit());
       break;

@@ -223,14 +223,14 @@ void SignalManager::process()
   {
     case 'S':  // A signal is pending
     {
-      LicqSignal* s = Licq::gDaemon->popPluginSignal();
+      LicqSignal* s = Licq::gDaemon.popPluginSignal();
       ProcessSignal(s);
       break;
     }
 
     case 'E':  // An event is pending
     {
-      ICQEvent* e = Licq::gDaemon->PopPluginEvent();
+      ICQEvent* e = Licq::gDaemon.PopPluginEvent();
       ProcessEvent(e);
       break;
     }

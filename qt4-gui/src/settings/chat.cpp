@@ -570,8 +570,8 @@ void Settings::Chat::load()
   }
   myShowAllEncodingsCheck->setChecked(chatConfig->showAllEncodings());
 
-  myTerminalEdit->setText(Licq::gDaemon->terminal().empty() ?
-      tr("none") : QString(Licq::gDaemon->terminal().c_str()));
+  myTerminalEdit->setText(Licq::gDaemon.terminal().empty() ?
+      tr("none") : QString(Licq::gDaemon.terminal().c_str()));
 
   updatePreviews();
 }
@@ -623,7 +623,7 @@ void Settings::Chat::apply()
 
   gLicqDaemon->SetSendTypingNotification(mySendTNCheck->isChecked());
 
-  Licq::gDaemon->setTerminal(myTerminalEdit->text().toLocal8Bit().data());
+  Licq::gDaemon.setTerminal(myTerminalEdit->text().toLocal8Bit().data());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
     gUserManager.setDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()).data());

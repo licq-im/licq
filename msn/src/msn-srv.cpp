@@ -186,7 +186,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
         }
         u->setUserInfoString("Email1", strUser);
         string strURL = "http://members.msn.com/"+strUser;
@@ -194,7 +194,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         u->SetNewUser(false);
         u->SetEnableSave(true);
         u->SaveLicqInfo();
-        Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
+        Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
       }
     }
     else if (strCmd == "LSG")
@@ -237,7 +237,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
             string strDecodedNick = Decode(strNick);
             u->setAlias(strDecodedNick);
           }
-          Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
         }
       }
     }
@@ -322,7 +322,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
         }
 
 	// Get the display picture here, so it can be shown with the notify
@@ -460,7 +460,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           gLog.Error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
           pStart = *it;
           pStart->m_pEvent->m_eResult = EVENT_FAILED;
-          Licq::gDaemon->PushPluginEvent(pStart->m_pEvent);
+          Licq::gDaemon.PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
           break; 
         }

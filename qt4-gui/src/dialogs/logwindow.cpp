@@ -95,7 +95,7 @@ LogWindow::LogWindow(QWidget* parent)
   adjustSize();
 
   myLogSink.reset(new PluginLogSink());
-  Licq::gDaemon->getLogService().registerLogSink(myLogSink);
+  Licq::gDaemon.getLogService().registerLogSink(myLogSink);
 
   sn = new QSocketNotifier(myLogSink->getReadPipe(), QSocketNotifier::Read, this);
   connect(sn, SIGNAL(activated(int)), SLOT(log(int)));
@@ -103,7 +103,7 @@ LogWindow::LogWindow(QWidget* parent)
 
 LogWindow::~LogWindow()
 {
-  Licq::gDaemon->getLogService().unregisterLogSink(myLogSink);  
+  Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
 }
 
 void LogWindow::log(int /*fd*/)

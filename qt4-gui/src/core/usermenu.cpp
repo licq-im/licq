@@ -106,7 +106,7 @@ UserMenu::UserMenu(QWidget* parent)
   ADD_MISCMODE(tr("Auto Accept Chats"), ModeAutoChatAccept)
   ADD_MISCMODE(tr("Auto Request Secure"), ModeAutoSecure)
   ADD_MISCMODE(tr("Use GPG Encryption"), ModeUseGpg)
-  if (!Licq::gDaemon->haveGpgSupport())
+  if (!Licq::gDaemon.haveGpgSupport())
     a->setVisible(false);
   ADD_MISCMODE(tr("Use Real Ip (LAN)"), ModeUseRealIp)
   myMiscModesMenu->addSeparator();
@@ -171,7 +171,7 @@ UserMenu::UserMenu(QWidget* parent)
   myRemoveUserAction = addAction(tr("Remove From List"), this, SLOT(removeContact()));
   addSeparator();
   mySetKeyAction = addAction(tr("Set GPG key"), this, SLOT(selectKey()));
-  if (!Licq::gDaemon->haveGpgSupport())
+  if (!Licq::gDaemon.haveGpgSupport())
     mySetKeyAction->setVisible(false);
   myCopyIdAction = addAction(tr("&Copy User ID"), this, SLOT(copyIdToClipboard()));
   myViewHistoryAction = addAction(tr("View &History"), this, SLOT(viewHistory()));

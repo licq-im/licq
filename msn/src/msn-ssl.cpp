@@ -110,7 +110,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   else if (strFirstLine == "HTTP/1.1 401 Unauthorized")
   {
     gLog.Error("%sInvalid password.\n", L_MSNxSTR);
-    Licq::gDaemon->pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, UserId(m_szUserName, MSN_PPID)));
+    Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, UserId(m_szUserName, MSN_PPID)));
   }
   else
   {

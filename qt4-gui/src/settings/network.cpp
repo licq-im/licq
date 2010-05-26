@@ -37,7 +37,6 @@
 
 #include "settingsdlg.h"
 
-using Licq::gDaemon;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Network */
 
@@ -238,12 +237,12 @@ void Settings::Network::useProxyToggled(bool useProxy)
 void Settings::Network::load()
 {
   myIcqServerEdit->setText(QString(gLicqDaemon->icqServer().c_str()));
-  myFirewallCheck->setChecked(gDaemon->behindFirewall());
-  myTcpEnabledCheck->setChecked(gDaemon->tcpEnabled());
-  myPortLowSpin->setValue(gDaemon->tcpPortsLow());
-  myPortHighSpin->setValue(gDaemon->tcpPortsHigh());
+  myFirewallCheck->setChecked(Licq::gDaemon.behindFirewall());
+  myTcpEnabledCheck->setChecked(Licq::gDaemon.tcpEnabled());
+  myPortLowSpin->setValue(Licq::gDaemon.tcpPortsLow());
+  myPortHighSpin->setValue(Licq::gDaemon.tcpPortsHigh());
 
-  if (!gDaemon->behindFirewall())
+  if (!Licq::gDaemon.behindFirewall())
   {
     myTcpEnabledCheck->setEnabled(false);
     myPortLowSpin->setEnabled(false);
@@ -251,20 +250,20 @@ void Settings::Network::load()
   }
   else
   {
-    if (!gDaemon->tcpEnabled())
+    if (!Licq::gDaemon.tcpEnabled())
     {
       myPortLowSpin->setEnabled(false);
       myPortHighSpin->setEnabled(false);
     }
   }
 
-  myProxyEnabledCheck->setChecked(Licq::gDaemon->proxyEnabled());
-  myProxyTypeCombo->setCurrentIndex(Licq::gDaemon->proxyType() - 1);
-  myProxyHostEdit->setText(Licq::gDaemon->proxyHost().c_str());
-  myProxyPortSpin->setValue(Licq::gDaemon->proxyPort());
-  myProxyAuthEnabledCheck->setChecked(Licq::gDaemon->proxyAuthEnabled());
-  myProxyLoginEdit->setText(Licq::gDaemon->proxyLogin().c_str());
-  myProxyPasswdEdit->setText(Licq::gDaemon->proxyPasswd().c_str());
+  myProxyEnabledCheck->setChecked(Licq::gDaemon.proxyEnabled());
+  myProxyTypeCombo->setCurrentIndex(Licq::gDaemon.proxyType() - 1);
+  myProxyHostEdit->setText(Licq::gDaemon.proxyHost().c_str());
+  myProxyPortSpin->setValue(Licq::gDaemon.proxyPort());
+  myProxyAuthEnabledCheck->setChecked(Licq::gDaemon.proxyAuthEnabled());
+  myProxyLoginEdit->setText(Licq::gDaemon.proxyLogin().c_str());
+  myProxyPasswdEdit->setText(Licq::gDaemon.proxyPasswd().c_str());
 
   // Set server port after myProxyEnabledCheck as it will trigger useProxyToggled
   // which overwrites server port field.
@@ -272,7 +271,7 @@ void Settings::Network::load()
 
   myReconnectAfterUinClashCheck->setChecked(gLicqDaemon->ReconnectAfterUinClash());
 
-  if (!Licq::gDaemon->proxyEnabled())
+  if (!Licq::gDaemon.proxyEnabled())
   {
     myProxyTypeCombo->setEnabled(false);
     myProxyHostEdit->setEnabled(false);
@@ -280,7 +279,7 @@ void Settings::Network::load()
     myProxyAuthEnabledCheck->setEnabled(false);
     myProxyLoginEdit->setEnabled(false);
     myProxyPasswdEdit->setEnabled(false);
-  } else if (!Licq::gDaemon->proxyAuthEnabled())
+  } else if (!Licq::gDaemon.proxyAuthEnabled())
   {
     myProxyLoginEdit->setEnabled(false);
     myProxyPasswdEdit->setEnabled(false);
@@ -291,16 +290,16 @@ void Settings::Network::apply()
 {
   gLicqDaemon->setIcqServer(myIcqServerEdit->text().toLocal8Bit().data());
   gLicqDaemon->setIcqServerPort(myIcqServerPortSpin->value());
-  Licq::gDaemon->setTcpPorts(myPortLowSpin->value(), myPortHighSpin->value());
-  Licq::gDaemon->setTcpEnabled(myTcpEnabledCheck->isChecked());
-  Licq::gDaemon->setBehindFirewall(myFirewallCheck->isChecked());
-  Licq::gDaemon->setProxyEnabled(myProxyEnabledCheck->isChecked());
-  Licq::gDaemon->setProxyType(myProxyTypeCombo->currentIndex() + 1);
-  Licq::gDaemon->setProxyHost(myProxyHostEdit->text().toLocal8Bit().data());
-  Licq::gDaemon->setProxyPort(myProxyPortSpin->value());
-  Licq::gDaemon->setProxyAuthEnabled(myProxyAuthEnabledCheck->isChecked());
-  Licq::gDaemon->setProxyLogin(myProxyLoginEdit->text().toLocal8Bit().data());
-  Licq::gDaemon->setProxyPasswd(myProxyPasswdEdit->text().toLocal8Bit().data());
+  Licq::gDaemon.setTcpPorts(myPortLowSpin->value(), myPortHighSpin->value());
+  Licq::gDaemon.setTcpEnabled(myTcpEnabledCheck->isChecked());
+  Licq::gDaemon.setBehindFirewall(myFirewallCheck->isChecked());
+  Licq::gDaemon.setProxyEnabled(myProxyEnabledCheck->isChecked());
+  Licq::gDaemon.setProxyType(myProxyTypeCombo->currentIndex() + 1);
+  Licq::gDaemon.setProxyHost(myProxyHostEdit->text().toLocal8Bit().data());
+  Licq::gDaemon.setProxyPort(myProxyPortSpin->value());
+  Licq::gDaemon.setProxyAuthEnabled(myProxyAuthEnabledCheck->isChecked());
+  Licq::gDaemon.setProxyLogin(myProxyLoginEdit->text().toLocal8Bit().data());
+  Licq::gDaemon.setProxyPasswd(myProxyPasswdEdit->text().toLocal8Bit().data());
 
   gLicqDaemon->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
 }
