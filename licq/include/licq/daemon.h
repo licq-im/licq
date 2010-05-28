@@ -21,6 +21,7 @@
 #define LICQ_DAEMON_H
 
 #include <boost/noncopyable.hpp>
+#include <pthread.h>
 #include <string>
 
 class CUserEvent;
