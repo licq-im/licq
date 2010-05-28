@@ -3,26 +3,22 @@ ICQ.H
 header file containing all the main procedures to interface with the ICQ server at mirabilis
 */
 
-#ifndef ICQD_H
-#define ICQD_H
+#ifndef LICQ_ICQD_H
+#define LICQ_ICQD_H
 
-#include <vector>
+#include <boost/noncopyable.hpp>
+#include <boost/shared_array.hpp>
 #include <list>
 #include <map>
 #include <string>
-
-#include <boost/shared_array.hpp>
 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
 #include "licq/userid.h"
 
 class CPacketTcp;
-class CLicq;
-class CICQEventTag;
 class CICQColor;
 class TCPSocket;
-class SrvSocket;
 class INetSocket;
 class ProxyServer;
 class COscarService;
@@ -34,6 +30,7 @@ typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class IniFile;
 class Packet;
+class User;
 }
 
 // To keep old code working
@@ -44,21 +41,8 @@ typedef Licq::Packet CPacket;
 namespace LicqDaemon
 {
 class ProtocolManager;
-class User;
 class UserManager;
 }
-
-// Define for marking functions as deprecated
-#ifndef LICQ_DEPRECATED
-# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
-#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
-# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
-#  define LICQ_DEPRECATED __declspec(deprecated)
-# else
-#  define LICQ_DEPRECATED
-# endif
-#endif
-
 
 /* Forward declarations for friend functions */
 void *Ping_tep(void *p);
@@ -102,7 +86,7 @@ typedef ContactUserList::iterator ContactUserListIter;
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
-class CICQDaemon
+class CICQDaemon : private boost::noncopyable
 {
 public:
   CICQDaemon();
@@ -490,15 +474,11 @@ protected:
   friend void *OscarServiceSendQueue_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend void *ConnectToServer_tep(void *s);
-  friend class LicqDaemon::User;
-  friend class Licq::User;
-  friend class CSocketManager;
   friend class COscarService;
   friend class CChatManager;
   friend class CFileTransferManager;
   friend class LicqDaemon::ProtocolManager;
   friend class LicqDaemon::UserManager;
-  friend class CLicq;
 };
 
 // Global pointer
@@ -531,7 +511,4 @@ public:
   bool bFinished;
 };
 
-
-
 #endif
-
