@@ -21,7 +21,7 @@ const char PLUGIN_EVENT                            = 'E';
 const char PLUGIN_SHUTDOWN                         = 'X';
 
 // Miscellaneous constants
-const unsigned short MAX_FILENAME_LEN              = 255;
+const unsigned short MAX_FILENAME_LEN              = 1024;
 const unsigned short MAX_HOSTNAME_LEN              = 255;
 const unsigned short MAX_CMD_LEN                   = 1024;
 const unsigned short MAX_DATA_LEN                  = 1024;
