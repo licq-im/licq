@@ -1,5 +1,5 @@
-#ifndef OSCARSERVICE_H
-#define OSCARSERVICE_H
+#ifndef LICQDAEMON_ICQ_OSCARSERVICE_H
+#define LICQDAEMON_ICQ_OSCARSERVICE_H
 
 #include <list>
 #include <pthread.h>

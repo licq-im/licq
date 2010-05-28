@@ -26,23 +26,17 @@ set(licq_SRCS
   fifo.cpp
   gpghelper.cpp
   hebrev.c
-  icqcodes.c
   icqcolor.cpp
   icqd-chat.cpp
-  icqd.cpp
   icqd-filetransfer.cpp
-  icqd-srv.cpp
-  icqd-tcp.cpp
   icqd-threads.cpp
   icqevent.cpp
-  icqpacket.cpp
   licq.cpp
   log.cpp
   main.cpp
   md5.cpp
   message.cpp
   oneventmanager.cpp
-  oscarservice.cpp
   packet.cpp
   protocolmanager.cpp
   proxy.cpp
@@ -60,6 +54,13 @@ set(licq_SRCS
   contactlist/user.cpp
   contactlist/userhistory.cpp
   contactlist/usermanager.cpp
+
+  icq/icq.cpp
+  icq/icq-srv.cpp
+  icq/icq-tcp.cpp
+  icq/codes.c
+  icq/packet.cpp
+  icq/oscarservice.cpp
 
   logging/logservice.cpp
   logging/streamlogsink.cpp

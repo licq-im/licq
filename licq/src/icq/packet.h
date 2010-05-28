@@ -1,5 +1,5 @@
-#ifndef LICQDAEMON_ICQPACKET_H
-#define LICQDAEMON_ICQPACKET_H
+#ifndef LICQDAEMON_ICQ_PACKET_H
+#define LICQDAEMON_ICQ_PACKET_H
 
 #include <list>
 #include <map>

@@ -31,11 +31,11 @@
 #include "licq_color.h"
 #include "licq/version.h"
 
-#include "contactlist/group.h"
-#include "contactlist/usermanager.h"
-#include "gettext.h"
-#include "icqpacket.h"
-#include "support.h"
+#include "../contactlist/group.h"
+#include "../contactlist/usermanager.h"
+#include "../gettext.h"
+#include "../support.h"
+#include "packet.h"
 
 using namespace std;
 using Licq::Group;

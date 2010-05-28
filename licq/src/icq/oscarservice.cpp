@@ -26,10 +26,10 @@
 #include "licq_log.h"
 #include <licq_user.h>
 
-#include "daemon.h"
-#include "gettext.h"
-#include "icqpacket.h"
-#include "support.h"
+#include "../daemon.h"
+#include "../gettext.h"
+#include "../support.h"
+#include "packet.h"
 
 using namespace std;
 using Licq::Buffer;

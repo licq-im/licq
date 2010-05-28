@@ -17,20 +17,19 @@
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include "licq_icq.h"
+#include "licq_icqd.h"
 #include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"
 #include <licq_proxy.h>
 #include "licq_translate.h"
 
-#include "contactlist/user.h"
-#include "daemon.h"
-#include "gettext.h"
-#include "icqpacket.h"
+#include "../contactlist/user.h"
+#include "../daemon.h"
+#include "../gettext.h"
+#include "../support.h"
 #include "oscarservice.h"
-#include "support.h"
-
-#include "licq_icqd.h"
+#include "packet.h"
 
 using namespace std;
 using namespace LicqDaemon;

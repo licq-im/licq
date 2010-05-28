@@ -29,7 +29,7 @@
 #include "licq_user.h"
 #include <licq/daemon.h>
 
-#include "icqpacket.h"
+#include "icq/packet.h"
 #include "support.h"
 
 #define DEBUG_THREADS(x)

@@ -21,9 +21,6 @@
 
 #include <boost/scoped_array.hpp>
 
-// Localization
-#include "gettext.h"
-
 #include "licq/byteorder.h"
 #include <licq/oneventmanager.h>
 #include <licq/statistics.h>
@@ -35,16 +32,17 @@
 #include "licq_log.h"
 #include "licq_chat.h"
 #include "licq_filetransfer.h"
-#include "support.h"
 #include "licq_message.h"
 #include "licq_proxy.h"
 #include "licq/version.h"
 
-#include "contactlist/owner.h"
-#include "contactlist/user.h"
-#include "daemon.h"
-#include "icqpacket.h"
+#include "../contactlist/owner.h"
+#include "../contactlist/user.h"
+#include "../daemon.h"
+#include "../gettext.h"
+#include "../support.h"
 #include "oscarservice.h"
+#include "packet.h"
 
 using namespace std;
 using Licq::OnEventManager;

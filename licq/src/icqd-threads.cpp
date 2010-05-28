@@ -22,8 +22,8 @@
 
 #include "daemon.h"
 #include "fifo.h"
+#include "icq/oscarservice.h"
 #include "licq.h"
-#include "oscarservice.h"
 #include "statistics.h"
 
 // Localization
