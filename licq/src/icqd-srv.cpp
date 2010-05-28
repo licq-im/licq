@@ -50,6 +50,7 @@ using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
 using Licq::gOnEventManager;
+using LicqDaemon::Daemon;
 using LicqDaemon::Owner;
 using LicqDaemon::User;
 using LicqDaemon::gDaemon;
@@ -1001,7 +1002,7 @@ void CICQDaemon::icqUpdateContactList()
 //-----icqTypingNotification---------------------------------------------------
 void CICQDaemon::icqTypingNotification(const char *_szId, bool _bActive)
 {
-  if (m_bSendTN)
+  if (gDaemon.sendTypingNotification())
   {
     CSrvPacketTcp *p = new CPU_TypingNotification(_szId, _bActive);
     SendEvent_Server(p);
@@ -2755,10 +2756,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       szMessage[nMsgLen] = '\0';
       
       bool ignore = false;
+          char* szMsg;
       // Get the user and allow adding unless we ignore new users
-          LicqUser* u = gUserManager.fetchUser(userId, LOCK_W, !Ignore(IGNORE_NEWUSERS));
-      if (u == NULL)
-      {
+          {
+            Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
+            if (!u.isLocked())
+            {
           gLog.Info(tr("%sMessage from new user (%s), ignoring.\n"), L_SBLANKxSTR, szId);
           //TODO
           ignore = true;
@@ -2775,12 +2778,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         szMessage = szTmpMsg;
       }
 
-      char* szMsg = gTranslator.RNToN(szMessage);
+            szMsg = gTranslator.RNToN(szMessage);
       delete [] szMessage;
 
           // Unlock user mutex before parsing message so we don't block other threads
           //   for a long time since parser may blocks to prompt for GPG passphrase.
-          gUserManager.DropUser(u);
+          }
 
       // now send the message to the user
       CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
@@ -2792,13 +2795,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             break;
       }
 
-          u = gUserManager.fetchUser(userId, LOCK_W, !Ignore(IGNORE_NEWUSERS));
+          Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
           u->setIsTyping(false);
 
-          if (gDaemon.addUserEvent(u, e))
-            gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
+          if (gDaemon.addUserEvent(*u, e))
+            gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
           gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
-      gUserManager.DropUser(u);
       break;
     }
     case 2: // OSCAR's "Add ICBM parameter" message
@@ -3345,9 +3347,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_CONTACTxLIST:
 	  {
                 // Get the user and allow adding unless we ignore new users
-                LicqUser* u = gUserManager.fetchUser(userId, LOCK_W, !Ignore(IGNORE_NEWUSERS));
-	    if (u == NULL)
-	    {
+                Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
+                if (!u.isLocked())
+                {
           gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SBLANKxSTR, szType, szId);
 
           if (szType) free(szType);
@@ -3363,10 +3365,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                 u->setIsTyping(false);
 
 	    if (szType) free(szType);
-                if (gDaemon.addUserEvent(u, eEvent))
-                  gOnEventManager.performOnEvent(onEventType, u);
+                if (gDaemon.addUserEvent(*u, eEvent))
+                  gOnEventManager.performOnEvent(onEventType, *u);
                 gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
-	    gUserManager.DropUser(u);
             break;
 	  }
 	  case ICQ_CMDxSUB_AUTHxREQUEST:
@@ -4575,8 +4576,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_CONTACTxLIST:
 	  {
                 // Get the user and allow adding unless we ignore new users
-                LicqUser* u = gUserManager.fetchUser(userId, LOCK_W, !Ignore(IGNORE_NEWUSERS));
-                if (u == NULL)
+                Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
+                if (!u.isLocked())
                 {
                     gLog.Info(tr("%sOffline %s from new user (%s), ignoring.\n"),
                         L_SBLANKxSTR, szType, id);
@@ -4589,9 +4590,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                       L_SBLANKxSTR, szType, u->GetAlias(), id);
 
             if (szType) free(szType);
-                if (gDaemon.addUserEvent(u, eEvent))
-                  gOnEventManager.performOnEvent(onEventType, u);
-    	    gUserManager.DropUser(u);
+                if (gDaemon.addUserEvent(*u, eEvent))
+                  gOnEventManager.performOnEvent(onEventType, *u);
 	    break;
 	  }
 	  case ICQ_CMDxSUB_AUTHxREQUEST:

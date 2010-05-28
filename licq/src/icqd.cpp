@@ -49,7 +49,6 @@ CICQDaemon::CICQDaemon()
   gLicqDaemon = this;
 
   // Initialise the data values
-  m_nIgnoreTypes = 0;
   m_bAutoUpdateInfo = m_bAutoUpdateInfoPlugins = m_bAutoUpdateStatusPlugins
                     = true;
   m_nTCPSocketDesc = -1;
@@ -79,7 +78,6 @@ CICQDaemon::CICQDaemon()
   licqConf.get("ICQServerPort", myIcqServerPort, DEFAULT_SERVER_PORT);
 
   licqConf.get("MaxUsersPerPacket", myMaxUsersPerPacket, 100);
-  licqConf.get("IgnoreTypes", m_nIgnoreTypes, 0);
   licqConf.get("AutoUpdateInfo", m_bAutoUpdateInfo, true);
   licqConf.get("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins, true);
   licqConf.get("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins, true);
@@ -115,7 +113,6 @@ CICQDaemon::CICQDaemon()
   // Misc
   licqConf.get("UseSS", m_bUseSS, true); // server side list
   licqConf.get("UseBART", m_bUseBART, true); // server side buddy icons
-  licqConf.get("SendTypingNotification", m_bSendTN, true);
   licqConf.get("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
 
   // Pipes
@@ -205,7 +202,6 @@ void CICQDaemon::saveIcqConf(Licq::IniFile& licqConf)
   licqConf.set("ICQServerPort", myIcqServerPort);
 
   licqConf.set("MaxUsersPerPacket", myMaxUsersPerPacket);
-  licqConf.set("IgnoreTypes", m_nIgnoreTypes);
   licqConf.set("AutoUpdateInfo", m_bAutoUpdateInfo);
   licqConf.set("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins);
   licqConf.set("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
@@ -218,7 +214,6 @@ void CICQDaemon::saveIcqConf(Licq::IniFile& licqConf)
   // Misc
   licqConf.set("UseSS", m_bUseSS); // server side list
   licqConf.set("UseBART", m_bUseBART); // server side buddy icons
-  licqConf.set("SendTypingNotification", m_bSendTN);
   licqConf.set("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
 }
 
@@ -259,14 +254,6 @@ unsigned short VersionToUse(unsigned short v_in)
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-void CICQDaemon::SetIgnore(unsigned short n, bool b)
-{
-  if (b)
-    m_nIgnoreTypes |= n;
-  else
-    m_nIgnoreTypes &= ~n;
-}
 
 void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
 {
@@ -1297,7 +1284,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     {
       if (bNewUser)
       {
-        if (Ignore(IGNORE_NEWUSERS))
+        if (gDaemon.ignoreType(Licq::Daemon::IgnoreNewUsers))
         {
           gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
                     szType, u->IdString());

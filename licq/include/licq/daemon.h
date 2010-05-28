@@ -55,6 +55,14 @@ public:
    */
   bool haveGpgSupport() const;
 
+  /**
+   * Check if SSL support is enabled
+   * This function allows plugins to check at runtime if encryption is available
+   *
+   * @return True if SSL support is available in daemon
+   */
+  bool haveCryptoSupport() const;
+
   virtual LogService& getLogService() = 0;
 
   // Firewall options
@@ -85,11 +93,23 @@ public:
 
   const std::string& terminal() const           { return myTerminal; }
   void setTerminal(const std::string& s)        { myTerminal = s; }
+  bool sendTypingNotification() const           { return mySendTypingNotification; }
+  void setSendTypingNotification(bool b)        { mySendTypingNotification = b; }
 
   int StartTCPServer(TCPSocket *);
 
   virtual bool addUserEvent(User* u, CUserEvent* e) = 0;
   virtual void rejectEvent(const UserId& userId, CUserEvent* e) = 0;
+
+  enum IgnoreTypes
+  {
+    IgnoreMassMsg = 1,
+    IgnoreNewUsers = 2,
+    IgnoreEmailPager = 4,
+    IgnoreWebPanel = 8,
+  };
+  bool ignoreType(unsigned type) const          { return (myIgnoreTypes & type); }
+  void setIgnoreType(unsigned type, bool ignore);
 
   /**
    * Add a signal to the signal queues of all plugins.
@@ -120,6 +140,8 @@ protected:
 
   bool myShuttingDown;
   std::string myTerminal;
+  bool mySendTypingNotification;
+  unsigned myIgnoreTypes;
 
   // Firewall
   bool myTcpEnabled;

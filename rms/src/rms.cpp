@@ -1526,7 +1526,7 @@ int CRMSClient::Process_SECURE()
 {
   unsigned long nUin = 0;
 
-  if (!gLicqDaemon->CryptoEnabled())
+  if (!Licq::gDaemon.haveCryptoSupport())
   {
     fprintf(fs, "%d Licq secure channel not compiled. Please recompile with OpenSSL.\n", CODE_SECURExNOTCOMPILED);
     return fflush(fs);

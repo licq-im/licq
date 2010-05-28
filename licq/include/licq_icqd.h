@@ -70,11 +70,6 @@ void *ProcessRunningEvent_Server_tep(void *p);
 void *Shutdown_tep(void *p);
 void *ConnectToServer_tep(void *s);
 
-const unsigned short IGNORE_MASSMSG    = 1;
-const unsigned short IGNORE_NEWUSERS   = 2;
-const unsigned short IGNORE_EMAILPAGER = 4;
-const unsigned short IGNORE_WEBPANEL   = 8;
-
 /**
  * Internal template class for storing and processing received contact list.
  */
@@ -234,8 +229,6 @@ public:
   void InitProxy();
   ProxyServer *GetProxy() {  return m_xProxy;  }
 
-  static bool CryptoEnabled();
-
   bool AutoUpdateInfo() const                   { return m_bAutoUpdateInfo; }
   bool AutoUpdateInfoPlugins() const            { return m_bAutoUpdateInfoPlugins; }
   bool AutoUpdateStatusPlugins() const          { return m_bAutoUpdateStatusPlugins; }
@@ -244,18 +237,12 @@ public:
   void SetAutoUpdateInfoPlugins(bool b)   { m_bAutoUpdateInfoPlugins = b; }
   void SetAutoUpdateStatusPlugins(bool b) { m_bAutoUpdateStatusPlugins = b; }
 
-  // NOT MT SAFE
-  bool Ignore(unsigned short n) const           { return m_nIgnoreTypes & n; }
-  void SetIgnore(unsigned short, bool);
-
   // ICQ options
   bool UseServerContactList() const             { return m_bUseSS; }
   bool UseServerSideBuddyIcons() const          { return m_bUseBART; }
-  bool SendTypingNotification() const           { return m_bSendTN; }
 
   void SetUseServerContactList(bool b)    { m_bUseSS = b; }
   void SetUseServerSideBuddyIcons(bool b);
-  void SetSendTypingNotification(bool b)  { m_bSendTN = b; }
 
   // Misc functions
   bool ReconnectAfterUinClash() const           { return m_bReconnectAfterUinClash; }
@@ -339,8 +326,7 @@ protected:
   int pipe_newsocket[2];
   EDaemonStatus m_eStatus;
 
-  unsigned long m_nDesiredStatus,
-                m_nIgnoreTypes;
+  unsigned long m_nDesiredStatus;
   bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
   unsigned short m_nServerSequence;
   unsigned myMaxUsersPerPacket;
@@ -373,7 +359,6 @@ protected:
   // Misc
   bool m_bUseSS; // server side list
   bool m_bUseBART; // server side buddy icons
-  bool m_bSendTN; // Send typing notifications
   bool m_bReconnectAfterUinClash; // reconnect after uin has been used from another location?
 
   static std::list <CReverseConnectToUserData *> m_lReverseConnect;

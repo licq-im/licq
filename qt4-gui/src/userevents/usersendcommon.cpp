@@ -54,6 +54,7 @@
 #include <licq_translate.h>
 #include <licq_user.h>
 #include <licq/conversation.h>
+#include <licq/daemon.h>
 #include <licq/plugin.h>
 #include <licq/protocolmanager.h>
 
@@ -1521,7 +1522,7 @@ void UserSendCommon::sendTrySecure()
   bool autoSecure = false;
   if (u != NULL)
   {
-    autoSecure = (u->AutoSecure() && gLicqDaemon->CryptoEnabled() &&
+    autoSecure = (u->AutoSecure() && Licq::gDaemon.haveCryptoSupport() &&
         u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED &&
         !mySendServerCheck->isChecked() && !u->Secure());
     gUserManager.DropUser(u);

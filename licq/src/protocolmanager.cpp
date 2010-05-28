@@ -168,7 +168,7 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
 
 void ProtocolManager::sendTypingNotification(const UserId& userId, bool active, int nSocket)
 {
-  if (!gLicqDaemon->SendTypingNotification())
+  if (!gDaemon.sendTypingNotification())
     return;
 
   if (userId.protocolId() == LICQ_PPID)

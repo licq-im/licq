@@ -32,10 +32,10 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
+#include <licq_events.h>
 #include <licq_user.h>
 
 #include "contactlist/contactlist.h"
@@ -279,7 +279,7 @@ void UserPages::Settings::load(const LicqUser* user)
 
   myAutoAcceptFileCheck->setEnabled(sendFuncs & Licq::ProtocolPlugin::CanSendFile);
   myAutoAcceptChatCheck->setEnabled(sendFuncs & Licq::ProtocolPlugin::CanSendChat);
-  myAutoSecureCheck->setEnabled(gLicqDaemon->CryptoEnabled() && (sendFuncs & Licq::ProtocolPlugin::CanSendSecure));
+  myAutoSecureCheck->setEnabled(Licq::gDaemon.haveCryptoSupport() && (sendFuncs & Licq::ProtocolPlugin::CanSendSecure));
 
   myGroupsTable->clearContents();
   myGroupsTable->setRowCount(0);

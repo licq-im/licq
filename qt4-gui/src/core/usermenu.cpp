@@ -264,7 +264,7 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeAutoFileAccept]->setChecked(u->AutoFileAccept());
   myMiscModesActions[ModeAutoChatAccept]->setChecked(u->AutoChatAccept());
   myMiscModesActions[ModeAutoSecure]->setChecked(u->AutoSecure());
-  myMiscModesActions[ModeAutoSecure]->setEnabled(gLicqDaemon->CryptoEnabled());
+  myMiscModesActions[ModeAutoSecure]->setEnabled(Licq::gDaemon.haveCryptoSupport());
   myMiscModesActions[ModeUseGpg]->setChecked(u->UseGPG());
   myMiscModesActions[ModeUseRealIp]->setChecked(u->SendRealIp());
   myMiscModesActions[ModeStatusOnline]->setChecked(u->statusToUser() == User::OnlineStatus);

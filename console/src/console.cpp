@@ -3221,7 +3221,7 @@ void CLicqConsole::UserCommand_Secure(const UserId& userId, char *szStatus)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
 
-  if (!gLicqDaemon->CryptoEnabled())
+  if (!Licq::gDaemon.haveCryptoSupport())
   {
     winMain->wprintf("%CYou need to recompile Licq with OpenSSL for this "
                      "feature to work!\n", COLOR_RED);

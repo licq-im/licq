@@ -113,8 +113,10 @@ void Daemon::initialize(CLicq* _licq)
     gTranslator.setTranslationMap(temp.c_str());
   }
 
-  // Terminal
+  // Misc
   licqConf.get("Terminal", myTerminal, "xterm -T Licq -e ");
+  licqConf.get("SendTypingNotification", mySendTypingNotification, true);
+  licqConf.get("IgnoreTypes", myIgnoreTypes, 0);
 
   // Initialize the random number generator
   srand(time(NULL));
@@ -181,6 +183,8 @@ void Daemon::SaveConf()
   }
   licqConf.set("Translation", pc);
   licqConf.set("Terminal", myTerminal);
+  licqConf.set("SendTypingNotification", mySendTypingNotification);
+  licqConf.set("IgnoreTypes", myIgnoreTypes);
 
   licqConf.set("DefaultUserEncoding", gUserManager.defaultUserEncoding());
 
@@ -218,6 +222,15 @@ void Daemon::SaveConf()
 bool Licq::Daemon::haveGpgSupport() const
 {
 #ifdef HAVE_LIBGPGME
+  return true;
+#else
+  return false;
+#endif
+}
+
+bool Licq::Daemon::haveCryptoSupport() const
+{
+#ifdef USE_OPENSSL
   return true;
 #else
   return false;
@@ -280,6 +293,14 @@ void Licq::Daemon::setTcpPorts(unsigned lowPort, unsigned highPort)
   }
 }
 
+void Licq::Daemon::setIgnoreType(unsigned type, bool ignore)
+{
+  if (ignore)
+    myIgnoreTypes |= type;
+  else
+    myIgnoreTypes &= ~type;
+}
+
 ProxyServer* Licq::Daemon::createProxy()
 {
   ProxyServer *Proxy = NULL;
@@ -333,9 +354,9 @@ bool Daemon::addUserEvent(Licq::User* u, CUserEvent* e)
     e->AddToHistory(u, D_RECEIVER);
   // Don't log a user event if this user is on the ignore list
   if (u->IgnoreList() ||
-      (e->IsMultiRec() && gLicqDaemon->Ignore(IGNORE_MASSMSG)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_EMAILxPAGER && gLicqDaemon->Ignore(IGNORE_EMAILPAGER)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_WEBxPANEL && gLicqDaemon->Ignore(IGNORE_WEBPANEL)) )
+      (e->IsMultiRec() && ignoreType(IgnoreMassMsg)) ||
+      (e->SubCommand() == ICQ_CMDxSUB_EMAILxPAGER && ignoreType(IgnoreEmailPager)) ||
+      (e->SubCommand() == ICQ_CMDxSUB_WEBxPANEL && ignoreType(IgnoreWebPanel)) )
   {
     delete e;
     return false;

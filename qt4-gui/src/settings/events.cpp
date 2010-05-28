@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
+#include <licq/daemon.h>
 #include <licq/oneventmanager.h>
 #include <licq_user.h>
 
@@ -312,10 +312,10 @@ void Settings::Events::load()
   myFlashTaskbarCheck->setChecked(chatConfig->flashTaskbar());
   myNoSoundInActiveChatCheck->setChecked(chatConfig->noSoundInActiveChat());
 
-  myIgnoreNewUsersCheck->setChecked(gLicqDaemon->Ignore(IGNORE_NEWUSERS));
-  myIgnoreMassMsgCheck->setChecked(gLicqDaemon->Ignore(IGNORE_MASSMSG));
-  myIgnoreWebPanelCheck->setChecked(gLicqDaemon->Ignore(IGNORE_WEBPANEL));
-  myIgnoreEmailPagerCheck->setChecked(gLicqDaemon->Ignore(IGNORE_EMAILPAGER));
+  myIgnoreNewUsersCheck->setChecked(Licq::gDaemon.ignoreType(Licq::Daemon::IgnoreNewUsers));
+  myIgnoreMassMsgCheck->setChecked(Licq::gDaemon.ignoreType(Licq::Daemon::IgnoreMassMsg));
+  myIgnoreWebPanelCheck->setChecked(Licq::gDaemon.ignoreType(Licq::Daemon::IgnoreWebPanel));
+  myIgnoreEmailPagerCheck->setChecked(Licq::gDaemon.ignoreType(Licq::Daemon::IgnoreEmailPager));
 
   gOnEventManager.lock();
   myOnEventsCheck->setChecked(gOnEventManager.enabled());
@@ -367,10 +367,10 @@ void Settings::Events::apply()
   chatConfig->setFlashTaskbar(myFlashTaskbarCheck->isChecked());
   chatConfig->setNoSoundInActiveChat(myNoSoundInActiveChatCheck->isChecked());
 
-  gLicqDaemon->SetIgnore(IGNORE_NEWUSERS, myIgnoreNewUsersCheck->isChecked());
-  gLicqDaemon->SetIgnore(IGNORE_MASSMSG, myIgnoreMassMsgCheck->isChecked());
-  gLicqDaemon->SetIgnore(IGNORE_WEBPANEL, myIgnoreWebPanelCheck->isChecked());
-  gLicqDaemon->SetIgnore(IGNORE_EMAILPAGER, myIgnoreEmailPagerCheck->isChecked());
+  Licq::gDaemon.setIgnoreType(Licq::Daemon::IgnoreNewUsers, myIgnoreNewUsersCheck->isChecked());
+  Licq::gDaemon.setIgnoreType(Licq::Daemon::IgnoreMassMsg, myIgnoreMassMsgCheck->isChecked());
+  Licq::gDaemon.setIgnoreType(Licq::Daemon::IgnoreWebPanel, myIgnoreWebPanelCheck->isChecked());
+  Licq::gDaemon.setIgnoreType(Licq::Daemon::IgnoreEmailPager, myIgnoreEmailPagerCheck->isChecked());
 
   gOnEventManager.lock();
   gOnEventManager.setEnabled(myOnEventsCheck->isChecked());

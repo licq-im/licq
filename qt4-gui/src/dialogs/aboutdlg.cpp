@@ -67,7 +67,7 @@ AboutDlg::AboutDlg(QWidget* parent)
     )
     .arg(tr("Version"))
     .arg(Licq::gDaemon.Version())
-    .arg(CICQDaemon::CryptoEnabled() ? "/SSL" : "")
+    .arg(Licq::gDaemon.haveCryptoSupport() ? "/SSL" : "")
     .arg(PLUGIN_VERSION_STRING)
 #ifdef USE_KDE
     .arg("/KDE")

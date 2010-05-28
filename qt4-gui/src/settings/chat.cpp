@@ -34,7 +34,6 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
 #include <licq_user.h>
 #include <licq/daemon.h>
 
@@ -552,7 +551,7 @@ void Settings::Chat::load()
     myShowNoticesCheck->setChecked(false);
   }
 
-  mySendTNCheck->setChecked(gLicqDaemon->SendTypingNotification());
+  mySendTNCheck->setChecked(Licq::gDaemon.sendTypingNotification());
 
   QByteArray defaultEncoding = gUserManager.defaultUserEncoding().c_str();
   if (defaultEncoding.isEmpty())
@@ -621,7 +620,7 @@ void Settings::Chat::apply()
   chatConfig->setShowUserPicHidden(myShowUserPicHiddenCheck->isChecked());
   chatConfig->setPopupAutoResponse(myPopupAutoResponseCheck->isChecked());
 
-  gLicqDaemon->SetSendTypingNotification(mySendTNCheck->isChecked());
+  Licq::gDaemon.setSendTypingNotification(mySendTNCheck->isChecked());
 
   Licq::gDaemon.setTerminal(myTerminalEdit->text().toLocal8Bit().data());
 

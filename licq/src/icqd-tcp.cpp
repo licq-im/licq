@@ -46,6 +46,7 @@ using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
 using Licq::gOnEventManager;
+using LicqDaemon::Daemon;
 using LicqDaemon::User;
 using LicqDaemon::gDaemon;
 
@@ -1679,8 +1680,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         // Add the user to our list if they are new
         if (bNewUser)
         {
-          if (Ignore(IGNORE_NEWUSERS))
-          {
+            if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+            {
             // FIXME should log a message here or in reject event
             // FIXME should either refuse the event or have a special auto response
             // for rejected events instead of pretending to accept the user
@@ -1786,8 +1787,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         // Add the user to our list if they are new
         if (bNewUser)
         {
-          if (Ignore(IGNORE_NEWUSERS))
-          {
+            if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+            {
               gDaemon.rejectEvent(userId, e);
               break;
             }
@@ -1857,8 +1858,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         // Add the user to our list if they are new
         if (bNewUser)
         {
-          if (Ignore(IGNORE_NEWUSERS))
-          {
+            if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+            {
               gDaemon.rejectEvent(userId, e);
               break;
             }
@@ -1906,8 +1907,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         // Add the user to our list if they are new
         if (bNewUser)
         {
-          if (Ignore(IGNORE_NEWUSERS))
-          {
+            if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+            {
               gDaemon.rejectEvent(userId, e);
               break;
             }
@@ -1961,8 +1962,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         // Add the user to our list if they are new
         if (bNewUser)
         {
-          if (Ignore(IGNORE_NEWUSERS))
-          {
+            if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+            {
               gDaemon.rejectEvent(userId, e);
               break;
             }
@@ -2037,8 +2038,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 																				 filelist, theSequence, TIME_NOW, nMask);
 					if (bNewUser)
 					{
-						if (Ignore(IGNORE_NEWUSERS))
-						{
+                  if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+                  {
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
@@ -2070,8 +2071,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 																				 theSequence, TIME_NOW, nMask);
 					if (bNewUser)
 					{
-						if (Ignore(IGNORE_NEWUSERS))
-						{
+                  if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+                  {
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
@@ -2101,8 +2102,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
 					if (bNewUser)
 					{
-						if (Ignore(IGNORE_NEWUSERS))
-						{
+                  if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+                  {
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
@@ -2134,8 +2135,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
 					if (bNewUser)
 					{
-						if (Ignore(IGNORE_NEWUSERS))
-						{
+                  if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
+                  {
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
@@ -2201,7 +2202,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         // Add the user to our list if they are new
         if (bNewUser)
         {
-          if (Ignore(IGNORE_NEWUSERS))
+          if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
             break;
             gUserManager.addUser(userId, false);
           bNewUser = false;
@@ -3832,17 +3833,6 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
 
   return true;
 }
-
-
-bool CICQDaemon::CryptoEnabled()
-{
-#ifdef USE_OPENSSL
-  return true;
-#else
-  return false;
-#endif
-}
-
 
 void CICQDaemon::StupidChatLinkageFix()
 {

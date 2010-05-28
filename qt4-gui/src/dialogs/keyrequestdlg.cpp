@@ -32,6 +32,7 @@
 #include <licq_events.h>
 #include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/daemon.h>
 #include <licq/protocolmanager.h>
 
 #include "core/signalmanager.h"
@@ -65,7 +66,7 @@ KeyRequestDlg::KeyRequestDlg(const UserId& userId, QWidget* parent)
     case SECURE_CHANNEL_SUPPORTED:
       t2 = tr("The remote uses Licq %1/SSL.")
         .arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
-      if (gLicqDaemon->CryptoEnabled())
+      if (Licq::gDaemon.haveCryptoSupport())
         QTimer::singleShot(0, this, SLOT(startSend()));
       break;
 
@@ -100,7 +101,7 @@ KeyRequestDlg::KeyRequestDlg(const UserId& userId, QWidget* parent)
 
   top_lay->addWidget(buttons);
 
-  if (gLicqDaemon->CryptoEnabled())
+  if (Licq::gDaemon.haveCryptoSupport())
   {
     myOpen = !u->Secure();
     if (u->Secure())
