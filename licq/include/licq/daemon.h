@@ -136,7 +136,7 @@ public:
   LicqProtoSignal* PopProtoSignal();
 
 protected:
-  ~Daemon() { /* Empty */ }
+  virtual ~Daemon() { /* Empty */ }
 
   bool myShuttingDown;
   std::string myTerminal;
