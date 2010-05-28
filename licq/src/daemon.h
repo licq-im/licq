@@ -54,11 +54,15 @@ public:
   // From Licq::Daemon
   pthread_t* Shutdown();
   const char* Version() const;
+  void SaveConf();
   Licq::LogService& getLogService();
+  bool addUserEvent(Licq::User* u, CUserEvent* e);
+  void rejectEvent(const Licq::UserId& userId, CUserEvent* e);
 
 private:
   unsigned long myNextEventId;
   Licq::Mutex myNextEventIdMutex;
+  std::string myRejectFile;
 
   pthread_t thread_shutdown;
 

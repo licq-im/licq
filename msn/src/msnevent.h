@@ -5,6 +5,8 @@
 
 #include "msnpacket.h"
 
+class CMSN;
+
 enum ESTATE
 {
   STATE_WAITING_ACK = 0,

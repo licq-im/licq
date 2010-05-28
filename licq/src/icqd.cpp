@@ -89,11 +89,6 @@ CICQDaemon::CICQDaemon()
   licqConf.get("BackgroundColor", nColor, 0x00FFFFFF);
   CICQColor::SetDefaultBackground(nColor);
 
-  // Rejects log file
-  licqConf.get("Rejects", myRejectFile, "log.rejects");
-  if (myRejectFile == "none")
-    myRejectFile = "";
-
   // Error log file
   licqConf.get("Errors", myErrorFile, "log.errors");
   licqConf.get("ErrorTypes", myErrorTypes, L_ERROR | L_UNKNOWN);
@@ -219,7 +214,6 @@ void CICQDaemon::saveIcqConf(Licq::IniFile& licqConf)
 
   licqConf.set("Errors", myErrorFile);
   licqConf.set("ErrorTypes", myErrorTypes);
-  licqConf.set("Rejects", (myRejectFile.empty() ? "none" : myRejectFile));
 
   // Misc
   licqConf.set("UseSS", m_bUseSS); // server side list
@@ -296,49 +290,6 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
 void CICQDaemon::ChangeUserStatus(Licq::User* u, unsigned long s)
 {
   u->statusChanged(Licq::User::statusFromIcqStatus(s), s);
-}
-
-bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
-{
-  if (u->isUser())
-    e->AddToHistory(u, D_RECEIVER);
-  // Don't log a user event if this user is on the ignore list
-  if (u->IgnoreList() ||
-      (e->IsMultiRec() && Ignore(IGNORE_MASSMSG)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_EMAILxPAGER && Ignore(IGNORE_EMAILPAGER)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_WEBxPANEL && Ignore(IGNORE_WEBPANEL)) )
-  {
-    delete e;
-    return false;
-  }
-  u->EventPush(e);
-  //u->Touch();
-  Licq::gStatistics.increase(Licq::Statistics::EventsReceivedCounter);
-
-  //pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
-  return true;
-}
-
-void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
-{
-  if (myRejectFile.empty())
-    return;
-
-  string rejectFile = BASE_DIR + myRejectFile;
-  FILE *f = fopen(rejectFile.c_str(), "a");
-  if (f == NULL)
-  {
-    gLog.Warn(tr("%sUnable to open \"%s\" for writing.\n"), L_WARNxSTR, rejectFile.c_str());
-  }
-  else
-  {
-    fprintf(f, "Event from new user (%s) rejected: \n%s\n--------------------\n\n",
-        LicqUser::getUserAccountId(userId).c_str(), e->Text());
-    chmod(rejectFile.c_str(), 00600);
-    fclose(f);
-  }
-  delete e;
-  Licq::gStatistics.increase(Licq::Statistics::EventsRejectedCounter);
 }
 
 /*----------------------------------------------------------------------------
@@ -1351,7 +1302,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
           gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
                     szType, u->IdString());
           if (szType)  free(szType);
-          RejectEvent(u->id(), pEvent);
+          gDaemon.rejectEvent(u->id(), pEvent);
           u->Unlock();
           return;
         }
@@ -1367,7 +1318,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
             u->IdString());
 
-      if (AddUserEvent(u, pEvent))
+      if (gDaemon.addUserEvent(u, pEvent))
         gOnEventManager.performOnEvent(onEventType, u);
     }
     else // invalid parse or unknown event

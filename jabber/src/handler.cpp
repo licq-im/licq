@@ -27,8 +27,8 @@
 #include <licq/daemon.h>
 #include <licq/log.h>
 #include <licq/oneventmanager.h>
+#include <licq_events.h>
 #include <licq_icq.h>
-#include <licq_icqd.h>
 
 using std::string;
 using Licq::OnEventManager;
@@ -174,7 +174,7 @@ void Handler::onMessage(const std::string& from, const std::string& message)
 
   if (user.isLocked())
     user->setIsTyping(false);
-  if (gLicqDaemon->AddUserEvent(*user, event))
+  if (Licq::gDaemon.addUserEvent(*user, event))
     gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *user);
 }
 

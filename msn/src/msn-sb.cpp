@@ -27,7 +27,6 @@
 #include <list>
 #include <vector>
 
-#include <licq_icqd.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
@@ -136,7 +135,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
         if (u.isLocked())
           u->setIsTyping(false);
-        if (gLicqDaemon->AddUserEvent(*u, e))
+        if (Licq::gDaemon.addUserEvent(*u, e))
           gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
       }
       else if (strncmp(strType.c_str(), "text/x-msmsgsinvite", 19) == 0)

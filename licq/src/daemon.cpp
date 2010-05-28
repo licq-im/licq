@@ -26,14 +26,17 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <sys/stat.h> // chmod
 
 #include <licq_constants.h>
 #include <licq_events.h>
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_proxy.h>
 #include <licq_translate.h>
 #include <licq/inifile.h>
+#include <licq/statistics.h>
 #include <licq/thread/mutexlocker.h>
 
 #include "contactlist/usermanager.h"
@@ -44,6 +47,8 @@
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::User;
+using Licq::UserId;
 
 
 // Declare global Daemon (internal for daemon)
@@ -92,6 +97,11 @@ void Daemon::initialize(CLicq* _licq)
   licqConf.get("ProxyLogin", myProxyLogin, "");
   licqConf.get("ProxyPassword", myProxyPasswd, "");
 
+  // Rejects log file
+  licqConf.get("Rejects", myRejectFile, "log.rejects");
+  if (myRejectFile == "none")
+    myRejectFile = "";
+
   // Loading translation table from file
   licqConf.get("Translation", temp, "none");
   if (temp != "none")
@@ -136,7 +146,7 @@ pthread_t* Daemon::Shutdown()
   return (&thread_shutdown);
 }
 
-void Licq::Daemon::SaveConf()
+void Daemon::SaveConf()
 {
   Licq::IniFile licqConf("licq.conf");
   if (!licqConf.loadFile())
@@ -157,6 +167,8 @@ void Licq::Daemon::SaveConf()
   licqConf.set("ProxyAuthEnabled", myProxyAuthEnabled);
   licqConf.set("ProxyLogin", myProxyLogin);
   licqConf.set("ProxyPassword", myProxyPasswd);
+
+  licqConf.set("Rejects", (myRejectFile.empty() ? "none" : myRejectFile));
 
   const char* pc = gTranslator.getMapName();
   if (pc == NULL)
@@ -313,6 +325,49 @@ unsigned long Daemon::getNextEventId()
   if (++myNextEventId == 0)
     ++myNextEventId;
   return eventId;
+}
+
+bool Daemon::addUserEvent(Licq::User* u, CUserEvent* e)
+{
+  if (u->isUser())
+    e->AddToHistory(u, D_RECEIVER);
+  // Don't log a user event if this user is on the ignore list
+  if (u->IgnoreList() ||
+      (e->IsMultiRec() && gLicqDaemon->Ignore(IGNORE_MASSMSG)) ||
+      (e->SubCommand() == ICQ_CMDxSUB_EMAILxPAGER && gLicqDaemon->Ignore(IGNORE_EMAILPAGER)) ||
+      (e->SubCommand() == ICQ_CMDxSUB_WEBxPANEL && gLicqDaemon->Ignore(IGNORE_WEBPANEL)) )
+  {
+    delete e;
+    return false;
+  }
+  u->EventPush(e);
+  //u->Touch();
+  Licq::gStatistics.increase(Licq::Statistics::EventsReceivedCounter);
+
+  //pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
+  return true;
+}
+
+void Daemon::rejectEvent(const UserId& userId, CUserEvent* e)
+{
+  if (myRejectFile.empty())
+    return;
+
+  string rejectFile = BASE_DIR + myRejectFile;
+  FILE* f = fopen(rejectFile.c_str(), "a");
+  if (f == NULL)
+  {
+    gLog.Warn(tr("%sUnable to open \"%s\" for writing.\n"), L_WARNxSTR, rejectFile.c_str());
+  }
+  else
+  {
+    fprintf(f, "Event from new user (%s) rejected: \n%s\n--------------------\n\n",
+        userId.accountId().c_str(), e->Text());
+    chmod(rejectFile.c_str(), 00600);
+    fclose(f);
+  }
+  delete e;
+  Licq::gStatistics.increase(Licq::Statistics::EventsRejectedCounter);
 }
 
 void Licq::Daemon::PushPluginEvent(LicqEvent* e)

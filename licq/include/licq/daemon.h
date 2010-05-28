@@ -23,6 +23,7 @@
 #include <boost/noncopyable.hpp>
 #include <string>
 
+class CUserEvent;
 class LicqEvent;
 class LicqProtoSignal;
 class LicqSignal;
@@ -33,6 +34,7 @@ namespace Licq
 {
 
 class LogService;
+class User;
 class UserId;
 
 
@@ -41,7 +43,7 @@ class Daemon : private boost::noncopyable
 public:
   virtual pthread_t* Shutdown() = 0;
   virtual const char* Version() const = 0;
-  void SaveConf();
+  virtual void SaveConf() = 0;
 
   bool shuttingDown() const                     { return myShuttingDown; }
 
@@ -85,6 +87,9 @@ public:
   void setTerminal(const std::string& s)        { myTerminal = s; }
 
   int StartTCPServer(TCPSocket *);
+
+  virtual bool addUserEvent(User* u, CUserEvent* e) = 0;
+  virtual void rejectEvent(const UserId& userId, CUserEvent* e) = 0;
 
   /**
    * Add a signal to the signal queues of all plugins.

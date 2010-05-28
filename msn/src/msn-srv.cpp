@@ -32,7 +32,6 @@
 #include <licq/daemon.h>
 #include <licq/md5.h>
 #include <licq/oneventmanager.h>
-#include <licq_icqd.h>
 
 using namespace std;
 using Licq::OnEventManager;
@@ -219,7 +218,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
         Licq::OwnerWriteGuard o(MSN_PPID);
-        if (gLicqDaemon->AddUserEvent(*o, e))
+        if (Licq::gDaemon.addUserEvent(*o, e))
         {
           e->AddToHistory(*o, D_RECEIVER);
           gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
@@ -433,7 +432,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           szHexOut, m_nSessionStart);
 
         Licq::OwnerWriteGuard o(MSN_PPID);
-        if (gLicqDaemon->AddUserEvent(*o, pEmailAlert))
+        if (Licq::gDaemon.addUserEvent(*o, pEmailAlert))
         {
           pEmailAlert->AddToHistory(*o, D_RECEIVER);
           gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);

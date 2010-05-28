@@ -16,6 +16,7 @@ class User;
 
 namespace LicqDaemon
 {
+class Daemon;
 class UserHistory;
 }
 
@@ -112,6 +113,7 @@ protected:
    unsigned long  m_nConvoId;
 
 friend class CICQDaemon;
+  friend class LicqDaemon::Daemon;
 friend class CMSN;
 friend class Jabber;
   friend class LicqDaemon::UserHistory;

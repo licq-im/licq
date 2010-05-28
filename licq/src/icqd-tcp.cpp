@@ -1684,14 +1684,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             // FIXME should log a message here or in reject event
             // FIXME should either refuse the event or have a special auto response
             // for rejected events instead of pretending to accept the user
-              RejectEvent(userId, e);
+              gDaemon.rejectEvent(userId, e);
               break;
             }
             gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-        if (!AddUserEvent(u, e)) break;
+          if (!gDaemon.addUserEvent(u, e))
+            break;
           gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
           break;
         }
@@ -1787,14 +1788,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-              RejectEvent(userId, e);
+              gDaemon.rejectEvent(userId, e);
               break;
             }
             gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-        if (!AddUserEvent(u, e)) break;
+          if (!gDaemon.addUserEvent(u, e))
+            break;
           gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, u);
           break;
         }
@@ -1857,14 +1859,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-              RejectEvent(userId, e);
+              gDaemon.rejectEvent(userId, e);
               break;
             }
             gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-        if (!AddUserEvent(u, e)) break;
+          if (!gDaemon.addUserEvent(u, e))
+            break;
           gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
           break;
         }
@@ -1905,14 +1908,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-              RejectEvent(userId, e);
+              gDaemon.rejectEvent(userId, e);
               break;
             }
             gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-        if (!AddUserEvent(u, e)) break;
+          if (!gDaemon.addUserEvent(u, e))
+            break;
           gOnEventManager.performOnEvent(OnEventManager::OnEventChat, u);
           break;
         }
@@ -1959,14 +1963,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-              RejectEvent(userId, e);
+              gDaemon.rejectEvent(userId, e);
               break;
             }
             gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-        if (!AddUserEvent(u, e)) break;
+          if (!gDaemon.addUserEvent(u, e))
+            break;
           gOnEventManager.performOnEvent(OnEventManager::OnEventFile, u);
           break;
         }
@@ -2034,14 +2039,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					{
 						if (Ignore(IGNORE_NEWUSERS))
 						{
-                  RejectEvent(userId, e);
+                  gDaemon.rejectEvent(userId, e);
                   break;
                 }
                 gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-					if (!AddUserEvent(u, e)) break;
+                if (!gDaemon.addUserEvent(u, e))
+                  break;
                 gOnEventManager.performOnEvent(OnEventManager::OnEventFile, u);
                 break;
               }
@@ -2066,14 +2072,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					{
 						if (Ignore(IGNORE_NEWUSERS))
 						{
-                  RejectEvent(userId, e);
+                  gDaemon.rejectEvent(userId, e);
                   break;
                 }
                 gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-					if (!AddUserEvent(u, e)) break;
+                if (!gDaemon.addUserEvent(u, e))
+                  break;
                 gOnEventManager.performOnEvent(OnEventManager::OnEventChat, u);
                 break;
               }
@@ -2096,14 +2103,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					{
 						if (Ignore(IGNORE_NEWUSERS))
 						{
-                  RejectEvent(userId, e);
+                  gDaemon.rejectEvent(userId, e);
                   break;
                 }
                 gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-					if (!AddUserEvent(u, e)) break;
+                if (!gDaemon.addUserEvent(u, e))
+                  break;
                 gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, u);
                 break;
               }
@@ -2128,14 +2136,15 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					{
 						if (Ignore(IGNORE_NEWUSERS))
 						{
-                  RejectEvent(userId, e);
+                  gDaemon.rejectEvent(userId, e);
                   break;
                 }
                 gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-					if (!AddUserEvent(u, e)) break;
+                if (!gDaemon.addUserEvent(u, e))
+                  break;
                 gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
                 break;
               }

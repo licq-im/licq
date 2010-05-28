@@ -27,7 +27,6 @@ class INetSocket;
 class ProxyServer;
 class COscarService;
 class CReverseConnectToUserData;
-class CMSN;
 
 namespace Licq
 {
@@ -340,7 +339,6 @@ protected:
   int pipe_newsocket[2];
   EDaemonStatus m_eStatus;
 
-  std::string myRejectFile;
   unsigned long m_nDesiredStatus,
                 m_nIgnoreTypes;
   bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
@@ -404,8 +402,6 @@ protected:
 
   void ChangeUserStatus(Licq::User* u, unsigned long s);
 
-  bool AddUserEvent(Licq::User* user, CUserEvent* e);
-  void RejectEvent(const Licq::UserId& userId, CUserEvent* e);
   Licq::User* FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e, const char*);
   std::string FindUserByCellular(const char* cellular);
 
@@ -518,9 +514,6 @@ protected:
   friend class LicqDaemon::ProtocolManager;
   friend class LicqDaemon::UserManager;
   friend class CLicq;
-  friend class CMSN;
-  friend class Handler;
-  friend class Jabber;
 };
 
 // Global pointer
