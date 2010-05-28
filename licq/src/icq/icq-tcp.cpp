@@ -8,6 +8,8 @@
 
 #include "config.h"
 
+#include "icq.h"
+
 #include <ctime>
 #include <stdio.h>
 #include <string.h>
@@ -23,7 +25,6 @@
 #include "licq/gpghelper.h"
 #include <licq/oneventmanager.h>
 #include <licq/statistics.h>
-#include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_socket.h"
 #include "licq_user.h"

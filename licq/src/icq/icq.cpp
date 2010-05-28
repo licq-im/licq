@@ -8,6 +8,8 @@
 
 #include "config.h"
 
+#include "icq.h"
+
 #include <cassert>
 #include <cerrno>
 #include <cstdio>
@@ -17,7 +19,6 @@
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include "licq_icq.h"
-#include "licq_icqd.h"
 #include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"
@@ -42,8 +43,19 @@ pthread_cond_t  CICQDaemon::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
 
 
 CICQDaemon *gLicqDaemon = NULL;
+IcqProtocol gIcqProtocol;
 
-CICQDaemon::CICQDaemon()
+IcqProtocol::IcqProtocol()
+{
+  // Empty
+}
+
+IcqProtocol::~IcqProtocol()
+{
+  gLicqDaemon = NULL;
+}
+
+void IcqProtocol::initialize()
 {
   gLicqDaemon = this;
 
@@ -127,12 +139,7 @@ CICQDaemon::CICQDaemon()
   pthread_mutex_init(&mutex_serverack, NULL);
 }
 
-CICQDaemon::~CICQDaemon()
-{
-  gLicqDaemon = NULL;
-}
-
-bool CICQDaemon::Start()
+bool IcqProtocol::start()
 {
   int nResult = 0;
 
@@ -192,7 +199,7 @@ bool CICQDaemon::Start()
   return true;
 }
 
-void CICQDaemon::saveIcqConf(Licq::IniFile& licqConf)
+void IcqProtocol::save(Licq::IniFile& licqConf)
 {
   licqConf.setSection("network");
 

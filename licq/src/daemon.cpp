@@ -31,7 +31,6 @@
 #include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_proxy.h>
 #include <licq_translate.h>
@@ -42,6 +41,7 @@
 #include "contactlist/usermanager.h"
 #include "gettext.h"
 #include "gpghelper.h"
+#include "icq/icq.h"
 #include "licq.h"
 #include "plugins/pluginmanager.h"
 
@@ -214,7 +214,7 @@ void Daemon::SaveConf()
   }
   FOR_EACH_OWNER_END
 
-  gLicqDaemon->saveIcqConf(licqConf);
+  gIcqProtocol.save(licqConf);
 
   licqConf.writeFile();
 }

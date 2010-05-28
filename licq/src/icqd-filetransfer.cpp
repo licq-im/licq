@@ -24,11 +24,11 @@
 #include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_constants.h"
-#include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_user.h"
 #include <licq/daemon.h>
 
+#include "icq/icq.h"
 #include "icq/packet.h"
 #include "support.h"
 

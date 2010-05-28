@@ -26,7 +26,6 @@
 
 #include "licq.h"
 #include "licq_log.h"
-#include "licq_icqd.h"
 #include "licq_socket.h"
 #include "licq/exceptions/exception.h"
 #include <licq/inifile.h>
@@ -37,6 +36,7 @@
 #include "daemon.h"
 #include "fifo.h"
 #include "gettext.h"
+#include "icq/icq.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
 #include "plugins/pluginmanager.h"
@@ -645,19 +645,13 @@ bool CLicq::Init(int argc, char **argv)
   gUtilityManager.loadUtilities(szFilename);
 
   // Create the daemon
-  new CICQDaemon();
+  gIcqProtocol.initialize();
 
   return true;
 }
 
 CLicq::~CLicq()
 {
-  // Close the plugins
-  //...
-  // Kill the daemon
-  if (gLicqDaemon != NULL)
-    delete gLicqDaemon;
-
   gFifo.shutdown();
 
   myLogService.unregisterLogSink(myConsoleLog);
@@ -801,7 +795,7 @@ int CLicq::Main()
 
   gFifo.initialize();
 
-  if (!gLicqDaemon->Start())
+  if (!gIcqProtocol.start())
     return 1;
 
   // Run the plugins

@@ -8,6 +8,8 @@
 
 #include "config.h"
 
+#include "icq.h"
+
 #include <cassert>
 #include <cctype>
 #include <cerrno>
@@ -24,7 +26,6 @@
 #include "licq/byteorder.h"
 #include <licq/oneventmanager.h>
 #include <licq/statistics.h>
-#include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_socket.h"
 #include "licq_user.h"

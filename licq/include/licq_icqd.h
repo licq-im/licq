@@ -7,7 +7,6 @@ header file containing all the main procedures to interface with the ICQ server 
 #define LICQ_ICQD_H
 
 #include <boost/noncopyable.hpp>
-#include <boost/shared_array.hpp>
 #include <list>
 #include <map>
 #include <string>
@@ -23,12 +22,12 @@ class INetSocket;
 class ProxyServer;
 class COscarService;
 class CReverseConnectToUserData;
+class CUserProperties;
 
 namespace Licq
 {
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
-class IniFile;
 class Packet;
 class User;
 }
@@ -54,31 +53,6 @@ void *ProcessRunningEvent_Server_tep(void *p);
 void *Shutdown_tep(void *p);
 void *ConnectToServer_tep(void *s);
 
-/**
- * Internal template class for storing and processing received contact list.
- */
-class CUserProperties
-{
-public:
-  CUserProperties();
-
-private:
-  boost::shared_array<char> newAlias;
-  boost::shared_array<char> newCellular;
-
-  unsigned short normalSid;
-  unsigned short groupId;
-
-  unsigned short visibleSid;
-  unsigned short invisibleSid;
-  bool inIgnoreList;
-
-  bool awaitingAuth;
-
-  Licq::TlvList tlvs;
-
-friend class CICQDaemon;
-};
 
 typedef std::map<std::string, CUserProperties*> ContactUserList;
 typedef ContactUserList::iterator ContactUserListIter;
@@ -89,11 +63,6 @@ enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED 
 class CICQDaemon : private boost::noncopyable
 {
 public:
-  CICQDaemon();
-  ~CICQDaemon();
-  bool Start();
-  void saveIcqConf(Licq::IniFile& licqConf);
-
   // ICQ functions still public as they don't have any general proto functions
   //   to call them yet and needs to be callable from plugins for now
 
@@ -246,6 +215,7 @@ public:
   bool WaitForReverseConnection(unsigned short id, const char* userId);
 
 protected:
+  virtual ~CICQDaemon() { /* Empty */ }
 
   // ICQ protocol functions, only called from general proto functions and will
   //   be removed when ICQ is moved to separate protocol plugin
@@ -487,28 +457,5 @@ extern CICQDaemon *gLicqDaemon;
 // Helper functions for the daemon
 bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
 unsigned short VersionToUse(unsigned short);
-
-// Data structure for passing information to the reverse connection thread
-class CReverseConnectToUserData
-{
-public:
-  CReverseConnectToUserData(const char* idString, unsigned long id,
-      unsigned long data, unsigned long ip, unsigned short port,
-      unsigned short version, unsigned short failedport, unsigned long msgid1,
-      unsigned long msgid2);
-  ~CReverseConnectToUserData();
-
-  std::string myIdString;
-  unsigned long nId;
-  unsigned long nData;
-  unsigned long nIp;
-  unsigned short nPort;
-  unsigned short nFailedPort;
-  unsigned short nVersion;
-  unsigned long nMsgID1;
-  unsigned long nMsgID2;
-  bool bSuccess;
-  bool bFinished;
-};
 
 #endif

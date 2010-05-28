@@ -22,6 +22,7 @@
 
 #include "daemon.h"
 #include "fifo.h"
+#include "icq/icq.h"
 #include "icq/oscarservice.h"
 #include "licq.h"
 #include "statistics.h"
