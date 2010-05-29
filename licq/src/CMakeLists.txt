@@ -29,7 +29,6 @@ set(licq_SRCS
   icqcolor.cpp
   icqd-chat.cpp
   icqd-filetransfer.cpp
-  icqd-threads.cpp
   icqevent.cpp
   licq.cpp
   log.cpp
@@ -61,6 +60,7 @@ set(licq_SRCS
   icq/codes.c
   icq/packet.cpp
   icq/oscarservice.cpp
+  icq/threads.cpp
 
   logging/logservice.cpp
   logging/streamlogsink.cpp

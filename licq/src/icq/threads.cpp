@@ -6,10 +6,7 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#ifndef LICQTHREADS_H
-#define LICQTHREADS_H
-
-#include "licq_icqd.h"
+#include "icq.h"
 
 #include <cerrno>
 #include <ctime>
@@ -20,22 +17,18 @@
 #include "licq_log.h"
 #include <licq_user.h>
 
-#include "daemon.h"
-#include "fifo.h"
-#include "icq/icq.h"
-#include "icq/oscarservice.h"
-#include "licq.h"
-#include "statistics.h"
-
-// Localization
-#include "gettext.h"
+#include "../daemon.h"
+#include "../fifo.h"
+#include "../gettext.h"
+#include "../licq.h"
+#include "../statistics.h"
+#include "oscarservice.h"
 
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
 //#define DEBUG_THREADS(x) gLog.Info(x)
 
 using namespace std;
-using namespace LicqDaemon;
 
 void cleanup_mutex(void *m)
 {
@@ -632,7 +625,7 @@ void *Ping_tep(void *p)
   while (true)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    gStatistics.flush();
+    LicqDaemon::gStatistics.flush();
     switch(d->m_eStatus)
     {
     case STATUS_ONLINE:
@@ -687,11 +680,11 @@ void *MonitorSockets_tep(void* /* p */)
       l = gIcqProtocol.pipe_newsocket[PIPE_READ] + 1;
 
     // Add the fifo descriptor
-    if (gFifo.fifo_fd != -1)
+    if (LicqDaemon::gFifo.fifo_fd != -1)
     {
-      FD_SET(gFifo.fifo_fd, &f);
-      if (gFifo.fifo_fd >= l)
-        l = gFifo.fifo_fd + 1;
+      FD_SET(LicqDaemon::gFifo.fifo_fd, &f);
+      if (LicqDaemon::gFifo.fifo_fd >= l)
+        l = LicqDaemon::gFifo.fifo_fd + 1;
     }
 
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
@@ -730,11 +723,11 @@ void *MonitorSockets_tep(void* /* p */)
         }
 
         // Fifo event ----------------------------------------------------------
-      if (nCurrentSocket == gFifo.fifo_fd)
+      if (nCurrentSocket == LicqDaemon::gFifo.fifo_fd)
       {
           DEBUG_THREADS("[MonitorSockets_tep] Data on FIFO.\n");
-        fgets(buf, 1024, gFifo.fifo_fs);
-        gFifo.process(buf);
+        fgets(buf, 1024, LicqDaemon::gFifo.fifo_fs);
+        LicqDaemon::gFifo.process(buf);
         continue;
       }
 
@@ -888,7 +881,7 @@ void *MonitorSockets_tep(void* /* p */)
                 {
                   u->ClearSocketDesc(ICQ_CHNxNONE);
                   u->SetSecure(false);
-                  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+                  Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
                 }
                 gUserManager.DropUser(u);
               }
@@ -953,7 +946,7 @@ void *Shutdown_tep(void* /* p */)
   gLog.Info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
-  gDaemon.shutdownPlugins();
+  LicqDaemon::gDaemon.shutdownPlugins();
 
   // Cancel the monitor sockets thread (deferred until ready)
   write(gIcqProtocol.pipe_newsocket[PIPE_WRITE], "X", 1);
@@ -977,7 +970,7 @@ void *Shutdown_tep(void* /* p */)
     gSocketManager.CloseSocket(gIcqProtocol.m_nTCPSocketDesc);
 
   // Flush the stats
-  gStatistics.flush();
+  LicqDaemon::gStatistics.flush();
 
   // Signal that we are shutdown
   pthread_mutex_lock(&LP_IdMutex);
@@ -1090,5 +1083,3 @@ void *UpdateUsers_tep(void *p)
 
   pthread_exit(NULL);
 }
-
-#endif
