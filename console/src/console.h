@@ -7,7 +7,8 @@
 
 #include <licq_icqd.h>
 #include <licq_log.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
+#include <licq/userid.h>
 
 #include "window.h"
 
@@ -31,7 +32,7 @@ struct SColorMap
 struct SUser
 {
   char szKey[256];
-  UserId userId;
+  Licq::UserId userId;
   char *szLine;
   bool bOffline;
   const struct SColorMap *color;
@@ -43,7 +44,7 @@ struct SUser
 struct SScrollUser
 {
   int pos;
-  UserId userId;
+  Licq::UserId userId;
   const struct SColorMap *color;
 };
 
@@ -151,10 +152,10 @@ public:
   void PrintUsers();
   void PrintHelp();
   void PrintHistory(Licq::HistoryList&, unsigned short, unsigned short, const char *);
-  void PrintInfo_General(const UserId& userId);
-  void PrintInfo_More(const UserId& userId);
-  void PrintInfo_Work(const UserId& userId);
-  void PrintInfo_About(const UserId& userId);
+  void PrintInfo_General(const Licq::UserId& userId);
+  void PrintInfo_More(const Licq::UserId& userId);
+  void PrintInfo_Work(const Licq::UserId& userId);
+  void PrintInfo_About(const Licq::UserId& userId);
   void PrintFileStat(CFileTransferManager *);
   void PrintMacros();
   void PrintContactPopup(const char* alias);
@@ -197,28 +198,28 @@ public:
   void TabStatus(char *, struct STabCompletion &);
   void TabSet(char *, struct STabCompletion &);
 
-  void UserCommand_Info(const UserId& userId, char *);
-  void UserCommand_Msg(const UserId& userId, char *);
-  void UserCommand_View(const UserId& userId, char *);
-  void UserCommand_SendFile(const UserId&  userId, char *);
-  void UserCommand_Url(const UserId& userId, char *);
-  void UserCommand_Sms(const UserId& userId, char *);
-  void UserCommand_History(const UserId&  userId, char *);
-  void UserCommand_Remove(const UserId& userId, char *);
-  void UserCommand_FetchAutoResponse(const UserId& userId, char *);
-  void UserCommand_SetAutoResponse(const UserId& userId, char *);
-  void UserCommand_Secure(const UserId& userId, char *);
+  void UserCommand_Info(const Licq::UserId& userId, char *);
+  void UserCommand_Msg(const Licq::UserId& userId, char *);
+  void UserCommand_View(const Licq::UserId& userId, char *);
+  void UserCommand_SendFile(const Licq::UserId&  userId, char *);
+  void UserCommand_Url(const Licq::UserId& userId, char *);
+  void UserCommand_Sms(const Licq::UserId& userId, char *);
+  void UserCommand_History(const Licq::UserId&  userId, char *);
+  void UserCommand_Remove(const Licq::UserId& userId, char *);
+  void UserCommand_FetchAutoResponse(const Licq::UserId& userId, char *);
+  void UserCommand_SetAutoResponse(const Licq::UserId& userId, char *);
+  void UserCommand_Secure(const Licq::UserId& userId, char *);
   void Command_Search();
 
   void Beep() { printf("\a"); fflush(stdout); }
-  void FileChatOffer(CUserEvent *, const UserId& userId);
+  void FileChatOffer(CUserEvent *, const Licq::UserId& userId);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
   void UserSelect();
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
-  void SaveLastUser(const UserId& userId);
-  bool GetContactFromArg(char **, UserId& userId);
+  void SaveLastUser(const Licq::UserId& userId);
+  bool GetContactFromArg(char **, Licq::UserId& userId);
 };
 
 

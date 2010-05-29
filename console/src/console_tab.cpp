@@ -2,6 +2,8 @@
 
 #include <ctype.h>
 
+#include <licq/contactlist/usermanager.h>
+
 
 int StrMatchLen(const char *_sz1, const char *_sz2, unsigned short _nStartPos)
 {
@@ -69,12 +71,14 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
   if (szSubCmd == NULL)*/
   {
     nLen = strlen(_szPartialMatch);
-    FOR_EACH_USER_START(LOCK_R)
+
+    Licq::UserListGuard users;
+    BOOST_FOREACH(const Licq::User* pUser, **users)
     {
       // Ignored users and users not in the current group are unwanted
       if ((!userIsInGroup(pUser, myCurrentGroup) && myCurrentGroup != AllUsersGroupId) ||
           (pUser->IgnoreList() && myCurrentGroup != IgnoreListGroupId) )
-        FOR_EACH_USER_CONTINUE
+        continue;
 
       if (nLen == 0 || strncasecmp(_szPartialMatch, pUser->GetAlias(), nLen) == 0)
       {
@@ -93,7 +97,6 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
         _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->IdString()));
       }
     }
-    FOR_EACH_USER_END
 
     if (nLen == 0)
     {

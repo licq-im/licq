@@ -40,7 +40,7 @@ public:
 class DataAutoResponse : public CData
 {
 public:
-  DataAutoResponse() : CData(USERID_NONE)
+  DataAutoResponse() : CData(Licq::UserId())
     { szRsp[0] = '\0'; }
   char szRsp[1024];
 };
@@ -67,7 +67,7 @@ public:
 class DataRegWizard : public CData
 {
 public:
-  DataRegWizard(const Licq::UserId& id = USERID_NONE) : CData(id)
+  DataRegWizard(const Licq::UserId& id = Licq::UserId()) : CData(id)
     {  szOption[0] = '\0'; szPassword1[0] = '\0'; szPassword2[0] = '\0'; szUin[0] = '\0'; nState = 0; }
   char szOption[80];
   char szPassword1[80];
@@ -87,7 +87,7 @@ public:
 class DataSearch : public CData
 {
 public:
-  DataSearch() : CData(USERID_NONE)
+  DataSearch() : CData(Licq::UserId())
       {  szAlias[0] = szFirstName[0] = szLastName[0] = szEmail[0] =
          szCity[0] = szState[0] = szCoName[0] = szCoDept[0] = szCoPos[0] = '\0';
          nState = nMinAge = nMaxAge = nGender = nLanguage = nCountryCode = 0;
