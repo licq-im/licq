@@ -73,9 +73,9 @@ extern "C"
 
 #include <licq_events.h>
 #include <licq/inifile.h>
-#include <licq_icq.h>
 #include <licq_log.h>
 #include <licq/daemon.h>
+#include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 #include <licq/sarmanager.h>

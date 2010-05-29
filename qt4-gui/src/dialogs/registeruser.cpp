@@ -31,9 +31,9 @@
 #include <QVBoxLayout>
 #include <QWizardPage>
 
-#include <licq_icqd.h>
 #include <licq_user.h>
 #include <licq/daemon.h>
+#include <licq/icq.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"

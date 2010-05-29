@@ -48,13 +48,13 @@
 #include <KDE/KColorDialog>
 #endif
 
-#include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_translate.h>
 #include <licq_user.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 #include <licq/plugin.h>
 #include <licq/protocolmanager.h>
 

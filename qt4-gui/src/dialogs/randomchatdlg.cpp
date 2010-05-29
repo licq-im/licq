@@ -29,9 +29,9 @@
 #include <QVBoxLayout>
 
 #include <licq/daemon.h>
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 #include <licq_events.h>
-#include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_user.h>
 
 #include "core/gui-defines.h"

@@ -28,9 +28,9 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_icq.h>
 #include <licq_translate.h>
 #include <licq_user.h>
+#include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
 
 #include "config/chat.h"

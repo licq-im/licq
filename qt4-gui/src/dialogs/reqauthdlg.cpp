@@ -31,7 +31,7 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
-#include <licq_icqd.h>
+#include <licq/icq.h>
 
 #include "helpers/support.h"
 #include "helpers/usercodec.h"

@@ -31,7 +31,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include <licq_icq.h>
+#include <licq/icqdefines.h>
 #include <licq_message.h>
 #include <licq_user.h>
 

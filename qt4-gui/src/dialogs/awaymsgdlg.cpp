@@ -35,7 +35,6 @@
 #include <QVBoxLayout>
 
 #include <licq/sarmanager.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_user.h>
 

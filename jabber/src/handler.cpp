@@ -25,10 +25,10 @@
 
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/icqdefines.h>
 #include <licq/log.h>
 #include <licq/oneventmanager.h>
 #include <licq_events.h>
-#include <licq_icq.h>
 
 using std::string;
 using Licq::OnEventManager;

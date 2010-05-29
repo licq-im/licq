@@ -65,12 +65,12 @@
 #include <QX11Info>
 #endif /* defined(Q_WS_X11) */
 
-#include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_translate.h>
 #include <licq_user.h>
 #include <licq/daemon.h>
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 
 #include "config/contactlist.h"
 #include "config/general.h"

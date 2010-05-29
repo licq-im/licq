@@ -25,7 +25,6 @@
 #include <vector>
 
 #include "licq_events.h"
-#include "licq_icqd.h"
 #include "licq_socket.h"
 #include <licq/userid.h>
 

@@ -23,7 +23,6 @@
 #include "jabber.h"
 #include "pluginversion.h"
 
-#include <licq_icqd.h>
 #include <licq_protoplugin.h>
 #include <licq/pluginmanager.h>
 

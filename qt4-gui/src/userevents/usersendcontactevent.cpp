@@ -26,9 +26,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
 
 #include "config/chat.h"

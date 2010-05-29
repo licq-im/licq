@@ -11,12 +11,12 @@
 #include "forwarder.h"
 #include "forwarder.conf.h"
 #include <licq_events.h>
-#include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "licq_socket.h"
 #include "licq_translate.h"
 #include <licq/contactlist/usermanager.h>
+#include <licq/icqdefines.h>
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"

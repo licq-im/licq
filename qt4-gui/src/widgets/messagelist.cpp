@@ -30,7 +30,7 @@
 #include <QTextCodec>
 
 #include <licq_message.h>
-#include <licq_icq.h>
+#include <licq/icqdefines.h>
 
 #include "helpers/eventdesc.h"
 

@@ -53,9 +53,9 @@
 #include <QFileDialog>
 #endif
 
+#include <licq/icq.h>
 #include <licq/icqcodes.h>
 #include <licq/protocolmanager.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_user.h>
 

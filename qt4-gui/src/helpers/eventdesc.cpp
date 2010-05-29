@@ -22,7 +22,7 @@
 #include <QApplication>
 #include <QString>
 
-#include <licq_icq.h>
+#include <licq/icqdefines.h>
 #include <licq_message.h>
 
 using namespace LicqQtGui;

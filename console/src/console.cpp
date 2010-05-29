@@ -12,15 +12,15 @@
 
 #include "console.h"
 #include "licq_filetransfer.h"
-#include <licq_icq.h>
 #include "licq_log.h"
-#include "licq_icqd.h"
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/icq.h>
 #include <licq/icqcodes.h>
+#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>

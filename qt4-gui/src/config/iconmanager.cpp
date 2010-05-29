@@ -24,7 +24,7 @@
 
 #include <cctype>
 
-#include <licq_icq.h>
+#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
 #include <licq/contactlist/user.h>

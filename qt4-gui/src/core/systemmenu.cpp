@@ -24,10 +24,10 @@
 
 #include <QList>
 
-#include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq/daemon.h>
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
 #include <licq_user.h>
 

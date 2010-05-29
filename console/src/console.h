@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq/contactlist/user.h>
+#include <licq/icq.h>
 #include <licq/userid.h>
 
 #include "window.h"

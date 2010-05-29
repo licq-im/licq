@@ -27,7 +27,6 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 
-#include <licq_icqd.h>
 #include <licq/daemon.h>
 
 #include "helpers/support.h"

@@ -29,8 +29,8 @@
 #include <QTextCodec>
 #include <QTimer>
 
-#include <licq_icqd.h>
 #include <licq_user.h>
+#include <licq/icq.h>
 #include <licq/protocolmanager.h>
 
 #include "core/gui-defines.h"

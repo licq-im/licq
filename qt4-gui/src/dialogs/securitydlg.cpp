@@ -28,8 +28,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq/icq.h>
 #include <licq_events.h>
-#include <licq_icqd.h>
 #include <licq_user.h>
 
 #include "core/messagebox.h"

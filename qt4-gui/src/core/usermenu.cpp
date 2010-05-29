@@ -26,7 +26,7 @@
 #include <QClipboard>
 
 #include <licq_events.h>
-#include <licq_icqd.h>
+#include <licq/icq.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq_user.h>

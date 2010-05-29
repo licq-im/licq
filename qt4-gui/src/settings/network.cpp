@@ -32,8 +32,8 @@
 #include <QVBoxLayout>
 
 #include <licq_constants.h>
-#include <licq_icqd.h>
 #include <licq/daemon.h>
+#include <licq/icq.h>
 
 #include "settingsdlg.h"
 

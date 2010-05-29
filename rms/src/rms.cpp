@@ -12,12 +12,12 @@
 #include <cerrno>
 
 #include <licq_constants.h>
-#include <licq_icq.h>
-#include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_socket.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
