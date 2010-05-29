@@ -4,13 +4,13 @@
 #include <cstdio> // sprintf
 
 #include <licq_icq.h>
-#include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_events.h"
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 
 #include "../gettext.h"
+#include "../icq/icq.h"
 #include "../protocolmanager.h"
 #include "group.h"
 #include "owner.h"
@@ -600,7 +600,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
   }
 
   if (icqGroupId == 0 && icqOnline)
-    gLicqDaemon->icqAddGroup(name.c_str());
+    gIcqProtocol.icqAddGroup(name.c_str());
   else
     gLog.Info(tr("%sAdded group %s (%u) to list from server.\n"),
         L_SRVxSTR, name.c_str(), icqGroupId);
@@ -622,7 +622,7 @@ void UserManager::RemoveGroup(int groupId)
   group->unlockRead();
 
   // Must be called when there are no locks on GroupID and Group lists
-  gLicqDaemon->icqRemoveGroup(name.c_str());
+  gIcqProtocol.icqRemoveGroup(name.c_str());
 
   // Lock it back up
   myGroupListMutex.lockWrite();
@@ -734,7 +734,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
 
   // If we rename a group on logon, don't send the rename packet
   if (sendUpdate)
-    gLicqDaemon->icqRenameGroup(name.c_str(), icqGroupId);
+    gIcqProtocol.icqRenameGroup(name.c_str(), icqGroupId);
 
   // Send signal to let plugins know the group has changed
   gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, UserId(), groupId));
@@ -1081,7 +1081,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
     if (ppid == LICQ_PPID)
     {
       if (inGroup) // Server group can only be changed, not removed
-        gLicqDaemon->icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
+        gIcqProtocol.icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
             ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
     else

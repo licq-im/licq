@@ -16,8 +16,6 @@
      *                                                                         *
      ***************************************************************************/
 
-#include <stdio.h>
-
 #include "licq_icqd.h"
 #include "licq_translate.h"
 
@@ -25,6 +23,8 @@
 #include <stack>
 #include <string>
 #include <cstdarg>
+#include <cstdio>
+#include <cstring>
 
 #define UP			1	
 #define DOWN			2

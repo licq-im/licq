@@ -50,7 +50,7 @@ using LicqDaemon::User;
 using LicqDaemon::gDaemon;
 
 
-void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, const string& message,
+void IcqProtocol::icqSendMessage(unsigned long eventId, const UserId& userId, const string& message,
    bool viaServer, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
 {
@@ -182,8 +182,7 @@ void CICQDaemon::icqSendMessage(unsigned long eventId, const UserId& userId, con
     delete [] mDos;
 }
 
-//-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
-unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
+unsigned long IcqProtocol::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
 {
   unsigned long eventId = gDaemon.getNextEventId();
   UserId userId = LicqUser::makeUserId(_szId, _nPPID);
@@ -220,7 +219,7 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
   return eventId;
 }
 
-void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const string& url,
+void IcqProtocol::icqSendUrl(unsigned long eventId, const UserId& userId, const string& url,
    const string& message, bool viaServer, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
@@ -294,7 +293,7 @@ void CICQDaemon::icqSendUrl(unsigned long eventId, const UserId& userId, const s
     delete [] szDescDos;
 }
 
-void CICQDaemon::icqFileTransfer(unsigned long eventId, const UserId& userId, const string& filename,
+void IcqProtocol::icqFileTransfer(unsigned long eventId, const UserId& userId, const string& filename,
     const string& message, ConstFileList &lFileList, unsigned short nLevel, bool bServer)
 {
   if (gUserManager.isOwner(userId))
@@ -383,7 +382,7 @@ void CICQDaemon::icqFileTransfer(unsigned long eventId, const UserId& userId, co
 }
 
 //-----CICQDaemon::sendContactList-------------------------------------------
-unsigned long CICQDaemon::icqSendContactList(const char *szId,
+unsigned long IcqProtocol::icqSendContactList(const char *szId,
    const StringList& users, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
@@ -458,7 +457,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
 }
 
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------
-unsigned long CICQDaemon::icqRequestInfoPlugin(ICQUser *u, bool bServer,
+unsigned long IcqProtocol::icqRequestInfoPlugin(ICQUser *u, bool bServer,
                                                const char *GUID)
 {
   ICQEvent *result = NULL;
@@ -479,7 +478,7 @@ unsigned long CICQDaemon::icqRequestInfoPlugin(ICQUser *u, bool bServer,
 }
 
 //-----CICQDaemon::sendInfoPluginListReq----------------------------------------
-unsigned long CICQDaemon::icqRequestInfoPluginList(const char *szId,
+unsigned long IcqProtocol::icqRequestInfoPluginList(const char *szId,
                                                    bool bServer)
 {
   if (szId == gUserManager.OwnerId(LICQ_PPID))
@@ -503,7 +502,7 @@ unsigned long CICQDaemon::icqRequestInfoPluginList(const char *szId,
 }
 
 //-----CICQDaemon::sendPhoneBookReq--------------------------------------------
-unsigned long CICQDaemon::icqRequestPhoneBook(const char *szId,
+unsigned long IcqProtocol::icqRequestPhoneBook(const char *szId,
                                               bool bServer)
 {
   if (szId == gUserManager.OwnerId(LICQ_PPID))
@@ -526,7 +525,7 @@ unsigned long CICQDaemon::icqRequestPhoneBook(const char *szId,
 }
 
 //-----CICQDaemon::sendPictureReq-----------------------------------------------
-unsigned long CICQDaemon::icqRequestPicture(const UserId& userId, bool bServer, size_t iconHashSize)
+unsigned long IcqProtocol::icqRequestPicture(const UserId& userId, bool bServer, size_t iconHashSize)
 {
   if (UseServerSideBuddyIcons() && iconHashSize > 0)
     return m_xBARTService->SendEvent(userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
@@ -548,7 +547,7 @@ unsigned long CICQDaemon::icqRequestPicture(const UserId& userId, bool bServer, 
 }
 
 //-----CICQDaemon::sendStatusPluginReq------------------------------------------
-unsigned long CICQDaemon::icqRequestStatusPlugin(ICQUser *u, bool bServer,
+unsigned long IcqProtocol::icqRequestStatusPlugin(ICQUser *u, bool bServer,
                                                  const char *GUID)
 {
   ICQEvent *result = NULL;
@@ -569,7 +568,7 @@ unsigned long CICQDaemon::icqRequestStatusPlugin(ICQUser *u, bool bServer,
 }
 
 //-----CICQDaemon::sendStatusPluginListReq--------------------------------------
-unsigned long CICQDaemon::icqRequestStatusPluginList(const char *szId,
+unsigned long IcqProtocol::icqRequestStatusPluginList(const char *szId,
                                                      bool bServer)
 {
   if (szId == gUserManager.OwnerId(LICQ_PPID))
@@ -594,7 +593,7 @@ unsigned long CICQDaemon::icqRequestStatusPluginList(const char *szId,
 }
 
 //-----CICQDaemon::sendSharedFilesReq--------------------------------------
-unsigned long CICQDaemon::icqRequestSharedFiles(const char *szId,
+unsigned long IcqProtocol::icqRequestSharedFiles(const char *szId,
                                                 bool bServer)
 {
   if (szId == gUserManager.OwnerId(LICQ_PPID))
@@ -618,7 +617,7 @@ unsigned long CICQDaemon::icqRequestSharedFiles(const char *szId,
 }
 
 //-----CICQDaemon::sendPhoneFollowMeReq--------------------------------------
-unsigned long CICQDaemon::icqRequestPhoneFollowMe(const char *szId,
+unsigned long IcqProtocol::icqRequestPhoneFollowMe(const char *szId,
                                                   bool bServer)
 {
   if (szId == gUserManager.OwnerId(LICQ_PPID))
@@ -642,7 +641,7 @@ unsigned long CICQDaemon::icqRequestPhoneFollowMe(const char *szId,
 }
 
 //-----CICQDaemon::sendICQphoneReq--------------------------------------
-unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
+unsigned long IcqProtocol::icqRequestICQphone(const char *szId,
                                              bool bServer)
 {
   if (szId == gUserManager.OwnerId(LICQ_PPID))
@@ -665,7 +664,7 @@ unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
   return result;
 }
 
-void CICQDaemon::icqFileTransferCancel(const UserId& userId, unsigned short nSequence)
+void IcqProtocol::icqFileTransferCancel(const UserId& userId, unsigned short nSequence)
 {
   // add to history ??
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
@@ -677,7 +676,7 @@ void CICQDaemon::icqFileTransferCancel(const UserId& userId, unsigned short nSeq
   gUserManager.DropUser(u);
 }
 
-void CICQDaemon::icqFileTransferAccept(const UserId& userId, unsigned short nPort,
+void IcqProtocol::icqFileTransferAccept(const UserId& userId, unsigned short nPort,
     unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer,
     const string& message, const string& filename, unsigned long nFileSize)
 {
@@ -704,7 +703,7 @@ void CICQDaemon::icqFileTransferAccept(const UserId& userId, unsigned short nPor
   gUserManager.DropUser(u);
 }
 
-void CICQDaemon::icqFileTransferRefuse(const UserId& userId, const string& message,
+void IcqProtocol::icqFileTransferRefuse(const UserId& userId, const string& message,
     unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer)
 {
    // add to history ??
@@ -733,13 +732,13 @@ void CICQDaemon::icqFileTransferRefuse(const UserId& userId, const string& messa
     delete [] szReasonDos;
 }
 
-unsigned long CICQDaemon::icqChatRequest(const char* id, const char *szReason,
+unsigned long IcqProtocol::icqChatRequest(const char* id, const char *szReason,
                                          unsigned short nLevel, bool bServer)
 {
   return icqMultiPartyChatRequest(id, szReason, NULL, 0, nLevel, bServer);
 }
 
-unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
+unsigned long IcqProtocol::icqMultiPartyChatRequest(const char* id,
    const char *reason, const char *szChatUsers, unsigned short nPort,
    unsigned short nLevel, bool bServer)
 {
@@ -805,7 +804,7 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
   return 0;
 }
 
-void CICQDaemon::icqChatRequestCancel(const char* id, unsigned short nSequence)
+void IcqProtocol::icqChatRequestCancel(const char* id, unsigned short nSequence)
 {
   ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
   if (u == NULL) return;
@@ -816,7 +815,7 @@ void CICQDaemon::icqChatRequestCancel(const char* id, unsigned short nSequence)
   gUserManager.DropUser(u);
 }
 
-void CICQDaemon::icqChatRequestRefuse(const char* id, const char *szReason,
+void IcqProtocol::icqChatRequestRefuse(const char* id, const char *szReason,
     unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
   // add to history ??
@@ -845,7 +844,7 @@ void CICQDaemon::icqChatRequestRefuse(const char* id, const char *szReason,
     delete [] szReasonDos;
 }
 
-void CICQDaemon::icqChatRequestAccept(const char* id, unsigned short nPort,
+void IcqProtocol::icqChatRequestAccept(const char* id, unsigned short nPort,
     const char* szClients, unsigned short nSequence,
     const unsigned long nMsgID[2], bool bDirect)
 {
@@ -875,7 +874,7 @@ void CICQDaemon::icqChatRequestAccept(const char* id, unsigned short nPort,
  * OpenSSL stuff
  *-------------------------------------------------------------------------*/
 
-void CICQDaemon::icqOpenSecureChannel(unsigned long eventId, const UserId& userId)
+void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const UserId& userId)
 {
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
@@ -901,7 +900,7 @@ void CICQDaemon::icqOpenSecureChannel(unsigned long eventId, const UserId& userI
 #endif
 }
 
-void CICQDaemon::icqCloseSecureChannel(unsigned long eventId, const UserId& userId)
+void IcqProtocol::icqCloseSecureChannel(unsigned long eventId, const UserId& userId)
 {
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
@@ -927,7 +926,7 @@ void CICQDaemon::icqCloseSecureChannel(unsigned long eventId, const UserId& user
 #endif
 }
 
-void CICQDaemon::icqOpenSecureChannelCancel(const UserId& userId,
+void IcqProtocol::icqOpenSecureChannelCancel(const UserId& userId,
   unsigned short nSequence)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
@@ -943,7 +942,7 @@ void CICQDaemon::icqOpenSecureChannelCancel(const UserId& userId,
  *
  * Shake hands on the given socket with the given user.
  *-------------------------------------------------------------------------*/
-bool CICQDaemon::Handshake_Send(TCPSocket *s, const char* id,
+bool IcqProtocol::Handshake_Send(TCPSocket *s, const char* id,
    unsigned short nPort, unsigned short nVersion, bool bConfirm,
    unsigned long nId)
 {
@@ -1092,7 +1091,7 @@ sock_error:
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-int CICQDaemon::ConnectToUser(const char* id, unsigned char nChannel)
+int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
 {
   UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
@@ -1179,7 +1178,7 @@ int CICQDaemon::ConnectToUser(const char* id, unsigned char nChannel)
  *
  * Connects a socket to a given user on a given port.
  *----------------------------------------------------------------------------*/
-bool CICQDaemon::OpenConnectionToUser(const char* id, TCPSocket *sock,
+bool IcqProtocol::OpenConnectionToUser(const char* id, TCPSocket *sock,
                                       unsigned short nPort)
 {
   const ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
@@ -1198,7 +1197,7 @@ bool CICQDaemon::OpenConnectionToUser(const char* id, TCPSocket *sock,
 }
 
 
-bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
+bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
    unsigned long nIntIp, TCPSocket *sock, unsigned short nPort, bool bSendIntIp)
 {
   char buf[128];
@@ -1261,7 +1260,7 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-int CICQDaemon::ReverseConnectToUser(const char* id, unsigned long nIp,
+int IcqProtocol::ReverseConnectToUser(const char* id, unsigned long nIp,
    unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
    unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2)
 {
@@ -1348,9 +1347,7 @@ int CICQDaemon::ReverseConnectToUser(const char* id, unsigned long nIp,
   return nSD;
 }
 
-
-//-----CICQDaemon::ProcessTcpPacket----------------------------------------------------
-bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
+bool IcqProtocol::ProcessTcpPacket(TCPSocket *pSock)
 {
   unsigned long senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
@@ -2735,7 +2732,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   return !errorOccured;
 }
 
-bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
+bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
                                       unsigned char nChannel,
                                       bool bIsAck,
                                       unsigned long nMsgID1,
@@ -3402,7 +3399,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
 }
 
 //-----CICQDaemon::AckTCP--------------------------------------------------------------
-void CICQDaemon::AckTCP(CPacketTcp &p, int nSd)
+void IcqProtocol::AckTCP(CPacketTcp &p, int nSd)
 {
 #if ICQ_VERSION_TCP == 3
   TCPSocket *s = (TCPSocket *)gSocketManager.FetchSocket(nSD);
@@ -3416,7 +3413,7 @@ void CICQDaemon::AckTCP(CPacketTcp &p, int nSd)
 #endif
 }
 
-void CICQDaemon::AckTCP(CPacketTcp &p, TCPSocket *tcp)
+void IcqProtocol::AckTCP(CPacketTcp &p, TCPSocket *tcp)
 {
 #if ICQ_VERSION_TCP == 3
   tcp->Send(p.getBuffer());
@@ -3426,8 +3423,7 @@ void CICQDaemon::AckTCP(CPacketTcp &p, TCPSocket *tcp)
 }
 
 
-bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
-																bool bConfirm, bool bChat)
+bool IcqProtocol::Handshake_Recv(TCPSocket *s, unsigned short nPort, bool bConfirm, bool bChat)
 {
   char cHandshake;
   unsigned short nVersionMajor, nVersionMinor;
@@ -3718,7 +3714,7 @@ sock_error:
   return false;
 }
 
-bool CICQDaemon::Handshake_SendConfirm_v7(TCPSocket *s)
+bool IcqProtocol::Handshake_SendConfirm_v7(TCPSocket *s)
 {
   // Send handshake accepted
   CPacketTcp_Handshake_Confirm p_confirm(s->Channel(), 0);
@@ -3737,7 +3733,7 @@ bool CICQDaemon::Handshake_SendConfirm_v7(TCPSocket *s)
   return true;
 }
 
-bool CICQDaemon::Handshake_RecvConfirm_v7(TCPSocket *s)
+bool IcqProtocol::Handshake_RecvConfirm_v7(TCPSocket *s)
 {
   // Get handshake confirmation
   s->ClearRecvBuffer();
@@ -3794,7 +3790,7 @@ bool CICQDaemon::Handshake_RecvConfirm_v7(TCPSocket *s)
  * Takes the first buffer from a socket and parses it as a icq handshake.
  * Does not check that the given user already has a socket or not.
  *----------------------------------------------------------------------------*/
-bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
+bool IcqProtocol::ProcessTcpHandshake(TCPSocket *s)
 {
   if (!Handshake_Recv(s, 0)) return false;
   UserId userId = s->userId();
@@ -3833,7 +3829,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   return true;
 }
 
-void CICQDaemon::StupidChatLinkageFix()
+void IcqProtocol::StupidChatLinkageFix()
 {
   CChatManager* chatman = new CChatManager(0);
   delete chatman;

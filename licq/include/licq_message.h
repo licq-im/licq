@@ -112,7 +112,7 @@ protected:
    CICQColor      m_sColor;
    unsigned long  m_nConvoId;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
   friend class LicqDaemon::Daemon;
 friend class CMSN;
 friend class Jabber;

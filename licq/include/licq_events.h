@@ -8,7 +8,6 @@
 #include "licq_message.h"
 #include "licq/userid.h"
 
-class CICQDaemon;
 class CUserEvent;
 
 namespace LicqDaemon
@@ -54,7 +53,7 @@ protected:
   unsigned short m_nPort;
   char *m_szResponse;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 
@@ -123,7 +122,7 @@ protected:
   char m_nAge;
   char m_nAuth;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 
@@ -293,9 +292,9 @@ protected:
 
   unsigned long  m_nEventId;
 
-friend class CICQDaemon;
 friend class COscarService;
 friend class CMSN;
+  friend class IcqProtocol;
 friend class Jabber;
 friend class LicqDaemon::PluginEventHandler;
 friend void *ProcessRunningEvent_Client_tep(void *p);

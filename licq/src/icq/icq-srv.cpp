@@ -55,7 +55,7 @@ using LicqDaemon::User;
 using LicqDaemon::gDaemon;
 
 //-----icqAddUser----------------------------------------------------------
-void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
+void IcqProtocol::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
@@ -73,7 +73,7 @@ void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned sho
 }
 
 //-----icqAddUserServer--------------------------------------------------------
-void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired,
+void IcqProtocol::icqAddUserServer(const char *_szId, bool _bAuthRequired,
     unsigned short groupId)
 {
   CSrvPacketTcp *pStart = 0;
@@ -99,7 +99,7 @@ void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired,
 }
 
 //-----CheckExport-------------------------------------------------------------
-void CICQDaemon::CheckExport()
+void IcqProtocol::CheckExport()
 {
   // Export groups
   GroupNameMap groups;
@@ -160,7 +160,7 @@ void CICQDaemon::CheckExport()
 }
 
 //-----icqExportUsers----------------------------------------------------------
-void CICQDaemon::icqExportUsers(const list<UserId>& users, unsigned short _nType)
+void IcqProtocol::icqExportUsers(const list<UserId>& users, unsigned short _nType)
 {
   if (!UseServerContactList())  return;
 
@@ -178,7 +178,7 @@ void CICQDaemon::icqExportUsers(const list<UserId>& users, unsigned short _nType
 }
 
 //-----icqUpdateServerGroups----------------------------------------------------
-void CICQDaemon::icqUpdateServerGroups()
+void IcqProtocol::icqUpdateServerGroups()
 {
   if (!UseServerContactList())  return;
   CSrvPacketTcp *pReply;
@@ -204,7 +204,7 @@ void CICQDaemon::icqUpdateServerGroups()
 }
 
 //-----icqAddGroup--------------------------------------------------------------
-void CICQDaemon::icqAddGroup(const char *_szName)
+void IcqProtocol::icqAddGroup(const char *_szName)
 {
   if (!UseServerContactList())  return;
 
@@ -219,7 +219,7 @@ void CICQDaemon::icqAddGroup(const char *_szName)
   SendExpectEvent_Server(pAdd, NULL);
 }
 
-void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
+void IcqProtocol::icqChangeGroup(const char *_szId, unsigned long _nPPID,
                                 unsigned short _nNewGroup, unsigned short _nOldGSID,
                                 unsigned short _nNewType, unsigned short _nOldType)
 {
@@ -266,7 +266,7 @@ void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
 }
 
 //-----icqExportGroups----------------------------------------------------------
-void CICQDaemon::icqExportGroups(const GroupNameMap& groups)
+void IcqProtocol::icqExportGroups(const GroupNameMap& groups)
 {
   if (!UseServerContactList()) return;
 
@@ -287,7 +287,7 @@ void CICQDaemon::icqExportGroups(const GroupNameMap& groups)
 }
 
 //-----icqCreatePDINFO---------------------------------------------------------
-void CICQDaemon::icqCreatePDINFO()
+void IcqProtocol::icqCreatePDINFO()
 {
   CSrvPacketTcp *pPDInfo = new CPU_AddPDINFOToServerList();
   gLog.Info(tr("%sAdding privacy information to server side list...\n"),
@@ -295,7 +295,7 @@ void CICQDaemon::icqCreatePDINFO()
   SendEvent_Server(pPDInfo);
 }
 
-void CICQDaemon::icqRemoveUser(const char *_szId, bool ignored)
+void IcqProtocol::icqRemoveUser(const char *_szId, bool ignored)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   // Remove from the SSList and update groups
@@ -362,7 +362,7 @@ void CICQDaemon::icqRemoveUser(const char *_szId, bool ignored)
 }
 
 //-----icqRemoveGroup----------------------------------------------------------
-void CICQDaemon::icqRemoveGroup(const char *_szName)
+void IcqProtocol::icqRemoveGroup(const char *_szName)
 {
   if (!UseServerContactList()) return;
 
@@ -378,7 +378,7 @@ void CICQDaemon::icqRemoveGroup(const char *_szName)
 }
 
 //-----icqRenameGroup----------------------------------------------------------
-void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
+void IcqProtocol::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
 {
   if (!UseServerContactList() || !_nGSID || m_nTCPSrvSocketDesc == -1) return;
 
@@ -390,7 +390,7 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
-void CICQDaemon::icqRenameUser(const string& accountId, const string& newAlias)
+void IcqProtocol::icqRenameUser(const string& accountId, const string& newAlias)
 {
   if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1) return;
 
@@ -400,7 +400,7 @@ void CICQDaemon::icqRenameUser(const string& accountId, const string& newAlias)
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
-void CICQDaemon::icqAlertUser(const UserId& userId)
+void IcqProtocol::icqAlertUser(const UserId& userId)
 {
   if (userId.protocolId() != LICQ_PPID)
     return;
@@ -418,7 +418,7 @@ void CICQDaemon::icqAlertUser(const UserId& userId)
   SendExpectEvent_Server(userId, p, NULL);
 }
 
-void CICQDaemon::icqFetchAutoResponseServer(unsigned long eventId, const char *_szId)
+void IcqProtocol::icqFetchAutoResponseServer(unsigned long eventId, const char *_szId)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CPU_CommonFamily *p = 0;
@@ -462,7 +462,7 @@ void CICQDaemon::icqFetchAutoResponseServer(unsigned long eventId, const char *_
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------
-unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long _nGroup)
+unsigned long IcqProtocol::icqSetRandomChatGroup(unsigned long _nGroup)
 {
   CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(_nGroup);
   gLog.Info(tr("%sSetting random chat group (#%hu)...\n"), L_SRVxSTR,
@@ -475,7 +475,7 @@ unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long _nGroup)
 }
 
 //-----icqRandomChatSearch------------------------------------------------------
-unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
+unsigned long IcqProtocol::icqRandomChatSearch(unsigned long _nGroup)
 {
   CPU_RandomChatSearch *p = new CPU_RandomChatSearch(_nGroup);
   gLog.Info(tr("%sSearching for random chat user (#%hu)...\n"), L_SRVxSTR,
@@ -487,7 +487,7 @@ unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
   return 0;
 }
 
-void CICQDaemon::icqRegister(const char *_szPasswd)
+void IcqProtocol::icqRegister(const char *_szPasswd)
 {
   if (m_szRegisterPasswd)
   {
@@ -505,7 +505,7 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 }
 
 //-----ICQ::icqRegisterFinish------------------------------------------------
-void CICQDaemon::icqRegisterFinish()
+void IcqProtocol::icqRegisterFinish()
 {
   CPU_RegisterFirst *pFirst = new CPU_RegisterFirst();
   SendEvent_Server(pFirst);
@@ -518,7 +518,7 @@ void CICQDaemon::icqRegisterFinish()
 }
 
 //-----ICQ::icqVerifyRegistration
-void CICQDaemon::icqVerifyRegistration()
+void IcqProtocol::icqVerifyRegistration()
 {
   CPU_RegisterFirst *pFirst = new CPU_RegisterFirst();
   SendEvent_Server(pFirst);
@@ -531,7 +531,7 @@ void CICQDaemon::icqVerifyRegistration()
 }
 
 //-----ICQ::icqVerify--------------------------------------------------------
-void CICQDaemon::icqVerify(const char *szVerification)
+void IcqProtocol::icqVerify(const char *szVerification)
 {
   CPU_SendVerification *p = new CPU_SendVerification(m_szRegisterPasswd,
     szVerification);
@@ -541,7 +541,7 @@ void CICQDaemon::icqVerify(const char *szVerification)
 }
 
 //-----ICQ::icqRelogon-------------------------------------------------------
-void CICQDaemon::icqRelogon()
+void IcqProtocol::icqRelogon()
 {
   unsigned long status;
 
@@ -565,7 +565,7 @@ void CICQDaemon::icqRelogon()
 }
 
 //-----icqRequestMetaInfo----------------------------------------------------
-unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
+unsigned long IcqProtocol::icqRequestMetaInfo(const char *_szId)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CPU_CommonFamily *p = 0;
@@ -583,7 +583,7 @@ unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
 }
 
 //-----icqRequestService--------------------------------------------------------
-void CICQDaemon::icqRequestService(unsigned short nFam)
+void IcqProtocol::icqRequestService(unsigned short nFam)
 {
   CPU_CommonFamily *p = new CPU_RequestService(nFam);
   gLog.Info(tr("%sRequesting service socket for FAM 0x%02X (#%hu/#%d)...\n"),
@@ -591,7 +591,7 @@ void CICQDaemon::icqRequestService(unsigned short nFam)
   SendEvent_Server(p);
 }
 
-unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
+unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
 {
   if (newStatus & ICQ_STATUS_DND)
     newStatus |= ICQ_STATUS_OCCUPIED; // quick compat hack
@@ -655,7 +655,7 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
 }
 
 //-----icqSetPassword--------------------------------------------------------
-unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
+unsigned long IcqProtocol::icqSetPassword(const char *szPassword)
 {
   CPU_SetPassword *p = new CPU_SetPassword(szPassword);
   gLog.Info(tr("%sUpdating password (#%hu/#%d)...\n"), L_SRVxSTR,
@@ -666,7 +666,7 @@ unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
   return 0;
 }
 
-unsigned long CICQDaemon::icqSetGeneralInfo(
+unsigned long IcqProtocol::icqSetGeneralInfo(
                           const char *szAlias, const char *szFirstName,
                           const char *szLastName, const char *szEmailPrimary,
                           const char *szCity,
@@ -693,7 +693,7 @@ unsigned long CICQDaemon::icqSetGeneralInfo(
 }
 
 //-----icqSetEmailInfo---------------------------------------------------------
-unsigned long CICQDaemon::icqSetEmailInfo(
+unsigned long IcqProtocol::icqSetEmailInfo(
                           const char *szEmailSecondary, const char *szEmailOld)
 {
 return 0;
@@ -709,7 +709,7 @@ return 0;
 }
 
 //-----icqSetMoreInfo----------------------------------------------------
-unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
+unsigned long IcqProtocol::icqSetMoreInfo(unsigned short nAge,
                               char nGender, const char *szHomepage,
                               unsigned short nBirthYear, char nBirthMonth,
                               char nBirthDay, char nLanguage1,
@@ -730,7 +730,7 @@ unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
 }
 
 //-----icqSetInterestsInfo------------------------------------------------------
-unsigned long CICQDaemon::icqSetInterestsInfo(const UserCategoryMap& interests)
+unsigned long IcqProtocol::icqSetInterestsInfo(const UserCategoryMap& interests)
 {
   CPU_Meta_SetInterestsInfo *p = new CPU_Meta_SetInterestsInfo(interests);
   gLog.Info("%sUpdating Interests info (#%hu/#%d)..\n", L_SRVxSTR,
@@ -743,7 +743,7 @@ unsigned long CICQDaemon::icqSetInterestsInfo(const UserCategoryMap& interests)
 }
 
 //-----icqSetOrgBackInfo--------------------------------------------------------
-unsigned long CICQDaemon::icqSetOrgBackInfo(const UserCategoryMap& orgs,
+unsigned long IcqProtocol::icqSetOrgBackInfo(const UserCategoryMap& orgs,
     const UserCategoryMap& background)
 {
   CPU_Meta_SetOrgBackInfo *p =
@@ -758,7 +758,7 @@ unsigned long CICQDaemon::icqSetOrgBackInfo(const UserCategoryMap& orgs,
 }
 
 //-----icqSetWorkInfo--------------------------------------------------------
-unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
+unsigned long IcqProtocol::icqSetWorkInfo(const char *_szCity, const char *_szState,
                                      const char *_szPhone,
                                      const char *_szFax, const char *_szAddress,
                                      const char *_szZip, unsigned short _nCompanyCountry,
@@ -780,7 +780,7 @@ unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szSta
 }
 
 //-----icqSetAbout-----------------------------------------------------------
-unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
+unsigned long IcqProtocol::icqSetAbout(const char *_szAbout)
 {
   char *szAbout = gTranslator.NToRN(_szAbout);
 
@@ -796,7 +796,7 @@ unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
   return 0;
 }
 
-unsigned long CICQDaemon::icqAuthorizeGrant(const UserId& userId, const string& /* message */)
+unsigned long IcqProtocol::icqAuthorizeGrant(const UserId& userId, const string& /* message */)
 {
   const string accountId = LicqUser::getUserAccountId(userId);
   const char* szId = accountId.c_str();
@@ -807,7 +807,7 @@ unsigned long CICQDaemon::icqAuthorizeGrant(const UserId& userId, const string& 
   return 0;
 }
 
-unsigned long CICQDaemon::icqAuthorizeRefuse(const UserId& userId, const string& message)
+unsigned long IcqProtocol::icqAuthorizeRefuse(const UserId& userId, const string& message)
 {
   const string accountId = LicqUser::getUserAccountId(userId);
   const char* szId = accountId.c_str();
@@ -828,14 +828,14 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(const UserId& userId, const string&
   return 0;
 }
 
-void CICQDaemon::icqRequestAuth(const char* id, const char *_szMessage)
+void IcqProtocol::icqRequestAuth(const char* id, const char *_szMessage)
 {
   CSrvPacketTcp* p = new CPU_RequestAuth(id, _szMessage);
   SendEvent_Server(p);
 }
 
 //-----icqSetSecurityInfo----------------------------------------------------
-unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
+unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
 {
   // Since ICQ5.1, the status change packet is sent first, which means it is
   // assumed that the set security info packet works.
@@ -861,7 +861,7 @@ unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
 }
 
 //-----icqSearchWhitePages--------------------------------------------------
-unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
+unsigned long IcqProtocol::icqSearchWhitePages(const char *szFirstName,
     const char *szLastName, const char *szAlias, const char *szEmail,
     unsigned short nMinAge, unsigned short nMaxAge, char nGender,
     char nLanguage, const char *szCity, const char *szState,
@@ -883,7 +883,7 @@ unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
 }
 
 //-----icqSearchByUin----------------------------------------------------------
-unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
+unsigned long IcqProtocol::icqSearchByUin(unsigned long nUin)
 {
    CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
    gLog.Info(tr("%sStarting search by UIN for user (#%hu/#%d)...\n"), L_SRVxSTR, 
@@ -895,7 +895,7 @@ unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
 }
 
 //-----icqGetUserBasicInfo------------------------------------------------------
-unsigned long CICQDaemon::icqUserBasicInfo(const char *_szId)
+unsigned long IcqProtocol::icqUserBasicInfo(const char *_szId)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CPU_CommonFamily *p = 0;
@@ -913,7 +913,7 @@ unsigned long CICQDaemon::icqUserBasicInfo(const char *_szId)
 }
 
 //-----icqPing------------------------------------------------------------------
-void CICQDaemon::icqPing()
+void IcqProtocol::icqPing()
 {
   // pinging is necessary to avoid that masquerading
   // servers close the connection
@@ -922,14 +922,14 @@ void CICQDaemon::icqPing()
 }
 
 //-----icqUpdateInfoTimestamp---------------------------------------------------
-void CICQDaemon::icqUpdateInfoTimestamp(const char *GUID)
+void IcqProtocol::icqUpdateInfoTimestamp(const char *GUID)
 {
   CPU_UpdateInfoTimestamp *p = new CPU_UpdateInfoTimestamp(GUID);
   SendEvent_Server(p);
 }
 
 //-----icqUpdatePhoneBookTimestamp----------------------------------------------
-void CICQDaemon::icqUpdatePhoneBookTimestamp()
+void IcqProtocol::icqUpdatePhoneBookTimestamp()
 {
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   o->SetClientInfoTimestamp(time(NULL));
@@ -941,7 +941,7 @@ void CICQDaemon::icqUpdatePhoneBookTimestamp()
 }
 
 //-----icqUpdatePictureTimestamp------------------------------------------------
-void CICQDaemon::icqUpdatePictureTimestamp()
+void IcqProtocol::icqUpdatePictureTimestamp()
 {
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   o->SetClientInfoTimestamp(time(NULL));
@@ -953,7 +953,7 @@ void CICQDaemon::icqUpdatePictureTimestamp()
 }
 
 //-----icqSetPhoneFollowMeStatus------------------------------------------------
-void CICQDaemon::icqSetPhoneFollowMeStatus(unsigned long nNewStatus)
+void IcqProtocol::icqSetPhoneFollowMeStatus(unsigned long nNewStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   o->SetClientStatusTimestamp(time(NULL));
@@ -970,7 +970,7 @@ void CICQDaemon::icqSetPhoneFollowMeStatus(unsigned long nNewStatus)
 }
 
 //-----icqUpdateContactList-----------------------------------------------------
-void CICQDaemon::icqUpdateContactList()
+void IcqProtocol::icqUpdateContactList()
 {
   unsigned short n = 0;
   StringList users;
@@ -999,7 +999,7 @@ void CICQDaemon::icqUpdateContactList()
   }
 }
 //-----icqTypingNotification---------------------------------------------------
-void CICQDaemon::icqTypingNotification(const char *_szId, bool _bActive)
+void IcqProtocol::icqTypingNotification(const char *_szId, bool _bActive)
 {
   if (gDaemon.sendTypingNotification())
   {
@@ -1009,7 +1009,7 @@ void CICQDaemon::icqTypingNotification(const char *_szId, bool _bActive)
 }
 
 //-----icqCheckInvisible--------------------------------------------------------
-void CICQDaemon::icqCheckInvisible(const char *_szId)
+void IcqProtocol::icqCheckInvisible(const char *_szId)
 {
   UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CSrvPacketTcp *p = new CPU_CheckInvisible(_szId);
@@ -1017,7 +1017,7 @@ void CICQDaemon::icqCheckInvisible(const char *_szId)
 }
 
 //-----icqSendVisibleList-------------------------------------------------------
-void CICQDaemon::icqSendVisibleList()
+void IcqProtocol::icqSendVisibleList()
 {
   // send user info packet
   // Go through the entire list of users, checking if each one is on
@@ -1036,7 +1036,7 @@ void CICQDaemon::icqSendVisibleList()
 
 
 //-----icqSendInvisibleList-----------------------------------------------------
-void CICQDaemon::icqSendInvisibleList()
+void IcqProtocol::icqSendInvisibleList()
 {
   StringList users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
@@ -1052,7 +1052,7 @@ void CICQDaemon::icqSendInvisibleList()
 }
 
 //-----icqAddToVisibleList------------------------------------------------------
-void CICQDaemon::icqAddToVisibleList(const UserId& userId)
+void IcqProtocol::icqAddToVisibleList(const UserId& userId)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   string accountId = LicqUser::getUserAccountId(userId);
@@ -1076,7 +1076,7 @@ void CICQDaemon::icqAddToVisibleList(const UserId& userId)
 }
 
 //-----icqRemoveFromVisibleList-------------------------------------------------
-void CICQDaemon::icqRemoveFromVisibleList(const UserId& userId)
+void IcqProtocol::icqRemoveFromVisibleList(const UserId& userId)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   string accountId = LicqUser::getUserAccountId(userId);
@@ -1106,7 +1106,7 @@ void CICQDaemon::icqRemoveFromVisibleList(const UserId& userId)
 }
 
 //-----icqAddToInvisibleList----------------------------------------------------
-void CICQDaemon::icqAddToInvisibleList(const UserId& userId)
+void IcqProtocol::icqAddToInvisibleList(const UserId& userId)
 {
   string accountId = LicqUser::getUserAccountId(userId);
   const char* _szId = accountId.c_str();
@@ -1130,7 +1130,7 @@ void CICQDaemon::icqAddToInvisibleList(const UserId& userId)
 }
 
 //-----icqRemoveFromInvisibleList-----------------------------------------------
-void CICQDaemon::icqRemoveFromInvisibleList(const UserId& userId)
+void IcqProtocol::icqRemoveFromInvisibleList(const UserId& userId)
 {
   string accountId = LicqUser::getUserAccountId(userId);
   const char* _szId = accountId.c_str();
@@ -1160,7 +1160,7 @@ void CICQDaemon::icqRemoveFromInvisibleList(const UserId& userId)
 }
 
 //-----icqAddToIgnoreList-------------------------------------------------------
-void CICQDaemon::icqAddToIgnoreList(const UserId& userId)
+void IcqProtocol::icqAddToIgnoreList(const UserId& userId)
 {
   if (!UseServerContactList()) return;
 
@@ -1173,7 +1173,7 @@ void CICQDaemon::icqAddToIgnoreList(const UserId& userId)
 }
 
 //-----icqRemoveFromIgnoreList--------------------------------------------------
-void CICQDaemon::icqRemoveFromIgnoreList(const UserId& userId)
+void IcqProtocol::icqRemoveFromIgnoreList(const UserId& userId)
 {
   if (!UseServerContactList()) return;
 
@@ -1184,7 +1184,7 @@ void CICQDaemon::icqRemoveFromIgnoreList(const UserId& userId)
 }
 
 //-----icqClearServerList-------------------------------------------------------
-void CICQDaemon::icqClearServerList()
+void IcqProtocol::icqClearServerList()
 {
   if (!UseServerContactList()) return;
 
@@ -1288,7 +1288,7 @@ void CICQDaemon::icqClearServerList()
 }
 
 //-----icqSendThroughServer-----------------------------------------------------
-LicqEvent* CICQDaemon::icqSendThroughServer(unsigned long eventId, const char *szId,
+LicqEvent* IcqProtocol::icqSendThroughServer(unsigned long eventId, const char *szId,
     unsigned char format, const string& message, CUserEvent* ue, unsigned short nCharset,
   size_t nMsgLen)
 {
@@ -1331,7 +1331,7 @@ LicqEvent* CICQDaemon::icqSendThroughServer(unsigned long eventId, const char *s
   return result;
 }
 
-unsigned long CICQDaemon::icqSendSms(const char* id, unsigned long ppid,
+unsigned long IcqProtocol::icqSendSms(const char* id, unsigned long ppid,
     const char* number, const char* message)
 {
   UserId userId = LicqUser::makeUserId(id, ppid);
@@ -1350,7 +1350,7 @@ unsigned long CICQDaemon::icqSendSms(const char* id, unsigned long ppid,
  *
  * Processes the given event possibly passes the result to the gui.
  *----------------------------------------------------------------------------*/
-void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
+void IcqProtocol::ProcessDoneEvent(ICQEvent *e)
 {
   // Write the event to the history file if appropriate
   if (e->m_pUserEvent != NULL &&
@@ -1437,7 +1437,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   }
 }
 
-unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
+unsigned long IcqProtocol::icqLogon(unsigned short logonStatus)
 {
   if (m_bLoggingOn)
   {
@@ -1473,7 +1473,7 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
   return 0;
 }
 
-unsigned long CICQDaemon::icqRequestLogonSalt()
+unsigned long IcqProtocol::icqRequestLogonSalt()
 {
   if (m_bNeedSalt)
   {
@@ -1487,7 +1487,7 @@ unsigned long CICQDaemon::icqRequestLogonSalt()
   return 0;
 }
 
-void CICQDaemon::icqLogoff()
+void IcqProtocol::icqLogoff()
 {
   // Kill the udp socket asap to avoid race conditions
   int nSD = m_nTCPSrvSocketDesc;
@@ -1520,7 +1520,7 @@ void CICQDaemon::icqLogoff()
   postLogoff(nSD, cancelledEvent);
 }
 
-void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
+void IcqProtocol::postLogoff(int nSD, ICQEvent *cancelledEvent)
 {
   if (m_xBARTService)
   {
@@ -1640,7 +1640,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 // -----------------------------------------------------------------------------
 // -----ConnectToServer---------------------------------------------------------
 
-int CICQDaemon::ConnectToLoginServer()
+int IcqProtocol::ConnectToLoginServer()
 {
   if (gDaemon.proxyEnabled())
     InitProxy();
@@ -1653,7 +1653,7 @@ int CICQDaemon::ConnectToLoginServer()
   return r;
 }
 
-int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
+int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
 {
   SrvSocket* s = new SrvSocket(gUserManager.ownerUserId(LICQ_PPID));
 
@@ -1707,7 +1707,7 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 }
 
 //-----FindUserForInfoUpdate-------------------------------------------------
-LicqUser* CICQDaemon::FindUserForInfoUpdate(const UserId& userId, LicqEvent* e,
+LicqUser* IcqProtocol::FindUserForInfoUpdate(const UserId& userId, LicqEvent* e,
    const char *t)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
@@ -1740,7 +1740,7 @@ LicqUser* CICQDaemon::FindUserForInfoUpdate(const UserId& userId, LicqEvent* e,
   return u;
 }
 
-string CICQDaemon::FindUserByCellular(const char *szCellular)
+string IcqProtocol::FindUserByCellular(const char *szCellular)
 {
   char szParsedNumber1[16], szParsedNumber2[16];
   string id;
@@ -1758,7 +1758,7 @@ string CICQDaemon::FindUserByCellular(const char *szCellular)
 }
 
 //-----ProcessSrvPacket---------------------------------------------------------
-bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
+bool IcqProtocol::ProcessSrvPacket(CBuffer& packet)
 {
   unsigned short nLen;
   unsigned short  nSequence;
@@ -1826,7 +1826,7 @@ bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
 
 //--------ProcessServiceFam----------------------------------------------------
 
-void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 {
   unsigned short snacFlags = packet.UnpackUnsignedShortBE(); // flags
   packet.UnpackUnsignedLongBE(); // sequence
@@ -2077,7 +2077,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessLocationFam-----------------------------------------------
-void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned short nFlags = */packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
@@ -2154,7 +2154,7 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessBuddyFam--------------------------------------------------
-void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 {
   switch (nSubtype)
   {
@@ -2633,7 +2633,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessMessageFam------------------------------------------------
-void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned short Flags =*/ packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
@@ -3656,7 +3656,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessListFam--------------------------------------------
-void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 {
   unsigned short nFlags = packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
@@ -4222,7 +4222,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessBosFam---------------------------------------------
-void CICQDaemon::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
+void IcqProtocol::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
 {
   switch (nSubtype)
   {
@@ -4257,7 +4257,7 @@ void CICQDaemon::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
 }
 
 //--------ProcessVariousFam-----------------------------------------
-void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
@@ -5669,7 +5669,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessAuthFam----------------------------------------------------
-void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
@@ -5829,7 +5829,7 @@ void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
   }
 }
 
-void CICQDaemon::ProcessUserList()
+void IcqProtocol::ProcessUserList()
 {
   if (receivedUserList.empty())
     return;
@@ -5909,7 +5909,7 @@ void CICQDaemon::ProcessUserList()
 
 //--------ProcessDataChannel---------------------------------------------------
 
-void CICQDaemon::ProcessDataChannel(CBuffer &packet)
+void IcqProtocol::ProcessDataChannel(CBuffer &packet)
 {
   unsigned short nFamily, nSubtype;
 
@@ -5959,7 +5959,7 @@ void CICQDaemon::ProcessDataChannel(CBuffer &packet)
 
 //--------ProcessCloseChannel--------------------------------------------------
 
-bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
+bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
 {
   int nSD = m_nTCPSrvSocketDesc;
   if (nSD < 0) {
@@ -6088,14 +6088,14 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   return true;
 }
 
-void  CICQDaemon::addToModifyUsers(unsigned long unique_id, const std::string data)
+void IcqProtocol::addToModifyUsers(unsigned long unique_id, const std::string data)
 {
   pthread_mutex_lock(&mutex_modifyserverusers);
   m_lszModifyServerUsers[unique_id] = data;
   pthread_mutex_unlock(&mutex_modifyserverusers);
 }
 
-int CICQDaemon::RequestReverseConnection(const char* id,
+int IcqProtocol::RequestReverseConnection(const char* id,
                                          unsigned long nData,
                                          unsigned long nLocalIP,
                                          unsigned short nLocalPort,

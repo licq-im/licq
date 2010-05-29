@@ -29,6 +29,7 @@
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../support.h"
+#include "icq.h"
 #include "packet.h"
 
 using namespace std;
@@ -143,7 +144,7 @@ unsigned long COscarService::SendEvent(const UserId& userId,
   LicqEvent* e = new LicqEvent(eventId, mySocketDesc, NULL, CONNECT_SERVER, userId);
   e->SetSubType(SubType);
   if (Request)
-    gLicqDaemon->PushEvent(e);
+    gIcqProtocol.PushEvent(e);
   else
     e->SetNoAck(true);
   pthread_mutex_lock(&mutex_sendqueue);
@@ -337,9 +338,9 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
       gLog.Warn(tr("%sError #%02x.%02x in BART request (%ld) for service 0x%02X.\n"),
                     L_WARNxSTR, err, suberr, RequestId, myFam);
 
-      LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_ERROR);
+      LicqEvent* e = gIcqProtocol.DoneServerEvent(RequestId, EVENT_ERROR);
       if (e)
-        gLicqDaemon->ProcessDoneEvent(e);
+        gIcqProtocol.ProcessDoneEvent(e);
       break;
     }
 
@@ -404,17 +405,17 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
             u->SavePictureInfo();
             gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
 
-            LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_SUCCESS);
+            LicqEvent* e = gIcqProtocol.DoneServerEvent(RequestId, EVENT_SUCCESS);
             if (e)
-              gLicqDaemon->ProcessDoneEvent(e);
+              gIcqProtocol.ProcessDoneEvent(e);
           }
           else
           {
             gLog.Warn(tr("%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or hashlength (%d).\n"),
                       L_WARNxSTR, u->GetAlias(), HashType, HashLength);
-            LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_FAILED);
+            LicqEvent* e = gIcqProtocol.DoneServerEvent(RequestId, EVENT_FAILED);
             if (e)
-              gLicqDaemon->ProcessDoneEvent(e);
+              gIcqProtocol.ProcessDoneEvent(e);
           }
           break;
         }
@@ -423,9 +424,9 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
         {
           gLog.Warn(tr("%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"),
                     L_WARNxSTR, u->GetAlias(), IconType);
-          LicqEvent* e = gLicqDaemon->DoneServerEvent(RequestId, EVENT_FAILED);
+          LicqEvent* e = gIcqProtocol.DoneServerEvent(RequestId, EVENT_FAILED);
           if (e)
-            gLicqDaemon->ProcessDoneEvent(e);
+            gIcqProtocol.ProcessDoneEvent(e);
           break;
         }
       }
@@ -441,7 +442,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
 bool COscarService::Initialize()
 {
   ChangeStatus(STATUS_SERVICE_REQ_SENT);
-  gLicqDaemon->icqRequestService(myFam);
+  gIcqProtocol.icqRequestService(myFam);
 
   if (!WaitForStatus(STATUS_SERVICE_REQ_ACKED))
   {
@@ -479,8 +480,8 @@ bool COscarService::Initialize()
   gSocketManager.AddSocket(s);
   gSocketManager.DropSocket(s);
   // Alert the select thread that there is a new socket
-  write(gLicqDaemon->pipe_newsocket[PIPE_WRITE], "S", 1);
-      
+  write(gIcqProtocol.pipe_newsocket[PIPE_WRITE], "S", 1);
+
   CPU_SendCookie *p1 = new CPU_SendCookie(myCookie.get(), myCookieLen, myFam);
   gLog.Info(tr("%sSending cookie for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
@@ -597,8 +598,8 @@ void *OscarServiceSendQueue_tep(void *p)
       {
         gLog.Warn(tr("%sCan't send event for service 0x%02X because we are not online.\n"),
                   L_WARNxSTR, os->myFam);
-        if (gLicqDaemon->DoneEvent(e, EVENT_ERROR) != NULL)
-          gLicqDaemon->ProcessDoneEvent(e);
+        if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+          gIcqProtocol.ProcessDoneEvent(e);
         else
           delete e;
         pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -613,8 +614,8 @@ void *OscarServiceSendQueue_tep(void *p)
         {
           gLog.Warn(tr("%sInitialization of socket for service 0x%02X failed, failing event\n"),
                     L_WARNxSTR, os->myFam);
-          if (gLicqDaemon->DoneEvent(e, EVENT_ERROR) != NULL)
-            gLicqDaemon->ProcessDoneEvent(e);
+          if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+            gIcqProtocol.ProcessDoneEvent(e);
           else
             delete e;
           pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -639,8 +640,8 @@ void *OscarServiceSendQueue_tep(void *p)
  
       if (!Sent)
       {
-        if (gLicqDaemon->DoneEvent(e, EVENT_ERROR) != NULL)
-          gLicqDaemon->ProcessDoneEvent(e);
+        if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+          gIcqProtocol.ProcessDoneEvent(e);
         else
           delete e;
       }

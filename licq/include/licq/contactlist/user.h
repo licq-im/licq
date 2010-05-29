@@ -13,10 +13,10 @@
 #include "../thread/lockable.h"
 #include "../userid.h"
 
-class CICQDaemon;
 class CUserEvent;
 class CMSN;
 class CSocketManager;
+class IcqProtocol;
 class TCPSocket;
 void* MonitorSockets_tep(void *);
 
@@ -892,9 +892,9 @@ protected:
   static pthread_mutex_t mutex_nNumUserEvents;
 
   friend class LicqDaemon::UserManager;
-  friend class ::CICQDaemon;
   friend class ::CMSN;
   friend class ::CSocketManager;
+  friend class ::IcqProtocol;
   friend void* ::MonitorSockets_tep(void *);
 };
 

@@ -990,7 +990,7 @@ protected:
   char m_nTimezone;
   char m_nHideEmail;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 
@@ -1007,7 +1007,7 @@ protected:
   char *m_szEmailSecondary;
   char *m_szEmailOld;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 
@@ -1038,7 +1038,7 @@ protected:
   char m_nLanguage2;
   char m_nLanguage3;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 //-----Meta_SetInterestsInfo----------------------------------------------------
@@ -1052,7 +1052,7 @@ protected:
 
   Licq::UserCategoryMap myInterests;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 
@@ -1069,7 +1069,7 @@ protected:
   Licq::UserCategoryMap myOrganizations;
   Licq::UserCategoryMap myBackgrounds;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 //-----Meta_SetWorkInfo------------------------------------------------------
@@ -1105,7 +1105,7 @@ protected:
   unsigned short m_nCompanyOccupation;
   char *m_szHomepage;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 
@@ -1121,7 +1121,7 @@ protected:
 
   char *m_szAbout;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 //-----RequestInfo-----------------------------------------------------------
@@ -1164,7 +1164,7 @@ protected:
   unsigned short m_nMetaCommand;
   char *m_szPassword;
 
-friend class CICQDaemon;
+  friend class IcqProtocol;
 };
 
 
