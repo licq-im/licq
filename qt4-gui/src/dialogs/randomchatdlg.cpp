@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq/daemon.h>
 #include <licq_events.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
@@ -85,7 +86,7 @@ RandomChatDlg::RandomChatDlg(QWidget* parent)
 RandomChatDlg::~RandomChatDlg()
 {
   if (myTag != 0)
-    gLicqDaemon->CancelEvent(myTag);
+    Licq::gDaemon.cancelEvent(myTag);
 }
 
 void RandomChatDlg::okPressed()
@@ -213,7 +214,7 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
 SetRandomChatGroupDlg::~SetRandomChatGroupDlg()
 {
   if (myTag != 0)
-    gLicqDaemon->CancelEvent(myTag);
+    Licq::gDaemon.cancelEvent(myTag);
 }
 
 void SetRandomChatGroupDlg::okPressed()

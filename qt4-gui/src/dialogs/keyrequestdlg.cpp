@@ -30,7 +30,6 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_icqd.h>
 #include <licq_user.h>
 #include <licq/daemon.h>
 #include <licq/protocolmanager.h>
@@ -125,7 +124,7 @@ KeyRequestDlg::~KeyRequestDlg()
 {
   if (myIcqEventTag != 0)
   {
-    gLicqDaemon->CancelEvent(myIcqEventTag);
+    Licq::gDaemon.cancelEvent(myIcqEventTag);
     myIcqEventTag = 0;
   }
 }

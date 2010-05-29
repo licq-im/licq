@@ -1278,7 +1278,7 @@ void UserSendCommon::cancelSend()
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
     tabDlg->setWindowTitle(myBaseTitle);
 
-  gLicqDaemon->CancelEvent(icqEventTag);
+  Licq::gDaemon.cancelEvent(icqEventTag);
 }
 
 void UserSendCommon::changeEventType(QAction* action)

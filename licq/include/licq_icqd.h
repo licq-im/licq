@@ -131,8 +131,6 @@ public:
 
   virtual void UpdateAllUsers() = 0;
   virtual void updateAllUsersInGroup(int groupId) = 0;
-  virtual void CancelEvent(unsigned long ) = 0;
-  virtual void CancelEvent(ICQEvent *) = 0;
 
   // SMS
   virtual unsigned long icqSendSms(const char* id, unsigned long ppid,

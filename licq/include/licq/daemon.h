@@ -102,6 +102,9 @@ public:
   virtual bool addUserEvent(User* u, CUserEvent* e) = 0;
   virtual void rejectEvent(const UserId& userId, CUserEvent* e) = 0;
 
+  void cancelEvent(unsigned long eventId);
+  void cancelEvent(LicqEvent* event);
+
   enum IgnoreTypes
   {
     IgnoreMassMsg = 1,

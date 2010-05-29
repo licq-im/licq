@@ -1936,7 +1936,7 @@ void CLicqConsole::InputMessage(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-        gLicqDaemon->CancelEvent(winMain->event);
+        Licq::gDaemon.cancelEvent(winMain->event);
     return;
 
   case STATE_MLE:
@@ -2030,7 +2030,7 @@ void CLicqConsole::InputSendFile(int cIn)
   {
   case STATE_PENDING:
     if(cIn == CANCEL_KEY)
-        gLicqDaemon->CancelEvent(winMain->event);
+        Licq::gDaemon.cancelEvent(winMain->event);
     return;
 
   case STATE_LE:
@@ -2201,7 +2201,7 @@ void CLicqConsole::InputUrl(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-        gLicqDaemon->CancelEvent(winMain->event);
+        Licq::gDaemon.cancelEvent(winMain->event);
     return;
 
   case STATE_LE:
@@ -2307,7 +2307,7 @@ void CLicqConsole::InputSms(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-        gLicqDaemon->CancelEvent(winMain->event);
+        Licq::gDaemon.cancelEvent(winMain->event);
     return;
 
   case STATE_MLE:
@@ -2601,7 +2601,7 @@ void CLicqConsole::InputSearch(int cIn)
       if (cIn == CANCEL_KEY)
       {
         if (winMain->event != 0)
-          gLicqDaemon->CancelEvent(winMain->event);
+          Licq::gDaemon.cancelEvent(winMain->event);
       }
       return;
     }
@@ -2953,7 +2953,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
       if(cIn == CANCEL_KEY)
       {
         if(winMain->event != 0)
-          gLicqDaemon->CancelEvent(winMain->event);
+          Licq::gDaemon.cancelEvent(winMain->event);
       }
       return;
     }

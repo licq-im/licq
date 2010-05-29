@@ -391,6 +391,16 @@ void Daemon::rejectEvent(const UserId& userId, CUserEvent* e)
   Licq::gStatistics.increase(Licq::Statistics::EventsRejectedCounter);
 }
 
+void Licq::Daemon::cancelEvent(unsigned long eventId)
+{
+  gIcqProtocol.CancelEvent(eventId);
+}
+
+void Licq::Daemon::cancelEvent(LicqEvent* event)
+{
+  gIcqProtocol.CancelEvent(event);
+}
+
 void Licq::Daemon::PushPluginEvent(LicqEvent* e)
 {
   LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralEvent(e);

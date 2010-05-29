@@ -34,6 +34,7 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
+#include <licq/daemon.h>
 #include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_user.h>
@@ -113,7 +114,7 @@ ShowAwayMsgDlg::~ShowAwayMsgDlg()
   gUserManager.DropUser(u);
 
   if (icqEventTag != 0)
-    gLicqDaemon->CancelEvent(icqEventTag);
+    Licq::gDaemon.cancelEvent(icqEventTag);
 }
 
 void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)

@@ -41,6 +41,7 @@
 #include <licq_icqd.h>
 #include <licq_translate.h>
 #include <licq_user.h>
+#include <licq/daemon.h>
 #include <licq/protocolmanager.h>
 
 #include "core/signalmanager.h"
@@ -275,7 +276,7 @@ MMSendDlg::~MMSendDlg()
 {
   if (icqEventTag != 0)
   {
-    gLicqDaemon->CancelEvent(icqEventTag);
+    Licq::gDaemon.cancelEvent(icqEventTag);
     icqEventTag = 0;
   }
 }
@@ -284,7 +285,7 @@ void MMSendDlg::slot_cancel()
 {
   if (icqEventTag != 0)
   {
-    gLicqDaemon->CancelEvent(icqEventTag);
+    Licq::gDaemon.cancelEvent(icqEventTag);
     icqEventTag = 0;
   }
   //disconnect(sigman, SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(slot_done(const LicqEvent*)));
