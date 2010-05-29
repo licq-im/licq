@@ -37,11 +37,11 @@
 #include <fcntl.h>
 
 #include <licq/daemon.h>
+#include <licq/icq.h>
 #include "licq/pluginmanager.h"
 #include "licq/protocolmanager.h"
 #include "licq_user.h"
 #include "licq_constants.h"
-#include <licq_icqd.h>
 #include "licq_log.h"
 #include "licq_translate.h"
 

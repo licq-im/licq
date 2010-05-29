@@ -19,9 +19,10 @@
 
 #include <unistd.h>
 
-#include "licq_icqd.h"
-#include "licq/licqversion.h"
+#include <licq_constants.h>
 #include "licq/pluginmanager.h"
+#include <licq/version.h>
+
 
 #define LProto_Name LProto_icq_Name
 #define LProto_Version LProto_icq_Version

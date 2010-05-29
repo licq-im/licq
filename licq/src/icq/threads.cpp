@@ -12,8 +12,8 @@
 #include <ctime>
 #include <unistd.h>
 
+#include <licq/icqdefines.h>
 #include <licq/packet.h>
-#include <licq_icq.h>
 #include "licq_log.h"
 #include <licq_user.h>
 

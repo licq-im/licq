@@ -5,8 +5,6 @@ set(licq_HEADERS
   licq_events.h
   licq_filetransfer.h
   licq_icq.h
-  licq_icqd.h
-  licq_log.h
   licq_message.h
   licq_plugin.h
   licq_protoplugin.h

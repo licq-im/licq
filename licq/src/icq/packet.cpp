@@ -22,10 +22,10 @@
 #include <boost/scoped_array.hpp>
 
 #include "licq/byteorder.h"
+#include <licq/icqdefines.h>
 #include "licq/md5.h"
 #include <licq/utility.h>
 #include "licq_socket.h"
-#include "licq_icq.h"
 #include "licq_translate.h"
 #include "licq_log.h"
 #include "licq_color.h"

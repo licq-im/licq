@@ -6,7 +6,9 @@ set(licq_HEADERS
   conversation.h
   daemon.h
   gpghelper.h
+  icq.h
   icqcodes.h
+  icqdefines.h
   inifile.h
   log.h
   logservice.h

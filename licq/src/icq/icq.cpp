@@ -16,9 +16,9 @@
 #include <ctime>
 #include <sys/stat.h>
 
+#include <licq/icqdefines.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
-#include "licq_icq.h"
 #include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"

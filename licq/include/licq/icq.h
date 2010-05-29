@@ -3,8 +3,8 @@ ICQ.H
 header file containing all the main procedures to interface with the ICQ server at mirabilis
 */
 
-#ifndef LICQ_ICQD_H
-#define LICQ_ICQD_H
+#ifndef LICQ_ICQ_H
+#define LICQ_ICQ_H
 
 #include <boost/noncopyable.hpp>
 #include <list>

@@ -8,8 +8,8 @@
 
 #include <licq_chat.h> // ChatClientList
 #include <licq_filetransfer.h> // FileList, ConstFileList
-#include <licq_icq.h>
 #include <licq/contactlist/user.h>
+#include <licq/icqdefines.h>
 #include <licq/userid.h>
 #include <licq/packet.h>
 

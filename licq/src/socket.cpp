@@ -24,12 +24,12 @@
 // Localization
 #include "gettext.h"
 
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 #include "licq_socket.h"
-#include "licq_icq.h"
 #include "licq_log.h"
 #include "licq_user.h"
 #include "support.h"
-#include "licq_icqd.h"
 #include "licq_proxy.h"
 
 #ifdef USE_OPENSSL

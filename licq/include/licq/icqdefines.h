@@ -1,6 +1,6 @@
 // ICQ definitions:
-#ifndef ICQDEFINES_H
-#define ICQDEFINES_H
+#ifndef LICQ_ICQDEFINES_H
+#define LICQ_ICQDEFINES_H
 
 // Version constants
 #define MODE_DIRECT 0x04

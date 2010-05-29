@@ -20,7 +20,7 @@
 #ifndef LICQDAEMON_ICQ_H
 #define LICQDAEMON_ICQ_H
 
-#include <licq_icqd.h>
+#include <licq/icq.h>
 
 #include <boost/shared_array.hpp>
 #include <list>

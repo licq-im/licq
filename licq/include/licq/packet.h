@@ -21,7 +21,7 @@
 
 #include <cstdlib> // NULL
 
-#include "licq_icq.h" // ICQ_CHNxNONE
+#include "icqdefines.h" // ICQ_CHNxNONE
 
 class INetSocket;
 

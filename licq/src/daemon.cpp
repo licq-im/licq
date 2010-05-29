@@ -30,10 +30,10 @@
 
 #include <licq_constants.h>
 #include <licq_events.h>
-#include <licq_icq.h>
 #include <licq_log.h>
 #include <licq_proxy.h>
 #include <licq_translate.h>
+#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/statistics.h>
 #include <licq/thread/mutexlocker.h>

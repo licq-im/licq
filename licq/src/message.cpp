@@ -17,11 +17,11 @@
 #include "gettext.h"
 
 #include "licq/gpghelper.h"
-#include <licq_icq.h>
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
 #include "licq_message.h"
 #include "licq_user.h"
 #include "licq_translate.h"
-#include "licq_icqd.h"
 #include "support.h"
 
 #ifdef USE_HEBREW

@@ -23,7 +23,7 @@
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "licq_message.h"
-#include "licq_icq.h"
+#include <licq/icqdefines.h>
 #include <licq/userid.h>
 
 #include "../gettext.h"

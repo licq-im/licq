@@ -3,10 +3,10 @@
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
 
-#include <licq_icq.h>
 #include "licq_log.h"
 #include "licq_events.h"
 #include <licq/daemon.h>
+#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 
 #include "../gettext.h"
