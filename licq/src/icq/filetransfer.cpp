@@ -8,6 +8,8 @@
 
 #include "config.h"
 
+#include <licq/icqfiletransfer.h>
+
 #include <ctype.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -21,7 +23,6 @@
 // Localization
 #include "gettext.h"
 
-#include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "licq_translate.h"

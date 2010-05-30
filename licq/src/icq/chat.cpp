@@ -8,7 +8,7 @@
 
 #include "config.h"
 
-#include "licq_chat.h"
+#include <licq/icqchat.h>
 
 #include <cctype>
 #include <unistd.h>

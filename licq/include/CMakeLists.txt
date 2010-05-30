@@ -1,9 +1,7 @@
 set(licq_HEADERS
-  licq_chat.h
   licq_color.h
   licq_constants.h
   licq_events.h
-  licq_filetransfer.h
   licq_log.h
   licq_message.h
   licq_plugin.h

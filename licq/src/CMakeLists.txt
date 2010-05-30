@@ -27,8 +27,6 @@ set(licq_SRCS
   gpghelper.cpp
   hebrev.c
   icqcolor.cpp
-  icqd-chat.cpp
-  icqd-filetransfer.cpp
   icqevent.cpp
   licq.cpp
   log.cpp
@@ -57,7 +55,9 @@ set(licq_SRCS
   icq/icq.cpp
   icq/icq-srv.cpp
   icq/icq-tcp.cpp
+  icq/chat.cpp
   icq/codes.c
+  icq/filetransfer.cpp
   icq/packet.cpp
   icq/oscarservice.cpp
   icq/threads.cpp

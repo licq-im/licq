@@ -23,6 +23,8 @@
 
 #include "licq/byteorder.h"
 #include "licq/gpghelper.h"
+#include <licq/icqchat.h>
+#include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
 #include <licq/statistics.h>
 #include "licq_translate.h"
@@ -30,8 +32,6 @@
 #include "licq_user.h"
 #include "licq_events.h"
 #include "licq_log.h"
-#include "licq_chat.h"
-#include "licq_filetransfer.h"
 #include "licq/version.h"
 
 #include "../contactlist/user.h"

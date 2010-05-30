@@ -24,7 +24,7 @@
 #include <QTextCodec>
 
 #include <licq_user.h>
-#include <licq_chat.h>
+#include <licq/icqchat.h>
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserCodec */

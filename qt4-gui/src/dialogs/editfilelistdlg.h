@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-#include <licq_filetransfer.h>
+#include <licq/icqfiletransfer.h>
 
 class QListWidget;
 class QPushButton;

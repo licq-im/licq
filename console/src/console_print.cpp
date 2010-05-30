@@ -8,7 +8,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqcodes.h>
-#include <licq_filetransfer.h>
+#include <licq/icqfiletransfer.h>
 
 using namespace std;
 using Licq::User;

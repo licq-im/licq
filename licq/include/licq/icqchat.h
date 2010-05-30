@@ -1,5 +1,5 @@
-#ifndef CHAT_H
-#define CHAT_H
+#ifndef LICQ_ICQCHAT_H
+#define LICQ_ICQCHAT_H
 
 #include <cstdlib>
 #include <deque>
@@ -431,5 +431,3 @@ friend void ChatWaitForSignal_cleanup(void *);
 
 
 #endif
-
-

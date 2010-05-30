@@ -1,5 +1,5 @@
-#ifndef FILET_H
-#define FILET_H
+#ifndef LICQ_ICQFILETRANSFER_H
+#define LICQ_ICQFILETRANSFER_H
 
 /*---------------------------------------------------------------------------
  * FileTransfer Manager - CFileTransferManager

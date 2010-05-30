@@ -23,7 +23,7 @@
 
 class QLabel;
 
-#include <licq_filetransfer.h>
+#include <licq/icqfiletransfer.h>
 
 #include "usersendcommon.h"
 

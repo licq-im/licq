@@ -23,7 +23,7 @@
 #include <QTimer>
 #include <QWidget>
 
-#include <licq_filetransfer.h>
+#include <licq/icqfiletransfer.h>
 #include <licq/userid.h>
 
 class CFileTransferManager;
