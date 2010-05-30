@@ -28,8 +28,8 @@
 #include <pthread.h>
 
 #include <licq/buffer.h>
+#include <licq/icqfiletransfer.h>
 #include <licq/userid.h>
-#include <licq_filetransfer.h>
 
 class COscarService;
 class CPacketTcp;

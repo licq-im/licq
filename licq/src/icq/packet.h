@@ -6,10 +6,10 @@
 #include <pthread.h>
 #include <string>
 
-#include <licq_chat.h> // ChatClientList
-#include <licq_filetransfer.h> // FileList, ConstFileList
 #include <licq/contactlist/user.h>
+#include <licq/icqchat.h> // ChatClientList
 #include <licq/icqdefines.h>
+#include <licq/icqfiletransfer.h> // FileList, ConstFileList
 #include <licq/userid.h>
 #include <licq/packet.h>
 
