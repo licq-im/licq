@@ -20,8 +20,8 @@
 #ifndef LICQ_PROXY_H
 #define LICQ_PROXY_H
 
-#include <netinet/in.h>
 #include <string>
+#include <sys/socket.h>
 
 // proxy types
 #define PROXY_TYPE_HTTP 1

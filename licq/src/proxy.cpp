@@ -16,23 +16,17 @@
 
 #include <licq/proxy.h>
 
-#include <arpa/inet.h>
 #include <cerrno>
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/types.h>
+#include <cstdio>
+#include <cstring>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <netdb.h>
-#include <fcntl.h>
+#include <sys/types.h>
 #include <unistd.h>
 
-#include "licq_log.h"
+#include <licq_log.h>
 #include <licq_socket.h>
 
 #include "gettext.h"
-#include "support.h"
 
 static int  base64_length(int len);
 static void base64_encode(const char *s, char *store, int length);
