@@ -159,7 +159,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
   CBuffer *buf;
   bool sent = false;
   bool bExit = false;
-  char szErrorBuf[128];
+  string errorStr;
 
   pthread_cleanup_push(cleanup_mutex, &send_mutex);
 
@@ -289,9 +289,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
       delete buf;
 
       if (!sent)
-      {
-        s->ErrorStr(szErrorBuf, 128);
-      }
+        errorStr = s->errorStr();
 
       // We don't close the socket as it should be closed by the server thread
       gSocketManager.DropSocket(s);
@@ -314,7 +312,7 @@ exit_server_thread:
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
-              nSequence, L_BLANKxSTR, szErrorBuf);
+        nSequence, L_BLANKxSTR, errorStr.c_str());
 
     if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
     {
@@ -522,7 +520,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
 
   CBuffer *buf;
   bool sent;
-  char szErrorBuf[128];
+  string errorStr;
   pthread_cleanup_push(cleanup_socket, s);
 
   pthread_mutex_lock(&gIcqProtocol.mutex_cancelthread);
@@ -544,7 +542,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     sent = s->Send(buf);
 
     if (!sent)
-      s->ErrorStr(szErrorBuf, 128);
+      errorStr = s->errorStr();
 
     gSocketManager.DropSocket(s);
   pthread_cleanup_pop(0);
@@ -559,7 +557,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
-     -nSequence, L_BLANKxSTR, szErrorBuf);
+        -nSequence, L_BLANKxSTR, errorStr.c_str());
     write(gIcqProtocol.pipe_newsocket[PIPE_WRITE], "S", 1);
     // Kill the event, do after the above as ProcessDoneEvent erase the event
     if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
@@ -869,11 +867,8 @@ void *MonitorSockets_tep(void* /* p */)
                 gLog.Info(tr("%sConnection to %s was closed.\n"), L_TCPxSTR,
                 USERID_TOSTR(tcp->userId()));
               else
-              {
-                char buf[128];
                 gLog.Info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
-                USERID_TOSTR(tcp->userId()), L_BLANKxSTR, tcp->ErrorStr(buf, 128));
-              }
+                    tcp->userId().toString().c_str(), L_BLANKxSTR, tcp->errorStr().c_str());
           if (USERID_ISVALID(tcp->userId()))
           {
             LicqUser* u = gUserManager.fetchUser(tcp->userId(), LOCK_W);

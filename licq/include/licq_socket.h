@@ -72,7 +72,7 @@ public:
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
 
   int Error();
-  char *ErrorStr(char *, int);
+  std::string errorStr() const;
 
   /**
    * Get IP address of local endpoint as a readable string

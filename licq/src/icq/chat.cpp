@@ -901,12 +901,11 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 {
   if (!u->sock.RecvPacket())
   {
-    char buf[128];
     if (u->sock.Error() == 0)
       gLog.Info(tr("%sChat: Remote end disconnected.\n"), L_TCPxSTR);
     else
       gLog.Info(tr("%sChat: Lost remote end:\n%s%s\n"), L_TCPxSTR,
-                L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
+          L_BLANKxSTR, u->sock.errorStr().c_str());
     return false;
   }
 
@@ -1025,9 +1024,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
          m_szFontFamily, m_nFontEncoding, m_nFontStyle, l);
       if (!u->sock.SendPacket(p_colorfont.getBuffer()))
       {
-        char buf[128];
         gLog.Error("%sChat: Send error (color/font packet):\n%s%s\n",
-                   L_ERRORxSTR, L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
+            L_ERRORxSTR, L_BLANKxSTR, u->sock.errorStr().c_str());
         return false;
       }
       u->state = CHAT_STATE_WAITxFORxFONT;
@@ -1110,9 +1108,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
          m_szFontFamily, m_nFontEncoding, m_nFontStyle);
       if (!u->sock.SendPacket(p_font.getBuffer()))
       {
-        char buf[128];
         gLog.Error("%sChat: Send error (font packet):\n%s%s\n",
-                   L_ERRORxSTR, L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
+            L_ERRORxSTR, L_BLANKxSTR, u->sock.errorStr().c_str());
         return false;
       }
 
@@ -1168,12 +1165,11 @@ bool CChatManager::ProcessRaw(CChatUser *u)
 {
   if (!u->sock.RecvRaw())
   {
-    char buf[128];
     if (u->sock.Error() == 0)
       gLog.Info(tr("%sChat: Remote end disconnected.\n"), L_TCPxSTR);
     else
       gLog.Info(tr("%sChat: Lost remote end:\n%s%s\n"), L_TCPxSTR,
-                L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
+          L_BLANKxSTR, u->sock.errorStr().c_str());
     return false;
   }
 
@@ -1914,9 +1910,8 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
 
   if (!u->sock.SendRaw(&b_out))
   {
-    char buf[128];
     gLog.Warn(tr("%sChat: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
-               u->sock.ErrorStr(buf, 128));
+        u->sock.errorStr().c_str());
     CloseClient(u);
     return false;
   }
@@ -1945,9 +1940,8 @@ void CChatManager::SendBuffer_Raw(CBuffer *b)
 
       if (!u->sock.SendRaw(b))
       {
-        char buf[128];
         gLog.Warn(tr("%sChat: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
-                   u->sock.ErrorStr(buf, 128));
+            u->sock.errorStr().c_str());
         CloseClient(u);
         ok = false;
         break;

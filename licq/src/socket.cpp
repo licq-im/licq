@@ -208,43 +208,33 @@ int INetSocket::Error()
   return 0;
 }
 
-
-//-----INetSocket::ErrorStr---------------------------------------------------
-char *INetSocket::ErrorStr(char *buf, int buflen)
+string INetSocket::errorStr() const
 {
   switch (m_nErrorType)
   {
     case SOCK_ERROR_errno:
-      strncpy(buf, strerror(errno), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+      return strerror(errno);
 
     case SOCK_ERROR_h_errno:
-      strncpy(buf, hstrerror(h_errno), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+      return hstrerror(h_errno);
 
     case SOCK_ERROR_desx:
-      strncpy(buf, tr("DesX encryption/decryption failure"), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+      return tr("DesX encryption/decryption failure");
 
     case SOCK_ERROR_none:
-      strncpy(buf, tr("No error detected"), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+      return tr("No error detected");
 
-    case SOCK_ERROR_internal:
-      strncpy(buf, tr("Internal error"), buflen);
-      buf[buflen - 1] = '\0';
-      break;
     case SOCK_ERROR_proxy:
       if (m_xProxy != NULL)
-	return m_xProxy->ErrorStr(buf, buflen);
-      break;
-  }
+      {
+        char buf[128];
+        return m_xProxy->ErrorStr(buf, 128);
+      }
 
-  return buf;
+    case SOCK_ERROR_internal:
+    default:
+      return tr("Internal error");
+  }
 }
 
 
@@ -694,10 +684,9 @@ bool SrvSocket::RecvPacket()
       if (nBytesReceived == 0)
         gLog.Warn(tr("server socket was closed!!!\n"));
       else {
-        char buf[128];
         m_nErrorType = SOCK_ERROR_errno;
         gLog.Warn(tr("%serror during receiving from server socket :-((\n%s%s\n"),
-                  L_WARNxSTR, L_BLANKxSTR, ErrorStr(buf, sizeof(buf)));
+            L_WARNxSTR, L_BLANKxSTR, errorStr().c_str());
       }
       delete[] buffer;
       return (false);

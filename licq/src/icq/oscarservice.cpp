@@ -104,11 +104,9 @@ bool COscarService::SendPacket(CPacket *p)
   Buffer *b = p->Finalize(s);
   if (!s->Send(b))
   {
-    char ErrorBuf[128];
-    s->ErrorStr(ErrorBuf, 128);
     gLog.Warn(tr("%sError sending event (FAM #%02X, Subtype #%02X, Sequence #%hu):\n%s%s.\n"),
               L_WARNxSTR, (unsigned short)((p->SNAC() >> 16) & 0xffff), (unsigned short)(p->SNAC() & 0xffff),
-              p->Sequence(), L_BLANKxSTR, ErrorBuf);
+        p->Sequence(), L_BLANKxSTR, s->errorStr().c_str());
     gSocketManager.DropSocket(s);
     delete b;
     return false;

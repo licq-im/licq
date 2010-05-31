@@ -413,10 +413,9 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
   // Connect to the SMTP server
   if (!tcp->DestinationSet() && !tcp->connectTo(mySmtpHost.c_str(), m_nSMTPPort))
   {
-    char buf[128];
     gLog.Warn("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
         tcp->getRemoteIpString().c_str(), tcp->getRemotePort(), L_BLANKxSTR,
-              tcp->ErrorStr(buf, 128));
+        tcp->errorStr().c_str());
     return false;
   }
   char fin[256];

@@ -444,12 +444,11 @@ bool CFileTransferManager::ProcessPacket()
 {
   if (!ftSock.RecvPacket())
   {
-    char buf[128];
     if (ftSock.Error() == 0)
       gLog.Info(tr("%sFile Transfer: Remote end disconnected.\n"), L_TCPxSTR);
     else
       gLog.Warn(tr("%sFile Transfer: Lost remote end:\n%s%s\n"), L_WARNxSTR,
-                L_BLANKxSTR, ftSock.ErrorStr(buf, 128));
+          L_BLANKxSTR, ftSock.errorStr().c_str());
     if (m_nState == FT_STATE_WAITxFORxFILExINFO)
       m_nResult = FT_DONExBATCH;
     else
@@ -1053,9 +1052,8 @@ bool CFileTransferManager::SendBuffer(CBuffer *b)
 {
   if (!ftSock.SendPacket(b))
   {
-    char buf[128];
     gLog.Warn(tr("%sFile Transfer: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
-       ftSock.ErrorStr(buf, 128));
+        ftSock.errorStr().c_str());
     return false;
   }
   return true;

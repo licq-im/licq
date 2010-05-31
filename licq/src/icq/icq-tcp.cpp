@@ -1076,11 +1076,10 @@ bool IcqProtocol::Handshake_Send(TCPSocket *s, const char* id,
   return true;
   
 sock_error:
-  char buf[128];
   if (s->Error() == 0)
     gLog.Warn(tr("%sHandshake error, remote side closed connection.\n"), L_WARNxSTR);
   else
-    gLog.Warn(tr("%sHandshake socket error:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+    gLog.Warn(tr("%sHandshake socket error:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, s->errorStr().c_str());
   return false;
 }
 
@@ -1211,7 +1210,7 @@ bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
     if (!sock->connectTo(nIp, nPort))
     {
       gLog.Warn(tr("%sConnect to %s failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
-                L_BLANKxSTR, sock->ErrorStr(buf, 128));
+          L_BLANKxSTR, sock->errorStr().c_str());
 
       // Now try the internal ip if it is different from this one and we are behind a firewall
       if (sock->Error() != EINTR && nIntIp != nIp &&
@@ -1222,9 +1221,8 @@ bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
 
         if (!sock->connectTo(nIntIp, nPort))
         {
-          char buf[128];
           gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
-                    L_BLANKxSTR, sock->ErrorStr(buf, 128));
+              L_BLANKxSTR, sock->errorStr().c_str());
           return false;
         }
       }
@@ -1243,7 +1241,7 @@ bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
     if (!sock->connectTo(nIntIp, nPort))
     {
       gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
-         L_BLANKxSTR, sock->ErrorStr(buf, 128));
+          L_BLANKxSTR, sock->errorStr().c_str());
       return false;
     }
   }
@@ -1289,9 +1287,8 @@ int IcqProtocol::ReverseConnectToUser(const char* id, unsigned long nIp,
   // If we fail to set the remote address, the ip must be 0
   if (!s->connectTo(nIp, nPort))
   {
-    char buf[128];
     gLog.Warn(tr("%sReverse connect to %s failed:\n%s%s.\n"), L_WARNxSTR,
-        USERID_TOSTR(userId), L_BLANKxSTR, s->ErrorStr(buf, 128));
+        userId.toString().c_str(), L_BLANKxSTR, s->errorStr().c_str());
 
     CPU_ReverseConnectFailed* p = new CPU_ReverseConnectFailed(id, nMsgID1,
         nMsgID2, nPort, nFailedPort, nId);
@@ -3706,11 +3703,10 @@ bool IcqProtocol::Handshake_Recv(TCPSocket *s, unsigned short nPort, bool bConfi
   return true;
 
 sock_error:
-  char buf[128];
   if (s->Error() == 0)
     gLog.Warn(tr("%sHandshake error, remote side closed connection.\n"), L_WARNxSTR);
   else
-    gLog.Warn(tr("%sHandshake socket error:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+    gLog.Warn(tr("%sHandshake socket error:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, s->errorStr().c_str());
   return false;
 }
 
@@ -3776,11 +3772,10 @@ bool IcqProtocol::Handshake_RecvConfirm_v7(TCPSocket *s)
   }
  
  sock_error:
-  char buf[128];
   if (s->Error() == 0)
     gLog.Warn(tr("%sHandshake error, remote side closed connection.\n"), L_WARNxSTR);
   else
-    gLog.Warn(tr("%sHandshake socket error:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+    gLog.Warn(tr("%sHandshake socket error:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, s->errorStr().c_str());
   return false;
 }
 

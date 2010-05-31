@@ -251,7 +251,6 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
     }
   }
 
-  char sz[64];
   if (s->Descriptor() != -1)
   {
     gLog.Info(tr("%sLocal TCP server started on port %d.\n"), L_TCPxSTR, s->getLocalPort());
@@ -263,7 +262,7 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
   else
   {
     gLog.Warn(tr("%sFailed to start local TCP server:\n%s%s\n"), L_WARNxSTR,
-       L_BLANKxSTR, s->ErrorStr(sz, 64));
+        L_BLANKxSTR, s->errorStr().c_str());
   }
 
   return s->Descriptor();
