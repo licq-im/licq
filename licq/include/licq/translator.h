@@ -5,23 +5,25 @@
 // Modified by Andrew Frolov (dron@linuxer.net)
 // Further modified by Graham Roff
 
-#ifndef _LICQ_TRANSLATE_H_INCLUDED_
-#define _LICQ_TRANSLATE_H_INCLUDED_
+#ifndef LICQ_TRANSLATE_H
+#define LICQ_TRANSLATE_H
 
 #include <string>
 
+namespace Licq
+{
 
-class CTranslator
+class Translator
 {
 public:
-  CTranslator();
-  ~CTranslator();
+  Translator();
+  ~Translator();
 
   void setDefaultTranslationMap();
-  bool setTranslationMap(const char* mapFileName);
+  bool setTranslationMap(const std::string& mapFileName);
   bool isDefaultMap() { return myMapDefault; }
-  const char* getMapName() { return myMapName; }
-  const char* getMapFileName() { return myMapFileName; }
+  const std::string& getMapName() const { return myMapName; }
+  const std::string& getMapFileName() const { return myMapFileName; }
 
   void ServerToClient(char* array);
   void ServerToClient(char& value);
@@ -46,8 +48,8 @@ public:
 
 protected:
   bool myMapDefault;
-  char* myMapName;
-  char* myMapFileName;
+  std::string myMapName;
+  std::string myMapFileName;
   unsigned char serverToClientTab[256];
   unsigned char clientToServerTab[256];
 
@@ -55,6 +57,8 @@ protected:
       bool& ok, int length = -1, size_t* outDone = NULL);
 };
 
-extern CTranslator gTranslator;
+extern Translator gTranslator;
 
-#endif //_LICQ_TRANSLATE_H_INCLUDED_
+} // namespace Licq
+
+#endif

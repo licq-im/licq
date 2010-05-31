@@ -37,12 +37,12 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_translate.h>
 #include <licq_user.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/translator.h>
 
 #include "core/signalmanager.h"
 
@@ -181,7 +181,7 @@ void MMSendDlg::SendNext()
       gUserManager.DropUser(u);
 
       // create initial strings (implicit copying, no allocation impact :)
-      char* tmp = gTranslator.NToRN(codec->fromUnicode(s1));
+      char* tmp = Licq::gTranslator.NToRN(codec->fromUnicode(s1));
       QByteArray wholeMessageRaw(tmp);
       delete [] tmp;
       int wholeMessagePos = 0;
@@ -206,7 +206,7 @@ void MMSendDlg::SendNext()
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
           messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
-          tmp = gTranslator.RNToN(messageRaw);
+          tmp = Licq::gTranslator.RNToN(messageRaw);
           messageRaw = tmp;
           delete [] tmp;
           message = codec->toUnicode(messageRaw);
@@ -236,7 +236,7 @@ void MMSendDlg::SendNext()
         icqEventTag = gProtocolManager.sendMessage(userId, messageRaw.data(),
             true, ICQ_TCPxMSG_NORMAL, true);
 
-        tmp = gTranslator.NToRN(messageRaw);
+        tmp = Licq::gTranslator.NToRN(messageRaw);
         wholeMessagePos += strlen(tmp);
         delete [] tmp;
       }

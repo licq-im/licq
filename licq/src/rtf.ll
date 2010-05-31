@@ -17,7 +17,7 @@
      ***************************************************************************/
 
 #include <licq/icq.h>
-#include "licq_translate.h"
+#include <licq/translator.h>
 
 #include <vector>
 #include <stack>
@@ -574,10 +574,10 @@ void Level::flush()
     }
     if (encoding == NULL) encoding = p->encoding;
     p->icq->client->toUTF(text, encoding);*/
-    /*char *szText = gTranslator.ToUnicode(text);
+  /*char *szText = Licq::gTranslator.ToUnicode(text);
     text = szText;*/
     char *szText = const_cast<char *>(text.c_str());
-    gTranslator.ServerToClient(szText);
+  Licq::gTranslator.ServerToClient(szText);
     text = szText;
     p->PrintQuoted(text.c_str());
     text = "";
@@ -754,7 +754,7 @@ std::string RTF2HTML::Parse(const char *rtf)
         case UNICODE_CHAR:{
                 cur_level.flush();
                 std::string s;
-                gTranslator.utf16to8(atol(yytext + 2), s);
+        Licq::gTranslator.utf16to8(atol(yytext + 2), s);
                 PrintQuoted(s.c_str());
                 break;
             }

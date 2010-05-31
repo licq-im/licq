@@ -14,34 +14,31 @@
 
 #include "config.h"
 
+#include <licq/translator.h>
+
 #include <cerrno>
 #include <string.h>
 #include <iconv.h>
 #include <stdlib.h>
 
-#include "licq_translate.h"
 #include "licq_log.h"
 
 using namespace std;
+using Licq::Translator;
 
-CTranslator gTranslator;
+Licq::Translator Licq::gTranslator;
 
-CTranslator::CTranslator() :
-  myMapName(NULL),
-  myMapFileName(NULL)
+Translator::Translator()
 {
   setDefaultTranslationMap();
 }
 
-CTranslator::~CTranslator()
+Translator::~Translator()
 {
-  if (myMapName != NULL)
-    free(myMapName);
-  if (myMapFileName != NULL)
-    free(myMapFileName);
+  // Empty
 }
 
-void CTranslator::setDefaultTranslationMap()
+void Translator::setDefaultTranslationMap()
 {
   if (myMapDefault)
     return;
@@ -54,35 +51,27 @@ void CTranslator::setDefaultTranslationMap()
 
   myMapDefault = true;
 
-  if (myMapName != NULL)
-  {
-    free(myMapName);
-    myMapName = NULL;
-  }
-  if (myMapFileName != NULL)
-  {
-    free(myMapFileName);
-    myMapFileName = NULL;
-  }
+  myMapName = "";
+  myMapFileName = "";
 }
 
-bool CTranslator::setTranslationMap(const char* mapFileName)
+bool Translator::setTranslationMap(const string& mapFileName)
 {
   // Map name is the file name with no path
-  const char* sep = strrchr(mapFileName, '/');
-  const char* mapName = (sep == NULL ? mapFileName : sep + 1);
+  size_t sep = mapFileName.rfind('/');
+  string mapName = (sep == string::npos ? mapFileName : mapFileName.substr(sep+1));
 
-  if (strcmp(mapName, "LATIN_1") == 0)
+  if (mapName == "LATIN_1")
   {
     setDefaultTranslationMap();
     return true;
   }
 
-  FILE* mapFile = fopen(mapFileName, "r");
+  FILE* mapFile = fopen(mapFileName.c_str(), "r");
   if (mapFile == NULL)
   {
     gLog.Error("%sCould not open the translation file (%s) for reading:\n%s%s.\n",
-        L_ERRORxSTR, mapFileName,
+        L_ERRORxSTR, mapFileName.c_str(),
         L_BLANKxSTR, strerror(errno));
     setDefaultTranslationMap();
     return false;
@@ -114,7 +103,7 @@ bool CTranslator::setTranslationMap(const char* mapFileName)
           inputs+4, inputs+5, inputs+6, inputs+7) < 8)
     {
       gLog.Error("%sSyntax error in translation file '%s'.\n",
-          L_ERRORxSTR, mapFileName);
+          L_ERRORxSTR, mapFileName.c_str());
       setDefaultTranslationMap();
       fclose(mapFile);
       return false;
@@ -137,22 +126,18 @@ bool CTranslator::setTranslationMap(const char* mapFileName)
   else
   {
     gLog.Error("%sTranslation file '%s' corrupted.\n",
-        L_ERRORxSTR, mapFileName);
+        L_ERRORxSTR, mapFileName.c_str());
     setDefaultTranslationMap();
     return false;
   }
 
   myMapDefault = false;
-  if (myMapName != NULL)
-    free(myMapName);
-  myMapName = strdup(mapName);
-  if (myMapFileName != NULL)
-    free(myMapFileName);
-  myMapFileName = strdup(mapFileName);
+  myMapName = mapName;
+  myMapFileName = mapFileName;
   return true;
 }
 
-void CTranslator::ServerToClient(char* array)
+void Translator::ServerToClient(char* array)
 {
   if (array == NULL || myMapDefault)
     return;
@@ -165,13 +150,13 @@ void CTranslator::ServerToClient(char* array)
   }
 }
 
-void CTranslator::ServerToClient(char& value)
+void Translator::ServerToClient(char& value)
 {
   if (!myMapDefault)
     value = serverToClientTab[(unsigned char)(value)];
 }
 
-void CTranslator::ClientToServer(char* array)
+void Translator::ClientToServer(char* array)
 {
   if (array == NULL || myMapDefault)
     return;
@@ -184,13 +169,13 @@ void CTranslator::ClientToServer(char* array)
   }
 }
 
-void CTranslator::ClientToServer(char& value)
+void Translator::ClientToServer(char& value)
 {
   if (!myMapDefault)
     value = clientToServerTab[(unsigned char)(value)];
 }
 
-bool CTranslator::isAscii(const char* array, int length)
+bool Translator::isAscii(const char* array, int length)
 {
   bool ascii = true;
 
@@ -209,7 +194,7 @@ bool CTranslator::isAscii(const char* array, int length)
   return ascii;
 }
 
-char* CTranslator::nameForIconv(const char* licqName)
+char* Translator::nameForIconv(const char* licqName)
 {
   size_t i = 0, j = 0;
   size_t len = (licqName == NULL ? 0 : strlen(licqName));
@@ -224,7 +209,7 @@ char* CTranslator::nameForIconv(const char* licqName)
   return iconvName;
 }
 
-char* CTranslator::ToUnicode(const char* array, const char* fromEncoding)
+char* Translator::ToUnicode(const char* array, const char* fromEncoding)
 {
   if (array == NULL)
     return NULL;
@@ -249,7 +234,7 @@ char* CTranslator::ToUnicode(const char* array, const char* fromEncoding)
   return result;
 }
 
-char* CTranslator::FromUnicode(const char* array, const char* toEncoding)
+char* Translator::FromUnicode(const char* array, const char* toEncoding)
 {
   if (array == NULL)
     return NULL;
@@ -269,7 +254,7 @@ char* CTranslator::FromUnicode(const char* array, const char* toEncoding)
   return result;
 }
 
-char* CTranslator::FromUTF16(const char* array, const char* toEncoding, int length)
+char* Translator::FromUTF16(const char* array, const char* toEncoding, int length)
 {
   if (array == NULL)
     return NULL;
@@ -289,7 +274,7 @@ char* CTranslator::FromUTF16(const char* array, const char* toEncoding, int leng
   return result;
 }
 
-char* CTranslator::ToUTF16(const char* array, const char* fromEncoding, size_t& outDone)
+char* Translator::ToUTF16(const char* array, const char* fromEncoding, size_t& outDone)
 {
   if (array == NULL)
     return NULL;
@@ -303,7 +288,7 @@ char* CTranslator::ToUTF16(const char* array, const char* fromEncoding, size_t& 
   return result;
 }
 
-bool CTranslator::utf16to8(unsigned long c, string& s)
+bool Translator::utf16to8(unsigned long c, string& s)
 {
   if (c <= 0x7F)
   {
@@ -357,7 +342,7 @@ bool CTranslator::utf16to8(unsigned long c, string& s)
   return true;
 }
 
-char* CTranslator::NToRN(const char* array)
+char* Translator::NToRN(const char* array)
 // convert a unix style string (0x0A for returns) to a dos style string (0x0A 0x0D)
 // also encodes the string if necessary
 {
@@ -381,7 +366,7 @@ char* CTranslator::NToRN(const char* array)
   return result;
 }
 
-char* CTranslator::RNToN(const char* array)
+char* Translator::RNToN(const char* array)
 // converts a dos (CRLF) or mac style (CR) style string to
 // a unix style string (LF only)
 {
@@ -431,7 +416,7 @@ char* CTranslator::RNToN(const char* array)
   return result;
 }
 
-char* CTranslator::iconvConvert(const char* array, const char* to, const char* from,
+char* Translator::iconvConvert(const char* array, const char* to, const char* from,
     bool& ok, int length, size_t* outDone)
 {
   ok = true;

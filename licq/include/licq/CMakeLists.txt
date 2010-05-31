@@ -26,6 +26,7 @@ set(licq_HEADERS
   proxy.h
   sarmanager.h
   statistics.h
+  translator.h
   userid.h
   utility.h
   version.h

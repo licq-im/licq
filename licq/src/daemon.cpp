@@ -31,12 +31,12 @@
 #include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_log.h>
-#include <licq_translate.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/proxy.h>
 #include <licq/statistics.h>
 #include <licq/thread/mutexlocker.h>
+#include <licq/translator.h>
 
 #include "contactlist/usermanager.h"
 #include "gettext.h"
@@ -110,7 +110,7 @@ void Daemon::initialize(CLicq* _licq)
     filename += TRANSLATION_DIR;
     filename += "/";
     filename += temp;
-    gTranslator.setTranslationMap(temp.c_str());
+    Licq::gTranslator.setTranslationMap(temp);
   }
 
   // Misc
@@ -172,7 +172,7 @@ void Daemon::SaveConf()
 
   licqConf.set("Rejects", (myRejectFile.empty() ? "none" : myRejectFile));
 
-  const char* pc = gTranslator.getMapName();
+  const char* pc = Licq::gTranslator.getMapName().c_str();
   if (pc == NULL)
     pc = "none";
   else

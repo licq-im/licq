@@ -49,7 +49,6 @@
 #endif
 
 #include <licq_log.h>
-#include <licq_translate.h>
 #include <licq_user.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
@@ -57,6 +56,7 @@
 #include <licq/icqdefines.h>
 #include <licq/plugin.h>
 #include <licq/protocolmanager.h>
+#include <licq/translator.h>
 
 #include "config/chat.h"
 #include "config/emoticons.h"
@@ -816,7 +816,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
       }
       const CEventMsg* ue = dynamic_cast<const CEventMsg*>(e->UserEvent());
       // create initial strings (implicit copying, no allocation impact :)
-      char* tmp = gTranslator.NToRN(ue->Message());
+      char* tmp = Licq::gTranslator.NToRN(ue->Message());
       QByteArray wholeMessageRaw(tmp);
       delete [] tmp;
       int wholeMessagePos = 0;
@@ -840,7 +840,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
           messageRaw = wholeMessageRaw.mid(wholeMessagePos, maxSize);
-          tmp = gTranslator.RNToN(messageRaw);
+          tmp = Licq::gTranslator.RNToN(messageRaw);
           messageRaw = tmp;
           delete [] tmp;
           message = myCodec->toUnicode(messageRaw);
@@ -872,7 +872,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
         myEventTag.push_back(icqEventTag);
 
-        tmp = gTranslator.NToRN(messageRaw);
+        tmp = Licq::gTranslator.NToRN(messageRaw);
         wholeMessagePos += strlen(tmp);
         delete [] tmp;
       }

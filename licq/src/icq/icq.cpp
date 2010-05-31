@@ -20,10 +20,10 @@
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/proxy.h>
+#include <licq/translator.h>
 #include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"
-#include "licq_translate.h"
 
 #include "../contactlist/user.h"
 #include "../daemon.h"
@@ -1073,7 +1073,7 @@ void IcqProtocol::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     char szChatClients[1024];
     unsigned short nPortReversed;
 
-    gTranslator.ServerToClient(message);
+      Licq::gTranslator.ServerToClient(message);
 
     packet.UnpackString(szChatClients, sizeof(szChatClients));
     nPortReversed = packet.UnpackUnsignedShortBE();
@@ -1100,7 +1100,7 @@ void IcqProtocol::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     unsigned short nFilenameLen, nPortReversed;
     unsigned long nFileSize;
 
-    gTranslator.ServerToClient(message);
+      Licq::gTranslator.ServerToClient(message);
 
     nPortReversed = packet.UnpackUnsignedShortBE(); /* this is garbage when
                                                       the request is refused */
@@ -1256,7 +1256,7 @@ void IcqProtocol::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   }
 
   default:
-    gTranslator.ServerToClient(message);
+      Licq::gTranslator.ServerToClient(message);
     szType = strdup(tr("unknown event"));
   } // switch nMsgType
 

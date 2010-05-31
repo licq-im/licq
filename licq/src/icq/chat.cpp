@@ -15,9 +15,9 @@
 
 #include "licq_log.h"
 #include "licq_constants.h"
-#include "licq_translate.h"
 #include <licq_user.h>
 #include <licq/daemon.h>
+#include <licq/translator.h>
 
 #include "icq/icq.h"
 #include "icq/packet.h"
@@ -1489,7 +1489,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       {
         if (!iscntrl((int)(unsigned char)chatChar))
         {
-          gTranslator.ServerToClient(chatChar);
+          Licq::gTranslator.ServerToClient(chatChar);
           char tempStr[2] = { chatChar, '\0' };
           // Add to the users irc line buffer
           strcat(u->linebuf, tempStr);
@@ -1798,7 +1798,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
         {
           if (!iscntrl((int)(unsigned char)chatChar))
           {
-            gTranslator.ServerToClient(chatChar);
+            Licq::gTranslator.ServerToClient(chatChar);
             char tempStr[2] = { chatChar, '\0' };
             // Add to the users irc line buffer
             strcat(u->linebuf, tempStr);
@@ -1984,7 +1984,7 @@ void CChatManager::SendLaugh()
 void CChatManager::SendCharacter(char c)
 {
   CBuffer buf(1);
-  gTranslator.ClientToServer(c);
+  Licq::gTranslator.ClientToServer(c);
   buf.PackChar(c);
   SendBuffer_Raw(&buf);
 }

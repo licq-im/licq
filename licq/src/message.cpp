@@ -19,9 +19,9 @@
 #include "licq/gpghelper.h"
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
+#include <licq/translator.h>
 #include "licq_message.h"
 #include "licq_user.h"
-#include "licq_translate.h"
 #include "support.h"
 
 #ifdef USE_HEBREW
@@ -191,7 +191,7 @@ void CEventMsg::AddToHistory(LicqUser* u, direction _nDir) const
 CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime,
   unsigned long nFlags, unsigned long nConvoId)
 {
-  gTranslator.ServerToClient (sz);
+  Licq::gTranslator.ServerToClient (sz);
   return new CEventMsg(sz, nCmd, nTime, nFlags, nConvoId);
 }
 
@@ -313,7 +313,7 @@ CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime,
   }
 
   // translating string with Translation Table
-  gTranslator.ServerToClient(szUrl[0]);
+  Licq::gTranslator.ServerToClient(szUrl[0]);
   CEventUrl *e = new CEventUrl(szUrl[1], szUrl[0], nCmd, nTime,
     nFlags, nConvoId);
   delete []szUrl;
@@ -797,7 +797,7 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
   ContactList vc;
   for (i = 0; i < nNumContacts * 2; i += 2)
   {
-    gTranslator.ServerToClient(szFields[i + 1]);
+    Licq::gTranslator.ServerToClient(szFields[i + 1]);
     UserId userId = LicqUser::makeUserId(szFields[i], LICQ_PPID);
     vc.push_back(new CContact(userId, szFields[i + 1]));
   }

@@ -27,7 +27,7 @@
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
 #include <licq/statistics.h>
-#include "licq_translate.h"
+#include <licq/translator.h>
 #include "licq_socket.h"
 #include "licq_user.h"
 #include "licq_events.h"
@@ -45,6 +45,7 @@ using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
 using Licq::gOnEventManager;
+using Licq::gTranslator;
 using LicqDaemon::Daemon;
 using LicqDaemon::User;
 using LicqDaemon::gDaemon;

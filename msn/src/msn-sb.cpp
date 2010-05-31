@@ -20,7 +20,6 @@
 #include "msnpacket.h"
 #include "licq_log.h"
 #include "licq_message.h"
-#include "licq_translate.h"
 
 #include <boost/foreach.hpp>
 #include <string>
@@ -32,6 +31,7 @@
 #include <licq/daemon.h>
 #include <licq/oneventmanager.h>
 #include <licq/statistics.h>
+#include <licq/translator.h>
 
 using namespace std;
 using Licq::UserId;
@@ -585,7 +585,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
       nSocket = convo->socketId();
   }
 
-  char* szRNMsg = gTranslator.NToRN(message.c_str());
+  char* szRNMsg = Licq::gTranslator.NToRN(message.c_str());
   CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
   CEventMsg *m = new CEventMsg(szRNMsg, 0, TIME_NOW, 0);
   m->m_eDir = D_SENDER;

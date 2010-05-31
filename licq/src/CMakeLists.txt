@@ -43,7 +43,7 @@ set(licq_SRCS
   socket.cpp
   statistics.cpp
   support.c
-  translate.cpp
+  translator.cpp
   utility.cpp
 
   contactlist/group.cpp

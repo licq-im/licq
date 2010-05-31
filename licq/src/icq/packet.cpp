@@ -24,9 +24,9 @@
 #include "licq/byteorder.h"
 #include <licq/icqdefines.h>
 #include "licq/md5.h"
+#include <licq/translator.h>
 #include <licq/utility.h>
 #include "licq_socket.h"
-#include "licq_translate.h"
 #include "licq_log.h"
 #include "licq_color.h"
 #include "licq/version.h"
@@ -45,6 +45,7 @@ using Licq::StringList;
 using Licq::UserCategoryMap;
 using Licq::UserGroupList;
 using Licq::UserId;
+using Licq::gTranslator;
 using LicqDaemon::GroupMap;
 using LicqDaemon::gUserManager;
 

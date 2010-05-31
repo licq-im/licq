@@ -28,10 +28,10 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_translate.h>
 #include <licq_user.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/translator.h>
 
 #include "config/chat.h"
 
@@ -131,7 +131,7 @@ void UserSendMsgEvent::send()
   }
 
   // create initial strings (implicit copying, no allocation impact :)
-  char* tmp = gTranslator.NToRN(myCodec->fromUnicode(myMessageEdit->toPlainText()));
+  char* tmp = Licq::gTranslator.NToRN(myCodec->fromUnicode(myMessageEdit->toPlainText()));
   QByteArray wholeMessageRaw(tmp);
   delete [] tmp;
   int wholeMessagePos = 0;
@@ -155,7 +155,7 @@ void UserSendMsgEvent::send()
       // we take the maximum length, then convert back to a Unicode string
       // and then search for Unicode whitespaces.
       messageRaw = wholeMessageRaw.mid(wholeMessagePos, maxSize);
-      tmp = gTranslator.RNToN(messageRaw);
+      tmp = Licq::gTranslator.RNToN(messageRaw);
       messageRaw = tmp;
       delete [] tmp;
       message = myCodec->toUnicode(messageRaw);
@@ -201,7 +201,7 @@ void UserSendMsgEvent::send()
     if (icqEventTag != 0)
       myEventTag.push_back(icqEventTag);
 
-    tmp = gTranslator.NToRN(messageRaw);
+    tmp = Licq::gTranslator.NToRN(messageRaw);
     wholeMessagePos += strlen(tmp);
     delete [] tmp;
   }
