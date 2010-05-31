@@ -183,6 +183,17 @@ public:
    */
   static uint16_t getAddrPort(const struct sockaddr* addr);
 
+  /**
+   * Connect to a remote host without actually using a INetSocket object
+   *
+   * @param remoteName Host to connect to
+   * @param prometPort Port to connect to
+   * @param sockType Socket type
+   * @param remoteAddr Area to store remote address after resolving
+   * @return A socket descriptor if successfull, -1 if failed
+   */
+  static int connectDirect(const std::string& remoteName, uint16_t remotePort, uint16_t sockType, struct sockaddr* remoteAddr);
+
   void SetChannel(unsigned char nChannel) { m_nChannel = nChannel; }
   unsigned char Channel()                 { return m_nChannel; }
 

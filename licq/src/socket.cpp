@@ -355,6 +355,24 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyS
   if (m_nDescriptor != -1)
     CloseConnection();
 
+  // If anything happens here, the error will be in errno
+  m_nErrorType = SOCK_ERROR_errno;
+
+  m_nDescriptor = connectDirect(remoteName, remotePort, m_nSockType, &myRemoteAddr);
+
+#ifdef USE_SOCKS5
+    if (m_nSockType != SOCK_STREAM)
+      return true;
+#endif
+
+  if (m_nDescriptor == -1)
+    return false;
+
+  return SetLocalAddress();
+}
+
+int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uint16_t sockType, struct sockaddr* remoteAddr)
+{
   struct addrinfo hints;
   memset(&hints, 0, sizeof(hints));
 #ifdef LICQ_DISABLE_IPV6
@@ -362,14 +380,11 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyS
 #else
   hints.ai_family = AF_UNSPEC;
 #endif
-  hints.ai_socktype = m_nSockType;
+  hints.ai_socktype = sockType;
 #ifdef AI_ADDRCONFIG
   // AI_ADDRCONFIG = Don't return IPvX address if host has no IPvX address configured
   hints.ai_flags = AI_ADDRCONFIG;
 #endif
-
-  // If anything happens here, the error will be in errno
-  m_nErrorType = SOCK_ERROR_errno;
 
   struct addrinfo* addrs;
   int s = getaddrinfo(remoteName.c_str(), NULL, &hints, &addrs);
@@ -380,46 +395,48 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyS
     return false;
   }
 
+  int sock = -1;
+
   // getaddrinfo() returns a list of addresses, we'll try them one by one until
   //   we manage to make a connection. The list is already be sorted with
   //   preferred address first.
   struct addrinfo* ai;
   for (ai = addrs; ai != NULL; ai = ai->ai_next)
   {
-    memcpy(&myRemoteAddr, ai->ai_addr, ai->ai_addrlen);
+    memcpy(remoteAddr, ai->ai_addr, ai->ai_addrlen);
 
     // We didn't use getaddrinfo to lookup port so set in manually
-    if (myRemoteAddr.sa_family == AF_INET)
-      ((struct sockaddr_in*)&myRemoteAddr)->sin_port = htons(remotePort);
-    else if (myRemoteAddr.sa_family == AF_INET6)
-      ((struct sockaddr_in6*)&myRemoteAddr)->sin6_port = htons(remotePort);
+    if (remoteAddr->sa_family == AF_INET)
+      ((struct sockaddr_in*)remoteAddr)->sin_port = htons(remotePort);
+    else if (remoteAddr->sa_family == AF_INET6)
+      ((struct sockaddr_in6*)remoteAddr)->sin6_port = htons(remotePort);
 
     gLog.Info(tr("%sConnecting to %s:%i...\n"), L_SRVxSTR,
-        addrToString(&myRemoteAddr).c_str(), remotePort);
+        addrToString(remoteAddr).c_str(), remotePort);
 
     // Create socket of the returned type
-    m_nDescriptor = socket(myRemoteAddr.sa_family, m_nSockType, 0);
-    if (m_nDescriptor == -1)
+    sock = socket(remoteAddr->sa_family, sockType, 0);
+    if (sock == -1)
       continue;
 
 #ifdef IP_PORTRANGE
     int i=IP_PORTRANGE_HIGH;
-    if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
+    if (setsockopt(sock, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
     {
-      close(m_nDescriptor);
-      m_nDescriptor = -1;
+      close(sock);
+      sock = -1;
       gLog.Warn(tr("%sFailed to set port range for socket.\n"), L_WARNxSTR);
       continue;
     }
 #endif
 
     // Try to connect, exit loop if successful
-    if (connect(m_nDescriptor, (struct sockaddr*)&myRemoteAddr, ai->ai_addrlen) != -1)
+    if (connect(sock, (struct sockaddr*)remoteAddr, ai->ai_addrlen) != -1)
       break;
 
     // Failed to connect, close socket and try next
-    close(m_nDescriptor);
-    m_nDescriptor = -1;
+    close(sock);
+    sock = -1;
   }
 
   // Return the memory allocated by getaddrinfo
@@ -427,13 +444,9 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyS
 
   // If we reached the end of the address list we didn't find anything that could connect
   if (ai == NULL)
-    return false;
+    return -1;
 
-#ifdef USE_SOCKS5
-    if (m_nSockType != SOCK_STREAM) return true;
-#endif
-
-  return SetLocalAddress();
+  return sock;
 }
 
 bool INetSocket::connectTo(uint32_t remoteAddr, uint16_t remotePort, ProxyServer* proxy)
