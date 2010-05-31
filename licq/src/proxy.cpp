@@ -14,7 +14,10 @@
 
 #include "config.h"
 
+#include <licq/proxy.h>
+
 #include <arpa/inet.h>
+#include <cerrno>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -25,194 +28,93 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <cerrno>
-
-// Localization
-#include "gettext.h"
-
-#include "licq_proxy.h"
 #include "licq_log.h"
+#include <licq_socket.h>
+
+#include "gettext.h"
 #include "support.h"
 
 static int  base64_length(int len);
 static void base64_encode(const char *s, char *store, int length);
 
 using namespace std;
+using Licq::Proxy;
+using Licq::HttpProxy;
 
-//-----ProxyServer::ProxyServer-------------------------------------------------
-ProxyServer::ProxyServer()
+
+Proxy::Proxy()
 {
-  m_nDescriptor = -1;
-  memset(&m_sProxyAddr, 0, sizeof(struct sockaddr_in));
-  m_szProxyLogin = NULL;
-  m_szProxyPasswd = NULL;
+  memset(&myProxyAddr, 0, sizeof(myProxyAddrStorage));
+  myErrorType = ErrorNone;
 }
 
-
-//-----ProxyServer::~ProxyServer------------------------------------------------
-ProxyServer::~ProxyServer()
+Proxy::~Proxy()
 {
-  CloseConnection();
-  free (m_szProxyLogin);
-  free (m_szProxyPasswd);
+  // Empty
 }
 
-
-//-----ProxyServer::Error-------------------------------------------------------
-int ProxyServer::Error()
+int Proxy::error() const
 {
-  switch (m_nErrorType)
+  switch (myErrorType)
   {
-    case PROXY_ERROR_errno: return errno;
-    case PROXY_ERROR_h_errno: return h_errno;
-    case PROXY_ERROR_none: return 0;
-    case PROXY_ERROR_internal: return -2;
+    case ErrorErrno:
+      return errno;
+    case ErrorNone:
+      return 0;
+    case ErrorInternal:
+      return -2;
   }
   return 0;
 }
 
-
-//-----ProxyServer::ErrorStr----------------------------------------------------
-char *ProxyServer::ErrorStr(char *buf, int buflen)
+string Proxy::errorStr() const
 {
-  switch (m_nErrorType)
+  switch (myErrorType)
   {
-    case PROXY_ERROR_errno:
-      strncpy(buf, strerror(errno), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+    case ErrorErrno:
+      return strerror(errno);
 
-    case PROXY_ERROR_h_errno:
-      strncpy(buf, hstrerror(h_errno), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+    case ErrorNone:
+      return tr("No proxy error detected");
 
-    case PROXY_ERROR_none:
-      strncpy(buf, tr("No proxy error detected"), buflen);
-      buf[buflen - 1] = '\0';
-      break;
-
-    case PROXY_ERROR_internal:
-      strncpy(buf, tr("Internal proxy error"), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+    case ErrorInternal:
+      return tr("Internal proxy error");
 
     default:
-      strncpy(buf, tr("Unknown proxy error"), buflen);
-      buf[buflen - 1] = '\0';
-      break;
+      return tr("Unknown proxy error");
   }
-  
-  return buf;
 }
 
-		       
-//-----ProxyServer::GetIpByName-------------------------------------------------
-unsigned long ProxyServer::GetIpByName(const char *_szHostName)
+void Proxy::setProxyAddr(const string& proxyName, int proxyPort)
 {
-  // check if the hostname is in dot and number notation
-  struct in_addr ina;
-  if (inet_pton(AF_INET, _szHostName, &ina) > 0)
-     return(ina.s_addr);
-
-  // try and resolve hostname
-  struct hostent host;
-  char temp[1024];
-  h_errno = gethostbyname_r_portable(_szHostName, &host, temp, sizeof(temp));
-  if (h_errno == -1) // Couldn't resolve hostname/ip
-  {
-    return (0);
-  }
-  else if (h_errno > 0)
-  {
-    return (0);
-  }
-  // return the ip
-  return ((struct in_addr *)(host.h_addr))->s_addr;
+  myProxyName = proxyName;
+  myProxyPort = proxyPort;
 }
 
-
-//-----ProxyServer::SetProxyAddr------------------------------------------------
-bool ProxyServer::SetProxyAddr(const char *_szProxyName, unsigned short _nProxyPort)
+void Proxy::setProxyAuth(const string& proxyLogin, const string& proxyPasswd)
 {
-  unsigned long nProxyIp;
-  
-  nProxyIp = GetIpByName(_szProxyName);
-  if (nProxyIp == 0)
-    return(false);
-
-  m_sProxyAddr.sin_port = htons(_nProxyPort);
-  m_sProxyAddr.sin_addr.s_addr = nProxyIp;
-  return(true);
+  myProxyLogin = proxyLogin;
+  myProxyPasswd = proxyPasswd;
 }
 
-
-//-----ProxyServer::SetProxyAuth------------------------------------------------
-void ProxyServer::SetProxyAuth(const char *_szProxyLogin, const char *_szProxyPasswd)
+int Proxy::openConnection(const string& remoteName, int remotePort)
 {
-  if (m_szProxyLogin != NULL) free (m_szProxyLogin);
-  if (_szProxyLogin != NULL)
-    m_szProxyLogin = strdup(_szProxyLogin);
-  else
-    m_szProxyLogin = NULL;
-
-  if (m_szProxyPasswd != NULL) free (m_szProxyPasswd);
-  if (_szProxyPasswd != NULL)
-    m_szProxyPasswd = strdup(_szProxyPasswd);
-  else
-    m_szProxyPasswd = NULL;
-}
-
-
-//-----ProxyServer::OpenConnection----------------------------------------------
-bool ProxyServer::OpenConnection()
-{
-  if(m_sProxyAddr.sin_addr.s_addr == 0)
+  if (myProxyName.empty())
   {
-    m_nErrorType = PROXY_ERROR_internal;
-    return(false);
+    myErrorType = ErrorInternal;
+    return -1;
   }
 
-  if (m_nDescriptor != -1) CloseConnection();
-  m_nDescriptor = socket(AF_INET, SOCK_STREAM, 0);
-  if (m_nDescriptor == -1)
+  int sock = INetSocket::connectDirect(myProxyName, myProxyPort, SOCK_STREAM, &myProxyAddr);
+
+  if (sock == -1)
   {
-    m_nErrorType = PROXY_ERROR_errno;
-    return(false);
+    myErrorType = ErrorErrno;
+    return -1;
   }
 
-#ifdef IP_PORTRANGE
-  int i = IP_PORTRANGE_HIGH;
-  if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i)) < 0)
-  {
-    m_nErrorType = PROXY_ERROR_errno;
-    return(false);
-  }
-#endif
-
-  m_sProxyAddr.sin_family = AF_INET;
-
-  socklen_t sizeofSockaddr = sizeof(struct sockaddr);
-  if (connect(m_nDescriptor, (struct sockaddr *)&m_sProxyAddr, sizeofSockaddr) < 0)
-  {
-    // errno has been set
-    m_nErrorType = PROXY_ERROR_errno;
-    CloseConnection();
-    return(false);
-  }
-  return(true);
-}
-
-
-//-----ProxyServer::CloseConnection---------------------------------------------
-void ProxyServer::CloseConnection()
-{
-  if (m_nDescriptor != -1)
-  {
-    ::shutdown(m_nDescriptor, 2);
-    ::close (m_nDescriptor);
-    m_nDescriptor = -1;
-  }
+  // Connection to proxy established, invoke sub class to instruct proxy what to do
+  return openProxyConnection(sock, remoteName, remotePort);
 }
 
 
@@ -262,27 +164,23 @@ static void base64_encode (const char *s, char *store, int length)
 }
 
 
-HTTPProxyServer::HTTPProxyServer() : ProxyServer()
+HttpProxy::HttpProxy()
+  : Proxy()
 {
   // Empty
 }
 
-//-----HTTPProxyServer::~HTTPProxyServer----------------------------------------
-HTTPProxyServer::~HTTPProxyServer()
+HttpProxy::~HttpProxy()
 {
   // Empty
 }
 
-
-//-----HTTPProxyServer::HTTPInitProxy-------------------------------------------
-bool HTTPProxyServer::HTTPInitProxy()
+bool HttpProxy::initProxy()
 {
-  return(true);
+  return true;
 }
 
-
-//-----HTTPProxyServer::HTTPOpenProxyConnection---------------------------------
-bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigned short _nRemotePort)
+int HttpProxy::openProxyConnection(int sock, const string& remoteName, int remotePort)
 {
   int nlc = 0;
   int pos = 0;
@@ -294,40 +192,38 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
   cmd[sizeof(cmd) - 1] = '\0';
 
   snprintf(cmd, sizeof(cmd) - 1, "CONNECT %s:%d HTTP/1.1\r\nHost: %s:%d\r\n", 
-		_szRemoteName, _nRemotePort, _szRemoteName, _nRemotePort);
-  if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
+      remoteName.c_str(), remotePort, remoteName.c_str(), remotePort);
+  if (send(sock, cmd, strlen(cmd), 0) < 0)
   {
-    m_nErrorType = PROXY_ERROR_errno;
-    CloseConnection();
-    return(false);
+    myErrorType = ErrorErrno;
+    close(sock);
+    return -1;
   }
-  
-  if (m_szProxyLogin && m_szProxyPasswd)
+
+  if (!myProxyLogin.empty() && !myProxyPasswd.empty())
   {
-    char *cmd_b = new char[strlen(m_szProxyLogin) + 1 + strlen(m_szProxyPasswd) + 1];
-    sprintf(cmd_b, "%s:%s", m_szProxyLogin, m_szProxyPasswd);
-    char *cmd_b64 = new char[base64_length(strlen(cmd_b)) + 1];
-    base64_encode(cmd_b, cmd_b64, strlen(cmd_b));
+    string auth = myProxyLogin + ":" + myProxyPasswd;
+    char* cmd_b64 = new char[base64_length(auth.size()) + 1];
+    base64_encode(auth.c_str(), cmd_b64, auth.size());
     snprintf(cmd, sizeof(cmd) - 1, "Proxy-Authorization: Basic %s\r\n", cmd_b64);
-    delete [] cmd_b;
     delete [] cmd_b64;
-    if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
+    if (send(sock, cmd, strlen(cmd), 0) < 0)
     {
-      m_nErrorType = PROXY_ERROR_errno;
-      CloseConnection();
-      return(false);
+      myErrorType = ErrorErrno;
+      close(sock);
+      return -1;
     }
   }
   
   snprintf(cmd, sizeof(cmd) - 1, "\r\n");
-  if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
+  if (send(sock, cmd, strlen(cmd), 0) < 0)
   {
-    m_nErrorType = PROXY_ERROR_errno;
-    CloseConnection();
-    return(false);
+    myErrorType = ErrorErrno;
+    close(sock);
+    return -1;
   }
 
-  while ((nlc != 2) && (read(m_nDescriptor, &input_line[pos++], 1) == 1))
+  while ((nlc != 2) && (read(sock, &input_line[pos++], 1) == 1))
   {
     if (input_line[pos - 1] == '\n')
       nlc++;
@@ -340,16 +236,16 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
 	     &status_consumed, &status_code) != 3)
   {
     gLog.Warn(tr("%sCould not parse HTTP status line from proxy\n"), L_ERRORxSTR);
-    m_nErrorType = PROXY_ERROR_internal;
-    CloseConnection();
-    return(false);
+    myErrorType = ErrorInternal;
+    close(sock);
+    return -1;
   }
   if (status_code == HTTP_STATUS_OK)
-    return (true);
+    return sock;
 
   gLog.Warn(tr("%sHTTPS proxy return error code: %d, error string:\n%s\n"),
 	      L_ERRORxSTR, status_code, input_line);
-  m_nErrorType = PROXY_ERROR_internal;
-  CloseConnection();
-  return(false);
+  myErrorType = ErrorInternal;
+  close(sock);
+  return -1;
 }

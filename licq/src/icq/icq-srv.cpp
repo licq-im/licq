@@ -27,6 +27,7 @@
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
+#include <licq/proxy.h>
 #include <licq/statistics.h>
 #include "licq_translate.h"
 #include "licq_socket.h"
@@ -34,7 +35,6 @@
 #include "licq_events.h"
 #include "licq_log.h"
 #include "licq_message.h"
-#include "licq_proxy.h"
 #include "licq/version.h"
 
 #include "../contactlist/owner.h"

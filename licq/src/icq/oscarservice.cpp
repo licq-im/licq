@@ -19,9 +19,9 @@
 
 #include <licq/buffer.h>
 #include "licq/byteorder.h"
+#include <licq/proxy.h>
 #include "licq_events.h"
 #include "licq_socket.h"
-#include "licq_proxy.h"
 #include "licq_log.h"
 #include <licq_user.h>
 

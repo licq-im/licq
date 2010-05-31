@@ -14,12 +14,12 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_events.h"
 
 class CICQColor;
-class ProxyServer;
 
 namespace Licq
 {
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
+class Proxy;
 class User;
 class UserId;
 }
@@ -147,7 +147,7 @@ public:
 
   // Proxy options
   void InitProxy();
-  ProxyServer *GetProxy() {  return m_xProxy;  }
+  Licq::Proxy* GetProxy() {  return m_xProxy;  }
 
   bool AutoUpdateInfo() const                   { return m_bAutoUpdateInfo; }
   bool AutoUpdateInfoPlugins() const            { return m_bAutoUpdateInfoPlugins; }
@@ -181,7 +181,7 @@ protected:
   unsigned myIcqServerPort;
 
   // Proxy
-  ProxyServer *m_xProxy;
+  Licq::Proxy* m_xProxy;
 
   // Misc
   bool m_bUseSS; // server side list

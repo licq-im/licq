@@ -7,12 +7,12 @@
 #include <boost/shared_array.hpp>
 
 class LicqEvent;
-class ProxyServer;
 
 namespace Licq
 {
 class Buffer;
 class Packet;
+class Proxy;
 class UserId;
 }
 
@@ -43,7 +43,7 @@ public:
 protected:
   unsigned short myFam;
   int mySocketDesc;
-  ProxyServer *myProxy;
+  Licq::Proxy* myProxy;
   EOscarServiceStatus myStatus;
   char *myServer;
   boost::shared_array<char> myCookie;

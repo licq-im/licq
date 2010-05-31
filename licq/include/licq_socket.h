@@ -13,7 +13,10 @@
 #include <licq/thread/readwritemutex.h>
 #include "licq/userid.h"
 
-class ProxyServer;
+namespace Licq
+{
+class Proxy;
+}
 
 // Temporary to keep old code working until this header has also been ported
 typedef Licq::Buffer CBuffer;
@@ -132,7 +135,7 @@ public:
    * @return True if connection was opened successfully
    */
   bool connectTo(const std::string& remoteAddr, uint16_t remotePort,
-      ProxyServer* proxy = NULL);
+      Licq::Proxy* proxy = NULL);
 
   /**
    * Connect to a remote IP as unsigned int
@@ -144,7 +147,7 @@ public:
    * @return True if connection was opened successfully
    */
   bool connectTo(uint32_t remoteAddr, uint16_t remotePort,
-      ProxyServer* proxy = NULL);
+      Licq::Proxy* proxy = NULL);
 
   void CloseConnection();
   bool StartServer(unsigned int _nPort);
@@ -221,7 +224,7 @@ protected:
   int m_nSockType;
   unsigned short m_nVersion;
   SocketError_et m_nErrorType;
-  ProxyServer *m_xProxy;
+  Licq::Proxy* myProxy;
   Licq::UserId myUserId;
   unsigned char m_nChannel;
 };

@@ -23,6 +23,7 @@ set(licq_HEADERS
   pluginlogsink.h
   pluginmanager.h
   protocolmanager.h
+  proxy.h
   sarmanager.h
   statistics.h
   userid.h

@@ -26,11 +26,11 @@
 
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
+#include <licq/proxy.h>
 #include "licq_socket.h"
 #include "licq_log.h"
 #include "licq_user.h"
 #include "support.h"
-#include "licq_proxy.h"
 
 #ifdef USE_OPENSSL
 #include <openssl/ssl.h>
@@ -203,7 +203,9 @@ int INetSocket::Error()
     case SOCK_ERROR_desx: return -1;
     case SOCK_ERROR_none: return 0;
     case SOCK_ERROR_internal: return -2;
-    case SOCK_ERROR_proxy: if (m_xProxy != NULL) return m_xProxy->Error();
+    case SOCK_ERROR_proxy:
+      if (myProxy != NULL)
+        return myProxy->error();
   }
   return 0;
 }
@@ -225,11 +227,8 @@ string INetSocket::errorStr() const
       return tr("No error detected");
 
     case SOCK_ERROR_proxy:
-      if (m_xProxy != NULL)
-      {
-        char buf[128];
-        return m_xProxy->ErrorStr(buf, 128);
-      }
+      if (myProxy != NULL)
+        return myProxy->errorStr();
 
     case SOCK_ERROR_internal:
     default:
@@ -246,7 +245,7 @@ INetSocket::INetSocket(const UserId& userId)
   m_nErrorType = SOCK_ERROR_none;
   memset(&myRemoteAddr, 0, sizeof(myRemoteAddrStorage));
   memset(&myLocalAddr, 0, sizeof(myLocalAddrStorage));
-  m_xProxy = NULL;
+  myProxy = NULL;
   m_nChannel = ICQ_CHNxNONE;
   
   // Initialize the mutex
@@ -313,29 +312,22 @@ bool INetSocket::SetLocalAddress(bool /* bIp */)
   return (true);
 }
 
-bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyServer* proxy)
+bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, Licq::Proxy* proxy)
 {
   myRemoteName = remoteName;
-  m_xProxy = proxy;
+  myProxy = proxy;
 
   // If we're using a proxy, let the proxy class handle this
-  if (m_xProxy != NULL)
+  if (myProxy != NULL)
   {
-    if (!m_xProxy->OpenConnection())
+    m_nDescriptor = myProxy->openConnection(remoteName, remotePort);
+    if (m_nDescriptor == -1)
     {
       m_nErrorType = SOCK_ERROR_proxy;
       return(false);
     }
 
-    bool ret = m_xProxy->OpenProxyConnection(remoteName.c_str(), remotePort);
-    if (!ret)
-    {
-      m_nErrorType = SOCK_ERROR_proxy;
-      return(false);
-    }
-
-    memcpy(&myRemoteAddr, m_xProxy->ProxyAddr(), sizeof(myRemoteAddrStorage));
-    m_nDescriptor = m_xProxy->Descriptor();
+    memcpy(&myRemoteAddr, myProxy->proxyAddr(), sizeof(myRemoteAddrStorage));
     return SetLocalAddress();
   }
 
@@ -439,7 +431,7 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
   return sock;
 }
 
-bool INetSocket::connectTo(uint32_t remoteAddr, uint16_t remotePort, ProxyServer* proxy)
+bool INetSocket::connectTo(uint32_t remoteAddr, uint16_t remotePort, Licq::Proxy* proxy)
 {
   char buf[INET_ADDRSTRLEN];
   return connectTo(string(inet_ntop(AF_INET, &remoteAddr, buf, sizeof(buf))), remotePort, proxy);

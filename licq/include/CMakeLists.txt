@@ -6,7 +6,6 @@ set(licq_HEADERS
   licq_message.h
   licq_plugin.h
   licq_protoplugin.h
-  licq_proxy.h
   licq_socket.h
   licq_translate.h
   licq_user.h

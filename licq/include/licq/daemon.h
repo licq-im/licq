@@ -28,13 +28,13 @@ class CUserEvent;
 class LicqEvent;
 class LicqProtoSignal;
 class LicqSignal;
-class ProxyServer;
 class TCPSocket;
 
 namespace Licq
 {
 
 class LogService;
+class Proxy;
 class User;
 class UserId;
 
@@ -76,7 +76,7 @@ public:
   void setTcpPorts(unsigned lowPort, unsigned highPort);
 
   // Proxy options
-  ProxyServer* createProxy();
+  Licq::Proxy* createProxy();
   bool proxyEnabled() const                     { return myProxyEnabled; }
   void setProxyEnabled(bool b)                  { myProxyEnabled = b; }
   unsigned proxyType() const                    { return myProxyType; }

@@ -19,10 +19,10 @@
 #include <licq/icqdefines.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
+#include <licq/proxy.h>
 #include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"
-#include <licq_proxy.h>
 #include "licq_translate.h"
 
 #include "../contactlist/user.h"

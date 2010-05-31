@@ -31,10 +31,10 @@
 #include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_log.h>
-#include <licq_proxy.h>
 #include <licq_translate.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
+#include <licq/proxy.h>
 #include <licq/statistics.h>
 #include <licq/thread/mutexlocker.h>
 
@@ -300,14 +300,14 @@ void Licq::Daemon::setIgnoreType(unsigned type, bool ignore)
     myIgnoreTypes &= ~type;
 }
 
-ProxyServer* Licq::Daemon::createProxy()
+Licq::Proxy* Licq::Daemon::createProxy()
 {
-  ProxyServer *Proxy = NULL;
+  Licq::Proxy* Proxy = NULL;
 
   switch (myProxyType)
   {
     case PROXY_TYPE_HTTP :
-      Proxy = new HTTPProxyServer();
+      Proxy = new HttpProxy();
       break;
     default:
       break;
@@ -315,24 +315,10 @@ ProxyServer* Licq::Daemon::createProxy()
 
   if (Proxy != NULL)
   {
-    gLog.Info(tr("%sResolving proxy: %s:%d...\n"), L_INITxSTR, myProxyHost.c_str(), myProxyPort);
-    if (!Proxy->SetProxyAddr(myProxyHost.c_str(), myProxyPort))
-    {
-      char buf[128];
-
-      gLog.Warn(tr("%sUnable to resolve proxy server %s:\n%s%s.\n"), L_ERRORxSTR,
-          myProxyHost.c_str(), L_BLANKxSTR, Proxy->ErrorStr(buf, 128));
-      delete Proxy;
-      Proxy = NULL;
-    }
-
-    if (Proxy)
-    {
-      if (myProxyAuthEnabled)
-        Proxy->SetProxyAuth(myProxyLogin.c_str(), myProxyPasswd.c_str());
-
-      Proxy->InitProxy();
-    }
+    Proxy->setProxyAddr(myProxyHost, myProxyPort);
+    if (myProxyAuthEnabled)
+      Proxy->setProxyAuth(myProxyLogin, myProxyPasswd);
+    Proxy->initProxy();
   }
 
   return Proxy;
