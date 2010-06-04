@@ -82,7 +82,7 @@ public:
   OwnerReadGuard(unsigned long protocolId);
 
   // Derived constructors
-  OwnerReadGuard(Owner* owner, bool locked = false)
+  OwnerReadGuard(const Owner* owner, bool locked = false)
     : ReadMutexGuard<Owner>(owner, locked)
   { }
   OwnerReadGuard(ReadMutexGuard<Owner>* guard)

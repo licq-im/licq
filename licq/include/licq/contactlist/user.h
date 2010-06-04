@@ -916,7 +916,7 @@ public:
   UserReadGuard(const UserId& userId, bool addUser = false, bool* retWasAdded = NULL);
 
   // Derived constructors
-  UserReadGuard(User* user, bool locked = false)
+  UserReadGuard(const User* user, bool locked = false)
     : ReadMutexGuard<User>(user, locked)
   { }
   UserReadGuard(ReadMutexGuard<User>* guard)

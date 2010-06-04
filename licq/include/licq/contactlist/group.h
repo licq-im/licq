@@ -100,7 +100,7 @@ public:
   GroupReadGuard(int groupId);
 
   // Derived constructors
-  GroupReadGuard(Group* group, bool locked = false)
+  GroupReadGuard(const Group* group, bool locked = false)
     : ReadMutexGuard<Group>(group, locked)
   { }
   GroupReadGuard(ReadMutexGuard<Group>* guard)

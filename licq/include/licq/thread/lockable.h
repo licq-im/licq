@@ -77,7 +77,7 @@ public:
    * @param object Object to guard mutex for
    * @param locked True if object is already locked or false if guard should lock
    */
-  ReadMutexGuard(T* object, bool locked = false)
+  ReadMutexGuard(const T* object, bool locked = false)
     : myObject(object)
   {
     if (!locked)
@@ -139,7 +139,7 @@ private:
   // Stop assignment operator from being used by misstake
   ReadMutexGuard<T> operator=(const ReadMutexGuard<T>&) {}
 
-  T* myObject;
+  const T* myObject;
 };
 
 
