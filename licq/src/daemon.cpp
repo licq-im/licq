@@ -110,7 +110,7 @@ void Daemon::initialize(CLicq* _licq)
     filename += TRANSLATION_DIR;
     filename += "/";
     filename += temp;
-    Licq::gTranslator.setTranslationMap(temp);
+    Licq::gTranslator.setTranslationMap(filename);
   }
 
   // Misc
