@@ -10,18 +10,20 @@
 
 #include "icq.h"
 
+#include <boost/foreach.hpp>
 #include <cassert>
 #include <cerrno>
 #include <cstdio>
 #include <ctime>
 #include <sys/stat.h>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
-#include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"
 
@@ -152,12 +154,13 @@ bool IcqProtocol::start()
      return false;
   }
   gSocketManager.AddSocket(s);
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-  if (o != NULL)
   {
-    o->SetIntIp(s->getLocalIpInt());
-    o->SetPort(s->getLocalPort());
-    gUserManager.DropOwner(o);
+    Licq::OwnerWriteGuard o(LICQ_PPID);
+    if (o.isLocked())
+    {
+      o->SetIntIp(s->getLocalIpInt());
+      o->SetPort(s->getLocalPort());
+    }
   }
   CPacket::SetLocalPort(s->getLocalPort());
   gSocketManager.DropSocket(s);
@@ -316,7 +319,7 @@ void IcqProtocol::SendEvent_Server(CPacket *packet)
 #endif
 }
 
-LicqEvent* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const UserId& userId,
+LicqEvent* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId,
    CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
@@ -355,8 +358,8 @@ LicqEvent* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const User
   return result;
 }
 
-ICQEvent* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const LicqUser* pUser, CPacket* packet,
-   CUserEvent *ue)
+LicqEvent* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq::User* pUser,
+    CPacket* packet, CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
   if (gDaemon.shuttingDown())
@@ -985,7 +988,7 @@ void IcqProtocol::CancelEvent(ICQEvent *e)
   e->m_eResult = EVENT_CANCELLED;
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
-    icqChatRequestCancel(LicqUser::getUserAccountId(e->userId()).c_str(), e->m_nSequence);
+    icqChatRequestCancel(e->userId().accountId().c_str(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
     icqFileTransferCancel(e->userId(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)
@@ -998,27 +1001,24 @@ void IcqProtocol::CancelEvent(ICQEvent *e)
 //-----updateAllUsers-------------------------------------------------------------------------
 void IcqProtocol::UpdateAllUsers()
 {
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    icqRequestMetaInfo(pUser->IdString());
-  }
-  FOR_EACH_USER_END
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(Licq::User* u, **userList)
+    icqRequestMetaInfo(u->accountId().c_str());
 }
 
 void IcqProtocol::updateAllUsersInGroup(int groupId)
 {
-  FOR_EACH_USER_START(LOCK_R)
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(Licq::User* user, **userList)
   {
+    Licq::UserReadGuard pUser(user);
     if (pUser->isInGroup(groupId))
-    {
-      icqRequestMetaInfo(pUser->IdString());
-    }
+      icqRequestMetaInfo(pUser->accountId().c_str());
   }
-  FOR_EACH_USER_END
 }
 
 //-----ProcessMessage-----------------------------------------------------------
-void IcqProtocol::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
+void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     unsigned short nMsgType, unsigned long nMask, const unsigned long nMsgID[2],
                                 unsigned short nSequence, bool bIsAck,
                                 bool &bNewUser)
@@ -1299,11 +1299,11 @@ void IcqProtocol::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         }
         gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->IdString());
         u->Unlock();
-        gUserManager.addUser(u->id(), false);
+        Licq::gUserManager.addUser(u->id(), false);
         bNewUser = false;
 
         // Fetch the just added user and use it from here on
-        u = gUserManager.fetchUser(u->id(), LOCK_W);
+        u = Licq::gUserManager.fetchUser(u->id(), LOCK_W);
       }
       else
         gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
@@ -1390,7 +1390,7 @@ done:
   return bSuccess;
 }
 
-LicqEvent* IcqProtocol::SendExpectEvent_Server(const UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent)
+LicqEvent* IcqProtocol::SendExpectEvent_Server(const Licq::UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent)
 {
   return SendExpectEvent_Server(gDaemon.getNextEventId(), userId, packet, ue, extendedEvent);
 }

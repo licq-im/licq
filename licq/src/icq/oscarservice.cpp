@@ -18,12 +18,12 @@
 #include <unistd.h>
 
 #include <licq/buffer.h>
+#include <licq/contactlist/usermanager.h>
 #include "licq/byteorder.h"
 #include <licq/proxy.h>
 #include "licq_events.h"
 #include "licq_socket.h"
 #include "licq_log.h"
-#include <licq_user.h>
 
 #include "../daemon.h"
 #include "../gettext.h"
@@ -134,7 +134,7 @@ void COscarService::ClearQueue()
   pthread_mutex_unlock(&mutex_sendqueue);
 }
 
-unsigned long COscarService::SendEvent(const UserId& userId,
+unsigned long COscarService::SendEvent(const Licq::UserId& userId,
                                        unsigned short SubType, bool Request)
 {
   unsigned long eventId = gDaemon.getNextEventId();
@@ -158,14 +158,16 @@ bool COscarService::SendBARTFam(ICQEvent *e)
   {
     case ICQ_SNACxBART_DOWNLOADxREQUEST:
     {
-      const LicqUser* u = gUserManager.fetchUser(e->userId());
-      if (u == NULL)
-        return false;
-      CPU_RequestBuddyIcon *p = new CPU_RequestBuddyIcon(u->accountId().c_str(),
-          u->buddyIconType(), u->buddyIconHashType(), u->buddyIconHash().c_str(), myFam);
-      gLog.Info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
-                L_SRVxSTR, u->GetAlias(), p->Sequence(), p->SubSequence());
-      gUserManager.DropUser(u);
+      CPU_RequestBuddyIcon* p;
+      {
+        Licq::UserReadGuard u(e->userId());
+        if (!u.isLocked())
+          return false;
+        p = new CPU_RequestBuddyIcon(u->accountId().c_str(),
+            u->buddyIconType(), u->buddyIconHashType(), u->buddyIconHash().c_str(), myFam);
+        gLog.Info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
+            L_SRVxSTR, u->GetAlias(), p->Sequence(), p->SubSequence());
+      }
       e->AttachPacket(p);
       return (SendPacket(p));
     }
@@ -344,8 +346,9 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
     case ICQ_SNACxBART_DOWNLOADxREPLY:
     {
       char *Id = packet.UnpackUserString();
-      ICQUser *u = gUserManager.FetchUser(Id, LICQ_PPID, LOCK_W);
-      if (u == NULL)
+      Licq::UserId userId(Id, LICQ_PPID);
+      Licq::UserWriteGuard u(userId);
+      if (!u.isLocked())
       {
         gLog.Warn(tr("%sBuddy icon for unknown user (%s).\n"),
                   L_WARNxSTR, Id);
@@ -427,7 +430,6 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
           break;
         }
       }
-      gUserManager.DropUser(u);
       break;
     }
 
@@ -450,7 +452,7 @@ bool COscarService::Initialize()
   }
 
   ChangeStatus(STATUS_CONNECTED);
-  SrvSocket* s = new SrvSocket(gUserManager.ownerUserId(LICQ_PPID));
+  SrvSocket* s = new SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
   gLog.Info(tr("%sConnecting to separate server for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (gLicqDaemon->GetProxy() == NULL)

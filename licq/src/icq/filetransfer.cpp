@@ -25,7 +25,8 @@
 
 #include "licq_log.h"
 #include "licq_constants.h"
-#include "licq_user.h"
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 
 #include "icq/icq.h"
@@ -209,10 +210,11 @@ CFileTransferManager::CFileTransferManager(const char* accountId)
     myId[0] = '\0';
   m_nSession = rand();
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  strncpy(m_szLocalName, o->GetAlias(), sizeof(m_szLocalName) - 1);
-  m_szLocalName[sizeof(m_szLocalName) - 1] = '\0';
-  gUserManager.DropOwner(o);
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    strncpy(m_szLocalName, o->GetAlias(), sizeof(m_szLocalName) - 1);
+    m_szLocalName[sizeof(m_szLocalName) - 1] = '\0';
+  }
 
   m_nCurrentFile = m_nBatchFiles = 0;
   m_nFileSize = m_nBatchSize = m_nFilePos = m_nBatchPos = 0;
@@ -344,13 +346,16 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
 //-----CFileTransferManager::ConnectToFileServer-----------------------------
 bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 {
-  const ICQUser* u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
-  if (u == NULL)
-    return false;
+  bool bTryDirect;
+  bool bSendIntIp;
+  {
+    Licq::UserReadGuard u(Licq::UserId(myId, LICQ_PPID));
+    if (!u.isLocked())
+      return false;
 
-  bool bTryDirect = u->Version() <= 6 || u->Mode() == MODE_DIRECT;
-  bool bSendIntIp = u->SendIntIp();
-  gUserManager.DropUser(u);
+    bTryDirect = u->Version() <= 6 || u->Mode() == MODE_DIRECT;
+    bSendIntIp = u->SendIntIp();
+  }
 
   bool bSuccess = false;
   if (bTryDirect)
@@ -362,9 +367,11 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   bool bResult = false;
   if (!bSuccess)
   {
-    const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-    unsigned long nIp = bSendIntIp ? o->IntIp() : o->Ip();
-    gUserManager.DropOwner(o);
+    unsigned long nIp;
+    {
+      Licq::OwnerReadGuard o(LICQ_PPID);
+      nIp = bSendIntIp ? o->IntIp() : o->Ip();
+    }
 
     // try reverse connect
     int nId = gIcqProtocol.RequestReverseConnection(myId, 0, nIp, LocalPort(),
@@ -394,9 +401,11 @@ bool CFileTransferManager::SendFileHandshake()
   gLog.Info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
 
   // Send handshake packet:
-  const ICQUser* u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
-  unsigned short nVersion = u->ConnectionVersion();
-  gUserManager.DropUser(u);
+  unsigned short nVersion;
+  {
+    Licq::UserReadGuard u(Licq::UserId(myId, LICQ_PPID));
+    nVersion = u->ConnectionVersion();
+  }
   if (!IcqProtocol::Handshake_Send(&ftSock, myId, LocalPort(), nVersion, false))
     return false;
 

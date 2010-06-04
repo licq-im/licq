@@ -8,14 +8,17 @@
 
 #include "icq.h"
 
+#include <boost/foreach.hpp>
 #include <cerrno>
 #include <ctime>
 #include <unistd.h>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/packet.h>
 #include "licq_log.h"
-#include <licq_user.h>
 
 #include "../daemon.h"
 #include "../fifo.h"
@@ -377,35 +380,43 @@ void *ProcessRunningEvent_Client_tep(void *p)
   // Check if the socket is connected
   if (e->m_nSocketDesc == -1)
   {
-    UserId userId = e->userId();
-    string id = LicqUser::getUserAccountId(userId);
+    Licq::UserId userId = e->userId();
+    string id = userId.accountId();
     unsigned char nChannel = e->Channel();
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    const LicqUser* u = gUserManager.fetchUser(userId);
-    if (u == NULL)
+    unsigned long nVersion;
+    unsigned char nMode;
+    unsigned short nRemotePort;
+    bool bSendIntIp;
     {
-      if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
-        gIcqProtocol.ProcessDoneEvent(e);
-      else
+      Licq::UserReadGuard u(userId);
+      if (!u.isLocked())
       {
-        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-        pthread_testcancel();
-        delete e;
+        if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+          gIcqProtocol.ProcessDoneEvent(e);
+        else
+        {
+          pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+          pthread_testcancel();
+          delete e;
+        }
+        pthread_exit(NULL);
       }
-      pthread_exit(NULL);
+
+      nVersion = u->Version();
+      nMode = u->Mode();
+      nRemotePort = u->Port();
+      bSendIntIp = u->SendIntIp();
     }
 
-    unsigned long nVersion = u->Version();
-    unsigned char nMode = u->Mode();
-    unsigned short nRemotePort = u->Port();
-    bool bSendIntIp = u->SendIntIp();
-    gUserManager.DropUser(u);
-
-    const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-    unsigned long nIP = bSendIntIp ? o->IntIp() : o->Ip();
-    unsigned short nLocalPort = o->Port();
-    gUserManager.DropOwner(o);
+    unsigned long nIP;
+    unsigned short nLocalPort;
+    {
+      Licq::OwnerReadGuard o(LICQ_PPID);
+      nIP = bSendIntIp ? o->IntIp() : o->Ip();
+      nLocalPort = o->Port();
+    }
 
     int socket = -1;
     if (!bSendIntIp && nVersion > 6 && nMode != MODE_DIRECT)
@@ -414,8 +425,8 @@ void *ProcessRunningEvent_Client_tep(void *p)
       if (nId != -1)
       {
         gIcqProtocol.WaitForReverseConnection(nId, id.c_str());
-        u = gUserManager.fetchUser(userId);
-        if (u == NULL)
+        Licq::UserReadGuard u(userId);
+        if (!u.isLocked())
         {
           if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
             gIcqProtocol.ProcessDoneEvent(e);
@@ -428,7 +439,6 @@ void *ProcessRunningEvent_Client_tep(void *p)
           pthread_exit(NULL);
         }
         socket = u->SocketDesc(nChannel);
-        gUserManager.DropUser(u);
       }
       
       // if we failed, try direct anyway
@@ -457,8 +467,8 @@ void *ProcessRunningEvent_Client_tep(void *p)
         if (nId != -1)
         {
           gIcqProtocol.WaitForReverseConnection(nId, id.c_str());
-          u = gUserManager.fetchUser(userId);
-          if (u == NULL)
+          Licq::UserReadGuard u(userId);
+          if (!u.isLocked())
           {
             if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
               gIcqProtocol.ProcessDoneEvent(e);
@@ -471,7 +481,6 @@ void *ProcessRunningEvent_Client_tep(void *p)
             pthread_exit(NULL);
           }
           socket = u->SocketDesc(nChannel);
-          gUserManager.DropUser(u);
         }
       }
     }
@@ -730,8 +739,8 @@ void *MonitorSockets_tep(void* /* p */)
       }
 
           INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
-      if (s != NULL && USERID_ISVALID(s->userId()) &&
-          s->userId() == gUserManager.ownerUserId(LICQ_PPID) &&
+      if (s != NULL && s->userId().isValid() &&
+          s->userId() == Licq::gUserManager.ownerUserId(LICQ_PPID) &&
               gIcqProtocol.m_nTCPSrvSocketDesc == -1)
           {
             /* This is the server socket and it is about to be destoryed
@@ -865,21 +874,20 @@ void *MonitorSockets_tep(void* /* p */)
               int err = tcp->Error();
               if (err == 0)
                 gLog.Info(tr("%sConnection to %s was closed.\n"), L_TCPxSTR,
-                USERID_TOSTR(tcp->userId()));
+                tcp->userId().toString().c_str());
               else
                 gLog.Info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
                     tcp->userId().toString().c_str(), L_BLANKxSTR, tcp->errorStr().c_str());
-          if (USERID_ISVALID(tcp->userId()))
+          if (tcp->userId().isValid())
           {
-            LicqUser* u = gUserManager.fetchUser(tcp->userId(), LOCK_W);
-                if (u && u->Secure())
-                {
-                  u->ClearSocketDesc(ICQ_CHNxNONE);
-                  u->SetSecure(false);
-                  Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
-                }
-                gUserManager.DropUser(u);
-              }
+            Licq::UserWriteGuard u(tcp->userId());
+            if (u.isLocked() && u->Secure())
+            {
+              u->ClearSocketDesc(ICQ_CHNxNONE);
+              u->SetSecure(false);
+              Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+            }
+          }
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
           gIcqProtocol.FailEvents(nCurrentSocket, err);
@@ -894,7 +902,7 @@ void *MonitorSockets_tep(void* /* p */)
             // Process the packet if the buffer is full
             if (tcp->RecvBufferFull())
             {
-          if (LicqUser::getUserProtocolId(tcp->userId()) != LICQ_PPID)
+          if (tcp->userId().protocolId() != LICQ_PPID)
             r = gIcqProtocol.ProcessTcpHandshake(tcp);
           else
             r = gIcqProtocol.ProcessTcpPacket(tcp);
@@ -905,7 +913,7 @@ void *MonitorSockets_tep(void* /* p */)
             if (!r)
             {
               gLog.Info(tr("%sClosing connection to %s.\n"), L_TCPxSTR,
-              USERID_TOSTR(tcp->userId()));
+              tcp->userId().toString().c_str());
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
           gIcqProtocol.FailEvents(nCurrentSocket, 0);
@@ -988,8 +996,10 @@ void *UpdateUsers_tep(void *p)
     if (d->m_eStatus == STATUS_ONLINE)
     {
       pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-      FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
+      Licq::UserListGuard userList(LICQ_PPID);
+      BOOST_FOREACH(Licq::User* user, **userList)
       {
+        Licq::UserWriteGuard pUser(user);
         bool bSent = false;
         bool bBART = false;
 
@@ -1036,10 +1046,10 @@ void *UpdateUsers_tep(void *p)
               pUser->ClientInfoTimestamp() != 0)
           {
             gLog.Info("Updating %s's info plugins.\n", pUser->GetAlias());
-            gIcqProtocol.icqRequestInfoPlugin(pUser, true, PLUGIN_QUERYxINFO);
-            gIcqProtocol.icqRequestInfoPlugin(pUser, true, PLUGIN_PHONExBOOK);
+            gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_QUERYxINFO);
+            gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_PHONExBOOK);
             if (!bBART) // Send only if we didn't request BART already
-              gIcqProtocol.icqRequestInfoPlugin(pUser, true, PLUGIN_PICTURE);
+              gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_PICTURE);
             bSent = true;
           }
 
@@ -1048,10 +1058,10 @@ void *UpdateUsers_tep(void *p)
               && pUser->ClientStatusTimestamp() != 0)
           {
             gLog.Info("Updating %s's status plugins.\n", pUser->GetAlias());
-            gIcqProtocol.icqRequestStatusPlugin(pUser, true, PLUGIN_QUERYxSTATUS);
-            gIcqProtocol.icqRequestStatusPlugin(pUser, true, PLUGIN_FILExSERVER);
-            gIcqProtocol.icqRequestStatusPlugin(pUser, true, PLUGIN_FOLLOWxME);
-            gIcqProtocol.icqRequestStatusPlugin(pUser, true, PLUGIN_ICQxPHONE);
+            gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_QUERYxSTATUS);
+            gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_FILExSERVER);
+            gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_FOLLOWxME);
+            gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_ICQxPHONE);
             bSent = true;
           }
 
@@ -1060,10 +1070,9 @@ void *UpdateUsers_tep(void *p)
         if (bSent)
         {
           pUser->SetUserUpdated(true);
-          FOR_EACH_PROTO_USER_BREAK;
+          break;
         }
       }
-      FOR_EACH_PROTO_USER_END
       pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     }
 
