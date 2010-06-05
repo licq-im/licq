@@ -22,7 +22,9 @@
 
 #include "config.h"
 
-#include <licq_user.h>
+#include <boost/foreach.hpp>
+
+#include <licq/contactlist/usermanager.h>
 
 #include "config/general.h"
 #include "config/iconmanager.h"
@@ -49,13 +51,16 @@ DockIcon::DockIcon()
 
   unsigned short sysMsg = 0;
 
-  FOR_EACH_OWNER_START(LOCK_R)
   {
-    sysMsg += pOwner->NewMessages();
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard pOwner(owner);
+      sysMsg += pOwner->NewMessages();
+    }
   }
-  FOR_EACH_OWNER_END
 
-  unsigned short newMsg = LicqUser::getNumUserEvents() - sysMsg;
+  unsigned short newMsg = Licq::User::getNumUserEvents() - sysMsg;
 
   updateIconMessages(newMsg, sysMsg);
   updateIconStatus();
@@ -69,21 +74,25 @@ DockIcon::~DockIcon()
 void DockIcon::updateIconStatus()
 {
   // Default if there is no owner, just show status as offline
-  myUserId = UserId();;
+  myUserId = Licq::UserId();;
   myStatus = User::OfflineStatus;
 
-  FOR_EACH_OWNER_START(LOCK_R)
   {
-    // Any account is better than no account
-    //   and try and get account with "best" status
-    unsigned status = pOwner->status();
-    if (!myUserId.isValid() || (status != User::OfflineStatus && status < myStatus))
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
     {
-      myUserId = pOwner->id();
-      myStatus = status;
+      Licq::OwnerReadGuard pOwner(owner);
+
+      // Any account is better than no account
+      //   and try and get account with "best" status
+      unsigned status = pOwner->status();
+      if (!myUserId.isValid() || (status != User::OfflineStatus && status < myStatus))
+      {
+        myUserId = pOwner->id();
+        myStatus = status;
+      }
     }
   }
-  FOR_EACH_OWNER_END
 
   updateToolTip();
   updateStatusIcon();

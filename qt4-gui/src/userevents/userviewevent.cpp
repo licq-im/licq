@@ -41,7 +41,7 @@
 
 #include <licq_events.h>
 #include <licq_message.h>
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
@@ -72,7 +72,7 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserViewEvent */
 
-UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
+UserViewEvent::UserViewEvent(const Licq::UserId& userId, QWidget* parent)
   : UserEventCommon(userId, parent, "UserViewEvent")
 {
   myReadSplitter = new QSplitter(Qt::Vertical);
@@ -134,8 +134,8 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
   h_lay->addWidget(myCloseButton);
   setTabOrder(myReadNextButton, myCloseButton);
 
-  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
-  if (u != NULL && u->NewMessages() > 0)
+  Licq::UserReadGuard u(myUsers.front());
+  if (u.isLocked() && u->NewMessages() > 0)
   {
     unsigned short i = 0;
     // Create an item for the message we're currently viewing.
@@ -172,16 +172,14 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
       }
     }
 
-    gUserManager.DropUser(u);
+    u.release();
     for (int i = 0; i < myMessageList->columnCount(); i++)
       myMessageList->resizeColumnToContents(i);
     myMessageList->setCurrentItem(e, 0);
     myMessageList->scrollToItem(e);
     printMessage(e);
   }
-  else
-    if (u != NULL)
-      gUserManager.DropUser(u);
+  u.release();
 
   QSize dialogSize = Config::Chat::instance()->viewDialogSize();
   if (dialogSize.isValid())
@@ -266,11 +264,11 @@ void UserViewEvent::updateNextButton()
     myReadNextButton->setIcon(QIcon());
 }
 
-void UserViewEvent::userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long /* cid */)
+void UserViewEvent::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long /* cid */)
 {
-  const LicqUser* u = gUserManager.fetchUser(userId);
+  Licq::UserReadGuard u(userId);
 
-  if (u == 0)
+  if (!u.isLocked())
     return;
 
   if (subSignal == USER_EVENTS)
@@ -294,8 +292,6 @@ void UserViewEvent::userUpdated(const UserId& userId, unsigned long subSignal, i
     if (argument != 0)
       updateNextButton();
   }
-
-  gUserManager.DropUser(u);
 }
 
 void UserViewEvent::autoClose()
@@ -303,14 +299,12 @@ void UserViewEvent::autoClose()
   if (!myAutoCloseCheck->isChecked())
     return;
 
-  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
-
   bool doclose = false;
 
-  if (u != NULL)
   {
-    doclose = (u->NewMessages() == 0);
-    gUserManager.DropUser(u);
+    Licq::UserReadGuard u(myUsers.front());
+    if (u.isLocked())
+      doclose = (u->NewMessages() == 0);
   }
 
   if (doclose)
@@ -417,7 +411,7 @@ void UserViewEvent::read2()
   if (myCurrentEvent == NULL)
     return;
 
-  QString accountId = LicqUser::getUserAccountId(myUsers.front()).c_str();
+  QString accountId = myUsers.front().accountId().c_str();
 
   switch (myCurrentEvent->SubCommand())
   {
@@ -485,7 +479,7 @@ void UserViewEvent::read3()
   if (myCurrentEvent == NULL)
     return;
 
-  QString accountId = LicqUser::getUserAccountId(myUsers.front()).c_str();
+  QString accountId = myUsers.front().accountId().c_str();
 
   switch (myCurrentEvent->SubCommand())
   {
@@ -553,11 +547,7 @@ void UserViewEvent::read4()
   if (myCurrentEvent == NULL)
     return;
 
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  gUserManager.DropUser(user);
+  QString accountId = myUsers.front().accountId().c_str();
 
   switch (myCurrentEvent->SubCommand())
   {
@@ -599,7 +589,7 @@ void UserViewEvent::read4()
     case ICQ_CMDxSUB_AUTHxGRANTED:
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
-      UserId userId;
+      Licq::UserId userId;
 #define GETINFO(sub, type) \
       if (myCurrentEvent->SubCommand() == sub) \
       { \
@@ -612,8 +602,9 @@ void UserViewEvent::read4()
       GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
 #undef GETINFO
 
-      const LicqUser* user = gUserManager.fetchUser(userId, LOCK_R, true);
-      gUserManager.DropUser(user);
+      {
+        Licq::UserReadGuard u(userId, true);
+      }
 
       gLicqGui->showInfoDialog(mnuUserGeneral, userId, false, true);
       break;
@@ -637,13 +628,12 @@ void UserViewEvent::readNext()
 
 void UserViewEvent::clearEvent()
 {
-  LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
+  Licq::UserWriteGuard u(myUsers.front());
 
-  if (u == NULL)
+  if (!u.isLocked())
     return;
 
   u->EventClearId(myCurrentEvent->Id());
-  gUserManager.DropUser(u);
 }
 
 void UserViewEvent::closeDialog()
@@ -746,11 +736,8 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         myRead1Button->setText(tr("A&uthorize"));
         myRead2Button->setText(tr("&Refuse"));
         CEventAuthRequest* pAuthReq = dynamic_cast<CEventAuthRequest*>(m);
-        const LicqUser* u = gUserManager.fetchUser(pAuthReq->userId());
-        if (u == NULL)
+        if (!Licq::gUserManager.userExists(pAuthReq->userId()))
           myRead3Button->setText(tr("A&dd User"));
-        else
-          gUserManager.DropUser(u);
         myRead4Button->setText(tr("&View Info"));
         break;
       }
@@ -758,11 +745,8 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
       case ICQ_CMDxSUB_AUTHxGRANTED:
       {
         CEventAuthGranted* pAuth = dynamic_cast<CEventAuthGranted*>(m);
-        const LicqUser* u = gUserManager.fetchUser(pAuth->userId());
-        if (u == NULL)
+        if (!Licq::gUserManager.userExists(pAuth->userId()))
           myRead1Button->setText(tr("A&dd User"));
-        else
-          gUserManager.DropUser(u);
         myRead4Button->setText(tr("&View Info"));
         break;
       }
@@ -770,11 +754,8 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
       case ICQ_CMDxSUB_ADDEDxTOxLIST:
       {
         CEventAdded* pAdd = dynamic_cast<CEventAdded*>(m);
-        const LicqUser* u = gUserManager.fetchUser(pAdd->userId());
-        if (u == NULL)
+        if (!Licq::gUserManager.userExists(pAdd->userId()))
           myRead1Button->setText(tr("A&dd User"));
-        else
-          gUserManager.DropUser(u);
         myRead4Button->setText(tr("&View Info"));
         break;
       }

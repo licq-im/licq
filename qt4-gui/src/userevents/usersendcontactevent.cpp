@@ -26,7 +26,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
@@ -49,7 +49,7 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendContactEvent */
 
-UserSendContactEvent::UserSendContactEvent(const UserId& userId, QWidget* parent)
+UserSendContactEvent::UserSendContactEvent(const Licq::UserId& userId, QWidget* parent)
   : UserSendCommon(ContactEvent, userId, parent, "UserSendContactEvent")
 {
   myMassMessageCheck->setChecked(false);
@@ -86,15 +86,11 @@ UserSendContactEvent::~UserSendContactEvent()
   // Empty
 }
 
-void UserSendContactEvent::setContact(const UserId& userId)
+void UserSendContactEvent::setContact(const Licq::UserId& userId)
 {
-  const LicqUser* u = gUserManager.fetchUser(userId);
-
-  if (u != NULL)
-  {
+  Licq::UserReadGuard u(userId);
+  if (u.isLocked())
     myContactsList->add(u->id());
-    gUserManager.DropUser(u);
-  }
 }
 
 bool UserSendContactEvent::sendDone(const LicqEvent* e)
@@ -103,11 +99,10 @@ bool UserSendContactEvent::sendDone(const LicqEvent* e)
     return true;
 
   bool showAwayDlg = false;
-  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
-  if (u != NULL)
   {
-    showAwayDlg = u->Away() && u->ShowAwayMsg();
-    gUserManager.DropUser(u);
+    Licq::UserReadGuard u(myUsers.front());
+    if (u.isLocked())
+      showAwayDlg = u->Away() && u->ShowAwayMsg();
   }
 
   if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
@@ -128,22 +123,15 @@ void UserSendContactEvent::send()
   // Take care of typing notification now
   mySendTypingTimer->stop();
 
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  QString accountId = user->accountId().c_str();
-  gUserManager.DropUser(user);
+  QString accountId = myUsers.front().accountId().c_str();
   gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   StringList users;
 
-  UserId userId;
+  Licq::UserId userId;
   foreach (userId, myContactsList->contacts())
   {
-    const LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
-    if (user == NULL)
-      continue;
-    QString accountId = user->accountId().c_str();
-    gUserManager.DropUser(user);
-    users.push_back(accountId.toLatin1().data());
+    users.push_back(userId.accountId());
   }
 
   if (users.size() == 0)

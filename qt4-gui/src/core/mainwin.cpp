@@ -66,7 +66,7 @@
 #endif /* defined(Q_WS_X11) */
 
 #include <licq_log.h>
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
@@ -137,11 +137,10 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(currentListChanged()), SLOT(updateCurrentGroup()));
 
   myCaption = "Licq";
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o != NULL)
   {
-    myCaption += QString(" (%1)").arg(QString::fromUtf8(o->GetAlias()));
-    gUserManager.DropOwner(o);
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    if (o.isLocked())
+      myCaption += QString(" (%1)").arg(QString::fromUtf8(o->GetAlias()));
   }
   setWindowTitle(myCaption);
 
@@ -253,22 +252,19 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   setVisible(!conf->mainwinStartHidden() && !bStartHidden);
 
   // verify we exist
-  if (gUserManager.NumOwners() == 0)
+  if (Licq::gUserManager.NumOwners() == 0)
     OwnerManagerDlg::showOwnerManagerDlg();
   else
   {
     // Do we need to get a password
-    o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-    if (o != NULL)
+    bool needpwd = false;
     {
-     if (o->password().empty())
-     {
-       gUserManager.DropOwner(o);
-       new UserSelectDlg();
-     }
-     else
-       gUserManager.DropOwner(o);
+      Licq::OwnerReadGuard o(LICQ_PPID);
+      if (o.isLocked() && o->password().empty())
+        needpwd = true;
     }
+    if (needpwd)
+      new UserSelectDlg();
   }
 
 #ifdef USE_KDE
@@ -530,7 +526,7 @@ void MainWindow::closeEvent(QCloseEvent* e)
 
 void MainWindow::removeUserFromList()
 {
-  UserId userId = myUserView->currentUserId();
+  Licq::UserId userId = myUserView->currentUserId();
 
   gLicqGui->removeUserFromList(userId, this);
 }
@@ -548,7 +544,7 @@ void MainWindow::removeUserFromGroup()
   }
 
   // Get currently selected user
-  UserId userId = myUserView->currentUserId();
+  Licq::UserId userId = myUserView->currentUserId();
 
   gLicqGui->setUserInGroup(userId, groupId, false);
 }
@@ -556,7 +552,7 @@ void MainWindow::removeUserFromGroup()
 void MainWindow::callUserFunction(QAction* action)
 {
   int index = action->data().toInt();
-  UserId userId = myUserView->currentUserId();
+  Licq::UserId userId = myUserView->currentUserId();
 
   if (index == -1)
     gLicqGui->showViewEventDialog(userId);
@@ -566,15 +562,15 @@ void MainWindow::callUserFunction(QAction* action)
 
 void MainWindow::checkUserAutoResponse()
 {
-  UserId userId = myUserView->currentUserId();
-  if (USERID_ISVALID(userId))
+  Licq::UserId userId = myUserView->currentUserId();
+  if (userId.isValid())
     new ShowAwayMsgDlg(userId, true);
 }
 
 void MainWindow::showUserHistory()
 {
-  UserId userId = myUserView->currentUserId();
-  if (USERID_ISVALID(userId))
+  Licq::UserId userId = myUserView->currentUserId();
+  if (userId.isValid())
     new HistoryDlg(userId);
 }
 
@@ -635,23 +631,19 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
     case USER_SECURITY:
     case USER_TYPING:
     {
-      if (gUserManager.isOwner(userId))
+      if (Licq::gUserManager.isOwner(userId))
       {
         if (subSignal == USER_STATUS ||
             subSignal == USER_SETTINGS)
           break;
 
         myCaption = "Licq (|)";
-        const LicqUser* o = gUserManager.fetchUser(userId, LOCK_R);
-        if (o != NULL)
-        {
-          myCaption.replace("|", QString::fromUtf8(o->GetAlias()));
-          gUserManager.DropUser(o);
-        }
+        Licq::UserReadGuard u(userId);
+        if (u.isLocked())
+          myCaption.replace("|", QString::fromUtf8(u->getAlias().c_str()));
         else
-        {
           myCaption.replace("|", tr("Error! No owner set"));
-        }
+
         QString caption = myCaption;
         if (windowTitle()[0] == '*')
           caption.prepend("* ");
@@ -660,11 +652,11 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
         break;
       }
 
-      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-      if (u == NULL)
+      Licq::UserReadGuard u(userId);
+      if (!u.isLocked())
       {
         gLog.Warn("%sMainWindow::slot_updatedUser(): Invalid user received: %s\n",
-            L_ERRORxSTR, USERID_TOSTR(userId));
+            L_ERRORxSTR, userId.toString().c_str());
         break;
       }
 
@@ -676,12 +668,10 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
         if (gLicqGui->dockIcon() != NULL && u->OnlineNotify())
         {
           QString alias = QString::fromUtf8(u->GetAlias());
-          QPixmap px = IconManager::instance()->iconForUser(u);
+          QPixmap px = IconManager::instance()->iconForUser(*u);
           gLicqGui->dockIcon()->popupMessage(alias, tr("is online"), px, 4000);
         }
       }
-
-      gUserManager.DropUser(u);
 
       break;
     }
@@ -703,13 +693,16 @@ void MainWindow::updateEvents()
   QString szCaption;
   unsigned short nNumOwnerEvents = 0;
 
-  FOR_EACH_OWNER_START(LOCK_R)
   {
-    nNumOwnerEvents += pOwner->NewMessages();
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard o(owner);
+      nNumOwnerEvents += o->NewMessages();
+    }
   }
-  FOR_EACH_OWNER_END
 
-  unsigned short nNumUserEvents = LicqUser::getNumUserEvents() - nNumOwnerEvents;
+  unsigned short nNumUserEvents = Licq::User::getNumUserEvents() - nNumOwnerEvents;
 
   if (myMessageField != NULL)
     myMessageField->setBold(false);
@@ -736,7 +729,7 @@ void MainWindow::updateEvents()
   else
   {
     // Update the msg label if necessary
-    if (Config::General::instance()->showGroupIfNoMsg() && LicqUser::getNumUserEvents() == 0)
+    if (Config::General::instance()->showGroupIfNoMsg() && Licq::User::getNumUserEvents() == 0)
     {
       s = myUserGroupsBox->currentText();
       l = myUserGroupsBox->currentText();
@@ -910,7 +903,7 @@ void MainWindow::updateCurrentGroup()
   // Update the msg label if necessary
   if (myMessageField != NULL &&
       Config::General::instance()->showGroupIfNoMsg() &&
-      LicqUser::getNumUserEvents() == 0)
+      Licq::User::getNumUserEvents() == 0)
     myMessageField->setText(myUserGroupsBox->currentText());
 }
 
@@ -931,11 +924,14 @@ void MainWindow::updateGroups(bool initial)
   ADD_SYSTEMGROUP(ContactListModel::AllGroupsGroupId);
   ADD_SYSTEMGROUP(ContactListModel::AllUsersGroupId);
 
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    myUserGroupsBox->addItem(QString::fromLocal8Bit(pGroup->name().c_str()), pGroup->id());
+    Licq::GroupListGuard groupList(true);
+    BOOST_FOREACH(const Licq::Group* group, **groupList)
+    {
+      Licq::GroupReadGuard pGroup(group);
+      myUserGroupsBox->addItem(QString::fromLocal8Bit(pGroup->name().c_str()), pGroup->id());
+    }
   }
-  FOR_EACH_GROUP_END
 
   for (int i = ContactListModel::SystemGroupOffset; i <= ContactListModel::LastSystemGroup; i++)
   {
@@ -1006,13 +1002,14 @@ void MainWindow::updateStatus()
 void MainWindow::showAwayMsgDlg()
 {
   //TODO iterate all owners that support fetching away message
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  unsigned status;
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    if (!o.isLocked())
+      return;
 
-  if (o == NULL)
-    return;
-
-  unsigned status = o->status();
-  gUserManager.DropOwner(o);
+    status = o->status();
+  }
 
   AwayMsgDlg::showAwayMsgDlg(status);
 }
@@ -1029,8 +1026,8 @@ void MainWindow::slot_logon()
 
 void MainWindow::slot_protocolPlugin(unsigned long nPPID)
 {
-  UserId userId = gUserManager.ownerUserId(nPPID);
-  if (USERID_ISVALID(userId))
+  Licq::UserId userId = Licq::gUserManager.ownerUserId(nPPID);
+  if (userId.isValid())
     mySystemMenu->addOwner(userId);
 
   updateStatus();
@@ -1101,8 +1098,8 @@ void MainWindow::setMiniMode(bool miniMode)
 
 void MainWindow::slot_pluginUnloaded(unsigned long _nPPID)
 {
-  UserId userId = gUserManager.ownerUserId(_nPPID);
-  if (USERID_ISVALID(userId))
+  Licq::UserId userId = Licq::gUserManager.ownerUserId(_nPPID);
+  if (userId.isValid())
     mySystemMenu->removeOwner(userId);
 
 #ifdef USE_KDE
@@ -1174,7 +1171,7 @@ void MainWindow::showAutoResponseHints(QWidget* parent)
 
 void MainWindow::addUser(const Licq::UserId& userId)
 {
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return;
 
   new AddUserDlg(userId);

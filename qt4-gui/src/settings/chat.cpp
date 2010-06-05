@@ -34,7 +34,7 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 
 #include "config/chat.h"
@@ -359,7 +359,7 @@ QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
   myChatColorsLayout->setRowStretch(7, 1);
 
   myChatTabs = new TabWidget(w);
-  myChatView = new HistoryView(false, USERID_NONE, myChatTabs);
+  myChatView = new HistoryView(false, Licq::UserId(), myChatTabs);
   myChatTabs->addTab(myChatView, "Marge");
 
   myPageChatDispLayout->addWidget(myChatDispBox, 0, 0);
@@ -553,7 +553,7 @@ void Settings::Chat::load()
 
   mySendTNCheck->setChecked(Licq::gDaemon.sendTypingNotification());
 
-  QByteArray defaultEncoding = gUserManager.defaultUserEncoding().c_str();
+  QByteArray defaultEncoding = Licq::gUserManager.defaultUserEncoding().c_str();
   if (defaultEncoding.isEmpty())
     myDefaultEncodingCombo->setCurrentIndex(0);
   else
@@ -625,9 +625,9 @@ void Settings::Chat::apply()
   Licq::gDaemon.setTerminal(myTerminalEdit->text().toLocal8Bit().data());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
-    gUserManager.setDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()).data());
+    Licq::gUserManager.setDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()).data());
   else
-    gUserManager.setDefaultUserEncoding("");
+    Licq::gUserManager.setDefaultUserEncoding("");
   chatConfig->setShowAllEncodings(myShowAllEncodingsCheck->isChecked());
 
   chatConfig->blockUpdates(false);

@@ -32,10 +32,11 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
 #include <licq_events.h>
-#include <licq_user.h>
 
 #include "config/chat.h"
 #include "config/iconmanager.h"
@@ -62,7 +63,7 @@ using namespace LicqQtGui;
 using std::list;
 using std::string;
 
-UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const char* name)
+UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, const char* name)
   : QWidget(parent),
     myHighestEventId(-1)
 {
@@ -70,12 +71,13 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   myUsers.push_back(userId);
-  LicqUser* user = gUserManager.fetchUser(userId);
-  if (user != NULL)
   {
-    myId = user->realAccountId().c_str();
-    myPpid = user->ppid();
-    gUserManager.DropUser(user);
+    Licq::UserReadGuard user(userId);
+    if (user.isLocked())
+    {
+      myId = user->realAccountId().c_str();
+      myPpid = user->ppid();
+    }
   }
 
   // Find out what's supported for the protocol
@@ -85,7 +87,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
     mySendFuncs = protocol->getSendFunctions();
 
   myCodec = QTextCodec::codecForLocale();
-  myIsOwner = gUserManager.isOwner(myUsers.front());
+  myIsOwner = Licq::gUserManager.isOwner(myUsers.front());
   myDeleteUser = false;
   myConvoId = 0;
 
@@ -135,24 +137,25 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
   myTimeTimer = NULL;
   myTypingTimer = NULL;
 
-  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
-  if (u != NULL)
   {
-    if (u->NewMessages() == 0)
-      setWindowIcon(IconManager::instance()->iconForUser(u));
-    else
+    Licq::UserReadGuard u(myUsers.front());
+    if (u.isLocked())
     {
-      setWindowIcon(IconManager::instance()->iconForEvent(ICQ_CMDxSUB_MSG));
-      flashTaskbar();
+      if (u->NewMessages() == 0)
+        setWindowIcon(IconManager::instance()->iconForUser(*u));
+      else
+      {
+        setWindowIcon(IconManager::instance()->iconForEvent(ICQ_CMDxSUB_MSG));
+        flashTaskbar();
+      }
+
+      updateWidgetInfo(*u);
+
+      // restore prefered encoding
+      myCodec = UserCodec::codecForUser(*u);
+
+      setTyping(u->isTyping());
     }
-
-    updateWidgetInfo(u);
-
-    // restore prefered encoding
-    myCodec = UserCodec::codecForUser(u);
-
-    setTyping(u->isTyping());
-    gUserManager.DropUser(u);
   }
 
   myEncodingsGroup = new QActionGroup(this);
@@ -255,7 +258,7 @@ void UserEventCommon::updateShortcuts()
   pushToolTip(mySecure, tr("Open / Close secure channel"));
 }
 
-bool UserEventCommon::isUserInConvo(const UserId& userId) const
+bool UserEventCommon::isUserInConvo(const Licq::UserId& userId) const
 {
   bool found = (std::find(myUsers.begin(), myUsers.end(), userId) != myUsers.end());
   return found;
@@ -286,11 +289,11 @@ void UserEventCommon::flashTaskbar()
     QApplication::alert(this);
 }
 
-void UserEventCommon::updateWidgetInfo(const LicqUser* u)
+void UserEventCommon::updateWidgetInfo(const Licq::User* u)
 {
   const QTextCodec* codec = UserCodec::codecForUser(u);
 
-  if (u->GetTimezone() == TIMEZONE_UNKNOWN)
+  if (u->GetTimezone() == Licq::TIMEZONE_UNKNOWN)
     myTimezone->setText(tr("Unknown"));
   else
   {
@@ -373,14 +376,15 @@ void UserEventCommon::setEncoding(QAction* action)
     myCodec = codec;
 
     /* save preferred character set */
-    LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
-    if (u != NULL)
     {
-      u->SetEnableSave(false);
-      u->setUserEncoding(encoding.toLatin1().data());
-      u->SetEnableSave(true);
-      u->SaveLicqInfo();
-      gUserManager.DropUser(u);
+      Licq::UserWriteGuard u(myUsers.front());
+      if (u.isLocked())
+      {
+        u->SetEnableSave(false);
+        u->setUserEncoding(encoding.toLatin1().data());
+        u->SetEnableSave(true);
+        u->SaveLicqInfo();
+      }
     }
 
     emit encodingChanged();
@@ -423,13 +427,12 @@ void UserEventCommon::updateTyping()
     return;
 
   //FIXME Which user?
-  LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
+  Licq::UserWriteGuard u(myUsers.front());
   u->setIsTyping(false);
   myTimezone->setPalette(QPalette());
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (Config::Chat::instance()->tabbedChatting() && tabDlg != NULL)
-    tabDlg->updateTabLabel(u);
-  gUserManager.DropUser(u);
+    tabDlg->updateTabLabel(*u);
 }
 
 void UserEventCommon::showUserMenu()
@@ -466,26 +469,26 @@ void UserEventCommon::updatedUser(const Licq::UserId& userId, unsigned long subS
     }
   }
 
-  const LicqUser* u = gUserManager.fetchUser(userId);
-  if (u == NULL)
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
     return;
 
   switch (subSignal)
   {
     case USER_STATUS:
       if (u->NewMessages() == 0)
-        setWindowIcon(IconManager::instance()->iconForUser(u));
+        setWindowIcon(IconManager::instance()->iconForUser(*u));
       break;
 
     case USER_BASIC:
     case USER_INFO: // For time zone
     case USER_SECURITY:
-      updateWidgetInfo(u);
+      updateWidgetInfo(*u);
       break;
 
     case USER_EVENTS:
       if (u->NewMessages() == 0)
-        setWindowIcon(IconManager::instance()->iconForUser(u));
+        setWindowIcon(IconManager::instance()->iconForUser(*u));
       else
       {
         setWindowIcon(IconManager::instance()->iconForEvent(ICQ_CMDxSUB_MSG));
@@ -495,7 +498,7 @@ void UserEventCommon::updatedUser(const Licq::UserId& userId, unsigned long subS
       break;
   }
 
-  gUserManager.DropUser(u);
+  u.release();
 
   // Call the event specific function now
   userUpdated(userId, subSignal, argument, cid);
@@ -507,12 +510,9 @@ void UserEventCommon::focusChanged(bool gotFocus)
   if (gotFocus && !Config::Chat::instance()->noSoundInActiveChat())
     return;
 
-  LicqUser* user = gUserManager.fetchUser(userId(), LOCK_W);
-  if (user != NULL)
-  {
+  Licq::UserWriteGuard user(userId());
+  if (user.isLocked())
     user->setOnEventsBlocked(gotFocus);
-    gUserManager.DropUser(user);
-  }
 }
 
 bool UserEventCommon::event(QEvent* event)

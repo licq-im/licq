@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "config/contactlist.h"
 #include "config/iconmanager.h"
@@ -128,7 +128,7 @@ void GroupMenu::aboutToShowMenu()
   }
 
   myMoveUpAction->setEnabled(userGroup && mySortIndex > 0);
-  myMoveDownAction->setEnabled(userGroup && static_cast<unsigned int>(mySortIndex) < gUserManager.NumGroups()-1);
+  myMoveDownAction->setEnabled(userGroup && static_cast<unsigned int>(mySortIndex) < Licq::gUserManager.NumGroups()-1);
 }
 
 void GroupMenu::setGroup(int groupId, bool online)
@@ -148,12 +148,12 @@ void GroupMenu::moveGroupUp()
   if (mySortIndex == 0)
     return;
 
-  gUserManager.ModifyGroupSorting(myGroupId, mySortIndex - 1);
+  Licq::gUserManager.ModifyGroupSorting(myGroupId, mySortIndex - 1);
 }
 
 void GroupMenu::moveGroupDown()
 {
-  gUserManager.ModifyGroupSorting(myGroupId, mySortIndex + 1);
+  Licq::gUserManager.ModifyGroupSorting(myGroupId, mySortIndex + 1);
 }
 
 void GroupMenu::renameGroup()
@@ -168,7 +168,7 @@ void GroupMenu::removeGroup()
   if (!QueryYesNo(this, warning))
     return;
 
-  gUserManager.RemoveGroup(myGroupId);
+  Licq::gUserManager.RemoveGroup(myGroupId);
 }
 
 void GroupMenu::addUsersToGroup(QAction* action)
@@ -182,7 +182,7 @@ void GroupMenu::addUsersToGroup(QAction* action)
   {
     QModelIndex userIndex = gGuiContactList->index(i, 0, groupIndex);
 
-    UserId userId = userIndex.data(ContactListModel::UserIdRole).value<UserId>();
+    Licq::UserId userId = userIndex.data(ContactListModel::UserIdRole).value<Licq::UserId>();
 
     // Call function that knows how to handle system groups
     gLicqGui->setUserInGroup(userId, groupId, true, groupId >= ContactListModel::SystemGroupOffset);

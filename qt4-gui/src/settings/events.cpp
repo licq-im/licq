@@ -29,9 +29,9 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/owner.h>
 #include <licq/daemon.h>
 #include <licq/oneventmanager.h>
-#include <licq_user.h>
 
 #include "config/chat.h"
 #include "config/contactlist.h"
@@ -331,14 +331,13 @@ void Settings::Events::load()
   gOnEventManager.unlock();
 
   //TODO make general for all plugins
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o != NULL)
+  Licq::OwnerReadGuard o(LICQ_PPID);
+  if (o.isLocked())
   {
     myOnEventAwayCheck->setChecked(o->AcceptInAway());
     myOnEventNaCheck->setChecked(o->AcceptInNA());
     myOnEventOccupiedCheck->setChecked(o->AcceptInOccupied());
     myOnEventDndCheck->setChecked(o->AcceptInDND());
-    gUserManager.DropOwner(o);
   }
 }
 
@@ -386,17 +385,18 @@ void Settings::Events::apply()
   gOnEventManager.unlock(true);
 
   //TODO Make general for all plugins
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-  if (o)
   {
-    o->SetEnableSave(false);
-    o->SetAcceptInAway(myOnEventAwayCheck->isChecked());
-    o->SetAcceptInNA(myOnEventNaCheck->isChecked());
-    o->SetAcceptInOccupied(myOnEventOccupiedCheck->isChecked());
-    o->SetAcceptInDND(myOnEventDndCheck->isChecked());
-    o->SetEnableSave(true);
-    o->SaveLicqInfo();
-    gUserManager.DropOwner(o);
+    Licq::OwnerWriteGuard o(LICQ_PPID);
+    if (o.isLocked())
+    {
+      o->SetEnableSave(false);
+      o->SetAcceptInAway(myOnEventAwayCheck->isChecked());
+      o->SetAcceptInNA(myOnEventNaCheck->isChecked());
+      o->SetAcceptInOccupied(myOnEventOccupiedCheck->isChecked());
+      o->SetAcceptInDND(myOnEventDndCheck->isChecked());
+      o->SetEnableSave(true);
+      o->SaveLicqInfo();
+    }
   }
 
   chatConfig->blockUpdates(false);

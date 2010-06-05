@@ -26,10 +26,10 @@
 #include <QClipboard>
 
 #include <licq_events.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icq.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
-#include <licq_user.h>
 #include <licq/utility.h>
 
 #include "config/iconmanager.h"
@@ -241,12 +241,12 @@ void UserMenu::updateGroups()
 
 void UserMenu::aboutToShowMenu()
 {
-  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
+  Licq::UserReadGuard u(myUserId);
 
-  unsigned status = (u == NULL ? static_cast<unsigned>(User::OfflineStatus) : u->status());
+  unsigned status = (!u.isLocked() ? static_cast<unsigned>(User::OfflineStatus) : u->status());
 
   myCheckArAction->setEnabled(status != User::OfflineStatus);
-  myMakePermanentAction->setVisible(u == NULL ? false : u->NotInList());
+  myMakePermanentAction->setVisible(!u.isLocked() ? false : u->NotInList());
 
   if (status & User::MessageStatuses)
     myCheckArAction->setText(tr("Check %1 Response")
@@ -254,7 +254,7 @@ void UserMenu::aboutToShowMenu()
   else
     myCheckArAction->setText(tr("Check Auto Response"));
 
-  if (u == NULL)
+  if (!u.isLocked())
     return;
 
   myMiscModesActions[ModeAcceptInAway]->setChecked(u->AcceptInAway());
@@ -330,7 +330,7 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeStatusOccupied]->setVisible(isIcq);
   myMiscModesActions[ModeStatusDnd]->setVisible(isIcq);
 
-  int serverGroup = (u->GetSID() ? gUserManager.GetGroupFromID(u->GetGSID()) : 0);
+  int serverGroup = (u->GetSID() ? Licq::gUserManager.GetGroupFromID(u->GetGSID()) : 0);
 
   // Update group memberships
   foreach (QAction* a, myUserGroupActions->actions())
@@ -344,30 +344,23 @@ void UserMenu::aboutToShowMenu()
   }
   foreach (QAction* a, myServerGroupActions->actions())
     a->setChecked(a->data().toInt() == serverGroup);
-
-  gUserManager.DropUser(u);
 }
 
-void UserMenu::setUser(const UserId& userId)
+void UserMenu::setUser(const Licq::UserId& userId)
 {
-  LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
-  if (user == NULL)
-    return;
-
   myUserId = userId;
-  myId = user->accountId().c_str();
-  myPpid = user->ppid();
-  gUserManager.DropUser(user);
+  myId = userId.accountId().c_str();
+  myPpid = userId.protocolId();
 }
 
 void UserMenu::setUser(const QString& id, unsigned long ppid)
 {
   myId = id;
   myPpid = ppid;
-  myUserId = LicqUser::makeUserId(myId.toLatin1().data(), myPpid);
+  myUserId = Licq::UserId(myId.toLatin1().data(), myPpid);
 }
 
-void UserMenu::popup(QPoint pos, const UserId& userId)
+void UserMenu::popup(QPoint pos, const Licq::UserId& userId)
 {
   setUser(userId);
   QMenu::popup(pos);
@@ -396,7 +389,7 @@ void UserMenu::customAutoResponse()
 
 void UserMenu::makePermanent()
 {
-  gUserManager.makeUserPermanent(myUserId);
+  Licq::gUserManager.makeUserPermanent(myUserId);
 }
 
 void UserMenu::toggleFloaty()
@@ -488,8 +481,8 @@ void UserMenu::toggleMiscMode(QAction* action)
   int mode = action->data().toInt();
   bool newState = action->isChecked();
 
-  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
-  if (u == NULL)
+  Licq::UserWriteGuard u(myUserId);
+  if (!u.isLocked())
     return;
 
   switch (mode)
@@ -527,14 +520,14 @@ void UserMenu::toggleMiscMode(QAction* action)
       if (!u->gpgKey().empty())
       {
         u->SetUseGPG(newState);
-        gUserManager.DropUser(u);
+        u.release();
 
         // Notify all plugins (including ourselves)
-        gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
+        Licq::gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
       }
       else
       {
-        gUserManager.DropUser(u);
+        u.release();
         new GPGKeySelect(myUserId);
       }
       return;
@@ -564,10 +557,10 @@ void UserMenu::toggleMiscMode(QAction* action)
       u->setStatusToUser(newState ? User::DoNotDisturbStatus | User::OnlineStatus : User::OfflineStatus);
       break;
   }
-  gUserManager.DropUser(u);
+  u.release();
 
   // Notify all plugins (including ourselves)
-  gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
 }
 
 void UserMenu::utility(QAction* action)
@@ -583,7 +576,7 @@ void UserMenu::utility(QAction* action)
 void UserMenu::toggleUserGroup(QAction* action)
 {
   int gid = action->data().toInt();
-  gUserManager.setUserInGroup(myUserId, gid, action->isChecked(), false);
+  Licq::gUserManager.setUserInGroup(myUserId, gid, action->isChecked(), false);
 }
 
 void UserMenu::toggleSystemGroup(QAction* action)
@@ -592,12 +585,13 @@ void UserMenu::toggleSystemGroup(QAction* action)
 
   if (gid == ContactListModel::IgnoreListGroupId && action->isChecked())
   {
-    const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
-    if (u == NULL)
-      return;
-
-    QString alias = QString::fromUtf8(u->GetAlias());
-    gUserManager.DropUser(u);
+    QString alias;
+    {
+      Licq::UserReadGuard u(myUserId);
+      if (!u.isLocked())
+        return;
+      alias = u->getAlias().c_str();
+    }
 
     if(!QueryYesNo(this, tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
         .arg(alias).arg(myId)))
@@ -610,5 +604,5 @@ void UserMenu::toggleSystemGroup(QAction* action)
 void UserMenu::setServerGroup(QAction* action)
 {
   int gid = action->data().toInt();
-  gUserManager.setUserInGroup(myUserId, gid, true, true);
+  Licq::gUserManager.setUserInGroup(myUserId, gid, true, true);
 }

@@ -25,7 +25,7 @@
 #include <QBitmap>
 #include <QPainter>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 
 #include "config/general.h"
 #include "dockiconwidget.h"

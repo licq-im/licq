@@ -28,7 +28,7 @@
 #include <QTextCodec>
 #include <QTimer>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
@@ -48,7 +48,7 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendChatEvent */
 
-UserSendChatEvent::UserSendChatEvent(const UserId& userId, QWidget* parent)
+UserSendChatEvent::UserSendChatEvent(const Licq::UserId& userId, QWidget* parent)
   : UserSendCommon(ChatEvent, userId, parent, "UserSendChatEvent")
 {
   myChatPort = 0;
@@ -89,15 +89,14 @@ bool UserSendChatEvent::sendDone(const LicqEvent* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
-    const LicqUser* u = gUserManager.fetchUser(myUsers.front());
+    Licq::UserReadGuard u(myUsers.front());
     QString s = !e->ExtendedAck() ?
       tr("No reason provided") :
       myCodec->toUnicode(e->ExtendedAck()->Response());
     QString result = tr("Chat with %1 refused:\n%2")
-      .arg(u == NULL ? u->accountId().c_str() : QString::fromUtf8(u->GetAlias()))
+      .arg(!u.isLocked() ? u->accountId().c_str() : QString::fromUtf8(u->GetAlias()))
       .arg(s);
-    if (u != NULL)
-      gUserManager.DropUser(u);
+    u.release();
     InformUser(this, result);
   }
   else
@@ -150,11 +149,7 @@ void UserSendChatEvent::inviteUser()
 
 void UserSendChatEvent::send()
 {
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  gUserManager.DropUser(user);
+  QString accountId = myUsers.front().accountId().c_str();
 
   // Take care of typing notification now`
   mySendTypingTimer->stop();

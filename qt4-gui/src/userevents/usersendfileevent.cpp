@@ -37,7 +37,7 @@
 #endif
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
 
@@ -54,7 +54,7 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendFileEvent */
 
-UserSendFileEvent::UserSendFileEvent(const UserId& userId, QWidget* parent)
+UserSendFileEvent::UserSendFileEvent(const Licq::UserId& userId, QWidget* parent)
   : UserSendCommon(FileEvent, userId, parent, "UserSendFileEvent")
 {
   myMassMessageCheck->setChecked(false);
@@ -120,8 +120,8 @@ bool UserSendFileEvent::sendDone(const LicqEvent* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
-    const LicqUser* u = gUserManager.fetchUser(myUsers.front());
-    if (u == NULL)
+    Licq::UserReadGuard u(myUsers.front());
+    if (!u.isLocked())
       return true;
     QString s = !e->ExtendedAck() ?
       tr("No reason provided") :
@@ -129,8 +129,7 @@ bool UserSendFileEvent::sendDone(const LicqEvent* e)
     QString result = tr("File transfer with %1 refused:\n%2")
       .arg(QString::fromUtf8(u->GetAlias()))
       .arg(s);
-    if (u != NULL)
-      gUserManager.DropUser(u);
+    u.release();
     InformUser(this, result);
   }
   else

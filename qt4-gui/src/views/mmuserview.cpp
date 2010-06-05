@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
 #include <ctype.h>
 
 #include <QDragEnterEvent>
@@ -31,7 +32,9 @@
 #include <QMenu>
 #include <QMouseEvent>
 
-#include <licq_user.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "config/contactlist.h"
 
@@ -47,7 +50,7 @@ using std::set;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMUserView */
 
-MMUserView::MMUserView(const UserId& userId, ContactListModel* contactList, QWidget* parent)
+MMUserView::MMUserView(const Licq::UserId& userId, ContactListModel* contactList, QWidget* parent)
   : UserViewBase(contactList, parent),
     myUserId(userId)
 {
@@ -78,7 +81,7 @@ MMUserView::~MMUserView()
   // Empty
 }
 
-void MMUserView::add(const UserId& userId)
+void MMUserView::add(const Licq::UserId& userId)
 {
   if (userId == myUserId)
     return;
@@ -87,11 +90,11 @@ void MMUserView::add(const UserId& userId)
 
 void MMUserView::removeFirst()
 {
-  UserId userId = *contacts().begin();
+  Licq::UserId userId = *contacts().begin();
   dynamic_cast<MultiContactProxy*>(myListProxy)->remove(userId);
 }
 
-const set<UserId>& MMUserView::contacts() const
+const set<Licq::UserId>& MMUserView::contacts() const
 {
   return dynamic_cast<MultiContactProxy*>(myListProxy)->contacts();
 }
@@ -174,7 +177,7 @@ void MMUserView::dropEvent(QDropEvent* event)
     if (id.isEmpty())
       return;
 
-    add(LicqUser::makeUserId(id.toLatin1().data(), ppid));
+    add(Licq::UserId(id.toLatin1().data(), ppid));
   }
   else
     return; // Not accepted

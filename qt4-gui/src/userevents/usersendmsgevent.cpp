@@ -28,7 +28,7 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
@@ -47,7 +47,7 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendMsgEvent */
 
-UserSendMsgEvent::UserSendMsgEvent(const UserId& userId, QWidget* parent)
+UserSendMsgEvent::UserSendMsgEvent(const Licq::UserId& userId, QWidget* parent)
   : UserSendCommon(MessageEvent, userId, parent, "UserSendMsgEvent")
 {
   myMainWidget->addWidget(myViewSplitter);
@@ -71,11 +71,10 @@ bool UserSendMsgEvent::sendDone(const LicqEvent* /* e */)
   myMessageEdit->setText(QString::null);
 
   bool showAwayDlg = false;
-  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
-  if (u != NULL)
   {
-    showAwayDlg = u->Away() && u->ShowAwayMsg();
-    gUserManager.DropUser(u);
+    Licq::UserReadGuard u(myUsers.front());
+    if (u.isLocked())
+      showAwayDlg = u->Away() && u->ShowAwayMsg();
   }
 
   if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
@@ -122,12 +121,11 @@ void UserSendMsgEvent::send()
   if (!checkSecure())
     return;
 
-  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
   bool userOffline = true;
-  if (u != NULL)
   {
-    userOffline = !u->isOnline();
-    gUserManager.DropUser(u);
+    Licq::UserReadGuard u(myUsers.front());
+    if (u.isLocked())
+      userOffline = !u->isOnline();
   }
 
   // create initial strings (implicit copying, no allocation impact :)

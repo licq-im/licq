@@ -74,12 +74,14 @@ extern "C"
 #include <licq_events.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 #include <licq/sarmanager.h>
-#include <licq_user.h>
 
 #include "config/chat.h"
 #include "config/contactlist.h"
@@ -346,7 +348,7 @@ void LicqGui::loadFloatiesConfig()
     guiConf.get(key, s, "");
     if (s.empty())
       continue;
-    UserId userId(s, ppid);
+    Licq::UserId userId(s, ppid);
 
     sprintf(key, "Floaty%d.X", i);
     guiConf.get(key, xPosF, 0);
@@ -355,7 +357,7 @@ void LicqGui::loadFloatiesConfig()
     sprintf(key, "Floaty%d.W", i);
     guiConf.get(key, wValF, 80);
 
-    if (USERID_ISVALID(userId))
+    if (userId.isValid())
       createFloaty(userId, xPosF, yPosF, wValF);
   }
 }
@@ -591,17 +593,15 @@ void LicqGui::grabKey(const QString& key)
 void LicqGui::changeStatus(unsigned status, bool invisible, const QString& autoMessage)
 {
   // Get a list of owners first since we can't call changeStatus with list locked
-  list<UserId> owners;
-  FOR_EACH_OWNER_START(LOCK_R)
+  list<Licq::UserId> owners;
   {
-    owners.push_back(pOwner->id());
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* o, **ownerList)
+      owners.push_back(o->id());
   }
-  FOR_EACH_OWNER_END
 
-  BOOST_FOREACH(const UserId& userId, owners)
-  {
+  BOOST_FOREACH(const Licq::UserId& userId, owners)
     changeStatus(status, userId, invisible, autoMessage);
-  }
 }
 
 void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool invisible, const QString& autoMessage)
@@ -651,29 +651,32 @@ void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool inv
       (autoMessage.isNull() ? gProtocolManager.KeepAutoResponse : codec->fromUnicode(autoMessage).data()));
 }
 
-bool LicqGui::removeUserFromList(const UserId& userId, QWidget* parent)
+bool LicqGui::removeUserFromList(const Licq::UserId& userId, QWidget* parent)
 {
   if (parent == NULL)
     parent = myMainWindow;
 
-  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-  if (u == NULL)
-    return true;
-  QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-      .arg(QString::fromUtf8(u->GetAlias()))
-      .arg(u->IdString()));
-  gUserManager.DropUser(u);
+  QString warning;
+  {
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+      return true;
+    warning = tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
+        .arg(QString::fromUtf8(u->GetAlias()))
+        .arg(u->accountId().c_str());
+  }
+
   if (QueryYesNo(parent, warning))
   {
-    gUserManager.removeUser(userId);
+    Licq::gUserManager.removeUser(userId);
     return true;
   }
   return false;
 }
 
-void LicqGui::showInfoDialog(int /* fcn */, const UserId& userId, bool toggle, bool updateNow)
+void LicqGui::showInfoDialog(int /* fcn */, const Licq::UserId& userId, bool toggle, bool updateNow)
 {
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return;
 
   UserDlg* f = NULL;
@@ -718,9 +721,9 @@ void LicqGui::showInfoDialog(int /* fcn */, const UserId& userId, bool toggle, b
     f->retrieveSettings();
 }
 
-UserViewEvent* LicqGui::showViewEventDialog(const UserId& userId)
+UserViewEvent* LicqGui::showViewEventDialog(const Licq::UserId& userId)
 {
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return NULL;
 
   for (int i = 0; i < myUserViewList.size(); ++i)
@@ -754,17 +757,13 @@ UserViewEvent* LicqGui::showViewEventDialog(const UserId& userId)
   return e;
 }
 
-UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int convoId, bool autoPopup)
+UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, int convoId, bool autoPopup)
 {
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return NULL;
 
-  LicqUser* user = gUserManager.fetchUser(userId);
-  if (user == NULL)
-    return NULL;
-  QString id = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
+  QString id = userId.accountId().c_str();
+  unsigned long ppid = userId.protocolId();
 
   // Find out what's supported for this protocol
   unsigned long sendFuncs = 0;
@@ -922,7 +921,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int con
   return e;
 }
 
-void LicqGui::replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, const UserId& userId)
+void LicqGui::replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, const Licq::UserId& userId)
 {
   disconnect(oldDialog, SIGNAL(finished(const Licq::UserId&)), this, SLOT(sendEventFinished(const Licq::UserId&)));
   sendEventFinished(userId);
@@ -936,7 +935,7 @@ void LicqGui::showMessageDialog(const Licq::UserId& userId)
   showEventDialog(MessageEvent, userId);
 }
 
-void LicqGui::sendMsg(const UserId& userId, const QString& message)
+void LicqGui::sendMsg(const Licq::UserId& userId, const QString& message)
 {
   UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(MessageEvent, userId));
   if (event == 0)
@@ -945,7 +944,7 @@ void LicqGui::sendMsg(const UserId& userId, const QString& message)
   event->setText(message);
 }
 
-void LicqGui::sendFileTransfer(const UserId& userId, const QString& filename, const QString& description)
+void LicqGui::sendFileTransfer(const Licq::UserId& userId, const QString& filename, const QString& description)
 {
   UserSendFileEvent* event = dynamic_cast<UserSendFileEvent*>(showEventDialog(FileEvent, userId));
   if (event == 0)
@@ -954,14 +953,14 @@ void LicqGui::sendFileTransfer(const UserId& userId, const QString& filename, co
   event->setFile(filename, description);
 }
 
-void LicqGui::sendChatRequest(const UserId& userId)
+void LicqGui::sendChatRequest(const Licq::UserId& userId)
 {
   UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(ChatEvent, userId));
   if (event == 0)
     return;
 }
 
-bool LicqGui::userDropEvent(const UserId& userId, const QMimeData& mimeData)
+bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeData)
 {
   if (mimeData.hasUrls())
   {
@@ -1026,8 +1025,8 @@ bool LicqGui::userDropEvent(const UserId& userId, const QMimeData& mimeData)
     if (dropPpid != 0 && text.length() > 4)
     {
       QString dropId = text.mid(4);
-      UserId dropUserId = LicqUser::makeUserId(dropId.toLatin1().data(), dropPpid);
-      if (!USERID_ISVALID(dropUserId) || userId == dropUserId)
+      Licq::UserId dropUserId(dropId.toLatin1().data(), dropPpid);
+      if (!dropUserId.isValid() || userId == dropUserId)
         return false;
 
       UserSendContactEvent* sendContact = dynamic_cast<UserSendContactEvent*>(showEventDialog(ContactEvent, userId));
@@ -1069,7 +1068,7 @@ void LicqGui::userDlgFinished(UserDlg* dialog)
     return;
 
   gLog.Warn("%sUser Info finished signal for user with no window (%s)!\n",
-      L_WARNxSTR, USERID_TOSTR(dialog->userId()));
+      L_WARNxSTR, dialog->userId().toString().c_str());
 }
 
 void LicqGui::userEventTabDlgDone()
@@ -1103,37 +1102,36 @@ void LicqGui::sendEventFinished(const Licq::UserId& userId)
 
 void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
 {
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return;
 
-  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
+  QString id = userId.accountId().c_str();
+  unsigned long ppid = userId.protocolId();
 
-  if (u == NULL)
-    return;
-
-  QString id = u->accountId().c_str();
-  unsigned long ppid = u->ppid();
-
-  // For multi user conversations (i.e. in MSN)
+  bool send;
   int convoId = -1;
-
-  // set default function to read or send depending on whether or not
-  // there are new messages
-  bool send = (u->NewMessages() == 0);
-  if (!send && Config::Chat::instance()->msgChatView())
   {
-    // if one of the new events is a msg in chatview mode,
-    // change def function to send
-    for (unsigned short i = 0; i < u->NewMessages(); i++)
-      if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG ||
-          u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
-      {
-        convoId = u->EventPeek(i)->ConvoId();
-        send = true;
-        break;
-      }
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+      return;
+
+    // set default function to read or send depending on whether or not
+    // there are new messages
+    send = (u->NewMessages() == 0);
+    if (!send && Config::Chat::instance()->msgChatView())
+    {
+      // if one of the new events is a msg in chatview mode,
+      // change def function to send
+      for (unsigned short i = 0; i < u->NewMessages(); i++)
+        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG ||
+            u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
+        {
+          convoId = u->EventPeek(i)->ConvoId();
+          send = true;
+          break;
+        }
+    }
   }
-  gUserManager.DropUser(u);
 
   if (!send)
   {
@@ -1203,7 +1201,7 @@ bool LicqGui::showAllOwnerEvents()
   bool foundEvents = false;
 
   // Get a list of owners first so we can unlock list before calling showViewEventDialog
-  list<UserId> users;
+  list<Licq::UserId> users;
 
   {
     Licq::OwnerListGuard ownerList;
@@ -1218,7 +1216,7 @@ bool LicqGui::showAllOwnerEvents()
     }
   }
 
-  BOOST_FOREACH(UserId& userId, users)
+  BOOST_FOREACH(Licq::UserId& userId, users)
     showViewEventDialog(userId);
 
   return foundEvents;
@@ -1227,35 +1225,36 @@ bool LicqGui::showAllOwnerEvents()
 void LicqGui::showNextEvent(const Licq::UserId& uid)
 {
   // Do nothing if there are no events pending
-  if (LicqUser::getNumUserEvents() == 0)
+  if (Licq::User::getNumUserEvents() == 0)
     return;
 
-  UserId userId = uid;
+  Licq::UserId userId = uid;
 
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
   {
     // Do system messages first
     if (showAllOwnerEvents())
       return;
 
     time_t t = time(NULL);
-    FOR_EACH_USER_START(LOCK_R)
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
     {
+      Licq::UserReadGuard pUser(user);
       if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
       {
         userId = pUser->id();
         t = pUser->Touched();
       }
     }
-    FOR_EACH_USER_END
   }
 
-  if (USERID_ISVALID(userId))
+  if (userId.isValid())
   {
     if (Config::Chat::instance()->msgChatView())
     {
-      const LicqUser* u = gUserManager.fetchUser(userId);
-      if (u == NULL)
+      Licq::UserReadGuard u(userId);
+      if (!u.isLocked())
         return;
 
       for (unsigned short i = 0; i < u->NewMessages(); i++)
@@ -1263,12 +1262,12 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
         if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG ||
             u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
         {
-          gUserManager.DropUser(u);
-          showEventDialog(MessageEvent, userId, u->EventPeek(i)->ConvoId());
+          int convoId = u->EventPeek(i)->ConvoId();
+          u.release();
+          showEventDialog(MessageEvent, userId, convoId);
           return;
         }
       }
-      gUserManager.DropUser(u);
     }
 
     showViewEventDialog(userId);
@@ -1278,26 +1277,29 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
 void LicqGui::showAllEvents()
 {
   // Do nothing if there are no events pending
-  if (LicqUser::getNumUserEvents() == 0)
+  if (Licq::User::getNumUserEvents() == 0)
     return;
 
   // Do system messages first
   showAllOwnerEvents();
 
-  list<UserId> users;
-  FOR_EACH_USER_START(LOCK_R)
+  list<Licq::UserId> users;
   {
-    if (pUser->NewMessages() > 0)
-      users.push_back(pUser->id());
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
+    {
+      Licq::UserReadGuard pUser(user);
+      if (pUser->NewMessages() > 0)
+        users.push_back(pUser->id());
+    }
   }
-  FOR_EACH_USER_END
 
-  list<UserId>::iterator iter;
+  list<Licq::UserId>::iterator iter;
   for (iter = users.begin(); iter != users.end(); iter++)
     showDefaultEventDialog(*iter);
 }
 
-void LicqGui::toggleFloaty(const UserId& userId)
+void LicqGui::toggleFloaty(const Licq::UserId& userId)
 {
   FloatyView* v = FloatyView::findFloaty(userId);
   if (v == NULL)
@@ -1306,10 +1308,10 @@ void LicqGui::toggleFloaty(const UserId& userId)
     delete v;
 }
 
-void LicqGui::createFloaty(const UserId& userId,
+void LicqGui::createFloaty(const Licq::UserId& userId,
    int x, int y, int w)
 {
-  if (!USERID_ISVALID(userId) || !gUserManager.userExists(userId))
+  if (!userId.isValid() || !Licq::gUserManager.userExists(userId))
     return;
 
   FloatyView* f = new FloatyView(myContactList, userId);
@@ -1395,16 +1397,8 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const Lic
 
 void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
-  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-  if (u == NULL)
-  {
-    gLog.Warn("%sLicqGui::userUpdated(): Invalid user received: %s\n",
-        L_ERRORxSTR, USERID_TOSTR(userId));
-    return;
-  }
-  QString id = u->accountId().c_str();
-  unsigned long ppid = u->ppid();
-  gUserManager.DropUser(u);
+  QString id = userId.accountId().c_str();
+  unsigned long ppid = userId.protocolId();
 
   switch (subSignal)
   {
@@ -1418,32 +1412,30 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
       {
         unsigned short popCheck = 99;
 
-        const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
-        if (o != NULL)
         {
-          unsigned status = o->status();
-          if (status & User::DoNotDisturbStatus)
-            popCheck = 5;
-          else if (status & User::OccupiedStatus)
-            popCheck = 4;
-          else if (status & User::NotAvailableStatus)
-            popCheck = 3;
-          else if (status & User::AwayStatus)
-            popCheck = 2;
-          else if (status & User::OnlineStatus)
-            popCheck = 1;
-
-          gUserManager.DropOwner(o);
+          Licq::OwnerReadGuard o(ppid);
+          if (o.isLocked())
+          {
+            unsigned status = o->status();
+            if (status & User::DoNotDisturbStatus)
+              popCheck = 5;
+            else if (status & User::OccupiedStatus)
+              popCheck = 4;
+            else if (status & User::NotAvailableStatus)
+              popCheck = 3;
+            else if (status & User::AwayStatus)
+              popCheck = 2;
+            else if (status & User::OnlineStatus)
+              popCheck = 1;
+          }
         }
 
         if (Config::Chat::instance()->autoPopup() >= popCheck)
         {
-          const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-          if (u != NULL)
+          bool bCallUserView = false, bCallSendMsg = false;
           {
-            bool bCallUserView = false, bCallSendMsg = false;
-
-            if (u->NewMessages() > 0)
+            Licq::UserReadGuard u(userId);
+            if (u.isLocked() && u->NewMessages() > 0)
             {
               if (Config::Chat::instance()->msgChatView())
               {
@@ -1465,14 +1457,12 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
               else
                 bCallUserView = true;
             }
-
-            gUserManager.DropUser(u);
-
-            if (bCallSendMsg)
-              showEventDialog(MessageEvent, userId, cid, true);
-            if (bCallUserView)
-              showViewEventDialog(userId);
           }
+
+          if (bCallSendMsg)
+            showEventDialog(MessageEvent, userId, cid, true);
+          if (bCallUserView)
+            showViewEventDialog(userId);
         }
       }
       // Fall through
@@ -1482,16 +1472,16 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
     case USER_SECURITY:
     case USER_TYPING:
     {
-      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-      if (u == NULL)
+      Licq::UserReadGuard u(userId);
+      if (!u.isLocked())
         break;
 
       // update the tab icon of this user
       if (Config::Chat::instance()->tabbedChatting() && myUserEventTabDlg != NULL)
       {
         if (subSignal == USER_TYPING)
-          myUserEventTabDlg->setTyping(u, argument);
-        myUserEventTabDlg->updateTabLabel(u);
+          myUserEventTabDlg->setTyping(*u, argument);
+        myUserEventTabDlg->updateTabLabel(*u);
       }
       else if (subSignal == USER_TYPING)
       {
@@ -1514,8 +1504,6 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
           }
         }
       }
-
-      gUserManager.DropUser(u);
 
       break;
     }
@@ -1601,22 +1589,25 @@ void LicqGui::autoAway()
   }
 
   const unsigned long idleTime = mit_info->idle;
-  static std::map<UserId, SAutoAwayInfo> autoAwayInfo;
+  static std::map<Licq::UserId, SAutoAwayInfo> autoAwayInfo;
 
   Config::General* generalConfig = Config::General::instance();
 
   // Check every owner as the statuses may differ
-  map<UserId, unsigned> newStatuses;
+  map<Licq::UserId, unsigned> newStatuses;
 
   {
     Licq::OwnerListGuard ownerList;
-    BOOST_FOREACH(Licq::Owner* o, **ownerList)
+    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
     {
       // Fetch current status
-      o->Lock();
-      UserId userId = o->id();
-      unsigned status = o->status();
-      o->Unlock();
+      Licq::UserId userId;
+      unsigned status;
+      {
+        Licq::OwnerReadGuard o(owner);
+        userId = o->id();
+        status = o->status();
+      }
 
       SAutoAwayInfo& info = autoAwayInfo[userId];
 
@@ -1690,9 +1681,8 @@ void LicqGui::autoAway()
       }
       if (!autoResponse.isNull())
       {
-        o->Lock(LOCK_W);
+        Licq::OwnerWriteGuard o(owner);
         o->setAutoResponse(autoResponse.toLocal8Bit().data());
-        o->Unlock();
       }
 
       //gLog.Info("%sAuto-away changing status to %u (from %u, PPID 0x%lx).\n",
@@ -1705,7 +1695,7 @@ void LicqGui::autoAway()
   }
 
   // Do the actual status change here, after we've released the lock on owner list
-  map<UserId, unsigned>::const_iterator iter;
+  map<Licq::UserId, unsigned>::const_iterator iter;
   for (iter = newStatuses.begin(); iter != newStatuses.end(); ++iter)
     changeStatus(iter->second, iter->first);
 
@@ -1748,11 +1738,11 @@ void LicqGui::updateDockIcon()
   connect(myDockIcon, SIGNAL(middleClicked()), SLOT(showNextEvent()));
 }
 
-void LicqGui::setUserInGroup(const UserId& userId, int groupId, bool inGroup, bool updateServer)
+void LicqGui::setUserInGroup(const Licq::UserId& userId, int groupId, bool inGroup, bool updateServer)
 {
   // Normal user group
   if (groupId < ContactListModel::SystemGroupOffset)
-    return gUserManager.setUserInGroup(userId, groupId, inGroup, updateServer);
+    return Licq::gUserManager.setUserInGroup(userId, groupId, inGroup, updateServer);
 
   // Groups that require server update
   if (groupId == ContactListModel::VisibleListGroupId)
@@ -1784,5 +1774,5 @@ void LicqGui::setUserInGroup(const UserId& userId, int groupId, bool inGroup, bo
   }
 
   // Notify everyone of the change
-  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
 }

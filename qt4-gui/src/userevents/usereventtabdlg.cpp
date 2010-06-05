@@ -22,9 +22,10 @@
 
 #include "config.h"
 
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq_message.h>
-#include <licq_user.h>
 
 #include <QAction>
 #include <QActionGroup>
@@ -123,12 +124,11 @@ void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
   // Tab label will be set later by updateTabLabel()
   myTabs->insertTab(index, tab, QString());
 
-  const LicqUser* u = gUserManager.fetchUser(tab->userId());
-  if (u == NULL)
+  Licq::UserReadGuard u(tab->userId());
+  if (!u.isLocked())
     return;
 
-  updateTabLabel(tab, u);
-  gUserManager.DropUser(u);
+  updateTabLabel(tab, *u);
 }
 
 void UserEventTabDlg::switchTab(QAction* action)
@@ -163,30 +163,26 @@ bool UserEventTabDlg::tabExists(QWidget* tab)
 void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
 {
   // Show the list of users in the conversation
-  list<UserId> users = tab->convoUsers();
-  list<UserId>::iterator it;
+  list<Licq::UserId> users = tab->convoUsers();
+  list<Licq::UserId>::iterator it;
   QString newLabel = QString::null;
 
   for (it = users.begin(); it != users.end(); ++it)
   {
-    const LicqUser* u = gUserManager.fetchUser(*it);
-
     if (!newLabel.isEmpty())
       newLabel += ", ";
 
-    if (u == 0)
+    Licq::UserReadGuard u(*it);
+    if (!u.isLocked())
       newLabel += tr("[UNKNOWN_USER]");
     else
-    {
       newLabel += QString::fromUtf8(u->GetAlias());
-      gUserManager.DropUser(u);
-    }
   }
 
   myTabs->setTabText(myTabs->indexOf(tab), newLabel);
 }
 
-void UserEventTabDlg::updateTabLabel(const LicqUser* u)
+void UserEventTabDlg::updateTabLabel(const Licq::User* u)
 {
   if (u == NULL)
     return;
@@ -200,7 +196,7 @@ void UserEventTabDlg::updateTabLabel(const LicqUser* u)
   }
 }
 
-void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const LicqUser* u)
+void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const Licq::User* u)
 {
   if (tab == NULL)
     return;
@@ -209,7 +205,7 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const LicqUser* u)
   if (u == NULL ||
       !tab->isUserInConvo(u->id()))
   {
-    u = gUserManager.fetchUser(tab->userId());
+    u = Licq::gUserManager.fetchUser(tab->userId());
     if (u == NULL)
       return;
     fetched = true;
@@ -263,14 +259,14 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const LicqUser* u)
   }
 
   if (fetched)
-    gUserManager.DropUser(u);
+    Licq::gUserManager.DropUser(u);
 
   myTabs->setTabIcon(index, icon);
   if (myTabs->currentIndex() == index)
     setWindowIcon(icon);
 }
 
-void UserEventTabDlg::setTyping(const LicqUser* u, int convoId)
+void UserEventTabDlg::setTyping(const Licq::User* u, int convoId)
 {
   for (int index = 0; index < myTabs->count(); index++)
   {

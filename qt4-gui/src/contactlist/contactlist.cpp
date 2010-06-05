@@ -27,7 +27,7 @@
 
 #include <licq_events.h>
 #include <licq_log.h>
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "config/contactlist.h"
 
@@ -136,11 +136,11 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
 
     case LIST_CONTACT_ADDED:
     {
-      LicqUserReadGuard u(userId);
+      Licq::UserReadGuard u(userId);
       if (!u.isLocked())
       {
         gLog.Warn("%sContactList::listUpdated(): Invalid user received: %s\n",
-            L_ERRORxSTR, USERID_TOSTR(userId));
+            L_ERRORxSTR, userId.toString().c_str());
         break;
       }
       addUser(*u);
@@ -216,14 +216,14 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
 void ContactListModel::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument)
 {
   // Skip events for owners
-  if (gUserManager.isOwner(userId))
+  if (Licq::gUserManager.isOwner(userId))
     return;
 
   ContactUserData* user = findUser(userId);
   if (user == NULL)
   {
     gLog.Warn("%sContactList::userUpdated(): Invalid user received: %s\n",
-        L_ERRORxSTR, USERID_TOSTR(userId));
+        L_ERRORxSTR, userId.toString().c_str());
     return;
   }
 
@@ -350,7 +350,7 @@ void ContactListModel::reloadAll()
 
   {
     Licq::GroupListGuard groupList;
-    BOOST_FOREACH(Licq::Group* g, **groupList)
+    BOOST_FOREACH(const Licq::Group* g, **groupList)
     {
       Licq::GroupReadGuard pGroup(g);
       ContactGroup* group = new ContactGroup(*pGroup);
@@ -360,11 +360,14 @@ void ContactListModel::reloadAll()
   }
 
   // Add all users
-  FOR_EACH_USER_START(LOCK_R)
   {
-    addUser(pUser);
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
+    {
+      Licq::UserReadGuard u(user);
+      addUser(*u);
+    }
   }
-  FOR_EACH_USER_END
 
   // Tell views that we have done major changes
   myBlockUpdates = false;
@@ -372,7 +375,7 @@ void ContactListModel::reloadAll()
   reset();
 }
 
-ContactUserData* ContactListModel::findUser(const UserId& userId) const
+ContactUserData* ContactListModel::findUser(const Licq::UserId& userId) const
 {
   foreach (ContactUserData* user, myUsers)
   {
@@ -387,7 +390,7 @@ int ContactListModel::groupRow(ContactGroup* group) const
   return myGroups.indexOf(group);
 }
 
-void ContactListModel::addUser(const LicqUser* licqUser)
+void ContactListModel::addUser(const Licq::User* licqUser)
 {
   ContactUserData* newUser = new ContactUserData(licqUser, this);
   connect(newUser, SIGNAL(dataChanged(const ContactUserData*)),
@@ -437,7 +440,7 @@ void ContactListModel::updateUserGroup(ContactUserData* user, ContactGroup* grou
     delete member;
 }
 
-void ContactListModel::removeUser(const UserId& userId)
+void ContactListModel::removeUser(const Licq::UserId& userId)
 {
   ContactUserData* user = findUser(userId);
   if (user == NULL)
@@ -568,7 +571,7 @@ QVariant ContactListModel::headerData(int section, Qt::Orientation orientation, 
   return QVariant();
 }
 
-QModelIndex ContactListModel::userIndex(const UserId& userId, int column) const
+QModelIndex ContactListModel::userIndex(const Licq::UserId& userId, int column) const
 {
   ContactUserData* userData = findUser(userId);
   if (userData != NULL)
@@ -614,7 +617,7 @@ bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, 
   return static_cast<ContactItem*>(index.internalPointer())->setData(value, role);
 }
 
-uint qHash(const UserId& userId)
+uint qHash(const Licq::UserId& userId)
 {
   return qHash(userId.toString().c_str());
 }

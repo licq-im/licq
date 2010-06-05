@@ -24,9 +24,10 @@
 #include <QRegExp>
 #include <QTextCodec>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
 #include <licq_events.h>
-#include <licq_user.h>
 
 #include "config/chat.h"
 
@@ -60,7 +61,7 @@ QStringList HistoryView::getStyleNames(bool includeHistoryStyles)
   return styleList;
 }
 
-HistoryView::HistoryView(bool historyMode, const UserId& userId, QWidget* parent)
+HistoryView::HistoryView(bool historyMode, const Licq::UserId& userId, QWidget* parent)
   : MLView(parent),
     myUserId(userId)
 {
@@ -151,7 +152,7 @@ void HistoryView::setReverse(bool reverse)
   myReverse = reverse;
 }
 
-void HistoryView::setOwner(const UserId& userId)
+void HistoryView::setOwner(const Licq::UserId& userId)
 {
   myUserId = userId;
 }
@@ -381,7 +382,7 @@ void HistoryView::addMsg(direction dir, bool fromHistory,
   internalAddMsg(s);
 }
 
-void HistoryView::addMsg(const CUserEvent* event, const UserId& uid)
+void HistoryView::addMsg(const CUserEvent* event, const Licq::UserId& uid)
 {
   QDateTime date;
   date.setTime_t(event->Time());
@@ -391,39 +392,37 @@ void HistoryView::addMsg(const CUserEvent* event, const UserId& uid)
   QString contactName;
   const QTextCodec* codec = NULL;
 
-  UserId userId = USERID_ISVALID(uid) ? uid : myUserId;
+  Licq::UserId userId = uid.isValid() ? uid : myUserId;
 
-  const LicqUser* u = gUserManager.fetchUser(userId);
   unsigned long myPpid = 0;
   QString myId;
-  if (u != NULL)
   {
-    myId = u->accountId().c_str();
-    myPpid = u->ppid();
-
-    codec = UserCodec::codecForUser(u);
-    if (event->Direction() == D_RECEIVER)
+    Licq::UserReadGuard u(userId);
+    if (u.isLocked())
     {
-      contactName = QString::fromUtf8(u->GetAlias());
-      if (myPpid == LICQ_PPID)
-        for (int x = 0; x < myId.length(); ++x)
-          if (!myId.at(x).isDigit())
-          {
-            bUseHTML = true;
-            break;
-          }
+      myId = u->accountId().c_str();
+      myPpid = u->ppid();
+
+      codec = UserCodec::codecForUser(*u);
+      if (event->Direction() == D_RECEIVER)
+      {
+        contactName = QString::fromUtf8(u->GetAlias());
+        if (myPpid == LICQ_PPID)
+          for (int x = 0; x < myId.length(); ++x)
+            if (!myId.at(x).isDigit())
+            {
+              bUseHTML = true;
+              break;
+            }
+      }
     }
-    gUserManager.DropUser(u);
   }
 
   if (event->Direction() != D_RECEIVER)
   {
-    const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
-    if (o != NULL)
-    {
+    Licq::OwnerReadGuard o(myPpid);
+    if (o.isLocked())
       contactName = QString::fromUtf8(o->GetAlias());
-      gUserManager.DropOwner(o);
-    }
   }
 
   // Fallback, in case we couldn't fetch User.

@@ -20,7 +20,9 @@
 
 #include "groupcombobox.h"
 
-#include <licq_user.h>
+#include <boost/foreach.hpp>
+
+#include <licq/contactlist/usermanager.h>
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::GroupComboBox */
@@ -28,11 +30,12 @@ using namespace LicqQtGui;
 GroupComboBox::GroupComboBox(QWidget* parent)
   : QComboBox(parent)
 {
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  Licq::GroupListGuard groupList(true);
+  BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
+    Licq::GroupReadGuard pGroup(group);
     addItem(pGroup->name().c_str(), QString::number(pGroup->id()));
   }
-  FOR_EACH_GROUP_END
 }
 
 int GroupComboBox::currentGroupId() const

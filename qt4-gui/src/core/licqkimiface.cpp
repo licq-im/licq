@@ -33,7 +33,7 @@
 #include <kstandarddirs.h>
 
 // Licq includes
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 
 // local includes
 #include "helpers/usercodec.h"
@@ -389,16 +389,11 @@ void LicqKIMIface::messageNewContact(const QString& contactId, const QString& pr
     unsigned long PPID = idForProtocol(protocol);
     if (PPID == 0) return;
 
-  UserId userId = LicqUser::makeUserId(contactId.toLatin1().data(), PPID);
+  Licq::UserId userId(contactId.toLatin1().data(), PPID);
 
     // check if user exists
-  const LicqUser* pUser = gUserManager.fetchUser(userId);
-    if (pUser != 0)
-    {
-        gUserManager.DropUser(pUser);
-
+  if (Licq::gUserManager.userExists(userId))
         emit sendMessage(contactId.latin1(), PPID, QString::null);
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -474,15 +469,11 @@ bool LicqKIMIface::addContact(const QString& contactId,
     unsigned long PPID = idForProtocol(protocol);
     if (PPID == 0) return false;
 
-  UserId userId = LicqUser::makeUserId(contactId.toLatin1().data(), PPID);
+  Licq::UserId userId(contactId.toLatin1().data(), PPID);
 
     // check if user already exists
-  const LicqUser* pUser = gUserManager.fetchUser(userId);
-    if (pUser != 0)
-    {
-        gUserManager.DropUser(pUser);
+  if (Licq::gUsermanager.userExists(userId))
         return false;
-    }
 
   emit addUser(userId);
 

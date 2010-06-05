@@ -20,7 +20,8 @@
 
 #include "contactgroup.h"
 
-#include <licq_user.h>
+#include <licq/contactlist/group.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "contactbar.h"
 #include "contactlist.h"
@@ -49,7 +50,7 @@ ContactGroup::ContactGroup(int id, const QString& name, unsigned showMask, unsig
     myBars[i] = new ContactBar(static_cast<ContactListModel::SubGroupType>(i), this);
 }
 
-ContactGroup::ContactGroup(const LicqGroup* group)
+ContactGroup::ContactGroup(const Licq::Group* group)
   : ContactItem(ContactListModel::GroupItem),
     myGroupId(group->id()),
     myName(QString::fromLocal8Bit(group->name().c_str())),
@@ -81,7 +82,7 @@ void ContactGroup::update()
     return;
 
   {
-    LicqGroupReadGuard g(myGroupId);
+    Licq::GroupReadGuard g(myGroupId);
     if (!g.isLocked())
       return;
 
@@ -99,7 +100,7 @@ void ContactGroup::updateSortKey()
       myGroupId >= ContactListModel::SystemGroupOffset)
     return;
 
-  LicqGroupReadGuard g(myGroupId);
+  Licq::GroupReadGuard g(myGroupId);
   if (!g.isLocked())
     return;
 
@@ -290,7 +291,7 @@ bool ContactGroup::setData(const QVariant& value, int role)
     return true;
 
   // Don't save new name here, daemon will signal us when name has changed
-  gUserManager.RenameGroup(myGroupId, newName.toLocal8Bit().data());
+  Licq::gUserManager.RenameGroup(myGroupId, newName.toLocal8Bit().data());
 
   return true;
 }

@@ -28,7 +28,7 @@
 #include <licq_events.h>
 #include <licq/icqdefines.h>
 #include <licq_log.h>
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/protocolmanager.h>
 
@@ -59,21 +59,11 @@ SignalManager::~SignalManager()
 
 void SignalManager::ProcessSignal(LicqSignal* sig)
 {
-  UserId userId = sig->userId();
+  Licq::UserId userId = sig->userId();
 
   // Temporary code to get account id and ppid until the rest of the gui is updated to use user id directly
-  QString accountId;
-  unsigned long ppid = 0;
-  if (USERID_ISVALID(userId))
-  {
-    LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
-    if (user != NULL)
-    {
-      accountId = user->accountId().c_str();
-      ppid = user->ppid();
-      gUserManager.DropUser(user);
-    }
-  }
+  QString accountId = userId.accountId().c_str();
+  unsigned long ppid = userId.protocolId();
 
   switch (sig->Signal())
   {
@@ -84,7 +74,7 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
     case SIGNAL_UPDATExUSER:
       emit updatedUser(userId, sig->SubSignal(), sig->Argument(), sig->CID());
 
-      if (gUserManager.isOwner(userId) && sig->SubSignal() == USER_STATUS)
+      if (Licq::gUserManager.isOwner(userId) && sig->SubSignal() == USER_STATUS)
         emit updatedStatus(ppid);
       break;
 

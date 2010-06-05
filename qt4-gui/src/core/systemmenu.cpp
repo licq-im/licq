@@ -25,11 +25,12 @@
 #include <QList>
 
 #include <licq_log.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
-#include <licq_user.h>
 
 #include "config/contactlist.h"
 #include "config/general.h"
@@ -267,7 +268,7 @@ void SystemMenu::updateIcons()
   myStatusDoNotDisturbAction->setIcon(iconman->iconForStatus(User::DoNotDisturbStatus));
   myStatusFreeForChatAction->setIcon(iconman->iconForStatus(User::FreeForChatStatus));
   myStatusOfflineAction->setIcon(iconman->iconForStatus(User::OfflineStatus));
-  myStatusInvisibleAction->setIcon(iconman->iconForStatus(User::InvisibleStatus, UserId(), true));
+  myStatusInvisibleAction->setIcon(iconman->iconForStatus(User::InvisibleStatus, Licq::UserId(), true));
 
   foreach (OwnerData* data, myOwnerData.values())
     data->updateIcons();
@@ -332,7 +333,7 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
 
   // Make we actually have a plugin protocol loaded for the owner,
   //   otherwise there is no point in including it in the menus.
-  unsigned long ppid = LicqUser::getUserProtocolId(userId);
+  unsigned long ppid = userId.protocolId();
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
   if (protocol.get() == NULL)
     return;
@@ -381,7 +382,7 @@ void SystemMenu::removeOwner(const Licq::UserId& userId)
 
   delete data;
 
-  unsigned long ppid = LicqUser::getUserProtocolId(userId);
+  unsigned long ppid = userId.protocolId();
   if (ppid == LICQ_PPID)
     setIcqEntriesVisible(false);
 
@@ -399,7 +400,7 @@ void SystemMenu::removeOwner(const Licq::UserId& userId)
   }
 }
 
-bool SystemMenu::getInvisibleStatus(const UserId& userId) const
+bool SystemMenu::getInvisibleStatus(const Licq::UserId& userId) const
 {
   OwnerData* data = myOwnerData.value(userId);
   if (data == NULL)
@@ -417,17 +418,15 @@ void SystemMenu::aboutToShowMenu()
 
 void SystemMenu::aboutToShowFollowMeMenu()
 {
-   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-   if (o == NULL)
-     return;
+  Licq::OwnerReadGuard o(LICQ_PPID);
+  if (!o.isLocked())
+    return;
 
   int status = o->PhoneFollowMeStatus();
 
   foreach (QAction* a, myFollowMeActions->actions())
     if (a->data().toInt() == status)
       a->setChecked(true);
-
-  gUserManager.DropOwner(o);
 }
 
 void SystemMenu::aboutToShowGroupMenu()
@@ -539,7 +538,7 @@ void SystemMenu::updateAllUsersInGroup()
 
 void SystemMenu::saveAllUsers()
 {
-   gUserManager.SaveAllUsers();
+   Licq::gUserManager.SaveAllUsers();
 }
 
 void SystemMenu::showOwnerManagerDlg()
@@ -569,7 +568,7 @@ void SystemMenu::showSearchUserDlg()
 
 void SystemMenu::showAuthUserDlg()
 {
-  new AuthUserDlg(USERID_NONE, true);
+  new AuthUserDlg(Licq::UserId(), true);
 }
 
 void SystemMenu::showReqAuthDlg()
@@ -608,7 +607,7 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
   : QObject(parent),
     myPpid(ppid)
 {
-  myUserId = gUserManager.ownerUserId(ppid);
+  myUserId = Licq::gUserManager.ownerUserId(ppid);
   myUseAwayMessage = ((sendFunctions & Licq::ProtocolPlugin::CanHoldStatusMsg) != 0);
 
   // System sub menu
@@ -688,8 +687,8 @@ void OwnerData::updateIcons()
 
 void OwnerData::aboutToShowStatusMenu()
 {
-  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
-  if (o == NULL)
+  Licq::OwnerReadGuard o(myPpid);
+  if (!o.isLocked())
     return;
 
   unsigned status = o->status();
@@ -704,8 +703,6 @@ void OwnerData::aboutToShowStatusMenu()
 
   if (myStatusInvisibleAction != NULL && status != User::OfflineStatus)
     myStatusInvisibleAction->setChecked(o->isInvisible());
-
-  gUserManager.DropOwner(o);
 }
 
 void OwnerData::viewInfo()

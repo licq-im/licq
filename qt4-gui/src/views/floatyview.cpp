@@ -23,7 +23,7 @@
 #include <QHeaderView>
 #include <QMouseEvent>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 
 #include "config/contactlist.h"
 #include "contactlist/contactlist.h"
@@ -38,7 +38,7 @@ using namespace LicqQtGui;
 
 UserFloatyList FloatyView::floaties;
 
-FloatyView::FloatyView(ContactListModel* contactList, const UserId& userId,  QWidget* parent)
+FloatyView::FloatyView(ContactListModel* contactList, const Licq::UserId& userId,  QWidget* parent)
   : UserViewBase(contactList, parent),
   myUserId(userId)
 {
@@ -51,7 +51,7 @@ FloatyView::FloatyView(ContactListModel* contactList, const UserId& userId,  QWi
   Support::setWidgetProps(this, name);
 
   {
-    LicqUserReadGuard u(myUserId);
+    Licq::UserReadGuard u(myUserId);
 
     setWindowTitle(tr("%1 Floaty (%2)")
         .arg(QString::fromUtf8(u->GetAlias()))
@@ -79,7 +79,7 @@ FloatyView::~FloatyView()
     floaties.remove(pos);
 }
 
-FloatyView* FloatyView::findFloaty(const UserId& userId)
+FloatyView* FloatyView::findFloaty(const Licq::UserId& userId)
 {
   for (int i = 0; i < floaties.size(); i++)
   {

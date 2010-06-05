@@ -29,7 +29,7 @@
 #include <QTextCodec>
 #include <QTimer>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 #include <licq/icq.h>
 #include <licq/protocolmanager.h>
 
@@ -43,7 +43,7 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendSmsEvent */
 
-UserSendSmsEvent::UserSendSmsEvent(const UserId& userId, QWidget* parent)
+UserSendSmsEvent::UserSendSmsEvent(const Licq::UserId& userId, QWidget* parent)
   : UserSendCommon(SmsEvent, userId, parent, "UserSendSmsEvent")
 {
   mySendServerCheck->setChecked(true);
@@ -76,11 +76,10 @@ UserSendSmsEvent::UserSendSmsEvent(const UserId& userId, QWidget* parent)
   count();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(count()));
 
-  LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
-  if (u != NULL)
   {
-    myNumberField->setText(myCodec->toUnicode(u->getCellularNumber().c_str()));
-    gUserManager.DropUser(u);
+    Licq::UserReadGuard u(myUsers.front());
+    if (u.isLocked())
+      myNumberField->setText(myCodec->toUnicode(u->getCellularNumber().c_str()));
   }
 
   myBaseTitle += tr(" - SMS");
@@ -108,11 +107,7 @@ void UserSendSmsEvent::resetSettings()
 
 void UserSendSmsEvent::send()
 {
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  gUserManager.DropUser(user);
+  QString accountId = myUsers.front().accountId().c_str();
 
   // Take care of typing notification now
   mySendTypingTimer->stop();

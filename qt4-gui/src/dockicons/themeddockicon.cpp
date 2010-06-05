@@ -26,8 +26,9 @@
 #include <QFile>
 #include <QPainter>
 
+#include <licq_constants.h>
+#include <licq/contactlist/user.h>
 #include <licq/inifile.h>
-#include <licq_user.h>
 
 #include "config/general.h"
 #include "core/messagebox.h"

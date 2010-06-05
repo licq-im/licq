@@ -30,10 +30,10 @@
 #include <QTextCodec>
 
 // Licq
+#include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
 #include <licq_events.h>
 #include <licq_socket.h>
-#include <licq_user.h>
 
 // Qt-gui
 #include "config/contactlist.h"
@@ -60,7 +60,7 @@ QTimer* ContactUserData::myAnimateTimer = NULL;
 int ContactUserData::myAnimatorCount = 0;
 
 
-ContactUserData::ContactUserData(const LicqUser* licqUser, QObject* parent)
+ContactUserData::ContactUserData(const Licq::User* licqUser, QObject* parent)
   : myStatus(User::OfflineStatus),
     myEvents(0),
     myFlash(false),
@@ -125,7 +125,7 @@ void ContactUserData::update(unsigned long subSignal, int argument)
     // Fall trough to actually update status
   }
 
-  LicqUserReadGuard u(myUserId);
+  Licq::UserReadGuard u(myUserId);
   if (!u.isLocked())
     return;
 
@@ -410,7 +410,7 @@ void ContactUserData::updateSorting()
   mySortKey += myText[0];
 }
 
-bool ContactUserData::updateText(const LicqUser* licqUser)
+bool ContactUserData::updateText(const Licq::User* licqUser)
 {
   bool hasChanged = false;
 
@@ -442,7 +442,7 @@ void ContactUserData::configUpdated()
   bool oldVisibility = myVisibility;
 
   {
-    LicqUserReadGuard u(myUserId);
+    Licq::UserReadGuard u(myUserId);
     if (!u.isLocked())
       return;
 
@@ -490,7 +490,7 @@ bool ContactUserData::setData(const QVariant& value, int role)
     return true;
 
   {
-    LicqUserWriteGuard u(myUserId);
+    Licq::UserWriteGuard u(myUserId);
     if (!u.isLocked())
       return false;
 
@@ -514,7 +514,7 @@ void ContactUserData::refresh()
   bool birthday;
   bool hasChanged;
   {
-    LicqUserReadGuard u(myUserId);
+    Licq::UserReadGuard u(myUserId);
     if (!u.isLocked())
       return;
 
@@ -683,7 +683,7 @@ QVariant ContactUserData::data(int column, int role) const
 
 QString ContactUserData::tooltip() const
 {
-  LicqUserReadGuard u(myUserId);
+  Licq::UserReadGuard u(myUserId);
   if (!u.isLocked())
     return "";
 
