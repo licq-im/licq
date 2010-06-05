@@ -31,7 +31,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq_user.h>
+#include <licq/contactlist/owner.h>
 
 #include "helpers/support.h"
 
@@ -87,15 +87,16 @@ UserSelectDlg::UserSelectDlg(QWidget* parent)
   // Populate the combo box
 
   // For now, just have one owner
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o == 0)
   {
-    close();
-    return;
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    if (!o.isLocked())
+    {
+      close();
+      return;
+    }
+    cmbUser->addItem(QString("%1 (%2)").arg(o->GetAlias()).arg(o->IdString()));
+    edtPassword->setText(o->password().c_str());
   }
-  cmbUser->addItem(QString("%1 (%2)").arg(o->GetAlias()).arg(o->IdString()));
-  edtPassword->setText(o->password().c_str());
-  gUserManager.DropOwner(o);
 
   // Wait for dialog to finish before returning to caller
   exec();
@@ -107,15 +108,12 @@ UserSelectDlg::~UserSelectDlg()
 
 void UserSelectDlg::slot_ok()
 {
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-  if (o == 0)
+  Licq::OwnerWriteGuard o(LICQ_PPID);
+  if (o.isLocked())
   {
-    close();
-    return;
+    o->SetSavePassword(chkSavePassword->isChecked());
+    o->setPassword(edtPassword->text().toLatin1().data());
   }
-  o->SetSavePassword(chkSavePassword->isChecked());
-  o->setPassword(edtPassword->text().toLatin1().data());
-  gUserManager.DropOwner(o);
 
   close();
 }

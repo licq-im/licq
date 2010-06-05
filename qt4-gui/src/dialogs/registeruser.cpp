@@ -31,7 +31,7 @@
 #include <QVBoxLayout>
 #include <QWizardPage>
 
-#include <licq_user.h>
+#include <licq/contactlist/owner.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 
@@ -230,13 +230,12 @@ void RegisterUserDlg::gotNewOwner(const QString& id, unsigned long ppid)
       this, SLOT(gotNewOwner(const QString&, unsigned long)));
 
   // Save "Remember password" setting
-  ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_W);
-  if (o != NULL)
   {
-    o->SetSavePassword(mySavePassword->isChecked());
-    gUserManager.DropOwner(o);
-    Licq::gDaemon.SaveConf();
+    Licq::OwnerWriteGuard o(LICQ_PPID);
+    if (o.isLocked())
+      o->SetSavePassword(mySavePassword->isChecked());
   }
+  Licq::gDaemon.SaveConf();
 
   // Mark that we have finished
   mySuccess = true;

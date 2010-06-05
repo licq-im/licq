@@ -31,7 +31,7 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
@@ -180,7 +180,7 @@ void EditGrpDlg::slot_remove()
 
   if (QueryYesNo(this, warning))
   {
-    gUserManager.RemoveGroup(groupId);
+    Licq::gUserManager.RemoveGroup(groupId);
     RefreshList();
   }
 }
@@ -203,7 +203,7 @@ void EditGrpDlg::moveGroup(int delta)
   if (delta + oldSortIndex < 0)
     return;
 
-  gUserManager.ModifyGroupSorting(groupId, oldSortIndex + delta);
+  Licq::gUserManager.ModifyGroupSorting(groupId, oldSortIndex + delta);
   RefreshList();
 }
 
@@ -239,9 +239,9 @@ void EditGrpDlg::slot_edit()
 void EditGrpDlg::slot_editok()
 {
   if (myEditGroupId == 0)
-    myEditGroupId = gUserManager.AddGroup(edtName->text().toLocal8Bit().data());
+    myEditGroupId = Licq::gUserManager.AddGroup(edtName->text().toLocal8Bit().data());
   else
-    gUserManager.RenameGroup(myEditGroupId, edtName->text().toLocal8Bit().data());
+    Licq::gUserManager.RenameGroup(myEditGroupId, edtName->text().toLocal8Bit().data());
   RefreshList();
   setCurrentGroupId(myEditGroupId);
 

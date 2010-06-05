@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-#include "licq_user.h"
+#include <licq/contactlist/user.h>
 
 class QCheckBox;
 class QComboBox;
@@ -37,11 +37,11 @@ class EditPhoneDlg : public QDialog
   Q_OBJECT
 
 public:
-  EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe = 0,
+  EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* pbe = 0,
       int nEntry = -1);
 
 signals:
-  void updated(struct PhoneBookEntry, int);
+  void updated(struct Licq::PhoneBookEntry, int);
 
 private:
   QCheckBox* cbRemove0s;

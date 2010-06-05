@@ -29,8 +29,9 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
-#include <licq_user.h>
 
 #include "core/messagebox.h"
 
@@ -90,14 +91,13 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   // Set the fields
   if (ppid != 0)
   {
-    const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
-    if (o != NULL)
+    Licq::OwnerReadGuard o(ppid);
+    if (o.isLocked())
     {
       edtId->setText(o->IdString());
       edtId->setEnabled(false);
       edtPassword->setText(o->password().c_str());
       chkSave->setChecked(o->SavePassword());
-      gUserManager.DropOwner(o);
     }
 
     cmbProtocol->setCurrentPpid(ppid);
@@ -129,16 +129,17 @@ void OwnerEditDlg::slot_ok()
   }
 
   if (myPpid == 0)
-    gUserManager.AddOwner(id.toLocal8Bit(), ppid);
+    Licq::gUserManager.AddOwner(id.toLocal8Bit(), ppid);
 
-  ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_W);
-  if (o == NULL)
-    return;
+  {
+    Licq::OwnerWriteGuard o(ppid);
+    if (!o.isLocked())
+      return;
 
-  o->setPassword(pwd.toLocal8Bit().data());
-  o->SetSavePassword(chkSave->isChecked());
+    o->setPassword(pwd.toLocal8Bit().data());
+    o->SetSavePassword(chkSave->isChecked());
+  }
 
-  gUserManager.DropOwner(o);
   Licq::gDaemon.SaveConf();
 
   close();

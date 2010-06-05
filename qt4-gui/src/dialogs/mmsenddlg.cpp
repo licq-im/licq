@@ -37,7 +37,7 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
@@ -165,20 +165,23 @@ void MMSendDlg::SendNext()
     return;
   }
 
-  UserId userId = *mmv->contacts().begin();
+  Licq::UserId userId = *mmv->contacts().begin();
 
-  if (!USERID_ISVALID(userId))
+  if (!userId.isValid())
     return;
 
   switch (m_nEventType)
   {
     case ICQ_CMDxSUB_MSG:
     {
-      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-      if (u == NULL) return;
-      const QTextCodec* codec = UserCodec::codecForUser(u);
-      grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
-      gUserManager.DropUser(u);
+      const QTextCodec* codec;
+      {
+        Licq::UserReadGuard u(userId);
+        if (!u.isLocked())
+          return;
+        codec = UserCodec::codecForUser(*u);
+        grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      }
 
       // create initial strings (implicit copying, no allocation impact :)
       char* tmp = Licq::gTranslator.NToRN(codec->fromUnicode(s1));
@@ -245,11 +248,14 @@ void MMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_URL:
     {
-      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-      if (u == NULL) return;
-      grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
-      const QTextCodec* codec = UserCodec::codecForUser(u);
-      gUserManager.DropUser(u);
+      const QTextCodec* codec;
+      {
+        Licq::UserReadGuard u(userId);
+        if (!u.isLocked())
+          return;
+        codec = UserCodec::codecForUser(*u);
+        grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      }
 
       icqEventTag = gProtocolManager.sendUrl(userId, s2.toLatin1().data(),
           codec->fromUnicode(s1).data(), true, ICQ_TCPxMSG_NORMAL, true);
@@ -257,14 +263,17 @@ void MMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-      if (u == NULL) return;
-      grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
-      QString myId = u->accountId().c_str();
-      gUserManager.DropUser(u);
+      const QTextCodec* codec;
+      {
+        Licq::UserReadGuard u(userId);
+        if (!u.isLocked())
+          return;
+        codec = UserCodec::codecForUser(*u);
+        grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      }
 
       icqEventTag = gLicqDaemon->icqSendContactList(
-          myId.toLatin1(), *myUsers, false, ICQ_TCPxMSG_NORMAL);
+          userId.accountId().c_str(), *myUsers, false, ICQ_TCPxMSG_NORMAL);
       break;
     }
   }

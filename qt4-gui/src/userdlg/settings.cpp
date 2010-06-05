@@ -32,11 +32,12 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 #include <licq_events.h>
-#include <licq_user.h>
 
 #include "contactlist/contactlist.h"
 #include "dialogs/awaymsgdlg.h"
@@ -233,7 +234,7 @@ QWidget* UserPages::Settings::createPageGroups(QWidget* parent)
   return w;
 }
 
-void UserPages::Settings::load(const LicqUser* user)
+void UserPages::Settings::load(const Licq::User* user)
 {
   if (myIsOwner)
     return;
@@ -283,10 +284,12 @@ void UserPages::Settings::load(const LicqUser* user)
 
   myGroupsTable->clearContents();
   myGroupsTable->setRowCount(0);
-  int serverGroup = (user->GetSID() ? gUserManager.GetGroupFromID(user->GetGSID()) : 0);
+  int serverGroup = (user->GetSID() ? Licq::gUserManager.GetGroupFromID(user->GetGSID()) : 0);
   int i = 0;
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  Licq::GroupListGuard groups;
+  BOOST_FOREACH(const Licq::Group* group, **groups)
   {
+    Licq::GroupReadGuard pGroup(group);
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
     int gid = pGroup->id();
 
@@ -314,13 +317,12 @@ void UserPages::Settings::load(const LicqUser* user)
 
     ++i;
   }
-  FOR_EACH_GROUP_END
 
   myGroupsTable->resizeRowsToContents();
   myGroupsTable->resizeColumnsToContents();
 }
 
-void UserPages::Settings::apply(LicqUser* user)
+void UserPages::Settings::apply(Licq::User* user)
 {
   if (myIsOwner)
     return;
@@ -358,25 +360,29 @@ void UserPages::Settings::apply(LicqUser* user)
   user->setCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit().data());
 }
 
-void UserPages::Settings::apply2(const UserId& userId)
+void UserPages::Settings::apply2(const Licq::UserId& userId)
 {
   if (myIsOwner)
     return;
 
-  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-  if (u == NULL)
-    return;
-
-  // Get current group memberships so we only set those that have actually changed
   int serverGroup = 0;
-  if (u->GetSID() != 0)
-    serverGroup = gUserManager.GetGroupFromID(u->GetGSID());
-  const Licq::UserGroupList& userGroups = u->GetGroups();
-  bool visibleList = u->VisibleList();
-  bool invisibleList = u->InvisibleList();
-  bool ignoreList = u->IgnoreList();
+  Licq::UserGroupList userGroups;
+  bool visibleList;
+  bool invisibleList;
+  bool ignoreList;
+  {
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+      return;
 
-  gUserManager.DropUser(u);
+   // Get current group memberships so we only set those that have actually changed
+    if (u->GetSID() != 0)
+      serverGroup = Licq::gUserManager.GetGroupFromID(u->GetGSID());
+    userGroups = u->GetGroups();
+    visibleList = u->VisibleList();
+    invisibleList = u->InvisibleList();
+    ignoreList = u->IgnoreList();
+  }
 
   // First set server group
   for (int i = 0; i < myGroupsTable->rowCount(); ++i)
@@ -386,7 +392,7 @@ void UserPages::Settings::apply2(const UserId& userId)
     if (dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked())
     {
       if (gid != serverGroup)
-        gUserManager.setUserInGroup(userId, gid, true, true);
+        Licq::gUserManager.setUserInGroup(userId, gid, true, true);
     }
   }
 
@@ -397,7 +403,7 @@ void UserPages::Settings::apply2(const UserId& userId)
 
     bool inLocal = dynamic_cast<QCheckBox*>(myGroupsTable->cellWidget(i, 1))->isChecked();
     if ((userGroups.count(gid) > 0) != inLocal)
-      gUserManager.setUserInGroup(userId, gid, inLocal, false);
+      Licq::gUserManager.setUserInGroup(userId, gid, inLocal, false);
   }
 
   // Set system groups
@@ -409,7 +415,7 @@ void UserPages::Settings::apply2(const UserId& userId)
     gProtocolManager.ignoreListSet(userId, myIgnoreListCheck->isChecked());
 }
 
-void UserPages::Settings::userUpdated(const LicqUser* user, unsigned long subSignal)
+void UserPages::Settings::userUpdated(const Licq::User* user, unsigned long subSignal)
 {
   switch (subSignal)
   {

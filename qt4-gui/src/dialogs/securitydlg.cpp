@@ -28,9 +28,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/owner.h>
 #include <licq/icq.h>
 #include <licq_events.h>
-#include <licq_user.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
@@ -49,8 +49,8 @@ SecurityDlg::SecurityDlg(QWidget* parent)
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(title);
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o == NULL)
+  Licq::OwnerReadGuard o(LICQ_PPID);
+  if (!o.isLocked())
   {
     InformUser(this, tr("No ICQ owner found.\nPlease create one first."));
     close();
@@ -78,8 +78,6 @@ SecurityDlg::SecurityDlg(QWidget* parent)
       o->HideIp());
 #undef ADD_CHECK
 
-  gUserManager.DropOwner(o);
-
   top_lay->addWidget(boxOptions);
 
   QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Cancel);
@@ -97,33 +95,35 @@ SecurityDlg::SecurityDlg(QWidget* parent)
 
 void SecurityDlg::ok()
 {
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-
-  if (o == NULL)
+  bool auth, web, ip;
+  bool changed;
   {
-    // Even though we protected from this in constructor,
-    // it's never too bad to persuade
-    close();
-    return;
-  }
+    Licq::OwnerReadGuard o(LICQ_PPID);
 
-  if (o->status() == Licq::User::OfflineStatus)
-  {
-    gUserManager.DropOwner(o);
-    InformUser(this, tr("You need to be connected to the\n"
+    if (!o.isLocked())
+    {
+      // Even though we protected from this in constructor,
+      // it's never too bad to persuade
+      close();
+      return;
+    }
+
+    if (o->status() == Licq::User::OfflineStatus)
+    {
+      InformUser(this, tr("You need to be connected to the\n"
           "ICQ Network to change the settings."));
-    return;
+      return;
+    }
+
+    auth = chkAuthorization->isChecked();
+    web = chkWebAware->isChecked();
+    ip = chkHideIp->isChecked();
+
+    changed = (auth != o->GetAuthorization() || web != o->WebAware() || ip != o->HideIp());
   }
 
-  bool auth = chkAuthorization->isChecked();
-  bool web = chkWebAware->isChecked();
-  bool ip = chkHideIp->isChecked();
-
-  if (auth != o->GetAuthorization() ||
-      web != o->WebAware() ||
-      ip != o->HideIp())
+  if (changed)
   {
-    gUserManager.DropOwner(o);
     btnUpdate->setEnabled(false);
 
     connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
@@ -135,8 +135,6 @@ void SecurityDlg::ok()
 
     return; // prevents the dialog from closing
   }
-
-  gUserManager.DropOwner(o);
 
   close();
 }

@@ -26,7 +26,8 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "helpers/support.h"
 
@@ -37,7 +38,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::CustomAutoRespDlg */
 
-CustomAutoRespDlg::CustomAutoRespDlg(const UserId& userId, QWidget* parent)
+CustomAutoRespDlg::CustomAutoRespDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent),
     myUserId(userId)
 {
@@ -69,9 +70,8 @@ CustomAutoRespDlg::CustomAutoRespDlg(const UserId& userId, QWidget* parent)
 
   lay->addWidget(buttons);
 
-  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
-
-  if (u == NULL)
+  Licq::UserReadGuard u(myUserId);
+  if (!u.isLocked())
     return;
 
   setWindowTitle(tr("Set Custom Auto Response for %1").arg(QString::fromUtf8(u->GetAlias())));
@@ -85,8 +85,6 @@ CustomAutoRespDlg::CustomAutoRespDlg(const UserId& userId, QWidget* parent)
           .arg(Licq::User::statusToString(status, true, false).c_str()));
   }
 
-  gUserManager.DropUser(u);
-
   myMessage->setFocus();
   QTimer::singleShot(0, myMessage, SLOT(selectAll()));
 
@@ -97,29 +95,29 @@ void CustomAutoRespDlg::ok()
 {
   QString s = myMessage->toPlainText().trimmed();
 
-  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
-  if (u != NULL)
   {
-    u->setCustomAutoResponse(s.toLocal8Bit().data());
-    gUserManager.DropUser(u);
-
-    // Notify all plugins (including ourselves)
-    gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+    Licq::UserWriteGuard u(myUserId);
+    if (u.isLocked())
+      u->setCustomAutoResponse(s.toLocal8Bit().data());
   }
+
+  // Notify all plugins (including ourselves)
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+
   close();
 }
 
 void CustomAutoRespDlg::clear()
 {
-  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
-  if (u != NULL)
   {
-    u->clearCustomAutoResponse();
-    gUserManager.DropUser(u);
-
-    // Notify all plugins (including ourselves)
-    gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+    Licq::UserWriteGuard u(myUserId);
+    if (u.isLocked())
+      u->clearCustomAutoResponse();
   }
+
+  // Notify all plugins (including ourselves)
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+
   close();
 }
 

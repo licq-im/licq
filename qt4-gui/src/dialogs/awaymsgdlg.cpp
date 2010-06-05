@@ -34,9 +34,10 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/sarmanager.h>
 #include <licq_log.h>
-#include <licq_user.h>
 
 #include "core/licqgui.h"
 
@@ -147,25 +148,26 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
   QAction* a = myMenu->addAction(tr("&Edit Items"), this, SLOT(selectMessage()));
   a->setData(QString());
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o == NULL)
-    return;
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    if (!o.isLocked())
+      return;
 
-  QString statusStr = User::statusToString(myStatus, true, false).c_str();
+    QString statusStr = User::statusToString(myStatus, true, false).c_str();
 
-  setWindowTitle(QString(tr("Set %1 Response for %2"))
-      .arg(statusStr)
-      .arg(QString::fromUtf8(o->GetAlias())));
+    setWindowTitle(QString(tr("Set %1 Response for %2"))
+        .arg(statusStr)
+        .arg(QString::fromUtf8(o->GetAlias())));
 
-  const QTextCodec* codec = UserCodec::defaultEncoding();
-  if (!o->autoResponse().empty())
-    myAwayMsg->setText(codec->toUnicode(o->autoResponse().c_str()));
-  else
-    myAwayMsg->setText(tr("I'm currently %1, %a.\n"
-          "You can leave me a message.\n"
-          "(%m messages pending from you).")
-        .arg(statusStr));
-  gUserManager.DropOwner(o);
+    const QTextCodec* codec = UserCodec::defaultEncoding();
+    if (!o->autoResponse().empty())
+      myAwayMsg->setText(codec->toUnicode(o->autoResponse().c_str()));
+    else
+      myAwayMsg->setText(tr("I'm currently %1, %a.\n"
+            "You can leave me a message.\n"
+            "(%m messages pending from you).")
+          .arg(statusStr));
+  }
 
   myAwayMsg->setFocus();
   QTimer::singleShot(0, myAwayMsg, SLOT(selectAll()));
@@ -232,7 +234,7 @@ void AwayMsgDlg::ok()
     gLicqGui->changeStatus(myStatus, invisible, s);
   else
   {
-    Licq::UserId userId = gUserManager.ownerUserId(myPpid);
+    Licq::UserId userId = Licq::gUserManager.ownerUserId(myPpid);
     gLicqGui->changeStatus(myStatus, userId, invisible, s);
   }
 

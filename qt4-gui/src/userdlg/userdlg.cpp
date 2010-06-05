@@ -30,7 +30,8 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "core/signalmanager.h"
 #include "core/usermenu.h"
@@ -44,7 +45,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserDlg */
 
-UserDlg::UserDlg(const UserId& userId, QWidget* parent)
+UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
     myUserId(userId),
     myIcqEventTag(0)
@@ -52,7 +53,7 @@ UserDlg::UserDlg(const UserId& userId, QWidget* parent)
   Support::setWidgetProps(this, "UserDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  myIsOwner = gUserManager.isOwner(myUserId);
+  myIsOwner = Licq::gUserManager.isOwner(myUserId);
 
   QVBoxLayout* top_lay = new QVBoxLayout(this);
 
@@ -99,23 +100,23 @@ UserDlg::UserDlg(const UserId& userId, QWidget* parent)
   myUserInfo = new UserPages::Info(myIsOwner, this);
   myUserSettings = new UserPages::Settings(myIsOwner, this);
 
-  const LicqUser* user = gUserManager.fetchUser(myUserId, LOCK_R);
-  if (user != NULL)
   {
-    const QTextCodec* codec = UserCodec::codecForUser(user);
-    QString name = codec->toUnicode(user->getFullName().c_str());
-    if (!name.isEmpty())
-      name = " (" + name + ")";
-    myBasicTitle = tr("Licq - Info ") + QString::fromUtf8(user->GetAlias()) + name;
+     Licq::UserReadGuard user(myUserId);
+    if (user.isLocked())
+    {
+      const QTextCodec* codec = UserCodec::codecForUser(*user);
+      QString name = codec->toUnicode(user->getFullName().c_str());
+      if (!name.isEmpty())
+        name = " (" + name + ")";
+      myBasicTitle = tr("Licq - Info ") + QString::fromUtf8(user->GetAlias()) + name;
 
-    myUserInfo->load(user);
-    myUserSettings->load(user);
-
-    gUserManager.DropUser(user);
-  }
-  else
-  {
-    myBasicTitle = tr("Licq - Info ") + tr("INVALID USER");
+      myUserInfo->load(*user);
+      myUserSettings->load(*user);
+    }
+    else
+    {
+      myBasicTitle = tr("Licq - Info ") + tr("INVALID USER");
+    }
   }
   resetCaption();
 
@@ -200,29 +201,29 @@ void UserDlg::ok()
 
 void UserDlg::apply()
 {
-  LicqUser* user = gUserManager.fetchUser(myUserId, LOCK_W);
-  if (user == NULL)
-    return;
+  {
+    Licq::UserWriteGuard user(myUserId);
+    if (!user.isLocked())
+      return;
 
-  user->SetEnableSave(false);
+    user->SetEnableSave(false);
 
-  myUserInfo->apply(user);
-  myUserSettings->apply(user);
+    myUserInfo->apply(*user);
+    myUserSettings->apply(*user);
 
-  user->SetEnableSave(true);
-  user->saveAll();
-
-  gUserManager.DropUser(user);
+    user->SetEnableSave(true);
+    user->saveAll();
+  }
 
   // Special stuff that must be called without holding lock
   myUserInfo->apply2(myUserId);
   myUserSettings->apply2(myUserId);
 
   // Notify all plugins (including ourselves)
-  gUserManager.notifyUserUpdated(myUserId, USER_BASIC);
-  gUserManager.notifyUserUpdated(myUserId, USER_GROUPS);
-  gUserManager.notifyUserUpdated(myUserId, USER_INFO);
-  gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_BASIC);
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_GROUPS);
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_INFO);
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
 }
 
 void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
@@ -230,14 +231,12 @@ void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
   if (userId != myUserId)
     return;
 
-  const LicqUser* user = gUserManager.fetchUser(myUserId, LOCK_R);
-  if (user == NULL)
+  Licq::UserReadGuard user(myUserId);
+  if (!user.isLocked())
     return;
 
-  myUserInfo->userUpdated(user, subSignal);
-  myUserSettings->userUpdated(user, subSignal);
-
-  gUserManager.DropUser(user);
+  myUserInfo->userUpdated(*user, subSignal);
+  myUserSettings->userUpdated(*user, subSignal);
 }
 
 void UserDlg::doneFunction(const LicqEvent* event)

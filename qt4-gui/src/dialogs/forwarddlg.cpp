@@ -31,9 +31,11 @@
 #include <QLabel>
 #include <QPushButton>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq_message.h>
-#include <licq_user.h>
 
 #include "core/gui-defines.h"
 #include "core/messagebox.h"
@@ -105,7 +107,7 @@ ForwardDlg::~ForwardDlg()
 
 void ForwardDlg::slot_ok()
 {
-  if (!USERID_ISVALID(myUserId))
+  if (!myUserId.isValid())
     return;
 
   switch(m_nEventType)
@@ -166,12 +168,11 @@ void ForwardDlg::dropEvent(QDropEvent* de)
   if (nPPID == 0 || text.length() <= 4)
     return;
 
-  myUserId = LicqUser::makeUserId(text.toLatin1().data(), nPPID);
+  myUserId = Licq::UserId(text.toLatin1().data(), nPPID);
 
-  const LicqUser* u = gUserManager.fetchUser(myUserId);
-  if (u == NULL)
+  Licq::UserReadGuard u(myUserId);
+  if (!u.isLocked())
     return;
 
   edtUser->setText(QString::fromUtf8(u->GetAlias()) + " (" + u->accountId().c_str() + ")");
-  gUserManager.DropUser(u);
 }

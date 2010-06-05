@@ -28,11 +28,12 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq_events.h>
-#include <licq_user.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -133,8 +134,8 @@ void RandomChatDlg::userEventDone(const LicqEvent* event)
       break;
     default:
       //TODO when CSearchAck changes
-      UserId userId = event->SearchAck()->userId();
-      gUserManager.addUser(userId, false);
+      Licq::UserId userId = event->SearchAck()->userId();
+      Licq::gUserManager.addUser(userId, false);
       gLicqGui->showEventDialog(ChatEvent, userId);
       close();
       return;
@@ -184,8 +185,8 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
   myGroupsList->addItem(tr("Seeking Women"));
   myGroupsList->addItem(tr("Seeking Men"));
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o == NULL)
+  Licq::OwnerReadGuard o(LICQ_PPID);
+  if (!o.isLocked())
   {
     close();
     return;
@@ -206,7 +207,6 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
     default:
       myGroupsList->setCurrentRow(0); break;
   }
-  gUserManager.DropOwner(o);
 
   show();
 }

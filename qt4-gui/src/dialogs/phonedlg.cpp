@@ -31,6 +31,7 @@
 #include <QPushButton>
 #include <QTextCodec>
 
+#include <licq/contactlist/owner.h>
 #include <licq/icqcodes.h>
 
 #include "config/iconmanager.h"
@@ -43,7 +44,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::EditPhoneDlg */
 
-EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
+EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* pbe,
     int nEntry)
   : QDialog(parent)
 {
@@ -51,14 +52,16 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
   setAttribute(Qt::WA_DeleteOnClose, true);
   setModal(true);
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o == NULL)
+  const QTextCodec* codec;
   {
-    close();
-    return;
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    if (!o.isLocked())
+    {
+      close();
+      return;
+    }
+    codec = UserCodec::codecForUser(*o);
   }
-  const QTextCodec* codec = UserCodec::codecForUser(o);
-  gUserManager.DropOwner(o);
 
   m_nEntry = nEntry;
 
@@ -76,7 +79,7 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
   cmbDescription->addItem(tr("Home Fax"));
   cmbDescription->addItem(tr("Work Fax"));
   cmbDescription->addItem(tr("Wireless Pager"));
-  cmbDescription->lineEdit()->setMaxLength(MAX_DESCRIPTION_SIZE);
+  cmbDescription->lineEdit()->setMaxLength(Licq::MAX_DESCRIPTION_SIZE);
   cmbDescription->setDuplicatesEnabled(false);
   top_lay->addWidget(cmbDescription, 0, 1);
 
@@ -108,19 +111,19 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
   gdlay->addWidget(new QLabel(tr("Network #/Area code:")), 0, 0);
 
   leAreaCode = new QLineEdit();
-  leAreaCode->setMaxLength(MAX_AREAxCODE_SIZE);
+  leAreaCode->setMaxLength(Licq::MAX_AREAxCODE_SIZE);
   gdlay->addWidget(leAreaCode, 1, 0);
 
   gdlay->addWidget(new QLabel(tr("Number:")), 0, 1);
 
   leNumber = new QLineEdit();
-  leNumber->setMaxLength(MAX_PHONExNUMBER_SIZE);
+  leNumber->setMaxLength(Licq::MAX_PHONExNUMBER_SIZE);
   gdlay->addWidget(leNumber, 1, 1);
 
   gdlay->addWidget(new QLabel(tr("Extension:")), 0, 2);
 
   leExtension = new QLineEdit();
-  leExtension->setMaxLength(MAX_EXTENSION_SIZE);
+  leExtension->setMaxLength(Licq::MAX_EXTENSION_SIZE);
   gdlay->addWidget(leExtension, 1, 2);
 
   // ROW 6
@@ -136,7 +139,7 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
   top_lay->addWidget(new QLabel(tr("E-mail Gateway:")), 5, 0);
 
   leGateway = new QLineEdit();
-  leGateway->setMaxLength(MAX_GATEWAY_SIZE);
+  leGateway->setMaxLength(Licq::MAX_GATEWAY_SIZE);
   top_lay->addWidget(leGateway, 5, 1);
 
   // ROW 8
@@ -169,11 +172,11 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
     leAreaCode->setText(codec->toUnicode(pbe->areaCode.c_str()));
     leNumber->setText(codec->toUnicode(pbe->phoneNumber.c_str()));
     // avoid duplicating the pager number in the extension field
-    if (pbe->nType != TYPE_PAGER || pbe->phoneNumber != pbe->extension)
+    if (pbe->nType != Licq::TYPE_PAGER || pbe->phoneNumber != pbe->extension)
     {
       leExtension->setText(codec->toUnicode(pbe->extension.c_str()));
     }
-    if (pbe->nGatewayType == GATEWAY_BUILTIN)
+    if (pbe->nGatewayType == Licq::GATEWAY_BUILTIN)
     {
       const struct SProvider* p = GetProviderByName(pbe->gateway.c_str());
       if (p)
@@ -204,12 +207,12 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
 
 void EditPhoneDlg::UpdateDlg(int nType)
 {
-  leExtension->setEnabled(nType == TYPE_PHONE);
-  cmbProvider->setEnabled(nType == TYPE_PAGER);
-  leGateway->setEnabled(nType == TYPE_PAGER && cmbProvider->currentIndex() == 0);
-  cbRemove0s->setEnabled(nType != TYPE_PAGER);
-  leAreaCode->setEnabled(nType != TYPE_PAGER);
-  cmbCountry->setEnabled(nType != TYPE_PAGER);
+  leExtension->setEnabled(nType == Licq::TYPE_PHONE);
+  cmbProvider->setEnabled(nType == Licq::TYPE_PAGER);
+  leGateway->setEnabled(nType == Licq::TYPE_PAGER && cmbProvider->currentIndex() == 0);
+  cbRemove0s->setEnabled(nType != Licq::TYPE_PAGER);
+  leAreaCode->setEnabled(nType != Licq::TYPE_PAGER);
+  cmbCountry->setEnabled(nType != Licq::TYPE_PAGER);
 }
 
 //------------------------------------------------------------------------------
@@ -233,16 +236,18 @@ void EditPhoneDlg::ok()
     return;
   }
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o == NULL)
+  const QTextCodec* codec;
   {
-    close();
-    return;
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    if (!o.isLocked())
+    {
+      close();
+      return;
+    }
+    codec = UserCodec::codecForUser(*o);
   }
-  const QTextCodec* codec = UserCodec::codecForUser(o);
-  gUserManager.DropOwner(o);
 
-  struct PhoneBookEntry pbe;
+  struct Licq::PhoneBookEntry pbe;
   memset(&pbe, 0, sizeof(pbe));
 
   pbe.description = codec->fromUnicode(cmbDescription->currentText()).data();
@@ -258,7 +263,7 @@ void EditPhoneDlg::ok()
 
   if (leExtension->isEnabled())
     pbe.extension = codec->fromUnicode(leExtension->text()).data();
-  else if (pbe.nType == TYPE_PAGER)
+  else if (pbe.nType == Licq::TYPE_PAGER)
     // need to store the number in extension as well for some reason
     pbe.extension = pbe.phoneNumber;
   else
@@ -272,20 +277,20 @@ void EditPhoneDlg::ok()
   if (leGateway->isEnabled())
   {
     pbe.gateway = codec->fromUnicode(leGateway->text()).data();
-    pbe.nGatewayType = GATEWAY_CUSTOM;
+    pbe.nGatewayType = Licq::GATEWAY_CUSTOM;
   }
   else if (cmbProvider->isEnabled())
   {
     pbe.gateway = codec->fromUnicode(cmbProvider->currentText()).data();
-    pbe.nGatewayType = GATEWAY_BUILTIN;
+    pbe.nGatewayType = Licq::GATEWAY_BUILTIN;
   }
   else
   {
     pbe.gateway = "";
-    pbe.nGatewayType = GATEWAY_BUILTIN;
+    pbe.nGatewayType = Licq::GATEWAY_BUILTIN;
   }
 
-  pbe.nSmsAvailable = (pbe.nType == TYPE_CELLULARxSMS) ? 1 : 0;
+  pbe.nSmsAvailable = (pbe.nType == Licq::TYPE_CELLULARxSMS) ? 1 : 0;
 
   if (cbRemove0s->isEnabled() && !cbRemove0s->isChecked())
     pbe.nRemoveLeading0s = 0;

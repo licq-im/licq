@@ -34,10 +34,12 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq_events.h>
 #include <licq_message.h>
-#include <licq_user.h>
 
 #include "config/chat.h"
 #include "core/licqgui.h"
@@ -53,14 +55,14 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::HistoryDlg */
 
-HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
+HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent),
     myUserId(userId)
 {
   Support::setWidgetProps(this, "UserHistoryDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  myIsOwner = gUserManager.isOwner(myUserId);
+  myIsOwner = Licq::gUserManager.isOwner(myUserId);
 
   QVBoxLayout* topLayout = new QVBoxLayout(this);
 
@@ -160,7 +162,7 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
 
   show();
 
-  const LicqUser* u = gUserManager.fetchUser(myUserId);
+  const Licq::User* u = Licq::gUserManager.fetchUser(myUserId);
   unsigned long myPpid = u->ppid();
 
   QString name = tr("INVALID USER");
@@ -206,7 +208,7 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
   if (!validHistory)
   {
     if (u != NULL)
-      gUserManager.DropUser(u);
+      Licq::gUserManager.DropUser(u);
     myCalendar->setEnabled(false);
     previousDateButton->setEnabled(false);
     nextDateButton->setEnabled(false);
@@ -230,13 +232,12 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
       break;
     }
   }
-  gUserManager.DropUser(u);
+  Licq::gUserManager.DropUser(u);
 
-  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
-  if (o != NULL)
   {
-    myOwnerName = QString::fromUtf8(o->GetAlias());
-    gUserManager.DropOwner(o);
+    Licq::OwnerReadGuard o(myPpid);
+    if (o.isLocked())
+      myOwnerName = QString::fromUtf8(o->GetAlias());
   }
 
   // Mark all dates with activity so they are easier to find
@@ -266,7 +267,7 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
 
 HistoryDlg::~HistoryDlg()
 {
-  LicqUser::ClearHistory(myHistoryList);
+  Licq::User::ClearHistory(myHistoryList);
 }
 
 void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument)
@@ -276,12 +277,14 @@ void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal
 
   if (subSignal == USER_EVENTS)
   {
-    const LicqUser* u = gUserManager.fetchUser(myUserId);
-    if (u == NULL)
-      return;
+    const CUserEvent* event;
+    {
+      Licq::UserReadGuard u(myUserId);
+      if (!u.isLocked())
+        return;
 
-    const CUserEvent* event = u->EventPeekId(argument);
-    gUserManager.DropUser(u);
+      event = u->EventPeekId(argument);
+    }
 
     if (event != NULL && argument > 0 && argument > (*(--myHistoryList.end()))->Id())
       addMsg(event);

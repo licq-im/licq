@@ -43,7 +43,6 @@
 
 #include <licq/icqfiletransfer.h>
 #include <licq_log.h>
-#include <licq_user.h>
 
 #include "core/messagebox.h"
 
@@ -55,17 +54,12 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::FileDlg */
 
-FileDlg::FileDlg(const UserId& userId, QWidget* parent)
+FileDlg::FileDlg(const Licq::UserId& userId, QWidget* parent)
   : QWidget(parent),
     myUserId(userId)
 {
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user != NULL)
-  {
-    myId = user->accountId().c_str();
-    m_nPPID = user->ppid();
-    gUserManager.DropUser(user);
-  }
+  myId = userId.accountId().c_str();
+  m_nPPID = userId.protocolId();
 
   setObjectName("FileDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);

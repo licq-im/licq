@@ -23,7 +23,7 @@
 
 #include <QDialog>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 
 class QComboBox;
 class QLineEdit;
@@ -38,16 +38,16 @@ class EditCategoryDlg : public QDialog
   Q_OBJECT
 
 public:
-  EditCategoryDlg(UserCat cat, const UserCategoryMap& category, QWidget* parent = 0);
+  EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap& category, QWidget* parent = 0);
 
 signals:
-  void updated(UserCat cat, const UserCategoryMap& category);
+  void updated(Licq::UserCat cat, const Licq::UserCategoryMap& category);
 
 private:
-  QComboBox* myCats[MAX_CATEGORIES];
-  QLineEdit* myDescr[MAX_CATEGORIES];
+  QComboBox* myCats[Licq::MAX_CATEGORIES];
+  QLineEdit* myDescr[Licq::MAX_CATEGORIES];
   unsigned short myNumCats;
-  UserCat myUserCat;
+  Licq::UserCat myUserCat;
 
   const struct SCategory* (*getEntry)(unsigned short index);
 

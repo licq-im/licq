@@ -25,7 +25,7 @@
 
 #include <QObject>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 
 #include "userdlg.h"
 
@@ -38,9 +38,6 @@ class QSpinBox;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QVBoxLayout;
-
-class ICQUserPhoneBook;
-class ICQUserCategory;
 
 
 namespace LicqQtGui
@@ -77,14 +74,14 @@ public:
    *
    * @param user User to get data from
    */
-  void load(const LicqUser* user);
+  void load(const Licq::User* user);
 
   /**
    * Save user data for pages
    *
    * @param user User to write data to
    */
-  void apply(LicqUser* user);
+  void apply(Licq::User* user);
 
   /**
    * Save user data for pages
@@ -92,7 +89,7 @@ public:
    *
    * @param userId User id
    */
-  void apply2(const UserId& userId);
+  void apply2(const Licq::UserId& userId);
 
   /**
    * User was updated
@@ -100,7 +97,7 @@ public:
    * @param user User locked for read access
    * @param subSignal Sub signal telling what the change was
    */
-  void userUpdated(const LicqUser* user, unsigned long subSignal);
+  void userUpdated(const Licq::User* user, unsigned long subSignal);
 
   /**
    * Retrieve info from server
@@ -138,7 +135,7 @@ private slots:
    * @param cat Category to update
    * @param category New category map
    */
-  void setCategory(UserCat cat, const UserCategoryMap& category);
+  void setCategory(Licq::UserCat cat, const Licq::UserCategoryMap& category);
 
   /**
    * Add/update phone book entry after editing dialog has finished
@@ -146,7 +143,7 @@ private slots:
    * @param pbe Data for entry
    * @param nEntry Position in list to update
    */
-  void phoneBookUpdated(struct PhoneBookEntry pbe, int nEntry);
+  void phoneBookUpdated(struct Licq::PhoneBookEntry pbe, int nEntry);
 
   /**
    * Open dialog to edit phone entry
@@ -203,14 +200,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageGeneral(const LicqUser* user);
+  void loadPageGeneral(const Licq::User* user);
 
   /**
    * Save user data for general page
    *
    * @param user User to write data to
    */
-  void savePageGeneral(LicqUser* user);
+  void savePageGeneral(Licq::User* user);
 
   /**
    * Setup the more page
@@ -225,14 +222,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageMore(const LicqUser* user);
+  void loadPageMore(const Licq::User* user);
 
   /**
    * Save user data for more page
    *
    * @param user User to write data to
    */
-  void savePageMore(LicqUser* user);
+  void savePageMore(Licq::User* user);
 
   /**
    * Setup the more2 page
@@ -247,14 +244,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageMore2(const LicqUser* user);
+  void loadPageMore2(const Licq::User* user);
 
   /**
    * Save user data for more2 page
    *
    * @param user User to write data to
    */
-  void savePageMore2(LicqUser* user);
+  void savePageMore2(Licq::User* user);
 
   /**
    * Split interest, organization or background string for presentation
@@ -271,7 +268,7 @@ private:
    * @param cat Category to update
    * @param category New category map
    */
-  void updateMore2Info(UserCat cat, const UserCategoryMap& category);
+  void updateMore2Info(Licq::UserCat cat, const Licq::UserCategoryMap& category);
 
   /**
    * Setup the work page.
@@ -286,14 +283,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageWork(const LicqUser* user);
+  void loadPageWork(const Licq::User* user);
 
   /**
    * Save user data for work page
    *
    * @param user User to write data to
    */
-  void savePageWork(LicqUser* user);
+  void savePageWork(Licq::User* user);
 
   /**
    * Setup the about page.
@@ -308,14 +305,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageAbout(const LicqUser* user);
+  void loadPageAbout(const Licq::User* user);
 
   /**
    * Save user data for about page
    *
    * @param user User to write data to
    */
-  void savePageAbout(LicqUser* user);
+  void savePageAbout(Licq::User* user);
 
   /**
    * Setup the phone book page.
@@ -330,14 +327,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPagePhoneBook(const LicqUser* user);
+  void loadPagePhoneBook(const Licq::User* user);
 
   /**
    * Save user data for phone book
    *
    * @param user User to write data to
    */
-  void savePagePhoneBook(LicqUser* user);
+  void savePagePhoneBook(Licq::User* user);
 
   /**
    * Update data in phone book widget
@@ -357,14 +354,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPagePicture(const LicqUser* user);
+  void loadPagePicture(const Licq::User* user);
 
   /**
    * Save user data for picture page
    *
    * @param user User to write data to
    */
-  void savePagePicture(LicqUser* user);
+  void savePagePicture(Licq::User* user);
 
   /**
    * Setup the counters page.
@@ -379,7 +376,7 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageCounters(const LicqUser* user);
+  void loadPageCounters(const Licq::User* user);
 
 #ifdef USE_KABC
   /**
@@ -395,7 +392,7 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageKabc(const LicqUser* user);
+  void loadPageKabc(const Licq::User* user);
 
   /**
    * Save user data for KDE adressbook page
@@ -403,7 +400,7 @@ private:
   void savePageKabc();
 #endif
 
-  UserId myUserId;
+  Licq::UserId myUserId;
   QString myId;
   unsigned long myPpid;
   bool m_bOwner;
@@ -457,9 +454,9 @@ private:
   QGroupBox* myMore2Box;
   QTreeWidget* lsvMore2;
   QTreeWidgetItem* lviMore2Top[3];
-  UserCategoryMap myInterests;
-  UserCategoryMap myBackgrounds;
-  UserCategoryMap myOrganizations;
+  Licq::UserCategoryMap myInterests;
+  Licq::UserCategoryMap myBackgrounds;
+  Licq::UserCategoryMap myOrganizations;
 
   // Work info
   QVBoxLayout* myPageWorkLayout;
@@ -493,7 +490,7 @@ private:
   InfoField* nfoActive;
   QPushButton* myPhoneAddButton;
   QPushButton* myPhoneClearButton;
-  ICQUserPhoneBook* m_PhoneBook;
+  Licq::ICQUserPhoneBook* m_PhoneBook;
 
   // Picture
   QVBoxLayout* myPagePictureLayout;

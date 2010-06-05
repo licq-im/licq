@@ -35,9 +35,9 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/usermanager.h>
 #include <licq/icq.h>
 #include <licq/icqcodes.h>
-#include <licq_user.h>
 
 #include "contactlist/contactlist.h"
 
@@ -243,7 +243,7 @@ void SearchUserDlg::startSearch()
 
   if (edtUin->text().trimmed().isEmpty())
   {
-    QTextCodec* codec = QTextCodec::codecForName(gUserManager.defaultUserEncoding().c_str());
+    QTextCodec* codec = QTextCodec::codecForName(Licq::gUserManager.defaultUserEncoding().c_str());
     if (codec == 0)
       codec = QTextCodec::codecForLocale();
     searchTag = gLicqDaemon->icqSearchWhitePages(
@@ -326,7 +326,7 @@ void SearchUserDlg::searchResult(const LicqEvent* e)
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
 
-  if (e->SearchAck() != NULL && USERID_ISVALID(e->SearchAck()->userId()))
+  if (e->SearchAck() != NULL && e->SearchAck()->userId().isValid())
     searchFound(e->SearchAck());
 
   if (e->Result() == EVENT_SUCCESS)
@@ -339,7 +339,7 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
 {
   QString text;
   QTreeWidgetItem* item = new QTreeWidgetItem(foundView);
-  QTextCodec* codec = QTextCodec::codecForName(gUserManager.defaultUserEncoding().c_str());
+  QTextCodec* codec = QTextCodec::codecForName(Licq::gUserManager.defaultUserEncoding().c_str());
   if (codec == NULL)
     codec = QTextCodec::codecForLocale();
 
@@ -347,7 +347,7 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
   item->setText(0, codec->toUnicode(s->Alias()));
 
   item->setTextAlignment(1, Qt::AlignRight);
-  item->setText(1, LicqUser::getUserAccountId(s->userId()).c_str());
+  item->setText(1, s->userId().accountId().c_str());
 
   item->setText(2, codec->toUnicode(s->FirstName()) + " " + codec->toUnicode(s->LastName()));
 
@@ -370,10 +370,10 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
         text = (s->Age() ? QString::number(s->Age()) : tr("?")) + "/";
         switch (s->Gender())
         {
-          case GENDER_FEMALE:
+          case Licq::GENDER_FEMALE:
             text += tr("F");
             break;
-          case GENDER_MALE:
+          case Licq::GENDER_MALE:
             text += tr("M");
             break;
           default:
@@ -431,9 +431,9 @@ void SearchUserDlg::viewInfo()
 {
   foreach (QTreeWidgetItem* current, foundView->selectedItems())
   {
-    UserId userId = current->data(0, Qt::UserRole).value<UserId>();
+    Licq::UserId userId = current->data(0, Qt::UserRole).value<Licq::UserId>();
 
-    gUserManager.addUser(userId, false);
+    Licq::gUserManager.addUser(userId, false);
     gLicqGui->showInfoDialog(mnuUserGeneral, userId, false, true);
   }
 }
@@ -442,7 +442,7 @@ void SearchUserDlg::addUser()
 {
   foreach (QTreeWidgetItem* current, foundView->selectedItems())
   {
-    UserId userId = current->data(0, Qt::UserRole).value<UserId>();
+    Licq::UserId userId = current->data(0, Qt::UserRole).value<Licq::UserId>();
 
     new AddUserDlg(userId, this);
   }

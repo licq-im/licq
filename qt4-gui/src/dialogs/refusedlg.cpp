@@ -27,7 +27,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 
 #include "helpers/support.h"
 
@@ -36,7 +36,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::RefuseDlg */
 
-RefuseDlg::RefuseDlg(const UserId& userId, const QString& t, QWidget* parent)
+RefuseDlg::RefuseDlg(const Licq::UserId& userId, const QString& t, QWidget* parent)
    : QDialog(parent)
 {
   Support::setWidgetProps(this, "RefuseDialog");
@@ -44,10 +44,11 @@ RefuseDlg::RefuseDlg(const UserId& userId, const QString& t, QWidget* parent)
 
   QVBoxLayout* lay = new QVBoxLayout(this);
 
-  const LicqUser* u = gUserManager.fetchUser(userId);
-  QLabel* lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromUtf8(u->GetAlias()) + ":");
-  lay->addWidget(lbl);
-  gUserManager.DropUser(u);
+  {
+    Licq::UserReadGuard u(userId);
+    QLabel* lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromUtf8(u->GetAlias()) + ":");
+    lay->addWidget(lbl);
+  }
 
   mleRefuseMsg = new MLEdit(true);
   mleRefuseMsg->setSizeHintLines(5);

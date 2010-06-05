@@ -30,7 +30,7 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 #include <licq/protocolmanager.h>
 
@@ -42,7 +42,7 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::KeyRequestDlg */
 
-KeyRequestDlg::KeyRequestDlg(const UserId& userId, QWidget* parent)
+KeyRequestDlg::KeyRequestDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent),
     myUserId(userId),
     myIcqEventTag(0)
@@ -50,7 +50,7 @@ KeyRequestDlg::KeyRequestDlg(const UserId& userId, QWidget* parent)
   Support::setWidgetProps(this, "KeyRequestDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  const LicqUser* u = gUserManager.fetchUser(myUserId);
+  Licq::UserReadGuard u(myUserId);
   setWindowTitle(tr("Licq - Secure Channel with %1")
       .arg(QString::fromUtf8(u->GetAlias())));
 
@@ -62,14 +62,14 @@ KeyRequestDlg::KeyRequestDlg(const UserId& userId, QWidget* parent)
   QString t2;
   switch (u->SecureChannelSupport())
   {
-    case SECURE_CHANNEL_SUPPORTED:
+    case Licq::SECURE_CHANNEL_SUPPORTED:
       t2 = tr("The remote uses Licq %1/SSL.")
         .arg(CUserEvent::LicqVersionToString(u->LicqVersion()));
       if (Licq::gDaemon.haveCryptoSupport())
         QTimer::singleShot(0, this, SLOT(startSend()));
       break;
 
-    case SECURE_CHANNEL_NOTSUPPORTED:
+    case Licq::SECURE_CHANNEL_NOTSUPPORTED:
       t2 = tr("The remote uses Licq %1, however it\n"
               "has no secure channel support compiled in.\n"
               "This probably won't work.")
@@ -114,8 +114,6 @@ KeyRequestDlg::KeyRequestDlg(const UserId& userId, QWidget* parent)
                           "Rebuild Licq with OpenSSL support."));
     btnSend->setEnabled(false);
   }
-
-  gUserManager.DropUser(u);
 
   show();
 }

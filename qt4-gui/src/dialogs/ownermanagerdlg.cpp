@@ -27,9 +27,10 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
+#include <licq_constants.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
-#include <licq_user.h>
 
 #include "config/iconmanager.h"
 
@@ -110,7 +111,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   updateOwners();
 
   // Show information to the user
-  if (gUserManager.NumOwners() == 0)
+  if (Licq::gUserManager.NumOwners() == 0)
   {
     InformUser(this, tr("From the Account Manager dialog you are able to add"
         " and register your accounts.\n"
@@ -130,7 +131,7 @@ void OwnerManagerDlg::updateOwners()
 {
   ownerView->clear();
 
-  if (gUserManager.NumOwners() != 0)
+  if (Licq::gUserManager.NumOwners() != 0)
   {
     IconManager* iconman = IconManager::instance();
 
@@ -171,14 +172,14 @@ void OwnerManagerDlg::addOwner()
 
 void OwnerManagerDlg::registerOwner()
 {
-  if (!gUserManager.OwnerId(LICQ_PPID).empty())
+  if (!Licq::gUserManager.OwnerId(LICQ_PPID).empty())
   {
     QString buf = tr("You are currently registered as\n"
         "UIN (User ID): %1\n"
         "Base Directory: %2\n"
         "Rerun licq with the -b option to select a new\n"
         "base directory and then register a new user.")
-        .arg(gUserManager.OwnerId(LICQ_PPID).c_str()).arg(BASE_DIR);
+        .arg(Licq::gUserManager.OwnerId(LICQ_PPID).c_str()).arg(BASE_DIR);
     InformUser(this, buf);
     return;
   }
@@ -199,7 +200,7 @@ void OwnerManagerDlg::registerDone(bool success, const QString& /* newId */, uns
 
   if (success)
   {
-    gLicqGui->showInfoDialog(mnuUserGeneral, gUserManager.ownerUserId(newPpid));
+    gLicqGui->showInfoDialog(mnuUserGeneral, Licq::gUserManager.ownerUserId(newPpid));
   }
 }
 
@@ -227,6 +228,6 @@ void OwnerManagerDlg::removeOwner()
   if (!QueryYesNo(this, tr("Do you really want to remove account %1?").arg(item->text(1))))
     return;
 
-  gUserManager.RemoveOwner(item->data(0, Qt::UserRole).toString().toULong());
+  Licq::gUserManager.RemoveOwner(item->data(0, Qt::UserRole).toString().toULong());
   Licq::gDaemon.SaveConf();
 }

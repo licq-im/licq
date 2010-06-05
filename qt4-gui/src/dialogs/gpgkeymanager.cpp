@@ -29,7 +29,8 @@
 #include <QVBoxLayout>
 
 #include <licq_events.h>
-#include <licq_user.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 
 #include "core/messagebox.h"
 
@@ -43,7 +44,7 @@ using namespace LicqQtGui;
 
 struct luser
 {
-  UserId userId;
+  Licq::UserId userId;
   QString alias;
 };
 
@@ -172,7 +173,7 @@ KeyList::KeyList(QWidget* parent)
   setRootIsDecorated(false);
 }
 
-void KeyList::editUser(const UserId& userId)
+void KeyList::editUser(const Licq::UserId& userId)
 {
   KeyListItem* item = NULL;
   bool found = false;
@@ -190,11 +191,10 @@ void KeyList::editUser(const UserId& userId)
 
   if (!found)
   {
-    const LicqUser* u = gUserManager.fetchUser(userId);
-    if (u == NULL)
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
       return;
-    item = new KeyListItem(this, u);
-    gUserManager.DropUser(u);
+    item = new KeyListItem(this, *u);
     resizeColumnsToContents();
   }
 
@@ -237,7 +237,7 @@ void KeyList::dropEvent(QDropEvent* event)
   if (nPPID == 0)
     return;
 
-  editUser(LicqUser::makeUserId(text.mid(4).toLatin1().data(), nPPID));
+  editUser(Licq::UserId(text.mid(4).toLatin1().data(), nPPID));
 }
 
 void KeyList::resizeEvent(QResizeEvent* e)
@@ -269,7 +269,7 @@ void KeyList::resizeColumnsToContents()
 }
 
 // KEYLISTITEM
-KeyListItem::KeyListItem(QTreeWidget* parent, const LicqUser* u)
+KeyListItem::KeyListItem(QTreeWidget* parent, const Licq::User* u)
   : QTreeWidgetItem(parent),
     myUserId(u->id()),
     keySelect(NULL)
@@ -277,7 +277,7 @@ KeyListItem::KeyListItem(QTreeWidget* parent, const LicqUser* u)
   updateText(u);
 }
 
-void KeyListItem::updateText(const LicqUser* u)
+void KeyListItem::updateText(const Licq::User* u)
 {
   setText(0, QString::fromUtf8(u->GetAlias()));
   setText(1, u->UseGPG() ? tr("Yes") : tr("No"));
@@ -295,31 +295,30 @@ void KeyListItem::edit()
 
 void KeyListItem::slot_done()
 {
-  const LicqUser* u = gUserManager.fetchUser(myUserId);
+  Licq::UserReadGuard u(myUserId);
   keySelect = NULL;
 
-  if (u != NULL)
+  if (u.isLocked())
   {
     if (u->gpgKey().empty())
       delete this;
     else
-      updateText(u);
-    gUserManager.DropUser(u);
+      updateText(*u);
     dynamic_cast<KeyList*>(treeWidget())->resizeColumnsToContents();
   }
 }
 
 void KeyListItem::unsetKey()
 {
-  LicqUser* u = gUserManager.fetchUser(myUserId);
-
-  if (u != NULL)
   {
-    u->SetUseGPG(false);
-    u->setGpgKey("");
-    gUserManager.DropUser(u);
-
-    // Notify all plugins (including ourselves)
-    gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
+    Licq::UserWriteGuard u(myUserId);
+    if (u.isLocked())
+    {
+      u->SetUseGPG(false);
+      u->setGpgKey("");
+    }
   }
+
+  // Notify all plugins (including ourselves)
+  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
 }
