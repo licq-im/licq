@@ -104,7 +104,7 @@ void Daemon::initialize(CLicq* _licq)
 
   // Loading translation table from file
   licqConf.get("Translation", temp, "none");
-  if (temp != "none")
+  if (!temp.empty() && temp != "none")
   {
     string filename = SHARE_DIR;
     filename += TRANSLATION_DIR;
@@ -172,16 +172,16 @@ void Daemon::SaveConf()
 
   licqConf.set("Rejects", (myRejectFile.empty() ? "none" : myRejectFile));
 
-  const char* pc = Licq::gTranslator.getMapName().c_str();
-  if (pc == NULL)
-    pc = "none";
+  string translation = Licq::gTranslator.getMapName();
+  if (translation.empty())
+    translation = "none";
   else
   {
-    const char* pc2 = strrchr(pc, '/');
-    if (pc2 != NULL)
-      pc = pc2++;
+    size_t pos = translation.rfind('/');
+    if (pos != string::npos)
+      translation.erase(0, pos+1);
   }
-  licqConf.set("Translation", pc);
+  licqConf.set("Translation", translation);
   licqConf.set("Terminal", myTerminal);
   licqConf.set("SendTypingNotification", mySendTypingNotification);
   licqConf.set("IgnoreTypes", myIgnoreTypes);
