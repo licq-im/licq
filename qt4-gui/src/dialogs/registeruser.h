@@ -24,6 +24,8 @@
 
 #include <QWizard>
 
+#include <licq/userid.h>
+
 class QCheckBox;
 class QLabel;
 class QLineEdit;
@@ -42,7 +44,7 @@ public:
   virtual bool validateCurrentPage();
 
 signals:
-  void signal_done(bool success, const QString& id, unsigned long ppid);
+  void signal_done(bool success, const Licq::UserId& userId);
 
 private:
   void createIntroPage();
@@ -54,8 +56,7 @@ private:
   bool myGotOwner;
 
   bool mySuccess;
-  QString myId;
-  unsigned long myPpid;
+  Licq::UserId myUserId;
 
   QWizardPage* myIntroPage;
   QWizardPage* myPasswordPage;
@@ -71,7 +72,7 @@ private:
 
 private slots:
   void gotCaptcha(unsigned long ppid);
-  void gotNewOwner(const QString& id, unsigned long ppid);
+  void gotNewOwner(const Licq::UserId& userId);
 };
 
 } // namespace LicqQtGui

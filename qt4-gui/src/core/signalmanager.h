@@ -119,7 +119,13 @@ signals:
    */
   void convoLeave(const Licq::UserId& userId, unsigned long ppid, unsigned long convoId);
   void verifyImage(unsigned long);
-  void newOwner(const QString& accountId, unsigned long ppid);
+
+  /**
+   * A new owner was created (as part of registration process)
+   *
+   * @param userId User id of new owner
+   */
+  void newOwner(const Licq::UserId& userId);
 
   /**
    * An owner was added

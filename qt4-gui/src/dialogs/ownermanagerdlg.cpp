@@ -189,18 +189,18 @@ void OwnerManagerDlg::registerOwner()
   else
   {
     registerUserDlg = new RegisterUserDlg(this);
-    connect(registerUserDlg, SIGNAL(signal_done(bool, const QString&, unsigned long)),
-        SLOT(registerDone(bool, const QString&, unsigned long)));
+    connect(registerUserDlg, SIGNAL(signal_done(bool, const Licq::UserId&)),
+        SLOT(registerDone(bool, const Licq::UserId&)));
   }
 }
 
-void OwnerManagerDlg::registerDone(bool success, const QString& /* newId */, unsigned long newPpid)
+void OwnerManagerDlg::registerDone(bool success, const Licq::UserId& userId)
 {
   registerUserDlg = 0;
 
   if (success)
   {
-    gLicqGui->showInfoDialog(mnuUserGeneral, Licq::gUserManager.ownerUserId(newPpid));
+    gLicqGui->showInfoDialog(mnuUserGeneral, userId);
   }
 }
 

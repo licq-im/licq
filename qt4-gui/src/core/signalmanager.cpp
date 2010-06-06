@@ -60,9 +60,6 @@ SignalManager::~SignalManager()
 void SignalManager::ProcessSignal(LicqSignal* sig)
 {
   Licq::UserId userId = sig->userId();
-
-  // Temporary code to get account id and ppid until the rest of the gui is updated to use user id directly
-  QString accountId = userId.accountId().c_str();
   unsigned long ppid = userId.protocolId();
 
   switch (sig->Signal())
@@ -124,7 +121,7 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
       break;
 
     case SIGNAL_NEW_OWNER:
-      emit newOwner(accountId, ppid);
+      emit newOwner(userId);
       break;
 
     case SIGNAL_OWNERxLIST:

@@ -26,6 +26,11 @@ class QPushButton;
 class QTreeWidget;
 class QTreeWidgetItem;
 
+namespace Licq
+{
+class UserId;
+}
+
 namespace LicqQtGui
 {
 class RegisterUserDlg;
@@ -65,10 +70,9 @@ private slots:
    * Registration dialog has finished
    *
    * @param success True if a new account was created
-   * @param newId Contact id of new account
-   * @param newPpid Protocal id of new account
+   * @param userId Id of new account
    */
-  void registerDone(bool success, const QString& newId, unsigned long newPpid);
+  void registerDone(bool success, const Licq::UserId& userId);
 
   /**
    * Edit currently selected account

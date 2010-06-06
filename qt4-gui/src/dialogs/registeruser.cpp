@@ -68,7 +68,7 @@ RegisterUserDlg::RegisterUserDlg(QWidget* parent)
 
 RegisterUserDlg::~RegisterUserDlg()
 {
-  emit signal_done(mySuccess, myId, myPpid);
+  emit signal_done(mySuccess, myUserId);
 }
 
 void RegisterUserDlg::createIntroPage()
@@ -203,8 +203,8 @@ bool RegisterUserDlg::validateCurrentPage()
     // Disable dialog while we're waiting for server to respond
     setEnabled(false);
     button(CancelButton)->setEnabled(true);
-    connect(gGuiSignalManager, SIGNAL(newOwner(const QString&, unsigned long)),
-        SLOT(gotNewOwner(const QString&, unsigned long)));
+    connect(gGuiSignalManager, SIGNAL(newOwner(const Licq::UserId&)),
+        SLOT(gotNewOwner(const Licq::UserId&)));
     gLicqDaemon->icqVerify(myCaptchaField->text().toLatin1().data());
     return false;
   }
@@ -223,11 +223,11 @@ void RegisterUserDlg::gotCaptcha(unsigned long /* ppid */)
   next();
 }
 
-void RegisterUserDlg::gotNewOwner(const QString& id, unsigned long ppid)
+void RegisterUserDlg::gotNewOwner(const Licq::UserId& userId)
 {
   // We got the new owner
-  disconnect(gGuiSignalManager, SIGNAL(newOwner(const QString&, unsigned long)),
-      this, SLOT(gotNewOwner(const QString&, unsigned long)));
+  disconnect(gGuiSignalManager, SIGNAL(newOwner(const Licq::UserId& userId)),
+      this, SLOT(gotNewOwner(const Licq::UserId& userId)));
 
   // Save "Remember password" setting
   {
@@ -239,12 +239,11 @@ void RegisterUserDlg::gotNewOwner(const QString& id, unsigned long ppid)
 
   // Mark that we have finished
   mySuccess = true;
-  myId = id;
-  myPpid = ppid;
+  myUserId = userId;
 
   // Go to result page
   setEnabled(true);
   myGotOwner = true;
-  myOwnerIdField->setText(id);
+  myOwnerIdField->setText(myUserId.accountId().c_str());
   next();
 }
