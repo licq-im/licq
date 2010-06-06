@@ -236,7 +236,7 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
   if (event->m_pUserEvent)
   {
     Licq::UserWriteGuard user(signal->userId());
-    event->m_pUserEvent->AddToHistory(*user, D_SENDER);
+    event->m_pUserEvent->AddToHistory(*user, false);
   }
 
   Licq::gDaemon.PushPluginEvent(event);
