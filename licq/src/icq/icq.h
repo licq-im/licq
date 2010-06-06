@@ -426,4 +426,6 @@ private:
 
 extern IcqProtocol gIcqProtocol;
 
+extern CSocketManager gSocketManager;
+
 #endif

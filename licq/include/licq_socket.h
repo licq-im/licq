@@ -358,6 +358,4 @@ protected:
   pthread_mutex_t mutex;
 };
 
-extern CSocketManager gSocketManager;
-
 #endif

@@ -20,6 +20,8 @@
 #include <licq/daemon.h>
 #include "licq/pluginmanager.h"
 
+#include "../icq/icq.h" // For gSocketManager
+
 using boost::any_cast;
 using boost::bad_any_cast;
 using std::map;
