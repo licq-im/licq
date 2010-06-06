@@ -186,22 +186,21 @@ INetSocket::~INetSocket()
 }
 
 //-----INetSocket::dumpPacket---------------------------------------------------
-void INetSocket::DumpPacket(Buffer *b, direction d)
+void INetSocket::DumpPacket(Buffer *b, bool isReceiver)
 {
-  switch (d)
+  if (!isReceiver)
   {
-  case D_SENDER:
     b->log("Packet (%sv%lu, %lu bytes) sent:\n(%s:%d -> %s:%d)",
            m_szID, Version(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
-    break;
-  case D_RECEIVER:
+  }
+  else
+  {
     b->log("Packet (%sv%lu, %lu bytes) received:\n(%s:%d <- %s:%d)",
            m_szID, Version(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
-     break;
   }
 }
 
@@ -486,7 +485,7 @@ bool INetSocket::SendRaw(Buffer *b)
   }
 
   // Print the packet
-  DumpPacket(b, D_SENDER);
+  DumpPacket(b, false);
   return (true);
 }
 
@@ -510,7 +509,7 @@ bool INetSocket::RecvRaw()
   delete[] buffer;
 
   // Print the packet
-  DumpPacket(&m_xRecvBuffer, D_RECEIVER);
+  DumpPacket(&m_xRecvBuffer, true);
 
   return (true);
 }
@@ -562,7 +561,7 @@ bool SrvSocket::SendPacket(Buffer *b_in)
   }
 
   // Print the packet
-  DumpPacket(b, D_SENDER);
+  DumpPacket(b, false);
 
   if (b != b_in) delete b;
   return (true);
@@ -651,7 +650,7 @@ bool SrvSocket::RecvPacket()
     m_xRecvBuffer.incDataPosWrite(nBytesReceived);
   }
 
-  DumpPacket(&m_xRecvBuffer, D_RECEIVER);
+  DumpPacket(&m_xRecvBuffer, true);
 
   return (true);
 }
@@ -852,7 +851,7 @@ bool TCPSocket::SendPacket(Buffer *b_in)
 #endif
 
   // Print the packet
-  DumpPacket(b, D_SENDER);
+  DumpPacket(b, false);
 
   if (b != b_in) delete b;
   return (true);
@@ -990,7 +989,7 @@ bool TCPSocket::RecvPacket()
 
   // Print the packet if it's full
   if (m_xRecvBuffer.Full())
-    DumpPacket(&m_xRecvBuffer, D_RECEIVER);
+    DumpPacket(&m_xRecvBuffer, true);
 
   return (true);
 }
@@ -1023,8 +1022,8 @@ bool TCPSocket::SSLSend(Buffer *b_in)
         break;
     }
   }
- 
-  DumpPacket(b_in, D_SENDER);
+
+  DumpPacket(b_in, false);
 
   return true;
 #else
@@ -1074,7 +1073,7 @@ bool TCPSocket::SSLRecv()
   delete[] buffer;
 
   // Print the packet
-  DumpPacket(&m_xRecvBuffer, D_RECEIVER);
+  DumpPacket(&m_xRecvBuffer, true);
 
   return (true);
 #else

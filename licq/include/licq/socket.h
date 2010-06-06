@@ -27,7 +27,6 @@
 #include "buffer.h"
 #include "thread/mutex.h"
 #include "userid.h"
-#include "licq_constants.h" // enum direction
 
 
 // IPv6 is implemented in socket classes but Licq support must be considered experimental for now
@@ -203,7 +202,7 @@ public:
 protected:
   const char *GetIDStr()  { return (m_szID); }
   bool SetLocalAddress(bool bIp = true);
-  void DumpPacket(Buffer* b, direction d);
+  void DumpPacket(Buffer* b, bool isReceiver);
 
   // sockaddr is too small to hold a sockaddr_in6 so use union to allocate the extra space
   union

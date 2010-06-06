@@ -275,7 +275,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
             messageText = myCodec->toUnicode((*lHistoryIter)->Text());
 
           myHistoryView->addMsg(
-              (*lHistoryIter)->Direction(),
+              (*lHistoryIter)->isReceiver(),
               true,
               (*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : EventDescription(*lHistoryIter) + " ",
               date,
@@ -283,7 +283,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
               (*lHistoryIter)->IsMultiRec(),
               (*lHistoryIter)->IsUrgent(),
               (*lHistoryIter)->IsEncrypted(),
-              (*lHistoryIter)->Direction() == D_RECEIVER ? contactName : ownerName,
+              (*lHistoryIter)->isReceiver() ? contactName : ownerName,
               MLView::toRichText(messageText, true, bUseHTML));
           lHistoryIter++;
         }
@@ -1291,8 +1291,7 @@ void UserSendCommon::clearNewEvents()
         for (unsigned short i = 0; i < u->NewMessages(); i++)
         {
           const CUserEvent* e = u->EventPeek(i);
-          if (e->Id() <= myHighestEventId &&
-              e->Direction() == D_RECEIVER &&
+          if (e->Id() <= myHighestEventId && e->isReceiver() &&
               (e->SubCommand() == ICQ_CMDxSUB_MSG ||
                e->SubCommand() == ICQ_CMDxSUB_URL))
             idList.push_back(e->Id());

@@ -245,7 +245,7 @@ void HistoryView::addMsg(const ICQEvent* event)
     addMsg(event->UserEvent());
 }
 
-void HistoryView::addMsg(direction dir, bool fromHistory,
+void HistoryView::addMsg(bool isReceiver, bool fromHistory,
   const QString& eventDescription, const QDateTime& date,
   bool isDirect, bool isMultiRec, bool isUrgent, bool isEncrypted,
   const QString& contactName, QString messageText, QString anchor)
@@ -255,14 +255,14 @@ void HistoryView::addMsg(direction dir, bool fromHistory,
 
   if (fromHistory)
   {
-    if (dir == D_RECEIVER)
+    if (isReceiver)
       color = myColorRcvHistory;
     else
       color = myColorSntHistory;
   }
   else
   {
-    if (dir == D_RECEIVER)
+    if (isReceiver)
       color = myColorRcv;
     else
       color = myColorSnt;
@@ -352,7 +352,7 @@ void HistoryView::addMsg(direction dir, bool fromHistory,
           .arg(anchor)
           .arg(color)
           .arg(eventDescription)
-          .arg(dir == D_RECEIVER ? tr("from") : tr("to"))
+          .arg(isReceiver ? tr("from") : tr("to"))
           .arg(contactName)
           .arg(dateString)
           .arg(flags);
@@ -404,7 +404,7 @@ void HistoryView::addMsg(const CUserEvent* event, const Licq::UserId& uid)
       myPpid = u->ppid();
 
       codec = UserCodec::codecForUser(*u);
-      if (event->Direction() == D_RECEIVER)
+      if (event->isReceiver())
       {
         contactName = QString::fromUtf8(u->GetAlias());
         if (myPpid == LICQ_PPID)
@@ -418,7 +418,7 @@ void HistoryView::addMsg(const CUserEvent* event, const Licq::UserId& uid)
     }
   }
 
-  if (event->Direction() != D_RECEIVER)
+  if (!event->isReceiver())
   {
     Licq::OwnerReadGuard o(myPpid);
     if (o.isLocked())
@@ -435,7 +435,7 @@ void HistoryView::addMsg(const CUserEvent* event, const Licq::UserId& uid)
   else
     messageText = codec->toUnicode(event->Text());
 
-  addMsg(event->Direction(), false,
+  addMsg(event->isReceiver(), false,
          (event->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(event) + " ")),
          date,
          event->IsDirect(),
@@ -446,7 +446,7 @@ void HistoryView::addMsg(const CUserEvent* event, const Licq::UserId& uid)
          MLView::toRichText(messageText, true, bUseHTML));
   GotoEnd();
 
-  if (event->Direction() == D_RECEIVER &&
+  if (event->isReceiver() &&
       (event->SubCommand() == ICQ_CMDxSUB_MSG ||
        event->SubCommand() == ICQ_CMDxSUB_URL))
     emit messageAdded();

@@ -1356,7 +1356,8 @@ LicqEvent* IcqProtocol::icqSendThroughServer(unsigned long eventId, const char *
   if (gDaemon.shuttingDown())
     return NULL;
 
-  if (ue != NULL) ue->m_eDir = D_SENDER;
+  if (ue != NULL)
+    ue->setIsReceiver(false);
   LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
   if (e == NULL) return 0;
   e->m_NoAck = true;
@@ -1394,7 +1395,7 @@ void IcqProtocol::ProcessDoneEvent(ICQEvent *e)
     Licq::UserWriteGuard u(e->userId());
     if (u.isLocked())
     {
-      e->m_pUserEvent->AddToHistory(*u, D_SENDER);
+      e->m_pUserEvent->AddToHistory(*u, false);
       u->SetLastSentEvent();
       gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
     }
@@ -3424,7 +3425,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                 Licq::OwnerWriteGuard o(LICQ_PPID);
                 if (gDaemon.addUserEvent(*o, eEvent))
                 {
-                  eEvent->AddToHistory(*o, D_RECEIVER);
+                  eEvent->AddToHistory(*o, true);
                   gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
                 }
                 break;
@@ -3450,7 +3451,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                   gLog.Info(tr("%sSMS from %s.\n"), L_BLANKxSTR, eSms->Number());
                   if (gDaemon.addUserEvent(*o, eEvent))
                   {
-                    eEvent->AddToHistory(*o, D_RECEIVER);
+                    eEvent->AddToHistory(*o, true);
                     gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *o);
 	          }
                 }
@@ -4148,7 +4149,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       Licq::OwnerWriteGuard o(LICQ_PPID);
       if (gDaemon.addUserEvent(*o, e))
       {
-        e->AddToHistory(*o, D_RECEIVER);
+        e->AddToHistory(*o, true);
         gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
       }
 
@@ -4196,7 +4197,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       Licq::OwnerWriteGuard o(LICQ_PPID);
       if (gDaemon.addUserEvent(*o, eEvent))
       {
-        eEvent->AddToHistory(*o, D_RECEIVER);
+        eEvent->AddToHistory(*o, true);
         gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
       }
 
@@ -4218,7 +4219,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         Licq::OwnerWriteGuard o(LICQ_PPID);
         if (gDaemon.addUserEvent(*o, e))
         {
-          e->AddToHistory(*o, D_RECEIVER);
+          e->AddToHistory(*o, true);
           gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
         }
       }
@@ -4637,7 +4638,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 Licq::OwnerWriteGuard o(LICQ_PPID);
                 if (gDaemon.addUserEvent(*o, eEvent))
 	        {
-                  eEvent->AddToHistory(*o, D_RECEIVER);
+                  eEvent->AddToHistory(*o, true);
                   gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
                 }
                 break;
@@ -4661,7 +4662,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	      gLog.Info(tr("%sOffline SMS from %s.\n"), L_BLANKxSTR, eSms->Number());
                   if (gDaemon.addUserEvent(*o, eEvent))
                   {
-                    eEvent->AddToHistory(*o, D_RECEIVER);
+                    eEvent->AddToHistory(*o, true);
                     gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *o);
                   }
                 }

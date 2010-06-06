@@ -214,7 +214,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
               if (!u.isLocked())
                 continue;
 
-              e->m_pUserEvent->AddToHistory(*u, D_SENDER);
+              e->m_pUserEvent->AddToHistory(*u, false);
               u->SetLastSentEvent();
               if (u->id() == e->userId())
                 gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
@@ -225,7 +225,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
             Licq::UserWriteGuard u(e->userId());
             if (u.isLocked())
             {
-              e->m_pUserEvent->AddToHistory(*u, D_SENDER);
+              e->m_pUserEvent->AddToHistory(*u, false);
               u->SetLastSentEvent();
               gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
             }
@@ -589,7 +589,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
   char* szRNMsg = Licq::gTranslator.NToRN(message.c_str());
   CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
   CEventMsg *m = new CEventMsg(szRNMsg, 0, TIME_NOW, 0);
-  m->m_eDir = D_SENDER;
+  m->setIsReceiver(false);
   LicqEvent* e = new LicqEvent(eventId, 0, pSend, CONNECT_SERVER, userId, m);
   e->thread_plugin = _tPlugin;  
 

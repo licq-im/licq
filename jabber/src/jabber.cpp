@@ -28,6 +28,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 #include <licq/log.h>
+#include <licq_constants.h>
 #include <licq_events.h>
 
 #include <sys/select.h>
@@ -225,7 +226,7 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
   myClient->sendMessage(signal->userId().accountId(), signal->message());
 
   CEventMsg* message = new CEventMsg(signal->message().c_str(), 0, TIME_NOW, 0);
-  message->m_eDir = D_SENDER;
+  message->setIsReceiver(false);
 
   LicqEvent* event = new LicqEvent(signal->eventId(), 0, NULL, CONNECT_SERVER,
                                    signal->userId(), message);

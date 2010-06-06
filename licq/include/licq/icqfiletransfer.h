@@ -57,6 +57,7 @@
 #include <cstring>
 #include <list>
 
+#include "licq_constants.h"
 #include "socket.h"
 #include "socketmanager.h"
 
@@ -132,7 +133,7 @@ public:
   // Available after construction
   uint16_t LocalPort() const            { return ftServer.getLocalPort(); }
   const char *LocalName()  { return m_szLocalName; }
-  direction Direction() { return m_nDirection; }
+  bool isReceiver() const { return myIsReceiver; }
   const char* Id() const { return myId; }
 
   // Available after FT_STARTxBATCH
@@ -181,7 +182,7 @@ protected:
   FileTransferEventList ftEvents;
   pthread_t thread_ft;
   FileList m_lPathNames;
-  direction m_nDirection;
+  bool myIsReceiver;
 
   struct timeval tv_lastupdate;
   unsigned short m_nUpdatesEnabled;

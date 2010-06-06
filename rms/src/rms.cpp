@@ -11,7 +11,6 @@
 #include <unistd.h>
 #include <cerrno>
 
-#include <licq_constants.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
@@ -989,7 +988,7 @@ int CRMSClient::Process_HISTORY()
     if (counter < offset || counter > offset + length)
       continue;
 
-    printUserEvent(*it, ((*it)->Direction() == D_RECEIVER ? userAlias : ownerAlias));
+    printUserEvent(*it, ((*it)->isReceiver() ? userAlias : ownerAlias));
   }
   fprintf(fs, "%d End.\n", CODE_HISTORYxEND);
   return fflush(fs);

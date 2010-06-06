@@ -307,7 +307,7 @@ void FileDlg::slot_ft()
         nfoLocalFileName->setText(QFile::decodeName(ftman->PathName()));
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
         barTransfer->setMaximum(ftman->FileSize() / 1024);
-        if (ftman->Direction() == D_RECEIVER)
+        if (ftman->isReceiver())
           mleStatus->append(tr("Receiving file..."));
         else
           mleStatus->append(tr("Sending file..."));
@@ -323,7 +323,7 @@ void FileDlg::slot_ft()
       case FT_DONExFILE:
       {
         slot_update();
-        if (ftman->Direction() == D_RECEIVER)
+        if (ftman->isReceiver())
           mleStatus->append(tr("Received %1 from %2 successfully.").arg(QFile::decodeName(e->Data())).arg(codec->toUnicode(ftman->RemoteName())));
         else
           mleStatus->append(tr("Sent %1 to %2 successfully.").arg(QFile::decodeName(e->Data())).arg(codec->toUnicode(ftman->RemoteName())));
@@ -334,7 +334,7 @@ void FileDlg::slot_ft()
       {
         mleStatus->append(tr("File transfer complete."));
         btnCancel->setText(tr("OK"));
-        if (btnOpen && btnOpenDir && ftman->Direction() == D_RECEIVER)
+        if (btnOpen && btnOpenDir && ftman->isReceiver())
         {
           btnOpen->show();
           btnOpenDir->show();

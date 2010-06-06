@@ -365,7 +365,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     }
     if (e != NULL)
     {
-      e->SetDirection(cDir == 'R' ? D_RECEIVER : D_SENDER);
+      e->setIsReceiver(cDir == 'R');
       e->SetPending(false);
       lHistory.push_back(e);
     }

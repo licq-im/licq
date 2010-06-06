@@ -333,7 +333,8 @@ LicqEvent* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq
     return NULL;
   }
 
-  if (ue != NULL) ue->m_eDir = D_SENDER;
+  if (ue != NULL)
+    ue->setIsReceiver(false);
   LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, userId, ue);
 
 	if (e == NULL)  return NULL;
@@ -372,7 +373,8 @@ LicqEvent* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq
     return NULL;
   }
 
-  if (ue != NULL) ue->m_eDir = D_SENDER;
+  if (ue != NULL)
+    ue->setIsReceiver(false);
   LicqEvent* e = new LicqEvent(eventId, pUser->SocketDesc(packet->Channel()), packet,
      CONNECT_USER, pUser->id(), ue);
 

@@ -34,6 +34,7 @@
 #include <licq/contactlist/owner.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
+#include <licq_constants.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"

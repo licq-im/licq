@@ -548,7 +548,7 @@ void CLicqConsole::PrintHistory(Licq::HistoryList& lHistory, unsigned short nSta
     szTime[16] = '\0';
     winMain->wprintf("%A%C[%d of %d] %s %s %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
                      COLOR_WHITE, n + 1, lHistory.size(), (*it)->Description(),
-                     (*it)->Direction() == D_RECEIVER ? "from" : "to", szFrom,
+        (*it)->isReceiver() ? "from" : "to", szFrom,
                      szTime, (*it)->IsDirect() ? 'D' : '-',
                      (*it)->IsMultiRec() ? 'M' : '-', (*it)->IsUrgent() ? 'U' : '-',
                      A_BOLD, (*it)->Text());
@@ -779,7 +779,7 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
     Licq::UserReadGuard u(Licq::UserId(ftman->Id(), LICQ_PPID));
 
     // Make the title
-    strcpy(szTitle, (ftman->Direction() == D_RECEIVER ? "File from " : "File to "));
+    strcpy(szTitle, (ftman->isReceiver() ? "File from " : "File to "));
     strcat(szTitle, u->GetAlias());
   }
 

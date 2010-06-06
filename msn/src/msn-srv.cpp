@@ -221,7 +221,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         Licq::OwnerWriteGuard o(MSN_PPID);
         if (Licq::gDaemon.addUserEvent(*o, e))
         {
-          e->AddToHistory(*o, D_RECEIVER);
+          e->AddToHistory(*o, true);
           gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
         }
       }
@@ -435,7 +435,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         Licq::OwnerWriteGuard o(MSN_PPID);
         if (Licq::gDaemon.addUserEvent(*o, pEmailAlert))
         {
-          pEmailAlert->AddToHistory(*o, D_RECEIVER);
+          pEmailAlert->AddToHistory(*o, true);
           gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
         }
       }

@@ -20,8 +20,6 @@
 #ifndef HISTORYVIEW_H
 #define HISTORYVIEW_H
 
-#include <licq_constants.h>
-
 #include "mlview.h"
 
 #include <licq/userid.h>
@@ -66,7 +64,7 @@ public:
 
   void updateContent();
   void clear();
-  void addMsg(direction dir, bool fromHistory, const QString& eventDescription, const QDateTime& date,
+  void addMsg(bool isReceiver, bool fromHistory, const QString& eventDescription, const QDateTime& date,
     bool isDirect, bool isMultiRec, bool isUrgent, bool isEncrypted,
     const QString& contactName, QString messageText, QString anchor = QString());
   void addNotice(const QDateTime& dateTime, QString messageText);

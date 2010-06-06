@@ -479,14 +479,14 @@ void Settings::Chat::updatePreviews()
     if (i < 2 && myShowHistoryCheck->isChecked() == false)
       continue;
 
-    myChatView->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, (i<2),
+    myChatView->addMsg(i%2 == 0, (i<2),
           QString(""),
           msgDate,
           true, false, false, false,
           names[i % 2],
           MLView::toRichText(tr(msgs[i]), true, true));
 
-    myHistoryView->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, false,
+    myHistoryView->addMsg(i%2 == 0, false,
           QString(""),
           msgDate,
           true, false, false, false,

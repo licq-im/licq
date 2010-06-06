@@ -685,7 +685,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
 
   myMessageView->GotoHome();
 
-  if (m->Direction() == D_RECEIVER &&
+  if (m->isReceiver() &&
       (m->Command() == ICQ_CMDxTCP_START ||
        m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE ||
        m->Command() == ICQ_CMDxRCV_SYSxMSGxOFFLINE))

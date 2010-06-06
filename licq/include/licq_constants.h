@@ -12,7 +12,6 @@ const char UTILITY_DIR[]                           = "utilities";
 extern char BASE_DIR[];
 extern char SHARE_DIR[];
 extern char LIB_DIR[];
-enum direction { D_SENDER, D_RECEIVER };
 
 // Plugin constants
 const char PLUGIN_SIGNAL                           = 'S';

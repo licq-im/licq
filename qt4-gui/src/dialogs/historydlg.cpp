@@ -341,7 +341,7 @@ void HistoryDlg::showHistory()
     else
       messageText = myContactCodec->toUnicode((*item)->Text());
 
-    QString name = (*item)->Direction() == D_RECEIVER ? myContactName : myOwnerName;
+    QString name = (*item)->isReceiver() ? myContactName : myOwnerName;
 
     QRegExp highlight;
 
@@ -354,7 +354,7 @@ void HistoryDlg::showHistory()
     messageText = HistoryView::toRichText(messageText, true, myUseHtml, highlight);
 
     // Add entry to history view
-    myHistoryView->addMsg((*item)->Direction(), false,
+    myHistoryView->addMsg((*item)->isReceiver(), false,
         ((*item)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : (EventDescription(*item) + " ")),
         date,
         (*item)->IsDirect(),

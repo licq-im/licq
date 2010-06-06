@@ -251,7 +251,7 @@ bool CFileTransferManager::StartFileTransferServer()
 
 bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 {
-  m_nDirection = D_RECEIVER;
+  myIsReceiver = true;
 
   if (szDirectory == NULL)
   {
@@ -302,7 +302,7 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 //-----CFileTransferManager::StartAsClient-------------------------------------------
 void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nPort)
 {
-  m_nDirection = D_SENDER;
+  myIsReceiver = false;
 
   // Validate the pathnames
   if (lPathNames.size() == 0) return;
@@ -1130,7 +1130,7 @@ void *FileTransferManager_tep(void *arg)
   int l, nSocketsAvailable, nCurrentSocket;
   char buf[2];
 
-  if (ftman->m_nDirection == D_SENDER)
+  if (!ftman->isReceiver())
   {
     if (!ftman->ConnectToFileServer(ftman->m_nPort))
     {
@@ -1138,7 +1138,7 @@ void *FileTransferManager_tep(void *arg)
       return NULL;
     }
   }
-  else if (ftman->m_nDirection != D_RECEIVER)
+  else if (!ftman->isReceiver())
     return NULL;
 
   while (true)

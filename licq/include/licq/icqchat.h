@@ -7,6 +7,7 @@
 
 #include "socket.h"
 #include "socketmanager.h"
+#include "licq_constants.h"
 
 namespace Licq
 {

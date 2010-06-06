@@ -46,9 +46,9 @@ MessageListItem::MessageListItem(const CUserEvent* theMsg, const QTextCodec* cod
 
   myCodec = codec;
 
-  myUnread = (myMsg->Direction() == D_RECEIVER);
+  myUnread = (myMsg->isReceiver());
 
-  setText(0, myMsg->Direction() == D_SENDER ? "S" : "*R");
+  setText(0, myMsg->isReceiver() ? "*R" : "S");
   setTextAlignment(0, Qt::AlignHCenter);
   SetEventLine();
   QString t =  "-----";
@@ -70,7 +70,7 @@ MessageListItem::MessageListItem(const CUserEvent* theMsg, const QTextCodec* cod
   setText(3, sd);
 
   QColor foreColor;
-  if (myMsg->Direction() == D_SENDER)
+  if (!myMsg->isReceiver())
     foreColor = QColor("blue");
   else
     foreColor = QColor("red");
@@ -146,7 +146,7 @@ void MessageListItem::MarkRead()
   setFont(2, f);
   setFont(3, f);
 
-  setText(0, myMsg->Direction() == D_SENDER ? "S" : "R");
+  setText(0, myMsg->isReceiver() ? "R" : "S");
   SetEventLine();
 }
 

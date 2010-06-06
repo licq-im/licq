@@ -337,7 +337,7 @@ unsigned long Daemon::getNextEventId()
 bool Daemon::addUserEvent(Licq::User* u, CUserEvent* e)
 {
   if (u->isUser())
-    e->AddToHistory(u, D_RECEIVER);
+    e->AddToHistory(u, true);
   // Don't log a user event if this user is on the ignore list
   if (u->IgnoreList() ||
       (e->IsMultiRec() && ignoreType(IgnoreMassMsg)) ||
