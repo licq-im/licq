@@ -2332,7 +2332,7 @@ void *ChatManager_tep(void *arg)
 
   while (true)
   {
-    f = chatman->sockman.SocketSet();
+    f = chatman->sockman.socketSet();
     l = chatman->sockman.LargestSocket() + 1;
 
     // Add the new socket pipe descriptor

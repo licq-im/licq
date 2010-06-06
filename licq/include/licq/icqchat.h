@@ -6,6 +6,7 @@
 #include <list>
 
 #include "licq_socket.h"
+#include "socketmanager.h"
 
 namespace Licq
 {
@@ -391,7 +392,7 @@ protected:
 
   TCPSocket chatServer;
 
-  CSocketManager sockman;
+  Licq::SocketManager sockman;
   bool m_bThreadCreated;
 
   bool StartChatServer();

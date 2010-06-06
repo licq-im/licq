@@ -58,6 +58,7 @@
 #include <list>
 
 #include "licq_socket.h"
+#include "socketmanager.h"
 
 namespace Licq
 {
@@ -204,7 +205,7 @@ protected:
 
   TCPSocket ftSock, ftServer;
 
-  CSocketManager sockman;
+  Licq::SocketManager sockman;
 
   bool StartFileTransferServer();
   bool ConnectToFileServer(unsigned short nPort);

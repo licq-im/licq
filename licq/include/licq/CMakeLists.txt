@@ -25,6 +25,7 @@ set(licq_HEADERS
   protocolmanager.h
   proxy.h
   sarmanager.h
+  socketmanager.h
   statistics.h
   translator.h
   userid.h

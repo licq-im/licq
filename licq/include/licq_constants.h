@@ -36,7 +36,6 @@ const unsigned short MAX_WAIT_ACK                  = 10;
 const unsigned short MAX_WAIT_PLUGIN               = 10;
 const unsigned short MIN_SEND_DELAY                = 2;
 const unsigned short USER_HASH_SIZE                = 128;
-const unsigned short SOCKET_HASH_SIZE              = 128;
 const unsigned long  LOCALHOST                     = 0x0100007F;
 const unsigned short LOGON_ATTEMPT_DELAY           = 300;
 const unsigned short MAX_PING_TIMEOUTS             = 3;

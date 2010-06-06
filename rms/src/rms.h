@@ -4,6 +4,7 @@
 #include <list>
 
 #include <licq_socket.h>
+#include <licq/socketmanager.h>
 #include <licq/userid.h>
 
 class TCPSocket;
@@ -57,7 +58,7 @@ public:
 
   int Activity();
 
-  static CSocketManager sockman;
+  static Licq::SocketManager sockman;
 
   int Process_QUIT();
   int Process_TERM();

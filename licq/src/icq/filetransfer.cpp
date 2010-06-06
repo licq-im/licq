@@ -1143,7 +1143,7 @@ void *FileTransferManager_tep(void *arg)
 
   while (true)
   {
-    f_recv = ftman->sockman.SocketSet();
+    f_recv = ftman->sockman.socketSet();
     l = ftman->sockman.LargestSocket() + 1;
 
     // Add the new socket pipe descriptor

@@ -32,6 +32,7 @@
 #include <licq/daemon.h>
 #include <licq/md5.h>
 #include <licq/oneventmanager.h>
+#include <licq_socket.h>
 
 using namespace std;
 using Licq::OnEventManager;

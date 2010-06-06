@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "licq_events.h"
-#include "licq_socket.h"
+#include <licq/socketmanager.h>
 #include <licq/userid.h>
 
 #include "msnbuffer.h"
@@ -199,6 +199,6 @@ private:
   friend class CMSNDataEvent;
 };
 
-extern CSocketManager gSocketMan;
+extern Licq::SocketManager gSocketMan;
 
 #endif // __MSN_H

@@ -749,6 +749,9 @@ public:
   // Crypto
   bool Secure() const                           { return m_bSecure; }
 
+  void SetOfflineOnDisconnect(bool b) { m_bOfflineOnDisconnect = b; }
+  bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
+
   virtual bool isUser() const                   { return true; }
 
 protected:
@@ -778,8 +781,6 @@ protected:
   virtual void AddToContactList() = 0;
 
   void SetSecure(bool s) { m_bSecure = s; }
-  void SetOfflineOnDisconnect(bool b) { m_bOfflineOnDisconnect = b; }
-  bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
   bool ConnectionInProgress() { return m_bConnectionInProgress; }
   void SetConnectionInProgress(bool c)  { m_bConnectionInProgress = c; }
 
@@ -893,7 +894,6 @@ protected:
 
   friend class LicqDaemon::UserManager;
   friend class ::CMSN;
-  friend class ::CSocketManager;
   friend class ::IcqProtocol;
   friend void* ::MonitorSockets_tep(void *);
 };

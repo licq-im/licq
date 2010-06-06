@@ -229,7 +229,7 @@ int CLicqRMS::Run()
 
   while (!m_bExit)
   {
-    f = CRMSClient::sockman.SocketSet();
+    f = CRMSClient::sockman.socketSet();
     l = CRMSClient::sockman.LargestSocket() + 1;
 
     // Add the new socket pipe descriptor
@@ -443,7 +443,7 @@ void CLicqRMS::ProcessServer()
 
 
 
-CSocketManager CRMSClient::sockman;
+Licq::SocketManager CRMSClient::sockman;
 
 /*---------------------------------------------------------------------------
  * CRMSClient::constructor

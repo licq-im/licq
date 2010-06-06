@@ -678,7 +678,7 @@ void *MonitorSockets_tep(void* /* p */)
     /*pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();*/
 
-    f = gSocketManager.SocketSet();
+    f = gSocketManager.socketSet();
     l = gSocketManager.LargestSocket() + 1;
 
     // Add the new socket pipe descriptor

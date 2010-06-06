@@ -23,6 +23,7 @@
 #include <licq_events.h>
 #include "licq_log.h"
 #include "licq_message.h"
+#include <licq_socket.h>
 
 #include <cstring>
 #include <string>

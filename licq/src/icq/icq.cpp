@@ -46,6 +46,7 @@ pthread_cond_t IcqProtocol::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
 
 CICQDaemon *gLicqDaemon = NULL;
 IcqProtocol gIcqProtocol;
+Licq::SocketManager gSocketManager;
 
 IcqProtocol::IcqProtocol()
 {

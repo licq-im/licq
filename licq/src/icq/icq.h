@@ -29,6 +29,7 @@
 
 #include <licq/buffer.h>
 #include <licq/icqfiletransfer.h>
+#include <licq/socketmanager.h>
 #include <licq/userid.h>
 
 class COscarService;
@@ -426,6 +427,6 @@ private:
 
 extern IcqProtocol gIcqProtocol;
 
-extern CSocketManager gSocketManager;
+extern Licq::SocketManager gSocketManager;
 
 #endif

@@ -29,6 +29,7 @@
 
 #include "licq_log.h"
 #include "licq_message.h"
+#include <licq_socket.h>
 #include <licq/contactlist/user.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
@@ -64,7 +65,7 @@ char *strndup(const char *s, size_t n)
 #endif // HAVE_STRNDUP
 
 //Global socket manager
-CSocketManager gSocketMan;
+Licq::SocketManager gSocketMan;
 
 void *MSNPing_tep(void *);
 
@@ -399,7 +400,7 @@ void CMSN::Run()
   {
     pthread_mutex_lock(&mutex_ServerSocket);
     FD_ZERO(&f);
-    f = gSocketMan.SocketSet();
+    f = gSocketMan.socketSet();
     nNumDesc = gSocketMan.LargestSocket() + 1;
  
     if (m_nPipe != -1)

@@ -3,14 +3,12 @@
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <pthread.h>
 #include <sys/socket.h>
 #include <string>
-#include <vector>
-#include <list>
 
 #include <licq/buffer.h>
 #include "licq_constants.h"
-#include <licq/thread/readwritemutex.h>
 #include "licq/userid.h"
 
 namespace Licq
@@ -285,77 +283,6 @@ public:
     { return SendRaw(b); }
   virtual bool Recv()
     { return RecvRaw(); }
-};
-
-
-//=====CSocketHashTable=========================================================
-class CSocketHashTable
-{
-public:
-  CSocketHashTable(unsigned short _nSize);
-  ~CSocketHashTable();
-
-  INetSocket *Retrieve(int _nSd);
-  void Store(INetSocket *s, int _nSd);
-  void Remove(int _nSd);
-
-protected:
-  unsigned short HashValue(int _nSd);
-  std::vector < std::list<INetSocket *> > m_vlTable;
-
-  Licq::ReadWriteMutex myMutex;
-};
-
-
-/*=====CSocketSet===============================================================
- *
- * This class encapsulates an fd_set used for a call to select().  It is
- * thread-safe as long as the caller calls Lock() and Unlock() properly.
- *----------------------------------------------------------------------------*/
-class CSocketSet
-{
-friend class CSocketManager;
-
-public:
-  CSocketSet();
-  ~CSocketSet();
-
-  unsigned short Num();
-  int Largest();
-  fd_set SocketSet();
-
-protected:
-  fd_set sFd;
-  std::list <int> lFd;
-  void Set (int _nSD);
-  void Clear (int _nSD);
-  void Lock();
-  void Unlock();
-
-  pthread_mutex_t mutex;
-};
-
-
-//=====CSocketManager===========================================================
-class CSocketManager
-{
-public:
-  CSocketManager();
-  virtual ~CSocketManager();
-
-  INetSocket *FetchSocket (int _nSd);
-  void DropSocket (INetSocket *s);
-  void AddSocket(INetSocket *s);
-  void CloseSocket (int nSd, bool bClearUser = true, bool bDelete = true);
-
-  fd_set SocketSet()   {  return m_sSockets.SocketSet(); }
-  int LargestSocket()  {  return m_sSockets.Largest(); }
-  unsigned short Num() {  return m_sSockets.Num(); }
-
-protected:
-  CSocketSet m_sSockets;
-  CSocketHashTable m_hSockets;
-  pthread_mutex_t mutex;
 };
 
 #endif
