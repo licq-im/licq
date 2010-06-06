@@ -36,12 +36,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include "licq/pluginmanager.h"
 #include "licq/protocolmanager.h"
 #include <licq/translator.h>
-#include "licq_user.h"
 #include "licq_constants.h"
 #include "licq_log.h"
 
@@ -54,6 +54,7 @@ using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
+using Licq::gUserManager;
 using namespace LicqDaemon;
 
 #define ReportMissingParams(cmdname) \
@@ -235,7 +236,7 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
   else if( (s=strdup(buff)) == 0 )
     ret  = false;
   else if ( buffer_is_uin(buff) && 
-      ((bOnList && gUserManager.userExists(Licq::User::makeUserId(buff, LICQ_PPID))) || !bOnList))
+      ((bOnList && gUserManager.userExists(Licq::UserId(buff, LICQ_PPID))) || !bOnList))
   {
     _nPPID = LICQ_PPID;
     _szId = s;
@@ -245,32 +246,34 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
   {
     ret = false;
 
-    FOR_EACH_PROTO_USER_START(_nPPID, LOCK_R)
+    Licq::UserListGuard userList(_nPPID);
+    BOOST_FOREACH(const Licq::User* user, **userList)
     {
-      if( strcasecmp(_szId, pUser->GetAlias()) == 0)
+      Licq::UserReadGuard pUser(user);
+      if (pUser->getAlias() == _szId)
       {
         _szId = strdup(pUser->IdString());
         ret = true;
-        FOR_EACH_PROTO_USER_BREAK
+        break;
       }
     }
-    FOR_EACH_PROTO_USER_END
   }
   else if( missing_protocol )
   {  
      /* assume ICQ */
     _nPPID = LICQ_PPID;
-    
-    FOR_EACH_PROTO_USER_START(_nPPID, LOCK_R)
+
+    Licq::UserListGuard userList(_nPPID);
+    BOOST_FOREACH(const Licq::User* user, **userList)
     {
-        if( strcasecmp(s, pUser->GetAlias()) == 0)
-        {
+      Licq::UserReadGuard pUser(user);
+      if (pUser->getAlias() == s)
+      {
         _szId = strdup(pUser->IdString());
         ret = true;
-          FOR_EACH_PROTO_USER_BREAK
-        }
+        break;
+      }
     }
-    FOR_EACH_PROTO_USER_END
     free(s);
     s = 0;
   }
@@ -406,17 +409,20 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
   { 
     if( nPPID == LICQ_PPID )
     {
-      const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-      if (u != NULL)
+      UserId userId(szId, nPPID);
+      string number;
       {
-        string number = u->getCellularNumber();
-        gUserManager.DropUser(u);
-        if (!number.empty())
-          d->icqSendSms(szId, nPPID, number.c_str(), argv[2]);
-        else
-          gLog.Error("%sUnable to send SMS to %s, no SMS number found.\n",
-                     L_ERRORxSTR, szId);
+        Licq::UserReadGuard u(userId);
+        {
+          if (u.isLocked())
+            number = u->getCellularNumber();
+        }
       }
+      if (!number.empty())
+        d->icqSendSms(szId, nPPID, number.c_str(), argv[2]);
+      else
+        gLog.Error("%sUnable to send SMS to %s, no SMS number found.\n",
+            L_ERRORxSTR, szId);
     }
     else
       gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
@@ -493,7 +499,7 @@ static int fifo_adduser(int argc, const char* const* argv, void* /* data */)
 
   if (atoid(argv[1], false, &szId, &nPPID))
   {
-    UserId userId = LicqUser::makeUserId(szId, nPPID);
+    UserId userId(szId, nPPID);
     gUserManager.addUser(userId);
   }
   else
@@ -518,14 +524,12 @@ static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
      gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
   else
   {
-    const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-    if (u == NULL)
+    UserId userId(szId, nPPID);
+    if (!gUserManager.userExists(userId))
       gLog.Warn(tr("%s %s: user %s not on contact list, not retrieving "
                 "info.\n"), L_WARNxSTR, argv[0], szId);
     else
     {
-      UserId userId = u->id();
-      gUserManager.DropUser(u);
       gProtocolManager.requestUserInfo(userId);
       ret = 0;
     }

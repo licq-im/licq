@@ -16,12 +16,12 @@
 // Localization
 #include "gettext.h"
 
+#include <licq/contactlist/user.h>
 #include "licq/gpghelper.h"
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/translator.h>
 #include "licq_message.h"
-#include "licq_user.h"
 #include "support.h"
 
 #ifdef USE_HEBREW
@@ -31,6 +31,8 @@ extern char *hebrev (char* pszStr);
 #endif
 
 using namespace std;
+using Licq::User;
+using Licq::UserId;
 
 int CUserEvent::s_nId = 1;
 
@@ -133,7 +135,7 @@ int CUserEvent::AddToHistory_Header(direction _nDir, char* szOut) const
 }
 
 
-void CUserEvent::AddToHistory_Flush(LicqUser* u, const char* szOut) const
+void CUserEvent::AddToHistory_Flush(User* u, const char* szOut) const
 {
   if (u != NULL)
     u->WriteToHistory(szOut);
@@ -178,7 +180,7 @@ CEventMsg* CEventMsg::Copy() const
   return e;
 }
 
-void CEventMsg::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventMsg::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[ (strlen(m_szMessage) << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
@@ -242,7 +244,7 @@ CEventFile* CEventFile::Copy() const
   return e;
 }
 
-void CEventFile::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventFile::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[(strlen(m_szFilename) + strlen(m_szFileDescription)) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
@@ -289,7 +291,7 @@ CEventUrl* CEventUrl::Copy() const
   return e;
 }
 
-void CEventUrl::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventUrl::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[(strlen(m_szUrlDescription) << 1) +
                    (strlen(m_szUrl) << 1) + EVENT_HEADER_SIZE];
@@ -380,7 +382,7 @@ CEventChat* CEventChat::Copy() const
   return e;
 }
 
-void CEventChat::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventChat::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[(strlen(Text()) << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
@@ -431,7 +433,7 @@ CEventAdded* CEventAdded::Copy() const
   return e;
 }
 
-void CEventAdded::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventAdded::AddToHistory(User* u, direction _nDir) const
 {
   string accountId = myUserId.accountId();
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
@@ -496,7 +498,7 @@ CEventAuthRequest* CEventAuthRequest::Copy() const
   return e;
 }
 
-void CEventAuthRequest::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventAuthRequest::AddToHistory(User* u, direction _nDir) const
 {
   string accountId = myUserId.accountId();
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
@@ -550,7 +552,7 @@ CEventAuthGranted* CEventAuthGranted::Copy() const
   return e;
 }
 
-void CEventAuthGranted::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventAuthGranted::AddToHistory(User* u, direction _nDir) const
 {
   string accountId = myUserId.accountId();
   char *szOut = new char[(accountId.size() + strlen(m_szMessage))
@@ -602,7 +604,7 @@ CEventAuthRefused* CEventAuthRefused::Copy() const
   return e;
 }
 
-void CEventAuthRefused::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventAuthRefused::AddToHistory(User* u, direction _nDir) const
 {
   string accountId = myUserId.accountId();
   char *szOut = new char[(accountId.size() + strlen(m_szMessage)) * 2 +
@@ -652,7 +654,7 @@ CEventWebPanel* CEventWebPanel::Copy() const
   return e;
 }
 
-void CEventWebPanel::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventWebPanel::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                     strlen(m_szMessage)) * 2 +
@@ -700,7 +702,7 @@ CEventEmailPager* CEventEmailPager::Copy() const
   return e;
 }
 
-void CEventEmailPager::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventEmailPager::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                     strlen(m_szMessage)) * 2 +
@@ -745,7 +747,7 @@ void CEventContactList::CreateDescription() const
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
-    szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), USERID_TOSTR((*iter)->userId()));
+    szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), (*iter)->userId().toString().c_str());
   }
 }
 
@@ -765,7 +767,7 @@ CEventContactList* CEventContactList::Copy() const
   return e;
 }
 
-void CEventContactList::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventContactList::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[m_vszFields.size() * 32 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
@@ -773,7 +775,7 @@ void CEventContactList::AddToHistory(LicqUser* u, direction _nDir) const
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
     nPos += sprintf(&szOut[nPos], ":%s\n:%s\n",
-        LicqUser::getUserAccountId((*iter)->userId()).c_str(), (*iter)->Alias());
+        (*iter)->userId().accountId().c_str(), (*iter)->Alias());
   }
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
@@ -798,7 +800,7 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
   for (i = 0; i < nNumContacts * 2; i += 2)
   {
     Licq::gTranslator.ServerToClient(szFields[i + 1]);
-    UserId userId = LicqUser::makeUserId(szFields[i], LICQ_PPID);
+    UserId userId(szFields[i], LICQ_PPID);
     vc.push_back(new CContact(userId, szFields[i + 1]));
   }
   delete[] szFields;
@@ -835,7 +837,7 @@ CEventSms* CEventSms::Copy() const
   return e;
 }
 
-void CEventSms::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventSms::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[ (strlen(m_szNumber) << 1) +
                           (strlen(m_szMessage) << 1) +
@@ -901,7 +903,7 @@ CEventServerMessage* CEventServerMessage::Copy() const
   return e;
 }
 
-void CEventServerMessage::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventServerMessage::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                          (strlen(m_szMessage) * 2) + EVENT_HEADER_SIZE)];
@@ -984,7 +986,7 @@ CEventEmailAlert* CEventEmailAlert::Copy() const
   return e;
 }
 
-void CEventEmailAlert::AddToHistory(LicqUser* u, direction _nDir) const
+void CEventEmailAlert::AddToHistory(User* u, direction _nDir) const
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                          (strlen(m_szSubject) * 2) + EVENT_HEADER_SIZE)];
@@ -1021,7 +1023,7 @@ CEventPlugin* CEventPlugin::Copy() const
   return new CEventPlugin(m_sz, m_nSubCommand, m_tTime, m_nFlags);
 }
 
-void CEventPlugin::AddToHistory(LicqUser* /* u */, direction /* dir */) const
+void CEventPlugin::AddToHistory(User* /* u */, direction /* dir */) const
 {
   // Don't write these to the history file
 }
@@ -1043,7 +1045,7 @@ void CEventUnknownSysMsg::CreateDescription() const
   delete [] m_szText;
   m_szText = new char [strlen(m_szMsg) + 128];
   sprintf(m_szText, "Unknown system message (0x%04X) from %s:\n%s\n",
-      m_nSubCommand, USERID_TOSTR(myUserId), m_szMsg);
+      m_nSubCommand, myUserId.toString().c_str(), m_szMsg);
 }
 
 
@@ -1060,7 +1062,7 @@ CEventUnknownSysMsg* CEventUnknownSysMsg::Copy() const
   return e;
 }
 
-void CEventUnknownSysMsg::AddToHistory(LicqUser* /* u */, direction /* _nDir */) const
+void CEventUnknownSysMsg::AddToHistory(User* /* u */, direction /* _nDir */) const
 {
 /*  char *szOut = new char[strlen(m_szMsg) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %lu ]\n",

@@ -24,12 +24,12 @@
 // Localization
 #include "gettext.h"
 
+#include <licq/contactlist/user.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/proxy.h>
 #include "licq_socket.h"
 #include "licq_log.h"
-#include "licq_user.h"
 #include "support.h"
 
 #ifdef USE_OPENSSL
@@ -58,6 +58,7 @@ extern "C" {
 #endif
 
 using namespace std;
+using Licq::UserId;
 
 char *ip_ntoa(unsigned long in, char *buf)
 {
@@ -747,7 +748,7 @@ TCPSocket::TCPSocket(const UserId& userId)
 }
 
 TCPSocket::TCPSocket()
-  : INetSocket(USERID_NONE)
+  : INetSocket(UserId())
 {
   strcpy(m_szID, "TCP");
   m_nSockType = SOCK_STREAM;
@@ -1179,7 +1180,7 @@ bool TCPSocket::SSL_Pending()
 bool TCPSocket::SecureConnect()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
-  if (LicqUser::getUserProtocolId(myUserId) == LICQ_PPID)
+  if (myUserId.protocolId() == LICQ_PPID)
     m_p_SSL = SSL_new(gSSL_CTX);
   else
     m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
@@ -1215,7 +1216,7 @@ bool TCPSocket::SecureListen()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
 
-  if (LicqUser::getUserProtocolId(myUserId) == LICQ_PPID)
+  if (myUserId.protocolId() == LICQ_PPID)
     m_p_SSL = SSL_new(gSSL_CTX);
   else
     m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
@@ -1448,16 +1449,12 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
 
   if (bClearUser)
   {
-    ICQUser *u = NULL;
-    if (USERID_ISVALID(userId))
-      u = gUserManager.fetchUser(userId, LOCK_W);
-
-    if (u != NULL)
+    Licq::UserWriteGuard u(userId);
+    if (u.isLocked())
     {
       u->ClearSocketDesc(nChannel);
       if (u->OfflineOnDisconnect())
         u->statusChanged(Licq::User::OfflineStatus);
-      gUserManager.DropUser(u);
     }
   }
 }

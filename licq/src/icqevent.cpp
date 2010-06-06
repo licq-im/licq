@@ -9,16 +9,17 @@
 #include "config.h"
 
 #include <assert.h>
+#include <cstring>
 
 #include <licq/packet.h>
 #include "licq_events.h"
 #include "licq_log.h"
-#include "licq_user.h"
 
 #include "contactlist/user.h"
 
 using namespace std;
 using Licq::StringList;
+using Licq::UserId;
 
 //-----CSearchAck------------------------------------------------------------
 CSearchAck::CSearchAck(const UserId& userId)
@@ -206,9 +207,11 @@ CSearchAck *ICQEvent::GrabSearchAck()
   CSearchAck *a = m_pSearchAck; m_pSearchAck = NULL; return a;
 }
 
-ICQUser *ICQEvent::GrabUnknownUser()
+Licq::User* LicqEvent::GrabUnknownUser()
 {
-  ICQUser *u = m_pUnknownUser; m_pUnknownUser = NULL; return u;
+  Licq::User* u = m_pUnknownUser;
+  m_pUnknownUser = NULL;
+  return u;
 }
 
 LicqSignal::LicqSignal(unsigned long signal, unsigned long subSignal,
@@ -250,20 +253,20 @@ LicqProtoSignal::LicqProtoSignal(LicqProtoSignal* s)
 }
 
 LicqProtoLogonSignal::LicqProtoLogonSignal(unsigned status)
-  : LicqProtoSignal(PROTOxLOGON, USERID_NONE),
+  : LicqProtoSignal(PROTOxLOGON, UserId()),
     myStatus(status)
 {
   // Empty
 }
 
 LicqProtoLogoffSignal::LicqProtoLogoffSignal()
-  : LicqProtoSignal(PROTOxLOGOFF, USERID_NONE)
+  : LicqProtoSignal(PROTOxLOGOFF, UserId())
 {
   // Empty
 }
 
 LicqProtoChangeStatusSignal::LicqProtoChangeStatusSignal(unsigned status)
-  : LicqProtoSignal(PROTOxCHANGE_STATUS, USERID_NONE),
+  : LicqProtoSignal(PROTOxCHANGE_STATUS, UserId()),
     myStatus(status)
 {
   // Empty
@@ -338,7 +341,7 @@ LicqProtoUpdateInfoSignal::LicqProtoUpdateInfoSignal(const string& alias,
     const string& city, const string& state, const string& phoneNumber,
     const string& faxNumber, const string& address, const string& cellNumber,
     const string& zipCode)
-  : LicqProtoSignal(PROTOxUPDATExINFO, USERID_NONE),
+  : LicqProtoSignal(PROTOxUPDATExINFO, UserId()),
     myAlias(alias),
     myFirstName(firstName),
     myLastName(lastName),
