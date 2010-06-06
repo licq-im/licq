@@ -13,17 +13,6 @@ class User;
 class UserId;
 }
 
-// Define for marking functions as deprecated
-#ifndef LICQ_DEPRECATED
-# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
-#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
-# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
-#  define LICQ_DEPRECATED __declspec(deprecated)
-# else
-#  define LICQ_DEPRECATED
-# endif
-#endif
-
 
 /*----------------------
  * Licq Chat Module
