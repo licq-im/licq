@@ -425,7 +425,7 @@ bool CFileTransferManager::SendFileHandshake()
 
 
 //-----CFileTransferManager::AcceptReverseConnection-------------------------
-void CFileTransferManager::AcceptReverseConnection(TCPSocket *s)
+void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
 {
   if (ftSock.Descriptor() != -1)
   {
@@ -1221,7 +1221,7 @@ void *FileTransferManager_tep(void *arg)
             gLog.Warn(tr("%sFile Transfer: Receiving repeat incoming connection.\n"), L_WARNxSTR);
 
             // Dump the extra connection to clear the listen socket queue
-            TCPSocket ts;
+            Licq::TCPSocket ts;
             if (ftman->ftServer.RecvConnection(ts))
               ts.CloseConnection();
           }
@@ -1327,7 +1327,7 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   gLog.Info("%sFile Transfer: Reverse connection failed, trying direct.\n",
                                                                     L_TCPxSTR);
-  TCPSocket s;
+  Licq::TCPSocket s;
   bConnected = gIcqProtocol.OpenConnectionToUser(id.c_str(), &s, nPort);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 

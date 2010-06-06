@@ -20,10 +20,10 @@
 #include "msnpacket.h"
 
 #include <licq/daemon.h>
+#include <licq/socket.h>
 #include <licq_events.h>
 #include "licq_log.h"
 #include "licq_message.h"
-#include <licq_socket.h>
 
 #include <cstring>
 #include <string>
@@ -159,7 +159,7 @@ void CMSN::ProcessNexusPacket(CMSNBuffer &packet)
 void CMSN::MSNGetServer()
 {
   UserId myOwnerId(m_szUserName, MSN_PPID);
-  TCPSocket* sock = new TCPSocket(myOwnerId);
+  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
   if (!sock->connectTo(string("nexus.passport.com"), 443))
   {
     delete sock;
@@ -182,7 +182,7 @@ void CMSN::MSNGetServer()
 void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strParam */)
 {
   UserId myOwnerId(m_szUserName, MSN_PPID);
-  TCPSocket* sock = new TCPSocket(myOwnerId);
+  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
   gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
       strHost.c_str(), 443);
   if (!sock->connectTo(strHost, 443))
@@ -210,7 +210,7 @@ void CMSN::MSNAuthenticate(char *szCookie)
 {
   UserId myOwnerId(m_szUserName, MSN_PPID);
   string server = "loginnet.passport.com";
-  TCPSocket* sock = new TCPSocket(myOwnerId);
+  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
   gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
       server.c_str(), 443);
   if (!sock->connectTo(server, 443))

@@ -32,7 +32,7 @@
 #include <licq/daemon.h>
 #include <licq/md5.h>
 #include <licq/oneventmanager.h>
-#include <licq_socket.h>
+#include <licq/socket.h>
 
 using namespace std;
 using Licq::OnEventManager;
@@ -499,8 +499,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
 void CMSN::SendPacket(CMSNPacket *p)
 {
-  INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
-  SrvSocket *sock = static_cast<SrvSocket *>(s);
+  Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
+  Licq::SrvSocket* sock = static_cast<Licq::SrvSocket*>(s);
   assert(sock != NULL);
   if (!sock->SendRaw(p->getBuffer()))
     MSNLogoff(true);
@@ -533,7 +533,7 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned status)
     myPassword = o->password();
   }
 
-  SrvSocket* sock = new SrvSocket(myOwnerId);
+  Licq::SrvSocket* sock = new Licq::SrvSocket(myOwnerId);
   gLog.Info("%sServer found at %s:%d.\n", L_MSNxSTR,
       _szServer, _nPort);
 
@@ -599,7 +599,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
   m_bCanPing = false;
 
   // Close the server socket
-  INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
+  Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
   int nSD = m_nServerSocket;
   m_nServerSocket = -1;
   gSocketMan.DropSocket(s);

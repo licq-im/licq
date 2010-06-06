@@ -5,13 +5,13 @@
 
 #include <licq/userid.h>
 
-class TCPSocket;
 class CUserEvent;
 class LicqSignal;
 class LicqEvent;
 
 namespace Licq
 {
+class TCPSocket;
 class User;
 }
 
@@ -40,7 +40,7 @@ protected:
   Licq::UserId myUserId;
   unsigned m_nForwardType;
 
-  TCPSocket *tcp;
+  Licq::TCPSocket* tcp;
 
 public:
   void ProcessPipe();

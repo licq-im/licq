@@ -57,7 +57,7 @@
 #include <cstring>
 #include <list>
 
-#include "licq_socket.h"
+#include "socket.h"
 #include "socketmanager.h"
 
 namespace Licq
@@ -167,7 +167,7 @@ public:
   int Pipe() { return pipe_events[PIPE_READ]; }
   CFileTransferEvent *PopFileTransferEvent();
 
-  void AcceptReverseConnection(TCPSocket *);
+  void AcceptReverseConnection(Licq::TCPSocket*);
   static CFileTransferManager *FindByPort(unsigned short);
 
 protected:
@@ -203,7 +203,7 @@ protected:
   FileList::iterator m_iPathName;
   bool m_bThreadCreated;
 
-  TCPSocket ftSock, ftServer;
+  Licq::TCPSocket ftSock, ftServer;
 
   Licq::SocketManager sockman;
 
@@ -216,7 +216,7 @@ protected:
   void PushFileTransferEvent(CFileTransferEvent *);
   void CloseConnection();
 
-  bool SendBuffer(CBuffer *);
+  bool SendBuffer(Licq::Buffer*);
   bool SendPacket(Licq::Packet*);
 
 friend void *FileTransferManager_tep(void *);

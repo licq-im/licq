@@ -26,10 +26,9 @@
 #include <licq/thread/mutex.h>
 #include <licq/thread/readwritemutex.h>
 
-class INetSocket;
-
 namespace Licq
 {
+class INetSocket;
 
 class SocketHashTable
 {

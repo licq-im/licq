@@ -26,7 +26,6 @@
 
 #include "licq.h"
 #include "licq_log.h"
-#include "licq_socket.h"
 #include "licq/exceptions/exception.h"
 #include <licq/inifile.h>
 #include <licq/utility.h>

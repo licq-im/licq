@@ -6,7 +6,6 @@ set(licq_HEADERS
   licq_message.h
   licq_plugin.h
   licq_protoplugin.h
-  licq_socket.h
 )
 
 install(FILES ${licq_HEADERS} DESTINATION "${Licq_INCLUDE_DIR}/licq")

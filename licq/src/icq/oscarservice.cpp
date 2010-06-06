@@ -21,8 +21,8 @@
 #include <licq/contactlist/usermanager.h>
 #include "licq/byteorder.h"
 #include <licq/proxy.h>
+#include <licq/socket.h>
 #include "licq_events.h"
-#include "licq_socket.h"
 #include "licq_log.h"
 
 #include "../daemon.h"
@@ -99,7 +99,7 @@ void COscarService::SetConnectCredential(char *Server, unsigned short Port,
 
 bool COscarService::SendPacket(CPacket *p)
 {
-  INetSocket *s = gSocketManager.FetchSocket(mySocketDesc);
+  Licq::INetSocket* s = gSocketManager.FetchSocket(mySocketDesc);
   if (s == NULL) return false;
   Buffer *b = p->Finalize(s);
   if (!s->Send(b))
@@ -452,7 +452,7 @@ bool COscarService::Initialize()
   }
 
   ChangeStatus(STATUS_CONNECTED);
-  SrvSocket* s = new SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::SrvSocket* s = new Licq::SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
   gLog.Info(tr("%sConnecting to separate server for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (gLicqDaemon->GetProxy() == NULL)

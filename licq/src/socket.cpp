@@ -10,26 +10,18 @@
 
 #include "config.h"
 
+#include <licq/socket.h>
+
 #include <arpa/inet.h>
-#include <stdio.h>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <netdb.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <cerrno>
-
-// Localization
-#include "gettext.h"
-
-#include <licq/icq.h>
-#include <licq/icqdefines.h>
-#include <licq/proxy.h>
-#include "licq_socket.h"
-#include "licq_log.h"
-#include "support.h"
 
 #ifdef USE_OPENSSL
 #include <openssl/ssl.h>
@@ -56,10 +48,24 @@ extern "C" {
   #define socklen_t SOCKS5_OPTLEN
 #endif
 
+#include <licq/icq.h>
+#include <licq/icqdefines.h>
+#include <licq/proxy.h>
+#include <licq_log.h>
+
+#include "gettext.h"
+#include "support.h"
+
+
 using namespace std;
+using Licq::Buffer;
+using Licq::INetSocket;
+using Licq::SrvSocket;
+using Licq::TCPSocket;
+using Licq::UDPSocket;
 using Licq::UserId;
 
-char *ip_ntoa(unsigned long in, char *buf)
+char* Licq::ip_ntoa(unsigned long in, char *buf)
 {
   inet_ntop(AF_INET, &in, buf, 32);
   return buf;
@@ -172,26 +178,15 @@ INetSocket::INetSocket(const UserId& userId)
   memset(&myLocalAddr, 0, sizeof(myLocalAddrStorage));
   myProxy = NULL;
   m_nChannel = ICQ_CHNxNONE;
-  
-  // Initialize the mutex
-  pthread_mutex_init(&mutex, NULL);
 }
 
 INetSocket::~INetSocket()
 {
   CloseConnection();
-  // Destroy the mutex
-  int nResult = 0;
-  do
-  {
-    pthread_mutex_lock(&mutex);
-    pthread_mutex_unlock(&mutex);
-    nResult = pthread_mutex_destroy(&mutex);
-  } while (nResult != 0);
 }
 
 //-----INetSocket::dumpPacket---------------------------------------------------
-void INetSocket::DumpPacket(CBuffer *b, direction d)
+void INetSocket::DumpPacket(Buffer *b, direction d)
 {
   switch (d)
   {
@@ -473,7 +468,7 @@ void INetSocket::CloseConnection()
 }
 
 //-----INetSocket::SendRaw------------------------------------------------------
-bool INetSocket::SendRaw(CBuffer *b)
+bool INetSocket::SendRaw(Buffer *b)
 {
   // send the packet
   int nBytesSent;
@@ -542,9 +537,9 @@ SrvSocket::~SrvSocket()
  * packet.
  *---------------------------------------------------------------------------*/
 
-bool SrvSocket::SendPacket(CBuffer *b_in)
+bool SrvSocket::SendPacket(Buffer *b_in)
 {
-  CBuffer *b = b_in;
+  Buffer *b = b_in;
 
   unsigned long nTotalBytesSent = 0;
   int nBytesSent = 0;
@@ -761,10 +756,10 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
  * buffer is full.  This should not be a problem unless we are sending a huge
  * packet.
  *---------------------------------------------------------------------------*/
-bool TCPSocket::SendPacket(CBuffer *b_in)
+bool TCPSocket::SendPacket(Buffer *b_in)
 {
   char *pcSize = new char[2];
-  CBuffer *b = b_in;
+  Buffer *b = b_in;
 
   pcSize[0] = (b->getDataSize()) & 0xFF;
   pcSize[1] = (b->getDataSize() >> 8) & 0xFF;
@@ -1001,7 +996,7 @@ bool TCPSocket::RecvPacket()
 }
 
 
-bool TCPSocket::SSLSend(CBuffer *b_in)
+bool TCPSocket::SSLSend(Buffer *b_in)
 {
 #ifdef USE_OPENSSL
   if (m_pSSL == 0) return false;
@@ -1217,10 +1212,10 @@ UDPSocket::~UDPSocket()
 //=====Locking==================================================================
 void INetSocket::Lock()
 {
-  pthread_mutex_lock (&mutex);
+  myMutex.lock();
 }
 
 void INetSocket::Unlock()
 {
-  pthread_mutex_unlock (&mutex);
+  myMutex.unlock();
 }

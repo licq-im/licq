@@ -13,7 +13,6 @@
 
 #include <licq_constants.h>
 #include <licq_log.h>
-#include <licq_socket.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
@@ -202,7 +201,7 @@ int CLicqRMS::Run()
     conf.get("Port", nPort, 0);
   }
 
-  server = new TCPSocket();
+  server = new Licq::TCPSocket();
 
   if (Licq::gDaemon.tcpPortsLow() != 0 && nPort == 0)
   {
@@ -448,7 +447,7 @@ Licq::SocketManager CRMSClient::sockman;
 /*---------------------------------------------------------------------------
  * CRMSClient::constructor
  *-------------------------------------------------------------------------*/
-CRMSClient::CRMSClient(TCPSocket* sin)
+CRMSClient::CRMSClient(Licq::TCPSocket* sin)
 {
   sin->RecvConnection(sock);
   sockman.AddSocket(&sock);

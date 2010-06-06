@@ -856,7 +856,7 @@ bool CChatManager::SendChatHandshake(CChatUser *u)
 
 
 //-----CChatManager::AcceptReverseConnection---------------------------------
-void CChatManager::AcceptReverseConnection(TCPSocket *s)
+void CChatManager::AcceptReverseConnection(Licq::TCPSocket* s)
 {
   CChatUser *u = new CChatUser;
   u->sock.TransferConnectionFrom(*s);

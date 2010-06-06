@@ -34,6 +34,7 @@
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/proxy.h>
+#include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/thread/mutexlocker.h>
 #include <licq/translator.h>

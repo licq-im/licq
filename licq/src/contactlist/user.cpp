@@ -1,5 +1,6 @@
 #include "user.h"
 
+#include <arpa/inet.h> // inet_pton
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 #include <cerrno>
@@ -11,7 +12,6 @@
 #include "licq_constants.h"
 #include "licq_events.h"
 #include "licq_log.h"
-#include "licq_socket.h"
 #include <licq/icq.h> // For VersionToUse()
 #include <licq/icqcodes.h>
 #include <licq/icqdefines.h>
@@ -19,6 +19,7 @@
 #include "licq/contactlist/usermanager.h"
 #include <licq/daemon.h>
 #include "licq/pluginmanager.h"
+#include <licq/socket.h>
 
 #include "../icq/icq.h" // For gSocketManager
 
@@ -1129,7 +1130,7 @@ int Licq::User::SocketDesc(unsigned char nChannel) const
   return 0;
 }
 
-void Licq::User::SetSocketDesc(TCPSocket *s)
+void Licq::User::SetSocketDesc(Licq::TCPSocket* s)
 {
   if (s->Channel() == ICQ_CHNxNONE)
     m_nNormalSocketDesc = s->Descriptor();
@@ -1417,7 +1418,7 @@ char* Licq::User::IntIpStr(char* rbuf) const
 
   if (socket > 0)		// First check if we are connected
   {
-    INetSocket *s = gSocketManager.FetchSocket(socket);
+    Licq::INetSocket *s = gSocketManager.FetchSocket(socket);
     if (s != NULL)
     {
       strcpy(rbuf, s->getRemoteIpString().c_str());
@@ -1959,8 +1960,8 @@ void User::SaveLicqInfo()
   myConf.set("OnIgnoreList", myOnIgnoreList);
   myConf.set("OnlineNotify", myOnlineNotify);
   myConf.set("NewUser", myNewUser);
-  myConf.set("Ip", ip_ntoa(m_nIp, buf));
-  myConf.set("IntIp", ip_ntoa(m_nIntIp, buf));
+  myConf.set("Ip", Licq::ip_ntoa(m_nIp, buf));
+  myConf.set("IntIp", Licq::ip_ntoa(m_nIntIp, buf));
   myConf.set("Port", Port());
   myConf.set("NewMessages", NewMessages());
   myConf.set("LastOnline", (unsigned long)LastOnline());

@@ -32,8 +32,8 @@
 // Licq
 #include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
+#include <licq/socket.h>
 #include <licq_events.h>
-#include <licq_socket.h>
 
 // Qt-gui
 #include "config/contactlist.h"
@@ -773,11 +773,11 @@ QString ContactUserData::tooltip() const
   if (config->popupIP() && (u->Ip() || u->IntIp()))
   {
     char buf[32];
-    ip_ntoa(u->Ip(), buf);
+    Licq::ip_ntoa(u->Ip(), buf);
     s += "<br>" + tr("Ip: ") + QString::fromAscii(buf);
     if (u->IntIp() != 0 && u->IntIp() != u->Ip())
     {
-      ip_ntoa(u->IntIp(), buf);
+      Licq::ip_ntoa(u->IntIp(), buf);
       s += " / " + QString::fromAscii(buf);
     }
   }

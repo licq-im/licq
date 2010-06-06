@@ -24,9 +24,9 @@
 #include "licq/byteorder.h"
 #include <licq/icqdefines.h>
 #include "licq/md5.h"
+#include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/utility.h>
-#include "licq_socket.h"
 #include "licq_log.h"
 #include "licq_color.h"
 #include "licq/version.h"
@@ -302,7 +302,7 @@ CSrvPacketTcp::~CSrvPacketTcp()
   // Empty
 }
 
-CBuffer *CSrvPacketTcp::Finalize(INetSocket *)
+CBuffer *CSrvPacketTcp::Finalize(Licq::INetSocket*)
 {
   //  m_szSequenceOffset
   if (!getBuffer()) return new CBuffer;
@@ -510,7 +510,7 @@ unsigned short CPacketUdp::s_nSubSequence = 0;
 unsigned long  CPacketUdp::s_nSessionId = 0;
 bool CPacketUdp::s_bRegistered = false;
 
-CBuffer *CPacketUdp::Finalize(INetSocket *)
+CBuffer *CPacketUdp::Finalize(Licq::INetSocket*)
 {
   if (!getBuffer()) return new CBuffer;
   return new CBuffer(*getBuffer());
@@ -4451,7 +4451,7 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(CBuffer *inbuf)
 }
 
 //=====PacketTcp================================================================
-CBuffer *CPacketTcp::Finalize(INetSocket *s)
+Licq::Buffer* CPacketTcp::Finalize(Licq::INetSocket *s)
 {
   // Set the local port in the tcp packet now
   if (s != NULL && LocalPortOffset() != NULL)

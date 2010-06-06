@@ -63,7 +63,7 @@ CMSNDataEvent::~CMSNDataEvent()
 {
   if (m_nSocketDesc)
   {
-    INetSocket *s = gSocketMan.FetchSocket(m_nSocketDesc);
+    Licq::INetSocket* s = gSocketMan.FetchSocket(m_nSocketDesc);
     gSocketMan.DropSocket(s);
     gSocketMan.CloseSocket(m_nSocketDesc);
   }

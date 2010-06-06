@@ -17,7 +17,6 @@ class CUserEvent;
 class CMSN;
 class CSocketManager;
 class IcqProtocol;
-class TCPSocket;
 void* MonitorSockets_tep(void *);
 
 
@@ -30,6 +29,7 @@ class UserManager;
 namespace Licq
 {
 class IniFile;
+class TCPSocket;
 
 typedef enum EGender
 {
@@ -730,7 +730,7 @@ public:
   // Don't call these:
   int SocketDesc(unsigned char channel) const;
   void ClearSocketDesc(unsigned char nChannel = 0x00);
-  void SetSocketDesc(TCPSocket *);
+  void SetSocketDesc(Licq::TCPSocket*);
 
   // Convenience functions so plugins don't need to know ICQ_CHNx constants
   int normalSocketDesc() const                  { return m_nNormalSocketDesc; }

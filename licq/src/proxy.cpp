@@ -24,7 +24,7 @@
 #include <unistd.h>
 
 #include <licq_log.h>
-#include <licq_socket.h>
+#include <licq/socket.h>
 
 #include "gettext.h"
 

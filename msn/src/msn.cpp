@@ -29,7 +29,7 @@
 
 #include "licq_log.h"
 #include "licq_message.h"
-#include <licq_socket.h>
+#include <licq/socket.h>
 #include <licq/contactlist/user.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
@@ -436,8 +436,8 @@ void CMSN::Run()
         
         else if (nCurrent == m_nServerSocket)
         {
-          INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
-          TCPSocket *sock = static_cast<TCPSocket *>(s);
+          Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
+          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
           if (sock->RecvRaw())
           {
             CMSNBuffer packet(sock->RecvBuffer());
@@ -461,8 +461,8 @@ void CMSN::Run()
         
         else if (nCurrent == m_nNexusSocket)
         {
-          INetSocket *s = gSocketMan.FetchSocket(m_nNexusSocket);
-          TCPSocket *sock = static_cast<TCPSocket *>(s);
+          Licq::INetSocket* s = gSocketMan.FetchSocket(m_nNexusSocket);
+          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
           if (sock->SSLRecv())
           {
             CMSNBuffer packet(sock->RecvBuffer());
@@ -474,8 +474,8 @@ void CMSN::Run()
 
         else if (nCurrent == m_nSSLSocket)
         {
-          INetSocket *s = gSocketMan.FetchSocket(m_nSSLSocket);
-          TCPSocket *sock = static_cast<TCPSocket *>(s);
+          Licq::INetSocket* s = gSocketMan.FetchSocket(m_nSSLSocket);
+          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
           if (sock->SSLRecv())
           {
             CMSNBuffer packet(sock->RecvBuffer());
@@ -488,8 +488,8 @@ void CMSN::Run()
         else
         {
           //SB socket
-          INetSocket *s = gSocketMan.FetchSocket(nCurrent);
-          TCPSocket *sock = static_cast<TCPSocket *>(s);
+          Licq::INetSocket* s = gSocketMan.FetchSocket(nCurrent);
+          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
           if (sock && sock->RecvRaw())
           {
             CMSNBuffer packet(sock->RecvBuffer());

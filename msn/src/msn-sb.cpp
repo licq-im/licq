@@ -30,9 +30,9 @@
 #include <licq/conversation.h>
 #include <licq/daemon.h>
 #include <licq/oneventmanager.h>
+#include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
-#include <licq_socket.h>
 
 using namespace std;
 using Licq::UserId;
@@ -331,7 +331,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 
       if (convo == NULL || convo->isEmpty())
       {
-        INetSocket* s = gSocketMan.FetchSocket(nThisSock);
+        Licq::INetSocket* s = gSocketMan.FetchSocket(nThisSock);
         gSocketMan.DropSocket(s);
         gSocketMan.CloseSocket(nSock);
         if (convo != NULL)
@@ -390,11 +390,11 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
       return;
     nSock = u->normalSocketDesc();
   }
-  INetSocket *s = gSocketMan.FetchSocket(nSock);
+  Licq::INetSocket* s = gSocketMan.FetchSocket(nSock);
   if (!s)
     s = gSocketMan.FetchSocket(nSocket);
   if (!s) return;
-  TCPSocket *sock = static_cast<TCPSocket *>(s);
+  Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
   if (!sock->SendRaw(p->getBuffer()))
   {
     gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, userId.toString().c_str());
@@ -459,7 +459,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     return false;
   }
   //pStart->m_bConnecting = true;
-  TCPSocket* sock = new TCPSocket(pStart->userId);
+  Licq::TCPSocket* sock = new Licq::TCPSocket(pStart->userId);
   pthread_mutex_unlock(&mutex_StartList);
 
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
@@ -514,7 +514,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     return false;
   }
 
-  TCPSocket* sock = new TCPSocket(userId);
+  Licq::TCPSocket* sock = new Licq::TCPSocket(userId);
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
       host.c_str(), port);
   if (!sock->connectTo(host, port))

@@ -30,9 +30,9 @@
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
 #include <licq/proxy.h>
+#include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
-#include "licq_socket.h"
 #include "licq_events.h"
 #include "licq_log.h"
 #include "licq_message.h"
@@ -1690,7 +1690,7 @@ int IcqProtocol::ConnectToLoginServer()
 
 int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
 {
-  SrvSocket* s = new SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  Licq::SrvSocket* s = new Licq::SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
 
   if (gDaemon.proxyEnabled())
   {
@@ -2070,7 +2070,7 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
         }
 
       char buf[32];
-      gLog.Info(tr("%sServer says we are at %s.\n"), L_SRVxSTR, ip_ntoa(realIP, buf));
+        gLog.Info(tr("%sServer says we are at %s.\n"), L_SRVxSTR, Licq::ip_ntoa(realIP, buf));
       //icqSetStatus(m_nDesiredStatus);
     }
     if (packet.getTLVLen(0x0003) == 4)

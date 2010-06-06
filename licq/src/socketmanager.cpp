@@ -22,10 +22,11 @@
 #include <licq/socketmanager.h>
 
 #include <licq/contactlist/user.h>
+#include <licq/socket.h>
 #include <licq/thread/mutexlocker.h>
-#include <licq_socket.h>
 
 using namespace std;
+using Licq::INetSocket;
 using Licq::SocketHashTable;
 using Licq::SocketManager;
 using Licq::SocketSet;

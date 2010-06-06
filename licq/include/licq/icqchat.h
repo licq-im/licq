@@ -5,7 +5,7 @@
 #include <deque>
 #include <list>
 
-#include "licq_socket.h"
+#include "socket.h"
 #include "socketmanager.h"
 
 namespace Licq
@@ -193,10 +193,10 @@ public:
 
   // Initialize from the handshake buffer (does not set the session
   // or port fields however)
-  bool LoadFromHandshake_v2(CBuffer &);
-  bool LoadFromHandshake_v4(CBuffer &);
-  bool LoadFromHandshake_v6(CBuffer &);
-  bool LoadFromHandshake_v7(CBuffer &);
+  bool LoadFromHandshake_v2(Licq::Buffer&);
+  bool LoadFromHandshake_v4(Licq::Buffer&);
+  bool LoadFromHandshake_v6(Licq::Buffer&);
+  bool LoadFromHandshake_v7(Licq::Buffer&);
 
   unsigned long m_nVersion;
   unsigned short m_nPort;
@@ -209,8 +209,8 @@ public:
   unsigned short m_nId;
   
 protected:
-  CChatClient(CBuffer &);
-  bool LoadFromBuffer(CBuffer &);
+  CChatClient(Licq::Buffer&);
+  bool LoadFromBuffer(Licq::Buffer&);
 
 friend class CPChat_ColorFont;
 };
@@ -263,7 +263,7 @@ protected:
   bool focus, sleep;
 
   CChatClient *m_pClient;
-  TCPSocket sock;
+  Licq::TCPSocket sock;
   std::deque <unsigned char> chatQueue;
   unsigned short state;
   char linebuf[1024];
@@ -363,7 +363,7 @@ public:
   int Pipe() { return pipe_events[PIPE_READ]; }
   CChatEvent *PopChatEvent();
 
-  void AcceptReverseConnection(TCPSocket *);
+  void AcceptReverseConnection(Licq::TCPSocket*);
   static CChatManager *FindByPort(unsigned short);
 
 protected:
@@ -390,7 +390,7 @@ protected:
   unsigned long m_nFontFace;
   bool m_bSleep, m_bFocus;
 
-  TCPSocket chatServer;
+  Licq::TCPSocket chatServer;
 
   Licq::SocketManager sockman;
   bool m_bThreadCreated;
@@ -407,10 +407,10 @@ protected:
   void PushChatEvent(CChatEvent *);
   void FinishKickVote(VoteInfoList::iterator, bool);
 
-  void SendBuffer(CBuffer *, unsigned char,
+  void SendBuffer(Licq::Buffer*, unsigned char,
       const char* id = NULL, bool bNotIter = true);
-  bool SendBufferToClient(CBuffer *, unsigned char, CChatUser *);
-  void SendBuffer_Raw(CBuffer *);
+  bool SendBufferToClient(Licq::Buffer*, unsigned char, CChatUser *);
+  void SendBuffer_Raw(Licq::Buffer*);
   //void SendPacket(Licq::Packet*);
 
 friend void *ChatManager_tep(void *);

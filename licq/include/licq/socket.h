@@ -1,28 +1,43 @@
-#ifndef socket_h
-#define socket_h
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 2010 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <pthread.h>
-#include <sys/socket.h>
+#ifndef LICQ_SOCKET_H
+#define LICQ_SOCKET_H
+
+#include <stdint.h>
 #include <string>
+#include <sys/socket.h> // AF_UNSPEC, struct sockaddr
 
-#include <licq/buffer.h>
-#include "licq_constants.h"
-#include "licq/userid.h"
-
-namespace Licq
-{
-class Proxy;
-}
-
-// Temporary to keep old code working until this header has also been ported
-typedef Licq::Buffer CBuffer;
+#include "buffer.h"
+#include "thread/mutex.h"
+#include "userid.h"
+#include "licq_constants.h" // enum direction
 
 
 // IPv6 is implemented in socket classes but Licq support must be considered experimental for now
 // Uncomment the following line to disable IPv6 socket usage
 //#define LICQ_DISABLE_IPV6
+
+
+namespace Licq
+{
+class Proxy;
 
 
 /**
@@ -49,14 +64,14 @@ typedef enum SocketError_et_
 class INetSocket
 {
 public:
-  INetSocket(const Licq::UserId& userId);
+  INetSocket(const UserId& userId);
   virtual ~INetSocket();
 
   bool Connected()          { return(m_nDescriptor > 0);  }
   int Descriptor()          { return(m_nDescriptor);      }
   bool DestinationSet()     { return myRemoteAddr.sa_family != AF_UNSPEC; }
-  const Licq::UserId& userId() const { return myUserId; }
-  void setUserId(const Licq::UserId& userId) { myUserId = userId; }
+  const UserId& userId() const { return myUserId; }
+  void setUserId(const UserId& userId) { myUserId = userId; }
   unsigned long Version()     { return (m_nVersion); }
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
 
@@ -110,7 +125,7 @@ public:
   void ResetSocket();
   void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
   bool RecvBufferFull()   { return m_xRecvBuffer.Full(); };
-  CBuffer &RecvBuffer()   { return m_xRecvBuffer; };
+  Buffer& RecvBuffer()   { return m_xRecvBuffer; };
 
   /**
    * Connect to a remote host
@@ -121,7 +136,7 @@ public:
    * @return True if connection was opened successfully
    */
   bool connectTo(const std::string& remoteAddr, uint16_t remotePort,
-      Licq::Proxy* proxy = NULL);
+      Proxy* proxy = NULL);
 
   /**
    * Connect to a remote IP as unsigned int
@@ -133,19 +148,18 @@ public:
    * @return True if connection was opened successfully
    */
   bool connectTo(uint32_t remoteAddr, uint16_t remotePort,
-      Licq::Proxy* proxy = NULL);
+      Proxy* proxy = NULL);
 
   void CloseConnection();
   bool StartServer(unsigned int _nPort);
-  bool SendRaw(CBuffer *b);
+  bool SendRaw(Buffer *b);
   bool RecvRaw();
 
-  virtual bool Send(CBuffer *b) = 0;
+  virtual bool Send(Buffer* b) = 0;
   virtual bool Recv() = 0;
 
   void Lock();
   void Unlock();
-  pthread_mutex_t mutex;
 
   /**
    * Convert an address to readable string form
@@ -189,7 +203,7 @@ public:
 protected:
   const char *GetIDStr()  { return (m_szID); }
   bool SetLocalAddress(bool bIp = true);
-  void DumpPacket(CBuffer *b, direction d);
+  void DumpPacket(Buffer* b, direction d);
 
   // sockaddr is too small to hold a sockaddr_in6 so use union to allocate the extra space
   union
@@ -205,38 +219,38 @@ protected:
 
   int m_nDescriptor;
   std::string myRemoteName;
-  CBuffer m_xRecvBuffer;
+  Buffer m_xRecvBuffer;
   char m_szID[4];
   int m_nSockType;
   unsigned short m_nVersion;
   SocketError_et m_nErrorType;
-  Licq::Proxy* myProxy;
-  Licq::UserId myUserId;
+  Proxy* myProxy;
+  UserId myUserId;
   unsigned char m_nChannel;
+  Mutex myMutex;
 };
 
 
-//=====TCPSocket===============================================================
 class TCPSocket : public INetSocket
 {
 public:
-  TCPSocket(const Licq::UserId& userId);
+  TCPSocket(const UserId& userId);
   TCPSocket();
   virtual ~TCPSocket();
 
   // Abstract base class overloads
-  virtual bool Send(CBuffer *b)
+  virtual bool Send(Buffer* b)
     { return SendPacket(b); }
   virtual bool Recv()
     { return RecvPacket(); }
 
   // Functions specific to TCP
-  bool SendPacket(CBuffer *b);
+  bool SendPacket(Buffer* b);
   bool RecvPacket();
   bool RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
 
-  bool SSLSend(CBuffer *b);
+  bool SSLSend(Buffer* b);
   bool SSLRecv();
 
   bool Secure() { return m_p_SSL != NULL; }
@@ -252,21 +266,20 @@ protected:
 };
 
 
-//=====SrvSocket===============================================================
 class SrvSocket : public INetSocket
 {
 public:
-  SrvSocket(const Licq::UserId& userId);
+  SrvSocket(const UserId& userId);
   virtual ~SrvSocket();
 
   // Abstract base class overloads
-  virtual bool Send(CBuffer *b)
+  virtual bool Send(Buffer* b)
     { return SendPacket(b); }
   virtual bool Recv()
     { return RecvPacket(); }
 
   // Functions specific to Server TCP communication
-  bool SendPacket(CBuffer *b);
+  bool SendPacket(Buffer* b);
   bool RecvPacket();
 };
 
@@ -275,14 +288,16 @@ public:
 class UDPSocket : public INetSocket
 {
 public:
-  UDPSocket(const Licq::UserId& userId);
+  UDPSocket(const UserId& userId);
   virtual ~UDPSocket();
 
   // Abstract base class overloads
-  virtual bool Send(CBuffer *b)
+  virtual bool Send(Buffer *b)
     { return SendRaw(b); }
   virtual bool Recv()
     { return RecvRaw(); }
 };
+
+} // namespace Licq
 
 #endif

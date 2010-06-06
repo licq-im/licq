@@ -18,12 +18,12 @@ namespace Licq
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Buffer;
+class INetSocket;
 }
 
 class CICQColor;
 typedef Licq::Buffer CBuffer;
 typedef Licq::Packet CPacket;
-class INetSocket;
 
 typedef std::map<int, std::string> GroupNameMap;
 
@@ -104,7 +104,7 @@ public:
 
   // Misc.
   virtual unsigned short ExtraInfo() { return m_nExtraInfo; }
-  virtual CBuffer *Finalize(INetSocket *);
+  virtual CBuffer *Finalize(Licq::INetSocket*);
   void SetExtraInfo(unsigned short e)  { m_nExtraInfo = e; }
 
 protected:
@@ -136,7 +136,7 @@ class CPacketUdp : public CPacket
 public:
    virtual ~CPacketUdp();
 
-   virtual CBuffer *Finalize(INetSocket *);
+   virtual CBuffer *Finalize(Licq::INetSocket*);
    virtual unsigned short Sequence() { return m_nSequence; }
    virtual unsigned short SubSequence() { return m_nSubSequence; }
    virtual unsigned short Command()  { return m_nCommand; }
@@ -1345,7 +1345,7 @@ class CPacketTcp : public CPacket
 public:
    virtual ~CPacketTcp();
 
-   virtual CBuffer *Finalize(INetSocket *);
+   virtual CBuffer *Finalize(Licq::INetSocket*);
    virtual unsigned short Sequence()   { return m_nSequence; }
    virtual unsigned short SubSequence()   { return 0; }
    virtual unsigned short Command()    { return m_nCommand; }

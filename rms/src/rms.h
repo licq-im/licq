@@ -3,11 +3,10 @@
 
 #include <list>
 
-#include <licq_socket.h>
+#include <licq/socket.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
 
-class TCPSocket;
 class CUserEvent;
 class LicqSignal;
 class LicqEvent;
@@ -34,7 +33,7 @@ protected:
 
   unsigned short m_nPort;
 
-  TCPSocket *server;
+  Licq::TCPSocket* server;
   ClientList clients;
   CLogService_Plugin *log;
 
@@ -53,7 +52,7 @@ friend class CRMSClient;
 class CRMSClient
 {
 public:
-  CRMSClient(TCPSocket *);
+  CRMSClient(Licq::TCPSocket*);
   ~CRMSClient();
 
   int Activity();
@@ -80,7 +79,7 @@ public:
   int Process_NOTIFY();
 
 protected:
-  TCPSocket sock;
+  Licq::TCPSocket sock;
   FILE *fs;
   TagList tags;
   unsigned short m_nState;

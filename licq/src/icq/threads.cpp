@@ -18,6 +18,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/packet.h>
+#include <licq/socket.h>
 #include "licq_log.h"
 
 #include "../daemon.h"
@@ -40,7 +41,7 @@ void cleanup_mutex(void *m)
 
 void cleanup_socket(void *s)
 {
-  gSocketManager.DropSocket((INetSocket *)s);
+  gSocketManager.DropSocket((Licq::INetSocket *)s);
 }
 
 void *cleanup_thread_tep(void *t)
@@ -159,7 +160,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
   pthread_mutex_unlock(&gIcqProtocol.mutex_sendqueue_server);
 
   // declared here because pthread_cleanup_push starts a new block
-  CBuffer *buf;
+  Licq::Buffer* buf;
   bool sent = false;
   bool bExit = false;
   string errorStr;
@@ -171,8 +172,8 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
 
     int socket = -1;
     unsigned short nSequence;
-    INetSocket *s;
-    
+  Licq::INetSocket *s;
+
     // Check if the socket is connected
     if (e->m_nSocketDesc == -1)
     {
@@ -506,7 +507,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
 
   int socket = e->m_nSocketDesc;
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  INetSocket *s = gSocketManager.FetchSocket(socket);
+  Licq::INetSocket* s = gSocketManager.FetchSocket(socket);
   if (s == NULL)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -527,7 +528,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     pthread_exit(NULL);
   }
 
-  CBuffer *buf;
+  Licq::Buffer* buf;
   bool sent;
   string errorStr;
   pthread_cleanup_push(cleanup_socket, s);
@@ -738,7 +739,7 @@ void *MonitorSockets_tep(void* /* p */)
         continue;
       }
 
-          INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
+      Licq::INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
       if (s != NULL && s->userId().isValid() &&
           s->userId() == Licq::gUserManager.ownerUserId(LICQ_PPID) &&
               gIcqProtocol.m_nTCPSrvSocketDesc == -1)
@@ -753,7 +754,7 @@ void *MonitorSockets_tep(void* /* p */)
       if (nCurrentSocket == gIcqProtocol.m_nTCPSrvSocketDesc)
       {
               DEBUG_THREADS("[MonitorSockets_tep] Data on TCP server socket.\n");
-        SrvSocket* srvTCP = dynamic_cast<SrvSocket*>(s);
+        Licq::SrvSocket* srvTCP = dynamic_cast<Licq::SrvSocket*>(s);
               if (srvTCP == NULL)
               {
               gLog.Warn(tr("%sInvalid server socket in set.\n"), L_WARNxSTR);
@@ -764,7 +765,7 @@ void *MonitorSockets_tep(void* /* p */)
             // DAW FIXME error handling when socket is closed..
         if (srvTCP->Recv())
         {
-              CBuffer packet(srvTCP->RecvBuffer());
+          Licq::Buffer packet(srvTCP->RecvBuffer());
               srvTCP->ClearRecvBuffer();
               gSocketManager.DropSocket(srvTCP);
           if (!gIcqProtocol.ProcessSrvPacket(packet))
@@ -791,7 +792,7 @@ void *MonitorSockets_tep(void* /* p */)
           {
             DEBUG_THREADS("[MonitorSockets_tep] Data on BART service socket.\n");
         COscarService *svc = gIcqProtocol.m_xBARTService;
-        SrvSocket* sock_svc = dynamic_cast<SrvSocket*>(s);
+        Licq::SrvSocket* sock_svc = dynamic_cast<Licq::SrvSocket*>(s);
         if (sock_svc == NULL)
         {
           gLog.Warn(tr("%sInvalid BART service socket in set.\n"), L_WARNxSTR);
@@ -800,7 +801,7 @@ void *MonitorSockets_tep(void* /* p */)
         }
             if (sock_svc->Recv())
             {
-              CBuffer packet(sock_svc->RecvBuffer());
+          Licq::Buffer packet(sock_svc->RecvBuffer());
               sock_svc->ClearRecvBuffer();
               gSocketManager.DropSocket(sock_svc);
               if (!svc->ProcessPacket(packet))
@@ -828,7 +829,7 @@ void *MonitorSockets_tep(void* /* p */)
       {
             DEBUG_THREADS("[MonitorSockets_tep] Data on listening TCP socket."
                           "\n");
-        TCPSocket* tcp = dynamic_cast<TCPSocket *>(s);
+        Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(s);
             if (tcp == NULL)
             {
               gLog.Warn(tr("%sInvalid server TCP socket in set.\n"), L_WARNxSTR);
@@ -836,7 +837,7 @@ void *MonitorSockets_tep(void* /* p */)
           continue;
         }
 
-              TCPSocket *newSocket = new TCPSocket();
+        Licq::TCPSocket* newSocket = new Licq::TCPSocket();
               bool ok = tcp->RecvConnection(*newSocket);
               gSocketManager.DropSocket(tcp);
 
@@ -862,7 +863,7 @@ void *MonitorSockets_tep(void* /* p */)
 
             ssl_recv:
 
-        TCPSocket* tcp = dynamic_cast<TCPSocket *>(s);
+        Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(s);
 
             // If tcp is NULL then the socket is no longer in the set, hence it
             // must have been closed by us and we can ignore it.

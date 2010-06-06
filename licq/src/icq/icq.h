@@ -34,13 +34,13 @@
 
 class COscarService;
 class CPacketTcp;
-class TCPSocket;
-class INetSocket;
 
 namespace Licq
 {
+class INetSocket;
 class IniFile;
 class Packet;
+class TCPSocket;
 }
 
 // To keep old code working
@@ -263,10 +263,10 @@ public:
       unsigned short = 0, size_t = 0);
 
   void CheckExport();
-  bool OpenConnectionToUser(const char* id, TCPSocket *sock,
+  bool OpenConnectionToUser(const char* id, Licq::TCPSocket* sock,
      unsigned short nPort);
   bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
-     unsigned long nIntIp, TCPSocket *sock, unsigned short nPort,
+     unsigned long nIntIp, Licq::TCPSocket* sock, unsigned short nPort,
      bool bSendIntIp);
 
   void UpdateAllUsers();
@@ -292,7 +292,7 @@ public:
   bool ProcessPluginMessage(Licq::Buffer& packet, Licq::User* user, unsigned char nChannel,
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
-     TCPSocket *pSock);
+     Licq::TCPSocket* pSock);
   void ProcessDoneEvent(ICQEvent *);
   bool ProcessSrvPacket(Licq::Buffer&);
 
@@ -314,18 +314,18 @@ public:
 
   void ProcessSystemMessage(Licq::Buffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(Licq::Buffer &packet, unsigned short nMetaCommand, ICQEvent *e);
-  bool ProcessTcpPacket(TCPSocket *);
-  bool ProcessTcpHandshake(TCPSocket *);
+  bool ProcessTcpPacket(Licq::TCPSocket*);
+  bool ProcessTcpHandshake(Licq::TCPSocket*);
 
   unsigned long icqRequestInfoPlugin(Licq::User* user, bool, const char *);
   unsigned long icqRequestStatusPlugin(Licq::User* user, bool, const char *);
   void icqUpdateInfoTimestamp(const char *);
 
-  static bool Handshake_Send(TCPSocket *, const char* id, unsigned short,
+  static bool Handshake_Send(Licq::TCPSocket*, const char* id, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
-  static bool Handshake_SendConfirm_v7(TCPSocket *);
-  static bool Handshake_Recv(TCPSocket *, unsigned short, bool = true, bool = false);
-  static bool Handshake_RecvConfirm_v7(TCPSocket *);
+  static bool Handshake_SendConfirm_v7(Licq::TCPSocket*);
+  static bool Handshake_Recv(Licq::TCPSocket*, unsigned short, bool = true, bool = false);
+  static bool Handshake_RecvConfirm_v7(Licq::TCPSocket*);
 
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
@@ -343,7 +343,7 @@ public:
 private:
 
   bool SendEvent(int nSD, Licq::Packet &, bool);
-  bool SendEvent(INetSocket *, Licq::Packet &, bool);
+  bool SendEvent(Licq::INetSocket *, Licq::Packet &, bool);
   void SendEvent_Server(Licq::Packet *packet);
   LicqEvent* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, Licq::Packet *, CUserEvent *, bool = false);
   LicqEvent* SendExpectEvent_Server(const Licq::UserId& userId, Licq::Packet* packet, CUserEvent* ue, bool extendedEvent = false);
@@ -357,7 +357,7 @@ private:
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
 
   void AckTCP(CPacketTcp &, int);
-  void AckTCP(CPacketTcp &, TCPSocket *);
+  void AckTCP(CPacketTcp &, Licq::TCPSocket*);
 
   void ChangeUserStatus(Licq::User* u, unsigned long s);
   Licq::User* FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e, const char*);

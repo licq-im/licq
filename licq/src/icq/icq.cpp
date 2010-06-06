@@ -146,7 +146,7 @@ bool IcqProtocol::start()
 {
   int nResult = 0;
 
-  TCPSocket* s = new TCPSocket();
+  Licq::TCPSocket* s = new Licq::TCPSocket();
   m_nTCPSocketDesc = gDaemon.StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {
@@ -447,14 +447,14 @@ ICQEvent *IcqProtocol::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
  */
 bool IcqProtocol::SendEvent(int nSD, CPacket &p, bool d)
 {
-  INetSocket *s = gSocketManager.FetchSocket(nSD);
+  Licq::INetSocket* s = gSocketManager.FetchSocket(nSD);
   if (s == NULL) return false;
   bool r = SendEvent(s, p, d);
   gSocketManager.DropSocket(s);
   return r;
 }
 
-bool IcqProtocol::SendEvent(INetSocket *pSock, CPacket &p, bool d)
+bool IcqProtocol::SendEvent(Licq::INetSocket* pSock, CPacket &p, bool d)
 {
   CBuffer *buf = p.Finalize(pSock);
   pSock->Send(buf);

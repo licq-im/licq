@@ -28,13 +28,13 @@ class CUserEvent;
 class LicqEvent;
 class LicqProtoSignal;
 class LicqSignal;
-class TCPSocket;
 
 namespace Licq
 {
 
 class LogService;
 class Proxy;
+class TCPSocket;
 class User;
 class UserId;
 

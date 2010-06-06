@@ -9,6 +9,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqcodes.h>
 #include <licq/icqfiletransfer.h>
+#include <licq/socket.h> // For ip_ntoa
 
 using namespace std;
 using Licq::User;
@@ -578,7 +579,7 @@ void CLicqConsole::PrintInfo_General(const Licq::UserId& userId)
   char buf[32];
   char szPort[32];
   char szRealIp[32];
-  strcpy(szRealIp, ip_ntoa(u->RealIp(), buf));
+  strcpy(szRealIp, Licq::ip_ntoa(u->RealIp(), buf));
   time_t nLast = u->LastOnline();
   time_t nOnSince = u->OnlineSince();
 

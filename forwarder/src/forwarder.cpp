@@ -13,13 +13,13 @@
 #include <licq_events.h>
 #include "licq_log.h"
 #include "licq_constants.h"
-#include "licq_socket.h"
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
+#include <licq/socket.h>
 #include <licq/translator.h>
 
 extern "C" { const char *LP_Version(); }
@@ -38,7 +38,7 @@ const unsigned short SUBJ_CHARS = 20;
  *-------------------------------------------------------------------------*/
 CLicqForwarder::CLicqForwarder(bool _bEnable, bool _bDelete, char *_szStatus)
 {
-  tcp = new TCPSocket;
+  tcp = new Licq::TCPSocket;
   m_bExit = false;
   m_bEnabled = _bEnable;
   m_bDelete = _bDelete;
