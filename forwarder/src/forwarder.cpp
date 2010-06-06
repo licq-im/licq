@@ -14,13 +14,13 @@
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "licq_socket.h"
-#include "licq_translate.h"
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include <licq/protocolmanager.h>
+#include <licq/translator.h>
 
 extern "C" { const char *LP_Version(); }
 
@@ -478,7 +478,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
     return false;
   }
 
-  char *szTextRN = gTranslator.NToRN(e->Text());
+  char *szTextRN = Licq::gTranslator.NToRN(e->Text());
   fprintf(fs, "%s"
               "%s\r\n"
               "%s\r\n"
