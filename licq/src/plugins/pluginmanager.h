@@ -38,6 +38,8 @@ namespace LicqDaemon
 class PluginManager : public Licq::PluginManager
 {
 public:
+  static const unsigned MaxWaitPlugin = 10;
+
   PluginManager();
   ~PluginManager();
 

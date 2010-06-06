@@ -817,7 +817,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
       bool needsSplitting = false;
       // If we send through myServer (= have message limit), and we've crossed the limit
-      unsigned short maxSize = userOffline ? MAX_OFFLINE_MESSAGE_SIZE : MAX_MESSAGE_SIZE;
+      unsigned short maxSize = userOffline ? CICQDaemon::MaxOfflineMessageSize : CICQDaemon::MaxMessageSize;
       if ((wholeMessageRaw.length() - wholeMessagePos) > maxSize)
         needsSplitting = true;
 

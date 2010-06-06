@@ -423,7 +423,7 @@ void IcqProtocol::icqAlertUser(const Licq::UserId& userId)
   if (userId.protocolId() != LICQ_PPID)
     return;
 
-  char sz[MAX_MESSAGE_SIZE];
+  char sz[MaxMessageSize];
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
     sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->getFirstName().c_str(),

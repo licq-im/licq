@@ -35,6 +35,7 @@
 #include "../contactlist/usermanager.h"
 #include "../gettext.h"
 #include "../support.h"
+#include "icq.h"
 #include "packet.h"
 
 using namespace std;
@@ -4084,8 +4085,8 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   m_szAbout = szAbout == NULL ? strdup("") : strdup(szAbout);
   char *sz = gTranslator.NToRN(szAbout);
   gTranslator.ClientToServer(sz);
-  if (strlen(sz) > MAX_MESSAGE_SIZE)
-    sz[MAX_MESSAGE_SIZE] = '\0';
+  if (strlen(sz) > size_t(IcqProtocol::MaxMessageSize))
+    sz[IcqProtocol::MaxMessageSize] = '\0';
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxABOUT);
   buffer->PackUnsignedShort(strlen_safe(sz)+3);

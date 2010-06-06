@@ -46,6 +46,7 @@
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using LicqDaemon::PluginManager;
 using LicqDaemon::gDaemon;
 using LicqDaemon::gFifo;
 using LicqDaemon::gOnEventManager;
@@ -810,7 +811,7 @@ int CLicq::Main()
     while (true)
     {
       if (bDaemonShutdown)
-        gPluginManager.waitForPluginExit(MAX_WAIT_PLUGIN);
+        gPluginManager.waitForPluginExit(PluginManager::MaxWaitPlugin);
       else
       {
         if (gPluginManager.waitForPluginExit() == 0)

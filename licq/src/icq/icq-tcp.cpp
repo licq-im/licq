@@ -139,7 +139,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     }
 
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-     unsigned short nMaxSize = bUserOffline ? MAX_OFFLINE_MESSAGE_SIZE : MAX_MESSAGE_SIZE;
+     unsigned short nMaxSize = bUserOffline ? MaxOfflineMessageSize : MaxMessageSize;
      if (strlen(szMessage) > nMaxSize)
      {
        gLog.Warn(tr("%sTruncating message to %d characters to send through server.\n"),
@@ -237,8 +237,8 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   int n = url.size() + strlen_safe(szDescDos) + 2;
   if (szDescDos != NULL)
   {
-    if (viaServer && n > MAX_MESSAGE_SIZE)
-      szDescDos[MAX_MESSAGE_SIZE - url.size() - 2] = '\0';
+    if (viaServer && n > MaxMessageSize)
+      szDescDos[MaxMessageSize - url.size() - 2] = '\0';
     m = szDescDos;
   }
   m += '\xFE';
@@ -401,7 +401,7 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
     vc.push_back(new CContact(uId, !u.isLocked() ? "" : u->GetAlias()));
   }
 
-  if (!online && p > MAX_MESSAGE_SIZE)
+  if (!online && p > MaxMessageSize)
   {
     gLog.Warn(tr("%sContact list too large to send through server.\n"), L_WARNxSTR);
     delete []m;

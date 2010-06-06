@@ -642,14 +642,14 @@ void *Ping_tep(void *p)
     case STATUS_OFFLINE_MANUAL:
       break;
     case STATUS_OFFLINE_FORCED:
-      if (time(NULL) > gIcqProtocol.m_tLogonTime + LOGON_ATTEMPT_DELAY)
+      if (time(NULL) > gIcqProtocol.m_tLogonTime + IcqProtocol::LogonAttemptDelay)
         gIcqProtocol.icqRelogon();
       break;
     }
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
 
-    tv.tv_sec = PING_FREQUENCY;
+    tv.tv_sec = IcqProtocol::PingFrequency;
     tv.tv_usec = 0;
     select(0, NULL, NULL, NULL, &tv);
 
@@ -1079,7 +1079,7 @@ void *UpdateUsers_tep(void *p)
 
     pthread_testcancel();
 
-    tv.tv_sec = UPDATE_FREQUENCY;
+    tv.tv_sec = IcqProtocol::UpdateFrequency;
     tv.tv_usec = 0;
     select(0, NULL, NULL, NULL, &tv);
 

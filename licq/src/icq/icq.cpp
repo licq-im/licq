@@ -24,7 +24,6 @@
 #include <licq/oneventmanager.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
-#include "licq_constants.h"
 #include "licq_log.h"
 
 #include "../contactlist/user.h"
@@ -38,6 +37,9 @@ using namespace std;
 using namespace LicqDaemon;
 using Licq::OnEventManager;
 using Licq::gOnEventManager;
+
+// Constants
+const char* const CICQDaemon::DefaultServerHost = "login.icq.com";
 
 std::list <CReverseConnectToUserData *> IcqProtocol::m_lReverseConnect;
 pthread_mutex_t IcqProtocol::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
@@ -88,8 +90,8 @@ void IcqProtocol::initialize()
   licqConf.setSection("network");
 
   // ICQ Server
-  licqConf.get("ICQServer", myIcqServer, DEFAULT_SERVER_HOST);
-  licqConf.get("ICQServerPort", myIcqServerPort, DEFAULT_SERVER_PORT);
+  licqConf.get("ICQServer", myIcqServer, DefaultServerHost);
+  licqConf.get("ICQServerPort", myIcqServerPort, DefaultServerPort);
 
   licqConf.get("MaxUsersPerPacket", myMaxUsersPerPacket, 100);
   licqConf.get("AutoUpdateInfo", m_bAutoUpdateInfo, true);
@@ -749,7 +751,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     else
     {
       s_nPingTimeOuts++;
-      if (s_nPingTimeOuts > MAX_PING_TIMEOUTS)
+      if (s_nPingTimeOuts > MaxPingTimeouts)
       {
         s_nPingTimeOuts = 0;
         icqRelogon();

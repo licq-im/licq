@@ -220,7 +220,7 @@ void Settings::Network::useProxyToggled(bool useProxy)
       myProxyLoginEdit->setEnabled(true);
       myProxyPasswdEdit->setEnabled(true);
     }
-    myIcqServerPortSpin->setValue(DEFAULT_SSL_PORT);
+    myIcqServerPortSpin->setValue(CICQDaemon::DefaultSslPort);
   }
   else
   {
@@ -230,7 +230,7 @@ void Settings::Network::useProxyToggled(bool useProxy)
     myProxyAuthEnabledCheck->setEnabled(false);
     myProxyLoginEdit->setEnabled(false);
     myProxyPasswdEdit->setEnabled(false);
-    myIcqServerPortSpin->setValue(DEFAULT_SERVER_PORT);
+    myIcqServerPortSpin->setValue(CICQDaemon::DefaultServerPort);
   }
 }
 

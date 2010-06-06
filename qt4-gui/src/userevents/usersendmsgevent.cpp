@@ -29,6 +29,7 @@
 
 #include <licq_events.h>
 #include <licq/contactlist/user.h>
+#include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
@@ -136,7 +137,7 @@ void UserSendMsgEvent::send()
 
   bool needsSplitting = false;
   // If we send through server (= have message limit), and we've crossed the limit
-  unsigned short maxSize = userOffline ? MAX_OFFLINE_MESSAGE_SIZE : MAX_MESSAGE_SIZE;
+  unsigned short maxSize = userOffline ? CICQDaemon::MaxOfflineMessageSize : CICQDaemon::MaxMessageSize;
   if (mySendServerCheck->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > maxSize))
     needsSplitting = true;
 

@@ -39,6 +39,12 @@ enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED 
 class CICQDaemon : private boost::noncopyable
 {
 public:
+  static const char* const DefaultServerHost;
+  static const int DefaultServerPort = 5190;
+  static const int DefaultSslPort = 443;
+  static const int MaxMessageSize = 6800; // Maybe a little bigger?
+  static const int MaxOfflineMessageSize = 450;
+
   // ICQ functions still public as they don't have any general proto functions
   //   to call them yet and needs to be callable from plugins for now
 

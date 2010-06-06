@@ -341,6 +341,10 @@ public:
   void PushExtendedEvent(ICQEvent *);
 
 private:
+  static const int PingFrequency = 60;
+  static const int UpdateFrequency = 60;
+  static const int LogonAttemptDelay = 300;
+  static const int MaxPingTimeouts = 3;
 
   bool SendEvent(int nSD, Licq::Packet &, bool);
   bool SendEvent(Licq::INetSocket *, Licq::Packet &, bool);
