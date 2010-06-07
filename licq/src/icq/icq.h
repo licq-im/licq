@@ -28,7 +28,6 @@
 #include <pthread.h>
 
 #include <licq/buffer.h>
-#include <licq/icqfiletransfer.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
 
@@ -203,7 +202,7 @@ public:
       const std::string& message, bool viaServer, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
   void icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
-      const std::string& message, ConstFileList &lFileList,
+      const std::string& message, const std::list<std::string>& fileList,
      unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(const Licq::UserId& userId, const std::string& message,
       unsigned short nSequence, const unsigned long nMsgID[], bool viaServer);

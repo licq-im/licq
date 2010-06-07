@@ -793,18 +793,18 @@ class LicqProtoSendFileSignal : public LicqProtoSignal
 {
 public:
   LicqProtoSendFileSignal(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
-      const std::string& message, ConstFileList &files);
+      const std::string& message, const std::list<std::string>& files);
 
   unsigned long eventId() const { return myEventId; }
   const std::string& filename() const { return myFilename; }
   const std::string& message() const { return myMessage; }
-  ConstFileList files() const { return myFiles; }
+  const std::list<std::string>& files() const { return myFiles; }
 
 private:
   unsigned long myEventId;
   std::string myFilename;
   std::string myMessage;
-  ConstFileList myFiles;
+  std::list<std::string> myFiles;
 };
 
 class LicqProtoSendChatSignal : public LicqProtoSignal

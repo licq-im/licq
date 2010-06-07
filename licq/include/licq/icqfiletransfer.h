@@ -56,6 +56,7 @@
 
 #include <cstring>
 #include <list>
+#include <string>
 
 #include "licq_constants.h"
 #include "socket.h"
@@ -67,7 +68,6 @@ class Packet;
 }
 
 typedef std::list<char *> FileList;
-typedef std::list<const char *> ConstFileList;
 
 // FileTransferEvent codes
 const unsigned char FT_STARTxBATCH   = 1;
@@ -104,14 +104,14 @@ class CFileTransferEvent
 {
 public:
   unsigned char Command() { return m_nCommand; }
-  const char *Data() { return m_szData; }
+  const std::string& fileName() const { return myFileName; }
 
   ~CFileTransferEvent();
 
 protected:
-  CFileTransferEvent(unsigned char t, char *d = NULL);
+  CFileTransferEvent(unsigned char t, const std::string& fileName = std::string());
   unsigned char m_nCommand;
-  char *m_szData;
+  std::string myFileName;
 
 friend class CFileTransferManager;
 };
@@ -125,8 +125,8 @@ public:
   CFileTransferManager(const char* accountId);
   ~CFileTransferManager();
 
-  bool ReceiveFiles(const char *szDirectory);
-  void SendFiles(ConstFileList lPathNames, unsigned short nPort);
+  bool receiveFiles(const std::string& directory);
+  void sendFiles(const std::list<std::string>& pathNames, unsigned short nPort);
 
   void CloseFileTransfer();
 
@@ -146,15 +146,15 @@ public:
 
   // You must use this function to start receiving the incoming file, possibly
   // giving it a different name on the local machine.
-  bool StartReceivingFile(char *szFileName = NULL);
+  bool startReceivingFile(const std::string& fileName);
 
   // Available between FT_STARTxFILE and FT_DONExFILE
   unsigned long FilePos() { return m_nFilePos; }
   unsigned long BytesTransfered() { return m_nBytesTransfered; }
   unsigned long FileSize() { return m_nFileSize; }
   time_t StartTime() { return m_nStartTime; }
-  const char *FileName() { return m_szFileName; }
-  const char *PathName() { return m_szPathName; }
+  const std::string& fileName() const { return myFileName; }
+  const std::string& pathName() const { return myPathName; }
 
   // Batch information, available after first FT_STARTxFILE
   unsigned short CurrentFile() { return m_nCurrentFile; }
@@ -181,7 +181,7 @@ protected:
   int pipe_events[2], pipe_thread[2];
   FileTransferEventList ftEvents;
   pthread_t thread_ft;
-  FileList m_lPathNames;
+  std::list<std::string> myPathNames;
   bool myIsReceiver;
 
   struct timeval tv_lastupdate;
@@ -197,11 +197,11 @@ protected:
   unsigned short m_nCurrentFile, m_nBatchFiles;
   unsigned long m_nFileSize, m_nBatchSize;
   time_t m_nStartTime, m_nBatchStartTime;
-  char m_szFileName[128], m_szPathName[MAX_FILENAME_LEN];
-
-  char m_szDirectory[MAX_FILENAME_LEN];
+  std::string myFileName;
+  std::string myPathName;
+  std::string myDirectory;
   int m_nFileDesc;
-  FileList::iterator m_iPathName;
+  std::list<std::string>::iterator myPathNameIter;
   bool m_bThreadCreated;
 
   Licq::TCPSocket ftSock, ftServer;

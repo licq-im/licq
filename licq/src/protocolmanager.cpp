@@ -219,7 +219,7 @@ unsigned long ProtocolManager::requestUserAutoResponse(const UserId& userId)
 
 
 unsigned long ProtocolManager::fileTransferPropose(const UserId& userId,
-    const string& filename, const string& message, ConstFileList& files,
+    const string& filename, const string& message, const list<string>& files,
     unsigned short flags, bool viaServer)
 {
   unsigned long eventId = getNextEventId();

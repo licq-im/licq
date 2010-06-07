@@ -924,7 +924,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
     case ICQ_CMDxSUB_FILE:
     {
       const CEventFile* ue = dynamic_cast<const CEventFile*>(e->UserEvent());
-      ConstFileList filelist(ue->FileList());
+      list<string> filelist(ue->FileList());
 
       //TODO in the daemon
       icqEventTag = gProtocolManager.fileTransferPropose(myUsers.front(),

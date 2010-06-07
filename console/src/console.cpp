@@ -703,7 +703,7 @@ bool CLicqConsole::ProcessFile(CFileTransferManager *ftman)
       break;
 
     case FT_CONFIRMxFILE:
-      ftman->StartReceivingFile(const_cast<char *>(ftman->FileName()));
+      ftman->startReceivingFile(ftman->fileName());
       break;
     }
 
@@ -840,9 +840,9 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             ftman->SetUpdatesEnabled(1);
             FD_SET(ftman->Pipe(), &fdSet);
 
-            ConstFileList fl;
+            list<string> fl;
             fl.push_back(f->Filename());
-            ftman->SendFiles(fl, ea->Port());
+            ftman->sendFiles(fl, ea->Port());
           }
         }
         /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
@@ -2090,8 +2090,8 @@ void CLicqConsole::InputSendFile(int cIn)
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "trhough the server" : "direct");
 
-      ConstFileList lFileList;
-      lFileList.push_back(strdup(data->szFileName));
+      list<string> lFileList;
+      lFileList.push_back(data->szFileName);
 
       winMain->event = gProtocolManager.fileTransferPropose(data->userId,
               data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
@@ -3151,7 +3151,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
           // Accept the file
           const char *home = getenv("HOME");
-          ftman->ReceiveFiles(home);
+          ftman->receiveFiles(home);
           gProtocolManager.fileTransferAccept(data->userId,
               ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
               f->MessageID()[1], f->FileDescription(), f->Filename(),

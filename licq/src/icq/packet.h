@@ -9,7 +9,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/icqchat.h> // ChatClientList
 #include <licq/icqdefines.h>
-#include <licq/icqfiletransfer.h> // FileList, ConstFileList
 #include <licq/userid.h>
 #include <licq/packet.h>
 
@@ -62,11 +61,11 @@ char *PipeInput(char *m_szMessage);
 class CPX_FileTransfer
 {
 public:
-  CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
+  CPX_FileTransfer(const std::list<std::string>& lFileList, const char *szFileName);
   virtual ~CPX_FileTransfer();
 
   bool IsValid()                { return m_bValid; }
-  ConstFileList GetFileList()   { return m_lFileList; }
+  const std::list<std::string>& GetFileList() const { return m_lFileList; }
   const char *GetFilename()     { return m_szFilename; }
   const char *GetDescription() { return m_szDesc; }
   unsigned long GetFileSize()   { return m_nFileSize; }
@@ -77,7 +76,7 @@ protected:
   bool          m_bValid;
   char          *m_szDesc;
   char          *m_szFilename;
-  ConstFileList m_lFileList;
+  std::list<std::string> m_lFileList;
   unsigned long m_nFileSize;
 };
 
@@ -769,7 +768,7 @@ public:
 class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
 {
 public:
-  CPU_FileTransfer(const Licq::User* u, ConstFileList &lFileList, const char *_szFile,
+  CPU_FileTransfer(const Licq::User* u, const std::list<std::string>& lFileList, const char *_szFile,
                    const char *_szDesc, unsigned short nLevel, bool bICBM);
 };
 
@@ -1443,7 +1442,7 @@ public:
 class CPT_FileTransfer : public CPacketTcp, public CPX_FileTransfer
 {
 public:
-   CPT_FileTransfer(ConstFileList &lFileList, const char *_szFilename,
+   CPT_FileTransfer(const std::list<std::string>& lFileList, const char *_szFilename,
       const char* _szDescription, unsigned short nLevel, Licq::User* pUser);
    const char *GetDescription() { return m_szMessage; }
 protected:
@@ -1756,20 +1755,20 @@ public:
 class CPFile_Info : public CPacketFile
 {
 public:
-  CPFile_Info(const char *_szFileName);
+  CPFile_Info(const std::string& fileName);
   virtual ~CPFile_Info();
 
   bool IsValid()  { return m_bValid; };
   unsigned long GetFileSize()
     { return m_nFileSize; };
-  const char *GetFileName()
-    { return m_szFileName; }
+  const std::string& fileName() const
+    { return myFileName; }
   const char *ErrorStr()
     { return strerror(m_nError); }
 protected:
   bool m_bValid;
   int m_nError;
-  char *m_szFileName;
+  std::string myFileName;
   unsigned long m_nFileSize;
 };
 

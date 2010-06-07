@@ -20,10 +20,12 @@
 #ifndef FILEDLG_H
 #define FILEDLG_H
 
+#include <list>
+#include <string>
+
 #include <QTimer>
 #include <QWidget>
 
-#include <licq/icqfiletransfer.h>
 #include <licq/userid.h>
 
 class CFileTransferManager;
@@ -50,7 +52,7 @@ public:
   FileDlg(const Licq::UserId& userId, QWidget* parent = 0);
   virtual ~FileDlg();
 
-  bool SendFiles(ConstFileList filelist, unsigned short nPort);
+  bool SendFiles(const std::list<std::string>& filelist, unsigned short nPort);
   bool ReceiveFiles();
 
   unsigned short LocalPort();

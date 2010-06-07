@@ -24,7 +24,6 @@
 #include "gettext.h"
 
 #include "licq_log.h"
-#include "licq_constants.h"
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
@@ -45,7 +44,7 @@ const unsigned short FT_STATE_RECEIVINGxFILE = 6;
 const unsigned short FT_STATE_SENDINGxFILE = 7;
 const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
-using std::string;
+using namespace std;
 using Licq::gDaemon;
 
 
@@ -100,21 +99,18 @@ CPFile_InitServer::~CPFile_InitServer()
 }
 
 //-----FileBatch----------------------------------------------------------------
-CPFile_Info::CPFile_Info(const char *_szFileName)
+CPFile_Info::CPFile_Info(const string& fileName)
 {
   m_bValid = true;
   m_nError = 0;
 
-  const char* pcNoPath = NULL;
   struct stat buf;
 
   // Remove any path from the filename
-  if ( (pcNoPath = strrchr(_szFileName, '/')) != NULL)
-    m_szFileName = strdup(pcNoPath + 1);
-  else
-    m_szFileName = strdup(_szFileName);
+  size_t lastSlash = fileName.rfind('/');
+  myFileName = (lastSlash == string::npos ? fileName : fileName.substr(lastSlash+1));
 
-  if (stat(_szFileName, &buf) < 0)
+  if (stat(myFileName.c_str(), &buf) < 0)
   {
     m_bValid = false;
     m_nError = errno;
@@ -122,12 +118,12 @@ CPFile_Info::CPFile_Info(const char *_szFileName)
   }
   m_nFileSize = buf.st_size;
 
-  m_nSize = strlen(m_szFileName) + 21;
+  m_nSize = myFileName.size() + 21;
   InitBuffer();
 
   buffer->PackUnsignedShort(0x02);
   // Add all the file names
-  buffer->PackString(m_szFileName);
+  buffer->PackString(myFileName.c_str());
   // Add the empty file name
   buffer->PackString("");
   //Add the file length
@@ -139,7 +135,7 @@ CPFile_Info::CPFile_Info(const char *_szFileName)
 
 CPFile_Info::~CPFile_Info()
 {
-  free (m_szFileName);
+  // Empty
 }
 
 
@@ -177,18 +173,15 @@ CPFile_SetSpeed::~CPFile_SetSpeed()
 }
 
 //=====FileTransferManager===========================================================
-CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d)
+CFileTransferEvent::CFileTransferEvent(unsigned char t, const string& fileName)
 {
   m_nCommand = t;
-  if (d != NULL)
-    m_szData = strdup(d);
-  else
-    m_szData = NULL;
+  myFileName = fileName;
 }
 
 CFileTransferEvent::~CFileTransferEvent()
 {
-  free(m_szData);
+  // Empty
 }
 
 
@@ -224,7 +217,6 @@ CFileTransferManager::CFileTransferManager(const char* accountId)
   m_nState = FT_STATE_DISCONNECTED;
   m_bThreadCreated = false;
 
-  m_szFileName[0] = m_szPathName[0] = '\0';
   strcpy(m_szRemoteName, myId);
 
   ftmList.push_back(this);
@@ -249,34 +241,32 @@ bool CFileTransferManager::StartFileTransferServer()
 
 
 
-bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
+bool CFileTransferManager::receiveFiles(const string& directory)
 {
   myIsReceiver = true;
 
-  if (szDirectory == NULL)
+  if (directory.empty())
   {
-    snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s%s", BASE_DIR, myId);
-    m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
-    if (access(BASE_DIR, F_OK) < 0 && mkdir(m_szDirectory, 0700) == -1 &&
+    myDirectory = BASE_DIR;
+    myDirectory += myId;
+    if (access(BASE_DIR, F_OK) < 0 && mkdir(myDirectory.c_str(), 0700) == -1 &&
         errno != EEXIST)
     {
       gLog.Warn(tr("%sUnable to create directory %s for file transfer.\n"),
-         L_WARNxSTR, m_szDirectory);
-      strncpy(m_szDirectory, BASE_DIR, MAX_FILENAME_LEN - 1);
-      m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
+         L_WARNxSTR, myDirectory.c_str());
+      myDirectory = BASE_DIR;
     }
   }
   else
   {
-    strncpy(m_szDirectory, szDirectory, MAX_FILENAME_LEN - 1);
-    m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
+    myDirectory = directory;
   }
 
   struct stat buf;
-  stat(m_szDirectory, &buf);
+  stat(myDirectory.c_str(), &buf);
   if (!S_ISDIR(buf.st_mode))
   {
-    gLog.Warn(tr("%sPath %s is not a directory.\n"), L_WARNxSTR, m_szDirectory);
+    gLog.Warn(tr("%sPath %s is not a directory.\n"), L_WARNxSTR, myDirectory.c_str());
     return false;
   }
 
@@ -300,29 +290,30 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 
 
 //-----CFileTransferManager::StartAsClient-------------------------------------------
-void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nPort)
+void CFileTransferManager::sendFiles(const list<string>& pathNames, unsigned short nPort)
 {
   myIsReceiver = false;
 
   // Validate the pathnames
-  if (lPathNames.size() == 0) return;
+  if (pathNames.size() == 0)
+    return;
 
   struct stat buf;
-  ConstFileList::iterator iter;
-  for (iter = lPathNames.begin(); iter != lPathNames.end(); ++iter)
+  list<string>::const_iterator iter;
+  for (iter = pathNames.begin(); iter != pathNames.end(); ++iter)
   {
-    if (stat(*iter, &buf) == -1)
+    if (stat(iter->c_str(), &buf) == -1)
     {
       gLog.Warn(tr("%sFile Transfer: File access error %s:\n%s%s.\n"), L_WARNxSTR,
-         *iter, L_BLANKxSTR, strerror(errno));
+         iter->c_str(), L_BLANKxSTR, strerror(errno));
       continue;
     }
-    m_lPathNames.push_back(const_cast<char*>(*iter));
+    myPathNames.push_back(*iter);
     m_nBatchFiles++;
     m_nBatchSize += buf.st_size;
   }
-  m_iPathName = m_lPathNames.begin();
-  strcpy(m_szPathName, *m_iPathName);
+  myPathNameIter = myPathNames.begin();
+  myPathName = *myPathNameIter;
   m_nPort = nPort;
 
   // start the server anyway, may need to do reverse connect
@@ -602,22 +593,14 @@ bool CFileTransferManager::ProcessPacket()
         return false;
       }
       b.UnpackChar();
-      b.UnpackString(m_szFileName, sizeof(m_szFileName));
+      myFileName = b.unpackString();
 
       // Remove any preceeding path info from the filename for security
       // reasons
-      char *pTmp, *pNoPath;
-      for (pTmp = m_szFileName + strlen(m_szFileName);
-           pTmp >= m_szFileName && *pTmp != '/';
-           pTmp--)
-        ;
-      if (pTmp >= m_szFileName && *pTmp == '/')
-      {
-        pNoPath = strdup(pTmp + 1);
-        strcpy(m_szFileName, pNoPath);
-        free(pNoPath);
-      }
-      
+      size_t lastSlash = myFileName.rfind('/');
+      if (lastSlash != string::npos)
+        myFileName.erase(0, lastSlash+1);
+
       b.UnpackUnsignedShort(); // 0 length string...?
       b.UnpackChar();
       m_nFileSize = b.UnpackUnsignedLong();
@@ -630,7 +613,7 @@ bool CFileTransferManager::ProcessPacket()
       gLog.Info(tr("File Transfer: Waiting for plugin to confirm file receive.\n"));
       
       m_nState = FT_STATE_CONFIRMINGxFILE;
-      PushFileTransferEvent(new CFileTransferEvent(FT_CONFIRMxFILE, m_szPathName));
+      PushFileTransferEvent(new CFileTransferEvent(FT_CONFIRMxFILE, myPathName));
       break;
     }
     
@@ -649,8 +632,8 @@ bool CFileTransferManager::ProcessPacket()
         m_nStartTime = time(TIME_NOW);
         m_nBatchPos += m_nFilePos;
         gLog.Info(tr("%sFile Transfer: Receiving %s (%ld bytes).\n"), L_TCPxSTR,
-           m_szFileName, m_nFileSize);
-        PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, m_szPathName));
+            myFileName.c_str(), m_nFileSize);
+        PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, myPathName));
         gettimeofday(&tv_lastupdate, NULL);
       }
 
@@ -706,16 +689,16 @@ bool CFileTransferManager::ProcessPacket()
       m_nFileDesc = -1;
       if (nBytesLeft == 0) // File transfer done perfectly
       {
-        gLog.Info(tr("%sFile Transfer: %s received.\n"), L_TCPxSTR, m_szFileName);
+        gLog.Info(tr("%sFile Transfer: %s received.\n"), L_TCPxSTR, myFileName.c_str());
       }
       else // nBytesLeft < 0
       {
         // Received too many bytes for the given size of the current file
         gLog.Warn(tr("%sFile Transfer: %s received %d too many bytes.\n"), L_WARNxSTR,
-           m_szFileName, -nBytesLeft);
+            myFileName.c_str(), -nBytesLeft);
       }
       // Notify Plugin
-      PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, m_szPathName));
+      PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, myPathName));
 
       // Now wait for a disconnect or another file
       m_nState = FT_STATE_WAITxFORxFILExINFO;
@@ -747,11 +730,11 @@ bool CFileTransferManager::ProcessPacket()
       b.UnpackString(m_szRemoteName, sizeof(m_szRemoteName));
 
       // Send file info packet
-      CPFile_Info p(*m_iPathName);
+      CPFile_Info p(*myPathNameIter);
       if (!p.IsValid())
       {
         gLog.Warn(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
-           *m_iPathName, p.ErrorStr());
+            myPathNameIter->c_str(), p.ErrorStr());
         m_nResult = FT_ERRORxFILE;
         return false;
       }
@@ -762,7 +745,7 @@ bool CFileTransferManager::ProcessPacket()
       }
 
       m_nFileSize = p.GetFileSize();
-      strcpy(m_szFileName, p.GetFileName());
+      myFileName = p.fileName();
 
       m_nBatchStartTime = time(TIME_NOW);
       m_nBatchBytesTransfered = m_nBatchPos = 0;
@@ -798,11 +781,11 @@ bool CFileTransferManager::ProcessPacket()
 
       m_nFilePos = b.UnpackUnsignedLong();
 
-      m_nFileDesc = open(*m_iPathName, O_RDONLY);
+      m_nFileDesc = open(myPathNameIter->c_str(), O_RDONLY);
       if (m_nFileDesc == -1)
       {
         gLog.Error("%sFile Transfer: Read error '%s':\n%s%s\n.", L_ERRORxSTR,
-           *m_iPathName, L_BLANKxSTR, strerror(errno));
+            myPathNameIter->c_str(), L_BLANKxSTR, strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
       }
@@ -810,7 +793,7 @@ bool CFileTransferManager::ProcessPacket()
       if (lseek(m_nFileDesc, m_nFilePos, SEEK_SET) == -1)
       {
         gLog.Error("%sFile Transfer: Seek error '%s':\n%s%s\n.", L_ERRORxSTR,
-                   m_szFileName, L_BLANKxSTR, strerror(errno));
+            myFileName.c_str(), L_BLANKxSTR, strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
       }
@@ -852,7 +835,7 @@ bool CFileTransferManager::ProcessPacket()
 
 // This function gives a callback opportunity for the plugin, just before
 // the actual transfer begins
-bool CFileTransferManager::StartReceivingFile(char *szFileName)
+bool CFileTransferManager::startReceivingFile(const string& fileName)
 {
   gLog.Info(tr("%sFile Transfer: Received plugin confirmation.\n"), L_TCPxSTR);
       
@@ -864,38 +847,35 @@ bool CFileTransferManager::StartReceivingFile(char *szFileName)
   }
 
   // If a different filename was specified, use it
-  if (szFileName != NULL)
-  {
-    strncpy(m_szFileName, szFileName, sizeof(m_szFileName)-1);
-    m_szFileName[sizeof(m_szFileName)-1] = '\0';
-  }
+  if (fileName.empty())
+    myFileName = fileName;
 
   // Get the local filename and set the file offset (for resume)
   struct stat buf;
   m_nFileDesc = -1;
-  snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s", m_szDirectory, m_szFileName);
-  m_szPathName[MAX_FILENAME_LEN - 1] = '\0';
+  myPathName = myDirectory + '/' + myFileName;
   while (m_nFileDesc == -1)
   {
-    if (stat(m_szPathName, &buf) != -1)
+    if (stat(myPathName.c_str(), &buf) != -1)
     {
       if ((unsigned long)buf.st_size >= m_nFileSize)
       {
-        snprintf(m_szPathName, MAX_FILENAME_LEN, "%s/%s.%lu", m_szDirectory, m_szFileName, (unsigned long)time(NULL));
-        m_szPathName[MAX_FILENAME_LEN - 1] = '\0';
+        char buf[20];
+        snprintf(buf, sizeof(buf), ".%lu", (unsigned long)time(NULL));
+        myPathName += buf;
       }
-      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT | O_APPEND, 00600);
+      m_nFileDesc = open(myPathName.c_str(), O_WRONLY | O_CREAT | O_APPEND, 00600);
       m_nFilePos = buf.st_size;
     }
     else
     {
-      m_nFileDesc = open(m_szPathName, O_WRONLY | O_CREAT, 00600);
+      m_nFileDesc = open(myPathName.c_str(), O_WRONLY | O_CREAT, 00600);
       m_nFilePos = 0;
     }
     if (m_nFileDesc == -1)
     {
       gLog.Error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
-         L_ERRORxSTR, m_szPathName, L_BLANKxSTR, strerror(errno));
+          L_ERRORxSTR, myPathName.c_str(), L_BLANKxSTR, strerror(errno));
       m_nResult = FT_ERRORxFILE;
       return false;
     }
@@ -924,8 +904,8 @@ bool CFileTransferManager::SendFilePacket()
     m_nStartTime = time(TIME_NOW);
     m_nBatchPos += m_nFilePos;
     gLog.Info(tr("%sFile Transfer: Sending %s (%ld bytes).\n"), L_TCPxSTR,
-       m_szPathName, m_nFileSize);
-    PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, m_szPathName));
+        myPathName.c_str(), m_nFileSize);
+    PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, myPathName));
     gettimeofday(&tv_lastupdate, NULL);
   }
 
@@ -934,7 +914,7 @@ bool CFileTransferManager::SendFilePacket()
   if (read(m_nFileDesc, pSendBuf, nBytesToSend) != nBytesToSend)
   {
     gLog.Error("%sFile Transfer: Error reading from %s:\n%s%s.\n", L_ERRORxSTR,
-       m_szPathName, L_BLANKxSTR, strerror(errno));
+        myPathName.c_str(), L_BLANKxSTR, strerror(errno));
     m_nResult = FT_ERRORxFILE;
     return false;
   }
@@ -978,18 +958,18 @@ bool CFileTransferManager::SendFilePacket()
 
   if (nBytesLeft == 0)
   {
-    gLog.Info(tr("%sFile Transfer: Sent %s.\n"), L_TCPxSTR, m_szFileName);
+    gLog.Info(tr("%sFile Transfer: Sent %s.\n"), L_TCPxSTR, myFileName.c_str());
   }
   else // nBytesLeft < 0
   {
     gLog.Info(tr("%sFile Transfer: Sent %s, %d too many bytes.\n"), L_TCPxSTR,
-       m_szFileName, -nBytesLeft);
+        myFileName.c_str(), -nBytesLeft);
   }
-  PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, m_szPathName));
+  PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, myPathName));
 
   // Go to the next file, if no more then close connections
-  m_iPathName++;
-  if (m_iPathName == m_lPathNames.end())
+  myPathNameIter++;
+  if (myPathNameIter == myPathNames.end())
   {
     m_nResult = FT_DONExBATCH;
     return false;
@@ -997,11 +977,11 @@ bool CFileTransferManager::SendFilePacket()
   else
   {
     // Send file info packet
-    CPFile_Info p(*m_iPathName);
+    CPFile_Info p(*myPathNameIter);
     if (!p.IsValid())
     {
       gLog.Warn(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
-         *m_iPathName, p.ErrorStr());
+          myPathNameIter->c_str(), p.ErrorStr());
       m_nResult = FT_ERRORxFILE;
       return false;
     }
@@ -1012,8 +992,8 @@ bool CFileTransferManager::SendFilePacket()
     }
 
     m_nFileSize = p.GetFileSize();
-    strcpy(m_szFileName, p.GetFileName());
-    strcpy(m_szPathName, *m_iPathName);
+    myFileName = p.fileName();
+    myPathName = *myPathNameIter;
 
     m_nState = FT_STATE_WAITxFORxSTART;
   }
@@ -1397,12 +1377,6 @@ CFileTransferManager::~CFileTransferManager()
     e = ftEvents.front();
     delete e;
     ftEvents.pop_front();
-  }
-
-  FileList::iterator iter;
-  for (iter = m_lPathNames.begin(); iter != m_lPathNames.end(); ++iter)
-  {
-    free(*iter);
   }
 
   FileTransferManagerList::iterator fiter;

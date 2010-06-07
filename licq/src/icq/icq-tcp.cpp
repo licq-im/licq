@@ -292,7 +292,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
 }
 
 void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const string& filename,
-    const string& message, ConstFileList &lFileList, unsigned short nLevel, bool bServer)
+    const string& message, const list<string>& lFileList, unsigned short nLevel, bool bServer)
 {
   if (Licq::gUserManager.isOwner(userId))
     return;
@@ -1937,8 +1937,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.Info(tr("%sFile transfer request from %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
 
-        ConstFileList filelist;
-        filelist.push_back(filename.c_str());
+        list<string> filelist;
+        filelist.push_back(filename);
 
         // translating string with translation table
         gTranslator.ServerToClient (message);
@@ -2015,8 +2015,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.Info(tr("%sFile transfer request from %s (%s).\n"),
                   L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
 
-					ConstFileList filelist;
-              filelist.push_back(filename.c_str());
+              list<string> filelist;
+              filelist.push_back(filename);
 
 					// translating string with translation table
 					gTranslator.ServerToClient(szMessage);

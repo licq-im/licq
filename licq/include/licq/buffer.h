@@ -122,6 +122,14 @@ public:
    */
   std::string unpackRawString(size_t size);
 
+  /**
+   * Get a string from the buffer
+   * Length of string is a 16 bit word at beginning of data
+   *
+   * @return String read
+   */
+  std::string unpackString();
+
    char *UnpackRaw(char *, unsigned short);
    char *UnpackBinBlock(char *, unsigned short);
    char *UnpackString(char *, unsigned short);

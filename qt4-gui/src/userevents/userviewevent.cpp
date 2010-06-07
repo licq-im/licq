@@ -39,6 +39,7 @@
 #include <KDE/KToolInvocation>
 #endif
 
+#include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_message.h>
 #include <licq/contactlist/usermanager.h>

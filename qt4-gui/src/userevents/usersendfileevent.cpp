@@ -192,7 +192,7 @@ void UserSendFileEvent::updateLabel(unsigned count)
       break;
 
     case 1:
-      f = myFileList.front();
+      f = myFileList.front().c_str();
       break;
 
     default:

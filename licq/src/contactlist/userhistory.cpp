@@ -30,7 +30,7 @@
 
 #define MAX_HISTORY_MSG_SIZE 8192
 
-using std::string;
+using namespace std;
 using Licq::UserId;
 using LicqDaemon::UserHistory;
 
@@ -194,7 +194,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         GET_VALID_LINE_OR_BREAK;
         unsigned long nSize = atoi(&szResult[1]);
         GET_VALID_LINES;
-        ConstFileList filelist;
+        list<string> filelist;
         filelist.push_back(szFile);
         e = new CEventFile(szFile, szMsg, nSize, filelist, 0, tTime, nFlags);
         free(szFile);

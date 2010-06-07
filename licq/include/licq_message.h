@@ -19,9 +19,6 @@ class Daemon;
 class UserHistory;
 }
 
-
-typedef std::list<const char *> ConstFileList;
-
 #define EVENT_HEADER_SIZE  80
 
 // Define some event flags, leave the 2 LSB's for the licq version
@@ -135,7 +132,7 @@ class CEventFile : public CUserEvent
 {
 public:
    CEventFile(const char *_szFilename, const char *_szFileDescription,
-      unsigned long _nFileSize, const ConstFileList& lFileList,
+      unsigned long _nFileSize, const std::list<std::string>& lFileList,
               unsigned short _nSequence, time_t _tTime,
               unsigned long _nFlags, unsigned long _nConovId = 0,
               unsigned long _nMsgID1 = 0, unsigned long _nMsgID2 = 0);
@@ -146,14 +143,14 @@ public:
   const char* Filename() const { return m_szFilename; }
   unsigned long FileSize() const {  return m_nFileSize; }
   const char* FileDescription() const { return m_szFileDescription; }
-  ConstFileList FileList() const { return m_lFileList; }
+  const std::list<std::string>& FileList() const { return m_lFileList; }
   const unsigned long* MessageID() const { return m_nMsgID; }
 protected:
   void CreateDescription() const;
    char *m_szFilename;
    char *m_szFileDescription;
    unsigned long m_nFileSize;
-   ConstFileList m_lFileList;
+  std::list<std::string> m_lFileList;
    unsigned long m_nMsgID[2];
 };
 

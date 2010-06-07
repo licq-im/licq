@@ -21,9 +21,10 @@
 #ifndef USERSENDFILEEVENT_H
 #define USERSENDFILEEVENT_H
 
-class QLabel;
+#include <list>
+#include <string>
 
-#include <licq/icqfiletransfer.h>
+class QLabel;
 
 #include "usersendcommon.h"
 
@@ -52,7 +53,7 @@ private:
   InfoField* myFileEdit;
   QPushButton* myBrowseButton;
   QPushButton* myEditButton;
-  ConstFileList myFileList;
+  std::list<std::string> myFileList;
 
   virtual bool sendDone(const LicqEvent* e);
   virtual void resetSettings();

@@ -21,9 +21,8 @@
 #define LICQ_PROTOCOLMANAGER_H
 
 #include <boost/noncopyable.hpp>
+#include <list>
 #include <string>
-
-#include "icqfiletransfer.h" // ConstFileList
 
 class CICQColor;
 
@@ -122,7 +121,7 @@ public:
    */
   virtual unsigned long fileTransferPropose(const UserId& userId,
       const std::string& filename, const std::string& message,
-      ConstFileList& files, unsigned short flags, bool viaServer) = 0;
+      const std::list<std::string>& files, unsigned short flags, bool viaServer) = 0;
 
   /**
    * Refuse a proposed file transfer

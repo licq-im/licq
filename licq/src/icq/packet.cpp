@@ -2179,7 +2179,7 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 }
 
 //-----FileTransfer------------------------------------------------------------
-CPU_FileTransfer::CPU_FileTransfer(const ICQUser* u, ConstFileList& lFileList,
+CPU_FileTransfer::CPU_FileTransfer(const Licq::User* u, const list<string>& lFileList,
 	const char *_szFile, const char *_szDesc, unsigned short nLevel, bool bICBM)
   : CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, nLevel,
                         false, 0),
@@ -4910,7 +4910,7 @@ CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
 
 
 //-----FileTransfer--------------------------------------------------------------
-CPT_FileTransfer::CPT_FileTransfer(ConstFileList &lFileList, const char *_szFilename,
+CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const char *_szFilename,
    const char *_szDescription, unsigned short nLevel, ICQUser *_cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, _szDescription,
                true, nLevel, _cUser),
@@ -5712,19 +5712,19 @@ CPT_StatusPluginResp::CPT_StatusPluginResp(ICQUser *_cUser,
 // Connection independent base classes
 
 //-----FileTransfer------------------------------------------------------------
-CPX_FileTransfer::CPX_FileTransfer(ConstFileList &lFileList, const char *_szFilename)
+CPX_FileTransfer::CPX_FileTransfer(const list<string>& lFileList, const char *_szFilename)
   : m_lFileList(lFileList.begin(), lFileList.end())
 {
   m_bValid = false;
   m_szDesc = NULL;
   m_nFileSize = 0;
 
-  ConstFileList::iterator it;
+  list<string>::iterator it;
   for (it = m_lFileList.begin(); it != m_lFileList.end(); ++it)
   {
     // Check file exists and get size
     struct stat buf;
-    if (!(*it == NULL || stat(*it, &buf) < 0))
+    if (!(it->empty() || stat(it->c_str(), &buf) < 0))
     {
        m_nFileSize += buf.st_size;
        m_bValid = true;

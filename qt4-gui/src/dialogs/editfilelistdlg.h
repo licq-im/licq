@@ -20,9 +20,10 @@
 #ifndef EDITFILEDLG_H
 #define EDITFILEDLG_H
 
-#include <QDialog>
+#include <list>
+#include <string>
 
-#include <licq/icqfiletransfer.h>
+#include <QDialog>
 
 class QListWidget;
 class QPushButton;
@@ -35,14 +36,14 @@ class EditFileListDlg : public QDialog
   Q_OBJECT
 
 public:
-  EditFileListDlg(ConstFileList* fileList, QWidget* parent = 0);
+  EditFileListDlg(std::list<std::string>* fileList, QWidget* parent = 0);
 
 signals:
   void fileDeleted(unsigned);
 
 private:
   QListWidget* lstFiles;
-  ConstFileList* myFileList;
+  std::list<std::string>* myFileList;
   QPushButton* btnDone;
   QPushButton* btnUp;
   QPushButton* btnDown;

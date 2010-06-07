@@ -206,7 +206,7 @@ CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime,
 //=====CEventFile===============================================================
 
 CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
-    unsigned long _nFileSize, const ConstFileList& _lFileList,
+    unsigned long _nFileSize, const list<string>& _lFileList,
                        unsigned short _nSequence, time_t _tTime,
                        unsigned long _nFlags, unsigned long _nConvoId,
                        unsigned long _nMsgID1, unsigned long _nMsgID2)

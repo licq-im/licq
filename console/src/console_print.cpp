@@ -787,7 +787,7 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   PrintBoxTop(szTitle, COLOR_WHITE, 48);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("%ACurrent File: %Z", A_BOLD, A_BOLD);
-  winMain->wprintf(const_cast<char *>(ftman->FileName()));
+  winMain->wprintf(ftman->fileName().c_str());
   PrintBoxRight(48);
  
   // Current progress, current file xferred slash total current file size

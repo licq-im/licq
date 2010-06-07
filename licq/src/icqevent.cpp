@@ -401,7 +401,7 @@ LicqProtoUnignoreUserSignal::LicqProtoUnignoreUserSignal(const UserId& userId)
 
 LicqProtoSendFileSignal::LicqProtoSendFileSignal(unsigned long eventId,
     const UserId& userId, const string& filename, const string& message,
-    ConstFileList& files)
+    const list<string>& files)
   : LicqProtoSignal(PROTOxSENDxFILE, userId),
     myEventId(eventId),
     myFilename(filename),

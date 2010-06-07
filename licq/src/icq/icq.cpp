@@ -1116,8 +1116,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     {
         string filename = packet.unpackRawString(nFilenameLen);
       packet >> nFileSize;
-      ConstFileList filelist;
-        filelist.push_back(strdup(filename.c_str()));
+        list<string> filelist;
+        filelist.push_back(filename);
 
         CEventFile* e = new CEventFile(filename.c_str(), message, nFileSize,
                                      filelist, nSequence, TIME_NOW, nFlags,

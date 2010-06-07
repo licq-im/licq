@@ -266,6 +266,19 @@ char* Buffer::UnpackString(char* sz, unsigned short _usiSize)
   return sz;
 }
 
+string Buffer::unpackString()
+{
+  unsigned short nLen;
+  *this >> nLen;
+  char* sz = new char[nLen+1];
+  sz[0] = '\0';
+  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
+  sz[nLen] = '\0';
+  string ret = sz;
+  delete[] sz;
+  return ret;
+}
+
 // Need to delete[] returned string
 char* Buffer::UnpackString()
 {
