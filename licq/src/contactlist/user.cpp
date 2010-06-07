@@ -260,6 +260,14 @@ User::User(const UserId& id, bool temporary)
     filename += ".";
     filename += p;
     myConf.setFilename(filename);
+
+    // Create file so load won't fail later
+    if (!myConf.loadFile())
+    {
+      myConf.setSection("user");
+      if (!myConf.writeFile())
+        gLog.Error("%sError opening '%s' for writing.\n", L_ERRORxSTR, myConf.filename().c_str());
+    }
   }
 }
 
@@ -672,6 +680,15 @@ void User::SetPermanent()
   filename += ".";
   filename += p;
   myConf.setFilename(filename);
+
+  // Create file so save will have something to write in
+  if (!myConf.loadFile())
+  {
+    myConf.setSection("user");
+    if (!myConf.writeFile())
+      gLog.Error("%sError opening '%s' for writing.\n", L_ERRORxSTR, myConf.filename().c_str());
+  }
+
 
   // Save all the info now
   saveAll();
