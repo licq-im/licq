@@ -1874,20 +1874,17 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-  char szFilename[MAX_FILENAME_LEN];
-  szFilename[MAX_FILENAME_LEN - 1] = '\0';
-  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%sowner.pic", BASE_DIR);
-
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
   if (o->GetPicturePresent())
   {
-    fd = open(szFilename, O_RDONLY);
+    fd = open(filename.c_str(), O_RDONLY);
     if (fd == -1)
     {
       gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                     szFilename, L_BLANKxSTR, strerror(errno));
+          filename.c_str(), L_BLANKxSTR, strerror(errno));
     }
     else
     {
@@ -1895,7 +1892,7 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
       if (fstat(fd, &fi) == -1)
       {
         gLog.Error("%sUnable to stat picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                     szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
       }
       else
       {
@@ -1936,13 +1933,13 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
       if (nBytesRead == -1)
       {
         gLog.Error("%sFailed to read file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                    szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
         break;
       }
       if (nBytesRead == 0)
       {
         gLog.Error("%sPremature end of file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                    szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
         break;
       }
 
@@ -5466,20 +5463,17 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
   unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-  char szFilename[MAX_FILENAME_LEN];
-  szFilename[MAX_FILENAME_LEN - 1] = '\0';
-  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%sowner.pic", BASE_DIR);
-
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
   if (o->GetPicturePresent())
   {
-    fd = open(szFilename, O_RDONLY);
+    fd = open(filename.c_str(), O_RDONLY);
     if (fd == -1)
     {
       gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                     szFilename, L_BLANKxSTR, strerror(errno));
+          filename.c_str(), L_BLANKxSTR, strerror(errno));
     }
     else
     {
@@ -5487,7 +5481,7 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
       if (fstat(fd, &fi) == -1)
       {
         gLog.Error("%sUnable to stat picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                     szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
       }
       else
       {
@@ -5529,13 +5523,13 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
       if (nBytesRead == -1)
       {
         gLog.Error("%sFailed to read file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                    szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
         break;
       }
       if (nBytesRead == 0)
       {
         gLog.Error("%sPremature end of file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                    szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
         break;
       }
 

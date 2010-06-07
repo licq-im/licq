@@ -166,20 +166,18 @@ void Licq::Owner::SetStatusOffline()
 
 void Licq::Owner::SetPicture(const char *f)
 {
-  char szFilename[MAX_FILENAME_LEN];
-  szFilename[MAX_FILENAME_LEN - 1] = '\0';
-  snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/owner.pic", BASE_DIR);
+  string filename = pictureFileName();
   if (f == NULL)
   {
     SetPicturePresent(false);
-    if (remove(szFilename) != 0 && errno != ENOENT)
+    if (remove(filename.c_str()) != 0 && errno != ENOENT)
     {
       gLog.Error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
-          L_ERRORxSTR, myAlias.c_str(), szFilename, L_BLANKxSTR,
+          L_ERRORxSTR, myAlias.c_str(), filename.c_str(), L_BLANKxSTR,
                          strerror(errno));
     }
   }
-  else if (strcmp(f, szFilename) == 0)
+  else if (strcmp(f, filename.c_str()) == 0)
   {
     SetPicturePresent(true);
     return;
@@ -194,11 +192,11 @@ void Licq::Owner::SetPicture(const char *f)
       return;
     }
 
-    int dest = open(szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+    int dest = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
     if (dest == -1)
     {
       gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-                                     szFilename, L_BLANKxSTR, strerror(errno));
+          filename.c_str(), L_BLANKxSTR, strerror(errno));
       close(source);
       return;
     }
@@ -233,4 +231,11 @@ void Licq::Owner::SetPicture(const char *f)
     close(source);
     close(dest);
   }
+}
+
+string Licq::Owner::pictureFileName() const
+{
+  string filename = BASE_DIR;
+  filename += "owner.pic";
+  return filename;
 }

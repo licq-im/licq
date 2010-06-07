@@ -306,7 +306,7 @@ public:
    *
    * @return Path to user picture
    */
-  std::string pictureFileName() const;
+  virtual std::string pictureFileName() const;
 
   // Dynamic info fields for protocol plugins
   std::string GetPPField(const std::string &);

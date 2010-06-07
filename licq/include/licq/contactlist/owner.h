@@ -40,6 +40,14 @@ public:
 
   void SetPicture(const char *f);
 
+  /**
+   * Get path for file with owner picture
+   * Note: This function will not check if file actually (should) exist
+   *
+   * @return Path to user picture
+   */
+  std::string pictureFileName() const;
+
   // Virtual overloaded functions
   virtual void SaveLicqInfo() = 0;
   virtual void SetStatusOffline();
