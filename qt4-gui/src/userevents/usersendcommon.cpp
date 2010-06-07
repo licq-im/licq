@@ -565,7 +565,7 @@ void UserSendCommon::updatePicture(const Licq::User* u)
   if (Config::Chat::instance()->showUserPic() &&
       u->GetPicturePresent())
   {
-    QString picPath = QString::fromLocal8Bit(u->pictureFileName());
+    QString picPath = QString::fromLocal8Bit(u->pictureFileName().c_str());
     QMovie* picMovie = new QMovie(picPath, QByteArray(), this);
     if (picMovie->isValid())
     {

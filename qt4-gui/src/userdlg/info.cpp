@@ -1218,7 +1218,7 @@ void UserPages::Info::loadPagePicture(const Licq::User* u)
 {
   //FIXME: other protocols
   if (u != NULL && u->GetPicturePresent())
-    m_sFilename = QString::fromLocal8Bit(u->pictureFileName());
+    m_sFilename = QString::fromLocal8Bit(u->pictureFileName().c_str());
   else
     m_sFilename = QString::null;
 

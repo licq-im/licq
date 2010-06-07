@@ -238,7 +238,7 @@ void ContactUserData::updatePicture(const Licq::User* u)
 
   if (u->GetPicturePresent())
   {
-    myUserIcon = new QImage(QString::fromLocal8Bit(u->pictureFileName()));
+    myUserIcon = new QImage(QString::fromLocal8Bit(u->pictureFileName().c_str()));
     if (myUserIcon->isNull())
     {
       delete myUserIcon;
@@ -693,7 +693,7 @@ QString ContactUserData::tooltip() const
   QString s = "<nobr>";
   if (config->popupPicture() && u->GetPicturePresent())
   {
-    QString file = QString::fromLocal8Bit(u->pictureFileName());
+    QString file = QString::fromLocal8Bit(u->pictureFileName().c_str());
     QImage picture = QImage(file);
     if (!picture.isNull())
       s += QString("<center><img src=\"%1\"></center>").arg(file);
