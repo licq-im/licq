@@ -143,17 +143,8 @@ CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
 {
   // oh yeah, add in a variable for the
   // status window text and colors.. that'd be cool
-  char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%slicq_console.conf", BASE_DIR);
-  Licq::IniFile conf(szFileName);
-  if (!conf.loadFile())
-  {
-    FILE *f = fopen(szFileName, "w");
-    fprintf(f, "[appearance]");
-    fclose(f);
-    conf.loadFile();
-  }
-
+  Licq::IniFile conf("licq_console.conf");
+  conf.loadFile();
   conf.setSection("appearance");
 
   conf.get("ShowOfflineUsers", m_bShowOffline, true);
@@ -177,7 +168,7 @@ CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
   conf.get("CommandCharacter", myCommandChar, "/");
   conf.get("Backspace", m_nBackspace, KEY_BACKSPACE);
 
-  if (conf.setSection("macros"))
+  if (conf.setSection("macros", false))
   {
     char sz[32];
     unsigned n = 0;
@@ -395,9 +386,7 @@ int CLicqConsole::Run()
  *-------------------------------------------------------------------------*/
 void CLicqConsole::DoneOptions()
 {
-  char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%slicq_console.conf", BASE_DIR);
-  Licq::IniFile conf(szFileName);
+  Licq::IniFile conf("licq_console.conf");
   conf.loadFile();
 
   conf.setSection("appearance");

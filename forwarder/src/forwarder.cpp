@@ -158,18 +158,15 @@ int CLicqForwarder::Run()
  *-------------------------------------------------------------------------*/
 bool CLicqForwarder::CreateDefaultConfig()
 {
-  bool ret = false;
   // Create licq_forwarder.conf
-  char cmd[MAX_FILENAME_LEN + 128];
-  cmd[sizeof(cmd) - 1] = '\0';
-  snprintf(cmd, sizeof(cmd) - 1, "%slicq_forwarder.conf", BASE_DIR);
-  if (FILE *f = fopen(cmd, "w"))
-  {
-    fprintf(f, "%s", FORWARDER_CONF);
-    fclose(f);
-    ret = true;
-  }
-  return ret;
+  string filename = BASE_DIR;
+  filename += "licq_forwarder.conf";
+  FILE *f = fopen(filename.c_str(), "w");
+  if (f == NULL)
+    return false;
+  fprintf(f, "%s", FORWARDER_CONF);
+  fclose(f);
+  return true;
 }
 
 /*---------------------------------------------------------------------------
