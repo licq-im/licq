@@ -5804,13 +5804,13 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       char *szJPEG = packet.UnpackStringTLV(0x0002);
  
       // Save it in a file
-      char szFilename[MAX_FILENAME_LEN];
-      snprintf(szFilename, MAX_FILENAME_LEN, "%s%s", BASE_DIR, "Licq_verify.jpg");
-      FILE *fp = fopen(szFilename, "w");
+      string filename = BASE_DIR;
+      filename += "Licq_verify.jpg";
+      FILE* fp = fopen(filename.c_str(), "w");
       if (fp == 0)
       {
         gLog.Warn(tr("%sUnable to open file (%s):\n%s%s.\n"), L_WARNxSTR,
-          szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
         break;
       }
       

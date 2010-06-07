@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <string>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -23,6 +24,8 @@
 #ifdef HAVE_BACKTRACE
 #include <execinfo.h>
 #endif
+
+using std::string;
 
 static void licq_handle_sigsegv(int);
 static void licq_handle_sigabrt(int);
@@ -86,9 +89,9 @@ void licq_handle_sigabrt(int s)
    * Use gdb to try to generate a backtrace for all threads and save
    * it in BASE_DIR/licq.backtrace.gdb.
    */
-  char cmd[MAX_FILENAME_LEN];
-  snprintf(cmd, MAX_FILENAME_LEN, "%slicqcmd.gdb", BASE_DIR);
-  FILE* cmdfile = fopen(cmd, "w");
+  string cmd = BASE_DIR;
+  cmd += "licqcmd.gdb";
+  FILE* cmdfile = fopen(cmd.c_str(), "w");
   if (cmdfile != NULL)
   {
     fprintf(cmdfile, "set logging file %slicq.backtrace.gdb\n", BASE_DIR);
@@ -119,7 +122,7 @@ void licq_handle_sigabrt(int s)
 #else
                        "--batch-silent",
 #endif
-          "-x", cmd, "--pid", parentPid, (char *)NULL);
+          "-x", cmd.c_str(), "--pid", parentPid, (char *)NULL);
       fprintf(stderr, "Failed to start gdb: %s\n", strerror(errno));
       exit(ret);
     }
@@ -131,9 +134,9 @@ void licq_handle_sigabrt(int s)
       fprintf(stderr, "gdb exited with exit code %d\n\n", status);
 
       // Include time in file
-      char filename[MAX_FILENAME_LEN];
-      snprintf(filename, MAX_FILENAME_LEN, "%slicq.backtrace.gdb", BASE_DIR);
-      FILE* file = fopen(filename, "a");
+      string filename = BASE_DIR;
+      filename += "licq.backtrace.gdb";
+      FILE* file = fopen(filename.c_str(), "a");
       if (file != NULL)
       {
         fprintf(file, "\ntime: %lu\n", (unsigned long)time(NULL));
@@ -141,17 +144,17 @@ void licq_handle_sigabrt(int s)
       }
     }
 
-    unlink(cmd);
+    unlink(cmd.c_str());
   }
 
 #ifdef HAVE_BACKTRACE
-  char filename[MAX_FILENAME_LEN];
-  snprintf(filename, MAX_FILENAME_LEN, "%slicq.backtrace", BASE_DIR);
-  FILE* file = fopen(filename, "w");
+  string filename = BASE_DIR;
+  filename += "licq.backtrace";
+  FILE* file = fopen(filename.c_str(), "w");
   if (file != NULL)
     fprintf(file, "time: %lu\n", time(NULL));
 
-  fprintf(stderr, tr("Backtrace (saved in %s):\n"), filename);
+  fprintf(stderr, tr("Backtrace (saved in %s):\n"), filename.c_str());
   {
     const int size = 100;
     int i;

@@ -383,11 +383,11 @@ void UserHistory::write(const string& buf, bool append)
     return;
 
   // Make sure history dir exists before trying to write a file in it
-  char historydir[MAX_FILENAME_LEN];
-  snprintf(historydir, sizeof(historydir) - 1, "%s/%s", BASE_DIR, HISTORY_DIR);
-  if (mkdir(historydir, 0700) == -1 && errno != EEXIST)
+  string historydir = BASE_DIR;
+  historydir += HISTORY_DIR;
+  if (mkdir(historydir.c_str(), 0700) == -1 && errno != EEXIST)
   {
-    fprintf(stderr, "Couldn't mkdir %s: %s\n", historydir, strerror(errno));
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", historydir.c_str(), strerror(errno));
     return;
   }
 

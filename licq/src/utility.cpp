@@ -72,11 +72,9 @@ int UtilityManager::loadUtilities(const string& dir)
   Utility* p;
   for (unsigned short i = 0; i < n; i++)
   {
-    char szFile[MAX_FILENAME_LEN];
-    snprintf(szFile, MAX_FILENAME_LEN, "%s/%s", dir.c_str(), namelist[i]->d_name);
-    szFile[MAX_FILENAME_LEN - 1] = '\0';
+    string filename = dir + "/" + namelist[i]->d_name;
     free (namelist[i]);
-    p = new Utility(szFile);
+    p = new Utility(filename);
     if (p->isFailed())
     {
       gLog.Warn(tr("%sWarning: unable to load utility \"%s\".\n"), L_WARNxSTR, namelist[i]->d_name);

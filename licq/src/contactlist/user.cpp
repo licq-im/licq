@@ -279,19 +279,20 @@ void User::AddToContactList()
   // Check for old history file
   if (access(myHistory.filename().c_str(), F_OK) == -1)
   {
-    char szFilename[MAX_FILENAME_LEN];
     char p[5];
     Licq::protocolId_toStr(p, myId.protocolId());
-    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR, myId.accountId().c_str(),
-             p, HISTORYxOLD_EXT);
+    string filename = BASE_DIR;
+    filename += HISTORY_DIR;
+    filename += myId.accountId();
+    filename += p;
+    filename += HISTORYxOLD_EXT;
 
-    szFilename[MAX_FILENAME_LEN - 1] = '\0';
-    if (access(szFilename, F_OK) == 0)
+    if (access(filename.c_str(), F_OK) == 0)
     {
-      if (rename(szFilename, myHistory.filename().c_str()) == -1)
+      if (rename(filename.c_str(), myHistory.filename().c_str()) == -1)
       {
         gLog.Warn(tr("%sFailed to rename old history file (%s):\n%s%s\n"), L_WARNxSTR,
-            szFilename, L_BLANKxSTR, strerror(errno));
+            filename.c_str(), L_BLANKxSTR, strerror(errno));
       }
     }
   }
@@ -520,17 +521,18 @@ void User::RemoveFiles()
   struct stat buf;
   if (stat(myHistory.filename().c_str(), &buf) == 0 && buf.st_size > 0)
   {
-    char szFilename[MAX_FILENAME_LEN];
     char p[5];
     Licq::protocolId_toStr(p, myId.protocolId());
-    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR,
-        myId.accountId().c_str(), p, HISTORYxOLD_EXT);
+    string filename = BASE_DIR;
+    filename += HISTORY_DIR;
+    filename += myId.accountId();
+    filename += p;
+    filename += HISTORYxOLD_EXT;
 
-    szFilename[MAX_FILENAME_LEN - 1] = '\0';
-    if (rename(myHistory.filename().c_str(), szFilename) == -1)
+    if (rename(myHistory.filename().c_str(), filename.c_str()) == -1)
     {
       gLog.Warn(tr("%sFailed to rename history file (%s):\n%s%s\n"), L_WARNxSTR,
-          szFilename, L_BLANKxSTR, strerror(errno));
+          filename.c_str(), L_BLANKxSTR, strerror(errno));
       remove(myHistory.filename().c_str());
     }
   }

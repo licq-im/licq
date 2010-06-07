@@ -163,8 +163,9 @@ static bool setupBaseDirPath(const char* path)
   else
   {
     // Get current working directory
-    char cwd[MAX_FILENAME_LEN];
-    if (::getcwd(cwd, MAX_FILENAME_LEN) == NULL)
+    // Linux uses PATH_MAX, BSD uses MAXPATHLEN, either seems to work on both
+    char cwd[PATH_MAX];
+    if (::getcwd(cwd, sizeof(cwd)) == NULL)
     {
       ::fprintf(stderr, tr("Could not get current working directory\n"));
       return false;
@@ -257,7 +258,6 @@ bool CLicq::Init(int argc, char **argv)
   myLogService.registerLogSink(myConsoleLog);
 
   char *szRedirect = NULL;
-  char szFilename[MAX_FILENAME_LEN];
   vector <char *> vszPlugins;
   vector <char *> vszProtoPlugins;
 
@@ -429,23 +429,23 @@ bool CLicq::Init(int argc, char **argv)
   // We do this by acquiring a write lock on the pid file and never closing the file.
   // When Licq is killed (normally or abnormally) the file will be closed by the operating
   // system and the lock released.
-  char szConf[MAX_FILENAME_LEN], szKey[32];
-  snprintf(szConf, MAX_FILENAME_LEN, "%slicq.pid", BASE_DIR);
-  szConf[MAX_FILENAME_LEN - 1] = '\0';
+  char szKey[32];
+  string pidfile = BASE_DIR;
+  pidfile += "licq.pid";
 
   // Never close pidFile!
-  int pidFile = open(szConf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+  int pidFile = open(pidfile.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
   if (pidFile < 0)
   {
     // We couldn't open (or create) the file for writing.
     // If the file doesn't exists we continue without lockfile protection.
     // If it does exist, we bail out.
     struct stat buf;
-    if (stat(szConf, &buf) < 0 && errno == ENOENT)
+    if (stat(pidfile.c_str(), &buf) < 0 && errno == ENOENT)
     {
       gLog.Warn(tr("%sLicq: %s cannot be opened for writing.\n"
                    "%s      skipping lockfile protection.\n"),
-                L_WARNxSTR, szConf, L_BLANKxSTR);
+          L_WARNxSTR, pidfile.c_str(), L_BLANKxSTR);
     }
     else
     {
@@ -453,7 +453,7 @@ bool CLicq::Init(int argc, char **argv)
       char error[ERR_SIZE + 1];
 
       // Try to read the pid of running Licq instance.
-      FILE* fs = fopen(szConf, "r");
+      FILE* fs = fopen(pidfile.c_str(), "r");
       if (fs != NULL)
       {
           fgets(szKey, 32, fs);
@@ -462,7 +462,7 @@ bool CLicq::Init(int argc, char **argv)
           snprintf(error, ERR_SIZE,
                    tr("%sLicq: Already running at pid %d.\n"
                       "%s      Kill process or remove %s.\n"),
-                   L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
+            L_ERRORxSTR, pid, L_BLANKxSTR, pidfile.c_str());
           fclose(fs);
       }
       else
@@ -523,7 +523,7 @@ bool CLicq::Init(int argc, char **argv)
   Licq::IniFile licqConf("licq.conf");
   if (!licqConf.loadFile())
   {
-    gLog.error("Could not load config file '%s'", szConf);
+    gLog.error("Could not load config file '%s'", licqConf.filename().c_str());
     return false;
   }
 
@@ -641,8 +641,9 @@ bool CLicq::Init(int argc, char **argv)
   gOnEventManager.initialize();
   gSarManager.initialize();
   gStatistics.initialize();
-  sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
-  gUtilityManager.loadUtilities(szFilename);
+  string filename = SHARE_DIR;
+  filename += UTILITY_DIR;
+  gUtilityManager.loadUtilities(filename);
 
   // Create the daemon
   gIcqProtocol.initialize();
@@ -912,26 +913,24 @@ void CLicq::ShutdownPlugins()
 
 bool CLicq::Install()
 {
-  char cmd[MAX_FILENAME_LEN + 128];
-
-  cmd[sizeof(cmd) - 1] = '\0';
-
   // Create the directory if necessary
   if (mkdir(BASE_DIR, 0700) == -1 && errno != EEXIST)
   {
     fprintf(stderr, "Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
     return (false);
   }
-  snprintf(cmd, sizeof(cmd) - 1, "%s%s", BASE_DIR, HISTORY_DIR);
-  if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
+  string cmd = BASE_DIR;
+  cmd += HISTORY_DIR;
+  if (mkdir(cmd.c_str(), 0700) == -1 && errno != EEXIST)
   {
-    fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd, strerror(errno));
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd.c_str(), strerror(errno));
     return (false);
   }
-  snprintf(cmd, sizeof(cmd) - 1, "%s%s", BASE_DIR, USER_DIR);
-  if (mkdir(cmd, 0700) == -1 && errno != EEXIST)
+  cmd = BASE_DIR;
+  cmd += USER_DIR;
+  if (mkdir(cmd.c_str(), 0700) == -1 && errno != EEXIST)
   {
-    fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd, strerror(errno));
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd.c_str(), strerror(errno));
     return (false);
   }
 
