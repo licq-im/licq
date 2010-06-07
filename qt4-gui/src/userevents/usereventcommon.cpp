@@ -498,7 +498,7 @@ void UserEventCommon::updatedUser(const Licq::UserId& userId, unsigned long subS
       break;
   }
 
-  u.release();
+  u.unlock();
 
   // Call the event specific function now
   userUpdated(userId, subSignal, argument, cid);

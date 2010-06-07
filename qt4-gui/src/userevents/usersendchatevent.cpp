@@ -96,7 +96,7 @@ bool UserSendChatEvent::sendDone(const LicqEvent* e)
     QString result = tr("Chat with %1 refused:\n%2")
       .arg(!u.isLocked() ? u->accountId().c_str() : QString::fromUtf8(u->GetAlias()))
       .arg(s);
-    u.release();
+    u.unlock();
     InformUser(this, result);
   }
   else

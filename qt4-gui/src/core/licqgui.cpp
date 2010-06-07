@@ -1263,7 +1263,7 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
             u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
         {
           int convoId = u->EventPeek(i)->ConvoId();
-          u.release();
+          u.unlock();
           showEventDialog(MessageEvent, userId, convoId);
           return;
         }

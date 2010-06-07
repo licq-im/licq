@@ -995,7 +995,7 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
         if (e != NULL)
           if (u->ppid() != MSN_PPID || cid == myConvoId)
           {
-            u.release();
+            u.unlock();
             myHistoryView->addMsg(e, userId);
             return;
           }

@@ -520,14 +520,14 @@ void UserMenu::toggleMiscMode(QAction* action)
       if (!u->gpgKey().empty())
       {
         u->SetUseGPG(newState);
-        u.release();
+        u.unlock();
 
         // Notify all plugins (including ourselves)
         Licq::gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
       }
       else
       {
-        u.release();
+        u.unlock();
         new GPGKeySelect(myUserId);
       }
       return;
@@ -557,7 +557,7 @@ void UserMenu::toggleMiscMode(QAction* action)
       u->setStatusToUser(newState ? User::DoNotDisturbStatus | User::OnlineStatus : User::OfflineStatus);
       break;
   }
-  u.release();
+  u.unlock();
 
   // Notify all plugins (including ourselves)
   Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);

@@ -129,7 +129,7 @@ bool UserSendFileEvent::sendDone(const LicqEvent* e)
     QString result = tr("File transfer with %1 refused:\n%2")
       .arg(QString::fromUtf8(u->GetAlias()))
       .arg(s);
-    u.release();
+    u.unlock();
     InformUser(this, result);
   }
   else

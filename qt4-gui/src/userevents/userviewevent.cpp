@@ -173,14 +173,14 @@ UserViewEvent::UserViewEvent(const Licq::UserId& userId, QWidget* parent)
       }
     }
 
-    u.release();
+    u.unlock();
     for (int i = 0; i < myMessageList->columnCount(); i++)
       myMessageList->resizeColumnToContents(i);
     myMessageList->setCurrentItem(e, 0);
     myMessageList->scrollToItem(e);
     printMessage(e);
   }
-  u.release();
+  u.unlock();
 
   QSize dialogSize = Config::Chat::instance()->viewDialogSize();
   if (dialogSize.isValid())
