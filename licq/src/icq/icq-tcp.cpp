@@ -2872,17 +2872,11 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
           {
             gLog.Info("%s%s has no picture.\n", szInfo, u->GetAlias());
 
-            char szFilename[MAX_FILENAME_LEN];
-            szFilename[MAX_FILENAME_LEN - 1] = '\0';
-            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s%s/%s.pic",
-                                             BASE_DIR, USER_DIR, u->IdString());
-
-            if (remove(szFilename) != 0 && errno != ENOENT)
-            {
+                if (remove(u->pictureFileName().c_str()) != 0 && errno != ENOENT)
+                {
               gLog.Error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
-                         L_ERRORxSTR, u->GetAlias(), szFilename, L_BLANKxSTR,
-                         strerror(errno));
-            }
+                      L_ERRORxSTR, u->GetAlias(), u->pictureFileName().c_str(), L_BLANKxSTR, strerror(errno));
+                }
 
             u->SetEnableSave(false);
             u->SetPicturePresent(false);
@@ -3027,18 +3021,13 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             if (nLen == 0)	// do not create empty .pic files
               break;
 
-            char szFilename[MAX_FILENAME_LEN];
-            szFilename[MAX_FILENAME_LEN - 1] = '\0';
-            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s%s/%s.pic",
-                                             BASE_DIR, USER_DIR, u->IdString());
-
-            int nFD = open(szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+                  int nFD = open(u->pictureFileName().c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
             if (nFD == -1)
             {
               gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n",
-                         L_ERRORxSTR, szFilename, L_BLANKxSTR, strerror(errno));
-              break;
-            }
+                        L_ERRORxSTR, u->pictureFileName().c_str(), L_BLANKxSTR, strerror(errno));
+                    break;
+                  }
 
                   string data = packet.unpackRawString(nLen);
                   write(nFD, data.c_str(), nLen);

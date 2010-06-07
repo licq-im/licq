@@ -300,6 +300,14 @@ public:
   const std::string& buddyIconHash() const      { return myBuddyIconHash; }
   const std::string& ourBuddyIconHash() const   { return myOurBuddyIconHash; }
 
+  /**
+   * Get path for file with user picture
+   * Note: This function will not check if file actually (should) exist
+   *
+   * @return Path to user picture
+   */
+  std::string pictureFileName() const;
+
   // Dynamic info fields for protocol plugins
   std::string GetPPField(const std::string &);
 

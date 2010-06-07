@@ -1218,8 +1218,7 @@ void UserPages::Info::loadPagePicture(const Licq::User* u)
 {
   //FIXME: other protocols
   if (u != NULL && u->GetPicturePresent())
-    m_sFilename = QString::fromLocal8Bit(BASE_DIR) +
-      (m_bOwner ? "owner" : USER_DIR + ("/" + myId)) + ".pic";
+    m_sFilename = QString::fromLocal8Bit(u->pictureFileName());
   else
     m_sFilename = QString::null;
 

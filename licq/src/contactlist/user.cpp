@@ -815,6 +815,16 @@ std::string Licq::User::getEmail() const
   return email;
 }
 
+string Licq::User::pictureFileName() const
+{
+  string filename = BASE_DIR;
+  filename += USER_DIR;
+  filename += "/";
+  filename += myId.accountId();
+  filename += ".pic";
+  return filename;
+}
+
 const string& Licq::User::userEncoding() const
 {
   if (myEncoding.empty())

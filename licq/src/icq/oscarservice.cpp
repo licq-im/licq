@@ -381,15 +381,11 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
             unsigned short IconLen = packet.UnpackUnsignedShortBE();
             if (IconLen > 0) // do not create empty .pic files
             {
-              char Filename[MAX_FILENAME_LEN];
-              Filename[MAX_FILENAME_LEN - 1] = '\0';
-              snprintf(Filename, MAX_FILENAME_LEN - 1, "%s%s/%s.pic",
-                       BASE_DIR, USER_DIR, u->IdString());
-              int FD = open(Filename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+              int FD = open(u->pictureFileName().c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
               if (FD == -1)
               {
                 gLog.Error(tr("%sUnable to open picture file (%s):\n%s%s.\n"),
-                           L_ERRORxSTR, Filename, L_BLANKxSTR, strerror(errno));
+                    L_ERRORxSTR, u->pictureFileName().c_str(), L_BLANKxSTR, strerror(errno));
                 break;
               }
 
