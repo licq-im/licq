@@ -99,6 +99,11 @@ public:
   pthread_mutex_t mutex_ServerSocket; // Ugly, but whatever.
 
 private:
+  /**
+   * Write configuration to file
+   */
+  void saveConfig();
+
   void ProcessSignal(LicqProtoSignal* s);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);

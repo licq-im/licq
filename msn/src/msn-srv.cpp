@@ -145,6 +145,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       packet->SkipParameter();
       string strVersion = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
+      saveConfig();
 
       MSNChangeStatus(myStatus);
 
@@ -210,6 +211,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       UserId userId(strUser, MSN_PPID);
       string strNick = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
+      saveConfig();
       
       if (strList == "RL")
       {
@@ -248,7 +250,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strVersion = packet->GetParameter();
       string strUser = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
-    
+      saveConfig();
       gLog.Info("%sRemoved %s from contact list.\n", L_MSNxSTR, strUser.c_str()); 
     }
     else if (strCmd == "REA")
@@ -259,6 +261,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strNick = packet->GetParameter();
       
       m_nListVersion = atol(strVersion.c_str());
+      saveConfig();
       if (strcmp(m_szUserName, strUser.c_str()) == 0)
       {
         Licq::OwnerWriteGuard o(MSN_PPID);

@@ -83,18 +83,10 @@ CMSN::CMSN(int _nPipe) : m_vlPacketBucket(211)
   m_szUserName = 0;
   myPassword = "";
   m_nSessionStart = 0;
-  
+
   // Config file
-  char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%slicq_msn.conf", BASE_DIR);
-  Licq::IniFile msnConf(szFileName);
-  if (!msnConf.loadFile())
-  {
-    FILE *f = fopen(szFileName, "w");
-    fprintf(f, "[network]");
-    fclose(f);
-    msnConf.loadFile();
-  }  
+  Licq::IniFile msnConf("licq_msn.conf");
+  msnConf.loadFile();
 
   msnConf.setSection("network");
   msnConf.get("ListVersion", m_nListVersion, 0);
@@ -115,16 +107,19 @@ CMSN::~CMSN()
   if (m_szUserName)
     free(m_szUserName);
 
+  saveConfig();
+}
+
+void CMSN::saveConfig()
+{
   // Config file
-  char szFileName[MAX_FILENAME_LEN];
-  sprintf(szFileName, "%slicq_msn.conf", BASE_DIR);
-  Licq::IniFile msnConf(szFileName);
-  if (msnConf.loadFile())
-  {
-    msnConf.setSection("network");
-    msnConf.set("ListVersion", m_nListVersion);
-    msnConf.writeFile();
-  }
+  Licq::IniFile msnConf("licq_msn.conf");
+  msnConf.loadFile();
+  msnConf.setSection("network");
+  msnConf.set("ListVersion", m_nListVersion);
+  msnConf.set("MsnServerAddress", myServerAddress);
+  msnConf.set("MsnServerPort", myServerPort);
+  msnConf.writeFile();
 }
 
 void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
