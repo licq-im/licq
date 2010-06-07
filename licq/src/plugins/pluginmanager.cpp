@@ -223,7 +223,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
     if (timeout)
     {
       struct timespec abstime;
-      abstime.tv_sec = time(TIME_NOW) + timeout;
+      abstime.tv_sec = time(NULL) + timeout;
       abstime.tv_nsec = 0;
       if (::pthread_cond_timedwait(&LP_IdSignal, &LP_IdMutex,
                                    &abstime) == ETIMEDOUT)

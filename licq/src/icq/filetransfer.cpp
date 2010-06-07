@@ -542,7 +542,7 @@ bool CFileTransferManager::ProcessPacket()
       m_nSpeed = b.UnpackUnsignedLong();
       b.UnpackString(m_szRemoteName, sizeof(m_szRemoteName));
 
-      m_nBatchStartTime = time(TIME_NOW);
+      m_nBatchStartTime = time(NULL);
       m_nBatchBytesTransfered = m_nBatchPos = 0;
 
       PushFileTransferEvent(FT_STARTxBATCH);
@@ -629,7 +629,7 @@ bool CFileTransferManager::ProcessPacket()
       // if this is the first call to this function...
       if (m_nBytesTransfered == 0)
       {
-        m_nStartTime = time(TIME_NOW);
+        m_nStartTime = time(NULL);
         m_nBatchPos += m_nFilePos;
         gLog.Info(tr("%sFile Transfer: Receiving %s (%ld bytes).\n"), L_TCPxSTR,
             myFileName.c_str(), m_nFileSize);
@@ -747,7 +747,7 @@ bool CFileTransferManager::ProcessPacket()
       m_nFileSize = p.GetFileSize();
       myFileName = p.fileName();
 
-      m_nBatchStartTime = time(TIME_NOW);
+      m_nBatchStartTime = time(NULL);
       m_nBatchBytesTransfered = m_nBatchPos = 0;
 
       PushFileTransferEvent(FT_STARTxBATCH);
@@ -901,7 +901,7 @@ bool CFileTransferManager::SendFilePacket()
 
   if (m_nBytesTransfered == 0)
   {
-    m_nStartTime = time(TIME_NOW);
+    m_nStartTime = time(NULL);
     m_nBatchPos += m_nFilePos;
     gLog.Info(tr("%sFile Transfer: Sending %s (%ld bytes).\n"), L_TCPxSTR,
         myPathName.c_str(), m_nFileSize);
