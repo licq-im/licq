@@ -23,7 +23,6 @@ const unsigned short MAX_FILENAME_LEN              = 1024;
 
 #define PIPE_READ  0
 #define PIPE_WRITE 1
-#define TIME_NOW   0
 
 
 #endif

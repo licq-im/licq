@@ -35,6 +35,9 @@ const unsigned long E_UNKNOWN       = 0x80000000;
 class CUserEvent
 {
 public:
+  // Use this constant for constructor to get current time
+  static const time_t TimeNow = 0;
+
    CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
               unsigned short _nSequence, time_t _tTime,
               unsigned long _nFlags, unsigned long _nConvoId = 0);

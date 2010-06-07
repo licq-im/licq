@@ -225,7 +225,7 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
   assert(myClient != NULL);
   myClient->sendMessage(signal->userId().accountId(), signal->message());
 
-  CEventMsg* message = new CEventMsg(signal->message().c_str(), 0, TIME_NOW, 0);
+  CEventMsg* message = new CEventMsg(signal->message().c_str(), 0, CUserEvent::TimeNow, 0);
   message->setIsReceiver(false);
 
   LicqEvent* event = new LicqEvent(signal->eventId(), 0, NULL, CONNECT_SERVER,

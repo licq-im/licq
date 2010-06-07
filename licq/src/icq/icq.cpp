@@ -1059,7 +1059,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     }
 
     CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                    TIME_NOW, nFlags);
+          CUserEvent::TimeNow, nFlags);
     e->SetColor(fore, back);
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
@@ -1091,7 +1091,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     if (!bIsAck)
     {
       CEventChat *e = new CEventChat(message, szChatClients, nPort, nSequence,
-                                     TIME_NOW, nFlags, 0, nMsgID[0], nMsgID[1]);
+            CUserEvent::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
         onEventType = OnEventManager::OnEventChat;
       pEvent = e;
     }
@@ -1120,7 +1120,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         filelist.push_back(filename);
 
         CEventFile* e = new CEventFile(filename.c_str(), message, nFileSize,
-                                     filelist, nSequence, TIME_NOW, nFlags,
+              filelist, nSequence, CUserEvent::TimeNow, nFlags,
                                      0, nMsgID[0], nMsgID[1]);
         onEventType = OnEventManager::OnEventFile;
       pEvent = e;
@@ -1137,7 +1137,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   case ICQ_CMDxSUB_URL:
   {
     CEventUrl *e = CEventUrl::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                    TIME_NOW, nFlags);
+          CUserEvent::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_URL, true,
                                            nLevel);
@@ -1152,8 +1152,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   case ICQ_CMDxSUB_CONTACTxLIST:
   {
     CEventContactList *e = CEventContactList::Parse(message,
-                                                    ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                                    TIME_NOW, nFlags);
+          ICQ_CMDxRCV_SYSxMSGxONLINE, CUserEvent::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_CONTACTxLIST,
                                            true, nLevel);

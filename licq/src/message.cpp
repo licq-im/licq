@@ -21,7 +21,6 @@
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/translator.h>
-#include "licq_constants.h"
 #include "licq_message.h"
 #include "support.h"
 
@@ -46,7 +45,7 @@ CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
    m_nSubCommand = nSubCommand;
    m_nCommand = nCommand;
    m_nSequence = nSequence;
-   m_tTime = (tTime == TIME_NOW ? time(NULL) : tTime);
+   m_tTime = (tTime == TimeNow ? time(NULL) : tTime);
    m_nFlags = nFlags;
    m_nConvoId = nConvoId;
 

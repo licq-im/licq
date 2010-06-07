@@ -1370,7 +1370,8 @@ unsigned long IcqProtocol::icqSendSms(const char* id, unsigned long ppid,
     const char* number, const char* message)
 {
   Licq::UserId userId(id, ppid);
-  CEventSms* ue = new CEventSms(number, message, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, LICQ_VERSION);
+  CEventSms* ue = new CEventSms(number, message, ICQ_CMDxSND_THRUxSERVER,
+      CUserEvent::TimeNow, LICQ_VERSION);
   CPU_SendSms* p = new CPU_SendSms(number, message);
   gLog.Info(tr("%sSending SMS through server (#%hu/#%d)...\n"), L_SRVxSTR,
       p->Sequence(), p->SubSequence());
