@@ -616,7 +616,6 @@ public:
   void EventClearId(int);
   void EventPush(CUserEvent *);
   virtual void WriteToHistory(const char*) = 0;
-  virtual void SetHistoryFile(const char*) = 0;
   virtual int GetHistory(HistoryList& history) const = 0;
   static void ClearHistory(HistoryList& h);
   virtual void SaveHistory(const char *buf) = 0;
@@ -785,7 +784,7 @@ protected:
   void loadCategory(UserCategoryMap& category, Licq::IniFile& file,
       const std::string& key);
 
-  void SetDefaults();
+  virtual void SetDefaults() = 0;
   virtual void AddToContactList() = 0;
 
   void SetSecure(bool s) { m_bSecure = s; }

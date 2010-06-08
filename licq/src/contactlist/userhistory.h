@@ -4,7 +4,6 @@
 #include <string>
 
 #include <licq/contactlist/user.h> // HistoryList
-#include <licq/userid.h>
 
 class CUserEvent;
 
@@ -24,7 +23,7 @@ public:
    * @param filename "default", "none" or a filename
    * @param userId User id to use if default is requested
    */
-  void setFile(const std::string& filename, const Licq::UserId& userId = Licq::UserId());
+  void setFile(const std::string& filename, const std::string& description);
 
   /**
    * Read history from file

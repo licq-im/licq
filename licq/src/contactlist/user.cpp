@@ -39,6 +39,10 @@ using Licq::gPluginManager;
 using Licq::gUserManager;
 using namespace LicqDaemon;
 
+const char* const User::HistoryDir = "history/";
+const char* const User::HistoryExt = ".history";
+const char* const User::HistoryOldExt = ".removed";
+
 
 ICQUserPhoneBook::ICQUserPhoneBook()
 {
@@ -279,20 +283,13 @@ void User::AddToContactList()
   // Check for old history file
   if (access(myHistory.filename().c_str(), F_OK) == -1)
   {
-    char p[5];
-    Licq::protocolId_toStr(p, myId.protocolId());
-    string filename = BASE_DIR;
-    filename += HISTORY_DIR;
-    filename += myId.accountId();
-    filename += p;
-    filename += HISTORYxOLD_EXT;
-
-    if (access(filename.c_str(), F_OK) == 0)
+    string oldHistory = myHistory.filename() + HistoryOldExt;
+    if (access(oldHistory.c_str(), F_OK) == 0)
     {
-      if (rename(filename.c_str(), myHistory.filename().c_str()) == -1)
+      if (rename(oldHistory.c_str(), myHistory.filename().c_str()) == -1)
       {
         gLog.Warn(tr("%sFailed to rename old history file (%s):\n%s%s\n"), L_WARNxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+            oldHistory.c_str(), L_BLANKxSTR, strerror(errno));
       }
     }
   }
@@ -399,7 +396,7 @@ void User::LoadLicqInfo()
   myConf.get("History", temp, "default");
   if (temp.empty())
     temp = "default";
-  SetHistoryFile(temp.c_str());
+  setHistoryFile(temp);
   myConf.get("AwaitingAuth", m_bAwaitingAuth, false);
   myConf.get("SID", m_nSID[Licq::NORMAL_SID], 0);
   myConf.get("InvisibleSID", m_nSID[Licq::INV_SID], 0);
@@ -521,18 +518,11 @@ void User::RemoveFiles()
   struct stat buf;
   if (stat(myHistory.filename().c_str(), &buf) == 0 && buf.st_size > 0)
   {
-    char p[5];
-    Licq::protocolId_toStr(p, myId.protocolId());
-    string filename = BASE_DIR;
-    filename += HISTORY_DIR;
-    filename += myId.accountId();
-    filename += p;
-    filename += HISTORYxOLD_EXT;
-
-    if (rename(myHistory.filename().c_str(), filename.c_str()) == -1)
+    string oldHistory = myHistory.filename() + HistoryOldExt;
+    if (rename(myHistory.filename().c_str(), oldHistory.c_str()) == -1)
     {
       gLog.Warn(tr("%sFailed to rename history file (%s):\n%s%s\n"), L_WARNxSTR,
-          filename.c_str(), L_BLANKxSTR, strerror(errno));
+          oldHistory.c_str(), L_BLANKxSTR, strerror(errno));
       remove(myHistory.filename().c_str());
     }
   }
@@ -699,10 +689,10 @@ void User::SetPermanent()
   gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SETTINGS, myId, 0));
 }
 
-void Licq::User::SetDefaults()
+void User::SetDefaults()
 {
   setAlias(myId.accountId());
-  SetHistoryFile("default");
+  setHistoryFile("default");
   myOnVisibleList = false;
   myOnInvisibleList = false;
   myOnIgnoreList = false;
@@ -1093,9 +1083,27 @@ bool Licq::User::Away() const
            n == ICQ_STATUS_DND || n == ICQ_STATUS_OCCUPIED);
 }
 
-void User::SetHistoryFile(const char *s)
+void User::setHistoryFile(const std::string& file)
 {
-  myHistory.setFile(s, myId);
+  string realFile;
+  if (file == "default")
+  {
+    char p[5];
+    Licq::protocolId_toStr(p, myId.protocolId());
+    realFile = BASE_DIR;
+    realFile += HistoryDir;
+    realFile += myId.accountId().c_str();
+    realFile += '.';
+    realFile += p;
+    realFile += HistoryExt;
+  }
+  else if (file != "none")
+  {
+    // use given name
+    realFile = file;
+  }
+
+  myHistory.setFile(realFile, file);
   SaveLicqInfo();
 }
 

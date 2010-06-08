@@ -36,6 +36,10 @@ typedef std::map<std::string, boost::any> PropertyMap;
 class User : public virtual Licq::User
 {
 public:
+  static const char* const HistoryDir;
+  static const char* const HistoryExt;
+  static const char* const HistoryOldExt;
+
   /**
    * Constructor to create a user object for an existing contact
    *
@@ -69,14 +73,15 @@ public:
   void setUserInfoBool(const std::string& key, bool value);
   void SetPermanent();
   void WriteToHistory(const char*);
-  void SetHistoryFile(const char*);
   int GetHistory(Licq::HistoryList& history) const;
   void SaveHistory(const char* buf);
   const char* HistoryName() const;
   const char* HistoryFile() const;
+  void SetDefaults();
   void AddToContactList();
 
 protected:
+  void setHistoryFile(const std::string& file);
   bool LoadInfo();
   void LoadLicqInfo();
   void LoadPhoneBookInfo();

@@ -66,14 +66,13 @@ Owner::Owner(const UserId& id)
   gLog.Info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myId.toString().c_str());
 
   filename = BASE_DIR;
-  filename += "/";
-  filename += HISTORY_DIR;
-  filename += "/owner.";
+  filename += HistoryDir;
+  filename += "owner.";
   filename += myId.accountId();
   filename += ".";
   filename += p;
-  filename += ".history";
-  SetHistoryFile(filename.c_str());
+  filename += HistoryExt;
+  setHistoryFile(filename);
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != Licq::TIMEZONE_UNKNOWN)
   {

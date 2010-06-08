@@ -21,7 +21,6 @@
 #include <unistd.h>
 
 #include "licq_log.h"
-#include "licq_constants.h"
 #include "licq_message.h"
 #include <licq/icqdefines.h>
 #include <licq/userid.h>
@@ -42,35 +41,10 @@ UserHistory::~UserHistory()
 {
 }
 
-void UserHistory::setFile(const string& filename, const UserId& userId)
+void UserHistory::setFile(const string& filename, const string& description)
 {
-  // default history filename, compare only first 7 chars in case of spaces
-  if (filename == "default")
-  {
-    char p[5];
-    Licq::protocolId_toStr(p, userId.protocolId());
-    myFilename = BASE_DIR;
-    myFilename += HISTORY_DIR;
-    myFilename += '/';
-    myFilename += userId.accountId().c_str();
-    myFilename += '.';
-    myFilename += p;
-    myFilename += '.';
-    myFilename += HISTORY_EXT;
-    myDescription = "default";
-  }
-  // no history file
-  else if (filename == "none")
-  {
-    myFilename = "";
-    myDescription = "none";
-  }
-  // use given name
-  else
-  {
-    myFilename = filename;
-    myDescription = filename;
-  }
+  myFilename = filename;
+  myDescription = description;
 }
 
 
@@ -383,12 +357,15 @@ void UserHistory::write(const string& buf, bool append)
     return;
 
   // Make sure history dir exists before trying to write a file in it
-  string historydir = BASE_DIR;
-  historydir += HISTORY_DIR;
-  if (mkdir(historydir.c_str(), 0700) == -1 && errno != EEXIST)
+  size_t slashPos = myFilename.rfind('/');
+  if (slashPos != string::npos)
   {
-    fprintf(stderr, "Couldn't mkdir %s: %s\n", historydir.c_str(), strerror(errno));
-    return;
+    string historydir = myFilename.substr(0, slashPos);
+    if (mkdir(historydir.c_str(), 0700) == -1 && errno != EEXIST)
+    {
+      fprintf(stderr, "Couldn't mkdir %s: %s\n", historydir.c_str(), strerror(errno));
+      return;
+    }
   }
 
   int fd = open(myFilename.c_str(), O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 00600);

@@ -4,9 +4,6 @@
 
 // Directory constants
 const char USER_DIR[]                              = "users";
-const char HISTORY_DIR[]                           = "history";
-const char HISTORY_EXT[]                           = "history";
-const char HISTORYxOLD_EXT[]                       = "history.removed";
 const char TRANSLATION_DIR[]                       = "translations";
 const char UTILITY_DIR[]                           = "utilities";
 extern char BASE_DIR[];

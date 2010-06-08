@@ -730,7 +730,7 @@ bool CLicq::upgradeLicq128(Licq::IniFile& licqConf)
 
   // Rename the history files
   struct dirent **HistoryFiles;
-  string strHistoryDir = strBaseDir + HISTORY_DIR;
+  string strHistoryDir = strBaseDir + "history";
   int nNumHistory = scandir_alpha_r(strHistoryDir.c_str(), &HistoryFiles,
     SelectHistoryUtility);
   if (nNumHistory)
@@ -920,13 +920,6 @@ bool CLicq::Install()
     return (false);
   }
   string cmd = BASE_DIR;
-  cmd += HISTORY_DIR;
-  if (mkdir(cmd.c_str(), 0700) == -1 && errno != EEXIST)
-  {
-    fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd.c_str(), strerror(errno));
-    return (false);
-  }
-  cmd = BASE_DIR;
   cmd += USER_DIR;
   if (mkdir(cmd.c_str(), 0700) == -1 && errno != EEXIST)
   {
