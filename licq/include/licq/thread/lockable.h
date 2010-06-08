@@ -112,6 +112,8 @@ public:
    */
   void unlock()
   {
+    if (myObject == NULL)
+      return;
     myObject->unlockRead();
     myObject = NULL;
   }
@@ -191,6 +193,8 @@ public:
    */
   void unlock()
   {
+    if (myObject == NULL)
+      return;
     myObject->unlockWrite();
     myObject = NULL;
   }
