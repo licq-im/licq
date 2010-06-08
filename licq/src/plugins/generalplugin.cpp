@@ -94,7 +94,7 @@ void GeneralPlugin::pushSignal(LicqSignal* signal)
   MutexLocker locker(mySignalsMutex);
   mySignals.push(signal);
   locker.unlock();
-  myPipe.putChar(PLUGIN_SIGNAL);
+  myPipe.putChar(PipeSignal);
 }
 
 LicqSignal* GeneralPlugin::popSignal()
@@ -114,7 +114,7 @@ void GeneralPlugin::pushEvent(LicqEvent* event)
   MutexLocker locker(myEventsMutex);
   myEvents.push(event);
   locker.unlock();
-  myPipe.putChar(PLUGIN_EVENT);
+  myPipe.putChar(PipeEvent);
 }
 
 LicqEvent* GeneralPlugin::popEvent()
@@ -164,12 +164,12 @@ const char* GeneralPlugin::getBuildTime() const
 
 void GeneralPlugin::enable()
 {
-  myPipe.putChar('1');
+  myPipe.putChar(PipeEnable);
 }
 
 void GeneralPlugin::disable()
 {
-  myPipe.putChar('0');
+  myPipe.putChar(PipeDisable);
 }
 
 bool GeneralPlugin::initThreadEntry()

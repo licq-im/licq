@@ -91,7 +91,7 @@ int LProto_icq_Main()
       ::read(fd, &ch, sizeof(ch));
       switch (ch)
       {
-      case PLUGIN_SHUTDOWN:
+      case Licq::ProtocolPlugin::PipeShutdown:
         run = false;
         break;
       default:

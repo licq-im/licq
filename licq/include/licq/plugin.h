@@ -34,6 +34,10 @@ namespace Licq
 class Plugin : private boost::noncopyable
 {
 public:
+  // Notification that plugins can get via its pipe
+  static const char PipeSignal = 'S';
+  static const char PipeShutdown = 'X';
+
   /// Get the plugin's unique id.
   virtual unsigned short getId() const = 0;
 
@@ -59,6 +63,11 @@ protected:
 class GeneralPlugin : public virtual Plugin
 {
 public:
+  // Notification that general plugins can get via its pipe
+  static const char PipeEvent = 'E';
+  static const char PipeDisable = '0';
+  static const char PipeEnable = '1';
+
   /// A smart pointer to a GeneralPlugin instance.
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 

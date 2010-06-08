@@ -100,7 +100,7 @@ const std::string& Plugin::getLibraryName() const
 
 void Plugin::shutdown()
 {
-  myPipe.putChar(PLUGIN_SHUTDOWN);
+  myPipe.putChar(PipeShutdown);
 }
 
 bool Plugin::callInitInThread()

@@ -178,36 +178,37 @@ void CLicqForwarder::ProcessPipe()
   read(m_nPipe, buf, 1);
   switch (buf[0])
   {
-  case 'S':  // A signal is pending
-  {
+    case Licq::GeneralPlugin::PipeSignal:
+    {
       LicqSignal* s = Licq::gDaemon.popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
 
-  case 'E':  // An event is pending (should never happen)
-  {
+    case Licq::GeneralPlugin::PipeEvent:
+    {
+      // An event is pending (should never happen)
       LicqEvent* e = Licq::gDaemon.PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
 
-  case 'X':  // Shutdown
-  {
+    case Licq::GeneralPlugin::PipeShutdown:
+    {
     gLog.Info("%sExiting.\n", L_FORWARDxSTR);
     m_bExit = true;
     break;
   }
 
-  case '0':  // disable
-  {
+    case Licq::GeneralPlugin::PipeDisable:
+    {
     gLog.Info("%sDisabling.\n", L_FORWARDxSTR);
     m_bEnabled = false;
     break;
   }
 
-  case '1':  // enable
-  {
+    case Licq::GeneralPlugin::PipeEnable:
+    {
     gLog.Info("%sEnabling.\n", L_FORWARDxSTR);
     m_bEnabled = true;
     break;

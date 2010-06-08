@@ -34,6 +34,7 @@
 #include <licq/conversation.h>
 #include <licq/daemon.h>
 #include <licq/inifile.h>
+#include <licq/plugin.h>
 
 #include "msn.h"
 #include "msnpacket.h"
@@ -526,14 +527,14 @@ void CMSN::ProcessPipe()
   read(m_nPipe, buf, 1);
   switch (buf[0])
   {
-  case 'S':  // A signal is pending
+    case Licq::ProtocolPlugin::PipeSignal:
     {
       LicqProtoSignal* s = Licq::gDaemon.PopProtoSignal();
       ProcessSignal(s);
       break;
     }
 
-  case 'X': // Bye
+    case Licq::ProtocolPlugin::PipeShutdown:
     gLog.Info("%sExiting.\n", L_MSNxSTR);
     m_bExit = true;
     break;

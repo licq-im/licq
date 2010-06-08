@@ -324,8 +324,8 @@ int LP_Main()
 
 	switch (buf[0])
 	{
-	case 'S':  // A signal is pending
-	    {
+      case Licq::GeneralPlugin::PipeSignal:
+      {
 		// read the actual signal from the daemon
         LicqSignal* s = Licq::gDaemon.popPluginSignal();
 		if (s)
@@ -340,8 +340,8 @@ int LP_Main()
 	    // An event is pending - skip it - shouldnt happen
 	    // events are responses to some requests to the licq daemon
 	    // like send a message - we never do such a thing
-	case 'E':
-	    {
+      case Licq::GeneralPlugin::PipeEvent:
+      {
 		gLog.Warn("%sEvent received - should not happen in this plugin\n", L_WARNxSTR);
         LicqEvent* e = Licq::gDaemon.PopPluginEvent();
 		if (e)
@@ -353,18 +353,18 @@ int LP_Main()
 	    }
 	    // shutdown command from daemon
 	    // every plugin has to implement this command
-	case 'X':  // Shutdown = plugin unloaded or licq shutting down
-	    {
+      case Licq::GeneralPlugin::PipeShutdown:
+      {
 		Exit = true;
 		gLog.Info("%sOSD Plugin shutting down\n", L_OSD_STR);
 		break;
 	    }
 
-	case '0': // disable plugin (see plugin selector window)
+      case Licq::GeneralPlugin::PipeDisable:
 	    Enabled=false;
 	    gLog.Info("%sOSD Plugin disabled\n", L_OSD_STR);
 	    break;
-	case '1': // enable plugin (see plugin selector window)
+      case Licq::GeneralPlugin::PipeEnable:
 	    Enabled=true;
 	    gLog.Info("%sOSD Plugin enabled\n", L_OSD_STR);
 	    break;

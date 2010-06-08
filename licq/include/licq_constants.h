@@ -7,11 +7,6 @@ extern char BASE_DIR[];
 extern char SHARE_DIR[];
 extern char LIB_DIR[];
 
-// Plugin constants
-const char PLUGIN_SIGNAL                           = 'S';
-const char PLUGIN_EVENT                            = 'E';
-const char PLUGIN_SHUTDOWN                         = 'X';
-
 // Miscellaneous constants
 const unsigned short MAX_FILENAME_LEN              = 1024;
 

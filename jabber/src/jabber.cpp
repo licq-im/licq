@@ -28,8 +28,8 @@
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 #include <licq/log.h>
-#include <licq_constants.h>
 #include <licq_events.h>
+#include <licq/plugin.h>
 
 #include <sys/select.h>
 
@@ -92,14 +92,14 @@ void Jabber::processPipe(int pipe)
 
   switch (ch)
   {
-    case PLUGIN_SIGNAL:
+    case Licq::ProtocolPlugin::PipeSignal:
     {
       LicqProtoSignal* signal = Licq::gDaemon.PopProtoSignal();
       processSignal(signal);
       delete signal;
+      break;
     }
-    break;
-    case PLUGIN_SHUTDOWN:
+    case Licq::ProtocolPlugin::PipeShutdown:
       myDoRun = false;
       break;
     default:

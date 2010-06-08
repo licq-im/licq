@@ -30,6 +30,7 @@
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/plugin.h>
 #include <licq/protocolmanager.h>
 
 #include "dialogs/ownereditdlg.h"
@@ -208,29 +209,29 @@ void SignalManager::process()
 
   switch (buf[0])
   {
-    case 'S':  // A signal is pending
+    case Licq::GeneralPlugin::PipeSignal:
     {
       LicqSignal* s = Licq::gDaemon.popPluginSignal();
       ProcessSignal(s);
       break;
     }
 
-    case 'E':  // An event is pending
+    case Licq::GeneralPlugin::PipeEvent:
     {
       ICQEvent* e = Licq::gDaemon.PopPluginEvent();
       ProcessEvent(e);
       break;
     }
 
-    case 'X':  // Shutdown
+    case Licq::GeneralPlugin::PipeShutdown:
     {
       gLog.Info("%sExiting main window (qt gui).\n", L_ENDxSTR);
       qApp->quit();
       break;
     }
 
-    case '0':
-    case '1':
+    case Licq::GeneralPlugin::PipeDisable:
+    case Licq::GeneralPlugin::PipeEnable:
       break;
 
     default:

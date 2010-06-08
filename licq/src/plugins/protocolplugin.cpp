@@ -54,7 +54,7 @@ void ProtocolPlugin::pushSignal(LicqProtoSignal* signal)
   MutexLocker locker(mySignalsMutex);
   mySignals.push(signal);
   locker.unlock();
-  myPipe.putChar(PLUGIN_SIGNAL);
+  myPipe.putChar(PipeSignal);
 }
 
 LicqProtoSignal* ProtocolPlugin::popSignal()

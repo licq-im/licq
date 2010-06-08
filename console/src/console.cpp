@@ -475,29 +475,29 @@ void CLicqConsole::ProcessPipe()
   read(m_nPipe, buf, 1);
   switch (buf[0])
   {
-  case 'S':  // A signal is pending
+    case Licq::GeneralPlugin::PipeSignal:
     {
       LicqSignal* s = Licq::gDaemon.popPluginSignal();
       ProcessSignal(s);
       break;
     }
 
-  case 'E':  // An event is pending
+    case Licq::GeneralPlugin::PipeEvent:
     {
       LicqEvent* e = Licq::gDaemon.PopPluginEvent();
       ProcessEvent(e);
       break;
     }
 
-  case 'X':  // Shutdown
+    case Licq::GeneralPlugin::PipeShutdown:
     {
       gLog.Info("%sExiting console.\n", L_CONSOLExSTR);
       m_bExit = true;
       break;
     }
 
-  case '0':
-  case '1':
+    case Licq::GeneralPlugin::PipeDisable:
+    case Licq::GeneralPlugin::PipeEnable:
     break;
 
   default:
