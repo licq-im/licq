@@ -1,7 +1,6 @@
 #include "msn.h"
 #include "msnevent.h"
 
-#include "licq_constants.h"
 #include "licq_log.h"
 
 #include <sys/types.h>
@@ -35,19 +34,20 @@ CMSNDataEvent::CMSNDataEvent(CMSN *p)
 }
 
 CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
-			     unsigned long _nBaseId, const string &_strId,
+    unsigned long _nBaseId, const Licq::UserId& userId,
 			     const string &_strFromId, const string &_strCallId,
                              CMSN *p)
 {
   m_pMSN = p;
   m_nSocketDesc = -1;
   m_nEvent = _nEvent;
-  m_strId = _strId;
+  m_strId = userId.accountId();
   m_eState = STATE_WAITING_ACK;
   m_nFileDesc = -1;
-  m_strFileName = BASE_DIR;
-  m_strFileName += USER_DIR;
-  m_strFileName += "/" +_strId + ".pic";
+  {
+    Licq::UserReadGuard u(userId);
+    m_strFileName = u->pictureFileName();
+  }
   m_nFilePos = 0;
   m_nBytesTransferred = 0;
   m_nStartTime = 0;

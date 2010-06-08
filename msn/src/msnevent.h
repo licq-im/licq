@@ -5,6 +5,11 @@
 
 #include "msnpacket.h"
 
+namespace Licq
+{
+class UserId;
+}
+
 class CMSN;
 
 enum ESTATE
@@ -21,7 +26,7 @@ class CMSNDataEvent
 public:
   CMSNDataEvent(CMSN *);
   CMSNDataEvent(unsigned long event, unsigned long sessionId,
-      unsigned long baseId, const std::string& id, const std::string& fromId,
+      unsigned long baseId, const Licq::UserId& userId, const std::string& fromId,
       const std::string& callId, CMSN* p);
   ~CMSNDataEvent();
 

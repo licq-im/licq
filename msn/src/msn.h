@@ -135,7 +135,7 @@ private:
   void MSNUpdateUser(const std::string& alias);
   void MSNBlockUser(const Licq::UserId& userId);
   void MSNUnblockUser(const Licq::UserId& userId);
-  void MSNGetDisplayPicture(const std::string& user, const std::string& msnObject);
+  void MSNGetDisplayPicture(const Licq::UserId& userId, const std::string& msnObject);
 
   // Internal functions
   int HashValue(int n) { return n % 211; }

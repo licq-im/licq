@@ -333,7 +333,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 	{
 	  u->SetPPField("MSNObject_DP", strDecodedObject);
 	  if (strDecodedObject.size())
-            MSNGetDisplayPicture(u->accountId(), strDecodedObject);
+            MSNGetDisplayPicture(u->id(), strDecodedObject);
 	}
 
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
@@ -710,23 +710,21 @@ void CMSN::MSNUnblockUser(const UserId& userId)
   SendPacket(pAdd);
 }
 
-void CMSN::MSNGetDisplayPicture(const string &strUser, const string &strMSNObject)
+void CMSN::MSNGetDisplayPicture(const Licq::UserId& userId, const string &strMSNObject)
 {
   // If we are invisible, this will result in an error, so don't allow it
   if (myStatus & User::InvisibleStatus)
     return;
 
-  const char *szUser = const_cast<const char *>(strUser.c_str());
-  CMSNPacket *pGetMSNDP = new CPS_MSNInvitation(szUser,
+  CMSNPacket *pGetMSNDP = new CPS_MSNInvitation(userId.accountId().c_str(),
 						m_szUserName,
 						const_cast<char *>(strMSNObject.c_str()));
   CMSNP2PPacket *p = (CMSNP2PPacket *)(pGetMSNDP);
   CMSNDataEvent *pDataResponse = new CMSNDataEvent(MSN_DP_EVENT,
-						   p->SessionId(), p->BaseId(),  strUser, 
-                                                   m_szUserName, p->CallGUID(), this);
+      p->SessionId(), p->BaseId(), userId, m_szUserName, p->CallGUID(), this);
   WaitDataEvent(pDataResponse);
-  gLog.Info("%sRequesting %s's display picture.\n", L_MSNxSTR, szUser);
-  MSNSendInvitation(szUser, pGetMSNDP);
+  gLog.Info("%sRequesting %s's display picture.\n", L_MSNxSTR, userId.toString().c_str());
+  MSNSendInvitation(userId.accountId().c_str(), pGetMSNDP);
 }
 
 
