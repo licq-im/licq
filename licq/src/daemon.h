@@ -32,6 +32,9 @@ namespace LicqDaemon
 class Daemon : public Licq::Daemon
 {
 public:
+  static const char* const TranslationDir;
+  static const char* const UtilityDir;
+
   Daemon();
   ~Daemon();
 

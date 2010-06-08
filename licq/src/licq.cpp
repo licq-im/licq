@@ -46,6 +46,7 @@
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
+using LicqDaemon::Daemon;
 using LicqDaemon::PluginManager;
 using LicqDaemon::gDaemon;
 using LicqDaemon::gFifo;
@@ -642,7 +643,7 @@ bool CLicq::Init(int argc, char **argv)
   gSarManager.initialize();
   gStatistics.initialize();
   string filename = SHARE_DIR;
-  filename += UTILITY_DIR;
+  filename += Daemon::UtilityDir;
   gUtilityManager.loadUtilities(filename);
 
   // Create the daemon
@@ -704,7 +705,7 @@ bool CLicq::upgradeLicq128(Licq::IniFile& licqConf)
 
   // Update all the user files and update users.conf
   struct dirent **UinFiles;
-  string strUserDir = strBaseDir + USER_DIR;
+  string strUserDir = strBaseDir + "users";
   int n = scandir_alpha_r(strUserDir.c_str(), &UinFiles, SelectUserUtility);
   if (n != 0)
   {
@@ -920,7 +921,7 @@ bool CLicq::Install()
     return (false);
   }
   string cmd = BASE_DIR;
-  cmd += USER_DIR;
+  cmd += "users";
   if (mkdir(cmd.c_str(), 0700) == -1 && errno != EEXIST)
   {
     fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd.c_str(), strerror(errno));

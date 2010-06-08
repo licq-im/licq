@@ -306,7 +306,7 @@ public:
    *
    * @return Path to user picture
    */
-  virtual std::string pictureFileName() const;
+  const std::string& pictureFileName() const    { return myPictureFileName; }
 
   // Dynamic info fields for protocol plugins
   std::string GetPPField(const std::string &);
@@ -873,6 +873,7 @@ protected:
   ICQUserPhoneBook *m_PhoneBook;
 
   // Picture Info
+  std::string myPictureFileName;
   bool m_bPicturePresent;
   unsigned myBuddyIconType;
   unsigned myBuddyIconHashType;

@@ -58,6 +58,9 @@ LicqDaemon::Daemon LicqDaemon::gDaemon;
 // Declare global Licq::Daemon to refer to the internal Daemon
 Licq::Daemon& Licq::gDaemon(LicqDaemon::gDaemon);
 
+const char* const Daemon::TranslationDir = "translations";
+const char* const Daemon::UtilityDir = "utilities";
+
 Daemon::Daemon()
 {
   // Empty
@@ -108,7 +111,7 @@ void Daemon::initialize(CLicq* _licq)
   if (!temp.empty() && temp != "none")
   {
     string filename = SHARE_DIR;
-    filename += TRANSLATION_DIR;
+    filename += TranslationDir;
     filename += "/";
     filename += temp;
     Licq::gTranslator.setTranslationMap(filename);

@@ -3,9 +3,6 @@
 #define CONSTANTS_H
 
 // Directory constants
-const char USER_DIR[]                              = "users";
-const char TRANSLATION_DIR[]                       = "translations";
-const char UTILITY_DIR[]                           = "utilities";
 extern char BASE_DIR[];
 extern char SHARE_DIR[];
 extern char LIB_DIR[];

@@ -29,6 +29,9 @@ Owner::Owner(const UserId& id)
   myPassword = "";
   myPDINFO = 0;
 
+  myPictureFileName = BASE_DIR;
+  myPictureFileName += "owner.pic";
+
   // Get data from the config file
   char p[5];
   Licq::protocolId_toStr(p, myId.protocolId());
@@ -230,11 +233,4 @@ void Licq::Owner::SetPicture(const char *f)
     close(source);
     close(dest);
   }
-}
-
-string Licq::Owner::pictureFileName() const
-{
-  string filename = BASE_DIR;
-  filename += "owner.pic";
-  return filename;
 }

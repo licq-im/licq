@@ -36,6 +36,7 @@ typedef std::map<std::string, boost::any> PropertyMap;
 class User : public virtual Licq::User
 {
 public:
+  static const char* const ConfigDir;
   static const char* const HistoryDir;
   static const char* const HistoryExt;
   static const char* const HistoryOldExt;

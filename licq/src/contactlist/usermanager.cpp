@@ -204,7 +204,7 @@ bool UserManager::Load()
       gLog.Warn(tr("%sSkipping user %i, empty key.\n"), L_WARNxSTR, i);
       continue;
     }
-    string filename = USER_DIR;
+    string filename = User::ConfigDir;
     filename += '/';
     filename += userFile;
     size_t sz = userFile.rfind('.');

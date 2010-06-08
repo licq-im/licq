@@ -39,6 +39,7 @@ using Licq::gPluginManager;
 using Licq::gUserManager;
 using namespace LicqDaemon;
 
+const char* const User::ConfigDir = "users/";
 const char* const User::HistoryDir = "history/";
 const char* const User::HistoryExt = ".history";
 const char* const User::HistoryOldExt = ".removed";
@@ -257,9 +258,7 @@ User::User(const UserId& id, bool temporary)
     Licq::protocolId_toStr(p, myId.protocolId());
 
     string filename = BASE_DIR;
-    filename += "/";
-    filename += USER_DIR;
-    filename += "/";
+    filename += ConfigDir;
     filename += myId.accountId();
     filename += ".";
     filename += p;
@@ -609,6 +608,11 @@ void User::Init()
   myBuddyIconHash = "";
   myOurBuddyIconHash = "";
 
+  myPictureFileName = BASE_DIR;
+  myPictureFileName += ConfigDir;
+  myPictureFileName += myId.accountId();
+  myPictureFileName += ".pic";
+
   // GPG key
   myGpgKey = "";
 
@@ -665,9 +669,7 @@ void User::SetPermanent()
   Licq::protocolId_toStr(p, myId.protocolId());
 
   string filename = BASE_DIR;
-  filename += "/";
-  filename += USER_DIR;
-  filename += "/";
+  filename += ConfigDir;
   filename += myId.accountId();
   filename += ".";
   filename += p;
@@ -805,16 +807,6 @@ std::string Licq::User::getEmail() const
   if (email.empty())
     email = getUserInfoString("Email0");
   return email;
-}
-
-string Licq::User::pictureFileName() const
-{
-  string filename = BASE_DIR;
-  filename += USER_DIR;
-  filename += "/";
-  filename += myId.accountId();
-  filename += ".pic";
-  return filename;
 }
 
 const string& Licq::User::userEncoding() const
