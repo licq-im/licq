@@ -72,8 +72,8 @@ int CLicqForwarder::Run()
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
 
-  // Create our snmp information
-  m_nSMTPPort = 25; //getservicebyname("snmp");
+  // Create our smtp information
+  m_nSMTPPort = 25; //getservicebyname("smtp");
   string filename = "licq_forwarder.conf";
   Licq::IniFile conf(filename);
   if (!conf.loadFile())
