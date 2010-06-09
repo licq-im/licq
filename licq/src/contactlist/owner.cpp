@@ -35,8 +35,7 @@ Owner::Owner(const UserId& id)
   // Get data from the config file
   char p[5];
   Licq::protocolId_toStr(p, myId.protocolId());
-  string filename = BASE_DIR;
-  filename += "/owner.";
+  string filename = "owner.";
   filename += p;
   myConf.setFilename(filename);
   myConf.loadFile();

@@ -191,9 +191,7 @@ int CLicqRMS::Run()
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
 
-  char filename[256];
-  sprintf(filename, "%slicq_rms.conf", BASE_DIR);
-  Licq::IniFile conf(filename);
+  Licq::IniFile conf("licq_rms.conf");
   if (conf.loadFile())
   {
     conf.setSection("RMS");

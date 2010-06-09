@@ -257,8 +257,7 @@ User::User(const UserId& id, bool temporary)
     char p[5];
     Licq::protocolId_toStr(p, myId.protocolId());
 
-    string filename = BASE_DIR;
-    filename += ConfigDir;
+    string filename = ConfigDir;
     filename += myId.accountId();
     filename += ".";
     filename += p;
@@ -668,8 +667,7 @@ void User::SetPermanent()
   char p[5];
   Licq::protocolId_toStr(p, myId.protocolId());
 
-  string filename = BASE_DIR;
-  filename += ConfigDir;
+  string filename = ConfigDir;
   filename += myId.accountId();
   filename += ".";
   filename += p;

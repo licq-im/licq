@@ -74,17 +74,16 @@ int CLicqForwarder::Run()
 
   // Create our snmp information
   m_nSMTPPort = 25; //getservicebyname("snmp");
-  char filename[256];
-  sprintf(filename, "%slicq_forwarder.conf", BASE_DIR);
+  string filename = "licq_forwarder.conf";
   Licq::IniFile conf(filename);
   if (!conf.loadFile())
   {
     if(!CreateDefaultConfig())
     {
-      gLog.Error("%sCould not create default configuration file: %s\n", L_FORWARDxSTR, filename);
+      gLog.Error("%sCould not create default configuration file: %s\n", L_FORWARDxSTR, filename.c_str());
       return 1;
     }
-    gLog.Info("%sA default configuration file has been created: %s\n", L_FORWARDxSTR, filename);
+    gLog.Info("%sA default configuration file has been created: %s\n", L_FORWARDxSTR, filename.c_str());
     conf.loadFile();
   }
   conf.setSection("Forward");

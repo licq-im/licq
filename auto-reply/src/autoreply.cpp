@@ -16,7 +16,6 @@
 
 #include <licq_events.h>
 #include "licq_log.h"
-#include "licq_constants.h"
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
@@ -72,9 +71,7 @@ int CLicqAutoReply::Run()
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
 
-  char filename[256];
-  sprintf(filename, "%slicq_autoreply.conf", BASE_DIR);
-  Licq::IniFile conf(filename);
+  Licq::IniFile conf("licq_autoreply.conf");
   conf.loadFile();
   conf.setSection("Reply");
   conf.get("Program", myProgram, "cat");

@@ -218,13 +218,11 @@ bool LP_Init(int /* argc */, char** /* argv */)
 {
   string showInModes;
   string showMsgsInModes;
-    string filename;
     try {
 	Configured=false;
 	gLog.Info("%sOSD Plugin initializing\n", L_OSD_STR);
 
-	filename=BASE_DIR;
-    filename += "licq_osd.conf";
+    string filename = "licq_osd.conf";
     Licq::IniFile conf(filename);
     if (!conf.loadFile()) // no configfile found
     {
