@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <licq_constants.h>
 #include <licq/icqdefines.h>
 
 #include "gettext.h"

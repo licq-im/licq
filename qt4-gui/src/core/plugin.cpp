@@ -31,6 +31,7 @@
 # include <QStyleFactory>
 #endif
 
+#include <licq_constants.h>
 #include <licq_log.h>
 #include <licq_plugin.h>
 

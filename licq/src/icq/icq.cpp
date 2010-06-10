@@ -24,6 +24,7 @@
 #include <licq/oneventmanager.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
+#include <licq_constants.h>
 #include "licq_log.h"
 
 #include "../contactlist/user.h"

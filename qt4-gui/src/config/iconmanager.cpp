@@ -24,6 +24,7 @@
 
 #include <cctype>
 
+#include <licq_constants.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq_log.h>

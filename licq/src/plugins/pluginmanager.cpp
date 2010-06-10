@@ -20,6 +20,7 @@
 #include "pluginmanager.h"
 #include "gettext.h"
 
+#include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_log.h>
 #include <licq/daemon.h>

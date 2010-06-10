@@ -23,6 +23,7 @@
 // Localization
 #include "gettext.h"
 
+#include <licq_constants.h>
 #include "licq_log.h"
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
