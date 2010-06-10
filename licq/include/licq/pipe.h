@@ -17,12 +17,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQDAEMON_PIPE_H
-#define LICQDAEMON_PIPE_H
+#ifndef LICQ_PIPE_H
+#define LICQ_PIPE_H
 
 #include <unistd.h>
 
-namespace LicqDaemon
+namespace Licq
 {
 
 class Pipe
@@ -48,12 +48,18 @@ public:
   /**
    * Reads one byte using read().
    */
-  inline char getChar();
+  char getChar()
+  {
+    char ch;
+    read(&ch, sizeof(ch));
+    return ch;
+  }
 
   /**
    * Writes one byte using write().
    */
-  void putChar(char ch) { write(&ch, sizeof(ch)); }
+  void putChar(char ch)
+  { write(&ch, sizeof(ch)); }
 
   int getReadFd() const { return myFds[0]; }
   int getWriteFd() const { return myFds[1]; }
@@ -62,13 +68,6 @@ private:
   int myFds[2];
 };
 
-inline char Pipe::getChar()
-{
-  char ch;
-  read(&ch, sizeof(ch));
-  return ch;
-}
-
-} // namespace LicqDaemon
+} // namespace Licq
 
 #endif

@@ -22,10 +22,10 @@
 
 #include "pluginthread.h"
 
+#include <licq/pipe.h>
 #include "licq/plugin.h"
 #include "licq/thread/mutex.h"
 #include "utils/dynamiclibrary.h"
-#include "utils/pipe.h"
 
 #include <boost/exception/info.hpp>
 #include <boost/shared_ptr.hpp>
@@ -95,7 +95,7 @@ protected:
   bool callInitInThread();
 
   DynamicLibrary::Ptr myLib;
-  Pipe myPipe;
+  Licq::Pipe myPipe;
 
   template<typename SymbolType>
   inline void loadSymbol(const std::string& name, SymbolType*& symbol);

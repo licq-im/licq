@@ -19,6 +19,7 @@ set(licq_HEADERS
   md5.h
   oneventmanager.h
   packet.h
+  pipe.h
   plugin.h
   pluginlogsink.h
   pluginmanager.h

@@ -17,9 +17,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "pipe.h"
+#include <licq/pipe.h>
 
-using namespace LicqDaemon;
+using namespace Licq;
 
 Pipe::Pipe()
 {

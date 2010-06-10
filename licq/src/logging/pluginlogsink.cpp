@@ -17,10 +17,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <licq/pipe.h>
 #include "licq/pluginlogsink.h"
 #include "licq/thread/mutex.h"
 #include "licq/thread/mutexlocker.h"
-#include "utils/pipe.h"
 
 #include <deque>
 
@@ -36,7 +36,7 @@ public:
     // Empty
   }
 
-  LicqDaemon::Pipe myPipe;
+  Pipe myPipe;
 
   Mutex myMutex;
   int myLogLevels;
