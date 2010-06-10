@@ -568,7 +568,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
 
     gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
         -nSequence, L_BLANKxSTR, errorStr.c_str());
-    write(gIcqProtocol.pipe_newsocket[PIPE_WRITE], "S", 1);
+    gIcqProtocol.myNewSocketPipe.putChar('S');
     // Kill the event, do after the above as ProcessDoneEvent erase the event
     if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
       gIcqProtocol.ProcessDoneEvent(e);
@@ -672,7 +672,6 @@ void *MonitorSockets_tep(void* /* p */)
 
   fd_set f;
   int nSocketsAvailable, nServiceSocket, l;
-  char buf[1024];
 
   while (true)
   {
@@ -683,9 +682,9 @@ void *MonitorSockets_tep(void* /* p */)
     l = gSocketManager.LargestSocket() + 1;
 
     // Add the new socket pipe descriptor
-    FD_SET(gIcqProtocol.pipe_newsocket[PIPE_READ], &f);
-    if (gIcqProtocol.pipe_newsocket[PIPE_READ] >= l)
-      l = gIcqProtocol.pipe_newsocket[PIPE_READ] + 1;
+    FD_SET(gIcqProtocol.myNewSocketPipe.getReadFd(), &f);
+    if (gIcqProtocol.myNewSocketPipe.getReadFd() >= l)
+      l = gIcqProtocol.myNewSocketPipe.getReadFd() + 1;
 
     // Add the fifo descriptor
     if (LicqDaemon::gFifo.fifo_fd != -1)
@@ -716,15 +715,15 @@ void *MonitorSockets_tep(void* /* p */)
 
 
         // New socket event ----------------------------------------------------
-      if (nCurrentSocket == gIcqProtocol.pipe_newsocket[PIPE_READ])
+      if (nCurrentSocket == gIcqProtocol.myNewSocketPipe.getReadFd())
       {
-        read(gIcqProtocol.pipe_newsocket[PIPE_READ], buf, 1);
-          if (buf[0] == 'S')
-          {
+        char buf = gIcqProtocol.myNewSocketPipe.getChar();
+        if (buf == 'S')
+        {
             DEBUG_THREADS("[MonitorSockets_tep] Reloading socket info.\n");
           }
-          else if (buf[0] == 'X')
-          {
+        else if (buf == 'X')
+        {
             DEBUG_THREADS("[MonitorSockets_tep] Exiting.\n");
             pthread_exit(NULL);
           }
@@ -734,6 +733,7 @@ void *MonitorSockets_tep(void* /* p */)
       if (nCurrentSocket == LicqDaemon::gFifo.fifo_fd)
       {
           DEBUG_THREADS("[MonitorSockets_tep] Data on FIFO.\n");
+        char buf[1024];
         fgets(buf, 1024, LicqDaemon::gFifo.fifo_fs);
         LicqDaemon::gFifo.process(buf);
         continue;
@@ -953,7 +953,7 @@ void *Shutdown_tep(void* /* p */)
   LicqDaemon::gDaemon.shutdownPlugins();
 
   // Cancel the monitor sockets thread (deferred until ready)
-  write(gIcqProtocol.pipe_newsocket[PIPE_WRITE], "X", 1);
+  gIcqProtocol.myNewSocketPipe.putChar('X');
 
   // Cancel the ping thread
   pthread_cancel(gIcqProtocol.thread_ping);

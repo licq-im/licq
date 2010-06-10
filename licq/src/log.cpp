@@ -150,7 +150,6 @@ void CLogService_File::LogMessage(const char *_szPrefix,
 //-----Window-------------------------------------------------------------------
 CPluginLog::CPluginLog()
 {
-  pipe(pipe_log);
   pthread_mutex_init(&mutex, NULL);
 }
 
@@ -192,7 +191,7 @@ void CPluginLog::AddLog(char *_szLog, unsigned short _nLogType)
   m_vszLogs.push_back(_szLog);
   m_vnLogTypes.push_back(_nLogType);
   pthread_mutex_unlock(&mutex);
-  write(pipe_log[PIPE_WRITE], "*", 1);
+  myLogPipe.putChar('*');
 }
 
 CLogService_Plugin::CLogService_Plugin(CPluginLog *_xWindow, unsigned short _nLogTypes)

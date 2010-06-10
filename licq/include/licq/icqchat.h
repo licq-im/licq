@@ -5,9 +5,9 @@
 #include <deque>
 #include <list>
 
+#include "pipe.h"
 #include "socket.h"
 #include "socketmanager.h"
-#include "licq_constants.h"
 
 namespace Licq
 {
@@ -361,7 +361,7 @@ public:
   void FocusIn();
   void Sleep(bool);
 
-  int Pipe() { return pipe_events[PIPE_READ]; }
+  int Pipe() { return myEventsPipe.getReadFd(); }
   CChatEvent *PopChatEvent();
 
   void AcceptReverseConnection(Licq::TCPSocket*);
@@ -372,7 +372,8 @@ protected:
   static pthread_mutex_t cmList_mutex;
   static pthread_mutex_t waiting_thread_cancel_mutex;
 
-  int pipe_events[2], pipe_thread[2];
+  Licq::Pipe myEventsPipe;
+  Licq::Pipe myThreadPipe;
   Licq::UserId myUserId;
   unsigned short m_nSession;
   ChatUserList chatUsers;

@@ -7,8 +7,8 @@
 #include <list>
 #include <pthread.h>
 
-#include "licq_constants.h"
 #include "licq/log.h"
+#include "licq/pipe.h"
 
 using Licq::gLog;
 
@@ -115,12 +115,12 @@ public:
   unsigned short NextLogType();
   void ClearLog();
   void AddLog(char *_szLog, unsigned short _nLogType);
-  int Pipe()  { return pipe_log[PIPE_READ]; }
+  int Pipe()  { return myLogPipe.getReadFd(); }
 protected:
   pthread_mutex_t mutex;
   std::list <char *> m_vszLogs;
   std::list <unsigned short> m_vnLogTypes;
-  int pipe_log[2];
+  Licq::Pipe myLogPipe;
 };
 
 class CLogService_Plugin : public CLogService

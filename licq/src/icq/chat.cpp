@@ -651,10 +651,6 @@ CChatManager::CChatManager(unsigned long nUin,
   unsigned short fontSize, bool fontBold, bool fontItalic, bool fontUnderline,
   bool fontStrikeOut, int fr, int fg, int fb, int br, int bg, int bb)
 {
-  // Create the plugin notification pipe
-  pipe(pipe_thread);
-  pipe(pipe_events);
-
   char szUin[24];
   sprintf(szUin, "%lu", nUin);
   myUserId = Licq::UserId(szUin, LICQ_PPID);
@@ -880,7 +876,7 @@ void CChatManager::AcceptReverseConnection(Licq::TCPSocket* s)
   // Reload the socket information
   sockman.AddSocket(&u->sock);
   sockman.DropSocket(&u->sock);
-  write(pipe_thread[PIPE_WRITE], "R", 1);
+  myThreadPipe.putChar('R');
 
   gLog.Info(tr("%sChat: Received reverse connection.\n"), L_TCPxSTR);
 }
@@ -1161,7 +1157,7 @@ CChatEvent *CChatManager::PopChatEvent()
 void CChatManager::PushChatEvent(CChatEvent *e)
 {
   chatEvents.push_back(e);
-  write(pipe_events[PIPE_WRITE], "*", 1);
+  myEventsPipe.putChar('*');
 }
 
 
@@ -2191,18 +2187,10 @@ void CChatManager::CloseChat()
   // We must do it before trying to close the socket to avoid
   // the chat thread trying to close the socket itself once
   // it notices it cannot read from it
-  if (pipe_thread[PIPE_WRITE] != -1)
-  {
-    write(pipe_thread[PIPE_WRITE], "X", 1);
-    if (m_bThreadCreated)
-      pthread_join(thread_chat, NULL);
-    m_bThreadCreated = false;
-
-    close(pipe_thread[PIPE_READ]);
-    close(pipe_thread[PIPE_WRITE]);
-
-    pipe_thread[PIPE_READ] = pipe_thread[PIPE_WRITE] = -1;
-  }
+  myThreadPipe.putChar('X');
+  if (m_bThreadCreated)
+    pthread_join(thread_chat, NULL);
+  m_bThreadCreated = false;
 
   CChatUser *u = NULL;
   CBuffer buf;
@@ -2318,7 +2306,6 @@ void *ChatManager_tep(void *arg)
 
   fd_set f;
   int l, nSocketsAvailable, nCurrentSocket;
-  char buf[2];
 
   if (chatman->m_pChatClient)
   {
@@ -2336,9 +2323,9 @@ void *ChatManager_tep(void *arg)
     l = chatman->sockman.LargestSocket() + 1;
 
     // Add the new socket pipe descriptor
-    FD_SET(chatman->pipe_thread[PIPE_READ], &f);
-    if (chatman->pipe_thread[PIPE_READ] >= l)
-      l = chatman->pipe_thread[PIPE_READ] + 1;
+    FD_SET(chatman->myThreadPipe.getReadFd(), &f);
+    if (chatman->myThreadPipe.getReadFd() >= l)
+      l = chatman->myThreadPipe.getReadFd() + 1;
 
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
 
@@ -2348,14 +2335,14 @@ void *ChatManager_tep(void *arg)
       if (FD_ISSET(nCurrentSocket, &f))
       {
         // New socket event ----------------------------------------------------
-        if (nCurrentSocket == chatman->pipe_thread[PIPE_READ])
+        if (nCurrentSocket == chatman->myThreadPipe.getReadFd())
         {
-          read(chatman->pipe_thread[PIPE_READ], buf, 1);
-          if (buf[0] == 'R')
+          char buf = chatman->myThreadPipe.getChar();
+          if (buf == 'R')
           {
             DEBUG_THREADS("[ChatManager_tep] Reloading socket info.\n");
           }
-          else if (buf[0] == 'X')
+          else if (buf == 'X')
           {
             DEBUG_THREADS("[ChatManager_tep] Exiting.\n");
             pthread_exit(NULL);

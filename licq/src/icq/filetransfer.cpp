@@ -23,7 +23,7 @@
 // Localization
 #include "gettext.h"
 
-#include <licq_constants.h>
+#include "licq_constants.h"
 #include "licq_log.h"
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -194,10 +194,6 @@ pthread_mutex_t CFileTransferManager::thread_cancel_mutex
 CFileTransferManager::CFileTransferManager(const char* accountId)
   : m_bThreadRunning(false)
 {
-  // Create the plugin notification pipe
-  pipe(pipe_thread);
-  pipe(pipe_events);
-
   if (myId != NULL)
     strcpy(myId, accountId);
   else
@@ -433,7 +429,7 @@ void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
   m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
 
   // Reload socket info
-  write(pipe_thread[PIPE_WRITE], "R", 1);
+  myThreadPipe.putChar('R');
 
   gLog.Info(tr("%sFile Transfer: Received reverse connection.\n"), L_TCPxSTR);
 }
@@ -1025,7 +1021,7 @@ void CFileTransferManager::PushFileTransferEvent(unsigned char t)
 void CFileTransferManager::PushFileTransferEvent(CFileTransferEvent *e)
 {
   ftEvents.push_back(e);
-  write(pipe_events[PIPE_WRITE], "*", 1);
+  myEventsPipe.putChar('*');
 }
 
 
@@ -1068,18 +1064,10 @@ void CFileTransferManager::ChangeSpeed(unsigned short nSpeed)
 void CFileTransferManager::CloseFileTransfer()
 {
   // Close the thread
-  if (pipe_thread[PIPE_WRITE] != -1)
-  {
-    write(pipe_thread[PIPE_WRITE], "X", 1);
-    if (m_bThreadCreated)
-      pthread_join(thread_ft, NULL);
-    m_bThreadCreated = false;
-   
-    close(pipe_thread[PIPE_READ]);
-    close(pipe_thread[PIPE_WRITE]);
-
-    pipe_thread[PIPE_READ] = pipe_thread[PIPE_WRITE] = -1;
-  }
+  myThreadPipe.putChar('X');
+  if (m_bThreadCreated)
+    pthread_join(thread_ft, NULL);
+  m_bThreadCreated = false;
 
   CloseConnection();
 }
@@ -1109,7 +1097,6 @@ void *FileTransferManager_tep(void *arg)
   struct timeval *tv;
   struct timeval tv_updates = { 2, 0 };
   int l, nSocketsAvailable, nCurrentSocket;
-  char buf[2];
 
   if (!ftman->isReceiver())
   {
@@ -1128,9 +1115,9 @@ void *FileTransferManager_tep(void *arg)
     l = ftman->sockman.LargestSocket() + 1;
 
     // Add the new socket pipe descriptor
-    FD_SET(ftman->pipe_thread[PIPE_READ], &f_recv);
-    if (ftman->pipe_thread[PIPE_READ] >= l)
-      l = ftman->pipe_thread[PIPE_READ] + 1;
+    FD_SET(ftman->myThreadPipe.getReadFd(), &f_recv);
+    if (ftman->myThreadPipe.getReadFd() >= l)
+      l = ftman->myThreadPipe.getReadFd() + 1;
 
     // Set up the send descriptor
     FD_ZERO(&f_send);
@@ -1180,14 +1167,14 @@ void *FileTransferManager_tep(void *arg)
       if (FD_ISSET(nCurrentSocket, &f_recv))
       {
         // New socket event ----------------------------------------------------
-        if (nCurrentSocket == ftman->pipe_thread[PIPE_READ])
+        if (nCurrentSocket == ftman->myThreadPipe.getReadFd())
         {
-          read(ftman->pipe_thread[PIPE_READ], buf, 1);
-          if (buf[0] == 'R')
+          char buf = ftman->myThreadPipe.getChar();
+          if (buf == 'R')
           {
             DEBUG_THREADS("[FileTransferManager_tep] Reloading socket info.\n");
           }
-          else if (buf[0] == 'X')
+          else if (buf == 'X')
           {
             DEBUG_THREADS("[FileTransferManager_tep] Exiting.\n");
             pthread_exit(NULL);
@@ -1328,7 +1315,7 @@ void *FileWaitForSignal_tep(void *arg)
     {
       rc->m->ftSock.TransferConnectionFrom(s);
       bConnected = rc->m->SendFileHandshake();
-      write(rc->m->pipe_thread[PIPE_WRITE], "R", 1);
+      rc->m->myThreadPipe.putChar('R');
     }
   }
 

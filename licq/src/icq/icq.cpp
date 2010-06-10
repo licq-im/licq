@@ -132,9 +132,6 @@ void IcqProtocol::initialize()
   licqConf.get("UseBART", m_bUseBART, true); // server side buddy icons
   licqConf.get("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
 
-  // Pipes
-  pipe(pipe_newsocket);
-
   // Start up our threads
   pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);

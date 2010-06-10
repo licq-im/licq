@@ -475,7 +475,7 @@ bool COscarService::Initialize()
   gSocketManager.AddSocket(s);
   gSocketManager.DropSocket(s);
   // Alert the select thread that there is a new socket
-  write(gIcqProtocol.pipe_newsocket[PIPE_WRITE], "S", 1);
+  gIcqProtocol.myNewSocketPipe.putChar('S');
 
   CPU_SendCookie *p1 = new CPU_SendCookie(myCookie.get(), myCookieLen, myFam);
   gLog.Info(tr("%sSending cookie for service 0x%02X.\n"),

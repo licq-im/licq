@@ -1155,7 +1155,7 @@ int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
   gSocketManager.DropSocket(s);
 
   // Alert the select thread that there is a new socket
-  write(pipe_newsocket[PIPE_WRITE], "S", 1);
+  myNewSocketPipe.putChar('S');
 
   return nSD;
 }
@@ -1332,7 +1332,7 @@ int IcqProtocol::ReverseConnectToUser(const char* id, unsigned long nIp,
     // Add the new socket to the socket manager, alert the thread
     gSocketManager.AddSocket(s);
     gSocketManager.DropSocket(s);
-    write(pipe_newsocket[PIPE_WRITE], "S", 1);
+    myNewSocketPipe.putChar('S');
   }
 
   return nSD;

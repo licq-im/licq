@@ -58,7 +58,7 @@
 #include <list>
 #include <string>
 
-#include "licq_constants.h"
+#include "pipe.h"
 #include "socket.h"
 #include "socketmanager.h"
 
@@ -165,7 +165,7 @@ public:
   void SetUpdatesEnabled(unsigned short n) { m_nUpdatesEnabled = n; }
   unsigned short UpdatesEnabled(void) { return m_nUpdatesEnabled; }
 
-  int Pipe() { return pipe_events[PIPE_READ]; }
+  int Pipe() { return myEventsPipe.getReadFd(); }
   CFileTransferEvent *PopFileTransferEvent();
 
   void AcceptReverseConnection(Licq::TCPSocket*);
@@ -178,7 +178,8 @@ protected:
   bool m_bThreadRunning;
   pthread_t m_tThread;
 
-  int pipe_events[2], pipe_thread[2];
+  Licq::Pipe myEventsPipe;
+  Licq::Pipe myThreadPipe;
   FileTransferEventList ftEvents;
   pthread_t thread_ft;
   std::list<std::string> myPathNames;

@@ -28,6 +28,7 @@
 #include <pthread.h>
 
 #include <licq/buffer.h>
+#include <licq/pipe.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
 
@@ -370,7 +371,7 @@ private:
   void addToModifyUsers(unsigned long unique_id, const std::string data);
 
 
-  int pipe_newsocket[2];
+  Licq::Pipe myNewSocketPipe;
   unsigned long m_nDesiredStatus;
   unsigned short m_nServerSequence;
   unsigned myMaxUsersPerPacket;

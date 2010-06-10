@@ -1686,7 +1686,7 @@ int IcqProtocol::ConnectToLoginServer()
   // Which protocol plugin?
   int r = ConnectToServer(myIcqServer.c_str(), myIcqServerPort);
 
-  write(pipe_newsocket[PIPE_WRITE], "S", 1);
+  myNewSocketPipe.putChar('S');
 
   return r;
 }
