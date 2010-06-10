@@ -43,6 +43,7 @@ Owner::Owner(const UserId& id)
   myConf.writeFile();
 
   // Make sure config file is mode 0600
+  filename = BASE_DIR + filename;
   if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) == -1)
   {
     gLog.Warn(tr("%sUnable to set %s to mode 0600. Your password is vulnerable if stored locally.\n"),
