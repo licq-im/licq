@@ -101,6 +101,9 @@ set(test_SRCS
   logging/logservice.cpp
   logging/threadlog.cpp
 
+  # A dummy gDaemon to make tests compile without having to pull in the read daemon.cpp
+  tests/daemon_dummy.cpp
+
   ${tested_SRCS}
 )
 
