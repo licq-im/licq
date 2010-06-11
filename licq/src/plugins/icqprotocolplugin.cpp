@@ -19,7 +19,6 @@
 
 #include <unistd.h>
 
-#include <licq_constants.h>
 #include "licq/pluginmanager.h"
 #include <licq/version.h>
 

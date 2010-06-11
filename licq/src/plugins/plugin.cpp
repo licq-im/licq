@@ -19,7 +19,6 @@
 
 #include "plugin.h"
 
-#include "licq_constants.h"
 #include "licq/thread/mutexlocker.h"
 
 #include <cassert>

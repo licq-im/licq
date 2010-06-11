@@ -31,7 +31,6 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-#include <licq_constants.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
 

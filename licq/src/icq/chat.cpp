@@ -14,7 +14,6 @@
 #include <unistd.h>
 
 #include "licq_log.h"
-#include "licq_constants.h"
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/translator.h>

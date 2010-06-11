@@ -33,7 +33,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
 #include <licq/socket.h>
-#include <licq_constants.h>
 #include <licq_events.h>
 
 // Qt-gui
