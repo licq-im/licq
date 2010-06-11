@@ -14,8 +14,6 @@
 
 #include <locale>
 
-#include "licq_constants.h"
-
 #include "licq.h"
 
 #ifdef USE_SOCKS5
@@ -28,11 +26,6 @@ extern "C" {
 
 // Localization
 #include "gettext.h"
-
-// define a global variable for the base directory containing the data and config subdirectories
-char BASE_DIR[MAX_FILENAME_LEN];
-char SHARE_DIR[MAX_FILENAME_LEN];
-char LIB_DIR[MAX_FILENAME_LEN];
 
 // sighandler.cpp
 void licq_install_signal_handlers();

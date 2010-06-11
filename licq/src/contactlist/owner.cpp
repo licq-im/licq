@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <licq_constants.h>
+#include <licq/daemon.h>
 #include <licq/icqdefines.h>
 
 #include "gettext.h"
@@ -14,6 +14,7 @@
 
 using std::string;
 using Licq::UserId;
+using Licq::gDaemon;
 using namespace LicqDaemon;
 
 
@@ -30,8 +31,7 @@ Owner::Owner(const UserId& id)
   myPassword = "";
   myPDINFO = 0;
 
-  myPictureFileName = BASE_DIR;
-  myPictureFileName += "owner.pic";
+  myPictureFileName = gDaemon.baseDir() + "owner.pic";
 
   // Get data from the config file
   char p[5];
@@ -44,7 +44,7 @@ Owner::Owner(const UserId& id)
   myConf.writeFile();
 
   // Make sure config file is mode 0600
-  filename = BASE_DIR + filename;
+  filename = gDaemon.baseDir() + filename;
   if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) == -1)
   {
     gLog.Warn(tr("%sUnable to set %s to mode 0600. Your password is vulnerable if stored locally.\n"),
@@ -69,14 +69,8 @@ Owner::Owner(const UserId& id)
 
   gLog.Info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myId.toString().c_str());
 
-  filename = BASE_DIR;
-  filename += HistoryDir;
-  filename += "owner.";
-  filename += myId.accountId();
-  filename += ".";
-  filename += p;
-  filename += HistoryExt;
-  setHistoryFile(filename);
+  setHistoryFile(gDaemon.baseDir() + HistoryDir + "owner." + myId.accountId() +
+      "." + p + HistoryExt);
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != Licq::TIMEZONE_UNKNOWN)
   {

@@ -23,7 +23,6 @@
 // Localization
 #include "gettext.h"
 
-#include "licq_constants.h"
 #include "licq_log.h"
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -244,14 +243,13 @@ bool CFileTransferManager::receiveFiles(const string& directory)
 
   if (directory.empty())
   {
-    myDirectory = BASE_DIR;
-    myDirectory += myId;
-    if (access(BASE_DIR, F_OK) < 0 && mkdir(myDirectory.c_str(), 0700) == -1 &&
+    myDirectory = Licq::gDaemon.baseDir() + myId;
+    if (access(Licq::gDaemon.baseDir().c_str(), F_OK) < 0 && mkdir(myDirectory.c_str(), 0700) == -1 &&
         errno != EEXIST)
     {
       gLog.Warn(tr("%sUnable to create directory %s for file transfer.\n"),
          L_WARNxSTR, myDirectory.c_str());
-      myDirectory = BASE_DIR;
+      myDirectory = Licq::gDaemon.baseDir();
     }
   }
   else

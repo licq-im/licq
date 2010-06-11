@@ -21,8 +21,6 @@
 
 #include <gtest/gtest.h>
 
-char BASE_DIR;
-
 using namespace Licq;
 
 TEST(ReadWriteMutex, readLock)

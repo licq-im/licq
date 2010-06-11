@@ -42,7 +42,6 @@
 #include "licq/pluginmanager.h"
 #include "licq/protocolmanager.h"
 #include <licq/translator.h>
-#include "licq_constants.h"
 #include "licq_log.h"
 
 #include "gettext.h"
@@ -862,8 +861,7 @@ Fifo::~Fifo()
 void Fifo::initialize()
 {
 #ifdef USE_FIFO
-  string filename = BASE_DIR;
-  filename += "licq_fifo";
+  string filename = gDaemon.baseDir() + "licq_fifo";
 
   // Open the fifo
   gLog.Info(tr("%sOpening fifo.\n"), L_INITxSTR);

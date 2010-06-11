@@ -26,7 +26,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <licq_constants.h>
+#include <licq/daemon.h>
 #include <licq_log.h>
 
 #include "gettext.h"
@@ -65,7 +65,7 @@ bool IniFile::loadFile()
 
   string filename;
   if (myFilename.size() > 0 && myFilename[0] != '/')
-    filename = BASE_DIR + myFilename;
+    filename = Licq::gDaemon.baseDir() + myFilename;
   else
     filename = myFilename;
 
@@ -177,7 +177,7 @@ bool IniFile::writeFile(bool allowCreate)
 
   string filename;
   if (myFilename.size() > 0 && myFilename[0] != '/')
-    filename = BASE_DIR + myFilename;
+    filename = Licq::gDaemon.baseDir() + myFilename;
   else
     filename = myFilename;
 

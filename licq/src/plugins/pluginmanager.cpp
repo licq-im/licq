@@ -20,7 +20,6 @@
 #include "pluginmanager.h"
 #include "gettext.h"
 
-#include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_log.h>
 #include <licq/daemon.h>
@@ -46,6 +45,7 @@ using Licq::MutexLocker;
 using Licq::StringList;
 using Licq::gDaemon;
 using namespace LicqDaemon;
+using namespace std;
 
 // Declare global PluginManager (internal for daemon)
 LicqDaemon::PluginManager LicqDaemon::gPluginManager;
@@ -374,7 +374,7 @@ void PluginManager::getAvailablePlugins(
 {
   plugins.clear();
 
-  const std::string pattern = LIB_DIR + prefix + "_*.so";
+  string pattern = gDaemon.libDir() + prefix + "_*.so";
   glob_t globbuf;
   if (glob(pattern.c_str(), 0, NULL, &globbuf) != 0)
     return;
@@ -490,7 +490,7 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
 {
   std::string path;
   if (!name.empty() && name[0] != '/' && name[0] != '.')
-    path = LIB_DIR + prefix + "_" + name + ".so";
+    path = gDaemon.libDir() + prefix + "_" + name + ".so";
   else
     path = name;
 

@@ -19,10 +19,10 @@
 
 #include "oneventmanager.h"
 
-#include <licq_constants.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 
@@ -31,6 +31,7 @@
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::gDaemon;
 using Licq::gUserManager;
 
 
@@ -57,8 +58,7 @@ void OnEventManager::initialize()
   Licq::IniFile licqConf("licq.conf");
   licqConf.loadFile();
 
-  string soundDir = SHARE_DIR;
-  soundDir += "sounds/icq/";
+  string soundDir = gDaemon.shareDir() + "sounds/icq/";
 
   licqConf.setSection("onevent");
   licqConf.get("Enable", myEnabled, true);

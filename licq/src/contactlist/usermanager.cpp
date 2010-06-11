@@ -3,7 +3,6 @@
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
 
-#include <licq_constants.h>
 #include "licq_log.h"
 #include "licq_events.h"
 #include <licq/daemon.h>
@@ -212,7 +211,8 @@ bool UserManager::Load()
     if (sz == string::npos)
     {
       gLog.Error(tr("%sFatal error reading protocol information for User%d with ID '%s'.\n"
-          "%sPlease check \"%s/users.conf\".\n"), L_ERRORxSTR, i, userFile.c_str(), L_BLANKxSTR, BASE_DIR);
+          "%sPlease check \"%s/users.conf\".\n"), L_ERRORxSTR, i,
+          userFile.c_str(), L_BLANKxSTR, gDaemon.baseDir().c_str());
       exit(1);
     }
     string accountId = userFile.substr(0, sz);

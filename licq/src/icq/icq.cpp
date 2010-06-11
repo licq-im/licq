@@ -24,7 +24,6 @@
 #include <licq/oneventmanager.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
-#include <licq_constants.h>
 #include "licq_log.h"
 
 #include "../contactlist/user.h"
@@ -109,7 +108,7 @@ void IcqProtocol::initialize()
   licqConf.get("ErrorTypes", myErrorTypes, L_ERROR | L_UNKNOWN);
   if (myErrorFile != "none")
   {
-    string errorFile = BASE_DIR + myErrorFile;
+    string errorFile = Licq::gDaemon.baseDir() + myErrorFile;
     CLogService_File *l = new CLogService_File(myErrorTypes);
     if (!l->SetLogFile(errorFile.c_str(), "a"))
     {

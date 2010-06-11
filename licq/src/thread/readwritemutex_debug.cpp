@@ -20,7 +20,10 @@
 #include <cstdio>
 #include <cstdlib>
 
-extern char BASE_DIR[];
+#include <licq/daemon.h>
+
+using namespace std;
+using Licq::gDaemon;
 
 class ReadWriteMutex::Private
 {
@@ -92,9 +95,8 @@ void ReadWriteMutex::Private::debugWait(bool writing)
     printUsers(stderr, writing);
 
     // Also save it in <basedir>/licq.debug_rw_mutex
-    char filename[255];
-    ::snprintf(filename, 255, "%s/licq.debug_rw_mutex", BASE_DIR);
-    FILE* file = ::fopen(filename, "w");
+    string filename = gDaemon.baseDir() + "licq.debug_rw_mutex";
+    FILE* file = ::fopen(filename.c_str(), "w");
     if (file != NULL)
     {
       ::fprintf(file, "time: %lu\n", (unsigned long)time(NULL));

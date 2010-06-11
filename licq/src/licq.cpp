@@ -25,7 +25,6 @@
 #include <unistd.h>
 
 #include "licq.h"
-#include <licq_constants.h>
 #include "licq_log.h"
 #include "licq/exceptions/exception.h"
 #include <licq/inifile.h>
@@ -152,16 +151,10 @@ void ssl_info_callback(SSL *s, int where, int ret)
 
 // Sets up BASE_DIR to be the absolute path to the user's config base
 // directory. BASE_DIR will both start and end with a slash (/).
-static bool setupBaseDirPath(const char* path)
+static bool setupBaseDirPath(const std::string& path)
 {
-  const size_t len = ::strlen(path);
-
-  // Add slash to the end if needed
-  const char* slash = (len > 0 && path[len - 1] != '/') ? "/" : "";
-
-  int ret;
-  if (len > 0 && path[0] == '/')
-    ret = ::snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s%s", path, slash);
+  if (path.size() > 0 && path[0] == '/')
+    gDaemon.setBaseDir(path);
   else
   {
     // Get current working directory
@@ -174,20 +167,17 @@ static bool setupBaseDirPath(const char* path)
     }
 
     // Tidy up path if it is a "simple" relative path
-    if (::strncmp(path, "./", 2) == 0)
-      path += 2;
+    string newPath;
+    if (path.size() >= 2 && path[0] == '.' && path[1] == '/')
+      newPath = path.substr(1);
+    else
+      newPath = '/' + path;
 
     // Construct an absolute path
-    ret = ::snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/%s%s", cwd, path, slash);
+    gDaemon.setBaseDir(cwd + newPath);
   }
 
-  if (ret <= 0 || ret >= MAX_FILENAME_LEN)
-  {
-    ::fprintf(stderr, tr("Could not create config base directory path\n"));
-    return false;
-  }
-
-  return true;
+  return (gDaemon.baseDir().size() > 0);
 }
 
 /**
@@ -371,24 +361,12 @@ bool CLicq::Init(int argc, char **argv)
                     "unable to determine config base directory"));
       return false;
     }
-    int ret = ::snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/.licq/", home);
-    if (ret <= 0 || ret >= MAX_FILENAME_LEN)
-    {
-      gLog.error(tr("Could not create config base directory path"));
-      return false;
-    }
+    gDaemon.setBaseDir(string(home) + "/.licq");
   }
 
   // check if user has conf files installed, install them if not
-  if ( (access(BASE_DIR, F_OK) < 0 || bForceInit) && !Install() )
+  if ( (access(gDaemon.baseDir().c_str(), F_OK) < 0 || bForceInit) && !Install() )
     return false;
-
-  // Define the directory for all the shared data
-  strncpy(SHARE_DIR, INSTALL_SHAREDIR, MAX_FILENAME_LEN);
-  SHARE_DIR[MAX_FILENAME_LEN - 1] = '\0';
-
-  strncpy(LIB_DIR, INSTALL_LIBDIR, MAX_FILENAME_LEN);
-  LIB_DIR[MAX_FILENAME_LEN - 1] = '\0';
 
   // FIXME: ICQ should be put into its own plugin. This is just a dummy
   // plugin. It can't really be stopped...
@@ -432,8 +410,7 @@ bool CLicq::Init(int argc, char **argv)
   // When Licq is killed (normally or abnormally) the file will be closed by the operating
   // system and the lock released.
   char szKey[32];
-  string pidfile = BASE_DIR;
-  pidfile += "licq.pid";
+  string pidfile = gDaemon.baseDir() + "licq.pid";
 
   // Never close pidFile!
   int pidFile = open(pidfile.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
@@ -643,9 +620,7 @@ bool CLicq::Init(int argc, char **argv)
   gOnEventManager.initialize();
   gSarManager.initialize();
   gStatistics.initialize();
-  string filename = SHARE_DIR;
-  filename += Daemon::UtilityDir;
-  gUtilityManager.loadUtilities(filename);
+  gUtilityManager.loadUtilities(gDaemon.shareDir() + Daemon::UtilityDir);
 
   // Create the daemon
   gIcqProtocol.initialize();
@@ -675,7 +650,7 @@ const char *CLicq::Version()
  *---------------------------------------------------------------------------*/
 bool CLicq::upgradeLicq128(Licq::IniFile& licqConf)
 {
-  string strBaseDir = BASE_DIR;
+  string strBaseDir = gDaemon.baseDir();
   Licq::IniFile ownerFile("owner.uin");
   if (!ownerFile.loadFile())
     return false;
@@ -915,14 +890,15 @@ void CLicq::ShutdownPlugins()
 
 bool CLicq::Install()
 {
+  string baseDir = gDaemon.baseDir();
+
   // Create the directory if necessary
-  if (mkdir(BASE_DIR, 0700) == -1 && errno != EEXIST)
+  if (mkdir(baseDir.c_str(), 0700) == -1 && errno != EEXIST)
   {
-    fprintf(stderr, "Couldn't mkdir %s: %s\n", BASE_DIR, strerror(errno));
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", baseDir.c_str(), strerror(errno));
     return (false);
   }
-  string cmd = BASE_DIR;
-  cmd += "users";
+  string cmd = baseDir + "users";
   if (mkdir(cmd.c_str(), 0700) == -1 && errno != EEXIST)
   {
     fprintf(stderr, "Couldn't mkdir %s: %s\n", cmd.c_str(), strerror(errno));

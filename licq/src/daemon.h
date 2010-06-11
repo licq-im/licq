@@ -54,6 +54,12 @@ public:
    */
   void shutdownPlugins();
 
+  /**
+   * Set dir variable
+   * Only called once during startup
+   */
+  void setBaseDir(const std::string& baseDir);
+
   // From Licq::Daemon
   pthread_t* Shutdown();
   const char* Version() const;

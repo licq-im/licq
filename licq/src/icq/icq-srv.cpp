@@ -33,7 +33,6 @@
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
-#include <licq_constants.h>
 #include "licq_events.h"
 #include "licq_log.h"
 #include "licq_message.h"
@@ -5806,8 +5805,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       char *szJPEG = packet.UnpackStringTLV(0x0002);
  
       // Save it in a file
-      string filename = BASE_DIR;
-      filename += "Licq_verify.jpg";
+      string filename = Licq::gDaemon.baseDir() + "Licq_verify.jpg";
       FILE* fp = fopen(filename.c_str(), "w");
       if (fp == 0)
       {

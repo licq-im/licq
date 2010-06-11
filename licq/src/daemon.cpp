@@ -28,7 +28,6 @@
 #include <ctime>
 #include <sys/stat.h> // chmod
 
-#include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_log.h>
 #include <licq/icqdefines.h>
@@ -63,12 +62,24 @@ const char* const Daemon::UtilityDir = "utilities";
 
 Daemon::Daemon()
 {
-  // Empty
+  // Set static variables based on compile time constants
+  myLibDir = INSTALL_LIBDIR;
+  myShareDir = INSTALL_SHAREDIR;
 }
 
 Daemon::~Daemon()
 {
   // Empty
+}
+
+void Daemon::setBaseDir(const string& baseDir)
+{
+  // This function is only called from Licq class and validation is done there
+  myBaseDir = baseDir;
+
+  // Make sure base dir always ends with a slash
+  if (myBaseDir[myBaseDir.size()-1] != '/')
+    myBaseDir += '/';
 }
 
 void Daemon::initialize(CLicq* _licq)
@@ -109,13 +120,7 @@ void Daemon::initialize(CLicq* _licq)
   // Loading translation table from file
   licqConf.get("Translation", temp, "none");
   if (!temp.empty() && temp != "none")
-  {
-    string filename = SHARE_DIR;
-    filename += TranslationDir;
-    filename += "/";
-    filename += temp;
-    Licq::gTranslator.setTranslationMap(filename);
-  }
+    Licq::gTranslator.setTranslationMap(shareDir() + TranslationDir + "/" + temp);
 
   // Misc
   licqConf.get("Terminal", myTerminal, "xterm -T Licq -e ");
@@ -363,7 +368,7 @@ void Daemon::rejectEvent(const UserId& userId, CUserEvent* e)
   if (myRejectFile.empty())
     return;
 
-  string rejectFile = BASE_DIR + myRejectFile;
+  string rejectFile = baseDir() + myRejectFile;
   FILE* f = fopen(rejectFile.c_str(), "a");
   if (f == NULL)
   {

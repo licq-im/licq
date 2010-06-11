@@ -8,7 +8,6 @@
 
 #include "config.h"
 #include "gettext.h"
-#include "licq_constants.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -25,7 +24,10 @@
 #include <execinfo.h>
 #endif
 
+#include <licq/daemon.h>
+
 using std::string;
+using Licq::gDaemon;
 
 static void licq_handle_sigsegv(int);
 static void licq_handle_sigabrt(int);
@@ -89,12 +91,12 @@ void licq_handle_sigabrt(int s)
    * Use gdb to try to generate a backtrace for all threads and save
    * it in BASE_DIR/licq.backtrace.gdb.
    */
-  string cmd = BASE_DIR;
-  cmd += "licqcmd.gdb";
+  string cmd = gDaemon.baseDir() + "licqcmd.gdb";
+  string btfile2 = gDaemon.baseDir() + "licq.backtrace.gdb";
   FILE* cmdfile = fopen(cmd.c_str(), "w");
   if (cmdfile != NULL)
   {
-    fprintf(cmdfile, "set logging file %slicq.backtrace.gdb\n", BASE_DIR);
+    fprintf(cmdfile, "set logging file %s\n", btfile2.c_str());
     fprintf(cmdfile, "set pagination off\n");
     fprintf(cmdfile, "set logging overwrite\n");
     fprintf(cmdfile, "set logging redirect on\n");
@@ -104,8 +106,7 @@ void licq_handle_sigabrt(int s)
     fprintf(cmdfile, "detach\n");
     fclose(cmdfile);
 
-    fprintf(stderr, "\nUsing gdb to save backtrace to %slicq.backtrace.gdb\n",
-            BASE_DIR);
+    fprintf(stderr, "\nUsing gdb to save backtrace to %s\n", btfile2.c_str());
 
     char parentPid[16];
     snprintf(parentPid, 16, "%u", getpid());
@@ -134,9 +135,7 @@ void licq_handle_sigabrt(int s)
       fprintf(stderr, "gdb exited with exit code %d\n\n", status);
 
       // Include time in file
-      string filename = BASE_DIR;
-      filename += "licq.backtrace.gdb";
-      FILE* file = fopen(filename.c_str(), "a");
+      FILE* file = fopen(btfile2.c_str(), "a");
       if (file != NULL)
       {
         fprintf(file, "\ntime: %lu\n", (unsigned long)time(NULL));
@@ -148,13 +147,12 @@ void licq_handle_sigabrt(int s)
   }
 
 #ifdef HAVE_BACKTRACE
-  string filename = BASE_DIR;
-  filename += "licq.backtrace";
-  FILE* file = fopen(filename.c_str(), "w");
+  string btfile1 = gDaemon.baseDir() + "licq.backtrace";
+  FILE* file = fopen(btfile1.c_str(), "w");
   if (file != NULL)
     fprintf(file, "time: %lu\n", time(NULL));
 
-  fprintf(stderr, tr("Backtrace (saved in %s):\n"), filename.c_str());
+  fprintf(stderr, tr("Backtrace (saved in %s):\n"), btfile1.c_str());
   {
     const int size = 100;
     int i;
@@ -193,18 +191,18 @@ void licq_handle_sigabrt(int s)
            "To help us debug the error, please include a full description of "
            "what you did when the error occurred. Additionally, please include "
            "the following files (if they exist):\n"
-           "%slicq.backtrace\n"
-           "%slicq.backtrace.gdb\n"
+      "%s\n"
+      "%s\n"
 #ifdef DEBUG_RW_MUTEX
            "%slicq.debug_rw_mutex\n"
 #endif
            "\n"
            "Thanks, "
            "The Licq Team",
-           BASE_DIR,
-           BASE_DIR
+      btfile1.c_str(),
+      btfile2.c_str()
 #ifdef DEBUG_RW_MUTEX
-           , BASE_DIR
+      , gDaemon.baseDir().c_str()
 #endif
     );
   displayFatalError(error, 0);

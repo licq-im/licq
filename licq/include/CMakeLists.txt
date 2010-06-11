@@ -1,6 +1,5 @@
 set(licq_HEADERS
   licq_color.h
-  licq_constants.h
   licq_events.h
   licq_log.h
   licq_message.h

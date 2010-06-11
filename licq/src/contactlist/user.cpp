@@ -11,7 +11,6 @@
 #include <unistd.h>
 
 #include "gettext.h"
-#include "licq_constants.h"
 #include "licq_events.h"
 #include "licq_log.h"
 #include <licq/icq.h> // For VersionToUse()
@@ -607,10 +606,7 @@ void User::Init()
   myBuddyIconHash = "";
   myOurBuddyIconHash = "";
 
-  myPictureFileName = BASE_DIR;
-  myPictureFileName += ConfigDir;
-  myPictureFileName += myId.accountId();
-  myPictureFileName += ".pic";
+  myPictureFileName = gDaemon.baseDir() + ConfigDir + myId.accountId() + ".pic";
 
   // GPG key
   myGpgKey = "";
@@ -1080,12 +1076,7 @@ void User::setHistoryFile(const std::string& file)
   {
     char p[5];
     Licq::protocolId_toStr(p, myId.protocolId());
-    realFile = BASE_DIR;
-    realFile += HistoryDir;
-    realFile += myId.accountId().c_str();
-    realFile += '.';
-    realFile += p;
-    realFile += HistoryExt;
+    realFile = gDaemon.baseDir() + HistoryDir + myId.accountId() + '.' + p + HistoryExt;
   }
   else if (file != "none")
   {

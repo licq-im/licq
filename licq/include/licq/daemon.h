@@ -139,6 +139,27 @@ public:
   LicqEvent *PopPluginEvent();
   LicqProtoSignal* PopProtoSignal();
 
+  /**
+   * Get path for the base dir (e.g. /home/fred/.licq/)
+   *
+   * @return Full path for base dir, ending with a slash
+   */
+  const std::string& baseDir() const { return myBaseDir; }
+
+  /**
+   * Get path for plugin libraries (e.g. /usr/local/lib/licq/)
+   *
+   * @return Full path for library dir, ending with a slash
+   */
+  const std::string& libDir() const { return myLibDir; }
+
+  /**
+   * Get path for data files (e.g. /usr/local/share/licq/)
+   *
+   * @return Full path for share dir, ending with a slash
+   */
+  const std::string& shareDir() const { return myShareDir; }
+
 protected:
   virtual ~Daemon() { /* Empty */ }
 
@@ -161,6 +182,11 @@ protected:
   bool myProxyAuthEnabled;
   std::string myProxyLogin;
   std::string myProxyPasswd;
+
+  // Paths
+  std::string myBaseDir;
+  std::string myLibDir;
+  std::string myShareDir;
 };
 
 extern Daemon& gDaemon;
