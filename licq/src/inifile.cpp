@@ -52,10 +52,7 @@ IniFile::~IniFile()
 
 void IniFile::setFilename(const std::string& filename)
 {
-  if (filename.size() > 0 && filename[0] != '/')
-    myFilename = BASE_DIR + filename;
-  else
-    myFilename = filename;
+  myFilename = filename;
 
   // If filename has changed we most likely want to allow write
   myIsModified = true;
@@ -66,7 +63,13 @@ bool IniFile::loadFile()
   if (myFilename.empty())
     return false;
 
-  int fd = open(myFilename.c_str(), O_RDONLY);
+  string filename;
+  if (myFilename.size() > 0 && myFilename[0] != '/')
+    filename = BASE_DIR + myFilename;
+  else
+    filename = myFilename;
+
+  int fd = open(filename.c_str(), O_RDONLY);
   if (fd < 0)
   {
     // Open failed. If it was just a missing file it might be normal and we'll let caller handle it
@@ -74,7 +77,7 @@ bool IniFile::loadFile()
     {
       // Failure was not just a missing file, this is probably serious
       gLog.Error(tr("%sIniFile: I/O error, failed to open file.\nFile: %s\nError code: %i\n"),
-          L_ERRORxSTR, myFilename.c_str(), errno);
+          L_ERRORxSTR, filename.c_str(), errno);
     }
 
     return false;
@@ -84,7 +87,7 @@ bool IniFile::loadFile()
   if (fstat(fd, &st) != 0)
   {
     gLog.Error(tr("%sIniFile: I/O error, failed to get file size.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, myFilename.c_str(), errno);
+        L_ERRORxSTR, filename.c_str(), errno);
     close(fd);
     return false;
   }
@@ -96,7 +99,7 @@ bool IniFile::loadFile()
   if (numRead < 0)
   {
     gLog.Error(tr("%sIniFile: I/O error, failed to read file.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, myFilename.c_str(), errno);
+        L_ERRORxSTR, filename.c_str(), errno);
     close(fd);
     delete[] buffer;
     return false;
@@ -172,19 +175,25 @@ bool IniFile::writeFile(bool allowCreate)
   if (myFilename.empty())
     return false;
 
+  string filename;
+  if (myFilename.size() > 0 && myFilename[0] != '/')
+    filename = BASE_DIR + myFilename;
+  else
+    filename = myFilename;
+
   // If data hasn't been modified there is no point in generating disk I/O
   if (!myIsModified)
     return true;
 
   // First get stats for old file
   struct stat st;
-  if (stat(myFilename.c_str(), &st) != 0)
+  if (stat(filename.c_str(), &st) != 0)
   {
     if (errno != ENOENT)
     {
       // Failure was not just a missing file, this is probably serious
       gLog.Error(tr("%sIniFile: I/O error, failed to get file size.\nFile: %s\nError code: %i\n"),
-          L_ERRORxSTR, myFilename.c_str(), errno);
+          L_ERRORxSTR, filename.c_str(), errno);
       return false;
     }
 
@@ -196,7 +205,7 @@ bool IniFile::writeFile(bool allowCreate)
     st.st_mode = S_IRUSR | S_IWUSR;
   }
 
-  string tempFile = myFilename + ".new";
+  string tempFile = filename + ".new";
   int fd = open(tempFile.c_str(), O_WRONLY | O_CREAT | O_TRUNC, st.st_mode);
 
   if (fd < 0)
@@ -220,11 +229,11 @@ bool IniFile::writeFile(bool allowCreate)
   }
 
   // Replace real file with temp file
-  if (close(fd) != 0 || rename(tempFile.c_str(), myFilename.c_str()) != 0)
+  if (close(fd) != 0 || rename(tempFile.c_str(), filename.c_str()) != 0)
   {
     // Close or rename file failed, data might not have made it to disk
     gLog.Error(tr("%sIniFile: I/O error, failed to replace file.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, myFilename.c_str(), errno);
+        L_ERRORxSTR, filename.c_str(), errno);
     unlink(tempFile.c_str());
     return false;
   }
