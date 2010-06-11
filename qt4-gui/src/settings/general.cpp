@@ -31,7 +31,7 @@
 #include <QRadioButton>
 #include <QVBoxLayout>
 
-#include <licq_constants.h>
+#include <licq/daemon.h>
 
 #include "config/general.h"
 #include "core/gui-defines.h"
@@ -97,7 +97,7 @@ QWidget* Settings::General::createPageDocking(QWidget* parent)
 
   myDockThemeCombo = new QComboBox();
   // Set the currently available themes
-  QString szDockThemesDir = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + DOCK_DIR;
+  QString szDockThemesDir = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR + DOCK_DIR;
   QDir d(szDockThemesDir);
   d.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   myDockThemeCombo->addItems(d.entryList());

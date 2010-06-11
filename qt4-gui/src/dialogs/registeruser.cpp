@@ -34,7 +34,6 @@
 #include <licq/contactlist/owner.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
-#include <licq_constants.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
@@ -219,7 +218,7 @@ void RegisterUserDlg::gotCaptcha(unsigned long /* ppid */)
   disconnect(gGuiSignalManager, SIGNAL(verifyImage(unsigned long)),
       this, SLOT(gotCaptcha(unsigned long)));
   setEnabled(true);
-  myCaptchaImage->setPixmap(QPixmap(QString(BASE_DIR) + "Licq_verify.jpg"));
+  myCaptchaImage->setPixmap(QPixmap(QString(Licq::gDaemon.baseDir().c_str()) + "Licq_verify.jpg"));
   myGotCaptcha = true;
   next();
 }

@@ -31,9 +31,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
-#include <licq_constants.h>
 
 #include "config/iconmanager.h"
 #include "config/emoticons.h"
@@ -204,8 +204,8 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
 void Settings::Skin::load()
 {
   // Load up the available packs
-  QDir skinsPath(QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + SKINS_DIR);
-  QDir skinsUserPath(QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR + SKINS_DIR);
+  QDir skinsPath(QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR + SKINS_DIR);
+  QDir skinsUserPath(QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + QTGUI_DIR + SKINS_DIR);
   skinsPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   skinsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   if (skinsPath.count() == 0 && skinsUserPath.count() == 0)
@@ -265,8 +265,8 @@ void Settings::Skin::load()
 void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo,
     const QString& current, const QString& exampleIcon)
 {
-  QDir iconsPath(QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + subdir);
-  QDir iconsUserPath(QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR + subdir);
+  QDir iconsPath(QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR + subdir);
+  QDir iconsUserPath(QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + QTGUI_DIR + subdir);
   iconsPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   iconsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   if (iconsPath.count() == 0 && iconsUserPath.count() == 0)
@@ -363,11 +363,11 @@ void Settings::Skin::editSkin()
 {
   if (mySkinCombo->currentText().isEmpty()) return;
   QString f;
-  f.sprintf("%s%s%s%s/%s.skin", BASE_DIR, QTGUI_DIR, SKINS_DIR,
+  f.sprintf("%s%s%s%s/%s.skin", Licq::gDaemon.baseDir().c_str(), QTGUI_DIR, SKINS_DIR,
             QFile::encodeName(mySkinCombo->currentText()).data(),
             QFile::encodeName(mySkinCombo->currentText()).data());
   if (!QFile(f).exists())
-    f.sprintf("%s%s%s%s/%s.skin", SHARE_DIR, QTGUI_DIR, SKINS_DIR,
+    f.sprintf("%s%s%s%s/%s.skin", Licq::gDaemon.shareDir().c_str(), QTGUI_DIR, SKINS_DIR,
               QFile::encodeName(mySkinCombo->currentText()).data(),
               QFile::encodeName(mySkinCombo->currentText()).data());
   new EditFileDlg(f);
@@ -394,11 +394,11 @@ IconList Settings::Skin::loadIcons(const QString& iconSet, const QString& subdir
   IconList icons;
   QString iconListName = iconSet + ".icons";
   QString subpath = QString(QTGUI_DIR) + subdir + iconSet + "/";
-  QString iconsPath = QString::fromLocal8Bit(BASE_DIR) + subpath;
+  QString iconsPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subpath;
   Licq::IniFile iconsFile((iconsPath + iconListName).toLocal8Bit().data());
   if (!iconsFile.loadFile())
   {
-    iconsPath = QString::fromLocal8Bit(SHARE_DIR) + subpath;
+    iconsPath = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subpath;
     iconsFile.setFilename((iconsPath + iconListName).toLocal8Bit().data());
     if (!iconsFile.loadFile())
     {

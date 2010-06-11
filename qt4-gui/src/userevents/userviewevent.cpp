@@ -39,10 +39,10 @@
 #include <KDE/KToolInvocation>
 #endif
 
-#include <licq_constants.h>
 #include <licq_events.h>
 #include <licq_message.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
@@ -367,7 +367,7 @@ void UserViewEvent::read1()
       CEventEmailAlert* p = dynamic_cast<CEventEmailAlert*>(myCurrentEvent);
 
       // Create the HTML
-      QString url = BASE_DIR;
+      QString url = Licq::gDaemon.baseDir().c_str();
       url += ".msn_email.html";
 
       QString strUser = p->To();

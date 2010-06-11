@@ -38,7 +38,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
-#include <licq_constants.h>
+#include <licq/daemon.h>
 #include <licq/pluginmanager.h>
 
 #include "core/mainwin.h"
@@ -264,7 +264,7 @@ void PluginDlg::slot_stdConfig(int nRow, int /* nCol */)
   }
 
   QString f;
-  f.sprintf("%s%s", BASE_DIR, plugin->getConfigFile());
+  f.sprintf("%s%s", Licq::gDaemon.baseDir().c_str(), plugin->getConfigFile());
   new EditFileDlg(f);
 }
 

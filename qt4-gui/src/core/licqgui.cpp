@@ -71,7 +71,6 @@ extern "C"
 
 #endif /* defined(Q_WS_X11) */
 
-#include <licq_constants.h>
 #include <licq_events.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
@@ -244,7 +243,7 @@ LicqGui::LicqGui(int& argc, char** argv) :
   installTranslator(qtTranslator);
 
   QTranslator* licqTranslator = new QTranslator(this);
-  licqTranslator->load(locale, QString(SHARE_DIR) + QTGUI_DIR + "locale");
+  licqTranslator->load(locale, QString(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR + "locale");
   installTranslator(licqTranslator);
 }
 
@@ -303,8 +302,8 @@ void LicqGui::loadGuiConfig()
   // Load Emoticons
   guiConf.get("Emoticons", s, Emoticons::DEFAULT_THEME.toLatin1().data());
   QStringList emoticonsDirs;
-  emoticonsDirs += QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
-  emoticonsDirs += QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
+  emoticonsDirs += QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR + EMOTICONS_DIR;
+  emoticonsDirs += QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + QTGUI_DIR + EMOTICONS_DIR;
 #ifdef USE_KDE
   // emoticons resource added in KDE 3.4
   emoticonsDirs += KGlobal::dirs()->findDirs("emoticons", "");
@@ -434,10 +433,10 @@ int LicqGui::Run()
   myLogWindow->pluginLogSink()->setLogLevel(Log::Error, true);
 
   // Check for qt-gui directory in current base dir
-  if (!QDir(QString("%1%2").arg(BASE_DIR).arg(QTGUI_DIR)).exists())
+  if (!QDir(QString("%1%2").arg(Licq::gDaemon.baseDir().c_str()).arg(QTGUI_DIR)).exists())
   {
     QDir d;
-    d.mkdir(QString("%1%2").arg(BASE_DIR).arg(QTGUI_DIR));
+    d.mkdir(QString("%1%2").arg(Licq::gDaemon.baseDir().c_str()).arg(QTGUI_DIR));
   }
 
   loadGuiConfig();

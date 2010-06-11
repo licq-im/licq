@@ -24,7 +24,7 @@
 
 #include <cctype>
 
-#include <licq_constants.h>
+#include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
@@ -101,11 +101,11 @@ bool IconManager::loadIcons(const QString& iconSet)
 {
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + ICONS_DIR + iconSet + "/";
-  QString iconPath = QString::fromLocal8Bit(BASE_DIR) + subdir;
+  QString iconPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
   Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().data());
   if (!iconsConf.loadFile())
   {
-    iconPath = QString::fromLocal8Bit(SHARE_DIR) + subdir;
+    iconPath = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subdir;
     iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().data());
     if (!iconsConf.loadFile())
       return false;
@@ -236,11 +236,11 @@ bool IconManager::loadExtendedIcons(const QString& iconSet)
 {
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + EXTICONS_DIR + iconSet + "/";
-  QString iconPath = QString::fromLocal8Bit(BASE_DIR) + subdir;
+  QString iconPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
   Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().data());
   if (!iconsConf.loadFile())
   {
-    iconPath = QString::fromLocal8Bit(SHARE_DIR) + subdir;
+    iconPath = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subdir;
     iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().data());
     if (!iconsConf.loadFile())
       return false;

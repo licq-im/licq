@@ -27,7 +27,7 @@
 #include <QPainter>
 #include <QWidget>
 
-#include <licq_constants.h>
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
 
@@ -63,11 +63,11 @@ void Config::Skin::loadSkin(const QString& skinName)
 
   QString skinFileName = skinName + ".skin";
   QString subdir = QString(QTGUI_DIR) + SKINS_DIR + skinName + "/";
-  QString baseSkinDir = QString::fromLocal8Bit(BASE_DIR) + subdir;
+  QString baseSkinDir = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
   Licq::IniFile skinFile((baseSkinDir + skinFileName).toLocal8Bit().data());
   if (!skinFile.loadFile())
   {
-    baseSkinDir = QString::fromLocal8Bit(SHARE_DIR) + subdir;
+    baseSkinDir = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subdir;
     skinFile.setFilename((baseSkinDir + skinFileName).toLocal8Bit().data());
     if (!skinFile.loadFile())
     {

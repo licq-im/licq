@@ -12,7 +12,6 @@
 #include "forwarder.conf.h"
 #include <licq_events.h>
 #include "licq_log.h"
-#include "licq_constants.h"
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/daemon.h>
@@ -158,8 +157,7 @@ int CLicqForwarder::Run()
 bool CLicqForwarder::CreateDefaultConfig()
 {
   // Create licq_forwarder.conf
-  string filename = BASE_DIR;
-  filename += "licq_forwarder.conf";
+  string filename = Licq::gDaemon.baseDir() + "licq_forwarder.conf";
   FILE *f = fopen(filename.c_str(), "w");
   if (f == NULL)
     return false;

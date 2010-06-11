@@ -26,8 +26,8 @@
 #include <QFile>
 #include <QPainter>
 
-#include <licq_constants.h>
 #include <licq/contactlist/user.h>
+#include <licq/daemon.h>
 #include <licq/inifile.h>
 
 #include "config/general.h"
@@ -66,7 +66,7 @@ void ThemedDockIcon::updateConfig()
       baseDockDir += "/";
   }
   else
-    baseDockDir = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR +
+    baseDockDir = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR +
       DOCK_DIR + myTheme + "/";
 
   QByteArray filename = QFile::encodeName(baseDockDir);

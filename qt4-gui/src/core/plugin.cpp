@@ -31,7 +31,7 @@
 # include <QStyleFactory>
 #endif
 
-#include <licq_constants.h>
+#include <licq/daemon.h>
 #include <licq_log.h>
 #include <licq_plugin.h>
 
@@ -73,7 +73,7 @@ const char* LP_Usage()
     " -e : set the extended icons to use (must be in %2%3%6)"
     )
     .arg(PLUGIN_NAME)
-    .arg(BASE_DIR)
+      .arg(Licq::gDaemon.baseDir().c_str())
     .arg(QTGUI_DIR)
     .arg(SKINS_DIR)
     .arg(ICONS_DIR)

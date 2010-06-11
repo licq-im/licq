@@ -27,7 +27,6 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
-#include <licq_constants.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
@@ -179,7 +178,7 @@ void OwnerManagerDlg::registerOwner()
         "Base Directory: %2\n"
         "Rerun licq with the -b option to select a new\n"
         "base directory and then register a new user.")
-        .arg(Licq::gUserManager.OwnerId(LICQ_PPID).c_str()).arg(BASE_DIR);
+        .arg(Licq::gUserManager.OwnerId(LICQ_PPID).c_str()).arg(Licq::gDaemon.baseDir().c_str());
     InformUser(this, buf);
     return;
   }
