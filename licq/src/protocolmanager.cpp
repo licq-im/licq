@@ -178,7 +178,7 @@ void ProtocolManager::sendTypingNotification(const UserId& userId, bool active, 
 }
 
 unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& message,
-    bool viaServer, unsigned short flags, bool multipleRecipients, CICQColor* color,
+    bool viaServer, unsigned short flags, bool multipleRecipients, const Licq::Color* color,
     unsigned long convoId)
 {
   unsigned long eventId = getNextEventId();
@@ -193,7 +193,7 @@ unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& m
 
 unsigned long ProtocolManager::sendUrl(const UserId& userId, const string& url,
     const string& message, bool viaServer, unsigned short flags,
-    bool multipleRecipients, CICQColor* color)
+    bool multipleRecipients, const Licq::Color* color)
 {
   unsigned long eventId = getNextEventId();
 

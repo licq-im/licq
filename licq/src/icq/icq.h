@@ -119,7 +119,7 @@ public:
 
   unsigned long icqSendContactList(const char *szId, const Licq::StringList& users,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
-     CICQColor *pColor = NULL);
+     const Licq::Color* pColor = NULL);
 
   unsigned long icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer = false);
   unsigned long icqChatRequest(const char* id, const char *szReason,
@@ -198,10 +198,10 @@ public:
 
   void icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
       bool viaServer, unsigned short nLevel, bool bMultipleRecipients = false,
-     CICQColor *pColor = NULL);
+      const Licq::Color* pColor = NULL);
   void icqSendUrl(unsigned long eventId, const Licq::UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short nLevel,
-     bool bMultipleRecipients = false, CICQColor *pColor = NULL);
+      bool bMultipleRecipients = false, const Licq::Color* pColor = NULL);
   void icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
       const std::string& message, const std::list<std::string>& fileList,
      unsigned short nLevel, bool bServer);

@@ -13,12 +13,11 @@ header file containing all the main procedures to interface with the ICQ server 
 
 #include "licq_events.h"
 
-class CICQColor;
-
 namespace Licq
 {
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
+class Color;
 class Proxy;
 class User;
 class UserId;
@@ -50,7 +49,7 @@ public:
 
   virtual unsigned long icqSendContactList(const char *szId, const Licq::StringList& users,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
-     CICQColor *pColor = NULL) = 0;
+     const Licq::Color* pColor = NULL) = 0;
 
   // Auto Response
   virtual unsigned long icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer = false) = 0;

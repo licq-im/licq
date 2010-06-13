@@ -23,7 +23,7 @@
 
 #include "usereventcommon.h"
 
-#include <licq_color.h>
+#include <licq/color.h>
 
 class QGroupBox;
 class QLabel;
@@ -96,7 +96,7 @@ public slots:
   UserSendCommon* changeEventType(int type);
 
 protected:
-  CICQColor myIcqColor;
+  Licq::Color myIcqColor;
   HistoryView* myHistoryView;
   MLEdit* myMessageEdit;
   MMUserView* myMassMessageList;

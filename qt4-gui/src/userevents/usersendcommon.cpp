@@ -435,9 +435,9 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
     setTabOrder(mySendButton, myCloseButton);
   }
 
-  myIcqColor.SetToDefault();
-  myMessageEdit->setBackground(QColor(myIcqColor.BackRed(), myIcqColor.BackGreen(), myIcqColor.BackBlue()));
-  myMessageEdit->setForeground(QColor(myIcqColor.ForeRed(), myIcqColor.ForeGreen(), myIcqColor.ForeBlue()));
+  myIcqColor.setToDefault();
+  myMessageEdit->setBackground(QColor(myIcqColor.backRed(), myIcqColor.backGreen(), myIcqColor.backBlue()));
+  myMessageEdit->setForeground(QColor(myIcqColor.foreRed(), myIcqColor.foreGreen(), myIcqColor.foreBlue()));
 
   updateIcons();
   updatePicture();
@@ -1426,7 +1426,7 @@ void UserSendCommon::setBackgroundICQColor()
     return;
 #endif
 
-  myIcqColor.SetBackground(c.red(), c.green(), c.blue());
+  myIcqColor.setBackground(c.red(), c.green(), c.blue());
   myMessageEdit->setBackground(c);
 }
 
@@ -1445,7 +1445,7 @@ void UserSendCommon::setForegroundICQColor()
     return;
 #endif
 
-  myIcqColor.SetForeground(c.red(), c.green(), c.blue());
+  myIcqColor.setForeground(c.red(), c.green(), c.blue());
   myMessageEdit->setForeground(c);
 }
 

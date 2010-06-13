@@ -62,7 +62,7 @@ void CUserEvent::CopyBase(const CUserEvent* e)
   myIsReceiver = e->isReceiver();
   m_bPending = e->Pending();
   m_nId = e->Id(); // this is new and possibly will cause problems...
-  m_sColor.Set(e->Color());
+  myColor.set(e->Color());
 }
 
 

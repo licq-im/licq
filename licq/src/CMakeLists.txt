@@ -22,11 +22,11 @@ set(tested_SRCS
 
 set(licq_SRCS
   buffer.cpp
+  color.cpp
   daemon.cpp
   fifo.cpp
   gpghelper.cpp
   hebrev.c
-  icqcolor.cpp
   icqevent.cpp
   licq.cpp
   log.cpp

@@ -53,7 +53,7 @@ using LicqDaemon::gDaemon;
 
 void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const string& message,
    bool viaServer, unsigned short nLevel, bool bMultipleRecipients,
-   CICQColor *pColor)
+   const Licq::Color* pColor)
 {
   const string accountId = userId.accountId();
   const char* szId = accountId.c_str();
@@ -172,7 +172,8 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     u->SetSendLevel(nLevel);
   }
 
-  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
+  if (pColor != NULL)
+    Licq::Color::setDefaultColors(pColor);
 
   if (bUTF16 && szMessage)
     delete [] szMessage;
@@ -219,7 +220,7 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const char *_szId, unsigned long
 
 void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, const string& url,
    const string& message, bool viaServer, unsigned short nLevel,
-   bool bMultipleRecipients, CICQColor *pColor)
+   bool bMultipleRecipients, const Licq::Color* pColor)
 {
   if (Licq::gUserManager.isOwner(userId))
     return;
@@ -286,7 +287,8 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
     u->SetSendLevel(nLevel);
   }
 
-  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
+  if (pColor != NULL)
+    Licq::Color::setDefaultColors(pColor);
 
   if (szDescDos)
     delete [] szDescDos;
@@ -381,7 +383,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
 //-----CICQDaemon::sendContactList-------------------------------------------
 unsigned long IcqProtocol::icqSendContactList(const char *szId,
    const StringList& users, bool online, unsigned short nLevel,
-   bool bMultipleRecipients, CICQColor *pColor)
+   bool bMultipleRecipients, const Licq::Color* pColor)
 {
   unsigned long eventId = gDaemon.getNextEventId();
   Licq::UserId userId(szId, LICQ_PPID);
@@ -445,7 +447,8 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
     u->SetSendLevel(nLevel);
   }
 
-  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
+  if (pColor != NULL)
+    Licq::Color::setDefaultColors(pColor);
 
   delete []m;
   return eventId;

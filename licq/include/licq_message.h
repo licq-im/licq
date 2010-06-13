@@ -5,7 +5,7 @@
 #include <ctime>
 #include <list>
 
-#include "licq_color.h"
+#include "licq/color.h"
 #include "licq/userid.h"
 
 namespace Licq
@@ -62,7 +62,7 @@ public:
   bool IsEncrypted() const { return m_nFlags & E_ENCRYPTED; };
   unsigned short LicqVersion() const { return m_nFlags & E_LICQxVER; }
   bool isReceiver() const { return myIsReceiver; }
-  const CICQColor* Color() const { return &m_sColor; }
+  const Licq::Color* Color() const { return &myColor; }
   unsigned long ConvoId() const { return m_nConvoId; }
 
   bool Pending() const { return m_bPending; }
@@ -75,8 +75,8 @@ protected:
 
   void setIsReceiver(bool isReceiver) { myIsReceiver = isReceiver; }
    void Cancel() { m_nFlags |= E_CANCELLED; }
-   void SetColor(unsigned long fore, unsigned long back)  { m_sColor.Set(fore, back); }
-  void SetColor(CICQColor const* p) { m_sColor.Set(p); }
+  void SetColor(unsigned fore, unsigned back) { myColor.set(fore, back); }
+  void SetColor(const Licq::Color* c) { myColor.set(c); }
 
   void CopyBase(const CUserEvent* e);
 
@@ -97,7 +97,7 @@ protected:
 
   bool myIsReceiver;
    bool           m_bPending;
-   CICQColor      m_sColor;
+  Licq::Color myColor;
    unsigned long  m_nConvoId;
 
   friend class IcqProtocol;

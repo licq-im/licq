@@ -59,10 +59,10 @@ public:
   void sendTypingNotification(const Licq::UserId& userId, bool active, int nSocket = -1);
   unsigned long sendMessage(const Licq::UserId& userId, const std::string& message,
       bool viaServer, unsigned short flags, bool multipleRecipients = false,
-      CICQColor* color = NULL, unsigned long convoId = 0);
+      const Licq::Color* color = NULL, unsigned long convoId = 0);
   unsigned long sendUrl(const Licq::UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short flags,
-      bool multipleRecipients = false, CICQColor* color = NULL);
+      bool multipleRecipients = false, const Licq::Color* color = NULL);
   unsigned long requestUserAutoResponse(const Licq::UserId& userId);
   unsigned long fileTransferPropose(const Licq::UserId& userId, const std::string& filename,
       const std::string& message, const std::list<std::string>& files, unsigned short flags,

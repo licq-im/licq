@@ -3,6 +3,7 @@ set(licq_HEADERS
 
   buffer.h
   byteorder.h
+  color.h
   conversation.h
   daemon.h
   gpghelper.h

@@ -22,13 +22,13 @@
 #include <boost/scoped_array.hpp>
 
 #include "licq/byteorder.h"
+#include <licq/color.h>
 #include <licq/icqdefines.h>
 #include "licq/md5.h"
 #include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/utility.h>
 #include "licq_log.h"
-#include "licq_color.h"
 #include "licq/version.h"
 
 #include "../contactlist/group.h"
@@ -4752,7 +4752,7 @@ void CPacketTcp::PostBuffer_v7()
 
 //-----Message------------------------------------------------------------------
 CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
- CICQColor *pColor, ICQUser *pUser, size_t nLen)
+    const Licq::Color* pColor, ICQUser *pUser, size_t nLen)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
        _sMessage, true, nLevel, pUser, nLen)
@@ -4767,8 +4767,8 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->Foreground());
-      buffer->PackUnsignedLong(pColor->Background());
+      buffer->PackUnsignedLong(pColor->foreground());
+      buffer->PackUnsignedLong(pColor->background());
     }
   }
   PostBuffer();
@@ -4776,7 +4776,7 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
 
 //-----Url----------------------------------------------------------------------
 CPT_Url::CPT_Url(const char* szMessage, unsigned short nLevel, bool bMR,
- CICQColor *pColor, ICQUser *pUser)
+    const Licq::Color* pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_URL | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
        szMessage, true, nLevel, pUser)
@@ -4791,8 +4791,8 @@ CPT_Url::CPT_Url(const char* szMessage, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->Foreground());
-      buffer->PackUnsignedLong(pColor->Background());
+      buffer->PackUnsignedLong(pColor->foreground());
+      buffer->PackUnsignedLong(pColor->background());
     }
   }
   PostBuffer();
@@ -4801,7 +4801,7 @@ CPT_Url::CPT_Url(const char* szMessage, unsigned short nLevel, bool bMR,
 
 //-----ContactList-----------------------------------------------------------
 CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
-   CICQColor *pColor, ICQUser *pUser)
+    const Licq::Color* pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_CONTACTxLIST | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
        sz, true, nLevel, pUser)
@@ -4816,8 +4816,8 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->Foreground());
-      buffer->PackUnsignedLong(pColor->Background());
+      buffer->PackUnsignedLong(pColor->foreground());
+      buffer->PackUnsignedLong(pColor->background());
     }
   }
   PostBuffer();

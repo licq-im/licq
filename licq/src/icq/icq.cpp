@@ -99,9 +99,9 @@ void IcqProtocol::initialize()
   licqConf.get("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins, true);
   unsigned long nColor;
   licqConf.get("ForegroundColor", nColor, 0x00000000);
-  CICQColor::SetDefaultForeground(nColor);
+  Licq::Color::setDefaultForeground(nColor);
   licqConf.get("BackgroundColor", nColor, 0x00FFFFFF);
-  CICQColor::SetDefaultBackground(nColor);
+  Licq::Color::setDefaultBackground(nColor);
 
   // Error log file
   licqConf.get("Errors", myErrorFile, "log.errors");
@@ -214,8 +214,8 @@ void IcqProtocol::save(Licq::IniFile& licqConf)
   licqConf.set("AutoUpdateInfo", m_bAutoUpdateInfo);
   licqConf.set("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins);
   licqConf.set("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
-  licqConf.set("ForegroundColor", CICQColor::DefaultForeground());
-  licqConf.set("BackgroundColor", CICQColor::DefaultBackground());
+  licqConf.set("ForegroundColor", Licq::Color::defaultForeground());
+  licqConf.set("BackgroundColor", Licq::Color::defaultBackground());
 
   licqConf.set("Errors", myErrorFile);
   licqConf.set("ErrorTypes", myErrorTypes);

@@ -24,11 +24,10 @@
 #include <list>
 #include <string>
 
-class CICQColor;
-
 
 namespace Licq
 {
+class Color;
 class UserId;
 
 /**
@@ -82,7 +81,7 @@ public:
    */
   virtual unsigned long sendMessage(const UserId& userId, const std::string& message,
       bool viaServer, unsigned short flags, bool multipleRecipients = false,
-      CICQColor* color = NULL, unsigned long convoId = 0) = 0;
+      const Licq::Color* color = NULL, unsigned long convoId = 0) = 0;
 
   /**
    * Send URL message to a user
@@ -98,7 +97,7 @@ public:
    */
   virtual unsigned long sendUrl(const UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short flags,
-      bool multipleRecipients = false, CICQColor* color = NULL) = 0;
+      bool multipleRecipients = false, const Licq::Color* color = NULL) = 0;
 
   /**
    * Request user auto response from server

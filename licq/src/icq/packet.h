@@ -17,10 +17,10 @@ namespace Licq
 typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Buffer;
+class Color;
 class INetSocket;
 }
 
-class CICQColor;
 typedef Licq::Buffer CBuffer;
 typedef Licq::Packet CPacket;
 
@@ -1390,7 +1390,7 @@ class CPT_Message : public CPacketTcp
 {
 public:
    CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
-      CICQColor* pColor, Licq::User* pUser, size_t nLen = 0);
+      const Licq::Color* pColor, Licq::User* pUser, size_t nLen = 0);
 };
 
 
@@ -1402,7 +1402,7 @@ class CPT_Url : public CPacketTcp
 {
 public:
   CPT_Url(const char* _sMessage, unsigned short nLevel, bool bMR,
-      CICQColor* pColor, Licq::User *pUser);
+      const Licq::Color* pColor, Licq::User *pUser);
 };
 
 
@@ -1410,7 +1410,7 @@ class CPT_ContactList : public CPacketTcp
 {
 public:
    CPT_ContactList(char *szMessage, unsigned short nLevel, bool bMR,
-      CICQColor* pColor, Licq::User* pUser);
+      const Licq::Color* pColor, Licq::User* pUser);
 };
 
 

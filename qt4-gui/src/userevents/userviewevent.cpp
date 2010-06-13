@@ -671,8 +671,8 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
   myCurrentEvent = m;
 
   // Set the color for the message
-  myMessageView->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
-  myMessageView->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
+  myMessageView->setBackground(QColor(m->Color()->backRed(), m->Color()->backGreen(), m->Color()->backBlue()));
+  myMessageView->setForeground(QColor(m->Color()->foreRed(), m->Color()->foreGreen(), m->Color()->foreBlue()));
 
   // Set the text
   if (m->SubCommand() == ICQ_CMDxSUB_SMS)
@@ -681,7 +681,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
      myMessageText = myCodec->toUnicode(m->Text());
 
   QString colorAttr;
-  colorAttr.sprintf("#%02lx%02lx%02lx", m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue());
+  colorAttr.sprintf("#%02x%02x%02x", m->Color()->foreRed(), m->Color()->foreGreen(), m->Color()->foreBlue());
   myMessageView->setText("<font color=\"" + colorAttr + "\">" + MLView::toRichText(myMessageText, true) + "</font>");
 
   myMessageView->GotoHome();
