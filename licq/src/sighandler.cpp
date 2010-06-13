@@ -191,7 +191,9 @@ void licq_handle_sigabrt(int s)
            "To help us debug the error, please include a full description of "
            "what you did when the error occurred. Additionally, please include "
            "the following files (if they exist):\n"
+#ifdef HAVE_BACKTRACE
       "%s\n"
+#endif
       "%s\n"
 #ifdef DEBUG_RW_MUTEX
            "%slicq.debug_rw_mutex\n"
@@ -199,7 +201,9 @@ void licq_handle_sigabrt(int s)
            "\n"
            "Thanks, "
            "The Licq Team",
+#ifdef HAVE_BACKTRACE
       btfile1.c_str(),
+#endif
       btfile2.c_str()
 #ifdef DEBUG_RW_MUTEX
       , gDaemon.baseDir().c_str()
