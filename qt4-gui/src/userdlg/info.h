@@ -60,9 +60,10 @@ public:
    * Constructor
    *
    * @param isOwner True if the user is a protocol owner
+   * @param protocolId Protocol to create info pages for
    * @param parent User dialog that is parent
    */
-  Info(bool isOwner, UserDlg* parent);
+  Info(bool isOwner, unsigned long protocolId, UserDlg* parent);
 
   /**
    * Destructor

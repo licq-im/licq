@@ -97,7 +97,7 @@ UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
   buttonsLayout->addWidget(buttons);
   top_lay->addLayout(buttonsLayout);
 
-  myUserInfo = new UserPages::Info(myIsOwner, this);
+  myUserInfo = new UserPages::Info(myIsOwner, myUserId.protocolId(), this);
   myUserSettings = new UserPages::Settings(myIsOwner, this);
 
   {

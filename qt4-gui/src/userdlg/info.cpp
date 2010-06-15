@@ -80,8 +80,9 @@ using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserPages::Info */
 
-UserPages::Info::Info(bool isOwner, UserDlg* parent)
+UserPages::Info::Info(bool isOwner, unsigned long protocolId, UserDlg* parent)
   : QObject(parent),
+    myPpid(protocolId),
     m_bOwner(isOwner),
     myAliasHasChanged(false)
 {
@@ -89,16 +90,19 @@ UserPages::Info::Info(bool isOwner, UserDlg* parent)
 
   parent->addPage(UserDlg::GeneralPage, createPageGeneral(parent),
       tr("Info"));
-  parent->addPage(UserDlg::MorePage, createPageMore(parent),
-      tr("More"), UserDlg::GeneralPage);
-  parent->addPage(UserDlg::More2Page, createPageMore2(parent),
-      tr("More II"), UserDlg::GeneralPage);
-  parent->addPage(UserDlg::WorkPage, createPageWork(parent),
-      tr("Work"), UserDlg::GeneralPage);
-  parent->addPage(UserDlg::AboutPage, createPageAbout(parent),
-      tr("About"), UserDlg::GeneralPage);
-  parent->addPage(UserDlg::PhonePage, createPagePhoneBook(parent),
-      tr("Phone Book"), UserDlg::GeneralPage);
+  if (myPpid == LICQ_PPID)
+  {
+    parent->addPage(UserDlg::MorePage, createPageMore(parent),
+        tr("More"), UserDlg::GeneralPage);
+    parent->addPage(UserDlg::More2Page, createPageMore2(parent),
+        tr("More II"), UserDlg::GeneralPage);
+    parent->addPage(UserDlg::WorkPage, createPageWork(parent),
+        tr("Work"), UserDlg::GeneralPage);
+    parent->addPage(UserDlg::AboutPage, createPageAbout(parent),
+        tr("About"), UserDlg::GeneralPage);
+    parent->addPage(UserDlg::PhonePage, createPagePhoneBook(parent),
+        tr("Phone Book"), UserDlg::GeneralPage);
+  }
   parent->addPage(UserDlg::PicturePage, createPagePicture(parent),
       tr("Picture"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::CountersPage, createPageCounters(parent),
@@ -113,15 +117,17 @@ void UserPages::Info::load(const Licq::User* user)
 {
   myUserId = user->id();
   myId = user->IdString();
-  myPpid = user->PPID();
   codec = UserCodec::codecForUser(user);
 
   loadPageGeneral(user);
-  loadPageMore(user);
-  loadPageMore2(user);
-  loadPageWork(user);
-  loadPageAbout(user);
-  loadPagePhoneBook(user);
+  if (myPpid == LICQ_PPID)
+  {
+    loadPageMore(user);
+    loadPageMore2(user);
+    loadPageWork(user);
+    loadPageAbout(user);
+    loadPagePhoneBook(user);
+  }
   loadPagePicture(user);
   loadPageCounters(user);
 #ifdef USE_KABC
@@ -132,11 +138,14 @@ void UserPages::Info::load(const Licq::User* user)
 void UserPages::Info::apply(Licq::User* user)
 {
   savePageGeneral(user);
-  savePageMore(user);
-  savePageMore2(user);
-  savePageWork(user);
-  savePageAbout(user);
-  savePagePhoneBook(user);
+  if (myPpid == LICQ_PPID)
+  {
+    savePageMore(user);
+    savePageMore2(user);
+    savePageWork(user);
+    savePageAbout(user);
+    savePagePhoneBook(user);
+  }
   savePagePicture(user);
 }
 
@@ -201,58 +210,61 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
   nfoEmailPrimary = new InfoField(false);
   lay->addWidget(nfoEmailPrimary, CR, 1, 1, 4);
 
-  lay->addWidget(new QLabel(tr("EMail 2:")), ++CR, 0);
-  nfoEmailSecondary = new InfoField(false);
-  lay->addWidget(nfoEmailSecondary, CR, 1, 1, 4);
-
-  lay->addWidget(new QLabel(tr("Old Email:")), ++CR, 0);
-  nfoEmailOld = new InfoField(false);
-  lay->addWidget(nfoEmailOld, CR, 1, 1, 4);
-
-  lay->addWidget(new QLabel(tr("Address:")), ++CR, 0);
-  nfoAddress = new InfoField(!m_bOwner);
-  lay->addWidget(nfoAddress, CR, 1);
-  lay->addWidget(new QLabel(tr("Phone:")), CR, 3);
-  nfoPhone = new InfoField(false);//!m_bOwner);
-  lay->addWidget(nfoPhone, CR, 4);
-
-  lay->addWidget(new QLabel(tr("State:")), ++CR, 0);
-  nfoState = new InfoField(!m_bOwner);
-  nfoState->setMaxLength(3);
-  lay->addWidget(nfoState, CR, 1);
-  w->setTabOrder(nfoAddress, nfoState);
-  lay->addWidget(new QLabel(tr("Fax:")), CR, 3);
-  nfoFax = new InfoField(false);//!m_bOwner);
-  lay->addWidget(nfoFax, CR, 4);
-  w->setTabOrder(nfoPhone, nfoFax);
-
-  lay->addWidget(new QLabel(tr("City:")), ++CR, 0);
-  nfoCity = new InfoField(!m_bOwner);
-  lay->addWidget(nfoCity, CR, 1);
-  w->setTabOrder(nfoState, nfoCity);
-  lay->addWidget(new QLabel(tr("Cellular:")), CR, 3);
-  nfoCellular = new InfoField(false);//!m_bOwner);
-  lay->addWidget(nfoCellular, CR, 4);
-  w->setTabOrder(nfoFax, nfoCellular);
-
-  lay->addWidget(new QLabel(tr("Zip:")), ++CR, 0);
-  nfoZipCode = new InfoField(!m_bOwner);
-  lay->addWidget(nfoZipCode, CR, 1);
-  w->setTabOrder(nfoCity, nfoZipCode);
-  lay->addWidget(new QLabel(tr("Country:")), CR, 3);
-  if (m_bOwner)
+  if (myPpid == LICQ_PPID)
   {
-    cmbCountry = new QComboBox();
-    //cmbCountry->addItem(tr("Unspecified"));
-    cmbCountry->setMaximumWidth(cmbCountry->sizeHint().width()+20);
-    for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
-      cmbCountry->addItem(GetCountryByIndex(i)->szName);
-    lay->addWidget(cmbCountry, CR, 4);
-  }
-  else
-  {
-    nfoCountry = new InfoField(!m_bOwner);
-    lay->addWidget(nfoCountry, CR, 4);
+    lay->addWidget(new QLabel(tr("EMail 2:")), ++CR, 0);
+    nfoEmailSecondary = new InfoField(false);
+    lay->addWidget(nfoEmailSecondary, CR, 1, 1, 4);
+
+    lay->addWidget(new QLabel(tr("Old Email:")), ++CR, 0);
+    nfoEmailOld = new InfoField(false);
+    lay->addWidget(nfoEmailOld, CR, 1, 1, 4);
+
+    lay->addWidget(new QLabel(tr("Address:")), ++CR, 0);
+    nfoAddress = new InfoField(!m_bOwner);
+    lay->addWidget(nfoAddress, CR, 1);
+    lay->addWidget(new QLabel(tr("Phone:")), CR, 3);
+    nfoPhone = new InfoField(false);//!m_bOwner);
+    lay->addWidget(nfoPhone, CR, 4);
+
+    lay->addWidget(new QLabel(tr("State:")), ++CR, 0);
+    nfoState = new InfoField(!m_bOwner);
+    nfoState->setMaxLength(3);
+    lay->addWidget(nfoState, CR, 1);
+    w->setTabOrder(nfoAddress, nfoState);
+    lay->addWidget(new QLabel(tr("Fax:")), CR, 3);
+    nfoFax = new InfoField(false);//!m_bOwner);
+    lay->addWidget(nfoFax, CR, 4);
+    w->setTabOrder(nfoPhone, nfoFax);
+
+    lay->addWidget(new QLabel(tr("City:")), ++CR, 0);
+    nfoCity = new InfoField(!m_bOwner);
+    lay->addWidget(nfoCity, CR, 1);
+    w->setTabOrder(nfoState, nfoCity);
+    lay->addWidget(new QLabel(tr("Cellular:")), CR, 3);
+    nfoCellular = new InfoField(false);//!m_bOwner);
+    lay->addWidget(nfoCellular, CR, 4);
+    w->setTabOrder(nfoFax, nfoCellular);
+
+    lay->addWidget(new QLabel(tr("Zip:")), ++CR, 0);
+    nfoZipCode = new InfoField(!m_bOwner);
+    lay->addWidget(nfoZipCode, CR, 1);
+    w->setTabOrder(nfoCity, nfoZipCode);
+    lay->addWidget(new QLabel(tr("Country:")), CR, 3);
+    if (m_bOwner)
+    {
+      cmbCountry = new QComboBox();
+      //cmbCountry->addItem(tr("Unspecified"));
+      cmbCountry->setMaximumWidth(cmbCountry->sizeHint().width()+20);
+      for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
+        cmbCountry->addItem(GetCountryByIndex(i)->szName);
+      lay->addWidget(cmbCountry, CR, 4);
+    }
+    else
+    {
+      nfoCountry = new InfoField(!m_bOwner);
+      lay->addWidget(nfoCountry, CR, 4);
+    }
   }
 
   lay->setRowStretch(++CR, 5);
@@ -269,13 +281,10 @@ void UserPages::Info::loadPageGeneral(const Licq::User* u)
 
   if (!m_bOwner)
     chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
+  nfoUin->setText(myId);
   nfoAlias->setText(QString::fromUtf8(u->getAlias().c_str()));
   nfoFirstName->setText(codec->toUnicode(u->getFirstName().c_str()));
   nfoLastName->setText(codec->toUnicode(u->getLastName().c_str()));
-  nfoEmailPrimary->setText(codec->toUnicode(u->getUserInfoString("Email1").c_str()));
-  nfoEmailSecondary->setText(codec->toUnicode(u->getUserInfoString("Email2").c_str()));
-  nfoEmailOld->setText(codec->toUnicode(u->getUserInfoString("Email0").c_str()));
-  nfoUin->setText(myId);
   QString ip = QString(u->IpStr(buf));
   if (u->Ip() != u->IntIp() && u->IntIp() != 0)
   {
@@ -287,13 +296,20 @@ void UserPages::Info::loadPageGeneral(const Licq::User* u)
   }
   nfoIp->setText(ip);
   tznZone->setData(u->GetTimezone());
+  // Owner timezone is not editable, it is taken from system timezone instead
+  if (m_bOwner)
+    tznZone->setEnabled(false);
   nfoStatus->setText(u->statusString().c_str());
+  nfoEmailPrimary->setText(codec->toUnicode(u->getUserInfoString("Email1").c_str()));
+
+  if (myPpid != LICQ_PPID)
+    return;
+
+  nfoEmailSecondary->setText(codec->toUnicode(u->getUserInfoString("Email2").c_str()));
+  nfoEmailOld->setText(codec->toUnicode(u->getUserInfoString("Email0").c_str()));
   unsigned int countryCode = u->getUserInfoUint("Country");
   if (m_bOwner)
   {
-    // Owner timezone is not editable, it is taken from system timezone instead
-    tznZone->setEnabled(false);
-
     const SCountry* c = GetCountryByCode(countryCode);
     if (c == NULL)
       cmbCountry->setCurrentIndex(0);
@@ -323,9 +339,14 @@ void UserPages::Info::savePageGeneral(Licq::User* u)
   u->setAlias(nfoAlias->text().toUtf8().data());
   if (!m_bOwner)
     u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
+  u->SetTimezone(tznZone->data());
   u->setUserInfoString("FirstName", codec->fromUnicode(nfoFirstName->text()).data());
   u->setUserInfoString("LastName", codec->fromUnicode(nfoLastName->text()).data());
   u->setUserInfoString("Email1", codec->fromUnicode(nfoEmailPrimary->text()).data());
+
+  if (myPpid != LICQ_PPID)
+    return;
+
   u->setUserInfoString("Email2", codec->fromUnicode(nfoEmailSecondary->text()).data());
   u->setUserInfoString("Email0", codec->fromUnicode(nfoEmailOld->text()).data());
   u->setUserInfoString("City", codec->fromUnicode(nfoCity->text()).data());
@@ -340,7 +361,6 @@ void UserPages::Info::savePageGeneral(Licq::User* u)
     unsigned short i = cmbCountry->currentIndex();
     u->setUserInfoUint("Country", GetCountryByIndex(i)->nCode);
   }
-  u->SetTimezone(tznZone->data());
 }
 
 QWidget* UserPages::Info::createPageMore(QWidget* parent)
@@ -1562,14 +1582,15 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   }
 
   unsigned short cc, i, occupation;
-  unsigned long icqEventTag;
+  unsigned long icqEventTag = 0;
 
   switch (page)
   {
     case UserDlg::GeneralPage:
-    gLicqDaemon->icqSetEmailInfo(
-        codec->fromUnicode(nfoEmailSecondary->text()),
-        codec->fromUnicode(nfoEmailOld->text()));
+      if (myPpid == LICQ_PPID)
+        gLicqDaemon->icqSetEmailInfo(
+            codec->fromUnicode(nfoEmailSecondary->text()),
+            codec->fromUnicode(nfoEmailOld->text()));
 
       icqEventTag = gProtocolManager.updateOwnerInfo(ownerId);
       break;
@@ -1711,11 +1732,14 @@ void UserPages::Info::userUpdated(const Licq::User* user, unsigned long subSigna
   switch (subSignal)
   {
     case USER_INFO:
-      loadPageMore(user);
-      loadPageMore2(user);
-      loadPageWork(user);
-      loadPageAbout(user);
-      loadPagePhoneBook(user);
+      if (myPpid == LICQ_PPID)
+      {
+        loadPageMore(user);
+        loadPageMore2(user);
+        loadPageWork(user);
+        loadPageAbout(user);
+        loadPagePhoneBook(user);
+      }
       // fall through
     case USER_BASIC:
       loadPageGeneral(user);
