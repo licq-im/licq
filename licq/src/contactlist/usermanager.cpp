@@ -79,7 +79,7 @@ void UserManager::addOwner(const UserId& userId)
   myOwners[userId.protocolId()] = o;
   myOwnerListMutex.unlockWrite();
 
-  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST,
       LIST_OWNER_ADDED, userId));
 }
 
@@ -400,7 +400,7 @@ void UserManager::RemoveOwner(unsigned long ppid)
   o->Unlock();
   delete o;
 
-  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_OWNERxLIST,
+  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST,
         LIST_OWNER_REMOVED, id));
 }
 

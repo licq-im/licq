@@ -66,7 +66,12 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
   switch (sig->Signal())
   {
     case SIGNAL_UPDATExLIST:
-      emit updatedList(sig->SubSignal(), sig->Argument(), userId);
+      if (sig->SubSignal() == LIST_OWNER_ADDED)
+        emit ownerAdded(userId);
+      if (sig->SubSignal() == LIST_OWNER_REMOVED)
+        emit ownerRemoved(userId);
+      else
+        emit updatedList(sig->SubSignal(), sig->Argument(), userId);
       break;
 
     case SIGNAL_UPDATExUSER:
@@ -123,13 +128,6 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
 
     case SIGNAL_NEW_OWNER:
       emit newOwner(userId);
-      break;
-
-    case SIGNAL_OWNERxLIST:
-      if (sig->SubSignal() == LIST_OWNER_ADDED)
-        emit ownerAdded(userId);
-      if (sig->SubSignal() == LIST_OWNER_REMOVED)
-        emit ownerRemoved(userId);
       break;
 
     default:
