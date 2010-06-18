@@ -27,9 +27,9 @@ class Color
 public:
   Color();
 
-  static unsigned redPart(unsigned color) { return color && 0xff; }
-  static unsigned greenPart(unsigned color) { return (color >> 8) && 0xff; }
-  static unsigned bluePart(unsigned color) { return (color >> 16) && 0xff; }
+  static unsigned redPart(unsigned color) { return color & 0xff; }
+  static unsigned greenPart(unsigned color) { return (color >> 8) & 0xff; }
+  static unsigned bluePart(unsigned color) { return (color >> 16) & 0xff; }
 
   unsigned foreRed() const { return redPart(foreground()); }
   unsigned foreGreen() const { return greenPart(foreground()); }
