@@ -26,6 +26,7 @@
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/log.h>
 #include <licq_events.h>
@@ -257,8 +258,23 @@ void Jabber::doAddUser(LicqProtoAddUserSignal* signal)
 void Jabber::doChangeUserGroups(LicqProtoChangeUserGroupsSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->changeUserGroups(signal->userId().accountId(),
-      signal->groups());
+  const Licq::UserId userId = signal->userId();
+
+  // Get names of all group user is member of
+  gloox::StringList groupNames;
+  {
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+      return;
+    const Licq::UserGroupList groups = u->GetGroups();
+    for (Licq::UserGroupList::const_iterator i = groups.begin(); i != groups.end(); ++i)
+    {
+      string groupName = Licq::gUserManager. GetGroupNameFromGroup(*i);
+      if (!groupName.empty())
+        groupNames.push_back(groupName);
+    }
+  }
+  myClient->changeUserGroups(userId.accountId(), groupNames);
 }
 
 void Jabber::doRemoveUser(LicqProtoRemoveUserSignal* signal)

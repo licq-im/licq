@@ -1072,16 +1072,6 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
 
   // Update user object
   u->setInGroup(groupId, inGroup);
-  Licq::StringList groupNames;
-  std::string groupName;
-  UserGroupList groups = u->GetGroups();
-  UserGroupList::const_iterator it;
-  for (it = groups.begin(); it != groups.end(); it++)
-  {
-    groupName = GetGroupNameFromGroup(*it);
-    if (!groupName.empty())
-      groupNames.push_back(groupName);
-  }
   string accountId = u->accountId();
   unsigned long ppid = u->ppid();
   gUserManager.DropUser(u);
@@ -1096,8 +1086,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
             ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
     else
-      gDaemon.PushProtoSignal(
-          new LicqProtoChangeUserGroupsSignal(userId, groupNames), ppid);
+      gDaemon.PushProtoSignal(new LicqProtoChangeUserGroupsSignal(userId), ppid);
   }
 
   // Notify plugins

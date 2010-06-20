@@ -272,10 +272,8 @@ LicqProtoRenameUserSignal::LicqProtoRenameUserSignal(const UserId& userId)
   // Empty
 }
 
-LicqProtoChangeUserGroupsSignal::LicqProtoChangeUserGroupsSignal(const UserId& userId,
-    const StringList& groups)
-  : LicqProtoSignal(PROTOxCHANGE_USER_GROUPS, userId),
-  myGroups(groups)
+LicqProtoChangeUserGroupsSignal::LicqProtoChangeUserGroupsSignal(const UserId& userId)
+  : LicqProtoSignal(PROTOxCHANGE_USER_GROUPS, userId)
 {
   // Empty
 }
