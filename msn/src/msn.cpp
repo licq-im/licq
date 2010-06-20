@@ -30,6 +30,7 @@
 #include "licq_log.h"
 #include "licq_message.h"
 #include <licq/socket.h>
+#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
@@ -631,8 +632,13 @@ void CMSN::ProcessSignal(LicqProtoSignal* s)
 
     case PROTOxUPDATExINFO:
     {
-      LicqProtoUpdateInfoSignal* sig = static_cast<LicqProtoUpdateInfoSignal*>(s);
-      MSNUpdateUser(sig->alias());
+      string newAlias;
+      {
+        Licq::OwnerReadGuard o(MSN_PPID);
+        if (o.isLocked())
+          newAlias = o->getAlias();
+      }
+      MSNUpdateUser(newAlias);
       break;
     }
 

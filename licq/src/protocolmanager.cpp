@@ -307,42 +307,42 @@ unsigned long ProtocolManager::requestUserInfo(const UserId& userId)
 
 unsigned long ProtocolManager::updateOwnerInfo(const UserId& ownerId)
 {
-  string alias, firstName, lastName, email, address, city, state, zipCode;
-  string phoneNumber, faxNumber, cellNumber;
-  unsigned short countryCode;
-  bool hideEmail;
-
-  {
-    OwnerReadGuard owner(ownerId);
-    if (!owner.isLocked())
-      return 0;
-
-    alias = owner->getAlias();
-    firstName = owner->getFirstName();
-    firstName = owner->getLastName();
-    email = owner->getUserInfoString("Email1");
-    address = owner->getUserInfoString("Address");
-    city = owner->getUserInfoString("City");
-    state = owner->getUserInfoString("State");
-    zipCode = owner->getUserInfoString("Zipcode");
-    phoneNumber = owner->getUserInfoString("PhoneNumber");
-    faxNumber = owner->getUserInfoString("FaxNumber");
-    cellNumber = owner->getUserInfoString("CellularNumber");
-    countryCode = owner->getUserInfoUint("Country");
-    hideEmail = owner->getUserInfoBool("HideEmail");
-  }
-
   unsigned long eventId = 0;
 
   if (ownerId.protocolId() == LICQ_PPID)
+  {
+    string alias, firstName, lastName, email, address, city, state, zipCode;
+    string phoneNumber, faxNumber, cellNumber;
+    unsigned short countryCode;
+    bool hideEmail;
+
+    {
+      OwnerReadGuard owner(ownerId);
+      if (!owner.isLocked())
+        return 0;
+
+      alias = owner->getAlias();
+      firstName = owner->getFirstName();
+      firstName = owner->getLastName();
+      email = owner->getUserInfoString("Email1");
+      address = owner->getUserInfoString("Address");
+      city = owner->getUserInfoString("City");
+      state = owner->getUserInfoString("State");
+      zipCode = owner->getUserInfoString("Zipcode");
+      phoneNumber = owner->getUserInfoString("PhoneNumber");
+      faxNumber = owner->getUserInfoString("FaxNumber");
+      cellNumber = owner->getUserInfoString("CellularNumber");
+      countryCode = owner->getUserInfoUint("Country");
+      hideEmail = owner->getUserInfoBool("HideEmail");
+    }
+
     eventId = gIcqProtocol.icqSetGeneralInfo(alias.c_str(), firstName.c_str(),
         lastName.c_str(), email.c_str(), city.c_str(), state.c_str(),
         phoneNumber.c_str(), faxNumber.c_str(), address.c_str(),
         cellNumber.c_str(), zipCode.c_str(), countryCode, hideEmail);
+  }
   else
-    pushProtoSignal(new LicqProtoUpdateInfoSignal(alias, firstName,
-        lastName, email, city, state, phoneNumber, faxNumber, address,
-        cellNumber, zipCode), ownerId);
+    pushProtoSignal(new LicqProtoUpdateInfoSignal(), ownerId);
 
   return eventId;
 }

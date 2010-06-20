@@ -318,23 +318,8 @@ LicqProtoRequestInfo::LicqProtoRequestInfo(const UserId& userId)
   // Empty
 }
 
-LicqProtoUpdateInfoSignal::LicqProtoUpdateInfoSignal(const string& alias,
-    const string& firstName, const string& lastName, const string& email,
-    const string& city, const string& state, const string& phoneNumber,
-    const string& faxNumber, const string& address, const string& cellNumber,
-    const string& zipCode)
-  : LicqProtoSignal(PROTOxUPDATExINFO),
-    myAlias(alias),
-    myFirstName(firstName),
-    myLastName(lastName),
-    myEmail(email),
-    myCity(city),
-    myState(state),
-    myPhoneNumber(phoneNumber),
-    myFaxNumber(faxNumber),
-    myAddress(address),
-    myCellNumber(cellNumber),
-    myZipCode(zipCode)
+LicqProtoUpdateInfoSignal::LicqProtoUpdateInfoSignal()
+  : LicqProtoSignal(PROTOxUPDATExINFO)
 {
   // Empty
 }

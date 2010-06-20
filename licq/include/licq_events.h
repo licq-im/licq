@@ -535,37 +535,7 @@ public:
 class LicqProtoUpdateInfoSignal : public LicqProtoSignal
 {
 public:
-  LicqProtoUpdateInfoSignal(const std::string& alias, const std::string& firstName,
-      const std::string& lastName, const std::string& email,
-      const std::string& city, const std::string& state,
-      const std::string& phoneNumber, const std::string& faxNumber,
-      const std::string& address, const std::string& cellNumber,
-      const std::string& zipCode);
-
-  const std::string alias() const { return myAlias; }
-  const std::string firstName() const { return myFirstName; }
-  const std::string lastName() const { return myLastName; }
-  const std::string email() const { return myEmail; }
-  const std::string city() const { return myCity; }
-  const std::string state() const { return myState; }
-  const std::string phoneNumber() const { return myPhoneNumber; }
-  const std::string faxNumber() const { return myFaxNumber; }
-  const std::string address() const { return myAddress; }
-  const std::string cellNumber() const { return myCellNumber; }
-  const std::string zipCode() const { return myZipCode; }
-
-private:
-  std::string myAlias;
-  std::string myFirstName;
-  std::string myLastName;
-  std::string myEmail;
-  std::string myCity;
-  std::string myState;
-  std::string myPhoneNumber;
-  std::string myFaxNumber;
-  std::string myAddress;
-  std::string myCellNumber;
-  std::string myZipCode;
+  LicqProtoUpdateInfoSignal();
 };
 
 class LicqProtoRequestPicture : public LicqProtoSignal
