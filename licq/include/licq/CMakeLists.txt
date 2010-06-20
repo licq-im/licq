@@ -24,6 +24,7 @@ set(licq_HEADERS
   plugin.h
   pluginlogsink.h
   pluginmanager.h
+  pluginsignal.h
   protocolmanager.h
   proxy.h
   sarmanager.h

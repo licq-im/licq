@@ -22,6 +22,7 @@
 #include <licq/icqdefines.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
 #include "licq_log.h"
@@ -1198,7 +1199,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
     u->SetLastCheckedAutoResponse();
 
-        gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
+        gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            Licq::PluginSignal::UserEvents, u->id()));
       }
     u->Unlock();
     return;

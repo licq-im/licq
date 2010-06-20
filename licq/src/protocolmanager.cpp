@@ -24,6 +24,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
+#include <licq/pluginsignal.h>
 #include <licq/userid.h>
 
 #include "contactlist/user.h"
@@ -35,6 +36,7 @@ using namespace std;
 using namespace LicqDaemon;
 using Licq::OwnerReadGuard;
 using Licq::OwnerWriteGuard;
+using Licq::PluginSignal;
 using Licq::UserId;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
@@ -457,7 +459,7 @@ void ProtocolManager::visibleListSet(const UserId& userId, bool visible)
     else
       pushProtoSignal(new LicqProtoUnacceptUserSignal(userId), userId);
 
-  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
+  gUserManager.notifyUserUpdated(userId, PluginSignal::UserSettings);
 }
 
 void ProtocolManager::invisibleListSet(const UserId& userId, bool invisible)
@@ -478,7 +480,7 @@ void ProtocolManager::invisibleListSet(const UserId& userId, bool invisible)
     else
       pushProtoSignal(new LicqProtoUnblockUserSignal(userId), userId);
 
-  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
+  gUserManager.notifyUserUpdated(userId, PluginSignal::UserSettings);
 }
 
 void ProtocolManager::ignoreListSet(const UserId& userId, bool ignore)
@@ -499,5 +501,5 @@ void ProtocolManager::ignoreListSet(const UserId& userId, bool ignore)
     else
       pushProtoSignal(new LicqProtoUnignoreUserSignal(userId), userId);
 
-  gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
+  gUserManager.notifyUserUpdated(userId, PluginSignal::UserSettings);
 }

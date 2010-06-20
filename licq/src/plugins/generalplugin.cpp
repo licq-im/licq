@@ -88,7 +88,7 @@ bool GeneralPlugin::init(int argc, char** argv)
   return callInitInThread();
 }
 
-void GeneralPlugin::pushSignal(LicqSignal* signal)
+void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)
 {
   MutexLocker locker(mySignalsMutex);
   mySignals.push(signal);
@@ -96,12 +96,12 @@ void GeneralPlugin::pushSignal(LicqSignal* signal)
   myPipe.putChar(PipeSignal);
 }
 
-LicqSignal* GeneralPlugin::popSignal()
+Licq::PluginSignal* GeneralPlugin::popSignal()
 {
   MutexLocker locker(mySignalsMutex);
   if (!mySignals.empty())
   {
-    LicqSignal* signal = mySignals.front();
+    Licq::PluginSignal* signal = mySignals.front();
     mySignals.pop();
     return signal;
   }

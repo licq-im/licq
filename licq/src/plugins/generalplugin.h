@@ -26,7 +26,11 @@
 #include <queue>
 
 class LicqEvent;
-class LicqSignal;
+
+namespace Licq
+{
+class PluginSignal;
+}
 
 namespace LicqDaemon
 {
@@ -42,8 +46,8 @@ public:
 
   bool init(int argc, char** argv);
 
-  void pushSignal(LicqSignal* signal);
-  LicqSignal* popSignal();
+  void pushSignal(Licq::PluginSignal* signal);
+  Licq::PluginSignal* popSignal();
 
   void pushEvent(LicqEvent* event);
   LicqEvent* popEvent();
@@ -66,7 +70,7 @@ private:
   char** myArgv;
   char** myArgvCopy;
 
-  std::queue<LicqSignal*> mySignals;
+  std::queue<Licq::PluginSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 
   std::queue<LicqEvent*> myEvents;

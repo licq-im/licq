@@ -27,6 +27,7 @@
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
@@ -1718,8 +1719,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
         u->SetLastCheckedAutoResponse();
 
-          gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
-        break;
+          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserEvents, u->id()));
+          break;
       }
 
       case ICQ_CMDxSUB_URL:  // url sent
@@ -2198,7 +2200,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         }
 
         u->SetSendServer(false);
-          gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 1));
+          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserSecurity, u->id(), 1));
 
           gLog.Info(tr("%sSecure channel established with %s (%s).\n"),
               L_SSLxSTR, u->GetAlias(), userId.toString().c_str());
@@ -2245,8 +2248,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         pSock->SecureStop();
         u->SetSecure(false);
-          gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
-        break;
+          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserSecurity, u->id(), 0));
+          break;
 
 #else // We do not support OpenSSL
           gLog.Info(tr("%sReceived secure channel close from %s (%s) but we do not support OpenSSL.\n"),
@@ -2463,7 +2467,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.Info(tr("%s%s (%s) does not support OpenSSL.\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
           u->SetSecure(false);
-            gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+            gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                Licq::PluginSignal::UserSecurity, u->id(), 0));
           // find the event, fail it
           e = DoneEvent(sockfd, theSequence, EVENT_FAILED);
         }
@@ -2480,7 +2485,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             // Close the connection as we are in trouble
             u->SetSecure(false);
               Licq::gUserManager.DropUser(u);
-              gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+              gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                  Licq::PluginSignal::UserSecurity, u->id(), 0));
             return false;
           }
 
@@ -2494,9 +2500,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.Info(tr("%sSecure channel established with %s (%s).\n"),
                   L_SSLxSTR, u->GetAlias(), userId.toString().c_str());
             u->SetSecure(true);
-              gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 1));
+              gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                  Licq::PluginSignal::UserSecurity, u->id(), 1));
+            }
           }
-        }
 
         // finish up
         e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
@@ -2541,7 +2548,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         pSock->SecureStop();
         u->SetSecure(false);
-          gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserSecurity, u->id(), 0));
           Licq::gUserManager.DropUser(u);
 
         // finish up
@@ -2886,8 +2894,9 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             u->SetEnableSave(true);
             u->SavePictureInfo();
 
-              gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
-          }
+              gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                  Licq::PluginSignal::UserPicture, u->id()));
+            }
           else if (memcmp(GUID, PLUGIN_QUERYxINFO, GUID_LENGTH) == 0)
           {
             gLog.Info("%s%s has no info plugins.\n", szInfo, u->GetAlias());
@@ -3012,7 +3021,8 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             u->SavePhoneBookInfo();
                   delete [] pb;
 
-                gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
+                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                    Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
 
@@ -3041,7 +3051,8 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             u->SetEnableSave(true);
             u->SavePictureInfo();
 
-                gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                    Licq::PluginSignal::UserPicture, u->id()));
                 break;
               }
             }
@@ -3321,7 +3332,8 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
         }
 
         // Which plugin?
-            gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PLUGIN_STATUS, u->id(), 0));
+            gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                Licq::PluginSignal::UserPluginStatus, u->id(), 0));
 
         ProcessDoneEvent(e);
         return false;

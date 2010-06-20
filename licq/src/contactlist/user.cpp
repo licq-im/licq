@@ -20,6 +20,7 @@
 #include "licq/contactlist/usermanager.h"
 #include <licq/daemon.h>
 #include "licq/pluginmanager.h"
+#include "licq/pluginsignal.h"
 #include <licq/socket.h>
 
 #include "../icq/icq.h" // For gSocketManager
@@ -31,6 +32,7 @@ using std::string;
 using std::vector;
 using Licq::ICQUserPhoneBook;
 using Licq::IniFile;
+using Licq::PluginSignal;
 using Licq::SecureChannelSupport_et;
 using Licq::UserId;
 using Licq::gDaemon;
@@ -491,7 +493,8 @@ User::~User()
     m_vcMessages.pop_back();
     decNumUserEvents();
 
-    gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, nId));
+    gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+        PluginSignal::UserEvents, myId, nId));
   }
 
   delete m_PhoneBook;
@@ -682,7 +685,8 @@ void User::SetPermanent()
   saveAll();
 
   // Notify the plugins of the change
-  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SETTINGS, myId, 0));
+  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+      PluginSignal::UserSettings, myId, 0));
 }
 
 void User::SetDefaults()
@@ -852,7 +856,8 @@ void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
   if (oldStatus != newStatus)
   {
     Touch();
-    gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, myId, arg));
+    gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+        PluginSignal::UserStatus, myId, arg));
   }
 }
 
@@ -1164,8 +1169,8 @@ void Licq::User::SetSocketDesc(Licq::TCPSocket* s)
   {
     m_bSecure = s->Secure();
     if (m_bOnContactList)
-      gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY,
-          myId, m_bSecure ? 1 : 0));
+      gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+          PluginSignal::UserSecurity, myId, m_bSecure ? 1 : 0));
   }
 
   if (m_nIntIp == 0)
@@ -1206,7 +1211,8 @@ void Licq::User::ClearSocketDesc(unsigned char nChannel)
   }
 
   if (m_bOnContactList)
-    gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, myId, 0));
+    gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+        PluginSignal::UserSecurity, myId, 0));
 }
 
 void Licq::User::clearNormalSocketDesc()
@@ -2077,8 +2083,8 @@ void Licq::User::EventPush(CUserEvent *e)
   Touch();
   SetLastReceivedEvent();
 
-  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-      USER_EVENTS, myId, e->Id(), e->ConvoId()));
+  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+      PluginSignal::UserEvents, myId, e->Id(), e->ConvoId()));
 }
 
 void User::WriteToHistory(const char* _szText)
@@ -2137,7 +2143,8 @@ CUserEvent *Licq::User::EventPop()
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, e->Id()));
+  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+      PluginSignal::UserEvents, myId, e->Id()));
 
   return e;
 }
@@ -2155,7 +2162,8 @@ void Licq::User::EventClear(unsigned short index)
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, -id));
+  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+      PluginSignal::UserEvents, myId, -id));
 }
 
 void Licq::User::EventClearId(int id)
@@ -2170,7 +2178,8 @@ void Licq::User::EventClearId(int id)
       decNumUserEvents();
       SaveNewMessagesInfo();
 
-      gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, myId, -id));
+      gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+          PluginSignal::UserEvents, myId, -id));
       break;
     }
   }

@@ -27,12 +27,12 @@
 class CUserEvent;
 class LicqEvent;
 class LicqProtoSignal;
-class LicqSignal;
 
 namespace Licq
 {
 
 class LogService;
+class PluginSignal;
 class Proxy;
 class TCPSocket;
 class User;
@@ -120,7 +120,7 @@ public:
    *
    * @param signal Signal to send
    */
-  void pushPluginSignal(LicqSignal* signal);
+  void pushPluginSignal(PluginSignal* signal);
 
   void PushPluginEvent(LicqEvent *);
   void PushProtoSignal(LicqProtoSignal* s, unsigned long ppid);
@@ -135,7 +135,7 @@ public:
    *
    * @return The next queued signal or NULL if the queue is empty
    */
-  LicqSignal* popPluginSignal();
+  PluginSignal* popPluginSignal();
   LicqEvent *PopPluginEvent();
   LicqProtoSignal* PopProtoSignal();
 

@@ -137,7 +137,7 @@ public:
    * receiving signals.
    *
    * @param signalMask A mask indicating which signals the plugin wish to
-   *        receive. Use the constant SIGNAL_ALL to receive all signals.
+   *        receive. Use the constant PluginSignal::SignalAll to receive all signals.
    * @return The pipe to listen on for notifications.
    */
   virtual int registerGeneralPlugin(unsigned long signalMask) = 0;

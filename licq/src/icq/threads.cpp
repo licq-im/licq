@@ -18,6 +18,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/packet.h>
+#include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include "licq_log.h"
 
@@ -886,7 +887,8 @@ void *MonitorSockets_tep(void* /* p */)
             {
               u->ClearSocketDesc(ICQ_CHNxNONE);
               u->SetSecure(false);
-              Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+              Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                  Licq::PluginSignal::UserSecurity, u->id(), 0));
             }
           }
               gSocketManager.DropSocket(tcp);

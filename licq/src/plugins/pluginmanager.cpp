@@ -25,6 +25,7 @@
 #include <licq/daemon.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logservice.h>
+#include <licq/pluginsignal.h>
 #include <licq/thread/mutexlocker.h>
 
 #include <algorithm>
@@ -152,7 +153,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
 
     // Let the plugins know about the new protocol plugin
     myPluginEventHandler.pushGeneralSignal(
-        new LicqSignal(SIGNAL_NEWxPROTO_PLUGIN, plugin->getProtocolId()));
+        new Licq::PluginSignal(Licq::PluginSignal::SignalNewProtocol, plugin->getProtocolId()));
 
     return plugin;
   }

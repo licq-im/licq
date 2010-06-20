@@ -214,25 +214,6 @@ Licq::User* LicqEvent::GrabUnknownUser()
   return u;
 }
 
-LicqSignal::LicqSignal(unsigned long signal, unsigned long subSignal,
-    const UserId& userId, int argument, unsigned long cid)
-  : mySignal(signal),
-    mySubSignal(subSignal),
-    myUserId(userId),
-    myArgument(argument),
-    myCid(cid)
-{
-}
-
-LicqSignal::LicqSignal(const LicqSignal* s)
-  : mySignal(s->mySignal),
-    mySubSignal(s->mySubSignal),
-    myUserId(s->myUserId),
-    myArgument(s->myArgument),
-    myCid(s->myCid)
-{
-}
-
 
 LicqProtoSignal::LicqProtoSignal(SIGNAL_TYPE type, const UserId& userId, unsigned long convoId)
   : myType(type),

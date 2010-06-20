@@ -72,18 +72,18 @@ LicqEvent* PluginEventHandler::popGeneralEvent()
   return NULL;
 }
 
-void PluginEventHandler::pushGeneralSignal(LicqSignal* signal)
+void PluginEventHandler::pushGeneralSignal(Licq::PluginSignal* signal)
 {
   MutexLocker locker(myGeneralPluginsMutex);
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
   {
-    if (plugin->wantSignal(signal->Signal()))
-      plugin->pushSignal(new LicqSignal(signal));
+    if (plugin->wantSignal(signal->signal()))
+      plugin->pushSignal(new Licq::PluginSignal(signal));
   }
   delete signal;
 }
 
-LicqSignal* PluginEventHandler::popGeneralSignal()
+Licq::PluginSignal* PluginEventHandler::popGeneralSignal()
 {
   MutexLocker locker(myGeneralPluginsMutex);
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)

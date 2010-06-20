@@ -32,6 +32,7 @@
 #include <licq_log.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
+#include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
@@ -47,6 +48,7 @@
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::PluginSignal;
 using Licq::User;
 using Licq::UserId;
 
@@ -400,12 +402,12 @@ void Licq::Daemon::PushPluginEvent(LicqEvent* e)
   LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralEvent(e);
 }
 
-void Licq::Daemon::pushPluginSignal(LicqSignal* s)
+void Licq::Daemon::pushPluginSignal(PluginSignal* s)
 {
   LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralSignal(s);
 }
 
-LicqSignal* Licq::Daemon::popPluginSignal()
+PluginSignal* Licq::Daemon::popPluginSignal()
 {
   return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralSignal();
 }
@@ -427,12 +429,12 @@ LicqProtoSignal* Licq::Daemon::PopProtoSignal()
 
 void Licq::Daemon::pluginUIViewEvent(const Licq::UserId& userId)
 {
-  pushPluginSignal(new LicqSignal(SIGNAL_UI_VIEWEVENT, 0, userId));
+  pushPluginSignal(new PluginSignal(PluginSignal::SignalUiViewEvent, 0, userId));
 }
 
 void Licq::Daemon::pluginUIMessage(const Licq::UserId& userId)
 {
-  pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId));
+  pushPluginSignal(new PluginSignal(PluginSignal::SignalUiMessage, 0, userId));
 }
 
 void Daemon::shutdownPlugins()
