@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include <licq/contactlist/user.h>
+#include <licq/pluginsignal.h>
 
 using namespace std;
 using Licq::UserId;
@@ -225,7 +226,8 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
           if (u.isLocked())
           {
             u->SetPicturePresent(true);
-            m_pMSN->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+            m_pMSN->pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                Licq::PluginSignal::UserPicture, u->id()));
           }
         }
 

@@ -21,6 +21,7 @@
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
+#include "licq/pluginsignal.h"
 #include <licq/protocolmanager.h>
 
 extern "C" { const char *LP_Version(); }
@@ -69,7 +70,7 @@ void CLicqAutoReply::Shutdown()
 int CLicqAutoReply::Run()
 {
   // Register with the daemon, we only want the update user signal
-  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
+  m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalUser);
 
   Licq::IniFile conf("licq_autoreply.conf");
   conf.loadFile();
@@ -130,7 +131,7 @@ void CLicqAutoReply::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      LicqSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
@@ -173,13 +174,13 @@ void CLicqAutoReply::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqAutoReply::ProcessSignal(LicqSignal* s)
+void CLicqAutoReply::ProcessSignal(Licq::PluginSignal* s)
 {
-  switch (s->Signal())
+  switch (s->signal())
   {
-    case SIGNAL_UPDATExUSER:
-      if (s->SubSignal() == USER_EVENTS && !gUserManager.isOwner(s->userId()) && s->Argument() > 0)
-        processUserEvent(s->userId(), s->Argument());
+    case Licq::PluginSignal::SignalUser:
+      if (s->subSignal() == Licq::PluginSignal::UserEvents && !gUserManager.isOwner(s->userId()) && s->argument() > 0)
+        processUserEvent(s->userId(), s->argument());
       break;
     // We should never get any other signal
     default:

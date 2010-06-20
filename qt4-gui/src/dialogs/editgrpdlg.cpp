@@ -30,8 +30,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/pluginsignal.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
@@ -136,12 +136,12 @@ void EditGrpDlg::listUpdated(unsigned long subSignal)
 {
   switch (subSignal)
   {
-    case LIST_GROUP_ADDED:
-    case LIST_GROUP_REMOVED:
-    case LIST_GROUP_CHANGED:
-    case LIST_GROUP_REORDERED:
+    case Licq::PluginSignal::ListGroupAdded:
+    case Licq::PluginSignal::ListGroupRemoved:
+    case Licq::PluginSignal::ListGroupChanged:
+    case Licq::PluginSignal::ListGroupsReordered:
 
-    case LIST_INVALIDATE:
+    case Licq::PluginSignal::ListInvalidate:
       if (btnSave->isEnabled()) // we are editing the group name
         slot_editcancel();
       RefreshList();

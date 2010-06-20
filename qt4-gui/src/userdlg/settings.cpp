@@ -36,8 +36,8 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
-#include <licq_events.h>
 
 #include "contactlist/contactlist.h"
 #include "dialogs/awaymsgdlg.h"
@@ -419,8 +419,8 @@ void UserPages::Settings::userUpdated(const Licq::User* user, unsigned long subS
 {
   switch (subSignal)
   {
-    case USER_GROUPS:
-    case USER_SETTINGS:
+    case Licq::PluginSignal::UserGroups:
+    case Licq::PluginSignal::UserSettings:
       load(user);
       break;
   }

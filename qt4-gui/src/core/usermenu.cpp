@@ -25,11 +25,11 @@
 #include <QActionGroup>
 #include <QClipboard>
 
-#include <licq_events.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icq.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/utility.h>
 
 #include "config/iconmanager.h"
@@ -523,7 +523,7 @@ void UserMenu::toggleMiscMode(QAction* action)
         u.unlock();
 
         // Notify all plugins (including ourselves)
-        Licq::gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
+        Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSecurity);
       }
       else
       {
@@ -560,7 +560,7 @@ void UserMenu::toggleMiscMode(QAction* action)
   u.unlock();
 
   // Notify all plugins (including ourselves)
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSettings);
 }
 
 void UserMenu::utility(QAction* action)

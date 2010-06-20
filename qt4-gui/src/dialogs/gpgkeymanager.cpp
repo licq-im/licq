@@ -28,9 +28,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/pluginsignal.h>
 
 #include "core/messagebox.h"
 
@@ -320,5 +320,5 @@ void KeyListItem::unsetKey()
   }
 
   // Notify all plugins (including ourselves)
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSecurity);
 }

@@ -80,6 +80,7 @@ extern "C"
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/sarmanager.h>
 
@@ -409,7 +410,7 @@ void LicqGui::saveConfig()
 int LicqGui::Run()
 {
   // Register with the daemon, we want to receive all signals
-  int pipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
+  int pipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalAll);
 
   // Create the configuration handlers
   Config::General::createInstance(this);
@@ -1337,7 +1338,7 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const Lic
 {
   switch (subSignal)
   {
-    case LIST_REMOVE:
+    case Licq::PluginSignal::ListUserRemoved:
     {
       // If their floaty is enabled, remove it
       FloatyView* f = FloatyView::findFloaty(userId);
@@ -1384,10 +1385,10 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const Lic
       break;
     }
 
-    case LIST_ALL:
-    case LIST_GROUP_ADDED:
-    case LIST_GROUP_REMOVED:
-    case LIST_GROUP_CHANGED:
+    case Licq::PluginSignal::ListInvalidate:
+    case Licq::PluginSignal::ListGroupAdded:
+    case Licq::PluginSignal::ListGroupRemoved:
+    case Licq::PluginSignal::ListGroupChanged:
       myMainWindow->updateGroups();
       myUserMenu->updateGroups();
       myGroupMenu->updateGroups();
@@ -1402,7 +1403,7 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
 
   switch (subSignal)
   {
-    case USER_EVENTS:
+    case Licq::PluginSignal::UserEvents:
     {
       // Skip all this if it was just an away message check
       if (argument == 0)
@@ -1467,10 +1468,10 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
       }
       // Fall through
     }
-    case USER_STATUS:
-    case USER_BASIC:
-    case USER_SECURITY:
-    case USER_TYPING:
+    case Licq::PluginSignal::UserStatus:
+    case Licq::PluginSignal::UserBasic:
+    case Licq::PluginSignal::UserSecurity:
+    case Licq::PluginSignal::UserTyping:
     {
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
@@ -1479,11 +1480,11 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
       // update the tab icon of this user
       if (Config::Chat::instance()->tabbedChatting() && myUserEventTabDlg != NULL)
       {
-        if (subSignal == USER_TYPING)
+        if (subSignal == Licq::PluginSignal::UserTyping)
           myUserEventTabDlg->setTyping(*u, argument);
         myUserEventTabDlg->updateTabLabel(*u);
       }
-      else if (subSignal == USER_TYPING)
+      else if (subSignal == Licq::PluginSignal::UserTyping)
       {
         // First, update the window if available
         for (int i = 0; i < myUserSendList.size(); ++i)
@@ -1774,5 +1775,5 @@ void LicqGui::setUserInGroup(const Licq::UserId& userId, int groupId, bool inGro
   }
 
   // Notify everyone of the change
-  Licq::gUserManager.notifyUserUpdated(userId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(userId, Licq::PluginSignal::UserSettings);
 }

@@ -4,11 +4,11 @@
 #include <string>
 
 class CUserEvent;
-class LicqSignal;
 class LicqEvent;
 
 namespace Licq
 {
+class PluginSignal;
 class UserId;
 }
 
@@ -31,7 +31,7 @@ protected:
        m_bSendThroughServer;
 
   void ProcessPipe();
-  void ProcessSignal(LicqSignal* s);
+  void ProcessSignal(Licq::PluginSignal* s);
   void ProcessEvent(LicqEvent* e);
 
   /**

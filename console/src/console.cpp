@@ -23,6 +23,7 @@
 #include <licq/icqfiletransfer.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
+#include "licq/pluginsignal.h"
 #include <licq/protocolmanager.h>
 
 #include "event_data.h"
@@ -251,7 +252,7 @@ int CLicqConsole::Run()
   CWindow::StartScreen();
 
   // Register with the daemon, we want to receive all signals
-  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
+  m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalAll);
   m_bExit = false;
 
   // Create the windows
@@ -477,7 +478,7 @@ void CLicqConsole::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      LicqSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
       ProcessSignal(s);
       break;
     }
@@ -509,13 +510,13 @@ void CLicqConsole::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessSignal(LicqSignal* s)
+void CLicqConsole::ProcessSignal(Licq::PluginSignal* s)
 {
-  switch (s->Signal())
+  switch (s->signal())
   {
-  case SIGNAL_UPDATExLIST:
-    if (s->SubSignal() == LIST_REMOVE)
-    {
+    case Licq::PluginSignal::SignalList:
+      if (s->subSignal() == Licq::PluginSignal::ListUserRemoved)
+      {
       for (unsigned short i = 0; i < MAX_CON; i++)
       {
         if (s->userId() == winCon[i]->sLastContact)
@@ -525,11 +526,11 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
     PrintStatus();
     CreateUserList();
     PrintUsers();
-    break;
-  case SIGNAL_UPDATExUSER:
+      break;
+    case Licq::PluginSignal::SignalUser:
     {
-      if ((Licq::gUserManager.isOwner(s->userId()) && s->SubSignal() == USER_STATUS)
-          || s->SubSignal() == USER_EVENTS)
+      if ((Licq::gUserManager.isOwner(s->userId()) && s->subSignal() == Licq::PluginSignal::UserStatus)
+          || s->subSignal() == Licq::PluginSignal::UserEvents)
         PrintStatus();
       bool isInGroup = false;
       {
@@ -545,20 +546,20 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
 
       break;
     }
-  case SIGNAL_LOGON:
-  case SIGNAL_LOGOFF:
+    case Licq::PluginSignal::SignalLogon:
+    case Licq::PluginSignal::SignalLogoff:
     PrintStatus();
-    break;
-  case SIGNAL_ADDxSERVERxLIST:
+      break;
+    case Licq::PluginSignal::SignalAddedToServer:
       gProtocolManager.updateUserAlias(s->userId());
       break;
-  case SIGNAL_NEWxPROTO_PLUGIN:
+    case Licq::PluginSignal::SignalNewProtocol:
     //ignore for now
     break;
-  default:
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
-              L_WARNxSTR, s->Signal());
-    break;
+    default:
+      gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
+          L_WARNxSTR, s->signal());
+      break;
   }
   delete s;
 }
@@ -1623,7 +1624,8 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
     u.unlock();
     //PrintUsers();
     //PrintStatus();
-    ProcessSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, userId));
+    ProcessSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+        Licq::PluginSignal::UserEvents, userId));
   }
   else
   {

@@ -70,6 +70,7 @@
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
+#include <licq/pluginsignal.h>
 
 #include "config/contactlist.h"
 #include "config/general.h"
@@ -606,7 +607,7 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
 {
   switch(subSignal)
   {
-    case USER_EVENTS:
+    case Licq::PluginSignal::UserEvents:
     {
       // Skip all this if it was just an away message check
       if (argument == 0)
@@ -621,20 +622,20 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
 
       // Fall through
     }
-    case USER_STATUS:
+    case Licq::PluginSignal::UserStatus:
 #ifdef USE_KDE
       // TODO
       // kdeIMInterface->userStatusChanged(id, ppid);
 #endif
-    case USER_BASIC: // for alias
-    case USER_SETTINGS: // for online notify
-    case USER_SECURITY:
-    case USER_TYPING:
+    case Licq::PluginSignal::UserBasic: // for alias
+    case Licq::PluginSignal::UserSettings: // for online notify
+    case Licq::PluginSignal::UserSecurity:
+    case Licq::PluginSignal::UserTyping:
     {
       if (Licq::gUserManager.isOwner(userId))
       {
-        if (subSignal == USER_STATUS ||
-            subSignal == USER_SETTINGS)
+        if (subSignal == Licq::PluginSignal::UserStatus ||
+            subSignal == Licq::PluginSignal::UserSettings)
           break;
 
         myCaption = "Licq (|)";
@@ -660,7 +661,7 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
         break;
       }
 
-      if (subSignal == USER_STATUS &&
+      if (subSignal == Licq::PluginSignal::UserStatus &&
           argument == 1 &&
           Config::General::instance()->trayMsgOnlineNotify())
       {
@@ -682,7 +683,7 @@ void MainWindow::slot_updatedList(unsigned long subSignal)
 {
   switch(subSignal)
   {
-    case LIST_REMOVE:
+    case Licq::PluginSignal::ListUserRemoved:
       updateEvents();
       break;
   }

@@ -31,6 +31,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/plugin.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 
 #include "dialogs/ownereditdlg.h"
@@ -58,82 +59,90 @@ SignalManager::~SignalManager()
   gGuiSignalManager = NULL;
 }
 
-void SignalManager::ProcessSignal(LicqSignal* sig)
+void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
 {
-  Licq::UserId userId = sig->userId();
+  const Licq::UserId& userId = sig->userId();
   unsigned long ppid = userId.protocolId();
 
-  switch (sig->Signal())
+  switch (sig->signal())
   {
-    case SIGNAL_UPDATExLIST:
-      if (sig->SubSignal() == LIST_OWNER_ADDED)
-        emit ownerAdded(userId);
-      if (sig->SubSignal() == LIST_OWNER_REMOVED)
-        emit ownerRemoved(userId);
-      else
-        emit updatedList(sig->SubSignal(), sig->Argument(), userId);
+    case Licq::PluginSignal::SignalList:
+      switch (sig->subSignal())
+      {
+        case Licq::PluginSignal::ListOwnerAdded:
+          emit ownerAdded(userId);
+          break;
+        case Licq::PluginSignal::ListOwnerRemoved:
+          emit ownerRemoved(userId);
+          break;
+        default:
+          emit updatedList(sig->subSignal(), sig->argument(), userId);
+      }
       break;
 
-    case SIGNAL_UPDATExUSER:
-      emit updatedUser(userId, sig->SubSignal(), sig->Argument(), sig->CID());
+    case Licq::PluginSignal::SignalUser:
+      emit updatedUser(userId, sig->subSignal(), sig->argument(), sig->cid());
 
-      if (Licq::gUserManager.isOwner(userId) && sig->SubSignal() == USER_STATUS)
+      if (Licq::gUserManager.isOwner(userId) && sig->subSignal() == Licq::PluginSignal::UserStatus)
         emit updatedStatus(ppid);
       break;
 
-    case SIGNAL_LOGON:
+    case Licq::PluginSignal::SignalLogon:
       emit logon();
       break;
 
-    case SIGNAL_LOGOFF:
-      if (sig->SubSignal() == LOGOFF_PASSWORD)
+    case Licq::PluginSignal::SignalLogoff:
+      if (sig->subSignal() == Licq::PluginSignal::LogoffPassword)
         new OwnerEditDlg(ppid);
 
       emit logoff();
       break;
 
-    case SIGNAL_UI_VIEWEVENT:
+    case Licq::PluginSignal::SignalUiViewEvent:
       emit ui_viewevent(userId);
       break;
 
-    case SIGNAL_UI_MESSAGE:
+    case Licq::PluginSignal::SignalUiMessage:
       //TODO
       emit ui_message(userId);
       break;
 
-    case SIGNAL_ADDxSERVERxLIST:
+    case Licq::PluginSignal::SignalAddedToServer:
       //TODO
       gProtocolManager.updateUserAlias(userId);
       break;
 
-    case SIGNAL_NEWxPROTO_PLUGIN:
-      emit protocolPlugin(sig->SubSignal());
+    case Licq::PluginSignal::SignalNewProtocol:
+      emit protocolPlugin(sig->subSignal());
       break;
 
-    case SIGNAL_SOCKET:
-      emit socket(userId, sig->CID());
+    case Licq::PluginSignal::SignalConversation:
+      switch (sig->subSignal())
+      {
+        case Licq::PluginSignal::ConvoCreate:
+          emit socket(userId, sig->cid());
+          break;
+        case Licq::PluginSignal::ConvoJoin:
+          emit convoJoin(userId, ppid, sig->cid());
+          break;
+        case Licq::PluginSignal::ConvoLeave:
+          emit convoLeave(userId, ppid, sig->cid());
+          break;
+      }
       break;
 
-    case SIGNAL_CONVOxJOIN:
-      emit convoJoin(userId, ppid, sig->CID());
-      break;
-
-    case SIGNAL_CONVOxLEAVE:
-      emit convoLeave(userId, ppid, sig->CID());
-      break;
-
-    case SIGNAL_VERIFY_IMAGE:
+    case Licq::PluginSignal::SignalVerifyImage:
       emit verifyImage(ppid);
       break;
 
-    case SIGNAL_NEW_OWNER:
+    case Licq::PluginSignal::SignalNewOwner:
       emit newOwner(userId);
       break;
 
     default:
       gLog.Warn("%sInternal error: SignalManager::ProcessSignal(): "
-          "Unknown signal command received from daemon: %ld.\n",
-          L_WARNxSTR, sig->Signal());
+          "Unknown signal command received from daemon: %d.\n",
+          L_WARNxSTR, sig->signal());
       break;
   }
 
@@ -209,7 +218,7 @@ void SignalManager::process()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      LicqSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
       ProcessSignal(s);
       break;
     }

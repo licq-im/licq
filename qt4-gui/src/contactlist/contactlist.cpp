@@ -25,9 +25,9 @@
 
 #include <QHash>
 
-#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/pluginsignal.h>
 
 #include "config/contactlist.h"
 
@@ -130,11 +130,11 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
 {
   switch(subSignal)
   {
-    case LIST_INVALIDATE:
+    case Licq::PluginSignal::ListInvalidate:
       reloadAll();
       break;
 
-    case LIST_CONTACT_ADDED:
+    case Licq::PluginSignal::ListUserAdded:
     {
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
@@ -146,11 +146,11 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       addUser(*u);
       break;
     }
-    case LIST_CONTACT_REMOVED:
+    case Licq::PluginSignal::ListUserRemoved:
       removeUser(userId);
       break;
 
-    case LIST_GROUP_ADDED:
+    case Licq::PluginSignal::ListGroupAdded:
     {
       // argument is group id
 
@@ -166,7 +166,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       break;
     }
 
-    case LIST_GROUP_REMOVED:
+    case Licq::PluginSignal::ListGroupRemoved:
     {
       // argument is group id
 
@@ -184,7 +184,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       break;
     }
 
-    case LIST_GROUP_CHANGED:
+    case Licq::PluginSignal::ListGroupChanged:
     {
       // argument is group id
 
@@ -197,7 +197,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       break;
     }
 
-    case LIST_GROUP_REORDERED:
+    case Licq::PluginSignal::ListGroupsReordered:
     {
       // Get new sort keys for all groups
       for (int i = 0; i < myGroups.size(); ++i)

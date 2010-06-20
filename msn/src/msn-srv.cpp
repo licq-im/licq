@@ -32,6 +32,7 @@
 #include <licq/daemon.h>
 #include <licq/md5.h>
 #include <licq/oneventmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/socket.h>
 
 using namespace std;
@@ -187,7 +188,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserBasic, u->id()));
         }
         u->setUserInfoString("Email1", strUser);
         string strURL = "http://members.msn.com/"+strUser;
@@ -195,7 +197,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         u->SetNewUser(false);
         u->SetEnableSave(true);
         u->SaveLicqInfo();
-        Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_INFO, u->id()));
+        Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            Licq::PluginSignal::UserInfo, u->id()));
       }
     }
     else if (strCmd == "LSG")
@@ -239,7 +242,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
             string strDecodedNick = Decode(strNick);
             u->setAlias(strDecodedNick);
           }
-          Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserBasic, u->id()));
         }
       }
     }
@@ -325,7 +329,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->id()));
+          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserBasic, u->id()));
         }
 
 	// Get the display picture here, so it can be shown with the notify

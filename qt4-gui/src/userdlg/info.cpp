@@ -57,6 +57,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/icq.h>
 #include <licq/icqcodes.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq_log.h>
 
@@ -1731,7 +1732,7 @@ void UserPages::Info::userUpdated(const Licq::User* user, unsigned long subSigna
 {
   switch (subSignal)
   {
-    case USER_INFO:
+    case Licq::PluginSignal::UserInfo:
       if (myPpid == LICQ_PPID)
       {
         loadPageMore(user);
@@ -1741,10 +1742,10 @@ void UserPages::Info::userUpdated(const Licq::User* user, unsigned long subSigna
         loadPagePhoneBook(user);
       }
       // fall through
-    case USER_BASIC:
+    case Licq::PluginSignal::UserBasic:
       loadPageGeneral(user);
       break;
-  case USER_PICTURE:
+    case Licq::PluginSignal::UserPicture:
       loadPagePicture(user);
     break;
   }

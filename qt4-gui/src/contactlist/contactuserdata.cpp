@@ -32,6 +32,7 @@
 // Licq
 #include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
+#include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq_events.h>
 
@@ -109,7 +110,7 @@ ContactUserData::~ContactUserData()
 
 void ContactUserData::update(unsigned long subSignal, int argument)
 {
-  if (subSignal == USER_EVENTS && argument == 0)
+  if (subSignal == Licq::PluginSignal::UserEvents && argument == 0)
   {
     // User fetched our auto response message
     myCarCounter = ((5*1000/FLASH_TIME)+1)&(-2);
@@ -117,7 +118,7 @@ void ContactUserData::update(unsigned long subSignal, int argument)
     return;
   }
 
-  if (subSignal == USER_STATUS && argument == 1)
+  if (subSignal == Licq::PluginSignal::UserStatus && argument == 1)
   {
     // User came online
     myOnlCounter = 5*1000/FLASH_TIME; // run about 5 seconds
@@ -138,38 +139,38 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
   ContactListModel::SubGroupType oldSubGroup = mySubGroup;
   bool oldVisibility = myVisibility;
 
-  if (subSignal == 0 || subSignal == USER_STATUS)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserStatus)
   {
     myStatus = u->status();
     myStatusInvisible = u->isInvisible();
     myTouched = u->Touched();
   }
 
-  if (subSignal == 0 || subSignal == USER_TYPING)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserTyping)
     myStatusTyping = u->isTyping();
 
-  if (subSignal == 0 || subSignal == USER_PLUGIN_STATUS)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserPluginStatus)
   {
     myPhoneFollowMeStatus = u->PhoneFollowMeStatus();
     myIcqPhoneStatus = u->ICQphoneStatus();
     mySharedFilesStatus = u->SharedFilesStatus();
   }
 
-  if (subSignal == 0 || subSignal == USER_INFO)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserInfo)
   {
     myBirthday = (u->Birthday() == 0);
     myPhone = !u->getUserInfoString("PhoneNumber").empty();
     myCellular = !u->getCellularNumber().empty();
   }
 
-  if (subSignal == 0 || subSignal == USER_SECURITY)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserSecurity)
   {
     mySecure = u->Secure();
     myGPGKey = !u->gpgKey().empty();
     myGPGKeyEnabled = u->UseGPG();
   }
 
-  if (subSignal == 0 || subSignal == USER_SETTINGS)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserSettings)
   {
     myCustomAR = !u->customAutoResponse().empty();
     myNotInList = u->NotInList();
@@ -183,14 +184,16 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
 
   updateExtendedStatus();
 
-  if (subSignal == 0 || subSignal == USER_EVENTS)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserEvents)
     updateEvents(u);
 
-  if (subSignal == 0 || subSignal == USER_PICTURE)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserPicture)
     updatePicture(u);
 
-  if (subSignal != USER_GROUPS && subSignal != USER_PICTURE &&
-      subSignal != USER_TYPING && subSignal != USER_SECURITY)
+  if (subSignal != Licq::PluginSignal::UserGroups &&
+      subSignal != Licq::PluginSignal::UserPicture &&
+      subSignal != Licq::PluginSignal::UserTyping &&
+      subSignal != Licq::PluginSignal::UserSecurity)
   {
     if (myNotInList)
       mySubGroup = ContactListModel::NotInListSubGroup;
@@ -208,7 +211,7 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
   //       and myUserInstances is empty so below code won't trigger anything strange
 
   // Signal our own data changes before starting to touch groups and bars
-  if (subSignal != USER_GROUPS)
+  if (subSignal != Licq::PluginSignal::UserGroups)
     emit dataChanged(this);
 
   // If status has changed update the sub groups of all groups
@@ -222,7 +225,7 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
       user->group()->updateVisibility(myVisibility, mySubGroup);
 
   // Add/remove us to/from groups
-  if (subSignal == 0 || subSignal == USER_SETTINGS || subSignal == USER_GROUPS)
+  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserSettings || subSignal == Licq::PluginSignal::UserGroups)
     // Group membership is handled by ContactList so send it a signal to update
     emit updateUserGroups(this, u);
 }

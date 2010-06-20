@@ -20,6 +20,7 @@
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
@@ -75,7 +76,7 @@ struct Config {
 
 
 // some forward declarations
-void ProcessSignal(LicqSignal* s);
+void ProcessSignal(Licq::PluginSignal* s);
 void ProcessEvent(ICQEvent *e);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
@@ -296,7 +297,8 @@ bool LP_Init(int /* argc */, char** /* argv */)
 int LP_Main()
 {
     // register plugin at the licq daemon
-  int nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER | SIGNAL_LOGON| SIGNAL_LOGOFF);
+  int nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalUser |
+      Licq::PluginSignal::SignalLogon | Licq::PluginSignal::SignalLogoff);
     bool Exit=false; // exit plugin?
     char buf[16];
 
@@ -325,7 +327,7 @@ int LP_Main()
       case Licq::GeneralPlugin::PipeSignal:
       {
 		// read the actual signal from the daemon
-        LicqSignal* s = Licq::gDaemon.popPluginSignal();
+        Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
 		if (s)
 		{
 		    ProcessSignal(s);
@@ -384,7 +386,7 @@ int LP_Main()
 }
 
 
-void ProcessSignal(LicqSignal* s)
+void ProcessSignal(Licq::PluginSignal* s)
 {
     string username;
     bool notify=false;
@@ -396,10 +398,10 @@ void ProcessSignal(LicqSignal* s)
   string userencoding;
   const CUserEvent* e = NULL;
 
-    switch (s->Signal()) // signaltype
+  switch (s->signal()) // signaltype
+  {
+    case Licq::PluginSignal::SignalUser:
     {
-    case SIGNAL_UPDATExUSER:
-	{
 	    // FIX: we seem to get others logged on messages before
 	    // our own one - so start quiettimeout in this case too
 	    if (!Online)
@@ -479,13 +481,10 @@ void ProcessSignal(LicqSignal* s)
 		    username = username_translated_temp;
 		    free(username_translated_temp);
 
-                    if (
-			(s->SubSignal() == USER_EVENTS) &&
-			(s->Argument() > 0) // message
-		       )
-		    {
+          if (s->subSignal() == Licq::PluginSignal::UserEvents && s->argument() > 0) // message
+          {
 			// get the user event whose ID we got as the signal argument
-			e = u->EventPeekId(s->Argument());
+            e = u->EventPeekId(s->argument());
 
 			if (e == NULL) // event not found
 			{
@@ -513,10 +512,10 @@ void ProcessSignal(LicqSignal* s)
 	    // that you realize when they check your auto-response
 	    // i implemented this just for fun :)
 	    if ((want_osd) && (!want_osd_msgs_only) && // not ignored or disabled
-		(s->SubSignal() == USER_EVENTS) &&
-		(s->Argument() == 0) // auto response
-	       )
-	    {
+          (s->subSignal() == Licq::PluginSignal::UserEvents) &&
+          (s->argument() == 0) // auto response
+          )
+      {
 		if (
 		     (config.ShowAutoResponseCheck==1) ||  // display auto_reponse checks
 		     ((config.ShowAutoResponseCheck==2)&&(notify))
@@ -530,8 +529,8 @@ void ProcessSignal(LicqSignal* s)
 
 	    // messages that are not sent by myself
 	    if ((want_osd) && // not ignored or disabled
-		(s->SubSignal() == USER_EVENTS) &&
-		(s->Argument() > 0) // message
+          (s->subSignal() == Licq::PluginSignal::UserEvents) &&
+          (s->argument() > 0) // message
 	       )
 	    {
 		if (
@@ -557,17 +556,17 @@ void ProcessSignal(LicqSignal* s)
 		    my_xosd_display("", msg, config.colour);
 		}
 	    }
-	    if (want_osd && (!want_osd_msgs_only) && (s->SubSignal() == USER_STATUS)) // logon/logoff or status change
+      if (want_osd && (!want_osd_msgs_only) && (s->subSignal() == Licq::PluginSignal::UserStatus)) // logon/logoff or status change
 	    {
 		string msg = username;
-		if (s->Argument()!=0) // logon/logoff
-		{
+        if (s->argument()!=0) // logon/logoff
+        {
                     if (
 			(config.Showlogon==1) ||
 			((notify)&&(config.Showlogon==2))
 		       )
-		    {
-			if (s->Argument()>0)
+          {
+            if (s->argument() > 0)
 			    msg+=_(" logged on");
 			else
 			    msg+=_(" logged off");
@@ -610,23 +609,22 @@ void ProcessSignal(LicqSignal* s)
 	    }
 	}
 	break;
-    case SIGNAL_LOGOFF:
+    case Licq::PluginSignal::SignalLogoff:
 	gLog.Info("%sOSD Plugin received logoff\n", L_OSD_STR);
 	disabletimer=time(0);
 	Online=false;
 	break;
-    case SIGNAL_LOGON:
+    case Licq::PluginSignal::SignalLogon:
 	gLog.Info("%sOSD Plugin received logon\n", L_OSD_STR);
 	disabletimer=time(0);
 	Online=true;
 	break;
 	// we are not interested in those
-    case SIGNAL_ADDxSERVERxLIST:
-    case SIGNAL_UI_MESSAGE:
-	break;
-    case SIGNAL_UPDATExLIST:
+    case Licq::PluginSignal::SignalAddedToServer:
+    case Licq::PluginSignal::SignalUiMessage:
+      break;
     default: // shouldnt happen
-	gLog.Warn("%sUnknown signal %ld\n", L_WARNxSTR, s->Signal());
+      gLog.Warn("%sUnknown signal %d\n", L_WARNxSTR, s->signal());
 	//        cout << "Unknown signal" << s->Signal() << endl;
 	break;
     }
@@ -735,7 +733,7 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 // this works only if it is convertable by iconv
 // the codepage of the other user is determined by the UserEncoding property of
 // the other user. (change it for example via the licq-qt-gui message window)
-// LicqSignal is needed to get the User for this message -
+// Licq:PluginSignal is needed to get the User for this message -
 // some day i will do this more elegant
 char* my_translate(const UserId& /* userId */, const char* msg, const char* userenc)
 {
@@ -801,7 +799,7 @@ char* my_translate(const UserId& /* userId */, const char* msg, const char* user
 }
 #else
 // a dummy function which helps me to remove the #ifdef CP_TRANSLATEs in a lot of my code
-char* my_translate(const UserId& /* userId */, const char* msg, LicqSignal* s)
+char* my_translate(const UserId& /* userId */, const char* msg, Licq::PluginSignal* /* s */)
 {
     return strdup(msg);
 }

@@ -31,6 +31,11 @@
 #include "msnbuffer.h"
 #include "msnevent.h"
 
+namespace Licq
+{
+class PluginSignal;
+}
+
 #define L_MSNxSTR "[MSN] "
 
 const char CONTACT_LIST[] = "FL";
@@ -161,7 +166,7 @@ private:
   void killConversation(int sock);
 
   // Interface to CICQDaemon
-  void pushPluginSignal(LicqSignal* p);
+  void pushPluginSignal(Licq::PluginSignal* p);
 
   // Config
   unsigned long m_nListVersion;

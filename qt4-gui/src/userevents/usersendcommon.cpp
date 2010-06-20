@@ -55,6 +55,7 @@
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/plugin.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
 
@@ -966,7 +967,7 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
 
   switch (subSignal)
   {
-    case USER_STATUS:
+    case Licq::PluginSignal::UserStatus:
     {
       if (u->Port() == 0)
       {
@@ -982,7 +983,7 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
       break;
     }
 
-    case USER_EVENTS:
+    case Licq::PluginSignal::UserEvents:
     {
       const CUserEvent* e = u->EventPeekId(argument);
 
@@ -1003,7 +1004,7 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
       break;
     }
 
-    case USER_SECURITY:
+    case Licq::PluginSignal::UserSecurity:
       // Automatically unset 'send through server' upon
       // establishing secure channel
       if (u->Secure())
@@ -1013,7 +1014,7 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
       }
       break;
 
-    case USER_PICTURE:
+    case Licq::PluginSignal::UserPicture:
       updatePicture(*u);
   }
 }
@@ -1059,7 +1060,7 @@ void UserSendCommon::send()
       }
     }
     if (newUser)
-      Licq::gUserManager.notifyUserUpdated(myUsers.front(), USER_SETTINGS);
+      Licq::gUserManager.notifyUserUpdated(myUsers.front(), Licq::PluginSignal::UserSettings);
   }
 
   unsigned long icqEventTag = 0;

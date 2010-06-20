@@ -38,6 +38,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
+#include <licq/pluginsignal.h>
 #include <licq_events.h>
 #include <licq_message.h>
 
@@ -275,7 +276,7 @@ void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal
   if (userId != myUserId)
     return;
 
-  if (subSignal == USER_EVENTS)
+  if (subSignal == Licq::PluginSignal::UserEvents)
   {
     const CUserEvent* event;
     {

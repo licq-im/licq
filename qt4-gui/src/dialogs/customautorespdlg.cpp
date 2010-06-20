@@ -25,9 +25,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/pluginsignal.h>
 
 #include "helpers/support.h"
 
@@ -102,7 +102,7 @@ void CustomAutoRespDlg::ok()
   }
 
   // Notify all plugins (including ourselves)
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSettings);
 
   close();
 }
@@ -116,7 +116,7 @@ void CustomAutoRespDlg::clear()
   }
 
   // Notify all plugins (including ourselves)
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSettings);
 
   close();
 }

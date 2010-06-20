@@ -30,6 +30,7 @@
 #include <licq/conversation.h>
 #include <licq/daemon.h>
 #include <licq/oneventmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
@@ -83,9 +84,11 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       convo->addUser(userId);
 
       // Notify the plugins of the new CID
-      Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
+      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+          Licq::PluginSignal::ConvoCreate, userId, 0, SocketToCID(nSock)));
 
-      Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
+      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+          Licq::PluginSignal::ConvoJoin, userId, 0, SocketToCID(nSock)));
 
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
     }
@@ -117,8 +120,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (u.isLocked())
         {
           u->setIsTyping(true);
-          Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
-              USER_TYPING, u->id(), SocketToCID(nSock)));
+          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::PluginSignal::UserTyping, u->id(), SocketToCID(nSock)));
         }
       }
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
@@ -289,10 +292,12 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         convo->addUser(userId);
 
         // Notify the plugins of the new CID
-        Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
+        Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+            Licq::PluginSignal::ConvoCreate, userId, 0, SocketToCID(nSock)));
 
         // Notify the plugins
-        Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_CONVOxJOIN, 0, userId, 0, SocketToCID(nSock)));
+        Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+            Licq::PluginSignal::ConvoJoin, userId, 0, SocketToCID(nSock)));
       }
 
       if (pStart)
@@ -312,7 +317,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       UserId userId(packet->GetParameter(), MSN_PPID);
       gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, userId.toString().c_str());
 
-      Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
+      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+          Licq::PluginSignal::ConvoLeave, userId, 0, SocketToCID(nSock)));
 
       Conversation* convo = gConvoManager.getFromSocket(nSock);
       if (convo != NULL)
@@ -399,7 +405,8 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   {
     gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, userId.toString().c_str());
 
-    Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
+    Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+        Licq::PluginSignal::ConvoLeave, userId, 0, SocketToCID(nSock)));
 
     Conversation* convo = gConvoManager.getFromSocket(nSock);
     if (convo != NULL)
@@ -651,7 +658,8 @@ void CMSN::killConversation(int sock)
     BOOST_FOREACH(const UserId& userId, users)
     {
       // Signal that user is removed
-      Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, convoId));
+      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+          Licq::PluginSignal::ConvoLeave, userId, 0, convoId));
 
       // Remove user from the conversation
       convo->removeUser(userId);

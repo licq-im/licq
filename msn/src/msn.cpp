@@ -732,7 +732,7 @@ CMSNDataEvent *CMSN::FetchStartDataEvent(const string &_strUser)
   return pReturn;  
 }
 
-void CMSN::pushPluginSignal(LicqSignal* p)
+void CMSN::pushPluginSignal(Licq::PluginSignal* p)
 {
   Licq::gDaemon.pushPluginSignal(p);
 }

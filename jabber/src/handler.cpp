@@ -28,6 +28,7 @@
 #include <licq/icqdefines.h>
 #include <licq/log.h>
 #include <licq/oneventmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq_events.h>
 
 using std::string;
@@ -56,8 +57,8 @@ void Handler::onConnect()
 
   gUserManager.ownerStatusChanged(JABBER_PPID, myStatus);
 
-  LicqSignal* result = new LicqSignal(SIGNAL_LOGON, 0, UserId() , JABBER_PPID);
-  Licq::gDaemon.pushPluginSignal(result);
+  Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogon,
+      0, UserId() , JABBER_PPID));
 }
 
 void Handler::onChangeStatus(unsigned status)
@@ -80,9 +81,8 @@ void Handler::onDisconnect()
 
   gUserManager.ownerStatusChanged(JABBER_PPID, Licq::User::OfflineStatus);
 
-  LicqSignal* result = new LicqSignal(SIGNAL_LOGOFF, 0,
-      gUserManager.ownerUserId(JABBER_PPID));
-  Licq::gDaemon.pushPluginSignal(result);
+  Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
+      Licq::PluginSignal::LogoffRequested, gUserManager.ownerUserId(JABBER_PPID)));
 }
 
 void Handler::onUserAdded(const std::string& id,
@@ -123,8 +123,10 @@ void Handler::onUserAdded(const std::string& id,
   // Remove this line when SetGroups call above saves contact groups itself.
   user->SaveLicqInfo();
 
-  Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_BASIC, userId));
-  Licq::gDaemon.pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GROUPS, userId));
+  Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+      Licq::PluginSignal::UserBasic, userId));
+  Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+      Licq::PluginSignal::UserGroups, userId));
 }
 
 void Handler::onUserRemoved(const std::string& id)

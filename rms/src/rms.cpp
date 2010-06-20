@@ -18,6 +18,7 @@
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 
 using namespace std;
@@ -189,7 +190,7 @@ int CLicqRMS::Run()
   unsigned nPort;
 
   // Register with the daemon, we only want the update user signal
-  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_ALL);
+  m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalAll);
 
   Licq::IniFile conf("licq_rms.conf");
   if (conf.loadFile())
@@ -290,7 +291,7 @@ void CLicqRMS::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      LicqSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
@@ -355,13 +356,13 @@ void CLicqRMS::ProcessLog()
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessSignal(LicqSignal* s)
+void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
 {
-  switch (s->Signal())
+  switch (s->signal())
   {
-  case SIGNAL_UPDATExUSER:
-    if (s->SubSignal() == USER_STATUS)
-    {
+    case Licq::PluginSignal::SignalUser:
+      if (s->subSignal() == Licq::PluginSignal::UserStatus)
+      {
         Licq::UserReadGuard u(s->userId());
         if (u.isLocked())
         {
@@ -378,11 +379,11 @@ void CLicqRMS::ProcessSignal(LicqSignal* s)
             fflush((*iter)->fs);
           }
         }
+        }
+        break;
       }
-      break;
-    }
-    else if (s->SubSignal() == USER_EVENTS)
-    {
+      else if (s->subSignal() == Licq::PluginSignal::UserEvents)
+      {
         Licq::UserReadGuard u(s->userId());
         if (u.isLocked())
         {
@@ -401,10 +402,6 @@ void CLicqRMS::ProcessSignal(LicqSignal* s)
         }
       }
     }
-  case SIGNAL_UPDATExLIST:
-    break;
-  case SIGNAL_LOGON:
-    break;
   default:
     break;
     

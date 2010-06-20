@@ -7,8 +7,12 @@
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
 
+namespace Licq
+{
+class PluginSignal;
+}
+
 class CUserEvent;
-class LicqSignal;
 class LicqEvent;
 class CLogService_Plugin;
 
@@ -39,7 +43,7 @@ protected:
 
 public:
   void ProcessPipe();
-  void ProcessSignal(LicqSignal* s);
+  void ProcessSignal(Licq::PluginSignal* s);
   void ProcessEvent(LicqEvent* e);
   void ProcessServer();
   void ProcessLog();

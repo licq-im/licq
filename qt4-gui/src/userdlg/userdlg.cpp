@@ -32,6 +32,7 @@
 #include <licq_events.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/pluginsignal.h>
 
 #include "core/signalmanager.h"
 #include "core/usermenu.h"
@@ -220,10 +221,10 @@ void UserDlg::apply()
   myUserSettings->apply2(myUserId);
 
   // Notify all plugins (including ourselves)
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_BASIC);
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_GROUPS);
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_INFO);
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SETTINGS);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserBasic);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserGroups);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserInfo);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSettings);
 }
 
 void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)

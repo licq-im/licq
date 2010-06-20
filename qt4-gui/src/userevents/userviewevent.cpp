@@ -45,6 +45,7 @@
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 
 #include "config/chat.h"
@@ -272,7 +273,7 @@ void UserViewEvent::userUpdated(const Licq::UserId& userId, unsigned long subSig
   if (!u.isLocked())
     return;
 
-  if (subSignal == USER_EVENTS)
+  if (subSignal == Licq::PluginSignal::UserEvents)
   {
     if (argument > 0)
     {

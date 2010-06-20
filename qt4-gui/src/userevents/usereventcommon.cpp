@@ -36,7 +36,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
-#include <licq_events.h>
+#include <licq/pluginsignal.h>
 
 #include "config/chat.h"
 #include "config/iconmanager.h"
@@ -475,18 +475,18 @@ void UserEventCommon::updatedUser(const Licq::UserId& userId, unsigned long subS
 
   switch (subSignal)
   {
-    case USER_STATUS:
+    case Licq::PluginSignal::UserStatus:
       if (u->NewMessages() == 0)
         setWindowIcon(IconManager::instance()->iconForUser(*u));
       break;
 
-    case USER_BASIC:
-    case USER_INFO: // For time zone
-    case USER_SECURITY:
+    case Licq::PluginSignal::UserBasic:
+    case Licq::PluginSignal::UserInfo: // For time zone
+    case Licq::PluginSignal::UserSecurity:
       updateWidgetInfo(*u);
       break;
 
-    case USER_EVENTS:
+    case Licq::PluginSignal::UserEvents:
       if (u->NewMessages() == 0)
         setWindowIcon(IconManager::instance()->iconForUser(*u));
       else

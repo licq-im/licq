@@ -17,6 +17,7 @@
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
+#include "licq/pluginsignal.h"
 #include <licq/protocolmanager.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
@@ -69,7 +70,7 @@ void CLicqForwarder::Shutdown()
 int CLicqForwarder::Run()
 {
   // Register with the daemon, we only want the update user signal
-  m_nPipe = gPluginManager.registerGeneralPlugin(SIGNAL_UPDATExUSER);
+  m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalUser);
 
   // Create our smtp information
   m_nSMTPPort = 25; //getservicebyname("smtp");
@@ -177,7 +178,7 @@ void CLicqForwarder::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      LicqSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
@@ -220,23 +221,19 @@ void CLicqForwarder::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqForwarder::ProcessSignal(LicqSignal* s)
+void CLicqForwarder::ProcessSignal(Licq::PluginSignal* s)
 {
-  switch (s->Signal())
+  switch (s->signal())
   {
-  case SIGNAL_UPDATExUSER:
-    if (s->SubSignal() == USER_EVENTS && s->Argument() > 0)
-        ProcessUserEvent(s->userId(), s->Argument());
+    case Licq::PluginSignal::SignalUser:
+      if (s->subSignal() == Licq::PluginSignal::UserEvents && s->argument() > 0)
+        ProcessUserEvent(s->userId(), s->argument());
     break;
   // We should never get any other signal
-  case SIGNAL_UPDATExLIST:
-    break;
-  case SIGNAL_LOGON:
-    break;
-  default:
-    gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
-              L_WARNxSTR, s->Signal());
-    break;
+    default:
+      gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
+          L_WARNxSTR, s->signal());
+      break;
   }
   delete s;
 }

@@ -36,7 +36,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/gpghelper.h>
-#include <licq_events.h>
+#include <licq/pluginsignal.h>
 
 
 #include "helpers/support.h"
@@ -154,7 +154,7 @@ void GPGKeySelect::slot_ok()
     }
 
     // Notify all plugins (including ourselves)
-    Licq::gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
+    Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSecurity);
   }
 
   close();
@@ -169,7 +169,7 @@ void GPGKeySelect::slotNoKey()
   }
 
   // Notify all plugins (including ourselves)
-  Licq::gUserManager.notifyUserUpdated(myUserId, USER_SECURITY);
+  Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserSecurity);
 
   close();
 };

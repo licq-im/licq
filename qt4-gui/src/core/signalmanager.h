@@ -24,11 +24,11 @@
 
 class QSocketNotifier;
 
-class LicqSignal;
 class LicqEvent;
 
 namespace Licq
 {
+class PluginSignal;
 class UserId;
 }
 
@@ -145,7 +145,7 @@ private:
   int myPipe;
   QSocketNotifier* sn;
 
-  void ProcessSignal(LicqSignal* sig);
+  void ProcessSignal(Licq::PluginSignal* sig);
   void ProcessEvent(LicqEvent* ev);
 
 private slots:
