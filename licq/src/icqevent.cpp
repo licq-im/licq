@@ -215,10 +215,10 @@ Licq::User* LicqEvent::GrabUnknownUser()
 }
 
 
-LicqProtoSignal::LicqProtoSignal(SIGNAL_TYPE type, const UserId& userId, unsigned long convoId)
+LicqProtoSignal::LicqProtoSignal(SIGNAL_TYPE type, const UserId& userId, unsigned long eventId)
   : myType(type),
     myUserId(userId),
-    myConvoId(convoId),
+    myEventId(eventId),
     myCallerThread(pthread_self())
 {
   // Empty
@@ -227,27 +227,27 @@ LicqProtoSignal::LicqProtoSignal(SIGNAL_TYPE type, const UserId& userId, unsigne
 LicqProtoSignal::LicqProtoSignal(LicqProtoSignal* s)
   : myType(s->myType),
     myUserId(s->myUserId),
-    myConvoId(s->myConvoId),
+    myEventId(s->myEventId),
     myCallerThread(s->myCallerThread)
 {
   // Empty
 }
 
 LicqProtoLogonSignal::LicqProtoLogonSignal(unsigned status)
-  : LicqProtoSignal(PROTOxLOGON, UserId()),
+  : LicqProtoSignal(PROTOxLOGON),
     myStatus(status)
 {
   // Empty
 }
 
 LicqProtoLogoffSignal::LicqProtoLogoffSignal()
-  : LicqProtoSignal(PROTOxLOGOFF, UserId())
+  : LicqProtoSignal(PROTOxLOGOFF)
 {
   // Empty
 }
 
 LicqProtoChangeStatusSignal::LicqProtoChangeStatusSignal(unsigned status)
-  : LicqProtoSignal(PROTOxCHANGE_STATUS, UserId()),
+  : LicqProtoSignal(PROTOxCHANGE_STATUS),
     myStatus(status)
 {
   // Empty
@@ -282,17 +282,18 @@ LicqProtoChangeUserGroupsSignal::LicqProtoChangeUserGroupsSignal(const UserId& u
 
 LicqProtoSendMessageSignal::LicqProtoSendMessageSignal(unsigned long eventId,
     const UserId& userId, const string& message, unsigned long convoId)
-  : LicqProtoSignal(PROTOxSENDxMSG, userId, convoId),
-    myEventId(eventId),
-    myMessage(message)
+  : LicqProtoSignal(PROTOxSENDxMSG, userId, eventId),
+    myMessage(message),
+    myConvoId(convoId)
 {
   // Empty
 }
 
 LicqProtoTypingNotificationSignal::LicqProtoTypingNotificationSignal(
     const UserId& userId, bool active, unsigned long convoId)
-  : LicqProtoSignal(PROTOxSENDxTYPING_NOTIFICATION, userId, convoId),
-    myActive(active)
+  : LicqProtoSignal(PROTOxSENDxTYPING_NOTIFICATION, userId),
+    myActive(active),
+    myConvoId(convoId)
 {
   // Empty
 }
@@ -322,7 +323,7 @@ LicqProtoUpdateInfoSignal::LicqProtoUpdateInfoSignal(const string& alias,
     const string& city, const string& state, const string& phoneNumber,
     const string& faxNumber, const string& address, const string& cellNumber,
     const string& zipCode)
-  : LicqProtoSignal(PROTOxUPDATExINFO, UserId()),
+  : LicqProtoSignal(PROTOxUPDATExINFO),
     myAlias(alias),
     myFirstName(firstName),
     myLastName(lastName),
@@ -383,8 +384,7 @@ LicqProtoUnignoreUserSignal::LicqProtoUnignoreUserSignal(const UserId& userId)
 LicqProtoSendFileSignal::LicqProtoSendFileSignal(unsigned long eventId,
     const UserId& userId, const string& filename, const string& message,
     const list<string>& files)
-  : LicqProtoSignal(PROTOxSENDxFILE, userId),
-    myEventId(eventId),
+  : LicqProtoSignal(PROTOxSENDxFILE, userId, eventId),
     myFilename(filename),
     myMessage(message),
     myFiles(files)
@@ -435,15 +435,13 @@ LicqProtoClosedWindowSignal::LicqProtoClosedWindowSignal(const UserId& userId)
 }
 
 LicqProtoOpenSecureSignal::LicqProtoOpenSecureSignal(unsigned long eventId, const UserId& userId)
-  : LicqProtoSignal(PROTOxOPENxSECURE, userId),
-    myEventId(eventId)
+  : LicqProtoSignal(PROTOxOPENxSECURE, userId, eventId)
 {
   // Empty
 }
 
 LicqProtoCloseSecureSignal::LicqProtoCloseSecureSignal(unsigned long eventId, const UserId& userId)
-  : LicqProtoSignal(PROTOxCLOSExSECURE, userId),
-    myEventId(eventId)
+  : LicqProtoSignal(PROTOxCLOSExSECURE, userId, eventId)
 {
   // Empty
 }
