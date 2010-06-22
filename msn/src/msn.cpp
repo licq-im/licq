@@ -36,6 +36,7 @@
 #include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq/plugin.h>
+#include <licq/protocolsignal.h>
 
 #include "msn.h"
 #include "msnpacket.h"
@@ -530,7 +531,7 @@ void CMSN::ProcessPipe()
   {
     case Licq::ProtocolPlugin::PipeSignal:
     {
-      LicqProtoSignal* s = Licq::gDaemon.PopProtoSignal();
+      Licq::ProtocolSignal* s = Licq::gDaemon.PopProtoSignal();
       ProcessSignal(s);
       break;
     }
@@ -542,95 +543,84 @@ void CMSN::ProcessPipe()
   }
 }
 
-void CMSN::ProcessSignal(LicqProtoSignal* s)
+void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
 {
-  if (m_nServerSocket < 0 && s->type() != PROTOxLOGON)
+  if (m_nServerSocket < 0 && s->signal() != Licq::ProtocolSignal::SignalLogon)
   {
     delete s;
     return;
   }
 
-  switch (s->type())
+  switch (s->signal())
   {
-    case PROTOxLOGON:
+    case Licq::ProtocolSignal::SignalLogon:
     {
       if (m_nServerSocket < 0)
       {
-        LicqProtoLogonSignal* sig = static_cast<LicqProtoLogonSignal*>(s);
+        Licq::ProtoLogonSignal* sig = static_cast<Licq::ProtoLogonSignal*>(s);
         MSNLogon(myServerAddress.c_str(), myServerPort, sig->status());
       }
       break;
     }
-    
-    case PROTOxCHANGE_STATUS:
+    case Licq::ProtocolSignal::SignalChangeStatus:
     {
-      LicqProtoChangeStatusSignal* sig = static_cast<LicqProtoChangeStatusSignal*>(s);
+      Licq::ProtoChangeStatusSignal* sig = static_cast<Licq::ProtoChangeStatusSignal*>(s);
       MSNChangeStatus(sig->status());
       break;
     }
-    
-    case PROTOxLOGOFF:
+    case Licq::ProtocolSignal::SignalLogoff:
     {
       MSNLogoff();
       break;
     }
-    
-    case PROTOxADD_USER:
+    case Licq::ProtocolSignal::SignalAddUser:
     {
-      LicqProtoAddUserSignal* sig = static_cast<LicqProtoAddUserSignal*>(s);
+      Licq::ProtoAddUserSignal* sig = static_cast<Licq::ProtoAddUserSignal*>(s);
       MSNAddUser(sig->userId());
       break;
     }
-    
-    case PROTOxREM_USER:
+    case Licq::ProtocolSignal::SignalRemoveUser:
     {
-      LicqProtoRemoveUserSignal* sig = static_cast<LicqProtoRemoveUserSignal*>(s);
+      Licq::ProtoRemoveUserSignal* sig = static_cast<Licq::ProtoRemoveUserSignal*>(s);
       MSNRemoveUser(sig->userId());
       break;
     }
-    
-    case PROTOxRENAME_USER:
+    case Licq::ProtocolSignal::SignalRenameUser:
     {
-      LicqProtoRenameUserSignal* sig = static_cast<LicqProtoRenameUserSignal*>(s);
+      Licq::ProtoRenameUserSignal* sig = static_cast<Licq::ProtoRenameUserSignal*>(s);
       MSNRenameUser(sig->userId());
       break;
     }
-
-    case PROTOxSENDxTYPING_NOTIFICATION:
+    case Licq::ProtocolSignal::SignalNotifyTyping:
     {
-      LicqProtoTypingNotificationSignal* sig = static_cast<LicqProtoTypingNotificationSignal*>(s);
+      Licq::ProtoTypingNotificationSignal* sig = static_cast<Licq::ProtoTypingNotificationSignal*>(s);
       if (sig->active())
         MSNSendTypingNotification(sig->userId(), sig->convoId());
       break;
     }
-    
-    case PROTOxSENDxMSG:
+    case Licq::ProtocolSignal::SignalSendMessage:
     {
-      LicqProtoSendMessageSignal* sig = static_cast<LicqProtoSendMessageSignal*>(s);
+      Licq::ProtoSendMessageSignal* sig = static_cast<Licq::ProtoSendMessageSignal*>(s);
       MSNSendMessage(sig->eventId(), sig->userId(), sig->message(), sig->callerThread(), sig->convoId());
       break;
     }
-
-    case PROTOxSENDxGRANTxAUTH:
+    case Licq::ProtocolSignal::SignalGrantAuth:
     {
-      LicqProtoGrantAuthSignal* sig = static_cast<LicqProtoGrantAuthSignal*>(s);
+      Licq::ProtoGrantAuthSignal* sig = static_cast<Licq::ProtoGrantAuthSignal*>(s);
       MSNGrantAuth(sig->userId());
       break;
     }
-
-    case PROTOxSENDxREFUSExAUTH:
+    case Licq::ProtocolSignal::SignalRefuseAuth:
     {
-//      LicqProtoRefuseAuthSignal* sig = static_cast<LicqProtoRefuseAuthSignal*>(s);
+//      Licq::ProtoRefuseAuthSignal* sig = static_cast<Licq::ProtoRefuseAuthSignal*>(s);
       break;
     }
-
-    case PROTOxREQUESTxINFO:
+    case Licq::ProtocolSignal::SignalRequestInfo:
     {
-//      LicqProtoRequestInfo* sig = static_cast<LicqProtoRequestInfo*>(s);
+//      Licq::ProtoRequestInfo* sig = static_cast<Licq::ProtoRequestInfo*>(s);
       break;
     }
-
-    case PROTOxUPDATExINFO:
+    case Licq::ProtocolSignal::SignalUpdateInfo:
     {
       string newAlias;
       {
@@ -641,17 +631,15 @@ void CMSN::ProcessSignal(LicqProtoSignal* s)
       MSNUpdateUser(newAlias);
       break;
     }
-
-    case PROTOxBLOCKxUSER:
+    case Licq::ProtocolSignal::SignalBlockUser:
     {
-      LicqProtoBlockUserSignal* sig = static_cast<LicqProtoBlockUserSignal*>(s);
+      Licq::ProtoBlockUserSignal* sig = static_cast<Licq::ProtoBlockUserSignal*>(s);
       MSNBlockUser(sig->userId());
       break;
     }
-    
-    case PROTOxUNBLOCKxUSER:
+    case Licq::ProtocolSignal::SignalUnblockUser:
     {
-      LicqProtoUnblockUserSignal *sig = static_cast<LicqProtoUnblockUserSignal*>(s);
+      Licq::ProtoUnblockUserSignal* sig = static_cast<Licq::ProtoUnblockUserSignal*>(s);
       MSNUnblockUser(sig->userId());
       break;
     }

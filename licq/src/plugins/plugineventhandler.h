@@ -20,13 +20,16 @@
 #ifndef LICQDAEMON_PLUGINEVENTHANDLER_H
 #define LICQDAEMON_PLUGINEVENTHANDLER_H
 
-#include <licq/pluginsignal.h>
-
 #include "generalplugin.h"
-#include "licq_events.h"
 #include "protocolplugin.h"
 
 #include <boost/noncopyable.hpp>
+
+namespace Licq
+{
+class PluginSignal;
+class ProtocolSignal;
+}
 
 namespace LicqDaemon
 {
@@ -46,8 +49,8 @@ public:
   void pushGeneralSignal(Licq::PluginSignal* signal);
   Licq::PluginSignal* popGeneralSignal();
 
-  void pushProtocolSignal(LicqProtoSignal* signal, unsigned long ppid);
-  LicqProtoSignal* popProtocolSignal();
+  void pushProtocolSignal(Licq::ProtocolSignal* signal, unsigned long ppid);
+  Licq::ProtocolSignal* popProtocolSignal();
 
 private:
   GeneralPluginsList& myGeneralPlugins;

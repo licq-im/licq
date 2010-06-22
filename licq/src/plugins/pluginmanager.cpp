@@ -20,7 +20,6 @@
 #include "pluginmanager.h"
 #include "gettext.h"
 
-#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/daemon.h>
 #include <licq/exceptions/exception.h>
@@ -476,7 +475,7 @@ void PluginManager::unregisterGeneralPlugin()
 int PluginManager::registerProtocolPlugin()
 {
   MutexLocker locker(myProtocolPluginsMutex);
-  return registerPlugin(myProtocolPlugins, SIGNAL_ALL);
+  return registerPlugin(myProtocolPlugins, 0xffffffff);
 }
 
 void PluginManager::unregisterProtocolPlugin()

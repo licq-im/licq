@@ -22,7 +22,10 @@
 
 #include <licq/protocolmanager.h>
 
-class LicqProtoSignal;
+namespace Licq
+{
+class ProtocolSignal;
+}
 
 namespace LicqDaemon
 {
@@ -92,7 +95,7 @@ private:
    */
   unsigned long getNextEventId();
 
-  void pushProtoSignal(LicqProtoSignal* s, const Licq::UserId& userId);
+  void pushProtoSignal(Licq::ProtocolSignal* s, const Licq::UserId& userId);
 };
 
 extern ProtocolManager gProtocolManager;

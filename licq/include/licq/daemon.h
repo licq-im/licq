@@ -26,13 +26,13 @@
 
 class CUserEvent;
 class LicqEvent;
-class LicqProtoSignal;
 
 namespace Licq
 {
 
 class LogService;
 class PluginSignal;
+class ProtocolSignal;
 class Proxy;
 class TCPSocket;
 class User;
@@ -123,7 +123,7 @@ public:
   void pushPluginSignal(PluginSignal* signal);
 
   void PushPluginEvent(LicqEvent *);
-  void PushProtoSignal(LicqProtoSignal* s, unsigned long ppid);
+  void PushProtoSignal(ProtocolSignal* s, unsigned long ppid);
 
   void pluginUIViewEvent(const Licq::UserId& userId);
 
@@ -137,7 +137,7 @@ public:
    */
   PluginSignal* popPluginSignal();
   LicqEvent *PopPluginEvent();
-  LicqProtoSignal* PopProtoSignal();
+  ProtocolSignal* PopProtoSignal();
 
   /**
    * Get path for the base dir (e.g. /home/fred/.licq/)

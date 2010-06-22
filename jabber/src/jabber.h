@@ -23,18 +23,21 @@
 #ifndef JABBER_H
 #define JABBER_H
 
+namespace Licq
+{
+class ProtoAddUserSignal;
+class ProtoChangeStatusSignal;
+class ProtoChangeUserGroupsSignal;
+class ProtoLogonSignal;
+class ProtoRemoveUserSignal;
+class ProtoRenameUserSignal;
+class ProtoRequestInfo;
+class ProtoSendMessageSignal;
+class ProtocolSignal;
+}
+
 class Client;
 class Handler;
-
-class LicqProtoAddUserSignal;
-class LicqProtoChangeStatusSignal;
-class LicqProtoChangeUserGroupsSignal;
-class LicqProtoLogonSignal;
-class LicqProtoRemoveUserSignal;
-class LicqProtoRenameUserSignal;
-class LicqProtoRequestInfo;
-class LicqProtoSendMessageSignal;
-class LicqProtoSignal;
 
 class Jabber
 {
@@ -46,17 +49,17 @@ public:
 
 private:
   void processPipe(int pipe);
-  void processSignal(LicqProtoSignal* signal);
+  void processSignal(Licq::ProtocolSignal* signal);
 
-  void doLogon(LicqProtoLogonSignal* signal);
-  void doChangeStatus(LicqProtoChangeStatusSignal* signal);
+  void doLogon(Licq::ProtoLogonSignal* signal);
+  void doChangeStatus(Licq::ProtoChangeStatusSignal* signal);
   void doLogoff();
-  void doSendMessage(LicqProtoSendMessageSignal* signal);
-  void doGetInfo(LicqProtoRequestInfo* signal);
-  void doAddUser(LicqProtoAddUserSignal* signal);
-  void doChangeUserGroups(LicqProtoChangeUserGroupsSignal* signal);
-  void doRemoveUser(LicqProtoRemoveUserSignal* signal);
-  void doRenameUser(LicqProtoRenameUserSignal* signal);
+  void doSendMessage(Licq::ProtoSendMessageSignal* signal);
+  void doGetInfo(Licq::ProtoRequestInfo* signal);
+  void doAddUser(Licq::ProtoAddUserSignal* signal);
+  void doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal);
+  void doRemoveUser(Licq::ProtoRemoveUserSignal* signal);
+  void doRenameUser(Licq::ProtoRenameUserSignal* signal);
 
   Handler* myHandler;
   bool myDoRun;

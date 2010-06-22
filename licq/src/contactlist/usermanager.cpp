@@ -4,11 +4,11 @@
 #include <cstdio> // sprintf
 
 #include "licq_log.h"
-#include "licq_events.h"
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolsignal.h>
 
 #include "../gettext.h"
 #include "../icq/icq.h"
@@ -1086,7 +1086,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
             ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
     else
-      gDaemon.PushProtoSignal(new LicqProtoChangeUserGroupsSignal(userId), ppid);
+      gDaemon.PushProtoSignal(new Licq::ProtoChangeUserGroupsSignal(userId), ppid);
   }
 
   // Notify plugins

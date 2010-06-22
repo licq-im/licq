@@ -25,7 +25,10 @@
 #include <list>
 #include <queue>
 
-class LicqProtoSignal;
+namespace Licq
+{
+class ProtocolSignal;
+}
 
 namespace LicqDaemon
 {
@@ -42,8 +45,8 @@ public:
 
   bool init();
 
-  void pushSignal(LicqProtoSignal* signal);
-  LicqProtoSignal* popSignal();
+  void pushSignal(Licq::ProtocolSignal* signal);
+  Licq::ProtocolSignal* popSignal();
 
   // From Licq::ProtocolPlugin
   unsigned long getProtocolId() const;
@@ -55,7 +58,7 @@ private:
 
   unsigned long myProtocolId;
 
-  std::queue<LicqProtoSignal*> mySignals;
+  std::queue<Licq::ProtocolSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 
   bool (*myInit)();

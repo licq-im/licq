@@ -34,6 +34,7 @@
 namespace Licq
 {
 class PluginSignal;
+class ProtocolSignal;
 }
 
 #define L_MSNxSTR "[MSN] "
@@ -109,7 +110,7 @@ private:
    */
   void saveConfig();
 
-  void ProcessSignal(LicqProtoSignal* s);
+  void ProcessSignal(Licq::ProtocolSignal* s);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);
   void ProcessNexusPacket(CMSNBuffer &);

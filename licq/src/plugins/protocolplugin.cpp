@@ -48,7 +48,7 @@ bool ProtocolPlugin::init()
   return callInitInThread();
 }
 
-void ProtocolPlugin::pushSignal(LicqProtoSignal* signal)
+void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
 {
   MutexLocker locker(mySignalsMutex);
   mySignals.push(signal);
@@ -56,12 +56,12 @@ void ProtocolPlugin::pushSignal(LicqProtoSignal* signal)
   myPipe.putChar(PipeSignal);
 }
 
-LicqProtoSignal* ProtocolPlugin::popSignal()
+Licq::ProtocolSignal* ProtocolPlugin::popSignal()
 {
   MutexLocker locker(mySignalsMutex);
   if (!mySignals.empty())
   {
-    LicqProtoSignal* signal = mySignals.front();
+    Licq::ProtocolSignal* signal = mySignals.front();
     mySignals.pop();
     return signal;
   }

@@ -19,12 +19,12 @@
 
 #include "protocolmanager.h"
 
-#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolsignal.h>
 #include <licq/userid.h>
 
 #include "contactlist/user.h"
@@ -68,7 +68,7 @@ unsigned long ProtocolManager::getNextEventId()
   return gDaemon.getNextEventId();
 }
 
-void ProtocolManager::pushProtoSignal(LicqProtoSignal* s, const UserId& userId)
+void ProtocolManager::pushProtoSignal(Licq::ProtocolSignal* s, const UserId& userId)
 {
   gDaemon.PushProtoSignal(s, userId.protocolId());
 }
@@ -78,7 +78,7 @@ void ProtocolManager::addUser(const UserId& userId, int groupId)
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqAddUser(userId.accountId().c_str(), false, groupId);
   else
-    pushProtoSignal(new LicqProtoAddUserSignal(userId, false), userId);
+    pushProtoSignal(new Licq::ProtoAddUserSignal(userId, false), userId);
 }
 
 void ProtocolManager::removeUser(const UserId& userId)
@@ -99,7 +99,7 @@ void ProtocolManager::removeUser(const UserId& userId)
       gIcqProtocol.icqRemoveUser(userId.accountId().c_str());
   }
   else
-    pushProtoSignal(new LicqProtoRemoveUserSignal(userId), userId);
+    pushProtoSignal(new Licq::ProtoRemoveUserSignal(userId), userId);
 }
 
 void ProtocolManager::updateUserAlias(const UserId& userId)
@@ -117,7 +117,7 @@ void ProtocolManager::updateUserAlias(const UserId& userId)
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqRenameUser(userId.accountId(), newAlias);
   else
-    pushProtoSignal(new LicqProtoRenameUserSignal(userId), userId);
+    pushProtoSignal(new Licq::ProtoRenameUserSignal(userId), userId);
 }
 
 unsigned long ProtocolManager::setStatus(const UserId& ownerId,
@@ -148,21 +148,21 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
     if (ownerId.protocolId() == LICQ_PPID)
       gIcqProtocol.icqLogoff();
     else
-      pushProtoSignal(new LicqProtoLogoffSignal(), ownerId);
+      pushProtoSignal(new Licq::ProtoLogoffSignal(), ownerId);
   }
   else if(isOffline)
   {
     if (ownerId.protocolId() == LICQ_PPID)
       eventId = gIcqProtocol.icqLogon(icqStatus);
     else
-      pushProtoSignal(new LicqProtoLogonSignal(newStatus), ownerId);
+      pushProtoSignal(new Licq::ProtoLogonSignal(newStatus), ownerId);
   }
   else
   {
     if (ownerId.protocolId() == LICQ_PPID)
       eventId = gIcqProtocol.icqSetStatus(icqStatus);
     else
-      pushProtoSignal(new LicqProtoChangeStatusSignal(newStatus), ownerId);
+      pushProtoSignal(new Licq::ProtoChangeStatusSignal(newStatus), ownerId);
   }
 
   return eventId;
@@ -176,7 +176,7 @@ void ProtocolManager::sendTypingNotification(const UserId& userId, bool active, 
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqTypingNotification(userId.accountId().c_str(), active);
   else
-    pushProtoSignal(new LicqProtoTypingNotificationSignal(userId, active, nSocket), userId);
+    pushProtoSignal(new Licq::ProtoTypingNotificationSignal(userId, active, nSocket), userId);
 }
 
 unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& message,
@@ -188,7 +188,7 @@ unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& m
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqSendMessage(eventId, userId, message, viaServer, flags, multipleRecipients, color);
   else
-    pushProtoSignal(new LicqProtoSendMessageSignal(eventId, userId, message, convoId), userId);
+    pushProtoSignal(new Licq::ProtoSendMessageSignal(eventId, userId, message, convoId), userId);
 
   return eventId;
 }
@@ -229,7 +229,7 @@ unsigned long ProtocolManager::fileTransferPropose(const UserId& userId,
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqFileTransfer(eventId, userId, filename, message, files, flags, viaServer);
   else
-    pushProtoSignal(new LicqProtoSendFileSignal(eventId, userId, filename, message, files), userId);
+    pushProtoSignal(new Licq::ProtoSendFileSignal(eventId, userId, filename, message, files), userId);
 
   return eventId;
 }
@@ -239,7 +239,7 @@ void ProtocolManager::fileTransferCancel(const UserId& userId, unsigned long eve
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqFileTransferCancel(userId, (unsigned short)eventId);
   else
-    pushProtoSignal(new LicqProtoCancelEventSignal(userId, eventId), userId);
+    pushProtoSignal(new Licq::ProtoCancelEventSignal(userId, eventId), userId);
 }
 
 void ProtocolManager::fileTransferAccept(const UserId& userId, unsigned short port,
@@ -254,7 +254,7 @@ void ProtocolManager::fileTransferAccept(const UserId& userId, unsigned short po
         nMsgId, viaServer, message, filename, filesize);
   }
   else
-    pushProtoSignal(new LicqProtoSendEventReplySignal(userId, string(), true, port,
+    pushProtoSignal(new Licq::ProtoSendEventReplySignal(userId, string(), true, port,
         eventId, flag1, flag2, !viaServer), userId);
 }
 
@@ -267,7 +267,7 @@ void ProtocolManager::fileTransferRefuse(const UserId& userId, const string& mes
     gIcqProtocol.icqFileTransferRefuse(userId, message, (unsigned short)eventId, msgId, viaServer);
   }
   else
-    pushProtoSignal(new LicqProtoSendEventReplySignal(userId, message, false,
+    pushProtoSignal(new Licq::ProtoSendEventReplySignal(userId, message, false,
         eventId, flag1, flag2, !viaServer), userId);
 }
 
@@ -280,14 +280,14 @@ unsigned long ProtocolManager::authorizeReply(const UserId& userId, bool grant, 
     if (userId.protocolId() == LICQ_PPID)
       eventId = gIcqProtocol.icqAuthorizeGrant(userId, message);
     else
-      pushProtoSignal(new LicqProtoGrantAuthSignal(userId, message), userId);
+      pushProtoSignal(new Licq::ProtoGrantAuthSignal(userId, message), userId);
   }
   else
   {
     if (userId.protocolId() == LICQ_PPID)
       eventId = gIcqProtocol.icqAuthorizeRefuse(userId, message);
     else
-      pushProtoSignal(new LicqProtoRefuseAuthSignal(userId, message), userId);
+      pushProtoSignal(new Licq::ProtoRefuseAuthSignal(userId, message), userId);
   }
 
   return eventId;
@@ -300,7 +300,7 @@ unsigned long ProtocolManager::requestUserInfo(const UserId& userId)
   if (userId.protocolId() == LICQ_PPID)
     eventId = gIcqProtocol.icqRequestMetaInfo(userId.accountId().c_str());
   else
-    pushProtoSignal(new LicqProtoRequestInfo(userId), userId);
+    pushProtoSignal(new Licq::ProtoRequestInfo(userId), userId);
 
   return eventId;
 }
@@ -342,7 +342,7 @@ unsigned long ProtocolManager::updateOwnerInfo(const UserId& ownerId)
         cellNumber.c_str(), zipCode.c_str(), countryCode, hideEmail);
   }
   else
-    pushProtoSignal(new LicqProtoUpdateInfoSignal(), ownerId);
+    pushProtoSignal(new Licq::ProtoUpdateInfoSignal(), ownerId);
 
   return eventId;
 }
@@ -365,7 +365,7 @@ unsigned long ProtocolManager::requestUserPicture(const UserId& userId)
   if (userId.protocolId() == LICQ_PPID)
     eventId = gIcqProtocol.icqRequestPicture(userId, sendServer, iconHashSize);
   else
-    pushProtoSignal(new LicqProtoRequestPicture(userId), userId);
+    pushProtoSignal(new Licq::ProtoRequestPicture(userId), userId);
 
   return eventId;
 }
@@ -398,7 +398,7 @@ unsigned long ProtocolManager::secureChannelOpen(const UserId& userId)
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqOpenSecureChannel(eventId, userId);
   else
-    pushProtoSignal(new LicqProtoOpenSecureSignal(eventId, userId), userId);
+    pushProtoSignal(new Licq::ProtoOpenSecureSignal(eventId, userId), userId);
 
   return eventId;
 }
@@ -428,7 +428,7 @@ unsigned long ProtocolManager::secureChannelClose(const UserId& userId)
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqCloseSecureChannel(eventId, userId);
   else
-    pushProtoSignal(new LicqProtoCloseSecureSignal(eventId, userId), userId);
+    pushProtoSignal(new Licq::ProtoCloseSecureSignal(eventId, userId), userId);
 
   return eventId;
 }
@@ -438,7 +438,7 @@ void ProtocolManager::secureChannelCancelOpen(const UserId& userId, unsigned lon
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqOpenSecureChannelCancel(userId, (unsigned short)eventId);
   else
-    pushProtoSignal(new LicqProtoCancelEventSignal(userId, eventId), userId);
+    pushProtoSignal(new Licq::ProtoCancelEventSignal(userId, eventId), userId);
 }
 
 void ProtocolManager::visibleListSet(const UserId& userId, bool visible)
@@ -452,12 +452,12 @@ void ProtocolManager::visibleListSet(const UserId& userId, bool visible)
     if (userId.protocolId() == LICQ_PPID)
       gIcqProtocol.icqAddToVisibleList(userId);
     else
-      pushProtoSignal(new LicqProtoAcceptUserSignal(userId), userId);
+      pushProtoSignal(new Licq::ProtoAcceptUserSignal(userId), userId);
   else
     if (userId.protocolId() == LICQ_PPID)
       gIcqProtocol.icqRemoveFromVisibleList(userId);
     else
-      pushProtoSignal(new LicqProtoUnacceptUserSignal(userId), userId);
+      pushProtoSignal(new Licq::ProtoUnacceptUserSignal(userId), userId);
 
   gUserManager.notifyUserUpdated(userId, PluginSignal::UserSettings);
 }
@@ -473,12 +473,12 @@ void ProtocolManager::invisibleListSet(const UserId& userId, bool invisible)
     if (userId.protocolId() == LICQ_PPID)
       gIcqProtocol.icqAddToInvisibleList(userId);
     else
-      pushProtoSignal(new LicqProtoBlockUserSignal(userId), userId);
+      pushProtoSignal(new Licq::ProtoBlockUserSignal(userId), userId);
   else
     if (userId.protocolId() == LICQ_PPID)
       gIcqProtocol.icqRemoveFromInvisibleList(userId);
     else
-      pushProtoSignal(new LicqProtoUnblockUserSignal(userId), userId);
+      pushProtoSignal(new Licq::ProtoUnblockUserSignal(userId), userId);
 
   gUserManager.notifyUserUpdated(userId, PluginSignal::UserSettings);
 }
@@ -494,12 +494,12 @@ void ProtocolManager::ignoreListSet(const UserId& userId, bool ignore)
     if (userId.protocolId() == LICQ_PPID)
       gIcqProtocol.icqAddToIgnoreList(userId);
     else
-      pushProtoSignal(new LicqProtoIgnoreUserSignal(userId), userId);
+      pushProtoSignal(new Licq::ProtoIgnoreUserSignal(userId), userId);
   else
     if (userId.protocolId() == LICQ_PPID)
       gIcqProtocol.icqRemoveFromIgnoreList(userId);
     else
-      pushProtoSignal(new LicqProtoUnignoreUserSignal(userId), userId);
+      pushProtoSignal(new Licq::ProtoUnignoreUserSignal(userId), userId);
 
   gUserManager.notifyUserUpdated(userId, PluginSignal::UserSettings);
 }

@@ -31,6 +31,7 @@
 #include <licq/log.h>
 #include <licq_events.h>
 #include <licq/plugin.h>
+#include <licq/protocolsignal.h>
 
 #include <sys/select.h>
 
@@ -95,7 +96,7 @@ void Jabber::processPipe(int pipe)
   {
     case Licq::ProtocolPlugin::PipeSignal:
     {
-      LicqProtoSignal* signal = Licq::gDaemon.PopProtoSignal();
+      Licq::ProtocolSignal* signal = Licq::gDaemon.PopProtoSignal();
       processSignal(signal);
       delete signal;
       break;
@@ -109,66 +110,66 @@ void Jabber::processPipe(int pipe)
   }
 }
 
-void Jabber::processSignal(LicqProtoSignal* signal)
+void Jabber::processSignal(Licq::ProtocolSignal* signal)
 {
   assert(signal != NULL);
 
-  gLog.info("Got signal %u", signal->type());
-  switch (signal->type())
+  gLog.info("Got signal %u", signal->signal());
+  switch (signal->signal())
   {
-    case PROTOxLOGON:
-      doLogon(static_cast<LicqProtoLogonSignal*>(signal));
+    case Licq::ProtocolSignal::SignalLogon:
+      doLogon(static_cast<Licq::ProtoLogonSignal*>(signal));
       break;
-    case PROTOxCHANGE_STATUS:
-      doChangeStatus(static_cast<LicqProtoChangeStatusSignal*>(signal));
+    case Licq::ProtocolSignal::SignalChangeStatus:
+      doChangeStatus(static_cast<Licq::ProtoChangeStatusSignal*>(signal));
       break;
-    case PROTOxLOGOFF:
+    case Licq::ProtocolSignal::SignalLogoff:
       doLogoff();
       break;
-    case PROTOxSENDxMSG:
-      doSendMessage(static_cast<LicqProtoSendMessageSignal*>(signal));
+    case Licq::ProtocolSignal::SignalSendMessage:
+      doSendMessage(static_cast<Licq::ProtoSendMessageSignal*>(signal));
       break;
-    case PROTOxREQUESTxINFO:
-      doGetInfo(static_cast<LicqProtoRequestInfo*>(signal));
+    case Licq::ProtocolSignal::SignalRequestInfo:
+      doGetInfo(static_cast<Licq::ProtoRequestInfo*>(signal));
       break;
-    case PROTOxADD_USER:
-      doAddUser(static_cast<LicqProtoAddUserSignal*>(signal));
+    case Licq::ProtocolSignal::SignalAddUser:
+      doAddUser(static_cast<Licq::ProtoAddUserSignal*>(signal));
       break;
-    case PROTOxCHANGE_USER_GROUPS:
-      doChangeUserGroups(static_cast<LicqProtoChangeUserGroupsSignal*>(signal));
+    case Licq::ProtocolSignal::SignalChangeUserGroups:
+      doChangeUserGroups(static_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
       break;
-    case PROTOxREM_USER:
-      doRemoveUser(static_cast<LicqProtoRemoveUserSignal*>(signal));
+    case Licq::ProtocolSignal::SignalRemoveUser:
+      doRemoveUser(static_cast<Licq::ProtoRemoveUserSignal*>(signal));
       break;
-    case PROTOxRENAME_USER:
-      doRenameUser(static_cast<LicqProtoRenameUserSignal*>(signal));
+    case Licq::ProtocolSignal::SignalRenameUser:
+      doRenameUser(static_cast<Licq::ProtoRenameUserSignal*>(signal));
       break;
-    case PROTOxSENDxTYPING_NOTIFICATION:
-    case PROTOxSENDxGRANTxAUTH:
-    case PROTOxSENDxREFUSExAUTH:
-    case PROTOxUPDATExINFO:
-    case PROTOxREQUESTxPICTURE:
-    case PROTOxBLOCKxUSER:
-    case PROTOxUNBLOCKxUSER:
-    case PROTOxACCEPTxUSER:
-    case PROTOxUNACCEPTxUSER:
-    case PROTOxIGNORExUSER:
-    case PROTOxUNIGNORExUSER:
-    case PROTOxSENDxFILE:
-    case PROTOxSENDxCHAT:
-    case PROTOxCANCELxEVENT:
-    case PROTOxSENDxEVENTxREPLY:
-    case PROTOxOPENEDxWINDOW:
-    case PROTOxCLOSEDxWINDOW:
-    case PROTOxOPENxSECURE:
-    case PROTOxCLOSExSECURE:
+    case Licq::ProtocolSignal::SignalNotifyTyping:
+    case Licq::ProtocolSignal::SignalGrantAuth:
+    case Licq::ProtocolSignal::SignalRefuseAuth:
+    case Licq::ProtocolSignal::SignalUpdateInfo:
+    case Licq::ProtocolSignal::SignalRequestPicture:
+    case Licq::ProtocolSignal::SignalBlockUser:
+    case Licq::ProtocolSignal::SignalUnblockUser:
+    case Licq::ProtocolSignal::SignalAcceptUser:
+    case Licq::ProtocolSignal::SignalUnacceptUser:
+    case Licq::ProtocolSignal::SignalIgnoreUser:
+    case Licq::ProtocolSignal::SignalUnignoreUser:
+    case Licq::ProtocolSignal::SignalSendFile:
+    case Licq::ProtocolSignal::SignalSendChat:
+    case Licq::ProtocolSignal::SignalCancelEvent:
+    case Licq::ProtocolSignal::SignalSendReply:
+    case Licq::ProtocolSignal::SignalOpenedWindow:
+    case Licq::ProtocolSignal::SignalClosedWindow:
+    case Licq::ProtocolSignal::SignalOpenSecure:
+    case Licq::ProtocolSignal::SignalCloseSecure:
     default:
-      gLog.info("Unkown signal %u", signal->type());
+      gLog.info("Unkown signal %u", signal->signal());
       break;
   }
 }
 
-void Jabber::doLogon(LicqProtoLogonSignal* signal)
+void Jabber::doLogon(Licq::ProtoLogonSignal* signal)
 {
   unsigned status = signal->status();
   if (status == Licq::User::OfflineStatus)
@@ -206,7 +207,7 @@ void Jabber::doLogon(LicqProtoLogonSignal* signal)
   }
 }
 
-void Jabber::doChangeStatus(LicqProtoChangeStatusSignal* signal)
+void Jabber::doChangeStatus(Licq::ProtoChangeStatusSignal* signal)
 {
   assert(myClient != NULL);
   myClient->changeStatus(signal->status());
@@ -221,7 +222,7 @@ void Jabber::doLogoff()
   myClient = NULL;
 }
 
-void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
+void Jabber::doSendMessage(Licq::ProtoSendMessageSignal* signal)
 {
   assert(myClient != NULL);
   myClient->sendMessage(signal->userId().accountId(), signal->message());
@@ -243,19 +244,19 @@ void Jabber::doSendMessage(LicqProtoSendMessageSignal* signal)
   Licq::gDaemon.PushPluginEvent(event);
 }
 
-void Jabber::doGetInfo(LicqProtoRequestInfo* signal)
+void Jabber::doGetInfo(Licq::ProtoRequestInfo* signal)
 {
   assert(myClient != NULL);
   myClient->getVCard(signal->userId().accountId());
 }
 
-void Jabber::doAddUser(LicqProtoAddUserSignal* signal)
+void Jabber::doAddUser(Licq::ProtoAddUserSignal* signal)
 {
   assert(myClient != NULL);
   myClient->addUser(signal->userId().accountId());
 }
 
-void Jabber::doChangeUserGroups(LicqProtoChangeUserGroupsSignal* signal)
+void Jabber::doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal)
 {
   assert(myClient != NULL);
   const Licq::UserId userId = signal->userId();
@@ -277,13 +278,13 @@ void Jabber::doChangeUserGroups(LicqProtoChangeUserGroupsSignal* signal)
   myClient->changeUserGroups(userId.accountId(), groupNames);
 }
 
-void Jabber::doRemoveUser(LicqProtoRemoveUserSignal* signal)
+void Jabber::doRemoveUser(Licq::ProtoRemoveUserSignal* signal)
 {
   assert(myClient != NULL);
   myClient->removeUser(signal->userId().accountId());
 }
 
-void Jabber::doRenameUser(LicqProtoRenameUserSignal* signal)
+void Jabber::doRenameUser(Licq::ProtoRenameUserSignal* signal)
 {
   assert(myClient != NULL);
   string newName;

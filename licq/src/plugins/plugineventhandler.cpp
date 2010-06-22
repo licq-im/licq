@@ -19,6 +19,10 @@
 
 #include "plugineventhandler.h"
 
+#include <licq_events.h>
+#include <licq/pluginsignal.h>
+#include <licq/protocolsignal.h>
+
 #include "gettext.h"
 #include "licq_log.h"
 #include "licq/thread/mutexlocker.h"
@@ -94,7 +98,7 @@ Licq::PluginSignal* PluginEventHandler::popGeneralSignal()
   return NULL;
 }
 
-void PluginEventHandler::pushProtocolSignal(LicqProtoSignal* signal,
+void PluginEventHandler::pushProtocolSignal(Licq::ProtocolSignal* signal,
                                             unsigned long ppid)
 {
   MutexLocker locker(myProtocolPluginsMutex);
@@ -102,10 +106,7 @@ void PluginEventHandler::pushProtocolSignal(LicqProtoSignal* signal,
   {
     if (plugin->getProtocolId() == ppid)
     {
-      if (plugin->wantSignal(SIGNAL_ALL))
-        plugin->pushSignal(signal);
-      else
-        delete signal;
+      plugin->pushSignal(signal);
       return;
     }
   }
@@ -115,7 +116,7 @@ void PluginEventHandler::pushProtocolSignal(LicqProtoSignal* signal,
   delete signal;
 }
 
-LicqProtoSignal* PluginEventHandler::popProtocolSignal()
+Licq::ProtocolSignal* PluginEventHandler::popProtocolSignal()
 {
   MutexLocker locker(myProtocolPluginsMutex);
   BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)

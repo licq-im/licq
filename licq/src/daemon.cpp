@@ -417,12 +417,12 @@ LicqEvent* Licq::Daemon::PopPluginEvent()
   return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralEvent();
 }
 
-void Licq::Daemon::PushProtoSignal(LicqProtoSignal* s, unsigned long _nPPID)
+void Licq::Daemon::PushProtoSignal(Licq::ProtocolSignal* s, unsigned long _nPPID)
 {
   LicqDaemon::gPluginManager.getPluginEventHandler().pushProtocolSignal(s, _nPPID);
 }
 
-LicqProtoSignal* Licq::Daemon::PopProtoSignal()
+Licq::ProtocolSignal* Licq::Daemon::PopProtoSignal()
 {
   return LicqDaemon::gPluginManager.getPluginEventHandler().popProtocolSignal();
 }
