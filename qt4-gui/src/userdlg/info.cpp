@@ -1386,11 +1386,7 @@ void UserPages::Info::loadPageKabc(const Licq::User* u)
   {
     KABC::AddressBook* adrBook = KABC::StdAddressBook::self();
     if (adrBook == 0)
-    {
-      if (bDropUser)
-        Licq::gUserManager.DropUser(u);
       return;
-    }
 
     KABC::Addressee contact = adrBook->findByUid(m_kabcID);
     if (!contact.isEmpty())

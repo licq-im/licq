@@ -934,7 +934,7 @@ unsigned short UserManager::GenerateSID()
   return nSID;
 }
 
-void UserManager::DropUser(const Licq::User* u)
+void UserManager::dropUser(const Licq::User* u)
 {
   if (u == NULL) return;
   u->Unlock();
@@ -1057,36 +1057,34 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
   if (groupId == 0)
     return;
 
-  Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
-  if (u == NULL) 
-    return;
+  int gsid;
 
-  int gsid = u->GetGSID();
-
-  if (!inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
   {
-    // Don't remove user from local group if member of the same server group
-    gUserManager.DropUser(u);
-    return;
-  }
+    Licq::UserWriteGuard u(userId);
+    if (!u.isLocked())
+      return;
 
-  // Update user object
-  u->setInGroup(groupId, inGroup);
-  string accountId = u->accountId();
-  unsigned long ppid = u->ppid();
-  gUserManager.DropUser(u);
+    gsid = u->GetGSID();
+
+    // Don't remove user from local group if member of the same server group
+    if (!inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
+      return;
+
+    // Update user object
+    u->setInGroup(groupId, inGroup);
+  }
 
   // Notify server
   if (updateServer)
   {
-    if (ppid == LICQ_PPID)
+    if (userId.protocolId() == LICQ_PPID)
     {
       if (inGroup) // Server group can only be changed, not removed
-        gIcqProtocol.icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
+        gIcqProtocol.icqChangeGroup(userId.accountId().c_str(), userId.protocolId(), groupId, gsid,
             ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
     else
-      gDaemon.PushProtoSignal(new Licq::ProtoChangeUserGroupsSignal(userId), ppid);
+      gDaemon.PushProtoSignal(new Licq::ProtoChangeUserGroupsSignal(userId), userId.protocolId());
   }
 
   // Notify plugins
@@ -1119,13 +1117,13 @@ void UserManager::setDefaultUserEncoding(const string& defaultEncoding)
 
 
 UserReadGuard::UserReadGuard(const UserId& userId, bool addUser, bool* retWasAdded)
-  : ReadMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded), true)
+  : ReadMutexGuard<User>(LicqDaemon::gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded), true)
 {
   // Empty
 }
 
 UserWriteGuard::UserWriteGuard(const UserId& userId, bool addUser, bool* retWasAdded)
-  : WriteMutexGuard<User>(gUserManager.fetchUser(userId, LOCK_W, addUser, retWasAdded), true)
+  : WriteMutexGuard<User>(LicqDaemon::gUserManager.fetchUser(userId, LOCK_W, addUser, retWasAdded), true)
 {
   // Empty
 }

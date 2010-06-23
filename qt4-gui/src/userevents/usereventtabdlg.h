@@ -51,7 +51,6 @@ public:
   bool tabExists(QWidget* tab);
   void updateConvoLabel(UserEventCommon* tab);
   void updateTabLabel(const Licq::User* u);
-  void updateTabLabel(UserEventCommon* tab, const Licq::User* u = NULL);
   void setTyping(const Licq::User* u, int convoId);
 
 #ifdef USE_KDE
@@ -82,6 +81,8 @@ private slots:
   void updateShortcuts();
 
 private:
+  void updateTabLabel(UserEventCommon* tab, const Licq::User* u);
+
   TabWidget* myTabs;
   QAction* myTabSwitch01Action;
   QAction* myTabSwitch02Action;

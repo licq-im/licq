@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include <licq/contactlist/user.h>
-#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq_message.h>
 
@@ -201,16 +200,6 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const Licq::User* u)
   if (tab == NULL)
     return;
 
-  bool fetched = false;
-  if (u == NULL ||
-      !tab->isUserInConvo(u->id()))
-  {
-    u = Licq::gUserManager.fetchUser(tab->userId());
-    if (u == NULL)
-      return;
-    fetched = true;
-  }
-
   int index = myTabs->indexOf(tab);
   myTabs->setTabText(index, QString::fromUtf8(u->GetAlias()));
 
@@ -257,9 +246,6 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const Licq::User* u)
     else
       myTabs->setTabColor(tab, QColor());
   }
-
-  if (fetched)
-    Licq::gUserManager.DropUser(u);
 
   myTabs->setTabIcon(index, icon);
   if (myTabs->currentIndex() == index)

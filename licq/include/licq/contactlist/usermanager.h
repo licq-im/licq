@@ -124,18 +124,6 @@ typedef std::list<Group*> GroupList;
 class UserManager : private boost::noncopyable
 {
 public:
-  /**
-   * Find and lock an user object
-   *
-   * @param userId User id
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
-   * @param addUser True if user should be added (as temporary) if not found
-   * @param retWasAdded If not null, will be set to true if user was added
-   * @return The locked user object if user exist or was created, otherwise NULL
-   */
-  virtual User* fetchUser(const UserId& userId, unsigned short lockType = LOCK_R,
-      bool addUser = false, bool* retWasAdded = NULL) = 0;
-
   // For protocol plugins
   virtual void addOwner(const UserId& userId) = 0;
 
@@ -191,9 +179,6 @@ public:
    * @return True if user id is valid and user is an owner
    */
   virtual bool isOwner(const UserId& userId) = 0;
-
-  // ICQ Protocol only (from original Licq)
-  virtual void DropUser(const User* user) = 0;
 
   /**
    * Convenience function to get icq owner as an unsigned long

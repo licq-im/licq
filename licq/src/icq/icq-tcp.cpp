@@ -22,7 +22,6 @@
 #include <langinfo.h>
 
 #include "licq/byteorder.h"
-#include <licq/contactlist/usermanager.h>
 #include "licq/gpghelper.h"
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
@@ -36,6 +35,7 @@
 #include "licq/version.h"
 
 #include "../contactlist/user.h"
+#include "../contactlist/usermanager.h"
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../support.h"
@@ -50,6 +50,7 @@ using Licq::gTranslator;
 using LicqDaemon::Daemon;
 using LicqDaemon::User;
 using LicqDaemon::gDaemon;
+using LicqDaemon::gUserManager;
 
 
 void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const string& message,
@@ -1085,39 +1086,49 @@ sock_error:
 int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
 {
   Licq::UserId userId(id, LICQ_PPID);
-  Licq::User* u = Licq::gUserManager.fetchUser(userId, LOCK_W);
-  if (u == NULL) return -1;
-
-  int sd = u->SocketDesc(nChannel);
-
-  // Check that we need to connect at all
-  if (sd != -1)
   {
-    Licq::gUserManager.DropUser(u);
-    gLog.Warn(tr("%sConnection attempted to already connected user (%s).\n"),
-        L_WARNxSTR, userId.toString().c_str());
-    return sd;
-  }
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+      return -1;
 
-  char szAlias[64];
-  strncpy(szAlias, u->GetAlias(), sizeof(szAlias));
-  szAlias[sizeof(szAlias) - 1] = '\0';
-  unsigned short nPort = u->Port();
-  unsigned short nVersion = u->ConnectionVersion();
+    // Check that we need to connect at all
+    int sd = u->SocketDesc(nChannel);
+    if (sd != -1)
+    {
+      gLog.Warn(tr("%sConnection attempted to already connected user (%s).\n"),
+          L_WARNxSTR, userId.toString().c_str());
+      return sd;
+    }
+  }
 
   // Poll if there is a connection in progress already
-  while (u->ConnectionInProgress())
+  while (1)
   {
-    Licq::gUserManager.DropUser(u);
+    {
+      Licq::UserReadGuard u(userId);
+      if (u.isLocked() && !u->ConnectionInProgress())
+        break;
+    }
     struct timeval tv = { 2, 0 };
     if (select(0, NULL, NULL, NULL, &tv) == -1 && errno == EINTR) return -1;
-    u = Licq::gUserManager.fetchUser(userId, LOCK_W);
-    if (u == NULL) return -1;
   }
-  sd = u->SocketDesc(ICQ_CHNxNONE);
-  if (sd == -1) u->SetConnectionInProgress(true);
-  Licq::gUserManager.DropUser(u);
-  if (sd != -1) return sd;
+
+  string alias;
+  unsigned nPort;
+  unsigned nVersion;
+
+  {
+    Licq::UserWriteGuard u(userId);
+    int sd = u->SocketDesc(ICQ_CHNxNONE);
+    if (sd == -1)
+      u->SetConnectionInProgress(true);
+    else
+      return sd;
+
+    alias = u->getAlias();
+    nPort = u->Port();
+    nVersion = u->ConnectionVersion();
+  }
 
   Licq::TCPSocket* s = new Licq::TCPSocket(userId);
   if (!OpenConnectionToUser(id, s, nPort))
@@ -1131,7 +1142,7 @@ int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
   s->SetChannel(nChannel);
 
   gLog.Info(tr("%sShaking hands with %s (%s) [v%d].\n"), L_TCPxSTR,
-      szAlias, userId.toString().c_str(), nVersion);
+      alias.c_str(), userId.toString().c_str(), nVersion);
   nPort = s->getLocalPort();
 
   if (!Handshake_Send(s, id, 0, nVersion))
@@ -1508,7 +1519,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
   // find which user was sent
   bool bNewUser = false;
-  Licq::User* u = Licq::gUserManager.fetchUser(userId, LOCK_W);
+  Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
   {
     u = new User(userId);
@@ -2388,7 +2399,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
           {
             gLog.Info(tr("%sUnknown direct ack ICBM plugin type: %s\n"), L_TCPxSTR, plugin.c_str());
-            Licq::gUserManager.DropUser(u);
+            gUserManager.dropUser(u);
 					return true;
 				}
 
@@ -2484,7 +2495,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                   L_WARNxSTR, u->GetAlias(), userId.toString().c_str());
             // Close the connection as we are in trouble
             u->SetSecure(false);
-              Licq::gUserManager.DropUser(u);
+              gUserManager.dropUser(u);
               gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserSecurity, u->id(), 0));
             return false;
@@ -2507,7 +2518,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         // finish up
         e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-          Licq::gUserManager.DropUser(u);
+          gUserManager.dropUser(u);
         ProcessDoneEvent(e);
 
         // get out of here now as we don't want standard ack processing
@@ -2541,7 +2552,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         if (e == NULL)
         {
           // Close the connection as we are in trouble
-            Licq::gUserManager.DropUser(u);
+            gUserManager.dropUser(u);
           delete e;
           return false;
         }
@@ -2550,7 +2561,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         u->SetSecure(false);
           gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserSecurity, u->id(), 0));
-          Licq::gUserManager.DropUser(u);
+          gUserManager.dropUser(u);
 
         // finish up
         e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
@@ -2634,7 +2645,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     {
       e->m_pExtendedAck = pExtendedAck;
       e->m_nSubResult = nSubResult;
-        Licq::gUserManager.DropUser(u);
+        gUserManager.dropUser(u);
       ProcessDoneEvent(e);
       return true;
     }
@@ -2727,7 +2738,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     delete u;
     return false;
   }
-    Licq::gUserManager.DropUser(u);
+  gUserManager.dropUser(u);
   if (message)
     delete [] message;
   return !errorOccured;

@@ -101,11 +101,21 @@ public:
    */
   Group* fetchGroup(int groupId, bool writeLock = false);
 
-
-  // From Licq::UserManager
-
+  /**
+   * Find and lock an user object
+   *
+   * @param userId User id
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @param addUser True if user should be added (as temporary) if not found
+   * @param retWasAdded If not null, will be set to true if user was added
+   * @return The locked user object if user exist or was created, otherwise NULL
+   */
   Licq::User* fetchUser(const Licq::UserId& userId, unsigned short lockType = LOCK_R,
       bool addUser = false, bool* retWasAdded = NULL);
+
+  void dropUser(const Licq::User* user);
+
+  // From Licq::UserManager
   void addOwner(const Licq::UserId& userId);
   void RemoveOwner(unsigned long);
 
@@ -115,7 +125,6 @@ public:
   Licq::UserId ownerUserId(unsigned long ppid);
   std::string OwnerId(unsigned long ppid);
   bool isOwner(const Licq::UserId& userId);
-  void DropUser(const Licq::User* user);
   unsigned long icqOwnerUin();
   void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);
   bool addUser(const Licq::UserId& userId, bool permanent = true,

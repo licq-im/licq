@@ -163,80 +163,78 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
 
   show();
 
-  const Licq::User* u = Licq::gUserManager.fetchUser(myUserId);
-  unsigned long myPpid = u->ppid();
-
-  QString name = tr("INVALID USER");
-  myContactCodec = QTextCodec::codecForLocale();
-
-  if (u != NULL)
   {
-    myContactCodec = UserCodec::codecForUser(u);
+    Licq::UserReadGuard u(myUserId);
 
-    name = myContactCodec->toUnicode(u->getFullName().c_str());
-    if (!name.isEmpty())
-      name = " (" + name + ")";
-    name.prepend(QString::fromUtf8(u->GetAlias()));
-  }
-  setWindowTitle(tr("Licq - History ") + name);
+    QString name = tr("INVALID USER");
+    myContactCodec = QTextCodec::codecForLocale();
 
-  bool validHistory = false;
-
-  if (u == NULL)
-  {
-    myStatusLabel->setText(tr("Invalid user requested"));
-  }
-  // Fetch list of all history entries
-  else if (!u->GetHistory(myHistoryList))
-  {
-    if (u->HistoryFile())
-      myStatusLabel->setText(tr("Error loading history file: %1\nDescription: %2")
-          .arg(u->HistoryFile()).arg(u->HistoryName()));
-    else
-      myStatusLabel->setText(tr("Sorry, history is disabled for this person"));
-  }
-  // No point in doing anything more if history is empty
-  else if (myHistoryList.size() == 0)
-  {
-    myStatusLabel->setText(tr("History is empty"));
-  }
-  else
-  {
-    // No problems that should stop us from continuing
-    validHistory = true;
-  }
-
-  if (!validHistory)
-  {
-    if (u != NULL)
-      Licq::gUserManager.DropUser(u);
-    myCalendar->setEnabled(false);
-    previousDateButton->setEnabled(false);
-    nextDateButton->setEnabled(false);
-    myPatternEdit->setEnabled(false);
-    myFindPrevButton->setEnabled(false);
-    myFindNextButton->setEnabled(false);
-    return;
-  }
-
-  myContactName = tr("server");
-  myUseHtml = false;
-
-  if (!myIsOwner)
-    myContactName = QString::fromUtf8(u->GetAlias());
-  QString myId = u->accountId().c_str();
-  for (int x = 0; x < myId.length(); x++)
-  {
-    if (!myId[x].isDigit())
+    if (u.isLocked())
     {
-      myUseHtml = true;
-      break;
+      myContactCodec = UserCodec::codecForUser(*u);
+
+      name = myContactCodec->toUnicode(u->getFullName().c_str());
+      if (!name.isEmpty())
+        name = " (" + name + ")";
+      name.prepend(QString::fromUtf8(u->GetAlias()));
+    }
+    setWindowTitle(tr("Licq - History ") + name);
+
+    bool validHistory = false;
+
+    if (!u.isLocked())
+    {
+      myStatusLabel->setText(tr("Invalid user requested"));
+    }
+    // Fetch list of all history entries
+    else if (!u->GetHistory(myHistoryList))
+    {
+      if (u->HistoryFile())
+        myStatusLabel->setText(tr("Error loading history file: %1\nDescription: %2")
+            .arg(u->HistoryFile()).arg(u->HistoryName()));
+      else
+        myStatusLabel->setText(tr("Sorry, history is disabled for this person"));
+    }
+    // No point in doing anything more if history is empty
+    else if (myHistoryList.size() == 0)
+    {
+      myStatusLabel->setText(tr("History is empty"));
+    }
+    else
+    {
+      // No problems that should stop us from continuing
+      validHistory = true;
+    }
+
+    if (!validHistory)
+    {
+      myCalendar->setEnabled(false);
+      previousDateButton->setEnabled(false);
+      nextDateButton->setEnabled(false);
+      myPatternEdit->setEnabled(false);
+      myFindPrevButton->setEnabled(false);
+      myFindNextButton->setEnabled(false);
+      return;
+    }
+
+    myContactName = tr("server");
+    myUseHtml = false;
+
+    if (!myIsOwner)
+      myContactName = QString::fromUtf8(u->GetAlias());
+    QString myId = u->accountId().c_str();
+    for (int x = 0; x < myId.length(); x++)
+    {
+      if (!myId[x].isDigit())
+      {
+        myUseHtml = true;
+        break;
+      }
     }
   }
-  Licq::gUserManager.DropUser(u);
 
   {
-    Licq::OwnerReadGuard o(myPpid);
+    Licq::OwnerReadGuard o(myUserId.protocolId());
     if (o.isLocked())
       myOwnerName = QString::fromUtf8(o->GetAlias());
   }

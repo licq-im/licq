@@ -25,7 +25,6 @@
 #include <boost/scoped_array.hpp>
 
 #include "licq/byteorder.h"
-#include <licq/contactlist/usermanager.h>
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
@@ -41,6 +40,7 @@
 
 #include "../contactlist/owner.h"
 #include "../contactlist/user.h"
+#include "../contactlist/usermanager.h"
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../support.h"
@@ -56,6 +56,7 @@ using LicqDaemon::Daemon;
 using LicqDaemon::Owner;
 using LicqDaemon::User;
 using LicqDaemon::gDaemon;
+using LicqDaemon::gUserManager;
 
 //-----icqAddUser----------------------------------------------------------
 void IcqProtocol::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
@@ -1750,7 +1751,7 @@ int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
 Licq::User* IcqProtocol::FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e,
    const char *t)
 {
-  Licq::User* u = Licq::gUserManager.fetchUser(userId, LOCK_W);
+  Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
   {
     // If the event is NULL as well then nothing we can do
@@ -2940,7 +2941,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           nChannel = ICQ_CHNxSTATUS;
 
         bool bNewUser = false;
-            Licq::User* u = Licq::gUserManager.fetchUser(userId, LOCK_W);
+            Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
         if (u == NULL)
         {
               u = new User(userId);
@@ -2953,7 +2954,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         if (bNewUser)
           delete u;
             else
-              Licq::gUserManager.DropUser(u);
+              gUserManager.dropUser(u);
 
         break;
       }
@@ -2989,7 +2990,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       //gTranslator.ServerToClient(szMsg);
 
       bool bNewUser = false;
-          Licq::User* u = Licq::gUserManager.fetchUser(userId, LOCK_W);
+          Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
       if (u == NULL)
       {
             u = new User(userId);
@@ -3025,7 +3026,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           Licq::UserId userId = u->id();
       if (!bNewUser)
-            Licq::gUserManager.DropUser(u);
+            gUserManager.dropUser(u);
 
       // Handle it
       ProcessMessage(u, advMsg, szMsg, nMsgType, nMask, nMsgID,
@@ -3497,7 +3498,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       char id[16];
       snprintf(id, 15, "%lu", nUin);
 
-      u = Licq::gUserManager.fetchUser(Licq::UserId(id, LICQ_PPID), LOCK_W);
+      u = gUserManager.fetchUser(Licq::UserId(id, LICQ_PPID), LOCK_W);
 		if (u == NULL)
 		{
 			gLog.Warn(tr("%sUnexpected new user in subtype 0x%04x.\n"), L_SRVxSTR,
@@ -3529,7 +3530,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       nSubResult = ICQ_TCPxACK_REFUSE;
       pExtendedAck = NULL;
       pthread_cond_broadcast(&cond_reverseconnect_done);
-        Licq::gUserManager.DropUser(u);
+        gUserManager.dropUser(u);
         return;
       }
 
@@ -3539,7 +3540,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     {
       gLog.Warn(tr("%s%s doesn't have a manager for this event.\n"), L_WARNxSTR,
         u->GetAlias());
-        Licq::gUserManager.DropUser(u);
+        gUserManager.dropUser(u);
 
       ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ERROR);
       if (e)
@@ -3576,7 +3577,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         
       ProcessPluginMessage(packet, u, nChannel, true, 0, nMsgID, nSequence, 0);
 
-        Licq::gUserManager.DropUser(u);
+        gUserManager.dropUser(u);
         break;
       }
 
@@ -3625,7 +3626,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       pExtendedAck = new CExtendedAck(nSubResult == ICQ_TCPxACK_RETURN, 0,
                                       szMessage);
       }
-      Licq::gUserManager.DropUser(u);
+        gUserManager.dropUser(u);
       delete [] szMessage;
 
     ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ACKED);
@@ -5655,8 +5656,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
             gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserInfo, u->id()));
-        Licq::gUserManager.DropUser(u);
-      }
+            gUserManager.dropUser(u);
+          }
 
       if (szType)
       {

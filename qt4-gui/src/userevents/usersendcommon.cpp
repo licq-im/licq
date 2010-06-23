@@ -225,8 +225,9 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
     myHistoryView = new HistoryView(false, myUsers.front(), myViewSplitter);
     connect(myHistoryView, SIGNAL(messageAdded()), SLOT(messageAdded()));
 
-    const Licq::User* u = Licq::gUserManager.fetchUser(myUsers.front());
-    if (u != NULL && Config::Chat::instance()->showHistory())
+    Licq::UserReadGuard u(myUsers.front());
+    int userSocketDesc = (u.isLocked() ? u->normalSocketDesc() : -1);
+    if (u.isLocked() && Config::Chat::instance()->showHistory())
     {
       // Show the last SHOW_RECENT_NUM messages in the history
       Licq::HistoryList lHistoryList;
@@ -240,7 +241,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           lHistoryIter--;
 
         bool bUseHTML = !isdigit(u->accountId()[1]);
-        const QTextCodec* myCodec = UserCodec::codecForUser(u);
+        const QTextCodec* myCodec = UserCodec::codecForUser(*u);
         QString contactName = QString::fromUtf8(u->GetAlias());
         QString ownerName;
         {
@@ -299,7 +300,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
     vector<messagePair> messages;
 
     // add all unread messages.
-    if (u != 0 && u->NewMessages() > 0)
+    if (u.isLocked() && u->NewMessages() > 0)
     {
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
@@ -317,7 +318,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           messages.push_back(make_pair(e, u->id()));
         }
       }
-      Licq::gUserManager.DropUser(u);
+      u.unlock();
 
       // Now add messages that are a part of this convo
       if (myPpid != LICQ_PPID)
@@ -359,34 +360,15 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
       // using the old nConvoId
       if (gConvoManager.get(myConvoId) == NULL)
         myConvoId = 0;
-
-      // Fetch the user again since we dropped it above
-      u = Licq::gUserManager.fetchUser(myUsers.front());
     }
 
     // Do we already have an open socket?
-    if (myConvoId == 0 && u != 0)
+    if (myConvoId == 0 && userSocketDesc != 1)
     {
-//       bool bHasOpen = false;
-//       QPtrListIterator<UserSendCommon> it(licqUserSend);
-//       for (; it.current(); ++it)
-//       {
-//         if ((*it)->Id() == myId && (*it)->PPID() == myPpid)
-//         {
-//           bHasOpen = true;
-//           break;
-//         }
-//       }
-
-      if (u->normalSocketDesc() != 1)
-      {
-        Licq::Conversation* convo = gConvoManager.getFromSocket(u->normalSocketDesc());
-        if (convo != NULL)
-          myConvoId = convo->id();
-      }
+      Licq::Conversation* convo = gConvoManager.getFromSocket(userSocketDesc);
+      if (convo != NULL)
+        myConvoId = convo->id();
     }
-
-    Licq::gUserManager.DropUser(u);
 
     connect(gLicqGui, SIGNAL(eventSent(const LicqEvent*)),
         myHistoryView, SLOT(addMsg(const LicqEvent*)));
@@ -441,7 +423,10 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   myMessageEdit->setForeground(QColor(myIcqColor.foreRed(), myIcqColor.foreGreen(), myIcqColor.foreBlue()));
 
   updateIcons();
-  updatePicture();
+  {
+    Licq::UserReadGuard u(myUsers.front());
+    updatePicture(*u);
+  }
   updateShortcuts();
 
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
@@ -547,13 +532,6 @@ void UserSendCommon::updateShortcuts()
 
 void UserSendCommon::updatePicture(const Licq::User* u)
 {
-  bool fetched = false;
-
-  if (u == NULL)
-  {
-    u = Licq::gUserManager.fetchUser(myUsers.front());
-    fetched = true;
-  }
   if (u == NULL)
     return;
 
@@ -584,9 +562,6 @@ void UserSendCommon::updatePicture(const Licq::User* u)
     else
       delete picMovie;
   }
-
-  if (fetched)
-    Licq::gUserManager.DropUser(u);
 }
 
 const QPixmap& UserSendCommon::iconForType(int type) const

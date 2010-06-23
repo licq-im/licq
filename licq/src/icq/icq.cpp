@@ -18,7 +18,6 @@
 #include <sys/stat.h>
 
 #include <licq/contactlist/owner.h>
-#include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
@@ -28,6 +27,7 @@
 #include "licq_log.h"
 
 #include "../contactlist/user.h"
+#include "../contactlist/usermanager.h"
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../support.h"
@@ -1305,7 +1305,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         bNewUser = false;
 
         // Fetch the just added user and use it from here on
-        u = Licq::gUserManager.fetchUser(u->id(), LOCK_W);
+        u = gUserManager.fetchUser(u->id(), LOCK_W);
       }
       else
         gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),

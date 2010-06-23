@@ -788,7 +788,7 @@ protected:
   virtual void AddToContactList() = 0;
 
   void SetSecure(bool s) { m_bSecure = s; }
-  bool ConnectionInProgress() { return m_bConnectionInProgress; }
+  bool ConnectionInProgress() const { return m_bConnectionInProgress; }
   void SetConnectionInProgress(bool c)  { m_bConnectionInProgress = c; }
 
   void SetLastSentEvent()           { m_nLastCounters[LAST_SENT_EVENT] = time(NULL); }
