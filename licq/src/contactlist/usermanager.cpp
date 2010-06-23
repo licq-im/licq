@@ -356,7 +356,7 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
     gProtocolManager.removeUser(userId);
 
   // List should only be locked when not holding any user lock to avoid
-  // deadlock, so we cannot call FetchUser here.
+  // deadlock, so we cannot call fetchUser here.
   myUserListMutex.lockWrite();
   UserMap::iterator iter = myUsers.find(userId);
   if (iter == myUsers.end())

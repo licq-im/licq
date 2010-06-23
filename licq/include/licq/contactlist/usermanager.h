@@ -144,9 +144,6 @@ public:
 
   virtual void RemoveOwner(unsigned long) = 0;
 
-  User* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType)
-  { return idstring == NULL ? NULL : fetchUser(User::makeUserId(idstring, ppid), lockType); }
-
   virtual Owner* FetchOwner(unsigned long ppid, unsigned short lockType) = 0;
 
   /**

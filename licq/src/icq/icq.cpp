@@ -729,13 +729,12 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       e->m_eResult == EVENT_ACKED &&
       e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
-    const ICQUser* u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
-    if (u != NULL)
+    Licq::UserReadGuard(e->userId());
+    if (u.isLocked())
     {
-      e->m_pUserEvent->AddToHistory(u, D_SENDER);
+      e->m_pUserEvent->AddToHistory(*u, false);
       u->SetLastSentEvent();
-      m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
-      gUserManager.DropUser(u);
+      m_xOnEventManager.Do(ON_EVENT_MSGSENT, *u);
     }
     Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }

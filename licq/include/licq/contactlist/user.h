@@ -159,8 +159,8 @@ private:
  *
  * Unless otherwise noted, members should only be accessed while holding a lock
  * to avoid race conditions between threads. User objects are normally
- * retrieved using the user manager function FetchUser() which will lock the
- * user before returning it.
+ * retrieved by instansiating a UserReadGuard or a UserWriteGuard which will
+ * lock the user upon creation and release it when destroyed.
  * Modifying a user object will not trigger any server side changes or generate
  * events to notify plugins, that is the responsibility of the caller. For some
  * members (such as group memberships) user manager functions exist that should

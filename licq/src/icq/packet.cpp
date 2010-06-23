@@ -2817,9 +2817,9 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     m_nSID(0),
     m_nGSID(0)
 {
+  UserId userId(_szName, LICQ_PPID);
   unsigned short nStrLen = strlen(_szName);
   unsigned short nExportSize = 0;
-  ICQUser *u = 0;
   char *szUnicodeName = 0;
   Licq::TlvList tlvs;
   CBuffer tlvBuffer;
@@ -2831,7 +2831,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     case ICQ_ROSTxNORMAL:
     {
       // Save the SID
-      u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_W);
+      Licq::UserWriteGuard u(userId);
       u->SetSID(m_nSID);
       u->SetAwaitingAuth(_bAuthReq);
 
@@ -2905,7 +2905,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
       u->addToGroup(gUserManager.GetGroupFromID(m_nGSID));
-      gUserManager.DropUser(u);
 
       break;
     }
@@ -2933,7 +2932,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     {
       m_nGSID = 0;
 
-      ICQUser *u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_W);
+      Licq::UserWriteGuard u(userId);
       if (_nType == ICQ_ROSTxIGNORE)
       {
         u->SetSID(m_nSID);
@@ -2943,8 +2942,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
         u->SetVisibleSID(m_nSID);
       else
         u->SetInvisibleSID(m_nSID);
-
-      gUserManager.DropUser(u);
 
       SetExtraInfo(0); // not necessary except by design
       break;
@@ -3003,14 +3000,15 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
 	unsigned short _nGSID, unsigned short _nSID, unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
 {
+  UserId userId(_szName, LICQ_PPID);
   int nNameLen = strlen(_szName);
   char *szUnicodeName = 0;
   CBuffer tlvBuffer;
 
   if (_nType == ICQ_ROSTxNORMAL)
   {
-    const ICQUser* u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_R);
-    if (u)
+    Licq::UserReadGuard u(userId);
+    if (u.isLocked())
     {
       Licq::TlvList tlvs = u->GetTLVList();
 
@@ -3025,8 +3023,6 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
       // Now copy them to the new buffer
       for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
         tlvBuffer.PackTLV(tlv_iter->second);
-
-      gUserManager.DropUser(u);
     }
   }
   else if (_nType == ICQ_ROSTxGROUP)
@@ -3072,14 +3068,14 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
 
   for (i = uins.begin(); i != uins.end(); ++i)
   {
-    const ICQUser* pUser = gUserManager.FetchUser(i->c_str(), LICQ_PPID, LOCK_R);
-    if (pUser)
+    UserId userId(*i, LICQ_PPID);
+    Licq::UserReadGuard u(userId);
+    if (u.isLocked())
     {
       nSize += i->size() + 2;
       nSize += 8;
-      if (pUser->GetAwaitingAuth())
+      if (u->GetAwaitingAuth())
         nSize += 4;
-      gUserManager.DropUser(pUser);
     }
   }
 
@@ -3088,8 +3084,9 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
 
   for (i = uins.begin(); i != uins.end(); i++)
   {
-    ICQUser* pUser = gUserManager.FetchUser(i->c_str(), LICQ_PPID, LOCK_W);
-    if (pUser)
+    UserId userId(*i, LICQ_PPID);
+    Licq::UserWriteGuard pUser(userId);
+    if (pUser.isLocked())
     {
       bool bAuthReq = pUser->GetAwaitingAuth();
       unsigned short nGSID = 0;
@@ -3122,7 +3119,6 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
         pUser->SetAwaitingAuth(false);
         
       pUser->SaveLicqInfo();
-      gUserManager.DropUser(pUser);
     }
   }
 }
@@ -3134,6 +3130,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
                                                bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
+  UserId userId(_szName, LICQ_PPID);
   unsigned short nGSID = 0;
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
@@ -3147,8 +3144,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   {
     case ICQ_ROSTxNORMAL:
     {
-      const ICQUser* u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_R);
-      if (u)
+      Licq::UserReadGuard u(userId);
+      if (u.isLocked())
       {
         if (u->GetAwaitingAuth())
           _bAuthReq = true;
@@ -3173,7 +3170,6 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
         nGSID = u->GetGSID();
         nSID = u->GetSID();
         nExtraLen = tlvBuffer.getDataSize();
-        gUserManager.DropUser(u);
       }
 
       break;
@@ -4274,12 +4270,12 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
 
   char id[16];
   snprintf(id, 16, "%lu", nDestinationUin);
-  const ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
-  if (u)
+  UserId userId(id, LICQ_PPID);
+  Licq::UserReadGuard u(userId);
+  if (u.isLocked())
   {
     buffer->PackUnsignedLong(u->Cookie());
     m_nSessionId = u->Cookie();
-    gUserManager.DropUser(u);
   }
   else
   {
@@ -4333,12 +4329,12 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
 
   char id[16];
   snprintf(id, 16, "%lu", nDestinationUin);
-  const ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
-  if (u)
+  UserId userId(id, LICQ_PPID);
+  Licq::UserReadGuard u(userId);
+  if (u.isLocked())
   {
     buffer->PackUnsignedLong(u->Cookie());
     m_nSessionId = u->Cookie();
-    gUserManager.DropUser(u);
   }
   else
   {
