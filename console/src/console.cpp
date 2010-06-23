@@ -3045,8 +3045,9 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             }
 
             // Passwords match if we are this far, now set up the new user
+            Licq::UserId ownerId(data->szUin, LICQ_PPID);
             winMain->wprintf("Registration complete for user %s\n",data->szUin);
-            Licq::gUserManager.AddOwner(data->szUin, LICQ_PPID);
+            Licq::gUserManager.addOwner(ownerId);
             {
               Licq::OwnerWriteGuard o(LICQ_PPID);
               o->setPassword(data->szPassword1);

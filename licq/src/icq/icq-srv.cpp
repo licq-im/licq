@@ -5765,7 +5765,8 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Info(tr("%sReceived new uin: %lu\n"), L_SRVxSTR, nNewUin);
       char szUin[14];
       snprintf(szUin, sizeof(szUin), "%lu", nNewUin);
-      Licq::gUserManager.AddOwner(szUin, LICQ_PPID);
+      Licq::UserId ownerId(szUin, LICQ_PPID);
+      Licq::gUserManager.addOwner(ownerId);
 
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);

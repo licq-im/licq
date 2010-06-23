@@ -128,8 +128,10 @@ void OwnerEditDlg::slot_ok()
     return;
   }
 
+  Licq::UserId ownerId(id.toLocal8Bit().data(), ppid);
+
   if (myPpid == 0)
-    Licq::gUserManager.AddOwner(id.toLocal8Bit(), ppid);
+    Licq::gUserManager.addOwner(ownerId);
 
   {
     Licq::OwnerWriteGuard o(ppid);
