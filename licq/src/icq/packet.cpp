@@ -4132,7 +4132,7 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const char *_szId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  if (_szId == gUserManager.OwnerId(LICQ_PPID))
+  if (_szId == gUserManager.ownerUserId(LICQ_PPID).accountId())
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
   else
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFOxOWNER;

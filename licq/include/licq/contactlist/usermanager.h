@@ -169,9 +169,6 @@ public:
    */
   virtual UserId ownerUserId(unsigned long ppid) = 0;
 
-  // Get account id for an owner
-  virtual std::string OwnerId(unsigned long ppid) = 0;
-
   /**
    * Check if user is an owner
    *

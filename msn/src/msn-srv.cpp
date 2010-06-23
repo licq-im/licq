@@ -166,7 +166,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strLists = packet->GetParameter();
       string strUserLists;
 
-      if (strUser == gUserManager.OwnerId(MSN_PPID))
+      if (strUser == gUserManager.ownerUserId(MSN_PPID).accountId())
         return;
 
       int nLists = atoi(strLists.c_str());

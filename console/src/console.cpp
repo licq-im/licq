@@ -616,7 +616,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     // Needs to be better dealt with...
     // How's this then?
       winMain->wprintf("Registration complete!\nYour UIN is %s\n",
-          Licq::gUserManager.OwnerId(LICQ_PPID).c_str());
+          Licq::gUserManager.ownerUserId(LICQ_PPID).accountId().c_str());
     winMain->fProcessInput = &CLicqConsole::InputCommand;
     PrintStatus();
     break;

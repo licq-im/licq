@@ -507,17 +507,6 @@ UserId UserManager::ownerUserId(unsigned long ppid)
   return ret;
 }
 
-string UserManager::OwnerId(unsigned long ppid)
-{
-  const Licq::Owner* owner = FetchOwner(ppid, LOCK_R);
-  if (owner == NULL)
-    return "";
-
-  string ret = owner->accountId();
-  DropOwner(owner);
-  return ret;
-}
-
 bool UserManager::isOwner(const UserId& userId)
 {
   bool exists = false;
@@ -536,7 +525,7 @@ bool UserManager::isOwner(const UserId& userId)
 
 unsigned long UserManager::icqOwnerUin()
 {
-  return strtoul(OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
+  return strtoul(userOwnerId(LICQ_PPID).accountId().c_str(), (char**)NULL, 10);
 }
 
 void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSignal)

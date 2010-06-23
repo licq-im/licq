@@ -123,7 +123,6 @@ public:
   void DropOwner(const Licq::Owner* owner);
   bool userExists(const Licq::UserId& userId);
   Licq::UserId ownerUserId(unsigned long ppid);
-  std::string OwnerId(unsigned long ppid);
   bool isOwner(const Licq::UserId& userId);
   unsigned long icqOwnerUin();
   void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);

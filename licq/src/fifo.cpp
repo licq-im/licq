@@ -445,7 +445,7 @@ static int fifo_sms_number(int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  string id = gUserManager.OwnerId(LICQ_PPID);
+  string id = gUserManager.ownerUserId(LICQ_PPID).accountId();
   d->icqSendSms(id.c_str(), LICQ_PPID, argv[1], argv[2]);
   return 0;
 }

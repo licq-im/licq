@@ -744,7 +744,7 @@ int CRMSClient::Process_INFO()
 
   //XXX Handle the case when we have the owner
   if (szId == 0)
-    m_nUin = strtoul(gUserManager.OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
+    m_nUin = strtoul(gUserManager.ownerUserId(LICQ_PPID).accountId().c_str(), (char**)NULL, 10);
 
   // Print the user info
   Licq::UserReadGuard u(userId);

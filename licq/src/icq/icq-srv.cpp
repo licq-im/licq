@@ -5754,10 +5754,11 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
 
       unsigned long nNewUin = packet.UnpackUnsignedLong();
 
-      if (!Licq::gUserManager.OwnerId(LICQ_PPID).empty())
+      Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(LICQ_PPID);
+      if (!oldOwnerId.isValid())
       {
         gLog.Warn(tr("%sReceived new uin (%lu) when already have a uin (%s).\n"), L_WARNxSTR,
-            nNewUin, Licq::gUserManager.OwnerId(LICQ_PPID).c_str());
+            nNewUin, oldOwnerId.toString().c_str());
         return;
       }
 
