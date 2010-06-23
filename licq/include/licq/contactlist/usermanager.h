@@ -132,27 +132,6 @@ public:
 
   virtual void RemoveOwner(unsigned long) = 0;
 
-  virtual Owner* FetchOwner(unsigned long ppid, unsigned short lockType) = 0;
-
-  /**
-   * Find and lock an owner object based on userId
-   *
-   * Note: Currently this is just a convenience wrapper but if/when Licq
-   *   starts supporting multiple owners per protocol this call will be needed
-   *   to be able to get any owner.
-   *
-   * @param userId User id of owner
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
-   * @return The locked owner object if owner exists, otherwise NULL
-   */
-  Owner* fetchOwner(const UserId& userId, unsigned short lockType)
-  { return FetchOwner(User::getUserProtocolId(userId), lockType); }
-
-  /**
-   * Release owner lock
-   */
-  virtual void DropOwner(const Owner* owner) = 0;
-
   /**
    * Check if a user id is in the list
    *

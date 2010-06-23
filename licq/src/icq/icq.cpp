@@ -774,21 +774,19 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 
   case ICQ_CMDxSND_SETxSTATUS:
     if (e->m_eResult == EVENT_ACKED)
-    {
-        ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+      {
+        Licq::OwnerWriteGuard o(LICQ_PPID);
       ChangeUserStatus(o, ((CPU_SetStatus *)e->m_pPacket)->Status() );
-        gUserManager.DropOwner(o);
-    }
+      }
     PushPluginEvent(e);
     break;
 
   case ICQ_CMDxSND_SETxRANDOMxCHAT:
     if (e->m_eResult == EVENT_ACKED)
-    {
-        ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+      {
+        Licq::OwnerWriteGuard o(LICQ_PPID);
       o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_pPacket)->Group());
-        gUserManager.DropOwner(o);
-    }
+      }
     PushPluginEvent(e);
     break;
 

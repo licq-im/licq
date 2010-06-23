@@ -166,37 +166,57 @@ void OnEventManager::performOnEvent(OnEventType event, const Licq::User* user)
         return;
     }
 
-    // Get owner for user
-    const Licq::Owner* owner;
-    if (user->isUser())
-      owner = gUserManager.FetchOwner(user->ppid(), LOCK_R);
-    else
-      owner = dynamic_cast<const Licq::Owner*>(user);
-    if (owner == NULL)
-      return;
-
     // Check if current status is reason to block on event action
-    bool blocked = false;
-    switch (owner->Status())
+    bool allow = true;
+    unsigned long ownerStatus;
+
+    if (user->isUser())
     {
-      case ICQ_STATUS_AWAY:
-        blocked = (!owner->AcceptInAway() && !user->AcceptInAway());
-        break;
-      case ICQ_STATUS_NA:
-        blocked = (!owner->AcceptInNA() && !user->AcceptInNA());
-        break;
-      case ICQ_STATUS_OCCUPIED:
-        blocked = (!owner->AcceptInOccupied() && !user->AcceptInOccupied());
-        break;
-      case ICQ_STATUS_DND:
-        blocked = (!owner->AcceptInDND() && !user->AcceptInDND());
-        break;
+      // User isn't owner, so check owner if it will accept
+      Licq::OwnerReadGuard o(user->ppid());
+      ownerStatus = o->Status();
+      switch (ownerStatus)
+      {
+        case ICQ_STATUS_AWAY:
+          allow = o->AcceptInAway();
+          break;
+        case ICQ_STATUS_NA:
+          allow = o->AcceptInNA();
+          break;
+        case ICQ_STATUS_OCCUPIED:
+          allow = o->AcceptInOccupied();
+          break;
+        case ICQ_STATUS_DND:
+          allow = o->AcceptInDND();
+          break;
+      }
+    }
+    else
+    {
+      ownerStatus = user->Status();
     }
 
-    if (user->isUser())
-      gUserManager.DropOwner(owner);
+    if (!allow || user->isUser())
+    {
+      // Either we are owner or owner didn't accept so check user
+      switch (ownerStatus)
+      {
+        case ICQ_STATUS_AWAY:
+          allow = user->AcceptInAway();
+          break;
+        case ICQ_STATUS_NA:
+          allow = user->AcceptInNA();
+          break;
+        case ICQ_STATUS_OCCUPIED:
+          allow = user->AcceptInOccupied();
+          break;
+        case ICQ_STATUS_DND:
+          allow = user->AcceptInDND();
+          break;
+      }
+    }
 
-    if (blocked)
+    if (!allow)
       return;
   }
 

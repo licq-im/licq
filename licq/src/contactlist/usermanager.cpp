@@ -498,13 +498,11 @@ bool UserManager::userExists(const UserId& userId)
 
 UserId UserManager::ownerUserId(unsigned long ppid)
 {
-  const Licq::Owner* owner = FetchOwner(ppid, LOCK_R);
-  if (owner == NULL)
+  Licq::OwnerReadGuard owner(ppid);
+  if (!owner.isLocked())
     return UserId();
 
-  UserId ret = owner->id();
-  DropOwner(owner);
-  return ret;
+  return owner->id();
 }
 
 bool UserManager::isOwner(const UserId& userId)
@@ -525,7 +523,7 @@ bool UserManager::isOwner(const UserId& userId)
 
 unsigned long UserManager::icqOwnerUin()
 {
-  return strtoul(userOwnerId(LICQ_PPID).accountId().c_str(), (char**)NULL, 10);
+  return strtoul(ownerUserId(LICQ_PPID).accountId().c_str(), (char**)NULL, 10);
 }
 
 void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSignal)
@@ -587,11 +585,10 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
   myGroupListMutex.unlockWrite();
 
   bool icqOnline = false;
-  Licq::Owner* icqOwner = FetchOwner(LICQ_PPID, LOCK_R);
-  if (icqOwner != NULL)
   {
-    icqOnline = icqOwner->isOnline();
-    DropOwner(icqOwner);
+    Licq::OwnerReadGuard icqOwner(LICQ_PPID);
+    if (icqOwner.isLocked())
+      icqOnline = icqOwner->isOnline();
   }
 
   if (icqGroupId == 0 && icqOnline)
@@ -865,9 +862,10 @@ unsigned short UserManager::GenerateSID()
   int nSID;
   unsigned short nOwnerPDINFO;
 
-  const Licq::Owner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  nOwnerPDINFO = o->GetPDINFO();
-  gUserManager.DropOwner(o);
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    nOwnerPDINFO = o->GetPDINFO();
+  }
 
   // Generate a SID
   srand(time(NULL));
@@ -929,27 +927,23 @@ void UserManager::dropUser(const Licq::User* u)
   u->Unlock();
 }
 
-Licq::Owner* UserManager::FetchOwner(unsigned long ppid, unsigned short lockType)
+Licq::Owner* UserManager::fetchOwner(unsigned long protocolId, bool writeLock)
 {
   Owner* o = NULL;
 
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter = myOwners.find(ppid);
+  OwnerMap::iterator iter = myOwners.find(protocolId);
   if (iter != myOwners.end())
   {
     o = iter->second;
-    o->Lock(lockType);
+    if (writeLock)
+      o->lockWrite();
+    else
+      o->lockRead();
   }
   myOwnerListMutex.unlockRead();
 
   return o;
-}
-
-void UserManager::DropOwner(const Licq::Owner* owner)
-{
-  if (owner == NULL)
-    return;
-  owner->Unlock();
 }
 
 void UserManager::SaveAllUsers()
@@ -1118,25 +1112,25 @@ UserWriteGuard::UserWriteGuard(const UserId& userId, bool addUser, bool* retWasA
 }
 
 OwnerReadGuard::OwnerReadGuard(const UserId& userId)
-  : ReadMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_R), true)
+  : ReadMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(userId, false), true)
 {
   // Empty
 }
 
 OwnerReadGuard::OwnerReadGuard(unsigned long protocolId)
-  : ReadMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_R), true)
+  : ReadMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(protocolId, false), true)
 {
   // Empty
 }
 
 OwnerWriteGuard::OwnerWriteGuard(const UserId& userId)
-  : WriteMutexGuard<Owner>(gUserManager.fetchOwner(userId, LOCK_W), true)
+  : WriteMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(userId, true), true)
 {
   // Empty
 }
 
 OwnerWriteGuard::OwnerWriteGuard(unsigned long protocolId)
-  : WriteMutexGuard<Owner>(gUserManager.FetchOwner(protocolId, LOCK_W), true)
+  : WriteMutexGuard<Owner>(LicqDaemon::gUserManager.fetchOwner(protocolId, true), true)
 {
   // Empty
 }

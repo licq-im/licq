@@ -1073,9 +1073,11 @@ CPU_SetPrivacy::CPU_SetPrivacy(unsigned char _cPrivacy)
 
   InitBuffer();
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  unsigned short nPDINFO = o->GetPDINFO();
-  gUserManager.DropOwner(o);
+  unsigned short nPDINFO;
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    nPDINFO = o->GetPDINFO();
+  }
 
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedShortBE(nPDINFO);
@@ -1156,7 +1158,7 @@ void CPU_SetStatusFamily::InitBuffer()
   
   /* should eventually switch to some other way to identify licq, probably
      use capabilities */
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
 #ifdef USE_OPENSSL
    buffer->PackUnsignedLongBE(LICQ_WITHSSL | LICQ_VERSION);
 #else
@@ -1165,7 +1167,6 @@ void CPU_SetStatusFamily::InitBuffer()
    // some kind of timestamp ?
   buffer->PackUnsignedLongBE(o->ClientStatusTimestamp());
   buffer->PackUnsignedLongBE(o->ClientInfoTimestamp());
-  gUserManager.DropOwner(o);
   buffer->PackUnsignedShortBE(0x0000);
 }
 
@@ -1180,15 +1181,12 @@ CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
 CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
   : CPU_SetStatusFamily()
 {
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   m_nNewStatus = o->StatusFull();
-  gUserManager.DropOwner(o);
 
   m_nSize += 4 + 1 + 4 + 6 + GUID_LENGTH + 4 + 1;
 
   InitBuffer();
-
-  o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   buffer->PackUnsignedLongBE(0x00110022); // TLV
   buffer->PackChar(2);                    // info update
@@ -1199,8 +1197,6 @@ CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
   buffer->Pack(GUID, GUID_LENGTH);
   buffer->PackUnsignedLong(o->ClientInfoTimestamp());
   buffer->PackChar(0);                    //No info follows ??
-
-  gUserManager.DropOwner(o);
 }
 
 CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const char *GUID,
@@ -1208,15 +1204,12 @@ CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const char *GUID,
                                                      unsigned long nStatus)
   : CPU_SetStatusFamily()
 {
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   m_nNewStatus = nStatus != ICQ_STATUS_OFFLINE ? nStatus : o->StatusFull();
-  gUserManager.DropOwner(o);
 
   m_nSize += 4 + 1 + 4 + 6 + GUID_LENGTH + 1 + 4 + 4 + 6;
 
   InitBuffer();
-
-  o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   buffer->PackUnsignedLongBE(0x0011002C); // TLV
   buffer->PackChar(3);                    // info update
@@ -1231,28 +1224,21 @@ CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const char *GUID,
   buffer->PackUnsignedShort(0);           //Unknown
   buffer->PackUnsignedShort(0);           //Unknown
   buffer->PackUnsignedShort(1);           //Unknown
-
-  gUserManager.DropOwner(o);
 }
 
 CPU_UpdateTimestamp::CPU_UpdateTimestamp()
   : CPU_SetStatusFamily()
 {
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   m_nNewStatus = o->StatusFull();
-  gUserManager.DropOwner(o);
 
   m_nSize += 4 + 1 + 4;
 
   InitBuffer();
 
-  o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-
   buffer->PackUnsignedLongBE(0x00110005);         // TLV
   buffer->PackChar(0);                            // server info update
   buffer->PackUnsignedLong(o->ClientTimestamp());
-
-  gUserManager.DropOwner(o);
 }
 
 //-----GenericUinList-----------------------------------------------------------
@@ -1578,7 +1564,7 @@ void CPU_Type2Message::InitBuffer()
 {
 	CPU_CommonFamily::InitBuffer();
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
 
 	int nUinLen = strlen(m_pUser->IdString());
 
@@ -1623,8 +1609,6 @@ void CPU_Type2Message::InitBuffer()
 	buffer->PackUnsignedShortBE(0x2711); // tlv - more message info
 	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 36 - nDirectInfo -
           m_nExtraLen);
-
-  gUserManager.DropOwner(o);
 }
 
 //-----ReverseConnect-----------------------------------------------------------
@@ -1766,9 +1750,10 @@ CPU_InfoPluginListResp::CPU_InfoPluginListResp(const ICQUser *u,
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedShort(1);
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
-  gUserManager.DropOwner(o);
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  }
   buffer->PackUnsignedLong(nLen);
   if (nLen != 0)
   {
@@ -1801,8 +1786,7 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   const Licq::ICQUserPhoneBook* book = o->GetPhoneBook();
 
   unsigned long num_entries;
@@ -1863,8 +1847,6 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
     buffer->PackUnsignedLong(entry->nRemoveLeading0s);
     buffer->PackUnsignedLong(entry->nPublish);
   }
-
-  gUserManager.DropOwner(o);
 }
 
 //-----Send picture response-------------------------------------------------
@@ -1874,7 +1856,7 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
@@ -1958,8 +1940,6 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
 
   if (fd != -1)
     close(fd);
-
-  gUserManager.DropOwner(o);
 }
 
 //-----Send status plugin request---------------------------------------------
@@ -2009,9 +1989,10 @@ CPU_StatusPluginListResp::CPU_StatusPluginListResp(const ICQUser* u,
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackChar(1);            //Unknown
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
-  gUserManager.DropOwner(o);
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
 
   if (nLen != 0)
@@ -2055,9 +2036,8 @@ CPU_StatusPluginResp::CPU_StatusPluginResp(const ICQUser* u, unsigned long nMsgI
   buffer->PackUnsignedShort(1);   //Unknown
 
   buffer->PackUnsignedLong(nStatus);
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   buffer->PackUnsignedLong(o->ClientStatusTimestamp());
-  gUserManager.DropOwner(o);
   buffer->PackChar(1);            //Unknown
 }
 
@@ -2098,11 +2078,13 @@ void CPU_AdvancedMessage::InitBuffer()
 {
   CPU_Type2Message::InitBuffer();
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  unsigned short nStatus = o->Status();
-  if (m_pUser->StatusToUser() != ICQ_STATUS_OFFLINE)
-    nStatus = m_pUser->StatusToUser();
-  gUserManager.DropOwner(o);
+  unsigned short nStatus;
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    nStatus = o->Status();
+    if (m_pUser->StatusToUser() != ICQ_STATUS_OFFLINE)
+      nStatus = m_pUser->StatusToUser();
+  }
 
   // XXX Is this really a status? XXX
   // If this is non-zero, ICQ5 ignores our accept file ack.
@@ -2281,7 +2263,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
   }
   else
   {
-    const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+    Licq::OwnerReadGuard o(LICQ_PPID);
     unsigned short s = o->Status();
     if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
       s = u->StatusToUser();
@@ -2335,8 +2317,6 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
     else
       m_szMessage = strdup("");
 
-    gUserManager.DropOwner(o);
-  
     // Check for pipes, should possibly go after the ClientToServer call
     m_szMessage = PipeInput(m_szMessage);
   
@@ -2504,12 +2484,11 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
   char szParsedNumber[17] = "+";
   ParseDigits(&szParsedNumber[1], szNumber, 15);
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
 
   snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
 	   szParsedNumber, szMessage, o->IdString(), o->GetAlias(), szTime);
   szXmlStr[459] = '\0';
-  gUserManager.DropOwner(o);
 
   int nLenXmlStr = strlen_safe(szXmlStr) + 1;
   int packetSize = 2+2+2+4+2+2+2 + 22 + 2 + nLenXmlStr;
@@ -2603,10 +2582,9 @@ CPU_RequestList::CPU_RequestList()
   m_nSize += 6;
   InitBuffer();
 
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   buffer->PackUnsignedLongBE(o->GetSSTime());
   buffer->PackUnsignedShortBE(o->GetSSCount());
-  gUserManager.DropOwner(o);
 }
 
 //-----ExportContactStart-------------------------------------------------------
@@ -2794,10 +2772,9 @@ CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
   m_nSID = gUserManager.GenerateSID();
   m_nSize += 15;
   InitBuffer();
-  
-  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+
+  Licq::OwnerWriteGuard o(LICQ_PPID);
   o->SetPDINFO(m_nSID);
-  gUserManager.DropOwner(o);
 
   buffer->PackUnsignedShortBE(0);
   buffer->PackUnsignedShortBE(0);
@@ -4463,7 +4440,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
    size_t nLen)
 {
   // Setup the message type and status fields using our online status
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   unsigned short s = o->Status();
   if (user->StatusToUser() != ICQ_STATUS_OFFLINE) s = user->StatusToUser();
   m_nLevel = nLevel;
@@ -4546,7 +4523,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
       break;
     }
   }
-  gUserManager.DropOwner(o);
+  o.unlock();
 
   m_nSourceUin = gUserManager.icqOwnerUin();
   m_nCommand = _nCommand;
@@ -5037,7 +5014,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
 {
   m_nSequence = _nSequence;
   free(m_szMessage);
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
 
   // don't sent out AutoResponse if we're online
   // it could contain stuff the other site shouldn't be able to read
@@ -5068,8 +5045,6 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
   }
   else
     m_szMessage = strdup("");
-
-  gUserManager.DropOwner(o);
 
   // Check for pipes, should possibly go after the ClientToServer call
   m_szMessage = PipeInput(m_szMessage);
@@ -5385,9 +5360,8 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
   unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  Licq::ICQUserPhoneBook* book = o->GetPhoneBook();
+  Licq::OwnerReadGuard o(LICQ_PPID);
+  const Licq::ICQUserPhoneBook* book = o->GetPhoneBook();
 
   unsigned long num_entries;
   unsigned long nLen = 4 + 4;
@@ -5449,8 +5423,6 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
     buffer->PackUnsignedLong(entry->nPublish);
   }
 
-  gUserManager.DropOwner(o);
-
   PostBuffer();
 }
 
@@ -5459,7 +5431,7 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
   unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  Licq::OwnerReadGuard o(LICQ_PPID);
   string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
@@ -5544,8 +5516,6 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
 
   if (fd != -1)
     close(fd);
-
-  gUserManager.DropOwner(o);
 }
 
 //----Reply to plugin list request----------------------------------------------
@@ -5574,9 +5544,10 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(ICQUser *_cUser,
 
   buffer->PackUnsignedShort(0);   //Unknown
   buffer->PackUnsignedShort(1);   //Unknown
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
-  gUserManager.DropOwner(o);
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
   if (nLen != 0)
   {
@@ -5649,9 +5620,10 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(ICQUser *_cUser,
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackChar(1);            //Unknown
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
-  gUserManager.DropOwner(o);
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
   if (nLen != 0)
   {
@@ -5691,9 +5663,10 @@ CPT_StatusPluginResp::CPT_StatusPluginResp(ICQUser *_cUser,
   buffer->PackUnsignedShort(0);   //Unknown
   buffer->PackUnsignedShort(1);   //Unknown
   buffer->PackUnsignedLong(nStatus);
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  buffer->PackUnsignedLong(o->ClientStatusTimestamp());
-  gUserManager.DropOwner(o);
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    buffer->PackUnsignedLong(o->ClientStatusTimestamp());
+  }
   buffer->PackChar(1);            //Unknown
 
   PostBuffer();

@@ -115,12 +115,32 @@ public:
 
   void dropUser(const Licq::User* user);
 
+  /**
+   * Fetch and lock an owner object based on protocolId
+   *
+   * @param protocolId Protocol to get owner for
+   * @param writeLock True to lock owner for writing, false for read lock
+   * @return The locked owner object if owner exists, otherwise NULL
+   */
+  Licq::Owner* fetchOwner(unsigned long protocolId, bool writeLock = false);
+
+  /**
+   * Find and lock an owner object based on userId
+   *
+   * Note: Currently this is just a convenience wrapper but if/when Licq
+   *   starts supporting multiple owners per protocol this call will be needed
+   *   to be able to get any owner.
+   *
+   * @param userId User id of owner
+   * @param writeLock True to lock owner for writing, false for read lock
+   * @return The locked owner object if owner exists, otherwise NULL
+   */
+  Licq::Owner* fetchOwner(const Licq::UserId& userId, bool writeLock = false)
+  { return fetchOwner(userId.protocolId(), writeLock); }
+
   // From Licq::UserManager
   void addOwner(const Licq::UserId& userId);
   void RemoveOwner(unsigned long);
-
-  Licq::Owner* FetchOwner(unsigned long ppid, unsigned short lockType);
-  void DropOwner(const Licq::Owner* owner);
   bool userExists(const Licq::UserId& userId);
   Licq::UserId ownerUserId(unsigned long ppid);
   bool isOwner(const Licq::UserId& userId);
