@@ -66,7 +66,6 @@ UserEvent::UserEvent(unsigned short nSubCommand, unsigned short nCommand,
 
    // Initialized stuff
   myIsReceiver = true;
-   m_szText = NULL;
    m_bPending = true;
    m_nId = s_nId++;
 }
@@ -81,25 +80,25 @@ void CUserEvent::CopyBase(const CUserEvent* e)
 }
 
 
-const char *CUserEvent::Text() const
+const string& UserEvent::text() const
 {
-  if (m_szText == NULL)
+  if (myText.empty())
   {
     CreateDescription();
 #ifdef USE_HEBREW
-    char *p = hebrev(m_szText);
-    strcpy(m_szText, p);
+    char* p = hebrev(myText.c_str());
+    myText = p;
     free(p);
 #endif
   }
 
-  return m_szText;
+  return myText;
 }
 
 
 
 //-----CUserEvent::LicqVersionToString------------------------------------------
-const char *CUserEvent::LicqVersionToString(unsigned long v)
+const string UserEvent::licqVersionToString(unsigned long v)
 {
   static char s_szVersion[8];
   if(v % 10)
@@ -109,24 +108,18 @@ const char *CUserEvent::LicqVersionToString(unsigned long v)
   return (s_szVersion);
 }
 
-
-//-----CUserEvent::LicqVersionStr-----------------------------------------------
-const char *CUserEvent::LicqVersionStr() const
-{
-  return (LicqVersionToString(LicqVersion()));
-}
-
-
 //-----CUserEvent::destructor---------------------------------------------------
 UserEvent::~UserEvent()
 {
-  delete[] m_szText;
+  // Empty
 }
 
 
 //-----NToNS--------------------------------------------------------------------
-int AddStrWithColons(char *_szNewStr, const char *_szOldStr)
+int addStrWithColons(char *_szNewStr, const string& oldStr)
 {
+  const char* _szOldStr = oldStr.c_str();
+
   unsigned long j = 0, i = 0;
   _szNewStr[j++] = ':';
   while (_szOldStr[i] != '\0')
@@ -159,47 +152,38 @@ void CUserEvent::AddToHistory_Flush(User* u, const char* szOut) const
 
 //=====CEventMsg================================================================
 
-Licq::EventMsg::EventMsg(const char *_szMessage, unsigned short _nCommand,
+Licq::EventMsg::EventMsg(const string& message, unsigned short _nCommand,
                      time_t _tTime, unsigned long _nFlags, unsigned long _nConvoId)
-   : UserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags, _nConvoId)
+  : UserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags, _nConvoId),
+    myMessage(message)
 {
-  m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
-
-  if (strstr(m_szMessage, Licq::GpgHelper::pgpSig) == m_szMessage)
-    if (char *plaintext = Licq::gGpgHelper.Decrypt(m_szMessage))
+  if (myMessage.find(Licq::GpgHelper::pgpSig) == 0)
+    if (char* plaintext = Licq::gGpgHelper.Decrypt(myMessage.c_str()))
     {
       m_nFlags |= E_ENCRYPTED;
-      free(m_szMessage);
-      m_szMessage = plaintext;
+      myMessage = plaintext;
+      free(plaintext);
     }
 }
 
 
 void CEventMsg::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szMessage) + 1];
-  strcpy(m_szText, m_szMessage);
-}
-
-
-Licq::EventMsg::~EventMsg()
-{
-  free (m_szMessage);
+  myText = myMessage;
 }
 
 CEventMsg* CEventMsg::Copy() const
 {
-  CEventMsg *e = new CEventMsg(m_szMessage, m_nCommand, m_tTime, m_nFlags);
+  EventMsg* e = new EventMsg(myMessage, m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }
 
 void CEventMsg::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[ (strlen(m_szMessage) << 1) + EVENT_HEADER_SIZE];
+  char *szOut = new char[ (myMessage.size() << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  AddStrWithColons(&szOut[nPos], m_szMessage);
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -219,16 +203,16 @@ CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime,
 
 //=====CEventFile===============================================================
 
-Licq::EventFile::EventFile(const char *_szFilename, const char *_szFileDescription,
+Licq::EventFile::EventFile(const string& filename, const string& fileDescription,
     unsigned long _nFileSize, const list<string>& _lFileList,
                        unsigned short _nSequence, time_t _tTime,
                        unsigned long _nFlags, unsigned long _nConvoId,
                        unsigned long _nMsgID1, unsigned long _nMsgID2)
    : UserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags, _nConvoId),
+    myFilename(filename),
+    myFileDescription(fileDescription),
      m_lFileList(_lFileList.begin(), _lFileList.end())
 {
-  m_szFilename = strdup(_szFilename == NULL ? "" : _szFilename);
-  m_szFileDescription = strdup(_szFileDescription == NULL ? "" : _szFileDescription);
   m_nFileSize = _nFileSize;
   m_nMsgID[0] = _nMsgID1;
   m_nMsgID[1] = _nMsgID2;
@@ -237,22 +221,16 @@ Licq::EventFile::EventFile(const char *_szFilename, const char *_szFileDescripti
 
 void CEventFile::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
-  sprintf(m_szText, tr("File: %s (%lu bytes)\nDescription:\n%s\n"), m_szFilename,
-          m_nFileSize, m_szFileDescription);
-}
-
-
-Licq::EventFile::~EventFile()
-{
-   free (m_szFilename);
-   free (m_szFileDescription);
+  char* text = new char[myFilename.size() + myFileDescription.size() + 64];
+  sprintf(text, tr("File: %s (%lu bytes)\nDescription:\n%s\n"),
+      myFilename.c_str(), m_nFileSize, myFileDescription.c_str());
+  myText = text;
+  delete[] text;
 }
 
 CEventFile* CEventFile::Copy() const
 {
-  CEventFile *e = new CEventFile(m_szFilename, m_szFileDescription,
+  CEventFile *e = new CEventFile(myFilename, myFileDescription,
         m_nFileSize, m_lFileList, m_nSequence, m_tTime, m_nFlags, m_nConvoId, m_nMsgID[0],
         m_nMsgID[1]);
   e->CopyBase(this);
@@ -261,11 +239,11 @@ CEventFile* CEventFile::Copy() const
 
 void CEventFile::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[(strlen(m_szFilename) + strlen(m_szFileDescription)) * 2 + 16 + EVENT_HEADER_SIZE];
+  char* szOut = new char[(myFilename.size() + myFileDescription.size()) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n", m_szFilename);
+  nPos += sprintf(&szOut[nPos], ":%s\n", myFilename.c_str());
   nPos += sprintf(&szOut[nPos], ":%lu\n", m_nFileSize);
-  AddStrWithColons(&szOut[nPos], m_szFileDescription);
+  addStrWithColons(&szOut[nPos], myFileDescription);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -274,33 +252,28 @@ void CEventFile::AddToHistory(User* u, bool isReceiver) const
 
 //=====CEventUrl================================================================
 
-Licq::EventUrl::EventUrl(const char *_szUrl, const char *_szUrlDescription,
+Licq::EventUrl::EventUrl(const string& url, const string& urlDescription,
                      unsigned short _nCommand, time_t _tTime,
                      unsigned long _nFlags, unsigned long _nConvoId)
-   : UserEvent(ICQ_CMDxSUB_URL, _nCommand, 0, _tTime, _nFlags, _nConvoId)
+  : UserEvent(ICQ_CMDxSUB_URL, _nCommand, 0, _tTime, _nFlags, _nConvoId),
+    myUrl(url),
+    myUrlDescription(urlDescription)
 {
-   m_szUrl = strdup(_szUrl == NULL ? "" : _szUrl);
-   m_szUrlDescription = strdup(_szUrlDescription == NULL ? "" : _szUrlDescription);
+  // Empty
 }
 
 
 void CEventUrl::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szUrl) + strlen(m_szUrlDescription) + 64];
-  sprintf(m_szText, tr("Url: %s\nDescription:\n%s\n"), m_szUrl, m_szUrlDescription);
-}
-
-
-Licq::EventUrl::~EventUrl()
-{
-   free (m_szUrl);
-   free (m_szUrlDescription);
+  char* text = new char[myUrl.size() + myUrlDescription.size() + 64];
+  sprintf(text, tr("Url: %s\nDescription:\n%s\n"), myUrl.c_str(), myUrlDescription.c_str());
+  myText = text;
+  delete[] text;
 }
 
 CEventUrl* CEventUrl::Copy() const
 {
-  CEventUrl *e = new CEventUrl(m_szUrl, m_szUrlDescription, m_nCommand,
+  EventUrl* e = new EventUrl(myUrl, myUrlDescription, m_nCommand,
       m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
@@ -308,11 +281,10 @@ CEventUrl* CEventUrl::Copy() const
 
 void CEventUrl::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[(strlen(m_szUrlDescription) << 1) +
-                   (strlen(m_szUrl) << 1) + EVENT_HEADER_SIZE];
+  char* szOut = new char[(myUrlDescription.size() << 1) + (myUrl.size() << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n", m_szUrl);
-  AddStrWithColons(&szOut[nPos], m_szUrlDescription);
+  nPos += sprintf(&szOut[nPos], ":%s\n", myUrl.c_str());
+  addStrWithColons(&szOut[nPos], myUrlDescription);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -340,29 +312,25 @@ CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime,
 
 //=====CEventChat===============================================================
 
-Licq::EventChat::EventChat(const char *szReason, unsigned short nSequence,
+Licq::EventChat::EventChat(const string& reason, unsigned short nSequence,
                        time_t tTime, unsigned long nFlags,
                        unsigned long nConvoId, unsigned long nMsgID1, unsigned long nMsgID2)
-   : UserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
+  : UserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId),
+    myReason(reason)
 {
-  m_szReason = strdup(szReason ==  NULL ? "" : szReason);
-  m_szClients = NULL;
   m_nPort = 0;
   m_nMsgID[0] = nMsgID1;
   m_nMsgID[1] = nMsgID2;
 }
 
-Licq::EventChat::EventChat(const char *szReason, const char *szClients,
+Licq::EventChat::EventChat(const string& reason, const string& clients,
    unsigned short nPort, unsigned short nSequence,
    time_t tTime, unsigned long nFlags, unsigned long nConvoId, unsigned long nMsgID1,
    unsigned long nMsgID2)
-   : UserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
+  : UserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId),
+    myReason(reason),
+    myClients(clients)
 {
-  m_szReason = strdup(szReason ==  NULL ? "" : szReason);
-  if (nPort == 0)
-    m_szClients = NULL;
-  else
-    m_szClients = strdup(szClients);
   m_nPort = nPort;
   m_nMsgID[0] = nMsgID1;
   m_nMsgID[1] = nMsgID2;
@@ -370,28 +338,25 @@ Licq::EventChat::EventChat(const char *szReason, const char *szClients,
 
 void CEventChat::CreateDescription() const
 {
-  delete [] m_szText;
-  if (m_szClients == NULL) {
-    m_szText = new char [strlen(m_szReason) + 1];
-    strcpy(m_szText, m_szReason);
+  char* text;
+  if (!myClients.empty())
+  {
+    text = new char [myReason.size() + 1];
+    strcpy(text, myReason.c_str());
   }
   else
   {
-    m_szText = new char[strlen(m_szReason) + strlen(m_szClients) + 128];
-    sprintf(m_szText, tr("%s\n--------------------\nMultiparty:\n%s"), m_szReason, m_szClients);
+    text = new char[myReason.size() + myClients.size() + 128];
+    sprintf(text, tr("%s\n--------------------\nMultiparty:\n%s"),
+        myReason.c_str(), myClients.c_str());
   }
-}
-
-
-Licq::EventChat::~EventChat()
-{
-  free(m_szReason);
-  free(m_szClients);
+  myText = text;
+  delete[] text;
 }
 
 CEventChat* CEventChat::Copy() const
 {
-  CEventChat *e = new CEventChat(m_szText, m_szClients, m_nPort,
+  EventChat* e = new EventChat(myText, myClients, m_nPort,
       m_nSequence, m_tTime, m_nFlags, m_nConvoId, m_nMsgID[0], m_nMsgID[1]);
   e->CopyBase(this);
   return e;
@@ -399,51 +364,43 @@ CEventChat* CEventChat::Copy() const
 
 void CEventChat::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[(strlen(Text()) << 1) + EVENT_HEADER_SIZE];
+  char *szOut = new char[(text().size() << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  AddStrWithColons(&szOut[nPos], Text());
+  addStrWithColons(&szOut[nPos], text());
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
 
 
 //=====CEventAdded==============================================================
-Licq::EventAdded::EventAdded(const UserId& userId, const char *_szAlias,
-                         const char *_szFirstName,const char *_szLastName,
-                         const char *_szEmail, unsigned short _nCommand,
-                         time_t _tTime, unsigned long _nFlags)
+Licq::EventAdded::EventAdded(const UserId& userId, const string& alias,
+    const string& firstName, const string& lastName, const string& email,
+    unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
   : UserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags),
-    myUserId(userId)
+    myUserId(userId),
+    myAlias(alias),
+    myFirstName(firstName),
+    myLastName(lastName),
+    myEmail(email)
 {
-  m_szAlias = strdup(_szAlias);
-  m_szFirstName = strdup(_szFirstName);
-  m_szLastName = strdup(_szLastName);
-  m_szEmail = strdup(_szEmail);
+  // Empty
 }
 
 void CEventAdded::CreateDescription() const
 {
-  if (m_szText) delete [] m_szText;
   string accountId = myUserId.accountId();
-  m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
-      strlen(m_szLastName) + strlen(m_szEmail) + accountId.size() + 512];
-  sprintf(m_szText, tr("Alias: %s\nUser: %s\nName: %s %s\nEmail: %s\n"),
-      m_szAlias, accountId.c_str(), m_szFirstName, m_szLastName, m_szEmail);
-}
-
-
-Licq::EventAdded::~EventAdded()
-{
-  free (m_szAlias);
-  free (m_szFirstName);
-  free (m_szLastName);
-  free (m_szEmail);
+  char* text = new char[myAlias.size() + myFirstName.size() +
+      myLastName.size() + myEmail.size() + accountId.size() + 512];
+  sprintf(text, tr("Alias: %s\nUser: %s\nName: %s %s\nEmail: %s\n"),
+      myAlias.c_str(), accountId.c_str(), myFirstName.c_str(), myLastName.c_str(), myEmail.c_str());
+  myText = text;
+  delete[] text;
 }
 
 CEventAdded* CEventAdded::Copy() const
 {
-  CEventAdded *e = new CEventAdded(myUserId, m_szAlias, m_szFirstName,
-      m_szLastName, m_szEmail, m_nCommand, m_tTime, m_nFlags);
+  CEventAdded *e = new CEventAdded(myUserId, myAlias, myFirstName,
+      myLastName, myEmail, m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }
@@ -451,11 +408,11 @@ CEventAdded* CEventAdded::Copy() const
 void CEventAdded::AddToHistory(User* u, bool isReceiver) const
 {
   string accountId = myUserId.accountId();
-  char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
-      strlen(m_szLastName) + strlen(m_szEmail) + accountId.size()) * 2 + 20 + EVENT_HEADER_SIZE];
+  char *szOut = new char[(myAlias.size() + myFirstName.size() +
+      myLastName.size() + myEmail.size() + accountId.size()) * 2 + 20 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n",
-      accountId.c_str(), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+      accountId.c_str(), myAlias.c_str(), myFirstName.c_str(), myLastName.c_str(), myEmail.c_str());
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -463,52 +420,41 @@ void CEventAdded::AddToHistory(User* u, bool isReceiver) const
 
 
 //=====CEventAuthReq===============================================================
-Licq::EventAuthRequest::EventAuthRequest(const UserId& userId,
-                       const char *_szAlias, const char *_szFirstName,
-                       const char *_szLastName, const char *_szEmail,
-                       const char *_szReason, unsigned short _nCommand,
-                       time_t _tTime, unsigned long _nFlags)
+Licq::EventAuthRequest::EventAuthRequest(const UserId& userId, const string& alias,
+    const string& firstName, const string& lastName, const string& email,
+    const string& reason, unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
   : UserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags),
-    myUserId(userId)
+    myUserId(userId),
+    myAlias(alias),
+    myFirstName(firstName),
+    myLastName(lastName),
+    myEmail(email),
+    myReason(reason)
 {
-   m_szAlias = strdup(_szAlias);
-   m_szFirstName = strdup(_szFirstName);
-   m_szLastName = strdup(_szLastName);
-   m_szEmail = strdup(_szEmail);
-   m_szReason = strdup(_szReason);
+  // Empty
 }
 
 void CEventAuthRequest::CreateDescription() const
 {
   string userIdStr = myUserId.toString();
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
-                      + strlen(m_szLastName) + strlen(m_szEmail)
-      + strlen(m_szReason) + userIdStr.size() + 256];
+  char* text = new char[myAlias.size() + myFirstName.size() + myLastName.size() +
+      myEmail.size() + myReason.size() + userIdStr.size() + 256];
   //sprintf(m_szText, "%s (%s %s, %s), uin %s, requests authorization to add you to their contact list:\n%s\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_szId, m_szReason);
-  int pos = sprintf(m_szText, tr("Alias: %s\nUser: %s\nName: %s %s\nEmail: %s\n"),
-      m_szAlias, userIdStr.c_str(), m_szFirstName, m_szLastName, m_szEmail);
+  int pos = sprintf(text, tr("Alias: %s\nUser: %s\nName: %s %s\nEmail: %s\n"),
+      myAlias.c_str(), userIdStr.c_str(), myFirstName.c_str(), myLastName.c_str(), myEmail.c_str());
 
-  if (m_szReason[0] != '\0')
-    sprintf(&m_szText[pos], tr("Authorization Request:\n%s\n"), m_szReason);
-}
+  if (!myReason.empty())
+    sprintf(&text[pos], tr("Authorization Request:\n%s\n"), myReason.c_str());
 
-
-Licq::EventAuthRequest::~EventAuthRequest()
-{
-  free (m_szAlias);
-  free (m_szFirstName);
-  free (m_szLastName);
-  free (m_szEmail);
-  free (m_szReason);
+  myText = text;
+  delete[] text;
 }
 
 CEventAuthRequest* CEventAuthRequest::Copy() const
 {
-  CEventAuthRequest *e = new CEventAuthRequest(myUserId,
-      m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_szReason,
-      m_nCommand, m_tTime, m_nFlags);
+  EventAuthRequest* e = new EventAuthRequest(myUserId, myAlias, myFirstName,
+      myLastName, myEmail, myReason, m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }
@@ -516,14 +462,14 @@ CEventAuthRequest* CEventAuthRequest::Copy() const
 void CEventAuthRequest::AddToHistory(User* u, bool isReceiver) const
 {
   string accountId = myUserId.accountId();
-  char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
-      strlen(m_szLastName) + strlen(m_szEmail) + strlen(m_szReason) +
+  char *szOut = new char[(myAlias.size() + myFirstName.size() +
+      myLastName.size() + myEmail.size() + myReason.size() +
       accountId.size()) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n",
-      accountId.c_str(), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+      accountId.c_str(), myAlias.c_str(), myFirstName.c_str(), myLastName.c_str(), myEmail.c_str());
 
-  AddStrWithColons(&szOut[nPos], m_szReason);
+  addStrWithColons(&szOut[nPos], myReason);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -531,37 +477,32 @@ void CEventAuthRequest::AddToHistory(User* u, bool isReceiver) const
 
 
 //=====CEventAuthGranted========================================================
-Licq::EventAuthGranted::EventAuthGranted(const UserId& userId,
-                       const char *_szMessage, unsigned short _nCommand,
-                       time_t _tTime, unsigned long _nFlags)
+Licq::EventAuthGranted::EventAuthGranted(const UserId& userId, const string& message,
+    unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
   : UserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags),
-    myUserId(userId)
+    myUserId(userId),
+    myMessage(message)
 {
-  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
+  // Empty
 }
 
 void CEventAuthGranted::CreateDescription() const
 {
   string userIdStr = myUserId.toString();
-  delete [] m_szText;
-  m_szText = new char[userIdStr.size() + strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, tr("User %s authorized you"), userIdStr.c_str());
+  char* text = new char[userIdStr.size() + myMessage.size() + 128];
+  int pos = sprintf(text, tr("User %s authorized you"), userIdStr.c_str());
 
-  if (m_szMessage[0] != '\0')
-    sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
+  if (!myMessage.empty())
+    sprintf(&text[pos], ":\n%s\n", myMessage.c_str());
   else
-    sprintf(&m_szText[pos], ".\n");
-}
-
-
-Licq::EventAuthGranted::~EventAuthGranted()
-{
-  free (m_szMessage);
+    sprintf(&text[pos], ".\n");
+  myText = text;
+  delete[] text;
 }
 
 CEventAuthGranted* CEventAuthGranted::Copy() const
 {
-  CEventAuthGranted *e = new CEventAuthGranted(myUserId, m_szMessage,
+  EventAuthGranted* e = new EventAuthGranted(myUserId, myMessage,
       m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
@@ -570,12 +511,11 @@ CEventAuthGranted* CEventAuthGranted::Copy() const
 void CEventAuthGranted::AddToHistory(User* u, bool isReceiver) const
 {
   string accountId = myUserId.accountId();
-  char *szOut = new char[(accountId.size() + strlen(m_szMessage))
-                         * 2 + 16 + EVENT_HEADER_SIZE];
+  char *szOut = new char[(accountId.size() + myMessage.size()) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n", accountId.c_str());
 
-  AddStrWithColons(&szOut[nPos], m_szMessage);
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -583,38 +523,32 @@ void CEventAuthGranted::AddToHistory(User* u, bool isReceiver) const
 
 
 //=====CEventAuthRefused==========================================================
-Licq::EventAuthRefused::EventAuthRefused(const UserId& userId,
-                       const char *_szMessage, unsigned short _nCommand,
-                       time_t _tTime, unsigned long _nFlags)
+Licq::EventAuthRefused::EventAuthRefused(const UserId& userId, const string& message,
+    unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
   : UserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags),
-    myUserId(userId)
+    myUserId(userId),
+    myMessage(message)
 {
-  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
+  // Empty
 }
 
 void CEventAuthRefused::CreateDescription() const
 {
   string userIdStr = myUserId.toString();
-  delete [] m_szText;
-  m_szText = new char[userIdStr.size() + strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, tr("User %s refused to authorize you"), userIdStr.c_str());
+  char* text = new char[userIdStr.size() + myMessage.size() + 128];
+  int pos = sprintf(text, tr("User %s refused to authorize you"), userIdStr.c_str());
 
-  if (m_szMessage[0] != '\0')
-    sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
+  if (!myMessage.empty())
+    sprintf(&text[pos], ":\n%s\n", myMessage.c_str());
   else
-    sprintf(&m_szText[pos], ".\n");
-}
-
-
-Licq::EventAuthRefused::~EventAuthRefused()
-{
-  free (m_szMessage);
+    sprintf(&text[pos], ".\n");
+  myText = text;
+  delete[] text;
 }
 
 CEventAuthRefused* CEventAuthRefused::Copy() const
 {
-  CEventAuthRefused *e = new CEventAuthRefused(myUserId,
-      m_szMessage, m_nCommand, m_tTime, m_nFlags);
+  EventAuthRefused* e = new EventAuthRefused(myUserId, myMessage, m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }
@@ -622,12 +556,11 @@ CEventAuthRefused* CEventAuthRefused::Copy() const
 void CEventAuthRefused::AddToHistory(User* u, bool isReceiver) const
 {
   string accountId = myUserId.accountId();
-  char *szOut = new char[(accountId.size() + strlen(m_szMessage)) * 2 +
-                         16 + EVENT_HEADER_SIZE];
+  char *szOut = new char[(accountId.size() + myMessage.size()) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n", accountId.c_str());
 
-  AddStrWithColons(&szOut[nPos], m_szMessage);
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -635,35 +568,29 @@ void CEventAuthRefused::AddToHistory(User* u, bool isReceiver) const
 
 
 //====CEventWebPanel===========================================================
-Licq::EventWebPanel::EventWebPanel(const char *_szName, char *_szEmail,
-                               const char *_szMessage, unsigned short _nCommand,
-                               time_t _tTime, unsigned long _nFlags)
-   : UserEvent(ICQ_CMDxSUB_WEBxPANEL, _nCommand, 0, _tTime, _nFlags)
+Licq::EventWebPanel::EventWebPanel(const string& name, const string& email,
+    const string& message, unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
+  : UserEvent(ICQ_CMDxSUB_WEBxPANEL, _nCommand, 0, _tTime, _nFlags),
+    myName(name),
+    myEmail(email),
+    myMessage(message)
 {
-  m_szName = strdup(_szName);
-  m_szEmail = strdup(_szEmail);
-  m_szMessage = strdup(_szMessage);
+  // Empty
 }
 
 void CEventWebPanel::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
-  sprintf(m_szText, tr("Message from %s (%s) through web panel:\n%s\n"),
-          m_szName, m_szEmail, m_szMessage);
-}
+  char* text = new char[myName.size() + myEmail.size() + myMessage.size() + 64];
+  sprintf(text, tr("Message from %s (%s) through web panel:\n%s\n"),
+      myName.c_str(), myEmail.c_str(), myMessage.c_str());
 
-
-Licq::EventWebPanel::~EventWebPanel()
-{
-  free (m_szName);
-  free (m_szEmail);
-  free (m_szMessage);
+  myText = text;
+  delete[] text;
 }
 
 CEventWebPanel* CEventWebPanel::Copy() const
 {
-  CEventWebPanel *e = new CEventWebPanel(m_szName, m_szEmail, m_szMessage,
+  EventWebPanel* e = new EventWebPanel(myName, myEmail, myMessage,
       m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
@@ -671,73 +598,58 @@ CEventWebPanel* CEventWebPanel::Copy() const
 
 void CEventWebPanel::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
-                    strlen(m_szMessage)) * 2 +
-                   EVENT_HEADER_SIZE];
+  char *szOut = new char[(myName.size() + myEmail.size() + myMessage.size()) * 2 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", m_szName, m_szEmail);
-  AddStrWithColons(&szOut[nPos], m_szMessage);
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", myName.c_str(), myEmail.c_str());
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
 
 
 //====CEventEmailPager==========================================================
-Licq::EventEmailPager::EventEmailPager(const char *_szName, char *_szEmail,
-                                   const char *_szMessage, unsigned short _nCommand,
-                                   time_t _tTime, unsigned long _nFlags)
-   : UserEvent(ICQ_CMDxSUB_EMAILxPAGER, _nCommand, 0, _tTime, _nFlags)
+Licq::EventEmailPager::EventEmailPager(const string& name, const string& email,
+    const string& message, unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
+  : UserEvent(ICQ_CMDxSUB_EMAILxPAGER, _nCommand, 0, _tTime, _nFlags),
+    myName(name),
+    myEmail(email),
+    myMessage(message)
 {
-  m_szName = strdup(_szName);
-  m_szEmail = strdup(_szEmail);
-  m_szMessage = strdup(_szMessage);
+  // Empty
 }
 
 void CEventEmailPager::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
-  sprintf(m_szText, tr("Message from %s (%s) through email pager:\n%s\n"),
-          m_szName, m_szEmail, m_szMessage);
-}
-
-
-Licq::EventEmailPager::~EventEmailPager()
-{
-  free (m_szName);
-  free (m_szEmail);
-  free (m_szMessage);
+  char* text = new char[myName.size() + myEmail.size() + myMessage.size() + 64];
+  sprintf(text, tr("Message from %s (%s) through email pager:\n%s\n"),
+      myName.c_str(), myEmail.c_str(), myMessage.c_str());
+  myText = text;
+  delete[] text;
 }
 
 CEventEmailPager* CEventEmailPager::Copy() const
 {
-  CEventEmailPager *e = new CEventEmailPager(m_szName, m_szEmail,
-      m_szMessage, m_nCommand, m_tTime, m_nFlags);
+  EventEmailPager* e = new EventEmailPager(myName, myEmail, myMessage,
+      m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }
 
 void CEventEmailPager::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
-                    strlen(m_szMessage)) * 2 +
-                   EVENT_HEADER_SIZE];
+  char *szOut = new char[(myName.size() + myEmail.size() + myMessage.size()) * 2 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", m_szName, m_szEmail);
-  AddStrWithColons(&szOut[nPos], m_szMessage);
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", myName.c_str(), myEmail.c_str());
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
 
-Licq::EventContactList::Contact::Contact(const UserId& userId, const char *a)
-  : myUserId(userId)
+Licq::EventContactList::Contact::Contact(const UserId& userId, const string& alias)
+  : myUserId(userId),
+    myAlias(alias)
 {
-  m_szAlias = strdup(a);
-}
-
-Licq::EventContactList::Contact::~Contact()
-{
-  free(m_szAlias);
+  // Empty
 }
 
 //====CEventContactList========================================================
@@ -747,7 +659,7 @@ Licq::EventContactList::EventContactList(const ContactList& cl, bool bDeep,
 {
   if (bDeep)
     for(ContactList::const_iterator it = cl.begin(); it != cl.end(); ++it)
-      m_vszFields.push_back(new CContact((*it)->userId(), (*it)->Alias()));
+      m_vszFields.push_back(new CContact((*it)->userId(), (*it)->alias()));
   else
     m_vszFields = cl;
 }
@@ -755,15 +667,16 @@ Licq::EventContactList::EventContactList(const ContactList& cl, bool bDeep,
 
 void CEventContactList::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char [m_vszFields.size() * 32 + 128];
-  char *szEnd = m_szText;
-  szEnd += sprintf(m_szText, tr("Contact list (%d contacts):\n"), int(m_vszFields.size()));
+  char* text = new char [m_vszFields.size() * 32 + 128];
+  char *szEnd = text;
+  szEnd += sprintf(text, tr("Contact list (%d contacts):\n"), int(m_vszFields.size()));
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
-    szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), (*iter)->userId().toString().c_str());
+    szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->alias().c_str(), (*iter)->userId().toString().c_str());
   }
+  myText = text;
+  delete[] text;
 }
 
 
@@ -790,7 +703,7 @@ void CEventContactList::AddToHistory(User* u, bool isReceiver) const
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
     nPos += sprintf(&szOut[nPos], ":%s\n:%s\n",
-        (*iter)->userId().accountId().c_str(), (*iter)->Alias());
+        (*iter)->userId().accountId().c_str(), (*iter)->alias().c_str());
   }
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
@@ -824,42 +737,36 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
 }
 
 //=====CEventSms===============================================================
-Licq::EventSms::EventSms(const char *_szNumber, const char *_szMessage,
+Licq::EventSms::EventSms(const string& number, const string& message,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
-   : UserEvent(ICQ_CMDxSUB_SMS, _nCommand, 0, _tTime, _nFlags)
+  : UserEvent(ICQ_CMDxSUB_SMS, _nCommand, 0, _tTime, _nFlags),
+    myNumber(number),
+    myMessage(message)
 {
-  m_szNumber = strdup(_szNumber == NULL ? "" : _szNumber);
-  m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
+  // Empty
 }
 
 void CEventSms::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szNumber) + strlen(m_szMessage) + 32];
-  sprintf(m_szText, tr("Phone: %s\n%s\n"), m_szNumber, m_szMessage);
-}
-
-Licq::EventSms::~EventSms()
-{
-  free(m_szNumber);
-  free(m_szMessage);
+  char* text = new char[myNumber.size() + myMessage.size() + 32];
+  sprintf(text, tr("Phone: %s\n%s\n"), myNumber.c_str(), myMessage.c_str());
+  myText = text;
+  delete[] text;
 }
 
 CEventSms* CEventSms::Copy() const
 {
-  CEventSms *e = new CEventSms(m_szNumber, m_szMessage, m_nCommand, m_tTime, m_nFlags);
+  EventSms* e = new EventSms(myNumber, myMessage, m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }
 
 void CEventSms::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[ (strlen(m_szNumber) << 1) +
-                          (strlen(m_szMessage) << 1) +
-                          + EVENT_HEADER_SIZE];
+  char *szOut = new char[ (myNumber.size() << 1) + (myMessage.size() << 1) + + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n", m_szNumber);
-  AddStrWithColons(&szOut[nPos], m_szMessage);
+  nPos += sprintf(&szOut[nPos], ":%s\n", myNumber.c_str());
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -885,46 +792,39 @@ CEventSms *CEventSms::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 
 
 //=====CEventServerMessage=====================================================
-Licq::EventServerMessage::EventServerMessage(const char *_szName,
-                                         const char *_szEmail,
-                                         const char *_szMessage,
-                                         time_t _tTime)
-   : UserEvent(ICQ_CMDxSUB_MSGxSERVER, 0, 0, _tTime, 0)
+Licq::EventServerMessage::EventServerMessage(const string& name,
+    const string& email, const string& message, time_t _tTime)
+  : UserEvent(ICQ_CMDxSUB_MSGxSERVER, 0, 0, _tTime, 0),
+    myName(name),
+    myEmail(email),
+    myMessage(message)
 {
-  m_szName = strdup(_szName == NULL ? "" : _szName);
-  m_szEmail = strdup(_szEmail == NULL ? "" : _szEmail);
-  m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
-}
-
-Licq::EventServerMessage::~EventServerMessage()
-{
-  free(m_szName);
-  free(m_szEmail);
-  free(m_szMessage);
+  // Empty
 }
 
 void CEventServerMessage::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szMessage) + 64];
-  sprintf(m_szText, tr("System Server Message from %s (%s):\n%s\n"), m_szName,
-          m_szEmail, m_szMessage);
+  char* text = new char[myName.size() + myEmail.size() + myMessage.size() + 64];
+  sprintf(text, tr("System Server Message from %s (%s):\n%s\n"),
+      myName.c_str(), myEmail.c_str(), myMessage.c_str());
+
+  myText = text;
+  delete[] text;
 }
 
 CEventServerMessage* CEventServerMessage::Copy() const
 {
-  CEventServerMessage *e = new CEventServerMessage(m_szName, m_szEmail, m_szMessage, m_tTime);
+  EventServerMessage* e = new EventServerMessage(myName, myEmail, myMessage, m_tTime);
   e->CopyBase(this);
   return e;
 }
 
 void CEventServerMessage::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
-                         (strlen(m_szMessage) * 2) + EVENT_HEADER_SIZE)];
+  char *szOut = new char[(myName.size() + myEmail.size() + (myMessage.size() * 2) + EVENT_HEADER_SIZE)];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n%s\n", m_szName, m_szEmail);
-  AddStrWithColons(&szOut[nPos], m_szMessage);
+  nPos += sprintf(&szOut[nPos], ":%s\n%s\n", myName.c_str(), myEmail.c_str());
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -948,99 +848,80 @@ CEventServerMessage *CEventServerMessage::Parse(char *sz, unsigned short /* nCmd
 
 
 //=====CEventEmailAlert=====================================================
-Licq::EventEmailAlert::EventEmailAlert(const char *_szName, const char *_szTo,
-  const char *_szEmail, const char *_szSubject, time_t _tTime,
-  const char *_szMSPAuth, const char *_szSID, const char *_szKV,
-  const char *_szId, const char *_szPostURL, const char *_szMsgURL,
-  const char *_szCreds, unsigned long _nSessionLength)
-   : UserEvent(ICQ_CMDxSUB_EMAILxALERT, ICQ_CMDxTCP_START, 0, _tTime, 0)
+Licq::EventEmailAlert::EventEmailAlert(const string& name, const string& to,
+    const string& email, const string& subject, time_t _tTime, const string& mspAuth,
+    const string& sid, const string& kv, const string& id, const string& postUrl,
+    const string& msgUrl, const string& creds, unsigned long sessionLength)
+  : UserEvent(ICQ_CMDxSUB_EMAILxALERT, ICQ_CMDxTCP_START, 0, _tTime, 0),
+    myName(name),
+    myTo(to),
+    myEmail(email),
+    mySubject(subject),
+    myMspAuth(mspAuth),
+    mySid(sid),
+    myKv(kv),
+    myId(id),
+    myPostUrl(postUrl),
+    myMsgUrl(msgUrl),
+    myCreds(creds),
+    mySessionLength(sessionLength)
 {
-  m_szName = strdup(_szName == NULL ? "" : _szName);
-  m_szTo = strdup(_szTo == NULL ? "" : _szTo);
-  m_szEmail = strdup(_szEmail == NULL ? "" : _szEmail);
-  m_szSubject = strdup(_szSubject == NULL ? "" : _szSubject);
-  m_szMSPAuth = strdup(_szMSPAuth == NULL ? "" : _szMSPAuth);
-  m_szSID = strdup(_szSID == NULL ? "" : _szSID);
-  m_szKV = strdup(_szKV == NULL ? "" : _szKV);
-  m_szId = strdup(_szId == NULL ? "" : _szId);
-  m_szPostURL = strdup(_szPostURL == NULL ? "" : _szPostURL);
-  m_szMsgURL = strdup(_szMsgURL == NULL ? "" : _szMsgURL);
-  m_szCreds = strdup(_szCreds == NULL ? "" : _szCreds);
-  m_nSessionLength = _nSessionLength;
-}
-
-Licq::EventEmailAlert::~EventEmailAlert()
-{
-  free(m_szName);
-  free(m_szTo);
-  free(m_szEmail);
-  free(m_szSubject);
-  free(m_szMSPAuth);
-  free(m_szSID);
-  free(m_szKV);
-  free(m_szId);
-  free(m_szPostURL);
-  free(m_szMsgURL);
-  free(m_szCreds);
+  // Empty
 }
 
 void CEventEmailAlert::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szSubject) + 64];
-  sprintf(m_szText, tr("New Email from %s (%s):\nSubject: %s\n"), m_szName,
-          m_szEmail, m_szSubject);
+  char* text = new char[myName.size() + myEmail.size() + mySubject.size() + 64];
+  sprintf(text, tr("New Email from %s (%s):\nSubject: %s\n"),
+      myName.c_str(), myEmail.c_str(), mySubject.c_str());
+  myText = text;
+  delete[] text;
 }
 
 CEventEmailAlert* CEventEmailAlert::Copy() const
 {
-  CEventEmailAlert *e = new CEventEmailAlert(m_szName, m_szTo, m_szEmail,
-      m_szSubject, m_tTime, m_szMSPAuth, m_szSID, m_szKV, m_szId,
-      m_szPostURL, m_szMsgURL, m_szCreds, m_nSessionLength);
+  EventEmailAlert* e = new EventEmailAlert(myName, myTo, myEmail,
+      mySubject, m_tTime, myMspAuth, mySid, myKv, myId,
+      myPostUrl, myMsgUrl, myCreds, mySessionLength);
   e->CopyBase(this);
   return e;
 }
 
 void CEventEmailAlert::AddToHistory(User* u, bool isReceiver) const
 {
-  char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
-                         (strlen(m_szSubject) * 2) + EVENT_HEADER_SIZE)];
+  char *szOut = new char[myName.size() + myEmail.size() +
+      mySubject.size() * 2 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(isReceiver, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", m_szName, m_szEmail);
-  AddStrWithColons(&szOut[nPos], m_szSubject);
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", myName.c_str(), myEmail.c_str());
+  addStrWithColons(&szOut[nPos], mySubject);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
 
 //=====CEventUnknownSysMsg=====================================================
 Licq::EventUnknownSysMsg::EventUnknownSysMsg(unsigned short _nSubCommand,
-    unsigned short _nCommand, const UserId& userId,
-                             const char *_szMsg,
+    unsigned short _nCommand, const UserId& userId, const string& message,
                              time_t _tTime, unsigned long _nFlags)
   : UserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN),
-    myUserId(userId)
+    myUserId(userId),
+    myMessage(message)
 {
-  m_szMsg = _szMsg == NULL ? strdup("") : strdup(_szMsg);
+  // Empty
 }
 
 void CEventUnknownSysMsg::CreateDescription() const
 {
-  delete [] m_szText;
-  m_szText = new char [strlen(m_szMsg) + 128];
-  sprintf(m_szText, "Unknown system message (0x%04X) from %s:\n%s\n",
-      m_nSubCommand, myUserId.toString().c_str(), m_szMsg);
-}
-
-
-Licq::EventUnknownSysMsg::~EventUnknownSysMsg()
-{
-  free(m_szMsg);
+  char* text = new char [myMessage.size() + 128];
+  sprintf(text, "Unknown system message (0x%04X) from %s:\n%s\n",
+      m_nSubCommand, myUserId.toString().c_str(), myMessage.c_str());
+  myText = text;
+  delete[] text;
 }
 
 CEventUnknownSysMsg* CEventUnknownSysMsg::Copy() const
 {
   CEventUnknownSysMsg *e = new CEventUnknownSysMsg(m_nSubCommand,
-      m_nCommand, myUserId, m_szMsg, m_tTime, m_nFlags);
+      m_nCommand, myUserId, myMessage, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }
@@ -1051,7 +932,7 @@ void CEventUnknownSysMsg::AddToHistory(User* /* u */, bool /* isReceiver */) con
   int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %lu ]\n",
       isReceiver ? 'R' : 'S', m_nCommand, (unsigned short)(m_nFlags >> 16), m_tTime);
   nPos += sprintf(&szOut[nPos], ":%s\n", m_szId);
-  AddStrWithColons(&szOut[nPos], m_szMsg);
+  addStrWithColons(&szOut[nPos], myMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;*/
 }
