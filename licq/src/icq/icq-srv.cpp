@@ -5178,15 +5178,21 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
             CSearchAck* s = new CSearchAck(foundUserId);
 
-        s->m_szAlias = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
-        s->m_szFirstName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
-        s->m_szLastName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
-        s->m_szEmail = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
-        s->m_nAuth = msg.UnpackChar(); // authorization required
-        s->m_nStatus = msg.UnpackChar();
+            msg.UnpackString(szTemp, sizeof(szTemp));
+            gTranslator.ServerToClient(szTemp);
+            s->myAlias = szTemp;
+            msg.UnpackString(szTemp, sizeof(szTemp));
+            gTranslator.ServerToClient(szTemp);
+            s->myFirstName = szTemp;
+            msg.UnpackString(szTemp, sizeof(szTemp));
+            gTranslator.ServerToClient(szTemp);
+            s->myLastName = szTemp;
+            s->myEmail = msg.unpackString();
+            s->myAuth = msg.UnpackChar(); // authorization required
+            s->myStatus = msg.UnpackChar();
         msg.UnpackChar(); // unknown
-        s->m_nGender = msg.UnpackChar(); // gender
-        s->m_nAge = msg.UnpackChar(); // age
+            s->myGender = msg.UnpackChar(); // gender
+            s->myAge = msg.UnpackChar(); // age
         //TODO: Find out what these unknowns are. The first UnpackChar has been unknown for a long time, the others
         //seem fairly new.
         msg.UnpackChar(); // unknown
@@ -5195,13 +5201,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         msg.UnpackUnsignedLong();
         msg.UnpackUnsignedLong();
 
-        // translating string with Translation Table
-        gTranslator.ServerToClient(s->m_szAlias);
-        gTranslator.ServerToClient(s->m_szFirstName);
-        gTranslator.ServerToClient(s->m_szLastName);
-
-        gLog.Info("%s%s (%lu) <%s %s, %s>\n", L_SBLANKxSTR, s->m_szAlias, nFoundUin,
-                  s->m_szFirstName, s->m_szLastName, s->m_szEmail);
+            gLog.Info("%s%s (%lu) <%s %s, %s>\n", L_SBLANKxSTR, s->alias().c_str(),
+                nFoundUin, s->firstName().c_str(), s->lastName().c_str(), s->email().c_str());
 
         ICQEvent *e2 = new ICQEvent(e);
         // JON: Hack it so it is backwards compatible with plugins for now.
@@ -5213,13 +5214,13 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
           nMore = msg.UnpackUnsignedLong();
           // No more subtraction by 1, and now it seems to always be 0
-          e2->m_pSearchAck->m_nMore = nMore;
+              e2->m_pSearchAck->myMore = nMore;
           e2->m_eResult = EVENT_SUCCESS;
         }
         else
         {
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;
-          e2->m_pSearchAck->m_nMore = 0;
+              e2->m_pSearchAck->myMore = 0;
         }
 
             gDaemon.PushPluginEvent(e2);

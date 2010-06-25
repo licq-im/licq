@@ -2610,7 +2610,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       {
         case ICQ_TCPxACK_ONLINE:
           gLog.Info(tr("%sAck from %s (#%hu)%s.\n"), L_TCPxSTR, u->GetAlias(), -theSequence, l);
-          if (pExtendedAck && !pExtendedAck->Accepted())
+            if (pExtendedAck && !pExtendedAck->accepted())
             nSubResult = ICQ_TCPxACK_RETURN;
           else
             nSubResult = ICQ_TCPxACK_ACCEPT;

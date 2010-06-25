@@ -130,8 +130,7 @@ void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)
 
   QString title, result;
 
-  if (e->ExtendedAck() &&
-      !e->ExtendedAck()->Accepted())
+  if (e->ExtendedAck() && !e->ExtendedAck()->accepted())
     result = tr("refused");
   else
   {
@@ -167,8 +166,8 @@ void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)
     Licq::UserReadGuard u(myUserId);
     const QTextCodec* codec = UserCodec::codecForUser(*u);
     const char* szAutoResp =
-      (e->ExtendedAck() && !e->ExtendedAck()->Accepted()) ?
-       e->ExtendedAck()->Response() :
+      (e->ExtendedAck() && !e->ExtendedAck()->accepted()) ?
+       e->ExtendedAck()->response().c_str() :
        u->autoResponse().c_str();
 
     if (u->ppid() == LICQ_PPID && QString(u->accountId().c_str())[0].isLetter())

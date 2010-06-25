@@ -344,31 +344,31 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
     codec = QTextCodec::codecForLocale();
 
   item->setData(0, Qt::UserRole, QVariant::fromValue(s->userId()));
-  item->setText(0, codec->toUnicode(s->Alias()));
+  item->setText(0, codec->toUnicode(s->alias().c_str()));
 
   item->setTextAlignment(1, Qt::AlignRight);
   item->setText(1, s->userId().accountId().c_str());
 
-  item->setText(2, codec->toUnicode(s->FirstName()) + " " + codec->toUnicode(s->LastName()));
+  item->setText(2, codec->toUnicode(s->firstName().c_str()) + " " + codec->toUnicode(s->lastName().c_str()));
 
-  item->setText(3, s->Email());
+  item->setText(3, s->email().c_str());
 
-        switch (s->Status())
-        {
-          case SA_OFFLINE:
+  switch (s->status())
+  {
+    case Licq::SearchData::StatusOffline:
             text = tr("Offline");
             break;
-          case SA_ONLINE:
+    case Licq::SearchData::StatusOnline:
             text = tr("Online");
             break;
-          case SA_DISABLED:
+    case Licq::SearchData::StatusDisabled:
           default:
             text = tr("Unknown");
         }
   item->setText(4, text);
 
-        text = (s->Age() ? QString::number(s->Age()) : tr("?")) + "/";
-        switch (s->Gender())
+  text = (s->age() ? QString::number(s->age()) : tr("?")) + "/";
+  switch (s->gender())
         {
           case Licq::GENDER_FEMALE:
             text += tr("F");
@@ -381,17 +381,17 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
         }
   item->setText(5, text);
 
-  item->setText(6, s->Auth() ? tr("No") : tr("Yes"));
+  item->setText(6, s->auth() ? tr("No") : tr("Yes"));
 }
 
 void SearchUserDlg::searchDone(const CSearchAck* sa)
 {
-  if (sa == NULL || sa->More() == 0)
+  if (sa == NULL || sa->more() == 0)
     lblSearch->setText(tr("Search complete."));
-  else if (sa->More() == ~0UL)
+  else if (sa->more() == ~0UL)
     lblSearch->setText(tr("More users found. Narrow search."));
   else
-    lblSearch->setText(tr("%1 more users found. Narrow search.").arg(sa->More()));
+    lblSearch->setText(tr("%1 more users found. Narrow search.").arg(sa->more()));
 
   searchTag = 0;
   for (int i = 0; i < foundView->columnCount(); i++)

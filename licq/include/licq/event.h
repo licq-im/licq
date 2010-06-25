@@ -21,6 +21,7 @@
 #define LICQ_EVENT_H
 
 #include <pthread.h>
+#include <string>
 
 #include "userid.h"
 
@@ -57,20 +58,20 @@ public:
   // Accessors
 
   //!Returns true if the remote end accepted the request, otherwise false.
-  bool Accepted() const { return m_bAccepted; }
+  bool accepted() const { return myAccepted; }
   //!The port to connect to if the request was accpeted.
-  unsigned short Port() const { return m_nPort; }
+  unsigned short port() const { return myPort; }
   //!The reason for declining the request.
-  const char* Response() const { return m_szResponse; }
-
-  ~ExtendedData();
+  const std::string& response() const { return myResponse; }
 
 protected:
-  ExtendedData(bool bAccepted, unsigned short nPort, const char* szResponse);
+  ExtendedData(bool accepted, unsigned short port, const std::string& response)
+    : myAccepted(accepted), myPort(port), myResponse(response)
+  { /* Empty */ }
 
-  bool m_bAccepted;
-  unsigned short m_nPort;
-  char *m_szResponse;
+  bool myAccepted;
+  unsigned short myPort;
+  std::string myResponse;
 
   friend class ::IcqProtocol;
 };
@@ -96,13 +97,13 @@ public:
 
   // Accessors
   //! Returns the alias (nickname) of the search result.
-  const char* Alias() const { return m_szAlias; }
+  const std::string& alias() const { return myAlias; }
   //! Returns the first name of the search result.
-  const char* FirstName() const { return m_szFirstName; }
+  const std::string& firstName() const { return myFirstName; }
   //! Returns the last name of the search result.
-  const char* LastName() const { return m_szLastName; }
+  const std::string& lastName() const { return myLastName; }
   //! Returns the e-mail address of the search result.
-  const char* Email() const { return m_szEmail; }
+  const std::string& email() const { return myEmail; }
 
   /**
    * Get the user id
@@ -114,31 +115,31 @@ public:
   //! If non-zero, the number of search results that were found that could not
   //! be displayed.  The server has a 40 user limit on search results.  This
   //! is valid when Result() is EVENT_SUCCESS.
-  unsigned long More() const { return m_nMore; }
+  unsigned long more() const { return myMore; }
   //! The online status of the search result.
-  char Status() const { return m_nStatus; }
+  char status() const { return myStatus; }
   //! The gender of the search result.  Female = 1, Male = 2, Unknown = 3.
-  char Gender() const { return m_nGender; }
+  char gender() const { return myGender; }
   //! The age of the serach result.
-  char Age() const { return m_nAge; }
+  char age() const { return myAge; }
   //! Non-zero if authorization is required to add this user.
-  char Auth() const { return m_nAuth; }
-
-  ~SearchData();
+  char auth() const { return myAuth; }
 
 protected:
-  SearchData(const UserId& userId);
+  SearchData(const UserId& userId)
+    : myUserId(userId)
+  { /* Empty */ }
 
   UserId myUserId;
-  char *m_szAlias;
-  char *m_szFirstName;
-  char *m_szLastName;
-  char *m_szEmail;
-  unsigned long m_nMore;
-  char m_nStatus;
-  char m_nGender;
-  char m_nAge;
-  char m_nAuth;
+  std::string myAlias;
+  std::string myFirstName;
+  std::string myLastName;
+  std::string myEmail;
+  unsigned long myMore;
+  char myStatus;
+  char myGender;
+  char myAge;
+  char myAuth;
 
   friend class ::IcqProtocol;
 };

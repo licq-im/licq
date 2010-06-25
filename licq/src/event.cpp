@@ -9,7 +9,6 @@
 #include "config.h"
 
 #include <assert.h>
-#include <cstring>
 
 #include <licq/packet.h>
 #include "licq_events.h"
@@ -23,37 +22,6 @@ using Licq::ExtendedData;
 using Licq::SearchData;
 using Licq::UserId;
 
-//-----CSearchAck------------------------------------------------------------
-SearchData::SearchData(const UserId& userId)
-  : myUserId(userId)
-{
-  m_szAlias = m_szFirstName = m_szLastName = m_szEmail = NULL;
-}
-
-SearchData::~SearchData()
-{
-  free(m_szAlias);
-  free(m_szFirstName);
-  free(m_szLastName);
-  free(m_szEmail);
-}
-
-
-//-----CExtendedAck----------------------------------------------------------
-ExtendedData::ExtendedData(bool bAccepted, unsigned short nPort, const char* szResponse)
-{
-  m_bAccepted = bAccepted;
-  m_nPort = nPort;
-  m_szResponse = strdup(szResponse);
-}
-
-ExtendedData::~ExtendedData()
-{
-  free(m_szResponse);
-}
-
-
-//-----ICQEvent::constructor----------------------------------------------------
 Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
     ConnectType _eConnect, const UserId& userId, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())

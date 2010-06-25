@@ -810,11 +810,11 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             return;
           }
 
-          if(!ea->Accepted())
+          if(!ea->accepted())
           {
             Licq::UserReadGuard u(e->userId());
-            win->wprintf("%s refused file: %s\n",
-                         u->GetAlias(), ea->Response());
+            win->wprintf("%s refused file: %s\n", u->getAlias().c_str(),
+                ea->response().c_str());
           }
 
           else
@@ -832,7 +832,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
 
             list<string> fl;
             fl.push_back(f->Filename());
-            ftman->sendFiles(fl, ea->Port());
+            ftman->sendFiles(fl, ea->port());
           }
         }
         /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
@@ -936,17 +936,17 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
   {
     win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %s %A(%Z%s%A)\n",
                  COLOR_WHITE,
-                 e->SearchAck()->Alias(),
+        e->SearchAck()->alias().c_str(),
                  A_BOLD, A_BOLD,
-                 e->SearchAck()->FirstName(),
-                 e->SearchAck()->LastName(),
+        e->SearchAck()->firstName().c_str(),
+        e->SearchAck()->lastName().c_str(),
                  A_BOLD, A_BOLD,
-                 e->SearchAck()->Email(),
+        e->SearchAck()->email().c_str(),
                  A_BOLD, A_BOLD,
         e->SearchAck()->userId().accountId().c_str(),
                  A_BOLD, A_BOLD,
-                 e->SearchAck()->Status() == SA_ONLINE ? "online" :
-                 e->SearchAck()->Status() == SA_OFFLINE ? "offline" :
+        e->SearchAck()->status() == Licq::SearchData::StatusOnline ? "online" :
+        e->SearchAck()->status() == Licq::SearchData::StatusOffline ? "offline" :
                  "disabled",
                  A_BOLD);
   }
@@ -956,19 +956,19 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
 
   if (e->Result() == EVENT_SUCCESS)
   {
-    if (e->SearchAck() == NULL || e->SearchAck()->More() == 0)
+    if (e->SearchAck() == NULL || e->SearchAck()->more() == 0)
     {
       win->wprintf("%A%CSearch complete.\n", m_cColorInfo->nAttr, m_cColorInfo->nColor);
     }
-    else if (static_cast<long>(e->SearchAck()->More()) == -1)
+    else if (static_cast<long>(e->SearchAck()->more()) == -1)
     {
       win->wprintf("%A%CSearch complete.  More users found, narrow search.\n",
                    m_cColorInfo->nAttr, m_cColorInfo->nColor);
     }
-    else if (e->SearchAck()->More() > 0)
+    else if (e->SearchAck()->more() > 0)
     {
       win->wprintf("%A%CSearch complete.  %d more users found, narrow search.\n",
-                   m_cColorInfo->nAttr, m_cColorInfo->nColor, e->SearchAck()->More());
+          m_cColorInfo->nAttr, m_cColorInfo->nColor, e->SearchAck()->more());
     }
   }
   else

@@ -118,14 +118,14 @@ void UserSendFileEvent::addFile(const QString& file)
 
 bool UserSendFileEvent::sendDone(const LicqEvent* e)
 {
-  if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
+  if (!e->ExtendedAck() || !e->ExtendedAck()->accepted())
   {
     Licq::UserReadGuard u(myUsers.front());
     if (!u.isLocked())
       return true;
     QString s = !e->ExtendedAck() ?
       tr("No reason provided") :
-      myCodec->toUnicode(e->ExtendedAck()->Response());
+      myCodec->toUnicode(e->ExtendedAck()->response().c_str());
     QString result = tr("File transfer with %1 refused:\n%2")
       .arg(QString::fromUtf8(u->GetAlias()))
       .arg(s);
@@ -136,7 +136,7 @@ bool UserSendFileEvent::sendDone(const LicqEvent* e)
   {
     const Licq::EventFile* f = dynamic_cast<const Licq::EventFile*>(e->userEvent());
     FileDlg* fileDlg = new FileDlg(myUsers.front());
-    fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->Port());
+    fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->port());
   }
 
   return true;

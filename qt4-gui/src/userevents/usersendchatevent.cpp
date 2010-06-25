@@ -87,12 +87,12 @@ UserSendChatEvent::~UserSendChatEvent()
 
 bool UserSendChatEvent::sendDone(const LicqEvent* e)
 {
-  if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
+  if (!e->ExtendedAck() || !e->ExtendedAck()->accepted())
   {
     Licq::UserReadGuard u(myUsers.front());
     QString s = !e->ExtendedAck() ?
       tr("No reason provided") :
-      myCodec->toUnicode(e->ExtendedAck()->Response());
+      myCodec->toUnicode(e->ExtendedAck()->response().c_str());
     QString result = tr("Chat with %1 refused:\n%2")
       .arg(!u.isLocked() ? u->accountId().c_str() : QString::fromUtf8(u->GetAlias()))
       .arg(s);
@@ -105,7 +105,7 @@ bool UserSendChatEvent::sendDone(const LicqEvent* e)
     if (c->Port() == 0)  // If we requested a join, no need to do anything
     {
       ChatDlg* chatDlg = new ChatDlg(myUsers.front());
-      chatDlg->StartAsClient(e->ExtendedAck()->Port());
+      chatDlg->StartAsClient(e->ExtendedAck()->port());
     }
   }
 
