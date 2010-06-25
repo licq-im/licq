@@ -5,8 +5,6 @@
 
 #include <licq/contactlist/user.h> // HistoryList
 
-class CUserEvent;
-
 namespace LicqDaemon
 {
 

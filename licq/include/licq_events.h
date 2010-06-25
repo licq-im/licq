@@ -1,7 +1,11 @@
 #ifndef ICQEVENT_H
 #define ICQEVENT_H
 
+#include <list>
+#include <string>
+
 #include "licq/event.h"
+#include "licq_message.h"
 
 namespace Licq
 {

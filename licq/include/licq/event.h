@@ -22,7 +22,6 @@
 
 #include <pthread.h>
 
-#include "licq_message.h"
 #include "userid.h"
 
 class CMSN;
@@ -43,6 +42,7 @@ namespace Licq
 {
 class Packet;
 class User;
+class UserEvent;
 
 //-----CExtendedAck----------------------------------------------------------
 
@@ -229,7 +229,7 @@ public:
 
   //!Contains the actual CUserEvent containing the message/url...that was
   //!sent to Uin().  Can be used to resend the event.
-  const CUserEvent* UserEvent() const { return m_pUserEvent; }
+  const UserEvent* userEvent() const { return m_pUserEvent; }
 
   //!If the event was a user information update (basic/extended/meta) and
   //!the user does not exist on the contact list, this will return the user
@@ -239,7 +239,7 @@ public:
   const User* UnknownUser() const;
 
   // Returns the event and transfers ownership to the calling function
-  CUserEvent *GrabUserEvent();
+  UserEvent* GrabUserEvent();
   SearchData* GrabSearchAck();
   User* GrabUnknownUser();
 
@@ -251,7 +251,7 @@ public:
 
 protected:
   Event(unsigned long id, int _nSocketDesc, Packet* p, ConnectType _eConnect,
-      const UserId& userId = UserId(), CUserEvent* e = NULL);
+      const UserId& userId = UserId(), UserEvent* e = NULL);
   Event(const Event* e);
 
   // Daemon only
@@ -291,7 +291,7 @@ protected:
   bool           thread_running;
   pthread_t      thread_plugin;
 
-  CUserEvent* m_pUserEvent;
+  UserEvent* m_pUserEvent;
   ExtendedData* m_pExtendedAck;
   SearchData* m_pSearchAck;
   LicqDaemon::User* m_pUnknownUser;

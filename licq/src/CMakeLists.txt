@@ -32,7 +32,6 @@ set(licq_SRCS
   log.cpp
   main.cpp
   md5.cpp
-  message.cpp
   oneventmanager.cpp
   packet.cpp
   protocolmanager.cpp
@@ -45,6 +44,7 @@ set(licq_SRCS
   statistics.cpp
   support.c
   translator.cpp
+  userevents.cpp
   utility.cpp
 
   contactlist/group.cpp

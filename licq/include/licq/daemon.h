@@ -24,8 +24,6 @@
 #include <pthread.h>
 #include <string>
 
-class CUserEvent;
-
 namespace Licq
 {
 
@@ -36,6 +34,7 @@ class ProtocolSignal;
 class Proxy;
 class TCPSocket;
 class User;
+class UserEvent;
 class UserId;
 
 
@@ -99,8 +98,8 @@ public:
 
   int StartTCPServer(TCPSocket *);
 
-  virtual bool addUserEvent(User* u, CUserEvent* e) = 0;
-  virtual void rejectEvent(const UserId& userId, CUserEvent* e) = 0;
+  virtual bool addUserEvent(User* u, UserEvent* e) = 0;
+  virtual void rejectEvent(const UserId& userId, UserEvent* e) = 0;
 
   void cancelEvent(unsigned long eventId);
   void cancelEvent(Event* event);

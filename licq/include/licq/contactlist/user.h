@@ -13,7 +13,6 @@
 #include "../thread/lockable.h"
 #include "../userid.h"
 
-class CUserEvent;
 class CMSN;
 class CSocketManager;
 class IcqProtocol;
@@ -23,6 +22,7 @@ void* MonitorSockets_tep(void *);
 namespace LicqDaemon
 {
 class User;
+class UserEvent;
 class UserManager;
 }
 
@@ -81,10 +81,10 @@ typedef enum
   CAT_MAX
 } UserCat;
 
-typedef std::vector <class CUserEvent*> UserEventList;
+typedef std::vector <class UserEvent*> UserEventList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 typedef std::set<int> UserGroupList;
-typedef std::list<CUserEvent*> HistoryList;
+typedef std::list<UserEvent*> HistoryList;
 
 struct PhoneBookEntry
 {
@@ -607,14 +607,14 @@ public:
   // Message/History functions
   unsigned short NewMessages() const            { return(m_vcMessages.size()); }
   void CancelEvent(unsigned short index);
-  const CUserEvent* EventPeek(unsigned short index) const;
-  const CUserEvent* EventPeekId(int id) const;
-  const CUserEvent* EventPeekFirst() const;
-  const CUserEvent* EventPeekLast() const;
-  CUserEvent *EventPop();
+  const UserEvent* EventPeek(unsigned short index) const;
+  const UserEvent* EventPeekId(int id) const;
+  const UserEvent* EventPeekFirst() const;
+  const UserEvent* EventPeekLast() const;
+  UserEvent *EventPop();
   void EventClear(unsigned short);
   void EventClearId(int);
-  void EventPush(CUserEvent *);
+  void EventPush(UserEvent *);
   virtual void WriteToHistory(const char*) = 0;
   virtual int GetHistory(HistoryList& history) const = 0;
   static void ClearHistory(HistoryList& h);

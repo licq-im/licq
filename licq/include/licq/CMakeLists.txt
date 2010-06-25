@@ -34,6 +34,7 @@ set(licq_HEADERS
   socketmanager.h
   statistics.h
   translator.h
+  userevents.h
   userid.h
   utility.h
   version.h

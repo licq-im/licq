@@ -65,8 +65,8 @@ public:
   const char* Version() const;
   void SaveConf();
   Licq::LogService& getLogService();
-  bool addUserEvent(Licq::User* u, CUserEvent* e);
-  void rejectEvent(const Licq::UserId& userId, CUserEvent* e);
+  bool addUserEvent(Licq::User* u, Licq::UserEvent* e);
+  void rejectEvent(const Licq::UserId& userId, Licq::UserEvent* e);
 
 private:
   unsigned long myNextEventId;

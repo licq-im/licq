@@ -1,27 +1,39 @@
 // -*- c-basic-offset: 2 -*-
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998 - 2009 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 2010 Licq developers
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
+
+#include <licq_message.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
 
-// Localization
-#include "gettext.h"
-
 #include <licq/contactlist/user.h>
 #include "licq/gpghelper.h"
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/translator.h>
-#include "licq_message.h"
+
+#include "gettext.h"
 #include "support.h"
 
 #ifdef USE_HEBREW
@@ -32,12 +44,15 @@ extern char *hebrev (char* pszStr);
 
 using namespace std;
 using Licq::User;
+using Licq::UserEvent;
 using Licq::UserId;
 
 int CUserEvent::s_nId = 1;
 
+#define EVENT_HEADER_SIZE  80
+
 //----CUserEvent::constructor---------------------------------------------------
-CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
+UserEvent::UserEvent(unsigned short nSubCommand, unsigned short nCommand,
                        unsigned short nSequence, time_t tTime,
                        unsigned long nFlags, unsigned long nConvoId)
 {
@@ -62,7 +77,7 @@ void CUserEvent::CopyBase(const CUserEvent* e)
   myIsReceiver = e->isReceiver();
   m_bPending = e->Pending();
   m_nId = e->Id(); // this is new and possibly will cause problems...
-  myColor.set(e->Color());
+  myColor.set(e->color());
 }
 
 
@@ -103,7 +118,7 @@ const char *CUserEvent::LicqVersionStr() const
 
 
 //-----CUserEvent::destructor---------------------------------------------------
-CUserEvent::~CUserEvent()
+UserEvent::~UserEvent()
 {
   delete[] m_szText;
 }
@@ -144,9 +159,9 @@ void CUserEvent::AddToHistory_Flush(User* u, const char* szOut) const
 
 //=====CEventMsg================================================================
 
-CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
+Licq::EventMsg::EventMsg(const char *_szMessage, unsigned short _nCommand,
                      time_t _tTime, unsigned long _nFlags, unsigned long _nConvoId)
-   : CUserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags, _nConvoId)
+   : UserEvent(ICQ_CMDxSUB_MSG, _nCommand, 0, _tTime, _nFlags, _nConvoId)
 {
   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
 
@@ -168,7 +183,7 @@ void CEventMsg::CreateDescription() const
 }
 
 
-CEventMsg::~CEventMsg()
+Licq::EventMsg::~EventMsg()
 {
   free (m_szMessage);
 }
@@ -204,12 +219,12 @@ CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime,
 
 //=====CEventFile===============================================================
 
-CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
+Licq::EventFile::EventFile(const char *_szFilename, const char *_szFileDescription,
     unsigned long _nFileSize, const list<string>& _lFileList,
                        unsigned short _nSequence, time_t _tTime,
                        unsigned long _nFlags, unsigned long _nConvoId,
                        unsigned long _nMsgID1, unsigned long _nMsgID2)
-   : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags, _nConvoId),
+   : UserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags, _nConvoId),
      m_lFileList(_lFileList.begin(), _lFileList.end())
 {
   m_szFilename = strdup(_szFilename == NULL ? "" : _szFilename);
@@ -229,7 +244,7 @@ void CEventFile::CreateDescription() const
 }
 
 
-CEventFile::~CEventFile()
+Licq::EventFile::~EventFile()
 {
    free (m_szFilename);
    free (m_szFileDescription);
@@ -259,10 +274,10 @@ void CEventFile::AddToHistory(User* u, bool isReceiver) const
 
 //=====CEventUrl================================================================
 
-CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
+Licq::EventUrl::EventUrl(const char *_szUrl, const char *_szUrlDescription,
                      unsigned short _nCommand, time_t _tTime,
                      unsigned long _nFlags, unsigned long _nConvoId)
-   : CUserEvent(ICQ_CMDxSUB_URL, _nCommand, 0, _tTime, _nFlags, _nConvoId)
+   : UserEvent(ICQ_CMDxSUB_URL, _nCommand, 0, _tTime, _nFlags, _nConvoId)
 {
    m_szUrl = strdup(_szUrl == NULL ? "" : _szUrl);
    m_szUrlDescription = strdup(_szUrlDescription == NULL ? "" : _szUrlDescription);
@@ -277,7 +292,7 @@ void CEventUrl::CreateDescription() const
 }
 
 
-CEventUrl::~CEventUrl()
+Licq::EventUrl::~EventUrl()
 {
    free (m_szUrl);
    free (m_szUrlDescription);
@@ -325,10 +340,10 @@ CEventUrl *CEventUrl::Parse(char *sz, unsigned short nCmd, time_t nTime,
 
 //=====CEventChat===============================================================
 
-CEventChat::CEventChat(const char *szReason, unsigned short nSequence,
+Licq::EventChat::EventChat(const char *szReason, unsigned short nSequence,
                        time_t tTime, unsigned long nFlags,
                        unsigned long nConvoId, unsigned long nMsgID1, unsigned long nMsgID2)
-   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
+   : UserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
   m_szClients = NULL;
@@ -337,11 +352,11 @@ CEventChat::CEventChat(const char *szReason, unsigned short nSequence,
   m_nMsgID[1] = nMsgID2;
 }
 
-CEventChat::CEventChat(const char *szReason, const char *szClients,
+Licq::EventChat::EventChat(const char *szReason, const char *szClients,
    unsigned short nPort, unsigned short nSequence,
    time_t tTime, unsigned long nFlags, unsigned long nConvoId, unsigned long nMsgID1,
    unsigned long nMsgID2)
-   : CUserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
+   : UserEvent(ICQ_CMDxSUB_CHAT, ICQ_CMDxTCP_START, nSequence, tTime, nFlags, nConvoId)
 {
   m_szReason = strdup(szReason ==  NULL ? "" : szReason);
   if (nPort == 0)
@@ -368,7 +383,7 @@ void CEventChat::CreateDescription() const
 }
 
 
-CEventChat::~CEventChat()
+Licq::EventChat::~EventChat()
 {
   free(m_szReason);
   free(m_szClients);
@@ -393,11 +408,11 @@ void CEventChat::AddToHistory(User* u, bool isReceiver) const
 
 
 //=====CEventAdded==============================================================
-CEventAdded::CEventAdded(const UserId& userId, const char *_szAlias,
+Licq::EventAdded::EventAdded(const UserId& userId, const char *_szAlias,
                          const char *_szFirstName,const char *_szLastName,
                          const char *_szEmail, unsigned short _nCommand,
                          time_t _tTime, unsigned long _nFlags)
-  : CUserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags),
+  : UserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags),
     myUserId(userId)
 {
   m_szAlias = strdup(_szAlias);
@@ -417,7 +432,7 @@ void CEventAdded::CreateDescription() const
 }
 
 
-CEventAdded::~CEventAdded()
+Licq::EventAdded::~EventAdded()
 {
   free (m_szAlias);
   free (m_szFirstName);
@@ -448,12 +463,12 @@ void CEventAdded::AddToHistory(User* u, bool isReceiver) const
 
 
 //=====CEventAuthReq===============================================================
-CEventAuthRequest::CEventAuthRequest(const UserId& userId,
+Licq::EventAuthRequest::EventAuthRequest(const UserId& userId,
                        const char *_szAlias, const char *_szFirstName,
                        const char *_szLastName, const char *_szEmail,
                        const char *_szReason, unsigned short _nCommand,
                        time_t _tTime, unsigned long _nFlags)
-  : CUserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags),
+  : UserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags),
     myUserId(userId)
 {
    m_szAlias = strdup(_szAlias);
@@ -480,7 +495,7 @@ void CEventAuthRequest::CreateDescription() const
 }
 
 
-CEventAuthRequest::~CEventAuthRequest()
+Licq::EventAuthRequest::~EventAuthRequest()
 {
   free (m_szAlias);
   free (m_szFirstName);
@@ -516,10 +531,10 @@ void CEventAuthRequest::AddToHistory(User* u, bool isReceiver) const
 
 
 //=====CEventAuthGranted========================================================
-CEventAuthGranted::CEventAuthGranted(const UserId& userId,
+Licq::EventAuthGranted::EventAuthGranted(const UserId& userId,
                        const char *_szMessage, unsigned short _nCommand,
                        time_t _tTime, unsigned long _nFlags)
-  : CUserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags),
+  : UserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags),
     myUserId(userId)
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
@@ -539,7 +554,7 @@ void CEventAuthGranted::CreateDescription() const
 }
 
 
-CEventAuthGranted::~CEventAuthGranted()
+Licq::EventAuthGranted::~EventAuthGranted()
 {
   free (m_szMessage);
 }
@@ -568,10 +583,10 @@ void CEventAuthGranted::AddToHistory(User* u, bool isReceiver) const
 
 
 //=====CEventAuthRefused==========================================================
-CEventAuthRefused::CEventAuthRefused(const UserId& userId,
+Licq::EventAuthRefused::EventAuthRefused(const UserId& userId,
                        const char *_szMessage, unsigned short _nCommand,
                        time_t _tTime, unsigned long _nFlags)
-  : CUserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags),
+  : UserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags),
     myUserId(userId)
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
@@ -591,7 +606,7 @@ void CEventAuthRefused::CreateDescription() const
 }
 
 
-CEventAuthRefused::~CEventAuthRefused()
+Licq::EventAuthRefused::~EventAuthRefused()
 {
   free (m_szMessage);
 }
@@ -620,10 +635,10 @@ void CEventAuthRefused::AddToHistory(User* u, bool isReceiver) const
 
 
 //====CEventWebPanel===========================================================
-CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail,
+Licq::EventWebPanel::EventWebPanel(const char *_szName, char *_szEmail,
                                const char *_szMessage, unsigned short _nCommand,
                                time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_WEBxPANEL, _nCommand, 0, _tTime, _nFlags)
+   : UserEvent(ICQ_CMDxSUB_WEBxPANEL, _nCommand, 0, _tTime, _nFlags)
 {
   m_szName = strdup(_szName);
   m_szEmail = strdup(_szEmail);
@@ -639,7 +654,7 @@ void CEventWebPanel::CreateDescription() const
 }
 
 
-CEventWebPanel::~CEventWebPanel()
+Licq::EventWebPanel::~EventWebPanel()
 {
   free (m_szName);
   free (m_szEmail);
@@ -668,10 +683,10 @@ void CEventWebPanel::AddToHistory(User* u, bool isReceiver) const
 
 
 //====CEventEmailPager==========================================================
-CEventEmailPager::CEventEmailPager(const char *_szName, char *_szEmail,
+Licq::EventEmailPager::EventEmailPager(const char *_szName, char *_szEmail,
                                    const char *_szMessage, unsigned short _nCommand,
                                    time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_EMAILxPAGER, _nCommand, 0, _tTime, _nFlags)
+   : UserEvent(ICQ_CMDxSUB_EMAILxPAGER, _nCommand, 0, _tTime, _nFlags)
 {
   m_szName = strdup(_szName);
   m_szEmail = strdup(_szEmail);
@@ -687,7 +702,7 @@ void CEventEmailPager::CreateDescription() const
 }
 
 
-CEventEmailPager::~CEventEmailPager()
+Licq::EventEmailPager::~EventEmailPager()
 {
   free (m_szName);
   free (m_szEmail);
@@ -714,21 +729,21 @@ void CEventEmailPager::AddToHistory(User* u, bool isReceiver) const
   delete [] szOut;
 }
 
-CContact::CContact(const UserId& userId, const char *a)
+Licq::EventContactList::Contact::Contact(const UserId& userId, const char *a)
   : myUserId(userId)
 {
   m_szAlias = strdup(a);
 }
 
-CContact::~CContact()
+Licq::EventContactList::Contact::~Contact()
 {
   free(m_szAlias);
 }
 
 //====CEventContactList========================================================
-CEventContactList::CEventContactList(const ContactList& cl, bool bDeep,
+Licq::EventContactList::EventContactList(const ContactList& cl, bool bDeep,
    unsigned short nCommand, time_t tTime, unsigned long nFlags)
-  : CUserEvent(ICQ_CMDxSUB_CONTACTxLIST, nCommand, 0, tTime, nFlags)
+  : UserEvent(ICQ_CMDxSUB_CONTACTxLIST, nCommand, 0, tTime, nFlags)
 {
   if (bDeep)
     for(ContactList::const_iterator it = cl.begin(); it != cl.end(); ++it)
@@ -752,7 +767,7 @@ void CEventContactList::CreateDescription() const
 }
 
 
-CEventContactList::~CEventContactList()
+Licq::EventContactList::~EventContactList()
 {
   ContactList::iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
@@ -809,9 +824,9 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
 }
 
 //=====CEventSms===============================================================
-CEventSms::CEventSms(const char *_szNumber, const char *_szMessage,
+Licq::EventSms::EventSms(const char *_szNumber, const char *_szMessage,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_SMS, _nCommand, 0, _tTime, _nFlags)
+   : UserEvent(ICQ_CMDxSUB_SMS, _nCommand, 0, _tTime, _nFlags)
 {
   m_szNumber = strdup(_szNumber == NULL ? "" : _szNumber);
   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
@@ -824,7 +839,7 @@ void CEventSms::CreateDescription() const
   sprintf(m_szText, tr("Phone: %s\n%s\n"), m_szNumber, m_szMessage);
 }
 
-CEventSms::~CEventSms()
+Licq::EventSms::~EventSms()
 {
   free(m_szNumber);
   free(m_szMessage);
@@ -870,18 +885,18 @@ CEventSms *CEventSms::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 
 
 //=====CEventServerMessage=====================================================
-CEventServerMessage::CEventServerMessage(const char *_szName,
+Licq::EventServerMessage::EventServerMessage(const char *_szName,
                                          const char *_szEmail,
                                          const char *_szMessage,
                                          time_t _tTime)
-   : CUserEvent(ICQ_CMDxSUB_MSGxSERVER, 0, 0, _tTime, 0)
+   : UserEvent(ICQ_CMDxSUB_MSGxSERVER, 0, 0, _tTime, 0)
 {
   m_szName = strdup(_szName == NULL ? "" : _szName);
   m_szEmail = strdup(_szEmail == NULL ? "" : _szEmail);
   m_szMessage = strdup(_szMessage == NULL ? "" : _szMessage);
 }
 
-CEventServerMessage::~CEventServerMessage()
+Licq::EventServerMessage::~EventServerMessage()
 {
   free(m_szName);
   free(m_szEmail);
@@ -933,12 +948,12 @@ CEventServerMessage *CEventServerMessage::Parse(char *sz, unsigned short /* nCmd
 
 
 //=====CEventEmailAlert=====================================================
-CEventEmailAlert::CEventEmailAlert(const char *_szName, const char *_szTo,
+Licq::EventEmailAlert::EventEmailAlert(const char *_szName, const char *_szTo,
   const char *_szEmail, const char *_szSubject, time_t _tTime,
   const char *_szMSPAuth, const char *_szSID, const char *_szKV,
   const char *_szId, const char *_szPostURL, const char *_szMsgURL,
   const char *_szCreds, unsigned long _nSessionLength)
-   : CUserEvent(ICQ_CMDxSUB_EMAILxALERT, ICQ_CMDxTCP_START, 0, _tTime, 0)
+   : UserEvent(ICQ_CMDxSUB_EMAILxALERT, ICQ_CMDxTCP_START, 0, _tTime, 0)
 {
   m_szName = strdup(_szName == NULL ? "" : _szName);
   m_szTo = strdup(_szTo == NULL ? "" : _szTo);
@@ -954,7 +969,7 @@ CEventEmailAlert::CEventEmailAlert(const char *_szName, const char *_szTo,
   m_nSessionLength = _nSessionLength;
 }
 
-CEventEmailAlert::~CEventEmailAlert()
+Licq::EventEmailAlert::~EventEmailAlert()
 {
   free(m_szName);
   free(m_szTo);
@@ -998,9 +1013,9 @@ void CEventEmailAlert::AddToHistory(User* u, bool isReceiver) const
 }
 
 //=====EventPlugin=============================================================
-CEventPlugin::CEventPlugin(const char *sz, unsigned short nSubCommand,
+Licq::EventPlugin::EventPlugin(const char *sz, unsigned short nSubCommand,
    time_t tTime, unsigned long nFlags)
-   : CUserEvent(nSubCommand, 0, 0, tTime, nFlags)
+   : UserEvent(nSubCommand, 0, 0, tTime, nFlags)
 {
   m_sz = sz == NULL ? strdup("") : strdup(sz);
 }
@@ -1013,7 +1028,7 @@ void CEventPlugin::CreateDescription() const
 }
 
 
-CEventPlugin::~CEventPlugin()
+Licq::EventPlugin::~EventPlugin()
 {
   free(m_sz);
 }
@@ -1030,11 +1045,11 @@ void CEventPlugin::AddToHistory(User* /* u */, bool /* isReceiver */) const
 
 
 //=====CEventUnknownSysMsg=====================================================
-CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
+Licq::EventUnknownSysMsg::EventUnknownSysMsg(unsigned short _nSubCommand,
     unsigned short _nCommand, const UserId& userId,
                              const char *_szMsg,
                              time_t _tTime, unsigned long _nFlags)
-  : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN),
+  : UserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN),
     myUserId(userId)
 {
   m_szMsg = _szMsg == NULL ? strdup("") : strdup(_szMsg);
@@ -1049,7 +1064,7 @@ void CEventUnknownSysMsg::CreateDescription() const
 }
 
 
-CEventUnknownSysMsg::~CEventUnknownSysMsg()
+Licq::EventUnknownSysMsg::~EventUnknownSysMsg()
 {
   free(m_szMsg);
 }

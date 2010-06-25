@@ -34,8 +34,8 @@ public:
   const char* Version() const { return NULL; }
   void SaveConf() { }
   Licq::LogService& getLogService() { return getLogService(); }
-  bool addUserEvent(Licq::User*, CUserEvent*) { return false; }
-  void rejectEvent(const Licq::UserId&, CUserEvent*) { }
+  bool addUserEvent(Licq::User*, Licq::UserEvent*) { return false; }
+  void rejectEvent(const Licq::UserId&, Licq::UserEvent*) { }
 };
 
 DaemonDummy gDaemonDummy;
