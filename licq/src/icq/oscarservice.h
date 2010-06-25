@@ -6,11 +6,10 @@
 
 #include <boost/shared_array.hpp>
 
-class LicqEvent;
-
 namespace Licq
 {
 class Buffer;
+class Event;
 class Packet;
 class Proxy;
 class UserId;
@@ -48,7 +47,7 @@ protected:
   char *myServer;
   boost::shared_array<char> myCookie;
   unsigned short myPort, myCookieLen;
-  std::list<LicqEvent*> mySendQueue;
+  std::list<Licq::Event*> mySendQueue;
   pthread_mutex_t mutex_sendqueue;
   pthread_cond_t cond_sendqueue;
   pthread_mutex_t mutex_status;
@@ -56,7 +55,7 @@ protected:
 
   bool SendPacket(Licq::Packet* packet);
   bool WaitForStatus(EOscarServiceStatus s);
-  bool SendBARTFam(LicqEvent* event);
+  bool SendBARTFam(Licq::Event* event);
   void ProcessNewChannel(Licq::Buffer& packet);
   void ProcessDataChannel(Licq::Buffer& packet);
   void ProcessServiceFam(Licq::Buffer& packet, unsigned short SubType, unsigned long RequestId);

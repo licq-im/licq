@@ -25,11 +25,11 @@
 #include <string>
 
 class CUserEvent;
-class LicqEvent;
 
 namespace Licq
 {
 
+class Event;
 class LogService;
 class PluginSignal;
 class ProtocolSignal;
@@ -103,7 +103,7 @@ public:
   virtual void rejectEvent(const UserId& userId, CUserEvent* e) = 0;
 
   void cancelEvent(unsigned long eventId);
-  void cancelEvent(LicqEvent* event);
+  void cancelEvent(Event* event);
 
   enum IgnoreTypes
   {
@@ -122,7 +122,7 @@ public:
    */
   void pushPluginSignal(PluginSignal* signal);
 
-  void PushPluginEvent(LicqEvent *);
+  void PushPluginEvent(Event*);
   void PushProtoSignal(ProtocolSignal* s, unsigned long ppid);
 
   void pluginUIViewEvent(const Licq::UserId& userId);
@@ -136,7 +136,7 @@ public:
    * @return The next queued signal or NULL if the queue is empty
    */
   PluginSignal* popPluginSignal();
-  LicqEvent *PopPluginEvent();
+  Event* PopPluginEvent();
   ProtocolSignal* PopProtoSignal();
 
   /**

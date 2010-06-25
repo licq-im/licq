@@ -43,8 +43,8 @@ public:
                      Licq::Mutex& protocolPluginsMutex);
   ~PluginEventHandler();
 
-  void pushGeneralEvent(LicqEvent* event);
-  LicqEvent* popGeneralEvent();
+  void pushGeneralEvent(Licq::Event* event);
+  Licq::Event* popGeneralEvent();
 
   void pushGeneralSignal(Licq::PluginSignal* signal);
   Licq::PluginSignal* popGeneralSignal();

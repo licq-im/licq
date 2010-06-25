@@ -18,17 +18,19 @@
 #include "contactlist/user.h"
 
 using namespace std;
-using Licq::StringList;
+using Licq::Event;
+using Licq::ExtendedData;
+using Licq::SearchData;
 using Licq::UserId;
 
 //-----CSearchAck------------------------------------------------------------
-CSearchAck::CSearchAck(const UserId& userId)
+SearchData::SearchData(const UserId& userId)
   : myUserId(userId)
 {
   m_szAlias = m_szFirstName = m_szLastName = m_szEmail = NULL;
 }
 
-CSearchAck::~CSearchAck()
+SearchData::~SearchData()
 {
   free(m_szAlias);
   free(m_szFirstName);
@@ -38,21 +40,21 @@ CSearchAck::~CSearchAck()
 
 
 //-----CExtendedAck----------------------------------------------------------
-CExtendedAck::CExtendedAck(bool bAccepted, unsigned short nPort, const char* szResponse)
+ExtendedData::ExtendedData(bool bAccepted, unsigned short nPort, const char* szResponse)
 {
   m_bAccepted = bAccepted;
   m_nPort = nPort;
   m_szResponse = strdup(szResponse);
 }
 
-CExtendedAck::~CExtendedAck()
+ExtendedData::~ExtendedData()
 {
   free(m_szResponse);
 }
 
 
 //-----ICQEvent::constructor----------------------------------------------------
-LicqEvent::LicqEvent(unsigned long id, int _nSocketDesc, Licq::Packet* p,
+Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
     ConnectType _eConnect, const UserId& userId, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())
 {
@@ -98,7 +100,7 @@ LicqEvent::LicqEvent(unsigned long id, int _nSocketDesc, Licq::Packet* p,
 }
 
 //-----ICQEvent::constructor----------------------------------------------------
-LicqEvent::LicqEvent(const LicqEvent* e)
+Event::Event(const Event* e)
 //   : m_xBuffer(e->m_xBuffer)
 {
   m_nEventId = e->m_nEventId;
@@ -137,7 +139,7 @@ LicqEvent::LicqEvent(const LicqEvent* e)
 
 
 //-----ICQEvent::destructor-----------------------------------------------------
-LicqEvent::~LicqEvent()
+Event::~Event()
 {
   assert(!m_Deleted);
   m_Deleted = true;

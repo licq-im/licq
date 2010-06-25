@@ -6,6 +6,7 @@ set(licq_HEADERS
   color.h
   conversation.h
   daemon.h
+  event.h
   gpghelper.h
   icq.h
   icqchat.h

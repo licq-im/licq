@@ -108,7 +108,7 @@ Licq::PluginSignal* GeneralPlugin::popSignal()
   return NULL;
 }
 
-void GeneralPlugin::pushEvent(LicqEvent* event)
+void GeneralPlugin::pushEvent(Licq::Event* event)
 {
   MutexLocker locker(myEventsMutex);
   myEvents.push(event);
@@ -116,12 +116,12 @@ void GeneralPlugin::pushEvent(LicqEvent* event)
   myPipe.putChar(PipeEvent);
 }
 
-LicqEvent* GeneralPlugin::popEvent()
+Licq::Event* GeneralPlugin::popEvent()
 {
   MutexLocker locker(myEventsMutex);
   if (!myEvents.empty())
   {
-    LicqEvent* event = myEvents.front();
+    Licq::Event* event = myEvents.front();
     myEvents.pop();
     return event;
   }

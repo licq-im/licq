@@ -25,10 +25,9 @@
 #include <list>
 #include <queue>
 
-class LicqEvent;
-
 namespace Licq
 {
+class Event;
 class PluginSignal;
 }
 
@@ -49,8 +48,8 @@ public:
   void pushSignal(Licq::PluginSignal* signal);
   Licq::PluginSignal* popSignal();
 
-  void pushEvent(LicqEvent* event);
-  LicqEvent* popEvent();
+  void pushEvent(Licq::Event* event);
+  Licq::Event* popEvent();
 
   // From Licq::GeneralPlugin
   const char* getStatus() const;
@@ -73,7 +72,7 @@ private:
   std::queue<Licq::PluginSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 
-  std::queue<LicqEvent*> myEvents;
+  std::queue<Licq::Event*> myEvents;
   Licq::Mutex myEventsMutex;
 
   // Function pointers

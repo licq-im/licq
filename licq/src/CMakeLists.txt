@@ -24,10 +24,10 @@ set(licq_SRCS
   buffer.cpp
   color.cpp
   daemon.cpp
+  event.cpp
   fifo.cpp
   gpghelper.cpp
   hebrev.c
-  icqevent.cpp
   licq.cpp
   log.cpp
   main.cpp

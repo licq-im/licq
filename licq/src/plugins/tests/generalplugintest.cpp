@@ -145,7 +145,7 @@ TEST_F(GeneralPluginFixture, popSignalEmpty)
 
 TEST_F(GeneralPluginFixture, pushPopEvent)
 {
-  LicqEvent* event = (LicqEvent*)20;
+  Licq::Event* event = (Licq::Event*)20;
   plugin.pushEvent(event);
   plugin.pushEvent(event);
 
@@ -158,5 +158,5 @@ TEST_F(GeneralPluginFixture, pushPopEvent)
 
 TEST_F(GeneralPluginFixture, popEventEmpty)
 {
-  EXPECT_EQ(static_cast<LicqEvent*>(NULL), plugin.popEvent());
+  EXPECT_EQ(static_cast<Licq::Event*>(NULL), plugin.popEvent());
 }
