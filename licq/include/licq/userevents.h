@@ -466,21 +466,6 @@ protected:
   unsigned long m_nSessionLength;
 };
 
-//-----CEventPlugin------------------------------------------------------------
-class EventPlugin : public UserEvent
-{
-public:
-  EventPlugin(const char *sz, unsigned short nSubCommand,
-     time_t tTime, unsigned long nFlags);
-  ~EventPlugin();
-  virtual EventPlugin* Copy() const;
-  virtual void AddToHistory(User* user, bool isReceiver) const;
-protected:
-  void CreateDescription() const;
-  char *m_sz;
-};
-
-
 //-----CEventUnknownSysMsg-----------------------------------------------------
 class EventUnknownSysMsg : public UserEvent
 {

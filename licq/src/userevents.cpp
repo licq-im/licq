@@ -1012,38 +1012,6 @@ void CEventEmailAlert::AddToHistory(User* u, bool isReceiver) const
   delete [] szOut;
 }
 
-//=====EventPlugin=============================================================
-Licq::EventPlugin::EventPlugin(const char *sz, unsigned short nSubCommand,
-   time_t tTime, unsigned long nFlags)
-   : UserEvent(nSubCommand, 0, 0, tTime, nFlags)
-{
-  m_sz = sz == NULL ? strdup("") : strdup(sz);
-}
-
-void CEventPlugin::CreateDescription() const
-{
-  delete [] m_szText;
-  m_szText = new char[strlen(m_sz) + 1];
-  strcpy(m_szText, m_sz);
-}
-
-
-Licq::EventPlugin::~EventPlugin()
-{
-  free(m_sz);
-}
-
-CEventPlugin* CEventPlugin::Copy() const
-{
-  return new CEventPlugin(m_sz, m_nSubCommand, m_tTime, m_nFlags);
-}
-
-void CEventPlugin::AddToHistory(User* /* u */, bool /* isReceiver */) const
-{
-  // Don't write these to the history file
-}
-
-
 //=====CEventUnknownSysMsg=====================================================
 Licq::EventUnknownSysMsg::EventUnknownSysMsg(unsigned short _nSubCommand,
     unsigned short _nCommand, const UserId& userId,

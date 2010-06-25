@@ -28,7 +28,6 @@ typedef Licq::EventContactList CEventContactList;
 typedef Licq::EventSms CEventSms;
 typedef Licq::EventServerMessage CEventServerMessage;
 typedef Licq::EventEmailAlert CEventEmailAlert;
-typedef Licq::EventPlugin CEventPlugin;
 typedef Licq::EventUnknownSysMsg CEventUnknownSysMsg;
 
 #endif
