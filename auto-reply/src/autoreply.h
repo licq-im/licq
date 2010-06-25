@@ -3,12 +3,12 @@
 
 #include <string>
 
-class CUserEvent;
 
 namespace Licq
 {
 class Event;
 class PluginSignal;
+class UserEvent;
 class UserId;
 }
 
@@ -49,7 +49,7 @@ protected:
    * @Param event Event to reply to
    * @return True if a reply was sent
    */
-  bool autoReplyEvent(const Licq::UserId& userId, const CUserEvent* event);
+  bool autoReplyEvent(const Licq::UserId& userId, const Licq::UserEvent* event);
 
   bool POpen(const char *cmd);
   int PClose();

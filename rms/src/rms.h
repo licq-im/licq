@@ -11,9 +11,9 @@ namespace Licq
 {
 class Event;
 class PluginSignal;
+class UserEvent;
 }
 
-class CUserEvent;
 class CLogService_Plugin;
 
 const unsigned short MAX_LINE_LENGTH = 1024 * 1;
@@ -122,7 +122,7 @@ protected:
    * @param e User event
    * @param alias Alias of sender
    */
-  void printUserEvent(const CUserEvent* e, const std::string& alias);
+  void printUserEvent(const Licq::UserEvent* e, const std::string& alias);
 
 friend class CLicqRMS;
 };

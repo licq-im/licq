@@ -5,14 +5,13 @@
 
 #include <licq/userid.h>
 
-class CUserEvent;
-
 namespace Licq
 {
 class Event;
 class PluginSignal;
 class TCPSocket;
 class User;
+class UserEvent;
 }
 
 #define FORWARD_EMAIL 0
@@ -48,9 +47,9 @@ public:
   void ProcessEvent(Licq::Event* e);
 
   void ProcessUserEvent(const Licq::UserId& userId, unsigned long nId);
-  bool ForwardEvent(const Licq::User* u, const CUserEvent* e);
-  bool ForwardEvent_ICQ(const Licq::User* u, const CUserEvent* e);
-  bool ForwardEvent_Email(const Licq::User* u, const CUserEvent* e);
+  bool ForwardEvent(const Licq::User* u, const Licq::UserEvent* e);
+  bool ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent* e);
+  bool ForwardEvent_Email(const Licq::User* u, const Licq::UserEvent* e);
 
 private:
   bool CreateDefaultConfig();

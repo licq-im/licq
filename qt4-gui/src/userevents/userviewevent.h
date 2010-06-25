@@ -29,10 +29,10 @@ class QPushButton;
 class QSplitter;
 class QTreeWidgetItem;
 
-class CUserEvent;
 namespace Licq
 {
 class Event;
+class UserEvent;
 }
 
 namespace LicqQtGui
@@ -68,7 +68,7 @@ private:
   QSplitter* myReadSplitter;
   MLView* myMessageView;
   MessageList* myMessageList;
-  CUserEvent* myCurrentEvent;
+  Licq::UserEvent* myCurrentEvent;
   QCheckBox* myAutoCloseCheck;
   QGroupBox* myActionsBox;
   QPushButton* myRead1Button;

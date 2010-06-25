@@ -24,24 +24,27 @@
 
 class QTextCodec;
 
-class CUserEvent;
+namespace Licq
+{
+class UserEvent;
+}
 
 namespace LicqQtGui
 {
 class MessageListItem : public QTreeWidgetItem
 {
 public:
-  MessageListItem(const CUserEvent* theMsg, const QTextCodec* codec, QTreeWidget* parent);
+  MessageListItem(const Licq::UserEvent* theMsg, const QTextCodec* codec, QTreeWidget* parent);
   ~MessageListItem(void);
   void MarkRead();
   void SetEventLine();
 
-  CUserEvent* msg() { return myMsg; }
+  Licq::UserEvent* msg() { return myMsg; }
   bool isUnread() const { return myUnread; }
 
 private:
   bool myUnread;
-  CUserEvent* myMsg;
+  Licq::UserEvent* myMsg;
   const QTextCodec* myCodec;
 };
 
@@ -50,7 +53,7 @@ class MessageList : public QTreeWidget
   Q_OBJECT
 public:
   MessageList (QWidget* parent = 0);
-  CUserEvent* currentMsg();
+  Licq::UserEvent* currentMsg();
   QSize sizeHint() const;
   int getNumUnread() const;
   MessageListItem* getNextUnread();

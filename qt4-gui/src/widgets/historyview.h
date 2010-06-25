@@ -24,10 +24,10 @@
 
 #include <licq/userid.h>
 
-class CUserEvent;
 namespace Licq
 {
 class Event;
+class UserEvent;
 }
 
 namespace LicqQtGui
@@ -75,7 +75,7 @@ public:
   virtual QSize sizeHint() const;
 
 public slots:
-  void addMsg(const CUserEvent* event, const Licq::UserId& userId = Licq::UserId());
+  void addMsg(const Licq::UserEvent* event, const Licq::UserId& userId = Licq::UserId());
   void addMsg(const Licq::Event* event);
   void setColors();
 

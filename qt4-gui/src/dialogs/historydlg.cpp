@@ -292,8 +292,8 @@ void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal
 
 void HistoryDlg::eventSent(const ICQEvent* event)
 {
-  if (event->userId() == myUserId && event->UserEvent() != NULL)
-    addMsg(event->UserEvent());
+  if (event->userId() == myUserId && event->userEvent() != NULL)
+    addMsg(event->userEvent());
 }
 
 void HistoryDlg::addMsg(const CUserEvent* event)

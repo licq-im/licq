@@ -774,7 +774,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
   mySendServerCheck->setChecked(!online);
   myUrgentCheck->setChecked(level == ICQ_TCPxMSG_URGENT);
 
-  switch (e->UserEvent()->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
+  switch (e->userEvent()->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
   {
     case ICQ_CMDxSUB_MSG:
     {
@@ -784,7 +784,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
         if (u.isLocked())
           userOffline = !u->isOnline();
       }
-      const CEventMsg* ue = dynamic_cast<const CEventMsg*>(e->UserEvent());
+      const Licq::EventMsg* ue = dynamic_cast<const Licq::EventMsg*>(e->userEvent());
       // create initial strings (implicit copying, no allocation impact :)
       char* tmp = Licq::gTranslator.NToRN(ue->Message());
       QByteArray wholeMessageRaw(tmp);
@@ -854,7 +854,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
     case ICQ_CMDxSUB_URL:
     {
-      const CEventUrl* ue = dynamic_cast<const CEventUrl*>(e->UserEvent());
+      const Licq::EventUrl* ue = dynamic_cast<const Licq::EventUrl*>(e->userEvent());
 
       icqEventTag = gProtocolManager.sendUrl(myUsers.front(), ue->Url(),
           ue->Description(), !online, level, false, &myIcqColor);
@@ -864,8 +864,8 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      const CEventContactList* ue = dynamic_cast<const CEventContactList*>(e->UserEvent());
-      const ContactList& clist = ue->Contacts();
+      const Licq::EventContactList* ue = dynamic_cast<const Licq::EventContactList*>(e->userEvent());
+      const Licq::EventContactList::ContactList& clist = ue->Contacts();
       StringList users;
 
       // ContactList is const but string list holds "char*" so we have to copy each string
@@ -883,7 +883,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
     case ICQ_CMDxSUB_CHAT:
     {
-      const CEventChat* ue = dynamic_cast<const CEventChat*>(e->UserEvent());
+      const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
 
       if (ue->Clients() == NULL)
         //TODO in the daemon
@@ -899,7 +899,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
     case ICQ_CMDxSUB_FILE:
     {
-      const CEventFile* ue = dynamic_cast<const CEventFile*>(e->UserEvent());
+      const Licq::EventFile* ue = dynamic_cast<const Licq::EventFile*>(e->userEvent());
       list<string> filelist(ue->FileList());
 
       //TODO in the daemon
@@ -911,7 +911,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
     case ICQ_CMDxSUB_SMS:
     {
-      const CEventSms* ue = dynamic_cast<const CEventSms*>(e->UserEvent());
+      const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
 
       //TODO in the daemon
       icqEventTag = gLicqDaemon->icqSendSms(accountId.toLatin1(), LICQ_PPID,

@@ -22,11 +22,14 @@
 
 class QString;
 
-class CUserEvent;
+namespace Licq
+{
+class UserEvent;
+}
 
 namespace LicqQtGui
 {
-QString EventDescription(const CUserEvent* e);
+QString EventDescription(const Licq::UserEvent* e);
 } // namespace LicqQtGui
 
 #endif

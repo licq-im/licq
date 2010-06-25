@@ -26,7 +26,10 @@
 
 class QPushButton;
 
-class CUserEvent;
+namespace Licq
+{
+class UserEvent;
+}
 
 namespace LicqQtGui
 {
@@ -37,7 +40,7 @@ class ForwardDlg : public QDialog
   Q_OBJECT
 
 public:
-  ForwardDlg(CUserEvent* e, QWidget* p = NULL);
+  ForwardDlg(Licq::UserEvent* e, QWidget* p = NULL);
   ~ForwardDlg();
 
 private:

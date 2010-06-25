@@ -241,8 +241,8 @@ void HistoryView::internalAddMsg(QString s)
 
 void HistoryView::addMsg(const ICQEvent* event)
 {
-  if (event->userId() == myUserId && event->UserEvent() != NULL)
-    addMsg(event->UserEvent());
+  if (event->userId() == myUserId && event->userEvent() != NULL)
+    addMsg(event->userEvent());
 }
 
 void HistoryView::addMsg(bool isReceiver, bool fromHistory,

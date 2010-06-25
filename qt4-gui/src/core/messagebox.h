@@ -27,8 +27,6 @@
 class QLabel;
 class QPushButton;
 
-class CUserEvent;
-
 namespace LicqQtGui
 {
 bool QueryUser(QWidget* q, const QString& query, const QString& button1, const QString& button2,

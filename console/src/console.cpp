@@ -787,7 +787,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
     {
     case ICQ_CMDxTCP_START:
       {
-        const CUserEvent* ue = e->UserEvent();
+        const Licq::UserEvent* ue = e->userEvent();
         if (e->SubResult() == ICQ_TCPxACK_RETURN)
         {
           Licq::UserReadGuard u(e->userId());

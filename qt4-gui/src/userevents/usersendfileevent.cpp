@@ -134,7 +134,7 @@ bool UserSendFileEvent::sendDone(const LicqEvent* e)
   }
   else
   {
-    const CEventFile* f = dynamic_cast<const CEventFile*>(e->UserEvent());
+    const Licq::EventFile* f = dynamic_cast<const Licq::EventFile*>(e->userEvent());
     FileDlg* fileDlg = new FileDlg(myUsers.front());
     fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->Port());
   }

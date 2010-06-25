@@ -203,7 +203,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
         (e->SubCommand() != ICQ_CMDxSUB_CHAT &&
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
-	    user_event = e->UserEvent();
+      user_event = e->userEvent();
       gProtocolManager.sendMessage(e->userId(), user_event->Text(), m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }

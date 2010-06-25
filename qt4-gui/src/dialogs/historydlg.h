@@ -135,7 +135,7 @@ private:
    *
    * @param event Event to add
    */
-  void addMsg(const CUserEvent* event);
+  void addMsg(const Licq::UserEvent* event);
 
   /**
    * Build a regular expression from the input fields
