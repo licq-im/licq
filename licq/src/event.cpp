@@ -6,24 +6,24 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
+#include <licq/event.h>
+
 #include "config.h"
 
 #include <assert.h>
 
 #include <licq/packet.h>
-#include "licq_events.h"
+#include <licq/userevents.h>
 #include "licq_log.h"
 
 #include "contactlist/user.h"
 
 using namespace std;
 using Licq::Event;
-using Licq::ExtendedData;
-using Licq::SearchData;
 using Licq::UserId;
 
 Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
-    ConnectType _eConnect, const UserId& userId, CUserEvent *e)
+    ConnectType _eConnect, const UserId& userId, Licq::UserEvent* e)
 //   : m_xBuffer(p.getBuffer())
 {
   // set up internal variables
@@ -121,7 +121,7 @@ Event::~Event()
 
 
 //-----ICQEvent::AttachPacket---------------------------------------------------
-void ICQEvent::AttachPacket(Licq::Packet* p)
+void Event::AttachPacket(Licq::Packet* p)
 {
   m_pPacket = p;
   m_nChannel = p->Channel();
@@ -135,49 +135,52 @@ void ICQEvent::AttachPacket(Licq::Packet* p)
 }
   
 //-----ICQEvent::CompareEvent---------------------------------------------------
-bool ICQEvent::CompareEvent(int sockfd, unsigned short _nSequence) const
+bool Event::CompareEvent(int sockfd, unsigned short _nSequence) const
 {
    return(m_nSocketDesc == sockfd && m_nSequence == _nSequence);
 }
 
-bool ICQEvent::CompareEvent(unsigned short nEventId) const
+bool Event::CompareEvent(unsigned short nEventId) const
 {
   return (m_nEventId == nEventId);
 }
 
-bool ICQEvent::CompareSubSequence(unsigned long _nSubSequence) const
+bool Event::CompareSubSequence(unsigned long _nSubSequence) const
 {
   return (m_nSubSequence == _nSubSequence);
 }
 
-bool ICQEvent::Equals(unsigned long nEventId) const
+bool Event::Equals(unsigned long nEventId) const
 {
   return (this == NULL && nEventId == 0) || CompareEvent(nEventId);
 }
 
-
-unsigned long ICQEvent::EventId() const
+unsigned long Event::EventId() const
 {
   return this == NULL ? 0 : m_nEventId;
 }
 
-const Licq::User* LicqEvent::UnknownUser() const
+const Licq::User* Event::UnknownUser() const
 {
   return m_pUnknownUser;
 }
 
 // Returns the event and transfers ownership to the calling function
-CUserEvent *ICQEvent::GrabUserEvent()
+Licq::UserEvent* Event::GrabUserEvent()
 {
-  CUserEvent *e = m_pUserEvent; m_pUserEvent = NULL; return e;
+  Licq::UserEvent* e = m_pUserEvent;
+  m_pUserEvent = NULL;
+  return e;
 }
 
-CSearchAck *ICQEvent::GrabSearchAck()
+Licq::SearchData* Event::GrabSearchAck()
 {
-  CSearchAck *a = m_pSearchAck; m_pSearchAck = NULL; return a;
+  Licq::SearchData* a = m_pSearchAck;
+  m_pSearchAck = NULL;
+  return a;
 }
 
-Licq::User* LicqEvent::GrabUnknownUser()
+Licq::User* Event::GrabUnknownUser()
 {
   Licq::User* u = m_pUnknownUser;
   m_pUnknownUser = NULL;

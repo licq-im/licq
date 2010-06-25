@@ -16,11 +16,11 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/packet.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
-#include <licq_events.h>
 #include "licq_log.h"
 
 #include "../daemon.h"
@@ -102,8 +102,8 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
   pthread_mutex_lock(&send_mutex);
   pthread_mutex_lock(&gIcqProtocol.mutex_sendqueue_server);
 
-  list<ICQEvent *>::iterator iter;
-  ICQEvent *e = NULL;
+  list<Licq::Event*>::iterator iter;
+  Licq::Event* e = NULL;
 
   while (e == NULL)
   {
@@ -213,9 +213,9 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
           gIcqProtocol.m_tLogonTime = time(NULL);
           gIcqProtocol.m_eStatus = STATUS_OFFLINE_FORCED;
           gIcqProtocol.m_bLoggingOn = false;
-        if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+        if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
         {
-          gIcqProtocol.DoneExtendedEvent(e, EVENT_ERROR);
+          gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultError);
           gIcqProtocol.ProcessDoneEvent(e);
         }
         else
@@ -232,9 +232,9 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
       {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
         gLog.Info(tr("%sNot connected to server, failing event\n"), L_SRVxSTR);
-      if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+      if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
       {
-        gIcqProtocol.DoneExtendedEvent(e, EVENT_ERROR);
+        gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultError);
         gIcqProtocol.ProcessDoneEvent(e);
       }
       else
@@ -258,9 +258,9 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
     {
       gLog.Warn(tr("%sSocket not connected or invalid (#%hu).\n"), L_WARNxSTR,
                 nSequence);
-    if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+    if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
     {
-      gIcqProtocol.DoneExtendedEvent(e, EVENT_ERROR);
+      gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultError);
       gIcqProtocol.ProcessDoneEvent(e);
     }
     else
@@ -320,9 +320,9 @@ exit_server_thread:
     gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
         nSequence, L_BLANKxSTR, errorStr.c_str());
 
-    if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+    if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
     {
-      gIcqProtocol.DoneExtendedEvent(e, EVENT_ERROR);
+      gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultError);
       gIcqProtocol.ProcessDoneEvent(e);
     }
     else
@@ -338,9 +338,9 @@ exit_server_thread:
     {
       pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
       // send successfully and we don't get an answer from the server
-      if (gIcqProtocol.DoneEvent(e, EVENT_ACKED) != NULL)
+      if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultAcked) != NULL)
       {
-        gIcqProtocol.DoneExtendedEvent(e, EVENT_ACKED);
+        gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultAcked);
         gIcqProtocol.ProcessDoneEvent(e);
       }
       else
@@ -375,7 +375,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
 
   DEBUG_THREADS("[ProcessRunningEvent_Client_tep] Caught event.\n");
 
-  ICQEvent *e = (ICQEvent *)p;
+  Licq::Event* e = (Licq::Event*)p;
 
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
   pthread_testcancel();
@@ -396,7 +396,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
       {
-        if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+        if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
           gIcqProtocol.ProcessDoneEvent(e);
         else
         {
@@ -431,7 +431,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
         Licq::UserReadGuard u(userId);
         if (!u.isLocked())
         {
-          if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+          if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
             gIcqProtocol.ProcessDoneEvent(e);
           else
           {
@@ -473,7 +473,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
           Licq::UserReadGuard u(userId);
           if (!u.isLocked())
           {
-            if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+            if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
               gIcqProtocol.ProcessDoneEvent(e);
             else
             {
@@ -495,7 +495,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     if (e->m_nSocketDesc == -1)
     {
       pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-      if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+      if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
         gIcqProtocol.ProcessDoneEvent(e);
       else
       {
@@ -519,7 +519,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
 
     gLog.Warn(tr("%sSocket %d does not exist (#%hu).\n"), L_WARNxSTR, socket,
        nSequence);
-    if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+    if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
       gIcqProtocol.ProcessDoneEvent(e);
     else
     {
@@ -572,7 +572,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
         -nSequence, L_BLANKxSTR, errorStr.c_str());
     gIcqProtocol.myNewSocketPipe.putChar('S');
     // Kill the event, do after the above as ProcessDoneEvent erase the event
-    if (gIcqProtocol.DoneEvent(e, EVENT_ERROR) != NULL)
+    if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
       gIcqProtocol.ProcessDoneEvent(e);
     else
     {

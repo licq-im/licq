@@ -28,7 +28,6 @@
 #include <ctime>
 #include <sys/stat.h> // chmod
 
-#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
@@ -38,6 +37,7 @@
 #include <licq/statistics.h>
 #include <licq/thread/mutexlocker.h>
 #include <licq/translator.h>
+#include <licq/userevents.h>
 
 #include "contactlist/usermanager.h"
 #include "gettext.h"
@@ -344,7 +344,7 @@ unsigned long Daemon::getNextEventId()
   return eventId;
 }
 
-bool Daemon::addUserEvent(Licq::User* u, CUserEvent* e)
+bool Daemon::addUserEvent(Licq::User* u, Licq::UserEvent* e)
 {
   if (u->isUser())
     e->AddToHistory(u, true);
@@ -365,7 +365,7 @@ bool Daemon::addUserEvent(Licq::User* u, CUserEvent* e)
   return true;
 }
 
-void Daemon::rejectEvent(const UserId& userId, CUserEvent* e)
+void Daemon::rejectEvent(const UserId& userId, Licq::UserEvent* e)
 {
   if (myRejectFile.empty())
     return;
@@ -392,12 +392,12 @@ void Licq::Daemon::cancelEvent(unsigned long eventId)
   gIcqProtocol.CancelEvent(eventId);
 }
 
-void Licq::Daemon::cancelEvent(LicqEvent* event)
+void Licq::Daemon::cancelEvent(Licq::Event* event)
 {
   gIcqProtocol.CancelEvent(event);
 }
 
-void Licq::Daemon::PushPluginEvent(LicqEvent* e)
+void Licq::Daemon::PushPluginEvent(Licq::Event* e)
 {
   LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralEvent(e);
 }
@@ -412,7 +412,7 @@ PluginSignal* Licq::Daemon::popPluginSignal()
   return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralSignal();
 }
 
-LicqEvent* Licq::Daemon::PopPluginEvent()
+Licq::Event* Licq::Daemon::PopPluginEvent()
 {
   return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralEvent();
 }

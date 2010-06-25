@@ -11,7 +11,6 @@
 #include <unistd.h>
 
 #include "gettext.h"
-#include "licq_events.h"
 #include "licq_log.h"
 #include <licq/icq.h> // For VersionToUse()
 #include <licq/icqcodes.h>
@@ -22,6 +21,7 @@
 #include "licq/pluginmanager.h"
 #include "licq/pluginsignal.h"
 #include <licq/socket.h>
+#include <licq/userevents.h>
 
 #include "../icq/icq.h" // For gSocketManager
 
@@ -2075,7 +2075,7 @@ void Licq::User::saveAll()
   SavePictureInfo();
 }
 
-void Licq::User::EventPush(CUserEvent *e)
+void Licq::User::EventPush(Licq::UserEvent *e)
 {
   m_vcMessages.push_back(e);
   incNumUserEvents();
@@ -2099,16 +2099,16 @@ void Licq::User::CancelEvent(unsigned short index)
   m_vcMessages[index]->Cancel();
 }
 
-const CUserEvent* Licq::User::EventPeek(unsigned short index) const
+const Licq::UserEvent* Licq::User::EventPeek(unsigned short index) const
 {
   if (index >= NewMessages()) return (NULL);
   return (m_vcMessages[index]);
 }
 
-const CUserEvent* Licq::User::EventPeekId(int id) const
+const Licq::UserEvent* Licq::User::EventPeekId(int id) const
 {
   if (m_vcMessages.size() == 0) return NULL;
-  CUserEvent *e = NULL;
+  Licq::UserEvent* e = NULL;
   UserEventList::const_iterator iter;
   for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
   {
@@ -2121,22 +2121,22 @@ const CUserEvent* Licq::User::EventPeekId(int id) const
   return e;
 }
 
-const CUserEvent* Licq::User::EventPeekLast() const
+const Licq::UserEvent* Licq::User::EventPeekLast() const
 {
   if (m_vcMessages.size() == 0) return (NULL);
   return (m_vcMessages[m_vcMessages.size() - 1]);
 }
 
-const CUserEvent* Licq::User::EventPeekFirst() const
+const Licq::UserEvent* Licq::User::EventPeekFirst() const
 {
   if (m_vcMessages.size() == 0) return (NULL);
   return (m_vcMessages[0]);
 }
 
-CUserEvent *Licq::User::EventPop()
+Licq::UserEvent *Licq::User::EventPop()
 {
   if (m_vcMessages.size() == 0) return NULL;
-  CUserEvent *e = m_vcMessages[0];
+  Licq::UserEvent* e = m_vcMessages[0];
   for (unsigned short i = 0; i < m_vcMessages.size() - 1; i++)
     m_vcMessages[i] = m_vcMessages[i + 1];
   m_vcMessages.pop_back();

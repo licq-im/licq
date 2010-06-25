@@ -19,7 +19,7 @@
 
 #include "plugineventhandler.h"
 
-#include <licq_events.h>
+#include <licq/event.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
 
@@ -49,7 +49,7 @@ PluginEventHandler::~PluginEventHandler()
   // Empty
 }
 
-void PluginEventHandler::pushGeneralEvent(LicqEvent* event)
+void PluginEventHandler::pushGeneralEvent(Licq::Event* event)
 {
   MutexLocker locker(myGeneralPluginsMutex);
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
@@ -65,7 +65,7 @@ void PluginEventHandler::pushGeneralEvent(LicqEvent* event)
   delete event;
 }
 
-LicqEvent* PluginEventHandler::popGeneralEvent()
+Licq::Event* PluginEventHandler::popGeneralEvent()
 {
   MutexLocker locker(myGeneralPluginsMutex);
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)

@@ -21,8 +21,8 @@
 #include <unistd.h>
 
 #include "licq_log.h"
-#include "licq_message.h"
 #include <licq/icqdefines.h>
+#include <licq/userevents.h>
 #include <licq/userid.h>
 
 #include "../gettext.h"
@@ -115,7 +115,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
   unsigned short nCommand, nSubCommand;
   time_t tTime;
   char cDir;
-  CUserEvent *e;
+  Licq::UserEvent* e;
   szResult = fgets(sz, sizeof(sz), f);
   while(true)
   {
@@ -142,147 +142,125 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     case ICQ_CMDxSUB_MSG:
     {
       GET_VALID_LINES;
-      e = new CEventMsg(szMsg, nCommand, tTime, nFlags);
-      break;
+        e = new Licq::EventMsg(szMsg, nCommand, tTime, nFlags);
+        break;
     }
     case ICQ_CMDxSUB_CHAT:
     {
       if (nCommand != ICQ_CMDxTCP_CANCEL)
       {
         GET_VALID_LINES;
-        e = new CEventChat(szMsg, 0, tTime, nFlags);
-      }
+          e = new Licq::EventChat(szMsg, 0, tTime, nFlags);
+        }
       else
       {
         SKIP_VALID_LINES;
-        //e = new CEventChatCancel(0, tTime, nFlags);
-      }
-      break;
+          //e = new Licq::EventChatCancel(0, tTime, nFlags);
+        }
+        break;
     }
     case ICQ_CMDxSUB_FILE:
     {
       if (nCommand != ICQ_CMDxTCP_CANCEL)
       {
         GET_VALID_LINE_OR_BREAK;
-        char *szFile = strdup(&szResult[1]);
+          string file  = &szResult[1];
         GET_VALID_LINE_OR_BREAK;
         unsigned long nSize = atoi(&szResult[1]);
         GET_VALID_LINES;
         list<string> filelist;
-        filelist.push_back(szFile);
-        e = new CEventFile(szFile, szMsg, nSize, filelist, 0, tTime, nFlags);
-        free(szFile);
+        filelist.push_back(file);
+          e = new Licq::EventFile(file, szMsg, nSize, filelist, 0, tTime, nFlags);
       }
       else
       {
         SKIP_VALID_LINES;
-        //e = new CEventFileCancel(0, tTime, nFlags);
-      }
+          //e = new Licq::EventFileCancel(0, tTime, nFlags);
+        }
       break;
     }
     case ICQ_CMDxSUB_URL:
     {
       GET_VALID_LINE_OR_BREAK;
-      char *szUrl = strdup(&szResult[1]);
+        string url = &szResult[1];
       GET_VALID_LINES;
-      e = new CEventUrl(szUrl, szMsg, nCommand, tTime, nFlags);
-      free(szUrl);
+        e = new Licq::EventUrl(url, szMsg, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       GET_VALID_LINE_OR_BREAK;
-        char* id = strdup(&szResult[1]);
-        UserId userId(id, LICQ_PPID);
+        UserId userId(&szResult[1], LICQ_PPID);
       GET_VALID_LINE_OR_BREAK;
-      char *szAlias = strdup(&szResult[1]);
+        string alias = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szFName = strdup(&szResult[1]);
+        string firstName = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szLName = strdup(&szResult[1]);
+        string lastName = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szEmail = strdup(&szResult[1]);
+        string email = &szResult[1];
       GET_VALID_LINES;
-        e = new CEventAuthRequest(userId, szAlias, szFName, szLName,
-            szEmail, szMsg, nCommand, tTime, nFlags);
-        free(id);
-      free(szAlias);
-      free(szFName);
-      free(szLName);
-      free(szEmail);
+        e = new Licq::EventAuthRequest(userId, alias, firstName, lastName,
+            email, szMsg, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       GET_VALID_LINE_OR_BREAK;
-        char* id = strdup(&szResult[1]);
-        UserId userId(id, LICQ_PPID);
+        UserId userId(&szResult[1], LICQ_PPID);
       GET_VALID_LINES;
-        e = new CEventAuthGranted(userId, szMsg, nCommand, tTime, nFlags);
-        free(id);
+        e = new Licq::EventAuthGranted(userId, szMsg, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_AUTHxREFUSED:
     {
       GET_VALID_LINE_OR_BREAK;
-        char* id = strdup(&szResult[1]);
-        UserId userId(id, LICQ_PPID);
+        UserId userId(&szResult[1], LICQ_PPID);
       GET_VALID_LINES;
-        e = new CEventAuthRefused(userId, szMsg, nCommand, tTime, nFlags);
-        free(id);
+        e = new Licq::EventAuthRefused(userId, szMsg, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       GET_VALID_LINE_OR_BREAK;
-        char* id = strdup(&szResult[1]);
-        UserId userId(id, LICQ_PPID);
+        UserId userId(&szResult[1], LICQ_PPID);
       GET_VALID_LINE_OR_BREAK;
-      char *szAlias = strdup(&szResult[1]);
+        string alias = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szFName = strdup(&szResult[1]);
+        string firstName = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szLName = strdup(&szResult[1]);
+        string lastName = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szEmail = strdup(&szResult[1]);
-        e = new CEventAdded(userId, szAlias, szFName, szLName, szEmail,
+        string email = &szResult[1];
+        e = new Licq::EventAdded(userId, alias, firstName, lastName, email,
                             nCommand, tTime, nFlags);
-        free(id);
-      free(szAlias);
-      free(szFName);
-      free(szLName);
-      free(szEmail);
       break;
     }
     case ICQ_CMDxSUB_WEBxPANEL:
     {
       GET_VALID_LINE_OR_BREAK;
-      char *szName = strdup(&szResult[1]);
+        string name = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szEmail = strdup(&szResult[1]);
+        string email = &szResult[1];
       GET_VALID_LINES;
-      e = new CEventWebPanel(szName, szEmail, szMsg,
+        e = new Licq::EventWebPanel(name, email, szMsg,
                              nCommand, tTime, nFlags);
-      free(szName);
-      free(szEmail);
       break;
     }
     case ICQ_CMDxSUB_EMAILxPAGER:
     {
       GET_VALID_LINE_OR_BREAK;
-      char *szName = strdup(&szResult[1]);
+        string name = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szEmail = strdup(&szResult[1]);
+        string email = &szResult[1];
       GET_VALID_LINES;
-      e = new CEventWebPanel(szName, szEmail, szMsg,
+        e = new Licq::EventWebPanel(name, email, szMsg,
                              nCommand, tTime, nFlags);
-      free(szName);
-      free(szEmail);
       break;
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      ContactList vc;
+      Licq::EventContactList::ContactList vc;
       bool b = true;
       string id;
       while (true)
@@ -293,43 +271,38 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         else if (!id.empty())
           {
             UserId userId(id, LICQ_PPID);
-            vc.push_back(new CContact(userId, &szResult[1]));
+            vc.push_back(new Licq::EventContactList::Contact(userId, &szResult[1]));
           }
         b = !b;
       }
-      e = new CEventContactList(vc, false, nCommand, tTime, nFlags);
-      break;
+        e = new Licq::EventContactList(vc, false, nCommand, tTime, nFlags);
+        break;
     }
     case ICQ_CMDxSUB_SMS:
     {
       GET_VALID_LINE_OR_BREAK;
-      char *szNum = strdup(&szResult[1]);
+        string number = &szResult[1];
       GET_VALID_LINES;
-      e = new CEventSms(szNum, szMsg, nCommand, tTime, nFlags);
-      free(szNum);
+        e = new Licq::EventSms(number, szMsg, nCommand, tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_MSGxSERVER:
     {
       GET_VALID_LINE_OR_BREAK;
-      char *szName = strdup(&szResult[1]);
+        string name = &szResult[1];
       SKIP_LINE;
-      const char *szEmail = "";
       GET_VALID_LINES;
-      e = new CEventServerMessage(szName, szEmail, szMsg, tTime);
-      free(szName);
+        e = new Licq::EventServerMessage(name, "", szMsg, tTime);
       break;
     }
     case ICQ_CMDxSUB_EMAILxALERT:
     {
       GET_VALID_LINE_OR_BREAK;
-      char *szName = strdup(&szResult[1]);
+        string name = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
-      char *szEmail = strdup(&szResult[1]);
+        string email = &szResult[1];
       GET_VALID_LINES;
-      e = new CEventEmailAlert(szName, 0, szEmail, szMsg, tTime);
-      free(szName);
-      free(szEmail);
+        e = new Licq::EventEmailAlert(name, 0, email, szMsg, tTime);
       break;
     }
     default:
@@ -383,7 +356,7 @@ void UserHistory::write(const string& buf, bool append)
 
 void UserHistory::clear(Licq::HistoryList& hist)
 {
-  BOOST_FOREACH(CUserEvent* event, hist)
+  BOOST_FOREACH(Licq::UserEvent* event, hist)
     delete event;
 
   hist.clear();
