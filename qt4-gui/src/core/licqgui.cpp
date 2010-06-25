@@ -658,16 +658,18 @@ bool LicqGui::removeUserFromList(const Licq::UserId& userId, QWidget* parent)
     parent = myMainWindow;
 
   QString warning;
+  bool notInList;
   {
     Licq::UserReadGuard u(userId);
     if (!u.isLocked())
       return true;
+    notInList = u->NotInList();
     warning = tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
         .arg(QString::fromUtf8(u->GetAlias()))
         .arg(u->accountId().c_str());
   }
 
-  if (QueryYesNo(parent, warning))
+  if (notInList || QueryYesNo(parent, warning))
   {
     Licq::gUserManager.removeUser(userId);
     return true;
