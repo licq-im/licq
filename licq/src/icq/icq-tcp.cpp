@@ -1660,7 +1660,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				nMask |= licqVersion;
 				if (licqChar == 'L')
             gLog.Info(tr("%sMessage from %s (%s) [Licq %s].\n"), L_TCPxSTR,
-                u->GetAlias(), userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                u->getAlias().c_str(), userId.toString().c_str(),
+                Licq::UserEvent::licqVersionToString(licqVersion).c_str());
 	  else
             gLog.Info(tr("%sMessage from %s (%s).\n"), L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
 
@@ -1720,7 +1721,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet >> licqChar >> licqVersion;
         if (licqChar == 'L')
             gLog.Info(tr("%s%s (%s) requested auto response [Licq %s].\n"), L_TCPxSTR,
-                u->GetAlias(), userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                u->getAlias().c_str(), userId.toString().c_str(),
+                Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           else
             gLog.Info(tr("%s%s (%s) requested auto response.\n"), L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
 
@@ -1760,7 +1762,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         nMask |= licqVersion;
         if (licqChar == 'L')
             gLog.Info(tr("%sURL from %s (%s) [Licq %s].\n"), L_TCPxSTR, u->GetAlias(),
-                userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                userId.toString().c_str(), Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           else
             gLog.Info(tr("%sURL from %s (%s).\n"), L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
 
@@ -1830,7 +1832,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         nMask |= licqVersion;
         if (licqChar == 'L')
             gLog.Info(tr("%sContact list from %s (%s) [Licq %s].\n"), L_TCPxSTR,
-                u->GetAlias(), userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                u->getAlias().c_str(), userId.toString().c_str(),
+                Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           else
             gLog.Info(tr("%sContact list from %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
@@ -1897,7 +1900,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         if (licqChar == 'L')
             gLog.Info(tr("%sChat request from %s (%s) [Licq %s].\n"), L_TCPxSTR,
-                u->GetAlias(), userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                u->getAlias().c_str(), userId.toString().c_str(),
+                Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           else
             gLog.Info(tr("%sChat request from %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
@@ -1949,7 +1953,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         if (licqChar == 'L')
             gLog.Info(tr("%sFile transfer request from %s (%s) [Licq %s].\n"),
-                L_TCPxSTR, u->GetAlias(), userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                L_TCPxSTR, u->getAlias().c_str(), userId.toString().c_str(),
+                Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           else
             gLog.Info(tr("%sFile transfer request from %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
@@ -2186,7 +2191,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         if (licqChar == 'L')
             gLog.Info(tr("%sSecure channel request from %s (%s) [Licq %s].\n"),
-                L_TCPxSTR, u->GetAlias(), userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                L_TCPxSTR, u->getAlias().c_str(), userId.toString().c_str(),
+                Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           else
             gLog.Info(tr("%sSecure channel request from %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
@@ -2248,7 +2254,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         if (licqChar == 'L')
             gLog.Info(tr("%sSecure channel closed by %s (%s) [Licq %s].\n"),
-                L_TCPxSTR, u->GetAlias(), userId.toString().c_str(), CUserEvent::LicqVersionToString(licqVersion));
+                L_TCPxSTR, u->getAlias().c_str(), userId.toString().c_str(),
+                Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           else
             gLog.Info(tr("%sSecure channel closed by %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
@@ -2465,8 +2472,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet >> licqChar >> licqVersion;
 
         char l[32] = "";
-        if (licqChar == 'L') sprintf(l, " [Licq %s]",
-         CUserEvent::LicqVersionToString(licqVersion));
+          if (licqChar == 'L')
+            sprintf(l, " [Licq %s]", Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           gLog.Info(tr("%sSecure channel response from %s (%s)%s.\n"), L_TCPxSTR,
               u->GetAlias(), userId.toString().c_str(), l);
 
@@ -2541,7 +2548,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet >> licqChar >> licqVersion;
 
         char l[32] = "";
-        if (licqChar == 'L') sprintf(l, " [Licq %s]", CUserEvent::LicqVersionToString(licqVersion));
+          if (licqChar == 'L')
+            sprintf(l, " [Licq %s]", Licq::UserEvent::licqVersionToString(licqVersion).c_str());
           gLog.Info(tr("%sSecure channel with %s (%s) closed %s.\n"), L_TCPxSTR,
               u->GetAlias(), userId.toString().c_str(), l);
 
@@ -2584,7 +2592,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     }
 
     char l[32] = "";
-    if (licqChar == 'L') sprintf(l, " [Licq %s]", CUserEvent::LicqVersionToString(licqVersion));
+      if (licqChar == 'L')
+        sprintf(l, " [Licq %s]", Licq::UserEvent::licqVersionToString(licqVersion).c_str());
 
     // translating string with translation table
     gTranslator.ServerToClient (message);

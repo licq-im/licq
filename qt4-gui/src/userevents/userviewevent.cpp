@@ -371,7 +371,7 @@ void UserViewEvent::read1()
       QString url = Licq::gDaemon.baseDir().c_str();
       url += ".msn_email.html";
 
-      QString strUser = p->To();
+      QString strUser = p->to().c_str();
       QString strHTML = QString(
           "<html><head><noscript><meta http-equiv=Refresh content=\"0; url=http://www.hotmail.com\">"
           "</noscript></head><body onload=\"document.pform.submit(); \"><form name=\"pform\" action=\""
@@ -382,15 +382,15 @@ void UserViewEvent::read1()
           "type=\"hidden\" name=\"rru\" value=\"%7\"><input type=\"hidden\" name=\"auth\" value=\"%8\""
           "><input type=\"hidden\" name=\"creds\" value=\"%9\"><input type=\"hidden\" name=\"svc\" value=\"mail\">"
           "<input type=\"hidden\" name=\"js\"value=\"yes\"></form></body></html>")
-        .arg(p->PostURL())
+        .arg(p->postUrl().c_str())
         .arg(strUser.left(strUser.indexOf("@")))
         .arg(strUser)
-        .arg(p->SID())
-        .arg(p->KV())
-        .arg(p->Id())
-        .arg(p->MsgURL())
-        .arg(p->MSPAuth())
-        .arg(p->Creds());
+        .arg(p->sid().c_str())
+        .arg(p->kv().c_str())
+        .arg(p->id().c_str())
+        .arg(p->msgUrl().c_str())
+        .arg(p->mspAuth().c_str())
+        .arg(p->creds().c_str());
 
       QFile fileHTML(url);
       fileHTML.open(QIODevice::WriteOnly);
@@ -435,7 +435,7 @@ void UserViewEvent::read2()
         if (chatDlg->StartAsClient(c->Port()))
           gLicqDaemon->icqChatRequestAccept(
               accountId.toLatin1(),
-              0, c->Clients(), c->Sequence(),
+              0, c->clients().c_str(), c->Sequence(),
               c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
@@ -444,7 +444,7 @@ void UserViewEvent::read2()
         if (chatDlg->StartAsServer())
           gLicqDaemon->icqChatRequestAccept(
               accountId.toLatin1(),
-              chatDlg->LocalPort(), c->Clients(), c->Sequence(),
+              chatDlg->LocalPort(), c->clients().c_str(), c->Sequence(),
               c->MessageID(), c->IsDirect());
       }
       break;
@@ -463,7 +463,7 @@ void UserViewEvent::read2()
         gProtocolManager.fileTransferAccept(
             myUsers.front(),
             fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0], f->MessageID()[1],
-            f->FileDescription(), f->Filename(), f->FileSize(), !f->IsDirect());
+            f->fileDescription(), f->filename(), f->FileSize(), !f->IsDirect());
       break;
     }
 
@@ -567,7 +567,7 @@ void UserViewEvent::read4()
         if (chatDlg->StartAsClient(c->Port()))
           gLicqDaemon->icqChatRequestAccept(
               accountId.toLatin1(),
-              0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+              0, c->clients().c_str(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
@@ -577,14 +577,14 @@ void UserViewEvent::read4()
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
           gLicqDaemon->icqChatRequestAccept(
               accountId.toLatin1(),
-              chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+              chatDlg->LocalPort(), c->clients().c_str(), c->Sequence(), c->MessageID(), c->IsDirect());
         delete j;
       }
       break;
     }
 
     case ICQ_CMDxSUB_URL:   // view a url
-      gLicqGui->viewUrl(dynamic_cast<CEventUrl*>(myCurrentEvent)->Url());
+      gLicqGui->viewUrl(dynamic_cast<Licq::EventUrl*>(myCurrentEvent)->url().c_str());
       break;
 
     case ICQ_CMDxSUB_AUTHxREQUEST: // Fall through
@@ -677,9 +677,9 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
 
   // Set the text
   if (m->SubCommand() == ICQ_CMDxSUB_SMS)
-     myMessageText = QString::fromUtf8(m->Text());
+     myMessageText = QString::fromUtf8(m->text().c_str());
   else
-     myMessageText = myCodec->toUnicode(m->Text());
+     myMessageText = myCodec->toUnicode(m->text().c_str());
 
   QString colorAttr;
   colorAttr.sprintf("#%02x%02x%02x", m->color()->foreRed(), m->color()->foreGreen(), m->color()->foreBlue());

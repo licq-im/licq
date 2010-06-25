@@ -831,7 +831,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             FD_SET(ftman->Pipe(), &fdSet);
 
             list<string> fl;
-            fl.push_back(f->Filename());
+            fl.push_back(f->filename());
             ftman->sendFiles(fl, ea->port());
           }
         }
@@ -1608,7 +1608,7 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
                      u->isUser() ? u->GetAlias() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
-                     e->Text());
+        e->text().c_str());
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
       waddch(winMain->Win(), ACS_HLINE);
@@ -3146,7 +3146,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           ftman->receiveFiles(home);
           gProtocolManager.fileTransferAccept(data->userId,
               ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
-              f->MessageID()[1], f->FileDescription(), f->Filename(),
+              f->MessageID()[1], f->fileDescription(), f->filename(),
               f->FileSize(), !f->IsDirect());
           winMain->fProcessInput = &CLicqConsole::InputCommand;
 

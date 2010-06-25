@@ -80,7 +80,7 @@ void ProcessSignal(Licq::PluginSignal* s);
 void ProcessEvent(ICQEvent *e);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
-char* my_translate(const UserId& userId, const char* msg, const char* userenc);
+string my_translate(const UserId& userId, const string& msg, const char* userenc);
 #endif
 
 // some variables representing the internal state
@@ -477,9 +477,7 @@ void ProcessSignal(Licq::PluginSignal* s)
           userencoding = u->userEncoding(); // needed in translate function
             secure=u->Secure();
 
-          char* username_translated_temp = my_translate(s->userId(), username.c_str(), "UTF-8");
-		    username = username_translated_temp;
-		    free(username_translated_temp);
+          username = my_translate(s->userId(), username, "UTF-8");
 
           if (s->subSignal() == Licq::PluginSignal::UserEvents && s->argument() > 0) // message
           {
@@ -538,13 +536,11 @@ void ProcessSignal(Licq::PluginSignal* s)
 		    ((config.Showmessages==2)&&(notify))
 		   )
 		{
-          char* translated = my_translate(s->userId(), e->Text(), userencoding.c_str());
 		    string msg="";
 		    if (secure && config.marksecuremessages)
 			msg="(S) ";
-		    msg+=translated;
+          msg += my_translate(s->userId(), e->text(), userencoding.c_str());
 		    my_xosd_display(username.c_str(), msg.c_str(), config.colour);
-		    free(translated);
 		}
 		if (
 		    (config.Showmessages==3) ||   // only display information about message on screen
@@ -735,11 +731,8 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 // the other user. (change it for example via the licq-qt-gui message window)
 // Licq:PluginSignal is needed to get the User for this message -
 // some day i will do this more elegant
-char* my_translate(const UserId& /* userId */, const char* msg, const char* userenc)
+string my_translate(const UserId& /* userId */, const string& msg, const char* userenc)
 {
-    // will be deleted outside of this function
-    char *result = (char*)malloc(strlen(msg) + 1);
-
     iconv_t conv;
     size_t fromsize, tosize, ressize;
     const char *msgptr;
@@ -747,30 +740,29 @@ char* my_translate(const UserId& /* userId */, const char* msg, const char* user
 
     if (config.localencoding == "") {
 		gLog.Warn("%sDidn't get our local encoding\n", L_OSD_STR);
-	strcpy(result,msg);
-	return result;
-    }
+    return msg;
+  }
 
     if ((userenc == 0) || (*userenc == 0))
 	{
-		strcpy(result, msg);
 		gLog.Info("%sNo translation needs to be done\n", L_OSD_STR);
-        return result;
-    }
+    return msg;
+  }
     conv=iconv_open(config.localencoding.c_str(), get_iconv_encoding_name(userenc));
 
     // no translation possible?
     if (conv==(iconv_t)-1)
     {
 	gLog.Warn("%sError initializing iconv\n", L_OSD_STR);
-	strcpy(result, msg); // return original string
-	return result;
-    }
+    return msg;
+  }
 
-    fromsize=strlen(msg);
+  fromsize = msg.size();
     tosize=fromsize;
     ressize=tosize;
-    msgptr=msg;
+  msgptr = msg.c_str();
+
+  char* result = (char*)malloc(msg.size() + 1);
     resptr=result;
 
     while ((fromsize>0) && (tosize>0))
@@ -788,20 +780,23 @@ char* my_translate(const UserId& /* userId */, const char* msg, const char* user
 		continue;
 	    }
 	    gLog.Warn("%sError in my_translate - stopping translation, error on %ld. char\n",
-                      L_OSD_STR, (long int)(msgptr-msg+1));
-	    strcpy(result, msg); // return original string
-	    return result;
-	}
+          L_OSD_STR, (long int)(msgptr - msg.c_str() + 1));
+      free(result);
+      return msg;
     }
+  }
     *resptr = 0;
     iconv_close(conv);
-    return result;
+
+  string ret(result);
+  free(result);
+  return ret;
 }
 #else
 // a dummy function which helps me to remove the #ifdef CP_TRANSLATEs in a lot of my code
-char* my_translate(const UserId& /* userId */, const char* msg, Licq::PluginSignal* /* s */)
+string my_translate(const UserId& /* userId */, const string& msg, Licq::PluginSignal* /* s */)
 {
-    return strdup(msg);
+    return strdup(msg.c_str());
 }
 
 #endif

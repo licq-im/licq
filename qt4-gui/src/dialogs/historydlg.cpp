@@ -336,9 +336,9 @@ void HistoryDlg::showHistory()
 
     QString messageText;
     if ((*item)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
-      messageText = QString::fromUtf8((*item)->Text());
+      messageText = QString::fromUtf8((*item)->text().c_str());
     else
-      messageText = myContactCodec->toUnicode((*item)->Text());
+      messageText = myContactCodec->toUnicode((*item)->text().c_str());
 
     QString name = (*item)->isReceiver() ? myContactName : myOwnerName;
 
@@ -409,9 +409,9 @@ void HistoryDlg::find(bool backwards)
     {
       QString messageText;
       if ((*i)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
-        messageText = QString::fromUtf8((*i)->Text());
+        messageText = QString::fromUtf8((*i)->text().c_str());
       else
-        messageText = myContactCodec->toUnicode((*i)->Text());
+        messageText = myContactCodec->toUnicode((*i)->text().c_str());
 
       if (messageText.contains(regExp))
       {
@@ -462,9 +462,9 @@ void HistoryDlg::find(bool backwards)
     {
       QString messageText;
       if ((*mySearchPos)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
-        messageText = QString::fromUtf8((*mySearchPos)->Text());
+        messageText = QString::fromUtf8((*mySearchPos)->text().c_str());
       else
-        messageText = myContactCodec->toUnicode((*mySearchPos)->Text());
+        messageText = myContactCodec->toUnicode((*mySearchPos)->text().c_str());
 
       if (messageText.contains(regExp))
         // We have a match

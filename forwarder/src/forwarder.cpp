@@ -320,12 +320,12 @@ bool CLicqForwarder::ForwardEvent(const Licq::User* u, const CUserEvent* e)
 
 bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const CUserEvent* e)
 {
-  char *szText = new char[strlen(e->Text()) + 256];
+  char *szText = new char[e->text().size() + 256];
   char szTime[64];
   time_t t = e->Time();
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
-      u->getAlias().c_str(), u->accountId().c_str(), szTime, e->Text());
+      u->getAlias().c_str(), u->accountId().c_str(), szTime, e->text().c_str());
   unsigned long tag = gProtocolManager.sendMessage(myUserId, szText, true, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
@@ -380,22 +380,22 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
   case ICQ_CMDxSUB_CHAT:
   {
     char *s = new char[SUBJ_CHARS + 1];
-    strncpy(s, e->Text(), SUBJ_CHARS);
+    strncpy(s, e->text().c_str(), SUBJ_CHARS);
     s[40] = '\0';
     char *n = strchr(s, '\n');
     if (n != NULL) *n = '\0';
     sprintf (szSubject, "Subject: %s [%s%s]", e->Description(),
-             s, strlen(e->Text()) > SUBJ_CHARS ? "..." : "");
+        s, e->text().size() > SUBJ_CHARS ? "..." : "");
     delete []s;
     break;
   }
   case ICQ_CMDxSUB_URL:
     sprintf (szSubject, "Subject: %s [%s]", e->Description(),
-             ((CEventUrl *)e)->Url());
+          dynamic_cast<const Licq::EventUrl*>(e)->url().c_str());
     break;
   case ICQ_CMDxSUB_FILE:
     sprintf (szSubject, "Subject: %s [%s]", e->Description(),
-             ((CEventFile *)e)->Filename());
+          dynamic_cast<const Licq::EventFile*>(e)->filename().c_str());
     break;
   default:
     sprintf (szSubject, "Subject: %s", e->Description());
@@ -470,7 +470,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e
     return false;
   }
 
-  char *szTextRN = Licq::gTranslator.NToRN(e->Text());
+  char *szTextRN = Licq::gTranslator.NToRN(e->text().c_str());
   fprintf(fs, "%s"
               "%s\r\n"
               "%s\r\n"

@@ -1781,7 +1781,7 @@ Licq::User* IcqProtocol::FindUserForInfoUpdate(const Licq::UserId& userId, LicqE
   return u;
 }
 
-string IcqProtocol::FindUserByCellular(const char *szCellular)
+string IcqProtocol::findUserByCellular(const string& cellular)
 {
   char szParsedNumber1[16], szParsedNumber2[16];
   string id;
@@ -1789,7 +1789,7 @@ string IcqProtocol::FindUserByCellular(const char *szCellular)
   FOR_EACH_USER_START(LOCK_R)
   {
     ParseDigits(szParsedNumber1, pUser->getCellularNumber().c_str(), 15);
-    ParseDigits(szParsedNumber2, szCellular, 15);
+    ParseDigits(szParsedNumber2, cellular.c_str(), 15);
     if (!strcmp(szParsedNumber1, szParsedNumber2))
       id = pUser->IdString();
   }
@@ -2319,10 +2319,10 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       char szExtraInfo[28] = { 0 };
       if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
         snprintf(szExtraInfo, 27, "Licq %s/SSL",
-                 CUserEvent::LicqVersionToString(nInfoTimestamp & 0xFFFF));
+              Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF).c_str());
       else if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
         snprintf(szExtraInfo, 27, "Licq %s",
-                 CUserEvent::LicqVersionToString(nInfoTimestamp & 0xFFFF));
+              Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF).c_str());
       else if (nInfoTimestamp == 0xffffffff)
         strcpy(szExtraInfo, "MIRANDA");
       else if (nInfoTimestamp == 0xFFFFFF8F)
@@ -3444,13 +3444,13 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  {
 	    CEventSms *eSms = (CEventSms *)eEvent;
       //TODO
-      string idSms = FindUserByCellular(eSms->Number());
+                string idSms = findUserByCellular(eSms->number());
 
       if (!idSms.empty())
       {
         //TODO
                   Licq::UserWriteGuard u(Licq::UserId(idSms.c_str(), LICQ_PPID));
-                  gLog.Info(tr("%sSMS from %s - %s (%s).\n"), L_SBLANKxSTR, eSms->Number(),
+                  gLog.Info(tr("%sSMS from %s - %s (%s).\n"), L_SBLANKxSTR, eSms->number().c_str(),
                       u->getAlias().c_str(), idSms.c_str());
                   if (gDaemon.addUserEvent(*u, eEvent))
                     gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *u);
@@ -3458,7 +3458,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                 else
                 {
                   Licq::OwnerWriteGuard o(LICQ_PPID);
-                  gLog.Info(tr("%sSMS from %s.\n"), L_BLANKxSTR, eSms->Number());
+                  gLog.Info(tr("%sSMS from %s.\n"), L_BLANKxSTR, eSms->number().c_str());
                   if (gDaemon.addUserEvent(*o, eEvent))
                   {
                     eEvent->AddToHistory(*o, true);
@@ -4659,20 +4659,20 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_SMS:
 	  {
                 CEventSms* eSms = (CEventSms *)eEvent;
-                string idSms = FindUserByCellular(eSms->Number());
+                string idSms = findUserByCellular(eSms->number());
 
                 if (!idSms.empty())
                 {
                   Licq::UserWriteGuard u(Licq::UserId(idSms.c_str(), LICQ_PPID));
                   gLog.Info(tr("%sOffline SMS from %s - %s (%s).\n"), L_SBLANKxSTR,
-                      eSms->Number(), u->GetAlias(), id);
+                      eSms->number().c_str(), u->getAlias().c_str(), id);
                   if (gDaemon.addUserEvent(*u, eEvent))
                     gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *u);
                 }
                 else
                 {
                   Licq::OwnerWriteGuard o(LICQ_PPID);
-	      gLog.Info(tr("%sOffline SMS from %s.\n"), L_BLANKxSTR, eSms->Number());
+	          gLog.Info(tr("%sOffline SMS from %s.\n"), L_BLANKxSTR, eSms->number().c_str());
                   if (gDaemon.addUserEvent(*o, eEvent))
                   {
                     eEvent->AddToHistory(*o, true);

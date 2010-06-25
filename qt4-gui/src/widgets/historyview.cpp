@@ -431,9 +431,9 @@ void HistoryView::addMsg(const CUserEvent* event, const Licq::UserId& uid)
 
   QString messageText;
   if (event->SubCommand() == ICQ_CMDxSUB_SMS)
-    messageText = QString::fromUtf8(event->Text());
+    messageText = QString::fromUtf8(event->text().c_str());
   else
-    messageText = codec->toUnicode(event->Text());
+    messageText = codec->toUnicode(event->text().c_str());
 
   addMsg(event->isReceiver(), false,
          (event->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(event) + " ")),

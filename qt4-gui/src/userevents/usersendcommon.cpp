@@ -272,9 +272,9 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           date.setTime_t((*lHistoryIter)->Time());
           QString messageText;
           if ((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
-            messageText = QString::fromUtf8((*lHistoryIter)->Text());
+            messageText = QString::fromUtf8((*lHistoryIter)->text().c_str());
           else
-            messageText = myCodec->toUnicode((*lHistoryIter)->Text());
+            messageText = myCodec->toUnicode((*lHistoryIter)->text().c_str());
 
           myHistoryView->addMsg(
               (*lHistoryIter)->isReceiver(),
@@ -786,7 +786,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
       }
       const Licq::EventMsg* ue = dynamic_cast<const Licq::EventMsg*>(e->userEvent());
       // create initial strings (implicit copying, no allocation impact :)
-      char* tmp = Licq::gTranslator.NToRN(ue->Message());
+      char* tmp = Licq::gTranslator.NToRN(ue->message().c_str());
       QByteArray wholeMessageRaw(tmp);
       delete [] tmp;
       int wholeMessagePos = 0;
@@ -834,7 +834,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
         }
         else
         {
-          messageRaw = ue->Message();
+          messageRaw = ue->message().c_str();
         }
 
         icqEventTag = gProtocolManager.sendMessage(myUsers.front(), messageRaw.data(),
@@ -856,7 +856,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
     {
       const Licq::EventUrl* ue = dynamic_cast<const Licq::EventUrl*>(e->userEvent());
 
-      icqEventTag = gProtocolManager.sendUrl(myUsers.front(), ue->Url(),
+      icqEventTag = gProtocolManager.sendUrl(myUsers.front(), ue->url(),
           ue->Description(), !online, level, false, &myIcqColor);
 
       break;
@@ -885,14 +885,14 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
     {
       const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
 
-      if (ue->Clients() == NULL)
+      if (ue->clients().empty())
         //TODO in the daemon
         icqEventTag = gLicqDaemon->icqChatRequest(accountId.toLatin1(),
-            ue->Reason(), level, !online);
+            ue->reason().c_str(), level, !online);
       else
         //TODO in the daemon
         icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(accountId.toLatin1(),
-            ue->Reason(), ue->Clients(), ue->Port(), level, !online);
+            ue->reason().c_str(), ue->clients().c_str(), ue->Port(), level, !online);
 
       break;
     }
@@ -904,7 +904,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
       //TODO in the daemon
       icqEventTag = gProtocolManager.fileTransferPropose(myUsers.front(),
-          ue->Filename(), ue->FileDescription(), filelist, level, !online);
+          ue->filename(), ue->fileDescription(), filelist, level, !online);
 
       break;
     }
@@ -915,7 +915,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
       //TODO in the daemon
       icqEventTag = gLicqDaemon->icqSendSms(accountId.toLatin1(), LICQ_PPID,
-          ue->Number(), ue->Message());
+          ue->number().c_str(), ue->message().c_str());
       break;
     }
 

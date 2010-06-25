@@ -204,7 +204,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
       user_event = e->userEvent();
-      gProtocolManager.sendMessage(e->userId(), user_event->Text(), m_bSendThroughServer,
+      gProtocolManager.sendMessage(e->userId(), user_event->text(), m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }
@@ -260,7 +260,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
   }
   if (m_bPassMessage)
   {
-    fprintf(fStdIn, "%s\n", event->Text());
+    fprintf(fStdIn, "%s\n", event->text().c_str());
     fclose(fStdIn);
     fStdIn = NULL;
   }

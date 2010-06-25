@@ -379,7 +379,7 @@ void Daemon::rejectEvent(const UserId& userId, CUserEvent* e)
   else
   {
     fprintf(f, "Event from new user (%s) rejected: \n%s\n--------------------\n\n",
-        userId.accountId().c_str(), e->Text());
+        userId.accountId().c_str(), e->text().c_str());
     chmod(rejectFile.c_str(), 00600);
     fclose(f);
   }

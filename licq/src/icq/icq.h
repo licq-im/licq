@@ -365,7 +365,7 @@ private:
 
   void ChangeUserStatus(Licq::User* u, unsigned long s);
   Licq::User* FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e, const char*);
-  std::string FindUserByCellular(const char* cellular);
+  std::string findUserByCellular(const std::string& cellular);
   bool hasServerEvent(unsigned long subSequence) const;
   void StupidChatLinkageFix();
   void addToModifyUsers(unsigned long unique_id, const std::string data);

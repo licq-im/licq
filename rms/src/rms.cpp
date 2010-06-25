@@ -1442,7 +1442,7 @@ void CRMSClient::printUserEvent(const CUserEvent* e, const string& alias)
 
     // Message
     fprintf(fs, "%d Message Start\n", CODE_VIEWxTEXTxSTART);
-    fprintf(fs, "%s", e->Text());
+    fprintf(fs, "%s", e->text().c_str());
     fprintf(fs, "\n");
     fprintf(fs, "%d Message Complete\n", CODE_VIEWxTEXTxEND);
   }

@@ -63,11 +63,11 @@ ForwardDlg::ForwardDlg(CUserEvent* e, QWidget* p)
   {
     case ICQ_CMDxSUB_MSG:
       t = tr("Message");
-      s1 = QString::fromLocal8Bit(dynamic_cast<CEventMsg*>(e)->Message());
+      s1 = QString::fromLocal8Bit(dynamic_cast<Licq::EventMsg*>(e)->message().c_str());
       break;
     case ICQ_CMDxSUB_URL:
       t = tr("URL");
-      s1 = QString::fromLocal8Bit(dynamic_cast<CEventUrl*>(e)->Url());
+      s1 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->url().c_str());
       s2 = QString::fromLocal8Bit(dynamic_cast<CEventUrl*>(e)->Description());
       break;
     default:
