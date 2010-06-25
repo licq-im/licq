@@ -30,8 +30,10 @@ class QSplitter;
 class QTreeWidgetItem;
 
 class CUserEvent;
-class LicqEvent;
-
+namespace Licq
+{
+class Event;
+}
 
 namespace LicqQtGui
 {
@@ -105,7 +107,7 @@ private slots:
   void closeDialog();
   void msgTypeChanged(UserSendCommon* from, UserSendCommon* to);
   void printMessage(QTreeWidgetItem* item);
-  void sentEvent(const LicqEvent* e);
+  void sentEvent(const Licq::Event* e);
   void setEncoding();
 };
 

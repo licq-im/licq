@@ -41,7 +41,7 @@ public:
   virtual ~UserSendMsgEvent();
 
 private:
-  virtual bool sendDone(const LicqEvent* e);
+  virtual bool sendDone(const Licq::Event* e);
   virtual void resetSettings();
 
 private slots:

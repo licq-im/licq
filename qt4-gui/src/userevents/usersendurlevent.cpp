@@ -147,7 +147,7 @@ void UserSendUrlEvent::send()
   if (myMassMessageCheck->isChecked())
   {
     MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
-    connect(m, SIGNAL(eventSent(const LicqEvent*)), SIGNAL(eventSent(const LicqEvent*)));
+    connect(m, SIGNAL(eventSent(const Licq::Event*)), SIGNAL(eventSent(const Licq::Event*)));
     int r = m->go_url(myUrlEdit->text(), myMessageEdit->toPlainText());
     delete m;
     if (r != QDialog::Accepted)

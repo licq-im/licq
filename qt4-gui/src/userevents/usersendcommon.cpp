@@ -370,8 +370,8 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
         myConvoId = convo->id();
     }
 
-    connect(gLicqGui, SIGNAL(eventSent(const LicqEvent*)),
-        myHistoryView, SLOT(addMsg(const LicqEvent*)));
+    connect(gLicqGui, SIGNAL(eventSent(const Licq::Event*)),
+        myHistoryView, SLOT(addMsg(const Licq::Event*)));
     //myViewSplitter->setResizeMode(myHistoryView, QSplitter::FollowSizeHint);
   }
 
@@ -1068,8 +1068,8 @@ void UserSendCommon::send()
     disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(send()));
     connect(mySendButton, SIGNAL(clicked()), SLOT(cancelSend()));
 
-    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-        SLOT(eventDoneReceived(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+        SLOT(eventDoneReceived(const Licq::Event*)));
   }
 }
 
@@ -1151,8 +1151,8 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
 
   if (myEventTag.size() == 0)
   {
-    disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-        this, SLOT(eventDoneReceived(const LicqEvent*)));
+    disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+        this, SLOT(eventDoneReceived(const Licq::Event*)));
   }
 
   if (myMessageEdit != NULL)

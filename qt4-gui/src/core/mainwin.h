@@ -47,10 +47,9 @@ class QPushButton;
 class QStyle;
 class QTextEdit;
 
-class LicqEvent;
-
 namespace Licq
 {
+class Event;
 class UserId;
 }
 
@@ -182,7 +181,7 @@ private slots:
 
   void slot_logon();
   void slot_protocolPlugin(unsigned long);
-  void slot_doneOwnerFcn(const LicqEvent* event);
+  void slot_doneOwnerFcn(const Licq::Event* event);
   void slot_updateContactList();
   void slot_updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument);
 

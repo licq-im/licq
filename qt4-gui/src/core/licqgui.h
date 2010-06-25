@@ -36,7 +36,10 @@
 
 class QMimeData;
 
-class LicqEvent;
+namespace Licq
+{
+class Event;
+}
 
 namespace LicqQtGui
 {
@@ -243,7 +246,7 @@ signals:
    *
    * @param event Event object that was sent
    */
-  void eventSent(const LicqEvent* event);
+  void eventSent(const Licq::Event* event);
 
 private slots:
 #ifdef Q_WS_X11

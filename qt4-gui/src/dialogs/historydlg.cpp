@@ -255,8 +255,8 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   calenderClicked();
 
   // Catch sent messages and add them to history
-  connect(gLicqGui, SIGNAL(eventSent(const LicqEvent*)),
-      SLOT(eventSent(const LicqEvent*)));
+  connect(gLicqGui, SIGNAL(eventSent(const Licq::Event*)),
+      SLOT(eventSent(const Licq::Event*)));
 
   // Catch received messages so we can add them to history
   connect(gGuiSignalManager,

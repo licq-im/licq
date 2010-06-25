@@ -24,10 +24,9 @@
 
 class QSocketNotifier;
 
-class LicqEvent;
-
 namespace Licq
 {
+class Event;
 class PluginSignal;
 class UserId;
 }
@@ -70,9 +69,9 @@ signals:
    */
   void updatedStatus(unsigned long ppid);
 
-  void doneOwnerFcn(const LicqEvent* ev);
-  void doneUserFcn(const LicqEvent* ev);
-  void searchResult(const LicqEvent* ev);
+  void doneOwnerFcn(const Licq::Event* ev);
+  void doneUserFcn(const Licq::Event* ev);
+  void searchResult(const Licq::Event* ev);
   void logon();
   void logoff();
 
@@ -146,7 +145,7 @@ private:
   QSocketNotifier* sn;
 
   void ProcessSignal(Licq::PluginSignal* sig);
-  void ProcessEvent(LicqEvent* ev);
+  void ProcessEvent(Licq::Event* ev);
 
 private slots:
   void process();

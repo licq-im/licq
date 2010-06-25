@@ -4,10 +4,10 @@
 #include <string>
 
 class CUserEvent;
-class LicqEvent;
 
 namespace Licq
 {
+class Event;
 class PluginSignal;
 class UserId;
 }
@@ -32,7 +32,7 @@ protected:
 
   void ProcessPipe();
   void ProcessSignal(Licq::PluginSignal* s);
-  void ProcessEvent(LicqEvent* e);
+  void ProcessEvent(Licq::Event* e);
 
   /**
    * A new event arrived for a user

@@ -174,8 +174,8 @@ void UserDlg::retrieve()
   {
     setCursor(Qt::WaitCursor);
     myProgressMsg = tr("Updating...");
-    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-        SLOT(doneFunction(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+        SLOT(doneFunction(const Licq::Event*)));
     setWindowTitle(myBasicTitle + " [" + myProgressMsg + "]");
   }
 }
@@ -188,8 +188,8 @@ void UserDlg::send()
   {
     myProgressMsg = tr("Updating server...");
     setCursor(Qt::WaitCursor);
-    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-        SLOT(doneFunction(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+        SLOT(doneFunction(const Licq::Event*)));
     setWindowTitle(myBasicTitle + " [" + myProgressMsg +"]");
   }
 }
@@ -274,8 +274,8 @@ void UserDlg::doneFunction(const LicqEvent* event)
   QTimer::singleShot(5000, this, SLOT(resetCaption()));
   setCursor(Qt::ArrowCursor);
   myIcqEventTag = 0;
-  disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-      this, SLOT(doneFunction(const LicqEvent*)));
+  disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+      this, SLOT(doneFunction(const Licq::Event*)));
 }
 
 void UserDlg::showUserMenu()

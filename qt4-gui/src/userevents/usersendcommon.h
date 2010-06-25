@@ -30,7 +30,10 @@ class QLabel;
 class QPushButton;
 class QSplitter;
 
-class LicqEvent;
+namespace Licq
+{
+class Event;
+}
 
 namespace LicqQtGui
 {
@@ -84,7 +87,7 @@ signals:
    *
    * @param event Event object that was sent
    */
-  void eventSent(const LicqEvent* event);
+  void eventSent(const Licq::Event* event);
 
 public slots:
   /**
@@ -116,7 +119,7 @@ protected:
   int myType;
   std::list<unsigned long> myEventTag;
 
-  void retrySend(const LicqEvent* e, bool online, unsigned short level);
+  void retrySend(const Licq::Event* e, bool online, unsigned short level);
 
   /**
    * A user has been update, this virtual function allows subclasses to add additional handling
@@ -140,7 +143,7 @@ protected:
   const QPixmap& iconForType(int type) const;
 
   virtual void resetSettings() = 0;
-  virtual bool sendDone(const LicqEvent* e) = 0;
+  virtual bool sendDone(const Licq::Event* e) = 0;
 
   /**
    * Widget is about to be closed
@@ -169,7 +172,7 @@ protected slots:
   virtual void updateShortcuts();
 
   virtual void send();
-  virtual void eventDoneReceived(const LicqEvent* e);
+  virtual void eventDoneReceived(const Licq::Event* e);
 
   void cancelSend();
   void changeEventType(QAction* action);

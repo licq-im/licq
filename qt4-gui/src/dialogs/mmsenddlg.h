@@ -31,7 +31,10 @@ class QGroupBox;
 class QProgressBar;
 class QPushButton;
 
-class LicqEvent;
+namespace Licq
+{
+class Event;
+}
 
 namespace LicqQtGui
 {
@@ -56,7 +59,7 @@ signals:
    *
    * @param event Event object that was sent
    */
-  void eventSent(const LicqEvent* event);
+  void eventSent(const Licq::Event* event);
 
 private:
   QString s1, s2;
@@ -71,7 +74,7 @@ private:
 
   void SendNext();
 private slots:
-  void slot_done(const LicqEvent* event);
+  void slot_done(const Licq::Event* event);
   void slot_cancel();
 };
 

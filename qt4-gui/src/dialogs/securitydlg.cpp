@@ -126,8 +126,8 @@ void SecurityDlg::ok()
   {
     btnUpdate->setEnabled(false);
 
-    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-        SLOT(doneUserFcn(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+        SLOT(doneUserFcn(const Licq::Event*)));
 
     setWindowTitle(title + " [" + tr("Setting...") + "]");
 
@@ -148,8 +148,8 @@ void SecurityDlg::doneUserFcn(const LicqEvent* e)
   QString result = QString::null;
   btnUpdate->setEnabled(true);
 
-  disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-      this, SLOT(doneUserFcn(const LicqEvent*)));
+  disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+      this, SLOT(doneUserFcn(const Licq::Event*)));
 
   switch (e->Result())
   {

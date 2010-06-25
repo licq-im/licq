@@ -99,8 +99,8 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
     unsigned long myPpid = myUserId.protocolId();
     QString myId = myUserId.accountId().c_str();
     mleAwayMsg->setEnabled(false);
-    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-        SLOT(doneEvent(const LicqEvent*)));
+    connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+        SLOT(doneEvent(const Licq::Event*)));
     icqEventTag = gLicqDaemon->icqFetchAutoResponse(
         myId.toLatin1(), myPpid, bSendServer);
   }

@@ -6,10 +6,10 @@
 #include <licq/userid.h>
 
 class CUserEvent;
-class LicqEvent;
 
 namespace Licq
 {
+class Event;
 class PluginSignal;
 class TCPSocket;
 class User;
@@ -45,7 +45,7 @@ protected:
 public:
   void ProcessPipe();
   void ProcessSignal(Licq::PluginSignal* s);
-  void ProcessEvent(LicqEvent* e);
+  void ProcessEvent(Licq::Event* e);
 
   void ProcessUserEvent(const Licq::UserId& userId, unsigned long nId);
   bool ForwardEvent(const Licq::User* u, const CUserEvent* e);

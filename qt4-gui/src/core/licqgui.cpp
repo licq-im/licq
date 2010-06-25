@@ -913,7 +913,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
 
   // Since daemon doesn't notify us when an event is sent we need to take care of it ourselfs
   // Get signals from event dialog and forward it to anyone who needs it
-  connect(e, SIGNAL(eventSent(const LicqEvent*)), SIGNAL(eventSent(const LicqEvent*)));
+  connect(e, SIGNAL(eventSent(const Licq::Event*)), SIGNAL(eventSent(const Licq::Event*)));
 
   // there might be more than one send window open
   // make sure we only remember one, or it will get complicated
@@ -928,7 +928,7 @@ void LicqGui::replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newD
 {
   disconnect(oldDialog, SIGNAL(finished(const Licq::UserId&)), this, SLOT(sendEventFinished(const Licq::UserId&)));
   sendEventFinished(userId);
-  connect(newDialog, SIGNAL(eventSent(const LicqEvent*)), SIGNAL(eventSent(const LicqEvent*)));
+  connect(newDialog, SIGNAL(eventSent(const Licq::Event*)), SIGNAL(eventSent(const Licq::Event*)));
   connect(newDialog, SIGNAL(finished(const Licq::UserId&)), SLOT(sendEventFinished(const Licq::UserId&)));
     myUserSendList.append(newDialog);
 }

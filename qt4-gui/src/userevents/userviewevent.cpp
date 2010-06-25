@@ -187,8 +187,8 @@ UserViewEvent::UserViewEvent(const Licq::UserId& userId, QWidget* parent)
   if (dialogSize.isValid())
     resize(dialogSize);
 
-  connect(gLicqGui, SIGNAL(eventSent(const LicqEvent*)),
-      SLOT(sentEvent(const LicqEvent*)));
+  connect(gLicqGui, SIGNAL(eventSent(const Licq::Event*)),
+      SLOT(sentEvent(const Licq::Event*)));
   connect(myMessageList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
       SLOT(printMessage(QTreeWidgetItem*)));
   connect(myRead1Button, SIGNAL(clicked()), SLOT(read1()));

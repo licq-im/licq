@@ -222,8 +222,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SLOT(updateStatus()));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
       SLOT(updateStatus()));
-  connect(gGuiSignalManager, SIGNAL(doneOwnerFcn(const LicqEvent*)),
-      SLOT(slot_doneOwnerFcn(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneOwnerFcn(const Licq::Event*)),
+      SLOT(slot_doneOwnerFcn(const Licq::Event*)));
   connect(gGuiSignalManager, SIGNAL(logon()),
       SLOT(slot_logon()));
   connect(gGuiSignalManager, SIGNAL(protocolPlugin(unsigned long)),

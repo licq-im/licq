@@ -34,8 +34,11 @@ class QLineEdit;
 class QPushButton;
 class QTreeWidget;
 
-class CSearchAck;
-class LicqEvent;
+namespace Licq
+{
+class Event;
+class SearchData;
+}
 
 namespace LicqQtGui
 {
@@ -87,14 +90,14 @@ private:
 
   QTreeWidget* foundView;
 
-  void searchFound(const CSearchAck* sa);
-  void searchDone(const CSearchAck* sa);
+  void searchFound(const Licq::SearchData* sa);
+  void searchDone(const Licq::SearchData* sa);
   void searchFailed();
 
 private slots:
   void startSearch();
   void resetSearch();
-  void searchResult(const LicqEvent* e);
+  void searchResult(const Licq::Event* e);
   void selectionChanged();
   void viewInfo();
   void addUser();

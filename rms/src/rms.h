@@ -9,11 +9,11 @@
 
 namespace Licq
 {
+class Event;
 class PluginSignal;
 }
 
 class CUserEvent;
-class LicqEvent;
 class CLogService_Plugin;
 
 const unsigned short MAX_LINE_LENGTH = 1024 * 1;
@@ -44,7 +44,7 @@ protected:
 public:
   void ProcessPipe();
   void ProcessSignal(Licq::PluginSignal* s);
-  void ProcessEvent(LicqEvent* e);
+  void ProcessEvent(Licq::Event* e);
   void ProcessServer();
   void ProcessLog();
 
@@ -103,7 +103,7 @@ protected:
 
   int StateMachine();
   int ProcessCommand();
-  bool ProcessEvent(LicqEvent* e);
+  bool ProcessEvent(Licq::Event* e);
   bool AddLineToText();
   unsigned long GetProtocol(const char *);
   void ParseUser(const char *);

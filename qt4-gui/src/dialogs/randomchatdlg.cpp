@@ -93,8 +93,8 @@ RandomChatDlg::~RandomChatDlg()
 void RandomChatDlg::okPressed()
 {
   myOkButton->setEnabled(false);
-  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-      SLOT(userEventDone(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+      SLOT(userEventDone(const Licq::Event*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(myGroupsList->currentRow())
   {
@@ -221,8 +221,8 @@ void SetRandomChatGroupDlg::okPressed()
 {
   myOkButton->setEnabled(false);
   myCancelButton = new QPushButton(tr("&Cancel"), this);
-  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-      SLOT(userEventDone(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+      SLOT(userEventDone(const Licq::Event*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(myGroupsList->currentRow())
   {

@@ -29,7 +29,10 @@
 #include <QMap>
 #include <QPushButton>
 
-class LicqEvent;
+namespace Licq
+{
+class Event;
+}
 
 namespace LicqQtGui
 {
@@ -160,7 +163,7 @@ private slots:
    *
    * @param event Event from server with result
    */
-  void doneFunction(const LicqEvent* event);
+  void doneFunction(const Licq::Event* event);
 
   /**
    * Show user menu

@@ -79,8 +79,8 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
   v->addWidget(buttons);
 
   connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
-  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-      SLOT(slot_done(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+      SLOT(slot_done(const Licq::Event*)));
 
   barSend->setMaximum(mmv->contacts().size());
   barSend->setValue(0);
@@ -297,7 +297,7 @@ void MMSendDlg::slot_cancel()
     Licq::gDaemon.cancelEvent(icqEventTag);
     icqEventTag = 0;
   }
-  //disconnect(sigman, SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(slot_done(const LicqEvent*)));
+  //disconnect(sigman, SIGNAL(doneUserFcn(const Licq::Event*)), SLOT(slot_done(const Licq::Event*)));
 
   reject();
 }

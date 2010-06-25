@@ -27,7 +27,10 @@
 class QLabel;
 class QPushButton;
 
-class LicqEvent;
+namespace Licq
+{
+class Event;
+}
 
 namespace LicqQtGui
 {
@@ -55,7 +58,7 @@ private:
 
 private slots:
   void startSend();
-  void doneEvent(const LicqEvent* e);
+  void doneEvent(const Licq::Event* e);
   void openConnection();
   void closeConnection();
 };

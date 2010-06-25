@@ -61,8 +61,8 @@ SearchUserDlg::SearchUserDlg()
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Licq - User Search"));
 
-  connect(gGuiSignalManager, SIGNAL(searchResult(const LicqEvent*)),
-      SLOT(searchResult(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(searchResult(const Licq::Event*)),
+      SLOT(searchResult(const Licq::Event*)));
 
   QVBoxLayout* lay = new QVBoxLayout(this);
 

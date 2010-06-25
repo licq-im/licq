@@ -129,8 +129,8 @@ KeyRequestDlg::~KeyRequestDlg()
 
 void KeyRequestDlg::startSend()
 {
-  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const LicqEvent*)),
-      SLOT(doneEvent(const LicqEvent*)));
+  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
+      SLOT(doneEvent(const Licq::Event*)));
   btnSend->setEnabled(false);
 
   if (myOpen)
