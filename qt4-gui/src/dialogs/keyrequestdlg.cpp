@@ -29,10 +29,11 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/protocolmanager.h>
+#include <licq/userevents.h>
 
 #include "core/signalmanager.h"
 
@@ -155,7 +156,7 @@ void KeyRequestDlg::closeConnection()
   myIcqEventTag = gProtocolManager.secureChannelClose(myUserId);
 }
 
-void KeyRequestDlg::doneEvent(const LicqEvent* e)
+void KeyRequestDlg::doneEvent(const Licq::Event* e)
 {
   if (!e->Equals(myIcqEventTag))
     return;
@@ -177,13 +178,13 @@ void KeyRequestDlg::doneEvent(const LicqEvent* e)
     color = "red";
     switch (e->Result())
     {
-      case EVENT_FAILED:
+      case Licq::Event::ResultFailed:
         text = tr("Remote client does not support OpenSSL.");
         break;
-      case EVENT_ERROR: // could not connect to remote host (or out of memory)
+      case Licq::Event::ResultError: // could not connect to remote host (or out of memory)
         text = tr("Could not connect to remote client.");
         break;
-      case EVENT_SUCCESS:
+      case Licq::Event::ResultSuccess:
         if (myOpen)
         {
           color = "ForestGreen";
@@ -199,7 +200,7 @@ void KeyRequestDlg::doneEvent(const LicqEvent* e)
         text = tr("Unknown state.");
         break;
     }
-    if (e->Result() == EVENT_SUCCESS)
+    if (e->Result() == Licq::Event::ResultSuccess)
     {
       btnSend->setEnabled(false);
       QTimer::singleShot(500, this, SLOT(close()));

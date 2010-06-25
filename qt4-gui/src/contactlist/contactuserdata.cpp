@@ -34,7 +34,7 @@
 #include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
-#include <licq_events.h>
+#include <licq/userevents.h>
 
 // Qt-gui
 #include "config/contactlist.h"

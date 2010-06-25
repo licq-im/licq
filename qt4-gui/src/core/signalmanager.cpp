@@ -25,11 +25,11 @@
 #include <QApplication>
 #include <QSocketNotifier>
 
-#include <licq_events.h>
 #include <licq/icqdefines.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/plugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -149,7 +149,7 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
   delete sig;
 }
 
-void SignalManager::ProcessEvent(ICQEvent* ev)
+void SignalManager::ProcessEvent(Licq::Event* ev)
 {
   if (ev->Command() == ICQ_CMDxTCP_START) // direct connection check
   {
@@ -225,7 +225,7 @@ void SignalManager::process()
 
     case Licq::GeneralPlugin::PipeEvent:
     {
-      ICQEvent* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
       ProcessEvent(e);
       break;
     }

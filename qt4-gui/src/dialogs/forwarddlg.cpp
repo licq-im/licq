@@ -35,7 +35,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
-#include <licq_message.h>
+#include <licq/userevents.h>
 
 #include "core/gui-defines.h"
 #include "core/messagebox.h"
@@ -50,7 +50,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ForwardDlg */
 
-ForwardDlg::ForwardDlg(CUserEvent* e, QWidget* p)
+ForwardDlg::ForwardDlg(Licq::UserEvent* e, QWidget* p)
   : QDialog(p, Qt::Window)
 {
   Support::setWidgetProps(this, "UserForwardDialog");
@@ -68,7 +68,7 @@ ForwardDlg::ForwardDlg(CUserEvent* e, QWidget* p)
     case ICQ_CMDxSUB_URL:
       t = tr("URL");
       s1 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->url().c_str());
-      s2 = QString::fromLocal8Bit(dynamic_cast<CEventUrl*>(e)->Description());
+      s2 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->Description());
       break;
     default:
       WarnUser(this, tr("Unable to forward this message type (%d).")

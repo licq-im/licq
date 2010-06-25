@@ -29,8 +29,8 @@
 #include <QScrollBar>
 #include <QTextCodec>
 
-#include <licq_message.h>
 #include <licq/icqdefines.h>
+#include <licq/userevents.h>
 
 #include "helpers/eventdesc.h"
 
@@ -38,7 +38,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MessageList */
 /* TRANSLATOR LicqQtGui::MessageListItem */
 
-MessageListItem::MessageListItem(const CUserEvent* theMsg, const QTextCodec* codec, QTreeWidget* parent)
+MessageListItem::MessageListItem(const Licq::UserEvent* theMsg, const QTextCodec* codec, QTreeWidget* parent)
   : QTreeWidgetItem(parent)
 {
   // Keep a copy of the event
@@ -176,7 +176,7 @@ MessageList::MessageList(QWidget* parent)
   setMinimumHeight(40);
 }
 
-CUserEvent* MessageList::currentMsg()
+Licq::UserEvent* MessageList::currentMsg()
 {
   if (currentItem() == NULL)
     return NULL;

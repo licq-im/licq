@@ -37,10 +37,10 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
-#include <licq_events.h>
-#include <licq_message.h>
+#include <licq/userevents.h>
 
 #include "config/chat.h"
 #include "core/licqgui.h"
@@ -276,7 +276,7 @@ void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal
 
   if (subSignal == Licq::PluginSignal::UserEvents)
   {
-    const CUserEvent* event;
+    const Licq::UserEvent* event;
     {
       Licq::UserReadGuard u(myUserId);
       if (!u.isLocked())
@@ -290,15 +290,15 @@ void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal
   }
 }
 
-void HistoryDlg::eventSent(const ICQEvent* event)
+void HistoryDlg::eventSent(const Licq::Event* event)
 {
   if (event->userId() == myUserId && event->userEvent() != NULL)
     addMsg(event->userEvent());
 }
 
-void HistoryDlg::addMsg(const CUserEvent* event)
+void HistoryDlg::addMsg(const Licq::UserEvent* event)
 {
-  CUserEvent* eventCopy = event->Copy();
+  Licq::UserEvent* eventCopy = event->Copy();
   myHistoryList.push_back(eventCopy);
   QDate date = QDateTime::fromTime_t(event->Time()).date();
   myCalendar->markDate(date);

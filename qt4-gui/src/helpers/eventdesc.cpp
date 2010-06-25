@@ -23,7 +23,7 @@
 #include <QString>
 
 #include <licq/icqdefines.h>
-#include <licq_message.h>
+#include <licq/userevents.h>
 
 using namespace LicqQtGui;
 
@@ -60,7 +60,7 @@ static const char* szEventTypes[27] =
   QT_TRANSLATE_NOOP("LicqQtGui::EventDescription", "SMS")
 };
 
-QString LicqQtGui::EventDescription(const CUserEvent* e)
+QString LicqQtGui::EventDescription(const Licq::UserEvent* e)
 {
   QString desc;
 

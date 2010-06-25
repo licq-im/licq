@@ -26,8 +26,9 @@
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
+#include <licq/event.h>
 #include <licq/icqdefines.h>
-#include <licq_events.h>
+#include <licq/userevents.h>
 
 #include "config/chat.h"
 
@@ -239,7 +240,7 @@ void HistoryView::internalAddMsg(QString s)
   }
 }
 
-void HistoryView::addMsg(const ICQEvent* event)
+void HistoryView::addMsg(const Licq::Event* event)
 {
   if (event->userId() == myUserId && event->userEvent() != NULL)
     addMsg(event->userEvent());
@@ -382,7 +383,7 @@ void HistoryView::addMsg(bool isReceiver, bool fromHistory,
   internalAddMsg(s);
 }
 
-void HistoryView::addMsg(const CUserEvent* event, const Licq::UserId& uid)
+void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
 {
   QDateTime date;
   date.setTime_t(event->Time());

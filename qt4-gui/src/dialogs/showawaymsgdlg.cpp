@@ -36,9 +36,9 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
-#include <licq_events.h>
 
 #include "core/signalmanager.h"
 
@@ -120,14 +120,13 @@ ShowAwayMsgDlg::~ShowAwayMsgDlg()
     Licq::gDaemon.cancelEvent(icqEventTag);
 }
 
-void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)
+void ShowAwayMsgDlg::doneEvent(const Licq::Event* e)
 {
   if (!e->Equals(icqEventTag))
     return;
 
-  bool isOk =
-    (e->Result() == EVENT_ACKED ||
-     e->Result() == EVENT_SUCCESS);
+  bool isOk = (e->Result() == Licq::Event::ResultAcked ||
+      e->Result() == Licq::Event::ResultSuccess);
 
   QString title, result;
 
@@ -137,13 +136,13 @@ void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)
   {
     switch (e->Result())
     {
-    case EVENT_FAILED:
+      case Licq::Event::ResultFailed:
       result = tr("failed");
-      break;
-    case EVENT_TIMEDOUT:
+        break;
+      case Licq::Event::ResultTimedout:
       result = tr("timed out");
-      break;
-    case EVENT_ERROR:
+        break;
+      case Licq::Event::ResultError:
       result = tr("error");
       break;
     default:

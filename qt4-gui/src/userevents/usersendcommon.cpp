@@ -48,17 +48,18 @@
 #include <KDE/KColorDialog>
 #endif
 
-#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/plugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
+#include <licq/userevents.h>
 
 #include "config/chat.h"
 #include "config/emoticons.h"
@@ -101,7 +102,7 @@ using namespace LicqQtGui;
 
 const size_t SHOW_RECENT_NUM = 5;
 
-typedef pair<const CUserEvent*, Licq::UserId> messagePair;
+typedef pair<const Licq::UserEvent*, Licq::UserId> messagePair;
 
 bool orderMessagePairs(const messagePair& mp1, const messagePair& mp2)
 {
@@ -305,7 +306,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
     {
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
-        const CUserEvent* e = u->EventPeek(i);
+        const Licq::UserEvent* e = u->EventPeek(i);
         // Get the convo id now
         unsigned long convoId = e->ConvoId();
         if (myConvoId == 0)
@@ -332,7 +333,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           {
             for (unsigned short i = 0; i < pUser->NewMessages(); i++)
             {
-              const CUserEvent* e = pUser->EventPeek(i);
+              const Licq::UserEvent* e = pUser->EventPeek(i);
 
               if (e->ConvoId() == myConvoId)
               {
@@ -767,7 +768,7 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
   return e;
 }
 
-void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short level)
+void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short level)
 {
   QString accountId = myUsers.front().accountId().c_str();
 
@@ -870,7 +871,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
       StringList users;
 
       // ContactList is const but string list holds "char*" so we have to copy each string
-      for (ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
+      for (Licq::EventContactList::ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
         users.push_back((*i)->userId().accountId());
 
       if (users.size() == 0)
@@ -961,7 +962,7 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
 
     case Licq::PluginSignal::UserEvents:
     {
-      const CUserEvent* e = u->EventPeekId(argument);
+      const Licq::UserEvent* e = u->EventPeekId(argument);
 
       if (e != NULL && myHighestEventId < argument &&
           myHistoryView && argument > 0)
@@ -1074,7 +1075,7 @@ void UserSendCommon::send()
   }
 }
 
-void UserSendCommon::eventDoneReceived(const LicqEvent* e)
+void UserSendCommon::eventDoneReceived(const Licq::Event* e)
 {
   if (e == NULL)
   {
@@ -1108,21 +1109,21 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
   QString title, result;
   switch (e->Result())
   {
-    case EVENT_ACKED: // Fall through
-    case EVENT_SUCCESS:
+    case Licq::Event::ResultAcked:
+    case Licq::Event::ResultSuccess:
       result = tr("done");
       QTimer::singleShot(5000, this, SLOT(resetTitle()));
       break;
-    case EVENT_CANCELLED:
+    case Licq::Event::ResultCancelled:
       result = tr("cancelled");
       break;
-    case EVENT_FAILED:
+    case Licq::Event::ResultFailed:
       result = tr("failed");
       break;
-    case EVENT_TIMEDOUT:
+    case Licq::Event::ResultTimedout:
       result = tr("timed out");
       break;
-    case EVENT_ERROR:
+    case Licq::Event::ResultError:
       result = tr("error");
       break;
     default:
@@ -1147,7 +1148,7 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
   connect(mySendButton, SIGNAL(clicked()), SLOT(send()));
 
   // If cancelled automatically, check "Send through Server"
-  if (Config::Chat::instance()->autoSendThroughServer() && e->Result() == EVENT_CANCELLED)
+  if (Config::Chat::instance()->autoSendThroughServer() && e->Result() == Licq::Event::ResultCancelled)
     mySendServerCheck->setChecked(true);
 
   if (myEventTag.size() == 0)
@@ -1160,9 +1161,9 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
     if(tabDlg == NULL || !tabDlg->tabExists(this) || tabDlg->tabIsSelected(this))
       myMessageEdit->setFocus();
 
-  if (e->Result() != EVENT_ACKED)
+  if (e->Result() != Licq::Event::ResultAcked)
   {
-    if (e->Command() == ICQ_CMDxTCP_START && e->Result() != EVENT_CANCELLED &&
+    if (e->Command() == ICQ_CMDxTCP_START && e->Result() != Licq::Event::ResultCancelled &&
        (Config::Chat::instance()->autoSendThroughServer() ||
          QueryYesNo(this, tr("Direct send failed,\nsend through server?"))) )
       retrySend(e, false, ICQ_TCPxMSG_NORMAL);
@@ -1267,7 +1268,7 @@ void UserSendCommon::clearNewEvents()
         std::vector<int> idList;
         for (unsigned short i = 0; i < u->NewMessages(); i++)
         {
-          const CUserEvent* e = u->EventPeek(i);
+          const Licq::UserEvent* e = u->EventPeek(i);
           if (e->Id() <= myHighestEventId && e->isReceiver() &&
               (e->SubCommand() == ICQ_CMDxSUB_MSG ||
                e->SubCommand() == ICQ_CMDxSUB_URL))

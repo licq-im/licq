@@ -24,7 +24,7 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
-#include <licq_message.h>
+#include <licq/userevents.h>
 
 #include <QAction>
 #include <QActionGroup>

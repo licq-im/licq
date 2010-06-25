@@ -36,10 +36,11 @@
 #include <KDE/KFileDialog>
 #endif
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
+#include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/userevents.h>
 
 #include "core/gui-defines.h"
 #include "core/messagebox.h"
@@ -116,7 +117,7 @@ void UserSendFileEvent::addFile(const QString& file)
   myFileEdit->setText(QString(tr("%1 Files")).arg(myFileList.size()));
 }
 
-bool UserSendFileEvent::sendDone(const LicqEvent* e)
+bool UserSendFileEvent::sendDone(const Licq::Event* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->accepted())
   {

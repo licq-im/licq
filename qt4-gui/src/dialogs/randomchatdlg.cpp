@@ -31,9 +31,9 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
-#include <licq_events.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -113,7 +113,7 @@ void RandomChatDlg::okPressed()
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 
-void RandomChatDlg::userEventDone(const LicqEvent* event)
+void RandomChatDlg::userEventDone(const Licq::Event* event)
 {
   if (!event->Equals(myTag))
     return;
@@ -123,13 +123,13 @@ void RandomChatDlg::userEventDone(const LicqEvent* event)
 
   switch (event->Result())
   {
-    case EVENT_FAILED:
+    case Licq::Event::ResultFailed:
       WarnUser(this, tr("No random chat user found in that group."));
       break;
-    case EVENT_TIMEDOUT:
+    case Licq::Event::ResultTimedout:
       WarnUser(this, tr("Random chat search timed out."));
       break;
-    case EVENT_ERROR:
+    case Licq::Event::ResultError:
       WarnUser(this, tr("Random chat search had an error."));
       break;
     default:
@@ -242,7 +242,7 @@ void SetRandomChatGroupDlg::okPressed()
   setWindowTitle(tr("Setting Random Chat Group..."));
 }
 
-void SetRandomChatGroupDlg::userEventDone(const LicqEvent* event)
+void SetRandomChatGroupDlg::userEventDone(const Licq::Event* event)
 {
   if (!event->Equals(myTag))
     return;
@@ -253,13 +253,13 @@ void SetRandomChatGroupDlg::userEventDone(const LicqEvent* event)
 
   switch (event->Result())
   {
-    case EVENT_FAILED:
+    case Licq::Event::ResultFailed:
       setWindowTitle(windowTitle() + tr("failed"));
       break;
-    case EVENT_TIMEDOUT:
+    case Licq::Event::ResultTimedout:
       setWindowTitle(windowTitle() + tr("timed out"));
       break;
-    case EVENT_ERROR:
+    case Licq::Event::ResultError:
       setWindowTitle(windowTitle() + tr("error"));
       break;
     default:

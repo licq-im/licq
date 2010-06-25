@@ -27,7 +27,6 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
@@ -67,7 +66,7 @@ UserSendMsgEvent::~UserSendMsgEvent()
   // Empty
 }
 
-bool UserSendMsgEvent::sendDone(const LicqEvent* /* e */)
+bool UserSendMsgEvent::sendDone(const Licq::Event* /* e */)
 {
   myMessageEdit->setText(QString::null);
 

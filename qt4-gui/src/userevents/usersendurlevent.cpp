@@ -31,8 +31,8 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
+#include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
 
@@ -102,7 +102,7 @@ void UserSendUrlEvent::setUrl(const QString& url, const QString& description)
   setText(description);
 }
 
-bool UserSendUrlEvent::sendDone(const LicqEvent* e)
+bool UserSendUrlEvent::sendDone(const Licq::Event* e)
 {
   if (e->Command() != ICQ_CMDxTCP_START)
     return true;

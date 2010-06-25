@@ -71,7 +71,6 @@ extern "C"
 
 #endif /* defined(Q_WS_X11) */
 
-#include <licq_events.h>
 #include <licq/inifile.h>
 #include <licq_log.h>
 #include <licq/contactlist/owner.h>
@@ -83,6 +82,7 @@ extern "C"
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/sarmanager.h>
+#include <licq/userevents.h>
 
 #include "config/chat.h"
 #include "config/contactlist.h"

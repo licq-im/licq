@@ -36,9 +36,9 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
@@ -128,12 +128,12 @@ int MMSendDlg::go_contact(StringList& users)
   return result();
 }
 
-void MMSendDlg::slot_done(const LicqEvent* e)
+void MMSendDlg::slot_done(const Licq::Event* e)
 {
   if ( !e->Equals(icqEventTag) )
     return;
 
-  bool isOk = (e != NULL ? (e->Result() == EVENT_ACKED) : (icqEventTag == 0));
+  bool isOk = (e != NULL ? (e->Result() == Licq::Event::ResultAcked) : (icqEventTag == 0));
 
   icqEventTag = 0;
 

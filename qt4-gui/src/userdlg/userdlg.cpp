@@ -29,9 +29,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include <licq_events.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/event.h>
 #include <licq/pluginsignal.h>
 
 #include "core/signalmanager.h"
@@ -240,7 +240,7 @@ void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
   myUserSettings->userUpdated(*user, subSignal);
 }
 
-void UserDlg::doneFunction(const LicqEvent* event)
+void UserDlg::doneFunction(const Licq::Event* event)
 {
   if (!event->Equals(myIcqEventTag))
     return;
@@ -252,17 +252,17 @@ void UserDlg::doneFunction(const LicqEvent* event)
   {
     switch (event->Result())
     {
-    case EVENT_ACKED:
-    case EVENT_SUCCESS:
+      case Licq::Event::ResultAcked:
+      case Licq::Event::ResultSuccess:
       result = tr("done");
-      break;
-    case EVENT_FAILED:
+        break;
+      case Licq::Event::ResultFailed:
       result = tr("failed");
-      break;
-    case EVENT_TIMEDOUT:
+        break;
+      case Licq::Event::ResultTimedout:
       result = tr("timed out");
-      break;
-    case EVENT_ERROR:
+        break;
+      case Licq::Event::ResultError:
       result = tr("error");
       break;
     default:

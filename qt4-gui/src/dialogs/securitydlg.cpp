@@ -29,8 +29,8 @@
 #include <QVBoxLayout>
 
 #include <licq/contactlist/owner.h>
+#include <licq/event.h>
 #include <licq/icq.h>
-#include <licq_events.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
@@ -139,7 +139,7 @@ void SecurityDlg::ok()
   close();
 }
 
-void SecurityDlg::doneUserFcn(const LicqEvent* e)
+void SecurityDlg::doneUserFcn(const Licq::Event* e)
 {
   if (!e->Equals(eSecurityInfo))
     return;
@@ -153,17 +153,17 @@ void SecurityDlg::doneUserFcn(const LicqEvent* e)
 
   switch (e->Result())
   {
-    case EVENT_FAILED:
+    case Licq::Event::ResultFailed:
       result = tr("failed");
       InformUser(this, tr("Setting security options failed."));
       break;
 
-    case EVENT_TIMEDOUT:
+    case Licq::Event::ResultTimedout:
       result = tr("timed out");
       InformUser(this, tr("Timeout while setting security options."));
       break;
 
-    case EVENT_ERROR:
+    case Licq::Event::ResultError:
       result = tr("error");
       InformUser(this, tr("Internal error while setting security options."));
       break;
