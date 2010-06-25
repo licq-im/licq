@@ -28,10 +28,11 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/log.h>
-#include <licq_events.h>
 #include <licq/plugin.h>
 #include <licq/protocolsignal.h>
+#include <licq/userevents.h>
 
 #include <sys/select.h>
 
@@ -227,13 +228,13 @@ void Jabber::doSendMessage(Licq::ProtoSendMessageSignal* signal)
   assert(myClient != NULL);
   myClient->sendMessage(signal->userId().accountId(), signal->message());
 
-  CEventMsg* message = new CEventMsg(signal->message().c_str(), 0, CUserEvent::TimeNow, 0);
+  Licq::EventMsg* message = new Licq::EventMsg(signal->message().c_str(), 0, Licq::UserEvent::TimeNow, 0);
   message->setIsReceiver(false);
 
-  LicqEvent* event = new LicqEvent(signal->eventId(), 0, NULL, CONNECT_SERVER,
-                                   signal->userId(), message);
+  Licq::Event* event = new Licq::Event(signal->eventId(), 0, NULL,
+      Licq::Event::ConnectServer, signal->userId(), message);
   event->thread_plugin = signal->callerThread();
-  event->m_eResult = EVENT_ACKED;
+  event->m_eResult = Licq::Event::ResultAcked;
 
   if (event->m_pUserEvent)
   {

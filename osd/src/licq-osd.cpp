@@ -14,13 +14,14 @@
 #include <unistd.h>
 
 #include <licq_plugin.h>
-#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/inifile.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/userevents.h>
 
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
@@ -77,7 +78,7 @@ struct Config {
 
 // some forward declarations
 void ProcessSignal(Licq::PluginSignal* s);
-void ProcessEvent(ICQEvent *e);
+void ProcessEvent(Licq::Event* e);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
 string my_translate(const UserId& userId, const string& msg, const char* userenc);
@@ -343,7 +344,7 @@ int LP_Main()
       case Licq::GeneralPlugin::PipeEvent:
       {
 		gLog.Warn("%sEvent received - should not happen in this plugin\n", L_WARNxSTR);
-        LicqEvent* e = Licq::gDaemon.PopPluginEvent();
+        Licq::Event* e = Licq::gDaemon.PopPluginEvent();
 		if (e)
 		{
 		    delete e;
@@ -396,7 +397,7 @@ void ProcessSignal(Licq::PluginSignal* s)
     bool secure=false;
   unsigned status = User::OnlineStatus;
   string userencoding;
-  const CUserEvent* e = NULL;
+  const Licq::UserEvent* e = NULL;
 
   switch (s->signal()) // signaltype
   {

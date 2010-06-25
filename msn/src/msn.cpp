@@ -28,7 +28,6 @@
 #include <vector>
 
 #include "licq_log.h"
-#include "licq_message.h"
 #include <licq/socket.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>

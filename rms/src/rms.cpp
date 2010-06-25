@@ -11,16 +11,17 @@
 #include <unistd.h>
 #include <cerrno>
 
-#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
+#include <licq/userevents.h>
 
 using namespace std;
 using Licq::UserId;
@@ -300,7 +301,7 @@ void CLicqRMS::ProcessPipe()
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
-      LicqEvent* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -413,7 +414,7 @@ void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessEvent(ICQEvent *e)
+void CLicqRMS::ProcessEvent(Licq::Event* e)
 {
   ClientList ::iterator iter;
   for (iter = clients.begin(); iter != clients.end(); iter++)
@@ -525,7 +526,7 @@ void CRMSClient::ParseUser(const char *szData)
 /*---------------------------------------------------------------------------
  * CRMSClient::ProcessEvent
  *-------------------------------------------------------------------------*/
-bool CRMSClient::ProcessEvent(ICQEvent *e)
+bool CRMSClient::ProcessEvent(Licq::Event* e)
 {
   TagList::iterator iter;
   for (iter = tags.begin(); iter != tags.end(); iter++)
@@ -541,24 +542,24 @@ bool CRMSClient::ProcessEvent(ICQEvent *e)
   const char *szr = NULL;
   switch(e->Result())
   {
-    case EVENT_ACKED:
-    case EVENT_SUCCESS:
+    case Licq::Event::ResultAcked:
+    case Licq::Event::ResultSuccess:
       nCode = CODE_RESULTxSUCCESS;
       szr = "done";
       break;
-    case EVENT_TIMEDOUT:
+    case Licq::Event::ResultTimedout:
       nCode = CODE_EVENTxTIMEDOUT;
       szr = "timed out";
       break;
-    case EVENT_FAILED:
+    case Licq::Event::ResultFailed:
       nCode = CODE_EVENTxFAILED;
       szr = "failed";
       break;
-    case EVENT_ERROR:
+    case Licq::Event::ResultError:
       nCode = CODE_EVENTxERROR;
       szr = "error";
       break;
-    case EVENT_CANCELLED:
+    case Licq::Event::ResultCancelled:
       nCode = CODE_EVENTxCANCELLED;
       szr = "cancelled";
       break;
@@ -1390,13 +1391,13 @@ int CRMSClient::Process_VIEW()
     return fflush(fs);
   }
 
-  CUserEvent *e = u->EventPop();
+  Licq::UserEvent* e = u->EventPop();
   printUserEvent(e, u->getAlias());
 
   return fflush(fs);
 }
 
-void CRMSClient::printUserEvent(const CUserEvent* e, const string& alias)
+void CRMSClient::printUserEvent(const Licq::UserEvent* e, const string& alias)
 {
   if (e)
   {

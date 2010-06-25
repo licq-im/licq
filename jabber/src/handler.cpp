@@ -29,7 +29,7 @@
 #include <licq/log.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
-#include <licq_events.h>
+#include <licq/userevents.h>
 
 using std::string;
 using Licq::OnEventManager;
@@ -168,7 +168,7 @@ void Handler::onMessage(const std::string& from, const std::string& message)
   if (myConvoIds.find(from) == myConvoIds.end())
     myConvoIds[from] = myNextConvoId++;
 
-  CEventMsg* event = new CEventMsg(
+  Licq::EventMsg* event = new Licq::EventMsg(
       message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, ::time(0),
       0, myConvoIds[from]);
 

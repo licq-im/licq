@@ -10,17 +10,18 @@
 
 #include "forwarder.h"
 #include "forwarder.conf.h"
-#include <licq_events.h>
 #include "licq_log.h"
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include "licq/pluginsignal.h"
 #include <licq/protocolmanager.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
+#include <licq/userevents.h>
 
 extern "C" { const char *LP_Version(); }
 
@@ -186,7 +187,7 @@ void CLicqForwarder::ProcessPipe()
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
-      LicqEvent* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -242,7 +243,7 @@ void CLicqForwarder::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqForwarder::ProcessEvent(ICQEvent *e)
+void CLicqForwarder::ProcessEvent(Licq::Event* e)
 {
 /*  switch (e->m_nCommand)
   {
@@ -285,7 +286,7 @@ void CLicqForwarder::ProcessUserEvent(const UserId& userId, unsigned long nId)
     return;
   }
 
-  const CUserEvent* e = u->EventPeekId(nId);
+  const Licq::UserEvent* e = u->EventPeekId(nId);
 
   if (e == NULL)
   {
@@ -300,7 +301,7 @@ void CLicqForwarder::ProcessUserEvent(const UserId& userId, unsigned long nId)
 }
 
 
-bool CLicqForwarder::ForwardEvent(const Licq::User* u, const CUserEvent* e)
+bool CLicqForwarder::ForwardEvent(const Licq::User* u, const Licq::UserEvent* e)
 {
   if (e == NULL) return false;
 
@@ -318,7 +319,7 @@ bool CLicqForwarder::ForwardEvent(const Licq::User* u, const CUserEvent* e)
 }
 
 
-bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const CUserEvent* e)
+bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent* e)
 {
   char *szText = new char[e->text().size() + 256];
   char szTime[64];
@@ -339,7 +340,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const CUserEvent* e)
 }
 
 
-bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const CUserEvent* e)
+bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEvent* e)
 {
   char szTo[256],
        szFrom[256],

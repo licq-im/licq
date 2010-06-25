@@ -19,7 +19,6 @@
 #include "msn.h"
 #include "msnpacket.h"
 #include "licq_log.h"
-#include "licq_message.h"
 
 #include <boost/foreach.hpp>
 #include <string>
@@ -29,12 +28,13 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
-#include <licq_events.h>
+#include <licq/userevents.h>
 
 using namespace std;
 using Licq::UserId;
@@ -135,8 +135,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         for (i = 0; i < nSize; i++)
           (*packet) >> szMsg[i];
         szMsg[i] = '\0';
-        
-        CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE, time(0), 0, SocketToCID(nSock));
+
+        Licq::EventMsg* e = Licq::EventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
+            time(0), 0, SocketToCID(nSock));
         Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
         if (u.isLocked())
           u->setIsTyping(false);
@@ -201,10 +202,10 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     {
       string strId = packet->GetParameter();
       unsigned long nSeq = (unsigned long)atoi(strId.c_str());
-      ICQEvent *e = RetrieveEvent(nSeq);
+      Licq::Event* e = RetrieveEvent(nSeq);
       if (e)
       {
-        e->m_eResult = EVENT_ACKED;
+        e->m_eResult = Licq::Event::ResultAcked;
         if (e->m_pUserEvent)
         {
           Conversation* convo = gConvoManager.getFromSocket(nSock);
@@ -360,7 +361,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         {
           gLog.Error("%sUser not online.\n", L_ERRORxSTR);
           pStart = *it;
-          pStart->m_pEvent->m_eResult = EVENT_FAILED;
+          pStart->m_pEvent->m_eResult = Licq::Event::ResultFailed;
           Licq::gDaemon.PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
           break; 
@@ -596,9 +597,9 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
 
   char* szRNMsg = Licq::gTranslator.NToRN(message.c_str());
   CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
-  CEventMsg *m = new CEventMsg(szRNMsg, 0, CUserEvent::TimeNow, 0);
+  Licq::EventMsg* m = new Licq::EventMsg(szRNMsg, 0, Licq::UserEvent::TimeNow, 0);
   m->setIsReceiver(false);
-  LicqEvent* e = new LicqEvent(eventId, 0, pSend, CONNECT_SERVER, userId, m);
+  Licq::Event* e = new Licq::Event(eventId, 0, pSend, Licq::Event::ConnectServer, userId, m);
   e->thread_plugin = _tPlugin;  
 
   delete [] szRNMsg;

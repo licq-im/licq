@@ -19,7 +19,6 @@
 #include "msn.h"
 #include "msnpacket.h"
 #include "licq_log.h"
-#include "licq_message.h"
 
 #include <unistd.h>
 
@@ -30,11 +29,12 @@
 
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/md5.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
-#include <licq_events.h>
+#include <licq/userevents.h>
 
 using namespace std;
 using Licq::OnEventManager;
@@ -221,7 +221,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       {
         gLog.Info("%sAuthorization request from %s.\n", L_MSNxSTR, strUser.c_str());
 
-        CUserEvent* e = new CEventAuthRequest(userId,
+        Licq::UserEvent* e = new Licq::EventAuthRequest(userId,
           strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
         Licq::OwnerWriteGuard o(MSN_PPID);
@@ -435,7 +435,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
     
         gLog.Info("%sNew email from %s (%s)\n", L_MSNxSTR, strFrom.c_str(), strFromAddr.c_str());
-        CEventEmailAlert *pEmailAlert = new CEventEmailAlert(strFrom.c_str(), m_szUserName,
+        Licq::EventEmailAlert* pEmailAlert = new Licq::EventEmailAlert(strFrom.c_str(), m_szUserName,
           strFromAddr.c_str(), strSubject.c_str(), time(0), m_strMSPAuth.c_str(), m_strSID.c_str(),
           m_strKV.c_str(), packet->GetValue("id").c_str(),
           packet->GetValue("Post-URL").c_str(), packet->GetValue("Message-URL").c_str(),
@@ -468,7 +468,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           gLog.Error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
           pStart = *it;
-          pStart->m_pEvent->m_eResult = EVENT_FAILED;
+          pStart->m_pEvent->m_eResult = Licq::Event::ResultFailed;
           Licq::gDaemon.PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
           break; 

@@ -11,13 +11,13 @@
 #include <cerrno>
 
 #include "console.h"
-#include <licq_events.h>
 #include "licq_log.h"
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqcodes.h>
 #include <licq/icqdefines.h>
@@ -26,6 +26,7 @@
 #include "licq/pluginmanager.h"
 #include "licq/pluginsignal.h"
 #include <licq/protocolmanager.h>
+#include <licq/userevents.h>
 
 #include "event_data.h"
 
@@ -486,7 +487,7 @@ void CLicqConsole::ProcessPipe()
 
     case Licq::GeneralPlugin::PipeEvent:
     {
-      LicqEvent* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
       ProcessEvent(e);
       break;
     }
@@ -568,7 +569,7 @@ void CLicqConsole::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessEvent(ICQEvent *e)
+void CLicqConsole::ProcessEvent(Licq::Event* e)
 {
   if (e->Command() == ICQ_CMDxTCP_START) // direct connection check
   {
@@ -609,7 +610,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
   case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
   case ICQ_CMDxSND_LOGON:
-    if (e->Result() != EVENT_SUCCESS)
+      if (e->Result() != Licq::Event::ResultSuccess)
       winMain->wprintf("%CLogon failed.  See the log console for details.\n", COLOR_RED);
     break;
 
@@ -715,7 +716,7 @@ bool CLicqConsole::ProcessFile(CFileTransferManager *ftman)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessDoneEvent
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
+void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
 {
   CWindow *win = NULL;
 
@@ -735,7 +736,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
     return;
   }
 
-  bool isOk = (e != NULL && (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS));
+  bool isOk = (e != NULL && (e->Result() == Licq::Event::ResultAcked || e->Result() == Licq::Event::ResultSuccess));
 
   if (e == NULL)
   {
@@ -745,20 +746,20 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
   {
     switch (e->Result())
     {
-    case EVENT_ACKED:
-    case EVENT_SUCCESS:
+      case Licq::Event::ResultAcked:
+      case Licq::Event::ResultSuccess:
       win->wprintf("%A%Cdone\n", m_cColorInfo->nAttr, m_cColorInfo->nColor);
-      break;
-    case EVENT_TIMEDOUT:
+        break;
+      case Licq::Event::ResultTimedout:
       win->wprintf("%A%Ctimed out\n", m_cColorError->nAttr, m_cColorError->nColor);
-      break;
-    case EVENT_FAILED:
+        break;
+      case Licq::Event::ResultFailed:
       win->wprintf("%A%Cfailed\n", m_cColorError->nAttr, m_cColorError->nColor);
-      break;
-    case EVENT_ERROR:
+        break;
+      case Licq::Event::ResultError:
       win->wprintf("%A%Cerror\n", m_cColorError->nAttr, m_cColorError->nColor);
-      break;
-    case EVENT_CANCELLED:
+        break;
+      case Licq::Event::ResultCancelled:
       win->wprintf("%A%Ccancelled\n", m_cColorInfo->nAttr, m_cColorInfo->nColor);
       break;
     }
@@ -803,7 +804,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
         }
         else if(e->SubCommand() == ICQ_CMDxSUB_FILE)
         {
-          const CExtendedAck* ea = e->ExtendedAck();
+          const Licq::ExtendedData* ea = e->ExtendedAck();
 
           if( ea == NULL || ue == NULL)
           {
@@ -822,7 +823,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
           {
             // For now don't check for a chat subcommand..
             // Invoke a file transfer manager here
-            const CEventFile* f = dynamic_cast<const CEventFile *>(ue);
+            const Licq::EventFile* f = dynamic_cast<const Licq::EventFile*>(ue);
             CFileTransferManager *ftman = new CFileTransferManager(
                 e->userId().accountId().c_str());
             m_lFileStat.push_back(ftman);
@@ -913,7 +914,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
 /*---------------------------------------------------------------------------
 * CLicqConsole::ProcessDoneSearch
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
+void CLicqConsole::ProcessDoneSearch(Licq::Event* e)
 {
   CWindow *win = NULL;
 
@@ -952,10 +953,10 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
                  A_BOLD);
   }
 
-  if (e->Result() == EVENT_ACKED)
+  if (e->Result() == Licq::Event::ResultAcked)
     return;
 
-  if (e->Result() == EVENT_SUCCESS)
+  if (e->Result() == Licq::Event::ResultSuccess)
   {
     if (e->SearchAck() == NULL || e->SearchAck()->more() == 0)
     {
@@ -1596,7 +1597,7 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
   if (u->NewMessages() > 0)
   {
     // Fetch the most recent event
-    CUserEvent *e = u->EventPop();
+    Licq::UserEvent* e = u->EventPop();
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
       waddch(winMain->Win(), ACS_HLINE);
@@ -3097,9 +3098,9 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::FileChatOffer
  *-------------------------------------------------------------------------*/
-void CLicqConsole::FileChatOffer(CUserEvent *e, const Licq::UserId& userId)
+void CLicqConsole::FileChatOffer(Licq::UserEvent* e, const Licq::UserId& userId)
 {
-  CEventFile *f = (CEventFile *)e;
+  Licq::EventFile* f = dynamic_cast<Licq::EventFile*>(e);
   // Get y or n
   winMain->fProcessInput = &CLicqConsole::InputFileChatOffer;
   winMain->state = STATE_QUERY;
@@ -3118,7 +3119,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 {
   DataFileChatOffer *data = (DataFileChatOffer *)winMain->data;
   char *sz;
-  CEventFile *f = data->f;
+  Licq::EventFile* f = data->f;
 
   string szId = data->userId.accountId();
 

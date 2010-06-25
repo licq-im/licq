@@ -14,15 +14,16 @@
 
 #include "autoreply.h"
 
-#include <licq_events.h>
 #include "licq_log.h"
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include "licq/pluginmanager.h"
 #include "licq/pluginsignal.h"
 #include <licq/protocolmanager.h>
+#include <licq/userevents.h>
 
 extern "C" { const char *LP_Version(); }
 
@@ -139,7 +140,7 @@ void CLicqAutoReply::ProcessPipe()
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
-      LicqEvent* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
     if (m_bEnabled) ProcessEvent(e);
     break;
   }
@@ -193,11 +194,11 @@ void CLicqAutoReply::ProcessSignal(Licq::PluginSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqAutoReply::ProcessEvent(ICQEvent *e)
+void CLicqAutoReply::ProcessEvent(Licq::Event* e)
 {
-  const CUserEvent* user_event;
+  const Licq::UserEvent* user_event;
 
-  if (e->Result() != EVENT_ACKED)
+  if (e->Result() != Licq::Event::ResultAcked)
   {
     if (e->Command() == ICQ_CMDxTCP_START &&
         (e->SubCommand() != ICQ_CMDxSUB_CHAT &&
@@ -215,7 +216,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
 
 void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
 {
-  const CUserEvent* e;
+  const Licq::UserEvent* e;
 
   {
     Licq::UserReadGuard u(userId);
@@ -243,7 +244,7 @@ void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
   }
 }
 
-bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* event)
+bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent* event)
 {
   string command = myProgram + " ";
   {
