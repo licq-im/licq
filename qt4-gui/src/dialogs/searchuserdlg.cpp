@@ -36,6 +36,7 @@
 #include <QVBoxLayout>
 
 #include <licq/contactlist/usermanager.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqcodes.h>
 
@@ -318,7 +319,7 @@ void SearchUserDlg::resetSearch()
   btnSearch->setEnabled(true);
 }
 
-void SearchUserDlg::searchResult(const LicqEvent* e)
+void SearchUserDlg::searchResult(const Licq::Event* e)
 {
   if (!e->Equals(searchTag))
     return;
@@ -329,13 +330,13 @@ void SearchUserDlg::searchResult(const LicqEvent* e)
   if (e->SearchAck() != NULL && e->SearchAck()->userId().isValid())
     searchFound(e->SearchAck());
 
-  if (e->Result() == EVENT_SUCCESS)
+  if (e->Result() == Licq::Event::ResultSuccess)
     searchDone(e->SearchAck());
-  else if (e->Result() != EVENT_ACKED)
+  else if (e->Result() != Licq::Event::ResultAcked)
     searchFailed();
 }
 
-void SearchUserDlg::searchFound(const CSearchAck* s)
+void SearchUserDlg::searchFound(const Licq::SearchData* s)
 {
   QString text;
   QTreeWidgetItem* item = new QTreeWidgetItem(foundView);
@@ -384,7 +385,7 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
   item->setText(6, s->auth() ? tr("No") : tr("Yes"));
 }
 
-void SearchUserDlg::searchDone(const CSearchAck* sa)
+void SearchUserDlg::searchDone(const Licq::SearchData* sa)
 {
   if (sa == NULL || sa->more() == 0)
     lblSearch->setText(tr("Search complete."));

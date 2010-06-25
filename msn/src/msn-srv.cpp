@@ -34,6 +34,7 @@
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
+#include <licq_events.h>
 
 using namespace std;
 using Licq::OnEventManager;

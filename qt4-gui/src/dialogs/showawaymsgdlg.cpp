@@ -38,6 +38,7 @@
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
+#include <licq_events.h>
 
 #include "core/signalmanager.h"
 

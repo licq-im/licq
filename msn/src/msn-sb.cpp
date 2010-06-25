@@ -34,6 +34,7 @@
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
+#include <licq_events.h>
 
 using namespace std;
 using Licq::UserId;

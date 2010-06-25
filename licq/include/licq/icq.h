@@ -11,8 +11,6 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <map>
 #include <string>
 
-#include "licq_events.h"
-
 namespace Licq
 {
 typedef std::list<std::string> StringList;

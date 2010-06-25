@@ -10,6 +10,7 @@
 #include <licq/icqcodes.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/socket.h> // For ip_ntoa
+#include <licq/userevents.h>
 
 using namespace std;
 using Licq::User;

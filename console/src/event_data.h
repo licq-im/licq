@@ -3,6 +3,11 @@
 
 #include <licq/userid.h>
 
+namespace Licq
+{
+class EventFile;
+}
+
 // Data structures for input routines
 class CData
 {
@@ -116,9 +121,9 @@ public:
 class DataFileChatOffer : public CData
 {
 public:
-  DataFileChatOffer(CEventFile *_f, const Licq::UserId& id) : CData(id)
+  DataFileChatOffer(Licq::EventFile* _f, const Licq::UserId& id) : CData(id)
     { szReason[0] = '\0'; f = _f; }
-  CEventFile *f;
+  Licq::EventFile* f;
   char szReason[256];
 };
 

@@ -28,6 +28,7 @@
 #include <pthread.h>
 
 #include <licq/buffer.h>
+#include <licq/event.h>
 #include <licq/pipe.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
@@ -41,6 +42,7 @@ class INetSocket;
 class IniFile;
 class Packet;
 class TCPSocket;
+class UserEvent;
 }
 
 // To keep old code working
@@ -227,7 +229,7 @@ public:
                                 const char *, const char *_sAbout, const char *);
   unsigned long icqSetStatus(unsigned short newStatus);
   void icqLogoff();
-  void postLogoff(int nSD, ICQEvent *cancelledEvent);
+  void postLogoff(int nSD, Licq::Event* cancelledEvent);
   void icqRelogon();
   void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUserServer(const char *_szId, bool _bAuthReq, unsigned short groupId = 0);
@@ -258,8 +260,8 @@ public:
   void icqSendInvisibleList();
   void icqCreatePDINFO();
   void icqRequestSystemMsg();
-  LicqEvent* icqSendThroughServer(unsigned long eventId, const char *szId,
-      unsigned char format, const std::string& message, CUserEvent *,
+  Licq::Event* icqSendThroughServer(unsigned long eventId, const char *szId,
+      unsigned char format, const std::string& message, Licq::UserEvent*,
       unsigned short = 0, size_t = 0);
 
   void CheckExport();
@@ -272,16 +274,16 @@ public:
   void UpdateAllUsers();
   void updateAllUsersInGroup(int groupId);
   void CancelEvent(unsigned long );
-  void CancelEvent(ICQEvent *);
+  void CancelEvent(Licq::Event*);
 
   void FailEvents(int sd, int err);
-  ICQEvent *DoneServerEvent(unsigned long, EventResult);
-  ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
-  ICQEvent *DoneEvent(int _nSD, unsigned short _nSequence, EventResult _eResult);
-  ICQEvent *DoneEvent(unsigned long tag, EventResult _eResult);
-  ICQEvent *DoneExtendedServerEvent(const unsigned short, EventResult);
-  ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);
-  ICQEvent *DoneExtendedEvent(unsigned long tag, EventResult _eResult);
+  Licq::Event* DoneServerEvent(unsigned long, Licq::Event::ResultType);
+  Licq::Event* DoneEvent(Licq::Event* e, Licq::Event::ResultType _eResult);
+  Licq::Event* DoneEvent(int _nSD, unsigned short _nSequence, Licq::Event::ResultType _eResult);
+  Licq::Event* DoneEvent(unsigned long tag, Licq::Event::ResultType _eResult);
+  Licq::Event* DoneExtendedServerEvent(const unsigned short, Licq::Event::ResultType);
+  Licq::Event* DoneExtendedEvent(Licq::Event*, Licq::Event::ResultType);
+  Licq::Event* DoneExtendedEvent(unsigned long tag, Licq::Event::ResultType _eResult);
 
   // Common message handler
   void ProcessMessage(Licq::User* user, Licq::Buffer& packet, char* message,
@@ -293,7 +295,7 @@ public:
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
      Licq::TCPSocket* pSock);
-  void ProcessDoneEvent(ICQEvent *);
+  void ProcessDoneEvent(Licq::Event*);
   bool ProcessSrvPacket(Licq::Buffer&);
 
   //--- Channels ---------
@@ -313,7 +315,7 @@ public:
   void ProcessUserList();
 
   void ProcessSystemMessage(Licq::Buffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
-  void ProcessMetaCommand(Licq::Buffer &packet, unsigned short nMetaCommand, ICQEvent *e);
+  void ProcessMetaCommand(Licq::Buffer &packet, unsigned short nMetaCommand, Licq::Event* e);
   bool ProcessTcpPacket(Licq::TCPSocket*);
   bool ProcessTcpHandshake(Licq::TCPSocket*);
 
@@ -337,8 +339,8 @@ public:
                                unsigned short, unsigned short);
   bool WaitForReverseConnection(unsigned short id, const char* userId);
 
-  void PushEvent(ICQEvent *);
-  void PushExtendedEvent(ICQEvent *);
+  void PushEvent(Licq::Event*);
+  void PushExtendedEvent(Licq::Event*);
 
 private:
   static const int PingFrequency = 60;
@@ -349,22 +351,22 @@ private:
   bool SendEvent(int nSD, Licq::Packet &, bool);
   bool SendEvent(Licq::INetSocket *, Licq::Packet &, bool);
   void SendEvent_Server(Licq::Packet *packet);
-  LicqEvent* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, Licq::Packet *, CUserEvent *, bool = false);
-  LicqEvent* SendExpectEvent_Server(const Licq::UserId& userId, Licq::Packet* packet, CUserEvent* ue, bool extendedEvent = false);
+  Licq::Event* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, Licq::Packet*, Licq::UserEvent*, bool = false);
+  Licq::Event* SendExpectEvent_Server(const Licq::UserId& userId, Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent = false);
 
-  LicqEvent* SendExpectEvent_Server(unsigned long eventId, Licq::Packet* packet, CUserEvent* ue, bool extendedEvent = false)
+  Licq::Event* SendExpectEvent_Server(unsigned long eventId, Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent = false)
   { return SendExpectEvent_Server(eventId, Licq::UserId(), packet, ue, extendedEvent); }
 
-  LicqEvent* SendExpectEvent_Server(Licq::Packet* packet, CUserEvent* ue, bool extendedEvent = false);
-  LicqEvent* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, Licq::Packet* packet, CUserEvent* ue);
-  LicqEvent* SendExpectEvent_Client(const Licq::User* user, Licq::Packet* packet, CUserEvent* ue);
-  ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
+  Licq::Event* SendExpectEvent_Server(Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent = false);
+  Licq::Event* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, Licq::Packet* packet, Licq::UserEvent* ue);
+  Licq::Event* SendExpectEvent_Client(const Licq::User* user, Licq::Packet* packet, Licq::UserEvent* ue);
+  Licq::Event* SendExpectEvent(Licq::Event*, void *(*fcn)(void *));
 
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, Licq::TCPSocket*);
 
   void ChangeUserStatus(Licq::User* u, unsigned long s);
-  Licq::User* FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e, const char*);
+  Licq::User* FindUserForInfoUpdate(const Licq::UserId& userId, Licq::Event* e, const char*);
   std::string findUserByCellular(const std::string& cellular);
   bool hasServerEvent(unsigned long subSequence) const;
   void StupidChatLinkageFix();
@@ -400,11 +402,11 @@ private:
 
   ContactUserList receivedUserList;
 
-  std::list <ICQEvent *> m_lxRunningEvents;
+  std::list<Licq::Event*> m_lxRunningEvents;
   mutable pthread_mutex_t mutex_runningevents;
-  std::list <ICQEvent *> m_lxExtendedEvents;
+  std::list<Licq::Event*> m_lxExtendedEvents;
   pthread_mutex_t mutex_extendedevents;
-  std::list <ICQEvent *> m_lxSendQueue_Server;
+  std::list<Licq::Event*> m_lxSendQueue_Server;
   pthread_mutex_t mutex_sendqueue_server;
   std::map <unsigned long, std::string> m_lszModifyServerUsers;
   pthread_mutex_t mutex_modifyserverusers;

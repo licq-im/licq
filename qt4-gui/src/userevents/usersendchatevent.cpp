@@ -29,9 +29,11 @@
 #include <QTimer>
 
 #include <licq/contactlist/user.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/userevents.h>
 
 #include "config/chat.h"
 
@@ -85,7 +87,7 @@ UserSendChatEvent::~UserSendChatEvent()
   // Empty
 }
 
-bool UserSendChatEvent::sendDone(const LicqEvent* e)
+bool UserSendChatEvent::sendDone(const Licq::Event* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->accepted())
   {

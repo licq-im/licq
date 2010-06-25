@@ -48,6 +48,7 @@
 #include <KDE/KColorDialog>
 #endif
 
+#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>

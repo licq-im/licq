@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <cerrno>
 
+#include <licq_events.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>

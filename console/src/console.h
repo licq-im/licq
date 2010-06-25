@@ -16,7 +16,9 @@ class CFileTransferManager;
 
 namespace Licq
 {
+class Event;
 class PluginSignal;
+class UserEvent;
 }
 
 #define MAX_CON 8
@@ -119,9 +121,9 @@ public:
   void DoneOptions();
   void ProcessPipe();
   void ProcessSignal(Licq::PluginSignal* s);
-  void ProcessEvent(ICQEvent *);
-  void ProcessDoneEvent(ICQEvent *e);
-  void ProcessDoneSearch(ICQEvent *e);
+  void ProcessEvent(Licq::Event*);
+  void ProcessDoneEvent(Licq::Event* e);
+  void ProcessDoneSearch(Licq::Event* e);
   void ProcessStdin();
   void ProcessLog();
   bool ProcessFile(CFileTransferManager *);
@@ -216,7 +218,7 @@ public:
   void Command_Search();
 
   void Beep() { printf("\a"); fflush(stdout); }
-  void FileChatOffer(CUserEvent *, const Licq::UserId& userId);
+  void FileChatOffer(Licq::UserEvent*, const Licq::UserId& userId);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
   void UserSelect();

@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-#include "licq_events.h"
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
 
@@ -33,6 +32,7 @@
 
 namespace Licq
 {
+class Event;
 class PluginSignal;
 class ProtocolSignal;
 }
@@ -73,7 +73,7 @@ typedef std::list<SBuffer *> BufferList;
 struct SStartMessage
 {
   CMSNPacket *m_pPacket;
-  ICQEvent *m_pEvent;
+  Licq::Event* m_pEvent;
   Licq::UserId userId;
   unsigned long m_nSeq;
   bool m_bConnecting,
@@ -148,7 +148,7 @@ private:
   void StorePacket(SBuffer *, int);
   void RemovePacket(const std::string& user, int socketId, int size = 0);
   SBuffer *RetrievePacket(const std::string& user, int socketId);
-  ICQEvent *RetrieveEvent(unsigned long);
+  Licq::Event* RetrieveEvent(unsigned long);
   void HandlePacket(int, CMSNBuffer &, const char *);
   unsigned long SocketToCID(int);
   static std::string Decode(const std::string& strIn);
@@ -184,7 +184,7 @@ private:
              *m_pNexusBuff,
              *m_pSSLPacket;
   std::vector<BufferList> m_vlPacketBucket;
-  std::list<ICQEvent*> m_pEvents;
+  std::list<Licq::Event*> m_pEvents;
   std::list<CMSNDataEvent*> m_lMSNEvents;
   StartList m_lStart;
   bool m_bWaitingPingReply,

@@ -68,6 +68,7 @@
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
@@ -1040,19 +1041,19 @@ void MainWindow::slot_protocolPlugin(unsigned long nPPID)
 #endif
 }
 
-void MainWindow::slot_doneOwnerFcn(const LicqEvent* e)
+void MainWindow::slot_doneOwnerFcn(const Licq::Event* e)
 {
   updateStatus();
   switch (e->SNAC())
   {
     case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
-      if (e->Result() != EVENT_SUCCESS)
+      if (e->Result() != Licq::Event::ResultSuccess)
         WarnUser(this, tr("Logon failed.\nSee network window for details."));
       break;
 
 /*
     case ICQ_MDxSND_AUTHORIZE:
-       if (e->Result() != EVENT_ACKED)
+       if (e->Result() != Licq::Event::ResultAcked)
          WarnUser(this, tr("Error sending authorization."));
        else
          InformUser(this, tr("Authorization granted."));

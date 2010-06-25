@@ -11,6 +11,7 @@
 #include <cerrno>
 
 #include "console.h"
+#include <licq_events.h>
 #include "licq_log.h"
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>

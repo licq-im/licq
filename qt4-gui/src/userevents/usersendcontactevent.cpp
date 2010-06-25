@@ -27,6 +27,7 @@
 #include <QVBoxLayout>
 
 #include <licq/contactlist/user.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
@@ -93,7 +94,7 @@ void UserSendContactEvent::setContact(const Licq::UserId& userId)
     myContactsList->add(u->id());
 }
 
-bool UserSendContactEvent::sendDone(const LicqEvent* e)
+bool UserSendContactEvent::sendDone(const Licq::Event* e)
 {
   if (e->Command() != ICQ_CMDxTCP_START)
     return true;

@@ -34,6 +34,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/inifile.h>
 #include <licq/plugin.h>
 #include <licq/protocolsignal.h>
@@ -193,11 +194,11 @@ SBuffer *CMSN::RetrievePacket(const string &_strUser, int _nSock)
   return 0;
 }
   
-ICQEvent *CMSN::RetrieveEvent(unsigned long _nTag)
+Licq::Event *CMSN::RetrieveEvent(unsigned long _nTag)
 {
-  ICQEvent *e = 0;
-  
-  list<ICQEvent *>::iterator it;
+  Licq::Event *e = 0;
+
+  list<Licq::Event*>::iterator it;
   for (it = m_pEvents.begin(); it != m_pEvents.end(); it++)
   {
     if ((*it)->Sequence() == _nTag)

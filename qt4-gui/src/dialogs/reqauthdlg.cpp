@@ -32,6 +32,7 @@
 #include <QVBoxLayout>
 
 #include <licq/icq.h>
+#include <licq/userid.h>
 
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
