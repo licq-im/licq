@@ -25,6 +25,7 @@
 #include <boost/scoped_array.hpp>
 
 #include "licq/byteorder.h"
+#include <licq/event.h>
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
@@ -33,9 +34,8 @@
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
-#include "licq_events.h"
+#include <licq/userevents.h>
 #include "licq_log.h"
-#include "licq_message.h"
 #include "licq/version.h"
 
 #include "../contactlist/owner.h"
@@ -490,7 +490,7 @@ unsigned long IcqProtocol::icqSetRandomChatGroup(unsigned long _nGroup)
   gLog.Info(tr("%sSetting random chat group (#%hu)...\n"), L_SRVxSTR,
             p->Sequence());
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -503,7 +503,7 @@ unsigned long IcqProtocol::icqRandomChatSearch(unsigned long _nGroup)
   gLog.Info(tr("%sSearching for random chat user (#%hu)...\n"), L_SRVxSTR,
             p->Sequence());
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -534,7 +534,7 @@ void IcqProtocol::icqRegisterFinish()
 
   CPU_Register *p = new CPU_Register(m_szRegisterPasswd);
   gLog.Info(tr("%sRegistering a new user...\n"), L_SRVxSTR);
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     e->thread_plugin = m_nRegisterThreadId;
 }
@@ -597,7 +597,7 @@ unsigned long IcqProtocol::icqRequestMetaInfo(const char *_szId)
     p = new CPU_Meta_RequestAllInfo(_szId);
   gLog.Info(tr("%sRequesting meta info for %s (#%hu/#%d)...\n"), L_SRVxSTR,
       userId.toString().c_str(), p->Sequence(), p->SubSequence());
-  LicqEvent* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
+  Licq::Event* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -687,7 +687,7 @@ unsigned long IcqProtocol::icqSetPassword(const char *szPassword)
   CPU_SetPassword *p = new CPU_SetPassword(szPassword);
   gLog.Info(tr("%sUpdating password (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -713,7 +713,7 @@ unsigned long IcqProtocol::icqSetGeneralInfo(
 
   gLog.Info(tr("%sUpdating general info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -729,7 +729,7 @@ return 0;
 
   gLog.Info(tr("%sUpdating additional E-Mail info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -750,7 +750,7 @@ unsigned long IcqProtocol::icqSetMoreInfo(unsigned short nAge,
 
   gLog.Info(tr("%sUpdating more info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent *e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -763,7 +763,7 @@ unsigned long IcqProtocol::icqSetInterestsInfo(const UserCategoryMap& interests)
   gLog.Info("%sUpdating Interests info (#%hu/#%d)..\n", L_SRVxSTR,
     p->Sequence(), p->SubSequence());
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -778,7 +778,7 @@ unsigned long IcqProtocol::icqSetOrgBackInfo(const UserCategoryMap& orgs,
   gLog.Info("%sUpdating Organizations/Backgrounds info (#%hu/#%d)..\n",
     L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -800,7 +800,7 @@ unsigned long IcqProtocol::icqSetWorkInfo(const char *_szCity, const char *_szSt
 
   gLog.Info(tr("%sUpdating work info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -817,7 +817,7 @@ unsigned long IcqProtocol::icqSetAbout(const char *_szAbout)
 
   delete [] szAbout;
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -849,7 +849,7 @@ unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const 
      szId, p->Sequence());
   delete [] sz;
 
-  ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -883,7 +883,7 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, boo
   // Now send the set security info packet
     CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
     gLog.Info(tr("%sUpdating security info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
-    ICQEvent* e = SendExpectEvent_Server(p, NULL);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL);
     if (e != NULL)
       return e->EventId();
     return 0;
@@ -905,7 +905,7 @@ unsigned long IcqProtocol::icqSearchWhitePages(const char *szFirstName,
     nCountryCode, szCoName, szCoDept, szCoPos, szKeyword, bOnlineOnly);
   gLog.Info(tr("%sStarting white pages search (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(p, NULL, true);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL, true);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -917,7 +917,7 @@ unsigned long IcqProtocol::icqSearchByUin(unsigned long nUin)
    CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
    gLog.Info(tr("%sStarting search by UIN for user (#%hu/#%d)...\n"), L_SRVxSTR, 
              p->Sequence(), p->SubSequence());
-   ICQEvent* e = SendExpectEvent_Server(p, NULL, true);
+  Licq::Event* e = SendExpectEvent_Server(p, NULL, true);
    if (e != NULL)
      return e->EventId();
    return 0;
@@ -935,7 +935,7 @@ unsigned long IcqProtocol::icqUserBasicInfo(const char *_szId)
     p = new CPU_Meta_RequestAllInfo(_szId);
   gLog.Info(tr("%sRequesting user info (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
-  LicqEvent* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
+  Licq::Event* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -1324,11 +1324,11 @@ void IcqProtocol::icqClearServerList()
 }
 
 //-----icqSendThroughServer-----------------------------------------------------
-LicqEvent* IcqProtocol::icqSendThroughServer(unsigned long eventId, const char *szId,
-    unsigned char format, const string& message, CUserEvent* ue, unsigned short nCharset,
+Licq::Event* IcqProtocol::icqSendThroughServer(unsigned long eventId, const char *szId,
+    unsigned char format, const string& message, Licq::UserEvent* ue, unsigned short nCharset,
   size_t nMsgLen)
 {
-  ICQEvent* result;
+  Licq::Event* result;
   Licq::UserId userId(szId, LICQ_PPID);
   bool bOffline = true;
   {
@@ -1360,7 +1360,7 @@ LicqEvent* IcqProtocol::icqSendThroughServer(unsigned long eventId, const char *
 
   if (ue != NULL)
     ue->setIsReceiver(false);
-  LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
+  Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, p, Licq::Event::ConnectServer, userId, ue);
   if (e == NULL) return 0;
   e->m_NoAck = true;
 
@@ -1372,12 +1372,12 @@ unsigned long IcqProtocol::icqSendSms(const char* id, unsigned long ppid,
     const char* number, const char* message)
 {
   Licq::UserId userId(id, ppid);
-  CEventSms* ue = new CEventSms(number, message, ICQ_CMDxSND_THRUxSERVER,
-      CUserEvent::TimeNow, LICQ_VERSION);
+  Licq::EventSms* ue = new Licq::EventSms(number, message, ICQ_CMDxSND_THRUxSERVER,
+      Licq::EventSms::TimeNow, LICQ_VERSION);
   CPU_SendSms* p = new CPU_SendSms(number, message);
   gLog.Info(tr("%sSending SMS through server (#%hu/#%d)...\n"), L_SRVxSTR,
       p->Sequence(), p->SubSequence());
-  ICQEvent* e = SendExpectEvent_Server(userId, p, ue);
+  Licq::Event* e = SendExpectEvent_Server(userId, p, ue);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -1388,11 +1388,11 @@ unsigned long IcqProtocol::icqSendSms(const char* id, unsigned long ppid,
  *
  * Processes the given event possibly passes the result to the gui.
  *----------------------------------------------------------------------------*/
-void IcqProtocol::ProcessDoneEvent(ICQEvent *e)
+void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
 {
   // Write the event to the history file if appropriate
   if (e->m_pUserEvent != NULL &&
-      (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS) &&
+      (e->m_eResult == Licq::Event::ResultAcked || e->m_eResult == Licq::Event::ResultSuccess) &&
       e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
     Licq::UserWriteGuard u(e->userId());
@@ -1438,15 +1438,15 @@ void IcqProtocol::ProcessDoneEvent(ICQEvent *e)
       {
         switch (e->m_eResult)
         {
-          case EVENT_ERROR:
-          case EVENT_TIMEDOUT:
-          case EVENT_FAILED:
-          case EVENT_SUCCESS:
-          case EVENT_CANCELLED:
+          case Licq::Event::ResultError:
+          case Licq::Event::ResultTimedout:
+          case Licq::Event::ResultFailed:
+          case Licq::Event::ResultSuccess:
+          case Licq::Event::ResultCancelled:
             gDaemon.PushPluginEvent(e);
             break;
 
-          case EVENT_ACKED:
+          case Licq::Event::ResultAcked:
             PushExtendedEvent(e);
             break;
 
@@ -1542,13 +1542,13 @@ void IcqProtocol::icqLogoff()
   m_bLoggingOn = false;
 
   gLog.Info(tr("%sLogging off.\n"), L_SRVxSTR);
-  ICQEvent *cancelledEvent = NULL;
+  Licq::Event* cancelledEvent = NULL;
 
   if (nSD != -1)
   {
     CPU_Logoff p;
     unsigned long eventId = gDaemon.getNextEventId();
-    cancelledEvent = new LicqEvent(eventId, nSD, &p, CONNECT_SERVER);
+    cancelledEvent = new Licq::Event(eventId, nSD, &p, Licq::Event::ConnectServer);
     cancelledEvent->m_pPacket = NULL;
     cancelledEvent->m_bCancelled = true;
     SendEvent(nSD, p, true);
@@ -1558,7 +1558,7 @@ void IcqProtocol::icqLogoff()
   postLogoff(nSD, cancelledEvent);
 }
 
-void IcqProtocol::postLogoff(int nSD, ICQEvent *cancelledEvent)
+void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
 {
   if (m_xBARTService)
   {
@@ -1575,17 +1575,17 @@ void IcqProtocol::postLogoff(int nSD, ICQEvent *cancelledEvent)
   pthread_mutex_lock(&mutex_extendedevents);
   pthread_mutex_lock(&mutex_cancelthread);
   pthread_mutex_lock(&mutex_reverseconnect);
-  std::list<ICQEvent *>::iterator iter;
+  std::list<Licq::Event*>::iterator iter;
 
   // Cancel all events
   // Necessary since the end is always being modified
   unsigned long i = m_lxSendQueue_Server.size();
   for (iter = m_lxSendQueue_Server.begin(); i > 0; i--)
   {
-    ICQEvent *e = *iter;
+    Licq::Event* e = *iter;
     gLog.Info("Event #%hu is still on the server queue!\n", e->Sequence());
     iter = m_lxSendQueue_Server.erase(iter);
-    ICQEvent *cancelled = new ICQEvent(e);
+    Licq::Event* cancelled = new Licq::Event(e);
     cancelled->m_bCancelled = true;
     m_lxSendQueue_Server.push_back(cancelled);
   }
@@ -1595,7 +1595,7 @@ void IcqProtocol::postLogoff(int nSD, ICQEvent *cancelledEvent)
   {
     if ((*iter)->m_nSocketDesc == nSD || (*iter)->Channel() == ICQ_CHNxNEW)
     {
-      ICQEvent *e = *iter;
+      Licq::Event* e = *iter;
       gLog.Info("Event #%hu is still on the running queue!\n", e->Sequence());
       iter = m_lxRunningEvents.erase(iter);
       if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
@@ -1603,7 +1603,7 @@ void IcqProtocol::postLogoff(int nSD, ICQEvent *cancelledEvent)
         pthread_cancel(e->thread_send);
         e->thread_running = false;
       }
-      std::list<ICQEvent *>::iterator i;
+      std::list<Licq::Event*>::iterator i;
       for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); ++i)
       {
         if (*i == e)
@@ -1647,7 +1647,7 @@ void IcqProtocol::postLogoff(int nSD, ICQEvent *cancelledEvent)
   pthread_mutex_lock(&mutex_extendedevents);
   for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
-    (*iter)->m_eResult = EVENT_CANCELLED;
+    (*iter)->m_eResult = Licq::Event::ResultCancelled;
     ProcessDoneEvent(*iter);
   }
   m_lxExtendedEvents.erase(m_lxExtendedEvents.begin(), m_lxExtendedEvents.end());
@@ -1748,7 +1748,7 @@ int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
 }
 
 //-----FindUserForInfoUpdate-------------------------------------------------
-Licq::User* IcqProtocol::FindUserForInfoUpdate(const Licq::UserId& userId, LicqEvent* e,
+Licq::User* IcqProtocol::FindUserForInfoUpdate(const Licq::UserId& userId, Licq::Event* e,
    const char *t)
 {
   Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
@@ -2157,7 +2157,7 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
           }
         }
 
-      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+        Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
       if (e)
         ProcessDoneEvent(e);
     }
@@ -2182,7 +2182,7 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
           u->saveUserInfo();
         }
 
-      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+        Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
       if (e)
         ProcessDoneEvent(e);
 
@@ -2688,7 +2688,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   {
     unsigned short err = packet.UnpackUnsignedShortBE();
 
-    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+      Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultError);
 
     switch (err)
     {
@@ -2828,7 +2828,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           }
 
       // now send the message to the user
-      CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
+          Licq::EventMsg* e = Licq::EventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
       delete [] szMsg;
 
       if (ignore)
@@ -3049,7 +3049,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       CBuffer msgTxt = packet.UnpackTLV(0x0005);
       msgTxt.UnpackUnsignedLongBE();
       unsigned short nTypeMsg = msgTxt.UnpackUnsignedShort();
-      unsigned long nMask = ((nTypeMsg & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
+          unsigned long nMask = ((nTypeMsg & ICQ_CMDxSUB_FxMULTIREC) ? (int)Licq::UserEvent::FlagMultiRec : 0);
       nTypeMsg &= ~ICQ_CMDxSUB_FxMULTIREC;
 
       char *szMessage = NULL;
@@ -3135,21 +3135,21 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       char *szType = NULL;
       OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
-      CUserEvent *eEvent = NULL;
+          Licq::UserEvent* eEvent = NULL;
 
       switch(nTypeMsg)
       {
         case ICQ_CMDxSUB_MSG:
-        {
-          CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+            {
+              Licq::EventMsg* e = Licq::EventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
           szType = strdup(tr("Message"));
           onEventType = OnEventManager::OnEventMessage;
           eEvent = e;
           break;
         }
         case ICQ_CMDxSUB_URL:
-        {
-          CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+            {
+              Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
           if (e == NULL)
           {
             char *buf;
@@ -3183,7 +3183,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[2]);  // last name
           gTranslator.ServerToClient (szFields[5]);  // comment
 
-              CEventAuthRequest* e = new CEventAuthRequest(userId,
+              Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId,
                                                        szFields[0], szFields[1],
                                                        szFields[2], szFields[3],
                                                        szFields[5],
@@ -3201,7 +3201,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
 
-              CEventAuthRefused* e = new CEventAuthRefused(userId, szMessage,
+              Licq::EventAuthRefused* e = new Licq::EventAuthRefused(userId, szMessage,
                                                        ICQ_CMDxRCV_SYSxMSGxONLINE, 
                                                        nTimeSent, 0);
           eEvent = e;
@@ -3220,7 +3220,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                   u->SetAwaitingAuth(false);
               }
 
-              CEventAuthGranted* e = new CEventAuthGranted(userId,
+              Licq::EventAuthGranted* e = new Licq::EventAuthGranted(userId,
             szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
           eEvent = e;
           break;
@@ -3229,7 +3229,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         {
           gLog.Info(tr("%sServer message.\n"), L_BLANKxSTR);
 
-          CEventServerMessage *e = CEventServerMessage::Parse(szMessage,
+              Licq::EventServerMessage* e = Licq::EventServerMessage::Parse(szMessage,
             ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
           if (e == NULL)
           {
@@ -3264,7 +3264,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[1]);  // first name
           gTranslator.ServerToClient (szFields[2]);  // last name
 
-              CEventAdded* e = new CEventAdded(userId, szFields[0],
+              Licq::EventAdded* e = new Licq::EventAdded(userId, szFields[0],
             szFields[1], szFields[2], szFields[3], ICQ_CMDxRCV_SYSxMSGxONLINE,
             nTimeSent, 0);
           delete [] szFields;
@@ -3293,7 +3293,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[5]);  // message
 
           gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
-          CEventWebPanel *e = new CEventWebPanel(szFields[0], szFields[3],
+              Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3],
                                                  szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
                                                  nTimeSent, 0);
           delete [] szFields;
@@ -3322,7 +3322,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[5]);  // message
 
           gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
-          CEventEmailPager *e = new CEventEmailPager(szFields[0], szFields[3],
+              Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3],
                                                      szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
                                                      nTimeSent, 0);
           delete [] szFields;
@@ -3331,7 +3331,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_CONTACTxLIST:
         {
-          CEventContactList *e = CEventContactList::Parse(szMessage,
+              Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
             ICQ_CMDxRCV_SYSxMSGxONLINE,nTimeSent, nMask);
           if (e == NULL)
           {
@@ -3348,8 +3348,8 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           break;
         }
         case ICQ_CMDxSUB_SMS:
-        {
-          CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
+            {
+              Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
             nTimeSent, nMask);
           if (e == NULL)
           {
@@ -3372,7 +3372,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                        nTypeMsg, packet.print(buf));
           delete [] buf;
           //TODO
-              CEventUnknownSysMsg* e = new CEventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
+              Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
                   userId, szMessage, nTimeSent, 0);
 
               Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -3442,7 +3442,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  }
 	  case ICQ_CMDxSUB_SMS:
 	  {
-	    CEventSms *eSms = (CEventSms *)eEvent;
+                Licq::EventSms* eSms = dynamic_cast<Licq::EventSms*>(eEvent);
       //TODO
                 string idSms = findUserByCellular(eSms->number());
 
@@ -3488,7 +3488,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   {
 		unsigned short nFormat, nLen, nSequence, nMsgType, nAckFlags, nMsgFlags;
 		unsigned long nUin, nMsgID;
-                CExtendedAck *pExtendedAck = 0;
+      Licq::ExtendedData* pExtendedAck = 0;
       Licq::User* u = NULL;
 
 	 	packet.incDataPosRead(4); // msg id
@@ -3542,7 +3542,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         u->GetAlias());
         gUserManager.dropUser(u);
 
-      ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ERROR);
+        Licq::Event* e = DoneServerEvent(nMsgID, Licq::Event::ResultError);
       if (e)
       {
         ProcessDoneEvent(e);
@@ -3590,8 +3590,8 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     gTranslator.ServerToClient(szMessage);
     
     if (nAckFlags == ICQ_TCPxACK_REFUSE)
-    {
-      pExtendedAck = new CExtendedAck(false, 0, szMessage);
+      {
+        pExtendedAck = new Licq::ExtendedData(false, 0, szMessage);
       nSubResult = ICQ_TCPxACK_REFUSE;
       gLog.Info(tr("%sRefusal from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
         nMsgID);
@@ -3623,13 +3623,12 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         nSubResult = ICQ_TCPxACK_RETURN;
       }
 
-      pExtendedAck = new CExtendedAck(nSubResult == ICQ_TCPxACK_RETURN, 0,
-                                      szMessage);
+        pExtendedAck = new Licq::ExtendedData(nSubResult == ICQ_TCPxACK_RETURN, 0, szMessage);
       }
         gUserManager.dropUser(u);
       delete [] szMessage;
 
-    ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ACKED);
+      Licq::Event* e = DoneServerEvent(nMsgID, Licq::Event::ResultAcked);
     if (e)
     {
       e->m_pExtendedAck = pExtendedAck;
@@ -3651,8 +3650,8 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 		break;
 	}
   case ICQ_SNACxMSG_SERVERxACK:
-  {
-    ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ACKED);
+    {
+      Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultAcked);
     if (e)
     {
       e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
@@ -3714,7 +3713,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_RIGHTSxGRANTED:
     {
       gLog.Info(tr("%sServer granted contact list rights.\n"), L_SRVxSTR);
-      DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+      DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
 
       break;
     }
@@ -3890,7 +3889,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       else
       {
         // This is the last packet so mark it as done
-        DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+        DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
 
         gLog.Info(tr("%sReceived end of contact list.\n"), L_SRVxSTR);
 
@@ -3954,7 +3953,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
     case ICQ_SNACxLIST_ROSTxSYNCED:
     {
-      DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+      DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
 
       gLog.Info(tr("%sContact list is synchronized.\n"), L_SRVxSTR);
       // The server says we are up to date, let's double check
@@ -3970,8 +3969,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_UPDxACK:
     {
       if (!UseServerContactList()) break;
-      
-      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+
+      Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
 
       if (e == NULL)
       {
@@ -4156,7 +4155,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         packet >> szMsg[i];
       szMsg[nMsgLen] = '\0';
 
-      CEventAuthRequest* e = new CEventAuthRequest(userId, "", "", "", "", nMsgLen ? szMsg : "",
+      Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId, "", "", "", "", nMsgLen ? szMsg : "",
                                                    ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
       Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -4188,10 +4187,10 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Info(tr("%sAuthorization %s by %s.\n"), L_SRVxSTR,
          granted ? "granted" : "refused", szId);
 
-      CUserEvent *eEvent;
+      Licq::UserEvent* eEvent;
       if (granted)
       {
-         eEvent = new CEventAuthGranted(userId, szMsg,
+        eEvent = new Licq::EventAuthGranted(userId, szMsg,
            ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
         Licq::UserWriteGuard u(userId);
@@ -4203,7 +4202,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
       {
-        eEvent = new CEventAuthRefused(userId, szMsg,
+        eEvent = new Licq::EventAuthRefused(userId, szMsg,
             ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
       }
 
@@ -4226,7 +4225,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Info(tr("%sUser %s added you to their contact list.\n"), L_SRVxSTR,
                 szId);
 
-      CEventAdded* e = new CEventAdded(userId, "", "", "", "",
+      Licq::EventAdded* e = new Licq::EventAdded(userId, "", "", "", "",
                                        ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -4277,7 +4276,7 @@ void IcqProtocol::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
     m_eStatus = STATUS_ONLINE;
     m_bLoggingOn = false;
     // ### FIX subsequence !!
-    ICQEvent *e = DoneExtendedServerEvent(0, EVENT_SUCCESS);
+      Licq::Event* e = DoneExtendedServerEvent(0, Licq::Event::ResultSuccess);
     if (e != NULL) ProcessDoneEvent(e);
       gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogon, 0));
 
@@ -4353,7 +4352,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
       // Msg type & flags
       unsigned short nTypeMsg = msg.UnpackUnsignedShort();
-      unsigned long nMask = ((nTypeMsg & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
+          unsigned long nMask = ((nTypeMsg & ICQ_CMDxSUB_FxMULTIREC) ? (int)Licq::UserEvent::FlagMultiRec : 0);
       nTypeMsg &= ~ICQ_CMDxSUB_FxMULTIREC;
       
       char* szMessage = new char[msg.getDataMaxSize()];
@@ -4361,21 +4360,21 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       msg.UnpackString(szMessage, msg.getDataMaxSize());      
       char *szType = NULL;
           OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
-      CUserEvent *eEvent = NULL;
-            
+          Licq::UserEvent* eEvent = NULL;
+
       switch(nTypeMsg)
       {
         case ICQ_CMDxSUB_MSG:
-	{
-          CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+            {
+              Licq::EventMsg* e = Licq::EventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
 	  szType = strdup(tr("Message"));
               onEventType = OnEventManager::OnEventMessage;
 	  eEvent = e;
 	  break;
 	}
 	case ICQ_CMDxSUB_URL:
-	{
-          CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+            {
+              Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
 	  if (e == NULL)
 	  {
 	    char *buf;
@@ -4412,7 +4411,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[2]);  // last name
           gTranslator.ServerToClient (szFields[5]);  // comment
 
-              CEventAuthRequest* e = new CEventAuthRequest(userId,
+              Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId,
                   szFields[0], szFields[1], szFields[2], szFields[3],
                   szFields[5], ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
               delete [] szFields;
@@ -4426,7 +4425,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
 
-              CEventAuthRefused* e = new CEventAuthRefused(userId,
+              Licq::EventAuthRefused* e = new Licq::EventAuthRefused(userId,
                   szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  eEvent = e;
 	  break;
@@ -4444,7 +4443,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                   u->SetAwaitingAuth(false);
               }
 
-              CEventAuthGranted* e = new CEventAuthGranted(userId,
+              Licq::EventAuthGranted* e = new Licq::EventAuthGranted(userId,
                   szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  eEvent = e;
 	  break;
@@ -4452,8 +4451,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	case ICQ_CMDxSUB_MSGxSERVER:
 	{
 	  gLog.Info(tr("%sOffline server message.\n"), L_BLANKxSTR);
-	  
-	  CEventServerMessage *e = CEventServerMessage::Parse(szMessage, ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
+
+              Licq::EventServerMessage* e = Licq::EventServerMessage::Parse(szMessage,
+                  ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
 	  if (e == NULL)
 	  {
 	    char *buf;
@@ -4487,7 +4487,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[1]);  // first name
           gTranslator.ServerToClient (szFields[2]);  // last name
 
-              CEventAdded* e = new CEventAdded(userId, szFields[0],
+              Licq::EventAdded* e = new Licq::EventAdded(userId, szFields[0],
                   szFields[1], szFields[2], szFields[3],
                   ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
               delete [] szFields;
@@ -4517,7 +4517,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[5]);  // message
 
           gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
-          CEventWebPanel *e = new CEventWebPanel(szFields[0], szFields[3], szFields[5],
+              Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3], szFields[5],
                                                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
           delete [] szFields;	
           eEvent = e;
@@ -4546,15 +4546,16 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[5]);  // message
 
           gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
-          CEventEmailPager *e = new CEventEmailPager(szFields[0], szFields[3], szFields[5],
+              Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3], szFields[5],
                                                      ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  delete [] szFields;	
 	  eEvent = e;
 	  break;
 	}
 	case ICQ_CMDxSUB_CONTACTxLIST:
-        {
-	  CEventContactList *e = CEventContactList::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+            {
+              Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
+                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
           if (e == NULL)
           {
             char *buf;
@@ -4570,8 +4571,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  break;
 	}
 	case ICQ_CMDxSUB_SMS:
-	{
-	  CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+            {
+              Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
 	  if (e == NULL)
           {
 	    char *buf;
@@ -4592,7 +4593,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Unknown("%sUnknown offline system message (0x%04x):\n%s\n", L_UNKNOWNxSTR,
                        nTypeMsg, packet.print(buf));
           delete [] buf;
-              CEventUnknownSysMsg* e = new CEventUnknownSysMsg(nTypeMsg,
+              Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg,
                   ICQ_CMDxRCV_SYSxMSGxOFFLINE, userId, szMessage, nTimeSent, 0);
 
               Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -4657,8 +4658,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 break;
               }
 	  case ICQ_CMDxSUB_SMS:
-	  {
-                CEventSms* eSms = (CEventSms *)eEvent;
+              {
+                Licq::EventSms* eSms = dynamic_cast<Licq::EventSms*>(eEvent);
                 string idSms = findUserByCellular(eSms->number());
 
                 if (!idSms.empty())
@@ -4699,7 +4700,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     {
       unsigned short nSubtype;
       unsigned char nResult;
-      ICQEvent *pEvent = NULL;
+          Licq::Event* pEvent = NULL;
       nSubtype = msg.UnpackUnsignedShort();
       nResult = msg.UnpackChar();
       char *szType = NULL;
@@ -4708,7 +4709,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup(tr("Password change"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
               Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -4722,13 +4723,13 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup(tr("Security info"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
       }
       else if (nSubtype == ICQ_CMDxMETA_GENERALxINFOxRSP)
       {
         szType = strdup(tr("General info"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
@@ -4773,7 +4774,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup(tr("E-mail info"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
@@ -4798,7 +4799,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup(tr("More info"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
@@ -4828,7 +4829,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup("Interests info");
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
@@ -4853,7 +4854,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup(tr("Work info"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
@@ -4895,7 +4896,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup(tr("About"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
@@ -4916,7 +4917,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         // this one sucks, it could be sms or organization response
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL &&
             pEvent->m_pPacket->SubCommand() == ICQ_CMDxMETA_ORGBACKxINFOxSET)
@@ -4975,8 +4976,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               {
                 gLog.Info(tr("%sSMS delivered.\n"), L_SRVxSTR);
                 if (pEvent)
-                {
-                  pEvent->m_eResult = EVENT_SUCCESS;
+                    {
+                      pEvent->m_eResult = Licq::Event::ResultSuccess;
                   ProcessDoneEvent(pEvent);
                 }
               }
@@ -4992,8 +4993,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 if (szId != NULL) free(szId);
                 if (szParam != NULL) free(szParam);
                 if (pEvent)
-                {
-                  pEvent->m_eResult = EVENT_FAILED;
+                    {
+                      pEvent->m_eResult = Licq::Event::ResultFailed;
                   ProcessDoneEvent(pEvent);
                 }
               }
@@ -5026,8 +5027,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 }
   
                 if (pEvent)
-                {
-                  pEvent->m_eResult = EVENT_FAILED;
+                    {
+                      pEvent->m_eResult = Licq::Event::ResultFailed;
                   ProcessDoneEvent(pEvent);
                 }
               }
@@ -5040,8 +5041,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 delete [] buf;
   
                 if (pEvent)
-                {
-                  pEvent->m_eResult = EVENT_FAILED;
+                    {
+                      pEvent->m_eResult = Licq::Event::ResultFailed;
                   ProcessDoneEvent(pEvent);
                 }
               }
@@ -5052,8 +5053,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             {
               gLog.Info(tr("%sUndeliverable SMS.\n"), L_SRVxSTR);
               if (pEvent)
-              {
-                pEvent->m_eResult = EVENT_FAILED;
+                  {
+                    pEvent->m_eResult = Licq::Event::ResultFailed;
                 ProcessDoneEvent(pEvent);
               }
             }
@@ -5069,7 +5070,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         szType = strdup(tr("Random chat group"));
         pEvent = DoneServerEvent(nSubSequence,
-          nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
@@ -5079,8 +5080,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       }
       else if (nSubtype == ICQ_CMDxMETA_RANDOMxUSERxRSP)
       {
-        ICQEvent *e = DoneServerEvent(nSubSequence,
-                        nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+            Licq::Event* e = DoneServerEvent(nSubSequence,
+                nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
         if (e != NULL && nResult == META_SUCCESS)
         {
@@ -5115,7 +5116,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (bNewUser)
             icqRequestMetaInfo(szUin);
 
-              e->m_pSearchAck = new CSearchAck(userId);
+              e->m_pSearchAck = new Licq::SearchData(userId);
             }
         else
           gLog.Info(tr("%sNo random chat user found.\n"), L_SRVxSTR);
@@ -5123,8 +5124,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       }
       else if (nSubtype == ICQ_CMDxMETA_WPxINFOxSET_RSP)
       {
-        ICQEvent *e = DoneServerEvent(nSubSequence,
-                                      nResult == 0x0A ? EVENT_SUCCESS : EVENT_FAILED);
+            Licq::Event* e = DoneServerEvent(nSubSequence,
+                nResult == 0x0A ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
         if (e == NULL)
         {
           gLog.Info(tr("%sReceived info update ack, without updating info.\n"), L_SRVxSTR);
@@ -5137,7 +5138,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       }
       else if (nSubtype == 0x0001)
       {
-        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_FAILED);
+            Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultFailed);
         gLog.Info(tr("%sSMS failed to send.\n"), L_SRVxSTR);
         if (e != NULL)
         ProcessDoneEvent(e);
@@ -5146,21 +5147,22 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       else if (nSubtype == 0x0190 || nSubtype == 0x019a ||
                nSubtype == 0x01a4 || nSubtype == 0x01ae)
       {
-        ICQEvent *e = NULL;
+            Licq::Event* e = NULL;
 
         if (nResult == 0x32) // No results found
         {
           gLog.Info(tr("%sWhitePages search found no users.\n"), L_SRVxSTR);
-          e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
-          ICQEvent *e2 = new ICQEvent(e);
+              e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultSuccess);
+              Licq::Event* e2 = new Licq::Event(e);
           e2->m_pSearchAck = NULL; // Search ack is null lets plugins know no results found
           e2->m_nCommand = ICQ_CMDxSND_META;
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
               gDaemon.PushPluginEvent(e2);
-          DoneEvent(e, EVENT_SUCCESS);break;
-        }
+              DoneEvent(e, Licq::Event::ResultSuccess);
+              break;
+            }
 
-        e = DoneExtendedServerEvent(nSubSequence, EVENT_ACKED);
+            e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultAcked);
         if (e == NULL)
         {
           gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
@@ -5176,7 +5178,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         snprintf(foundAccount, sizeof(foundAccount), "%lu", nFoundUin);
             Licq::UserId foundUserId(foundAccount, LICQ_PPID);
 
-            CSearchAck* s = new CSearchAck(foundUserId);
+            Licq::SearchData* s = new Licq::SearchData(foundUserId);
 
             msg.UnpackString(szTemp, sizeof(szTemp));
             gTranslator.ServerToClient(szTemp);
@@ -5204,7 +5206,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             gLog.Info("%s%s (%lu) <%s %s, %s>\n", L_SBLANKxSTR, s->alias().c_str(),
                 nFoundUin, s->firstName().c_str(), s->lastName().c_str(), s->email().c_str());
 
-        ICQEvent *e2 = new ICQEvent(e);
+            Licq::Event* e2 = new Licq::Event(e);
         // JON: Hack it so it is backwards compatible with plugins for now.
         e2->m_nCommand = ICQ_CMDxSND_META;
         e2->m_pSearchAck = s;
@@ -5215,7 +5217,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           nMore = msg.UnpackUnsignedLong();
           // No more subtraction by 1, and now it seems to always be 0
               e2->m_pSearchAck->myMore = nMore;
-          e2->m_eResult = EVENT_SUCCESS;
+              e2->m_eResult = Licq::Event::ResultSuccess;
         }
         else
         {
@@ -5226,13 +5228,13 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             gDaemon.PushPluginEvent(e2);
 
         if (nSubtype & 0x0008)
-          DoneEvent(e, EVENT_SUCCESS); // Remove it from the running event list
+              DoneEvent(e, Licq::Event::ResultSuccess); // Remove it from the running event list
         else
           PushExtendedEvent(e);
       }
-      else
-      {
-        ICQEvent *e = NULL;
+          else
+          {
+            Licq::Event* e = NULL;
         Licq::User* u = NULL;
         Licq::UserId userId;
         bool multipart = false;
@@ -5241,10 +5243,10 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           // error: empty result or nonexistent user (1E =  readonly???)
           gLog.Warn(tr("%sFailed to update user info: %x.\n"), L_WARNxSTR, nResult);
-          e = DoneExtendedServerEvent(nSubSequence, EVENT_FAILED);
+              e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultFailed);
           if (e)
           {
-            DoneEvent(e, EVENT_FAILED);
+                DoneEvent(e, Licq::Event::ResultFailed);
             ProcessDoneEvent(e);
           }
           e = NULL;
@@ -5253,7 +5255,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         else
         {
           // Find the relevant event
-          e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+              e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultSuccess);
           if (e == NULL)
           {
             gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
@@ -5647,7 +5649,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
         if (!multipart) {
           if (e) {
-            DoneEvent(e, EVENT_SUCCESS);
+                DoneEvent(e, Licq::Event::ResultSuccess);
             ProcessDoneEvent(e);
           } else {
             gLog.Warn(tr("%sResponse to unknown extended info request for %s (%s).\n"),
@@ -5663,8 +5665,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       if (szType)
       {
         if (pEvent)
-        {
-          if (pEvent->Result() == EVENT_SUCCESS)
+            {
+              if (pEvent->Result() == Licq::Event::ResultSuccess)
             gLog.Info(tr("%s%s updated.\n"), L_SRVxSTR, szType);
           else
             gLog.Info(tr("%s%s update failed.\n"), L_SRVxSTR, szType);
@@ -5710,7 +5712,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       {
         gLog.Warn(tr("%sVerification required. Reconnecting...\n"), L_WARNxSTR);
 
-        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+        Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultError);
         if (e)
           delete e;
         m_bVerify = true;
@@ -5728,7 +5730,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
       {
-        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+        Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultError);
         if (e)
           delete e;
         gLog.Error(tr("%sUnknown logon error. There appears to be an issue with the ICQ servers. Please try again later.\n"), L_ERRORxSTR);
@@ -5738,8 +5740,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
     }
     case ICQ_SNACxNEW_UIN:
     {
-
-      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+      Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
       if (e)
         ProcessDoneEvent(e);
 

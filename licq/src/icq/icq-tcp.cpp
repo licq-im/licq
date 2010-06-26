@@ -22,6 +22,7 @@
 #include <langinfo.h>
 
 #include "licq/byteorder.h"
+#include <licq/event.h>
 #include "licq/gpghelper.h"
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
@@ -30,7 +31,7 @@
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
-#include "licq_events.h"
+#include <licq/userevents.h>
 #include "licq_log.h"
 #include "licq/version.h"
 
@@ -61,7 +62,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   const char* szId = accountId.c_str();
   const char* m = message.c_str();
 
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
   char *mDos = NULL;
   char *szMessage = NULL;
   bool bUTF16 = false;
@@ -71,9 +72,9 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     mDos = gTranslator.NToRN(m);
     gTranslator.ClientToServer(mDos);
   }
-  CEventMsg *e = NULL;
+  Licq::EventMsg* e = NULL;
 
-  unsigned long f = LICQ_VERSION;
+  unsigned long f = Licq::UserEvent::FlagLicqVerMask;
 
   char *cipher = NULL;
   bool useGpg;
@@ -90,10 +91,14 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       cipher = Licq::gGpgHelper.Encrypt(mDos, userId);
   }
 
-  if (cipher) f |= E_ENCRYPTED;
-  if (!viaServer) f |= E_DIRECT;
-  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  if (bMultipleRecipients) f |= E_MULTIxREC;
+  if (cipher)
+    f |= Licq::UserEvent::FlagEncrypted;
+  if (!viaServer)
+    f |= Licq::UserEvent::FlagDirect;
+  if (nLevel == ICQ_TCPxMSG_URGENT)
+    f |= Licq::UserEvent::FlagUrgent;
+  if (bMultipleRecipients)
+    f |= Licq::UserEvent::FlagMultiRec;
 
   // What kinda encoding do we have here?
   unsigned short nCharset = CHARSET_ASCII;
@@ -140,7 +145,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       }
     }
 
-     e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, CUserEvent::TimeNow, f);
+     e = new Licq::EventMsg(m, ICQ_CMDxSND_THRUxSERVER, Licq::EventMsg::TimeNow, f);
      unsigned short nMaxSize = bUserOffline ? MaxOfflineMessageSize : MaxMessageSize;
      if (strlen(szMessage) > nMaxSize)
      {
@@ -158,8 +163,9 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   {
     if (!u.isLocked())
       return;
-    if (u->Secure()) f |= E_ENCRYPTED;
-    e = new CEventMsg(m, ICQ_CMDxTCP_START, CUserEvent::TimeNow, f);
+    if (u->Secure())
+      f |= Licq::UserEvent::FlagEncrypted;
+    e = new Licq::EventMsg(m, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Message *p = new CPT_Message(cipher ? cipher : szMessage, nLevel, bMultipleRecipients, pColor, *u, nUTFLen);
     gLog.Info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
@@ -198,7 +204,7 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const char *_szId, unsigned long
     return eventId;
   }
 
-  ICQEvent *result;
+  Licq::Event* result;
   Licq::UserWriteGuard u(userId);
 
   if (bServer)
@@ -233,7 +239,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
 
   // make the URL info string
   char *szDescDos = NULL;
-  CEventUrl *e = NULL;
+  Licq::EventUrl* e = NULL;
   szDescDos = gTranslator.NToRN(description);
   gTranslator.ClientToServer(szDescDos);
   string m;
@@ -247,12 +253,15 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   m += '\xFE';
   m += url;
 
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
 
-  unsigned long f = LICQ_VERSION;
-  if (!viaServer) f |= E_DIRECT;
-  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  if (bMultipleRecipients) f |= E_MULTIxREC;
+  unsigned long f = Licq::UserEvent::FlagLicqVerMask;
+  if (!viaServer)
+    f |= Licq::UserEvent::FlagDirect;
+  if (nLevel == ICQ_TCPxMSG_URGENT)
+    f |= Licq::UserEvent::FlagUrgent;
+  if (bMultipleRecipients)
+    f |= Licq::UserEvent::FlagMultiRec;
 
   if (viaServer)
   {
@@ -263,8 +272,8 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
         nCharset = 3;
     }
 
-    e = new CEventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER,
-        CUserEvent::TimeNow, f);
+    e = new Licq::EventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER,
+        Licq::EventUrl::TimeNow, f);
     result = icqSendThroughServer(eventId, _szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
 
@@ -274,8 +283,9 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   {
     if (!u.isLocked())
       return;
-    if (u->Secure()) f |= E_ENCRYPTED;
-    e = new CEventUrl(url.c_str(), description, ICQ_CMDxTCP_START, CUserEvent::TimeNow, f);
+    if (u->Secure())
+      f |= Licq::UserEvent::FlagEncrypted;
+    e = new Licq::EventUrl(url.c_str(), description, ICQ_CMDxTCP_START, Licq::EventUrl::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Url* p = new CPT_Url(m.c_str(), nLevel, bMultipleRecipients, pColor, *u);
     gLog.Info(tr("%sSending %sURL to %s (#%hu).\n"), L_TCPxSTR,
@@ -305,14 +315,14 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   const char* szFilename = filename.c_str();
   const char* szDescription = message.c_str();
 
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
   char *szDosDesc = NULL;
   if (szDescription != NULL)
   {
     szDosDesc = gTranslator.NToRN(szDescription);
     gTranslator.ClientToServer(szDosDesc);
   }
-  CEventFile *e = NULL;
+  Licq::EventFile* e = NULL;
 
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
@@ -326,7 +336,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
       nLevel = ICQ_TCPxMSG_NORMAL2;
     else if (nLevel == ICQ_TCPxMSG_URGENT)
     {
-      f |= E_URGENT;
+      f |= Licq::UserEvent::FlagUrgent;
       nLevel = ICQ_TCPxMSG_URGENT2;
     }
     else if (nLevel == ICQ_TCPxMSG_LIST)
@@ -342,8 +352,8 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
-          lFileList, p->Sequence(), CUserEvent::TimeNow, f);
+      e = new Licq::EventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+          lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.Info(tr("%sSending file transfer to %s (#%hu).\n"), L_SRVxSTR, 
                 u->GetAlias(), -p->Sequence());
 
@@ -361,12 +371,14 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      unsigned long f = E_DIRECT | LICQ_VERSION;
-      if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-      if (u->Secure()) f |= E_ENCRYPTED;
+      unsigned long f = Licq::UserEvent::FlagDirect | Licq::UserEvent::FlagLicqVerMask;
+      if (nLevel == ICQ_TCPxMSG_URGENT)
+        f |= Licq::UserEvent::FlagUrgent;
+      if (u->Secure())
+        f |= Licq::UserEvent::FlagEncrypted;
 
-      e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
-          lFileList, p->Sequence(), CUserEvent::TimeNow, f);
+      e = new Licq::EventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+          lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.Info(tr("%sSending %sfile transfer to %s (#%hu).\n"), L_TCPxSTR,
                 nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "", 
                 u->GetAlias(), -p->Sequence());
@@ -394,7 +406,7 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
 
   char *m = new char[3 + users.size() * 80];
   int p = sprintf(m, "%d%c", int(users.size()), char(0xFE));
-  ContactList vc;
+  Licq::EventContactList::ContactList vc;
 
   StringList::const_iterator iter;
   for (iter = users.begin(); iter != users.end(); ++iter)
@@ -403,7 +415,7 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
     Licq::UserReadGuard u(uId);
     p += sprintf(&m[p], "%s%c%s%c", iter->c_str(), char(0xFE),
        !u.isLocked() ? "" : u->getAlias().c_str(), char(0xFE));
-    vc.push_back(new CContact(uId, !u.isLocked() ? "" : u->GetAlias()));
+    vc.push_back(new Licq::EventContactList::Contact(uId, !u.isLocked() ? "" : u->getAlias()));
   }
 
   if (!online && p > MaxMessageSize)
@@ -413,17 +425,20 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
     return 0;
   }
 
-  CEventContactList *e = NULL;
-  ICQEvent *result = NULL;
+  Licq::EventContactList* e = NULL;
+  Licq::Event* result = NULL;
 
-  unsigned long f = LICQ_VERSION;
-  if (online) f |= E_DIRECT;
-  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  if (bMultipleRecipients) f |= E_MULTIxREC;
+  unsigned long f = Licq::UserEvent::FlagLicqVerMask;
+  if (online)
+    f |= Licq::UserEvent::FlagDirect;
+  if (nLevel == ICQ_TCPxMSG_URGENT)
+    f |= Licq::UserEvent::FlagUrgent;
+  if (bMultipleRecipients)
+    f |= Licq::UserEvent::FlagMultiRec;
 
   if (!online) // send offline
   {
-    e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, CUserEvent::TimeNow, f);
+    e = new Licq::EventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, Licq::EventContactList::TimeNow, f);
     result = icqSendThroughServer(eventId, szId,
       ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
       m, e);
@@ -434,8 +449,9 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
   {
     if (!u.isLocked())
       return 0;
-    if (u->Secure()) f |= E_ENCRYPTED;
-    e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, CUserEvent::TimeNow, f);
+    if (u->Secure())
+      f |= Licq::UserEvent::FlagEncrypted;
+    e = new Licq::EventContactList(vc, false, ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, *u);
     gLog.Info(tr("%sSending %scontact list to %s (#%hu).\n"), L_TCPxSTR,
@@ -460,7 +476,7 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
 unsigned long IcqProtocol::icqRequestInfoPlugin(Licq::User* u, bool bServer,
                                                const char *GUID)
 {
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
   if (bServer)
   {
     CPU_InfoPluginReq *p = new CPU_InfoPluginReq(u, GUID, 0);
@@ -550,7 +566,7 @@ unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId, bool bS
 unsigned long IcqProtocol::icqRequestStatusPlugin(Licq::User* u, bool bServer,
                                                  const char *GUID)
 {
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
   if (bServer)
   {
     CPU_StatusPluginReq *p = new CPU_StatusPluginReq(u, GUID, 0);
@@ -750,17 +766,17 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const char* id,
   gTranslator.ClientToServer(szReasonDos);
 
   unsigned long f;
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
   if (bServer)
   {
-    f = LICQ_VERSION;
-    
+    f = Licq::UserEvent::FlagLicqVerMask;
+
     //flags through server are a little different
     if (nLevel == ICQ_TCPxMSG_NORMAL)
       nLevel = ICQ_TCPxMSG_NORMAL2;
     else if (nLevel == ICQ_TCPxMSG_URGENT)
     {
-      f |= E_URGENT;
+      f |= Licq::UserEvent::FlagUrgent;
       nLevel = ICQ_TCPxMSG_URGENT2;
     }
     else if (nLevel == ICQ_TCPxMSG_LIST)
@@ -770,8 +786,8 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const char* id,
         szChatUsers, nPort, nLevel, *u,
                                (u->Version() > 7));
 
-		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
-        CUserEvent::TimeNow, f);
+    Licq::EventChat* e = new Licq::EventChat(reason, szChatUsers, nPort, p->Sequence(),
+        Licq::EventChat::TimeNow, f);
 		gLog.Info(tr("%sSending chat request to %s (#%hu).\n"), L_SRVxSTR,
 			  u->GetAlias(), -p->Sequence());
 
@@ -781,11 +797,13 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const char* id,
 	{
 		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, szChatUsers, nPort,
         nLevel, *u, (u->Version() > 7));
-		f = E_DIRECT | LICQ_VERSION;
-		if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-		if (u->Secure()) f |= E_ENCRYPTED;
-		CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
-        CUserEvent::TimeNow, f);
+    f = Licq::UserEvent::FlagDirect | Licq::UserEvent::FlagLicqVerMask;
+    if (nLevel == ICQ_TCPxMSG_URGENT)
+      f |= Licq::UserEvent::FlagUrgent;
+    if (u->Secure())
+      f |= Licq::UserEvent::FlagEncrypted;
+    Licq::EventChat* e = new Licq::EventChat(reason, szChatUsers, nPort, p->Sequence(),
+        Licq::UserEvent::TimeNow, f);
 		gLog.Info(tr("%sSending %schat request to %s (#%hu).\n"), L_TCPxSTR,
 							nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
 							u->GetAlias(), -p->Sequence());
@@ -874,7 +892,7 @@ void IcqProtocol::icqChatRequestAccept(const char* id, unsigned short nPort,
 void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId)
 {
 #ifdef USE_OPENSSL
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
 
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
@@ -898,7 +916,7 @@ void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const Licq::UserId
 void IcqProtocol::icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId)
 {
 #ifdef USE_OPENSSL
-  ICQEvent *result = NULL;
+  Licq::Event* result = NULL;
 
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
@@ -1566,10 +1584,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     localIp = LE_32(localIp);
   }
 
-  unsigned long nMask = E_DIRECT
-                        | ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
-                        | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0)
-                        | (pSock->Secure() ? E_ENCRYPTED : 0);
+  unsigned long nMask = Licq::UserEvent::FlagDirect |
+      ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? (int)Licq::UserEvent::FlagMultiRec : 0) |
+      ((msgFlags & ICQ_TCPxMSG_URGENT) ? (int)Licq::UserEvent::FlagUrgent : 0) |
+      (pSock->Secure() ? (int)Licq::UserEvent::FlagEncrypted : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
   bool bAccept = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
   // Flag as sent urgent as well if we are in occ or dnd and auto-accept is on
@@ -1668,7 +1686,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, pSock);
 
-        CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, CUserEvent::TimeNow, nMask);
+          Licq::EventMsg* e = Licq::EventMsg::Parse(message, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, nMask);
         e->SetColor(fore, back);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
@@ -1766,7 +1784,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
             gLog.Info(tr("%sURL from %s (%s).\n"), L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
 
-        CEventUrl *e = CEventUrl::Parse(message, ICQ_CMDxTCP_START, CUserEvent::TimeNow, nMask);
+          Licq::EventUrl* e = Licq::EventUrl::Parse(message, ICQ_CMDxTCP_START, Licq::EventUrl::TimeNow, nMask);
         if (e == NULL)
         {
           char *buf;
@@ -1838,7 +1856,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.Info(tr("%sContact list from %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
 
-        CEventContactList *e = CEventContactList::Parse(message, ICQ_CMDxTCP_START, CUserEvent::TimeNow, nMask);
+          Licq::EventContactList* e = Licq::EventContactList::Parse(message, ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, nMask);
         if (e == NULL)
         {
           char *buf;
@@ -1908,8 +1926,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         // translating string with translation table
         gTranslator.ServerToClient (message);
-        CEventChat *e = new CEventChat(message, szChatClients, nPort, theSequence,
-              CUserEvent::TimeNow, nMask | licqVersion);
+          Licq::EventChat* e = new Licq::EventChat(message, szChatClients, nPort, theSequence,
+              Licq::EventChat::TimeNow, nMask | licqVersion);
 
         // Add the user to our list if they are new
         if (bNewUser)
@@ -1964,8 +1982,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         // translating string with translation table
         gTranslator.ServerToClient (message);
-          CEventFile* e = new CEventFile(filename.c_str(), message, nFileLength,
-              filelist, theSequence, CUserEvent::TimeNow, nMask | licqVersion);
+          Licq::EventFile* e = new Licq::EventFile(filename.c_str(), message, nFileLength,
+              filelist, theSequence, Licq::EventFile::TimeNow, nMask | licqVersion);
         // Add the user to our list if they are new
         if (bNewUser)
         {
@@ -2041,8 +2059,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
 					// translating string with translation table
 					gTranslator.ServerToClient(szMessage);
-              CEventFile* e = new CEventFile(filename.c_str(), szMessage, nFileSize,
-                    filelist, theSequence, CUserEvent::TimeNow, nMask);
+                Licq::EventFile* e = new Licq::EventFile(filename.c_str(), szMessage, nFileSize,
+                    filelist, theSequence, Licq::EventFile::TimeNow, nMask);
 					if (bNewUser)
 					{
                   if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
@@ -2074,8 +2092,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
 					// translating string with translation table
 					gTranslator.ServerToClient(szMessage);
-					CEventChat *e = new CEventChat(szMessage, szChatClients, nPort,
-                    theSequence, CUserEvent::TimeNow, nMask);
+                Licq::EventChat* e = new Licq::EventChat(szMessage, szChatClients, nPort,
+                    theSequence, Licq::EventChat::TimeNow, nMask);
 					if (bNewUser)
 					{
                   if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
@@ -2095,8 +2113,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				case ICQ_CMDxSUB_URL:
 				{
               gLog.Info(tr("%sURL from %s (%s).\n"), L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
-					CEventUrl *e = CEventUrl::Parse(szMessage, ICQ_CMDxTCP_START,
-                  CUserEvent::TimeNow, nMask);
+                Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxTCP_START,
+                    Licq::EventUrl::TimeNow, nMask);
 					if (e == NULL)
 					{
 						char *buf;
@@ -2127,9 +2145,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				{
               gLog.Info(tr("%sContact list from %s (%s).\n"), L_TCPxSTR,
                   u->GetAlias(), userId.toString().c_str());
-					CEventContactList *e = CEventContactList::Parse(szMessage,
-																													ICQ_CMDxTCP_START,
-                  CUserEvent::TimeNow, nMask);
+                Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
+                    ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, nMask);
 					if (e == NULL)
 					{
 						char *buf;
@@ -2300,7 +2317,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     // If this is not from a user on our list then ignore it
     if (bNewUser) break;
 
-    CExtendedAck *pExtendedAck = NULL;
+      Licq::ExtendedData *pExtendedAck = NULL;
 
     switch (newCommand)
     {
@@ -2347,9 +2364,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
 
-        pExtendedAck = new CExtendedAck (nPort != 0, nPort, message);
-        break;
-      }
+          pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort, message);
+          break;
+        }
 
       case ICQ_CMDxSUB_FILE:
       {
@@ -2376,9 +2393,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
          // Some clients only send the first port (reversed)
          if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
 
-         pExtendedAck = new CExtendedAck(nPort != 0, nPort, message);
-         break;
-      }
+          pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort, message);
+          break;
+        }
 
 		  case ICQ_CMDxSUB_ICBM:
 			{
@@ -2427,7 +2444,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 					if (nPort == 0)
 						nPort = nPortReversed;
 
-					pExtendedAck = new CExtendedAck(nPort != 0, nPort,
+              pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort,
                   message[0] != '\0' ? message : msg.c_str());
 	      break;
 	    }
@@ -2447,7 +2464,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
              rejected if it's 0) */
           bool bAccepted = (nPort != 0 && ul[0] == '\0') ||
                            (nPort == 0 && ul[0] != '\0');
-					pExtendedAck = new CExtendedAck(bAccepted, nPort,
+              pExtendedAck = new Licq::ExtendedData(bAccepted, nPort,
                   message[0] != '\0' ? message : msg.c_str());
 	      break;
 	    }
@@ -2477,7 +2494,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           gLog.Info(tr("%sSecure channel response from %s (%s)%s.\n"), L_TCPxSTR,
               u->GetAlias(), userId.toString().c_str(), l);
 
-        ICQEvent *e = NULL;
+          Licq::Event* e = NULL;
 
         // Check if the response is ok
         if (message[0] == '\0')
@@ -2488,12 +2505,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserSecurity, u->id(), 0));
           // find the event, fail it
-          e = DoneEvent(sockfd, theSequence, EVENT_FAILED);
-        }
+            e = DoneEvent(sockfd, theSequence, Licq::Event::ResultFailed);
+          }
         else
         {
           // Find the event, succeed it
-          e = DoneEvent(sockfd, theSequence, EVENT_SUCCESS);
+            e = DoneEvent(sockfd, theSequence, Licq::Event::ResultSuccess);
 
           // Check that a request was in progress...should always be ok
           if (e == NULL)
@@ -2511,8 +2528,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           if (!pSock->SecureConnect())
           {
             errorOccured = true;
-            e->m_eResult = EVENT_FAILED;
-          }
+              e->m_eResult = Licq::Event::ResultFailed;
+            }
           else
           {
               gLog.Info(tr("%sSecure channel established with %s (%s).\n"),
@@ -2554,7 +2571,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               u->GetAlias(), userId.toString().c_str(), l);
 
         // Find the event, succeed it
-        ICQEvent *e = DoneEvent(sockfd, theSequence, EVENT_SUCCESS);
+          Licq::Event* e = DoneEvent(sockfd, theSequence, Licq::Event::ResultSuccess);
 
         // Check that a request was in progress...should always be ok
         if (e == NULL)
@@ -2649,7 +2666,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       }
     }
 
-    ICQEvent *e = DoneEvent(sockfd, theSequence, EVENT_ACKED);
+      Licq::Event *e = DoneEvent(sockfd, theSequence, Licq::Event::ResultAcked);
     if (e != NULL)
     {
       e->m_pExtendedAck = pExtendedAck;
@@ -2851,7 +2868,7 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
     }
     else
     {
-      EventResult result;
+        Licq::Event::ResultType result;
 
       switch (error_level)
       {
@@ -2868,9 +2885,9 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
         if (len < 8)
         {
           //this could be no plugins or no picture, need to check
-          ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
-                                          EVENT_ACKED) :
-                                DoneServerEvent(nMsgID2, EVENT_ACKED);
+              Licq::Event* e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+                      Licq::Event::ResultAcked) :
+              DoneServerEvent(nMsgID2, Licq::Event::ResultAcked);
 
           if (e == NULL)
           {
@@ -3078,40 +3095,40 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             }
           }
 
-        result = EVENT_ACKED;
-        break;
+            result = Licq::Event::ResultAcked;
+            break;
       }
       case ICQ_PLUGIN_ERROR:
       {
         gLog.Warn("%sInfo plugin not available from %s.\n", L_WARNxSTR,
                                                             u->GetAlias());
-        result = EVENT_ERROR;
-        break;
-      }
+            result = Licq::Event::ResultError;
+            break;
+          }
       case ICQ_PLUGIN_REJECTED:
       {
         gLog.Info("%s%s refused our request.\n", szInfo, u->GetAlias());
-        result = EVENT_FAILED;
-        break;
-      }
+            result = Licq::Event::ResultFailed;
+            break;
+          }
       case ICQ_PLUGIN_AWAY:
       {
         gLog.Info("%sOur request was refused because %s is away.\n", szInfo,
                   u->GetAlias());
-        result = EVENT_FAILED;
-        break;
-      }
+            result = Licq::Event::ResultFailed;
+            break;
+          }
       default:
       {
         gLog.Warn("%sUnknown reply level %u from %s.\n", L_UNKNOWNxSTR,
                   error_level, u->GetAlias());
         errorOccured = true;
-        result = EVENT_ERROR;
-        break;
-      }
-      } 
+            result = Licq::Event::ResultError;
+            break;
+          }
+        }
 
-      ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+        Licq::Event* e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
                                       result) :
                             DoneServerEvent(nMsgID2, result);
       if (e == NULL)
@@ -3242,7 +3259,7 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
     }
     else
     {
-      EventResult result;
+        Licq::Event::ResultType result;
 
       switch (error_level)
       {
@@ -3280,14 +3297,14 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
               }
             }
 
-        result = EVENT_ACKED;
-        break;
+            result = Licq::Event::ResultAcked;
+            break;
       }
       case ICQ_PLUGIN_STATUSxREPLY:
       {
-        ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
-                                        EVENT_ACKED) :
-                              DoneServerEvent(nMsgID2, EVENT_ACKED);
+            Licq::Event* e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+                    Licq::Event::ResultAcked) :
+                DoneServerEvent(nMsgID2, Licq::Event::ResultAcked);
 
         if (e == NULL)
         {
@@ -3362,33 +3379,33 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
       {
         gLog.Warn("%sStatus plugin not available from %s.\n", L_WARNxSTR,
                                                             u->GetAlias());
-        result = EVENT_ERROR;
-        break;
-      }
+            result = Licq::Event::ResultError;
+            break;
+          }
       case ICQ_PLUGIN_REJECTED:
       {
         gLog.Info("%s%s refused our request.\n", szInfo, u->GetAlias());
-        result = EVENT_FAILED;
-        break;
-      }
+            result = Licq::Event::ResultFailed;
+            break;
+          }
       case ICQ_PLUGIN_AWAY:
       {
         gLog.Info("%sOur request was refused because %s is away.\n", szInfo,
                   u->GetAlias());
-        result = EVENT_FAILED;
-        break;
-      }
+            result = Licq::Event::ResultFailed;
+            break;
+          }
       default:
       {
         gLog.Warn("%sUnknown reply level %u from %s.\n", L_UNKNOWNxSTR,
                   error_level, u->GetAlias());
         errorOccured = true;
-        result = EVENT_ERROR;
-        break;
-      }
-      }
+            result = Licq::Event::ResultError;
+            break;
+          }
+        }
 
-      ICQEvent *e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
+        Licq::Event* e = pSock ? DoneEvent(pSock->Descriptor(), nSequence,
                                       result) :
                             DoneServerEvent(nMsgID2, result);
       if (e == NULL)

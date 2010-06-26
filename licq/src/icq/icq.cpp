@@ -18,13 +18,14 @@
 #include <sys/stat.h>
 
 #include <licq/contactlist/owner.h>
+#include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
-#include <licq_events.h>
+#include <licq/userevents.h>
 #include "licq_log.h"
 
 #include "../contactlist/user.h"
@@ -300,7 +301,7 @@ void IcqProtocol::SendEvent_Server(CPacket *packet)
 {
 #if 1
   unsigned long eventId = gDaemon.getNextEventId();
-  LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
+  Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer);
 
   if (e == NULL)  return;
  
@@ -314,15 +315,15 @@ void IcqProtocol::SendEvent_Server(CPacket *packet)
   {
     gLog.Error("%sUnable to start server event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
-    e->m_eResult = EVENT_ERROR;
+    e->m_eResult = Licq::Event::ResultError;
   }
 #else
   SendEvent(m_nTCPSrvSocketDesc, *packet, true);
 #endif
 }
 
-LicqEvent* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId,
-   CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
+Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId,
+    Licq::Packet *packet, Licq::UserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
   if (gDaemon.shuttingDown())
@@ -334,19 +335,19 @@ LicqEvent* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq
 
   if (ue != NULL)
     ue->setIsReceiver(false);
-  LicqEvent* e = new LicqEvent(eventId, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, userId, ue);
+  Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer, userId, ue);
 
 	if (e == NULL)  return NULL;
 
   if (bExtendedEvent) PushExtendedEvent(e);
 
-  ICQEvent *result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
+  Licq::Event *result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
 
   // if an error occured, remove the event from the extended queue as well
   if (result == NULL && bExtendedEvent)
   {
     pthread_mutex_lock(&mutex_extendedevents);
-    std::list<ICQEvent *>::iterator i;
+    std::list<Licq::Event*>::iterator i;
     for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); ++i)
     {
       if (*i == e)
@@ -361,8 +362,8 @@ LicqEvent* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq
   return result;
 }
 
-LicqEvent* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq::User* pUser,
-    CPacket* packet, CUserEvent *ue)
+Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq::User* pUser,
+    Licq::Packet* packet, Licq::UserEvent *ue)
 {
   // If we are already shutting down, don't start any events
   if (gDaemon.shuttingDown())
@@ -374,8 +375,8 @@ LicqEvent* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq
 
   if (ue != NULL)
     ue->setIsReceiver(false);
-  LicqEvent* e = new LicqEvent(eventId, pUser->SocketDesc(packet->Channel()), packet,
-     CONNECT_USER, pUser->id(), ue);
+  Licq::Event* e = new Licq::Event(eventId, pUser->SocketDesc(packet->Channel()), packet,
+      Licq::Event::ConnectUser, pUser->id(), ue);
 
   if (e == NULL) return NULL;
 
@@ -383,7 +384,7 @@ LicqEvent* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq
 }
 
 
-ICQEvent *IcqProtocol::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
+Licq::Event* IcqProtocol::SendExpectEvent(Licq::Event* e, void *(*fcn)(void *))
 {
   // don't release the mutex until thread is running so that cancelling the
   // event cancels the thread as well
@@ -408,11 +409,11 @@ ICQEvent *IcqProtocol::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
   {
     gLog.Error("%sUnable to start event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
-    DoneEvent(e, EVENT_ERROR);
+    DoneEvent(e, Licq::Event::ResultError);
     if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
     {
       pthread_mutex_lock(&mutex_sendqueue_server);
-      list<ICQEvent *>::iterator iter;
+      list<Licq::Event*>::iterator iter;
       for (iter = m_lxSendQueue_Server.begin();
            iter != m_lxSendQueue_Server.end(); ++iter)
       {
@@ -420,7 +421,7 @@ ICQEvent *IcqProtocol::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
         {
           m_lxSendQueue_Server.erase(iter);
 
-          ICQEvent *cancelled = new ICQEvent(e);
+          Licq::Event* cancelled = new Licq::Event(e);
           cancelled->m_bCancelled = true;
           m_lxSendQueue_Server.push_back(cancelled);
           break;
@@ -471,12 +472,12 @@ bool IcqProtocol::SendEvent(Licq::INetSocket* pSock, CPacket &p, bool d)
 void IcqProtocol::FailEvents(int sd, int err)
 {
   // Go through all running events and fail all from this socket
-  ICQEvent *e = NULL;
+  Licq::Event* e = NULL;
   do
   {
     e = NULL;
     pthread_mutex_lock(&mutex_runningevents);
-    list<ICQEvent *>::iterator iter;
+    list<Licq::Event*>::iterator iter;
     for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
     {
       if ((*iter)->m_nSocketDesc == sd)
@@ -486,7 +487,7 @@ void IcqProtocol::FailEvents(int sd, int err)
       }
     }
     pthread_mutex_unlock(&mutex_runningevents);
-    if (e != NULL && DoneEvent(e, EVENT_ERROR) != NULL)
+    if (e != NULL && DoneEvent(e, Licq::Event::ResultError) != NULL)
     {
       // If the connection was reset, we can try again
       if (err == ECONNRESET)
@@ -512,7 +513,7 @@ bool IcqProtocol::hasServerEvent(unsigned long _nSubSequence) const
 {
   bool hasEvent = false;
   pthread_mutex_lock(&mutex_runningevents);
-  list<ICQEvent*>::const_iterator iter;
+  list<Licq::Event*>::const_iterator iter;
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->CompareSubSequence(_nSubSequence))
@@ -534,11 +535,11 @@ bool IcqProtocol::hasServerEvent(unsigned long _nSubSequence) const
  * This is for new OSCAR server events. 
  * Basically this is DoneEvent (2)
  */
-ICQEvent *IcqProtocol::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResult)
+Licq::Event* IcqProtocol::DoneServerEvent(unsigned long _nSubSeq, Licq::Event::ResultType _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
-  ICQEvent *e = NULL;
-  list<ICQEvent *>::iterator iter;
+  Licq::Event* e = NULL;
+  list<Licq::Event*>::iterator iter;
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->CompareSubSequence(_nSubSeq) )
@@ -572,10 +573,10 @@ ICQEvent *IcqProtocol::DoneServerEvent(unsigned long _nSubSeq, EventResult _eRes
  *
  * Marks the given event as done and removes it from the running events list.
  */
-ICQEvent *IcqProtocol::DoneEvent(ICQEvent *e, EventResult _eResult)
+Licq::Event* IcqProtocol::DoneEvent(Licq::Event* e, Licq::Event::ResultType _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
-  list<ICQEvent *>::iterator iter;
+  list<Licq::Event*>::iterator iter;
   bool bFound = false;
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
@@ -617,10 +618,10 @@ ICQEvent *IcqProtocol::DoneEvent(ICQEvent *e, EventResult _eResult)
 
 #if 0
 #if ICQ_VERSION == 5
-  if (_eResult == EVENT_CANCELLED && e->m_nSocket == m_nUDPSocketDesc)
+  if (_eResult == Licq::Event::ResultCancelled && e->m_nSocket == m_nUDPSocketDesc)
   {
     pthread_mutex_lock(&mutex_runningevents);
-    ICQEvent *e2 = new ICQEvent(e);
+    Licq::Event* e2 = new Licq::Event(e);
     e2->m_bCancelled = true;
     e2->m_xPacket = e->m_xPacket;
     m_lxRunningEvents.push_back(e2);
@@ -644,11 +645,11 @@ ICQEvent *IcqProtocol::DoneEvent(ICQEvent *e, EventResult _eResult)
  *       thread during which the sending thread may continue to do stuff.
  *       The result is extra sends or time out warnings.
  *----------------------------------------------------------------------------*/
-ICQEvent *IcqProtocol::DoneEvent(int _nSD, unsigned short _nSequence, EventResult _eResult)
+Licq::Event* IcqProtocol::DoneEvent(int _nSD, unsigned short _nSequence, Licq::Event::ResultType _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
-  ICQEvent *e = NULL;
-  list<ICQEvent *>::iterator iter;
+  Licq::Event* e = NULL;
+  list<Licq::Event*>::iterator iter;
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->CompareEvent(_nSD, _nSequence) )
@@ -676,11 +677,11 @@ ICQEvent *IcqProtocol::DoneEvent(int _nSD, unsigned short _nSequence, EventResul
   return(e);
 }
 
-ICQEvent *IcqProtocol::DoneEvent(unsigned long tag, EventResult _eResult)
+Licq::Event* IcqProtocol::DoneEvent(unsigned long tag, Licq::Event::ResultType _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
-  ICQEvent *e = NULL;
-  list<ICQEvent *>::iterator iter;
+  Licq::Event* e = NULL;
+  list<Licq::Event*>::iterator iter;
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->Equals(tag))
@@ -715,7 +716,7 @@ ICQEvent *IcqProtocol::DoneEvent(unsigned long tag, EventResult _eResult)
  * Processes the given event possibly passes the result to the gui.
  *----------------------------------------------------------------------------*/
 #if ICQ_VERSION < 8
-void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
+void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
 {
 #if ICQ_VERSION != 5
   static unsigned short s_nPingTimeOuts = 0;
@@ -723,11 +724,11 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 
   // Determine this now as later we might have deleted the event
   unsigned short nCommand = e->m_nCommand;
-  EventResult eResult = e->m_eResult;
+  Licq::Event::ResultType eResult = e->m_eResult;
 
   // Write the event to the history file if appropriate
   if (e->m_pUserEvent != NULL &&
-      e->m_eResult == EVENT_ACKED &&
+      e->m_eResult == Licq::Event::ResultAcked &&
       e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
     Licq::UserReadGuard(e->userId());
@@ -746,7 +747,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   // Ping is always sent by the daemon
   case ICQ_CMDxSND_PING:
 #if ICQ_VERSION != 5
-    if (e->m_eResult == EVENT_ACKED)
+      if (e->m_eResult == Licq::Event::ResultAcked)
       s_nPingTimeOuts = 0;
     else
     {
@@ -774,7 +775,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     break;
 
   case ICQ_CMDxSND_SETxSTATUS:
-    if (e->m_eResult == EVENT_ACKED)
+      if (e->m_eResult == Licq::Event::ResultAcked)
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
       ChangeUserStatus(o, ((CPU_SetStatus *)e->m_pPacket)->Status() );
@@ -783,7 +784,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     break;
 
   case ICQ_CMDxSND_SETxRANDOMxCHAT:
-    if (e->m_eResult == EVENT_ACKED)
+      if (e->m_eResult == Licq::Event::ResultAcked)
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
       o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_pPacket)->Group());
@@ -805,14 +806,14 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   {
     switch (e->m_eResult)
     {
-      case EVENT_ERROR:
-      case EVENT_TIMEDOUT:
-      case EVENT_FAILED:
-      case EVENT_SUCCESS:
-      case EVENT_CANCELLED:
+        case Licq::Event::ResultError:
+        case Licq::Event::ResultTimedout:
+        case Licq::Event::ResultFailed:
+        case Licq::Event::ResultSuccess:
+        case Licq::Event::ResultCancelled:
         PushPluginEvent(e);
-        break;
-      case EVENT_ACKED:  // push to extended event list
+          break;
+        case Licq::Event::ResultAcked:  // push to extended event list
         PushExtendedEvent(e);
         break;
       default:
@@ -834,7 +835,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   // Some special commands to deal with
 #if ICQ_VERSION == 5
   if (nCommand != ICQ_CMDxTCP_START &&
-      (eResult == EVENT_TIMEDOUT || eResult == EVENT_ERROR) )
+      (eResult == Licq::Event::ResultTimedout || eResult == Licq::Event::ResultError) )
   {
     if (nCommand == ICQ_CMDxSND_LOGON)
     {
@@ -855,11 +856,11 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
  * Tracks down the relevant extended event, removes it from the list, and
  * returns it, marking the result as appropriate.
  *----------------------------------------------------------------------------*/
-ICQEvent *IcqProtocol::DoneExtendedServerEvent(const unsigned short _nSubSequence, EventResult _eResult)
+Licq::Event* IcqProtocol::DoneExtendedServerEvent(const unsigned short _nSubSequence, Licq::Event::ResultType _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
-  ICQEvent *e = NULL;
-  list<ICQEvent *>::iterator iter;
+  Licq::Event* e = NULL;
+  list<Licq::Event*>::iterator iter;
   for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
     if ((*iter)->m_nSubSequence == _nSubSequence)
@@ -875,10 +876,10 @@ ICQEvent *IcqProtocol::DoneExtendedServerEvent(const unsigned short _nSubSequenc
 }
 
 
-ICQEvent *IcqProtocol::DoneExtendedEvent(ICQEvent *e, EventResult _eResult)
+Licq::Event* IcqProtocol::DoneExtendedEvent(Licq::Event* e, Licq::Event::ResultType _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
-  list<ICQEvent *>::iterator iter;
+  list<Licq::Event*>::iterator iter;
   for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
     if (e == (*iter))
@@ -892,10 +893,10 @@ ICQEvent *IcqProtocol::DoneExtendedEvent(ICQEvent *e, EventResult _eResult)
   e->m_eResult = _eResult;
 #if 0
   // If the event was cancelled we still want to wait internally for the reply
-  if (_eResult == EVENT_CANCELLED)
+  if (_eResult == Licq::Event::ResultCancelled)
   {
     pthread_mutex_lock(&mutex_extendedevents);
-    ICQEvent *e2 = new ICQEvent(e);
+    Licq::Event* e2 = new Licq::Event(e);
     e2->m_bCancelled = true;
     e2->m_xPacket = e->m_xPacket;
     e->m_xPacket = NULL;
@@ -906,11 +907,11 @@ ICQEvent *IcqProtocol::DoneExtendedEvent(ICQEvent *e, EventResult _eResult)
   return(e);
 }
 
-ICQEvent *IcqProtocol::DoneExtendedEvent(unsigned long tag, EventResult _eResult)
+Licq::Event* IcqProtocol::DoneExtendedEvent(unsigned long tag, Licq::Event::ResultType _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
-  ICQEvent *e = NULL;
-  list<ICQEvent *>::iterator iter;
+  Licq::Event* e = NULL;
+  list<Licq::Event*>::iterator iter;
   for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
     if ((*iter)->Equals(tag))
@@ -925,7 +926,7 @@ ICQEvent *IcqProtocol::DoneExtendedEvent(unsigned long tag, EventResult _eResult
   return(e);
 }
 
-void IcqProtocol::PushEvent(ICQEvent *e)
+void IcqProtocol::PushEvent(Licq::Event* e)
 {
   assert(e != NULL);
   pthread_mutex_lock(&mutex_runningevents);
@@ -938,7 +939,7 @@ void IcqProtocol::PushEvent(ICQEvent *e)
  *
  * Takes the given event, moves it event into the extended event queue.
  *----------------------------------------------------------------------------*/
-void IcqProtocol::PushExtendedEvent(ICQEvent *e)
+void IcqProtocol::PushExtendedEvent(Licq::Event* e)
 {
   assert(e != NULL);
   pthread_mutex_lock(&mutex_extendedevents);
@@ -953,9 +954,9 @@ void IcqProtocol::PushExtendedEvent(ICQEvent *e)
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
 void IcqProtocol::CancelEvent(unsigned long t)
 {
-  ICQEvent *eSrv = NULL;
+  Licq::Event* eSrv = NULL;
   pthread_mutex_lock(&mutex_sendqueue_server);
-  list<ICQEvent *>::iterator iter;
+  list<Licq::Event*>::iterator iter;
   for (iter = m_lxSendQueue_Server.begin();
        iter != m_lxSendQueue_Server.end(); ++iter)
   {
@@ -964,7 +965,7 @@ void IcqProtocol::CancelEvent(unsigned long t)
       eSrv = *iter;
       m_lxSendQueue_Server.erase(iter);
 
-      ICQEvent *cancelled = new ICQEvent(eSrv);
+      Licq::Event* cancelled = new Licq::Event(eSrv);
       cancelled->m_bCancelled = true;
       m_lxSendQueue_Server.push_back(cancelled);
       break;
@@ -972,8 +973,8 @@ void IcqProtocol::CancelEvent(unsigned long t)
   }
   pthread_mutex_unlock(&mutex_sendqueue_server);
 
-  ICQEvent *eRun = DoneEvent(t, EVENT_CANCELLED);
-  ICQEvent *eExt = DoneExtendedEvent(t, EVENT_CANCELLED);
+  Licq::Event* eRun = DoneEvent(t, Licq::Event::ResultCancelled);
+  Licq::Event* eExt = DoneExtendedEvent(t, Licq::Event::ResultCancelled);
 
   if (eRun == NULL && eExt == NULL && eSrv == NULL)
   {
@@ -984,9 +985,9 @@ void IcqProtocol::CancelEvent(unsigned long t)
   CancelEvent((eRun != NULL)? eRun : (eExt != NULL)? eExt : eSrv);
 }
 
-void IcqProtocol::CancelEvent(ICQEvent *e)
+void IcqProtocol::CancelEvent(Licq::Event* e)
 {
-  e->m_eResult = EVENT_CANCELLED;
+  e->m_eResult = Licq::Event::ResultCancelled;
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
     icqChatRequestCancel(e->userId().accountId().c_str(), e->m_nSequence);
@@ -1025,7 +1026,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
                                 bool &bNewUser)
 {
   char *szType = NULL;
-  CUserEvent *pEvent = NULL;
+  Licq::UserEvent* pEvent = NULL;
   OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
 
   // for acks
@@ -1037,8 +1038,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   // gUserManager.DropOwner(o);
 
   unsigned short nLevel = nMask;
-  unsigned long nFlags = ((nMask & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
-                         | ((nMask & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
+  unsigned long nFlags = ((nMask & ICQ_CMDxSUB_FxMULTIREC) ? (unsigned)Licq::UserEvent::FlagMultiRec : 0)
+      | ((nMask & ICQ_TCPxMSG_URGENT) ? (unsigned)Licq::UserEvent::FlagUrgent : 0);
 
   u->Lock(LOCK_W);
 
@@ -1054,8 +1055,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       fore = 0x000000;
     }
 
-    CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
-          CUserEvent::TimeNow, nFlags);
+      Licq::EventMsg* e = Licq::EventMsg::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
+          Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
@@ -1086,8 +1087,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
     if (!bIsAck)
     {
-      CEventChat *e = new CEventChat(message, szChatClients, nPort, nSequence,
-            CUserEvent::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
+        Licq::EventChat* e = new Licq::EventChat(message, szChatClients, nPort,
+            nSequence, Licq::EventChat::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
         onEventType = OnEventManager::OnEventChat;
       pEvent = e;
     }
@@ -1115,9 +1116,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         list<string> filelist;
         filelist.push_back(filename);
 
-        CEventFile* e = new CEventFile(filename.c_str(), message, nFileSize,
-              filelist, nSequence, CUserEvent::TimeNow, nFlags,
-                                     0, nMsgID[0], nMsgID[1]);
+        Licq::EventFile* e = new Licq::EventFile(filename.c_str(), message, nFileSize,
+            filelist, nSequence, Licq::EventFile::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
         onEventType = OnEventManager::OnEventFile;
       pEvent = e;
     }
@@ -1132,8 +1132,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
   case ICQ_CMDxSUB_URL:
   {
-    CEventUrl *e = CEventUrl::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
-          CUserEvent::TimeNow, nFlags);
+      Licq::EventUrl* e = Licq::EventUrl::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
+          Licq::EventUrl::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_URL, true,
                                            nLevel);
@@ -1147,8 +1147,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
   case ICQ_CMDxSUB_CONTACTxLIST:
   {
-    CEventContactList *e = CEventContactList::Parse(message,
-          ICQ_CMDxRCV_SYSxMSGxONLINE, CUserEvent::TimeNow, nFlags);
+      Licq::EventContactList* e = Licq::EventContactList::Parse(message,
+          ICQ_CMDxRCV_SYSxMSGxONLINE, Licq::EventContactList::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_CONTACTxLIST,
                                            true, nLevel);
@@ -1174,11 +1174,11 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         u->SetShowAwayMsg(*message);
         gLog.Info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
                   nMsgID[1]);
-      }
-      ICQEvent *e = DoneServerEvent(nMsgID[1], EVENT_ACKED);
-      if (e)
+        }
+        Licq::Event* e = DoneServerEvent(nMsgID[1], Licq::Event::ResultAcked);
+        if (e)
       {
-        e->m_pExtendedAck = new CExtendedAck(true, 0, message);
+        e->m_pExtendedAck = new Licq::ExtendedData(true, 0, message);
         e->m_nSubResult = ICQ_TCPxACK_RETURN;
         ProcessDoneEvent(e);
       }
@@ -1263,8 +1263,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
   if (bIsAck)
   {
-    ICQEvent *pAckEvent = DoneServerEvent(nMsgID[1], EVENT_ACKED);
-    CExtendedAck *pExtendedAck = new CExtendedAck(true, nPort, message);
+    Licq::Event* pAckEvent = DoneServerEvent(nMsgID[1], Licq::Event::ResultAcked);
+    Licq::ExtendedData* pExtendedAck = new Licq::ExtendedData(true, nPort, message);
 
     if (pAckEvent)
     {
@@ -1391,17 +1391,17 @@ done:
   return bSuccess;
 }
 
-LicqEvent* IcqProtocol::SendExpectEvent_Server(const Licq::UserId& userId, CPacket* packet, CUserEvent* ue, bool extendedEvent)
+Licq::Event* IcqProtocol::SendExpectEvent_Server(const Licq::UserId& userId, Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent)
 {
   return SendExpectEvent_Server(gDaemon.getNextEventId(), userId, packet, ue, extendedEvent);
 }
 
-LicqEvent* IcqProtocol::SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent)
+Licq::Event* IcqProtocol::SendExpectEvent_Server(Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent)
 {
   return SendExpectEvent_Server(gDaemon.getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
 }
 
-LicqEvent* IcqProtocol::SendExpectEvent_Client(const Licq::User* user, CPacket* packet, CUserEvent* ue)
+Licq::Event* IcqProtocol::SendExpectEvent_Client(const Licq::User* user, Licq::Packet* packet, Licq::UserEvent* ue)
 {
   return SendExpectEvent_Client(gDaemon.getNextEventId(), user, packet, ue);
 }

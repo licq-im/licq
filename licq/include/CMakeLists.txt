@@ -1,7 +1,5 @@
 set(licq_HEADERS
-  licq_events.h
   licq_log.h
-  licq_message.h
   licq_plugin.h
   licq_protoplugin.h
 )
