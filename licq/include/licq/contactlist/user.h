@@ -559,11 +559,7 @@ public:
   void SetICQphoneStatus(unsigned long n)       { m_nICQphoneStatus = n; }
   void SetSharedFilesStatus(unsigned long n)    { m_nSharedFilesStatus = n; }  
   virtual void SetStatusOffline();
-  const char* StatusStr() const;
-  const char* StatusStrShort() const;
   bool Away() const;
-  static const char* StatusToStatusStr(unsigned short n, bool b);
-  static const char* StatusToStatusStrShort(unsigned short n, bool b);
 
   /**
    * Convert user status to a string

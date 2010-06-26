@@ -1277,40 +1277,6 @@ unsigned short Licq::User::LicqVersion() const
   return LICQ_VERSION_UNKNOWN;
 }
 
-const char* Licq::User::StatusStr() const
-{
-  return StatusToStatusStr(m_nStatus, isInvisible());
-}
-
-const char* Licq::User::StatusStrShort() const
-{
-  return StatusToStatusStrShort(m_nStatus, isInvisible());
-}
-
-const char* Licq::User::StatusToStatusStr(unsigned short n, bool b)
-{
-  if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Offline)") : tr("Offline");
-  else if (n & ICQ_STATUS_DND) return b ? tr("(Do Not Disturb)") : tr("Do Not Disturb");
-  else if (n & ICQ_STATUS_OCCUPIED) return b ? tr("(Occupied)") : tr("Occupied");
-  else if (n & ICQ_STATUS_NA) return b ? tr("(Not Available)") : tr("Not Available");
-  else if (n & ICQ_STATUS_AWAY) return b ? tr("(Away)") : tr("Away");
-  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? tr("(Free for Chat)") : tr("Free for Chat");
-  else if (n << 24 == 0x00) return b ? tr("(Online)") : tr("Online");
-  else return "Unknown";
-}
-
-const char* Licq::User::StatusToStatusStrShort(unsigned short n, bool b)
-{
-  if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Off)") : tr("Off");
-  else if (n & ICQ_STATUS_DND) return b ? tr("(DND)") : tr("DND");
-  else if (n & ICQ_STATUS_OCCUPIED) return b ? tr("(Occ)") : tr("Occ");
-  else if (n & ICQ_STATUS_NA) return b ? tr("(N/A)") : tr("N/A");
-  else if (n & ICQ_STATUS_AWAY) return b ? tr("(Away)") : tr("Away");
-  else if (n & ICQ_STATUS_FREEFORCHAT) return b ? tr("(FFC)") : tr("FFC");
-  else if (n << 24 == 0x00) return b ? tr("(On)") : tr("On");
-  else return "???";
-}
-
 unsigned Licq::User::singleStatus(unsigned status)
 {
   if (status == OfflineStatus)
@@ -1586,10 +1552,10 @@ char* Licq::User::usprintf(const char* _szFormat, unsigned long nFlags) const
           sz = getUserInfoString("CellularNumber").c_str();
           break;
         case 'S':
-          sz = StatusStrShort();
+          sz = statusString(false).c_str();
           break;
         case 's':
-          sz = StatusStr();
+          sz = statusString(true).c_str();
           break;
 
         case 't':

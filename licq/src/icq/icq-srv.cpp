@@ -654,7 +654,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
     p = new CPU_SetStatus(s);
 
   gLog.Info(tr("%sChanging status to %s (#%hu)...\n"), L_SRVxSTR,
-      Licq::User::StatusToStatusStr(newStatus, goInvisible), p->Sequence());
+      Licq::User::statusToString(Licq::User::statusFromIcqStatus(newStatus)).c_str(), p->Sequence());
   m_nDesiredStatus = s;
 
   SendEvent_Server(p);
@@ -2039,11 +2039,9 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       m_nDesiredStatus |= ICQ_STATUS_FxPFMxAVAILABLE;
       ChangeUserStatus(*o, m_nDesiredStatus);
     o->SetOnlineSince(nOnlineSince);
-    gLog.Info(tr("%sServer says we're now: %s\n"), L_SRVxSTR, Licq::User::StatusToStatusStr(o->Status(), o->isInvisible()));
-
-
-    break;
-  }
+      gLog.Info(tr("%sServer says we're now: %s\n"), L_SRVxSTR, o->statusString().c_str());
+      break;
+    }
 
   case ICQ_SNACxSUB_RATE_WARNING:
   {
@@ -2298,8 +2296,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
         ChangeUserStatus(*u, nNewStatus);
         gLog.Info(tr("%s%s (%s) changed status: %s (v%d)%s"),
-                   L_SRVxSTR, u->GetAlias(), u->IdString(), u->StatusStr(),
-                   tcpVersion & 0x0F, szClient);
+              L_SRVxSTR, u->getAlias().c_str(), u->id().toString().c_str(),
+              u->statusString().c_str(), tcpVersion & 0x0F, szClient);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
           gLog.Unknown("%sUnknown status flag for %s (%s): 0x%08lX\n",
                        L_UNKNOWNxSTR, u->GetAlias(), u->IdString(),
@@ -2346,8 +2344,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       if (nOldStatus != nNewStatus)
       {
         ChangeUserStatus(*u, nNewStatus);
-        gLog.Info(tr("%s%s changed status: %s (AIM).\n"), L_SRVxSTR, u->GetAlias(),
-                  u->StatusStr());
+        gLog.Info(tr("%s%s changed status: %s (AIM).\n"), L_SRVxSTR,
+              u->getAlias().c_str(), u->statusString().c_str());
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
           gLog.Unknown("%sUnknown status flag for %s: 0x%08lX\n",
                        L_UNKNOWNxSTR, u->GetAlias(),
@@ -2961,7 +2959,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         bool r = u->OfflineOnDisconnect() || !u->isOnline();
         ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | nStatus);
         gLog.Info(tr("%s%s (%s) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
-          u->IdString(), u->StatusStr());
+              u->id().toString().c_str(), u->statusString().c_str());
         if (r) u->SetOfflineOnDisconnect(true);
       }
 

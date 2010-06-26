@@ -1622,7 +1622,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       bool r = u->OfflineOnDisconnect() || !u->isOnline();
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
       gLog.Info(tr("%s%s (%s) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
-         u->IdString(), u->StatusStr());
+            u->id().toString().c_str(), u->statusString().c_str());
       if (r) u->SetOfflineOnDisconnect(true);
     }
 

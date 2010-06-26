@@ -759,7 +759,7 @@ int CRMSClient::Process_INFO()
   fprintf(fs, "%d %s Alias: %s\n", CODE_USERxINFO, u->accountId().c_str(),
       u->getAlias().c_str());
   fprintf(fs, "%d %s Status: %s\n", CODE_USERxINFO, u->accountId().c_str(),
-    u->StatusStr());
+      u->statusString().c_str());
   fprintf(fs, "%d %s First Name: %s\n", CODE_USERxINFO, u->accountId().c_str(),
     u->getFirstName().c_str());
   fprintf(fs, "%d %s Last Name: %s\n", CODE_USERxINFO, u->accountId().c_str(),
@@ -797,7 +797,8 @@ int CRMSClient::Process_STATUS()
       Licq::OwnerReadGuard o(plugin->getProtocolId());
       if (o.isLocked())
       {
-        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->accountId().c_str(), plugin->getName(), o->StatusStr());
+        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->accountId().c_str(),
+            plugin->getName(), o->statusString().c_str());
       }
     }
     fprintf(fs, "%d\n", CODE_STATUSxDONE);
