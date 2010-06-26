@@ -189,9 +189,9 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
     // Fetch list of all history entries
     else if (!u->GetHistory(myHistoryList))
     {
-      if (u->HistoryFile())
+      if (!u->historyFile().empty())
         myStatusLabel->setText(tr("Error loading history file: %1\nDescription: %2")
-            .arg(u->HistoryFile()).arg(u->HistoryName()));
+            .arg(u->historyFile().c_str()).arg(u->historyName().c_str()));
       else
         myStatusLabel->setText(tr("Sorry, history is disabled for this person"));
     }

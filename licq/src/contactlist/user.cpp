@@ -1103,19 +1103,14 @@ void Licq::User::ClearHistory(HistoryList& h)
   UserHistory::clear(h);
 }
 
-void User::SaveHistory(const char* buf)
+const string& User::historyName() const
 {
-  myHistory.save(buf);
+  return myHistory.description();
 }
 
-const char* User::HistoryName() const
+const string& User::historyFile() const
 {
-  return myHistory.description().c_str();
-}
-
-const char* User::HistoryFile() const
-{
-  return myHistory.filename().c_str();
+  return myHistory.filename();
 }
 
 void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
@@ -1946,7 +1941,7 @@ void User::SaveLicqInfo()
    }
    char buf[64];
   myConf.setSection("user");
-  myConf.set("History", HistoryName());
+  myConf.set("History", historyName());
   myConf.set("OnVisibleList", myOnVisibleList);
   myConf.set("OnInvisibleList", myOnInvisibleList);
   myConf.set("OnIgnoreList", myOnIgnoreList);
@@ -2053,9 +2048,9 @@ void Licq::User::EventPush(Licq::UserEvent *e)
       PluginSignal::UserEvents, myId, e->Id(), e->ConvoId()));
 }
 
-void User::WriteToHistory(const char* _szText)
+void User::writeToHistory(const string& text)
 {
-  myHistory.append(_szText);
+  myHistory.append(text);
 }
 
 void Licq::User::CancelEvent(unsigned short index)

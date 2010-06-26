@@ -27,12 +27,12 @@
 #include <cstring>
 #include <sstream>
 
-#include <licq/contactlist/user.h>
 #include "licq/gpghelper.h"
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/translator.h>
 
+#include "contactlist/user.h"
 #include "gettext.h"
 #include "support.h"
 
@@ -143,10 +143,12 @@ int UserEvent::AddToHistory_Header(bool isReceiver, char* szOut) const
 }
 
 
-void UserEvent::AddToHistory_Flush(User* u, const char* szOut) const
+void UserEvent::AddToHistory_Flush(User* u, const string& text) const
 {
-  if (u != NULL)
-    u->WriteToHistory(szOut);
+  if (u == NULL)
+    return;
+
+  dynamic_cast<LicqDaemon::User*>(u)->writeToHistory(text);
 }
 
 

@@ -59,6 +59,8 @@ public:
 
   ~User();
 
+  void writeToHistory(const std::string& text);
+
   // From Licq::User
   void RemoveFiles();
   void SaveLicqInfo();
@@ -73,11 +75,9 @@ public:
   void setUserInfoUint(const std::string& key, unsigned int value);
   void setUserInfoBool(const std::string& key, bool value);
   void SetPermanent();
-  void WriteToHistory(const char*);
   int GetHistory(Licq::HistoryList& history) const;
-  void SaveHistory(const char* buf);
-  const char* HistoryName() const;
-  const char* HistoryFile() const;
+  const std::string& historyName() const;
+  const std::string& historyFile() const;
   void SetDefaults();
   void AddToContactList();
 

@@ -96,7 +96,7 @@ public:
 protected:
   virtual void AddToHistory(User* user, bool isReceiver) const = 0;
   int AddToHistory_Header(bool isReceiver, char* szOut) const;
-  void AddToHistory_Flush(User* u, const char* szOut) const;
+  void AddToHistory_Flush(User* u, const std::string& text) const;
 
   void setIsReceiver(bool isReceiver) { myIsReceiver = isReceiver; }
   void Cancel() { m_nFlags |= FlagCancelled; }

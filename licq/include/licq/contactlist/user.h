@@ -611,12 +611,10 @@ public:
   void EventClear(unsigned short);
   void EventClearId(int);
   void EventPush(UserEvent *);
-  virtual void WriteToHistory(const char*) = 0;
   virtual int GetHistory(HistoryList& history) const = 0;
   static void ClearHistory(HistoryList& h);
-  virtual void SaveHistory(const char *buf) = 0;
-  virtual const char* HistoryName() const = 0;
-  virtual const char* HistoryFile() const = 0;
+  virtual const std::string& historyName() const = 0;
+  virtual const std::string& historyFile() const = 0;
 
   /**
    * Get user groups this user is member of
