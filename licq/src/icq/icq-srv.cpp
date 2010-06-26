@@ -215,7 +215,7 @@ void IcqProtocol::icqUpdateServerGroups()
 }
 
 //-----icqAddGroup--------------------------------------------------------------
-void IcqProtocol::icqAddGroup(const char *_szName)
+void IcqProtocol::icqAddGroup(const string& groupName)
 {
   if (!UseServerContactList())  return;
 
@@ -223,10 +223,10 @@ void IcqProtocol::icqAddGroup(const char *_szName)
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szName, ICQ_ROSTxGROUP);
+  CPU_AddToServerList *pAdd = new CPU_AddToServerList(groupName.c_str(), ICQ_ROSTxGROUP);
   int nGSID = pAdd->GetGSID();
-  gLog.Info(tr("%sAdding group %s (%d) to server list ...\n"), L_SRVxSTR, _szName, nGSID);
-  addToModifyUsers(pAdd->SubSequence(), _szName);
+  gLog.Info(tr("%sAdding group %s (%d) to server list ...\n"), L_SRVxSTR, groupName.c_str(), nGSID);
+  addToModifyUsers(pAdd->SubSequence(), groupName);
   SendExpectEvent_Server(pAdd, NULL);
 }
 
@@ -377,7 +377,7 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
 }
 
 //-----icqRemoveGroup----------------------------------------------------------
-void IcqProtocol::icqRemoveGroup(const char *_szName)
+void IcqProtocol::icqRemoveGroup(const string& groupName)
 {
   if (!UseServerContactList()) return;
 
@@ -385,23 +385,23 @@ void IcqProtocol::icqRemoveGroup(const char *_szName)
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szName,
-      Licq::gUserManager.GetIDFromGroup(_szName), 0, ICQ_ROSTxGROUP);
-  gLog.Info(tr("%sRemoving group from server side list (%s)...\n"), L_SRVxSTR, _szName);
-  addToModifyUsers(pRemove->SubSequence(), _szName);
+  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(groupName.c_str(),
+      Licq::gUserManager.GetIDFromGroup(groupName), 0, ICQ_ROSTxGROUP);
+  gLog.Info(tr("%sRemoving group from server side list (%s)...\n"), L_SRVxSTR, groupName.c_str());
+  addToModifyUsers(pRemove->SubSequence(), groupName);
   SendExpectEvent_Server(pRemove, NULL);
 }
 
 //-----icqRenameGroup----------------------------------------------------------
-void IcqProtocol::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
+void IcqProtocol::icqRenameGroup(const string& newName, unsigned short _nGSID)
 {
   if (!UseServerContactList() || !_nGSID || m_nTCPSrvSocketDesc == -1) return;
 
-  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(_szNewName,
+  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(newName.c_str(),
     ICQ_ROSTxGROUP, _nGSID);
   gLog.Info(tr("%sRenaming group with id %d to %s...\n"), L_SRVxSTR, _nGSID,
-    _szNewName);
-  addToModifyUsers(pUpdate->SubSequence(), _szNewName);
+      newName.c_str());
+  addToModifyUsers(pUpdate->SubSequence(), newName);
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
@@ -503,15 +503,9 @@ unsigned long IcqProtocol::icqRandomChatSearch(unsigned long _nGroup)
   return 0;
 }
 
-void IcqProtocol::icqRegister(const char *_szPasswd)
+void IcqProtocol::icqRegister(const string& passwd)
 {
-  if (m_szRegisterPasswd)
-  {
-    free(m_szRegisterPasswd);
-    m_szRegisterPasswd = 0;
-  }
-    
-  m_szRegisterPasswd = strdup(_szPasswd);
+  myRegisterPasswd = passwd;
   m_bRegistering = true;
   m_nRegisterThreadId = pthread_self();
 //  CPU_RegisterFirst *p = new CPU_RegisterFirst();
@@ -526,7 +520,7 @@ void IcqProtocol::icqRegisterFinish()
   CPU_RegisterFirst *pFirst = new CPU_RegisterFirst();
   SendEvent_Server(pFirst);
 
-  CPU_Register *p = new CPU_Register(m_szRegisterPasswd);
+  CPU_Register *p = new CPU_Register(myRegisterPasswd.c_str());
   gLog.Info(tr("%sRegistering a new user...\n"), L_SRVxSTR);
   Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
@@ -547,10 +541,10 @@ void IcqProtocol::icqVerifyRegistration()
 }
 
 //-----ICQ::icqVerify--------------------------------------------------------
-void IcqProtocol::icqVerify(const char *szVerification)
+void IcqProtocol::icqVerify(const string& verification)
 {
-  CPU_SendVerification *p = new CPU_SendVerification(m_szRegisterPasswd,
-    szVerification);
+  CPU_SendVerification *p = new CPU_SendVerification(myRegisterPasswd.c_str(),
+      verification.c_str());
    gLog.Info(tr("%sSending verification for registration.\n"), L_SRVxSTR);
 
    SendExpectEvent_Server(p, NULL);
@@ -675,9 +669,9 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
 }
 
 //-----icqSetPassword--------------------------------------------------------
-unsigned long IcqProtocol::icqSetPassword(const char *szPassword)
+unsigned long IcqProtocol::icqSetPassword(const string& password)
 {
-  CPU_SetPassword *p = new CPU_SetPassword(szPassword);
+  CPU_SetPassword *p = new CPU_SetPassword(password.c_str());
   gLog.Info(tr("%sUpdating password (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
   Licq::Event* e = SendExpectEvent_Server(p, NULL);
@@ -686,23 +680,15 @@ unsigned long IcqProtocol::icqSetPassword(const char *szPassword)
   return 0;
 }
 
-unsigned long IcqProtocol::icqSetGeneralInfo(
-                          const char *szAlias, const char *szFirstName,
-                          const char *szLastName, const char *szEmailPrimary,
-                          const char *szCity,
-                          const char *szState, const char *szPhoneNumber,
-                          const char *szFaxNumber, const char *szAddress,
-                          const char *szCellularNumber, const char *szZipCode,
-                          unsigned short nCountryCode, bool bHideEmail)
+unsigned long IcqProtocol::icqSetGeneralInfo(const string& alias, const string& firstName,
+      const string& lastName, const string& emailPrimary, const string& city,
+      const string& state, const string& phoneNumber, const string& faxNumber,
+      const string& address, const string& cellularNumber, const string& zipCode,
+      unsigned short countryCode, bool hideEmail)
 {
-  CPU_Meta_SetGeneralInfo *p =
-    new CPU_Meta_SetGeneralInfo(szAlias, szFirstName,
-                                szLastName, szEmailPrimary,
-                                szCity,
-                                szState, szPhoneNumber,
-                                szFaxNumber, szAddress,
-                                szCellularNumber, szZipCode,
-                                nCountryCode, bHideEmail);
+  CPU_Meta_SetGeneralInfo* p = new CPU_Meta_SetGeneralInfo(alias.c_str(), firstName.c_str(),
+      lastName.c_str(), emailPrimary.c_str(), city.c_str(), state.c_str(), phoneNumber.c_str(),
+      faxNumber.c_str(), address.c_str(), cellularNumber.c_str(), zipCode.c_str(), countryCode, hideEmail);
 
   gLog.Info(tr("%sUpdating general info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
@@ -713,12 +699,10 @@ unsigned long IcqProtocol::icqSetGeneralInfo(
 }
 
 //-----icqSetEmailInfo---------------------------------------------------------
-unsigned long IcqProtocol::icqSetEmailInfo(
-                          const char *szEmailSecondary, const char *szEmailOld)
+unsigned long IcqProtocol::icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld)
 {
 return 0;
-  CPU_Meta_SetEmailInfo *p =
-    new CPU_Meta_SetEmailInfo(szEmailSecondary, szEmailOld);
+  CPU_Meta_SetEmailInfo* p = new CPU_Meta_SetEmailInfo(emailSecondary.c_str(), emailOld.c_str());
 
   gLog.Info(tr("%sUpdating additional E-Mail info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
@@ -729,17 +713,12 @@ return 0;
 }
 
 //-----icqSetMoreInfo----------------------------------------------------
-unsigned long IcqProtocol::icqSetMoreInfo(unsigned short nAge,
-                              char nGender, const char *szHomepage,
-                              unsigned short nBirthYear, char nBirthMonth,
-                              char nBirthDay, char nLanguage1,
-                              char nLanguage2, char nLanguage3)
+unsigned long IcqProtocol::icqSetMoreInfo(unsigned short age, char gender,
+    const string& homepage, unsigned short birthYear, char birthMonth,
+    char birthDay, char language1, char language2, char language3)
 {
-  CPU_Meta_SetMoreInfo *p =
-    new CPU_Meta_SetMoreInfo(nAge, nGender, szHomepage,
-                             nBirthYear, nBirthMonth,
-                             nBirthDay, nLanguage1,
-                             nLanguage2, nLanguage3);
+  CPU_Meta_SetMoreInfo* p = new CPU_Meta_SetMoreInfo(age, gender, homepage.c_str(),
+      birthYear, birthMonth, birthDay, language1, language2, language3);
 
   gLog.Info(tr("%sUpdating more info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
@@ -778,18 +757,14 @@ unsigned long IcqProtocol::icqSetOrgBackInfo(const UserCategoryMap& orgs,
 }
 
 //-----icqSetWorkInfo--------------------------------------------------------
-unsigned long IcqProtocol::icqSetWorkInfo(const char *_szCity, const char *_szState,
-                                     const char *_szPhone,
-                                     const char *_szFax, const char *_szAddress,
-                                     const char *_szZip, unsigned short _nCompanyCountry,
-                                     const char *_szName, const char *_szDepartment,
-                                     const char *_szPosition, unsigned short _nCompanyOccupation,
-                                     const char *_szHomepage)
+unsigned long IcqProtocol::icqSetWorkInfo(const string& city, const string& state,
+    const string& phone, const string& fax, const string& address, const string& zip,
+    unsigned short companyCountry, const string& name, const string& department,
+    const string& position, unsigned short companyOccupation, const string& homepage)
 {
-  CPU_Meta_SetWorkInfo *p =
-    new CPU_Meta_SetWorkInfo(_szCity, _szState, _szPhone, _szFax, _szAddress,
-                             _szZip, _nCompanyCountry, _szName, _szDepartment,
-                             _szPosition, _nCompanyOccupation, _szHomepage);
+  CPU_Meta_SetWorkInfo* p = new CPU_Meta_SetWorkInfo(city.c_str(), state.c_str(),
+      phone.c_str(), fax.c_str(), address.c_str(), zip.c_str(), companyCountry,
+      name.c_str(), department.c_str(), position.c_str(), companyOccupation, homepage.c_str());
 
   gLog.Info(tr("%sUpdating work info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
@@ -800,9 +775,9 @@ unsigned long IcqProtocol::icqSetWorkInfo(const char *_szCity, const char *_szSt
 }
 
 //-----icqSetAbout-----------------------------------------------------------
-unsigned long IcqProtocol::icqSetAbout(const char *_szAbout)
+unsigned long IcqProtocol::icqSetAbout(const string& about)
 {
-  char *szAbout = gTranslator.NToRN(_szAbout);
+  char *szAbout = gTranslator.NToRN(about.c_str());
 
   CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(szAbout);
 
@@ -848,9 +823,9 @@ unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const 
   return 0;
 }
 
-void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const char *_szMessage)
+void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const string& message)
 {
-  CSrvPacketTcp* p = new CPU_RequestAuth(userId.accountId().c_str(), _szMessage);
+  CSrvPacketTcp* p = new CPU_RequestAuth(userId.accountId().c_str(), message.c_str());
   SendEvent_Server(p);
 }
 
@@ -883,19 +858,19 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, boo
 }
 
 //-----icqSearchWhitePages--------------------------------------------------
-unsigned long IcqProtocol::icqSearchWhitePages(const char *szFirstName,
-    const char *szLastName, const char *szAlias, const char *szEmail,
-    unsigned short nMinAge, unsigned short nMaxAge, char nGender,
-    char nLanguage, const char *szCity, const char *szState,
-    unsigned short nCountryCode, const char *szCoName, const char *szCoDept,
-    const char *szCoPos, const char *szKeyword, bool bOnlineOnly)
+unsigned long IcqProtocol::icqSearchWhitePages(const string& firstName, const string& lastName,
+    const string& alias, const string& email, unsigned short minAge, unsigned short maxAge,
+    char gender, char language, const string& city, const string& state,
+    unsigned short countryCode, const string& coName, const string& coDept,
+    const string& coPos, const string& keyword, bool onlineOnly)
 {
   // Yes, there are a lot of extra options that you can search by.. but I
   // don't see a point for the hundreds of items that I can add..  just
   // use their web page for that shit - Jon
-  CPU_SearchWhitePages *p = new CPU_SearchWhitePages(szFirstName, szLastName,
-    szAlias, szEmail, nMinAge, nMaxAge, nGender, nLanguage, szCity, szState,
-    nCountryCode, szCoName, szCoDept, szCoPos, szKeyword, bOnlineOnly);
+  CPU_SearchWhitePages* p = new CPU_SearchWhitePages(firstName.c_str(), lastName.c_str(),
+      alias.c_str(), email.c_str(), minAge, maxAge, gender, language, city.c_str(),
+      state.c_str(), countryCode, coName.c_str(), coDept.c_str(), coPos.c_str(),
+      keyword.c_str(), onlineOnly);
   gLog.Info(tr("%sStarting white pages search (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
   Licq::Event* e = SendExpectEvent_Server(p, NULL, true);
@@ -1347,11 +1322,11 @@ Licq::Event* IcqProtocol::icqSendThroughServer(unsigned long eventId, const Licq
 }
 
 unsigned long IcqProtocol::icqSendSms(const Licq::UserId& userId,
-    const char* number, const char* message)
+    const string& number, const string& message)
 {
   Licq::EventSms* ue = new Licq::EventSms(number, message, ICQ_CMDxSND_THRUxSERVER,
       Licq::EventSms::TimeNow, LICQ_VERSION);
-  CPU_SendSms* p = new CPU_SendSms(number, message);
+  CPU_SendSms* p = new CPU_SendSms(number.c_str(), message.c_str());
   gLog.Info(tr("%sSending SMS through server (#%hu/#%d)...\n"), L_SRVxSTR,
       p->Sequence(), p->SubSequence());
   Licq::Event* e = SendExpectEvent_Server(userId, p, ue);
@@ -1633,11 +1608,7 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
 
   Licq::gUserManager.ownerStatusChanged(LICQ_PPID, Licq::User::OfflineStatus);
 
-  if (m_szRegisterPasswd)
-  {
-    free(m_szRegisterPasswd);
-    m_szRegisterPasswd = 0;
-  }
+  myRegisterPasswd = "";
 
   gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
       Licq::PluginSignal::LogoffRequested, Licq::gUserManager.ownerUserId(LICQ_PPID)));
@@ -5685,7 +5656,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
   {
     case ICQ_SNACxNEW_UIN_ERROR:
     {
-      if (m_szRegisterPasswd)
+      if (!myRegisterPasswd.empty())
       {
         gLog.Warn(tr("%sVerification required. Reconnecting...\n"), L_WARNxSTR);
 
@@ -5695,15 +5666,14 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
         m_bVerify = true;
         
         // Reconnect now
-        char *szPasswd = strdup(m_szRegisterPasswd); // gets deleted in postLogoff
+        string passwd = myRegisterPasswd; // gets deleted in postLogoff
         int nSD = m_nTCPSrvSocketDesc;
         m_nTCPSrvSocketDesc = -1;
         m_eStatus = STATUS_OFFLINE_MANUAL;
         m_bLoggingOn = false; 
         gSocketManager.CloseSocket(nSD);
         postLogoff(nSD, NULL);
-        icqRegister(szPasswd);
-        free(szPasswd);
+        icqRegister(passwd);
       }
       else
       {
@@ -5750,10 +5720,9 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
         if (o.isLocked())
-          o->setPassword(m_szRegisterPasswd);
+          o->setPassword(myRegisterPasswd);
       }
-      free(m_szRegisterPasswd);
-      m_szRegisterPasswd = 0;
+      myRegisterPasswd = "";
       gDaemon.SaveConf();
 
       gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalNewOwner,

@@ -1586,8 +1586,8 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     case UserDlg::GeneralPage:
       if (myPpid == LICQ_PPID)
         gLicqDaemon->icqSetEmailInfo(
-            codec->fromUnicode(nfoEmailSecondary->text()),
-            codec->fromUnicode(nfoEmailOld->text()));
+            codec->fromUnicode(nfoEmailSecondary->text()).data(),
+            codec->fromUnicode(nfoEmailOld->text()).data());
 
       icqEventTag = gProtocolManager.updateOwnerInfo(ownerId);
       break;
@@ -1596,7 +1596,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     icqEventTag = gLicqDaemon->icqSetMoreInfo(
         nfoAge->text().toUShort(),
         cmbGender->currentIndex(),
-        nfoHomepage->text().toLocal8Bit(),
+          nfoHomepage->text().toLocal8Bit().data(),
         spnBirthYear->value(),
         spnBirthMonth->value(),
         spnBirthDay->value(),
@@ -1616,23 +1616,23 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     i = cmbCompanyOccupation->currentIndex();
     occupation = GetOccupationByIndex(i)->nCode;
     icqEventTag = gLicqDaemon->icqSetWorkInfo(
-        codec->fromUnicode(nfoCompanyCity->text()),
-        codec->fromUnicode(nfoCompanyState->text()),
-        codec->fromUnicode(nfoCompanyPhone->text()),
-        codec->fromUnicode(nfoCompanyFax->text()),
-        codec->fromUnicode(nfoCompanyAddress->text()),
-        codec->fromUnicode(nfoCompanyZip->text()),
+          codec->fromUnicode(nfoCompanyCity->text()).data(),
+          codec->fromUnicode(nfoCompanyState->text()).data(),
+          codec->fromUnicode(nfoCompanyPhone->text()).data(),
+          codec->fromUnicode(nfoCompanyFax->text()).data(),
+          codec->fromUnicode(nfoCompanyAddress->text()).data(),
+          codec->fromUnicode(nfoCompanyZip->text()).data(),
         cc,
-        codec->fromUnicode(nfoCompanyName->text()),
-        codec->fromUnicode(nfoCompanyDepartment->text()),
-        codec->fromUnicode(nfoCompanyPosition->text()),
+          codec->fromUnicode(nfoCompanyName->text()).data(),
+          codec->fromUnicode(nfoCompanyDepartment->text()).data(),
+          codec->fromUnicode(nfoCompanyPosition->text()).data(),
         occupation,
-        nfoCompanyHomepage->text().toLocal8Bit());
+          nfoCompanyHomepage->text().toLocal8Bit().data());
   break;
 
     case UserDlg::AboutPage:
     icqEventTag = gLicqDaemon->icqSetAbout(
-        codec->fromUnicode(mlvAbout->toPlainText()));
+          codec->fromUnicode(mlvAbout->toPlainText()).data());
     break;
 
     case UserDlg::PhonePage:

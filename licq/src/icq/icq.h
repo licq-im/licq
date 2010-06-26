@@ -124,15 +124,15 @@ public:
      const Licq::Color* pColor = NULL);
 
   unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqChatRequest(const Licq::UserId& userId, const char *szReason,
+  unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
      unsigned short nLevel, bool bServer);
   unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
-     const char *szReason, const char *szChatUsers, unsigned short nPort,
+     const std::string& reason, const std::string& chatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
-  void icqChatRequestRefuse(const Licq::UserId& userId, const char* szReason,
+  void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
-      const char* szClients, unsigned short nSequence,
+      const std::string& clients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
   unsigned long icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer = false);
@@ -142,57 +142,47 @@ public:
   unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestICQphone(const Licq::UserId& userId, bool bServer = false);
-  void icqRegister(const char *_szPasswd);
+  void icqRegister(const std::string& passwd);
   void icqVerifyRegistration();
-  void icqVerify(const char *);
-  unsigned long icqSetWorkInfo(const char *_szCity, const char *_szState,
-                           const char *_szPhone,
-                           const char *_szFax, const char *_szAddress,
-                           const char *_szZip, unsigned short _nCompanyCountry,
-                           const char *_szName, const char *_szDepartment,
-                           const char *_szPosition, unsigned short _nCompanyOccupation,
-                           const char *_szHomepage);
-  unsigned long icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
-                              const char *szLastName, const char *szEmailPrimary,
-                              const char *szCity,
-                              const char *szState, const char *szPhoneNumber,
-                              const char *szFaxNumber, const char *szAddress,
-                              const char *szCellularNumber, const char *szZipCode,
-                              unsigned short nCountryCode, bool bHideEmail);
-  unsigned long icqSetEmailInfo(const char *szEmailSecondary, const char *szEmailOld);
-  unsigned long icqSetMoreInfo(unsigned short nAge,
-                           char nGender, const char *szHomepage,
-                           unsigned short nBirthYear, char nBirthMonth,
-                           char nBirthDay, char nLanguage1,
-                           char nLanguage2, char nLanguage3);
+  void icqVerify(const std::string& verification);
+  unsigned long icqSetWorkInfo(const std::string& city, const std::string& state,
+      const std::string& phone, const std::string& fax, const std::string& address,
+      const std::string& zip, unsigned short companyCountry, const std::string& name,
+      const std::string& department, const std::string& position, unsigned short companyOccupation,
+      const std::string& homepage);
+  unsigned long icqSetGeneralInfo(const std::string& alias, const std::string& firstName,
+      const std::string& lastName, const std::string& emailPrimary, const std::string& city,
+      const std::string& state, const std::string& phoneNumber, const std::string& faxNumber,
+      const std::string& address, const std::string& cellularNumber, const std::string& zipCode,
+      unsigned short countryCode, bool hideEmail);
+  unsigned long icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld);
+  unsigned long icqSetMoreInfo(unsigned short age, char gender,
+      const std::string& homepage, unsigned short birthYear, char birthMonth,
+      char birthDay, char language1, char language2, char language3);
   unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
   unsigned long icqSetInterestsInfo(const Licq::UserCategoryMap& interests);
   unsigned long icqSetOrgBackInfo(const Licq::UserCategoryMap& orgs,
       const Licq::UserCategoryMap& background);
-  unsigned long icqSetAbout(const char *szAbout);
-  unsigned long icqSetPassword(const char *szPassword);
+  unsigned long icqSetAbout(const std::string& about);
+  unsigned long icqSetPassword(const std::string& password);
   unsigned long icqSetRandomChatGroup(unsigned long nGroup);
   unsigned long icqRandomChatSearch(unsigned long nGroup);
-  unsigned long icqSearchWhitePages(const char *szFirstName,
-                            const char *szLastName, const char *szAlias,
-                            const char *szEmail, unsigned short nMinAge,
-                            unsigned short nMaxAge, char nGender,
-                            char nLanguage, const char *szCity,
-                            const char *szState, unsigned short nCountryCode,
-                            const char *szCoName, const char *szCoDept,
-                            const char *szCoPos, const char *szKeyword,
-                            bool bOnlineOnly);
+  unsigned long icqSearchWhitePages(const std::string& firstName, const std::string& lastName,
+      const std::string& alias, const std::string& email, unsigned short minAge, unsigned short maxAge,
+      char gender, char language, const std::string& city, const std::string& state,
+      unsigned short countryCode, const std::string& coName, const std::string& coDept,
+      const std::string& coPos, const std::string& keyword, bool onlineOnly);
   unsigned long icqSearchByUin(unsigned long);
   unsigned long icqAuthorizeGrant(const Licq::UserId& userId, const std::string& message);
   unsigned long icqAuthorizeRefuse(const Licq::UserId& userId, const std::string& message);
-  void icqRequestAuth(const Licq::UserId& userId, const char *_szMessage);
+  void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
   void icqUpdatePhoneBookTimestamp();
   void icqUpdatePictureTimestamp();
   void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
   void icqUpdateContactList();
   void icqCheckInvisible(const Licq::UserId& userId);
-  unsigned long icqSendSms(const Licq::UserId& userId, const char* number, const char* message);
+  unsigned long icqSendSms(const Licq::UserId& userId, const std::string& number, const std::string& message);
 
   void icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
       bool viaServer, unsigned short nLevel, bool bMultipleRecipients = false,
@@ -223,12 +213,12 @@ public:
   void icqRelogon();
   void icqAddUser(const Licq::UserId& userId, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUserServer(const Licq::UserId& userId, bool _bAuthReq, unsigned short groupId = 0);
-  void icqAddGroup(const char *);
+  void icqAddGroup(const std::string& groupName);
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
-  void icqRemoveGroup(const char *);
+  void icqRemoveGroup(const std::string& groupName);
   void icqChangeGroup(const Licq::UserId& userId, unsigned short _nNewGroup, unsigned short _nOldGSID,
                       unsigned short _nNewType, unsigned short _nOldType);
-  void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
+  void icqRenameGroup(const std::string& newName, unsigned short _nGSID);
   void icqRenameUser(const Licq::UserId& userId, const std::string& newAlias);
   void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
@@ -379,7 +369,7 @@ private:
        // do another logon, but it doesn't need to get a salt.
        m_bNeedSalt;
   time_t m_tLogonTime;
-  char *m_szRegisterPasswd;
+  std::string myRegisterPasswd;
   pthread_t m_nRegisterThreadId;
 
   // Services

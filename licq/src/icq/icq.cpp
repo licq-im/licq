@@ -81,7 +81,6 @@ void IcqProtocol::initialize()
   m_bOnlineNotifies = true;
   m_bVerify = false;
   m_bNeedSalt = true;
-  m_szRegisterPasswd = 0;
   m_nRegisterThreadId = 0;
 
   receivedUserList.clear();

@@ -52,15 +52,15 @@ public:
   // Auto Response
   virtual unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false) = 0;
   // Chat Request
-  virtual unsigned long icqChatRequest(const Licq::UserId& userId, const char *szReason,
+  virtual unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
      unsigned short nLevel, bool bServer) = 0;
   virtual unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
-     const char *szReason, const char *szChatUsers, unsigned short nPort,
+     const std::string& reason, const std::string& chatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer) = 0;
-  virtual void icqChatRequestRefuse(const Licq::UserId& userId, const char* szReason,
+  virtual void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect) = 0;
   virtual void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
-      const char* szClients, unsigned short nSequence,
+      const std::string& clients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect) = 0;
   virtual void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence) = 0;
 
@@ -77,50 +77,39 @@ public:
   virtual unsigned long icqRequestICQphone(const Licq::UserId& userId, bool bServer = false) = 0;
 
   // Server functions
-  virtual void icqRegister(const char *_szPasswd) = 0;
+  virtual void icqRegister(const std::string& passwd) = 0;
   virtual void icqVerifyRegistration() = 0;
-  virtual void icqVerify(const char *) = 0;
-  virtual unsigned long icqSetWorkInfo(const char *_szCity, const char *_szState,
-                           const char *_szPhone,
-                           const char *_szFax, const char *_szAddress,
-                           const char *_szZip, unsigned short _nCompanyCountry,
-                           const char *_szName, const char *_szDepartment,
-                           const char *_szPosition, unsigned short _nCompanyOccupation,
-                           const char *_szHomepage) = 0;
-  virtual unsigned long icqSetGeneralInfo(const char *szAlias, const char *szFirstName,
-                              const char *szLastName, const char *szEmailPrimary,
-                              const char *szCity,
-                              const char *szState, const char *szPhoneNumber,
-                              const char *szFaxNumber, const char *szAddress,
-                              const char *szCellularNumber, const char *szZipCode,
-                              unsigned short nCountryCode, bool bHideEmail) = 0;
-  virtual unsigned long icqSetEmailInfo(const char *szEmailSecondary, const char *szEmailOld) = 0;
-  virtual unsigned long icqSetMoreInfo(unsigned short nAge,
-                           char nGender, const char *szHomepage,
-                           unsigned short nBirthYear, char nBirthMonth,
-                           char nBirthDay, char nLanguage1,
-                           char nLanguage2, char nLanguage3) = 0;
+  virtual void icqVerify(const std::string& verification) = 0;
+  virtual unsigned long icqSetWorkInfo(const std::string& city, const std::string& state,
+      const std::string& phone, const std::string& fax, const std::string& address,
+      const std::string& zip, unsigned short companyCountry, const std::string& name,
+      const std::string& department, const std::string& position, unsigned short companyOccupation,
+      const std::string& homepage) = 0;
+  virtual unsigned long icqSetGeneralInfo(const std::string& alias, const std::string& firstName,
+      const std::string& lastName, const std::string& emailPrimary, const std::string& city,
+      const std::string& state, const std::string& phoneNumber, const std::string& faxNumber,
+      const std::string& address, const std::string& cellularNumber, const std::string& zipCode,
+      unsigned short countryCode, bool hdeEmail) = 0;
+  virtual unsigned long icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld) = 0;
+  virtual unsigned long icqSetMoreInfo(unsigned short age, char gender,
+      const std::string& homepage, unsigned short birthYear, char birthMonth,
+      char birthDay, char language1, char language2, char language3) = 0;
   virtual unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware) = 0;
   virtual unsigned long icqSetInterestsInfo(const Licq::UserCategoryMap& interests) = 0;
   virtual unsigned long icqSetOrgBackInfo(const Licq::UserCategoryMap& orgs,
       const Licq::UserCategoryMap& background) = 0;
-  virtual unsigned long icqSetAbout(const char *szAbout) = 0;
-  virtual unsigned long icqSetPassword(const char *szPassword) = 0;
+  virtual unsigned long icqSetAbout(const std::string& about) = 0;
   virtual unsigned long icqSetRandomChatGroup(unsigned long nGroup) = 0;
   virtual unsigned long icqRandomChatSearch(unsigned long nGroup) = 0;
-  virtual unsigned long icqSearchWhitePages(const char *szFirstName,
-                            const char *szLastName, const char *szAlias,
-                            const char *szEmail, unsigned short nMinAge,
-                            unsigned short nMaxAge, char nGender,
-                            char nLanguage, const char *szCity,
-                            const char *szState, unsigned short nCountryCode,
-                            const char *szCoName, const char *szCoDept,
-                            const char *szCoPos, const char *szKeyword,
-                            bool bOnlineOnly) = 0;
+  virtual unsigned long icqSearchWhitePages(const std::string& firstName, const std::string& lastName,
+      const std::string& alias, const std::string& email, unsigned short minAge, unsigned short maxAge,
+      char gender, char language, const std::string& city, const std::string& state,
+      unsigned short countryCode, const std::string& coName, const std::string& coDept,
+      const std::string& coPos, const std::string& keyword, bool onlineOnly) = 0;
   virtual unsigned long icqSearchByUin(unsigned long) = 0;
   virtual unsigned long icqAuthorizeGrant(const Licq::UserId& userId, const std::string& message) = 0;
   virtual unsigned long icqAuthorizeRefuse(const Licq::UserId& userId, const std::string& message) = 0;
-  virtual void icqRequestAuth(const Licq::UserId& userId, const char *_szMessage) = 0;
+  virtual void icqRequestAuth(const Licq::UserId& userId, const std::string& message) = 0;
   virtual void icqAlertUser(const Licq::UserId& userId) = 0;
   virtual void icqUpdatePhoneBookTimestamp() = 0;
   virtual void icqUpdatePictureTimestamp() = 0;
@@ -137,7 +126,7 @@ public:
 
   // SMS
   virtual unsigned long icqSendSms(const Licq::UserId& userId,
-      const char* number, const char* message) = 0;
+      const std::string& number, const std::string& message) = 0;
 
   // ICQ Server options
   const std::string& icqServer() const          { return myIcqServer; }

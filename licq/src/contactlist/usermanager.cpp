@@ -592,7 +592,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
   }
 
   if (icqGroupId == 0 && icqOnline)
-    gIcqProtocol.icqAddGroup(name.c_str());
+    gIcqProtocol.icqAddGroup(name);
   else
     gLog.Info(tr("%sAdded group %s (%u) to list from server.\n"),
         L_SRVxSTR, name.c_str(), icqGroupId);
@@ -615,7 +615,7 @@ void UserManager::RemoveGroup(int groupId)
   group->unlockRead();
 
   // Must be called when there are no locks on GroupID and Group lists
-  gIcqProtocol.icqRemoveGroup(name.c_str());
+  gIcqProtocol.icqRemoveGroup(name);
 
   // Lock it back up
   myGroupListMutex.lockWrite();
@@ -730,7 +730,7 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
 
   // If we rename a group on logon, don't send the rename packet
   if (sendUpdate)
-    gIcqProtocol.icqRenameGroup(name.c_str(), icqGroupId);
+    gIcqProtocol.icqRenameGroup(name, icqGroupId);
 
   // Send signal to let plugins know the group has changed
   gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,

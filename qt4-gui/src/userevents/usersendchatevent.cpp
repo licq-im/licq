@@ -162,14 +162,14 @@ void UserSendChatEvent::send()
     //TODO in daemon
     icqEventTag = gLicqDaemon->icqChatRequest(
         myUsers.front(),
-        myCodec->fromUnicode(myMessageEdit->toPlainText()),
+        myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
         myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         mySendServerCheck->isChecked());
   else
     icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
         myUsers.front(),
-        myCodec->fromUnicode(myMessageEdit->toPlainText()),
-        myCodec->fromUnicode(myChatClients),
+        myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+        myCodec->fromUnicode(myChatClients).data(),
         myChatPort,
         myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         mySendServerCheck->isChecked());

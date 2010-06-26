@@ -729,14 +729,14 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
     delete [] szReasonDos;
 }
 
-unsigned long IcqProtocol::icqChatRequest(const Licq::UserId& userId, const char *szReason,
+unsigned long IcqProtocol::icqChatRequest(const Licq::UserId& userId, const string& reason,
                                          unsigned short nLevel, bool bServer)
 {
-  return icqMultiPartyChatRequest(userId, szReason, NULL, 0, nLevel, bServer);
+  return icqMultiPartyChatRequest(userId, reason, "", 0, nLevel, bServer);
 }
 
 unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
-   const char *reason, const char *szChatUsers, unsigned short nPort,
+   const string& reason, const string& chatUsers, unsigned short nPort,
    unsigned short nLevel, bool bServer)
 {
   if (Licq::gUserManager.isOwner(userId))
@@ -745,7 +745,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
-  char *szReasonDos = gTranslator.NToRN(reason);
+  char *szReasonDos = gTranslator.NToRN(reason.c_str());
   gTranslator.ClientToServer(szReasonDos);
 
   unsigned long f;
@@ -766,10 +766,10 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
       nLevel = ICQ_TCPxMSG_LIST2;
 
 		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos,
-        szChatUsers, nPort, nLevel, *u,
+        chatUsers.c_str(), nPort, nLevel, *u,
                                (u->Version() > 7));
 
-    Licq::EventChat* e = new Licq::EventChat(reason, szChatUsers, nPort, p->Sequence(),
+    Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
         Licq::EventChat::TimeNow, f);
 		gLog.Info(tr("%sSending chat request to %s (#%hu).\n"), L_SRVxSTR,
 			  u->GetAlias(), -p->Sequence());
@@ -778,14 +778,14 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
     }
 	else
 	{
-		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, szChatUsers, nPort,
+		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, chatUsers.c_str(), nPort,
         nLevel, *u, (u->Version() > 7));
     f = Licq::UserEvent::FlagDirect | Licq::UserEvent::FlagLicqVerMask;
     if (nLevel == ICQ_TCPxMSG_URGENT)
       f |= Licq::UserEvent::FlagUrgent;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    Licq::EventChat* e = new Licq::EventChat(reason, szChatUsers, nPort, p->Sequence(),
+    Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
         Licq::UserEvent::TimeNow, f);
 		gLog.Info(tr("%sSending %schat request to %s (#%hu).\n"), L_TCPxSTR,
 							nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
@@ -814,7 +814,7 @@ void IcqProtocol::icqChatRequestCancel(const Licq::UserId& userId, unsigned shor
   AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 }
 
-void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const char *szReason,
+void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string& reason,
     unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
   // add to history ??
@@ -823,7 +823,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const char *s
     return;
   gLog.Info(tr("%sRefusing chat request with %s (#%hu).\n"), 
             bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
-  char *szReasonDos = gTranslator.NToRN(szReason);
+  char *szReasonDos = gTranslator.NToRN(reason.c_str());
   gTranslator.ClientToServer(szReasonDos);
 
 	if (bDirect)
@@ -842,7 +842,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const char *s
 }
 
 void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
-    const char* szClients, unsigned short nSequence,
+    const string& clients, unsigned short nSequence,
     const unsigned long nMsgID[2], bool bDirect)
 {
   // basically a fancy tcp ack packet which is sent late
@@ -855,12 +855,12 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
 
 	if (bDirect)
   {
-    CPT_AckChatAccept p(nPort, szClients, nSequence, *u, u->Version() > 7);
+    CPT_AckChatAccept p(nPort, clients.c_str(), nSequence, *u, u->Version() > 7);
 		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 	}
 	else
   {
-    CPU_AckChatAccept *p = new CPU_AckChatAccept(*u, szClients, nMsgID, nSequence, nPort);
+    CPU_AckChatAccept *p = new CPU_AckChatAccept(*u, clients.c_str(), nMsgID, nSequence, nPort);
 		SendEvent_Server(p);
 	}
 }

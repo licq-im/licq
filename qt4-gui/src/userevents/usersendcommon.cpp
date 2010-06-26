@@ -890,11 +890,11 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       if (ue->clients().empty())
         //TODO in the daemon
         icqEventTag = gLicqDaemon->icqChatRequest(myUsers.front(),
-            ue->reason().c_str(), level, !online);
+            ue->reason(), level, !online);
       else
         //TODO in the daemon
         icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(myUsers.front(),
-            ue->reason().c_str(), ue->clients().c_str(), ue->Port(), level, !online);
+            ue->reason(), ue->clients(), ue->Port(), level, !online);
 
       break;
     }

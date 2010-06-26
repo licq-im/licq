@@ -130,7 +130,7 @@ void UserSendSmsEvent::send()
 
   //TODO in daemon
   icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
-      myNumberField->text().toLatin1(),
+      myNumberField->text().toLatin1().data(),
       myMessageEdit->toPlainText().toUtf8().data());
   myEventTag.push_back(icqEventTag);
 

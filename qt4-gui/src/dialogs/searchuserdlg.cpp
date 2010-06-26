@@ -248,21 +248,21 @@ void SearchUserDlg::startSearch()
     if (codec == 0)
       codec = QTextCodec::codecForLocale();
     searchTag = gLicqDaemon->icqSearchWhitePages(
-        codec->fromUnicode(edtFirst->text()),
-        codec->fromUnicode(edtLast->text()),
-        codec->fromUnicode(edtNick->text()),
+        codec->fromUnicode(edtFirst->text()).data(),
+        codec->fromUnicode(edtLast->text()).data(),
+        codec->fromUnicode(edtNick->text()).data(),
         edtEmail->text().toLocal8Bit().data(),
         mins[cmbAge->currentIndex()],
         maxs[cmbAge->currentIndex()],
         cmbGender->currentIndex(),
         GetLanguageByIndex(cmbLanguage->currentIndex())->nCode,
-        codec->fromUnicode(edtCity->text()),
-        codec->fromUnicode(edtState->text()),
+        codec->fromUnicode(edtCity->text()).data(),
+        codec->fromUnicode(edtState->text()).data(),
         GetCountryByIndex(cmbCountry->currentIndex())->nCode,
-        codec->fromUnicode(edtCoName->text()),
-        codec->fromUnicode(edtCoDept->text()),
-        codec->fromUnicode(edtCoPos->text()),
-        codec->fromUnicode(edtKeyword->text()),
+        codec->fromUnicode(edtCoName->text()).data(),
+        codec->fromUnicode(edtCoDept->text()).data(),
+        codec->fromUnicode(edtCoPos->text()).data(),
+        codec->fromUnicode(edtKeyword->text()).data(),
         chkOnlineOnly->isChecked());
   }
   else

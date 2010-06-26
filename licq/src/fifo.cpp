@@ -418,7 +418,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
         }
       }
       if (!number.empty())
-        d->icqSendSms(userId, number.c_str(), argv[2]);
+        d->icqSendSms(userId, number, argv[2]);
       else
         gLog.Error("%sUnable to send SMS to %s, no SMS number found.\n",
             L_ERRORxSTR, szId);
