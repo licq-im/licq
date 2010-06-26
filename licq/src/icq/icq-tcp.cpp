@@ -59,7 +59,6 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
    const Licq::Color* pColor)
 {
   const string accountId = userId.accountId();
-  const char* szId = accountId.c_str();
   const char* m = message.c_str();
 
   Licq::Event* result = NULL;
@@ -153,7 +152,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
                  L_WARNxSTR, nMaxSize);
        szMessage[nMaxSize] = '\0';
      }
-     result = icqSendThroughServer(eventId, szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+     result = icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
                                    cipher ? cipher : szMessage, e, nCharset, nUTFLen);
   }
 
@@ -191,16 +190,15 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     delete [] mDos;
 }
 
-unsigned long IcqProtocol::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
+unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool bServer)
 {
   unsigned long eventId = gDaemon.getNextEventId();
-  Licq::UserId userId(_szId, _nPPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  if (isalpha(_szId[0]))
+  if (isalpha(userId.accountId()[0]))
   {
-    icqFetchAutoResponseServer(eventId, _szId);
+    icqFetchAutoResponseServer(eventId, userId);
     return eventId;
   }
 
@@ -234,7 +232,6 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
     return;
 
   const string accountId = userId.accountId();
-  const char* _szId = accountId.c_str();
   const char* description = message.c_str();
 
   // make the URL info string
@@ -274,7 +271,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
 
     e = new Licq::EventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER,
         Licq::EventUrl::TimeNow, f);
-    result = icqSendThroughServer(eventId, _szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
+    result = icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
 
   Licq::UserWriteGuard u(userId);
@@ -395,12 +392,11 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
 }
 
 //-----CICQDaemon::sendContactList-------------------------------------------
-unsigned long IcqProtocol::icqSendContactList(const char *szId,
+unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
    const StringList& users, bool online, unsigned short nLevel,
    bool bMultipleRecipients, const Licq::Color* pColor)
 {
   unsigned long eventId = gDaemon.getNextEventId();
-  Licq::UserId userId(szId, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -439,7 +435,7 @@ unsigned long IcqProtocol::icqSendContactList(const char *szId,
   if (!online) // send offline
   {
     e = new Licq::EventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, Licq::EventContactList::TimeNow, f);
-    result = icqSendThroughServer(eventId, szId,
+    result = icqSendThroughServer(eventId, userId,
       ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
       m, e);
   }
@@ -494,10 +490,8 @@ unsigned long IcqProtocol::icqRequestInfoPlugin(Licq::User* u, bool bServer,
 }
 
 //-----CICQDaemon::sendInfoPluginListReq----------------------------------------
-unsigned long IcqProtocol::icqRequestInfoPluginList(const char *szId,
-                                                   bool bServer)
+unsigned long IcqProtocol::icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer)
 {
-  Licq::UserId userId(szId, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -518,10 +512,8 @@ unsigned long IcqProtocol::icqRequestInfoPluginList(const char *szId,
 }
 
 //-----CICQDaemon::sendPhoneBookReq--------------------------------------------
-unsigned long IcqProtocol::icqRequestPhoneBook(const char *szId,
-                                              bool bServer)
+unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId, bool bServer)
 {
-  Licq::UserId userId(szId, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -584,10 +576,8 @@ unsigned long IcqProtocol::icqRequestStatusPlugin(Licq::User* u, bool bServer,
 }
 
 //-----CICQDaemon::sendStatusPluginListReq--------------------------------------
-unsigned long IcqProtocol::icqRequestStatusPluginList(const char *szId,
-                                                     bool bServer)
+unsigned long IcqProtocol::icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer)
 {
-  Licq::UserId userId(szId, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -608,10 +598,8 @@ unsigned long IcqProtocol::icqRequestStatusPluginList(const char *szId,
 }
 
 //-----CICQDaemon::sendSharedFilesReq--------------------------------------
-unsigned long IcqProtocol::icqRequestSharedFiles(const char *szId,
-                                                bool bServer)
+unsigned long IcqProtocol::icqRequestSharedFiles(const Licq::UserId& userId, bool bServer)
 {
-  Licq::UserId userId(szId, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -632,10 +620,8 @@ unsigned long IcqProtocol::icqRequestSharedFiles(const char *szId,
 }
 
 //-----CICQDaemon::sendPhoneFollowMeReq--------------------------------------
-unsigned long IcqProtocol::icqRequestPhoneFollowMe(const char *szId,
-                                                  bool bServer)
+unsigned long IcqProtocol::icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer)
 {
-  Licq::UserId userId(szId, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -656,10 +642,8 @@ unsigned long IcqProtocol::icqRequestPhoneFollowMe(const char *szId,
 }
 
 //-----CICQDaemon::sendICQphoneReq--------------------------------------
-unsigned long IcqProtocol::icqRequestICQphone(const char *szId,
-                                             bool bServer)
+unsigned long IcqProtocol::icqRequestICQphone(const Licq::UserId& userId, bool bServer)
 {
-  Licq::UserId userId(szId, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -745,17 +729,16 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
     delete [] szReasonDos;
 }
 
-unsigned long IcqProtocol::icqChatRequest(const char* id, const char *szReason,
+unsigned long IcqProtocol::icqChatRequest(const Licq::UserId& userId, const char *szReason,
                                          unsigned short nLevel, bool bServer)
 {
-  return icqMultiPartyChatRequest(id, szReason, NULL, 0, nLevel, bServer);
+  return icqMultiPartyChatRequest(userId, szReason, NULL, 0, nLevel, bServer);
 }
 
-unsigned long IcqProtocol::icqMultiPartyChatRequest(const char* id,
+unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
    const char *reason, const char *szChatUsers, unsigned short nPort,
    unsigned short nLevel, bool bServer)
 {
-  Licq::UserId userId(id, LICQ_PPID);
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -820,9 +803,8 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const char* id,
   return 0;
 }
 
-void IcqProtocol::icqChatRequestCancel(const char* id, unsigned short nSequence)
+void IcqProtocol::icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence)
 {
-  Licq::UserId userId(id, LICQ_PPID);
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
@@ -832,11 +814,10 @@ void IcqProtocol::icqChatRequestCancel(const char* id, unsigned short nSequence)
   AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 }
 
-void IcqProtocol::icqChatRequestRefuse(const char* id, const char *szReason,
+void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const char *szReason,
     unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
   // add to history ??
-  Licq::UserId userId(id, LICQ_PPID);
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
@@ -860,13 +841,12 @@ void IcqProtocol::icqChatRequestRefuse(const char* id, const char *szReason,
     delete [] szReasonDos;
 }
 
-void IcqProtocol::icqChatRequestAccept(const char* id, unsigned short nPort,
+void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
     const char* szClients, unsigned short nSequence,
     const unsigned long nMsgID[2], bool bDirect)
 {
   // basically a fancy tcp ack packet which is sent late
   // add to history ??
-  Licq::UserId userId(id, LICQ_PPID);
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
@@ -953,15 +933,14 @@ void IcqProtocol::icqOpenSecureChannelCancel(const Licq::UserId& userId,
  *
  * Shake hands on the given socket with the given user.
  *-------------------------------------------------------------------------*/
-bool IcqProtocol::Handshake_Send(Licq::TCPSocket* s, const char* id,
+bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
    unsigned short nPort, unsigned short nVersion, bool bConfirm,
    unsigned long nId)
 {
   s->SetVersion(nVersion);
-  Licq::UserId userId(id, LICQ_PPID);
   s->setUserId(userId);
 
-  unsigned long nUin = strtoul(id, NULL, 10);
+  unsigned long nUin = strtoul(userId.accountId().c_str(), NULL, 10);
 
   switch (nVersion)
   {
@@ -1101,9 +1080,8 @@ sock_error:
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
+int IcqProtocol::connectToUser(const Licq::UserId& userId, unsigned char nChannel)
 {
-  Licq::UserId userId(id, LICQ_PPID);
   {
     Licq::UserReadGuard u(userId);
     if (!u.isLocked())
@@ -1149,7 +1127,7 @@ int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
   }
 
   Licq::TCPSocket* s = new Licq::TCPSocket(userId);
-  if (!OpenConnectionToUser(id, s, nPort))
+  if (!openConnectionToUser(userId, s, nPort))
   {
     Licq::UserWriteGuard u(userId);
     if (u.isLocked())
@@ -1163,7 +1141,7 @@ int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
       alias.c_str(), userId.toString().c_str(), nVersion);
   nPort = s->getLocalPort();
 
-  if (!Handshake_Send(s, id, 0, nVersion))
+  if (!handshake_Send(s, userId, 0, nVersion))
   {
     Licq::UserWriteGuard u(userId);
     if (u.isLocked())
@@ -1200,10 +1178,9 @@ int IcqProtocol::ConnectToUser(const char* id, unsigned char nChannel)
  *
  * Connects a socket to a given user on a given port.
  *----------------------------------------------------------------------------*/
-bool IcqProtocol::OpenConnectionToUser(const char* id, Licq::TCPSocket* sock,
-                                      unsigned short nPort)
+bool IcqProtocol::openConnectionToUser(const Licq::UserId& userId,
+    Licq::TCPSocket* sock, unsigned short nPort)
 {
-  Licq::UserId userId(id, LICQ_PPID);
   char szAlias[64];
   unsigned long ip;
   unsigned long intip;
@@ -1286,11 +1263,10 @@ bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-int IcqProtocol::ReverseConnectToUser(const char* id, unsigned long nIp,
+int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long nIp,
    unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
    unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2)
 {
-  Licq::UserId userId(id, LICQ_PPID);
   // Find which socket this is for
   Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(gSocketManager.FetchSocket(m_nTCPSocketDesc));
   unsigned short tcpPort = tcp != NULL ? tcp->getLocalPort() : 0;
@@ -1318,7 +1294,7 @@ int IcqProtocol::ReverseConnectToUser(const char* id, unsigned long nIp,
     gLog.Warn(tr("%sReverse connect to %s failed:\n%s%s.\n"), L_WARNxSTR,
         userId.toString().c_str(), L_BLANKxSTR, s->errorStr().c_str());
 
-    CPU_ReverseConnectFailed* p = new CPU_ReverseConnectFailed(id, nMsgID1,
+    CPU_ReverseConnectFailed* p = new CPU_ReverseConnectFailed(userId.accountId().c_str(), nMsgID1,
         nMsgID2, nPort, nFailedPort, nId);
     SendEvent_Server(p);
     return -1;
@@ -1330,7 +1306,7 @@ int IcqProtocol::ReverseConnectToUser(const char* id, unsigned long nIp,
   // Make sure we use the right version
   nVersion = VersionToUse(nVersion);
 
-  if (!Handshake_Send(s, id, 0, nVersion, bConfirm, nId))
+  if (!handshake_Send(s, userId, 0, nVersion, bConfirm, nId))
   {
     delete s;
     return -1;

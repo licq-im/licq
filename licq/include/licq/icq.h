@@ -45,36 +45,36 @@ public:
   // ICQ functions still public as they don't have any general proto functions
   //   to call them yet and needs to be callable from plugins for now
 
-  virtual unsigned long icqSendContactList(const char *szId, const Licq::StringList& users,
+  virtual unsigned long icqSendContactList(const Licq::UserId& userId, const Licq::StringList& users,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      const Licq::Color* pColor = NULL) = 0;
 
   // Auto Response
-  virtual unsigned long icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer = false) = 0;
+  virtual unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false) = 0;
   // Chat Request
-  virtual unsigned long icqChatRequest(const char* id, const char *szReason,
+  virtual unsigned long icqChatRequest(const Licq::UserId& userId, const char *szReason,
      unsigned short nLevel, bool bServer) = 0;
-  virtual unsigned long icqMultiPartyChatRequest(const char* id,
+  virtual unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer) = 0;
-  virtual void icqChatRequestRefuse(const char* id, const char* szReason,
+  virtual void icqChatRequestRefuse(const Licq::UserId& userId, const char* szReason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect) = 0;
-  virtual void icqChatRequestAccept(const char* id, unsigned short nPort,
+  virtual void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
       const char* szClients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect) = 0;
-  virtual void icqChatRequestCancel(const char* id, unsigned short nSequence) = 0;
+  virtual void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence) = 0;
 
   // Plugins
-  virtual unsigned long icqRequestInfoPluginList(const char *szId,
+  virtual unsigned long icqRequestInfoPluginList(const Licq::UserId& userId,
      bool bServer = false) = 0;
-  virtual unsigned long icqRequestPhoneBook(const char *szId, bool bServer = false) = 0;
+  virtual unsigned long icqRequestPhoneBook(const Licq::UserId& userId, bool bServer = false) = 0;
   virtual unsigned long icqRequestPicture(const Licq::UserId& userId, bool bServer, size_t iconHashSize) = 0;
-  virtual unsigned long icqRequestStatusPluginList(const char *szId,
+  virtual unsigned long icqRequestStatusPluginList(const Licq::UserId& userId,
      bool bServer = false) = 0;
-  virtual unsigned long icqRequestSharedFiles(const char *szId, bool bServer = false) = 0;
-  virtual unsigned long icqRequestPhoneFollowMe(const char *szId,
+  virtual unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false) = 0;
+  virtual unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId,
      bool bServer = false) = 0;
-  virtual unsigned long icqRequestICQphone(const char *szId, bool bServer = false) = 0;
+  virtual unsigned long icqRequestICQphone(const Licq::UserId& userId, bool bServer = false) = 0;
 
   // Server functions
   virtual void icqRegister(const char *_szPasswd) = 0;
@@ -120,13 +120,13 @@ public:
   virtual unsigned long icqSearchByUin(unsigned long) = 0;
   virtual unsigned long icqAuthorizeGrant(const Licq::UserId& userId, const std::string& message) = 0;
   virtual unsigned long icqAuthorizeRefuse(const Licq::UserId& userId, const std::string& message) = 0;
-  virtual void icqRequestAuth(const char* id, const char *_szMessage) = 0;
+  virtual void icqRequestAuth(const Licq::UserId& userId, const char *_szMessage) = 0;
   virtual void icqAlertUser(const Licq::UserId& userId) = 0;
   virtual void icqUpdatePhoneBookTimestamp() = 0;
   virtual void icqUpdatePictureTimestamp() = 0;
   virtual void icqSetPhoneFollowMeStatus(unsigned long nNewStatus) = 0;
   virtual void icqUpdateContactList() = 0;
-  virtual void icqCheckInvisible(const char *_szId) = 0;
+  virtual void icqCheckInvisible(const Licq::UserId& userId) = 0;
 
   virtual void CheckExport() = 0;
 
@@ -136,7 +136,7 @@ public:
   virtual void updateAllUsersInGroup(int groupId) = 0;
 
   // SMS
-  virtual unsigned long icqSendSms(const char* id, unsigned long ppid,
+  virtual unsigned long icqSendSms(const Licq::UserId& userId,
       const char* number, const char* message) = 0;
 
   // ICQ Server options

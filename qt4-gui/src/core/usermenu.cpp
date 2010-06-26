@@ -374,7 +374,7 @@ void UserMenu::viewEvent()
 void UserMenu::checkInvisible()
 {
   if (myPpid == LICQ_PPID)
-    gLicqDaemon->icqCheckInvisible(myId.toLatin1());
+    gLicqDaemon->icqCheckInvisible(myUserId);
 }
 
 void UserMenu::checkAutoResponse()
@@ -448,27 +448,27 @@ void UserMenu::send(QAction* action)
 
     case RequestUpdateInfoPlugin:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestInfoPluginList(myId.toLatin1(), true);
+        gLicqDaemon->icqRequestInfoPluginList(myUserId, true);
       break;
 
     case RequestUpdateStatusPlugin:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestStatusPluginList(myId.toLatin1(), true);
+        gLicqDaemon->icqRequestStatusPluginList(myUserId, true);
       break;
 
     case RequestPhoneFollowMeStatus:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestPhoneFollowMe(myId.toLatin1(), true);
+        gLicqDaemon->icqRequestPhoneFollowMe(myUserId, true);
       break;
 
     case RequestIcqphoneStatus:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestICQphone(myId.toLatin1(), true);
+        gLicqDaemon->icqRequestICQphone(myUserId, true);
       break;
 
     case RequestFileServerStatus:
       if (myPpid == LICQ_PPID)
-        gLicqDaemon->icqRequestSharedFiles(myId.toLatin1(), true);
+        gLicqDaemon->icqRequestSharedFiles(myUserId, true);
       break;
 
     default:

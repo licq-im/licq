@@ -1540,7 +1540,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
         return 0;
       bSendServer = (u->infoSocketDesc() < 0);
     }
-    icqEventTag = gLicqDaemon->icqRequestPhoneBook(myId.toLatin1(), bSendServer);
+    icqEventTag = gLicqDaemon->icqRequestPhoneBook(myUserId, bSendServer);
   }
   else if (page == UserDlg::PicturePage)
   {

@@ -151,8 +151,6 @@ void UserSendChatEvent::inviteUser()
 
 void UserSendChatEvent::send()
 {
-  QString accountId = myUsers.front().accountId().c_str();
-
   // Take care of typing notification now`
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
@@ -163,13 +161,13 @@ void UserSendChatEvent::send()
   if (myChatPort == 0)
     //TODO in daemon
     icqEventTag = gLicqDaemon->icqChatRequest(
-        accountId.toLatin1(),
+        myUsers.front(),
         myCodec->fromUnicode(myMessageEdit->toPlainText()),
         myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         mySendServerCheck->isChecked());
   else
     icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
-        accountId.toLatin1(),
+        myUsers.front(),
         myCodec->fromUnicode(myMessageEdit->toPlainText()),
         myCodec->fromUnicode(myChatClients),
         myChatPort,

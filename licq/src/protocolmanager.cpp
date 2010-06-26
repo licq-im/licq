@@ -76,7 +76,7 @@ void ProtocolManager::pushProtoSignal(Licq::ProtocolSignal* s, const UserId& use
 void ProtocolManager::addUser(const UserId& userId, int groupId)
 {
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqAddUser(userId.accountId().c_str(), false, groupId);
+    gIcqProtocol.icqAddUser(userId, false, groupId);
   else
     pushProtoSignal(new Licq::ProtoAddUserSignal(userId, false), userId);
 }
@@ -96,7 +96,7 @@ void ProtocolManager::removeUser(const UserId& userId)
   if (userId.protocolId() == LICQ_PPID)
   {
     if (!tempUser)
-      gIcqProtocol.icqRemoveUser(userId.accountId().c_str());
+      gIcqProtocol.icqRemoveUser(userId);
   }
   else
     pushProtoSignal(new Licq::ProtoRemoveUserSignal(userId), userId);
@@ -115,7 +115,7 @@ void ProtocolManager::updateUserAlias(const UserId& userId)
   }
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqRenameUser(userId.accountId(), newAlias);
+    gIcqProtocol.icqRenameUser(userId, newAlias);
   else
     pushProtoSignal(new Licq::ProtoRenameUserSignal(userId), userId);
 }
@@ -174,7 +174,7 @@ void ProtocolManager::sendTypingNotification(const UserId& userId, bool active, 
     return;
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqTypingNotification(userId.accountId().c_str(), active);
+    gIcqProtocol.icqTypingNotification(userId, active);
   else
     pushProtoSignal(new Licq::ProtoTypingNotificationSignal(userId, active, nSocket), userId);
 }
@@ -212,7 +212,7 @@ unsigned long ProtocolManager::requestUserAutoResponse(const UserId& userId)
   unsigned long eventId = getNextEventId();
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqFetchAutoResponseServer(eventId, userId.accountId().c_str());
+    gIcqProtocol.icqFetchAutoResponseServer(eventId, userId);
   else
     eventId = 0;
 
@@ -298,7 +298,7 @@ unsigned long ProtocolManager::requestUserInfo(const UserId& userId)
   unsigned long eventId = 0;
 
   if (userId.protocolId() == LICQ_PPID)
-    eventId = gIcqProtocol.icqRequestMetaInfo(userId.accountId().c_str());
+    eventId = gIcqProtocol.icqRequestMetaInfo(userId);
   else
     pushProtoSignal(new Licq::ProtoRequestInfo(userId), userId);
 

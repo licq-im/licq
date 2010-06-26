@@ -418,7 +418,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
         }
       }
       if (!number.empty())
-        d->icqSendSms(szId, nPPID, number.c_str(), argv[2]);
+        d->icqSendSms(userId, number.c_str(), argv[2]);
       else
         gLog.Error("%sUnable to send SMS to %s, no SMS number found.\n",
             L_ERRORxSTR, szId);
@@ -445,8 +445,7 @@ static int fifo_sms_number(int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  string id = gUserManager.ownerUserId(LICQ_PPID).accountId();
-  d->icqSendSms(id.c_str(), LICQ_PPID, argv[1], argv[2]);
+  d->icqSendSms(gUserManager.ownerUserId(LICQ_PPID), argv[1], argv[2]);
   return 0;
 }
 

@@ -119,32 +119,29 @@ public:
 
   void SetUseServerSideBuddyIcons(bool b);
 
-  unsigned long icqSendContactList(const char *szId, const Licq::StringList& users,
+  unsigned long icqSendContactList(const Licq::UserId& userId, const Licq::StringList& users,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      const Licq::Color* pColor = NULL);
 
-  unsigned long icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer = false);
-  unsigned long icqChatRequest(const char* id, const char *szReason,
+  unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false);
+  unsigned long icqChatRequest(const Licq::UserId& userId, const char *szReason,
      unsigned short nLevel, bool bServer);
-  unsigned long icqMultiPartyChatRequest(const char* id,
+  unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
-  void icqChatRequestRefuse(const char* id, const char* szReason,
+  void icqChatRequestRefuse(const Licq::UserId& userId, const char* szReason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
-  void icqChatRequestAccept(const char* id, unsigned short nPort,
+  void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
       const char* szClients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect);
-  void icqChatRequestCancel(const char* id, unsigned short nSequence);
-  unsigned long icqRequestInfoPluginList(const char *szId,
-     bool bServer = false);
-  unsigned long icqRequestPhoneBook(const char *szId, bool bServer = false);
+  void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
+  unsigned long icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer = false);
+  unsigned long icqRequestPhoneBook(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPicture(const Licq::UserId& userId, bool bServer, size_t iconHashSize);
-  unsigned long icqRequestStatusPluginList(const char *szId,
-     bool bServer = false);
-  unsigned long icqRequestSharedFiles(const char *szId, bool bServer = false);
-  unsigned long icqRequestPhoneFollowMe(const char *szId,
-     bool bServer = false);
-  unsigned long icqRequestICQphone(const char *szId, bool bServer = false);
+  unsigned long icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer = false);
+  unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false);
+  unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer = false);
+  unsigned long icqRequestICQphone(const Licq::UserId& userId, bool bServer = false);
   void icqRegister(const char *_szPasswd);
   void icqVerifyRegistration();
   void icqVerify(const char *);
@@ -188,15 +185,14 @@ public:
   unsigned long icqSearchByUin(unsigned long);
   unsigned long icqAuthorizeGrant(const Licq::UserId& userId, const std::string& message);
   unsigned long icqAuthorizeRefuse(const Licq::UserId& userId, const std::string& message);
-  void icqRequestAuth(const char* id, const char *_szMessage);
+  void icqRequestAuth(const Licq::UserId& userId, const char *_szMessage);
   void icqAlertUser(const Licq::UserId& userId);
   void icqUpdatePhoneBookTimestamp();
   void icqUpdatePictureTimestamp();
   void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
   void icqUpdateContactList();
-  void icqCheckInvisible(const char *_szId);
-  unsigned long icqSendSms(const char* id, unsigned long ppid,
-      const char* number, const char* message);
+  void icqCheckInvisible(const Licq::UserId& userId);
+  unsigned long icqSendSms(const Licq::UserId& userId, const char* number, const char* message);
 
   void icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
       bool viaServer, unsigned short nLevel, bool bMultipleRecipients = false,
@@ -216,35 +212,28 @@ public:
   void icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId);
   void icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId);
   void icqOpenSecureChannelCancel(const Licq::UserId& userId, unsigned short nSequence);
-  void icqFetchAutoResponseServer(unsigned long eventId, const char *);
+  void icqFetchAutoResponseServer(unsigned long eventId, const Licq::UserId& userId);
   unsigned long icqLogon(unsigned short logonStatus);
   unsigned long icqRequestLogonSalt();
-  unsigned long icqUserBasicInfo(const char *);
-  unsigned long icqUserExtendedInfo(const char *);
-  unsigned long icqRequestMetaInfo(const char *);
-  unsigned long icqUpdateBasicInfo(const char *, const char *, const char *,
-                                       const char *, bool);
-  unsigned long icqUpdateExtendedInfo(const char *, unsigned short, const char *,
-                                unsigned short, char, const char *,
-                                const char *, const char *_sAbout, const char *);
+  unsigned long icqUserBasicInfo(const Licq::UserId& userId);
+  unsigned long icqRequestMetaInfo(const Licq::UserId& userId);
   unsigned long icqSetStatus(unsigned short newStatus);
   void icqLogoff();
   void postLogoff(int nSD, Licq::Event* cancelledEvent);
   void icqRelogon();
-  void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
-  void icqAddUserServer(const char *_szId, bool _bAuthReq, unsigned short groupId = 0);
+  void icqAddUser(const Licq::UserId& userId, bool _bAuthReq = false, unsigned short groupId = 0);
+  void icqAddUserServer(const Licq::UserId& userId, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddGroup(const char *);
-  void icqRemoveUser(const char *, bool ignored = false);
+  void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
   void icqRemoveGroup(const char *);
-  void icqChangeGroup(const char *_szId, unsigned long _nPPID,
-                      unsigned short _nNewGroup, unsigned short _nOldGSID,
+  void icqChangeGroup(const Licq::UserId& userId, unsigned short _nNewGroup, unsigned short _nOldGSID,
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
-  void icqRenameUser(const std::string& accountId, const std::string& newAlias);
+  void icqRenameUser(const Licq::UserId& userId, const std::string& newAlias);
   void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();
-  void icqTypingNotification(const char *_szId, bool _bActive);
+  void icqTypingNotification(const Licq::UserId& userId, bool _bActive);
   void icqRequestService(unsigned short nFam);
   void icqAddToVisibleList(const Licq::UserId& userId);
   void icqRemoveFromVisibleList(const Licq::UserId& userId);
@@ -260,12 +249,12 @@ public:
   void icqSendInvisibleList();
   void icqCreatePDINFO();
   void icqRequestSystemMsg();
-  Licq::Event* icqSendThroughServer(unsigned long eventId, const char *szId,
+  Licq::Event* icqSendThroughServer(unsigned long eventId, const Licq::UserId& userId,
       unsigned char format, const std::string& message, Licq::UserEvent*,
       unsigned short = 0, size_t = 0);
 
   void CheckExport();
-  bool OpenConnectionToUser(const char* id, Licq::TCPSocket* sock,
+  bool openConnectionToUser(const Licq::UserId& userId, Licq::TCPSocket* sock,
      unsigned short nPort);
   bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
      unsigned long nIntIp, Licq::TCPSocket* sock, unsigned short nPort,
@@ -323,7 +312,7 @@ public:
   unsigned long icqRequestStatusPlugin(Licq::User* user, bool, const char *);
   void icqUpdateInfoTimestamp(const char *);
 
-  static bool Handshake_Send(Licq::TCPSocket*, const char* id, unsigned short,
+  static bool handshake_Send(Licq::TCPSocket*, const Licq::UserId& userId, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
   static bool Handshake_SendConfirm_v7(Licq::TCPSocket*);
   static bool Handshake_Recv(Licq::TCPSocket*, unsigned short, bool = true, bool = false);
@@ -331,13 +320,13 @@ public:
 
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
-  int ConnectToUser(const char* id, unsigned char channel);
-  int ReverseConnectToUser(const char* id, unsigned long nIp,
+  int connectToUser(const Licq::UserId& userId, unsigned char channel);
+  int reverseConnectToUser(const Licq::UserId& userId, unsigned long nIp,
      unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
      unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2);
-  int RequestReverseConnection(const char* id, unsigned long, unsigned long,
+  int requestReverseConnection(const Licq::UserId& userId, unsigned long, unsigned long,
                                unsigned short, unsigned short);
-  bool WaitForReverseConnection(unsigned short id, const char* userId);
+  bool waitForReverseConnection(unsigned short id, const Licq::UserId& userId);
 
   void PushEvent(Licq::Event*);
   void PushExtendedEvent(Licq::Event*);

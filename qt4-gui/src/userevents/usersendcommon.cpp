@@ -877,7 +877,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       if (users.size() == 0)
         break;
 
-      icqEventTag = gLicqDaemon->icqSendContactList(accountId.toLatin1(),
+      icqEventTag = gLicqDaemon->icqSendContactList(myUsers.front(),
           users, online, level, false, &myIcqColor);
 
       break;
@@ -889,11 +889,11 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
 
       if (ue->clients().empty())
         //TODO in the daemon
-        icqEventTag = gLicqDaemon->icqChatRequest(accountId.toLatin1(),
+        icqEventTag = gLicqDaemon->icqChatRequest(myUsers.front(),
             ue->reason().c_str(), level, !online);
       else
         //TODO in the daemon
-        icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(accountId.toLatin1(),
+        icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(myUsers.front(),
             ue->reason().c_str(), ue->clients().c_str(), ue->Port(), level, !online);
 
       break;
@@ -916,7 +916,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
 
       //TODO in the daemon
-      icqEventTag = gLicqDaemon->icqSendSms(accountId.toLatin1(), LICQ_PPID,
+      icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
           ue->number().c_str(), ue->message().c_str());
       break;
     }

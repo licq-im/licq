@@ -124,7 +124,6 @@ void UserSendContactEvent::send()
   // Take care of typing notification now
   mySendTypingTimer->stop();
 
-  QString accountId = myUsers.front().accountId().c_str();
   gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   StringList users;
@@ -152,7 +151,7 @@ void UserSendContactEvent::send()
 
   unsigned long icqEventTag;
   icqEventTag = gLicqDaemon->icqSendContactList(
-      accountId.toLatin1(),
+      myUsers.front(),
       users,
       mySendServerCheck->isChecked() ? false : true,
       myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,

@@ -272,8 +272,7 @@ void MMSendDlg::SendNext()
         grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
       }
 
-      icqEventTag = gLicqDaemon->icqSendContactList(
-          userId.accountId().c_str(), *myUsers, false, ICQ_TCPxMSG_NORMAL);
+      icqEventTag = gLicqDaemon->icqSendContactList(userId, *myUsers, false, ICQ_TCPxMSG_NORMAL);
       break;
     }
   }

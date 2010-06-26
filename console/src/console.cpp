@@ -1705,19 +1705,15 @@ void CLicqConsole::InputRemove(int cIn)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::UserCommand_FetchAutoResponse(const Licq::UserId& userId, char *)
 {
-  string szId;
-  unsigned long nPPID;
   {
     Licq::UserReadGuard u(userId);
     winMain->wprintf("%C%AFetching auto-response for %s (%s)...",
                    m_cColorInfo->nColor, m_cColorInfo->nAttr,
       u->GetAlias(), u->accountId().c_str());
     winMain->RefreshWin();
-    szId = u->accountId();
-    nPPID = u->ppid();
   }
 
-  winMain->event = gLicqDaemon->icqFetchAutoResponse(szId.c_str(), nPPID);
+  winMain->event = gLicqDaemon->icqFetchAutoResponse(userId);
   // InputMessage just to catch the cancel key
   winMain->fProcessInput = &CLicqConsole::InputMessage;
   winMain->data = NULL;
@@ -2320,7 +2316,7 @@ void CLicqConsole::InputSms(int cIn)
       Licq::UserReadGuard u(data->userId);
       winMain->wprintf("%C%ASending SMS to %s ...", m_cColorInfo->nColor,
           m_cColorInfo->nAttr, u->getCellularNumber().c_str());
-        winMain->event = gLicqDaemon->icqSendSms(u->accountId().c_str(), u->ppid(),
+      winMain->event = gLicqDaemon->icqSendSms(data->userId,
           u->getCellularNumber().c_str(), data->szMsg);
       winMain->state = STATE_PENDING;
       break;

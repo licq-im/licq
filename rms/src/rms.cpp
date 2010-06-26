@@ -1232,7 +1232,8 @@ int CRMSClient::Process_SMS_message()
 {
   char id[16];
   snprintf(id, 16, "%lu", m_nUin);
-  unsigned long tag = gLicqDaemon->icqSendSms(id, LICQ_PPID, m_szLine, m_szText);
+  Licq::UserId userId(id, LICQ_PPID);
+  unsigned long tag = gLicqDaemon->icqSendSms(userId, m_szLine, m_szText);
 
   fprintf(fs, "%d [%lu] Sending SMS to %lu (%s).\n", CODE_COMMANDxSTART,
      tag, m_nUin, m_szLine);

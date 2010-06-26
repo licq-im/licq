@@ -990,7 +990,7 @@ void IcqProtocol::CancelEvent(Licq::Event* e)
   e->m_eResult = Licq::Event::ResultCancelled;
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
-    icqChatRequestCancel(e->userId().accountId().c_str(), e->m_nSequence);
+    icqChatRequestCancel(e->userId(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
     icqFileTransferCancel(e->userId(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)
@@ -1005,7 +1005,7 @@ void IcqProtocol::UpdateAllUsers()
 {
   Licq::UserListGuard userList;
   BOOST_FOREACH(Licq::User* u, **userList)
-    icqRequestMetaInfo(u->accountId().c_str());
+    icqRequestMetaInfo(u->id());
 }
 
 void IcqProtocol::updateAllUsersInGroup(int groupId)
@@ -1015,7 +1015,7 @@ void IcqProtocol::updateAllUsersInGroup(int groupId)
   {
     Licq::UserReadGuard pUser(user);
     if (pUser->isInGroup(groupId))
-      icqRequestMetaInfo(pUser->accountId().c_str());
+      icqRequestMetaInfo(pUser->id());
   }
 }
 
@@ -1325,7 +1325,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   if (szType)  free(szType);
 }
 
-bool IcqProtocol::WaitForReverseConnection(unsigned short id, const char* userId)
+bool IcqProtocol::waitForReverseConnection(unsigned short id, const Licq::UserId& userId)
 {
   bool bSuccess = false;
   pthread_mutex_lock(&mutex_reverseconnect);
@@ -1334,7 +1334,7 @@ bool IcqProtocol::WaitForReverseConnection(unsigned short id, const char* userId
   for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
     ++iter)
   {
-    if ((*iter)->nId == id && (*iter)->myIdString == userId)
+    if ((*iter)->nId == id && (*iter)->myIdString == userId.accountId())
       break;
   }
 
@@ -1360,7 +1360,7 @@ bool IcqProtocol::WaitForReverseConnection(unsigned short id, const char* userId
           L_WARNxSTR);
         goto done;
       }
-      if ((*iter)->nId == id && (*iter)->myIdString == userId)
+      if ((*iter)->nId == id && (*iter)->myIdString == userId.accountId())
       {
         if ((*iter)->bFinished)
         {
@@ -1378,7 +1378,7 @@ bool IcqProtocol::WaitForReverseConnection(unsigned short id, const char* userId
   for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
     ++iter)
   {
-    if ((*iter)->nId == id && (*iter)->myIdString == userId)
+    if ((*iter)->nId == id && (*iter)->myIdString == userId.accountId())
     {
       delete *iter;
       m_lReverseConnect.erase(iter);

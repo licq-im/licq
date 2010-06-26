@@ -332,10 +332,11 @@ void CFileTransferManager::sendFiles(const list<string>& pathNames, unsigned sho
 //-----CFileTransferManager::ConnectToFileServer-----------------------------
 bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 {
+  Licq::UserId myUserId(myId, LICQ_PPID);
   bool bTryDirect;
   bool bSendIntIp;
   {
-    Licq::UserReadGuard u(Licq::UserId(myId, LICQ_PPID));
+    Licq::UserReadGuard u(myUserId);
     if (!u.isLocked())
       return false;
 
@@ -347,7 +348,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   if (bTryDirect)
   {
     gLog.Info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
-    bSuccess = gIcqProtocol.OpenConnectionToUser(myId, &ftSock, nPort);
+    bSuccess = gIcqProtocol.openConnectionToUser(myUserId, &ftSock, nPort);
    }
 
   bool bResult = false;
@@ -360,8 +361,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
     }
 
     // try reverse connect
-    int nId = gIcqProtocol.RequestReverseConnection(myId, 0, nIp, LocalPort(),
-                                                                        nPort);
+    int nId = gIcqProtocol.requestReverseConnection(myUserId, 0, nIp, LocalPort(), nPort);
 
     if (nId != -1)
     {
@@ -384,15 +384,16 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 
 bool CFileTransferManager::SendFileHandshake()
 {
+  Licq::UserId myUserId(myId, LICQ_PPID);
   gLog.Info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
 
   // Send handshake packet:
   unsigned short nVersion;
   {
-    Licq::UserReadGuard u(Licq::UserId(myId, LICQ_PPID));
+    Licq::UserReadGuard u(myUserId);
     nVersion = u->ConnectionVersion();
   }
-  if (!IcqProtocol::Handshake_Send(&ftSock, myId, LocalPort(), nVersion, false))
+  if (!IcqProtocol::handshake_Send(&ftSock, myUserId, LocalPort(), nVersion, false))
     return false;
 
   // Send init packet:
@@ -1263,12 +1264,13 @@ void *FileWaitForSignal_tep(void *arg)
     pthread_testcancel();
   pthread_cleanup_pop(0);
   string id = rc->m->Id();
+  Licq::UserId userId(id, LICQ_PPID);
   nPort = rc->m->m_nPort;
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   gLog.Info("%sFile Transfer: Waiting for reverse connection.\n", L_TCPxSTR);
-  bool bConnected = gIcqProtocol.WaitForReverseConnection(rc->nId, id.c_str());
+  bool bConnected = gIcqProtocol.waitForReverseConnection(rc->nId, userId);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);
@@ -1294,7 +1296,7 @@ void *FileWaitForSignal_tep(void *arg)
   gLog.Info("%sFile Transfer: Reverse connection failed, trying direct.\n",
                                                                     L_TCPxSTR);
   Licq::TCPSocket s;
-  bConnected = gIcqProtocol.OpenConnectionToUser(id.c_str(), &s, nPort);
+  bConnected = gIcqProtocol.openConnectionToUser(userId, &s, nPort);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);

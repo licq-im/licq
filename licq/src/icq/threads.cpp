@@ -424,10 +424,10 @@ void *ProcessRunningEvent_Client_tep(void *p)
     int socket = -1;
     if (!bSendIntIp && nVersion > 6 && nMode != MODE_DIRECT)
     {
-      int nId = gIcqProtocol.RequestReverseConnection(id.c_str(), nChannel, nIP, nLocalPort, nRemotePort);
+      int nId = gIcqProtocol.requestReverseConnection(userId, nChannel, nIP, nLocalPort, nRemotePort);
       if (nId != -1)
       {
-        gIcqProtocol.WaitForReverseConnection(nId, id.c_str());
+        gIcqProtocol.waitForReverseConnection(nId, userId);
         Licq::UserReadGuard u(userId);
         if (!u.isLocked())
         {
@@ -451,12 +451,12 @@ void *ProcessRunningEvent_Client_tep(void *p)
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-        socket = gIcqProtocol.ConnectToUser(id.c_str(), nChannel);
+        socket = gIcqProtocol.connectToUser(userId, nChannel);
       }
     }
     else
     {
-      socket = gIcqProtocol.ConnectToUser(id.c_str(), nChannel);
+      socket = gIcqProtocol.connectToUser(userId, nChannel);
 
       // if we failed, try through server
       if (socket == -1)
@@ -465,11 +465,11 @@ void *ProcessRunningEvent_Client_tep(void *p)
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-        int nId = gIcqProtocol.RequestReverseConnection(id.c_str(), nChannel, nIP,
+        int nId = gIcqProtocol.requestReverseConnection(userId, nChannel, nIP,
                                               nLocalPort, nRemotePort);
         if (nId != -1)
         {
-          gIcqProtocol.WaitForReverseConnection(nId, id.c_str());
+          gIcqProtocol.waitForReverseConnection(nId, userId);
           Licq::UserReadGuard u(userId);
           if (!u.isLocked())
           {
@@ -609,7 +609,8 @@ void *ReverseConnectToUser_tep(void *v)
 
   CReverseConnectToUserData *p = (CReverseConnectToUserData *)v;
 
-  gIcqProtocol.ReverseConnectToUser(p->myIdString.c_str(), p->nIp, p->nPort,
+  Licq::UserId userId(p->myIdString, LICQ_PPID);
+  gIcqProtocol.reverseConnectToUser(userId, p->nIp, p->nPort,
       p->nVersion, p->nFailedPort, p->nId, p->nMsgID1, p->nMsgID2);
 
   delete p;
@@ -1011,7 +1012,7 @@ void *UpdateUsers_tep(void *p)
             pUser->ClientTimestamp() != pUser->OurClientTimestamp()
             && pUser->ClientTimestamp() != 0)
         {
-          gIcqProtocol.icqRequestMetaInfo(pUser->IdString());
+          gIcqProtocol.icqRequestMetaInfo(pUser->id());
           bSent = true;
         }
 

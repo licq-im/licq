@@ -107,8 +107,6 @@ void UserSendSmsEvent::resetSettings()
 
 void UserSendSmsEvent::send()
 {
-  QString accountId = myUsers.front().accountId().c_str();
-
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
@@ -131,7 +129,7 @@ void UserSendSmsEvent::send()
     return;
 
   //TODO in daemon
-  icqEventTag = gLicqDaemon->icqSendSms(accountId.toLatin1(), LICQ_PPID,
+  icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
       myNumberField->text().toLatin1(),
       myMessageEdit->toPlainText().toUtf8().data());
   myEventTag.push_back(icqEventTag);

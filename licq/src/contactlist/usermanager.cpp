@@ -1063,8 +1063,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
     if (userId.protocolId() == LICQ_PPID)
     {
       if (inGroup) // Server group can only be changed, not removed
-        gIcqProtocol.icqChangeGroup(userId.accountId().c_str(), userId.protocolId(), groupId, gsid,
-            ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
+        gIcqProtocol.icqChangeGroup(userId, groupId, gsid, ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
     else
       gDaemon.PushProtoSignal(new Licq::ProtoChangeUserGroupsSignal(userId), userId.protocolId());
