@@ -13,12 +13,12 @@
 #include <locale.h>
 #include <unistd.h>
 
-#include <licq_plugin.h>
 #include <licq_log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
+#include <licq/pluginbase.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/userevents.h>

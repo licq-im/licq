@@ -16,8 +16,8 @@
 
 // written by Jon Keating <jon@licq.org>
 
-#include "licq_protoplugin.h"
 #include "licq/pluginmanager.h"
+#include <licq/protocolbase.h>
 
 #include "pluginversion.h"
 #include "msn.h"

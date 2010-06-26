@@ -23,7 +23,7 @@
 // able to have both in the same binary.
 extern unsigned short LP_Id;
 #define LP_Id LP_DummyId
-#include "licq_protoplugin.h"
+#include <licq/protocolbase.h>
 #undef LP_Id
 
 #include <gtest/gtest.h>

@@ -2,7 +2,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <unistd.h>
-#include "licq_plugin.h"
+
+#include <licq/pluginbase.h>
 
 #include "autoreply.h"
 #include "pluginversion.h"

@@ -18,7 +18,7 @@
  */
 
 #include "../generalplugin.h"
-#include "licq_plugin.h"
+#include <licq/pluginbase.h>
 
 #include <gtest/gtest.h>
 #include <list>

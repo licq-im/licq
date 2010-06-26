@@ -2,10 +2,10 @@
 #include <locale.h>
 #include <unistd.h>
 
+#include <licq/pluginbase.h>
+
 #include "console.h"
 #include "pluginversion.h"
-
-#include <licq_plugin.h>
 
 CLicqConsole *licqConsole;
 

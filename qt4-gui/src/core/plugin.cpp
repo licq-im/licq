@@ -32,8 +32,8 @@
 #endif
 
 #include <licq/daemon.h>
+#include <licq/pluginbase.h>
 #include <licq_log.h>
-#include <licq_plugin.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"

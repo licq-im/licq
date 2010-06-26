@@ -23,9 +23,11 @@ set(licq_HEADERS
   packet.h
   pipe.h
   plugin.h
+  pluginbase.h
   pluginlogsink.h
   pluginmanager.h
   pluginsignal.h
+  protocolbase.h
   protocolmanager.h
   protocolsignal.h
   proxy.h

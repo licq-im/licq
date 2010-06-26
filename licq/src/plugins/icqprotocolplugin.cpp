@@ -33,7 +33,7 @@
 #define LPproto_Exit LProto_icq_Exit
 #define LProto_Main_tep LProto_icq_Main_tep
 
-#include "licq_protoplugin.h"
+#include <licq/protocolbase.h>
 
 using Licq::gPluginManager;
 using Licq::ProtocolPlugin;
