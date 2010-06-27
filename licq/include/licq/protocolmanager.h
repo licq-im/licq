@@ -81,7 +81,7 @@ public:
    */
   virtual unsigned long sendMessage(const UserId& userId, const std::string& message,
       bool viaServer, unsigned short flags, bool multipleRecipients = false,
-      const Licq::Color* color = NULL, unsigned long convoId = 0) = 0;
+      const Color* color = NULL, unsigned long convoId = 0) = 0;
 
   /**
    * Send URL message to a user
@@ -97,7 +97,7 @@ public:
    */
   virtual unsigned long sendUrl(const UserId& userId, const std::string& url,
       const std::string& message, bool viaServer, unsigned short flags,
-      bool multipleRecipients = false, const Licq::Color* color = NULL) = 0;
+      bool multipleRecipients = false, const Color* color = NULL) = 0;
 
   /**
    * Request user auto response from server
@@ -225,7 +225,7 @@ public:
    * @param userId User to change visible status for
    * @param visible True to add user to visible list or false to remove
    */
-  virtual void visibleListSet(const Licq::UserId& userId, bool visible) = 0;
+  virtual void visibleListSet(const UserId& userId, bool visible) = 0;
 
   /**
    * Add/remove a user to/from invisible list
@@ -233,7 +233,7 @@ public:
    * @param userId User to change invisible status for
    * @param invisible True to add user to invisible list or false to remove
    */
-  virtual void invisibleListSet(const Licq::UserId& userId, bool invisible) = 0;
+  virtual void invisibleListSet(const UserId& userId, bool invisible) = 0;
 
   /**
    * Add/remove a user to/from ignore list
@@ -241,7 +241,7 @@ public:
    * @param userId User to set ignore status for
    * @param ignore True to add user to ignore list or false to remove
    */
-  virtual void ignoreListSet(const Licq::UserId& userId, bool ignore) = 0;
+  virtual void ignoreListSet(const UserId& userId, bool ignore) = 0;
 
 protected:
   virtual ~ProtocolManager() { /* Empty */ }

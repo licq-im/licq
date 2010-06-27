@@ -20,10 +20,11 @@
 #ifndef LICQ_LOGSERVICE_H
 #define LICQ_LOGSERVICE_H
 
+#include <boost/noncopyable.hpp>
+#include <string>
+
 #include "log.h"
 #include "logsink.h"
-
-#include <boost/noncopyable.hpp>
 
 namespace Licq
 {

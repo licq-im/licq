@@ -85,7 +85,7 @@ protected:
  * @return @a os
  */
 std::ostream& packetToString(
-    std::ostream& os, const Licq::LogSink::Message& message);
+    std::ostream& os, const LogSink::Message& message);
 
 } // namespace Licq
 

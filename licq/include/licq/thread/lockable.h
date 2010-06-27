@@ -59,7 +59,7 @@ public:
   void unlockWrite() const { myLockType=LOCK_R; myMutex.unlockWrite(); }
 
 protected:
-  mutable Licq::ReadWriteMutex myMutex;
+  mutable ReadWriteMutex myMutex;
   mutable unsigned short myLockType;
 };
 

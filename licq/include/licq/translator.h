@@ -5,8 +5,8 @@
 // Modified by Andrew Frolov (dron@linuxer.net)
 // Further modified by Graham Roff
 
-#ifndef LICQ_TRANSLATE_H
-#define LICQ_TRANSLATE_H
+#ifndef LICQ_TRANSLATOR_H
+#define LICQ_TRANSLATOR_H
 
 #include <string>
 

@@ -75,7 +75,7 @@ public:
   void setTcpPorts(unsigned lowPort, unsigned highPort);
 
   // Proxy options
-  Licq::Proxy* createProxy();
+  Proxy* createProxy();
   bool proxyEnabled() const                     { return myProxyEnabled; }
   void setProxyEnabled(bool b)                  { myProxyEnabled = b; }
   unsigned proxyType() const                    { return myProxyType; }
@@ -124,9 +124,9 @@ public:
   void PushPluginEvent(Event*);
   void PushProtoSignal(ProtocolSignal* s, unsigned long ppid);
 
-  void pluginUIViewEvent(const Licq::UserId& userId);
+  void pluginUIViewEvent(const UserId& userId);
 
-  void pluginUIMessage(const Licq::UserId& userId);
+  void pluginUIMessage(const UserId& userId);
 
   /**
    * Get the next queued signal for a plugin

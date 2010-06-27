@@ -1,6 +1,7 @@
 #ifndef LICQ_CONTACTLIST_USERMANAGER_H
 #define LICQ_CONTACTLIST_USERMANAGER_H
 
+#include <boost/foreach.hpp>
 #include <boost/noncopyable.hpp>
 #include <list>
 #include <string>
@@ -166,7 +167,7 @@ public:
    * @param userId User that has changed
    * @param subSignal Sub signal for changes
    */
-  virtual void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal) = 0;
+  virtual void notifyUserUpdated(const UserId& userId, unsigned long subSignal) = 0;
 
   /**
    * Add a user to the contact list

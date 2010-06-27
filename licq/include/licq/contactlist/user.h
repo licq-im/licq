@@ -3,6 +3,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <cstring> // strdup
+#include <ctime>
 #include <list>
 #include <map>
 #include <set>
@@ -145,8 +146,8 @@ public:
   bool Get(unsigned long nEntry, const struct PhoneBookEntry** entry) const;
 
 private:
-  bool SaveToDisk(Licq::IniFile& conf);
-  bool LoadFromDisk(Licq::IniFile& conf);
+  bool SaveToDisk(IniFile& conf);
+  bool LoadFromDisk(IniFile& conf);
 
   std::vector<struct PhoneBookEntry> PhoneBookVector;
 
@@ -731,7 +732,7 @@ public:
   // Don't call these:
   int SocketDesc(unsigned char channel) const;
   void ClearSocketDesc(unsigned char nChannel = 0x00);
-  void SetSocketDesc(Licq::TCPSocket*);
+  void SetSocketDesc(TCPSocket*);
 
   // Convenience functions so plugins don't need to know ICQ_CHNx constants
   int normalSocketDesc() const                  { return m_nNormalSocketDesc; }
@@ -765,7 +766,7 @@ protected:
    * @param file User file, must already be open
    * @param key Base name of key in file for entries
    */
-  void saveCategory(const UserCategoryMap& category, Licq::IniFile& file,
+  void saveCategory(const UserCategoryMap& category, IniFile& file,
       const std::string& key);
 
   /**
@@ -775,7 +776,7 @@ protected:
    * @param file User file, must already be open
    * @param key Base name of key in file for entries
    */
-  void loadCategory(UserCategoryMap& category, Licq::IniFile& file,
+  void loadCategory(UserCategoryMap& category, IniFile& file,
       const std::string& key);
 
   virtual void SetDefaults() = 0;

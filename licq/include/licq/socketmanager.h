@@ -23,8 +23,9 @@
 #include <vector>
 #include <list>
 #include <sys/select.h> // fd_set
-#include <licq/thread/mutex.h>
-#include <licq/thread/readwritemutex.h>
+
+#include "thread/mutex.h"
+#include "thread/readwritemutex.h"
 
 namespace Licq
 {

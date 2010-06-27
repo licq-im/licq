@@ -127,7 +127,7 @@ public:
    * @param event Type of event
    * @param user User associated with event
    */
-  virtual void performOnEvent(OnEventType event, const Licq::User* user) = 0;
+  virtual void performOnEvent(OnEventType event, const User* user) = 0;
 
 protected:
   virtual ~OnEventManager() { /* Empty */ }

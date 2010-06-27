@@ -29,7 +29,7 @@ class GpgHelper : private boost::noncopyable
 public:
   static const char pgpSig[];
   virtual char* Decrypt(const char* cipher) = 0;
-  virtual char* Encrypt(const char* plain, const Licq::UserId& userId) = 0;
+  virtual char* Encrypt(const char* plain, const UserId& userId) = 0;
 
   /**
    * Get a list of keys
