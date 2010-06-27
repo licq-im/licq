@@ -1015,7 +1015,7 @@ bool UserSendCommon::checkSecure()
       send_ok = false;
     else
     {
-      Licq::UserWriteGuard u(myUsers.front(), LOCK_W);
+      Licq::UserWriteGuard u(myUsers.front());
       if (u.isLocked())
         u->SetAutoSecure(false);
     }
@@ -1029,7 +1029,7 @@ void UserSendCommon::send()
   {
     bool newUser = false;
     {
-      Licq::UserWriteGuard u(myUsers.front(), LOCK_W);
+      Licq::UserWriteGuard u(myUsers.front());
       if (u.isLocked() && u->NewUser())
       {
         u->SetNewUser(false);
