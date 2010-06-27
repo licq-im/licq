@@ -239,11 +239,11 @@ void UserManager::saveUserList() const
   int count = 0;
   for (UserMap::const_iterator i = myUsers.begin(); i != myUsers.end(); ++i)
   {
-    i->second->Lock(LOCK_R);
+    i->second->lockRead();
     bool temporary = i->second->NotInList();
     string accountId = i->second->accountId();
     unsigned long ppid = i->second->ppid();
-    i->second->Unlock();
+    i->second->unlockRead();
 
     // Only save users that's been permanently added
     if (temporary)
@@ -281,7 +281,7 @@ bool UserManager::addUser(const UserId& uid,
   }
 
   User* pUser = new User(uid, !permanent);
-  pUser->Lock(LOCK_W);
+  pUser->lockWrite();
 
   if (permanent)
   {
@@ -294,7 +294,7 @@ bool UserManager::addUser(const UserId& uid,
   // Store the user in the lookup map
   myUsers[uid] = pUser;
 
-  pUser->Unlock();
+  pUser->unlockWrite();
 
   if (permanent)
     saveUserList();
@@ -366,7 +366,7 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
   }
 
   User* u = iter->second;
-  u->Lock(LOCK_W);
+  u->lockWrite();
   myUsers.erase(iter);
   if (!u->NotInList())
   {
@@ -374,7 +374,7 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
     saveUserList();
   }
   myUserListMutex.unlockWrite();
-  u->Unlock();
+  u->unlockWrite();
   delete u;
 
   // Notify plugins about the removed user
@@ -396,12 +396,12 @@ void UserManager::RemoveOwner(unsigned long ppid)
   }
 
   Owner* o = iter->second;
-  o->Lock(LOCK_W);
+  o->lockWrite();
   myOwners.erase(iter);
   o->RemoveFiles();
   UserId id = o->id();
   myOwnerListMutex.unlockWrite();
-  o->Unlock();
+  o->unlockWrite();
   delete o;
 
   gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
@@ -631,11 +631,11 @@ void UserManager::RemoveGroup(int groupId)
   GroupMap::const_iterator iter;
   for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
-    iter->second->Lock(LOCK_W);
+    iter->second->lockWrite();
     int si = iter->second->sortIndex();
     if (si > sortIndex)
       iter->second->setSortIndex(si - 1);
-    iter->second->Unlock();
+    iter->second->unlockWrite();
   }
 
   // Remove group from users
@@ -754,9 +754,9 @@ void UserManager::SaveGroups()
   int i = 1;
   for (GroupMap::iterator group = myGroups.begin(); group != myGroups.end(); ++group)
   {
-    group->second->Lock(LOCK_R);
+    group->second->lockRead();
     group->second->save(licqConf, i);
-    group->second->Unlock();
+    group->second->unlockRead();
     ++i;
   }
 
@@ -791,10 +791,10 @@ int UserManager::GetGroupFromID(unsigned short icqGroupId)
   int groupId = 0;
   for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
-    iter->second->Lock(LOCK_R);
+    iter->second->lockRead();
     if (iter->second->serverId(LICQ_PPID) == icqGroupId)
       groupId = iter->first;
-    iter->second->Unlock();
+    iter->second->unlockRead();
   }
   myGroupListMutex.unlockRead();
 
@@ -808,10 +808,10 @@ int UserManager::GetGroupFromName(const string& name)
   int id = 0;
   for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
-    iter->second->Lock(LOCK_R);
+    iter->second->lockRead();
     if (iter->second->name() == name)
       id = iter->first;
-    iter->second->Unlock();
+    iter->second->unlockRead();
   }
   myGroupListMutex.unlockRead();
 
@@ -825,10 +825,10 @@ std::string UserManager::GetGroupNameFromGroup(int groupId)
   std::string name;
   for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
-    iter->second->Lock(LOCK_R);
+    iter->second->lockRead();
     if (iter->second->id() == groupId)
       name = iter->second->name();
-    iter->second->Unlock();
+    iter->second->unlockRead();
   }
   myGroupListMutex.unlockRead();
 
