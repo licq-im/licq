@@ -25,15 +25,34 @@ public:
   const std::string& getMapName() const { return myMapName; }
   const std::string& getMapFileName() const { return myMapFileName; }
 
+  std::string serverToClient(const std::string& s);
+  char serverToClient(char c);
+  std::string clientToServer(const std::string& s);
+  char clientToServer(char c);
+
+  bool isAscii(const std::string& s);
+
+  std::string fromUnicode(const std::string& s, const std::string& toEncoding = "");
+  std::string toUnicode(const std::string& s, const std::string& fromEncoding = "");
+  std::string fromUtf16(const std::string& s, const std::string& toEncoding);
+  std::string toUtf16(const std::string& s, const std::string& fromEncoding);
+
+  /**
+   * Converts a unix style string (LF) to dos style (LFCR)
+   */
+  std::string returnToDos(const std::string& s);
+
+  /**
+   * Converts a dos (CRLF) or mac style (CR) style string to unix style (LF)
+   */
+  std::string returnToUnix(const std::string& s);
+
   void ServerToClient(char* array);
   void ServerToClient(char& value);
   void ClientToServer(char* array);
   void ClientToServer(char& value);
 
-  bool isAscii(const char* array, int length = -1);
-
   // Must use delete[] on the returned value if it is not NULL
-  char* nameForIconv(const char* licqName);
 
   char* ToUnicode(const char* array, const char* fromEncoding = "");
   char* FromUnicode(const char* array, const char* toEncoding = "");
@@ -47,14 +66,16 @@ public:
   bool utf16to8(unsigned long c, std::string &s);
 
 protected:
+  std::string nameForIconv(const std::string& licqName);
+
+  std::string iconvConvert(const std::string& s, const std::string& to, const std::string& from,
+      bool& ok, int length = -1, size_t* outDone = NULL);
+
   bool myMapDefault;
   std::string myMapName;
   std::string myMapFileName;
   unsigned char serverToClientTab[256];
   unsigned char clientToServerTab[256];
-
-  char* iconvConvert(const char* array, const char* to, const char* from,
-      bool& ok, int length = -1, size_t* outDone = NULL);
 };
 
 extern Translator gTranslator;

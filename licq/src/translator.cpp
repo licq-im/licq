@@ -137,6 +137,38 @@ bool Translator::setTranslationMap(const string& mapFileName)
   return true;
 }
 
+string Translator::serverToClient(const string& s)
+{
+  if (myMapDefault)
+    return s;
+
+  string ret;
+  for (size_t i = 0; i < s.size(); ++i)
+    ret += serverToClientTab[(unsigned)s[i]];
+  return ret;
+}
+
+char Translator::serverToClient(char c)
+{
+  return myMapDefault ? c : serverToClientTab[(unsigned)c];
+}
+
+string Translator::clientToServer(const string& s)
+{
+  if (myMapDefault)
+    return s;
+
+  string ret;
+  for (size_t i = 0; i < s.size(); ++i)
+    ret += clientToServerTab[(unsigned)s[i]];
+  return ret;
+}
+
+char Translator::clientToServer(char c)
+{
+  return myMapDefault ? c : clientToServerTab[(unsigned)c];
+}
+
 void Translator::ServerToClient(char* array)
 {
   if (array == NULL || myMapDefault)
@@ -175,38 +207,75 @@ void Translator::ClientToServer(char& value)
     value = clientToServerTab[(unsigned char)(value)];
 }
 
-bool Translator::isAscii(const char* array, int length)
+bool Translator::isAscii(const string& s)
 {
-  bool ascii = true;
+  for (size_t i = 0; i < s.size(); ++i)
+    if ((unsigned char)s[i] >= 0x80)
+      return false;
 
-  if (length == -1)
-    length = strlen(array);
-
-  for (int i = 0; i < length; i++)
-  {
-    if ((unsigned char)array[i] >= 0x80)
-    {
-      ascii = false;
-      break;
-    }
-  }
-  
-  return ascii;
+  return true;
 }
 
-char* Translator::nameForIconv(const char* licqName)
+string Translator::nameForIconv(const string& licqName)
 {
-  size_t i = 0, j = 0;
-  size_t len = (licqName == NULL ? 0 : strlen(licqName));
-  char* iconvName = new char[len + 1];
+  string ret = licqName;
 
-  for (; i < len; i++)
-    if (licqName[i] != ' ')
-      iconvName[j++] = licqName[i];
+  size_t i;
+  while ((i = ret.find(' ')) != string::npos)
+    ret.erase(i, 1);
 
-  iconvName[j] = '\0';
+  return ret;
+}
 
-  return iconvName;
+string Translator::fromUnicode(const string& s, const string& toEncoding)
+{
+  bool ok = true;
+  string to = nameForIconv(toEncoding);
+
+  string result = iconvConvert(s, to, "UTF-8", ok);
+  if (ok)
+    return result;
+
+  result = iconvConvert(s, to, "UCS-2BE", ok);
+  return result;
+}
+
+string Translator::toUnicode(const string& s, const string& fromEncoding)
+{
+  bool ok = true;
+  string from = nameForIconv(fromEncoding);
+
+  string result = iconvConvert(s, "UTF-8", from, ok);
+  if (ok)
+    return result;
+
+  result = iconvConvert(s, "UCS-2BE", from, ok);
+  if (ok)
+    return result;
+
+  result = iconvConvert(s, "UCS-2BE", "UTF-8", ok);
+  return result;
+}
+
+string Translator::fromUtf16(const string& s, const string& toEncoding)
+{
+  bool ok = true;
+  string to = nameForIconv(toEncoding);
+
+  string result = iconvConvert(s, to, "UCS-2BE", ok);
+  if (ok)
+    return result;
+
+  result = iconvConvert(s, "UTF-8", "UCS-2BE", ok);
+  return result;
+}
+
+string Translator::toUtf16(const string& s, const string& fromEncoding)
+{
+  bool ok = true;
+  string from = nameForIconv(fromEncoding);
+
+  return iconvConvert(s, "UCS-2BE", from, ok);
 }
 
 char* Translator::ToUnicode(const char* array, const char* fromEncoding)
@@ -214,24 +283,7 @@ char* Translator::ToUnicode(const char* array, const char* fromEncoding)
   if (array == NULL)
     return NULL;
 
-  bool ok = true;
-  char* from = nameForIconv(fromEncoding);
-  char* result = iconvConvert(array, "UTF-8", from, ok);
-
-  if (!ok)
-  {
-    delete [] result;
-    result = iconvConvert(array, "UCS-2BE", from, ok);
-    if (!ok)
-    {
-      delete [] result;
-      result = iconvConvert(array, "UCS-2BE", "UTF-8", ok);
-    }
-  }
-
-  delete [] from;
-
-  return result;
+  return strdup(toUnicode(array, fromEncoding).c_str());
 }
 
 char* Translator::FromUnicode(const char* array, const char* toEncoding)
@@ -239,19 +291,7 @@ char* Translator::FromUnicode(const char* array, const char* toEncoding)
   if (array == NULL)
     return NULL;
 
-  bool ok = true;
-  char* to = nameForIconv(toEncoding);
-  char* result = iconvConvert(array, to, "UTF-8", ok);
-
-  if (!ok)
-  {
-    delete [] result;
-    result = iconvConvert(array, to, "UCS-2BE", ok);
-  }
-
-  delete [] to;
-
-  return result;
+  return strdup(fromUnicode(array, toEncoding).c_str());
 }
 
 char* Translator::FromUTF16(const char* array, const char* toEncoding, int length)
@@ -259,19 +299,7 @@ char* Translator::FromUTF16(const char* array, const char* toEncoding, int lengt
   if (array == NULL)
     return NULL;
 
-  bool ok = true;
-  char* to = nameForIconv(toEncoding);
-  char* result = iconvConvert(array, to, "UCS-2BE", ok, length);
-
-  if (!ok)
-  {
-    delete [] result;
-    result = iconvConvert(array, "UTF-8", "UCS-2BE", ok, length);
-  }
-
-  delete [] to;
-  
-  return result;
+  return strdup(fromUtf16(string(array, length), toEncoding).c_str());
 }
 
 char* Translator::ToUTF16(const char* array, const char* fromEncoding, size_t& outDone)
@@ -279,13 +307,9 @@ char* Translator::ToUTF16(const char* array, const char* fromEncoding, size_t& o
   if (array == NULL)
     return NULL;
 
-  bool ok = true;
-  char* from = nameForIconv(fromEncoding);
-  char* result = iconvConvert(array, "UCS-2BE", from, ok, -2, &outDone);
-
-  delete [] from;
-
-  return result;
+  string result = toUtf16(array, fromEncoding);
+  outDone = result.size();
+  return strdup(result.c_str());
 }
 
 bool Translator::utf16to8(unsigned long c, string& s)
@@ -340,6 +364,39 @@ bool Translator::utf16to8(unsigned long c, string& s)
     return false;
   }
   return true;
+}
+
+string Translator::returnToDos(const string& s)
+{
+  string ret = s;
+  size_t pos = 0;
+  while (1)
+  {
+    pos = ret.find('\n', pos);
+    if (pos == string::npos)
+      break;
+
+    if (pos+1 == ret.size() || ret[pos+1] != '\r')
+      ret.insert(pos+1, "\r");
+    ++pos;
+  }
+  return ret;
+}
+
+string Translator::returnToUnix(const string& s)
+{
+  string ret = s;
+
+  // Replace all \n\r with \n, and make sure \n\r\r becomes \n\r, not just \n
+  size_t pos = 0;
+  while ((pos = ret.find("\n\r", pos)) != string::npos)
+    ret.replace(pos++, 2, "\n");
+
+  // Replace all remaining \r with \n
+  while ((pos = ret.find('\r')) != string::npos)
+    ret.replace(pos, 1, "\n");
+
+  return ret;
 }
 
 char* Translator::NToRN(const char* array)
@@ -416,18 +473,12 @@ char* Translator::RNToN(const char* array)
   return result;
 }
 
-char* Translator::iconvConvert(const char* array, const char* to, const char* from,
+string Translator::iconvConvert(const string& s, const string& to, const string& from,
     bool& ok, int length, size_t* outDone)
 {
   ok = true;
 
-  if (array == NULL)
-  {
-    ok = false;
-    return NULL;
-  }
-
-  size_t inLen = (length > -1 ? length : strlen(array));
+  size_t inLen = (length > -1 ? length : s.size());
   size_t outLen = inLen * (length == -2 ? 3 : 2);
   size_t outSize = outLen;
 
@@ -436,17 +487,18 @@ char* Translator::iconvConvert(const char* array, const char* to, const char* fr
   char* outPtr = result;
   iconv_t tr;
 
-  tr = iconv_open(to, from);
+  tr = iconv_open(to.c_str(), from.c_str());
   if (tr == (iconv_t)(-1))
   {
     ok = false;
     gLog.Warn("Unsupported encoding conversion from %s to %s.\n",
-        from[0] == '\0' ? "[LOCALE]" : from,
-        to[0] == '\0' ? "[LOCALE]" : to);
+        from.empty() ? "[LOCALE]" : from.c_str(),
+        to.empty() ? "[LOCALE]" : to.c_str());
   }
   else
   {
-    size_t ret = iconv(tr, (ICONV_CONST char**)&array, &inLen, &outPtr, &outLen);
+    const char* inPtr = s.c_str();
+    size_t ret = iconv(tr, (ICONV_CONST char**)&inPtr, &inLen, &outPtr, &outLen);
     iconv_close(tr);
 
     if (outDone != NULL)
@@ -456,12 +508,13 @@ char* Translator::iconvConvert(const char* array, const char* to, const char* fr
     {
       ok = false;
       gLog.Warn("Unable to encode from %s to %s.\n",
-          from[0] == '\0' ? "[LOCALE]" : from,
-          to[0] == '\0' ? "[LOCALE]" : to);
+          from.empty() ? "[LOCALE]" : from.c_str(),
+          to.empty() ? "[LOCALE]" : to.c_str());
     }
   }
 
   *outPtr = '\0';
-
-  return result;
+  string ret(result);
+  delete[] result;
+  return ret;
 }
