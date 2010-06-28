@@ -788,9 +788,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       }
       const Licq::EventMsg* ue = dynamic_cast<const Licq::EventMsg*>(e->userEvent());
       // create initial strings (implicit copying, no allocation impact :)
-      char* tmp = Licq::gTranslator.NToRN(ue->message().c_str());
-      QByteArray wholeMessageRaw(tmp);
-      delete [] tmp;
+      QByteArray wholeMessageRaw(Licq::gTranslator.returnToDos(ue->message()).c_str());
       int wholeMessagePos = 0;
 
       bool needsSplitting = false;
@@ -811,10 +809,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
           // really know how spaces are represented in its encoding), so
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
-          messageRaw = wholeMessageRaw.mid(wholeMessagePos, maxSize);
-          tmp = Licq::gTranslator.RNToN(messageRaw);
-          messageRaw = tmp;
-          delete [] tmp;
+          messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos, maxSize).data()).c_str();
           message = myCodec->toUnicode(messageRaw);
 
           if ((wholeMessageRaw.length() - wholeMessagePos) > maxSize)
@@ -844,9 +839,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
 
         myEventTag.push_back(icqEventTag);
 
-        tmp = Licq::gTranslator.NToRN(messageRaw);
-        wholeMessagePos += strlen(tmp);
-        delete [] tmp;
+        wholeMessagePos += Licq::gTranslator.returnToDos(messageRaw.data()).size();
       }
 
       icqEventTag = 0;

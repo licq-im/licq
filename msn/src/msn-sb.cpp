@@ -595,14 +595,12 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
       nSocket = convo->socketId();
   }
 
-  char* szRNMsg = Licq::gTranslator.NToRN(message.c_str());
-  CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
-  Licq::EventMsg* m = new Licq::EventMsg(szRNMsg, 0, Licq::UserEvent::TimeNow, 0);
+  string msgDos = Licq::gTranslator.returnToDos(message);
+  CMSNPacket* pSend = new CPS_MSNMessage(msgDos.c_str());
+  Licq::EventMsg* m = new Licq::EventMsg(msgDos, 0, Licq::UserEvent::TimeNow, 0);
   m->setIsReceiver(false);
   Licq::Event* e = new Licq::Event(eventId, 0, pSend, Licq::Event::ConnectServer, userId, m);
   e->thread_plugin = _tPlugin;  
-
-  delete [] szRNMsg;
 
   if (nSocket > 0)
   {

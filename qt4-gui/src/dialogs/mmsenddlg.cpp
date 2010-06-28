@@ -184,9 +184,7 @@ void MMSendDlg::SendNext()
       }
 
       // create initial strings (implicit copying, no allocation impact :)
-      char* tmp = Licq::gTranslator.NToRN(codec->fromUnicode(s1));
-      QByteArray wholeMessageRaw(tmp);
-      delete [] tmp;
+      QByteArray wholeMessageRaw(Licq::gTranslator.returnToDos(codec->fromUnicode(s1).data()).c_str());
       int wholeMessagePos = 0;
 
       bool needsSplitting = false;
@@ -208,10 +206,7 @@ void MMSendDlg::SendNext()
           // really know how spaces are represented in its encoding), so
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
-          messageRaw = wholeMessageRaw.mid(wholeMessagePos, CICQDaemon::MaxMessageSize);
-          tmp = Licq::gTranslator.RNToN(messageRaw);
-          messageRaw = tmp;
-          delete [] tmp;
+          messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos, CICQDaemon::MaxMessageSize).data()).c_str();
           message = codec->toUnicode(messageRaw);
 
           if ((wholeMessageRaw.length() - wholeMessagePos) > CICQDaemon::MaxMessageSize)
@@ -239,9 +234,7 @@ void MMSendDlg::SendNext()
         icqEventTag = gProtocolManager.sendMessage(userId, messageRaw.data(),
             true, ICQ_TCPxMSG_NORMAL, true);
 
-        tmp = Licq::gTranslator.NToRN(messageRaw);
-        wholeMessagePos += strlen(tmp);
-        delete [] tmp;
+        wholeMessagePos += Licq::gTranslator.returnToDos(messageRaw.data()).size();
       }
 
       break;

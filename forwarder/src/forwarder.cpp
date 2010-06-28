@@ -471,7 +471,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
     return false;
   }
 
-  char *szTextRN = Licq::gTranslator.NToRN(e->text().c_str());
+  string textDos = Licq::gTranslator.returnToDos(e->text());
   fprintf(fs, "%s"
               "%s\r\n"
               "%s\r\n"
@@ -479,8 +479,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
               "%s\r\n"
               "\r\n"
               "%s\r\n.\r\n",
-              szDate, szFrom, szTo, szReplyTo, szSubject, szTextRN);
-  delete [] szTextRN;
+      szDate, szFrom, szTo, szReplyTo, szSubject, textDos.c_str());
 
   fgets(fin, 256, fs);
   code = atoi(fin);
