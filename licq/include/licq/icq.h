@@ -159,7 +159,7 @@ public:
   // Misc functions
   bool ReconnectAfterUinClash() const           { return m_bReconnectAfterUinClash; }
   void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
-  char *parseRTF(const char *);
+  std::string parseRtf(const std::string& rtf);
 
 protected:
   virtual ~CICQDaemon() { /* Empty */ }

@@ -1544,7 +1544,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   while ((pos = messageTmp.find(0x0D)) != string::npos)
     messageTmp.erase(pos, 1);
 
-  message = parseRTF(messageTmp.c_str());
+  message = strdup(parseRtf(messageTmp).c_str());
 
   if (nInVersion <= 4)
   {

@@ -2926,11 +2926,10 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
       message[j] = '\0'; // ensure null terminated
 
-      char *szTmpMsg = gTranslator.RNToN(message);
+          string szTmpMsg = gTranslator.returnToUnix(message);
       delete [] message;
 
-      char *szMsg = parseRTF(szTmpMsg);
-      delete [] szTmpMsg;
+          char* szMsg = strdup(parseRtf(szTmpMsg).c_str());
 
       // Seems to be misplaced, don't do it here
       //gTranslator.ServerToClient(szMsg);
