@@ -384,13 +384,13 @@ void Buffer::Reset()
 }
 
 //-----Empty--------------------------------------------------------------------
-bool Buffer::Empty()
+bool Buffer::Empty() const
 {
   return (m_pDataStart == NULL);
 }
 
 //-----Full---------------------------------------------------------------------
-bool Buffer::Full()
+bool Buffer::Full() const
 {
   return (!Empty() && getDataPosWrite() >= (getDataStart() + getDataMaxSize()));
 }

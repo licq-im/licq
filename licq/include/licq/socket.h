@@ -48,31 +48,20 @@ class Proxy;
  */
 char *ip_ntoa(unsigned long in, char *buf);
 
-typedef enum SocketError_et_
-{
-  SOCK_ERROR_none,
-  SOCK_ERROR_errno,
-  SOCK_ERROR_h_errno,
-  SOCK_ERROR_desx,
-  SOCK_ERROR_internal,
-  SOCK_ERROR_proxy
-} SocketError_et;
-
-
 //=====INetSocket==================================================================================
 class INetSocket
 {
 public:
-  INetSocket(const UserId& userId);
+  INetSocket(int sockType, const std::string& logId, const UserId& userId);
   virtual ~INetSocket();
 
-  bool Connected()          { return(m_nDescriptor > 0);  }
-  int Descriptor()          { return(m_nDescriptor);      }
+  bool Connected() const { return (myDescriptor > 0);  }
+  int Descriptor() const { return myDescriptor; }
   bool DestinationSet()     { return myRemoteAddr.sa_family != AF_UNSPEC; }
   const UserId& userId() const { return myUserId; }
   void setUserId(const UserId& userId) { myUserId = userId; }
-  unsigned long Version()     { return (m_nVersion); }
-  void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
+  unsigned long Version() const { return (myVersion); }
+  void SetVersion(unsigned long version) { myVersion = version; }
 
   int Error();
   std::string errorStr() const;
@@ -122,9 +111,9 @@ public:
   uint16_t getRemotePort() const        { return getAddrPort(&myRemoteAddr); };
 
   void ResetSocket();
-  void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
-  bool RecvBufferFull()   { return m_xRecvBuffer.Full(); };
-  Buffer& RecvBuffer()   { return m_xRecvBuffer; };
+  void ClearRecvBuffer()  { myRecvBuffer.Clear(); };
+  bool RecvBufferFull() const { return myRecvBuffer.Full(); };
+  Buffer& RecvBuffer()   { return myRecvBuffer; };
 
   /**
    * Connect to a remote host
@@ -196,11 +185,18 @@ public:
    */
   static int connectDirect(const std::string& remoteName, uint16_t remotePort, uint16_t sockType, struct sockaddr* remoteAddr);
 
-  void SetChannel(unsigned char nChannel) { m_nChannel = nChannel; }
-  unsigned char Channel()                 { return m_nChannel; }
+  void SetChannel(unsigned char channel) { myChannel = channel; }
+  unsigned char Channel() const { return myChannel; }
 
 protected:
-  const char *GetIDStr()  { return (m_szID); }
+  enum ErrorType
+  {
+    ErrorNone,
+    ErrorErrno,
+    ErrorInternal,
+    ErrorProxy,
+  };
+
   bool SetLocalAddress(bool bIp = true);
   void DumpPacket(Buffer* b, bool isReceiver);
 
@@ -216,16 +212,16 @@ protected:
     struct sockaddr_storage myRemoteAddrStorage;
   };
 
-  int m_nDescriptor;
+  int myDescriptor;
   std::string myRemoteName;
-  Buffer m_xRecvBuffer;
-  char m_szID[4];
-  int m_nSockType;
-  unsigned short m_nVersion;
-  SocketError_et m_nErrorType;
+  Buffer myRecvBuffer;
+  std::string myLogId;
+  int mySockType;
+  unsigned short myVersion;
+  ErrorType myErrorType;
   Proxy* myProxy;
   UserId myUserId;
-  unsigned char m_nChannel;
+  unsigned char myChannel;
   Mutex myMutex;
 };
 

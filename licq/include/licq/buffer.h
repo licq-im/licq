@@ -100,8 +100,8 @@ public:
 
    void Clear();
    void Reset();
-   bool Empty();
-   bool Full();
+   bool Empty() const;
+   bool Full() const;
    bool End()  { return ( getDataPosRead() >= (getDataStart() + getDataSize()) ); }
    void Create(unsigned long _nDataSize = 0);
 

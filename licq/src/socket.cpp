@@ -127,14 +127,15 @@ uint16_t INetSocket::getAddrPort(const struct sockaddr* addr)
 //-----INetSocket::Error------------------------------------------------------
 int INetSocket::Error()
 {
-  switch (m_nErrorType)
+  switch (myErrorType)
   {
-    case SOCK_ERROR_errno: return errno;
-    case SOCK_ERROR_h_errno: return h_errno;
-    case SOCK_ERROR_desx: return -1;
-    case SOCK_ERROR_none: return 0;
-    case SOCK_ERROR_internal: return -2;
-    case SOCK_ERROR_proxy:
+    case ErrorErrno:
+      return errno;
+    case ErrorNone:
+      return 0;
+    case ErrorInternal:
+      return -2;
+    case ErrorProxy:
       if (myProxy != NULL)
         return myProxy->error();
   }
@@ -143,41 +144,37 @@ int INetSocket::Error()
 
 string INetSocket::errorStr() const
 {
-  switch (m_nErrorType)
+  switch (myErrorType)
   {
-    case SOCK_ERROR_errno:
+    case ErrorErrno:
       return strerror(errno);
 
-    case SOCK_ERROR_h_errno:
-      return hstrerror(h_errno);
-
-    case SOCK_ERROR_desx:
-      return tr("DesX encryption/decryption failure");
-
-    case SOCK_ERROR_none:
+    case ErrorNone:
       return tr("No error detected");
 
-    case SOCK_ERROR_proxy:
+    case ErrorProxy:
       if (myProxy != NULL)
         return myProxy->errorStr();
 
-    case SOCK_ERROR_internal:
+    case ErrorInternal:
     default:
       return tr("Internal error");
   }
 }
 
 
-INetSocket::INetSocket(const UserId& userId)
+INetSocket::INetSocket(int sockType, const string& logId, const UserId& userId)
+  : myDescriptor(-1),
+    myLogId(logId),
+    mySockType(sockType),
+    myVersion(0),
+    myErrorType(ErrorNone),
+    myProxy(NULL),
+    myUserId(userId),
+    myChannel(ICQ_CHNxNONE)
 {
-  m_nDescriptor = -1;
-  myUserId = userId;
-  m_nVersion = 0;
-  m_nErrorType = SOCK_ERROR_none;
   memset(&myRemoteAddr, 0, sizeof(myRemoteAddrStorage));
   memset(&myLocalAddr, 0, sizeof(myLocalAddrStorage));
-  myProxy = NULL;
-  m_nChannel = ICQ_CHNxNONE;
 }
 
 INetSocket::~INetSocket()
@@ -191,14 +188,14 @@ void INetSocket::DumpPacket(Buffer *b, bool isReceiver)
   if (!isReceiver)
   {
     b->log("Packet (%sv%lu, %lu bytes) sent:\n(%s:%d -> %s:%d)",
-           m_szID, Version(), b->getDataSize(),
+        myLogId.c_str(), Version(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
   }
   else
   {
     b->log("Packet (%sv%lu, %lu bytes) received:\n(%s:%d <- %s:%d)",
-           m_szID, Version(), b->getDataSize(),
+        myLogId.c_str(), Version(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
   }
@@ -222,9 +219,9 @@ bool INetSocket::SetLocalAddress(bool /* bIp */)
   // Setup the local structure
   socklen_t sizeofSockaddr = sizeof(myLocalAddrStorage);
 
-  if (getsockname(m_nDescriptor, (struct sockaddr*)&myLocalAddr, &sizeofSockaddr) < 0)
+  if (getsockname(myDescriptor, (struct sockaddr*)&myLocalAddr, &sizeofSockaddr) < 0)
   {
-    m_nErrorType = SOCK_ERROR_errno;
+    myErrorType = ErrorNone;
     return (false);
   }
 
@@ -239,10 +236,10 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, Licq::
   // If we're using a proxy, let the proxy class handle this
   if (myProxy != NULL)
   {
-    m_nDescriptor = myProxy->openConnection(remoteName, remotePort);
-    if (m_nDescriptor == -1)
+    myDescriptor = myProxy->openConnection(remoteName, remotePort);
+    if (myDescriptor == -1)
     {
-      m_nErrorType = SOCK_ERROR_proxy;
+      myErrorType = ErrorProxy;
       return(false);
     }
 
@@ -253,20 +250,20 @@ bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, Licq::
   // No proxy, let's do this ourselves
 
   // If already connected, close the old connection first
-  if (m_nDescriptor != -1)
+  if (myDescriptor != -1)
     CloseConnection();
 
   // If anything happens here, the error will be in errno
-  m_nErrorType = SOCK_ERROR_errno;
+  myErrorType = ErrorErrno;
 
-  m_nDescriptor = connectDirect(remoteName, remotePort, m_nSockType, &myRemoteAddr);
+  myDescriptor = connectDirect(remoteName, remotePort, mySockType, &myRemoteAddr);
 
 #ifdef USE_SOCKS5
-    if (m_nSockType != SOCK_STREAM)
+    if (mySockType != SOCK_STREAM)
       return true;
 #endif
 
-  if (m_nDescriptor == -1)
+  if (myDescriptor == -1)
     return false;
 
   return SetLocalAddress();
@@ -364,28 +361,28 @@ bool INetSocket::StartServer(unsigned int _nPort)
 
 #ifndef LICQ_DISABLE_IPV6
   // Try to create an IPv6 socket
-  m_nDescriptor = socket(AF_INET6, m_nSockType, 0);
-  if (m_nDescriptor != -1)
+  myDescriptor = socket(AF_INET6, mySockType, 0);
+  if (myDescriptor != -1)
   {
     // IPv6 socket created
 
     // Make sure we can accept connections for IPv4 as well
     int i = 0;
-    if (setsockopt(m_nDescriptor, IPPROTO_IPV6, IPV6_V6ONLY, &i, sizeof(i)) < 0)
+    if (setsockopt(myDescriptor, IPPROTO_IPV6, IPV6_V6ONLY, &i, sizeof(i)) < 0)
     {
-      m_nErrorType = SOCK_ERROR_errno;
-      ::close(m_nDescriptor);
-      m_nDescriptor = -1;
+      myErrorType = ErrorErrno;
+      ::close(myDescriptor);
+      myDescriptor = -1;
       return false;
     }
 
 #ifdef IPV6_PORTRANGE
     i = IPV6_PORTRANGE_HIGH;
-    if (setsockopt(m_nDescriptor, IPPROTO_IPV6, IPV6_PORTRANGE, &i, sizeof(i)) < 0)
+    if (setsockopt(myDescriptor, IPPROTO_IPV6, IPV6_PORTRANGE, &i, sizeof(i)) < 0)
     {
-      m_nErrorType = SOCK_ERROR_errno;
-      ::close(m_nDescriptor);
-      m_nDescriptor = -1;
+      myErrorType = ErrorErrno;
+      ::close(myDescriptor);
+      myDescriptor = -1;
       return false;
     }
 #endif
@@ -402,20 +399,20 @@ bool INetSocket::StartServer(unsigned int _nPort)
         L_WARNxSTR, L_BLANKxSTR, strerror(errno));
 
 #endif
-    m_nDescriptor = socket(AF_INET, m_nSockType, 0);
-    if (m_nDescriptor == -1)
+    myDescriptor = socket(AF_INET, mySockType, 0);
+    if (myDescriptor == -1)
     {
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       return (false);
     }
 
 #ifdef IP_PORTRANGE
     int i = IP_PORTRANGE_HIGH;
-    if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i)) < 0)
+    if (setsockopt(myDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i)) < 0)
     {
-      m_nErrorType = SOCK_ERROR_errno;
-      ::close(m_nDescriptor);
-      m_nDescriptor = -1;
+      myErrorType = ErrorErrno;
+      ::close(myDescriptor);
+      myDescriptor = -1;
       return false;
     }
 #endif
@@ -428,24 +425,24 @@ bool INetSocket::StartServer(unsigned int _nPort)
   }
 #endif
 
-  if (bind(m_nDescriptor, (struct sockaddr*)&myLocalAddr, addrlen) == -1)
+  if (bind(myDescriptor, (struct sockaddr*)&myLocalAddr, addrlen) == -1)
   {
-    m_nErrorType = SOCK_ERROR_errno;
-    ::close(m_nDescriptor);
-    m_nDescriptor = -1;
+    myErrorType = ErrorErrno;
+    ::close(myDescriptor);
+    myDescriptor = -1;
     return (false);
   }
 
   if (!SetLocalAddress(false)) return (false);
 
-  if (m_nSockType == SOCK_STREAM)
+  if (mySockType == SOCK_STREAM)
   {
     // Allow 10 unprocessed connections
-    if (listen(m_nDescriptor, 10) != 0)
+    if (listen(myDescriptor, 10) != 0)
     {
-      m_nErrorType = SOCK_ERROR_errno;
-      ::close(m_nDescriptor);
-      m_nDescriptor = -1;
+      myErrorType = ErrorErrno;
+      ::close(myDescriptor);
+      myDescriptor = -1;
       return false;
     }
   }
@@ -457,12 +454,12 @@ bool INetSocket::StartServer(unsigned int _nPort)
 //-----INetSocket::CloseConnection-------------------------------------------
 void INetSocket::CloseConnection()
 {
-  m_xRecvBuffer.Clear();
-  if (m_nDescriptor != -1)
+  myRecvBuffer.Clear();
+  if (myDescriptor != -1)
   {
-    ::shutdown(m_nDescriptor, 2);
-    ::close (m_nDescriptor);
-    m_nDescriptor = -1;
+    ::shutdown(myDescriptor, 2);
+    ::close (myDescriptor);
+    myDescriptor = -1;
   }
 }
 
@@ -474,11 +471,11 @@ bool INetSocket::SendRaw(Buffer *b)
   unsigned long nTotalBytesSent = 0;
   while (nTotalBytesSent < b->getDataSize())
   {
-    nBytesSent = send(m_nDescriptor, b->getDataStart() + nTotalBytesSent,
+    nBytesSent = send(myDescriptor, b->getDataStart() + nTotalBytesSent,
                       b->getDataSize() - nTotalBytesSent, 0);
     if (nBytesSent < 0)
     {
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       return(false);
     }
     nTotalBytesSent += nBytesSent;
@@ -497,19 +494,19 @@ bool INetSocket::RecvRaw()
 {
   char *buffer = new char[MAX_RECV_SIZE];
   errno = 0;
-  int nBytesReceived = recv(m_nDescriptor, buffer, MAX_RECV_SIZE, 0);
+  int nBytesReceived = recv(myDescriptor, buffer, MAX_RECV_SIZE, 0);
   if (nBytesReceived <= 0)
   {
     delete[] buffer;
-    m_nErrorType = SOCK_ERROR_errno;
+    myErrorType = ErrorErrno;
     return (false);
   }
-  m_xRecvBuffer.Create(nBytesReceived);
-  m_xRecvBuffer.Pack(buffer, nBytesReceived);
+  myRecvBuffer.Create(nBytesReceived);
+  myRecvBuffer.Pack(buffer, nBytesReceived);
   delete[] buffer;
 
   // Print the packet
-  DumpPacket(&m_xRecvBuffer, true);
+  DumpPacket(&myRecvBuffer, true);
 
   return (true);
 }
@@ -517,10 +514,9 @@ bool INetSocket::RecvRaw()
 //=====SrvSocket===============================================================
 
 SrvSocket::SrvSocket(const UserId& userId)
-  : INetSocket(userId)
+  : INetSocket(SOCK_STREAM, "SRV", userId)
 {
-  strcpy(m_szID, "SRV");
-  m_nSockType = SOCK_STREAM;
+  // Empty
 }
 
 SrvSocket::~SrvSocket()
@@ -548,12 +544,12 @@ bool SrvSocket::SendPacket(Buffer *b_in)
   errno = 0;
   while (nTotalBytesSent < b->getDataSize())
   {
-    nBytesSent = send(m_nDescriptor, b->getDataStart() + nTotalBytesSent,
+    nBytesSent = send(myDescriptor, b->getDataStart() + nTotalBytesSent,
                       b->getDataSize() - nTotalBytesSent, 0);
     if (nBytesSent <= 0)
     {
       if (nBytesSent < 0 && errno == EINTR) continue;
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       if (b != b_in) delete b;
       return(false);
     }
@@ -574,10 +570,10 @@ bool SrvSocket::SendPacket(Buffer *b_in)
  *---------------------------------------------------------------------------*/
 bool SrvSocket::RecvPacket()
 {
-  if (!m_xRecvBuffer.Empty())
+  if (!myRecvBuffer.Empty())
   {
     gLog.Error("%sInternal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
-              L_WARNxSTR, m_xRecvBuffer.getDataSize());
+        L_WARNxSTR, myRecvBuffer.getDataSize());
     return (true);
   }
 
@@ -589,13 +585,13 @@ bool SrvSocket::RecvPacket()
   int nSixBytes = 0;
   while (nSixBytes != 6)
   {
-    nBytesReceived = read(m_nDescriptor, buffer + nSixBytes, 6 - nSixBytes);
+    nBytesReceived = read(myDescriptor, buffer + nSixBytes, 6 - nSixBytes);
     if (nBytesReceived <= 0)
     {
       if (nBytesReceived == 0)
         gLog.Warn(tr("server socket was closed!!!\n"));
       else {
-        m_nErrorType = SOCK_ERROR_errno;
+        myErrorType = ErrorErrno;
         gLog.Warn(tr("%serror during receiving from server socket :-((\n%s%s\n"),
             L_WARNxSTR, L_BLANKxSTR, errorStr().c_str());
       }
@@ -610,7 +606,7 @@ bool SrvSocket::RecvPacket()
     gLog.Warn("%sServer send bad packet start code: %d.\n", L_WARNxSTR, buffer[0]);
     gLog.Warn("%sSixbyte: %02x %02x %02x %02x %02x %02x\n", L_WARNxSTR,
               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
-    m_nErrorType = SOCK_ERROR_errno;
+    myErrorType = ErrorErrno;
     delete[] buffer;
     return false;
   }
@@ -624,33 +620,33 @@ bool SrvSocket::RecvPacket()
   // buffer like RecvRaw
   if (nLen >= MAX_RECV_SIZE) {
     gLog.Warn("%sServer send bad packet with suspiciously large size: %d.\n", L_WARNxSTR, nLen);
-    m_nErrorType = SOCK_ERROR_errno;
+    myErrorType = ErrorErrno;
     delete[] buffer;
     return false;
   }
 #endif
   // push the 6 bytes at the beginning of the packet again..
-  m_xRecvBuffer.Create(nLen + 6);
-  m_xRecvBuffer.Pack(buffer, 6);
+  myRecvBuffer.Create(nLen + 6);
+  myRecvBuffer.Pack(buffer, 6);
   delete[] buffer;
 
-  while ( !m_xRecvBuffer.Full()) {
+  while (!myRecvBuffer.Full())
+  {
     // Determine the number of bytes left to be read into the buffer
-    unsigned long nBytesLeft = m_xRecvBuffer.getDataStart() +
-                               m_xRecvBuffer.getDataMaxSize() -
-                               m_xRecvBuffer.getDataPosWrite();
+    unsigned long nBytesLeft = myRecvBuffer.getDataStart() +
+        myRecvBuffer.getDataMaxSize() - myRecvBuffer.getDataPosWrite();
 
-    nBytesReceived = read(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft);
+    nBytesReceived = read(myDescriptor, myRecvBuffer.getDataPosWrite(), nBytesLeft);
     if (nBytesReceived == 0 ||
         (nBytesReceived < 0 && errno != EINTR) )
     {
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       return (false);
     }
-    m_xRecvBuffer.incDataPosWrite(nBytesReceived);
+    myRecvBuffer.incDataPosWrite(nBytesReceived);
   }
 
-  DumpPacket(&m_xRecvBuffer, true);
+  DumpPacket(&myRecvBuffer, true);
 
   return (true);
 }
@@ -658,18 +654,14 @@ bool SrvSocket::RecvPacket()
 
 //=====TCPSocket===============================================================
 TCPSocket::TCPSocket(const UserId& userId)
-  : INetSocket(userId)
+  : INetSocket(SOCK_STREAM, "TCP", userId)
 {
-  strcpy(m_szID, "TCP");
-  m_nSockType = SOCK_STREAM;
   m_p_SSL = NULL;
 }
 
 TCPSocket::TCPSocket()
-  : INetSocket(UserId())
+  : INetSocket(SOCK_STREAM, "TCP", UserId())
 {
-  strcpy(m_szID, "TCP");
-  m_nSockType = SOCK_STREAM;
   m_p_SSL = NULL;
 }
 
@@ -695,7 +687,7 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
   // for more details
   // This probably has no affect, since we are using multiple threads, but keep it here 
   // to be used as a sanity check.
-  int newDesc = accept(m_nDescriptor, (struct sockaddr*)&newSocket.myRemoteAddr, &sizeofSockaddr);
+  int newDesc = accept(myDescriptor, (struct sockaddr*)&newSocket.myRemoteAddr, &sizeofSockaddr);
   if (newDesc < 0)
   {
     // Something went wrong, probably indicates an error somewhere else
@@ -704,7 +696,7 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
   }
   if (newDesc < static_cast<int>(FD_SETSIZE))
   {
-    newSocket.m_nDescriptor = newDesc;
+    newSocket.myDescriptor = newDesc;
     newSocket.SetLocalAddress();
     success = true;
   }
@@ -725,12 +717,12 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
  *---------------------------------------------------------------------------*/
 void TCPSocket::TransferConnectionFrom(TCPSocket &from)
 {
-  m_nDescriptor = from.m_nDescriptor;
+  myDescriptor = from.myDescriptor;
   myLocalAddr = from.myLocalAddr;
   myRemoteAddr = from.myRemoteAddr;
   myUserId = from.myUserId;
 
-  m_nVersion = from.m_nVersion;
+  myVersion = from.myVersion;
   if (from.m_p_SSL)
   {
     pthread_mutex_lock(&from.mutex_ssl);
@@ -745,7 +737,7 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   else
     m_p_SSL = NULL;
   ClearRecvBuffer();
-  from.m_nDescriptor = -1;
+  from.myDescriptor = -1;
   from.CloseConnection();
 }
 
@@ -820,11 +812,11 @@ bool TCPSocket::SendPacket(Buffer *b_in)
 
   //  send the length of the packet, close the connection and return false if unable to send
   while (nTotalBytesSent < 2) {
-    nBytesSent = send(m_nDescriptor, pcSize + nTotalBytesSent, 2 - nTotalBytesSent, 0);
+    nBytesSent = send(myDescriptor, pcSize + nTotalBytesSent, 2 - nTotalBytesSent, 0);
     if (nBytesSent <= 0) {
       delete[] pcSize;
       if (b != b_in) delete b;
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       return (false);
     }
     nTotalBytesSent += nBytesSent;
@@ -835,11 +827,11 @@ bool TCPSocket::SendPacket(Buffer *b_in)
   nTotalBytesSent = 0;
   while (nTotalBytesSent < b->getDataSize())
   {
-    nBytesSent = send(m_nDescriptor, b->getDataStart() + nTotalBytesSent,
+    nBytesSent = send(myDescriptor, b->getDataStart() + nTotalBytesSent,
                       b->getDataSize() - nTotalBytesSent, 0);
     if (nBytesSent <= 0)
     {
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       if (b != b_in) delete b;
       return(false);
     }
@@ -871,10 +863,10 @@ bool TCPSocket::SendPacket(Buffer *b_in)
  *---------------------------------------------------------------------------*/
 bool TCPSocket::RecvPacket()
 {
-  if (m_xRecvBuffer.Full())
+  if (myRecvBuffer.Full())
   {
     gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
-              L_WARNxSTR, m_xRecvBuffer.getDataSize());
+        L_WARNxSTR, myRecvBuffer.getDataSize());
     return (true);
   }
 
@@ -882,7 +874,7 @@ bool TCPSocket::RecvPacket()
   errno = 0;
 
   // Check if the buffer is empty
-  if (m_xRecvBuffer.Empty())
+  if (myRecvBuffer.Empty())
   {
     char *buffer = new char[2];
     int nTwoBytes = 0;
@@ -904,16 +896,16 @@ bool TCPSocket::RecvPacket()
           case SSL_ERROR_WANT_X509_LOOKUP:
             break;
           case SSL_ERROR_ZERO_RETURN:
-            m_nErrorType = SOCK_ERROR_errno;
+            myErrorType = ErrorErrno;
             errno = 0;
             delete[] buffer;
             return (false);
           case SSL_ERROR_SYSCALL:
-            m_nErrorType = SOCK_ERROR_errno;
+            myErrorType = ErrorErrno;
             delete[] buffer;
             return (false);
           case SSL_ERROR_SSL:
-            m_nErrorType = SOCK_ERROR_internal;
+            myErrorType = ErrorInternal;
             delete[] buffer;
             return (false);
         }
@@ -921,10 +913,10 @@ bool TCPSocket::RecvPacket()
       else
       {
 #endif
-      nBytesReceived = recv(m_nDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
+      nBytesReceived = recv(myDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
       if (nBytesReceived <= 0)
       {
-        m_nErrorType = SOCK_ERROR_errno;
+        myErrorType = ErrorErrno;
         delete[] buffer;
         return (false);
       }
@@ -933,20 +925,19 @@ bool TCPSocket::RecvPacket()
 #endif
       nTwoBytes += nBytesReceived;
     }
-    m_xRecvBuffer.Create(((unsigned char)buffer[0]) +
+    myRecvBuffer.Create(((unsigned char)buffer[0]) +
                          (((unsigned char)buffer[1]) << 8 ));
     delete[] buffer;
   }
 
   // Determine the number of bytes left to be read into the buffer
-  unsigned long nBytesLeft = m_xRecvBuffer.getDataStart() +
-                             m_xRecvBuffer.getDataMaxSize() -
-                             m_xRecvBuffer.getDataPosWrite();
+  unsigned long nBytesLeft = myRecvBuffer.getDataStart() +
+      myRecvBuffer.getDataMaxSize() - myRecvBuffer.getDataPosWrite();
 #ifdef USE_OPENSSL
   if (m_pSSL != NULL)
   {
     pthread_mutex_lock(&mutex_ssl);
-    nBytesReceived = SSL_read(m_pSSL, m_xRecvBuffer.getDataPosWrite(), nBytesLeft);
+    nBytesReceived = SSL_read(m_pSSL, myRecvBuffer.getDataPosWrite(), nBytesLeft);
     int tmp = SSL_get_error(m_pSSL, nBytesReceived);
     pthread_mutex_unlock(&mutex_ssl);
     switch (tmp)
@@ -958,38 +949,38 @@ bool TCPSocket::RecvPacket()
       case SSL_ERROR_WANT_X509_LOOKUP:
         return (true);
       case SSL_ERROR_ZERO_RETURN:
-        m_nErrorType = SOCK_ERROR_errno;
+        myErrorType = ErrorErrno;
         errno = 0;
         return (false);
       case SSL_ERROR_SYSCALL:
-        m_nErrorType = SOCK_ERROR_errno;
+        myErrorType = ErrorErrno;
         return (false);
       case SSL_ERROR_SSL:
-        m_nErrorType = SOCK_ERROR_internal;
+        myErrorType = ErrorInternal;
         return (false);
     }
   }
   else
   {
 #endif
-  int f = fcntl(m_nDescriptor, F_GETFL);
-  fcntl(m_nDescriptor, F_SETFL, f | O_NONBLOCK);
-  nBytesReceived = recv(m_nDescriptor, m_xRecvBuffer.getDataPosWrite(), nBytesLeft, 0);
-  fcntl(m_nDescriptor, F_SETFL, f & ~O_NONBLOCK);
+  int f = fcntl(myDescriptor, F_GETFL);
+  fcntl(myDescriptor, F_SETFL, f | O_NONBLOCK);
+  nBytesReceived = recv(myDescriptor, myRecvBuffer.getDataPosWrite(), nBytesLeft, 0);
+  fcntl(myDescriptor, F_SETFL, f & ~O_NONBLOCK);
   if (nBytesReceived <= 0)
   {
-    m_nErrorType = SOCK_ERROR_errno;
+    myErrorType = ErrorErrno;
     if (errno == EAGAIN || errno == EWOULDBLOCK) return (true);
     return (false);
   }
 #ifdef USE_OPENSSL
   }
 #endif
-  m_xRecvBuffer.incDataPosWrite(nBytesReceived);
+  myRecvBuffer.incDataPosWrite(nBytesReceived);
 
   // Print the packet if it's full
-  if (m_xRecvBuffer.Full())
-    DumpPacket(&m_xRecvBuffer, true);
+  if (myRecvBuffer.Full())
+    DumpPacket(&myRecvBuffer, true);
 
   return (true);
 }
@@ -1052,28 +1043,28 @@ bool TCPSocket::SSLRecv()
     case SSL_ERROR_WANT_X509_LOOKUP:
       return (true);
     case SSL_ERROR_ZERO_RETURN:
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       errno = 0;
       return (false);
     case SSL_ERROR_SYSCALL:
-      m_nErrorType = SOCK_ERROR_errno;
+      myErrorType = ErrorErrno;
       return (false);
     case SSL_ERROR_SSL:
-      m_nErrorType = SOCK_ERROR_internal;
+      myErrorType = ErrorInternal;
       return (false);
   }
   if (nBytesReceived <= 0)
   {
     delete[] buffer;
-    m_nErrorType = SOCK_ERROR_errno;
+    myErrorType = ErrorErrno;
     return (false);
   }
-  m_xRecvBuffer.Create(nBytesReceived);
-  m_xRecvBuffer.Pack(buffer, nBytesReceived);
+  myRecvBuffer.Create(nBytesReceived);
+  myRecvBuffer.Pack(buffer, nBytesReceived);
   delete[] buffer;
 
   // Print the packet
-  DumpPacket(&m_xRecvBuffer, true);
+  DumpPacket(&myRecvBuffer, true);
 
   return (true);
 #else
@@ -1106,7 +1097,7 @@ bool TCPSocket::SecureConnect()
   m_pSSL->debug = 1;
 #endif
   SSL_set_session(m_pSSL, NULL);
-  SSL_set_fd(m_pSSL, m_nDescriptor);
+  SSL_set_fd(m_pSSL, myDescriptor);
   int i = SSL_connect(m_pSSL);
   int j = SSL_get_error(m_pSSL, i);
   if (j != SSL_ERROR_NONE)
@@ -1139,7 +1130,7 @@ bool TCPSocket::SecureListen()
   else
     m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
   SSL_set_session(m_pSSL, NULL);
-  SSL_set_fd(m_pSSL, m_nDescriptor);
+  SSL_set_fd(m_pSSL, myDescriptor);
   int i = SSL_accept(m_pSSL);
   int j = SSL_get_error(m_pSSL, i);
   if (j != SSL_ERROR_NONE)
@@ -1197,10 +1188,9 @@ void TCPSocket::SecureStop()
 #endif /*-----End of OpenSSL code------------------------------------------*/
 
 UDPSocket::UDPSocket(const UserId& userId)
-  : INetSocket(userId)
+  : INetSocket(SOCK_DGRAM, "UDP", userId)
 {
-  strcpy(m_szID, "UDP");
-  m_nSockType = SOCK_DGRAM;
+  // Empty
 }
 
 UDPSocket::~UDPSocket()
