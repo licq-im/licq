@@ -311,6 +311,18 @@ const QPixmap& IconManager::iconForStatus(unsigned status, const Licq::UserId& u
   if (myStatusIconMap.contains(QPair<ProtocolType, unsigned>(protocol, status)))
     return myStatusIconMap[QPair<ProtocolType, unsigned>(protocol, status)];
 
+  // Use Occupied icon if Do Not Disturb icon is missing
+  if (status & User::DoNotDisturbStatus && myStatusIconMap.contains(QPair<ProtocolType, unsigned>(protocol, User::OccupiedStatus)))
+    return myStatusIconMap[QPair<ProtocolType, unsigned>(protocol, User::OccupiedStatus)];
+
+  // Use Away icon if other away type icons are missing
+  if (status & User::AwayStatuses && myStatusIconMap.contains(QPair<ProtocolType, unsigned>(protocol, User::AwayStatus)))
+    return myStatusIconMap[QPair<ProtocolType, unsigned>(protocol, User::AwayStatus)];
+
+  // Use Online icon if nothing else exist
+  if (myStatusIconMap.contains(QPair<ProtocolType, unsigned>(protocol, User::OnlineStatus)))
+    return myStatusIconMap[QPair<ProtocolType, unsigned>(protocol, User::OnlineStatus)];
+
   // No protocol specific icon existed so use default (same as ICQ)
   if (myStatusIconMap.contains(QPair<ProtocolType, unsigned>(ProtocolIcq, status)))
     return myStatusIconMap[QPair<ProtocolType, unsigned>(ProtocolIcq, status)];
