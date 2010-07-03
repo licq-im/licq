@@ -421,7 +421,7 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
 
   // Check for an owner first
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter_o = myOwners.find(User::getUserProtocolId(userId));
+  OwnerMap::iterator iter_o = myOwners.find(userId.protocolId());
   if (iter_o != myOwners.end())
   {
     if (iter_o->second->id() == userId)
@@ -478,7 +478,7 @@ bool UserManager::userExists(const UserId& userId)
   bool exists = false;
 
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter_o = myOwners.find(User::getUserProtocolId(userId));
+  OwnerMap::iterator iter_o = myOwners.find(userId.protocolId());
   if (iter_o != myOwners.end())
   {
     if (iter_o->second->id() == userId)
@@ -510,7 +510,7 @@ bool UserManager::isOwner(const UserId& userId)
   bool exists = false;
 
   myOwnerListMutex.lockRead();
-  OwnerMap::iterator iter_o = myOwners.find(User::getUserProtocolId(userId));
+  OwnerMap::iterator iter_o = myOwners.find(userId.protocolId());
   if (iter_o != myOwners.end())
   {
     if (iter_o->second->id() == userId)

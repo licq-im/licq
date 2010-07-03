@@ -170,35 +170,6 @@ public:
   static const char TimezoneUnknown = (char)-100;
   static const unsigned short LicqVersionUnknown = 0;
 
-  /**
-   * Build user id from protocol id and account id
-   * The user id is unique for each user object.
-   *
-   * @param accountId User account id string, protocol specific format
-   * @param ppid Protocol id for user
-   * @return a unique user id for referring to the user
-   */
-  static UserId makeUserId(const std::string& accountId, unsigned long ppid)
-  { return UserId(accountId, ppid); }
-
-  /**
-   * Get account id from user a id
-   *
-   * @param userId User id
-   * @return account id for user
-   */
-  static std::string getUserAccountId(const UserId& userId)
-  { return userId.accountId(); }
-
-  /**
-   * Get protocol id from user a id
-   *
-   * @param userId User id
-   * @return protocol id for user
-   */
-  static unsigned long getUserProtocolId(const UserId& userId)
-  { return userId.protocolId(); }
-
 
   virtual void RemoveFiles() = 0;
 
