@@ -72,7 +72,7 @@ Owner::Owner(const UserId& id)
   setHistoryFile(gDaemon.baseDir() + HistoryDir + "owner." + myId.accountId() +
       "." + p + HistoryExt);
 
-  if (m_nTimezone != SystemTimezone() && m_nTimezone != Licq::TIMEZONE_UNKNOWN)
+  if (m_nTimezone != SystemTimezone() && m_nTimezone != TimezoneUnknown)
   {
     gLog.Warn(tr("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
               "%sUpdate general info on server to fix.\n"),

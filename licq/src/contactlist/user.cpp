@@ -314,7 +314,7 @@ void User::loadUserInfo()
   myConf.setSection("user");
   myConf.get("Alias", myAlias, tr("Unknown"));
   int timezone;
-  myConf.get("Timezone", timezone, Licq::TIMEZONE_UNKNOWN);
+  myConf.get("Timezone", timezone, TimezoneUnknown);
   m_nTimezone = timezone;
   myConf.get("Authorization", m_bAuthorization, false);
 
@@ -554,7 +554,7 @@ void User::Init()
   myUserInfo["Zipcode"] = string();
   myUserInfo["Country"] = (unsigned int)COUNTRY_UNSPECIFIED;
   myUserInfo["HideEmail"] = false;
-  m_nTimezone = Licq::TIMEZONE_UNKNOWN;
+  m_nTimezone = TimezoneUnknown;
   m_bAuthorization = false;
   myIsTyping = false;
   m_bNotInList = false;
@@ -1269,7 +1269,7 @@ unsigned short Licq::User::LicqVersion() const
        (m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
     return m_nClientTimestamp & 0x0000FFFF;
 
-  return LICQ_VERSION_UNKNOWN;
+  return LicqVersionUnknown;
 }
 
 unsigned Licq::User::singleStatus(unsigned status)
@@ -1572,7 +1572,7 @@ char* Licq::User::usprintf(const char* _szFormat, unsigned long nFlags) const
         case 'z':
         {
           char zone = GetTimezone();
-          if (zone == TIMEZONE_UNKNOWN)
+          if (zone == TimezoneUnknown)
             strcpy(szTemp, tr("Unknown"));
           else
             sprintf(szTemp, tr("GMT%c%i%c0"), (zone > 0 ? '-' : '+'), abs(zone / 2), (zone & 1 ? '3' : '0'));
@@ -1583,7 +1583,7 @@ char* Licq::User::usprintf(const char* _szFormat, unsigned long nFlags) const
         case 'L':
         {
           char zone = GetTimezone();
-          if (zone == TIMEZONE_UNKNOWN)
+          if (zone == TimezoneUnknown)
             strcpy(szTemp, tr("Unknown"));
           else
           {
@@ -1598,7 +1598,7 @@ char* Licq::User::usprintf(const char* _szFormat, unsigned long nFlags) const
         case 'F':
         {
           char zone = GetTimezone();
-          if (zone == TIMEZONE_UNKNOWN)
+          if (zone == TimezoneUnknown)
             strcpy(szTemp, tr("Unknown"));
           else
           {
