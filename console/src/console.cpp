@@ -800,7 +800,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
         {
           Licq::UserReadGuard u(e->userId());
           win->wprintf("%s refused %s.\n",
-                       u->GetAlias(), ue->Description());
+              u->getAlias().c_str(), ue->description().c_str());
         }
         else if(e->SubCommand() == ICQ_CMDxSUB_FILE)
         {
@@ -1606,7 +1606,7 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
     char *szTime = ctime(&t);
     szTime[16] = '\0';
     winMain->wprintf("%B%s from %b%s%B (%b%s%B) [%b%c%c%c%B]:\n%b%s\n",
-                     e->Description(),
+        e->description().c_str(),
                      u->isUser() ? u->GetAlias() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',

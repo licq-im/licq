@@ -934,7 +934,7 @@ void Licq::EventUnknownSysMsg::AddToHistory(User* /* u */, bool /* isReceiver */
 
 static const int MAX_EVENT = 26;
 
-static const char *szEventTypes[27] =
+static const char *const eventDescriptions[27] =
 { tr("Plugin Event"),
   tr("Message"),
   tr("Chat Request"),
@@ -942,7 +942,7 @@ static const char *szEventTypes[27] =
   tr("URL"),
   "",
   tr("Authorization Request"),
-  tr("AUthorization Refused"),
+  tr("Authorization Refused"),
   tr("Authorization Granted"),
   tr("Server Message"),
   "",
@@ -964,21 +964,14 @@ static const char *szEventTypes[27] =
   tr("SMS")
 };
 
-
-const char* UserEvent::Description() const
+string UserEvent::description() const
 {
-  // not thread-safe, but I'm lazy
-  static char desc[128];
+  if (SubCommand() > MAX_EVENT || eventDescriptions[SubCommand()][0] == '\0')
+    return tr("Unknown Event");
 
-  if (SubCommand() > MAX_EVENT ||
-      szEventTypes[SubCommand()][0] == '\0')
-    strcpy(desc, tr("Unknown Event"));
-  else
-  {
-    strcpy(desc, szEventTypes[SubCommand()]);
-    if (IsCancelled())
-      strcat(desc, tr(" (cancelled)"));
-  }
+  string desc = eventDescriptions[SubCommand()];
+  if (IsCancelled())
+    desc += tr(" (cancelled)");
   return desc;
 }
 

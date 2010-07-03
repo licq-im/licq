@@ -325,7 +325,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent
   char szTime[64];
   time_t t = e->Time();
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
-  sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
+  sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->description().c_str(),
       u->getAlias().c_str(), u->accountId().c_str(), szTime, e->text().c_str());
   unsigned long tag = gProtocolManager.sendMessage(myUserId, szText, true, ICQ_TCPxMSG_NORMAL);
   delete []szText;
@@ -344,10 +344,10 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
 {
   char szTo[256],
        szFrom[256],
-       szSubject[256],
        szDate[256],
        szReplyTo[256];
   time_t t = e->Time();
+  string subject;
 
   // Fill in the strings
   if (!u->isUser())
@@ -379,27 +379,25 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   {
   case ICQ_CMDxSUB_MSG:
   case ICQ_CMDxSUB_CHAT:
-  {
-    char *s = new char[SUBJ_CHARS + 1];
-    strncpy(s, e->text().c_str(), SUBJ_CHARS);
-    s[40] = '\0';
-    char *n = strchr(s, '\n');
-    if (n != NULL) *n = '\0';
-    sprintf (szSubject, "Subject: %s [%s%s]", e->Description(),
-        s, e->text().size() > SUBJ_CHARS ? "..." : "");
-    delete []s;
-    break;
-  }
+    {
+      string s = e->text().substr(0, SUBJ_CHARS);
+      size_t pos = s.find('\n');
+      if (pos != string::npos)
+        s.erase(pos);
+      subject = "Subject: " + e->description() + " [" + s +
+          (e->text().size() > SUBJ_CHARS ? "..." : "") + "]";
+      break;
+    }
   case ICQ_CMDxSUB_URL:
-    sprintf (szSubject, "Subject: %s [%s]", e->Description(),
-          dynamic_cast<const Licq::EventUrl*>(e)->url().c_str());
-    break;
+      subject = "Subject: " + e->description() + " [" +
+          dynamic_cast<const Licq::EventUrl*>(e)->url() + "]";
+      break;
   case ICQ_CMDxSUB_FILE:
-    sprintf (szSubject, "Subject: %s [%s]", e->Description(),
-          dynamic_cast<const Licq::EventFile*>(e)->filename().c_str());
-    break;
-  default:
-    sprintf (szSubject, "Subject: %s", e->Description());
+      subject = "Subject: " + e->description() + " [" +
+          dynamic_cast<const Licq::EventFile*>(e)->filename() + "]";
+      break;
+    default:
+      subject = "Subject: " + e->description();
   }
 
 
@@ -479,7 +477,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
               "%s\r\n"
               "\r\n"
               "%s\r\n.\r\n",
-      szDate, szFrom, szTo, szReplyTo, szSubject, textDos.c_str());
+      szDate, szFrom, szTo, szReplyTo, subject.c_str(), textDos.c_str());
 
   fgets(fin, 256, fs);
   code = atoi(fin);

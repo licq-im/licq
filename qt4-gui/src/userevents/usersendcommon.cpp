@@ -852,7 +852,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       const Licq::EventUrl* ue = dynamic_cast<const Licq::EventUrl*>(e->userEvent());
 
       icqEventTag = gProtocolManager.sendUrl(myUsers.front(), ue->url(),
-          ue->Description(), !online, level, false, &myIcqColor);
+          ue->description(), !online, level, false, &myIcqColor);
 
       break;
     }

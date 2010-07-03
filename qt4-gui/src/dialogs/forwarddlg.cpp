@@ -68,7 +68,7 @@ ForwardDlg::ForwardDlg(Licq::UserEvent* e, QWidget* p)
     case ICQ_CMDxSUB_URL:
       t = tr("URL");
       s1 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->url().c_str());
-      s2 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->Description());
+      s2 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->description().c_str());
       break;
     default:
       WarnUser(this, tr("Unable to forward this message type (%d).")

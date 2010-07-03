@@ -69,7 +69,7 @@ public:
 
   virtual UserEvent* Copy() const = 0;
   const std::string& text() const;
-  const char* Description() const;
+  std::string description() const;
   time_t Time() const { return m_tTime; }
   const std::string licqVersionStr() const
   { return licqVersionToString(LicqVersion()); }
