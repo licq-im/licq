@@ -160,6 +160,7 @@ public:
   bool ReconnectAfterUinClash() const           { return m_bReconnectAfterUinClash; }
   void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
   std::string parseRtf(const std::string& rtf);
+  static std::string getXmlTag(const std::string& xmlSource, const std::string& tagName);
 
 protected:
   virtual ~CICQDaemon() { /* Empty */ }

@@ -384,7 +384,7 @@ public:
   const std::string& message() const { return myMessage; }
   virtual void AddToHistory(User* u, bool isReceiver) const;
 
-  static EventSms *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
+  static EventSms* Parse(const std::string& s, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
   void CreateDescription() const;
   std::string myNumber;

@@ -34,7 +34,6 @@
 
 #include "contactlist/user.h"
 #include "gettext.h"
-#include "support.h"
 
 #ifdef USE_HEBREW
 extern "C" {
@@ -772,23 +771,16 @@ void Licq::EventSms::AddToHistory(User* u, bool isReceiver) const
   delete [] szOut;
 }
 
-Licq::EventSms* Licq::EventSms::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags)
+Licq::EventSms* Licq::EventSms::Parse(const std::string& s, unsigned short nCmd, time_t nTime, unsigned long nFlags)
 {
-  char *szXmlSms, *szNum, *szTxt;
+  string xmlSms = CICQDaemon::getXmlTag(s, "sms_message");
+  if (xmlSms.empty())
+    return NULL;
 
-  szXmlSms = GetXmlTag(sz, "sms_message");
-  if (szXmlSms == NULL) return NULL;
+  string number = CICQDaemon::getXmlTag(xmlSms, "sender");
+  string msg = CICQDaemon::getXmlTag(xmlSms, "text");
 
-  szNum = GetXmlTag(szXmlSms, "sender");
-  szTxt = GetXmlTag(szXmlSms, "text");
-
-  EventSms* e = new EventSms(szNum, szTxt, nCmd, nTime, nFlags);
-
-  free(szNum);
-  free(szTxt);
-  free(szXmlSms);
-
-  return e;
+  return new EventSms(number, msg, nCmd, nTime, nFlags);
 }
 
 

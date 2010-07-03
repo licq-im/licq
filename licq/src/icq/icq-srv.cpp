@@ -4899,78 +4899,61 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
         else if (pEvent != NULL &&
                 pEvent->m_pPacket->SubCommand() == ICQ_CMDxMETA_SENDxSMS)
-        {
-          char *szTag, *szXml, *szSmsResponse;
-  
+            {
+              char *szTag, *szXml;
+
           msg.UnpackUnsignedShortBE();
           msg.UnpackUnsignedShortBE();
           msg.UnpackUnsignedShortBE();
   
           szTag = msg.UnpackStringBE();
           szXml = msg.UnpackStringBE();
-          szSmsResponse = GetXmlTag(szXml, "sms_response");
-  
-          if (szSmsResponse != NULL)
-          {
-            char *szDeliverable;
-            szDeliverable = GetXmlTag(szSmsResponse, "deliverable");
-  
-            if (szDeliverable != NULL)
-            {
-              if (!strcmp(szDeliverable, "Yes"))
+              string smsResponse = getXmlTag(szXml, "sms_response");
+
+              if (!smsResponse.empty())
               {
+                string deliverable = getXmlTag(smsResponse, "deliverable");
+                if (!deliverable.empty())
+                {
+                  if (deliverable == "Yes")
+                  {
                 gLog.Info(tr("%sSMS delivered.\n"), L_SRVxSTR);
                 if (pEvent)
                     {
                       pEvent->m_eResult = Licq::Event::ResultSuccess;
                   ProcessDoneEvent(pEvent);
                 }
-              }
-              else if (!strcmp(szDeliverable, "No"))
-              {
-                char *szId, *szParam;
-  
-                szId = GetXmlTag(szSmsResponse, "id");
-                szParam = GetXmlTag(szSmsResponse, "param");
-                gLog.Warn(tr("%sSMS not delivered, error #%s, param: %s\n"),
-                  L_SRVxSTR, szId, szParam);
-  
-                if (szId != NULL) free(szId);
-                if (szParam != NULL) free(szParam);
+                  }
+                  else if (deliverable == "No")
+                  {
+                    string id = getXmlTag(smsResponse, "id");
+                    string param = getXmlTag(smsResponse, "param");
+                    gLog.Warn(tr("%sSMS not delivered, error #%s, param: %s\n"),
+                        L_SRVxSTR, id.c_str(), param.c_str());
+
                 if (pEvent)
                     {
                       pEvent->m_eResult = Licq::Event::ResultFailed;
                   ProcessDoneEvent(pEvent);
                 }
-              }
-              else if (!strcmp(szDeliverable, "SMTP"))
-              {
-                char *szFrom, *szTo, *szSubject;
-  
-                szFrom = GetXmlTag(szSmsResponse, "from");
-                szTo = GetXmlTag(szSmsResponse, "to");
-                szSubject = GetXmlTag(szSmsResponse, "subject");
+                  }
+                  else if (deliverable ==  "SMTP")
+                  {
+                    string from = getXmlTag(smsResponse, "from");
+                    string to = getXmlTag(smsResponse, "to");
+                    string subject = getXmlTag(smsResponse, "subject");
                 gLog.Info(tr("%sSending SMS via SMTP not supported yet.\n"),
                   L_SRVxSTR);
-  
-                if (szFrom != NULL)
-                {
-                  gLog.Info(tr("%sFrom: %s\n"), L_SRVxSTR, szFrom);
-                  free(szFrom);
-                }
-  
-                if (szTo != NULL)
-                {
-                  gLog.Info(tr("%sTo: %s\n"), L_SRVxSTR, szTo);
-                  free(szTo);
-                }
-  
-                if (szSubject != NULL)
-                {
-                  gLog.Info(tr("%sSubject: %s\n"), L_SRVxSTR, szSubject);
-                  free(szSubject);
-                }
-  
+
+                    if (!from.empty())
+                      gLog.Info(tr("%sFrom: %s\n"), L_SRVxSTR, from.c_str());
+
+                    if (!to.empty())
+                      gLog.Info(tr("%sTo: %s\n"), L_SRVxSTR, to.c_str());
+
+                    if (!subject.empty())
+                      gLog.Info(tr("%sSubject: %s\n"), L_SRVxSTR, subject.c_str());
+
                 if (pEvent)
                     {
                       pEvent->m_eResult = Licq::Event::ResultFailed;
@@ -4991,8 +4974,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                   ProcessDoneEvent(pEvent);
                 }
               }
-  
-              free(szDeliverable);
             }
             else
             {
@@ -5003,8 +4984,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 ProcessDoneEvent(pEvent);
               }
             }
-  
-            free(szSmsResponse);
           }
   
           delete [] szTag;

@@ -1405,6 +1405,18 @@ Licq::Event* IcqProtocol::SendExpectEvent_Client(const Licq::User* user, Licq::P
   return SendExpectEvent_Client(gDaemon.getNextEventId(), user, packet, ue);
 }
 
+string CICQDaemon::getXmlTag(const string& xmlSource, const string& tagName)
+{
+  size_t startPos = xmlSource.find("<" + tagName + ">");
+  size_t endPos = xmlSource.find("</" + tagName + ">");
+  if (startPos == string::npos || endPos == string::npos)
+    return "";
+  startPos += tagName.size() + 2;
+  if (startPos > endPos)
+    return "";
+  return xmlSource.substr(startPos, endPos - startPos);
+}
+
 
 CReverseConnectToUserData::CReverseConnectToUserData(const char* idString, unsigned long id,
       unsigned long data, unsigned long ip, unsigned short port,
