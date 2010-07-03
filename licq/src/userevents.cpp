@@ -24,7 +24,6 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
 #include <sstream>
 
 #include "licq/gpghelper.h"
@@ -338,20 +337,10 @@ Licq::EventChat::EventChat(const string& reason, const string& clients,
 
 void Licq::EventChat::CreateDescription() const
 {
-  char* text;
-  if (!myClients.empty())
-  {
-    text = new char [myReason.size() + 1];
-    strcpy(text, myReason.c_str());
-  }
+  if (myClients.empty())
+    myText = myReason;
   else
-  {
-    text = new char[myReason.size() + myClients.size() + 128];
-    sprintf(text, tr("%s\n--------------------\nMultiparty:\n%s"),
-        myReason.c_str(), myClients.c_str());
-  }
-  myText = text;
-  delete[] text;
+    myText = myReason + "\n--------------------\n" + tr("Multiparty:\n") + myClients;
 }
 
 Licq::EventChat* Licq::EventChat::Copy() const
