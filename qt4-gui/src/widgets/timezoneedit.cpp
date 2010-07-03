@@ -47,14 +47,14 @@ void TimeZoneEdit::setData(char data)
 {
   // The spinbox uses the lowest value to mark the undefined state but the constant is some other value so we need to change it
   // For all defined values, the sign is inverted
-  setValue(data == Licq::TIMEZONE_UNKNOWN ? undefinedValue : static_cast<int>(-data));
+  setValue(data == Licq::User::TimezoneUnknown ? undefinedValue : static_cast<int>(-data));
 }
 
 char TimeZoneEdit::data() const
 {
   int v = value();
   if (v == undefinedValue)
-    return Licq::TIMEZONE_UNKNOWN;
+    return Licq::User::TimezoneUnknown;
   return static_cast<char>(-v);
 }
 

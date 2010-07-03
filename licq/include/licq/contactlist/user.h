@@ -32,17 +32,6 @@ namespace Licq
 class IniFile;
 class TCPSocket;
 
-typedef enum EGender
-{
-  GENDER_UNSPECIFIED = 0,
-  GENDER_FEMALE = 1,
-  GENDER_MALE = 2
-} Gender;
-
-const unsigned short AGE_UNSPECIFIED = 0xFFFF;
-const char TIMEZONE_UNKNOWN = (char)-100;
-const unsigned short LICQ_VERSION_UNKNOWN = 0;
-
 typedef enum SecureChannelSupport_et_ {
   SECURE_CHANNEL_UNKNOWN = 0,
   SECURE_CHANNEL_NOTSUPPORTED = 1,
@@ -170,6 +159,17 @@ private:
 class User : public Lockable
 {
 public:
+  enum Gender
+  {
+    GenderUnspecified = 0,
+    GenderFemale = 1,
+    GenderMale = 2,
+  };
+
+  static const unsigned short AgeUnspecified = 0xFFFF;
+  static const char TimezoneUnknown = (char)-100;
+  static const unsigned short LicqVersionUnknown = 0;
+
   /**
    * Build user id from protocol id and account id
    * The user id is unique for each user object.

@@ -382,9 +382,9 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
   if (m_bOwner)
   {
     cmbGender = new QComboBox();
-    cmbGender->insertItem(Licq::GENDER_UNSPECIFIED, tr("Unspecified"));
-    cmbGender->insertItem(Licq::GENDER_FEMALE, tr("Female"));
-    cmbGender->insertItem(Licq::GENDER_MALE, tr("Male"));
+    cmbGender->insertItem(Licq::User::GenderUnspecified, tr("Unspecified"));
+    cmbGender->insertItem(Licq::User::GenderFemale, tr("Female"));
+    cmbGender->insertItem(Licq::User::GenderMale, tr("Male"));
     lay->addWidget(cmbGender, CR, 4);
   }
   else
@@ -493,9 +493,9 @@ void UserPages::Info::loadPageMore(const Licq::User* u)
   }
   else
   {
-    if (gender == Licq::GENDER_FEMALE)
+    if (gender == Licq::User::GenderFemale)
       nfoGender->setText(tr("Female"));
-    else if (gender == Licq::GENDER_MALE)
+    else if (gender == Licq::User::GenderMale)
       nfoGender->setText(tr("Male"));
     else
       nfoGender->setText(tr("Unspecified"));
@@ -503,7 +503,7 @@ void UserPages::Info::loadPageMore(const Licq::User* u)
 
   // Age
   unsigned int age = u->getUserInfoUint("Age");
-  if (age == Licq::AGE_UNSPECIFIED)
+  if (age == Licq::User::AgeUnspecified)
     nfoAge->setText(tr("Unspecified"));
   else
     nfoAge->setText(age);

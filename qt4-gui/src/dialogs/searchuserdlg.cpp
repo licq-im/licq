@@ -370,11 +370,11 @@ void SearchUserDlg::searchFound(const Licq::SearchData* s)
 
   text = (s->age() ? QString::number(s->age()) : tr("?")) + "/";
   switch (s->gender())
-        {
-          case Licq::GENDER_FEMALE:
+  {
+    case Licq::User::GenderFemale:
             text += tr("F");
             break;
-          case Licq::GENDER_MALE:
+    case Licq::User::GenderMale:
             text += tr("M");
             break;
           default:

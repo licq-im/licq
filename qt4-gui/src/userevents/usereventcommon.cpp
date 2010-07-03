@@ -293,7 +293,7 @@ void UserEventCommon::updateWidgetInfo(const Licq::User* u)
 {
   const QTextCodec* codec = UserCodec::codecForUser(u);
 
-  if (u->GetTimezone() == Licq::TIMEZONE_UNKNOWN)
+  if (u->GetTimezone() == Licq::User::TimezoneUnknown)
     myTimezone->setText(tr("Unknown"));
   else
   {

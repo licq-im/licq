@@ -660,12 +660,12 @@ void CLicqConsole::PrintInfo_More(const Licq::UserId& userId)
       A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   unsigned int age = u->getUserInfoUint("Age");
-  if (age == Licq::AGE_UNSPECIFIED)
+  if (age == Licq::User::AgeUnspecified)
     winMain->wprintf("%C%AAge: %ZUnspecified\n", COLOR_WHITE, A_BOLD, A_BOLD);
   else
     winMain->wprintf("%C%AAge: %Z%d\n", COLOR_WHITE, A_BOLD, A_BOLD, age);
   unsigned int gender = u->getUserInfoUint("Gender");
-  winMain->wprintf("%C%AGender: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, gender == Licq::GENDER_MALE ? "Male" : gender == Licq::GENDER_FEMALE ? "Female" : "Unspecified");
+  winMain->wprintf("%C%AGender: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, gender == Licq::User::GenderMale ? "Male" : gender == Licq::User::GenderFemale ? "Female" : "Unspecified");
   winMain->wprintf("%C%AHomepage: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("Homepage").c_str());
   winMain->wprintf("%C%ABirthday: %Z%d/%d/%d\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoUint("BirthDay"), u->getUserInfoUint("BirthMonth"), u->getUserInfoUint("BirthYear"));
   for (unsigned short i = 0; i < 3; i++)
