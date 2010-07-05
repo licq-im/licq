@@ -1615,7 +1615,7 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
 
   // Mark all users as offline, this also updates the last seen
   // online field
-  Licq::UserListGuard userList;
+  Licq::UserListGuard userList(LICQ_PPID);
   BOOST_FOREACH(Licq::User* user, **userList)
   {
     Licq::UserWriteGuard pUser(user);
