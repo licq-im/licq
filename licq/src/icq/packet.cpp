@@ -2899,7 +2899,11 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       if (_bTopLevel)
         nExportSize += 4 + (2 * gUserManager.NumGroups());
       else
-        gUserManager.ModifyGroupID(const_cast<char *>(_szName), m_nGSID);
+      {
+        int groupId = Licq::gUserManager.GetGroupFromName(_szName);
+        if (groupId != 0)
+          Licq::gUserManager.ModifyGroupID(groupId, m_nGSID);
+      }
       break;
     }
 

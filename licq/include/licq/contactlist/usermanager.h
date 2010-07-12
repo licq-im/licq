@@ -253,14 +253,6 @@ public:
   /**
    * Change ICQ server group id for a user group
    *
-   * @param name Name of group to change
-   * @param icqGroupId ICQ server group id to set
-   */
-  virtual void ModifyGroupID(const std::string& name, unsigned short icqGroupId) = 0;
-
-  /**
-   * Change ICQ server group id for a user group
-   *
    * @param groupId Id of group to change
    * @param icqGroupId ICQ server group id to set
    */

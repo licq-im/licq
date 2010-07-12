@@ -835,13 +835,6 @@ std::string UserManager::GetGroupNameFromGroup(int groupId)
   return name;
 }
 
-void UserManager::ModifyGroupID(const string& name, unsigned short icqGroupId)
-{
-  int id = GetGroupFromName(name);
-  if (id != 0)
-    ModifyGroupID(id, icqGroupId);
-}
-
 void UserManager::ModifyGroupID(int groupId, unsigned short icqGroupId)
 {
   Group* group = fetchGroup(groupId, true);

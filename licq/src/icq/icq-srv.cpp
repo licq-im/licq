@@ -3765,7 +3765,11 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               if (nGroup == 0)
               {
                 if (!Licq::gUserManager.AddGroup(szUnicodeName, nTag))
-                  Licq::gUserManager.ModifyGroupID(szUnicodeName, nTag);
+                {
+                  nGroup = Licq::gUserManager.GetGroupFromName(szUnicodeName);
+                  if (nGroup != 0)
+                    Licq::gUserManager.ModifyGroupID(nGroup, nTag);
+                }
               }
               else
               {
