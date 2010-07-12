@@ -377,16 +377,17 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
 }
 
 //-----icqRemoveGroup----------------------------------------------------------
-void IcqProtocol::icqRemoveGroup(const string& groupName)
+void IcqProtocol::icqRemoveGroup(int groupId)
 {
   if (!UseServerContactList()) return;
 
-  int groupId = Licq::gUserManager.GetGroupFromName(groupName);
-  unsigned short serverId = 0;
+  string groupName;
+  unsigned short serverId;
   {
     Licq::GroupReadGuard group(groupId);
     if (group.isLocked())
       return;
+    groupName = group->name();
     serverId = group->serverId(LICQ_PPID);
   }
 

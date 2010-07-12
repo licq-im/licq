@@ -606,29 +606,34 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
 
 void UserManager::RemoveGroup(int groupId)
 {
-  Group* group = fetchGroup(groupId);
-  if (group == NULL)
-    return;
+  // Must be called when there are no locks on group or group list
+  gIcqProtocol.icqRemoveGroup(groupId);
 
-  string name = group->name();
-  int sortIndex = group->sortIndex();
-  group->unlockRead();
+  // TODO: Notify other protocols as well
+  //       For signals, include id, name and serverId for protocol as signal
+  //       may be processed after group is gone.
 
-  // Must be called when there are no locks on GroupID and Group lists
-  gIcqProtocol.icqRemoveGroup(name);
-
-  // Lock it back up
+  // List should only be locked when not holding any group lock to avoid
+  // deadlock, so we cannot call fetchGroup here.
   myGroupListMutex.lockWrite();
+  GroupMap::iterator iter = myGroups.find(groupId);
+  if (iter == myGroups.end())
+  {
+    myGroupListMutex.unlockWrite();
+    return;
+  }
+  Group* group = iter->second;
+
   group->lockWrite();
+  int sortIndex = group->sortIndex();
 
   // Erase the group
-  myGroups.erase(groupId);
+  myGroups.erase(iter);
   group->unlockWrite();
   delete group;
 
 
   // Decrease sorting index for higher groups so we don't leave a gap
-  GroupMap::const_iterator iter;
   for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
     iter->second->lockWrite();
@@ -638,6 +643,9 @@ void UserManager::RemoveGroup(int groupId)
     iter->second->unlockWrite();
   }
 
+  SaveGroups();
+  myGroupListMutex.unlockWrite();
+
   // Remove group from users
   FOR_EACH_USER_START(LOCK_W)
   {
@@ -645,9 +653,6 @@ void UserManager::RemoveGroup(int groupId)
       notifyUserUpdated(pUser->id(), PluginSignal::UserGroups);
   }
   FOR_EACH_USER_END;
-
-  SaveGroups();
-  myGroupListMutex.unlockWrite();
 
   // Send signal to let plugins know of the removed group
   gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,

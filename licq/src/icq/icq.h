@@ -215,7 +215,7 @@ public:
   void icqAddUserServer(const Licq::UserId& userId, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddGroup(const std::string& groupName);
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
-  void icqRemoveGroup(const std::string& groupName);
+  void icqRemoveGroup(int groupId);
   void icqChangeGroup(const Licq::UserId& userId, unsigned short _nNewGroup, unsigned short _nOldGSID,
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const std::string& newName, unsigned short _nGSID);
