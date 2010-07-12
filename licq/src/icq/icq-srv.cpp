@@ -381,12 +381,21 @@ void IcqProtocol::icqRemoveGroup(const string& groupName)
 {
   if (!UseServerContactList()) return;
 
+  int groupId = Licq::gUserManager.GetGroupFromName(groupName);
+  unsigned short serverId = 0;
+  {
+    Licq::GroupReadGuard group(groupId);
+    if (group.isLocked())
+      return;
+    serverId = group->serverId(LICQ_PPID);
+  }
+
   CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
   CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(groupName.c_str(),
-      Licq::gUserManager.GetIDFromGroup(groupName), 0, ICQ_ROSTxGROUP);
+      serverId, 0, ICQ_ROSTxGROUP);
   gLog.Info(tr("%sRemoving group from server side list (%s)...\n"), L_SRVxSTR, groupName.c_str());
   addToModifyUsers(pRemove->SubSequence(), groupName);
   SendExpectEvent_Server(pRemove, NULL);

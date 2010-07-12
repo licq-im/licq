@@ -156,8 +156,6 @@ public:
   bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
   void ModifyGroupSorting(int groupId, int newIndex);
   void ModifyGroupID(int groupId, unsigned short icqGroupId);
-  unsigned short GetIDFromGroup(const std::string& name);
-  unsigned short GetIDFromGroup(int groupId);
   int GetGroupFromID(unsigned short icqGroupId);
   int GetGroupFromName(const std::string& name);
   std::string GetGroupNameFromGroup(int groupId);

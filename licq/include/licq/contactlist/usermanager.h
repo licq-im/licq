@@ -259,22 +259,6 @@ public:
   virtual void ModifyGroupID(int groupId, unsigned short icqGroupId) = 0;
 
   /**
-   * Get ICQ group id from group name
-   *
-   * @param name Group name
-   * @return Id for ICQ server group or 0 if not found
-   */
-  virtual unsigned short GetIDFromGroup(const std::string& name) = 0;
-
-  /**
-   * Get ICQ group id from group
-   *
-   * @param groupId Group
-   * @return Id for iCQ server group or 0 if groupId was invalid
-   */
-  virtual unsigned short GetIDFromGroup(int groupId) = 0;
-
-  /**
    * Get group id from ICQ server group id
    *
    * @param icqGroupId ICQ server group id

@@ -2666,7 +2666,8 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
 
       for (UserGroupList::const_iterator j = userGroups.begin(); j != userGroups.end(); ++j)
       {
-        m_nGSID = gUserManager.GetIDFromGroup(*j);
+        Licq::GroupReadGuard group(*j);
+        m_nGSID = group->serverId(LICQ_PPID);
         if (m_nGSID != 0)
           break;
       }
@@ -2813,54 +2814,43 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       u->SetAwaitingAuth(_bAuthReq);
 
       // Check for a group id
-      unsigned short i = 0;
-      while (m_nGSID == 0)
+
       {
-        switch (i)
+        // Passed in id
+        Licq::GroupReadGuard group(_nGroup);
+        m_nGSID = group->serverId(LICQ_PPID);
+      }
+      if (m_nGSID == 0)
+      {
+        // Preset id
+        m_nGSID = u->GetGSID();
+      }
+      if (m_nGSID == 0)
+      {
+        // Use the first group the user is in as the server stored group
+        const UserGroupList& userGroups = u->GetGroups();
+        for (UserGroupList::iterator iter = userGroups.begin(); iter != userGroups.end(); ++iter)
         {
-          case 0:
-            // Passed in id
-            m_nGSID = gUserManager.GetIDFromGroup(_nGroup);
-            break;
-
-          case 1:
-            // Preset id
-            m_nGSID = u->GetGSID();
-            break;
-
-          case 2:
-            // Use the first group the user is in as the server stored group
-            {
-              const UserGroupList& userGroups = u->GetGroups();
-              for (UserGroupList::iterator iter = userGroups.begin(); iter != userGroups.end(); ++iter)
-              {
-                m_nGSID = gUserManager.GetIDFromGroup(*iter);
-                if (m_nGSID != 0)
-                  break;
-              }
-            }
-            break;
-
-          case 3:
-            // Use the first group from the list
-            {
-              Licq::GroupListGuard groups;
-              if (groups->size() > 0)
-              {
-                Group* g = *groups->begin();
-                g->lockRead();
-                m_nGSID = g->serverId(LICQ_PPID);
-                g->unlockRead();
-              }
-            }
-            break;
-
-          default:
-            m_nGSID = 1;
+          Licq::GroupReadGuard group(*iter);
+          m_nGSID = group->serverId(LICQ_PPID);
+          if (m_nGSID != 0)
             break;
         }
-        i++;
       }
+      if (m_nGSID == 0)
+      {
+        // Use the first group from the list
+        Licq::GroupListGuard groups;
+        if (groups->size() > 0)
+        {
+          Group* g = *groups->begin();
+          g->lockRead();
+          m_nGSID = g->serverId(LICQ_PPID);
+          g->unlockRead();
+        }
+      }
+      if (m_nGSID == 0)
+        m_nGSID = 1;
 
       // Get all the TLV's attached to this user, otherwise the server will delete
       // all of the ones that we don't send

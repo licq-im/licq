@@ -763,27 +763,6 @@ void UserManager::SaveGroups()
   licqConf.writeFile();
 }
 
-unsigned short UserManager::GetIDFromGroup(const string& name)
-{
-  int groupId = GetGroupFromName(name);
-  if (groupId == 0)
-    return 0;
-
-  return GetIDFromGroup(groupId);
-}
-
-unsigned short UserManager::GetIDFromGroup(int groupId)
-{
-  Group* group = fetchGroup(groupId);
-  if (group == NULL)
-    return 0;
-
-  unsigned short icqGroupId = group->serverId(LICQ_PPID);
-  group->unlockRead();
-
-  return icqGroupId;
-}
-
 int UserManager::GetGroupFromID(unsigned short icqGroupId)
 {
   myGroupListMutex.lockRead();
