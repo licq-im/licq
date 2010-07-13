@@ -109,9 +109,6 @@ void Config::General::loadConfiguration(Licq::IniFile& iniFile)
   iniFile.get("TrayMsgOnlineNotify", myTrayMsgOnlineNotify, true);
 
   iniFile.setSection("startup");
-  iniFile.get("Logon", myAutoLogon, 0);
-  if (myAutoLogon > 16)
-    myAutoLogon = 0;
   iniFile.get("AutoAway", myAutoAwayTime, 5);
   iniFile.get("AutoNA", myAutoNaTime, 10);
   iniFile.get("AutoOffline", myAutoOfflineTime, 0);
@@ -177,7 +174,6 @@ void Config::General::saveConfiguration(Licq::IniFile& iniFile) const
   iniFile.set("TrayMsgOnlineNotify", myTrayMsgOnlineNotify);
 
   iniFile.setSection("startup");
-  iniFile.set("Logon", myAutoLogon);
   iniFile.set("AutoAway", myAutoAwayTime);
   iniFile.set("AutoNA", myAutoNaTime);
   iniFile.set("AutoOffline", myAutoOfflineTime);
@@ -491,14 +487,6 @@ void Config::General::setTrayMsgOnlineNotify(bool trayMsgOnlineNotify)
     return;
 
   myTrayMsgOnlineNotify = trayMsgOnlineNotify;
-}
-
-void Config::General::setAutoLogon(int autoLogon)
-{
-  if (autoLogon == myAutoLogon)
-    return;
-
-  myAutoLogon = autoLogon;
 }
 
 void Config::General::setAutoAwayTime(int autoAwayTime)

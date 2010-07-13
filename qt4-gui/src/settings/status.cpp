@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGridLayout>
@@ -32,8 +34,11 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-#include <licq/sarmanager.h>
+#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
+#include <licq/pluginmanager.h>
+#include <licq/sarmanager.h>
 
 #include "config/general.h"
 
@@ -67,22 +72,45 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
   myPageStatusLayout->setContentsMargins(0, 0, 0, 0);
 
   myAutoLogonBox = new QGroupBox(tr("Startup"));
-  myAutoLogonLayout = new QVBoxLayout(myAutoLogonBox);
+  myAutoLogonLayout = new QGridLayout(myAutoLogonBox);
 
-  myAutoLogonCombo = new QComboBox();
-  myAutoLogonCombo->addItem(User::statusToString(User::OfflineStatus).c_str());
-  myAutoLogonCombo->addItem(User::statusToString(User::OnlineStatus).c_str());
-  myAutoLogonCombo->addItem(User::statusToString(User::AwayStatus).c_str());
-  myAutoLogonCombo->addItem(User::statusToString(User::NotAvailableStatus).c_str());
-  myAutoLogonCombo->addItem(User::statusToString(User::OccupiedStatus).c_str());
-  myAutoLogonCombo->addItem(User::statusToString(User::DoNotDisturbStatus).c_str());
-  myAutoLogonCombo->addItem(User::statusToString(User::FreeForChatStatus).c_str());
-  myAutoLogonCombo->setToolTip(tr("Automatically log on when first starting up."));
-  myAutoLogonLayout->addWidget(myAutoLogonCombo);
+  {
+    Licq::OwnerListGuard ownerList;
+    int line = 0;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      unsigned long protocolId = owner->protocolId();
+      Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(protocolId);
+      if (protocol.get() == NULL)
+        continue;
 
-  myAutoLogonInvisibleCheck = new QCheckBox(tr("Invisible"));
-  myAutoLogonLayout->addWidget(myAutoLogonInvisibleCheck);
+      QLabel* autoLogonLabel = new QLabel(QString(protocol->getName()) + ": ");
+      myAutoLogonLayout->addWidget(autoLogonLabel, line, 0);
 
+#define ADD_STATUS(status, cond) \
+      if (cond) \
+        myAutoLogonCombo[protocolId]->addItem(User::statusToString(status).c_str(), status);
+
+      myAutoLogonCombo[protocolId] = new QComboBox();
+      ADD_STATUS(User::OfflineStatus, true);
+      ADD_STATUS(User::OnlineStatus, true);
+      ADD_STATUS(User::OnlineStatus | User::AwayStatus, true);
+      ADD_STATUS(User::OnlineStatus | User::NotAvailableStatus, protocolId != MSN_PPID);
+      ADD_STATUS(User::OnlineStatus | User::OccupiedStatus, protocolId != JABBER_PPID);
+      ADD_STATUS(User::OnlineStatus | User::DoNotDisturbStatus, protocolId != MSN_PPID);
+      ADD_STATUS(User::OnlineStatus | User::FreeForChatStatus, protocolId != MSN_PPID);
+#undef ADD_STATUS
+      myAutoLogonCombo[protocolId]->setToolTip(tr("Automatically log on when first starting up."));
+      myAutoLogonLayout->addWidget(myAutoLogonCombo[protocolId], line, 1);
+
+      myAutoLogonInvisibleCheck[protocolId] = new QCheckBox(tr("Invisible"));
+      if (protocolId == JABBER_PPID)
+        myAutoLogonInvisibleCheck[protocolId]->setEnabled(false);
+      myAutoLogonLayout->addWidget(myAutoLogonInvisibleCheck[protocolId], line, 2);
+
+      ++line;
+    }
+  }
 
   myAutoAwayBox = new QGroupBox(tr("Auto Change Status"));
   myAutoAwayLayout = new QGridLayout(myAutoAwayBox);
@@ -269,10 +297,23 @@ void Settings::Status::load()
   myAutoAwaySpin->setValue(generalConfig->autoAwayTime());
   myAutoNaSpin->setValue(generalConfig->autoNaTime());
   myAutoOfflineSpin->setValue(generalConfig->autoOfflineTime());
-  myAutoLogonCombo->setCurrentIndex(generalConfig->autoLogon() % 10);
-  myAutoLogonInvisibleCheck->setChecked(generalConfig->autoLogon() >= 10);
   myAutoAwayMessCombo->setCurrentIndex(generalConfig->autoAwayMess());
   myAutoNaMessCombo->setCurrentIndex(generalConfig->autoNaMess());
+
+  Licq::OwnerListGuard ownerList;
+  BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+  {
+    Licq::OwnerReadGuard o(owner);
+    unsigned long protocolId = o->protocolId();
+
+    // In case someone added an owner since we created the page
+    if (myAutoLogonCombo.find(protocolId) == myAutoLogonCombo.end())
+      continue;
+
+    int item = myAutoLogonCombo[protocolId]->findData(o->startupStatus() & ~User::InvisibleStatus);
+    myAutoLogonCombo[protocolId]->setCurrentIndex(item);
+    myAutoLogonInvisibleCheck[protocolId]->setChecked(o->startupStatus() & User::InvisibleStatus);
+  }
 }
 
 void Settings::Status::apply()
@@ -283,10 +324,32 @@ void Settings::Status::apply()
   generalConfig->setAutoAwayTime(myAutoAwaySpin->value());
   generalConfig->setAutoNaTime(myAutoNaSpin->value());
   generalConfig->setAutoOfflineTime(myAutoOfflineSpin->value());
-  generalConfig->setAutoLogon(myAutoLogonCombo->currentIndex() +
-      (myAutoLogonInvisibleCheck->isChecked() ? 10 : 0));
+
   generalConfig->setAutoAwayMess(myAutoAwayMessCombo->currentIndex());
   generalConfig->setAutoNaMess(myAutoNaMessCombo->currentIndex());
 
   generalConfig->blockUpdates(false);
+
+  Licq::OwnerListGuard ownerList;
+  BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+  {
+    Licq::OwnerWriteGuard o(owner);
+    unsigned long protocolId = o->protocolId();
+
+    // In case someone added an owner since we created the page
+    if (myAutoLogonCombo.find(protocolId) == myAutoLogonCombo.end())
+      continue;
+
+    int index = myAutoLogonCombo[protocolId]->currentIndex();
+    unsigned long status = myAutoLogonCombo[protocolId]->itemData(index).toUInt();
+    if (status != User::OfflineStatus && myAutoLogonInvisibleCheck[protocolId]->isChecked())
+      status |= User::InvisibleStatus;
+
+    // Don't trigger unnecessary updates
+    if (status == o->startupStatus())
+      continue;
+
+    o->setStartupStatus(status);
+    o->SaveLicqInfo();
+  }
 }

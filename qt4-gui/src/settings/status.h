@@ -22,6 +22,7 @@
 
 #include <config.h>
 
+#include <map>
 #include <QObject>
 
 class QCheckBox;
@@ -80,10 +81,10 @@ private:
   QVBoxLayout* myPageStatusLayout;
   QGroupBox* myAutoLogonBox;
   QGroupBox* myAutoAwayBox;
-  QVBoxLayout* myAutoLogonLayout;
+  QGridLayout* myAutoLogonLayout;
   QGridLayout* myAutoAwayLayout;
-  QComboBox* myAutoLogonCombo;
-  QCheckBox* myAutoLogonInvisibleCheck;
+  std::map<unsigned long, QComboBox*> myAutoLogonCombo;
+  std::map<unsigned long, QCheckBox*> myAutoLogonInvisibleCheck;
   QLabel* myAutoAwayLabel;
   QLabel* myAutoNaLabel;
   QLabel* myAutoOfflineLabel;

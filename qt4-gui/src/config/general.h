@@ -108,7 +108,6 @@ public:
   bool trayBlink() const { return myTrayBlink; }
   bool trayMsgOnlineNotify() const { return myTrayMsgOnlineNotify; }
 
-  int autoLogon() const { return myAutoLogon; }
   int autoAwayTime() const { return myAutoAwayTime; }
   int autoNaTime() const { return myAutoNaTime; }
   int autoOfflineTime() const { return myAutoOfflineTime; }
@@ -155,7 +154,6 @@ public slots:
   void setTrayBlink(bool trayBlink);
   void setTrayMsgOnlineNotify(bool trayMsgOnlineNotify);
 
-  void setAutoLogon(int autoLogon);
   void setAutoAwayTime(int autoAwayTime);
   void setAutoNaTime(int autoNaTime);
   void setAutoOfflineTime(int autoOfflineTime);
@@ -240,7 +238,6 @@ private:
   bool myTrayMsgOnlineNotify;
 
   // Auto status configuration
-  int myAutoLogon;
   int myAutoAwayTime;
   int myAutoNaTime;
   int myAutoOfflineTime;

@@ -486,24 +486,6 @@ int LicqGui::Run()
   myAutoAwayTimer.start(10000);  // start the inactivity timer for auto away
   connect(&myAutoAwayTimer, SIGNAL(timeout()), SLOT(autoAway()));
 
-  // automatically logon if requested in conf file
-  int autoLogon = Config::General::instance()->autoLogon();
-  if (autoLogon > 0)
-  {
-    bool invisible = (autoLogon >= 10);
-    switch (autoLogon % 10)
-    {
-      case 0: break;
-      case 1: changeStatus(User::OnlineStatus, invisible); break;
-      case 2: changeStatus(User::AwayStatus, invisible); break;
-      case 3: changeStatus(User::NotAvailableStatus, invisible); break;
-      case 4: changeStatus(User::OccupiedStatus, invisible); break;
-      case 5: changeStatus(User::DoNotDisturbStatus, invisible); break;
-      case 6: changeStatus(User::FreeForChatStatus, invisible); break;
-      default: gLog.Warn("%sInvalid auto online id: %d.\n", L_WARNxSTR, autoLogon);
-    }
-  }
-
   int r = exec();
 
   gPluginManager.unregisterGeneralPlugin();
