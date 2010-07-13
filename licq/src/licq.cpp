@@ -782,6 +782,9 @@ int CLicq::Main()
   // Reset to requested log level
   myConsoleLog->setLogLevels(myConsoleLogLevel);
 
+  // Logon all protocols according to owner configuration
+  gDaemon.autoLogon();
+
   try
   {
     bool bDaemonShutdown = false;

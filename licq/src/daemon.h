@@ -60,6 +60,12 @@ public:
    */
   void setBaseDir(const std::string& baseDir);
 
+  /**
+   * Set startup status for all protocols according to owner data
+   * Only called once during startup
+   */
+  void autoLogon();
+
   // From Licq::Daemon
   pthread_t* Shutdown();
   const char* Version() const;

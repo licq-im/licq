@@ -30,6 +30,18 @@ public:
   unsigned long RandomChatGroup() const         { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus) const;
 
+  /**
+   * Get status to change to at startup
+   */
+  unsigned startupStatus() const
+  { return myStartupStatus; }
+
+  /**
+   * Set status to change to at startup
+   */
+  void setStartupStatus(unsigned status)
+  { myStartupStatus = status; }
+
   // Server Side List functions
   time_t GetSSTime() const                      { return m_nSSTime; }
   void SetSSTime(time_t t)            { m_nSSTime = t; }
@@ -49,6 +61,7 @@ protected:
   virtual ~Owner() { /* Empty */ }
 
   std::string myPassword;
+  unsigned myStartupStatus;
   bool m_bException,
        m_bWebAware,
        m_bHideIp,

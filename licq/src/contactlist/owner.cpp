@@ -61,6 +61,7 @@ Owner::Owner(const UserId& id)
   myConf.get("HideIP", m_bHideIp, false);
   myConf.get("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
   myConf.get("AutoResponse", myAutoResponse, "");
+  myConf.get("StartupStatus", myStartupStatus, OfflineStatus);
   unsigned long sstime;
   myConf.get("SSTime", sstime, 0);
   m_nSSTime = sstime;
@@ -138,6 +139,7 @@ void Owner::SaveLicqInfo()
   myConf.set("WebPresence", WebAware());
   myConf.set("HideIP", HideIp());
   myConf.set("Authorization", GetAuthorization());
+  myConf.set("StartupStatus", myStartupStatus);
   myConf.set("RCG", RandomChatGroup());
   myConf.set("SSTime", (unsigned long)m_nSSTime);
   myConf.set("SSCount", mySsCount);

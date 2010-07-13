@@ -21,17 +21,20 @@
 
 #include "daemon.h"
 
+#include <boost/foreach.hpp>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <map>
 #include <sys/stat.h> // chmod
 
 #include <licq_log.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolmanager.h>
 #include <licq/proxy.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
@@ -440,4 +443,23 @@ void Licq::Daemon::pluginUIMessage(const Licq::UserId& userId)
 void Daemon::shutdownPlugins()
 {
   licq->ShutdownPlugins();
+}
+
+void Daemon::autoLogon()
+{
+  map<UserId, unsigned> logonStatuses;
+  {
+    // Get statuses first as we cannot call setStatus while list is locked
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerReadGuard o(owner);
+      if (o->startupStatus() != Licq::User::OfflineStatus)
+        logonStatuses[o->id()] = o->startupStatus();
+    }
+  }
+
+  map<UserId, unsigned>::const_iterator iter;
+  for (iter = logonStatuses.begin(); iter != logonStatuses.end(); ++iter)
+    Licq::gProtocolManager.setStatus(iter->first, iter->second);
 }
