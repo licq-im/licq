@@ -9,7 +9,7 @@
 #include <aosd-text.h>
 #undef Status
 
-class LicqSignal;
+#include <licq/pluginsignal.h>
 
 class Conf;
 
@@ -19,7 +19,7 @@ public:
   Iface();
   ~Iface();
 
-  void processSignal(LicqSignal* sig);
+  void processSignal(Licq::PluginSignal* sig);
   void updateTextRenderData();
 
 private:
@@ -28,7 +28,7 @@ private:
   Conf* conf;
   std::map<unsigned long, time_t> ppidTimers;
 
-  bool filterSignal(LicqSignal* sig, unsigned long ppid);
+  bool filterSignal(Licq::PluginSignal* sig, unsigned long ppid);
 
   void displayLayout(std::string& msg, bool control);
 };

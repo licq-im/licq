@@ -1,8 +1,7 @@
 #include <string.h>
 
-#include <licq_events.h>
-#include <licq_plugin.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/plugin.h>
 #include <licq/pluginmanager.h>
@@ -68,9 +67,9 @@ bool LP_Init(int argc, char** argv)
 int LP_Main()
 {
   int pipe = gPluginManager.registerGeneralPlugin(
-      SIGNAL_UPDATExUSER |
-      SIGNAL_LOGON |
-      SIGNAL_LOGOFF);
+      Licq::PluginSignal::SignalUser |
+      Licq::PluginSignal::SignalLogon |
+      Licq::PluginSignal::SignalLogoff);
   bool finita = false;
   char msg[3];
 
@@ -84,7 +83,7 @@ int LP_Main()
     {
       case Licq::GeneralPlugin::PipeSignal:
         {
-          LicqSignal* sig = Licq::gDaemon.popPluginSignal();
+          Licq::PluginSignal* sig = Licq::gDaemon.popPluginSignal();
           if (sig != NULL)
           {
             if (!blocked)
@@ -97,7 +96,7 @@ int LP_Main()
 
       case Licq::GeneralPlugin::PipeEvent:
         {
-          LicqEvent* ev = Licq::gDaemon.PopPluginEvent();
+          Licq::Event* ev = Licq::gDaemon.PopPluginEvent();
           if (ev != NULL)
             delete ev;
         }

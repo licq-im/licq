@@ -1,8 +1,9 @@
 #include "iface.h"
 
+#include <licq/contactlist/usermanager.h>
 #include <licq/icq.h>
 #include <licq/translator.h>
-#include <licq/contactlist/usermanager.h>
+#include <licq/userevents.h>
 
 #include "conf.h"
 
@@ -44,41 +45,43 @@ Iface::~Iface()
   pango_layout_unref_aosd(trd.lay);
 }
 
-void Iface::processSignal(LicqSignal* sig)
+void Iface::processSignal(Licq::PluginSignal* sig)
 {
   string msg = "";
   bool control = true;
 
-  Licq::User* u = gUserManager.fetchUser(sig->userId(), LOCK_R);
-  if (u == NULL)
-    return;
-  unsigned long ppid = u->PPID();
-  gUserManager.DropUser(u);
-
-  switch (sig->Signal())
+  unsigned long ppid;
   {
-    case SIGNAL_UPDATExUSER:
+    Licq::UserReadGuard user(sig->userId());
+    if (!user.isLocked())
+      return;
+    ppid = user->PPID();
+  }
+
+  switch (sig->signal())
+  {
+    case Licq::PluginSignal::SignalUser:
     {
       if (filterSignal(sig, ppid))
         break;
 
-      u = gUserManager.fetchUser(sig->userId(), LOCK_R);
-      if (u == NULL)
+      Licq::UserReadGuard user(sig->userId());
+      if (!user.isLocked())
         break;
 
-      msg = u->GetAlias();
+      msg = user->GetAlias();
 
-      switch (sig->SubSignal())
+      switch (sig->subSignal())
       {
-        case USER_STATUS:
+        case Licq::PluginSignal::UserStatus:
           msg += " changed status to: ";
-          msg += u->StatusStr();
-          if (sig->Argument() > 0)
+          msg += user->statusToString(true);
+          if (sig->argument() > 0)
             msg += " [logged on]";
           break;
 
-        case USER_EVENTS:
-          if (sig->Argument() == 0)
+        case Licq::PluginSignal::UserEvents:
+          if (sig->argument() == 0)
           {
             msg += " checked your auto-response";
             break;
@@ -89,36 +92,33 @@ void Iface::processSignal(LicqSignal* sig)
           if (conf->notifyOnly)
           {
             msg = "Message from ";
-            msg += u->GetAlias();
-            if (conf->markSecure && u->Secure())
+            msg += user->GetAlias();
+            if (conf->markSecure && user->Secure())
               msg += " [secured]";
             msg += ".";
           }
           else
           {
-            const CUserEvent* ue = u->EventPeekId(sig->Argument());
+            const Licq::UserEvent* ue = user->EventPeekId(sig->argument());
             if (ue == NULL)
             {
               msg.clear();
               break;
             }
-            if (conf->markSecure && u->Secure())
+            if (conf->markSecure && user->Secure())
               msg += " (S)";
             msg += ": ";
-            char* trans = Licq::gTranslator.ToUnicode(const_cast<char*>(ue->Text()),
-                u->userEncoding().c_str());
-            msg += trans;
-            delete[] trans;
+            msg += Licq::gTranslator.toUnicode(ue->text(),
+                user->userEncoding());
           }
           break;
       }
 
-      gUserManager.DropUser(u);
       break;
     }
 
-    case SIGNAL_LOGON:
-    case SIGNAL_LOGOFF:
+    case Licq::PluginSignal::SignalLogon:
+    case Licq::PluginSignal::SignalLogoff:
       ppidTimers[ppid] = time(NULL) + conf->quietTimeout;
       break;
   }
@@ -155,19 +155,20 @@ void Iface::updateTextRenderData()
         (width > conf->wrapWidth ? conf->wrapWidth : width) * PANGO_SCALE);
 }
 
-bool Iface::filterSignal(LicqSignal* sig, unsigned long ppid)
+bool Iface::filterSignal(Licq::PluginSignal* sig, unsigned long ppid)
 {
-  switch (sig->SubSignal())
+  switch (sig->subSignal())
   {
-    case USER_STATUS:
-    case USER_EVENTS:
+    case Licq::PluginSignal::UserStatus:
+    case Licq::PluginSignal::UserEvents:
       break;
 
     default:
       return true;
   }
 
-  bool isMessage = (sig->SubSignal() == USER_EVENTS && sig->Argument() > 0);
+  bool isMessage = (sig->subSignal() == Licq::PluginSignal::UserEvents
+                    && sig->argument() > 0);
 
   if (!isMessage && (ppidTimers[ppid] > time(NULL)))
     return true;
@@ -182,37 +183,36 @@ bool Iface::filterSignal(LicqSignal* sig, unsigned long ppid)
     return true;
   }
 
-  Licq::User* u = gUserManager.fetchUser(sig->userId(), LOCK_R);
-  if (u == NULL)
-    return true;
+  bool on;
+  {
+    Licq::UserReadGuard user(sig->userId());
+    if (!user.isLocked())
+      return true;
 
-  bool ign = u->IgnoreList();
-  bool on = u->OnlineNotify();
-
-  gUserManager.DropUser(u);
-
-  if (ign)
-    return true;
+    if (user->IgnoreList())
+      return true;
+    on = user->OnlineNotify();
+  }
 
 #define GROUP_DISABLED(type) \
   (conf->type == GROUP_TYPE_NONE || \
   (conf->type == GROUP_TYPE_ONLINE_NOTIFY && !on))
 
-  if (sig->SubSignal() == USER_STATUS)
+  if (sig->subSignal() == Licq::PluginSignal::UserStatus)
   {
-    if (sig->Argument() == 0 && GROUP_DISABLED(statusChange))
+    if (sig->argument() == 0 && GROUP_DISABLED(statusChange))
       return true;
 
     if (GROUP_DISABLED(logonLogoff))
       return true;
   }
 
-  if (sig->SubSignal() == USER_EVENTS)
+  if (sig->subSignal() == Licq::PluginSignal::UserEvents)
   {
-    if (sig->Argument() < 0)
+    if (sig->argument() < 0)
       return true;
 
-    if (sig->Argument() == 0 && GROUP_DISABLED(autoResponse))
+    if (sig->argument() == 0 && GROUP_DISABLED(autoResponse))
       return true;
 
     if (GROUP_DISABLED(showMessage))
