@@ -149,19 +149,33 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
   a->setData(QString());
 
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (!o.isLocked())
-      return;
-
     QString statusStr = User::statusToString(myStatus, true, false).c_str();
+    QString autoResponse;
 
-    setWindowTitle(QString(tr("Set %1 Response for %2"))
-        .arg(statusStr)
-        .arg(QString::fromUtf8(o->GetAlias())));
+    if (myPpid == 0)
+    {
+      setWindowTitle(QString(tr("Set %1 Response for all accounts"))
+          .arg(statusStr));
+    }
+    else
+    {
+      Licq::OwnerReadGuard o(myPpid);
+      if (!o.isLocked())
+        return;
 
-    const QTextCodec* codec = UserCodec::defaultEncoding();
-    if (!o->autoResponse().empty())
-      myAwayMsg->setText(codec->toUnicode(o->autoResponse().c_str()));
+      setWindowTitle(QString(tr("Set %1 Response for %2"))
+          .arg(statusStr)
+          .arg(QString::fromUtf8(o->GetAlias())));
+
+      if (!o->autoResponse().empty())
+      {
+        const QTextCodec* codec = UserCodec::defaultEncoding();
+        autoResponse = codec->toUnicode(o->autoResponse().c_str());
+      }
+    }
+
+    if (!autoResponse.isEmpty())
+      myAwayMsg->setText(autoResponse);
     else
       myAwayMsg->setText(tr("I'm currently %1, %a.\n"
             "You can leave me a message.\n"
