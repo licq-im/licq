@@ -60,25 +60,25 @@ TEST(Conversation, userList)
   EXPECT_TRUE(convo.addUser(UserId("second", 0x54657374)));
   EXPECT_TRUE(convo.addUser(UserId("user3", 0x54657374)));
   convo.getUsers(users);
-  EXPECT_EQ(3, users.size());
+  EXPECT_EQ(3u, users.size());
   users.clear();
 
   // Adding duplicate should fail
   EXPECT_FALSE(convo.addUser(UserId("second", 0x54657374)));
   convo.getUsers(users);
-  EXPECT_EQ(3, users.size());
+  EXPECT_EQ(3u, users.size());
   users.clear();
 
   // Try removing
   EXPECT_TRUE(convo.removeUser(UserId("uno", 0x54657374)));
   convo.getUsers(users);
-  EXPECT_EQ(2, users.size());
+  EXPECT_EQ(2u, users.size());
   users.clear();
 
   // Removing non-existent should fail
   EXPECT_FALSE(convo.removeUser(UserId("missing", 0x54657374)));
   convo.getUsers(users);
-  EXPECT_EQ(2, users.size());
+  EXPECT_EQ(2u, users.size());
   users.clear();
 }
 
