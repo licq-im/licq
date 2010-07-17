@@ -13,6 +13,7 @@ msgstr ""
 "PO-Revision-Date: 2009-02-20 11:27+0100\n"
 "Last-Translator: Arne Schmitz <arne.schmitz@gmx.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -716,8 +717,8 @@ msgstr "%sDateiübertragung an %s wird abgebrochen (#%hu).\n"
 #, c-format
 msgid "%sCancelling secure channel request to %s (#%hu).\n"
 msgstr ""
-"%sAnforderung einer verschlüsselten Verbindung zu %s wird abgebrochen (#%"
-"hu).\n"
+"%sAnforderung einer verschlüsselten Verbindung zu %s wird abgebrochen (#"
+"%hu).\n"
 
 #: src/socket.cpp:812
 #, c-format
@@ -985,8 +986,8 @@ msgid ""
 "%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
 "%sUpdate general info on server to fix.\n"
 msgstr ""
-"%sAktuelles Licq GTM-Offset (%d) entspricht nicht dem System-GMT-Offset (%"
-"d).\n"
+"%sAktuelles Licq GTM-Offset (%d) entspricht nicht dem System-GMT-Offset "
+"(%d).\n"
 "%sBitte die allgemeinen Informationen auf dem Server bearbeiten.\n"
 
 #: src/icqd-tcp.cpp:2792
@@ -1379,8 +1380,8 @@ msgstr "%sAllgemeine Informationen zu %s (%s).\n"
 #: src/oscarservice.cpp:515
 #, c-format
 msgid ""
-"%sGive up waiting for channel capability list while initializing service 0x%"
-"02X.\n"
+"%sGive up waiting for channel capability list while initializing service 0x"
+"%02X.\n"
 msgstr ""
 
 #: src/oscarservice.cpp:535
@@ -1397,8 +1398,8 @@ msgstr ""
 #: src/oscarservice.cpp:494
 #, c-format
 msgid ""
-"%sGive up waiting for server ready packet while initializing service 0x%"
-"02X.\n"
+"%sGive up waiting for server ready packet while initializing service 0x"
+"%02X.\n"
 msgstr ""
 
 #: src/icqd-srv.cpp:4100

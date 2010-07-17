@@ -11,6 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1356,8 +1357,8 @@ msgstr "%sАсноўныя зьвесткі пра %s (%s).\n"
 #: src/oscarservice.cpp:515
 #, c-format
 msgid ""
-"%sGive up waiting for channel capability list while initializing service 0x%"
-"02X.\n"
+"%sGive up waiting for channel capability list while initializing service 0x"
+"%02X.\n"
 msgstr ""
 
 #: src/oscarservice.cpp:535
@@ -1374,8 +1375,8 @@ msgstr ""
 #: src/oscarservice.cpp:494
 #, c-format
 msgid ""
-"%sGive up waiting for server ready packet while initializing service 0x%"
-"02X.\n"
+"%sGive up waiting for server ready packet while initializing service 0x"
+"%02X.\n"
 msgstr ""
 
 #: src/icqd-srv.cpp:4100

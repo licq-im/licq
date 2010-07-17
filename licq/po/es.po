@@ -12,6 +12,7 @@ msgstr ""
 "PO-Revision-Date: 2007-08-17 20:05-0300\n"
 "Last-Translator: Sebastian Renzi <srenzi@gmail.com>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1365,8 +1366,8 @@ msgstr "%sInformación general de %s (%s).\n"
 #: src/oscarservice.cpp:515
 #, c-format
 msgid ""
-"%sGive up waiting for channel capability list while initializing service 0x%"
-"02X.\n"
+"%sGive up waiting for channel capability list while initializing service 0x"
+"%02X.\n"
 msgstr ""
 
 #: src/oscarservice.cpp:535
@@ -1383,8 +1384,8 @@ msgstr ""
 #: src/oscarservice.cpp:494
 #, c-format
 msgid ""
-"%sGive up waiting for server ready packet while initializing service 0x%"
-"02X.\n"
+"%sGive up waiting for server ready packet while initializing service 0x"
+"%02X.\n"
 msgstr ""
 
 #: src/icqd-srv.cpp:4100
