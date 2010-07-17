@@ -121,23 +121,14 @@ void Jabber::processSignal(Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalLogon:
       doLogon(static_cast<Licq::ProtoLogonSignal*>(signal));
       break;
-    case Licq::ProtocolSignal::SignalChangeStatus:
-      doChangeStatus(static_cast<Licq::ProtoChangeStatusSignal*>(signal));
-      break;
     case Licq::ProtocolSignal::SignalLogoff:
       doLogoff();
       break;
-    case Licq::ProtocolSignal::SignalSendMessage:
-      doSendMessage(static_cast<Licq::ProtoSendMessageSignal*>(signal));
-      break;
-    case Licq::ProtocolSignal::SignalRequestInfo:
-      doGetInfo(static_cast<Licq::ProtoRequestInfo*>(signal));
+    case Licq::ProtocolSignal::SignalChangeStatus:
+      doChangeStatus(static_cast<Licq::ProtoChangeStatusSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalAddUser:
       doAddUser(static_cast<Licq::ProtoAddUserSignal*>(signal));
-      break;
-    case Licq::ProtocolSignal::SignalChangeUserGroups:
-      doChangeUserGroups(static_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRemoveUser:
       doRemoveUser(static_cast<Licq::ProtoRemoveUserSignal*>(signal));
@@ -145,31 +136,74 @@ void Jabber::processSignal(Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalRenameUser:
       doRenameUser(static_cast<Licq::ProtoRenameUserSignal*>(signal));
       break;
+    case Licq::ProtocolSignal::SignalChangeUserGroups:
+      doChangeUserGroups(static_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalSendMessage:
+      doSendMessage(static_cast<Licq::ProtoSendMessageSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalNotifyTyping:
+      gLog.info("SignalNotifyTyping not implemented");
+      break;
     case Licq::ProtocolSignal::SignalGrantAuth:
       doGrantAuth(static_cast<Licq::ProtoGrantAuthSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRefuseAuth:
       doRefuseAuth(static_cast<Licq::ProtoRefuseAuthSignal*>(signal));
       break;
-    case Licq::ProtocolSignal::SignalNotifyTyping:
+    case Licq::ProtocolSignal::SignalRequestInfo:
+      doGetInfo(static_cast<Licq::ProtoRequestInfo*>(signal));
+      break;
     case Licq::ProtocolSignal::SignalUpdateInfo:
+      gLog.info("SignalUpdateInfo not implemented");
+      break;
     case Licq::ProtocolSignal::SignalRequestPicture:
+      gLog.info("SignalRequestPicture not implemented");
+      break;
     case Licq::ProtocolSignal::SignalBlockUser:
+      gLog.info("SignalBlockUser not implemented");
+      break;
     case Licq::ProtocolSignal::SignalUnblockUser:
+      gLog.info("SignalUnblockUser not implemented");
+      break;
     case Licq::ProtocolSignal::SignalAcceptUser:
+      gLog.info("SignalAcceptUser not implemented");
+      break;
     case Licq::ProtocolSignal::SignalUnacceptUser:
+      gLog.info("SignalUnacceptUser not implemented");
+      break;
     case Licq::ProtocolSignal::SignalIgnoreUser:
+      gLog.info("SignalIgnoreUser not implemented");
+      break;
     case Licq::ProtocolSignal::SignalUnignoreUser:
+      gLog.info("SignalUnignoreUser not implemented");
+      break;
     case Licq::ProtocolSignal::SignalSendFile:
+      gLog.info("SignalSendFile not implemented");
+      break;
     case Licq::ProtocolSignal::SignalSendChat:
+      gLog.info("SignalSendChat not implemented");
+      break;
     case Licq::ProtocolSignal::SignalCancelEvent:
+      gLog.info("SignalCancelEvent not implemented");
+      break;
     case Licq::ProtocolSignal::SignalSendReply:
+      gLog.info("SignalSendReply not implemented");
+      break;
     case Licq::ProtocolSignal::SignalOpenedWindow:
+      gLog.info("SignalOpenedWindow not implemented");
+      break;
     case Licq::ProtocolSignal::SignalClosedWindow:
+      gLog.info("SignalClosedWindow not implemented");
+      break;
     case Licq::ProtocolSignal::SignalOpenSecure:
+      gLog.info("SignalOpenSecure not implemented");
+      break;
     case Licq::ProtocolSignal::SignalCloseSecure:
+      gLog.info("SignalCloseSecure not implemented");
+      break;
     default:
-      gLog.info("Unkown signal %u", signal->signal());
+      gLog.error("Unkown signal %u", signal->signal());
       break;
   }
 }
