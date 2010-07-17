@@ -256,12 +256,10 @@ void MMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      const QTextCodec* codec;
       {
         Licq::UserReadGuard u(userId);
         if (!u.isLocked())
           return;
-        codec = UserCodec::codecForUser(*u);
         grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
       }
 

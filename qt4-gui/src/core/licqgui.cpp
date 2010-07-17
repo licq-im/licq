@@ -822,7 +822,6 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
     }
   }
 
-  bool newtabw = false;
   QWidget* parent = NULL;
   if (Config::Chat::instance()->tabbedChatting())
   {
@@ -831,7 +830,6 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
       // create the tab dialog if it does not exist
       myUserEventTabDlg = new UserEventTabDlg(0, "UserEventTabbedDialog");
       connect(myUserEventTabDlg, SIGNAL(signal_done()), SLOT(userEventTabDlgDone()));
-      newtabw = true;
     }
     parent = myUserEventTabDlg;
   }

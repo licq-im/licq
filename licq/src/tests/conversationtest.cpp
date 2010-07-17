@@ -93,15 +93,17 @@ TEST(ConvoManager, convoList)
   int convoId2 = convo2->id();
   EXPECT_NE(convoId1, convoId2);
 
+  const Licq::Conversation* const nullConvo = NULL;
+
   // Verify get functions
   EXPECT_EQ(convo1, gConvoManager.get(convoId1));
-  EXPECT_EQ(NULL, gConvoManager.get(12345));
+  EXPECT_EQ(nullConvo, gConvoManager.get(12345));
   EXPECT_EQ(convo2, gConvoManager.getFromSocket(8));
-  EXPECT_EQ(NULL, gConvoManager.getFromSocket(1));
+  EXPECT_EQ(nullConvo, gConvoManager.getFromSocket(1));
 
   // Verify remove
   EXPECT_FALSE(gConvoManager.remove(12345));
   EXPECT_TRUE(gConvoManager.remove(convoId1));
-  EXPECT_EQ(NULL, gConvoManager.get(convoId1));
+  EXPECT_EQ(nullConvo, gConvoManager.get(convoId1));
   EXPECT_EQ(convo2, gConvoManager.get(convoId2));
 }

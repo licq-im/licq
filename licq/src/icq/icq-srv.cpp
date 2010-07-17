@@ -2162,19 +2162,18 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxSUB_ONLINExLIST:
   {
-    unsigned long junk1, intIP, userPort, nInfoTimestamp = 0,
+    unsigned long intIP, userPort, nInfoTimestamp = 0,
                   nStatusPluginTimestamp = 0, nInfoPluginTimestamp = 0, nCookie,
                   nUserIP;
     time_t registeredTimestamp;
-    unsigned short junk2;
     unsigned char mode;
     char *szId;
 
-    junk1 = packet.UnpackUnsignedLongBE();
-    junk2 = packet.UnpackUnsignedShortBE();
+    packet.UnpackUnsignedLongBE();
+    packet.UnpackUnsignedShortBE();
     szId = packet.UnpackUserString();
 
-    junk1 = packet.UnpackUnsignedLongBE(); // tlvcount
+    packet.UnpackUnsignedLongBE(); // tlvcount
 
     if (!packet.readTLV()) {
       gLog.Error("%sTLV Error\n", L_ERRORxSTR);
@@ -2270,7 +2269,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       else if (tcount == 2)
         nInfoPluginTimestamp = 0;
         
-      junk2 = msg.UnpackUnsignedShortBE();
+      msg.UnpackUnsignedShortBE();
 
       char szExtraInfo[28] = { 0 };
       if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
@@ -2574,13 +2573,11 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
   case ICQ_SNACxSUB_OFFLINExLIST:
   {
-    unsigned long junk1;
-    unsigned short junk2;
     char *szId;
     bool bFake = false;
 
-    junk1 = packet.UnpackUnsignedLongBE();
-    junk2 = packet.UnpackUnsignedShortBE();
+    packet.UnpackUnsignedLongBE();
+    packet.UnpackUnsignedShortBE();
     szId = packet.UnpackUserString();
 
     if (packet.readTLV())
@@ -2705,7 +2702,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   {
     unsigned long nMsgID[2];
     unsigned long nTimeSent;
-    unsigned short mFormat, nMsgLen, nTLVs, nSubEncoding;
+    unsigned short mFormat, nMsgLen, nTLVs;
     char *szId;
 
     nMsgID[0] = packet.UnpackUnsignedLongBE();
@@ -2744,7 +2741,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       nMsgLen = msgTxt.getDataSize();
 
       unsigned short nEncoding = msgTxt.UnpackUnsignedShortBE();
-      nSubEncoding = msgTxt.UnpackUnsignedShortBE();
+      msgTxt.UnpackUnsignedShortBE(); // Sub encoding
       
       nMsgLen -= 4;
 
@@ -3441,14 +3438,14 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   }
   case ICQ_SNACxMSG_SERVERxREPLYxMSG:
   {
-		unsigned short nFormat, nLen, nSequence, nMsgType, nAckFlags, nMsgFlags;
+		unsigned short nLen, nSequence, nMsgType, nAckFlags, nMsgFlags;
 		unsigned long nUin, nMsgID;
       Licq::ExtendedData* pExtendedAck = 0;
       Licq::User* u = NULL;
 
 	 	packet.incDataPosRead(4); // msg id
 		nMsgID = packet.UnpackUnsignedLongBE(); // lower bits, what licq uses
-		nFormat = packet.UnpackUnsignedShortBE();
+		packet.UnpackUnsignedShortBE(); // Format
 		nUin = packet.UnpackUinString();
       char id[16];
       snprintf(id, 15, "%lu", nUin);
@@ -4259,7 +4256,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
   {
   case 0x0003: // multi-purpose sub-type
   {
-    unsigned short nLen, nType, nId;
+    unsigned short nType, nId;
 
     if (!packet.readTLV()) {
       char *buf;
@@ -4279,7 +4276,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
 
-    nLen = msg.UnpackUnsignedShortBE();
+    msg.UnpackUnsignedShortBE(); // Length
     msg.UnpackUnsignedLong(); // own UIN
     nType = msg.UnpackUnsignedShort();
     nId = msg.UnpackUnsignedShortBE(); // req-id, which we use to match requests for info and replies

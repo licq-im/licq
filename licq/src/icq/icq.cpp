@@ -1098,13 +1098,14 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
   case ICQ_CMDxSUB_FILE:
   {
-    unsigned short nFilenameLen, nPortReversed;
+    unsigned short nFilenameLen;
     unsigned long nFileSize;
 
-      Licq::gTranslator.ServerToClient(message);
+    Licq::gTranslator.ServerToClient(message);
 
-    nPortReversed = packet.UnpackUnsignedShortBE(); /* this is garbage when
-                                                      the request is refused */
+    // Port reversed: garbage when the request is refused
+    packet.UnpackUnsignedShortBE();
+
     packet.UnpackUnsignedShort();
 
     packet >> nFilenameLen;

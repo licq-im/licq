@@ -2472,9 +2472,7 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
       if (xp == 0)
       {
         int newX = 0;
-
-        int ymax, xmax;
-        getmaxyx(winMain->Win(), ymax, xmax);
+        int xmax = getmaxx(winMain->Win());
 
         // If the previous char is a new line we need to calculate the length
         // of the line to determine where to put the cursor.

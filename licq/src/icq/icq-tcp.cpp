@@ -61,7 +61,6 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   const string accountId = userId.accountId();
   const char* m = message.c_str();
 
-  Licq::Event* result = NULL;
   char *mDos = NULL;
   char *szMessage = NULL;
   bool bUTF16 = false;
@@ -152,8 +151,8 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
                  L_WARNxSTR, nMaxSize);
        szMessage[nMaxSize] = '\0';
      }
-     result = icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
-                                   cipher ? cipher : szMessage, e, nCharset, nUTFLen);
+     icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+                          cipher ? cipher : szMessage, e, nCharset, nUTFLen);
   }
 
   Licq::UserWriteGuard u(userId);
@@ -170,7 +169,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     gLog.Info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(eventId, *u, p, e);
+    SendExpectEvent_Client(eventId, *u, p, e);
   }
 
   if (u.isLocked())
@@ -202,7 +201,6 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool
     return eventId;
   }
 
-  Licq::Event* result;
   Licq::UserWriteGuard u(userId);
 
   if (bServer)
@@ -211,14 +209,14 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool
     CSrvPacketTcp *s = new CPU_AdvancedMessage(*u, ICQ_CMDxTCP_READxAWAYxMSG, 0, false, 0, 0, 0);
     gLog.Info(tr("%sRequesting auto response from %s.\n"), L_SRVxSTR,
               u->GetAlias());
-    result = SendExpectEvent_Server(userId, s, NULL);
+    SendExpectEvent_Server(userId, s, NULL);
   }
   else
   {
     CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(*u);
     gLog.Info(tr("%sRequesting auto response from %s (#%hu).\n"), L_TCPxSTR,
 	      u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(eventId, *u, p, NULL);
+    SendExpectEvent_Client(eventId, *u, p, NULL);
   }
 
   return eventId;
@@ -250,8 +248,6 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   m += '\xFE';
   m += url;
 
-  Licq::Event* result = NULL;
-
   unsigned long f = Licq::UserEvent::FlagLicqVerMask;
   if (!viaServer)
     f |= Licq::UserEvent::FlagDirect;
@@ -271,7 +267,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
 
     e = new Licq::EventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER,
         Licq::EventUrl::TimeNow, f);
-    result = icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
+    icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
 
   Licq::UserWriteGuard u(userId);
@@ -288,7 +284,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
     gLog.Info(tr("%sSending %sURL to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(eventId, *u, p, e);
+    SendExpectEvent_Client(eventId, *u, p, e);
   }
   if (u.isLocked())
   {
@@ -312,7 +308,6 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   const char* szFilename = filename.c_str();
   const char* szDescription = message.c_str();
 
-  Licq::Event* result = NULL;
   char *szDosDesc = NULL;
   if (szDescription != NULL)
   {
@@ -345,7 +340,6 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     if (!p->IsValid())
     {
       delete p;
-      result = NULL;
     }
     else
     {
@@ -354,7 +348,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
       gLog.Info(tr("%sSending file transfer to %s (#%hu).\n"), L_SRVxSTR, 
                 u->GetAlias(), -p->Sequence());
 
-      result = SendExpectEvent_Server(userId, p, e);
+      SendExpectEvent_Server(userId, p, e);
     }
   }
   else
@@ -364,7 +358,6 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     if (!p->IsValid())
     {
       delete p;
-      result = NULL;
     }
     else
     {
@@ -380,7 +373,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
                 nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "", 
                 u->GetAlias(), -p->Sequence());
 
-      result = SendExpectEvent_Client(eventId, *u, p, e);
+      SendExpectEvent_Client(eventId, *u, p, e);
     }
   }
 
@@ -422,7 +415,6 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   }
 
   Licq::EventContactList* e = NULL;
-  Licq::Event* result = NULL;
 
   unsigned long f = Licq::UserEvent::FlagLicqVerMask;
   if (online)
@@ -435,7 +427,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   if (!online) // send offline
   {
     e = new Licq::EventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, Licq::EventContactList::TimeNow, f);
-    result = icqSendThroughServer(eventId, userId,
+    icqSendThroughServer(eventId, userId,
       ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
       m, e);
   }
@@ -453,7 +445,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
     gLog.Info(tr("%sSending %scontact list to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(eventId, *u, p, e);
+    SendExpectEvent_Client(eventId, *u, p, e);
   }
   if (u.isLocked())
   {
@@ -872,8 +864,6 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
 void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId)
 {
 #ifdef USE_OPENSSL
-  Licq::Event* result = NULL;
-
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
@@ -881,23 +871,19 @@ void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const Licq::UserId
   CPT_OpenSecureChannel *pkt = new CPT_OpenSecureChannel(*u);
   gLog.Info(tr("%sSending request for secure channel to %s (#%hu).\n"), L_TCPxSTR,
             u->GetAlias(), -pkt->Sequence());
-  result = SendExpectEvent_Client(eventId, *u, pkt, NULL);
+  SendExpectEvent_Client(eventId, *u, pkt, NULL);
 
   u->SetSendServer(false);
 
 #else // No OpenSSL
   gLog.Warn("%sicqOpenSecureChannel() to %s called when we do not support OpenSSL.\n",
       L_WARNxSTR, userId.toString().c_str());
-  return;
-
 #endif
 }
 
 void IcqProtocol::icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId)
 {
 #ifdef USE_OPENSSL
-  Licq::Event* result = NULL;
-
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
@@ -905,15 +891,13 @@ void IcqProtocol::icqCloseSecureChannel(unsigned long eventId, const Licq::UserI
   CPT_CloseSecureChannel *pkt = new CPT_CloseSecureChannel(*u);
   gLog.Info(tr("%sClosing secure channel with %s (#%hu).\n"), L_TCPxSTR,
             u->GetAlias(), -pkt->Sequence());
-  result = SendExpectEvent_Client(eventId, *u, pkt, NULL);
+  SendExpectEvent_Client(eventId, *u, pkt, NULL);
 
   u->SetSendServer(false);
 
 #else // No OpenSSL
   gLog.Warn("%sicqCloseSecureChannel() to %s called when we do not support OpenSSL.\n",
       L_WARNxSTR, userId.toString().c_str());
-  return;
-
 #endif
 }
 
