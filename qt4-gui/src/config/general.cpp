@@ -76,7 +76,7 @@ void Config::General::loadConfiguration(Licq::IniFile& iniFile)
 
 #ifndef USE_KDE
   iniFile.get("QtStyle", s, "default");
-  if (s == "default")
+  if (s != "default")
     setGuiStyle(s.c_str());
 #endif
 
