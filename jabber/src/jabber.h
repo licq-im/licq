@@ -28,7 +28,9 @@ namespace Licq
 class ProtoAddUserSignal;
 class ProtoChangeStatusSignal;
 class ProtoChangeUserGroupsSignal;
+class ProtoGrantAuthSignal;
 class ProtoLogonSignal;
+class ProtoRefuseAuthSignal;
 class ProtoRemoveUserSignal;
 class ProtoRenameUserSignal;
 class ProtoRequestInfo;
@@ -60,6 +62,8 @@ private:
   void doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal);
   void doRemoveUser(Licq::ProtoRemoveUserSignal* signal);
   void doRenameUser(Licq::ProtoRenameUserSignal* signal);
+  void doGrantAuth(Licq::ProtoGrantAuthSignal* signal);
+  void doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal);
 
   Handler* myHandler;
   bool myDoRun;

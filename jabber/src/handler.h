@@ -47,6 +47,8 @@ public:
   void onUserRemoved(const std::string& id);
   void onUserStatusChange(const std::string& id, unsigned status);
   void onRosterReceived(const std::set<std::string>& ids);
+  void onUserAuthorizationRequest(const std::string& id,
+                                  const std::string& message);
 
   void onMessage(const std::string& from, const std::string& message);
 

@@ -161,6 +161,27 @@ void Handler::onRosterReceived(const std::set<std::string>& ids)
     gUserManager.removeUser(*it, false);
 }
 
+void Handler::onUserAuthorizationRequest(const std::string& id,
+                                         const std::string& message)
+{
+  TRACE();
+
+  Licq::EventAuthRequest* event = new Licq::EventAuthRequest(
+      UserId(id, JABBER_PPID),
+      std::string(), // alias
+      std::string(), std::string(), // first and last name
+      std::string(), // email
+      message,
+      ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+
+  Licq::OwnerWriteGuard owner(JABBER_PPID);
+  if (Licq::gDaemon.addUserEvent(*owner, event))
+  {
+    event->AddToHistory(*owner, true);
+    gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *owner);
+  }
+}
+
 void Handler::onMessage(const std::string& from, const std::string& message)
 {
   TRACE();

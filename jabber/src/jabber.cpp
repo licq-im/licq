@@ -145,9 +145,13 @@ void Jabber::processSignal(Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalRenameUser:
       doRenameUser(static_cast<Licq::ProtoRenameUserSignal*>(signal));
       break;
-    case Licq::ProtocolSignal::SignalNotifyTyping:
     case Licq::ProtocolSignal::SignalGrantAuth:
+      doGrantAuth(static_cast<Licq::ProtoGrantAuthSignal*>(signal));
+      break;
     case Licq::ProtocolSignal::SignalRefuseAuth:
+      doRefuseAuth(static_cast<Licq::ProtoRefuseAuthSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalNotifyTyping:
     case Licq::ProtocolSignal::SignalUpdateInfo:
     case Licq::ProtocolSignal::SignalRequestPicture:
     case Licq::ProtocolSignal::SignalBlockUser:
@@ -254,7 +258,7 @@ void Jabber::doGetInfo(Licq::ProtoRequestInfo* signal)
 void Jabber::doAddUser(Licq::ProtoAddUserSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->addUser(signal->userId().accountId());
+  myClient->addUser(signal->userId().accountId(), signal->authRequired());
 }
 
 void Jabber::doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal)
@@ -297,4 +301,16 @@ void Jabber::doRenameUser(Licq::ProtoRenameUserSignal* signal)
   }
 
   myClient->renameUser(signal->userId().accountId(), newName);
+}
+
+void Jabber::doGrantAuth(Licq::ProtoGrantAuthSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->grantAuthorization(signal->userId().accountId());
+}
+
+void Jabber::doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->refuseAuthorization(signal->userId().accountId());
 }

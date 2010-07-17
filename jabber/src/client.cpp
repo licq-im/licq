@@ -33,6 +33,8 @@
 #include <licq/log.h>
 #include <licq/licqversion.h>
 
+#define TRACE() Licq::gLog.info("In Client::%s()", __func__)
+
 using Licq::User;
 using Licq::gLog;
 
@@ -108,9 +110,12 @@ void Client::getVCard(const std::string& user)
   myVCardManager.fetchVCard(gloox::JID(user), this);
 }
 
-void Client::addUser(const std::string& user)
+void Client::addUser(const std::string& user, bool notify)
 {
-  myRosterManager->add(gloox::JID(user), user, gloox::StringList());
+  if (notify)
+    myRosterManager->subscribe(gloox::JID(user));
+  else
+    myRosterManager->add(gloox::JID(user), user, gloox::StringList());
 }
 
 void Client::changeUserGroups(const std::string& user,
@@ -139,6 +144,17 @@ void Client::renameUser(const std::string& user, const std::string& newName)
   }
 }
 
+void Client::grantAuthorization(const std::string& user)
+{
+  myRosterManager->ackSubscriptionRequest(gloox::JID(user), true);
+  addUser(user, true);
+}
+
+void Client::refuseAuthorization(const std::string& user)
+{
+  myRosterManager->ackSubscriptionRequest(gloox::JID(user), false);
+}
+
 void Client::onConnect()
 {
   myHandler.onConnect();
@@ -156,33 +172,45 @@ void Client::onDisconnect(gloox::ConnectionError /*error*/)
 
 void Client::handleItemAdded(const gloox::JID& jid)
 {
-  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
+  TRACE();
 
+  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
   myHandler.onUserAdded(jid.bare(), ri->name(), ri->groups());
 }
 
-void Client::handleItemSubscribed(const gloox::JID& /*jid*/)
+void Client::handleItemSubscribed(const gloox::JID& jid)
 {
+  TRACE();
+
+  gLog.info("Now authorized for %s", jid.bare().c_str());
 }
 
 void Client::handleItemRemoved(const gloox::JID& jid)
 {
+  TRACE();
+
   myHandler.onUserRemoved(jid.bare());
 }
 
 void Client::handleItemUpdated(const gloox::JID& jid)
 {
-  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
+  TRACE();
 
+  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
   myHandler.onUserAdded(jid.bare(), ri->name(), ri->groups());
 }
 
-void Client::handleItemUnsubscribed(const gloox::JID& /*jid*/)
+void Client::handleItemUnsubscribed(const gloox::JID& jid)
 {
+  TRACE();
+
+  gLog.info("No longer authorized for %s", jid.bare().c_str());
 }
 
 void Client::handleRoster(const gloox::Roster& roster)
 {
+  TRACE();
+
   std::set<std::string> jidlist;
   gloox::Roster::const_iterator it;
 
@@ -200,6 +228,8 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
                                   gloox::Presence::PresenceType presence,
                                   const std::string& /*msg*/)
 {
+  TRACE();
+
   myHandler.onUserStatusChange(gloox::JID(item.jid()).bare(),
       presenceToStatus(presence));
 }
@@ -209,28 +239,37 @@ void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
                                 gloox::Presence::PresenceType presence,
                                 const std::string& /*msg*/)
 {
+  TRACE();
+
   if (resource == myClient.resource())
     myHandler.onChangeStatus(presenceToStatus(presence));
 }
 
-bool Client::handleSubscriptionRequest(const gloox::JID& /*jid*/,
-                                       const std::string& /*msg*/)
+bool Client::handleSubscriptionRequest(const gloox::JID& jid,
+                                       const std::string& msg)
 {
-  return false;
+  TRACE();
+
+  myHandler.onUserAuthorizationRequest(jid.bare(), msg);
+  return false; // Ignored by gloox
 }
 
 bool Client::handleUnsubscriptionRequest(const gloox::JID& /*jid*/,
                                          const std::string& /*msg*/)
 {
-  return false;
+  TRACE();
+
+  return false; // Ignored by gloox
 }
 
 void Client::handleNonrosterPresence(const gloox::Presence& /*presence*/)
 {
+  TRACE();
 }
 
 void Client::handleRosterError(const gloox::IQ& /*iq*/)
 {
+  TRACE();
 }
 
 void Client::handleMessage(const gloox::Message& msg,
@@ -320,6 +359,8 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
 
 void Client::handleVCard(const gloox::JID& jid, const gloox::VCard* vcard)
 {
+  TRACE();
+
   (void)jid;
   delete vcard;
 }
@@ -327,6 +368,8 @@ void Client::handleVCard(const gloox::JID& jid, const gloox::VCard* vcard)
 void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
                                const gloox::JID& jid, gloox::StanzaError error)
 {
+  TRACE();
+
   if (error != gloox::StanzaErrorUndefined)
   {
     gLog.warning("%s VCard for user %s failed with error %u",

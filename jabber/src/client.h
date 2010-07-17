@@ -59,10 +59,12 @@ public:
   void changeStatus(unsigned status);
   void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);
-  void addUser(const std::string& user);
+  void addUser(const std::string& user, bool notify);
   void changeUserGroups(const std::string& user, const gloox::StringList& groups);
   void removeUser(const std::string& user);
   void renameUser(const std::string& user, const std::string& newName);
+  void grantAuthorization(const std::string& user);
+  void refuseAuthorization(const std::string& user);
 
   // gloox::ConnectionListener
   void onConnect();
