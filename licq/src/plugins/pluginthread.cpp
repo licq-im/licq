@@ -19,9 +19,9 @@
 
 #include "pluginthread.h"
 
-#include "licq/thread/condition.h"
-#include "licq/thread/mutex.h"
-#include "licq/thread/mutexlocker.h"
+#include <licq/thread/condition.h>
+#include <licq/thread/mutex.h>
+#include <licq/thread/mutexlocker.h>
 
 #include <boost/exception_ptr.hpp>
 

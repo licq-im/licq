@@ -25,11 +25,11 @@
 #include <unistd.h>
 
 #include "licq.h"
-#include "licq_log.h"
-#include "licq/exceptions/exception.h"
+#include <licq_log.h>
+#include <licq/exceptions/exception.h>
 #include <licq/inifile.h>
 #include <licq/utility.h>
-#include "licq/version.h"
+#include <licq/version.h>
 
 #include "contactlist/usermanager.h"
 #include "daemon.h"

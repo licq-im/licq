@@ -1,7 +1,7 @@
 #include "msn.h"
 #include "msnevent.h"
 
-#include "licq_log.h"
+#include <licq_log.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>

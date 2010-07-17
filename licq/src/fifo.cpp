@@ -39,10 +39,10 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
-#include "licq/pluginmanager.h"
-#include "licq/protocolmanager.h"
+#include <licq/pluginmanager.h>
+#include <licq/protocolmanager.h>
 #include <licq/translator.h>
-#include "licq_log.h"
+#include <licq_log.h>
 
 #include "gettext.h"
 #include "licq.h"

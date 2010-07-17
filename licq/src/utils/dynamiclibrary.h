@@ -20,7 +20,7 @@
 #ifndef LICQDAEMON_DYNAMICLIBRARY_H
 #define LICQDAEMON_DYNAMICLIBRARY_H
 
-#include "licq/exceptions/exception.h"
+#include <licq/exceptions/exception.h>
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>

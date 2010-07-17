@@ -19,7 +19,7 @@
 
 #include <unistd.h>
 
-#include "licq/pluginmanager.h"
+#include <licq/pluginmanager.h>
 #include <licq/version.h>
 
 

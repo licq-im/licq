@@ -25,8 +25,8 @@
 #include "pluginthread.h"
 #include "protocolplugin.h"
 
-#include "licq/pluginmanager.h"
-#include "licq/thread/mutex.h"
+#include <licq/pluginmanager.h>
+#include <licq/thread/mutex.h>
 #include "utils/dynamiclibrary.h"
 
 #include <boost/noncopyable.hpp>

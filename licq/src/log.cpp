@@ -15,7 +15,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
-#include "licq_log.h"
+#include <licq_log.h>
 
 using namespace std;
 

@@ -18,7 +18,7 @@
 
 #include "msn.h"
 #include "msnpacket.h"
-#include "licq_log.h"
+#include <licq_log.h>
 
 #include <unistd.h>
 

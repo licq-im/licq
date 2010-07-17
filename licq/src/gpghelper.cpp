@@ -5,10 +5,10 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "licq/contactlist/user.h"
-#include "licq/contactlist/usermanager.h"
-#include "licq/thread/mutexlocker.h"
-#include "licq_log.h"
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
+#include <licq/thread/mutexlocker.h>
+#include <licq_log.h>
 
 using namespace std;
 using namespace LicqDaemon;

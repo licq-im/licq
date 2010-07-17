@@ -11,15 +11,15 @@
 #include <unistd.h>
 
 #include "gettext.h"
-#include "licq_log.h"
+#include <licq_log.h>
 #include <licq/icq.h> // For VersionToUse()
 #include <licq/icqcodes.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
-#include "licq/contactlist/usermanager.h"
+#include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
-#include "licq/pluginmanager.h"
-#include "licq/pluginsignal.h"
+#include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>
 

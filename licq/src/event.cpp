@@ -14,7 +14,7 @@
 
 #include <licq/packet.h>
 #include <licq/userevents.h>
-#include "licq_log.h"
+#include <licq_log.h>
 
 #include "contactlist/user.h"
 

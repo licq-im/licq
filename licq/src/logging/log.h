@@ -20,8 +20,8 @@
 #ifndef LICQDAEMON_LOG_H
 #define LICQDAEMON_LOG_H
 
-#include "licq/log.h"
-#include "licq/logsink.h"
+#include <licq/log.h>
+#include <licq/logsink.h>
 
 namespace LicqDaemon
 {

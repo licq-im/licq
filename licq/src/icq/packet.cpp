@@ -21,15 +21,15 @@
 
 #include <boost/scoped_array.hpp>
 
-#include "licq/byteorder.h"
+#include <licq/byteorder.h>
 #include <licq/color.h>
 #include <licq/icqdefines.h>
-#include "licq/md5.h"
+#include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/utility.h>
-#include "licq_log.h"
-#include "licq/version.h"
+#include <licq_log.h>
+#include <licq/version.h>
 
 #include "../contactlist/group.h"
 #include "../contactlist/usermanager.h"

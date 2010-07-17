@@ -23,8 +23,8 @@
 #include "pluginthread.h"
 
 #include <licq/pipe.h>
-#include "licq/plugin.h"
-#include "licq/thread/mutex.h"
+#include <licq/plugin.h>
+#include <licq/thread/mutex.h>
 #include "utils/dynamiclibrary.h"
 
 #include <boost/exception/info.hpp>

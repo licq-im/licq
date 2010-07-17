@@ -11,7 +11,7 @@
 #include <cerrno>
 
 #include "console.h"
-#include "licq_log.h"
+#include <licq_log.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -23,8 +23,8 @@
 #include <licq/icqdefines.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/inifile.h>
-#include "licq/pluginmanager.h"
-#include "licq/pluginsignal.h"
+#include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/userevents.h>
 

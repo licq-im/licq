@@ -12,7 +12,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
-#include "licq/pluginmanager.h"
+#include <licq/pluginmanager.h>
 #include <licq/protocolmanager.h>
 
 using namespace std;

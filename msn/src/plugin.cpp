@@ -16,7 +16,7 @@
 
 // written by Jon Keating <jon@licq.org>
 
-#include "licq/pluginmanager.h"
+#include <licq/pluginmanager.h>
 #include <licq/protocolbase.h>
 
 #include "pluginversion.h"

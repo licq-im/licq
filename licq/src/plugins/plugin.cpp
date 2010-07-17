@@ -19,7 +19,7 @@
 
 #include "plugin.h"
 
-#include "licq/thread/mutexlocker.h"
+#include <licq/thread/mutexlocker.h>
 
 #include <cassert>
 #include <pthread.h>

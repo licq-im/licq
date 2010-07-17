@@ -22,7 +22,7 @@
 #include <licq/daemon.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
-#include "licq_log.h"
+#include <licq_log.h>
 
 #include <cstring>
 #include <string>

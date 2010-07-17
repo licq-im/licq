@@ -24,7 +24,7 @@
 
 #include <boost/scoped_array.hpp>
 
-#include "licq/byteorder.h"
+#include <licq/byteorder.h>
 #include <licq/event.h>
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
@@ -35,8 +35,8 @@
 #include <licq/statistics.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
-#include "licq_log.h"
-#include "licq/version.h"
+#include <licq_log.h>
+#include <licq/version.h>
 
 #include "../contactlist/owner.h"
 #include "../contactlist/user.h"

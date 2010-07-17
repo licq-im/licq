@@ -19,7 +19,7 @@
 
 #include "protocolplugin.h"
 
-#include "licq/thread/mutexlocker.h"
+#include <licq/thread/mutexlocker.h>
 
 using Licq::MutexLocker;
 using namespace LicqDaemon;

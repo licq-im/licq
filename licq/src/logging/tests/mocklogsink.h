@@ -20,7 +20,7 @@
 #ifndef MOCKLOGSINK_H
 #define MOCKLOGSINK_H
 
-#include "licq/logsink.h"
+#include <licq/logsink.h>
 
 #include "gmock/gmock.h"
 

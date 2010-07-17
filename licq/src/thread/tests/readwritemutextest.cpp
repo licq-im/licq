@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "licq/thread/readwritemutex.h"
+#include <licq/thread/readwritemutex.h>
 
 #include <gtest/gtest.h>
 

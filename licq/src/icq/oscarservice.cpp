@@ -19,12 +19,12 @@
 
 #include <licq/buffer.h>
 #include <licq/contactlist/usermanager.h>
-#include "licq/byteorder.h"
+#include <licq/byteorder.h>
 #include <licq/event.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/socket.h>
-#include "licq_log.h"
+#include <licq_log.h>
 
 #include "../daemon.h"
 #include "../gettext.h"

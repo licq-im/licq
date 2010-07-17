@@ -19,7 +19,7 @@
 
 #include "generalplugin.h"
 
-#include "licq/thread/mutexlocker.h"
+#include <licq/thread/mutexlocker.h>
 
 #include <cstring>
 

@@ -21,9 +21,9 @@
 #include <ctype.h>
 #include <langinfo.h>
 
-#include "licq/byteorder.h"
+#include <licq/byteorder.h>
 #include <licq/event.h>
-#include "licq/gpghelper.h"
+#include <licq/gpghelper.h>
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
@@ -32,8 +32,8 @@
 #include <licq/statistics.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
-#include "licq_log.h"
-#include "licq/version.h"
+#include <licq_log.h>
+#include <licq/version.h>
 
 #include "../contactlist/user.h"
 #include "../contactlist/usermanager.h"

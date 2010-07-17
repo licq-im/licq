@@ -10,7 +10,7 @@
 #include <licq/icqdefines.h>
 
 #include "gettext.h"
-#include "licq_log.h"
+#include <licq_log.h>
 
 using std::string;
 using Licq::UserId;

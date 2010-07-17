@@ -20,7 +20,7 @@
 #ifndef LICQDAEMON_STREAMLOGSINK_H
 #define LICQDAEMON_STREAMLOGSINK_H
 
-#include "licq/logsink.h"
+#include <licq/logsink.h>
 
 #include <iosfwd>
 

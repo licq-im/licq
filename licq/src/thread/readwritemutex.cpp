@@ -24,8 +24,8 @@
  */
 #define DEBUG_RW_MUTEX
 
-#include "licq/thread/mutexlocker.h"
-#include "licq/thread/readwritemutex.h"
+#include <licq/thread/mutexlocker.h>
+#include <licq/thread/readwritemutex.h>
 
 #include <cassert>
 

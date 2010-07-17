@@ -16,9 +16,9 @@
 #include <ctype.h>
 #include <cstring>
 
-#include "licq/buffer.h"
-#include "licq/byteorder.h"
-#include "licq_log.h"
+#include <licq/buffer.h>
+#include <licq/byteorder.h>
+#include <licq_log.h>
 
 #include "gettext.h"
 #include "support.h"

@@ -26,7 +26,7 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "licq/gpghelper.h"
+#include <licq/gpghelper.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/translator.h>
