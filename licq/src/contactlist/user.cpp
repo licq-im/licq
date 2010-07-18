@@ -1366,37 +1366,39 @@ bool Licq::User::stringToStatus(const string& strStatus, unsigned& retStatus)
   return true;
 }
 
-char* Licq::User::IpStr(char* rbuf) const
+string Licq::User::ipToString() const
 {
-  char ip[32], buf[32];
+  string ip;
 
   if (Ip() > 0)                 // Default to the given ip
-    strcpy(ip, ip_ntoa(m_nIp, buf));
+  {
+    char buf[32];
+    ip = ip_ntoa(m_nIp, buf);
+  }
   else                          // Otherwise we don't know
-    strcpy(ip, tr("Unknown"));
+    ip = tr("Unknown");
 
   if (StatusHideIp())
-    sprintf(rbuf, "(%s)", ip);
+    return "(" + ip + ")";
   else
-    sprintf(rbuf, "%s", ip);
-
-  return rbuf;
+    return ip;
 }
 
 
-char* Licq::User::PortStr(char* rbuf) const
+string Licq::User::portToString() const
 {
   if (Port() > 0)               // Default to the given port
-    sprintf(rbuf, "%d", Port());
-  else                          // Otherwise we don't know
-    rbuf[0] = '\0';
+  {
+    char buf[10];
+    snprintf(buf, 10, "%d", Port());
+    return buf;
+  }
 
-  return rbuf;
+  return "";                     // Otherwise we don't know
 }
 
-char* Licq::User::IntIpStr(char* rbuf) const
+string Licq::User::internalIpToString() const
 {
-  char buf[32];
   int socket = SocketDesc(ICQ_CHNxNONE);
   if (socket < 0)
     socket = SocketDesc(ICQ_CHNxINFO);
@@ -1408,399 +1410,312 @@ char* Licq::User::IntIpStr(char* rbuf) const
     Licq::INetSocket *s = gSocketManager.FetchSocket(socket);
     if (s != NULL)
     {
-      strcpy(rbuf, s->getRemoteIpString().c_str());
+      string ret = s->getRemoteIpString();
       gSocketManager.DropSocket(s);
+      return ret;
     }
     else
-      strcpy(rbuf, tr("Invalid"));
+      return tr("Invalid");
   }
   else
   {
     if (IntIp() > 0)		// Default to the given ip
-      strcpy(rbuf, ip_ntoa(m_nIntIp, buf));
+    {
+      char buf[32];
+      return ip_ntoa(m_nIntIp, buf);
+    }
     else			// Otherwise we don't know
-      rbuf[0] = '\0';
+      return "";
   }
-
-  return rbuf;
 }
 
-
-char* Licq::User::usprintf(const char* _szFormat, unsigned long nFlags) const
+string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool allowFieldWidth) const
 {
-  bool bLeft = false;
-  unsigned long i = 0, j, nField = 0, nPos = 0;
-  char szTemp[128];
-
   // Our secure string for escaping stuff
-  bool bSecure = (_szFormat[0] == '|' && (nFlags & USPRINTF_PIPEISCMD)) ||
-   (nFlags & USPRINTF_LINEISCMD);
+  bool addQuotes = (quotes == usprintf_quoteall || (quotes == usprintf_quotepipe && format.size() > 0 && format[0] == '|'));
 
-  unsigned long bufSize = strlen(_szFormat) + 512;
-  char *_sz = (char *)malloc(bufSize);
-#define CHECK_BUFFER                     \
-  if (nPos >= bufSize - 1)               \
-  {                                      \
-    bufSize *= 2;                        \
-    _sz = (char *)realloc(_sz, bufSize); \
-  }
-
-  while(_szFormat[i] != '\0')
+  string s = format;
+  size_t pos = 0;
+  while (pos < s.size())
   {
-    if (_szFormat[i] == '`')
+    switch (s[pos])
     {
-        _sz[nPos++] = '`';
-        CHECK_BUFFER;
-        i++;
-        while(_szFormat[i] != '`' && _szFormat[i] != '\0')
-        {
-            _sz[nPos++] = _szFormat[i++];
-            CHECK_BUFFER;
-        }
-        if (_szFormat[i] != '\0')
-        {
-          _sz[nPos++] = _szFormat[i];
-          CHECK_BUFFER;
-          i++;
-        }
-    }
-    else if (_szFormat[i] == '%')
-    {
-      i++;
-      if (!(nFlags & USPRINTF_NOFW))
+      case '`':
+        // Don't do any processing on data between back ticks
+        pos = s.find('`', pos+1);
+        if (pos != string::npos)
+          ++pos;
+        break;
+
+      case '%':
       {
-        if (_szFormat[i] == '-')
+        bool alignLeft = false;
+        int fieldWidth = 0;
+        size_t pos2 = pos + 1;
+        if (!allowFieldWidth)
         {
-          i++;
-          bLeft = true;
-        }
-        j = nField = 0;
-        while (isdigit(_szFormat[i]))
-          szTemp[j++] = _szFormat[i++];
-        szTemp[j] = '\0';
-        if (j > 0) nField = atoi(szTemp);
-      }
-      else
-      {
-        if (isdigit(_szFormat[i]))
-        {
-          _sz[nPos++] = _szFormat[i - 1];
-          CHECK_BUFFER;
-          _sz[nPos++] = _szFormat[i++];
-          CHECK_BUFFER;
-          continue;
-        }
-      }
-
-      const char *sz = 0;
-      switch(_szFormat[i])
-      {
-        case 'i':
-          char buf[32];
-          strcpy(szTemp, ip_ntoa(m_nIp, buf));
-          sz = szTemp;
-          break;
-        case 'p':
-          sprintf(szTemp, "%d", Port());
-          sz = szTemp;
-          break;
-        case 'P':
-        {
-          Licq::ProtocolPluginsList plugins;
-          gPluginManager.getProtocolPluginsList(plugins);
-          BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
+          if (isdigit(s[pos2]))
           {
-            if (myId.protocolId() == plugin->getProtocolId())
-            {
-              strcpy(szTemp, plugin->getName());
-              sz = szTemp;
-              break;
-            }
-          }
-          break;
-        }
-        case 'e':
-          sz = getEmail().c_str();
-          break;
-        case 'n':
-          sz = getFullName().c_str();
-          break;
-        case 'f':
-          sz = getFirstName().c_str();
-          break;
-        case 'l':
-          sz = getLastName().c_str();
-          break;
-        case 'a':
-          sz = getAlias().c_str();
-          break;
-        case 'u':
-          sz = accountId().c_str();
-          break;
-        case 'w':
-          sz = getUserInfoString("Homepage").c_str();
-          break;
-        case 'h':
-          sz = getUserInfoString("PhoneNumber").c_str();
-          break;
-        case 'c':
-          sz = getUserInfoString("CellularNumber").c_str();
-          break;
-        case 'S':
-          sz = statusString(false).c_str();
-          break;
-        case 's':
-          sz = statusString(true).c_str();
-          break;
-
-        case 't':
-        {
-          time_t t = time(NULL);
-          strftime(szTemp, 128, "%b %d %r", localtime(&t));
-          sz = szTemp;
-          break;
-        }
-
-        case 'T':
-        {
-          time_t t = time(NULL);
-          strftime(szTemp, 128, "%b %d %R %Z", localtime(&t));
-          sz = szTemp;
-          break;
-        }
-
-        case 'z':
-        {
-          char zone = GetTimezone();
-          if (zone == TimezoneUnknown)
-            strcpy(szTemp, tr("Unknown"));
-          else
-            sprintf(szTemp, tr("GMT%c%i%c0"), (zone > 0 ? '-' : '+'), abs(zone / 2), (zone & 1 ? '3' : '0'));
-          sz = szTemp;
-          break;
-        }
-
-        case 'L':
-        {
-          char zone = GetTimezone();
-          if (zone == TimezoneUnknown)
-            strcpy(szTemp, tr("Unknown"));
-          else
-          {
-            time_t t = time(NULL) - zone*30*60;
-            struct tm ts;
-            strftime(szTemp, 128, "%R", gmtime_r(&t, &ts));
-          }
-
-          sz = szTemp;
-          break;
-        }
-        case 'F':
-        {
-          char zone = GetTimezone();
-          if (zone == TimezoneUnknown)
-            strcpy(szTemp, tr("Unknown"));
-          else
-          {
-            time_t t = time(NULL) - zone*30*60;
-            struct tm ts;
-            strftime(szTemp, 128, "%c", gmtime_r(&t, &ts));
-          }
-
-          sz = szTemp;
-          break;
-        }
-
-        case 'o':
-          if(m_nLastCounters[LAST_ONLINE] == 0)
-          {
-            strcpy(szTemp, tr("Never"));
-            sz = szTemp;
-            break;
-          }
-          strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastCounters[LAST_ONLINE]));
-          sz = szTemp;
-          break;
-        case 'O':
-          if (m_nStatus == ICQ_STATUS_OFFLINE || m_nOnlineSince == 0)
-          {
-            strcpy(szTemp, tr("Unknown"));
-            sz = szTemp;
-            break;
-          }
-          strftime(szTemp, 128, "%b %d %R", localtime(&m_nOnlineSince));
-          sz = szTemp;
-          break;
-
-        case 'I':
-        {
-          if (m_nIdleSince)
-          {
-            unsigned short nDays, nHours, nMinutes;
-            char szTime[128];
-            time_t nIdleTime = (time(NULL) > m_nIdleSince ? time(NULL) - m_nIdleSince : 0);
-            nDays = nIdleTime / ( 60 * 60 * 24);
-            nHours = (nIdleTime % (60 * 60 * 24)) / (60 * 60);
-            nMinutes = (nIdleTime % (60 * 60)) / 60;
-
-            strcpy(szTemp, "");
-
-            if (nDays)
-            {
-              if (nDays > 1)
-                sprintf(szTime, tr("%d days "), nDays);
-              else
-                sprintf(szTime, tr("%d day "), nDays);
-              strcat(szTemp, szTime);
-            }
-
-            if (nHours)
-            {
-              if (nHours > 1)
-                sprintf(szTime, tr("%d hours "), nHours);
-              else
-                sprintf(szTime, tr("%d hour "), nHours);
-              strcat(szTemp, szTime);
-            }
-
-            if (nMinutes)
-            {
-              if (nMinutes > 1)
-                sprintf(szTime, tr("%d minutes"), nMinutes);
-              else
-                sprintf(szTime, tr("%d minute"), nMinutes);
-              strcat(szTemp, szTime);
-            }
-          }
-          else
-            strcpy(szTemp, tr("Active"));
-
-          sz = szTemp;
-
-          break;
-        }
-
-        case 'm':
-        case 'M':
-          if (_szFormat[i] == 'm' || NewMessages())
-            sprintf(szTemp, "%d", NewMessages());
-          else
-            szTemp[0] = '\0';
-          sz = szTemp;
-          break;
-        case '%':
-          strcpy(szTemp, "\%");
-          sz = szTemp;
-          break;
-        default:
-          gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
-                    L_WARNxSTR, _szFormat[i]);
-          sprintf(szTemp, "%s%lu%%%c", (bLeft ? "-" : ""), nField, _szFormat[i]);
-          sz = szTemp;
-          bLeft = false;
-          nField = 0;
-          break;
-      }
-
-      if (!sz)
-        continue;
-
-      // If we need to be secure, then quote the % string
-      if (bSecure)
-      {
-        _sz[nPos++] = '\'';
-        CHECK_BUFFER;
-      }
-
-// The only way to escape a ' inside a ' is to do '\'' believe it or not
-#define PACK_STRING(x)                          \
-  while(x)                                      \
-  {                                             \
-    if (bSecure && sz[j] == '\'')               \
-    {                                           \
-      if (nPos >= bufSize - 5)                  \
-      {                                         \
-        bufSize *= 2;                           \
-        _sz = (char *)realloc(_sz, bufSize);    \
-      }                                         \
-      nPos += sprintf(&_sz[nPos], "'\\''");     \
-      j++;                                      \
-    }                                           \
-    else                                        \
-    {                                           \
-      _sz[nPos++] = sz[j++];                    \
-      CHECK_BUFFER;                             \
-    }                                           \
-  }
-
-      // Now append sz to the string using the given field width and alignment
-      if (nField == 0)
-      {
-        j = 0;
-        PACK_STRING(sz[j] != '\0');
-      }
-      else
-      {
-        if (bLeft)
-        {
-          j = 0;
-          PACK_STRING(sz[j] != '\0');
-          while(j++ < nField)
-          {
-            _sz[nPos++] = ' ';
-            CHECK_BUFFER;
+            // Digit after % but we don't allow field length, just skip this and leave as is
+            pos += 2;
+            continue;
           }
         }
         else
         {
-          int nLen = nField - strlen(sz);
-          if (nLen < 0)
+          if (s[pos2] == '-')
           {
-            j = 0;
-            //while(j < nField) _sz[nPos++] = sz[j++];
-            PACK_STRING(j < nField);
+            ++pos2;
+            alignLeft = true;
+          }
+          fieldWidth = 0;
+          while (isdigit(s[pos2]))
+          {
+            fieldWidth = fieldWidth*10 + (s[pos2] - '0');
+            ++pos2;
+          }
+        }
+
+        string sz;
+        bool szok = true;
+        char c = s[pos2];
+        switch (c)
+        {
+          case 'i':
+          {
+            char buf[32];
+            sz = ip_ntoa(Ip(), buf);
+            break;
+          }
+          case 'p':
+          {
+            char buf[10];
+            snprintf(buf, 10, "%d", Port());
+            sz = buf;
+            break;
+          }
+          case 'P':
+          {
+            Licq::ProtocolPluginsList plugins;
+            gPluginManager.getProtocolPluginsList(plugins);
+            szok = false;
+            BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
+            {
+              if (myId.protocolId() == plugin->getProtocolId())
+              {
+                sz = plugin->getName();
+                szok = true;
+                break;
+              }
+            }
+            break;
+          }
+          case 'e':
+            sz = getEmail();
+            break;
+          case 'n':
+            sz = getFullName();
+            break;
+          case 'f':
+            sz = getFirstName();
+            break;
+          case 'l':
+            sz = getLastName();
+            break;
+          case 'a':
+            sz = getAlias();
+            break;
+          case 'u':
+            sz = accountId();
+            break;
+          case 'w':
+            sz = getUserInfoString("Homepage");
+            break;
+          case 'h':
+            sz = getUserInfoString("PhoneNumber");
+            break;
+          case 'c':
+            sz = getUserInfoString("CellularNumber");
+            break;
+          case 'S':
+            sz = statusString(false);
+            break;
+          case 's':
+            sz = statusString(true);
+            break;
+
+          case 't':
+          case 'T':
+          {
+            time_t t = time(NULL);
+            char buf[128];
+            strftime(buf, 128, (c == 't' ? "%b %d %r" : "%b %d %R %Z"), localtime(&t));
+            sz = buf;
+            break;
+          }
+
+          case 'z':
+          {
+            char zone = GetTimezone();
+            if (zone == TimezoneUnknown)
+              sz = tr("Unknown");
+            else
+            {
+              char buf[128];
+              snprintf(buf, 128, tr("GMT%c%i%c0"), (zone > 0 ? '-' : '+'), abs(zone / 2), (zone & 1 ? '3' : '0'));
+              sz = buf;
+            }
+            break;
+          }
+
+          case 'L':
+          case 'F':
+          {
+            char zone = GetTimezone();
+            if (zone == TimezoneUnknown)
+              sz = tr("Unknown");
+            else
+            {
+              time_t t = time(NULL) - zone*30*60;
+              struct tm ts;
+              char buf[128];
+              strftime(buf, 128, (c == 'L' ? "%R" : "%c"), gmtime_r(&t, &ts));
+              sz = buf;
+            }
+            break;
+          }
+
+          case 'o':
+            if (m_nLastCounters[LAST_ONLINE] == 0)
+              sz  = tr("Never");
+            else
+            {
+              char buf[128];
+              strftime(buf, 128, "%b %d %R", localtime(&m_nLastCounters[LAST_ONLINE]));
+              sz = buf;
+            }
+            break;
+          case 'O':
+            if (myStatus == OfflineStatus || m_nOnlineSince == 0)
+              sz = tr("Unknown");
+            else
+            {
+              char buf[128];
+              strftime(buf, 128, "%b %d %R", localtime(&m_nOnlineSince));
+              sz = buf;
+            }
+            break;
+
+          case 'I':
+          {
+            if (m_nIdleSince == 0)
+              sz = tr("Active");
+            else
+            {
+              unsigned short nDays, nHours, nMinutes;
+              char buf[128];
+              time_t nIdleTime = (time(NULL) > m_nIdleSince ? time(NULL) - m_nIdleSince : 0);
+              nDays = nIdleTime / ( 60 * 60 * 24);
+              nHours = (nIdleTime % (60 * 60 * 24)) / (60 * 60);
+              nMinutes = (nIdleTime % (60 * 60)) / 60;
+
+              if (nDays)
+              {
+                snprintf(buf, 128, (nDays > 1 ? tr("%d days ") : tr("%d day ")), nDays);
+                sz += buf;
+              }
+              if (nDays)
+              {
+                snprintf(buf, 128, (nDays > 1 ? tr("%d hours ") : tr("%d hour ")), nDays);
+                sz += buf;
+              }
+              if (nDays)
+              {
+                snprintf(buf, 128, (nDays > 1 ? tr("%d minutes") : tr("%d minute")), nDays);
+                sz += buf;
+              }
+            }
+            break;
+          }
+
+          case 'm':
+          case 'M':
+            if (c == 'm' || NewMessages())
+            {
+              char buf[128];
+              snprintf(buf, 128, "%d", NewMessages());
+              sz = buf;
+            }
+            break;
+          case '%':
+            sz = "%";
+            break;
+          default:
+            gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n", L_WARNxSTR, c);
+            szok = false;
+            break;
+        }
+
+        if (!szok)
+        {
+          // No proper replace, leave original characters and move on
+          pos += 2;
+          continue;
+        }
+
+        // Add width and allignment
+        if (fieldWidth > 0)
+        {
+          int len = fieldWidth - sz.size();
+          if (alignLeft)
+          {
+            if (len > 0)
+              sz.append(len, ' ');
           }
           else
           {
-            for (j = 0; j < (unsigned long)nLen; j++)
-            {
-              _sz[nPos++] = ' ';
-              CHECK_BUFFER;
-            }
-            j = 0;
-            PACK_STRING(sz[j] != '\0');
+            if (len < 0)
+              sz.erase(len);
+            else if (len > 0)
+              sz.insert(0, len, ' ');
           }
         }
-      }
 
-      // If we need to be secure, then quote the % string
-      if (bSecure)
-      {
-        _sz[nPos++] = '\'';
-        CHECK_BUFFER;
-      }
-
-      if (_szFormat[i] != '\0') i++;
-    }
-    else
-    {
-      if (_szFormat[i] == '\n')
-      {
-        if (nFlags & USPRINTF_NTORN)
+        // If we need to be secure, then quote the % string
+        if (addQuotes)
         {
-          _sz[nPos++] = '\r';
-          CHECK_BUFFER;
+          size_t pos3 = 0;
+          while ((pos3 = sz.find('\'', pos3)) != string::npos)
+          {
+            // Single quotes in the string needs extra handling
+            sz.replace(pos3, 1, "'\\''");
+            pos3 += 4;
+          }
+          sz = '\'' + sz + '\'';
         }
-        if (nFlags & USPRINTF_PIPEISCMD)
-          bSecure = (_szFormat[i + 1] == '|');
+
+        s.replace(pos, pos2-pos+1, sz);
+        pos += sz.size();
+        break;
       }
-      _sz[nPos++] = _szFormat[i++];
-      CHECK_BUFFER;
+      case '\n':
+        // If we're converting newlines, insert \r before the \n we just found
+        if (toDos)
+        {
+          s.insert(pos, "\r");
+          ++pos;
+        }
+        // Check if next line starts with a pipe
+        if (quotes == usprintf_quotepipe && pos+1 < s.size())
+          addQuotes = (s[pos + 1] == '|');
+
+        // Fall through to let new line character be handled normally
+      default:
+        // Nothing special here, check next character
+        ++pos;
     }
   }
-  _sz[nPos] = '\0';
-
-  return _sz;
+  return s;
 }
 
 string UserId::normalizeId(const string& accountId, unsigned long ppid)

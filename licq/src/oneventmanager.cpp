@@ -224,11 +224,8 @@ void OnEventManager::performOnEvent(OnEventType event, const Licq::User* user)
 
   string param = myParameters[event];
   if (user != NULL)
-  {
-    char* newParam = user->usprintf(param.c_str(), Licq::USPRINTF_LINEISCMD);
-    param = newParam;
-    free(newParam);
-  }
+    param = user->usprintf(param, Licq::User::usprintf_quoteall);
+
   if (!param.empty())
   {
     string fullCmd = myCommand + " " + param + " &";

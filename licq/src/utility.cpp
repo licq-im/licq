@@ -180,10 +180,7 @@ bool Utility::setFields(const UserId& userId)
   Licq::UserReadGuard u(userId);
   if (!u.isLocked())
     return false;
-  char *szTmp;
-  szTmp = u->usprintf(myCommand.c_str(), USPRINTF_NOFW|USPRINTF_LINEISCMD);
-  myFullCommand = szTmp;
-  free(szTmp);
+  myFullCommand = u->usprintf(myCommand, Licq::User::usprintf_quoteall, false, false);
   vector<UtilityUserField *>::iterator iter;
   for (iter = myUserFields.begin(); iter != myUserFields.end(); ++iter)
     (*iter)->setFields(*u);
@@ -234,10 +231,7 @@ UtilityUserField::~UtilityUserField()
 
 bool UtilityUserField::setFields(const User* u)
 {
-  char *szTmp;
-  szTmp = u->usprintf(myDefaultValue.c_str(), USPRINTF_NOFW|USPRINTF_LINEISCMD);
-  myFullDefault = szTmp;
-  free(szTmp);
+  myFullDefault = u->usprintf(myDefaultValue, Licq::User::usprintf_quoteall, false, false);
   return true;
 }
 

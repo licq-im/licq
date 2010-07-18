@@ -373,11 +373,7 @@ void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
         {
           if ((*iter)->m_bNotify)
           {
-            char format[128], *ubuf;
-			strcpy(format, "%u %P %-20a %3m %s");
-			ubuf = u->usprintf(format);
-            fprintf((*iter)->fs, "%d %s\n", CODE_NOTIFYxSTATUS, ubuf);
-			free(ubuf);
+            fprintf((*iter)->fs, "%d %s\n", CODE_NOTIFYxSTATUS, u->usprintf("%u %P %-20a %3m %s").c_str());
             fflush((*iter)->fs);
           }
         }
@@ -394,11 +390,7 @@ void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
         {
           if ((*iter)->m_bNotify)
           {
-            char format[128], *ubuf;
-			strcpy(format, "%u %P %3m");
-			ubuf = u->usprintf(format);
-            fprintf((*iter)->fs, "%d %s\n", CODE_NOTIFYxMESSAGE, ubuf);
-			free(ubuf);
+            fprintf((*iter)->fs, "%d %s\n", CODE_NOTIFYxMESSAGE, u->usprintf("%u %P %3m").c_str());
             fflush((*iter)->fs);
           }
         }
@@ -1043,24 +1035,18 @@ int CRMSClient::Process_LIST()
   }
   NEXT_WORD(data_arg);
 
-  char format[128], *ubuf;
+  string format;
   if (*data_arg == '\0')
-  {
-    strcpy(format, "%u %P %-20a %3m %s");
-  }
+    format = "%u %P %-20a %3m %s";
   else
-  {
-    strcpy(format, data_arg);
-  }
+    format = data_arg;
 
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->isInGroup(nGroup) &&
         ((!pUser->isOnline() && n&2) || (pUser->isOnline() && n&1)))
     {
-      ubuf = pUser->usprintf(format);
-      fprintf(fs, "%d %s\n", CODE_LISTxUSER, ubuf);
-      free(ubuf);
+      fprintf(fs, "%d %s\n", CODE_LISTxUSER, pUser->usprintf(format).c_str());
     }
   }
   FOR_EACH_USER_END

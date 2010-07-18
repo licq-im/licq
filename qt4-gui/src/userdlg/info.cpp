@@ -278,22 +278,20 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
 
 void UserPages::Info::loadPageGeneral(const Licq::User* u)
 {
-  char buf[32];
-
   if (!m_bOwner)
     chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
   nfoUin->setText(myId);
   nfoAlias->setText(QString::fromUtf8(u->getAlias().c_str()));
   nfoFirstName->setText(codec->toUnicode(u->getFirstName().c_str()));
   nfoLastName->setText(codec->toUnicode(u->getLastName().c_str()));
-  QString ip = QString(u->IpStr(buf));
+  QString ip(u->ipToString().c_str());
   if (u->Ip() != u->IntIp() && u->IntIp() != 0)
   {
-    ip.append(QString(" / %1").arg(u->IntIpStr(buf)));
+    ip.append(QString(" / %1").arg(u->internalIpToString().c_str()));
   }
   if (u->Port() != 0)
   {
-    ip.append(QString(":%1").arg(u->PortStr(buf)));
+    ip.append(QString(":%1").arg(u->portToString().c_str()));
   }
   nfoIp->setText(ip);
   tznZone->setData(u->GetTimezone());

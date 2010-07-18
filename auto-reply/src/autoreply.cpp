@@ -249,9 +249,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
   string command = myProgram + " ";
   {
     Licq::UserReadGuard u(userId);
-    char* tmp = u->usprintf(myArguments.c_str());
-    command += tmp;
-    free(tmp);
+    command += u->usprintf(myArguments);
   }
 
   if (!POpen(command.c_str()))

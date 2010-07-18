@@ -50,11 +50,6 @@ const unsigned short AUTO_ACCEPT_CHAT   = 0x0100;
 const unsigned short AUTO_ACCEPT_FILE   = 0x0200;
 const unsigned short AUTO_SECURE        = 0x0400;
 
-const unsigned short USPRINTF_NTORN     = 1;
-const unsigned short USPRINTF_NOFW      = 2;
-const unsigned short USPRINTF_LINEISCMD = 4;
-const unsigned short USPRINTF_PIPEISCMD = 8;
-
 const unsigned short LAST_ONLINE        = 0;
 const unsigned short LAST_RECV_EVENT    = 1;
 const unsigned short LAST_SENT_EVENT    = 2;
@@ -336,7 +331,23 @@ public:
   const std::string& customAutoResponse() const { return myCustomAutoResponse; }
   bool NotInList() const                        { return m_bNotInList; }
 
-  char* usprintf(const char* szFormat, unsigned long nFlags = 0) const;
+  enum usprintf_quotes
+  {
+    usprintf_quotenone,
+    usprintf_quotepipe,
+    usprintf_quoteall,
+  };
+
+  /**
+   * Perform printf style convertion of a string using data from the user object
+   *
+   * @param format Input string
+   * @param quotes Add quotes around all parameters, never or just on lines starting with pipe
+   * @param toDos Add carrige return for all newlines
+   * @param allowFieldWidth True to allow width parameter for fields
+   * @return Input string with parameters replaced
+   */
+  std::string usprintf(const std::string& format, int quotes = usprintf_quotenone, bool toDos = false, bool allowFieldWidth = true) const;
 
   // General Info
   void setAlias(const std::string& alias);
@@ -688,9 +699,9 @@ public:
   bool SendRealIp() const                       { return SendIntIp(); }
   void SetSendRealIp(bool s)      { SetSendIntIp(s); }
 
-  char* IpStr(char* rbuf) const;
-  char* IntIpStr(char* rbuf) const;
-  char* PortStr(char* rbuf) const;
+  std::string ipToString() const;
+  std::string internalIpToString() const;
+  std::string portToString() const;
 
   // User TLV List handling
   void AddTLV(TlvPtr);

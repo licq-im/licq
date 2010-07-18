@@ -424,9 +424,7 @@ bool ContactUserData::updateText(const Licq::User* licqUser)
     format.replace("%a", "@_USER_ALIAS_@");
 
     const QTextCodec* codec = UserCodec::codecForUser(licqUser);
-    char* temp = licqUser->usprintf(codec->fromUnicode(format));
-    QString newStr = codec->toUnicode(temp);
-    free(temp);
+    QString newStr = codec->toUnicode(licqUser->usprintf(codec->fromUnicode(format).data()).c_str());
 
     newStr.replace("@_USER_ALIAS_@", myAlias);
 
@@ -832,31 +830,13 @@ QString ContactUserData::tooltip() const
   }
 
   if (config->popupIdleTime() && u->IdleSince())
-  {
-    char* szTemp;
-    szTemp = u->usprintf("%I");
-    QString temp(szTemp);
-    free(szTemp);
-    s += "<br>" + tr("Idle: ") + temp;
-  }
+    s += "<br>" + tr("Idle: ") + u->usprintf("%I").c_str();
 
   if (config->popupLocalTime())
-  {
-    char* szTemp;
-    szTemp = u->usprintf("%F");
-    QString temp(szTemp);
-    free(szTemp);
-    s += "<br>" + tr("Local time: ") + temp;
-  }
+    s += "<br>" + tr("Local time: ") + u->usprintf("%F").c_str();
 
   if (config->popupID())
-  {
-    char* szTemp;
-    szTemp = u->usprintf("%u");
-    QString temp(szTemp);
-    free(szTemp);
-    s += "<br>" + tr("ID: ") + temp;
-  }
+    s += "<br>" + tr("ID: ") + u->usprintf("%u").c_str();
 
   s += "</nobr>";
 

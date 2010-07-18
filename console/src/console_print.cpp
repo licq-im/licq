@@ -276,7 +276,7 @@ void CLicqConsole::PrintVariable(unsigned short nVar)
 void CLicqConsole::CreateUserList()
 {
   unsigned short i = 0;
-  char *szTmp = 0;
+  string sz;
   struct SUser *s = NULL;
   list <SUser *>::iterator it;
 
@@ -310,27 +310,27 @@ void CLicqConsole::CreateUserList()
 
     if (status & User::InvisibleStatus)
     {
-      szTmp = pUser->usprintf(myOtherOnlineFormat.c_str());
+      sz = pUser->usprintf(myOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
     else if (status == User::OfflineStatus)
     {
-      szTmp = pUser->usprintf(myOfflineFormat.c_str());
+      sz = pUser->usprintf(myOfflineFormat);
       s->color = m_cColorOffline;
     }
     else if (status & User::AwayStatuses)
     {
-      szTmp = pUser->usprintf(myAwayFormat.c_str());
+      sz = pUser->usprintf(myAwayFormat);
       s->color = m_cColorAway;
     }
     else if (status & User::FreeForChatStatus)
     {
-      szTmp = pUser->usprintf(myOtherOnlineFormat.c_str());
+      sz = pUser->usprintf(myOtherOnlineFormat);
       s->color = m_cColorOnline;
     }
     else
     {
-      szTmp = pUser->usprintf(myOnlineFormat.c_str());
+      sz = pUser->usprintf(myOnlineFormat);
       s->color = m_cColorOnline;
     }
 
@@ -340,16 +340,15 @@ void CLicqConsole::CreateUserList()
     // Create the line to printout now
     if (pUser->NewMessages() > 0)
     {
-      s->szLine = new char[strlen(szTmp) + 19];
-      snprintf(s->szLine, strlen(szTmp) + 19, "</%d></K>%s<!K><!%d>", s->color->nColor - 6, szTmp ? szTmp : "", s->color->nColor - 6);
-      s->szLine[strlen(szTmp) + 18] = '\0';
+      s->szLine = new char[sz.size() + 19];
+      snprintf(s->szLine, sz.size() + 19, "</%d></K>%s<!K><!%d>", s->color->nColor - 6, sz.c_str(), s->color->nColor - 6);
+      s->szLine[sz.size() + 18] = '\0';
     } else {
-      s->szLine = new char[strlen(szTmp) + 11];
-      snprintf(s->szLine, strlen(szTmp) + 11, "</%d>%s<!%d>", s->color->nColor, szTmp ? szTmp : "", s->color->nColor);
-      s->szLine[strlen(szTmp) + 10] = '\0';
+      s->szLine = new char[sz.size() + 11];
+      snprintf(s->szLine, sz.size() + 11, "</%d>%s<!%d>", s->color->nColor, sz.c_str(), s->color->nColor);
+      s->szLine[sz.size() + 10] = '\0';
     }
-    free(szTmp);
-    
+
     // Insert into the list
     bool found = false;
     for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
@@ -578,7 +577,6 @@ void CLicqConsole::PrintInfo_General(const Licq::UserId& userId)
 
   // Some IP, Real IP and last seen stuff
   char buf[32];
-  char szPort[32];
   char szRealIp[32];
   strcpy(szRealIp, Licq::ip_ntoa(u->RealIp(), buf));
   time_t nLast = u->LastOnline();
@@ -595,7 +593,7 @@ void CLicqConsole::PrintInfo_General(const Licq::UserId& userId)
 
   winMain->wprintf("%C%AName: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getFullName().c_str());
   winMain->wprintf("%C%AIp: %Z%s:%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
-                   u->IpStr(buf), u->PortStr(szPort));
+      u->ipToString().c_str(), u->portToString().c_str());
   winMain->wprintf("%C%AReal Ip: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    szRealIp);
   winMain->wprintf("%C%AEmail 1: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("Email1").c_str());

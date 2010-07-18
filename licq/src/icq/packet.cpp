@@ -40,8 +40,6 @@
 
 using namespace std;
 using Licq::Group;
-using Licq::USPRINTF_NTORN;
-using Licq::USPRINTF_PIPEISCMD;
 using Licq::StringList;
 using Licq::UserCategoryMap;
 using Licq::UserGroupList;
@@ -2298,20 +2296,14 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
     {
       if (!u->customAutoResponse().empty())
       {
-        //m_szMessage = (char *)malloc(u->customAutoResponse().size() + 512);
-        //pUser->usprintf(m_szMessage, u->customAutoResponse().c_str(), USPRINTF_NTORN);
-        char *cus;
-        char *def;
-        def = u->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-        cus = u->usprintf(u->customAutoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-        m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
-        sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
-        free(cus);
-        free(def);
+        string def = u->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
+        string cus = u->usprintf(u->customAutoResponse(), Licq::User::usprintf_quotepipe, true);
+        m_szMessage = (char *)malloc(cus.size() + def.size() + 60);
+        sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def.c_str(), cus.c_str());
       }
       else
       {
-        m_szMessage = u->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+        m_szMessage = strdup(u->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true).c_str());
       }
     }
     else
@@ -5020,20 +5012,14 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
   {
     if (!pUser->customAutoResponse().empty())
     {
-      //m_szMessage = (char *)malloc(pUser->customAutoResponse().size() + 512);
-      //pUser->usprintf(m_szMessage, pUser->customAutoResponse().c_str(), USPRINTF_NTORN);
-      char *cus;
-      char *def;
-      def = pUser->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-      cus = pUser->usprintf(pUser->customAutoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
-      m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
-      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
-      free(cus);
-      free(def);
+      string def = pUser->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
+      string cus = pUser->usprintf(pUser->customAutoResponse().c_str(), Licq::User::usprintf_quotepipe, true);
+      m_szMessage = (char *)malloc(cus.size() + def.size() + 60);
+      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def.c_str(), cus.c_str());
     }
     else
     {
-      m_szMessage = pUser->usprintf(o->autoResponse().c_str(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      m_szMessage = strdup(pUser->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true).c_str());
     }
 
   }
