@@ -1543,7 +1543,7 @@ CPU_Type2Message::CPU_Type2Message(const ICQUser* u, bool _bAck, bool _bDirectIn
                                    unsigned long nMsgID2)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
-	int nUinLen = strlen(u->IdString());
+  int nUinLen = u->accountId().size();
         unsigned short nDirectInfo = _bDirectInfo ? 14 : 0; //size of di
 
 	m_nSize += 55 + nUinLen + nDirectInfo;
@@ -1564,7 +1564,7 @@ void CPU_Type2Message::InitBuffer()
 
   Licq::OwnerReadGuard o(LICQ_PPID);
 
-	int nUinLen = strlen(m_pUser->IdString());
+  int nUinLen = m_pUser->accountId().size();
 
 	unsigned long nID1, nID2;
   unsigned short nDirectInfo = m_bDirectInfo ? 14 : 0; // size of direct info
@@ -1584,7 +1584,7 @@ void CPU_Type2Message::InitBuffer()
 	buffer->PackUnsignedLongBE(nID2); // lower 4 bytes of message id
 	buffer->PackUnsignedShortBE(0x02); // message format
 	buffer->PackChar(nUinLen);
-	buffer->Pack(m_pUser->IdString(), nUinLen);
+  buffer->pack(m_pUser->accountId());
 
 	buffer->PackUnsignedShortBE(0x0005);	// tlv - message info
 	buffer->PackUnsignedShortBE(m_nSize - 25 - nUinLen - m_nExtraLen);
@@ -2211,7 +2211,7 @@ CPU_NoManager::CPU_NoManager(const ICQUser* u, unsigned long nMsgID1,
                              unsigned long nMsgID2)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  unsigned long nUinLen = strlen(u->IdString());
+  unsigned long nUinLen = u->accountId().size();
 
   m_nSize += 17 + nUinLen;
 
@@ -2221,7 +2221,7 @@ CPU_NoManager::CPU_NoManager(const ICQUser* u, unsigned long nMsgID1,
   buffer->PackUnsignedLongBE(nMsgID2);
   buffer->PackUnsignedShortBE(2);
   buffer->PackChar(nUinLen);
-  buffer->Pack(u->IdString(), nUinLen);
+  buffer->pack(u->accountId());
   buffer->PackUnsignedShortBE(0x03);  /* tlv3?? who knows, doesn't fit with the
                                          ack below */
   buffer->PackUnsignedShortBE(0x02);
@@ -2238,7 +2238,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
                                            const char *GUID)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  strncpy(m_szUin, u->IdString(), sizeof(m_szUin));
+  strncpy(m_szUin, u->accountId().c_str(), sizeof(m_szUin));
   m_szUin[sizeof(m_szUin) - 1] = '\0';
   m_nUinLen = strlen(m_szUin);
 
@@ -2479,7 +2479,7 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
   Licq::OwnerReadGuard o(LICQ_PPID);
 
   snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
-	   szParsedNumber, szMessage, o->IdString(), o->GetAlias(), szTime);
+      szParsedNumber, szMessage, o->accountId().c_str(), o->getAlias().c_str(), szTime);
   szXmlStr[459] = '\0';
 
   int nLenXmlStr = strlen_safe(szXmlStr) + 1;

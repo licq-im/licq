@@ -117,7 +117,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
         if (u.isLocked() && !u->userEncoding().empty())
           szFromEncoding = strdup(u->userEncoding().c_str());
 
-        if (u.isLocked() && isdigit(u->IdString()[0]))
+        if (u.isLocked() && isdigit(u->accountId()[0]))
         {
           // ICQ Users can send a flag that says UTF8/16 is ok
           if (u->SupportsUTF8())
@@ -125,7 +125,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
           else if (!u->userEncoding().empty())
             nCharset = CHARSET_CUSTOM;
         }
-        else if (u.isLocked() && !(isdigit(u->IdString()[0])))
+        else if (u.isLocked() && !(isdigit(u->accountId()[0])))
         {
           // AIM users support UTF8/16
           nCharset = CHARSET_UNICODE;
@@ -1144,7 +1144,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, unsigned char nChanne
 bool IcqProtocol::openConnectionToUser(const Licq::UserId& userId,
     Licq::TCPSocket* sock, unsigned short nPort)
 {
-  char szAlias[64];
+  string name;
   unsigned long ip;
   unsigned long intip;
   bool bSendIntIp;
@@ -1153,18 +1153,17 @@ bool IcqProtocol::openConnectionToUser(const Licq::UserId& userId,
     if (!u.isLocked())
       return false;
 
-    snprintf(szAlias, sizeof(szAlias), "%s (%s)", u->GetAlias(), u->IdString());
-    szAlias[sizeof(szAlias) - 1] = '\0';
+    name = u->getAlias() + " (" + u->accountId() + ")";
     ip = u->Ip();
     intip = u->IntIp();
     bSendIntIp = u->SendIntIp();
   }
 
-  return OpenConnectionToUser(szAlias, ip, intip, sock, nPort, bSendIntIp);
+  return OpenConnectionToUser(name, ip, intip, sock, nPort, bSendIntIp);
 }
 
 
-bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
+bool IcqProtocol::OpenConnectionToUser(const string& name, unsigned long nIp,
    unsigned long nIntIp, Licq::TCPSocket* sock, unsigned short nPort, bool bSendIntIp)
 {
   char buf[128];
@@ -1172,24 +1171,24 @@ bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
   // Sending to internet ip
   if (!bSendIntIp)
   {
-    gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, szAlias,
+    gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, name.c_str(),
         Licq::ip_ntoa(nIp, buf), nPort);
     // If we fail to set the remote address, the ip must be 0
     if (!sock->connectTo(nIp, nPort))
     {
-      gLog.Warn(tr("%sConnect to %s failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
+      gLog.Warn(tr("%sConnect to %s failed:\n%s%s.\n"), L_WARNxSTR, name.c_str(),
           L_BLANKxSTR, sock->errorStr().c_str());
 
       // Now try the internal ip if it is different from this one and we are behind a firewall
       if (sock->Error() != EINTR && nIntIp != nIp &&
           nIntIp != 0 && CPacket::Firewall())
       {
-        gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, szAlias,
+        gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, name.c_str(),
             Licq::ip_ntoa(nIntIp, buf), nPort);
 
         if (!sock->connectTo(nIntIp, nPort))
         {
-          gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
+          gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, name.c_str(),
               L_BLANKxSTR, sock->errorStr().c_str());
           return false;
         }
@@ -1204,11 +1203,11 @@ bool IcqProtocol::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
   // Sending to Internal IP
   else
   {
-    gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, szAlias,
+    gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, name.c_str(),
        Licq::ip_ntoa(nIntIp, buf), nPort);
     if (!sock->connectTo(nIntIp, nPort))
     {
-      gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
+      gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, name.c_str(),
           L_BLANKxSTR, sock->errorStr().c_str());
       return false;
     }
@@ -1480,7 +1479,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   if (u->SocketDesc(pSock->Channel()) != sockfd)
   {
     gLog.Warn("%sUser %s (%s) socket (%d) does not match incoming message (%d).\n",
-              L_TCPxSTR, u->GetAlias(), u->IdString(),
+        L_TCPxSTR, u->getAlias().c_str(), u->accountId().c_str(),
               u->SocketDesc(pSock->Channel()), sockfd);
   }
 

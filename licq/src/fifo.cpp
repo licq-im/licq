@@ -251,7 +251,7 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
       Licq::UserReadGuard pUser(user);
       if (pUser->getAlias() == _szId)
       {
-        _szId = strdup(pUser->IdString());
+        _szId = strdup(pUser->accountId().c_str());
         ret = true;
         break;
       }
@@ -268,7 +268,7 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
       Licq::UserReadGuard pUser(user);
       if (pUser->getAlias() == s)
       {
-        _szId = strdup(pUser->IdString());
+        _szId = strdup(pUser->accountId().c_str());
         ret = true;
         break;
       }

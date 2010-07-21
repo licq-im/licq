@@ -263,7 +263,7 @@ void UserPages::Settings::load(const Licq::User* user)
   myIgnoreListCheck->setChecked(user->IgnoreList());
   myNewUserCheck->setChecked(user->NewUser());
 
-  unsigned int ppid = user->PPID();
+  unsigned int ppid = user->protocolId();
   bool isIcq = (ppid == LICQ_PPID);
   myUseRealIpCheck->setEnabled(isIcq);
   myStatusNoneRadio->setEnabled(isIcq);

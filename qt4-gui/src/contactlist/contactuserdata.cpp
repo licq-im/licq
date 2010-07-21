@@ -73,7 +73,7 @@ ContactUserData::ContactUserData(const Licq::User* licqUser, QObject* parent)
     myUserIcon(NULL)
 {
   myUserId = licqUser->id();
-  myPpid = licqUser->PPID();
+  myPpid = licqUser->protocolId();
   myAccountId = licqUser->realAccountId().c_str();
 
   if (myRefreshTimer == NULL)

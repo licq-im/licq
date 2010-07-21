@@ -117,7 +117,7 @@ UserPages::Info::Info(bool isOwner, unsigned long protocolId, UserDlg* parent)
 void UserPages::Info::load(const Licq::User* user)
 {
   myUserId = user->id();
-  myId = user->IdString();
+  myId = user->accountId().c_str();
   codec = UserCodec::codecForUser(user);
 
   loadPageGeneral(user);

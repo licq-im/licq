@@ -208,10 +208,6 @@ public:
    */
   const std::string& realAccountId() const      { return accountId(); }
 
-  // Old deprecated functions to get account id and protocol id, do not use in new code
-  const char* IdString() const { return accountId().c_str(); }
-  unsigned long PPID() const { return ppid(); }
-
   // General Info
   //!Retrieves the user's alias.
   //LICQ_DEPRECATED // Use getAlias() instead

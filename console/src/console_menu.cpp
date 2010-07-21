@@ -572,7 +572,7 @@ void CLicqConsole::MenuUins(char *)
   for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
   {
     Licq::UserReadGuard u((*it)->userId);
-    winMain->wprintf("%s %A-%Z %s\n", u->GetAlias(), A_BOLD, A_BOLD, u->IdString());
+    winMain->wprintf("%s %A-%Z %s\n", u->getAlias().c_str(), A_BOLD, A_BOLD, u->accountId().c_str());
   }
 }
 
@@ -652,14 +652,14 @@ bool CLicqConsole::GetContactFromArg(char **p_szArg, Licq::UserId& userId)
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    if ((nPPID && pUser->PPID() == nPPID && strcasecmp(szAlias, pUser->GetAlias()) == 0) ||
+    if ((nPPID && pUser->protocolId() == nPPID && strcasecmp(szAlias, pUser->getAlias().c_str()) == 0) ||
         (!nPPID && strcasecmp(szAlias, pUser->GetAlias()) == 0))
     {
       userId = pUser->id();
       FOR_EACH_PROTO_USER_BREAK;
     }
-    else if ((nPPID && pUser->PPID() == nPPID && strcasecmp(szAlias, pUser->IdString()) == 0) ||
-             (!nPPID && strcasecmp(szAlias, pUser->IdString()) == 0))
+    else if ((nPPID && pUser->protocolId() == nPPID && strcasecmp(szAlias, pUser->accountId().c_str()) == 0) ||
+        (!nPPID && strcasecmp(szAlias, pUser->accountId().c_str()) == 0))
     {
       userId = pUser->id();
       FOR_EACH_PROTO_USER_BREAK;

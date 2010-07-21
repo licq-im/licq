@@ -980,7 +980,7 @@ void IcqProtocol::icqUpdateContactList()
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
     n++;
-    users.push_back(pUser->IdString());
+    users.push_back(pUser->accountId());
     if (n == myMaxUsersPerPacket)
     {
       CSrvPacketTcp *p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
@@ -1028,7 +1028,7 @@ void IcqProtocol::icqSendVisibleList()
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     if (pUser->VisibleList())
-      users.push_back(pUser->IdString());
+      users.push_back(pUser->accountId());
   }
   FOR_EACH_PROTO_USER_END
   CSrvPacketTcp* p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxVISIBLExLIST);
@@ -1044,7 +1044,7 @@ void IcqProtocol::icqSendInvisibleList()
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     if (pUser->InvisibleList())
-      users.push_back(pUser->IdString());
+      users.push_back(pUser->accountId());
   }
   FOR_EACH_PROTO_USER_END
 
@@ -1740,7 +1740,7 @@ string IcqProtocol::findUserByCellular(const string& cellular)
     ParseDigits(szParsedNumber1, pUser->getCellularNumber().c_str(), 15);
     ParseDigits(szParsedNumber2, cellular.c_str(), 15);
     if (!strcmp(szParsedNumber1, szParsedNumber2))
-      id = pUser->IdString();
+      id = pUser->accountId();
   }
   FOR_EACH_USER_END
 
@@ -2296,7 +2296,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
               u->statusString().c_str(), tcpVersion & 0x0F, szClient);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
           gLog.Unknown("%sUnknown status flag for %s (%s): 0x%08lX\n",
-                       L_UNKNOWNxSTR, u->GetAlias(), u->IdString(),
+                L_UNKNOWNxSTR, u->getAlias().c_str(), u->accountId().c_str(),
                        (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS));
         nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
         u->setAutoResponse("");
@@ -2325,7 +2325,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       if (mode != MODE_DIRECT && mode != MODE_INDIRECT)
       {
         gLog.Unknown("%sUnknown peer-to-peer mode for %s (%s): %d\n", L_UNKNOWNxSTR,
-                     u->GetAlias(), u->IdString(), mode);
+              u->getAlias().c_str(), u->accountId().c_str(), mode);
         u->SetMode(MODE_DIRECT);
         u->SetSendServer(false);
       }
@@ -3317,7 +3317,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	    }
 	    else
 	      gLog.Info(tr("%s%s through server from %s (%s).\n"), L_SBLANKxSTR,
-	    					szType, u->GetAlias(), u->IdString());
+                    szType, u->getAlias().c_str(), u->accountId().c_str());
 
                 u->setIsTyping(false);
 
@@ -5137,8 +5137,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         switch (nSubtype)
         {
         case ICQ_CMDxMETA_GENERALxINFO:
-        {   
-          gLog.Info(tr("%sGeneral info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
+              {
+                gLog.Info(tr("%sGeneral info on %s (%s).\n"), L_SRVxSTR,
+                    u->getAlias().c_str(), u->accountId().c_str());
 
           // main home info
           u->SetEnableSave(false);
@@ -5218,8 +5219,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 break;
               }
         case ICQ_CMDxMETA_MORExINFO:
-        {
-          gLog.Info(tr("%sMore info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
+              {
+                gLog.Info(tr("%sMore info on %s (%s).\n"), L_SRVxSTR,
+                    u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
                 u->setUserInfoUint("Age", msg.UnpackUnsignedShort());
@@ -5272,9 +5274,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 break;
               }
         case ICQ_CMDxMETA_EMAILxINFO:
-        {
-
-          gLog.Info(tr("%sEmail info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
+              {
+                gLog.Info(tr("%sEmail info on %s (%s).\n"), L_SRVxSTR,
+                    u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
           int nEmail = (int)msg.UnpackChar();
@@ -5314,8 +5316,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         case ICQ_CMDxMETA_HOMEPAGExINFO:
         {
           gLog.Info("%sHomepage info on %s (%s).\n", L_SRVxSTR, u->GetAlias(),
-            u->IdString());          
-          
+                    u->accountId().c_str());
+
           u->SetEnableSave(false);
           
           unsigned char categoryPresent = msg.UnpackChar();
@@ -5343,7 +5345,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               }
 
         case ICQ_CMDxMETA_WORKxINFO:
-          gLog.Info(tr("%sWork info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
+                gLog.Info(tr("%sWork info on %s (%s).\n"), L_SRVxSTR,
+                    u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
@@ -5391,8 +5394,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 break;
 
         case ICQ_CMDxMETA_ABOUT:
-        {
-          gLog.Info(tr("%sAbout info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
+              {
+                gLog.Info(tr("%sAbout info on %s (%s).\n"), L_SRVxSTR,
+                    u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
                 u->setUserInfoString("About",
@@ -5414,7 +5418,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           unsigned i, n;
 
           gLog.Info("%sPersonal Interests info on %s (%s).\n", L_SRVxSTR,
-                    u->GetAlias(), u->IdString());
+                    u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
                 u->getInterests().clear();
@@ -5446,7 +5450,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           unsigned i, n;
 
           gLog.Info("%sOrganizations/Past Background info on %s (%s).\n",
-                    L_SRVxSTR, u->GetAlias(), u->IdString());
+                    L_SRVxSTR, u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
 

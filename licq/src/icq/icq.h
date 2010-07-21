@@ -246,7 +246,7 @@ public:
   void CheckExport();
   bool openConnectionToUser(const Licq::UserId& userId, Licq::TCPSocket* sock,
      unsigned short nPort);
-  bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
+  bool OpenConnectionToUser(const std::string& name, unsigned long nIp,
      unsigned long nIntIp, Licq::TCPSocket* sock, unsigned short nPort,
      bool bSendIntIp);
 

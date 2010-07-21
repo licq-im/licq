@@ -3263,7 +3263,7 @@ void CLicqConsole::UserSelect()
 
   Licq::OwnerReadGuard o(LICQ_PPID);
   winMain->wprintf("%A%CEnter your password for %s (%s):%C%Z\n", A_BOLD,
-                   COLOR_GREEN, o->GetAlias(), o->IdString(), COLOR_WHITE, A_BOLD);
+      COLOR_GREEN, o->getAlias().c_str(), o->accountId().c_str(), COLOR_WHITE, A_BOLD);
 }
 
 /*------------------------------------------------------------------------

@@ -1188,7 +1188,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     else
     {
       gLog.Info(tr("%s%s (%s) requested auto response.\n"), L_SRVxSTR,
-          u->GetAlias(), u->IdString());
+            u->getAlias().c_str(), u->accountId().c_str());
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, nMsgType, true, nLevel);
@@ -1271,7 +1271,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       pAckEvent->m_pExtendedAck = pExtendedAck;
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
       gLog.Info(tr("%s%s accepted from %s (%s).\n"), L_SRVxSTR, szType,
-          u->GetAlias(), u->IdString());
+          u->getAlias().c_str(), u->accountId().c_str());
       u->Unlock();
       ProcessDoneEvent(pAckEvent);
       u->Lock(LOCK_W);
@@ -1292,13 +1292,13 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         if (gDaemon.ignoreType(Licq::Daemon::IgnoreNewUsers))
         {
           gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
-                    szType, u->IdString());
+              szType, u->accountId().c_str());
           if (szType)  free(szType);
           gDaemon.rejectEvent(u->id(), pEvent);
           u->Unlock();
           return;
         }
-        gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->IdString());
+        gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->accountId().c_str());
         u->Unlock();
         Licq::gUserManager.addUser(u->id(), false);
         bNewUser = false;
@@ -1308,7 +1308,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       }
       else
         gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
-            u->IdString());
+            u->accountId().c_str());
 
       if (gDaemon.addUserEvent(u, pEvent))
         gOnEventManager.performOnEvent(onEventType, u);

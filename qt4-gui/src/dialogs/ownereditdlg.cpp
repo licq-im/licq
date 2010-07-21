@@ -94,7 +94,7 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
     Licq::OwnerReadGuard o(ppid);
     if (o.isLocked())
     {
-      edtId->setText(o->IdString());
+      edtId->setText(o->accountId().c_str());
       edtId->setEnabled(false);
       edtPassword->setText(o->password().c_str());
       chkSave->setChecked(o->SavePassword());

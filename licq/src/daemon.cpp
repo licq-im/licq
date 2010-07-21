@@ -213,16 +213,11 @@ void Daemon::SaveConf()
     sprintf(szOwnerId, "Owner%d.Id", n);
     sprintf(szOwnerPPID, "Owner%d.PPID", n++);
 
-    szPPID[0] = (pOwner->PPID() & 0xFF000000) >> 24;
-    szPPID[1] = (pOwner->PPID() & 0x00FF0000) >> 16;
-    szPPID[2] = (pOwner->PPID() & 0x0000FF00) >> 8;
-    szPPID[3] = (pOwner->PPID() & 0x000000FF);
-    szPPID[4] = '\0';
-
     pOwner->SaveLicqInfo();
-    if (strcmp(pOwner->IdString(), "0") != 0)
+    if (pOwner->accountId() != "0")
     {
-      licqConf.set(szOwnerId, pOwner->IdString());
+      Licq::protocolId_toStr(szPPID, pOwner->protocolId());
+      licqConf.set(szOwnerId, pOwner->accountId());
       licqConf.set(szOwnerPPID, szPPID);
     }
   }

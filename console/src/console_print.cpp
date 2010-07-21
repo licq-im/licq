@@ -176,7 +176,7 @@ void CLicqConsole::PrintStatus()
     if (o.isLocked())
       winStatus->wprintf("%C%A[ %C%s %C(%C%s%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", 29,
                        A_BOLD, 5,  o->GetAlias(), 29,
-                       5, o->IdString(), 29,
+        5, o->accountId().c_str(), 29,
         53, o->statusString().c_str(), 29,
                        53, CurrentGroupName(), 29,
                        53, szMsgStr, 29, 53,
@@ -589,7 +589,7 @@ void CLicqConsole::PrintInfo_General(const Licq::UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) General Info - %Z%s\n", u->GetAlias(), A_BOLD,
-      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
+      A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%C%AName: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getFullName().c_str());
   winMain->wprintf("%C%AIp: %Z%s:%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
@@ -655,7 +655,7 @@ void CLicqConsole::PrintInfo_More(const Licq::UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) More Info - %Z%s\n", u->GetAlias(), A_BOLD,
-      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
+      A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   unsigned int age = u->getUserInfoUint("Age");
   if (age == Licq::User::AgeUnspecified)
@@ -705,7 +705,7 @@ void CLicqConsole::PrintInfo_Work(const Licq::UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) Work Info - %Z%s\n", u->GetAlias(), A_BOLD,
-      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
+      A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%C%ACompany Name: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("CompanyName").c_str());
   winMain->wprintf("%C%ACompany Department: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("CompanyDepartment").c_str());
@@ -755,7 +755,7 @@ void CLicqConsole::PrintInfo_About(const Licq::UserId& userId)
   wattroff(winMain->Win(), A_BOLD);
 
   winMain->wprintf("%s %A(%Z%s%A) About Info - %Z%s\n", u->GetAlias(), A_BOLD,
-      A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->statusString().c_str());
+      A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%s\n", u->getUserInfoString("About").c_str());
 

@@ -88,13 +88,13 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
           szMatch[StrMatchLen(szMatch, pUser->GetAlias(), nLen)] = '\0';
         _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->GetAlias()));
       }
-      else if (strncasecmp(_szPartialMatch, pUser->IdString(), nLen) == 0)
+      else if (strncasecmp(_szPartialMatch, pUser->accountId().c_str(), nLen) == 0)
       {
         if (szMatch == 0)
-          szMatch = strdup(pUser->IdString());
+          szMatch = strdup(pUser->accountId().c_str());
         else
-          szMatch[StrMatchLen(szMatch, pUser->IdString(), nLen)] = '\0';
-        _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->IdString()));
+          szMatch[StrMatchLen(szMatch, pUser->accountId().c_str(), nLen)] = '\0';
+        _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->accountId().c_str()));
       }
     }
 
