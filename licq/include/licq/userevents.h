@@ -145,8 +145,6 @@ public:
   const std::string& message() const { return myMessage; }
   virtual void AddToHistory(User* u, bool isReceiver) const;
 
-  static EventMsg *Parse(char *sz, unsigned short nCmd, time_t nTime,
-                           unsigned long nFlags, unsigned long nConvoId = 0);
 protected:
   void CreateDescription() const;
   std::string myMessage;

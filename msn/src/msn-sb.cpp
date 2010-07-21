@@ -136,7 +136,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           (*packet) >> szMsg[i];
         szMsg[i] = '\0';
 
-        Licq::EventMsg* e = Licq::EventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
+        Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMsg), ICQ_CMDxRCV_SYSxMSGxOFFLINE,
             time(0), 0, SocketToCID(nSock));
         Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
         if (u.isLocked())

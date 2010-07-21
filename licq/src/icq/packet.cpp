@@ -2107,14 +2107,14 @@ void CPU_AdvancedMessage::InitBuffer()
 }
 
 //-----ChatRequest-------------------------------------------------------------
-CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
+CPU_ChatRequest::CPU_ChatRequest(const string& message, const char *_szChatUsers,
                                  unsigned short nPort, unsigned short nLevel,
     const ICQUser* _pUser, bool bICBM)
   : CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
                         nLevel, false, 0)
 {
 	int nUsersLen = _szChatUsers ? strlen(_szChatUsers) : 0;
-	int nMessageLen = _szMessage ? strlen(_szMessage) : 0;
+  int nMessageLen = message.size();
 
   if (bICBM)
 		m_nSize += 58 + nUsersLen + nMessageLen + 21; // 21 = strlen(pluginname)
@@ -2141,11 +2141,11 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 		buffer->PackChar(0);
 		buffer->PackUnsignedLong(nMessageLen + nUsersLen + 15);
 		buffer->PackUnsignedLong(nMessageLen);
-		if (_szMessage)
-			buffer->Pack(_szMessage, nMessageLen);
-	}
-	else
-		buffer->PackString(_szMessage);
+    if (!message.empty())
+      buffer->pack(message);
+  }
+  else
+    buffer->PackString(message.c_str(), nMessageLen);
 
 	buffer->PackString(_szChatUsers);
 	buffer->PackUnsignedShortBE(nPort);
@@ -2726,10 +2726,9 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
   GroupNameMap::const_iterator g;
   for (g = groups.begin(); g != groups.end(); ++g)
   {
-    const char* szUnicode = gTranslator.ToUnicode(g->second.c_str());
-    nSize += strlen(szUnicode);
+    string unicode = gTranslator.toUnicode(g->second);
+    nSize += unicode.size();
     nSize += 10;
-    delete [] szUnicode;
   }
 
   m_nSize += nSize;
@@ -2744,16 +2743,14 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
 
     gUserManager.ModifyGroupID(g->first, nGSID);
 
-    const char* szUnicodeName = gTranslator.ToUnicode(g->second.c_str());
+    string unicodeName = gTranslator.toUnicode(g->second);
 
-    buffer->PackUnsignedShortBE(strlen(szUnicodeName));
-    buffer->Pack(szUnicodeName, strlen(szUnicodeName));
+    buffer->PackUnsignedShortBE(unicodeName.size());
+    buffer->pack(unicodeName);
     buffer->PackUnsignedShortBE(nGSID);
     buffer->PackUnsignedShortBE(0);
     buffer->PackUnsignedShortBE(ICQ_ROSTxGROUP);
     buffer->PackUnsignedShortBE(0);
-
-    delete [] szUnicodeName;
   }
 }
 
@@ -2790,7 +2787,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   UserId userId(_szName, LICQ_PPID);
   unsigned short nStrLen = strlen(_szName);
   unsigned short nExportSize = 0;
-  char *szUnicodeName = 0;
+  string unicodeName;
   Licq::TlvList tlvs;
   CBuffer tlvBuffer;
 
@@ -2875,8 +2872,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       m_nSID = 0;
       SetExtraInfo(0);
 
-      szUnicodeName = gTranslator.ToUnicode(const_cast<char *>(_szName));
-      nStrLen = strlen(szUnicodeName);
+      unicodeName = gTranslator.toUnicode(_szName);
+      nStrLen = unicodeName.size();
 
       if (_bTopLevel)
         nExportSize += 4 + (2 * gUserManager.NumGroups());
@@ -2916,7 +2913,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nStrLen);
-  buffer->Pack(szUnicodeName != NULL ? szUnicodeName : _szName, nStrLen);
+  buffer->Pack(!unicodeName.empty() ? unicodeName.c_str() : _szName, nStrLen);
   buffer->PackUnsignedShortBE(m_nGSID);
   buffer->PackUnsignedShortBE(m_nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -2942,8 +2939,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       // TODO Have this be a part of tlvBuffer
       buffer->PackUnsignedShortBE(0x0131);
       buffer->PackUnsignedShortBE(nExportSize-4);
-      if (szUnicodeName)
-        buffer->Pack(szUnicodeName, nExportSize-4);
+      if (!unicodeName.empty())
+        buffer->Pack(unicodeName.c_str(), nExportSize-4);
     }
   }
 
@@ -2953,9 +2950,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
   if (!tlvBuffer.Empty())
     buffer->Pack(&tlvBuffer);
-
-  if (szUnicodeName)
-    delete [] szUnicodeName;
 }
 
 //-----RemoveFromServerList-----------------------------------------------------
@@ -2965,7 +2959,7 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
 {
   UserId userId(_szName, LICQ_PPID);
   int nNameLen = strlen(_szName);
-  char *szUnicodeName = 0;
+  string unicodeName;
   CBuffer tlvBuffer;
 
   if (_nType == ICQ_ROSTxNORMAL)
@@ -2990,16 +2984,16 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
   }
   else if (_nType == ICQ_ROSTxGROUP)
   {
-    szUnicodeName = gTranslator.ToUnicode((char *)_szName);
-    nNameLen = strlen(szUnicodeName);
-  }  
+    unicodeName = gTranslator.toUnicode(_szName);
+    nNameLen = unicodeName.size();
+  }
 
   m_nSize += 10+nNameLen+tlvBuffer.getDataSize();
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nNameLen);
-  if (szUnicodeName)
-    buffer->Pack(szUnicodeName, nNameLen);
+  if (!unicodeName.empty())
+    buffer->pack(unicodeName);
   else
     buffer->Pack(_szName, nNameLen);
   buffer->PackUnsignedShortBE(_nGSID);
@@ -3013,9 +3007,6 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
     SetExtraInfo(0);
   else
     SetExtraInfo(_nGSID);
-
-  if (szUnicodeName)
-    delete [] szUnicodeName;
 }
 
 //-----ClearServerList------------------------------------------------------
@@ -3098,7 +3089,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
   unsigned short nNameLen = strlen(_szName);
-  char *szUnicodeName = 0;
+  string unicodeName;
   CBuffer tlvBuffer;
 
   list<unsigned long> groupIds;
@@ -3157,8 +3148,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       }
       else
       {
-        szUnicodeName = gTranslator.ToUnicode((char *)_szName);
-        nNameLen = strlen(szUnicodeName);
+        unicodeName = gTranslator.toUnicode(_szName);
+        nNameLen = unicodeName.size();
         FOR_EACH_USER_START(LOCK_R)
         {
           if (pUser->GetGSID() == nGSID)
@@ -3177,8 +3168,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nNameLen);
-  if (szUnicodeName && _nType == ICQ_ROSTxGROUP)
-    buffer->Pack(szUnicodeName, nNameLen);
+  if (!unicodeName.empty() && _nType == ICQ_ROSTxGROUP)
+    buffer->pack(unicodeName);
   else
     buffer->Pack(_szName, nNameLen);
   buffer->PackUnsignedShortBE(nGSID);
@@ -3215,9 +3206,6 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
   if (_bAuthReq)
     buffer->PackUnsignedLongBE(0x00660000);
-
-  if (szUnicodeName)
-    delete [] szUnicodeName;
 }
 
 //-----SearchWhitePages---------------------------------------------------------
@@ -4039,15 +4027,12 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
   m_szAbout = szAbout == NULL ? strdup("") : strdup(szAbout);
-  char *sz = gTranslator.NToRN(szAbout);
-  gTranslator.ClientToServer(sz);
-  if (strlen(sz) > size_t(IcqProtocol::MaxMessageSize))
-    sz[IcqProtocol::MaxMessageSize] = '\0';
+  if (strlen(m_szAbout) > size_t(IcqProtocol::MaxMessageSize))
+    m_szAbout[IcqProtocol::MaxMessageSize] = '\0';
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxABOUT);
-  buffer->PackUnsignedShort(strlen_safe(sz)+3);
-  buffer->PackString(sz);
-  if (sz != NULL) delete [] sz;
+  buffer->PackUnsignedShort(strlen(m_szAbout)+3);
+  buffer->PackString(m_szAbout);
 }
 
 CPU_Meta_SetAbout::~CPU_Meta_SetAbout()
@@ -4808,15 +4793,15 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
 }
 
 //-----ChatRequest--------------------------------------------------------------
-CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
+CPT_ChatRequest::CPT_ChatRequest(const string& message, const char *szChatUsers,
    unsigned short nPort, unsigned short nLevel, ICQUser *pUser, bool bICBM)
-  : CPacketTcp(ICQ_CMDxTCP_START, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, bICBM ? "" : _sMessage, true, nLevel, pUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, bICBM ? "" : message.c_str(), true, nLevel, pUser)
 {
   int nUsersLen = strlen_safe(szChatUsers);
-  int nMessageLen = strlen_safe(_sMessage);
+  int nMessageLen = message.size();
 
   if (bICBM)
-    m_nSize += 58 + strlen_safe(szChatUsers) + strlen_safe(_sMessage) + 21;
+    m_nSize += 58 + strlen_safe(szChatUsers) + nMessageLen + 21;
   else
     m_nSize += 2 + strlen_safe(szChatUsers) + 1 + 8;
 
@@ -4845,7 +4830,7 @@ CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
     buffer->PackUnsignedLong(nMessageLen);
 
     if (nMessageLen)
-      buffer->Pack(_sMessage, nMessageLen);
+      buffer->pack(message);
 
     buffer->PackString(szChatUsers);
 

@@ -25,9 +25,9 @@ public:
   const std::string& getMapName() const { return myMapName; }
   const std::string& getMapFileName() const { return myMapFileName; }
 
-  std::string serverToClient(const std::string& s);
+  std::string serverToClient(const std::string& s, bool removeCR = false);
   char serverToClient(char c);
-  std::string clientToServer(const std::string& s);
+  std::string clientToServer(const std::string& s, bool addCR = false);
   char clientToServer(char c);
 
   bool isAscii(const std::string& s);
@@ -51,17 +51,6 @@ public:
   void ServerToClient(char& value);
   void ClientToServer(char* array);
   void ClientToServer(char& value);
-
-  // Must use delete[] on the returned value if it is not NULL
-
-  char* ToUnicode(const char* array, const char* fromEncoding = "");
-  char* FromUnicode(const char* array, const char* toEncoding = "");
-
-  char* FromUTF16(const char* array, const char* toEncoding, int length = -1);
-  char* ToUTF16(const char* array, const char* fromEncoding, size_t& outDone);
-
-  char* NToRN(const char* array);
-  char* RNToN(const char* array);
 
   bool utf16to8(unsigned long c, std::string &s);
 

@@ -137,14 +137,16 @@ bool Translator::setTranslationMap(const string& mapFileName)
   return true;
 }
 
-string Translator::serverToClient(const string& s)
+string Translator::serverToClient(const string& s, bool removeCR)
 {
   if (myMapDefault)
     return s;
 
+  string s2(removeCR ? returnToUnix(s) : s);
+
   string ret;
   for (size_t i = 0; i < s.size(); ++i)
-    ret += serverToClientTab[(unsigned)s[i]];
+    ret += serverToClientTab[(unsigned)s2[i]];
   return ret;
 }
 
@@ -153,10 +155,12 @@ char Translator::serverToClient(char c)
   return myMapDefault ? c : serverToClientTab[(unsigned)c];
 }
 
-string Translator::clientToServer(const string& s)
+string Translator::clientToServer(const string& s, bool addCR)
 {
   if (myMapDefault)
     return s;
+
+  string s2(addCR ? returnToDos(s) : s);
 
   string ret;
   for (size_t i = 0; i < s.size(); ++i)
@@ -278,40 +282,6 @@ string Translator::toUtf16(const string& s, const string& fromEncoding)
   return iconvConvert(s, "UCS-2BE", from, ok);
 }
 
-char* Translator::ToUnicode(const char* array, const char* fromEncoding)
-{
-  if (array == NULL)
-    return NULL;
-
-  return strdup(toUnicode(array, fromEncoding).c_str());
-}
-
-char* Translator::FromUnicode(const char* array, const char* toEncoding)
-{
-  if (array == NULL)
-    return NULL;
-
-  return strdup(fromUnicode(array, toEncoding).c_str());
-}
-
-char* Translator::FromUTF16(const char* array, const char* toEncoding, int length)
-{
-  if (array == NULL)
-    return NULL;
-
-  return strdup(fromUtf16(string(array, length), toEncoding).c_str());
-}
-
-char* Translator::ToUTF16(const char* array, const char* fromEncoding, size_t& outDone)
-{
-  if (array == NULL)
-    return NULL;
-
-  string result = toUtf16(array, fromEncoding);
-  outDone = result.size();
-  return strdup(result.c_str());
-}
-
 bool Translator::utf16to8(unsigned long c, string& s)
 {
   if (c <= 0x7F)
@@ -397,80 +367,6 @@ string Translator::returnToUnix(const string& s)
     ret.replace(pos, 1, "\n");
 
   return ret;
-}
-
-char* Translator::NToRN(const char* array)
-// convert a unix style string (0x0A for returns) to a dos style string (0x0A 0x0D)
-// also encodes the string if necessary
-{
-  if (array == NULL)
-    return NULL;
-
-  unsigned long len = strlen(array);
-  char* result = new char[(len << 1) + 1];
-
-  unsigned long i = 0, j = 0;
-
-  for (i = 0, j = 0; i <= len; i++)
-  {
-    if (array[i] == (char)0x0A &&
-        (i == 0 || array[i-1] != (char)0x0D))
-      result[j++] = 0x0D;
-
-    result[j++] = array[i];
-  }
-
-  return result;
-}
-
-char* Translator::RNToN(const char* array)
-// converts a dos (CRLF) or mac style (CR) style string to
-// a unix style string (LF only)
-{
-  if (array == NULL)
-    return NULL;
-
-  unsigned long len = strlen(array);
-
-  char* result = new char[len + 1];
-  unsigned long j = 0;
-
-  bool skipCR = false;
-  bool skipLF = false;
-
-  for (const char* ptr = array; *ptr != '\0'; ptr++)
-  {
-    if (skipCR && *ptr != '\r')
-      skipCR = false;
-    if (skipLF && *ptr != '\n')
-      skipLF = false;
-
-    if (skipCR || skipLF)
-    {
-      skipCR = skipLF = false;
-      continue; // skip it
-    }
-
-    if (*ptr == '\r')
-    {
-      result[j++] = '\n';
-      skipLF = true;
-      continue;
-    }
-
-    if (*ptr == '\n')
-    {
-      result[j++] = '\n';
-      skipCR = true;
-      continue;
-    }
-
-    result[j++] = *ptr;
-  }
-
-  result[j] = '\0';
-
-  return result;
 }
 
 string Translator::iconvConvert(const string& s, const string& to, const string& from,

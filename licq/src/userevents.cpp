@@ -189,18 +189,6 @@ void Licq::EventMsg::AddToHistory(User* u, bool isReceiver) const
 }
 
 
-Licq::EventMsg* Licq::EventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime,
-  unsigned long nFlags, unsigned long nConvoId)
-{
-  Licq::gTranslator.ServerToClient (sz);
-  return new EventMsg(sz, nCmd, nTime, nFlags, nConvoId);
-}
-
-
-
-
-
-
 //=====CEventFile===============================================================
 
 Licq::EventFile::EventFile(const string& filename, const string& fileDescription,

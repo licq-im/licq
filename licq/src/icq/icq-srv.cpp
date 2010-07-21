@@ -787,13 +787,9 @@ unsigned long IcqProtocol::icqSetWorkInfo(const string& city, const string& stat
 //-----icqSetAbout-----------------------------------------------------------
 unsigned long IcqProtocol::icqSetAbout(const string& about)
 {
-  char *szAbout = gTranslator.NToRN(about.c_str());
-
-  CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(szAbout);
+  CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(gTranslator.clientToServer(about, true).c_str());
 
   gLog.Info(tr("%sUpdating about (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
-
-  delete [] szAbout;
 
   Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
@@ -816,16 +812,11 @@ unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const 
 {
   const string accountId = userId.accountId();
   const char* szId = accountId.c_str();
-  char *sz = NULL;
-  if (!message.empty())
-  {
-    sz = gTranslator.NToRN(message.c_str());
-    gTranslator.ClientToServer(sz);
-  }
-  CPU_ThroughServer* p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxREFUSED, sz == NULL ? string() : sz);
+
+  CPU_ThroughServer* p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxREFUSED,
+      gTranslator.clientToServer(message, true));
   gLog.Info(tr("%sRefusing authorization to user %s (#%hu)...\n"), L_SRVxSTR,
      szId, p->Sequence());
-  delete [] sz;
 
   Licq::Event* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
@@ -2747,7 +2738,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       szMessage[nMsgLen] = '\0';
       
       bool ignore = false;
-          char* szMsg;
+          string m;
       // Get the user and allow adding unless we ignore new users
           {
             Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
@@ -2764,12 +2755,14 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       if (nEncoding == 2) // utf-8 or utf-16?
       {
             const char* szEncoding = ignore ? "" : u->userEncoding().c_str();
-        char* szTmpMsg = gTranslator.FromUTF16(szMessage, szEncoding, nMsgLen);
-        delete [] szMessage;
-        szMessage = szTmpMsg;
-      }
+            string tmpMsg = gTranslator.fromUtf16(szMessage, szEncoding);
+            delete [] szMessage;
+            szMessage = new char[tmpMsg.size()+1];
+            strncpy(szMessage, tmpMsg.c_str(), tmpMsg.size());
+            szMessage[tmpMsg.size()] = '\0';
+          }
 
-            szMsg = gTranslator.RNToN(szMessage);
+            m = gTranslator.serverToClient(szMessage, true);
       delete [] szMessage;
 
           // Unlock user mutex before parsing message so we don't block other threads
@@ -2777,8 +2770,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           }
 
       // now send the message to the user
-          Licq::EventMsg* e = Licq::EventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
-      delete [] szMsg;
+          Licq::EventMsg* e = new Licq::EventMsg(m, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
 
       if (ignore)
       {
@@ -3067,15 +3059,11 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       else
       {
         // new unpack the message
-        nMsgLen = msgTxt.UnpackUnsignedShort();
-        char* szMsg = new char[nMsgLen+1];
-        for (int i = 0; i < nMsgLen; ++i)
-          szMsg[i] = msgTxt.UnpackChar();
-        szMsg[nMsgLen] = '\0';
-
-        szMessage = gTranslator.RNToN(szMsg);
-        delete [] szMsg;
-      }
+            string msg = gTranslator.returnToUnix(msgTxt.unpackString());
+            szMessage = new char[msg.size() + 1];
+            strncpy(szMessage, msg.c_str(), msg.size());
+            szMessage[msg.size()] = '\0';
+          }
 
       char *szType = NULL;
       OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
@@ -3085,7 +3073,8 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       {
         case ICQ_CMDxSUB_MSG:
             {
-              Licq::EventMsg* e = Licq::EventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+              Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
+                  ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
           szType = strdup(tr("Message"));
           onEventType = OnEventManager::OnEventMessage;
           eEvent = e;
@@ -3739,24 +3728,21 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             {
               // Rename the group if we have it already or else add it
               unsigned short nGroup = Licq::gUserManager.GetGroupFromID(nTag);
-              char* szUnicodeName = gTranslator.FromUnicode(szId);
+              string unicodeName = gTranslator.fromUnicode(szId);
 
               if (nGroup == 0)
               {
-                if (!Licq::gUserManager.AddGroup(szUnicodeName, nTag))
+                if (!Licq::gUserManager.AddGroup(unicodeName, nTag))
                 {
-                  nGroup = Licq::gUserManager.GetGroupFromName(szUnicodeName);
+                  nGroup = Licq::gUserManager.GetGroupFromName(unicodeName);
                   if (nGroup != 0)
                     Licq::gUserManager.ModifyGroupID(nGroup, nTag);
                 }
               }
               else
               {
-                Licq::gUserManager.RenameGroup(nGroup, szUnicodeName, false);
+                Licq::gUserManager.RenameGroup(nGroup, unicodeName, false);
               }
-              
-              if (szUnicodeName)
-                delete[] szUnicodeName;
 
               // This is bad, i don't think we want to call this at all..
               // it will add users to different groups that they werent even
@@ -4290,7 +4276,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         case ICQ_CMDxSUB_MSG:
             {
-              Licq::EventMsg* e = Licq::EventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+              Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
+                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
 	  szType = strdup(tr("Message"));
               onEventType = OnEventManager::OnEventMessage;
 	  eEvent = e;
@@ -4804,11 +4791,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)pEvent->m_pPacket;
               Licq::OwnerWriteGuard o(LICQ_PPID);
-          char* msg = gTranslator.RNToN(p->m_szAbout);
-          gTranslator.ServerToClient(msg);
           o->SetEnableSave(false);
-              o->setUserInfoString("About", msg);
-          delete [] msg;
+              o->setUserInfoString("About",
+                  gTranslator.serverToClient(p->m_szAbout, true));
 
           // save the user infomation
           o->SetEnableSave(true);
@@ -5157,17 +5142,15 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // main home info
           u->SetEnableSave(false);
-          tmp = msg.UnpackString();
+                string alias = msg.unpackString();
           // Skip the alias if user wants to keep his own.
           if (!u->m_bKeepAliasOnUpdate || userId == Licq::gUserManager.ownerUserId(LICQ_PPID))
           {
-                  char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->userEncoding().c_str()) : 0;
-            gTranslator.ServerToClient(szUTFAlias);
-                  u->setAlias(szUTFAlias);
+                  alias = gTranslator.toUnicode(alias, u->userEncoding());
+                  gTranslator.serverToClient(alias);
+                  u->setAlias(alias);
             //printf("Alias: %s\n", szUTFAlias);
-          }
-          if (tmp)
-            delete[] tmp;
+                }
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
                 u->setUserInfoString("FirstName", tmp);
           delete[] tmp;
@@ -5341,15 +5324,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (categoryPresent)
           {
                   u->setUserInfoUint("HomepageCatCode", msg.UnpackUnsignedShort());
-
-            char *rawmsg = msg.UnpackString();
-            char *msg = gTranslator.RNToN(rawmsg);
-            delete [] rawmsg;
-
-            gTranslator.ServerToClient(msg);
-                  u->setUserInfoString("HomepageDesc", msg);
-            delete [] msg;
-          }
+                  u->setUserInfoString("HomepageDesc",
+                      gTranslator.serverToClient(msg.unpackString(), true));
+                }
 
                 u->setUserInfoBool("ICQHomepagePresent", msg.UnpackChar());
 
@@ -5417,13 +5394,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           gLog.Info(tr("%sAbout info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
 
-          char* rawmsg = msg.UnpackString();
-          char* msg = gTranslator.RNToN(rawmsg);
-          delete [] rawmsg;
-          gTranslator.ServerToClient(msg);
           u->SetEnableSave(false);
-                u->setUserInfoString("About", msg);
-          delete [] msg;
+                u->setUserInfoString("About",
+                    gTranslator.serverToClient(msg.unpackString(), true));
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5779,12 +5752,9 @@ void IcqProtocol::ProcessUserList()
 
     if (data->newCellular != NULL)
     {
-      char* tmp = gTranslator.FromUnicode(data->newCellular.get());
+      const char* tmp = data->newCellular.get();
       if (tmp != NULL)
-      {
-        u->setUserInfoString("CellularNumber", tmp);
-        delete[] tmp;
-      }
+        u->setUserInfoString("CellularNumber", gTranslator.fromUnicode(tmp));
     }
 
     // Save GSID, SID and group memberships

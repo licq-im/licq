@@ -760,7 +760,7 @@ protected:
 class CPU_ChatRequest : public CPU_AdvancedMessage
 {
 public:
-  CPU_ChatRequest(char *szReason, const char *szChatUsers, unsigned short nPort,
+  CPU_ChatRequest(const std::string& message, const char *szChatUsers, unsigned short nPort,
       unsigned short nLevel, const Licq::User* pUser, bool bICBM);
 };
 
@@ -1433,7 +1433,7 @@ public:
 class CPT_ChatRequest : public CPacketTcp
 {
 public:
-  CPT_ChatRequest(char *_sMessage, const char *szChatUsers, unsigned short nPort,
+  CPT_ChatRequest(const std::string& message, const char *szChatUsers, unsigned short nPort,
       unsigned short nLevel, Licq::User* pUser, bool bICBM);
 };
 

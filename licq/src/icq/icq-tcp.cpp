@@ -67,8 +67,10 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   bool bUserOffline = true;
   if (m != NULL)
   {
-    mDos = gTranslator.NToRN(m);
-    gTranslator.ClientToServer(mDos);
+    string m2 = gTranslator.clientToServer(message, true);
+    mDos = new char[m2.size()+1];
+    strncpy(mDos, m2.c_str(), m2.size());
+    mDos[m2.size()] = '\0';
   }
   Licq::EventMsg* e = NULL;
 
@@ -138,7 +140,11 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
           free(szFromEncoding);
           szFromEncoding = strdup(nl_langinfo(CODESET));
         }
-        szMessage = gTranslator.ToUTF16(mDos, szFromEncoding, nUTFLen);
+        string msgUtf16 = gTranslator.toUtf16(mDos, szFromEncoding);
+        nUTFLen = msgUtf16.size();
+        szMessage = new char[msgUtf16.size()+1];
+        strncpy(szMessage, msgUtf16.c_str(), msgUtf16.size());
+        szMessage[msgUtf16.size()] = '\0';
         free(szFromEncoding);
       }
     }
@@ -235,16 +241,10 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   // make the URL info string
   char *szDescDos = NULL;
   Licq::EventUrl* e = NULL;
-  szDescDos = gTranslator.NToRN(description);
-  gTranslator.ClientToServer(szDescDos);
-  string m;
-  int n = url.size() + strlen_safe(szDescDos) + 2;
-  if (szDescDos != NULL)
-  {
-    if (viaServer && n > MaxMessageSize)
-      szDescDos[MaxMessageSize - url.size() - 2] = '\0';
-    m = szDescDos;
-  }
+  string m = gTranslator.clientToServer(message, true);
+  int n = url.size() + m.size() + 2;
+  if (viaServer && n > MaxMessageSize)
+    m.erase(MaxMessageSize - url.size() - 2);
   m += '\xFE';
   m += url;
 
@@ -306,14 +306,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     return;
 
   const char* szFilename = filename.c_str();
-  const char* szDescription = message.c_str();
-
-  char *szDosDesc = NULL;
-  if (szDescription != NULL)
-  {
-    szDosDesc = gTranslator.NToRN(szDescription);
-    gTranslator.ClientToServer(szDosDesc);
-  }
+  string dosDesc = gTranslator.clientToServer(message, true);
   Licq::EventFile* e = NULL;
 
   Licq::UserWriteGuard u(userId);
@@ -335,7 +328,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
       nLevel = ICQ_TCPxMSG_LIST2;
 
     CPU_FileTransfer *p = new CPU_FileTransfer(*u, lFileList, szFilename,
-      szDosDesc, nLevel, (u->Version() > 7));
+        dosDesc.c_str(), nLevel, (u->Version() > 7));
 
     if (!p->IsValid())
     {
@@ -353,7 +346,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   }
   else
   {
-    CPT_FileTransfer *p = new CPT_FileTransfer(lFileList, szFilename, szDosDesc, nLevel, *u);
+    CPT_FileTransfer *p = new CPT_FileTransfer(lFileList, szFilename, dosDesc.c_str(), nLevel, *u);
 
     if (!p->IsValid())
     {
@@ -379,9 +372,6 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
 
   u->SetSendServer(bServer);
   u->SetSendLevel(nLevel);
-
-  if (szDosDesc)
-    delete [] szDosDesc;
 }
 
 //-----CICQDaemon::sendContactList-------------------------------------------
@@ -697,8 +687,7 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
     unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer)
 {
    // add to history ??
-  char *szReasonDos = gTranslator.NToRN(message.c_str());
-  gTranslator.ClientToServer(szReasonDos);
+  string reasonDos = gTranslator.clientToServer(message, true);
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
@@ -707,18 +696,15 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
 
   if (!viaServer)
   {
-    CPT_AckFileRefuse p(szReasonDos, nSequence, *u);
+    CPT_AckFileRefuse p(reasonDos.c_str(), nSequence, *u);
     AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   }
   else
   {
     CPU_AckFileRefuse *p = new CPU_AckFileRefuse(*u, nMsgID, nSequence,
-      szReasonDos);
+        reasonDos.c_str());
     SendEvent_Server(p);
   }
-
-  if (szReasonDos)
-    delete [] szReasonDos;
 }
 
 unsigned long IcqProtocol::icqChatRequest(const Licq::UserId& userId, const string& reason,
@@ -737,8 +723,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
-  char *szReasonDos = gTranslator.NToRN(reason.c_str());
-  gTranslator.ClientToServer(szReasonDos);
+  string reasonDos = gTranslator.clientToServer(reason, true);
 
   unsigned long f;
   Licq::Event* result = NULL;
@@ -757,7 +742,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
     else if (nLevel == ICQ_TCPxMSG_LIST)
       nLevel = ICQ_TCPxMSG_LIST2;
 
-		CPU_ChatRequest *p = new CPU_ChatRequest(szReasonDos,
+    CPU_ChatRequest *p = new CPU_ChatRequest(reasonDos,
         chatUsers.c_str(), nPort, nLevel, *u,
                                (u->Version() > 7));
 
@@ -768,9 +753,9 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
 
       result = SendExpectEvent_Server(u->id(), p, e);
     }
-	else
-	{
-		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, chatUsers.c_str(), nPort,
+  else
+  {
+    CPT_ChatRequest *p = new CPT_ChatRequest(reasonDos, chatUsers.c_str(), nPort,
         nLevel, *u, (u->Version() > 7));
     f = Licq::UserEvent::FlagDirect | Licq::UserEvent::FlagLicqVerMask;
     if (nLevel == ICQ_TCPxMSG_URGENT)
@@ -788,8 +773,6 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
 	u->SetSendServer(bServer);
   u->SetSendLevel(nLevel);
 
-  if (szReasonDos)
-    delete [] szReasonDos;
   if (result != NULL)
     return result->EventId();
   return 0;
@@ -815,22 +798,18 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
     return;
   gLog.Info(tr("%sRefusing chat request with %s (#%hu).\n"), 
             bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
-  char *szReasonDos = gTranslator.NToRN(reason.c_str());
-  gTranslator.ClientToServer(szReasonDos);
+  string reasonDos = gTranslator.clientToServer(reason, true);
 
 	if (bDirect)
   {
-    CPT_AckChatRefuse p(szReasonDos, nSequence, *u);
+    CPT_AckChatRefuse p(reasonDos.c_str(), nSequence, *u);
 		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 	}
 	else
   {
-    CPU_AckChatRefuse *p = new CPU_AckChatRefuse(*u, nMsgID, nSequence, szReasonDos);
+    CPU_AckChatRefuse *p = new CPU_AckChatRefuse(*u, nMsgID, nSequence, reasonDos.c_str());
 		SendEvent_Server(p);
 	}
-
-  if (szReasonDos)
-    delete [] szReasonDos;
 }
 
 void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
@@ -1638,7 +1617,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, pSock);
 
-          Licq::EventMsg* e = Licq::EventMsg::Parse(message, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, nMask);
+          Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
+              ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, nMask);
         e->SetColor(fore, back);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it

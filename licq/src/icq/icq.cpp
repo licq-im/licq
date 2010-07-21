@@ -1054,8 +1054,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       fore = 0x000000;
     }
 
-      Licq::EventMsg* e = Licq::EventMsg::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
-          Licq::EventMsg::TimeNow, nFlags);
+      Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
+          ICQ_CMDxRCV_SYSxMSGxONLINE, Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
