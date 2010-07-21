@@ -788,16 +788,6 @@ TlvList Buffer::getTlvList()
   return myTLVs;
 }
 
-// Dummy wrapper for toString until print is no longer needed
-char* Buffer::print(char *&p)
-{
-  string s = toString();
-  p = new char[s.size() + 1];
-  strncpy(p, s.c_str(), s.size());
-  p[s.size()] = '\0';
-  return p;
-}
-
 string Buffer::toString() const
 {
   return packetToString((const unsigned char*)getDataStart(), getDataSize());

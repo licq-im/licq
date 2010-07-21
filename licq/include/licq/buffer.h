@@ -26,8 +26,6 @@
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "macro.h"
-
 
 namespace Licq
 {
@@ -89,9 +87,6 @@ public:
    char *PackUnsignedLong(unsigned long data);
    char *PackChar(char data);
   void Copy(Buffer*);
-
-  LICQ_DEPRECATED // Use toString() instead
-   char *print(char *&);
 
   /**
    * Get a printable string with packet data (for logging or debugging)

@@ -525,10 +525,8 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x00)
       {
-        char *pbuf;
         gLog.Error("%sFile Transfer: Invalid client init packet:\n%s%s\n",
-                   L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
-        delete [] pbuf;
+            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
@@ -581,10 +579,8 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x02)
       {
-        char *pbuf;
         gLog.Error("%sFile Transfer: Invalid file info packet:\n%s%s\n",
-                   L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
-        delete [] pbuf;
+            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
@@ -715,10 +711,8 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x01)
       {
-        char *pbuf;
         gLog.Error("%sFile Transfer: Invalid server init packet:\n%s%s\n",
-                   L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
-        delete [] pbuf;
+            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
@@ -764,10 +758,8 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x03)
       {
-        char *pbuf;
         gLog.Error("%sFile Transfer: Invalid start packet:\n%s%s\n",
-                   L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
-        delete [] pbuf;
+            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxCLOSED;
         return false;
       }
@@ -807,10 +799,8 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
-      char *p;
       gLog.Unknown(tr("%sFile Transfer: Unknown packet received during file send:\n%s\n"),
-         L_UNKNOWNxSTR, b.print(p));
-      delete [] p;
+          L_UNKNOWNxSTR, b.toString().c_str());
       break;
     }
 
