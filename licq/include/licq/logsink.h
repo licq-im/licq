@@ -79,13 +79,34 @@ protected:
 };
 
 /**
- * Pretty-prints packet to the stream @a os.
- * @param os The stream to print to.
- * @param message The message with the packet to print.
- * @return @a os
+ * Pretty-print a packet to a stream
+ *
+ * @param os Stream to print to
+ * @param packet Raw packet data
+ * @param size Size of packet data
+ * @param bytesToPrint Bytes to print or 0 to print entire packet
+ * @return os
  */
-std::ostream& packetToString(
-    std::ostream& os, const LogSink::Message& message);
+std::ostream& packetToString(std::ostream& os, const uint8_t* packet, size_t size, size_t bytesToPrint = 0);
+
+/**
+ * Pretty-print a packet to a string
+ *
+ * @param packet Raw packet data
+ * @param size Size of packet data
+ * @param bytesToPrint Bytes to print or 0 to print entire packet
+ * @return A printable string containing the packet data
+ */
+std::string packetToString(const uint8_t* packet, size_t size, size_t bytesToPrint = 0);
+
+/**
+ * Pretty-print packet from a log message to a stream
+ *
+ * @param os Stream to print to
+ * @param message Message with the packet to print
+ * @return os
+ */
+std::ostream& packetToString(std::ostream& os, const LogSink::Message& message);
 
 } // namespace Licq
 

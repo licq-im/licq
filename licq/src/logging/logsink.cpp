@@ -21,17 +21,32 @@
 
 #include <iomanip>
 #include <ostream>
+#include <sstream>
+
+using namespace std;
+
+string Licq::packetToString(const uint8_t* packet, size_t size, size_t bytesToPrint)
+{
+  ostringstream os;
+  packetToString(os, packet, size, bytesToPrint);
+  return os.str();
+}
 
 std::ostream& Licq::packetToString(
     std::ostream& os, const Licq::LogSink::Message& message)
 {
-  const std::vector<uint8_t>& packet = message.packet;
-
-  const size_t bytesPerRow = 16;
   const size_t maxRows = 512;
-  const size_t bytesToPrint = std::min(bytesPerRow * maxRows, packet.size());
 
+  return packetToString(os, &(message.packet[0]), message.packet.size(), maxRows*16);
+}
+
+ostream& Licq::packetToString(ostream& os, const uint8_t* packet, size_t size, size_t bytesToPrint)
+{
+  const size_t bytesPerRow = 16;
   const std::string prefix(5, ' ');
+
+  if (bytesToPrint == 0 || bytesToPrint > size)
+    bytesToPrint = size;
 
   char ascii[bytesPerRow + 1];
   ascii[bytesPerRow] = '\0';
@@ -88,10 +103,10 @@ std::ostream& Licq::packetToString(
   }
 
   // Print the address range for bytes not printed
-  if (bytesToPrint != packet.size())
+  if (bytesToPrint != size)
   {
     os << "\n" << prefix << setw(4) << setfill('0') << bytesToPrint
-       << " - " << setw(4) << packet.size() - 1 << ": ...";
+       << " - " << setw(4) << size - 1 << ": ...";
   }
 
   // Restore flags

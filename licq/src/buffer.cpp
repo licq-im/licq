@@ -18,6 +18,7 @@
 
 #include <licq/buffer.h>
 #include <licq/byteorder.h>
+#include <licq/logsink.h>       // packetToString()
 #include <licq_log.h>
 
 #include "gettext.h"
@@ -787,62 +788,19 @@ TlvList Buffer::getTlvList()
   return myTLVs;
 }
 
-//-----print--------------------------------------------------------------------
+// Dummy wrapper for toString until print is no longer needed
 char* Buffer::print(char *&p)
 {
-   static const char BUFFER_BLANKS[] = "     ";
-   static const unsigned long SPACE_PER_LINE =
-    strlen(BUFFER_BLANKS) + strlen("0000: ") + 16 * 3 + 18 + 4;
+  string s = toString();
+  p = new char[s.size() + 1];
+  strncpy(p, s.c_str(), s.size());
+  p[s.size()] = '\0';
+  return p;
+}
 
-   unsigned long nBytesToPrint = getDataSize();
-   char szAscii[16 + 1];
-   szAscii[16] = '\0';
-
-   unsigned short nLenBuf = ((int)(nBytesToPrint / 16) + 1) *
-    SPACE_PER_LINE;
-   p = new char[nLenBuf + 1];
-   char *pPos = p;
-   pPos += sprintf(pPos, "%s0000: ", BUFFER_BLANKS);
-   unsigned short i = 0;
-   unsigned char c = 0;
-   while(true)
-   {
-     c = (unsigned char)getDataStart()[i];
-     szAscii[i % 16] = isprint(c) ? c : '.';
-     pPos += sprintf(pPos, "%02X ", c);
-     i++;
-
-     if ((i % 16 == 0) && i >= nBytesToPrint)
-     {
-     	 pPos += sprintf(pPos, "  %s", szAscii);
-     	 break;
-     }
-     else if (i >= nBytesToPrint)  break;
-
-     if (i % 16 == 0)
-       pPos += sprintf(pPos, "  %s\n%s%04X: ", szAscii, BUFFER_BLANKS, i);
-     else if(i % 8 == 0)
-       pPos += sprintf(pPos, " ");
-   }
-
-   if (nBytesToPrint != getDataSize())
-     pPos += sprintf(pPos, "...");
-   else
-   {
-     if ( (i % 16) && (i % 16) <= 8)
-       pPos += sprintf(pPos, " ");
-
-     szAscii[i % 16] = '\0';
-
-     while (i++ % 16 != 0)
-       pPos += sprintf(pPos, "   ");
-
-     pPos += sprintf(pPos, "  %s", szAscii);
-
-     *pPos = '\0';
-   }
-
-   return(p);
+string Buffer::toString() const
+{
+  return packetToString((const unsigned char*)getDataStart(), getDataSize());
 }
 
 void Buffer::log(const char* format, ...)
