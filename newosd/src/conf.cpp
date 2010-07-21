@@ -5,7 +5,7 @@
 
 void Conf::loadConfig()
 {
-  Licq::IniFile conf(Licq::gDaemon.baseDir() + "licq_newosd.ini");
+  Licq::IniFile conf("licq_newosd.ini");
   conf.loadFile();
 
 #define GET(key, dst, def); \
