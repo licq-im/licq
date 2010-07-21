@@ -1,6 +1,7 @@
 # Various Dialogs
 set(dialogs_SRCS
   aboutdlg.cpp
+  addgroupdlg.cpp
   adduserdlg.cpp
   authuserdlg.cpp
   awaymsgdlg.cpp

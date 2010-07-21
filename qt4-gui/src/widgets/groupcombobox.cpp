@@ -27,25 +27,31 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::GroupComboBox */
 
-GroupComboBox::GroupComboBox(QWidget* parent)
+GroupComboBox::GroupComboBox(bool groupPos, QWidget* parent)
   : QComboBox(parent)
 {
+  if (groupPos)
+    addItem(tr("First"), -1);
+
   Licq::GroupListGuard groupList(true);
   BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
     Licq::GroupReadGuard pGroup(group);
-    addItem(pGroup->name().c_str(), QString::number(pGroup->id()));
+    QString text(pGroup->name().c_str());
+    if (groupPos)
+      text.prepend(tr("After "));
+    addItem(text, pGroup->id());
   }
 }
 
 int GroupComboBox::currentGroupId() const
 {
-  return itemData(currentIndex()).toString().toUShort();
+  return itemData(currentIndex()).toInt();
 }
 
 bool GroupComboBox::setCurrentGroupId(int groupId)
 {
-  int index = findData(QString::number(groupId));
+  int index = findData(groupId);
 
   if (index == -1)
     return false;

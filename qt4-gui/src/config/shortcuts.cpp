@@ -76,6 +76,7 @@ Config::Shortcuts::Shortcuts(QObject* parent)
 
   // Shortcuts for main window (contact list)
   ADD_SHORTCUT(MainwinAccountManager, "Mainwin.AccountManager", 0)
+  ADD_SHORTCUT(MainwinAddGroup, "Mainwin.AddGroup", 0)
   ADD_SHORTCUT(MainwinEditGroups, "Mainwin.EditGroups", Qt::CTRL + Qt::Key_G)
   ADD_SHORTCUT(MainwinExit, "Mainwin.Exit", Qt::CTRL + Qt::Key_Q)
   ADD_SHORTCUT(MainwinHide, "Mainwin.Hide", Qt::CTRL + Qt::Key_H)

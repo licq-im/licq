@@ -1,7 +1,8 @@
 // -*- c-basic-offset: 2 -*-
+// -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009 Licq developers
+ * Copyright (C) 2010 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,32 +19,33 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef GROUPCOMBOBOX_H
-#define GROUPCOMBOBOX_H
+#ifndef ADDGROUPDLG_H
+#define ADDGROUPDLG_H
 
-#include <QComboBox>
+#include <QDialog>
+
+class QLineEdit;
 
 namespace LicqQtGui
 {
+class GroupComboBox;
 
-class GroupComboBox : public QComboBox
+class AddGroupDlg : public QDialog
 {
-  Q_OBJECT
+   Q_OBJECT
 
 public:
-  /**
-   * Constructor
-   *
-   * @param groupPos True to add "First" entry and prefix group names with "After "
-   * @param parent Parent widget
-   */
-  GroupComboBox(bool groupPos = false, QWidget* parent = NULL);
+   AddGroupDlg(QWidget* parent = 0);
 
-  int currentGroupId() const;
-  bool setCurrentGroupId(int groupId);
-  bool setCurrentGroupName(const QString& groupName);
+private:
+   QLineEdit* myNameEdit;
+   GroupComboBox* myPositionCombo;
+
+private slots:
+   void ok();
 };
 
 } // namespace LicqQtGui
 
 #endif
+

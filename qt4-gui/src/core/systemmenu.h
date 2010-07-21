@@ -136,6 +136,7 @@ private slots:
   void showSecurityDlg();
   void showRandomChatGroupDlg();
   void showAddUserDlg();
+  void showAddGroupDlg();
   void showSearchUserDlg();
   void showAuthUserDlg();
   void showReqAuthDlg();
@@ -171,6 +172,7 @@ private:
   QAction* myIcqRandomChatGroupAction;
 
   // Actions on user menu
+  QAction* myAddGroupAction;
   QAction* myUserSearchAction;
   QAction* myUserAutorizeAction;
   QAction* myUserReqAutorizeAction;

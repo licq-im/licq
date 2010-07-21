@@ -72,6 +72,7 @@ public:
     InputDeleteLineBack,
     InputDeleteWordBack,
     MainwinAccountManager,
+    MainwinAddGroup,
     MainwinEditGroups,
     MainwinExit,
     MainwinHide,

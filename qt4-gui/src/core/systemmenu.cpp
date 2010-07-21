@@ -39,6 +39,7 @@
 
 #include "contactlist/contactlist.h"
 
+#include "dialogs/addgroupdlg.h"
 #include "dialogs/adduserdlg.h"
 #include "dialogs/authuserdlg.h"
 #include "dialogs/awaymsgdlg.h"
@@ -106,6 +107,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   // Sub menu User Functions
   myUserAdmMenu = new QMenu(tr("User &Functions"));
   myUserAdmMenu->addAction(tr("&Add User..."), this, SLOT(showAddUserDlg()));
+  myAddGroupAction = myUserAdmMenu->addAction(tr("A&dd Group..."), this, SLOT(showAddGroupDlg()));
   myUserSearchAction = myUserAdmMenu->addAction(tr("S&earch for User..."), this, SLOT(showSearchUserDlg()));
   myUserAutorizeAction = myUserAdmMenu->addAction(tr("A&uthorize User..."), this, SLOT(showAuthUserDlg()));
   myUserReqAutorizeAction = myUserAdmMenu->addAction(tr("Re&quest Authorization..."), this, SLOT(showReqAuthDlg()));
@@ -319,6 +321,7 @@ void SystemMenu::updateShortcuts()
   myStatusInvisibleAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinStatusInvisible));
 
   myAccountManagerAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinAccountManager));
+  myAddGroupAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinAddGroup));
   myPopupMessageAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinPopupMessage));
   myUserPopupAllAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinPopupAllMessages));
   myEditGroupsAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinEditGroups));
@@ -559,6 +562,11 @@ void SystemMenu::showRandomChatGroupDlg()
 void SystemMenu::showAddUserDlg()
 {
   new AddUserDlg();
+}
+
+void SystemMenu::showAddGroupDlg()
+{
+  new AddGroupDlg();
 }
 
 void SystemMenu::showSearchUserDlg()
