@@ -430,7 +430,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
             L_ERRORxSTR, szId);
     }
     else
-      gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
+      gLog.Info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
   }
   else
     ReportBadBuddy(argv[0], argv[1]);
@@ -525,7 +525,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
   else if (!atoid(argv[1], true, &szId, &nPPID))
     ReportBadBuddy(argv[0],argv[1]);
   else if( nPPID != LICQ_PPID )
-     gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
+     gLog.Info(tr("%s `%s': bad protocol. ICQ only allowed\n"), L_FIFOxSTR, argv[0]);
   else
   {
     UserId userId(szId, nPPID);
