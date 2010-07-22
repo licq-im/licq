@@ -206,22 +206,26 @@ void Daemon::SaveConf()
   licqConf.set("NumOfOwners", (unsigned long)gUserManager.NumOwners());
 
   int n = 1;
-  FOR_EACH_OWNER_START(LOCK_R)
   {
-    char szOwnerId[12], szOwnerPPID[14];
-    char szPPID[5];
-    sprintf(szOwnerId, "Owner%d.Id", n);
-    sprintf(szOwnerPPID, "Owner%d.PPID", n++);
-
-    pOwner->SaveLicqInfo();
-    if (pOwner->accountId() != "0")
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
     {
-      Licq::protocolId_toStr(szPPID, pOwner->protocolId());
-      licqConf.set(szOwnerId, pOwner->accountId());
-      licqConf.set(szOwnerPPID, szPPID);
+      Licq::OwnerWriteGuard o(owner);
+
+      char szOwnerId[12], szOwnerPPID[14];
+      char szPPID[5];
+      sprintf(szOwnerId, "Owner%d.Id", n);
+      sprintf(szOwnerPPID, "Owner%d.PPID", n++);
+
+      o->SaveLicqInfo();
+      if (o->accountId() != "0")
+      {
+        Licq::protocolId_toStr(szPPID, o->protocolId());
+        licqConf.set(szOwnerId, o->accountId());
+        licqConf.set(szOwnerPPID, szPPID);
+      }
     }
   }
-  FOR_EACH_OWNER_END
 
   gIcqProtocol.save(licqConf);
 

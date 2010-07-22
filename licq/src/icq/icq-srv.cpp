@@ -977,23 +977,27 @@ void IcqProtocol::icqUpdateContactList()
 {
   unsigned short n = 0;
   StringList users;
-  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
+
   {
-    n++;
-    users.push_back(pUser->accountId());
-    if (n == myMaxUsersPerPacket)
+    Licq::UserListGuard userList(LICQ_PPID);
+    BOOST_FOREACH(Licq::User* user, **userList)
     {
-      CSrvPacketTcp *p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
-      gLog.Info(tr("%sUpdating contact list (#%hu)...\n"), L_SRVxSTR, p->Sequence());
-      SendEvent_Server(p);
-      users.clear();
-      n = 0;
+      Licq::UserWriteGuard u(user);
+      n++;
+      users.push_back(u->accountId());
+      if (n == myMaxUsersPerPacket)
+      {
+        CSrvPacketTcp *p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
+        gLog.Info(tr("%sUpdating contact list (#%hu)...\n"), L_SRVxSTR, p->Sequence());
+        SendEvent_Server(p);
+        users.clear();
+        n = 0;
+      }
+      // Reset all users to offline
+      if (u->isOnline())
+        u->statusChanged(User::OfflineStatus);
     }
-    // Reset all users to offline
-    if (pUser->isOnline())
-      pUser->statusChanged(User::OfflineStatus);
   }
-  FOR_EACH_PROTO_USER_END
   if (n != 0)
   {
     CSrvPacketTcp *p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
@@ -1025,12 +1029,15 @@ void IcqProtocol::icqSendVisibleList()
   // Go through the entire list of users, checking if each one is on
   // the visible list
   StringList users;
-  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
-    if (pUser->VisibleList())
-      users.push_back(pUser->accountId());
+    Licq::UserListGuard userList(LICQ_PPID);
+    BOOST_FOREACH(const Licq::User* user, **userList)
+    {
+      Licq::UserReadGuard u(user);
+      if (u->VisibleList())
+        users.push_back(u->accountId());
+    }
   }
-  FOR_EACH_PROTO_USER_END
   CSrvPacketTcp* p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxVISIBLExLIST);
   gLog.Info(tr("%sSending visible list (#%hu)...\n"), L_SRVxSTR, p->Sequence());
   SendEvent_Server(p);
@@ -1041,12 +1048,15 @@ void IcqProtocol::icqSendVisibleList()
 void IcqProtocol::icqSendInvisibleList()
 {
   StringList users;
-  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
-    if (pUser->InvisibleList())
-      users.push_back(pUser->accountId());
+    Licq::UserListGuard userList(LICQ_PPID);
+    BOOST_FOREACH(const Licq::User* user, **userList)
+    {
+      Licq::UserReadGuard u(user);
+      if (u->InvisibleList())
+        users.push_back(u->accountId());
+    }
   }
-  FOR_EACH_PROTO_USER_END
 
   CSrvPacketTcp* p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxINVISIBxLIST);
   gLog.Info(tr("%sSending invisible list (#%hu)...\n"), L_SRVxSTR, p->Sequence());
@@ -1733,18 +1743,19 @@ Licq::User* IcqProtocol::FindUserForInfoUpdate(const Licq::UserId& userId, Licq:
 string IcqProtocol::findUserByCellular(const string& cellular)
 {
   char szParsedNumber1[16], szParsedNumber2[16];
-  string id;
 
-  FOR_EACH_USER_START(LOCK_R)
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(const Licq::User* user, **userList)
   {
-    ParseDigits(szParsedNumber1, pUser->getCellularNumber().c_str(), 15);
+    Licq::UserReadGuard u(user);
+
+    ParseDigits(szParsedNumber1, u->getCellularNumber().c_str(), 15);
     ParseDigits(szParsedNumber2, cellular.c_str(), 15);
     if (!strcmp(szParsedNumber1, szParsedNumber2))
-      id = pUser->accountId();
+      return u->accountId();
   }
-  FOR_EACH_USER_END
 
-  return id;
+  return "";
 }
 
 //-----ProcessSrvPacket---------------------------------------------------------

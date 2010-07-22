@@ -647,12 +647,15 @@ void UserManager::RemoveGroup(int groupId)
   myGroupListMutex.unlockWrite();
 
   // Remove group from users
-  FOR_EACH_USER_START(LOCK_W)
   {
-    if (pUser->removeFromGroup(groupId))
-      notifyUserUpdated(pUser->id(), PluginSignal::UserGroups);
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(Licq::User* user, **userList)
+    {
+      Licq::UserWriteGuard u(user);
+      if (u->removeFromGroup(groupId))
+        notifyUserUpdated(u->id(), PluginSignal::UserGroups);
+    }
   }
-  FOR_EACH_USER_END;
 
   // Send signal to let plugins know of the removed group
   gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
@@ -858,28 +861,36 @@ unsigned short UserManager::GenerateSID()
 
     if (nSID == 0) nSID++;
     if (nSID == nOwnerPDINFO) nSID++;
-    FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
+
     {
-      if (pUser->GetSID() == nSID  || pUser->GetInvisibleSID() == nSID ||
-          pUser->GetVisibleSID() == nSID)
+      Licq::UserListGuard userList(LICQ_PPID);
+      BOOST_FOREACH(const Licq::User* user, **userList)
       {
-        if (nSID == 0x7FFF)
-          nSID = 1;
-        else
-          nSID++;
-        bDone = false;	// Restart
-        bCheckGroup = false;	// Don't waste time now
-        FOR_EACH_PROTO_USER_BREAK;
+        Licq::UserReadGuard u(user);
+
+        if (u->GetSID() == nSID  || u->GetInvisibleSID() == nSID ||
+          u->GetVisibleSID() == nSID)
+        {
+          if (nSID == 0x7FFF)
+            nSID = 1;
+          else
+            nSID++;
+          bDone = false;	// Restart
+          bCheckGroup = false;	// Don't waste time now
+          break;
+        }
       }
     }
-    FOR_EACH_PROTO_USER_END
 
     if (bCheckGroup)
     {
       // Check our groups too!
-      FOR_EACH_GROUP_START(LOCK_R)
+      Licq::GroupListGuard groupList;
+      BOOST_FOREACH(const Licq::Group* group, **groupList)
       {
-        unsigned short icqGroupId = pGroup->serverId(LICQ_PPID);
+        Licq::GroupReadGuard g(group);
+
+        unsigned short icqGroupId = g->serverId(LICQ_PPID);
         if (icqGroupId == nSID)
         {
           if (nSID == 0x7FFF)
@@ -887,10 +898,9 @@ unsigned short UserManager::GenerateSID()
           else
             nSID++;
           bDone = false;
-          FOR_EACH_GROUP_BREAK
+          break;
         }
       }
-      FOR_EACH_GROUP_END
     }
 
   } while (!bDone);
@@ -925,32 +935,35 @@ Licq::Owner* UserManager::fetchOwner(unsigned long protocolId, bool writeLock)
 
 void UserManager::SaveAllUsers()
 {
-  FOR_EACH_USER_START(LOCK_R)
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(Licq::User* user, **userList)
   {
-    if (!pUser->NotInList())
-      pUser->saveAll();
+    Licq::UserWriteGuard u(user);
+    if (!u->NotInList())
+      u->saveAll();
   }
-  FOR_EACH_USER_END
 }
 
 bool UserManager::UpdateUsersInGroups()
 {
   bool bDid = false;
 
-  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
+  Licq::UserListGuard userList(LICQ_PPID);
+  BOOST_FOREACH(Licq::User* user, **userList)
   {
-    unsigned short nGSID = pUser->GetGSID();
+    Licq::UserWriteGuard u(user);
+
+    unsigned short nGSID = u->GetGSID();
     if (nGSID)
     {
       int nInGroup = gUserManager.GetGroupFromID(nGSID);
       if (nInGroup != 0)
       {
-        pUser->addToGroup(nInGroup);
+        u->addToGroup(nInGroup);
         bDid = true;
       }
     }
   }
-  FOR_EACH_PROTO_USER_END
 
   return bDid;
 }

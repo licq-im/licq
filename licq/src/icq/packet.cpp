@@ -2927,11 +2927,12 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       buffer->PackUnsignedShortBE(0x00C8);
       buffer->PackUnsignedShortBE(gUserManager.NumGroups() * 2);
 
-      FOR_EACH_GROUP_START(LOCK_R)
+      Licq::GroupListGuard groupList(false);
+      BOOST_FOREACH(const Licq::Group* group, **groupList)
       {
+        Licq::GroupReadGuard pGroup(group);
         buffer->PackUnsignedShortBE(pGroup->serverId(LICQ_PPID));
       }
-      FOR_EACH_GROUP_END
     }
     else
     {
@@ -3150,12 +3151,14 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       {
         unicodeName = gTranslator.toUnicode(_szName);
         nNameLen = unicodeName.size();
-        FOR_EACH_USER_START(LOCK_R)
+
+        Licq::UserListGuard userList;
+        BOOST_FOREACH(const Licq::User* user, **userList)
         {
+          Licq::UserReadGuard pUser(user);
           if (pUser->GetGSID() == nGSID)
             nExtraLen += 2;
         }
-        FOR_EACH_USER_END
       }
 
       if (nExtraLen)
@@ -3194,12 +3197,13 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       }
       else
       {
-        FOR_EACH_USER_START(LOCK_R)
+        Licq::UserListGuard userList;
+        BOOST_FOREACH(const Licq::User* user, **userList)
         {
+          Licq::UserReadGuard pUser(user);
           if (pUser->GetGSID() == nGSID)
             buffer->PackUnsignedShortBE(pUser->GetSID());
         }
-        FOR_EACH_USER_END
       }
     }
   }
