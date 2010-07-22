@@ -114,7 +114,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserSearchAction = myUserAdmMenu->addAction(tr("S&earch for User..."), this, SLOT(showSearchUserDlg()));
   myUserAutorizeAction = myUserAdmMenu->addAction(tr("A&uthorize User..."), this, SLOT(showAuthUserDlg()));
   myUserReqAutorizeAction = myUserAdmMenu->addAction(tr("Re&quest Authorization..."), this, SLOT(showReqAuthDlg()));
-  myIcqRandomChatAction = myUserAdmMenu->addAction(tr("ICQ R&andom Chat..."), this, SLOT(showRandomChatSearchDlg()));
+  myIcqRandomChatAction = myUserAdmMenu->addAction(tr("ICQ Ra&ndom Chat..."), this, SLOT(showRandomChatSearchDlg()));
   myUserAdmMenu->addSeparator();
   myUserPopupAllAction = myUserAdmMenu->addAction(tr("&Popup All Messages..."), gLicqGui, SLOT(showAllEvents()));
   myEditGroupsAction = myUserAdmMenu->addAction(tr("Edit &Groups..."), this, SLOT(showEditGrpDlg()));
