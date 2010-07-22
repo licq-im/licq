@@ -42,6 +42,7 @@
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
 #include <licq/userid.h>
@@ -105,6 +106,10 @@ static const char* const HELP_ADDUSER = tr(
 static const char* const HELP_USERINFO = tr(
         "\tuserinfo <buddy>\n"
         "\t\tUpdates a buddy's user information.\n");
+static const char* const HELP_SETPICTURE = tr(
+    "\tsetpicture <filename> [<protocol>]\n"
+    "\t\tChanges picture for an account, or all accounts if no protocol entered.\n"
+    "\t\tAn empty filename will remove the current picture.\n");
 static const char* const HELP_EXIT = tr(
         "\texit\n"
         "\t\tCauses the Licq session to shutdown.\n");
@@ -544,6 +549,74 @@ static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
   return ret;
 }
 
+static int fifo_setpicture(int argc, const char* const* argv, void* /* data */)
+{
+  if (argc < 2)
+  {
+    ReportMissingParams(argv[0]);
+    return -1;
+  }
+
+  if (argc > 2)
+  {
+    // Just one plugin, find which one
+
+    unsigned long protocolId = 0;
+
+    Licq::ProtocolPluginsList plugins;
+    gPluginManager.getProtocolPluginsList(plugins);
+
+    BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
+    {
+      if (strcmp(plugin->getName(), argv[2]) == 0)
+      {
+        protocolId = plugin->getProtocolId();
+        break;
+      }
+    }
+
+    if (protocolId == 0)
+    {
+      gLog.Info(tr("Couldn't find plugin '%s'"), argv[2]);
+      return -1;
+    }
+
+    {
+      Licq::OwnerWriteGuard o(protocolId);
+      if (!o.isLocked())
+      {
+        gLog.Info(tr("No account registered for plugin '%s'"), argv[2]);
+        return -1;
+      }
+      if (strlen(argv[1]) == 0)
+        o->SetPicture(NULL);
+      else
+        o->SetPicture(argv[1]);
+      o->SavePictureInfo();
+      Licq::gUserManager.notifyUserUpdated(o->id(), Licq::PluginSignal::UserPicture);
+    }
+  }
+  else
+  {
+    // All plugins
+
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+    {
+      Licq::OwnerWriteGuard o(owner);
+      if (strlen(argv[1]) == 0)
+        o->SetPicture(NULL);
+      else
+        o->SetPicture(argv[1]);
+      o->SavePictureInfo();
+      Licq::gUserManager.notifyUserUpdated(o->id(), Licq::PluginSignal::UserPicture);
+    }
+  }
+
+  gLicqDaemon->icqUpdatePictureTimestamp();
+  return 0;
+}
+
 // exit
 static int fifo_exit(int /* argc */, const char* const* /* argv */, void* /* data */)
 {
@@ -758,6 +831,7 @@ static struct command_t fifocmd_table[]=
   {"debuglvl",            fifo_debuglvl,            HELP_DEBUGLVL,          0},
   {"adduser",             fifo_adduser,             HELP_ADDUSER,           0},
   {"userinfo",            fifo_userinfo,            HELP_USERINFO,          0},
+  {"setpicture",          fifo_setpicture,          HELP_SETPICTURE,        0},
   {"exit",                fifo_exit,                HELP_EXIT,              0},
   {"ui_viewevent",        fifo_ui_viewevent,        HELP_UIVIEWEVENT,       0},
   {"ui_message",          fifo_ui_message,          HELP_UIMESSAGE,         0},
