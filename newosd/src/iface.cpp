@@ -5,7 +5,7 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/icq.h>
+#include <licq/pluginsignal.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
@@ -56,13 +56,7 @@ void Iface::processSignal(Licq::PluginSignal* sig)
   string msg = "";
   bool control = true;
 
-  unsigned long ppid;
-  {
-    Licq::UserReadGuard user(sig->userId());
-    if (!user.isLocked())
-      return;
-    ppid = user->protocolId();
-  }
+  unsigned long ppid = sig->userId().protocolId();
 
   switch (sig->signal())
   {
@@ -75,7 +69,7 @@ void Iface::processSignal(Licq::PluginSignal* sig)
       if (!user.isLocked())
         break;
 
-      msg = user->GetAlias();
+      msg = user->getAlias();
 
       switch (sig->subSignal())
       {
@@ -98,7 +92,7 @@ void Iface::processSignal(Licq::PluginSignal* sig)
           if (conf->notifyOnly)
           {
             msg = "Message from ";
-            msg += user->GetAlias();
+            msg += user->getAlias();
             if (conf->markSecure && user->Secure())
               msg += " [secured]";
             msg += ".";

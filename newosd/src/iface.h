@@ -1,15 +1,18 @@
 #ifndef IFACE_H
 #define IFACE_H
 
-#include <string>
+#include <ctime>
 #include <map>
-#include <time.h>
+#include <string>
 
 #include <aosd.h>
 #include <aosd-text.h>
 #undef Status
 
-#include <licq/pluginsignal.h>
+namespace Licq
+{
+class PluginSignal;
+}
 
 class Conf;
 

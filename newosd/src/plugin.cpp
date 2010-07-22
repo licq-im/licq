@@ -1,10 +1,12 @@
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/plugin.h>
 #include <licq/pluginmanager.h>
+#include <licq/pluginsignal.h>
 
 #include "iface.h"
 #include "pluginversion.h"

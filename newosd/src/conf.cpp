@@ -1,6 +1,5 @@
 #include "conf.h"
 
-#include <licq/daemon.h>
 #include <licq/inifile.h>
 
 void Conf::loadConfig()
