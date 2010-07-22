@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QGroupBox>
@@ -121,13 +123,15 @@ void EditGrpDlg::RefreshList()
   int groupId = currentGroupId();
   lstGroups->clear();
 
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  Licq::GroupListGuard groupList;
+  BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
+    Licq::GroupReadGuard pGroup(group);
+
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
     QListWidgetItem* item = new QListWidgetItem(name, lstGroups);
     item->setData(Qt::UserRole, pGroup->id());
   }
-  FOR_EACH_GROUP_END
 
   setCurrentGroupId(groupId);
 }

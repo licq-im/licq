@@ -290,16 +290,18 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
 #endif
 
   list<unsigned long> protocolIds;
-  FOR_EACH_OWNER_START(LOCK_R)
   {
-    unsigned long ppid = pOwner->ppid();
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      unsigned long protocolId = owner->protocolId();
 #ifdef USE_KDE
-    // TODO
-    // kdeIMInterface->addProtocol(protocol->getName(), ppid);
+      // TODO
+      // kdeIMInterface->addProtocol(protocol->getName(), protocolId);
 #endif
-    protocolIds.push_back(ppid);
+      protocolIds.push_back(protocolId);
+    }
   }
-  FOR_EACH_OWNER_END
 
   BOOST_FOREACH(unsigned long protocolId, protocolIds)
     slot_protocolPlugin(protocolId);

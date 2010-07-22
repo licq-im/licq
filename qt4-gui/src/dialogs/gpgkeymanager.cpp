@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QDialogButtonBox>
 #include <QDragEnterEvent>
 #include <QDropEvent>
@@ -108,17 +110,21 @@ void GPGKeyManager::slot_add()
   QMenu popupMenu;
   QList<luser> list;
 
-  FOR_EACH_USER_START(LOCK_R)
   {
-    if (pUser->gpgKey().empty())
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
     {
+      Licq::UserReadGuard u(user);
+
+      if (!u->gpgKey().empty())
+        continue;
+
       luser tmp;
-      tmp.userId = pUser->id();
-      tmp.alias = QString::fromUtf8(pUser->GetAlias());
+      tmp.userId = u->id();
+      tmp.alias = QString::fromUtf8(u->getAlias().c_str());
       list.append(tmp);
     }
   }
-  FOR_EACH_USER_END
 
   qSort(list.begin(), list.end(), compare_luser);
 
@@ -153,14 +159,14 @@ void GPGKeyManager::slot_remove()
 
 void GPGKeyManager::initKeyList()
 {
-  FOR_EACH_USER_START(LOCK_R)
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(const Licq::User* user, **userList)
   {
-    if (!pUser->gpgKey().empty())
-    {
-      new KeyListItem(lst_keyList, pUser);
-    }
+    Licq::UserReadGuard u(user);
+
+    if (!u->gpgKey().empty())
+      new KeyListItem(lst_keyList, *u);
   }
-  FOR_EACH_USER_END
 
   lst_keyList->resizeColumnsToContents();
 }

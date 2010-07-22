@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QActionGroup>
 #include <QClipboard>
 
@@ -220,8 +222,11 @@ void UserMenu::updateGroups()
   foreach (a, myServerGroupActions->actions())
     delete a;
 
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  Licq::GroupListGuard groupList;
+  BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
+    Licq::GroupReadGuard pGroup(group);
+
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
 
     a = myUserGroupActions->addAction(name);
@@ -232,7 +237,6 @@ void UserMenu::updateGroups()
     a->setData(pGroup->id());
     a->setCheckable(true);
   }
-  FOR_EACH_GROUP_END
 
   // Add groups to menu
   myGroupsMenu->insertActions(myGroupSeparator, myUserGroupActions->actions());

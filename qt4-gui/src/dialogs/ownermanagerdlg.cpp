@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QStringList>
@@ -134,20 +136,22 @@ void OwnerManagerDlg::updateOwners()
   {
     IconManager* iconman = IconManager::instance();
 
-    FOR_EACH_OWNER_START(LOCK_R)
-      QString id = pOwner->accountId().c_str();
-      unsigned long ppid = pOwner->ppid();
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      QString id = owner->accountId().c_str();
+      unsigned long ppid = owner->protocolId();
       QString proto;
       Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
       if (protocol.get() != NULL)
         proto = protocol->getName();
 
       QTreeWidgetItem* item = new QTreeWidgetItem(ownerView);
-      item->setIcon(0, iconman->iconForStatus(Licq::User::OnlineStatus, pOwner->id()));
+      item->setIcon(0, iconman->iconForStatus(Licq::User::OnlineStatus, owner->id()));
       item->setText(0, proto.isNull() ? tr("(Invalid Protocol)") : proto);
       item->setData(0, Qt::UserRole, QString::number(ppid));
       item->setText(1, id.isNull() ? tr("(Invalid ID)") : id);
-    FOR_EACH_OWNER_END
+    }
   }
 
   ownerView->resizeColumnToContents(0);

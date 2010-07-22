@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QList>
 
 #include <licq_log.h>
@@ -285,8 +287,11 @@ void SystemMenu::updateGroups()
     if (a->data().toInt() < ContactListModel::SystemGroupOffset)
       delete a;
 
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  Licq::GroupListGuard groupList;
+  BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
+    Licq::GroupReadGuard pGroup(group);
+
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
 
     a = myUserGroupActions->addAction(name);
@@ -295,7 +300,6 @@ void SystemMenu::updateGroups()
 
     myGroupMenu->insertAction(myGroupSeparator, a);
   }
-  FOR_EACH_GROUP_END
 }
 
 void SystemMenu::updateShortcuts()

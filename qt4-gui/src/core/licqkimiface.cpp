@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 // Qt includes
 #include <QByteArray>
 #include <QPixmap>
@@ -63,20 +65,19 @@ QStringList LicqKIMIface::allContacts()
     // workaround for missing QSet
     QMap<QString, bool> contactSet;
 
-    FOR_EACH_USER_START(LOCK_R)
-    QString id = pUser->IdString();
-    if (!id.isEmpty())
-    {
-        QString kabcID = kabcIDForUser(id, pUser->PPID());
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(const Licq::User* user, **userList)
+  {
+    QString id = user->accountId().c_str();
+    QString kabcID = kabcIDForUser(id, user->protocolId());
         if (!kabcID.isEmpty())
         {
-/*            kdDebug() << pUser->GetAlias()
-                      << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
+/*            kdDebug() << user->getAlias().c_str()
+                      << ": Licq ID=(" << user->protocolId() << ", " << id << ")"
                       << "KABC ID=" << kabcID << endl;*/
             contactSet.insert(kabcID, true);
         }
-    }
-    FOR_EACH_USER_END
+  }
 
     QStringList contacts;
     QMap<QString, bool>::const_iterator it    = contactSet.begin();
@@ -112,23 +113,23 @@ QStringList LicqKIMIface::onlineContacts()
     // workaround for missing QSet
     QMap<QString, bool> contactSet;
 
-    FOR_EACH_USER_START(LOCK_R)
-    if (!pUser->StatusOffline())
-    {
-        QString id = pUser->IdString();
-        if (!id.isEmpty())
-        {
-            QString kabcID = kabcIDForUser(id, pUser->PPID());
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(const Licq::User* user, **userList)
+  {
+    Licq::UserReadGuard u(user);
+    if (u->StatusOffline())
+      continue;
+
+    QString id = u->accountId().c_str();
+    QString kabcID = kabcIDForUser(id, u->protocolId());
             if (!kabcID.isEmpty())
             {
-/*                kdDebug() << pUser->GetAlias()
-                        << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
+/*                kdDebug() << u->getAlias().c_str()
+                        << ": Licq ID=(" << u->protocolId() << ", " << id << ")"
                         << "KABC ID=" << kabcID << endl;*/
                 contactSet.insert(kabcID, true);
             }
-        }
-    }
-    FOR_EACH_USER_END
+  }
 
     QStringList contacts;
     QMap<QString, bool>::const_iterator it    = contactSet.begin();
@@ -171,23 +172,16 @@ QString LicqKIMIface::displayName(const QString& uid)
 
     if (licqID.isEmpty()) return QString::null;
 
-    QString name;
+  Licq::UserId userId(licqID.accountId().c_str(), PPID);
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
+    return QString;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    QString id = pUser->IdString();
-    if (!id.isEmpty() && id == licqID)
-    {
-/*        kdDebug() << pUser->GetAlias()
-                    << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
+/*        kdDebug() << u->getAlias().c_str()
+                    << ": Licq ID=(" << u->protocolId() << ", " << licqID << ")"
                     << "KABC ID=" << kabcID << endl;*/
-    const QTextCodec* codec = UserCodec::codecForUser(pUser);
-        QByteArray rawName = pUser->GetAlias();
-        name = codec->toUnicode(rawName);
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
-
-    return name;
+  const QTextCodec* codec = UserCodec::codecForUser(*u);
+  return codec->toUnicode(u->getAlias().c_str());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -201,21 +195,15 @@ QString LicqKIMIface::presenceString(const QString& uid)
 
     if (licqID.isEmpty()) return QString::null;
 
-    QString status;
+  Licq::UserId userId(licqID.accountId().c_str(), PPID);
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
+    return QString;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    QString id = pUser->IdString();
-    if (!id.isEmpty() && id == licqID)
-    {
-/*        kdDebug() << pUser->GetAlias()
-                    << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
+/*        kdDebug() << u->getAlias().c_str()
+                    << ": Licq ID=(" << u->protocolId() << ", " << licqID << ")"
                     << "KABC ID=" << kabcID << endl;*/
-      status = pUser->statusString().c_str();
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
-
-    return status;
+  return u->statusString().c_str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -229,28 +217,20 @@ int LicqKIMIface::presenceStatus(const QString& uid)
 
     if (licqID.isEmpty()) return 0; // unkown
 
-    int status = 0; // unkown
+  Licq::UserId userId(licqID.accountId().c_str(), PPID);
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
+    return QString;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    QString id = pUser->IdString();
-    if (!id.isEmpty() && id == licqID)
-    {
-/*        kdDebug() << pUser->GetAlias()
-                    << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
+/*        kdDebug() << u->getAlias().c_str()
+                    << ": Licq ID=(" << u->protocolId() << ", " << licqID << ")"
                     << "KABC ID=" << kabcID << endl;*/
 
-      if (pUser->status() == Licq::User::OfflineStatus)
-        status = 1; // offline
-      else if (pUser->status() & Licq::User::AwayStatuses)
-        status = 3; // away
-      else
-        status = 4; // online
-
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
-
-    return status;
+  if (u->status() == Licq::User::OfflineStatus)
+    return 1; // offline
+  if (u->status() & Licq::User::AwayStatuses)
+    return 3; // away
+  return 4; // online
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -279,20 +259,14 @@ QString LicqKIMIface::locate(const QString& contactId, const QString& protocol)
 
     if (PPID == 0) return QString::null;
 
-    QString kabcID;
+  Licq::UserId userId(contactId.accountId().c_str(), PPID);
+  if (!Licq::gUserManager.userExists(userId))
+    return QString;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    QString uin = pUser->IdString();
-    if (!uin.isEmpty() && uin == contactId)
-    {
-        QString id = pUser->IdString();
-        kabcID = kabcIDForUser(id, PPID);
-/*        kdDebug() << pUser->GetAlias()
-                    << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
+  QString kabcID = kabcIDForUser(id, PPID);
+/*        kdDebug() << u->getAlias().c_str()
+                    << ": Licq ID=(" << u->protocolId() << ", " << contactId << ")"
                     << "KABC ID=" << kabcID << endl;*/
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
 
     return kabcID;
 }
@@ -308,21 +282,15 @@ QPixmap LicqKIMIface::icon(const QString& uid)
 
     if (licqID.isEmpty()) return QPixmap();
 
-  Licq::UserId userId;
+  Licq::UserId userId(licqID.toLatin1().data(), PPID);
   unsigned status = 0;
-    bool found = false;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    userId = pUser->id();
-    if (!id.isEmpty() && id == licqID)
-    {
-      status = pUser->status();
-        found = true;
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
-
-    if (!found) return QPixmap();
+  {
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+      return QPixmap();
+    status = u->status();
+  }
 
   return CMainWindow::iconForStatus(status, userId);
 }
@@ -363,21 +331,11 @@ void LicqKIMIface::messageContact(const QString& uid, const QString& message)
 
     if (licqID.isEmpty()) return;
 
-    QString id;
-    bool found = false;
+  Licq::UserId userId(licqID.toLatin1().data(), PPID);
+  if (!Licq::gUserManager.userExists(userId))
+    return;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    id = pUser->IdString();
-    if (!id.isEmpty() && id == licqID)
-    {
-        found = true;
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
-
-    if (!found) return;
-
-    emit sendMessage(id.latin1(), PPID, message);
+  emit sendMessage(licqID.latin1(), PPID, message);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -409,21 +367,11 @@ void LicqKIMIface::chatWithContact(const QString& uid)
 
     if (licqID.isEmpty()) return;
 
-    QString id;
-    bool found = false;
+  Licq::UserId userId(licqID.toLatin1().data(), PPID);
+  if (!Licq::gUserManager.userExists(userId))
+    return;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    id = pUser->IdString();
-    if (!id.isEmpty() && id == licqID)
-    {
-        found = true;
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
-
-    if (!found) return;
-
-    emit sendChatRequest(id.latin1(), PPID);
+  emit sendChatRequest(licqID.latin1(), PPID);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -442,21 +390,11 @@ void LicqKIMIface::sendFile(const QString& uid, const KURL& sourceURL,
 
     if (licqID.isEmpty()) return;
 
-    QString id;
-    bool found = false;
+  Licq::UserId userId(licqID.toLatin1().data(), PPID);
+  if (!Licq::gUserManager.userExists(userId))
+    return;
 
-    FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    id = pUser->IdString();
-    if (!id.isEmpty() && id == licqID)
-    {
-        found = true;
-        FOR_EACH_PROTO_USER_BREAK
-    }
-    FOR_EACH_PROTO_USER_END
-
-    if (!found) return;
-
-    emit sendFileTransfer(id.latin1(), PPID, sourceURL.path(), altFileName);
+  emit sendFileTransfer(licqID.latin1(), PPID, sourceURL.path(), altFileName);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
