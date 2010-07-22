@@ -29,7 +29,7 @@ Iface::Iface()
 
   FOR_EACH_OWNER_START(LOCK_R)
   {
-    ppidTimers[pOwner->PPID()] = time(NULL);
+    ppidTimers[pOwner->protocolId()] = time(NULL);
   }
   FOR_EACH_OWNER_END;
 
@@ -55,7 +55,7 @@ void Iface::processSignal(Licq::PluginSignal* sig)
     Licq::UserReadGuard user(sig->userId());
     if (!user.isLocked())
       return;
-    ppid = user->PPID();
+    ppid = user->protocolId();
   }
 
   switch (sig->signal())
