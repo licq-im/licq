@@ -291,7 +291,7 @@ private:
  *     Licq::OwnerListGuard ownerList;
  *     BOOST_FOREACH(Licq::Owner* owner, **ownerList)
  *     {
- *       Licq::OwnerReadGuard o(owner);
+ *       Licq::OwnerWriteGuard o(owner);
  *       ...
  *     }
  */
