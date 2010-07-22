@@ -1,6 +1,7 @@
 #include "owner.h"
 
 #include <cerrno>
+#include <cstdio>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -10,11 +11,12 @@
 #include <licq/icqdefines.h>
 
 #include "gettext.h"
-#include <licq_log.h>
+#include <licq/log.h>
 
 using std::string;
 using Licq::UserId;
 using Licq::gDaemon;
+using Licq::gLog;
 using namespace LicqDaemon;
 
 
@@ -78,9 +80,9 @@ Owner::Owner(const UserId& id)
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TimezoneUnknown)
   {
-    gLog.Warn(tr("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
-              "%sUpdate general info on server to fix.\n"),
-       L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
+    gLog.warning(tr("Current Licq GMT offset (%d) does not match system GMT offset (%d).\n"
+                    "Update general info on server to fix."),
+                 m_nTimezone, SystemTimezone());
   }
   SetEnableSave(true);
 }

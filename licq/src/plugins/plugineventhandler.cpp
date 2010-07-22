@@ -24,7 +24,7 @@
 #include <licq/protocolsignal.h>
 
 #include "gettext.h"
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/foreach.hpp>
@@ -111,8 +111,7 @@ void PluginEventHandler::pushProtocolSignal(Licq::ProtocolSignal* signal,
     }
   }
 
-  gLog.Info(tr("%sInvalid protocol plugin requested (%ld).\n"),
-            L_ERRORxSTR, ppid);
+  Licq::gLog.error(tr("Invalid protocol plugin requested (%ld)"), ppid);
   delete signal;
 }
 

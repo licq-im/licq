@@ -72,7 +72,7 @@ extern "C"
 #endif /* defined(Q_WS_X11) */
 
 #include <licq/inifile.h>
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
@@ -135,6 +135,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
 using Licq::SarManager;
 using Licq::User;
+using Licq::gLog;
 using Licq::gSarManager;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;

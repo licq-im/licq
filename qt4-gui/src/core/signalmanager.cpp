@@ -26,7 +26,7 @@
 #include <QSocketNotifier>
 
 #include <licq/icqdefines.h>
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
@@ -36,6 +36,7 @@
 
 #include "dialogs/ownereditdlg.h"
 
+using Licq::gLog;
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
 

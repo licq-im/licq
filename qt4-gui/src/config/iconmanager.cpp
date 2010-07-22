@@ -27,7 +27,7 @@
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/user.h>
 
 #include "config/contactlist.h"
@@ -91,10 +91,10 @@ IconManager::IconManager(const QString& iconSet, const QString& extendedIconSet,
   : QObject(parent)
 {
   if (!loadIcons(iconSet))
-    gLog.Warn("%sUnable to load icons %s.\n", L_WARNxSTR, iconSet.toLocal8Bit().data());
+    Licq::gLog.Warn("Unable to load icons %s", iconSet.toLocal8Bit().data());
 
   if (!loadExtendedIcons(extendedIconSet))
-    gLog.Warn("%sUnable to load extended icons %s.\n", L_WARNxSTR, extendedIconSet.toLocal8Bit().data());
+    Licq::gLog.Warn("Unable to load extended icons %s", extendedIconSet.toLocal8Bit().data());
 }
 
 bool IconManager::loadIcons(const QString& iconSet)

@@ -54,6 +54,7 @@
 using std::string;
 using Licq::UserId;
 using Licq::gDaemon;
+using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
@@ -65,6 +66,8 @@ using namespace LicqDaemon;
 
 #define ReportBadBuddy(cmdname,szUin) \
   (gLog.Info("%s `%s': bad buddy string `%s'\n",L_FIFOxSTR,cmdname,szUin))
+
+static const char L_FIFOxSTR[] = "[FIF] ";
 
 static const char* const HELP_STATUS = tr(
         "\tstatus <[*]<status>> <auto response>\n"

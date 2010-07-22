@@ -21,7 +21,7 @@
 #include <licq/packet.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "../daemon.h"
 #include "../fifo.h"
@@ -35,6 +35,7 @@
 //#define DEBUG_THREADS(x) gLog.Info(x)
 
 using namespace std;
+using Licq::gLog;
 
 void cleanup_mutex(void *m)
 {

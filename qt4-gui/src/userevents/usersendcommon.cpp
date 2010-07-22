@@ -49,7 +49,7 @@
 #include <KDE/KColorDialog>
 #endif
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
@@ -918,8 +918,8 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
 
     default:
     {
-      gLog.Warn("%sInternal error: UserSendCommon::RetrySend()\n"
-                "%sUnknown sub-command %d.\n", L_WARNxSTR, L_BLANKxSTR, e->SubCommand());
+      Licq::gLog.Warn("Internal error: UserSendCommon::RetrySend()\n"
+                      "Unknown sub-command %d", e->SubCommand());
       break;
     }
   }

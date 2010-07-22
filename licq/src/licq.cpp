@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 #include "licq.h"
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/exceptions/exception.h>
 #include <licq/inifile.h>
 #include <licq/utility.h>
@@ -55,6 +55,7 @@ using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
 using LicqDaemon::gStatistics;
 using LicqDaemon::gUserManager;
+using Licq::gLog;
 using Licq::gUtilityManager;
 
 /*-----Start OpenSSL code--------------------------------------------------*/
@@ -345,8 +346,7 @@ bool CLicq::Init(int argc, char **argv)
     if (bRedirect_ok)
       gLog.Info(tr("%sOutput redirected to \"%s\".\n"), L_INITxSTR, szRedirect);
     else
-      gLog.Warn(tr("%sRedirection to \"%s\" failed:\n%s%s.\n"), L_WARNxSTR,
-                szRedirect, L_BLANKxSTR, strerror(errno));
+      gLog.warning(tr("Redirection to \"%s\" failed:\n%s"), szRedirect, strerror(errno));
     free (szRedirect);
     szRedirect = NULL;
   }
@@ -422,9 +422,9 @@ bool CLicq::Init(int argc, char **argv)
     struct stat buf;
     if (stat(pidfile.c_str(), &buf) < 0 && errno == ENOENT)
     {
-      gLog.Warn(tr("%sLicq: %s cannot be opened for writing.\n"
-                   "%s      skipping lockfile protection.\n"),
-          L_WARNxSTR, pidfile.c_str(), L_BLANKxSTR);
+      gLog.warning(tr("Licq: %s cannot be opened for writing,\n"
+                      "      skipping lockfile protection."),
+                   pidfile.c_str());
     }
     else
     {
@@ -439,9 +439,9 @@ bool CLicq::Init(int argc, char **argv)
           pid_t pid = atol(szKey);
 
           snprintf(error, ERR_SIZE,
-                   tr("%sLicq: Already running at pid %d.\n"
-                      "%s      Kill process or remove %s.\n"),
-            L_ERRORxSTR, pid, L_BLANKxSTR, pidfile.c_str());
+                   tr("Licq: Already running at pid %d.\n"
+                      "      Kill process or remove %s."),
+                   pid, pidfile.c_str());
           fclose(fs);
       }
       else
@@ -512,13 +512,13 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.get("Version", nVersion, 0);
   if (nVersion < LICQ_MAKE_VERSION(1, 2, 8))
   {
-    gLog.Info("%sUpgrading config file formats.\n", L_SBLANKxSTR);
+    gLog.info("Upgrading config file formats");
     if (upgradeLicq128(licqConf))
-      gLog.Info("%sUpgrade completed.\n", L_SBLANKxSTR);
+      gLog.info("Upgrade completed");
     else
     {
-      gLog.Warn("%sUpgrade failed. Please save your licq directory and\n"
-                "%sreport this as a bug.\n", L_ERRORxSTR, L_BLANKxSTR);
+      gLog.error("Upgrade failed. Please save your licq directory and "
+                 "report this as a bug.");
       return false;
     }
   }
@@ -765,9 +765,8 @@ int CLicq::Main()
 
   if (gPluginManager.getGeneralPluginsCount() == 0)
   {
-    gLog.Warn(tr("%sNo plugins specified on the command-line (-p option).\n"
-                 "%sSee the README for more information.\n"),
-              L_WARNxSTR, L_BLANKxSTR);
+    gLog.warning(tr("No plugins specified on the command-line (-p option).\n"
+                    "See the README for more information."));
     return nResult;
   }
 

@@ -10,6 +10,7 @@
 
 #include <licq/icqfiletransfer.h>
 
+#include <cstdio>
 #include <ctype.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -23,7 +24,7 @@
 // Localization
 #include "gettext.h"
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
@@ -46,6 +47,7 @@ const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
 using namespace std;
 using Licq::gDaemon;
+using Licq::gLog;
 
 
 //=====FILE==================================================================
@@ -641,8 +643,8 @@ bool CFileTransferManager::ProcessPacket()
 
       if (nCmd != 0x06)
       {
-        gLog.Unknown(tr("%sFile Transfer: Invalid data (%c) ignoring packet.\n"),
-           L_UNKNOWNxSTR, nCmd);
+        gLog.Unknown(tr("File Transfer: Invalid data (%c) ignoring packet"),
+           nCmd);
         break;
       }
 
@@ -799,8 +801,8 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
-      gLog.Unknown(tr("%sFile Transfer: Unknown packet received during file send:\n%s\n"),
-          L_UNKNOWNxSTR, b.toString().c_str());
+      gLog.Unknown(tr("File Transfer: Unknown packet received during file send:\n%s"),
+          b.toString().c_str());
       break;
     }
 

@@ -59,7 +59,7 @@
 #include <licq/icqcodes.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "config/iconmanager.h"
 #include "core/messagebox.h"
@@ -1711,8 +1711,8 @@ void UserPages::Info::browsePicture()
     QString s = tr("Not Available");
     if (!p.load(Filename))
     {
-      gLog.Warn("%sFailed to load user picture, did you forget to compile GIF"
-                " support?\n", L_WARNxSTR);
+      Licq::gLog.Warn("Failed to load user picture, did you forget to compile GIF"
+                      " support?");
       s = tr("Failed to Load");
     }
 

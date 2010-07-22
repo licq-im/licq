@@ -26,7 +26,7 @@
 
 #include <QList>
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>

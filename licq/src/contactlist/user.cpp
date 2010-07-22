@@ -4,6 +4,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
 #include <cerrno>
+#include <cstdio>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -11,7 +12,7 @@
 #include <unistd.h>
 
 #include "gettext.h"
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/icq.h> // For VersionToUse()
 #include <licq/icqcodes.h>
 #include <licq/icqdefines.h>
@@ -36,6 +37,7 @@ using Licq::PluginSignal;
 using Licq::SecureChannelSupport_et;
 using Licq::UserId;
 using Licq::gDaemon;
+using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gUserManager;
 using namespace LicqDaemon;

@@ -3,7 +3,7 @@
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
@@ -32,6 +32,7 @@ using Licq::UserGroupList;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
 using Licq::gDaemon;
+using Licq::gLog;
 using namespace LicqDaemon;
 
 // Declare global UserManager (internal for daemon)

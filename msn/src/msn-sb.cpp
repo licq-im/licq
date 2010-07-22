@@ -18,7 +18,7 @@
 
 #include "msn.h"
 #include "msnpacket.h"
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include <boost/foreach.hpp>
 #include <string>
@@ -42,6 +42,7 @@ using Licq::UserId;
 using Licq::Conversation;
 using Licq::OnEventManager;
 using Licq::gConvoManager;
+using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gUserManager;
 

@@ -19,7 +19,7 @@
 
 #include "protocolmanager.h"
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
@@ -41,6 +41,7 @@ using Licq::PluginSignal;
 using Licq::UserId;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
+using Licq::gLog;
 using Licq::gUserManager;
 
 

@@ -8,10 +8,11 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/thread/mutexlocker.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::gLog;
 using Licq::GpgKey;
 using Licq::GpgUid;
 using Licq::MutexLocker;

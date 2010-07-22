@@ -29,7 +29,7 @@
 #include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/utility.h>
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/version.h>
 
 #include "../contactlist/group.h"
@@ -45,6 +45,7 @@ using Licq::StringList;
 using Licq::UserCategoryMap;
 using Licq::UserGroupList;
 using Licq::UserId;
+using Licq::gLog;
 using Licq::gTranslator;
 using LicqDaemon::GroupMap;
 using LicqDaemon::gUserManager;

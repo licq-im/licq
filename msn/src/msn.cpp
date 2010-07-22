@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include <vector>
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/socket.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -43,6 +43,7 @@
 
 using namespace std;
 using Licq::gConvoManager;
+using Licq::gLog;
 
 #ifndef HAVE_STRNDUP
 

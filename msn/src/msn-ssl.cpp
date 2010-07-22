@@ -22,7 +22,7 @@
 #include <licq/daemon.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include <cstring>
 #include <string>
@@ -31,6 +31,7 @@
 
 using namespace std;
 using Licq::UserId;
+using Licq::gLog;
 
 void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
 {

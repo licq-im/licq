@@ -23,7 +23,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/socket.h>
 
 #include "gettext.h"

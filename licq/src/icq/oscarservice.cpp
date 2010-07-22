@@ -24,7 +24,7 @@
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/socket.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "../daemon.h"
 #include "../gettext.h"
@@ -34,6 +34,7 @@
 
 using namespace std;
 using Licq::Buffer;
+using Licq::gLog;
 using LicqDaemon::gDaemon;
 
 COscarService::COscarService(unsigned short Fam)

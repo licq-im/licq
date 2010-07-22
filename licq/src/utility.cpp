@@ -23,7 +23,7 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/inifile.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "gettext.h"
 #include "support.h"
@@ -64,8 +64,8 @@ int UtilityManager::loadUtilities(const string& dir)
   int n = scandir_alpha_r(dir.c_str(), &namelist, SelectUtility);
   if (n < 0)
   {
-    gLog.Error("%sError reading utility directory \"%s\":\n%s%s.\n", L_ERRORxSTR,
-        dir.c_str(), L_BLANKxSTR, strerror(errno));
+    gLog.error("Error reading utility directory \"%s\":\n%s",
+        dir.c_str(), strerror(errno));
     return (0);
   }
 

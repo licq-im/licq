@@ -41,7 +41,7 @@
 #include <QRegExp>
 #include <QTextDocument>
 
-#include <licq_log.h>
+#include <licq/log.h>
 
 
 using namespace LicqQtGui;
@@ -213,7 +213,7 @@ static QString fullFilename(const QString& dir, const QString& file)
   else if (QFile::exists(base + ".mng"))
     return base + ".mng";
 
-  gLog.Warn("%sUnknown file '%s'.\n", L_WARNxSTR, base.toLatin1().data());
+  Licq::gLog.Warn("%sUnknown file '%s'.\n", L_WARNxSTR, base.toLatin1().data());
   return QString::null;
 }
 
@@ -313,8 +313,8 @@ static bool parseXml(const QString& dir, QMap<QChar, QLinkedList<Emoticon> >* em
         }
         else
         {
-          gLog.Warn("%sElement '%s' in '%s' unknown.\n", L_WARNxSTR,
-                    string.tagName().toLatin1().data(), xmlfile.fileName().toLatin1().data());
+          Licq::gLog.Warn("%sElement '%s' in '%s' unknown.\n", L_WARNxSTR,
+              string.tagName().toLatin1().data(), xmlfile.fileName().toLatin1().data());
         }
       }
     }

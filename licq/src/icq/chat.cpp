@@ -11,9 +11,10 @@
 #include <licq/icqchat.h>
 
 #include <cctype>
+#include <cstdio>
 #include <unistd.h>
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
@@ -27,6 +28,7 @@
 #include "gettext.h"
 
 using Licq::gDaemon;
+using Licq::gLog;
 
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
@@ -1764,8 +1766,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
 
         default:
         {
-          gLog.Unknown("%sChat: Unknown chat command (%02X).\n", L_UNKNOWNxSTR,
-             chatChar);
+          gLog.Unknown("Chat: Unknown chat command (%02X)", chatChar);
           break;
         }
 

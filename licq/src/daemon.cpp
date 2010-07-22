@@ -30,7 +30,7 @@
 #include <map>
 #include <sys/stat.h> // chmod
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
@@ -53,6 +53,7 @@
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::gLog;
 using Licq::PluginSignal;
 using Licq::User;
 using Licq::UserId;
@@ -268,7 +269,7 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
 
   if (s->Descriptor() != -1)
   {
-    gLog.Info(tr("%sLocal TCP server started on port %d.\n"), L_TCPxSTR, s->getLocalPort());
+    gLog.Info(tr("Local TCP server started on port %d"), s->getLocalPort());
   }
   else if (s->Error() == EADDRINUSE)
   {
@@ -276,8 +277,8 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
   }
   else
   {
-    gLog.Warn(tr("%sFailed to start local TCP server:\n%s%s\n"), L_WARNxSTR,
-        L_BLANKxSTR, s->errorStr().c_str());
+    gLog.Warn(tr("%sFailed to start local TCP server:\n%s"), L_WARNxSTR,
+        s->errorStr().c_str());
   }
 
   return s->Descriptor();

@@ -18,10 +18,11 @@
 
 #include "msn.h"
 #include "msnpacket.h"
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include <boost/foreach.hpp>
 #include <cassert>
+#include <cstdio>
 #include <string>
 #include <list>
 #include <unistd.h>
@@ -42,6 +43,7 @@ using namespace std;
 using Licq::OnEventManager;
 using Licq::User;
 using Licq::UserId;
+using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gUserManager;
 

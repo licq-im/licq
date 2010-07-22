@@ -65,7 +65,7 @@
 #include <QX11Info>
 #endif /* defined(Q_WS_X11) */
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
@@ -661,8 +661,8 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
       {
-        gLog.Warn("%sMainWindow::slot_updatedUser(): Invalid user received: %s\n",
-            L_ERRORxSTR, userId.toString().c_str());
+        Licq::gLog.Warn("MainWindow::slot_updatedUser(): Invalid user received: %s",
+            userId.toString().c_str());
         break;
       }
 

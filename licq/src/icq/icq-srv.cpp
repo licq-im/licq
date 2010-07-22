@@ -36,7 +36,7 @@
 #include <licq/statistics.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/version.h>
 
 #include "../contactlist/owner.h"
@@ -51,6 +51,7 @@
 using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
+using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
 using LicqDaemon::Daemon;
@@ -1772,7 +1773,7 @@ bool IcqProtocol::ProcessSrvPacket(CBuffer& packet)
   if (startCode != 0x2a)
   {
     gLog.Warn("%sProcessSrvPacket bad start code: %d.\n", L_WARNxSTR, startCode);
-    gLog.Unknown(tr("%sUnknown server response:\n%s\n"), L_UNKNOWNxSTR,
+    gLog.Unknown(tr("Unknown server response:\n%s"),
         packet.toString().c_str());
     return false;
   }
@@ -2009,7 +2010,7 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     gLog.Info("%sUIN: %lu Evil: %04hx\n", L_SRVxSTR, nUin, evil);
 
     if (!packet.readTLV(tlvBlocks)) {
-      gLog.Unknown(tr("%sUnknown server response:\n%s\n"), L_UNKNOWNxSTR,
+      gLog.Unknown(tr("Unknown server response:\n%s"),
             packet.toString().c_str());
         break;
       }
@@ -2307,8 +2308,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
               L_SRVxSTR, u->getAlias().c_str(), u->id().toString().c_str(),
               u->statusString().c_str(), tcpVersion & 0x0F, szClient);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
-          gLog.Unknown("%sUnknown status flag for %s (%s): 0x%08lX\n",
-                L_UNKNOWNxSTR, u->getAlias().c_str(), u->accountId().c_str(),
+          gLog.Unknown("Unknown status flag for %s (%s): 0x%08lX",
+                u->getAlias().c_str(), u->accountId().c_str(),
                        (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS));
         nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
         u->setAutoResponse("");
@@ -2336,7 +2337,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         ) mode = MODE_INDIRECT;
       if (mode != MODE_DIRECT && mode != MODE_INDIRECT)
       {
-        gLog.Unknown("%sUnknown peer-to-peer mode for %s (%s): %d\n", L_UNKNOWNxSTR,
+        gLog.Unknown("Unknown peer-to-peer mode for %s (%s): %d",
               u->getAlias().c_str(), u->accountId().c_str(), mode);
         u->SetMode(MODE_DIRECT);
         u->SetSendServer(false);
@@ -2355,8 +2356,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         gLog.Info(tr("%s%s changed status: %s (AIM).\n"), L_SRVxSTR,
               u->getAlias().c_str(), u->statusString().c_str());
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
-          gLog.Unknown("%sUnknown status flag for %s: 0x%08lX\n",
-                       L_UNKNOWNxSTR, u->GetAlias(),
+          gLog.Unknown("Unknown status flag for %s: 0x%08lX",
+                       u->GetAlias(),
                        nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS);
         u->setAutoResponse("");
         u->SetShowAwayMsg(false);
@@ -2657,7 +2658,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Info(tr("%sList overflow.\n"), L_WARNxSTR);
       break;
     default:
-      gLog.Unknown(tr("%sUnknown ICBM error: 0x%04x.\n"), L_UNKNOWNxSTR, err);
+      gLog.Unknown(tr("Unknown ICBM error: 0x%04x"), err);
     }
     
     if (e)
@@ -2756,7 +2757,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
             if (!u.isLocked())
             {
-          gLog.Info(tr("%sMessage from new user (%s), ignoring.\n"), L_SBLANKxSTR, szId);
+          gLog.Info(tr("Message from new user (%s), ignoring"), szId);
           //TODO
           ignore = true;
       }
@@ -3018,14 +3019,14 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	          break;
           case 0x0002:
             // SMS Receipt: Success (meanwhile, we handle it in a rather lame way)
-            gLog.Unknown(tr("%sReceived SMS receipt indicating success.\n"), L_UNKNOWNxSTR);
+            gLog.Unknown(tr("Received SMS receipt indicating success"));
             return;
           case 0x0003:
             // SMS Receipt : Failure
-            gLog.Unknown(tr("%sReceived SMS receipt indicating failure.\n"), L_UNKNOWNxSTR);
+            gLog.Unknown(tr("Received SMS receipt indicating failure"));
             return;
           default:
-            gLog.Unknown("%sUnknown SMS subtype (0x%04x):\n%s\n", L_UNKNOWNxSTR,
+            gLog.Unknown("Unknown SMS subtype (0x%04x):\n%s",
                     nTypeSMS, packet.toString().c_str());
             return;
         }
@@ -3034,7 +3035,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         // Refuse irreasonable tag sizes
         if (nTagLength > 255)
         {
-          gLog.Unknown(tr("%sInvalid tag in SMS message."), L_UNKNOWNxSTR);
+          gLog.Unknown(tr("Invalid tag in SMS message"));
           return;
         }
 
@@ -3045,8 +3046,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
         if (strcmp(szTag, "ICQSMS") != 0)
         {
-          gLog.Unknown(tr("%sUnknown tag in SMS message:\n%s\n"), L_UNKNOWNxSTR,
-            szTag);
+          gLog.Unknown(tr("Unknown tag in SMS message:\n%s"), szTag);
           delete [] szTag;
           return;
         }
@@ -3059,8 +3059,8 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         // Refuse irreasonable SMS sizes (something must've went wrong)
         if (nSMSLength > 0x7fff)
         {
-          gLog.Unknown(tr("%sSMS message packet was too large (claimed size: %lu bytes)\n"),
-            L_UNKNOWNxSTR, nSMSLength);
+          gLog.Unknown(tr("SMS message packet was too large (claimed size: %lu bytes)"),
+                       nSMSLength);
           return;
         }
         szMessage = new char[nSMSLength+1];
@@ -3108,7 +3108,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_AUTHxREQUEST:
         {
-          gLog.Info(tr("%sAuthorization request from %s.\n"), L_SBLANKxSTR, szId);
+          gLog.Info(tr("Authorization request from %s"),szId);
           char **szFields = new char *[6];  // alias, first name, last name, email, auth, comment
 
           if (!ParseFE(szMessage, &szFields, 6))
@@ -3138,7 +3138,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
         {
-          gLog.Info(tr("%sAuthorization refused by %s.\n"), L_SBLANKxSTR, szId);
+          gLog.Info(tr("Authorization refused by %s"), szId);
 
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
@@ -3151,7 +3151,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
         {
-          gLog.Info(tr("%sAuthorization granted by %s.\n"), L_SBLANKxSTR, szId);
+          gLog.Info(tr("Authorization granted by %s"), szId);
 
           // translating string with Translation Table
           gTranslator.ServerToClient (szMessage);
@@ -3184,7 +3184,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_ADDEDxTOxLIST: // system message: added to a contact list
         {
-          gLog.Info(tr("%sUser %s added you to their contact list.\n"), L_SBLANKxSTR, szId);
+          gLog.Info(tr("User %s added you to their contact list"), szId);
 
           char **szFields = new char*[6]; // alias, first name, last name, email, auth, comment
 
@@ -3210,7 +3210,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_WEBxPANEL:
         {
-          gLog.Info(tr("%sMessage through web panel.\n"), L_SBLANKxSTR);
+          gLog.Info(tr("Message through web panel"));
 
           char **szFields = new char *[6];	// name, ?, ?, email, ?, message
 
@@ -3227,7 +3227,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[3]);  // email
           gTranslator.ServerToClient(szFields[5]);  // message
 
-          gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
+          gLog.Info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3],
                                                  szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
                                                  nTimeSent, 0);
@@ -3237,7 +3237,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_EMAILxPAGER:
         {
-          gLog.Info(tr("%sEmail pager message.\n"), L_SBLANKxSTR);
+          gLog.Info(tr("Email pager message"));
 
           char **szFields = new char *[6];	// name, ?, ?, email, ?, message
 
@@ -3254,7 +3254,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[3]);  // email
           gTranslator.ServerToClient(szFields[5]);  // message
 
-          gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
+          gLog.Info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3],
                                                      szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
                                                      nTimeSent, 0);
@@ -3297,7 +3297,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           while ((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
 
-          gLog.Unknown(tr("%sUnknown system message (0x%04x):\n%s\n"), L_UNKNOWNxSTR,
+          gLog.Unknown(tr("Unknown system message (0x%04x):\n%s"),
                   nTypeMsg, packet.toString().c_str());
           //TODO
               Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
@@ -3319,7 +3319,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                 Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
                 if (!u.isLocked())
                 {
-          gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SBLANKxSTR, szType, szId);
+          gLog.Info(tr("%s from new user (%s), ignoring"), szType, szId);
 
           if (szType) free(szType);
 
@@ -3328,7 +3328,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
               break;
 	    }
 	    else
-	      gLog.Info(tr("%s%s through server from %s (%s).\n"), L_SBLANKxSTR,
+	      gLog.Info(tr("%s through server from %s (%s)"),
                     szType, u->getAlias().c_str(), u->accountId().c_str());
 
                 u->setIsTyping(false);
@@ -3378,7 +3378,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       {
         //TODO
                   Licq::UserWriteGuard u(Licq::UserId(idSms.c_str(), LICQ_PPID));
-                  gLog.Info(tr("%sSMS from %s - %s (%s).\n"), L_SBLANKxSTR, eSms->number().c_str(),
+                  gLog.Info(tr("SMS from %s - %s (%s)"), eSms->number().c_str(),
                       u->getAlias().c_str(), idSms.c_str());
                   if (gDaemon.addUserEvent(*u, eEvent))
                     gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *u);
@@ -4229,7 +4229,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     unsigned short nType, nId;
 
     if (!packet.readTLV()) {
-      gLog.Unknown(tr("%sUnknown server response:\n%s\n"), L_UNKNOWNxSTR,
+      gLog.Unknown(tr("Unknown server response:\n%s"),
             packet.toString().c_str());
         break;
       }
@@ -4237,7 +4237,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     CBuffer msg = packet.UnpackTLV(0x0001);
 
     if (msg.Empty()) {
-      gLog.Unknown(tr("%sUnknown server response:\n%s\n"), L_UNKNOWNxSTR,
+      gLog.Unknown(tr("Unknown server response:\n%s"),
             packet.toString().c_str());
         break;
       }
@@ -4311,7 +4311,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_AUTHxREQUEST:
 	{
-              gLog.Info(tr("%sOffline authorization request from %s.\n"), L_SBLANKxSTR, id);
+          gLog.Info(tr("Offline authorization request from %s"), id);
 
 	  char **szFields = new char *[6];  // alias, first name, last name, email, auth, comment
           
@@ -4338,7 +4338,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
         {
-              gLog.Info(tr("%sOffline authorization refused by %s.\n"), L_SBLANKxSTR, id);
+          gLog.Info(tr("Offline authorization refused by %s"), id);
 
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
@@ -4350,7 +4350,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
         {
-              gLog.Info(tr("%sOffline authorization granted by %s.\n"), L_SBLANKxSTR, id);
+          gLog.Info(tr("Offline authorization granted by %s"), id);
 
           // translating string with Translation Table
           gTranslator.ServerToClient (szMessage);
@@ -4383,7 +4383,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
         {
-              gLog.Info(tr("%sUser %s added you to their contact list (offline).\n"), L_SBLANKxSTR, id);
+          gLog.Info(tr("User %s added you to their contact list (offline)"), id);
 
           char **szFields = new char *[6]; // alias, first name, last name, email, auth, comment
           
@@ -4409,7 +4409,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_WEBxPANEL:
         {
-          gLog.Info(tr("%sOffline message through web panel.\n"), L_SBLANKxSTR);
+          gLog.Info(tr("Offline message through web panel"));
 
           char **szFields = new char *[6];	// name, ?, ?, email, ?, message
         
@@ -4426,7 +4426,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[3]);  // email
           gTranslator.ServerToClient(szFields[5]);  // message
 
-          gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
+          gLog.Info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3], szFields[5],
                                                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
           delete [] szFields;	
@@ -4435,7 +4435,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     }
 	case ICQ_CMDxSUB_EMAILxPAGER:
         {
-          gLog.Info(tr("%sEmail pager offline message.\n"), L_SBLANKxSTR);
+          gLog.Info(tr("Email pager offline message"));
 
           char **szFields = new char *[6];	// name, ?, ?, email, ?, message
         
@@ -4452,7 +4452,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szFields[3]);  // email
           gTranslator.ServerToClient(szFields[5]);  // message
 
-          gLog.Info(tr("%sFrom %s (%s).\n"), L_SBLANKxSTR, szFields[0], szFields[3]);
+          gLog.Info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3], szFields[5],
                                                      ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  delete [] szFields;	
@@ -4492,7 +4492,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
 	  while ((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
 	  
-          gLog.Unknown("%sUnknown offline system message (0x%04x):\n%s\n", L_UNKNOWNxSTR,
+          gLog.Unknown("Unknown offline system message (0x%04x):\n%s",
                   nTypeMsg, packet.toString().c_str());
               Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg,
                   ICQ_CMDxRCV_SYSxMSGxOFFLINE, userId, szMessage, nTimeSent, 0);
@@ -4513,15 +4513,15 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
                 if (!u.isLocked())
                 {
-                    gLog.Info(tr("%sOffline %s from new user (%s), ignoring.\n"),
-                        L_SBLANKxSTR, szType, id);
+                    gLog.Info(tr("Offline %s from new user (%s), ignoring"),
+                        szType, id);
                     if (szType) free(szType);
                     gDaemon.rejectEvent(userId, eEvent);
                     break;
                 }
                 else
-                  gLog.Info(tr("%sOffline %s through server from %s (%s).\n"),
-                      L_SBLANKxSTR, szType, u->GetAlias(), id);
+                  gLog.Info(tr("Offline %s through server from %s (%s)"),
+                      szType, u->GetAlias(), id);
 
             if (szType) free(szType);
                 if (gDaemon.addUserEvent(*u, eEvent))
@@ -4566,7 +4566,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 if (!idSms.empty())
                 {
                   Licq::UserWriteGuard u(Licq::UserId(idSms.c_str(), LICQ_PPID));
-                  gLog.Info(tr("%sOffline SMS from %s - %s (%s).\n"), L_SBLANKxSTR,
+                  gLog.Info(tr("Offline SMS from %s - %s (%s)"),
                       eSms->number().c_str(), u->getAlias().c_str(), id);
                   if (gDaemon.addUserEvent(*u, eEvent))
                     gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *u);
@@ -4916,7 +4916,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               }
                   else
                   {
-                gLog.Info(tr("%sUnknown SMS response:\n%s"), L_UNKNOWNxSTR,
+                gLog.Info(tr("Unknown SMS response:\n%s"),
                         packet.toString().c_str());
 
                 if (pEvent)
@@ -5078,7 +5078,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         msg.UnpackUnsignedLong();
         msg.UnpackUnsignedLong();
 
-            gLog.Info("%s%s (%lu) <%s %s, %s>\n", L_SBLANKxSTR, s->alias().c_str(),
+            gLog.Info("%s (%lu) <%s %s, %s>", s->alias().c_str(),
                 nFoundUin, s->firstName().c_str(), s->lastName().c_str(), s->email().c_str());
 
             Licq::Event* e2 = new Licq::Event(e);
@@ -5505,7 +5505,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 break;
               }
             default:
-          gLog.Unknown(tr("%sunknown info: %04hx\n%s\n"), L_UNKNOWNxSTR,
+          gLog.Unknown(tr("Unknown info: %04hx\n%s"),
                   nSubtype, packet.toString().c_str());
           }
 
@@ -5542,13 +5542,13 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
         default:
-      gLog.Unknown("%sUnknown SNAC 15,03 response type: %04hx\n%s\n", L_UNKNOWNxSTR,
+      gLog.Unknown("Unknown SNAC 15,03 response type: %04hx\n%s",
               nType, packet.toString().c_str());
       }
       break;
     }
     default:
-    gLog.Unknown(tr("%sUnknown Various Family Subtype: %04hx\n%s\n"), L_UNKNOWNxSTR,
+    gLog.Unknown(tr("Unknown Various Family Subtype: %04hx\n%s"),
           nSubtype, packet.toString().c_str());
   }
 }
@@ -5675,7 +5675,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       
       if (!packet.readTLV())
       {
-        gLog.Unknown(tr("%sUnknown server response:\n%s\n"), L_UNKNOWNxSTR,
+        gLog.Unknown(tr("Unknown server response:\n%s"),
             packet.toString().c_str());
         break;
       }
@@ -5703,7 +5703,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
     }
 
     default:
-      gLog.Unknown("%sUnknown New UIN Family Subtype: %04hx\n%s\n", L_UNKNOWNxSTR,
+      gLog.Unknown("Unknown New UIN Family Subtype: %04hx\n%s",
           nSubtype, packet.toString().c_str());
   }
 }

@@ -20,7 +20,7 @@
 #include "pluginmanager.h"
 #include "gettext.h"
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/daemon.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logservice.h>
@@ -44,6 +44,7 @@ std::list<unsigned short> LP_Ids;
 using Licq::MutexLocker;
 using Licq::StringList;
 using Licq::gDaemon;
+using Licq::gLog;
 using namespace LicqDaemon;
 using namespace std;
 
@@ -83,7 +84,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     // Let the plugin initialize itself
     if (!plugin->init(argc, argv))
     {
-      gLog.Error(tr("%sFailed to initialize plugin (%s).\n"), L_ERRORxSTR,
+      gLog.error(tr("Failed to initialize plugin (%s)"),
                  plugin->getName());
       throw std::exception();
     }
@@ -103,8 +104,8 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     std::string error = ex.getSystemError();
     std::string symbol =
         *boost::get_error_info<Plugin::errinfo_symbol_name>(ex);
-    gLog.Error(tr("%sFailed to find %s in plugin (%s): %s\n"),
-                  L_ERRORxSTR, symbol.c_str(), name.c_str(), error.c_str());
+    gLog.error(tr("Failed to find %s in plugin (%s): %s"),
+               symbol.c_str(), name.c_str(), error.c_str());
   }
   catch (const std::exception&)
   {

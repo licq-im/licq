@@ -33,7 +33,7 @@
 
 #include <licq/daemon.h>
 #include <licq/inifile.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "config/iconmanager.h"
 #include "config/emoticons.h"
@@ -210,7 +210,7 @@ void Settings::Skin::load()
   skinsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   if (skinsPath.count() == 0 && skinsUserPath.count() == 0)
   {
-    gLog.Error("%sError reading %s directory.\n", L_ERRORxSTR, skinsPath.path().toLatin1().data());
+    Licq::gLog.error("Error reading %s directory", skinsPath.path().toLatin1().data());
     mySkinCombo->addItem(tr("Error"));
     mySkinCombo->setEnabled(false);
   }
@@ -271,7 +271,7 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
   iconsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   if (iconsPath.count() == 0 && iconsUserPath.count() == 0)
   {
-    gLog.Error("%sError reading %s directory.\n", L_ERRORxSTR, iconsPath.path().toLatin1().data());
+    Licq::gLog.error("Error reading %s directory", iconsPath.path().toLatin1().data());
     iconCombo->addItem(tr("Error"));
     iconCombo->setEnabled(false);
   }

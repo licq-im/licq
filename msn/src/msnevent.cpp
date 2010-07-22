@@ -1,7 +1,7 @@
 #include "msn.h"
 #include "msnevent.h"
 
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -13,6 +13,7 @@
 
 using namespace std;
 using Licq::UserId;
+using Licq::gLog;
 
 CMSNDataEvent::CMSNDataEvent(CMSN *p)
 {

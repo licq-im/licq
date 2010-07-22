@@ -27,19 +27,6 @@ const unsigned short L_MOST     = L_INFO | L_UNKNOWN | L_ERROR | L_WARN;
 const unsigned short L_ALL      = L_MOST | L_PACKET;
 const unsigned short L_NONE     = 0;
 
-const char L_WARNxSTR[]    = "[WRN] ";
-const char L_TCPxSTR[]     = "[TCP] ";
-const char L_SRVxSTR[]     = "[SRV] ";
-const char L_ERRORxSTR[]   = "[ERR] ";
-const char L_UNKNOWNxSTR[] = "[???] ";
-const char L_BLANKxSTR[]   = "                ";
-const char L_SBLANKxSTR[]  = "      ";
-const char L_PACKETxSTR[]  = "[PKT] ";
-const char L_INITxSTR[]    = "[INI] ";
-const char L_ENDxSTR[]     = "[END] ";
-const char L_FIFOxSTR[]    = "[FIF] ";
-const char L_SSLxSTR[]     = "[SSL] ";
-
 const unsigned short S_STDERR   = 1;
 const unsigned short S_FILE     = 2;
 const unsigned short S_PLUGIN   = 4;

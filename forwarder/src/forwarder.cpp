@@ -10,7 +10,7 @@
 
 #include "forwarder.h"
 #include "forwarder.conf.h"
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
@@ -28,6 +28,7 @@
 extern "C" { const char *LP_Version(); }
 
 using std::string;
+using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;

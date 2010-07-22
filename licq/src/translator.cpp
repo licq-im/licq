@@ -17,11 +17,12 @@
 #include <licq/translator.h>
 
 #include <cerrno>
+#include <cstdio>
 #include <string.h>
 #include <iconv.h>
 #include <stdlib.h>
 
-#include <licq_log.h>
+#include <licq/log.h>
 
 using namespace std;
 using Licq::Translator;
@@ -70,9 +71,8 @@ bool Translator::setTranslationMap(const string& mapFileName)
   FILE* mapFile = fopen(mapFileName.c_str(), "r");
   if (mapFile == NULL)
   {
-    gLog.Error("%sCould not open the translation file (%s) for reading:\n%s%s.\n",
-        L_ERRORxSTR, mapFileName.c_str(),
-        L_BLANKxSTR, strerror(errno));
+    gLog.error("Could not open the translation file (%s) for reading:\n%s",
+        mapFileName.c_str(), strerror(errno));
     setDefaultTranslationMap();
     return false;
   }

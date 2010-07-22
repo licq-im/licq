@@ -62,7 +62,7 @@
 #endif
 
 #include <licq/icqchat.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "config/chat.h"
 #include "config/general.h"
@@ -901,8 +901,8 @@ void ChatDlg::slot_chat()
 
       default:
       {
-        gLog.Warn("%sInternal Error: invalid command from chat manager (%d).\n",
-           L_ERRORxSTR, e->Command());
+        Licq::gLog.Warn("Internal Error: invalid command from chat manager (%d)",
+           e->Command());
         break;
       }
     }

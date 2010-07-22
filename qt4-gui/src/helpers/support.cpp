@@ -38,14 +38,14 @@
 #include <X11/keysym.h>
 #endif /* defined(Q_WS_X11) */
 
-#include <licq_log.h>
+#include <licq/log.h>
 
 using namespace LicqQtGui;
 
 void Support::changeWinSticky(WId win, bool stick)
 {
 #if defined(USE_KDE) || defined(Q_WS_X11)
-  gLog.Info("Setting Sticky state of window 0x%lx to %s.\n",
+  Licq::gLog.Info("Setting Sticky state of window 0x%lx to %s",
       static_cast<unsigned long>(win), stick ? "true" : "false");
 #endif
 
@@ -63,7 +63,7 @@ void Support::changeWinSticky(WId win, bool stick)
     unsigned char* tmp = getWindowProperty(root, "_NET_CURRENT_DESKTOP");
 
     if (tmp == NULL)
-      gLog.Info("Error reading current desktop property.");
+      Licq::gLog.info("Error reading current desktop property");
     else
     {
       desktop = *(reinterpret_cast<unsigned long*>(tmp));

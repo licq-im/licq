@@ -19,7 +19,7 @@
 #include <licq/buffer.h>
 #include <licq/byteorder.h>
 #include <licq/logsink.h>       // packetToString()
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "gettext.h"
 #include "support.h"

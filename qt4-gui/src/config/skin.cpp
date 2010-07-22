@@ -29,7 +29,7 @@
 
 #include <licq/daemon.h>
 #include <licq/inifile.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Config::Skin */
@@ -49,7 +49,7 @@ Config::Skin::Skin(const QString& skinName, QObject* parent)
 
 void Config::Skin::loadSkin(const QString& skinName)
 {
-  gLog.Info("%sApplying %s skin.\n", L_INITxSTR, skinName.toLocal8Bit().data());
+  Licq::gLog.Info("%sApplying %s skin", L_INITxSTR, skinName.toLocal8Bit().data());
 
   // Set default values even if skin is valid as skin may not include all settings
   SetDefaultValues();
@@ -233,12 +233,12 @@ void Config::FrameSkin::loadSkin(const Licq::IniFile& skinFile,
   skinFile.get((name + ".pixmap").toLatin1().data(), temp, "none");
   if (temp != "none")
     if (!pixmap.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str())))
-      gLog.Error("%sError loading background pixmap (%s).\n", L_ERRORxSTR, temp.c_str());
+      Licq::gLog.error("Error loading background pixmap (%s)", temp.c_str());
 
   skinFile.get((name + ".mask").toLatin1().data(), temp, "none");
   if (temp != "none")
     if (!mask.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str())))
-      gLog.Error("%sError loading background mask (%s).\n", L_ERRORxSTR, temp.c_str());
+      Licq::gLog.error("Error loading background mask (%s)", temp.c_str());
 
   skinFile.get((name + ".border.top").toLatin1().data(), border.top);
   skinFile.get((name + ".border.bottom").toLatin1().data(), border.bottom);

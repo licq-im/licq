@@ -25,7 +25,7 @@
 
 #include <QHash>
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
@@ -141,8 +141,8 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
       {
-        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %s\n",
-            L_ERRORxSTR, userId.toString().c_str());
+        Licq::gLog.Warn("ContactList::listUpdated(): Invalid user received: %s",
+            userId.toString().c_str());
         break;
       }
       addUser(*u);
@@ -224,8 +224,8 @@ void ContactListModel::userUpdated(const Licq::UserId& userId, unsigned long sub
   ContactUserData* user = findUser(userId);
   if (user == NULL)
   {
-    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %s\n",
-        L_ERRORxSTR, userId.toString().c_str());
+    Licq::gLog.Warn("ContactList::userUpdated(): Invalid user received: %s",
+        userId.toString().c_str());
     return;
   }
 

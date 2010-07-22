@@ -51,7 +51,7 @@ extern "C" {
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/proxy.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "gettext.h"
 #include "support.h"
@@ -395,8 +395,8 @@ bool INetSocket::StartServer(unsigned int _nPort)
   else
   {
     // Unable to create an IPv6 socket, try with IPv4 instead
-    gLog.Warn(tr("%sFailed to start local server using IPv6 socket (falling back to IPv4):\n%s%s\n"),
-        L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+    gLog.warning(tr("Failed to start local server using IPv6 socket "
+                    "(falling back to IPv4):\n%s"), strerror(errno));
 
 #endif
     myDescriptor = socket(AF_INET, mySockType, 0);
@@ -592,8 +592,8 @@ bool SrvSocket::RecvPacket()
         gLog.Warn(tr("server socket was closed!!!\n"));
       else {
         myErrorType = ErrorErrno;
-        gLog.Warn(tr("%serror during receiving from server socket :-((\n%s%s\n"),
-            L_WARNxSTR, L_BLANKxSTR, errorStr().c_str());
+        gLog.warning(tr("Error during receiving from server socket:\n%s"),
+                     errorStr().c_str());
       }
       delete[] buffer;
       return (false);
@@ -691,7 +691,7 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
   if (newDesc < 0)
   {
     // Something went wrong, probably indicates an error somewhere else
-    gLog.Warn(tr("%sCannot accept new connection:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+    gLog.warning(tr("Cannot accept new connection:\n%s"), strerror(errno));
     return false;
   }
   if (newDesc < static_cast<int>(FD_SETSIZE))
@@ -772,11 +772,11 @@ bool TCPSocket::SendPacket(Buffer *b_in)
       {
         case SSL_ERROR_SSL:
           err = ERR_get_error_line(&file, &line);
-          gLog.Error("%sSSL_write error = %lx, %s:%i\n", L_SSLxSTR, err, file, line);
+          gLog.error("SSL_write error = %lx, %s:%i", err, file, line);
           ERR_clear_error();
           break;
         default:
-          gLog.Error("%sSSL_write error %d, SSL_%d\n", L_SSLxSTR, i, j);
+          gLog.Error("SSL_write error %d, SSL_%d", i, j);
           break;
       }
     }
@@ -794,11 +794,11 @@ bool TCPSocket::SendPacket(Buffer *b_in)
       {
         case SSL_ERROR_SSL:
           err = ERR_get_error_line(&file, &line);
-          gLog.Error("%sSSL_write error = %lx, %s:%i\n", L_SSLxSTR, err, file, line);
+          gLog.Error("SSL_write error = %lx, %s:%i", err, file, line);
           ERR_clear_error();
           break;
         default:
-          gLog.Error("%sSSL_write error %d, SSL_%d\n", L_SSLxSTR, i, j);
+          gLog.Error("SSL_write error %d, SSL_%d\n", i, j);
           break;
       }
     }
@@ -1142,14 +1142,14 @@ bool TCPSocket::SecureListen()
     {
       case SSL_ERROR_SSL:
         err = ERR_get_error_line(&file, &line);
-        gLog.Warn("%sSSL_accept error = %lx, %s:%i\n", L_SSLxSTR, err, file, line);
-        gLog.Warn("%s%s\n", L_SSLxSTR, ERR_error_string(err, 0));
+        gLog.warning("SSL_accept error = %lx, %s:%i\n%s", err, file, line,
+                     ERR_error_string(err, 0));
         ERR_clear_error();
         break;
       default:
         err = ERR_get_error();
-        gLog.Warn("%sSSL_accept error %d, SSL_%d\n", L_SSLxSTR, i, j);
-        gLog.Warn("%s%s\n", L_SSLxSTR, ERR_error_string(err, 0));
+        gLog.warning("SSL_accept error %d, SSL_%d\n%s", i, j,
+                     ERR_error_string(err, 0));
         break;
     }
     return false;

@@ -33,7 +33,7 @@
 #include <licq/statistics.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/version.h>
 
 #include "../contactlist/user.h"
@@ -47,6 +47,7 @@
 using namespace std;
 using Licq::OnEventManager;
 using Licq::StringList;
+using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
 using LicqDaemon::Daemon;
@@ -1354,7 +1355,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     {
       if (!Decrypt_Client(&packet, 4))
       {
-        gLog.Unknown("%sInvalid TCPv4 encryption:\n%s\n", L_UNKNOWNxSTR, packet.toString().c_str());
+        gLog.Unknown("Invalid TCPv4 encryption:\n%s", packet.toString().c_str());
         return false;
       }
       unsigned long nUin;
@@ -1377,7 +1378,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       userId = pSock->userId();
       if (!Decrypt_Client(&packet, 6))
       {
-        gLog.Unknown("%sInvalid TCPv6 encryption:\n%s\n", L_UNKNOWNxSTR, packet.toString().c_str());
+        gLog.Unknown("Invalid TCPv6 encryption:\n%s", packet.toString().c_str());
         return false;
       }
       packet.UnpackUnsignedLong(); // Checksum
@@ -1398,7 +1399,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       userId = pSock->userId();
       if (!Decrypt_Client(&packet, nInVersion))
       {
-        gLog.Unknown("%sUnknown TCPv%d packet:\n%s\n", L_UNKNOWNxSTR, nInVersion, packet.toString().c_str());
+        gLog.Unknown("Unknown TCPv%d packet:\n%s", nInVersion, packet.toString().c_str());
         break;
       }
 
@@ -1441,8 +1442,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   // Some simple validation of the packet
   if (!userId.isValid() || command == 0)
   {
-    gLog.Unknown("%sInvalid TCP packet (uin: %s, cmd: %04x):\n%s\n",
-        L_UNKNOWNxSTR, userId.toString().c_str(), command, packet.toString().c_str());
+    gLog.Unknown("Invalid TCP packet (uin: %s, cmd: %04x):\n%s",
+        userId.toString().c_str(), command, packet.toString().c_str());
     return false;
   }
 
@@ -2163,8 +2164,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserSecurity, u->id(), 1));
 
-          gLog.Info(tr("%sSecure channel established with %s (%s).\n"),
-              L_SSLxSTR, u->GetAlias(), userId.toString().c_str());
+          gLog.Info(tr("Secure channel established with %s (%s)"),
+              u->GetAlias(), userId.toString().c_str());
 
         break;
 
@@ -2224,7 +2225,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       }
 
         default:
-        gLog.Unknown("%sUnknown TCP message type (%04x):\n%s\n", L_UNKNOWNxSTR,
+        gLog.Unknown("Unknown TCP message type (%04x):\n%s",
               newCommand, packet.toString().c_str());
         errorOccured = true;
       }
@@ -2452,8 +2453,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             }
           else
           {
-              gLog.Info(tr("%sSecure channel established with %s (%s).\n"),
-                  L_SSLxSTR, u->GetAlias(), userId.toString().c_str());
+              gLog.Info(tr("Secure channel established with %s (%s)"),
+                  u->GetAlias(), userId.toString().c_str());
             u->SetSecure(true);
               gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserSecurity, u->id(), 1));
@@ -2518,7 +2519,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 #endif
 
         default:
-        gLog.Unknown("%sUnknown TCP Ack subcommand (%04x):\n%s\n", L_UNKNOWNxSTR,
+        gLog.Unknown("Unknown TCP Ack subcommand (%04x):\n%s",
               newCommand, packet.toString().c_str());
         errorOccured = true;
       }
@@ -2575,7 +2576,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           nSubResult = ICQ_TCPxACK_ACCEPT; // FIXME: or should this be ACK_RETURN ?
           break;
         default:
-          gLog.Unknown("%sUnknown ack flag from %s (#%hu): %04x %s.\n", L_UNKNOWNxSTR,
+          gLog.Unknown("Unknown ack flag from %s (#%hu): %04x %s",
                        u->GetAlias(), -theSequence, ackFlags, l);
           nSubResult = ICQ_TCPxACK_ACCEPT;
       }
@@ -2666,8 +2667,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     break;
 
     default:
-      gLog.Unknown("%sUnknown TCP packet (command 0x%04x):\n%s\n",
-          L_UNKNOWNxSTR, command, packet.toString().c_str());
+      gLog.Unknown("Unknown TCP packet (command 0x%04x):\n%s",
+          command, packet.toString().c_str());
     errorOccured = true;
     break;
   }
@@ -3034,7 +3035,7 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
           }
       default:
       {
-        gLog.Warn("%sUnknown reply level %u from %s.\n", L_UNKNOWNxSTR,
+        gLog.Warn("Unknown reply level %u from %s",
                   error_level, u->GetAlias());
         errorOccured = true;
             result = Licq::Event::ResultError;
@@ -3311,7 +3312,7 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
           }
       default:
       {
-        gLog.Warn("%sUnknown reply level %u from %s.\n", L_UNKNOWNxSTR,
+        gLog.Warn("Unknown reply level %u from %s",
                   error_level, u->GetAlias());
         errorOccured = true;
             result = Licq::Event::ResultError;
@@ -3653,8 +3654,8 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
     }
 
     default:
-      gLog.Unknown("%sUnknown TCP handshake packet :\n%s\n",
-          L_UNKNOWNxSTR, b.toString().c_str());
+      gLog.Unknown("Unknown TCP handshake packet :\n%s",
+          b.toString().c_str());
       return false;
   }
 

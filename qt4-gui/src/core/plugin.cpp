@@ -21,6 +21,7 @@
 #include "config.h"
 #include "pluginversion.h"
 
+#include <cstdio>
 #include <QApplication>
 #include <QString>
 
@@ -33,7 +34,7 @@
 
 #include <licq/daemon.h>
 #include <licq/pluginbase.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -111,9 +112,8 @@ bool LP_Init(int argc, char** argv)
 
   if (qApp != NULL)
   {
-    gLog.Error("%sA Qt application is already loaded.\n"
-        "%sRemove the plugin from the command line.\n",
-        L_ERRORxSTR, L_BLANKxSTR);
+    Licq::gLog.error("A Qt application is already loaded.\n"
+        "Remove the plugin from the command line.");
     return false;
   }
 

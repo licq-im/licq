@@ -13,7 +13,7 @@
 #include <locale.h>
 #include <unistd.h>
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
@@ -32,6 +32,7 @@
 using namespace std;
 using Licq::User;
 using Licq::UserId;
+using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gUserManager;
 

@@ -14,7 +14,7 @@
 
 #include "autoreply.h"
 
-#include <licq_log.h>
+#include <licq/log.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
@@ -30,6 +30,7 @@ extern "C" { const char *LP_Version(); }
 
 using namespace std;
 using Licq::UserId;
+using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;

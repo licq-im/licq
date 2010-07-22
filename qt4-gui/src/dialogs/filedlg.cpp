@@ -42,7 +42,7 @@
 #include <QTextCodec>
 
 #include <licq/icqfiletransfer.h>
-#include <licq_log.h>
+#include <licq/log.h>
 
 #include "core/messagebox.h"
 
