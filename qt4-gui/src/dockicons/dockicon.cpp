@@ -24,6 +24,7 @@
 
 #include <boost/foreach.hpp>
 
+#include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 
 #include "config/general.h"

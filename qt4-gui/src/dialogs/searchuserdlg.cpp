@@ -35,6 +35,7 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/icq.h>

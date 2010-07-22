@@ -23,6 +23,7 @@
 
 #include <licq/byteorder.h>
 #include <licq/color.h>
+#include <licq/contactlist/owner.h>
 #include <licq/icqdefines.h>
 #include <licq/md5.h>
 #include <licq/socket.h>

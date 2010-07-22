@@ -11,6 +11,8 @@
 #include "forwarder.h"
 #include "forwarder.conf.h"
 #include <licq_log.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
 #include <licq/daemon.h>

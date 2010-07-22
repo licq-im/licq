@@ -31,6 +31,8 @@
 #include <sys/stat.h> // chmod
 
 #include <licq_log.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>

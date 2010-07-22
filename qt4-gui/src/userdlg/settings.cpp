@@ -34,6 +34,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/group.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>

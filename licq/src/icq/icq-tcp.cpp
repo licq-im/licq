@@ -22,6 +22,7 @@
 #include <langinfo.h>
 
 #include <licq/byteorder.h>
+#include <licq/contactlist/owner.h>
 #include <licq/event.h>
 #include <licq/gpghelper.h>
 #include <licq/icqchat.h>

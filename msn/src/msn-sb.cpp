@@ -25,6 +25,7 @@
 #include <list>
 #include <vector>
 
+#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>

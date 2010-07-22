@@ -25,6 +25,7 @@
 #include <boost/scoped_array.hpp>
 
 #include <licq/byteorder.h>
+#include <licq/contactlist/group.h>
 #include <licq/event.h>
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>

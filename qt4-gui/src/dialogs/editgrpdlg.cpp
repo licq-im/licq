@@ -32,6 +32,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/pluginsignal.h>
 

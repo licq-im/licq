@@ -5,12 +5,13 @@
 #include <list>
 #include <string>
 
-#include "group.h"
-#include "owner.h"
-#include "user.h"
-
 namespace Licq
 {
+class Group;
+class Owner;
+class User;
+class UserId;
+
 typedef std::list<User*> UserList;
 typedef std::list<Owner*> OwnerList;
 typedef std::list<Group*> GroupList;

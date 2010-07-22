@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QLineEdit>
 
+#include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
 
 #include "config/contactlist.h"

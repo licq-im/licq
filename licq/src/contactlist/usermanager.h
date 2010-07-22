@@ -24,6 +24,10 @@
 
 #include <map>
 
+#include <licq/thread/lockable.h> // LOCK_R
+#include <licq/thread/readwritemutex.h>
+#include <licq/userid.h>
+
 
 namespace LicqDaemon
 {

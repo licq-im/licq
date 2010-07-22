@@ -27,6 +27,7 @@
 #include <QActionGroup>
 #include <QClipboard>
 
+#include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icq.h>
 #include <licq/daemon.h>

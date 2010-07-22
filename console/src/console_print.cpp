@@ -4,6 +4,7 @@
 #include <cstring>
 #include <ctime>
 
+#include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>

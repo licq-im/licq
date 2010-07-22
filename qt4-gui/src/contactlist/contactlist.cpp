@@ -26,6 +26,8 @@
 #include <QHash>
 
 #include <licq_log.h>
+#include <licq/contactlist/group.h>
+#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/pluginsignal.h>
 

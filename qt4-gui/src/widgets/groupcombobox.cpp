@@ -22,6 +22,7 @@
 
 #include <boost/foreach.hpp>
 
+#include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
 
 using namespace LicqQtGui;

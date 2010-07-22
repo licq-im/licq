@@ -50,6 +50,7 @@
 #endif
 
 #include <licq_log.h>
+#include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/conversation.h>
 #include <licq/daemon.h>

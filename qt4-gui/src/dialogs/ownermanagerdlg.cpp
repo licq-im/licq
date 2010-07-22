@@ -29,6 +29,7 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
+#include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/pluginmanager.h>
