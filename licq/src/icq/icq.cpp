@@ -18,8 +18,11 @@
 #include <sys/stat.h>
 
 #include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/icqdefines.h>
+#include <licq/inifile.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
@@ -28,8 +31,6 @@
 #include <licq/userevents.h>
 #include <licq_log.h>
 
-#include "../contactlist/user.h"
-#include "../contactlist/usermanager.h"
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../support.h"
@@ -1032,15 +1033,15 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   unsigned short nPort;
 
   // Do we accept it if we are in Occ or DND?
-  // const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  // unsigned short nOwnerStatus = o->Status();
-  // gUserManager.DropOwner(o);
+  // unsigned short nOwnerStatus;
+  // {
+  //   Licq::OwnerReadGuard o(LICQ_PPID);
+  //   nOwnerStatus = o->Status();
+  // }
 
   unsigned short nLevel = nMask;
   unsigned long nFlags = ((nMask & ICQ_CMDxSUB_FxMULTIREC) ? (unsigned)Licq::UserEvent::FlagMultiRec : 0)
       | ((nMask & ICQ_TCPxMSG_URGENT) ? (unsigned)Licq::UserEvent::FlagUrgent : 0);
-
-  u->Lock(LOCK_W);
 
   switch (nMsgType)
   {
@@ -1200,7 +1201,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserEvents, u->id()));
       }
-    u->Unlock();
     return;
     
     break; // bah!
@@ -1232,9 +1232,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     if (nCommand == 0)
     {
         gLog.Warn(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, plugin.c_str());
-      u->Unlock();
-      return;
-    }
+        return;
+      }
 
     packet >> nLongLen;
       char* szMessage = new char[nLongLen+1];
@@ -1247,7 +1246,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     char *msg = (message[0] != '\0') ? message : szMessage;
 
     // recursion
-    u->Unlock();
     ProcessMessage(u, packet, msg, nCommand, nMask, nMsgID,
                    nSequence, bIsAck, bNewUser);
       delete [] szMessage;
@@ -1272,9 +1270,9 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
       gLog.Info(tr("%s%s accepted from %s (%s).\n"), L_SRVxSTR, szType,
           u->getAlias().c_str(), u->accountId().c_str());
-      u->Unlock();
+      u->unlockWrite();
       ProcessDoneEvent(pAckEvent);
-      u->Lock(LOCK_W);
+      u->lockWrite();
     }
     else
     {
@@ -1295,16 +1293,12 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
               szType, u->accountId().c_str());
           if (szType)  free(szType);
           gDaemon.rejectEvent(u->id(), pEvent);
-          u->Unlock();
           return;
         }
         gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->accountId().c_str());
-        u->Unlock();
-        Licq::gUserManager.addUser(u->id(), false);
-        bNewUser = false;
 
-        // Fetch the just added user and use it from here on
-        u = gUserManager.fetchUser(u->id(), LOCK_W);
+        // Don't delete user when we're done
+        bNewUser = false;
       }
       else
         gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
@@ -1319,8 +1313,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       packet.log(tr("Invalid %s:"), szType);
     }
   }
-
-  u->Unlock();
 
   if (szType)  free(szType);
 }

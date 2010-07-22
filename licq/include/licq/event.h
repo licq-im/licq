@@ -36,13 +36,11 @@ void* OscarServiceSendQueue_tep(void* p);
 namespace LicqDaemon
 {
 class PluginEventHandler;
-class User;
 }
 
 namespace Licq
 {
 class Packet;
-class User;
 class UserEvent;
 
 //-----CExtendedAck----------------------------------------------------------
@@ -232,17 +230,9 @@ public:
   //!sent to Uin().  Can be used to resend the event.
   const UserEvent* userEvent() const { return m_pUserEvent; }
 
-  //!If the event was a user information update (basic/extended/meta) and
-  //!the user does not exist on the contact list, this will return the user
-  //!with the relevant fields set.  This is helpful in searches for example
-  //!to avoid having to add the user to the list before checking their
-  //!other information.
-  const User* UnknownUser() const;
-
   // Returns the event and transfers ownership to the calling function
   UserEvent* GrabUserEvent();
   SearchData* GrabSearchAck();
-  User* GrabUnknownUser();
 
   //!Compare this event to the id to see if the plugin matches a waiting
   //!event with the event that the daemon has signaled to the plugin.
@@ -295,7 +285,6 @@ protected:
   UserEvent* m_pUserEvent;
   ExtendedData* m_pExtendedAck;
   SearchData* m_pSearchAck;
-  LicqDaemon::User* m_pUnknownUser;
 
   unsigned long  m_nEventId;
 

@@ -23,6 +23,8 @@
 
 #include <licq/byteorder.h>
 #include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/gpghelper.h>
 #include <licq/icqchat.h>
@@ -36,8 +38,6 @@
 #include <licq/log.h>
 #include <licq/version.h>
 
-#include "../contactlist/user.h"
-#include "../contactlist/usermanager.h"
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../support.h"
@@ -51,9 +51,7 @@ using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
 using LicqDaemon::Daemon;
-using LicqDaemon::User;
 using LicqDaemon::gDaemon;
-using LicqDaemon::gUserManager;
 
 
 void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const string& message,
@@ -1469,13 +1467,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
   // find which user was sent
   bool bNewUser = false;
-  Licq::User* u = gUserManager.fetchUser(userId, LOCK_W);
-  if (u == NULL)
-  {
-    u = new User(userId);
+  Licq::UserWriteGuard u(userId, true, &bNewUser);
+  if (bNewUser)
     u->SetSocketDesc(pSock);
-    bNewUser = true;
-  }
 
   // Check for spoofing
   if (u->SocketDesc(pSock->Channel()) != sockfd)
@@ -1487,7 +1481,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
   if (pSock->Channel() != ICQ_CHNxNONE)
   {
-    errorOccured = ProcessPluginMessage(packet, u, pSock->Channel(),
+    errorOccured = ProcessPluginMessage(packet, *u, pSock->Channel(),
                                         command == ICQ_CMDxTCP_ACK,
                                         0, 0, theSequence, pSock);
   }
@@ -1576,7 +1570,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         ns != (u->Status() | (u->isInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
     {
       bool r = u->OfflineOnDisconnect() || !u->isOnline();
-      ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
+        ChangeUserStatus(*u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
       gLog.Info(tr("%s%s (%s) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
             u->id().toString().c_str(), u->statusString().c_str());
       if (r) u->SetOfflineOnDisconnect(true);
@@ -1615,7 +1609,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 	  else
             gLog.Info(tr("%sMessage from %s (%s).\n"), L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
 
-        CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
+          CPT_AckGeneral p(newCommand, theSequence, true, bAccept, *u);
         AckTCP(p, pSock);
 
           Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
@@ -1642,13 +1636,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gDaemon.rejectEvent(userId, e);
               break;
             }
-            Licq::gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-          if (!gDaemon.addUserEvent(u, e))
+          if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
           break;
         }
       case ICQ_CMDxTCP_READxNAxMSG:
@@ -1677,7 +1670,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
             gLog.Info(tr("%s%s (%s) requested auto response.\n"), L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
 
-        CPT_AckGeneral p(newCommand, theSequence, true, false, u);
+          CPT_AckGeneral p(newCommand, theSequence, true, false, *u);
         AckTCP(p, pSock);
 
           Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
@@ -1727,7 +1720,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         }
         e->SetColor(fore, back);
 
-        CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
+          CPT_AckGeneral p(newCommand, theSequence, true, bAccept, *u);
         AckTCP(p, pSock);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
@@ -1747,13 +1740,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gDaemon.rejectEvent(userId, e);
               break;
             }
-            Licq::gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-          if (!gDaemon.addUserEvent(u, e))
+          if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, u);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, *u);
           break;
         }
 
@@ -1798,7 +1790,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         }
         e->SetColor(fore, back);
 
-        CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
+          CPT_AckGeneral p(newCommand, theSequence, true, bAccept, *u);
         AckTCP(p, pSock);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
@@ -1818,13 +1810,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gDaemon.rejectEvent(userId, e);
               break;
             }
-            Licq::gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-          if (!gDaemon.addUserEvent(u, e))
+          if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
           break;
         }
 
@@ -1868,13 +1859,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gDaemon.rejectEvent(userId, e);
               break;
             }
-            Licq::gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-          if (!gDaemon.addUserEvent(u, e))
+          if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventChat, u);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventChat, *u);
           break;
         }
 
@@ -1923,13 +1913,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gDaemon.rejectEvent(userId, e);
               break;
             }
-            Licq::gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
-          if (!gDaemon.addUserEvent(u, e))
+          if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventFile, u);
+          gOnEventManager.performOnEvent(OnEventManager::OnEventFile, *u);
           break;
         }
 
@@ -1999,13 +1988,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
-                Licq::gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-                if (!gDaemon.addUserEvent(u, e))
+                if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventFile, u);
+                gOnEventManager.performOnEvent(OnEventManager::OnEventFile, *u);
                 break;
               }
 				case ICQ_CMDxSUB_CHAT:
@@ -2032,13 +2020,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
-                Licq::gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-                if (!gDaemon.addUserEvent(u, e))
+                if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventChat, u);
+                gOnEventManager.performOnEvent(OnEventManager::OnEventChat, *u);
                 break;
               }
 				case ICQ_CMDxSUB_URL:
@@ -2061,13 +2048,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
-                Licq::gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-                if (!gDaemon.addUserEvent(u, e))
+                if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, u);
+                gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, *u);
                 break;
               }
 				case ICQ_CMDxSUB_CONTACTxLIST:
@@ -2091,13 +2077,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                   gDaemon.rejectEvent(userId, e);
                   break;
                 }
-                Licq::gUserManager.addUser(userId, false);
 						bNewUser = false;
 					}
 
-                if (!gDaemon.addUserEvent(u, e))
+                if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, u);
+                gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
                 break;
               }
           } // switch nICBMCommand
@@ -2112,7 +2097,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           gLog.Info(tr("%sReceived old-style key request from %s (%s) but we do not support it.\n"),
               L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
         // Send the nack back
-        CPT_AckOldSecureChannel p(theSequence, u);
+          CPT_AckOldSecureChannel p(theSequence, *u);
         AckTCP(p, pSock);
         break;
       }
@@ -2141,7 +2126,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.Info(tr("%sSecure channel request from %s (%s).\n"), L_TCPxSTR,
                 u->GetAlias(), userId.toString().c_str());
 
-        CPT_AckOpenSecureChannel p(theSequence, true, u);
+          CPT_AckOpenSecureChannel p(theSequence, true, *u);
         AckTCP(p, pSock);
 
         if (!pSock->SecureListen())
@@ -2156,7 +2141,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         {
           if (gDaemon.ignoreType(Daemon::IgnoreNewUsers))
             break;
-          Licq::gUserManager.addUser(userId, false);
           bNewUser = false;
         }
 
@@ -2173,7 +2157,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           gLog.Info(tr("%sReceived secure channel request from %s (%s) but we do not support OpenSSL.\n"),
               L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
         // Send the nack back
-        CPT_AckOpenSecureChannel p(theSequence, false, u);
+          CPT_AckOpenSecureChannel p(theSequence, false, *u);
         AckTCP(p, pSock);
         break;
 #endif
@@ -2205,7 +2189,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                 u->GetAlias(), userId.toString().c_str());
 
         // send ack
-        CPT_AckCloseSecureChannel p(theSequence, u);
+          CPT_AckCloseSecureChannel p(theSequence, *u);
         AckTCP(p, pSock);
 
         pSock->SecureStop();
@@ -2218,7 +2202,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           gLog.Info(tr("%sReceived secure channel close from %s (%s) but we do not support OpenSSL.\n"),
               L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
         // Send the nack back
-        CPT_AckCloseSecureChannel p(theSequence, u);
+          CPT_AckCloseSecureChannel p(theSequence, *u);
         AckTCP(p, pSock);
         break;
 #endif
@@ -2344,7 +2328,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
           {
             gLog.Info(tr("%sUnknown direct ack ICBM plugin type: %s\n"), L_TCPxSTR, plugin.c_str());
-            gUserManager.dropUser(u);
+
+            if (bNewUser)
+            {
+              u.unlock();
+              Licq::gUserManager.removeUser(userId, false);
+            }
 					return true;
 				}
 
@@ -2440,9 +2429,11 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                   L_WARNxSTR, u->GetAlias(), userId.toString().c_str());
             // Close the connection as we are in trouble
             u->SetSecure(false);
-              gUserManager.dropUser(u);
+              u.unlock();
+              if (bNewUser)
+                Licq::gUserManager.removeUser(userId, false);
               gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
-                  Licq::PluginSignal::UserSecurity, u->id(), 0));
+                  Licq::PluginSignal::UserSecurity, userId, 0));
             return false;
           }
 
@@ -2463,7 +2454,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         // finish up
         e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-          gUserManager.dropUser(u);
+          u.unlock();
+          if (bNewUser)
+            Licq::gUserManager.removeUser(userId, false);
         ProcessDoneEvent(e);
 
         // get out of here now as we don't want standard ack processing
@@ -2498,7 +2491,11 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         if (e == NULL)
         {
           // Close the connection as we are in trouble
-            gUserManager.dropUser(u);
+            if (bNewUser)
+            {
+              u.unlock();
+              Licq::gUserManager.removeUser(userId, false);
+            }
           delete e;
           return false;
         }
@@ -2507,7 +2504,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         u->SetSecure(false);
           gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserSecurity, u->id(), 0));
-          gUserManager.dropUser(u);
+
+          u.unlock();
+          if (bNewUser)
+            Licq::gUserManager.removeUser(userId, false);
 
         // finish up
         e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
@@ -2587,7 +2587,11 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     {
       e->m_pExtendedAck = pExtendedAck;
       e->m_nSubResult = nSubResult;
-        gUserManager.dropUser(u);
+
+        u.unlock();
+        if (bNewUser)
+          Licq::gUserManager.removeUser(userId, false);
+
       ProcessDoneEvent(e);
       return true;
     }
@@ -2676,10 +2680,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   }
   if (bNewUser)
   {
-    delete u;
+    u.unlock();
+    Licq::gUserManager.removeUser(userId, false);
     return false;
   }
-  gUserManager.dropUser(u);
   if (message)
     delete [] message;
   return !errorOccured;

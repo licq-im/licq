@@ -16,8 +16,6 @@
 #include <licq/userevents.h>
 #include <licq/log.h>
 
-#include "contactlist/user.h"
-
 using namespace std;
 using Licq::Event;
 using Licq::UserId;
@@ -59,7 +57,6 @@ Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
   m_nSocketDesc = _nSocketDesc;
   m_pExtendedAck = NULL;
   m_pSearchAck = NULL;
-  m_pUnknownUser = NULL;
   m_nSubResult = ICQ_TCPxACK_ACCEPT;
   thread_plugin = pthread_self();
   thread_running = false;
@@ -97,7 +94,6 @@ Event::Event(const Event* e)
   m_nSocketDesc = e->m_nSocketDesc;
   m_pExtendedAck = NULL;
   m_pSearchAck = NULL;
-  m_pUnknownUser = NULL;
 
   thread_plugin = e->thread_plugin;
   thread_send = e->thread_send;
@@ -116,7 +112,6 @@ Event::~Event()
   delete m_pUserEvent;
   delete m_pExtendedAck;
   delete m_pSearchAck;
-  delete m_pUnknownUser;
 }
 
 
@@ -160,11 +155,6 @@ unsigned long Event::EventId() const
   return this == NULL ? 0 : m_nEventId;
 }
 
-const Licq::User* Event::UnknownUser() const
-{
-  return m_pUnknownUser;
-}
-
 // Returns the event and transfers ownership to the calling function
 Licq::UserEvent* Event::GrabUserEvent()
 {
@@ -178,11 +168,4 @@ Licq::SearchData* Event::GrabSearchAck()
   Licq::SearchData* a = m_pSearchAck;
   m_pSearchAck = NULL;
   return a;
-}
-
-Licq::User* Event::GrabUnknownUser()
-{
-  Licq::User* u = m_pUnknownUser;
-  m_pUnknownUser = NULL;
-  return u;
 }
