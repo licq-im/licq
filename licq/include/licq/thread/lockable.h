@@ -6,10 +6,6 @@
 #include <pthread.h>
 #include <string>
 
-// Thread lock constants
-const unsigned short LOCK_N = 0;
-const unsigned short LOCK_R = 1;
-const unsigned short LOCK_W = 2;
 
 namespace Licq
 {
@@ -20,23 +16,8 @@ namespace Licq
 class Lockable
 {
 public:
-  Lockable() : myLockType(LOCK_R) {};
-
-  /**
-   * Lock object for access
-   * Convenience function for easier migration from old mutex handling in LicqUser
-   *
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
-   */
-  void Lock(unsigned short lockType = LOCK_R) const
-  { if (lockType == LOCK_W) lockWrite(); else lockRead(); }
-
-  /**
-   * Release current lock for object
-   * Convenience function for easier migration from old mutex handling in LicqUser
-   */
-  void Unlock() const
-  { if (myLockType == LOCK_W) unlockWrite(); else unlockRead(); }
+  Lockable()
+  { /* Empty */ }
 
   /**
    * Acquire a read lock
@@ -51,16 +32,17 @@ public:
   /**
    * Acquire the write lock
    */
-  void lockWrite() const { myMutex.lockWrite(); myLockType=LOCK_W; }
+  void lockWrite() const
+  { myMutex.lockWrite(); }
 
   /**
    * Release the write lock
    */
-  void unlockWrite() const { myLockType=LOCK_R; myMutex.unlockWrite(); }
+  void unlockWrite() const
+  { myMutex.unlockWrite(); }
 
 protected:
   mutable ReadWriteMutex myMutex;
-  mutable unsigned short myLockType;
 };
 
 
