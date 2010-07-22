@@ -909,12 +909,13 @@ int CRMSClient::Process_GROUPS()
 {
   fprintf(fs, "%d 000 All Users\n", CODE_LISTxGROUP);
   int i = 1;
-  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  Licq::GroupListGuard groupList;
+  BOOST_FOREACH(const Licq::Group* group, **groupList)
   {
+    Licq::GroupReadGuard pGroup(group);
     fprintf(fs, "%d %03d %s\n", CODE_LISTxGROUP, i, pGroup->name().c_str());
     ++i;
   }
-  FOR_EACH_GROUP_END
   fprintf(fs, "%d\n", CODE_LISTxDONE);
 
   return fflush(fs);
@@ -1041,15 +1042,16 @@ int CRMSClient::Process_LIST()
   else
     format = data_arg;
 
-  FOR_EACH_USER_START(LOCK_R)
+  Licq::UserListGuard userList;
+  BOOST_FOREACH(const Licq::User* user, **userList)
   {
+    Licq::UserReadGuard pUser(user);
     if (pUser->isInGroup(nGroup) &&
         ((!pUser->isOnline() && n&2) || (pUser->isOnline() && n&1)))
     {
       fprintf(fs, "%d %s\n", CODE_LISTxUSER, pUser->usprintf(format).c_str());
     }
   }
-  FOR_EACH_USER_END
   fprintf(fs, "%d\n", CODE_LISTxDONE);
 
   return fflush(fs);
@@ -1355,16 +1357,17 @@ int CRMSClient::Process_VIEW()
     // XXX Check system messages first
 
     // Check user messages now
-    FOR_EACH_USER_START(LOCK_R)
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
     {
+      Licq::UserReadGuard pUser(user);
       if(pUser->NewMessages() > 0)
       {
         myUserId = pUser->id();
-        FOR_EACH_USER_BREAK
+        break;
       }
     }
-    FOR_EACH_USER_END
-  
+
     if (!myUserId.isValid())
     {
       fprintf(fs, "%d No new messages.\n", CODE_VIEWxNONE);

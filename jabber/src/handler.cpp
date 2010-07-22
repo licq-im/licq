@@ -23,6 +23,8 @@
 #include "handler.h"
 #include "jabber.h"
 
+#include <boost/foreach.hpp>
+
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
@@ -72,12 +74,15 @@ void Handler::onDisconnect()
 {
   TRACE();
 
-  FOR_EACH_PROTO_USER_START(JABBER_PPID, LOCK_W)
   {
-    if (pUser->isOnline())
-      pUser->statusChanged(Licq::User::OfflineStatus);
+    Licq::UserListGuard userList(JABBER_PPID);
+    BOOST_FOREACH(Licq::User* user, **userList)
+    {
+      Licq::UserWriteGuard u(user);
+      if (u->isOnline())
+        u->statusChanged(Licq::User::OfflineStatus);
+    }
   }
-  FOR_EACH_PROTO_USER_END;
 
   gUserManager.ownerStatusChanged(JABBER_PPID, Licq::User::OfflineStatus);
 
@@ -150,12 +155,14 @@ void Handler::onRosterReceived(const std::set<std::string>& ids)
   std::list<UserId> todel;
   std::list<UserId>::const_iterator it;
 
-  FOR_EACH_PROTO_USER_START(JABBER_PPID, LOCK_R)
   {
-    if (ids.count(pUser->accountId()) == 0)
-      todel.push_back(pUser->id());
+    Licq::UserListGuard userList(JABBER_PPID);
+    BOOST_FOREACH(const Licq::User* user, **userList)
+    {
+      if (ids.count(user->accountId()) == 0)
+        todel.push_back(user->id());
+    }
   }
-  FOR_EACH_PROTO_USER_END;
 
   for (it = todel.begin(); it != todel.end(); ++it)
     gUserManager.removeUser(*it, false);

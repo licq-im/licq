@@ -20,11 +20,11 @@
 #include "msnpacket.h"
 #include <licq_log.h>
 
-#include <unistd.h>
-
+#include <boost/foreach.hpp>
 #include <cassert>
 #include <string>
 #include <list>
+#include <unistd.h>
 #include <vector>
 
 #include <licq/contactlist/usermanager.h>
@@ -152,12 +152,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       MSNChangeStatus(myStatus);
 
       // Send our local list now
-      //FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_R)
+      //Licq::UserListGuard userList(MSN_PPID);
+      //BOOST_FOREACH(const Licq::User* user, **userList)
       //{
-      //  pReply = new CPS_MSNAddUser(pUser->accountId().c_str());
+      //  pReply = new CPS_MSNAddUser(user->accountId().c_str());
       //  SendPacket(pReply);
       //}
-      //FOR_EACH_PROTO_USER_END
     }
     else if (strCmd == "LST")
     {
@@ -616,17 +616,20 @@ void CMSN::MSNLogoff(bool bDisconnected)
 
   
   // Close user sockets and update the daemon
-  FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_W)
   {
-    if (pUser->normalSocketDesc() != -1)
+    Licq::UserListGuard userList(MSN_PPID);
+    BOOST_FOREACH(Licq::User* user, **userList)
     {
-      gSocketMan.CloseSocket(pUser->normalSocketDesc(), false, true);
-      pUser->ClearSocketDesc();
+      Licq::UserWriteGuard u(user);
+      if (u->normalSocketDesc() != -1)
+      {
+        gSocketMan.CloseSocket(u->normalSocketDesc(), false, true);
+        u->ClearSocketDesc();
+      }
+      if (u->isOnline())
+        u->statusChanged(User::OfflineStatus);
     }
-    if (pUser->isOnline())
-      pUser->statusChanged(User::OfflineStatus);
   }
-  FOR_EACH_PROTO_USER_END
 
   gUserManager.ownerStatusChanged(MSN_PPID, User::OfflineStatus);
 }

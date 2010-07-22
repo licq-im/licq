@@ -650,22 +650,26 @@ bool CLicqConsole::GetContactFromArg(char **p_szArg, Licq::UserId& userId)
   }
   *p_szArg = szCmd;
 
-  FOR_EACH_USER_START(LOCK_R)
   {
-    if ((nPPID && pUser->protocolId() == nPPID && strcasecmp(szAlias, pUser->getAlias().c_str()) == 0) ||
-        (!nPPID && strcasecmp(szAlias, pUser->GetAlias()) == 0))
+    Licq::UserListGuard userList;
+    BOOST_FOREACH(const Licq::User* user, **userList)
     {
-      userId = pUser->id();
-      FOR_EACH_PROTO_USER_BREAK;
-    }
-    else if ((nPPID && pUser->protocolId() == nPPID && strcasecmp(szAlias, pUser->accountId().c_str()) == 0) ||
-        (!nPPID && strcasecmp(szAlias, pUser->accountId().c_str()) == 0))
-    {
-      userId = pUser->id();
-      FOR_EACH_PROTO_USER_BREAK;
+      Licq::UserReadGuard u(user);
+      if ((nPPID && u->protocolId() == nPPID && strcasecmp(szAlias, u->getAlias().c_str()) == 0) ||
+          (!nPPID && strcasecmp(szAlias, u->GetAlias()) == 0))
+      {
+        userId = u->id();
+        break;
+      }
+      else if ((nPPID && u->protocolId() == nPPID && strcasecmp(szAlias, u->accountId().c_str()) == 0) ||
+          (!nPPID && strcasecmp(szAlias, u->accountId().c_str()) == 0))
+      {
+        userId = u->id();
+        break;
+      }
     }
   }
-  FOR_EACH_USER_END
+
   if (!userId.isValid())
   {
     winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
