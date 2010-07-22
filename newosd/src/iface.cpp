@@ -1,5 +1,9 @@
 #include "iface.h"
 
+#include <boost/foreach.hpp>
+
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icq.h>
 #include <licq/translator.h>
@@ -27,11 +31,13 @@ Iface::Iface()
 
   updateTextRenderData();
 
-  FOR_EACH_OWNER_START(LOCK_R)
   {
-    ppidTimers[pOwner->protocolId()] = time(NULL);
+    Licq::OwnerListGuard ownerList;
+    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+    {
+      ppidTimers[owner->protocolId()] = time(NULL);
+    }
   }
-  FOR_EACH_OWNER_END;
 
   string init = "Licq newosd plugin is initialized.";
   displayLayout(init, false);
