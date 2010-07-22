@@ -410,7 +410,7 @@ void UserManager::RemoveOwner(unsigned long ppid)
 }
 
 Licq::User* UserManager::fetchUser(const UserId& userId,
-    unsigned short lockType, bool addUser, bool* retWasAdded)
+    bool writeLock, bool addUser, bool* retWasAdded)
 {
   if (retWasAdded != NULL)
     *retWasAdded = false;
@@ -428,7 +428,10 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
     if (iter_o->second->id() == userId)
     {
       user = iter_o->second;
-      user->Lock(lockType);
+      if (writeLock)
+        user->lockWrite();
+      else
+        user->lockRead();
     }
   }
   myOwnerListMutex.unlockRead();
@@ -464,7 +467,12 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
 
     // Lock the user and release the lock on the list
     if (user != NULL)
-      user->Lock(lockType);
+  {
+    if (writeLock)
+      user->lockWrite();
+    else
+      user->lockRead();
+  }
 
   if (addUser)
     myUserListMutex.unlockWrite();
@@ -909,12 +917,6 @@ unsigned short UserManager::GenerateSID()
   return nSID;
 }
 
-void UserManager::dropUser(const Licq::User* u)
-{
-  if (u == NULL) return;
-  u->Unlock();
-}
-
 Licq::Owner* UserManager::fetchOwner(unsigned long protocolId, bool writeLock)
 {
   Owner* o = NULL;
@@ -1090,13 +1092,13 @@ void UserManager::setDefaultUserEncoding(const string& defaultEncoding)
 
 
 UserReadGuard::UserReadGuard(const UserId& userId, bool addUser, bool* retWasAdded)
-  : ReadMutexGuard<User>(LicqDaemon::gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded), true)
+  : ReadMutexGuard<User>(LicqDaemon::gUserManager.fetchUser(userId, false, addUser, retWasAdded), true)
 {
   // Empty
 }
 
 UserWriteGuard::UserWriteGuard(const UserId& userId, bool addUser, bool* retWasAdded)
-  : WriteMutexGuard<User>(LicqDaemon::gUserManager.fetchUser(userId, LOCK_W, addUser, retWasAdded), true)
+  : WriteMutexGuard<User>(LicqDaemon::gUserManager.fetchUser(userId, true, addUser, retWasAdded), true)
 {
   // Empty
 }

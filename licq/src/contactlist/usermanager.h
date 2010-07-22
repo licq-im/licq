@@ -24,7 +24,6 @@
 
 #include <map>
 
-#include <licq/thread/lockable.h> // LOCK_R
 #include <licq/thread/readwritemutex.h>
 #include <licq/userid.h>
 
@@ -109,15 +108,13 @@ public:
    * Find and lock an user object
    *
    * @param userId User id
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @param writeLock True to lock user for writing, false for read lock
    * @param addUser True if user should be added (as temporary) if not found
    * @param retWasAdded If not null, will be set to true if user was added
    * @return The locked user object if user exist or was created, otherwise NULL
    */
-  Licq::User* fetchUser(const Licq::UserId& userId, unsigned short lockType = LOCK_R,
+  Licq::User* fetchUser(const Licq::UserId& userId, bool writeLock = false,
       bool addUser = false, bool* retWasAdded = NULL);
-
-  void dropUser(const Licq::User* user);
 
   /**
    * Fetch and lock an owner object based on protocolId
