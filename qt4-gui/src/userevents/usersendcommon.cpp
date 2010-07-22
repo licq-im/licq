@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <assert.h>
+#include <boost/foreach.hpp>
 
 #include <QAction>
 #include <QApplication>

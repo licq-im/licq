@@ -1,7 +1,6 @@
 #ifndef LICQ_CONTACTLIST_USERMANAGER_H
 #define LICQ_CONTACTLIST_USERMANAGER_H
 
-#include <boost/foreach.hpp>
 #include <boost/noncopyable.hpp>
 #include <list>
 #include <string>
@@ -9,112 +8,6 @@
 #include "group.h"
 #include "owner.h"
 #include "user.h"
-
-class CICQDaemon;
-
-
-/*---------------------------------------------------------------------------
- * FOR_EACH_USER
- *
- * Macros to iterate through the entire list of users.  "pUser" will be a
- * pointer to the current user.
- *-------------------------------------------------------------------------*/
-#include <boost/foreach.hpp>
-
-#define FOR_EACH_USER_START(x)                           \
-  {                                                      \
-    Licq::UserListGuard _ul_;                            \
-    BOOST_FOREACH(Licq::User* pUser, **_ul_)             \
-    {                                                    \
-      pUser->Lock(x);                                    \
-      {
-
-#define FOR_EACH_PROTO_USER_START(x, y)                  \
-  {                                                      \
-    Licq::UserListGuard _ul_(x);                         \
-    BOOST_FOREACH(Licq::User* pUser, **_ul_)             \
-    {                                                    \
-      pUser->Lock(y);                                    \
-      {
-
-#define FOR_EACH_OWNER_START(x)                           \
-  {                                                      \
-    Licq::OwnerListGuard _ol_;                           \
-    BOOST_FOREACH(Licq::Owner* pOwner, **_ol_)           \
-    {                                                    \
-      pOwner->Lock(x);                                   \
-      {
-
-#define FOR_EACH_OWNER_END                                \
-      }                                                   \
-      pOwner->Unlock();                                   \
-    }                                                     \
-  }                                                       \
-
-#define FOR_EACH_OWNER_BREAK                              \
-        {                                                 \
-          pOwner->Unlock();                               \
-          break;                                          \
-        }
-
-#define FOR_EACH_USER_END                \
-      }                                  \
-      pUser->Unlock();                   \
-    }                                    \
-  }
-
-#define FOR_EACH_PROTO_USER_END FOR_EACH_USER_END
-
-#define FOR_EACH_USER_BREAK              \
-        {                                \
-          pUser->Unlock();               \
-          break;                         \
-        }
-
-#define FOR_EACH_PROTO_USER_BREAK FOR_EACH_USER_BREAK
-
-#define FOR_EACH_USER_CONTINUE           \
-        {                                \
-          pUser->Unlock();               \
-          continue;                      \
-        }
-
-#define FOR_EACH_PROTO_USER_CONTINUE FOR_EACH_USER_CONTINUE
-
-#define FOR_EACH_GROUP_START(x)                          \
-  {                                                      \
-    Licq::GroupListGuard _gl_(false);                    \
-    BOOST_FOREACH(Licq::Group* pGroup, **_gl_)           \
-    {                                                    \
-      pGroup->Lock(x);                                   \
-      {
-
-#define FOR_EACH_GROUP_START_SORTED(x)                                  \
-  {                                                      \
-    Licq::GroupListGuard _gl_;                           \
-    BOOST_FOREACH(Licq::Group* pGroup, **_gl_)           \
-    {                                                    \
-      pGroup->Lock(x);                                   \
-      {
-
-#define FOR_EACH_GROUP_CONTINUE          \
-        {                                \
-          pGroup->Unlock();              \
-          continue;                      \
-        }
-
-#define FOR_EACH_GROUP_BREAK             \
-        {                                \
-          pGroup->Unlock();              \
-          break;                         \
-        }
-
-#define FOR_EACH_GROUP_END               \
-      }                                  \
-      pGroup->Unlock();                  \
-    }                                    \
-  }
-
 
 namespace Licq
 {
@@ -352,6 +245,14 @@ extern UserManager& gUserManager;
  *
  * Note that the users in the list are not locked and any access beyond
  * reading the id requires the user to be locked by the caller.
+ *
+ * Usage example: Iterate over all ICQ users with read-only access
+ *     Licq::UserListGuard userList;
+ *     BOOST_FOREACH(const Licq::User* user, **userList)
+ *     {
+ *       Licq::UserReadGuard u(user);
+ *       ...
+ *     }
  */
 class UserListGuard : private boost::noncopyable
 {
@@ -385,6 +286,14 @@ private:
  *
  * Note that the owners in the list are not locked and any access beyond
  * reading the id requires the owner to be locked by the caller.
+ *
+ * Usage example: Iterate over all owners with write access
+ *     Licq::OwnerListGuard ownerList;
+ *     BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+ *     {
+ *       Licq::OwnerReadGuard o(owner);
+ *       ...
+ *     }
  */
 class OwnerListGuard : private boost::noncopyable
 {
@@ -416,6 +325,14 @@ private:
  *
  * Note that the groups in the list are not locked and any access beyond
  * reading the id requires the group to be locked by the caller.
+ *
+ * Usage example: Iterate over all groups (unsorted) with read-only access
+ *     Licq::GroupListGuard groupList(false);
+ *     BOOST_FOREACH(const Licq::Group* group, **groupList)
+ *     {
+ *       Licq::GroupReadGuard g(group);
+ *       ...
+ *     }
  */
 class GroupListGuard : private boost::noncopyable
 {

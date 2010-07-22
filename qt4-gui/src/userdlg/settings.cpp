@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QGroupBox>

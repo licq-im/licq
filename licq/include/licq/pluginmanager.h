@@ -27,19 +27,6 @@
 #include "plugin.h"
 
 
-#define FOR_EACH_PROTO_PLUGIN_START()                           \
-    {                                                           \
-      Licq::ProtocolPluginsList _pl_;                           \
-      Licq::ProtocolPluginsList::iterator _ppit;                \
-      gPluginManager().getProtocolPluginsList(_pl_);            \
-      for (_ppit = _pl_.begin(); _ppit != _pl_.end(); _ppit++)  \
-      {
-
-#define FOR_EACH_PROTO_PLUGIN_END                               \
-      }                                                         \
-    }
-
-
 namespace Licq
 {
 typedef std::list<std::string> StringList;
@@ -56,7 +43,14 @@ typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
  * Plugins use this to register and unregister themselves, starting other
  * plugins and for getting information about active plugins.
  *
- * Get the global instance by calling CICQDaemon::getPluginManager().
+ * Usage example: Iterate over all protocol plugins:
+ *     Licq::ProtocolPluginsList protocols;
+ *     Licq::gPluginManager.getProtocolPluginsList(protocols);
+ *     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
+ *     {
+ *       unsigned long protocolId = protocol->getProtocolId();
+ *       ...
+ *     }
  */
 class PluginManager : private boost::noncopyable
 {

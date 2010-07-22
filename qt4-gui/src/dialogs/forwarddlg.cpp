@@ -25,6 +25,8 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QGridLayout>
 #include <QDragEnterEvent>
 #include <QDropEvent>

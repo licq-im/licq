@@ -20,6 +20,8 @@
 
 #include "userviewbase.h"
 
+#include <boost/foreach.hpp>
+
 #include <licq/contactlist/usermanager.h>
 
 #include "contactlist/contactlist.h"

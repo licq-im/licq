@@ -1,5 +1,6 @@
 #include "console.h"
 
+#include <boost/foreach.hpp>
 #include <ctype.h>
 
 #include <licq/contactlist/usermanager.h>
