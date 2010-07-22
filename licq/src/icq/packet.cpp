@@ -1181,8 +1181,12 @@ CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
 CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
   : CPU_SetStatusFamily()
 {
-  Licq::OwnerReadGuard o(LICQ_PPID);
-  m_nNewStatus = o->StatusFull();
+  unsigned long timestamp;
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    m_nNewStatus = o->StatusFull();
+    timestamp = o->ClientInfoTimestamp();
+  }
 
   m_nSize += 4 + 1 + 4 + 6 + GUID_LENGTH + 4 + 1;
 
@@ -1190,12 +1194,12 @@ CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
 
   buffer->PackUnsignedLongBE(0x00110022); // TLV
   buffer->PackChar(2);                    // info update
-  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackUnsignedLong(timestamp);
   buffer->PackUnsignedShort(2);           //Unknown
   buffer->PackUnsignedShort(1);           //Unknown
   buffer->PackUnsignedShort(1);           //Unknown
   buffer->Pack(GUID, GUID_LENGTH);
-  buffer->PackUnsignedLong(o->ClientInfoTimestamp());
+  buffer->PackUnsignedLong(timestamp);
   buffer->PackChar(0);                    //No info follows ??
 }
 
