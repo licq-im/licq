@@ -12,6 +12,7 @@
 
 #include <cctype>
 #include <cstdio>
+#include <cstring>
 #include <unistd.h>
 
 #include <licq/log.h>

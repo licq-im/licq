@@ -1,6 +1,7 @@
 #ifndef LICQDAEMON_ICQ_PACKET_H
 #define LICQDAEMON_ICQ_PACKET_H
 
+#include <cstring>
 #include <list>
 #include <map>
 #include <pthread.h>

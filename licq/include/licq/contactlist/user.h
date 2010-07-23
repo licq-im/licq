@@ -2,7 +2,6 @@
 #define LICQ_CONTACTLIST_USER_H
 
 #include <boost/noncopyable.hpp>
-#include <cstring> // strdup
 #include <ctime>
 #include <list>
 #include <map>
