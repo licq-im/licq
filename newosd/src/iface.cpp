@@ -132,17 +132,17 @@ void Iface::updateTextRenderData()
   conf->loadConfig();
 
   aosd_set_hide_upon_mouse_event(aosd, conf->mouseActive);
-  pango_layout_set_font_aosd(trd.lay, const_cast<char*>(conf->font.c_str()));
+  pango_layout_set_font_aosd(trd.lay, conf->font.c_str());
 
   trd.geom.x_offset = conf->marginHorizontal;
   trd.geom.y_offset = conf->marginVertical;
 
-  trd.back.color = const_cast<char*>(conf->backColor.c_str());
+  trd.back.color = conf->backColor.c_str();
   trd.back.opacity = conf->backOpacity;
 
   trd.shadow.x_offset = conf->shadowOffset;
   trd.shadow.y_offset = conf->shadowOffset;
-  trd.shadow.color = const_cast<char*>(conf->shadowColor.c_str());
+  trd.shadow.color = conf->shadowColor.c_str();
   trd.shadow.opacity = conf->shadowOpacity;
 
   trd.fore.opacity = conf->textOpacity;
@@ -225,19 +225,17 @@ bool Iface::filterSignal(Licq::PluginSignal* sig, unsigned long ppid)
 
 void Iface::displayLayout(string& msg, bool control)
 {
-  trd.fore.color = control ?
-    const_cast<char*>(conf->textControlColor.c_str()) :
-    const_cast<char*>(conf->textColor.c_str());
+  trd.fore.color = control ? conf->textControlColor.c_str() :
+    conf->textColor.c_str();
 
-  pango_layout_set_text(trd.lay, const_cast<char*>(msg.c_str()), -1);
+  pango_layout_set_text(trd.lay, msg.c_str(), -1);
 
   if (conf->maxLines != 0 &&
       pango_layout_get_line_count(trd.lay) > conf->maxLines)
   {
     PangoLayoutLine* line =
       pango_layout_get_line_readonly(trd.lay, conf->maxLines);
-    pango_layout_set_text(trd.lay, const_cast<char*>(msg.c_str()),
-        line->start_index);
+    pango_layout_set_text(trd.lay, msg.c_str(), line->start_index);
   }
 
   unsigned width, height;
