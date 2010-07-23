@@ -41,7 +41,7 @@ const char* LP_Usage()
 
 const char* LP_ConfigFile()
 {
-  static const char file[] = "licq_newosd.ini";
+  static const char file[] = "licq_aosd.ini";
   return file;
 }
 

@@ -39,7 +39,7 @@ Iface::Iface()
     }
   }
 
-  string init = "Licq newosd plugin is initialized.";
+  string init = "Licq aosd plugin is initialized.";
   displayLayout(init, false);
 }
 

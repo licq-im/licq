@@ -1,4 +1,4 @@
-project(newosd)
+project(aosd)
 cmake_minimum_required(VERSION 2.6.0)
 cmake_policy(VERSION 2.6)
 

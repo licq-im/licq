@@ -5,7 +5,7 @@
 void Conf::loadConfig()
 {
   unsigned int tmp;
-  Licq::IniFile conf("licq_newosd.ini");
+  Licq::IniFile conf("licq_aosd.ini");
   conf.loadFile();
 
 #define GET(key, dst, def); \
