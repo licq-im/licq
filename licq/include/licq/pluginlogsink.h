@@ -36,8 +36,21 @@ public:
   PluginLogSink();
   ~PluginLogSink();
 
+  /**
+   * Get the file descriptor that will be readable when there is a new log
+   * message to be poped (one byte per message). The returned fd can be used in
+   * e.g. select().
+   */
   int getReadPipe();
 
+  /**
+   * Removes the first message from the queue and returns it, optionally
+   * reading a byte from the pipe.
+   *
+   * @param readPipe If true one byte will be read from the pipe. If the pipe
+   * is read outside of this method, pass false here.
+   * @return A log message or a null pointer on error.
+   */
   Message::Ptr popMessage(bool readPipe = true);
 
   // LogSink
