@@ -41,12 +41,12 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
+#include <licq/log.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
 #include <licq/userid.h>
-#include <licq_log.h>
 
 #include "gettext.h"
 #include "licq.h"
@@ -489,7 +489,10 @@ static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
   if( (nRet = (argc == 1)) )
     ReportMissingParams(argv[0]);
   else
-    gOldLog.ModifyService( S_STDERR, atoi(argv[1]));
+  {
+    Licq::adjustLogSinkOldFormat(LogService::instance().getDefaultLogSink(),
+                                 ::atoi(argv[1]));
+  }
 
   return -nRet;
 }
