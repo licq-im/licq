@@ -336,7 +336,7 @@ bool CLicq::Init(int argc, char **argv)
 
   // Dump all initial errors and warnings to the console log regardless of the
   // requested debug level.
-  myConsoleLog->setLogLevels(myConsoleLogLevel);
+  Licq::adjustLogSinkOldFormat(myConsoleLog, myConsoleLogLevel);
   myConsoleLog->setLogLevel(Licq::Log::Warning, true);
   myConsoleLog->setLogLevel(Licq::Log::Error, true);
   myConsoleLog->setUseColors(bUseColor);
@@ -779,7 +779,7 @@ int CLicq::Main()
   gPluginManager.startAllPlugins();
 
   // Reset to requested log level
-  myConsoleLog->setLogLevels(myConsoleLogLevel);
+  Licq::adjustLogSinkOldFormat(myConsoleLog, myConsoleLogLevel);
 
   // Logon all protocols according to owner configuration
   gDaemon.autoLogon();

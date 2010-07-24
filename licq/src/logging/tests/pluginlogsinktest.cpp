@@ -25,43 +25,6 @@
 
 using namespace Licq;
 
-TEST(PluginLogSink, notLoggingAnythingByDefault)
-{
-  PluginLogSink sink;
-  EXPECT_FALSE(sink.isLogging(Log::Unknown));
-  EXPECT_FALSE(sink.isLogging(Log::Info));
-  EXPECT_FALSE(sink.isLogging(Log::Warning));
-  EXPECT_FALSE(sink.isLogging(Log::Error));
-  EXPECT_FALSE(sink.isLogging(Log::Debug));
-  EXPECT_FALSE(sink.isLoggingPackets());
-}
-
-TEST(PluginLogSink, setLogLevel)
-{
-  PluginLogSink sink;
-
-  sink.setLogLevel(Log::Info, true);
-  sink.setLogLevel(Log::Warning, true);
-  EXPECT_TRUE(sink.isLogging(Log::Info));
-  EXPECT_TRUE(sink.isLogging(Log::Warning));
-
-  sink.setLogLevel(Log::Info, false);
-  EXPECT_FALSE(sink.isLogging(Log::Info));
-  EXPECT_TRUE(sink.isLogging(Log::Warning));  
-}
-
-TEST(PluginLogSink, setAllLogLevels)
-{
-  PluginLogSink sink;
-  sink.setAllLogLevels(true);
-
-  EXPECT_TRUE(sink.isLogging(Log::Unknown));
-  EXPECT_TRUE(sink.isLogging(Log::Info));
-  EXPECT_TRUE(sink.isLogging(Log::Warning));
-  EXPECT_TRUE(sink.isLogging(Log::Error));
-  EXPECT_TRUE(sink.isLogging(Log::Debug));
-}
-
 static ssize_t charsInPipe(int fd)
 {
   ::fcntl(fd, F_SETFL, ::fcntl(fd, F_GETFL, 0) | O_NONBLOCK);

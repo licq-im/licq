@@ -2,6 +2,7 @@ set(tested_SRCS
   conversation.cpp
   inifile.cpp
 
+  logging/adjustablelogsink.cpp
   logging/log.cpp
   logging/logdistributor.cpp
   logging/logsink.cpp
@@ -78,6 +79,7 @@ set(test_SRCS
   tests/conversationtest.cpp
   tests/inifiletest.cpp
 
+  logging/tests/adjustablelogsinktest.cpp
   logging/tests/logdistributortest.cpp
   logging/tests/logsinktest.cpp
   logging/tests/logtest.cpp

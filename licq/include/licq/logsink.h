@@ -119,7 +119,7 @@ protected:
  *   0x08 - Log::Warning
  *   0x10 - Log::Debug and packets
  */
-void adjustLogSinkOldFormat(AdjustableLogSink& sink, int levels);
+void adjustLogSinkOldFormat(AdjustableLogSink::Ptr sink, int levels);
 
 /**
  * Pretty-print a packet to a stream

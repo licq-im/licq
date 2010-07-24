@@ -1,6 +1,9 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Erik Johansson <erijo@licq.org>
+ * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ *
+ * Please refer to the COPYRIGHT file distributed with this source
+ * distribution for the names of the individual contributors.
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +20,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "adjustablelogsink.h"
+
 #include <licq/pipe.h>
 #include <licq/pluginlogsink.h>
 #include <licq/thread/mutex.h>
@@ -26,22 +31,31 @@
 
 using namespace Licq;
 
-class PluginLogSink::Private
+class PluginLogSink::Private : public LicqDaemon::AdjustableLogSink
 {
 public:
-  Private() :
-    myLogLevels(0),
-    myLogPackets(false)
+  void log(Message::Ptr message)
   {
-    // Empty
+    MutexLocker locker(myMutex);
+    myMessages.push_back(message);
+    myPipe.putChar('M');
+  }
+
+  LogSink::Message::Ptr popMessage(bool readPipe)
+  {
+    MutexLocker locker(myMutex);
+    if (myMessages.empty())
+      return Message::Ptr();
+
+    if (readPipe)
+      myPipe.getChar();
+
+    Message::Ptr message = myMessages.front();
+    myMessages.pop_front();
+    return message;
   }
 
   Pipe myPipe;
-
-  Mutex myMutex;
-  int myLogLevels;
-  bool myLogPackets;
-
   std::deque<Message::Ptr> myMessages;
 };
 
@@ -65,63 +79,41 @@ int PluginLogSink::getReadPipe()
 LogSink::Message::Ptr PluginLogSink::popMessage(bool readPipe)
 {
   LICQ_D();
-  MutexLocker locker(d->myMutex);
-  if (d->myMessages.empty())
-    return Message::Ptr();
-
-  if (readPipe)
-    d->myPipe.getChar();
-
-  Message::Ptr message = d->myMessages.front();
-  d->myMessages.pop_front();
-  return message;
+  return d->popMessage(readPipe);
 }
 
 void PluginLogSink::setLogLevel(Log::Level level, bool enable)
 {
   LICQ_D();
-  MutexLocker locker(d->myMutex);
-  if (enable)
-    d->myLogLevels |= (1 << level);
-  else
-    d->myLogLevels &= ~(1 << level);
+  d->setLogLevel(level, enable);
 }
 
 void PluginLogSink::setLogPackets(bool enable)
 {
   LICQ_D();
-  MutexLocker locker(d->myMutex);
-  d->myLogPackets = enable;
+  d->setLogPackets(enable);
 }
 
 void PluginLogSink::setAllLogLevels(bool enable)
 {
   LICQ_D();
-  MutexLocker locker(d->myMutex);
-  if (enable)
-    d->myLogLevels = 0x3f;
-  else
-    d->myLogLevels = 0;
+  d->setAllLogLevels(enable);
 }
 
 bool PluginLogSink::isLogging(Log::Level level)
 {
   LICQ_D();
-  MutexLocker locker(d->myMutex);
-  return d->myLogLevels & (1 << level);
+  return d->isLogging(level);
 }
 
 bool PluginLogSink::isLoggingPackets()
 {
   LICQ_D();
-  MutexLocker locker(d->myMutex);
-  return d->myLogPackets;
+  return d->isLoggingPackets();
 }
 
 void PluginLogSink::log(Message::Ptr message)
 {
   LICQ_D();
-  MutexLocker locker(d->myMutex);
-  d->myMessages.push_back(message);
-  d->myPipe.putChar('M');
+  d->log(message);
 }

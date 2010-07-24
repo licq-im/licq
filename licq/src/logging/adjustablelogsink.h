@@ -1,6 +1,9 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Erik Johansson <erijo@licq.org>
+ * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ *
+ * Please refer to the COPYRIGHT file distributed with this source
+ * distribution for the names of the individual contributors.
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,43 +20,37 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQ_PLUGINLOGSINK_H
-#define LICQ_PLUGINLOGSINK_H
+#ifndef LICQDAEMON_ADJUSTABLELOGSINK_H
+#define LICQDAEMON_ADJUSTABLELOGSINK_H
 
-#include "logsink.h"
-#include "macro.h"
+#include <licq/logsink.h>
+#include <licq/thread/mutex.h>
 
-#include <boost/shared_ptr.hpp>
-
-namespace Licq
+namespace LicqDaemon
 {
 
-class PluginLogSink : public AdjustableLogSink
+class AdjustableLogSink : public Licq::AdjustableLogSink
 {
 public:
-  typedef boost::shared_ptr<PluginLogSink> Ptr;
+  AdjustableLogSink();
 
-  PluginLogSink();
-  ~PluginLogSink();
-
-  int getReadPipe();
-
-  Message::Ptr popMessage(bool readPipe = true);
-
-  // LogSink
-  bool isLogging(Log::Level level);
+  // Licq::LogSink (not all)
+  bool isLogging(Licq::Log::Level level);
   bool isLoggingPackets();
-  void log(Message::Ptr message);
 
-  // AdjustableLogSink
-  void setLogLevel(Log::Level level, bool enable);
+  // Licq::AdjustableLogSink
+  void setLogLevel(Licq::Log::Level level, bool enable);
   void setLogPackets(bool enable);
   void setAllLogLevels(bool enable);
- 
+
+protected:
+  Licq::Mutex myMutex;
+
 private:
-  LICQ_DECLARE_PRIVATE();
+  int myLogLevels;
+  bool myLogPackets;
 };
 
-} // namespace Licq
+} // namespace LicqDaemon
 
 #endif

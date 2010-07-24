@@ -80,7 +80,7 @@ static std::string getColor(Log::Level level)
   return color.str();
 }
 
-static std::string getResetColor()
+static inline std::string getResetColor()
 {
   static const char reset[] = { Esc, '[', '0', 'm', '\0' };
   return reset;
@@ -106,53 +106,9 @@ static std::ostream& operator<<(
 
 StreamLogSink::StreamLogSink(std::ostream& stream) :
   myStream(stream),
-  myUseColors(true),
-  myLogLevels(0),
-  myLogPackets(false)
+  myUseColors(true)
 {
   // Empty
-}
-
-void StreamLogSink::setLogLevel(Log::Level level, bool enable)
-{
-  if (enable)
-    myLogLevels |= (1 << level);
-  else
-    myLogLevels &= ~(1 << level);
-}
-
-void StreamLogSink::setLogPackets(bool enable)
-{
-  myLogPackets = enable;
-}
-
-void StreamLogSink::setAllLogLevels(bool enable)
-{
-  myLogPackets = enable ? 0x3f : 0;
-}
-
-bool StreamLogSink::isLogging(Log::Level level)
-{
-  return myLogLevels & (1 << level);
-}
-
-bool StreamLogSink::isLoggingPackets()
-{
-  return myLogPackets;
-}
-
-void StreamLogSink::setLogLevels(int levels)
-{
-  myLogLevels = 0;
-  myLogPackets = false;
-
-  setLogLevel(Log::Info, levels & 0x1);
-  setLogLevel(Log::Unknown, levels & 0x2);
-  setLogLevel(Log::Error, levels & 0x4);
-  setLogLevel(Log::Warning, levels & 0x8);
-
-  setLogLevel(Log::Debug, levels & 0x10);
-  setLogPackets(levels & 0x10);
 }
 
 void StreamLogSink::log(Message::Ptr message)
@@ -210,7 +166,7 @@ void StreamLogSink::log(Message::Ptr message)
     myStream << prefix << message->text.substr(start, count) << '\n';
   }
 
-  if (myLogPackets && !message->packet.empty())
+  if (isLoggingPackets() && !message->packet.empty())
     Licq::packetToString(myStream, *message) << '\n';
 
   if (myUseColors)
