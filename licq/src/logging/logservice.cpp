@@ -49,6 +49,13 @@ Log* LogService::getThreadLog() const
   return myThreadLogs.get();
 }
 
+void LogService::registerDefaultLogSink(Licq::AdjustableLogSink::Ptr logSink)
+{
+  assert(!myDefaultLogSink);
+  myDefaultLogSink = logSink;
+  registerLogSink(logSink);
+}
+
 Log::Ptr LogService::createLog(const std::string& name)
 {
   return Log::Ptr(new Log(name, myLogDistributor));
@@ -67,4 +74,12 @@ void LogService::registerLogSink(Licq::LogSink::Ptr logSink)
 void LogService::unregisterLogSink(Licq::LogSink::Ptr logSink)
 {
   myLogDistributor.unregisterSink(logSink);
+  if (logSink == myDefaultLogSink)
+    myDefaultLogSink.reset();
+}
+
+Licq::AdjustableLogSink::Ptr LogService::getDefaultLogSink()
+{
+  assert(myDefaultLogSink);
+  return myDefaultLogSink;
 }

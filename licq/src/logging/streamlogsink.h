@@ -33,21 +33,24 @@ namespace LicqDaemon
  * "HH:MM:SS.mmm [XXX] sender: a text message"
  * where XXX is three letters indicating log level.
  */
-class StreamLogSink : public Licq::LogSink
+class StreamLogSink : public Licq::AdjustableLogSink
 {
 public:
   StreamLogSink(std::ostream& stream);
 
   void setUseColors(bool useColors) { myUseColors = useColors; }
-  void setLogLevel(Licq::Log::Level level, bool enable);
-  void setLogPackets(bool enable);
 
   void setLogLevels(int levels);
 
-  // From Licq::LogSink
+  // Licq::LogSink
   bool isLogging(Licq::Log::Level level);
   bool isLoggingPackets();
   void log(Message::Ptr message);
+
+  // Licq::AdjustableLogSink
+  void setLogLevel(Licq::Log::Level level, bool enable);
+  void setLogPackets(bool enable);
+  void setAllLogLevels(bool enable);
 
 private:
   void logMessage(const Message& message);

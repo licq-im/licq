@@ -79,6 +79,49 @@ protected:
 };
 
 /**
+ * A LogSink that can be configured what to log in runtime.
+ */
+class AdjustableLogSink : public LogSink
+{
+public:
+  typedef boost::shared_ptr<AdjustableLogSink> Ptr;
+
+  /**
+   * Enable or disable logging for a given log level.
+   * @param level The log level to enable or disable.
+   * @param enable True to enable logging; false to disable.
+   */
+  virtual void setLogLevel(Log::Level level, bool enable) = 0;
+
+  /**
+   * Enable or disable logging of packets.
+   * @param enable True to enable logging of packets; false to disable.
+   */
+  virtual void setLogPackets(bool enable) = 0;
+
+  /**
+   * Enable or disable all log levels (not packets).
+   * @param enable True to enable logging of all log levels; false to disable.
+   */
+  virtual void setAllLogLevels(bool enable) = 0;
+
+protected:
+  virtual ~AdjustableLogSink() { /* Empty */ }
+};
+
+/**
+ * Configures an AdjustableLogSink using the old format.
+ * @param sink The AdjustableLogSink to configure.
+ * @param levels A bitmask indicating which levels to log:
+ *   0x01 - Log::Info
+ *   0x02 - Log::Unknown
+ *   0x04 - Log::Error
+ *   0x08 - Log::Warning
+ *   0x10 - Log::Debug and packets
+ */
+void adjustLogSinkOldFormat(AdjustableLogSink& sink, int levels);
+
+/**
  * Pretty-print a packet to a stream
  *
  * @param os Stream to print to

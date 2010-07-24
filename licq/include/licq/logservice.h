@@ -38,6 +38,11 @@ public:
   virtual void registerLogSink(LogSink::Ptr logSink) = 0;
   virtual void unregisterLogSink(LogSink::Ptr logSink) = 0;
 
+  /**
+   * Get the default log sink, i.e. the log sink that logs to standard out.
+   */
+  virtual AdjustableLogSink::Ptr getDefaultLogSink() = 0;
+
 protected:
   virtual ~LogService() { /* Empty */ }
 };

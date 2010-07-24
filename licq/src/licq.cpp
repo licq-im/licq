@@ -248,7 +248,7 @@ bool CLicq::Init(int argc, char **argv)
   myConsoleLog.reset(new LicqDaemon::StreamLogSink(std::cerr));
   myConsoleLog->setLogLevel(Licq::Log::Error, true);
   myConsoleLog->setLogLevel(Licq::Log::Warning, true);
-  myLogService.registerLogSink(myConsoleLog);
+  myLogService.registerDefaultLogSink(myConsoleLog);
 
   char *szRedirect = NULL;
   vector <char *> vszPlugins;

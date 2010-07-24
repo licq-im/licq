@@ -126,6 +126,11 @@ void StreamLogSink::setLogPackets(bool enable)
   myLogPackets = enable;
 }
 
+void StreamLogSink::setAllLogLevels(bool enable)
+{
+  myLogPackets = enable ? 0x3f : 0;
+}
+
 bool StreamLogSink::isLogging(Log::Level level)
 {
   return myLogLevels & (1 << level);

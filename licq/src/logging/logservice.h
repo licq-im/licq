@@ -39,16 +39,20 @@ public:
   Log& getLog() { return myLog; }
   Log* getThreadLog() const;
 
+  void registerDefaultLogSink(Licq::AdjustableLogSink::Ptr logSink);
+
   // From Licq::LogService
   Licq::Log::Ptr createLog(const std::string& name);
   void createThreadLog(const std::string& name);
   void registerLogSink(Licq::LogSink::Ptr logSink);
   void unregisterLogSink(Licq::LogSink::Ptr logSink);
+  Licq::AdjustableLogSink::Ptr getDefaultLogSink();
 
 private:
   LogDistributor myLogDistributor;
   Log myLog;
   Licq::ThreadSpecificData<Log> myThreadLogs;
+  Licq::AdjustableLogSink::Ptr myDefaultLogSink;
 };
 
 } // namespace LicqDaemon
