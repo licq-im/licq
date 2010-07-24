@@ -24,40 +24,42 @@
 
 #include <licq/thread/mutexlocker.h>
 
-void Licq::adjustLogSinkOldFormat(Licq::AdjustableLogSink::Ptr sink,
-                                  int levels)
+const unsigned int AllLevelsMask = (1 << (Licq::Log::Debug + 1)) - 1;
+const unsigned int PacketBit = 0x1000;
+
+unsigned int Licq::convertOldLogLevelBitmaskToNew(int levels)
 {
-  sink->setAllLogLevels(false);
+  unsigned int mask = 0;
+  mask |= (levels & 0x1) ? (1 << Log::Info) : 0;
+  mask |= (levels & 0x2) ? (1 << Log::Unknown) : 0;
+  mask |= (levels & 0x4) ? (1 << Log::Error) : 0;
+  mask |= (levels & 0x8) ? (1 << Log::Warning) : 0;
 
-  sink->setLogLevel(Log::Info, levels & 0x1);
-  sink->setLogLevel(Log::Unknown, levels & 0x2);
-  sink->setLogLevel(Log::Error, levels & 0x4);
-  sink->setLogLevel(Log::Warning, levels & 0x8);
+  mask |= (levels & 0x10) ? (1 << Log::Debug) : 0;
+  mask |= (levels & 0x10) ? PacketBit : 0;
 
-  sink->setLogLevel(Log::Debug, levels & 0x10);
-  sink->setLogPackets(levels & 0x10);
+  return mask;
 }
 
 using namespace LicqDaemon;
 using Licq::MutexLocker;
 
 AdjustableLogSink::AdjustableLogSink()
-  : myLogLevels(0),
-    myLogPackets(false)
+  : myLogLevels(0)
 {
   // Empty
 }
 
-bool AdjustableLogSink::isLogging(Licq::Log::Level level)
+bool AdjustableLogSink::isLogging(Licq::Log::Level level) const
 {
   MutexLocker locker(myMutex);
   return myLogLevels & (1 << level);
 }
 
-bool AdjustableLogSink::isLoggingPackets()
+bool AdjustableLogSink::isLoggingPackets() const
 {
   MutexLocker locker(myMutex);
-  return myLogPackets;
+  return myLogLevels & PacketBit;
 }
 
 void AdjustableLogSink::setLogLevel(Licq::Log::Level level, bool enable)
@@ -72,11 +74,29 @@ void AdjustableLogSink::setLogLevel(Licq::Log::Level level, bool enable)
 void AdjustableLogSink::setLogPackets(bool enable)
 {
   MutexLocker locker(myMutex);
-  myLogPackets = enable;
+  if (enable)
+    myLogLevels |= PacketBit;
+  else
+    myLogLevels &= ~PacketBit;
 }
 
 void AdjustableLogSink::setAllLogLevels(bool enable)
 {
   MutexLocker locker(myMutex);
-  myLogLevels = enable ? 0x3f : 0;
+  if (enable)
+    myLogLevels |= AllLevelsMask;
+  else
+    myLogLevels &= ~AllLevelsMask;
+}
+
+void AdjustableLogSink::setLogLevelsFromBitmask(unsigned int levels)
+{
+  MutexLocker locker(myMutex);
+  myLogLevels = levels & (AllLevelsMask | PacketBit);
+}
+
+unsigned int AdjustableLogSink::getLogLevelsBitmask() const
+{
+  MutexLocker locker(myMutex);
+  return myLogLevels;
 }

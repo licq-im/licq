@@ -88,7 +88,8 @@ TEST(AdjustableLogSink, oldFormat)
 {
   Licq::AdjustableLogSink::Ptr sink(new AdjustableLogSinkTest());
 
-  Licq::adjustLogSinkOldFormat(sink, 0x10 | 0x2);
+  unsigned int mask = Licq::convertOldLogLevelBitmaskToNew(0x10 | 0x2);
+  sink->setLogLevelsFromBitmask(mask);
 
   EXPECT_TRUE(sink->isLogging(Log::Unknown));
   EXPECT_TRUE(sink->isLogging(Log::Debug));
@@ -97,4 +98,27 @@ TEST(AdjustableLogSink, oldFormat)
   EXPECT_FALSE(sink->isLogging(Log::Info));
   EXPECT_FALSE(sink->isLogging(Log::Warning));
   EXPECT_FALSE(sink->isLogging(Log::Error));
+}
+
+TEST(AdjustableLogSink, bitmaskWorksAsExpected)
+{
+  AdjustableLogSinkTest sink1, sink2;
+
+  sink1.setLogLevel(Log::Warning, true);
+  sink1.setLogLevel(Log::Error, true);
+
+  sink2.setLogLevel(Log::Error, true);
+  sink2.setLogPackets(true);
+
+  AdjustableLogSinkTest sink;
+  sink.setLogLevelsFromBitmask(
+      sink1.getLogLevelsBitmask() | sink2.getLogLevelsBitmask());
+
+  EXPECT_TRUE(sink.isLogging(Log::Warning));
+  EXPECT_TRUE(sink.isLogging(Log::Error));
+  EXPECT_TRUE(sink.isLoggingPackets());
+
+  EXPECT_FALSE(sink.isLogging(Log::Unknown));
+  EXPECT_FALSE(sink.isLogging(Log::Info));
+  EXPECT_FALSE(sink.isLogging(Log::Debug));
 }

@@ -82,6 +82,24 @@ LogSink::Message::Ptr PluginLogSink::popMessage(bool readPipe)
   return d->popMessage(readPipe);
 }
 
+bool PluginLogSink::isLogging(Log::Level level) const
+{
+  LICQ_D();
+  return d->isLogging(level);
+}
+
+bool PluginLogSink::isLoggingPackets() const
+{
+  LICQ_D();
+  return d->isLoggingPackets();
+}
+
+void PluginLogSink::log(Message::Ptr message)
+{
+  LICQ_D();
+  d->log(message);
+}
+
 void PluginLogSink::setLogLevel(Log::Level level, bool enable)
 {
   LICQ_D();
@@ -100,20 +118,14 @@ void PluginLogSink::setAllLogLevels(bool enable)
   d->setAllLogLevels(enable);
 }
 
-bool PluginLogSink::isLogging(Log::Level level)
+void PluginLogSink::setLogLevelsFromBitmask(unsigned int levels)
 {
   LICQ_D();
-  return d->isLogging(level);
+  d->setLogLevelsFromBitmask(levels);
 }
 
-bool PluginLogSink::isLoggingPackets()
+unsigned int PluginLogSink::getLogLevelsBitmask() const
 {
   LICQ_D();
-  return d->isLoggingPackets();
-}
-
-void PluginLogSink::log(Message::Ptr message)
-{
-  LICQ_D();
-  d->log(message);
+  return d->getLogLevelsBitmask();
 }

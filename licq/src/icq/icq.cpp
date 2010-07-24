@@ -23,13 +23,13 @@
 #include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
+#include <licq_log.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
-#include <licq_log.h>
 
 #include "../daemon.h"
 #include "../gettext.h"
@@ -40,6 +40,7 @@
 using namespace std;
 using namespace LicqDaemon;
 using Licq::OnEventManager;
+using Licq::gLog;
 using Licq::gOnEventManager;
 
 // Constants

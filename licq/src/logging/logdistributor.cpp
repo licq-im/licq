@@ -41,7 +41,7 @@ void LogDistributor::unregisterSink(LogSink::Ptr sink)
   mySinks.remove(sink);
 }
 
-bool LogDistributor::isLogging(Licq::Log::Level level)
+bool LogDistributor::isLogging(Licq::Log::Level level) const
 {
   MutexLocker locker(myMutex);
   BOOST_FOREACH(LogSink::Ptr sink, mySinks)
@@ -52,7 +52,7 @@ bool LogDistributor::isLogging(Licq::Log::Level level)
   return false;
 }
 
-bool LogDistributor::isLoggingPackets()
+bool LogDistributor::isLoggingPackets() const
 {
   MutexLocker locker(myMutex);
   BOOST_FOREACH(LogSink::Ptr sink, mySinks)

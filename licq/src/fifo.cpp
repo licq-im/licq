@@ -490,8 +490,8 @@ static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
     ReportMissingParams(argv[0]);
   else
   {
-    Licq::adjustLogSinkOldFormat(LogService::instance().getDefaultLogSink(),
-                                 ::atoi(argv[1]));
+    unsigned int mask = Licq::convertOldLogLevelBitmaskToNew(::atoi(argv[1]));
+    LogService::instance().getDefaultLogSink()->setLogLevelsFromBitmask(mask);
   }
 
   return -nRet;

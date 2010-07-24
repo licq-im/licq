@@ -49,12 +49,12 @@ public:
   void unregisterSink(LogSink::Ptr sink);
 
   // From Licq::LogSink
-  bool isLogging(Licq::Log::Level level);
-  bool isLoggingPackets();
+  bool isLogging(Licq::Log::Level level) const;
+  bool isLoggingPackets() const;
   void log(Message::Ptr message);
 
 private:
-  Licq::Mutex myMutex;
+  mutable Licq::Mutex myMutex;
 
   typedef std::list<LogSink::Ptr> LogSinkList;
   LogSinkList mySinks;

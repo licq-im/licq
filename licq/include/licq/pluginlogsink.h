@@ -54,14 +54,16 @@ public:
   Message::Ptr popMessage(bool readPipe = true);
 
   // LogSink
-  bool isLogging(Log::Level level);
-  bool isLoggingPackets();
+  bool isLogging(Log::Level level) const;
+  bool isLoggingPackets() const;
   void log(Message::Ptr message);
 
   // AdjustableLogSink
   void setLogLevel(Log::Level level, bool enable);
   void setLogPackets(bool enable);
   void setAllLogLevels(bool enable);
+  void setLogLevelsFromBitmask(unsigned int levels);
+  unsigned int getLogLevelsBitmask() const;
  
 private:
   LICQ_DECLARE_PRIVATE();

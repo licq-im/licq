@@ -60,13 +60,13 @@ public:
    * @return True if the sink is interested in log messages at @a level;
    * otherwise false.
    */
-  virtual bool isLogging(Log::Level level) = 0;
+  virtual bool isLogging(Log::Level level) const = 0;
 
   /**
    * @return True if the sink is interested in logging the raw packet data, in
    * which case Message::packet will contain the packet.
    */
-  virtual bool isLoggingPackets() = 0;
+  virtual bool isLoggingPackets() const = 0;
 
   /**
    * Called every time a new log messages is generated. But only if the sink
@@ -105,13 +105,25 @@ public:
    */
   virtual void setAllLogLevels(bool enable) = 0;
 
+  /**
+   * Enable or disable all log levels (including packets).
+   */
+  virtual void setLogLevelsFromBitmask(unsigned int levels) = 0;
+
+  /**
+   * @return A bitmask indicating which log levels (including packets) that are
+   * logged. Can be bitwise and:ed or or:ed with other bitmasks and passed to
+   * setLogLevelsFromBitmask().
+   */
+  virtual unsigned int getLogLevelsBitmask() const = 0;
+
 protected:
   virtual ~AdjustableLogSink() { /* Empty */ }
 };
 
 /**
- * Configures an AdjustableLogSink using the old format.
- * @param sink The AdjustableLogSink to configure.
+ * Converts a bitmask in the old format to a new that can be passed to
+ * AdjustableLogSink::setLogLevelsFromBitmask().
  * @param levels A bitmask indicating which levels to log:
  *   0x01 - Log::Info
  *   0x02 - Log::Unknown
@@ -119,7 +131,7 @@ protected:
  *   0x08 - Log::Warning
  *   0x10 - Log::Debug and packets
  */
-void adjustLogSinkOldFormat(AdjustableLogSink::Ptr sink, int levels);
+unsigned int convertOldLogLevelBitmaskToNew(int levels);
 
 /**
  * Pretty-print a packet to a stream

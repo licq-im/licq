@@ -35,20 +35,21 @@ public:
   AdjustableLogSink();
 
   // Licq::LogSink (not all)
-  bool isLogging(Licq::Log::Level level);
-  bool isLoggingPackets();
+  bool isLogging(Licq::Log::Level level) const;
+  bool isLoggingPackets() const;
 
   // Licq::AdjustableLogSink
   void setLogLevel(Licq::Log::Level level, bool enable);
   void setLogPackets(bool enable);
   void setAllLogLevels(bool enable);
+  void setLogLevelsFromBitmask(unsigned int levels);
+  unsigned int getLogLevelsBitmask() const;
 
 protected:
-  Licq::Mutex myMutex;
+  mutable Licq::Mutex myMutex;
 
 private:
-  int myLogLevels;
-  bool myLogPackets;
+  unsigned int myLogLevels;
 };
 
 } // namespace LicqDaemon
