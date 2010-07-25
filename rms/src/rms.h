@@ -3,6 +3,7 @@
 
 #include <list>
 
+#include <licq/pluginlogsink.h>
 #include <licq/socket.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
@@ -13,8 +14,6 @@ class Event;
 class PluginSignal;
 class UserEvent;
 }
-
-class CLogService_Plugin;
 
 const unsigned short MAX_LINE_LENGTH = 1024 * 1;
 const unsigned short MAX_TEXT_LENGTH = 1024 * 8;
@@ -39,7 +38,7 @@ protected:
 
   Licq::TCPSocket* server;
   ClientList clients;
-  CLogService_Plugin *log;
+  Licq::PluginLogSink::Ptr myLogSink;
 
 public:
   void ProcessPipe();
@@ -92,7 +91,7 @@ protected:
   unsigned short data_line_pos;
   unsigned long m_nCheckUin;
   char *m_szCheckId;
-  unsigned long m_nLogTypes;
+  unsigned int myLogLevelsBitmask;
   bool m_bNotify;
 
   unsigned long m_nUin;
