@@ -65,6 +65,7 @@ set(licq_SRCS
   icq/threads.cpp
 
   logging/logservice.cpp
+  logging/logutils.cpp
   logging/streamlogsink.cpp
   logging/threadlog.cpp
 
