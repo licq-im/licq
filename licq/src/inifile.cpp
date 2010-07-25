@@ -279,7 +279,7 @@ bool IniFile::setSection(const string& section, bool allowAdd)
     }
 
     // Find end of section (i.e. start of next section)
-    pos = myConfigData.find("\n[", mySectionStart + 1);
+    pos = myConfigData.find("\n[", mySectionStart);
     if (pos == string::npos)
       mySectionEnd = myConfigData.size();
     else
