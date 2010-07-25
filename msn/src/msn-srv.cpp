@@ -110,7 +110,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         packet->SkipParameter(); // email account
         string strNick = packet->GetParameter();
         string strDecodedNick = Decode(strNick);
-        gLog.Info("%s%s logged in.\n", L_MSNxSTR, strDecodedNick.c_str());
+        gLog.info("%s%s logged in.\n", L_MSNxSTR, strDecodedNick.c_str());
        
         // Set our alias here
         {
@@ -223,7 +223,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       
       if (strList == "RL")
       {
-        gLog.Info("%sAuthorization request from %s.\n", L_MSNxSTR, strUser.c_str());
+        gLog.info("%sAuthorization request from %s.\n", L_MSNxSTR, strUser.c_str());
 
         Licq::UserEvent* e = new Licq::EventAuthRequest(userId,
           strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
@@ -237,7 +237,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       }
       else
       {
-        gLog.Info("%sAdded %s to contact list.\n", L_MSNxSTR, strUser.c_str());
+        gLog.info("%sAdded %s to contact list.\n", L_MSNxSTR, strUser.c_str());
 
         Licq::UserWriteGuard u(userId);
         if (u.isLocked())
@@ -260,7 +260,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strUser = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
       saveConfig();
-      gLog.Info("%sRemoved %s from contact list.\n", L_MSNxSTR, strUser.c_str()); 
+      gLog.info("%sRemoved %s from contact list.\n", L_MSNxSTR, strUser.c_str()); 
     }
     else if (strCmd == "REA")
     {
@@ -278,7 +278,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         o->setAlias(strDecodedNick);
       }
       
-      gLog.Info("%s%s renamed successfully.\n", L_MSNxSTR, strUser.c_str());
+      gLog.info("%s%s renamed successfully.\n", L_MSNxSTR, strUser.c_str());
     }
     else if (strCmd == "CHG")
     {
@@ -297,7 +297,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       else
         status = User::OnlineStatus | User::AwayStatus;
 
-      gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR,
+      gLog.info("%sServer says we are now: %s\n", L_MSNxSTR,
           User::statusToString(status, true, false).c_str());
       myStatus = status;
 
@@ -346,7 +346,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
             MSNGetDisplayPicture(u->id(), strDecodedObject);
 	}
 
-        gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
+        gLog.info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
         u->statusChanged(status);
 
         if (strCmd == "NLN" && status == User::OnlineStatus)
@@ -361,7 +361,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         Licq::UserWriteGuard u(userId);
         if (u.isLocked())
         {
-          gLog.Info("%s%s logged off.\n", L_MSNxSTR, u->getAlias().c_str());
+          gLog.info("%s%s logged off.\n", L_MSNxSTR, u->getAlias().c_str());
           u->statusChanged(User::OfflineStatus);
         }
       }
@@ -373,7 +373,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       {
         if (*it && userId == (*it)->userId)
         {
-          gLog.Info("%sRemoving connection attempt to %s.\n", L_MSNxSTR, userId.toString().c_str());
+          gLog.info("%sRemoving connection attempt to %s.\n", L_MSNxSTR, userId.toString().c_str());
 //          SStartMessage *pStart = (*it);
           m_lStart.erase(it);
           break;
@@ -438,7 +438,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         for (int i = 0; i < 16; i++)
           sprintf(&szHexOut[i*2], "%02x", szDigest[i]);
     
-        gLog.Info("%sNew email from %s (%s)\n", L_MSNxSTR, strFrom.c_str(), strFromAddr.c_str());
+        gLog.info("%sNew email from %s (%s)\n", L_MSNxSTR, strFrom.c_str(), strFromAddr.c_str());
         Licq::EventEmailAlert* pEmailAlert = new Licq::EventEmailAlert(strFrom.c_str(), m_szUserName,
           strFromAddr.c_str(), strSubject.c_str(), time(0), m_strMSPAuth.c_str(), m_strSID.c_str(),
           m_strKV.c_str(), packet->GetValue("id").c_str(),
@@ -470,7 +470,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       {
         if ((*it)->m_nSeq == nSeq)
         {
-          gLog.Error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
+          gLog.error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
           pStart = *it;
           pStart->m_pEvent->m_eResult = Licq::Event::ResultFailed;
           Licq::gDaemon.PushPluginEvent(pStart->m_pEvent);
@@ -502,7 +502,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     }
     else
     {
-      gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
+      gLog.warning("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
     }
     
     if (pReply)
@@ -538,7 +538,7 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned status)
     Licq::OwnerReadGuard o(MSN_PPID);
     if (!o.isLocked())
     {
-      gLog.Error("%sNo owner set.\n", L_MSNxSTR);
+      gLog.error("%sNo owner set.\n", L_MSNxSTR);
       return;
     }
     m_szUserName = strdup(o->accountId().c_str());
@@ -547,12 +547,12 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned status)
   }
 
   Licq::SrvSocket* sock = new Licq::SrvSocket(myOwnerId);
-  gLog.Info("%sServer found at %s:%d.\n", L_MSNxSTR,
+  gLog.info("%sServer found at %s:%d.\n", L_MSNxSTR,
       _szServer, _nPort);
 
   if (!sock->connectTo(_szServer, _nPort))
   {
-    gLog.Info("%sConnect failed to %s.\n", L_MSNxSTR, _szServer);
+    gLog.info("%sConnect failed to %s.\n", L_MSNxSTR, _szServer);
     delete sock;
     return;
   }
@@ -699,10 +699,10 @@ void CMSN::MSNBlockUser(const UserId& userId)
   }
 
   CMSNPacket* pRem = new CPS_MSNRemoveUser(userId.accountId().c_str(), ALLOW_LIST);
-  gLog.Info("%sRemoving user %s from the allow list.\n", L_MSNxSTR, userId.toString().c_str());
+  gLog.info("%sRemoving user %s from the allow list.\n", L_MSNxSTR, userId.toString().c_str());
   SendPacket(pRem);
   CMSNPacket* pAdd = new CPS_MSNAddUser(userId.accountId().c_str(), BLOCK_LIST);
-  gLog.Info("%sAdding user %s to the block list.\n", L_MSNxSTR, userId.toString().c_str());
+  gLog.info("%sAdding user %s to the block list.\n", L_MSNxSTR, userId.toString().c_str());
   SendPacket(pAdd);
 }
 
@@ -716,10 +716,10 @@ void CMSN::MSNUnblockUser(const UserId& userId)
   }
 
   CMSNPacket* pRem = new CPS_MSNRemoveUser(userId.accountId().c_str(), BLOCK_LIST);
-  gLog.Info("%sRemoving user %s from the block list\n", L_MSNxSTR, userId.toString().c_str());
+  gLog.info("%sRemoving user %s from the block list\n", L_MSNxSTR, userId.toString().c_str());
   SendPacket(pRem);
   CMSNPacket* pAdd = new CPS_MSNAddUser(userId.accountId().c_str(), ALLOW_LIST);
-  gLog.Info("%sAdding user %s to the allow list.\n", L_MSNxSTR, userId.toString().c_str());
+  gLog.info("%sAdding user %s to the allow list.\n", L_MSNxSTR, userId.toString().c_str());
   SendPacket(pAdd);
 }
 
@@ -736,7 +736,7 @@ void CMSN::MSNGetDisplayPicture(const Licq::UserId& userId, const string &strMSN
   CMSNDataEvent *pDataResponse = new CMSNDataEvent(MSN_DP_EVENT,
       p->SessionId(), p->BaseId(), userId, m_szUserName, p->CallGUID(), this);
   WaitDataEvent(pDataResponse);
-  gLog.Info("%sRequesting %s's display picture.\n", L_MSNxSTR, userId.toString().c_str());
+  gLog.info("%sRequesting %s's display picture.\n", L_MSNxSTR, userId.toString().c_str());
   MSNSendInvitation(userId.accountId().c_str(), pGetMSNDP);
 }
 
@@ -760,7 +760,7 @@ void *MSNPing_tep(void *p)
     if (pMSN->WaitingPingReply())
     {
       pthread_mutex_lock(&(pMSN->mutex_ServerSocket));
-      gLog.Info("%sPing timeout. Reconnecting...\n", L_MSNxSTR);
+      gLog.info("%sPing timeout. Reconnecting...\n", L_MSNxSTR);
       pMSN->SetWaitingPingReply(false);
       pMSN->MSNLogoff();
       pMSN->MSNLogon(pMSN->serverAddress().c_str(), pMSN->serverPort());

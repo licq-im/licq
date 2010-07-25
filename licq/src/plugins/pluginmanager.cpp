@@ -131,7 +131,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     // Let the plugin initialize itself
     if (!plugin->init())
     {
-      gLog.Error(tr("%sFailed to initialize plugin (%s).\n"), L_ERRORxSTR,
+      gLog.error(tr("%sFailed to initialize plugin (%s).\n"), L_ERRORxSTR,
                  plugin->getName());
       throw std::exception();
     }
@@ -162,7 +162,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     std::string error = ex.getSystemError();
     std::string symbol =
         *boost::get_error_info<Plugin::errinfo_symbol_name>(ex);
-    gLog.Error(tr("%sFailed to find %s in plugin (%s): %s\n"),
+    gLog.error(tr("%sFailed to find %s in plugin (%s): %s\n"),
                   L_ERRORxSTR, symbol.c_str(), name.c_str(), error.c_str());
   }
   catch (const std::exception&)
@@ -256,7 +256,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
     if ((*plugin)->getId() == exitId)
     {
       int result = (*plugin)->joinThread();
-      gLog.Info(tr("%sPlugin %s exited with code %d.\n"),
+      gLog.info(tr("%sPlugin %s exited with code %d.\n"),
                 L_ENDxSTR, (*plugin)->getName(), result);
       myGeneralPlugins.erase(plugin);
       return exitId;
@@ -270,14 +270,14 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
     if ((*plugin)->getId() == exitId)
     {
       int result = (*plugin)->joinThread();
-      gLog.Info(tr("%sProtocol plugin %s exited with code %d.\n"),
+      gLog.info(tr("%sProtocol plugin %s exited with code %d.\n"),
                 L_ENDxSTR, (*plugin)->getName(), result);
       myProtocolPlugins.erase(plugin);
       return exitId;
     }
   }
 
-  gLog.Error(tr("%sInvalid plugin id (%d) in exit signal.\n"),
+  gLog.error(tr("%sInvalid plugin id (%d) in exit signal.\n"),
              L_ERRORxSTR, exitId);
   return Plugin::INVALID_ID;
 }
@@ -288,7 +288,7 @@ void PluginManager::cancelAllPlugins()
     MutexLocker locker(myGeneralPluginsMutex);
     BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
     {
-      gLog.Info(tr("%sPlugin %s failed to exit.\n"),
+      gLog.info(tr("%sPlugin %s failed to exit.\n"),
                 L_WARNxSTR, plugin->getName());
       plugin->cancelThread();
     }
@@ -298,7 +298,7 @@ void PluginManager::cancelAllPlugins()
     MutexLocker locker(myProtocolPluginsMutex);
     BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
     {
-      gLog.Info(tr("%sProtocol plugin %s failed to exit.\n"),
+      gLog.info(tr("%sProtocol plugin %s failed to exit.\n"),
                 L_WARNxSTR, plugin->getName());
       plugin->cancelThread();
     }
@@ -440,7 +440,7 @@ static int registerPlugin(PluginsList& plugins, unsigned long signalMask)
     }
   }
 
-  gLog.Error(tr("%sInvalid thread in registration attempt.\n"),
+  gLog.error(tr("%sInvalid thread in registration attempt.\n"),
              L_ERRORxSTR);
   return -1;
 }
@@ -457,7 +457,7 @@ static void unregisterPlugin(PluginsList& plugins)
     }
   }
 
-  gLog.Error(tr("%sInvalid thread in unregistration attempt.\n"),
+  gLog.error(tr("%sInvalid thread in unregistration attempt.\n"),
              L_ERRORxSTR);
 }
 
@@ -505,12 +505,12 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
   catch (const DynamicLibrary::Exception& ex)
   {
     std::string error = ex.getSystemError();
-    gLog.Error(tr("%sUnable to load plugin (%s): %s\n"), L_ERRORxSTR,
+    gLog.error(tr("%sUnable to load plugin (%s): %s\n"), L_ERRORxSTR,
                name.c_str(), error.c_str());
 
     if (error.find("No such file") == std::string::npos)
     {
-      gLog.Warn(tr("%sThis usually happens when your plugin\n"
+      gLog.warning(tr("%sThis usually happens when your plugin\n"
                    "%sis not kept in sync with the daemon.\n"
                    "%sPlease try recompiling the plugin.\n"
                    "%sIf you are still having problems, see\n"
@@ -535,12 +535,12 @@ void PluginManager::startPlugin(Plugin::Ptr plugin)
 {
   if (dynamic_cast<ProtocolPlugin*>(plugin.get()))
   {
-    gLog.Info(tr("%sStarting protocol plugin %s (version %s).\n"), L_INITxSTR,
+    gLog.info(tr("%sStarting protocol plugin %s (version %s).\n"), L_INITxSTR,
               plugin->getName(), plugin->getVersion());
   }
   else
   {
-    gLog.Info(tr("%sStarting plugin %s (version %s).\n"), L_INITxSTR,
+    gLog.info(tr("%sStarting plugin %s (version %s).\n"), L_INITxSTR,
               plugin->getName(), plugin->getVersion());
   }
 

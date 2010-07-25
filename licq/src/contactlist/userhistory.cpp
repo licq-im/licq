@@ -104,7 +104,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     }
     else
     {
-      gLog.Warn(tr("%sUnable to open history file (%s):\n%s%s.\n"), L_WARNxSTR,
+      gLog.warning(tr("%sUnable to open history file (%s):\n%s%s.\n"), L_WARNxSTR,
           myFilename.c_str(), L_BLANKxSTR, strerror(errno));
       return false;
     }
@@ -307,7 +307,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       break;
     }
     default:
-      gLog.Warn(tr("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"),
+      gLog.warning(tr("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"),
           L_WARNxSTR, myFilename.c_str(), nSubCommand);
       break;
     }
@@ -345,7 +345,7 @@ void UserHistory::write(const string& buf, bool append)
   int fd = open(myFilename.c_str(), O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 00600);
   if (fd == -1)
   {
-    gLog.Error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,
+    gLog.error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,
         myFilename.c_str(), L_BLANKxSTR, strerror(errno));
     return;
   }

@@ -45,7 +45,7 @@ using namespace LicqQtGui;
 void Support::changeWinSticky(WId win, bool stick)
 {
 #if defined(USE_KDE) || defined(Q_WS_X11)
-  Licq::gLog.Info("Setting Sticky state of window 0x%lx to %s",
+  Licq::gLog.info("Setting Sticky state of window 0x%lx to %s",
       static_cast<unsigned long>(win), stick ? "true" : "false");
 #endif
 

@@ -661,7 +661,7 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
       {
-        Licq::gLog.Warn("MainWindow::slot_updatedUser(): Invalid user received: %s",
+        Licq::gLog.warning("MainWindow::slot_updatedUser(): Invalid user received: %s",
             userId.toString().c_str());
         break;
       }

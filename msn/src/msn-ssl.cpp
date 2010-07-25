@@ -101,22 +101,22 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
       delete m_pSSLPacket;
       m_pSSLPacket = 0;
 
-      gLog.Info("%sRedirecting to %s:443\n", L_MSNxSTR, strHost.c_str());
+      gLog.info("%sRedirecting to %s:443\n", L_MSNxSTR, strHost.c_str());
       MSNAuthenticateRedirect(strHost, strToSend);
       return;
     }
     else
-      gLog.Error("%sMalformed location header.\n", L_MSNxSTR);
+      gLog.error("%sMalformed location header.\n", L_MSNxSTR);
   }
   else if (strFirstLine == "HTTP/1.1 401 Unauthorized")
   {
-    gLog.Error("%sInvalid password.\n", L_MSNxSTR);
+    gLog.error("%sInvalid password.\n", L_MSNxSTR);
     Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
         Licq::PluginSignal::LogoffPassword, UserId(m_szUserName, MSN_PPID)));
   }
   else
   {
-    gLog.Error("%sUnknown sign in error.\n", L_MSNxSTR);
+    gLog.error("%sUnknown sign in error.\n", L_MSNxSTR);
   }
   
   gSocketMan.CloseSocket(m_nSSLSocket, false, true);
@@ -184,18 +184,18 @@ void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strPa
 {
   UserId myOwnerId(m_szUserName, MSN_PPID);
   Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
-  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
+  gLog.info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
       strHost.c_str(), 443);
   if (!sock->connectTo(strHost, 443))
   {
-    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, strHost.c_str());
+    gLog.error("%sConnection to %s failed.\n", L_MSNxSTR, strHost.c_str());
     delete sock;
     return;
   }
 
   if (!sock->SecureConnect())
   {
-    gLog.Error("%sSSL connection failed.\n", L_MSNxSTR);
+    gLog.error("%sSSL connection failed.\n", L_MSNxSTR);
     delete sock;
     return;
   }
@@ -212,11 +212,11 @@ void CMSN::MSNAuthenticate(char *szCookie)
   UserId myOwnerId(m_szUserName, MSN_PPID);
   string server = "loginnet.passport.com";
   Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
-  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
+  gLog.info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
       server.c_str(), 443);
   if (!sock->connectTo(server, 443))
   {
-    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, server.c_str());
+    gLog.error("%sConnection to %s failed.\n", L_MSNxSTR, server.c_str());
     delete sock;
     free(szCookie);
     szCookie = 0;
@@ -225,7 +225,7 @@ void CMSN::MSNAuthenticate(char *szCookie)
   
   if (!sock->SecureConnect())
   {
-    gLog.Error("%sSSL connection failed.\n", L_MSNxSTR);   
+    gLog.error("%sSSL connection failed.\n", L_MSNxSTR);   
     free(szCookie);
     szCookie = 0;
     delete sock;

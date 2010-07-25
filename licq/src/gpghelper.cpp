@@ -66,7 +66,7 @@ char* GpgHelper::Decrypt(const char *szCipher)
 
   gpgme_data_seek(cipher, 0, SEEK_SET);
   if ((err = gpgme_op_decrypt(mCtx, cipher, plain)) != GPG_ERR_NO_ERROR)
-    gLog.Warn("%s[GPG] gpgme message decryption failed: %s\n", L_WARNxSTR, gpgme_strerror(err));
+    gLog.warning("%s[GPG] gpgme message decryption failed: %s\n", L_WARNxSTR, gpgme_strerror(err));
   
   gpgme_data_release(cipher);
   buf = gpgme_data_release_and_get_mem(plain, &nRead);
@@ -100,7 +100,7 @@ char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
   if (key.empty() && !myKeysIni.get(iniKey, key))
     return 0;
 
-  gLog.Info("[GPG] Encrypting message to %s.\n", userId.toString().c_str());
+  gLog.info("[GPG] Encrypting message to %s.\n", userId.toString().c_str());
 
   MutexLocker lock(myMutex);
   gpgme_key_t rcps[2];
@@ -113,11 +113,11 @@ char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
   // Still use the old method, gpgme_get_key requires the fingerprint, which
   // actually isn't very helpful.
   if (gpgme_op_keylist_start (mCtx, key.c_str(), 0) != GPG_ERR_NO_ERROR)
-    gLog.Error("%s[GPG] Couldn't use gpgme recipient: %s\n", L_ERRORxSTR, key.c_str());
+    gLog.error("%s[GPG] Couldn't use gpgme recipient: %s\n", L_ERRORxSTR, key.c_str());
   else
   {
     if (gpgme_op_keylist_next(mCtx, rcps) != GPG_ERR_NO_ERROR)
-      gLog.Error("%s[GPG] Couldn't get key: %s\n", L_ERRORxSTR, key.c_str());
+      gLog.error("%s[GPG] Couldn't get key: %s\n", L_ERRORxSTR, key.c_str());
     else
     {
       if (gpgme_data_new_from_mem(&plain, szPlain, strlen(szPlain), 0) == GPG_ERR_NO_ERROR &&
@@ -131,7 +131,7 @@ char* GpgHelper::Encrypt(const char *szPlain, const Licq::UserId& userId)
           szCipher[nRead] = 0;
         }
         else
-          gLog.Error("%s[GPG] Encryption failed: %s\n", L_ERRORxSTR, gpgme_strerror(err));
+          gLog.error("%s[GPG] Encryption failed: %s\n", L_ERRORxSTR, gpgme_strerror(err));
       }
     }
 
@@ -196,10 +196,10 @@ void GpgHelper::Start()
   myKeysIni.get("passphrase", myGpgPassphrase, "");
 
   const char *gpgme_ver = gpgme_check_version(0);
-  gLog.Info("%s[GPG] gpgme library found: %s\n", L_INITxSTR, gpgme_ver);
+  gLog.info("%s[GPG] gpgme library found: %s\n", L_INITxSTR, gpgme_ver);
 	
   if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != GPG_ERR_NO_ERROR)
-    gLog.Error("%s[GPG] gpgme engine OpenPGP not found!\n", L_ERRORxSTR);
+    gLog.error("%s[GPG] gpgme engine OpenPGP not found!\n", L_ERRORxSTR);
 
   gpgme_new(&mCtx);
   gpgme_set_protocol(mCtx, GPGME_PROTOCOL_OpenPGP);

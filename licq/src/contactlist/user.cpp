@@ -119,7 +119,7 @@ bool ICQUserPhoneBook::SaveToDisk(IniFile& conf)
 
   if (!conf.loadFile())
   {
-    gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+    gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
         L_ERRORxSTR, conf.filename().c_str(), L_BLANKxSTR);
     return false;
   }
@@ -169,7 +169,7 @@ bool ICQUserPhoneBook::SaveToDisk(IniFile& conf)
 
   if (!conf.writeFile())
   {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+    gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
         L_ERRORxSTR, conf.filename().c_str(), L_BLANKxSTR);
     return false;
   }
@@ -242,7 +242,7 @@ User::User(const UserId& id, const string& filename)
   myConf.setFilename(filename);
   if (!LoadInfo())
   {
-    gLog.Error("%sUnable to load user info from '%s'.\n%sUsing default values.\n",
+    gLog.error("%sUnable to load user info from '%s'.\n%sUsing default values.\n",
         L_ERRORxSTR, filename.c_str(), L_BLANKxSTR);
     SetDefaults();
   }
@@ -271,7 +271,7 @@ User::User(const UserId& id, bool temporary)
     {
       myConf.setSection("user");
       if (!myConf.writeFile())
-        gLog.Error("%sError opening '%s' for writing.\n", L_ERRORxSTR, myConf.filename().c_str());
+        gLog.error("%sError opening '%s' for writing.\n", L_ERRORxSTR, myConf.filename().c_str());
     }
   }
 }
@@ -289,7 +289,7 @@ void User::AddToContactList()
     {
       if (rename(oldHistory.c_str(), myHistory.filename().c_str()) == -1)
       {
-        gLog.Warn(tr("%sFailed to rename old history file (%s):\n%s%s\n"), L_WARNxSTR,
+        gLog.warning(tr("%sFailed to rename old history file (%s):\n%s%s\n"), L_WARNxSTR,
             oldHistory.c_str(), L_BLANKxSTR, strerror(errno));
       }
     }
@@ -523,7 +523,7 @@ void User::RemoveFiles()
     string oldHistory = myHistory.filename() + HistoryOldExt;
     if (rename(myHistory.filename().c_str(), oldHistory.c_str()) == -1)
     {
-      gLog.Warn(tr("%sFailed to rename history file (%s):\n%s%s\n"), L_WARNxSTR,
+      gLog.warning(tr("%sFailed to rename history file (%s):\n%s%s\n"), L_WARNxSTR,
           oldHistory.c_str(), L_BLANKxSTR, strerror(errno));
       remove(myHistory.filename().c_str());
     }
@@ -679,7 +679,7 @@ void User::SetPermanent()
   {
     myConf.setSection("user");
     if (!myConf.writeFile())
-      gLog.Error("%sError opening '%s' for writing.\n", L_ERRORxSTR, myConf.filename().c_str());
+      gLog.error("%sError opening '%s' for writing.\n", L_ERRORxSTR, myConf.filename().c_str());
   }
 
 
@@ -1147,7 +1147,7 @@ int Licq::User::SocketDesc(unsigned char nChannel) const
   case ICQ_CHNxSTATUS:
     return m_nStatusSocketDesc;
   }
-  gLog.Warn("%sUnknown channel type %u\n", L_WARNxSTR, nChannel);
+  gLog.warning("%sUnknown channel type %u\n", L_WARNxSTR, nChannel);
 
   return 0;
 }
@@ -1194,7 +1194,7 @@ void Licq::User::ClearSocketDesc(unsigned char nChannel)
     m_nNormalSocketDesc = m_nInfoSocketDesc = m_nStatusSocketDesc = -1;
     break;
   default:
-    gLog.Info("%sUnknown channel %u\n", L_WARNxSTR, nChannel);
+    gLog.info("%sUnknown channel %u\n", L_WARNxSTR, nChannel);
     return;
   }
 
@@ -1653,7 +1653,7 @@ string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool a
             sz = "%";
             break;
           default:
-            gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n", L_WARNxSTR, c);
+            gLog.warning("%sWarning: Invalid qualifier in command: %%%c.\n", L_WARNxSTR, c);
             szok = false;
             break;
         }
@@ -1744,7 +1744,7 @@ void User::saveUserInfo()
 
   if (!myConf.loadFile())
   {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+     gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
@@ -1764,7 +1764,7 @@ void User::saveUserInfo()
 
   if (!myConf.writeFile())
   {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+    gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
@@ -1794,7 +1794,7 @@ void Licq::User::loadCategory(UserCategoryMap& category, IniFile& file, const st
 
   if (count > MAX_CATEGORIES)
   {
-    gLog.Warn("%sTrying to load more categories than the max limit. Truncating.\n", L_WARNxSTR);
+    gLog.warning("%sTrying to load more categories than the max limit. Truncating.\n", L_WARNxSTR);
     count = MAX_CATEGORIES;
   }
 
@@ -1828,7 +1828,7 @@ void User::SavePictureInfo()
 
   if (!myConf.loadFile())
   {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+     gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
@@ -1840,7 +1840,7 @@ void User::SavePictureInfo()
   myConf.set("OurBuddyIconHash", myOurBuddyIconHash);
   if (!myConf.writeFile())
   {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+    gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
@@ -1852,7 +1852,7 @@ void User::SaveLicqInfo()
 
   if (!myConf.loadFile())
   {
-      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+      gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
       return;
    }
@@ -1919,7 +1919,7 @@ void User::SaveLicqInfo()
 
   if (!myConf.writeFile())
   {
-     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+     gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
    }
@@ -1931,7 +1931,7 @@ void User::SaveNewMessagesInfo()
 
   if (!myConf.loadFile())
   {
-      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+      gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
       return;
    }
@@ -1939,7 +1939,7 @@ void User::SaveNewMessagesInfo()
   myConf.set("NewMessages", NewMessages());
   if (!myConf.writeFile())
   {
-     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+     gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
    }

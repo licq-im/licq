@@ -50,7 +50,7 @@ Owner::Owner(const UserId& id)
   filename = gDaemon.baseDir() + filename;
   if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) == -1)
   {
-    gLog.Warn(tr("%sUnable to set %s to mode 0600. Your password is vulnerable if stored locally.\n"),
+    gLog.warning(tr("%sUnable to set %s to mode 0600. Your password is vulnerable if stored locally.\n"),
         L_WARNxSTR, filename.c_str());
   }
 
@@ -74,7 +74,7 @@ Owner::Owner(const UserId& id)
   myConf.get("SSCount", mySsCount, 0);
   myConf.get("PDINFO", myPDINFO, 0);
 
-  gLog.Info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myId.toString().c_str());
+  gLog.info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myId.toString().c_str());
 
   setHistoryFile(gDaemon.baseDir() + HistoryDir + "owner." + myId.accountId() +
       "." + p + HistoryExt);
@@ -93,7 +93,7 @@ Owner::~Owner()
   // Save the current auto response
   if (!myConf.loadFile())
   {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+     gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
@@ -104,7 +104,7 @@ Owner::~Owner()
   myConf.set("PDINFO", myPDINFO);
   if (!myConf.writeFile())
   {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+    gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
@@ -136,7 +136,7 @@ void Owner::SaveLicqInfo()
 
   if (!myConf.loadFile())
   {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+     gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
      return;
   }
@@ -158,7 +158,7 @@ void Owner::SaveLicqInfo()
 
   if (!myConf.writeFile())
   {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+    gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
         L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
     return;
   }
@@ -177,7 +177,7 @@ void Licq::Owner::SetPicture(const char *f)
     SetPicturePresent(false);
     if (remove(filename.c_str()) != 0 && errno != ENOENT)
     {
-      gLog.Error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
+      gLog.error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
           L_ERRORxSTR, myAlias.c_str(), filename.c_str(), L_BLANKxSTR,
                          strerror(errno));
     }
@@ -192,7 +192,7 @@ void Licq::Owner::SetPicture(const char *f)
     int source = open(f, O_RDONLY);
     if (source == -1)
     {
-      gLog.Error("%sUnable to open source picture file (%s):\n%s%s.\n",
+      gLog.error("%sUnable to open source picture file (%s):\n%s%s.\n",
                        L_ERRORxSTR, f, L_BLANKxSTR, strerror(errno));
       return;
     }
@@ -200,7 +200,7 @@ void Licq::Owner::SetPicture(const char *f)
     int dest = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
     if (dest == -1)
     {
-      gLog.Error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
+      gLog.error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
           filename.c_str(), L_BLANKxSTR, strerror(errno));
       close(source);
       return;
@@ -218,7 +218,7 @@ void Licq::Owner::SetPicture(const char *f)
       }
       else if (s == -1)
       {
-        gLog.Error("%sError reading from %s:\n%s%s.\n", L_ERRORxSTR, f,
+        gLog.error("%sError reading from %s:\n%s%s.\n", L_ERRORxSTR, f,
                                          L_BLANKxSTR, strerror(errno));
         SetPicturePresent(false);
         break;
@@ -226,7 +226,7 @@ void Licq::Owner::SetPicture(const char *f)
 
       if (write(dest, buf, s) != s)
       {
-        gLog.Error("%sError writing to %s:\n%s%s.\n", L_ERRORxSTR, f,
+        gLog.error("%sError writing to %s:\n%s%s.\n", L_ERRORxSTR, f,
                                          L_BLANKxSTR, strerror(errno));
         SetPicturePresent(false);
         break;

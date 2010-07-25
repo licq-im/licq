@@ -226,7 +226,7 @@ bool CFileTransferManager::StartFileTransferServer()
 {
   if (gDaemon.StartTCPServer(&ftServer) == -1)
   {
-    gLog.Warn(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
+    gLog.warning(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
     return false;
   }
 
@@ -249,7 +249,7 @@ bool CFileTransferManager::receiveFiles(const string& directory)
     if (access(Licq::gDaemon.baseDir().c_str(), F_OK) < 0 && mkdir(myDirectory.c_str(), 0700) == -1 &&
         errno != EEXIST)
     {
-      gLog.Warn(tr("%sUnable to create directory %s for file transfer.\n"),
+      gLog.warning(tr("%sUnable to create directory %s for file transfer.\n"),
          L_WARNxSTR, myDirectory.c_str());
       myDirectory = Licq::gDaemon.baseDir();
     }
@@ -263,7 +263,7 @@ bool CFileTransferManager::receiveFiles(const string& directory)
   stat(myDirectory.c_str(), &buf);
   if (!S_ISDIR(buf.st_mode))
   {
-    gLog.Warn(tr("%sPath %s is not a directory.\n"), L_WARNxSTR, myDirectory.c_str());
+    gLog.warning(tr("%sPath %s is not a directory.\n"), L_WARNxSTR, myDirectory.c_str());
     return false;
   }
 
@@ -301,7 +301,7 @@ void CFileTransferManager::sendFiles(const list<string>& pathNames, unsigned sho
   {
     if (stat(iter->c_str(), &buf) == -1)
     {
-      gLog.Warn(tr("%sFile Transfer: File access error %s:\n%s%s.\n"), L_WARNxSTR,
+      gLog.warning(tr("%sFile Transfer: File access error %s:\n%s%s.\n"), L_WARNxSTR,
          iter->c_str(), L_BLANKxSTR, strerror(errno));
       continue;
     }
@@ -349,7 +349,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   bool bSuccess = false;
   if (bTryDirect)
   {
-    gLog.Info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
+    gLog.info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
     bSuccess = gIcqProtocol.openConnectionToUser(myUserId, &ftSock, nPort);
    }
 
@@ -387,7 +387,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 bool CFileTransferManager::SendFileHandshake()
 {
   Licq::UserId myUserId(myId, LICQ_PPID);
-  gLog.Info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
+  gLog.info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
 
   // Send handshake packet:
   unsigned short nVersion;
@@ -402,7 +402,7 @@ bool CFileTransferManager::SendFileHandshake()
   CPFile_InitClient p(m_szLocalName, m_nBatchFiles, m_nBatchSize);
   if (!SendPacket(&p)) return false;
 
-  gLog.Info(tr("%sFile Transfer: Waiting for server to respond.\n"), L_TCPxSTR);
+  gLog.info(tr("%sFile Transfer: Waiting for server to respond.\n"), L_TCPxSTR);
 
   m_nState = FT_STATE_WAITxFORxSERVERxINIT;
 
@@ -418,7 +418,7 @@ void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
 {
   if (ftSock.Descriptor() != -1)
   {
-    gLog.Warn(tr("%sFile Transfer: Attempted reverse connection when already connected.\n"),
+    gLog.warning(tr("%sFile Transfer: Attempted reverse connection when already connected.\n"),
        L_WARNxSTR);
     return;
   }
@@ -432,7 +432,7 @@ void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
   // Reload socket info
   myThreadPipe.putChar('R');
 
-  gLog.Info(tr("%sFile Transfer: Received reverse connection.\n"), L_TCPxSTR);
+  gLog.info(tr("%sFile Transfer: Received reverse connection.\n"), L_TCPxSTR);
 }
 
 
@@ -442,9 +442,9 @@ bool CFileTransferManager::ProcessPacket()
   if (!ftSock.RecvPacket())
   {
     if (ftSock.Error() == 0)
-      gLog.Info(tr("%sFile Transfer: Remote end disconnected.\n"), L_TCPxSTR);
+      gLog.info(tr("%sFile Transfer: Remote end disconnected.\n"), L_TCPxSTR);
     else
-      gLog.Warn(tr("%sFile Transfer: Lost remote end:\n%s%s\n"), L_WARNxSTR,
+      gLog.warning(tr("%sFile Transfer: Lost remote end:\n%s%s\n"), L_WARNxSTR,
           L_BLANKxSTR, ftSock.errorStr().c_str());
     if (m_nState == FT_STATE_WAITxFORxFILExINFO)
       m_nResult = FT_DONExBATCH;
@@ -466,7 +466,7 @@ bool CFileTransferManager::ProcessPacket()
 
       if (!IcqProtocol::Handshake_Recv(&ftSock, LocalPort(), false))
         break;
-      gLog.Info(tr("%sFile Transfer: Received handshake.\n"), L_TCPxSTR);
+      gLog.info(tr("%sFile Transfer: Received handshake.\n"), L_TCPxSTR);
       
       unsigned long nId = 0;
       if (ftSock.Version() == 7 || ftSock.Version() == 8)
@@ -504,7 +504,7 @@ bool CFileTransferManager::ProcessPacket()
             return false;
           }
 
-          gLog.Info("%sFile Transfer: Waiting for server to respond.\n",
+          gLog.info("%sFile Transfer: Waiting for server to respond.\n",
             L_TCPxSTR);
 
           m_nState = FT_STATE_WAITxFORxSERVERxINIT;
@@ -522,12 +522,12 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
       if (nCmd != 0x00)
       {
-        gLog.Error("%sFile Transfer: Invalid client init packet:\n%s%s\n",
+        gLog.error("%sFile Transfer: Invalid client init packet:\n%s%s\n",
             L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
@@ -559,7 +559,7 @@ bool CFileTransferManager::ProcessPacket()
         return false;
       }
 
-      gLog.Info(tr("%sFile Transfer: Waiting for file info.\n"), L_TCPxSTR);
+      gLog.info(tr("%sFile Transfer: Waiting for file info.\n"), L_TCPxSTR);
       m_nState = FT_STATE_WAITxFORxFILExINFO;
       break;
     }
@@ -570,18 +570,18 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
       if (nCmd == 0x06 && b.getDataSize() == 1)
       {
-        gLog.Info(tr("%sFile Transfer: Ignoring a possible erroneous packet.\n"),
+        gLog.info(tr("%sFile Transfer: Ignoring a possible erroneous packet.\n"),
                   L_WARNxSTR);
         break;
       }
       if (nCmd != 0x02)
       {
-        gLog.Error("%sFile Transfer: Invalid file info packet:\n%s%s\n",
+        gLog.error("%sFile Transfer: Invalid file info packet:\n%s%s\n",
             L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
@@ -604,7 +604,7 @@ bool CFileTransferManager::ProcessPacket()
       m_nBytesTransfered = 0;
       m_nCurrentFile++;
       
-      gLog.Info(tr("File Transfer: Waiting for plugin to confirm file receive.\n"));
+      gLog.info(tr("File Transfer: Waiting for plugin to confirm file receive.\n"));
       
       m_nState = FT_STATE_CONFIRMINGxFILE;
       PushFileTransferEvent(new CFileTransferEvent(FT_CONFIRMxFILE, myPathName));
@@ -614,7 +614,7 @@ bool CFileTransferManager::ProcessPacket()
     case FT_STATE_CONFIRMINGxFILE:
     {
       // Still waiting for the plugin to confirm
-      gLog.Warn(tr("File Transfer: Still waiting for the plugin to confirm file receive..."));
+      gLog.warning(tr("File Transfer: Still waiting for the plugin to confirm file receive..."));
       break;
     }
 
@@ -625,7 +625,7 @@ bool CFileTransferManager::ProcessPacket()
       {
         m_nStartTime = time(NULL);
         m_nBatchPos += m_nFilePos;
-        gLog.Info(tr("%sFile Transfer: Receiving %s (%ld bytes).\n"), L_TCPxSTR,
+        gLog.info(tr("%sFile Transfer: Receiving %s (%ld bytes).\n"), L_TCPxSTR,
             myFileName.c_str(), m_nFileSize);
         PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, myPathName));
         gettimeofday(&tv_lastupdate, NULL);
@@ -637,13 +637,13 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
 
       if (nCmd != 0x06)
       {
-        gLog.Unknown(tr("File Transfer: Invalid data (%c) ignoring packet"),
+        gLog.unknown(tr("File Transfer: Invalid data (%c) ignoring packet"),
            nCmd);
         break;
       }
@@ -652,7 +652,7 @@ bool CFileTransferManager::ProcessPacket()
       size_t nBytesWritten = write(m_nFileDesc, b.getDataPosRead(), b.getDataSize() - 1);
       if (nBytesWritten != b.getDataSize() - 1)
       {
-        gLog.Error("%sFile Transfer: Write error:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR,
+        gLog.error("%sFile Transfer: Write error:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR,
            errno == 0 ? "Disk full (?)" : strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
@@ -683,12 +683,12 @@ bool CFileTransferManager::ProcessPacket()
       m_nFileDesc = -1;
       if (nBytesLeft == 0) // File transfer done perfectly
       {
-        gLog.Info(tr("%sFile Transfer: %s received.\n"), L_TCPxSTR, myFileName.c_str());
+        gLog.info(tr("%sFile Transfer: %s received.\n"), L_TCPxSTR, myFileName.c_str());
       }
       else // nBytesLeft < 0
       {
         // Received too many bytes for the given size of the current file
-        gLog.Warn(tr("%sFile Transfer: %s received %d too many bytes.\n"), L_WARNxSTR,
+        gLog.warning(tr("%sFile Transfer: %s received %d too many bytes.\n"), L_WARNxSTR,
             myFileName.c_str(), -nBytesLeft);
       }
       // Notify Plugin
@@ -708,12 +708,12 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
       if (nCmd != 0x01)
       {
-        gLog.Error("%sFile Transfer: Invalid server init packet:\n%s%s\n",
+        gLog.error("%sFile Transfer: Invalid server init packet:\n%s%s\n",
             L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
@@ -725,7 +725,7 @@ bool CFileTransferManager::ProcessPacket()
       CPFile_Info p(*myPathNameIter);
       if (!p.IsValid())
       {
-        gLog.Warn(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
+        gLog.warning(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
             myPathNameIter->c_str(), p.ErrorStr());
         m_nResult = FT_ERRORxFILE;
         return false;
@@ -755,12 +755,12 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
       if (nCmd != 0x03)
       {
-        gLog.Error("%sFile Transfer: Invalid start packet:\n%s%s\n",
+        gLog.error("%sFile Transfer: Invalid start packet:\n%s%s\n",
             L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
         m_nResult = FT_ERRORxCLOSED;
         return false;
@@ -774,7 +774,7 @@ bool CFileTransferManager::ProcessPacket()
       m_nFileDesc = open(myPathNameIter->c_str(), O_RDONLY);
       if (m_nFileDesc == -1)
       {
-        gLog.Error("%sFile Transfer: Read error '%s':\n%s%s\n.", L_ERRORxSTR,
+        gLog.error("%sFile Transfer: Read error '%s':\n%s%s\n.", L_ERRORxSTR,
             myPathNameIter->c_str(), L_BLANKxSTR, strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
@@ -782,7 +782,7 @@ bool CFileTransferManager::ProcessPacket()
 
       if (lseek(m_nFileDesc, m_nFilePos, SEEK_SET) == -1)
       {
-        gLog.Error("%sFile Transfer: Seek error '%s':\n%s%s\n.", L_ERRORxSTR,
+        gLog.error("%sFile Transfer: Seek error '%s':\n%s%s\n.", L_ERRORxSTR,
             myFileName.c_str(), L_BLANKxSTR, strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
@@ -798,10 +798,10 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.Info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
-      gLog.Unknown(tr("File Transfer: Unknown packet received during file send:\n%s"),
+      gLog.unknown(tr("File Transfer: Unknown packet received during file send:\n%s"),
           b.toString().c_str());
       break;
     }
@@ -809,7 +809,7 @@ bool CFileTransferManager::ProcessPacket()
 
     default:
     {
-      gLog.Error("%sInternal error: FileTransferManager::ProcessPacket(), invalid state (%d).\n",
+      gLog.error("%sInternal error: FileTransferManager::ProcessPacket(), invalid state (%d).\n",
          L_ERRORxSTR, m_nState);
       break;
     }
@@ -825,11 +825,11 @@ bool CFileTransferManager::ProcessPacket()
 // the actual transfer begins
 bool CFileTransferManager::startReceivingFile(const string& fileName)
 {
-  gLog.Info(tr("%sFile Transfer: Received plugin confirmation.\n"), L_TCPxSTR);
+  gLog.info(tr("%sFile Transfer: Received plugin confirmation.\n"), L_TCPxSTR);
       
   if (m_nState != FT_STATE_CONFIRMINGxFILE)
   {
-     gLog.Warn("%sFile Transfer: StartReceivingFile called without a pending confirmation.\n",
+     gLog.warning("%sFile Transfer: StartReceivingFile called without a pending confirmation.\n",
         L_WARNxSTR);
      return false;
   }
@@ -862,7 +862,7 @@ bool CFileTransferManager::startReceivingFile(const string& fileName)
     }
     if (m_nFileDesc == -1)
     {
-      gLog.Error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
+      gLog.error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
           L_ERRORxSTR, myPathName.c_str(), L_BLANKxSTR, strerror(errno));
       m_nResult = FT_ERRORxFILE;
       return false;
@@ -873,7 +873,7 @@ bool CFileTransferManager::startReceivingFile(const string& fileName)
   CPFile_Start p(m_nFilePos, m_nCurrentFile);
   if (!SendPacket(&p))
   {
-    gLog.Error("%sFile Transfer: Unable to send file receive start packet.\n", L_ERRORxSTR);
+    gLog.error("%sFile Transfer: Unable to send file receive start packet.\n", L_ERRORxSTR);
     m_nResult = FT_ERRORxCLOSED;
     return false;
   }
@@ -891,7 +891,7 @@ bool CFileTransferManager::SendFilePacket()
   {
     m_nStartTime = time(NULL);
     m_nBatchPos += m_nFilePos;
-    gLog.Info(tr("%sFile Transfer: Sending %s (%ld bytes).\n"), L_TCPxSTR,
+    gLog.info(tr("%sFile Transfer: Sending %s (%ld bytes).\n"), L_TCPxSTR,
         myPathName.c_str(), m_nFileSize);
     PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, myPathName));
     gettimeofday(&tv_lastupdate, NULL);
@@ -901,7 +901,7 @@ bool CFileTransferManager::SendFilePacket()
   if (nBytesToSend > 2048) nBytesToSend = 2048;
   if (read(m_nFileDesc, pSendBuf, nBytesToSend) != nBytesToSend)
   {
-    gLog.Error("%sFile Transfer: Error reading from %s:\n%s%s.\n", L_ERRORxSTR,
+    gLog.error("%sFile Transfer: Error reading from %s:\n%s%s.\n", L_ERRORxSTR,
         myPathName.c_str(), L_BLANKxSTR, strerror(errno));
     m_nResult = FT_ERRORxFILE;
     return false;
@@ -946,11 +946,11 @@ bool CFileTransferManager::SendFilePacket()
 
   if (nBytesLeft == 0)
   {
-    gLog.Info(tr("%sFile Transfer: Sent %s.\n"), L_TCPxSTR, myFileName.c_str());
+    gLog.info(tr("%sFile Transfer: Sent %s.\n"), L_TCPxSTR, myFileName.c_str());
   }
   else // nBytesLeft < 0
   {
-    gLog.Info(tr("%sFile Transfer: Sent %s, %d too many bytes.\n"), L_TCPxSTR,
+    gLog.info(tr("%sFile Transfer: Sent %s, %d too many bytes.\n"), L_TCPxSTR,
         myFileName.c_str(), -nBytesLeft);
   }
   PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, myPathName));
@@ -968,7 +968,7 @@ bool CFileTransferManager::SendFilePacket()
     CPFile_Info p(*myPathNameIter);
     if (!p.IsValid())
     {
-      gLog.Warn(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
+      gLog.warning(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
           myPathNameIter->c_str(), p.ErrorStr());
       m_nResult = FT_ERRORxFILE;
       return false;
@@ -1028,7 +1028,7 @@ bool CFileTransferManager::SendBuffer(CBuffer *b)
 {
   if (!ftSock.SendPacket(b))
   {
-    gLog.Warn(tr("%sFile Transfer: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
+    gLog.warning(tr("%sFile Transfer: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
         ftSock.errorStr().c_str());
     return false;
   }
@@ -1040,7 +1040,7 @@ void CFileTransferManager::ChangeSpeed(unsigned short nSpeed)
 {
   if (nSpeed > 100)
   {
-    gLog.Warn(tr("%sInvalid file transfer speed: %d%%.\n"), L_WARNxSTR, nSpeed);
+    gLog.warning(tr("%sInvalid file transfer speed: %d%%.\n"), L_WARNxSTR, nSpeed);
     return;
   }
 
@@ -1140,7 +1140,7 @@ void *FileTransferManager_tep(void *arg)
       //   descriptor and select will continue to fail causing this thread to
       //   spin so better to just give up and exit.
 
-      gLog.Warn(tr("%sFile Transfer: select failed, aborting thread:\n%s%s\n"),
+      gLog.warning(tr("%sFile Transfer: select failed, aborting thread:\n%s%s\n"),
           L_WARNxSTR, L_BLANKxSTR, strerror(errno));
       pthread_exit(NULL);
     }
@@ -1177,7 +1177,7 @@ void *FileTransferManager_tep(void *arg)
         {
           if (ftman->ftSock.Descriptor() != -1)
           {
-            gLog.Warn(tr("%sFile Transfer: Receiving repeat incoming connection.\n"), L_WARNxSTR);
+            gLog.warning(tr("%sFile Transfer: Receiving repeat incoming connection.\n"), L_WARNxSTR);
 
             // Dump the extra connection to clear the listen socket queue
             Licq::TCPSocket ts;
@@ -1192,11 +1192,11 @@ void *FileTransferManager_tep(void *arg)
               ftman->sockman.DropSocket(&ftman->ftSock);
 
               ftman->m_nState = FT_STATE_HANDSHAKE;
-              gLog.Info(tr("%sFile Transfer: Received connection.\n"), L_TCPxSTR);
+              gLog.info(tr("%sFile Transfer: Received connection.\n"), L_TCPxSTR);
             }
             else
             {
-              gLog.Error(tr("%sFile Transfer: Unable to receive new connection.\n"), L_ERRORxSTR);
+              gLog.error(tr("%sFile Transfer: Unable to receive new connection.\n"), L_ERRORxSTR);
             }
           }
         }
@@ -1216,7 +1216,7 @@ void *FileTransferManager_tep(void *arg)
 
         else
         {
-          gLog.Warn(tr("%sFile Transfer: No such socket.\n"), L_WARNxSTR);
+          gLog.warning(tr("%sFile Transfer: No such socket.\n"), L_WARNxSTR);
         }
 
         nSocketsAvailable--;
@@ -1261,7 +1261,7 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  gLog.Info("%sFile Transfer: Waiting for reverse connection.\n", L_TCPxSTR);
+  gLog.info("%sFile Transfer: Waiting for reverse connection.\n", L_TCPxSTR);
   bool bConnected = gIcqProtocol.waitForReverseConnection(rc->nId, userId);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
@@ -1285,7 +1285,7 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  gLog.Info("%sFile Transfer: Reverse connection failed, trying direct.\n",
+  gLog.info("%sFile Transfer: Reverse connection failed, trying direct.\n",
                                                                     L_TCPxSTR);
   Licq::TCPSocket s;
   bConnected = gIcqProtocol.openConnectionToUser(userId, &s, nPort);
@@ -1300,7 +1300,7 @@ void *FileWaitForSignal_tep(void *arg)
   {
     if (rc->m->ftSock.Descriptor() != -1)
     {
-      gLog.Warn("%sFile Transfer: Attempted connection when already"
+      gLog.warning("%sFile Transfer: Attempted connection when already"
                 " connected.\n", L_WARNxSTR);
     }
     else

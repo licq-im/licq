@@ -156,7 +156,7 @@ bool IcqProtocol::start()
   m_nTCPSocketDesc = gDaemon.StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {
-     gLog.Error(tr("%sUnable to allocate TCP port for local server (%s)!\n"),
+     gLog.error(tr("%sUnable to allocate TCP port for local server (%s)!\n"),
                 L_ERRORxSTR, tr("No ports available"));
      return false;
   }
@@ -172,24 +172,24 @@ bool IcqProtocol::start()
   CPacket::SetLocalPort(s->getLocalPort());
   gSocketManager.DropSocket(s);
 
-  gLog.Info(tr("%sSpawning daemon threads.\n"), L_INITxSTR);
+  gLog.info(tr("%sSpawning daemon threads.\n"), L_INITxSTR);
   nResult = pthread_create(&thread_monitorsockets, NULL, &MonitorSockets_tep, this);
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start socket monitor thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    gLog.error("%sUnable to start socket monitor thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     return false;
   }
   nResult = pthread_create(&thread_ping, NULL, &Ping_tep, this);
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    gLog.error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     return false;
   }
   
   nResult = pthread_create(&thread_updateusers, NULL, &UpdateUsers_tep, this);
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start users update thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    gLog.error("%sUnable to start users update thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     return false;
   }
 
@@ -200,7 +200,7 @@ bool IcqProtocol::start()
                              &OscarServiceSendQueue_tep, m_xBARTService);
     if (nResult != 0)
     {
-      gLog.Error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
+      gLog.error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
                  L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
       return false;
     }
@@ -253,7 +253,7 @@ unsigned short VersionToUse(unsigned short v_in)
 {
   /*if (ICQ_VERSION_TCP & 4 && v & 4) return 4;
   if (ICQ_VERSION_TCP & 2 && v & 2) return 2;
-  gLog.Warn("%sUnknown TCP version %d.  Attempting v2.\n", L_WARNxSTR, v);
+  gLog.warning("%sUnknown TCP version %d.  Attempting v2.\n", L_WARNxSTR, v);
   return 2;*/
   unsigned short v_out = v_in < ICQ_VERSION_TCP ? v_in : ICQ_VERSION_TCP;
   if (v_out < 2 || v_out == 5)
@@ -263,7 +263,7 @@ unsigned short VersionToUse(unsigned short v_in)
     else
       v_out = 6;
 
-    gLog.Warn(tr("%sInvalid TCP version %d.  Attempting v%d.\n"), L_WARNxSTR, v_in,
+    gLog.warning(tr("%sInvalid TCP version %d.  Attempting v%d.\n"), L_WARNxSTR, v_in,
                                                               v_out);
   }
   return v_out;
@@ -280,7 +280,7 @@ void IcqProtocol::SetUseServerSideBuddyIcons(bool b)
                                  &OscarServiceSendQueue_tep, m_xBARTService);
     if (nResult != 0)
     {
-      gLog.Error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
+      gLog.error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
                  L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     }
     else
@@ -317,7 +317,7 @@ void IcqProtocol::SendEvent_Server(CPacket *packet)
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_Server_tep, e);
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start server event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
+    gLog.error("%sUnable to start server event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     e->m_eResult = Licq::Event::ResultError;
   }
@@ -411,7 +411,7 @@ Licq::Event* IcqProtocol::SendExpectEvent(Licq::Event* e, void *(*fcn)(void *))
 
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
+    gLog.error("%sUnable to start event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     DoneEvent(e, Licq::Event::ResultError);
     if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
@@ -602,10 +602,10 @@ Licq::Event* IcqProtocol::DoneEvent(Licq::Event* e, Licq::Event::ResultType _eRe
 
 #if 0
   if (m_lxRunningEvents.size()) {
-    gLog.Info("doneevents: for: %p pending: \n", e);
+    gLog.info("doneevents: for: %p pending: \n", e);
     for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
     {
-      gLog.Info("%p Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", *iter,
+      gLog.info("%p Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", *iter,
                 (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
                 (*iter)->Uin());
     }
@@ -821,7 +821,7 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
         PushExtendedEvent(e);
         break;
       default:
-        gLog.Error("%sInternal error: ProcessDoneEvents(): Invalid result for extended event (%d).\n",
+        gLog.error("%sInternal error: ProcessDoneEvents(): Invalid result for extended event (%d).\n",
                    L_ERRORxSTR, e->m_eResult);
         delete e;
         return;
@@ -830,7 +830,7 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
   }
 
   default:
-    gLog.Error("%sInternal error: ProcessDoneEvents(): Unknown command (%04X).\n",
+    gLog.error("%sInternal error: ProcessDoneEvents(): Unknown command (%04X).\n",
                L_ERRORxSTR, e->m_nCommand);
     delete e;
     return;
@@ -949,7 +949,7 @@ void IcqProtocol::PushExtendedEvent(Licq::Event* e)
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.push_back(e);
 #if 0
-  gLog.Info("%p pushing Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", e,
+  gLog.info("%p pushing Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", e,
             e->Command(), e->SubCommand(), e->Sequence(), e->SubSequence(), e->Uin());
 #endif
   pthread_mutex_unlock(&mutex_extendedevents);
@@ -982,7 +982,7 @@ void IcqProtocol::CancelEvent(unsigned long t)
 
   if (eRun == NULL && eExt == NULL && eSrv == NULL)
   {
-    gLog.Warn(tr("%sCancelled event not found.\n"), L_WARNxSTR);
+    gLog.warning(tr("%sCancelled event not found.\n"), L_WARNxSTR);
     return;
   }
 
@@ -1177,7 +1177,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       {
         u->setAutoResponse(message);
         u->SetShowAwayMsg(*message);
-        gLog.Info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
+        gLog.info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
                   nMsgID[1]);
         }
         Licq::Event* e = DoneServerEvent(nMsgID[1], Licq::Event::ResultAcked);
@@ -1188,11 +1188,11 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         ProcessDoneEvent(e);
       }
       else
-        gLog.Warn(tr("%sAck for unknown event.\n"), L_SRVxSTR);
+        gLog.warning(tr("%sAck for unknown event.\n"), L_SRVxSTR);
     }
     else
     {
-      gLog.Info(tr("%s%s (%s) requested auto response.\n"), L_SRVxSTR,
+      gLog.info(tr("%s%s (%s) requested auto response.\n"), L_SRVxSTR,
             u->getAlias().c_str(), u->accountId().c_str());
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
@@ -1235,7 +1235,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
     if (nCommand == 0)
     {
-        gLog.Warn(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, plugin.c_str());
+        gLog.warning(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, plugin.c_str());
         return;
       }
 
@@ -1272,7 +1272,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     {
       pAckEvent->m_pExtendedAck = pExtendedAck;
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-      gLog.Info(tr("%s%s accepted from %s (%s).\n"), L_SRVxSTR, szType,
+      gLog.info(tr("%s%s accepted from %s (%s).\n"), L_SRVxSTR, szType,
           u->getAlias().c_str(), u->accountId().c_str());
       u->unlockWrite();
       ProcessDoneEvent(pAckEvent);
@@ -1280,7 +1280,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     }
     else
     {
-      gLog.Warn(tr("%sAck for unknown event.\n"), L_SRVxSTR);
+      gLog.warning(tr("%sAck for unknown event.\n"), L_SRVxSTR);
       delete pExtendedAck;
      }
   }
@@ -1293,19 +1293,19 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       {
         if (gDaemon.ignoreType(Licq::Daemon::IgnoreNewUsers))
         {
-          gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
+          gLog.info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
               szType, u->accountId().c_str());
           if (szType)  free(szType);
           gDaemon.rejectEvent(u->id(), pEvent);
           return;
         }
-        gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->accountId().c_str());
+        gLog.info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->accountId().c_str());
 
         // Don't delete user when we're done
         bNewUser = false;
       }
       else
-        gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
+        gLog.info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
             u->accountId().c_str());
 
       if (gDaemon.addUserEvent(u, pEvent))
@@ -1336,7 +1336,7 @@ bool IcqProtocol::waitForReverseConnection(unsigned short id, const Licq::UserId
 
   if (iter == m_lReverseConnect.end())
   {
-    gLog.Warn("%sFailed to find desired connection record.\n", L_WARNxSTR);
+    gLog.warning("%sFailed to find desired connection record.\n", L_WARNxSTR);
     goto done;
   }
 
@@ -1352,7 +1352,7 @@ bool IcqProtocol::waitForReverseConnection(unsigned short id, const Licq::UserId
     {
       if (iter == m_lReverseConnect.end())
       {
-        gLog.Warn("%sSomebody else removed our connection record.\n",
+        gLog.warning("%sSomebody else removed our connection record.\n",
           L_WARNxSTR);
         goto done;
       }

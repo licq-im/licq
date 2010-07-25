@@ -63,7 +63,7 @@ CLicqForwarder::~CLicqForwarder()
  *-------------------------------------------------------------------------*/
 void CLicqForwarder::Shutdown()
 {
-  gLog.Info("%sShutting down forwarder.\n", L_FORWARDxSTR);
+  gLog.info("%sShutting down forwarder.\n", L_FORWARDxSTR);
   gPluginManager.unregisterGeneralPlugin();
 }
 
@@ -84,10 +84,10 @@ int CLicqForwarder::Run()
   {
     if(!CreateDefaultConfig())
     {
-      gLog.Error("%sCould not create default configuration file: %s\n", L_FORWARDxSTR, filename.c_str());
+      gLog.error("%sCould not create default configuration file: %s\n", L_FORWARDxSTR, filename.c_str());
       return 1;
     }
-    gLog.Info("%sA default configuration file has been created: %s\n", L_FORWARDxSTR, filename.c_str());
+    gLog.info("%sA default configuration file has been created: %s\n", L_FORWARDxSTR, filename.c_str());
     conf.loadFile();
   }
   conf.setSection("Forward");
@@ -109,14 +109,14 @@ int CLicqForwarder::Run()
       conf.get("Uin", accountId, "");
       if (accountId.empty())
       {
-        gLog.Error("%sInvalid ICQ forward UIN: %s\n", L_FORWARDxSTR, accountId.c_str());
+        gLog.error("%sInvalid ICQ forward UIN: %s\n", L_FORWARDxSTR, accountId.c_str());
         return 1;
       }
       myUserId = UserId(accountId, LICQ_PPID);
       break;
     }
     default:
-      gLog.Error("%sInvalid forward type: %d\n", L_FORWARDxSTR, m_nForwardType);
+      gLog.error("%sInvalid forward type: %d\n", L_FORWARDxSTR, m_nForwardType);
       return 1;
       break;
   }
@@ -126,7 +126,7 @@ int CLicqForwarder::Run()
   {
     unsigned s;
     if (!Licq::User::stringToStatus(m_szStatus, s))
-      gLog.Warn("%sInvalid startup status.\n", L_FORWARDxSTR);
+      gLog.warning("%sInvalid startup status.\n", L_FORWARDxSTR);
     else
       gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);
     free(m_szStatus);
@@ -144,7 +144,7 @@ int CLicqForwarder::Run()
     nResult = select(m_nPipe + 1, &fdSet, NULL, NULL, NULL);
     if (nResult == -1)
     {
-      gLog.Error("%sError in select(): %s\n", L_ERRORxSTR, strerror(errno));
+      gLog.error("%sError in select(): %s\n", L_ERRORxSTR, strerror(errno));
       m_bExit = true;
     }
     else
@@ -197,27 +197,27 @@ void CLicqForwarder::ProcessPipe()
 
     case Licq::GeneralPlugin::PipeShutdown:
     {
-    gLog.Info("%sExiting.\n", L_FORWARDxSTR);
+    gLog.info("%sExiting.\n", L_FORWARDxSTR);
     m_bExit = true;
     break;
   }
 
     case Licq::GeneralPlugin::PipeDisable:
     {
-    gLog.Info("%sDisabling.\n", L_FORWARDxSTR);
+    gLog.info("%sDisabling.\n", L_FORWARDxSTR);
     m_bEnabled = false;
     break;
   }
 
     case Licq::GeneralPlugin::PipeEnable:
     {
-    gLog.Info("%sEnabling.\n", L_FORWARDxSTR);
+    gLog.info("%sEnabling.\n", L_FORWARDxSTR);
     m_bEnabled = true;
     break;
   }
 
   default:
-    gLog.Warn("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
+    gLog.warning("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
   }
 }
 
@@ -235,7 +235,7 @@ void CLicqForwarder::ProcessSignal(Licq::PluginSignal* s)
     break;
   // We should never get any other signal
     default:
-      gLog.Warn("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
+      gLog.warning("%sInternal error: CLicqForwarder::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
           L_WARNxSTR, s->signal());
       break;
   }
@@ -272,7 +272,7 @@ void CLicqForwarder::ProcessEvent(Licq::Event* e)
     break;
 
   default:
-    gLog.Warn("%sInternal error: CLicqForwarder::ProcessEvent(): Unknown event command received from daemon: %d.\n",
+    gLog.warning("%sInternal error: CLicqForwarder::ProcessEvent(): Unknown event command received from daemon: %d.\n",
               L_WARNxSTR, e->m_nCommand);
     break;
   }*/
@@ -285,7 +285,7 @@ void CLicqForwarder::ProcessUserEvent(const UserId& userId, unsigned long nId)
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
   {
-    gLog.Warn("%sInvalid user received from daemon (%s).\n", L_FORWARDxSTR, userId.toString().c_str());
+    gLog.warning("%sInvalid user received from daemon (%s).\n", L_FORWARDxSTR, userId.toString().c_str());
     return;
   }
 
@@ -293,7 +293,7 @@ void CLicqForwarder::ProcessUserEvent(const UserId& userId, unsigned long nId)
 
   if (e == NULL)
   {
-    gLog.Warn("%sInvalid message id (%ld).\n", L_FORWARDxSTR, nId);
+    gLog.warning("%sInvalid message id (%ld).\n", L_FORWARDxSTR, nId);
   }
   else
   {
@@ -334,10 +334,10 @@ bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent
   delete []szText;
   if (tag == 0)
   {
-    gLog.Warn("%sSending message to %s failed.\n", L_FORWARDxSTR, myUserId.toString().c_str());
+    gLog.warning("%sSending message to %s failed.\n", L_FORWARDxSTR, myUserId.toString().c_str());
     return false;
   }
-  gLog.Info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR,
+  gLog.info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR,
       u->getAlias().c_str(), u->accountId().c_str(), myUserId.toString().c_str());
   return true;
 }
@@ -407,7 +407,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   // Connect to the SMTP server
   if (!tcp->DestinationSet() && !tcp->connectTo(mySmtpHost.c_str(), m_nSMTPPort))
   {
-    gLog.Warn("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
+    gLog.warning("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
         tcp->getRemoteIpString().c_str(), tcp->getRemotePort(), L_BLANKxSTR,
         tcp->errorStr().c_str());
     return false;
@@ -417,7 +417,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   FILE *fs = fdopen(tcp->Descriptor(), "r+");
   if (fs == NULL)
   {
-    gLog.Warn("%sUnable to open socket descriptor in file stream mode:\n%s%s.\n",
+    gLog.warning("%sUnable to open socket descriptor in file stream mode:\n%s%s.\n",
               L_ERRORxSTR, L_BLANKxSTR, strerror(errno));
     return false;
   }
@@ -427,7 +427,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   code = atoi(fin);
   if (code != 220)
   {
-    gLog.Warn("%sInvalid SMTP welcome:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
+    gLog.warning("%sInvalid SMTP welcome:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
     tcp->CloseConnection();
     return false;
   }
@@ -437,7 +437,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   code = atoi(fin);
   if (code != 250)
   {
-    gLog.Warn("%sInvalid response to HELO:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
+    gLog.warning("%sInvalid response to HELO:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
     tcp->CloseConnection();
     return false;
   }
@@ -447,7 +447,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   code = atoi(fin);
   if (code != 250)
   {
-    gLog.Warn("%sInvalid response to MAIL:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
+    gLog.warning("%sInvalid response to MAIL:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
     tcp->CloseConnection();
     return false;
   }
@@ -457,7 +457,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   code = atoi(fin);
   if (code != 250)
   {
-    gLog.Warn("%sInvalid response to RCPT TO:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
+    gLog.warning("%sInvalid response to RCPT TO:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
     tcp->CloseConnection();
     return false;
   }
@@ -467,7 +467,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   code = atoi(fin);
   if (code != 354)
   {
-    gLog.Warn("%sInvalid response to DATA:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
+    gLog.warning("%sInvalid response to DATA:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
     tcp->CloseConnection();
     return false;
   }
@@ -486,7 +486,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   code = atoi(fin);
   if (code != 250)
   {
-    gLog.Warn("%sInvalid response to DATA done:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
+    gLog.warning("%sInvalid response to DATA done:\n%s%s\n", L_WARNxSTR, L_BLANKxSTR, fin);
     tcp->CloseConnection();
     return false;
   }
@@ -496,7 +496,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   // Close our connection
   tcp->CloseConnection();
 
-  gLog.Info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR,
+  gLog.info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR,
       u->getAlias().c_str(), u->accountId().c_str(), mySmtpTo.c_str());
   return true;
 }

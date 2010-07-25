@@ -229,7 +229,7 @@ int HttpProxy::openProxyConnection(int sock, const string& remoteName, int remot
   if (sscanf(input_line, "HTTP/%d.%d %n%d", &ver_major, &ver_minor,
 	     &status_consumed, &status_code) != 3)
   {
-    gLog.Warn(tr("%sCould not parse HTTP status line from proxy\n"), L_ERRORxSTR);
+    gLog.warning(tr("%sCould not parse HTTP status line from proxy\n"), L_ERRORxSTR);
     myErrorType = ErrorInternal;
     close(sock);
     return -1;
@@ -237,7 +237,7 @@ int HttpProxy::openProxyConnection(int sock, const string& remoteName, int remot
   if (status_code == HTTP_STATUS_OK)
     return sock;
 
-  gLog.Warn(tr("%sHTTPS proxy return error code: %d, error string:\n%s\n"),
+  gLog.warning(tr("%sHTTPS proxy return error code: %d, error string:\n%s\n"),
 	      L_ERRORxSTR, status_code, input_line);
   myErrorType = ErrorInternal;
   close(sock);

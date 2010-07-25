@@ -60,7 +60,7 @@ int UtilityManager::loadUtilities(const string& dir)
 {
   struct dirent **namelist;
 
-  gLog.Info(tr("%sLoading utilities.\n"), L_INITxSTR);
+  gLog.info(tr("%sLoading utilities.\n"), L_INITxSTR);
   int n = scandir_alpha_r(dir.c_str(), &namelist, SelectUtility);
   if (n < 0)
   {
@@ -77,7 +77,7 @@ int UtilityManager::loadUtilities(const string& dir)
     p = new Utility(filename);
     if (p->isFailed())
     {
-      gLog.Warn(tr("%sWarning: unable to load utility \"%s\".\n"), L_WARNxSTR, namelist[i]->d_name);
+      gLog.warning(tr("%sWarning: unable to load utility \"%s\".\n"), L_WARNxSTR, namelist[i]->d_name);
       continue;
     }
     myUtilities.push_back(p);
@@ -112,7 +112,7 @@ Utility::Utility(const string& filename)
     myWinType = WinLicq;
   else
   {
-    gLog.Warn(tr("%sWarning: Invalid entry in plugin \"%s\":\nWindow = %s\n"),
+    gLog.warning(tr("%sWarning: Invalid entry in plugin \"%s\":\nWindow = %s\n"),
         L_WARNxSTR, filename.c_str(), window.c_str());
     myIsFailed = true;
     return;
@@ -137,7 +137,7 @@ Utility::Utility(const string& filename)
       nField = cField - '0';
       if (nField == 0 || nField > nCurField)
       {
-        gLog.Warn("%sWarning: Out-of-order user field id (%d) in plugin \"%s\".\n",
+        gLog.warning("%sWarning: Out-of-order user field id (%d) in plugin \"%s\".\n",
             L_WARNxSTR, nField, filename.c_str());
       }
       else if (nField == nCurField)
@@ -191,7 +191,7 @@ void Utility::setUserFields(const vector<string>& userFields)
 {
   if (static_cast<int>(userFields.size()) != numUserFields())
   {
-    gLog.Warn("%sInternal error: Utility::setUserFields(): incorrect number of data fields (%d/%d).\n",
+    gLog.warning("%sInternal error: Utility::setUserFields(): incorrect number of data fields (%d/%d).\n",
         L_WARNxSTR, int(userFields.size()), numUserFields());
     return;
   }

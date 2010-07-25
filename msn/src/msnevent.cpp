@@ -104,7 +104,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       {
 	if (nFlag == 0x00000002)
 	{
-	  gLog.Info("%sDisplay Picture: Ack received\n", L_MSNxSTR);
+	  gLog.info("%sDisplay Picture: Ack received\n", L_MSNxSTR);
 	}
 	else if (nFlag == 0)
 	{
@@ -117,7 +117,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	    int nToRead = strstr(p->getDataPosRead(), "\r\n")+2-p->getDataPosRead();
 	    if (nToRead > 128)
 	    {
-	      gLog.Warn("%sDisplay Picture: Received unusually long status line, aborting\n", L_WARNxSTR);
+	      gLog.warning("%sDisplay Picture: Received unusually long status line, aborting\n", L_WARNxSTR);
 	      // close connection
 	      return -1;
 	    }
@@ -125,7 +125,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	    string strStatus(szStatusLine);
 	    if (strStatus != "MSNSLP/1.0 200 OK\r\n")
 	    {
-	      gLog.Error("%sDisplay Picture: Encountered an error before the session id was received: %s", L_ERRORxSTR, szStatusLine);
+	      gLog.error("%sDisplay Picture: Encountered an error before the session id was received: %s", L_ERRORxSTR, szStatusLine);
 	      // close connection
 	      return -1;
 	    }
@@ -142,7 +142,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	    }
 	  }
 
-	  gLog.Info("%sDisplay Picture: Session Id received (%ld)\n",
+	  gLog.info("%sDisplay Picture: Session Id received (%ld)\n",
 		    L_MSNxSTR, m_nSessionId);
 	  CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
 					       m_nBaseId-3, nIdentifier, nAckId,
@@ -164,13 +164,13 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       m_pMSN->Send_SB_Packet(UserId(m_strId, MSN_PPID), pAck, m_nSocketDesc);
       m_eState = STATE_RECV_DATA;
 
-      gLog.Info("%sDisplay Picture: Got data start message (%ld)\n",
+      gLog.info("%sDisplay Picture: Got data start message (%ld)\n",
 		L_MSNxSTR, m_nSessionId);
 
       m_nFileDesc = open(m_strFileName.c_str(), O_WRONLY | O_CREAT, 00600);
       if (!m_nFileDesc)
       {
-	gLog.Error("%sUnable to create a file in your licq directory, check disk space.\n",
+	gLog.error("%sUnable to create a file in your licq directory, check disk space.\n",
 		   L_ERRORxSTR);
 	return -1;
       }
@@ -185,38 +185,38 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       {
 	m_nDataSize[0] = nDataSize[0];
 	m_nDataSize[1] = nDataSize[1];
-	gLog.Info("%sDisplay Picture: Expecting file of size %ld (Id: %ld).\n",
+	gLog.info("%sDisplay Picture: Expecting file of size %ld (Id: %ld).\n",
 		  L_MSNxSTR, m_nDataSize[0], m_nSessionId);
       }
 
       if (nFlag != 0x00000020)
       {
-        gLog.Info("%sDisplay Picture: Skipping packet without 0x20 flag.\n", L_MSNxSTR);
+        gLog.info("%sDisplay Picture: Skipping packet without 0x20 flag.\n", L_MSNxSTR);
         break;
       }
 
       ssize_t nWrote = write(m_nFileDesc, p->getDataPosRead(), nLen);
       if (nWrote != (ssize_t)nLen)
       {
-	gLog.Error("%sDisplay Picture: Tried to write %ld, but wrote %ld (Id: %ld).\n",
+	gLog.error("%sDisplay Picture: Tried to write %ld, but wrote %ld (Id: %ld).\n",
 		   L_MSNxSTR, nLen, (long)nWrote, m_nSessionId);
       }
 
       m_nBytesTransferred += nLen;
 
-      gLog.Info("%sDisplay Picture: Wrote %ld of %ld bytes.\n",
+      gLog.info("%sDisplay Picture: Wrote %ld of %ld bytes.\n",
           L_MSNxSTR, m_nBytesTransferred, m_nDataSize[0]);
 
       if (m_nBytesTransferred >= m_nDataSize[0])
       {
 	if (m_nBytesTransferred == m_nDataSize[0])
 	{
-	  gLog.Info("%sDisplay Picture: Successfully completed (%s).\n",
+	  gLog.info("%sDisplay Picture: Successfully completed (%s).\n",
 		    L_MSNxSTR, m_strFileName.c_str());
 	}
 	else
 	{
-	  gLog.Error("%sDisplay Picture: Too much data received, ending transfer.\n",
+	  gLog.error("%sDisplay Picture: Too much data received, ending transfer.\n",
 		     L_MSNxSTR);
 	}
 	close(m_nFileDesc);
@@ -255,7 +255,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
     case STATE_FINISHED:
     {
       // Don't have to send anything back, just return and close the socket.
-      gLog.Info("%s Display Picture: closing connection with %s\n", L_MSNxSTR,
+      gLog.info("%s Display Picture: closing connection with %s\n", L_MSNxSTR,
                 m_strId.c_str());
       return 10;
       break;

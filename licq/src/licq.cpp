@@ -106,12 +106,12 @@ void ssl_info_callback(SSL *s, int where, int ret)
 
     if (where & SSL_CB_LOOP)
     {
-        gLog.Info("%s%s:%s\n",L_SSLxSTR,str,SSL_state_string_long(s));
+        gLog.info("%s%s:%s\n",L_SSLxSTR,str,SSL_state_string_long(s));
     }
     else if (where & SSL_CB_ALERT)
     {
         str=(where & SSL_CB_READ)?"read":"write";
-        gLog.Info("%sSSL3 alert %s:%s:%s\n",L_SSLxSTR,
+        gLog.info("%sSSL3 alert %s:%s:%s\n",L_SSLxSTR,
             str,
             SSL_alert_type_string_long(ret),
             SSL_alert_desc_string_long(ret));
@@ -119,17 +119,17 @@ void ssl_info_callback(SSL *s, int where, int ret)
     else if (where & SSL_CB_EXIT)
     {
         if (ret == 0)
-            gLog.Info("%s%s:failed in %s\n",L_SSLxSTR,
+            gLog.info("%s%s:failed in %s\n",L_SSLxSTR,
                 str,SSL_state_string_long(s));
         else if (ret < 0)
         {
-        gLog.Info("%s%s:%s\n",L_SSLxSTR,str,SSL_state_string_long(s));
+        gLog.info("%s%s:%s\n",L_SSLxSTR,str,SSL_state_string_long(s));
         }
     }
     else if (where & SSL_CB_ALERT)
     {
         str=(where & SSL_CB_READ)?"read":"write";
-        gLog.Info("%sSSL3 alert %s:%s:%s\n",L_SSLxSTR,
+        gLog.info("%sSSL3 alert %s:%s:%s\n",L_SSLxSTR,
             str,
             SSL_alert_type_string_long(ret),
             SSL_alert_desc_string_long(ret));
@@ -137,11 +137,11 @@ void ssl_info_callback(SSL *s, int where, int ret)
     else if (where & SSL_CB_EXIT)
     {
         if (ret == 0)
-            gLog.Info("%s%s:failed in %s\n",L_SSLxSTR,
+            gLog.info("%s%s:failed in %s\n",L_SSLxSTR,
                 str,SSL_state_string_long(s));
         else if (ret < 0)
         {
-            gLog.Info("%s%s:error in %s\n",L_SSLxSTR,
+            gLog.info("%s%s:error in %s\n",L_SSLxSTR,
                 str,SSL_state_string_long(s));
         }
     }
@@ -188,7 +188,7 @@ static bool setupBaseDirPath(const std::string& path)
 void displayFatalError(const char* error, int useLicqLog)
 {
   if (useLicqLog)
-    gLog.Error(error);
+    gLog.error(error);
   else
     fprintf(stderr, "\n%s\n", error);
 
@@ -215,7 +215,7 @@ void displayFatalError(const char* error, int useLicqLog)
 
 void handleExitSignal(int signal)
 {
-  gLog.Info(tr("%sReceived signal %d, exiting.\n"), L_ENDxSTR, signal);
+  gLog.info(tr("%sReceived signal %d, exiting.\n"), L_ENDxSTR, signal);
   gDaemon.Shutdown();
 }
 
@@ -345,7 +345,7 @@ bool CLicq::Init(int argc, char **argv)
   // Redirect stdout and stderr if asked to
   if (szRedirect) {
     if (bRedirect_ok)
-      gLog.Info(tr("%sOutput redirected to \"%s\".\n"), L_INITxSTR, szRedirect);
+      gLog.info(tr("%sOutput redirected to \"%s\".\n"), L_INITxSTR, szRedirect);
     else
       gLog.warning(tr("Redirection to \"%s\" failed:\n%s"), szRedirect, strerror(errno));
     free (szRedirect);
@@ -567,12 +567,12 @@ bool CLicq::Init(int argc, char **argv)
         // Make upgrade from 1.3.x and older easier by automatically switching from kde/qt-gui to kde4/qt4-gui
         if (!loaded && pluginName == "kde-gui")
         {
-          gLog.Warn(tr("%sPlugin kde-gui is no longer available, trying to load kde4-gui instead.\n"), L_WARNxSTR);
+          gLog.warning(tr("%sPlugin kde-gui is no longer available, trying to load kde4-gui instead.\n"), L_WARNxSTR);
           loaded = LoadPlugin("kde4-gui", argc, argv);
         }
         if (!loaded && (pluginName == "qt-gui" || pluginName == "kde-gui"))
         {
-          gLog.Warn(tr("%sPlugin %s is no longer available, trying to load qt4-gui instead.\n"), L_WARNxSTR, pluginName.c_str());
+          gLog.warning(tr("%sPlugin %s is no longer available, trying to load qt4-gui instead.\n"), L_WARNxSTR, pluginName.c_str());
           loaded = LoadPlugin("qt4-gui", argc, argv);
         }
 

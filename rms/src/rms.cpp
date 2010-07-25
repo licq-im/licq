@@ -184,7 +184,7 @@ CLicqRMS::~CLicqRMS()
  *-------------------------------------------------------------------------*/
 void CLicqRMS::Shutdown()
 {
-  gLog.Info("%sShutting down remote manager server.\n", L_RMSxSTR);
+  gLog.info("%sShutting down remote manager server.\n", L_RMSxSTR);
 
   if (myLogSink)
     Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
@@ -221,13 +221,13 @@ int CLicqRMS::Run()
   {
     if (!server->StartServer(nPort))
     {
-      gLog.Error("Could not start server on port %u, "
+      gLog.error("Could not start server on port %u, "
                  "maybe this port is already in use?\n", nPort);
       return 1;
     };
   }
 
-  gLog.Info("%sRMS server started on port %d.\n", L_RMSxSTR, server->getLocalPort());
+  gLog.info("%sRMS server started on port %d.\n", L_RMSxSTR, server->getLocalPort());
   CRMSClient::sockman.AddSocket(server);
   CRMSClient::sockman.DropSocket(server);
 
@@ -254,7 +254,7 @@ int CLicqRMS::Run()
     nResult = select(l, &f, NULL, NULL, NULL);
     if (nResult == -1)
     {
-      gLog.Error("%sError in select(): %s\n", L_ERRORxSTR, strerror(errno));
+      gLog.error("%sError in select(): %s\n", L_ERRORxSTR, strerror(errno));
       m_bExit = true;
     }
     else
@@ -326,27 +326,27 @@ void CLicqRMS::ProcessPipe()
 
     case Licq::GeneralPlugin::PipeShutdown:
     {
-    gLog.Info("%sExiting.\n", L_RMSxSTR);
+    gLog.info("%sExiting.\n", L_RMSxSTR);
     m_bExit = true;
     break;
   }
 
     case Licq::GeneralPlugin::PipeDisable:
     {
-    gLog.Info("%sDisabling.\n", L_RMSxSTR);
+    gLog.info("%sDisabling.\n", L_RMSxSTR);
     m_bEnabled = false;
     break;
   }
 
     case Licq::GeneralPlugin::PipeEnable:
     {
-    gLog.Info("%sEnabling.\n", L_RMSxSTR);
+    gLog.info("%sEnabling.\n", L_RMSxSTR);
     m_bEnabled = true;
     break;
   }
 
   default:
-    gLog.Warn("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
+    gLog.warning("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
   }
 }
 
@@ -474,7 +474,7 @@ CRMSClient::CRMSClient(Licq::TCPSocket* sin)
   sockman.AddSocket(&sock);
   sockman.DropSocket(&sock);
 
-  gLog.Info("%sClient connected from %s.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
+  gLog.info("%sClient connected from %s.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
   fs = fdopen(sock.Descriptor(), "r+");
   fprintf(fs, "Licq Remote Management Server v%s\n"
      "%d Enter your UIN:\n", LP_Version(), CODE_ENTERxUIN);
@@ -601,7 +601,7 @@ int CRMSClient::Activity()
 {
   if (!sock.RecvRaw())
   {
-    gLog.Info("%sClient %s disconnected.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
+    gLog.info("%sClient %s disconnected.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
     return -1;
   }
 
@@ -662,13 +662,13 @@ int CRMSClient::StateMachine()
       m_szCheckId = 0;
       if (!ok)
       {
-        gLog.Info("%sClient failed validation from %s.\n", L_RMSxSTR,
+        gLog.info("%sClient failed validation from %s.\n", L_RMSxSTR,
             sock.getRemoteIpString().c_str());
         fprintf(fs, "%d Invalid ID/Password.\n", CODE_INVALID);
         fflush(fs);
         return -1;
       }
-      gLog.Info("%sClient validated from %s.\n", L_RMSxSTR,
+      gLog.info("%sClient validated from %s.\n", L_RMSxSTR,
           sock.getRemoteIpString().c_str());
       fprintf(fs, "%d Hello %s.  Type HELP for assistance.\n", CODE_HELLO,
          o->getAlias().c_str());

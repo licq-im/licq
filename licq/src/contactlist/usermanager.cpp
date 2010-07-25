@@ -91,7 +91,7 @@ void UserManager::addOwner(const UserId& userId)
  *-------------------------------------------------------------------------*/
 bool UserManager::Load()
 {
-  gLog.Info(tr("%sUser configuration.\n"), L_INITxSTR);
+  gLog.info(tr("%sUser configuration.\n"), L_INITxSTR);
 
   // Load the group info from licq.conf
   Licq::IniFile licqConf("licq.conf");
@@ -193,7 +193,7 @@ bool UserManager::Load()
   unsigned nUsers;
   usersConf.setSection("users");
   usersConf.get("NumOfUsers", nUsers);
-  gLog.Info(tr("%sLoading %d users.\n"), L_INITxSTR, nUsers);
+  gLog.info(tr("%sLoading %d users.\n"), L_INITxSTR, nUsers);
 
   // TODO: We need to only load users of protocol plugins that are loaded!
   myUserListMutex.lockWrite();
@@ -204,7 +204,7 @@ bool UserManager::Load()
     sprintf(sUserKey, "User%d", i);
     if (!usersConf.get(sUserKey, userFile, ""))
     {
-      gLog.Warn(tr("%sSkipping user %i, empty key.\n"), L_WARNxSTR, i);
+      gLog.warning(tr("%sSkipping user %i, empty key.\n"), L_WARNxSTR, i);
       continue;
     }
     string filename = User::ConfigDir;
@@ -213,7 +213,7 @@ bool UserManager::Load()
     size_t sz = userFile.rfind('.');
     if (sz == string::npos)
     {
-      gLog.Error(tr("%sFatal error reading protocol information for User%d with ID '%s'.\n"
+      gLog.error(tr("%sFatal error reading protocol information for User%d with ID '%s'.\n"
           "%sPlease check \"%s/users.conf\".\n"), L_ERRORxSTR, i,
           userFile.c_str(), L_BLANKxSTR, gDaemon.baseDir().c_str());
       exit(1);
@@ -574,7 +574,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
   if (GetGroupFromName(name) != 0)
   {
     // Don't allow a duplicate name
-    gLog.Warn(tr("%sGroup %s is already in list.\n"), L_WARNxSTR, name.c_str());
+    gLog.warning(tr("%sGroup %s is already in list.\n"), L_WARNxSTR, name.c_str());
     return 0;
   }
 
@@ -603,7 +603,7 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
   if (icqGroupId == 0 && icqOnline)
     gIcqProtocol.icqAddGroup(name);
   else
-    gLog.Info(tr("%sAdded group %s (%u) to list from server.\n"),
+    gLog.info(tr("%sAdded group %s (%u) to list from server.\n"),
         L_SRVxSTR, name.c_str(), icqGroupId);
 
   // Send signal to let plugins know of the new group
@@ -726,14 +726,14 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
   if (foundGroupId != 0)
   {
     // Don't allow a duplicate name
-    gLog.Warn(tr("%sGroup name %s is already in list.\n"), L_WARNxSTR, name.c_str());
+    gLog.warning(tr("%sGroup name %s is already in list.\n"), L_WARNxSTR, name.c_str());
     return false;
   }
 
   Group* group = fetchGroup(groupId, true);
   if (group == NULL)
   {
-    gLog.Warn(tr("%sRenaming request for invalid group %u.\n"), L_WARNxSTR, groupId);
+    gLog.warning(tr("%sRenaming request for invalid group %u.\n"), L_WARNxSTR, groupId);
     return false;
   }
 

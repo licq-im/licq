@@ -106,7 +106,7 @@ bool COscarService::SendPacket(CPacket *p)
   Buffer *b = p->Finalize(s);
   if (!s->Send(b))
   {
-    gLog.Warn(tr("%sError sending event (FAM #%02X, Subtype #%02X, Sequence #%hu):\n%s%s.\n"),
+    gLog.warning(tr("%sError sending event (FAM #%02X, Subtype #%02X, Sequence #%hu):\n%s%s.\n"),
               L_WARNxSTR, (unsigned short)((p->SNAC() >> 16) & 0xffff), (unsigned short)(p->SNAC() & 0xffff),
         p->Sequence(), L_BLANKxSTR, s->errorStr().c_str());
     gSocketManager.DropSocket(s);
@@ -129,7 +129,7 @@ void COscarService::ClearQueue()
     mySendQueue.erase(iter);
     if (e != NULL)
     {
-      gLog.Info("Event #%hu is still on the service 0x%02X queue!\n", e->Sequence(), myFam);
+      gLog.info("Event #%hu is still on the service 0x%02X queue!\n", e->Sequence(), myFam);
       delete e;
     }
   }
@@ -167,7 +167,7 @@ bool COscarService::SendBARTFam(Licq::Event* e)
           return false;
         p = new CPU_RequestBuddyIcon(u->accountId().c_str(),
             u->buddyIconType(), u->buddyIconHashType(), u->buddyIconHash().c_str(), myFam);
-        gLog.Info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
+        gLog.info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
             L_SRVxSTR, u->GetAlias(), p->Sequence(), p->SubSequence());
       }
       e->AttachPacket(p);
@@ -175,7 +175,7 @@ bool COscarService::SendBARTFam(Licq::Event* e)
     }
     
     default:
-      gLog.Warn(tr("%sEvent with unsupported subtype (%02X) for FAM %02X failed.\n"),
+      gLog.warning(tr("%sEvent with unsupported subtype (%02X) for FAM %02X failed.\n"),
                 L_WARNxSTR, e->SubType(), myFam);
       return false;
   }
@@ -194,7 +194,7 @@ bool COscarService::ProcessPacket(Buffer& packet)
 
   if (startCode != 0x2a)
   {
-    gLog.Warn(tr("%sbad start code %d for packet in socket of service 0x%02X.\n"),
+    gLog.warning(tr("%sbad start code %d for packet in socket of service 0x%02X.\n"),
                L_WARNxSTR, startCode, myFam);
     return false;
   }
@@ -217,13 +217,13 @@ bool COscarService::ProcessPacket(Buffer& packet)
       break;
 
     case ICQ_CHNxCLOSE:
-      gLog.Info(tr("%sServer send us request for close service 0x%02X.\n"),
+      gLog.info(tr("%sServer send us request for close service 0x%02X.\n"),
                 L_SRVxSTR, myFam);
       return false;
       break;
 
     default:
-      gLog.Warn(tr("%sPacket from unhandled channel %02x for service 0x%02X.\n"),
+      gLog.warning(tr("%sPacket from unhandled channel %02x for service 0x%02X.\n"),
                 L_WARNxSTR, Channel, myFam);
       break;
   }
@@ -237,7 +237,7 @@ void COscarService::ProcessNewChannel(Buffer& packet)
   
   if (Version != 0x00000001)
   {
-    gLog.Warn(tr("%sPacket with wrong version (0x%08lx) from new channel for service 0x%02X.\n"),
+    gLog.warning(tr("%sPacket with wrong version (0x%08lx) from new channel for service 0x%02X.\n"),
               L_WARNxSTR, Version, myFam);
   }
 }
@@ -269,12 +269,12 @@ void COscarService::ProcessDataChannel(Buffer& packet)
       if (myFam == ICQ_SNACxFAM_BART)
         ProcessBARTFam(packet, SubType, RequestId);
       else
-        gLog.Warn(tr("%sUsupported family %04hx\n on data channel of service %02X.\n"),
+        gLog.warning(tr("%sUsupported family %04hx\n on data channel of service %02X.\n"),
                   L_WARNxSTR, Family, myFam);
       break;
 
     default:
-      gLog.Warn(tr("%sUnknown or usupported family %04hx\n on data channel of service %02X.\n"),
+      gLog.warning(tr("%sUnknown or usupported family %04hx\n on data channel of service %02X.\n"),
                 L_WARNxSTR, Family, myFam);
       break;
   }
@@ -293,31 +293,31 @@ void COscarService::ProcessServiceFam(Buffer& packet, unsigned short SubType,
       packet.readTLV();
       if (packet.getTLVLen(0x0008) == 2)
         suberr = packet.UnpackUnsignedShortTLV(0x0008);
-      gLog.Warn(tr("%sError #%02x.%02x in control FAM request (%ld) for service 0x%02X.\n"),
+      gLog.warning(tr("%sError #%02x.%02x in control FAM request (%ld) for service 0x%02X.\n"),
                 L_WARNxSTR, err, suberr, RequestId, myFam);
       break;
     }
 
     case ICQ_SNACxSUB_READYxSERVER:
-      gLog.Info(tr("%sServer says he's ready for service 0x%02X.\n"),
+      gLog.info(tr("%sServer says he's ready for service 0x%02X.\n"),
                 L_SRVxSTR, myFam);
       ChangeStatus(STATUS_SRV_READY_RECV);
       break;
 
     case ICQ_SNACxSRV_ACKxIMxICQ:
-      gLog.Info(tr("%sServer sent us channel capability list for service 0x%02X.\n"),
+      gLog.info(tr("%sServer sent us channel capability list for service 0x%02X.\n"),
                 L_SRVxSTR, myFam);
       ChangeStatus(STATUS_SRV_VER_RECV);
       break;
 
     case ICQ_SNACxSUB_RATE_INFO:
-      gLog.Info(tr("%sServer sent us rate-limits information for service 0x%02X.\n"),
+      gLog.info(tr("%sServer sent us rate-limits information for service 0x%02X.\n"),
                 L_SRVxSTR, myFam);
       ChangeStatus(STATUS_SRV_RATE_RECV);
       break;
 
     default:
-      gLog.Warn(tr("%sUnknown or unsupported service FAM subtype 0x%02X for service 0x%02X.\n"),
+      gLog.warning(tr("%sUnknown or unsupported service FAM subtype 0x%02X for service 0x%02X.\n"),
                 L_WARNxSTR, SubType, myFam);
       break;
   }
@@ -336,7 +336,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
       packet.readTLV();
       if (packet.getTLVLen(0x0008) == 2)
         suberr = packet.UnpackUnsignedShortTLV(0x0008);
-      gLog.Warn(tr("%sError #%02x.%02x in BART request (%ld) for service 0x%02X.\n"),
+      gLog.warning(tr("%sError #%02x.%02x in BART request (%ld) for service 0x%02X.\n"),
                     L_WARNxSTR, err, suberr, RequestId, myFam);
 
       Licq::Event* e = gIcqProtocol.DoneServerEvent(RequestId, Licq::Event::ResultError);
@@ -352,7 +352,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
       Licq::UserWriteGuard u(userId);
       if (!u.isLocked())
       {
-        gLog.Warn(tr("%sBuddy icon for unknown user (%s).\n"),
+        gLog.warning(tr("%sBuddy icon for unknown user (%s).\n"),
                   L_WARNxSTR, Id);
         delete [] Id;
         break;
@@ -379,14 +379,14 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
             packet.incDataPosRead(HashLength2); // Hash once more
             u->setOurBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
 
-            gLog.Info(tr("%sBuddy icon reply for %s.\n"), L_SRVxSTR, u->GetAlias());
+            gLog.info(tr("%sBuddy icon reply for %s.\n"), L_SRVxSTR, u->GetAlias());
             unsigned short IconLen = packet.UnpackUnsignedShortBE();
             if (IconLen > 0) // do not create empty .pic files
             {
               int FD = open(u->pictureFileName().c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
               if (FD == -1)
               {
-                gLog.Error(tr("%sUnable to open picture file (%s):\n%s%s.\n"),
+                gLog.error(tr("%sUnable to open picture file (%s):\n%s%s.\n"),
                     L_ERRORxSTR, u->pictureFileName().c_str(), L_BLANKxSTR, strerror(errno));
                 break;
               }
@@ -410,7 +410,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
           }
           else
           {
-            gLog.Warn(tr("%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or hashlength (%d).\n"),
+            gLog.warning(tr("%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or hashlength (%d).\n"),
                       L_WARNxSTR, u->GetAlias(), HashType, HashLength);
             Licq::Event* e = gIcqProtocol.DoneServerEvent(RequestId, Licq::Event::ResultFailed);
             if (e)
@@ -421,7 +421,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
 
         default:
         {
-          gLog.Warn(tr("%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"),
+          gLog.warning(tr("%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"),
                     L_WARNxSTR, u->GetAlias(), IconType);
           Licq::Event* e = gIcqProtocol.DoneServerEvent(RequestId, Licq::Event::ResultFailed);
           if (e)
@@ -444,7 +444,7 @@ bool COscarService::Initialize()
 
   if (!WaitForStatus(STATUS_SERVICE_REQ_ACKED))
   {
-    gLog.Warn(tr("%sGive up waiting for redirect reply while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sGive up waiting for redirect reply while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -452,7 +452,7 @@ bool COscarService::Initialize()
 
   ChangeStatus(STATUS_CONNECTED);
   Licq::SrvSocket* s = new Licq::SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
-  gLog.Info(tr("%sConnecting to separate server for service 0x%02X.\n"),
+  gLog.info(tr("%sConnecting to separate server for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (gLicqDaemon->GetProxy() == NULL)
   {
@@ -469,7 +469,7 @@ bool COscarService::Initialize()
   }
   if (!s->connectTo(string(myServer), myPort, myProxy))
   {
-    gLog.Warn(tr("%sCan't establish service 0x%02X socket.\n"),
+    gLog.warning(tr("%sCan't establish service 0x%02X socket.\n"),
                L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -481,11 +481,11 @@ bool COscarService::Initialize()
   gIcqProtocol.myNewSocketPipe.putChar('S');
 
   CPU_SendCookie *p1 = new CPU_SendCookie(myCookie.get(), myCookieLen, myFam);
-  gLog.Info(tr("%sSending cookie for service 0x%02X.\n"),
+  gLog.info(tr("%sSending cookie for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (!SendPacket(p1))
   {
-    gLog.Warn(tr("%sCan't send cookie while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sCan't send cookie while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -493,7 +493,7 @@ bool COscarService::Initialize()
 
   if (!WaitForStatus(STATUS_SRV_READY_RECV))
   {
-    gLog.Warn(tr("%sGive up waiting for server ready packet while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sGive up waiting for server ready packet while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -502,11 +502,11 @@ bool COscarService::Initialize()
   unsigned short VerArray[2][2] = {{ 0x0001, 0x0004 },	// Service FAM
                                    { 0x0010, 0x0001 }};	// BART	FAM
   CPU_ImICQ *p2 = new CPU_ImICQ(VerArray, 2, myFam);
-  gLog.Info(tr("%sSending our families versions for service 0x%02X.\n"),
+  gLog.info(tr("%sSending our families versions for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (!SendPacket(p2))
   {
-    gLog.Warn(tr("%sCan't send channel capability request while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sCan't send channel capability request while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -514,7 +514,7 @@ bool COscarService::Initialize()
   
   if (!WaitForStatus(STATUS_SRV_VER_RECV))
   {
-    gLog.Warn(tr("%sGive up waiting for channel capability list while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sGive up waiting for channel capability list while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -522,11 +522,11 @@ bool COscarService::Initialize()
 
   CPU_GenericFamily *p3 = new CPU_GenericFamily(ICQ_SNACxFAM_SERVICE,
                                                 ICQ_SNACxSUB_REQ_RATE_INFO, myFam);
-  gLog.Info(tr("%sSending request of rate-limits for service 0x%02X.\n"),
+  gLog.info(tr("%sSending request of rate-limits for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (!SendPacket(p3))
   {
-    gLog.Warn(tr("%sCan't send request for rate-limits while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sCan't send request for rate-limits while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -534,18 +534,18 @@ bool COscarService::Initialize()
 
   if (!WaitForStatus(STATUS_SRV_RATE_RECV))
   {
-    gLog.Warn(tr("%sGive up waiting for rate-limits while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sGive up waiting for rate-limits while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
   }
 
   CPU_RateAck *p4 = new CPU_RateAck(myFam);
-  gLog.Info(tr("%sSending ack for rate-limits for service 0x%02X.\n"),
+  gLog.info(tr("%sSending ack for rate-limits for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (!SendPacket(p4))
   {
-    gLog.Warn(tr("%sCan't send rate-limits ack while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sCan't send rate-limits ack while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -553,11 +553,11 @@ bool COscarService::Initialize()
   unsigned short VerArray2[2][4] = {{ 0x0001, 0x0004, 0x0110, 0x08e4 },  // Service FAM
                                     { 0x0010, 0x0001, 0x0110, 0x08e4 }}; // BART FAM
   CPU_ClientReady *p5 = new CPU_ClientReady(VerArray2, 2, myFam);
-  gLog.Info(tr("%sSending client ready for service 0x%02X.\n"),
+  gLog.info(tr("%sSending client ready for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (!SendPacket(p5))
   {
-    gLog.Warn(tr("%sCan't send client ready while initializing service 0x%02X.\n"),
+    gLog.warning(tr("%sCan't send client ready while initializing service 0x%02X.\n"),
               L_WARNxSTR, myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
     return false;
@@ -594,7 +594,7 @@ void *OscarServiceSendQueue_tep(void *p)
 
       if (gLicqDaemon->Status() != STATUS_ONLINE)
       {
-        gLog.Warn(tr("%sCan't send event for service 0x%02X because we are not online.\n"),
+        gLog.warning(tr("%sCan't send event for service 0x%02X because we are not online.\n"),
                   L_WARNxSTR, os->myFam);
         if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
           gIcqProtocol.ProcessDoneEvent(e);
@@ -607,10 +607,10 @@ void *OscarServiceSendQueue_tep(void *p)
       
       if (os->mySocketDesc == -1)
       {
-        gLog.Info(tr("%sInitializing socket for service 0x%02X.\n"), L_SRVxSTR, os->myFam);
+        gLog.info(tr("%sInitializing socket for service 0x%02X.\n"), L_SRVxSTR, os->myFam);
         if (!os->Initialize())
         {
-          gLog.Warn(tr("%sInitialization of socket for service 0x%02X failed, failing event\n"),
+          gLog.warning(tr("%sInitialization of socket for service 0x%02X failed, failing event\n"),
                     L_WARNxSTR, os->myFam);
           if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
             gIcqProtocol.ProcessDoneEvent(e);
@@ -630,7 +630,7 @@ void *OscarServiceSendQueue_tep(void *p)
           break;
 
         default:
-          gLog.Warn(tr("%sEvent for unknown or unsupported service 0x%02X failed.\n"),
+          gLog.warning(tr("%sEvent for unknown or unsupported service 0x%02X failed.\n"),
                     L_WARNxSTR, os->myFam);
           Sent = false;
           break;

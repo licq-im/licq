@@ -381,7 +381,7 @@ unsigned long ProtocolManager::secureChannelOpen(const UserId& userId)
     UserReadGuard user(userId);
     if (!user.isLocked())
     {
-      gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
+      gLog.warning(tr("%sCannot send secure channel request to user not on list (%s).\n"),
           L_WARNxSTR, userId.toString().c_str());
       return 0;
     }
@@ -389,7 +389,7 @@ unsigned long ProtocolManager::secureChannelOpen(const UserId& userId)
     // Check that the user doesn't already have a secure channel
     if (user->Secure())
     {
-      gLog.Warn(tr("%s%s (%s) already has a secure channel.\n"), L_WARNxSTR,
+      gLog.warning(tr("%s%s (%s) already has a secure channel.\n"), L_WARNxSTR,
           user->getAlias().c_str(), userId.toString().c_str());
       return 0;
     }
@@ -411,7 +411,7 @@ unsigned long ProtocolManager::secureChannelClose(const UserId& userId)
     UserReadGuard user(userId);
     if (!user.isLocked())
     {
-      gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
+      gLog.warning(tr("%sCannot send secure channel request to user not on list (%s).\n"),
           L_WARNxSTR, userId.toString().c_str());
       return 0;
     }
@@ -419,7 +419,7 @@ unsigned long ProtocolManager::secureChannelClose(const UserId& userId)
     // Check that the user have a secure channel to close
     if (!user->Secure())
     {
-      gLog.Warn(tr("%s%s (%s) does not have a secure channel.\n"), L_WARNxSTR,
+      gLog.warning(tr("%s%s (%s) does not have a secure channel.\n"), L_WARNxSTR,
           user->getAlias().c_str(), userId.toString().c_str());
       return 0;
     }

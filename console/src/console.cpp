@@ -242,7 +242,7 @@ CLicqConsole::~CLicqConsole()
  *-------------------------------------------------------------------------*/
 void CLicqConsole::Shutdown()
 {
-  gLog.Info("%sShutting down console.\n", L_CONSOLExSTR);
+  gLog.info("%sShutting down console.\n", L_CONSOLExSTR);
   Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
   gPluginManager.unregisterGeneralPlugin();
 }
@@ -351,7 +351,7 @@ int CLicqConsole::Run()
     {
       if (errno != EINTR)
       {
-        gLog.Error("Error in select(): %s.\n", strerror(errno));
+        gLog.error("Error in select(): %s.\n", strerror(errno));
         m_bExit = true;
       }
     }
@@ -516,7 +516,7 @@ void CLicqConsole::ProcessPipe()
 
     case Licq::GeneralPlugin::PipeShutdown:
     {
-      gLog.Info("%sExiting console.\n", L_CONSOLExSTR);
+      gLog.info("%sExiting console.\n", L_CONSOLExSTR);
       m_bExit = true;
       break;
     }
@@ -526,7 +526,7 @@ void CLicqConsole::ProcessPipe()
     break;
 
   default:
-    gLog.Warn("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
+    gLog.warning("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
   }
 }
 
@@ -581,7 +581,7 @@ void CLicqConsole::ProcessSignal(Licq::PluginSignal* s)
     //ignore for now
     break;
     default:
-      gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
+      gLog.warning("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
           L_WARNxSTR, s->signal());
       break;
   }
@@ -646,7 +646,7 @@ void CLicqConsole::ProcessEvent(Licq::Event* e)
     break;
 
   default:
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event SNAC received from daemon: 0x%08lX.\n",
+    gLog.warning("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event SNAC received from daemon: 0x%08lX.\n",
               L_WARNxSTR, e->SNAC());
     break;
   }
@@ -753,7 +753,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
   }
   if (win == NULL)
   {
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessDoneEvent(): Unknown event from daemon: %d.\n",
+    gLog.warning("%sInternal error: CLicqConsole::ProcessDoneEvent(): Unknown event from daemon: %d.\n",
               L_WARNxSTR, e->SubCommand());
     return;
   }
@@ -830,7 +830,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
 
           if( ea == NULL || ue == NULL)
           {
-            gLog.Error("%sInternal error: file request acknowledgement without extended result.\n", L_ERRORxSTR);
+            gLog.error("%sInternal error: file request acknowledgement without extended result.\n", L_ERRORxSTR);
             return;
           }
 
@@ -864,7 +864,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
               struct SExtendedAck *ea = e->m_sExtendedAck;
               if (ea == NULL || ue == NULL)
               {
-                gLog.Error("%sInternal error: ICQFunctions::doneFcn(): chat or file request acknowledgement without extended result.\n", L_ERRORxSTR);
+                gLog.error("%sInternal error: ICQFunctions::doneFcn(): chat or file request acknowledgement without extended result.\n", L_ERRORxSTR);
                 return;
               }
               if (!ea->bAccepted)
@@ -951,7 +951,7 @@ void CLicqConsole::ProcessDoneSearch(Licq::Event* e)
   }
   if (win == NULL)
   {
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
+    gLog.warning("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
               L_WARNxSTR, e->Command());
     return;
   }

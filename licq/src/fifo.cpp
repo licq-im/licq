@@ -62,11 +62,11 @@ using Licq::gUserManager;
 using namespace LicqDaemon;
 
 #define ReportMissingParams(cmdname) \
-  (gLog.Info("%s `%s': missing arguments. try `help %s'\n",  \
+  (gLog.info("%s `%s': missing arguments. try `help %s'\n",  \
   L_FIFOxSTR,cmdname,cmdname))
 
 #define ReportBadBuddy(cmdname,szUin) \
-  (gLog.Info("%s `%s': bad buddy string `%s'\n",L_FIFOxSTR,cmdname,szUin))
+  (gLog.info("%s `%s': bad buddy string `%s'\n",L_FIFOxSTR,cmdname,szUin))
 
 static const char L_FIFOxSTR[] = "[FIF] ";
 
@@ -320,7 +320,7 @@ static int fifo_status( int argc, const char *const *argv, void* /* data */)
   unsigned status;
   if (!Licq::User::stringToStatus(szStatus, status))
   {
-    gLog.Warn(tr("%s%s %s: command with invalid status \"%s\".\n"),
+    gLog.warning(tr("%s%s %s: command with invalid status \"%s\".\n"),
               L_WARNxSTR,L_FIFOxSTR,argv[0],szStatus);
     return -1;
   }
@@ -431,11 +431,11 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
       if (!number.empty())
         d->icqSendSms(userId, number, argv[2]);
       else
-        gLog.Error("%sUnable to send SMS to %s, no SMS number found.\n",
+        gLog.error("%sUnable to send SMS to %s, no SMS number found.\n",
             L_ERRORxSTR, szId);
     }
     else
-      gLog.Info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
+      gLog.info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
   }
   else
     ReportBadBuddy(argv[0], argv[1]);
@@ -471,11 +471,11 @@ static int fifo_redirect ( int argc, const char *const *argv, void* /* data */)
 
   if ( !Redirect(argv[1]) )
   {
-    gLog.Warn(tr("%s %s: redirection to \"%s\" failed: %s.\n"),
+    gLog.warning(tr("%s %s: redirection to \"%s\" failed: %s.\n"),
               L_WARNxSTR,argv[0], argv[1],strerror(errno));
   }
   else
-    gLog.Info(tr("%s %s: output redirected to \"%s\".\n"), L_INITxSTR, argv[0],
+    gLog.info(tr("%s %s: output redirected to \"%s\".\n"), L_INITxSTR, argv[0],
              argv[1]);
 
   return 0;
@@ -533,12 +533,12 @@ static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
   else if (!atoid(argv[1], true, &szId, &nPPID))
     ReportBadBuddy(argv[0],argv[1]);
   else if( nPPID != LICQ_PPID )
-     gLog.Info(tr("%s `%s': bad protocol. ICQ only allowed\n"), L_FIFOxSTR, argv[0]);
+     gLog.info(tr("%s `%s': bad protocol. ICQ only allowed\n"), L_FIFOxSTR, argv[0]);
   else
   {
     UserId userId(szId, nPPID);
     if (!gUserManager.userExists(userId))
-      gLog.Warn(tr("%s %s: user %s not on contact list, not retrieving "
+      gLog.warning(tr("%s %s: user %s not on contact list, not retrieving "
                 "info.\n"), L_WARNxSTR, argv[0], szId);
     else
     {
@@ -580,7 +580,7 @@ static int fifo_setpicture(int argc, const char* const* argv, void* /* data */)
 
     if (protocolId == 0)
     {
-      gLog.Info(tr("Couldn't find plugin '%s'"), argv[2]);
+      gLog.info(tr("Couldn't find plugin '%s'"), argv[2]);
       return -1;
     }
 
@@ -588,7 +588,7 @@ static int fifo_setpicture(int argc, const char* const* argv, void* /* data */)
       Licq::OwnerWriteGuard o(protocolId);
       if (!o.isLocked())
       {
-        gLog.Info(tr("No account registered for plugin '%s'"), argv[2]);
+        gLog.info(tr("No account registered for plugin '%s'"), argv[2]);
         return -1;
       }
       if (strlen(argv[1]) == 0)
@@ -685,7 +685,7 @@ static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void*
 
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    gLog.Info("[%3d] %s\n", plugin->getId(), plugin->getName());
+    gLog.info("[%3d] %s\n", plugin->getId(), plugin->getName());
   }
   return 0;
 }
@@ -701,7 +701,7 @@ static int fifo_plugin_load(int argc, const char* const* argv, void* /* data */)
   if (gPluginManager.startGeneralPlugin(argv[1], 0, NULL))
     return 0;
   
-  gLog.Info("Couldn't load plugin '%s'\n", argv[1]);
+  gLog.info("Couldn't load plugin '%s'\n", argv[1]);
   return -1;
 }
 
@@ -724,7 +724,7 @@ static int fifo_plugin_unload(int argc, const char* const* argv, void* /* data *
       return 0;
     }
   }
-  gLog.Info("Couldn't find plugin '%s'\n", argv[1]);
+  gLog.info("Couldn't find plugin '%s'\n", argv[1]);
   return -1;
 }
 
@@ -735,7 +735,7 @@ static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */,
 
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    gLog.Info("[%3d] %s\n", plugin->getId(), plugin->getName());
+    gLog.info("[%3d] %s\n", plugin->getId(), plugin->getName());
   }
   return 0;
 }
@@ -751,7 +751,7 @@ static int fifo_proto_plugin_load(int argc, const char* const* argv, void* /* da
   if (gPluginManager.startProtocolPlugin(argv[1]))
     return 0;
   
-  gLog.Info("Couldn't load protocol plugin '%s'\n", argv[1]);
+  gLog.info("Couldn't load protocol plugin '%s'\n", argv[1]);
   return -1;
 }
 
@@ -774,7 +774,7 @@ static int fifo_proto_plugin_unload(int argc, const char* const* argv, void* /* 
       return 0;
     }
   }
-  gLog.Info("Couldn't find protocol plugin '%s'\n", argv[1]);
+  gLog.info("Couldn't find protocol plugin '%s'\n", argv[1]);
   return -1;
 }
 
@@ -785,10 +785,10 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
 
   if( argc == 1 )
   {
-    gLog.Info(tr("%sFifo commands:\n"), L_FIFOxSTR);
+    gLog.info(tr("%sFifo commands:\n"), L_FIFOxSTR);
     for( i=0; table[i].fnc ; i++ )
-      gLog.Info("%s%s\n",L_BLANKxSTR,table[i].szName);
-    gLog.Info(tr("%s: Type `help command'\n"), L_FIFOxSTR);
+      gLog.info("%s%s\n",L_BLANKxSTR,table[i].szName);
+    gLog.info(tr("%s: Type `help command'\n"), L_FIFOxSTR);
   }
   else 
   {
@@ -800,7 +800,7 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
         j = 0;
         while (table[j].szName)
         {
-          gLog.Info(tr("%s %s: help for `%s'\n%s\n"),
+          gLog.info(tr("%s %s: help for `%s'\n%s\n"),
                     L_FIFOxSTR, argv[0], table[j].szName, table[j].szHelp);
           j++;
 	}
@@ -810,10 +810,10 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
         // show help for a specific command
         j = process_tok(table, argv[i]);
         if (j >= 0)
-          gLog.Info(tr("%s %s: help for `%s'\n%s\n"),
+          gLog.info(tr("%s %s: help for `%s'\n%s\n"),
                     L_FIFOxSTR, argv[0], argv[i], table[j].szHelp);
         else
-          gLog.Info(tr("%s %s: unknown command `%s'\n"),
+          gLog.info(tr("%s %s: unknown command `%s'\n"),
                     L_FIFOxSTR, argv[0], argv[i]);
       }
     }
@@ -946,17 +946,17 @@ void Fifo::initialize()
   string filename = gDaemon.baseDir() + "licq_fifo";
 
   // Open the fifo
-  gLog.Info(tr("%sOpening fifo.\n"), L_INITxSTR);
+  gLog.info(tr("%sOpening fifo.\n"), L_INITxSTR);
   fifo_fd = open(filename.c_str(), O_RDWR);
   if (fifo_fd == -1)
   {
     if (mkfifo(filename.c_str(), 00600) == -1)
-      gLog.Warn(tr("%sUnable to create fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+      gLog.warning(tr("%sUnable to create fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
     else
     {
       fifo_fd = open(filename.c_str(), O_RDWR);
       if (fifo_fd == -1)
-        gLog.Warn(tr("%sUnable to open fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+        gLog.warning(tr("%sUnable to open fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
     }
   }
   fifo_fs = NULL;
@@ -966,7 +966,7 @@ void Fifo::initialize()
     fstat(fifo_fd, &buf);
     if (!S_ISFIFO(buf.st_mode))
     {
-      gLog.Warn(tr("%s%s is not a FIFO, disabling fifo support.\n"), L_WARNxSTR, filename.c_str());
+      gLog.warning(tr("%s%s is not a FIFO, disabling fifo support.\n"), L_WARNxSTR, filename.c_str());
       close(fifo_fd);
       fifo_fd = -1;
     }
@@ -998,14 +998,14 @@ void Fifo::process(const string& buf)
   if( szBuf == NULL )
     return ;
 
-  gLog.Info(tr("%sReceived string: %s"), L_FIFOxSTR, szBuf);
+  gLog.info(tr("%sReceived string: %s"), L_FIFOxSTR, szBuf);
   line2argv(szBuf, argv, &argc, sizeof(argv) / sizeof(argv[0]) );
   index = process_tok(fifocmd_table,argv[0]);
 
   switch( index )
   {
     case CL_UNKNOWN:
-      gLog.Info(tr("%s: '%s' Unknown fifo command. Try 'help'\n"),
+      gLog.info(tr("%s: '%s' Unknown fifo command. Try 'help'\n"),
                 L_FIFOxSTR,argv[0]);
       break;
     case CL_NONE:

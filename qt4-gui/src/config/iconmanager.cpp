@@ -91,10 +91,10 @@ IconManager::IconManager(const QString& iconSet, const QString& extendedIconSet,
   : QObject(parent)
 {
   if (!loadIcons(iconSet))
-    Licq::gLog.Warn("Unable to load icons %s", iconSet.toLocal8Bit().data());
+    Licq::gLog.warning("Unable to load icons %s", iconSet.toLocal8Bit().data());
 
   if (!loadExtendedIcons(extendedIconSet))
-    Licq::gLog.Warn("Unable to load extended icons %s", extendedIconSet.toLocal8Bit().data());
+    Licq::gLog.warning("Unable to load extended icons %s", extendedIconSet.toLocal8Bit().data());
 }
 
 bool IconManager::loadIcons(const QString& iconSet)

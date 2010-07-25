@@ -102,7 +102,7 @@ bool Translator::setTranslationMap(const string& mapFileName)
           inputs+0, inputs+1, inputs+2, inputs+3,
           inputs+4, inputs+5, inputs+6, inputs+7) < 8)
     {
-      gLog.Error("%sSyntax error in translation file '%s'.\n",
+      gLog.error("%sSyntax error in translation file '%s'.\n",
           L_ERRORxSTR, mapFileName.c_str());
       setDefaultTranslationMap();
       fclose(mapFile);
@@ -125,7 +125,7 @@ bool Translator::setTranslationMap(const string& mapFileName)
   }
   else
   {
-    gLog.Error("%sTranslation file '%s' corrupted.\n",
+    gLog.error("%sTranslation file '%s' corrupted.\n",
         L_ERRORxSTR, mapFileName.c_str());
     setDefaultTranslationMap();
     return false;
@@ -387,7 +387,7 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
   if (tr == (iconv_t)(-1))
   {
     ok = false;
-    gLog.Warn("Unsupported encoding conversion from %s to %s.\n",
+    gLog.warning("Unsupported encoding conversion from %s to %s.\n",
         from.empty() ? "[LOCALE]" : from.c_str(),
         to.empty() ? "[LOCALE]" : to.c_str());
   }
@@ -403,7 +403,7 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
     if (ret == (size_t)(-1))
     {
       ok = false;
-      gLog.Warn("Unable to encode from %s to %s.\n",
+      gLog.warning("Unable to encode from %s to %s.\n",
           from.empty() ? "[LOCALE]" : from.c_str(),
           to.empty() ? "[LOCALE]" : to.c_str());
     }

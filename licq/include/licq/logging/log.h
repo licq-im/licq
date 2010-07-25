@@ -154,12 +154,6 @@ public:
   // Bring in the other variants
   using Log::log;
   using Log::packet;
-
-  // Old log functions, considered deprecated
-  inline void Info(const char* format, ...) LICQ_FORMAT(2, 3);
-  inline void Unknown(const char* format, ...) LICQ_FORMAT(2, 3);
-  inline void Error(const char* format, ...) LICQ_FORMAT(2, 3);
-  inline void Warn(const char* format, ...) LICQ_FORMAT(2, 3);
 };
 
 inline void ThreadLog::log(Level level, const std::string& msg)
@@ -171,38 +165,6 @@ inline void ThreadLog::packet(Level level, const uint8_t* data,
                               size_t size, const std::string& msg)
 {
   getLog()->packet(level, data, size, msg);
-}
-
-inline void ThreadLog::Info(const char* format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  Log::log(Log::Info, format, args);
-  va_end(args);
-}
-
-inline void ThreadLog::Unknown(const char* format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  Log::log(Log::Unknown, format, args);
-  va_end(args);
-}
-
-inline void ThreadLog::Error(const char* format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  Log::log(Log::Error, format, args);
-  va_end(args);
-}
-
-inline void ThreadLog::Warn(const char* format, ...)
-{
-  va_list args;
-  va_start(args, format);
-  Log::log(Log::Warning, format, args);
-  va_end(args);
 }
 
 /**

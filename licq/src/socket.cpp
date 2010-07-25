@@ -288,7 +288,7 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
   int s = getaddrinfo(remoteName.c_str(), NULL, &hints, &addrs);
   if(s != 0)
   {
-    gLog.Warn(tr("%sError when trying to resolve %s. getaddrinfo() returned %d\n."),
+    gLog.warning(tr("%sError when trying to resolve %s. getaddrinfo() returned %d\n."),
         L_WARNxSTR, remoteName.c_str(), s);
     return false;
   }
@@ -309,7 +309,7 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
     else if (remoteAddr->sa_family == AF_INET6)
       ((struct sockaddr_in6*)remoteAddr)->sin6_port = htons(remotePort);
 
-    gLog.Info(tr("%sConnecting to %s:%i...\n"), L_SRVxSTR,
+    gLog.info(tr("%sConnecting to %s:%i...\n"), L_SRVxSTR,
         addrToString(remoteAddr).c_str(), remotePort);
 
     // Create socket of the returned type
@@ -323,7 +323,7 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
     {
       close(sock);
       sock = -1;
-      gLog.Warn(tr("%sFailed to set port range for socket.\n"), L_WARNxSTR);
+      gLog.warning(tr("%sFailed to set port range for socket.\n"), L_WARNxSTR);
       continue;
     }
 #endif
@@ -572,7 +572,7 @@ bool SrvSocket::RecvPacket()
 {
   if (!myRecvBuffer.Empty())
   {
-    gLog.Error("%sInternal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
+    gLog.error("%sInternal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
         L_WARNxSTR, myRecvBuffer.getDataSize());
     return (true);
   }
@@ -589,7 +589,7 @@ bool SrvSocket::RecvPacket()
     if (nBytesReceived <= 0)
     {
       if (nBytesReceived == 0)
-        gLog.Warn(tr("server socket was closed!!!\n"));
+        gLog.warning(tr("server socket was closed!!!\n"));
       else {
         myErrorType = ErrorErrno;
         gLog.warning(tr("Error during receiving from server socket:\n%s"),
@@ -603,8 +603,8 @@ bool SrvSocket::RecvPacket()
 
   // now we start to verify the FLAP header
   if (buffer[0] != 0x2a) {
-    gLog.Warn("%sServer send bad packet start code: %d.\n", L_WARNxSTR, buffer[0]);
-    gLog.Warn("%sSixbyte: %02x %02x %02x %02x %02x %02x\n", L_WARNxSTR,
+    gLog.warning("%sServer send bad packet start code: %d.\n", L_WARNxSTR, buffer[0]);
+    gLog.warning("%sSixbyte: %02x %02x %02x %02x %02x %02x\n", L_WARNxSTR,
               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
     myErrorType = ErrorErrno;
     delete[] buffer;
@@ -619,7 +619,7 @@ bool SrvSocket::RecvPacket()
   // a large enough packet, if there is enough memory.  It is not a static
   // buffer like RecvRaw
   if (nLen >= MAX_RECV_SIZE) {
-    gLog.Warn("%sServer send bad packet with suspiciously large size: %d.\n", L_WARNxSTR, nLen);
+    gLog.warning("%sServer send bad packet with suspiciously large size: %d.\n", L_WARNxSTR, nLen);
     myErrorType = ErrorErrno;
     delete[] buffer;
     return false;
@@ -702,7 +702,7 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
   }
   else
   {
-    gLog.Error(tr("%sCannot accept new connection, too many descriptors in use.\n"), L_ERRORxSTR);
+    gLog.error(tr("%sCannot accept new connection, too many descriptors in use.\n"), L_ERRORxSTR);
     close(newDesc);
   }
 
@@ -776,7 +776,7 @@ bool TCPSocket::SendPacket(Buffer *b_in)
           ERR_clear_error();
           break;
         default:
-          gLog.Error("SSL_write error %d, SSL_%d", i, j);
+          gLog.error("SSL_write error %d, SSL_%d", i, j);
           break;
       }
     }
@@ -794,11 +794,11 @@ bool TCPSocket::SendPacket(Buffer *b_in)
       {
         case SSL_ERROR_SSL:
           err = ERR_get_error_line(&file, &line);
-          gLog.Error("SSL_write error = %lx, %s:%i", err, file, line);
+          gLog.error("SSL_write error = %lx, %s:%i", err, file, line);
           ERR_clear_error();
           break;
         default:
-          gLog.Error("SSL_write error %d, SSL_%d\n", i, j);
+          gLog.error("SSL_write error %d, SSL_%d\n", i, j);
           break;
       }
     }
@@ -865,7 +865,7 @@ bool TCPSocket::RecvPacket()
 {
   if (myRecvBuffer.Full())
   {
-    gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
+    gLog.warning("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
         L_WARNxSTR, myRecvBuffer.getDataSize());
     return (true);
   }
@@ -1109,11 +1109,11 @@ bool TCPSocket::SecureConnect()
     {
       case SSL_ERROR_SSL:
         err = ERR_get_error_line(&file, &line);
-        gLog.Warn("%sSSL_connect error = %lx, %s:%i\n", L_WARNxSTR, err, file, line);
+        gLog.warning("%sSSL_connect error = %lx, %s:%i\n", L_WARNxSTR, err, file, line);
         ERR_clear_error();
         break;
       default:
-        gLog.Warn("%sSSL_connect error %d, SSL_%d\n", L_WARNxSTR, i, j);
+        gLog.warning("%sSSL_connect error %d, SSL_%d\n", L_WARNxSTR, i, j);
         break;
     }
     return false;

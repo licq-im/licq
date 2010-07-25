@@ -1711,7 +1711,7 @@ void UserPages::Info::browsePicture()
     QString s = tr("Not Available");
     if (!p.load(Filename))
     {
-      Licq::gLog.Warn("Failed to load user picture, did you forget to compile GIF"
+      Licq::gLog.warning("Failed to load user picture, did you forget to compile GIF"
                       " support?");
       s = tr("Failed to Load");
     }

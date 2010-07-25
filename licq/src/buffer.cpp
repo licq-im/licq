@@ -415,7 +415,7 @@ char* Buffer::PackUnsignedLong(unsigned long data)
 {
   if ( getDataSize() + 4 > getDataMaxSize() )
   {
-    gLog.Warn(tr("%sPackUnsignedLong(): Trying to pack more data than "
+    gLog.warning(tr("%sPackUnsignedLong(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -428,7 +428,7 @@ char* Buffer::PackUnsignedLongBE(unsigned long data)
 {
   if (getDataSize() + 4 > getDataMaxSize() )
   {
-    gLog.Warn(tr("%sPackUnsignedLongBE(): Trying to pack more data than "
+    gLog.warning(tr("%sPackUnsignedLongBE(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -441,7 +441,7 @@ char* Buffer::PackChar(char data)
 {
   if (getDataSize() + 1 > getDataMaxSize())
   {
-    gLog.Warn(tr("%sPackChar(): Trying to pack more data than "
+    gLog.warning(tr("%sPackChar(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -454,7 +454,7 @@ char* Buffer::Pack(const char* data, int size)
 {
   if ( getDataSize() + size > getDataMaxSize() )
   {
-    gLog.Warn(tr("%sPack(): Trying to pack more data than "
+    gLog.warning(tr("%sPack(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -468,7 +468,7 @@ char* Buffer::Pack(Buffer* buf)
 {
   if ( getDataSize() + buf->getDataSize() > getDataMaxSize() )
   {
-    gLog.Warn(tr("%sPack(): Trying to pack more data than "
+    gLog.warning(tr("%sPack(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -494,7 +494,7 @@ char* Buffer::PackString(const char* data, unsigned short max)
   if (max > 0 && n > max) n = max;
   if ( getDataSize()  + n + 1 > getDataMaxSize() )
   {
-    gLog.Warn(tr("%sPackString(): Trying to pack more data than "
+    gLog.warning(tr("%sPackString(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -514,7 +514,7 @@ char* Buffer::PackUnsignedShort(unsigned short data)
 {
   if ( getDataSize() + 2 > getDataMaxSize() )
   {
-    gLog.Warn(tr("%sPackUnsignedShort(): Trying to pack more data than "
+    gLog.warning(tr("%sPackUnsignedShort(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -527,7 +527,7 @@ char* Buffer::PackUnsignedShortBE(unsigned short data)
 {
   if ( getDataSize() + 2 > getDataMaxSize() )
   {
-    gLog.Warn(tr("%sPackUnsignedShortBE(): Trying to pack more data than "
+    gLog.warning(tr("%sPackUnsignedShortBE(): Trying to pack more data than "
         "Licq::Buffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
@@ -581,7 +581,7 @@ bool Buffer::readTLV(int nCount, int nBytes)
 
     if (nBytes > 0 && nCurBytes > nBytes)
     {
-      gLog.Warn(tr("%sRead too much TLV data!\n"), L_WARNxSTR);
+      gLog.warning(tr("%sRead too much TLV data!\n"), L_WARNxSTR);
       return true;
     }
   }
@@ -589,7 +589,7 @@ bool Buffer::readTLV(int nCount, int nBytes)
   // Finish off the number of bytes we wanted
   if (nCurBytes < nBytes)
   { 
-    gLog.Warn(tr("%sUnable to read requested amount of TLV data!\n"), L_WARNxSTR);
+    gLog.warning(tr("%sUnable to read requested amount of TLV data!\n"), L_WARNxSTR);
     for (; nCurBytes < nBytes; nCurBytes++)
       UnpackChar();
   }

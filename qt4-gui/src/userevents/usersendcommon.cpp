@@ -918,7 +918,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
 
     default:
     {
-      Licq::gLog.Warn("Internal error: UserSendCommon::RetrySend()\n"
+      Licq::gLog.warning("Internal error: UserSendCommon::RetrySend()\n"
                       "Unknown sub-command %d", e->SubCommand());
       break;
     }

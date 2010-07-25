@@ -237,7 +237,7 @@ LicqGui::LicqGui(int& argc, char** argv) :
   QString locale = QLocale::system().name();
 #endif
   // Try to load a translation
-  gLog.Info("%sAttempting to load Qt4 and Licq Qt4-GUI translations for %s locale.\n",
+  gLog.info("%sAttempting to load Qt4 and Licq Qt4-GUI translations for %s locale.\n",
       L_INITxSTR, qPrintable(locale));
 
   QTranslator* qtTranslator = new QTranslator(this);
@@ -263,7 +263,7 @@ LicqGui::~LicqGui()
 
 void LicqGui::loadGuiConfig()
 {
-  gLog.Info("%s%s configuration.\n", L_INITxSTR, PLUGIN_NAME);
+  gLog.info("%s%s configuration.\n", L_INITxSTR, PLUGIN_NAME);
   Licq::IniFile guiConf(QTGUI_CONFIGFILE);
   if (!guiConf.loadFile())
   {
@@ -312,7 +312,7 @@ void LicqGui::loadGuiConfig()
 #endif
   Emoticons::self()->setBasedirs(emoticonsDirs);
   if (!Emoticons::self()->setTheme(Emoticons::translateThemeName(s.c_str())))
-    gLog.Error("%sLoading emoticons theme '%s'\n", L_ERRORxSTR, s.c_str());
+    gLog.error("%sLoading emoticons theme '%s'\n", L_ERRORxSTR, s.c_str());
 
   // Load skin
   if (mySkin.isEmpty())
@@ -491,7 +491,7 @@ int LicqGui::Run()
 
   gPluginManager.unregisterGeneralPlugin();
 
-  gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
+  gLog.info("%sShutting down gui.\n", L_ENDxSTR);
 
   return r;
 }
@@ -564,7 +564,7 @@ void LicqGui::grabKey(const QString& key)
 
   if (grabKeysym == 0)
   {
-    gLog.Error("%sUnknown popup key: %s\n", L_INITxSTR, key.toLatin1().data());
+    gLog.error("%sUnknown popup key: %s\n", L_INITxSTR, key.toLatin1().data());
     return;
   }
 
@@ -864,7 +864,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
       break;
 
     default:
-      gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
+      gLog.warning("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
   }
   if (e == NULL) return NULL;
 
@@ -1051,7 +1051,7 @@ void LicqGui::userDlgFinished(UserDlg* dialog)
   if (myUserDlgList.removeAll(dialog) > 0)
     return;
 
-  gLog.Warn("%sUser Info finished signal for user with no window (%s)!\n",
+  gLog.warning("%sUser Info finished signal for user with no window (%s)!\n",
       L_WARNxSTR, dialog->userId().toString().c_str());
 }
 
@@ -1557,7 +1557,7 @@ void LicqGui::autoAway()
       mit_info = XScreenSaverAllocInfo ();
     else
     {
-      gLog.Warn("%sNo XScreenSaver extension found on current XServer, disabling auto-away.\n",
+      gLog.warning("%sNo XScreenSaver extension found on current XServer, disabling auto-away.\n",
                 L_WARNxSTR);
       myAutoAwayTimer.stop();
       return;
@@ -1566,7 +1566,7 @@ void LicqGui::autoAway()
 
   if (!XScreenSaverQueryInfo(myMainWindow->x11Info().display(), QX11Info::appRootWindow(), mit_info))
   {
-    gLog.Warn("%sXScreenSaverQueryInfo failed, disabling auto-away.\n",
+    gLog.warning("%sXScreenSaverQueryInfo failed, disabling auto-away.\n",
               L_WARNxSTR);
     myAutoAwayTimer.stop();
     return;
@@ -1598,7 +1598,7 @@ void LicqGui::autoAway()
       // Check no one changed the status behind our back
       if (info.isAutoAway && info.setAutoAwayStatus != status)
       {
-        gLog.Warn("%sSomeone changed the status behind our back (%4x != %4x; Account: %s).\n",
+        gLog.warning("%sSomeone changed the status behind our back (%4x != %4x; Account: %s).\n",
             L_WARNxSTR, info.setAutoAwayStatus, status, userId.toString().c_str());
         info.isAutoAway = false;
         continue;
@@ -1669,7 +1669,7 @@ void LicqGui::autoAway()
         o->setAutoResponse(autoResponse.toLocal8Bit().data());
       }
 
-      //gLog.Info("%sAuto-away changing status to %u (from %u, PPID 0x%lx).\n",
+      //gLog.info("%sAuto-away changing status to %u (from %u, PPID 0x%lx).\n",
       //    L_SRVxSTR, wantedStatus, status, userId.protocolId());
 
       // Change status

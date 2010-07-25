@@ -141,7 +141,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       Licq::UserReadGuard u(userId);
       if (!u.isLocked())
       {
-        Licq::gLog.Warn("ContactList::listUpdated(): Invalid user received: %s",
+        Licq::gLog.warning("ContactList::listUpdated(): Invalid user received: %s",
             userId.toString().c_str());
         break;
       }
@@ -224,7 +224,7 @@ void ContactListModel::userUpdated(const Licq::UserId& userId, unsigned long sub
   ContactUserData* user = findUser(userId);
   if (user == NULL)
   {
-    Licq::gLog.Warn("ContactList::userUpdated(): Invalid user received: %s",
+    Licq::gLog.warning("ContactList::userUpdated(): Invalid user received: %s",
         userId.toString().c_str());
     return;
   }

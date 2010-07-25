@@ -901,7 +901,7 @@ void ChatDlg::slot_chat()
 
       default:
       {
-        Licq::gLog.Warn("Internal Error: invalid command from chat manager (%d)",
+        Licq::gLog.warning("Internal Error: invalid command from chat manager (%d)",
            e->Command());
         break;
       }

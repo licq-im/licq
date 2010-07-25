@@ -93,7 +93,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
           Licq::PluginSignal::ConvoJoin, userId, 0, SocketToCID(nSock)));
 
-      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
+      gLog.info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
     }
     else if (strCmd == "ANS")
     {
@@ -129,7 +129,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       }
       else if (strncmp(strType.c_str(), "text/plain", 10) == 0)
       {
-        gLog.Info("%sMessage from %s.\n", L_MSNxSTR, strUser.c_str());
+        gLog.info("%sMessage from %s.\n", L_MSNxSTR, strUser.c_str());
 
         bSkipPacket = false;  
         char szMsg[nSize + 1];
@@ -158,7 +158,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (command == "INVITE")
         {
           // Invitation for unknown application, tell inviter that we don't have it
-          gLog.Info("%sInvitation from %s for unknown application (%s).\n", L_MSNxSTR, strUser.c_str(), application.c_str());
+          gLog.info("%sInvitation from %s for unknown application (%s).\n", L_MSNxSTR, strUser.c_str(), application.c_str());
           pReply = new CPS_MSNCancelInvite(cookie, "REJECT_NOT_INSTALLED");
         }
       }
@@ -197,7 +197,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       }
       else
       {
-        gLog.Info("%sMessage from %s with unknown content type (%s).\n", L_MSNxSTR, strUser.c_str(), strType.c_str());
+        gLog.info("%sMessage from %s with unknown content type (%s).\n", L_MSNxSTR, strUser.c_str(), strType.c_str());
       }
     }
     else if (strCmd == "ACK")
@@ -272,7 +272,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     else if (strCmd == "JOI")
     {
       UserId userId(packet->GetParameter(), MSN_PPID);
-      gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
+      gLog.info("%s%s joined the conversation.\n", L_MSNxSTR, userId.toString().c_str());
 
       SStartMessage *pStart = 0;
       StartList::iterator it;
@@ -319,7 +319,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     {
       // closed the window and connection
       UserId userId(packet->GetParameter(), MSN_PPID);
-      gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, userId.toString().c_str());
+      gLog.info("%sConnection with %s closed.\n", L_MSNxSTR, userId.toString().c_str());
 
       Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
           Licq::PluginSignal::ConvoLeave, userId, 0, SocketToCID(nSock)));
@@ -361,7 +361,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       {
         if ((*it)->m_nSeq == nSeq)
         {
-          gLog.Error("%sUser not online.\n", L_ERRORxSTR);
+          gLog.error("%sUser not online.\n", L_ERRORxSTR);
           pStart = *it;
           pStart->m_pEvent->m_eResult = Licq::Event::ResultFailed;
           Licq::gDaemon.PushPluginEvent(pStart->m_pEvent);
@@ -373,7 +373,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     }
     else
     {
-      gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
+      gLog.warning("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
     }
   
     // Get the next packet
@@ -407,7 +407,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
   if (!sock->SendRaw(p->getBuffer()))
   {
-    gLog.Info("%sConnection with %s lost.\n", L_MSNxSTR, userId.toString().c_str());
+    gLog.info("%sConnection with %s lost.\n", L_MSNxSTR, userId.toString().c_str());
 
     Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
         Licq::PluginSignal::ConvoLeave, userId, 0, SocketToCID(nSock)));
@@ -449,7 +449,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   }
   else
   {
-    gLog.Info("%sConnecting to SB at %s failed, invalid address.\n", L_MSNxSTR,
+    gLog.info("%sConnecting to SB at %s failed, invalid address.\n", L_MSNxSTR,
         strServer.c_str());
     return false;
   }
@@ -473,11 +473,11 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   Licq::TCPSocket* sock = new Licq::TCPSocket(pStart->userId);
   pthread_mutex_unlock(&mutex_StartList);
 
-  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
+  gLog.info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
       host.c_str(), port);
   if (!sock->connectTo(host, port))
   {
-    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, host.c_str());
+    gLog.error("%sConnection to SB at %s failed.\n", L_MSNxSTR, host.c_str());
     delete sock;
     return false;
   }
@@ -520,17 +520,17 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   }
   else
   {
-    gLog.Info("%sConnecting to SB at %s failed, invalid address.\n", L_MSNxSTR,
+    gLog.info("%sConnecting to SB at %s failed, invalid address.\n", L_MSNxSTR,
         strServer.c_str());
     return false;
   }
 
   Licq::TCPSocket* sock = new Licq::TCPSocket(userId);
-  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
+  gLog.info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
       host.c_str(), port);
   if (!sock->connectTo(host, port))
   {
-    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, host.c_str());
+    gLog.error("%sConnection to SB at %s failed.\n", L_MSNxSTR, host.c_str());
     delete sock;
     return false;
   }

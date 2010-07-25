@@ -144,9 +144,9 @@ const char *LP_Description(void)
 void log(int mode, const char *message)
 {
     if (mode==0) // warn/info
-	gLog.Warn("%s%s\n", L_OSD_STR, message);
+	gLog.warning("%s%s\n", L_OSD_STR, message);
     if (mode==1) // error
-	gLog.Error("%s%s\n", L_ERRORxSTR, message);
+	gLog.error("%s%s\n", L_ERRORxSTR, message);
 }
 
 // issue a few warnings for wrong config values.
@@ -160,41 +160,41 @@ void verifyconfig(string pluginfont, unsigned long /* timeout */,
 {
     try {
 	if ((pluginfont=="") || (pluginfont.at(0)=='"') || (pluginfont.at(0)=='\''))
-	    gLog.Error("%sCONFIG: Invalid pluginfont %s. This will fail\n", L_ERRORxSTR, pluginfont.c_str());
+	    gLog.error("%sCONFIG: Invalid pluginfont %s. This will fail\n", L_ERRORxSTR, pluginfont.c_str());
 	if (hoffset>10000)
-	    gLog.Warn("%sCONFIG: Very high horizontal offset %lu. This might fail\n", L_OSD_STR, hoffset);
+	    gLog.warning("%sCONFIG: Very high horizontal offset %lu. This might fail\n", L_OSD_STR, hoffset);
 	if (voffset>10000)
-	    gLog.Warn("%sCONFIG: Very high vertical offset %lu. This might fail\n", L_OSD_STR, voffset);
+	    gLog.warning("%sCONFIG: Very high vertical offset %lu. This might fail\n", L_OSD_STR, voffset);
 	if ((vpos!="top") && (vpos!="bottom") && (vpos!="middle"))
-            gLog.Error("%sCONFIG: Invalid vertical position %s. Should be \"top\" or \"bottom\" or \"middle\". This will fail.\n", L_ERRORxSTR, vpos.c_str());
+            gLog.error("%sCONFIG: Invalid vertical position %s. Should be \"top\" or \"bottom\" or \"middle\". This will fail.\n", L_ERRORxSTR, vpos.c_str());
 	if ((hpos!="left") && (hpos!="right") && (hpos!="center"))
-	    gLog.Error("%sCONFIG: Invalid horizontal position %s. Should be \"left\" or \"right\" or \"center\". This will fail.\n", L_ERRORxSTR, hpos.c_str());
+	    gLog.error("%sCONFIG: Invalid horizontal position %s. Should be \"left\" or \"right\" or \"center\". This will fail.\n", L_ERRORxSTR, hpos.c_str());
 	if (lines>50)
-	    gLog.Error("%sCONFIG: More than 50 lines not allowed. You used %lu\n", L_ERRORxSTR, lines);
+	    gLog.error("%sCONFIG: More than 50 lines not allowed. You used %lu\n", L_ERRORxSTR, lines);
 	if (linelen>500)
-	    gLog.Error("%sCONFIG: More than 500 characters per line not allowed. You used %lu\n", L_ERRORxSTR, linelen);
+	    gLog.error("%sCONFIG: More than 500 characters per line not allowed. You used %lu\n", L_ERRORxSTR, linelen);
 	if (quiettimeout>500)
-	    gLog.Warn("%sCONFIG: Your quiettimeout %lu is higher than 500. Do you really want this ?\n", L_OSD_STR, quiettimeout);
+	    gLog.warning("%sCONFIG: Your quiettimeout %lu is higher than 500. Do you really want this ?\n", L_OSD_STR, quiettimeout);
 	if (colour=="")
-	    gLog.Error("%sCONFIG: Invalid colour %s. For possible values look at rgb.txt from your Xfree86 distribution\n", L_ERRORxSTR, colour.c_str());
+	    gLog.error("%sCONFIG: Invalid colour %s. For possible values look at rgb.txt from your Xfree86 distribution\n", L_ERRORxSTR, colour.c_str());
 	if (showmessages>4)
-            gLog.Error("%sCONFIG: Invalid value for showmessages %lu\n", L_ERRORxSTR, showmessages);
+            gLog.error("%sCONFIG: Invalid value for showmessages %lu\n", L_ERRORxSTR, showmessages);
 	if (showlogon>2)
-            gLog.Error("%sCONFIG: Invalid value for showlogon %lu\n", L_ERRORxSTR, showlogon);
+            gLog.error("%sCONFIG: Invalid value for showlogon %lu\n", L_ERRORxSTR, showlogon);
 	if (shadowoffset>200)
-            gLog.Warn("%sCONFIG: Very high Shadowoffset value %lu\n", L_OSD_STR, shadowoffset);
+            gLog.warning("%sCONFIG: Very high Shadowoffset value %lu\n", L_OSD_STR, shadowoffset);
 	if (outlineoffset>200)
-            gLog.Warn("%sCONFIG: Very high Outlineoffset value %lu\n", L_OSD_STR, outlineoffset);
+            gLog.warning("%sCONFIG: Very high Outlineoffset value %lu\n", L_OSD_STR, outlineoffset);
 	if (shadowcolour=="")
-	    gLog.Error("%sCONFIG: Invalid shadow colour %s. For possible values look at rgb.txt from your Xfree86 distribution\n", L_ERRORxSTR, shadowcolour.c_str());
+	    gLog.error("%sCONFIG: Invalid shadow colour %s. For possible values look at rgb.txt from your Xfree86 distribution\n", L_ERRORxSTR, shadowcolour.c_str());
 	if (outlinecolour=="")
-	    gLog.Error("%sCONFIG: Invalid outline colour %s. For possible values look at rgb.txt from your Xfree86 distribution\n", L_ERRORxSTR, outlinecolour.c_str());
+	    gLog.error("%sCONFIG: Invalid outline colour %s. For possible values look at rgb.txt from your Xfree86 distribution\n", L_ERRORxSTR, outlinecolour.c_str());
 	if (localencoding=="")
-	    gLog.Warn("%sLocalencoding could not be determined from your locale\n", L_OSD_STR);
+	    gLog.warning("%sLocalencoding could not be determined from your locale\n", L_OSD_STR);
     }
     catch (...)
     {
-	gLog.Error("%sCONFIG: Exception while verifying config values", L_OSD_STR);
+	gLog.error("%sCONFIG: Exception while verifying config values", L_OSD_STR);
     }
 }
 
@@ -225,7 +225,7 @@ bool LP_Init(int /* argc */, char** /* argv */)
   string showMsgsInModes;
     try {
 	Configured=false;
-	gLog.Info("%sOSD Plugin initializing\n", L_OSD_STR);
+	gLog.info("%sOSD Plugin initializing\n", L_OSD_STR);
 
     string filename = "licq_osd.conf";
     Licq::IniFile conf(filename);
@@ -239,12 +239,12 @@ bool LP_Init(int /* argc */, char** /* argv */)
 	    }
 	    else // configfile cannot be created
 	    {
-		gLog.Error("%sConfigfile can not be created. Check the permissions on %s\n", L_ERRORxSTR, filename.c_str());
+		gLog.error("%sConfigfile can not be created. Check the permissions on %s\n", L_ERRORxSTR, filename.c_str());
 		return 0;
 	    }
       if (!conf.loadFile()) // configfile cannot be read after creating it - this should not happen
       {
-		gLog.Error("%sConfigfile created but cannot be loaded. This should not happen.\n", L_ERRORxSTR);
+		gLog.error("%sConfigfile created but cannot be loaded. This should not happen.\n", L_ERRORxSTR);
 		return 0;
       }
     }
@@ -308,7 +308,7 @@ int LP_Main()
 
     if (nPipe==-1)
     {
-	gLog.Warn("%sInvalid Pipe received\n", L_ERRORxSTR);
+	gLog.warning("%sInvalid Pipe received\n", L_ERRORxSTR);
 	return 1;
     }
 
@@ -346,7 +346,7 @@ int LP_Main()
 	    // like send a message - we never do such a thing
       case Licq::GeneralPlugin::PipeEvent:
       {
-		gLog.Warn("%sEvent received - should not happen in this plugin\n", L_WARNxSTR);
+		gLog.warning("%sEvent received - should not happen in this plugin\n", L_WARNxSTR);
         Licq::Event* e = Licq::gDaemon.PopPluginEvent();
 		if (e)
 		{
@@ -360,20 +360,20 @@ int LP_Main()
       case Licq::GeneralPlugin::PipeShutdown:
       {
 		Exit = true;
-		gLog.Info("%sOSD Plugin shutting down\n", L_OSD_STR);
+		gLog.info("%sOSD Plugin shutting down\n", L_OSD_STR);
 		break;
 	    }
 
       case Licq::GeneralPlugin::PipeDisable:
 	    Enabled=false;
-	    gLog.Info("%sOSD Plugin disabled\n", L_OSD_STR);
+	    gLog.info("%sOSD Plugin disabled\n", L_OSD_STR);
 	    break;
       case Licq::GeneralPlugin::PipeEnable:
 	    Enabled=true;
-	    gLog.Info("%sOSD Plugin enabled\n", L_OSD_STR);
+	    gLog.info("%sOSD Plugin enabled\n", L_OSD_STR);
 	    break;
 	default:
-	    gLog.Warn("%sUnknown message type %d\n", L_WARNxSTR, buf[0]);
+	    gLog.warning("%sUnknown message type %d\n", L_WARNxSTR, buf[0]);
 	    //            cout << "Unknown message type !!! " << endl;
 	}
     }
@@ -490,14 +490,14 @@ void ProcessSignal(Licq::PluginSignal* s)
 
 			if (e == NULL) // event not found
 			{
-              gLog.Warn("%sEvent for user %s not found\n", L_WARNxSTR, s->userId().toString().c_str());
+              gLog.warning("%sEvent for user %s not found\n", L_WARNxSTR, s->userId().toString().c_str());
                             want_osd=false;
 			}
 		    }
 		}
 		else
 		{
-          gLog.Warn("%sUser %s not found\n", L_WARNxSTR, s->userId().toString().c_str());
+          gLog.warning("%sUser %s not found\n", L_WARNxSTR, s->userId().toString().c_str());
 		    want_osd=false;
 		}
 	    }
@@ -610,12 +610,12 @@ void ProcessSignal(Licq::PluginSignal* s)
 	}
 	break;
     case Licq::PluginSignal::SignalLogoff:
-	gLog.Info("%sOSD Plugin received logoff\n", L_OSD_STR);
+	gLog.info("%sOSD Plugin received logoff\n", L_OSD_STR);
 	disabletimer=time(0);
 	Online=false;
 	break;
     case Licq::PluginSignal::SignalLogon:
-	gLog.Info("%sOSD Plugin received logon\n", L_OSD_STR);
+	gLog.info("%sOSD Plugin received logon\n", L_OSD_STR);
 	disabletimer=time(0);
 	Online=true;
 	break;
@@ -624,7 +624,7 @@ void ProcessSignal(Licq::PluginSignal* s)
     case Licq::PluginSignal::SignalUiMessage:
       break;
     default: // shouldnt happen
-      gLog.Warn("%sUnknown signal %d\n", L_WARNxSTR, s->signal());
+      gLog.warning("%sUnknown signal %d\n", L_WARNxSTR, s->signal());
 	//        cout << "Unknown signal" << s->Signal() << endl;
 	break;
     }
@@ -743,13 +743,13 @@ string my_translate(const UserId& /* userId */, const string& msg, const char* u
     char *resptr;
 
     if (config.localencoding == "") {
-		gLog.Warn("%sDidn't get our local encoding\n", L_OSD_STR);
+		gLog.warning("%sDidn't get our local encoding\n", L_OSD_STR);
     return msg;
   }
 
     if ((userenc == 0) || (*userenc == 0))
 	{
-		gLog.Info("%sNo translation needs to be done\n", L_OSD_STR);
+		gLog.info("%sNo translation needs to be done\n", L_OSD_STR);
     return msg;
   }
     conv=iconv_open(config.localencoding.c_str(), get_iconv_encoding_name(userenc));
@@ -757,7 +757,7 @@ string my_translate(const UserId& /* userId */, const string& msg, const char* u
     // no translation possible?
     if (conv==(iconv_t)-1)
     {
-	gLog.Warn("%sError initializing iconv\n", L_OSD_STR);
+	gLog.warning("%sError initializing iconv\n", L_OSD_STR);
     return msg;
   }
 
@@ -783,7 +783,7 @@ string my_translate(const UserId& /* userId */, const string& msg, const char* u
 		tosize += fromsize + 4;
 		continue;
 	    }
-	    gLog.Warn("%sError in my_translate - stopping translation, error on %ld. char\n",
+	    gLog.warning("%sError in my_translate - stopping translation, error on %ld. char\n",
           L_OSD_STR, (long int)(msgptr - msg.c_str() + 1));
       free(result);
       return msg;

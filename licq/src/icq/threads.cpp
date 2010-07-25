@@ -32,7 +32,7 @@
 
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
-//#define DEBUG_THREADS(x) gLog.Info(x)
+//#define DEBUG_THREADS(x) gLog.info(x)
 
 using namespace std;
 using Licq::gLog;
@@ -184,7 +184,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
       if (e->m_pPacket->Channel() == ICQ_CHNxNEW)
       {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-        gLog.Info(tr("%sConnecting to login server.\n"), L_SRVxSTR);
+        gLog.info(tr("%sConnecting to login server.\n"), L_SRVxSTR);
 
         pthread_t *t = new pthread_t;
         int *s = new int;
@@ -208,7 +208,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
         if (e->m_nSocketDesc == -1)
         {
           pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-          gLog.Info(tr("%sConnecting to login server failed, failing event\n"),
+          gLog.info(tr("%sConnecting to login server failed, failing event\n"),
                     L_SRVxSTR);
           // we need to initialize the logon time for the next retry
           gIcqProtocol.m_tLogonTime = time(NULL);
@@ -232,7 +232,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
       else
       {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-        gLog.Info(tr("%sNot connected to server, failing event\n"), L_SRVxSTR);
+        gLog.info(tr("%sNot connected to server, failing event\n"), L_SRVxSTR);
       if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
       {
         gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultError);
@@ -257,7 +257,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
     s = gSocketManager.FetchSocket(socket);
     if (s == NULL)
     {
-      gLog.Warn(tr("%sSocket not connected or invalid (#%hu).\n"), L_WARNxSTR,
+      gLog.warning(tr("%sSocket not connected or invalid (#%hu).\n"), L_WARNxSTR,
                 nSequence);
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
     {
@@ -318,7 +318,7 @@ exit_server_thread:
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
+    gLog.warning(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
         nSequence, L_BLANKxSTR, errorStr.c_str());
 
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
@@ -518,7 +518,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned short nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn(tr("%sSocket %d does not exist (#%hu).\n"), L_WARNxSTR, socket,
+    gLog.warning(tr("%sSocket %d does not exist (#%hu).\n"), L_WARNxSTR, socket,
        nSequence);
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
       gIcqProtocol.ProcessDoneEvent(e);
@@ -569,7 +569,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned short nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.Warn(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
+    gLog.warning(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
         -nSequence, L_BLANKxSTR, errorStr.c_str());
     gIcqProtocol.myNewSocketPipe.putChar('S');
     // Kill the event, do after the above as ProcessDoneEvent erase the event
@@ -761,7 +761,7 @@ void *MonitorSockets_tep(void* /* p */)
         Licq::SrvSocket* srvTCP = dynamic_cast<Licq::SrvSocket*>(s);
               if (srvTCP == NULL)
               {
-              gLog.Warn(tr("%sInvalid server socket in set.\n"), L_WARNxSTR);
+              gLog.warning(tr("%sInvalid server socket in set.\n"), L_WARNxSTR);
               close(nCurrentSocket);
           continue;
         }
@@ -780,7 +780,7 @@ void *MonitorSockets_tep(void* /* p */)
               // if ping-thread is running already
           int nSD = gIcqProtocol.m_nTCPSrvSocketDesc;
           gIcqProtocol.m_nTCPSrvSocketDesc = -1;
-              gLog.Info("%sDropping server connection.\n", L_SRVxSTR);
+              gLog.info("%sDropping server connection.\n", L_SRVxSTR);
               gSocketManager.DropSocket(srvTCP);
               gSocketManager.CloseSocket(nSD);
               // we need to initialize the logon time for the next retry
@@ -799,7 +799,7 @@ void *MonitorSockets_tep(void* /* p */)
         Licq::SrvSocket* sock_svc = dynamic_cast<Licq::SrvSocket*>(s);
         if (sock_svc == NULL)
         {
-          gLog.Warn(tr("%sInvalid BART service socket in set.\n"), L_WARNxSTR);
+          gLog.warning(tr("%sInvalid BART service socket in set.\n"), L_WARNxSTR);
           close(nCurrentSocket);
           continue;
         }
@@ -810,7 +810,7 @@ void *MonitorSockets_tep(void* /* p */)
               gSocketManager.DropSocket(sock_svc);
               if (!svc->ProcessPacket(packet))
               {
-                gLog.Warn(tr("%sCan't process packet for service 0x%02X.\n"),
+                gLog.warning(tr("%sCan't process packet for service 0x%02X.\n"),
                           L_WARNxSTR, svc->GetFam());
                 svc->ResetSocket();
                 svc->ChangeStatus(STATUS_UNINITIALIZED);
@@ -819,7 +819,7 @@ void *MonitorSockets_tep(void* /* p */)
             }
             else
             {
-              gLog.Warn(tr("%sCan't receive packet for service 0x%02X.\n"),
+              gLog.warning(tr("%sCan't receive packet for service 0x%02X.\n"),
                         L_WARNxSTR, svc->GetFam());
               svc->ResetSocket();
               svc->ChangeStatus(STATUS_UNINITIALIZED);
@@ -836,7 +836,7 @@ void *MonitorSockets_tep(void* /* p */)
         Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(s);
             if (tcp == NULL)
             {
-              gLog.Warn(tr("%sInvalid server TCP socket in set.\n"), L_WARNxSTR);
+              gLog.warning(tr("%sInvalid server TCP socket in set.\n"), L_WARNxSTR);
               close(nCurrentSocket);
           continue;
         }
@@ -849,7 +849,7 @@ void *MonitorSockets_tep(void* /* p */)
               if (!ok || gSocketManager.Num() > MAX_CONNECTS)
               {
                 // Too many sockets, drop this one
-                gLog.Warn(tr("%sToo many connected sockets, rejecting connection from %s.\n"),
+                gLog.warning(tr("%sToo many connected sockets, rejecting connection from %s.\n"),
                     L_WARNxSTR, newSocket->getRemoteIpString().c_str());
                 delete newSocket;
               }
@@ -878,10 +878,10 @@ void *MonitorSockets_tep(void* /* p */)
             {
               int err = tcp->Error();
               if (err == 0)
-                gLog.Info(tr("%sConnection to %s was closed.\n"), L_TCPxSTR,
+                gLog.info(tr("%sConnection to %s was closed.\n"), L_TCPxSTR,
                 tcp->userId().toString().c_str());
               else
-                gLog.Info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
+                gLog.info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
                     tcp->userId().toString().c_str(), L_BLANKxSTR, tcp->errorStr().c_str());
           if (tcp->userId().isValid())
           {
@@ -918,7 +918,7 @@ void *MonitorSockets_tep(void* /* p */)
             // Kill the socket if there was a problem
             if (!r)
             {
-              gLog.Info(tr("%sClosing connection to %s.\n"), L_TCPxSTR,
+              gLog.info(tr("%sClosing connection to %s.\n"), L_TCPxSTR,
               tcp->userId().toString().c_str());
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
@@ -952,7 +952,7 @@ extern list<unsigned short> LP_Ids;
 void *Shutdown_tep(void* /* p */)
 {
   // Shutdown
-  gLog.Info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
+  gLog.info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
   LicqDaemon::gDaemon.shutdownPlugins();
@@ -1051,7 +1051,7 @@ void *UpdateUsers_tep(void *p)
               pUser->ClientInfoTimestamp() != pUser->OurClientInfoTimestamp() &&
               pUser->ClientInfoTimestamp() != 0)
           {
-            gLog.Info("Updating %s's info plugins.\n", pUser->GetAlias());
+            gLog.info("Updating %s's info plugins.\n", pUser->GetAlias());
             gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_QUERYxINFO);
             gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_PHONExBOOK);
             if (!bBART) // Send only if we didn't request BART already
@@ -1063,7 +1063,7 @@ void *UpdateUsers_tep(void *p)
              pUser->ClientStatusTimestamp() != pUser->OurClientStatusTimestamp()
               && pUser->ClientStatusTimestamp() != 0)
           {
-            gLog.Info("Updating %s's status plugins.\n", pUser->GetAlias());
+            gLog.info("Updating %s's status plugins.\n", pUser->GetAlias());
             gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_QUERYxSTATUS);
             gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_FILExSERVER);
             gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_FOLLOWxME);
