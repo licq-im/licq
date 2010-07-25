@@ -46,6 +46,7 @@ const unsigned short FT_STATE_SENDINGxFILE = 7;
 const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
 using namespace std;
+using Licq::Log;
 using Licq::gDaemon;
 using Licq::gLog;
 
@@ -527,8 +528,7 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x00)
       {
-        gLog.error("%sFile Transfer: Invalid client init packet:\n%s%s\n",
-            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
+        b.log(Log::Error, "File Transfer: Invalid client init packet");
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
@@ -581,8 +581,7 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x02)
       {
-        gLog.error("%sFile Transfer: Invalid file info packet:\n%s%s\n",
-            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
+        b.log(Log::Error, "File Transfer: Invalid file info packet");
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
@@ -713,8 +712,7 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x01)
       {
-        gLog.error("%sFile Transfer: Invalid server init packet:\n%s%s\n",
-            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
+        b.log(Log::Error, "File Transfer: Invalid server init packet");
         m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
@@ -760,8 +758,7 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd != 0x03)
       {
-        gLog.error("%sFile Transfer: Invalid start packet:\n%s%s\n",
-            L_ERRORxSTR, L_BLANKxSTR, b.toString().c_str());
+        b.log(Log::Error, "File Transfer: Invalid start packet");
         m_nResult = FT_ERRORxCLOSED;
         return false;
       }
@@ -801,8 +798,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
         break;
       }
-      gLog.unknown(tr("File Transfer: Unknown packet received during file send:\n%s"),
-          b.toString().c_str());
+      b.log(Log::Unknown, tr("File Transfer: Unknown packet received during file send"));
       break;
     }
 

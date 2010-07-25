@@ -20,6 +20,8 @@
 #ifndef LICQ_BUFFER_H
 #define LICQ_BUFFER_H
 
+#include "logging/log.h"
+
 #include <map>
 #include <string>
 
@@ -88,17 +90,12 @@ public:
    char *PackChar(char data);
   void Copy(Buffer*);
 
-  /**
-   * Get a printable string with packet data (for logging or debugging)
-   */
-  std::string toString() const;
-
    /**
     * Log the packet with the given message.
     */
-   void log(const char* format, ...)
+  void log(Log::Level level, const char* format, ...)
 #ifdef __GNUC__
-      __attribute__((format (printf, 2, 3)))
+      __attribute__((format (printf, 3, 4)))
 #endif
    ;
 

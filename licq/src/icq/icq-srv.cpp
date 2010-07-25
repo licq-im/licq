@@ -49,6 +49,7 @@
 #include "packet.h"
 
 using namespace std;
+using Licq::Log;
 using Licq::OnEventManager;
 using Licq::Owner;
 using Licq::StringList;
@@ -1737,9 +1738,8 @@ bool IcqProtocol::ProcessSrvPacket(CBuffer& packet)
 
   if (startCode != 0x2a)
   {
-    gLog.warning("%sProcessSrvPacket bad start code: %d.\n", L_WARNxSTR, startCode);
-    gLog.unknown(tr("Unknown server response:\n%s"),
-        packet.toString().c_str());
+    gLog.warning("ProcessSrvPacket bad start code: %d", startCode);
+    packet.log(Log::Unknown, tr("Unknown server response"));
     return false;
   }
 
@@ -1975,10 +1975,9 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     gLog.info("%sUIN: %lu Evil: %04hx\n", L_SRVxSTR, nUin, evil);
 
     if (!packet.readTLV(tlvBlocks)) {
-      gLog.unknown(tr("Unknown server response:\n%s"),
-            packet.toString().c_str());
-        break;
-      }
+      packet.log(Log::Unknown, tr("Unknown server response"));
+      break;
+    }
 
     // T(1) unknown
     // T(2) member since
@@ -2979,8 +2978,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             gLog.unknown(tr("Received SMS receipt indicating failure"));
             return;
           default:
-            gLog.unknown("Unknown SMS subtype (0x%04x):\n%s",
-                    nTypeSMS, packet.toString().c_str());
+            packet.log(Log::Unknown, "Unknown SMS subtype (0x%04x)", nTypeSMS);
             return;
         }
 
@@ -3046,14 +3044,13 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           break;
         }
         case ICQ_CMDxSUB_URL:
-            {
-              Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+        {
+          Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
           if (e == NULL)
           {
-                gLog.warning(tr("%sInvalid URL message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
-                break;
-              }
+            packet.log(Log::Warning, tr("Invalid URL message"));
+            break;
+          }
           szType = strdup(tr("URL"));
           onEventType = OnEventManager::OnEventUrl;
           eEvent = e;
@@ -3066,8 +3063,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid authorization request system message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
+            packet.log(Log::Warning, tr("Invalid authorization request system message"));
             delete [] szFields;
             break;
           }
@@ -3124,14 +3120,13 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         {
           gLog.info(tr("%sServer message.\n"), L_BLANKxSTR);
 
-              Licq::EventServerMessage* e = Licq::EventServerMessage::Parse(szMessage,
-            ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
+          Licq::EventServerMessage* e = Licq::EventServerMessage::Parse(szMessage,
+              ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
           if (e == NULL)
           {
-            gLog.warning(tr("%sInvalid Server Message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
-                break;
-              }
+            packet.log(Log::Warning, tr("Invalid Server Message"));
+            break;
+          }
           eEvent = e;
           break;
         }
@@ -3143,8 +3138,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid added to list system message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
+            packet.log(Log::Warning, tr("Invalid added to list system message"));
             delete [] szFields;
             break;
           }
@@ -3169,8 +3163,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid web panel system message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
+            packet.log(Log::Warning, tr("Invalid web panel system message"));
             delete [] szFields;
             break;
           }
@@ -3196,8 +3189,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid email pager system message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
+            packet.log(Log::Warning, tr("Invalid email pager system message"));
             delete [] szFields;
             break;
           }
@@ -3217,14 +3209,13 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
         case ICQ_CMDxSUB_CONTACTxLIST:
         {
-              Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
-            ICQ_CMDxRCV_SYSxMSGxONLINE,nTimeSent, nMask);
+          Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
+              ICQ_CMDxRCV_SYSxMSGxONLINE,nTimeSent, nMask);
           if (e == NULL)
           {
-            gLog.warning(tr("%sInvalid Contact List message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
-                break;
-              }
+            packet.log(Log::Warning, tr("Invalid Contact List message"));
+            break;
+          }
 
           szType = strdup(tr("Contacts"));
           onEventType = OnEventManager::OnEventMessage;
@@ -3232,34 +3223,33 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           break;
         }
         case ICQ_CMDxSUB_SMS:
-            {
-              Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
-            nTimeSent, nMask);
+        {
+          Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
+              nTimeSent, nMask);
           if (e == NULL)
           {
-            gLog.warning(tr("%sInvalid SMS message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
-                break;
-              }
+            packet.log(Log::Warning, tr("Invalid SMS message"));
+            break;
+          }
           eEvent = e;
           break;
         }
-            default:
-            {
-              char *szFE;
+        default:
+        {
+          char *szFE;
 
           while ((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
 
-          gLog.unknown(tr("Unknown system message (0x%04x):\n%s"),
-                  nTypeMsg, packet.toString().c_str());
+          packet.log(Log::Unknown, tr("Unknown system message (0x%04x)"),
+                     nTypeMsg);
           //TODO
-              Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                  userId, szMessage, nTimeSent, 0);
+          Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
+              userId, szMessage, nTimeSent, 0);
 
-              Licq::OwnerWriteGuard o(LICQ_PPID);
-              gDaemon.addUserEvent(*o, e);
-            }
-          }
+          Licq::OwnerWriteGuard o(LICQ_PPID);
+          gDaemon.addUserEvent(*o, e);
+        }
+      }
 
       if (eEvent)
 	switch(nTypeMsg)
@@ -3354,11 +3344,11 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
 
-        default:
-      gLog.unknown(tr("%sMessage through server with unknown format: %04hx\n%s\n"),
-              L_ERRORxSTR, mFormat, packet.toString().c_str());
-          break;
-      }
+      default:
+        packet.log(Log::Unknown, tr("Message through server with unknown format: %04hx"),
+                   mFormat);
+        break;
+    }
     delete [] szId;
     break;
   }
@@ -4179,18 +4169,16 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
     unsigned short nType, nId;
 
     if (!packet.readTLV()) {
-      gLog.unknown(tr("Unknown server response:\n%s"),
-            packet.toString().c_str());
-        break;
-      }
+      packet.log(Log::Unknown, tr("Unknown server response"));
+      break;
+    }
 
     CBuffer msg = packet.UnpackTLV(0x0001);
 
     if (msg.Empty()) {
-      gLog.unknown(tr("Unknown server response:\n%s"),
-            packet.toString().c_str());
-        break;
-      }
+      packet.log(Log::Unknown, tr("Unknown server response"));
+      break;
+    }
 
     msg.UnpackUnsignedShortBE(); // Length
     msg.UnpackUnsignedLong(); // own UIN
@@ -4246,16 +4234,15 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  break;
 	}
 	case ICQ_CMDxSUB_URL:
-            {
-              Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+        {
+          Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
 	  if (e == NULL)
 	  {
-	        gLog.warning(tr("%sInvalid offline URL message:\n%s\n"),
-                    L_WARNxSTR, packet.toString().c_str());
-	        break;
-	      }
+            packet.log(Log::Warning, tr("Invalid offline URL message"));
+            break;
+          }
 	  szType = strdup(tr("URL"));
-              onEventType = OnEventManager::OnEventUrl;
+          onEventType = OnEventManager::OnEventUrl;
 	  eEvent = e;
 	  break;
 	}
@@ -4267,8 +4254,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           
 	  if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid offline authorization request system message:\n%s\n"), L_WARNxSTR,
-	            packet.toString().c_str());
+            packet.log(Log::Warning,
+                       tr("Invalid offline authorization request system message"));
             delete [] szFields;
             break;
           }
@@ -4320,14 +4307,13 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	{
 	  gLog.info(tr("%sOffline server message.\n"), L_BLANKxSTR);
 
-              Licq::EventServerMessage* e = Licq::EventServerMessage::Parse(szMessage,
-                  ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
+          Licq::EventServerMessage* e = Licq::EventServerMessage::Parse(szMessage,
+              ICQ_CMDxSUB_MSGxSERVER, nTimeSent, nMask);
 	  if (e == NULL)
 	  {
-	        gLog.warning(tr("%sInvalid Server Message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
-	        break;
-	      }
+            packet.log(Log::Warning, tr("Invalid Server Message"));
+            break;
+          }
 	  eEvent = e;
 	  break;
 	}
@@ -4339,8 +4325,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           
 	  if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid offline added to list system message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
+            packet.log(Log::Warning, tr("Invalid offline added to list system message"));
             delete [] szFields;
             break;
           }
@@ -4365,8 +4350,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         
 	  if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid offline web panel system message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
+            packet.log(Log::Warning, tr("Invalid offline web panel system message"));
             delete [] szFields;
             break;
           }
@@ -4391,8 +4375,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         
 	  if (!ParseFE(szMessage, &szFields, 6))
           {
-            gLog.warning(tr("%sInvalid offline email pager system message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
+            packet.log(Log::Warning, tr("Invalid offline email pager system message"));
             delete [] szFields;
             break;
           }
@@ -4410,45 +4393,43 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  break;
 	}
 	case ICQ_CMDxSUB_CONTACTxLIST:
-            {
-              Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
-                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+        {
+          Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
+              ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
           if (e == NULL)
           {
-            gLog.warning(tr("%sInvalid offline Contact List message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
-                break;
-              }
+            packet.log(Log::Warning, tr("Invalid offline Contact List message"));
+            break;
+          }
 	  szType = strdup(tr("Contacts"));
-              onEventType = OnEventManager::OnEventMessage;
+          onEventType = OnEventManager::OnEventMessage;
 	  eEvent = e;
 	  break;
 	}
 	case ICQ_CMDxSUB_SMS:
-            {
-              Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+        {
+          Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
 	  if (e == NULL)
           {
-	        gLog.warning(tr("%sInvalid SMS message:\n%s\n"), L_WARNxSTR,
-                    packet.toString().c_str());
-	        break;
-	      }
+            packet.log(Log::Warning, tr("Invalid SMS message"));
+            break;
+          }
 	  eEvent = e;
 	  break;
 	}
-	    default:
-	    {
-              char* szFE;
+        default:
+        {
+          char* szFE;
 
 	  while ((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
 	  
-          gLog.unknown("Unknown offline system message (0x%04x):\n%s",
-                  nTypeMsg, packet.toString().c_str());
-              Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg,
-                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, userId, szMessage, nTimeSent, 0);
+          packet.log(Log::Unknown, "Unknown offline system message (0x%04x)",
+                     nTypeMsg);
+          Licq::EventUnknownSysMsg* e = new Licq::EventUnknownSysMsg(nTypeMsg,
+              ICQ_CMDxRCV_SYSxMSGxOFFLINE, userId, szMessage, nTimeSent, 0);
 
-              Licq::OwnerWriteGuard o(LICQ_PPID);
-              gDaemon.addUserEvent(*o, e);
+          Licq::OwnerWriteGuard o(LICQ_PPID);
+          gDaemon.addUserEvent(*o, e);
 	}
       }
 
@@ -4858,7 +4839,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                     if (!subject.empty())
                       gLog.info(tr("%sSubject: %s\n"), L_SRVxSTR, subject.c_str());
 
-                if (pEvent)
+                    if (pEvent)
                     {
                       pEvent->m_eResult = Licq::Event::ResultFailed;
                   ProcessDoneEvent(pEvent);
@@ -4866,8 +4847,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               }
                   else
                   {
-                gLog.info(tr("Unknown SMS response:\n%s"),
-                        packet.toString().c_str());
+                    packet.log(Log::Unknown, tr("Unknown SMS response"));
 
                 if (pEvent)
                     {
@@ -5451,8 +5431,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 break;
               }
             default:
-          gLog.unknown(tr("Unknown info: %04hx\n%s"),
-                  nSubtype, packet.toString().c_str());
+              packet.log(Log::Unknown, tr("Unknown info: %04hx"), nSubtype);
           }
 
         if (!multipart) {
@@ -5487,14 +5466,14 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
         default:
-      gLog.unknown("Unknown SNAC 15,03 response type: %04hx\n%s",
-              nType, packet.toString().c_str());
+          packet.log(Log::Unknown, "Unknown SNAC 15,03 response type: %04hx",
+                     nType);
       }
       break;
     }
     default:
-    gLog.unknown(tr("Unknown Various Family Subtype: %04hx\n%s"),
-          nSubtype, packet.toString().c_str());
+      packet.log(Log::Unknown, tr("Unknown Various Family Subtype: %04hx"),
+                 nSubtype);
   }
 }
 
@@ -5620,8 +5599,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       
       if (!packet.readTLV())
       {
-        gLog.unknown(tr("Unknown server response:\n%s"),
-            packet.toString().c_str());
+        packet.log(Log::Unknown, tr("Unknown server response"));
         break;
       }
 
@@ -5648,8 +5626,8 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
     }
 
     default:
-      gLog.unknown("Unknown New UIN Family Subtype: %04hx\n%s",
-          nSubtype, packet.toString().c_str());
+      packet.log(Log::Unknown, "Unknown New UIN Family Subtype: %04hx",
+                 nSubtype);
   }
 }
 

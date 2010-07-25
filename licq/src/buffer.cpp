@@ -788,17 +788,12 @@ TlvList Buffer::getTlvList()
   return myTLVs;
 }
 
-string Buffer::toString() const
-{
-  return packetToString((const unsigned char*)getDataStart(), getDataSize());
-}
-
-void Buffer::log(const char* format, ...)
+void Buffer::log(Log::Level level, const char* format, ...)
 {
   va_list args;
   va_start(args, format);
 
-  gLog.packet(Licq::Log::Debug,
+  gLog.packet(level,
               reinterpret_cast<const uint8_t*>(getDataStart()),
               getDataSize(),
               format, args);

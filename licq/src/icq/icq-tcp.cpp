@@ -45,6 +45,7 @@
 #include "packet.h"
 
 using namespace std;
+using Licq::Log;
 using Licq::OnEventManager;
 using Licq::StringList;
 using Licq::gLog;
@@ -1353,7 +1354,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     {
       if (!Decrypt_Client(&packet, 4))
       {
-        gLog.unknown("Invalid TCPv4 encryption:\n%s", packet.toString().c_str());
+        packet.log(Log::Unknown, "Invalid TCPv4 encryption");
         return false;
       }
       unsigned long nUin;
@@ -1376,7 +1377,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       userId = pSock->userId();
       if (!Decrypt_Client(&packet, 6))
       {
-        gLog.unknown("Invalid TCPv6 encryption:\n%s", packet.toString().c_str());
+        packet.log(Log::Unknown, "Invalid TCPv6 encryption");
         return false;
       }
       packet.UnpackUnsignedLong(); // Checksum
@@ -1397,7 +1398,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       userId = pSock->userId();
       if (!Decrypt_Client(&packet, nInVersion))
       {
-        gLog.unknown("Unknown TCPv%d packet:\n%s", nInVersion, packet.toString().c_str());
+        packet.log(Log::Unknown, "Unknown TCPv%d packet", nInVersion);
         break;
       }
 
@@ -1440,8 +1441,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   // Some simple validation of the packet
   if (!userId.isValid() || command == 0)
   {
-    gLog.unknown("Invalid TCP packet (uin: %s, cmd: %04x):\n%s",
-        userId.toString().c_str(), command, packet.toString().c_str());
+    packet.log(Log::Unknown, "Invalid TCP packet (uin: %s, cmd: %04x)",
+               userId.toString().c_str(), command);
     return false;
   }
 
@@ -1449,12 +1450,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   if (isOwner || userId != pSock->userId())
   {
     if (isOwner)
-      gLog.warning(tr("%sTCP message from self (probable spoof):\n%s\n"),
-          L_WARNxSTR, packet.toString().c_str());
+      packet.log(Log::Warning, tr("TCP message from self (probable spoof)"));
     else
-      gLog.warning(tr("%sTCP message from invalid UIN (%s, expect %s):\n%s\n"),
-          L_WARNxSTR, userId.toString().c_str(), pSock->userId().toString().c_str(),
-          packet.toString().c_str());
+      packet.log(Log::Warning, tr("TCP message from invalid UIN (%s, expect %s)"),
+                 userId.toString().c_str(), pSock->userId().toString().c_str());
     return false;
   }
 
@@ -1713,8 +1712,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           Licq::EventUrl* e = Licq::EventUrl::Parse(message, ICQ_CMDxTCP_START, Licq::EventUrl::TimeNow, nMask);
         if (e == NULL)
         {
-            gLog.warning(tr("%sInvalid URL message:\n%s\n"), L_WARNxSTR,
-                packet.toString().c_str());
+          packet.log(Log::Warning, tr("Invalid URL message"));
           errorOccured = true;
           break;
         }
@@ -1783,8 +1781,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           Licq::EventContactList* e = Licq::EventContactList::Parse(message, ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, nMask);
         if (e == NULL)
         {
-            gLog.warning(tr("%sInvalid contact list message:\n%s\n"),
-                L_WARNxSTR, packet.toString().c_str());
+          packet.log(Log::Warning, tr("Invalid contact list message"));
           errorOccured = true;
           break;
         }
@@ -2035,10 +2032,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                     Licq::EventUrl::TimeNow, nMask);
 					if (e == NULL)
 					{
-						gLog.warning(tr("%sInvalid URL message:\n%s\n"), L_WARNxSTR,
-                      packet.toString().c_str());
-						errorOccured = true;
-						break;
+                                          packet.log(Log::Warning, tr("Invalid URL message"));
+                                          errorOccured = true;
+                                          break;
 					}
 
 					if (bNewUser)
@@ -2064,10 +2060,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                     ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, nMask);
 					if (e == NULL)
 					{
-						gLog.warning(tr("%sInvalid contact list message:\n%s\n"), L_TCPxSTR,
-                      packet.toString().c_str());
-						errorOccured = true;
-						break;
+                                          packet.log(Log::Warning, tr("Invalid contact list message"));
+                                          errorOccured = true;
+                                          break;
 					}
 
 					if (bNewUser)
@@ -2209,9 +2204,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       }
 
         default:
-        gLog.unknown("Unknown TCP message type (%04x):\n%s",
-              newCommand, packet.toString().c_str());
-        errorOccured = true;
+          packet.log(Log::Unknown, "Unknown TCP message type (%04x)",
+                     newCommand);
+          errorOccured = true;
       }
       break;
     }
@@ -2519,9 +2514,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 #endif
 
         default:
-        gLog.unknown("Unknown TCP Ack subcommand (%04x):\n%s",
-              newCommand, packet.toString().c_str());
-        errorOccured = true;
+          packet.log(Log::Unknown, "Unknown TCP Ack subcommand (%04x)",
+                     newCommand);
+          errorOccured = true;
       }
 
     char l[32] = "";
@@ -2671,10 +2666,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     break;
 
     default:
-      gLog.unknown("Unknown TCP packet (command 0x%04x):\n%s",
-          command, packet.toString().c_str());
-    errorOccured = true;
-    break;
+      packet.log(Log::Unknown, "Unknown TCP packet (command 0x%04x)",
+                 command);
+      errorOccured = true;
+      break;
   }
   
   }
@@ -3658,8 +3653,7 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
     }
 
     default:
-      gLog.unknown("Unknown TCP handshake packet :\n%s",
-          b.toString().c_str());
+      b.log(Log::Unknown, "Unknown TCP handshake packet");
       return false;
   }
 

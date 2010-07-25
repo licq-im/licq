@@ -155,7 +155,7 @@ void Encrypt_Server(CBuffer* /* buffer */)
 #if ICQ_VERSION == 2
 // No encryption in V2
 #elif ICQ_VERSION == 4
-  buffer->log(tr("Unencrypted Packet:"));
+  buffer->log(Log::Debug, tr("Unencrypted Packet"));
 
   unsigned long nCheckSum = 0;
   unsigned long l = buffer->getDataSize();
@@ -210,7 +210,7 @@ void Encrypt_Server(CBuffer* /* buffer */)
     l = buffer->getDataSize();
   }
 
-  buffer->log(tr("Unencrypted Packet (%lu bytes):"), l);
+  buffer->log(Log::Debug, tr("Unencrypted Packet (%lu bytes)"), l);
 
   // Calculate checkcode
   unsigned long chk1 = ( buf[8] << 24) |
@@ -365,7 +365,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
       offset = 0;
   }
 
-  pkt->log(tr("Unencrypted (ICQ) TCP Packet (%lu bytes):"), size);
+  pkt->log(Licq::Log::Debug, tr("Unencrypted (ICQ) TCP Packet (%lu bytes)"), size);
 
   // Fuck AOL
   if (version > 6)
@@ -499,7 +499,7 @@ bool Decrypt_Client(CBuffer *pkt, unsigned long version)
     }
   }
 
-  pkt->log(tr("Decrypted (ICQ) TCP Packet (%lu bytes):"), size);
+  pkt->log(Licq::Log::Debug, tr("Decrypted (ICQ) TCP Packet (%lu bytes)"), size);
 
   return true;
 }

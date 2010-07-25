@@ -1313,8 +1313,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     }
     else // invalid parse or unknown event
     {
-      gLog.warning(tr("Invalid %s, see packet log for details"), szType);
-      packet.log(tr("Invalid %s:"), szType);
+      packet.log(Licq::Log::Warning, tr("Invalid %s"), szType);
     }
   }
 

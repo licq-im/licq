@@ -187,15 +187,15 @@ void INetSocket::DumpPacket(Buffer *b, bool isReceiver)
 {
   if (!isReceiver)
   {
-    b->log("Packet (%sv%lu, %lu bytes) sent:\n(%s:%d -> %s:%d)",
-        myLogId.c_str(), Version(), b->getDataSize(),
+    b->log(Log::Debug, "Packet (%sv%lu, %lu bytes) sent:\n(%s:%d -> %s:%d)",
+           myLogId.c_str(), Version(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
   }
   else
   {
-    b->log("Packet (%sv%lu, %lu bytes) received:\n(%s:%d <- %s:%d)",
-        myLogId.c_str(), Version(), b->getDataSize(),
+    b->log(Log::Debug, "Packet (%sv%lu, %lu bytes) received:\n(%s:%d <- %s:%d)",
+           myLogId.c_str(), Version(), b->getDataSize(),
            getLocalIpString().c_str(), getLocalPort(),
            getRemoteIpString().c_str(), getRemotePort());
   }
