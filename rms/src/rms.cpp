@@ -39,8 +39,6 @@ extern "C" { const char *LP_Version(); }
 
 CLicqRMS *licqRMS = NULL;
 
-const char L_RMSxSTR[]  = "[RMS] ";
-
 // 100 - information
 const unsigned short CODE_QUIT = 100;
 const unsigned short CODE_HELP = 101;
@@ -184,7 +182,7 @@ CLicqRMS::~CLicqRMS()
  *-------------------------------------------------------------------------*/
 void CLicqRMS::Shutdown()
 {
-  gLog.info("%sShutting down remote manager server.\n", L_RMSxSTR);
+  gLog.info("Shutting down remote manager server");
 
   if (myLogSink)
     Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
@@ -222,12 +220,12 @@ int CLicqRMS::Run()
     if (!server->StartServer(nPort))
     {
       gLog.error("Could not start server on port %u, "
-                 "maybe this port is already in use?\n", nPort);
+                 "maybe this port is already in use?", nPort);
       return 1;
     };
   }
 
-  gLog.info("%sRMS server started on port %d.\n", L_RMSxSTR, server->getLocalPort());
+  gLog.info("RMS server started on port %d", server->getLocalPort());
   CRMSClient::sockman.AddSocket(server);
   CRMSClient::sockman.DropSocket(server);
 
@@ -254,7 +252,7 @@ int CLicqRMS::Run()
     nResult = select(l, &f, NULL, NULL, NULL);
     if (nResult == -1)
     {
-      gLog.error("%sError in select(): %s\n", L_ERRORxSTR, strerror(errno));
+      gLog.error("Error in select(): %s", strerror(errno));
       m_bExit = true;
     }
     else
@@ -305,48 +303,46 @@ int CLicqRMS::Run()
  *-------------------------------------------------------------------------*/
 void CLicqRMS::ProcessPipe()
 {
-  char buf[16];
-  read(m_nPipe, buf, 1);
-  switch (buf[0])
+  char buf;
+  read(m_nPipe, &buf, 1);
+  switch (buf)
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
       Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
-    if (m_bEnabled) ProcessSignal(s);
-    break;
-  }
+      if (m_bEnabled)
+        ProcessSignal(s);
+      delete s;
+      break;
+    }
 
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
       Licq::Event* e = Licq::gDaemon.PopPluginEvent();
-    if (m_bEnabled) ProcessEvent(e);
-    break;
-  }
+      if (m_bEnabled)
+        ProcessEvent(e);
+      delete e;
+      break;
+    }
 
     case Licq::GeneralPlugin::PipeShutdown:
-    {
-    gLog.info("%sExiting.\n", L_RMSxSTR);
-    m_bExit = true;
-    break;
-  }
+      gLog.info("Exiting");
+      m_bExit = true;
+      break;
 
     case Licq::GeneralPlugin::PipeDisable:
-    {
-    gLog.info("%sDisabling.\n", L_RMSxSTR);
-    m_bEnabled = false;
-    break;
-  }
+      gLog.info("Disabling");
+      m_bEnabled = false;
+      break;
 
     case Licq::GeneralPlugin::PipeEnable:
-    {
-    gLog.info("%sEnabling.\n", L_RMSxSTR);
-    m_bEnabled = true;
-    break;
-  }
+      gLog.info("Enabling");
+      m_bEnabled = true;
+      break;
 
-  default:
-    gLog.warning("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
+    default:
+      gLog.warning("Unknown notification type from daemon: %c", buf);
   }
 }
 
@@ -431,7 +427,6 @@ void CLicqRMS::ProcessSignal(Licq::PluginSignal* s)
     break;
     
   }
-  delete s;
 }
 
 /*---------------------------------------------------------------------------
@@ -444,8 +439,6 @@ void CLicqRMS::ProcessEvent(Licq::Event* e)
   {
     if ((*iter)->ProcessEvent(e)) break;
   }
-
-  delete e;
 }
 
 
@@ -474,7 +467,7 @@ CRMSClient::CRMSClient(Licq::TCPSocket* sin)
   sockman.AddSocket(&sock);
   sockman.DropSocket(&sock);
 
-  gLog.info("%sClient connected from %s.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
+  gLog.info("Client connected from %s", sock.getRemoteIpString().c_str());
   fs = fdopen(sock.Descriptor(), "r+");
   fprintf(fs, "Licq Remote Management Server v%s\n"
      "%d Enter your UIN:\n", LP_Version(), CODE_ENTERxUIN);
@@ -601,7 +594,7 @@ int CRMSClient::Activity()
 {
   if (!sock.RecvRaw())
   {
-    gLog.info("%sClient %s disconnected.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
+    gLog.info("Client %s disconnected", sock.getRemoteIpString().c_str());
     return -1;
   }
 
@@ -662,13 +655,13 @@ int CRMSClient::StateMachine()
       m_szCheckId = 0;
       if (!ok)
       {
-        gLog.info("%sClient failed validation from %s.\n", L_RMSxSTR,
+        gLog.info("Client failed validation from %s",
             sock.getRemoteIpString().c_str());
         fprintf(fs, "%d Invalid ID/Password.\n", CODE_INVALID);
         fflush(fs);
         return -1;
       }
-      gLog.info("%sClient validated from %s.\n", L_RMSxSTR,
+      gLog.info("Client validated from %s",
           sock.getRemoteIpString().c_str());
       fprintf(fs, "%d Hello %s.  Type HELP for assistance.\n", CODE_HELLO,
          o->getAlias().c_str());
