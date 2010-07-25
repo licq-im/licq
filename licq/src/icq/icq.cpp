@@ -23,7 +23,8 @@
 #include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
-#include <licq_log.h>
+#include <licq/log.h>
+#include <licq/logservice.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
@@ -33,6 +34,7 @@
 
 #include "../daemon.h"
 #include "../gettext.h"
+#include "../logging/filelogsink.h"
 #include "../support.h"
 #include "oscarservice.h"
 #include "packet.h"
@@ -108,20 +110,21 @@ void IcqProtocol::initialize()
   Licq::Color::setDefaultBackground(nColor);
 
   // Error log file
+  // TODO: Move this to the daemon
   licqConf.get("Errors", myErrorFile, "log.errors");
-  licqConf.get("ErrorTypes", myErrorTypes, L_ERROR | L_UNKNOWN);
+  licqConf.get("ErrorTypes", myErrorTypes, 0x4 | 0x2); // error and unknown
   if (myErrorFile != "none")
   {
     string errorFile = Licq::gDaemon.baseDir() + myErrorFile;
-    CLogService_File *l = new CLogService_File(myErrorTypes);
-    if (!l->SetLogFile(errorFile.c_str(), "a"))
-    {
-      gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
-          L_ERRORxSTR, errorFile.c_str(), L_BLANKxSTR, strerror(errno));
-      delete l;
-    }
+    boost::shared_ptr<LicqDaemon::FileLogSink> logSink(
+        new LicqDaemon::FileLogSink(errorFile));
+    logSink->setLogLevelsFromBitmask(
+        Licq::convertOldLogLevelBitmaskToNew(myErrorTypes));
+    if (logSink->isOpen())
+      gDaemon.getLogService().registerLogSink(logSink);
     else
-      gOldLog.AddService(l);
+      gLog.error("Unable to open %s as error log:\n%s",
+                 errorFile.c_str(), strerror(errno));
   }
 
   // Proxy
