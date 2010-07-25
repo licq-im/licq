@@ -30,7 +30,6 @@ set(licq_SRCS
   gpghelper.cpp
   hebrev.c
   licq.cpp
-  log.cpp
   main.cpp
   md5.cpp
   oneventmanager.cpp
