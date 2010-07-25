@@ -18,6 +18,7 @@
 
 #include <cctype>
 #include <cstdio>
+#include <cstring>
 #include <list>
 #include <pthread.h>
 #include <sys/select.h>
