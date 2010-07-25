@@ -11,7 +11,6 @@
 #include <cerrno>
 
 #include "console.h"
-#include <licq_log.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -23,6 +22,8 @@
 #include <licq/icqdefines.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/inifile.h>
+#include <licq/logservice.h>
+#include <licq/logutils.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -36,6 +37,7 @@
 
 using namespace std;
 using Licq::User;
+using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 
@@ -241,7 +243,7 @@ CLicqConsole::~CLicqConsole()
 void CLicqConsole::Shutdown()
 {
   gLog.Info("%sShutting down console.\n", L_CONSOLExSTR);
-  gOldLog.ModifyService(S_PLUGIN, 0);
+  Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
   gPluginManager.unregisterGeneralPlugin();
 }
 
@@ -282,12 +284,19 @@ int CLicqConsole::Run()
   winBar->SetActive(true);
   winUsers->SetActive(true);
 
-  log = new CPluginLog;
-  unsigned long lt = L_MOST;
-  if (gOldLog.ServiceLogTypes(S_STDERR) & L_PACKET)
-    lt |= L_PACKET;
-  gOldLog.AddService(new CLogService_Plugin(log, lt));
-  gOldLog.ModifyService(S_STDERR, L_NONE);
+  Licq::LogService& logService = Licq::gDaemon.getLogService();
+
+  myLogSink.reset(new Licq::PluginLogSink);
+  myLogSink->setLogLevelsFromBitmask(
+      logService.getDefaultLogSink()->getLogLevelsBitmask());
+  myLogSink->setLogLevel(Licq::Log::Unknown, true);
+  myLogSink->setLogLevel(Licq::Log::Info, true);
+  myLogSink->setLogLevel(Licq::Log::Warning, true);
+  myLogSink->setLogLevel(Licq::Log::Error, true);
+  logService.registerLogSink(myLogSink);
+
+  // Disable default log sink to stop it from messing with the console
+  logService.getDefaultLogSink()->setLogLevelsFromBitmask(0);
 
   winMain = winCon[1];
   winLog = winCon[0];
@@ -321,20 +330,23 @@ int CLicqConsole::Run()
   {
     FD_ZERO(&fdSet);
     FD_SET(STDIN_FILENO, &fdSet);
-    FD_SET(m_nPipe, &fdSet);
-    FD_SET(log->Pipe(), &fdSet);
+    int maxFd = STDIN_FILENO;
 
-    int nNumDesc = log->Pipe() + 1;
+    FD_SET(m_nPipe, &fdSet);
+    maxFd = std::max(maxFd, m_nPipe);
+
+    FD_SET(myLogSink->getReadPipe(), &fdSet);
+    maxFd = std::max(maxFd, myLogSink->getReadPipe());
 
     // Check to see if we want to add in the file xfer manager..
     list<CFileTransferManager *>::iterator iter;
     for (iter = m_lFileStat.begin(); iter != m_lFileStat.end(); iter++)
     {
       FD_SET((*iter)->Pipe(), &fdSet);
-      nNumDesc += (*iter)->Pipe();
+      maxFd = std::max(maxFd, (*iter)->Pipe());
     }
 
-    nResult = select(nNumDesc, &fdSet, NULL, NULL, NULL);
+    nResult = select(maxFd + 1, &fdSet, NULL, NULL, NULL);
     if (nResult == -1)
     {
       if (errno != EINTR)
@@ -355,7 +367,7 @@ int CLicqConsole::Run()
         ProcessPipe();
         continue;
       }
-      else if (FD_ISSET(log->Pipe(), &fdSet))
+      else if (FD_ISSET(myLogSink->getReadPipe(), &fdSet))
       {
         ProcessLog();
         continue;
@@ -432,40 +444,50 @@ void CLicqConsole::DoneOptions()
  *-------------------------------------------------------------------------*/
 void CLicqConsole::ProcessLog()
 {
-  static char buf[2];
-  read(log->Pipe(), buf, 1);
+  Licq::LogSink::Message::Ptr message = myLogSink->popMessage();
 
   short cp;
-  switch (log->NextLogType())
+  switch (message->level)
   {
-  case L_WARN:
+  case Licq::Log::Warning:
     cp = COLOR_YELLOW;
     break;
-  case L_ERROR:
+  case Licq::Log::Error:
     cp = COLOR_RED;
     break;
-  case L_PACKET:
-    cp = COLOR_BLUE;
-    break;
-  case L_UNKNOWN:
+  case Licq::Log::Unknown:
     cp = COLOR_MAGENTA;
     break;
-  case L_INFO:
   default:
     cp = COLOR_WHITE;
     break;
   }
-  char *p = log->NextLogMsg();
-  char *l = &p[LOG_PREFIX_OFFSET];
-  p[LOG_PREFIX_OFFSET - 1] = '\0';
-  winLog->wprintf("%C%s %C%s", COLOR_GREEN, p, cp, l);
-  if (log->NextLogType() == L_ERROR)
+
+  using namespace Licq::LogUtils;
+  const char* level = levelToShortString(message->level);
+  std::string time = timeToString(message->time);
+
+  CWindow* wins[2] = { winLog, NULL };
+  if (message->level == Licq::Log::Error)
+    wins[1] = winMain;
+
+  size_t pos = message->text.find_last_not_of('\n');
+  pos = (pos == std::string::npos ? 0 : pos + 1);
+  std::string text = message->text.substr(0, pos);
+
+  for (size_t i = 0; i < 2 && wins[i] != NULL; ++i)
   {
-    winMain->wprintf("%C%s %C%s", COLOR_GREEN, p, cp, l);
-    winMain->RefreshWin();
+    wins[i]->wprintf("%C%s %C[%s] %s: %s\n",
+                     COLOR_GREEN, time.c_str(), cp, level,
+                     message->sender.c_str(), text.c_str());
+    if (myLogSink->isLoggingPackets()
+        && !message->packet.empty()
+        && wins[i] == winLog)
+    {
+      wins[i]->wprintf("%C%s\n", COLOR_BLUE, packetToString(message).c_str());
+    }
+    wins[i]->RefreshWin();
   }
-  log->ClearLog();
-  winLog->RefreshWin();
 }
 
 
