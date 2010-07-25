@@ -24,7 +24,7 @@
 #include <licq/protocolsignal.h>
 
 #include "gettext.h"
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/foreach.hpp>

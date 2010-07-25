@@ -41,7 +41,7 @@
 #endif
 
 #include <licq/daemon.h>
-#include <licq/logservice.h>
+#include <licq/logging/logservice.h>
 
 #include "core/messagebox.h"
 

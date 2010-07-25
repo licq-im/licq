@@ -37,7 +37,7 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/sarmanager.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "core/licqgui.h"
 

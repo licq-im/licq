@@ -72,7 +72,7 @@ extern "C"
 #endif /* defined(Q_WS_X11) */
 
 #include <licq/inifile.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>

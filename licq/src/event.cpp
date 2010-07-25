@@ -14,7 +14,7 @@
 
 #include <licq/packet.h>
 #include <licq/userevents.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 using namespace std;
 using Licq::Event;

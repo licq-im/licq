@@ -20,7 +20,7 @@
 #ifndef LICQDAEMON_LOGSERVICE_H
 #define LICQDAEMON_LOGSERVICE_H
 
-#include <licq/logservice.h>
+#include <licq/logging/logservice.h>
 #include <licq/thread/threadspecificdata.h>
 #include "logging/log.h"
 #include "logging/logdistributor.h"

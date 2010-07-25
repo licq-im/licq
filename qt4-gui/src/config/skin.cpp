@@ -29,7 +29,7 @@
 
 #include <licq/daemon.h>
 #include <licq/inifile.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Config::Skin */

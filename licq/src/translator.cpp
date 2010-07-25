@@ -22,7 +22,7 @@
 #include <iconv.h>
 #include <stdlib.h>
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 using namespace std;
 using Licq::Translator;

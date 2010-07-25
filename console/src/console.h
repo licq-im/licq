@@ -7,7 +7,7 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/icq.h>
-#include <licq/pluginlogsink.h>
+#include <licq/logging/pluginlogsink.h>
 #include <licq/userid.h>
 
 #include "window.h"

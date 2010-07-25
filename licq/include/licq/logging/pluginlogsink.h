@@ -21,7 +21,7 @@
 #define LICQ_PLUGINLOGSINK_H
 
 #include "logsink.h"
-#include "macro.h"
+#include "../macro.h"
 
 #include <boost/shared_ptr.hpp>
 

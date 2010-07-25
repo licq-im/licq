@@ -1,7 +1,7 @@
 #include "msn.h"
 #include "msnevent.h"
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include <cstring>
 #include <sys/types.h>

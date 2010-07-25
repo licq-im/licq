@@ -13,7 +13,7 @@
 #include <locale.h>
 #include <unistd.h>
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>

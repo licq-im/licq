@@ -23,7 +23,7 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/inifile.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "gettext.h"
 #include "support.h"

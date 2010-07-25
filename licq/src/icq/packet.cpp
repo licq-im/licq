@@ -29,7 +29,7 @@
 #include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/utility.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/version.h>
 
 #include "../contactlist/group.h"

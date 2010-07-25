@@ -62,7 +62,7 @@
 #endif
 
 #include <licq/icqchat.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "config/chat.h"
 #include "config/general.h"

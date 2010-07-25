@@ -51,7 +51,7 @@ extern "C" {
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/proxy.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "gettext.h"
 #include "support.h"

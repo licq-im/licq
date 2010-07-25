@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <vector>
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/socket.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>

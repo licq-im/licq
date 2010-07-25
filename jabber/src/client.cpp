@@ -30,7 +30,7 @@
 #include <gloox/rostermanager.h>
 
 #include <licq/contactlist/user.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/licqversion.h>
 
 #define TRACE() Licq::gLog.info("In Client::%s()", __func__)

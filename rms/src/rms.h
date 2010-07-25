@@ -3,7 +3,7 @@
 
 #include <list>
 
-#include <licq/pluginlogsink.h>
+#include <licq/logging/pluginlogsink.h>
 #include <licq/socket.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>

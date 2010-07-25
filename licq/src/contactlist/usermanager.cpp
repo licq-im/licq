@@ -3,7 +3,7 @@
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>

@@ -39,7 +39,7 @@
 #include <licq/statistics.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/version.h>
 
 #include "../daemon.h"

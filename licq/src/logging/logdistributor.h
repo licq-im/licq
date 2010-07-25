@@ -20,7 +20,7 @@
 #ifndef LICQDAEMON_LOGDISTRIBUTOR_H
 #define LICQDAEMON_LOGDISTRIBUTOR_H
 
-#include <licq/logsink.h>
+#include <licq/logging/logsink.h>
 #include <licq/thread/mutex.h>
 
 #include <list>

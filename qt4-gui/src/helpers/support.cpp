@@ -38,7 +38,7 @@
 #include <X11/keysym.h>
 #endif /* defined(Q_WS_X11) */
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 using namespace LicqQtGui;
 

@@ -23,7 +23,7 @@
 #ifndef LICQDAEMON_ADJUSTABLELOGSINK_H
 #define LICQDAEMON_ADJUSTABLELOGSINK_H
 
-#include <licq/logsink.h>
+#include <licq/logging/logsink.h>
 #include <licq/thread/mutex.h>
 
 namespace LicqDaemon

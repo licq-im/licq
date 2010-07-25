@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-#include <licq/pluginlogsink.h>
+#include <licq/logging/pluginlogsink.h>
 
 class QShowEvent;
 class QSocketNotifier;

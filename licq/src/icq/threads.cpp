@@ -21,7 +21,7 @@
 #include <licq/packet.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "../daemon.h"
 #include "../fifo.h"

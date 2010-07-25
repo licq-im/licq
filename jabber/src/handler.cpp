@@ -30,7 +30,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/userevents.h>

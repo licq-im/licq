@@ -14,10 +14,6 @@ set(licq_HEADERS
   icqdefines.h
   icqfiletransfer.h
   inifile.h
-  log.h
-  logservice.h
-  logsink.h
-  logutils.h
   macro.h
   md5.h
   oneventmanager.h
@@ -25,7 +21,6 @@ set(licq_HEADERS
   pipe.h
   plugin.h
   pluginbase.h
-  pluginlogsink.h
   pluginmanager.h
   pluginsignal.h
   protocolbase.h
@@ -47,4 +42,5 @@ install(FILES ${licq_HEADERS} DESTINATION "${Licq_INCLUDE_DIR}/licq")
 
 add_subdirectory(contactlist)
 add_subdirectory(exceptions)
+add_subdirectory(logging)
 add_subdirectory(thread)

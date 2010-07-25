@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 #include "gettext.h"
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/icq.h> // For VersionToUse()
 #include <licq/icqcodes.h>
 #include <licq/icqdefines.h>

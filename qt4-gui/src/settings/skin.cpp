@@ -33,7 +33,7 @@
 
 #include <licq/daemon.h>
 #include <licq/inifile.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "config/iconmanager.h"
 #include "config/emoticons.h"

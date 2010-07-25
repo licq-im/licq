@@ -18,7 +18,7 @@
 
 #include "msn.h"
 #include "msnpacket.h"
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include <boost/foreach.hpp>
 #include <string>

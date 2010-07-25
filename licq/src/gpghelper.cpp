@@ -8,7 +8,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/thread/mutexlocker.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 using namespace std;
 using namespace LicqDaemon;

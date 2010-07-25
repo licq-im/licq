@@ -59,7 +59,7 @@
 #include <licq/icqcodes.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "config/iconmanager.h"
 #include "core/messagebox.h"

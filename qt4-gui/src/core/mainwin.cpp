@@ -65,7 +65,7 @@
 #include <QX11Info>
 #endif /* defined(Q_WS_X11) */
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>

@@ -24,7 +24,7 @@
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/socket.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "../daemon.h"
 #include "../gettext.h"

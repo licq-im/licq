@@ -20,7 +20,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/icqdefines.h>
 #include <licq/userevents.h>
 #include <licq/userid.h>

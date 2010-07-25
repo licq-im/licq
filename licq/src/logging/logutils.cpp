@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/logutils.h>
+#include <licq/logging/logutils.h>
 
 #include <cstdio>
 #include <sstream>

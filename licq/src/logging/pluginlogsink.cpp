@@ -23,7 +23,7 @@
 #include "adjustablelogsink.h"
 
 #include <licq/pipe.h>
-#include <licq/pluginlogsink.h>
+#include <licq/logging/pluginlogsink.h>
 #include <licq/thread/mutex.h>
 #include <licq/thread/mutexlocker.h>
 

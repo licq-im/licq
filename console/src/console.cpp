@@ -22,8 +22,8 @@
 #include <licq/icqdefines.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/inifile.h>
-#include <licq/logservice.h>
-#include <licq/logutils.h>
+#include <licq/logging/logservice.h>
+#include <licq/logging/logutils.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>

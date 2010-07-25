@@ -23,8 +23,8 @@
 #include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
-#include <licq/log.h>
-#include <licq/logservice.h>
+#include <licq/logging/log.h>
+#include <licq/logging/logservice.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>

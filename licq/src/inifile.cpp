@@ -27,7 +27,7 @@
 #include <unistd.h>
 
 #include <licq/daemon.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "gettext.h"
 

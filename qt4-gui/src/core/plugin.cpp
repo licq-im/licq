@@ -34,7 +34,7 @@
 
 #include <licq/daemon.h>
 #include <licq/pluginbase.h>
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"

@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 #include "licq.h"
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/exceptions/exception.h>
 #include <licq/inifile.h>
 #include <licq/utility.h>

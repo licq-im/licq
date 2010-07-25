@@ -12,7 +12,7 @@
 #include <licq/icqdefines.h>
 
 #include "gettext.h"
-#include <licq/log.h>
+#include <licq/logging/log.h>
 
 using std::string;
 using Licq::UserId;

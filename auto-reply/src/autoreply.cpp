@@ -14,7 +14,7 @@
 
 #include "autoreply.h"
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>

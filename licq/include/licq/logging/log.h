@@ -20,7 +20,7 @@
 #ifndef LICQ_LOG_H
 #define LICQ_LOG_H
 
-#include "macro.h"
+#include "../macro.h"
 
 #include <boost/shared_ptr.hpp>
 #include <cstdarg>

@@ -20,10 +20,10 @@
 #include "pluginmanager.h"
 #include "gettext.h"
 
-#include <licq/log.h>
+#include <licq/logging/log.h>
 #include <licq/daemon.h>
 #include <licq/exceptions/exception.h>
-#include <licq/logservice.h>
+#include <licq/logging/logservice.h>
 #include <licq/pluginsignal.h>
 #include <licq/thread/mutexlocker.h>
 
