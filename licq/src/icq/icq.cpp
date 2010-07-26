@@ -120,6 +120,7 @@ void IcqProtocol::initialize()
         new LicqDaemon::FileLogSink(errorFile));
     logSink->setLogLevelsFromBitmask(
         Licq::convertOldLogLevelBitmaskToNew(myErrorTypes));
+    logSink->setLogPackets(true);
     if (logSink->isOpen())
       gDaemon.getLogService().registerLogSink(logSink);
     else
