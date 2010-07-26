@@ -22,6 +22,7 @@
 
 #include "../adjustablelogsink.h"
 
+#include <licq/logging/logutils.h>
 #include <gtest/gtest.h>
 
 using namespace LicqDaemon;
@@ -88,7 +89,7 @@ TEST(AdjustableLogSink, oldFormat)
 {
   Licq::AdjustableLogSink::Ptr sink(new AdjustableLogSinkTest());
 
-  unsigned int mask = Licq::convertOldLogLevelBitmaskToNew(0x10 | 0x2);
+  unsigned int mask = Licq::LogUtils::convertOldBitmaskToNew(0x10 | 0x2);
   sink->setLogLevelsFromBitmask(mask);
 
   EXPECT_TRUE(sink->isLogging(Log::Unknown));

@@ -42,6 +42,7 @@
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/logging/log.h>
+#include <licq/logging/logutils.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -490,7 +491,7 @@ static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
     ReportMissingParams(argv[0]);
   else
   {
-    unsigned int mask = Licq::convertOldLogLevelBitmaskToNew(::atoi(argv[1]));
+    unsigned int mask = Licq::LogUtils::convertOldBitmaskToNew(::atoi(argv[1]));
     LogService::instance().getDefaultLogSink()->setLogLevelsFromBitmask(mask);
   }
 

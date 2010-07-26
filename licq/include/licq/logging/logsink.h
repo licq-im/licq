@@ -121,48 +121,6 @@ protected:
   virtual ~AdjustableLogSink() { /* Empty */ }
 };
 
-/**
- * Converts a bitmask in the old format to a new that can be passed to
- * AdjustableLogSink::setLogLevelsFromBitmask().
- * @param levels A bitmask indicating which levels to log:
- *   0x01 - Log::Info
- *   0x02 - Log::Unknown
- *   0x04 - Log::Error
- *   0x08 - Log::Warning
- *   0x10 - Log::Debug and packets
- */
-unsigned int convertOldLogLevelBitmaskToNew(int levels);
-
-/**
- * Pretty-print a packet to a stream
- *
- * @param os Stream to print to
- * @param packet Raw packet data
- * @param size Size of packet data
- * @param bytesToPrint Bytes to print or 0 to print entire packet
- * @return os
- */
-std::ostream& packetToString(std::ostream& os, const uint8_t* packet, size_t size, size_t bytesToPrint = 0);
-
-/**
- * Pretty-print a packet to a string
- *
- * @param packet Raw packet data
- * @param size Size of packet data
- * @param bytesToPrint Bytes to print or 0 to print entire packet
- * @return A printable string containing the packet data
- */
-std::string packetToString(const uint8_t* packet, size_t size, size_t bytesToPrint = 0);
-
-/**
- * Pretty-print packet from a log message to a stream
- *
- * @param os Stream to print to
- * @param message Message with the packet to print
- * @return os
- */
-std::ostream& packetToString(std::ostream& os, const LogSink::Message& message);
-
 } // namespace Licq
 
 #endif

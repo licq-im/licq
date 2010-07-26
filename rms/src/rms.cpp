@@ -1328,7 +1328,7 @@ int CRMSClient::Process_LOG()
   }
 
   unsigned short lt = strtoul(data_arg, (char**)NULL, 10);
-  myLogLevelsBitmask = Licq::convertOldLogLevelBitmaskToNew(lt);
+  myLogLevelsBitmask = Licq::LogUtils::convertOldBitmaskToNew(lt);
 
   unsigned int mask = 0;
   BOOST_FOREACH(CRMSClient* client, licqRMS->clients)

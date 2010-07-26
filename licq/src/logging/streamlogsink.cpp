@@ -19,11 +19,14 @@
 
 #include "streamlogsink.h"
 
+#include <licq/logging/logutils.h>
+
 #include <iomanip>
 #include <sstream>
 #include <time.h>
 
 using Licq::Log;
+using namespace Licq::LogUtils;
 using namespace LicqDaemon;
 
 // Ascii escape char
@@ -89,19 +92,10 @@ static inline std::string getResetColor()
 /**
  * Print @a tv to @a os as hh:mm:ss.xxx.
  */
-static std::ostream& operator<<(
+static inline std::ostream& operator<<(
     std::ostream& os, const Licq::LogSink::Message::Time& msgTime)
 {
-  time_t t = msgTime.sec;
-  tm time;
-  ::localtime_r(&t, &time);
-
-  const size_t size = 8 + 1;
-  char buffer[size];
-  ::strftime(buffer, size, "%H:%M:%S", &time);
-
-  os << buffer << '.' << std::setfill('0') << std::setw(3) << msgTime.msec;
-  return os;
+  return os << timeToString(msgTime);
 }
 
 StreamLogSink::StreamLogSink(std::ostream& stream) :
@@ -123,27 +117,9 @@ void StreamLogSink::log(Message::Ptr message)
 
   std::ostringstream ss;
   ss << message->time << color << " [";
-
-  switch (message->level)
-  {
-    case Log::Unknown:
-      ss << "UNK";
-      break;
-    case Log::Info:
-      ss << "INF";
-      break;
-    case Log::Warning:
-      ss << "WAR";
-      break;
-    case Log::Error:
-      ss << "ERR";
-      break;
-    case Log::Debug:
-      ss << "DBG";
-      break;
-  }
-
+  ss << levelToShortString(message->level);
   ss << "] " << message->sender << ": ";
+
   const std::string header = ss.str();
   myStream << header;
 
@@ -167,7 +143,7 @@ void StreamLogSink::log(Message::Ptr message)
   }
 
   if (isLoggingPackets() && !message->packet.empty())
-    Licq::packetToString(myStream, *message) << '\n';
+    myStream << packetToString(message) << '\n';
 
   if (myUseColors)
     myStream << getResetColor();

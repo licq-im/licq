@@ -42,6 +42,7 @@
 
 #include <licq/daemon.h>
 #include <licq/logging/logservice.h>
+#include <licq/logging/logutils.h>
 
 #include "core/messagebox.h"
 
@@ -109,6 +110,7 @@ LogWindow::~LogWindow()
 void LogWindow::log(int /*fd*/)
 {
   using Licq::LogSink;
+  using namespace Licq::LogUtils;
 
   LogSink::Message::Ptr message = myLogSink->popMessage();
 
@@ -118,7 +120,9 @@ void LogWindow::log(int /*fd*/)
 
   QString str;
   str += dt.time().toString("hh:mm:ss.zzz");
-  str += " ";
+  str += " [";
+  str += QString::fromUtf8(levelToShortString(message->level));
+  str += "] ";
   str += QString::fromUtf8(message->sender.c_str());
   str += ": ";
   str += QString::fromUtf8(message->text.c_str());
@@ -128,9 +132,7 @@ void LogWindow::log(int /*fd*/)
 
   if (myLogSink->isLoggingPackets() && !message->packet.empty())
   {
-    std::ostringstream ss;
-    Licq::packetToString(ss, *message);
-    str += QString::fromUtf8(ss.str().c_str()) + '\n';
+    str += QString::fromUtf8(packetToString(message).c_str()) + '\n';
   }
 
   outputBox->appendNoNewLine(str);

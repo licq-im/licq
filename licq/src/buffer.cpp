@@ -18,7 +18,6 @@
 
 #include <licq/buffer.h>
 #include <licq/byteorder.h>
-#include <licq/logging/logsink.h>       // packetToString()
 #include <licq/logging/log.h>
 
 #include "gettext.h"

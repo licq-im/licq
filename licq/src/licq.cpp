@@ -26,6 +26,7 @@
 
 #include "licq.h"
 #include <licq/logging/log.h>
+#include <licq/logging/logutils.h>
 #include <licq/exceptions/exception.h>
 #include <licq/inifile.h>
 #include <licq/utility.h>
@@ -337,7 +338,7 @@ bool CLicq::Init(int argc, char **argv)
   // Dump all initial errors and warnings to the console log regardless of the
   // requested debug level.
   myConsoleLog->setLogLevelsFromBitmask(
-      Licq::convertOldLogLevelBitmaskToNew(myConsoleLogLevel));
+      Licq::LogUtils::convertOldBitmaskToNew(myConsoleLogLevel));
   myConsoleLog->setLogLevel(Licq::Log::Warning, true);
   myConsoleLog->setLogLevel(Licq::Log::Error, true);
   myConsoleLog->setUseColors(bUseColor);
@@ -781,7 +782,7 @@ int CLicq::Main()
 
   // Reset to requested log level
   myConsoleLog->setLogLevelsFromBitmask(
-      Licq::convertOldLogLevelBitmaskToNew(myConsoleLogLevel));
+      Licq::LogUtils::convertOldBitmaskToNew(myConsoleLogLevel));
 
   // Logon all protocols according to owner configuration
   gDaemon.autoLogon();

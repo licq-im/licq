@@ -17,37 +17,30 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/logging/logsink.h>
+#include <licq/logging/logutils.h>
 
 #include <gtest/gtest.h>
 #include <sstream>
 
 using Licq::LogSink;
+using namespace Licq::LogUtils;
 
-TEST(LogSink, emptyPacketToString)
+TEST(LogUtils, emptyPacketToString)
 {
-  LogSink::Message message;
-
-  std::ostringstream ss;
-  Licq::packetToString(ss, message);
-
-  EXPECT_EQ("", ss.str());
+  LogSink::Message::Ptr message(new LogSink::Message);
+  EXPECT_EQ(std::string(), packetToString(message));
 }
 
 template<size_t N>
 static void checkPacketString(const uint8_t (&data)[N],
                               const std::string& result)
 {
-  LogSink::Message message;
-  message.packet.assign(data, data + sizeof(data));
-
-  std::ostringstream ss;
-  Licq::packetToString(ss, message);
-
-  EXPECT_EQ(result, ss.str());
+  boost::shared_ptr<LogSink::Message> message(new LogSink::Message);
+  message->packet.assign(data, data + sizeof(data));
+  EXPECT_EQ(result, packetToString(message));
 }
 
-TEST(LogSink, shortPacketToString)
+TEST(LogUtils, shortPacketToString)
 {
   const uint8_t data[] = { 'a', 0, 'b', 1, 'c' };
   const std::string result =
@@ -56,7 +49,7 @@ TEST(LogSink, shortPacketToString)
   checkPacketString(data, result);
 }
 
-TEST(LogSink, longPacketToString)
+TEST(LogUtils, longPacketToString)
 {
   uint8_t data[31];
   for (size_t i = 0; i < sizeof(data); ++i)
@@ -70,7 +63,7 @@ TEST(LogSink, longPacketToString)
   checkPacketString(data, result);
 }
 
-TEST(LogSink, tooLongPacketToString)
+TEST(LogUtils, tooLongPacketToString)
 {
   uint8_t data[512 * 16 + 20];
   ::memset(data, 0, sizeof(data));

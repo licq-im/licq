@@ -25,6 +25,7 @@
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
 #include <licq/logging/logservice.h>
+#include <licq/logging/logutils.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
@@ -119,7 +120,7 @@ void IcqProtocol::initialize()
     boost::shared_ptr<LicqDaemon::FileLogSink> logSink(
         new LicqDaemon::FileLogSink(errorFile));
     logSink->setLogLevelsFromBitmask(
-        Licq::convertOldLogLevelBitmaskToNew(myErrorTypes));
+        Licq::LogUtils::convertOldBitmaskToNew(myErrorTypes));
     logSink->setLogPackets(true);
     if (logSink->isOpen())
       gDaemon.getLogService().registerLogSink(logSink);

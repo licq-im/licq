@@ -25,21 +25,7 @@
 #include <licq/thread/mutexlocker.h>
 
 const unsigned int AllLevelsMask = (1 << (Licq::Log::Debug + 1)) - 1;
-const unsigned int PacketBit = 0x1000;
-
-unsigned int Licq::convertOldLogLevelBitmaskToNew(int levels)
-{
-  unsigned int mask = 0;
-  mask |= (levels & 0x1) ? (1 << Log::Info) : 0;
-  mask |= (levels & 0x2) ? (1 << Log::Unknown) : 0;
-  mask |= (levels & 0x4) ? (1 << Log::Error) : 0;
-  mask |= (levels & 0x8) ? (1 << Log::Warning) : 0;
-
-  mask |= (levels & 0x10) ? (1 << Log::Debug) : 0;
-  mask |= (levels & 0x10) ? PacketBit : 0;
-
-  return mask;
-}
+extern const unsigned int PacketBit = 0x1000;
 
 using namespace LicqDaemon;
 using Licq::MutexLocker;

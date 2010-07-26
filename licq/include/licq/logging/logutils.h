@@ -37,9 +37,28 @@ namespace LogUtils
 bool levelInBitmask(Log::Level level, unsigned int bitmask);
 bool packetInBitmask(unsigned int bitmask);
 
+/**
+ * Converts a bitmask in the old format to a new that can be passed to
+ * AdjustableLogSink::setLogLevelsFromBitmask().
+ * @param levels A bitmask indicating which levels to log:
+ *   0x01 - Log::Info
+ *   0x02 - Log::Unknown
+ *   0x04 - Log::Error
+ *   0x08 - Log::Warning
+ *   0x10 - Log::Debug and packets
+ */
+unsigned int convertOldBitmaskToNew(int levels);
+
 const char* levelToString(Log::Level level);
 const char* levelToShortString(Log::Level level);
 std::string timeToString(const LogSink::Message::Time& msgTime);
+
+/**
+ * Pretty-print a packet to a string
+ *
+ * @param message Message with the packet to print
+ * @return A printable string containing the packet data
+ */
 std::string packetToString(LogSink::Message::Ptr message);
 
 } // namespace LogUtils

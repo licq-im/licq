@@ -5,7 +5,7 @@ set(tested_SRCS
   logging/adjustablelogsink.cpp
   logging/log.cpp
   logging/logdistributor.cpp
-  logging/logsink.cpp
+  logging/logutils.cpp
   logging/pluginlogsink.cpp
 
   plugins/generalplugin.cpp
@@ -64,7 +64,6 @@ set(licq_SRCS
   icq/threads.cpp
 
   logging/logservice.cpp
-  logging/logutils.cpp
   logging/streamlogsink.cpp
   logging/threadlog.cpp
 
@@ -81,8 +80,8 @@ set(test_SRCS
 
   logging/tests/adjustablelogsinktest.cpp
   logging/tests/logdistributortest.cpp
-  logging/tests/logsinktest.cpp
   logging/tests/logtest.cpp
+  logging/tests/logutilstest.cpp
   logging/tests/pluginlogsinktest.cpp
 
   plugins/tests/generalplugintest.cpp
