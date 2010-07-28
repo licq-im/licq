@@ -14,7 +14,7 @@
 #include <ctime>
 #include <ctype.h>
 #include <dirent.h>
-#ifndef __sun
+#ifdef __sun
 # define _PATH_BSHELL "/bin/sh"
 #else
 # include <paths.h>

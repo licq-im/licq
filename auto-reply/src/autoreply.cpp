@@ -10,7 +10,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <cerrno>
-#ifndef __sun
+#ifdef __sun
 # define _PATH_BSHELL "/bin/sh"
 #else
 # include <paths.h>
