@@ -109,7 +109,7 @@ void licq_handle_sigabrt(int s)
     fprintf(stderr, "\nUsing gdb to save backtrace to %s\n", btfile2.c_str());
 
     char parentPid[16];
-    snprintf(parentPid, 16, "%u", getpid());
+    snprintf(parentPid, 16, "%u", (int)getpid());
 
     pid_t child = fork();
     if (child == 0)

@@ -443,7 +443,7 @@ bool CLicq::Init(int argc, char **argv)
           snprintf(error, ERR_SIZE,
                    tr("Licq: Already running at pid %d.\n"
                       "      Kill process or remove %s."),
-                   pid, pidfile.c_str());
+                   (int)pid, pidfile.c_str());
           fclose(fs);
       }
       else
@@ -483,7 +483,7 @@ bool CLicq::Init(int argc, char **argv)
       {
         snprintf(error, ERR_SIZE,
                 tr("%sLicq: Already running at pid %d.\n"),
-                L_ERRORxSTR, lock.l_pid);
+                L_ERRORxSTR, (int)lock.l_pid);
       }
 
       error[ERR_SIZE] = '\0';
@@ -495,7 +495,7 @@ bool CLicq::Init(int argc, char **argv)
     {
       // Save our pid in the file
       ftruncate(pidFile, 0);
-      int size = snprintf(szKey, 32, "%d\n", getpid());
+      int size = snprintf(szKey, 32, "%d\n", (int)getpid());
       write(pidFile, szKey, (size > 32 ? 32 : size));
     }
   }
