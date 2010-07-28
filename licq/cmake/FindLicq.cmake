@@ -94,7 +94,7 @@ macro (LICQ_ADD_PLUGIN _licq_plugin_name)
     set(_symbols_list "${CMAKE_CURRENT_BINARY_DIR}/symbols.list")
     file(WRITE ${_symbols_list} "_${_symbols}\n")
     set(_link_flags
-      "${_link_flags} -Wl,-exported_symbols_list -Wl,'${_symbols_list}'")
+      "${_link_flags} -Wl,-exported_symbols_list,'${_symbols_list}'")
 
   elseif (CMAKE_COMPILER_IS_GNUCXX)
     # Create a version script exporting the symbols that should be exported
@@ -102,8 +102,14 @@ macro (LICQ_ADD_PLUGIN _licq_plugin_name)
     set(_symbols "{ global: ${_licq_plugin_symbols}; local: *; };")
     set(_version_script "${CMAKE_CURRENT_BINARY_DIR}/version.script")
     file(WRITE ${_version_script} "${_symbols}\n")
-    set(_link_flags
-      "${_link_flags} -Wl,--version-script -Wl,'${_version_script}'")
+
+    # Check if the linker supports version script (i.e. is GNU ld)
+    check_cxx_accepts_flag("-Wl,--version-script,${_version_script}"
+      LD_ACCEPTS_VERSION_SCRIPT)
+    if (LD_ACCEPTS_VERSION_SCRIPT)
+      set(_link_flags
+	"${_link_flags} -Wl,--version-script,'${_version_script}'")
+    endif (LD_ACCEPTS_VERSION_SCRIPT)
   endif (APPLE)
 
   set_target_properties(${_licq_plugin_name} PROPERTIES
