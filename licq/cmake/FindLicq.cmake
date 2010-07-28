@@ -2,21 +2,23 @@
 #
 # Variables defined:
 #   Licq_FOUND        - TRUE if Licq was found
-#   Licq_INCLUDE_DIRS - Licq include directories, not cached
+#   Licq_INCLUDE_DIRS - Licq's include directories, not cached
 #
 #   Licq_LOCALE_DIR   - Directory where Licq's locales are installed
 #   Licq_PLUGIN_DIR   - Directory where plugins should be installed
 #   Licq_SHARE_DIR    - Directory where sounds, icons etc. are installed
+#
+#   Licq_CMAKE_DIR    - Directory where Licq's cmake files can be found
 #
 # Macros defined:
 #   LICQ_ADD_PLUGIN(plugin_name sources...)
 #
 
 # Directory this file is in
-get_filename_component(_licq_cmake_dir ${CMAKE_CURRENT_LIST_FILE} PATH)
+get_filename_component(Licq_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} PATH)
 
 # Check if Licq is installed
-include(${_licq_cmake_dir}/LicqPaths.cmake OPTIONAL RESULT_VARIABLE _licq_installed)
+include(${Licq_CMAKE_DIR}/LicqPaths.cmake OPTIONAL RESULT_VARIABLE _licq_installed)
 
 if (_licq_installed)
   if (NOT Licq_FIND_QUIETLY)
@@ -31,12 +33,12 @@ if (_licq_installed)
 
 else (_licq_installed)
   # Licq not installed, check if this is the source
-  set(LICQ_VERSION_SOURCE_DIR "${_licq_cmake_dir}/..")
-  include(${_licq_cmake_dir}/LicqVersion.cmake OPTIONAL RESULT_VARIABLE _licq_version)
+  set(LICQ_VERSION_SOURCE_DIR "${Licq_CMAKE_DIR}/..")
+  include(${Licq_CMAKE_DIR}/LicqVersion.cmake OPTIONAL RESULT_VARIABLE _licq_version)
 
   if (_licq_version)
-    include(${_licq_cmake_dir}/LicqDefaultPaths.cmake)
-    get_filename_component(_licq_src_dir "${_licq_cmake_dir}/.." ABSOLUTE)
+    include(${Licq_CMAKE_DIR}/LicqDefaultPaths.cmake)
+    get_filename_component(_licq_src_dir "${Licq_CMAKE_DIR}/.." ABSOLUTE)
 
     if (NOT Licq_FIND_QUIETLY)
       message(STATUS "Found Licq source: ${_licq_src_dir}")
@@ -56,12 +58,12 @@ if (NOT Licq_FOUND)
 endif (NOT Licq_FOUND)
 
 # Add common (for daemon and plugin) compiler flags
-include(${_licq_cmake_dir}/LicqCommonCompilerFlags.cmake)
+include(${Licq_CMAKE_DIR}/LicqCommonCompilerFlags.cmake)
 
 # make uninstall
 if (NOT licq_target_prefix)
   configure_file(
-    "${_licq_cmake_dir}/cmake_uninstall.cmake.in"
+    "${Licq_CMAKE_DIR}/cmake_uninstall.cmake.in"
     "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
     @ONLY)
 

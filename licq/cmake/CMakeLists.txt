@@ -19,3 +19,5 @@ configure_file(
 )
 
 install(FILES ${licq_CMAKE} DESTINATION ${Licq_SHARE_DIR}/cmake)
+
+add_subdirectory(Modules)
