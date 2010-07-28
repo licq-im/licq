@@ -131,7 +131,7 @@ include_directories(${ICONV_INCLUDE_DIR})
 include_directories(${OPENSSL_INCLUDE_DIR})
 include_directories(${SOCKS5_INCLUDE_DIR})
 
-target_link_libraries(licq ${DLOPEN_LIBRARIES})
+target_link_libraries(licq ${CMAKE_DL_LIBS})
 target_link_libraries(licq ${GETTEXT_LIBRARIES})
 target_link_libraries(licq ${GPGME_VANILLA_LIBRARIES})
 target_link_libraries(licq ${ICONV_LIBRARIES})
@@ -148,7 +148,7 @@ if (BUILD_TESTS)
 
   target_link_libraries(unittests ${GTEST_LIBRARIES})
   target_link_libraries(unittests ${GMOCK_LIBRARIES})
-  target_link_libraries(unittests ${DLOPEN_LIBRARIES})
+  target_link_libraries(unittests ${CMAKE_DL_LIBS})
 
   # Add linker flags for thread support
   set_target_properties(unittests PROPERTIES

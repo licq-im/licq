@@ -28,9 +28,6 @@ include(cmake/LicqCommonCompilerFlags.cmake)
 check_function_exists(readdir_r HAVE_READDIR_R)
 check_function_exists(backtrace HAVE_BACKTRACE)
 
-# dlopen
-find_package(Dlopen REQUIRED QUIET)
-
 # iconv
 find_package(Iconv REQUIRED)
 if (ICONV_SECOND_ARGUMENT_IS_CONST)
