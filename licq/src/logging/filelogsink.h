@@ -35,7 +35,9 @@ class FileLogSink : public StreamLogSink
 public:
   inline FileLogSink(const std::string& filename);
 
-  bool isOpen() const { return myFile.is_open(); }
+  bool isOpen() const
+  // const_cast needed on Solaris where ofstream::is_open isn't declared const
+  { return const_cast<std::ofstream&>(myFile).is_open(); }
 
 private:
   std::ofstream myFile;
