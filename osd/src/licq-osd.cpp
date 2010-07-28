@@ -771,7 +771,7 @@ string my_translate(const UserId& /* userId */, const string& msg, const char* u
 
     while ((fromsize>0) && (tosize>0))
     {
-	if ((int)iconv(conv, (char **)&msgptr, &fromsize, &resptr, &tosize)==-1)
+	if ((int)iconv(conv, (ICONV_CONST char **)&msgptr, &fromsize, &resptr, &tosize)==-1)
 	{
 	    // array is not enough
 	    if (errno == E2BIG)
