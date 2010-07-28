@@ -5,6 +5,7 @@
 #include <boost/foreach.hpp>
 #include <cerrno>
 #include <cstdio>
+#include <ctime>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -1232,9 +1233,16 @@ int Licq::User::LocalTimeGMTOffset() const
 
 int Licq::User::SystemTimeGMTOffset()
 {
-  time_t t = time(NULL);
-  struct tm *tzone = localtime(&t);
-  return -(tzone->tm_gmtoff) + (tzone->tm_isdst == 1 ? 3600 : 0); // seconds _east_ of UTC
+  // Get local time
+  time_t lt = time(NULL);
+
+  // Get GMT time
+  struct tm gtm;
+  gmtime_r(&lt, &gtm);
+  time_t gt = mktime(&gtm);
+
+  // Diff is seconds east of UTC
+  return gt - lt;
 }
 
 char Licq::User::SystemTimezone()
