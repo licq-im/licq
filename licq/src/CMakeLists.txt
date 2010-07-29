@@ -136,6 +136,7 @@ target_link_libraries(licq ${GETTEXT_LIBRARIES})
 target_link_libraries(licq ${GPGME_VANILLA_LIBRARIES})
 target_link_libraries(licq ${ICONV_LIBRARIES})
 target_link_libraries(licq ${OPENSSL_LIBRARIES})
+target_link_libraries(licq ${SOCKET_LIBRARIES})
 target_link_libraries(licq ${SOCKS5_LIBRARIES})
 
 install(TARGETS licq RUNTIME DESTINATION bin)
@@ -149,6 +150,7 @@ if (BUILD_TESTS)
   target_link_libraries(unittests ${GTEST_LIBRARIES})
   target_link_libraries(unittests ${GMOCK_LIBRARIES})
   target_link_libraries(unittests ${CMAKE_DL_LIBS})
+  target_link_libraries(unittests ${SOCKET_LIBRARIES})
 
   # Add linker flags for thread support
   set_target_properties(unittests PROPERTIES

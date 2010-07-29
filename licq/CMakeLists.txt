@@ -24,6 +24,16 @@ mark_as_advanced(DLOPEN_POLICY)
 
 include(cmake/LicqCommonCompilerFlags.cmake)
 
+# Network libraries (needed on Solaris)
+check_library_exists(socket getaddrinfo "" HAVE_LIBSOCKET)
+if (HAVE_LIBSOCKET)
+  set(SOCKET_LIBRARIES ${SOCKET_LIBRARIES} socket)
+endif (HAVE_LIBSOCKET)
+check_library_exists(nsl gethostbyname "" HAVE_LIBNSL)
+if (HAVE_LIBNSL)
+  set(SOCKET_LIBRARIES ${SOCKET_LIBRARIES} nsl)
+endif (HAVE_LIBNSL)
+
 # Functions
 check_function_exists(readdir_r HAVE_READDIR_R)
 check_function_exists(backtrace HAVE_BACKTRACE)
