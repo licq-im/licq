@@ -137,7 +137,7 @@ CWindow& CWindow::operator<<(unsigned char d)
 }
 
 
-CWindow& CWindow::operator<<(const char *d)
+CWindow& CWindow::operator<<(char* d)
 {
   waddstr(win, d);
   RefreshWin();
@@ -163,7 +163,7 @@ void CWindow::wprintf(const char *formatIn, ...)
    va_list argp;
    char formatOut[1024], out[1024];
    unsigned short i = 0, j = 0;
-   attr_t save = win->_attrs;
+   chtype save = win->_attrs;
 
    va_start(argp, formatIn);
 

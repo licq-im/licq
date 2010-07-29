@@ -50,7 +50,7 @@ public:
   bool Active()  { return active; }
   CWindow& operator<<(char d);
   CWindow& operator<<(unsigned char d);
-  CWindow& operator<<(const char *d);
+  CWindow& operator<<(char* d);
   CWindow& operator<<(unsigned long d);
   CWindow& operator<<(unsigned short d);
   void wprintf(const char *formatIn, ...);
