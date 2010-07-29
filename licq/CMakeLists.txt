@@ -28,6 +28,11 @@ include(cmake/LicqCommonCompilerFlags.cmake)
 check_function_exists(readdir_r HAVE_READDIR_R)
 check_function_exists(backtrace HAVE_BACKTRACE)
 
+if(CMAKE_SYSTEM MATCHES "SunOS.*")
+  # Make readdir_r on Solaris behave normally
+  add_definitions(-D_POSIX_PTHREAD_SEMANTICS)
+endif(CMAKE_SYSTEM MATCHES "SunOS.*")
+
 # iconv
 find_package(Iconv REQUIRED)
 if (ICONV_SECOND_ARGUMENT_IS_CONST)
