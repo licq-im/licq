@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: licq_osd_plugin-ru\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-12-28 08:40+0100\n"
+"POT-Creation-Date: 2010-07-29 21:46+0200\n"
 "PO-Revision-Date: 2003-11-21 14:18+0200\n"
 "Last-Translator: Andy Shevchenko <andy@smile.org.ua>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -14,23 +14,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 
-#: src/licq-osd.cpp:631
+#: src/licq-osd.cpp:585
 msgid " changed status to: "
 msgstr " сменил статус: "
 
-#: src/licq-osd.cpp:571
+#: src/licq-osd.cpp:527
 msgid " checked your auto-response"
 msgstr " проверил автоответ"
 
-#: src/licq-osd.cpp:618
+#: src/licq-osd.cpp:572
 msgid " logged off"
 msgstr " вышел"
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:570
 msgid " logged on"
 msgstr " вошел"
 
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:554
 msgid "Message from "
 msgstr "Сообщение от "
 
@@ -42,39 +42,42 @@ msgstr "Система"
 msgid "XOSD plugin initialized"
 msgstr "Дополнение XOSD инициализировано"
 
-#: src/licq-osd.cpp:639
+#: src/licq-osd.cpp:595
 msgid "away"
 msgstr "отошел"
 
-#: src/licq-osd.cpp:633
+#: src/licq-osd.cpp:589
 msgid "do not disturb"
 msgstr "не беспокоить"
 
-#: src/licq-osd.cpp:643
+#: src/licq-osd.cpp:597
 msgid "free for chat"
 msgstr "свободен для чата"
 
-#: src/licq-osd.cpp:645
+#: src/licq-osd.cpp:601
+msgid "idle"
+msgstr ""
+
+#: src/licq-osd.cpp:599
 msgid "invisible"
 msgstr "невидимый"
 
-#: src/licq-osd.cpp:637
+#: src/licq-osd.cpp:593
 msgid "not available"
 msgstr "недоступен"
 
-#: src/licq-osd.cpp:635
+#: src/licq-osd.cpp:591
 msgid "occupied"
 msgstr "занят"
 
-#: src/licq-osd.cpp:647
+#: src/licq-osd.cpp:587
 #, fuzzy
 msgid "offline"
 msgstr "в сети"
 
-#: src/licq-osd.cpp:641
+#: src/licq-osd.cpp:603
 msgid "online"
 msgstr "в сети"
 
-#: src/licq-osd.cpp:649
-msgid "unknown"
-msgstr "неизвестно"
+#~ msgid "unknown"
+#~ msgstr "неизвестно"

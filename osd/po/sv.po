@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sv\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-12-28 08:40+0100\n"
+"POT-Creation-Date: 2010-07-29 21:46+0200\n"
 "PO-Revision-Date: 2006-10-01 21:58+0200\n"
 "Last-Translator: Erik Johansson <erik@ejohansson.se>\n"
 "Language-Team:  <erik@ejohansson.se>\n"
@@ -19,23 +19,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/licq-osd.cpp:631
+#: src/licq-osd.cpp:585
 msgid " changed status to: "
 msgstr " ändrade status till: "
 
-#: src/licq-osd.cpp:571
+#: src/licq-osd.cpp:527
 msgid " checked your auto-response"
 msgstr " kontrollerade ditt auto-meddelande"
 
-#: src/licq-osd.cpp:618
+#: src/licq-osd.cpp:572
 msgid " logged off"
 msgstr " kopplade från"
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:570
 msgid " logged on"
 msgstr " anslöt"
 
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:554
 msgid "Message from "
 msgstr "Meddelande från "
 
@@ -47,38 +47,41 @@ msgstr "System"
 msgid "XOSD plugin initialized"
 msgstr "XOSD plugin initierad"
 
-#: src/licq-osd.cpp:639
+#: src/licq-osd.cpp:595
 msgid "away"
 msgstr "inte vid datorn"
 
-#: src/licq-osd.cpp:633
+#: src/licq-osd.cpp:589
 msgid "do not disturb"
 msgstr "stör ej"
 
-#: src/licq-osd.cpp:643
+#: src/licq-osd.cpp:597
 msgid "free for chat"
 msgstr "tillgänglig för chat"
 
-#: src/licq-osd.cpp:645
+#: src/licq-osd.cpp:601
+msgid "idle"
+msgstr ""
+
+#: src/licq-osd.cpp:599
 msgid "invisible"
 msgstr "osynlig"
 
-#: src/licq-osd.cpp:637
+#: src/licq-osd.cpp:593
 msgid "not available"
 msgstr "inte tillgänglig"
 
-#: src/licq-osd.cpp:635
+#: src/licq-osd.cpp:591
 msgid "occupied"
 msgstr "upptagen"
 
-#: src/licq-osd.cpp:647
+#: src/licq-osd.cpp:587
 msgid "offline"
 msgstr "frånkopplad"
 
-#: src/licq-osd.cpp:641
+#: src/licq-osd.cpp:603
 msgid "online"
 msgstr "ansluten"
 
-#: src/licq-osd.cpp:649
-msgid "unknown"
-msgstr "okänd"
+#~ msgid "unknown"
+#~ msgstr "okänd"

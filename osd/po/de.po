@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: licq_osd_plugin 1.2.7.4\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-12-28 08:40+0100\n"
+"POT-Creation-Date: 2010-07-29 21:46+0200\n"
 "PO-Revision-Date: 2003-07-22 21:31+0100\n"
 "Last-Translator: Joerg Rieger <Joerg.Rieger@informatik.med.uni-giessen.de>\n"
 "Language-Team: German <de@li.org>\n"
@@ -16,23 +16,23 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/licq-osd.cpp:631
+#: src/licq-osd.cpp:585
 msgid " changed status to: "
 msgstr " änderte seinen Status zu: "
 
-#: src/licq-osd.cpp:571
+#: src/licq-osd.cpp:527
 msgid " checked your auto-response"
 msgstr " hat Ihre automatische Antwort abgefragt"
 
-#: src/licq-osd.cpp:618
+#: src/licq-osd.cpp:572
 msgid " logged off"
 msgstr " ist offline"
 
-#: src/licq-osd.cpp:616
+#: src/licq-osd.cpp:570
 msgid " logged on"
 msgstr " ist online"
 
-#: src/licq-osd.cpp:600
+#: src/licq-osd.cpp:554
 msgid "Message from "
 msgstr "Nachricht von "
 
@@ -44,39 +44,42 @@ msgstr "System"
 msgid "XOSD plugin initialized"
 msgstr "XOSD plugin wurde initialisiert"
 
-#: src/licq-osd.cpp:639
+#: src/licq-osd.cpp:595
 msgid "away"
 msgstr "abwesend"
 
-#: src/licq-osd.cpp:633
+#: src/licq-osd.cpp:589
 msgid "do not disturb"
 msgstr "nicht stören"
 
-#: src/licq-osd.cpp:643
+#: src/licq-osd.cpp:597
 msgid "free for chat"
 msgstr "frei für chat"
 
-#: src/licq-osd.cpp:645
+#: src/licq-osd.cpp:601
+msgid "idle"
+msgstr ""
+
+#: src/licq-osd.cpp:599
 msgid "invisible"
 msgstr "unsichtbar"
 
-#: src/licq-osd.cpp:637
+#: src/licq-osd.cpp:593
 msgid "not available"
 msgstr "nicht verfügbar"
 
-#: src/licq-osd.cpp:635
+#: src/licq-osd.cpp:591
 msgid "occupied"
 msgstr "beschäftigt"
 
-#: src/licq-osd.cpp:647
+#: src/licq-osd.cpp:587
 #, fuzzy
 msgid "offline"
 msgstr "online"
 
-#: src/licq-osd.cpp:641
+#: src/licq-osd.cpp:603
 msgid "online"
 msgstr "online"
 
-#: src/licq-osd.cpp:649
-msgid "unknown"
-msgstr "unbekannt"
+#~ msgid "unknown"
+#~ msgstr "unbekannt"
