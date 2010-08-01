@@ -41,14 +41,6 @@ const unsigned short NORMAL_SID         = 0;
 const unsigned short INV_SID            = 1;
 const unsigned short VIS_SID            = 2;
 
-const unsigned short ACCEPT_IN_AWAY     = 0x0001;
-const unsigned short ACCEPT_IN_NA       = 0x0002;
-const unsigned short ACCEPT_IN_OCCUPIED = 0x0004;
-const unsigned short ACCEPT_IN_DND      = 0x0008;
-const unsigned short AUTO_ACCEPT_CHAT   = 0x0100;
-const unsigned short AUTO_ACCEPT_FILE   = 0x0200;
-const unsigned short AUTO_SECURE        = 0x0400;
-
 const unsigned short LAST_ONLINE        = 0;
 const unsigned short LAST_RECV_EVENT    = 1;
 const unsigned short LAST_SENT_EVENT    = 2;
@@ -313,13 +305,13 @@ public:
   time_t RegisteredTime() const                 { return m_nRegisteredTime; }
   bool UseGPG() const                           { return m_bUseGPG; }
   const std::string& gpgKey() const             { return myGpgKey; }
-  bool AutoChatAccept() const                   { return myAutoAccept & AUTO_ACCEPT_CHAT; }
-  bool AutoFileAccept() const                   { return myAutoAccept & AUTO_ACCEPT_FILE; }
-  bool AutoSecure() const                       { return myAutoAccept & AUTO_SECURE; }
-  bool AcceptInAway() const                     { return myAutoAccept & ACCEPT_IN_AWAY; }
-  bool AcceptInNA() const                       { return myAutoAccept & ACCEPT_IN_NA; }
-  bool AcceptInOccupied() const                 { return myAutoAccept & ACCEPT_IN_OCCUPIED; }
-  bool AcceptInDND() const                      { return myAutoAccept & ACCEPT_IN_DND; }
+  bool AutoChatAccept() const                   { return myAutoAcceptChat; }
+  bool AutoFileAccept() const                   { return myAutoAcceptFile; }
+  bool AutoSecure() const                       { return myAutoSecure; }
+  bool AcceptInAway() const                     { return myAcceptInAway; }
+  bool AcceptInNA() const                       { return myAcceptInNotAvailable; }
+  bool AcceptInOccupied() const                 { return myAcceptInOccupied; }
+  bool AcceptInDND() const                      { return myAcceptInDoNotDisturb; }
   unsigned short StatusToUser() const           { return m_nStatusToUser; }
   unsigned statusToUser() const                 { return statusFromIcqStatus(m_nStatusToUser); }
   bool KeepAliasOnUpdate() const                { return m_bKeepAliasOnUpdate; }
@@ -429,13 +421,13 @@ public:
   void SetOurClientStatusTimestamp(unsigned long s) { m_nOurClientStatusTimestamp = s; }
   void SetUserUpdated(bool s)         { m_bUserUpdated = s; }
   void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
-  void SetAutoChatAccept(bool s)      { s ? myAutoAccept |= AUTO_ACCEPT_CHAT : myAutoAccept &= ~AUTO_ACCEPT_CHAT; SaveLicqInfo(); }
-  void SetAutoFileAccept(bool s)      { s ? myAutoAccept |= AUTO_ACCEPT_FILE : myAutoAccept &= ~AUTO_ACCEPT_FILE; SaveLicqInfo(); }
-  void SetAutoSecure(bool s)          { s ? myAutoAccept |= AUTO_SECURE : myAutoAccept &= ~AUTO_SECURE; SaveLicqInfo(); }
-  void SetAcceptInAway(bool s)        { s ? myAutoAccept |= ACCEPT_IN_AWAY : myAutoAccept &= ~ACCEPT_IN_AWAY; SaveLicqInfo(); }
-  void SetAcceptInNA(bool s)          { s ? myAutoAccept |= ACCEPT_IN_NA : myAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
-  void SetAcceptInOccupied(bool s)    { s ? myAutoAccept |= ACCEPT_IN_OCCUPIED : myAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
-  void SetAcceptInDND(bool s)         { s ? myAutoAccept |= ACCEPT_IN_DND : myAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
+  void SetAutoChatAccept(bool s)        { myAutoAcceptChat = s; SaveLicqInfo(); }
+  void SetAutoFileAccept(bool s)        { myAutoAcceptFile = s; SaveLicqInfo(); }
+  void SetAutoSecure(bool s)            { myAutoSecure = s; SaveLicqInfo(); }
+  void SetAcceptInAway(bool s)          { myAcceptInAway = s; SaveLicqInfo(); }
+  void SetAcceptInNA(bool s)            { myAcceptInNotAvailable = s; SaveLicqInfo(); }
+  void SetAcceptInOccupied(bool s)      { myAcceptInOccupied = s; SaveLicqInfo(); }
+  void SetAcceptInDND(bool s)           { myAcceptInDoNotDisturb = s; SaveLicqInfo(); }
   void SetUseGPG(bool b)                        { m_bUseGPG = b; SaveLicqInfo(); }
   void setGpgKey(const std::string& c) { myGpgKey = c; SaveLicqInfo(); }
   void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
@@ -824,8 +816,15 @@ protected:
        m_bNotInList;
   unsigned short m_nStatusToUser, m_nSendLevel;
   bool m_bKeepAliasOnUpdate;
-  unsigned myAutoAccept;
   bool myOnEventsBlocked;
+
+  bool myAutoAcceptChat;
+  bool myAutoAcceptFile;
+  bool myAutoSecure;
+  bool myAcceptInAway;
+  bool myAcceptInNotAvailable;
+  bool myAcceptInOccupied;
+  bool myAcceptInDoNotDisturb;
 
   // GPG data
   bool m_bUseGPG;

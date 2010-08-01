@@ -384,7 +384,17 @@ void User::LoadLicqInfo()
   m_nLastCounters[Licq::LAST_CHECKED_AR] = nLast;
   myConf.get("RegisteredTime", nLast, 0);
   m_nRegisteredTime = nLast;
-  myConf.get("AutoAccept", myAutoAccept, 0);
+
+  unsigned autoAcceptFlags;
+  myConf.get("AutoAccept", autoAcceptFlags, 0);
+  myAcceptInAway                = (autoAcceptFlags & 0x0001);
+  myAcceptInNotAvailable        = (autoAcceptFlags & 0x0002);
+  myAcceptInOccupied            = (autoAcceptFlags & 0x0004);
+  myAcceptInDoNotDisturb        = (autoAcceptFlags & 0x0008);
+  myAutoAcceptChat              = (autoAcceptFlags & 0x0100);
+  myAutoAcceptFile              = (autoAcceptFlags & 0x0200);
+  myAutoSecure                  = (autoAcceptFlags & 0x0400);
+
   unsigned icqStatusToUser;
   myConf.get("StatusToUser", icqStatusToUser, ICQ_STATUS_OFFLINE);
   m_nStatusToUser = icqStatusToUser;
@@ -649,7 +659,13 @@ void User::Init()
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
   m_bKeepAliasOnUpdate = false;
   m_nStatus = ICQ_STATUS_OFFLINE;
-  myAutoAccept = 0;
+  myAutoAcceptChat = false;
+  myAutoAcceptFile = false;
+  myAutoSecure = false;
+  myAcceptInAway = false;
+  myAcceptInNotAvailable = false;
+  myAcceptInOccupied = false;
+  myAcceptInDoNotDisturb = false;
   myCustomAutoResponse = "";
   m_bConnectionInProgress = false;
   m_bAwaitingAuth = false;
@@ -1881,7 +1897,17 @@ void User::SaveLicqInfo()
   myConf.set("LastRecv", (unsigned long)LastReceivedEvent());
   myConf.set("LastCheckedAR", (unsigned long)LastCheckedAutoResponse());
   myConf.set("RegisteredTime", (unsigned long)RegisteredTime());
-  myConf.set("AutoAccept", myAutoAccept);
+
+  unsigned autoAcceptFlags = 0;
+  if (myAcceptInAway)           autoAcceptFlags |= 0x0001;
+  if (myAcceptInNotAvailable)   autoAcceptFlags |= 0x0002;
+  if (myAcceptInOccupied)       autoAcceptFlags |= 0x0004;
+  if (myAcceptInDoNotDisturb)   autoAcceptFlags |= 0x0008;
+  if (myAutoAcceptChat)         autoAcceptFlags |= 0x0100;
+  if (myAutoAcceptFile)         autoAcceptFlags |= 0x0200;
+  if (myAutoSecure)             autoAcceptFlags |= 0x0400;
+  myConf.set("AutoAccept", autoAcceptFlags);
+
   myConf.set("StatusToUser", m_nStatusToUser);
   myConf.set("CustomAutoRsp", customAutoResponse());
   myConf.set("SendIntIp", m_bSendIntIp);
