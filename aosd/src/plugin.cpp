@@ -5,6 +5,7 @@
 #include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/plugin.h>
+#include <licq/pluginbase.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 
