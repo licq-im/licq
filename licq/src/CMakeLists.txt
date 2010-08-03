@@ -53,21 +53,21 @@ set(licq_SRCS
   contactlist/userhistory.cpp
   contactlist/usermanager.cpp
 
-  icq/icq.cpp
-  icq/icq-srv.cpp
-  icq/icq-tcp.cpp
   icq/chat.cpp
   icq/codes.c
   icq/filetransfer.cpp
-  icq/packet.cpp
+  icq/icq-srv.cpp
+  icq/icq-tcp.cpp
+  icq/icq.cpp
+  icq/icqprotocolplugin.cpp
   icq/oscarservice.cpp
+  icq/packet.cpp
   icq/threads.cpp
 
   logging/logservice.cpp
   logging/streamlogsink.cpp
   logging/threadlog.cpp
 
-  plugins/icqprotocolplugin.cpp
   plugins/plugineventhandler.cpp
   plugins/pluginmanager.cpp
 
