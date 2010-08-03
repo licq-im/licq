@@ -13,7 +13,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Atheme OSD text
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(AOSD REQUIRED libaosd-text>=0.2.6)
+pkg_check_modules(AOSD REQUIRED libaosd-text>=0.2.7)
 add_definitions(${AOSD_CFLAGS})
 include_directories(${AOSD_INCLUDE_DIRS})
 link_directories(${AOSD_LIBRARY_DIRS})
