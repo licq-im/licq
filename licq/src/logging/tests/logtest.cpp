@@ -72,6 +72,29 @@ public:
         break;
     }
   }
+
+  Licq::Log::Stream log()
+  {
+    switch (GetParam())
+    {
+      case Licq::Log::Unknown:
+        return myLog.unknown();
+        break;
+      case Licq::Log::Info:
+        return myLog.info();
+        break;
+      case Licq::Log::Warning:
+        return myLog.warning();
+        break;
+      case Licq::Log::Error:
+        return myLog.error();
+        break;
+      case Licq::Log::Debug:
+        return myLog.debug();
+        break;
+    }
+    return myLog.log(static_cast<Licq::Log::Level>(-1));
+  }
 };
 
 TEST_P(LogFixture, correctLevelWithStdStringLog)
@@ -84,6 +107,11 @@ TEST_P(LogFixture, correctLevelWithPrintfFormat)
 {
   const char* msg = "message";
   log(msg);
+}
+
+TEST_P(LogFixture, correctLevelWithStream)
+{
+  log() << "message";
 }
 
 INSTANTIATE_TEST_CASE_P(logLevels, LogFixture,
@@ -118,5 +146,81 @@ TEST(Log, packet)
       .Times(1);
 
   Log log("test", logSink);
-  log.packet(Licq::Log::Info, packet, sizeof(packet), std::string("message"));
+  log.packet(Log::Info, packet, sizeof(packet), std::string("message"));
+}
+
+TEST(Log, streamPacket)
+{
+  const uint8_t packet[] = { 1, 2, 3, 4 };
+
+  StrictMock<MockLogSink> logSink;
+  EXPECT_CALL(logSink, isLogging(Licq::Log::Info))
+      .WillOnce(Return(true));
+  EXPECT_CALL(logSink, isLoggingPackets())
+      .WillOnce(Return(true));
+  EXPECT_CALL(logSink, log(Pointee(Field(&Licq::LogSink::Message::packet,
+                                         ElementsAreArray(packet)))))
+      .Times(1);
+
+  Log log("test", logSink);
+  log.packet(Log::Info, packet, sizeof(packet)) << std::string("message");
+}
+
+TEST(Log, streamFormatting)
+{
+  StrictMock<MockLogSink> logSink;
+  EXPECT_CALL(logSink, isLogging(Licq::Log::Info))
+      .WillOnce(Return(true));
+  EXPECT_CALL(logSink, log(Pointee(Field(&Licq::LogSink::Message::text,
+                                         "255 = 0xff"))));
+
+  Log log("test", logSink);
+  log(Log::Info) << 255 << " = " << std::showbase << std::hex << 255;
+}
+
+TEST(Log, streamCopyConstructor)
+{
+  StrictMock<MockLogSink> logSink;
+  EXPECT_CALL(logSink, isLogging(Licq::Log::Debug))
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(logSink, log(Pointee(Field(&Licq::LogSink::Message::text,
+                                         "s1 s2"))));
+  EXPECT_CALL(logSink, log(Pointee(Field(&Licq::LogSink::Message::text,
+                                         "s1"))));
+
+  Log log("test", logSink);
+  {
+    Licq::Log::Stream s1(log.debug());
+    s1 << "s1";
+
+    Licq::Log::Stream s2(s1);
+    s2 << " s2";
+  }
+}
+
+namespace
+{
+struct Custom
+{
+  int myValue;
+};
+}
+
+static std::ostream& operator<<(std::ostream& os, const Custom& c)
+{
+  os << c.myValue;
+  return os;
+}
+
+TEST(Log, streamCustomDataType)
+{
+  StrictMock<MockLogSink> logSink;
+  EXPECT_CALL(logSink, isLogging(Licq::Log::Error))
+      .WillOnce(Return(true));
+  EXPECT_CALL(logSink, log(Pointee(Field(&Licq::LogSink::Message::text,
+                                         "256 = 0x100"))));
+
+  Log log("test", logSink);
+  Custom c; c.myValue = 256;
+  log.log(Log::Error) << c << " = " << std::showbase << std::hex << c;
 }

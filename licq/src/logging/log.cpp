@@ -20,7 +20,60 @@
 #include "log.h"
 
 #include <cstdio>
+#include <sstream>
 #include <sys/time.h>
+
+Licq::Log::
+Stream::Stream(Log* log, Level level, const uint8_t* data, size_t size)
+  : myLog(log),
+    myLevel(level),
+    myData(data),
+    mySize(size)
+{
+  myStream = new std::ostringstream;
+}
+
+Licq::Log::Stream::Stream(const Stream& other)
+{
+  myStream = new std::ostringstream;
+  *this = other;
+}
+
+Licq::Log::Stream::~Stream()
+{
+  const std::string msg = myStream->str();
+  if (!msg.empty())
+  {
+    if (myData != 0 && mySize != 0)
+      myLog->packet(myLevel, myData, mySize, msg);
+    else
+      myLog->log(myLevel, msg);
+  }
+  delete myStream;
+}
+
+Licq::Log::Stream& Licq::Log::Stream::operator=(const Stream& other)
+{
+  if (this != &other)
+  {
+    myLog = other.myLog;
+    myLevel = other.myLevel;
+    myData = other.myData;
+    mySize = other.mySize;
+
+    myStream->clear();
+    myStream->str(other.myStream->str());
+    myStream->copyfmt(*other.myStream);
+    myStream->seekp(other.myStream->tellp());
+  }
+
+  return *this;
+}
+
+Licq::Log::Stream::operator std::ostream&()
+{
+  return *myStream;
+}
 
 static inline std::string vaToString(const char* format, va_list args)
 {
@@ -33,12 +86,12 @@ static inline std::string vaToString(const char* format, va_list args)
   return std::string(msg);
 }
 
-void Licq::Log::log(Licq::Log::Level level, const char* format, va_list args)
+void Licq::Log::log(Level level, const char* format, va_list args)
 {
   log(level, vaToString(format, args));
 }
 
-void Licq::Log::packet(Licq::Log::Level level, const uint8_t* data,
+void Licq::Log::packet(Level level, const uint8_t* data,
                        size_t size, const char* format, va_list args)
 {
   packet(level, data, size, vaToString(format, args));

@@ -22,8 +22,10 @@
 
 #include "../macro.h"
 
+#include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <cstdarg>
+#include <iosfwd>
 #include <stdint.h>
 #include <string>
 
@@ -39,7 +41,7 @@ const char L_BLANKxSTR[]   = "                ";
 namespace Licq
 {
 
-class Log
+class Log : private boost::noncopyable
 {
 public:
   typedef boost::shared_ptr<Log> Ptr;
@@ -62,23 +64,32 @@ public:
     Debug
   };
 
+  class Stream;
+  Stream operator()(Level level) { return log(level); }
+
   virtual void log(Level level, const std::string& msg) = 0;
   void log(Level level, const char* format, va_list args) LICQ_FORMAT(3, 0);
+  Stream log(Level level) { return Stream(this, level, 0, 0); }
 
   void unknown(const std::string& msg) { log(Unknown, msg); }
   inline void unknown(const char* format, ...) LICQ_FORMAT(2, 3);
+  Stream unknown() { return log(Unknown); }
 
   void info(const std::string& msg) { log(Info, msg); }
   inline void info(const char* format, ...) LICQ_FORMAT(2, 3);
+  Stream info() { return log(Info); }
 
   void warning(const std::string& msg) { log(Warning, msg); }
   inline void warning(const char* format, ...) LICQ_FORMAT(2, 3);
+  Stream warning() { return log(Warning); }
 
   void error(const std::string& msg) { log(Error, msg); }
   inline void error(const char* format, ...) LICQ_FORMAT(2, 3);
+  Stream error() { return log(Error); }
 
   void debug(const std::string& msg) { log(Debug, msg); }
   inline void debug(const char* format, ...) LICQ_FORMAT(2, 3);
+  Stream debug() { return log(Debug); }
 
   virtual void packet(Level level, const uint8_t* data, size_t size,
                       const std::string& msg) = 0;
@@ -86,6 +97,34 @@ public:
               const char* format, va_list args) LICQ_FORMAT(5, 0);
   inline void packet(Level level, const uint8_t* data, size_t size,
                      const char* format, ...) LICQ_FORMAT(5, 6);
+  Stream packet(Level level, const uint8_t* data, size_t size)
+      { return Stream(this, level, data, size); }
+
+  class Stream
+  {
+  public:
+    friend class Log;
+
+    Stream(const Stream& other);
+    ~Stream();
+
+    Stream& operator=(const Stream& other);
+
+    /// Automatic conversion to std::ostream
+    operator std::ostream&();
+
+    template<typename T>
+    Stream& operator<<(const T& msg) { *myStream << msg; return *this; }
+
+  private:
+    Stream(Log* log, Level level, const uint8_t* data, size_t size);
+
+    Log* myLog;
+    Level myLevel;
+    const uint8_t* myData;
+    size_t mySize;
+    std::ostringstream* myStream;
+  };
 
 protected:
   virtual ~Log() { /* Empty */ }
