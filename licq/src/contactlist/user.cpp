@@ -1669,14 +1669,14 @@ string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool a
                 snprintf(buf, 128, (nDays > 1 ? tr("%d days ") : tr("%d day ")), nDays);
                 sz += buf;
               }
-              if (nDays)
+              if (nHours)
               {
-                snprintf(buf, 128, (nDays > 1 ? tr("%d hours ") : tr("%d hour ")), nDays);
+                snprintf(buf, 128, (nHours > 1 ? tr("%d hours ") : tr("%d hour ")), nHours);
                 sz += buf;
               }
-              if (nDays)
+              if (nMinutes)
               {
-                snprintf(buf, 128, (nDays > 1 ? tr("%d minutes") : tr("%d minute")), nDays);
+                snprintf(buf, 128, (nMinutes > 1 ? tr("%d minutes") : tr("%d minute")), nMinutes);
                 sz += buf;
               }
             }
