@@ -2812,8 +2812,10 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       {
         // Passed in id
+        m_nGSID = 0;
         Licq::GroupReadGuard group(_nGroup);
-        m_nGSID = group->serverId(LICQ_PPID);
+        if (group.isLocked())
+          m_nGSID = group->serverId(LICQ_PPID);
       }
       if (m_nGSID == 0)
       {
