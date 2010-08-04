@@ -44,7 +44,6 @@ class UserEvent;
 #define MAX_CMD_HISTORY 100
 #define SCROLLBACK_BUFFER 20
 const unsigned short USER_WIN_WIDTH = 30;
-const char L_CONSOLExSTR[] = "[CON] ";
 const char CANCEL_KEY = 'C';
 
 struct SColorMap
