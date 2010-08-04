@@ -108,8 +108,8 @@ static const char OSD_CONF[] =
 "# If this option is enabled, then the osd messages will only be shown\n"
 "# if _you_ are in one of those stati. \n"
 "# As long as this is commented out, the messages will _always_ be displayed\n"
-"#ShowInModes = Online,FreeForChat,Away,NA,Occupied,DND,Invisible\n"
+"#ShowInModes=Online,FreeForChat,Away,NA,Occupied,DND,Invisible\n"
 "\n"
 "# If ShowInModes specifies to not show anything, you might like to show\n"
 "# messages (not status changes or so) in some more modes, so specify it here\n"
-"#ShowMsgsInModes = DND\n";
+"#ShowMsgsInModes=DND\n";
