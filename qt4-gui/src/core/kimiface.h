@@ -1,8 +1,9 @@
 /*
  * kimiface.h - KDE Instant Messenger DCOP Interface
  * 
- * Copyright (c) 2004-2005 Will Stephenson <lists@stevello.free-online.co.uk>
- * 
+ * Copyright (c) 2004 Will Stephenson <lists@stevello.free-online.co.uk>
+ * Copyright (C) 2006-2010 Licq developers
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
  * License as published by the Free Software Foundation; either

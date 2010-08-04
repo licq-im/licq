@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 2007 Licq developers
+ * Copyright (C) 2007-2010 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
