@@ -847,7 +847,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
         {
           const Licq::ExtendedData* ea = e->ExtendedAck();
 
-          if( ea == NULL || ue == NULL)
+          if (ea == NULL || ue == NULL)
           {
             gLog.error("Internal error: file request acknowledgement "
                        "without extended result");
@@ -879,47 +879,6 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
             ftman->sendFiles(fl, ea->port());
           }
         }
-        /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
-            {
-              struct SExtendedAck *ea = e->m_sExtendedAck;
-              if (ea == NULL || ue == NULL)
-              {
-                gLog.error("Internal error: ICQFunctions::doneFcn(): chat or file request acknowledgement without extended result");
-                return;
-              }
-              if (!ea->bAccepted)
-              {
-                 u = gUserManager.FetchUser(m_nUin, LOCK_R);
-                 QString result;
-                 result.sprintf(tr("%s%1 with %2 refused:\n%s%3"), L_TCPxSTR, L_BLANKxSTR);
-                 result.arg(EventDescription(ue)).arg(u->GetAlias()).arg(ea->szResponse);
-                 gUserManager.DropUser(u);
-                 InformUser(this, result);
-              }
-              else
-              {
-                switch (e->m_nSubCommand)
-                {
-                case ICQ_CMDxSUB_CHAT:
-                {
-                  ChatDlg *chatDlg = new ChatDlg(m_nUin, false, ea->nPort);
-                  chatDlg->show();
-                  break;
-                }
-                case ICQ_CMDxSUB_FILE:
-                {
-                  CFileDlg *fileDlg = new CFileDlg(m_nUin,
-                                                   ((CEventFile *)ue)->Filename(),
-                                                   ((CEventFile *)ue)->FileSize(),
-                                                   false, ea->nPort);
-                  fileDlg->show();
-                  break;
-                }
-                default:
-                  break;
-                } // case
-              } // if accepted
-            } // if file or chat*/
         else
         {
           Licq::UserReadGuard u(e->userId());
