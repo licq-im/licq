@@ -58,7 +58,6 @@ using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
 
-const char L_AUTOREPxSTR[]  = "[RPL] ";
 const unsigned short SUBJ_CHARS = 20;
 
 /*---------------------------------------------------------------------------
@@ -85,7 +84,7 @@ CLicqAutoReply::~CLicqAutoReply()
  *-------------------------------------------------------------------------*/
 void CLicqAutoReply::Shutdown()
 {
-  gLog.info("%sShutting down auto reply.\n", L_AUTOREPxSTR);
+  gLog.info("Shutting down auto reply");
   gPluginManager.unregisterGeneralPlugin();
 }
 
@@ -115,7 +114,7 @@ int CLicqAutoReply::Run()
   {
     unsigned s;
     if (!Licq::User::stringToStatus(m_szStatus, s))
-      gLog.warning("%sInvalid startup status.\n", L_AUTOREPxSTR);
+      gLog.warning("Invalid startup status");
     else
       gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);
     free(m_szStatus);
@@ -133,7 +132,7 @@ int CLicqAutoReply::Run()
     nResult = select(m_nPipe + 1, &fdSet, NULL, NULL, NULL);
     if (nResult == -1)
     {
-      gLog.error("%sError in select(): %s\n", L_ERRORxSTR, strerror(errno));
+      gLog.error("Error in select(): %s", strerror(errno));
       m_bExit = true;
     }
     else
@@ -172,27 +171,27 @@ void CLicqAutoReply::ProcessPipe()
 
     case Licq::GeneralPlugin::PipeShutdown:
     {
-    gLog.info("%sExiting.\n", L_AUTOREPxSTR);
+    gLog.info("Exiting");
     m_bExit = true;
     break;
   }
 
     case Licq::GeneralPlugin::PipeDisable:
     {
-    gLog.info("%sDisabling.\n", L_AUTOREPxSTR);
+    gLog.info("Disabling");
     m_bEnabled = false;
     break;
   }
 
     case Licq::GeneralPlugin::PipeEnable:
     {
-    gLog.info("%sEnabling.\n", L_AUTOREPxSTR);
+    gLog.info("Enabling");
     m_bEnabled = true;
     break;
   }
 
   default:
-    gLog.warning("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
+    gLog.warning("Unknown notification type from daemon: %c", buf[0]);
   }
 }
 
@@ -247,8 +246,8 @@ void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
     Licq::UserReadGuard u(userId);
     if (!u.isLocked())
     {
-      gLog.warning("%sInvalid user id received from daemon (%s).\n",
-          L_AUTOREPxSTR, userId.toString().c_str());
+      gLog.warning("Invalid user id received from daemon (%s)",
+          userId.toString().c_str());
       return;
     }
 
@@ -257,7 +256,7 @@ void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
 
   if (e == NULL)
   {
-    gLog.warning("%sInvalid message id (%ld).\n", L_AUTOREPxSTR, nId);
+    gLog.warning("Invalid message id (%ld)", nId);
     return;
   }
 
@@ -279,7 +278,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
 
   if (!POpen(command.c_str()))
   {
-    gLog.warning("%sCould not execute %s\n", L_AUTOREPxSTR, command.c_str());
+    gLog.warning("Could not execute %s", command.c_str());
     return false;
   }
   if (m_bPassMessage)
@@ -301,8 +300,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
   int r = 0;
   if ((r = PClose()) != 0 && m_bFailOnExitCode)
   {
-    gLog.warning("%s%s returned abnormally: exit code %d\n", L_AUTOREPxSTR,
-        command.c_str(), r);
+    gLog.warning("%s returned abnormally: exit code %d", command.c_str(), r);
     return !m_bAbortDeleteOnExitCode;
   }
 
@@ -318,12 +316,12 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
 
   if (tag == 0)
   {
-    gLog.warning("%sSending message to %s (%s) failed.\n", L_AUTOREPxSTR,
+    gLog.warning("Sending message to %s (%s) failed",
         u->getAlias().c_str(), u->accountId().c_str());
   }
   else
   {
-    gLog.info("%sSent autoreply to %s (%s).\n", L_AUTOREPxSTR,
+    gLog.info("Sent autoreply to %s (%s)",
         u->getAlias().c_str(), u->accountId().c_str());
   }
 
