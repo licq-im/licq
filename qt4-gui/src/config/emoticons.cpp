@@ -213,7 +213,7 @@ static QString fullFilename(const QString& dir, const QString& file)
   else if (QFile::exists(base + ".mng"))
     return base + ".mng";
 
-  Licq::gLog.warning("%sUnknown file '%s'.\n", L_WARNxSTR, base.toLatin1().data());
+  Licq::gLog.warning("Unknown file '%s'", base.toLatin1().data());
   return QString::null;
 }
 
@@ -313,8 +313,9 @@ static bool parseXml(const QString& dir, QMap<QChar, QLinkedList<Emoticon> >* em
         }
         else
         {
-          Licq::gLog.warning("%sElement '%s' in '%s' unknown.\n", L_WARNxSTR,
-              string.tagName().toLatin1().data(), xmlfile.fileName().toLatin1().data());
+          Licq::gLog.warning("Element '%s' in '%s' unknown",
+              string.tagName().toLatin1().data(),
+              xmlfile.fileName().toLatin1().data());
         }
       }
     }

@@ -49,7 +49,7 @@ Config::Skin::Skin(const QString& skinName, QObject* parent)
 
 void Config::Skin::loadSkin(const QString& skinName)
 {
-  Licq::gLog.info("%sApplying %s skin", L_INITxSTR, skinName.toLocal8Bit().data());
+  Licq::gLog.info("Applying %s skin", skinName.toLocal8Bit().data());
 
   // Set default values even if skin is valid as skin may not include all settings
   SetDefaultValues();

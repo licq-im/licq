@@ -141,9 +141,9 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
       break;
 
     default:
-      gLog.warning("%sInternal error: SignalManager::ProcessSignal(): "
-          "Unknown signal command received from daemon: %d.\n",
-          L_WARNxSTR, sig->signal());
+      gLog.warning("Internal error: SignalManager::ProcessSignal(): "
+          "Unknown signal command received from daemon: %d",
+          sig->signal());
       break;
   }
 
@@ -200,9 +200,9 @@ void SignalManager::ProcessEvent(Licq::Event* ev)
       break;
 
     default:
-      gLog.warning("%sInternal error: SignalManager::ProcessEvent(): "
-          "Unknown event SNAC received from daemon: 0x%08lX.\n",
-          L_WARNxSTR, ev->SNAC());
+      gLog.warning("Internal error: SignalManager::ProcessEvent(): "
+          "Unknown event SNAC received from daemon: 0x%08lX",
+          ev->SNAC());
       break;
   }
 
@@ -233,7 +233,7 @@ void SignalManager::process()
 
     case Licq::GeneralPlugin::PipeShutdown:
     {
-      gLog.info("%sExiting main window (qt gui).\n", L_ENDxSTR);
+      gLog.info("Exiting main window (qt gui)");
       qApp->quit();
       break;
     }
@@ -243,6 +243,6 @@ void SignalManager::process()
       break;
 
     default:
-      gLog.warning("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);
+      gLog.warning("Unknown notification type from daemon: %c", buf[0]);
   }
 }
