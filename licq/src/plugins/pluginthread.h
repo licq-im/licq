@@ -50,7 +50,7 @@ public:
   ~PluginThread();
 
   /**
-   * Stop thread if startPluin() hasn't been called. Mostly for unit test.
+   * Stop thread if startPlugin() hasn't been called. Mostly for unit test.
    */
   void stop();
 

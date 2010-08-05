@@ -32,8 +32,6 @@
 // Deprecated, to be removed
 const char L_WARNxSTR[]    = "[WRN] ";
 const char L_ERRORxSTR[]   = "[ERR] ";
-const char L_INITxSTR[]    = "[INI] ";
-const char L_ENDxSTR[]     = "[END] ";
 const char L_TCPxSTR[]     = "[TCP] ";
 const char L_SRVxSTR[]     = "[SRV] ";
 const char L_BLANKxSTR[]   = "                ";

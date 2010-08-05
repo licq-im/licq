@@ -216,7 +216,7 @@ void displayFatalError(const char* error, int useLicqLog)
 
 void handleExitSignal(int signal)
 {
-  gLog.info(tr("%sReceived signal %d, exiting.\n"), L_ENDxSTR, signal);
+  gLog.info(tr("Received signal %d, exiting"), signal);
   gDaemon.Shutdown();
 }
 
@@ -346,9 +346,9 @@ bool CLicq::Init(int argc, char **argv)
   // Redirect stdout and stderr if asked to
   if (szRedirect) {
     if (bRedirect_ok)
-      gLog.info(tr("%sOutput redirected to \"%s\".\n"), L_INITxSTR, szRedirect);
+      gLog.info(tr("Output redirected to \"%s\""), szRedirect);
     else
-      gLog.warning(tr("Redirection to \"%s\" failed:\n%s"), szRedirect, strerror(errno));
+      gLog.warning(tr("Redirection to \"%s\" failed: %s"), szRedirect, strerror(errno));
     free (szRedirect);
     szRedirect = NULL;
   }

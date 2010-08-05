@@ -321,8 +321,8 @@ static int fifo_status( int argc, const char *const *argv, void* /* data */)
   unsigned status;
   if (!Licq::User::stringToStatus(szStatus, status))
   {
-    gLog.warning(tr("%s%s %s: command with invalid status \"%s\".\n"),
-              L_WARNxSTR,L_FIFOxSTR,argv[0],szStatus);
+    gLog.warning(tr("%s %s: command with invalid status \"%s\""),
+              L_FIFOxSTR,argv[0],szStatus);
     return -1;
   }
 
@@ -432,8 +432,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
       if (!number.empty())
         d->icqSendSms(userId, number, argv[2]);
       else
-        gLog.error("%sUnable to send SMS to %s, no SMS number found.\n",
-            L_ERRORxSTR, szId);
+        gLog.error("Unable to send SMS to %s, no SMS number found", szId);
     }
     else
       gLog.info(tr("%s `%s': bad protocol. ICQ only allowed"), L_FIFOxSTR, argv[0]);
@@ -472,11 +471,11 @@ static int fifo_redirect ( int argc, const char *const *argv, void* /* data */)
 
   if ( !Redirect(argv[1]) )
   {
-    gLog.warning(tr("%s %s: redirection to \"%s\" failed: %s.\n"),
-              L_WARNxSTR,argv[0], argv[1],strerror(errno));
+    gLog.warning(tr("%s: redirection to \"%s\" failed: %s"),
+        argv[0], argv[1],strerror(errno));
   }
   else
-    gLog.info(tr("%s %s: output redirected to \"%s\".\n"), L_INITxSTR, argv[0],
+    gLog.info(tr("%s: output redirected to \"%s\""), argv[0],
              argv[1]);
 
   return 0;
@@ -539,8 +538,8 @@ static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
   {
     UserId userId(szId, nPPID);
     if (!gUserManager.userExists(userId))
-      gLog.warning(tr("%s %s: user %s not on contact list, not retrieving "
-                "info.\n"), L_WARNxSTR, argv[0], szId);
+      gLog.warning(tr("%s: user %s not on contact list, not retrieving "
+                "info"), argv[0], szId);
     else
     {
       gProtocolManager.requestUserInfo(userId);
@@ -947,17 +946,17 @@ void Fifo::initialize()
   string filename = gDaemon.baseDir() + "licq_fifo";
 
   // Open the fifo
-  gLog.info(tr("%sOpening fifo.\n"), L_INITxSTR);
+  gLog.info(tr("Opening fifo"));
   fifo_fd = open(filename.c_str(), O_RDWR);
   if (fifo_fd == -1)
   {
     if (mkfifo(filename.c_str(), 00600) == -1)
-      gLog.warning(tr("%sUnable to create fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+      gLog.warning(tr("Unable to create fifo: %s"), strerror(errno));
     else
     {
       fifo_fd = open(filename.c_str(), O_RDWR);
       if (fifo_fd == -1)
-        gLog.warning(tr("%sUnable to open fifo:\n%s%s.\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+        gLog.warning(tr("Unable to open fifo: %s"), strerror(errno));
     }
   }
   fifo_fs = NULL;
@@ -967,7 +966,8 @@ void Fifo::initialize()
     fstat(fifo_fd, &buf);
     if (!S_ISFIFO(buf.st_mode))
     {
-      gLog.warning(tr("%s%s is not a FIFO, disabling fifo support.\n"), L_WARNxSTR, filename.c_str());
+      gLog.warning(tr("%s is not a FIFO, disabling fifo support"),
+          filename.c_str());
       close(fifo_fd);
       fifo_fd = -1;
     }

@@ -174,7 +174,7 @@ bool IcqProtocol::start()
   CPacket::SetLocalPort(s->getLocalPort());
   gSocketManager.DropSocket(s);
 
-  gLog.info(tr("%sSpawning daemon threads.\n"), L_INITxSTR);
+  gLog.info(tr("Spawning daemon threads"));
   nResult = pthread_create(&thread_monitorsockets, NULL, &MonitorSockets_tep, this);
   if (nResult != 0)
   {

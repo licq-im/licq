@@ -69,8 +69,8 @@ Owner::Owner(const UserId& id)
   filename = gDaemon.baseDir() + filename;
   if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) == -1)
   {
-    gLog.warning(tr("%sUnable to set %s to mode 0600. Your password is vulnerable if stored locally.\n"),
-        L_WARNxSTR, filename.c_str());
+    gLog.warning(tr("Unable to set %s to mode 0600. Your password is vulnerable if stored locally."),
+        filename.c_str());
   }
 
   // And finally our favorite function
@@ -93,7 +93,7 @@ Owner::Owner(const UserId& id)
   myConf.get("SSCount", mySsCount, 0);
   myConf.get("PDINFO", myPDINFO, 0);
 
-  gLog.info(tr("%sOwner configuration for %s.\n"), L_INITxSTR, myId.toString().c_str());
+  gLog.info(tr("Loading owner configuration for %s"), myId.toString().c_str());
 
   setHistoryFile(gDaemon.baseDir() + HistoryDir + "owner." + myId.accountId() +
       "." + p + HistoryExt);
@@ -112,8 +112,8 @@ Owner::~Owner()
   // Save the current auto response
   if (!myConf.loadFile())
   {
-     gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
+     gLog.error("Error opening '%s' for reading. See log for details.",
+         myConf.filename().c_str());
      return;
   }
   myConf.setSection("user");
@@ -123,8 +123,8 @@ Owner::~Owner()
   myConf.set("PDINFO", myPDINFO);
   if (!myConf.writeFile())
   {
-    gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
+    gLog.error("Error opening '%s' for writing. See log for details.",
+        myConf.filename().c_str());
     return;
   }
 }
@@ -155,8 +155,8 @@ void Owner::SaveLicqInfo()
 
   if (!myConf.loadFile())
   {
-     gLog.error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
+     gLog.error("Error opening '%s' for reading. See log for details.",
+         myConf.filename().c_str());
      return;
   }
   myConf.setSection("user");
@@ -177,8 +177,8 @@ void Owner::SaveLicqInfo()
 
   if (!myConf.writeFile())
   {
-    gLog.error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-        L_ERRORxSTR, myConf.filename().c_str(), L_BLANKxSTR);
+    gLog.error("Error opening '%s' for writing. See log for details.",
+        myConf.filename().c_str());
     return;
   }
 }
@@ -196,9 +196,8 @@ void Licq::Owner::SetPicture(const char *f)
     SetPicturePresent(false);
     if (remove(filename.c_str()) != 0 && errno != ENOENT)
     {
-      gLog.error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
-          L_ERRORxSTR, myAlias.c_str(), filename.c_str(), L_BLANKxSTR,
-                         strerror(errno));
+      gLog.error("Unable to delete %s's picture file (%s): %s",
+          myAlias.c_str(), filename.c_str(), strerror(errno));
     }
   }
   else if (strcmp(f, filename.c_str()) == 0)
@@ -211,16 +210,16 @@ void Licq::Owner::SetPicture(const char *f)
     int source = open(f, O_RDONLY);
     if (source == -1)
     {
-      gLog.error("%sUnable to open source picture file (%s):\n%s%s.\n",
-                       L_ERRORxSTR, f, L_BLANKxSTR, strerror(errno));
+      gLog.error("Unable to open source picture file (%s): %s",
+          f, strerror(errno));
       return;
     }
 
     int dest = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 00664);
     if (dest == -1)
     {
-      gLog.error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-          filename.c_str(), L_BLANKxSTR, strerror(errno));
+      gLog.error("Unable to open picture file (%s): %s",
+          filename.c_str(), strerror(errno));
       close(source);
       return;
     }
@@ -237,16 +236,14 @@ void Licq::Owner::SetPicture(const char *f)
       }
       else if (s == -1)
       {
-        gLog.error("%sError reading from %s:\n%s%s.\n", L_ERRORxSTR, f,
-                                         L_BLANKxSTR, strerror(errno));
+        gLog.error("Error reading from %s: %s", f, strerror(errno));
         SetPicturePresent(false);
         break;
       }
 
       if (write(dest, buf, s) != s)
       {
-        gLog.error("%sError writing to %s:\n%s%s.\n", L_ERRORxSTR, f,
-                                         L_BLANKxSTR, strerror(errno));
+        gLog.error("Error writing to %s: %s", f, strerror(errno));
         SetPicturePresent(false);
         break;
       }

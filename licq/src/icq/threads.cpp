@@ -952,7 +952,7 @@ extern list<unsigned short> LP_Ids;
 void *Shutdown_tep(void* /* p */)
 {
   // Shutdown
-  gLog.info(tr("%sShutting down daemon.\n"), L_ENDxSTR);
+  gLog.info(tr("Shutting down daemon"));
 
   // Send shutdown signal to all the plugins
   LicqDaemon::gDaemon.shutdownPlugins();
