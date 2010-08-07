@@ -1830,13 +1830,13 @@ protected:
 class CPChat_Color : public CPacketChat  // First info packet after handshake
 {
 public:
-  CPChat_Color(const char *szLocalName, unsigned short nLocalPort,
+  CPChat_Color(const std::string& localName, unsigned short nLocalPort,
                int nColorForeRed, int nColorForeGreen, int nColorForeBlue,
                int nColorBackRed, int nColorBackBlue, int nColorBackGreen);
   CPChat_Color(CBuffer &);
 
   // Accessors
-  const char *Name() { return m_szName; }
+  const std::string& name() const { return myName; }
   const Licq::UserId& userId() const { return myUserId; }
   unsigned short Port() { return m_nPort; }
   int ColorForeRed() { return m_nColorForeRed; }
@@ -1850,7 +1850,7 @@ public:
 
 protected:
   Licq::UserId myUserId;
-  char *m_szName;
+  std::string myName;
   unsigned short m_nPort;
   int m_nColorForeRed;
   int m_nColorForeGreen;
@@ -1867,13 +1867,13 @@ protected:
 class CPChat_ColorFont : public CPacketChat  // Second info packet after handshake
 {
 public:
-  CPChat_ColorFont(const char *szLocalName, unsigned short nLocalPort,
+  CPChat_ColorFont(const std::string& localName, unsigned short nLocalPort,
      unsigned short nSession,
      int nColorForeRed, int nColorForeGreen, int nColorForeBlue,
      int nColorBackRed, int nColorBackBlue, int nColorBackGreen,
      unsigned long nFontSize,
      bool bFontBold, bool bFontItalic, bool bFontUnderline, bool bFontStrikeOut,
-     const char *szFontFamily, unsigned char nFontEncoding,
+      const std::string& fontFamily, unsigned char nFontEncoding,
      unsigned char nFontStyle, ChatClientPList &clientList);
 
   CPChat_ColorFont(CBuffer &);
@@ -1881,7 +1881,7 @@ public:
   virtual ~CPChat_ColorFont();
 
   // Accessors
-  const char *Name() { return m_szName; }
+  const std::string& name() const { return myName; }
   const Licq::UserId& userId() const { return myUserId; }
   unsigned short Session() { return m_nSession; }
   int ColorForeRed() { return m_nColorForeRed; }
@@ -1897,7 +1897,7 @@ public:
   bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
   bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
   unsigned long FontFace() { return m_nFontFace; }
-  const char *FontFamily() { return m_szFontFamily; }
+  const std::string& fontFamily() const { return myFontFamily; }
   unsigned char FontEncoding() { return m_nFontEncoding; }
   unsigned char FontStyle() { return m_nFontStyle; }
   ChatClientList &ChatClients()  { return chatClients; }
@@ -1905,7 +1905,7 @@ public:
 protected:
   Licq::UserId myUserId;
   unsigned short m_nSession;
-  char *m_szName;
+  std::string myName;
   int m_nColorForeRed;
   int m_nColorForeGreen;
   int m_nColorForeBlue;
@@ -1915,7 +1915,7 @@ protected:
   unsigned short m_nPort;
   unsigned long m_nFontSize;
   unsigned long m_nFontFace;
-  char *m_szFontFamily;
+  std::string myFontFamily;
   unsigned char m_nFontEncoding, m_nFontStyle;
   ChatClientList chatClients;
 };
@@ -1930,7 +1930,7 @@ public:
    CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
                unsigned long nFontSize,
                bool bFontBold, bool bFontItalic, bool bFontUnderline,
-               bool bFontStrikeOut, const char *szFontFamily,
+      bool bFontStrikeOut, const std::string& fontFamily,
                unsigned char nFontEncoding, unsigned char nFontStyle);
    CPChat_Font(CBuffer &);
    virtual ~CPChat_Font();
@@ -1943,7 +1943,7 @@ public:
   bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
   bool FontStrikeOut() { return m_nFontFace & FONT_STRIKEOUT; }
   unsigned long FontFace() { return m_nFontFace; }
-  const char *FontFamily() { return m_szFontFamily; }
+  const std::string& fontFamily() const { return myFontFamily; }
   unsigned char FontEncoding() { return m_nFontEncoding; }
   unsigned char FontStyle() { return m_nFontStyle; }
 
@@ -1952,7 +1952,7 @@ protected:
   unsigned short m_nSession;
   unsigned long m_nFontSize;
   unsigned long m_nFontFace;
-  char *m_szFontFamily;
+  std::string myFontFamily;
   unsigned char m_nFontEncoding, m_nFontStyle;
 };
 
@@ -1961,14 +1961,14 @@ protected:
 class CPChat_ChangeFontFamily : public CPacketChat
 {
 public:
-  CPChat_ChangeFontFamily(const char *szFamily);
+  CPChat_ChangeFontFamily(const std::string& fontFamily);
   CPChat_ChangeFontFamily(CBuffer &);
-  virtual ~CPChat_ChangeFontFamily() { if (m_szFontFamily != NULL) free(m_szFontFamily); }
+  virtual ~CPChat_ChangeFontFamily() { }
 
-  const char *FontFamily()  { return m_szFontFamily; }
+  const std::string& fontFamily() const { return myFontFamily; }
 
 protected:
-  char *m_szFontFamily;
+  std::string myFontFamily;
 };
 
 

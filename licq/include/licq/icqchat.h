@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <deque>
 #include <list>
+#include <string>
 
 #include "pipe.h"
 #include "socket.h"
@@ -253,10 +254,10 @@ class CChatUser
 public:
   const Licq::UserId& userId() const { return myUserId; }
   unsigned long ToKick()       { return nToKick; }
-  const char *Name()           { return chatname; }
+  const std::string& name() const { return myName; }
   int *ColorFg()               { return colorFore; }
   int *ColorBg()               { return colorBack; }
-  char *FontFamily()           { return fontFamily; }
+  const std::string& fontFamily() const { return myFontFamily; }
   unsigned char FontEncoding() { return fontEncoding; }
   unsigned char FontStyle()    { return fontStyle; }
   unsigned short FontSize()    { return fontSize; }
@@ -274,9 +275,9 @@ protected:
 
   Licq::UserId myUserId;
   unsigned long nToKick;
-  char chatname[32];
+  std::string myName;
   int colorFore[3], colorBack[3];
-  char fontFamily[64];
+  std::string myFontFamily;
   unsigned char fontEncoding, fontStyle;
   unsigned short fontSize;
   unsigned long fontFace;
@@ -286,7 +287,7 @@ protected:
   Licq::TCPSocket sock;
   std::deque <unsigned char> chatQueue;
   unsigned short state;
-  char linebuf[1024];
+  std::string myLinebuf;
 
   pthread_mutex_t mutex;
 
@@ -305,17 +306,17 @@ typedef std::list<CChatUser *> ChatUserList;
 class CChatEvent
 {
 public:
-  CChatEvent(unsigned char, CChatUser *, char * = NULL);
+  CChatEvent(unsigned char, CChatUser *, const std::string& data = "");
   ~CChatEvent();
 
   unsigned char Command() { return m_nCommand; }
   CChatUser *Client() { return m_pUser; }
-  char *Data() { return m_szData; }
+  const std::string& data() const { return myData; }
 
 protected:
   unsigned char m_nCommand;
   CChatUser *m_pUser;
-  char *m_szData;
+  std::string myData;
   bool m_bLocked;
 
 friend class CChatManager;
@@ -332,7 +333,7 @@ class CChatManager
 {
 public:
   CChatManager(unsigned long nUin,
-     const char *fontFamily = "courier",
+      const std::string& fontFamily = "courier",
      unsigned char fontEncoding = ENCODING_DEFAULT,
      unsigned char fontStyle = STYLE_DONTCARE | STYLE_DEFAULTxPITCH,
      unsigned short fontSize = 12, bool fontBold = false,
@@ -345,12 +346,12 @@ public:
   void StartAsClient(unsigned short nPort);
 
   void CloseChat();
-  char *ClientsStr();
+  std::string clientsString() const;
   unsigned short ConnectedUsers()  { return chatUsers.size(); }
 
   uint16_t LocalPort() const            { return chatServer.getLocalPort(); }
-  const char *Name()  { return m_szName; }
-  const char *FontFamily()  { return m_szFontFamily; }
+  const std::string& name() const { return myName; }
+  const std::string& fontFamily() const { return myFontFamily; }
   unsigned char FontEncoding() { return m_nFontEncoding; }
   unsigned char FontStyle() { return m_nFontStyle; }
   unsigned long FontFace()  { return m_nFontFace; }
@@ -361,7 +362,7 @@ public:
   bool Sleep()  { return m_bSleep; }
   bool Focus()  { return m_bFocus; }
 
-  void ChangeFontFamily(const char *, unsigned char, unsigned char);
+  void changeFontFamily(const std::string& fontFamily, unsigned char, unsigned char);
   void ChangeFontSize(unsigned short);
   void ChangeFontFace(bool, bool, bool, bool);
   void ChangeColorFg(int, int, int);
@@ -405,7 +406,8 @@ protected:
   CChatClient *m_pChatClient;
 
   int m_nColorFore[3], m_nColorBack[3];
-  char m_szFontFamily[64], m_szName[64];
+  std::string myName;
+  std::string myFontFamily;
   unsigned char m_nFontEncoding, m_nFontStyle;
   unsigned short m_nFontSize;
   unsigned long m_nFontFace;

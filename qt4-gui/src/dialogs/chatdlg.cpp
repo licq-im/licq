@@ -350,7 +350,7 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
   unsigned char encoding = UserCodec::charsetForName(codec->name());
   //TODO in daemon
   chatman = new CChatManager(
-      myId.toULong(), fi.family().toLocal8Bit(), encoding, style,
+      myId.toULong(), fi.family().toLocal8Bit().data(), encoding, style,
       fi.pointSize(), fi.bold(), fi.italic(), fi.underline(), fi.strikeOut());
 
   sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
@@ -369,7 +369,7 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
      chatman->ColorFg()[1], chatman->ColorFg()[2]));
   mleIRCRemote->setBackground(QColor(chatman->ColorBg()[0],
      chatman->ColorBg()[1], chatman->ColorBg()[2]));
-  chatname = QString::fromLocal8Bit(chatman->Name());
+  chatname = QString::fromLocal8Bit(chatman->name().c_str());
   lstUsers->addItem(chatname);
   lblLocal->setText(tr("Local - %1").arg(chatname));
 
@@ -459,7 +459,7 @@ void ChatDlg::sendFontInfo()
 
   unsigned char encoding = UserCodec::charsetForName(codec->name());
 
-  chatman->ChangeFontFamily(fi.family().toLocal8Bit(), encoding, style);
+  chatman->changeFontFamily(fi.family().toLocal8Bit().data(), encoding, style);
 }
 
 // -----------------------------------------------------------------------------
@@ -582,7 +582,7 @@ void ChatDlg::updateRemoteStyle()
         f.setStyleHint(QFont::AnyStyle);
         break;
       }
-      f.setFamily(iter->u->FontFamily());
+      f.setFamily(iter->u->fontFamily().c_str());
       f.setPointSize(iter->u->FontSize());
       f.setBold(iter->u->FontBold());
       f.setItalic(iter->u->FontItalic());
@@ -730,7 +730,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_DISCONNECTION:
       {
-        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
+        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->name().c_str());
 
         if (n.isEmpty())
           n = u->userId().toString().c_str();
@@ -741,7 +741,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_CONNECTION:
       {
-        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
+        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->name().c_str());
 
         // Add the user to the listbox
         lstUsers->addItem(n);
@@ -774,10 +774,10 @@ void ChatDlg::slot_chat()
 
       case CHAT_NEWLINE:
       {
-        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
+        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->name().c_str());
 
         // add to IRC box
-        mleIRCRemote->append(n + QString::fromLatin1("> ") + UserCodec::codecForCChatUser(u)->toUnicode(e->Data()));
+        mleIRCRemote->append(n + QString::fromLatin1("> ") + UserCodec::codecForCChatUser(u)->toUnicode(e->data().c_str()));
         mleIRCRemote->GotoEnd();
         GetWindow(u)->appendNoNewLine("\n");
         GetWindow(u)->GotoEnd();
@@ -852,7 +852,7 @@ void ChatDlg::slot_chat()
             break;
           }
 
-          f.setFamily(u->FontFamily());
+          f.setFamily(u->fontFamily().c_str());
 
           GetWindow(u)->setFont(f);
         }
@@ -895,7 +895,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_CHARACTER:
       {
-        GetWindow(u)->appendNoNewLine(UserCodec::codecForCChatUser(u)->toUnicode(e->Data()));
+        GetWindow(u)->appendNoNewLine(UserCodec::codecForCChatUser(u)->toUnicode(e->data().c_str()));
         break;
       }
 
@@ -947,7 +947,7 @@ void ChatDlg::chatClose(CChatUser* u)
     // Remove the user from the list box
     for (int i = 0; i < lstUsers->count(); i++)
     {
-      if (lstUsers->item(i)->text() == u->Name())
+      if (lstUsers->item(i)->text() == u->name().c_str())
       {
         lstUsers->removeItemWidget(lstUsers->item(i));
         break;
@@ -1030,16 +1030,12 @@ void ChatDlg::UpdateRemotePane()
 
 QString ChatDlg::ChatClients()
 {
-  char* sz = chatman->ClientsStr();
-  QString n = sz;
-  delete [] sz;
-  return n;
+  return chatman->clientsString().c_str();
 }
 
 QString ChatDlg::ChatName()
 {
-  QString n = chatman->Name();
-  return n;
+  return chatman->name().c_str();
 }
 
 
