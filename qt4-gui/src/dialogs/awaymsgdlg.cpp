@@ -24,6 +24,8 @@
 
 #include "awaymsgdlg.h"
 
+#include <boost/foreach.hpp>
+
 #include <QCloseEvent>
 #include <QDialogButtonBox>
 #include <QEvent>
@@ -156,6 +158,20 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
     {
       setWindowTitle(QString(tr("Set %1 Response for all accounts"))
           .arg(statusStr));
+
+      // Check all owners for existing away messages
+      Licq::OwnerListGuard ownerList;
+      BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
+      {
+        Licq::OwnerReadGuard o(owner);
+
+        if (!o->autoResponse().empty())
+        {
+          const QTextCodec* codec = UserCodec::defaultEncoding();
+          autoResponse = codec->toUnicode(o->autoResponse().c_str());
+          break;
+        }
+      }
     }
     else
     {
