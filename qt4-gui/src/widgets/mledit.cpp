@@ -218,12 +218,6 @@ void MLEdit::keyPressEvent(QKeyEvent* event)
     }
   }
 
-  if (event->key() == Qt::Key_Delete && event->modifiers() == Qt::ShiftModifier)
-    return cut();
-  if (event->key() == Qt::Key_Insert && event->modifiers() == Qt::ShiftModifier)
-    return paste();
-  if (event->key() == Qt::Key_Insert && event->modifiers() == Qt::ControlModifier)
-    return copy();
   if (event->key() == Qt::Key_PageDown && event->modifiers() == Qt::ShiftModifier)
   {
     emit scrollDownPressed();
