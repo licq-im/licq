@@ -392,7 +392,7 @@ void CMSN::Run()
   int nResult = pthread_create(&m_tMSNPing, NULL, &MSNPing_tep, this);
   if (nResult)
   {
-    gLog.error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    gLog.error("Unable to start ping thread: %s", strerror(nResult));
   }
   
   nResult = 0;
@@ -450,7 +450,7 @@ void CMSN::Run()
           else
           {
             // Time to reconnect
-            gLog.info("%sDisconnected from server, reconnecting.\n", L_MSNxSTR);
+            gLog.info("Disconnected from server, reconnecting");
             sleep(1);
             int nSD = m_nServerSocket;
             m_nServerSocket = -1;
@@ -540,7 +540,7 @@ void CMSN::ProcessPipe()
     }
 
     case Licq::ProtocolPlugin::PipeShutdown:
-    gLog.info("%sExiting.\n", L_MSNxSTR);
+    gLog.info("Exiting");
     m_bExit = true;
     break;
   }

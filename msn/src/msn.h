@@ -38,8 +38,6 @@ class PluginSignal;
 class ProtocolSignal;
 }
 
-#define L_MSNxSTR "[MSN] "
-
 const char CONTACT_LIST[] = "FL";
 const char ALLOW_LIST[] = "AL";
 const char BLOCK_LIST[] = "BL";
