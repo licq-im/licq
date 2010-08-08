@@ -137,7 +137,8 @@ void Jabber::processSignal(Licq::ProtocolSignal* signal)
       doRenameUser(static_cast<Licq::ProtoRenameUserSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalChangeUserGroups:
-      doChangeUserGroups(static_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
+      doChangeUserGroups(
+          static_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalSendMessage:
       doSendMessage(static_cast<Licq::ProtoSendMessageSignal*>(signal));
@@ -266,7 +267,8 @@ void Jabber::doSendMessage(Licq::ProtoSendMessageSignal* signal)
   assert(myClient != NULL);
   myClient->sendMessage(signal->userId().accountId(), signal->message());
 
-  Licq::EventMsg* message = new Licq::EventMsg(signal->message().c_str(), 0, Licq::UserEvent::TimeNow, 0);
+  Licq::EventMsg* message = new Licq::EventMsg(
+      signal->message().c_str(), 0, Licq::UserEvent::TimeNow, 0);
   message->setIsReceiver(false);
 
   Licq::Event* event = new Licq::Event(signal->eventId(), 0, NULL,
@@ -307,7 +309,8 @@ void Jabber::doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal)
     if (!u.isLocked())
       return;
     const Licq::UserGroupList groups = u->GetGroups();
-    for (Licq::UserGroupList::const_iterator i = groups.begin(); i != groups.end(); ++i)
+    for (Licq::UserGroupList::const_iterator i = groups.begin();
+         i != groups.end(); ++i)
     {
       string groupName = Licq::gUserManager. GetGroupNameFromGroup(*i);
       if (!groupName.empty())

@@ -60,7 +60,8 @@ public:
   void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);
   void addUser(const std::string& user, bool notify);
-  void changeUserGroups(const std::string& user, const gloox::StringList& groups);
+  void changeUserGroups(const std::string& user,
+                        const gloox::StringList& groups);
   void removeUser(const std::string& user);
   void renameUser(const std::string& user, const std::string& newName);
   void grantAuthorization(const std::string& user);
@@ -94,7 +95,8 @@ public:
   void handleRosterError(const gloox::IQ& iq);
 
   // gloox::MessageHandler
-  void handleMessage(const gloox::Message& msg, gloox::MessageSession* session);
+  void handleMessage(const gloox::Message& msg,
+                     gloox::MessageSession* session);
 
   // gloox::LogHandler
   void handleLog(gloox::LogLevel level, gloox::LogArea area,
