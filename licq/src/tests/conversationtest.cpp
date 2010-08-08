@@ -106,4 +106,7 @@ TEST(ConvoManager, convoList)
   EXPECT_TRUE(gConvoManager.remove(convoId1));
   EXPECT_EQ(nullConvo, gConvoManager.get(convoId1));
   EXPECT_EQ(convo2, gConvoManager.get(convoId2));
+
+  // Cleanup
+  gConvoManager.remove(convoId2);
 }
