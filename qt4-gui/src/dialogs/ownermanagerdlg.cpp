@@ -115,10 +115,8 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   // Show information to the user
   if (Licq::gUserManager.NumOwners() == 0)
   {
-    InformUser(this, tr("From the Account Manager dialog you are able to add"
-        " and register your accounts.\n"
-        "Currently, only one account per protocol is supported, but this will"
-        " be changed in future versions."));
+    InformUser(this, tr("From the Account Manager dialog you can add your accounts or register a new account.\n"
+        "Note that only one account per protocol is supported in Licq."));
   }
 
   show();
