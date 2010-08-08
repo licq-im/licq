@@ -175,7 +175,7 @@ void OwnerManagerDlg::addOwner()
 void OwnerManagerDlg::registerOwner()
 {
   Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(LICQ_PPID);
-  if (!oldOwnerId.isValid())
+  if (oldOwnerId.isValid())
   {
     QString buf = tr("You are currently registered as\n"
         "UIN (User ID): %1\n"
