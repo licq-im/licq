@@ -102,8 +102,6 @@ SystemMenu::SystemMenu(QWidget* parent)
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmSeparator = myOwnerAdmMenu->addSeparator();
   myAccountManagerAction = myOwnerAdmMenu->addAction(tr("&Account Manager..."), this, SLOT(showOwnerManagerDlg()));
-  myIcqSecurityAction = myOwnerAdmMenu->addAction(tr("ICQ &Security Options..."), this, SLOT(showSecurityDlg()));
-  myIcqRandomChatGroupAction = myOwnerAdmMenu->addAction(tr("ICQ &Random Chat Group..."), this, SLOT(showRandomChatGroupDlg()));
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmMenu->addMenu(myDebugMenu);
 
@@ -251,8 +249,6 @@ void SystemMenu::setIcqEntriesVisible(bool visible)
   myHasIcqOwner = visible;
   myIcqFollowMeAction->setVisible(visible);
   myIcqFollowMeSeparator->setVisible(visible);
-  myIcqSecurityAction->setVisible(visible);
-  myIcqRandomChatGroupAction->setVisible(visible);
   myIcqRandomChatAction->setVisible(visible);
 }
 
@@ -554,16 +550,6 @@ void SystemMenu::showOwnerManagerDlg()
   OwnerManagerDlg::showOwnerManagerDlg();
 }
 
-void SystemMenu::showSecurityDlg()
-{
-  new SecurityDlg();
-}
-
-void SystemMenu::showRandomChatGroupDlg()
-{
-  new SetRandomChatGroupDlg();
-}
-
 void SystemMenu::showAddUserDlg()
 {
   new AddUserDlg();
@@ -627,6 +613,11 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
   myOwnerAdmMenu = new QMenu(protoName);
   myOwnerAdmInfoAction = myOwnerAdmMenu->addAction(tr("&Info..."), this, SLOT(viewInfo()));
   myOwnerAdmHistoryAction = myOwnerAdmMenu->addAction(tr("View &History..."), this, SLOT(viewHistory()));
+  if (ppid == LICQ_PPID)
+  {
+    myOwnerAdmMenu->addAction(tr("&Security Options..."), this, SLOT(showSecurityDlg()));
+    myOwnerAdmMenu->addAction(tr("&Random Chat Group..."), this, SLOT(showRandomChatGroupDlg()));
+  }
 
   // Status sub menu
   myStatusMenu = new QMenu(protoName);
@@ -726,6 +717,16 @@ void OwnerData::viewInfo()
 void OwnerData::viewHistory()
 {
   new HistoryDlg(myUserId);
+}
+
+void OwnerData::showSecurityDlg()
+{
+  new SecurityDlg();
+}
+
+void OwnerData::showRandomChatGroupDlg()
+{
+  new SetRandomChatGroupDlg();
 }
 
 void OwnerData::setStatus(QAction* action)

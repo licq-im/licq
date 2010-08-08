@@ -133,8 +133,6 @@ private slots:
   void updateAllUsersInGroup();
   void saveAllUsers();
   void showOwnerManagerDlg();
-  void showSecurityDlg();
-  void showRandomChatGroupDlg();
   void showAddUserDlg();
   void showAddGroupDlg();
   void showSearchUserDlg();
@@ -168,8 +166,6 @@ private:
 
   // Actions on system menu
   QAction* myAccountManagerAction;
-  QAction* myIcqSecurityAction;
-  QAction* myIcqRandomChatGroupAction;
 
   // Actions on user menu
   QAction* myAddGroupAction;
@@ -286,6 +282,8 @@ private slots:
   void aboutToShowStatusMenu();
   void viewInfo();
   void viewHistory();
+  void showSecurityDlg();
+  void showRandomChatGroupDlg();
   void setStatus(QAction* action);
   void toggleInvisibleStatus();
 
