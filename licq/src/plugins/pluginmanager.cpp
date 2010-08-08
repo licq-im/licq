@@ -56,7 +56,7 @@ Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 
 
 PluginManager::PluginManager() :
-  myNextPluginId(1),
+  myNextPluginId(DaemonId + 1),
   myPluginEventHandler(myGeneralPlugins, myGeneralPluginsMutex,
                        myProtocolPlugins, myProtocolPluginsMutex)
 {
@@ -89,14 +89,17 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       throw std::exception();
     }
 
-    // Give plugin a unique ID
+    // Lock both to avoid race for myNextPluginId
+    MutexLocker generalLocker(myGeneralPluginsMutex);
+    MutexLocker protocolLocker(myProtocolPluginsMutex);
+
+    // Give plugin a unique ID and then directly unlock protocol lock
     plugin->setId(myNextPluginId++);
+    protocolLocker.unlock();
 
     if (keep)
-    {
-      MutexLocker locker(myGeneralPluginsMutex);
       myGeneralPlugins.push_back(plugin);
-    }
+
     return plugin;
   }
   catch (const DynamicLibrary::Exception& ex)
@@ -136,24 +139,29 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
       throw std::exception();
     }
 
-    // Give plugin a unique ID
-    plugin->setId(myNextPluginId++);
+    // Lock both to avoid race for myNextPluginId
+    MutexLocker generalLocker(myGeneralPluginsMutex);
+    MutexLocker protocolLocker(myProtocolPluginsMutex);
 
     // Check if the plugin is already loaded
-    MutexLocker locker(myProtocolPluginsMutex);
     BOOST_FOREACH(ProtocolPlugin::Ptr proto, myProtocolPlugins)
     {
       if (proto->getProtocolId() == plugin->getProtocolId())
         throw std::exception();
     }
 
+    // Give plugin a unique ID and then directly unlock general lock
+    plugin->setId(myNextPluginId++);
+    generalLocker.unlock();
+
     if (keep)
       myProtocolPlugins.push_back(plugin);
-    locker.unlock();
+    protocolLocker.unlock();
 
     // Let the plugins know about the new protocol plugin
     myPluginEventHandler.pushGeneralSignal(
-        new Licq::PluginSignal(Licq::PluginSignal::SignalNewProtocol, plugin->getProtocolId()));
+        new Licq::PluginSignal(Licq::PluginSignal::SignalNewProtocol,
+                               plugin->getProtocolId()));
 
     return plugin;
   }
@@ -247,7 +255,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
 
   // 0 means daemon
   if (exitId == 0)
-    return 0;
+    return DaemonId;
 
   // Check general plugins first
   for (GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();

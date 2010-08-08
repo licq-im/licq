@@ -38,7 +38,8 @@ namespace LicqDaemon
 class PluginManager : public Licq::PluginManager
 {
 public:
-  static const unsigned MaxWaitPlugin = 10;
+  static const unsigned int MaxWaitPlugin = 10;
+  static const unsigned short DaemonId = 0;
 
   PluginManager();
   ~PluginManager();
@@ -61,7 +62,7 @@ public:
    *        Licq::Exception is thrown.
    * @throw Licq::Exception if there are no plugins to wait for or if the
    *        timeout expires before a plugin exits.
-   * @return The id of the plugin that exited, or 0 for the daemon.
+   * @return The id of the plugin that exited, or DaemonId for the daemon.
    */
   unsigned short waitForPluginExit(unsigned int timeout = 0);
 

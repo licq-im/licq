@@ -313,7 +313,8 @@ bool CLicq::Init(int argc, char **argv)
         bFork = true;
         break;
       case 'v':  // show version
-        printf(tr("%s version %s, compiled on %s\n"), PACKAGE, LICQ_VERSION_STRING, __DATE__);
+        printf(tr("%s version %s, compiled on %s\n"),
+               PACKAGE, LICQ_VERSION_STRING, __DATE__);
         return false;
         break;
       }
@@ -370,8 +371,8 @@ bool CLicq::Init(int argc, char **argv)
   if ( (access(gDaemon.baseDir().c_str(), F_OK) < 0 || bForceInit) && !Install() )
     return false;
 
-  // FIXME: ICQ should be put into its own plugin. This is just a dummy
-  // plugin. It can't really be stopped...
+  // ICQ-PLUGIN: Remove when ICQ is put into its own plugin. This is just a
+  // dummy plugin. It can't really be stopped.
   gPluginManager.loadProtocolPlugin("", true, true);
 
   // Load up the plugins
@@ -534,7 +535,8 @@ bool CLicq::Init(int argc, char **argv)
   if (!bHelp && !bCmdLineProtoPlugins)
   {
     unsigned nNumProtoPlugins = 0;
-    if (licqConf.setSection("plugins", false) && licqConf.get("NumProtoPlugins", nNumProtoPlugins) && nNumProtoPlugins > 0)
+    if (licqConf.setSection("plugins", false)
+        && licqConf.get("NumProtoPlugins", nNumProtoPlugins))
     {
       char szKey[20];
       for (unsigned i = 0; i < nNumProtoPlugins; i++)
@@ -797,7 +799,7 @@ int CLicq::Main()
         gPluginManager.waitForPluginExit(PluginManager::MaxWaitPlugin);
       else
       {
-        if (gPluginManager.waitForPluginExit() == 0)
+        if (gPluginManager.waitForPluginExit() == PluginManager::DaemonId)
         {
           bDaemonShutdown = true;
           continue;
@@ -867,11 +869,13 @@ void CLicq::SaveLoadedPlugins()
   Licq::ProtocolPluginsList protocols;
   gPluginManager.getProtocolPluginsList(protocols);
 
+  // ICQ-PLUGIN: Remove -1
   licqConf.set("NumProtoPlugins", (protocols.size() - 1));
 
   i = 1;
   BOOST_FOREACH(ProtocolPlugin::Ptr plugin, protocols)
   {
+    // ICQ-PLUGIN: Remove if
     if (!plugin->getLibraryName().empty())
     {
       sprintf(szKey, "ProtoPlugin%d", i++);
