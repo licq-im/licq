@@ -3786,7 +3786,7 @@ void IcqProtocol::StupidChatLinkageFix()
 {
   CChatManager* chatman = new CChatManager(0);
   delete chatman;
-  CFileTransferManager* ftman = new CFileTransferManager(0);
+  CFileTransferManager* ftman = new CFileTransferManager(Licq::UserId());
   delete ftman;
 }
 

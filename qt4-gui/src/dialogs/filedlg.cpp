@@ -136,7 +136,7 @@ FileDlg::FileDlg(const Licq::UserId& userId, QWidget* parent)
   hbox->addWidget(btnCancel);
 
   //TODO fix this
-  ftman = new CFileTransferManager(myId.toLatin1().data());
+  ftman = new CFileTransferManager(myUserId);
   ftman->SetUpdatesEnabled(2);
   sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));
@@ -286,7 +286,7 @@ void FileDlg::slot_ft()
     {
       case FT_STARTxBATCH:
       {
-        setWindowTitle(QString(tr("Licq - File Transfer (%1)")).arg(codec->toUnicode(ftman->RemoteName())));
+        setWindowTitle(QString(tr("Licq - File Transfer (%1)")).arg(codec->toUnicode(ftman->remoteName().c_str())));
         nfoTotalFiles->setText(QString("%1 / %2").arg(1).arg(ftman->BatchFiles()));
         nfoBatchSize->setText(encodeFSize(ftman->BatchSize()));
         barBatchTransfer->setMaximum(ftman->BatchSize() / 1024);
@@ -325,9 +325,9 @@ void FileDlg::slot_ft()
       {
         slot_update();
         if (ftman->isReceiver())
-          mleStatus->append(tr("Received %1 from %2 successfully.").arg(QFile::decodeName(e->fileName().c_str())).arg(codec->toUnicode(ftman->RemoteName())));
+          mleStatus->append(tr("Received %1 from %2 successfully.").arg(QFile::decodeName(e->fileName().c_str())).arg(codec->toUnicode(ftman->remoteName().c_str())));
         else
-          mleStatus->append(tr("Sent %1 to %2 successfully.").arg(QFile::decodeName(e->fileName().c_str())).arg(codec->toUnicode(ftman->RemoteName())));
+          mleStatus->append(tr("Sent %1 to %2 successfully.").arg(QFile::decodeName(e->fileName().c_str())).arg(codec->toUnicode(ftman->remoteName().c_str())));
         break;
       }
 

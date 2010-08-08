@@ -80,13 +80,12 @@
 #include "pipe.h"
 #include "socket.h"
 #include "socketmanager.h"
+#include "userid.h"
 
 namespace Licq
 {
 class Packet;
 }
-
-typedef std::list<char *> FileList;
 
 // FileTransferEvent codes
 const unsigned char FT_STARTxBATCH   = 1;
@@ -141,7 +140,7 @@ typedef std::list<class CFileTransferManager *> FileTransferManagerList;
 class CFileTransferManager
 {
 public:
-  CFileTransferManager(const char* accountId);
+  CFileTransferManager(const Licq::UserId& userId);
   ~CFileTransferManager();
 
   bool receiveFiles(const std::string& directory);
@@ -151,12 +150,12 @@ public:
 
   // Available after construction
   uint16_t LocalPort() const            { return ftServer.getLocalPort(); }
-  const char *LocalName()  { return m_szLocalName; }
+  const std::string& localName() const { return myLocalName; }
   bool isReceiver() const { return myIsReceiver; }
-  const char* Id() const { return myId; }
+  const Licq::UserId& userId() const { return myUserId; }
 
   // Available after FT_STARTxBATCH
-  const char *RemoteName()  { return m_szRemoteName; }
+  const std::string& remoteName() const { return myRemoteName; }
   unsigned short BatchFiles() { return m_nBatchFiles; }
   unsigned long BatchSize() { return m_nBatchSize; }
   time_t BatchStartTime() { return m_nBatchStartTime; }
@@ -209,9 +208,10 @@ protected:
 
   unsigned char m_nResult;
   unsigned short m_nSession, m_nSpeed, m_nState;
-  char myId[16];
+  Licq::UserId myUserId;
 
-  char m_szLocalName[64], m_szRemoteName[64];
+  std::string myLocalName;
+  std::string myRemoteName;
   unsigned short m_nPort;
   unsigned long m_nFilePos, m_nBatchPos, m_nBytesTransfered, m_nBatchBytesTransfered;
   unsigned short m_nCurrentFile, m_nBatchFiles;

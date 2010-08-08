@@ -1755,7 +1755,7 @@ protected:
 class CPFile_InitClient : public CPacketFile
 {
 public:
-  CPFile_InitClient(char *_szLocalName, unsigned long _nNumFiles,
+  CPFile_InitClient(const std::string& localName, unsigned long _nNumFiles,
                     unsigned long _nTotalSize);
   virtual ~CPFile_InitClient();
 };
@@ -1765,7 +1765,7 @@ public:
 class CPFile_InitServer : public CPacketFile
 {
 public:
-  CPFile_InitServer(char *_szLocalName);
+  CPFile_InitServer(const std::string& localName);
   virtual ~CPFile_InitServer();
 };
 

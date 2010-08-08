@@ -866,8 +866,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
             // For now don't check for a chat subcommand..
             // Invoke a file transfer manager here
             const Licq::EventFile* f = dynamic_cast<const Licq::EventFile*>(ue);
-            CFileTransferManager *ftman = new CFileTransferManager(
-                e->userId().accountId().c_str());
+            CFileTransferManager* ftman = new CFileTransferManager(e->userId());
             m_lFileStat.push_back(ftman);
 
             // Now watch the file pipe
@@ -3129,8 +3128,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
 
           // Make the ftman
-          CFileTransferManager *ftman = new CFileTransferManager(
-              szId.c_str());
+          CFileTransferManager *ftman = new CFileTransferManager(data->userId);
           ftman->SetUpdatesEnabled(1);
           m_lFileStat.push_back(ftman);
 

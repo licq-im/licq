@@ -795,7 +795,7 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   // Get the user's name
   char szTitle[30];
   {
-    Licq::UserReadGuard u(Licq::UserId(ftman->Id(), LICQ_PPID));
+    Licq::UserReadGuard u(ftman->userId());
 
     // Make the title
     strcpy(szTitle, (ftman->isReceiver() ? "File from " : "File to "));

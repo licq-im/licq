@@ -65,11 +65,11 @@ CPacketFile::~CPacketFile()
 }
 
 //-----FileInitClient-----------------------------------------------------------
-CPFile_InitClient::CPFile_InitClient(char *_szLocalName,
+CPFile_InitClient::CPFile_InitClient(const string& localName,
                                     unsigned long _nNumFiles,
                                     unsigned long _nTotalSize)
 {
-  m_nSize = 20 + strlen(_szLocalName);
+  m_nSize = 20 + localName.size();
   InitBuffer();
 
   buffer->PackChar(0x00);
@@ -77,7 +77,7 @@ CPFile_InitClient::CPFile_InitClient(char *_szLocalName,
   buffer->PackUnsignedLong(_nNumFiles);
   buffer->PackUnsignedLong(_nTotalSize);
   buffer->PackUnsignedLong(0x64);
-  buffer->PackString(_szLocalName);
+  buffer->PackString(localName.c_str());
 }
 
 CPFile_InitClient::~CPFile_InitClient()
@@ -86,14 +86,14 @@ CPFile_InitClient::~CPFile_InitClient()
 }
 
 //-----FileInitServer-----------------------------------------------------------
-CPFile_InitServer::CPFile_InitServer(char *_szLocalName)
+CPFile_InitServer::CPFile_InitServer(const string& localName)
 {
-  m_nSize = 8 + strlen(_szLocalName);
+  m_nSize = 8 + localName.size();
   InitBuffer();
 
   buffer->PackChar(0x01);
   buffer->PackUnsignedLong(0x64);
-  buffer->PackString(_szLocalName);
+  buffer->PackString(localName.c_str());
 }
 
 CPFile_InitServer::~CPFile_InitServer()
@@ -193,19 +193,15 @@ FileTransferManagerList CFileTransferManager::ftmList;
 pthread_mutex_t CFileTransferManager::thread_cancel_mutex
                                                    = PTHREAD_MUTEX_INITIALIZER;
 
-CFileTransferManager::CFileTransferManager(const char* accountId)
-  : m_bThreadRunning(false)
+CFileTransferManager::CFileTransferManager(const Licq::UserId& userId)
+  : m_bThreadRunning(false),
+    myUserId(userId)
 {
-  if (myId != NULL)
-    strcpy(myId, accountId);
-  else
-    myId[0] = '\0';
   m_nSession = rand();
 
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    strncpy(m_szLocalName, o->GetAlias(), sizeof(m_szLocalName) - 1);
-    m_szLocalName[sizeof(m_szLocalName) - 1] = '\0';
+    myLocalName = o->getAlias();
   }
 
   m_nCurrentFile = m_nBatchFiles = 0;
@@ -216,7 +212,7 @@ CFileTransferManager::CFileTransferManager(const char* accountId)
   m_nState = FT_STATE_DISCONNECTED;
   m_bThreadCreated = false;
 
-  strcpy(m_szRemoteName, myId);
+  myRemoteName = myUserId.accountId();
 
   ftmList.push_back(this);
 }
@@ -246,7 +242,7 @@ bool CFileTransferManager::receiveFiles(const string& directory)
 
   if (directory.empty())
   {
-    myDirectory = Licq::gDaemon.baseDir() + myId;
+    myDirectory = Licq::gDaemon.baseDir() + myUserId.accountId();
     if (access(Licq::gDaemon.baseDir().c_str(), F_OK) < 0 && mkdir(myDirectory.c_str(), 0700) == -1 &&
         errno != EEXIST)
     {
@@ -335,7 +331,6 @@ void CFileTransferManager::sendFiles(const list<string>& pathNames, unsigned sho
 //-----CFileTransferManager::ConnectToFileServer-----------------------------
 bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 {
-  Licq::UserId myUserId(myId, LICQ_PPID);
   bool bTryDirect;
   bool bSendIntIp;
   {
@@ -387,7 +382,6 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 
 bool CFileTransferManager::SendFileHandshake()
 {
-  Licq::UserId myUserId(myId, LICQ_PPID);
   gLog.info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
 
   // Send handshake packet:
@@ -400,7 +394,7 @@ bool CFileTransferManager::SendFileHandshake()
     return false;
 
   // Send init packet:
-  CPFile_InitClient p(m_szLocalName, m_nBatchFiles, m_nBatchSize);
+  CPFile_InitClient p(myLocalName, m_nBatchFiles, m_nBatchSize);
   if (!SendPacket(&p)) return false;
 
   gLog.info(tr("%sFile Transfer: Waiting for server to respond.\n"), L_TCPxSTR);
@@ -484,7 +478,7 @@ bool CFileTransferManager::ProcessPacket()
         for (iter = gIcqProtocol.m_lReverseConnect.begin();
             iter != gIcqProtocol.m_lReverseConnect.end();  ++iter)
         {
-          if ((*iter)->nId == nId && (*iter)->myIdString == myId)
+          if ((*iter)->nId == nId && (*iter)->myIdString == myUserId.accountId())
           {
             bFound = true;
             (*iter)->bSuccess = true;
@@ -498,7 +492,7 @@ bool CFileTransferManager::ProcessPacket()
         if (bFound)
         {
           // Send init packet:
-          CPFile_InitClient p(m_szLocalName, m_nBatchFiles, m_nBatchSize);
+          CPFile_InitClient p(myLocalName, m_nBatchFiles, m_nBatchSize);
           if (!SendPacket(&p))
           {
             m_nResult = FT_ERRORxCLOSED;
@@ -536,7 +530,7 @@ bool CFileTransferManager::ProcessPacket()
       m_nBatchFiles = b.UnpackUnsignedLong();
       m_nBatchSize = b.UnpackUnsignedLong();
       m_nSpeed = b.UnpackUnsignedLong();
-      b.UnpackString(m_szRemoteName, sizeof(m_szRemoteName));
+      myRemoteName = b.unpackString();
 
       m_nBatchStartTime = time(NULL);
       m_nBatchBytesTransfered = m_nBatchPos = 0;
@@ -552,7 +546,7 @@ bool CFileTransferManager::ProcessPacket()
       }
 
       // Send response
-      CPFile_InitServer p(m_szLocalName);
+      CPFile_InitServer p(myLocalName);
       if (!SendPacket(&p))
       {
         m_nResult = FT_ERRORxCLOSED;
@@ -717,7 +711,7 @@ bool CFileTransferManager::ProcessPacket()
         return false;
       }
       m_nSpeed = b.UnpackUnsignedLong();
-      b.UnpackString(m_szRemoteName, sizeof(m_szRemoteName));
+      myRemoteName = b.unpackString();
 
       // Send file info packet
       CPFile_Info p(*myPathNameIter);
@@ -1251,8 +1245,7 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_cleanup_push(FileWaitForSignal_cleanup, arg);
     pthread_testcancel();
   pthread_cleanup_pop(0);
-  string id = rc->m->Id();
-  Licq::UserId userId(id, LICQ_PPID);
+  Licq::UserId userId = rc->m->userId();
   nPort = rc->m->m_nPort;
   pthread_mutex_unlock(cancel_mutex);
 
