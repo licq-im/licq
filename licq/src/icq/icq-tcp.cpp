@@ -172,7 +172,12 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       f |= Licq::UserEvent::FlagEncrypted;
     e = new Licq::EventMsg(m, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_Message *p = new CPT_Message(cipher ? cipher : szMessage, nLevel, bMultipleRecipients, pColor, *u, nUTFLen);
+    string message;
+    if (cipher != NULL)
+      message = cipher;
+    else
+      message.assign(szMessage, nUTFLen);
+    CPT_Message* p = new CPT_Message(message, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
@@ -281,7 +286,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
       f |= Licq::UserEvent::FlagEncrypted;
     e = new Licq::EventUrl(url.c_str(), description, ICQ_CMDxTCP_START, Licq::EventUrl::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_Url* p = new CPT_Url(m.c_str(), nLevel, bMultipleRecipients, pColor, *u);
+    CPT_Url* p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("%sSending %sURL to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
@@ -306,7 +311,6 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   if (Licq::gUserManager.isOwner(userId))
     return;
 
-  const char* szFilename = filename.c_str();
   string dosDesc = gTranslator.clientToServer(message, true);
   Licq::EventFile* e = NULL;
 
@@ -328,8 +332,8 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     else if (nLevel == ICQ_TCPxMSG_LIST)
       nLevel = ICQ_TCPxMSG_LIST2;
 
-    CPU_FileTransfer *p = new CPU_FileTransfer(*u, lFileList, szFilename,
-        dosDesc.c_str(), nLevel, (u->Version() > 7));
+    CPU_FileTransfer* p = new CPU_FileTransfer(*u, lFileList, filename,
+        dosDesc, nLevel, (u->Version() > 7));
 
     if (!p->IsValid())
     {
@@ -337,7 +341,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      e = new Licq::EventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+      e = new Licq::EventFile(filename, p->description(), p->GetFileSize(),
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("%sSending file transfer to %s (#%hu).\n"), L_SRVxSTR, 
                 u->GetAlias(), -p->Sequence());
@@ -347,7 +351,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   }
   else
   {
-    CPT_FileTransfer *p = new CPT_FileTransfer(lFileList, szFilename, dosDesc.c_str(), nLevel, *u);
+    CPT_FileTransfer* p = new CPT_FileTransfer(lFileList, filename, dosDesc, nLevel, *u);
 
     if (!p->IsValid())
     {
@@ -361,7 +365,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
       if (u->Secure())
         f |= Licq::UserEvent::FlagEncrypted;
 
-      e = new Licq::EventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+      e = new Licq::EventFile(filename, p->description(), p->GetFileSize(),
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("%sSending %sfile transfer to %s (#%hu).\n"), L_TCPxSTR,
                 nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "", 
@@ -662,9 +666,6 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
     unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer,
     const string& message, const string& filename, unsigned long nFileSize)
 {
-  const char* szDesc = message.c_str();
-  const char* szFile = filename.c_str();
-
    // basically a fancy tcp ack packet which is sent late
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
@@ -679,7 +680,7 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
   else
   {
     CPU_AckFileAccept *p = new CPU_AckFileAccept(*u, nMsgID,
-      nSequence, nPort, szDesc, szFile, nFileSize);
+        nSequence, nPort, message, filename, nFileSize);
     SendEvent_Server(p);
   }
 }
@@ -697,13 +698,13 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
 
   if (!viaServer)
   {
-    CPT_AckFileRefuse p(reasonDos.c_str(), nSequence, *u);
+    CPT_AckFileRefuse p(reasonDos, nSequence, *u);
     AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   }
   else
   {
     CPU_AckFileRefuse *p = new CPU_AckFileRefuse(*u, nMsgID, nSequence,
-        reasonDos.c_str());
+        reasonDos);
     SendEvent_Server(p);
   }
 }
@@ -744,8 +745,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
       nLevel = ICQ_TCPxMSG_LIST2;
 
     CPU_ChatRequest *p = new CPU_ChatRequest(reasonDos,
-        chatUsers.c_str(), nPort, nLevel, *u,
-                               (u->Version() > 7));
+        chatUsers, nPort, nLevel, *u, (u->Version() > 7));
 
     Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
         Licq::EventChat::TimeNow, f);
@@ -756,7 +756,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
     }
   else
   {
-    CPT_ChatRequest *p = new CPT_ChatRequest(reasonDos, chatUsers.c_str(), nPort,
+    CPT_ChatRequest* p = new CPT_ChatRequest(reasonDos, chatUsers, nPort,
         nLevel, *u, (u->Version() > 7));
     f = Licq::UserEvent::FlagDirect | Licq::UserEvent::FlagLicqVerMask;
     if (nLevel == ICQ_TCPxMSG_URGENT)
@@ -803,12 +803,12 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
 
 	if (bDirect)
   {
-    CPT_AckChatRefuse p(reasonDos.c_str(), nSequence, *u);
+    CPT_AckChatRefuse p(reasonDos, nSequence, *u);
 		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 	}
 	else
   {
-    CPU_AckChatRefuse *p = new CPU_AckChatRefuse(*u, nMsgID, nSequence, reasonDos.c_str());
+    CPU_AckChatRefuse* p = new CPU_AckChatRefuse(*u, nMsgID, nSequence, reasonDos);
 		SendEvent_Server(p);
 	}
 }
@@ -827,12 +827,12 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
 
 	if (bDirect)
   {
-    CPT_AckChatAccept p(nPort, clients.c_str(), nSequence, *u, u->Version() > 7);
+    CPT_AckChatAccept p(nPort, clients, nSequence, *u, u->Version() > 7);
 		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
 	}
 	else
   {
-    CPU_AckChatAccept *p = new CPU_AckChatAccept(*u, clients.c_str(), nMsgID, nSequence, nPort);
+    CPU_AckChatAccept* p = new CPU_AckChatAccept(*u, clients, nMsgID, nSequence, nPort);
 		SendEvent_Server(p);
 	}
 }
@@ -1257,7 +1257,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
     gLog.warning(tr("%sReverse connect to %s failed:\n%s%s.\n"), L_WARNxSTR,
         userId.toString().c_str(), L_BLANKxSTR, s->errorStr().c_str());
 
-    CPU_ReverseConnectFailed* p = new CPU_ReverseConnectFailed(userId.accountId().c_str(), nMsgID1,
+    CPU_ReverseConnectFailed* p = new CPU_ReverseConnectFailed(userId.accountId(), nMsgID1,
         nMsgID2, nPort, nFailedPort, nId);
     SendEvent_Server(p);
     return -1;

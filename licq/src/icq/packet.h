@@ -67,7 +67,7 @@ extern const struct PluginList info_plugins[];
 extern const struct PluginList status_plugins[];
 
 unsigned short ReversePort(unsigned short p);
-unsigned short lengthField(const char *szField);
+size_t lengthField(const std::string& field);
 std::string pipeInput(const std::string& message);
 
 
@@ -81,21 +81,21 @@ std::string pipeInput(const std::string& message);
 class CPX_FileTransfer
 {
 public:
-  CPX_FileTransfer(const std::list<std::string>& lFileList, const char *szFileName);
+  CPX_FileTransfer(const std::list<std::string>& lFileList, const std::string& fileName);
   virtual ~CPX_FileTransfer();
 
   bool IsValid()                { return m_bValid; }
   const std::list<std::string>& GetFileList() const { return m_lFileList; }
-  const char *GetFilename()     { return m_szFilename; }
-  const char *GetDescription() { return m_szDesc; }
+  const std::string& filename() const { return myFilename; }
+  const std::string& description() const { return myDesc; }
   unsigned long GetFileSize()   { return m_nFileSize; }
 
 protected:
   CPX_FileTransfer();
 
   bool          m_bValid;
-  char          *m_szDesc;
-  char          *m_szFilename;
+  std::string myDesc;
+  std::string myFilename;
   std::list<std::string> m_lFileList;
   unsigned long m_nFileSize;
 };
@@ -204,7 +204,7 @@ public:
 class CPU_Logon : public CSrvPacketTcp
 {
 public:
-  CPU_Logon(const char *_szPassword, const char *_szUin, unsigned short _nLogonStatus);
+  CPU_Logon(const std::string& password, const std::string& accountId, unsigned short _nLogonStatus);
   virtual ~CPU_Logon();
 protected:
   unsigned long  m_nLogonStatus;
@@ -223,7 +223,7 @@ public:
 class CPU_SendCookie : public CSrvPacketTcp
 {
 public:
-  CPU_SendCookie(const char *, int len, unsigned short nService = 0);
+  CPU_SendCookie(const std::string& cookie, unsigned short nService = 0);
   virtual ~CPU_SendCookie();
 };
 
@@ -255,7 +255,7 @@ public:
 class CPU_NewLogon : public CPU_CommonFamily
 {
 public:
-  CPU_NewLogon(const char *_szPassword, const char *_szUin, const char *_szMD5Salt);
+  CPU_NewLogon(const std::string& password, const std::string& accountId, const std::string& md5Salt);
 };
 
 #if ICQ_VERSION == 2 || ICQ_VERSION == 6
@@ -265,7 +265,7 @@ public:
 class CPU_Register : public CPacketUdp
 {
 public:
-  CPU_Register(const char *_szPasswd);
+  CPU_Register(const std::string& password);
   virtual ~CPU_Register();
 
   virtual unsigned short Sequence() { return m_nSequence; }
@@ -281,7 +281,7 @@ protected:
   unsigned short m_nSequence;
   unsigned short m_nUnknown1;
   unsigned short m_nPasswdLen;
-  char          *m_szPasswd;
+  std::string myPassword;
   unsigned long  m_nUnknown2;
   unsigned long  m_nUnknown3;
 };
@@ -290,7 +290,7 @@ protected:
 class CPU_Register : public CPacketUdp
 {
 public:
-  CPU_Register(const char *_szPasswd);
+  CPU_Register(const std::string& password);
   virtual ~CPU_Register();
 };
 #elif ICQ_VERSION > 6
@@ -304,7 +304,7 @@ public:
 class CPU_Register : public CPU_CommonFamily
 {
 public:
-  CPU_Register(const char *_szPasswd);
+  CPU_Register(const std::string& password);
   virtual ~CPU_Register();
 };
 #endif
@@ -321,7 +321,7 @@ public:
 class CPU_SendVerification : public CPU_CommonFamily
 {
 public:
-  CPU_SendVerification(const char *, const char *);
+  CPU_SendVerification(const std::string& password, const std::string& verification);
   virtual ~CPU_SendVerification();
 };
 
@@ -366,7 +366,7 @@ public:
 class CPU_GenericUinList : public CPU_CommonFamily
 {
 public:
-   CPU_GenericUinList(const char *szId, unsigned short Family, unsigned short Subtype);
+   CPU_GenericUinList(const std::string& accountId, unsigned short Family, unsigned short Subtype);
    CPU_GenericUinList(const Licq::StringList& users, unsigned short, unsigned short);
    CPU_GenericUinList(unsigned long _nUin, unsigned short Family, unsigned short Subtype);
 };
@@ -421,7 +421,7 @@ protected:
 class CPU_AddToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_AddToServerList(const char *_szName, unsigned short _nType,
+  CPU_AddToServerList(const std::string& name, unsigned short _nType,
                       unsigned short _nGroup = 0,
                       bool _bAuthReq = false, bool _bTopLevel = false);
 
@@ -437,7 +437,7 @@ protected:
 class CPU_RemoveFromServerList : public CPU_CommonFamily
 {
 public:
-  CPU_RemoveFromServerList(const char * _szName, unsigned short _nGSID,
+  CPU_RemoveFromServerList(const std::string& name, unsigned short _nGSID,
                            unsigned short _nSID, unsigned short _nType);
 };
 
@@ -452,7 +452,7 @@ public:
 class CPU_UpdateToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_UpdateToServerList(const char *_szName, unsigned short _nType,
+  CPU_UpdateToServerList(const std::string& name, unsigned short _nType,
                          unsigned short _nSID = 0, bool _bAuthReq = false);
 };
 
@@ -550,14 +550,14 @@ protected:
 class CPU_TypingNotification : public CPU_CommonFamily
 {
 public:
-  CPU_TypingNotification(const char *szId, bool bActive);
+  CPU_TypingNotification(const std::string& accountId, bool bActive);
 };
 
 //-----CheckInvisible----------------------------------------------------------
 class CPU_CheckInvisible : public CPU_CommonFamily
 {
 public:
-  CPU_CheckInvisible(const char *szId);
+  CPU_CheckInvisible(const std::string& accountId);
 };
 
 //-----Ack---------------------------------------------------------------------
@@ -587,16 +587,16 @@ protected:
 class CPU_SearchWhitePages : public CPU_CommonFamily
 {
 public:
-   CPU_SearchWhitePages(const char *szFirstName, const char *szLastName,
-                   const char *szAlias, const char *szEmail,
-                   unsigned short nMinAge, unsigned short nMaxAge,
-                   char nGender, char nLanguage, const char *szCity,
-                   const char *szState, unsigned short nCountryCode,
-                   const char *szCoName, const char *szCoDept,
-                   const char *szCoPos, const char *szKeyword, bool bOnlineOnly);
+  CPU_SearchWhitePages(const std::string& firstName, const std::string& lastName,
+      const std::string& alias, const std::string& email, unsigned short nMinAge,
+      unsigned short nMaxAge, char nGender, char nLanguage, const std::string& city,
+      const std::string& state, unsigned short nCountryCode, const std::string& coName,
+      const std::string& coDept, const std::string& coPos, const std::string& keyword,
+      bool bOnlineOnly);
    virtual unsigned short SubCommand()   { return m_nMetaCommand; }
    unsigned long Uin()  { return 0; }
-   void PackSearch(unsigned short nCmd, const char *szField);
+  void packSearch(unsigned short nCmd, const std::string& field);
+
 protected:
    unsigned long m_nMetaCommand;
 };
@@ -617,21 +617,20 @@ protected:
 class CPU_UpdatePersonalBasicInfo : public CPacketUdp
 {
 public:
-   CPU_UpdatePersonalBasicInfo(const char *_sAlias, const char *_sFirstName,
-                               const char *_sLastName, const char *_sEmail,
-                               bool _bAuthorization);
+  CPU_UpdatePersonalBasicInfo(const std::string& alias, const std::string& firstName,
+      const std::string& lastName, const std::string& email, bool _bAuthorization);
 
-   const char *Alias()  { return m_szAlias; }
-   const char *FirstName()  { return m_szFirstName; }
-   const char *LastName()  { return m_szLastName; }
-   const char *Email()  { return m_szEmail; }
+  const std::string& alias() const { return myAlias; }
+  const std::string& firstName() const { return myFirstName; }
+  const std::string& lastName() const { return myLastName; }
+  const std::string& email() const { return myEmail; }
    bool Authorization()  { return m_nAuthorization == 0; }
 protected:
-   char *m_szAlias;
-   char *m_szFirstName;
-   char *m_szLastName;
-   char *m_szEmail;
-   char m_nAuthorization;
+  std::string myAlias;
+  std::string myFirstName;
+  std::string myLastName;
+  std::string myEmail;
+  char m_nAuthorization;
 };
 
 
@@ -639,31 +638,29 @@ protected:
 class CPU_UpdatePersonalExtInfo : public CPacketUdp
 {
 public:
-   CPU_UpdatePersonalExtInfo(const char *_sCity, unsigned short _nCountry,
-                             const char *_sState, unsigned short _nAge,
-                             char _cSex, const char *_sPhone,
-                             const char *_sHomepage, const char *_sAbout,
-                             unsigned long _nZipcode);
+  CPU_UpdatePersonalExtInfo(const std::string& city, unsigned short _nCountry,
+      const std::string& state, unsigned short _nAge, char _cSex, const std::string& phone,
+      const std::string& homepage, const std::string& about, unsigned long _nZipcode);
 
-   const char *City()  { return m_szCity; }
+  const std::string& city() const { return myCity; }
    unsigned short Country()  { return m_nCountry; }
-   const char *State()  { return m_szState; }
+  const std::string& state() const { return myState; }
    unsigned short Age()  { return m_nAge; }
    char Sex()  { return m_cSex; }
-   const char *PhoneNumber()  { return m_szPhone; }
-   const char *Homepage()  { return m_szHomepage; }
-   const char *About()  { return m_szAbout; }
+  const std::string& phoneNumber() const { return myPhone; }
+  const std::string& homepage() const { return myHomepage; }
+  const std::string& about() const { return myAbout; }
    unsigned long Zipcode() { return m_nZipcode; }
 protected:
-   char           *m_szCity;
+  std::string myCity;
    unsigned short m_nCountry;
    char           m_cTimezone;
-   char           *m_szState;
+  std::string myState;
    unsigned short m_nAge;
    char           m_cSex;
-   char           *m_szPhone;
-   char           *m_szHomepage;
-   char           *m_szAbout;
+  std::string myPhone;
+  std::string myHomepage;
+  std::string myAbout;
    unsigned long  m_nZipcode;
 };
 
@@ -680,7 +677,7 @@ public:
 class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
-  CPU_ThroughServer(const char *szId, unsigned char format, const std::string& message,
+  CPU_ThroughServer(const std::string& accountId, unsigned char format, const std::string& message,
                     unsigned short _nCharset = 0, bool bOffline = true,
                     size_t _nLen = 0);
 protected:
@@ -717,7 +714,7 @@ public:
 class CPU_ReverseConnectFailed : public CPU_CommonFamily
 {
 public:
-  CPU_ReverseConnectFailed(const char* id, unsigned long nMsgID1,
+  CPU_ReverseConnectFailed(const std::string& accountId, unsigned long nMsgID1,
                            unsigned long nMsgID2, unsigned short nFailedPort,
                            unsigned short nOurPort, unsigned long nConnectID);
 };
@@ -780,7 +777,7 @@ protected:
 class CPU_ChatRequest : public CPU_AdvancedMessage
 {
 public:
-  CPU_ChatRequest(const std::string& message, const char *szChatUsers, unsigned short nPort,
+  CPU_ChatRequest(const std::string& message, const std::string& chatUsers, unsigned short nPort,
       unsigned short nLevel, const Licq::User* pUser, bool bICBM);
 };
 
@@ -788,8 +785,8 @@ public:
 class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
 {
 public:
-  CPU_FileTransfer(const Licq::User* u, const std::list<std::string>& lFileList, const char *_szFile,
-                   const char *_szDesc, unsigned short nLevel, bool bICBM);
+  CPU_FileTransfer(const Licq::User* u, const std::list<std::string>& lFileList,
+      const std::string& file, const std::string& desc, unsigned short nLevel, bool bICBM);
 };
 
 //-----NoManager--------------------------------------------------------
@@ -831,9 +828,8 @@ class CPU_AckFileAccept : public CPU_AdvancedMessage
 {
 public:
   CPU_AckFileAccept(const Licq::User* u, const unsigned long nMsgID[],
-                    unsigned short nSequence, unsigned short nPort,
-                    const char *szDesc, const char *szFile,
-                    unsigned long nFileSize);
+      unsigned short nSequence, unsigned short nPort, const std::string& desc,
+      const std::string& file, unsigned long nFileSize);
 };
 
 //-----AckFileRefuse-----------------------------------------------------------
@@ -841,15 +837,15 @@ class CPU_AckFileRefuse : public CPU_AckThroughServer
 {
 public:
   CPU_AckFileRefuse(const Licq::User* u, const unsigned long nMsgID[],
-                    unsigned short nSequence, const char *msg);
+      unsigned short nSequence, const std::string& message);
 };
 
 //-----AckChatAccept-----------------------------------------------------------
 class CPU_AckChatAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckChatAccept(const Licq::User* u, const char *szClients, const unsigned long nMsgID[],
-                    unsigned short nSequence, unsigned short nPort);
+  CPU_AckChatAccept(const Licq::User* u, const std::string& clients,
+      const unsigned long nMsgID[], unsigned short nSequence, unsigned short nPort);
 };
 
 //-----AckChatRefuse-----------------------------------------------------------
@@ -857,7 +853,7 @@ class CPU_AckChatRefuse : public CPU_AckThroughServer
 {
 public:
   CPU_AckChatRefuse(const Licq::User* u, const unsigned long nMsgID[],
-                    unsigned short nSequence, const char *msg);
+      unsigned short nSequence, const std::string& message);
 };
 
 //-----PluginError-------------------------------------------------------------
@@ -913,7 +909,7 @@ public:
 class CPU_SendSms : public CPU_CommonFamily
 {
 public:
-   CPU_SendSms(const char *szNumber, const char *szMessage);
+  CPU_SendSms(const std::string& number, const std::string& message);
    virtual unsigned short SubCommand() { return m_nMetaCommand; }
 protected:
    unsigned long m_nMetaCommand;
@@ -934,14 +930,14 @@ protected:
 class CPU_RequestAuth : public CPU_CommonFamily
 {
 public:
-  CPU_RequestAuth(const char* id, const char *);
+  CPU_RequestAuth(const std::string& accountId, const std::string& message);
 };
 
 //-----Authorize----------------------------------------------------------------
 class CPU_Authorize : public CPU_CommonFamily
 {
 public:
-   CPU_Authorize(const char *szId);
+   CPU_Authorize(const std::string& accountId);
 };
 
 
@@ -977,34 +973,27 @@ protected:
 class CPU_Meta_SetGeneralInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetGeneralInfo(const char *szAlias,
-                          const char *szFirstName,
-                          const char *szLastName,
-                          const char *szEmailPrimary,
-                          const char *szCity,
-                          const char *szState,
-                          const char *szPhoneNumber,
-                          const char *szFaxNumber,
-                          const char *szAddress,
-                          const char *szCellularNumber,
-                          const char *szZipCode,
-                          unsigned short nCountryCode,
-                          bool bHideEmail);
+  CPU_Meta_SetGeneralInfo(const std::string& alias, const std::string& firstName,
+      const std::string& lastName, const std::string& emailPrimary,
+      const std::string& city, const std::string& state, const std::string& phoneNumber,
+      const std::string& faxNumber, const std::string& address,
+      const std::string& cellularNumber, const std::string& zipCode,
+      unsigned short nCountryCode, bool bHideEmail);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
-  char *m_szAlias;
-  char *m_szFirstName;
-  char *m_szLastName;
-  char *m_szEmailPrimary;
-  char *m_szCity;
-  char *m_szState;
-  char *m_szPhoneNumber;
-  char *m_szFaxNumber;
-  char *m_szAddress;
-  char *m_szCellularNumber;
-  char *m_szZipCode;
+  std::string myAlias;
+  std::string myFirstName;
+  std::string myLastName;
+  std::string myEmailPrimary;
+  std::string myCity;
+  std::string myState;
+  std::string myPhoneNumber;
+  std::string myFaxNumber;
+  std::string myAddress;
+  std::string myCellularNumber;
+  std::string myZipCode;
   unsigned short m_nCountryCode;
   char m_nTimezone;
   char m_nHideEmail;
@@ -1017,14 +1006,13 @@ protected:
 class CPU_Meta_SetEmailInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetEmailInfo(const char *szEmailSecondary,
-                        const char *szEmailOld);
+  CPU_Meta_SetEmailInfo(const std::string& emailSecondary, const std::string& emailOld);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
-  char *m_szEmailSecondary;
-  char *m_szEmailOld;
+  std::string myEmailSecondary;
+  std::string myEmailOld;
 
   friend class IcqProtocol;
 };
@@ -1034,22 +1022,16 @@ protected:
 class CPU_Meta_SetMoreInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetMoreInfo(unsigned short nAge,
-                       char nGender,
-                       const char *szHomepage,
-                       unsigned short nBirthYear,
-                       char nBirthMonth,
-                       char nBirthDay,
-                       char nLanguage1,
-                       char nLanguage2,
-                       char nLanguage3);
+  CPU_Meta_SetMoreInfo(unsigned short nAge, char nGender, const std::string& homepage,
+      unsigned short nBirthYear, char nBirthMonth, char nBirthDay, char nLanguage1,
+      char nLanguage2, char nLanguage3);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
   unsigned short m_nAge;
   char m_nGender;
-  char *m_szHomepage;
+  std::string myHomepage;
   unsigned short m_nBirthYear;
   char m_nBirthMonth;
   char m_nBirthDay;
@@ -1095,34 +1077,28 @@ protected:
 class CPU_Meta_SetWorkInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetWorkInfo(const char *szCity,
-                       const char *szState,
-                       const char *szPhoneNumber,
-                       const char *szFaxNumber,
-                       const char *szAddress,
-                       const char *szZip,
-                       unsigned short nCompanyCountry,
-                       const char *szName,
-                       const char *szDepartment,
-                       const char *szPosition,
-                       unsigned short nCompanyOccupation,
-                       const char *szHomepage);
+  CPU_Meta_SetWorkInfo(const std::string& city, const std::string& state,
+      const std::string& phoneNumber, const std::string& faxNumber,
+      const std::string& address, const std::string& zip,
+      unsigned short nCompanyCountry, const std::string& name,
+      const std::string& department, const std::string& position,
+      unsigned short nCompanyOccupation, const std::string& homepage);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
-  char *m_szCity;
-  char *m_szState;
-  char *m_szPhoneNumber;
-  char *m_szFaxNumber;
-  char *m_szAddress;
-  char *m_szZip;
+  std::string myCity;
+  std::string myState;
+  std::string myPhoneNumber;
+  std::string myFaxNumber;
+  std::string myAddress;
+  std::string myZip;
   unsigned short m_nCompanyCountry;
-  char *m_szName;
-  char *m_szDepartment;
-  char *m_szPosition;
+  std::string myName;
+  std::string myDepartment;
+  std::string myPosition;
   unsigned short m_nCompanyOccupation;
-  char *m_szHomepage;
+  std::string myHomepage;
 
   friend class IcqProtocol;
 };
@@ -1132,13 +1108,12 @@ protected:
 class CPU_Meta_SetAbout : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetAbout(const char *szAbout);
-  virtual ~CPU_Meta_SetAbout();
+  CPU_Meta_SetAbout(const std::string& about);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
-  char *m_szAbout;
+  std::string myAbout;
 
   friend class IcqProtocol;
 };
@@ -1147,16 +1122,15 @@ protected:
 class CPU_RequestInfo : public CPU_CommonFamily
 {
 public:
-  CPU_RequestInfo(const char *szId);
+  CPU_RequestInfo(const std::string& accountId);
 };
 
 //-----RequestBuddyIcon------------------------------------------------------
 class CPU_RequestBuddyIcon : public CPU_CommonFamily
 {
 public:
-  CPU_RequestBuddyIcon(const char *szId, unsigned short _nBuddyIconType,
-                       char _nBuddyIconHashType, const char *_szBuddyIconHash,
-                       unsigned short nService);
+  CPU_RequestBuddyIcon(const std::string& accountId, unsigned short _nBuddyIconType,
+      char _nBuddyIconHashType, const std::string& buddyIconHash, unsigned short nService);
 };
 
 class CPU_RequestService : public CPU_CommonFamily
@@ -1169,19 +1143,19 @@ public:
 class CPU_AIMFetchAwayMessage : public CPU_CommonFamily
 {
 public:
-  CPU_AIMFetchAwayMessage(const char *szId);
+  CPU_AIMFetchAwayMessage(const std::string& accountId);
 };
 
 //-----SetPassword---------------------------------------------------------
 class CPU_SetPassword : public CPU_CommonFamily
 {
 public:
-  CPU_SetPassword(const char *szPassword);
+  CPU_SetPassword(const std::string& password);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
   unsigned long Uin()           { return 0; }
 protected:
   unsigned short m_nMetaCommand;
-  char *m_szPassword;
+  std::string myPassword;
 
   friend class IcqProtocol;
 };
@@ -1211,13 +1185,12 @@ protected:
 class CPU_Meta_RequestAllInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_RequestAllInfo(const char *_szId);
-  virtual ~CPU_Meta_RequestAllInfo();
+  CPU_Meta_RequestAllInfo(const std::string& accountId);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
-  const char *Id()  {  return m_szId; }
+  const std::string& accountId() const {  return myAccountId; }
 protected:
   unsigned short m_nMetaCommand;
-  char *m_szId;
+  std::string myAccountId;
 };
 
 
@@ -1225,13 +1198,12 @@ protected:
 class CPU_Meta_RequestBasicInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_RequestBasicInfo(const char *_szId);
-  virtual ~CPU_Meta_RequestBasicInfo();
+  CPU_Meta_RequestBasicInfo(const std::string& accountId);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
-  const char *Id()  {  return m_szId; }
+  const std::string& accountId() const {  return myAccountId; }
 protected:
   unsigned short m_nMetaCommand;
-  char *m_szId;
+  std::string myAccountId;
 };
 
 
@@ -1375,8 +1347,8 @@ public:
    unsigned short Version()  { return m_nVersion; }
 protected:
    CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
-      const char *szMessage, bool _bAccept, unsigned short nLevel,
-      Licq::User* _cUser, size_t _nLen = 0);
+      const std::string& message, bool _bAccept, unsigned short nLevel,
+      Licq::User* _cUser);
    void InitBuffer();
    void PostBuffer();
    void InitBuffer_v2();
@@ -1409,8 +1381,8 @@ protected:
 class CPT_Message : public CPacketTcp
 {
 public:
-   CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
-      const Licq::Color* pColor, Licq::User* pUser, size_t nLen = 0);
+   CPT_Message(const std::string& message, unsigned short nLevel, bool bMR,
+      const Licq::Color* pColor, Licq::User* pUser);
 };
 
 
@@ -1421,7 +1393,7 @@ public:
 class CPT_Url : public CPacketTcp
 {
 public:
-  CPT_Url(const char* _sMessage, unsigned short nLevel, bool bMR,
+  CPT_Url(const std::string& message, unsigned short nLevel, bool bMR,
       const Licq::Color* pColor, Licq::User *pUser);
 };
 
@@ -1429,7 +1401,7 @@ public:
 class CPT_ContactList : public CPacketTcp
 {
 public:
-   CPT_ContactList(char *szMessage, unsigned short nLevel, bool bMR,
+  CPT_ContactList(const std::string& message, unsigned short nLevel, bool bMR,
       const Licq::Color* pColor, Licq::User* pUser);
 };
 
@@ -1453,7 +1425,7 @@ public:
 class CPT_ChatRequest : public CPacketTcp
 {
 public:
-  CPT_ChatRequest(const std::string& message, const char *szChatUsers, unsigned short nPort,
+  CPT_ChatRequest(const std::string& message, const std::string& chatUsers, unsigned short nPort,
       unsigned short nLevel, Licq::User* pUser, bool bICBM);
 };
 
@@ -1462,9 +1434,9 @@ public:
 class CPT_FileTransfer : public CPacketTcp, public CPX_FileTransfer
 {
 public:
-   CPT_FileTransfer(const std::list<std::string>& lFileList, const char *_szFilename,
-      const char* _szDescription, unsigned short nLevel, Licq::User* pUser);
-   const std::string& getDescription() { return myMessage; }
+  CPT_FileTransfer(const std::list<std::string>& lFileList, const std::string& filename,
+      const std::string& description, unsigned short nLevel, Licq::User* pUser);
+  const std::string& description() { return myMessage; }
 protected:
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 03 00 0F 00 74 68 69 73 20 69
       73 20 61 20 66 69 6C 65 00 CF 60 AD D3 CF 60 AD D3 60 12 00 00 04 00 00
@@ -1574,7 +1546,7 @@ public:
 class CPT_AckChatRefuse : public CPT_Ack
 {
 public:
-  CPT_AckChatRefuse(const char *_sReason, unsigned short _nSequence, Licq::User* _cUser);
+  CPT_AckChatRefuse(const std::string& reason, unsigned short _nSequence, Licq::User* _cUser);
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 03 00 6E 6F 00 CF 60 AD
       95 CF 60 AD 95 1E 3C 00 00 04 01 00 00 00 01 00 00 00 00 00 00 00 00 00
       00 01 00 00 00 */
@@ -1585,7 +1557,7 @@ public:
 class CPT_AckChatAccept : public CPT_Ack
 {
 public:
-  CPT_AckChatAccept(unsigned short _nPort, const char *szClients,
+  CPT_AckChatAccept(unsigned short _nPort, const std::string& clients,
       unsigned short _nSequence, Licq::User* _cUser, bool bICBM);
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD 95 CF
       60 AD 95 1E 3C 00 00 04 00 00 00 00 01 00 00 40 78 00 00 78 40 00 00 02
@@ -1616,7 +1588,7 @@ protected:
 class CPT_AckFileRefuse : public CPT_Ack
 {
 public:
-  CPT_AckFileRefuse(const char *_sReason, unsigned short _nSequence, Licq::User* _cUser);
+  CPT_AckFileRefuse(const std::string& reason, unsigned short _nSequence, Licq::User* _cUser);
 protected:
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 0A 00 6E 6F 20 74 68 61
       6E 6B 73 00 D1 EF 04 9F 7F 00 00 01 4A 1F 00 00 04 01 00 00 00 00 00 00

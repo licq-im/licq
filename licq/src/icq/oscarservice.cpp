@@ -165,8 +165,8 @@ bool COscarService::SendBARTFam(Licq::Event* e)
         Licq::UserReadGuard u(e->userId());
         if (!u.isLocked())
           return false;
-        p = new CPU_RequestBuddyIcon(u->accountId().c_str(),
-            u->buddyIconType(), u->buddyIconHashType(), u->buddyIconHash().c_str(), myFam);
+        p = new CPU_RequestBuddyIcon(u->accountId(),
+            u->buddyIconType(), u->buddyIconHashType(), u->buddyIconHash(), myFam);
         gLog.info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
             L_SRVxSTR, u->GetAlias(), p->Sequence(), p->SubSequence());
       }
@@ -480,7 +480,8 @@ bool COscarService::Initialize()
   // Alert the select thread that there is a new socket
   gIcqProtocol.myNewSocketPipe.putChar('S');
 
-  CPU_SendCookie *p1 = new CPU_SendCookie(myCookie.get(), myCookieLen, myFam);
+  string cookie(myCookie.get(), myCookieLen);
+  CPU_SendCookie *p1 = new CPU_SendCookie(cookie, myFam);
   gLog.info(tr("%sSending cookie for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (!SendPacket(p1))

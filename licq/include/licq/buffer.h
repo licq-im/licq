@@ -85,6 +85,8 @@ public:
 
    char *PackLNTS(const char *);
    char *PackString(const char *data, unsigned short max = 0);
+  char* packString(const std::string& data, unsigned short max = 0)
+  { return PackString(data.c_str(), max); }
    char *PackUnsignedShort(unsigned short data);
    char *PackUnsignedLong(unsigned long data);
    char *PackChar(char data);

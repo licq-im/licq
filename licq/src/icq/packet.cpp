@@ -60,14 +60,14 @@ unsigned short ReversePort(unsigned short p)
   return ((p >> 8) & 0xFF) + ((p & 0xFF) << 8);
 }
 
-unsigned short LengthField(const char *szField)
+size_t lengthField(const string& field)
 {
   // By SC 27434326
   // Auxiliary function for whitepage search
   //+ 7 byte for command (2),length field (4)
   // end string (1)
-  
-  int len = strlen(szField);
+
+  size_t len = field.size();
   return (len ? (len + 7 ) : 0);
 }
 
@@ -605,37 +605,37 @@ void CPacketUdp::InitBuffer()
 
 //-----Register----------------------------------------------------------------
 #if ICQ_VERSION == 2 || ICQ_VERSION == 6
-CPU_Register::CPU_Register(const char *_szPasswd)
+CPU_Register::CPU_Register(const string& password)
 {
   m_nVersion = ICQ_VERSION;
   m_nCommand = ICQ_CMDxSND_REGISTERxUSER;
   m_nSequence = 0x001;
-  m_nPasswdLen = strlen(_szPasswd) + 1;
-  m_szPasswd = strdup(_szPasswd);
+  m_nPasswdLen = password.size() + 1;
+  myPassword = password;
 
-  m_nSize = strlen (m_szPasswd) + 1 + 18;
+  m_nSize = myPassword.size() + 1 + 18;
   buffer = new CBuffer(m_nSize);
 
   buffer->PackUnsignedShort(m_nVersion);
   buffer->PackUnsignedShort(m_nCommand);
   buffer->PackUnsignedShort(m_nSequence);
   buffer->PackUnsignedShort(0x02);
-  buffer->PackString(m_szPasswd);
+  buffer->packString(myPassword);
   buffer->PackUnsignedShort(0x72);
   buffer->PackUnsignedShort(0x00);
 }
 
 CPU_Register::~CPU_Register()
 {
-  free (m_szPasswd);
+  // Empty
 }
 
 #elif ICQ_VERSION == 4 || ICQ_VERSION == 5
 
-CPU_Register::CPU_Register(const char *szPasswd)
+CPU_Register::CPU_Register(const string& password)
   : CPacketUdp(ICQ_CMDxSND_REGISTERxUSER)
 {
-  m_nSize += strlen (szPasswd) + 1 + 20;
+  m_nSize += password.size() + 1 + 20;
 
 #if ICQ_VERSION == 5
   m_nSessionId = s_nSessionId = rand() & 0x3FFFFFFF;
@@ -647,7 +647,7 @@ CPU_Register::CPU_Register(const char *szPasswd)
 
   InitBuffer();
 
-  buffer->PackString(szPasswd);
+  buffer->packString(password);
   buffer->PackUnsignedLong(0x000000A0);
   buffer->PackUnsignedLong(0x00002461);
   buffer->PackUnsignedLong(0x00A00000);
@@ -681,10 +681,10 @@ CPU_RegisterFirst::~CPU_RegisterFirst()
   // Empty
 }
 
-CPU_Register::CPU_Register(const char *szPasswd)
+CPU_Register::CPU_Register(const string& password)
 	: CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxREGISTER_USER)
 {
-  int nPassLen = strlen(szPasswd);
+  int nPassLen = password.size();
   m_nSize += 55 + nPassLen;
 
   InitBuffer();
@@ -698,7 +698,7 @@ CPU_Register::CPU_Register(const char *szPasswd)
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0);//x82270000);
   for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
-  buffer->PackLNTS(szPasswd);
+  buffer->PackLNTS(password.c_str());
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0xf2070000);
 }
@@ -723,17 +723,15 @@ CPU_VerifyRegistration::~CPU_VerifyRegistration()
   // Empty
 }
 
-CPU_SendVerification::CPU_SendVerification(const char *szPasswd, const char *szVerify)
+CPU_SendVerification::CPU_SendVerification(const string& password, const string& verification)
   : CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxREGISTER_USER)
 {
-  int nPassLen = strlen(szPasswd);
-  int nVerifyLen = strlen(szVerify);
-  m_nSize += 55 + nPassLen + nVerifyLen + 4;
+  m_nSize += 55 + password.size() + verification.size() + 4;
 
   InitBuffer();
 
   buffer->PackUnsignedShortBE(0x0001);
-  buffer->PackUnsignedShortBE(nPassLen+51);
+  buffer->PackUnsignedShortBE(password.size()+51);
   buffer->PackUnsignedLongBE(0x00000000);
   buffer->PackUnsignedLongBE(0x28000000);
   buffer->PackUnsignedLongBE(0);
@@ -741,13 +739,13 @@ CPU_SendVerification::CPU_SendVerification(const char *szPasswd, const char *szV
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0);//x82270000);
   for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
-  buffer->PackLNTS(szPasswd);
+  buffer->PackLNTS(password.c_str());
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0xf2070000);
   // Verification TLV
   buffer->PackUnsignedShortBE(0x0009);
-  buffer->PackUnsignedShortBE(nVerifyLen);
-  buffer->Pack(szVerify, nVerifyLen);
+  buffer->PackUnsignedShortBE(verification.size());
+  buffer->pack(verification);
 }
 
 CPU_SendVerification::~CPU_SendVerification()
@@ -783,29 +781,27 @@ CPU_RequestLogonSalt::CPU_RequestLogonSalt(const std::string &id)
 }
 
 //-----NewLogon-----------------------------------------------------------------
-CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char *szMD5Salt)
+CPU_NewLogon::CPU_NewLogon(const string& password, const string& accountId, const string& md5Salt)
   : CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxAUTHxLOGON)
 {
   // truncate password to MAX 8 characters
-  string pass = szPassword;
+  string pass(password);
   if (pass.size() > 8)
   {
     gLog.warning(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
     pass.erase(8);
   }
 
-  std::string toHash = szMD5Salt;
+  string toHash(md5Salt);
   toHash += pass;
   toHash += "AOL Instant Messenger (SM)";
   unsigned char szDigest[MD5_DIGEST_LENGTH];
   Licq::md5((const unsigned char*)toHash.c_str(), toHash.size(), szDigest);
 
-  unsigned int uinlen = strlen(szUin);
-
-  m_nSize += uinlen + MD5_DIGEST_LENGTH + 70;
+  m_nSize += accountId.size() + MD5_DIGEST_LENGTH + 70;
   InitBuffer();
 
-  buffer->PackTLV(0x0001, uinlen, szUin);
+  buffer->PackTLV(0x0001, accountId.size(), accountId.c_str());
   buffer->PackTLV(0x0025, MD5_DIGEST_LENGTH, reinterpret_cast<char *>(szDigest));
 
   buffer->PackTLV(0x0003, 0x0008, "ICQBasic");
@@ -833,11 +829,11 @@ CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char
 }
 
 //-----Logon--------------------------------------------------------------------
-CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _nLogonStatus)
+CPU_Logon::CPU_Logon(const string& password, const string& accountId, unsigned short _nLogonStatus)
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
   // truncate password to MAX 8 characters
-  string pass = szPassword;
+  string pass(password);
   if (pass.size() > 8)
   {
     gLog.warning(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
@@ -856,11 +852,10 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
 
   m_nLogonStatus = _nLogonStatus;
   m_nTcpVersion = ICQ_VERSION_TCP;
-  
-  unsigned int uinlen = strlen(szUin);
+
   unsigned int pwlen = pass.size();
 
-  m_nSize = uinlen + pwlen + 74;
+  m_nSize = accountId.size() + pwlen + 74;
   InitBuffer();
 
   // Encrypt our password here
@@ -871,7 +866,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   szEncPass[j] = 0;
 
   buffer->PackUnsignedLongBE(0x00000001);
-  buffer->PackTLV(0x0001, uinlen, szUin);
+  buffer->PackTLV(0x0001, accountId.size(), accountId.c_str());
   buffer->PackTLV(0x0002, pwlen, szEncPass);
   buffer->PackTLV(0x0003,  0x0008, "ICQBasic");
 
@@ -903,19 +898,18 @@ CPU_Logon::~CPU_Logon()
 }
 
 //-----SendCookie------------------------------------------------------------
-CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen,
-                               unsigned short nService)
+CPU_SendCookie::CPU_SendCookie(const string& cookie, unsigned short nService)
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
   m_nService = nService;
-  m_nSize = nLen + 8;
+  m_nSize = cookie.size() + 8;
   pthread_mutex_lock(&s_xMutex);
   s_nSequence[m_nService] = 0xffff;
   pthread_mutex_unlock(&s_xMutex);
   InitBuffer();
 
   buffer->PackUnsignedLongBE(0x00000001);
-  buffer->PackTLV(0x0006, nLen, szCookie);
+  buffer->PackTLV(0x0006, cookie.size(), cookie.c_str());
 }
 
 CPU_SendCookie::~CPU_SendCookie()
@@ -1032,26 +1026,25 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
 }
 
 //-----RequestBuddyIcon---------------------------------------------------------
-CPU_RequestBuddyIcon::CPU_RequestBuddyIcon(const char *_szId,
+CPU_RequestBuddyIcon::CPU_RequestBuddyIcon(const string& accountId,
                       unsigned short _nBuddyIconType, char _nBuddyIconHashType,
-                      const char *_szBuddyIconHash, unsigned short nService)
+      const string& buddyIconHash, unsigned short nService)
   : CPU_CommonFamily(ICQ_SNACxFAM_BART, ICQ_SNACxBART_DOWNLOADxREQUEST)
 {
-  int nSize = strlen(_szId);
-  int nHashLength = strlen(_szBuddyIconHash)/2;
+  int nHashLength = buddyIconHash.size()/2;
   boost::scoped_array<char> Hash(new char[nHashLength]);
   m_nService = nService;
-  m_nSize += 6 + nSize + nHashLength;
+  m_nSize += 6 + accountId.size() + nHashLength;
 
   InitBuffer();
-  
-  buffer->PackChar(nSize);
-  buffer->Pack(_szId, nSize);
+
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
   buffer->PackChar(0x01);	// number of hashes being requested in this packet
   buffer->PackUnsignedShortBE(_nBuddyIconType);
   buffer->PackChar(_nBuddyIconHashType);
   buffer->PackChar(nHashLength);
-  buffer->Pack(ReadHex(Hash.get(), _szBuddyIconHash, nHashLength), nHashLength);
+  buffer->Pack(ReadHex(Hash.get(), buddyIconHash.c_str(), nHashLength), nHashLength);
 }
 
 //-----RequestService-----------------------------------------------------------
@@ -1270,15 +1263,14 @@ CPU_GenericUinList::CPU_GenericUinList(const StringList& users, unsigned short f
   buffer->pack(contacts);
 }
 
-CPU_GenericUinList::CPU_GenericUinList(const char *szId, unsigned short family, unsigned short Subtype)
+CPU_GenericUinList::CPU_GenericUinList(const string& accountId, unsigned short family, unsigned short Subtype)
   : CPU_CommonFamily(family, Subtype)
 {
-  int n = strlen(szId);
-  m_nSize += n+1;
+  m_nSize += accountId.size()+1;
   InitBuffer();
 
-  buffer->PackChar(n);
-  buffer->Pack(szId, n);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
 }
 
 CPU_GenericUinList::CPU_GenericUinList(unsigned long _nUin, unsigned short family, unsigned short Subtype)
@@ -1419,42 +1411,40 @@ CPU_AckNameInfo::CPU_AckNameInfo()
 }
 
 //-----TypingNotification--------------------------------------------------
-CPU_TypingNotification::CPU_TypingNotification(const char *szId, bool bActive)
+CPU_TypingNotification::CPU_TypingNotification(const string& accountId, bool bActive)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_TYPING)
 {
-  int nLen = strlen(szId);
   unsigned short nTyping = bActive ? ICQ_TYPING_ACTIVE : ICQ_TYPING_INACTIVEx0;
-  m_nSize += 13 + nLen;
+  m_nSize += 13 + accountId.size();
 
   InitBuffer();
 
   buffer->PackUnsignedLongBE(0x00000000);
   buffer->PackUnsignedLongBE(0x00000000);
   buffer->PackUnsignedShortBE(0x0001);
-  buffer->PackChar(nLen);
-  buffer->Pack(szId, nLen);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
   buffer->PackUnsignedShortBE(nTyping);
 }
 
 //-----CheckInvisible------------------------------------------------------
-CPU_CheckInvisible::CPU_CheckInvisible(const char *szId)
+CPU_CheckInvisible::CPU_CheckInvisible(const string& accountId)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
-  int nLen = strlen(szId);
-  m_nSize += 15 + nLen;
-  
+  m_nSize += 15 + accountId.size();
+
   InitBuffer();
   
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE((unsigned long)m_nSequence);
   buffer->PackUnsignedShortBE(0x0002);
-  buffer->PackChar(nLen);
-  buffer->Pack(szId, nLen);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
   buffer->PackUnsignedLongBE(0x00060000);
 }
 
 //-----ThroughServer-------------------------------------------------------
-CPU_ThroughServer::CPU_ThroughServer(const char *szId,
+CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
     unsigned char msgType, const string& message,
                                      unsigned short nCharset, bool bOffline,
                                      size_t nLen)
@@ -1467,7 +1457,6 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
     msgLen = nLen;
   else
     msgLen = message.size();
-  int nUinLen = strlen(szId);
   unsigned short nFormat = 0;
   int nTypeLen = 0, nTLVType = 0;
   CBuffer tlvData;
@@ -1490,12 +1479,12 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
   	break;
 
   default:
-  	nUinLen = nTypeLen = msgLen = 0;
+      nTypeLen = msgLen = 0;
   	gLog.warning("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
 		return;
   }
 
-  m_nSize += 11 + nTypeLen + nUinLen + 4; // 11 all bytes pre-tlv
+  m_nSize += 11 + nTypeLen + accountId.size() + 4; // 11 all bytes pre-tlv
 	//  8 fom tlv type, tlv len
   if (bOffline)
     m_nSize += 4;
@@ -1505,8 +1494,8 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
 	buffer->PackUnsignedLongBE(0); // upper 4 bytes of message id
 	buffer->PackUnsignedLongBE(0); // lower 4 bytes of message id
 	buffer->PackUnsignedShortBE(nFormat); // message format
-	buffer->PackChar(nUinLen);
-	buffer->Pack(szId, nUinLen);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
 
 	tlvData.Create(nTypeLen);
 
@@ -1636,7 +1625,7 @@ CPU_ReverseConnect::CPU_ReverseConnect(const ICQUser* u, unsigned long nLocalIP,
 //  buffer->PackUnsignedLongBE(0x00030000);
 }
 
-CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(const char* szUin,
+CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(const string& accountId,
                                                    unsigned long nMsgID1,
                                                    unsigned long nMsgID2,
                                                    unsigned short nFailedPort,
@@ -1644,17 +1633,15 @@ CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(const char* szUin,
                                                    unsigned long nConnectID)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  int nUinLen = strlen(szUin);
-
-  m_nSize += 8 + 2 + 1 + nUinLen + 2 + 4 + 4 + 4 + 2 + 4;
+  m_nSize += 8 + 2 + 1 + accountId.size() + 2 + 4 + 4 + 4 + 2 + 4;
 
   InitBuffer();
 
   buffer->PackUnsignedLongBE(nMsgID1);
   buffer->PackUnsignedLongBE(nMsgID2);
   buffer->PackUnsignedShortBE(0x0002);
-  buffer->PackChar(nUinLen);
-  buffer->Pack(szUin, nUinLen);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
   buffer->PackUnsignedShortBE(0x0003);
   buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedLong(nFailedPort);
@@ -2110,19 +2097,15 @@ void CPU_AdvancedMessage::InitBuffer()
 }
 
 //-----ChatRequest-------------------------------------------------------------
-CPU_ChatRequest::CPU_ChatRequest(const string& message, const char *_szChatUsers,
+CPU_ChatRequest::CPU_ChatRequest(const string& message, const string& chatUsers,
                                  unsigned short nPort, unsigned short nLevel,
     const ICQUser* _pUser, bool bICBM)
   : CPU_AdvancedMessage(_pUser, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
                         nLevel, false, 0)
 {
-	int nUsersLen = _szChatUsers ? strlen(_szChatUsers) : 0;
-  int nMessageLen = message.size();
-
+  m_nSize += 14 + chatUsers.size() + message.size();
   if (bICBM)
-		m_nSize += 58 + nUsersLen + nMessageLen + 21; // 21 = strlen(pluginname)
-	else
-		m_nSize += 14 + nUsersLen + nMessageLen;
+    m_nSize += 44 + 21; // 21 = strlen(pluginname)
 
 //  m_nExtraLen += 4; m_nSize += 4; //ack request
 	InitBuffer();
@@ -2142,15 +2125,15 @@ CPU_ChatRequest::CPU_ChatRequest(const string& message, const char *_szChatUsers
 		buffer->PackUnsignedLongBE(0);
 		buffer->PackUnsignedShortBE(0);
 		buffer->PackChar(0);
-		buffer->PackUnsignedLong(nMessageLen + nUsersLen + 15);
-		buffer->PackUnsignedLong(nMessageLen);
+    buffer->PackUnsignedLong(message.size() + chatUsers.size() + 15);
+    buffer->PackUnsignedLong(message.size());
     if (!message.empty())
       buffer->pack(message);
   }
   else
-    buffer->PackString(message.c_str(), nMessageLen);
+    buffer->packString(message);
 
-	buffer->PackString(_szChatUsers);
+  buffer->packString(chatUsers);
 	buffer->PackUnsignedShortBE(nPort);
 	buffer->PackUnsignedShort(0);
 	buffer->PackUnsignedShort(nPort);
@@ -2160,21 +2143,18 @@ CPU_ChatRequest::CPU_ChatRequest(const string& message, const char *_szChatUsers
 
 //-----FileTransfer------------------------------------------------------------
 CPU_FileTransfer::CPU_FileTransfer(const Licq::User* u, const list<string>& lFileList,
-	const char *_szFile, const char *_szDesc, unsigned short nLevel, bool bICBM)
+    const string& file, const string& desc, unsigned short nLevel, bool bICBM)
   : CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, nLevel,
                         false, 0),
-    CPX_FileTransfer(lFileList, _szFile)
+    CPX_FileTransfer(lFileList, file)
 {
 	if (!m_bValid)  return;
 
-	int nFileLen = strlen(m_szFilename);
-	int nDescLen = strlen(_szDesc);
-	m_szDesc = strdup(_szDesc); // XXX where should this be free'd?
+  myDesc = desc;
 
+  m_nSize += 18 + myFilename.size() + desc.size();
   if (bICBM)
-		m_nSize += 62 + nFileLen + nDescLen + 4; // 4 = strlen("File")
-	else
-		m_nSize += 18 + nFileLen + nDescLen ;
+    m_nSize += 44 + 4; // 4 = strlen("File")
 //  m_nExtraLen += 4; m_nSize += 4; //the ack request
 
 	InitBuffer();
@@ -2194,16 +2174,16 @@ CPU_FileTransfer::CPU_FileTransfer(const Licq::User* u, const list<string>& lFil
 		buffer->PackUnsignedLongBE(0);
 		buffer->PackUnsignedShortBE(0);
 		buffer->PackChar(0);
-		buffer->PackUnsignedLong(nDescLen + nFileLen + 19); //remaining  - is 4 bytes
+    buffer->PackUnsignedLong(desc.size() + myFilename.size() + 19); //remaining  - is 4 bytes
 																											//dont count last 4 bytes
-		buffer->PackUnsignedLong(nDescLen); // file desc - is 4 bytes
-		buffer->Pack(_szDesc, nDescLen);
-	}
-	else
-		buffer->PackString(_szDesc);
+    buffer->PackUnsignedLong(desc.size()); // file desc - is 4 bytes
+    buffer->pack(desc);
+  }
+  else
+    buffer->packString(desc);
 
 	buffer->PackUnsignedLongBE(0x2D384444); // ???
-	buffer->PackString(m_szFilename);
+  buffer->packString(myFilename);
 	buffer->PackUnsignedLong(m_nFileSize);
 	buffer->PackUnsignedLongBE(0);
 //	buffer->PackUnsignedLongBE(0x00030000); // ack request
@@ -2372,12 +2352,11 @@ CPU_AckGeneral::CPU_AckGeneral(const ICQUser* u, unsigned long nMsgID1,
 //-----AckFileAccept-----------------------------------------------------------
 CPU_AckFileAccept::CPU_AckFileAccept(const ICQUser* u,//unsigned long nUin,
     const unsigned long nMsgID[2], unsigned short nSequence, unsigned short nPort,
-   const char *szDesc, const char *szFile, unsigned long nFileSize)
+    const string& desc, const string& file, unsigned long nFileSize)
    : CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true, nSequence, nMsgID[0],
        nMsgID[1])
 {
-        int nFileLen = strlen(szFile), nDescLen = strlen(szDesc);
-	m_nSize += 66 + nFileLen + nDescLen;
+  m_nSize += 66 + file.size() + desc.size();
 	InitBuffer();
 
 	buffer->PackUnsignedShort(0x29);  // len of following plugin info
@@ -2393,11 +2372,11 @@ CPU_AckFileAccept::CPU_AckFileAccept(const ICQUser* u,//unsigned long nUin,
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedShortBE(0);
 	buffer->PackChar(0);
-	buffer->PackUnsignedLong(19 + nDescLen + nFileLen);
-	buffer->PackUnsignedLong(nDescLen); // file desc - is 4 bytes
-	buffer->Pack(szDesc, nDescLen); // file desc
+  buffer->PackUnsignedLong(19 + desc.size() + file.size());
+  buffer->PackUnsignedLong(desc.size()); // file desc - is 4 bytes
+  buffer->pack(desc); // file desc
 	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
-	buffer->PackString(szFile); // filename
+  buffer->packString(file); // filename
 	buffer->PackUnsignedLong(nFileSize); // filesize
 	buffer->PackUnsignedLong(nPort); // port
 }
@@ -2405,15 +2384,15 @@ CPU_AckFileAccept::CPU_AckFileAccept(const ICQUser* u,//unsigned long nUin,
 
 //-----AckFileRefuse-----------------------------------------------------------
 CPU_AckFileRefuse::CPU_AckFileRefuse(const ICQUser* u, const unsigned long nMsgID[2],
-    unsigned short nSequence, const char *msg)
+    unsigned short nSequence, const string& message)
   : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
       ICQ_CMDxSUB_FILE, false, 0, PLUGIN_NORMAL)
 {
 	// XXX This is not the ICBM way yet!
-	m_nSize += strlen(msg) + 18;
+  m_nSize += message.size() + 18;
 	InitBuffer();
 
-	buffer->PackString(msg);
+  buffer->packString(message);
 	buffer->PackUnsignedLong(0); // port reversed
 	buffer->PackString("");
 	buffer->PackUnsignedLong(0);
@@ -2421,39 +2400,39 @@ CPU_AckFileRefuse::CPU_AckFileRefuse(const ICQUser* u, const unsigned long nMsgI
 }
 
 //-----AckChatAccept-----------------------------------------------------------
-CPU_AckChatAccept::CPU_AckChatAccept(const ICQUser* u, const char *szClients,
+CPU_AckChatAccept::CPU_AckChatAccept(const ICQUser* u, const string& clients,
     const unsigned long nMsgID[2], unsigned short nSequence,
                                           unsigned short nPort)
 	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_CHAT, 0, true, nSequence,
                              nMsgID[0], nMsgID[1])
 {
 	// XXX This is not the ICBM way yet!
-	m_nSize += 11 + strlen_safe(szClients);
+  m_nSize += 11 + clients.size();
 	InitBuffer();
 
-	buffer->PackString(szClients);
+  buffer->packString(clients);
 	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
 	buffer->PackUnsignedLong(nPort);
 }
 
 //-----AckChatRefuse-----------------------------------------------------------
 CPU_AckChatRefuse::CPU_AckChatRefuse(const ICQUser* u, const unsigned long nMsgID[2],
-    unsigned short nSequence, const char *msg)
+    unsigned short nSequence, const string& message)
   : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
       ICQ_CMDxSUB_CHAT, false, 0, PLUGIN_NORMAL)
 {
 	// XXX This is not the ICBM way yet!
-	m_nSize += strlen(msg) + 14;
+  m_nSize += message.size() + 14;
 	InitBuffer();
 
-	buffer->PackString(msg);
+  buffer->packString(message);
 	buffer->PackString("");
 	buffer->PackUnsignedLong(0);
 	buffer->PackUnsignedLong(0);
 }
 
 //-----SendSms-----------------------------------------------------------------
-CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
+CPU_SendSms::CPU_SendSms(const string& number, const string& message)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_SENDxSMS;
@@ -2468,12 +2447,12 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
   strftime(szTime, 30, "%a, %d %b %Y %T %Z", tmTime);
 
   char szParsedNumber[17] = "+";
-  ParseDigits(&szParsedNumber[1], szNumber, 15);
+  ParseDigits(&szParsedNumber[1], number.c_str(), 15);
 
   Licq::OwnerReadGuard o(LICQ_PPID);
 
   snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
-      szParsedNumber, szMessage, o->accountId().c_str(), o->getAlias().c_str(), szTime);
+      szParsedNumber, message.c_str(), o->accountId().c_str(), o->getAlias().c_str(), szTime);
   szXmlStr[459] = '\0';
 
   int nLenXmlStr = strlen_safe(szXmlStr) + 1;
@@ -2503,19 +2482,16 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
 }
 
 //----RequestAuth------------------------------------------------------------
-CPU_RequestAuth::CPU_RequestAuth(const char* szUin, const char *_szMsg)
+CPU_RequestAuth::CPU_RequestAuth(const string& accountId, const string& message)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_AUTHxREQ)
 {
-  int nUinLen = strlen(szUin);
-  int nMsgLen = strlen(_szMsg);
-
-  m_nSize += nUinLen + nMsgLen + 5;
+  m_nSize += accountId.size() + message.size() + 5;
   InitBuffer();
 
-  buffer->PackChar(nUinLen);
-  buffer->Pack(szUin, nUinLen);
-  buffer->PackUnsignedShortBE(nMsgLen);
-  buffer->Pack(_szMsg, nMsgLen);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
+  buffer->PackUnsignedShortBE(message.size());
+  buffer->pack(message);
   buffer->PackUnsignedShortBE(0);
 }
 
@@ -2770,7 +2746,7 @@ CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
 }
 
 //-----AddToServerList----------------------------------------------------------
-CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
+CPU_AddToServerList::CPU_AddToServerList(const string& name,
                                          unsigned short _nType,
                                          unsigned short _nGroup, bool _bAuthReq,
                                          bool _bTopLevel)
@@ -2778,8 +2754,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     m_nSID(0),
     m_nGSID(0)
 {
-  UserId userId(_szName, LICQ_PPID);
-  unsigned short nStrLen = strlen(_szName);
+  UserId userId(name, LICQ_PPID);
+  unsigned short nStrLen = name.size();
   unsigned short nExportSize = 0;
   string unicodeName;
   Licq::TlvList tlvs;
@@ -2868,14 +2844,14 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       m_nSID = 0;
       SetExtraInfo(0);
 
-      unicodeName = gTranslator.toUnicode(_szName);
+      unicodeName = gTranslator.toUnicode(name);
       nStrLen = unicodeName.size();
 
       if (_bTopLevel)
         nExportSize += 4 + (2 * gUserManager.NumGroups());
       else
       {
-        int groupId = Licq::gUserManager.GetGroupFromName(_szName);
+        int groupId = Licq::gUserManager.GetGroupFromName(name);
         if (groupId != 0)
           Licq::gUserManager.ModifyGroupID(groupId, m_nGSID);
       }
@@ -2909,7 +2885,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nStrLen);
-  buffer->Pack(!unicodeName.empty() ? unicodeName.c_str() : _szName, nStrLen);
+  buffer->pack(!unicodeName.empty() ? unicodeName : name);
   buffer->PackUnsignedShortBE(m_nGSID);
   buffer->PackUnsignedShortBE(m_nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -2950,12 +2926,12 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 }
 
 //-----RemoveFromServerList-----------------------------------------------------
-CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
+CPU_RemoveFromServerList::CPU_RemoveFromServerList(const string& name,
 	unsigned short _nGSID, unsigned short _nSID, unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
 {
-  UserId userId(_szName, LICQ_PPID);
-  int nNameLen = strlen(_szName);
+  UserId userId(name, LICQ_PPID);
+  int nNameLen = name.size();
   string unicodeName;
   CBuffer tlvBuffer;
 
@@ -2981,7 +2957,7 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
   }
   else if (_nType == ICQ_ROSTxGROUP)
   {
-    unicodeName = gTranslator.toUnicode(_szName);
+    unicodeName = gTranslator.toUnicode(name);
     nNameLen = unicodeName.size();
   }
 
@@ -2989,10 +2965,7 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nNameLen);
-  if (!unicodeName.empty())
-    buffer->pack(unicodeName);
-  else
-    buffer->Pack(_szName, nNameLen);
+  buffer->pack(!unicodeName.empty() ? unicodeName : name);
   buffer->PackUnsignedShortBE(_nGSID);
   buffer->PackUnsignedShortBE(_nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -3075,17 +3048,17 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
 }
 
 //-----UpdateToServerList---------------------------------------------------
-CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
+CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
                                                unsigned short _nType,
                                                unsigned short _nGSID, // only for groups
                                                bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
-  UserId userId(_szName, LICQ_PPID);
+  UserId userId(name, LICQ_PPID);
   unsigned short nGSID = 0;
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
-  unsigned short nNameLen = strlen(_szName);
+  unsigned short nNameLen = name.size();
   string unicodeName;
   CBuffer tlvBuffer;
 
@@ -3145,7 +3118,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       }
       else
       {
-        unicodeName = gTranslator.toUnicode(_szName);
+        unicodeName = gTranslator.toUnicode(name);
         nNameLen = unicodeName.size();
 
         Licq::UserListGuard userList;
@@ -3170,7 +3143,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   if (!unicodeName.empty() && _nType == ICQ_ROSTxGROUP)
     buffer->pack(unicodeName);
   else
-    buffer->Pack(_szName, nNameLen);
+    buffer->pack(name);
   buffer->PackUnsignedShortBE(nGSID);
   buffer->PackUnsignedShortBE(nSID);
   buffer->PackUnsignedShortBE(_nType);
@@ -3209,21 +3182,20 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 }
 
 //-----SearchWhitePages---------------------------------------------------------
-CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
-    const char *szLastName, const char *szAlias, const char *szEmail,
-    unsigned short nMinAge, unsigned short nMaxAge, char nGender,
-    char nLanguage, const char *szCity, const char *szState, unsigned short nCountryCode,
-    const char *szCoName, const char *szCoDept, const char *szCoPos,
-    const char *szKeyword, bool bOnlineOnly)
+CPU_SearchWhitePages::CPU_SearchWhitePages(const string& firstName, const string& lastName,
+    const string& alias, const string& email, unsigned short nMinAge, unsigned short nMaxAge,
+    char nGender, char nLanguage, const string& city, const string& state,
+    unsigned short nCountryCode, const string& coName, const string& coDept,
+    const string& coPos, const string& keyword, bool bOnlineOnly)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   unsigned short nDataLen;	// length of data info to add packet size
-  
-  nDataLen = LengthField(szFirstName) + LengthField(szLastName) +
-             LengthField(szAlias) + LengthField(szCity) +
-             LengthField(szEmail) + LengthField(szState) +
-             LengthField(szCoName) + LengthField(szCoDept) +
-             LengthField(szCoPos) + LengthField(szKeyword);
+
+  nDataLen = lengthField(firstName) + lengthField(lastName) +
+             lengthField(alias) + lengthField(city) +
+             lengthField(email) + lengthField(state) +
+             lengthField(coName) + lengthField(coDept) +
+             lengthField(coPos) + lengthField(keyword);
 
   nDataLen += 5*!(!nGender) + 6*!(!nLanguage) + 4*(!(!nMaxAge) + !(!nMinAge))
 	      + 6*(!(!nCountryCode)) + 5*(bOnlineOnly);
@@ -3252,17 +3224,6 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
     }
   }
 
-  gTranslator.ClientToServer((char *) szFirstName);
-  gTranslator.ClientToServer((char *) szLastName);
-  gTranslator.ClientToServer((char *) szAlias);
-  gTranslator.ClientToServer((char *) szEmail);
-  gTranslator.ClientToServer((char *) szCity);
-  gTranslator.ClientToServer((char *) szState);
-  gTranslator.ClientToServer((char *) szCoName);
-  gTranslator.ClientToServer((char *) szCoDept);
-  gTranslator.ClientToServer((char *) szCoPos);
-  gTranslator.ClientToServer((char *) szKeyword);
-
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(16 + nDataLen - 4);
   buffer->PackUnsignedShort(16 + nDataLen - 6);
@@ -3270,18 +3231,18 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
   buffer->PackUnsignedShortBE(0xd007);
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand);
-  
-  PackSearch(ICQ_CMDxWPxFNAME, szFirstName);
-  PackSearch(ICQ_CMDxWPxLNAME, szLastName);
-  PackSearch(ICQ_CMDxWPxALIAS, szAlias);
-  PackSearch(ICQ_CMDxWPxEMAIL, szEmail);
-  PackSearch(ICQ_CMDxWPxCITY, szCity);
-  PackSearch(ICQ_CMDxWPxSTATE, szState);
-  PackSearch(ICQ_CMDxWPxCOMPANY, szCoName);
-  PackSearch(ICQ_CMDxWPxCODEPT, szCoDept);
-  PackSearch(ICQ_CMDxWPxCOPOS, szCoPos);
-  PackSearch(ICQ_CMDxWPxKEYWORD, szKeyword);
-  
+
+  packSearch(ICQ_CMDxWPxFNAME, gTranslator.clientToServer(firstName));
+  packSearch(ICQ_CMDxWPxLNAME, gTranslator.clientToServer(lastName));
+  packSearch(ICQ_CMDxWPxALIAS, gTranslator.clientToServer(alias));
+  packSearch(ICQ_CMDxWPxEMAIL, gTranslator.clientToServer(email));
+  packSearch(ICQ_CMDxWPxCITY, gTranslator.clientToServer(city));
+  packSearch(ICQ_CMDxWPxSTATE, gTranslator.clientToServer(state));
+  packSearch(ICQ_CMDxWPxCOMPANY, gTranslator.clientToServer(coName));
+  packSearch(ICQ_CMDxWPxCODEPT, gTranslator.clientToServer(coDept));
+  packSearch(ICQ_CMDxWPxCOPOS, gTranslator.clientToServer(coPos));
+  packSearch(ICQ_CMDxWPxKEYWORD, gTranslator.clientToServer(keyword));
+
   if (nMinAge)
   {
     buffer->PackUnsignedShortBE(ICQ_CMDxWPxAGE);
@@ -3315,18 +3276,18 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
   }
 }
 
-void CPU_SearchWhitePages::PackSearch(unsigned short nCmd, const char *szField)
+void CPU_SearchWhitePages::packSearch(unsigned short nCmd, const string& field)
 {
   // By SC
   // Pack string field info if exist
 
-  int nLenField = strlen(szField) + 1;
+  int nLenField = field.size() + 1;
 
   if (nLenField > 1)
   {
     buffer->PackUnsignedShortBE(nCmd);
     buffer->PackUnsignedShort(nLenField + 2);
-    buffer->PackLNTS(szField);
+    buffer->PackLNTS(field.c_str());
   }
 }
 
@@ -3354,48 +3315,33 @@ CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
 
 
 //-----UpdatePersonalInfo-------------------------------------------------------
-CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const char *szAlias,
-                                                        const char *szFirstName,
-                                                        const char *szLastName,
-                                                        const char *szEmail,
-                                                        bool bAuthorization)
+CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const string& alias,
+    const string& firstName, const string& lastName, const string& email, bool bAuthorization)
   : CPacketUdp(ICQ_CMDxSND_UPDATExBASIC)
 {
 
   m_nAuthorization = bAuthorization ? 0 : 1;
 
-  m_nSize += 15 + strlen(szAlias) + strlen(szFirstName) +
-             strlen(szLastName) + strlen(szEmail);
+  m_nSize += 15 + alias.size() + firstName.size() + lastName.size() + email.size();
   InitBuffer();
 
 #if ICQ_VERSION == 2
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
 
-  gTranslator.ClientToServer((char *) szAlias);
-  gTranslator.ClientToServer((char *) szFirstName);
-  gTranslator.ClientToServer((char *) szLastName);
-  gTranslator.ClientToServer((char *) szEmail);
-
-  m_szAlias = buffer->PackString(szAlias);
-  m_szFirstName = buffer->PackString(szFirstName);
-  m_szLastName = buffer->PackString(szLastName);
-  m_szEmail = buffer->PackString(szEmail);
+  myAlias = buffer->packString(gTranslator.clientToServer(alias));
+  myFirstName = buffer->packString(gTranslator.clientToServer(firstName));
+  myLastName = buffer->packString(gTranslator.clientToServer(lastName));
+  myEmail = buffer->packString(gTranslator.clientToServer(email));
   buffer->PackChar(m_nAuthorization);
 
 }
 
 
 //-----UpdatePersonalExtInfo-------------------------------------------------------
-CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
-                                                    unsigned short nCountry,
-                                                    const char *szState,
-                                                    unsigned short nAge,
-                                                    char cSex,
-                                                    const char *szPhone,
-                                                    const char *szHomepage,
-                                                    const char *szAbout,
-                                                    unsigned long nZipcode)
+CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const string& city,
+    unsigned short nCountry, const string& state, unsigned short nAge, char cSex,
+    const string& phone, const string& homepage, const string& about, unsigned long nZipcode)
   : CPacketUdp(ICQ_CMDxSND_UPDATExDETAIL)
 {
 
@@ -3405,29 +3351,22 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
   m_cSex = cSex;
   m_nZipcode = nZipcode;
 
-  m_nSize += strlen(szCity) + strlen(szState) +
-             strlen(szPhone) + strlen(szHomepage) + strlen(szAbout) + 27;
+  m_nSize += city.size() + state.size() + phone.size() + homepage.size() + about.size() + 27;
   InitBuffer();
 
 #if ICQ_VERSION == 2
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
 
-  gTranslator.ClientToServer((char *) szCity);
-  gTranslator.ClientToServer((char *) szHomepage);
-  gTranslator.ClientToServer((char *) szPhone);
-  gTranslator.ClientToServer((char *) szState);
-//  gTranslator.ClientToServer((char *) szAbout);
-
-  m_szCity = buffer->PackString(szCity);
+  myCity = buffer->packString(gTranslator.clientToServer(city));
   buffer->PackUnsignedShort(m_nCountry);
   buffer->PackChar(m_cTimezone);
-  m_szState = buffer->PackString(szState, 5);
+  myState = buffer->packString(gTranslator.clientToServer(state), 5);
   buffer->PackUnsignedShort(m_nAge);
   buffer->PackChar(m_cSex);
-  m_szPhone = buffer->PackString(szPhone);
-  m_szHomepage = buffer->PackString(szHomepage);
-  m_szAbout = buffer->PackString(szAbout);
+  myPhone = buffer->packString(gTranslator.clientToServer(phone));
+  myHomepage = buffer->packString(gTranslator.clientToServer(homepage));
+  myAbout = buffer->packString(about);
   buffer->PackUnsignedLong(m_nZipcode);
 
 }
@@ -3478,26 +3417,25 @@ CPU_ReverseTCPRequest::CPU_ReverseTCPRequest(unsigned long nDestinationUin,
 
 
 //-----Authorize----------------------------------------------------------------
-CPU_Authorize::CPU_Authorize(const char* szId)
+CPU_Authorize::CPU_Authorize(const string& accountId)
  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_AUTHxGRANT)
 {
-  size_t idLen = strlen(szId); 
-  m_nSize += 1 + idLen + 5;
+  m_nSize += 1 + accountId.size() + 5;
   InitBuffer();
 
-  buffer->PackChar(idLen);
-  buffer->Pack(szId, idLen);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
   buffer->PackChar(0x01);
   buffer->PackUnsignedLong(0);
 }
 
 //------SetPassword---------------------------------------------------------
-CPU_SetPassword::CPU_SetPassword(const char *szPassword)
+CPU_SetPassword::CPU_SetPassword(const string& password)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nSubCommand = ICQ_CMDxMETA_PASSWORDxSET;
 
-  unsigned short nDataLen = strlen(szPassword) + 19;
+  unsigned short nDataLen = password.size() + 19;
   m_nSize += nDataLen;
   InitBuffer();
 
@@ -3511,7 +3449,7 @@ CPU_SetPassword::CPU_SetPassword(const char *szPassword)
 
   // LNTS, but we want the password in this class
   //buffer->PackUnsignedShort(nDataLen - 19);
-  m_szPassword = buffer->PackLNTS(szPassword);//buffer->PackString(szPassword);
+  myPassword = buffer->PackLNTS(password.c_str());//buffer->PackString(szPassword);
   //buffer->PackChar(0x00);
 }
 
@@ -3607,15 +3545,11 @@ CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
 }
 
 
-CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
-                          const char *szFirstName, const char *szLastName,
-                          const char *szEmailPrimary,
-                          const char *szCity, const char *szState,
-                          const char *szPhoneNumber, const char *szFaxNumber,
-                          const char *szAddress, const char *szCellularNumber,
-                          const char *szZipCode,
-                          unsigned short nCountryCode,
-                          bool bHideEmail)
+CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
+    const string& firstName, const string& lastName, const string& emailPrimary,
+    const string& city, const string& state, const string& phoneNumber,
+    const string& faxNumber, const string& address, const string& cellularNumber,
+    const string& zipCode, unsigned short nCountryCode, bool bHideEmail)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
@@ -3624,12 +3558,9 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_nTimezone = ICQUser::SystemTimezone();
   m_nHideEmail = bHideEmail ? 1 : 0;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAlias) +
-    strlen_safe(szFirstName) + strlen_safe(szLastName) +
-    strlen_safe(szEmailPrimary) + strlen_safe(szCity) + strlen_safe(szState) +
-    strlen_safe(szPhoneNumber) + strlen_safe(szFaxNumber) +
-    strlen_safe(szAddress) + strlen_safe(szZipCode) +
-    strlen_safe(szCellularNumber) + 89;
+  int packetSize = 2+2+2+4+2+2+2 + alias.size() + firstName.size() + lastName.size() +
+    emailPrimary.size() + city.size() + state.size() + phoneNumber.size() +
+    faxNumber.size() + address.size() + zipCode.size() + cellularNumber.size() + 89;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -3641,67 +3572,55 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
 
-  gTranslator.ClientToServer((char *) szAlias);
-  gTranslator.ClientToServer((char *) szFirstName);
-  gTranslator.ClientToServer((char *) szLastName);
-  gTranslator.ClientToServer((char *) szEmailPrimary);
-  gTranslator.ClientToServer((char *) szCity);
-  gTranslator.ClientToServer((char *) szState);
-  gTranslator.ClientToServer((char *) szPhoneNumber);
-  gTranslator.ClientToServer((char *) szFaxNumber);
-  gTranslator.ClientToServer((char *) szAddress);
-  gTranslator.ClientToServer((char *) szCellularNumber);
-  gTranslator.ClientToServer((char *) szZipCode);
-
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxTIMEZONE);
   buffer->PackUnsignedShort(0x0001);
   buffer->PackChar(m_nTimezone);
   
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxALIAS);
-  buffer->PackUnsignedShort(strlen_safe(szAlias)+3);
-  m_szAlias = buffer->PackString(szAlias);
-  
+  buffer->PackUnsignedShort(alias.size()+3);
+  myAlias = buffer->packString(gTranslator.clientToServer(alias));
+
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxFNAME);
-  buffer->PackUnsignedShort(strlen_safe(szFirstName)+3);
-  m_szFirstName = buffer->PackString(szFirstName);
-  
+  buffer->PackUnsignedShort(firstName.size()+3);
+  myFirstName = buffer->packString(gTranslator.clientToServer(firstName));
+
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxLNAME);
-  buffer->PackUnsignedShort(strlen_safe(szLastName)+3);
-  m_szLastName = buffer->PackString(szLastName);
+  buffer->PackUnsignedShort(lastName.size()+3);
+  myLastName = buffer->packString(gTranslator.clientToServer(lastName));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxEMAIL);
-  buffer->PackUnsignedShort(strlen_safe(szEmailPrimary)+3);
-  m_szEmailPrimary = buffer->PackString(szEmailPrimary);
+  buffer->PackUnsignedShort(emailPrimary.size()+3);
+  myEmailPrimary = buffer->packString(gTranslator.clientToServer(emailPrimary));
   buffer->PackChar(m_nHideEmail);
   
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCITY);
-  buffer->PackUnsignedShort(strlen_safe(szCity)+3);
-  m_szCity = buffer->PackString(szCity);
-  
+  buffer->PackUnsignedShort(city.size()+3);
+  myCity = buffer->packString(gTranslator.clientToServer(city));
+
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxSTATE);
-  buffer->PackUnsignedShort(strlen_safe(szState)+3);
-  m_szState = buffer->PackString(szState);
+  buffer->PackUnsignedShort(state.size()+3);
+  myState = buffer->packString(gTranslator.clientToServer(state));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExHOME);
-  buffer->PackUnsignedShort(strlen_safe(szPhoneNumber)+3);
-  m_szPhoneNumber = buffer->PackString(szPhoneNumber);
+  buffer->PackUnsignedShort(phoneNumber.size()+3);
+  myPhoneNumber = buffer->packString(gTranslator.clientToServer(phoneNumber));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_FAX);
-  buffer->PackUnsignedShort(strlen_safe(szFaxNumber)+3);
-  m_szFaxNumber = buffer->PackString(szFaxNumber);
-  
+  buffer->PackUnsignedShort(faxNumber.size()+3);
+  myFaxNumber = buffer->packString(gTranslator.clientToServer(faxNumber));
+
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ADDR);
-  buffer->PackUnsignedShort(strlen_safe(szAddress)+3);
-  m_szAddress = buffer->PackString(szAddress);
+  buffer->PackUnsignedShort(address.size()+3);
+  myAddress = buffer->packString(gTranslator.clientToServer(address));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExCELL);
-  buffer->PackUnsignedShort(strlen_safe(szCellularNumber)+3);
-  m_szCellularNumber = buffer->PackString(szCellularNumber);
-  
+  buffer->PackUnsignedShort(cellularNumber.size()+3);
+  myCellularNumber = buffer->packString(gTranslator.clientToServer(cellularNumber));
+
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ZIP);
-  buffer->PackUnsignedShort(strlen_safe(szZipCode)+3);
-  m_szZipCode = buffer->PackString(szZipCode);
-  
+  buffer->PackUnsignedShort(zipCode.size()+3);
+  myZipCode = buffer->packString(gTranslator.clientToServer(zipCode));
+
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOUNTRY);
   buffer->PackUnsignedShort(0x0002);
   buffer->PackUnsignedShort(m_nCountryCode);
@@ -3717,14 +3636,13 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
 }
 
 //-----Meta_SetEmailInfo------------------------------------------------------
-CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo( const char *szEmailSecondary,
-                       const char *szEmailOld)
+CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo(const string& emailSecondary, const string& emailOld)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_EMAILxINFOxSET;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szEmailSecondary) + 3
-				 + strlen_safe(szEmailOld) + 3 + 3;
+  int packetSize = 2+2+2+4+2+2+2 + emailSecondary.size() + 3
+      + emailOld.size() + 3 + 3;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -3737,26 +3655,17 @@ CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo( const char *szEmailSecondary,
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
 
-  gTranslator.ClientToServer((char *) szEmailSecondary);
-  gTranslator.ClientToServer((char *) szEmailOld);
-  
   buffer->PackChar(2);
   buffer->PackChar(0);
-  m_szEmailSecondary = buffer->PackString(szEmailSecondary);
+  myEmailSecondary = buffer->packString(gTranslator.clientToServer(emailSecondary));
   buffer->PackChar(0);
-  m_szEmailOld = buffer->PackString(szEmailOld);
+  myEmailOld = buffer->packString(gTranslator.clientToServer(emailOld));
 }
 
 //-----Meta_SetMoreInfo------------------------------------------------------
-CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
-                       char nGender,
-                       const char *szHomepage,
-                       unsigned short nBirthYear,
-                       char nBirthMonth,
-                       char nBirthDay,
-                       char nLanguage1,
-                       char nLanguage2,
-                       char nLanguage3)
+CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge, char nGender,
+    const string& homepage, unsigned short nBirthYear, char nBirthMonth,
+    char nBirthDay, char nLanguage1, char nLanguage2, char nLanguage3)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
@@ -3770,7 +3679,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   m_nLanguage2 = nLanguage2;
   m_nLanguage3 = nLanguage3;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szHomepage)+3 + 43;
+  int packetSize = 2+2+2+4+2+2+2 + homepage.size()+3 + 43;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -3783,8 +3692,6 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
-  gTranslator.ClientToServer((char *) szHomepage);
-
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxAGE);
   buffer->PackUnsignedShort(0x0002);
   buffer->PackUnsignedShort(m_nAge);
@@ -3794,8 +3701,8 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   buffer->PackChar(nGender);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOMEPAGE);
-  buffer->PackUnsignedShort(strlen_safe(szHomepage)+3);
-  m_szHomepage = buffer->PackString(szHomepage);
+  buffer->PackUnsignedShort(homepage.size()+3);
+  myHomepage = buffer->packString(gTranslator.clientToServer(homepage));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxBIRTHDAY);
   buffer->PackUnsignedShort(0x0006);
@@ -3906,35 +3813,23 @@ CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(const UserCategoryMap& orgs,
 }
 
 //-----Meta_SetWorkInfo------------------------------------------------------
-CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
-    const char *szCity,
-    const char *szState,
-    const char *szPhoneNumber,
-    const char *szFaxNumber,
-    const char *szAddress,
-    const char *szZip,
-    unsigned short nCompanyCountry,
-    const char *szName,
-    const char *szDepartment,
-    const char *szPosition,
-    unsigned short nCompanyOccupation,
-    const char *szHomepage)
+CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& state,
+    const string& phoneNumber, const string& faxNumber, const string& address,
+    const string& zip, unsigned short nCompanyCountry, const string& name,
+    const string& department, const string& position, unsigned short nCompanyOccupation,
+    const string& homepage)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
   
   m_nCompanyCountry = nCompanyCountry;  
   m_nCompanyOccupation = nCompanyOccupation;
-  
-  char szStatebuf[6];
-  strncpy(szStatebuf, szState, 6);
-  szStatebuf[5] = '\0';
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) +
-    strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
-    strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZip) +
-    strlen_safe(szName) + strlen_safe(szDepartment) + strlen_safe(szPosition) +
-    strlen_safe(szHomepage) + 82;
+  string statebuf(state, 0, 5);
+
+  int packetSize = 2+2+2+4+2+2+2 + city.size() + statebuf.size() + phoneNumber.size() +
+      faxNumber.size() + address.size() + zip.size() + name.size() + department.size() +
+      position.size() + homepage.size() + 82;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -3947,73 +3842,66 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
-  gTranslator.ClientToServer((char *) szCity);
-  gTranslator.ClientToServer((char *) szState);
-  gTranslator.ClientToServer((char *) szPhoneNumber);
-  gTranslator.ClientToServer((char *) szFaxNumber);
-  gTranslator.ClientToServer((char *) szAddress);
-  gTranslator.ClientToServer((char *) szZip);
-  gTranslator.ClientToServer((char *) szName);
-  gTranslator.ClientToServer((char *) szDepartment);
-  gTranslator.ClientToServer((char *) szPosition);
-  gTranslator.ClientToServer((char *) szHomepage);
-
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_CITY);
-  buffer->PackUnsignedShort(strlen_safe(szCity)+3);
-  m_szCity = buffer->PackString(szCity);
+  buffer->PackUnsignedShort(city.size()+3);
+  myCity = buffer->packString(gTranslator.clientToServer(city));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_STATE);
-  buffer->PackUnsignedShort(strlen_safe(szStatebuf)+3);
-  m_szState = buffer->PackString(szStatebuf);
+  buffer->PackUnsignedShort(statebuf.size()+3);
+  myState = buffer->packString(gTranslator.clientToServer(statebuf));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_PHONE);
-  buffer->PackUnsignedShort(strlen_safe(szPhoneNumber)+3);
-  m_szPhoneNumber = buffer->PackString(szPhoneNumber);
+  buffer->PackUnsignedShort(phoneNumber.size()+3);
+  myPhoneNumber = buffer->packString(gTranslator.clientToServer(phoneNumber));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_FAX);
-  buffer->PackUnsignedShort(strlen_safe(szFaxNumber)+3);
-  m_szFaxNumber = buffer->PackString(szFaxNumber);
+  buffer->PackUnsignedShort(faxNumber.size()+3);
+  myFaxNumber = buffer->packString(gTranslator.clientToServer(faxNumber));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ADDR);
-  buffer->PackUnsignedShort(strlen_safe(szAddress)+3);
-  m_szAddress = buffer->PackString(szAddress);
+  buffer->PackUnsignedShort(address.size()+3);
+  myAddress = buffer->packString(gTranslator.clientToServer(address));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ZIP);
-  buffer->PackUnsignedShort(strlen_safe(szZip)+3);
-  m_szZip = buffer->PackString(szZip);
+  buffer->PackUnsignedShort(zip.size()+3);
+  myZip = buffer->packString(gTranslator.clientToServer(zip));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_COUNTRY);
   buffer->PackUnsignedShort(0x0002);
-  buffer->PackUnsignedShort(m_nCompanyCountry);
+  buffer->PackUnsignedShort(nCompanyCountry);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOMPANY);
-  buffer->PackUnsignedShort(strlen_safe(szName)+3);
-  m_szName = buffer->PackString(szName);
+  buffer->PackUnsignedShort(name.size()+3);
+  myName = buffer->packString(gTranslator.clientToServer(name));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCODEPT);
-  buffer->PackUnsignedShort(strlen_safe(szDepartment)+3);
-  m_szDepartment = buffer->PackString(szDepartment);
+  buffer->PackUnsignedShort(department.size()+3);
+  myDepartment = buffer->packString(gTranslator.clientToServer(department));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOPOS);
-  buffer->PackUnsignedShort(strlen_safe(szPosition)+3);
-  m_szPosition = buffer->PackString(szPosition);
+  buffer->PackUnsignedShort(position.size()+3);
+  myPosition = buffer->packString(gTranslator.clientToServer(position));
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxOCCUP);
   buffer->PackUnsignedShort(0x0002);
   buffer->PackUnsignedShort(m_nCompanyOccupation);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_URL);
-  buffer->PackUnsignedShort(strlen_safe(szHomepage)+3);
-  m_szHomepage = buffer->PackString(szHomepage);
+  buffer->PackUnsignedShort(homepage.size()+3);
+  myHomepage = buffer->packString(gTranslator.clientToServer(homepage));
 }
 
 //-----Meta_SetAbout---------------------------------------------------------
-CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
+CPU_Meta_SetAbout::CPU_Meta_SetAbout(const string& about)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA),
+    myAbout(about)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAbout) + 7;
+  if (myAbout.size() > size_t(IcqProtocol::MaxMessageSize))
+    myAbout.resize(IcqProtocol::MaxMessageSize);
+
+  int packetSize = 2+2+2+4+2+2+2 + myAbout.size() + 7;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -4026,18 +3914,9 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
-  m_szAbout = szAbout == NULL ? strdup("") : strdup(szAbout);
-  if (strlen(m_szAbout) > size_t(IcqProtocol::MaxMessageSize))
-    m_szAbout[IcqProtocol::MaxMessageSize] = '\0';
-
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxABOUT);
-  buffer->PackUnsignedShort(strlen(m_szAbout)+3);
-  buffer->PackString(m_szAbout);
-}
-
-CPU_Meta_SetAbout::~CPU_Meta_SetAbout()
-{
-  free(m_szAbout);
+  buffer->PackUnsignedShort(myAbout.size()+3);
+  buffer->packString(myAbout);
 }
 
 //-----Meta_SetSecurityInfo--------------------------------------------------
@@ -4077,14 +3956,14 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const char *_szId)
+CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const string& accountId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  if (_szId == gUserManager.ownerUserId(LICQ_PPID).accountId())
+  if (accountId == gUserManager.ownerUserId(LICQ_PPID).accountId())
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
   else
     m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFOxOWNER;
-  m_szId = strdup(_szId);
+  myAccountId = accountId;
 
   int packetSize = 2+2+2+4+2+2+2+4;
   m_nSize += packetSize;
@@ -4098,20 +3977,15 @@ CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const char *_szId)
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
-  buffer->PackUnsignedLong(strtoul(m_szId, (char **)NULL, 10));
-}
-
-CPU_Meta_RequestAllInfo::~CPU_Meta_RequestAllInfo()
-{
-  free(m_szId);
+  buffer->PackUnsignedLong(strtoul(myAccountId.c_str(), (char **)NULL, 10));
 }
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const char *_szId)
+CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const string& accountId)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_REQUESTxBASICxINFO;
-  m_szId = strdup(_szId);
+  myAccountId = accountId;
 
   m_nSize += 20;
 
@@ -4123,40 +3997,33 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const char *_szId)
   buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nSubSequence);
-  buffer->PackUnsignedLong(strtoul(m_szId, (char **)NULL, 10));
-}
-
-CPU_Meta_RequestBasicInfo::~CPU_Meta_RequestBasicInfo()
-{
-  free(m_szId);
+  buffer->PackUnsignedLong(strtoul(myAccountId.c_str(), (char **)NULL, 10));
 }
 
 //-----RequestInfo-------------------------------------------------------------
-CPU_RequestInfo::CPU_RequestInfo(const char *_szId)
+CPU_RequestInfo::CPU_RequestInfo(const string& accountId)
   : CPU_CommonFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxREQUESTxUSERxINFO)
 {
-  int nSize = strlen(_szId);
-  m_nSize += 5 + nSize;
-  
+  m_nSize += 5 + accountId.size();
+
   InitBuffer();
 
   buffer->PackUnsignedLongBE(0x00000003);
-  buffer->PackChar(nSize);
-  buffer->Pack(_szId, nSize);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
 }
 
 //-----AIMFetchAwayMessage-----------------------------------------------------
-CPU_AIMFetchAwayMessage::CPU_AIMFetchAwayMessage(const char *_szId)
+CPU_AIMFetchAwayMessage::CPU_AIMFetchAwayMessage(const string& accountId)
   : CPU_CommonFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)
 {
-  int nSize = strlen(_szId);
-  m_nSize += 3 + nSize;
+  m_nSize += 3 + accountId.size();
 
   InitBuffer();
 
   buffer->PackUnsignedShortBE(0x0003); // away message type
-  buffer->PackChar(nSize);
-  buffer->Pack(_szId, nSize);
+  buffer->PackChar(accountId.size());
+  buffer->pack(accountId);
 }
 
 CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
@@ -4407,8 +4274,7 @@ Licq::Buffer* CPacketTcp::Finalize(Licq::INetSocket *s)
 }
 
 CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
-   const char *szMessage, bool _bAccept, unsigned short nLevel, ICQUser *user,
-   size_t nLen)
+    const string& message, bool _bAccept, unsigned short nLevel, Licq::User* user)
 {
   // Setup the message type and status fields using our online status
   Licq::OwnerReadGuard o(LICQ_PPID);
@@ -4499,14 +4365,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
   m_nSourceUin = gUserManager.icqOwnerUin();
   m_nCommand = _nCommand;
   m_nSubCommand = _nSubCommand;
-  if (nLen)
-  {
-    myMessage.assign(szMessage, nLen);
-  }
-  else
-  {
-    myMessage = (szMessage == NULL ? "" : szMessage);
-  }
+  myMessage = message;
   m_nLocalPort = user->LocalPort();
 
   // don't increment the sequence if this is an ack and cancel packet
@@ -4691,11 +4550,11 @@ void CPacketTcp::PostBuffer_v7()
 
 
 //-----Message------------------------------------------------------------------
-CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
-    const Licq::Color* pColor, ICQUser *pUser, size_t nLen)
+CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
+    const Licq::Color* pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-       _sMessage, true, nLevel, pUser, nLen)
+        message, true, nLevel, pUser)
 {
   InitBuffer();
   if (m_nVersion >= 6)
@@ -4715,11 +4574,11 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
 }
 
 //-----Url----------------------------------------------------------------------
-CPT_Url::CPT_Url(const char* szMessage, unsigned short nLevel, bool bMR,
+CPT_Url::CPT_Url(const string& message, unsigned short nLevel, bool bMR,
     const Licq::Color* pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_URL | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-       szMessage, true, nLevel, pUser)
+        message, true, nLevel, pUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
@@ -4740,11 +4599,11 @@ CPT_Url::CPT_Url(const char* szMessage, unsigned short nLevel, bool bMR,
 
 
 //-----ContactList-----------------------------------------------------------
-CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
+CPT_ContactList::CPT_ContactList(const string& message, unsigned short nLevel, bool bMR,
     const Licq::Color* pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_CONTACTxLIST | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-       sz, true, nLevel, pUser)
+        message, true, nLevel, pUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
@@ -4789,17 +4648,13 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
 }
 
 //-----ChatRequest--------------------------------------------------------------
-CPT_ChatRequest::CPT_ChatRequest(const string& message, const char *szChatUsers,
+CPT_ChatRequest::CPT_ChatRequest(const string& message, const string& chatUsers,
    unsigned short nPort, unsigned short nLevel, ICQUser *pUser, bool bICBM)
-  : CPacketTcp(ICQ_CMDxTCP_START, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, bICBM ? "" : message.c_str(), true, nLevel, pUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, bICBM ? "" : message, true, nLevel, pUser)
 {
-  int nUsersLen = strlen_safe(szChatUsers);
-  int nMessageLen = message.size();
-
+  m_nSize += 2 + chatUsers.size() + 1 + 8;
   if (bICBM)
-    m_nSize += 58 + strlen_safe(szChatUsers) + nMessageLen + 21;
-  else
-    m_nSize += 2 + strlen_safe(szChatUsers) + 1 + 8;
+    m_nSize += 47 + message.size() + 21;
 
   InitBuffer();
 
@@ -4821,14 +4676,14 @@ CPT_ChatRequest::CPT_ChatRequest(const string& message, const char *szChatUsers,
     buffer->PackUnsignedShortBE(0);
     buffer->PackChar(0);
 
-    buffer->PackUnsignedLong(nMessageLen + nUsersLen + 15);
+    buffer->PackUnsignedLong(message.size() + chatUsers.size() + 15);
 
-    buffer->PackUnsignedLong(nMessageLen);
+    buffer->PackUnsignedLong(message.size());
 
-    if (nMessageLen)
+    if (!message.empty())
       buffer->pack(message);
 
-    buffer->PackString(szChatUsers);
+    buffer->packString(chatUsers);
 
     buffer->PackUnsignedShortBE(nPort);
     buffer->PackUnsignedShort(0);
@@ -4837,7 +4692,7 @@ CPT_ChatRequest::CPT_ChatRequest(const string& message, const char *szChatUsers,
   }
   else
   {
-    buffer->PackString(szChatUsers);
+    buffer->packString(chatUsers);
     buffer->PackUnsignedLong(ReversePort(nPort));
     buffer->PackUnsignedLong(nPort);
   }
@@ -4847,19 +4702,19 @@ CPT_ChatRequest::CPT_ChatRequest(const string& message, const char *szChatUsers,
 
 
 //-----FileTransfer--------------------------------------------------------------
-CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const char *_szFilename,
-   const char *_szDescription, unsigned short nLevel, ICQUser *_cUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, _szDescription,
+CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const string& filename,
+    const string& description, unsigned short nLevel, ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, description,
                true, nLevel, _cUser),
-		CPX_FileTransfer(lFileList, _szFilename)
+    CPX_FileTransfer(lFileList, filename)
 {
 	if (!m_bValid)  return;
 
-  m_nSize += 15 + strlen(m_szFilename);
+  m_nSize += 15 + myFilename.size();
   InitBuffer();
 
   buffer->PackUnsignedLong(0);
-  buffer->PackString(m_szFilename);
+  buffer->packString(myFilename);
   buffer->PackUnsignedLong(m_nFileSize);
   buffer->PackUnsignedLong(0);
 
@@ -5098,11 +4953,11 @@ CPT_AckContactList::CPT_AckContactList(unsigned short _nSequence, bool _bAccept,
 #endif
 
 //-----AckChatRefuse------------------------------------------------------------
-CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
+CPT_AckChatRefuse::CPT_AckChatRefuse(const string& reason,
    unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, false, _cUser)
 {
-  myMessage = szReason == NULL ? "" : szReason;
+  myMessage = reason;
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
   m_nSize += 11 + myMessage.size();
@@ -5113,7 +4968,7 @@ CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
 
 
 //-----AckChatAccept------------------------------------------------------------
-CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const char *szClients,
+CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const string& clients,
                                     unsigned short _nSequence, ICQUser *_cUser,
                                     bool bICBM)
   : CPT_Ack(bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, _nSequence, true, true, _cUser)
@@ -5121,10 +4976,9 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const char *szClient
   m_nPort = _nPort;
   m_nStatus = ICQ_TCPxACK_ONLINE;
 
+  m_nSize += 11 + clients.size();
   if (bICBM)
-    m_nSize += 79 + strlen_safe(szClients);
-  else
-    m_nSize += 11 + strlen_safe(szClients);
+    m_nSize += 68;
 
   InitBuffer();
 
@@ -5146,11 +5000,11 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const char *szClient
     buffer->PackUnsignedShortBE(0);
     buffer->PackChar(0);
 
-    buffer->PackUnsignedLong(15 + strlen_safe(szClients));
+    buffer->PackUnsignedLong(15 + clients.size());
 
     buffer->PackUnsignedLong(0);
 
-    buffer->PackString(szClients);
+    buffer->packString(clients);
 
     buffer->PackUnsignedShortBE(m_nPort);
     buffer->PackUnsignedShort(0);
@@ -5169,11 +5023,11 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const char *szClient
 
 
 //-----AckFileRefuse------------------------------------------------------------
-CPT_AckFileRefuse::CPT_AckFileRefuse(const char *szReason,
+CPT_AckFileRefuse::CPT_AckFileRefuse(const string& reason,
                                     unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, false, false, _cUser)
 {
-  myMessage = (szReason == NULL ? "" : szReason);
+  myMessage = reason;
 
   m_nSize += 15 + myMessage.size();
   InitBuffer();
@@ -5595,11 +5449,10 @@ CPT_StatusPluginResp::CPT_StatusPluginResp(ICQUser *_cUser,
 // Connection independent base classes
 
 //-----FileTransfer------------------------------------------------------------
-CPX_FileTransfer::CPX_FileTransfer(const list<string>& lFileList, const char *_szFilename)
+CPX_FileTransfer::CPX_FileTransfer(const list<string>& lFileList, const string& filename)
   : m_lFileList(lFileList.begin(), lFileList.end())
 {
   m_bValid = false;
-  m_szDesc = NULL;
   m_nFileSize = 0;
 
   list<string>::iterator it;
@@ -5615,11 +5468,10 @@ CPX_FileTransfer::CPX_FileTransfer(const list<string>& lFileList, const char *_s
   }
 
   // Remove path from filename (if it exists)
-  const char* pcEndOfPath = strrchr(_szFilename, '/');
-  if (pcEndOfPath != NULL)
-     m_szFilename = strdup(pcEndOfPath + 1);
-  else
-     m_szFilename = strdup(_szFilename);
+  myFilename = filename;
+  size_t posSlash = myFilename.rfind('/');
+  if (posSlash != string::npos)
+    myFilename.erase(0, posSlash+1);
 }
 
 CPX_FileTransfer::~CPX_FileTransfer()
