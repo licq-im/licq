@@ -140,7 +140,7 @@ public:
 
 private:
   // Stop assignment operator from being used by misstake
-  ReadMutexGuard<T> operator=(const ReadMutexGuard<T>&) {}
+  ReadMutexGuard<T> operator=(const ReadMutexGuard<T>&);
 
   const T* myObject;
 };
@@ -221,7 +221,7 @@ public:
 
 private:
   // Stop assignment operator from being used by misstake
-  WriteMutexGuard<T> operator=(const WriteMutexGuard<T>&) {}
+  WriteMutexGuard<T> operator=(const WriteMutexGuard<T>&);
 
   T* myObject;
 };
