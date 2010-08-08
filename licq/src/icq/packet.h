@@ -58,17 +58,17 @@ const unsigned short CAP_LENGTH                  = 16;
 // list of plugins we currently support
 struct PluginList
 {
-  const char *name;
-  const char *guid;
-  const char *description;
+  const char* const name;
+  const char* const guid;
+  const char* const description;
 };
 
-extern struct PluginList info_plugins[];
-extern struct PluginList status_plugins[];
+extern const struct PluginList info_plugins[];
+extern const struct PluginList status_plugins[];
 
 unsigned short ReversePort(unsigned short p);
-unsigned short LengthField(const char *szField);
-char *PipeInput(char *m_szMessage);
+unsigned short lengthField(const char *szField);
+std::string pipeInput(const std::string& message);
 
 
 //
@@ -811,9 +811,9 @@ protected:
   void InitBuffer();
 
   unsigned long m_nMsgID[2];
-  unsigned short m_nSequence, m_nMsgType, m_nStatus, m_nUinLen, m_nLevel;
-  char m_szUin[13];
-  char *m_szMessage;
+  unsigned short m_nSequence, m_nMsgType, m_nStatus, m_nLevel;
+  std::string myAccountId;
+  std::string myMessage;
   char m_GUID[GUID_LENGTH];
 };
 
@@ -1391,7 +1391,7 @@ protected:
    unsigned long  m_nSourceUin;
    unsigned long  m_nCommand;
    unsigned short m_nSubCommand;
-   char          *m_szMessage;
+   std::string myMessage;
    unsigned long  m_nLocalPort;
    unsigned short m_nStatus;
    unsigned short m_nMsgType;
@@ -1464,7 +1464,7 @@ class CPT_FileTransfer : public CPacketTcp, public CPX_FileTransfer
 public:
    CPT_FileTransfer(const std::list<std::string>& lFileList, const char *_szFilename,
       const char* _szDescription, unsigned short nLevel, Licq::User* pUser);
-   const char *GetDescription() { return m_szMessage; }
+   const std::string& getDescription() { return myMessage; }
 protected:
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 03 00 0F 00 74 68 69 73 20 69
       73 20 61 20 66 69 6C 65 00 CF 60 AD D3 CF 60 AD D3 60 12 00 00 04 00 00

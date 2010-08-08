@@ -263,13 +263,13 @@ void Encrypt_Server(CBuffer* /* buffer */)
 #endif
 }
 
-struct PluginList info_plugins[] =
+const struct PluginList info_plugins[] =
 {
   { "Picture"   , PLUGIN_PICTURE   , "Picture"                          },
   { "Phone Book", PLUGIN_PHONExBOOK, "Phone Book / Phone \"Follow Me\"" }
 };
 
-struct PluginList status_plugins[] =
+const struct PluginList status_plugins[] =
 {
   {"Phone \"Follow Me\"", PLUGIN_FOLLOWxME, "Phone Book / Phone \"Follow Me\""},
   { "Shared Files Directory", PLUGIN_FILExSERVER, "Shared Files Directory" },
@@ -1256,21 +1256,18 @@ CPU_GenericUinList::CPU_GenericUinList(const StringList& users, unsigned short f
   for (it = users.begin(); it != users.end(); ++it)
     nLen += it->size() + 1;
 
-  char *contacts = new char[nLen+1];
-  contacts[0] = '\0';
+  string contacts;
 
   for (it = users.begin(); it != users.end(); ++it) {
     len[0] = it->size();
-    strcat(contacts, len);
-    strcat(contacts, it->c_str());
+    contacts += len;
+    contacts += *it;
   }
 
-  m_nSize += strlen(contacts);
+  m_nSize += contacts.size();
   InitBuffer();
 
-  buffer->Pack(contacts, strlen(contacts));
-
-  delete [] contacts;
+  buffer->pack(contacts);
 }
 
 CPU_GenericUinList::CPU_GenericUinList(const char *szId, unsigned short family, unsigned short Subtype)
@@ -1704,7 +1701,7 @@ CPU_PluginError::CPU_PluginError(const ICQUser* u, unsigned long nMsgID1,
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true, 0, cap)
 {
   // this is a bit of a hack
-  m_szMessage[0] = ICQ_PLUGIN_ERROR;
+  myMessage[0] = ICQ_PLUGIN_ERROR;
   InitBuffer();
 }
 
@@ -2032,7 +2029,7 @@ CPU_StatusPluginResp::CPU_StatusPluginResp(const ICQUser* u, unsigned long nMsgI
                          0, PLUGIN_STATUSxMANAGER)
 {
   // this is a bit of a hack
-  m_szMessage[0] = ICQ_PLUGIN_STATUSxREPLY;
+  myMessage[0] = ICQ_PLUGIN_STATUSxREPLY;
   m_nSize += 2 + 2 + 4 + 4 + 1;
   InitBuffer();
 
@@ -2244,11 +2241,9 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
                                            const char *GUID)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  strncpy(m_szUin, u->accountId().c_str(), sizeof(m_szUin));
-  m_szUin[sizeof(m_szUin) - 1] = '\0';
-  m_nUinLen = strlen(m_szUin);
+  myAccountId = u->accountId();
 
-  m_nSize += 66 + m_nUinLen;
+  m_nSize += 66 + myAccountId.size();
 
   m_nMsgID[0] = nMsgID1;
   m_nMsgID[1] = nMsgID2;
@@ -2260,8 +2255,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
   
   if (memcmp(GUID, PLUGIN_NORMAL, GUID_LENGTH) != 0)
   {
-    m_szMessage = (char *)malloc(1);
-    m_szMessage[0] = bAccept ? ICQ_PLUGIN_SUCCESS : ICQ_PLUGIN_REJECTED;
+    myMessage.assign(1, (bAccept ? ICQ_PLUGIN_SUCCESS : ICQ_PLUGIN_REJECTED));
     m_nStatus = ICQ_TCPxACK_ONLINE;
     m_nSize ++;
   }
@@ -2300,31 +2294,27 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
         u->StatusToUser() != ICQ_STATUS_ONLINE)  ?
         u->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
     {
+      myMessage = u->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
+
       if (!u->customAutoResponse().empty())
       {
-        string def = u->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
-        string cus = u->usprintf(u->customAutoResponse(), Licq::User::usprintf_quotepipe, true);
-        m_szMessage = (char *)malloc(cus.size() + def.size() + 60);
-        sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def.c_str(), cus.c_str());
-      }
-      else
-      {
-        m_szMessage = strdup(u->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true).c_str());
+        myMessage += "\r\n--------------------\r\n";
+        myMessage += u->usprintf(u->customAutoResponse(), Licq::User::usprintf_quotepipe, true);
       }
     }
     else
-      m_szMessage = strdup("");
+      myMessage.clear();
 
     // Check for pipes, should possibly go after the ClientToServer call
-    m_szMessage = PipeInput(m_szMessage);
-  
-    gTranslator.ClientToServer(m_szMessage);
+    myMessage = pipeInput(myMessage);
+
+    myMessage = gTranslator.clientToServer(myMessage);
 
     // If message is 8099 characters or longer the server will disconnect us so better to truncate
-    if (strlen(m_szMessage) >= 8099)
-      m_szMessage[8099] = '\0';
+    if (myMessage.size() >= 8099)
+      myMessage.resize(8098);
 
-    m_nSize += strlen(m_szMessage)+1;
+    m_nSize += myMessage.size() + 1;
   }
 }
 
@@ -2337,8 +2327,8 @@ void CPU_AckThroughServer::InitBuffer()
   buffer->PackUnsignedLongBE(m_nMsgID[0]);
   buffer->PackUnsignedLongBE(m_nMsgID[1]);
   buffer->PackUnsignedShortBE(2);
-  buffer->PackChar(m_nUinLen);
-  buffer->Pack(m_szUin, m_nUinLen);
+  buffer->PackChar(myAccountId.size());
+  buffer->pack(myAccountId);
   buffer->PackUnsignedShortBE(0x03);
   buffer->PackUnsignedShort(0x1b);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
@@ -2357,12 +2347,10 @@ void CPU_AckThroughServer::InitBuffer()
   if (bPlugin)
   {
     buffer->PackUnsignedShort(1);
-    buffer->PackChar(m_szMessage[0]);
+    buffer->PackChar(myMessage[0]);
   }
   else
-    buffer->PackString(m_szMessage);
-  
-  free(m_szMessage);
+    buffer->PackString(myMessage.c_str());
 }
 
 //-----AckGeneral--------------------------------------------------------------
@@ -4513,15 +4501,11 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
   m_nSubCommand = _nSubCommand;
   if (nLen)
   {
-    m_szMessage = (char *)malloc(nLen + 1);
-    memcpy(m_szMessage, szMessage, nLen);
-    m_szMessage[nLen] = 0;
-    m_nMsgLen = nLen + 1;
+    myMessage.assign(szMessage, nLen);
   }
   else
   {
-    m_szMessage = (szMessage == NULL ? strdup("") : strdup(szMessage));
-    m_nMsgLen = strlen(m_szMessage) + 1;
+    myMessage = (szMessage == NULL ? "" : szMessage);
   }
   m_nLocalPort = user->LocalPort();
 
@@ -4529,13 +4513,13 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
   if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = user->Sequence(true);
 
   // v4,6 packets are smaller then v2 so we just set the size based on a v2 packet
-  m_nSize = 18 + m_nMsgLen + 25;
+  m_nSize = 18 + myMessage.size()+1 + 25;
   buffer = NULL;
 }
 
 CPacketTcp::~CPacketTcp()
 {
-  free (m_szMessage);
+  // Empty
 }
 
 
@@ -4594,7 +4578,7 @@ void CPacketTcp::InitBuffer_v2()
   buffer->PackUnsignedLong(m_nCommand);
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(m_nSubCommand);
-  buffer->Pack(m_szMessage, m_nMsgLen);
+  buffer->pack(myMessage);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   m_szLocalPortOffset = buffer->getDataPosWrite();
@@ -4626,7 +4610,7 @@ void CPacketTcp::InitBuffer_v4()
   buffer->PackUnsignedLong(m_nCommand);
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(m_nSubCommand);
-  buffer->Pack(m_szMessage, m_nMsgLen);
+  buffer->pack(myMessage);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   m_szLocalPortOffset = buffer->getDataPosWrite();
@@ -4658,8 +4642,8 @@ void CPacketTcp::InitBuffer_v6()
   buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort(m_nMsgType);
-  buffer->PackUnsignedShort(m_nMsgLen);
-  buffer->Pack(m_szMessage, m_nMsgLen);
+  buffer->PackUnsignedShort(myMessage.size());
+  buffer->pack(myMessage);
 
   m_szLocalPortOffset = NULL;
 }
@@ -4689,13 +4673,13 @@ void CPacketTcp::InitBuffer_v7()
 
   if (Channel() == ICQ_CHNxNONE)
   {
-    buffer->PackUnsignedShort(m_nMsgLen);
-    buffer->Pack(m_szMessage, m_nMsgLen);
+    buffer->PackUnsignedShort(myMessage.size());
+    buffer->pack(myMessage);
   }
   else
   {
     buffer->PackUnsignedShort(1);
-    buffer->PackChar(m_szMessage[0]);
+    buffer->PackChar(myMessage[0]);
   }
 
   m_szLocalPortOffset = NULL;
@@ -4903,89 +4887,60 @@ CPT_CloseSecureChannel::CPT_CloseSecureChannel(ICQUser *_cUser)
 
 
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-char *PipeInput(char *m_szMessage)
+string pipeInput(const string& message)
 {
-  // Check for pipes
-  char *pipe = NULL;
-  if (m_szMessage[0] == '|')
-    pipe = m_szMessage;
-  else
-  {
-    pipe = strstr(m_szMessage, "\n|");
-    if (pipe != NULL) pipe++;
-  }
+  string m(message);
+  size_t posPipe = 0;
 
-  while (pipe != NULL)
+  while (true)
   {
-    char *sz = pipe;
-    char szCmd[1024];
-    char szCmdOutput[4097];
-    unsigned short i;
-    Licq::UtilityInternalWindow win;
+    posPipe = m.find('|', posPipe);
+    if (posPipe == string::npos)
+      break;
 
-    // Move over the '|'
-    sz++;
-    // Find the end of the command
-    for (i = 0; *sz != '\r' && *sz != '\0'; sz++)
+    if (posPipe != 0 && m[posPipe-1] != '\n')
     {
-      if (i < sizeof(szCmd) - 1) szCmd[i++] = *sz;
+      // Pipe char isn't at begining of a line, ignore it
+      ++posPipe;
+      continue;
     }
-    szCmd[i] = '\0';
-    // Ensure sz points to after the command and \r\n
-    if (*sz == '\r') sz += 2;
 
-    //gLog.info("-> \"%s\"\n", szCmd);
+    // Find end of command
+    size_t posEnd = m.find('\r', posPipe+1);
+    if (posEnd == string::npos)
+      posEnd = m.size();
+    size_t cmdLen = posEnd - posPipe - 2;
 
-    if (!win.POpen(szCmd))
+    string cmd(m, posPipe+1, cmdLen);
+    string cmdOutput;
+    Licq::UtilityInternalWindow win;
+    if (!win.POpen(cmd))
     {
-      gLog.warning(tr("%sCould not execute \"%s\" for auto-response.\n"), L_WARNxSTR, szCmd);
-      szCmdOutput[0] = '\0';
+      gLog.warning(tr("%sCould not execute \"%s\" for auto-response.\n"), L_WARNxSTR, cmd.c_str());
     }
     else
     {
       int c;
-      i = 0;
-      while (((c = fgetc(win.StdOut())) != EOF) && (i < sizeof(szCmdOutput) - 1))
+      while ((c = fgetc(win.StdOut())) != EOF)
       {
-        szCmdOutput[i++] = c;
+        if (c == '\n')
+          cmdOutput += '\r';
+        cmdOutput += c;
       }
-      szCmdOutput[i] = '\0';
 
+      int i;
       if ((i = win.PClose()) != 0)
       {
-        gLog.warning(tr("%s%s returned abnormally: exit code %d\n"), L_WARNxSTR, szCmd, i);
-        // do anything to szCmdOutput ???
+        gLog.warning(tr("%s%s returned abnormally: exit code %d\n"), L_WARNxSTR, cmd.c_str(), i);
+        // do anything to cmdOutput ???
       }
     }
 
-    // Create the new response
-    char *szNewMsg = (char *)malloc(
-     (pipe - m_szMessage) + (strlen(szCmdOutput) << 1) + strlen(sz) + 1);
-    *pipe = '\0';
-    strcpy(szNewMsg, m_szMessage);
-    // Make pipe point to the same place in the new message
-    pipe = &szNewMsg[pipe - m_szMessage];
-    // Copy the command output, converting N to RN and making pipe point to
-    // after the output
-    for (char *p = szCmdOutput; *p != '\0'; p++)
-    {
-      if (*p == '\n') *pipe++ = '\r';
-      *pipe++ = *p;
-    }
-    // Copy the post-command stuff
-    strcpy(pipe, sz);
-    free(m_szMessage);
-    m_szMessage = szNewMsg;
-
-    // Try again now
-    if (pipe[0] != '|')
-    {
-      pipe = strstr(pipe, "\n|");
-      if (pipe != NULL) pipe++;
-    }
+    m.replace(posPipe, cmdLen + 1, cmdOutput);
+    posPipe += cmdOutput.size() + 1;
   }
 
-  return m_szMessage;
+  return m;
 }
 
 
@@ -4996,8 +4951,9 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
                l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
 {
   m_nSequence = _nSequence;
-  free(m_szMessage);
   Licq::OwnerReadGuard o(LICQ_PPID);
+
+  m_nSize -= myMessage.size();
 
   // don't sent out AutoResponse if we're online
   // it could contain stuff the other site shouldn't be able to read
@@ -5007,30 +4963,23 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
        pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
       pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
   {
+    myMessage = pUser->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
+
     if (!pUser->customAutoResponse().empty())
     {
-      string def = pUser->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
-      string cus = pUser->usprintf(pUser->customAutoResponse().c_str(), Licq::User::usprintf_quotepipe, true);
-      m_szMessage = (char *)malloc(cus.size() + def.size() + 60);
-      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def.c_str(), cus.c_str());
+      myMessage += "\r\n--------------------\r\n";
+      myMessage += pUser->usprintf(pUser->customAutoResponse().c_str(), Licq::User::usprintf_quotepipe, true);
     }
-    else
-    {
-      m_szMessage = strdup(pUser->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true).c_str());
-    }
-
   }
   else
-    m_szMessage = strdup("");
+    myMessage.clear();
 
   // Check for pipes, should possibly go after the ClientToServer call
-  m_szMessage = PipeInput(m_szMessage);
+  myMessage = pipeInput(myMessage);
 
-  gTranslator.ClientToServer(m_szMessage);
+  myMessage = gTranslator.clientToServer(myMessage);
 
-  m_nSize -= m_nMsgLen;
-  m_nMsgLen = strlen(m_szMessage) + 1;
-  m_nSize += m_nMsgLen;
+  m_nSize += myMessage.size();
 }
 
 CPT_Ack::~CPT_Ack()
@@ -5064,11 +5013,9 @@ CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned short nSequence,
    bool ok, ICQUser *pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
-  m_nSize -= strlen(m_szMessage);
-  free(m_szMessage);
-  m_szMessage = strdup(ok ? "1" : "");
-  m_nMsgLen = strlen(m_szMessage)+1;
-  m_nSize += m_nMsgLen;
+  m_nSize -= myMessage.size();
+  myMessage = (ok ? "1" : "");
+  m_nSize += myMessage.size()+1;
 
   InitBuffer();
   PostBuffer();
@@ -5079,10 +5026,9 @@ CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned short nSequence,
    ICQUser *pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
-  m_nSize -= strlen(m_szMessage);
-  free(m_szMessage);
-  m_szMessage = strdup("");
-  m_nSize += strlen(m_szMessage)+1;
+  m_nSize -= myMessage.size();
+  myMessage.clear();
+  m_nSize += myMessage.size() + 1;
 
   InitBuffer();
   if (m_nVersion == 6)
@@ -5098,10 +5044,9 @@ CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned short nSequence,
    ICQUser *pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExCLOSE, nSequence, true, true, pUser)
 {
-  m_nSize -= strlen(m_szMessage);
-  free(m_szMessage);
-  m_szMessage = strdup("");
-  m_nSize += strlen(m_szMessage)+1;
+  m_nSize -= myMessage.size();
+  myMessage.clear();
+  m_nSize += myMessage.size() + 1;
 
   InitBuffer();
   PostBuffer();
@@ -5157,11 +5102,10 @@ CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
    unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, false, _cUser)
 {
-  free (m_szMessage);
-  m_szMessage = szReason == NULL ? strdup("") : strdup(szReason);
+  myMessage = szReason == NULL ? "" : szReason;
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-  m_nSize += 11 + strlen(m_szMessage);
+  m_nSize += 11 + myMessage.size();
   InitBuffer();
   buffer->Pack(temp_1, 11);
   PostBuffer();
@@ -5229,10 +5173,9 @@ CPT_AckFileRefuse::CPT_AckFileRefuse(const char *szReason,
                                     unsigned short _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, false, false, _cUser)
 {
-  free(m_szMessage);
-  m_szMessage = (szReason == NULL ? strdup("") : strdup(szReason));
+  myMessage = (szReason == NULL ? "" : szReason);
 
-  m_nSize += 15 + strlen(m_szMessage);
+  m_nSize += 15 + myMessage.size();
   InitBuffer();
 
   buffer->PackUnsignedLong(0);
