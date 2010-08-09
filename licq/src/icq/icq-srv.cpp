@@ -4147,6 +4147,15 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
   
   switch (nSubtype)
   {
+    case 0x0001: // Error
+    {
+      unsigned short errorcode = packet.UnpackUnsignedShortBE();
+      gLog.info(tr("Meta request failed. Eventid %u, errorcode %u"), nSubSequence, errorcode);
+      Licq::Event* pEvent = DoneServerEvent(nSubSequence, Licq::Event::ResultFailed);
+      ProcessDoneEvent(pEvent);
+      break;
+    }
+
   case 0x0003: // multi-purpose sub-type
   {
     unsigned short nType, nId;
