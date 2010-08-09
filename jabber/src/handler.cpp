@@ -34,6 +34,7 @@
 #include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolmanager.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>
 
@@ -148,6 +149,10 @@ void Handler::onUserAdded(const std::string& id,
   Licq::gDaemon.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                              Licq::PluginSignal::UserGroups, userId));
+
+  // Request user info if this is a new user
+  if (wasAdded)
+    Licq::gProtocolManager.requestUserInfo(userId);
 }
 
 void Handler::onUserRemoved(const std::string& id)
