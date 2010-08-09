@@ -32,6 +32,7 @@ gloox::VCard* UserToVCard::createVCard() const
 
   card->setJabberid(myUser->accountId());
   card->setNickname(myUser->getAlias());
+  card->setFormattedname(myUser->getFullName());
   card->setName(myUser->getLastName(), myUser->getFirstName());
   if (!myUser->getEmail().empty())
     card->addEmail(myUser->getEmail(), gloox::VCard::AddrTypePref);
