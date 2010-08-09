@@ -23,6 +23,7 @@
 #include "client.h"
 #include "handler.h"
 #include "jabber.h"
+#include "vcard.h"
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -156,7 +157,7 @@ void Jabber::processSignal(Licq::ProtocolSignal* signal)
       doGetInfo(static_cast<Licq::ProtoRequestInfo*>(signal));
       break;
     case Licq::ProtocolSignal::SignalUpdateInfo:
-      gLog.info("SignalUpdateInfo not implemented");
+      doUpdateInfo(static_cast<Licq::ProtoUpdateInfoSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalRequestPicture:
       gLog.info("SignalRequestPicture not implemented");
@@ -289,6 +290,20 @@ void Jabber::doGetInfo(Licq::ProtoRequestInfo* signal)
 {
   assert(myClient != NULL);
   myClient->getVCard(signal->userId().accountId());
+}
+
+void Jabber::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
+{
+  assert(myClient != NULL);
+  Licq::OwnerReadGuard owner(JABBER_PPID);
+  if (!owner.isLocked())
+  {
+    gLog.error("No owner set");
+    return;
+  }
+
+  UserToVCard wrapper(*owner);
+  myClient->setOwnerVCard(wrapper);
 }
 
 void Jabber::doAddUser(Licq::ProtoAddUserSignal* signal)

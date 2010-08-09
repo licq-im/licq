@@ -34,6 +34,7 @@ class ProtoRefuseAuthSignal;
 class ProtoRemoveUserSignal;
 class ProtoRenameUserSignal;
 class ProtoRequestInfo;
+class ProtoUpdateInfoSignal;
 class ProtoSendMessageSignal;
 class ProtocolSignal;
 }
@@ -58,6 +59,7 @@ private:
   void doLogoff();
   void doSendMessage(Licq::ProtoSendMessageSignal* signal);
   void doGetInfo(Licq::ProtoRequestInfo* signal);
+  void doUpdateInfo(Licq::ProtoUpdateInfoSignal* signal);
   void doAddUser(Licq::ProtoAddUserSignal* signal);
   void doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal);
   void doRemoveUser(Licq::ProtoRemoveUserSignal* signal);

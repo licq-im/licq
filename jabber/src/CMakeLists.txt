@@ -3,6 +3,7 @@ set(jabber_SRCS
   handler.cpp
   jabber.cpp
   plugin.cpp
+  vcard.cpp
 )
 
 licq_add_plugin(protocol_jabber ${jabber_SRCS})

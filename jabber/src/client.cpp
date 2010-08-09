@@ -23,6 +23,7 @@
 #include "client.h"
 #include "handler.h"
 #include "jabber.h"
+#include "vcard.h"
 
 #include <gloox/connectiontcpclient.h>
 #include <gloox/disco.h>
@@ -108,6 +109,12 @@ void Client::sendMessage(const std::string& user, const std::string& message)
 void Client::getVCard(const std::string& user)
 {
   myVCardManager.fetchVCard(gloox::JID(user), this);
+}
+
+void Client::setOwnerVCard(const UserToVCard& wrapper)
+{
+  gloox::VCard* card = wrapper.createVCard();
+  myVCardManager.storeVCard(card, this);
 }
 
 void Client::addUser(const std::string& user, bool notify)

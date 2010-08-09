@@ -38,6 +38,7 @@ class RosterManager;
 }
 
 class Handler;
+class UserToVCard;
 
 class Client : public gloox::ConnectionListener,
                public gloox::RosterListener,
@@ -59,6 +60,7 @@ public:
   void changeStatus(unsigned status);
   void sendMessage(const std::string& user, const std::string& message);
   void getVCard(const std::string& user);
+  void setOwnerVCard(const UserToVCard& wrapper);
   void addUser(const std::string& user, bool notify);
   void changeUserGroups(const std::string& user,
                         const gloox::StringList& groups);
