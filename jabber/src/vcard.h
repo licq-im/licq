@@ -46,4 +46,14 @@ private:
   const Licq::User* myUser;
 };
 
+class VCardToUser
+{
+public:
+  VCardToUser(const gloox::VCard* vcard) : myVCard(vcard) { /* Empty */ }
+  bool updateUser(Licq::User* user) const;
+
+private:
+  const gloox::VCard* myVCard;
+};
+
 #endif

@@ -302,8 +302,7 @@ void Jabber::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
     return;
   }
 
-  UserToVCard wrapper(*owner);
-  myClient->setOwnerVCard(wrapper);
+  myClient->setOwnerVCard(UserToVCard(*owner));
 }
 
 void Jabber::doAddUser(Licq::ProtoAddUserSignal* signal)

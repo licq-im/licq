@@ -28,6 +28,7 @@
 #include <set>
 #include <string>
 
+class VCardToUser;
 
 class Handler
 {
@@ -46,6 +47,7 @@ public:
                    const std::list<std::string>& groups);
   void onUserRemoved(const std::string& id);
   void onUserStatusChange(const std::string& id, unsigned status);
+  void onUserInfo(const std::string& id, const VCardToUser& wrapper);
   void onRosterReceived(const std::set<std::string>& ids);
   void onUserAuthorizationRequest(const std::string& id,
                                   const std::string& message);

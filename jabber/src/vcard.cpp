@@ -47,3 +47,22 @@ gloox::VCard* UserToVCard::createVCard() const
 
   return card;
 }
+
+bool VCardToUser::updateUser(Licq::User* user) const
+{
+  if (!user->KeepAliasOnUpdate() && !myVCard->nickname().empty())
+    user->setAlias(myVCard->nickname());
+
+  const gloox::VCard::Name& name = myVCard->name();
+  user->setUserInfoString("FirstName", name.given);
+  user->setUserInfoString("LastName", name.family);
+
+  // Bug in gloox: emailAddresses should be const
+  const gloox::VCard::EmailList& emails =
+      const_cast<gloox::VCard*>(myVCard)->emailAddresses();
+  if (emails.begin() != emails.end())
+    user->setUserInfoString("Email1", emails.begin()->userid);
+
+  user->SaveLicqInfo();
+  return true;
+}

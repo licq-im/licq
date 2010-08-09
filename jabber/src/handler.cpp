@@ -22,6 +22,7 @@
 
 #include "handler.h"
 #include "jabber.h"
+#include "vcard.h"
 
 #include <boost/foreach.hpp>
 
@@ -161,6 +162,33 @@ void Handler::onUserStatusChange(const string& id, unsigned status)
   TRACE();
 
   gUserManager.userStatusChanged(Licq::UserId(id, JABBER_PPID), status);
+}
+
+void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
+{
+  TRACE();
+
+  bool updated = false;
+  Licq::UserId userId(id, JABBER_PPID);
+  if (gUserManager.isOwner(userId))
+  {
+    Licq::OwnerWriteGuard owner(userId);
+    if (owner.isLocked())
+      updated = wrapper.updateUser(*owner);
+  }
+  else
+  {
+    Licq::UserWriteGuard user(userId);
+    if (user.isLocked())
+      updated = wrapper.updateUser(*user);
+  }
+
+  if (updated)
+  {
+    Licq::gDaemon.pushPluginSignal(
+        new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                               Licq::PluginSignal::UserBasic, userId));
+  }
 }
 
 void Handler::onRosterReceived(const std::set<std::string>& ids)
