@@ -109,6 +109,14 @@ uint32_t INetSocket::addrToInt(const struct sockaddr* addr)
   return 0;
 }
 
+uint32_t INetSocket::ipToInt(const std::string& ip)
+{
+  struct in_addr addr;
+  if (::inet_aton(ip.c_str(), &addr))
+    return addr.s_addr;
+  return 0;
+}
+
 uint16_t INetSocket::getAddrPort(const struct sockaddr* addr)
 {
   switch (addr->sa_family)

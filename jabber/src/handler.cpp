@@ -33,6 +33,7 @@
 #include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/socket.h>
 #include <licq/userevents.h>
 
 using std::string;
@@ -55,15 +56,21 @@ Handler::~Handler()
   // Empty
 }
 
-void Handler::onConnect()
+void Handler::onConnect(const std::string& ip, int port)
 {
   TRACE();
-
-  gUserManager.ownerStatusChanged(JABBER_PPID, myStatus);
+  {
+    Licq::OwnerWriteGuard owner(JABBER_PPID);
+    if (owner.isLocked())
+    {
+      owner->statusChanged(myStatus);
+      owner->SetIpPort(Licq::INetSocket::ipToInt(ip), port);
+    }
+  }
 
   Licq::gDaemon.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalLogon,
-                             0, UserId() , JABBER_PPID));
+                             0, UserId(), JABBER_PPID));
 }
 
 void Handler::onChangeStatus(unsigned status)

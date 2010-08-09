@@ -38,7 +38,7 @@ public:
   void setStatus(unsigned status)
   { myStatus = status; }
 
-  void onConnect();
+  void onConnect(const std::string& ip, int port);
   void onChangeStatus(unsigned status);
   void onDisconnect();
 

@@ -164,7 +164,8 @@ void Client::refuseAuthorization(const std::string& user)
 
 void Client::onConnect()
 {
-  myHandler.onConnect();
+  gloox::ConnectionBase* conn = myClient.connectionImpl();
+  myHandler.onConnect(conn->localInterface(), conn->localPort());
 }
 
 bool Client::onTLSConnect(const gloox::CertInfo& /*info*/)

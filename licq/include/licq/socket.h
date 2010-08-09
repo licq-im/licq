@@ -167,6 +167,15 @@ public:
   static uint32_t addrToInt(const struct sockaddr* addr);
 
   /**
+   * Get the IPv4 address as an unsigned int from an IP address
+   * Note: This function is not usable with IPv6 addresses
+   *
+   * @param ip A string with the IPv4 IP to extract
+   * @return The ip from the string in network endian form
+   */
+  static uint32_t ipToInt(const std::string& ip);
+
+  /**
    * Get the port from an address
    *
    * @param addr A sockaddr_in or sockaddr_in6 with the port to extract
