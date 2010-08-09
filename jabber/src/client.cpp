@@ -362,7 +362,7 @@ void Client::handleVCard(const gloox::JID& jid, const gloox::VCard* vcard)
   TRACE();
 
   (void)jid;
-  delete vcard;
+  (void)vcard;
 }
 
 void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
