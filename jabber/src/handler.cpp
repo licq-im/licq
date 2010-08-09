@@ -65,6 +65,7 @@ void Handler::onConnect(const std::string& ip, int port)
     {
       owner->statusChanged(myStatus);
       owner->SetIpPort(Licq::INetSocket::ipToInt(ip), port);
+      owner->SetTimezone(Licq::User::SystemTimezone());
     }
   }
 
