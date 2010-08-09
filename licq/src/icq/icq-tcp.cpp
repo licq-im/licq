@@ -104,8 +104,8 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   // What kinda encoding do we have here?
   unsigned short nCharset = CHARSET_ASCII;
   size_t nUTFLen = 0;
-  char *szFromEncoding = 0;
-  
+  string fromEncoding;
+
   szMessage =  cipher ? cipher : mDos;
 
   if (viaServer)
@@ -116,7 +116,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       {
         Licq::UserReadGuard u(userId);
         if (u.isLocked() && !u->userEncoding().empty())
-          szFromEncoding = strdup(u->userEncoding().c_str());
+          fromEncoding = u->userEncoding();
 
         if (u.isLocked() && isdigit(u->accountId()[0]))
         {
@@ -136,17 +136,13 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       if (nCharset == CHARSET_UNICODE)
       {
         bUTF16 = true;
-        if (!szFromEncoding || strlen(szFromEncoding) == 0)
-        {
-          free(szFromEncoding);
-          szFromEncoding = strdup(nl_langinfo(CODESET));
-        }
-        string msgUtf16 = gTranslator.toUtf16(mDos, szFromEncoding);
+        if (fromEncoding.empty())
+          fromEncoding = nl_langinfo(CODESET);
+        string msgUtf16 = gTranslator.toUtf16(mDos, fromEncoding);
         nUTFLen = msgUtf16.size();
         szMessage = new char[msgUtf16.size()+1];
         strncpy(szMessage, msgUtf16.c_str(), msgUtf16.size());
         szMessage[msgUtf16.size()] = '\0';
-        free(szFromEncoding);
       }
     }
 

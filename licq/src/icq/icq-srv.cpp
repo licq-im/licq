@@ -427,14 +427,13 @@ void IcqProtocol::icqAlertUser(const Licq::UserId& userId)
   if (userId.protocolId() != LICQ_PPID)
     return;
 
-  char sz[MaxMessageSize];
+  string s;
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->getFirstName().c_str(),
-        0xFE, o->getLastName().c_str(), 0xFE, o->getEmail().c_str(), 0xFE,
-        o->GetAuthorization() ? '0' : '1', 0xFE);
+    s = o->getAlias() + '\xFE' + o->getFirstName() + '\xFE' + o->getLastName() +
+        '\xFE' + o->getEmail() + '\xFE' + (o->GetAuthorization() ? '0' : '1') + '\xFE';
   }
-  CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
+  CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), ICQ_CMDxSUB_ADDEDxTOxLIST, s);
   gLog.info(tr("%sAlerting user they were added (#%hu)...\n"), L_SRVxSTR, p->Sequence());
   SendExpectEvent_Server(userId, p, NULL);
 }
@@ -2220,42 +2219,34 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         
       msg.UnpackUnsignedShortBE();
 
-      char szExtraInfo[28] = { 0 };
+        string extraInfo;
       if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
-        snprintf(szExtraInfo, 27, "Licq %s/SSL",
-              Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF).c_str());
+          extraInfo = "Licq " + Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF) + "/SSL";
       else if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-        snprintf(szExtraInfo, 27, "Licq %s",
-              Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF).c_str());
+          extraInfo = "Licq " + Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF);
       else if (nInfoTimestamp == 0xffffffff)
-        strcpy(szExtraInfo, "MIRANDA");
+          extraInfo = "MIRANDA";
       else if (nInfoTimestamp == 0xFFFFFF8F)
-        strcpy(szExtraInfo, "StrICQ");
+          extraInfo = "StrICQ";
       else if (nInfoTimestamp == 0xFFFFFF42)
-        strcpy(szExtraInfo, "mICQ");
+          extraInfo ="mICQ";
       else if (nInfoTimestamp == 0xFFFFFF7F)
-        strcpy(szExtraInfo, "&RQ");
+          extraInfo = "&RQ";
       else if (nInfoTimestamp == 0xFFFFFFAB)
-        strcpy(szExtraInfo, "YSM");
-      else
-        szExtraInfo[0]=0;
-      szExtraInfo[27] = '\0';
+          extraInfo = "YSM";
 
-        u->setClientInfo(szExtraInfo);
+        u->setClientInfo(extraInfo);
       u->SetVersion(tcpVersion);
       
       if (nOldStatus != nNewStatus)
       {
-        char *szClient = new char[strlen(szExtraInfo)+6];
-        if (szExtraInfo[0])
-          sprintf(szClient, " [%s].\n", szExtraInfo);
-        else
-          sprintf(szClient, ".\n");
+          if (!extraInfo.empty())
+            extraInfo = " [" + extraInfo + "]";
 
         ChangeUserStatus(*u, nNewStatus);
-        gLog.info(tr("%s%s (%s) changed status: %s (v%d)%s"),
+          gLog.info(tr("%s%s (%s) changed status: %s (v%d)%s.\n"),
               L_SRVxSTR, u->getAlias().c_str(), u->id().toString().c_str(),
-              u->statusString().c_str(), tcpVersion & 0x0F, szClient);
+              u->statusString().c_str(), tcpVersion & 0x0F, extraInfo.c_str());
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
           gLog.unknown("Unknown status flag for %s (%s): 0x%08lX",
                 u->getAlias().c_str(), u->accountId().c_str(),
@@ -2263,9 +2254,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         nNewStatus &= ICQ_STATUS_FxUNKNOWNxFLAGS;
         u->setAutoResponse("");
         u->SetShowAwayMsg(false);
-
-        delete [] szClient;
-      }
+        }
 
       if (intIP)
       {
@@ -3013,7 +3002,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             szMessage[msg.size()] = '\0';
           }
 
-      char *szType = NULL;
+          string type;
       OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
           Licq::UserEvent* eEvent = NULL;
 
@@ -3023,7 +3012,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             {
               Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
                   ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
-          szType = strdup(tr("Message"));
+              type = tr("Message");
           onEventType = OnEventManager::OnEventMessage;
           eEvent = e;
           break;
@@ -3036,7 +3025,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             packet.log(Log::Warning, tr("Invalid URL message"));
             break;
           }
-          szType = strdup(tr("URL"));
+              type = tr("URL");
           onEventType = OnEventManager::OnEventUrl;
           eEvent = e;
           break;
@@ -3202,7 +3191,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 
-          szType = strdup(tr("Contacts"));
+              type = tr("Contacts");
           onEventType = OnEventManager::OnEventMessage;
           eEvent = e;
           break;
@@ -3247,9 +3236,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                 Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
                 if (!u.isLocked())
                 {
-          gLog.info(tr("%s from new user (%s), ignoring"), szType, szId);
-
-          if (szType) free(szType);
+                  gLog.info(tr("%s from new user (%s), ignoring"), type.c_str(), szId);
 
           //TODO
               gDaemon.rejectEvent(userId, eEvent);
@@ -3257,11 +3244,10 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	    }
 	    else
 	      gLog.info(tr("%s through server from %s (%s)"),
-                    szType, u->getAlias().c_str(), u->accountId().c_str());
+                      type.c_str(), u->getAlias().c_str(), u->accountId().c_str());
 
                 u->setIsTyping(false);
 
-	    if (szType) free(szType);
                 if (gDaemon.addUserEvent(*u, eEvent))
                   gOnEventManager.performOnEvent(onEventType, *u);
                 gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
@@ -4143,8 +4129,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
-  char *tmp;
-  
+
   switch (nSubtype)
   {
     case 0x0001: // Error
@@ -4210,7 +4195,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       char* szMessage = new char[msg.getDataMaxSize()];
       // 2 byte length little endian + string
       msg.UnpackString(szMessage, msg.getDataMaxSize());      
-      char *szType = NULL;
+          string type;
           OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
           Licq::UserEvent* eEvent = NULL;
 
@@ -4220,7 +4205,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             {
               Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
                   ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
-	  szType = strdup(tr("Message"));
+	      type = tr("Message");
               onEventType = OnEventManager::OnEventMessage;
 	  eEvent = e;
 	  break;
@@ -4233,7 +4218,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             packet.log(Log::Warning, tr("Invalid offline URL message"));
             break;
           }
-	  szType = strdup(tr("URL"));
+	      type = tr("URL");
           onEventType = OnEventManager::OnEventUrl;
 	  eEvent = e;
 	  break;
@@ -4393,7 +4378,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             packet.log(Log::Warning, tr("Invalid offline Contact List message"));
             break;
           }
-	  szType = strdup(tr("Contacts"));
+	      type = tr("Contacts");
           onEventType = OnEventManager::OnEventMessage;
 	  eEvent = e;
 	  break;
@@ -4437,16 +4422,14 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 if (!u.isLocked())
                 {
                     gLog.info(tr("Offline %s from new user (%s), ignoring"),
-                        szType, id);
-                    if (szType) free(szType);
+                      type.c_str(), id);
                     gDaemon.rejectEvent(userId, eEvent);
                     break;
                 }
                 else
                   gLog.info(tr("Offline %s through server from %s (%s)"),
-                      szType, u->GetAlias(), id);
+                      type.c_str(), u->getAlias().c_str(), id);
 
-            if (szType) free(szType);
                 if (gDaemon.addUserEvent(*u, eEvent))
                   gOnEventManager.performOnEvent(onEventType, *u);
 	    break;
@@ -4527,11 +4510,11 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           Licq::Event* pEvent = NULL;
       nSubtype = msg.UnpackUnsignedShort();
       nResult = msg.UnpackChar();
-      char *szType = NULL;
+          string type;
 
       if (nSubtype == ICQ_CMDxMETA_PASSWORDxRSP)
-      {
-        szType = strdup(tr("Password change"));
+          {
+            type = tr("Password change");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
         if (pEvent != NULL && nResult == META_SUCCESS)
@@ -4544,14 +4527,14 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_SECURITYxRSP)
-      {
-        szType = strdup(tr("Security info"));
+          {
+            type = tr("Security info");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
       }
       else if (nSubtype == ICQ_CMDxMETA_GENERALxINFOxRSP)
-      {
-        szType = strdup(tr("General info"));
+          {
+            type = tr("General info");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
@@ -4582,8 +4565,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_EMAILxINFOxRSP)
-      {
-        szType = strdup(tr("E-mail info"));
+          {
+            type = tr("E-mail info");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
@@ -4603,8 +4586,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_MORExINFOxRSP)
-      {
-        szType = strdup(tr("More info"));
+          {
+            type = tr("More info");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
@@ -4630,8 +4613,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_INTERESTSxINFOxRSP)
-      {
-        szType = strdup("Interests info");
+          {
+            type = "Interests info";
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
@@ -4644,19 +4627,15 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               o->getInterests().clear();
               UserCategoryMap::iterator i;
               for (i = p->myInterests.begin(); i != p->myInterests.end(); ++i)
-              {
-                char* tmp = strdup(i->second.c_str());
-                gTranslator.ServerToClient(tmp);
-                o->getInterests()[i->first] = tmp;
-            free(tmp);
-          }
+                o->getInterests()[i->first] = gTranslator.serverToClient(i->second);;
+
           o->SetEnableSave(true);
               o->saveUserInfo();
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_WORKxINFOxRSP)
-      {
-        szType = strdup(tr("Work info"));
+          {
+            type = tr("Work info");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
@@ -4685,8 +4664,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_ABOUTxRSP)
-      {
-        szType = strdup(tr("About"));
+          {
+            type = tr("About");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
@@ -4711,8 +4690,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
         if (pEvent != NULL &&
             pEvent->m_pPacket->SubCommand() == ICQ_CMDxMETA_ORGBACKxINFOxSET)
-        {
-          szType = strdup("Organizations/Background info");
+            {
+              type = "Organizations/Background info";
 
           if (nResult == META_SUCCESS)
           {
@@ -4723,21 +4702,12 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 o->getOrganizations().clear();
                 UserCategoryMap::iterator i;
                 for (i = p->myOrganizations.begin(); i != p->myOrganizations.end(); ++i)
-                {
-                  char *tmp = strdup(i->second.c_str());
-              gTranslator.ServerToClient(tmp);
-                  o->getOrganizations()[i->first] = tmp;
-              free(tmp);
-            }
+                  o->getOrganizations()[i->first] = gTranslator.serverToClient(i->second);
 
                 o->getBackgrounds().clear();
                 for (i = p->myBackgrounds.begin(); i != p->myBackgrounds.end(); ++i)
-                {
-                  char *tmp = strdup(i->second.c_str());
-              gTranslator.ServerToClient(tmp);
-                  o->getBackgrounds()[i->first] = tmp;
-              free(tmp);
-            }
+                  o->getBackgrounds()[i->first] = gTranslator.serverToClient(i->second);;
+
             o->SetEnableSave(true);
                 o->saveUserInfo();
           }
@@ -4832,8 +4802,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_SETxRANDxCHATxRSP)
-      {
-        szType = strdup(tr("Random chat group"));
+          {
+            type = tr("Random chat group");
         pEvent = DoneServerEvent(nSubSequence,
                 nResult == META_SUCCESS ? Licq::Event::ResultSuccess : Licq::Event::ResultFailed);
 
@@ -4935,7 +4905,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
 
         unsigned long nFoundUin;
-        char szTemp[64];
 
         msg.UnpackUnsignedShort(); // length of the rest of the packet.
         nFoundUin = msg.UnpackUnsignedLong();
@@ -4945,15 +4914,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
             Licq::SearchData* s = new Licq::SearchData(foundUserId);
 
-            msg.UnpackString(szTemp, sizeof(szTemp));
-            gTranslator.ServerToClient(szTemp);
-            s->myAlias = szTemp;
-            msg.UnpackString(szTemp, sizeof(szTemp));
-            gTranslator.ServerToClient(szTemp);
-            s->myFirstName = szTemp;
-            msg.UnpackString(szTemp, sizeof(szTemp));
-            gTranslator.ServerToClient(szTemp);
-            s->myLastName = szTemp;
+            s->myAlias = gTranslator.serverToClient(msg.unpackString());
+            s->myFirstName = gTranslator.serverToClient(msg.unpackString());
+            s->myLastName = gTranslator.serverToClient(msg.unpackString());
             s->myEmail = msg.unpackString();
             s->myAuth = msg.UnpackChar(); // authorization required
             s->myStatus = msg.UnpackChar();
@@ -5046,40 +5009,20 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (!u->m_bKeepAliasOnUpdate || userId == Licq::gUserManager.ownerUserId(LICQ_PPID))
           {
                   alias = gTranslator.toUnicode(alias, u->userEncoding());
-                  gTranslator.serverToClient(alias);
+                  alias = gTranslator.serverToClient(alias);
                   u->setAlias(alias);
             //printf("Alias: %s\n", szUTFAlias);
                 }
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("FirstName", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("LastName", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("Email1", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("City", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("State", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("PhoneNumber", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("FaxNumber", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("Address", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CellularNumber", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("Zipcode", tmp);
-          delete[] tmp;
+                u->setUserInfoString("FirstName", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("LastName", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("Email1", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("City", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("State", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("PhoneNumber", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("FaxNumber", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("Address", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CellularNumber", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("Zipcode", gTranslator.serverToClient(msg.unpackString()));
                 u->setUserInfoUint("Country", msg.UnpackUnsignedShort() );
           u->SetTimezone( msg.UnpackChar() );
           u->SetAuthorization( !msg.UnpackChar() );
@@ -5124,9 +5067,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetEnableSave(false);
                 u->setUserInfoUint("Age", msg.UnpackUnsignedShort());
                 u->setUserInfoUint("Gender", msg.UnpackChar());
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("Homepage", tmp);
-          delete[] tmp;
+                u->setUserInfoString("Homepage", gTranslator.serverToClient(msg.unpackString()));
                 u->setUserInfoUint("BirthYear", msg.UnpackUnsignedShort());
                 u->setUserInfoUint("BirthMonth", msg.UnpackChar());
                 u->setUserInfoUint("BirthDay", msg.UnpackChar());
@@ -5178,27 +5119,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           u->SetEnableSave(false);
           int nEmail = (int)msg.UnpackChar();
-          for(int i = 0; i < 2; i++)
-          {
-            if (i < nEmail)
-            {
-              msg.UnpackChar(); // publish email, not yet implemented
-              tmp = msg.UnpackString();
-              gTranslator.ServerToClient(tmp);
-            }
-            else
-            {
-              tmp = new char[1];
-              tmp[0] = '\0';
-            }
-
-            if(i == 0)
-                    u->setUserInfoString("Email2", tmp);
-            else if(i == 1)
-                    u->setUserInfoString("Email0", tmp);
-
-            delete[] tmp;
-          }
+                u->setUserInfoString("Email2", nEmail > 0 ? gTranslator.serverToClient(msg.unpackString()) : "");
+                u->setUserInfoString("Email0", nEmail > 1 ? gTranslator.serverToClient(msg.unpackString()) : "");
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5247,38 +5169,18 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                     u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyCity", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyState", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyPhoneNumber", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyFaxNumber", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyAddress", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyZip", tmp);
-          delete[] tmp;
+                u->setUserInfoString("CompanyCity", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyState", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyPhoneNumber", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyFaxNumber", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyAddress", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyZip", gTranslator.serverToClient(msg.unpackString()));
                 u->setUserInfoUint("CompanyCountry", msg.UnpackUnsignedShort());
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyName", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyDepartment", tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyPosition", tmp);
-          delete[] tmp;
+                u->setUserInfoString("CompanyName", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyDepartment", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyPosition", gTranslator.serverToClient(msg.unpackString()));
                 u->setUserInfoUint("CompanyOccupation", msg.UnpackUnsignedShort());
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-                u->setUserInfoString("CompanyHomepage", tmp);
-          delete[] tmp;
+                u->setUserInfoString("CompanyHomepage", gTranslator.serverToClient(msg.unpackString()));
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5325,11 +5227,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
                 {
             unsigned short cat = msg.UnpackUnsignedShort();
-            tmp = msg.UnpackString();
-            gTranslator.ServerToClient(tmp);
-                  u->getInterests()[cat] = tmp;
-            delete [] tmp;
-          }
+                  u->getInterests()[cat] = gTranslator.serverToClient(msg.unpackString());
+                }
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5359,11 +5258,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
                 {
             unsigned short cat = msg.UnpackUnsignedShort();
-            tmp = msg.UnpackString();
-            gTranslator.ServerToClient(tmp);
-                  u->getBackgrounds()[cat] = tmp;
-            delete [] tmp;
-          }
+                  u->getBackgrounds()[cat] = gTranslator.serverToClient(msg.unpackString());
+                }
 
           //---- Organizations
                 u->getOrganizations().clear();
@@ -5372,11 +5268,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
           {
             unsigned short cat = msg.UnpackUnsignedShort();
-            tmp = msg.UnpackString();
-            gTranslator.ServerToClient(tmp);
-                  u->getOrganizations()[cat] = tmp;
-            delete [] tmp;
-          }
+                  u->getOrganizations()[cat] = gTranslator.serverToClient(msg.unpackString());;
+                }
 
           // our user info is now up to date
           u->SetOurClientTimestamp(u->ClientTimestamp());
@@ -5408,23 +5301,21 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 Licq::PluginSignal::UserInfo, u->id()));
           }
 
-      if (szType)
-      {
+          if (!type.empty())
+          {
         if (pEvent)
             {
               if (pEvent->Result() == Licq::Event::ResultSuccess)
-            gLog.info(tr("%s%s updated.\n"), L_SRVxSTR, szType);
-          else
-            gLog.info(tr("%s%s update failed.\n"), L_SRVxSTR, szType);
+                gLog.info(tr("%s updated."), type.c_str());
+              else
+                gLog.info(tr("%s update failed."), type.c_str());
           ProcessDoneEvent(pEvent);
         }
-        else
-          gLog.info(tr("%sUnexpected result for %s.\n"), L_SRVxSTR, szType);
-
-        free(szType);
-      }
-      break;
-    }
+            else
+              gLog.info(tr("Unexpected result for %s."), type.c_str());
+          }
+          break;
+        }
         default:
           packet.log(Log::Unknown, "Unknown SNAC 15,03 response type: %04hx",
                      nType);
