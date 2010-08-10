@@ -22,9 +22,11 @@
 
 #include "vcard.h"
 
-#include <ctime>
-#include <licq/contactlist/user.h>
 #include <gloox/vcard.h>
+#include <licq/contactlist/user.h>
+
+#include <iomanip>
+#include <sstream>
 
 gloox::VCard* UserToVCard::createVCard() const
 {
@@ -37,13 +39,20 @@ gloox::VCard* UserToVCard::createVCard() const
   if (!myUser->getEmail().empty())
     card->addEmail(myUser->getEmail(), gloox::VCard::AddrTypePref);
 
-  struct tm tm;
-  time_t now = ::time(0);
-  ::localtime_r(&now, &tm);
-
-  char tz[10];
-  strftime(tz, sizeof(tz), "%z", &tm);
-  card->setTz(tz);
+  std::ostringstream tz;
+  if (myUser->GetTimezone() == Licq::User::TimezoneUnknown)
+    tz << "-00:00";
+  else
+  {
+    int offset = myUser->LocalTimeGMTOffset();
+    tz << (offset > 0 ? '-' : '+')
+       << std::setw(2) << std::setfill('0')
+       << std::abs(offset) / 3600
+       << ':'
+       << std::setw(2) << std::setfill('0')
+       << std::abs(offset) % 3600;
+  }
+  card->setTz(tz.str());
 
   return card;
 }
