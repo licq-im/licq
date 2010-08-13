@@ -25,6 +25,7 @@
 #include "jabber.h"
 #include "vcard.h"
 
+#include <gloox/attention.h>
 #include <gloox/connectiontcpclient.h>
 #include <gloox/disco.h>
 #include <gloox/message.h>
@@ -55,6 +56,11 @@ Client::Client(Handler& handler, const std::string& username,
 
   myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
+
+  // FIXME: The feature should only be announced if the user has activated it.
+  myClient.disco()->addFeature(gloox::XMLNS_ATTENTION);
+
+  myClient.registerStanzaExtension(new gloox::Attention);
 
   // TODO: Fix in a more generic way
   if (myClient.server() == "chat.facebook.com")
@@ -100,9 +106,13 @@ void Client::changeStatus(unsigned status)
   myClient.setPresence(statusToPresence(status), 0, msg);
 }
 
-void Client::sendMessage(const std::string& user, const std::string& message)
+void Client::sendMessage(const std::string& user, const std::string& message,
+  bool urgent)
 {
   gloox::Message msg(gloox::Message::Chat, user, message);
+  // TODO: Only add extension if receiver supports it
+  if (urgent)
+    msg.addExtension(new gloox::Attention);
   myClient.send(msg);
 }
 
@@ -283,8 +293,11 @@ void Client::handleRosterError(const gloox::IQ& /*iq*/)
 void Client::handleMessage(const gloox::Message& msg,
                            gloox::MessageSession* /*session*/)
 {
+  const bool urgent = msg.findExtension(gloox::ExtAttention) != NULL;
   if (!msg.body().empty())
-    myHandler.onMessage(msg.from().bare(), msg.body());
+    myHandler.onMessage(msg.from().bare(), msg.body(), urgent);
+  else if (urgent)
+    myHandler.onMessage(msg.from().bare(), "buzz", urgent);
 }
 
 void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,

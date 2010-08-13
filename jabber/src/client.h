@@ -58,7 +58,8 @@ public:
   bool connect(unsigned status);
   bool isConnected();
   void changeStatus(unsigned status);
-  void sendMessage(const std::string& user, const std::string& message);
+  void sendMessage(const std::string& user, const std::string& message,
+    bool urgent);
   void getVCard(const std::string& user);
   void setOwnerVCard(const UserToVCard& wrapper);
   void addUser(const std::string& user, bool notify);

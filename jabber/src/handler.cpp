@@ -237,7 +237,8 @@ void Handler::onUserAuthorizationRequest(const std::string& id,
   }
 }
 
-void Handler::onMessage(const std::string& from, const std::string& message)
+void Handler::onMessage(const std::string& from, const std::string& message,
+  bool urgent)
 {
   TRACE();
 
@@ -245,8 +246,9 @@ void Handler::onMessage(const std::string& from, const std::string& message)
     myConvoIds[from] = myNextConvoId++;
 
   Licq::EventMsg* event = new Licq::EventMsg(
-      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, ::time(0),
-      0, myConvoIds[from]);
+      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, Licq::UserEvent::TimeNow,
+      urgent ? unsigned(Licq::UserEvent::FlagUrgent) : 0,
+      myConvoIds[from]);
 
   Licq::UserWriteGuard user(UserId(from, JABBER_PPID), true);
 

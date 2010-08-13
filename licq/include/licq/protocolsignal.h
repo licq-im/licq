@@ -180,19 +180,24 @@ class ProtoSendMessageSignal : public ProtocolSignal
 {
 public:
   ProtoSendMessageSignal(unsigned long eventId, const UserId& userId,
-      const std::string& message, unsigned long convoId = 0)
+      const std::string& message, unsigned short flags,
+      unsigned long convoId = 0)
     : ProtocolSignal(SignalSendMessage, userId, eventId),
       myMessage(message),
+      myFlags(flags),
       myConvoId(convoId)
   { /* Empty */ }
 
   //! The message to be sent
   const std::string& message() const { return myMessage; }
+  //! The message flags
+  unsigned short flags() const { return myFlags; }
   //! The conversation id to use (gets the socket).
   unsigned long convoId() const { return myConvoId; }
 
 private:
   std::string myMessage;
+  unsigned short myFlags;
   unsigned long myConvoId;
 };
 

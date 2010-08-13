@@ -190,7 +190,7 @@ unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& m
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqSendMessage(eventId, userId, message, viaServer, flags, multipleRecipients, color);
   else
-    pushProtoSignal(new Licq::ProtoSendMessageSignal(eventId, userId, message, convoId), userId);
+    pushProtoSignal(new Licq::ProtoSendMessageSignal(eventId, userId, message, flags, convoId), userId);
 
   return eventId;
 }

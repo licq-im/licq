@@ -52,7 +52,8 @@ public:
   void onUserAuthorizationRequest(const std::string& id,
                                   const std::string& message);
 
-  void onMessage(const std::string& from, const std::string& message);
+  void onMessage(const std::string& from, const std::string& message,
+    bool urgent);
 
   std::string getStatusMessage(unsigned status);
 

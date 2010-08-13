@@ -266,7 +266,8 @@ void Jabber::doLogoff()
 void Jabber::doSendMessage(Licq::ProtoSendMessageSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->sendMessage(signal->userId().accountId(), signal->message());
+  myClient->sendMessage(signal->userId().accountId(), signal->message(),
+                        signal->flags() & 0x40);
 
   Licq::EventMsg* message = new Licq::EventMsg(
       signal->message().c_str(), 0, Licq::UserEvent::TimeNow, 0);
