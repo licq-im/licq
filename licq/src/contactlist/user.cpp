@@ -2038,7 +2038,7 @@ const Licq::UserEvent* Licq::User::EventPeek(unsigned short index) const
 
 const Licq::UserEvent* Licq::User::EventPeekId(int id) const
 {
-  if (m_vcMessages.size() == 0) return NULL;
+  if (m_vcMessages.empty()) return NULL;
   Licq::UserEvent* e = NULL;
   UserEventList::const_iterator iter;
   for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
@@ -2054,19 +2054,19 @@ const Licq::UserEvent* Licq::User::EventPeekId(int id) const
 
 const Licq::UserEvent* Licq::User::EventPeekLast() const
 {
-  if (m_vcMessages.size() == 0) return (NULL);
+  if (m_vcMessages.empty()) return (NULL);
   return (m_vcMessages[m_vcMessages.size() - 1]);
 }
 
 const Licq::UserEvent* Licq::User::EventPeekFirst() const
 {
-  if (m_vcMessages.size() == 0) return (NULL);
+  if (m_vcMessages.empty()) return (NULL);
   return (m_vcMessages[0]);
 }
 
 Licq::UserEvent *Licq::User::EventPop()
 {
-  if (m_vcMessages.size() == 0) return NULL;
+  if (m_vcMessages.empty()) return NULL;
   Licq::UserEvent* e = m_vcMessages[0];
   for (unsigned short i = 0; i < m_vcMessages.size() - 1; i++)
     m_vcMessages[i] = m_vcMessages[i + 1];

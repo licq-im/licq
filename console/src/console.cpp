@@ -1243,7 +1243,7 @@ void CLicqConsole::InputCommand(int cIn)
       }
 
       // Process the tab results
-      if (sTabCompletion.vszPartialMatch.size() == 0)
+      if (sTabCompletion.vszPartialMatch.empty())
       { // No matches
         Beep();
         winMain->wprintf("%CNo matches.\n", COLOR_RED);
@@ -1319,7 +1319,7 @@ void CLicqConsole::InputCommand(int cIn)
         nPos--;
       }
       // Save the command in the history
-      if (m_lCmdHistory.size() == 0 || strcmp(m_lCmdHistory.back(), szIn) != 0)
+      if (m_lCmdHistory.empty() || strcmp(m_lCmdHistory.back(), szIn) != 0)
       {
         m_lCmdHistory.push_back(strdup(szIn));
         while(m_lCmdHistory.size() > MAX_CMD_HISTORY)

@@ -108,7 +108,7 @@ void UserSendFileEvent::setFile(const QString& file, const QString& description)
 
 void UserSendFileEvent::addFile(const QString& file)
 {
-  if (myFileList.size() == 0)
+  if (myFileList.empty())
     return;
 
   myFileList.push_back(strdup(file.toLocal8Bit()));

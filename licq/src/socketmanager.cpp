@@ -74,7 +74,7 @@ unsigned short SocketSet::Num()
 int SocketSet::Largest()
 {
   MutexLocker lock(myMutex);
-  if (lFd.size() == 0)
+  if (lFd.empty())
     return 0;
   else
     return *lFd.begin();

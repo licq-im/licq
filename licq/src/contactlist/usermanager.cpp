@@ -194,7 +194,7 @@ bool UserManager::Load()
 
     // ServerId per protocol didn't exist in 1.3.x and older.
     // This will preserve ICQ group ids when reading old config.
-    if (serverIdKeys.size() == 0 && icqGroupId != 0)
+    if (serverIdKeys.empty() && icqGroupId != 0)
       newGroup->setServerId(LICQ_PPID, icqGroupId);
 
     myGroups[groupId] = newGroup;

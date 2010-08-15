@@ -869,7 +869,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       for (Licq::EventContactList::ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
         users.push_back((*i)->userId().accountId());
 
-      if (users.size() == 0)
+      if (users.empty())
         break;
 
       icqEventTag = gLicqDaemon->icqSendContactList(myUsers.front(),
@@ -1146,7 +1146,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
   if (Config::Chat::instance()->autoSendThroughServer() && e->Result() == Licq::Event::ResultCancelled)
     mySendServerCheck->setChecked(true);
 
-  if (myEventTag.size() == 0)
+  if (myEventTag.empty())
   {
     disconnect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
         this, SLOT(eventDoneReceived(const Licq::Event*)));

@@ -134,7 +134,7 @@ void UserSendContactEvent::send()
     users.push_back(userId.accountId());
   }
 
-  if (users.size() == 0)
+  if (users.empty())
     return;
 
   if (!checkSecure())

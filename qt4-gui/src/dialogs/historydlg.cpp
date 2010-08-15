@@ -196,7 +196,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
         myStatusLabel->setText(tr("Sorry, history is disabled for this person"));
     }
     // No point in doing anything more if history is empty
-    else if (myHistoryList.size() == 0)
+    else if (myHistoryList.empty())
     {
       myStatusLabel->setText(tr("History is empty"));
     }
@@ -316,7 +316,7 @@ QRegExp HistoryDlg::getRegExp() const
 
 void HistoryDlg::showHistory()
 {
-  if (myHistoryList.size() == 0)
+  if (myHistoryList.empty())
     return;
 
   myHistoryView->clear();

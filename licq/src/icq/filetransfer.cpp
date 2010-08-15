@@ -289,7 +289,7 @@ void CFileTransferManager::sendFiles(const list<string>& pathNames, unsigned sho
   myIsReceiver = false;
 
   // Validate the pathnames
-  if (pathNames.size() == 0)
+  if (pathNames.empty())
     return;
 
   struct stat buf;
@@ -984,7 +984,7 @@ bool CFileTransferManager::SendFilePacket()
 //-----CFileTransferManager::PopFileTransferEvent------------------------------
 CFileTransferEvent *CFileTransferManager::PopFileTransferEvent()
 {
-  if (ftEvents.size() == 0) return NULL;
+  if (ftEvents.empty()) return NULL;
 
   CFileTransferEvent *e = ftEvents.front();
   ftEvents.pop_front();

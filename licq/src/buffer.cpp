@@ -772,7 +772,7 @@ Buffer Buffer::UnpackTLV(unsigned short nType)
 
 TlvPtr Buffer::getTLV(unsigned short nType)
 {
-  if (myTLVs.size() == 0)
+  if (myTLVs.empty())
     throw std::exception();
 
   TlvList::iterator iter = myTLVs.find(nType);

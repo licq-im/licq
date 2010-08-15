@@ -96,7 +96,7 @@ void SkinnableLabel::addPixmap(const QPixmap& p)
 
 void SkinnableLabel::clearPixmaps()
 {
-  if (myPixmaps.size() == 0)
+  if (myPixmaps.empty())
     return;
 
   myPixmaps.clear();

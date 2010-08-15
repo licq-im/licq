@@ -1115,7 +1115,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 //-----CChatManager::PopChatEvent--------------------------------------------
 CChatEvent *CChatManager::PopChatEvent()
 {
-  if (chatEvents.size() == 0) return NULL;
+  if (chatEvents.empty()) return NULL;
 
   CChatEvent *e = chatEvents.front();
   chatEvents.pop_front();
