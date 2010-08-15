@@ -45,6 +45,7 @@ Jabber::Jabber() :
   myDoRun(false),
   myClient(NULL)
 {
+  gLog.debug("Using gloox version %s", gloox::GLOOX_VERSION.c_str());
   myHandler = new Handler();
 }
 
