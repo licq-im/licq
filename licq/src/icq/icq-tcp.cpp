@@ -217,7 +217,7 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool
     CSrvPacketTcp *s = new CPU_AdvancedMessage(*u, ICQ_CMDxTCP_READxAWAYxMSG, 0, false, 0, 0, 0);
     gLog.info(tr("%sRequesting auto response from %s.\n"), L_SRVxSTR,
               u->GetAlias());
-    SendExpectEvent_Server(userId, s, NULL);
+    SendExpectEvent_Server(eventId, userId, s, NULL);
   }
   else
   {
