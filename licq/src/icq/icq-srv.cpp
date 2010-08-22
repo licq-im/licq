@@ -2887,6 +2887,13 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         u->SetIp(Ip);
       }
 
+      if (msgTxt.getTLVLen(0x0005) == 2)
+        u->SetPort(BE_16(msgTxt.UnpackUnsignedShortTLV(0x0005)));
+
+/*
+The following code is supposed to check if user has set a different status toward us
+However it seems to always think contact is online instead of away/occupied/etc...
+
       // Special status to us?
       if (!bIsAck && !bNewUser && nStatus != ICQ_STATUS_OFFLINE &&
           !(nStatus == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
@@ -2898,6 +2905,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
               u->id().toString().c_str(), u->statusString().c_str());
         if (r) u->SetOfflineOnDisconnect(true);
       }
+*/
 
       if (u->Version() == 0x0A)
       {
