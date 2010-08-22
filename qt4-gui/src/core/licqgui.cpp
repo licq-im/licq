@@ -1421,24 +1421,34 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
             Licq::UserReadGuard u(userId);
             if (u.isLocked() && u->NewMessages() > 0)
             {
-              if (Config::Chat::instance()->msgChatView())
+              bool urgent = false;
+              for (unsigned short i = 0; i < u->NewMessages(); i++)
               {
-                for (unsigned short i = 0; i < u->NewMessages(); i++)
+                const Licq::UserEvent* event = u->EventPeek(i);
+
+                if (event->IsUrgent())
+                  urgent = true;
+
+                switch (event->SubCommand())
                 {
-                  switch (u->EventPeek(i)->SubCommand())
-                  {
-                    case ICQ_CMDxSUB_MSG:
-                    case ICQ_CMDxSUB_URL:
-                      bCallSendMsg = true;
-                      break;
-                    default:
-                      bCallUserView = true;
-                  }
-                  if (bCallSendMsg && bCallUserView)
+                  case ICQ_CMDxSUB_MSG:
+                  case ICQ_CMDxSUB_URL:
+                    bCallSendMsg = true;
                     break;
+                  default:
+                    bCallUserView = true;
                 }
+                if (bCallSendMsg && bCallUserView)
+                  break;
               }
-              else
+
+              if (!urgent && Config::Chat::instance()->autoPopupUrgentOnly())
+              {
+                bCallSendMsg = false;
+                bCallUserView = false;
+              }
+
+              if (bCallSendMsg && !Config::Chat::instance()->msgChatView())
                 bCallUserView = true;
             }
           }

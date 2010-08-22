@@ -96,6 +96,10 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   autoPopupLayout->addWidget(myAutoPopupCombo);
   myMsgActionsLayout->addLayout(autoPopupLayout, 3, 0);
 
+  myAutoUrgentCheck = new QCheckBox(tr("Auto-popup urgent only"));
+  myAutoUrgentCheck->setToolTip(tr("Only auto-popup urgent messages."));
+  myMsgActionsLayout->addWidget(myAutoUrgentCheck, 4, 0);
+
   myFlashTaskbarCheck = new QCheckBox(tr("Flash taskbar"));
   myFlashTaskbarCheck->setToolTip(tr("Flash the taskbar on incoming messages"));
   myMsgActionsLayout->addWidget(myFlashTaskbarCheck, 0, 1);
@@ -308,6 +312,7 @@ void Settings::Events::load()
   myFlashAllCheck->setChecked(flash == Config::ContactList::FlashAll);
 
   myAutoPopupCombo->setCurrentIndex(chatConfig->autoPopup());
+  myAutoUrgentCheck->setChecked(chatConfig->autoPopupUrgentOnly());
   myAutoFocusCheck->setChecked(chatConfig->autoFocus());
   myFlashTaskbarCheck->setChecked(chatConfig->flashTaskbar());
   myNoSoundInActiveChatCheck->setChecked(chatConfig->noSoundInActiveChat());
@@ -362,6 +367,7 @@ void Settings::Events::apply()
     contactListConfig->setFlash(Config::ContactList::FlashNone);
 
   chatConfig->setAutoPopup(myAutoPopupCombo->currentIndex());
+  chatConfig->setAutoPopupUrgentOnly(myAutoUrgentCheck->isChecked());
   chatConfig->setAutoFocus(myAutoFocusCheck->isChecked());
   chatConfig->setFlashTaskbar(myFlashTaskbarCheck->isChecked());
   chatConfig->setNoSoundInActiveChat(myNoSoundInActiveChatCheck->isChecked());

@@ -95,6 +95,7 @@ private:
   QCheckBox* myIgnoreEmailPagerCheck;
   QLabel* myHotKeyLabel;
   ShortcutEdit* myHotKeyEdit;
+  QCheckBox* myAutoUrgentCheck;
 
   // Widget for sounds settings
   QVBoxLayout* myPageSoundsLayout;

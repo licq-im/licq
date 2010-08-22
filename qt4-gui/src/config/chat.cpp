@@ -92,6 +92,7 @@ void Config::Chat::loadConfiguration(Licq::IniFile& iniFile)
   iniFile.setSection("functions");
   iniFile.get("AutoClose", myAutoClose, true);
   iniFile.get("AutoPopup", myAutoPopup, 0);
+  iniFile.get("AutoPopupUrgentOnly", myAutoPopupUrgentOnly, false);
   iniFile.get("AutoFocus", myAutoFocus, true);
   iniFile.get("PopupAutoResponse", myPopupAutoResponse, true);
 
@@ -161,6 +162,7 @@ void Config::Chat::saveConfiguration(Licq::IniFile& iniFile) const
   iniFile.setSection("functions");
   iniFile.set("AutoClose", myAutoClose);
   iniFile.set("AutoPopup", myAutoPopup);
+  iniFile.set("AutoPopupUrgentOnly", myAutoPopupUrgentOnly);
   iniFile.set("AutoFocus", myAutoFocus);
   iniFile.set("PopupAutoResponse", myPopupAutoResponse);
 
@@ -206,6 +208,14 @@ void Config::Chat::setAutoPopup(int autoPopup)
     return;
 
   myAutoPopup = autoPopup;
+}
+
+void Config::Chat::setAutoPopupUrgentOnly(bool autoPopupUrgentOnly)
+{
+  if (autoPopupUrgentOnly == myAutoPopupUrgentOnly)
+    return;
+
+  myAutoPopupUrgentOnly = autoPopupUrgentOnly;
 }
 
 void Config::Chat::setAutoFocus(bool autoFocus)
