@@ -1126,7 +1126,6 @@ void MainWindow::showHints()
     "<li>Use the following shortcuts from the contact list:<ul>"
     "<li><tt>Ctrl-M : </tt>Toggle mini-mode</li>"
     "<li><tt>Ctrl-O : </tt>Toggle show offline users</li>"
-    "<li><tt>Ctrl-T : </tt>Toggle group show</li>"
     "<li><tt>Ctrl-X : </tt>Exit</li>"
     "<li><tt>Ctrl-H : </tt>Hide</li>"
     "<li><tt>Ctrl-I : </tt>View the next message</li>"
