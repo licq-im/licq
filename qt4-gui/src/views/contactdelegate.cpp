@@ -66,10 +66,14 @@ QSize ContactDelegate::sizeHint(const QStyleOptionViewItem& option, const QModel
   QVariant var;
   if ((var = index.data(Qt::DisplayRole)).isValid())
   {
-    QString text = var.toString();
-    size = QSize(
-        textStyle.fontMetrics.width(text),
-        textStyle.fontMetrics.height());
+    QStringList lines = var.toString().split('\n');
+    size.setHeight(textStyle.fontMetrics.height() * lines.count());
+    foreach (const QString& line, lines)
+    {
+      int w = textStyle.fontMetrics.width(line);
+      if (w > size.width())
+        size.setWidth(w);
+    }
   }
 
   // Make sure we have enough height for icons
@@ -401,8 +405,14 @@ void ContactDelegate::drawText(Parameters& arg) const
   if (arg.text.isEmpty())
     return;
 
-  QString elidedText = arg.p->fontMetrics().elidedText(
-      arg.text, arg.option.textElideMode, arg.width - 6);
+  QStringList lines = arg.text.split('\n');
+  for (int i = 0; i < lines.count(); ++i)
+  {
+    lines[i] = arg.p->fontMetrics().elidedText(
+        lines[i], arg.option.textElideMode, arg.width - 6);
+  }
+  QString elidedText = lines.join("\n");
+
   arg.p->drawText(2, 0, arg.width - 4, arg.height, arg.align, elidedText);
 
   int textWidth = arg.p->fontMetrics().width(elidedText);

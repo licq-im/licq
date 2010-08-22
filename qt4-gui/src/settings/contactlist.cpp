@@ -387,7 +387,7 @@ void Settings::ContactList::load()
   for (int i = 0; i < MAX_COLUMNCOUNT; ++i)
   {
     myColTitleEdit[i]->setText(contactListConfig->columnHeading(i));
-    myColFormatEdit[i]->setText(contactListConfig->columnFormat(i));
+    myColFormatEdit[i]->setText(QString(contactListConfig->columnFormat(i)).replace("\n", "\\n"));
     myColWidthSpin[i]->setValue(contactListConfig->columnWidth(i));
     myColAlignCombo[i]->setCurrentIndex(contactListConfig->columnAlignment(i));
 
@@ -461,7 +461,7 @@ void Settings::ContactList::apply()
   {
     contactListConfig->setColumn(i,
         myColTitleEdit[i]->text(),
-        myColFormatEdit[i]->text(),
+        myColFormatEdit[i]->text().replace("\\n", "\n"),
         myColWidthSpin[i]->value(),
         static_cast<Config::ContactList::AlignmentMode>(myColAlignCombo[i]->currentIndex()));
 
