@@ -97,6 +97,7 @@ void GroupMenu::updateGroups()
     Licq::GroupReadGuard pGroup(group);
 
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
+    name.replace("&", "&&");
 
     a = myUserGroupActions->addAction(name);
     a->setData(pGroup->id());
