@@ -3,6 +3,7 @@ set(jabber_SRCS
   handler.cpp
   jabber.cpp
   plugin.cpp
+  sessionmanager.cpp
   vcard.cpp
 )
 

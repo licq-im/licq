@@ -38,11 +38,11 @@ class RosterManager;
 }
 
 class Handler;
+class SessionManager;
 class UserToVCard;
 
 class Client : public gloox::ConnectionListener,
                public gloox::RosterListener,
-               public gloox::MessageHandler,
                public gloox::LogHandler,
                public gloox::VCardHandler
 {
@@ -54,12 +54,12 @@ public:
   int getSocket();
   void recv();
 
+  SessionManager* getSessionManager() { return mySessionManager; }
+
   void setPassword(const std::string& password);
   bool connect(unsigned status);
   bool isConnected();
   void changeStatus(unsigned status);
-  void sendMessage(const std::string& user, const std::string& message,
-    bool urgent);
   void getVCard(const std::string& user);
   void setOwnerVCard(const UserToVCard& wrapper);
   void addUser(const std::string& user, bool notify);
@@ -97,10 +97,6 @@ public:
   void handleNonrosterPresence(const gloox::Presence& presence);
   void handleRosterError(const gloox::IQ& iq);
 
-  // gloox::MessageHandler
-  void handleMessage(const gloox::Message& msg,
-                     gloox::MessageSession* session);
-
   // gloox::LogHandler
   void handleLog(gloox::LogLevel level, gloox::LogArea area,
                  const std::string& message);
@@ -113,6 +109,7 @@ public:
 
 private:
   Handler& myHandler;
+  SessionManager* mySessionManager;
   gloox::JID myJid;
   gloox::Client myClient;
   gloox::RosterManager* myRosterManager;

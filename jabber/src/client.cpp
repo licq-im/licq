@@ -23,6 +23,7 @@
 #include "client.h"
 #include "handler.h"
 #include "jabber.h"
+#include "sessionmanager.h"
 #include "vcard.h"
 
 #include <gloox/attention.h>
@@ -43,6 +44,7 @@ using Licq::gLog;
 Client::Client(Handler& handler, const std::string& username,
                const std::string& password) :
   myHandler(handler),
+  mySessionManager(NULL),
   myJid(username + "/Licq"),
   myClient(myJid, password),
   myRosterManager(myClient.rosterManager()),
@@ -50,9 +52,11 @@ Client::Client(Handler& handler, const std::string& username,
 {
   myClient.registerConnectionListener(this);
   myRosterManager->registerRosterListener(this, false);
-  myClient.registerMessageHandler(this);
   myClient.logInstance().registerLogHandler(
       gloox::LogLevelDebug, gloox::LogAreaAll, this);
+
+  mySessionManager = new SessionManager(myClient, myHandler);
+  myClient.registerMessageSessionHandler(mySessionManager);
 
   myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
@@ -71,6 +75,8 @@ Client::~Client()
 {
   myVCardManager.cancelVCardOperations(this);
   myClient.disconnect();
+
+  delete mySessionManager;
 }
 
 int Client::getSocket()
@@ -104,16 +110,6 @@ void Client::changeStatus(unsigned status)
 {
   std::string msg = myHandler.getStatusMessage(status);
   myClient.setPresence(statusToPresence(status), 0, msg);
-}
-
-void Client::sendMessage(const std::string& user, const std::string& message,
-  bool urgent)
-{
-  gloox::Message msg(gloox::Message::Chat, user, message);
-  // TODO: Only add extension if receiver supports it
-  if (urgent)
-    msg.addExtension(new gloox::Attention);
-  myClient.send(msg);
 }
 
 void Client::getVCard(const std::string& user)
@@ -288,16 +284,6 @@ void Client::handleNonrosterPresence(const gloox::Presence& /*presence*/)
 void Client::handleRosterError(const gloox::IQ& /*iq*/)
 {
   TRACE();
-}
-
-void Client::handleMessage(const gloox::Message& msg,
-                           gloox::MessageSession* /*session*/)
-{
-  const bool urgent = msg.findExtension(gloox::ExtAttention) != NULL;
-  if (!msg.body().empty())
-    myHandler.onMessage(msg.from().bare(), msg.body(), urgent);
-  else if (urgent)
-    myHandler.onMessage(msg.from().bare(), "buzz", urgent);
 }
 
 void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
