@@ -26,7 +26,6 @@
 #include "sessionmanager.h"
 #include "vcard.h"
 
-#include <gloox/attention.h>
 #include <gloox/connectiontcpclient.h>
 #include <gloox/disco.h>
 #include <gloox/message.h>
@@ -60,11 +59,6 @@ Client::Client(Handler& handler, const std::string& username,
 
   myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
-
-  // FIXME: The feature should only be announced if the user has activated it.
-  myClient.disco()->addFeature(gloox::XMLNS_ATTENTION);
-
-  myClient.registerStanzaExtension(new gloox::Attention);
 
   // TODO: Fix in a more generic way
   if (myClient.server() == "chat.facebook.com")

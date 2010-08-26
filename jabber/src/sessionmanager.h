@@ -23,19 +23,22 @@
 #ifndef SESSIONMANAGER_H
 #define SESSIONMANAGER_H
 
+#include <gloox/chatstatehandler.h>
 #include <gloox/messagehandler.h>
 #include <gloox/messagesessionhandler.h>
 #include <map>
 
 namespace gloox
 {
+class ChatStateFilter;
 class Client;
 }
 
 class Handler;
 
 class SessionManager : public gloox::MessageSessionHandler,
-                       public gloox::MessageHandler
+                       public gloox::MessageHandler,
+                       public gloox::ChatStateHandler
 {
 public:
   SessionManager(gloox::Client& client, Handler& handler);
@@ -43,6 +46,7 @@ public:
 
   void sendMessage(const std::string& user, const std::string& message,
       bool urgent);
+  void notifyTyping(const std::string& user, bool active);
 
   // gloox::MessageSessionHandler
   void handleMessageSession(gloox::MessageSession* session);
@@ -51,12 +55,23 @@ public:
   void handleMessage(const gloox::Message& message,
                      gloox::MessageSession* session);
 
+  // gloox::ChatStateHandler
+  void handleChatState(const gloox::JID& from, gloox::ChatStateType state);
+
 private:
   gloox::Client& myClient;
   Handler& myHandler;
 
-  typedef std::map<std::string, gloox::MessageSession*> Sessions;
+  struct Session
+  {
+    gloox::MessageSession* mySession;
+    gloox::ChatStateFilter* myChatStateFilter;
+  };
+
+  typedef std::map<std::string, Session> Sessions;
   Sessions mySessions;
+
+  Session& findSession(const std::string& user);
 };
 
 #endif

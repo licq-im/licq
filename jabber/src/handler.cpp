@@ -242,13 +242,10 @@ void Handler::onMessage(const std::string& from, const std::string& message,
 {
   TRACE();
 
-  if (myConvoIds.find(from) == myConvoIds.end())
-    myConvoIds[from] = myNextConvoId++;
-
   Licq::EventMsg* event = new Licq::EventMsg(
       message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, Licq::UserEvent::TimeNow,
       urgent ? unsigned(Licq::UserEvent::FlagUrgent) : 0,
-      myConvoIds[from]);
+      getConvoId(from));
 
   Licq::UserWriteGuard user(UserId(from, JABBER_PPID), true);
 
@@ -256,6 +253,23 @@ void Handler::onMessage(const std::string& from, const std::string& message,
     user->setIsTyping(false);
   if (Licq::gDaemon.addUserEvent(*user, event))
     gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *user);
+}
+
+void Handler::onNotifyTyping(const std::string& from, bool active)
+{
+  TRACE();
+
+  Licq::UserWriteGuard user(UserId(from, JABBER_PPID));
+  if (user.isLocked())
+  {
+    user->setIsTyping(active);
+
+    Licq::gDaemon.pushPluginSignal(
+        new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                               Licq::PluginSignal::UserTyping,
+                               user->id(),
+                               getConvoId(from)));
+  }
 }
 
 std::string Handler::getStatusMessage(unsigned status)
@@ -268,4 +282,12 @@ std::string Handler::getStatusMessage(unsigned status)
     return string();
 
   return o->autoResponse();
+}
+
+unsigned long Handler::getConvoId(const std::string& from)
+{
+  std::map<std::string, unsigned long>::iterator it = myConvoIds.find(from);
+  if (it == myConvoIds.end())
+    it = myConvoIds.insert(std::make_pair(from, myNextConvoId++)).first;
+  return it->second;
 }

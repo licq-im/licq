@@ -24,9 +24,14 @@
 #include "handler.h"
 
 #include <gloox/attention.h>
+#include <gloox/chatstate.h>
+#include <gloox/chatstatefilter.h>
 #include <gloox/client.h>
+#include <gloox/disco.h>
 #include <gloox/message.h>
 #include <licq/logging/log.h>
+
+#define TRACE() gLog.info("In SessionManager::%s()", __func__)
 
 using Licq::gLog;
 
@@ -34,7 +39,13 @@ SessionManager::SessionManager(gloox::Client& client, Handler& handler) :
   myClient(client),
   myHandler(handler)
 {
-  // Empty
+  // FIXME: The feature should only be announced if the user has activated it.
+  myClient.disco()->addFeature(gloox::XMLNS_ATTENTION);
+  myClient.registerStanzaExtension(new gloox::Attention);
+
+  myClient.disco()->addFeature(gloox::XMLNS_CHAT_STATES);
+  myClient.registerStanzaExtension(
+      new gloox::ChatState(gloox::ChatStateInvalid));
 }
 
 SessionManager::~SessionManager()
@@ -53,15 +64,14 @@ void SessionManager::sendMessage(
     extensions.push_back(new gloox::Attention);
   }
 
-  Sessions::iterator it = mySessions.find(user);
-  if (it == mySessions.end())
-  {
-    handleMessageSession(new gloox::MessageSession(&myClient, user));
-    it = mySessions.find(user);
-    assert(it != mySessions.end());
-  }
+  findSession(user).mySession->send(message, gloox::EmptyString, extensions);
+}
 
-  it->second->send(message, gloox::EmptyString, extensions);
+void SessionManager::notifyTyping(const std::string& user, bool active)
+{
+  const gloox::ChatStateType state =
+      active ? gloox::ChatStateComposing : gloox::ChatStatePaused;
+  findSession(user).myChatStateFilter->setChatState(state);
 }
 
 void SessionManager::handleMessageSession(gloox::MessageSession* session)
@@ -73,13 +83,20 @@ void SessionManager::handleMessageSession(gloox::MessageSession* session)
   if (it != mySessions.end())
   {
     gLog.debug("Disposing old message session for %s",
-               it->second->target().full().c_str());
-    myClient.disposeMessageSession(it->second);
+               it->second.mySession->target().full().c_str());
+    myClient.disposeMessageSession(it->second.mySession);
     mySessions.erase(it);
   }
 
-  mySessions[jid.bare()] = session;
   session->registerMessageHandler(this);
+
+  gloox::ChatStateFilter* filter = new gloox::ChatStateFilter(session);
+  filter->registerChatStateHandler(this);
+
+  Session newSession;
+  newSession.mySession = session;
+  newSession.myChatStateFilter = filter;
+  mySessions[jid.bare()] = newSession;
 }
 
 void SessionManager::handleMessage(
@@ -90,4 +107,24 @@ void SessionManager::handleMessage(
     myHandler.onMessage(message.from().bare(), message.body(), urgent);
   else if (urgent)
     myHandler.onMessage(message.from().bare(), "buzz", urgent);
+}
+
+void SessionManager::handleChatState(
+    const gloox::JID& from, gloox::ChatStateType state)
+{
+  bool active = state == gloox::ChatStateComposing;
+  myHandler.onNotifyTyping(from.bare(), active);
+}
+
+SessionManager::Session& SessionManager::findSession(const std::string& user)
+{
+  Sessions::iterator it = mySessions.find(user);
+  if (it == mySessions.end())
+  {
+    handleMessageSession(new gloox::MessageSession(&myClient, user));
+    it = mySessions.find(user);
+    assert(it != mySessions.end());
+  }
+
+  return it->second;
 }

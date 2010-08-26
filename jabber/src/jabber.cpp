@@ -147,7 +147,7 @@ void Jabber::processSignal(Licq::ProtocolSignal* signal)
       doSendMessage(static_cast<Licq::ProtoSendMessageSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalNotifyTyping:
-      gLog.info("SignalNotifyTyping not implemented");
+      doNotifyTyping(static_cast<Licq::ProtoTypingNotificationSignal*>(signal));
       break;
     case Licq::ProtocolSignal::SignalGrantAuth:
       doGrantAuth(static_cast<Licq::ProtoGrantAuthSignal*>(signal));
@@ -288,6 +288,14 @@ void Jabber::doSendMessage(Licq::ProtoSendMessageSignal* signal)
   }
 
   Licq::gDaemon.PushPluginEvent(event);
+}
+
+void Jabber::doNotifyTyping(Licq::ProtoTypingNotificationSignal* signal)
+{
+  assert(myClient != NULL);
+
+  myClient->getSessionManager()->notifyTyping(
+      signal->userId().accountId(), signal->active());
 }
 
 void Jabber::doGetInfo(Licq::ProtoRequestInfo* signal)

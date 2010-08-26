@@ -54,10 +54,13 @@ public:
 
   void onMessage(const std::string& from, const std::string& message,
     bool urgent);
+  void onNotifyTyping(const std::string& from, bool active);
 
   std::string getStatusMessage(unsigned status);
 
 private:
+  unsigned long getConvoId(const std::string& from);
+
   unsigned myStatus;
   unsigned long myNextConvoId;
   std::map<std::string, unsigned long> myConvoIds;
