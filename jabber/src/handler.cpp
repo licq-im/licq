@@ -47,7 +47,6 @@ using Licq::gUserManager;
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
 Handler::Handler() :
-  myStatus(Licq::User::OfflineStatus),
   myNextConvoId(1)
 {
   // Empty
@@ -58,17 +57,16 @@ Handler::~Handler()
   // Empty
 }
 
-void Handler::onConnect(const std::string& ip, int port)
+void Handler::onConnect(const std::string& ip, int port, unsigned status)
 {
   TRACE();
+
+  Licq::OwnerWriteGuard owner(JABBER_PPID);
+  if (owner.isLocked())
   {
-    Licq::OwnerWriteGuard owner(JABBER_PPID);
-    if (owner.isLocked())
-    {
-      owner->statusChanged(myStatus);
-      owner->SetIpPort(Licq::INetSocket::ipToInt(ip), port);
-      owner->SetTimezone(Licq::User::SystemTimezone());
-    }
+    owner->statusChanged(status);
+    owner->SetIpPort(Licq::INetSocket::ipToInt(ip), port);
+    owner->SetTimezone(Licq::User::SystemTimezone());
   }
 
   Licq::gDaemon.pushPluginSignal(
@@ -83,7 +81,7 @@ void Handler::onChangeStatus(unsigned status)
   gUserManager.ownerStatusChanged(JABBER_PPID, status);
 }
 
-void Handler::onDisconnect()
+void Handler::onDisconnect(bool authError)
 {
   TRACE();
 
@@ -101,6 +99,8 @@ void Handler::onDisconnect()
 
   Licq::gDaemon.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
+                             authError ?
+                             Licq::PluginSignal::LogoffPassword :
                              Licq::PluginSignal::LogoffRequested,
                              gUserManager.ownerUserId(JABBER_PPID)));
 }

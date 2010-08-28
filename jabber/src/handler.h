@@ -36,12 +36,9 @@ public:
   Handler();
   ~Handler();
 
-  void setStatus(unsigned status)
-  { myStatus = status; }
-
-  void onConnect(const std::string& ip, int port);
+  void onConnect(const std::string& ip, int port, unsigned status);
   void onChangeStatus(unsigned status);
-  void onDisconnect();
+  void onDisconnect(bool authError);
 
   void onUserAdded(const std::string& id, const std::string& name,
                    const std::list<std::string>& groups);
@@ -61,7 +58,6 @@ public:
 private:
   unsigned long getConvoId(const std::string& from);
 
-  unsigned myStatus;
   unsigned long myNextConvoId;
   std::map<std::string, unsigned long> myConvoIds;
 };

@@ -232,8 +232,6 @@ void Jabber::doLogon(Licq::ProtoLogonSignal* signal)
     password = owner->password();
   }
 
-  myHandler->setStatus(status);
-
   if (myClient == NULL)
     myClient = new Client(*myHandler, username, password);
   else

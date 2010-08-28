@@ -165,7 +165,8 @@ void Client::refuseAuthorization(const std::string& user)
 void Client::onConnect()
 {
   gloox::ConnectionBase* conn = myClient.connectionImpl();
-  myHandler.onConnect(conn->localInterface(), conn->localPort());
+  myHandler.onConnect(conn->localInterface(), conn->localPort(),
+                      presenceToStatus(myClient.presence().subtype()));
 }
 
 bool Client::onTLSConnect(const gloox::CertInfo& /*info*/)
@@ -173,9 +174,66 @@ bool Client::onTLSConnect(const gloox::CertInfo& /*info*/)
   return true;
 }
 
-void Client::onDisconnect(gloox::ConnectionError /*error*/)
+void Client::onDisconnect(gloox::ConnectionError error)
 {
-  myHandler.onDisconnect();
+  bool authError = false;
+
+  switch (error)
+  {
+    case gloox::ConnNoError:
+      break;
+    case gloox::ConnStreamError:
+      gLog.error("stream error (%d)", myClient.streamError());
+      break;
+    case gloox::ConnStreamVersionError:
+      gLog.error("incoming stream version not supported");
+      break;
+    case gloox::ConnStreamClosed:
+      gLog.error("connection closed by the server");
+      break;
+    case gloox::ConnProxyAuthRequired:
+    case gloox::ConnProxyAuthFailed:
+    case gloox::ConnProxyNoSupportedAuth:
+      gLog.error("proxy authentication failed");
+      authError = true;
+      break;
+    case gloox::ConnIoError:
+      gLog.error("connection I/O error");
+      break;
+    case gloox::ConnParseError:
+      gLog.error("XML parse error");
+      break;
+    case gloox::ConnConnectionRefused:
+      gLog.error("server refused connection");
+      break;
+    case gloox::ConnDnsError:
+      gLog.error("could not resolve server hostname");
+      break;
+    case gloox::ConnOutOfMemory:
+      gLog.error("out of memory");
+      break;
+    case gloox::ConnNoSupportedAuth:
+      gLog.error("no supported authentication mechanism");
+      break;
+    case gloox::ConnTlsFailed:
+      gLog.error("TLS veification failed");
+      break;
+    case gloox::ConnTlsNotAvailable:
+      gLog.error("TLS not available");
+      break;
+    case gloox::ConnCompressionFailed:
+      gLog.error("compression error");
+      break;
+    case gloox::ConnAuthenticationFailed:
+      gLog.error("authentication failed (error %d)", myClient.authError());
+      authError = true;
+      break;
+    case gloox::ConnUserDisconnected:
+      break;
+    case gloox::ConnNotConnected:
+      break;
+  }
+  myHandler.onDisconnect(authError);
 }
 
 void Client::handleItemAdded(const gloox::JID& jid)
@@ -243,14 +301,11 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
-                                const std::string& resource,
-                                gloox::Presence::PresenceType presence,
+                                const std::string& /*resource*/,
+                                gloox::Presence::PresenceType /*presence*/,
                                 const std::string& /*msg*/)
 {
   TRACE();
-
-  if (resource == myClient.resource())
-    myHandler.onChangeStatus(presenceToStatus(presence));
 }
 
 bool Client::handleSubscriptionRequest(const gloox::JID& jid,
