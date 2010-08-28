@@ -91,7 +91,7 @@ void Client::setPassword(const std::string& password)
 
 bool Client::connect(unsigned status)
 {
-  changeStatus(status);
+  changeStatus(status, false);
   return myClient.connect(false);
 }
 
@@ -100,10 +100,12 @@ bool Client::isConnected()
   return myClient.authed();
 }
 
-void Client::changeStatus(unsigned status)
+void Client::changeStatus(unsigned status, bool notifyHandler)
 {
   std::string msg = myHandler.getStatusMessage(status);
   myClient.setPresence(statusToPresence(status), 0, msg);
+  if (notifyHandler)
+    myHandler.onChangeStatus(status);
 }
 
 void Client::getVCard(const std::string& user)

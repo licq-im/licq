@@ -59,7 +59,7 @@ public:
   void setPassword(const std::string& password);
   bool connect(unsigned status);
   bool isConnected();
-  void changeStatus(unsigned status);
+  void changeStatus(unsigned status, bool notifyHandler = true);
   void getVCard(const std::string& user);
   void setOwnerVCard(const UserToVCard& wrapper);
   void addUser(const std::string& user, bool notify);
