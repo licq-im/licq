@@ -39,11 +39,11 @@
 
 using namespace Jabber;
 
-using std::string;
 using Licq::OnEventManager;
 using Licq::UserId;
 using Licq::gOnEventManager;
 using Licq::gUserManager;
+using std::string;
 
 #define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
 
@@ -53,12 +53,7 @@ Handler::Handler() :
   // Empty
 }
 
-Handler::~Handler()
-{
-  // Empty
-}
-
-void Handler::onConnect(const std::string& ip, int port, unsigned status)
+void Handler::onConnect(const string& ip, int port, unsigned status)
 {
   TRACE();
 
@@ -106,9 +101,8 @@ void Handler::onDisconnect(bool authError)
                              gUserManager.ownerUserId(JABBER_PPID)));
 }
 
-void Handler::onUserAdded(const std::string& id,
-                          const std::string& name,
-                          const std::list<std::string>& groups)
+void Handler::onUserAdded(
+    const string& id, const string& name, const std::list<string>& groups)
 {
   TRACE();
 
@@ -125,7 +119,7 @@ void Handler::onUserAdded(const std::string& id,
     user->setAlias(name);
 
   Licq::UserGroupList glist;
-  for (std::list<std::string>::const_iterator it = groups.begin();
+  for (std::list<string>::const_iterator it = groups.begin();
       it != groups.end(); ++it)
   {
     int groupId = gUserManager.GetGroupFromName(*it);
@@ -156,7 +150,7 @@ void Handler::onUserAdded(const std::string& id,
     Licq::gProtocolManager.requestUserInfo(userId);
 }
 
-void Handler::onUserRemoved(const std::string& id)
+void Handler::onUserRemoved(const string& id)
 {
   TRACE();
 
@@ -197,7 +191,7 @@ void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
   }
 }
 
-void Handler::onRosterReceived(const std::set<std::string>& ids)
+void Handler::onRosterReceived(const std::set<string>& ids)
 {
   TRACE();
 
@@ -217,16 +211,16 @@ void Handler::onRosterReceived(const std::set<std::string>& ids)
     gUserManager.removeUser(*it, false);
 }
 
-void Handler::onUserAuthorizationRequest(const std::string& id,
-                                         const std::string& message)
+void Handler::onUserAuthorizationRequest(
+    const string& id, const string& message)
 {
   TRACE();
 
   Licq::EventAuthRequest* event = new Licq::EventAuthRequest(
       UserId(id, JABBER_PPID),
-      std::string(), // alias
-      std::string(), std::string(), // first and last name
-      std::string(), // email
+      string(), // alias
+      string(), string(), // first and last name
+      string(), // email
       message,
       ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
@@ -238,8 +232,7 @@ void Handler::onUserAuthorizationRequest(const std::string& id,
   }
 }
 
-void Handler::onMessage(const std::string& from, const std::string& message,
-  bool urgent)
+void Handler::onMessage(const string& from, const string& message, bool urgent)
 {
   TRACE();
 
@@ -256,7 +249,7 @@ void Handler::onMessage(const std::string& from, const std::string& message,
     gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *user);
 }
 
-void Handler::onNotifyTyping(const std::string& from, bool active)
+void Handler::onNotifyTyping(const string& from, bool active)
 {
   TRACE();
 
@@ -273,7 +266,7 @@ void Handler::onNotifyTyping(const std::string& from, bool active)
   }
 }
 
-std::string Handler::getStatusMessage(unsigned status)
+string Handler::getStatusMessage(unsigned status)
 {
   if ((status & Licq::User::MessageStatuses) == 0)
     return string();
@@ -285,9 +278,9 @@ std::string Handler::getStatusMessage(unsigned status)
   return o->autoResponse();
 }
 
-unsigned long Handler::getConvoId(const std::string& from)
+unsigned long Handler::getConvoId(const string& from)
 {
-  std::map<std::string, unsigned long>::iterator it = myConvoIds.find(from);
+  std::map<string, unsigned long>::iterator it = myConvoIds.find(from);
   if (it == myConvoIds.end())
     it = myConvoIds.insert(std::make_pair(from, myNextConvoId++)).first;
   return it->second;

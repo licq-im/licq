@@ -23,6 +23,7 @@
 #ifndef JABBER_HANDLER_H
 #define JABBER_HANDLER_H
 
+#include <boost/noncopyable.hpp>
 #include <list>
 #include <map>
 #include <set>
@@ -33,11 +34,10 @@ namespace Jabber
 
 class VCardToUser;
 
-class Handler
+class Handler : private boost::noncopyable
 {
 public:
   Handler();
-  ~Handler();
 
   void onConnect(const std::string& ip, int port, unsigned status);
   void onChangeStatus(unsigned status);

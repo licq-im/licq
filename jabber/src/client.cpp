@@ -41,10 +41,10 @@ using namespace Jabber;
 
 using Licq::User;
 using Licq::gLog;
+using std::string;
 
 Client::Client(const Config& config, Handler& handler,
-               const std::string& username,
-               const std::string& password) :
+               const string& username, const string& password) :
   myHandler(handler),
   mySessionManager(NULL),
   myJid(username + "/" + config.getResource()),
@@ -89,7 +89,7 @@ void Client::recv()
   myClient.recv();
 }
 
-void Client::setPassword(const std::string& password)
+void Client::setPassword(const string& password)
 {
   myClient.setPassword(password);
 }
@@ -107,13 +107,13 @@ bool Client::isConnected()
 
 void Client::changeStatus(unsigned status, bool notifyHandler)
 {
-  std::string msg = myHandler.getStatusMessage(status);
+  string msg = myHandler.getStatusMessage(status);
   myClient.setPresence(statusToPresence(status), 0, msg);
   if (notifyHandler)
     myHandler.onChangeStatus(status);
 }
 
-void Client::getVCard(const std::string& user)
+void Client::getVCard(const string& user)
 {
   myVCardManager.fetchVCard(gloox::JID(user), this);
 }
@@ -124,7 +124,7 @@ void Client::setOwnerVCard(const UserToVCard& wrapper)
   myVCardManager.storeVCard(card, this);
 }
 
-void Client::addUser(const std::string& user, bool notify)
+void Client::addUser(const string& user, bool notify)
 {
   if (notify)
     myRosterManager->subscribe(gloox::JID(user));
@@ -132,8 +132,8 @@ void Client::addUser(const std::string& user, bool notify)
     myRosterManager->add(gloox::JID(user), user, gloox::StringList());
 }
 
-void Client::changeUserGroups(const std::string& user,
-                              const gloox::StringList& groups)
+void Client::changeUserGroups(
+    const string& user, const gloox::StringList& groups)
 {
   gloox::RosterItem* item = myRosterManager->getRosterItem(gloox::JID(user));
   if (item != NULL)
@@ -143,12 +143,12 @@ void Client::changeUserGroups(const std::string& user,
   }
 }
 
-void Client::removeUser(const std::string& user)
+void Client::removeUser(const string& user)
 {
   myRosterManager->remove(gloox::JID(user));
 }
 
-void Client::renameUser(const std::string& user, const std::string& newName)
+void Client::renameUser(const string& user, const string& newName)
 {
   gloox::RosterItem* item = myRosterManager->getRosterItem(gloox::JID(user));
   if (item != NULL)
@@ -158,13 +158,13 @@ void Client::renameUser(const std::string& user, const std::string& newName)
   }
 }
 
-void Client::grantAuthorization(const std::string& user)
+void Client::grantAuthorization(const string& user)
 {
   myRosterManager->ackSubscriptionRequest(gloox::JID(user), true);
   addUser(user, true);
 }
 
-void Client::refuseAuthorization(const std::string& user)
+void Client::refuseAuthorization(const string& user)
 {
   myRosterManager->ackSubscriptionRequest(gloox::JID(user), false);
 }
@@ -284,7 +284,7 @@ void Client::handleRoster(const gloox::Roster& roster)
 {
   TRACE();
 
-  std::set<std::string> jidlist;
+  std::set<string> jidlist;
   gloox::Roster::const_iterator it;
 
   for (it = roster.begin(); it != roster.end(); ++it)
@@ -297,9 +297,9 @@ void Client::handleRoster(const gloox::Roster& roster)
 }
 
 void Client::handleRosterPresence(const gloox::RosterItem& item,
-                                  const std::string& /*resource*/,
+                                  const string& /*resource*/,
                                   gloox::Presence::PresenceType presence,
-                                  const std::string& /*msg*/)
+                                  const string& /*msg*/)
 {
   TRACE();
 
@@ -308,15 +308,15 @@ void Client::handleRosterPresence(const gloox::RosterItem& item,
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
-                                const std::string& /*resource*/,
+                                const string& /*resource*/,
                                 gloox::Presence::PresenceType /*presence*/,
-                                const std::string& /*msg*/)
+                                const string& /*msg*/)
 {
   TRACE();
 }
 
-bool Client::handleSubscriptionRequest(const gloox::JID& jid,
-                                       const std::string& msg)
+bool Client::handleSubscriptionRequest(
+    const gloox::JID& jid, const string& msg)
 {
   TRACE();
 
@@ -324,8 +324,8 @@ bool Client::handleSubscriptionRequest(const gloox::JID& jid,
   return false; // Ignored by gloox
 }
 
-bool Client::handleUnsubscriptionRequest(const gloox::JID& /*jid*/,
-                                         const std::string& /*msg*/)
+bool Client::handleUnsubscriptionRequest(
+    const gloox::JID& /*jid*/, const string& /*msg*/)
 {
   TRACE();
 
@@ -343,7 +343,7 @@ void Client::handleRosterError(const gloox::IQ& /*iq*/)
 }
 
 void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
-                       const std::string& message)
+                       const string& message)
 {
   const char* areaStr = "Area ???";
   switch (area)

@@ -23,15 +23,10 @@
 #ifndef JABBER_VCARD_H
 #define JABBER_VCARD_H
 
-namespace Licq
-{
-class User;
-}
+#include <boost/noncopyable.hpp>
 
-namespace gloox
-{
-class VCard;
-}
+namespace Licq { class User; }
+namespace gloox { class VCard; }
 
 namespace Jabber
 {
@@ -39,20 +34,20 @@ namespace Jabber
 /**
  * Converts between a Licq user and a gloox vcard.
  */
-class UserToVCard
+class UserToVCard : private boost::noncopyable
 {
 public:
-  UserToVCard(const Licq::User* user) : myUser(user) { /* Empty */ }
+  explicit UserToVCard(const Licq::User* user) : myUser(user) {}
   gloox::VCard* createVCard() const;
 
 private:
   const Licq::User* myUser;
 };
 
-class VCardToUser
+class VCardToUser : private boost::noncopyable
 {
 public:
-  VCardToUser(const gloox::VCard* vcard) : myVCard(vcard) { /* Empty */ }
+  explicit VCardToUser(const gloox::VCard* vcard) : myVCard(vcard) {}
   bool updateUser(Licq::User* user) const;
 
 private:

@@ -23,6 +23,7 @@
 #ifndef JABBER_CLIENT_H
 #define JABBER_CLIENT_H
 
+#include <boost/noncopyable.hpp>
 #include <gloox/client.h>
 #include <gloox/connectionlistener.h>
 #include <gloox/loghandler.h>
@@ -45,7 +46,8 @@ class Handler;
 class SessionManager;
 class UserToVCard;
 
-class Client : public gloox::ConnectionListener,
+class Client : private boost::noncopyable,
+               public gloox::ConnectionListener,
                public gloox::RosterListener,
                public gloox::LogHandler,
                public gloox::VCardHandler

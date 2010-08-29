@@ -23,6 +23,8 @@
 #ifndef JABBER_PLUGIN_H
 #define JABBER_PLUGIN_H
 
+#include <boost/noncopyable.hpp>
+
 namespace Licq
 {
 class ProtoAddUserSignal;
@@ -47,10 +49,10 @@ class Client;
 class Config;
 class Handler;
 
-class Plugin
+class Plugin : private boost::noncopyable
 {
 public:
-  Plugin(const Config& config);
+  explicit Plugin(const Config& config);
   ~Plugin();
 
   int run(int pipe);

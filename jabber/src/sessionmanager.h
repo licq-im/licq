@@ -23,6 +23,7 @@
 #ifndef JABBER_SESSIONMANAGER_H
 #define JABBER_SESSIONMANAGER_H
 
+#include <boost/noncopyable.hpp>
 #include <gloox/chatstatehandler.h>
 #include <gloox/messagehandler.h>
 #include <gloox/messagesessionhandler.h>
@@ -39,7 +40,8 @@ namespace Jabber
 
 class Handler;
 
-class SessionManager : public gloox::MessageSessionHandler,
+class SessionManager : private boost::noncopyable,
+                       public gloox::MessageSessionHandler,
                        public gloox::MessageHandler,
                        public gloox::ChatStateHandler
 {

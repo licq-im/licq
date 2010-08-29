@@ -34,6 +34,7 @@ class Config
 public:
   explicit Config(const std::string& filename);
 
+  // Network settings
   int getPort() const { return myPort; }
   const std::string& getServer() const { return myServer; }
   gloox::TLSPolicy getTlsPolicy() const { return myTlsPolicy; }
