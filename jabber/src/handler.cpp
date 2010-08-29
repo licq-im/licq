@@ -45,7 +45,7 @@ using Licq::gOnEventManager;
 using Licq::gUserManager;
 using std::string;
 
-#define TRACE() Licq::gLog.info("In Handler::%s()", __func__)
+#define TRACE() Licq::gLog.debug("In Handler::%s()", __func__)
 
 Handler::Handler() :
   myNextConvoId(1)

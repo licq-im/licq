@@ -35,7 +35,7 @@
 #include <licq/logging/log.h>
 #include <licq/licqversion.h>
 
-#define TRACE() gLog.info("In Client::%s()", __func__)
+#define TRACE() gLog.debug("In Client::%s()", __func__)
 
 using namespace Jabber;
 
@@ -407,10 +407,10 @@ void Client::handleLog(gloox::LogLevel level, gloox::LogArea area,
 
   switch (level)
   {
-    default:
     case gloox::LogLevelDebug:
-      gLog.info("[%s] %s", areaStr, message.c_str());
+      gLog.debug("[%s] %s", areaStr, message.c_str());
       break;
+    default:
     case gloox::LogLevelWarning:
       gLog.warning("[%s] %s", areaStr, message.c_str());
       break;

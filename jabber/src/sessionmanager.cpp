@@ -31,7 +31,7 @@
 #include <gloox/message.h>
 #include <licq/logging/log.h>
 
-#define TRACE() gLog.info("In SessionManager::%s()", __func__)
+#define TRACE() gLog.debug("In SessionManager::%s()", __func__)
 
 using namespace Jabber;
 
