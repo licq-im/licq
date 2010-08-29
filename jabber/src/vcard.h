@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef VCARD_H
-#define VCARD_H
+#ifndef JABBER_VCARD_H
+#define JABBER_VCARD_H
 
 namespace Licq
 {
@@ -32,6 +32,9 @@ namespace gloox
 {
 class VCard;
 }
+
+namespace Jabber
+{
 
 /**
  * Converts between a Licq user and a gloox vcard.
@@ -55,5 +58,7 @@ public:
 private:
   const gloox::VCard* myVCard;
 };
+
+} // namespace Jabber
 
 #endif

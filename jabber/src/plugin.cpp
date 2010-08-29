@@ -20,53 +20,361 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
-#include "jabber.h"
-#include "pluginversion.h"
+#include "client.h"
+#include "handler.h"
+#include "plugin.h"
+#include "sessionmanager.h"
+#include "vcard.h"
 
-#include <licq/pluginmanager.h>
-#include <licq/protocolbase.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
+#include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
+#include <licq/event.h>
+#include <licq/logging/log.h>
+#include <licq/plugin.h>
+#include <licq/protocolsignal.h>
+#include <licq/userevents.h>
 
-using Licq::gPluginManager;
+#include <sys/select.h>
 
-char* LProto_Name()
+using namespace Jabber;
+
+using Licq::gLog;
+using std::string;
+
+Plugin::Plugin(const Config& config) :
+  myConfig(config),
+  myHandler(NULL),
+  myDoRun(false),
+  myClient(NULL)
 {
-  static char name[] = "Jabber";
-  return name;
+  gLog.debug("Using gloox version %s", gloox::GLOOX_VERSION.c_str());
+  myHandler = new Handler();
 }
 
-char* LProto_Version()
+Plugin::~Plugin()
 {
-  static char version[] = PLUGIN_VERSION_STRING;
-  return version;
+  delete myClient;
+  delete myHandler;
 }
 
-char* LProto_PPID()
+int Plugin::run(int pipe)
 {
-  static char ppid[] = "XMPP";
-  return ppid;
+  fd_set readFds;
+
+  myDoRun = (pipe != -1);
+  while (myDoRun)
+  {
+    FD_ZERO(&readFds);
+    FD_SET(pipe, &readFds);
+    int nfds = pipe + 1;
+
+    int sock = -1;
+    if (myClient != NULL)
+    {
+      sock = myClient->getSocket();
+      if (sock != -1)
+      {
+        FD_SET(sock, &readFds);
+        if (sock > pipe)
+          nfds = sock + 1;
+      }
+    }
+
+    if (::select(nfds, &readFds, NULL, NULL, NULL) > 0)
+    {
+      if (sock != -1 && FD_ISSET(sock, &readFds))
+        myClient->recv();
+      if (FD_ISSET(pipe, &readFds))
+        processPipe(pipe);
+    }
+  }
+
+  return 0;
 }
 
-bool LProto_Init()
+void Plugin::processPipe(int pipe)
 {
-  return true;
+  char ch;
+  ::read(pipe, &ch, sizeof(ch));
+
+  switch (ch)
+  {
+    case Licq::ProtocolPlugin::PipeSignal:
+    {
+      Licq::ProtocolSignal* signal = Licq::gDaemon.PopProtoSignal();
+      processSignal(signal);
+      delete signal;
+      break;
+    }
+    case Licq::ProtocolPlugin::PipeShutdown:
+      myDoRun = false;
+      break;
+    default:
+      gLog.error("Unkown command %c", ch);
+      break;
+  }
 }
 
-unsigned long LProto_SendFuncs()
+void Plugin::processSignal(Licq::ProtocolSignal* signal)
 {
-  return Licq::ProtocolPlugin::CanSendMsg
-      | Licq::ProtocolPlugin::CanHoldStatusMsg
-      | Licq::ProtocolPlugin::CanSendAuth;
-  // FIXME: Currently only works for ICQ
-  // | Licq::ProtocolPlugin::CanSendAuthReq;
+  assert(signal != NULL);
+
+  gLog.info("Got signal %u", signal->signal());
+  switch (signal->signal())
+  {
+    case Licq::ProtocolSignal::SignalLogon:
+      doLogon(static_cast<Licq::ProtoLogonSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalLogoff:
+      doLogoff();
+      break;
+    case Licq::ProtocolSignal::SignalChangeStatus:
+      doChangeStatus(static_cast<Licq::ProtoChangeStatusSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalAddUser:
+      doAddUser(static_cast<Licq::ProtoAddUserSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalRemoveUser:
+      doRemoveUser(static_cast<Licq::ProtoRemoveUserSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalRenameUser:
+      doRenameUser(static_cast<Licq::ProtoRenameUserSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalChangeUserGroups:
+      doChangeUserGroups(
+          static_cast<Licq::ProtoChangeUserGroupsSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalSendMessage:
+      doSendMessage(static_cast<Licq::ProtoSendMessageSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalNotifyTyping:
+      doNotifyTyping(static_cast<Licq::ProtoTypingNotificationSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalGrantAuth:
+      doGrantAuth(static_cast<Licq::ProtoGrantAuthSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalRefuseAuth:
+      doRefuseAuth(static_cast<Licq::ProtoRefuseAuthSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalRequestInfo:
+      doGetInfo(static_cast<Licq::ProtoRequestInfo*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalUpdateInfo:
+      doUpdateInfo(static_cast<Licq::ProtoUpdateInfoSignal*>(signal));
+      break;
+    case Licq::ProtocolSignal::SignalRequestPicture:
+      gLog.info("SignalRequestPicture not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalBlockUser:
+      gLog.info("SignalBlockUser not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalUnblockUser:
+      gLog.info("SignalUnblockUser not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalAcceptUser:
+      gLog.info("SignalAcceptUser not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalUnacceptUser:
+      gLog.info("SignalUnacceptUser not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalIgnoreUser:
+      gLog.info("SignalIgnoreUser not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalUnignoreUser:
+      gLog.info("SignalUnignoreUser not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalSendFile:
+      gLog.info("SignalSendFile not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalSendChat:
+      gLog.info("SignalSendChat not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalCancelEvent:
+      gLog.info("SignalCancelEvent not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalSendReply:
+      gLog.info("SignalSendReply not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalOpenedWindow:
+      gLog.info("SignalOpenedWindow not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalClosedWindow:
+      gLog.info("SignalClosedWindow not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalOpenSecure:
+      gLog.info("SignalOpenSecure not implemented");
+      break;
+    case Licq::ProtocolSignal::SignalCloseSecure:
+      gLog.info("SignalCloseSecure not implemented");
+      break;
+    default:
+      gLog.error("Unkown signal %u", signal->signal());
+      break;
+  }
 }
 
-int LProto_Main()
+void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
 {
-  Config config("licq_jabber.conf");
+  unsigned status = signal->status();
+  if (status == Licq::User::OfflineStatus)
+    return;
 
-  int pipe = gPluginManager.registerProtocolPlugin();
-  int res = Jabber(config).run(pipe);
-  gPluginManager.unregisterProtocolPlugin();
-  return res;
+  string username;
+  string password;
+  {
+    Licq::OwnerReadGuard owner(JABBER_PPID);
+    if (!owner.isLocked())
+    {
+      gLog.error("No owner set");
+      return;
+    }
+
+    username = owner->accountId();
+    password = owner->password();
+  }
+
+  if (myClient == NULL)
+    myClient = new Client(myConfig, *myHandler, username, password);
+  else
+    myClient->setPassword(password);
+
+  if (!myClient->isConnected())
+  {
+    if (!myClient->connect(status))
+    {
+      delete myClient;
+      myClient = NULL;
+      return;
+    }
+  }
+}
+
+void Plugin::doChangeStatus(Licq::ProtoChangeStatusSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->changeStatus(signal->status());
+}
+
+void Plugin::doLogoff()
+{
+  if (myClient == NULL)
+    return;
+
+  delete myClient;
+  myClient = NULL;
+}
+
+void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
+{
+  assert(myClient != NULL);
+
+  myClient->getSessionManager()->sendMessage(
+      signal->userId().accountId(), signal->message(), signal->flags() & 0x40);
+
+  Licq::EventMsg* message = new Licq::EventMsg(
+      signal->message().c_str(), 0, Licq::UserEvent::TimeNow, 0);
+  message->setIsReceiver(false);
+
+  Licq::Event* event = new Licq::Event(signal->eventId(), 0, NULL,
+      Licq::Event::ConnectServer, signal->userId(), message);
+  event->thread_plugin = signal->callerThread();
+  event->m_eResult = Licq::Event::ResultAcked;
+
+  if (event->m_pUserEvent)
+  {
+    Licq::UserWriteGuard user(signal->userId());
+    event->m_pUserEvent->AddToHistory(*user, false);
+  }
+
+  Licq::gDaemon.PushPluginEvent(event);
+}
+
+void Plugin::doNotifyTyping(Licq::ProtoTypingNotificationSignal* signal)
+{
+  assert(myClient != NULL);
+
+  myClient->getSessionManager()->notifyTyping(
+      signal->userId().accountId(), signal->active());
+}
+
+void Plugin::doGetInfo(Licq::ProtoRequestInfo* signal)
+{
+  assert(myClient != NULL);
+  myClient->getVCard(signal->userId().accountId());
+}
+
+void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
+{
+  assert(myClient != NULL);
+  Licq::OwnerReadGuard owner(JABBER_PPID);
+  if (!owner.isLocked())
+  {
+    gLog.error("No owner set");
+    return;
+  }
+
+  myClient->setOwnerVCard(UserToVCard(*owner));
+}
+
+void Plugin::doAddUser(Licq::ProtoAddUserSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->addUser(signal->userId().accountId(), signal->authRequired());
+}
+
+void Plugin::doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal)
+{
+  assert(myClient != NULL);
+  const Licq::UserId userId = signal->userId();
+
+  // Get names of all group user is member of
+  gloox::StringList groupNames;
+  {
+    Licq::UserReadGuard u(userId);
+    if (!u.isLocked())
+      return;
+    const Licq::UserGroupList groups = u->GetGroups();
+    for (Licq::UserGroupList::const_iterator i = groups.begin();
+         i != groups.end(); ++i)
+    {
+      string groupName = Licq::gUserManager. GetGroupNameFromGroup(*i);
+      if (!groupName.empty())
+        groupNames.push_back(groupName);
+    }
+  }
+  myClient->changeUserGroups(userId.accountId(), groupNames);
+}
+
+void Plugin::doRemoveUser(Licq::ProtoRemoveUserSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->removeUser(signal->userId().accountId());
+}
+
+void Plugin::doRenameUser(Licq::ProtoRenameUserSignal* signal)
+{
+  assert(myClient != NULL);
+  string newName;
+  {
+    Licq::UserReadGuard u(signal->userId());
+    if (!u.isLocked())
+      return;
+    newName = u->getAlias();
+  }
+
+  myClient->renameUser(signal->userId().accountId(), newName);
+}
+
+void Plugin::doGrantAuth(Licq::ProtoGrantAuthSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->grantAuthorization(signal->userId().accountId());
+}
+
+void Plugin::doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->refuseAuthorization(signal->userId().accountId());
 }

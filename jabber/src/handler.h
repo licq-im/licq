@@ -20,13 +20,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef HANDLER_H
-#define HANDLER_H
+#ifndef JABBER_HANDLER_H
+#define JABBER_HANDLER_H
 
 #include <list>
 #include <map>
 #include <set>
 #include <string>
+
+namespace Jabber
+{
 
 class VCardToUser;
 
@@ -61,5 +64,7 @@ private:
   unsigned long myNextConvoId;
   std::map<std::string, unsigned long> myConvoIds;
 };
+
+} // namespace Jabber
 
 #endif

@@ -28,7 +28,7 @@
 class CMSN;
 class COscarService;
 class IcqProtocol;
-class Jabber;
+namespace Jabber { class Plugin; }
 void* ProcessRunningEvent_Client_tep(void* p);
 void* ProcessRunningEvent_Server_tep(void* p);
 void* OscarServiceSendQueue_tep(void* p);
@@ -291,8 +291,8 @@ protected:
   friend class ::COscarService;
   friend class ::CMSN;
   friend class ::IcqProtocol;
-  friend class ::Jabber;
-friend class LicqDaemon::PluginEventHandler;
+  friend class Jabber::Plugin;
+  friend class LicqDaemon::PluginEventHandler;
   friend void* ::ProcessRunningEvent_Client_tep(void* p);
   friend void* ::ProcessRunningEvent_Server_tep(void* p);
   friend void* ::OscarServiceSendQueue_tep(void* p);

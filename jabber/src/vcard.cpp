@@ -28,6 +28,8 @@
 #include <iomanip>
 #include <sstream>
 
+using namespace Jabber;
+
 gloox::VCard* UserToVCard::createVCard() const
 {
   gloox::VCard* card = new gloox::VCard;

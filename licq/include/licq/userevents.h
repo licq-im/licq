@@ -29,7 +29,7 @@
 
 class CMSN;
 class IcqProtocol;
-class Jabber;
+namespace Jabber { class Plugin; }
 
 namespace LicqDaemon
 {
@@ -128,7 +128,7 @@ protected:
   friend class ::IcqProtocol;
   friend class LicqDaemon::Daemon;
   friend class ::CMSN;
-  friend class ::Jabber;
+  friend class Jabber::Plugin;
   friend class LicqDaemon::UserHistory;
   friend class User;
 };

@@ -23,7 +23,6 @@
 #include "client.h"
 #include "config.h"
 #include "handler.h"
-#include "jabber.h"
 #include "sessionmanager.h"
 #include "vcard.h"
 
@@ -36,7 +35,9 @@
 #include <licq/logging/log.h>
 #include <licq/licqversion.h>
 
-#define TRACE() Licq::gLog.info("In Client::%s()", __func__)
+#define TRACE() gLog.info("In Client::%s()", __func__)
+
+using namespace Jabber;
 
 using Licq::User;
 using Licq::gLog;

@@ -24,6 +24,8 @@
 
 #include <licq/inifile.h>
 
+using namespace Jabber;
+
 Config::Config(const std::string& filename) :
   myPort(-1),
   myTlsPolicy(gloox::TLSOptional),

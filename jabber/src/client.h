@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#ifndef JABBER_CLIENT_H
+#define JABBER_CLIENT_H
 
 #include <gloox/client.h>
 #include <gloox/connectionlistener.h>
@@ -36,6 +36,9 @@ namespace gloox
 class Client;
 class RosterManager;
 }
+
+namespace Jabber
+{
 
 class Config;
 class Handler;
@@ -119,5 +122,7 @@ private:
   unsigned presenceToStatus(gloox::Presence::PresenceType presence);
   gloox::Presence::PresenceType statusToPresence(unsigned status);
 };
+
+} // namespace Jabber
 
 #endif

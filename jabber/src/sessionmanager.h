@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef SESSIONMANAGER_H
-#define SESSIONMANAGER_H
+#ifndef JABBER_SESSIONMANAGER_H
+#define JABBER_SESSIONMANAGER_H
 
 #include <gloox/chatstatehandler.h>
 #include <gloox/messagehandler.h>
@@ -33,6 +33,9 @@ namespace gloox
 class ChatStateFilter;
 class Client;
 }
+
+namespace Jabber
+{
 
 class Handler;
 
@@ -73,5 +76,7 @@ private:
 
   Session& findSession(const std::string& user);
 };
+
+} // namespace Jabber
 
 #endif

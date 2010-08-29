@@ -20,32 +20,51 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef JABBER_CONFIG_H
-#define JABBER_CONFIG_H
+#include "config.h"
+#include "plugin.h"
+#include "pluginversion.h"
 
-#include <gloox/gloox.h>
-#include <string>
+#include <licq/pluginmanager.h>
+#include <licq/protocolbase.h>
 
-namespace Jabber
+char* LProto_Name()
 {
+  static char name[] = "Jabber";
+  return name;
+}
 
-class Config
+char* LProto_Version()
 {
-public:
-  explicit Config(const std::string& filename);
+  static char version[] = PLUGIN_VERSION_STRING;
+  return version;
+}
 
-  int getPort() const { return myPort; }
-  const std::string& getServer() const { return myServer; }
-  gloox::TLSPolicy getTlsPolicy() const { return myTlsPolicy; }
-  const std::string& getResource() const { return myResource; }
+char* LProto_PPID()
+{
+  static char ppid[] = "XMPP";
+  return ppid;
+}
 
-private:
-  int myPort;
-  std::string myServer;
-  gloox::TLSPolicy myTlsPolicy;
-  std::string myResource;
-};
+bool LProto_Init()
+{
+  return true;
+}
 
-} // namespace Jabber
+unsigned long LProto_SendFuncs()
+{
+  return Licq::ProtocolPlugin::CanSendMsg
+      | Licq::ProtocolPlugin::CanHoldStatusMsg
+      | Licq::ProtocolPlugin::CanSendAuth;
+  // FIXME: Currently only works for ICQ
+  // | Licq::ProtocolPlugin::CanSendAuthReq;
+}
 
-#endif
+int LProto_Main()
+{
+  Jabber::Config config("licq_jabber.conf");
+
+  int pipe = Licq::gPluginManager.registerProtocolPlugin();
+  int res = Jabber::Plugin(config).run(pipe);
+  Licq::gPluginManager.unregisterProtocolPlugin();
+  return res;
+}

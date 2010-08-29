@@ -21,7 +21,6 @@
  */
 
 #include "handler.h"
-#include "jabber.h"
 #include "vcard.h"
 
 #include <boost/foreach.hpp>
@@ -37,6 +36,8 @@
 #include <licq/protocolmanager.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>
+
+using namespace Jabber;
 
 using std::string;
 using Licq::OnEventManager;

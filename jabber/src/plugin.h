@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef JABBER_H
-#define JABBER_H
+#ifndef JABBER_PLUGIN_H
+#define JABBER_PLUGIN_H
 
 namespace Licq
 {
@@ -40,15 +40,18 @@ class ProtoSendMessageSignal;
 class ProtocolSignal;
 }
 
+namespace Jabber
+{
+
 class Client;
 class Config;
 class Handler;
 
-class Jabber
+class Plugin
 {
 public:
-  Jabber(const Config& config);
-  ~Jabber();
+  Plugin(const Config& config);
+  ~Plugin();
 
   int run(int pipe);
 
@@ -75,5 +78,7 @@ private:
   bool myDoRun;
   Client* myClient;
 };
+
+} // namespace Jabber
 
 #endif

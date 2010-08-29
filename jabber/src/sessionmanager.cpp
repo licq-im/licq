@@ -33,6 +33,8 @@
 
 #define TRACE() gLog.info("In SessionManager::%s()", __func__)
 
+using namespace Jabber;
+
 using Licq::gLog;
 
 SessionManager::SessionManager(gloox::Client& client, Handler& handler) :
