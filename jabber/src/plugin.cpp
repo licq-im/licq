@@ -315,7 +315,8 @@ void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
     return;
   }
 
-  myClient->setOwnerVCard(UserToVCard(*owner));
+  UserToVCard vcard(*owner);
+  myClient->setOwnerVCard(vcard);
 }
 
 void Plugin::doAddUser(Licq::ProtoAddUserSignal* signal)
