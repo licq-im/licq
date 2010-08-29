@@ -21,6 +21,7 @@
  */
 
 #include "client.h"
+#include "config.h"
 #include "handler.h"
 #include "jabber.h"
 #include "sessionmanager.h"
@@ -40,11 +41,12 @@
 using Licq::User;
 using Licq::gLog;
 
-Client::Client(Handler& handler, const std::string& username,
+Client::Client(const Config& config, Handler& handler,
+               const std::string& username,
                const std::string& password) :
   myHandler(handler),
   mySessionManager(NULL),
-  myJid(username + "/Licq"),
+  myJid(username + "/" + config.getResource()),
   myClient(myJid, password),
   myRosterManager(myClient.rosterManager()),
   myVCardManager(&myClient)
@@ -60,9 +62,11 @@ Client::Client(Handler& handler, const std::string& username,
   myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
 
-  // TODO: Fix in a more generic way
-  if (myClient.server() == "chat.facebook.com")
-    myClient.setTls(gloox::TLSDisabled);
+  if (!config.getServer().empty())
+    myClient.setServer(config.getServer());
+  if (config.getPort() != -1)
+    myClient.setPort(config.getPort());
+  myClient.setTls(config.getTlsPolicy());
 }
 
 Client::~Client()

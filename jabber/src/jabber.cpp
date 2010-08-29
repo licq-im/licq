@@ -41,7 +41,8 @@
 using Licq::gLog;
 using std::string;
 
-Jabber::Jabber() :
+Jabber::Jabber(const Config& config) :
+  myConfig(config),
   myHandler(NULL),
   myDoRun(false),
   myClient(NULL)
@@ -233,7 +234,7 @@ void Jabber::doLogon(Licq::ProtoLogonSignal* signal)
   }
 
   if (myClient == NULL)
-    myClient = new Client(*myHandler, username, password);
+    myClient = new Client(myConfig, *myHandler, username, password);
   else
     myClient->setPassword(password);
 

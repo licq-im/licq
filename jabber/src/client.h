@@ -37,6 +37,7 @@ class Client;
 class RosterManager;
 }
 
+class Config;
 class Handler;
 class SessionManager;
 class UserToVCard;
@@ -47,7 +48,7 @@ class Client : public gloox::ConnectionListener,
                public gloox::VCardHandler
 {
 public:
-  Client(Handler& handler, const std::string& user,
+  Client(const Config& config, Handler& handler, const std::string& user,
          const std::string& password);
   virtual ~Client();
 

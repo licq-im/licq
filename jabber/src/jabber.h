@@ -41,12 +41,13 @@ class ProtocolSignal;
 }
 
 class Client;
+class Config;
 class Handler;
 
 class Jabber
 {
 public:
-  Jabber();
+  Jabber(const Config& config);
   ~Jabber();
 
   int run(int pipe);
@@ -69,6 +70,7 @@ private:
   void doGrantAuth(Licq::ProtoGrantAuthSignal* signal);
   void doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal);
 
+  const Config& myConfig;
   Handler* myHandler;
   bool myDoRun;
   Client* myClient;

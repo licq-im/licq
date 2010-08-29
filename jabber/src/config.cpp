@@ -21,52 +21,42 @@
  */
 
 #include "config.h"
-#include "jabber.h"
-#include "pluginversion.h"
 
-#include <licq/pluginmanager.h>
-#include <licq/protocolbase.h>
+#include <licq/inifile.h>
 
-using Licq::gPluginManager;
-
-char* LProto_Name()
+Config::Config(const std::string& filename) :
+  myPort(-1),
+  myTlsPolicy(gloox::TLSOptional),
+  myResource("Licq")
 {
-  static char name[] = "Jabber";
-  return name;
+  Licq::IniFile file(filename);
+
+  if (!file.loadFile()) {
+    // Save default values
+    file.setSection("network");
+    file.set("Port", -1);
+    file.set("Server", "");
+    file.set("TlsPolicy", "optional");
+    file.set("Resource", "Licq");
+    file.writeFile();
+  }
+  else {
+    std::string value;
+    file.setSection("network");
+
+    file.get("Port", myPort, -1);
+    file.get("Server", myServer, std::string());
+
+    file.get("TlsPolicy", value, "optional");
+    if (value == "disabled")
+      myTlsPolicy = gloox::TLSDisabled;
+    else if (value == "required")
+      myTlsPolicy = gloox::TLSRequired;
+    else
+      myTlsPolicy = gloox::TLSOptional;
+
+    if (file.get("Resource", value) && !value.empty())
+      myResource = value;
+  }
 }
 
-char* LProto_Version()
-{
-  static char version[] = PLUGIN_VERSION_STRING;
-  return version;
-}
-
-char* LProto_PPID()
-{
-  static char ppid[] = "XMPP";
-  return ppid;
-}
-
-bool LProto_Init()
-{
-  return true;
-}
-
-unsigned long LProto_SendFuncs()
-{
-  return Licq::ProtocolPlugin::CanSendMsg
-      | Licq::ProtocolPlugin::CanHoldStatusMsg
-      | Licq::ProtocolPlugin::CanSendAuth;
-  // FIXME: Currently only works for ICQ
-  // | Licq::ProtocolPlugin::CanSendAuthReq;
-}
-
-int LProto_Main()
-{
-  Config config("licq_jabber.conf");
-
-  int pipe = gPluginManager.registerProtocolPlugin();
-  int res = Jabber(config).run(pipe);
-  gPluginManager.unregisterProtocolPlugin();
-  return res;
-}
