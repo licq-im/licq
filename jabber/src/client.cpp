@@ -424,8 +424,11 @@ void Client::handleVCard(const gloox::JID& jid, const gloox::VCard* vcard)
 {
   TRACE();
 
-  VCardToUser user(vcard);
-  myHandler.onUserInfo(jid.bare(), user);
+  if (vcard != NULL)
+  {
+    VCardToUser user(vcard);
+    myHandler.onUserInfo(jid.bare(), user);
+  }
 }
 
 void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
