@@ -35,6 +35,7 @@
 class CMSN;
 class CSocketManager;
 class IcqProtocol;
+namespace Jabber { class Plugin; }
 void* MonitorSockets_tep(void *);
 
 
@@ -893,6 +894,7 @@ protected:
   friend class LicqDaemon::UserManager;
   friend class ::CMSN;
   friend class ::IcqProtocol;
+  friend class Jabber::Plugin;
   friend void* ::MonitorSockets_tep(void *);
 };
 

@@ -32,14 +32,18 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/logging/log.h>
+#include <licq/oneventmanager.h>
 #include <licq/plugin.h>
 #include <licq/protocolsignal.h>
+#include <licq/statistics.h>
 #include <licq/userevents.h>
 
 #include <sys/select.h>
 
 using namespace Jabber;
 
+using Licq::OnEventManager;
+using Licq::gOnEventManager;
 using Licq::gLog;
 using std::string;
 
@@ -285,7 +289,13 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
   if (event->m_pUserEvent)
   {
     Licq::UserWriteGuard user(signal->userId());
-    event->m_pUserEvent->AddToHistory(*user, false);
+    if (user.isLocked())
+    {
+      event->m_pUserEvent->AddToHistory(*user, false);
+      user->SetLastSentEvent();
+      gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *user);
+    }
+    Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }
 
   Licq::gDaemon.PushPluginEvent(event);
