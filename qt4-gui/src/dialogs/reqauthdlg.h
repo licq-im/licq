@@ -39,6 +39,7 @@ public:
    ReqAuthDlg(const QString& id = QString(), unsigned long ppid = 0, QWidget* parent = 0);
 
 private:
+   unsigned long myPpid;
    QPushButton* btnOk;
    QPushButton* btnCancel;
    QLabel* lblUin;

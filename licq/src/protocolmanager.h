@@ -79,6 +79,8 @@ public:
       const std::string& message = "", const std::string filename = "",
       unsigned long filesize = 0, bool viaServer = true);
   unsigned long authorizeReply(const Licq::UserId& userId, bool grant, const std::string& message);
+  void requestAuthorization(const Licq::UserId& userid,
+      const std::string& message);
   unsigned long requestUserInfo(const Licq::UserId& userId);
   unsigned long updateOwnerInfo(const Licq::UserId& ownerId);
   unsigned long requestUserPicture(const Licq::UserId& userId);

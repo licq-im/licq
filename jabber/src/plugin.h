@@ -35,6 +35,7 @@ class ProtoLogonSignal;
 class ProtoRefuseAuthSignal;
 class ProtoRemoveUserSignal;
 class ProtoRenameUserSignal;
+class ProtoRequestAuthSignal;
 class ProtoRequestInfo;
 class ProtoTypingNotificationSignal;
 class ProtoUpdateInfoSignal;
@@ -74,6 +75,7 @@ private:
   void doRenameUser(Licq::ProtoRenameUserSignal* signal);
   void doGrantAuth(Licq::ProtoGrantAuthSignal* signal);
   void doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal);
+  void doRequestAuth(Licq::ProtoRequestAuthSignal* signal);
 
   const Config& myConfig;
   Handler* myHandler;

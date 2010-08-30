@@ -31,19 +31,21 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
-#include <licq/icq.h>
 #include <licq/userid.h>
+#include <licq/protocolmanager.h>
 
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
 
 #include "widgets/mledit.h"
 
+using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ReqAuthDlg */
 
-ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long /* ppid */, QWidget* parent)
-  : QDialog(parent)
+ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long ppid, QWidget* parent)
+  : QDialog(parent),
+    myPpid(ppid == 0 ? LICQ_PPID : ppid)
 {
   Support::setWidgetProps(this, "RequestAuthDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
@@ -97,13 +99,13 @@ ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long /* ppid */, QWidget* par
 void ReqAuthDlg::ok()
 {
   QString id = edtUin->text();
-  Licq::UserId userId(id.toLatin1().data(), LICQ_PPID);
+  Licq::UserId userId(id.toLatin1().data(), myPpid);
 
   if (!id.isEmpty())
   {
     //TODO add a drop down list for protocol
     const QTextCodec* codec = UserCodec::codecForUserId(userId);
-    gLicqDaemon->icqRequestAuth(userId, codec->fromUnicode(mleRequest->toPlainText()).data());
+    gProtocolManager.requestAuthorization(userId, codec->fromUnicode(mleRequest->toPlainText()).data());
     close();
   }
 }

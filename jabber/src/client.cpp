@@ -169,6 +169,13 @@ void Client::refuseAuthorization(const string& user)
   myRosterManager->ackSubscriptionRequest(gloox::JID(user), false);
 }
 
+void Client::requestAuthorization(const string& user, const string& msg)
+{
+  gloox::Subscription subscription(
+      gloox::Subscription::Subscribe, gloox::JID(user), msg);
+  myClient.send(subscription);
+}
+
 void Client::onConnect()
 {
   gloox::ConnectionBase* conn = myClient.connectionImpl();

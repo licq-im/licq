@@ -54,9 +54,8 @@ unsigned long LProto_SendFuncs()
 {
   return Licq::ProtocolPlugin::CanSendMsg
       | Licq::ProtocolPlugin::CanHoldStatusMsg
-      | Licq::ProtocolPlugin::CanSendAuth;
-  // FIXME: Currently only works for ICQ
-  // | Licq::ProtocolPlugin::CanSendAuthReq;
+      | Licq::ProtocolPlugin::CanSendAuth
+      | Licq::ProtocolPlugin::CanSendAuthReq;
 }
 
 int LProto_Main()

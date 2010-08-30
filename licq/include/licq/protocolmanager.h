@@ -174,6 +174,15 @@ public:
       const std::string& message) = 0;
 
   /**
+   * Request user authorization
+   *
+   * @param userId User to request authorization from
+   * @param message Message to send with request
+   */
+  virtual void requestAuthorization(const UserId& userid,
+      const std::string& message) = 0;
+   
+  /**
    * Request user information from server
    *
    * @param userId User to get information for

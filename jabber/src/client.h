@@ -75,6 +75,7 @@ public:
   void renameUser(const std::string& user, const std::string& newName);
   void grantAuthorization(const std::string& user);
   void refuseAuthorization(const std::string& user);
+  void requestAuthorization(const std::string& user, const std::string& msg);
 
   // gloox::ConnectionListener
   void onConnect();

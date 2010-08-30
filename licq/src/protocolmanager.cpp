@@ -295,6 +295,15 @@ unsigned long ProtocolManager::authorizeReply(const UserId& userId, bool grant, 
   return eventId;
 }
 
+void ProtocolManager::requestAuthorization(
+    const UserId& userId, const string& message)
+{
+  if (userId.protocolId() == LICQ_PPID)
+    gIcqProtocol.icqRequestAuth(userId, message);
+  else
+    pushProtoSignal(new Licq::ProtoRequestAuthSignal(userId, message), userId);
+}
+
 unsigned long ProtocolManager::requestUserInfo(const UserId& userId)
 {
   unsigned long eventId = 0;

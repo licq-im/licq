@@ -213,6 +213,9 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalCloseSecure:
       gLog.info("SignalCloseSecure not implemented");
       break;
+    case Licq::ProtocolSignal::SignalRequestAuth:
+      doRequestAuth(static_cast<Licq::ProtoRequestAuthSignal*>(signal));
+      break;
     default:
       gLog.error("Unkown signal %u", signal->signal());
       break;
@@ -388,4 +391,11 @@ void Plugin::doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal)
 {
   assert(myClient != NULL);
   myClient->refuseAuthorization(signal->userId().accountId());
+}
+
+void Plugin::doRequestAuth(Licq::ProtoRequestAuthSignal* signal)
+{
+  assert(myClient != NULL);
+  myClient->requestAuthorization(
+      signal->userId().accountId(), signal->message());
 }

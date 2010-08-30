@@ -62,6 +62,7 @@ public:
     SignalClosedWindow  = 26,   // Chat window has been closed for a user
     SignalOpenSecure    = 27,   // Request secure channel with user
     SignalCloseSecure   = 28,   // Close secure channel with user
+    SignalRequestAuth   = 29,   // Request authorization from user
   };
 
   ProtocolSignal(SignalType signal, const UserId& userId = UserId(), unsigned long eventId = 0)
@@ -432,6 +433,20 @@ public:
   ProtoCloseSecureSignal(unsigned long eventId, const UserId& userId)
     : ProtocolSignal(SignalCloseSecure, userId, eventId)
   { /* Empty */ }
+};
+
+class ProtoRequestAuthSignal : public ProtocolSignal
+{
+public:
+  ProtoRequestAuthSignal(const UserId& userId, const std::string& message)
+    : ProtocolSignal(SignalRequestAuth, userId),
+      myMessage(message)
+  { /* Empty */ }
+
+  const std::string& message() const { return myMessage; }
+
+private:
+  std::string myMessage;
 };
 
 } // namespace Licq
