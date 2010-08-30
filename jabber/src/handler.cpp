@@ -161,7 +161,15 @@ void Handler::onUserStatusChange(const string& id, unsigned status)
 {
   TRACE();
 
-  gUserManager.userStatusChanged(Licq::UserId(id, JABBER_PPID), status);
+  Licq::UserWriteGuard user(Licq::UserId(id, JABBER_PPID));
+  if (user.isLocked())
+  {
+    user->SetSendServer(true);
+    user->statusChanged(status);
+
+    if (status == Licq::User::OnlineStatus)
+      gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, *user);
+  }
 }
 
 void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
