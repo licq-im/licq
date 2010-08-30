@@ -232,12 +232,13 @@ void Handler::onUserAuthorizationRequest(
   }
 }
 
-void Handler::onMessage(const string& from, const string& message, bool urgent)
+void Handler::onMessage(const string& from, const string& message, time_t sent,
+                        bool urgent)
 {
   TRACE();
 
   Licq::EventMsg* event = new Licq::EventMsg(
-      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, Licq::UserEvent::TimeNow,
+      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, sent,
       urgent ? unsigned(Licq::UserEvent::FlagUrgent) : 0,
       getConvoId(from));
 

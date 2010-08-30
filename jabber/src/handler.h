@@ -53,7 +53,7 @@ public:
                                   const std::string& message);
 
   void onMessage(const std::string& from, const std::string& message,
-    bool urgent);
+                 time_t sent, bool urgent);
   void onNotifyTyping(const std::string& from, bool active);
 
   std::string getStatusMessage(unsigned status);

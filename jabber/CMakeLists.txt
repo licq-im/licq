@@ -20,4 +20,10 @@ add_definitions(${gloox_CFLAGS})
 include_directories(${gloox_INCLUDE_DIRS})
 link_directories(${gloox_LIBRARY_DIRS})
 
+# See if timegm(3) exists
+check_function_exists(timegm HAVE_TIMEGM)
+if (HAVE_TIMEGM)
+  add_definitions("-DHAVE_TIMEGM=1")
+endif (HAVE_TIMEGM)
+
 add_subdirectory(src)

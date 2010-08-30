@@ -23,10 +23,13 @@
 #include "sessionmanager.h"
 #include "handler.h"
 
+#include <cstring>
+#include <ctime>
 #include <gloox/attention.h>
 #include <gloox/chatstate.h>
 #include <gloox/chatstatefilter.h>
 #include <gloox/client.h>
+#include <gloox/delayeddelivery.h>
 #include <gloox/disco.h>
 #include <gloox/message.h>
 #include <licq/logging/log.h>
@@ -36,6 +39,30 @@
 using namespace Jabber;
 
 using Licq::gLog;
+
+static time_t utcTmToTime(struct tm* tm)
+{
+#ifdef HAVE_TIMEGM
+  return ::timegm(tm);
+#else
+  // Set timezone to UTC
+  char* tz = ::getenv("TZ");
+  ::setenv("TZ", "", 1);
+  ::tzset();
+
+  // Convert to time_t
+  time_t time = ::mktime(tm);
+
+  // Reset timezone
+  if (tz)
+    ::setenv("TZ", tz, 1);
+  else
+    ::unsetenv("TZ");
+  ::tzset();
+
+  return time;
+#endif
+}
 
 SessionManager::SessionManager(gloox::Client& client, Handler& handler) :
   myClient(client),
@@ -48,6 +75,8 @@ SessionManager::SessionManager(gloox::Client& client, Handler& handler) :
   myClient.disco()->addFeature(gloox::XMLNS_CHAT_STATES);
   myClient.registerStanzaExtension(
       new gloox::ChatState(gloox::ChatStateInvalid));
+
+  myClient.registerStanzaExtension(new gloox::DelayedDelivery);
 }
 
 SessionManager::~SessionManager()
@@ -105,10 +134,23 @@ void SessionManager::handleMessage(
     const gloox::Message& message, gloox::MessageSession* /*session*/)
 {
   const bool urgent = message.findExtension(gloox::ExtAttention) != NULL;
+
+  time_t sent = ::time(NULL);
+  if (const gloox::DelayedDelivery* delayed
+      = message.findExtension<gloox::DelayedDelivery>(gloox::ExtDelay))
+  {
+    struct tm tm;
+    ::memset(&tm, 0, sizeof(tm));
+
+    // Only support XEP-0203 date format, not obsolete XEP-0091
+    if (::strptime(delayed->stamp().c_str(), "%Y-%m-%dT%H:%M:%S", &tm) != NULL)
+      sent = utcTmToTime(&tm);
+  }
+
   if (!message.body().empty())
-    myHandler.onMessage(message.from().bare(), message.body(), urgent);
+    myHandler.onMessage(message.from().bare(), message.body(), sent, urgent);
   else if (urgent)
-    myHandler.onMessage(message.from().bare(), "buzz", urgent);
+    myHandler.onMessage(message.from().bare(), "buzz", sent, urgent);
 }
 
 void SessionManager::handleChatState(
