@@ -122,6 +122,8 @@ private:
   gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;
 
+  bool addRosterItem(const gloox::RosterItem& item);
+
   unsigned presenceToStatus(gloox::Presence::PresenceType presence);
   gloox::Presence::PresenceType statusToPresence(unsigned status);
 };

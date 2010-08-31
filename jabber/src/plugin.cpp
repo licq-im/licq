@@ -335,7 +335,7 @@ void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
 void Plugin::doAddUser(Licq::ProtoAddUserSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->addUser(signal->userId().accountId(), signal->authRequired());
+  myClient->addUser(signal->userId().accountId(), true);
 }
 
 void Plugin::doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal)

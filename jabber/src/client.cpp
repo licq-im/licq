@@ -161,7 +161,6 @@ void Client::renameUser(const string& user, const string& newName)
 void Client::grantAuthorization(const string& user)
 {
   myRosterManager->ackSubscriptionRequest(gloox::JID(user), true);
-  addUser(user, true);
 }
 
 void Client::refuseAuthorization(const string& user)
@@ -254,8 +253,8 @@ void Client::handleItemAdded(const gloox::JID& jid)
 {
   TRACE();
 
-  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
-  myHandler.onUserAdded(jid.bare(), ri->name(), ri->groups());
+  gloox::RosterItem* item = myRosterManager->getRosterItem(jid);
+  addRosterItem(*item);
 }
 
 void Client::handleItemSubscribed(const gloox::JID& jid)
@@ -276,8 +275,8 @@ void Client::handleItemUpdated(const gloox::JID& jid)
 {
   TRACE();
 
-  gloox::RosterItem* ri = myRosterManager->getRosterItem(jid);
-  myHandler.onUserAdded(jid.bare(), ri->name(), ri->groups());
+  gloox::RosterItem* item = myRosterManager->getRosterItem(jid);
+  addRosterItem(*item);
 }
 
 void Client::handleItemUnsubscribed(const gloox::JID& jid)
@@ -296,8 +295,8 @@ void Client::handleRoster(const gloox::Roster& roster)
 
   for (it = roster.begin(); it != roster.end(); ++it)
   {
-    myHandler.onUserAdded(it->first, it->second->name(), it->second->groups());
-    jidlist.insert(it->first);
+    if (addRosterItem(*it->second))
+      jidlist.insert(it->first);
   }
 
   myHandler.onRosterReceived(jidlist);
@@ -449,6 +448,17 @@ void Client::handleVCardResult(gloox::VCardHandler::VCardContext context,
         context == gloox::VCardHandler::StoreVCard ? "Storing" : "Fetching",
         jid.bare().c_str(), error);
   }
+}
+
+bool Client::addRosterItem(const gloox::RosterItem& item)
+{
+  // Filter out the states where the contact should not be on our list
+  if (item.subscription() == gloox::S10nNoneIn
+      || item.subscription() == gloox::S10nFrom)
+    return false;
+
+  myHandler.onUserAdded(item.jid(), item.name(), item.groups());
+  return true;
 }
 
 unsigned Client::presenceToStatus(gloox::Presence::PresenceType presence)
