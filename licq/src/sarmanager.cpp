@@ -48,7 +48,7 @@ const char* const SarManager::DefaultNames[SarManager::NumLists][SarManager::Num
 
 const char* const SarManager::DefaultTexts[SarManager::NumLists][SarManager::NumDefaults] = {
     {
-        "I am currently away from ICQ.\\nPlease leave your message and I will get back to you as soon as I return!",
+        "I am currently away from the keyboard.\\nPlease leave your message and I will get back to you as soon as I return!",
         "I'm out to lunch.\\nI will return shortly.",
         "Don't go anywhere!\\nI'll be back in a jiffy.",
         "I'm out with the dog.\\nBe back when he's finished",
