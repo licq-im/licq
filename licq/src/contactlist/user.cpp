@@ -255,6 +255,7 @@ unsigned short Licq::User::s_nNumUserEvents = 0;
 pthread_mutex_t Licq::User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
 User::User(const UserId& id, const string& filename)
+  : myHistory(id.protocolId())
 {
   myId = id;
 
@@ -269,6 +270,7 @@ User::User(const UserId& id, const string& filename)
 }
 
 User::User(const UserId& id, bool temporary)
+  : myHistory(id.protocolId())
 {
   myId = id;
 

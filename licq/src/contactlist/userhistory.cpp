@@ -46,7 +46,8 @@ using Licq::UserId;
 using Licq::gLog;
 using LicqDaemon::UserHistory;
 
-UserHistory::UserHistory()
+UserHistory::UserHistory(unsigned long ppid)
+  : myPpid(ppid)
 {
 }
 
@@ -203,7 +204,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       GET_VALID_LINE_OR_BREAK;
-        UserId userId(&szResult[1], LICQ_PPID);
+        UserId userId(&szResult[1], myPpid);
       GET_VALID_LINE_OR_BREAK;
         string alias = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
@@ -220,7 +221,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       GET_VALID_LINE_OR_BREAK;
-        UserId userId(&szResult[1], LICQ_PPID);
+        UserId userId(&szResult[1], myPpid);
       GET_VALID_LINES;
         e = new Licq::EventAuthGranted(userId, szMsg, nCommand, tTime, nFlags);
       break;
@@ -228,7 +229,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     case ICQ_CMDxSUB_AUTHxREFUSED:
     {
       GET_VALID_LINE_OR_BREAK;
-        UserId userId(&szResult[1], LICQ_PPID);
+        UserId userId(&szResult[1], myPpid);
       GET_VALID_LINES;
         e = new Licq::EventAuthRefused(userId, szMsg, nCommand, tTime, nFlags);
       break;
@@ -236,7 +237,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       GET_VALID_LINE_OR_BREAK;
-        UserId userId(&szResult[1], LICQ_PPID);
+        UserId userId(&szResult[1], myPpid);
       GET_VALID_LINE_OR_BREAK;
         string alias = &szResult[1];
       GET_VALID_LINE_OR_BREAK;
@@ -283,7 +284,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
           id = &szResult[1];
         else if (!id.empty())
           {
-            UserId userId(id, LICQ_PPID);
+            UserId userId(id, myPpid);
             vc.push_back(new Licq::EventContactList::Contact(userId, &szResult[1]));
           }
         b = !b;

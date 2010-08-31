@@ -30,7 +30,7 @@ namespace LicqDaemon
 class UserHistory
 {
 public:
-  UserHistory();
+  explicit UserHistory(unsigned long ppid);
   ~UserHistory();
 
   /**
@@ -73,6 +73,7 @@ public:
   const std::string& filename() const { return myFilename; }
 
 protected:
+  unsigned long myPpid;
   std::string myFilename;
   std::string myDescription;
 };
