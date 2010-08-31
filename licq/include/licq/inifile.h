@@ -101,6 +101,14 @@ public:
   bool setSection(const std::string& section, bool allowAdd = true);
 
   /**
+   * Get a list of sections
+   *
+   * @param ret List to return section names in
+   * @param prefix Prefix that sections must match to be returned
+   */
+  void getSections(std::list<std::string>& ret, const std::string& prefix = "") const;
+
+  /**
    * Get a list of keys from the current section
    *
    * @param ret List to return keys in

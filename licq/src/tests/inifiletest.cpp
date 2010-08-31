@@ -193,6 +193,24 @@ TEST(IniFile, set)
   EXPECT_EQ("[FirstSection]\nparam1=1\nparam2=2\n[Section2]\nparam1=1\n", ini.getRawConfiguration());
 }
 
+TEST(IniFile, getSections)
+{
+  IniFile ini("/tmp/testini.conf");
+
+  ini.loadRawConfiguration("[Section1]\nparam1=1\n#[Section2]\n[section3]\n[Section4]\n[Section5\n]\n");
+
+  // Get all sections
+  list<string> ret;
+  ini.getSections(ret, "");
+  EXPECT_EQ(3u, ret.size());
+  ret.clear();
+
+  // Verify prefix parameter
+  ini.getSections(ret, "Section");
+  EXPECT_EQ(2u, ret.size());
+  ret.clear();
+}
+
 TEST(IniFile, getKeyList)
 {
   IniFile ini("/tmp/testini.conf");

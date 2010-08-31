@@ -316,6 +316,26 @@ bool IniFile::setSection(const string& section, bool allowAdd)
   return true;
 }
 
+void IniFile::getSections(list<string>& ret, const string& prefix) const
+{
+  string needle = "\n[" + prefix;
+  string::size_type pos = 0;
+  while ((pos = myConfigData.find(needle, pos)) != string::npos)
+  {
+    // Skip newline and left bracket
+    pos += 2;
+
+    // Find end of section name and make sure it ends on the same line
+    string::size_type secend = myConfigData.find(']', pos);
+    string::size_type nl = myConfigData.find('\n', pos);
+    if (secend == string::npos || nl == string::npos || nl < secend)
+      continue;
+
+    // Section name is valid, return it
+    ret.push_back(myConfigData.substr(pos, secend - pos));
+  }
+}
+
 void IniFile::getKeyList(list<string>& ret, const string& prefix) const
 {
   if (mySectionStart == string::npos)
