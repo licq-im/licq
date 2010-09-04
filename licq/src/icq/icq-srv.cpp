@@ -50,7 +50,7 @@
 
 using namespace std;
 using Licq::Log;
-using Licq::OnEventManager;
+using Licq::OnEventData;
 using Licq::Owner;
 using Licq::StringList;
 using Licq::User;
@@ -1349,7 +1349,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
     {
       e->m_pUserEvent->AddToHistory(*u, false);
       u->SetLastSentEvent();
-      gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
+      gOnEventManager.performOnEvent(OnEventData::OnEventMsgSent, *u);
     }
     Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }
@@ -2506,7 +2506,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     u->SetClientStatusTimestamp(nStatusPluginTimestamp);
 
       if (nOldStatus == ICQ_STATUS_OFFLINE)
-        gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, *u);
+        gOnEventManager.performOnEvent(OnEventData::OnEventOnline, *u);
       break;
     }
   case ICQ_SNACxSUB_OFFLINExLIST:
@@ -2733,7 +2733,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           u->setIsTyping(false);
 
           if (gDaemon.addUserEvent(*u, e))
-            gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
+            gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *u);
           gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserTyping, u->id()));
           break;
@@ -3011,7 +3011,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
           }
 
           string type;
-      OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
+          OnEventData::OnEventType onEventType = OnEventData::OnEventMessage;
           Licq::UserEvent* eEvent = NULL;
 
       switch(nTypeMsg)
@@ -3021,7 +3021,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
               Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
                   ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
               type = tr("Message");
-          onEventType = OnEventManager::OnEventMessage;
+              onEventType = OnEventData::OnEventMessage;
           eEvent = e;
           break;
         }
@@ -3034,7 +3034,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
             break;
           }
               type = tr("URL");
-          onEventType = OnEventManager::OnEventUrl;
+              onEventType = OnEventData::OnEventUrl;
           eEvent = e;
           break;
         }
@@ -3200,7 +3200,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
           }
 
               type = tr("Contacts");
-          onEventType = OnEventManager::OnEventMessage;
+              onEventType = OnEventData::OnEventMessage;
           eEvent = e;
           break;
         }
@@ -3286,7 +3286,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
                 if (gDaemon.addUserEvent(*o, eEvent))
                 {
                   eEvent->AddToHistory(*o, true);
-                  gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
+                  gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
                 }
                 break;
 	  }
@@ -3303,7 +3303,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
                   gLog.info(tr("SMS from %s - %s (%s)"), eSms->number().c_str(),
                       u->getAlias().c_str(), idSms.c_str());
                   if (gDaemon.addUserEvent(*u, eEvent))
-                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *u);
+                    gOnEventManager.performOnEvent(OnEventData::OnEventSms, *u);
                 }
                 else
                 {
@@ -3312,7 +3312,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
                   if (gDaemon.addUserEvent(*o, eEvent))
                   {
                     eEvent->AddToHistory(*o, true);
-                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *o);
+                    gOnEventManager.performOnEvent(OnEventData::OnEventSms, *o);
 	          }
                 }
 	    break;
@@ -4005,7 +4005,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       if (gDaemon.addUserEvent(*o, e))
       {
         e->AddToHistory(*o, true);
-        gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
+        gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
       }
 
       delete [] szId;
@@ -4053,7 +4053,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       if (gDaemon.addUserEvent(*o, eEvent))
       {
         eEvent->AddToHistory(*o, true);
-        gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
+        gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
       }
 
       delete [] szId;
@@ -4075,7 +4075,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         if (gDaemon.addUserEvent(*o, e))
         {
           e->AddToHistory(*o, true);
-          gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
+          gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
         }
       }
 
@@ -4204,7 +4204,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       // 2 byte length little endian + string
       msg.UnpackString(szMessage, msg.getDataMaxSize());      
           string type;
-          OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
+          OnEventData::OnEventType onEventType = OnEventData::OnEventMessage;
           Licq::UserEvent* eEvent = NULL;
 
       switch(nTypeMsg)
@@ -4214,7 +4214,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
                   ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
 	      type = tr("Message");
-              onEventType = OnEventManager::OnEventMessage;
+              onEventType = OnEventData::OnEventMessage;
 	  eEvent = e;
 	  break;
 	}
@@ -4227,7 +4227,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 	      type = tr("URL");
-          onEventType = OnEventManager::OnEventUrl;
+          onEventType = OnEventData::OnEventUrl;
 	  eEvent = e;
 	  break;
 	}
@@ -4387,7 +4387,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 	      type = tr("Contacts");
-          onEventType = OnEventManager::OnEventMessage;
+          onEventType = OnEventData::OnEventMessage;
 	  eEvent = e;
 	  break;
 	}
@@ -4468,7 +4468,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 if (gDaemon.addUserEvent(*o, eEvent))
 	        {
                   eEvent->AddToHistory(*o, true);
-                  gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
+                  gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
                 }
                 break;
               }
@@ -4483,7 +4483,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                   gLog.info(tr("Offline SMS from %s - %s (%s)"),
                       eSms->number().c_str(), u->getAlias().c_str(), id);
                   if (gDaemon.addUserEvent(*u, eEvent))
-                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *u);
+                    gOnEventManager.performOnEvent(OnEventData::OnEventSms, *u);
                 }
                 else
                 {
@@ -4492,7 +4492,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                   if (gDaemon.addUserEvent(*o, eEvent))
                   {
                     eEvent->AddToHistory(*o, true);
-                    gOnEventManager.performOnEvent(OnEventManager::OnEventSms, *o);
+                    gOnEventManager.performOnEvent(OnEventData::OnEventSms, *o);
                   }
                 }
 	    break;

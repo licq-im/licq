@@ -42,7 +42,7 @@
 
 using namespace std;
 using namespace LicqDaemon;
-using Licq::OnEventManager;
+using Licq::OnEventData;
 using Licq::gLog;
 using Licq::gOnEventManager;
 
@@ -1033,7 +1033,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 {
   char *szType = NULL;
   Licq::UserEvent* pEvent = NULL;
-  OnEventManager::OnEventType onEventType = OnEventManager::OnEventMessage;
+  OnEventData::OnEventType onEventType = OnEventData::OnEventMessage;
 
   // for acks
   unsigned short nPort;
@@ -1071,7 +1071,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     SendEvent_Server(p);
 
     szType = strdup(tr("Message"));
-      onEventType = OnEventManager::OnEventMessage;
+      onEventType = OnEventData::OnEventMessage;
     pEvent = e;
     break;
   }
@@ -1095,7 +1095,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     {
         Licq::EventChat* e = new Licq::EventChat(message, szChatClients, nPort,
             nSequence, Licq::EventChat::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
-        onEventType = OnEventManager::OnEventChat;
+        onEventType = OnEventData::OnEventChat;
       pEvent = e;
     }
 
@@ -1125,7 +1125,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
         Licq::EventFile* e = new Licq::EventFile(filename.c_str(), message, nFileSize,
             filelist, nSequence, Licq::EventFile::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
-        onEventType = OnEventManager::OnEventFile;
+        onEventType = OnEventData::OnEventFile;
       pEvent = e;
     }
     else
@@ -1147,7 +1147,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     SendEvent_Server(p);
 
     szType = strdup(tr("URL"));
-      onEventType = OnEventManager::OnEventUrl;
+      onEventType = OnEventData::OnEventUrl;
     pEvent = e;
     break;
   }
@@ -1162,7 +1162,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     SendEvent_Server(p);
 
     szType = strdup(tr("Contact list"));
-      onEventType = OnEventManager::OnEventMessage;
+      onEventType = OnEventData::OnEventMessage;
     pEvent = e;
     break;
   }

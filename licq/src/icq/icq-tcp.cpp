@@ -46,7 +46,7 @@
 
 using namespace std;
 using Licq::Log;
-using Licq::OnEventManager;
+using Licq::OnEventData;
 using Licq::StringList;
 using Licq::gLog;
 using Licq::gOnEventManager;
@@ -1636,7 +1636,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
           if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
+          gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *u);
           break;
         }
       case ICQ_CMDxTCP_READxNAxMSG:
@@ -1739,7 +1739,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
           if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, *u);
+          gOnEventManager.performOnEvent(OnEventData::OnEventUrl, *u);
           break;
         }
 
@@ -1808,7 +1808,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
           if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
+          gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *u);
           break;
         }
 
@@ -1857,7 +1857,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
           if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventChat, *u);
+          gOnEventManager.performOnEvent(OnEventData::OnEventChat, *u);
           break;
         }
 
@@ -1911,7 +1911,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
           if (!gDaemon.addUserEvent(*u, e))
             break;
-          gOnEventManager.performOnEvent(OnEventManager::OnEventFile, *u);
+          gOnEventManager.performOnEvent(OnEventData::OnEventFile, *u);
           break;
         }
 
@@ -1986,7 +1986,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
                 if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventFile, *u);
+                gOnEventManager.performOnEvent(OnEventData::OnEventFile, *u);
                 break;
               }
 				case ICQ_CMDxSUB_CHAT:
@@ -2018,7 +2018,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
                 if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventChat, *u);
+                gOnEventManager.performOnEvent(OnEventData::OnEventChat, *u);
                 break;
               }
 				case ICQ_CMDxSUB_URL:
@@ -2045,7 +2045,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
                 if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventUrl, *u);
+                gOnEventManager.performOnEvent(OnEventData::OnEventUrl, *u);
                 break;
               }
 				case ICQ_CMDxSUB_CONTACTxLIST:
@@ -2073,7 +2073,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
                 if (!gDaemon.addUserEvent(*u, e))
                   break;
-                gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
+                gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *u);
                 break;
               }
           } // switch nICBMCommand

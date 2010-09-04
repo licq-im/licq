@@ -42,7 +42,7 @@
 
 using namespace Jabber;
 
-using Licq::OnEventManager;
+using Licq::OnEventData;
 using Licq::gOnEventManager;
 using Licq::gLog;
 using std::string;
@@ -296,7 +296,7 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
     {
       event->m_pUserEvent->AddToHistory(*user, false);
       user->SetLastSentEvent();
-      gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *user);
+      gOnEventManager.performOnEvent(OnEventData::OnEventMsgSent, *user);
     }
     Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }

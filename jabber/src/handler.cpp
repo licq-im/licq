@@ -39,7 +39,7 @@
 
 using namespace Jabber;
 
-using Licq::OnEventManager;
+using Licq::OnEventData;
 using Licq::UserId;
 using Licq::gOnEventManager;
 using Licq::gUserManager;
@@ -168,7 +168,7 @@ void Handler::onUserStatusChange(const string& id, unsigned status)
     user->statusChanged(status);
 
     if (status == Licq::User::OnlineStatus)
-      gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, *user);
+      gOnEventManager.performOnEvent(OnEventData::OnEventOnline, *user);
   }
 }
 
@@ -236,7 +236,7 @@ void Handler::onUserAuthorizationRequest(
   if (Licq::gDaemon.addUserEvent(*owner, event))
   {
     event->AddToHistory(*owner, true);
-    gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *owner);
+    gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *owner);
   }
 }
 
@@ -255,7 +255,7 @@ void Handler::onMessage(const string& from, const string& message, time_t sent,
   if (user.isLocked())
     user->setIsTyping(false);
   if (Licq::gDaemon.addUserEvent(*user, event))
-    gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *user);
+    gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *user);
 }
 
 void Handler::onNotifyTyping(const string& from, bool active)

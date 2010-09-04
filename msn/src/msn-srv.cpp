@@ -42,7 +42,7 @@
 #include <licq/userevents.h>
 
 using namespace std;
-using Licq::OnEventManager;
+using Licq::OnEventData;
 using Licq::User;
 using Licq::UserId;
 using Licq::gLog;
@@ -234,7 +234,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (Licq::gDaemon.addUserEvent(*o, e))
         {
           e->AddToHistory(*o, true);
-          gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
+          gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
         }
       }
       else
@@ -352,7 +352,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         u->statusChanged(status);
 
         if (strCmd == "NLN" && status == User::OnlineStatus)
-          gOnEventManager.performOnEvent(OnEventManager::OnEventOnline, *u);
+          gOnEventManager.performOnEvent(OnEventData::OnEventOnline, *u);
       }
     }
     else if (strCmd == "FLN")
@@ -451,7 +451,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (Licq::gDaemon.addUserEvent(*o, pEmailAlert))
         {
           pEmailAlert->AddToHistory(*o, true);
-          gOnEventManager.performOnEvent(OnEventManager::OnEventSysMsg, *o);
+          gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
         }
       }
     }

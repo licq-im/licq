@@ -41,7 +41,7 @@
 using namespace std;
 using Licq::UserId;
 using Licq::Conversation;
-using Licq::OnEventManager;
+using Licq::OnEventData;
 using Licq::gConvoManager;
 using Licq::gLog;
 using Licq::gOnEventManager;
@@ -145,7 +145,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (u.isLocked())
           u->setIsTyping(false);
         if (Licq::gDaemon.addUserEvent(*u, e))
-          gOnEventManager.performOnEvent(OnEventManager::OnEventMessage, *u);
+          gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *u);
       }
       else if (strncmp(strType.c_str(), "text/x-msmsgsinvite", 19) == 0)
       {
@@ -227,7 +227,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
               e->m_pUserEvent->AddToHistory(*u, false);
               u->SetLastSentEvent();
               if (u->id() == e->userId())
-                gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
+                gOnEventManager.performOnEvent(OnEventData::OnEventMsgSent, *u);
             }
           }
           else
@@ -237,7 +237,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
             {
               e->m_pUserEvent->AddToHistory(*u, false);
               u->SetLastSentEvent();
-              gOnEventManager.performOnEvent(OnEventManager::OnEventMsgSent, *u);
+              gOnEventManager.performOnEvent(OnEventData::OnEventMsgSent, *u);
             }
           }
           Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
