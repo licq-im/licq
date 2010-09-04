@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009 Licq developers
+ * Copyright (C) 2007-2010 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@ class QWidget;
 
 namespace LicqQtGui
 {
-class FileNameEdit;
 class SettingsDlg;
 class ShortcutEdit;
+class OnEventBox;
 
 namespace Settings
 {
@@ -51,9 +51,6 @@ public:
 
   void load();
   void apply();
-
-private slots:
-  void setOnEventsEnabled(bool enable);
 
 private:
   /**
@@ -76,10 +73,6 @@ private:
   QGroupBox* myParanoiaBox;
   QVBoxLayout* myParanoiaLayout;
   QGridLayout* myMsgActionsLayout;
-  QCheckBox* myOnEventAwayCheck;
-  QCheckBox* myOnEventNaCheck;
-  QCheckBox* myOnEventOccupiedCheck;
-  QCheckBox* myOnEventDndCheck;
   QCheckBox* myAlwaysOnlineNotifyCheck;
   QCheckBox* myNoSoundInActiveChatCheck;
   QCheckBox* myBoldOnMsgCheck;
@@ -99,27 +92,7 @@ private:
 
   // Widget for sounds settings
   QVBoxLayout* myPageSoundsLayout;
-  QGroupBox* myEventParamsBox;
-  QGroupBox* myAcceptEventsBox;
-  QGridLayout* myEventParamsLayout;
-  QGridLayout* myAcceptEventsLayout;
-  QCheckBox* myOnEventsCheck;
-  QLabel* mySndPlayerLabel;
-  QLabel* mySndMsgLabel;
-  QLabel* mySndChatLabel;
-  QLabel* mySndUrlLabel;
-  QLabel* mySndFileLabel;
-  QLabel* mySndNotifyLabel;
-  QLabel* mySndSysMsgLabel;
-  QLabel* mySndMsgSentLabel;
-  FileNameEdit* mySndPlayerEdit;
-  FileNameEdit* mySndMsgEdit;
-  FileNameEdit* mySndChatEdit;
-  FileNameEdit* mySndUrlEdit;
-  FileNameEdit* mySndFileEdit;
-  FileNameEdit* mySndNotifyEdit;
-  FileNameEdit* mySndSysMsgEdit;
-  FileNameEdit* mySndMsgSentEdit;
+  OnEventBox* myOnEventBox;
 };
 
 } // namespace Settings
