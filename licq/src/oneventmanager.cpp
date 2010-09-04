@@ -25,14 +25,102 @@
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
+#include <licq/thread/mutexlocker.h>
 
-#include <cstdlib> // system, free
+#include <boost/foreach.hpp>
+#include <cstdlib> // system, atoi
 #include <ctime> // time
+#include <sstream>
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gUserManager;
+
+const char* const Licq::OnEventData::Default = "default";
+
+OnEventData::OnEventData(const string& iniSection, bool isGlobal) :
+  myIniSection(iniSection),
+  myIsGlobal(isGlobal)
+{
+  // Empty
+}
+
+void OnEventData::loadDefaults()
+{
+  myEnabled = EnabledDefault;
+  myAlwaysOnlineNotify = -1;
+  myCommand = Default;
+  for (int i = 0; i < NumOnEventTypes; ++i)
+    myParameters[i] = Default;
+}
+
+void OnEventData::load(Licq::IniFile& conf)
+{
+  string soundDir;
+  if (myIsGlobal)
+    soundDir = gDaemon.shareDir() + "sounds/icq/";
+  else
+    conf.setSection(myIniSection);
+
+  conf.get("Enable", myEnabled, myIsGlobal ? EnabledOnline : EnabledDefault);
+  conf.get("AlwaysOnlineNotify", myAlwaysOnlineNotify, myIsGlobal ? 1 : -1);
+  conf.get("Command", myCommand, myIsGlobal ? "play" : Default);
+  conf.get("Message", myParameters[OnEventMessage], myIsGlobal ? (soundDir + "Message.wav") : Default);
+  conf.get("Url", myParameters[OnEventUrl], myIsGlobal ? (soundDir + "URL.wav") : Default);
+  conf.get("Chat", myParameters[OnEventChat], myIsGlobal ? (soundDir + "Chat.wav") : Default);
+  conf.get("File", myParameters[OnEventFile], myIsGlobal ? (soundDir + "File.wav") : Default);
+  conf.get("Sms", myParameters[OnEventSms], myIsGlobal ? (soundDir + "Message.wav") : Default);
+  conf.get("OnlineNotify", myParameters[OnEventOnline], myIsGlobal ? (soundDir + "Online.wav") : Default);
+  conf.get("SysMsg", myParameters[OnEventSysMsg], myIsGlobal ? (soundDir + "System.wav") : Default);
+  conf.get("MsgSent", myParameters[OnEventMsgSent], myIsGlobal ? (soundDir + "Message.wav") : Default);
+}
+
+void OnEventData::save(Licq::IniFile& conf) const
+{
+  bool allDefault = (myEnabled == EnabledDefault && myAlwaysOnlineNotify == -1
+      && myCommand == Default);
+  for (int i = 0; i < NumOnEventTypes; ++i)
+    if (myParameters[i] != Default)
+      allDefault = false;
+
+  if (allDefault)
+  {
+    // Everything is set to default, no point in having this section in file
+    conf.removeSection(myIniSection);
+    return;
+  }
+
+  conf.setSection(myIniSection);
+
+  if (myUserId.isValid())
+    conf.set("User", myUserId.toString());
+  conf.set("Enable", myEnabled);
+  conf.set("AlwaysOnlineNotify", myAlwaysOnlineNotify);
+  conf.set("Command", myCommand);
+  conf.set("Message", myParameters[OnEventMessage]);
+  conf.set("Url", myParameters[OnEventUrl]);
+  conf.set("Chat", myParameters[OnEventChat]);
+  conf.set("File", myParameters[OnEventFile]);
+  conf.set("Sms", myParameters[OnEventSms]);
+  conf.set("OnlineNotify", myParameters[OnEventOnline]);
+  conf.set("SysMsg", myParameters[OnEventSysMsg]);
+  conf.set("MsgSent", myParameters[OnEventMsgSent]);
+}
+
+void OnEventData::merge(const Licq::OnEventData* data)
+{
+  if (myEnabled == EnabledDefault)
+    myEnabled = data->enabled();
+  if (myAlwaysOnlineNotify == -1)
+    myAlwaysOnlineNotify = data->alwaysOnlineNotify();
+  if (myCommand == Default)
+    myCommand = data->command();
+  for (int i = 0; i < NumOnEventTypes; ++i)
+    if (myParameters[i] == Default)
+      myParameters[i] = data->parameter(i);
+}
 
 
 // Declare global OnEventManager (internal for daemon)
@@ -43,194 +131,260 @@ Licq::OnEventManager& Licq::gOnEventManager(LicqDaemon::gOnEventManager);
 
 
 OnEventManager::OnEventManager()
-  : myEnabled(true)
+  : myGlobalData("global", true)
 {
   // Empty
 }
 
 OnEventManager::~OnEventManager()
 {
-  // Empty
+  // Delete data for users
+  for (map<UserId, OnEventData*>::iterator i = myUserData.begin(); i != myUserData.end(); ++i)
+    delete i->second;
+  myUserData.clear();
+
+  // Delete data for groups
+  for (map<int, OnEventData*>::iterator i = myGroupData.begin(); i != myGroupData.end(); ++i)
+    delete i->second;
+  myGroupData.clear();
 }
 
 void OnEventManager::initialize()
 {
-  Licq::IniFile licqConf("licq.conf");
-  licqConf.loadFile();
-
-  string soundDir = gDaemon.shareDir() + "sounds/icq/";
-
-  licqConf.setSection("onevent");
-  licqConf.get("Enable", myEnabled, true);
-  licqConf.get("AlwaysOnlineNotify", myAlwaysOnlineNotify, false);
-  licqConf.get("Command", myCommand, "play");
-  licqConf.get("Message", myParameters[OnEventMessage], soundDir + "Message.wav");
-  licqConf.get("Url", myParameters[OnEventUrl], soundDir + "URL.wav");
-  licqConf.get("Chat", myParameters[OnEventChat], soundDir + "Chat.wav");
-  licqConf.get("File", myParameters[OnEventFile], soundDir + "File.wav");
-  licqConf.get("OnlineNotify", myParameters[OnEventOnline], soundDir + "Online.wav");
-  licqConf.get("SysMsg", myParameters[OnEventSysMsg], soundDir + "System.wav");
-  licqConf.get("MsgSent", myParameters[OnEventMsgSent], soundDir + "Message.wav");
-  licqConf.get("Sms", myParameters[OnEventSms], soundDir + "Message.wav");
-}
-
-void OnEventManager::lock()
-{
-  myMutex.lock();
-}
-
-void OnEventManager::unlock(bool save)
-{
-  if (save)
+  Licq::IniFile conf("onevent.conf");
+  if (!conf.loadFile())
   {
+    // Failed to read configuration, try migrating old configuration
     Licq::IniFile licqConf("licq.conf");
-    if (!licqConf.loadFile())
-      return;
+    licqConf.loadFile();
 
     licqConf.setSection("onevent");
-    licqConf.set("Enable", myEnabled);
-    licqConf.set("AlwaysOnlineNotify", myAlwaysOnlineNotify);
-    licqConf.set("Command", myCommand);
-    licqConf.set("Message", myParameters[OnEventMessage]);
-    licqConf.set("Url", myParameters[OnEventUrl]);
-    licqConf.set("Chat", myParameters[OnEventChat]);
-    licqConf.set("File", myParameters[OnEventFile]);
-    licqConf.set("OnlineNotify", myParameters[OnEventOnline]);
-    licqConf.set("SysMsg", myParameters[OnEventSysMsg]);
-    licqConf.set("MsgSent", myParameters[OnEventMsgSent]);
-    licqConf.set("Sms", myParameters[OnEventSms]);
-    licqConf.writeFile();
+    myGlobalData.load(licqConf);
+    return;
   }
 
-  myMutex.unlock();
+  // Global configuration
+  conf.setSection("global");
+  myGlobalData.load(conf);
+
+  // Groups configuration
+  list<string> sections;
+  conf.getSections(sections, "Group.");
+  BOOST_FOREACH(const string& section, sections)
+  {
+    int groupId = atoi(section.substr(6).c_str());
+    if (groupId <= 0)
+      continue;
+    OnEventData* data = new OnEventData(section);
+    data->load(conf);
+    myGroupData[groupId] = data;
+  }
+
+  // Users configuration
+  conf.getSections(sections, "User.");
+  BOOST_FOREACH(const string& section, sections)
+  {
+    conf.setSection(section);
+    string userIdStr;
+    conf.get("User", userIdStr);
+    if (userIdStr.size() < 5)
+      continue;
+    string accountId = userIdStr.substr(4);
+    unsigned long protocolId = (userIdStr[0] << 24) | (userIdStr[1] << 16) | (userIdStr[2] << 8) | userIdStr[3];
+    UserId userId(accountId, protocolId);
+    if (!userId.isValid())
+      continue;
+    OnEventData* data = new OnEventData(section);
+    data->load(conf);
+    data->setUserId(userId);
+    myUserData[userId] = data;
+  }
 }
 
-bool OnEventManager::enabled() const
+
+Licq::OnEventData* OnEventManager::lockGlobal()
 {
-  return myEnabled;
+  myGlobalData.lockWrite();
+  return &myGlobalData;
 }
 
-void OnEventManager::setEnabled(bool enabled)
+Licq::OnEventData* OnEventManager::lockGroup(int groupId, bool create)
 {
-  myEnabled = enabled;
+  Licq::MutexLocker lock(myDataMutex);
+
+  OnEventData* data;
+  if (myGroupData.count(groupId) == 0)
+  {
+    if (create == false)
+      return NULL;
+
+    std::ostringstream section;
+    section << "Group." << groupId;
+    data = new OnEventData(section.str());
+    myGroupData[groupId] = data;
+  }
+  else
+  {
+    data = myGroupData[groupId];
+  }
+
+  data->lockWrite();
+  return data;
 }
 
-bool OnEventManager::alwaysOnlineNotify() const
+Licq::OnEventData* OnEventManager::lockUser(const UserId& userId, bool create)
 {
-  return myAlwaysOnlineNotify;
+  Licq::MutexLocker lock(myDataMutex);
+
+  OnEventData* data;
+  if (myUserData.count(userId) == 0)
+  {
+    if (create == false)
+      return NULL;
+
+    data = new OnEventData("User." + userId.toString());
+    data->setUserId(userId);
+    myUserData[userId] = data;
+  }
+  else
+  {
+    data = myUserData[userId];
+  }
+
+  data->lockWrite();
+  return data;
 }
 
-void OnEventManager::setAlwaysOnlineNotify(bool alwaysOnlineNotify)
+void OnEventManager::unlock(const Licq::OnEventData* data, bool save)
 {
-  myAlwaysOnlineNotify = alwaysOnlineNotify;
-}
-
-string OnEventManager::command() const
-{
-  return myCommand;
-}
-
-void OnEventManager::setCommand(const string& command)
-{
-  myCommand = command;
-}
-
-string OnEventManager::parameter(OnEventType event) const
-{
-  return myParameters[event];
-}
-
-void OnEventManager::setParameter(OnEventType event, const string& parameter)
-{
-  myParameters[event] = parameter;
-}
-
-void OnEventManager::performOnEvent(OnEventType event, const Licq::User* user)
-{
-  if (!myEnabled)
+  if (data == NULL)
     return;
+
+  if (save)
+  {
+    Licq::IniFile conf("onevent.conf");
+    conf.loadFile();
+    dynamic_cast<const OnEventData*>(data)->save(conf);
+    conf.writeFile();
+  }
+
+  dynamic_cast<const OnEventData*>(data)->unlockWrite();
+}
+
+Licq::OnEventData* OnEventManager::getEffectiveUser(const Licq::User* user)
+{
+  OnEventData* data = new OnEventData("");
+  data->loadDefaults();
+
+  if (user != NULL)
+  {
+    // Merge with user specific settings
+    Licq::OnEventData* userData = lockUser(user->id(), false);
+    if (userData != NULL)
+    {
+      data->merge(userData);
+      unlock(userData);
+    }
+
+    // Merge with groups settings
+    BOOST_FOREACH(int groupId, user->GetGroups())
+    {
+      Licq::OnEventData* groupData = lockGroup(groupId, false);
+      if (groupData == NULL)
+        continue;
+      data->merge(groupData);
+      unlock(data);
+    }
+  }
+
+  // Finally merge with global settings
+  Licq::OnEventData* globalData = lockGlobal();
+  data->merge(globalData);
+  unlock(globalData);
+
+  return data;
+}
+
+void OnEventManager::dropEffectiveUser(Licq::OnEventData* data)
+{
+  if (data == NULL)
+    return;
+
+  delete dynamic_cast<OnEventData*>(data);
+}
+
+void OnEventManager::performOnEvent(OnEventData::OnEventType event, const Licq::User* user)
+{
+  bool justOnline = false;
+  int statusLevel = OnEventData::EnabledAlways;
 
   if (user != NULL)
   {
     if (user->onEventsBlocked())
       return;
 
-    if (event == OnEventOnline)
+    if (event == OnEventData::OnEventOnline)
     {
       if (!user->OnlineNotify())
         return;
 
       // We cannot always differentiate from users going online and users
       //   already online when we sign on. Make a guess based on online since.
-      if (!myAlwaysOnlineNotify && user->OnlineSince()+60 < time(NULL))
-        return;
+      if (user->OnlineSince()+60 < time(NULL))
+        justOnline = true;
     }
 
     // Check if current status is reason to block on event action
-    bool allow = true;
-    unsigned long ownerStatus;
-
+    unsigned ownerStatus;
     if (user->isUser())
     {
-      // User isn't owner, so check owner if it will accept
+      // Get owner for this user
       Licq::OwnerReadGuard o(user->ppid());
-      ownerStatus = o->Status();
-      switch (ownerStatus)
-      {
-        case ICQ_STATUS_AWAY:
-          allow = o->AcceptInAway();
-          break;
-        case ICQ_STATUS_NA:
-          allow = o->AcceptInNA();
-          break;
-        case ICQ_STATUS_OCCUPIED:
-          allow = o->AcceptInOccupied();
-          break;
-        case ICQ_STATUS_DND:
-          allow = o->AcceptInDND();
-          break;
-      }
+      ownerStatus = o->status();
     }
     else
     {
-      ownerStatus = user->Status();
+      // This already is an owner
+      ownerStatus = user->status();
     }
 
-    if (!allow || user->isUser())
-    {
-      // Either we are owner or owner didn't accept so check user
-      switch (ownerStatus)
-      {
-        case ICQ_STATUS_AWAY:
-          allow = user->AcceptInAway();
-          break;
-        case ICQ_STATUS_NA:
-          allow = user->AcceptInNA();
-          break;
-        case ICQ_STATUS_OCCUPIED:
-          allow = user->AcceptInOccupied();
-          break;
-        case ICQ_STATUS_DND:
-          allow = user->AcceptInDND();
-          break;
-      }
-    }
+    // Get enable level needed to enable on events for current status
+    if (ownerStatus & Licq::User::DoNotDisturbStatus)
+      statusLevel = OnEventData::EnabledAlways;
+    else if (ownerStatus & Licq::User::OccupiedStatus)
+      statusLevel = OnEventData::EnabledOccupied;
+    else if (ownerStatus & Licq::User::NotAvailableStatus)
+      statusLevel = OnEventData::EnabledNotAvailable;
+    else if (ownerStatus & Licq::User::AwayStatus)
+      statusLevel = OnEventData::EnabledAway;
+    else
+      statusLevel = OnEventData::EnabledOnline;
 
-    if (!allow)
-      return;
   }
 
-  myMutex.lock();
+  Licq::OnEventData* data = getEffectiveUser(user);
+  string param;
 
-  string param = myParameters[event];
+  // Check if we should do anything at all
+  if (data->enabled() < statusLevel)
+    goto SkipPerformOnEvent;
+
+  // Ignore due to just going online?
+  if (justOnline && data->alwaysOnlineNotify() == 0)
+    goto SkipPerformOnEvent;
+
+  // Get parameter
+  param = data->parameter(event);
   if (user != NULL)
     param = user->usprintf(param, Licq::User::usprintf_quoteall);
 
   if (!param.empty())
   {
-    string fullCmd = myCommand + " " + param + " &";
+    string fullCmd = data->command() + " " + param + " &";
     system(fullCmd.c_str());
   }
 
-  myMutex.unlock();
+SkipPerformOnEvent:
+  // Cleanup
+  dropEffectiveUser(data);
 }

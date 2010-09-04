@@ -22,10 +22,73 @@
 
 #include <licq/oneventmanager.h>
 
+#include <map>
+
+#include <licq/thread/lockable.h>
 #include <licq/thread/mutex.h>
+#include <licq/userid.h>
+
+namespace Licq
+{
+class IniFile;
+}
 
 namespace LicqDaemon
 {
+
+class OnEventData : public Licq::OnEventData, public Licq::Lockable
+{
+public:
+  /**
+   * Constructor
+   *
+   * @param iniSection Section in config file for this data
+   * @param isGlobal True if this is the global section
+   */
+  OnEventData(const std::string& iniSection, bool isGlobal = false);
+
+  /**
+   * Set user id for this data
+   *
+   * @param userId Id of user for this data
+   */
+  void setUserId(const Licq::UserId& userId)
+  { myUserId = userId; }
+
+  /**
+   * Load default values for all parameters
+   */
+  void loadDefaults();
+
+  /**
+   * Load values from configuration file
+   * Mutex must already be locked
+   *
+   * @param conf File to get parameters from
+   */
+  void load(Licq::IniFile& conf);
+
+  /**
+   * Save data to configuration file
+   * Mutex must already be locked
+   *
+   * @param conf File to write configuration to
+   */
+  void save(Licq::IniFile& conf) const;
+
+  /**
+   * Merge with another data object
+   * Any default values are replaced with data for the other object
+   *
+   * @param data Object to merge with
+   */
+  void merge(const Licq::OnEventData* data);
+
+private:
+  std::string myIniSection;
+  bool myIsGlobal;
+  Licq::UserId myUserId;
+};
 
 class OnEventManager : public Licq::OnEventManager
 {
@@ -39,24 +102,19 @@ public:
   void initialize();
 
   // From Licq::OnEventManager
-  void lock();
-  void unlock(bool save = false);
-  bool enabled() const;
-  void setEnabled(bool enabled);
-  bool alwaysOnlineNotify() const;
-  void setAlwaysOnlineNotify(bool alwaysOnlineNotify);
-  std::string command() const;
-  void setCommand(const std::string& command);
-  std::string parameter(OnEventType event) const;
-  void setParameter(OnEventType event, const std::string& parameter);
-  void performOnEvent(OnEventType event, const Licq::User* user);
+  Licq::OnEventData* lockGlobal();
+  Licq::OnEventData* lockGroup(int groupId, bool create = false);
+  Licq::OnEventData* lockUser(const Licq::UserId& userId, bool create = false);
+  void unlock(const Licq::OnEventData* data, bool save = false);
+  Licq::OnEventData* getEffectiveUser(const Licq::User* user);
+  void dropEffectiveUser(Licq::OnEventData* data);
+  void performOnEvent(OnEventData::OnEventType event, const Licq::User* user);
 
 private:
-  bool myEnabled;
-  std::string myCommand;
-  std::string myParameters[NumOnEventTypes];
-  bool myAlwaysOnlineNotify;
-  Licq::Mutex myMutex;
+  OnEventData myGlobalData;
+  std::map<int, OnEventData*> myGroupData;
+  std::map<Licq::UserId, OnEventData*> myUserData;
+  Licq::Mutex myDataMutex;
 };
 
 extern OnEventManager gOnEventManager;
