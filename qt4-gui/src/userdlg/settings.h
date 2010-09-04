@@ -44,6 +44,7 @@ class UserId;
 namespace LicqQtGui
 {
 class MLEdit;
+class OnEventBox;
 class UserDlg;
 
 namespace UserPages
@@ -97,6 +98,13 @@ private:
   QWidget* createPageStatus(QWidget* parent);
 
   /**
+   * Setup the sounds page
+   *
+   * @return a widget with the sounds settings
+   */
+  QWidget* createPageOnEvent(QWidget* parent);
+
+  /**
    * Setup the groups page
    *
    * @return a widget with the groups selection
@@ -141,6 +149,10 @@ private:
   MLEdit* myAutoRespEdit;
   QPushButton* myAutoRespClearButton;
   QPushButton* myAutoRespHintsButton;
+
+  // Sounds page
+  QVBoxLayout* myPageOnEventLayout;
+  OnEventBox* myOnEventBox;
 
   // Widgets for groups page
   QVBoxLayout* myPageGroupsLayout;

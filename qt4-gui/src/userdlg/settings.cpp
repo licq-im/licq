@@ -38,12 +38,14 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/oneventmanager.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 
 #include "contactlist/contactlist.h"
 #include "dialogs/awaymsgdlg.h"
+#include "settings/oneventbox.h"
 #include "widgets/mledit.h"
 
 #include "userdlg.h"
@@ -65,6 +67,8 @@ UserPages::Settings::Settings(bool isOwner, UserDlg* parent)
       tr("Settings"));
   parent->addPage(UserDlg::StatusPage, createPageStatus(parent),
       tr("Status"), UserDlg::SettingsPage);
+  parent->addPage(UserDlg::OnEventPage, createPageOnEvent(parent),
+      tr("Sounds"), UserDlg::SettingsPage);
   parent->addPage(UserDlg::GroupsPage, createPageGroups(parent),
       tr("Groups"));
 }
@@ -212,6 +216,20 @@ QWidget* UserPages::Settings::createPageStatus(QWidget* parent)
   return w;
 }
 
+QWidget* UserPages::Settings::createPageOnEvent(QWidget* parent)
+{
+  QWidget* w = new QWidget(parent);
+  myPageOnEventLayout = new QVBoxLayout(w);
+  myPageOnEventLayout->setContentsMargins(0, 0, 0, 0);
+
+  myOnEventBox = new OnEventBox(false);
+
+  myPageOnEventLayout->addWidget(myOnEventBox);
+  myPageOnEventLayout->addStretch(1);
+
+  return w;
+}
+
 QWidget* UserPages::Settings::createPageGroups(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
@@ -323,6 +341,13 @@ void UserPages::Settings::load(const Licq::User* user)
 
   myGroupsTable->resizeRowsToContents();
   myGroupsTable->resizeColumnsToContents();
+
+  // Get onevents data for user
+  Licq::OnEventData* effectiveData = Licq::gOnEventManager.getEffectiveUser(user);
+  const Licq::OnEventData* userData = Licq::gOnEventManager.lockUser(user->id());
+  myOnEventBox->load(effectiveData, userData);
+  Licq::gOnEventManager.unlock(userData);
+  Licq::gOnEventManager.dropEffectiveUser(effectiveData);
 }
 
 void UserPages::Settings::apply(Licq::User* user)
@@ -361,6 +386,11 @@ void UserPages::Settings::apply(Licq::User* user)
 
   // Set auto response (empty string will disable custom auto response)
   user->setCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit().data());
+
+  // Save onevent settings
+  Licq::OnEventData* userData = Licq::gOnEventManager.lockUser(user->id(), true);
+  myOnEventBox->apply(userData);
+  Licq::gOnEventManager.unlock(userData, true);
 }
 
 void UserPages::Settings::apply2(const Licq::UserId& userId)
