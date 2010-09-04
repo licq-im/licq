@@ -284,7 +284,7 @@ bool IniFile::setSection(const string& rawSection, bool allowAdd)
     }
 
     // Find end of section (i.e. start of next section)
-    pos = myConfigData.find("\n[", mySectionStart);
+    pos = myConfigData.find("\n[", mySectionStart-1);
     if (pos == string::npos)
       mySectionEnd = myConfigData.size();
     else
@@ -293,6 +293,8 @@ bool IniFile::setSection(const string& rawSection, bool allowAdd)
     // Don't include empty lines between sections as part of this section
     while (mySectionEnd > mySectionStart && myConfigData[mySectionEnd-2] == '\n')
       --mySectionEnd;
+
+    // TODO: Don't include comments between sections as part of this section
 
     // mySectionEnd points to first character of line after section end
 
@@ -308,7 +310,8 @@ bool IniFile::setSection(const string& rawSection, bool allowAdd)
   }
 
   // Section not found, create it
-  if (myConfigData.size() > 1)
+  if (myConfigData.size() > 1 &&
+      (myConfigData[myConfigData.size()-1] != '\n' || myConfigData[myConfigData.size()-2] != '\n'))
     // Make sure we get an extra space between each section
     myConfigData.append("\n");
   myConfigData.append("[" + section + "]\n");
