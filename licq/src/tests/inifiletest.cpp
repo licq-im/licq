@@ -47,17 +47,6 @@ TEST(IniFile, rawConfigAccess)
   EXPECT_EQ("[Section1]\nparam=0\n[Section2]\ndata=value\n", ini.getRawConfiguration());
 }
 
-TEST(IniFile, inputValidation)
-{
-  IniFile ini("/tmp/testini.conf");
-
-  EXPECT_TRUE(ini.setSection("NewSection_23.0-9", true));
-  EXPECT_FALSE(ini.setSection("New Section", true));
-  EXPECT_FALSE(ini.setSection("#NewSection", true));
-  EXPECT_FALSE(ini.setSection("Räksmörgås", true));
-  EXPECT_FALSE(ini.setSection("New\nSection", true));
-}
-
 TEST(IniFile, setSection)
 {
   IniFile ini("/tmp/testini.conf");
@@ -209,6 +198,29 @@ TEST(IniFile, getSections)
   ini.getSections(ret, "Section");
   EXPECT_EQ(2u, ret.size());
   ret.clear();
+}
+
+TEST(IniFile, removeSection)
+{
+  IniFile ini("/tmp/testini.conf");
+
+  ini.loadRawConfiguration("[FirstSection]\nparam1=0\nparam2=1\n[EmptySection]\n[AnotherSection]\nparam3=4\n\n[LastSection]\n");
+
+  // Remove empty section
+  ini.removeSection("EmptySection");
+  EXPECT_EQ("[FirstSection]\nparam1=0\nparam2=1\n[AnotherSection]\nparam3=4\n\n[LastSection]\n", ini.getRawConfiguration());
+
+  // Remove section with empty line at end
+  ini.removeSection("AnotherSection");
+  EXPECT_EQ("[FirstSection]\nparam1=0\nparam2=1\n[LastSection]\n", ini.getRawConfiguration());
+
+  // Remove last section
+  ini.removeSection("LastSection");
+  EXPECT_EQ("[FirstSection]\nparam1=0\nparam2=1\n", ini.getRawConfiguration());
+
+  // Remove first (and only) section
+  ini.removeSection("FirstSection");
+  EXPECT_EQ("", ini.getRawConfiguration());
 }
 
 TEST(IniFile, getKeyList)

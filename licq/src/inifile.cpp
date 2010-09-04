@@ -324,6 +324,32 @@ bool IniFile::setSection(const string& rawSection, bool allowAdd)
   return true;
 }
 
+void IniFile::removeSection(const string& section)
+{
+  // Find section to remove
+  if (!setSection(section, false))
+    return;
+
+  // find section header (should be line before mySectionStart)
+  string::size_type pos = myConfigData.rfind("\n[", mySectionStart-2);
+  if (pos == string::npos)
+    // Shouldn't happen, just give up
+    return;
+
+  // Also remove empty lines at end of section
+  while (mySectionEnd < myConfigData.size() && myConfigData[mySectionEnd] == '\n')
+    mySectionEnd++;
+
+  myConfigData.erase(pos+1, mySectionEnd-pos-1);
+
+  // Data has changed
+  myIsModified = true;
+
+  // We no longer have a valid section selected
+  mySectionStart = string::npos;
+  mySectionEnd = string::npos;
+}
+
 void IniFile::getSections(list<string>& ret, const string& prefix) const
 {
   string needle = "\n[" + prefix;

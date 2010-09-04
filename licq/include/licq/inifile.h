@@ -101,6 +101,13 @@ public:
   bool setSection(const std::string& section, bool allowAdd = true);
 
   /**
+   * Remove a section, including all values
+   *
+   * @param section Name of section to remove
+   */
+  void removeSection(const std::string& section);
+
+  /**
    * Get a list of sections
    *
    * @param ret List to return section names in
