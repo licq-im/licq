@@ -249,10 +249,15 @@ string IniFile::getRawConfiguration() const
   return myConfigData.substr(1);
 }
 
-bool IniFile::setSection(const string& section, bool allowAdd)
+bool IniFile::setSection(const string& rawSection, bool allowAdd)
 {
+  string section(rawSection);
+
   // Restrict characters allowed in section name
-  if (section.find_first_not_of("-.1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz") != string::npos)
+  string::size_type p = 0;
+  while ((p = section.find_first_not_of("-.1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz", p)) != string::npos)
+    section.erase(p, 1);
+  if (section.empty())
   {
     mySectionStart = string::npos;
     mySectionEnd = string::npos;
