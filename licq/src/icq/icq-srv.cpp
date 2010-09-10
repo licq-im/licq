@@ -2706,7 +2706,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       if (nEncoding == 2) // utf-8 or utf-16?
       {
             const char* szEncoding = ignore ? "" : u->userEncoding().c_str();
-            string tmpMsg = gTranslator.fromUtf16(szMessage, szEncoding);
+            string tmpMsg = gTranslator.fromUtf16(string(szMessage, nMsgLen), szEncoding);
             delete [] szMessage;
             szMessage = new char[tmpMsg.size()+1];
             strncpy(szMessage, tmpMsg.c_str(), tmpMsg.size());
