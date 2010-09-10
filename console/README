@@ -16,7 +16,7 @@ make install
 DESCRIPTION
 
 This is a console ui plugin for the Licq ICQ client.  It is considered beta
-at this point and does not have all the features that the qt-gui supports,
+at this point and does not have all the features that the qt4-gui supports,
 however does offer a number of really cool text-mode things.  Multiple windows,
 contact list pane, log window...
 
@@ -26,7 +26,7 @@ RUNNING
 Running is simply a matter of running licq with the "-p console" switch.
 Remember that Licq will save the plugin being run so after running
 "licq -p console" once, it will always run with this plugin.  Hence when
-you want to go back to the gui, use "licq -p qt-gui" the first time at least.
+you want to go back to the gui, use "licq -p qt4-gui" the first time at least.
 
 For help using the console, type "/help" once inside.  F1-F8 will toggle between
 8 different virtual screens, PgUp/PgDown will scroll the screen, 

@@ -4,7 +4,7 @@ An ICQ clone written in C and C++ using a plugin system to allow for
 many possible interfaces.
 See the webpage (http://www.licq.org) for more information.
 Licq implements messages (online and offline), urls, chat, full file
-transfer, gui configuration (with the qt-gui or qt4-gui plugin), history as
+transfer, gui configuration (with the qt4-gui plugin), history as
 well as a number of other features.
 
 
@@ -59,7 +59,7 @@ have compiled and installed Licq, unpack the plugins you wish to use into
 the plugins/ directory, compile them, and then install them into
 /usr/local/share/licq/plugins (replace /usr/local with the prefix given
 to configure if necessary).  Then start licq with the -p option:
-$ licq -p qt-gui -- ...any options to the plugin...
+$ licq -p qt4-gui -- ...any options to the plugin...
 
 Note the -- which tells the system to pass any options after that on to the
 first plugin in the list.  Multiple plugins can be chained in this way:

@@ -739,7 +739,7 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 //translates incoming messages or user names to our codepage.
 // this works only if it is convertable by iconv
 // the codepage of the other user is determined by the UserEncoding property of
-// the other user. (change it for example via the licq-qt-gui message window)
+// the other user. (change it for example via the qt4-gui message window)
 // Licq:PluginSignal is needed to get the User for this message -
 // some day i will do this more elegant
 string my_translate(const UserId& /* userId */, const string& msg, const char* userenc)

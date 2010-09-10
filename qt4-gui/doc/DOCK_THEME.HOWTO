@@ -5,7 +5,7 @@
 # It is written as an example dock config file and can be edited to suit
 # a new theme easily.
 # Like skins and icons, dock themes are placed in the licq share directory
-# in the qt-gui subdirectory in dock.<name>/, and the config file is
+# in the qt4-gui subdirectory in dock.<name>/, and the config file is
 # called <name>.dock
 
 # The first section details the main images to be used in the dock.

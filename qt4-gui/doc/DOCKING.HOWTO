@@ -4,7 +4,7 @@ Docking Howto
 Graham Roff
 
 
-Docking the licq qt-gui status icon is fairly simple to do.  Here is a list
+Docking the licq qt4-gui status icon is fairly simple to do.  Here is a list
 of window managers and what to do.  First, do the following:
 
 1. Remove any old dock icons for licq.

@@ -5,7 +5,7 @@ Graham Roff
 
 This document is not nearly complete and is only intended to give a
 bried introduction to the main ideas behind the licq plugin system.
-Careful perusal of the licq and qt-gui plugin source code is a good
+Careful perusal of the licq and qt4-gui plugin source code is a good
 place to find out more.
 
 1.0  Introduction (IPC and Initialization)

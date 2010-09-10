@@ -47,7 +47,7 @@ Skins Howto:
   2) Non-rectangular (essentially using transparency)
   3) Any color
 
-  A skin is composed of a skin.name directory in {prefix}/share/licq/qt-gui,
+  A skin is composed of a skin.name directory in {prefix}/share/licq/qt4-gui,
 a name.skin file in that directory, and any graphics files necessary, also
 in that directory.
   The best way to explain how to build a skin is to look at a sample
@@ -55,7 +55,7 @@ name.skin file.  Basically each object has various fields that must be
 specified.  All fields must be specified, text fields can have a value of
 "default" to use the default behavior.  Pixmap fields can have a value of
 "none" as well to specify no pixmap.  All pixmaps specified must be located
-in the {prefix}/share/licq/qt-gui/skin.name directory.
+in the {prefix}/share/licq/qt4-gui/skin.name directory.
   To not display an object, set all the position coordinates to be
 the same (non-zero) value and it will be hidden.
 
