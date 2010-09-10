@@ -29,6 +29,7 @@
 
 #include "config/contactlist.h"
 #include "config/iconmanager.h"
+#include "dialogs/groupdlg.h"
 #include "views/userview.h"
 
 #include "licqgui.h"
@@ -66,6 +67,7 @@ GroupMenu::GroupMenu(QWidget* parent)
   myMoveUpAction = addAction(tr("Move &Up"), this, SLOT(moveGroupUp()));
   myMoveDownAction = addAction(tr("Move &Down"), this, SLOT(moveGroupDown()));
   myRenameAction = addAction(tr("Rename"), this, SLOT(renameGroup()));
+  mySettingsAction = addAction(tr("Sounds..."), this, SLOT(settings()));
   addMenu(myGroupsMenu);
   myRemoveGroupAction = addAction(tr("Remove Group"), this, SLOT(removeGroup()));
 
@@ -122,6 +124,9 @@ void GroupMenu::aboutToShowMenu()
   myRenameAction->setEnabled(userGroup);
   myRemoveGroupAction->setEnabled(userGroup);
 
+  // OnEvent manager in daemon does not handle gui system groups
+  mySettingsAction->setEnabled(userGroup);
+
   mySortIndex = 0;
   if (userGroup)
   {
@@ -165,6 +170,11 @@ void GroupMenu::moveGroupDown()
 void GroupMenu::renameGroup()
 {
   gMainWindow->getUserView()->editGroupName(myGroupId, myOnline);
+}
+
+void GroupMenu::settings()
+{
+  new GroupDlg(myGroupId);
 }
 
 void GroupMenu::removeGroup()

@@ -15,6 +15,7 @@ set(dialogs_SRCS
   forwarddlg.cpp
   gpgkeymanager.cpp
   gpgkeyselect.cpp
+  groupdlg.cpp
   hintsdlg.cpp
   historydlg.cpp
   joinchatdlg.cpp
