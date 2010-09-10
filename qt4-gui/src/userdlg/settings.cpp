@@ -347,7 +347,7 @@ void UserPages::Settings::load(const Licq::User* user)
   const Licq::OnEventData* userData = Licq::gOnEventManager.lockUser(user->id());
   myOnEventBox->load(effectiveData, userData);
   Licq::gOnEventManager.unlock(userData);
-  Licq::gOnEventManager.dropEffectiveUser(effectiveData);
+  Licq::gOnEventManager.dropEffective(effectiveData);
 }
 
 void UserPages::Settings::apply(Licq::User* user)

@@ -293,7 +293,7 @@ Licq::OnEventData* OnEventManager::getEffectiveUser(const Licq::User* user)
       if (groupData == NULL)
         continue;
       data->merge(groupData);
-      unlock(data);
+      unlock(groupData);
     }
   }
 
@@ -305,7 +305,31 @@ Licq::OnEventData* OnEventManager::getEffectiveUser(const Licq::User* user)
   return data;
 }
 
-void OnEventManager::dropEffectiveUser(Licq::OnEventData* data)
+Licq::OnEventData* OnEventManager::getEffectiveGroup(int groupId)
+{
+  OnEventData* data = new OnEventData("");
+  data->loadDefaults();
+
+  if (groupId != 0)
+  {
+    // Merge with groups settings
+    Licq::OnEventData* groupData = lockGroup(groupId, false);
+    if (groupData != NULL)
+    {
+      data->merge(groupData);
+      unlock(groupData);
+    }
+  }
+
+  // Finally merge with global settings
+  Licq::OnEventData* globalData = lockGlobal();
+  data->merge(globalData);
+  unlock(globalData);
+
+  return data;
+}
+
+void OnEventManager::dropEffective(Licq::OnEventData* data)
 {
   if (data == NULL)
     return;
@@ -386,5 +410,5 @@ void OnEventManager::performOnEvent(OnEventData::OnEventType event, const Licq::
 
 SkipPerformOnEvent:
   // Cleanup
-  dropEffectiveUser(data);
+  dropEffective(data);
 }

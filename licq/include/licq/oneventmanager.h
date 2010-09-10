@@ -184,17 +184,26 @@ public:
    * Get effective configuration for a user
    * Use the returned data to see what parameters would actually be used
    *
-   * @param userId Id of user to get configuration for
+   * @param user User to get configuration for
    * @return User configuration with defaults filled in
    */
   virtual OnEventData* getEffectiveUser(const User* user) = 0;
+
+  /**
+   * Get effective configuration for a group
+   * Use the returned data to see what parameters would actually be used
+   *
+   * @param groupId Id of group to get configuration for
+   * @return Group configuration with defaults filled in
+   */
+  virtual OnEventData* getEffectiveGroup(int groupId) = 0;
 
   /**
    * Delete a data object returned by getEffectiveUser
    *
    * @param data Data object to delete
    */
-  virtual void dropEffectiveUser(OnEventData* data) = 0;
+  virtual void dropEffective(OnEventData* data) = 0;
 
   /**
    * Execute on event command

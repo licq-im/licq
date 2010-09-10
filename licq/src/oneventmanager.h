@@ -107,7 +107,8 @@ public:
   Licq::OnEventData* lockUser(const Licq::UserId& userId, bool create = false);
   void unlock(const Licq::OnEventData* data, bool save = false);
   Licq::OnEventData* getEffectiveUser(const Licq::User* user);
-  void dropEffectiveUser(Licq::OnEventData* data);
+  Licq::OnEventData* getEffectiveGroup(int groupId);
+  void dropEffective(Licq::OnEventData* data);
   void performOnEvent(OnEventData::OnEventType event, const Licq::User* user);
 
 private:
