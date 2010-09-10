@@ -4,7 +4,7 @@ o  Use multiple accounts or just keep multiple user lists by using a
    different base directory by runing licq with -b.
 o  You can pass plugins command line arguments simply by 
    appending them to the command line after a --.  ie
-   "licq -p qt-gui -- -g MOTIF"
+   "licq -p qt4-gui -- -g MOTIF"
 o  Use the licq_fifo file in your base directory (~/.licq) to change your
    status, your auto response, or exit licq remotely or from a script.  See
    The FAQ for details.

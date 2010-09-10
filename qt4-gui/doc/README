@@ -18,7 +18,7 @@ See the INSTALL file within this directory.
 
 CONFIGURATION:
 
-Configuration is done through the licq_qt-gui.conf file in your base dir,
+Configuration is done through the qt4-gui/config.ini file in your base dir,
 which contains .ini style options.
 
 
