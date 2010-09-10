@@ -97,6 +97,11 @@ private:
    */
   unsigned long getNextEventId();
 
+  /**
+   * @return true if the protocol is connected
+   */
+  bool isProtocolConnected(const Licq::UserId& userId);
+
   void pushProtoSignal(Licq::ProtocolSignal* s, const Licq::UserId& userId);
 };
 
