@@ -147,6 +147,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       myCaption += QString(" (%1)").arg(QString::fromUtf8(o->GetAlias()));
   }
   setWindowTitle(myCaption);
+  setWindowIconText(myCaption);
 
   // Group Combo Box
   myUserGroupsBox = new SkinnableComboBox(this);
@@ -655,6 +656,7 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
           caption.prepend("* ");
 
         setWindowTitle(caption);
+        setWindowIconText(caption);
         break;
       }
 
@@ -749,6 +751,7 @@ void MainWindow::updateEvents()
   }
 
   setWindowTitle(szCaption);
+  setWindowIconText(szCaption);
 
   if (myMessageField != NULL)
   {

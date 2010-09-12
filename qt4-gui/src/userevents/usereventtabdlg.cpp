@@ -320,6 +320,8 @@ void UserEventTabDlg::updateTitle(QWidget* tab)
   if (!title.isEmpty())
     setWindowTitle(title);
 
+  setWindowIconText(tab->windowIconText());
+
   QIcon icon = myTabs->tabIcon(myTabs->indexOf(tab));
   if (!icon.isNull())
     setWindowIcon(icon);
