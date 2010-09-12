@@ -317,7 +317,7 @@ void LicqGui::loadGuiConfig()
   // Load skin
   if (mySkin.isEmpty())
   {
-    guiConf.get("Skin", s, "basic");
+    guiConf.get("Skin", s, "basic-ncb");
     mySkin = s.c_str();
   }
   bool skinFrameTransparent;
