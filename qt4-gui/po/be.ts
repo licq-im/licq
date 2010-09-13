@@ -159,37 +159,37 @@
 <context>
     <name>LicqQtGui::AwayMsgDlg</name>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="263"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="279"/>
         <source>(Closing in %1)</source>
         <translation>(Зачыніцца праз %1)</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="98"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="100"/>
         <source>&amp;Select</source>
         <translation>&amp;Абраць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="97"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="99"/>
         <source>&amp;Hints</source>
         <translation>&amp;Парады</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="148"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="150"/>
         <source>&amp;Edit Items</source>
         <translation>&amp;Рэдагаваць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="157"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="159"/>
         <source>Set %1 Response for all accounts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="166"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="182"/>
         <source>Set %1 Response for %2</source>
         <translation>Усталяваць адказ %1 дзеля %2</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="180"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="196"/>
         <source>I&apos;m currently %1, %a.
 You can leave me a message.
 (%m messages pending from you).</source>
@@ -198,7 +198,7 @@ You can leave me a message.
 (%m паведамленьняў ад Вас).</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/awaymsgdlg.cpp" line="201"/>
+        <location filename="../src/dialogs/awaymsgdlg.cpp" line="217"/>
         <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias.&lt;br&gt;Examples of popular uses include:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Will replace that line by the current date&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Show a fortune, as a tagline for example&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Run a script, passing the uin and alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Run the same script but ignore the output (for tracking auto response checks or something)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Useless, but shows how you can use shell script.&lt;/li&gt;&lt;/ul&gt;Of course, multiple &quot;|&quot; can appear in the auto response, and commands and regular text can be mixed line by line.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation>&lt;h2&gt;Падказкі для наладак&lt;br&gt;Аўтаматычнага адказу&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Вы маеце магчымасьц выкарыстоўваць любы з %-пашырэньняў (апісаных на асноўнай старонцы парад).&lt;/li&gt;&lt;li&gt;Любы радок, які пачынаецца з вертыкальнай рыскі (|) будзе разгледжвацца як выконваемая каманда.  Гэты радок будзе заменены на вывад каманды. Каманды выконваюцца /bin/sh і таму маюць ужывацца любыя шэл-каманды і мэта-сымбалі.  Зыходна мэтаў бясьпекі, усе %-пашырэньні перадаюцца камандам у косках каб выключыць памылковы разбор мянушак.&lt;br&gt;Прыклады выкарыстоўваньня:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Замяняе радок на цякучы час&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Паказвае выпадковы выраз з праграмы fortune&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Выконвае скрыпт, перадавая ў якасьці аргументаў нумар icq і мянушку&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Выконвае папярэдні скрыпт, але нічога не выводзіць (напрыклад, дзеля адслежваньняў праверак аштаматычных адказаў)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Не мае практычнага выкарыстаньня, але паказвае магчымасьці выкарыстаньня шэл-скрыптоў.&lt;/li&gt;&lt;/ul&gt;Безумоўна, дазваляецца шматразовае выкарыстаньне  &quot;|&quot;  у аўтаматычных адказах. Таксама, магчыма змешваць каманды і звычайны тэкст радок за радком.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; Дзеля больш падрабязнай інфармацыяй калі ласка зьвяртайцеся на старонку Licq  (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
@@ -404,19 +404,19 @@ See Network Window for details.</source>
         <translation>Licq - Размова %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1053"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1049"/>
         <source>/%1.chat</source>
         <translation>/%1.размова</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1067"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1063"/>
         <source>Failed to open file:
 %1</source>
         <translation>Немагчыма адчыніць файл:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1107"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1103"/>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
         <translation>Немагчыма загрузіць кадоўку &lt;b&gt;%1&lt;/b&gt;. Магчыма, паведамленьне будзе выглядаць пашкоджаным.</translation>
     </message>
@@ -1511,34 +1511,47 @@ The key isn&apos;t deleted from your keyring.</source>
     </message>
 </context>
 <context>
+    <name>LicqQtGui::GroupDlg</name>
+    <message>
+        <location filename="../src/dialogs/groupdlg.cpp" line="48"/>
+        <source>Licq - Group </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LicqQtGui::GroupMenu</name>
     <message>
-        <location filename="../src/core/groupmenu.cpp" line="47"/>
+        <location filename="../src/core/groupmenu.cpp" line="48"/>
         <source>Add Users to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/groupmenu.cpp" line="66"/>
+        <location filename="../src/core/groupmenu.cpp" line="67"/>
         <source>Move &amp;Up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/groupmenu.cpp" line="67"/>
+        <location filename="../src/core/groupmenu.cpp" line="68"/>
         <source>Move &amp;Down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/groupmenu.cpp" line="68"/>
+        <location filename="../src/core/groupmenu.cpp" line="69"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/core/groupmenu.cpp" line="70"/>
+        <source>Sounds...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/groupmenu.cpp" line="72"/>
         <source>Remove Group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/groupmenu.cpp" line="171"/>
+        <location filename="../src/core/groupmenu.cpp" line="182"/>
         <source>Are you sure you want to remove the group &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1926,7 +1939,7 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MLEdit</name>
     <message>
-        <location filename="../src/widgets/mledit.cpp" line="293"/>
+        <location filename="../src/widgets/mledit.cpp" line="287"/>
         <source>Allow Tabulations</source>
         <translation>Дазволіць укладкі</translation>
     </message>
@@ -2018,105 +2031,105 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MainWindow</name>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="198"/>
+        <location filename="../src/core/mainwin.cpp" line="199"/>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;мянушка карытсальніка&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;паштовая скрынка&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;імя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;нумар тэлефону&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IP-адрас карыстальніка&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;прозвішча&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;мясцовы час&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;калькасць непрагледжаных паведамленьняў&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;колькасьць непрагледжаных паведамленьняў (любых)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;поўнае імя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;час апошняга з&apos;яўленьня ў сетцы&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;час з моманту з&apos;яўленьня ў сетцы&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт карыстальніка&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;поўны стан&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;скарочаны стан&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;нумар&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;старонка ў сеціве&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="414"/>
+        <location filename="../src/core/mainwin.cpp" line="415"/>
         <source>System</source>
         <translation>Мяню</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="404"/>
+        <location filename="../src/core/mainwin.cpp" line="405"/>
         <source>&amp;System</source>
         <translation>&amp;Мяню</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="438"/>
+        <location filename="../src/core/mainwin.cpp" line="439"/>
         <source>Right click - User groups
 Double click - Show next message</source>
         <translation>Клік правай кнопкай мышы - групы карыстальнікаў
 Падвойны клік - праглядзець наступнае паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="450"/>
+        <location filename="../src/core/mainwin.cpp" line="451"/>
         <source>Right click - Status menu
 Double click - Set auto response</source>
         <translation>Клік правай кнопкай мышы - мяню стану
 Падвойны клік - усталяваць аўта-адказ</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="651"/>
+        <location filename="../src/core/mainwin.cpp" line="652"/>
         <source>Error! No owner set</source>
         <translation>Памылка! Уладар не вызначаны</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="719"/>
+        <location filename="../src/core/mainwin.cpp" line="721"/>
         <source>SysMsg</source>
         <translation>СістПав</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="720"/>
+        <location filename="../src/core/mainwin.cpp" line="722"/>
         <source>System Message</source>
         <translation>Сістэмнае паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="728"/>
+        <location filename="../src/core/mainwin.cpp" line="730"/>
         <source>%1 msg%2</source>
         <translation>%1 пав-%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="728"/>
-        <location filename="../src/core/mainwin.cpp" line="729"/>
+        <location filename="../src/core/mainwin.cpp" line="730"/>
+        <location filename="../src/core/mainwin.cpp" line="731"/>
         <source> </source>
         <translation>е</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="728"/>
-        <location filename="../src/core/mainwin.cpp" line="729"/>
+        <location filename="../src/core/mainwin.cpp" line="730"/>
+        <location filename="../src/core/mainwin.cpp" line="731"/>
         <source>s</source>
         <translation>яў</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="729"/>
+        <location filename="../src/core/mainwin.cpp" line="731"/>
         <source>%1 message%2</source>
         <translation>%1 паведамленьн%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="745"/>
+        <location filename="../src/core/mainwin.cpp" line="747"/>
         <source>No msgs</source>
         <translation>0 пав</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="746"/>
+        <location filename="../src/core/mainwin.cpp" line="748"/>
         <source>No messages</source>
         <translation>Няма паведамленьняў</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1055"/>
+        <location filename="../src/core/mainwin.cpp" line="1058"/>
         <source>Logon failed.
 See network window for details.</source>
         <translation>Немагчыма усталяваць сувязь.
 Падрабязнасьці ў акенцы сеткі.</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="678"/>
+        <location filename="../src/core/mainwin.cpp" line="1122"/>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/mainwin.cpp" line="680"/>
         <source>is online</source>
         <translation>у сетцы</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1119"/>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-T : &lt;/tt&gt;Toggle group show&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/mainwin.cpp" line="1151"/>
+        <location filename="../src/core/mainwin.cpp" line="1153"/>
         <source>Qt URL handling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1168"/>
+        <location filename="../src/core/mainwin.cpp" line="1170"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2223,6 +2236,174 @@ See network window for details.</source>
     </message>
 </context>
 <context>
+    <name>LicqQtGui::OnEventBox</name>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="41"/>
+        <source>Sound Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="47"/>
+        <source>Sounds enabled:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="48"/>
+        <source>Select for which statuses &quot;Command&quot; should be run.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="51"/>
+        <source>Never</source>
+        <translation type="unfinished">Ніколі</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="52"/>
+        <source>Only when online</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="53"/>
+        <source>When online or away</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="54"/>
+        <source>When online, away or N/A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="55"/>
+        <source>Always except DND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="56"/>
+        <source>Always</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="61"/>
+        <source>Command:</source>
+        <translation type="unfinished">Каманда:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="62"/>
+        <source>Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:</source>
+        <translation type="unfinished">Каманда, якая будзе выканана пры з&apos;яўленьні здарэньня.&lt;br&gt;Ёй маюць быць пераданы параметры з сьпіса ніжэй.&lt;br&gt;Параметры могуць утрымліваць наступныя зьменныя,&lt;br&gt;якія будуць зьменены на наступныя дадзеныя:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="77"/>
+        <source>Message:</source>
+        <translation type="unfinished">Паведамленьне:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="78"/>
+        <source>Parameter for received messages</source>
+        <translation type="unfinished">Параметр, ужываемы пры атрыманьні новага паведамленьня</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="79"/>
+        <source>URL:</source>
+        <translation type="unfinished">Спасылка:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="80"/>
+        <source>Parameter for received URLs</source>
+        <translation type="unfinished">Параметр, ужываемы пры атрыманьні спасылкі</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="81"/>
+        <source>Chat request:</source>
+        <translation type="unfinished">Запыт размовы:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="82"/>
+        <source>Parameter for received chat requests</source>
+        <translation type="unfinished">Параметр, ужываемы пры атрыманьні запрашэньня да размовы</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="83"/>
+        <source>File transfer:</source>
+        <translation type="unfinished">Перадача файла:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="84"/>
+        <source>Parameter for received file transfers</source>
+        <translation type="unfinished">Параметр, ужываемы пры атрыманьні запыта на атрыманьне файла</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="85"/>
+        <source>SMS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="86"/>
+        <source>Parameter for received SMSs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="87"/>
+        <source>Online notify:</source>
+        <translation type="unfinished">З&apos;яўленьне ў сетцы:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="88"/>
+        <source>Parameter for online notification</source>
+        <translation type="unfinished">Параметр, ужываемы пры з&apos;яўленьні карыстальніка ў сетцы</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="89"/>
+        <source>System msg:</source>
+        <translation type="unfinished">Сістэмнае паведамленьне:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="90"/>
+        <source>Parameter for received system messages</source>
+        <translation type="unfinished">Параметр, ужываемы пры атрыманьні сістэмнага паведамленьня</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="91"/>
+        <source>Message sent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="92"/>
+        <source>Parameter for sent messages</source>
+        <translation type="unfinished">Параметр, ужываемы пры адсылке паведамленьня</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="103"/>
+        <source>Online notify when logging on</source>
+        <translation type="unfinished">Папярэджваньне аб з&apos;яўленьні</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="104"/>
+        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
+        <translation type="unfinished">Дазволіць папярэджваньне пры з&apos;яўленьні карыстальніка ў сетцы. (адрозьніваецца ад працы ў Mirabilis-кліентах)</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="111"/>
+        <source>Override default setting for enabling sounds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="117"/>
+        <source>Override default command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="125"/>
+        <source>Override parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/oneventbox.cpp" line="132"/>
+        <source>Override always online notify setting</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LicqQtGui::OptionsDlg</name>
     <message>
         <location filename="../src/settings/chat.cpp" line="228"/>
@@ -2301,14 +2482,13 @@ See network window for details.</source>
         <translation>&amp;Скончыць</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="118"/>
         <source>From the Account Manager dialog you are able to add and register your accounts.
 Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
-        <translation>Праз наладкі ўліковых запісаў магчыма дадаць і зарэгістраваць Вашыя акаунты.
+        <translation type="obsolete">Праз наладкі ўліковых запісаў магчыма дадаць і зарэгістраваць Вашыя акаунты.
 Зараз толькі адзіны ўліковы запіс дзеля кожнага пратаколу падтрымліваеца Licq, але гэта павінна змяніцца ў будучых версіях.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="182"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="180"/>
         <source>You are currently registered as
 UIN (User ID): %1
 Base Directory: %2
@@ -2321,7 +2501,7 @@ UIN (ідэнтыфікатарам карыстальніка): %1
  каталёг і паспрабуйце зноў.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="233"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="231"/>
         <source>Do you really want to remove account %1?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2336,14 +2516,88 @@ UIN (ідэнтыфікатарам карыстальніка): %1
         <translation>Ідэнтыфікатар карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="152"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="118"/>
+        <source>From the Account Manager dialog you can add your accounts or register a new account.
+Note that only one account per protocol is supported in Licq.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="150"/>
         <source>(Invalid Protocol)</source>
         <translation>(Няспраўны пратакол)</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="154"/>
+        <location filename="../src/dialogs/ownermanagerdlg.cpp" line="152"/>
         <source>(Invalid ID)</source>
         <translation>(Няспраўны ідэнтыфікатар)</translation>
+    </message>
+</context>
+<context>
+    <name>LicqQtGui::PasswordDlg</name>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="51"/>
+        <source>Change Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="62"/>
+        <source>Protocol</source>
+        <translation type="unfinished">Пратакол</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="65"/>
+        <source>User ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="86"/>
+        <source>&amp;Current Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="87"/>
+        <source>&amp;New Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="88"/>
+        <source>&amp;Verify Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="118"/>
+        <source>Passwords doesn&apos;t match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="124"/>
+        <source>Password cannot be empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="132"/>
+        <source>Old password doesn&apos;t match</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="141"/>
+        <source>Setting Password...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="163"/>
+        <source>failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="166"/>
+        <source>timed out</source>
+        <translation type="unfinished">скончыўся час</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/passworddlg.cpp" line="169"/>
+        <source>error</source>
+        <translation type="unfinished">памылка</translation>
     </message>
 </context>
 <context>
@@ -2626,17 +2880,17 @@ After you are online, you can send your personal details to the server.</source>
 <context>
     <name>LicqQtGui::ReqAuthDlg</name>
     <message>
-        <location filename="../src/dialogs/reqauthdlg.cpp" line="50"/>
+        <location filename="../src/dialogs/reqauthdlg.cpp" line="52"/>
         <source>Licq - Request Authorization</source>
         <translation>Licq - Запыт аўтарызацыі</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/reqauthdlg.cpp" line="56"/>
+        <location filename="../src/dialogs/reqauthdlg.cpp" line="58"/>
         <source>Request authorization from (UIN):</source>
         <translation>Запыт аўтарызацыі ад (UIN):</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/reqauthdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/reqauthdlg.cpp" line="69"/>
         <source>Request</source>
         <translation>Запыт</translation>
     </message>
@@ -3970,87 +4224,97 @@ If not checked user will only be added to the new group.</source>
 <context>
     <name>LicqQtGui::Settings::Events</name>
     <message>
-        <location filename="../src/settings/events.cpp" line="55"/>
+        <location filename="../src/settings/events.cpp" line="54"/>
         <source>Events</source>
         <translation>Падзеі</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="57"/>
+        <location filename="../src/settings/events.cpp" line="56"/>
         <source>Sounds</source>
         <translation>Гукі</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="68"/>
+        <location filename="../src/settings/events.cpp" line="67"/>
         <source>Actions On Incoming Messages</source>
         <translation>Дзеяньні пры атрыманьні паведамленьняў</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="71"/>
+        <location filename="../src/settings/events.cpp" line="70"/>
         <source>Bold message label</source>
         <translation>Патоўшчыць друкаваньне пры новым паведамленьні</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="72"/>
+        <location filename="../src/settings/events.cpp" line="71"/>
         <source>Show the message info label in bold font if there are incoming messages</source>
         <translation>Патоўшчыць друкаваньне дзеля адпаведнага карыстальніка калі атрымана новае паведамленьне</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="75"/>
+        <location filename="../src/settings/events.cpp" line="74"/>
         <source>Auto-focus message</source>
         <translation>Аўтаматычна ўсталёўваць фокус на паведамленьні</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="76"/>
+        <location filename="../src/settings/events.cpp" line="75"/>
         <source>Automatically focus opened message windows.</source>
         <translation>Аўтаматычна ўсталёўваць фокус на акенцы з новым паведамленьнем.</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="79"/>
+        <location filename="../src/settings/events.cpp" line="78"/>
         <source>Auto-raise main window</source>
         <translation>Аўтаматычна падымаць галоўнае акенца</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="80"/>
+        <location filename="../src/settings/events.cpp" line="79"/>
         <source>Raise the main window on incoming messages</source>
         <translation>Паказваць акенца з новым паведамленьнем паверх іншых</translation>
     </message>
     <message>
+        <location filename="../src/settings/events.cpp" line="98"/>
+        <source>Auto-popup urgent only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/settings/events.cpp" line="99"/>
+        <source>Only auto-popup urgent messages.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/events.cpp" line="102"/>
         <source>Flash taskbar</source>
         <translation>Мільгаць на панэлі</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="100"/>
+        <location filename="../src/settings/events.cpp" line="103"/>
         <source>Flash the taskbar on incoming messages</source>
         <translation>Мільгаць на сістэмнай панэлі заданьняў пры атрыманьні новага паведамленьня </translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="103"/>
+        <location filename="../src/settings/events.cpp" line="106"/>
         <source>Blink all events</source>
         <translation>Мільгаць пры ўсіх паведамленьнях</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="104"/>
+        <location filename="../src/settings/events.cpp" line="107"/>
         <source>All incoming events will blink</source>
         <translation>Усе ўваходзячыя паведамленьні павінны мільгаць</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="107"/>
+        <location filename="../src/settings/events.cpp" line="110"/>
         <source>Blink urgent events</source>
         <translation>Мільгаць пры хуткіх паведамленьнях</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="108"/>
+        <location filename="../src/settings/events.cpp" line="111"/>
         <source>Only urgent events will blink</source>
         <translation>Мільгаць толькі пры хуткіх паведамленьнях</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="112"/>
+        <location filename="../src/settings/events.cpp" line="115"/>
         <source>Hot key:</source>
         <translation>Скарачэньне:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="114"/>
+        <location filename="../src/settings/events.cpp" line="117"/>
         <source>Hotkey to pop up the next pending message.
 Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for disabling.</source>
         <translation>Скарачэньне дзеля адчыненьня наступнага непрагледжанага
@@ -4058,247 +4322,217 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
 Увядзіце скарачэньне літаральна, напрыклад &quot;shift+f10&quot; альбо &quot;none&quot; каб выключыць.</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="122"/>
+        <location filename="../src/settings/events.cpp" line="125"/>
         <source>Paranoia</source>
         <translation>Параноя</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="125"/>
+        <location filename="../src/settings/events.cpp" line="128"/>
         <source>Ignore new users</source>
         <translation>Ігнараваць новых карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="126"/>
+        <location filename="../src/settings/events.cpp" line="129"/>
         <source>Determines if new users are automatically added to your list or must first request authorization.</source>
         <translation>Вызначае, трэба лі абавязковая аўтарызацыя каб карыстальнік быў дададзены ў сьпіс.</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="129"/>
+        <location filename="../src/settings/events.cpp" line="132"/>
         <source>Ignore mass messages</source>
         <translation>Ігнараваць шматкарыстальніцкую разсылку</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="130"/>
+        <location filename="../src/settings/events.cpp" line="133"/>
         <source>Determines if mass messages are ignored or not.</source>
         <translation>Вызначае, будзе лі ігнаравана масавая разсылка.</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="133"/>
+        <location filename="../src/settings/events.cpp" line="136"/>
         <source>Ignore web panel</source>
         <translation>Ігнараваць вэб-панэль</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="134"/>
+        <location filename="../src/settings/events.cpp" line="137"/>
         <source>Determines if web panel messages are ignored or not.</source>
         <translation>Вызначае, будуць лі ігнараваны паведамленьні з Вэб-панэлі.</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="137"/>
+        <location filename="../src/settings/events.cpp" line="140"/>
         <source>Ignore email pager</source>
         <translation>Ігнараваць паштовы пэджар</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="138"/>
+        <location filename="../src/settings/events.cpp" line="141"/>
         <source>Determines if email pager messages are ignored or not.</source>
         <translation>Вызначае, будуць лі ігнараваны паведамленьні з паштовага пэйджару.</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="157"/>
         <source>Sounds enabled</source>
-        <translation>Уключыць гук</translation>
+        <translation type="obsolete">Уключыць гук</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="158"/>
         <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation>Дазволіць зьдяйсьненьне каманд, калі мае месца здарэньне.</translation>
+        <translation type="obsolete">Дазволіць зьдяйсьненьне каманд, калі мае месца здарэньне.</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="166"/>
         <source>Command:</source>
-        <translation>Каманда:</translation>
+        <translation type="obsolete">Каманда:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="180"/>
         <source>Parameters</source>
-        <translation>Параметры</translation>
+        <translation type="obsolete">Параметры</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="183"/>
         <source>Message:</source>
-        <translation>Паведамленьне:</translation>
+        <translation type="obsolete">Паведамленьне:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="184"/>
         <source>Parameter for received messages</source>
-        <translation>Параметр, ужываемы пры атрыманьні новага паведамленьня</translation>
+        <translation type="obsolete">Параметр, ужываемы пры атрыманьні новага паведамленьня</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="191"/>
         <source>URL:</source>
-        <translation>Спасылка:</translation>
+        <translation type="obsolete">Спасылка:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="192"/>
         <source>Parameter for received URLs</source>
-        <translation>Параметр, ужываемы пры атрыманьні спасылкі</translation>
+        <translation type="obsolete">Параметр, ужываемы пры атрыманьні спасылкі</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="199"/>
         <source>Chat request:</source>
-        <translation>Запыт размовы:</translation>
+        <translation type="obsolete">Запыт размовы:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="200"/>
         <source>Parameter for received chat requests</source>
-        <translation>Параметр, ужываемы пры атрыманьні запрашэньня да размовы</translation>
+        <translation type="obsolete">Параметр, ужываемы пры атрыманьні запрашэньня да размовы</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="207"/>
         <source>File transfer:</source>
-        <translation>Перадача файла:</translation>
+        <translation type="obsolete">Перадача файла:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="208"/>
         <source>Parameter for received file transfers</source>
-        <translation>Параметр, ужываемы пры атрыманьні запыта на атрыманьне файла</translation>
+        <translation type="obsolete">Параметр, ужываемы пры атрыманьні запыта на атрыманьне файла</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="215"/>
         <source>Online notify:</source>
-        <translation>З&apos;яўленьне ў сетцы:</translation>
+        <translation type="obsolete">З&apos;яўленьне ў сетцы:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="216"/>
         <source>Parameter for online notification</source>
-        <translation>Параметр, ужываемы пры з&apos;яўленьні карыстальніка ў сетцы</translation>
+        <translation type="obsolete">Параметр, ужываемы пры з&apos;яўленьні карыстальніка ў сетцы</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="223"/>
         <source>System msg:</source>
-        <translation>Сістэмнае паведамленьне:</translation>
+        <translation type="obsolete">Сістэмнае паведамленьне:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="224"/>
         <source>Parameter for received system messages</source>
-        <translation>Параметр, ужываемы пры атрыманьні сістэмнага паведамленьня</translation>
+        <translation type="obsolete">Параметр, ужываемы пры атрыманьні сістэмнага паведамленьня</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="231"/>
         <source>Message sent:</source>
-        <translation>Адасланае паведамленьне:</translation>
+        <translation type="obsolete">Адасланае паведамленьне:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="232"/>
         <source>Parameter for sent messages</source>
-        <translation>Параметр, ужываемы пры адсылке паведамленьня</translation>
+        <translation type="obsolete">Параметр, ужываемы пры адсылке паведамленьня</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="240"/>
         <source>Enable Events</source>
-        <translation>Дазволіць здарэньні</translation>
+        <translation type="obsolete">Дазволіць здарэньні</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="243"/>
         <source>Sounds when Away</source>
-        <translation>Гук калі &quot;Адсутнічаю&quot;</translation>
+        <translation type="obsolete">Гук калі &quot;Адсутнічаю&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="244"/>
         <source>Perform OnEvent command in away mode</source>
-        <translation>Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Адсутнічаю&quot;</translation>
+        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Адсутнічаю&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="247"/>
         <source>Sounds when N/A</source>
-        <translation>Гук пры &quot;Ня дасягальны&quot;</translation>
+        <translation type="obsolete">Гук пры &quot;Ня дасягальны&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="248"/>
         <source>Perform OnEvent command in not available mode</source>
-        <translation>Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Нядасягальны&quot;</translation>
+        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Нядасягальны&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="251"/>
         <source>Sounds when Occupied</source>
-        <translation>Гук калі &quot;Заняты&quot;</translation>
+        <translation type="obsolete">Гук калі &quot;Заняты&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="252"/>
         <source>Perform OnEvent command in occupied mode</source>
-        <translation>Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Заняты&quot;</translation>
+        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Заняты&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="255"/>
         <source>Sounds when DND</source>
-        <translation>Гук пры &quot;Не турбаваць&quot;</translation>
+        <translation type="obsolete">Гук пры &quot;Не турбаваць&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="256"/>
         <source>Perform OnEvent command in do not disturb mode</source>
-        <translation>Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Не турбаваць&quot;</translation>
+        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Не турбаваць&quot;</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="259"/>
         <source>Online notify when logging on</source>
-        <translation>Папярэджваньне аб з&apos;яўленьні</translation>
+        <translation type="obsolete">Папярэджваньне аб з&apos;яўленьні</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="260"/>
         <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation>Дазволіць папярэджваньне пры з&apos;яўленьні карыстальніка ў сетцы. (адрозьніваецца ад працы ў Mirabilis-кліентах)</translation>
+        <translation type="obsolete">Дазволіць папярэджваньне пры з&apos;яўленьні карыстальніка ў сетцы. (адрозьніваецца ад працы ў Mirabilis-кліентах)</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="264"/>
+        <location filename="../src/settings/events.cpp" line="164"/>
         <source>Disable sound for active window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="265"/>
+        <location filename="../src/settings/events.cpp" line="165"/>
         <source>Don&apos;t perform OnEvent command if chat window for user is currently active.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="167"/>
         <source>Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:</source>
-        <translation>Каманда, якая будзе выканана пры з&apos;яўленьні здарэньня.&lt;br&gt;Ёй маюць быць пераданы параметры з сьпіса ніжэй.&lt;br&gt;Параметры могуць утрымліваць наступныя зьменныя,&lt;br&gt;якія будуць зьменены на наступныя дадзеныя:</translation>
+        <translation type="obsolete">Каманда, якая будзе выканана пры з&apos;яўленьні здарэньня.&lt;br&gt;Ёй маюць быць пераданы параметры з сьпіса ніжэй.&lt;br&gt;Параметры могуць утрымліваць наступныя зьменныя,&lt;br&gt;якія будуць зьменены на наступныя дадзеныя:</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="84"/>
+        <location filename="../src/settings/events.cpp" line="83"/>
         <source>Auto-popup message:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="87"/>
+        <location filename="../src/settings/events.cpp" line="86"/>
         <source>Never</source>
         <translation type="unfinished">Ніколі</translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="88"/>
+        <location filename="../src/settings/events.cpp" line="87"/>
         <source>Only when online</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="89"/>
+        <location filename="../src/settings/events.cpp" line="88"/>
         <source>When online or away</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="90"/>
+        <location filename="../src/settings/events.cpp" line="89"/>
         <source>When online, away or N/A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="91"/>
+        <location filename="../src/settings/events.cpp" line="90"/>
         <source>Always except DND</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="92"/>
+        <location filename="../src/settings/events.cpp" line="91"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/events.cpp" line="93"/>
+        <location filename="../src/settings/events.cpp" line="92"/>
         <source>Select for which statuses incoming messages should open automatically.
 Online also includes Free for chat.</source>
         <translation type="unfinished"></translation>
@@ -5265,22 +5499,22 @@ reset your statistics?</source>
         <translation>Пр&amp;агляд сістэмных маведамленьняў...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="112"/>
+        <location filename="../src/core/systemmenu.cpp" line="110"/>
         <source>&amp;Add User...</source>
         <translation>&amp;дадаць карыстальніка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="114"/>
+        <location filename="../src/core/systemmenu.cpp" line="112"/>
         <source>S&amp;earch for User...</source>
         <translation>&amp;Пошук карыстальніка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="115"/>
+        <location filename="../src/core/systemmenu.cpp" line="113"/>
         <source>A&amp;uthorize User...</source>
         <translation>А&amp;ўтарызаваць карыстальніка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="116"/>
+        <location filename="../src/core/systemmenu.cpp" line="114"/>
         <source>Re&amp;quest Authorization...</source>
         <translation>&amp;Запытаць аўтарызацыю...</translation>
     </message>
@@ -5289,32 +5523,32 @@ reset your statistics?</source>
         <translation type="obsolete">В&amp;ыпадковая размова...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="119"/>
+        <location filename="../src/core/systemmenu.cpp" line="117"/>
         <source>&amp;Popup All Messages...</source>
         <translation>Паказаць &amp;усе паведамленьні...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="120"/>
+        <location filename="../src/core/systemmenu.cpp" line="118"/>
         <source>Edit &amp;Groups...</source>
         <translation>Рэдагаваць &amp;гурты...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="122"/>
+        <location filename="../src/core/systemmenu.cpp" line="120"/>
         <source>Update All Users</source>
         <translation>Абнавіць усіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="123"/>
+        <location filename="../src/core/systemmenu.cpp" line="121"/>
         <source>Update Current Group</source>
         <translation>Аднавіць цякучы гурт</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="124"/>
+        <location filename="../src/core/systemmenu.cpp" line="122"/>
         <source>&amp;Redraw User Window</source>
         <translation>П&amp;ерамаляваць акенца карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="125"/>
+        <location filename="../src/core/systemmenu.cpp" line="123"/>
         <source>&amp;Save All Users</source>
         <translation>&amp;Захаваць усіх карыстальнікаў</translation>
     </message>
@@ -5323,67 +5557,67 @@ reset your statistics?</source>
         <translation type="obsolete">Тэлефон &quot;Кроч за мной&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="136"/>
+        <location filename="../src/core/systemmenu.cpp" line="134"/>
         <source>Don&apos;t Show</source>
         <translation>Не паказваць</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="137"/>
+        <location filename="../src/core/systemmenu.cpp" line="135"/>
         <source>Available</source>
         <translation>Даступны</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="138"/>
+        <location filename="../src/core/systemmenu.cpp" line="136"/>
         <source>Busy</source>
         <translation>Заняты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="142"/>
+        <location filename="../src/core/systemmenu.cpp" line="140"/>
         <source>&amp;Status</source>
         <translation>С&amp;тан</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="167"/>
+        <location filename="../src/core/systemmenu.cpp" line="165"/>
         <source>&amp;Group</source>
         <translation>&amp;Гурты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="187"/>
+        <location filename="../src/core/systemmenu.cpp" line="185"/>
         <source>&amp;Help</source>
         <translation>Дапа&amp;мога</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="188"/>
+        <location filename="../src/core/systemmenu.cpp" line="186"/>
         <source>&amp;Hints...</source>
         <translation>Пара&amp;ды...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="189"/>
+        <location filename="../src/core/systemmenu.cpp" line="187"/>
         <source>&amp;About...</source>
         <translation>Зьв&amp;есткі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="190"/>
+        <location filename="../src/core/systemmenu.cpp" line="188"/>
         <source>&amp;Statistics...</source>
         <translation>Стат&amp;ыстыка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="197"/>
+        <location filename="../src/core/systemmenu.cpp" line="195"/>
         <source>Set &amp;Auto Response...</source>
         <translation>Усталяваць &amp;аўта-адказ...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="199"/>
+        <location filename="../src/core/systemmenu.cpp" line="197"/>
         <source>&amp;Network Window...</source>
         <translation>Акенца сетк&amp;і...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="200"/>
+        <location filename="../src/core/systemmenu.cpp" line="198"/>
         <source>&amp;Mini Mode</source>
         <translation>Р&amp;эжым &quot;Міні&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="202"/>
+        <location filename="../src/core/systemmenu.cpp" line="200"/>
         <source>Show Offline &amp;Users</source>
         <translation>Паказваць &amp;усіх карыстальнікаў</translation>
     </message>
@@ -5392,17 +5626,17 @@ reset your statistics?</source>
         <translation type="obsolete">Паказваць па г&amp;уртах</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="207"/>
+        <location filename="../src/core/systemmenu.cpp" line="205"/>
         <source>&amp;Plugin Manager...</source>
         <translation>П&amp;шырэньні...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="212"/>
+        <location filename="../src/core/systemmenu.cpp" line="210"/>
         <source>Sa&amp;ve Settings</source>
         <translation>За&amp;хаваць наладкі</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="214"/>
+        <location filename="../src/core/systemmenu.cpp" line="212"/>
         <source>E&amp;xit</source>
         <translation>В&amp;ыйсьце</translation>
     </message>
@@ -5427,62 +5661,70 @@ reset your statistics?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="111"/>
+        <location filename="../src/core/systemmenu.cpp" line="109"/>
         <source>User &amp;Functions</source>
         <translation>Карыс&amp;тальніцкія прылады</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="113"/>
+        <location filename="../src/core/systemmenu.cpp" line="111"/>
         <source>A&amp;dd Group...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="117"/>
+        <location filename="../src/core/systemmenu.cpp" line="115"/>
         <source>ICQ Ra&amp;ndom Chat...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="128"/>
+        <location filename="../src/core/systemmenu.cpp" line="126"/>
         <source>ICQ Phone &quot;Follow Me&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="204"/>
+        <location filename="../src/core/systemmenu.cpp" line="202"/>
         <source>Sh&amp;ow Empty Groups</source>
         <translation>Паказва&amp;ць пустыя гурты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="206"/>
+        <location filename="../src/core/systemmenu.cpp" line="204"/>
         <source>S&amp;ettings...</source>
         <translation>&amp;Наладкі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="208"/>
+        <location filename="../src/core/systemmenu.cpp" line="206"/>
         <source>GPG &amp;Key Manager...</source>
         <translation>На&amp;ладкі GPG...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="105"/>
         <source>ICQ &amp;Security Options...</source>
-        <translation>Наладкі &amp;бясьпекі ICQ...</translation>
+        <translation type="obsolete">Наладкі &amp;бясьпекі ICQ...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="106"/>
         <source>ICQ &amp;Random Chat Group...</source>
-        <translation>В&amp;ыпадковы ICQ-гурт для размовы...</translation>
+        <translation type="obsolete">В&amp;ыпадковы ICQ-гурт для размовы...</translation>
     </message>
 </context>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="628"/>
+        <location filename="../src/core/systemmenu.cpp" line="615"/>
         <source>&amp;Info...</source>
         <translation>&amp;дадзеныя...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="629"/>
+        <location filename="../src/core/systemmenu.cpp" line="616"/>
         <source>View &amp;History...</source>
         <translation>Прагл&amp;яд гісторыі...</translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="619"/>
+        <source>&amp;Security Options...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/systemmenu.cpp" line="620"/>
+        <source>&amp;Random Chat Group...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5980,27 +6222,27 @@ reset your statistics?</source>
         <translation>&amp;Дадзеныя</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="260"/>
+        <location filename="../src/core/usermenu.cpp" line="261"/>
         <source>Check Auto Response</source>
         <translation>Праверыць аўта-адказ</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="257"/>
+        <location filename="../src/core/usermenu.cpp" line="258"/>
         <source>Check %1 Response</source>
         <translation>Праверыць %1-адказ</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="288"/>
+        <location filename="../src/core/usermenu.cpp" line="289"/>
         <source>Close &amp;Secure Channel</source>
         <translation>За&amp;чыніць бясьпечны канал</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="293"/>
+        <location filename="../src/core/usermenu.cpp" line="294"/>
         <source>Request &amp;Secure Channel</source>
         <translation>Запытаць &amp;бясьпечны канал</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="601"/>
+        <location filename="../src/core/usermenu.cpp" line="602"/>
         <source>Do you really want to add
 %1 (%2)
 to your ignore list?</source>
@@ -6472,188 +6714,193 @@ Select another picture?</source>
 <context>
     <name>LicqQtGui::UserPages::Settings</name>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="65"/>
+        <location filename="../src/userdlg/settings.cpp" line="67"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="67"/>
+        <location filename="../src/userdlg/settings.cpp" line="69"/>
         <source>Status</source>
         <translation type="unfinished">Стан</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="69"/>
-        <location filename="../src/userdlg/settings.cpp" line="221"/>
+        <location filename="../src/userdlg/settings.cpp" line="71"/>
+        <source>Sounds</source>
+        <translation type="unfinished">Гукі</translation>
+    </message>
+    <message>
+        <location filename="../src/userdlg/settings.cpp" line="73"/>
+        <location filename="../src/userdlg/settings.cpp" line="239"/>
         <source>Groups</source>
         <translation type="unfinished">Гурты</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="78"/>
+        <location filename="../src/userdlg/settings.cpp" line="82"/>
         <source>Misc Modes</source>
         <translation type="unfinished">Дадатковыя рэжымы</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="81"/>
+        <location filename="../src/userdlg/settings.cpp" line="85"/>
         <source>Accept in away</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="82"/>
+        <location filename="../src/userdlg/settings.cpp" line="86"/>
         <source>Play sounds for this contact when my status is away.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="85"/>
+        <location filename="../src/userdlg/settings.cpp" line="89"/>
         <source>Accept in not available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="86"/>
+        <location filename="../src/userdlg/settings.cpp" line="90"/>
         <source>Play sounds for this contact when my status is not available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="89"/>
+        <location filename="../src/userdlg/settings.cpp" line="93"/>
         <source>Accept in occupied</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="90"/>
+        <location filename="../src/userdlg/settings.cpp" line="94"/>
         <source>Play sounds for this contact when my status is occupied.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="93"/>
+        <location filename="../src/userdlg/settings.cpp" line="97"/>
         <source>Accept in do not disturb</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="94"/>
+        <location filename="../src/userdlg/settings.cpp" line="98"/>
         <source>Play sounds for this contact when my status is do not disturb.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="97"/>
+        <location filename="../src/userdlg/settings.cpp" line="101"/>
         <source>Auto accept files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="98"/>
+        <location filename="../src/userdlg/settings.cpp" line="102"/>
         <source>Automatically accept file transfers from this contact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="101"/>
+        <location filename="../src/userdlg/settings.cpp" line="105"/>
         <source>Auto accept chats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="102"/>
+        <location filename="../src/userdlg/settings.cpp" line="106"/>
         <source>Automatically accept chat requests from this contact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="105"/>
+        <location filename="../src/userdlg/settings.cpp" line="109"/>
         <source>Auto request secure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="106"/>
+        <location filename="../src/userdlg/settings.cpp" line="110"/>
         <source>Automatically request secure channel to this contact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="109"/>
+        <location filename="../src/userdlg/settings.cpp" line="113"/>
         <source>Use GPG encryption</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="110"/>
+        <location filename="../src/userdlg/settings.cpp" line="114"/>
         <source>Use GPG encryption for messages with this contact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="115"/>
+        <location filename="../src/userdlg/settings.cpp" line="119"/>
         <source>Use real ip (LAN)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="116"/>
+        <location filename="../src/userdlg/settings.cpp" line="120"/>
         <source>Use real IP for when sending to this contact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="131"/>
+        <location filename="../src/userdlg/settings.cpp" line="135"/>
         <source>Status to User</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="134"/>
+        <location filename="../src/userdlg/settings.cpp" line="138"/>
         <source>Not overridden</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="135"/>
+        <location filename="../src/userdlg/settings.cpp" line="139"/>
         <source>Contact will see your normal status.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="138"/>
+        <location filename="../src/userdlg/settings.cpp" line="142"/>
         <source>Online</source>
         <translation type="unfinished">У сетцы</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="139"/>
+        <location filename="../src/userdlg/settings.cpp" line="143"/>
         <source>Contact will always see you as online.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="142"/>
+        <location filename="../src/userdlg/settings.cpp" line="146"/>
         <source>Away</source>
         <translation type="unfinished">Адсутнічаю</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="143"/>
+        <location filename="../src/userdlg/settings.cpp" line="147"/>
         <source>Contact will always see your status as away.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="146"/>
+        <location filename="../src/userdlg/settings.cpp" line="150"/>
         <source>Not available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="147"/>
+        <location filename="../src/userdlg/settings.cpp" line="151"/>
         <source>Contact will always see your status as not available.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="150"/>
+        <location filename="../src/userdlg/settings.cpp" line="154"/>
         <source>Occupied</source>
         <translation type="unfinished">Заняты</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="151"/>
+        <location filename="../src/userdlg/settings.cpp" line="155"/>
         <source>Contact will always see your status as occupied.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="154"/>
+        <location filename="../src/userdlg/settings.cpp" line="158"/>
         <source>Do not disturb</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="155"/>
+        <location filename="../src/userdlg/settings.cpp" line="159"/>
         <source>Contact will always see your status as do not disturb.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="161"/>
+        <location filename="../src/userdlg/settings.cpp" line="165"/>
         <source>System Groups</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="165"/>
+        <location filename="../src/userdlg/settings.cpp" line="169"/>
         <source>Notify when this contact comes online.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6662,7 +6909,7 @@ Select another picture?</source>
         <translation type="obsolete">У сьпісе бачных</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="169"/>
+        <location filename="../src/userdlg/settings.cpp" line="173"/>
         <source>Contact will see you online even if you&apos;re invisible.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6671,7 +6918,7 @@ Select another picture?</source>
         <translation type="obsolete">У сьпісе нябачных</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="173"/>
+        <location filename="../src/userdlg/settings.cpp" line="177"/>
         <source>Contact will always see you as offline.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6680,7 +6927,7 @@ Select another picture?</source>
         <translation type="obsolete">У сьпісе ігнараваных</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="177"/>
+        <location filename="../src/userdlg/settings.cpp" line="181"/>
         <source>Ignore any events from this contact.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6689,37 +6936,37 @@ Select another picture?</source>
         <translation type="obsolete">Новыя карыстальнікі</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="181"/>
+        <location filename="../src/userdlg/settings.cpp" line="185"/>
         <source>Contact was recently added to the list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="186"/>
+        <location filename="../src/userdlg/settings.cpp" line="190"/>
         <source>Custom Auto Response</source>
         <translation type="unfinished">Карыстальніцкі аўтаматычны адказ</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="195"/>
+        <location filename="../src/userdlg/settings.cpp" line="199"/>
         <source>Hints</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="199"/>
+        <location filename="../src/userdlg/settings.cpp" line="203"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="231"/>
+        <location filename="../src/userdlg/settings.cpp" line="249"/>
         <source>Group</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="231"/>
+        <location filename="../src/userdlg/settings.cpp" line="249"/>
         <source>Local</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="231"/>
+        <location filename="../src/userdlg/settings.cpp" line="249"/>
         <source>Server</source>
         <translation type="unfinished">Паслужнік</translation>
     </message>

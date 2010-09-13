@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: licq_osd_plugin 1.2.7.3\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-07-29 21:46+0200\n"
+"POT-Creation-Date: 2010-09-13 20:47+0200\n"
 "PO-Revision-Date: 2003-06-27 21:16+0200\n"
 "Last-Translator: Martin Maurer <martinmaurer@gmx.at>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -18,67 +18,67 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: src/licq-osd.cpp:585
+#: src/licq-osd.cpp:593
 msgid " changed status to: "
 msgstr " changer le statut: "
 
-#: src/licq-osd.cpp:527
+#: src/licq-osd.cpp:535
 msgid " checked your auto-response"
 msgstr " vérifié l'auto-réponse"
 
-#: src/licq-osd.cpp:572
+#: src/licq-osd.cpp:580
 msgid " logged off"
 msgstr " non connecté"
 
-#: src/licq-osd.cpp:570
+#: src/licq-osd.cpp:578
 msgid " logged on"
 msgstr " en ligne"
 
-#: src/licq-osd.cpp:554
+#: src/licq-osd.cpp:562
 msgid "Message from "
 msgstr "Message de "
 
-#: src/my_xosd.cpp:170
+#: src/my_xosd.cpp:186
 msgid "System"
 msgstr "Système"
 
-#: src/my_xosd.cpp:170
+#: src/my_xosd.cpp:186
 msgid "XOSD plugin initialized"
 msgstr "XOSD plugin etait initialisé"
 
-#: src/licq-osd.cpp:595
+#: src/licq-osd.cpp:603
 msgid "away"
 msgstr "absent"
 
-#: src/licq-osd.cpp:589
+#: src/licq-osd.cpp:597
 msgid "do not disturb"
 msgstr " ne pas déranger"
 
-#: src/licq-osd.cpp:597
+#: src/licq-osd.cpp:605
 msgid "free for chat"
 msgstr "libre pour dialoguer"
 
-#: src/licq-osd.cpp:601
+#: src/licq-osd.cpp:609
 msgid "idle"
 msgstr ""
 
-#: src/licq-osd.cpp:599
+#: src/licq-osd.cpp:607
 msgid "invisible"
 msgstr "invisible"
 
-#: src/licq-osd.cpp:593
+#: src/licq-osd.cpp:601
 msgid "not available"
 msgstr "non disponible"
 
-#: src/licq-osd.cpp:591
+#: src/licq-osd.cpp:599
 msgid "occupied"
 msgstr "occupé"
 
-#: src/licq-osd.cpp:587
+#: src/licq-osd.cpp:595
 msgid "offline"
 msgstr "non connecté"
 
-#: src/licq-osd.cpp:603
+#: src/licq-osd.cpp:611
 msgid "online"
 msgstr "en ligne"
 

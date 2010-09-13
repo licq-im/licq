@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: licq_osd_plugin 1.2.7.3\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-07-29 21:46+0200\n"
+"POT-Creation-Date: 2010-09-13 20:47+0200\n"
 "PO-Revision-Date: 2003-06-27 21:16+0200\n"
 "Last-Translator: Martin Maurer <martinmaurer@gmx.at>\n"
 "Language-Team: German <de@li.org>\n"
@@ -19,81 +19,81 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 # example: "lonestar changed status to: away"
-#: src/licq-osd.cpp:585
+#: src/licq-osd.cpp:593
 msgid " changed status to: "
 msgstr " cambió su estado a: "
 
-#: src/licq-osd.cpp:527
+#: src/licq-osd.cpp:535
 msgid " checked your auto-response"
 msgstr ""
 
 # example: "lonestar logged off"
-#: src/licq-osd.cpp:572
+#: src/licq-osd.cpp:580
 msgid " logged off"
 msgstr " se desconectó"
 
 # example: "lonestar logged on"
-#: src/licq-osd.cpp:570
+#: src/licq-osd.cpp:578
 msgid " logged on"
 msgstr " se conectó"
 
 # example: "Message from lonestar"
-#: src/licq-osd.cpp:554
+#: src/licq-osd.cpp:562
 msgid "Message from "
 msgstr "Mensaje de "
 
 # example: "System: XOSD plugin initialized"
-#: src/my_xosd.cpp:170
+#: src/my_xosd.cpp:186
 msgid "System"
 msgstr "Sistema"
 
 # example: "System: XOSD plugin initialized"
-#: src/my_xosd.cpp:170
+#: src/my_xosd.cpp:186
 msgid "XOSD plugin initialized"
 msgstr "Plugin XOSD inicialiado"
 
 # example: "lonestar changed status to: away"
-#: src/licq-osd.cpp:595
+#: src/licq-osd.cpp:603
 msgid "away"
 msgstr "lejos"
 
 # example: "lonestar changed status to: do not disturb"
-#: src/licq-osd.cpp:589
+#: src/licq-osd.cpp:597
 msgid "do not disturb"
 msgstr "no molestar"
 
 # example: "lonestar changed status to: free for chat"
-#: src/licq-osd.cpp:597
+#: src/licq-osd.cpp:605
 msgid "free for chat"
 msgstr "libre para charlar"
 
-#: src/licq-osd.cpp:601
+#: src/licq-osd.cpp:609
 msgid "idle"
 msgstr ""
 
 # example: "lonestar changed status to: invisible"
-#: src/licq-osd.cpp:599
+#: src/licq-osd.cpp:607
 msgid "invisible"
 msgstr "invisible"
 
 # example: "lonestar changed status to: not available"
-#: src/licq-osd.cpp:593
+#: src/licq-osd.cpp:601
 msgid "not available"
 msgstr "no disponible"
 
 # example: "lonestar changed status to: occupied"
-#: src/licq-osd.cpp:591
+#: src/licq-osd.cpp:599
 msgid "occupied"
 msgstr "ocupado"
 
 # example: "lonestar changed status to: online"
-#: src/licq-osd.cpp:587
+#: src/licq-osd.cpp:595
 #, fuzzy
 msgid "offline"
 msgstr "en línea"
 
 # example: "lonestar changed status to: online"
-#: src/licq-osd.cpp:603
+#: src/licq-osd.cpp:611
 msgid "online"
 msgstr "en línea"
 
