@@ -137,6 +137,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
     gUserManager.DropOwner(o);
   }
   setWindowTitle(myCaption);
+  setWindowIconText(myCaption);
 
   // Group Combo Box
   myUserGroupsBox = new SkinnableComboBox(this);
@@ -647,6 +648,7 @@ void MainWindow::slot_updatedUser(const UserId& userId, unsigned long subSignal,
           caption.prepend("* ");
 
         setWindowTitle(caption);
+        setWindowIconText(caption);
         break;
       }
 
@@ -740,6 +742,7 @@ void MainWindow::updateEvents()
   }
 
   setWindowTitle(szCaption);
+  setWindowIconText(szCaption);
 
   if (myMessageField != NULL)
   {

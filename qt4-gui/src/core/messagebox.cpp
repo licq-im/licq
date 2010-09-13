@@ -374,6 +374,7 @@ void MessageBox::updateCaption(MessageBoxItem* item)
       break;
   }
   setWindowTitle(caption);
+  setWindowIconText(caption);
 }
 
 QPixmap MessageBox::getMessageIcon(QMessageBox::Icon type)
