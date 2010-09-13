@@ -125,7 +125,6 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
 {
   assert(signal != NULL);
 
-  gLog.info("Got signal %u", signal->signal());
   switch (signal->signal())
   {
     case Licq::ProtocolSignal::SignalLogon:
