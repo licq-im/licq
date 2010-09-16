@@ -80,17 +80,17 @@
     <message>
         <location filename="../src/dialogs/addgroupdlg.cpp" line="43"/>
         <source>Licq - Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Gruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/addgroupdlg.cpp" line="48"/>
         <source>New &amp;Group Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name neue &amp;Gruppe:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/addgroupdlg.cpp" line="56"/>
         <source>&amp;Position:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Position:</translation>
     </message>
 </context>
 <context>
@@ -190,7 +190,7 @@ Sie können mir eine Nachricht hinterlassen.
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="159"/>
         <source>Set %1 Response for all accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Setze %1 Antwort für alle Zugänge</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="182"/>
@@ -444,42 +444,42 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="51"/>
         <source>Online Notify</source>
-        <translation type="unfinished">Online-Benachrichtigung</translation>
+        <translation>Online-Benachrichtigung</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="53"/>
         <source>Visible List</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbar-Liste</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="55"/>
         <source>Invisible List</source>
-        <translation type="unfinished"></translation>
+        <translation>Unsichtbar-Liste</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="57"/>
         <source>Ignore List</source>
-        <translation type="unfinished">Ignorieren</translation>
+        <translation>Ignorieren</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="59"/>
         <source>New Users</source>
-        <translation type="unfinished">Neue Benutzer</translation>
+        <translation>Neue Benutzer</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="61"/>
         <source>Awaiting Authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Erwarte Autorisierung</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="64"/>
         <source>All Users</source>
-        <translation type="unfinished">Alle Benutzer</translation>
+        <translation>Alle Benutzer</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="66"/>
         <source>All Groups (Threaded)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Gruppen (Gruppiert)</translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactlist.cpp" line="349"/>
@@ -1502,12 +1502,12 @@ Der Schlüssel wird nicht von ihrem Schlüsselring entfernt.</translation>
     <message>
         <location filename="../src/widgets/groupcombobox.cpp" line="35"/>
         <source>First</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfang</translation>
     </message>
     <message>
         <location filename="../src/widgets/groupcombobox.cpp" line="43"/>
         <source>After </source>
-        <translation type="unfinished"></translation>
+        <translation>Hinter </translation>
     </message>
 </context>
 <context>
@@ -1515,7 +1515,7 @@ Der Schlüssel wird nicht von ihrem Schlüsselring entfernt.</translation>
     <message>
         <location filename="../src/dialogs/groupdlg.cpp" line="48"/>
         <source>Licq - Group </source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Gruppe </translation>
     </message>
 </context>
 <context>
@@ -1543,7 +1543,7 @@ Der Schlüssel wird nicht von ihrem Schlüsselring entfernt.</translation>
     <message>
         <location filename="../src/core/groupmenu.cpp" line="70"/>
         <source>Sounds...</source>
-        <translation type="unfinished"></translation>
+        <translation>Klänge...</translation>
     </message>
     <message>
         <location filename="../src/core/groupmenu.cpp" line="72"/>
@@ -2116,7 +2116,7 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/core/mainwin.cpp" line="1122"/>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Hinweise für die Benutzung&lt;br&gt;des Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Änderung des Status durch Rechtsklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Änderung der Autoantwort durch Doppelklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Anzeigen von Nachrichten durch Doppelklick auf das Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Gruppe wechseln durch Rechtsklick auf Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Folgende Tastenkürzel sind in der Kontaktliste aktiv:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Strg-M : &lt;/tt&gt;Mini-Modus&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-O : &lt;/tt&gt;Offline-Benutzer anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-X : &lt;/tt&gt;Beenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-H : &lt;/tt&gt;Hauptfenster verstecken&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-I : &lt;/tt&gt;Zeige nächste Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-V : &lt;/tt&gt;Zeige Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-S : &lt;/tt&gt;Sende Nachricht&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-U : &lt;/tt&gt;Sende URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-C : &lt;/tt&gt;Sende Chat-Anfrage&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-F : &lt;/tt&gt;Sende Datei&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-A : &lt;/tt&gt;Überprüfe Auto-Antwort&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-P : &lt;/tt&gt;Alle Nachrichten anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-L : &lt;/tt&gt;Benutzerfenster neu zeichnen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Entf : &lt;/tt&gt;Benutzer aus aktueller Gruppe löschen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-Entf : &lt;/tt&gt;Lösche Benutzer aus Kontaktliste&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Strg halten während des Klickens festhalten um   den Benutzer von der Kontaktliste zu entfernen.&lt;/li&gt;&lt;li&gt;Strg-Enter selektiert in den meisten Textfeldern &quot;Ok&quot; oder &quot;Anwenden&quot;.   Zum Beispiel im Chatfenster.&lt;/li&gt;&lt;li&gt;Hier ist die komplette Liste von Benutzeroptionen für &lt;b&gt;OnEvent&lt;/b&gt;,    &lt;b&gt;Auto-Antworten&lt;/b&gt; und &lt;b&gt;Werkzeuge&lt;/b&gt; in den Benutzerfunktionen:</translation>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="680"/>
@@ -2244,167 +2244,167 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="41"/>
         <source>Sound Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Klangoptionen</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="47"/>
         <source>Sounds enabled:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klänge aktivieren:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="48"/>
         <source>Select for which statuses &quot;Command&quot; should be run.</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswählen, bei welchem status &quot;Befehl&quot; ausgeführt werden soll.</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="51"/>
         <source>Never</source>
-        <translation type="unfinished">Niemals</translation>
+        <translation>Niemals</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="52"/>
         <source>Only when online</source>
-        <translation type="unfinished">Nur wenn Online</translation>
+        <translation>Nur wenn Online</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="53"/>
         <source>When online or away</source>
-        <translation type="unfinished">Nur wenn Online oder Abwesend</translation>
+        <translation>Nur wenn Online oder Abwesend</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="54"/>
         <source>When online, away or N/A</source>
-        <translation type="unfinished">Wenn Online, Abwesend oder Nicht Verfügbar</translation>
+        <translation>Wenn Online, Abwesend oder Nicht Verfügbar</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="55"/>
         <source>Always except DND</source>
-        <translation type="unfinished">Immer, außer Nicht Stören</translation>
+        <translation>Immer, außer Nicht Stören</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="56"/>
         <source>Always</source>
-        <translation type="unfinished">Immer</translation>
+        <translation>Immer</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="61"/>
         <source>Command:</source>
-        <translation type="unfinished">Befehl:</translation>
+        <translation>Befehl:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="62"/>
         <source>Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:</source>
-        <translation type="unfinished">Kommando, das ausgeführt wird, wenn ein Ereignis empfangen wurde.&lt;br&gt;Es werden die unten angegebenen Parameter übergeben.&lt;br&gt;Parameter können folgende Ausdrücke enthalten, &lt;br&gt;welche mit den relevanten Informationen ersetzt werden:</translation>
+        <translation>Kommando, das ausgeführt wird, wenn ein Ereignis empfangen wurde.&lt;br&gt;Es werden die unten angegebenen Parameter übergeben.&lt;br&gt;Parameter können folgende Ausdrücke enthalten, &lt;br&gt;welche mit den relevanten Informationen ersetzt werden:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="77"/>
         <source>Message:</source>
-        <translation type="unfinished">Nachricht:</translation>
+        <translation>Nachricht:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="78"/>
         <source>Parameter for received messages</source>
-        <translation type="unfinished">Parameter für empfangene Nachrichten</translation>
+        <translation>Parameter für empfangene Nachrichten</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="79"/>
         <source>URL:</source>
-        <translation type="unfinished">URL:</translation>
+        <translation>URL:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="80"/>
         <source>Parameter for received URLs</source>
-        <translation type="unfinished">Parameter für empfangene URLs</translation>
+        <translation>Parameter für empfangene URLs</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="81"/>
         <source>Chat request:</source>
-        <translation type="unfinished">Chatanfrage:</translation>
+        <translation>Chatanfrage:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="82"/>
         <source>Parameter for received chat requests</source>
-        <translation type="unfinished">Parameter für empfangene Chat-Anfragen</translation>
+        <translation>Parameter für empfangene Chat-Anfragen</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="83"/>
         <source>File transfer:</source>
-        <translation type="unfinished">Dateitransfer:</translation>
+        <translation>Dateitransfer:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="84"/>
         <source>Parameter for received file transfers</source>
-        <translation type="unfinished">Parameter für empfangene Dateiübertragung</translation>
+        <translation>Parameter für empfangene Dateiübertragung</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="85"/>
         <source>SMS:</source>
-        <translation type="unfinished"></translation>
+        <translation>SMS:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="86"/>
         <source>Parameter for received SMSs</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter für empfangene SMS</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="87"/>
         <source>Online notify:</source>
-        <translation type="unfinished">Online-Benachrichtigung:</translation>
+        <translation>Online-Benachrichtigung:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="88"/>
         <source>Parameter for online notification</source>
-        <translation type="unfinished">Parameter für Online-Benachrichtigung</translation>
+        <translation>Parameter für Online-Benachrichtigung</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="89"/>
         <source>System msg:</source>
-        <translation type="unfinished">Systemnachricht:</translation>
+        <translation>Systemnachricht:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="90"/>
         <source>Parameter for received system messages</source>
-        <translation type="unfinished">Parameter für empfangene Systemnachrichten</translation>
+        <translation>Parameter für empfangene Systemnachrichten</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="91"/>
         <source>Message sent:</source>
-        <translation type="unfinished">Gesendete Nachricht:</translation>
+        <translation>Gesendete Nachricht:</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="92"/>
         <source>Parameter for sent messages</source>
-        <translation type="unfinished">Parameter für gesendete Nachrichten</translation>
+        <translation>Parameter für gesendete Nachrichten</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="103"/>
         <source>Online notify when logging on</source>
-        <translation type="unfinished">Online-Benachrichtigung beim Anmelden</translation>
+        <translation>Online-Benachrichtigung beim Anmelden</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="104"/>
         <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="unfinished">Ausführen der Online-Benachrichtigung beim Einloggen. (Anders als der offizielle ICQ Client)</translation>
+        <translation>Ausführen der Online-Benachrichtigung beim Einloggen. (Anders als der offizielle ICQ Client)</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="111"/>
         <source>Override default setting for enabling sounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschreibt die Standardeinstellung für die Aktivierung von Klängen</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="117"/>
         <source>Override default command</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschreibt den Standardbefehl</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="125"/>
         <source>Override parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschreibe Parameter</translation>
     </message>
     <message>
         <location filename="../src/settings/oneventbox.cpp" line="132"/>
         <source>Override always online notify setting</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschreibe Onlinebenachrichtigungseinstellung</translation>
     </message>
 </context>
 <context>
@@ -2518,7 +2518,8 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="118"/>
         <source>From the Account Manager dialog you can add your accounts or register a new account.
 Note that only one account per protocol is supported in Licq.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Licq Zugangsverwaltung ermöglicht Ihnen das Hinzufügen und Registrieren
+Ihrer Zugänge. Es wird nur ein Zugang pro Protokoll unterstützt.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="150"/>
@@ -2533,7 +2534,7 @@ Note that only one account per protocol is supported in Licq.</source>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="231"/>
         <source>Do you really want to remove account %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten sie wirklich account %1 löschen?</translation>
     </message>
 </context>
 <context>
@@ -2541,67 +2542,67 @@ Note that only one account per protocol is supported in Licq.</source>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="51"/>
         <source>Change Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort ändern</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="62"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protokoll</translation>
+        <translation>Protokoll</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="65"/>
         <source>User ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzer-ID:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="86"/>
         <source>&amp;Current Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aktuelles Passwort:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="87"/>
         <source>&amp;New Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Neues Passwort</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="88"/>
         <source>&amp;Verify Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort &amp;wiederholen:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="118"/>
         <source>Passwords doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwörter stimmen nicht überein</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="124"/>
         <source>Password cannot be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Passwort darf nicht leer sein</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="132"/>
         <source>Old password doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
+        <translation>Altes Passwort stimmt nicht</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="141"/>
         <source>Setting Password...</source>
-        <translation type="unfinished"></translation>
+        <translation>Setze Passwort...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="163"/>
         <source>failed</source>
-        <translation type="unfinished">fehlgeschlagen</translation>
+        <translation>fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="166"/>
         <source>timed out</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitüberschreitung</translation>
     </message>
     <message>
         <location filename="../src/dialogs/passworddlg.cpp" line="169"/>
         <source>error</source>
-        <translation type="unfinished">fehler</translation>
+        <translation>fehler</translation>
     </message>
 </context>
 <context>
@@ -3424,7 +3425,7 @@ Bitte erstellen sie zuerst einen.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="91"/>
         <source>Send messages with Return and insert new lines with (Ctrl|Shift)+Return, opposite of the normal mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Sendet Nachrichten mit Enter und fügt neue Zeilen mit (Strg|Shift)-Enter ein, im Gegensatz zum normalen Modus</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="94"/>
@@ -4282,12 +4283,12 @@ Wenn diese Option aus ist, werden die Benutzer nur zu der Gruppe hinzugefügt.</
     <message>
         <location filename="../src/settings/events.cpp" line="98"/>
         <source>Auto-popup urgent only</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur dringende Nachrichten automatisch öffnen</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="99"/>
         <source>Only auto-popup urgent messages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur dringende Nachrichten werden automatisch geöffnet.</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="102"/>
@@ -4913,18 +4914,18 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="84"/>
         <source>Open all unread messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle ungelesenen Nachrichten öffnen</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="85"/>
         <location filename="../src/settings/shortcuts.cpp" line="157"/>
         <source>Open next unread message</source>
-        <translation type="unfinished"></translation>
+        <translation>Nächste ungelesene Nachricht öffnen</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="86"/>
         <source>Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="93"/>
@@ -5539,7 +5540,7 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="111"/>
         <source>A&amp;dd Group...</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe &amp;hinzufügen...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="112"/>
@@ -5686,12 +5687,12 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="92"/>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="93"/>
         <source>Raw Packets</source>
-        <translation type="unfinished"></translation>
+        <translation>Reine Pakete</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="109"/>
@@ -5701,12 +5702,12 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="115"/>
         <source>ICQ Ra&amp;ndom Chat...</source>
-        <translation type="unfinished"></translation>
+        <translation>ICQ Zufälliger &amp;Chat...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="126"/>
         <source>ICQ Phone &quot;Follow Me&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>ICQ Telefon folgen</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="202"/>
@@ -5752,12 +5753,12 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="619"/>
         <source>&amp;Security Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sicherheits-Einstellungen...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="620"/>
         <source>&amp;Random Chat Group...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zufällige Chat-Gruppe...</translation>
     </message>
 </context>
 <context>
@@ -5774,7 +5775,8 @@ zurückgesetzt werden?</translation>
         <location filename="../src/dockicons/themeddockicon.cpp" line="80"/>
         <source>Unable to load dock theme file:
 (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Dock-Stil-Datei nicht laden:
+(%1)</translation>
     </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="94"/>
@@ -6226,7 +6228,7 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/usermenu.cpp" line="171"/>
         <source>Add to List</source>
-        <translation type="unfinished"></translation>
+        <translation>Zur Liste hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="172"/>
@@ -6753,7 +6755,7 @@ Ein anderes Bild auswählen?</translation>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="71"/>
         <source>Sounds</source>
-        <translation type="unfinished">Klänge</translation>
+        <translation>Klänge</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="73"/>
