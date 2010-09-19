@@ -47,7 +47,7 @@ msgid ""
 msgstr ""
 "\tdebuglvl <level>\n"
 "\t\tStellt ein, wieviel Informationen protokolliert werden.\n"
-"\t\tSchauen Sie sich <level> in \"Licq -h\" an.\n"
+"\t\tSchauen Sie sich <level> in \"Licq -h\" an\n"
 
 #: src/fifo.cpp:115
 msgid ""
@@ -103,7 +103,7 @@ msgid ""
 "\t\tSend a message to the given buddy.\n"
 msgstr ""
 "\tmessage <Benutzer> <Nachricht>\n"
-"\t\tSendet eine Nachricht an den Benutzer\n"
+"\t\tSendet eine Nachricht an den Benutzer.\n"
 
 #: src/fifo.cpp:97
 msgid ""
@@ -121,6 +121,10 @@ msgid ""
 "\t\tChanges picture for an account, or all accounts if no protocol entered.\n"
 "\t\tAn empty filename will remove the current picture.\n"
 msgstr ""
+"\tsetpicture <Dateiname> [<Prokoll>]\n"
+"\t\tÄndert das Bild für einen Zugang, oder alle Zugänge, falls kein "
+"Protokoll angegeben wurde.\n"
+"\t\tEin leerer Dateiname entfernt das aktuelle Bild.\n"
 
 #: src/fifo.cpp:91
 msgid ""
@@ -160,7 +164,7 @@ msgid ""
 "\t\tOpen the plugin message composer to <buddy>\n"
 msgstr ""
 "\tui_message <Benutzer>\n"
-"\t\tÖffnet den \"Nachricht senden\"-Dialog des GUI-Plugins.\n"
+"\t\tÖffnet den \"Nachricht senden\"-Dialog des GUI-Plugins\n"
 
 #: src/fifo.cpp:118
 msgid ""
@@ -214,6 +218,8 @@ msgstr " (abgebrochen)"
 #: src/licq.cpp:363
 msgid "$HOME not set or invalid; unable to determine config base directory"
 msgstr ""
+"$HOME wurde nicht gesetzt oder ist ungültig; kann Konfigurationsverzeichnis "
+"nicht ermitteln"
 
 #: src/contactlist/user.cpp:1671
 #, c-format
@@ -622,27 +628,31 @@ msgstr ""
 "wurde: %ld.\n"
 
 #: src/icq/oscarservice.cpp:355
-#, c-format
+#, fuzzy, c-format
 msgid "%sBuddy icon for unknown user (%s).\n"
-msgstr "%sTastatureingabe-Status für unbekannten Benutzer empfagen (%s).\n"
+msgstr "%sBuddy-Icon für unbekannten Nutzer (%s).\n"
 
 #: src/icq/oscarservice.cpp:413
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or "
 "hashlength (%d).\n"
 msgstr ""
+"%sBuddy-Icon Antwort für %s mit falschem oder nicht unterstütztem Hashtyp "
+"(%d) oder Hashlänge (%d).\n"
 
 #: src/icq/oscarservice.cpp:424
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"
 msgstr ""
+"%sBuddy-Icon Antwort für %s mit falschem oder nicht unterstütztem Bildtyp "
+"(0x%02x).\n"
 
 #: src/icq/oscarservice.cpp:382
-#, c-format
+#, fuzzy, c-format
 msgid "%sBuddy icon reply for %s.\n"
-msgstr ""
+msgstr "%sBuddy-Icon Antwort für %s.\n"
 
 #: src/icq/oscarservice.cpp:472
 #, c-format
