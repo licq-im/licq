@@ -248,7 +248,7 @@ msgstr "%d Minuten"
 #: src/fifo.cpp:324
 #, c-format
 msgid "%s %s: command with invalid status \"%s\""
-msgstr "%s%s: Kommando mit ungültigem Status \"%s\"\n"
+msgstr "%s%s: Kommando mit ungültigem Status \"%s\""
 
 #: src/fifo.cpp:803 src/fifo.cpp:813
 #, c-format
@@ -267,7 +267,7 @@ msgstr "%s %s: unbekanntes Kommando `%s'\n"
 #: src/fifo.cpp:438
 #, c-format
 msgid "%s `%s': bad protocol. ICQ only allowed"
-msgstr "%s `%s': Ungültiges Protokoll. Nur ICQ ist erlaubt\n"
+msgstr "%s `%s': Ungültiges Protokoll. Nur ICQ ist erlaubt"
 
 #: src/fifo.cpp:536
 #, c-format
@@ -277,27 +277,27 @@ msgstr "%s `%s': Ungültiges Protokoll. Nur ICQ ist erlaubt\n"
 #: src/icq/icq-srv.cpp:3247
 #, c-format
 msgid "%s from new user (%s), ignoring"
-msgstr "%s von neuem Benutzer (%s), wird ignoriert\n"
+msgstr "%s von neuem Benutzer (%s), wird ignoriert"
 
 #: src/fifo.cpp:969
 #, c-format
 msgid "%s is not a FIFO, disabling fifo support"
-msgstr "%s ist kein Fifo, Fifo-Unterstützung wird deaktiviert\n"
+msgstr "%s ist kein Fifo, Fifo-Unterstützung wird deaktiviert"
 
 #: src/icq/icq-srv.cpp:3254
 #, c-format
 msgid "%s through server from %s (%s)"
-msgstr "%s über den Server von %s (%s)\n"
+msgstr "%s über den Server von %s (%s)"
 
 #: src/icq/icq-srv.cpp:5319
 #, c-format
 msgid "%s update failed."
-msgstr "%s Aktualisierung fehlgeschlagen.\n"
+msgstr "%s Aktualisierung fehlgeschlagen."
 
 #: src/icq/icq-srv.cpp:5317
 #, c-format
 msgid "%s updated."
-msgstr "%s aktualisiert.\n"
+msgstr "%s aktualisiert."
 
 #: src/licq.cpp:316
 #, c-format
@@ -357,7 +357,7 @@ msgstr "%s%s (%s) hat bereits eine verschlüsselte Verbindung.\n"
 #: src/icq/icq-srv.cpp:2247
 #, c-format
 msgid "%s%s (%s) changed status: %s (v%d)%s.\n"
-msgstr "%s%s (%s) hat den Status geändert: %s (v%d)%s."
+msgstr "%s%s (%s) hat den Status geändert: %s (v%d)%s.\n"
 
 #: src/protocolmanager.cpp:490
 #, c-format
@@ -460,19 +460,19 @@ msgstr "%s: Geben Sie ein: `help Kommando'\n"
 #: src/fifo.cpp:478
 #, c-format
 msgid "%s: output redirected to \"%s\""
-msgstr "%s: Ausgabe nach \"%s\" umgeleitet\n"
+msgstr "%s: Ausgabe nach \"%s\" umgeleitet"
 
 #: src/fifo.cpp:474
 #, c-format
 msgid "%s: redirection to \"%s\" failed: %s"
-msgstr "%s: Umleitung nach \"%s\" ist fehlgeschlagen: %s\n"
+msgstr "%s: Umleitung nach \"%s\" ist fehlgeschlagen: %s"
 
 #: src/fifo.cpp:541
 #, c-format
 msgid "%s: user %s not on contact list, not retrieving info"
 msgstr ""
 "%s: %s ist nicht in Ihrer Kontaktliste, es werden keine Informationen "
-"heruntergeladen\n"
+"heruntergeladen"
 
 #: src/icq/icq-srv.cpp:5206
 #, c-format
@@ -1107,7 +1107,7 @@ msgid ""
 "%s"
 msgstr ""
 "%sLokaler TCP-Server lies sich nicht starten:\n"
-"%s\n"
+"%s"
 
 #: src/icq/icq-srv.cpp:4980
 #, c-format
@@ -2906,7 +2906,7 @@ msgstr "Aktiv"
 #: src/contactlist/usermanager.cpp:625
 #, c-format
 msgid "Added group %s (%u) to list from server"
-msgstr "Gruppe %s (%u) zu Serverliste hinzugefügt\n"
+msgstr "Gruppe %s (%u) zu Serverliste hinzugefügt"
 
 #: src/userevents.cpp:927
 msgid "Added to Contact List"
@@ -3564,17 +3564,17 @@ msgstr ""
 #: src/icq/icq-srv.cpp:3085
 #, c-format
 msgid "Authorization granted by %s"
-msgstr "Autorisation von %s erteilt\n"
+msgstr "Autorisation von %s erteilt"
 
 #: src/icq/icq-srv.cpp:3072
 #, c-format
 msgid "Authorization refused by %s"
-msgstr "Autorisation von %s abgelehnt\n"
+msgstr "Autorisation von %s abgelehnt"
 
 #: src/icq/icq-srv.cpp:3043
 #, c-format
 msgid "Authorization request from %s"
-msgstr "Autorisationsanfrage von %s\n"
+msgstr "Autorisationsanfrage von %s"
 
 #: src/statistics.cpp:41
 msgid "Auto Response Checked"
@@ -4297,7 +4297,7 @@ msgid ""
 "%s"
 msgstr ""
 "%sKann neue Verbindung nicht annehmen:\n"
-"%s\n"
+"%s"
 
 #: src/icq/codes.c:3442
 msgid "Cantonese"
@@ -5495,7 +5495,7 @@ msgid ""
 "Update general info on server to fix."
 msgstr ""
 "Aktuelles Licq GMT-Offset (%d) entspricht nicht dem System-GMT-Offset (%d).\n"
-"Bitte die allgemeinen Informationen auf dem Server bearbeiten.\n"
+"Bitte die allgemeinen Informationen auf dem Server bearbeiten."
 
 #: src/icq/codes.c:121
 msgid "Cyprus"
@@ -5588,11 +5588,11 @@ msgstr "Email-Ticker"
 
 #: src/icq/icq-srv.cpp:3168
 msgid "Email pager message"
-msgstr "Email-Pager-Nachricht\n"
+msgstr "Email-Pager-Nachricht"
 
 #: src/icq/icq-srv.cpp:4357
 msgid "Email pager offline message"
-msgstr "Offline Emailnachricht\n"
+msgstr "Offline Emailnachricht"
 
 #: src/icq/codes.c:3540
 msgid "Engineering"
@@ -5621,7 +5621,7 @@ msgid ""
 "%s"
 msgstr ""
 "Fehler beim Empfangen vom Server Socket:\n"
-"%s\n"
+"%s"
 
 #: src/icq/codes.c:3451
 msgid "Esperanto"
@@ -5667,7 +5667,7 @@ msgstr "Faeroe Inseln"
 #: src/plugins/pluginmanager.cpp:110 src/plugins/pluginmanager.cpp:173
 #, c-format
 msgid "Failed to find %s in plugin (%s): %s"
-msgstr "Konnte %s in Plugin (%s) nicht finden: %s\n"
+msgstr "Konnte %s in Plugin (%s) nicht finden: %s"
 
 #: src/plugins/pluginmanager.cpp:87 src/plugins/pluginmanager.cpp:137
 #, c-format
@@ -6085,7 +6085,7 @@ msgstr "Dateiübertragung"
 #: src/icq/filetransfer.cpp:639
 #, c-format
 msgid "File Transfer: Invalid data (%c) ignoring packet"
-msgstr "Dateiübertragung: Ungültige Daten (%c), Paket wird ignoriert\n"
+msgstr "Dateiübertragung: Ungültige Daten (%c), Paket wird ignoriert"
 
 #: src/icq/filetransfer.cpp:610
 msgid "File Transfer: Still waiting for the plugin to confirm file receive..."
@@ -6169,7 +6169,7 @@ msgstr "Französisch-Polynesien"
 #: src/icq/icq-srv.cpp:4373
 #, c-format
 msgid "From %s (%s)"
-msgstr "Von %s (%s)\n"
+msgstr "Von %s (%s)"
 
 #: src/contactlist/user.cpp:1612
 #, c-format
@@ -10327,12 +10327,12 @@ msgstr "Grenada"
 #: src/contactlist/usermanager.cpp:596
 #, c-format
 msgid "Group %s is already in list"
-msgstr "Gruppe %s ist bereits auf der Liste\n"
+msgstr "Gruppe %s ist bereits auf der Liste"
 
 #: src/contactlist/usermanager.cpp:748
 #, c-format
 msgid "Group name %s is already in list"
-msgstr "Gruppenname %s ist bereits auf der Liste\n"
+msgstr "Gruppenname %s ist bereits auf der Liste"
 
 #: src/icq/codes.c:152
 msgid "Guadeloupe"
@@ -12400,7 +12400,7 @@ msgstr "Ungültige Server-Nachricht:"
 
 #: src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031 src/icq/icq-srv.cpp:3033
 msgid "Invalid URL message"
-msgstr "Ungültige URL-Nachricht\n"
+msgstr "Ungültige URL-Nachricht"
 
 #: src/icq/icq-srv.cpp:3123
 msgid "Invalid added to list system message"
@@ -12416,7 +12416,7 @@ msgstr "Ungültige Kontaktlisten-Nachricht"
 
 #: src/icq/icq-srv.cpp:3174
 msgid "Invalid email pager system message"
-msgstr "Ungültige Email-Pager-Systemnachricht\n"
+msgstr "Ungültige Email-Pager-Systemnachricht"
 
 #: src/utility.cpp:120
 #, c-format
