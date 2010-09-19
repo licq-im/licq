@@ -628,12 +628,12 @@ msgstr ""
 "wurde: %ld.\n"
 
 #: src/icq/oscarservice.cpp:355
-#, fuzzy, c-format
+#, c-format
 msgid "%sBuddy icon for unknown user (%s).\n"
 msgstr "%sBuddy-Icon für unbekannten Nutzer (%s).\n"
 
 #: src/icq/oscarservice.cpp:413
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or "
 "hashlength (%d).\n"
@@ -642,7 +642,7 @@ msgstr ""
 "(%d) oder Hashlänge (%d).\n"
 
 #: src/icq/oscarservice.cpp:424
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"
 msgstr ""
@@ -650,7 +650,7 @@ msgstr ""
 "(0x%02x).\n"
 
 #: src/icq/oscarservice.cpp:382
-#, fuzzy, c-format
+#, c-format
 msgid "%sBuddy icon reply for %s.\n"
 msgstr "%sBuddy-Icon Antwort für %s.\n"
 
@@ -675,7 +675,7 @@ msgid ""
 "%sCan't send channel capability request while initializing service 0x%02X.\n"
 msgstr ""
 "%sKann channel capibility request nicht senden während der Initialisierung "
-"von Dienst 0x%20X.\n"
+"von Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:561
 #, c-format
@@ -701,7 +701,7 @@ msgstr "%sKann \"rate limits\" für Service 0x%02X nicht senden.\n"
 #, c-format
 msgid ""
 "%sCan't send request for rate-limits while initializing service 0x%02X.\n"
-msgstr "%sKann Anfrage für \"rate limits\" nicht senden für Dienst 0x%20X.\n"
+msgstr "%sKann Anfrage für \"rate limits\" nicht senden für Dienst 0x%02X.\n"
 
 #: src/icq/icq.cpp:987
 #, c-format
@@ -2604,9 +2604,9 @@ msgid "%sVerification required. Reconnecting...\n"
 msgstr "%sVerifikation notwendig. Verbinde erneut...\n"
 
 #: src/icq/icq-srv.cpp:5636
-#, c-format
+#, fuzzy, c-format
 msgid "%sWe're logging off..\n"
-msgstr "%sAbmelden...\n"
+msgstr "%sAbmelden..\n"
 
 #: src/icq/icq-srv.cpp:4897
 #, c-format
@@ -12406,7 +12406,7 @@ msgstr "Ungültige SMS-Nachricht"
 
 #: src/icq/icq-srv.cpp:3109 src/icq/icq-srv.cpp:4299
 msgid "Invalid Server Message"
-msgstr "Ungültige Server-Nachricht:"
+msgstr "Ungültige Server-Nachricht"
 
 #: src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031 src/icq/icq-srv.cpp:3033
 msgid "Invalid URL message"
@@ -12418,7 +12418,7 @@ msgstr "Ungültige \"Zur Kontaktliste hinzugefügt\"-Nachricht"
 
 #: src/icq/icq-srv.cpp:3048
 msgid "Invalid authorization request system message"
-msgstr "Ungültige Autorisationsanfrage-Nachricht:"
+msgstr "Ungültige Autorisationsanfragenachricht"
 
 #: src/icq/icq-tcp.cpp:1780 src/icq/icq-tcp.cpp:2059
 msgid "Invalid contact list message"
@@ -12446,22 +12446,19 @@ msgid "Invalid offline added to list system message"
 msgstr "Ungültige Offline \"Zur Kontaktliste hinzugefügt\"-Systemnachricht"
 
 #: src/icq/icq-srv.cpp:4243
-#, fuzzy
 msgid "Invalid offline authorization request system message"
-msgstr "Ungültige offline Autorisations-Anfrage Systemnachricht"
+msgstr "Ungültige Offlinesystemnachricht: Autorisationsanfrage"
 
 #: src/icq/icq-srv.cpp:4363
-#, fuzzy
 msgid "Invalid offline email pager system message"
 msgstr ""
-"%sUngültige offline Email-Systemnachricht:\n"
+"%sUngültige Offlinesystemnachricht: Email\n"
 "%s\n"
 
 #: src/icq/icq-srv.cpp:4338
-#, fuzzy
 msgid "Invalid offline web panel system message"
 msgstr ""
-"%sUngültige offline Web-Panel Systemnachricht:\n"
+"%sUngültige Offlinesystemnachricht: Web-Panel\n"
 "%s\n"
 
 #: src/plugins/pluginmanager.cpp:288
@@ -12475,9 +12472,8 @@ msgid "Invalid protocol plugin requested (%ld)"
 msgstr ""
 
 #: src/icq/icq-srv.cpp:2971
-#, fuzzy
 msgid "Invalid tag in SMS message"
-msgstr "%sUngültiges Tag in der SMS-Nachricht."
+msgstr "Ungültiges Tag in der SMS-Nachricht"
 
 #: src/plugins/pluginmanager.cpp:448
 msgid "Invalid thread in registration attempt"
@@ -12488,15 +12484,12 @@ msgid "Invalid thread in unregistration attempt"
 msgstr ""
 
 #: src/icq/icq-srv.cpp:3148
-#, fuzzy
 msgid "Invalid web panel system message"
-msgstr ""
-"%sUngültige Web-Panel Systemnachricht:\n"
-"%s\n"
+msgstr "Ungültige Systemnachricht Web-Panel"
 
 #: src/contactlist/user.cpp:1349
 msgid "Invisible"
-msgstr ""
+msgstr "Unsichtbar"
 
 #: src/icq/codes.c:165
 msgid "Iran (Islamic Republic of)"
@@ -12595,9 +12588,8 @@ msgid "Latvian"
 msgstr "Latvian"
 
 #: src/icq/codes.c:3546
-#, fuzzy
 msgid "Law"
-msgstr "Lao"
+msgstr "Recht"
 
 #: src/icq/codes.c:182
 msgid "Lebanon"
@@ -12620,22 +12612,22 @@ msgid "Licq Segmentation Violation Detected.\n"
 msgstr "Licq Speicherzugriffsfehler entdeckt.\n"
 
 #: src/licq.cpp:428
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Licq: %s cannot be opened for writing,\n"
 "      skipping lockfile protection."
 msgstr ""
-"%sLicq: %s kann nicht zum Schreiben geöffnet werden.\n"
-"%s      Lock-Datei Schutz wird nicht verwendet.\n"
+"Licq: %s kann nicht zum Schreiben geöffnet werden,\n"
+"      Lockdateischutz wird nicht verwendet.\n"
 
 #: src/licq.cpp:445
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Licq: Already running at pid %d.\n"
 "      Kill process or remove %s."
 msgstr ""
-"%sLicq: Läuft bereits mit der PID %d.\n"
-"%s      Prozess beenden oder %s entfernen.\n"
+"Licq: Läuft bereits mit der PID %d.\n"
+"      Prozess beenden oder %s entfernen.\n"
 
 #: src/icq/codes.c:186
 msgid "Liechtenstein"
@@ -13543,29 +13535,27 @@ msgid "Lithuanian"
 msgstr "Lithuanian"
 
 #: src/contactlist/usermanager.cpp:215
-#, fuzzy, c-format
+#, c-format
 msgid "Loading %d users"
-msgstr "%s%d Benutzer werden geladen.\n"
+msgstr "%d Benutzer werden geladen\n"
 
 #: src/contactlist/owner.cpp:96
-#, fuzzy, c-format
+#, c-format
 msgid "Loading owner configuration for %s"
-msgstr "%sBenutzerkonfiguration für %s.\n"
+msgstr "Benutzerkonfiguration für %s\n"
 
 #: src/contactlist/usermanager.cpp:113
-#, fuzzy
 msgid "Loading user configuration"
-msgstr "%sBenutzerkonfiguration.\n"
+msgstr "Benutzerkonfiguration\n"
 
 #: src/utility.cpp:67
-#, fuzzy
 msgid "Loading utilities"
-msgstr "%sWerkzeuge werden geladen.\n"
+msgstr "Werkzeuge werden geladen\n"
 
 #: src/daemon.cpp:272
-#, fuzzy, c-format
+#, c-format
 msgid "Local TCP server started on port %d"
-msgstr "%sLokaler TCP-Server wurde an Port %d gestartet.\n"
+msgstr "Lokaler TCP-Server wurde an Port %d gestartet"
 
 #: src/icq/codes.c:188
 msgid "Luxembourg"
