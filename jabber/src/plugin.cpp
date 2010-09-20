@@ -47,6 +47,8 @@ using Licq::gOnEventManager;
 using Licq::gLog;
 using std::string;
 
+const time_t PING_TIMEOUT = 60;
+
 Plugin::Plugin(const Config& config) :
   myConfig(config),
   myHandler(NULL),
@@ -67,12 +69,20 @@ int Plugin::run(int pipe)
 {
   fd_set readFds;
 
+  time_t lastPing = 0;
+  struct timeval pingTimeout;
+
   myDoRun = (pipe != -1);
   while (myDoRun)
   {
     FD_ZERO(&readFds);
     FD_SET(pipe, &readFds);
     int nfds = pipe + 1;
+    struct timeval* timeout = NULL;
+
+    const time_t now = ::time(NULL);
+    if (lastPing == 0)
+      lastPing = now;
 
     int sock = -1;
     if (myClient != NULL)
@@ -83,10 +93,24 @@ int Plugin::run(int pipe)
         FD_SET(sock, &readFds);
         if (sock > pipe)
           nfds = sock + 1;
+
+        if (lastPing + PING_TIMEOUT <= now)
+        {
+          myClient->ping();
+          lastPing = now;
+          pingTimeout.tv_sec = PING_TIMEOUT;
+        }
+        else
+          pingTimeout.tv_sec = std::min(PING_TIMEOUT, now - lastPing);
+
+        pingTimeout.tv_usec = 0;
+        timeout = &pingTimeout;
       }
     }
+    else
+      lastPing = 0;
 
-    if (::select(nfds, &readFds, NULL, NULL, NULL) > 0)
+    if (::select(nfds, &readFds, NULL, NULL, timeout) > 0)
     {
       if (sock != -1 && FD_ISSET(sock, &readFds))
         myClient->recv();
