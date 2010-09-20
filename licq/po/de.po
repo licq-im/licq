@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-09-13 20:46+0200\n"
-"PO-Revision-Date: 2010-09-19 22:43+0200\n"
+"PO-Revision-Date: 2010-09-20 22:18+0200\n"
 "Last-Translator: Arne Schmitz <arne.schmitz@gmx.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1019,12 +1019,12 @@ msgstr "%sEnde der offline-Nachrichten (nId: %04hx).\n"
 #: src/icq/oscarservice.cpp:339
 #, c-format
 msgid "%sError #%02x.%02x in BART request (%ld) for service 0x%02X.\n"
-msgstr ""
+msgstr "%sFehler #%02x.%02x in BART-Anfrage (%ld) für Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:296
 #, c-format
 msgid "%sError #%02x.%02x in control FAM request (%ld) for service 0x%02X.\n"
-msgstr ""
+msgstr "%sFehler #%02x.%02x in Kontoll-FAM-Anfrage (%ld) für Dienst 0x%02X.\n"
 
 #: src/icq/icq-srv.cpp:3770
 #, c-format
@@ -1066,16 +1066,22 @@ msgid ""
 "%sError when trying to resolve %s. getaddrinfo() returned %d\n"
 "."
 msgstr ""
+"%sFehler beim Versuch %s aufzulösen. getaddrinfo() hat %d zurückgeliefert\n"
+"."
 
 #: src/icq/oscarservice.cpp:634
 #, c-format
 msgid "%sEvent for unknown or unsupported service 0x%02X failed.\n"
 msgstr ""
+"%sEreignis für unbekannten oder nicht unterstützten Dienst 0x%02X "
+"fehlgeschlagen.\n"
 
 #: src/icq/oscarservice.cpp:178
 #, c-format
 msgid "%sEvent with unsupported subtype (%02X) for FAM %02X failed.\n"
 msgstr ""
+"%sEreignis mit nicht unterstütztem Untertyp (%02X) für FAM %02X "
+"fehlgeschlagen.\n"
 
 #: src/icq/icq-srv.cpp:288
 #, c-format
@@ -1310,17 +1316,23 @@ msgid ""
 "%sGive up waiting for channel capability list while initializing service 0x%"
 "02X.\n"
 msgstr ""
+"%sGebe das Warten auf die Kanalfähigkeitenliste auf, während der "
+"Initialisierung von Service 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:538
 #, c-format
 msgid "%sGive up waiting for rate-limits while initializing service 0x%02X.\n"
 msgstr ""
+"%sGebe das Warten auf die Ratenlimitierung auf, während der Initialisierung "
+"von Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:447
 #, c-format
 msgid ""
 "%sGive up waiting for redirect reply while initializing service 0x%02X.\n"
 msgstr ""
+"%sGebe das Warten auf die Umleitungsantwort auf, während der Initialisierung "
+"von Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:497
 #, c-format
@@ -1328,6 +1340,8 @@ msgid ""
 "%sGive up waiting for server ready packet while initializing service 0x%"
 "02X.\n"
 msgstr ""
+"%sGebe das Warten auf das \"Server bereit\"-Paket auf, während der "
+"Initialisierung von Dienst 0x%02X.\n"
 
 #: src/icq/icq-srv.cpp:3689
 #, c-format
@@ -1387,6 +1401,9 @@ msgid ""
 "File: %s\n"
 "Error code: %i\n"
 msgstr ""
+"%sIniFile: E/A-Fehler, konnte Dateigröße nicht ermitteln.\n"
+"Datei: %s\n"
+"Fehlercode: %i\n"
 
 #: src/inifile.cpp:79
 #, c-format
@@ -1447,12 +1464,12 @@ msgstr "%sInitialisiere Socket für Service 0x%02X.\n"
 #: src/inifile.cpp:512
 #, c-format
 msgid "%sInternal Error: IniFile::get, key=%s, data.type=%s\n"
-msgstr ""
+msgstr "%sInterner Fehler: IniFile::get, key=%s, data.type=%s\n"
 
 #: src/inifile.cpp:612
 #, c-format
 msgid "%sInternal Error: IniFile::set, key=%s, data.type=%s\n"
-msgstr ""
+msgstr "%sInterner Fehler: IniFile::set, key=%s, data.type=%s\n"
 
 #: src/icq/threads.cpp:802
 #, c-format
