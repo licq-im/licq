@@ -10,13 +10,13 @@ msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-09-13 20:46+0200\n"
-"PO-Revision-Date: 2009-02-20 11:27+0100\n"
+"PO-Revision-Date: 2010-09-20 22:18+0200\n"
 "Last-Translator: Arne Schmitz <arne.schmitz@gmx.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Language: de_DE\n"
@@ -47,7 +47,7 @@ msgid ""
 msgstr ""
 "\tdebuglvl <level>\n"
 "\t\tStellt ein, wieviel Informationen protokolliert werden.\n"
-"\t\tSchauen Sie sich <level> in \"Licq -h\" an.\n"
+"\t\tSchauen Sie sich <level> in \"Licq -h\" an\n"
 
 #: src/fifo.cpp:115
 msgid ""
@@ -103,7 +103,7 @@ msgid ""
 "\t\tSend a message to the given buddy.\n"
 msgstr ""
 "\tmessage <Benutzer> <Nachricht>\n"
-"\t\tSendet eine Nachricht an den Benutzer\n"
+"\t\tSendet eine Nachricht an den Benutzer.\n"
 
 #: src/fifo.cpp:97
 msgid ""
@@ -121,6 +121,10 @@ msgid ""
 "\t\tChanges picture for an account, or all accounts if no protocol entered.\n"
 "\t\tAn empty filename will remove the current picture.\n"
 msgstr ""
+"\tsetpicture <Dateiname> [<Prokoll>]\n"
+"\t\tÄndert das Bild für einen Zugang, oder alle Zugänge, falls kein "
+"Protokoll angegeben wurde.\n"
+"\t\tEin leerer Dateiname entfernt das aktuelle Bild.\n"
 
 #: src/fifo.cpp:91
 msgid ""
@@ -160,7 +164,7 @@ msgid ""
 "\t\tOpen the plugin message composer to <buddy>\n"
 msgstr ""
 "\tui_message <Benutzer>\n"
-"\t\tÖffnet den \"Nachricht senden\"-Dialog des GUI-Plugins.\n"
+"\t\tÖffnet den \"Nachricht senden\"-Dialog des GUI-Plugins\n"
 
 #: src/fifo.cpp:118
 msgid ""
@@ -214,6 +218,8 @@ msgstr " (abgebrochen)"
 #: src/licq.cpp:363
 msgid "$HOME not set or invalid; unable to determine config base directory"
 msgstr ""
+"$HOME wurde nicht gesetzt oder ist ungültig; kann Konfigurationsverzeichnis "
+"nicht ermitteln"
 
 #: src/contactlist/user.cpp:1671
 #, c-format
@@ -308,8 +314,8 @@ msgstr "%s Version %s, kompiliert am %s\n"
 #, c-format
 msgid ""
 "%s version %s.\n"
-"Usage:  Licq [-h] [-d #] [-b configdir] [-I] [-p plugin] [-l protoplugin] "
-"[-o file] [-- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n"
+"Usage:  Licq [-h] [-d #] [-b configdir] [-I] [-p plugin] [-l protoplugin] [-"
+"o file] [-- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n"
 "\n"
 " -h : this help screen (and any plugin help screens as well)\n"
 " -d : set what information is logged to standard output:\n"
@@ -346,8 +352,8 @@ msgstr ""
 " -I : Initialisierung des Basisordners erzwingen\n"
 " -p : Angegebenes Plugin laden\n"
 " -l : Angegebenes Protkollplugin laden\n"
-" -o : Fehlerausgabe nach <Datei> umleiten, kann auch ein Gerät sein (z. B. "
-"/dev/ttyp4)\n"
+" -o : Fehlerausgabe nach <Datei> umleiten, kann auch ein Gerät sein (z. B. /"
+"dev/ttyp4)\n"
 
 #: src/protocolmanager.cpp:457
 #, c-format
@@ -624,7 +630,7 @@ msgstr ""
 #: src/icq/oscarservice.cpp:355
 #, c-format
 msgid "%sBuddy icon for unknown user (%s).\n"
-msgstr "%sTastatureingabe-Status für unbekannten Benutzer empfagen (%s).\n"
+msgstr "%sBuddy-Icon für unbekannten Nutzer (%s).\n"
 
 #: src/icq/oscarservice.cpp:413
 #, c-format
@@ -632,17 +638,21 @@ msgid ""
 "%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or "
 "hashlength (%d).\n"
 msgstr ""
+"%sBuddy-Icon Antwort für %s mit falschem oder nicht unterstütztem Hashtyp (%"
+"d) oder Hashlänge (%d).\n"
 
 #: src/icq/oscarservice.cpp:424
 #, c-format
 msgid ""
 "%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"
 msgstr ""
+"%sBuddy-Icon Antwort für %s mit falschem oder nicht unterstütztem Bildtyp (0x"
+"%02x).\n"
 
 #: src/icq/oscarservice.cpp:382
 #, c-format
 msgid "%sBuddy icon reply for %s.\n"
-msgstr ""
+msgstr "%sBuddy-Icon Antwort für %s.\n"
 
 #: src/icq/oscarservice.cpp:472
 #, c-format
@@ -665,7 +675,7 @@ msgid ""
 "%sCan't send channel capability request while initializing service 0x%02X.\n"
 msgstr ""
 "%sKann channel capibility request nicht senden während der Initialisierung "
-"von Dienst 0x%20X.\n"
+"von Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:561
 #, c-format
@@ -691,7 +701,7 @@ msgstr "%sKann \"rate limits\" für Service 0x%02X nicht senden.\n"
 #, c-format
 msgid ""
 "%sCan't send request for rate-limits while initializing service 0x%02X.\n"
-msgstr "%sKann Anfrage für \"rate limits\" nicht senden für Dienst 0x%20X.\n"
+msgstr "%sKann Anfrage für \"rate limits\" nicht senden für Dienst 0x%02X.\n"
 
 #: src/icq/icq.cpp:987
 #, c-format
@@ -712,8 +722,8 @@ msgstr "%sDateiübertragung an %s wird abgebrochen (#%hu).\n"
 #, c-format
 msgid "%sCancelling secure channel request to %s (#%hu).\n"
 msgstr ""
-"%sAnforderung einer verschlüsselten Verbindung zu %s wird abgebrochen "
-"(#%hu).\n"
+"%sAnforderung einer verschlüsselten Verbindung zu %s wird abgebrochen (#%"
+"hu).\n"
 
 #: src/socket.cpp:713
 #, c-format
@@ -1009,12 +1019,12 @@ msgstr "%sEnde der offline-Nachrichten (nId: %04hx).\n"
 #: src/icq/oscarservice.cpp:339
 #, c-format
 msgid "%sError #%02x.%02x in BART request (%ld) for service 0x%02X.\n"
-msgstr ""
+msgstr "%sFehler #%02x.%02x in BART-Anfrage (%ld) für Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:296
 #, c-format
 msgid "%sError #%02x.%02x in control FAM request (%ld) for service 0x%02X.\n"
-msgstr ""
+msgstr "%sFehler #%02x.%02x in Kontoll-FAM-Anfrage (%ld) für Dienst 0x%02X.\n"
 
 #: src/icq/icq-srv.cpp:3770
 #, c-format
@@ -1046,8 +1056,8 @@ msgid ""
 "%sError sending event (FAM #%02X, Subtype #%02X, Sequence #%hu):\n"
 "%s%s.\n"
 msgstr ""
-"%sFehler beim senden des Ereignisses (FAM #%02X, Subtype #%02X, Sequence "
-"#%hu):\n"
+"%sFehler beim senden des Ereignisses (FAM #%02X, Subtype #%02X, Sequence #%"
+"hu):\n"
 "%s%s.\n"
 
 #: src/socket.cpp:299
@@ -1056,16 +1066,22 @@ msgid ""
 "%sError when trying to resolve %s. getaddrinfo() returned %d\n"
 "."
 msgstr ""
+"%sFehler beim Versuch %s aufzulösen. getaddrinfo() hat %d zurückgeliefert\n"
+"."
 
 #: src/icq/oscarservice.cpp:634
 #, c-format
 msgid "%sEvent for unknown or unsupported service 0x%02X failed.\n"
 msgstr ""
+"%sEreignis für unbekannten oder nicht unterstützten Dienst 0x%02X "
+"fehlgeschlagen.\n"
 
 #: src/icq/oscarservice.cpp:178
 #, c-format
 msgid "%sEvent with unsupported subtype (%02X) for FAM %02X failed.\n"
 msgstr ""
+"%sEreignis mit nicht unterstütztem Untertyp (%02X) für FAM %02X "
+"fehlgeschlagen.\n"
 
 #: src/icq/icq-srv.cpp:288
 #, c-format
@@ -1297,27 +1313,35 @@ msgstr "%sAllgemeine Informationen zu %s (%s).\n"
 #: src/icq/oscarservice.cpp:518
 #, c-format
 msgid ""
-"%sGive up waiting for channel capability list while initializing service "
-"0x%02X.\n"
+"%sGive up waiting for channel capability list while initializing service 0x%"
+"02X.\n"
 msgstr ""
+"%sGebe das Warten auf die Kanalfähigkeitenliste auf, während der "
+"Initialisierung von Service 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:538
 #, c-format
 msgid "%sGive up waiting for rate-limits while initializing service 0x%02X.\n"
 msgstr ""
+"%sGebe das Warten auf die Ratenlimitierung auf, während der Initialisierung "
+"von Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:447
 #, c-format
 msgid ""
 "%sGive up waiting for redirect reply while initializing service 0x%02X.\n"
 msgstr ""
+"%sGebe das Warten auf die Umleitungsantwort auf, während der Initialisierung "
+"von Dienst 0x%02X.\n"
 
 #: src/icq/oscarservice.cpp:497
 #, c-format
 msgid ""
-"%sGive up waiting for server ready packet while initializing service "
-"0x%02X.\n"
+"%sGive up waiting for server ready packet while initializing service 0x%"
+"02X.\n"
 msgstr ""
+"%sGebe das Warten auf das \"Server bereit\"-Paket auf, während der "
+"Initialisierung von Dienst 0x%02X.\n"
 
 #: src/icq/icq-srv.cpp:3689
 #, c-format
@@ -1377,6 +1401,9 @@ msgid ""
 "File: %s\n"
 "Error code: %i\n"
 msgstr ""
+"%sIniFile: E/A-Fehler, konnte Dateigröße nicht ermitteln.\n"
+"Datei: %s\n"
+"Fehlercode: %i\n"
 
 #: src/inifile.cpp:79
 #, c-format
@@ -1437,12 +1464,12 @@ msgstr "%sInitialisiere Socket für Service 0x%02X.\n"
 #: src/inifile.cpp:512
 #, c-format
 msgid "%sInternal Error: IniFile::get, key=%s, data.type=%s\n"
-msgstr ""
+msgstr "%sInterner Fehler: IniFile::get, key=%s, data.type=%s\n"
 
 #: src/inifile.cpp:612
 #, c-format
 msgid "%sInternal Error: IniFile::set, key=%s, data.type=%s\n"
-msgstr ""
+msgstr "%sInterner Fehler: IniFile::set, key=%s, data.type=%s\n"
 
 #: src/icq/threads.cpp:802
 #, c-format
@@ -1597,8 +1624,8 @@ msgstr ""
 msgid ""
 "%sPackUnsignedLong(): Trying to pack more data than Licq::Buffer can hold!\n"
 msgstr ""
-"%sPackUnsignedLong(): Es wurde versucht, mehr Daten zu packen als "
-"Licq::Buffer aufnehmen kann!\n"
+"%sPackUnsignedLong(): Es wurde versucht, mehr Daten zu packen als Licq::"
+"Buffer aufnehmen kann!\n"
 
 #: src/buffer.cpp:430
 #, c-format
@@ -1606,16 +1633,16 @@ msgid ""
 "%sPackUnsignedLongBE(): Trying to pack more data than Licq::Buffer can "
 "hold!\n"
 msgstr ""
-"%sPackUnsignedLongBE(): Es wurde versucht, mehr Daten zu packen als "
-"Licq::Buffer aufnehmen kann!\n"
+"%sPackUnsignedLongBE(): Es wurde versucht, mehr Daten zu packen als Licq::"
+"Buffer aufnehmen kann!\n"
 
 #: src/buffer.cpp:516
 #, c-format
 msgid ""
 "%sPackUnsignedShort(): Trying to pack more data than Licq::Buffer can hold!\n"
 msgstr ""
-"%sPackUnsignedShort(): Es wurde versucht, mehr Daten zu packen als "
-"Licq::Buffer aufnehmen kann!\n"
+"%sPackUnsignedShort(): Es wurde versucht, mehr Daten zu packen als Licq::"
+"Buffer aufnehmen kann!\n"
 
 #: src/buffer.cpp:529
 #, c-format
@@ -1623,8 +1650,8 @@ msgid ""
 "%sPackUnsignedShortBE(): Trying to pack more data than Licq::Buffer can "
 "hold!\n"
 msgstr ""
-"%sPackUnsignedShortBE(): Es wurde versucht, mehr Daten zu packen als "
-"Licq::Buffer aufnehmen kann!\n"
+"%sPackUnsignedShortBE(): Es wurde versucht, mehr Daten zu packen als Licq::"
+"Buffer aufnehmen kann!\n"
 
 #: src/icq/oscarservice.cpp:226
 #, c-format
@@ -2241,8 +2268,8 @@ msgstr "%sDer Server sendete Informationen zur maximalen Datenrate.\n"
 #, c-format
 msgid "%sServer sent us rate-limits information for service 0x%02X.\n"
 msgstr ""
-"%sDer Server hat uns Informationen zu \"rate limits\" gesendet für Dienst "
-"0x%02X.\n"
+"%sDer Server hat uns Informationen zu \"rate limits\" gesendet für Dienst 0x%"
+"02X.\n"
 
 #: src/icq/icq-srv.cpp:1869
 #, c-format
@@ -2594,9 +2621,9 @@ msgid "%sVerification required. Reconnecting...\n"
 msgstr "%sVerifikation notwendig. Verbinde erneut...\n"
 
 #: src/icq/icq-srv.cpp:5636
-#, c-format
+#, fuzzy, c-format
 msgid "%sWe're logging off..\n"
-msgstr "%sAbmelden...\n"
+msgstr "%sAbmelden..\n"
 
 #: src/icq/icq-srv.cpp:4897
 #, c-format
@@ -3133,8 +3160,8 @@ msgstr ""
 
 #: src/icq/codes.c:365
 msgid ""
-"Art, Culture and Humanities/Art, Literature and Humanities/Artists "
-"Talk/Artists Talk"
+"Art, Culture and Humanities/Art, Literature and Humanities/Artists Talk/"
+"Artists Talk"
 msgstr ""
 
 #: src/icq/codes.c:366
@@ -3432,20 +3459,20 @@ msgstr ""
 
 #: src/icq/codes.c:416
 msgid ""
-"Art, Culture and Humanities/Art, Literature and Humanities/Other "
-"Humanities/History"
+"Art, Culture and Humanities/Art, Literature and Humanities/Other Humanities/"
+"History"
 msgstr ""
 
 #: src/icq/codes.c:417
 msgid ""
-"Art, Culture and Humanities/Art, Literature and Humanities/Other "
-"Humanities/Philosophy"
+"Art, Culture and Humanities/Art, Literature and Humanities/Other Humanities/"
+"Philosophy"
 msgstr ""
 
 #: src/icq/codes.c:418
 msgid ""
-"Art, Culture and Humanities/Art, Literature and Humanities/Other "
-"Humanities/Sociology"
+"Art, Culture and Humanities/Art, Literature and Humanities/Other Humanities/"
+"Sociology"
 msgstr ""
 
 #: src/icq/codes.c:419
@@ -3734,8 +3761,8 @@ msgstr ""
 
 #: src/icq/codes.c:436
 msgid ""
-"Business Sectors, Professionals, "
-"Associations/Agriculture/Agriculture/Agriculture"
+"Business Sectors, Professionals, Associations/Agriculture/Agriculture/"
+"Agriculture"
 msgstr ""
 
 #: src/icq/codes.c:437
@@ -3817,8 +3844,8 @@ msgstr ""
 
 #: src/icq/codes.c:452
 msgid ""
-"Business Sectors, Professionals, Associations/Consumer Goods/Consumer "
-"Goods/Consumer Goods"
+"Business Sectors, Professionals, Associations/Consumer Goods/Consumer Goods/"
+"Consumer Goods"
 msgstr ""
 
 #: src/icq/codes.c:453
@@ -3827,32 +3854,32 @@ msgstr ""
 
 #: src/icq/codes.c:454
 msgid ""
-"Business Sectors, Professionals, Associations/Creative "
-"Professionals/Creative Professionals"
+"Business Sectors, Professionals, Associations/Creative Professionals/"
+"Creative Professionals"
 msgstr ""
 
 #: src/icq/codes.c:455
 msgid ""
-"Business Sectors, Professionals, Associations/Creative "
-"Professionals/Creative Professionals/Architects"
+"Business Sectors, Professionals, Associations/Creative Professionals/"
+"Creative Professionals/Architects"
 msgstr ""
 
 #: src/icq/codes.c:456
 msgid ""
-"Business Sectors, Professionals, Associations/Creative "
-"Professionals/Creative Professionals/Creative Professionals - Other"
+"Business Sectors, Professionals, Associations/Creative Professionals/"
+"Creative Professionals/Creative Professionals - Other"
 msgstr ""
 
 #: src/icq/codes.c:457
 msgid ""
-"Business Sectors, Professionals, Associations/Creative "
-"Professionals/Creative Professionals/Film and TV Industry"
+"Business Sectors, Professionals, Associations/Creative Professionals/"
+"Creative Professionals/Film and TV Industry"
 msgstr ""
 
 #: src/icq/codes.c:458
 msgid ""
-"Business Sectors, Professionals, Associations/Creative "
-"Professionals/Creative Professionals/Journalism"
+"Business Sectors, Professionals, Associations/Creative Professionals/"
+"Creative Professionals/Journalism"
 msgstr ""
 
 #: src/icq/codes.c:459
@@ -3865,8 +3892,8 @@ msgstr ""
 
 #: src/icq/codes.c:461
 msgid ""
-"Business Sectors, Professionals, "
-"Associations/Economists/Economists/Economists"
+"Business Sectors, Professionals, Associations/Economists/Economists/"
+"Economists"
 msgstr ""
 
 #: src/icq/codes.c:462
@@ -3893,8 +3920,8 @@ msgstr ""
 
 #: src/icq/codes.c:467
 msgid ""
-"Business Sectors, Professionals, Associations/Export, Import/Export, "
-"Import/Export, Import"
+"Business Sectors, Professionals, Associations/Export, Import/Export, Import/"
+"Export, Import"
 msgstr ""
 
 #: src/icq/codes.c:468
@@ -3937,8 +3964,8 @@ msgstr ""
 
 #: src/icq/codes.c:476
 msgid ""
-"Business Sectors, Professionals, "
-"Associations/Government/Government/Government- General"
+"Business Sectors, Professionals, Associations/Government/Government/"
+"Government- General"
 msgstr ""
 
 #: src/icq/codes.c:477
@@ -3978,14 +4005,14 @@ msgstr ""
 
 #: src/icq/codes.c:485
 msgid ""
-"Business Sectors, Professionals, Associations/Machinary and "
-"Equipment/Machinary and Equipment"
+"Business Sectors, Professionals, Associations/Machinary and Equipment/"
+"Machinary and Equipment"
 msgstr ""
 
 #: src/icq/codes.c:486
 msgid ""
-"Business Sectors, Professionals, Associations/Machinary and "
-"Equipment/Machinary and Equipment/Machinary and Equipment"
+"Business Sectors, Professionals, Associations/Machinary and Equipment/"
+"Machinary and Equipment/Machinary and Equipment"
 msgstr ""
 
 #: src/icq/codes.c:487
@@ -4061,14 +4088,14 @@ msgstr ""
 
 #: src/icq/codes.c:501
 msgid ""
-"Business Sectors, Professionals, Associations/Professional "
-"Electronics/Professional Electronics"
+"Business Sectors, Professionals, Associations/Professional Electronics/"
+"Professional Electronics"
 msgstr ""
 
 #: src/icq/codes.c:502
 msgid ""
-"Business Sectors, Professionals, Associations/Professional "
-"Electronics/Professional Electronics/Professional Electronics"
+"Business Sectors, Professionals, Associations/Professional Electronics/"
+"Professional Electronics/Professional Electronics"
 msgstr ""
 
 #: src/icq/codes.c:503
@@ -4082,8 +4109,8 @@ msgstr ""
 
 #: src/icq/codes.c:505
 msgid ""
-"Business Sectors, Professionals, Associations/Public Sectors/Public "
-"Sectors/Public Sectors"
+"Business Sectors, Professionals, Associations/Public Sectors/Public Sectors/"
+"Public Sectors"
 msgstr ""
 
 #: src/icq/codes.c:506
@@ -4217,8 +4244,8 @@ msgstr ""
 
 #: src/icq/codes.c:532
 msgid ""
-"Business Sectors, Professionals, "
-"Associations/Retail/Retail/Telecommunications"
+"Business Sectors, Professionals, Associations/Retail/Retail/"
+"Telecommunications"
 msgstr ""
 
 #: src/icq/codes.c:533
@@ -4548,110 +4575,110 @@ msgstr ""
 
 #: src/icq/codes.c:575
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Chat Cafe"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Chat Cafe"
 msgstr ""
 
 #: src/icq/codes.c:576
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Chat Corner"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Chat Corner"
 msgstr ""
 
 #: src/icq/codes.c:577
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Chat Etc"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Chat Etc"
 msgstr ""
 
 #: src/icq/codes.c:578
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Chat Lounge"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Chat Lounge"
 msgstr ""
 
 #: src/icq/codes.c:579
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Chat Zone"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Chat Zone"
 msgstr ""
 
 #: src/icq/codes.c:580
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Chatters Only"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Chatters Only"
 msgstr ""
 
 #: src/icq/codes.c:581
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/General Chat"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"General Chat"
 msgstr ""
 
 #: src/icq/codes.c:582
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/General Chat 2"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"General Chat 2"
 msgstr ""
 
 #: src/icq/codes.c:583
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Hangin Out"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Hangin Out"
 msgstr ""
 
 #: src/icq/codes.c:584
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Interracial"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Interracial"
 msgstr ""
 
 #: src/icq/codes.c:585
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Just Chatting"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Just Chatting"
 msgstr ""
 
 #: src/icq/codes.c:586
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Meeting People"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Meeting People"
 msgstr ""
 
 #: src/icq/codes.c:587
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Mingling"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Mingling"
 msgstr ""
 
 #: src/icq/codes.c:588
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Mingling 2"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Mingling 2"
 msgstr ""
 
 #: src/icq/codes.c:589
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Mingling 3"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Mingling 3"
 msgstr ""
 
 #: src/icq/codes.c:590
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Peace Talk"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Peace Talk"
 msgstr ""
 
 #: src/icq/codes.c:591
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Singles Chat"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Singles Chat"
 msgstr ""
 
 #: src/icq/codes.c:592
 msgid ""
-"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and "
-"Chats/People/Singles Chat 2"
+"Chat, Mingling, Virtual Hangout/Hanging Out - Mingling, and Chats/People/"
+"Singles Chat 2"
 msgstr ""
 
 #: src/icq/codes.c:107
@@ -4738,44 +4765,44 @@ msgstr ""
 
 #: src/icq/codes.c:597
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Desktop User Groups"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Desktop User Groups"
 msgstr ""
 
 #: src/icq/codes.c:598
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Digital Cameras"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Digital Cameras"
 msgstr ""
 
 #: src/icq/codes.c:599
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Firewalls"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Firewalls"
 msgstr ""
 
 #: src/icq/codes.c:600
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/General Hardware Talk"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"General Hardware Talk"
 msgstr ""
 
 #: src/icq/codes.c:601
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Hardware User Groups"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Hardware User Groups"
 msgstr ""
 
 #: src/icq/codes.c:602
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Laptop User Groups"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Laptop User Groups"
 msgstr ""
 
 #: src/icq/codes.c:603
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Macintosh User Groups"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Macintosh User Groups"
 msgstr ""
 
 #: src/icq/codes.c:604
@@ -4786,14 +4813,14 @@ msgstr ""
 
 #: src/icq/codes.c:605
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Networking"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Networking"
 msgstr ""
 
 #: src/icq/codes.c:606
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Office Equipment"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Office Equipment"
 msgstr ""
 
 #: src/icq/codes.c:607
@@ -4804,14 +4831,14 @@ msgstr ""
 
 #: src/icq/codes.c:608
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Printer User Groups"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Printer User Groups"
 msgstr ""
 
 #: src/icq/codes.c:609
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Hardware "
-"Users/Routers"
+"Computers, IP Telephony/Computers and Internet/Computer Hardware Users/"
+"Routers"
 msgstr ""
 
 #: src/icq/codes.c:610
@@ -4832,8 +4859,8 @@ msgstr ""
 
 #: src/icq/codes.c:613
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer "
-"Industry/Organizations and Associations"
+"Computers, IP Telephony/Computers and Internet/Computer Industry/"
+"Organizations and Associations"
 msgstr ""
 
 #: src/icq/codes.c:614
@@ -4893,14 +4920,14 @@ msgstr ""
 
 #: src/icq/codes.c:624
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Asymetrics"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Asymetrics"
 msgstr ""
 
 #: src/icq/codes.c:625
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Autodesk"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Autodesk"
 msgstr ""
 
 #: src/icq/codes.c:626
@@ -4910,8 +4937,8 @@ msgstr ""
 
 #: src/icq/codes.c:627
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Borland"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Borland"
 msgstr ""
 
 #: src/icq/codes.c:628
@@ -4927,20 +4954,20 @@ msgstr ""
 
 #: src/icq/codes.c:630
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Digidesign"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Digidesign"
 msgstr ""
 
 #: src/icq/codes.c:631
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Discreet"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Discreet"
 msgstr ""
 
 #: src/icq/codes.c:632
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Distributors"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Distributors"
 msgstr ""
 
 #: src/icq/codes.c:633
@@ -4950,56 +4977,56 @@ msgstr ""
 
 #: src/icq/codes.c:634
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Fractal"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Fractal"
 msgstr ""
 
 #: src/icq/codes.c:635
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/General Software Talk"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"General Software Talk"
 msgstr ""
 
 #: src/icq/codes.c:636
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Interactive Effects"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Interactive Effects"
 msgstr ""
 
 #: src/icq/codes.c:637
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Kinetix"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Kinetix"
 msgstr ""
 
 #: src/icq/codes.c:638
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Macromedia"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Macromedia"
 msgstr ""
 
 #: src/icq/codes.c:639
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/MetaTools"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"MetaTools"
 msgstr ""
 
 #: src/icq/codes.c:640
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Microsoft"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Microsoft"
 msgstr ""
 
 #: src/icq/codes.c:641
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Multigen"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Multigen"
 msgstr ""
 
 #: src/icq/codes.c:642
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Multimedia"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Multimedia"
 msgstr ""
 
 #: src/icq/codes.c:643
@@ -5009,8 +5036,8 @@ msgstr ""
 
 #: src/icq/codes.c:644
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Netscape"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Netscape"
 msgstr ""
 
 #: src/icq/codes.c:645
@@ -5020,8 +5047,8 @@ msgstr ""
 
 #: src/icq/codes.c:646
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Operating System Users"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Operating System Users"
 msgstr ""
 
 #: src/icq/codes.c:647
@@ -5031,8 +5058,8 @@ msgstr ""
 
 #: src/icq/codes.c:648
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Oreilley"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Oreilley"
 msgstr ""
 
 #: src/icq/codes.c:649
@@ -5048,8 +5075,8 @@ msgstr ""
 
 #: src/icq/codes.c:651
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Programming"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Programming"
 msgstr ""
 
 #: src/icq/codes.c:652
@@ -5064,14 +5091,14 @@ msgstr ""
 
 #: src/icq/codes.c:654
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Sausage"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Sausage"
 msgstr ""
 
 #: src/icq/codes.c:655
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Screen Savers"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Screen Savers"
 msgstr ""
 
 #: src/icq/codes.c:656
@@ -5081,14 +5108,14 @@ msgstr ""
 
 #: src/icq/codes.c:657
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Shareware and Freeware"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Shareware and Freeware"
 msgstr ""
 
 #: src/icq/codes.c:658
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Software Talk"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Software Talk"
 msgstr ""
 
 #: src/icq/codes.c:659
@@ -5098,8 +5125,8 @@ msgstr ""
 
 #: src/icq/codes.c:660
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Computer Software "
-"Users/Symantec"
+"Computers, IP Telephony/Computers and Internet/Computer Software Users/"
+"Symantec"
 msgstr ""
 
 #: src/icq/codes.c:661
@@ -5124,74 +5151,74 @@ msgstr ""
 
 #: src/icq/codes.c:665
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Graphic Design and Publishing"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Graphic Design and Publishing"
 msgstr ""
 
 #: src/icq/codes.c:666
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/HTML Software"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"HTML Software"
 msgstr ""
 
 #: src/icq/codes.c:667
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/ICQ ListMasters"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"ICQ ListMasters"
 msgstr ""
 
 #: src/icq/codes.c:668
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/ICQ Tools for the Web"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"ICQ Tools for the Web"
 msgstr ""
 
 #: src/icq/codes.c:669
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Java and ActiveX Software"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Java and ActiveX Software"
 msgstr ""
 
 #: src/icq/codes.c:670
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Other Webmaster Subjects"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Other Webmaster Subjects"
 msgstr ""
 
 #: src/icq/codes.c:671
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Resources Exchange"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Resources Exchange"
 msgstr ""
 
 #: src/icq/codes.c:672
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/VRML and 3D Software"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"VRML and 3D Software"
 msgstr ""
 
 #: src/icq/codes.c:673
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Web Design"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Web Design"
 msgstr ""
 
 #: src/icq/codes.c:674
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Web Programming and Development"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Web Programming and Development"
 msgstr ""
 
 #: src/icq/codes.c:675
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Web Servers"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Web Servers"
 msgstr ""
 
 #: src/icq/codes.c:676
 msgid ""
-"Computers, IP Telephony/Computers and Internet/Web Master's and Site "
-"Owner's/Webmasters and Site Owners"
+"Computers, IP Telephony/Computers and Internet/Web Master's and Site Owner's/"
+"Webmasters and Site Owners"
 msgstr ""
 
 #: src/icq/codes.c:677
@@ -5215,8 +5242,8 @@ msgstr ""
 #: src/icq/codes.c:680
 msgid ""
 "Computers, IP Telephony/Internet Telephony,Voice, Video, Data Conferencing "
-"and Collaboration/Voice, Video, Data Conferencing and "
-"Collaboration/Conferencing"
+"and Collaboration/Voice, Video, Data Conferencing and Collaboration/"
+"Conferencing"
 msgstr ""
 
 #: src/icq/codes.c:681
@@ -5242,8 +5269,8 @@ msgstr ""
 #: src/icq/codes.c:684
 msgid ""
 "Computers, IP Telephony/Internet Telephony,Voice, Video, Data Conferencing "
-"and Collaboration/Voice, Video, Data Conferencing and "
-"Collaboration/Microsoft NetMeeting"
+"and Collaboration/Voice, Video, Data Conferencing and Collaboration/"
+"Microsoft NetMeeting"
 msgstr ""
 
 #: src/icq/codes.c:685
@@ -5356,8 +5383,8 @@ msgstr ""
 
 #: src/icq/codes.c:704
 msgid ""
-"Consumer and "
-"Shopping/Consumer-Electronics/Consumer-Electronics/Consumer-Electronics"
+"Consumer and Shopping/Consumer-Electronics/Consumer-Electronics/Consumer-"
+"Electronics"
 msgstr ""
 
 #: src/icq/codes.c:705
@@ -5737,50 +5764,50 @@ msgstr ""
 
 #: src/icq/codes.c:728
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Celebrations"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Celebrations"
 msgstr ""
 
 #: src/icq/codes.c:729
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Concerts"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Concerts"
 msgstr ""
 
 #: src/icq/codes.c:730
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Conventions"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Conventions"
 msgstr ""
 
 #: src/icq/codes.c:731
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Family Events"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Family Events"
 msgstr ""
 
 #: src/icq/codes.c:732
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Other Events"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Other Events"
 msgstr ""
 
 #: src/icq/codes.c:733
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Reunions"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Reunions"
 msgstr ""
 
 #: src/icq/codes.c:734
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Sports Events"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Sports Events"
 msgstr ""
 
 #: src/icq/codes.c:735
 msgid ""
-"Family Life, Parenting/Future Event Participants/Future Event "
-"Participants/Trips"
+"Family Life, Parenting/Future Event Participants/Future Event Participants/"
+"Trips"
 msgstr ""
 
 #: src/icq/codes.c:736
@@ -6207,8 +6234,8 @@ msgstr ""
 
 #: src/icq/codes.c:807
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Board "
-"Games/Backgammon/Backgammon"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Board Games/Backgammon/"
+"Backgammon"
 msgstr ""
 
 #: src/icq/codes.c:808
@@ -6227,8 +6254,8 @@ msgstr ""
 
 #: src/icq/codes.c:811
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Board Games/DND and "
-"RPG/DND and RPG"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Board Games/DND and RPG/"
+"DND and RPG"
 msgstr ""
 
 #: src/icq/codes.c:812
@@ -6238,8 +6265,8 @@ msgstr ""
 
 #: src/icq/codes.c:813
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Board "
-"Games/Monopoly/Monopoly"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Board Games/Monopoly/"
+"Monopoly"
 msgstr ""
 
 #: src/icq/codes.c:814
@@ -6705,1022 +6732,1022 @@ msgstr ""
 
 #: src/icq/codes.c:891
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B"
 msgstr ""
 
 #: src/icq/codes.c:892
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/A-10 Warthog"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/A-10 Warthog"
 msgstr ""
 
 #: src/icq/codes.c:893
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/AHX-1"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/AHX-1"
 msgstr ""
 
 #: src/icq/codes.c:894
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Aftermath"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Aftermath"
 msgstr ""
 
 #: src/icq/codes.c:895
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Age of Empires"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Age of Empires"
 msgstr ""
 
 #: src/icq/codes.c:896
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Alone in the Dark Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Alone in the Dark Series"
 msgstr ""
 
 #: src/icq/codes.c:897
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Army Men"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Army Men"
 msgstr ""
 
 #: src/icq/codes.c:898
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Australian Rugby League"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Australian Rugby League"
 msgstr ""
 
 #: src/icq/codes.c:899
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Baldurs Gate"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Baldurs Gate"
 msgstr ""
 
 #: src/icq/codes.c:900
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/BattleZone"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/BattleZone"
 msgstr ""
 
 #: src/icq/codes.c:901
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Battlestations"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Battlestations"
 msgstr ""
 
 #: src/icq/codes.c:902
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Betrayal at Antara"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Betrayal at Antara"
 msgstr ""
 
 #: src/icq/codes.c:903
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Black Dahlia"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Black Dahlia"
 msgstr ""
 
 #: src/icq/codes.c:904
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/A-B/Blood"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"A-B/Blood"
 msgstr ""
 
 #: src/icq/codes.c:905
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D"
 msgstr ""
 
 #: src/icq/codes.c:906
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Carmen Sandiego"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Carmen Sandiego"
 msgstr ""
 
 #: src/icq/codes.c:907
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Circle of Blood"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Circle of Blood"
 msgstr ""
 
 #: src/icq/codes.c:908
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Civilization Series and Civnet"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Civilization Series and Civnet"
 msgstr ""
 
 #: src/icq/codes.c:909
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Close Combat"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Close Combat"
 msgstr ""
 
 #: src/icq/codes.c:910
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Comanche Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Comanche Series"
 msgstr ""
 
 #: src/icq/codes.c:911
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Command and Conquer Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Command and Conquer Series"
 msgstr ""
 
 #: src/icq/codes.c:912
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Commandos"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Commandos"
 msgstr ""
 
 #: src/icq/codes.c:913
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Conquest of a New World"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Conquest of a New World"
 msgstr ""
 
 #: src/icq/codes.c:914
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Cricket"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Cricket"
 msgstr ""
 
 #: src/icq/codes.c:915
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Crusader Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Crusader Series"
 msgstr ""
 
 #: src/icq/codes.c:916
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Cybermage"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Cybermage"
 msgstr ""
 
 #: src/icq/codes.c:917
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Daikatana"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Daikatana"
 msgstr ""
 
 #: src/icq/codes.c:918
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Dark Colony"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Dark Colony"
 msgstr ""
 
 #: src/icq/codes.c:919
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Dark Forces Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Dark Forces Series"
 msgstr ""
 
 #: src/icq/codes.c:920
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Dark Reign"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Dark Reign"
 msgstr ""
 
 #: src/icq/codes.c:921
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Darklight"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Darklight"
 msgstr ""
 
 #: src/icq/codes.c:922
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Descent Freespace"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Descent Freespace"
 msgstr ""
 
 #: src/icq/codes.c:923
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Descent Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Descent Series"
 msgstr ""
 
 #: src/icq/codes.c:924
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Diablo Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Diablo Series"
 msgstr ""
 
 #: src/icq/codes.c:925
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Doom Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Doom Series"
 msgstr ""
 
 #: src/icq/codes.c:926
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Duke Nukem Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Duke Nukem Series"
 msgstr ""
 
 #: src/icq/codes.c:927
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Dune 2000"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Dune 2000"
 msgstr ""
 
 #: src/icq/codes.c:928
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Dune II"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Dune II"
 msgstr ""
 
 #: src/icq/codes.c:929
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/Dungeon Master Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/Dungeon Master Series"
 msgstr ""
 
 #: src/icq/codes.c:930
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/C-D/New Folder"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"C-D/New Folder"
 msgstr ""
 
 #: src/icq/codes.c:931
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F"
 msgstr ""
 
 #: src/icq/codes.c:932
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/Earth Siege Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/Earth Siege Series"
 msgstr ""
 
 #: src/icq/codes.c:933
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/F-15"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/F-15"
 msgstr ""
 
 #: src/icq/codes.c:934
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/F-16 Falcon"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/F-16 Falcon"
 msgstr ""
 
 #: src/icq/codes.c:935
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/F-86 Sabre"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/F-86 Sabre"
 msgstr ""
 
 #: src/icq/codes.c:936
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/FIFA Soccer"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/FIFA Soccer"
 msgstr ""
 
 #: src/icq/codes.c:937
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/Falcon Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/Falcon Series"
 msgstr ""
 
 #: src/icq/codes.c:938
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/Fallout 2"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/Fallout 2"
 msgstr ""
 
 #: src/icq/codes.c:939
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/Final Fantasy VII"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/Final Fantasy VII"
 msgstr ""
 
 #: src/icq/codes.c:940
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/Flight Simulator"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/Flight Simulator"
 msgstr ""
 
 #: src/icq/codes.c:941
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/Forsaken"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/Forsaken"
 msgstr ""
 
 #: src/icq/codes.c:942
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/E-F/Front Page Sports"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"E-F/Front Page Sports"
 msgstr ""
 
 #: src/icq/codes.c:943
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H"
 msgstr ""
 
 #: src/icq/codes.c:944
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Gabriel Knight Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Gabriel Knight Series"
 msgstr ""
 
 #: src/icq/codes.c:945
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Gangsters"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Gangsters"
 msgstr ""
 
 #: src/icq/codes.c:946
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Gender Wars"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Gender Wars"
 msgstr ""
 
 #: src/icq/codes.c:947
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Gettysburg"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Gettysburg"
 msgstr ""
 
 #: src/icq/codes.c:948
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Golf"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Golf"
 msgstr ""
 
 #: src/icq/codes.c:949
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Grand Prix Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Grand Prix Series"
 msgstr ""
 
 #: src/icq/codes.c:950
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Grand Slam"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Grand Slam"
 msgstr ""
 
 #: src/icq/codes.c:951
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Grand Theft Auto"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Grand Theft Auto"
 msgstr ""
 
 #: src/icq/codes.c:952
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Great Naval Battles Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Great Naval Battles Series"
 msgstr ""
 
 #: src/icq/codes.c:953
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Grim Fandango"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Grim Fandango"
 msgstr ""
 
 #: src/icq/codes.c:954
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Half Life"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Half Life"
 msgstr ""
 
 #: src/icq/codes.c:955
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Heavy Gear"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Heavy Gear"
 msgstr ""
 
 #: src/icq/codes.c:956
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Hellbender"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Hellbender"
 msgstr ""
 
 #: src/icq/codes.c:957
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Herc's Adventures"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Herc's Adventures"
 msgstr ""
 
 #: src/icq/codes.c:958
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Heretic"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Heretic"
 msgstr ""
 
 #: src/icq/codes.c:959
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Heroes of Might and Magic Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Heroes of Might and Magic Series"
 msgstr ""
 
 #: src/icq/codes.c:960
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Hexen Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Hexen Series"
 msgstr ""
 
 #: src/icq/codes.c:961
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/G-H/Hexx Wars II"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"G-H/Hexx Wars II"
 msgstr ""
 
 #: src/icq/codes.c:962
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J"
 msgstr ""
 
 #: src/icq/codes.c:963
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J/Imperialism"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J/Imperialism"
 msgstr ""
 
 #: src/icq/codes.c:964
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J/Incoming"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J/Incoming"
 msgstr ""
 
 #: src/icq/codes.c:965
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J/Indiana Jones"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J/Indiana Jones"
 msgstr ""
 
 #: src/icq/codes.c:966
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J/Interstate 76"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J/Interstate 76"
 msgstr ""
 
 #: src/icq/codes.c:967
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J/Jedi Knight"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J/Jedi Knight"
 msgstr ""
 
 #: src/icq/codes.c:968
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J/Jet Fighter Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J/Jet Fighter Series"
 msgstr ""
 
 #: src/icq/codes.c:969
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/I-J/Lode Runner 2"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"I-J/Lode Runner 2"
 msgstr ""
 
 #: src/icq/codes.c:970
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/K-L"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"K-L"
 msgstr ""
 
 #: src/icq/codes.c:971
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/K-L/Lands of Lore Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"K-L/Lands of Lore Series"
 msgstr ""
 
 #: src/icq/codes.c:972
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/K-L/Legacy of Kain"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"K-L/Legacy of Kain"
 msgstr ""
 
 #: src/icq/codes.c:973
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/K-L/Longbow"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"K-L/Longbow"
 msgstr ""
 
 #: src/icq/codes.c:974
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/K-L/Lords of the Realms Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"K-L/Lords of the Realms Series"
 msgstr ""
 
 #: src/icq/codes.c:975
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N"
 msgstr ""
 
 #: src/icq/codes.c:976
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Magic- The Gathering"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Magic- The Gathering"
 msgstr ""
 
 #: src/icq/codes.c:977
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Master of Orion Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Master of Orion Series"
 msgstr ""
 
 #: src/icq/codes.c:978
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/MechCommander"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/MechCommander"
 msgstr ""
 
 #: src/icq/codes.c:979
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/MechWarrior Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/MechWarrior Series"
 msgstr ""
 
 #: src/icq/codes.c:980
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/MiG-29 Fulcrum"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/MiG-29 Fulcrum"
 msgstr ""
 
 #: src/icq/codes.c:981
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Might and Magic VI"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Might and Magic VI"
 msgstr ""
 
 #: src/icq/codes.c:982
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Monopoly"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Monopoly"
 msgstr ""
 
 #: src/icq/codes.c:983
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Monster Truck Madness"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Monster Truck Madness"
 msgstr ""
 
 #: src/icq/codes.c:984
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Mortal Kombat IV"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Mortal Kombat IV"
 msgstr ""
 
 #: src/icq/codes.c:985
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Moto Racer"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Moto Racer"
 msgstr ""
 
 #: src/icq/codes.c:986
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Motorcross Madness"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Motorcross Madness"
 msgstr ""
 
 #: src/icq/codes.c:987
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Myst"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Myst"
 msgstr ""
 
 #: src/icq/codes.c:988
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Mysteries of the Syth"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Mysteries of the Syth"
 msgstr ""
 
 #: src/icq/codes.c:989
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Myth The fallen Lords"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Myth The fallen Lords"
 msgstr ""
 
 #: src/icq/codes.c:990
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/NASCAR Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/NASCAR Series"
 msgstr ""
 
 #: src/icq/codes.c:991
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/NBA Full Court Press"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/NBA Full Court Press"
 msgstr ""
 
 #: src/icq/codes.c:992
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/NBA Live"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/NBA Live"
 msgstr ""
 
 #: src/icq/codes.c:993
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/NCAA Football"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/NCAA Football"
 msgstr ""
 
 #: src/icq/codes.c:994
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/NHL Hockey"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/NHL Hockey"
 msgstr ""
 
 #: src/icq/codes.c:995
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/NHL PowerPlay"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/NHL PowerPlay"
 msgstr ""
 
 #: src/icq/codes.c:996
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Nascar"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Nascar"
 msgstr ""
 
 #: src/icq/codes.c:997
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Need for Speed Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Need for Speed Series"
 msgstr ""
 
 #: src/icq/codes.c:998
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Netstorm"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Netstorm"
 msgstr ""
 
 #: src/icq/codes.c:999
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/M-N/Nuclear Strike"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"M-N/Nuclear Strike"
 msgstr ""
 
 #: src/icq/codes.c:1000
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P"
 msgstr ""
 
 #: src/icq/codes.c:1001
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Oddworld Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Oddworld Series"
 msgstr ""
 
 #: src/icq/codes.c:1002
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Omikron"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Omikron"
 msgstr ""
 
 #: src/icq/codes.c:1003
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Outpost Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Outpost Series"
 msgstr ""
 
 #: src/icq/codes.c:1004
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Outwars"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Outwars"
 msgstr ""
 
 #: src/icq/codes.c:1005
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Overblood"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Overblood"
 msgstr ""
 
 #: src/icq/codes.c:1006
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/PGA Tour Golf"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/PGA Tour Golf"
 msgstr ""
 
 #: src/icq/codes.c:1007
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Pacific General Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Pacific General Series"
 msgstr ""
 
 #: src/icq/codes.c:1008
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Panzer General Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Panzer General Series"
 msgstr ""
 
 #: src/icq/codes.c:1009
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Prince of Persia Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Prince of Persia Series"
 msgstr ""
 
 #: src/icq/codes.c:1010
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/O-P/Privateer Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"O-P/Privateer Series"
 msgstr ""
 
 #: src/icq/codes.c:1011
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R"
 msgstr ""
 
 #: src/icq/codes.c:1012
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Quake Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Quake Series"
 msgstr ""
 
 #: src/icq/codes.c:1013
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Quest for Glory Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Quest for Glory Series"
 msgstr ""
 
 #: src/icq/codes.c:1014
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Quests Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Quests Series"
 msgstr ""
 
 #: src/icq/codes.c:1015
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Rally Championship"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Rally Championship"
 msgstr ""
 
 #: src/icq/codes.c:1016
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Rebel Assault Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Rebel Assault Series"
 msgstr ""
 
 #: src/icq/codes.c:1017
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Red Alert"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Red Alert"
 msgstr ""
 
 #: src/icq/codes.c:1018
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Redneck Rampage"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Redneck Rampage"
 msgstr ""
 
 #: src/icq/codes.c:1019
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Redneck Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Redneck Series"
 msgstr ""
 
 #: src/icq/codes.c:1020
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Q-R/Requiem"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Q-R/Requiem"
 msgstr ""
 
 #: src/icq/codes.c:1021
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T"
 msgstr ""
 
 #: src/icq/codes.c:1022
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Scorched Planet"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Scorched Planet"
 msgstr ""
 
 #: src/icq/codes.c:1023
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Shadow Warrior"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Shadow Warrior"
 msgstr ""
 
 #: src/icq/codes.c:1024
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Shadows of the Empire"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Shadows of the Empire"
 msgstr ""
 
 #: src/icq/codes.c:1025
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Shattered Steel"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Shattered Steel"
 msgstr ""
 
 #: src/icq/codes.c:1026
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Sole Survivor"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Sole Survivor"
 msgstr ""
 
 #: src/icq/codes.c:1027
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Space Bunnies"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Space Bunnies"
 msgstr ""
 
 #: src/icq/codes.c:1028
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Star Command- Revolution"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Star Command- Revolution"
 msgstr ""
 
 #: src/icq/codes.c:1029
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Star General"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Star General"
 msgstr ""
 
 #: src/icq/codes.c:1030
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Star Trek- Star Fleet Academy"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Star Trek- Star Fleet Academy"
 msgstr ""
 
 #: src/icq/codes.c:1031
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Starcraft Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Starcraft Series"
 msgstr ""
 
 #: src/icq/codes.c:1032
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Steel Panthers Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Steel Panthers Series"
 msgstr ""
 
 #: src/icq/codes.c:1033
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Subspace"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Subspace"
 msgstr ""
 
 #: src/icq/codes.c:1034
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Swat II"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Swat II"
 msgstr ""
 
 #: src/icq/codes.c:1035
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Terminal Velocity"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Terminal Velocity"
 msgstr ""
 
 #: src/icq/codes.c:1036
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/The Lost World"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/The Lost World"
 msgstr ""
 
 #: src/icq/codes.c:1037
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/The Realm"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/The Realm"
 msgstr ""
 
 #: src/icq/codes.c:1038
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Tomb Raider Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Tomb Raider Series"
 msgstr ""
 
 #: src/icq/codes.c:1039
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Total Annihilation"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Total Annihilation"
 msgstr ""
 
 #: src/icq/codes.c:1040
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Tribes"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Tribes"
 msgstr ""
 
 #: src/icq/codes.c:1041
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/S-T/Triple Play"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"S-T/Triple Play"
 msgstr ""
 
 #: src/icq/codes.c:1042
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/U-V"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"U-V"
 msgstr ""
 
 #: src/icq/codes.c:1043
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/U-V/Ultima Online"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"U-V/Ultima Online"
 msgstr ""
 
 #: src/icq/codes.c:1044
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/U-V/Ultima Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"U-V/Ultima Series"
 msgstr ""
 
 #: src/icq/codes.c:1045
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/U-V/Under a Killing Moon Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"U-V/Under a Killing Moon Series"
 msgstr ""
 
 #: src/icq/codes.c:1046
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/U-V/Unreal"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"U-V/Unreal"
 msgstr ""
 
 #: src/icq/codes.c:1047
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/U-V/VR Sports"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"U-V/VR Sports"
 msgstr ""
 
 #: src/icq/codes.c:1048
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X"
 msgstr ""
 
 #: src/icq/codes.c:1049
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/War of the Worlds"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/War of the Worlds"
 msgstr ""
 
 #: src/icq/codes.c:1050
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/Warcraft Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/Warcraft Series"
 msgstr ""
 
 #: src/icq/codes.c:1051
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/Warlords Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/Warlords Series"
 msgstr ""
 
 #: src/icq/codes.c:1052
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/Warwind Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/Warwind Series"
 msgstr ""
 
 #: src/icq/codes.c:1053
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/Wing Commander Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/Wing Commander Series"
 msgstr ""
 
 #: src/icq/codes.c:1054
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/Worms Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/Worms Series"
 msgstr ""
 
 #: src/icq/codes.c:1055
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/X-Wing vs. TIE Fighter"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/X-Wing vs. TIE Fighter"
 msgstr ""
 
 #: src/icq/codes.c:1056
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/XCOM Series"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/XCOM Series"
 msgstr ""
 
 #: src/icq/codes.c:1057
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/W-X/XS"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"W-X/XS"
 msgstr ""
 
 #: src/icq/codes.c:1058
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Y-Z"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Y-Z"
 msgstr ""
 
 #: src/icq/codes.c:1059
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Y-Z/Z"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Y-Z/Z"
 msgstr ""
 
 #: src/icq/codes.c:1060
 msgid ""
-"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to "
-"Z/Y-Z/Zork - Grand Inquisitor"
+"Games, Leisure, Recreation, Hobbies and Collectibles/Computer Games - A to Z/"
+"Y-Z/Zork - Grand Inquisitor"
 msgstr ""
 
 #: src/icq/codes.c:1061
@@ -10563,74 +10590,74 @@ msgstr ""
 
 #: src/icq/codes.c:1517
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/ACT"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"ACT"
 msgstr ""
 
 #: src/icq/codes.c:1518
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Adelaide"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Adelaide"
 msgstr ""
 
 #: src/icq/codes.c:1519
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Auckland"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Auckland"
 msgstr ""
 
 #: src/icq/codes.c:1520
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Melbourne"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Melbourne"
 msgstr ""
 
 #: src/icq/codes.c:1521
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/New South Wales"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"New South Wales"
 msgstr ""
 
 #: src/icq/codes.c:1522
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Northern Territory"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Northern Territory"
 msgstr ""
 
 #: src/icq/codes.c:1523
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Queensland"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Queensland"
 msgstr ""
 
 #: src/icq/codes.c:1524
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/South Australia"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"South Australia"
 msgstr ""
 
 #: src/icq/codes.c:1525
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Sydney"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Sydney"
 msgstr ""
 
 #: src/icq/codes.c:1526
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Tasmania"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Tasmania"
 msgstr ""
 
 #: src/icq/codes.c:1527
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Victoria"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Victoria"
 msgstr ""
 
 #: src/icq/codes.c:1528
 msgid ""
-"ICQ Around The World/By Cities and Towns/Cities in Australia and New "
-"Zealand/Western Australia"
+"ICQ Around The World/By Cities and Towns/Cities in Australia and New Zealand/"
+"Western Australia"
 msgstr ""
 
 #: src/icq/codes.c:1529
@@ -12035,8 +12062,8 @@ msgstr ""
 
 #: src/icq/codes.c:1848
 msgid ""
-"Internet Developers, Operators and Centriqus/Apache Server/Apache "
-"Server/Apache Server"
+"Internet Developers, Operators and Centriqus/Apache Server/Apache Server/"
+"Apache Server"
 msgstr ""
 
 #: src/icq/codes.c:1849
@@ -12237,38 +12264,38 @@ msgstr ""
 
 #: src/icq/codes.c:1886
 msgid ""
-"Internet Developers, Operators and Centriqus/Site Builders and Web "
-"Masters/ICQ Group Masters"
+"Internet Developers, Operators and Centriqus/Site Builders and Web Masters/"
+"ICQ Group Masters"
 msgstr ""
 
 #: src/icq/codes.c:1887
 msgid ""
-"Internet Developers, Operators and Centriqus/Site Builders and Web "
-"Masters/ICQ Group Masters/ICQ Group Masters"
+"Internet Developers, Operators and Centriqus/Site Builders and Web Masters/"
+"ICQ Group Masters/ICQ Group Masters"
 msgstr ""
 
 #: src/icq/codes.c:1888
 msgid ""
-"Internet Developers, Operators and Centriqus/Site Builders and Web "
-"Masters/ICQ List Masters"
+"Internet Developers, Operators and Centriqus/Site Builders and Web Masters/"
+"ICQ List Masters"
 msgstr ""
 
 #: src/icq/codes.c:1889
 msgid ""
-"Internet Developers, Operators and Centriqus/Site Builders and Web "
-"Masters/ICQ List Masters/ICQ List Masters"
+"Internet Developers, Operators and Centriqus/Site Builders and Web Masters/"
+"ICQ List Masters/ICQ List Masters"
 msgstr ""
 
 #: src/icq/codes.c:1890
 msgid ""
-"Internet Developers, Operators and Centriqus/Site Builders and Web "
-"Masters/Other Site Owners"
+"Internet Developers, Operators and Centriqus/Site Builders and Web Masters/"
+"Other Site Owners"
 msgstr ""
 
 #: src/icq/codes.c:1891
 msgid ""
-"Internet Developers, Operators and Centriqus/Site Builders and Web "
-"Masters/Other Site Owners/Other Site Owners"
+"Internet Developers, Operators and Centriqus/Site Builders and Web Masters/"
+"Other Site Owners/Other Site Owners"
 msgstr ""
 
 #: src/icq/codes.c:1892
@@ -12304,8 +12331,8 @@ msgstr ""
 
 #: src/icq/codes.c:1898
 msgid ""
-"Internet Developers, Operators and Centriqus/Web Related "
-"Hardware/Routers/Routers"
+"Internet Developers, Operators and Centriqus/Web Related Hardware/Routers/"
+"Routers"
 msgstr ""
 
 #: src/icq/codes.c:1899
@@ -12315,8 +12342,8 @@ msgstr ""
 
 #: src/icq/codes.c:1900
 msgid ""
-"Internet Developers, Operators and Centriqus/Web Related "
-"Hardware/Webservers/Webservers"
+"Internet Developers, Operators and Centriqus/Web Related Hardware/Webservers/"
+"Webservers"
 msgstr ""
 
 #: src/icq/codes.c:1901
@@ -12339,8 +12366,8 @@ msgstr ""
 
 #: src/icq/codes.c:1905
 msgid ""
-"Internet Developers, Operators and Centriqus/Web Related "
-"Software/Firewall/Firewall"
+"Internet Developers, Operators and Centriqus/Web Related Software/Firewall/"
+"Firewall"
 msgstr ""
 
 #: src/icq/codes.c:1906
@@ -12396,7 +12423,7 @@ msgstr "Ungültige SMS-Nachricht"
 
 #: src/icq/icq-srv.cpp:3109 src/icq/icq-srv.cpp:4299
 msgid "Invalid Server Message"
-msgstr "Ungültige Server-Nachricht:"
+msgstr "Ungültige Server-Nachricht"
 
 #: src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031 src/icq/icq-srv.cpp:3033
 msgid "Invalid URL message"
@@ -12408,7 +12435,7 @@ msgstr "Ungültige \"Zur Kontaktliste hinzugefügt\"-Nachricht"
 
 #: src/icq/icq-srv.cpp:3048
 msgid "Invalid authorization request system message"
-msgstr "Ungültige Autorisationsanfrage-Nachricht:"
+msgstr "Ungültige Autorisationsanfragenachricht"
 
 #: src/icq/icq-tcp.cpp:1780 src/icq/icq-tcp.cpp:2059
 msgid "Invalid contact list message"
@@ -12436,23 +12463,16 @@ msgid "Invalid offline added to list system message"
 msgstr "Ungültige Offline \"Zur Kontaktliste hinzugefügt\"-Systemnachricht"
 
 #: src/icq/icq-srv.cpp:4243
-#, fuzzy
 msgid "Invalid offline authorization request system message"
-msgstr "Ungültige offline Autorisations-Anfrage Systemnachricht"
+msgstr "Ungültige Offlinesystemnachricht: Autorisationsanfrage"
 
 #: src/icq/icq-srv.cpp:4363
-#, fuzzy
 msgid "Invalid offline email pager system message"
-msgstr ""
-"%sUngültige offline Email-Systemnachricht:\n"
-"%s\n"
+msgstr "Ungültige Offlinesystemnachricht: Email"
 
 #: src/icq/icq-srv.cpp:4338
-#, fuzzy
 msgid "Invalid offline web panel system message"
-msgstr ""
-"%sUngültige offline Web-Panel Systemnachricht:\n"
-"%s\n"
+msgstr "Ungültige Offlinesystemnachricht: Web-Panel"
 
 #: src/plugins/pluginmanager.cpp:288
 #, c-format
@@ -12465,9 +12485,8 @@ msgid "Invalid protocol plugin requested (%ld)"
 msgstr ""
 
 #: src/icq/icq-srv.cpp:2971
-#, fuzzy
 msgid "Invalid tag in SMS message"
-msgstr "%sUngültiges Tag in der SMS-Nachricht."
+msgstr "Ungültiges Tag in der SMS-Nachricht"
 
 #: src/plugins/pluginmanager.cpp:448
 msgid "Invalid thread in registration attempt"
@@ -12478,15 +12497,12 @@ msgid "Invalid thread in unregistration attempt"
 msgstr ""
 
 #: src/icq/icq-srv.cpp:3148
-#, fuzzy
 msgid "Invalid web panel system message"
-msgstr ""
-"%sUngültige Web-Panel Systemnachricht:\n"
-"%s\n"
+msgstr "Ungültige Systemnachricht Web-Panel"
 
 #: src/contactlist/user.cpp:1349
 msgid "Invisible"
-msgstr ""
+msgstr "Unsichtbar"
 
 #: src/icq/codes.c:165
 msgid "Iran (Islamic Republic of)"
@@ -12585,9 +12601,8 @@ msgid "Latvian"
 msgstr "Latvian"
 
 #: src/icq/codes.c:3546
-#, fuzzy
 msgid "Law"
-msgstr "Lao"
+msgstr "Recht"
 
 #: src/icq/codes.c:182
 msgid "Lebanon"
@@ -12610,22 +12625,22 @@ msgid "Licq Segmentation Violation Detected.\n"
 msgstr "Licq Speicherzugriffsfehler entdeckt.\n"
 
 #: src/licq.cpp:428
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Licq: %s cannot be opened for writing,\n"
 "      skipping lockfile protection."
 msgstr ""
-"%sLicq: %s kann nicht zum Schreiben geöffnet werden.\n"
-"%s      Lock-Datei Schutz wird nicht verwendet.\n"
+"Licq: %s kann nicht zum Schreiben geöffnet werden,\n"
+"      Lockdateischutz wird nicht verwendet."
 
 #: src/licq.cpp:445
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Licq: Already running at pid %d.\n"
 "      Kill process or remove %s."
 msgstr ""
-"%sLicq: Läuft bereits mit der PID %d.\n"
-"%s      Prozess beenden oder %s entfernen.\n"
+"Licq: Läuft bereits mit der PID %d.\n"
+"      Prozess beenden oder %s entfernen."
 
 #: src/icq/codes.c:186
 msgid "Liechtenstein"
@@ -12645,68 +12660,68 @@ msgstr ""
 
 #: src/icq/codes.c:1914
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Ceremonies"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Ceremonies"
 msgstr ""
 
 #: src/icq/codes.c:1915
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Ceremonies/Awards"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Ceremonies/Awards"
 msgstr ""
 
 #: src/icq/codes.c:1916
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Ceremonies/Charity and Donations"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Ceremonies/Charity and Donations"
 msgstr ""
 
 #: src/icq/codes.c:1917
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Ceremonies/Graduations"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Ceremonies/Graduations"
 msgstr ""
 
 #: src/icq/codes.c:1918
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Competition Events"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Competition Events"
 msgstr ""
 
 #: src/icq/codes.c:1919
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Competition Events/Aviation Competitions"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Competition Events/Aviation Competitions"
 msgstr ""
 
 #: src/icq/codes.c:1920
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Competition Events/Dog Shows"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Competition Events/Dog Shows"
 msgstr ""
 
 #: src/icq/codes.c:1921
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Competition Events/Sports Events"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Competition Events/Sports Events"
 msgstr ""
 
 #: src/icq/codes.c:1922
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Entertainment Events"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Entertainment Events"
 msgstr ""
 
 #: src/icq/codes.c:1923
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Entertainment Events/Musical Events"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Entertainment Events/Musical Events"
 msgstr ""
 
 #: src/icq/codes.c:1924
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Entertainment Events/Other Entertainment Events"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Entertainment Events/Other Entertainment Events"
 msgstr ""
 
 #: src/icq/codes.c:1925
@@ -12753,38 +12768,38 @@ msgstr ""
 
 #: src/icq/codes.c:1932
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Meetings and Competitions"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Meetings and Competitions"
 msgstr ""
 
 #: src/icq/codes.c:1933
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Meetings and Competitions/Chess Meets"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Meetings and Competitions/Chess Meets"
 msgstr ""
 
 #: src/icq/codes.c:1934
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Meetings and Competitions/Club Meetings"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Meetings and Competitions/Club Meetings"
 msgstr ""
 
 #: src/icq/codes.c:1935
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Meetings and Competitions/Hobbyists Meetings"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Meetings and Competitions/Hobbyists Meetings"
 msgstr ""
 
 #: src/icq/codes.c:1936
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Meetings and Competitions/Organization Meetings"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Meetings and Competitions/Organization Meetings"
 msgstr ""
 
 #: src/icq/codes.c:1937
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Meetings and Competitions/Other Meetings"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Meetings and Competitions/Other Meetings"
 msgstr ""
 
 #: src/icq/codes.c:1938
@@ -12801,50 +12816,50 @@ msgstr ""
 
 #: src/icq/codes.c:1940
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Professional Conferences"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Professional Conferences"
 msgstr ""
 
 #: src/icq/codes.c:1941
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Professional Conferences/Computer Conferences"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Professional Conferences/Computer Conferences"
 msgstr ""
 
 #: src/icq/codes.c:1942
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Professional Conferences/Engineering Conferences"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Professional Conferences/Engineering Conferences"
 msgstr ""
 
 #: src/icq/codes.c:1943
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Professional Conferences/Medical Conferences"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Professional Conferences/Medical Conferences"
 msgstr ""
 
 #: src/icq/codes.c:1944
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Professional Conferences/Trade Shows"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Professional Conferences/Trade Shows"
 msgstr ""
 
 #: src/icq/codes.c:1945
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Recreation Events"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Recreation Events"
 msgstr ""
 
 #: src/icq/codes.c:1946
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Recreation Events/Journeys and Expeditions"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Recreation Events/Journeys and Expeditions"
 msgstr ""
 
 #: src/icq/codes.c:1947
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Gathering for "
-"Events/Recreation Events/Recreation Events"
+"Lifestyle, Health, Well Being, Self Improvement/Gathering for Events/"
+"Recreation Events/Recreation Events"
 msgstr ""
 
 #: src/icq/codes.c:1948
@@ -12882,26 +12897,26 @@ msgstr ""
 
 #: src/icq/codes.c:1954
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative "
-"Health/Aromatherapy"
+"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative Health/"
+"Aromatherapy"
 msgstr ""
 
 #: src/icq/codes.c:1955
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative "
-"Health/Holistics"
+"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative Health/"
+"Holistics"
 msgstr ""
 
 #: src/icq/codes.c:1956
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative "
-"Health/Other - Alternative Health"
+"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative Health/"
+"Other - Alternative Health"
 msgstr ""
 
 #: src/icq/codes.c:1957
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative "
-"Health/Reiki and Energy Workers"
+"Lifestyle, Health, Well Being, Self Improvement/Health/Alternative Health/"
+"Reiki and Energy Workers"
 msgstr ""
 
 #: src/icq/codes.c:1958
@@ -12911,8 +12926,8 @@ msgstr ""
 
 #: src/icq/codes.c:1959
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Health/Beauty and Self "
-"Care/Skin Care"
+"Lifestyle, Health, Well Being, Self Improvement/Health/Beauty and Self Care/"
+"Skin Care"
 msgstr ""
 
 #: src/icq/codes.c:1960
@@ -12922,8 +12937,8 @@ msgstr ""
 
 #: src/icq/codes.c:1961
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Health/Doctors and "
-"Nurses/Doctors and Nurses"
+"Lifestyle, Health, Well Being, Self Improvement/Health/Doctors and Nurses/"
+"Doctors and Nurses"
 msgstr ""
 
 #: src/icq/codes.c:1962
@@ -13201,8 +13216,8 @@ msgstr ""
 
 #: src/icq/codes.c:2009
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Celebrities/Alicia Silverstone"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Celebrities/"
+"Alicia Silverstone"
 msgstr ""
 
 #: src/icq/codes.c:2010
@@ -13219,8 +13234,8 @@ msgstr ""
 
 #: src/icq/codes.c:2012
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Celebrities/Madonna"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Celebrities/"
+"Madonna"
 msgstr ""
 
 #: src/icq/codes.c:2013
@@ -13231,8 +13246,8 @@ msgstr ""
 
 #: src/icq/codes.c:2014
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Celebrities/Pamela Anderson"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Celebrities/"
+"Pamela Anderson"
 msgstr ""
 
 #: src/icq/codes.c:2015
@@ -13243,8 +13258,8 @@ msgstr ""
 
 #: src/icq/codes.c:2016
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Celebrities/Sandra Bullock"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Celebrities/"
+"Sandra Bullock"
 msgstr ""
 
 #: src/icq/codes.c:2017
@@ -13265,68 +13280,68 @@ msgstr ""
 
 #: src/icq/codes.c:2020
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Artifacts"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Artifacts"
 msgstr ""
 
 #: src/icq/codes.c:2021
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Auctions"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Auctions"
 msgstr ""
 
 #: src/icq/codes.c:2022
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Carpets"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Carpets"
 msgstr ""
 
 #: src/icq/codes.c:2023
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Cigars"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Cigars"
 msgstr ""
 
 #: src/icq/codes.c:2024
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Estates"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Estates"
 msgstr ""
 
 #: src/icq/codes.c:2025
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Fashion"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Fashion"
 msgstr ""
 
 #: src/icq/codes.c:2026
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Gourmet Food"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Gourmet Food"
 msgstr ""
 
 #: src/icq/codes.c:2027
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Islands"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Islands"
 msgstr ""
 
 #: src/icq/codes.c:2028
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Jewelry"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Jewelry"
 msgstr ""
 
 #: src/icq/codes.c:2029
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Lighters"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Lighters"
 msgstr ""
 
 #: src/icq/codes.c:2030
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Luxury Cars"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Luxury Cars"
 msgstr ""
 
 #: src/icq/codes.c:2031
@@ -13337,14 +13352,14 @@ msgstr ""
 
 #: src/icq/codes.c:2032
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Other Connoisseurs"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Other Connoisseurs"
 msgstr ""
 
 #: src/icq/codes.c:2033
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Paintings"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Paintings"
 msgstr ""
 
 #: src/icq/codes.c:2034
@@ -13354,20 +13369,20 @@ msgstr ""
 
 #: src/icq/codes.c:2035
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Private Planes"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Private Planes"
 msgstr ""
 
 #: src/icq/codes.c:2036
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Resorts"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Resorts"
 msgstr ""
 
 #: src/icq/codes.c:2037
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Shopping"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Shopping"
 msgstr ""
 
 #: src/icq/codes.c:2038
@@ -13377,8 +13392,8 @@ msgstr ""
 
 #: src/icq/codes.c:2039
 msgid ""
-"Lifestyle, Health, Well Being, Self "
-"Improvement/Lifestyles/Connoisseurs/Watches"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Connoisseurs/"
+"Watches"
 msgstr ""
 
 #: src/icq/codes.c:2040
@@ -13416,8 +13431,8 @@ msgstr ""
 
 #: src/icq/codes.c:2046
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Home and "
-"Garden/Home and Garden"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Home and Garden/"
+"Home and Garden"
 msgstr ""
 
 #: src/icq/codes.c:2047
@@ -13427,38 +13442,38 @@ msgstr ""
 
 #: src/icq/codes.c:2048
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal "
-"Interest/Alternative Lifestyles"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal Interest/"
+"Alternative Lifestyles"
 msgstr ""
 
 #: src/icq/codes.c:2049
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal "
-"Interest/Arts"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal Interest/"
+"Arts"
 msgstr ""
 
 #: src/icq/codes.c:2050
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal "
-"Interest/Groups"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal Interest/"
+"Groups"
 msgstr ""
 
 #: src/icq/codes.c:2051
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal "
-"Interest/Paranormal and Unexplained"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal Interest/"
+"Paranormal and Unexplained"
 msgstr ""
 
 #: src/icq/codes.c:2052
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal "
-"Interest/Special Interests"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal Interest/"
+"Special Interests"
 msgstr ""
 
 #: src/icq/codes.c:2053
 msgid ""
-"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal "
-"Interest/beauty and fashion"
+"Lifestyle, Health, Well Being, Self Improvement/Lifestyles/Personal Interest/"
+"beauty and fashion"
 msgstr ""
 
 #: src/icq/codes.c:2054
@@ -13533,29 +13548,27 @@ msgid "Lithuanian"
 msgstr "Lithuanian"
 
 #: src/contactlist/usermanager.cpp:215
-#, fuzzy, c-format
+#, c-format
 msgid "Loading %d users"
-msgstr "%s%d Benutzer werden geladen.\n"
+msgstr "%d Benutzer werden geladen"
 
 #: src/contactlist/owner.cpp:96
-#, fuzzy, c-format
+#, c-format
 msgid "Loading owner configuration for %s"
-msgstr "%sBenutzerkonfiguration für %s.\n"
+msgstr "Benutzerkonfiguration für %s"
 
 #: src/contactlist/usermanager.cpp:113
-#, fuzzy
 msgid "Loading user configuration"
-msgstr "%sBenutzerkonfiguration.\n"
+msgstr "Benutzerkonfiguration"
 
 #: src/utility.cpp:67
-#, fuzzy
 msgid "Loading utilities"
-msgstr "%sWerkzeuge werden geladen.\n"
+msgstr "Werkzeuge werden geladen"
 
 #: src/daemon.cpp:272
-#, fuzzy, c-format
+#, c-format
 msgid "Local TCP server started on port %d"
-msgstr "%sLokaler TCP-Server wurde an Port %d gestartet.\n"
+msgstr "Lokaler TCP-Server wurde an Port %d gestartet"
 
 #: src/icq/codes.c:188
 msgid "Luxembourg"
@@ -14319,8 +14332,8 @@ msgstr ""
 
 #: src/icq/codes.c:2201
 msgid ""
-"Movies, TV and Radio/TV Series/Paranormal and Fantasy - TV "
-"Series/Poltergeist - The Legacy"
+"Movies, TV and Radio/TV Series/Paranormal and Fantasy - TV Series/"
+"Poltergeist - The Legacy"
 msgstr ""
 
 #: src/icq/codes.c:2202
@@ -15423,8 +15436,8 @@ msgstr ""
 
 #: src/icq/codes.c:2442
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Clubs/Rock Clubs "
-"-General"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Clubs/Rock Clubs -"
+"General"
 msgstr ""
 
 #: src/icq/codes.c:2443
@@ -15466,20 +15479,20 @@ msgstr ""
 
 #: src/icq/codes.c:2450
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Celine Deon"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Celine Deon"
 msgstr ""
 
 #: src/icq/codes.c:2451
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/David Bowie"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"David Bowie"
 msgstr ""
 
 #: src/icq/codes.c:2452
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Elton John"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Elton John"
 msgstr ""
 
 #: src/icq/codes.c:2453
@@ -15490,50 +15503,50 @@ msgstr ""
 
 #: src/icq/codes.c:2454
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Gloria Estefan"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Gloria Estefan"
 msgstr ""
 
 #: src/icq/codes.c:2455
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Holly McNarland"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Holly McNarland"
 msgstr ""
 
 #: src/icq/codes.c:2456
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Kylie Minogue"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Kylie Minogue"
 msgstr ""
 
 #: src/icq/codes.c:2457
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Madonna"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Madonna"
 msgstr ""
 
 #: src/icq/codes.c:2458
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Marilyn Manson"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Marilyn Manson"
 msgstr ""
 
 #: src/icq/codes.c:2459
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Michael Jackson"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Michael Jackson"
 msgstr ""
 
 #: src/icq/codes.c:2460
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Nanase Aikawa"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Nanase Aikawa"
 msgstr ""
 
 #: src/icq/codes.c:2461
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Other Rock Artists"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Other Rock Artists"
 msgstr ""
 
 #: src/icq/codes.c:2462
@@ -15556,8 +15569,8 @@ msgstr ""
 
 #: src/icq/codes.c:2465
 msgid ""
-"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo "
-"Artists/Shania Twain"
+"Music and Computer Sounds/Rock, Pop, Punk, Hip-Hop, Reggae/Solo Artists/"
+"Shania Twain"
 msgstr ""
 
 #: src/icq/codes.c:2466
@@ -15586,8 +15599,8 @@ msgstr ""
 
 #: src/icq/codes.c:2471
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Albums/Trance Albums- General"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Albums/"
+"Trance Albums- General"
 msgstr ""
 
 #: src/icq/codes.c:2472
@@ -15597,44 +15610,44 @@ msgstr ""
 
 #: src/icq/codes.c:2473
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Bands/Beastie boys"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Bands/"
+"Beastie boys"
 msgstr ""
 
 #: src/icq/codes.c:2474
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Bands/Enigma"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Bands/"
+"Enigma"
 msgstr ""
 
 #: src/icq/codes.c:2475
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Bands/Future Sound of London"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Bands/"
+"Future Sound of London"
 msgstr ""
 
 #: src/icq/codes.c:2476
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Bands/Jamiroquai"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Bands/"
+"Jamiroquai"
 msgstr ""
 
 #: src/icq/codes.c:2477
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Bands/Massive Attack"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Bands/"
+"Massive Attack"
 msgstr ""
 
 #: src/icq/codes.c:2478
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Bands/Other Dance Bands"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Bands/"
+"Other Dance Bands"
 msgstr ""
 
 #: src/icq/codes.c:2479
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Bands/Prodigy"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Bands/"
+"Prodigy"
 msgstr ""
 
 #: src/icq/codes.c:2480
@@ -15644,8 +15657,8 @@ msgstr ""
 
 #: src/icq/codes.c:2481
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Clubs/Trance Clubs- General"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Clubs/"
+"Trance Clubs- General"
 msgstr ""
 
 #: src/icq/codes.c:2482
@@ -15655,8 +15668,8 @@ msgstr ""
 
 #: src/icq/codes.c:2483
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Magazines/Trance Magazines- General"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/"
+"Magazines/Trance Magazines- General"
 msgstr ""
 
 #: src/icq/codes.c:2484
@@ -15690,8 +15703,8 @@ msgstr ""
 
 #: src/icq/codes.c:2489
 msgid ""
-"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, "
-"Jungle/Talk/Trance Talk"
+"Music and Computer Sounds/Trance, House, Acid, Dance, Dream, Jungle/Talk/"
+"Trance Talk"
 msgstr ""
 
 #: src/icq/codes.c:2490
@@ -15774,146 +15787,146 @@ msgstr ""
 
 #: src/icq/codes.c:2504
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife"
 msgstr ""
 
 #: src/icq/codes.c:2505
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Animal Rights"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Animal Rights"
 msgstr ""
 
 #: src/icq/codes.c:2506
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Bees"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Bees"
 msgstr ""
 
 #: src/icq/codes.c:2507
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Birds"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Birds"
 msgstr ""
 
 #: src/icq/codes.c:2508
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Chickens"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Chickens"
 msgstr ""
 
 #: src/icq/codes.c:2509
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Elephants"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Elephants"
 msgstr ""
 
 #: src/icq/codes.c:2510
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Fish"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Fish"
 msgstr ""
 
 #: src/icq/codes.c:2511
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Horses"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Horses"
 msgstr ""
 
 #: src/icq/codes.c:2512
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Lions"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Lions"
 msgstr ""
 
 #: src/icq/codes.c:2513
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Marine Mammals"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Marine Mammals"
 msgstr ""
 
 #: src/icq/codes.c:2514
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Mice"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Mice"
 msgstr ""
 
 #: src/icq/codes.c:2515
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Other Animals"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Other Animals"
 msgstr ""
 
 #: src/icq/codes.c:2516
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Animals and Wildlife/Snakes"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Animals and Wildlife/Snakes"
 msgstr ""
 
 #: src/icq/codes.c:2517
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology"
 msgstr ""
 
 #: src/icq/codes.c:2518
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Chat"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Chat"
 msgstr ""
 
 #: src/icq/codes.c:2519
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Forests"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Forests"
 msgstr ""
 
 #: src/icq/codes.c:2520
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Journals"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Journals"
 msgstr ""
 
 #: src/icq/codes.c:2521
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Maritime"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Maritime"
 msgstr ""
 
 #: src/icq/codes.c:2522
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Ozone Depletion"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Ozone Depletion"
 msgstr ""
 
 #: src/icq/codes.c:2523
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Parks"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Parks"
 msgstr ""
 
 #: src/icq/codes.c:2524
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Pollution"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Pollution"
 msgstr ""
 
 #: src/icq/codes.c:2525
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/Ecology/Weather"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"Ecology/Weather"
 msgstr ""
 
 #: src/icq/codes.c:2526
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/International Organizations"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"International Organizations"
 msgstr ""
 
 #: src/icq/codes.c:2527
 msgid ""
-"Nature and Environment/Current Events, Environmental Issues and "
-"Animals/International Organizations/Green Peace"
+"Nature and Environment/Current Events, Environmental Issues and Animals/"
+"International Organizations/Green Peace"
 msgstr ""
 
 #: src/icq/codes.c:212
@@ -16112,362 +16125,362 @@ msgstr ""
 
 #: src/icq/codes.c:2530
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes"
 msgstr ""
 
 #: src/icq/codes.c:2531
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes/Asterix"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes/Asterix"
 msgstr ""
 
 #: src/icq/codes.c:2532
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes/Batman"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes/Batman"
 msgstr ""
 
 #: src/icq/codes.c:2533
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes/Bugs Bunny"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes/Bugs Bunny"
 msgstr ""
 
 #: src/icq/codes.c:2534
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes/Mickey Mouse"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes/Mickey Mouse"
 msgstr ""
 
 #: src/icq/codes.c:2535
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes/Spiderman"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes/Spiderman"
 msgstr ""
 
 #: src/icq/codes.c:2536
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes/Superman"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes/Superman"
 msgstr ""
 
 #: src/icq/codes.c:2537
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Animations, Cartoons and Comix Heroes/Wonder woman"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Animations, Cartoons and Comix Heroes/Wonder woman"
 msgstr ""
 
 #: src/icq/codes.c:2538
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Fine Arts Heroes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Fine Arts Heroes"
 msgstr ""
 
 #: src/icq/codes.c:2539
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Fine Arts Heroes/Andy Warhol"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Fine Arts Heroes/Andy Warhol"
 msgstr ""
 
 #: src/icq/codes.c:2540
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Fine Arts Heroes/Donatelo"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Fine Arts Heroes/Donatelo"
 msgstr ""
 
 #: src/icq/codes.c:2541
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Fine Arts Heroes/Jiotto"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Fine Arts Heroes/Jiotto"
 msgstr ""
 
 #: src/icq/codes.c:2542
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Fine Arts Heroes/Leonardo de Vinci"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Fine Arts Heroes/Leonardo de Vinci"
 msgstr ""
 
 #: src/icq/codes.c:2543
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Fine Arts Heroes/Michael Angelo"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Fine Arts Heroes/Michael Angelo"
 msgstr ""
 
 #: src/icq/codes.c:2544
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Fine Arts Heroes/Picasso"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Fine Arts Heroes/Picasso"
 msgstr ""
 
 #: src/icq/codes.c:2545
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Great Creators"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Great Creators"
 msgstr ""
 
 #: src/icq/codes.c:2546
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Great Creators/Albert Einstein"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Great Creators/Albert Einstein"
 msgstr ""
 
 #: src/icq/codes.c:2547
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Great Creators/Alexander Bell"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Great Creators/Alexander Bell"
 msgstr ""
 
 #: src/icq/codes.c:2548
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Great Creators/Other Great Creators"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Great Creators/Other Great Creators"
 msgstr ""
 
 #: src/icq/codes.c:2549
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Great Creators/Thomas Edison"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Great Creators/Thomas Edison"
 msgstr ""
 
 #: src/icq/codes.c:2550
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Great Creators/Walt Disney"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Great Creators/Walt Disney"
 msgstr ""
 
 #: src/icq/codes.c:2551
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders"
 msgstr ""
 
 #: src/icq/codes.c:2552
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Abraham Lincoln"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Abraham Lincoln"
 msgstr ""
 
 #: src/icq/codes.c:2553
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Dalai Lama"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Dalai Lama"
 msgstr ""
 
 #: src/icq/codes.c:2554
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Franklin D.Roosevelt"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Franklin D.Roosevelt"
 msgstr ""
 
 #: src/icq/codes.c:2555
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Ghandi"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Ghandi"
 msgstr ""
 
 #: src/icq/codes.c:2556
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Golda Meir"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Golda Meir"
 msgstr ""
 
 #: src/icq/codes.c:2557
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Matin Luther King"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Matin Luther King"
 msgstr ""
 
 #: src/icq/codes.c:2558
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Nelson Mandela"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Nelson Mandela"
 msgstr ""
 
 #: src/icq/codes.c:2559
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Other Spiritual Leaders"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Other Spiritual Leaders"
 msgstr ""
 
 #: src/icq/codes.c:2560
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Susane B.Anthony"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Susane B.Anthony"
 msgstr ""
 
 #: src/icq/codes.c:2561
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Leaders/Winston Churchill"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Leaders/Winston Churchill"
 msgstr ""
 
 #: src/icq/codes.c:2562
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/More Culture Heroes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"More Culture Heroes"
 msgstr ""
 
 #: src/icq/codes.c:2563
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/More Culture Heroes/More Culture Heroes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"More Culture Heroes/More Culture Heroes"
 msgstr ""
 
 #: src/icq/codes.c:2564
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers"
 msgstr ""
 
 #: src/icq/codes.c:2565
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers/Beatles"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers/Beatles"
 msgstr ""
 
 #: src/icq/codes.c:2566
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers/Bob Marley"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers/Bob Marley"
 msgstr ""
 
 #: src/icq/codes.c:2567
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers/Charlie Chaplin"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers/Charlie Chaplin"
 msgstr ""
 
 #: src/icq/codes.c:2568
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers/Elvis Presley"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers/Elvis Presley"
 msgstr ""
 
 #: src/icq/codes.c:2569
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers/Frank Zappa"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers/Frank Zappa"
 msgstr ""
 
 #: src/icq/codes.c:2570
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers/James Dean"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers/James Dean"
 msgstr ""
 
 #: src/icq/codes.c:2571
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Musicians, Actors and Singers/Marilyn Monroe"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Musicians, Actors and Singers/Marilyn Monroe"
 msgstr ""
 
 #: src/icq/codes.c:2572
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology"
 msgstr ""
 
 #: src/icq/codes.c:2573
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Achiles"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Achiles"
 msgstr ""
 
 #: src/icq/codes.c:2574
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Aphrodite"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Aphrodite"
 msgstr ""
 
 #: src/icq/codes.c:2575
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Appolo"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Appolo"
 msgstr ""
 
 #: src/icq/codes.c:2576
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Ares"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Ares"
 msgstr ""
 
 #: src/icq/codes.c:2577
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Atlas"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Atlas"
 msgstr ""
 
 #: src/icq/codes.c:2578
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Cupid"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Cupid"
 msgstr ""
 
 #: src/icq/codes.c:2579
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Cyclopes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Cyclopes"
 msgstr ""
 
 #: src/icq/codes.c:2580
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Dianna"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Dianna"
 msgstr ""
 
 #: src/icq/codes.c:2581
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Hades"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Hades"
 msgstr ""
 
 #: src/icq/codes.c:2582
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Hera"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Hera"
 msgstr ""
 
 #: src/icq/codes.c:2583
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Hercules"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Hercules"
 msgstr ""
 
 #: src/icq/codes.c:2584
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Hermes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Hermes"
 msgstr ""
 
 #: src/icq/codes.c:2585
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Medusa"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Medusa"
 msgstr ""
 
 #: src/icq/codes.c:2586
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Neptune"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Neptune"
 msgstr ""
 
 #: src/icq/codes.c:2587
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Other Mythological Heroes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Other Mythological Heroes"
 msgstr ""
 
 #: src/icq/codes.c:2588
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Prometheus"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Prometheus"
 msgstr ""
 
 #: src/icq/codes.c:2589
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Mythology/Zeus"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Mythology/Zeus"
 msgstr ""
 
 #: src/icq/codes.c:2590
@@ -16514,20 +16527,20 @@ msgstr ""
 
 #: src/icq/codes.c:2597
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Special Occasions and Holidays Heroes"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Special Occasions and Holidays Heroes"
 msgstr ""
 
 #: src/icq/codes.c:2598
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Special Occasions and Holidays Heroes/Santa Clause"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Special Occasions and Holidays Heroes/Santa Clause"
 msgstr ""
 
 #: src/icq/codes.c:2599
 msgid ""
-"Our Culture Heroes/Art, Mythology, Great Creators, animation and "
-"Leaders/Special Occasions and Holidays Heroes/The Easter Bunny"
+"Our Culture Heroes/Art, Mythology, Great Creators, animation and Leaders/"
+"Special Occasions and Holidays Heroes/The Easter Bunny"
 msgstr ""
 
 #: src/icq/codes.c:3387
@@ -16937,8 +16950,8 @@ msgstr ""
 
 #: src/icq/codes.c:2625
 msgid ""
-"Science and Space/Space and Astronomical Events/Planets and "
-"Galaxies/Extraterrestrial Life"
+"Science and Space/Space and Astronomical Events/Planets and Galaxies/"
+"Extraterrestrial Life"
 msgstr ""
 
 #: src/icq/codes.c:2626
@@ -17023,8 +17036,8 @@ msgstr ""
 
 #: src/icq/codes.c:2641
 msgid ""
-"Science and Space/Space and Astronomical Events/Space "
-"Professionals/Astronauts"
+"Science and Space/Space and Astronomical Events/Space Professionals/"
+"Astronauts"
 msgstr ""
 
 #: src/icq/codes.c:2642
@@ -17040,32 +17053,32 @@ msgstr ""
 
 #: src/icq/codes.c:2644
 msgid ""
-"Science and Space/Space and Astronomical Events/Space and Celestial "
-"Events/Lunar Eclipse"
+"Science and Space/Space and Astronomical Events/Space and Celestial Events/"
+"Lunar Eclipse"
 msgstr ""
 
 #: src/icq/codes.c:2645
 msgid ""
-"Science and Space/Space and Astronomical Events/Space and Celestial "
-"Events/Meteorite Showers"
+"Science and Space/Space and Astronomical Events/Space and Celestial Events/"
+"Meteorite Showers"
 msgstr ""
 
 #: src/icq/codes.c:2646
 msgid ""
-"Science and Space/Space and Astronomical Events/Space and Celestial "
-"Events/Other Astronomical Events"
+"Science and Space/Space and Astronomical Events/Space and Celestial Events/"
+"Other Astronomical Events"
 msgstr ""
 
 #: src/icq/codes.c:2647
 msgid ""
-"Science and Space/Space and Astronomical Events/Space and Celestial "
-"Events/Solar Eclipse"
+"Science and Space/Space and Astronomical Events/Space and Celestial Events/"
+"Solar Eclipse"
 msgstr ""
 
 #: src/icq/codes.c:2648
 msgid ""
-"Science and Space/Space and Astronomical Events/Space and Celestial "
-"Events/Ufo Sightings"
+"Science and Space/Space and Astronomical Events/Space and Celestial Events/"
+"Ufo Sightings"
 msgstr ""
 
 #: src/icq/codes.c:3600
@@ -17975,20 +17988,20 @@ msgstr ""
 
 #: src/icq/codes.c:2813
 msgid ""
-"Student Life and Education/High Schools Alumni/European Highschools "
-"Alumni/England"
+"Student Life and Education/High Schools Alumni/European Highschools Alumni/"
+"England"
 msgstr ""
 
 #: src/icq/codes.c:2814
 msgid ""
-"Student Life and Education/High Schools Alumni/European Highschools "
-"Alumni/European Highschools Alumni- General"
+"Student Life and Education/High Schools Alumni/European Highschools Alumni/"
+"European Highschools Alumni- General"
 msgstr ""
 
 #: src/icq/codes.c:2815
 msgid ""
-"Student Life and Education/High Schools Alumni/European Highschools "
-"Alumni/Italy"
+"Student Life and Education/High Schools Alumni/European Highschools Alumni/"
+"Italy"
 msgstr ""
 
 #: src/icq/codes.c:2816
@@ -18150,20 +18163,20 @@ msgstr ""
 
 #: src/icq/codes.c:2843
 msgid ""
-"Student Life and Education/University and College Students/College "
-"Chats/College Chat 1"
+"Student Life and Education/University and College Students/College Chats/"
+"College Chat 1"
 msgstr ""
 
 #: src/icq/codes.c:2844
 msgid ""
-"Student Life and Education/University and College Students/College "
-"Chats/College Chat 2"
+"Student Life and Education/University and College Students/College Chats/"
+"College Chat 2"
 msgstr ""
 
 #: src/icq/codes.c:2845
 msgid ""
-"Student Life and Education/University and College Students/College "
-"Chats/College Chat 3"
+"Student Life and Education/University and College Students/College Chats/"
+"College Chat 3"
 msgstr ""
 
 #: src/icq/codes.c:2846
@@ -18341,14 +18354,14 @@ msgstr ""
 
 #: src/icq/codes.c:2875
 msgid ""
-"Student Life and Education/University and College Students/Studying "
-"Abroad/Studying Abroad - By Current Location"
+"Student Life and Education/University and College Students/Studying Abroad/"
+"Studying Abroad - By Current Location"
 msgstr ""
 
 #: src/icq/codes.c:2876
 msgid ""
-"Student Life and Education/University and College Students/Studying "
-"Abroad/Studying Abroad - By Place of Origin"
+"Student Life and Education/University and College Students/Studying Abroad/"
+"Studying Abroad - By Place of Origin"
 msgstr ""
 
 #: src/icq/codes.c:264
@@ -18465,8 +18478,8 @@ msgstr ""
 
 #: src/icq/codes.c:2880
 msgid ""
-"The Workplace, Employees by Corporation/Corporations A-b/Corporations "
-"A-b/Corporations A-b"
+"The Workplace, Employees by Corporation/Corporations A-b/Corporations A-b/"
+"Corporations A-b"
 msgstr ""
 
 #: src/icq/codes.c:2881
@@ -18480,8 +18493,8 @@ msgstr ""
 
 #: src/icq/codes.c:2883
 msgid ""
-"The Workplace, Employees by Corporation/Corporations C-d/Corporations "
-"C-d/Corporations C-d"
+"The Workplace, Employees by Corporation/Corporations C-d/Corporations C-d/"
+"Corporations C-d"
 msgstr ""
 
 #: src/icq/codes.c:2884
@@ -18495,8 +18508,8 @@ msgstr ""
 
 #: src/icq/codes.c:2886
 msgid ""
-"The Workplace, Employees by Corporation/Corporations E-f/Corporations "
-"E-f/Corporations E-f"
+"The Workplace, Employees by Corporation/Corporations E-f/Corporations E-f/"
+"Corporations E-f"
 msgstr ""
 
 #: src/icq/codes.c:2887
@@ -18510,8 +18523,8 @@ msgstr ""
 
 #: src/icq/codes.c:2889
 msgid ""
-"The Workplace, Employees by Corporation/Corporations G-h/Corporations "
-"G-h/Corporations G-h"
+"The Workplace, Employees by Corporation/Corporations G-h/Corporations G-h/"
+"Corporations G-h"
 msgstr ""
 
 #: src/icq/codes.c:2890
@@ -18525,8 +18538,8 @@ msgstr ""
 
 #: src/icq/codes.c:2892
 msgid ""
-"The Workplace, Employees by Corporation/Corporations I-j/Corporations "
-"I-j/Corporations I-j"
+"The Workplace, Employees by Corporation/Corporations I-j/Corporations I-j/"
+"Corporations I-j"
 msgstr ""
 
 #: src/icq/codes.c:2893
@@ -18540,8 +18553,8 @@ msgstr ""
 
 #: src/icq/codes.c:2895
 msgid ""
-"The Workplace, Employees by Corporation/Corporations K-l/Corporations "
-"K-l/Corporations K-l"
+"The Workplace, Employees by Corporation/Corporations K-l/Corporations K-l/"
+"Corporations K-l"
 msgstr ""
 
 #: src/icq/codes.c:2896
@@ -18555,8 +18568,8 @@ msgstr ""
 
 #: src/icq/codes.c:2898
 msgid ""
-"The Workplace, Employees by Corporation/Corporations M-n/Corporations "
-"M-n/Corporations M-n"
+"The Workplace, Employees by Corporation/Corporations M-n/Corporations M-n/"
+"Corporations M-n"
 msgstr ""
 
 #: src/icq/codes.c:2899
@@ -18570,8 +18583,8 @@ msgstr ""
 
 #: src/icq/codes.c:2901
 msgid ""
-"The Workplace, Employees by Corporation/Corporations O-p/Corporations "
-"O-p/Corporations O-p"
+"The Workplace, Employees by Corporation/Corporations O-p/Corporations O-p/"
+"Corporations O-p"
 msgstr ""
 
 #: src/icq/codes.c:2902
@@ -18585,8 +18598,8 @@ msgstr ""
 
 #: src/icq/codes.c:2904
 msgid ""
-"The Workplace, Employees by Corporation/Corporations Q-r/Corporations "
-"Q-r/Corporations Q-r"
+"The Workplace, Employees by Corporation/Corporations Q-r/Corporations Q-r/"
+"Corporations Q-r"
 msgstr ""
 
 #: src/icq/codes.c:2905
@@ -18600,8 +18613,8 @@ msgstr ""
 
 #: src/icq/codes.c:2907
 msgid ""
-"The Workplace, Employees by Corporation/Corporations S-t/Corporations "
-"S-t/Corporations S-t"
+"The Workplace, Employees by Corporation/Corporations S-t/Corporations S-t/"
+"Corporations S-t"
 msgstr ""
 
 #: src/icq/codes.c:2908
@@ -18615,8 +18628,8 @@ msgstr ""
 
 #: src/icq/codes.c:2910
 msgid ""
-"The Workplace, Employees by Corporation/Corporations U-v/Corporations "
-"U-v/Corporations U-v"
+"The Workplace, Employees by Corporation/Corporations U-v/Corporations U-v/"
+"Corporations U-v"
 msgstr ""
 
 #: src/icq/codes.c:2911
@@ -18630,8 +18643,8 @@ msgstr ""
 
 #: src/icq/codes.c:2913
 msgid ""
-"The Workplace, Employees by Corporation/Corporations W-x/Corporations "
-"W-x/Corporations W-x"
+"The Workplace, Employees by Corporation/Corporations W-x/Corporations W-x/"
+"Corporations W-x"
 msgstr ""
 
 #: src/icq/codes.c:2914
@@ -18645,8 +18658,8 @@ msgstr ""
 
 #: src/icq/codes.c:2916
 msgid ""
-"The Workplace, Employees by Corporation/Corporations Y-z/Corporations "
-"Y-z/Corporations Y-z"
+"The Workplace, Employees by Corporation/Corporations Y-z/Corporations Y-z/"
+"Corporations Y-z"
 msgstr ""
 
 #: src/icq/codes.c:2917
@@ -18746,56 +18759,56 @@ msgstr ""
 
 #: src/icq/codes.c:2923
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Alberta"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Alberta"
 msgstr ""
 
 #: src/icq/codes.c:2924
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Calgary"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Calgary"
 msgstr ""
 
 #: src/icq/codes.c:2925
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Montreal"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Montreal"
 msgstr ""
 
 #: src/icq/codes.c:2926
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Ontario"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Ontario"
 msgstr ""
 
 #: src/icq/codes.c:2927
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Ottawa"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Ottawa"
 msgstr ""
 
 #: src/icq/codes.c:2928
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Quebec"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Quebec"
 msgstr ""
 
 #: src/icq/codes.c:2929
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Toronto"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Toronto"
 msgstr ""
 
 #: src/icq/codes.c:2930
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Vancouver"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Vancouver"
 msgstr ""
 
 #: src/icq/codes.c:2931
 msgid ""
-"US and Canada by States and Cities/US and Canada by Cities/Cities in "
-"Canada/Winnipeg"
+"US and Canada by States and Cities/US and Canada by Cities/Cities in Canada/"
+"Winnipeg"
 msgstr ""
 
 #: src/icq/codes.c:2932
@@ -20041,20 +20054,20 @@ msgstr ""
 
 #: src/icq/codes.c:3138
 msgid ""
-"Volunteer, Community Services and Social Organizations/Community "
-"Services/Community Services"
+"Volunteer, Community Services and Social Organizations/Community Services/"
+"Community Services"
 msgstr ""
 
 #: src/icq/codes.c:3139
 msgid ""
-"Volunteer, Community Services and Social Organizations/Community "
-"Services/Community Services/Community Professionals"
+"Volunteer, Community Services and Social Organizations/Community Services/"
+"Community Services/Community Professionals"
 msgstr ""
 
 #: src/icq/codes.c:3140
 msgid ""
-"Volunteer, Community Services and Social Organizations/Community "
-"Services/Community Services/Community Services"
+"Volunteer, Community Services and Social Organizations/Community Services/"
+"Community Services/Community Services"
 msgstr ""
 
 #: src/icq/codes.c:3141
@@ -20081,50 +20094,50 @@ msgstr ""
 
 #: src/icq/codes.c:3145
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members"
 msgstr ""
 
 #: src/icq/codes.c:3146
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members/American Red Cross"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members/American Red Cross"
 msgstr ""
 
 #: src/icq/codes.c:3147
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members/Civil Air Patrol"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members/Civil Air Patrol"
 msgstr ""
 
 #: src/icq/codes.c:3148
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members/Green Peace"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members/Green Peace"
 msgstr ""
 
 #: src/icq/codes.c:3149
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members/Other Volunteer Groups"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members/Other Volunteer Groups"
 msgstr ""
 
 #: src/icq/codes.c:3150
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members/Peace Corps"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members/Peace Corps"
 msgstr ""
 
 #: src/icq/codes.c:3151
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members/Rotary International"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members/Rotary International"
 msgstr ""
 
 #: src/icq/codes.c:3152
 msgid ""
-"Volunteer, Community Services and Social Organizations/Volunteer "
-"Groups/Voluntary Organizations Members/The National Auduborn Society"
+"Volunteer, Community Services and Social Organizations/Volunteer Groups/"
+"Voluntary Organizations Members/The National Auduborn Society"
 msgstr ""
 
 #: src/icq/codes.c:296
@@ -20961,8 +20974,8 @@ msgstr "dringend"
 
 #~ msgid "%sResponse to unknown %s info request for unknown user (%s).\n"
 #~ msgstr ""
-#~ "%sAntwort auf unbekannte(s) %s Info-Anfrage zu unbekanntem Benutzer "
-#~ "(%s).\n"
+#~ "%sAntwort auf unbekannte(s) %s Info-Anfrage zu unbekanntem Benutzer (%"
+#~ "s).\n"
 
 #~ msgid ""
 #~ "%sUnable to connect to %s:%d:\n"
