@@ -79,7 +79,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
   lay->addWidget(buttons);
 
-  bool bSendServer;
+  bool bSendServer = true;
   {
     Licq::UserReadGuard u(myUserId);
     const QTextCodec* codec = UserCodec::codecForUser(*u);

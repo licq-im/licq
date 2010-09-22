@@ -136,6 +136,8 @@ void EditCategoryDlg::ok()
     Licq::OwnerReadGuard o(LICQ_PPID);
     if (o.isLocked())
       codec = UserCodec::codecForUser(*o);
+    else
+      codec = UserCodec::defaultEncoding();
   }
 
   Licq::UserCategoryMap cat;
