@@ -59,6 +59,7 @@ public:
 
   int getSocket();
   void recv();
+  void ping();
 
   SessionManager* getSessionManager() { return mySessionManager; }
 

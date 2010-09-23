@@ -89,6 +89,11 @@ void Client::recv()
   myClient.recv();
 }
 
+void Client::ping()
+{
+  myClient.whitespacePing();
+}
+
 void Client::setPassword(const string& password)
 {
   myClient.setPassword(password);
