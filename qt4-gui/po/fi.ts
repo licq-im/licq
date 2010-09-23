@@ -2,71 +2,44 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>Groups</name>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Online-huomautus</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Näkyvissä-lista</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Näkymättömissä-lista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Huomiotta-lista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Uudet</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Tuntematon</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::AboutDlg</name>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="42"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="44"/>
         <source>Licq - About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="69"/>
         <source>Version</source>
         <translation type="unfinished">Versio</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="76"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
         <source>Compiled on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="79"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
         <source>Maintainer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
         <source>Contributions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="83"/>
         <source>Original author</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="84"/>
         <source>Contact us</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1897,12 +1870,6 @@ from your contact list?</source>
 kontaktilistaltasi?</translation>
     </message>
     <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq ei voi käynnistää selaintasi ja avata URLia.
-Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="274"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
@@ -2106,22 +2073,22 @@ See network window for details.</source>
 Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1122"/>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="680"/>
         <source>is online</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1153"/>
+        <location filename="../src/core/mainwin.cpp" line="1122"/>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/mainwin.cpp" line="1155"/>
         <source>Qt URL handling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1170"/>
+        <location filename="../src/core/mainwin.cpp" line="1172"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2512,74 +2479,6 @@ base directory and then register a new user.</source>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="152"/>
         <source>(Invalid ID)</source>
         <translation type="unfinished">(Virheellinen ID)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::PasswordDlg</name>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="51"/>
-        <source>Change Password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="62"/>
-        <source>Protocol</source>
-        <translation type="unfinished">Protokolla</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="65"/>
-        <source>User ID:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="86"/>
-        <source>&amp;Current Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="87"/>
-        <source>&amp;New Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="88"/>
-        <source>&amp;Verify Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="118"/>
-        <source>Passwords doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="124"/>
-        <source>Password cannot be empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="132"/>
-        <source>Old password doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="141"/>
-        <source>Setting Password...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="163"/>
-        <source>failed</source>
-        <translation type="unfinished">epäonnistui</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="166"/>
-        <source>timed out</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="169"/>
-        <source>error</source>
-        <translation type="unfinished">virhe</translation>
     </message>
 </context>
 <context>
@@ -4317,74 +4216,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <translation type="unfinished">Määrää huomioidaanko email pager -viestejä vai ei.</translation>
     </message>
     <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Komennon suoritus päälle tapahtuman tullessa.</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Komento:</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Parametrit</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Viesti:</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Parametri viestin tullessa</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Parametri URL:n tullessa</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Parametri chat-pyynnön tullessa</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Parametri tiedoston tullessa</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Parametri online-huomautukseen</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Parametri järjestelmäviestien tullessa</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Parametri viestien lähdettyä</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Poissa&quot;-tilassa</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Ei paikalla&quot; -tilassa</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Varattu&quot;-tilassa</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Suorita tapahtumakomento &quot;Älä häiritse&quot; -tilassa</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Aja online-huomautuksen tapahtumakomento kirjauduttaessa sisään (eri käytäntö kuin Mirabiliksen ohjelmassa)</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="164"/>
         <source>Disable sound for active window</source>
         <translation type="unfinished"></translation>
@@ -5097,30 +4928,6 @@ Kuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
         <translation type="unfinished">Käynnistys</translation>
     </message>
     <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Poissa</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Kiireinen</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Älä häiritse</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Vapaa</translation>
-    </message>
-    <message>
         <location filename="../src/settings/status.cpp" line="103"/>
         <source>Automatically log on when first starting up.</source>
         <translation type="unfinished">Kirjaudu automaattisesti sisään käynnistyksen yhteydessä.</translation>
@@ -5181,10 +4988,6 @@ Kuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
         <location filename="../src/settings/status.cpp" line="172"/>
         <source>Status:</source>
         <translation type="unfinished">Tila:</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Vapaa</translation>
     </message>
     <message>
         <location filename="../src/settings/status.cpp" line="184"/>
@@ -5367,10 +5170,6 @@ reset your statistics?</source>
         <translation type="unfinished">Varoitukset</translation>
     </message>
     <message>
-        <source>Packets</source>
-        <translation type="obsolete">Paketit</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="95"/>
         <source>Set All</source>
         <translation type="unfinished">Aseta kaikki</translation>
@@ -5436,10 +5235,6 @@ reset your statistics?</source>
         <translation type="unfinished">&amp;Tallenna kaikki käyttäjät</translation>
     </message>
     <message>
-        <source>Phone &quot;Follow Me&quot;</source>
-        <translation type="obsolete">Puhelin &quot;seuraa minua&quot;</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="134"/>
         <source>Don&apos;t Show</source>
         <translation type="unfinished">Älä näytä</translation>
@@ -5503,10 +5298,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="200"/>
         <source>Show Offline &amp;Users</source>
         <translation type="unfinished">Näytä o&amp;ffline-käyttäjät</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">Säikeis&amp;tä ryhmänäkymä</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="205"/>
@@ -6768,17 +6559,9 @@ Valitaanko toinen kuva?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Näkyvissä-lista</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="173"/>
         <source>Contact will see you online even if you&apos;re invisible.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Näkymättömissä-lista</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="177"/>
@@ -6786,17 +6569,9 @@ Valitaanko toinen kuva?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Huomiotta-lista</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="181"/>
         <source>Ignore any events from this contact.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Uudet</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="185"/>
@@ -7471,41 +7246,6 @@ Pyyntö peruttu.</translation>
         <location filename="../src/core/messagebox.cpp" line="81"/>
         <source>No</source>
         <translation>Ei</translation>
-    </message>
-</context>
-<context>
-    <name>Status</name>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Offline</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Älä häiritse</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Kiireinen</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Poissa</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Vapaa</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Online</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Tuntematon</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Näkymätön</translation>
     </message>
 </context>
 </TS>

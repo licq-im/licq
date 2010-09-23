@@ -2,75 +2,44 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>Groups</name>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Все пользователи</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">В списке игнорируемых</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">В списке невидимости</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Новые пользователи</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Оповещать о появлении</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Неизвестно</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">В списке видимости</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::AboutDlg</name>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="42"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="44"/>
         <source>Licq - About</source>
         <translation>Licq - О программе</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="69"/>
         <source>Version</source>
         <translation>Версия</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="76"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
         <source>Compiled on</source>
         <translation>Скомпилировано</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
         <source>Credits</source>
         <translation>Благодарность</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="79"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
         <source>Maintainer</source>
         <translation>Ведущий разработчик</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
         <source>Contributions</source>
         <translation>При содействии</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="83"/>
         <source>Original author</source>
         <translation>Первоначальный автор</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="84"/>
         <source>Contact us</source>
         <translation>Обратная связь</translation>
     </message>
@@ -1903,12 +1872,6 @@ from your contact list?</source>
 из списка контактов?</translation>
     </message>
     <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq не удалось запустить браузер и открыть ссылку.
-Вам небходимо запустить браузер вручную.</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="274"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
@@ -2065,7 +2028,7 @@ See network window for details.</source>
     </message>
     <message>
         <location filename="../src/core/mainwin.cpp" line="1122"/>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2124,16 +2087,12 @@ Double click - Show next message</source>
         <translation>в сети</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-T : &lt;/tt&gt;Toggle group show&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="obsolete">&lt;h2&gt;Подсказки по использованию&lt;br&gt;Qt-GUI модуля Licq&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Статус можно изменить нажатием правой кнопки мыши на поле статуса.&lt;/li&gt;&lt;li&gt;Авто-ответ можно изменить двойным щелчком на поле статуса.&lt;/li&gt;&lt;li&gt;Для просмотра системных сообщений можно использовать двойной щелчок на поле сообщений.&lt;/li&gt;&lt;li&gt;Сменить отображаемую группу можно нажатием правой кнопки мыши на поле сообщений.&lt;/li&gt;&lt;li&gt;Также в списке контактов можно воспользоваться следующими комбинациями:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Включение/выключение режима &quot;мини&quot;&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Показывать/не показывать пользователей не в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Выход&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Скрыть&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Просмотр следующего сообщения&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Просмотр сообщения&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Отправить сообщение&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Отправить ссылку&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Отправить запрос чата&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Отправить файл(ы)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Проверить авто-ответ&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Открыть все сообщения&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Обновить окно пользователей&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Удалить пользователя из текущей группы&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Удалить пользователя из списка контактов&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Если нажать кнопку &quot;закрыть&quot; удерживая клавишу Ctrl, то можно сразу же удалить пользователя из списка контактов.&lt;/li&gt;&lt;li&gt;Можно использовать Ctrl-Enter во многих полях ввода чтобы вызвать нажатие &quot;Да&quot; или &quot;Подтвердить&quot;. Например, в диалоге отправки сообщения.&lt;/li&gt;&lt;li&gt;Здесь полный список всех %-переменных, которые могут быть использованы в качестве параметров к &lt;b&gt;команде при событии&lt;/b&gt;, &lt;b&gt;авто-ответах&lt;/b&gt; и строчке запуска &lt;b&gt;утилит&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <location filename="../src/core/mainwin.cpp" line="1153"/>
+        <location filename="../src/core/mainwin.cpp" line="1155"/>
         <source>Qt URL handling</source>
         <translation>Обработка URL в Qt</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1170"/>
+        <location filename="../src/core/mainwin.cpp" line="1172"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation>&lt;p&gt;Более подробную информацию можно получить на web-сайте (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
@@ -2482,13 +2441,6 @@ Double click - Show next message</source>
         <translation>&amp;Завершить</translation>
     </message>
     <message>
-        <source>From the Account Manager dialog you are able to add and register your accounts.
-Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
-        <translation type="obsolete">С помощью Менеджера учётных записей Вы можете добавлять и регистрировать записи.
-В настоящее время поддерживается работа только с одной учётной записью для каждого из протоколов.
-Работу с несколькими учётными записями одновременно планируется реализовать в будущем.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="231"/>
         <source>Do you really want to remove account %1?</source>
         <translation type="unfinished"></translation>
@@ -2536,74 +2488,6 @@ base directory and then register a new user.</source>
 Рабочий каталог: %2
 Перезапустите licq с опцией -b чтобы выбрать другой
 рабочий каталог и тогда регистрируйте новую запись.</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::PasswordDlg</name>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="51"/>
-        <source>Change Password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="62"/>
-        <source>Protocol</source>
-        <translation type="unfinished">Протокол</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="65"/>
-        <source>User ID:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="86"/>
-        <source>&amp;Current Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="87"/>
-        <source>&amp;New Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="88"/>
-        <source>&amp;Verify Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="118"/>
-        <source>Passwords doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="124"/>
-        <source>Password cannot be empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="132"/>
-        <source>Old password doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="141"/>
-        <source>Setting Password...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="163"/>
-        <source>failed</source>
-        <translation type="unfinished">неудачно</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="166"/>
-        <source>timed out</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="169"/>
-        <source>error</source>
-        <translation type="unfinished">ошибка</translation>
     </message>
 </context>
 <context>
@@ -3573,10 +3457,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation>Программы</translation>
     </message>
     <message>
-        <source>URI viewer:</source>
-        <translation type="obsolete">Программа просмотра ссылок:</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="199"/>
         <location filename="../src/settings/chat.cpp" line="203"/>
         <source>Terminal:</source>
@@ -3762,10 +3642,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation>При открытии иконка будет скрыта</translation>
     </message>
     <message>
-        <source>Send messages with Return and insert new lines with Ctrl+Return, opposite of the normal mode</source>
-        <translation type="obsolete">Отправлять сообщения с помощью Enter и вставлять пустые строки при Ctrl+Enter</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="141"/>
         <source>Check spelling</source>
         <translation>Проверить правописание</translation>
@@ -3784,14 +3660,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <location filename="../src/settings/chat.cpp" line="142"/>
         <source>Mark misspelled words as you type.</source>
         <translation>Отмечать слова с ошибками во время набора.</translation>
-    </message>
-    <message>
-        <source>The command to run in case Qt is unable to open an URL.
-It is passed an URL as the last parameter.
-Refer to the hints dialog for Qt URL handling rules.</source>
-        <translation type="obsolete">Команда для запуска в случае, если Qt не удалось открыть URL.
-URL передается последним параметром.
-Получите справку об обработке URL в Qt в диалоге подсказок.</translation>
     </message>
 </context>
 <context>
@@ -4386,123 +4254,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <translation>Определяет, игнорировать ли сообщения с Email-пейджера.</translation>
     </message>
     <message>
-        <source>Sounds enabled</source>
-        <translation type="obsolete">Включить</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Разрешает запуск команды при соответствующем событии.</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Команда:</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Параметры</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Сообщение:</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Параметры команды для входящих сообщений</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">Ссылка:</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Параметры команды для ссылок</translation>
-    </message>
-    <message>
-        <source>Chat request:</source>
-        <translation type="obsolete">Запрос чата:</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Параматры команды для запросов чата</translation>
-    </message>
-    <message>
-        <source>File transfer:</source>
-        <translation type="obsolete">Передача файла:</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Параметры команды для передачи файлов</translation>
-    </message>
-    <message>
-        <source>Online notify:</source>
-        <translation type="obsolete">При появлении:</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Параматры команды для оповещения о появлении пользователя в сети</translation>
-    </message>
-    <message>
-        <source>System msg:</source>
-        <translation type="obsolete">Сист сообщ:</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Параметры команды для системных сообщений</translation>
-    </message>
-    <message>
-        <source>Message sent:</source>
-        <translation type="obsolete">Отправленное сообщение:</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Параметры команды для отправляемых сообщений</translation>
-    </message>
-    <message>
-        <source>Enable Events</source>
-        <translation type="obsolete">Обработка событий</translation>
-    </message>
-    <message>
-        <source>Sounds when Away</source>
-        <translation type="obsolete">Включено когда &apos;Отошел&apos;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Запускать команду в режиме &apos;отошел&apos;</translation>
-    </message>
-    <message>
-        <source>Sounds when N/A</source>
-        <translation type="obsolete">Включено когда &apos;Недоступен&apos;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Запускать команду в режиме &apos;недоступен&apos;</translation>
-    </message>
-    <message>
-        <source>Sounds when Occupied</source>
-        <translation type="obsolete">Включено когда &apos;Занят&apos;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Запускать команду в режиме &apos;занят&apos;</translation>
-    </message>
-    <message>
-        <source>Sounds when DND</source>
-        <translation type="obsolete">Включено когда &apos;Не беспокоить&apos;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Запускать команду в режиме &apos;не беспокоить&apos;</translation>
-    </message>
-    <message>
-        <source>Online notify when logging on</source>
-        <translation type="obsolete">Оповещать о появлении при заходе в сеть</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Запускает команду обработки события &apos;При появлении&apos; во время того, как Вы заходите в сеть
-(это отличается от поведения клиента от Mirabilis)</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="164"/>
         <source>Disable sound for active window</source>
         <translation type="unfinished"></translation>
@@ -4511,10 +4262,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <location filename="../src/settings/events.cpp" line="165"/>
         <source>Don&apos;t perform OnEvent command if chat window for user is currently active.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:</source>
-        <translation type="obsolete">Команда, которая будет выполнена при событии.&lt;br&gt;Ей будут переданы параметры, указанные ниже.&lt;br&gt;Также будут выполнены следующие подстановки:</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="83"/>
@@ -5226,34 +4973,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <translation>Запуск</translation>
     </message>
     <message>
-        <source>Offline</source>
-        <translation type="obsolete">Отключен</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">В сети</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Отошел</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Недоступен</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Занят</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Не беспокоить</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Свободен для чата</translation>
-    </message>
-    <message>
         <location filename="../src/settings/status.cpp" line="103"/>
         <source>Automatically log on when first starting up.</source>
         <translation>Автоматически подключаться к сети с заданным статусом при запуске.</translation>
@@ -5319,10 +5038,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <translation>Статус:</translation>
     </message>
     <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Свободен для чата</translation>
-    </message>
-    <message>
         <location filename="../src/settings/status.cpp" line="184"/>
         <source>Preset slot:</source>
         <translation>Заготовки:</translation>
@@ -5342,18 +5057,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <location filename="../src/settings/status.cpp" line="242"/>
         <source>Previous Message</source>
         <translation>Предыдущее сообщение</translation>
-    </message>
-    <message>
-        <source>General Status Options</source>
-        <translation type="obsolete">Общие настройки статуса</translation>
-    </message>
-    <message>
-        <source>Delay status changes</source>
-        <translation type="obsolete">Задержка смена статуса</translation>
-    </message>
-    <message>
-        <source>Set status after closing the away message dialog instead of setting it directly.</source>
-        <translation type="obsolete">Установить статус после закрытия диалога с сообщением о статусе вместо того, чтобы ставить его не дожидаясь.</translation>
     </message>
 </context>
 <context>
@@ -5571,14 +5274,6 @@ reset your statistics?</source>
         <translation>Окно &amp;отладки...</translation>
     </message>
     <message>
-        <source>Packets</source>
-        <translation type="obsolete">Пакеты</translation>
-    </message>
-    <message>
-        <source>Phone &quot;Follow Me&quot;</source>
-        <translation type="obsolete">&quot;Следуй за мной&quot;</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="205"/>
         <source>&amp;Plugin Manager...</source>
         <translation>Менеджер мо&amp;дулей...</translation>
@@ -5587,10 +5282,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="117"/>
         <source>&amp;Popup All Messages...</source>
         <translation>&amp;Вывести все сообщения...</translation>
-    </message>
-    <message>
-        <source>R&amp;andom Chat...</source>
-        <translation type="obsolete">&amp;Случайный чат...</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="122"/>
@@ -5646,10 +5337,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>Status Info</source>
         <translation>Статус</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">Показывать г&amp;руппы</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="89"/>
@@ -5731,14 +5418,6 @@ reset your statistics?</source>
         <source>GPG &amp;Key Manager...</source>
         <translation>Менеджер &amp;ключей GPG...</translation>
     </message>
-    <message>
-        <source>ICQ &amp;Security Options...</source>
-        <translation type="obsolete">Настройки &amp;безопасности ICQ...</translation>
-    </message>
-    <message>
-        <source>ICQ &amp;Random Chat Group...</source>
-        <translation type="obsolete">&amp;Группа случайного чата ICQ...</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
@@ -5765,14 +5444,6 @@ reset your statistics?</source>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file:
-(%1)
-%2</source>
-        <translation type="obsolete">Невозможно загрузить файл с темой для дока:
-(%1)
-%2</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="80"/>
         <source>Unable to load dock theme file:
@@ -6932,17 +6603,9 @@ Select another picture?</source>
         <translation>Системные группы</translation>
     </message>
     <message>
-        <source>Online notify</source>
-        <translation type="obsolete">Оповещать о появлении</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="169"/>
         <source>Notify when this contact comes online.</source>
         <translation>Оповещать о появлении при заходе в сеть.</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">В списке видимости</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="173"/>
@@ -6950,26 +6613,14 @@ Select another picture?</source>
         <translation>Контакт будет видеть Ваш статус если Вы невидимы.</translation>
     </message>
     <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">В списке невидимости</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="177"/>
         <source>Contact will always see you as offline.</source>
         <translation>Ваш статус будет скрываться от контакта.</translation>
     </message>
     <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">В списке игнорируемых</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="181"/>
         <source>Ignore any events from this contact.</source>
         <translation>Все сообщения от контакта будут игнорироваться.</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Новые пользователи</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="185"/>
@@ -7646,77 +7297,6 @@ Request was cancelled.</source>
         <location filename="../src/core/messagebox.cpp" line="81"/>
         <source>Yes</source>
         <translation>Да</translation>
-    </message>
-</context>
-<context>
-    <name>Status</name>
-    <message>
-        <source>???</source>
-        <translation type="obsolete">???</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Отошел</translation>
-    </message>
-    <message>
-        <source>DND</source>
-        <translation type="obsolete">Не бесп</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Не беспокоить</translation>
-    </message>
-    <message>
-        <source>FFC</source>
-        <translation type="obsolete">Чат</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Свободен для чата</translation>
-    </message>
-    <message>
-        <source>N/A</source>
-        <translation type="obsolete">Недост</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Недоступен</translation>
-    </message>
-    <message>
-        <source>Occ</source>
-        <translation type="obsolete">Зан</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Занят</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Откл</translation>
-    </message>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Отключен</translation>
-    </message>
-    <message>
-        <source>On</source>
-        <translation type="obsolete">Подкл</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">В сети</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Неизвестно</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Невидимый</translation>
-    </message>
-    <message>
-        <source>Inv</source>
-        <translation type="obsolete">Невид</translation>
     </message>
 </context>
 </TS>

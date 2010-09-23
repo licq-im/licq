@@ -2,75 +2,44 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="sv_SE">
 <context>
-    <name>Groups</name>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Alla användare</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Anslutningsavisering</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Synlighetslista</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Osynlighetslista</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Ignoreringslista</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Nya användare</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Okänd</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::AboutDlg</name>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="42"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="44"/>
         <source>Licq - About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="69"/>
         <source>Version</source>
         <translation type="unfinished">Version</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="76"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
         <source>Compiled on</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
         <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="79"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
         <source>Maintainer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
         <source>Contributions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="83"/>
         <source>Original author</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="84"/>
         <source>Contact us</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1899,12 +1868,6 @@ from your contact list?</source>
 från din kontaktlista?</translation>
     </message>
     <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq kan inte starta din webbläsare och öppna länken.
-Du måste starta din webbläsare och öppna länken manuellt.</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="274"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
@@ -2109,22 +2072,22 @@ See network window for details.</source>
 Se nätverksfönstret för mer information.</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1122"/>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="680"/>
         <source>is online</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1153"/>
+        <location filename="../src/core/mainwin.cpp" line="1122"/>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/mainwin.cpp" line="1155"/>
         <source>Qt URL handling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1170"/>
+        <location filename="../src/core/mainwin.cpp" line="1172"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2477,12 +2440,6 @@ Se nätverksfönstret för mer information.</translation>
         <translation>&amp;Klar</translation>
     </message>
     <message>
-        <source>From the Account Manager dialog you are able to add and register your accounts.
-Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
-        <translation type="obsolete">Från Kontohanteraren kan du lägga till och registrera konton.
-Förnärvarande kan endast ett konto per protokoll användas. Detta kommer att ändras i framtida versioner.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="180"/>
         <source>You are currently registered as
 UIN (User ID): %1
@@ -2525,74 +2482,6 @@ Note that only one account per protocol is supported in Licq.</source>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="152"/>
         <source>(Invalid ID)</source>
         <translation type="unfinished">(Felaktigt ID)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::PasswordDlg</name>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="51"/>
-        <source>Change Password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="62"/>
-        <source>Protocol</source>
-        <translation type="unfinished">Protokoll</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="65"/>
-        <source>User ID:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="86"/>
-        <source>&amp;Current Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="87"/>
-        <source>&amp;New Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="88"/>
-        <source>&amp;Verify Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="118"/>
-        <source>Passwords doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="124"/>
-        <source>Password cannot be empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="132"/>
-        <source>Old password doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="141"/>
-        <source>Setting Password...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="163"/>
-        <source>failed</source>
-        <translation type="unfinished">misslyckades</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="166"/>
-        <source>timed out</source>
-        <translation type="unfinished">dog ut</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="169"/>
-        <source>error</source>
-        <translation type="unfinished">fel</translation>
     </message>
 </context>
 <context>
@@ -3543,10 +3432,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation type="unfinished">Extensioner</translation>
     </message>
     <message>
-        <source>URI viewer:</source>
-        <translation type="obsolete">URI-visare:</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="199"/>
         <location filename="../src/settings/chat.cpp" line="203"/>
         <source>Terminal:</source>
@@ -4333,74 +4218,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <translation type="unfinished">Bestämmer om e-postmeddelanden ignoreras eller ej.</translation>
     </message>
     <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Aktivera körning av &quot;Kommando&quot; när relevant händelse inträffar.</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Kommando:</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Paramatrar</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Meddelande:</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Parameter för mottagna meddelanden</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Parameter för mottagna URL:er</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Parameter för mottagna chattbegäran</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Parameter för mottagna filöverföringar</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Parameter för anslutningsavisering</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Parameter för mottagna systemmeddelanden</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Parametrar för skickade meddelanden</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i frånvaroläget</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i Ej-tillgänglig-läget</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i Upptagenläget</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Utför VidHändelse-kommando i Stör-ej-läget</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Utför anslutnings notifiering OnEvent vid inloggning (detta är olikt det sätt Mirabilis klient arbetar)</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="164"/>
         <source>Disable sound for active window</source>
         <translation type="unfinished"></translation>
@@ -5113,34 +4930,6 @@ Ikongrupp &apos;%2&apos; är ej tillgänglig.</translation>
         <translation type="unfinished">Uppstart</translation>
     </message>
     <message>
-        <source>Offline</source>
-        <translation type="obsolete">Frånkopplad</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Ansluten</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Borta</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Upptagen</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Stör ej</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Chattledig</translation>
-    </message>
-    <message>
         <location filename="../src/settings/status.cpp" line="103"/>
         <source>Automatically log on when first starting up.</source>
         <translation type="unfinished">Anslut automatiskt vid uppstart.</translation>
@@ -5201,10 +4990,6 @@ Ikongrupp &apos;%2&apos; är ej tillgänglig.</translation>
         <location filename="../src/settings/status.cpp" line="172"/>
         <source>Status:</source>
         <translation type="unfinished">Status:</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Chattledig</translation>
     </message>
     <message>
         <location filename="../src/settings/status.cpp" line="184"/>
@@ -5387,10 +5172,6 @@ reset your statistics?</source>
         <translation type="unfinished">Varningar</translation>
     </message>
     <message>
-        <source>Packets</source>
-        <translation type="obsolete">Paket</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="95"/>
         <source>Set All</source>
         <translation type="unfinished">Ange alla</translation>
@@ -5456,10 +5237,6 @@ reset your statistics?</source>
         <translation type="unfinished">&amp;Spara alla användare</translation>
     </message>
     <message>
-        <source>Phone &quot;Follow Me&quot;</source>
-        <translation type="obsolete">Telefon &quot;Följ Mig&quot;</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="134"/>
         <source>Don&apos;t Show</source>
         <translation type="unfinished">Visa Inte</translation>
@@ -5523,10 +5300,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="200"/>
         <source>Show Offline &amp;Users</source>
         <translation type="unfinished">Visa frånkopplade &amp;användare</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">&amp;Trådad gruppvy</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="205"/>
@@ -6788,17 +6561,9 @@ Välj en annan bild?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Synlighetslista</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="173"/>
         <source>Contact will see you online even if you&apos;re invisible.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Osynlighetslista</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="177"/>
@@ -6806,17 +6571,9 @@ Välj en annan bild?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Ignoreringslista</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="181"/>
         <source>Ignore any events from this contact.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Nya användare</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="185"/>
@@ -7491,45 +7248,6 @@ Begäran avbröts.</translation>
         <location filename="../src/core/messagebox.cpp" line="81"/>
         <source>No</source>
         <translation>Nej</translation>
-    </message>
-</context>
-<context>
-    <name>Status</name>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Frånkopplad</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Stör ej</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Upptagen</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Ej tillgänglig</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Borta</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Chattledig</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">Ansluten</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Okänd</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Osynlig</translation>
     </message>
 </context>
 </TS>
