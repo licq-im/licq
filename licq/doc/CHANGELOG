@@ -1,5 +1,33 @@
 Change log for Licq.
 
+New in 1.5.0
+o Added auto logon feature per protocol in Licq 
+o Sound settings can be overridden per group or per user 
+o Fifo command "setpicture" added 
+o Build: Switched Licq and all plugins to use cmake 
+o Build: Various fixes to make Licq build on Solaris 
+o Plugin API: Major changes, see below 
+o Aosd: New OSD plugin based on libaosd
+o Jabber: New protocol plugin for the Jabber protocol
+o ICQ: Sending a system message with no text would cause disconnect from server 
+o ICQ: Contacts were shown as online after fetching auto response 
+o Qt-Gui/Kde-Gui: Removed and no longer maintained in favour of Qt4-Gui 
+o Qt4-Gui: Allow shortcut to be configured for creating a new group 
+o Qt4-Gui: Mass messages sent are added to user specific chat window as well 
+o Qt4-Gui: Thread mode 2 sometimes showed online contacts under offline header 
+o Qt4-Gui: Group names with ampersands were not displayed properly in menus 
+o Qt4-Gui: Added option to limit auto-popup to only urgent messages 
+
+Main changes in Plugin API (some are currently only partially completed)
+o Header files no longer have "licq_" prefix and are moved to subdir "licq". 
+o Namespace "Licq" is used for all classes and objects in the public headers 
+o Many classes and members have been moved and/or renamed 
+o Private members have been moved to non-public headers in Licq 
+o Classes that are only created in Licq are virtual in public header 
+o Contact list only provides access to its objects through mutex guards 
+o C style strings and data types are replaced with C++ strings and stl containers
+
+
 New in 1.3.9
 o Various bugs in both Licq and plugins that caused crashes and hangings have been fixed 
 o Hebrew support was broken and could cause crashes 
