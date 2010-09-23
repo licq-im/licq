@@ -34,8 +34,10 @@
 
 #ifdef USE_KDE
 # define PLUGIN_NAME "kde4-gui"
+# define DISPLAY_PLUGIN_NAME "KDE4 GUI"
 #else
 # define PLUGIN_NAME "qt4-gui"
+# define DISPLAY_PLUGIN_NAME "Qt4 GUI"
 #endif
 
 #ifdef HAVE_HUNSPELL

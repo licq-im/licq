@@ -41,17 +41,17 @@
 
 const char* LP_Name()
 {
-#ifdef USE_KDE
-  static const char name[] = "KDE4 GUI";
-#else
-  static const char name[] = "Qt4 GUI";
-#endif
+  static const char name[] = DISPLAY_PLUGIN_NAME;
   return name;
 }
 
 const char* LP_Description()
 {
+#ifdef USE_KDE
+  static const char desc[] = "KDE4 based GUI";
+#else
   static const char desc[] = "Qt4 based GUI";
+#endif
   return desc;
 }
 
