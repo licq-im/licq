@@ -1,1 +1,5 @@
-install(FILES licq.desktop DESTINATION share/applications)
+if (WITH_KDE)
+  install(FILES licq.desktop DESTINATION share/applications/kde4)
+else (WITH_KDE)
+  install(FILES licq.desktop DESTINATION share/applications)
+endif (WITH_KDE)
