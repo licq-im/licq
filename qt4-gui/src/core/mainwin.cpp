@@ -1120,7 +1120,7 @@ void MainWindow::slot_pluginUnloaded(unsigned long _nPPID)
 void MainWindow::showHints()
 {
   QString hints = tr(
-    "<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><hr>"
+    "<h2>Hints for Using<br>the Licq %1 Plugin</h2><hr>"
     "<ul>"
     "<li>Change your status by right clicking on the status label.</li>"
     "<li>Change your auto response by double-clicking on the status label.</li>"
@@ -1147,7 +1147,9 @@ void MainWindow::showHints()
     "<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
     "   For example in the send tab of the user function window.</li>"
     "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
-    "   parameters, <b>auto responses</b>, and <b>utilities</b>:") + gMainWindow->usprintfHelp +
+    "   parameters, <b>auto responses</b>, and <b>utilities</b>:")
+    .arg(DISPLAY_PLUGIN_NAME) +
+    gMainWindow->usprintfHelp +
     "</li></ul><hr>" +
 #ifndef USE_KDE
     "<h2>" + tr("Qt URL handling") + "</h2>"

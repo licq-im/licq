@@ -29,6 +29,8 @@
 
 #include <licq/daemon.h>
 
+#include "core/gui-defines.h"
+
 #include "helpers/support.h"
 
 using namespace LicqQtGui;
@@ -47,7 +49,7 @@ AboutDlg::AboutDlg(QWidget* parent)
       "<table width=100%>"
       "<tr><th colspan=2>%1</th></tr>"
       "<tr><td>Licq</td><td align=right>%2%3</td></tr>"
-      "<tr><td>Qt4-GUI</td><td align=right>%4%5</td></tr>"
+      "<tr><td>" DISPLAY_PLUGIN_NAME "</td><td align=right>%4%5</td></tr>"
       "<tr><td>%6</td><td align=right>%7</td></tr>"
       "</table>"
       "<hr>"

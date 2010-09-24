@@ -237,7 +237,7 @@ LicqGui::LicqGui(int& argc, char** argv) :
   QString locale = QLocale::system().name();
 #endif
   // Try to load a translation
-  gLog.info("Attempting to load Qt4 and Licq Qt4-GUI translations for %s locale",
+  gLog.info("Attempting to load Qt4 and Licq " DISPLAY_PLUGIN_NAME " translations for %s locale",
       qPrintable(locale));
 
   QTranslator* qtTranslator = new QTranslator(this);
