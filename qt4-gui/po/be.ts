@@ -2,75 +2,44 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="be_BY">
 <context>
-    <name>Groups</name>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Усе карыстальнікі</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Паведаміць аб з&apos;яўленьні</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">У сьпісе бачных</translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">У сьпісе нябачных</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">У сьпісе ігнараваных</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Новыя карыстальнікі</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Не вядома</translation>
-    </message>
-</context>
-<context>
     <name>LicqQtGui::AboutDlg</name>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="42"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="44"/>
         <source>Licq - About</source>
         <translation>Licq - Інфармацыя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="69"/>
         <source>Version</source>
         <translation>Версія</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="76"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
         <source>Compiled on</source>
         <translation>Сабрана</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="78"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
         <source>Credits</source>
         <translation>Распрацоўшчыкі</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="79"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
         <source>Maintainer</source>
         <translation>Мэйнтэйнер</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="80"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
         <source>Contributions</source>
         <translation>Падтрымка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="81"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="83"/>
         <source>Original author</source>
         <translation>Першапачатковы распрацоўшчык</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/aboutdlg.cpp" line="82"/>
+        <location filename="../src/dialogs/aboutdlg.cpp" line="84"/>
         <source>Contact us</source>
         <translation>Сувязь з намі</translation>
     </message>
@@ -1903,12 +1872,6 @@ from your contact list?</source>
 з Вашага сьпісу кантактаў?</translation>
     </message>
     <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq няздольны запусціць праглядач і адчыніць спасылку.
-Скапіруйце спасылку і ўстаўце яе ў праглядач.</translation>
-    </message>
-    <message>
         <location filename="../src/core/licqgui.cpp" line="274"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
@@ -2114,22 +2077,22 @@ See network window for details.</source>
 Падрабязнасьці ў акенцы сеткі.</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1122"/>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/mainwin.cpp" line="680"/>
         <source>is online</source>
         <translation>у сетцы</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1153"/>
+        <location filename="../src/core/mainwin.cpp" line="1122"/>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/mainwin.cpp" line="1155"/>
         <source>Qt URL handling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1170"/>
+        <location filename="../src/core/mainwin.cpp" line="1172"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2482,12 +2445,6 @@ See network window for details.</source>
         <translation>&amp;Скончыць</translation>
     </message>
     <message>
-        <source>From the Account Manager dialog you are able to add and register your accounts.
-Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
-        <translation type="obsolete">Праз наладкі ўліковых запісаў магчыма дадаць і зарэгістраваць Вашыя акаунты.
-Зараз толькі адзіны ўліковы запіс дзеля кожнага пратаколу падтрымліваеца Licq, але гэта павінна змяніцца ў будучых версіях.</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="180"/>
         <source>You are currently registered as
 UIN (User ID): %1
@@ -2530,74 +2487,6 @@ Note that only one account per protocol is supported in Licq.</source>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="152"/>
         <source>(Invalid ID)</source>
         <translation>(Няспраўны ідэнтыфікатар)</translation>
-    </message>
-</context>
-<context>
-    <name>LicqQtGui::PasswordDlg</name>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="51"/>
-        <source>Change Password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="62"/>
-        <source>Protocol</source>
-        <translation type="unfinished">Пратакол</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="65"/>
-        <source>User ID:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="86"/>
-        <source>&amp;Current Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="87"/>
-        <source>&amp;New Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="88"/>
-        <source>&amp;Verify Password:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="118"/>
-        <source>Passwords doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="124"/>
-        <source>Password cannot be empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="132"/>
-        <source>Old password doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="141"/>
-        <source>Setting Password...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="163"/>
-        <source>failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="166"/>
-        <source>timed out</source>
-        <translation type="unfinished">скончыўся час</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/passworddlg.cpp" line="169"/>
-        <source>error</source>
-        <translation type="unfinished">памылка</translation>
     </message>
 </context>
 <context>
@@ -3565,10 +3454,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <translation>Пашырэньні</translation>
     </message>
     <message>
-        <source>URI viewer:</source>
-        <translation type="obsolete">Праглядач спасылак:</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="199"/>
         <location filename="../src/settings/chat.cpp" line="203"/>
         <source>Terminal:</source>
@@ -3753,10 +3638,6 @@ Normally, this menu shows only commonly used encodings.</source>
         <location filename="../src/settings/chat.cpp" line="137"/>
         <source>Hide user picture upon opening</source>
         <translation>Схаваць малюнак карыстальніка пакуль не адчыняецца</translation>
-    </message>
-    <message>
-        <source>Send messages with Return and insert new lines with Ctrl+Return, opposite of the normal mode</source>
-        <translation type="obsolete">Дасылаць паведамленьне націскам Увода ды ўстаўляць новыя радкі выкарыстоўваючы CTRL+Увод, замест звычайнага рэжыму</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="141"/>
@@ -4367,122 +4248,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <translation>Вызначае, будуць лі ігнараваны паведамленьні з паштовага пэйджару.</translation>
     </message>
     <message>
-        <source>Sounds enabled</source>
-        <translation type="obsolete">Уключыць гук</translation>
-    </message>
-    <message>
-        <source>Enable running of &quot;Command&quot; when the relevant event occurs.</source>
-        <translation type="obsolete">Дазволіць зьдяйсьненьне каманд, калі мае месца здарэньне.</translation>
-    </message>
-    <message>
-        <source>Command:</source>
-        <translation type="obsolete">Каманда:</translation>
-    </message>
-    <message>
-        <source>Parameters</source>
-        <translation type="obsolete">Параметры</translation>
-    </message>
-    <message>
-        <source>Message:</source>
-        <translation type="obsolete">Паведамленьне:</translation>
-    </message>
-    <message>
-        <source>Parameter for received messages</source>
-        <translation type="obsolete">Параметр, ужываемы пры атрыманьні новага паведамленьня</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">Спасылка:</translation>
-    </message>
-    <message>
-        <source>Parameter for received URLs</source>
-        <translation type="obsolete">Параметр, ужываемы пры атрыманьні спасылкі</translation>
-    </message>
-    <message>
-        <source>Chat request:</source>
-        <translation type="obsolete">Запыт размовы:</translation>
-    </message>
-    <message>
-        <source>Parameter for received chat requests</source>
-        <translation type="obsolete">Параметр, ужываемы пры атрыманьні запрашэньня да размовы</translation>
-    </message>
-    <message>
-        <source>File transfer:</source>
-        <translation type="obsolete">Перадача файла:</translation>
-    </message>
-    <message>
-        <source>Parameter for received file transfers</source>
-        <translation type="obsolete">Параметр, ужываемы пры атрыманьні запыта на атрыманьне файла</translation>
-    </message>
-    <message>
-        <source>Online notify:</source>
-        <translation type="obsolete">З&apos;яўленьне ў сетцы:</translation>
-    </message>
-    <message>
-        <source>Parameter for online notification</source>
-        <translation type="obsolete">Параметр, ужываемы пры з&apos;яўленьні карыстальніка ў сетцы</translation>
-    </message>
-    <message>
-        <source>System msg:</source>
-        <translation type="obsolete">Сістэмнае паведамленьне:</translation>
-    </message>
-    <message>
-        <source>Parameter for received system messages</source>
-        <translation type="obsolete">Параметр, ужываемы пры атрыманьні сістэмнага паведамленьня</translation>
-    </message>
-    <message>
-        <source>Message sent:</source>
-        <translation type="obsolete">Адасланае паведамленьне:</translation>
-    </message>
-    <message>
-        <source>Parameter for sent messages</source>
-        <translation type="obsolete">Параметр, ужываемы пры адсылке паведамленьня</translation>
-    </message>
-    <message>
-        <source>Enable Events</source>
-        <translation type="obsolete">Дазволіць здарэньні</translation>
-    </message>
-    <message>
-        <source>Sounds when Away</source>
-        <translation type="obsolete">Гук калі &quot;Адсутнічаю&quot;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in away mode</source>
-        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Адсутнічаю&quot;</translation>
-    </message>
-    <message>
-        <source>Sounds when N/A</source>
-        <translation type="obsolete">Гук пры &quot;Ня дасягальны&quot;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in not available mode</source>
-        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Нядасягальны&quot;</translation>
-    </message>
-    <message>
-        <source>Sounds when Occupied</source>
-        <translation type="obsolete">Гук калі &quot;Заняты&quot;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in occupied mode</source>
-        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Заняты&quot;</translation>
-    </message>
-    <message>
-        <source>Sounds when DND</source>
-        <translation type="obsolete">Гук пры &quot;Не турбаваць&quot;</translation>
-    </message>
-    <message>
-        <source>Perform OnEvent command in do not disturb mode</source>
-        <translation type="obsolete">Дазволіць выкананьне здарэньня пры знаходжаньні ў рэжыме &quot;Не турбаваць&quot;</translation>
-    </message>
-    <message>
-        <source>Online notify when logging on</source>
-        <translation type="obsolete">Папярэджваньне аб з&apos;яўленьні</translation>
-    </message>
-    <message>
-        <source>Perform the online notify OnEvent when logging on (this is different from how the Mirabilis client works)</source>
-        <translation type="obsolete">Дазволіць папярэджваньне пры з&apos;яўленьні карыстальніка ў сетцы. (адрозьніваецца ад працы ў Mirabilis-кліентах)</translation>
-    </message>
-    <message>
         <location filename="../src/settings/events.cpp" line="164"/>
         <source>Disable sound for active window</source>
         <translation type="unfinished"></translation>
@@ -4491,10 +4256,6 @@ Enter the hotkey literally, like &quot;shift+f10&quot;, or &quot;none&quot; for 
         <location filename="../src/settings/events.cpp" line="165"/>
         <source>Don&apos;t perform OnEvent command if chat window for user is currently active.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Command to execute when an event is received.&lt;br&gt;It will be passed the relevant parameters from below.&lt;br&gt;Parameters can contain the following expressions &lt;br&gt; which will be replaced with the relevant information:</source>
-        <translation type="obsolete">Каманда, якая будзе выканана пры з&apos;яўленьні здарэньня.&lt;br&gt;Ёй маюць быць пераданы параметры з сьпіса ніжэй.&lt;br&gt;Параметры могуць утрымліваць наступныя зьменныя,&lt;br&gt;якія будуць зьменены на наступныя дадзеныя:</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="83"/>
@@ -5205,34 +4966,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <translation>Пры старце</translation>
     </message>
     <message>
-        <source>Offline</source>
-        <translation type="obsolete">Адключаны</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">У сетцы</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Адсутнічаю</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Нядасягальны</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Заняты</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Не турбаваць</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Згодны размаўляць</translation>
-    </message>
-    <message>
         <location filename="../src/settings/status.cpp" line="103"/>
         <source>Automatically log on when first starting up.</source>
         <translation>Аўтаматычна ўсталяваць стан пры старце.</translation>
@@ -5293,10 +5026,6 @@ Iconset &apos;%2&apos; has been disabled.</source>
         <location filename="../src/settings/status.cpp" line="172"/>
         <source>Status:</source>
         <translation>Стан:</translation>
-    </message>
-    <message>
-        <source>Free For Chat</source>
-        <translation type="obsolete">Згодны размаўляць</translation>
     </message>
     <message>
         <location filename="../src/settings/status.cpp" line="184"/>
@@ -5480,10 +5209,6 @@ reset your statistics?</source>
         <translation>Папярэджваньні</translation>
     </message>
     <message>
-        <source>Packets</source>
-        <translation type="obsolete">Пакеты</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="95"/>
         <source>Set All</source>
         <translation>Усталяваць усё</translation>
@@ -5519,10 +5244,6 @@ reset your statistics?</source>
         <translation>&amp;Запытаць аўтарызацыю...</translation>
     </message>
     <message>
-        <source>R&amp;andom Chat...</source>
-        <translation type="obsolete">В&amp;ыпадковая размова...</translation>
-    </message>
-    <message>
         <location filename="../src/core/systemmenu.cpp" line="117"/>
         <source>&amp;Popup All Messages...</source>
         <translation>Паказаць &amp;усе паведамленьні...</translation>
@@ -5551,10 +5272,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="123"/>
         <source>&amp;Save All Users</source>
         <translation>&amp;Захаваць усіх карыстальнікаў</translation>
-    </message>
-    <message>
-        <source>Phone &quot;Follow Me&quot;</source>
-        <translation type="obsolete">Тэлефон &quot;Кроч за мной&quot;</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="134"/>
@@ -5620,10 +5337,6 @@ reset your statistics?</source>
         <location filename="../src/core/systemmenu.cpp" line="200"/>
         <source>Show Offline &amp;Users</source>
         <translation>Паказваць &amp;усіх карыстальнікаў</translation>
-    </message>
-    <message>
-        <source>&amp;Thread Group View</source>
-        <translation type="obsolete">Паказваць па г&amp;уртах</translation>
     </message>
     <message>
         <location filename="../src/core/systemmenu.cpp" line="205"/>
@@ -5695,14 +5408,6 @@ reset your statistics?</source>
         <source>GPG &amp;Key Manager...</source>
         <translation>На&amp;ладкі GPG...</translation>
     </message>
-    <message>
-        <source>ICQ &amp;Security Options...</source>
-        <translation type="obsolete">Наладкі &amp;бясьпекі ICQ...</translation>
-    </message>
-    <message>
-        <source>ICQ &amp;Random Chat Group...</source>
-        <translation type="obsolete">В&amp;ыпадковы ICQ-гурт для размовы...</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
@@ -5729,14 +5434,6 @@ reset your statistics?</source>
 </context>
 <context>
     <name>LicqQtGui::ThemedDockIcon</name>
-    <message>
-        <source>Unable to load dock theme file:
-(%1)
-%2</source>
-        <translation type="obsolete">Немагчыма загрузіць тэму дока з файла: 
-(%1)
-:%2</translation>
-    </message>
     <message>
         <location filename="../src/dockicons/themeddockicon.cpp" line="80"/>
         <source>Unable to load dock theme file:
@@ -6905,17 +6602,9 @@ Select another picture?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Visible List</source>
-        <translation type="obsolete">У сьпісе бачных</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="173"/>
         <source>Contact will see you online even if you&apos;re invisible.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">У сьпісе нябачных</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="177"/>
@@ -6923,17 +6612,9 @@ Select another picture?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">У сьпісе ігнараваных</translation>
-    </message>
-    <message>
         <location filename="../src/userdlg/settings.cpp" line="181"/>
         <source>Ignore any events from this contact.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Новыя карыстальнікі</translation>
     </message>
     <message>
         <location filename="../src/userdlg/settings.cpp" line="185"/>
@@ -7609,77 +7290,6 @@ Request was cancelled.</source>
         <location filename="../src/core/messagebox.cpp" line="81"/>
         <source>No</source>
         <translation>Не</translation>
-    </message>
-</context>
-<context>
-    <name>Status</name>
-    <message>
-        <source>Offline</source>
-        <translation type="obsolete">Адключаны</translation>
-    </message>
-    <message>
-        <source>Do Not Disturb</source>
-        <translation type="obsolete">Не турбаваць</translation>
-    </message>
-    <message>
-        <source>Occupied</source>
-        <translation type="obsolete">Заняты</translation>
-    </message>
-    <message>
-        <source>Not Available</source>
-        <translation type="obsolete">Нядасягальны</translation>
-    </message>
-    <message>
-        <source>Away</source>
-        <translation type="obsolete">Адсутнічаю</translation>
-    </message>
-    <message>
-        <source>Free for Chat</source>
-        <translation type="obsolete">Згодны размаўляць</translation>
-    </message>
-    <message>
-        <source>Online</source>
-        <translation type="obsolete">У сетцы</translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="obsolete">Не вядома</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation type="obsolete">Адкл.</translation>
-    </message>
-    <message>
-        <source>DND</source>
-        <translation type="obsolete">Не турб.</translation>
-    </message>
-    <message>
-        <source>Occ</source>
-        <translation type="obsolete">Зан.</translation>
-    </message>
-    <message>
-        <source>N/A</source>
-        <translation type="obsolete">Нядас.</translation>
-    </message>
-    <message>
-        <source>FFC</source>
-        <translation type="obsolete">Разм.</translation>
-    </message>
-    <message>
-        <source>On</source>
-        <translation type="obsolete">акт.</translation>
-    </message>
-    <message>
-        <source>???</source>
-        <translation type="obsolete">???</translation>
-    </message>
-    <message>
-        <source>Invisible</source>
-        <translation type="obsolete">Нябачны</translation>
-    </message>
-    <message>
-        <source>Inv</source>
-        <translation type="obsolete">Схав.</translation>
     </message>
 </context>
 </TS>
