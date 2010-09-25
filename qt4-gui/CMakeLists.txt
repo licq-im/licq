@@ -81,6 +81,13 @@ else (NOT WITH_KDE)
   string(REPLACE "-fvisibility=hidden" ""
     CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+  # FindKDE4Internal disables exceptions, but the daemon is built with
+  # exceptions so we must have them enabled here as well.
+  string(REPLACE "-fno-exceptions" ""
+    CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  string(REPLACE "-DQT_NO_EXCEPTIONS" ""
+    CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
   add_definitions(${KDE4_DEFINITIONS})
   link_directories(${KDE4_LIB_DIR})
 
