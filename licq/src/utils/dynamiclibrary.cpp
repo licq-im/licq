@@ -60,7 +60,11 @@ DynamicLibrary::DynamicLibrary(const std::string& filename)
 
 DynamicLibrary::~DynamicLibrary() throw()
 {
-  ::dlclose(myDlHandle);
+  // For some reason licq crashes after kde4-gui has been unloaded. Probably
+  // due to some atexit destructor trying to access code in the newly unloaded
+  // lib. This is an ugly work-around for now.
+  if (myName.find("licq_kde4-gui") == std::string::npos)
+    ::dlclose(myDlHandle);
 }
 
 template<> void
