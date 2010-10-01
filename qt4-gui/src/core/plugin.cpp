@@ -28,6 +28,7 @@
 #ifdef USE_KDE
 # include <QInternal>
 #include <KDE/KCmdLineArgs>
+#include <KDE/KMessage>
 #else
 # include <QStyleFactory>
 #endif
@@ -142,6 +143,24 @@ int LP_Main()
 
   myArgc = 0;
   myArgv = NULL;
+
+#ifdef USE_KDE
+  // When a KApplication is started a new KMessageBoxMessageHandler (from
+  // libkdeui) is created and is installed as the message handler. The call to
+  // setMessageHandler() triggers KMessage to create a static object that will
+  // delete the handler when libkdecore is unloaded.
+  //
+  // The problem is that when kde4-gui is unloaded (which happens before Licq
+  // exits) only libkdeui is unloaded; something makes libkdecore stay
+  // loaded. When Licq exits, all libs are unloaded. Before libkdecore is
+  // unloaded, the static objects are deleted. In the destructor of the static
+  // object created by KMessage a call to the destructor for
+  // KMessageBoxMessageHandler is attempted. But that code is in libkdeui which
+  // already has been unloaded, resulting in a crash.
+  //
+  // The line below avoids that and stops Licq from crashing on exit.
+  KMessage::setMessageHandler(0);
+#endif
 
   return result;
 }

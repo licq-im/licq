@@ -140,7 +140,7 @@ void Plugin::processPipe(int pipe)
       myDoRun = false;
       break;
     default:
-      gLog.error("Unkown command %c", ch);
+      gLog.error("Unknown command %c", ch);
       break;
   }
 }
@@ -240,7 +240,7 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
       doRequestAuth(static_cast<Licq::ProtoRequestAuthSignal*>(signal));
       break;
     default:
-      gLog.error("Unkown signal %u", signal->signal());
+      gLog.error("Unknown signal %u", signal->signal());
       break;
   }
 }
