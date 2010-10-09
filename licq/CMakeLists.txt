@@ -17,7 +17,7 @@ option(USE_HEBREW "Include support for hebrew reverse string" OFF)
 option(USE_OPENSSL "Enable secure communication channels" ON)
 option(USE_SOCKS5 "Enable socks5 support" OFF)
 option(BUILD_PLUGINS "Build all plugins" OFF)
-option(BUILD_TESTS "Build all unit tests" OFF)
+option(BUILD_TESTS "Build all unit tests" ON)
 
 set(DLOPEN_POLICY RTLD_NOW CACHE STRING "2nd dlopen parameter")
 mark_as_advanced(DLOPEN_POLICY)
