@@ -435,7 +435,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
 
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  connect(mySendServerCheck, SIGNAL(triggered(bool)), SLOT(sendServerToggled(bool)));
+  connect(mySendServerCheck, SIGNAL(toggled(bool)), SLOT(sendServerToggled(bool)));
 
   QSize dialogSize = Config::Chat::instance()->sendDialogSize();
   if (dialogSize.isValid())
@@ -1161,7 +1161,12 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
     if (e->Command() == ICQ_CMDxTCP_START && e->Result() != Licq::Event::ResultCancelled &&
        (Config::Chat::instance()->autoSendThroughServer() ||
          QueryYesNo(this, tr("Direct send failed,\nsend through server?"))) )
+    {
+      // Remember that we want to send through server
+      mySendServerCheck->setChecked(true);
+
       retrySend(e, false, ICQ_TCPxMSG_NORMAL);
+    }
     return;
   }
 
