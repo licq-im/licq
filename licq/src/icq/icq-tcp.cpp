@@ -78,7 +78,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   unsigned long f = Licq::UserEvent::FlagLicqVerMask;
 
   char *cipher = NULL;
-  bool useGpg;
+  bool useGpg = false;
   {
     {
       Licq::UserReadGuard u(userId);
