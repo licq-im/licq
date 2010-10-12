@@ -75,14 +75,14 @@ UserMenu::UserMenu(QWidget* parent)
     a = mySendMenu->addAction(text); \
     mySendActions.insert(data, a); \
     a->setData(data);
-  ADD_SEND(tr("Send &Message"), SendMessage)
-  ADD_SEND(tr("Send &URL"), SendUrl)
-  ADD_SEND(tr("Send &Chat Request"), SendChat)
-  ADD_SEND(tr("Send &File Transfer"), SendFile)
-  ADD_SEND(tr("Send Contact &List"), SendContact)
-  ADD_SEND(tr("Send &Authorization"), SendAuthorize)
-  ADD_SEND(tr("Send Authorization Re&quest"), SendReqAuthorize)
-  ADD_SEND(tr("Send &SMS"), SendSms)
+  ADD_SEND(tr("Send &Message..."), SendMessage)
+  ADD_SEND(tr("Send &URL..."), SendUrl)
+  ADD_SEND(tr("Send &Chat Request..."), SendChat)
+  ADD_SEND(tr("Send &File Transfer..."), SendFile)
+  ADD_SEND(tr("Send Contact &List..."), SendContact)
+  ADD_SEND(tr("Send &Authorization..."), SendAuthorize)
+  ADD_SEND(tr("Send Authorization Re&quest..."), SendReqAuthorize)
+  ADD_SEND(tr("Send &SMS..."), SendSms)
   mySendMenu->addSeparator();
   ADD_SEND(tr("Update Info Plugin List"), RequestUpdateInfoPlugin)
   ADD_SEND(tr("Update Status Plugin List"), RequestUpdateStatusPlugin)
@@ -159,7 +159,7 @@ UserMenu::UserMenu(QWidget* parent)
   myGroupsMenu->addActions(mySystemGroupActions->actions());
 
   // User menu
-  myViewEventAction = addAction(tr("&View Event"), this, SLOT(viewEvent()));
+  myViewEventAction = addAction(tr("&View Event..."), this, SLOT(viewEvent()));
   addMenu(mySendMenu);
   addMenu(myMiscModesMenu);
   addMenu(myUtilitiesMenu);
@@ -173,12 +173,12 @@ UserMenu::UserMenu(QWidget* parent)
   addMenu(myGroupsMenu);
   myRemoveUserAction = addAction(tr("Remove From List"), this, SLOT(removeContact()));
   addSeparator();
-  mySetKeyAction = addAction(tr("Set GPG key"), this, SLOT(selectKey()));
+  mySetKeyAction = addAction(tr("Set GPG key..."), this, SLOT(selectKey()));
   if (!Licq::gDaemon.haveGpgSupport())
     mySetKeyAction->setVisible(false);
   myCopyIdAction = addAction(tr("&Copy User ID"), this, SLOT(copyIdToClipboard()));
-  myViewHistoryAction = addAction(tr("View &History"), this, SLOT(viewHistory()));
-  myViewGeneralAction = addAction(tr("&Info"), this, SLOT(viewInfoGeneral()));
+  myViewHistoryAction = addAction(tr("View &History..."), this, SLOT(viewHistory()));
+  myViewGeneralAction = addAction(tr("&Info..."), this, SLOT(viewInfoGeneral()));
 
   connect(this, SIGNAL(aboutToShow()), SLOT(aboutToShowMenu()));
 
@@ -286,12 +286,12 @@ void UserMenu::aboutToShowMenu()
   mySendActions[SendSms]->setEnabled(!u->getCellularNumber().empty());
   if (u->Secure())
   {
-    mySendActions[SendKey]->setText(tr("Close &Secure Channel"));
+    mySendActions[SendKey]->setText(tr("Close &Secure Channel..."));
     mySendActions[SendKey]->setIcon(IconManager::instance()->getIcon(IconManager::SecureOnIcon));
   }
   else
   {
-    mySendActions[SendKey]->setText(tr("Request &Secure Channel"));
+    mySendActions[SendKey]->setText(tr("Request &Secure Channel..."));
     mySendActions[SendKey]->setIcon(IconManager::instance()->getIcon(IconManager::SecureOffIcon));
   }
 

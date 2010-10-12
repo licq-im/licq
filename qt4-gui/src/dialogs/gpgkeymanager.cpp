@@ -90,7 +90,7 @@ GPGKeyManager::GPGKeyManager(QWidget* parent)
   btn = buttons->addButton(name, QDialogButtonBox::role); \
   connect(btn, SIGNAL(clicked()), SLOT(slot()))
 
-  BUTTON(ActionRole, tr("&Edit"), slot_edit);
+  BUTTON(ActionRole, tr("&Edit..."), slot_edit);
   BUTTON(ActionRole, tr("&Remove"), slot_remove);
 
 #undef BUTTON
