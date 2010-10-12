@@ -512,7 +512,7 @@ QPixmap Settings::Skin::renderSkin(const QString& skinName)
   // Group Combo Box
   cmbUserGroups = new SkinnableComboBox(skin->cmbGroups, &w);
   cmbUserGroups->setGeometry(skin->cmbGroups.borderToRect(&w));
-  cmbUserGroups->addItem(ContactListModel::systemGroupName(ContactListModel::AllUsersGroupId));
+  cmbUserGroups->addItem(ContactListModel::systemGroupName(ContactListModel::MostUsersGroupId));
 
   // The Menu Button
   if (!skin->frame.hasMenuBar)

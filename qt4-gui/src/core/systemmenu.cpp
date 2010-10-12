@@ -172,7 +172,7 @@ SystemMenu::SystemMenu(QWidget* parent)
     a->setCheckable(true); \
     myGroupMenu->addAction(a);
   ADD_SYSTEMGROUP(ContactListModel::AllGroupsGroupId);
-  ADD_SYSTEMGROUP(ContactListModel::AllUsersGroupId);
+  ADD_SYSTEMGROUP(ContactListModel::MostUsersGroupId);
   myGroupMenu->addSeparator();
   myGroupSeparator = myGroupMenu->addSeparator();
   for (int i = ContactListModel::SystemGroupOffset; i <= ContactListModel::LastSystemGroup; ++i)

@@ -90,7 +90,7 @@ void Config::ContactList::loadConfiguration(Licq::IniFile& iniFile)
       // User group
       myGroupId = oldGroupId;
     else if (oldGroupId == 0)
-      myGroupId = ContactListModel::AllUsersGroupId;
+      myGroupId = ContactListModel::MostUsersGroupId;
     else if (oldGroupId == 1)
       myGroupId = ContactListModel::OnlineNotifyGroupId;
     else if (oldGroupId == 2)
@@ -105,7 +105,7 @@ void Config::ContactList::loadConfiguration(Licq::IniFile& iniFile)
 
   // Check that the group actually exists
   if (myGroupId <= 0 || (myGroupId >= ContactListModel::SystemGroupOffset &&
-      myGroupId != ContactListModel::AllUsersGroupId && myGroupId != ContactListModel::AllGroupsGroupId) ||
+      myGroupId != ContactListModel::MostUsersGroupId && myGroupId != ContactListModel::AllGroupsGroupId) ||
       (myGroupId < ContactListModel::SystemGroupOffset && !Licq::gUserManager.groupExists(myGroupId)))
     myGroupId = ContactListModel::AllGroupsGroupId;
 

@@ -183,10 +183,13 @@ public:
   static const int AwaitingAuthGroupId                  = SystemGroupOffset + 5;
   static const int NumSystemGroups                      = 6;
   static const int LastSystemGroup                      = SystemGroupOffset + NumSystemGroups - 1;
-  static const int AllUsersGroupId                      = SystemGroupOffset + 100;
+  static const int MostUsersGroupId                     = SystemGroupOffset + 100;
 
   // Not real group but need unique id in menus
   static const int AllGroupsGroupId                     = SystemGroupOffset + 101;
+
+  // Really all users. MostUsers above doesn't include Ignored users
+  static const int AllUsersGroupId                      = SystemGroupOffset + 200;
 
   /**
    * Get display name for system groups
