@@ -367,7 +367,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
         case BART_TYPExBUDDY_ICON_SMALL:
         case BART_TYPExBUDDY_ICON:
         {
-          if (HashType == 1 && HashLength > 0 && HashLength <= 16)
+          if ((HashType == 0 || HashType == 1) && HashLength > 0 && HashLength <= 16)
           {
             boost::scoped_array<char> Hash(new char[HashLength]);
             boost::scoped_array<char> HashHex(new char[HashLength*2 + 1]);
