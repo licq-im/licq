@@ -25,6 +25,9 @@
 
 #include <licq/userid.h>
 
+class QAction;
+class QMenu;
+
 namespace Licq
 {
 class User;
@@ -43,11 +46,13 @@ public:
   GPGKeyManager(QWidget* parent = 0);
 
 private:
+  QMenu* myUsersMenu;
   KeyList* lst_keyList;
   void initKeyList();
 
 private slots:
-  void slot_add();
+  void showAddMenu();
+  void addUser(QAction* res);
   void slot_edit();
   void slot_remove();
   void slot_doubleClicked(QTreeWidgetItem* item);

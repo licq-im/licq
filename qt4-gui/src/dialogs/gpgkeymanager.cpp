@@ -35,6 +35,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/pluginsignal.h>
 
+#include "contactlist/contactlist.h"
 #include "core/messagebox.h"
 
 #include "helpers/support.h"
@@ -74,15 +75,21 @@ GPGKeyManager::GPGKeyManager(QWidget* parent)
       SLOT(slot_doubleClicked(QTreeWidgetItem*)));
   lay_main->addWidget(lst_keyList);
 
+  myUsersMenu = new QMenu(this);
+  connect(myUsersMenu, SIGNAL(aboutToShow()), SLOT(showAddMenu()));
+  connect(myUsersMenu, SIGNAL(triggered(QAction*)), SLOT(addUser(QAction*)));
+
   QDialogButtonBox* buttons = new QDialogButtonBox();
   lay_main->addWidget(buttons);
 
   QPushButton* btn;
+  btn = buttons->addButton(tr("&Add"), QDialogButtonBox::ActionRole);
+  btn->setMenu(myUsersMenu);
+
 #define BUTTON(role, name, slot) \
   btn = buttons->addButton(name, QDialogButtonBox::role); \
   connect(btn, SIGNAL(clicked()), SLOT(slot()))
 
-  BUTTON(ActionRole, tr("&Add"), slot_add);
   BUTTON(ActionRole, tr("&Edit"), slot_edit);
   BUTTON(ActionRole, tr("&Remove"), slot_remove);
 
@@ -106,9 +113,11 @@ void GPGKeyManager::slot_doubleClicked(QTreeWidgetItem* item)
     dynamic_cast<KeyListItem*>(item)->edit();
 }
 
-void GPGKeyManager::slot_add()
+void GPGKeyManager::showAddMenu()
 {
-  QMenu popupMenu;
+  // Remove existing entries in menu
+  myUsersMenu->clear();
+
   QList<luser> list;
 
   {
@@ -130,16 +139,12 @@ void GPGKeyManager::slot_add()
   qSort(list.begin(), list.end(), compare_luser);
 
   for (int i = 0; i < list.count(); i++)
-    popupMenu.addAction(list.at(i).alias)->setData(i);
+    myUsersMenu->addAction(list.at(i).alias)->setData(QVariant::fromValue(list.at(i).userId));
+}
 
-  QAction* res = popupMenu.exec(QCursor::pos());
-  if (res == NULL)
-    return;
-  const luser* tmp = &list.at(res->data().toInt());
-  if (tmp == NULL)
-    return;
-
-  lst_keyList->editUser(tmp->userId);
+void GPGKeyManager::addUser(QAction* res)
+{
+  lst_keyList->editUser(res->data().value<Licq::UserId>());
 }
 
 void GPGKeyManager::slot_remove()
