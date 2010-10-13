@@ -96,7 +96,7 @@ AwayMsgDlg::AwayMsgDlg(QWidget* parent)
       QDialogButtonBox::Cancel |
       QDialogButtonBox::Help);
 
-  myButtons->button(QDialogButtonBox::Help)->setText(tr("&Hints"));
+  myButtons->button(QDialogButtonBox::Help)->setText(tr("&Hints..."));
   myButtons->addButton(tr("&Select"), QDialogButtonBox::ActionRole)->setMenu(myMenu);
 
   connect(myButtons, SIGNAL(accepted()), SLOT(ok()));

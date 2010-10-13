@@ -81,16 +81,16 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   QDialogButtonBox* buttons = new QDialogButtonBox();
   toplay->addWidget(buttons);
 
-  addButton = new QPushButton(tr("&Add"));
+  addButton = new QPushButton(tr("&Add..."));
   buttons->addButton(addButton, QDialogButtonBox::ActionRole);
 
-  registerButton = new QPushButton(tr("&Register"));
+  registerButton = new QPushButton(tr("&Register..."));
   buttons->addButton(registerButton, QDialogButtonBox::ActionRole);
 
-  modifyButton = new QPushButton(tr("&Modify"));
+  modifyButton = new QPushButton(tr("&Modify..."));
   buttons->addButton(modifyButton, QDialogButtonBox::ActionRole);
 
-  removeButton = new QPushButton(tr("D&elete"));
+  removeButton = new QPushButton(tr("D&elete..."));
   buttons->addButton(removeButton, QDialogButtonBox::ActionRole);
 
   closeButton = new QPushButton(tr("&Done"));
