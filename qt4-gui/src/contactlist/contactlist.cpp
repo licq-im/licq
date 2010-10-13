@@ -61,6 +61,7 @@ QString ContactListModel::systemGroupName(int groupId)
       return tr("Awaiting Authorization");
 
     case AllUsersGroupId:
+    case MostUsersGroupId:
       return tr("All Users");
     case AllGroupsGroupId:
       return tr("All Groups (Threaded)");
@@ -83,6 +84,7 @@ ContactListModel::ContactListModel(QObject* parent)
 
   CREATE_SYSTEMGROUP(AllUsersGroupId, 0, 0);
   myAllUsersGroup = group;
+  CREATE_SYSTEMGROUP(MostUsersGroupId, 0, IgnoreStatus);
   CREATE_SYSTEMGROUP(OnlineNotifyGroupId, OnlineNotifyStatus, IgnoreStatus);
   CREATE_SYSTEMGROUP(VisibleListGroupId, VisibleListStatus, IgnoreStatus);
   CREATE_SYSTEMGROUP(InvisibleListGroupId, InvisibleListStatus, IgnoreStatus);
