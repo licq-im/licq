@@ -82,5 +82,4 @@ TEST_F(PluginThreadFixture, startPlugin)
   thread.startPlugin(&start, &id);
   EXPECT_EQ(thread.join(), (void*)42);
   EXPECT_FALSE(::pthread_equal(id, ::pthread_self()));
-  EXPECT_TRUE(thread.isThread(id));
 }

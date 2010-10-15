@@ -24,6 +24,7 @@
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/exception_ptr.hpp>
+#include <cstring>
 
 using Licq::MutexLocker;
 using namespace LicqDaemon;
@@ -146,7 +147,10 @@ void* PluginThread::join()
 {
   void* result;
   if (::pthread_join(myThread, &result) == 0)
+  {
+    ::memset(&myThread, 0, sizeof(myThread));
     return result;
+  }
   return NULL;
 }
 
