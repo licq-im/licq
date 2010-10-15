@@ -44,6 +44,8 @@ public:
   PluginManager();
   ~PluginManager();
 
+  inline void setMainThread(PluginThread::Ptr mainThread);
+
   GeneralPlugin::Ptr loadGeneralPlugin(
       const std::string& name, int argc, char** argv, bool keep = true);
   ProtocolPlugin::Ptr loadProtocolPlugin(
@@ -102,6 +104,7 @@ private:
                            const std::string& prefix) const;
 
   unsigned short myNextPluginId;
+  PluginThread::Ptr myMainThread;
 
   GeneralPluginsList myGeneralPlugins;
   mutable Licq::Mutex myGeneralPluginsMutex;
@@ -113,6 +116,11 @@ private:
 };
 
 extern PluginManager gPluginManager;
+
+inline void PluginManager::setMainThread(PluginThread::Ptr mainThread)
+{
+  myMainThread = mainThread;
+}
 
 inline PluginEventHandler& PluginManager::getPluginEventHandler()
 {

@@ -15,6 +15,8 @@
 #include <locale>
 
 #include "licq.h"
+#include "plugins/pluginmanager.h"
+#include "plugins/pluginthread.h"
 
 #ifdef USE_SOCKS5
 #define SOCKS
@@ -29,6 +31,25 @@ extern "C" {
 
 // sighandler.cpp
 void licq_install_signal_handlers();
+
+using LicqDaemon::PluginThread;
+
+static int threadArgc;
+static char** threadArgv;
+static int threadMain(PluginThread::Ptr mainThread)
+{
+  using LicqDaemon::gPluginManager;
+  gPluginManager.setMainThread(mainThread);
+  mainThread.reset();
+
+  int ret = 1;
+  CLicq licq;
+  if (licq.Init(threadArgc, threadArgv))
+    ret = licq.Main();
+
+  gPluginManager.setMainThread(PluginThread::Ptr());
+  return ret;
+}
 
 int main(int argc, char **argv)
 {
@@ -48,8 +69,7 @@ int main(int argc, char **argv)
 
   licq_install_signal_handlers();
 
-  CLicq licq;
-  if (!licq.Init(argc, argv))
-    return 1;
-  return licq.Main();
+  threadArgc = argc;
+  threadArgv = argv;
+  return PluginThread::createWithCurrentThread(&threadMain);
 }

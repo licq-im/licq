@@ -24,6 +24,7 @@
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/exception_ptr.hpp>
+#include <cstring>
 
 using Licq::MutexLocker;
 using namespace LicqDaemon;
@@ -37,7 +38,8 @@ struct PluginThread::Data
     STATE_LOAD_PLUGIN,
     STATE_INIT_PLUGIN,
     STATE_START_PLUGIN,
-    STATE_RUNNING
+    STATE_RUNNING,
+    STATE_EXITED
   };
 
   // Syncronization between main and plugin thread
@@ -79,6 +81,7 @@ static void* pluginThreadEntry(void* arg)
         break;
       case PluginThread::Data::STATE_WAITING:
       case PluginThread::Data::STATE_RUNNING:
+      case PluginThread::Data::STATE_EXITED:
         assert(false);
         break;
       case PluginThread::Data::STATE_LOAD_PLUGIN:
@@ -116,16 +119,55 @@ static void* pluginThreadEntry(void* arg)
   return NULL;
 }
 
+struct PluginThread::NewThreadData
+{
+  int (*myNewThreadEntry)(PluginThread::Ptr);
+  PluginThread::Ptr myPluginThread;
+  int myReturnValue;
+};
+
+int PluginThread::createWithCurrentThread(
+    int (*newThreadEntry)(PluginThread::Ptr))
+{
+  NewThreadData data;
+  data.myNewThreadEntry = newThreadEntry;
+  data.myPluginThread.reset(new PluginThread(false));
+  data.myReturnValue = -1;
+
+  pthread_t newThread;
+  ::pthread_create(&newThread, NULL, &PluginThread::newThreadEntry, &data);
+
+  data.myPluginThread->myExitValue =
+      pluginThreadEntry(data.myPluginThread->myData);
+
+  {
+    MutexLocker locker(data.myPluginThread->myData->myMutex);
+    data.myPluginThread->myData->myState = PluginThread::Data::STATE_EXITED;
+    data.myPluginThread->myData->myCondition.signal();
+  }
+
+  void* retval;
+  ::pthread_join(newThread, &retval);
+  return data.myReturnValue;
+}
+
 PluginThread::PluginThread() :
-  myData(new Data())
+  myIsThreadOwner(true),
+  myData(new Data),
+  myExitValue(NULL)
 {
   myData->myState = PluginThread::Data::STATE_STOPPED;
   ::pthread_create(&myThread, NULL, pluginThreadEntry, myData);
+  waitForThreadToStart();
+}
 
-  // Wait for thread to start
-  MutexLocker locker(myData->myMutex);
-  if (myData->myState != PluginThread::Data::STATE_WAITING)
-    myData->myCondition.wait(myData->myMutex);
+PluginThread::PluginThread(bool) :
+  myIsThreadOwner(false),
+  myData(new Data),
+  myExitValue(NULL)
+{
+  myData->myState = PluginThread::Data::STATE_STOPPED;
+  myThread = ::pthread_self();
 }
 
 PluginThread::~PluginThread()
@@ -138,12 +180,23 @@ PluginThread::~PluginThread()
 void PluginThread::stop()
 {
   MutexLocker locker(myData->myMutex);
-  myData->myState = PluginThread::Data::STATE_STOPPED;
-  myData->myCondition.signal();
+  if (myData->myState != PluginThread::Data::STATE_EXITED)
+  {
+    myData->myState = PluginThread::Data::STATE_STOPPED;
+    myData->myCondition.signal();
+  }
 }
 
 void* PluginThread::join()
 {
+  if (!myIsThreadOwner)
+  {
+    MutexLocker locker(myData->myMutex);
+    while (myData->myState != PluginThread::Data::STATE_EXITED)
+      myData->myCondition.wait(myData->myMutex);
+    return myExitValue;
+  }
+
   void* result;
   if (::pthread_join(myThread, &result) == 0)
     return result;
@@ -152,7 +205,8 @@ void* PluginThread::join()
 
 void PluginThread::cancel()
 {
-  ::pthread_cancel(myThread);
+  if (myIsThreadOwner)
+    ::pthread_cancel(myThread);
 }
 
 bool PluginThread::isThread(const pthread_t& thread) const
@@ -215,4 +269,19 @@ void PluginThread::startPlugin(void* (*pluginStart)(void*), void* argument)
   // Reset myData
   myData->myPluginStart = NULL;
   myData->myPluginStartArgument = NULL;
+}
+
+void PluginThread::waitForThreadToStart()
+{
+  MutexLocker locker(myData->myMutex);
+  if (myData->myState != PluginThread::Data::STATE_WAITING)
+    myData->myCondition.wait(myData->myMutex);
+}
+
+void* PluginThread::newThreadEntry(void* voidData)
+{
+  NewThreadData* data = reinterpret_cast<NewThreadData*>(voidData);
+  data->myPluginThread->waitForThreadToStart();
+  data->myReturnValue = data->myNewThreadEntry(data->myPluginThread);
+  return NULL;
 }

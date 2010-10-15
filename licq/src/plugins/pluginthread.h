@@ -46,6 +46,8 @@ public:
 
   struct Data;
 
+  static int createWithCurrentThread(int (*newThreadEntry)(PluginThread::Ptr));
+
   PluginThread();
   ~PluginThread();
 
@@ -69,8 +71,16 @@ public:
   void startPlugin(void* (*pluginStart)(void*), void* argument);
 
 private:
+  explicit PluginThread(bool);
+  void waitForThreadToStart();
+
+  struct NewThreadData;
+  static void* newThreadEntry(void* data);
+
+  bool myIsThreadOwner;
   pthread_t myThread;
   Data* myData;
+  void* myExitValue;
 };
 
 } // namespace LicqDaemon

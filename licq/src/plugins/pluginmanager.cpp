@@ -71,7 +71,15 @@ PluginManager::~PluginManager()
 GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     const std::string& name, int argc, char** argv, bool keep)
 {
-  PluginThread::Ptr pluginThread(new PluginThread());
+  PluginThread::Ptr pluginThread;
+  if (myMainThread && name.find("qt4-gui") != std::string::npos)
+  {
+    gLog.debug("Using main thread to load %s", name.c_str());
+    pluginThread.swap(myMainThread);
+  }
+  else
+    pluginThread.reset(new PluginThread);
+
   DynamicLibrary::Ptr lib = loadPlugin(pluginThread, name, "licq");
   if (!lib)
     return GeneralPlugin::Ptr();

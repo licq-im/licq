@@ -84,3 +84,19 @@ TEST_F(PluginThreadFixture, startPlugin)
   EXPECT_FALSE(::pthread_equal(id, ::pthread_self()));
   EXPECT_TRUE(thread.isThread(id));
 }
+
+static pthread_t mainThreadId;
+static int testMainThreadEntry(PluginThread::Ptr thread)
+{
+  thread->initPlugin(&init, &mainThreadId);
+  thread->stop();
+  thread->join();
+  return 17;
+}
+
+TEST(PluginThread, createWithCurrentThread)
+{
+  ::memset(&mainThreadId, 0, sizeof(mainThreadId));
+  EXPECT_EQ(PluginThread::createWithCurrentThread(testMainThreadEntry), 17);
+  EXPECT_TRUE(::pthread_equal(mainThreadId, ::pthread_self()));
+}
