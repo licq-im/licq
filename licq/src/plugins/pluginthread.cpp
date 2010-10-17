@@ -24,7 +24,8 @@
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/exception_ptr.hpp>
-#include <cstring>
+
+const pthread_t INVALID_THREAD_ID = 0;
 
 using Licq::MutexLocker;
 using namespace LicqDaemon;
@@ -145,10 +146,13 @@ void PluginThread::stop()
 
 void* PluginThread::join()
 {
+  if (isThread(INVALID_THREAD_ID))
+    return NULL;
+
   void* result;
   if (::pthread_join(myThread, &result) == 0)
   {
-    ::memset(&myThread, 0, sizeof(myThread));
+    myThread = INVALID_THREAD_ID;
     return result;
   }
   return NULL;
@@ -156,7 +160,8 @@ void* PluginThread::join()
 
 void PluginThread::cancel()
 {
-  ::pthread_cancel(myThread);
+  if (!isThread(INVALID_THREAD_ID))
+    ::pthread_cancel(myThread);
 }
 
 bool PluginThread::isThread(const pthread_t& thread) const
@@ -166,6 +171,8 @@ bool PluginThread::isThread(const pthread_t& thread) const
 
 DynamicLibrary::Ptr PluginThread::loadPlugin(const std::string& path)
 {
+  assert(!isThread(INVALID_THREAD_ID));
+
   MutexLocker locker(myData->myMutex);
   myData->myState = PluginThread::Data::STATE_LOAD_PLUGIN;
   myData->myPluginPath = path;
@@ -187,6 +194,8 @@ DynamicLibrary::Ptr PluginThread::loadPlugin(const std::string& path)
 
 bool PluginThread::initPlugin(bool (*pluginInit)(void*), void* argument)
 {
+  assert(!isThread(INVALID_THREAD_ID));
+
   MutexLocker locker(myData->myMutex);
   myData->myState = PluginThread::Data::STATE_INIT_PLUGIN;
   myData->myPluginInit = pluginInit;
@@ -207,6 +216,8 @@ bool PluginThread::initPlugin(bool (*pluginInit)(void*), void* argument)
 
 void PluginThread::startPlugin(void* (*pluginStart)(void*), void* argument)
 {
+  assert(!isThread(INVALID_THREAD_ID));
+
   MutexLocker locker(myData->myMutex);
   myData->myState = PluginThread::Data::STATE_START_PLUGIN;
   myData->myPluginStart = pluginStart;
