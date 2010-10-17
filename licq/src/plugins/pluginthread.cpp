@@ -308,6 +308,8 @@ void* PluginThread::newThreadEntry(void* voidData)
 
   int* retval = new int;
   *retval = data->myNewThreadEntry(data->myPluginThread);
+
+  data->myPluginThread->stop();
   data->myPluginThread.reset();
   return retval;
 }
