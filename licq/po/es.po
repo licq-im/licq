@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-13 20:46+0200\n"
+"POT-Creation-Date: 2010-10-17 20:26+0200\n"
 "PO-Revision-Date: 2007-08-17 20:05-0300\n"
 "Last-Translator: Sebastian Renzi <srenzi@gmail.com>\n"
 "Language-Team: \n"
@@ -488,8 +488,8 @@ msgstr "%sAceptando pedido de charla con %s (#%hu).\n"
 msgid "%sAccepting file transfer from %s (#%hu).\n"
 msgstr "%sAceptando transferencia de ficheros de %s (#%hu).\n"
 
-#: src/icq/icq.cpp:1193 src/icq/icq.cpp:1285 src/icq/icq-tcp.cpp:2591
-#: src/icq/icq-srv.cpp:3398 src/icq/icq-srv.cpp:3485
+#: src/icq/icq.cpp:1193 src/icq/icq.cpp:1285 src/icq/icq-srv.cpp:3398
+#: src/icq/icq-srv.cpp:3485 src/icq/icq-tcp.cpp:2591
 #, c-format
 msgid "%sAck for unknown event.\n"
 msgstr "%sAck para evento desconocido.\n"
@@ -12394,7 +12394,7 @@ msgstr ""
 "%sMensaje del servidor no válido:\n"
 "%s\n"
 
-#: src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031 src/icq/icq-srv.cpp:3033
+#: src/icq/icq-srv.cpp:3033 src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031
 #, fuzzy
 msgid "Invalid URL message"
 msgstr ""
@@ -16053,7 +16053,7 @@ msgstr "No Disponible"
 msgid "Occ"
 msgstr "Ocu"
 
-#: src/icq/icq-tcp.cpp:2565 src/contactlist/user.cpp:1353
+#: src/contactlist/user.cpp:1353 src/icq/icq-tcp.cpp:2565
 msgid "Occupied"
 msgstr "Ocupado"
 

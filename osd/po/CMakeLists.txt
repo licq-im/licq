@@ -18,11 +18,15 @@ foreach(lang ${po_FILES})
   set(po  "${CMAKE_CURRENT_SOURCE_DIR}/${lang}.po")
   set(gmo "${CMAKE_CURRENT_BINARY_DIR}/${lang}.gmo")
 
-  add_custom_command(OUTPUT ${gmo}
+  add_custom_command(OUTPUT ${po}
     COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --quiet --update --backup=none
       --sort-output ${po} ${CMAKE_CURRENT_SOURCE_DIR}/licq_osd_plugin.pot
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/licq_osd_plugin.pot
+  )
+
+  add_custom_command(OUTPUT ${gmo}
     COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${gmo} ${po}
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/licq_osd_plugin.pot ${po}
+    DEPENDS ${po}
   )
 
   install(FILES ${gmo}
