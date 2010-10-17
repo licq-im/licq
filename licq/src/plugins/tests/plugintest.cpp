@@ -37,8 +37,6 @@ int Test_Main()
   return 5;
 }
 
-extern unsigned short LP_Id;
-
 } // extern "C"
 
 using namespace LicqDaemon;
@@ -102,7 +100,6 @@ TEST_F(PluginFixture, getSetId)
 {
   plugin.setId(1);
   EXPECT_EQ(1, plugin.getId());
-  EXPECT_EQ(1, LP_Id);
 }
 
 TEST_F(PluginFixture, runPlugin)

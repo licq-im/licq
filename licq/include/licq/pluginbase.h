@@ -107,8 +107,6 @@ const char *LP_ConfigFile();
  * INTERNAL USE ONLY
  *============================================================================*/
 
-unsigned short LP_Id;
-
 char *LP_BuildDate()
 {
   static char szDate[] = __DATE__;

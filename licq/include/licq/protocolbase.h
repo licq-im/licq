@@ -36,10 +36,6 @@ unsigned long LProto_SendFuncs();
 
 int LProto_Main();
 
-/*--------INTERNAL USE ONLY------------*/
-
-unsigned short LP_Id;
-
 #ifdef __cplusplus
 }
 #endif

@@ -48,7 +48,7 @@ public:
   error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 
   Plugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
-         const std::string& prefix, bool prefixId = false);
+         const std::string& prefix);
   virtual ~Plugin();
 
   /// Get the read end of the pipe used to communicate with the plugin.
@@ -80,7 +80,7 @@ public:
   inline bool isThread(const pthread_t& thread) const;
 
   /// Set the plugin's unique id.
-  void setId(unsigned short id) { *myId = id; }
+  void setId(unsigned short id) { myId = id; }
 
   void setSignalMask(unsigned long mask) { mySignalMask = mask; }
 
@@ -120,7 +120,7 @@ private:
   const char* (*myVersion)();
 
   // Unique plugin id
-  unsigned short* myId;
+  unsigned short myId;
 };
 
 inline bool Plugin::isThread(const pthread_t& thread) const

@@ -29,7 +29,6 @@
 #define LProto_Init LProto_icq_Init
 #define LProto_SendFuncs LProto_icq_SendFuncs
 #define LProto_Main LProto_icq_Main
-#define LP_Id LProto_icq_Id
 
 #include <licq/protocolbase.h>
 

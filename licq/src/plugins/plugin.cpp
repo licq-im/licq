@@ -29,22 +29,17 @@ using namespace LicqDaemon;
 
 Plugin::Plugin(DynamicLibrary::Ptr lib,
                PluginThread::Ptr pluginThread,
-               const std::string& prefix, bool prefixId) :
+               const std::string& prefix) :
   myLib(lib),
   myThread(pluginThread),
   mySignalMask(0),
   myStartCallback(NULL),
-  myExitCallback(NULL)
+  myExitCallback(NULL),
+  myId(INVALID_ID)
 {
   loadSymbol(prefix + "_Main", myMain);
   loadSymbol(prefix + "_Name", myName);
   loadSymbol(prefix + "_Version", myVersion);
-
-  if (prefixId)
-    loadSymbol(prefix + "_Id", myId);
-  else
-    loadSymbol("LP_Id", myId);
-  *myId = INVALID_ID;
 }
 
 Plugin::~Plugin()
@@ -93,7 +88,7 @@ const char* Plugin::getVersion() const
 
 unsigned short Plugin::getId() const
 {
-  return *myId;
+  return myId;
 }
 
 const std::string& Plugin::getLibraryName() const
