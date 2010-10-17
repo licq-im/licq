@@ -980,7 +980,7 @@ void *Shutdown_tep(void* /* p */)
 
   // Signal that we are shutdown
   LicqDaemon::gPluginManager.pluginHasExited(
-      LicqDaemon::PluginManager::DaemonId);
+      LicqDaemon::PluginManager::DAEMON_ID);
 
   return NULL;
 }
