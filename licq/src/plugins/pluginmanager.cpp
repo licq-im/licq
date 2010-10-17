@@ -533,11 +533,19 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
 }
 
 // Called in the plugin's thread just before the main entry point
-static void startPluginCallback(Plugin& plugin)
+static void startPluginCallback(const Plugin& plugin)
 {
   std::string name = plugin.getName();
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
   gDaemon.getLogService().createThreadLog(name);
+}
+
+static void exitPluginCallback(const Plugin& plugin)
+{
+  pthread_mutex_lock(&LP_IdMutex);
+  LP_Ids.push_back(plugin.getId());
+  pthread_mutex_unlock(&LP_IdMutex);
+  pthread_cond_signal(&LP_IdSignal);
 }
 
 void PluginManager::startPlugin(Plugin::Ptr plugin)
@@ -553,5 +561,5 @@ void PluginManager::startPlugin(Plugin::Ptr plugin)
               plugin->getName(), plugin->getVersion());
   }
 
-  plugin->startThread(startPluginCallback);
+  plugin->startThread(startPluginCallback, exitPluginCallback);
 }

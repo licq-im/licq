@@ -33,9 +33,10 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
   myLib(lib),
   myThread(pluginThread),
   mySignalMask(0),
-  myStartCallback(NULL)
+  myStartCallback(NULL),
+  myExitCallback(NULL)
 {
-  loadSymbol(prefix + "_Main_tep", myMainThreadEntryPoint);
+  loadSymbol(prefix + "_Main", myMain);
   loadSymbol(prefix + "_Name", myName);
   loadSymbol(prefix + "_Version", myVersion);
 
@@ -51,10 +52,13 @@ Plugin::~Plugin()
   // Empty
 }
 
-void Plugin::startThread(void (*startCallback)(Plugin& plugin))
+void Plugin::startThread(
+    void (*startCallback)(const Plugin& plugin),
+    void (*exitCallback)(const Plugin& plugin))
 {
-  assert(myStartCallback == NULL);
+  assert(myStartCallback == NULL && myExitCallback == NULL);
   myStartCallback = startCallback;
+  myExitCallback = exitCallback;
   myThread->startPlugin(startThreadEntry, this);
 }
 
@@ -65,7 +69,7 @@ int Plugin::joinThread()
   {
     int* retval = reinterpret_cast<int*>(result);
     int value = *retval;
-    ::free(retval);
+    delete retval;
     return value;
   }
 
@@ -119,5 +123,11 @@ void* Plugin::startThreadEntry(void* plugin)
   if (thisPlugin->myStartCallback)
     (*thisPlugin->myStartCallback)(*thisPlugin);
 
-  return thisPlugin->myMainThreadEntryPoint(NULL);
+  int* retval = new int;
+  *retval = thisPlugin->myMain();
+
+  if (thisPlugin->myExitCallback)
+    (*thisPlugin->myExitCallback)(*thisPlugin);
+
+  return retval;
 }

@@ -30,8 +30,6 @@
 #define LProto_SendFuncs LProto_icq_SendFuncs
 #define LProto_Main LProto_icq_Main
 #define LP_Id LProto_icq_Id
-#define LProto_Exit LProto_icq_Exit
-#define LProto_Main_tep LProto_icq_Main_tep
 
 #include <licq/protocolbase.h>
 

@@ -57,9 +57,12 @@ public:
   /**
    * Start the plugin in a new thread.
    * @param startCallback will be called in the plugin's thread just before the
-   * plugin's main entry point is called.
+   * plugin's main function is called.
+   * @param exitCallback will be called in the plugin's thread just after the
+   * plugin returns from the main function.
    */
-  void startThread(void (*startCallback)(Plugin& plugin) = NULL);
+  void startThread(void (*startCallback)(const Plugin& plugin) = NULL,
+                   void (*exitCallback)(const Plugin& plugin) = NULL);
 
   /**
    * Wait for the plugin to stop.
@@ -108,10 +111,11 @@ private:
 
   PluginThread::Ptr myThread;
   unsigned long mySignalMask;
-  void (*myStartCallback)(Plugin& plugin);
+  void (*myStartCallback)(const Plugin& plugin);
+  void (*myExitCallback)(const Plugin& plugin);
 
   // Function pointers
-  void* (*myMainThreadEntryPoint)(void*);
+  int (*myMain)();
   const char* (*myName)();
   const char* (*myVersion)();
 

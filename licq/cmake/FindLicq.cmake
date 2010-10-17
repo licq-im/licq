@@ -76,9 +76,9 @@ endif (NOT licq_target_prefix)
 set(_licq_plugin_symbols
   LP_Name LP_Version LP_Status LP_Description
   LP_BuildDate LP_BuildTime LP_Usage LP_Id
-  LP_Init LP_Main_tep LP_ConfigFile
+  LP_Init LP_Main LP_ConfigFile
   LProto_Name LProto_Version LProto_PPID
-  LProto_Init LProto_Main_tep LProto_SendFuncs)
+  LProto_Init LProto_Main LProto_SendFuncs)
 
 macro (LICQ_ADD_PLUGIN _licq_plugin_name)
   add_library(${_licq_plugin_name} MODULE ${ARGN})

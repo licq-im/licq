@@ -24,11 +24,6 @@
 
 extern "C" {
 
-// Daemon stuff
-extern pthread_cond_t LP_IdSignal;
-extern pthread_mutex_t LP_IdMutex;
-extern std::list<unsigned short> LP_Ids;
-
 // Plugin API functions
 #define STR_FUNC(name)                          \
   const char* Test_ ## name()                   \
@@ -40,23 +35,6 @@ STR_FUNC(Version);
 int Test_Main()
 {
   return 5;
-}
-
-void Test_Exit(int result)
-{
-  int *p = (int *)malloc(sizeof(int));
-  *p = result;
-  pthread_mutex_lock(&LP_IdMutex);
-  LP_Ids.push_back(1);
-  pthread_mutex_unlock(&LP_IdMutex);
-  pthread_cond_signal(&LP_IdSignal);
-  pthread_exit(p);
-}
-
-void* Test_Main_tep()
-{
-  Test_Exit(Test_Main());
-  return NULL;
 }
 
 extern unsigned short LP_Id;
@@ -134,19 +112,27 @@ TEST_F(PluginFixture, runPlugin)
   EXPECT_EQ(5, plugin.joinThread());
 }
 
-static bool CallbackCalled = false;
-static void startCallback(Plugin&)
+static bool StartCallbackCalled = false;
+static void startCallback(const Plugin&)
 {
-  CallbackCalled = true;
+  StartCallbackCalled = true;
 }
 
-TEST_F(PluginFixture, runPluginWithCallback)
+static bool ExitCallbackCalled = false;
+static void exitCallback(const Plugin&)
 {
-  CallbackCalled = false;
-  plugin.startThread(&startCallback);
+  ExitCallbackCalled = true;
+}
+
+TEST_F(PluginFixture, runPluginWithCallbacks)
+{
+  StartCallbackCalled = false;
+  ExitCallbackCalled = false;
+  plugin.startThread(&startCallback, &exitCallback);
   EXPECT_FALSE(plugin.isThisThread());
   EXPECT_EQ(5, plugin.joinThread());
-  EXPECT_TRUE(CallbackCalled);
+  EXPECT_TRUE(StartCallbackCalled);
+  EXPECT_TRUE(ExitCallbackCalled);
 }
 
 TEST_F(PluginFixture, shutdown)

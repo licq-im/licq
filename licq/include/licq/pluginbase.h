@@ -23,12 +23,8 @@
 /*------------------------------------------------------------------------------
  * Plugin header file
  *
- * Note that except for LP_Exit these functions must be implemented in each
- * plugin.
+ * Note that these functions must be implemented in each plugin.
  *----------------------------------------------------------------------------*/
-#include <pthread.h>
-#include <list>
-#include <cstdlib>
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,17 +94,6 @@ int LP_Main();
 
 
 /*------------------------------------------------------------------------------
- * Exit
- *
- * This function is called to exit the plugin other then when LP_Main
- * terminates.  It is implemented internally and should not be reimplemented.
- * It takes as argument the exit value for the plugin (0 for successful
- * termination).
- *----------------------------------------------------------------------------*/
-void LP_Exit(int);
-
-
-/*------------------------------------------------------------------------------
  * ConfigFile
  *
  * This function returns the name of the configuration file referenced
@@ -122,20 +107,7 @@ const char *LP_ConfigFile();
  * INTERNAL USE ONLY
  *============================================================================*/
 
-
-extern pthread_cond_t LP_IdSignal;
-extern pthread_mutex_t LP_IdMutex;
-extern std::list<unsigned short> LP_Ids;
 unsigned short LP_Id;
-
-
-
-void *LP_Main_tep(void* /* argument */)
-{
-  LP_Exit(LP_Main());
-  return NULL;
-}
-
 
 char *LP_BuildDate()
 {
@@ -147,17 +119,6 @@ char *LP_BuildTime()
 {
   static char szTime[] = __TIME__;
   return szTime;
-}
-
-void LP_Exit(int _nResult)
-{
-  int *p = (int *)malloc(sizeof(int));
-  *p = _nResult;
-  pthread_mutex_lock(&LP_IdMutex);
-  LP_Ids.push_back(LP_Id);
-  pthread_mutex_unlock(&LP_IdMutex);
-  pthread_cond_signal(&LP_IdSignal);
-  pthread_exit(p);
 }
 
 #ifdef __cplusplus
