@@ -21,7 +21,6 @@
 #include <licq/pluginbase.h>
 
 #include <gtest/gtest.h>
-#include <list>
 
 // licq.cpp
 static const char* argv0 = "test";

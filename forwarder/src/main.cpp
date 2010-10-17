@@ -82,7 +82,7 @@ bool LP_Init(int argc, char **argv)
 
   // parse command line for arguments
   bool bEnable = false, bDelete = false;
-  char *szStatus = NULL;
+  std::string startupStatus;
   int i = 0;
   while( (i = getopt(argc, argv, "hel:d")) > 0)
   {
@@ -95,15 +95,14 @@ bool LP_Init(int argc, char **argv)
       bEnable = true;
       break;
     case 'l': //log on
-      szStatus = strdup(optarg);
+        startupStatus = optarg;
       break;
     case 'd':
       bDelete = true;
       break;
     }
   }
-  licqForwarder = new CLicqForwarder(bEnable, bDelete, szStatus);
-  if (szStatus != NULL) free(szStatus);
+  licqForwarder = new CLicqForwarder(bEnable, bDelete, startupStatus);
   return (licqForwarder != NULL);
 }
 
