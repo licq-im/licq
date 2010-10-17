@@ -85,17 +85,21 @@ TEST_F(PluginThreadFixture, startPlugin)
 }
 
 static pthread_t mainThreadId;
+static pthread_t pluginThreadId;
 static int testMainThreadEntry(PluginThread::Ptr thread)
 {
-  thread->initPlugin(&init, &mainThreadId);
-  thread->stop();
-  thread->join();
+  mainThreadId = ::pthread_self();
+  thread->initPlugin(&init, &pluginThreadId);
   return 17;
 }
 
 TEST(PluginThread, createWithCurrentThread)
 {
-  ::memset(&mainThreadId, 0, sizeof(mainThreadId));
+  // Verify that the plugin is executed in the current thread and that the main
+  // thread continues in a new thread.
+  mainThreadId = ::pthread_self();
+  pluginThreadId = 0;
   EXPECT_EQ(PluginThread::createWithCurrentThread(testMainThreadEntry), 17);
-  EXPECT_TRUE(::pthread_equal(mainThreadId, ::pthread_self()));
+  EXPECT_FALSE(::pthread_equal(mainThreadId, ::pthread_self()));
+  EXPECT_TRUE(::pthread_equal(pluginThreadId, ::pthread_self()));
 }

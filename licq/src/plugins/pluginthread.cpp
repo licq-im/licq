@@ -24,7 +24,6 @@
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/exception_ptr.hpp>
-#include <cstring>
 
 const pthread_t INVALID_THREAD_ID = 0;
 
