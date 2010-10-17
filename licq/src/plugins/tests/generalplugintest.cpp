@@ -21,13 +21,6 @@
 #include <licq/pluginbase.h>
 
 #include <gtest/gtest.h>
-#include <list>
-#include <pthread.h>
-
-// Deamon stuff
-pthread_cond_t LP_IdSignal = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t LP_IdMutex = PTHREAD_MUTEX_INITIALIZER;
-std::list<unsigned short> LP_Ids;
 
 // licq.cpp
 static const char* argv0 = "test";

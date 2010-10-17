@@ -27,7 +27,7 @@ using namespace LicqDaemon;
 ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
                                PluginThread::Ptr pluginThread,
                                bool icq) :
-  Plugin(lib, pluginThread, icq ? "LProto_icq" : "LProto", icq)
+  Plugin(lib, pluginThread, icq ? "LProto_icq" : "LProto")
 {
   std::string prefix = (icq ? "LProto_icq" : "LProto");
   loadSymbol(prefix + "_Init", myInit);

@@ -28,6 +28,7 @@
 #include "../gettext.h"
 #include "../licq.h"
 #include "../statistics.h"
+#include "../plugins/pluginmanager.h"
 #include "oscarservice.h"
 
 #define MAX_CONNECTS  256
@@ -945,10 +946,6 @@ void *MonitorSockets_tep(void* /* p */)
  *
  * Shutdown the daemon and all the plugins.
  *----------------------------------------------------------------------------*/
-extern pthread_cond_t LP_IdSignal;
-extern pthread_mutex_t LP_IdMutex;
-extern list<unsigned short> LP_Ids;
-
 void *Shutdown_tep(void* /* p */)
 {
   // Shutdown
@@ -982,10 +979,8 @@ void *Shutdown_tep(void* /* p */)
   LicqDaemon::gStatistics.flush();
 
   // Signal that we are shutdown
-  pthread_mutex_lock(&LP_IdMutex);
-  LP_Ids.push_back(0);
-  pthread_mutex_unlock(&LP_IdMutex);
-  pthread_cond_signal(&LP_IdSignal);
+  LicqDaemon::gPluginManager.pluginHasExited(
+      LicqDaemon::PluginManager::DAEMON_ID);
 
   return NULL;
 }
