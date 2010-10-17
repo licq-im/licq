@@ -28,11 +28,11 @@
 extern "C" {
 #endif
 
-char *LProto_Name();
+const char* LProto_Name();
 
-char *LProto_Version();
+const char* LProto_Version();
 
-char *LProto_PPID();
+const char* LProto_PPID();
 
 bool LProto_Init();
 
@@ -68,4 +68,4 @@ void *LProto_Main_tep(void* /* argument */)
 }
 #endif
 
-#endif // PROTOPLUGIN_H
+#endif

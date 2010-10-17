@@ -30,7 +30,7 @@ extern unsigned short LP_Id;
 
 // Plugin API functions
 #define STR_FUNC(name)                          \
-  char* LProto_ ## name()                       \
+  const char* LProto_ ## name()                 \
   { static char name[] = #name; return name; }
 
 STR_FUNC(Name);

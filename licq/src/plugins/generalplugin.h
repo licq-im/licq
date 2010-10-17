@@ -81,8 +81,8 @@ private:
   const char* (*myDescription)();
   const char* (*myUsage)();
   const char* (*myConfigFile)();
-  char* (*myBuildDate)();
-  char* (*myBuildTime)();
+  const char* (*myBuildDate)();
+  const char* (*myBuildTime)();
 };
 
 typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
