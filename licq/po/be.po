@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-13 20:46+0200\n"
+"POT-Creation-Date: 2010-10-17 20:26+0200\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
@@ -481,8 +481,8 @@ msgstr "%sПрымаем запрашэньне да размовы з %s (#%hu)
 msgid "%sAccepting file transfer from %s (#%hu).\n"
 msgstr "%sДазваляем перадачу файла %s (#%hu).\n"
 
-#: src/icq/icq.cpp:1193 src/icq/icq.cpp:1285 src/icq/icq-tcp.cpp:2591
-#: src/icq/icq-srv.cpp:3398 src/icq/icq-srv.cpp:3485
+#: src/icq/icq.cpp:1193 src/icq/icq.cpp:1285 src/icq/icq-srv.cpp:3398
+#: src/icq/icq-srv.cpp:3485 src/icq/icq-tcp.cpp:2591
 #, c-format
 msgid "%sAck for unknown event.\n"
 msgstr "%sЗапыт Ack дзеля невядомага выпадку.\n"
@@ -12380,7 +12380,7 @@ msgstr ""
 "%sНяспраўнае паведамленьне з паслужніка:\n"
 "%s\n"
 
-#: src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031 src/icq/icq-srv.cpp:3033
+#: src/icq/icq-srv.cpp:3033 src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031
 #, fuzzy
 msgid "Invalid URL message"
 msgstr ""
@@ -16039,7 +16039,7 @@ msgstr "Нядасягальны"
 msgid "Occ"
 msgstr "Зан"
 
-#: src/icq/icq-tcp.cpp:2565 src/contactlist/user.cpp:1353
+#: src/contactlist/user.cpp:1353 src/icq/icq-tcp.cpp:2565
 msgid "Occupied"
 msgstr "Заняты"
 
