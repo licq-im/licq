@@ -73,8 +73,8 @@ TEST(DynamicLibrary, loadSelf)
 
   int (*testfuncSymbol)();
   ASSERT_NO_THROW(self.getSymbol("testfunc", &testfuncSymbol));
-  EXPECT_EQ((void*)testfuncSymbol, (void*)&testfunc);
-  EXPECT_EQ(testfuncSymbol(), 42);
+  EXPECT_TRUE(testfunc == testfuncSymbol);
+  EXPECT_EQ(42, testfuncSymbol());
 }
 
 TEST(DynamicLibrary, exceptionGetSystemError)
