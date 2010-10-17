@@ -125,32 +125,40 @@ struct PluginThread::NewThreadData
 {
   int (*myNewThreadEntry)(PluginThread::Ptr);
   PluginThread::Ptr myPluginThread;
-  int myReturnValue;
 };
 
 int PluginThread::createWithCurrentThread(
     int (*newThreadEntry)(PluginThread::Ptr))
 {
+  PluginThread::Ptr thread(new PluginThread(false));
+
   NewThreadData data;
   data.myNewThreadEntry = newThreadEntry;
-  data.myPluginThread.reset(new PluginThread(false));
-  data.myReturnValue = -1;
+  data.myPluginThread = thread;
 
   pthread_t newThread;
   ::pthread_create(&newThread, NULL, &PluginThread::newThreadEntry, &data);
 
-  data.myPluginThread->myExitValue =
-      pluginThreadEntry(data.myPluginThread->myData);
+  thread->myExitValue = pluginThreadEntry(thread->myData);
 
   {
-    MutexLocker locker(data.myPluginThread->myData->myMutex);
-    data.myPluginThread->myData->myState = PluginThread::Data::STATE_EXITED;
-    data.myPluginThread->myData->myCondition.signal();
+    MutexLocker locker(thread->myData->myMutex);
+    thread->myData->myState = PluginThread::Data::STATE_EXITED;
+    thread->myData->myCondition.signal();
   }
 
-  void* retval;
-  ::pthread_join(newThread, &retval);
-  return data.myReturnValue;
+  thread.reset();
+
+  void* result;
+  if (::pthread_join(newThread, &result) == 0
+      && result != NULL && result != PTHREAD_CANCELED)
+  {
+    int* retval = reinterpret_cast<int*>(result);
+    int value = *retval;
+    delete retval;
+    return value;
+  }
+  return -1;
 }
 
 PluginThread::PluginThread() :
@@ -297,6 +305,9 @@ void* PluginThread::newThreadEntry(void* voidData)
 {
   NewThreadData* data = reinterpret_cast<NewThreadData*>(voidData);
   data->myPluginThread->waitForThreadToStart();
-  data->myReturnValue = data->myNewThreadEntry(data->myPluginThread);
-  return NULL;
+
+  int* retval = new int;
+  *retval = data->myNewThreadEntry(data->myPluginThread);
+  data->myPluginThread.reset();
+  return retval;
 }
