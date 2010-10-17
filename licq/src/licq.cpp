@@ -796,10 +796,10 @@ int CLicq::Main()
     while (true)
     {
       if (bDaemonShutdown)
-        gPluginManager.waitForPluginExit(PluginManager::MaxWaitPlugin);
+        gPluginManager.waitForPluginExit(PluginManager::MAX_WAIT_PLUGIN);
       else
       {
-        if (gPluginManager.waitForPluginExit() == PluginManager::DaemonId)
+        if (gPluginManager.waitForPluginExit() == PluginManager::DAEMON_ID)
         {
           bDaemonShutdown = true;
           continue;

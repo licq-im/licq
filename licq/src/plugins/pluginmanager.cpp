@@ -56,7 +56,7 @@ Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 
 
 PluginManager::PluginManager() :
-  myNextPluginId(DaemonId + 1),
+  myNextPluginId(DAEMON_ID + 1),
   myPluginEventHandler(myGeneralPlugins, myGeneralPluginsMutex,
                        myProtocolPlugins, myProtocolPluginsMutex)
 {
@@ -255,7 +255,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
 
   // 0 means daemon
   if (exitId == 0)
-    return DaemonId;
+    return DAEMON_ID;
 
   // Check general plugins first
   for (GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
