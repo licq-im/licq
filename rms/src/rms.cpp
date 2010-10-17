@@ -176,12 +176,13 @@ static const unsigned short NUM_COMMANDS = sizeof(commands)/sizeof(*commands);
 /*---------------------------------------------------------------------------
  * CLicqRMS::Constructor
  *-------------------------------------------------------------------------*/
-CLicqRMS::CLicqRMS(bool bEnable, unsigned short nPort)
+CLicqRMS::CLicqRMS(bool bEnable, unsigned int port)
+  : myPort(port),
+    myAuthProtocol(LICQ_PPID)
 {
   server = NULL;
   m_bExit = false;
   m_bEnabled = bEnable;
-  m_nPort = nPort;
 }
 
 
@@ -215,8 +216,6 @@ void CLicqRMS::Shutdown()
  *-------------------------------------------------------------------------*/
 int CLicqRMS::Run()
 {
-  unsigned nPort;
-
   // Register with the daemon, we only want the update user signal
   m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalAll);
 
@@ -224,22 +223,58 @@ int CLicqRMS::Run()
   if (conf.loadFile())
   {
     conf.setSection("RMS");
-    conf.get("Port", nPort, 0);
+
+    // Ignore port in config if given on command line
+    if (myPort == 0)
+      conf.get("Port", myPort, 0);
+
+    string protocolStr;
+    conf.get("AuthProtocol", protocolStr, "Licq");
+    if (protocolStr == "Config")
+    {
+      // Get user and password from config file
+      myAuthProtocol = 0;
+      conf.get("AuthUser", myAuthUser);
+      conf.get("AuthPassword", myAuthPassword);
+
+      // Make sure we got something instead of opening a security problem
+      if (myAuthUser.empty() || myAuthPassword.empty())
+      {
+        gLog.warning("Missing value for AuthUser or AuthPassword in configuration, "
+            "login will not be possible.");
+
+        // Dummy value that should never match any real protocol
+        myAuthProtocol = 1;
+      }
+    }
+    else if (protocolStr.size() == 4)
+    {
+      // Parse protocol id
+      myAuthProtocol = (protocolStr[0] << 24) | (protocolStr[1] << 16) |
+          (protocolStr[2] << 8) | (protocolStr[3]);
+    }
+    else
+    {
+      // Invalid
+      gLog.warning("Invalid value for AuthProtocol in configuration, "
+          "will use ICQ account.");
+      myAuthProtocol = LICQ_PPID;
+    }
   }
 
   server = new Licq::TCPSocket();
 
-  if (Licq::gDaemon.tcpPortsLow() != 0 && nPort == 0)
+  if (Licq::gDaemon.tcpPortsLow() != 0 && myPort == 0)
   {
     if (!Licq::gDaemon.StartTCPServer(server))
       return 1;
   }
   else
   {
-    if (!server->StartServer(nPort))
+    if (!server->StartServer(myPort))
     {
       gLog.error("Could not start server on port %u, "
-                 "maybe this port is already in use?", nPort);
+          "maybe this port is already in use?", myPort);
       return 1;
     };
   }
@@ -657,7 +692,7 @@ int CRMSClient::StateMachine()
   {
     case STATE_UIN:
     {
-      m_szCheckId = data_line ? strdup(data_line) : 0;
+      myLoginUser = data_line;
       fprintf(fs, "%d Enter your password:\n", CODE_ENTERxPASSWORD);
       fflush(fs);
       m_nState = STATE_PASSWORD;
@@ -665,13 +700,25 @@ int CRMSClient::StateMachine()
     }
     case STATE_PASSWORD:
     {
-      Licq::OwnerReadGuard o(LICQ_PPID);
-      if (!o.isLocked())
-        return -1;
+      bool ok;
+      string name;
+      if (licqRMS->myAuthProtocol == 0)
+      {
+        // User and password specified in RMS config
+        ok = (myLoginUser == licqRMS->myAuthUser &&
+            data_line == licqRMS->myAuthPassword);
+        name = myLoginUser;
+      }
+      else
+      {
+        // Check against protocol owner
+        Licq::OwnerReadGuard o(licqRMS->myAuthProtocol);
+        if (!o.isLocked())
+          return -1;
+        ok = (myLoginUser == o->accountId() && data_line == o->password());
+        name = o->getAlias();
+      }
 
-      bool ok = (o->accountId() == m_szCheckId && o->password() == data_line);
-      free(m_szCheckId);
-      m_szCheckId = 0;
       if (!ok)
       {
         gLog.info("Client failed validation from %s",
@@ -683,7 +730,7 @@ int CRMSClient::StateMachine()
       gLog.info("Client validated from %s",
           sock.getRemoteIpString().c_str());
       fprintf(fs, "%d Hello %s.  Type HELP for assistance.\n", CODE_HELLO,
-         o->getAlias().c_str());
+         name.c_str());
       fflush(fs);
       m_nState = STATE_COMMAND;
       break;

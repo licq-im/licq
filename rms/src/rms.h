@@ -43,7 +43,7 @@ typedef std::list<unsigned long> TagList;
 class CLicqRMS
 {
 public:
-  CLicqRMS(bool, unsigned short);
+  CLicqRMS(bool, unsigned int port);
   ~CLicqRMS();
   int Run();
   void Shutdown();
@@ -53,7 +53,10 @@ protected:
   int m_nPipe;
   bool m_bExit, m_bEnabled;
 
-  unsigned short m_nPort;
+  unsigned int myPort;
+  unsigned long myAuthProtocol;
+  std::string myAuthUser;
+  std::string myAuthPassword;
 
   Licq::TCPSocket* server;
   ClientList clients;
@@ -108,7 +111,7 @@ protected:
   char data_line[MAX_LINE_LENGTH + 1];
   char *data_arg;
   unsigned short data_line_pos;
-  unsigned long m_nCheckUin;
+  std::string myLoginUser;
   char *m_szCheckId;
   unsigned int myLogLevelsBitmask;
   bool m_bNotify;
