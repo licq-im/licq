@@ -40,7 +40,6 @@ static int threadMain(PluginThread::Ptr mainThread)
 {
   using LicqDaemon::gPluginManager;
   gPluginManager.setMainThread(mainThread);
-  mainThread.reset();
 
   int ret = 1;
   CLicq licq;
@@ -60,7 +59,7 @@ int main(int argc, char **argv)
   textdomain(PACKAGE);
 #endif
   
-// Make sure argv[0] is defined otherwise licq will crash if it is NULL
+  // Make sure argv[0] is defined otherwise licq will crash if it is NULL
   if (argv[0] == NULL)
     argv[0] = strdup("licq");
 #ifdef USE_SOCKS5
@@ -71,5 +70,11 @@ int main(int argc, char **argv)
 
   threadArgc = argc;
   threadArgv = argv;
+
+  // TODO: Change 1 to e.g. __APPLE__
+#if 1
   return PluginThread::createWithCurrentThread(&threadMain);
+#else
+  return threadMain(PluginThread::Ptr());
+#endif
 }
