@@ -62,7 +62,7 @@ private:
   Licq::Mutex mySignalsMutex;
 
   bool (*myInit)();
-  char* (*myPpid)();
+  const char* (*myPpid)();
   unsigned long (*mySendFunctions)();
 };
 

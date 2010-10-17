@@ -25,22 +25,27 @@
 
 using Licq::gPluginManager;
 
-char *LProto_Name()
+const char* LProto_Name()
 {
   static char szName[] = "MSN";
   return szName;
 }
 
-char *LProto_Version()
+const char* LProto_Version()
 {
   static char szVersion[] = PLUGIN_VERSION_STRING;
   return szVersion;
 }
 
-const char *LProto_Description()
+const char* LProto_PPID()
 {
-  static char szDesc[] = "MSN Protocol Plugin";
-  return szDesc;
+  static char szId[] = "MSN_";
+  return szId;
+}
+
+bool LProto_Init()
+{
+  return true;
 }
 
 unsigned long LProto_SendFuncs()
@@ -48,11 +53,6 @@ unsigned long LProto_SendFuncs()
   return Licq::ProtocolPlugin::CanSendMsg |
       Licq::ProtocolPlugin::CanSendAuth |
       Licq::ProtocolPlugin::CanSendAuthReq;
-}
-
-unsigned long LProto_Capabilities()
-{
-  return 0;
 }
 
 int LProto_Main()
@@ -67,15 +67,4 @@ int LProto_Main()
   delete pMSN;
   
   return 0;
-}
-
-char *LProto_PPID()
-{
-  static char szId[] = "MSN_";
-  return szId;
-}
-
-bool LProto_Init()
-{
-  return true;
 }

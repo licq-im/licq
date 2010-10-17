@@ -22,7 +22,6 @@
 #include <licq/pluginmanager.h>
 #include <licq/version.h>
 
-
 #define LProto_Name LProto_icq_Name
 #define LProto_Version LProto_icq_Version
 #define LProto_PPID LProto_icq_PPID
@@ -35,19 +34,19 @@
 using Licq::gPluginManager;
 using Licq::ProtocolPlugin;
 
-char* LProto_icq_Name()
+const char* LProto_icq_Name()
 {
   static char name[] = "ICQ";
   return name;
 }
 
-char* LProto_icq_Version()
+const char* LProto_icq_Version()
 {
   static char version[] = LICQ_VERSION_STRING;
   return version;
 }
 
-char* LProto_icq_PPID()
+const char* LProto_icq_PPID()
 {
   static char ppid[] = "Licq";
   return ppid;

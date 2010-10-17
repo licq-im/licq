@@ -35,7 +35,7 @@ extern "C" {
  *
  * Returns the name of the plugin.  Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Name();
+const char* LP_Name();
 
 
 /*------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ const char *LP_Name();
  *
  * Returns the version of the plugin.  Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Version();
+const char* LP_Version();
 
 
 /*------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ const char *LP_Version();
  * disabled.  Rarely relevant for a main interface plugin.
  * Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Status();
+const char* LP_Status();
 
 
 /*------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ const char *LP_Status();
  * Returns a brief (one line) description of the plugin
  * Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Description();
+const char* LP_Description();
 
 
 /*------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ const char *LP_Description();
  *
  * Returns a usage string.
  *----------------------------------------------------------------------------*/
-const char *LP_Usage();
+const char* LP_Usage();
 
 
 /*------------------------------------------------------------------------------
@@ -100,20 +100,20 @@ int LP_Main();
  * from the BASE_DIR.  It can be left undefined if no config file is
  * used.
  *----------------------------------------------------------------------------*/
-const char *LP_ConfigFile();
+const char* LP_ConfigFile();
 
 
 /*==============================================================================
  * INTERNAL USE ONLY
  *============================================================================*/
 
-char *LP_BuildDate()
+const char* LP_BuildDate()
 {
   static char szDate[] = __DATE__;
   return szDate;
 }
 
-char *LP_BuildTime()
+const char* LP_BuildTime()
 {
   static char szTime[] = __TIME__;
   return szTime;
@@ -122,6 +122,5 @@ char *LP_BuildTime()
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif

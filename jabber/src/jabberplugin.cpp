@@ -27,19 +27,19 @@
 #include <licq/pluginmanager.h>
 #include <licq/protocolbase.h>
 
-char* LProto_Name()
+const char* LProto_Name()
 {
   static char name[] = "Jabber";
   return name;
 }
 
-char* LProto_Version()
+const char* LProto_Version()
 {
   static char version[] = PLUGIN_VERSION_STRING;
   return version;
 }
 
-char* LProto_PPID()
+const char* LProto_PPID()
 {
   static char ppid[] = "XMPP";
   return ppid;
