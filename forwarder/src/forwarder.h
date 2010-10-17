@@ -39,7 +39,7 @@ class UserEvent;
 class CLicqForwarder
 {
 public:
-  CLicqForwarder(bool, bool, char *);
+  CLicqForwarder(bool, bool, const std::string& startupStatus);
   ~CLicqForwarder();
   int Run();
   void Shutdown();
@@ -48,7 +48,7 @@ public:
 protected:
   int m_nPipe;
   bool m_bExit, m_bEnabled, m_bDelete;
-  char *m_szStatus;
+  std::string myStartupStatus;
 
   unsigned short m_nSMTPPort;
   std::string mySmtpHost;

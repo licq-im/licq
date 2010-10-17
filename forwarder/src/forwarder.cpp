@@ -58,13 +58,13 @@ const unsigned short SUBJ_CHARS = 20;
 /*---------------------------------------------------------------------------
  * CLicqForwarder::Constructor
  *-------------------------------------------------------------------------*/
-CLicqForwarder::CLicqForwarder(bool _bEnable, bool _bDelete, char *_szStatus)
+CLicqForwarder::CLicqForwarder(bool _bEnable, bool _bDelete, const string& startupStatus)
+  : myStartupStatus(startupStatus)
 {
   tcp = new Licq::TCPSocket;
   m_bExit = false;
   m_bEnabled = _bEnable;
   m_bDelete = _bDelete;
-  m_szStatus = _szStatus == NULL ? NULL : strdup(_szStatus);
 }
 
 
@@ -140,15 +140,13 @@ int CLicqForwarder::Run()
   }
 
   // Log on if necessary
-  if (m_szStatus != NULL)
+  if (!myStartupStatus.empty())
   {
     unsigned s;
-    if (!Licq::User::stringToStatus(m_szStatus, s))
+    if (!Licq::User::stringToStatus(myStartupStatus, s))
       gLog.warning("Invalid startup status");
     else
       gProtocolManager.setStatus(gUserManager.ownerUserId(LICQ_PPID), s);
-    free(m_szStatus);
-    m_szStatus = NULL;
   }
 
   fd_set fdSet;
@@ -339,14 +337,12 @@ bool CLicqForwarder::ForwardEvent(const Licq::User* u, const Licq::UserEvent* e)
 
 bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent* e)
 {
-  char *szText = new char[e->text().size() + 256];
   char szTime[64];
   time_t t = e->Time();
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
-  sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->description().c_str(),
-      u->getAlias().c_str(), u->accountId().c_str(), szTime, e->text().c_str());
-  unsigned long tag = gProtocolManager.sendMessage(myUserId, szText, true, ICQ_TCPxMSG_NORMAL);
-  delete []szText;
+  string text = "[ " + e->description() + " from " + u->getAlias() + " (" +
+      u->accountId() + ") sent " + szTime + " ]\n\n" + e->text() + "\n";
+  unsigned long tag = gProtocolManager.sendMessage(myUserId, text, true, ICQ_TCPxMSG_NORMAL);
   if (tag == 0)
   {
     gLog.warning("Sending message to %s failed", myUserId.toString().c_str());
@@ -360,38 +356,34 @@ bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent
 
 bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEvent* e)
 {
-  char szTo[256],
-       szFrom[256],
-       szDate[256],
-       szReplyTo[256];
+  string headTo, headFrom, headDate, headReplyTo;
   time_t t = e->Time();
   string subject;
 
   // Fill in the strings
   if (!u->isUser())
   {
-    sprintf(szTo, "To: %s <%s>", u->getAlias().c_str(), mySmtpTo.c_str());
-    sprintf (szFrom, "From: ICQ System Message <support@icq.com>");
-    sprintf (szReplyTo, "Reply-To: Mirabilis <support@icq.com>");
+    headTo = "To: " + u->getAlias() + " <" + mySmtpTo + ">";
+    headFrom = "From: ICQ System Message <support@icq.com>";
+    headReplyTo = "Reply-To: Mirabilis <support@icq.com>";
   }
   else
   {
     unsigned long protocolId = u->protocolId();
     {
       Licq::OwnerReadGuard o(protocolId);
-      sprintf(szTo, "To: %s <%s>", o->getAlias().c_str(), mySmtpTo.c_str());
+      headTo = "To: " + o->getAlias() + " <" + mySmtpTo + ">";
     }
     if (protocolId == LICQ_PPID)
-      sprintf (szFrom, "From: \"%s\" <%s@pager.icq.com>", u->getAlias().c_str(), u->accountId().c_str());
+      headFrom = "From: \"" + u->getAlias() + "\" <" + u->accountId() + "@pager.icq.com>";
     else
-      sprintf (szFrom, "From: \"%s\" <%s>", u->getAlias().c_str(), u->getEmail().c_str());
-    sprintf (szReplyTo, "Reply-To: \"%s\" <%s>", u->getFullName().c_str(), u->getEmail().c_str());
+      headFrom = "From: \"" + u->getAlias() + "\" <" + u->getEmail() + ">";
+    headReplyTo = "Reply-To: \"" + u->getFullName() + "\" <" + u->getEmail() + ">";
   }
-  sprintf (szDate, "Date: %s", ctime(&t));
-  int l = strlen(szDate);
-  szDate[l - 1] = '\r';
-  szDate[l] = '\n';
-  szDate[l + 1] = '\0';
+  char ctimeBuf[32]; // Minimum 26 char according to man page
+  headDate = string("Date: ") + ctime_r(&t, ctimeBuf);
+  // ctime returns a string ending with \n, drop it
+  headDate.erase(headDate.size()-1);
 
   switch (e->SubCommand())
   {
@@ -420,7 +412,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
 
 
   // Connect to the SMTP server
-  if (!tcp->DestinationSet() && !tcp->connectTo(mySmtpHost.c_str(), m_nSMTPPort))
+  if (!tcp->DestinationSet() && !tcp->connectTo(mySmtpHost, m_nSMTPPort))
   {
     gLog.warning("Unable to connect to %s:%d: %s",
         tcp->getRemoteIpString().c_str(), tcp->getRemotePort(),
@@ -488,14 +480,9 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   }
 
   string textDos = Licq::gTranslator.returnToDos(e->text());
-  fprintf(fs, "%s"
-              "%s\r\n"
-              "%s\r\n"
-              "%s\r\n"
-              "%s\r\n"
-              "\r\n"
-              "%s\r\n.\r\n",
-      szDate, szFrom, szTo, szReplyTo, subject.c_str(), textDos.c_str());
+  string msg = headDate + "\r\n" + headFrom + "\r\n" + headTo + "\r\n" +
+      headReplyTo + "\r\n" + subject + "\r\n\r\n" + textDos + "\r\n.\r\n";
+  fprintf(fs, "%s", msg.c_str());
 
   fgets(fin, 256, fs);
   code = atoi(fin);
