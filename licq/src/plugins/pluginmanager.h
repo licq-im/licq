@@ -26,11 +26,13 @@
 #include "protocolplugin.h"
 
 #include <licq/pluginmanager.h>
+#include <licq/thread/condition.h>
 #include <licq/thread/mutex.h>
 #include "utils/dynamiclibrary.h"
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+#include <queue>
 
 namespace LicqDaemon
 {
@@ -56,6 +58,9 @@ public:
 
   /// Send shutdown signal to all the plugins
   void shutdownAllPlugins();
+
+  /// Notify the manager that a plugin has exited
+  void pluginHasExited(unsigned short id);
 
   /**
    * Wait for a plugin to exit.
@@ -113,6 +118,10 @@ private:
   mutable Licq::Mutex myProtocolPluginsMutex;
 
   PluginEventHandler myPluginEventHandler;
+
+  Licq::Mutex myExitListMutex;
+  Licq::Condition myExitListSignal;
+  std::queue<unsigned short> myExitList;
 };
 
 extern PluginManager gPluginManager;

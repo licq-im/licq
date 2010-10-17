@@ -36,11 +36,6 @@
 #include <iterator>
 #include <glob.h>
 
-// Plugin variables
-pthread_cond_t LP_IdSignal = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t LP_IdMutex = PTHREAD_MUTEX_INITIALIZER;
-std::list<unsigned short> LP_Ids;
-
 using Licq::MutexLocker;
 using Licq::StringList;
 using Licq::gDaemon;
@@ -224,6 +219,13 @@ void PluginManager::shutdownAllPlugins()
   }
 }
 
+void PluginManager::pluginHasExited(unsigned short id)
+{
+  MutexLocker locker(myExitListMutex);
+  myExitList.push(id);
+  myExitListSignal.signal();
+}
+
 unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
 {
   MutexLocker generalLocker(myGeneralPluginsMutex);
@@ -232,37 +234,29 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   if (myGeneralPlugins.empty() && myProtocolPlugins.empty())
     LICQ_THROW(Licq::Exception());
 
-  ::pthread_mutex_lock(&LP_IdMutex);
+  MutexLocker exitListLocker(myExitListMutex);
   protocolLocker.unlock();
   generalLocker.unlock();
 
-  while (LP_Ids.empty())
+  while (myExitList.empty())
   {
     if (timeout)
     {
-      struct timespec abstime;
-      abstime.tv_sec = time(NULL) + timeout;
-      abstime.tv_nsec = 0;
-      if (::pthread_cond_timedwait(&LP_IdSignal, &LP_IdMutex,
-                                   &abstime) == ETIMEDOUT)
-      {
-        ::pthread_mutex_unlock(&LP_IdMutex);
+      if (!myExitListSignal.wait(myExitListMutex, timeout * 1000))
         LICQ_THROW(Licq::Exception());
-      }
     }
     else
-      ::pthread_cond_wait(&LP_IdSignal, &LP_IdMutex);
+      myExitListSignal.wait(myExitListMutex);
   }
 
-  unsigned short exitId = LP_Ids.front();
-  LP_Ids.pop_front();
+  unsigned short exitId = myExitList.front();
+  myExitList.pop();
 
   generalLocker.relock();
   protocolLocker.relock();
-  ::pthread_mutex_unlock(&LP_IdMutex);
+  exitListLocker.unlock();
 
-  // 0 means daemon
-  if (exitId == 0)
+  if (exitId == DaemonId)
     return DaemonId;
 
   // Check general plugins first
@@ -542,10 +536,7 @@ static void startPluginCallback(const Plugin& plugin)
 
 static void exitPluginCallback(const Plugin& plugin)
 {
-  pthread_mutex_lock(&LP_IdMutex);
-  LP_Ids.push_back(plugin.getId());
-  pthread_mutex_unlock(&LP_IdMutex);
-  pthread_cond_signal(&LP_IdSignal);
+  gPluginManager.pluginHasExited(plugin.getId());
 }
 
 void PluginManager::startPlugin(Plugin::Ptr plugin)
