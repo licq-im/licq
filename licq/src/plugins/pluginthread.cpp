@@ -24,6 +24,7 @@
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/exception_ptr.hpp>
+#include <csignal>
 
 const pthread_t INVALID_THREAD_ID = 0;
 
@@ -66,6 +67,15 @@ struct PluginThread::Data
 static void* pluginThreadEntry(void* arg)
 {
   PluginThread::Data& data = *reinterpret_cast<PluginThread::Data*>(arg);
+
+  // The following signals should not directed to the plugin but to the daemon;
+  // thus we block them here.
+  sigset_t signals;
+  sigemptyset(&signals);
+  sigaddset(&signals, SIGHUP);
+  sigaddset(&signals, SIGINT);
+  sigaddset(&signals, SIGTERM);
+  ::pthread_sigmask(SIG_BLOCK, &signals, NULL);
 
   // Signal thread started
   MutexLocker locker(data.myMutex);
