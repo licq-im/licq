@@ -118,16 +118,15 @@ protected:
 
   unsigned long m_nUin;
   Licq::UserId myUserId;
-  char m_szText[MAX_TEXT_LENGTH + 1];
-  char m_szLine[MAX_LINE_LENGTH + 1];
-  unsigned short m_nTextPos;
+  std::string myText;
+  std::string myLine;
 
   int StateMachine();
   int ProcessCommand();
   bool ProcessEvent(Licq::Event* e);
   bool AddLineToText();
-  unsigned long GetProtocol(const char *);
-  void ParseUser(const char *);
+  unsigned long getProtocol(const std::string& data);
+  void ParseUser(const std::string& data);
   int changeStatus(unsigned long, const char *);
 
   int Process_MESSAGE_text();
