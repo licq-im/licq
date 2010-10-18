@@ -1366,12 +1366,14 @@ int CRMSClient::Process_AR_text()
   if (!myUserId.isValid())
   {
     Licq::OwnerWriteGuard o(LICQ_PPID);
-    o->setAutoResponse(m_szText);
+    if (o.isLocked())
+      o->setAutoResponse(m_szText);
   }
   else
   {
     Licq::UserWriteGuard u(myUserId);
-    u->setCustomAutoResponse(m_szText);
+    if (u.isLocked())
+      u->setCustomAutoResponse(m_szText);
   }
 
   fprintf(fs, "%d Auto response saved.\n", CODE_RESULTxSUCCESS);
@@ -1648,14 +1650,13 @@ int CRMSClient::Process_SECURE()
   else
   {
     Licq::UserReadGuard u(userId);
-   if (u->Secure() == 0)
-   {
-    fprintf(fs, "%d Status: secure connection is closed.\n", CODE_SECURExSTAT);
-   }
-   if (u->Secure() == 1)
-   {
-    fprintf(fs, "%d Status: secure connection is open.\n", CODE_SECURExSTAT);
-   }
+    if (u.isLocked())
+    {
+      if (u->Secure() == 0)
+        fprintf(fs, "%d Status: secure connection is closed.\n", CODE_SECURExSTAT);
+      if (u->Secure() == 1)
+        fprintf(fs, "%d Status: secure connection is open.\n", CODE_SECURExSTAT);
+    }
   }
 
   free(id);
