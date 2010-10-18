@@ -934,6 +934,11 @@ int CRMSClient::changeStatus(unsigned long nPPID, const char *szStatus)
     bool b;
     {
       Licq::OwnerReadGuard o(nPPID);
+      if (!o.isLocked())
+      {
+        fprintf(fs, "%d Invalid protocol.\n", CODE_INVALIDxUSER);
+        return -1;
+      }
       b = !o->isOnline();
     }
     unsigned long tag = gProtocolManager.setStatus(ownerId, status);
