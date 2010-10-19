@@ -43,7 +43,7 @@ const char *LP_Name()
 
 const char *LP_Description()
 {
-  static const char desc[] = "ICQ remote management server for telnet ICQ access";
+  static const char desc[] = "Licq remote management server";
   return desc;
 }
 
