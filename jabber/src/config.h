@@ -26,25 +26,48 @@
 #include <gloox/gloox.h>
 #include <string>
 
+namespace Licq
+{
+class IniFile;
+}
+
 namespace Jabber
 {
 
 class Config
 {
 public:
+  struct Proxy
+  {
+    Proxy(const std::string& name);
+
+    enum Type { TYPE_DISABLED, TYPE_HTTP };
+    std::string myName;
+    Type myType;
+    int myPort;
+    std::string myServer;
+    std::string myUsername;
+    std::string myPassword;
+  };
+
   explicit Config(const std::string& filename);
+  ~Config();
 
   // Network settings
   int getPort() const { return myPort; }
   const std::string& getServer() const { return myServer; }
   gloox::TLSPolicy getTlsPolicy() const { return myTlsPolicy; }
   const std::string& getResource() const { return myResource; }
+  const Proxy& getProxy() const { return myProxy; }
 
 private:
+  Licq::IniFile* myFile;
+
   int myPort;
   std::string myServer;
   gloox::TLSPolicy myTlsPolicy;
   std::string myResource;
+  Proxy myProxy;
 };
 
 } // namespace Jabber
