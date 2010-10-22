@@ -26,6 +26,7 @@
 #include "sessionmanager.h"
 #include "vcard.h"
 
+#include <gloox/connectionhttpproxy.h>
 #include <gloox/connectiontcpclient.h>
 #include <gloox/disco.h>
 #include <gloox/message.h>
@@ -49,6 +50,7 @@ Client::Client(const Config& config, Handler& handler,
   mySessionManager(NULL),
   myJid(username + "/" + config.getResource()),
   myClient(myJid, password),
+  myTcpClient(NULL),
   myRosterManager(myClient.rosterManager()),
   myVCardManager(&myClient)
 {
@@ -63,11 +65,34 @@ Client::Client(const Config& config, Handler& handler,
   myClient.disco()->setIdentity("client", "pc");
   myClient.disco()->setVersion("Licq", LICQ_VERSION_STRING);
 
-  if (!config.getServer().empty())
-    myClient.setServer(config.getServer());
-  if (config.getPort() != -1)
-    myClient.setPort(config.getPort());
   myClient.setTls(config.getTlsPolicy());
+
+  const Config::Proxy& proxy = config.getProxy();
+  if (proxy.myType == Config::Proxy::TYPE_DISABLED)
+  {
+    if (!config.getServer().empty())
+      myClient.setServer(config.getServer());
+    if (config.getPort() != -1)
+      myClient.setPort(config.getPort());
+  }
+  else if (proxy.myType == Config::Proxy::TYPE_HTTP)
+  {
+    myTcpClient = new gloox::ConnectionTCPClient(
+      myClient.logInstance(), proxy.myServer, proxy.myPort);
+
+    std::string server = myClient.server();
+    if (!config.getServer().empty())
+      server = config.getServer();
+
+    gloox::ConnectionHTTPProxy* httpProxy =
+      new gloox::ConnectionHTTPProxy(
+        &myClient, myTcpClient, myClient.logInstance(),
+        server, config.getPort());
+
+    httpProxy->setProxyAuth(proxy.myUsername, proxy.myPassword);
+
+    myClient.setConnectionImpl(httpProxy);
+  }
 }
 
 Client::~Client()
@@ -80,7 +105,10 @@ Client::~Client()
 
 int Client::getSocket()
 {
-  return static_cast<gloox::ConnectionTCPClient*>(
+  if (myTcpClient != NULL)
+    return myTcpClient->socket();
+  else
+    return static_cast<gloox::ConnectionTCPClient*>(
       myClient.connectionImpl())->socket();
 }
 

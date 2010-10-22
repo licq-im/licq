@@ -35,6 +35,7 @@
 namespace gloox
 {
 class Client;
+class ConnectionTCPClient;
 class RosterManager;
 }
 
@@ -120,6 +121,7 @@ private:
   SessionManager* mySessionManager;
   gloox::JID myJid;
   gloox::Client myClient;
+  gloox::ConnectionTCPClient* myTcpClient;
   gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;
 
