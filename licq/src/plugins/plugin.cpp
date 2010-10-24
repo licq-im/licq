@@ -33,6 +33,7 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
   myLib(lib),
   myThread(pluginThread),
   mySignalMask(0),
+  myInitCallback(NULL),
   myStartCallback(NULL),
   myExitCallback(NULL),
   myId(INVALID_ID)
@@ -101,14 +102,21 @@ void Plugin::shutdown()
   myPipe.putChar(PipeShutdown);
 }
 
-bool Plugin::callInitInThread()
+bool Plugin::callInitInThread(void (*initCallback)(const Plugin&))
 {
+  assert(myInitCallback == NULL);
+  myInitCallback = initCallback;
   return myThread->initPlugin(&Plugin::initThreadEntry, this);
 }
 
 bool Plugin::initThreadEntry(void* plugin)
 {
-  return static_cast<Plugin*>(plugin)->initThreadEntry();
+  Plugin* thisPlugin = static_cast<Plugin*>(plugin);
+
+  if (thisPlugin->myInitCallback)
+    thisPlugin->myInitCallback(*thisPlugin);
+
+  return thisPlugin->initThreadEntry();
 }
 
 void* Plugin::startThreadEntry(void* plugin)

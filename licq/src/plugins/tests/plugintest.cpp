@@ -47,6 +47,11 @@ public:
   PluginTest(DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
     Plugin(lib, thread, "Test") { /* Empty */ }
 
+  void init(void (*callback)(const Plugin&))
+  {
+    callInitInThread(callback);
+  }
+
 private:
   bool initThreadEntry()
   {
@@ -109,6 +114,12 @@ TEST_F(PluginFixture, runPlugin)
   EXPECT_EQ(5, plugin.joinThread());
 }
 
+static bool InitCallbackCalled = false;
+static void initCallback(const Plugin&)
+{
+  InitCallbackCalled = true;
+}
+
 static bool StartCallbackCalled = false;
 static void startCallback(const Plugin&)
 {
@@ -123,11 +134,14 @@ static void exitCallback(const Plugin&)
 
 TEST_F(PluginFixture, runPluginWithCallbacks)
 {
+  InitCallbackCalled = false;
   StartCallbackCalled = false;
   ExitCallbackCalled = false;
+  plugin.init(&initCallback);
   plugin.startThread(&startCallback, &exitCallback);
   EXPECT_FALSE(plugin.isThisThread());
   EXPECT_EQ(5, plugin.joinThread());
+  EXPECT_TRUE(InitCallbackCalled);
   EXPECT_TRUE(StartCallbackCalled);
   EXPECT_TRUE(ExitCallbackCalled);
 }

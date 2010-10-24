@@ -43,7 +43,7 @@ public:
                  bool icq = false);
   virtual ~ProtocolPlugin();
 
-  bool init();
+  bool init(void (*callback)(const Plugin&) = NULL);
 
   void pushSignal(Licq::ProtocolSignal* signal);
   Licq::ProtocolSignal* popSignal();

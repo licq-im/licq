@@ -62,7 +62,8 @@ GeneralPlugin::~GeneralPlugin()
   delete[] myArgvCopy;
 }
 
-bool GeneralPlugin::init(int argc, char** argv)
+bool GeneralPlugin::init(int argc, char** argv,
+                         void (*callback)(const Plugin&))
 {
   const size_t size = argc + 2;
 
@@ -85,7 +86,7 @@ bool GeneralPlugin::init(int argc, char** argv)
   // and that messes up free, causing SIGSEGV in the destructor.
   ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
 
-  return callInitInThread();
+  return callInitInThread(callback);
 }
 
 void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)

@@ -43,7 +43,7 @@ public:
   GeneralPlugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread);
   virtual ~GeneralPlugin();
 
-  bool init(int argc, char** argv);
+  bool init(int argc, char** argv, void (*callback)(const Plugin&) = NULL);
 
   void pushSignal(Licq::PluginSignal* signal);
   Licq::PluginSignal* popSignal();

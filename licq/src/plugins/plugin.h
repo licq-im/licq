@@ -61,8 +61,8 @@ public:
    * @param exitCallback will be called in the plugin's thread just after the
    * plugin returns from the main function.
    */
-  void startThread(void (*startCallback)(const Plugin& plugin) = NULL,
-                   void (*exitCallback)(const Plugin& plugin) = NULL);
+  void startThread(void (*startCallback)(const Plugin&) = NULL,
+                   void (*exitCallback)(const Plugin&) = NULL);
 
   /**
    * Wait for the plugin to stop.
@@ -95,7 +95,7 @@ public:
   void shutdown();
 
 protected:
-  bool callInitInThread();
+  bool callInitInThread(void (*initCallback)(const Plugin&) = NULL);
 
   DynamicLibrary::Ptr myLib;
   Licq::Pipe myPipe;
@@ -111,8 +111,9 @@ private:
 
   PluginThread::Ptr myThread;
   unsigned long mySignalMask;
-  void (*myStartCallback)(const Plugin& plugin);
-  void (*myExitCallback)(const Plugin& plugin);
+  void (*myInitCallback)(const Plugin&);
+  void (*myStartCallback)(const Plugin&);
+  void (*myExitCallback)(const Plugin&);
 
   // Function pointers
   int (*myMain)();
