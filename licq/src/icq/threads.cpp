@@ -666,23 +666,18 @@ void *Ping_tep(void *p)
 
 
 /*------------------------------------------------------------------------------
- * MonitorSockets_tep
+ * MonitorSockets_func
  *
  * The server thread lives here.  The main guy who waits on socket activity
  * and processes incoming packets.
  *----------------------------------------------------------------------------*/
-void *MonitorSockets_tep(void* /* p */)
+void *MonitorSockets_func()
 {
-  //pthread_detach(pthread_self());
-
   fd_set f;
   int nSocketsAvailable, nServiceSocket, l;
 
   while (true)
   {
-    /*pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_testcancel();*/
-
     f = gSocketManager.socketSet();
     l = gSocketManager.LargestSocket() + 1;
 
@@ -701,8 +696,6 @@ void *MonitorSockets_tep(void* /* p */)
 
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
 
-    /*pthread_testcancel();
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);*/
     if (gIcqProtocol.m_xBARTService)
     {
       COscarService *svc = gIcqProtocol.m_xBARTService;
@@ -730,7 +723,7 @@ void *MonitorSockets_tep(void* /* p */)
         else if (buf == 'X')
         {
             DEBUG_THREADS("[MonitorSockets_tep] Exiting.\n");
-            pthread_exit(NULL);
+            return NULL;
           }
         }
 
@@ -966,9 +959,6 @@ void *Shutdown_tep(void* /* p */)
   // Cancel the BART service thread
   if (gIcqProtocol.m_xBARTService)
     pthread_cancel(gIcqProtocol.thread_ssbiservice);
-
-  // Join our threads
-  pthread_join(gIcqProtocol.thread_monitorsockets, NULL);
 
   if (gIcqProtocol.m_nTCPSrvSocketDesc != -1 )
     gIcqProtocol.icqLogoff();

@@ -153,12 +153,7 @@ bool IcqProtocol::start()
   gSocketManager.DropSocket(s);
 
   gLog.info(tr("Spawning daemon threads"));
-  nResult = pthread_create(&thread_monitorsockets, NULL, &MonitorSockets_tep, this);
-  if (nResult != 0)
-  {
-    gLog.error("%sUnable to start socket monitor thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
-    return false;
-  }
+
   nResult = pthread_create(&thread_ping, NULL, &Ping_tep, this);
   if (nResult != 0)
   {
@@ -186,6 +181,7 @@ bool IcqProtocol::start()
     }
   }
 
+  MonitorSockets_func();
   return true;
 }
 

@@ -387,8 +387,7 @@ private:
   std::map <unsigned long, std::string> m_lszModifyServerUsers;
   pthread_mutex_t mutex_modifyserverusers;
   pthread_mutex_t mutex_cancelthread;
-  pthread_t thread_monitorsockets,
-            thread_ping,
+  pthread_t thread_ping,
             thread_updateusers,
             thread_ssbiservice;
 
@@ -398,7 +397,7 @@ private:
 
   friend void *Ping_tep(void *p);
   friend void *UpdateUsers_tep(void *p);
-  friend void *MonitorSockets_tep(void *p);
+  friend void *MonitorSockets_func();
   friend void *ProcessRunningEvent_Client_tep(void *p);
   friend void *ProcessRunningEvent_Server_tep(void *p);
   friend void *Shutdown_tep(void *p);

@@ -36,7 +36,6 @@
 #include "daemon.h"
 #include "fifo.h"
 #include "gettext.h"
-#include "icq/icq.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
 #include "plugins/pluginmanager.h"
@@ -628,9 +627,6 @@ bool CLicq::Init(int argc, char **argv)
   gStatistics.initialize();
   gUtilityManager.loadUtilities(gDaemon.shareDir() + Daemon::UtilityDir);
 
-  // Create the daemon
-  gIcqProtocol.initialize();
-
   return true;
 }
 
@@ -777,9 +773,6 @@ int CLicq::Main()
   }
 
   gFifo.initialize();
-
-  if (!gIcqProtocol.start())
-    return 1;
 
   // Run the plugins
   gPluginManager.startAllPlugins();
