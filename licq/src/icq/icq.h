@@ -355,8 +355,6 @@ private:
   unsigned long m_nDesiredStatus;
   unsigned short m_nServerSequence;
   unsigned myMaxUsersPerPacket;
-  unsigned myErrorTypes;
-  std::string myErrorFile;
   int m_nTCPSrvSocketDesc,
       m_nTCPSocketDesc;
   bool m_bLoggingOn,

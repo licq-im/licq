@@ -24,8 +24,6 @@
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
-#include <licq/logging/logservice.h>
-#include <licq/logging/logutils.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
 #include <licq/pluginsignal.h>
@@ -35,7 +33,6 @@
 
 #include "../daemon.h"
 #include "../gettext.h"
-#include "../logging/filelogsink.h"
 #include "../support.h"
 #include "oscarservice.h"
 #include "packet.h"
@@ -109,25 +106,6 @@ void IcqProtocol::initialize()
   Licq::Color::setDefaultForeground(nColor);
   licqConf.get("BackgroundColor", nColor, 0x00FFFFFF);
   Licq::Color::setDefaultBackground(nColor);
-
-  // Error log file
-  // TODO: Move this to the daemon
-  licqConf.get("Errors", myErrorFile, "log.errors");
-  licqConf.get("ErrorTypes", myErrorTypes, 0x4 | 0x2); // error and unknown
-  if (myErrorFile != "none")
-  {
-    string errorFile = Licq::gDaemon.baseDir() + myErrorFile;
-    boost::shared_ptr<LicqDaemon::FileLogSink> logSink(
-        new LicqDaemon::FileLogSink(errorFile));
-    logSink->setLogLevelsFromBitmask(
-        Licq::LogUtils::convertOldBitmaskToNew(myErrorTypes));
-    logSink->setLogPackets(true);
-    if (logSink->isOpen())
-      gDaemon.getLogService().registerLogSink(logSink);
-    else
-      gLog.error("Unable to open %s as error log:\n%s",
-                 errorFile.c_str(), strerror(errno));
-  }
 
   // Proxy
   m_xProxy = NULL;
@@ -225,9 +203,6 @@ void IcqProtocol::save(Licq::IniFile& licqConf)
   licqConf.set("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
   licqConf.set("ForegroundColor", Licq::Color::defaultForeground());
   licqConf.set("BackgroundColor", Licq::Color::defaultBackground());
-
-  licqConf.set("Errors", myErrorFile);
-  licqConf.set("ErrorTypes", myErrorTypes);
 
   // Misc
   licqConf.set("UseSS", m_bUseSS); // server side list

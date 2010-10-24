@@ -78,6 +78,8 @@ private:
   unsigned long myNextEventId;
   Licq::Mutex myNextEventIdMutex;
   std::string myRejectFile;
+  unsigned myErrorTypes;
+  std::string myErrorFile;
 
   pthread_t thread_shutdown;
 
