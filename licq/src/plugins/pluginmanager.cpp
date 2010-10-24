@@ -226,30 +226,32 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   if (myGeneralPlugins.empty() && myProtocolPlugins.empty())
     LICQ_THROW(Licq::Exception());
 
-  MutexLocker exitListLocker(myExitListMutex);
   protocolLocker.unlock();
   generalLocker.unlock();
 
-  while (myExitList.empty())
+  unsigned short exitId;
   {
-    if (timeout)
+    MutexLocker exitListLocker(myExitListMutex);
+    while (myExitList.empty())
     {
-      if (!myExitListSignal.wait(myExitListMutex, timeout * 1000))
-        LICQ_THROW(Licq::Exception());
+      if (timeout)
+      {
+        if (!myExitListSignal.wait(myExitListMutex, timeout * 1000))
+          LICQ_THROW(Licq::Exception());
+      }
+      else
+        myExitListSignal.wait(myExitListMutex);
     }
-    else
-      myExitListSignal.wait(myExitListMutex);
+
+    exitId = myExitList.front();
+    myExitList.pop();
   }
-
-  unsigned short exitId = myExitList.front();
-  myExitList.pop();
-
-  generalLocker.relock();
-  protocolLocker.relock();
-  exitListLocker.unlock();
 
   if (exitId == DAEMON_ID)
     return DAEMON_ID;
+
+  generalLocker.relock();
+  protocolLocker.relock();
 
   // Check general plugins first
   for (GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
