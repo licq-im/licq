@@ -71,7 +71,8 @@ Licq::Daemon& Licq::gDaemon(LicqDaemon::gDaemon);
 const char* const Daemon::TranslationDir = "translations";
 const char* const Daemon::UtilityDir = "utilities";
 
-Daemon::Daemon()
+Daemon::Daemon() :
+  licq(NULL)
 {
   // Set static variables based on compile time constants
   myLibDir = INSTALL_LIBDIR;
@@ -93,11 +94,11 @@ void Daemon::setBaseDir(const string& baseDir)
     myBaseDir += '/';
 }
 
-void Daemon::initialize(CLicq* _licq)
+void Daemon::initialize()
 {
-  string temp;
+  assert(licq != NULL);
 
-  licq = _licq;
+  string temp;
 
   myShuttingDown = false;
 

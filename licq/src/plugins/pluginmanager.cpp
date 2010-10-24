@@ -63,6 +63,14 @@ PluginManager::~PluginManager()
   // Empty
 }
 
+// Called in the plugin's thread just before the init function
+static void initPluginCallback(const Plugin& plugin)
+{
+  std::string name = plugin.getName();
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  gDaemon.getLogService().createThreadLog(name);
+}
+
 GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     const std::string& name, int argc, char** argv, bool keep)
 {
@@ -77,7 +85,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     GeneralPlugin::Ptr plugin(new GeneralPlugin(lib, pluginThread));
 
     // Let the plugin initialize itself
-    if (!plugin->init(argc, argv))
+    if (!plugin->init(argc, argv, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
                  plugin->getName());
@@ -127,7 +135,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     ProtocolPlugin::Ptr plugin(new ProtocolPlugin(lib, pluginThread, icq));
 
     // Let the plugin initialize itself
-    if (!plugin->init())
+    if (!plugin->init(&initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
                  plugin->getName());
@@ -520,14 +528,6 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
   return DynamicLibrary::Ptr();
 }
 
-// Called in the plugin's thread just before the main entry point
-static void startPluginCallback(const Plugin& plugin)
-{
-  std::string name = plugin.getName();
-  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  gDaemon.getLogService().createThreadLog(name);
-}
-
 static void exitPluginCallback(const Plugin& plugin)
 {
   gPluginManager.pluginHasExited(plugin.getId());
@@ -546,5 +546,5 @@ void PluginManager::startPlugin(Plugin::Ptr plugin)
               plugin->getName(), plugin->getVersion());
   }
 
-  plugin->startThread(startPluginCallback, exitPluginCallback);
+  plugin->startThread(NULL, exitPluginCallback);
 }

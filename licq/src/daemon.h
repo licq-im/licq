@@ -38,10 +38,12 @@ public:
   Daemon();
   ~Daemon();
 
+  void preInitialize(CLicq* _licq) { licq = _licq; }
+
   /**
    * Initialize the daemon
    */
-  void initialize(CLicq* licq);
+  void initialize();
 
   /**
    * Get next available id to use for an event

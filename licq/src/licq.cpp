@@ -251,6 +251,8 @@ bool CLicq::Init(int argc, char **argv)
   myConsoleLog->setLogLevel(Licq::Log::Warning, true);
   myLogService.registerDefaultLogSink(myConsoleLog);
 
+  gDaemon.preInitialize(this);
+
   char *szRedirect = NULL;
   vector <char *> vszPlugins;
   vector <char *> vszProtoPlugins;
@@ -620,7 +622,7 @@ bool CLicq::Init(int argc, char **argv)
   // Start things going
   if (!LicqDaemon::gUserManager.Load())
     return false;
-  gDaemon.initialize(this);
+  gDaemon.initialize();
   gOnEventManager.initialize();
   gSarManager.initialize();
   gStatistics.initialize();
