@@ -62,7 +62,7 @@ int Plugin::joinThread()
   void* result = myThread->join();
   if (result != NULL && result != PTHREAD_CANCELED)
   {
-    int* retval = reinterpret_cast<int*>(result);
+    int* retval = static_cast<int*>(result);
     int value = *retval;
     delete retval;
     return value;

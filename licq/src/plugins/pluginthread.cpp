@@ -66,7 +66,7 @@ struct PluginThread::Data
 
 static void* pluginThreadEntry(void* arg)
 {
-  PluginThread::Data& data = *reinterpret_cast<PluginThread::Data*>(arg);
+  PluginThread::Data& data = *static_cast<PluginThread::Data*>(arg);
 
   // The following signals should not directed to the plugin but to the daemon;
   // thus we block them here.
@@ -162,7 +162,7 @@ int PluginThread::createWithCurrentThread(
   if (::pthread_join(newThread, &result) == 0
       && result != NULL && result != PTHREAD_CANCELED)
   {
-    int* retval = reinterpret_cast<int*>(result);
+    int* retval = static_cast<int*>(result);
     int value = *retval;
     delete retval;
     return value;
@@ -312,7 +312,7 @@ void PluginThread::waitForThreadToStart()
 
 void* PluginThread::newThreadEntry(void* voidData)
 {
-  NewThreadData* data = reinterpret_cast<NewThreadData*>(voidData);
+  NewThreadData* data = static_cast<NewThreadData*>(voidData);
   data->myPluginThread->waitForThreadToStart();
 
   int* retval = new int;
