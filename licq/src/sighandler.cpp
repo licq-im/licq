@@ -8,6 +8,7 @@
 
 #include "config.h"
 #include "gettext.h"
+#include "thread/readwritemutex_debug.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -195,7 +196,7 @@ void licq_handle_sigabrt(int s)
       "%s\n"
 #endif
       "%s\n"
-#ifdef DEBUG_RW_MUTEX
+#ifdef LICQDAEMON_DEBUG_RW_MUTEX
            "%slicq.debug_rw_mutex\n"
 #endif
            "\n"
@@ -205,7 +206,7 @@ void licq_handle_sigabrt(int s)
       btfile1.c_str(),
 #endif
       btfile2.c_str()
-#ifdef DEBUG_RW_MUTEX
+#ifdef LICQDAEMON_DEBUG_RW_MUTEX
       , gDaemon.baseDir().c_str()
 #endif
     );

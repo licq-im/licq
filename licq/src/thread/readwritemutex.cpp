@@ -17,12 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/*
- * Define DEBUG_RW_MUTEX and recompile the daemon to debug deadlocks. If a
- * (potential) deadlock is discovered, the daemon will print a message to
- * stderr (and to the file <basedir>/licq.debug_rw_mutex) and then abort.
- */
-#define DEBUG_RW_MUTEX
+#include "readwritemutex_debug.h"
 
 #include <licq/thread/mutexlocker.h>
 #include <licq/thread/readwritemutex.h>
@@ -32,7 +27,7 @@
 using Licq::MutexLocker;
 using Licq::ReadWriteMutex;
 
-#ifdef DEBUG_RW_MUTEX
+#ifdef LICQDAEMON_DEBUG_RW_MUTEX
 #include "readwritemutex_debug.cpp"
 #else
 
