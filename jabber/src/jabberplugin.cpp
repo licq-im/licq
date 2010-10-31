@@ -39,6 +39,12 @@ const char* LProto_Version()
   return version;
 }
 
+const char* LProto_ConfigFile()
+{
+  static char configFile[] = "licq_jabber.conf";
+  return configFile;
+}
+
 const char* LProto_PPID()
 {
   static char ppid[] = "XMPP";
@@ -60,7 +66,7 @@ unsigned long LProto_SendFuncs()
 
 int LProto_Main()
 {
-  Jabber::Config config("licq_jabber.conf");
+  Jabber::Config config(LProto_ConfigFile());
 
   int pipe = Licq::gPluginManager.registerProtocolPlugin();
   int res = Jabber::Plugin(config).run(pipe);
