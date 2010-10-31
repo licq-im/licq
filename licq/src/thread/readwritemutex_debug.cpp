@@ -28,8 +28,9 @@ using Licq::gDaemon;
 class ReadWriteMutex::Private
 {
 public:
-  Private(ReadWriteMutex* parent) :
-    myParent(parent),
+  Private() :
+    myNumReaders(0),
+    myHasWriter(false),
     myName("no name")
   {
     // Empty
@@ -37,8 +38,8 @@ public:
 
   ~Private()
   {
-    assert(myParent->myNumReaders == 0);
-    assert(myParent->myHasWriter == false);
+    assert(myNumReaders == 0);
+    assert(!myHasWriter);
   }
 
   void setName(const std::string& name) { myName = name; }
@@ -55,11 +56,16 @@ public:
   void setReader();
   void unsetReader();
 
+  int myNumReaders;
+  bool myHasWriter;
+
+  Mutex myMutex;
+  Condition myLockFree;
+
 private:
   static const int RW_MUTEX_MAX_READERS = 20;
   static const unsigned int WAIT_TIMEOUT = 30 * 1000;
 
-  ReadWriteMutex* myParent;
   pthread_t myWriterThread;
   pthread_t myReaderThreads[RW_MUTEX_MAX_READERS];
   std::string myName;
@@ -71,15 +77,15 @@ void ReadWriteMutex::Private::printUsers(FILE* file, bool writing) const
             "on '%s'\n", (void*)::pthread_self(),
             (writing ? "write" : "read"), myName.c_str());
 
-  if (myParent->myHasWriter)
+  if (myHasWriter)
     ::fprintf(file, "Thread %p holds the write lock\n", (void*)myWriterThread);
   else
     ::fprintf(file, "No thread holds the write lock\n");
 
-  if (myParent->myNumReaders > 0)
+  if (myNumReaders > 0)
   {
     ::fprintf(file, "These threads hold the read lock:");
-    for (int i = 0; i < myParent->myNumReaders; ++i)
+    for (int i = 0; i < myNumReaders; ++i)
       ::fprintf(file, " %p", (void*)myReaderThreads[i]);
     ::fprintf(file, "\n");
   }
@@ -89,7 +95,7 @@ void ReadWriteMutex::Private::printUsers(FILE* file, bool writing) const
 
 void ReadWriteMutex::Private::debugWait(bool writing)
 {
-  if (!myParent->myLockFree.wait(myParent->myMutex, WAIT_TIMEOUT))
+  if (!myLockFree.wait(myMutex, WAIT_TIMEOUT))
   {
     // Print to stderr
     printUsers(stderr, writing);
@@ -123,7 +129,7 @@ void ReadWriteMutex::Private::setReader()
   int i;
 
   // Find this thread
-  for (i = 0; i < myParent->myNumReaders; ++i)
+  for (i = 0; i < myNumReaders; ++i)
   {
     if (::pthread_equal(::pthread_self(), myReaderThreads[i]))
       break;
@@ -132,10 +138,10 @@ void ReadWriteMutex::Private::setReader()
   // Make sure that this thread doesn't have a read lock already.
   // Comment the assert if a thread should be allowed to have multiple
   // read locks.
-  assert(i == myParent->myNumReaders);
+  assert(i == myNumReaders);
 
-  assert(myParent->myNumReaders < RW_MUTEX_MAX_READERS);
-  myReaderThreads[myParent->myNumReaders] = ::pthread_self();
+  assert(myNumReaders < RW_MUTEX_MAX_READERS);
+  myReaderThreads[myNumReaders] = ::pthread_self();
 }
 
 void ReadWriteMutex::Private::unsetReader()
@@ -143,16 +149,16 @@ void ReadWriteMutex::Private::unsetReader()
   int i;
 
   // Find this thread
-  for (i = 0; i < myParent->myNumReaders; ++i)
+  for (i = 0; i < myNumReaders; ++i)
   {
     if (::pthread_equal(::pthread_self(), myReaderThreads[i]))
       break;
   }
 
   // Make sure that this thread has a read lock
-  assert(i < myParent->myNumReaders);
+  assert(i < myNumReaders);
 
   // Remove the reference to this thread
-  for (; i < myParent->myNumReaders - 1; ++i)
+  for (; i < myNumReaders - 1; ++i)
     myReaderThreads[i] = myReaderThreads[i + 1];
 }

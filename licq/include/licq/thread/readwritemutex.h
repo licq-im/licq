@@ -20,8 +20,6 @@
 #ifndef LICQ_READWRITEMUTEX_H
 #define LICQ_READWRITEMUTEX_H
 
-#include "condition.h"
-#include "mutex.h"
 #include "../macro.h"
 
 #include <boost/noncopyable.hpp>
@@ -77,12 +75,6 @@ public:
 
 private:
   LICQ_DECLARE_PRIVATE();
-
-  int myNumReaders;
-  bool myHasWriter;
-
-  Mutex myMutex;
-  Condition myLockFree;
 };
 
 } // namespace Licq
