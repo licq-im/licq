@@ -55,7 +55,6 @@ public:
   const char* getStatus() const;
   const char* getDescription() const;
   const char* getUsage() const;
-  const char* getConfigFile() const;
   const char* getBuildDate() const;
   const char* getBuildTime() const;
   void enable();
@@ -80,7 +79,6 @@ private:
   const char* (*myStatus)();
   const char* (*myDescription)();
   const char* (*myUsage)();
-  const char* (*myConfigFile)();
   const char* (*myBuildDate)();
   const char* (*myBuildTime)();
 };

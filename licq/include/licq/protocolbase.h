@@ -30,6 +30,8 @@ const char* LProto_Version();
 
 const char* LProto_PPID();
 
+const char* LProto_ConfigFile();
+
 bool LProto_Init();
 
 unsigned long LProto_SendFuncs();

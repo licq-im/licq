@@ -29,6 +29,7 @@
 
 STR_FUNC(Name);
 STR_FUNC(Version);
+STR_FUNC(ConfigFile);
 STR_FUNC(PPID);
 
 bool LProto_Init()
@@ -87,6 +88,7 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
 {
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
+  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
   unsigned long ppid = 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D';
   EXPECT_EQ(ppid, plugin.getProtocolId());
   EXPECT_TRUE(plugin.init());

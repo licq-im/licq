@@ -31,6 +31,7 @@ extern "C" {
 
 STR_FUNC(Name);
 STR_FUNC(Version);
+STR_FUNC(ConfigFile);
 
 int Test_Main()
 {
@@ -98,6 +99,7 @@ TEST_F(PluginFixture, callApiFunctions)
 {
   EXPECT_STREQ("Name", plugin.getName());
   EXPECT_STREQ("Version", plugin.getVersion());
+  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
   EXPECT_EQ("", plugin.getLibraryName());
 }
 

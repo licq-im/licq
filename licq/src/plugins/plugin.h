@@ -91,6 +91,7 @@ public:
   unsigned short getId() const;
   const char* getName() const;
   const char* getVersion() const;
+  const char* getConfigFile() const;
   const std::string& getLibraryName() const;
   void shutdown();
 
@@ -119,6 +120,7 @@ private:
   int (*myMain)();
   const char* (*myName)();
   const char* (*myVersion)();
+  const char* (*myConfigFile)();
 
   // Unique plugin id
   unsigned short myId;

@@ -42,16 +42,6 @@ GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
   loadSymbol("LP_Usage", myUsage);
   loadSymbol("LP_BuildDate", myBuildDate);
   loadSymbol("LP_BuildTime", myBuildTime);
-
-  try
-  {
-    // LP_ConfigFile is not required
-    loadSymbol("LP_ConfigFile", myConfigFile);
-  }
-  catch (DynamicLibrary::Exception&)
-  {
-    myConfigFile = NULL;
-  }
 }
 
 GeneralPlugin::~GeneralPlugin()
@@ -142,14 +132,6 @@ const char* GeneralPlugin::getDescription() const
 const char* GeneralPlugin::getUsage() const
 {
   return (*myUsage)();
-}
-
-const char* GeneralPlugin::getConfigFile() const
-{
-  if (myConfigFile)
-    return (*myConfigFile)();
-  else
-    return NULL;
 }
 
 const char* GeneralPlugin::getBuildDate() const

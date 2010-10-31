@@ -41,6 +41,16 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
   loadSymbol(prefix + "_Main", myMain);
   loadSymbol(prefix + "_Name", myName);
   loadSymbol(prefix + "_Version", myVersion);
+
+  try
+  {
+    // ConfigFile is not required
+    loadSymbol(prefix + "_ConfigFile", myConfigFile);
+  }
+  catch (DynamicLibrary::Exception&)
+  {
+    myConfigFile = NULL;
+  }
 }
 
 Plugin::~Plugin()
@@ -77,6 +87,11 @@ void Plugin::cancelThread()
   myThread->cancel();
 }
 
+unsigned short Plugin::getId() const
+{
+  return myId;
+}
+
 const char* Plugin::getName() const
 {
   return (*myName)();
@@ -87,9 +102,12 @@ const char* Plugin::getVersion() const
   return (*myVersion)();
 }
 
-unsigned short Plugin::getId() const
+const char* Plugin::getConfigFile() const
 {
-  return myId;
+  if (myConfigFile)
+    return (*myConfigFile)();
+  else
+    return NULL;
 }
 
 const std::string& Plugin::getLibraryName() const
