@@ -85,12 +85,6 @@ public:
   /// Get the plugin's usage instructions.
   virtual const char* getUsage() const = 0;
 
-  /// Get the plugin's build date.
-  virtual const char* getBuildDate() const = 0;
-
-  /// Get the plugin's build time.
-  virtual const char* getBuildTime() const = 0;
-
   /// Ask the plugin to enable itself.
   virtual void enable() = 0;
 

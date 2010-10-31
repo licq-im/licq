@@ -40,8 +40,6 @@ GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
   loadSymbol("LP_Status", myStatus);
   loadSymbol("LP_Description", myDescription);
   loadSymbol("LP_Usage", myUsage);
-  loadSymbol("LP_BuildDate", myBuildDate);
-  loadSymbol("LP_BuildTime", myBuildTime);
 }
 
 GeneralPlugin::~GeneralPlugin()
@@ -132,16 +130,6 @@ const char* GeneralPlugin::getDescription() const
 const char* GeneralPlugin::getUsage() const
 {
   return (*myUsage)();
-}
-
-const char* GeneralPlugin::getBuildDate() const
-{
-  return (*myBuildDate)();
-}
-
-const char* GeneralPlugin::getBuildTime() const
-{
-  return (*myBuildTime)();
 }
 
 void GeneralPlugin::enable()

@@ -301,10 +301,9 @@ void CLicqConsole::MenuPlugins(char* /* _szArg */)
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
     PrintBoxLeft();
-    winMain->wprintf("[%3d] %s v%s (%s %s) - %s",
+    winMain->wprintf("[%3d] %s v%s - %s",
                      plugin->getId(), plugin->getName(),
-                     plugin->getVersion(), plugin->getBuildDate(),
-                     plugin->getBuildTime(), plugin->getStatus());
+                     plugin->getVersion(), plugin->getStatus());
     PrintBoxRight(70);
   }
 
