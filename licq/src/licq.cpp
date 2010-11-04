@@ -188,7 +188,7 @@ static bool setupBaseDirPath(const std::string& path)
 void displayFatalError(const char* error, int useLicqLog)
 {
   if (useLicqLog)
-    gLog.error(error);
+    gLog.error("%s", error);
   else
     fprintf(stderr, "\n%s\n", error);
 
