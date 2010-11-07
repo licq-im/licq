@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "icq.h"
+
 #include <unistd.h>
 
 #include <licq/pluginmanager.h>
@@ -54,6 +56,7 @@ const char* LProto_icq_PPID()
 
 bool LProto_icq_Init()
 {
+  gIcqProtocol.initialize();
   return true;
 }
 
@@ -69,33 +72,7 @@ unsigned long LProto_icq_SendFuncs()
 
 int LProto_icq_Main()
 {
-  int fd = gPluginManager.registerProtocolPlugin();
-  if (fd == -1)
-    return -1;
-
-  bool run = true;
-  while (run)
-  {
-    fd_set readFd;
-    FD_ZERO(&readFd);
-    FD_SET(fd, &readFd);
-    int ret = ::select(fd + 1, &readFd, NULL, NULL, NULL);
-    if (ret > 0 && FD_ISSET(fd, &readFd))
-    {
-      char ch;
-      ::read(fd, &ch, sizeof(ch));
-      switch (ch)
-      {
-      case Licq::ProtocolPlugin::PipeShutdown:
-        run = false;
-        break;
-      default:
-        assert(false);
-        break;
-      }
-    }
-  }
-
-  gPluginManager.unregisterProtocolPlugin();
+  if (!gIcqProtocol.start())
+    return 1;
   return 0;
 }

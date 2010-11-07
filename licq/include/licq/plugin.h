@@ -48,6 +48,10 @@ public:
   /// Get the plugin's version.
   virtual const char* getVersion() const = 0;
 
+  /// Get the name of the plugin's config file. Can be NULL if the plugin
+  /// doesn't have a config file.
+  virtual const char* getConfigFile() const = 0;
+
   /// Get the name of the library from where the plugin was loaded.
   virtual const std::string& getLibraryName() const = 0;
 
@@ -80,16 +84,6 @@ public:
 
   /// Get the plugin's usage instructions.
   virtual const char* getUsage() const = 0;
-
-  /// Get the name of the plugin's config file. Can be NULL if the plugin
-  /// doesn't have a config file.
-  virtual const char* getConfigFile() const = 0;
-
-  /// Get the plugin's build date.
-  virtual const char* getBuildDate() const = 0;
-
-  /// Get the plugin's build time.
-  virtual const char* getBuildTime() const = 0;
 
   /// Ask the plugin to enable itself.
   virtual void enable() = 0;

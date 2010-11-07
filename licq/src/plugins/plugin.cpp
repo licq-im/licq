@@ -33,6 +33,7 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
   myLib(lib),
   myThread(pluginThread),
   mySignalMask(0),
+  myInitCallback(NULL),
   myStartCallback(NULL),
   myExitCallback(NULL),
   myId(INVALID_ID)
@@ -40,6 +41,16 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
   loadSymbol(prefix + "_Main", myMain);
   loadSymbol(prefix + "_Name", myName);
   loadSymbol(prefix + "_Version", myVersion);
+
+  try
+  {
+    // ConfigFile is not required
+    loadSymbol(prefix + "_ConfigFile", myConfigFile);
+  }
+  catch (DynamicLibrary::Exception&)
+  {
+    myConfigFile = NULL;
+  }
 }
 
 Plugin::~Plugin()
@@ -76,6 +87,11 @@ void Plugin::cancelThread()
   myThread->cancel();
 }
 
+unsigned short Plugin::getId() const
+{
+  return myId;
+}
+
 const char* Plugin::getName() const
 {
   return (*myName)();
@@ -86,9 +102,12 @@ const char* Plugin::getVersion() const
   return (*myVersion)();
 }
 
-unsigned short Plugin::getId() const
+const char* Plugin::getConfigFile() const
 {
-  return myId;
+  if (myConfigFile)
+    return (*myConfigFile)();
+  else
+    return NULL;
 }
 
 const std::string& Plugin::getLibraryName() const
@@ -101,14 +120,21 @@ void Plugin::shutdown()
   myPipe.putChar(PipeShutdown);
 }
 
-bool Plugin::callInitInThread()
+bool Plugin::callInitInThread(void (*initCallback)(const Plugin&))
 {
+  assert(myInitCallback == NULL);
+  myInitCallback = initCallback;
   return myThread->initPlugin(&Plugin::initThreadEntry, this);
 }
 
 bool Plugin::initThreadEntry(void* plugin)
 {
-  return static_cast<Plugin*>(plugin)->initThreadEntry();
+  Plugin* thisPlugin = static_cast<Plugin*>(plugin);
+
+  if (thisPlugin->myInitCallback)
+    thisPlugin->myInitCallback(*thisPlugin);
+
+  return thisPlugin->initThreadEntry();
 }
 
 void* Plugin::startThreadEntry(void* plugin)

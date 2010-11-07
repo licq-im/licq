@@ -40,18 +40,6 @@ GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
   loadSymbol("LP_Status", myStatus);
   loadSymbol("LP_Description", myDescription);
   loadSymbol("LP_Usage", myUsage);
-  loadSymbol("LP_BuildDate", myBuildDate);
-  loadSymbol("LP_BuildTime", myBuildTime);
-
-  try
-  {
-    // LP_ConfigFile is not required
-    loadSymbol("LP_ConfigFile", myConfigFile);
-  }
-  catch (DynamicLibrary::Exception&)
-  {
-    myConfigFile = NULL;
-  }
 }
 
 GeneralPlugin::~GeneralPlugin()
@@ -62,7 +50,8 @@ GeneralPlugin::~GeneralPlugin()
   delete[] myArgvCopy;
 }
 
-bool GeneralPlugin::init(int argc, char** argv)
+bool GeneralPlugin::init(int argc, char** argv,
+                         void (*callback)(const Plugin&))
 {
   const size_t size = argc + 2;
 
@@ -85,7 +74,7 @@ bool GeneralPlugin::init(int argc, char** argv)
   // and that messes up free, causing SIGSEGV in the destructor.
   ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
 
-  return callInitInThread();
+  return callInitInThread(callback);
 }
 
 void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)
@@ -141,24 +130,6 @@ const char* GeneralPlugin::getDescription() const
 const char* GeneralPlugin::getUsage() const
 {
   return (*myUsage)();
-}
-
-const char* GeneralPlugin::getConfigFile() const
-{
-  if (myConfigFile)
-    return (*myConfigFile)();
-  else
-    return NULL;
-}
-
-const char* GeneralPlugin::getBuildDate() const
-{
-  return (*myBuildDate)();
-}
-
-const char* GeneralPlugin::getBuildTime() const
-{
-  return (*myBuildTime)();
 }
 
 void GeneralPlugin::enable()

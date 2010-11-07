@@ -51,7 +51,7 @@ public:
 class FrameSkin
 {
 public:
-  struct Border border;
+  Border border;
   unsigned frameStyle;
   bool maintainBorder;
   bool hasMenuBar;

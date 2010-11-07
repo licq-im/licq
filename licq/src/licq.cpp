@@ -36,7 +36,6 @@
 #include "daemon.h"
 #include "fifo.h"
 #include "gettext.h"
-#include "icq/icq.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
 #include "plugins/pluginmanager.h"
@@ -189,7 +188,7 @@ static bool setupBaseDirPath(const std::string& path)
 void displayFatalError(const char* error, int useLicqLog)
 {
   if (useLicqLog)
-    gLog.error(error);
+    gLog.error("%s", error);
   else
     fprintf(stderr, "\n%s\n", error);
 
@@ -250,6 +249,8 @@ bool CLicq::Init(int argc, char **argv)
   myConsoleLog->setLogLevel(Licq::Log::Error, true);
   myConsoleLog->setLogLevel(Licq::Log::Warning, true);
   myLogService.registerDefaultLogSink(myConsoleLog);
+
+  gDaemon.preInitialize(this);
 
   char *szRedirect = NULL;
   vector <char *> vszPlugins;
@@ -620,14 +621,11 @@ bool CLicq::Init(int argc, char **argv)
   // Start things going
   if (!LicqDaemon::gUserManager.Load())
     return false;
-  gDaemon.initialize(this);
+  gDaemon.initialize();
   gOnEventManager.initialize();
   gSarManager.initialize();
   gStatistics.initialize();
   gUtilityManager.loadUtilities(gDaemon.shareDir() + Daemon::UtilityDir);
-
-  // Create the daemon
-  gIcqProtocol.initialize();
 
   return true;
 }
@@ -775,9 +773,6 @@ int CLicq::Main()
   }
 
   gFifo.initialize();
-
-  if (!gIcqProtocol.start())
-    return 1;
 
   // Run the plugins
   gPluginManager.startAllPlugins();

@@ -374,7 +374,7 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
 {
   ok = true;
 
-  size_t inLen = (length > -1 ? length : s.size());
+  size_t inLen = (length > -1 ? static_cast<size_t>(length) : s.size());
   size_t outLen = inLen * (length == -2 ? 3 : 2);
   size_t outSize = outLen;
 

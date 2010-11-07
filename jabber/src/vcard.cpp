@@ -61,8 +61,13 @@ gloox::VCard* UserToVCard::createVCard() const
 
 bool VCardToUser::updateUser(Licq::User* user) const
 {
-  if (!user->KeepAliasOnUpdate() && !myVCard->nickname().empty())
-    user->setAlias(myVCard->nickname());
+  if (!user->KeepAliasOnUpdate())
+  {
+    if (!myVCard->nickname().empty())
+      user->setAlias(myVCard->nickname());
+    else if (!myVCard->formattedname().empty())
+      user->setAlias(myVCard->formattedname());
+  }
 
   const gloox::VCard::Name& name = myVCard->name();
   user->setUserInfoString("FirstName", name.given);

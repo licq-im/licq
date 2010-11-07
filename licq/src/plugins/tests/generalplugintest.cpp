@@ -93,8 +93,6 @@ TEST_F(GeneralPluginFixture, callApiFunctions)
   EXPECT_STREQ("Description", plugin.getDescription());
   EXPECT_STREQ("Usage", plugin.getUsage());
   EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
-  EXPECT_TRUE(plugin.getBuildDate());
-  EXPECT_TRUE(plugin.getBuildTime());
 
   EXPECT_TRUE(plugin.init(0, 0));
 }

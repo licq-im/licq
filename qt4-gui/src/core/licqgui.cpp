@@ -1723,6 +1723,7 @@ void LicqGui::updateDockIcon()
     default:
       // Ensure that main window is visible when the dock gets disabled:
       myMainWindow->show();
+      myMainWindow->raise();
       return;
   }
 

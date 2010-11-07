@@ -43,9 +43,9 @@ ProtocolPlugin::~ProtocolPlugin()
   // Empty
 }
 
-bool ProtocolPlugin::init()
+bool ProtocolPlugin::init(void (*callback)(const Plugin&))
 {
-  return callInitInThread();
+  return callInitInThread(callback);
 }
 
 void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)

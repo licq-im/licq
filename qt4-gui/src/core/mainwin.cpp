@@ -254,7 +254,11 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   updateGroups(true);
 
   setMiniMode(conf->miniMode());
-  setVisible(!conf->mainwinStartHidden() && !bStartHidden);
+  if(!conf->mainwinStartHidden() && !bStartHidden)
+  {
+    setVisible(true);
+    raise();
+  }
 
   // verify we exist
   if (Licq::gUserManager.NumOwners() == 0)

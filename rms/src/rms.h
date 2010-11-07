@@ -43,7 +43,7 @@ typedef std::list<unsigned long> TagList;
 class CLicqRMS
 {
 public:
-  CLicqRMS(bool, unsigned short);
+  CLicqRMS(bool, unsigned int port);
   ~CLicqRMS();
   int Run();
   void Shutdown();
@@ -53,7 +53,10 @@ protected:
   int m_nPipe;
   bool m_bExit, m_bEnabled;
 
-  unsigned short m_nPort;
+  unsigned int myPort;
+  unsigned long myAuthProtocol;
+  std::string myAuthUser;
+  std::string myAuthPassword;
 
   Licq::TCPSocket* server;
   ClientList clients;
@@ -108,23 +111,22 @@ protected:
   char data_line[MAX_LINE_LENGTH + 1];
   char *data_arg;
   unsigned short data_line_pos;
-  unsigned long m_nCheckUin;
+  std::string myLoginUser;
   char *m_szCheckId;
   unsigned int myLogLevelsBitmask;
   bool m_bNotify;
 
   unsigned long m_nUin;
   Licq::UserId myUserId;
-  char m_szText[MAX_TEXT_LENGTH + 1];
-  char m_szLine[MAX_LINE_LENGTH + 1];
-  unsigned short m_nTextPos;
+  std::string myText;
+  std::string myLine;
 
   int StateMachine();
   int ProcessCommand();
   bool ProcessEvent(Licq::Event* e);
   bool AddLineToText();
-  unsigned long GetProtocol(const char *);
-  void ParseUser(const char *);
+  unsigned long getProtocol(const std::string& data);
+  void ParseUser(const std::string& data);
   int changeStatus(unsigned long, const char *);
 
   int Process_MESSAGE_text();

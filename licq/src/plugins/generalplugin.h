@@ -43,7 +43,7 @@ public:
   GeneralPlugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread);
   virtual ~GeneralPlugin();
 
-  bool init(int argc, char** argv);
+  bool init(int argc, char** argv, void (*callback)(const Plugin&) = NULL);
 
   void pushSignal(Licq::PluginSignal* signal);
   Licq::PluginSignal* popSignal();
@@ -55,9 +55,6 @@ public:
   const char* getStatus() const;
   const char* getDescription() const;
   const char* getUsage() const;
-  const char* getConfigFile() const;
-  const char* getBuildDate() const;
-  const char* getBuildTime() const;
   void enable();
   void disable();
 
@@ -80,9 +77,6 @@ private:
   const char* (*myStatus)();
   const char* (*myDescription)();
   const char* (*myUsage)();
-  const char* (*myConfigFile)();
-  const char* (*myBuildDate)();
-  const char* (*myBuildTime)();
 };
 
 typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;

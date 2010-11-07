@@ -63,6 +63,14 @@ PluginManager::~PluginManager()
   // Empty
 }
 
+// Called in the plugin's thread just before the init function
+static void initPluginCallback(const Plugin& plugin)
+{
+  std::string name = plugin.getName();
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  gDaemon.getLogService().createThreadLog(name);
+}
+
 GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     const std::string& name, int argc, char** argv, bool keep)
 {
@@ -87,7 +95,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     GeneralPlugin::Ptr plugin(new GeneralPlugin(lib, pluginThread));
 
     // Let the plugin initialize itself
-    if (!plugin->init(argc, argv))
+    if (!plugin->init(argc, argv, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
                  plugin->getName());
@@ -137,7 +145,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     ProtocolPlugin::Ptr plugin(new ProtocolPlugin(lib, pluginThread, icq));
 
     // Let the plugin initialize itself
-    if (!plugin->init())
+    if (!plugin->init(&initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
                  plugin->getName());
@@ -236,30 +244,32 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   if (myGeneralPlugins.empty() && myProtocolPlugins.empty())
     LICQ_THROW(Licq::Exception());
 
-  MutexLocker exitListLocker(myExitListMutex);
   protocolLocker.unlock();
   generalLocker.unlock();
 
-  while (myExitList.empty())
+  unsigned short exitId;
   {
-    if (timeout)
+    MutexLocker exitListLocker(myExitListMutex);
+    while (myExitList.empty())
     {
-      if (!myExitListSignal.wait(myExitListMutex, timeout * 1000))
-        LICQ_THROW(Licq::Exception());
+      if (timeout)
+      {
+        if (!myExitListSignal.wait(myExitListMutex, timeout * 1000))
+          LICQ_THROW(Licq::Exception());
+      }
+      else
+        myExitListSignal.wait(myExitListMutex);
     }
-    else
-      myExitListSignal.wait(myExitListMutex);
+
+    exitId = myExitList.front();
+    myExitList.pop();
   }
-
-  unsigned short exitId = myExitList.front();
-  myExitList.pop();
-
-  generalLocker.relock();
-  protocolLocker.relock();
-  exitListLocker.unlock();
 
   if (exitId == DAEMON_ID)
     return DAEMON_ID;
+
+  generalLocker.relock();
+  protocolLocker.relock();
 
   // Check general plugins first
   for (GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
@@ -528,14 +538,6 @@ DynamicLibrary::Ptr PluginManager::loadPlugin(
   return DynamicLibrary::Ptr();
 }
 
-// Called in the plugin's thread just before the main entry point
-static void startPluginCallback(const Plugin& plugin)
-{
-  std::string name = plugin.getName();
-  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  gDaemon.getLogService().createThreadLog(name);
-}
-
 static void exitPluginCallback(const Plugin& plugin)
 {
   gPluginManager.pluginHasExited(plugin.getId());
@@ -554,5 +556,5 @@ void PluginManager::startPlugin(Plugin::Ptr plugin)
               plugin->getName(), plugin->getVersion());
   }
 
-  plugin->startThread(startPluginCallback, exitPluginCallback);
+  plugin->startThread(NULL, exitPluginCallback);
 }

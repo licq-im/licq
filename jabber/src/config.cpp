@@ -26,39 +26,91 @@
 
 using namespace Jabber;
 
+Config::Proxy::Proxy(const std::string& name) :
+  myName(name),
+  myType(TYPE_DISABLED),
+  myPort(-1)
+{
+  // Empty
+}
+
 Config::Config(const std::string& filename) :
+  myFile(NULL),
   myPort(-1),
   myTlsPolicy(gloox::TLSOptional),
-  myResource("Licq")
+  myResource("Licq"),
+  myProxy("default")
 {
-  Licq::IniFile file(filename);
+  myFile = new Licq::IniFile(filename);
 
-  if (!file.loadFile()) {
-    // Save default values
-    file.setSection("network");
-    file.set("Port", -1);
-    file.set("Server", "");
-    file.set("TlsPolicy", "optional");
-    file.set("Resource", "Licq");
-    file.writeFile();
+  if (!myFile->loadFile()) {
+    return;
   }
-  else {
-    std::string value;
-    file.setSection("network");
 
-    file.get("Port", myPort, -1);
-    file.get("Server", myServer, std::string());
+  std::string value;
+  myFile->setSection("network");
 
-    file.get("TlsPolicy", value, "optional");
-    if (value == "disabled")
-      myTlsPolicy = gloox::TLSDisabled;
-    else if (value == "required")
-      myTlsPolicy = gloox::TLSRequired;
+  myFile->get("Server", myServer);
+  myFile->get("Port", myPort, -1);
+
+  myFile->get("TlsPolicy", value, "optional");
+  if (value == "disabled")
+    myTlsPolicy = gloox::TLSDisabled;
+  else if (value == "required")
+    myTlsPolicy = gloox::TLSRequired;
+  else
+    myTlsPolicy = gloox::TLSOptional;
+
+  if (myFile->get("Resource", value) && !value.empty())
+    myResource = value;
+
+  myFile->get("Proxy", value);
+  if (!value.empty() && myFile->setSection("proxy." + value, false))
+  {
+    myProxy.myName = value;
+
+    myFile->get("Type", value, "disabled");
+    if (value == "http")
+      myProxy.myType = Proxy::TYPE_HTTP;
     else
-      myTlsPolicy = gloox::TLSOptional;
+      myProxy.myType = Proxy::TYPE_DISABLED;
 
-    if (file.get("Resource", value) && !value.empty())
-      myResource = value;
+    myFile->get("Server", myProxy.myServer);
+    myFile->get("Port", myProxy.myPort, -1);
+    myFile->get("Username", myProxy.myUsername);
+    myFile->get("Password", myProxy.myPassword);
   }
 }
 
+Config::~Config()
+{
+  myFile->setSection("network");
+
+  myFile->set("Server", myServer);
+  myFile->set("Port", myPort);
+
+  if (myTlsPolicy == gloox::TLSDisabled)
+    myFile->set("TlsPolicy", "disabled");
+  else if (myTlsPolicy == gloox::TLSRequired)
+    myFile->set("TlsPolicy", "required");
+  else if (myTlsPolicy == gloox::TLSOptional)
+    myFile->set("TlsPolicy", "optional");
+
+  myFile->set("Resource", myResource);
+
+  myFile->set("Proxy", myProxy.myName);
+  myFile->setSection("proxy." + myProxy.myName);
+
+  if (myProxy.myType == Proxy::TYPE_DISABLED)
+    myFile->set("Type", "disabled");
+  else if (myProxy.myType == Proxy::TYPE_HTTP)
+    myFile->set("Type", "http");
+
+  myFile->set("Server", myProxy.myServer);
+  myFile->set("Port", myProxy.myPort);
+  myFile->set("Username", myProxy.myUsername);
+  myFile->set("Password", myProxy.myPassword);
+
+  myFile->writeFile();
+  delete myFile;
+}

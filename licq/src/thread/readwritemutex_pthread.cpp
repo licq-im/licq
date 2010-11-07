@@ -20,56 +20,64 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
-#include "plugin.h"
-#include "pluginversion.h"
+#include <licq/thread/readwritemutex.h>
 
-#include <licq/pluginmanager.h>
-#include <licq/protocolbase.h>
+#include <pthread.h>
 
-const char* LProto_Name()
+using Licq::ReadWriteMutex;
+
+class ReadWriteMutex::Private
 {
-  static char name[] = "Jabber";
-  return name;
+public:
+  Private()
+  {
+    ::pthread_rwlock_init(&myReadWriteMutex, NULL);
+  }
+
+  ~Private()
+  {
+    ::pthread_rwlock_destroy(&myReadWriteMutex);
+  }
+
+  pthread_rwlock_t myReadWriteMutex;
+};
+
+ReadWriteMutex::ReadWriteMutex() :
+  myPrivate(new Private)
+{
+  // Empty
 }
 
-const char* LProto_Version()
+ReadWriteMutex::~ReadWriteMutex()
 {
-  static char version[] = PLUGIN_VERSION_STRING;
-  return version;
+  delete myPrivate;
 }
 
-const char* LProto_ConfigFile()
+void ReadWriteMutex::lockRead()
 {
-  static char configFile[] = "licq_jabber.conf";
-  return configFile;
+  LICQ_D();
+  ::pthread_rwlock_rdlock(&d->myReadWriteMutex);
 }
 
-const char* LProto_PPID()
+void ReadWriteMutex::unlockRead()
 {
-  static char ppid[] = "XMPP";
-  return ppid;
+  LICQ_D();
+  ::pthread_rwlock_unlock(&d->myReadWriteMutex);
 }
 
-bool LProto_Init()
+void ReadWriteMutex::lockWrite()
 {
-  return true;
+  LICQ_D();
+  ::pthread_rwlock_wrlock(&d->myReadWriteMutex);
 }
 
-unsigned long LProto_SendFuncs()
+void ReadWriteMutex::unlockWrite()
 {
-  return Licq::ProtocolPlugin::CanSendMsg
-      | Licq::ProtocolPlugin::CanHoldStatusMsg
-      | Licq::ProtocolPlugin::CanSendAuth
-      | Licq::ProtocolPlugin::CanSendAuthReq;
+  LICQ_D();
+  ::pthread_rwlock_unlock(&d->myReadWriteMutex);
 }
 
-int LProto_Main()
+void ReadWriteMutex::setName(const std::string& /*name*/)
 {
-  Jabber::Config config(LProto_ConfigFile());
-
-  int pipe = Licq::gPluginManager.registerProtocolPlugin();
-  int res = Jabber::Plugin(config).run(pipe);
-  Licq::gPluginManager.unregisterProtocolPlugin();
-  return res;
+  // Empty
 }

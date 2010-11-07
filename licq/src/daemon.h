@@ -38,10 +38,12 @@ public:
   Daemon();
   ~Daemon();
 
+  void preInitialize(CLicq* _licq) { licq = _licq; }
+
   /**
    * Initialize the daemon
    */
-  void initialize(CLicq* licq);
+  void initialize();
 
   /**
    * Get next available id to use for an event
@@ -78,6 +80,8 @@ private:
   unsigned long myNextEventId;
   Licq::Mutex myNextEventIdMutex;
   std::string myRejectFile;
+  unsigned myErrorTypes;
+  std::string myErrorFile;
 
   pthread_t thread_shutdown;
 

@@ -1,6 +1,9 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ *
+ * Please refer to the COPYRIGHT file distributed with this source
+ * distribution for the names of the individual contributors.
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,29 +20,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQ_PROTOCOLBASE_H
-#define LICQ_PROTOCOLBASE_H
+#ifndef LICQDAEMON_READWRITEMUTEX_DEBUG_H
+#define LICQDAEMON_READWRITEMUTEX_DEBUG_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-const char* LProto_Name();
-
-const char* LProto_Version();
-
-const char* LProto_PPID();
-
-const char* LProto_ConfigFile();
-
-bool LProto_Init();
-
-unsigned long LProto_SendFuncs();
-
-int LProto_Main();
-
-#ifdef __cplusplus
-}
-#endif
+/*
+ * Define this and recompile the daemon to debug deadlocks. If a (potential)
+ * deadlock is discovered, the daemon will print a message to stderr (and to
+ * the file <basedir>/licq.debug_rw_mutex) and then abort.
+ */
+#define LICQDAEMON_DEBUG_RW_MUTEX
 
 #endif

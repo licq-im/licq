@@ -31,6 +31,8 @@
 #include <sys/stat.h> // chmod
 
 #include <licq/logging/log.h>
+#include <licq/logging/logservice.h>
+#include <licq/logging/logutils.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/icqdefines.h>
@@ -49,6 +51,7 @@
 #include "gpghelper.h"
 #include "icq/icq.h"
 #include "licq.h"
+#include "logging/filelogsink.h"
 #include "plugins/pluginmanager.h"
 
 using namespace std;
@@ -68,7 +71,8 @@ Licq::Daemon& Licq::gDaemon(LicqDaemon::gDaemon);
 const char* const Daemon::TranslationDir = "translations";
 const char* const Daemon::UtilityDir = "utilities";
 
-Daemon::Daemon()
+Daemon::Daemon() :
+  licq(NULL)
 {
   // Set static variables based on compile time constants
   myLibDir = INSTALL_LIBDIR;
@@ -90,11 +94,11 @@ void Daemon::setBaseDir(const string& baseDir)
     myBaseDir += '/';
 }
 
-void Daemon::initialize(CLicq* _licq)
+void Daemon::initialize()
 {
-  string temp;
+  assert(licq != NULL);
 
-  licq = _licq;
+  string temp;
 
   myShuttingDown = false;
 
@@ -124,6 +128,23 @@ void Daemon::initialize(CLicq* _licq)
   licqConf.get("Rejects", myRejectFile, "log.rejects");
   if (myRejectFile == "none")
     myRejectFile = "";
+
+  // Error log file
+  licqConf.get("Errors", myErrorFile, "log.errors");
+  licqConf.get("ErrorTypes", myErrorTypes, 0x4 | 0x2); // error and unknown
+  if (!myErrorFile.empty() && myErrorFile != "none")
+  {
+    string errorFile = baseDir() + myErrorFile;
+    boost::shared_ptr<FileLogSink> logSink(new FileLogSink(errorFile));
+    logSink->setLogLevelsFromBitmask(
+        Licq::LogUtils::convertOldBitmaskToNew(myErrorTypes));
+    logSink->setLogPackets(true);
+    if (logSink->isOpen())
+      getLogService().registerLogSink(logSink);
+    else
+      gLog.error("Unable to open %s as error log:\n%s",
+                 errorFile.c_str(), strerror(errno));
+  }
 
   // Loading translation table from file
   licqConf.get("Translation", temp, "none");
@@ -188,6 +209,9 @@ void Daemon::SaveConf()
   licqConf.set("ProxyPassword", myProxyPasswd);
 
   licqConf.set("Rejects", (myRejectFile.empty() ? "none" : myRejectFile));
+
+  licqConf.set("Errors", myErrorFile);
+  licqConf.set("ErrorTypes", myErrorTypes);
 
   string translation = Licq::gTranslator.getMapName();
   if (translation.empty())

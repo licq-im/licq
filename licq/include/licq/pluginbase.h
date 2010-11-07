@@ -102,23 +102,6 @@ int LP_Main();
  *----------------------------------------------------------------------------*/
 const char* LP_ConfigFile();
 
-
-/*==============================================================================
- * INTERNAL USE ONLY
- *============================================================================*/
-
-const char* LP_BuildDate()
-{
-  static char szDate[] = __DATE__;
-  return szDate;
-}
-
-const char* LP_BuildTime()
-{
-  static char szTime[] = __TIME__;
-  return szTime;
-}
-
 #ifdef __cplusplus
 }
 #endif

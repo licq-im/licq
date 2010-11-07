@@ -296,7 +296,6 @@ protected:
   friend void* ::ProcessRunningEvent_Client_tep(void* p);
   friend void* ::ProcessRunningEvent_Server_tep(void* p);
   friend void* ::OscarServiceSendQueue_tep(void* p);
-//friend void *MonitorSockets_tep(void *p);
 };
 
 } // namespace Licq
