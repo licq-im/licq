@@ -417,6 +417,15 @@ void UserManager::RemoveOwner(unsigned long ppid)
 
   Owner* o = iter->second;
   o->lockWrite();
+
+  // Don't allow removing an owner that is online
+  if (o->status() != Owner::OfflineStatus)
+  {
+    myOwnerListMutex.unlockWrite();
+    o->unlockWrite();
+    return;
+  }
+
   myOwners.erase(iter);
   o->RemoveFiles();
   UserId id = o->id();
