@@ -157,7 +157,8 @@ void Handler::onUserRemoved(const string& id)
   gUserManager.removeUser(UserId(id, JABBER_PPID), false);
 }
 
-void Handler::onUserStatusChange(const string& id, unsigned status)
+void Handler::onUserStatusChange(
+    const string& id, unsigned status, const string& msg)
 {
   TRACE();
 
@@ -165,6 +166,7 @@ void Handler::onUserStatusChange(const string& id, unsigned status)
   if (user.isLocked())
   {
     user->SetSendServer(true);
+    user->setAutoResponse(msg);
     user->statusChanged(status);
 
     if (status == Licq::User::OnlineStatus)
