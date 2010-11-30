@@ -44,7 +44,8 @@ public:
   void onDisconnect(bool authError);
 
   void onUserAdded(const std::string& id, const std::string& name,
-                   const std::list<std::string>& groups);
+                   const std::list<std::string>& groups,
+                   bool awaitingAuthorization);
   void onUserRemoved(const std::string& id);
   void onUserStatusChange(const std::string& id, unsigned status,
                           const std::string& msg);

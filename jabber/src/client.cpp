@@ -493,7 +493,12 @@ bool Client::addRosterItem(const gloox::RosterItem& item)
       || item.subscription() == gloox::S10nFrom)
     return false;
 
-  myHandler.onUserAdded(item.jid(), item.name(), item.groups());
+  // States where we have sent a subscription request that hasn't be answered
+  bool awaitAuth = item.subscription() == gloox::S10nNoneOut
+      || item.subscription() == gloox::S10nNoneOutIn
+      || item.subscription() == gloox::S10nFromOut;
+
+  myHandler.onUserAdded(item.jid(), item.name(), item.groups(), awaitAuth);
   return true;
 }
 
