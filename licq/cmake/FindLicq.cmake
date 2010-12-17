@@ -135,22 +135,21 @@ macro (LICQ_CREATE_PLUGIN_VERSION_FILE dir)
   _licq_plugin_version_helper(RELEASE)
   _licq_plugin_version_helper(EXTRA \" \")
 
-  # When building from a svn working copy, set the extra version to the current
-  # revision, replacing any existing value.
-  find_package(Subversion QUIET)
-  if (Subversion_FOUND)
-    # The subversion_wc_info macro prints an error if the dir isn't a working
-    # copy. To avoid this, check if it is one before executing the macro.
-    execute_process(
-      COMMAND ${Subversion_SVN_EXECUTABLE} info ${PROJECT_SOURCE_DIR}
-      RESULT_VARIABLE _licq_plugin_svn_result
-      OUTPUT_QUIET ERROR_QUIET)
-
-    if (${_licq_plugin_svn_result} EQUAL 0)
-      subversion_wc_info(${PROJECT_SOURCE_DIR} Plugin)
-      set(_PLUGIN_VERSION_EXTRA "\"-r${Plugin_WC_LAST_CHANGED_REV}\"")
-    endif (${_licq_plugin_svn_result} EQUAL 0)
-  endif (Subversion_FOUND)
+  # When building from a git clone, set the extra version to the HEAD revision,
+  # replacing any existing value.
+  find_program(licq_git git)
+  if (licq_git)
+    execute_process(COMMAND ${licq_git} rev-parse HEAD
+      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+      RESULT_VARIABLE licq_git_result
+      OUTPUT_VARIABLE licq_git_output
+      ERROR_QUIET
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (${licq_git_result} EQUAL 0)
+      string(SUBSTRING ${licq_git_output} 0 7 licq_git_short)
+      set(_PLUGIN_VERSION_EXTRA "\"-${licq_git_short}\"")
+    endif (${licq_git_result} EQUAL 0)
+  endif (licq_git)
 
   # pluginversion.h content
   set(_plugin_version_file "${dir}/pluginversion.h")

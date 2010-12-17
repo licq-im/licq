@@ -9,33 +9,25 @@ set(LICQ_VERSION_RELEASE 0)        # 0 <= release <=  9
 set(LICQ_VERSION_EXTRA "-dev")     # Any string
 set(LICQ_VERSION_PLUGIN_ABI 0)     # Increase when breaking plugin ABI
 
-# When building from a svn working copy, set the extra version to the current
-# revision, replacing any existing value.
-find_package(Subversion QUIET)
-if (Subversion_FOUND)
+# When building from a git clone, set the extra version to the HEAD revision,
+# replacing any existing value.
+find_program(licq_git git)
+if (licq_git)
   if (NOT LICQ_VERSION_SOURCE_DIR)
     set(LICQ_VERSION_SOURCE_DIR ${PROJECT_SOURCE_DIR})
   endif (NOT LICQ_VERSION_SOURCE_DIR)
 
-  # The subversion_wc_info macro prints an error if the dir isn't a working
-  # copy. To avoid this, check if it is one before executing the macro.
-  execute_process(
-    COMMAND ${Subversion_SVN_EXECUTABLE} info ${LICQ_VERSION_SOURCE_DIR}
-    RESULT_VARIABLE licq_svn_result
-    OUTPUT_QUIET ERROR_QUIET)
-
-  if (${licq_svn_result} EQUAL 0)
-    # Work-around for old FindSubversion.cmake
-    set(_Licq_SAVED_LC_ALL "$ENV{LC_ALL}")
-    set(ENV{LC_ALL} C)
-
-    subversion_wc_info(${LICQ_VERSION_SOURCE_DIR} Licq)
-    set(LICQ_VERSION_EXTRA "-r${Licq_WC_LAST_CHANGED_REV}")
-
-    # restore the previous LC_ALL
-    set(ENV{LC_ALL} ${_Licq_SAVED_LC_ALL})    
-  endif (${licq_svn_result} EQUAL 0)
-endif (Subversion_FOUND)
+  execute_process(COMMAND ${licq_git} rev-parse HEAD
+    WORKING_DIRECTORY ${LICQ_VERSION_SOURCE_DIR}
+    RESULT_VARIABLE licq_git_result
+    OUTPUT_VARIABLE licq_git_output
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  if (${licq_git_result} EQUAL 0)
+    string(SUBSTRING ${licq_git_output} 0 7 licq_git_short)
+    set(LICQ_VERSION_EXTRA "-${licq_git_short}")
+  endif (${licq_git_result} EQUAL 0)
+endif (licq_git)
 
 # licqversion.h content
 set(licq_version_file "${CMAKE_CURRENT_BINARY_DIR}/include/licq/licqversion.h")
