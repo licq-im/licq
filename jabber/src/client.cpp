@@ -313,12 +313,12 @@ void Client::handleRoster(const gloox::Roster& roster)
 void Client::handleRosterPresence(const gloox::RosterItem& item,
                                   const string& /*resource*/,
                                   gloox::Presence::PresenceType presence,
-                                  const string& /*msg*/)
+                                  const string& msg)
 {
   TRACE();
 
   myHandler.onUserStatusChange(gloox::JID(item.jid()).bare(),
-      presenceToStatus(presence));
+      presenceToStatus(presence), msg);
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
