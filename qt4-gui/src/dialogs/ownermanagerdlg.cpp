@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,8 +97,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   buttons->addButton(closeButton, QDialogButtonBox::RejectRole);
 
   // Connect all the signals
-  connect(ownerView, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-      SLOT(listClicked(QTreeWidgetItem*)));
+  connect(ownerView, SIGNAL(itemSelectionChanged()), SLOT(listSelectionChanged()));
   connect(ownerView, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
       SLOT(modifyOwner(QTreeWidgetItem*, int)));
   connect(addButton, SIGNAL(clicked()), SLOT(addOwner()));
@@ -111,6 +110,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
 
   // Add the owners to the list now
   updateOwners();
+  listSelectionChanged();
 
   // Show information to the user
   if (Licq::gUserManager.NumOwners() == 0)
@@ -156,15 +156,14 @@ void OwnerManagerDlg::updateOwners()
   ownerView->resizeColumnToContents(0);
   ownerView->resizeColumnToContents(1);
   ownerView->sortByColumn(0, Qt::AscendingOrder);
-
-  modifyButton->setEnabled(false);
-  removeButton->setEnabled(false);
 }
 
-void OwnerManagerDlg::listClicked(QTreeWidgetItem* item)
+void OwnerManagerDlg::listSelectionChanged()
 {
-  modifyButton->setEnabled(item != NULL);
-  removeButton->setEnabled(item != NULL);
+  bool hasSelection = !ownerView->selectedItems().isEmpty();
+
+  modifyButton->setEnabled(hasSelection);
+  removeButton->setEnabled(hasSelection);
 }
 
 void OwnerManagerDlg::addOwner()
