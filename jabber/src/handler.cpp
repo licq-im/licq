@@ -102,7 +102,8 @@ void Handler::onDisconnect(bool authError)
 }
 
 void Handler::onUserAdded(
-    const string& id, const string& name, const std::list<string>& groups)
+    const string& id, const string& name, const std::list<string>& groups,
+    bool awaitingAuthorization)
 {
   TRACE();
 
@@ -134,6 +135,8 @@ void Handler::onUserAdded(
   user->setUserEncoding("UTF-8");
   if (!user->KeepAliasOnUpdate())
     user->setAlias(name);
+
+  user->SetAwaitingAuth(awaitingAuthorization);
 
   // Remove this line when SetGroups call above saves contact groups itself.
   user->SaveLicqInfo();
