@@ -44,16 +44,19 @@ ProtoComboBox::ProtoComboBox(bool skipExisting, QWidget* parent)
 
 void ProtoComboBox::fillComboBox(bool skipExisting)
 {
-  QString id;
-
   Licq::ProtocolPluginsList protocols;
   Licq::gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     unsigned long ppid = protocol->getProtocolId();
     Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
-    if (userId.isValid() && skipExisting)
-      continue;
+    if (userId.isValid())
+    {
+      if (skipExisting)
+        continue;
+    }
+    else
+      userId = Licq::UserId("", ppid);
 
     addItem(
         IconManager::instance()->iconForStatus(Licq::User::OnlineStatus, userId), // icon
