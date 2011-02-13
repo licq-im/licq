@@ -112,6 +112,9 @@ bool Client::isConnected()
 
 void Client::changeStatus(unsigned status, bool notifyHandler)
 {
+  // Must reset status to avoid sending the old status message
+  myClient.presence().resetStatus();
+
   string msg = myHandler.getStatusMessage(status);
   myClient.setPresence(statusToPresence(status), 0, msg);
   if (notifyHandler)
