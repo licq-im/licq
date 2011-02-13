@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,16 +78,18 @@ LogWindow::LogWindow(QWidget* parent)
   top_lay->addWidget(outputBox);
 
   QDialogButtonBox* buttons = new QDialogButtonBox(
-      QDialogButtonBox::Save |
       QDialogButtonBox::Close);
 
-  connect(buttons, SIGNAL(accepted()), SLOT(save()));
   connect(buttons, SIGNAL(rejected()), SLOT(hide()));
-
   buttons->button(QDialogButtonBox::Close)->setDefault(true);
 
-  QPushButton* btnClear = buttons->addButton(tr("Clear"),
+  QPushButton* btnSave = buttons->addButton(tr("Save..."),
       QDialogButtonBox::ActionRole);
+  btnSave->setAutoDefault(false);
+  connect(btnSave, SIGNAL(clicked()), SLOT(save()));
+
+  QPushButton* btnClear = buttons->addButton(tr("Clear"),
+      QDialogButtonBox::ResetRole);
   btnClear->setAutoDefault(false);
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
 
@@ -148,10 +150,11 @@ void LogWindow::save()
 
 #ifdef USE_KDE
   KUrl u = KFileDialog::getSaveUrl(QString(QDir::homePath() + "/licq.log"),
-      QString::null, this);
+      QString::null, this, tr("Licq - Save Network Log"));
   fn = u.path();
 #else
-  fn = QFileDialog::getSaveFileName(this, QString::null, QDir::homePath() + "/licq.log");
+  fn = QFileDialog::getSaveFileName(this, tr("Licq - Save Network Log"),
+      QDir::homePath() + "/licq.log");
 #endif
 
   if (fn.isNull())
