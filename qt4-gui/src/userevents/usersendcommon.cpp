@@ -435,7 +435,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
 
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  connect(mySendServerCheck, SIGNAL(toggled(bool)), SLOT(sendServerToggled(bool)));
+  connect(mySendServerCheck, SIGNAL(clicked(bool)), SLOT(sendServerToggled(bool)));
 
   QSize dialogSize = Config::Chat::instance()->sendDialogSize();
   if (dialogSize.isValid())
