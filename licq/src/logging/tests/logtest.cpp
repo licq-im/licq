@@ -50,8 +50,7 @@ public:
         .WillOnce(Return(true));
   }
 
-  template<typename T>
-  void log(const T& msg)
+  void log(const std::string& msg)
   {
     switch (GetParam())
     {
@@ -69,6 +68,28 @@ public:
         break;
       case Licq::Log::Debug:
         myLog.debug(msg);
+        break;
+    }
+  }
+
+  void log(const char* msg)
+  {
+    switch (GetParam())
+    {
+      case Licq::Log::Unknown:
+        myLog.unknown("%s", msg);
+        break;
+      case Licq::Log::Info:
+        myLog.info("%s", msg);
+        break;
+      case Licq::Log::Warning:
+        myLog.warning("%s", msg);
+        break;
+      case Licq::Log::Error:
+        myLog.error("%s", msg);
+        break;
+      case Licq::Log::Debug:
+        myLog.debug("%s", msg);
         break;
     }
   }
