@@ -114,7 +114,7 @@ add_executable(licq ${licq_SRCS})
 set_target_properties(licq PROPERTIES LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
 
 # Must export symbols from daemon so that plugins can use them
-list(APPEND CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_EXPORTS_CXX_FLAG})
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_EXE_EXPORTS_CXX_FLAG}")
 
 # To find public headers
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
