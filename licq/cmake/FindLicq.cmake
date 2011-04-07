@@ -84,11 +84,11 @@ macro (LICQ_ADD_PLUGIN _licq_plugin_name)
   add_library(${_licq_plugin_name} MODULE ${ARGN})
   set_target_properties(${_licq_plugin_name} PROPERTIES PREFIX "")
 
-  # Add linker flags for thread support
-  set(_link_flags "${CMAKE_THREAD_LIBS_INIT}")
+  # Link with thread library
+  target_link_libraries(${_licq_plugin_name} ${CMAKE_THREAD_LIBS_INIT})
 
   if (APPLE)
-    set(_link_flags "${_link_flags} -flat_namespace -undefined suppress")
+    set(_link_flags "-flat_namespace -undefined suppress")
 
     # Write the list of symbols that should be exported from the plugin to a
     # file and tell the linker about it. One symbol per line with a '_' prefix.
@@ -109,8 +109,7 @@ macro (LICQ_ADD_PLUGIN _licq_plugin_name)
     check_cxx_accepts_flag("-Wl,--version-script,${_version_script}"
       LD_ACCEPTS_VERSION_SCRIPT)
     if (LD_ACCEPTS_VERSION_SCRIPT)
-      set(_link_flags
-	"${_link_flags} -Wl,--version-script,'${_version_script}'")
+      set(_link_flags "-Wl,--version-script,'${_version_script}'")
     endif (LD_ACCEPTS_VERSION_SCRIPT)
   endif (APPLE)
 

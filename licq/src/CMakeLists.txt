@@ -110,8 +110,8 @@ set(test_SRCS
 
 add_executable(licq ${licq_SRCS})
 
-# Add linker flags for thread support
-set_target_properties(licq PROPERTIES LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
+# Link with thread library
+target_link_libraries(licq ${CMAKE_THREAD_LIBS_INIT})
 
 # Must export symbols from daemon so that plugins can use them
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_EXE_EXPORTS_CXX_FLAG}")
@@ -152,9 +152,8 @@ if (BUILD_TESTS)
   target_link_libraries(unittests ${CMAKE_DL_LIBS})
   target_link_libraries(unittests ${SOCKET_LIBRARIES})
 
-  # Add linker flags for thread support
-  set_target_properties(unittests PROPERTIES
-    LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
+  # Link with thread library
+  target_link_libraries(unittests ${CMAKE_THREAD_LIBS_INIT})
 
   add_test(licq unittests)
   add_dependencies(tests unittests)
