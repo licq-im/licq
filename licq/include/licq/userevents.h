@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -257,6 +257,7 @@ public:
   virtual EventAuthRequest* Copy() const;
   virtual void AddToHistory(User* u, bool isReceiver) const;
   const UserId& userId() const { return myUserId; }
+  const std::string& reason() const { return myReason; }
 
 protected:
   void CreateDescription() const;
@@ -278,6 +279,7 @@ public:
   virtual EventAuthGranted* Copy() const;
   virtual void AddToHistory(User* u, bool isReceiver) const;
   const UserId& userId() const { return myUserId; }
+  const std::string& message() const { return myMessage; }
 
 protected:
   void CreateDescription() const;
@@ -295,6 +297,7 @@ public:
   virtual EventAuthRefused* Copy() const;
   virtual void AddToHistory(User* u, bool isReceiver) const;
   const UserId& userId() const { return myUserId; }
+  const std::string& message() const { return myMessage; }
 
 protected:
   void CreateDescription() const;
@@ -312,6 +315,8 @@ public:
       unsigned long _nFlags);
   virtual EventWebPanel* Copy() const;
   virtual void AddToHistory(User* u, bool isReceiver) const;
+  const std::string& message() const { return myMessage; }
+
 protected:
   void CreateDescription() const;
   std::string myName;
@@ -329,6 +334,8 @@ public:
       unsigned long _nFlags);
   virtual EventEmailPager* Copy() const;
   virtual void AddToHistory(User* u, bool isReceiver) const;
+  const std::string& message() const { return myMessage; }
+
 protected:
   void CreateDescription() const;
   std::string myName;
@@ -396,6 +403,7 @@ public:
   EventServerMessage(const std::string& name, const std::string& email,
       const std::string& message, time_t _tTime);
   virtual EventServerMessage* Copy() const;
+  const std::string& message() const { return myMessage; }
   virtual void AddToHistory(User* u, bool isReceiver) const;
 
   static EventServerMessage *Parse(char *, unsigned short, time_t, unsigned long);
