@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -35,6 +35,7 @@
 #include "contactlist/usermanager.h"
 #include "daemon.h"
 #include "fifo.h"
+#include "filter.h"
 #include "gettext.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
@@ -50,6 +51,7 @@ using LicqDaemon::Daemon;
 using LicqDaemon::PluginManager;
 using LicqDaemon::gDaemon;
 using LicqDaemon::gFifo;
+using LicqDaemon::gFilterManager;
 using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
@@ -625,6 +627,7 @@ bool CLicq::Init(int argc, char **argv)
   gOnEventManager.initialize();
   gSarManager.initialize();
   gStatistics.initialize();
+  gFilterManager.initialize();
   gUtilityManager.loadUtilities(gDaemon.shareDir() + Daemon::UtilityDir);
 
   return true;

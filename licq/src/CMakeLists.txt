@@ -27,6 +27,7 @@ set(licq_SRCS
   daemon.cpp
   event.cpp
   fifo.cpp
+  filter.cpp
   gpghelper.cpp
   hebrev.c
   licq.cpp
@@ -138,6 +139,7 @@ target_link_libraries(licq ${ICONV_LIBRARIES})
 target_link_libraries(licq ${OPENSSL_LIBRARIES})
 target_link_libraries(licq ${SOCKET_LIBRARIES})
 target_link_libraries(licq ${SOCKS5_LIBRARIES})
+target_link_libraries(licq ${Boost_LIBRARIES})
 
 install(TARGETS licq RUNTIME DESTINATION bin)
 

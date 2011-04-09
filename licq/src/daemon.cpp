@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@
 #include "contactlist/usermanager.h"
 #include "gettext.h"
 #include "gpghelper.h"
+#include "filter.h"
 #include "icq/icq.h"
 #include "licq.h"
 #include "logging/filelogsink.h"
@@ -375,8 +376,25 @@ unsigned long Daemon::getNextEventId()
 
 bool Daemon::addUserEvent(Licq::User* u, Licq::UserEvent* e)
 {
+  int filteraction = gFilterManager.filterEvent(u, e);
+  if (filteraction == Licq::FilterRule::ActionIgnore)
+  {
+    // Ignore => Just drop the event
+    gLog.info("Event dropped by filter");
+    delete e;
+    return false;
+  }
+
   if (u->isUser())
     e->AddToHistory(u, true);
+
+  if (filteraction == Licq::FilterRule::ActionSilent)
+  {
+    // Accept silently => Logged to history but don't notify plugins
+    delete e;
+    return false;
+  }
+
   // Don't log a user event if this user is on the ignore list
   if (u->IgnoreList() ||
       (e->IsMultiRec() && ignoreType(IgnoreMassMsg)) ||
