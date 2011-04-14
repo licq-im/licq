@@ -2545,6 +2545,10 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
     delete [] szId;
 
+      // Server told us something we already know
+      if (u->status() == User::OfflineStatus)
+        break;
+
     gLog.info(tr("%s%s went offline.\n"), L_SRVxSTR, u->GetAlias());
     u->SetClientTimestamp(0);
       u->setIsTyping(false);
