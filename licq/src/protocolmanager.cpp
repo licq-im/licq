@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -446,15 +446,15 @@ unsigned long ProtocolManager::secureChannelOpen(const UserId& userId)
     UserReadGuard user(userId);
     if (!user.isLocked())
     {
-      gLog.warning(tr("%sCannot send secure channel request to user not on list (%s).\n"),
-          L_WARNxSTR, userId.toString().c_str());
+      gLog.warning(tr("Cannot send secure channel request to user not on list (%s)."),
+          userId.toString().c_str());
       return 0;
     }
 
     // Check that the user doesn't already have a secure channel
     if (user->Secure())
     {
-      gLog.warning(tr("%s%s (%s) already has a secure channel.\n"), L_WARNxSTR,
+      gLog.warning(tr("%s (%s) already has a secure channel."),
           user->getAlias().c_str(), userId.toString().c_str());
       return 0;
     }
@@ -479,15 +479,15 @@ unsigned long ProtocolManager::secureChannelClose(const UserId& userId)
     UserReadGuard user(userId);
     if (!user.isLocked())
     {
-      gLog.warning(tr("%sCannot send secure channel request to user not on list (%s).\n"),
-          L_WARNxSTR, userId.toString().c_str());
+      gLog.warning(tr("Cannot send secure channel request to user not on list (%s)."),
+          userId.toString().c_str());
       return 0;
     }
 
     // Check that the user have a secure channel to close
     if (!user->Secure())
     {
-      gLog.warning(tr("%s%s (%s) does not have a secure channel.\n"), L_WARNxSTR,
+      gLog.warning(tr("%s (%s) does not have a secure channel."),
           user->getAlias().c_str(), userId.toString().c_str());
       return 0;
     }

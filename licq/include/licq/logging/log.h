@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007, 2010 Licq developers
+ * Copyright (C) 2007, 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,6 @@
 #include <string>
 
 // Deprecated, to be removed
-const char L_WARNxSTR[]    = "[WRN] ";
-const char L_ERRORxSTR[]   = "[ERR] ";
 const char L_TCPxSTR[]     = "[TCP] ";
 const char L_SRVxSTR[]     = "[SRV] ";
 const char L_BLANKxSTR[]   = "                ";

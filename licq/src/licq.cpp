@@ -453,8 +453,7 @@ bool CLicq::Init(int argc, char **argv)
       else
       {
         snprintf(error, ERR_SIZE,
-                 tr("%sLicq: Unable to determine pid of running Licq instance.\n"),
-                 L_ERRORxSTR);
+            tr("Licq: Unable to determine pid of running Licq instance."));
       }
 
       error[ERR_SIZE] = '\0';
@@ -480,14 +479,12 @@ bool CLicq::Init(int argc, char **argv)
       if (fcntl(pidFile, F_GETLK, &lock) != 0)
       {
         snprintf(error, ERR_SIZE,
-                tr("%sLicq: Unable to determine pid of running Licq instance.\n"),
-                L_ERRORxSTR);
+            tr("Licq: Unable to determine pid of running Licq instance."));
       }
       else
       {
         snprintf(error, ERR_SIZE,
-                tr("%sLicq: Already running at pid %d.\n"),
-                L_ERRORxSTR, (int)lock.l_pid);
+            tr("Licq: Already running at pid %d."), (int)lock.l_pid);
       }
 
       error[ERR_SIZE] = '\0';
@@ -573,12 +570,12 @@ bool CLicq::Init(int argc, char **argv)
         // Make upgrade from 1.3.x and older easier by automatically switching from kde/qt-gui to kde4/qt4-gui
         if (!loaded && pluginName == "kde-gui")
         {
-          gLog.warning(tr("%sPlugin kde-gui is no longer available, trying to load kde4-gui instead.\n"), L_WARNxSTR);
+          gLog.warning(tr("Plugin kde-gui is no longer available, trying to load kde4-gui instead."));
           loaded = LoadPlugin("kde4-gui", argc, argv);
         }
         if (!loaded && (pluginName == "qt-gui" || pluginName == "kde-gui"))
         {
-          gLog.warning(tr("%sPlugin %s is no longer available, trying to load qt4-gui instead.\n"), L_WARNxSTR, pluginName.c_str());
+          gLog.warning(tr("Plugin %s is no longer available, trying to load qt4-gui instead."), pluginName.c_str());
           loaded = LoadPlugin("qt4-gui", argc, argv);
         }
 

@@ -298,12 +298,11 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
   }
   else if (s->Error() == EADDRINUSE)
   {
-    gLog.warning(tr("%sNo ports available for local TCP server.\n"), L_WARNxSTR);
+    gLog.warning(tr("No ports available for local TCP server."));
   }
   else
   {
-    gLog.warning(tr("%sFailed to start local TCP server:\n%s"), L_WARNxSTR,
-        s->errorStr().c_str());
+    gLog.warning(tr("Failed to start local TCP server: %s"), s->errorStr().c_str());
   }
 
   return s->Descriptor();
@@ -327,8 +326,8 @@ void Licq::Daemon::setTcpPorts(unsigned lowPort, unsigned highPort)
   myTcpPortsHigh = highPort;
   if (myTcpPortsHigh < myTcpPortsLow)
   {
-    gLog.warning(tr("%sTCP high port (%d) is lower then TCP low port (%d).\n"),
-       L_WARNxSTR, myTcpPortsHigh, myTcpPortsLow);
+    gLog.warning(tr("TCP high port (%d) is lower then TCP low port (%d)."),
+        myTcpPortsHigh, myTcpPortsLow);
     myTcpPortsHigh = myTcpPortsLow + 10;
   }
 }
@@ -421,7 +420,7 @@ void Daemon::rejectEvent(const UserId& userId, Licq::UserEvent* e)
   FILE* f = fopen(rejectFile.c_str(), "a");
   if (f == NULL)
   {
-    gLog.warning(tr("%sUnable to open \"%s\" for writing.\n"), L_WARNxSTR, rejectFile.c_str());
+    gLog.warning(tr("Unable to open \"%s\" for writing."), rejectFile.c_str());
   }
   else
   {

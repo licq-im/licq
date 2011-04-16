@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,8 +117,8 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     }
     else
     {
-      gLog.warning(tr("%sUnable to open history file (%s):\n%s%s.\n"), L_WARNxSTR,
-          myFilename.c_str(), L_BLANKxSTR, strerror(errno));
+      gLog.warning(tr("Unable to open history file (%s): %s."),
+          myFilename.c_str(), strerror(errno));
       return false;
     }
   }
@@ -319,10 +319,10 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         e = new Licq::EventEmailAlert(name, 0, email, szMsg, tTime);
       break;
     }
-    default:
-      gLog.warning(tr("%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"),
-          L_WARNxSTR, myFilename.c_str(), nSubCommand);
-      break;
+      default:
+        gLog.warning(tr("Corrupt history file (%s): Unknown sub-command 0x%04X."),
+            myFilename.c_str(), nSubCommand);
+        break;
     }
     if (e != NULL)
     {
@@ -358,8 +358,8 @@ void UserHistory::write(const string& buf, bool append)
   int fd = open(myFilename.c_str(), O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 00600);
   if (fd == -1)
   {
-    gLog.error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,
-        myFilename.c_str(), L_BLANKxSTR, strerror(errno));
+    gLog.error(tr("Unable to open history file (%s): %s."),
+        myFilename.c_str(), strerror(errno));
     return;
   }
   ::write(fd, buf.c_str(), buf.size());

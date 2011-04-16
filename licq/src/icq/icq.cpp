@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -136,9 +136,8 @@ bool IcqProtocol::start()
   m_nTCPSocketDesc = gDaemon.StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {
-     gLog.error(tr("%sUnable to allocate TCP port for local server (%s)!\n"),
-                L_ERRORxSTR, tr("No ports available"));
-     return false;
+    gLog.error(tr("Unable to allocate TCP port for local server (No ports available)!"));
+    return false;
   }
   gSocketManager.AddSocket(s);
   {
@@ -157,14 +156,14 @@ bool IcqProtocol::start()
   nResult = pthread_create(&thread_ping, NULL, &Ping_tep, this);
   if (nResult != 0)
   {
-    gLog.error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    gLog.error(tr("Unable to start ping thread: %s."), strerror(nResult));
     return false;
   }
   
   nResult = pthread_create(&thread_updateusers, NULL, &UpdateUsers_tep, this);
   if (nResult != 0)
   {
-    gLog.error("%sUnable to start users update thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    gLog.error(tr("Unable to start users update thread: %s."), strerror(nResult));
     return false;
   }
 
@@ -175,8 +174,7 @@ bool IcqProtocol::start()
                              &OscarServiceSendQueue_tep, m_xBARTService);
     if (nResult != 0)
     {
-      gLog.error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
-                 L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+      gLog.error(tr("Unable to start BART service thread: %s."), strerror(nResult));
       return false;
     }
   }
@@ -226,7 +224,7 @@ unsigned short VersionToUse(unsigned short v_in)
 {
   /*if (ICQ_VERSION_TCP & 4 && v & 4) return 4;
   if (ICQ_VERSION_TCP & 2 && v & 2) return 2;
-  gLog.warning("%sUnknown TCP version %d.  Attempting v2.\n", L_WARNxSTR, v);
+  gLog.warning(tr("Unknown TCP version %d.  Attempting v2."), v);
   return 2;*/
   unsigned short v_out = v_in < ICQ_VERSION_TCP ? v_in : ICQ_VERSION_TCP;
   if (v_out < 2 || v_out == 5)
@@ -236,8 +234,7 @@ unsigned short VersionToUse(unsigned short v_in)
     else
       v_out = 6;
 
-    gLog.warning(tr("%sInvalid TCP version %d.  Attempting v%d.\n"), L_WARNxSTR, v_in,
-                                                              v_out);
+    gLog.warning(tr("Invalid TCP version %d.  Attempting v%d."), v_in, v_out);
   }
   return v_out;
 }
@@ -253,8 +250,7 @@ void IcqProtocol::SetUseServerSideBuddyIcons(bool b)
                                  &OscarServiceSendQueue_tep, m_xBARTService);
     if (nResult != 0)
     {
-      gLog.error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
-                 L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+      gLog.error(tr("Unable to start BART service thread:%s."), strerror(nResult));
     }
     else
       m_bUseBART = true;
@@ -290,8 +286,8 @@ void IcqProtocol::SendEvent_Server(CPacket *packet)
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_Server_tep, e);
   if (nResult != 0)
   {
-    gLog.error("%sUnable to start server event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
-       e->m_nSequence, L_BLANKxSTR, strerror(nResult));
+    gLog.error(tr("Unable to start server event thread (#%hu): %s."),
+        e->m_nSequence, strerror(nResult));
     e->m_eResult = Licq::Event::ResultError;
   }
 #else
@@ -384,8 +380,8 @@ Licq::Event* IcqProtocol::SendExpectEvent(Licq::Event* e, void *(*fcn)(void *))
 
   if (nResult != 0)
   {
-    gLog.error("%sUnable to start event thread (#%hu):\n%s%s.\n", L_ERRORxSTR,
-       e->m_nSequence, L_BLANKxSTR, strerror(nResult));
+    gLog.error(tr("Unable to start event thread (#%hu): %s."),
+        e->m_nSequence, strerror(nResult));
     DoneEvent(e, Licq::Event::ResultError);
     if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
     {
@@ -793,20 +789,20 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
         case Licq::Event::ResultAcked:  // push to extended event list
         PushExtendedEvent(e);
         break;
-      default:
-        gLog.error("%sInternal error: ProcessDoneEvents(): Invalid result for extended event (%d).\n",
-                   L_ERRORxSTR, e->m_eResult);
-        delete e;
-        return;
+        default:
+          gLog.error(tr("Internal error: ProcessDoneEvents(): Invalid result for extended event (%d)."),
+              e->m_eResult);
+          delete e;
+          return;
     }
     break;
   }
 
-  default:
-    gLog.error("%sInternal error: ProcessDoneEvents(): Unknown command (%04X).\n",
-               L_ERRORxSTR, e->m_nCommand);
-    delete e;
-    return;
+    default:
+      gLog.error(tr("Internal error: ProcessDoneEvents(): Unknown command (%04X)."),
+          e->m_nCommand);
+      delete e;
+      return;
   }
 
   // Some special commands to deal with
@@ -955,7 +951,7 @@ void IcqProtocol::CancelEvent(unsigned long t)
 
   if (eRun == NULL && eExt == NULL && eSrv == NULL)
   {
-    gLog.warning(tr("%sCancelled event not found.\n"), L_WARNxSTR);
+    gLog.warning(tr("Cancelled event not found."));
     return;
   }
 
@@ -1308,7 +1304,7 @@ bool IcqProtocol::waitForReverseConnection(unsigned short id, const Licq::UserId
 
   if (iter == m_lReverseConnect.end())
   {
-    gLog.warning("%sFailed to find desired connection record.\n", L_WARNxSTR);
+    gLog.warning(tr("Failed to find desired connection record."));
     goto done;
   }
 
@@ -1324,8 +1320,7 @@ bool IcqProtocol::waitForReverseConnection(unsigned short id, const Licq::UserId
     {
       if (iter == m_lReverseConnect.end())
       {
-        gLog.warning("%sSomebody else removed our connection record.\n",
-          L_WARNxSTR);
+        gLog.warning(tr("Somebody else removed our connection record."));
         goto done;
       }
       if ((*iter)->nId == id && (*iter)->myIdString == userId.accountId())

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -258,8 +258,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
     s = gSocketManager.FetchSocket(socket);
     if (s == NULL)
     {
-      gLog.warning(tr("%sSocket not connected or invalid (#%hu).\n"), L_WARNxSTR,
-                nSequence);
+      gLog.warning(tr("Socket not connected or invalid (#%hu)."), nSequence);
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
     {
       gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultError);
@@ -319,8 +318,8 @@ exit_server_thread:
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.warning(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
-        nSequence, L_BLANKxSTR, errorStr.c_str());
+    gLog.warning(tr("Error sending event (#%hu): %s."),
+        nSequence, errorStr.c_str());
 
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
     {
@@ -519,7 +518,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned short nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.warning(tr("%sSocket %d does not exist (#%hu).\n"), L_WARNxSTR, socket,
+    gLog.warning(tr("Socket %d does not exist (#%hu)."), socket,
        nSequence);
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
       gIcqProtocol.ProcessDoneEvent(e);
@@ -570,8 +569,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned short nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.warning(tr("%sError sending event (#%hu):\n%s%s.\n"), L_WARNxSTR,
-        -nSequence, L_BLANKxSTR, errorStr.c_str());
+    gLog.warning(tr("Error sending event (#%hu): %s."), -nSequence, errorStr.c_str());
     gIcqProtocol.myNewSocketPipe.putChar('S');
     // Kill the event, do after the above as ProcessDoneEvent erase the event
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
@@ -755,7 +753,7 @@ void *MonitorSockets_func()
         Licq::SrvSocket* srvTCP = dynamic_cast<Licq::SrvSocket*>(s);
         if (srvTCP == NULL)
         {
-          gLog.warning(tr("%sInvalid server socket in set.\n"), L_WARNxSTR);
+          gLog.warning(tr("Invalid server socket in set."));
           close(nCurrentSocket);
           continue;
         }
@@ -793,7 +791,7 @@ void *MonitorSockets_func()
         Licq::SrvSocket* sock_svc = dynamic_cast<Licq::SrvSocket*>(s);
         if (sock_svc == NULL)
         {
-          gLog.warning(tr("%sInvalid BART service socket in set.\n"), L_WARNxSTR);
+          gLog.warning(tr("Invalid BART service socket in set."));
           close(nCurrentSocket);
           continue;
         }
@@ -804,8 +802,7 @@ void *MonitorSockets_func()
           gSocketManager.DropSocket(sock_svc);
           if (!svc->ProcessPacket(packet))
           {
-            gLog.warning(tr("%sCan't process packet for service 0x%02X.\n"),
-                         L_WARNxSTR, svc->GetFam());
+            gLog.warning(tr("Can't process packet for service 0x%02X."), svc->GetFam());
             svc->ResetSocket();
             svc->ChangeStatus(STATUS_UNINITIALIZED);
             gSocketManager.CloseSocket(nCurrentSocket);
@@ -813,8 +810,7 @@ void *MonitorSockets_func()
         }
         else
         {
-          gLog.warning(tr("%sCan't receive packet for service 0x%02X.\n"),
-                       L_WARNxSTR, svc->GetFam());
+          gLog.warning(tr("Can't receive packet for service 0x%02X."), svc->GetFam());
           svc->ResetSocket();
           svc->ChangeStatus(STATUS_UNINITIALIZED);
           gSocketManager.DropSocket(sock_svc);
@@ -830,7 +826,7 @@ void *MonitorSockets_func()
         Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(s);
         if (tcp == NULL)
         {
-          gLog.warning(tr("%sInvalid server TCP socket in set.\n"), L_WARNxSTR);
+          gLog.warning(tr("Invalid server TCP socket in set."));
           close(nCurrentSocket);
           continue;
         }
@@ -843,8 +839,8 @@ void *MonitorSockets_func()
         if (!ok || gSocketManager.Num() > MAX_CONNECTS)
         {
           // Too many sockets, drop this one
-          gLog.warning(tr("%sToo many connected sockets, rejecting connection from %s.\n"),
-                       L_WARNxSTR, newSocket->getRemoteIpString().c_str());
+          gLog.warning(tr("Too many connected sockets, rejecting connection from %s."),
+              newSocket->getRemoteIpString().c_str());
           delete newSocket;
         }
         else

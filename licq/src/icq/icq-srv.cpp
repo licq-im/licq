@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -1400,8 +1400,8 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
             break;
 
           default:
-            gLog.error("%sInternal error: ProcessDoneEvents(): Invalid result "
-                       "for extended event (%d).\n", L_ERRORxSTR, e->m_eResult);
+            gLog.error(tr("Internal error: ProcessDoneEvents(): Invalid result "
+                "for extended event (%d)."), e->m_eResult);
             delete e;
             return;
         }
@@ -1411,8 +1411,8 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
 
       default:
       {
-        gLog.warning("%sInternal error: ProcessDoneEvents(): Unknown SNAC (0x%08lX).\n",
-                  L_ERRORxSTR, e->m_nSNAC);
+        gLog.warning(tr("Internal error: ProcessDoneEvents(): Unknown SNAC (0x%08lX)."),
+            e->m_nSNAC);
         delete e;
         return;
       }
@@ -1427,19 +1427,19 @@ unsigned long IcqProtocol::icqLogon(unsigned short logonStatus)
 {
   if (m_bLoggingOn)
   {
-    gLog.warning(tr(tr("%sAttempt to logon while already logged or logging on, logoff and try again.\n")), L_WARNxSTR);
+    gLog.warning(tr("Attempt to logon while already logged or logging on, logoff and try again."));
     return 0;
   }
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
     if (!o.isLocked() || o->accountId().empty())
     {
-      gLog.error("%sNo registered user, unable to process logon attempt.\n", L_ERRORxSTR);
+      gLog.error(tr("No registered user, unable to process logon attempt."));
       return 0;
     }
     if (o->password().empty())
     {
-      gLog.error(tr("%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"), L_ERRORxSTR);
+      gLog.error(tr("No password set.  Edit ~/.licq/owner.Licq and fill in the password field."));
       return 0;
     }
 
@@ -1484,7 +1484,7 @@ void IcqProtocol::icqLogoff()
 
   if (nSD == -1 && !m_bLoggingOn)
   {
-    gLog.warning(tr("%sAttempt to logoff while not logged on.\n"), L_WARNxSTR);
+    gLog.warning(tr("Attempt to logoff while not logged on."));
     return;
   }
 
@@ -1646,7 +1646,7 @@ int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
   {
     if (m_xProxy == NULL)
     {
-      gLog.warning(tr("%sProxy server not properly configured.\n"), L_ERRORxSTR);
+      gLog.warning(tr("Proxy server not properly configured."));
       delete s;
       return (-1);
     }
@@ -1668,7 +1668,7 @@ int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
   int nSocket;
   if (m_nTCPSrvSocketDesc != -1)
   {
-    gLog.warning(tr("%sConnection to server already exists, aborting.\n"), L_WARNxSTR);
+    gLog.warning(tr("Connection to server already exists, aborting."));
     delete s;
     nSocket = -1;
   }
@@ -1823,7 +1823,7 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
       if (!packet.readTLV())
       {
-        gLog.warning(tr("%sError during parsing service redirect packet!\n"), L_WARNxSTR);
+        gLog.warning(tr("Error during parsing service redirect packet!"));
         break;
       }
       if (packet.getTLVLen(0x000D) == 2)
@@ -1836,8 +1836,8 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       unsigned short nCookieLen = packet.getTLVLen(0x0006);
       if (!szServer || !szCookie)
       {
-        gLog.warning(tr("%sInvalid servername (%s) or cookie (%s) in service redirect packet!\n"),
-                  L_WARNxSTR, szServer ? szServer : "(null)", szCookie ? szCookie : "(null)");
+        gLog.warning(tr("Invalid servername (%s) or cookie (%s) in service redirect packet!"),
+            szServer ? szServer : "(null)", szCookie ? szCookie : "(null)");
         if (szServer) delete [] szServer;
         if (szCookie) delete [] szCookie;
         break;
@@ -1866,14 +1866,12 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
           }
           else
           {
-            gLog.warning(tr("%sService redirect packet for unallocated BART service.\n"),
-                      L_WARNxSTR);
+            gLog.warning(tr("Service redirect packet for unallocated BART service."));
             break;
           }
 
         default:
-          gLog.warning(tr("%sService redirect packet for unhandled service 0x%02X.\n"),
-                    L_WARNxSTR, nFam);
+          gLog.warning(tr("Service redirect packet for unhandled service 0x%02X."), nFam);
       }
 
       delete [] szServer;
@@ -2044,7 +2042,7 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
     
     if (!packet.readTLV())
     {
-      gLog.error("%sError during parsing user information packet!\n", L_ERRORxSTR);
+      gLog.error(tr("Error during parsing user information packet!"));
       break;
     }
    
@@ -2124,17 +2122,16 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     packet.UnpackUnsignedLongBE(); // tlvcount
 
     if (!packet.readTLV()) {
-      gLog.error("%sTLV Error\n", L_ERRORxSTR);
-      return;
-    }
+        gLog.error(tr("TLV Error"));
+        return;
+      }
 
 //     userIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
 //      userIP = BSWAP_32(userIP);
       Licq::UserWriteGuard u(Licq::UserId(szId, LICQ_PPID));
       if (!u.isLocked())
       {
-      gLog.warning(tr("%sUnknown user (%s) changed status.\n"), L_WARNxSTR,
-                szId);
+        gLog.warning(tr("Unknown user (%s) changed status."), szId);
       delete [] szId;
       break;
     }
@@ -2405,8 +2402,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           gLog.info("%s%s updated info plugin list\n", L_SRVxSTR,
                     u->GetAlias());
         else
-          gLog.warning("%sUnknown info plugin update from %s\n", L_WARNxSTR,
-                    u->GetAlias());
+          gLog.warning(tr("Unknown info plugin update from %s."), u->getAlias().c_str());
 
         u->SetUserUpdated(false);
 
@@ -2461,9 +2457,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 
-      default:
-        gLog.warning(tr("%sUnknown index %d from %s.\n"), L_WARNxSTR, index,
-        u->GetAlias());
+        default:
+          gLog.warning(tr("Unknown index %d from %s."), index, u->getAlias().c_str());
       }
     }
 
@@ -2494,8 +2489,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         }
 
         default:	// Unsupported types of BART
-          gLog.warning(tr("%sUnsupported type 0x%02X of buddy icon for %s.\n"),
-                    L_WARNxSTR, IconType, u->GetAlias());
+          gLog.warning(tr("Unsupported type 0x%02X of buddy icon for %s."),
+              IconType, u->getAlias().c_str());
           break;
       }
     }
@@ -2539,11 +2534,11 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       Licq::UserWriteGuard u(Licq::UserId(szId, LICQ_PPID));
       if (!u.isLocked())
       {
-      gLog.warning(tr("%sUnknown user (%s) has gone offline.\n"), L_WARNxSTR, szId);
+        gLog.warning(tr("Unknown user (%s) has gone offline."), szId);
+        delete [] szId;
+        break;
+      }
       delete [] szId;
-      break;
-    }
-    delete [] szId;
 
       // Server told us something we already know
       if (u->status() == User::OfflineStatus)
@@ -2587,18 +2582,18 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
     switch (err)
     {
-    case 0x0004:
-      gLog.warning(tr("%sUser is offline.\n"), L_WARNxSTR);
-      break;
-    case 0x0009:
-      gLog.warning(tr("%sClient does not understand type-2 messages.\n"), L_WARNxSTR);
-      break;
-    case 0x000e:
-      gLog.warning(tr("%sPacket was malformed.\n"), L_WARNxSTR);
-      break;
-    case 0x0015:
-      gLog.info(tr("%sList overflow.\n"), L_WARNxSTR);
-      break;
+        case 0x0004:
+          gLog.warning(tr("User is offline."));
+          break;
+        case 0x0009:
+          gLog.warning(tr("Client does not understand type-2 messages."));
+          break;
+        case 0x000e:
+          gLog.warning(tr("Packet was malformed."));
+          break;
+        case 0x0015:
+          gLog.info(tr("List overflow."));
+          break;
     default:
       gLog.unknown(tr("Unknown ICBM error: 0x%04x"), err);
     }
@@ -2618,11 +2613,9 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             {
               Licq::UserReadGuard u(Licq::UserId((*iter)->myIdString, LICQ_PPID));
               if (!u.isLocked())
-                gLog.warning("%sReverse connection from %s failed.\n", L_WARNxSTR,
-                    (*iter)->myIdString.c_str());
+                gLog.warning(tr("Reverse connection from %s failed."), (*iter)->myIdString.c_str());
               else
-                gLog.warning("%sReverse connection from %s failed.\n", L_WARNxSTR,
-                    u->getAlias().c_str());
+                gLog.warning(tr("Reverse connection from %s failed."), u->getAlias().c_str());
             }
 
           (*iter)->bSuccess = false;
@@ -2635,8 +2628,8 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       pthread_mutex_unlock(&mutex_reverseconnect);
 
       if (!bFound)
-        gLog.warning("%sICBM error for unknown event.\n", L_WARNxSTR);
-    }
+          gLog.warning(tr("ICBM error for unknown event."));
+      }
 
     break;
   }
@@ -2657,7 +2650,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     //TODO Check this again with new protocol plugin support
     //if (nUin < 10000 && nUin != ICQ_UINxPAGER && nUin != ICQ_UINxSMS)
     //{
-    //  gLog.warning("%sMessage through server with strange Uin: %04lx\n", L_WARNxSTR, nUin);
+    //  gLog.warning(tr("Message through server with strange Uin: %04lx"), nUin);
     //  break;
     //}
 
@@ -2665,9 +2658,9 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     nTLVs = packet.UnpackUnsignedShortBE() + 1;
     if (nTLVs && !packet.readTLV())
     {
-      gLog.error("%sIvalid packet format in message through server\n", L_ERRORxSTR);
-      return;
-    }
+        gLog.error(tr("Invalid packet format in message through server"));
+        return;
+      }
 
     switch (mFormat)
     {
@@ -3364,8 +3357,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
     {
         if ((*iter)->nId == nMsgID && (*iter)->myIdString == id)
         {
-        gLog.warning("%sReverse connection from %s failed.\n", L_WARNxSTR,
-                  u->GetAlias());
+          gLog.warning(tr("Reverse connection from %s failed."), u->getAlias().c_str());
         (*iter)->bSuccess = false;
         (*iter)->bFinished = true;
         bFound = true;
@@ -3387,8 +3379,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
     packet >> nLen;
     if (nLen == 0x0200)
     {
-      gLog.warning(tr("%s%s doesn't have a manager for this event.\n"), L_WARNxSTR,
-        u->GetAlias());
+        gLog.warning(tr("%s doesn't have a manager for this event."), u->getAlias().c_str());
         u.unlock();
 
         Licq::Event* e = DoneServerEvent(nMsgID, Licq::Event::ResultError);
@@ -3522,8 +3513,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
       Licq::UserWriteGuard u(Licq::UserId(szId, LICQ_PPID));
       if (!u.isLocked())
       {
-        gLog.warning(tr("%sTyping status received for unknown user (%s).\n"),
-            L_WARNxSTR, szId);
+        gLog.warning(tr("Typing status received for unknown user (%s)."), szId);
         break;
       }
       u->setIsTyping(nTyping == ICQ_TYPING_ACTIVE);
@@ -3591,8 +3581,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         {
           if (!packet.readTLV(-1, nByteLen))
           {
-            gLog.error("%sUnable to parse contact list TLV, aborting!\n",
-                L_ERRORxSTR);
+            gLog.error(tr("Unable to parse contact list TLV, aborting!"));
             delete[] szId;
             return;
           }
@@ -3771,7 +3760,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
       if (!packet.readTLV(-1, tlvBytes))
       {
-        gLog.error(tr("%sError during parsing packet!\n"), L_ERRORxSTR);
+        gLog.error(tr("Error during parsing packet!"));
         break;
       }
 
@@ -3864,13 +3853,13 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             break;
 
           case 0x02:
-            gLog.warning(tr("%sUser/Group %s not found on server list.\n"),
-                       L_WARNxSTR, pending.c_str());
+            gLog.warning(tr("User/Group %s not found on server list."),
+                pending.c_str());
             break;
 
           default:
-            gLog.warning(tr("%sUnknown error modifying server list: 0x%02X (ID: %s)\n"),
-                         L_ERRORxSTR, nError & 0xFF, pending.c_str());
+            gLog.warning(tr("Unknown error modifying server list: 0x%02X (ID: %s)"),
+                nError & 0xFF, pending.c_str());
         }
 
         if (nError && nError != 0x0E)
@@ -4912,9 +4901,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultAcked);
         if (e == NULL)
         {
-          gLog.warning("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
-          break;
-        }
+              gLog.warning(tr("Unmatched extended event (%d)!"), nSubSequence);
+              break;
+            }
 
         unsigned long nFoundUin;
 
@@ -4981,7 +4970,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e))
         {
           // error: empty result or nonexistent user (1E =  readonly???)
-          gLog.warning(tr("%sFailed to update user info: %x.\n"), L_WARNxSTR, nResult);
+              gLog.warning(tr("Failed to update user info: %x."), nResult);
               e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultFailed);
           if (e)
           {
@@ -4996,7 +4985,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultSuccess);
             if (e == NULL)
             {
-              gLog.warning("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
+              gLog.warning(tr("Unmatched extended event (%d)!"), nSubSequence);
               break;
             }
 
@@ -5056,7 +5045,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 /*
           unsigned short tmp = msg.UnpackChar();
           if (tmp)
-            gLog.error("%sConnection flags??? %x\n", L_ERRORxSTR, cf); */
+            gLog.error(tr("Connection flags??? %x"), cf); */
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5109,8 +5098,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             case 31: mstatus = "Separated"; break;
             case 40: mstatus = "Widowed"; break;
           }
-          gLog.info("%s%s status is %s, originally from: %s, %s, %s\n",
-                    L_WARNxSTR, u->GetAlias(), mstatus, city, state, country);
+                gLog.info(tr("%s status is %s, originally from: %s, %s, %s"),
+                    u->getAlias().c_str(), mstatus, city, state, country);
           */
 
           // save the user infomation
@@ -5304,10 +5293,10 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 DoneEvent(e, Licq::Event::ResultSuccess);
             ProcessDoneEvent(e);
           } else {
-            gLog.warning(tr("%sResponse to unknown extended info request for %s (%s).\n"),
-                      L_WARNxSTR, u->getAlias().c_str(), userId.toString().c_str());
-          }
-        }
+                gLog.warning(tr("Response to unknown extended info request for %s (%s)."),
+                    u->getAlias().c_str(), userId.toString().c_str());
+              }
+            }
 
             gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserInfo, u->id()));
@@ -5352,7 +5341,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
     {
       if (!myRegisterPasswd.empty())
       {
-        gLog.warning(tr("%sVerification required. Reconnecting...\n"), L_WARNxSTR);
+        gLog.warning(tr("Verification required. Reconnecting..."));
 
         Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultError);
         if (e)
@@ -5374,7 +5363,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
         Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultError);
         if (e)
           delete e;
-        gLog.error(tr("%sUnknown logon error. There appears to be an issue with the ICQ servers. Please try again later.\n"), L_ERRORxSTR);
+        gLog.error(tr("Unknown logon error. There appears to be an issue with the ICQ servers. Please try again later."));
       }
 
       break;
@@ -5400,7 +5389,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(LICQ_PPID);
       if (!oldOwnerId.isValid())
       {
-        gLog.warning(tr("%sReceived new uin (%lu) when already have a uin (%s).\n"), L_WARNxSTR,
+        gLog.warning(tr("Received new uin (%lu) when already have a uin (%s)."),
             nNewUin, oldOwnerId.toString().c_str());
         return;
       }
@@ -5473,8 +5462,8 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       FILE* fp = fopen(filename.c_str(), "w");
       if (fp == 0)
       {
-        gLog.warning(tr("%sUnable to open file (%s):\n%s%s.\n"), L_WARNxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.warning(tr("Unable to open file (%s): %s."),
+            filename.c_str(), strerror(errno));
         break;
       }
       
@@ -5644,43 +5633,43 @@ bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
   }
 
   if (!packet.readTLV()) {
-    gLog.error("%sError during parsing packet!\n", L_ERRORxSTR);
+    gLog.error(tr("Error during parsing packet!"));
     return false;
   }
 
   unsigned short nError = packet.UnpackUnsignedShortTLV(0x0008);
   switch (nError) {
-  case 0x1D:
-  case 0x18:
-    gLog.error(tr("%sRate limit exceeded.\n"), L_ERRORxSTR);
+    case 0x1D:
+    case 0x18:
+      gLog.error(tr("Rate limit exceeded."));
       gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
           Licq::PluginSignal::LogoffRate, Licq::gUserManager.ownerUserId(LICQ_PPID)));
       break;
 
-  case 0x04:
-  case 0x05:
-    gLog.error(tr("%sInvalid UIN and password combination.\n"), L_ERRORxSTR);
+    case 0x04:
+    case 0x05:
+      gLog.error(tr("Invalid UIN and password combination."));
       gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
           Licq::PluginSignal::LogoffPassword, Licq::gUserManager.ownerUserId(LICQ_PPID)));
       break;
 
-  case 0x0C:
-  case 0x0D:
-  case 0x12:
-  case 0x13:
-  case 0x14:
-  case 0x15:
-  case 0x1A:
-  case 0x1F:
-    gLog.error(tr("%sThe requested network service is temporarily unavailable.\n"
-                  "Please try again later.\n"), L_ERRORxSTR);
-    break;  
+    case 0x0C:
+    case 0x0D:
+    case 0x12:
+    case 0x13:
+    case 0x14:
+    case 0x15:
+    case 0x1A:
+    case 0x1F:
+      gLog.error(tr("The requested network service is temporarily unavailable. "
+          "Please try again later."));
+      break;
 
   case 0:
     break;
 
-  default:
-    gLog.error("%sUnknown sign on error: 0x%02X.\n", L_ERRORxSTR, nError);
+    default:
+      gLog.error(tr("Unknown sign on error: 0x%02X."), nError);
   }
 
   if (nError)
@@ -5696,13 +5685,13 @@ bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
   case 0x0001:
     if (ReconnectAfterUinClash())
     {
-      gLog.error(tr("%sYour ICQ number is used from another location.\n"), L_ERRORxSTR);
+        gLog.error(tr("Your ICQ number is used from another location."));
       m_eStatus = STATUS_OFFLINE_FORCED; // will try to reconnect
     }
     else 
     {
-      gLog.error(tr("%sYour ICQ number is used from another location.\n"
-                    "Automatic reconnect is disabled.\n"), L_ERRORxSTR);
+        gLog.error(tr("Your ICQ number is used from another location. "
+            "Automatic reconnect is disabled."));
       m_eStatus = STATUS_OFFLINE_MANUAL; // don't reconnect
     }
     break;
@@ -5710,8 +5699,8 @@ bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
   case 0:
     break;
 
-  default:
-    gLog.error("%sUnknown runtime error form server: 0x%02X.\n", L_ERRORxSTR, nError);
+    default:
+      gLog.error(tr("Unknown runtime error form server: 0x%02X."), nError);
     m_eStatus = STATUS_OFFLINE_FORCED;
   }
 
@@ -5727,7 +5716,7 @@ bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
 
   if (!szNewServer || !szCookie)
   {
-    gLog.error("%sUnable to sign on: NewServer: %s, cookie: %s.\n", L_ERRORxSTR,
+    gLog.error(tr("Unable to sign on: NewServer: %s, cookie: %s."),
                szNewServer ? szNewServer : "(null)", szCookie ? szCookie : "(null)");
     if (szNewServer) delete [] szNewServer;
     if (szCookie) delete [] szCookie;

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -680,7 +680,7 @@ bool CChatManager::StartChatServer()
 {
   if (gDaemon.StartTCPServer(&chatServer) == -1)
   {
-    gLog.warning(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
+    gLog.warning(tr("No more ports available, add more or close open chat/file sessions."));
     return false;
   }
 
@@ -902,7 +902,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       // get the handshake packet
       if (!IcqProtocol::Handshake_Recv(&u->sock, LocalPort(), false, true))
       {
-        gLog.warning("%sChat: Bad handshake.\n", L_ERRORxSTR);
+        gLog.warning(tr("Chat: Bad handshake."));
         return false;
       }
       switch (u->sock.Version())
@@ -1006,8 +1006,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           myFontFamily, m_nFontEncoding, m_nFontStyle, l);
       if (!u->sock.SendPacket(p_colorfont.getBuffer()))
       {
-        gLog.error("%sChat: Send error (color/font packet):\n%s%s\n",
-            L_ERRORxSTR, L_BLANKxSTR, u->sock.errorStr().c_str());
+        gLog.error(tr("Chat: Send error (color/font packet): %s"), u->sock.errorStr().c_str());
         return false;
       }
       u->state = CHAT_STATE_WAITxFORxFONT;
@@ -1087,8 +1086,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           myFontFamily, m_nFontEncoding, m_nFontStyle);
       if (!u->sock.SendPacket(p_font.getBuffer()))
       {
-        gLog.error("%sChat: Send error (font packet):\n%s%s\n",
-            L_ERRORxSTR, L_BLANKxSTR, u->sock.errorStr().c_str());
+        gLog.error(tr("Chat: Send error (font packet): %s"), u->sock.errorStr().c_str());
         return false;
       }
 
@@ -1100,8 +1098,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
     case CHAT_STATE_CONNECTED:
     default:
-      gLog.error("%sInternal error: ChatManager::ProcessPacket(), invalid state (%d).\n",
-         L_ERRORxSTR, u->state);
+      gLog.error(tr("Internal error: ChatManager::ProcessPacket(), invalid state (%d)."),
+          u->state);
       break;
 
   } // switch
@@ -1886,8 +1884,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
 
   if (!u->sock.SendRaw(&b_out))
   {
-    gLog.warning(tr("%sChat: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
-        u->sock.errorStr().c_str());
+    gLog.warning(tr("Chat: Send error: %s"), u->sock.errorStr().c_str());
     CloseClient(u);
     return false;
   }
@@ -1916,8 +1913,7 @@ void CChatManager::SendBuffer_Raw(CBuffer *b)
 
       if (!u->sock.SendRaw(b))
       {
-        gLog.warning(tr("%sChat: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
-            u->sock.errorStr().c_str());
+        gLog.warning(tr("Chat: Send error: %s"), u->sock.errorStr().c_str());
         CloseClient(u);
         ok = false;
         break;
@@ -2328,7 +2324,7 @@ void *ChatManager_tep(void *arg)
           if (chatman->sockman.Num() >= MAX_CONNECTS)
           {
             // Too many sockets, drop this one
-            gLog.warning(tr("%sToo many connected clients, rejecting new connection.\n"), L_WARNxSTR);
+            gLog.warning(tr("Too many connected clients, rejecting new connection."));
           }
           else
           {
@@ -2347,7 +2343,7 @@ void *ChatManager_tep(void *arg)
             else
             {
               delete u;
-              gLog.error(tr("%sChat: Unable to receive new connection.\n"), L_ERRORxSTR);
+              gLog.error(tr("Chat: Unable to receive new connection."));
             }
           }
         }
@@ -2358,7 +2354,7 @@ void *ChatManager_tep(void *arg)
           CChatUser *u = chatman->FindChatUser(nCurrentSocket);
           if (u == NULL)
           {
-            gLog.warning(tr("%sChat: No user owns socket %d.\n"), L_WARNxSTR, nCurrentSocket);
+            gLog.warning(tr("Chat: No user owns socket %d."), nCurrentSocket);
           }
           else
           {

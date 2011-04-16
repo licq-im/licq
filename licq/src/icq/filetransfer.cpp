@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -223,7 +223,7 @@ bool CFileTransferManager::StartFileTransferServer()
 {
   if (gDaemon.StartTCPServer(&ftServer) == -1)
   {
-    gLog.warning(tr("%sNo more ports available, add more or close open chat/file sessions.\n"), L_WARNxSTR);
+    gLog.warning(tr("No more ports available, add more or close open chat/file sessions."));
     return false;
   }
 
@@ -246,8 +246,7 @@ bool CFileTransferManager::receiveFiles(const string& directory)
     if (access(Licq::gDaemon.baseDir().c_str(), F_OK) < 0 && mkdir(myDirectory.c_str(), 0700) == -1 &&
         errno != EEXIST)
     {
-      gLog.warning(tr("%sUnable to create directory %s for file transfer.\n"),
-         L_WARNxSTR, myDirectory.c_str());
+      gLog.warning(tr("Unable to create directory %s for file transfer."), myDirectory.c_str());
       myDirectory = Licq::gDaemon.baseDir();
     }
   }
@@ -260,7 +259,7 @@ bool CFileTransferManager::receiveFiles(const string& directory)
   stat(myDirectory.c_str(), &buf);
   if (!S_ISDIR(buf.st_mode))
   {
-    gLog.warning(tr("%sPath %s is not a directory.\n"), L_WARNxSTR, myDirectory.c_str());
+    gLog.warning(tr("Path %s is not a directory."), myDirectory.c_str());
     return false;
   }
 
@@ -298,8 +297,8 @@ void CFileTransferManager::sendFiles(const list<string>& pathNames, unsigned sho
   {
     if (stat(iter->c_str(), &buf) == -1)
     {
-      gLog.warning(tr("%sFile Transfer: File access error %s:\n%s%s.\n"), L_WARNxSTR,
-         iter->c_str(), L_BLANKxSTR, strerror(errno));
+      gLog.warning(tr("File Transfer: File access error %s: %s."),
+         iter->c_str(), strerror(errno));
       continue;
     }
     myPathNames.push_back(*iter);
@@ -413,8 +412,7 @@ void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
 {
   if (ftSock.Descriptor() != -1)
   {
-    gLog.warning(tr("%sFile Transfer: Attempted reverse connection when already connected.\n"),
-       L_WARNxSTR);
+    gLog.warning(tr("File Transfer: Attempted reverse connection when already connected."));
     return;
   }
 
@@ -439,8 +437,7 @@ bool CFileTransferManager::ProcessPacket()
     if (ftSock.Error() == 0)
       gLog.info(tr("%sFile Transfer: Remote end disconnected.\n"), L_TCPxSTR);
     else
-      gLog.warning(tr("%sFile Transfer: Lost remote end:\n%s%s\n"), L_WARNxSTR,
-          L_BLANKxSTR, ftSock.errorStr().c_str());
+      gLog.warning(tr("File Transfer: Lost remote end: %s"), ftSock.errorStr().c_str());
     if (m_nState == FT_STATE_WAITxFORxFILExINFO)
       m_nResult = FT_DONExBATCH;
     else
@@ -569,8 +566,7 @@ bool CFileTransferManager::ProcessPacket()
       }
       if (nCmd == 0x06 && b.getDataSize() == 1)
       {
-        gLog.info(tr("%sFile Transfer: Ignoring a possible erroneous packet.\n"),
-                  L_WARNxSTR);
+        gLog.info(tr("File Transfer: Ignoring a possible erroneous packet."));
         break;
       }
       if (nCmd != 0x02)
@@ -645,8 +641,8 @@ bool CFileTransferManager::ProcessPacket()
       size_t nBytesWritten = write(m_nFileDesc, b.getDataPosRead(), b.getDataSize() - 1);
       if (nBytesWritten != b.getDataSize() - 1)
       {
-        gLog.error("%sFile Transfer: Write error:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR,
-           errno == 0 ? "Disk full (?)" : strerror(errno));
+        gLog.error(tr("File Transfer: Write error: %s."),
+            errno == 0 ? "Disk full (?)" : strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
       }
@@ -681,7 +677,7 @@ bool CFileTransferManager::ProcessPacket()
       else // nBytesLeft < 0
       {
         // Received too many bytes for the given size of the current file
-        gLog.warning(tr("%sFile Transfer: %s received %d too many bytes.\n"), L_WARNxSTR,
+        gLog.warning(tr("File Transfer: %s received %d too many bytes."),
             myFileName.c_str(), -nBytesLeft);
       }
       // Notify Plugin
@@ -717,7 +713,7 @@ bool CFileTransferManager::ProcessPacket()
       CPFile_Info p(*myPathNameIter);
       if (!p.IsValid())
       {
-        gLog.warning(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
+        gLog.warning(tr("File Transfer: Read error for %s:\n%s"),
             myPathNameIter->c_str(), p.ErrorStr());
         m_nResult = FT_ERRORxFILE;
         return false;
@@ -765,16 +761,16 @@ bool CFileTransferManager::ProcessPacket()
       m_nFileDesc = open(myPathNameIter->c_str(), O_RDONLY);
       if (m_nFileDesc == -1)
       {
-        gLog.error("%sFile Transfer: Read error '%s':\n%s%s\n.", L_ERRORxSTR,
-            myPathNameIter->c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("File Transfer: Read error '%s': %s."),
+            myPathNameIter->c_str(), strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
       }
 
       if (lseek(m_nFileDesc, m_nFilePos, SEEK_SET) == -1)
       {
-        gLog.error("%sFile Transfer: Seek error '%s':\n%s%s\n.", L_ERRORxSTR,
-            myFileName.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("File Transfer: Seek error '%s': %s."),
+            myFileName.c_str(), strerror(errno));
         m_nResult = FT_ERRORxFILE;
         return false;
       }
@@ -799,8 +795,8 @@ bool CFileTransferManager::ProcessPacket()
 
     default:
     {
-      gLog.error("%sInternal error: FileTransferManager::ProcessPacket(), invalid state (%d).\n",
-         L_ERRORxSTR, m_nState);
+      gLog.error(tr("Internal error: FileTransferManager::ProcessPacket(), invalid state (%d)."),
+          m_nState);
       break;
     }
 
@@ -819,8 +815,7 @@ bool CFileTransferManager::startReceivingFile(const string& fileName)
       
   if (m_nState != FT_STATE_CONFIRMINGxFILE)
   {
-     gLog.warning("%sFile Transfer: StartReceivingFile called without a pending confirmation.\n",
-        L_WARNxSTR);
+     gLog.warning(tr("File Transfer: StartReceivingFile called without a pending confirmation."));
      return false;
   }
 
@@ -852,8 +847,8 @@ bool CFileTransferManager::startReceivingFile(const string& fileName)
     }
     if (m_nFileDesc == -1)
     {
-      gLog.error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
-          L_ERRORxSTR, myPathName.c_str(), L_BLANKxSTR, strerror(errno));
+      gLog.error(tr("File Transfer: Unable to open %s for writing: %s."),
+          myPathName.c_str(), strerror(errno));
       m_nResult = FT_ERRORxFILE;
       return false;
     }
@@ -863,7 +858,7 @@ bool CFileTransferManager::startReceivingFile(const string& fileName)
   CPFile_Start p(m_nFilePos, m_nCurrentFile);
   if (!SendPacket(&p))
   {
-    gLog.error("%sFile Transfer: Unable to send file receive start packet.\n", L_ERRORxSTR);
+    gLog.error(tr("File Transfer: Unable to send file receive start packet."));
     m_nResult = FT_ERRORxCLOSED;
     return false;
   }
@@ -891,8 +886,8 @@ bool CFileTransferManager::SendFilePacket()
   if (nBytesToSend > 2048) nBytesToSend = 2048;
   if (read(m_nFileDesc, pSendBuf, nBytesToSend) != nBytesToSend)
   {
-    gLog.error("%sFile Transfer: Error reading from %s:\n%s%s.\n", L_ERRORxSTR,
-        myPathName.c_str(), L_BLANKxSTR, strerror(errno));
+    gLog.error(tr("File Transfer: Error reading from %s: %s."),
+        myPathName.c_str(), strerror(errno));
     m_nResult = FT_ERRORxFILE;
     return false;
   }
@@ -958,7 +953,7 @@ bool CFileTransferManager::SendFilePacket()
     CPFile_Info p(*myPathNameIter);
     if (!p.IsValid())
     {
-      gLog.warning(tr("%sFile Transfer: Read error for %s:\n%s\n"), L_WARNxSTR,
+      gLog.warning(tr("File Transfer: Read error for %s: %s"),
           myPathNameIter->c_str(), p.ErrorStr());
       m_nResult = FT_ERRORxFILE;
       return false;
@@ -1018,8 +1013,7 @@ bool CFileTransferManager::SendBuffer(CBuffer *b)
 {
   if (!ftSock.SendPacket(b))
   {
-    gLog.warning(tr("%sFile Transfer: Send error:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR,
-        ftSock.errorStr().c_str());
+    gLog.warning(tr("File Transfer: Send error: %s"), ftSock.errorStr().c_str());
     return false;
   }
   return true;
@@ -1030,7 +1024,7 @@ void CFileTransferManager::ChangeSpeed(unsigned short nSpeed)
 {
   if (nSpeed > 100)
   {
-    gLog.warning(tr("%sInvalid file transfer speed: %d%%.\n"), L_WARNxSTR, nSpeed);
+    gLog.warning(tr("Invalid file transfer speed: %d%%."), nSpeed);
     return;
   }
 
@@ -1130,8 +1124,7 @@ void *FileTransferManager_tep(void *arg)
       //   descriptor and select will continue to fail causing this thread to
       //   spin so better to just give up and exit.
 
-      gLog.warning(tr("%sFile Transfer: select failed, aborting thread:\n%s%s\n"),
-          L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+      gLog.warning(tr("File Transfer: select failed, aborting thread: %s"), strerror(errno));
       pthread_exit(NULL);
     }
 
@@ -1167,7 +1160,7 @@ void *FileTransferManager_tep(void *arg)
         {
           if (ftman->ftSock.Descriptor() != -1)
           {
-            gLog.warning(tr("%sFile Transfer: Receiving repeat incoming connection.\n"), L_WARNxSTR);
+            gLog.warning(tr("File Transfer: Receiving repeat incoming connection."));
 
             // Dump the extra connection to clear the listen socket queue
             Licq::TCPSocket ts;
@@ -1186,7 +1179,7 @@ void *FileTransferManager_tep(void *arg)
             }
             else
             {
-              gLog.error(tr("%sFile Transfer: Unable to receive new connection.\n"), L_ERRORxSTR);
+              gLog.error(tr("File Transfer: Unable to receive new connection."));
             }
           }
         }
@@ -1206,7 +1199,7 @@ void *FileTransferManager_tep(void *arg)
 
         else
         {
-          gLog.warning(tr("%sFile Transfer: No such socket.\n"), L_WARNxSTR);
+          gLog.warning(tr("File Transfer: No such socket."));
         }
 
         nSocketsAvailable--;
@@ -1289,8 +1282,7 @@ void *FileWaitForSignal_tep(void *arg)
   {
     if (rc->m->ftSock.Descriptor() != -1)
     {
-      gLog.warning("%sFile Transfer: Attempted connection when already"
-                " connected.\n", L_WARNxSTR);
+      gLog.warning(tr("File Transfer: Attempted connection when already connected."));
     }
     else
     {
