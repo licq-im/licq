@@ -317,7 +317,7 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
     else if (remoteAddr->sa_family == AF_INET6)
       ((struct sockaddr_in6*)remoteAddr)->sin6_port = htons(remotePort);
 
-    gLog.info(tr("%sConnecting to %s:%i...\n"), L_SRVxSTR,
+    gLog.info(tr("Connecting to %s:%i..."),
         addrToString(remoteAddr).c_str(), remotePort);
 
     // Create socket of the returned type

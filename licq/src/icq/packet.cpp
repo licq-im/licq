@@ -1484,8 +1484,8 @@ CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
 
   default:
       nTypeLen = msgLen = 0;
-  	gLog.warning("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
-		return;
+      gLog.warning(tr("Command not implemented yet (%04X)."), msgType);
+      return;
   }
 
   m_nSize += 11 + nTypeLen + accountId.size() + 4; // 11 all bytes pre-tlv

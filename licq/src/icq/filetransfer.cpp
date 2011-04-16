@@ -344,7 +344,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   bool bSuccess = false;
   if (bTryDirect)
   {
-    gLog.info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
+    gLog.info(tr("File Transfer: Connecting to server."));
     bSuccess = gIcqProtocol.openConnectionToUser(myUserId, &ftSock, nPort);
    }
 
@@ -381,7 +381,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 
 bool CFileTransferManager::SendFileHandshake()
 {
-  gLog.info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
+  gLog.info(tr("File Transfer: Shaking hands."));
 
   // Send handshake packet:
   unsigned short nVersion;
@@ -396,7 +396,7 @@ bool CFileTransferManager::SendFileHandshake()
   CPFile_InitClient p(myLocalName, m_nBatchFiles, m_nBatchSize);
   if (!SendPacket(&p)) return false;
 
-  gLog.info(tr("%sFile Transfer: Waiting for server to respond.\n"), L_TCPxSTR);
+  gLog.info(tr("File Transfer: Waiting for server to respond."));
 
   m_nState = FT_STATE_WAITxFORxSERVERxINIT;
 
@@ -425,7 +425,7 @@ void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
   // Reload socket info
   myThreadPipe.putChar('R');
 
-  gLog.info(tr("%sFile Transfer: Received reverse connection.\n"), L_TCPxSTR);
+  gLog.info(tr("File Transfer: Received reverse connection."));
 }
 
 
@@ -435,7 +435,7 @@ bool CFileTransferManager::ProcessPacket()
   if (!ftSock.RecvPacket())
   {
     if (ftSock.Error() == 0)
-      gLog.info(tr("%sFile Transfer: Remote end disconnected.\n"), L_TCPxSTR);
+      gLog.info(tr("File Transfer: Remote end disconnected."));
     else
       gLog.warning(tr("File Transfer: Lost remote end: %s"), ftSock.errorStr().c_str());
     if (m_nState == FT_STATE_WAITxFORxFILExINFO)
@@ -458,8 +458,8 @@ bool CFileTransferManager::ProcessPacket()
 
       if (!IcqProtocol::Handshake_Recv(&ftSock, LocalPort(), false))
         break;
-      gLog.info(tr("%sFile Transfer: Received handshake.\n"), L_TCPxSTR);
-      
+      gLog.info(tr("File Transfer: Received handshake."));
+
       unsigned long nId = 0;
       if (ftSock.Version() == 7 || ftSock.Version() == 8)
       {
@@ -496,8 +496,7 @@ bool CFileTransferManager::ProcessPacket()
             return false;
           }
 
-          gLog.info("%sFile Transfer: Waiting for server to respond.\n",
-            L_TCPxSTR);
+          gLog.info(tr("File Transfer: Waiting for server to respond."));
 
           m_nState = FT_STATE_WAITxFORxSERVERxINIT;
           break;
@@ -514,7 +513,7 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("File Transfer: Speed set to %ld%%."), nSpeed);
         break;
       }
       if (nCmd != 0x00)
@@ -550,7 +549,7 @@ bool CFileTransferManager::ProcessPacket()
         return false;
       }
 
-      gLog.info(tr("%sFile Transfer: Waiting for file info.\n"), L_TCPxSTR);
+      gLog.info(tr("File Transfer: Waiting for file info."));
       m_nState = FT_STATE_WAITxFORxFILExINFO;
       break;
     }
@@ -561,7 +560,7 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("File Transfer: Speed set to %ld%%."), nSpeed);
         break;
       }
       if (nCmd == 0x06 && b.getDataSize() == 1)
@@ -614,7 +613,7 @@ bool CFileTransferManager::ProcessPacket()
       {
         m_nStartTime = time(NULL);
         m_nBatchPos += m_nFilePos;
-        gLog.info(tr("%sFile Transfer: Receiving %s (%ld bytes).\n"), L_TCPxSTR,
+        gLog.info(tr("File Transfer: Receiving %s (%ld bytes)."),
             myFileName.c_str(), m_nFileSize);
         PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, myPathName));
         gettimeofday(&tv_lastupdate, NULL);
@@ -626,7 +625,7 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("File Transfer: Speed set to %ld%%."), nSpeed);
         break;
       }
 
@@ -672,7 +671,7 @@ bool CFileTransferManager::ProcessPacket()
       m_nFileDesc = -1;
       if (nBytesLeft == 0) // File transfer done perfectly
       {
-        gLog.info(tr("%sFile Transfer: %s received.\n"), L_TCPxSTR, myFileName.c_str());
+        gLog.info(tr("File Transfer: %s received."), myFileName.c_str());
       }
       else // nBytesLeft < 0
       {
@@ -697,7 +696,7 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("File Transfer: Speed set to %ld%%."), nSpeed);
         break;
       }
       if (nCmd != 0x01)
@@ -743,7 +742,7 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("File Transfer: Speed set to %ld%%."), nSpeed);
         break;
       }
       if (nCmd != 0x03)
@@ -785,7 +784,7 @@ bool CFileTransferManager::ProcessPacket()
       if (nCmd == 0x05)
       {
         unsigned long nSpeed = b.UnpackUnsignedLong();
-        gLog.info(tr("%sFile Transfer: Speed set to %ld%%.\n"), L_TCPxSTR, nSpeed);
+        gLog.info(tr("File Transfer: Speed set to %ld%%."), nSpeed);
         break;
       }
       b.log(Log::Unknown, tr("File Transfer: Unknown packet received during file send"));
@@ -811,8 +810,8 @@ bool CFileTransferManager::ProcessPacket()
 // the actual transfer begins
 bool CFileTransferManager::startReceivingFile(const string& fileName)
 {
-  gLog.info(tr("%sFile Transfer: Received plugin confirmation.\n"), L_TCPxSTR);
-      
+  gLog.info(tr("File Transfer: Received plugin confirmation."));
+
   if (m_nState != FT_STATE_CONFIRMINGxFILE)
   {
      gLog.warning(tr("File Transfer: StartReceivingFile called without a pending confirmation."));
@@ -876,7 +875,7 @@ bool CFileTransferManager::SendFilePacket()
   {
     m_nStartTime = time(NULL);
     m_nBatchPos += m_nFilePos;
-    gLog.info(tr("%sFile Transfer: Sending %s (%ld bytes).\n"), L_TCPxSTR,
+    gLog.info(tr("File Transfer: Sending %s (%ld bytes)."),
         myPathName.c_str(), m_nFileSize);
     PushFileTransferEvent(new CFileTransferEvent(FT_STARTxFILE, myPathName));
     gettimeofday(&tv_lastupdate, NULL);
@@ -931,11 +930,11 @@ bool CFileTransferManager::SendFilePacket()
 
   if (nBytesLeft == 0)
   {
-    gLog.info(tr("%sFile Transfer: Sent %s.\n"), L_TCPxSTR, myFileName.c_str());
+    gLog.info(tr("File Transfer: Sent %s."), myFileName.c_str());
   }
   else // nBytesLeft < 0
   {
-    gLog.info(tr("%sFile Transfer: Sent %s, %d too many bytes.\n"), L_TCPxSTR,
+    gLog.info(tr("File Transfer: Sent %s, %d too many bytes."),
         myFileName.c_str(), -nBytesLeft);
   }
   PushFileTransferEvent(new CFileTransferEvent(FT_DONExFILE, myPathName));
@@ -1175,7 +1174,7 @@ void *FileTransferManager_tep(void *arg)
               ftman->sockman.DropSocket(&ftman->ftSock);
 
               ftman->m_nState = FT_STATE_HANDSHAKE;
-              gLog.info(tr("%sFile Transfer: Received connection.\n"), L_TCPxSTR);
+              gLog.info(tr("File Transfer: Received connection."));
             }
             else
             {
@@ -1243,7 +1242,7 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  gLog.info("%sFile Transfer: Waiting for reverse connection.\n", L_TCPxSTR);
+  gLog.info(tr("File Transfer: Waiting for reverse connection.\n"));
   bool bConnected = gIcqProtocol.waitForReverseConnection(rc->nId, userId);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
@@ -1267,8 +1266,7 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  gLog.info("%sFile Transfer: Reverse connection failed, trying direct.\n",
-                                                                    L_TCPxSTR);
+  gLog.info(tr("File Transfer: Reverse connection failed, trying direct."));
   Licq::TCPSocket s;
   bConnected = gIcqProtocol.openConnectionToUser(userId, &s, nPort);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);

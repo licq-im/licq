@@ -185,7 +185,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
       if (e->m_pPacket->Channel() == ICQ_CHNxNEW)
       {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-        gLog.info(tr("%sConnecting to login server.\n"), L_SRVxSTR);
+      gLog.info(tr("Connecting to login server."));
 
         pthread_t *t = new pthread_t;
         int *s = new int;
@@ -209,8 +209,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
         if (e->m_nSocketDesc == -1)
         {
           pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-          gLog.info(tr("%sConnecting to login server failed, failing event\n"),
-                    L_SRVxSTR);
+        gLog.info(tr("Connecting to login server failed, failing event."));
           // we need to initialize the logon time for the next retry
           gIcqProtocol.m_tLogonTime = time(NULL);
           gIcqProtocol.m_eStatus = STATUS_OFFLINE_FORCED;
@@ -233,7 +232,7 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
       else
       {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-        gLog.info(tr("%sNot connected to server, failing event\n"), L_SRVxSTR);
+      gLog.info(tr("Not connected to server, failing event."));
       if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
       {
         gIcqProtocol.DoneExtendedEvent(e, Licq::Event::ResultError);
@@ -772,7 +771,7 @@ void *MonitorSockets_func()
           // if ping-thread is running already
           int nSD = gIcqProtocol.m_nTCPSrvSocketDesc;
           gIcqProtocol.m_nTCPSrvSocketDesc = -1;
-          gLog.info("%sDropping server connection.\n", L_SRVxSTR);
+          gLog.info(tr("Dropping server connection."));
           gSocketManager.DropSocket(srvTCP);
           gSocketManager.CloseSocket(nSD);
           // we need to initialize the logon time for the next retry
@@ -868,11 +867,10 @@ void *MonitorSockets_func()
         {
           int err = tcp->Error();
           if (err == 0)
-            gLog.info(tr("%sConnection to %s was closed.\n"), L_TCPxSTR,
-                      tcp->userId().toString().c_str());
+            gLog.info(tr("Connection to %s was closed."), tcp->userId().toString().c_str());
           else
-            gLog.info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
-                      tcp->userId().toString().c_str(), L_BLANKxSTR, tcp->errorStr().c_str());
+            gLog.info(tr("Connection to %s lost: %s."),
+                tcp->userId().toString().c_str(), tcp->errorStr().c_str());
           if (tcp->userId().isValid())
           {
             Licq::UserWriteGuard u(tcp->userId());
@@ -908,8 +906,7 @@ void *MonitorSockets_func()
         // Kill the socket if there was a problem
         if (!r)
         {
-          gLog.info(tr("%sClosing connection to %s.\n"), L_TCPxSTR,
-                    tcp->userId().toString().c_str());
+          gLog.info(tr("Closing connection to %s."), tcp->userId().toString().c_str());
           gSocketManager.DropSocket(tcp);
           gSocketManager.CloseSocket(nCurrentSocket);
           gIcqProtocol.FailEvents(nCurrentSocket, 0);

@@ -1146,8 +1146,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       {
         u->setAutoResponse(message);
         u->SetShowAwayMsg(*message);
-        gLog.info(tr("%sAuto response from %s (#%lu).\n"), L_SRVxSTR, u->GetAlias(),
-                  nMsgID[1]);
+          gLog.info(tr("Auto response from %s (#%lu)."), u->getAlias().c_str(), nMsgID[1]);
         }
         Licq::Event* e = DoneServerEvent(nMsgID[1], Licq::Event::ResultAcked);
         if (e)
@@ -1156,12 +1155,12 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         e->m_nSubResult = ICQ_TCPxACK_RETURN;
         ProcessDoneEvent(e);
       }
+        else
+          gLog.warning(tr("Ack for unknown event."));
+      }
       else
-        gLog.warning(tr("%sAck for unknown event.\n"), L_SRVxSTR);
-    }
-    else
-    {
-      gLog.info(tr("%s%s (%s) requested auto response.\n"), L_SRVxSTR,
+      {
+        gLog.info(tr("%s (%s) requested auto response."),
             u->getAlias().c_str(), u->accountId().c_str());
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
@@ -1204,7 +1203,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
     if (nCommand == 0)
     {
-        gLog.warning(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, plugin.c_str());
+        gLog.warning(tr("Unknown ICBM plugin type: %s"), plugin.c_str());
         return;
       }
 
@@ -1241,7 +1240,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     {
       pAckEvent->m_pExtendedAck = pExtendedAck;
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-      gLog.info(tr("%s%s accepted from %s (%s).\n"), L_SRVxSTR, szType,
+      gLog.info(tr("%s accepted from %s (%s)."), szType,
           u->getAlias().c_str(), u->accountId().c_str());
       u->unlockWrite();
       ProcessDoneEvent(pAckEvent);
@@ -1249,7 +1248,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     }
     else
     {
-      gLog.warning(tr("%sAck for unknown event.\n"), L_SRVxSTR);
+      gLog.warning(tr("Ack for unknown event."));
       delete pExtendedAck;
      }
   }
@@ -1262,19 +1261,19 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       {
         if (gDaemon.ignoreType(Licq::Daemon::IgnoreNewUsers))
         {
-          gLog.info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
+          gLog.info(tr("%s from new user (%s), ignoring."),
               szType, u->accountId().c_str());
           if (szType)  free(szType);
           gDaemon.rejectEvent(u->id(), pEvent);
           return;
         }
-        gLog.info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->accountId().c_str());
+        gLog.info(tr("%s from new user (%s)."), szType, u->accountId().c_str());
 
         // Don't delete user when we're done
         bNewUser = false;
       }
       else
-        gLog.info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
+        gLog.info(tr("%s from %s (%s)."), szType, u->getAlias().c_str(),
             u->accountId().c_str());
 
       if (gDaemon.addUserEvent(u, pEvent))

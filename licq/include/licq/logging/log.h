@@ -29,10 +29,6 @@
 #include <stdint.h>
 #include <string>
 
-// Deprecated, to be removed
-const char L_TCPxSTR[]     = "[TCP] ";
-const char L_SRVxSTR[]     = "[SRV] ";
-const char L_BLANKxSTR[]   = "                ";
 
 namespace Licq
 {

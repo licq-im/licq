@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -787,7 +787,7 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
   {
     gLog.info(tr("%sFifo commands:\n"), L_FIFOxSTR);
     for( i=0; table[i].fnc ; i++ )
-      gLog.info("%s%s\n",L_BLANKxSTR,table[i].szName);
+      gLog.info("                %s", table[i].szName);
     gLog.info(tr("%s: Type `help command'\n"), L_FIFOxSTR);
   }
   else 

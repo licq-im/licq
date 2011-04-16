@@ -167,8 +167,8 @@ bool COscarService::SendBARTFam(Licq::Event* e)
           return false;
         p = new CPU_RequestBuddyIcon(u->accountId(),
             u->buddyIconType(), u->buddyIconHashType(), u->buddyIconHash(), myFam);
-        gLog.info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
-            L_SRVxSTR, u->GetAlias(), p->Sequence(), p->SubSequence());
+        gLog.info(tr("Requesting buddy icon for %s (#%hu/#%d)..."),
+            u->getAlias().c_str(), p->Sequence(), p->SubSequence());
       }
       e->AttachPacket(p);
       return (SendPacket(p));
@@ -217,8 +217,7 @@ bool COscarService::ProcessPacket(Buffer& packet)
       break;
 
     case ICQ_CHNxCLOSE:
-      gLog.info(tr("%sServer send us request for close service 0x%02X.\n"),
-                L_SRVxSTR, myFam);
+      gLog.info(tr("Server send us request for close service 0x%02X."), myFam);
       return false;
       break;
 
@@ -299,20 +298,17 @@ void COscarService::ProcessServiceFam(Buffer& packet, unsigned short SubType,
     }
 
     case ICQ_SNACxSUB_READYxSERVER:
-      gLog.info(tr("%sServer says he's ready for service 0x%02X.\n"),
-                L_SRVxSTR, myFam);
+      gLog.info(tr("Server says he's ready for service 0x%02X."), myFam);
       ChangeStatus(STATUS_SRV_READY_RECV);
       break;
 
     case ICQ_SNACxSRV_ACKxIMxICQ:
-      gLog.info(tr("%sServer sent us channel capability list for service 0x%02X.\n"),
-                L_SRVxSTR, myFam);
+      gLog.info(tr("Server sent us channel capability list for service 0x%02X."), myFam);
       ChangeStatus(STATUS_SRV_VER_RECV);
       break;
 
     case ICQ_SNACxSUB_RATE_INFO:
-      gLog.info(tr("%sServer sent us rate-limits information for service 0x%02X.\n"),
-                L_SRVxSTR, myFam);
+      gLog.info(tr("Server sent us rate-limits information for service 0x%02X."), myFam);
       ChangeStatus(STATUS_SRV_RATE_RECV);
       break;
 
@@ -378,7 +374,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
             packet.incDataPosRead(HashLength2); // Hash once more
             u->setOurBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
 
-            gLog.info(tr("%sBuddy icon reply for %s.\n"), L_SRVxSTR, u->GetAlias());
+            gLog.info(tr("Buddy icon reply for %s."), u->getAlias().c_str());
             unsigned short IconLen = packet.UnpackUnsignedShortBE();
             if (IconLen > 0) // do not create empty .pic files
             {
@@ -451,8 +447,7 @@ bool COscarService::Initialize()
 
   ChangeStatus(STATUS_CONNECTED);
   Licq::SrvSocket* s = new Licq::SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
-  gLog.info(tr("%sConnecting to separate server for service 0x%02X.\n"),
-            L_SRVxSTR, myFam);
+  gLog.info(tr("Connecting to separate server for service 0x%02X."), myFam);
   if (gLicqDaemon->GetProxy() == NULL)
   {
     if (myProxy != NULL)
@@ -480,8 +475,7 @@ bool COscarService::Initialize()
 
   string cookie(myCookie.get(), myCookieLen);
   CPU_SendCookie *p1 = new CPU_SendCookie(cookie, myFam);
-  gLog.info(tr("%sSending cookie for service 0x%02X.\n"),
-            L_SRVxSTR, myFam);
+  gLog.info(tr("Sending cookie for service 0x%02X."), myFam);
   if (!SendPacket(p1))
   {
     gLog.warning(tr("Can't send cookie while initializing service 0x%02X."), myFam);
@@ -500,8 +494,7 @@ bool COscarService::Initialize()
   unsigned short VerArray[2][2] = {{ 0x0001, 0x0004 },	// Service FAM
                                    { 0x0010, 0x0001 }};	// BART	FAM
   CPU_ImICQ *p2 = new CPU_ImICQ(VerArray, 2, myFam);
-  gLog.info(tr("%sSending our families versions for service 0x%02X.\n"),
-            L_SRVxSTR, myFam);
+  gLog.info(tr("Sending our families versions for service 0x%02X."), myFam);
   if (!SendPacket(p2))
   {
     gLog.warning(tr("Can't send channel capability request while initializing service 0x%02X."),
@@ -520,8 +513,7 @@ bool COscarService::Initialize()
 
   CPU_GenericFamily *p3 = new CPU_GenericFamily(ICQ_SNACxFAM_SERVICE,
                                                 ICQ_SNACxSUB_REQ_RATE_INFO, myFam);
-  gLog.info(tr("%sSending request of rate-limits for service 0x%02X.\n"),
-            L_SRVxSTR, myFam);
+  gLog.info(tr("Sending request of rate-limits for service 0x%02X."), myFam);
   if (!SendPacket(p3))
   {
     gLog.warning(tr("Can't send request for rate-limits while initializing service 0x%02X."),
@@ -539,8 +531,7 @@ bool COscarService::Initialize()
   }
 
   CPU_RateAck *p4 = new CPU_RateAck(myFam);
-  gLog.info(tr("%sSending ack for rate-limits for service 0x%02X.\n"),
-            L_SRVxSTR, myFam);
+  gLog.info(tr("Sending ack for rate-limits for service 0x%02X."), myFam);
   if (!SendPacket(p4))
   {
     gLog.warning(tr("Can't send rate-limits ack while initializing service 0x%02X."), myFam);
@@ -550,8 +541,7 @@ bool COscarService::Initialize()
   unsigned short VerArray2[2][4] = {{ 0x0001, 0x0004, 0x0110, 0x08e4 },  // Service FAM
                                     { 0x0010, 0x0001, 0x0110, 0x08e4 }}; // BART FAM
   CPU_ClientReady *p5 = new CPU_ClientReady(VerArray2, 2, myFam);
-  gLog.info(tr("%sSending client ready for service 0x%02X.\n"),
-            L_SRVxSTR, myFam);
+  gLog.info(tr("Sending client ready for service 0x%02X."), myFam);
   if (!SendPacket(p5))
   {
     gLog.warning(tr("Can't send client ready while initializing service 0x%02X."), myFam);
@@ -603,7 +593,7 @@ void *OscarServiceSendQueue_tep(void *p)
       
       if (os->mySocketDesc == -1)
       {
-        gLog.info(tr("%sInitializing socket for service 0x%02X.\n"), L_SRVxSTR, os->myFam);
+        gLog.info(tr("Initializing socket for service 0x%02X."), os->myFam);
         if (!os->Initialize())
         {
           gLog.warning(tr("Initialization of socket for service 0x%02X failed, failing event."),

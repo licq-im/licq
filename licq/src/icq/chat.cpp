@@ -760,7 +760,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   bool bSuccess = false;
   if (bTryDirect)
   {
-    gLog.info("%sChat: Connecting to server.\n", L_TCPxSTR);
+    gLog.info(tr("Chat: Connecting to server."));
     bSuccess = gIcqProtocol.OpenConnectionToUser("chat", c->m_nIp, c->m_nIntIp,
                                             &u->sock, c->m_nPort, bSendIntIp);
   }
@@ -808,8 +808,8 @@ bool CChatManager::ConnectToChat(CChatClient *c)
 bool CChatManager::SendChatHandshake(CChatUser *u)
 {
   CChatClient *c = u->m_pClient;
-  
-  gLog.info(tr("%sChat: Shaking hands [v%d].\n"), L_TCPxSTR, VersionToUse(c->m_nVersion));
+
+  gLog.info(tr("Chat: Shaking hands [v%d]."), VersionToUse(c->m_nVersion));
 
   // Send handshake packet:
   if (!IcqProtocol::handshake_Send(&u->sock, c->myUserId, LocalPort(),
@@ -822,7 +822,7 @@ bool CChatManager::SendChatHandshake(CChatUser *u)
      m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
   u->sock.SendPacket(p_color.getBuffer());
 
-  gLog.info(tr("%sChat: Waiting for color/font response.\n"), L_TCPxSTR);
+  gLog.info(tr("Chat: Waiting for color/font response."));
 
   u->state = CHAT_STATE_WAITxFORxCOLORxFONT;
 
@@ -860,7 +860,7 @@ void CChatManager::AcceptReverseConnection(Licq::TCPSocket* s)
   sockman.DropSocket(&u->sock);
   myThreadPipe.putChar('R');
 
-  gLog.info(tr("%sChat: Received reverse connection.\n"), L_TCPxSTR);
+  gLog.info(tr("Chat: Received reverse connection."));
 }
 
 
@@ -885,10 +885,9 @@ bool CChatManager::ProcessPacket(CChatUser *u)
   if (!u->sock.RecvPacket())
   {
     if (u->sock.Error() == 0)
-      gLog.info(tr("%sChat: Remote end disconnected.\n"), L_TCPxSTR);
+      gLog.info(tr("Chat: Remote end disconnected."));
     else
-      gLog.info(tr("%sChat: Lost remote end:\n%s%s\n"), L_TCPxSTR,
-          L_BLANKxSTR, u->sock.errorStr().c_str());
+      gLog.info(tr("Chat: Lost remote end: %s"), u->sock.errorStr().c_str());
     return false;
   }
 
@@ -924,7 +923,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           u->m_pClient->LoadFromHandshake_v7(handshake);
           break;
       }
-      gLog.info(tr("%sChat: Received handshake from %s [v%ld].\n"), L_TCPxSTR,
+      gLog.info(tr("Chat: Received handshake from %s [v%ld]."),
           u->m_pClient->myUserId.toString().c_str(), u->sock.Version());
       u->myUserId = u->m_pClient->myUserId;
 
@@ -957,7 +956,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
         m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
         u->sock.SendPacket(p_color.getBuffer());
 
-        gLog.info("%sChat: Waiting for color/font response.\n", L_TCPxSTR);
+        gLog.info(tr("Chat: Waiting for color/font response."));
 
         u->state = CHAT_STATE_WAITxFORxCOLORxFONT;
       }
@@ -970,7 +969,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
     case CHAT_STATE_WAITxFORxCOLOR:  // we just received the color packet
     {
-      gLog.info(tr("%sChat: Received color packet.\n"), L_TCPxSTR);
+      gLog.info(tr("Chat: Received color packet."));
 
       CPChat_Color pin(u->sock.RecvBuffer());
 
@@ -1015,7 +1014,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
     case CHAT_STATE_WAITxFORxFONT:
     {
-      gLog.info(tr("%sChat: Received font packet.\n"), L_TCPxSTR);
+      gLog.info(tr("Chat: Received font packet."));
       CPChat_Font pin(u->sock.RecvBuffer());
 
       // just received the font reply
@@ -1033,7 +1032,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
     case CHAT_STATE_WAITxFORxCOLORxFONT:
     {
-      gLog.info(tr("%sChat: Received color/font packet.\n"), L_TCPxSTR);
+      gLog.info(tr("Chat: Received color/font packet."));
 
       CPChat_ColorFont pin(u->sock.RecvBuffer());
       u->myUserId = pin.userId();
@@ -1061,7 +1060,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       // Parse the multiusers list
       if (pin.ChatClients().size() > 0)
       {
-        gLog.info(tr("%sChat: Joined multiparty (%d people).\n"), L_TCPxSTR,
+        gLog.info(tr("Chat: Joined multiparty (%d people)."),
            int(pin.ChatClients().size() + 1));
         ChatClientList::iterator iter;
         for (iter = pin.ChatClients().begin(); iter != pin.ChatClients().end(); ++iter)
@@ -1143,10 +1142,9 @@ bool CChatManager::ProcessRaw(CChatUser *u)
   if (!u->sock.RecvRaw())
   {
     if (u->sock.Error() == 0)
-      gLog.info(tr("%sChat: Remote end disconnected.\n"), L_TCPxSTR);
+      gLog.info(tr("Chat: Remote end disconnected."));
     else
-      gLog.info(tr("%sChat: Lost remote end:\n%s%s\n"), L_TCPxSTR,
-          L_BLANKxSTR, u->sock.errorStr().c_str());
+      gLog.info(tr("Chat: Lost remote end: %s"), u->sock.errorStr().c_str());
     return false;
   }
 
@@ -2338,7 +2336,7 @@ void *ChatManager_tep(void *arg)
 
               u->state = CHAT_STATE_HANDSHAKE;
               chatman->chatUsers.push_back(u);
-              gLog.info(tr("%sChat: Received connection.\n"), L_TCPxSTR);
+              gLog.info(tr("Chat: Received connection."));
             }
             else
             {
@@ -2400,7 +2398,7 @@ void *ChatWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  gLog.info("%sChat: Waiting for reverse connection.\n", L_TCPxSTR);
+  gLog.info(tr("Chat: Waiting for reverse connection."));
   bool bConnected = gIcqProtocol.waitForReverseConnection(rc->nId, rc->u->userId());
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
@@ -2455,7 +2453,7 @@ void *ChatWaitForSignal_tep(void *arg)
     pthread_mutex_unlock(cancel_mutex);
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    gLog.info("%sChat: Reverse connection failed, trying direct.\n", L_TCPxSTR);
+  gLog.info(tr("Chat: Reverse connection failed, trying direct."));
     bool bSuccess = gIcqProtocol.OpenConnectionToUser("chat", nIp, nIntIp, &rc->u->sock,
                                             nPort, bSendIntIp);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
