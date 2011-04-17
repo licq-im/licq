@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,8 +221,6 @@ public:
 
   // General Info
   //!Retrieves the user's alias.
-  //LICQ_DEPRECATED // Use getAlias() instead
-  const char* GetAlias() const                  { return myAlias.c_str(); }
   const std::string& getAlias() const           { return myAlias; }
   //!Retrieves the user's first name.
   std::string getFirstName() const              { return getUserInfoString("FirstName"); }

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -322,18 +322,18 @@ void UserEventCommon::updateWidgetInfo(const Licq::User* u)
   QString tmp = codec->toUnicode(u->getFullName().c_str());
   if (!tmp.isEmpty())
     tmp = " (" + tmp + ")";
-  myBaseTitle = QString::fromUtf8(u->GetAlias()) + tmp;
+  myBaseTitle = QString::fromUtf8(u->getAlias().c_str()) + tmp;
 
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
   {
     tabDlg->setWindowTitle(myBaseTitle);
-    tabDlg->setWindowIconText(QString::fromUtf8(u->GetAlias()));
+    tabDlg->setWindowIconText(QString::fromUtf8(u->getAlias().c_str()));
   }
   else
   {
     setWindowTitle(myBaseTitle);
-    setWindowIconText(QString::fromUtf8(u->GetAlias()));
+    setWindowIconText(QString::fromUtf8(u->getAlias().c_str()));
   }
 }
 

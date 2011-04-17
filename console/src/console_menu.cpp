@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -167,7 +167,7 @@ void CLicqConsole::MenuPopup(int userSelected) {
         if (!u.isLocked())
           return;
 
-        PrintContactPopup(u->GetAlias());
+        PrintContactPopup(u->getAlias().c_str());
       }
       nl();
       choice = activateCDKScroll(cdkContactPopup, NULL);
@@ -673,14 +673,12 @@ bool CLicqConsole::GetContactFromArg(char **p_szArg, Licq::UserId& userId)
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       Licq::UserReadGuard u(user);
-      if ((nPPID && u->protocolId() == nPPID && strcasecmp(szAlias, u->getAlias().c_str()) == 0) ||
-          (!nPPID && strcasecmp(szAlias, u->GetAlias()) == 0))
+      if ((!nPPID || u->protocolId() == nPPID) && strcasecmp(szAlias, u->getAlias().c_str()) == 0)
       {
         userId = u->id();
         break;
       }
-      else if ((nPPID && u->protocolId() == nPPID && strcasecmp(szAlias, u->accountId().c_str()) == 0) ||
-          (!nPPID && strcasecmp(szAlias, u->accountId().c_str()) == 0))
+      else if ((!nPPID || u->protocolId() == nPPID) && strcasecmp(szAlias, u->accountId().c_str()) == 0)
       {
         userId = u->id();
         break;

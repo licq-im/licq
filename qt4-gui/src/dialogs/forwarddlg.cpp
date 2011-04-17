@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,5 +176,6 @@ void ForwardDlg::dropEvent(QDropEvent* de)
   if (!u.isLocked())
     return;
 
-  edtUser->setText(QString::fromUtf8(u->GetAlias()) + " (" + u->accountId().c_str() + ")");
+  edtUser->setText(QString::fromUtf8(u->getAlias().c_str()) +
+      " (" + u->accountId().c_str() + ")");
 }

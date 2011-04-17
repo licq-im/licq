@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,7 +176,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
       name = myContactCodec->toUnicode(u->getFullName().c_str());
       if (!name.isEmpty())
         name = " (" + name + ")";
-      name.prepend(QString::fromUtf8(u->GetAlias()));
+      name.prepend(QString::fromUtf8(u->getAlias().c_str()));
     }
     setWindowTitle(tr("Licq - History ") + name);
 
@@ -221,7 +221,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
     myUseHtml = false;
 
     if (!myIsOwner)
-      myContactName = QString::fromUtf8(u->GetAlias());
+      myContactName = QString::fromUtf8(u->getAlias().c_str());
     QString myId = u->accountId().c_str();
     for (int x = 0; x < myId.length(); x++)
     {
@@ -236,7 +236,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   {
     Licq::OwnerReadGuard o(myUserId.protocolId());
     if (o.isLocked())
-      myOwnerName = QString::fromUtf8(o->GetAlias());
+      myOwnerName = QString::fromUtf8(o->getAlias().c_str());
   }
 
   // Mark all dates with activity so they are easier to find

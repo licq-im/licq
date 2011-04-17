@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ KeyRequestDlg::KeyRequestDlg(const Licq::UserId& userId, QWidget* parent)
 
   Licq::UserReadGuard u(myUserId);
   setWindowTitle(tr("Licq - Secure Channel with %1")
-      .arg(QString::fromUtf8(u->GetAlias())));
+      .arg(QString::fromUtf8(u->getAlias().c_str())));
 
   QVBoxLayout* top_lay = new QVBoxLayout(this);
 

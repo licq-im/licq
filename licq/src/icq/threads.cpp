@@ -1029,7 +1029,7 @@ void *UpdateUsers_tep(void *p)
               pUser->ClientInfoTimestamp() != pUser->OurClientInfoTimestamp() &&
               pUser->ClientInfoTimestamp() != 0)
           {
-            gLog.info("Updating %s's info plugins.\n", pUser->GetAlias());
+            gLog.info(tr("Updating %s's info plugins."), pUser->getAlias().c_str());
             gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_QUERYxINFO);
             gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_PHONExBOOK);
             if (!bBART) // Send only if we didn't request BART already
@@ -1041,7 +1041,7 @@ void *UpdateUsers_tep(void *p)
              pUser->ClientStatusTimestamp() != pUser->OurClientStatusTimestamp()
               && pUser->ClientStatusTimestamp() != 0)
           {
-            gLog.info("Updating %s's status plugins.\n", pUser->GetAlias());
+            gLog.info(tr("Updating %s's status plugins."), pUser->getAlias().c_str());
             gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_QUERYxSTATUS);
             gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_FILExSERVER);
             gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_FOLLOWxME);

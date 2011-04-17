@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2010 Licq developers
+ * Copyright (C) 2005-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,7 +291,7 @@ KeyListItem::KeyListItem(QTreeWidget* parent, const Licq::User* u)
 
 void KeyListItem::updateText(const Licq::User* u)
 {
-  setText(0, QString::fromUtf8(u->GetAlias()));
+  setText(0, QString::fromUtf8(u->getAlias().c_str()));
   setText(1, u->UseGPG() ? tr("Yes") : tr("No"));
   setText(2, u->gpgKey().c_str());
 }

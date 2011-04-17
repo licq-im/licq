@@ -2581,12 +2581,9 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       nSize += pUser->accountId().size();
       nSize += 10;
 
-      char *szUnicode = strdup(pUser->GetAlias());
-      int nAliasLen = strlen(szUnicode);
+      string::size_type nAliasLen = pUser->getAlias().size();
       if (nAliasLen && _nType == ICQ_ROSTxNORMAL)
           nSize += 4 + nAliasLen;
-      if (szUnicode)
-        free(szUnicode);
     }
   }
 
@@ -2596,8 +2593,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
   for (i = users.begin(); i != users.end(); i++)
   {
     int nLen;
-    int nAliasSize = 0;
-    char *szUnicodeName = 0;
+    string unicodeName;
 
     m_nSID = gUserManager.GenerateSID();
 
@@ -2660,8 +2656,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       }
 
       u->SetGSID(m_nGSID);
-      szUnicodeName = strdup(u->GetAlias());
-      nAliasSize = strlen(szUnicodeName);
+      unicodeName = u->getAlias();
     }
 
     string accountId = u->accountId();
@@ -2675,18 +2670,15 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     buffer->PackUnsignedShortBE(m_nSID);
     buffer->PackUnsignedShortBE(_nType);
 
-    if (nAliasSize)
+    if (!unicodeName.empty())
     {
-      buffer->PackUnsignedShortBE(nAliasSize+4);
+      buffer->PackUnsignedShortBE(unicodeName.size() + 4);
       buffer->PackUnsignedShortBE(0x0131);
-      buffer->PackUnsignedShortBE(nAliasSize);
-      buffer->Pack(szUnicodeName, nAliasSize);
+      buffer->PackUnsignedShortBE(unicodeName.size());
+      buffer->pack(unicodeName);
     }
     else
       buffer->PackUnsignedShortBE(0);
-
-    if (szUnicodeName)
-      free(szUnicodeName);
   }
 }
 

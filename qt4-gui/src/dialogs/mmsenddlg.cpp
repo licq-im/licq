@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -180,7 +180,8 @@ void MMSendDlg::SendNext()
         if (!u.isLocked())
           return;
         codec = UserCodec::codecForUser(*u);
-        grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
+        grpSending->setTitle(tr("Sending mass message to %1...")
+            .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
       // create initial strings (implicit copying, no allocation impact :)
@@ -247,7 +248,8 @@ void MMSendDlg::SendNext()
         if (!u.isLocked())
           return;
         codec = UserCodec::codecForUser(*u);
-        grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
+        grpSending->setTitle(tr("Sending mass URL to %1...")
+            .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
       icqEventTag = gProtocolManager.sendUrl(userId, s2.toLatin1().data(),
@@ -260,7 +262,8 @@ void MMSendDlg::SendNext()
         Licq::UserReadGuard u(userId);
         if (!u.isLocked())
           return;
-        grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
+        grpSending->setTitle(tr("Sending mass list to %1...")
+            .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
       icqEventTag = gLicqDaemon->icqSendContactList(userId, *myUsers, false, ICQ_TCPxMSG_NORMAL);

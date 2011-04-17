@@ -175,7 +175,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     CPT_Message* p = new CPT_Message(message, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("Sending %smessage to %s (#%hu)."),
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
-       u->GetAlias(), -p->Sequence());
+        u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
   }
 
@@ -283,7 +283,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
     CPT_Url* p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("Sending %sURL to %s (#%hu)."),
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
-       u->GetAlias(), -p->Sequence());
+        u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
   }
   if (u.isLocked())
@@ -363,7 +363,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("Sending %sfile transfer to %s (#%hu)."),
                 nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "", 
-                u->GetAlias(), -p->Sequence());
+          u->getAlias().c_str(), -p->Sequence());
 
       SendExpectEvent_Client(eventId, *u, p, e);
     }
@@ -433,7 +433,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("Sending %scontact list to %s (#%hu)."),
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
-       u->GetAlias(), -p->Sequence());
+        u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
   }
   if (u.isLocked())
@@ -2118,7 +2118,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               Licq::PluginSignal::UserSecurity, u->id(), 1));
 
           gLog.info(tr("Secure channel established with %s (%s)"),
-              u->GetAlias(), userId.toString().c_str());
+              u->getAlias().c_str(), userId.toString().c_str());
 
         break;
 
@@ -2414,7 +2414,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
           {
               gLog.info(tr("Secure channel established with %s (%s)"),
-                  u->GetAlias(), userId.toString().c_str());
+                  u->getAlias().c_str(), userId.toString().c_str());
             u->SetSecure(true);
               gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserSecurity, u->id(), 1));
@@ -2544,8 +2544,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           nSubResult = ICQ_TCPxACK_ACCEPT; // FIXME: or should this be ACK_RETURN ?
           break;
         default:
-          gLog.unknown("Unknown ack flag from %s (#%hu): %04x %s",
-                       u->GetAlias(), -theSequence, ackFlags, l);
+          gLog.unknown(tr("Unknown ack flag from %s (#%hu): %04x %s"),
+              u->getAlias().c_str(), -theSequence, ackFlags, l);
           nSubResult = ICQ_TCPxACK_ACCEPT;
       }
     }
@@ -2997,10 +2997,10 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             result = Licq::Event::ResultFailed;
             break;
           }
-      default:
-      {
-        gLog.warning("Unknown reply level %u from %s",
-                  error_level, u->GetAlias());
+          default:
+          {
+            gLog.warning(tr("Unknown reply level %u from %s"),
+                error_level, u->getAlias().c_str());
         errorOccured = true;
             result = Licq::Event::ResultError;
             break;
@@ -3261,10 +3261,10 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             result = Licq::Event::ResultFailed;
             break;
           }
-      default:
-      {
-        gLog.warning("Unknown reply level %u from %s",
-                  error_level, u->GetAlias());
+          default:
+          {
+            gLog.warning(tr("Unknown reply level %u from %s"),
+                error_level, u->getAlias().c_str());
         errorOccured = true;
             result = Licq::Event::ResultError;
             break;

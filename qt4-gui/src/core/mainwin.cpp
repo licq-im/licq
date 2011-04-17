@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
     if (o.isLocked())
-      myCaption += QString(" (%1)").arg(QString::fromUtf8(o->GetAlias()));
+      myCaption += QString(" (%1)").arg(QString::fromUtf8(o->getAlias().c_str()));
   }
   setWindowTitle(myCaption);
   setWindowIconText(myCaption);
@@ -679,7 +679,7 @@ void MainWindow::slot_updatedUser(const Licq::UserId& userId, unsigned long subS
         // User on notify list went online -> show popup at systray icon
         if (gLicqGui->dockIcon() != NULL && u->OnlineNotify())
         {
-          QString alias = QString::fromUtf8(u->GetAlias());
+          QString alias = QString::fromUtf8(u->getAlias().c_str());
           QPixmap px = IconManager::instance()->iconForUser(*u);
           gLicqGui->dockIcon()->popupMessage(alias, tr("is online"), px, 4000);
         }

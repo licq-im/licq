@@ -2275,9 +2275,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           gLog.info(tr("%s changed status: %s (AIM)."),
               u->getAlias().c_str(), u->statusString().c_str());
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
-          gLog.unknown("Unknown status flag for %s: 0x%08lX",
-                       u->GetAlias(),
-                       nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS);
+            gLog.unknown(tr("Unknown status flag for %s: 0x%08lX"),
+                u->getAlias().c_str(), nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS);
         u->setAutoResponse("");
         u->SetShowAwayMsg(false);
       }
@@ -2509,7 +2508,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         Licq::UserReadGuard user(Licq::UserId(szId, LICQ_PPID));
       //XXX Debug output
       //gLog.error(tr("Ignoring fake offline: %s (%s)"),
-      //    user->GetAlias(), szId);
+      //    user->getAlias().c_str(), szId);
       delete [] szId;
       break;
     }

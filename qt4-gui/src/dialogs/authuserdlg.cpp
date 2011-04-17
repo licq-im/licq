@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,8 @@ AuthUserDlg::AuthUserDlg(const Licq::UserId& userId, bool grant, QWidget* parent
     QString userName = myUserId.accountId().c_str();
     Licq::UserReadGuard u(myUserId);
     if (u.isLocked())
-       userName = QString("%1 (%2)").arg(QString::fromUtf8(u->GetAlias())).arg(u->accountId().c_str());
+      userName = QString("%1 (%2)").arg(QString::fromUtf8(u->getAlias().c_str()))
+          .arg(u->accountId().c_str());
 
     lblUin->setText(tr("%1 authorization to %2")
         .arg(myGrant ? tr("Grant") : tr("Refuse"))

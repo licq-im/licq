@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,12 +246,12 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
 
         bool bUseHTML = !isdigit(u->accountId()[1]);
         const QTextCodec* myCodec = UserCodec::codecForUser(*u);
-        QString contactName = QString::fromUtf8(u->GetAlias());
+        QString contactName = QString::fromUtf8(u->getAlias().c_str());
         QString ownerName;
         {
           Licq::OwnerReadGuard o(u->protocolId());
           if (o.isLocked())
-            ownerName = QString::fromUtf8(o->GetAlias());
+            ownerName = QString::fromUtf8(o->getAlias().c_str());
           else
             ownerName = QString(tr("Error! no owner set"));
         }
@@ -613,7 +613,7 @@ void UserSendCommon::convoJoin(const Licq::UserId& userId)
     Licq::UserReadGuard u(userId);
     QString userName;
     if (u.isLocked())
-      userName = QString::fromUtf8(u->GetAlias());
+      userName = QString::fromUtf8(u->getAlias().c_str());
     else
       userName = "";
 
@@ -640,7 +640,7 @@ void UserSendCommon::convoLeave(const Licq::UserId& userId)
     Licq::UserWriteGuard u(userId);
     QString userName;
     if (u.isLocked())
-      userName = QString::fromUtf8(u->GetAlias());
+      userName = QString::fromUtf8(u->getAlias().c_str());
     else
       userName = "";
 
@@ -1178,7 +1178,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
       Licq::UserWriteGuard u(myUsers.front());
 
       msg = tr("%1 is in %2 mode:\n%3\nSend...")
-          .arg(QString::fromUtf8(u->GetAlias()))
+          .arg(QString::fromUtf8(u->getAlias().c_str()))
           .arg(u->statusString().c_str())
           .arg(myCodec->toUnicode(u->autoResponse().c_str()));
 

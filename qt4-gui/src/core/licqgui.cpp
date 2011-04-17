@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2; -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -648,7 +648,7 @@ bool LicqGui::removeUserFromList(const Licq::UserId& userId, QWidget* parent)
       return true;
     notInList = u->NotInList();
     warning = tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-        .arg(QString::fromUtf8(u->GetAlias()))
+        .arg(QString::fromUtf8(u->getAlias().c_str()))
         .arg(u->accountId().c_str());
   }
 

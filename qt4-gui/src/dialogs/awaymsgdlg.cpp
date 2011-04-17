@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
 
       setWindowTitle(QString(tr("Set %1 Response for %2"))
           .arg(statusStr)
-          .arg(QString::fromUtf8(o->GetAlias())));
+          .arg(QString::fromUtf8(o->getAlias().c_str())));
 
       if (!o->autoResponse().empty())
       {
