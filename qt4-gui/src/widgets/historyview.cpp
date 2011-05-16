@@ -32,7 +32,6 @@
 
 #include "config/chat.h"
 
-#include "helpers/eventdesc.h"
 #include "helpers/usercodec.h"
 
 using namespace LicqQtGui;
@@ -437,7 +436,7 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
     messageText = codec->toUnicode(event->text().c_str());
 
   addMsg(event->isReceiver(), false,
-         (event->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(event) + " ")),
+         (event->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (event->description() + " ").c_str()),
          date,
          event->IsDirect(),
          event->IsMultiRec(),

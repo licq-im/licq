@@ -46,7 +46,6 @@
 #include "core/licqgui.h"
 #include "core/signalmanager.h"
 #include "core/usermenu.h"
-#include "helpers/eventdesc.h"
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
 #include "widgets/calendar.h"
@@ -354,7 +353,7 @@ void HistoryDlg::showHistory()
 
     // Add entry to history view
     myHistoryView->addMsg((*item)->isReceiver(), false,
-        ((*item)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : (EventDescription(*item) + " ")),
+        ((*item)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : ((*item)->description() + " ").c_str()),
         date,
         (*item)->IsDirect(),
         (*item)->IsMultiRec(),

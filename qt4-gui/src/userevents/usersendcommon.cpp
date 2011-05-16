@@ -76,7 +76,6 @@
 
 #include "dialogs/keyrequestdlg.h"
 
-#include "helpers/eventdesc.h"
 #include "helpers/usercodec.h"
 
 #include "views/mmuserview.h"
@@ -283,7 +282,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           myHistoryView->addMsg(
               (*lHistoryIter)->isReceiver(),
               true,
-              (*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : EventDescription(*lHistoryIter) + " ",
+              (*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : ((*lHistoryIter)->description() + " ").c_str(),
               date,
               (*lHistoryIter)->IsDirect(),
               (*lHistoryIter)->IsMultiRec(),
