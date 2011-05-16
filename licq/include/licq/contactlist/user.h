@@ -42,7 +42,6 @@ void* MonitorSockets_func();
 namespace LicqDaemon
 {
 class User;
-class UserEvent;
 class UserManager;
 }
 
@@ -50,6 +49,7 @@ namespace Licq
 {
 class IniFile;
 class TCPSocket;
+class UserEvent;
 
 typedef enum SecureChannelSupport_et_ {
   SECURE_CHANNEL_UNKNOWN = 0,
