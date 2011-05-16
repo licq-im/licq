@@ -78,6 +78,10 @@ public:
   unsigned short Sequence() const { return m_nSequence; }
   unsigned short Command() const { return m_nCommand; }
   unsigned short SubCommand() const { return m_nSubCommand; }
+
+  /// Returns translated event name
+  virtual std::string eventName() const = 0;
+
   int Id() const { return m_nId; }
   bool IsDirect() const { return m_nFlags & FlagDirect; }
   bool IsMultiRec() const { return m_nFlags & FlagMultiRec; }
@@ -147,6 +151,8 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   std::string myMessage;
 };
 
@@ -170,6 +176,8 @@ public:
   const unsigned long* MessageID() const { return m_nMsgID; }
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   std::string myFilename;
   std::string myFileDescription;
    unsigned long m_nFileSize;
@@ -194,6 +202,8 @@ public:
      unsigned long nFlags, unsigned long nConvoId = 0);
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   std::string myUrl;
   std::string myUrlDescription;
 };
@@ -217,6 +227,8 @@ public:
   const unsigned long* MessageID() const { return m_nMsgID; }
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   std::string myReason;
   std::string myClients;
   unsigned short m_nPort;
@@ -238,6 +250,8 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   UserId myUserId;
   std::string myAlias;
   std::string myFirstName;
@@ -261,6 +275,8 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   UserId myUserId;
   std::string myAlias;
   std::string myFirstName;
@@ -283,6 +299,8 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   UserId myUserId;
   std::string myMessage;
 };
@@ -301,6 +319,8 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   UserId myUserId;
   std::string myMessage;
 };
@@ -319,6 +339,8 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   std::string myName;
   std::string myEmail;
   std::string myMessage;
@@ -338,6 +360,8 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   std::string myName;
   std::string myEmail;
   std::string myMessage;
@@ -374,6 +398,8 @@ public:
   static EventContactList *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   ContactList m_vszFields;
 };
 
@@ -392,6 +418,8 @@ public:
   static EventSms* Parse(const std::string& s, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   std::string myNumber;
   std::string myMessage;
 };
@@ -410,6 +438,7 @@ public:
 
 protected:
  void CreateDescription() const;
+  std::string eventName() const;
 
   std::string myName;
   std::string myEmail;
@@ -445,6 +474,7 @@ public:
 
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
 
   // Info
   std::string myName;
@@ -473,6 +503,8 @@ public:
   virtual void AddToHistory(User* u, bool isReceiver) const;
 protected:
   void CreateDescription() const;
+  std::string eventName() const;
+
   UserId myUserId;
   std::string myMessage;
 };

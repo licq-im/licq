@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,6 +172,11 @@ void Licq::EventMsg::CreateDescription() const
   myText = myMessage;
 }
 
+std::string Licq::EventMsg::eventName() const
+{
+  return tr("Message");
+}
+
 Licq::EventMsg* Licq::EventMsg::Copy() const
 {
   EventMsg* e = new EventMsg(myMessage, m_nCommand, m_tTime, m_nFlags);
@@ -216,6 +221,11 @@ void Licq::EventFile::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventFile::eventName() const
+{
+  return tr("File Transfer");
+}
+
 Licq::EventFile* Licq::EventFile::Copy() const
 {
   EventFile* e = new EventFile(myFilename, myFileDescription,
@@ -257,6 +267,11 @@ void Licq::EventUrl::CreateDescription() const
   sprintf(text, tr("Url: %s\nDescription:\n%s\n"), myUrl.c_str(), myUrlDescription.c_str());
   myText = text;
   delete[] text;
+}
+
+std::string Licq::EventUrl::eventName() const
+{
+  return tr("URL");
 }
 
 Licq::EventUrl* Licq::EventUrl::Copy() const
@@ -331,6 +346,11 @@ void Licq::EventChat::CreateDescription() const
     myText = myReason + "\n--------------------\n" + tr("Multiparty:\n") + myClients;
 }
 
+std::string Licq::EventChat::eventName() const
+{
+  return tr("Chat Request");
+}
+
 Licq::EventChat* Licq::EventChat::Copy() const
 {
   EventChat* e = new EventChat(myText, myClients, m_nPort,
@@ -372,6 +392,11 @@ void Licq::EventAdded::CreateDescription() const
       myAlias.c_str(), accountId.c_str(), myFirstName.c_str(), myLastName.c_str(), myEmail.c_str());
   myText = text;
   delete[] text;
+}
+
+std::string Licq::EventAdded::eventName() const
+{
+  return tr("Added to Contact List");
 }
 
 Licq::EventAdded* Licq::EventAdded::Copy() const
@@ -428,6 +453,11 @@ void Licq::EventAuthRequest::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventAuthRequest::eventName() const
+{
+  return tr("Authorization Request");
+}
+
 Licq::EventAuthRequest* Licq::EventAuthRequest::Copy() const
 {
   EventAuthRequest* e = new EventAuthRequest(myUserId, myAlias, myFirstName,
@@ -477,6 +507,11 @@ void Licq::EventAuthGranted::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventAuthGranted::eventName() const
+{
+  return tr("Authorization Granted");
+}
+
 Licq::EventAuthGranted* Licq::EventAuthGranted::Copy() const
 {
   EventAuthGranted* e = new EventAuthGranted(myUserId, myMessage,
@@ -523,6 +558,11 @@ void Licq::EventAuthRefused::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventAuthRefused::eventName() const
+{
+  return tr("Authorization Refused");
+}
+
 Licq::EventAuthRefused* Licq::EventAuthRefused::Copy() const
 {
   EventAuthRefused* e = new EventAuthRefused(myUserId, myMessage, m_nCommand, m_tTime, m_nFlags);
@@ -565,6 +605,11 @@ void Licq::EventWebPanel::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventWebPanel::eventName() const
+{
+  return tr("Web Panel");
+}
+
 Licq::EventWebPanel* Licq::EventWebPanel::Copy() const
 {
   EventWebPanel* e = new EventWebPanel(myName, myEmail, myMessage,
@@ -602,6 +647,11 @@ void Licq::EventEmailPager::CreateDescription() const
       myName.c_str(), myEmail.c_str(), myMessage.c_str());
   myText = text;
   delete[] text;
+}
+
+std::string Licq::EventEmailPager::eventName() const
+{
+  return tr("Email Pager");
 }
 
 Licq::EventEmailPager* Licq::EventEmailPager::Copy() const
@@ -656,6 +706,10 @@ void Licq::EventContactList::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventContactList::eventName() const
+{
+  return tr("Contact List");
+}
 
 Licq::EventContactList::~EventContactList()
 {
@@ -731,6 +785,11 @@ void Licq::EventSms::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventSms::eventName() const
+{
+  return tr("SMS");
+}
+
 Licq::EventSms* Licq::EventSms::Copy() const
 {
   EventSms* e = new EventSms(myNumber, myMessage, m_nCommand, m_tTime, m_nFlags);
@@ -780,6 +839,11 @@ void Licq::EventServerMessage::CreateDescription() const
 
   myText = text;
   delete[] text;
+}
+
+std::string Licq::EventServerMessage::eventName() const
+{
+  return tr("Server Message");
 }
 
 Licq::EventServerMessage* Licq::EventServerMessage::Copy() const
@@ -847,6 +911,11 @@ void Licq::EventEmailAlert::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventEmailAlert::eventName() const
+{
+  return tr("Email Alert");
+}
+
 Licq::EventEmailAlert* Licq::EventEmailAlert::Copy() const
 {
   EventEmailAlert* e = new EventEmailAlert(myName, myTo, myEmail,
@@ -887,6 +956,11 @@ void Licq::EventUnknownSysMsg::CreateDescription() const
   delete[] text;
 }
 
+std::string Licq::EventUnknownSysMsg::eventName() const
+{
+  return tr("Unknown Event");
+}
+
 Licq::EventUnknownSysMsg* Licq::EventUnknownSysMsg::Copy() const
 {
   EventUnknownSysMsg* e = new EventUnknownSysMsg(m_nSubCommand,
@@ -907,46 +981,9 @@ void Licq::EventUnknownSysMsg::AddToHistory(User* /* u */, bool /* isReceiver */
 }
 
 
-//=====EventDescriptions=====================================================
-
-static const int MAX_EVENT = 26;
-
-static const char *const eventDescriptions[27] =
-{ tr("Plugin Event"),
-  tr("Message"),
-  tr("Chat Request"),
-  tr("File Transfer"),
-  tr("URL"),
-  "",
-  tr("Authorization Request"),
-  tr("Authorization Refused"),
-  tr("Authorization Granted"),
-  tr("Server Message"),
-  "",
-  "",
-  tr("Added to Contact List"),
-  tr("Web Panel"),
-  tr("Email Pager"),
-  "",
-  "",
-  "",
-  "",
-  tr("Contact List"),
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  tr("SMS")
-};
-
 string UserEvent::description() const
 {
-  if (SubCommand() > MAX_EVENT || eventDescriptions[SubCommand()][0] == '\0')
-    return tr("Unknown Event");
-
-  string desc = eventDescriptions[SubCommand()];
+  string desc = eventName();
   if (IsCancelled())
     desc += tr(" (cancelled)");
   return desc;
