@@ -27,7 +27,6 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/userevents.h>
 
 #include "config/chat.h"
@@ -430,13 +429,13 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
     codec = QTextCodec::codecForName("UTF-8");
 
   QString messageText;
-  if (event->SubCommand() == ICQ_CMDxSUB_SMS)
+  if (event->eventType() == Licq::UserEvent::TypeSms)
     messageText = QString::fromUtf8(event->text().c_str());
   else
     messageText = codec->toUnicode(event->text().c_str());
 
   addMsg(event->isReceiver(), false,
-         (event->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (event->description() + " ").c_str()),
+      (event->eventType() == Licq::UserEvent::TypeMessage ? "" : (event->description() + " ").c_str()),
          date,
          event->IsDirect(),
          event->IsMultiRec(),
@@ -447,8 +446,8 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
   GotoEnd();
 
   if (event->isReceiver() &&
-      (event->SubCommand() == ICQ_CMDxSUB_MSG ||
-       event->SubCommand() == ICQ_CMDxSUB_URL))
+      (event->eventType() == Licq::UserEvent::TypeMessage ||
+      event->eventType() == Licq::UserEvent::TypeUrl))
     emit messageAdded();
 }
 

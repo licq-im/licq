@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -385,10 +385,10 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   // ctime returns a string ending with \n, drop it
   headDate.erase(headDate.size()-1);
 
-  switch (e->SubCommand())
+  switch (e->eventType())
   {
-  case ICQ_CMDxSUB_MSG:
-  case ICQ_CMDxSUB_CHAT:
+    case Licq::UserEvent::TypeMessage:
+    case Licq::UserEvent::TypeChat:
     {
       string s = e->text().substr(0, SUBJ_CHARS);
       size_t pos = s.find('\n');
@@ -398,11 +398,11 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
           (e->text().size() > SUBJ_CHARS ? "..." : "") + "]";
       break;
     }
-  case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeUrl:
       subject = "Subject: " + e->description() + " [" +
           dynamic_cast<const Licq::EventUrl*>(e)->url() + "]";
       break;
-  case ICQ_CMDxSUB_FILE:
+    case Licq::UserEvent::TypeFile:
       subject = "Subject: " + e->description() + " [" +
           dynamic_cast<const Licq::EventFile*>(e)->filename() + "]";
       break;

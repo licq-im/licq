@@ -58,10 +58,30 @@ public:
     FlagUnknown         = 0x80000000,
   };
 
+  // Event type, for now these must be the same as the ICQ protocol sub commands
+  enum EventType
+  {
+    TypeMessage         = 0x0001,
+    TypeChat            = 0x0002,
+    TypeFile            = 0x0003,
+    TypeUrl             = 0x0004,
+    TypeAuthRequest     = 0x0006,
+    TypeAuthRefused     = 0x0007,
+    TypeAuthGranted     = 0x0008,
+    TypeMsgServer       = 0x0009,
+    TypeAdded           = 0x000C,
+    TypeWebPanel        = 0x000D,
+    TypeEmailPager      = 0x000E,
+    TypeContactList     = 0x0013,
+    TypeSms             = 0x001A,
+    TypeEmailAlert      = 0x00EC,
+    TypeUnknownSys      = 0xFFFF,
+  };
+
   // Use this constant for constructor to get current time
   static const time_t TimeNow = 0;
 
-  UserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
+  UserEvent(EventType eventType, unsigned short _nCommand,
               unsigned short _nSequence, time_t _tTime,
               unsigned long _nFlags, unsigned long _nConvoId = 0);
   UserEvent(const UserEvent *);
@@ -77,7 +97,9 @@ public:
   static const std::string licqVersionToString(unsigned long);
   unsigned short Sequence() const { return m_nSequence; }
   unsigned short Command() const { return m_nCommand; }
-  unsigned short SubCommand() const { return m_nSubCommand; }
+
+  /// Get type of event
+  unsigned eventType() const { return myEventType; }
 
   /// Returns translated event name
   virtual std::string eventName() const = 0;
@@ -118,7 +140,7 @@ protected:
   // initialization even if called in const context.
   mutable std::string myText;
    unsigned short m_nCommand;
-   unsigned short m_nSubCommand;
+  unsigned myEventType;
    unsigned short m_nSequence;
    int            m_nId;
    time_t         m_tTime;
@@ -501,10 +523,12 @@ public:
       const UserId& userId, const std::string& message, time_t _tTime, unsigned long _nFlags);
   virtual EventUnknownSysMsg* Copy() const;
   virtual void AddToHistory(User* u, bool isReceiver) const;
+  unsigned short subCommand() const { return m_nSubCommand; }
 protected:
   void CreateDescription() const;
   std::string eventName() const;
 
+  unsigned short m_nSubCommand;
   UserId myUserId;
   std::string myMessage;
 };

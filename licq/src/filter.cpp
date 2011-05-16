@@ -20,7 +20,6 @@
 #include "filter.h"
 
 #include <licq/contactlist/user.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/thread/mutexlocker.h>
 #include <licq/userevents.h>
@@ -32,6 +31,7 @@ using namespace std;
 using namespace LicqDaemon;
 using Licq::FilterRule;
 using Licq::FilterRules;
+using Licq::UserEvent;
 
 // Declare global FilterManager (internal for daemon)
 LicqDaemon::FilterManager LicqDaemon::gFilterManager;
@@ -61,7 +61,7 @@ void FilterManager::initialize()
     // Log but don't notify authorization requests containing URLs
     rule.isEnabled = true;
     rule.protocolId = 0;
-    rule.eventMask = 1<<ICQ_CMDxSUB_AUTHxREQUEST;
+    rule.eventMask = 1<<UserEvent::TypeAuthRequest;
     rule.expression = ".*http://.*";
     rule.action = FilterRule::ActionSilent;
     myRules.push_back(rule);
@@ -69,7 +69,7 @@ void FilterManager::initialize()
     // Ignore reoccuring spam messages that are sent as ICQ Authorization Requests
     rule.isEnabled = true;
     rule.protocolId = LICQ_PPID;
-    rule.eventMask = 1<<ICQ_CMDxSUB_AUTHxREQUEST;
+    rule.eventMask = 1<<UserEvent::TypeAuthRequest;
     rule.action = FilterRule::ActionIgnore;
     rule.expression = "\\xD0[\\xBF\\x9F]\\xD1\\x80\\xD0\\xB8\\xD0\\xB2\\xD0\\xB5\\xD1\\x82(\\xD0\\xB8\\xD0\\xBA)? =\\)";
     myRules.push_back(rule);
@@ -158,52 +158,52 @@ int FilterManager::filterEvent(const Licq::User* user, const Licq::UserEvent* ev
   Licq::UserId userId = user->id();
   string msg;
 
-  switch (event->SubCommand())
+  switch (event->eventType())
   {
-    case ICQ_CMDxSUB_MSG:
+    case UserEvent::TypeMessage:
       msg = (dynamic_cast<const Licq::EventMsg*>(event))->message();
       break;
-    case ICQ_CMDxSUB_FILE:
+    case UserEvent::TypeFile:
       msg = (dynamic_cast<const Licq::EventFile*>(event))->fileDescription();
       break;
-    case ICQ_CMDxSUB_URL:
+    case UserEvent::TypeUrl:
       msg = (dynamic_cast<const Licq::EventUrl*>(event))->urlDescription();
       break;
-    case ICQ_CMDxSUB_CHAT:
+    case UserEvent::TypeChat:
       msg = (dynamic_cast<const Licq::EventChat*>(event))->reason();
       break;
-    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+    case UserEvent::TypeAdded:
       // No message
       userId = (dynamic_cast<const Licq::EventAdded*>(event))->userId();
       break;
-    case ICQ_CMDxSUB_AUTHxREQUEST:
+    case UserEvent::TypeAuthRequest:
       msg = (dynamic_cast<const Licq::EventAuthRequest*>(event))->reason();
       userId = (dynamic_cast<const Licq::EventAuthRequest*>(event))->userId();
       break;
-    case ICQ_CMDxSUB_AUTHxGRANTED:
+    case UserEvent::TypeAuthGranted:
       msg = (dynamic_cast<const Licq::EventAuthGranted*>(event))->message();
       userId = (dynamic_cast<const Licq::EventAuthGranted*>(event))->userId();
       break;
-    case ICQ_CMDxSUB_AUTHxREFUSED:
+    case UserEvent::TypeAuthRefused:
       msg = (dynamic_cast<const Licq::EventAuthRefused*>(event))->message();
       userId = (dynamic_cast<const Licq::EventAuthRefused*>(event))->userId();
       break;
-    case ICQ_CMDxSUB_WEBxPANEL:
+    case UserEvent::TypeWebPanel:
       msg = (dynamic_cast<const Licq::EventWebPanel*>(event))->message();
       break;
-    case ICQ_CMDxSUB_EMAILxPAGER:
+    case UserEvent::TypeEmailPager:
       msg = (dynamic_cast<const Licq::EventEmailPager*>(event))->message();
       break;
-    case ICQ_CMDxSUB_CONTACTxLIST:
+    case UserEvent::TypeContactList:
       // No message
       break;
-    case ICQ_CMDxSUB_SMS:
+    case UserEvent::TypeSms:
       msg = (dynamic_cast<const Licq::EventSms*>(event))->message();
       break;
-    case ICQ_CMDxSUB_MSGxSERVER:
+    case UserEvent::TypeMsgServer:
       msg = (dynamic_cast<const Licq::EventServerMessage*>(event))->message();
       break;
-    case ICQ_CMDxSUB_EMAILxALERT:
+    case UserEvent::TypeEmailAlert:
       msg = (dynamic_cast<const Licq::EventEmailAlert*>(event))->subject();
       break;
   }
@@ -234,7 +234,7 @@ int FilterManager::filterEvent(const Licq::User* user, const Licq::UserEvent* ev
     if (rule.protocolId != 0 && rule.protocolId != userId.protocolId())
       continue;
 
-    if ((rule.eventMask & (1<<event->SubCommand())) == 0)
+    if ((rule.eventMask & (1<<event->eventType())) == 0)
       continue;
 
     if (!rule.expression.empty())

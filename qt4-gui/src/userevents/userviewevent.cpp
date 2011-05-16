@@ -144,8 +144,8 @@ UserViewEvent::UserViewEvent(const Licq::UserId& userId, QWidget* parent)
     if (Config::Chat::instance()->msgChatView())
     {
       for (i = 0; i < u->NewMessages(); i++)
-        if (u->EventPeek(i)->SubCommand() != ICQ_CMDxSUB_MSG &&
-            u->EventPeek(i)->SubCommand() != ICQ_CMDxSUB_URL)
+        if (u->EventPeek(i)->eventType() != Licq::UserEvent::TypeMessage &&
+            u->EventPeek(i)->eventType() != Licq::UserEvent::TypeUrl)
           break;
       if (i == u->NewMessages())
         i = 0;
@@ -163,8 +163,8 @@ UserViewEvent::UserViewEvent(const Licq::UserId& userId, QWidget* parent)
     {
       const Licq::UserEvent* event = u->EventPeek(i);
       if (!Config::Chat::instance()->msgChatView() ||
-          (event->SubCommand() != ICQ_CMDxSUB_MSG &&
-           event->SubCommand() != ICQ_CMDxSUB_URL))
+          (event->eventType() != Licq::UserEvent::TypeMessage &&
+          event->eventType() != Licq::UserEvent::TypeUrl))
       {
         new MessageListItem(event, myCodec, myMessageList);
         // Make sure we don't add this message again,
@@ -261,7 +261,7 @@ void UserViewEvent::updateNextButton()
     myReadNextButton->setText(tr("Nex&t"));
 
   if (e != NULL && e->msg() != NULL)
-    myReadNextButton->setIcon(IconManager::instance()->iconForEvent(e->msg()->SubCommand()));
+    myReadNextButton->setIcon(IconManager::instance()->iconForEvent(e->msg()->eventType()));
   else
     myReadNextButton->setIcon(QIcon());
 }
@@ -282,8 +282,8 @@ void UserViewEvent::userUpdated(const Licq::UserId& userId, unsigned long subSig
       // Making sure we didn't handle this message already.
       if (e != NULL && myHighestEventId < eventId &&
           (!Config::Chat::instance()->msgChatView() ||
-           (e->SubCommand() != ICQ_CMDxSUB_MSG &&
-            e->SubCommand() != ICQ_CMDxSUB_URL)))
+          (e->eventType() != Licq::UserEvent::TypeMessage &&
+          e->eventType() != Licq::UserEvent::TypeUrl)))
       {
          myHighestEventId = eventId;
          MessageListItem* m = new MessageListItem(e, myCodec, myMessageList);
@@ -318,37 +318,37 @@ void UserViewEvent::read1()
   if (myCurrentEvent == 0)
     return;
 
-  switch (myCurrentEvent->SubCommand())
+  switch (myCurrentEvent->eventType())
   {
-    case ICQ_CMDxSUB_MSG:  // reply/quote
-    case ICQ_CMDxSUB_URL:
-    case ICQ_CMDxSUB_CHAT:
-    case ICQ_CMDxSUB_FILE:
+    case Licq::UserEvent::TypeMessage:  // reply/quote
+    case Licq::UserEvent::TypeUrl:
+    case Licq::UserEvent::TypeChat:
+    case Licq::UserEvent::TypeFile:
       sendMsg("");
       break;
 
-    case ICQ_CMDxSUB_AUTHxREQUEST:
+    case Licq::UserEvent::TypeAuthRequest:
     {
       Licq::EventAuthRequest* p = dynamic_cast<Licq::EventAuthRequest*>(myCurrentEvent);
       new AuthUserDlg(p->userId(), true);
       break;
     }
 
-    case ICQ_CMDxSUB_AUTHxGRANTED:
+    case Licq::UserEvent::TypeAuthGranted:
     {
       Licq::EventAuthGranted* p = dynamic_cast<Licq::EventAuthGranted*>(myCurrentEvent);
       new AddUserDlg(p->userId(), this);
       break;
     }
 
-    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+    case Licq::UserEvent::TypeAdded:
     {
       Licq::EventAdded* p = dynamic_cast<Licq::EventAdded*>(myCurrentEvent);
       new AddUserDlg(p->userId(), this);
       break;
     }
 
-    case ICQ_CMDxSUB_CONTACTxLIST:
+    case Licq::UserEvent::TypeContactList:
     {
       const Licq::EventContactList::ContactList& cl = dynamic_cast<Licq::EventContactList*>(myCurrentEvent)->Contacts();
       Licq::EventContactList::ContactList::const_iterator it;
@@ -362,7 +362,7 @@ void UserViewEvent::read1()
       break;
     }
 
-    case ICQ_CMDxSUB_EMAILxALERT:
+    case Licq::UserEvent::TypeEmailAlert:
     {
       // FIXME: For now assume MSN protocol, will need to be fixed soon.
       Licq::EventEmailAlert* p = dynamic_cast<Licq::EventEmailAlert*>(myCurrentEvent);
@@ -415,14 +415,14 @@ void UserViewEvent::read2()
 
   QString accountId = myUsers.front().accountId().c_str();
 
-  switch (myCurrentEvent->SubCommand())
+  switch (myCurrentEvent->eventType())
   {
-    case ICQ_CMDxSUB_MSG:  // quote
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeMessage:  // quote
+    case Licq::UserEvent::TypeUrl:
       generateReply();
       break;
 
-    case ICQ_CMDxSUB_CHAT:  // accept a chat request
+    case Licq::UserEvent::TypeChat:  // accept a chat request
     {
       myCurrentEvent->SetPending(false);
       myRead2Button->setEnabled(false);
@@ -450,7 +450,7 @@ void UserViewEvent::read2()
       break;
     }
 
-    case ICQ_CMDxSUB_FILE:  // accept a file transfer
+    case Licq::UserEvent::TypeFile:  // accept a file transfer
     {
       myCurrentEvent->SetPending(false);
       myRead2Button->setEnabled(false);
@@ -467,7 +467,7 @@ void UserViewEvent::read2()
       break;
     }
 
-    case ICQ_CMDxSUB_AUTHxREQUEST:
+    case Licq::UserEvent::TypeAuthRequest:
     {
       Licq::EventAuthRequest* p = dynamic_cast<Licq::EventAuthRequest*>(myCurrentEvent);
       new AuthUserDlg(p->userId(), false);
@@ -483,17 +483,17 @@ void UserViewEvent::read3()
 
   QString accountId = myUsers.front().accountId().c_str();
 
-  switch (myCurrentEvent->SubCommand())
+  switch (myCurrentEvent->eventType())
   {
-    case ICQ_CMDxSUB_MSG:  // Forward
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeMessage:  // Forward
+    case Licq::UserEvent::TypeUrl:
     {
       ForwardDlg* f = new ForwardDlg(myCurrentEvent, this);
       f->show();
       break;
     }
 
-    case ICQ_CMDxSUB_CHAT:  // refuse a chat request
+    case Licq::UserEvent::TypeChat:  // refuse a chat request
     {
       RefuseDlg* r = new RefuseDlg(myUsers.front(), tr("Chat"), this);
 
@@ -514,7 +514,7 @@ void UserViewEvent::read3()
       break;
     }
 
-    case ICQ_CMDxSUB_FILE:  // refuse a file transfer
+    case Licq::UserEvent::TypeFile:  // refuse a file transfer
     {
       RefuseDlg* r = new RefuseDlg(myUsers.front(), tr("File Transfer"), this);
 
@@ -535,7 +535,7 @@ void UserViewEvent::read3()
       break;
     }
 
-    case ICQ_CMDxSUB_AUTHxREQUEST:
+    case Licq::UserEvent::TypeAuthRequest:
     {
       Licq::EventAuthRequest* p = dynamic_cast<Licq::EventAuthRequest*>(myCurrentEvent);
       new AddUserDlg(p->userId(), this);
@@ -551,13 +551,13 @@ void UserViewEvent::read4()
 
   QString accountId = myUsers.front().accountId().c_str();
 
-  switch (myCurrentEvent->SubCommand())
+  switch (myCurrentEvent->eventType())
   {
-    case ICQ_CMDxSUB_MSG:
+    case Licq::UserEvent::TypeMessage:
       gLicqGui->showEventDialog(ChatEvent, myUsers.front());
       break;
 
-    case ICQ_CMDxSUB_CHAT:  // join to current chat
+    case Licq::UserEvent::TypeChat:  // join to current chat
     {
       Licq::EventChat* c = dynamic_cast<Licq::EventChat*>(myCurrentEvent);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
@@ -583,25 +583,25 @@ void UserViewEvent::read4()
       break;
     }
 
-    case ICQ_CMDxSUB_URL:   // view a url
+    case Licq::UserEvent::TypeUrl:   // view a url
       gLicqGui->viewUrl(dynamic_cast<Licq::EventUrl*>(myCurrentEvent)->url().c_str());
       break;
 
-    case ICQ_CMDxSUB_AUTHxREQUEST: // Fall through
-    case ICQ_CMDxSUB_AUTHxGRANTED:
-    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+    case Licq::UserEvent::TypeAuthRequest:
+    case Licq::UserEvent::TypeAuthGranted:
+    case Licq::UserEvent::TypeAdded:
     {
       Licq::UserId userId;
 #define GETINFO(sub, type) \
-      if (myCurrentEvent->SubCommand() == sub) \
+      if (myCurrentEvent->eventType() == sub) \
       { \
         type* p = dynamic_cast<type*>(myCurrentEvent); \
         userId = p->userId(); \
       }
 
-      GETINFO(ICQ_CMDxSUB_AUTHxREQUEST, Licq::EventAuthRequest);
-      GETINFO(ICQ_CMDxSUB_AUTHxGRANTED, Licq::EventAuthGranted);
-      GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, Licq::EventAdded);
+      GETINFO(Licq::UserEvent::TypeAuthRequest, Licq::EventAuthRequest);
+      GETINFO(Licq::UserEvent::TypeAuthGranted, Licq::EventAuthGranted);
+      GETINFO(Licq::UserEvent::TypeAdded, Licq::EventAdded);
 #undef GETINFO
 
       {
@@ -676,7 +676,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
   myMessageView->setForeground(QColor(m->color()->foreRed(), m->color()->foreGreen(), m->color()->foreBlue()));
 
   // Set the text
-  if (m->SubCommand() == ICQ_CMDxSUB_SMS)
+  if (m->eventType() == Licq::UserEvent::TypeSms)
      myMessageText = QString::fromUtf8(m->text().c_str());
   else
      myMessageText = myCodec->toUnicode(m->text().c_str());
@@ -692,10 +692,10 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
        m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE ||
        m->Command() == ICQ_CMDxRCV_SYSxMSGxOFFLINE))
   {
-    switch (m->SubCommand())
+    switch (m->eventType())
     {
-      case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
-      case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
+      case Licq::UserEvent::TypeChat:  // accept or refuse a chat request
+      case Licq::UserEvent::TypeFile:  // accept or refuse a file transfer
         myRead1Button->setText(tr("&Reply"));
         if (m->IsCancelled())
           myMessageView->append(tr("\n--------------------\nRequest was cancelled."));
@@ -708,32 +708,32 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
           }
           // If this is a chat, and we already have chats going, and this is
           // not a join request, then we can join
-          if (m->SubCommand() == ICQ_CMDxSUB_CHAT &&
+          if (m->eventType() == Licq::UserEvent::TypeChat &&
               ChatDlg::chatDlgs.size() > 0 &&
               dynamic_cast<Licq::EventChat*>(m)->Port() == 0)
             myRead4Button->setText(tr("&Join"));
         }
         break;
 
-      case ICQ_CMDxSUB_MSG:
+      case Licq::UserEvent::TypeMessage:
         myRead1Button->setText(tr("&Reply"));
         myRead2Button->setText(tr("&Quote"));
         myRead3Button->setText(tr("&Forward"));
         myRead4Button->setText(tr("Start Chat"));
         break;
 
-      case ICQ_CMDxSUB_SMS:
+      case Licq::UserEvent::TypeSms:
         myEncoding->setEnabled(false);
         break;
 
-      case ICQ_CMDxSUB_URL:   // view a url
+      case Licq::UserEvent::TypeUrl:   // view a url
         myRead1Button->setText(tr("&Reply"));
         myRead2Button->setText(tr("&Quote"));
         myRead3Button->setText(tr("&Forward"));
         myRead4Button->setText(tr("&View"));
         break;
 
-      case ICQ_CMDxSUB_AUTHxREQUEST:
+      case Licq::UserEvent::TypeAuthRequest:
       {
         myRead1Button->setText(tr("A&uthorize"));
         myRead2Button->setText(tr("&Refuse"));
@@ -744,7 +744,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         break;
       }
 
-      case ICQ_CMDxSUB_AUTHxGRANTED:
+      case Licq::UserEvent::TypeAuthGranted:
       {
         Licq::EventAuthGranted* pAuth = dynamic_cast<Licq::EventAuthGranted*>(m);
         if (!Licq::gUserManager.userExists(pAuth->userId()))
@@ -753,7 +753,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         break;
       }
 
-      case ICQ_CMDxSUB_ADDEDxTOxLIST:
+      case Licq::UserEvent::TypeAdded:
       {
         Licq::EventAdded* pAdd = dynamic_cast<Licq::EventAdded*>(m);
         if (!Licq::gUserManager.userExists(pAdd->userId()))
@@ -762,7 +762,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         break;
       }
 
-      case ICQ_CMDxSUB_CONTACTxLIST:
+      case Licq::UserEvent::TypeContactList:
       {
         int s = dynamic_cast<Licq::EventContactList*>(m)->Contacts().size();
         if (s > 1)
@@ -773,7 +773,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         break;
       }
 
-      case ICQ_CMDxSUB_EMAILxALERT:
+      case Licq::UserEvent::TypeEmailAlert:
         myRead1Button->setText(tr("&View Email"));
         break;
     } // switch

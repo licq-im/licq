@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include <licq/contactlist/user.h>
-#include <licq/icqdefines.h>
 #include <licq/userevents.h>
 
 #include <QAction>
@@ -207,31 +206,31 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const Licq::User* u)
 
   if (u->NewMessages() > 0) // use an event icon
   {
-    unsigned short SubCommand = ICQ_CMDxSUB_MSG;
+    unsigned eventType = Licq::UserEvent::TypeMessage;
     for (unsigned short i = 0; i < u->NewMessages(); i++)
-      switch (u->EventPeek(i)->SubCommand())
+      switch (u->EventPeek(i)->eventType())
       {
-	case ICQ_CMDxSUB_FILE:
-	  SubCommand = ICQ_CMDxSUB_FILE;
-	  break;
-	case ICQ_CMDxSUB_CHAT:
-	  if (SubCommand != ICQ_CMDxSUB_FILE)
-	    SubCommand = ICQ_CMDxSUB_CHAT;
-	  break;
-	case ICQ_CMDxSUB_URL:
-	  if (SubCommand != ICQ_CMDxSUB_FILE &&
-	      SubCommand != ICQ_CMDxSUB_CHAT)
-	    SubCommand = ICQ_CMDxSUB_URL;
-	  break;
-	case ICQ_CMDxSUB_CONTACTxLIST:
-	  if (SubCommand != ICQ_CMDxSUB_FILE &&
-	      SubCommand != ICQ_CMDxSUB_CHAT &&
-	      SubCommand != ICQ_CMDxSUB_URL)
-	    SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
-	  break;
+        case Licq::UserEvent::TypeFile:
+          eventType = Licq::UserEvent::TypeFile;
+          break;
+        case Licq::UserEvent::TypeChat:
+          if (eventType != Licq::UserEvent::TypeFile)
+            eventType = Licq::UserEvent::TypeChat;
+          break;
+        case Licq::UserEvent::TypeUrl:
+          if (eventType != Licq::UserEvent::TypeFile &&
+              eventType != Licq::UserEvent::TypeChat)
+            eventType = Licq::UserEvent::TypeUrl;
+          break;
+        case Licq::UserEvent::TypeContactList:
+          if (eventType != Licq::UserEvent::TypeFile &&
+              eventType != Licq::UserEvent::TypeChat &&
+              eventType != Licq::UserEvent::TypeUrl)
+            eventType = Licq::UserEvent::TypeContactList;
+          break;
       }
 
-    icon = IconManager::instance()->iconForEvent(SubCommand);
+    icon = IconManager::instance()->iconForEvent(eventType);
     myTabs->setTabColor(tab, QColor("blue"));
 
     // to clear it..

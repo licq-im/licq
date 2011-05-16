@@ -35,7 +35,6 @@
 #include <licq/logging/logutils.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -397,8 +396,8 @@ bool Daemon::addUserEvent(Licq::User* u, Licq::UserEvent* e)
   // Don't log a user event if this user is on the ignore list
   if (u->IgnoreList() ||
       (e->IsMultiRec() && ignoreType(IgnoreMassMsg)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_EMAILxPAGER && ignoreType(IgnoreEmailPager)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_WEBxPANEL && ignoreType(IgnoreWebPanel)) )
+      (e->eventType() == Licq::UserEvent::TypeEmailPager && ignoreType(IgnoreEmailPager)) ||
+      (e->eventType() == Licq::UserEvent::TypeWebPanel && ignoreType(IgnoreWebPanel)) )
   {
     delete e;
     return false;

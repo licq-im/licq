@@ -77,7 +77,6 @@ extern "C"
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
-#include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -1107,8 +1106,8 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
       // if one of the new events is a msg in chatview mode,
       // change def function to send
       for (unsigned short i = 0; i < u->NewMessages(); i++)
-        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG ||
-            u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
+        if (u->EventPeek(i)->eventType() == Licq::UserEvent::TypeMessage ||
+            u->EventPeek(i)->eventType() == Licq::UserEvent::TypeUrl)
         {
           convoId = u->EventPeek(i)->ConvoId();
           send = true;
@@ -1243,8 +1242,8 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
 
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
-        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG ||
-            u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
+        if (u->EventPeek(i)->eventType() == Licq::UserEvent::TypeMessage ||
+            u->EventPeek(i)->eventType() == Licq::UserEvent::TypeUrl)
         {
           int convoId = u->EventPeek(i)->ConvoId();
           u.unlock();
@@ -1429,10 +1428,10 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
                 if (event->IsUrgent())
                   urgent = true;
 
-                switch (event->SubCommand())
+                switch (event->eventType())
                 {
-                  case ICQ_CMDxSUB_MSG:
-                  case ICQ_CMDxSUB_URL:
+                  case Licq::UserEvent::TypeMessage:
+                  case Licq::UserEvent::TypeUrl:
                     bCallSendMsg = true;
                     break;
                   default:

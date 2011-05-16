@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ public:
     SortPrefixRole,                     // Primary sort index (UserItems only)
     SortRole,                           // Sort index (secondary index for UserItems, only index for GroupItems)
     UnreadEventsRole,                   // Number of unread events
-    EventSubCommandRole,                // Type of event (UserItems only)
+    EventTypeRole,                      // Type of event (UserItems only)
     GroupIdRole,                        // Id for groups, parent groups for other items
     SubGroupRole,                       // Sub group type (one of enum SubGroupType) (UserItems and BarItems only)
     UserCountRole,                      // Number of users in this group (GroupItems and BarItems only)

@@ -38,7 +38,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
 #include <licq/userevents.h>
 
@@ -334,7 +333,7 @@ void HistoryDlg::showHistory()
       continue;
 
     QString messageText;
-    if ((*item)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+    if ((*item)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
       messageText = QString::fromUtf8((*item)->text().c_str());
     else
       messageText = myContactCodec->toUnicode((*item)->text().c_str());
@@ -353,7 +352,7 @@ void HistoryDlg::showHistory()
 
     // Add entry to history view
     myHistoryView->addMsg((*item)->isReceiver(), false,
-        ((*item)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : ((*item)->description() + " ").c_str()),
+        ((*item)->eventType() == Licq::UserEvent::TypeMessage ? "" : ((*item)->description() + " ").c_str()),
         date,
         (*item)->IsDirect(),
         (*item)->IsMultiRec(),
@@ -407,7 +406,7 @@ void HistoryDlg::find(bool backwards)
     for (i = myHistoryList.begin(); i != myHistoryList.end(); ++i)
     {
       QString messageText;
-      if ((*i)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+      if ((*i)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
         messageText = QString::fromUtf8((*i)->text().c_str());
       else
         messageText = myContactCodec->toUnicode((*i)->text().c_str());
@@ -460,7 +459,7 @@ void HistoryDlg::find(bool backwards)
     if (mySearchPos != myHistoryList.end())
     {
       QString messageText;
-      if ((*mySearchPos)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+      if ((*mySearchPos)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
         messageText = QString::fromUtf8((*mySearchPos)->text().c_str());
       else
         messageText = myContactCodec->toUnicode((*mySearchPos)->text().c_str());

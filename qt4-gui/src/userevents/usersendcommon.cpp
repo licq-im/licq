@@ -274,7 +274,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           QString str;
           date.setTime_t((*lHistoryIter)->Time());
           QString messageText;
-          if ((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+          if ((*lHistoryIter)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
             messageText = QString::fromUtf8((*lHistoryIter)->text().c_str());
           else
             messageText = myCodec->toUnicode((*lHistoryIter)->text().c_str());
@@ -282,7 +282,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           myHistoryView->addMsg(
               (*lHistoryIter)->isReceiver(),
               true,
-              (*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : ((*lHistoryIter)->description() + " ").c_str(),
+              (*lHistoryIter)->eventType() == Licq::UserEvent::TypeMessage ? "" : ((*lHistoryIter)->description() + " ").c_str(),
               date,
               (*lHistoryIter)->IsDirect(),
               (*lHistoryIter)->IsMultiRec(),
@@ -777,9 +777,9 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
   mySendServerCheck->setChecked(!online);
   myUrgentCheck->setChecked(level == ICQ_TCPxMSG_URGENT);
 
-  switch (e->userEvent()->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
+  switch (e->userEvent()->eventType())
   {
-    case ICQ_CMDxSUB_MSG:
+    case Licq::UserEvent::TypeMessage:
     {
       bool userOffline = true;
       {
@@ -848,7 +848,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeUrl:
     {
       const Licq::EventUrl* ue = dynamic_cast<const Licq::EventUrl*>(e->userEvent());
 
@@ -858,7 +858,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_CONTACTxLIST:
+    case Licq::UserEvent::TypeContactList:
     {
       const Licq::EventContactList* ue = dynamic_cast<const Licq::EventContactList*>(e->userEvent());
       const Licq::EventContactList::ContactList& clist = ue->Contacts();
@@ -877,7 +877,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_CHAT:
+    case Licq::UserEvent::TypeChat:
     {
       const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
 
@@ -893,7 +893,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_FILE:
+    case Licq::UserEvent::TypeFile:
     {
       const Licq::EventFile* ue = dynamic_cast<const Licq::EventFile*>(e->userEvent());
       list<string> filelist(ue->FileList());
@@ -905,7 +905,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_SMS:
+    case Licq::UserEvent::TypeSms:
     {
       const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
 
@@ -1269,8 +1269,8 @@ void UserSendCommon::clearNewEvents()
         {
           const Licq::UserEvent* e = u->EventPeek(i);
           if (e->Id() <= myHighestEventId && e->isReceiver() &&
-              (e->SubCommand() == ICQ_CMDxSUB_MSG ||
-               e->SubCommand() == ICQ_CMDxSUB_URL))
+              (e->eventType() == Licq::UserEvent::TypeMessage ||
+              e->eventType() == Licq::UserEvent::TypeUrl))
             idList.push_back(e->Id());
         }
 

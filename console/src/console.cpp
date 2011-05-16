@@ -1619,7 +1619,7 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
     wattroff(winMain->Win(), A_BOLD);
 
     // Do we want to accept the file transfer?
-    if (e->SubCommand() == ICQ_CMDxSUB_FILE)
+    if (e->eventType() == Licq::UserEvent::TypeFile)
       FileChatOffer(e, userId);
 
     delete e;
