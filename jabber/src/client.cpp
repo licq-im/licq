@@ -33,6 +33,7 @@
 #include <gloox/rostermanager.h>
 
 #include <licq/contactlist/user.h>
+#include <licq/daemon.h>
 #include <licq/logging/log.h>
 #include <licq/licqversion.h>
 
@@ -41,6 +42,7 @@
 using namespace Jabber;
 
 using Licq::User;
+using Licq::gDaemon;
 using Licq::gLog;
 using std::string;
 
@@ -67,18 +69,17 @@ Client::Client(const Config& config, Handler& handler,
 
   myClient.setTls(config.getTlsPolicy());
 
-  const Config::Proxy& proxy = config.getProxy();
-  if (proxy.myType == Config::Proxy::TYPE_DISABLED)
+  if (!gDaemon.proxyEnabled())
   {
     if (!config.getServer().empty())
       myClient.setServer(config.getServer());
     if (config.getPort() != -1)
       myClient.setPort(config.getPort());
   }
-  else if (proxy.myType == Config::Proxy::TYPE_HTTP)
+  else if (gDaemon.proxyType() == Licq::Daemon::ProxyTypeHttp)
   {
     myTcpClient = new gloox::ConnectionTCPClient(
-      myClient.logInstance(), proxy.myServer, proxy.myPort);
+      myClient.logInstance(), gDaemon.proxyHost(), gDaemon.proxyPort());
 
     std::string server = myClient.server();
     if (!config.getServer().empty())
@@ -89,7 +90,7 @@ Client::Client(const Config& config, Handler& handler,
         &myClient, myTcpClient, myClient.logInstance(),
         server, config.getPort());
 
-    httpProxy->setProxyAuth(proxy.myUsername, proxy.myPassword);
+    httpProxy->setProxyAuth(gDaemon.proxyLogin(), gDaemon.proxyPasswd());
 
     myClient.setConnectionImpl(httpProxy);
   }
