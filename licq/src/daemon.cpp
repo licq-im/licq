@@ -117,7 +117,7 @@ void Daemon::initialize()
   setTcpEnabled(!myBehindFirewall || (myBehindFirewall && myTcpEnabled));
 
   licqConf.get("ProxyEnabled", myProxyEnabled, false);
-  licqConf.get("ProxyServerType", myProxyType, PROXY_TYPE_HTTP);
+  licqConf.get("ProxyServerType", myProxyType, ProxyTypeHttp);
   licqConf.get("ProxyServer", myProxyHost, "");
   licqConf.get("ProxyServerPort", myProxyPort, 0);
   licqConf.get("ProxyAuthEnabled", myProxyAuthEnabled, false);
@@ -345,7 +345,7 @@ Licq::Proxy* Licq::Daemon::createProxy()
 
   switch (myProxyType)
   {
-    case PROXY_TYPE_HTTP :
+    case ProxyTypeHttp:
       Proxy = new HttpProxy();
       break;
     default:
