@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,6 @@ CMSN::CMSN(int _nPipe) : m_vlPacketBucket(211)
   m_pNexusBuff = 0;
   m_pSSLPacket = 0;
   myStatus = Licq::User::OfflineStatus;
-  myOldStatus = Licq::User::OnlineStatus;
   m_szUserName = 0;
   myPassword = "";
   m_nSessionStart = 0;
@@ -96,8 +95,6 @@ CMSN::CMSN(int _nPipe) : m_vlPacketBucket(211)
 
   msnConf.setSection("network");
   msnConf.get("ListVersion", m_nListVersion, 0);
-  msnConf.get("MsnServerAddress", myServerAddress, MSN_DEFAULT_SERVER_ADDRESS);
-  msnConf.get("MsnServerPort", myServerPort, MSN_DEFAULT_SERVER_PORT);
 
   // pthread stuff now
   pthread_mutex_init(&mutex_StartList, 0);
@@ -123,8 +120,6 @@ void CMSN::saveConfig()
   msnConf.loadFile();
   msnConf.setSection("network");
   msnConf.set("ListVersion", m_nListVersion);
-  msnConf.set("MsnServerAddress", myServerAddress);
-  msnConf.set("MsnServerPort", myServerPort);
   msnConf.writeFile();
 }
 
@@ -456,7 +451,7 @@ void CMSN::Run()
             m_nServerSocket = -1;
             gSocketMan.DropSocket(sock);
             gSocketMan.CloseSocket(nSD);
-            MSNLogon(myServerAddress.c_str(), myServerPort, myStatus);
+            Logon(myStatus);
           }
         }
         
@@ -561,7 +556,7 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
       if (m_nServerSocket < 0)
       {
         Licq::ProtoLogonSignal* sig = static_cast<Licq::ProtoLogonSignal*>(s);
-        MSNLogon(myServerAddress.c_str(), myServerPort, sig->status());
+        Logon(sig->status());
       }
       break;
     }
