@@ -1614,8 +1614,18 @@ int IcqProtocol::ConnectToLoginServer()
   if (gDaemon.proxyEnabled())
     InitProxy();
 
+  string serverHost;
+  int serverPort;
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    if (!o.isLocked())
+      return -1;
+    serverHost = o->serverHost();
+    serverPort = o->serverPort();
+  }
+
   // Which protocol plugin?
-  int r = ConnectToServer(myIcqServer.c_str(), myIcqServerPort);
+  int r = ConnectToServer(serverHost.c_str(), serverPort);
 
   myNewSocketPipe.putChar('S');
 
@@ -1836,7 +1846,8 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
       {
-        nPort = myIcqServerPort;
+        Licq::OwnerReadGuard o(LICQ_PPID);
+        nPort = o->serverPort();
       }
 
       switch (nFam)

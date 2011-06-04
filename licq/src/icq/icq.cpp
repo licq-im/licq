@@ -43,8 +43,6 @@ using Licq::OnEventData;
 using Licq::gLog;
 using Licq::gOnEventManager;
 
-// Constants
-const char* const CICQDaemon::DefaultServerHost = "login.icq.com";
 
 std::list <CReverseConnectToUserData *> IcqProtocol::m_lReverseConnect;
 pthread_mutex_t IcqProtocol::mutex_reverseconnect = PTHREAD_MUTEX_INITIALIZER;
@@ -92,10 +90,6 @@ void IcqProtocol::initialize()
   licqConf.loadFile();
 
   licqConf.setSection("network");
-
-  // ICQ Server
-  licqConf.get("ICQServer", myIcqServer, DefaultServerHost);
-  licqConf.get("ICQServerPort", myIcqServerPort, DefaultServerPort);
 
   licqConf.get("MaxUsersPerPacket", myMaxUsersPerPacket, 100);
   licqConf.get("AutoUpdateInfo", m_bAutoUpdateInfo, true);
@@ -186,10 +180,6 @@ bool IcqProtocol::start()
 void IcqProtocol::save(Licq::IniFile& licqConf)
 {
   licqConf.setSection("network");
-
-  // ICQ Server
-  licqConf.set("ICQServer", myIcqServer);
-  licqConf.set("ICQServerPort", myIcqServerPort);
 
   licqConf.set("MaxUsersPerPacket", myMaxUsersPerPacket);
   licqConf.set("AutoUpdateInfo", m_bAutoUpdateInfo);
