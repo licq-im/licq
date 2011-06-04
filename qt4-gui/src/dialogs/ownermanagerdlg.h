@@ -22,6 +22,7 @@
 
 #include <QDialog>
 
+class QMenu;
 class QPushButton;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -95,6 +96,9 @@ private slots:
    */
   void updateOwners();
 
+  /// Refresh protocol list
+  void updateProtocols();
+
 private:
   static OwnerManagerDlg* myInstance;
 
@@ -114,7 +118,8 @@ private:
   RegisterUserDlg* registerUserDlg;
 
   QTreeWidget* ownerView;
-  QPushButton* addButton;
+  QMenu* myAddMenu;
+  QPushButton* myAddButton;
   QPushButton* registerButton;
   QPushButton* modifyButton;
   QPushButton* removeButton;

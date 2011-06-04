@@ -23,7 +23,9 @@
 
 #include <boost/foreach.hpp>
 
+#include <QAction>
 #include <QDialogButtonBox>
+#include <QMenu>
 #include <QPushButton>
 #include <QStringList>
 #include <QTreeWidget>
@@ -81,8 +83,11 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   QDialogButtonBox* buttons = new QDialogButtonBox();
   toplay->addWidget(buttons);
 
-  addButton = new QPushButton(tr("&Add..."));
-  buttons->addButton(addButton, QDialogButtonBox::ActionRole);
+  myAddMenu = new QMenu(this);
+
+  myAddButton = new QPushButton(tr("&Add"));
+  myAddButton->setMenu(myAddMenu);
+  buttons->addButton(myAddButton, QDialogButtonBox::ActionRole);
 
   registerButton = new QPushButton(tr("&Register..."));
   buttons->addButton(registerButton, QDialogButtonBox::ActionRole);
@@ -100,13 +105,13 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   connect(ownerView, SIGNAL(itemSelectionChanged()), SLOT(listSelectionChanged()));
   connect(ownerView, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
       SLOT(modifyOwner(QTreeWidgetItem*, int)));
-  connect(addButton, SIGNAL(clicked()), SLOT(addOwner()));
   connect(registerButton, SIGNAL(clicked()), SLOT(registerOwner()));
   connect(modifyButton, SIGNAL(clicked()), SLOT(modifyOwner()));
   connect(removeButton, SIGNAL(clicked()), SLOT(removeOwner()));
   connect(closeButton, SIGNAL(clicked()), SLOT(close()));
   connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateOwners()));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateOwners()));
+  connect(gGuiSignalManager, SIGNAL(protocolPlugin(unsigned long)), SLOT(updateProtocols()));
 
   // Add the owners to the list now
   updateOwners();
@@ -156,6 +161,34 @@ void OwnerManagerDlg::updateOwners()
   ownerView->resizeColumnToContents(0);
   ownerView->resizeColumnToContents(1);
   ownerView->sortByColumn(0, Qt::AscendingOrder);
+
+  updateProtocols();
+}
+
+void OwnerManagerDlg::updateProtocols()
+{
+  bool enableAdd = false;
+  myAddMenu->clear();
+
+  Licq::ProtocolPluginsList protocols;
+  Licq::gPluginManager.getProtocolPluginsList(protocols);
+  BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
+  {
+    unsigned long ppid = protocol->getProtocolId();
+    Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
+
+    if (userId.isValid())
+      // Owner exists, don't allow adding another
+      continue;
+
+    enableAdd = true;
+
+    QAction* a = myAddMenu->addAction(QString::fromLocal8Bit(protocol->getName()), this, SLOT(addOwner()));
+    a->setIcon(IconManager::instance()->iconForProtocol(ppid));
+    a->setData(QString::number(ppid));
+  }
+
+  myAddButton->setEnabled(enableAdd);
 }
 
 void OwnerManagerDlg::listSelectionChanged()
@@ -168,7 +201,12 @@ void OwnerManagerDlg::listSelectionChanged()
 
 void OwnerManagerDlg::addOwner()
 {
-  new OwnerEditDlg(0, this);
+  QAction* a = qobject_cast<QAction*>(sender());
+  if (a == NULL)
+    return;
+
+  unsigned long ppid = a->data().toUInt();
+  new OwnerEditDlg(ppid, this);
 }
 
 void OwnerManagerDlg::registerOwner()
