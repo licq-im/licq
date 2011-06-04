@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <licq/thread/mutexlocker.h>
 
 using Licq::MutexLocker;
+using namespace std;
 using namespace LicqDaemon;
 
 ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
@@ -33,6 +34,15 @@ ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
   loadSymbol(prefix + "_Init", myInit);
   loadSymbol(prefix + "_PPID", myPpid);
   loadSymbol(prefix + "_SendFuncs", mySendFunctions);
+
+  const char* (*getDefaultHost)();
+  loadSymbol(prefix + "_DefSrvHost", getDefaultHost);
+  if (getDefaultHost != NULL)
+    myDefaultHost = (*getDefaultHost)();
+
+  int (*getDefaultPort)();
+  loadSymbol(prefix + "_DefSrvPort", getDefaultPort);
+  myDefaultPort = (getDefaultPort == NULL ? 0 : (*getDefaultPort)() );
 
   const char* ppid = (*myPpid)();
   myProtocolId = ppid[0] << 24 | ppid[1] << 16 | ppid[2] << 8 | ppid[3];
@@ -76,6 +86,16 @@ unsigned long ProtocolPlugin::getProtocolId() const
 unsigned long ProtocolPlugin::getSendFunctions() const
 {
   return (*mySendFunctions)();
+}
+
+const string& ProtocolPlugin::getDefaultServerHost() const
+{
+  return myDefaultHost;
+}
+
+int ProtocolPlugin::getDefaultServerPort() const
+{
+  return myDefaultPort;
 }
 
 bool ProtocolPlugin::initThreadEntry()

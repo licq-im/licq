@@ -78,6 +78,7 @@ set(_licq_plugin_symbols
   LP_BuildDate LP_BuildTime LP_Usage
   LP_Init LP_Main LP_ConfigFile
   LProto_Name LProto_Version LProto_PPID
+  LProto_DefSrvHost LProto_DefSrvPort
   LProto_Init LProto_Main LProto_SendFuncs)
 
 macro (LICQ_ADD_PLUGIN _licq_plugin_name)
