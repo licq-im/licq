@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009 Licq developers
+ * Copyright (C) 2007-2009,2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,17 +95,8 @@ private:
   QLineEdit* myProxyLoginEdit;
   QLineEdit* myProxyPasswdEdit;
   QSpinBox* myProxyPortSpin;
-
-  // Widgets for icq network settings
-  QVBoxLayout* myPageIcqLayout;
-  QGroupBox* myIcqServerBox;
   QGroupBox* myIcqConnectionBox;
-  QGridLayout* myIcqServerLayout;
   QVBoxLayout* myIcqConnectionLayout;
-  QLabel* myIcqServerLabel;
-  QLabel* myIcqServerPortLabel;
-  QLineEdit* myIcqServerEdit;
-  QSpinBox* myIcqServerPortSpin;
 };
 
 } // namespace Settings
