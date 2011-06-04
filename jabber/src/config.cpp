@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -28,7 +28,6 @@ using namespace Jabber;
 
 Config::Config(const std::string& filename) :
   myFile(NULL),
-  myPort(-1),
   myTlsPolicy(gloox::TLSOptional),
   myResource("Licq")
 {
@@ -40,9 +39,6 @@ Config::Config(const std::string& filename) :
 
   std::string value;
   myFile->setSection("network");
-
-  myFile->get("Server", myServer);
-  myFile->get("Port", myPort, -1);
 
   myFile->get("TlsPolicy", value, "optional");
   if (value == "disabled")
@@ -59,9 +55,6 @@ Config::Config(const std::string& filename) :
 Config::~Config()
 {
   myFile->setSection("network");
-
-  myFile->set("Server", myServer);
-  myFile->set("Port", myPort);
 
   if (myTlsPolicy == gloox::TLSDisabled)
     myFile->set("TlsPolicy", "disabled");

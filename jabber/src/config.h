@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -41,16 +41,12 @@ public:
   ~Config();
 
   // Network settings
-  int getPort() const { return myPort; }
-  const std::string& getServer() const { return myServer; }
   gloox::TLSPolicy getTlsPolicy() const { return myTlsPolicy; }
   const std::string& getResource() const { return myResource; }
 
 private:
   Licq::IniFile* myFile;
 
-  int myPort;
-  std::string myServer;
   gloox::TLSPolicy myTlsPolicy;
   std::string myResource;
 };

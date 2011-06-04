@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -46,8 +46,8 @@ using Licq::gDaemon;
 using Licq::gLog;
 using std::string;
 
-Client::Client(const Config& config, Handler& handler,
-               const string& username, const string& password) :
+Client::Client(const Config& config, Handler& handler, const string& username,
+    const string& password, const string& host, int port) :
   myHandler(handler),
   mySessionManager(NULL),
   myJid(username + "/" + config.getResource()),
@@ -71,10 +71,10 @@ Client::Client(const Config& config, Handler& handler,
 
   if (!gDaemon.proxyEnabled())
   {
-    if (!config.getServer().empty())
-      myClient.setServer(config.getServer());
-    if (config.getPort() != -1)
-      myClient.setPort(config.getPort());
+    if (!host.empty())
+      myClient.setServer(host);
+    if (port > 0)
+      myClient.setPort(port);
   }
   else if (gDaemon.proxyType() == Licq::Daemon::ProxyTypeHttp)
   {
@@ -82,13 +82,13 @@ Client::Client(const Config& config, Handler& handler,
       myClient.logInstance(), gDaemon.proxyHost(), gDaemon.proxyPort());
 
     std::string server = myClient.server();
-    if (!config.getServer().empty())
-      server = config.getServer();
+    if (!host.empty())
+      server = host;
 
     gloox::ConnectionHTTPProxy* httpProxy =
       new gloox::ConnectionHTTPProxy(
         &myClient, myTcpClient, myClient.logInstance(),
-        server, config.getPort());
+        server, (port > 0 ? port : -1));
 
     httpProxy->setProxyAuth(gDaemon.proxyLogin(), gDaemon.proxyPasswd());
 

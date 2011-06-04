@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -55,7 +55,7 @@ class Client : private boost::noncopyable,
 {
 public:
   Client(const Config& config, Handler& handler, const std::string& user,
-         const std::string& password);
+      const std::string& password, const std::string& host, int port);
   virtual ~Client();
 
   int getSocket();
