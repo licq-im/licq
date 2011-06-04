@@ -331,6 +331,12 @@ const QPixmap& IconManager::iconForStatus(unsigned status, const Licq::UserId& u
   return myStatusIconMap[QPair<ProtocolType, unsigned>(ProtocolIcq, User::OnlineStatus)];
 }
 
+const QPixmap& IconManager::iconForProtocol(unsigned long protocolId)
+{
+  Licq::UserId userId = Licq::UserId("1", protocolId);
+  return iconForStatus(Licq::User::OnlineStatus, userId);
+}
+
 const QPixmap& IconManager::iconForEvent(unsigned eventType)
 {
   IconType icon;

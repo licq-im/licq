@@ -167,6 +167,15 @@ public:
       bool allowInvisible = false);
 
   /**
+   * Get icon for a protocol
+   * Note: Will always return ICQ icon for oscar protocol, never AIM
+   *
+   * @param protocolId Protocol to get icon for
+   * @return Online icon for the requested protocol
+   */
+  const QPixmap& iconForProtocol(unsigned long protocolId);
+
+  /**
    * Get icon for a user
    *
    * @param user An already locked object of LicqUser type
