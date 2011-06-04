@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
+#include <licq/pluginmanager.h>
 
 #include "gettext.h"
 #include <licq/logging/log.h>
@@ -87,6 +88,58 @@ Owner::Owner(const UserId& id)
   myConf.get("StartupStatus", statusStr, "");
   if (!User::stringToStatus(statusStr, myStartupStatus))
     myStartupStatus = User::OfflineStatus;
+
+  string defaultHost;
+  int defaultPort = 0;
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myId.protocolId());
+  if (protocol.get() != NULL)
+  {
+    defaultHost = protocol->getDefaultServerHost();
+    defaultPort = protocol->getDefaultServerPort();
+  }
+
+  bool gotserver = false;
+  if (myConf.get("ServerHost", myServerHost, defaultHost))
+    gotserver = true;
+  if (myConf.get("ServerPort", myServerPort, defaultPort))
+    gotserver = true;
+
+  if (!gotserver)
+  {
+    // Server parameters are missing, this could be due to upgrade from Licq 1.5.x or older
+    // Try to migrate from protocol specific config file
+    switch (myId.protocolId())
+    {
+      case LICQ_PPID:
+      {
+        Licq::IniFile conf("licq.conf");
+        conf.loadFile();
+        conf.setSection("network");
+        conf.get("ICQServer", myServerHost, defaultHost);
+        conf.get("ICQServerPort", myServerPort, defaultPort);
+        break;
+      }
+      case MSN_PPID:
+      {
+        Licq::IniFile conf("licq_msn.conf");
+        conf.loadFile();
+        conf.setSection("network");
+        conf.get("MsnServerAddress", myServerHost, defaultHost);
+        conf.get("MsnServerPort", myServerPort, defaultPort);
+        break;
+      }
+      case JABBER_PPID:
+      {
+        Licq::IniFile conf("licq_jabber.conf");
+        conf.loadFile();
+        conf.setSection("network");
+        conf.get("Server", myServerHost, defaultHost);
+        conf.get("Port", myServerPort, defaultPort);
+        break;
+      }
+    }
+  }
+
   unsigned long sstime;
   myConf.get("SSTime", sstime, 0);
   m_nSSTime = sstime;
@@ -165,6 +218,8 @@ void Owner::SaveLicqInfo()
   myConf.set("HideIP", HideIp());
   myConf.set("Authorization", GetAuthorization());
   myConf.set("StartupStatus", User::statusToString(myStartupStatus));
+  myConf.set("ServerHost", myServerHost);
+  myConf.set("ServerPort", myServerPort);
   myConf.set("RCG", RandomChatGroup());
   myConf.set("SSTime", (unsigned long)m_nSSTime);
   myConf.set("SSCount", mySsCount);

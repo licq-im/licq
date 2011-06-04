@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,21 @@ public:
   void setStartupStatus(unsigned status)
   { myStartupStatus = status; }
 
+  /// Get server to connect to
+  const std::string& serverHost() const         { return myServerHost; }
+
+  /// Get server port to connect to
+  int serverPort() const                        { return myServerPort; }
+
+  /**
+   * Set server to use when connecting
+   *
+   * @param host Host to connect to
+   * @param port Port to connect to
+   */
+  void setServer(const std::string& host, int port)
+  { myServerHost = host; myServerPort = port; SaveLicqInfo(); }
+
   // Server Side List functions
   time_t GetSSTime() const                      { return m_nSSTime; }
   void SetSSTime(time_t t)            { m_nSSTime = t; }
@@ -81,6 +96,8 @@ protected:
 
   std::string myPassword;
   unsigned myStartupStatus;
+  std::string myServerHost;
+  int myServerPort;
   bool m_bException,
        m_bWebAware,
        m_bHideIp,
