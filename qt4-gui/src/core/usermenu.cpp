@@ -467,7 +467,7 @@ void UserMenu::send(QAction* action)
       break;
 
     case SendReqAuthorize:
-      new ReqAuthDlg(myId, myPpid);
+      new ReqAuthDlg(myUserId);
       break;
 
     case SendKey:
