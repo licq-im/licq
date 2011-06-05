@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include <licq/utility.h>
 
 #include "config/iconmanager.h"
+#include "config/shortcuts.h"
 
 #include "contactlist/contactlist.h"
 
@@ -336,6 +337,33 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeStatusOccupied]->setVisible(isIcq);
   myMiscModesActions[ModeStatusDnd]->setVisible(isIcq);
 
+  if (myShowShortcuts)
+  {
+    // Display shortcuts
+    // Note: These shortcuts are only for display, the actual shortcuts for
+    //       the main contact list are handled in mainwin.
+    Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+
+    myCheckArAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserCheckAutoresponse));
+    mySendActions[SendChat]->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendChatRequest));
+    mySendActions[SendMessage]->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendMessage));
+    mySendActions[SendFile]->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendFile));
+    mySendActions[SendUrl]->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendUrl));
+    myViewHistoryAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserViewHistory));
+    myViewEventAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserViewMessage));
+  }
+  else
+  {
+    // Hide the shortcuts (e.g. menu is displayed from a dialog)
+    myCheckArAction->setShortcut(QKeySequence());
+    mySendActions[SendChat]->setShortcut(QKeySequence());
+    mySendActions[SendMessage]->setShortcut(QKeySequence());
+    mySendActions[SendFile]->setShortcut(QKeySequence());
+    mySendActions[SendUrl]->setShortcut(QKeySequence());
+    myViewHistoryAction->setShortcut(QKeySequence());
+    myViewEventAction->setShortcut(QKeySequence());
+  }
+
   int serverGroup = (u->GetSID() ? Licq::gUserManager.GetGroupFromID(u->GetGSID()) : 0);
 
   // Update group memberships
@@ -352,23 +380,17 @@ void UserMenu::aboutToShowMenu()
     a->setChecked(a->data().toInt() == serverGroup);
 }
 
-void UserMenu::setUser(const Licq::UserId& userId)
+void UserMenu::setUser(const Licq::UserId& userId, bool showShortcuts)
 {
   myUserId = userId;
   myId = userId.accountId().c_str();
   myPpid = userId.protocolId();
+  myShowShortcuts = showShortcuts;
 }
 
-void UserMenu::setUser(const QString& id, unsigned long ppid)
+void UserMenu::popup(QPoint pos, const Licq::UserId& userId, bool showShortcuts)
 {
-  myId = id;
-  myPpid = ppid;
-  myUserId = Licq::UserId(myId.toLatin1().data(), myPpid);
-}
-
-void UserMenu::popup(QPoint pos, const Licq::UserId& userId)
-{
-  setUser(userId);
+  setUser(userId, showShortcuts);
   QMenu::popup(pos);
 }
 

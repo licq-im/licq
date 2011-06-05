@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,25 +63,18 @@ public:
    * Change which contact the menu will be displayed for.
    *
    * @param userId Contact id
+   * @param showShortcuts Show key shortcuts in menu (only set in main window)
    */
-  void setUser(const Licq::UserId& userId);
-
-  /**
-   * Change which contact the menu will be displayed for.
-   *
-   * @param ppid Contact protocol id
-   * @param userId Contact id
-   */
-  void setUser(const QString& id, unsigned long ppid);
+  void setUser(const Licq::UserId& userId, bool showShortcuts = false);
 
   /**
    * Convenience function t set user and popup the menu on a given location.
    *
    * @param pos Posititon to show menu in global coordinates
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
+   * @param showShortcuts Show key shortcuts in menu (only set in main window)
    */
-  void popup(QPoint pos, const Licq::UserId& userId);
+  void popup(QPoint pos, const Licq::UserId& userId, bool showShortcuts = false);
 
 private slots:
   /**
@@ -116,6 +109,7 @@ private:
   Licq::UserId myUserId;
   QString myId;
   unsigned long myPpid;
+  bool myShowShortcuts;
 
   // Internal numbering of send sub menu entries
   enum SendModes

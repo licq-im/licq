@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,7 @@ using namespace LicqQtGui;
 UserViewBase::UserViewBase(ContactListModel* contactList, QWidget* parent)
   : QTreeView(parent),
     myContactList(contactList),
+    myIsMainView(false),
     myAllowScrollTo(false)
 {
   setItemDelegate(new ContactDelegate(this, this));
@@ -143,7 +144,7 @@ void UserViewBase::popupMenu(QPoint point, QModelIndex item)
   {
     Licq::UserId userId = item.data(ContactListModel::UserIdRole).value<Licq::UserId>();
 
-    gUserMenu->popup(point, userId);
+    gUserMenu->popup(point, userId, myIsMainView);
   }
   else if (itemType == ContactListModel::GroupItem)
   {
