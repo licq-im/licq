@@ -42,6 +42,7 @@ class INetSocket;
 class IniFile;
 class Packet;
 class TCPSocket;
+class User;
 class UserEvent;
 }
 

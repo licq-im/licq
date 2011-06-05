@@ -36,7 +36,6 @@ typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Color;
 class Proxy;
-class User;
 class UserId;
 }
 
