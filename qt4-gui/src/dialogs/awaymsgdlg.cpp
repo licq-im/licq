@@ -147,7 +147,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
   gSarManager.releaseList();
 
   myMenu->addSeparator();
-  QAction* a = myMenu->addAction(tr("&Edit Items"), this, SLOT(selectMessage()));
+  QAction* a = myMenu->addAction(tr("&Edit Items..."), this, SLOT(selectMessage()));
   a->setData(QString());
 
   {

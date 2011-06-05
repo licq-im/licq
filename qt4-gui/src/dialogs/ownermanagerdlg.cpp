@@ -183,7 +183,7 @@ void OwnerManagerDlg::updateProtocols()
 
     enableAdd = true;
 
-    QAction* a = myAddMenu->addAction(QString::fromLocal8Bit(protocol->getName()), this, SLOT(addOwner()));
+    QAction* a = myAddMenu->addAction(QString::fromLocal8Bit(protocol->getName()) + "...", this, SLOT(addOwner()));
     a->setIcon(IconManager::instance()->iconForProtocol(ppid));
     a->setData(QString::number(ppid));
   }
