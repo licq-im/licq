@@ -168,6 +168,7 @@ void OwnerManagerDlg::updateOwners()
 void OwnerManagerDlg::updateProtocols()
 {
   bool enableAdd = false;
+  bool enableRegister = false;
   myAddMenu->clear();
 
   Licq::ProtocolPluginsList protocols;
@@ -176,6 +177,10 @@ void OwnerManagerDlg::updateProtocols()
   {
     unsigned long ppid = protocol->getProtocolId();
     Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
+
+    if (ppid == LICQ_PPID)
+      // ICQ protocol found, allow registering if there is no owner
+      enableRegister = !userId.isValid();
 
     if (userId.isValid())
       // Owner exists, don't allow adding another
@@ -189,6 +194,7 @@ void OwnerManagerDlg::updateProtocols()
   }
 
   myAddButton->setEnabled(enableAdd);
+  registerButton->setEnabled(enableRegister);
 }
 
 void OwnerManagerDlg::listSelectionChanged()
