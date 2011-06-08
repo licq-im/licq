@@ -10,6 +10,7 @@ o Qt4-Gui: Ignored users were displayed in All Users list
 o Qt4-Gui: Several menu items and buttons were missing ... after caption
 o Qt4-Gui: Main window would appear under other windows on some systems
 o Qt4-Gui: GUI could hang when toggling Send Through Server button
+o Qt4-Gui: Show keyboard shortcuts in the user popup menu from contact list
 
 
 New in 1.5.0
