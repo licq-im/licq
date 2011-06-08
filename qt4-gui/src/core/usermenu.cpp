@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,10 +255,10 @@ void UserMenu::aboutToShowMenu()
   myMakePermanentAction->setVisible(!u.isLocked() ? false : u->NotInList());
 
   if (status & User::MessageStatuses)
-    myCheckArAction->setText(tr("Check %1 Response")
+    myCheckArAction->setText(tr("Check %1 Response...")
         .arg(u->statusString(true, false).c_str()));
   else
-    myCheckArAction->setText(tr("Check Auto Response"));
+    myCheckArAction->setText(tr("Check Auto Response..."));
 
   if (!u.isLocked())
     return;
