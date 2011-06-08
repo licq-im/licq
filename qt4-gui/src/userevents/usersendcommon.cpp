@@ -432,6 +432,9 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   }
   updateShortcuts();
 
+  updateEmoticons();
+  connect(Emoticons::self(), SIGNAL(themeChanged()), SLOT(updateEmoticons()));
+
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   connect(mySendServerCheck, SIGNAL(triggered(bool)), SLOT(sendServerToggled(bool)));
@@ -507,6 +510,12 @@ void UserSendCommon::updateIcons()
   // Update message type icons in menu
   foreach (QAction* a, myEventTypeGroup->actions())
     a->setIcon(iconForType(a->data().toInt()));
+}
+
+void UserSendCommon::updateEmoticons()
+{
+  // Don't show tool button for emoticons if there are no emoticons to select
+  myEmoticon->setVisible(Emoticons::self()->emoticonsKeys().size() > 0);
 }
 
 void UserSendCommon::updateShortcuts()

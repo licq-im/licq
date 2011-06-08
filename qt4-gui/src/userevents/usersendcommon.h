@@ -166,6 +166,9 @@ protected slots:
    */
   virtual void updateIcons();
 
+  /// Update toolbar button for emoticons
+  void updateEmoticons();
+
   /**
    * Update keyboard shortcuts
    */
