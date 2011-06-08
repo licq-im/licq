@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   lay->setColumnStretch(2, 2);
   lay->setColumnMinimumWidth(1, 8);
 
-  cmbProtocol = new ProtoComboBox(ppid == 0, this);
+  cmbProtocol = new ProtoComboBox((ppid == 0 ? ProtoComboBox::FilterSkipOwners : ProtoComboBox::FilterIncludeAll), this);
 
   edtId = new QLineEdit();
   connect(edtId, SIGNAL(returnPressed()), SLOT(slot_ok()));
