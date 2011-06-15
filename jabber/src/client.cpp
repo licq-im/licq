@@ -233,7 +233,8 @@ void Client::onDisconnect(gloox::ConnectionError error)
     case gloox::ConnNoError:
       break;
     case gloox::ConnStreamError:
-      gLog.error("stream error (%d)", myClient.streamError());
+      gLog.error("stream error (%d): %s", myClient.streamError(),
+          myClient.streamErrorText().c_str());
       break;
     case gloox::ConnStreamVersionError:
       gLog.error("incoming stream version not supported");
