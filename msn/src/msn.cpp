@@ -37,7 +37,7 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
-#include <licq/plugin.h>
+#include <licq/protocolplugin.h>
 #include <licq/protocolsignal.h>
 
 #include "msn.h"

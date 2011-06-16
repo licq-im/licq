@@ -21,6 +21,7 @@
 #define LICQDAEMON_PROTOCOLPLUGIN_H
 
 #include "plugin.h"
+#include <licq/protocolplugin.h>
 
 #include <list>
 #include <queue>
