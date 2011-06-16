@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 using Licq::MutexLocker;
 using namespace LicqDaemon;
+using namespace std;
 
 Plugin::Plugin(DynamicLibrary::Ptr lib,
                PluginThread::Ptr pluginThread,
@@ -87,30 +88,30 @@ void Plugin::cancelThread()
   myThread->cancel();
 }
 
-unsigned short Plugin::getId() const
+int Plugin::id() const
 {
   return myId;
 }
 
-const char* Plugin::getName() const
+string Plugin::name() const
 {
   return (*myName)();
 }
 
-const char* Plugin::getVersion() const
+string Plugin::version() const
 {
   return (*myVersion)();
 }
 
-const char* Plugin::getConfigFile() const
+string Plugin::configFile() const
 {
   if (myConfigFile)
     return (*myConfigFile)();
   else
-    return NULL;
+    return string();
 }
 
-const std::string& Plugin::getLibraryName() const
+string Plugin::libraryName() const
 {
   return myLib->getName();
 }

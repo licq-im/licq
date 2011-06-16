@@ -78,22 +78,22 @@ Licq::ProtocolSignal* ProtocolPlugin::popSignal()
   return NULL;
 }
 
-unsigned long ProtocolPlugin::getProtocolId() const
+unsigned long ProtocolPlugin::protocolId() const
 {
   return myProtocolId;
 }
 
-unsigned long ProtocolPlugin::getSendFunctions() const
+unsigned long ProtocolPlugin::capabilities() const
 {
   return (*mySendFunctions)();
 }
 
-const string& ProtocolPlugin::getDefaultServerHost() const
+string ProtocolPlugin::defaultServerHost() const
 {
   return myDefaultHost;
 }
 
-int ProtocolPlugin::getDefaultServerPort() const
+int ProtocolPlugin::defaultServerPort() const
 {
   return myDefaultPort;
 }

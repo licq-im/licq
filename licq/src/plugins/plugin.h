@@ -86,11 +86,11 @@ public:
   inline bool wantSignal(unsigned long signal);
 
   // From Licq::Plugin
-  unsigned short getId() const;
-  const char* getName() const;
-  const char* getVersion() const;
-  const char* getConfigFile() const;
-  const std::string& getLibraryName() const;
+  int id() const;
+  std::string name() const;
+  std::string version() const;
+  std::string configFile() const;
+  std::string libraryName() const;
   void shutdown();
 
 protected:

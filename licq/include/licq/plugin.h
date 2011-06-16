@@ -39,20 +39,19 @@ public:
   static const char PipeShutdown = 'X';
 
   /// Get the plugin's unique id.
-  virtual unsigned short getId() const = 0;
+  virtual int id() const = 0;
 
   /// Get the plugin's name.
-  virtual const char* getName() const = 0;
+  virtual std::string name() const = 0;
 
   /// Get the plugin's version.
-  virtual const char* getVersion() const = 0;
+  virtual std::string version() const = 0;
 
-  /// Get the name of the plugin's config file. Can be NULL if the plugin
-  /// doesn't have a config file.
-  virtual const char* getConfigFile() const = 0;
+  /// Configuration file for the plugin. Empty string if none. Path is relative to BASE_DIR
+  virtual std::string configFile() const = 0;
 
   /// Get the name of the library from where the plugin was loaded.
-  virtual const std::string& getLibraryName() const = 0;
+  virtual std::string libraryName() const = 0;
 
   /// Ask the plugin to shutdown.
   virtual void shutdown() = 0;

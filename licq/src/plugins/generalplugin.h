@@ -53,9 +53,9 @@ public:
   Licq::Event* popEvent();
 
   // From Licq::GeneralPlugin
-  const char* getStatus() const;
-  const char* getDescription() const;
-  const char* getUsage() const;
+  bool isEnabled() const;
+  std::string description() const;
+  std::string usage() const;
   void enable();
   void disable();
 

@@ -50,10 +50,10 @@ public:
   Licq::ProtocolSignal* popSignal();
 
   // From Licq::ProtocolPlugin
-  unsigned long getProtocolId() const;
-  unsigned long getSendFunctions() const;
-  const std::string& getDefaultServerHost() const;
-  int getDefaultServerPort() const;
+  unsigned long protocolId() const;
+  unsigned long capabilities() const;
+  std::string defaultServerHost() const;
+  int defaultServerPort() const;
 
 private:
   // From Plugin

@@ -92,15 +92,15 @@ TEST(ProtocolPlugin, load)
 
 TEST_F(ProtocolPluginFixture, callApiFunctions)
 {
-  EXPECT_STREQ("Name", plugin.getName());
-  EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
+  EXPECT_EQ("Name", plugin.name());
+  EXPECT_EQ("Version", plugin.version());
+  EXPECT_EQ("ConfigFile", plugin.configFile());
   unsigned long ppid = 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D';
-  EXPECT_EQ(ppid, plugin.getProtocolId());
+  EXPECT_EQ(ppid, plugin.protocolId());
   EXPECT_TRUE(plugin.init());
-  EXPECT_EQ(42u, plugin.getSendFunctions());
-  EXPECT_STREQ("DefSrvHost", plugin.getDefaultServerHost().c_str());
-  EXPECT_EQ(12345, plugin.getDefaultServerPort());
+  EXPECT_EQ(42u, plugin.capabilities());
+  EXPECT_EQ("DefSrvHost", plugin.defaultServerHost());
+  EXPECT_EQ(12345, plugin.defaultServerPort());
 }
 
 TEST_F(ProtocolPluginFixture, init)

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,16 +97,16 @@ TEST(Plugin, load)
 
 TEST_F(PluginFixture, callApiFunctions)
 {
-  EXPECT_STREQ("Name", plugin.getName());
-  EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
-  EXPECT_EQ("", plugin.getLibraryName());
+  EXPECT_EQ("Name", plugin.name());
+  EXPECT_EQ("Version", plugin.version());
+  EXPECT_EQ("ConfigFile", plugin.configFile());
+  EXPECT_EQ("", plugin.libraryName());
 }
 
 TEST_F(PluginFixture, getSetId)
 {
   plugin.setId(1);
-  EXPECT_EQ(1, plugin.getId());
+  EXPECT_EQ(1, plugin.id());
 }
 
 TEST_F(PluginFixture, runPlugin)

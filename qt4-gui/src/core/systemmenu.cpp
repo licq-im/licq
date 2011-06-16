@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -343,8 +343,8 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
   if (protocol.get() == NULL)
     return;
 
-  OwnerData* newOwner = new OwnerData(ppid, protocol->getName(),
-      protocol->getSendFunctions(), this);
+  OwnerData* newOwner = new OwnerData(ppid, protocol->name().c_str(),
+      protocol->capabilities(), this);
   QMenu* ownerAdmin = newOwner->getOwnerAdmMenu();
   QMenu* ownerStatus = newOwner->getStatusMenu();
   myOwnerAdmMenu->insertMenu(myOwnerAdmSeparator, ownerAdmin);

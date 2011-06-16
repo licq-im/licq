@@ -84,7 +84,7 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
   mySendFuncs = 0;
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myPpid);
   if (protocol.get() != NULL)
-    mySendFuncs = protocol->getSendFunctions();
+    mySendFuncs = protocol->capabilities();
 
   myCodec = QTextCodec::codecForLocale();
   myIsOwner = Licq::gUserManager.isOwner(myUsers.front());
