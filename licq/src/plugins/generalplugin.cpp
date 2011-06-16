@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ extern char** global_argv;
 
 using Licq::MutexLocker;
 using namespace LicqDaemon;
+using namespace std;
 
 GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
                              PluginThread::Ptr pluginThread) :
@@ -117,17 +118,18 @@ Licq::Event* GeneralPlugin::popEvent()
   return NULL;
 }
 
-const char* GeneralPlugin::getStatus() const
+bool GeneralPlugin::isEnabled() const
 {
-  return (*myStatus)();
+  const char* strStatus = (*myStatus)();
+  return (strstr(strStatus, "enabled") != NULL || strstr(strStatus, "running"));
 }
 
-const char* GeneralPlugin::getDescription() const
+string GeneralPlugin::description() const
 {
   return (*myDescription)();
 }
 
-const char* GeneralPlugin::getUsage() const
+string GeneralPlugin::usage() const
 {
   return (*myUsage)();
 }

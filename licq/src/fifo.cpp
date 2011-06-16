@@ -209,9 +209,9 @@ static bool buffer_get_ids(char* buffer, char** szId, unsigned long* nPPID,
 
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      if ( !strcmp(plugin->getName(), buffer) )
+      if (plugin->name() == buffer)
       {
-        *nPPID = plugin->getProtocolId();
+        *nPPID = plugin->protocolId();
         found = true;
       }
     }
@@ -567,9 +567,9 @@ static int fifo_setpicture(int argc, const char* const* argv)
 
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      if (strcmp(plugin->getName(), argv[2]) == 0)
+      if (plugin->name() == argv[2])
       {
-        protocolId = plugin->getProtocolId();
+        protocolId = plugin->protocolId();
         break;
       }
     }
@@ -681,7 +681,7 @@ static int fifo_plugin_list(int /* argc */, const char* const* /* argv */)
 
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    gLog.info("[%3d] %s\n", plugin->getId(), plugin->getName());
+    gLog.info("[%3d] %s\n", plugin->id(), plugin->name().c_str());
   }
   return 0;
 }
@@ -714,7 +714,7 @@ static int fifo_plugin_unload(int argc, const char* const* argv)
 
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    if (strcmp(plugin->getName(), argv[1]) == 0)
+    if (plugin->name() == argv[1])
     {
       plugin->shutdown();
       return 0;
@@ -731,7 +731,7 @@ static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */)
 
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    gLog.info("[%3d] %s\n", plugin->getId(), plugin->getName());
+    gLog.info("[%3d] %s\n", plugin->id(), plugin->name().c_str());
   }
   return 0;
 }
@@ -764,7 +764,7 @@ static int fifo_proto_plugin_unload(int argc, const char* const* argv)
 
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if (strcmp(plugin->getName(), argv[1]) == 0)
+    if (plugin->name() == argv[1])
     {
       plugin->shutdown();
       return 0;

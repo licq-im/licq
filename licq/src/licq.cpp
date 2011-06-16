@@ -387,11 +387,8 @@ bool CLicq::Init(int argc, char **argv)
       return false;
     if (bHelp)
     {
-      fprintf(stderr,
-              "----------\nLicq Plugin: %s %s\n%s\n",
-              plugin->getName(),
-              plugin->getVersion(),
-              plugin->getUsage());
+      fprintf(stderr, "----------\nLicq Plugin: %s %s\n%s\n",
+          plugin->name().c_str(), plugin->version().c_str(), plugin->usage().c_str());
     }
     free(*iter);
   }
@@ -402,10 +399,8 @@ bool CLicq::Init(int argc, char **argv)
       return false;
     if (bHelp)
     {
-      fprintf(stderr,
-              "----------\nLicq Protocol Plugin: %s %s\n",
-              plugin->getName(),
-              plugin->getVersion());
+      fprintf(stderr, "----------\nLicq Protocol Plugin: %s %s\n",
+          plugin->name().c_str(), plugin->version().c_str());
     }
     free(*iter);
   }
@@ -858,7 +853,7 @@ void CLicq::SaveLoadedPlugins()
   BOOST_FOREACH(GeneralPlugin::Ptr plugin, general)
   {
     sprintf(szKey, "Plugin%d", i++);
-    licqConf.set(szKey, plugin->getLibraryName());
+    licqConf.set(szKey, plugin->libraryName());
   }
 
   Licq::ProtocolPluginsList protocols;
@@ -871,10 +866,10 @@ void CLicq::SaveLoadedPlugins()
   BOOST_FOREACH(ProtocolPlugin::Ptr plugin, protocols)
   {
     // ICQ-PLUGIN: Remove if
-    if (!plugin->getLibraryName().empty())
+    if (!plugin->libraryName().empty())
     {
       sprintf(szKey, "ProtoPlugin%d", i++);
-      licqConf.set(szKey, plugin->getLibraryName());
+      licqConf.set(szKey, plugin->libraryName());
     }
   }
 

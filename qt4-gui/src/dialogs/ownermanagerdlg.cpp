@@ -148,7 +148,7 @@ void OwnerManagerDlg::updateOwners()
       QString proto;
       Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
       if (protocol.get() != NULL)
-        proto = protocol->getName();
+        proto = protocol->name().c_str();
 
       QTreeWidgetItem* item = new QTreeWidgetItem(ownerView);
       item->setIcon(0, iconman->iconForStatus(Licq::User::OnlineStatus, owner->id()));
@@ -175,7 +175,7 @@ void OwnerManagerDlg::updateProtocols()
   Licq::gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    unsigned long ppid = protocol->getProtocolId();
+    unsigned long ppid = protocol->protocolId();
     Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
 
     if (ppid == LICQ_PPID)
@@ -188,7 +188,7 @@ void OwnerManagerDlg::updateProtocols()
 
     enableAdd = true;
 
-    QAction* a = myAddMenu->addAction(QString::fromLocal8Bit(protocol->getName()) + "...", this, SLOT(addOwner()));
+    QAction* a = myAddMenu->addAction(QString::fromLocal8Bit(protocol->name().c_str()) + "...", this, SLOT(addOwner()));
     a->setIcon(IconManager::instance()->iconForProtocol(ppid));
     a->setData(QString::number(ppid));
   }

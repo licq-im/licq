@@ -42,13 +42,13 @@ public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
   /// Get the plugin's status.
-  virtual const char* getStatus() const = 0;
+  virtual bool isEnabled() const = 0;
 
   /// Get the plugin's description
-  virtual const char* getDescription() const = 0;
+  virtual std::string description() const = 0;
 
   /// Get the plugin's usage instructions
-  virtual const char* getUsage() const = 0;
+  virtual std::string usage() const = 0;
 
   /// Ask the plugin to enable itself
   virtual void enable() = 0;

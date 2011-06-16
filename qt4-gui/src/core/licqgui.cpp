@@ -754,7 +754,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
   unsigned long sendFuncs = 0;
   Licq::ProtocolPlugin::Ptr protocol = gPluginManager.getProtocolPlugin(ppid);
   if (protocol.get() != NULL)
-    sendFuncs = protocol->getSendFunctions();
+    sendFuncs = protocol->capabilities();
 
   // Check if the protocol for this contact support the function we want to open
   if ((fcn == MessageEvent && !(sendFuncs & Licq::ProtocolPlugin::CanSendMsg)) ||
@@ -1141,7 +1141,7 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
     unsigned long sendFuncs = 0;
     Licq::ProtocolPlugin::Ptr protocol = gPluginManager.getProtocolPlugin(ppid);
     if (protocol.get() != NULL)
-      sendFuncs = protocol->getSendFunctions();
+      sendFuncs = protocol->capabilities();
 
     if (sendFuncs & Licq::ProtocolPlugin::CanSendUrl &&
         (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))

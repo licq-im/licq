@@ -557,9 +557,9 @@ unsigned long CRMSClient::getProtocol(const string& data)
   gPluginManager.getProtocolPluginsList(plugins);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if (strcasecmp(plugin->getName(), data.c_str()) == 0)
+    if (strcasecmp(plugin->name().c_str(), data.c_str()) == 0)
     {
-      nPPID = plugin->getProtocolId();
+      nPPID = plugin->protocolId();
       break;
     }
   }
@@ -580,7 +580,7 @@ void CRMSClient::ParseUser(const string& strData)
     gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      myUserId = UserId(data_arg, plugin->getProtocolId());
+      myUserId = UserId(data_arg, plugin->protocolId());
       if (gUserManager.userExists(myUserId))
         break;
     }
@@ -875,11 +875,11 @@ int CRMSClient::Process_STATUS()
     gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      Licq::OwnerReadGuard o(plugin->getProtocolId());
+      Licq::OwnerReadGuard o(plugin->protocolId());
       if (o.isLocked())
       {
         fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->accountId().c_str(),
-            plugin->getName(), o->statusString().c_str());
+            plugin->name().c_str(), o->statusString().c_str());
       }
     }
     fprintf(fs, "%d\n", CODE_STATUSxDONE);
@@ -895,7 +895,7 @@ int CRMSClient::Process_STATUS()
     gPluginManager.getProtocolPluginsList(plugins);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
     {
-      changeStatus(plugin->getProtocolId(), data_arg);
+      changeStatus(plugin->protocolId(), data_arg);
     }
   }
   else

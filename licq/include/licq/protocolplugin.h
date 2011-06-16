@@ -52,20 +52,20 @@ public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
   /// Get the protocol's unique identifier
-  virtual unsigned long getProtocolId() const = 0;
+  virtual unsigned long protocolId() const = 0;
 
   /// Get default server host to connect to
-  virtual const std::string& getDefaultServerHost() const = 0;
+  virtual std::string defaultServerHost() const = 0;
 
   /// Get default server port to connect to
-  virtual int getDefaultServerPort() const = 0;
+  virtual int defaultServerPort() const = 0;
 
   /**
    * Get protocol plugin supported features
    *
    * @return A mask of bits from Capabilities enum
    */
-  virtual unsigned long getSendFunctions() const = 0;
+  virtual unsigned long capabilities() const = 0;
 
 protected:
   /// Destructor

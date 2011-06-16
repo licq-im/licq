@@ -94,8 +94,8 @@ Owner::Owner(const UserId& id)
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myId.protocolId());
   if (protocol.get() != NULL)
   {
-    defaultHost = protocol->getDefaultServerHost();
-    defaultPort = protocol->getDefaultServerPort();
+    defaultHost = protocol->defaultServerHost();
+    defaultPort = protocol->defaultServerPort();
   }
 
   bool gotserver = false;

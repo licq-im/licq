@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ Licq::GeneralPlugin::Ptr PluginDlg::getGeneralPlugin(int id)
   gPluginManager.getGeneralPluginsList(plugins);
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
-    if (plugin->getId() == id)
+    if (plugin->id() == id)
       return plugin;
   }
   return Licq::GeneralPlugin::Ptr();
@@ -153,7 +153,7 @@ Licq::ProtocolPlugin::Ptr PluginDlg::getProtocolPlugin(int id)
   gPluginManager.getProtocolPluginsList(plugins);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
   {
-    if (plugin->getId() == id)
+    if (plugin->id() == id)
       return plugin;
   }
   return Licq::ProtocolPlugin::Ptr();
@@ -233,7 +233,7 @@ void PluginDlg::slot_protocol(QTableWidgetItem* item)
     }
     else if (plugin.get() != NULL)
     {
-      unsigned long protocolId = plugin->getProtocolId();
+      unsigned long protocolId = plugin->protocolId();
 
       // Daemon doesn't notify when plugins are unloaded
       // so tell mainwin directly from here
@@ -257,14 +257,14 @@ void PluginDlg::slot_stdConfig(int nRow, int /* nCol */)
   if (plugin.get() == NULL)
     return;
 
-  if (plugin->getConfigFile() == NULL)
+  if (plugin->configFile().empty())
   {
-    InformUser(this, tr("Plugin %1 has no configuration file").arg(plugin->getName()));
+    InformUser(this, tr("Plugin %1 has no configuration file").arg(plugin->name().c_str()));
     return;
   }
 
   QString f;
-  f.sprintf("%s%s", Licq::gDaemon.baseDir().c_str(), plugin->getConfigFile());
+  f.sprintf("%s%s", Licq::gDaemon.baseDir().c_str(), plugin->configFile().c_str());
   new EditFileDlg(f);
 }
 
@@ -284,21 +284,19 @@ void PluginDlg::slot_refresh()
   BOOST_FOREACH(Licq::GeneralPlugin::Ptr plugin, plugins)
   {
     tblStandard->setRowCount(i+1);
-    tblStandard->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>(plugin->getId()))));
-    tblStandard->setItem(i, 1, new QTableWidgetItem(QString(plugin->getName())));
-    tblStandard->setItem(i, 2, new QTableWidgetItem(QString(plugin->getVersion())));
+    tblStandard->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>(plugin->id()))));
+    tblStandard->setItem(i, 1, new QTableWidgetItem(QString(plugin->name().c_str())));
+    tblStandard->setItem(i, 2, new QTableWidgetItem(QString(plugin->version().c_str())));
     QTableWidgetItem* chkLoad = new QTableWidgetItem("");
     chkLoad->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);
     QTableWidgetItem* chkEnable = new QTableWidgetItem("");
     chkEnable->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);
     chkLoad->setCheckState(Qt::Checked);
-    QString strStatus(plugin->getStatus());
-    bool bEnabled = (strStatus.indexOf("enable", 0, Qt::CaseInsensitive) != -1) ||
-                    (strStatus.indexOf("running", 0, Qt::CaseInsensitive) != -1);
+    bool bEnabled = plugin->isEnabled();
     chkEnable->setCheckState((bEnabled ? Qt::Checked : Qt::Unchecked));
     tblStandard->setItem(i, 3, chkLoad);
     tblStandard->setItem(i, 4, chkEnable);
-    tblStandard->setItem(i, 5, new QTableWidgetItem(QString(plugin->getDescription())));
+    tblStandard->setItem(i, 5, new QTableWidgetItem(QString(plugin->description().c_str())));
     mapCheckboxCache[chkLoad] = true;
     mapCheckboxCache[chkEnable] = bEnabled;
     i++;
@@ -333,13 +331,13 @@ void PluginDlg::slot_refresh()
   i = 0;
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    if (strcmp(protocol->getName(), "ICQ") == 0)
+    if (protocol->name() == "ICQ")
       continue;
 
     tblProtocol->setRowCount(i+1);
-    tblProtocol->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>(protocol->getId()))));
-    tblProtocol->setItem(i, 1, new QTableWidgetItem(QString(protocol->getName())));
-    tblProtocol->setItem(i, 2, new QTableWidgetItem(QString(protocol->getVersion())));
+    tblProtocol->setItem(i, 0, new QTableWidgetItem(QString::number(static_cast<int>(protocol->id()))));
+    tblProtocol->setItem(i, 1, new QTableWidgetItem(QString(protocol->name().c_str())));
+    tblProtocol->setItem(i, 2, new QTableWidgetItem(QString(protocol->version().c_str())));
     QTableWidgetItem* chkLoad = new QTableWidgetItem("");
     chkLoad->setFlags(chkLoad->flags() | Qt::ItemIsUserCheckable);
     chkLoad->setCheckState(Qt::Checked);

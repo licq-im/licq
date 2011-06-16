@@ -42,7 +42,7 @@ void ProtoComboBox::fillComboBox(unsigned filter)
   Licq::gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    unsigned long ppid = protocol->getProtocolId();
+    unsigned long ppid = protocol->protocolId();
     Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
     if (userId.isValid())
     {
@@ -58,7 +58,7 @@ void ProtoComboBox::fillComboBox(unsigned filter)
 
     addItem(
         IconManager::instance()->iconForStatus(Licq::User::OnlineStatus, userId), // icon
-        protocol->getName(), // protocol name
+        protocol->name().c_str(), // protocol name
         QString::number(ppid) // user data
         );
   }
