@@ -21,7 +21,6 @@
 #define LICQ_PLUGIN_H
 
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <string>
 
 namespace Licq
@@ -62,82 +61,6 @@ protected:
   virtual ~Plugin() { /* Empty */ }
 };
 
-/**
- * A GeneralPlugin is a plugin that isn't a ProtocolPlugin, e.g. the GUI.
- */
-class GeneralPlugin : public virtual Plugin
-{
-public:
-  // Notification that general plugins can get via its pipe
-  static const char PipeEvent = 'E';
-  static const char PipeDisable = '0';
-  static const char PipeEnable = '1';
-
-  /// A smart pointer to a GeneralPlugin instance.
-  typedef boost::shared_ptr<GeneralPlugin> Ptr;
-
-  /// Get the plugin's status.
-  virtual const char* getStatus() const = 0;
-
-  /// Get the plugin's description.
-  virtual const char* getDescription() const = 0;
-
-  /// Get the plugin's usage instructions.
-  virtual const char* getUsage() const = 0;
-
-  /// Ask the plugin to enable itself.
-  virtual void enable() = 0;
-
-  /// Ask the plugin to disable itself.
-  virtual void disable() = 0;
-
-protected:
-  virtual ~GeneralPlugin() { /* Empty */ }
-};
-
-/**
- * A ProtocolPlugin implements support for a specific IM protocol.
- */
-class ProtocolPlugin : public virtual Plugin
-{
-public:
-  enum Capabilities
-  {
-    CanSendMsg          = 1<<0,
-    CanSendUrl          = 1<<1,
-    CanSendFile         = 1<<2,
-    CanSendChat         = 1<<3,
-    CanSendContact      = 1<<4,
-    CanSendAuth         = 1<<5,
-    CanSendAuthReq      = 1<<6,
-    CanSendSms          = 1<<7,
-    CanSendSecure       = 1<<8,
-    CanSendDirect       = 1<<9,
-    CanHoldStatusMsg     = 1<<10,
-  };
-
-  /// A smart pointer to a ProtocolPlugin instance.
-  typedef boost::shared_ptr<ProtocolPlugin> Ptr;
-
-  /// Get the protocol's unique identifier.
-  virtual unsigned long getProtocolId() const = 0;
-
-  /// Get default server host to connect to
-  virtual const std::string& getDefaultServerHost() const = 0;
-
-  /// Get default server port to connect to
-  virtual int getDefaultServerPort() const = 0;
-
-  /**
-   * Get protocol plugin supported features
-   *
-   * @return A mask of bits from Capabilities enum
-   */
-  virtual unsigned long getSendFunctions() const = 0;
-
-protected:
-  virtual ~ProtocolPlugin() { /* Empty */ }
-};
 
 } // namespace Licq
 
