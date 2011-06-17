@@ -541,18 +541,18 @@ static void exitPluginCallback(const Plugin& plugin)
   gPluginManager.pluginHasExited(plugin.id());
 }
 
-void PluginManager::startPlugin(Plugin::Ptr plugin)
+void PluginManager::startPlugin(GeneralPlugin::Ptr plugin)
 {
-  if (dynamic_cast<ProtocolPlugin*>(plugin.get()))
-  {
-    gLog.info(tr("Starting protocol plugin %s (version %s)"),
-        plugin->name().c_str(), plugin->version().c_str());
-  }
-  else
-  {
-    gLog.info(tr("Starting plugin %s (version %s)"),
-        plugin->name().c_str(), plugin->version().c_str());
-  }
+  gLog.info(tr("Starting plugin %s (version %s)"),
+      plugin->name().c_str(), plugin->version().c_str());
+
+  plugin->startThread(NULL, exitPluginCallback);
+}
+
+void PluginManager::startPlugin(ProtocolPlugin::Ptr plugin)
+{
+  gLog.info(tr("Starting protocol plugin %s (version %s)"),
+      plugin->name().c_str(), plugin->version().c_str());
 
   plugin->startThread(NULL, exitPluginCallback);
 }
