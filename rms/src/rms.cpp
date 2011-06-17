@@ -1473,7 +1473,7 @@ void CRMSClient::printUserEvent(const Licq::UserEvent* e, const string& alias)
     strcat(szEventHeader, "\n\0");
 
     // Write out the event header
-    fprintf(fs, szEventHeader);
+    fprintf(fs, "%s", szEventHeader);
 
     // Timestamp
     char szTimestamp[39];
@@ -1484,7 +1484,7 @@ void CRMSClient::printUserEvent(const Licq::UserEvent* e, const string& alias)
     sprintf(szTimestamp, "%d Sent At ", CODE_VIEWxTIME);
     strncat(szTimestamp, szTime, 25);
     strcat(szTimestamp, "\n\0");
-    fprintf(fs, szTimestamp);
+    fprintf(fs, "%s", szTimestamp);
 
     // Message
     fprintf(fs, "%d Message Start\n", CODE_VIEWxTEXTxSTART);
