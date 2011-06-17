@@ -103,7 +103,8 @@ private:
                                  const std::string& name,
                                  const std::string& prefix);
 
-  void startPlugin(Plugin::Ptr plugin);
+  void startPlugin(GeneralPlugin::Ptr plugin);
+  void startPlugin(ProtocolPlugin::Ptr plugin);
 
   void getAvailablePlugins(Licq::StringList& plugins,
                            const std::string& prefix) const;
