@@ -38,8 +38,8 @@
 #ifndef GMOCK_INCLUDE_GMOCK_GMOCK_GENERATED_ACTIONS_H_
 #define GMOCK_INCLUDE_GMOCK_GMOCK_GENERATED_ACTIONS_H_
 
-#include <gmock/gmock-actions.h>
-#include <gmock/internal/gmock-port.h>
+#include "gmock/gmock-actions.h"
+#include "gmock/internal/gmock-port.h"
 
 namespace testing {
 namespace internal {
@@ -1378,7 +1378,7 @@ DoAll(Action1 a1, Action2 a2, Action3 a3, Action4 a4, Action5 a5, Action6 a6,
 
 // The name of the class template implementing the action template.
 #define GMOCK_ACTION_CLASS_(name, value_params)\
-    GMOCK_CONCAT_TOKEN_(name##Action, GMOCK_INTERNAL_COUNT_##value_params)
+    GTEST_CONCAT_TOKEN_(name##Action, GMOCK_INTERNAL_COUNT_##value_params)
 
 #define ACTION_TEMPLATE(name, template_params, value_params)\
   template <GMOCK_INTERNAL_DECL_##template_params\
@@ -2228,8 +2228,8 @@ namespace testing {
 // is expanded and macro expansion cannot contain #pragma.  Therefore
 // we suppress them here.
 #ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable:4100)
+# pragma warning(push)
+# pragma warning(disable:4100)
 #endif
 
 // Various overloads for InvokeArgument<N>().
@@ -2411,7 +2411,7 @@ ACTION_TEMPLATE(ReturnNew,
 }
 
 #ifdef _MSC_VER
-#pragma warning(pop)
+# pragma warning(pop)
 #endif
 
 }  // namespace testing

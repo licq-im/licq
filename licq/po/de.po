@@ -722,8 +722,8 @@ msgstr "%sDateiübertragung an %s wird abgebrochen (#%hu).\n"
 #, c-format
 msgid "%sCancelling secure channel request to %s (#%hu).\n"
 msgstr ""
-"%sAnforderung einer verschlüsselten Verbindung zu %s wird abgebrochen (#"
-"%hu).\n"
+"%sAnforderung einer verschlüsselten Verbindung zu %s wird abgebrochen (#%"
+"hu).\n"
 
 #: src/socket.cpp:713
 #, c-format
@@ -1313,8 +1313,8 @@ msgstr "%sAllgemeine Informationen zu %s (%s).\n"
 #: src/icq/oscarservice.cpp:518
 #, c-format
 msgid ""
-"%sGive up waiting for channel capability list while initializing service 0x"
-"%02X.\n"
+"%sGive up waiting for channel capability list while initializing service 0x%"
+"02X.\n"
 msgstr ""
 "%sGebe das Warten auf die Kanalfähigkeitenliste auf, während der "
 "Initialisierung von Service 0x%02X.\n"
@@ -1337,8 +1337,8 @@ msgstr ""
 #: src/icq/oscarservice.cpp:497
 #, c-format
 msgid ""
-"%sGive up waiting for server ready packet while initializing service 0x"
-"%02X.\n"
+"%sGive up waiting for server ready packet while initializing service 0x%"
+"02X.\n"
 msgstr ""
 "%sGebe das Warten auf das \"Server bereit\"-Paket auf, während der "
 "Initialisierung von Dienst 0x%02X.\n"
@@ -20974,8 +20974,8 @@ msgstr "dringend"
 
 #~ msgid "%sResponse to unknown %s info request for unknown user (%s).\n"
 #~ msgstr ""
-#~ "%sAntwort auf unbekannte(s) %s Info-Anfrage zu unbekanntem Benutzer "
-#~ "(%s).\n"
+#~ "%sAntwort auf unbekannte(s) %s Info-Anfrage zu unbekanntem Benutzer (%"
+#~ "s).\n"
 
 #~ msgid ""
 #~ "%sUnable to connect to %s:%d:\n"

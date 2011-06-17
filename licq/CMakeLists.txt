@@ -110,16 +110,14 @@ if (USE_SOCKS5)
   set(SOCKS5_LIBRARIES ${SOCKS5_LIBRARY})
 endif (USE_SOCKS5)
 
-# Google Test is needed for unit tests
 if (BUILD_TESTS)
-  find_package(GTest)
-  if (NOT GTEST_FOUND)
-    message(FATAL_ERROR
-      "Google Test NOT found; disable unit tests by running cmake with -DBUILD_TESTS=OFF")
-  endif (NOT GTEST_FOUND)
-
   enable_testing()
   add_custom_target(tests ALL COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
+
+  # Google Test
+  add_subdirectory(3rdparty/gtest)
+  set(GTEST_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/gtest/include")
+  set(GTEST_LIBRARIES gtest)
 
   # Google Mock
   add_subdirectory(3rdparty/gmock)

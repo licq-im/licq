@@ -35,14 +35,14 @@
 // Mock.  They are subject to change without notice, so please DO NOT
 // USE THEM IN USER CODE.
 
-#include <gmock/internal/gmock-internal-utils.h>
+#include "gmock/internal/gmock-internal-utils.h"
 
 #include <ctype.h>
 #include <ostream>  // NOLINT
 #include <string>
-#include <gmock/gmock.h>
-#include <gmock/internal/gmock-port.h>
-#include <gtest/gtest.h>
+#include "gmock/gmock.h"
+#include "gmock/internal/gmock-port.h"
+#include "gtest/gtest.h"
 
 namespace testing {
 namespace internal {
@@ -57,14 +57,14 @@ string ConvertIdentifierNameToWords(const char* id_name) {
   for (const char* p = id_name; *p != '\0'; prev_char = *(p++)) {
     // We don't care about the current locale as the input is
     // guaranteed to be a valid C++ identifier name.
-    const bool starts_new_word = isupper(*p) ||
-        (!isalpha(prev_char) && islower(*p)) ||
-        (!isdigit(prev_char) && isdigit(*p));
+    const bool starts_new_word = IsUpper(*p) ||
+        (!IsAlpha(prev_char) && IsLower(*p)) ||
+        (!IsDigit(prev_char) && IsDigit(*p));
 
-    if (isalnum(*p)) {
+    if (IsAlNum(*p)) {
       if (starts_new_word && result != "")
         result += ' ';
-      result += static_cast<char>(tolower(*p));
+      result += ToLower(*p);
     }
   }
   return result;

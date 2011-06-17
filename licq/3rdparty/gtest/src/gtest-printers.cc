@@ -29,7 +29,7 @@
 //
 // Author: wan@google.com (Zhanyong Wan)
 
-// Google Mock - a framework for writing C++ mock classes.
+// Google Test - The Google C++ Testing Framework
 //
 // This file implements a universal value printer that can print a
 // value of any type T:
@@ -42,12 +42,12 @@
 // or void PrintTo(const Foo&, ::std::ostream*) in the namespace that
 // defines Foo.
 
-#include <gmock/gmock-printers.h>
+#include "gtest/gtest-printers.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <ostream>  // NOLINT
 #include <string>
-#include <gmock/internal/gmock-port.h>
+#include "gtest/internal/gtest-port.h"
 
 namespace testing {
 
@@ -56,11 +56,11 @@ namespace {
 using ::std::ostream;
 
 #if GTEST_OS_WINDOWS_MOBILE  // Windows CE does not define _snprintf_s.
-#define snprintf _snprintf
+# define snprintf _snprintf
 #elif _MSC_VER >= 1400  // VC 8.0 and later deprecate snprintf and _snprintf.
-#define snprintf _snprintf_s
+# define snprintf _snprintf_s
 #elif _MSC_VER
-#define snprintf _snprintf
+# define snprintf _snprintf
 #endif  // GTEST_OS_WINDOWS_MOBILE
 
 // Prints a segment of bytes in the given object.
@@ -72,9 +72,10 @@ void PrintByteSegmentInObjectTo(const unsigned char* obj_bytes, size_t start,
     if (i != 0) {
       // Organizes the bytes into groups of 2 for easy parsing by
       // human.
-      if ((j % 2) == 0) {
-        *os << " ";
-      }
+      if ((j % 2) == 0)
+        *os << ' ';
+      else
+        *os << '-';
     }
     snprintf(text, sizeof(text), "%02X", obj_bytes[j]);
     *os << text;
@@ -123,18 +124,36 @@ void PrintBytesInObjectTo(const unsigned char* obj_bytes, size_t count,
 
 namespace internal {
 
-// Prints a wide char as a char literal without the quotes, escaping it
-// when necessary.
-static void PrintAsWideCharLiteralTo(wchar_t c, ostream* os) {
-  switch (c) {
+// Depending on the value of a char (or wchar_t), we print it in one
+// of three formats:
+//   - as is if it's a printable ASCII (e.g. 'a', '2', ' '),
+//   - as a hexidecimal escape sequence (e.g. '\x7F'), or
+//   - as a special escape sequence (e.g. '\r', '\n').
+enum CharFormat {
+  kAsIs,
+  kHexEscape,
+  kSpecialEscape
+};
+
+// Returns true if c is a printable ASCII character.  We test the
+// value of c directly instead of calling isprint(), which is buggy on
+// Windows Mobile.
+inline bool IsPrintableAscii(wchar_t c) {
+  return 0x20 <= c && c <= 0x7E;
+}
+
+// Prints a wide or narrow char c as a character literal without the
+// quotes, escaping it when necessary; returns how c was formatted.
+// The template argument UnsignedChar is the unsigned version of Char,
+// which is the type of c.
+template <typename UnsignedChar, typename Char>
+static CharFormat PrintAsCharLiteralTo(Char c, ostream* os) {
+  switch (static_cast<wchar_t>(c)) {
     case L'\0':
       *os << "\\0";
       break;
     case L'\'':
       *os << "\\'";
-      break;
-    case L'\?':
-      *os << "\\?";
       break;
     case L'\\':
       *os << "\\\\";
@@ -161,76 +180,79 @@ static void PrintAsWideCharLiteralTo(wchar_t c, ostream* os) {
       *os << "\\v";
       break;
     default:
-      // Checks whether c is printable or not. Printable characters are in
-      // the range [0x20,0x7E].
-      // We test the value of c directly instead of calling isprint(), as
-      // isprint() is buggy on Windows mobile.
-      if (0x20 <= c && c <= 0x7E) {
+      if (IsPrintableAscii(c)) {
         *os << static_cast<char>(c);
+        return kAsIs;
       } else {
-        // Buffer size enough for the maximum number of digits and \0.
-        char text[2 * sizeof(unsigned long) + 1] = "";
-        snprintf(text, sizeof(text), "%lX", static_cast<unsigned long>(c));
-        *os << "\\x" << text;
+        *os << String::Format("\\x%X", static_cast<UnsignedChar>(c));
+        return kHexEscape;
       }
   }
+  return kSpecialEscape;
 }
 
-// Prints a char as if it's part of a string literal, escaping it when
-// necessary.
-static void PrintAsWideStringLiteralTo(wchar_t c, ostream* os) {
+// Prints a char c as if it's part of a string literal, escaping it when
+// necessary; returns how c was formatted.
+static CharFormat PrintAsWideStringLiteralTo(wchar_t c, ostream* os) {
   switch (c) {
     case L'\'':
       *os << "'";
-      break;
+      return kAsIs;
     case L'"':
       *os << "\\\"";
-      break;
+      return kSpecialEscape;
     default:
-      PrintAsWideCharLiteralTo(c, os);
+      return PrintAsCharLiteralTo<wchar_t>(c, os);
   }
 }
 
-// Prints a char as a char literal without the quotes, escaping it
-// when necessary.
-static void PrintAsCharLiteralTo(char c, ostream* os) {
-  PrintAsWideCharLiteralTo(static_cast<unsigned char>(c), os);
+// Prints a char c as if it's part of a string literal, escaping it when
+// necessary; returns how c was formatted.
+static CharFormat PrintAsNarrowStringLiteralTo(char c, ostream* os) {
+  return PrintAsWideStringLiteralTo(static_cast<unsigned char>(c), os);
 }
 
-// Prints a char as if it's part of a string literal, escaping it when
-// necessary.
-static void PrintAsStringLiteralTo(char c, ostream* os) {
-  PrintAsWideStringLiteralTo(static_cast<unsigned char>(c), os);
+// Prints a wide or narrow character c and its code.  '\0' is printed
+// as "'\\0'", other unprintable characters are also properly escaped
+// using the standard C++ escape sequence.  The template argument
+// UnsignedChar is the unsigned version of Char, which is the type of c.
+template <typename UnsignedChar, typename Char>
+void PrintCharAndCodeTo(Char c, ostream* os) {
+  // First, print c as a literal in the most readable form we can find.
+  *os << ((sizeof(c) > 1) ? "L'" : "'");
+  const CharFormat format = PrintAsCharLiteralTo<UnsignedChar>(c, os);
+  *os << "'";
+
+  // To aid user debugging, we also print c's code in decimal, unless
+  // it's 0 (in which case c was printed as '\\0', making the code
+  // obvious).
+  if (c == 0)
+    return;
+  *os << " (" << String::Format("%d", c).c_str();
+
+  // For more convenience, we print c's code again in hexidecimal,
+  // unless c was already printed in the form '\x##' or the code is in
+  // [1, 9].
+  if (format == kHexEscape || (1 <= c && c <= 9)) {
+    // Do nothing.
+  } else {
+    *os << String::Format(", 0x%X",
+                          static_cast<UnsignedChar>(c)).c_str();
+  }
+  *os << ")";
 }
 
-// Prints a char and its code.  The '\0' char is printed as "'\\0'",
-// other unprintable characters are also properly escaped using the
-// standard C++ escape sequence.
-void PrintCharTo(char c, int char_code, ostream* os) {
-  *os << "'";
-  PrintAsCharLiteralTo(c, os);
-  *os << "'";
-  if (c != '\0')
-    *os << " (" << char_code << ")";
+void PrintTo(unsigned char c, ::std::ostream* os) {
+  PrintCharAndCodeTo<unsigned char>(c, os);
+}
+void PrintTo(signed char c, ::std::ostream* os) {
+  PrintCharAndCodeTo<unsigned char>(c, os);
 }
 
 // Prints a wchar_t as a symbol if it is printable or as its internal
-// code otherwise and also as its decimal code (except for L'\0').
-// The L'\0' char is printed as "L'\\0'". The decimal code is printed
-// as signed integer when wchar_t is implemented by the compiler
-// as a signed type and is printed as an unsigned integer when wchar_t
-// is implemented as an unsigned type.
+// code otherwise and also as its code.  L'\0' is printed as "L'\\0'".
 void PrintTo(wchar_t wc, ostream* os) {
-  *os << "L'";
-  PrintAsWideCharLiteralTo(wc, os);
-  *os << "'";
-  if (wc != L'\0') {
-    // Type Int64 is used because it provides more storage than wchar_t thus
-    // when the compiler converts signed or unsigned implementation of wchar_t
-    // to Int64 it fills higher bits with either zeros or the sign bit
-    // passing it to operator <<() as either signed or unsigned integer.
-    *os << " (" << static_cast<Int64>(wc) << ")";
-  }
+  PrintCharAndCodeTo<wchar_t>(wc, os);
 }
 
 // Prints the given array of characters to the ostream.
@@ -238,8 +260,16 @@ void PrintTo(wchar_t wc, ostream* os) {
 // and may not be null-terminated.
 static void PrintCharsAsStringTo(const char* begin, size_t len, ostream* os) {
   *os << "\"";
+  bool is_previous_hex = false;
   for (size_t index = 0; index < len; ++index) {
-    PrintAsStringLiteralTo(begin[index], os);
+    const char cur = begin[index];
+    if (is_previous_hex && IsXDigit(cur)) {
+      // Previous character is of '\x..' form and this character can be
+      // interpreted as another hexadecimal digit in its number. Break string to
+      // disambiguate.
+      *os << "\" \"";
+    }
+    is_previous_hex = PrintAsNarrowStringLiteralTo(cur, os) == kHexEscape;
   }
   *os << "\"";
 }
@@ -255,8 +285,16 @@ void UniversalPrintArray(const char* begin, size_t len, ostream* os) {
 static void PrintWideCharsAsStringTo(const wchar_t* begin, size_t len,
                                      ostream* os) {
   *os << "L\"";
+  bool is_previous_hex = false;
   for (size_t index = 0; index < len; ++index) {
-    PrintAsWideStringLiteralTo(begin[index], os);
+    const wchar_t cur = begin[index];
+    if (is_previous_hex && isascii(cur) && IsXDigit(static_cast<char>(cur))) {
+      // Previous character is of '\x..' form and this character can be
+      // interpreted as another hexadecimal digit in its number. Break string to
+      // disambiguate.
+      *os << "\" L\"";
+    }
+    is_previous_hex = PrintAsWideStringLiteralTo(cur, os) == kHexEscape;
   }
   *os << "\"";
 }
@@ -266,7 +304,7 @@ void PrintTo(const char* s, ostream* os) {
   if (s == NULL) {
     *os << "NULL";
   } else {
-    *os << implicit_cast<const void*>(s) << " pointing to ";
+    *os << ImplicitCast_<const void*>(s) << " pointing to ";
     PrintCharsAsStringTo(s, strlen(s), os);
   }
 }
@@ -283,7 +321,7 @@ void PrintTo(const wchar_t* s, ostream* os) {
   if (s == NULL) {
     *os << "NULL";
   } else {
-    *os << implicit_cast<const void*>(s) << " pointing to ";
+    *os << ImplicitCast_<const void*>(s) << " pointing to ";
     PrintWideCharsAsStringTo(s, wcslen(s), os);
   }
 }
