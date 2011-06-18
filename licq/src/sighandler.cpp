@@ -8,7 +8,6 @@
 
 #include "config.h"
 #include "gettext.h"
-#include "thread/readwritemutex_debug.h"
 
 #include <errno.h>
 #include <stdio.h>

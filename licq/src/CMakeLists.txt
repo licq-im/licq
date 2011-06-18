@@ -117,6 +117,10 @@ target_link_libraries(licq ${CMAKE_THREAD_LIBS_INIT})
 # Must export symbols from daemon so that plugins can use them
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_EXE_EXPORTS_CXX_FLAG}")
 
+# Print a message to stderr (and to the file <basedir>/licq.debug_rw_mutex) and
+# then abort if a (potential) deadlock is detected.
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DLICQDAEMON_DEBUG_RW_MUTEX=1")
+
 # To find public headers
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
 
