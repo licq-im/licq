@@ -6,6 +6,7 @@ o ICQ: Buddy icons would fail to update for some contacts retrying every minute
 o Jabber: Use full name for contact if there is no nickname set
 o Jabber: Get away message for contacts
 o Jabber: Keep track of contacts pending for authorization
+o RMS: Plugin could crash if bad parameters were given to some commands
 o Qt4-Gui: Ignored users were displayed in All Users list
 o Qt4-Gui: Several menu items and buttons were missing ... after caption
 o Qt4-Gui: Main window would appear under other windows on some systems

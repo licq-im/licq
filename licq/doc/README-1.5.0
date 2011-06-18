@@ -1,0 +1,40 @@
+      LICQ v1.5.0 README
+      http://www.licq.org/
+      #Licq on irc.freenode.net
+
+After much work, we are proud to present you with Licq 1.5.0.
+Although the big changes are on the inside, this is also the first release to
+include support for Jabber protocol and a new OSD plugin based on libaosd.
+Other changes include separate auto-logon for each account and the possibility
+to override sounds per user or per group.
+
+For building, Licq and all included plugins now use cmake.
+The plugin API has undergone major changes to make it easier to use and better
+hide the internal parts of Licq from the plugin development. Licq 1.5.0 also
+marks the end of the old Qt 3 based Qt-Gui in favour of Qt4-Gui.
+
+The Jabber protocol plugin is based on libgloox and currently supports:
+- Sending and receiving messages (including messages received while offline)
+- Adding and removing users (including authorization management)
+- Typing notifications
+- Fetching users vcard
+- "Buzzing" users (i.e. sending messages to get the receivers attention)
+
+Notes for upgrading:
+- Even though configuration files have changed, Licq will read and reuse
+  most of the old configuration.
+- If qt/kde-gui was previously used, Licq will automatically switch to
+  qt4/kde4-gui on startup if available.
+- Due to changes in configuration file format, downgrading back to a previous
+  version can cause passwords to loose their first character.
+
+For more information on what has changed since Licq 1.3.9, see doc/CHANGELOG.
+
+For general information on how to build and run Licq, see doc/README.
+For information about building and using the different plugins, see README or
+doc/README for the respective plugins.
+
+We hope you enjoy this release and feel free to come by #Licq to let us know
+what you think, get help, help others or just to keep us company.
+
+The Licq Team
