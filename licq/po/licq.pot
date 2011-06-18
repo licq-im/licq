@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-10-17 20:26+0200\n"
+"POT-Creation-Date: 2011-06-18 14:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,11 +153,11 @@ msgid ""
 "\t\tUpdates a buddy's user information.\n"
 msgstr ""
 
-#: src/userevents.cpp:951
+#: src/userevents.cpp:990
 msgid " (cancelled)"
 msgstr ""
 
-#: src/licq.cpp:363
+#: src/licq.cpp:366
 msgid "$HOME not set or invalid; unable to determine config base directory"
 msgstr ""
 
@@ -191,64 +191,199 @@ msgstr ""
 msgid "%d minutes"
 msgstr ""
 
-#: src/fifo.cpp:324
+#: src/fifo.cpp:323
 #, c-format
 msgid "%s %s: command with invalid status \"%s\""
 msgstr ""
 
-#: src/fifo.cpp:803 src/fifo.cpp:813
+#: src/fifo.cpp:826 src/fifo.cpp:836
 #, c-format
 msgid ""
 "%s %s: help for `%s'\n"
 "%s\n"
 msgstr ""
 
-#: src/fifo.cpp:816
+#: src/fifo.cpp:839
 #, c-format
 msgid "%s %s: unknown command `%s'\n"
 msgstr ""
 
-#: src/fifo.cpp:438
+#: src/protocolmanager.cpp:457
+#, c-format
+msgid "%s (%s) already has a secure channel."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2239
+#, c-format
+msgid "%s (%s) changed status: %s (v%d)%s."
+msgstr ""
+
+#: src/protocolmanager.cpp:490
+#, c-format
+msgid "%s (%s) does not have a secure channel."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2381
+#, c-format
+msgid "%s (%s) does not support OpenSSL."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1547
+#, c-format
+msgid "%s (%s) is %s to us."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1640
+#, c-format
+msgid "%s (%s) requested auto response [Licq %s]."
+msgstr ""
+
+#: src/icq/icq.cpp:1153 src/icq/icq-tcp.cpp:1644
+#, c-format
+msgid "%s (%s) requested auto response."
+msgstr ""
+
+#: src/fifo.cpp:436
 #, c-format
 msgid "%s `%s': bad protocol. ICQ only allowed"
 msgstr ""
 
-#: src/fifo.cpp:536
+#: src/fifo.cpp:532
 #, c-format
 msgid "%s `%s': bad protocol. ICQ only allowed\n"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3247
+#: src/icq/icq.cpp:1233
+#, c-format
+msgid "%s accepted from %s (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3837
+#, c-format
+msgid "%s added to awaiting authorization group on server list."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2436
+#, c-format
+msgid "%s changed ICQphone status to %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2424
+#, c-format
+msgid "%s changed Phone \"Follow Me\" status to %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2430
+#, c-format
+msgid "%s changed Shared Files Directory status to %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2286
+#, c-format
+msgid "%s changed status: %s (AIM)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3374
+#, c-format
+msgid "%s doesn't have a manager for this event."
+msgstr ""
+
+#: src/icq/icq.cpp:1266
+#, c-format
+msgid "%s from %s (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3237
 #, c-format
 msgid "%s from new user (%s), ignoring"
 msgstr ""
 
-#: src/fifo.cpp:969
+#: src/icq/icq.cpp:1254
+#, c-format
+msgid "%s from new user (%s), ignoring."
+msgstr ""
+
+#: src/icq/icq.cpp:1260
+#, c-format
+msgid "%s from new user (%s)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2852 src/icq/icq-tcp.cpp:3169
+#, c-format
+msgid "%s has %s (%s)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2821
+#, c-format
+msgid "%s has no info plugins."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2803
+#, c-format
+msgid "%s has no picture."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3151
+#, c-format
+msgid "%s has no status plugins.\n"
+msgstr ""
+
+#: src/fifo.cpp:966
 #, c-format
 msgid "%s is not a FIFO, disabling fifo support"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3254
+#: src/icq/icq-tcp.cpp:2990 src/icq/icq-tcp.cpp:3254
+#, c-format
+msgid "%s refused our request."
+msgstr ""
+
+#: src/icq/packet.cpp:4785
+#, c-format
+msgid "%s returned abnormally: exit code %d."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3244
 #, c-format
 msgid "%s through server from %s (%s)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:5319
+#: src/icq/icq-srv.cpp:5294
 #, c-format
 msgid "%s update failed."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:5317
+#: src/icq/icq-srv.cpp:2396
+#, c-format
+msgid "%s updated info plugin list"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2381
+#, c-format
+msgid "%s updated info."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2392
+#, c-format
+msgid "%s updated phonebook"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2394
+#, c-format
+msgid "%s updated picture"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5292
 #, c-format
 msgid "%s updated."
 msgstr ""
 
-#: src/licq.cpp:316
+#: src/licq.cpp:319
 #, c-format
 msgid "%s version %s, compiled on %s\n"
 msgstr ""
 
-#: src/licq.cpp:828
+#: src/licq.cpp:823
 #, c-format
 msgid ""
 "%s version %s.\n"
@@ -272,2137 +407,59 @@ msgid ""
 " -o : redirect stderr to <file>, which can be a device (ie /dev/ttyp4)\n"
 msgstr ""
 
-#: src/protocolmanager.cpp:457
+#: src/icq/icq-srv.cpp:2540
 #, c-format
-msgid "%s%s (%s) already has a secure channel.\n"
+msgid "%s went offline."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2247
+#: src/icq/icq-tcp.cpp:3235
 #, c-format
-msgid "%s%s (%s) changed status: %s (v%d)%s.\n"
+msgid "%s's ICQphone is %s."
 msgstr ""
 
-#: src/protocolmanager.cpp:490
+#: src/icq/icq-tcp.cpp:3230
 #, c-format
-msgid "%s%s (%s) does not have a secure channel.\n"
+msgid "%s's Phone \"Follow Me\" is %s."
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:2403
+#: src/icq/icq-tcp.cpp:3225
 #, c-format
-msgid "%s%s (%s) does not support OpenSSL.\n"
+msgid "%s's Shared Files Directory is %s."
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:1569
-#, c-format
-msgid "%s%s (%s) is %s to us.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1662
-#, c-format
-msgid "%s%s (%s) requested auto response [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1197 src/icq/icq-tcp.cpp:1666
-#, c-format
-msgid "%s%s (%s) requested auto response.\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1277
-#, c-format
-msgid "%s%s accepted from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3858
-#, c-format
-msgid "%s%s added to awaiting authorization group on server list.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2447
-#, c-format
-msgid "%s%s changed ICQphone status to %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2435
-#, c-format
-msgid "%s%s changed Phone \"Follow Me\" status to %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2441
-#, c-format
-msgid "%s%s changed Shared Files Directory status to %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2294
-#, c-format
-msgid "%s%s changed status: %s (AIM).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3386
-#, c-format
-msgid "%s%s doesn't have a manager for this event.\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1310
-#, c-format
-msgid "%s%s from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1298
-#, c-format
-msgid "%s%s from new user (%s), ignoring.\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1304
-#, c-format
-msgid "%s%s from new user (%s).\n"
-msgstr ""
-
-#: src/icq/packet.cpp:4793
-#, c-format
-msgid "%s%s returned abnormally: exit code %d\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2548
-#, c-format
-msgid "%s%s went offline.\n"
-msgstr ""
-
-#: src/fifo.cpp:1009
+#: src/fifo.cpp:1006
 #, c-format
 msgid "%s: '%s' Unknown fifo command. Try 'help'\n"
 msgstr ""
 
-#: src/fifo.cpp:791
+#: src/fifo.cpp:814
 #, c-format
 msgid "%s: Type `help command'\n"
 msgstr ""
 
-#: src/fifo.cpp:478
+#: src/fifo.cpp:474
 #, c-format
 msgid "%s: output redirected to \"%s\""
 msgstr ""
 
-#: src/fifo.cpp:474
+#: src/fifo.cpp:470
 #, c-format
 msgid "%s: redirection to \"%s\" failed: %s"
 msgstr ""
 
-#: src/fifo.cpp:541
+#: src/fifo.cpp:537
 #, c-format
 msgid "%s: user %s not on contact list, not retrieving info"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:5206
-#, c-format
-msgid "%sAbout info on %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:821
-#, c-format
-msgid "%sAccepting chat request with %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:669
-#, c-format
-msgid "%sAccepting file transfer from %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1193 src/icq/icq.cpp:1285 src/icq/icq-srv.cpp:3398
-#: src/icq/icq-srv.cpp:3485 src/icq/icq-tcp.cpp:2591
-#, c-format
-msgid "%sAck for unknown event.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2545 src/icq/icq-tcp.cpp:2554
-#, c-format
-msgid "%sAck from %s (#%hu)%s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3807
-#, c-format
-msgid "%sActivate server contact list.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3743
-#, c-format
-msgid "%sActivating server contact list.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5517
-#, c-format
-msgid "%sAdded %s (%s) to list from server.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:95
-#, c-format
-msgid "%sAdding %s to server list...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:229
-#, c-format
-msgid "%sAdding group %s (%d) to server list ...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:304
-#, c-format
-msgid "%sAdding privacy information to server side list...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1108
-#, c-format
-msgid "%sAdding user %s to invisible list (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1061
-#, c-format
-msgid "%sAdding user %s to visible list (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:67
-#, c-format
-msgid "%sAlerting server to new user (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:372
-#, c-format
-msgid "%sAlerting server to remove user (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:437
-#, c-format
-msgid "%sAlerting user they were added (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1487
-#, c-format
-msgid "%sAttempt to logoff while not logged on.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1430
-#, c-format
-msgid ""
-"%sAttempt to logon while already logged or logging on, logoff and try "
-"again.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5739
-#, c-format
-msgid "%sAuthenticated. Connecting to %s port %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4030
-#, c-format
-msgid "%sAuthorization %s by %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3992
-#, c-format
-msgid "%sAuthorization request from %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:795
-#, c-format
-msgid "%sAuthorizing user %s\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2538
-#, c-format
-msgid "%sAuto response from %s (#%hu)%s.\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1182 src/icq/icq-srv.cpp:3450
-#, c-format
-msgid "%sAuto response from %s (#%lu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:936 src/icq/icq-tcp.cpp:977 src/icq/icq-tcp.cpp:3438
-#: src/icq/icq-tcp.cpp:3528
-#, c-format
-msgid "%sBad handshake ack: %ld.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:990
-#, c-format
-msgid "%sBad handshake cookie: received %ld, expecting %ld.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:949
-#, c-format
-msgid "%sBad handshake session id: received %ld, expecting %ld.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:355
-#, c-format
-msgid "%sBuddy icon for unknown user (%s).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:413
-#, c-format
-msgid ""
-"%sBuddy icon reply for %s with wrong or unsupported hashtype (%d) or "
-"hashlength (%d).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:424
-#, c-format
-msgid ""
-"%sBuddy icon reply for %s with wrong or unsupported icontype (0x%02x).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:382
-#, c-format
-msgid "%sBuddy icon reply for %s.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:472
-#, c-format
-msgid "%sCan't establish service 0x%02X socket.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:813
-#, c-format
-msgid "%sCan't process packet for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:822
-#, c-format
-msgid "%sCan't receive packet for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:510
-#, c-format
-msgid ""
-"%sCan't send channel capability request while initializing service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:561
-#, c-format
-msgid "%sCan't send client ready while initializing service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:489
-#, c-format
-msgid "%sCan't send cookie while initializing service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:598
-#, c-format
-msgid "%sCan't send event for service 0x%02X because we are not online.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:549
-#, c-format
-msgid "%sCan't send rate-limits ack while initializing service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:530
-#, c-format
-msgid ""
-"%sCan't send request for rate-limits while initializing service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq.cpp:987
-#, c-format
-msgid "%sCancelled event not found.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:783
-#, c-format
-msgid "%sCancelling chat request with %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:655
-#, c-format
-msgid "%sCancelling file transfer to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:886
-#, c-format
-msgid "%sCancelling secure channel request to %s (#%hu).\n"
-msgstr ""
-
-#: src/socket.cpp:713
-#, c-format
-msgid "%sCannot accept new connection, too many descriptors in use.\n"
-msgstr ""
-
-#: src/protocolmanager.cpp:449 src/protocolmanager.cpp:482
-#, c-format
-msgid "%sCannot send secure channel request to user not on list (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:254
-#, c-format
-msgid "%sChanging group on server list for %s (%s)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:659
-#, c-format
-msgid "%sChanging status to %s (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1835
-#, c-format
-msgid "%sChat request from %s (%s) [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2607
-#, c-format
-msgid "%sChat request from %s (%s) cancelled.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1839 src/icq/icq-tcp.cpp:2002
-#, c-format
-msgid "%sChat request from %s (%s).\n"
-msgstr ""
-
-#: src/icq/chat.cpp:1065
-#, c-format
-msgid "%sChat: Joined multiparty (%d people).\n"
-msgstr ""
-
-#: src/icq/chat.cpp:890 src/icq/chat.cpp:1150
-#, c-format
-msgid ""
-"%sChat: Lost remote end:\n"
-"%s%s\n"
-msgstr ""
-
-#: src/icq/chat.cpp:2361
-#, c-format
-msgid "%sChat: No user owns socket %d.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:973
-#, c-format
-msgid "%sChat: Received color packet.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:1037
-#, c-format
-msgid "%sChat: Received color/font packet.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:2345
-#, c-format
-msgid "%sChat: Received connection.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:1019
-#, c-format
-msgid "%sChat: Received font packet.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:927
-#, c-format
-msgid "%sChat: Received handshake from %s [v%ld].\n"
-msgstr ""
-
-#: src/icq/chat.cpp:863
-#, c-format
-msgid "%sChat: Received reverse connection.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:888 src/icq/chat.cpp:1148
-#, c-format
-msgid "%sChat: Remote end disconnected.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:1889 src/icq/chat.cpp:1919
-#, c-format
-msgid ""
-"%sChat: Send error:\n"
-"%s%s\n"
-msgstr ""
-
-#: src/icq/chat.cpp:812
-#, c-format
-msgid "%sChat: Shaking hands [v%d].\n"
-msgstr ""
-
-#: src/icq/chat.cpp:2350
-#, c-format
-msgid "%sChat: Unable to receive new connection.\n"
-msgstr ""
-
-#: src/icq/chat.cpp:825
-#, c-format
-msgid "%sChat: Waiting for color/font response.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2590
-#, c-format
-msgid "%sClient does not understand type-2 messages.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:921
-#, c-format
-msgid "%sClosing connection to %s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:868
-#, c-format
-msgid "%sClosing secure channel with %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1176
-#, c-format
-msgid ""
-"%sConnect to %s failed:\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1188 src/icq/icq-tcp.cpp:1207
-#, c-format
-msgid ""
-"%sConnect to %s real ip failed:\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1171 src/icq/icq-tcp.cpp:1183 src/icq/icq-tcp.cpp:1203
-#, c-format
-msgid "%sConnecting to %s at %s:%d.\n"
-msgstr ""
-
-#: src/socket.cpp:320
-#, c-format
-msgid "%sConnecting to %s:%i...\n"
-msgstr ""
-
-#: src/icq/threads.cpp:211
-#, c-format
-msgid "%sConnecting to login server failed, failing event\n"
-msgstr ""
-
-#: src/icq/threads.cpp:187
-#, c-format
-msgid "%sConnecting to login server.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:455
-#, c-format
-msgid "%sConnecting to separate server for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1054
-#, c-format
-msgid "%sConnection attempted to already connected user (%s).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:3754
-#, c-format
-msgid "%sConnection from %s (%s) [v%ld].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:3771
-#, c-format
-msgid "%sConnection from new user (%s) [v%ld].\n"
-msgstr ""
-
-#: src/icq/threads.cpp:884
-#, c-format
-msgid ""
-"%sConnection to %s lost:\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:881
-#, c-format
-msgid "%sConnection to %s was closed.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1671
-#, c-format
-msgid "%sConnection to server already exists, aborting.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1770
-#, c-format
-msgid "%sContact list from %s (%s) [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1774 src/icq/icq-tcp.cpp:2053
-#, c-format
-msgid "%sContact list from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3803
-#, c-format
-msgid "%sContact list is synchronized.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:403
-#, c-format
-msgid "%sContact list too large to send through server.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3730
-#, c-format
-msgid "%sContact list without request.\n"
-msgstr ""
-
-#: src/contactlist/userhistory.cpp:323
-#, c-format
-msgid "%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"
-msgstr ""
-
-#: src/icq/packet.cpp:4778
-#, c-format
-msgid "%sCould not execute \"%s\" for auto-response.\n"
-msgstr ""
-
-#: src/proxy.cpp:232
-#, c-format
-msgid "%sCould not parse HTTP status line from proxy\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2564
-#, c-format
-msgid "%sCustom %s response from %s (#%hu)%s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1222 src/icq/icq-srv.cpp:1234
-#, c-format
-msgid "%sDeleting server list invisible list users (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1184 src/icq/icq-srv.cpp:1195
-#, c-format
-msgid "%sDeleting server list users (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1259 src/icq/icq-srv.cpp:1271
-#, c-format
-msgid "%sDeleting server list visible list users (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3758
-#, c-format
-msgid "%sDid not receive user ID.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5125
-#, c-format
-msgid "%sEmail info on %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5507
-#, c-format
-msgid "%sEmpty User ID was received in the contact list.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4507
-#, c-format
-msgid "%sEnd of Offline messages (nId: %04hx).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:339
-#, c-format
-msgid "%sError #%02x.%02x in BART request (%ld) for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:296
-#, c-format
-msgid "%sError #%02x.%02x in control FAM request (%ld) for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3770
-#, c-format
-msgid "%sError during parsing packet!\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1826
-#, c-format
-msgid "%sError during parsing service redirect packet!\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1792 src/icq/icq-srv.cpp:3550
-#, c-format
-msgid "%sError parsing SNAC header\n"
-msgstr ""
-
-#: src/icq/threads.cpp:321 src/icq/threads.cpp:572
-#, c-format
-msgid ""
-"%sError sending event (#%hu):\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:109
-#, c-format
-msgid ""
-"%sError sending event (FAM #%02X, Subtype #%02X, Sequence #%hu):\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/socket.cpp:299
-#, c-format
-msgid ""
-"%sError when trying to resolve %s. getaddrinfo() returned %d\n"
-"."
-msgstr ""
-
-#: src/icq/oscarservice.cpp:634
-#, c-format
-msgid "%sEvent for unknown or unsupported service 0x%02X failed.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:178
-#, c-format
-msgid "%sEvent with unsupported subtype (%02X) for FAM %02X failed.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:288
-#, c-format
-msgid "%sExporting groups to server contact list...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:183
-#, c-format
-msgid "%sExporting users to server contact list...\n"
-msgstr ""
-
-#: src/contactlist/user.cpp:558
-#, c-format
-msgid ""
-"%sFailed to rename history file (%s):\n"
-"%s%s\n"
-msgstr ""
-
-#: src/contactlist/user.cpp:314
-#, c-format
-msgid ""
-"%sFailed to rename old history file (%s):\n"
-"%s%s\n"
-msgstr ""
-
-#: src/socket.cpp:334
-#, c-format
-msgid "%sFailed to set port range for socket.\n"
-msgstr ""
-
-#: src/daemon.cpp:280
-#, c-format
-msgid ""
-"%sFailed to start local TCP server:\n"
-"%s"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4980
-#, c-format
-msgid "%sFailed to update user info: %x.\n"
-msgstr ""
-
-#: src/fifo.cpp:788
+#: src/fifo.cpp:811
 #, c-format
 msgid "%sFifo commands:\n"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:684
-#, c-format
-msgid "%sFile Transfer: %s received %d too many bytes.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:679
-#, c-format
-msgid "%sFile Transfer: %s received.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:416
-#, c-format
-msgid "%sFile Transfer: Attempted reverse connection when already connected.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:301
-#, c-format
-msgid ""
-"%sFile Transfer: File access error %s:\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:572
-#, c-format
-msgid "%sFile Transfer: Ignoring a possible erroneous packet.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:442
-#, c-format
-msgid ""
-"%sFile Transfer: Lost remote end:\n"
-"%s%s\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:1209
-#, c-format
-msgid "%sFile Transfer: No such socket.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:720 src/icq/filetransfer.cpp:961
-#, c-format
-msgid ""
-"%sFile Transfer: Read error for %s:\n"
-"%s\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:1185
-#, c-format
-msgid "%sFile Transfer: Received connection.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:464
-#, c-format
-msgid "%sFile Transfer: Received handshake.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:818
-#, c-format
-msgid "%sFile Transfer: Received plugin confirmation.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:430
-#, c-format
-msgid "%sFile Transfer: Received reverse connection.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:621
-#, c-format
-msgid "%sFile Transfer: Receiving %s (%ld bytes).\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:1170
-#, c-format
-msgid "%sFile Transfer: Receiving repeat incoming connection.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:440
-#, c-format
-msgid "%sFile Transfer: Remote end disconnected.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:1021
-#, c-format
-msgid ""
-"%sFile Transfer: Send error:\n"
-"%s%s\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:884
-#, c-format
-msgid "%sFile Transfer: Sending %s (%ld bytes).\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:943
-#, c-format
-msgid "%sFile Transfer: Sent %s, %d too many bytes.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:939
-#, c-format
-msgid "%sFile Transfer: Sent %s.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:385
-#, c-format
-msgid "%sFile Transfer: Shaking hands.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:520 src/icq/filetransfer.cpp:567
-#: src/icq/filetransfer.cpp:633 src/icq/filetransfer.cpp:704
-#: src/icq/filetransfer.cpp:750 src/icq/filetransfer.cpp:792
-#, c-format
-msgid "%sFile Transfer: Speed set to %ld%%.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:1189
-#, c-format
-msgid "%sFile Transfer: Unable to receive new connection.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:556
-#, c-format
-msgid "%sFile Transfer: Waiting for file info.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:400
-#, c-format
-msgid "%sFile Transfer: Waiting for server to respond.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:1133
-#, c-format
-msgid ""
-"%sFile Transfer: select failed, aborting thread:\n"
-"%s%s\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1887
-#, c-format
-msgid "%sFile transfer request from %s (%s) [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2633
-#, c-format
-msgid "%sFile transfer request from %s (%s) cancelled.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1891 src/icq/icq-tcp.cpp:1967
-#, c-format
-msgid "%sFile transfer request from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4772
-#, c-format
-msgid "%sFrom: %s\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5010
-#, c-format
-msgid "%sGeneral info on %s (%s).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:518
-#, c-format
-msgid ""
-"%sGive up waiting for channel capability list while initializing service 0x"
-"%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:538
-#, c-format
-msgid "%sGive up waiting for rate-limits while initializing service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:447
-#, c-format
-msgid ""
-"%sGive up waiting for redirect reply while initializing service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:497
-#, c-format
-msgid ""
-"%sGive up waiting for server ready packet while initializing service 0x"
-"%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3689
-#, c-format
-msgid "%sGot Master Group record.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1953
-#, c-format
-msgid "%sGot Name Info from Server\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3700
-#, c-format
-msgid "%sGot Privacy Setting.\n"
-msgstr ""
-
-#: src/proxy.cpp:240
-#, c-format
-msgid ""
-"%sHTTPS proxy return error code: %d, error string:\n"
-"%s\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1030 src/icq/icq-tcp.cpp:3663 src/icq/icq-tcp.cpp:3732
-#, c-format
-msgid "%sHandshake error, remote side closed connection.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1032 src/icq/icq-tcp.cpp:3665 src/icq/icq-tcp.cpp:3734
-#, c-format
-msgid ""
-"%sHandshake socket error:\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/inifile.cpp:213
-#, c-format
-msgid ""
-"%sIniFile: I/O error, failed to create file.\n"
-"File: %s\n"
-"Error code: %i\n"
-msgstr ""
-
-#: src/inifile.cpp:89 src/inifile.cpp:195
-#, c-format
-msgid ""
-"%sIniFile: I/O error, failed to get file size.\n"
-"File: %s\n"
-"Error code: %i\n"
-msgstr ""
-
-#: src/inifile.cpp:79
-#, c-format
-msgid ""
-"%sIniFile: I/O error, failed to open file.\n"
-"File: %s\n"
-"Error code: %i\n"
-msgstr ""
-
-#: src/inifile.cpp:101
-#, c-format
-msgid ""
-"%sIniFile: I/O error, failed to read file.\n"
-"File: %s\n"
-"Error code: %i\n"
-msgstr ""
-
-#: src/inifile.cpp:235
-#, c-format
-msgid ""
-"%sIniFile: I/O error, failed to replace file.\n"
-"File: %s\n"
-"Error code: %i\n"
-msgstr ""
-
-#: src/inifile.cpp:224
-#, c-format
-msgid ""
-"%sIniFile: I/O error, failed to write file.\n"
-"File: %s\n"
-"Error code: %i\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:614
-#, c-format
-msgid "%sInitialization of socket for service 0x%02X failed, failing event\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:611
-#, c-format
-msgid "%sInitializing socket for service 0x%02X.\n"
-msgstr ""
-
-#: src/inifile.cpp:512
-#, c-format
-msgid "%sInternal Error: IniFile::get, key=%s, data.type=%s\n"
-msgstr ""
-
-#: src/inifile.cpp:612
-#, c-format
-msgid "%sInternal Error: IniFile::set, key=%s, data.type=%s\n"
-msgstr ""
-
-#: src/icq/threads.cpp:802
-#, c-format
-msgid "%sInvalid BART service socket in set.\n"
-msgstr ""
-
-#: src/icq/icq.cpp:268
-#, c-format
-msgid "%sInvalid TCP version %d.  Attempting v%d.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5658
-#, c-format
-msgid "%sInvalid UIN and password combination.\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:1033
-#, c-format
-msgid "%sInvalid file transfer speed: %d%%.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:839
-#, c-format
-msgid "%sInvalid server TCP socket in set.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:764
-#, c-format
-msgid "%sInvalid server socket in set.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1839
-#, c-format
-msgid "%sInvalid servername (%s) or cookie (%s) in service redirect packet!\n"
-msgstr ""
-
-#: src/licq.cpp:486
-#, c-format
-msgid "%sLicq: Already running at pid %d.\n"
-msgstr ""
-
-#: src/licq.cpp:453 src/licq.cpp:480
-#, c-format
-msgid "%sLicq: Unable to determine pid of running Licq instance.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2596
-#, c-format
-msgid "%sList overflow.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1493
-#, c-format
-msgid "%sLogging off.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1601
-#, c-format
-msgid "%sMessage from %s (%s) [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1605
-#, c-format
-msgid "%sMessage from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2703
-#, c-format
-msgid "%sMessage through server from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3505
-#, c-format
-msgid ""
-"%sMessage was sent to an offline user. It will be delivered when the user "
-"logs on.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5072
-#, c-format
-msgid "%sMore info on %s (%s).\n"
-msgstr ""
-
-#: src/icq/chat.cpp:683 src/icq/filetransfer.cpp:226
-#, c-format
-msgid "%sNo more ports available, add more or close open chat/file sessions.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1442
-#, c-format
-msgid ""
-"%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"
-msgstr ""
-
-#: src/daemon.cpp:276
-#, c-format
-msgid "%sNo ports available for local TCP server.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4865
-#, c-format
-msgid "%sNo random chat user found.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:235
-#, c-format
-msgid "%sNot connected to server, failing event\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4491
-#, c-format
-msgid "%sOffline SMS from %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4293
-#, c-format
-msgid "%sOffline server message.\n"
-msgstr ""
-
-#: src/buffer.cpp:456 src/buffer.cpp:470
-#, c-format
-msgid "%sPack(): Trying to pack more data than Licq::Buffer can hold!\n"
-msgstr ""
-
-#: src/buffer.cpp:443
-#, c-format
-msgid "%sPackChar(): Trying to pack more data than Licq::Buffer can hold!\n"
-msgstr ""
-
-#: src/buffer.cpp:496
-#, c-format
-msgid "%sPackString(): Trying to pack more data than Licq::Buffer can hold!\n"
-msgstr ""
-
-#: src/buffer.cpp:417
-#, c-format
-msgid ""
-"%sPackUnsignedLong(): Trying to pack more data than Licq::Buffer can hold!\n"
-msgstr ""
-
-#: src/buffer.cpp:430
-#, c-format
-msgid ""
-"%sPackUnsignedLongBE(): Trying to pack more data than Licq::Buffer can "
-"hold!\n"
-msgstr ""
-
-#: src/buffer.cpp:516
-#, c-format
-msgid ""
-"%sPackUnsignedShort(): Trying to pack more data than Licq::Buffer can hold!\n"
-msgstr ""
-
-#: src/buffer.cpp:529
-#, c-format
-msgid ""
-"%sPackUnsignedShortBE(): Trying to pack more data than Licq::Buffer can "
-"hold!\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:226
-#, c-format
-msgid "%sPacket from unhandled channel %02x for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1762
-#, c-format
-msgid "%sPacket on unhandled Channel 'Error' received!\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2593
-#, c-format
-msgid "%sPacket was malformed.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:240
-#, c-format
-msgid ""
-"%sPacket with wrong version (0x%08lx) from new channel for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/packet.cpp:791 src/icq/packet.cpp:839
-#, c-format
-msgid "%sPassword too long, truncated to 8 Characters!\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:263
-#, c-format
-msgid "%sPath %s is not a directory.\n"
-msgstr ""
-
-#: src/licq.cpp:578
-#, c-format
-msgid "%sPlugin %s is no longer available, trying to load qt4-gui instead.\n"
-msgstr ""
-
-#: src/licq.cpp:573
-#, c-format
-msgid ""
-"%sPlugin kde-gui is no longer available, trying to load kde4-gui instead.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:243
-#, c-format
-msgid ""
-"%sProtocol prohibits for users to be in the root group.\n"
-"%sAborting group change attempt for %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1649
-#, c-format
-msgid "%sProxy server not properly configured.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4837
-#, c-format
-msgid "%sRandom chat user found (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5651
-#, c-format
-msgid "%sRate limit exceeded.\n"
-msgstr ""
-
-#: src/buffer.cpp:583
-#, c-format
-msgid "%sRead too much TLV data!\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4107
-#, c-format
-msgid "%sReceived BOS rights.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2054
-#, c-format
-msgid "%sReceived away message for %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3732
-#, c-format
-msgid "%sReceived contact list.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3739
-#, c-format
-msgid "%sReceived end of contact list.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5002
-#, c-format
-msgid "%sReceived extended information for %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4874
-#, c-format
-msgid "%sReceived info update ack, without updating info.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5399
-#, c-format
-msgid "%sReceived new uin (%lu) when already have a uin (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5404
-#, c-format
-msgid "%sReceived new uin: %lu\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2088
-#, c-format
-msgid ""
-"%sReceived old-style key request from %s (%s) but we do not support it.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2558
-#, c-format
-msgid "%sReceived rights for Contact List..\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3493
-#, c-format
-msgid "%sReceived rights for Instant Messaging..\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2035
-#, c-format
-msgid "%sReceived rights for Location Services.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2193
-#, c-format
-msgid ""
-"%sReceived secure channel close from %s (%s) but we do not support OpenSSL.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2148
-#, c-format
-msgid ""
-"%sReceived secure channel request from %s (%s) but we do not support "
-"OpenSSL.\n"
-msgstr ""
-
-#: src/fifo.cpp:1002
+#: src/fifo.cpp:999
 #, c-format
 msgid "%sReceived string: %s"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3753
-#, c-format
-msgid "%sReceived updated contact information from server.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2072
-#, c-format
-msgid "%sReceived user information for %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1832
-#, c-format
-msgid "%sRedirect for service 0x%02X received.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2528
-#, c-format
-msgid "%sRefusal from %s (#%hu)%s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3440
-#, c-format
-msgid "%sRefusal from %s (#%lu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:805
-#, c-format
-msgid "%sRefusing authorization to user %s (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:796
-#, c-format
-msgid "%sRefusing chat request with %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:692
-#, c-format
-msgid "%sRefusing file transfer from %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:528
-#, c-format
-msgid "%sRegistering a new user...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:398
-#, c-format
-msgid "%sRemoving group from server side list (%s)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1129
-#, c-format
-msgid "%sRemoving user %s from invisible list (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1082
-#, c-format
-msgid "%sRemoving user %s from visible list (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:420
-#, c-format
-msgid "%sRenaming %s to %s...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:409
-#, c-format
-msgid "%sRenaming group with id %d to %s...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1919
-#, c-format
-msgid "%sRequesting BOS rights.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1915
-#, c-format
-msgid "%sRequesting Instant Messaging rights.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:225
-#, c-format
-msgid "%sRequesting auto response from %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:478
-#, c-format
-msgid "%sRequesting auto response from %s (%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:218
-#, c-format
-msgid "%sRequesting auto response from %s.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:170
-#, c-format
-msgid "%sRequesting buddy icon for %s (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1911
-#, c-format
-msgid "%sRequesting contact list rights.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1899
-#, c-format
-msgid "%sRequesting list rights.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1907
-#, c-format
-msgid "%sRequesting location rights.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1470
-#, c-format
-msgid "%sRequesting logon salt (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:588
-#, c-format
-msgid "%sRequesting meta info for %s (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1809
-#, c-format
-msgid "%sRequesting rate info...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1903
-#, c-format
-msgid "%sRequesting roster rights.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1895
-#, c-format
-msgid "%sRequesting self info.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:600
-#, c-format
-msgid "%sRequesting service socket for FAM 0x%02X (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:890
-#, c-format
-msgid "%sRequesting user info (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:541
-#, c-format
-msgid "%sRequesting verification image...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5303
-#, c-format
-msgid "%sResponse to unknown extended info request for %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2559
-#, c-format
-msgid "%sReturned from %s (#%hu)%s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1253
-#, c-format
-msgid ""
-"%sReverse connect to %s failed:\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1247
-#, c-format
-msgid "%sReverse connecting to %s at %s:%d.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1262
-#, c-format
-msgid "%sReverse shaking hands with %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4743
-#, c-format
-msgid "%sSMS delivered.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4885
-#, c-format
-msgid "%sSMS failed to send.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3311
-#, c-format
-msgid "%sSMS from %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4754
-#, c-format
-msgid "%sSMS not delivered, error #%s, param: %s\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:501
-#, c-format
-msgid "%sSearching for random chat user (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2175
-#, c-format
-msgid "%sSecure channel closed by %s (%s) [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2179
-#, c-format
-msgid "%sSecure channel closed by %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2113
-#, c-format
-msgid "%sSecure channel request from %s (%s) [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2117
-#, c-format
-msgid "%sSecure channel request from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2419
-#, c-format
-msgid "%sSecure channel response from %s (%s) when no request in progress.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2395
-#, c-format
-msgid "%sSecure channel response from %s (%s)%s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2475
-#, c-format
-msgid "%sSecure channel with %s (%s) closed %s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:286
-#, c-format
-msgid "%sSending %sURL to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:764
-#, c-format
-msgid "%sSending %schat request to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:436
-#, c-format
-msgid "%sSending %scontact list to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:366
-#, c-format
-msgid "%sSending %sfile transfer to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:177
-#, c-format
-msgid "%sSending %smessage to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1327
-#, c-format
-msgid "%sSending SMS through server (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4768
-#, c-format
-msgid "%sSending SMS via SMTP not supported yet.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:545
-#, c-format
-msgid "%sSending ack for rate-limits for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1940
-#, c-format
-msgid "%sSending capability settings (?)\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:748
-#, c-format
-msgid "%sSending chat request to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:557
-#, c-format
-msgid "%sSending client ready for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4111
-#, c-format
-msgid "%sSending client ready...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1301
-#, c-format
-msgid "%sSending contact list through server (#%hu).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:485
-#, c-format
-msgid "%sSending cookie for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:342
-#, c-format
-msgid "%sSending file transfer to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1048
-#, c-format
-msgid "%sSending invisible list (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5440
-#, c-format
-msgid "%sSending md5 hashed password.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1295
-#, c-format
-msgid "%sSending message through server (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1304
-#, c-format
-msgid "%sSending misc through server (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4115
-#, c-format
-msgid "%sSending offline message request...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1805
-#, c-format
-msgid "%sSending our channel capability list...\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:506
-#, c-format
-msgid "%sSending our families versions for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:848
-#, c-format
-msgid "%sSending request for secure channel to %s (#%hu).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:526
-#, c-format
-msgid "%sSending request of rate-limits for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1298
-#, c-format
-msgid "%sSending url through server (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:551
-#, c-format
-msgid "%sSending verification for registration.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1028
-#, c-format
-msgid "%sSending visible list (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3559
-#, c-format
-msgid "%sServer granted contact list rights.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2015
-#, c-format
-msgid "%sServer is going to disconnect/pause. Lets reconnect to another one.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3822
-#, c-format
-msgid "%sServer list update ack without request.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3103
-#, c-format
-msgid "%sServer message.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:302
-#, c-format
-msgid "%sServer says he's ready for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1803
-#, c-format
-msgid "%sServer says he's ready.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1984
-#, c-format
-msgid "%sServer says we are at %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2000
-#, c-format
-msgid "%sServer says we're now: %s\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1770
-#, c-format
-msgid "%sServer send unknown channel: %02x\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:220
-#, c-format
-msgid "%sServer send us request for close service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1893
-#, c-format
-msgid "%sServer sent us channel capability list (ignoring).\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:308
-#, c-format
-msgid "%sServer sent us channel capability list for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1928
-#, c-format
-msgid "%sServer sent us rate information.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:314
-#, c-format
-msgid "%sServer sent us rate-limits information for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1869
-#, c-format
-msgid "%sService redirect packet for unallocated BART service.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1875
-#, c-format
-msgid "%sService redirect packet for unhandled service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:1932
-#, c-format
-msgid "%sSetting ICQ Instant Messaging Mode.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:488
-#, c-format
-msgid "%sSetting random chat group (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1100
-#, c-format
-msgid "%sShaking hands with %s (%s) [v%d].\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3845
-#, c-format
-msgid "%sSkipping invalid server side list ack (%ld).\n"
-msgstr ""
-
-#: src/icq/threads.cpp:521
-#, c-format
-msgid "%sSocket %d does not exist (#%hu).\n"
-msgstr ""
-
-#: src/icq/threads.cpp:260
-#, c-format
-msgid "%sSocket not connected or invalid (#%hu).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:873
-#, c-format
-msgid "%sStarting search by UIN for user (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:861
-#, c-format
-msgid "%sStarting white pages search (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4778
-#, c-format
-msgid "%sSubject: %s\n"
-msgstr ""
-
-#: src/daemon.cpp:305
-#, c-format
-msgid "%sTCP high port (%d) is lower then TCP low port (%d).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5671
-#, c-format
-msgid ""
-"%sThe requested network service is temporarily unavailable.\n"
-"Please try again later.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4775
-#, c-format
-msgid "%sTo: %s\n"
-msgstr ""
-
-#: src/icq/chat.cpp:2331
-#, c-format
-msgid "%sToo many connected clients, rejecting new connection.\n"
-msgstr ""
-
-#: src/icq/threads.cpp:852
-#, c-format
-msgid "%sToo many connected sockets, rejecting connection from %s.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:153
-#, c-format
-msgid "%sTruncating message to %d characters to send through server.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3521
-#, c-format
-msgid "%sTyping status received for unknown user (%s).\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1703
-#, c-format
-msgid "%sURL from %s (%s) [Licq %s].\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1706 src/icq/icq-tcp.cpp:2026
-#, c-format
-msgid "%sURL from %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq.cpp:161
-#, c-format
-msgid "%sUnable to allocate TCP port for local server (%s)!\n"
-msgstr ""
-
-#: src/icq/filetransfer.cpp:249
-#, c-format
-msgid "%sUnable to create directory %s for file transfer.\n"
-msgstr ""
-
-#: src/daemon.cpp:382
-#, c-format
-msgid "%sUnable to open \"%s\" for writing.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5472
-#, c-format
-msgid ""
-"%sUnable to open file (%s):\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/contactlist/userhistory.cpp:120
-#, c-format
-msgid ""
-"%sUnable to open history file (%s):\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:389
-#, c-format
-msgid ""
-"%sUnable to open picture file (%s):\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/buffer.cpp:591
-#, c-format
-msgid "%sUnable to read requested amount of TLV data!\n"
-msgstr ""
-
-#: src/icq/icq.cpp:205 src/icq/icq.cpp:285
-#, c-format
-msgid ""
-"%sUnable to start BART service thread:\n"
-"%s%s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4799
-#, c-format
-msgid "%sUndeliverable SMS.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3350
-#, c-format
-msgid "%sUnexpected new user in subtype 0x%04x.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4130
-#, c-format
-msgid "%sUnknown BOS Family Subtype: %04hx\n"
-msgstr ""
-
-#: src/icq/icq.cpp:1240 src/icq/icq-tcp.cpp:1946
-#, c-format
-msgid "%sUnknown ICBM plugin type: %s\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4095
-#, c-format
-msgid "%sUnknown List Family Subtype: %04hx\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3533
-#, c-format
-msgid "%sUnknown Message Family Subtype: %04hx\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1557
-#, c-format
-msgid "%sUnknown TCP status: %04X\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:1432
-#, c-format
-msgid "%sUnknown TCP version %d from socket.\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:2321
-#, c-format
-msgid "%sUnknown direct ack ICBM plugin type: %s\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3868
-#, c-format
-msgid "%sUnknown error modifying server list: 0x%02X (ID: %s)\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2465
-#, c-format
-msgid "%sUnknown index %d from %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5373
-#, c-format
-msgid ""
-"%sUnknown logon error. There appears to be an issue with the ICQ servers. "
-"Please try again later.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:320
-#, c-format
-msgid ""
-"%sUnknown or unsupported service FAM subtype 0x%02X for service 0x%02X.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:277
-#, c-format
-msgid ""
-"%sUnknown or usupported family %04hx\n"
-" on data channel of service %02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2136
-#, c-format
-msgid "%sUnknown user (%s) changed status.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2542
-#, c-format
-msgid "%sUnknown user (%s) has gone offline.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2497
-#, c-format
-msgid "%sUnsupported type 0x%02X of buddy icon for %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3954
-#, c-format
-msgid "%sUpdated %s successfully.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4878
-#, c-format
-msgid "%sUpdated information successfully.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:784
-#, c-format
-msgid "%sUpdating about (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:710
-#, c-format
-msgid "%sUpdating additional E-Mail info (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:977 src/icq/icq-srv.cpp:990
-#, c-format
-msgid "%sUpdating contact list (#%hu)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:696
-#, c-format
-msgid "%sUpdating general info (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:211 src/icq/icq-srv.cpp:3921
-#, c-format
-msgid "%sUpdating group %s.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:726
-#, c-format
-msgid "%sUpdating more info (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:678
-#, c-format
-msgid "%sUpdating password (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:841
-#, c-format
-msgid "%sUpdating security info (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:200 src/icq/icq-srv.cpp:3916
-#, c-format
-msgid "%sUpdating top level group.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:771
-#, c-format
-msgid "%sUpdating work info (#%hu/#%d)...\n"
-msgstr ""
-
-#: src/icq/icq-tcp.cpp:3760
-#, c-format
-msgid "%sUser %s (%s) already has an associated socket.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4068
-#, c-format
-msgid "%sUser %s added you to their contact list.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:2587
-#, c-format
-msgid "%sUser is offline.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:3863
-#, c-format
-msgid "%sUser/Group %s not found on server list.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:272
-#, c-format
-msgid ""
-"%sUsupported family %04hx\n"
-" on data channel of service %02X.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5351
-#, c-format
-msgid "%sVerification required. Reconnecting...\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5636
-#, c-format
-msgid "%sWe're logging off..\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4897
-#, c-format
-msgid "%sWhitePages search found no users.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5176
-#, c-format
-msgid "%sWork info on %s (%s).\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5695
-#, c-format
-msgid "%sYour ICQ number is used from another location.\n"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:5700
-#, c-format
-msgid ""
-"%sYour ICQ number is used from another location.\n"
-"Automatic reconnect is disabled.\n"
-msgstr ""
-
-#: src/icq/oscarservice.cpp:197
-#, c-format
-msgid "%sbad start code %d for packet in socket of service 0x%02X.\n"
 msgstr ""
 
 #: src/icq/codes.c:3641
@@ -2669,25 +726,98 @@ msgstr ""
 msgid "@skytel.com"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4676
+#: src/icq/icq-srv.cpp:4653
 msgid "About"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5181
+#, c-format
+msgid "About info on %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:3533
 msgid "Academic"
 msgstr ""
 
+#: src/icq/icq-tcp.cpp:801
+#, c-format
+msgid "Accepting chat request with %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:654
+#, c-format
+msgid "Accepting file transfer from %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2796 src/icq/icq-tcp.cpp:3202
+#, c-format
+msgid "Ack for the wrong event from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2778 src/icq/icq-tcp.cpp:3014 src/icq/icq-tcp.cpp:3184
+#: src/icq/icq-tcp.cpp:3278
+#, c-format
+msgid "Ack for unknown event from %s."
+msgstr ""
+
+#: src/icq/icq.cpp:1149 src/icq/icq.cpp:1241 src/icq/icq-srv.cpp:3385
+#: src/icq/icq-srv.cpp:3470 src/icq/icq-tcp.cpp:2568
+msgid "Ack for unknown event."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2522 src/icq/icq-tcp.cpp:2531
+#, c-format
+msgid "Ack from %s (#%hu)%s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3787
+msgid "Activate server contact list."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3723
+msgid "Activating server contact list."
+msgstr ""
+
 #: src/contactlist/user.cpp:1659
 msgid "Active"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:625
+#: src/icq/icq-srv.cpp:5491
+#, c-format
+msgid "Added %s (%s) to list from server."
+msgstr ""
+
+#: src/contactlist/usermanager.cpp:634
 #, c-format
 msgid "Added group %s (%u) to list from server"
 msgstr ""
 
-#: src/userevents.cpp:927
+#: src/userevents.cpp:400
 msgid "Added to Contact List"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:94
+#, c-format
+msgid "Adding %s to server list..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:228
+#, c-format
+msgid "Adding group %s (%d) to server list ..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:302
+msgid "Adding privacy information to server side list..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1097
+#, c-format
+msgid "Adding user %s to invisible list (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1050
+#, c-format
+msgid "Adding user %s to visible list (#%hu)..."
 msgstr ""
 
 #: src/icq/codes.c:3534
@@ -2806,11 +936,26 @@ msgstr ""
 msgid "Albanian"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:67
+#, c-format
+msgid "Alerting server to new user (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:369
+#, c-format
+msgid "Alerting server to remove user (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:432
+#, c-format
+msgid "Alerting user they were added (#%hu)..."
+msgstr ""
+
 #: src/icq/codes.c:64
 msgid "Algeria"
 msgstr ""
 
-#: src/userevents.cpp:371 src/userevents.cpp:421
+#: src/userevents.cpp:392 src/userevents.cpp:447
 #, c-format
 msgid ""
 "Alias: %s\n"
@@ -3298,6 +1443,15 @@ msgstr ""
 msgid "Astronomy"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:1471
+msgid "Attempt to logoff while not logged on."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1414
+msgid ""
+"Attempt to logon while already logged or logging on, logoff and try again."
+msgstr ""
+
 #: src/sighandler.cpp:176
 msgid "Attempting to generate core file.\n"
 msgstr ""
@@ -3314,42 +1468,72 @@ msgstr ""
 msgid "Austria"
 msgstr ""
 
-#: src/userevents.cpp:923
+#: src/icq/icq-srv.cpp:5713
+#, c-format
+msgid "Authenticated. Connecting to %s port %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4009
+#, c-format
+msgid "Authorization %s by %s."
+msgstr ""
+
+#: src/userevents.cpp:513
 msgid "Authorization Granted"
 msgstr ""
 
-#: src/userevents.cpp:922
+#: src/userevents.cpp:564
 msgid "Authorization Refused"
 msgstr ""
 
-#: src/userevents.cpp:921
+#: src/userevents.cpp:459
 msgid "Authorization Request"
 msgstr ""
 
-#: src/userevents.cpp:425
+#: src/userevents.cpp:451
 #, c-format
 msgid ""
 "Authorization Request:\n"
 "%s\n"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3085
+#: src/icq/icq-srv.cpp:3075
 #, c-format
 msgid "Authorization granted by %s"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3072
+#: src/icq/icq-srv.cpp:3062
 #, c-format
 msgid "Authorization refused by %s"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3043
+#: src/icq/icq-srv.cpp:3033
 #, c-format
 msgid "Authorization request from %s"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:3971
+#, c-format
+msgid "Authorization request from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:786
+#, c-format
+msgid "Authorizing user %s."
+msgstr ""
+
 #: src/statistics.cpp:41
 msgid "Auto Response Checked"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2516
+#, c-format
+msgid "Auto response from %s (#%hu)%s."
+msgstr ""
+
+#: src/icq/icq.cpp:1139 src/icq/icq-srv.cpp:3436
+#, c-format
+msgid "Auto response from %s (#%lu)."
 msgstr ""
 
 #: src/contactlist/user.cpp:1357
@@ -3386,6 +1570,22 @@ msgstr ""
 #: src/sighandler.cpp:155
 #, c-format
 msgid "Backtrace (saved in %s):\n"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:915 src/icq/icq-tcp.cpp:956 src/icq/icq-tcp.cpp:3392
+#: src/icq/icq-tcp.cpp:3481
+#, c-format
+msgid "Bad handshake ack: %ld."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:969
+#, c-format
+msgid "Bad handshake cookie: received %ld, expecting %ld."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:928
+#, c-format
+msgid "Bad handshake session id: received %ld, expecting %ld."
 msgstr ""
 
 #: src/icq/codes.c:79
@@ -3466,6 +1666,28 @@ msgstr ""
 
 #: src/icq/codes.c:95
 msgid "Brunei"
+msgstr ""
+
+#: src/icq/oscarservice.cpp:351
+#, c-format
+msgid "Buddy icon for unknown user (%s)."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:408
+#, c-format
+msgid ""
+"Buddy icon reply for %s with wrong or unsupported hashtype (%d) or "
+"hashlength (%d)."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:419
+#, c-format
+msgid "Buddy icon reply for %s with wrong or unsupported icontype (0x%02x)."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:377
+#, c-format
+msgid "Buddy icon reply for %s."
 msgstr ""
 
 #: src/icq/codes.c:96
@@ -4054,6 +2276,52 @@ msgstr ""
 msgid "Cameroon"
 msgstr ""
 
+#: src/icq/oscarservice.cpp:466
+#, c-format
+msgid "Can't establish service 0x%02X socket."
+msgstr ""
+
+#: src/icq/threads.cpp:804
+#, c-format
+msgid "Can't process packet for service 0x%02X."
+msgstr ""
+
+#: src/icq/threads.cpp:812
+#, c-format
+msgid "Can't receive packet for service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:500
+#, c-format
+msgid ""
+"Can't send channel capability request while initializing service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:547
+#, c-format
+msgid "Can't send client ready while initializing service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:481
+#, c-format
+msgid "Can't send cookie while initializing service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:583
+#, c-format
+msgid "Can't send event for service 0x%02X because we are not online."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:537
+#, c-format
+msgid "Can't send rate-limits ack while initializing service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:519
+#, c-format
+msgid "Can't send request for rate-limits while initializing service 0x%02X."
+msgstr ""
+
 #: src/icq/codes.c:101
 msgid "Canada"
 msgstr ""
@@ -4062,11 +2330,39 @@ msgstr ""
 msgid "Canary Islands"
 msgstr ""
 
+#: src/icq/icq.cpp:944
+msgid "Cancelled event not found."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:765
+#, c-format
+msgid "Cancelling chat request with %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:641
+#, c-format
+msgid "Cancelling file transfer to %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:865
+#, c-format
+msgid "Cancelling secure channel request to %s (#%hu)."
+msgstr ""
+
+#: src/socket.cpp:713
+msgid "Cannot accept new connection, too many descriptors in use."
+msgstr ""
+
 #: src/socket.cpp:702
 #, c-format
 msgid ""
 "Cannot accept new connection:\n"
 "%s"
+msgstr ""
+
+#: src/protocolmanager.cpp:449 src/protocolmanager.cpp:482
+#, c-format
+msgid "Cannot send secure channel request to user not on list (%s)."
 msgstr ""
 
 #: src/icq/codes.c:3442
@@ -4105,16 +2401,46 @@ msgstr ""
 msgid "Chamorro"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:252
+#, c-format
+msgid "Changing group on server list for %s (%s)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:652
+#, c-format
+msgid "Changing status to %s (#%hu)..."
+msgstr ""
+
+#: src/icq/packet.cpp:4212
+#, c-format
+msgid "Channel %u is not implemented"
+msgstr ""
+
 #: src/icq/codes.c:3590
 msgid "Charity Org."
 msgstr ""
 
-#: src/userevents.cpp:917
+#: src/userevents.cpp:352
 msgid "Chat Request"
 msgstr ""
 
-#: src/icq/icq.cpp:1102
+#: src/icq/icq.cpp:1059
 msgid "Chat request"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1813
+#, c-format
+msgid "Chat request from %s (%s) [Licq %s]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2584
+#, c-format
+msgid "Chat request from %s (%s) cancelled."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1817 src/icq/icq-tcp.cpp:1980
+#, c-format
+msgid "Chat request from %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:541
@@ -4424,6 +2750,94 @@ msgid ""
 "Singles Chat 2"
 msgstr ""
 
+#: src/icq/chat.cpp:904
+msgid "Chat: Bad handshake."
+msgstr ""
+
+#: src/icq/chat.cpp:763
+msgid "Chat: Connecting to server."
+msgstr ""
+
+#: src/icq/chat.cpp:1063
+#, c-format
+msgid "Chat: Joined multiparty (%d people)."
+msgstr ""
+
+#: src/icq/chat.cpp:890 src/icq/chat.cpp:1147
+#, c-format
+msgid "Chat: Lost remote end: %s"
+msgstr ""
+
+#: src/icq/chat.cpp:2355
+#, c-format
+msgid "Chat: No user owns socket %d."
+msgstr ""
+
+#: src/icq/chat.cpp:972
+msgid "Chat: Received color packet."
+msgstr ""
+
+#: src/icq/chat.cpp:1035
+msgid "Chat: Received color/font packet."
+msgstr ""
+
+#: src/icq/chat.cpp:2339
+msgid "Chat: Received connection."
+msgstr ""
+
+#: src/icq/chat.cpp:1017
+msgid "Chat: Received font packet."
+msgstr ""
+
+#: src/icq/chat.cpp:926
+#, c-format
+msgid "Chat: Received handshake from %s [v%ld]."
+msgstr ""
+
+#: src/icq/chat.cpp:863
+msgid "Chat: Received reverse connection."
+msgstr ""
+
+#: src/icq/chat.cpp:888 src/icq/chat.cpp:1145
+msgid "Chat: Remote end disconnected."
+msgstr ""
+
+#: src/icq/chat.cpp:2456
+msgid "Chat: Reverse connection failed, trying direct."
+msgstr ""
+
+#: src/icq/chat.cpp:1008
+#, c-format
+msgid "Chat: Send error (color/font packet): %s"
+msgstr ""
+
+#: src/icq/chat.cpp:1088
+#, c-format
+msgid "Chat: Send error (font packet): %s"
+msgstr ""
+
+#: src/icq/chat.cpp:1885 src/icq/chat.cpp:1914
+#, c-format
+msgid "Chat: Send error: %s"
+msgstr ""
+
+#: src/icq/chat.cpp:812
+#, c-format
+msgid "Chat: Shaking hands [v%d]."
+msgstr ""
+
+#: src/icq/chat.cpp:2344
+msgid "Chat: Unable to receive new connection."
+msgstr ""
+
+#: src/icq/chat.cpp:825 src/icq/chat.cpp:959
+msgid "Chat: Waiting for color/font response."
+msgstr ""
+
+#: src/icq/chat.cpp:2401
+msgid "Chat: Waiting for reverse connection."
+msgstr ""
+
 #: src/icq/codes.c:107
 msgid "Chile, Republic of"
 msgstr ""
@@ -4438,6 +2852,20 @@ msgstr ""
 
 #: src/icq/codes.c:109
 msgid "Christmas Island"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2582
+msgid "Client does not understand type-2 messages."
+msgstr ""
+
+#: src/icq/threads.cpp:909
+#, c-format
+msgid "Closing connection to %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:847
+#, c-format
+msgid "Closing secure channel with %s (#%hu)."
 msgstr ""
 
 #: src/icq/codes.c:3363
@@ -4470,6 +2898,11 @@ msgstr ""
 
 #: src/icq/codes.c:112
 msgid "Colombia"
+msgstr ""
+
+#: src/icq/packet.cpp:1487
+#, c-format
+msgid "Command not implemented yet (%04X)."
 msgstr ""
 
 #: src/icq/codes.c:3537
@@ -5052,6 +3485,78 @@ msgstr ""
 msgid "Congo, Democratic Republic of (Zaire)"
 msgstr ""
 
+#: src/icq/icq-tcp.cpp:1155
+#, c-format
+msgid "Connect to %s failed: %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1167 src/icq/icq-tcp.cpp:1186
+#, c-format
+msgid "Connect to %s real ip failed: %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1150 src/icq/icq-tcp.cpp:1162 src/icq/icq-tcp.cpp:1182
+#, c-format
+msgid "Connecting to %s at %s:%d."
+msgstr ""
+
+#: src/socket.cpp:320
+#, c-format
+msgid "Connecting to %s:%i..."
+msgstr ""
+
+#: src/icq/threads.cpp:212
+msgid "Connecting to login server failed, failing event."
+msgstr ""
+
+#: src/icq/threads.cpp:188
+msgid "Connecting to login server."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:450
+#, c-format
+msgid "Connecting to separate server for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1033
+#, c-format
+msgid "Connection attempted to already connected user (%s)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3707
+#, c-format
+msgid "Connection from %s (%s) [v%ld]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3530 src/icq/icq-tcp.cpp:3581
+#, c-format
+msgid "Connection from %s as %s possible spoof."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3724
+#, c-format
+msgid "Connection from new user (%s) [v%ld]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3355 src/icq/icq-tcp.cpp:3450 src/icq/icq-tcp.cpp:3519
+#: src/icq/icq-tcp.cpp:3569
+msgid "Connection from unknown user."
+msgstr ""
+
+#: src/icq/threads.cpp:872
+#, c-format
+msgid "Connection to %s lost: %s."
+msgstr ""
+
+#: src/icq/threads.cpp:870
+#, c-format
+msgid "Connection to %s was closed."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1665
+msgid "Connection to server already exists, aborting."
+msgstr ""
+
 #: src/icq/codes.c:3366
 msgid "Consumer Electronics"
 msgstr ""
@@ -5156,25 +3661,57 @@ msgid ""
 "Consumer Subjects"
 msgstr ""
 
-#: src/userevents.cpp:934
+#: src/userevents.cpp:712
 msgid "Contact List"
 msgstr ""
 
-#: src/icq/icq.cpp:1164
+#: src/icq/icq.cpp:1121
 msgid "Contact list"
 msgstr ""
 
-#: src/userevents.cpp:649
+#: src/userevents.cpp:700
 #, c-format
 msgid "Contact list (%d contacts):\n"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3202 src/icq/icq-srv.cpp:4389
+#: src/icq/icq-tcp.cpp:1748
+#, c-format
+msgid "Contact list from %s (%s) [Licq %s]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2031
+#, c-format
+msgid "Contact list from %s (%s)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1752
+#, c-format
+msgid "Contact list from %s (%s).\n"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3783
+msgid "Contact list is synchronized."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:401
+msgid "Contact list too large to send through server."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3710
+msgid "Contact list without request."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3192 src/icq/icq-srv.cpp:4366
 msgid "Contacts"
 msgstr ""
 
 #: src/icq/codes.c:116
 msgid "Cook Islands"
+msgstr ""
+
+#: src/contactlist/userhistory.cpp:323
+#, c-format
+msgid "Corrupt history file (%s): Unknown sub-command 0x%04X."
 msgstr ""
 
 #: src/icq/codes.c:117
@@ -5185,11 +3722,20 @@ msgstr ""
 msgid "Cote d'Ivoire"
 msgstr ""
 
-#: src/licq.cpp:167
+#: src/icq/packet.cpp:4770
+#, c-format
+msgid "Could not execute \"%s\" for auto-response."
+msgstr ""
+
+#: src/licq.cpp:168
 msgid "Could not get current working directory\n"
 msgstr ""
 
-#: src/fifo.cpp:583
+#: src/proxy.cpp:232
+msgid "Could not parse HTTP status line from proxy."
+msgstr ""
+
+#: src/fifo.cpp:579
 #, c-format
 msgid "Couldn't find plugin '%s'"
 msgstr ""
@@ -5258,11 +3804,16 @@ msgstr ""
 msgid "Culture"
 msgstr ""
 
-#: src/contactlist/owner.cpp:103
+#: src/contactlist/owner.cpp:156
 #, c-format
 msgid ""
 "Current Licq GMT offset (%d) does not match system GMT offset (%d).\n"
 "Update general info on server to fix."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2541
+#, c-format
+msgid "Custom %s response from %s (#%hu)%s."
 msgstr ""
 
 #: src/icq/codes.c:121
@@ -5290,8 +3841,27 @@ msgstr ""
 msgid "Decrypted (ICQ) TCP Packet (%lu bytes)"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:1211 src/icq/icq-srv.cpp:1222
+#, c-format
+msgid "Deleting server list invisible list users (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1173 src/icq/icq-srv.cpp:1184
+#, c-format
+msgid "Deleting server list users (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1246 src/icq/icq-srv.cpp:1257
+#, c-format
+msgid "Deleting server list visible list users (#%hu)..."
+msgstr ""
+
 #: src/icq/codes.c:123
 msgid "Denmark"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3738
+msgid "Did not receive user ID."
 msgstr ""
 
 #: src/icq/codes.c:124
@@ -5302,7 +3872,7 @@ msgstr ""
 msgid "Djibouti"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:2565
+#: src/icq/icq-tcp.cpp:2542
 msgid "DnD"
 msgstr ""
 
@@ -5318,11 +3888,15 @@ msgstr ""
 msgid "Dominican Republic"
 msgstr ""
 
+#: src/icq/threads.cpp:774
+msgid "Dropping server connection."
+msgstr ""
+
 #: src/icq/codes.c:3449
 msgid "Dutch"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4577
+#: src/icq/icq-srv.cpp:4554
 msgid "E-mail info"
 msgstr ""
 
@@ -5350,16 +3924,34 @@ msgstr ""
 msgid "Elementary School"
 msgstr ""
 
-#: src/userevents.cpp:929
+#: src/userevents.cpp:917
+msgid "Email Alert"
+msgstr ""
+
+#: src/userevents.cpp:655
 msgid "Email Pager"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3168
+#: src/icq/icq-srv.cpp:5100
+#, c-format
+msgid "Email info on %s (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3158
 msgid "Email pager message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4357
+#: src/icq/icq-srv.cpp:4334
 msgid "Email pager offline message"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5482
+msgid "Empty User ID was received in the contact list."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4484
+#, c-format
+msgid "End of Offline messages (nId: %04hx)."
 msgstr ""
 
 #: src/icq/codes.c:3540
@@ -5382,11 +3974,75 @@ msgstr ""
 msgid "Eritrea"
 msgstr ""
 
+#: src/icq/oscarservice.cpp:335
+#, c-format
+msgid "Error #%02x.%02x in BART request (%ld) for service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:295
+#, c-format
+msgid "Error #%02x.%02x in control FAM request (%ld) for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3750 src/icq/icq-srv.cpp:5617
+msgid "Error during parsing packet!"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1820
+msgid "Error during parsing service redirect packet!"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2040
+msgid "Error during parsing user information packet!"
+msgstr ""
+
 #: src/socket.cpp:603
 #, c-format
 msgid ""
 "Error during receiving from server socket:\n"
 "%s"
+msgstr ""
+
+#: src/contactlist/user.cpp:142 src/contactlist/user.cpp:1792
+#: src/contactlist/user.cpp:1876 src/contactlist/user.cpp:1900
+#: src/contactlist/user.cpp:1989
+#, c-format
+msgid "Error opening '%s' for reading. See log for details."
+msgstr ""
+
+#: src/contactlist/user.cpp:296 src/contactlist/user.cpp:720
+#, c-format
+msgid "Error opening '%s' for writing."
+msgstr ""
+
+#: src/contactlist/user.cpp:192 src/contactlist/user.cpp:1812
+#: src/contactlist/user.cpp:1888 src/contactlist/user.cpp:1977
+#: src/contactlist/user.cpp:1997
+#, c-format
+msgid "Error opening '%s' for writing. See log for details."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1786
+msgid "Error parsing SNAC header"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3531
+msgid "Error parsing SNAC header."
+msgstr ""
+
+#: src/icq/threads.cpp:320 src/icq/threads.cpp:571
+#, c-format
+msgid "Error sending event (#%hu): %s."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:109
+#, c-format
+msgid "Error sending event (FAM #%02X, Subtype #%02X, Sequence #%hu): %s."
+msgstr ""
+
+#: src/socket.cpp:299
+#, c-format
+msgid "Error when trying to resolve %s. getaddrinfo() returned %d."
 msgstr ""
 
 #: src/icq/codes.c:3451
@@ -5405,9 +4061,19 @@ msgstr ""
 msgid "Ethiopia"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:1573
+#: src/icq/icq-srv.cpp:1557
 #, c-format
 msgid "Event #%hu is still on queue!\n"
+msgstr ""
+
+#: src/icq/oscarservice.cpp:619
+#, c-format
+msgid "Event for unknown or unsupported service 0x%02X failed."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:178
+#, c-format
+msgid "Event with unsupported subtype (%02X) for FAM %02X failed."
 msgstr ""
 
 #: src/statistics.cpp:41
@@ -5422,6 +4088,14 @@ msgstr ""
 msgid "Events Sent"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:286
+msgid "Exporting groups to server contact list..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:182
+msgid "Exporting users to server contact list..."
+msgstr ""
+
 #: src/contactlist/user.cpp:1359
 msgid "FFC"
 msgstr ""
@@ -5430,18 +4104,46 @@ msgstr ""
 msgid "Faeroe Islands"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:110 src/plugins/pluginmanager.cpp:173
+#: src/plugins/pluginmanager.cpp:113 src/plugins/pluginmanager.cpp:176
 #, c-format
 msgid "Failed to find %s in plugin (%s): %s"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:87 src/plugins/pluginmanager.cpp:137
+#: src/icq/icq.cpp:1296
+msgid "Failed to find desired connection record."
+msgstr ""
+
+#: src/plugins/pluginmanager.cpp:90 src/plugins/pluginmanager.cpp:140
 #, c-format
 msgid "Failed to initialize plugin (%s)"
 msgstr ""
 
+#: src/icq/packet.cpp:1909 src/icq/packet.cpp:5263
+#, c-format
+msgid "Failed to read file (%s): %s."
+msgstr ""
+
+#: src/contactlist/user.cpp:558
+#, c-format
+msgid "Failed to rename history file (%s): %s"
+msgstr ""
+
+#: src/contactlist/user.cpp:314
+#, c-format
+msgid "Failed to rename old history file (%s): %s"
+msgstr ""
+
 #: src/sighandler.cpp:163
 msgid "Failed to retrive backtrace symbols"
+msgstr ""
+
+#: src/socket.cpp:334
+msgid "Failed to set port range for socket."
+msgstr ""
+
+#: src/daemon.cpp:304
+#, c-format
+msgid "Failed to start local TCP server: %s"
 msgstr ""
 
 #: src/socket.cpp:406
@@ -5449,6 +4151,11 @@ msgstr ""
 msgid ""
 "Failed to start local server using IPv6 socket (falling back to IPv4):\n"
 "%s"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4955
+#, c-format
+msgid "Failed to update user info: %x."
 msgstr ""
 
 #: src/icq/codes.c:136
@@ -5839,32 +4546,223 @@ msgstr ""
 msgid "Fiji"
 msgstr ""
 
-#: src/userevents.cpp:918
+#: src/userevents.cpp:227
 msgid "File Transfer"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:639
+#: src/icq/filetransfer.cpp:679
+#, c-format
+msgid "File Transfer: %s received %d too many bytes."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:674
+#, c-format
+msgid "File Transfer: %s received."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1283
+msgid "File Transfer: Attempted connection when already connected."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:415
+msgid "File Transfer: Attempted reverse connection when already connected."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:347
+msgid "File Transfer: Connecting to server."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:888
+#, c-format
+msgid "File Transfer: Error reading from %s: %s."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:300
+#, c-format
+msgid "File Transfer: File access error %s: %s."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:568
+msgid "File Transfer: Ignoring a possible erroneous packet."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:634
 #, c-format
 msgid "File Transfer: Invalid data (%c) ignoring packet"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:610
+#: src/icq/filetransfer.cpp:440
+#, c-format
+msgid "File Transfer: Lost remote end: %s"
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1201
+msgid "File Transfer: No such socket."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:763
+#, c-format
+msgid "File Transfer: Read error '%s': %s."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:715
+#, c-format
+msgid ""
+"File Transfer: Read error for %s:\n"
+"%s"
+msgstr ""
+
+#: src/icq/filetransfer.cpp:955
+#, c-format
+msgid "File Transfer: Read error for %s: %s"
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1177
+msgid "File Transfer: Received connection."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:461
+msgid "File Transfer: Received handshake."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:813
+msgid "File Transfer: Received plugin confirmation."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:428
+msgid "File Transfer: Received reverse connection."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:616
+#, c-format
+msgid "File Transfer: Receiving %s (%ld bytes)."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1162
+msgid "File Transfer: Receiving repeat incoming connection."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:438
+msgid "File Transfer: Remote end disconnected."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1269
+msgid "File Transfer: Reverse connection failed, trying direct."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:771
+#, c-format
+msgid "File Transfer: Seek error '%s': %s."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1015
+#, c-format
+msgid "File Transfer: Send error: %s"
+msgstr ""
+
+#: src/icq/filetransfer.cpp:878
+#, c-format
+msgid "File Transfer: Sending %s (%ld bytes)."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:937
+#, c-format
+msgid "File Transfer: Sent %s, %d too many bytes."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:933
+#, c-format
+msgid "File Transfer: Sent %s."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:384
+msgid "File Transfer: Shaking hands."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:516 src/icq/filetransfer.cpp:563
+#: src/icq/filetransfer.cpp:628 src/icq/filetransfer.cpp:699
+#: src/icq/filetransfer.cpp:745 src/icq/filetransfer.cpp:787
+#, c-format
+msgid "File Transfer: Speed set to %ld%%."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:817
+msgid ""
+"File Transfer: StartReceivingFile called without a pending confirmation."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:605
 msgid "File Transfer: Still waiting for the plugin to confirm file receive..."
 msgstr ""
 
-#: src/icq/filetransfer.cpp:795
+#: src/icq/filetransfer.cpp:849
+#, c-format
+msgid "File Transfer: Unable to open %s for writing: %s."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1181
+msgid "File Transfer: Unable to receive new connection."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:860
+msgid "File Transfer: Unable to send file receive start packet."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:790
 msgid "File Transfer: Unknown packet received during file send"
 msgstr ""
 
-#: src/icq/filetransfer.cpp:600
+#: src/icq/filetransfer.cpp:552
+msgid "File Transfer: Waiting for file info."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:595
 msgid "File Transfer: Waiting for plugin to confirm file receive.\n"
 msgstr ""
 
-#: src/icq/icq.cpp:1136
+#: src/icq/filetransfer.cpp:1245
+msgid "File Transfer: Waiting for reverse connection.\n"
+msgstr ""
+
+#: src/icq/filetransfer.cpp:399 src/icq/filetransfer.cpp:499
+msgid "File Transfer: Waiting for server to respond."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:643
+#, c-format
+msgid "File Transfer: Write error: %s."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:1126
+#, c-format
+msgid "File Transfer: select failed, aborting thread: %s"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3058
+#, c-format
+msgid "File server status request from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1865
+#, c-format
+msgid "File transfer request from %s (%s) [Licq %s]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2610
+#, c-format
+msgid "File transfer request from %s (%s) cancelled."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1869 src/icq/icq-tcp.cpp:1945
+#, c-format
+msgid "File transfer request from %s (%s)."
+msgstr ""
+
+#: src/icq/icq.cpp:1093
 msgid "File transfer request through server"
 msgstr ""
 
-#: src/userevents.cpp:213
+#: src/userevents.cpp:219
 #, c-format
 msgid ""
 "File: %s (%lu bytes)\n"
@@ -5920,10 +4818,15 @@ msgstr ""
 msgid "French Polynesia"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3158 src/icq/icq-srv.cpp:3184 src/icq/icq-srv.cpp:4348
-#: src/icq/icq-srv.cpp:4373
+#: src/icq/icq-srv.cpp:3148 src/icq/icq-srv.cpp:3174 src/icq/icq-srv.cpp:4325
+#: src/icq/icq-srv.cpp:4350
 #, c-format
 msgid "From %s (%s)"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4748
+#, c-format
+msgid "From: %s"
 msgstr ""
 
 #: src/contactlist/user.cpp:1612
@@ -10035,8 +8938,13 @@ msgid ""
 "Hobbies/Water Recreation/Trawler Boating"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4545
+#: src/icq/icq-srv.cpp:4522
 msgid "General info"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4985
+#, c-format
+msgid "General info on %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:145
@@ -10059,6 +8967,41 @@ msgstr ""
 msgid "Gibraltar"
 msgstr ""
 
+#: src/icq/oscarservice.cpp:508
+#, c-format
+msgid ""
+"Give up waiting for channel capability list while initializing service 0x"
+"%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:527
+#, c-format
+msgid "Give up waiting for rate-limits while initializing service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:442
+#, c-format
+msgid "Give up waiting for redirect reply while initializing service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:488
+#, c-format
+msgid ""
+"Give up waiting for server ready packet while initializing service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3669
+msgid "Got Master Group record."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1946
+msgid "Got Name Info from Server"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3680
+msgid "Got Privacy Setting."
+msgstr ""
+
 #: src/icq/codes.c:3373 src/icq/codes.c:3542
 msgid "Government"
 msgstr ""
@@ -10079,12 +9022,12 @@ msgstr ""
 msgid "Grenada"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:596
+#: src/contactlist/usermanager.cpp:605
 #, c-format
 msgid "Group %s is already in list"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:748
+#: src/contactlist/usermanager.cpp:757
 #, c-format
 msgid "Group name %s is already in list"
 msgstr ""
@@ -10117,8 +9060,30 @@ msgstr ""
 msgid "Guyana"
 msgstr ""
 
+#: src/proxy.cpp:240
+#, c-format
+msgid "HTTPS proxy return error code: %d, error string: %s"
+msgstr ""
+
 #: src/icq/codes.c:158
 msgid "Haiti"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3385
+msgid "Handshake ack not the right size."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3654
+msgid "Handshake confirm not the right size."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1009 src/icq/icq-tcp.cpp:3616 src/icq/icq-tcp.cpp:3685
+msgid "Handshake error, remote side closed connection."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1011 src/icq/icq-tcp.cpp:3618 src/icq/icq-tcp.cpp:3687
+#, c-format
+msgid "Handshake socket error: %s."
 msgstr ""
 
 #: src/icq/codes.c:3374
@@ -10157,6 +9122,11 @@ msgstr ""
 msgid "Home Automation"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:5121
+#, c-format
+msgid "Homepage info on %s (%s)."
+msgstr ""
+
 #: src/icq/codes.c:159
 msgid "Honduras"
 msgstr ""
@@ -10175,6 +9145,10 @@ msgstr ""
 
 #: src/icq/codes.c:161
 msgid "Hungary"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2624
+msgid "ICBM error for unknown event."
 msgstr ""
 
 #: src/icq/codes.c:3378
@@ -11705,6 +10679,11 @@ msgid ""
 "South America"
 msgstr ""
 
+#: src/icq/icq-tcp.cpp:3078
+#, c-format
+msgid "ICQphone status request from %s."
+msgstr ""
+
 #: src/icq/codes.c:162
 msgid "Iceland"
 msgstr ""
@@ -11729,8 +10708,119 @@ msgstr ""
 msgid "Indonesian"
 msgstr ""
 
+#: src/icq/icq-tcp.cpp:2692
+#, c-format
+msgid "Info plugin list request from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2984
+#, c-format
+msgid "Info plugin not available from %s."
+msgstr ""
+
+#: src/inifile.cpp:213
+#, c-format
+msgid ""
+"IniFile: I/O error, failed to create file.\n"
+"File: %s\n"
+"Error code: %i"
+msgstr ""
+
+#: src/inifile.cpp:89 src/inifile.cpp:195
+#, c-format
+msgid ""
+"IniFile: I/O error, failed to get file size.\n"
+"File: %s\n"
+"Error code: %i"
+msgstr ""
+
+#: src/inifile.cpp:79
+#, c-format
+msgid ""
+"IniFile: I/O error, failed to open file.\n"
+"File: %s\n"
+"Error code: %i"
+msgstr ""
+
+#: src/inifile.cpp:101
+#, c-format
+msgid ""
+"IniFile: I/O error, failed to read file.\n"
+"File: %s\n"
+"Error code: %i"
+msgstr ""
+
+#: src/inifile.cpp:235
+#, c-format
+msgid ""
+"IniFile: I/O error, failed to replace file.\n"
+"File: %s\n"
+"Error code: %i"
+msgstr ""
+
+#: src/inifile.cpp:224
+#, c-format
+msgid ""
+"IniFile: I/O error, failed to write file.\n"
+"File: %s\n"
+"Error code: %i"
+msgstr ""
+
+#: src/icq/oscarservice.cpp:599
+#, c-format
+msgid "Initialization of socket for service 0x%02X failed, failing event."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:596
+#, c-format
+msgid "Initializing socket for service 0x%02X."
+msgstr ""
+
+#: src/inifile.cpp:512
+#, c-format
+msgid "Internal Error: IniFile::get, key=%s, data.type=%s"
+msgstr ""
+
+#: src/inifile.cpp:612
+#, c-format
+msgid "Internal Error: IniFile::set, key=%s, data.type=%s"
+msgstr ""
+
 #: src/socket.cpp:169
 msgid "Internal error"
+msgstr ""
+
+#: src/icq/chat.cpp:1100
+#, c-format
+msgid "Internal error: ChatManager::ProcessPacket(), invalid state (%d)."
+msgstr ""
+
+#: src/icq/filetransfer.cpp:797
+#, c-format
+msgid ""
+"Internal error: FileTransferManager::ProcessPacket(), invalid state (%d)."
+msgstr ""
+
+#: src/icq/icq.cpp:783 src/icq/icq-srv.cpp:1387
+#, c-format
+msgid ""
+"Internal error: ProcessDoneEvents(): Invalid result for extended event (%d)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1398
+#, c-format
+msgid "Internal error: ProcessDoneEvents(): Unknown SNAC (0x%08lX)."
+msgstr ""
+
+#: src/icq/icq.cpp:792
+#, c-format
+msgid "Internal error: ProcessDoneEvents(): Unknown command (%04X)."
+msgstr ""
+
+#: src/socket.cpp:876
+#, c-format
+msgid ""
+"Internal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes)."
 msgstr ""
 
 #: src/proxy.cpp:75
@@ -12136,40 +11226,53 @@ msgstr ""
 msgid "Invalid"
 msgstr ""
 
-#: src/icq/icq.cpp:1318
+#: src/icq/icq.cpp:1274
 #, c-format
 msgid "Invalid %s"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3198
+#: src/icq/threads.cpp:793
+msgid "Invalid BART service socket in set."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3188
 msgid "Invalid Contact List message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3213 src/icq/icq-srv.cpp:4399
+#: src/icq/icq-srv.cpp:3203 src/icq/icq-srv.cpp:4376
 msgid "Invalid SMS message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3109 src/icq/icq-srv.cpp:4299
+#: src/icq/icq-srv.cpp:3099 src/icq/icq-srv.cpp:4276
 msgid "Invalid Server Message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3033 src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031
+#: src/icq/icq.cpp:227
+#, c-format
+msgid "Invalid TCP version %d.  Attempting v%d."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5632
+msgid "Invalid UIN and password combination."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3023 src/icq/icq-tcp.cpp:1689 src/icq/icq-tcp.cpp:2009
 msgid "Invalid URL message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3123
+#: src/icq/icq-srv.cpp:3113
 msgid "Invalid added to list system message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3048
+#: src/icq/icq-srv.cpp:3038
 msgid "Invalid authorization request system message"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:1780 src/icq/icq-tcp.cpp:2059
+#: src/icq/icq-tcp.cpp:1758 src/icq/icq-tcp.cpp:2037
 msgid "Invalid contact list message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3174
+#: src/icq/icq-srv.cpp:3164
 msgid "Invalid email pager system message"
 msgstr ""
 
@@ -12178,31 +11281,40 @@ msgstr ""
 msgid "Invalid entry in plugin \"%s\": Window = %s"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4386
-msgid "Invalid offline Contact List message"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4226
-msgid "Invalid offline URL message"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4313
-msgid "Invalid offline added to list system message"
-msgstr ""
-
-#: src/icq/icq-srv.cpp:4243
-msgid "Invalid offline authorization request system message"
+#: src/icq/filetransfer.cpp:1026
+#, c-format
+msgid "Invalid file transfer speed: %d%%."
 msgstr ""
 
 #: src/icq/icq-srv.cpp:4363
+msgid "Invalid offline Contact List message"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4203
+msgid "Invalid offline URL message"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4290
+msgid "Invalid offline added to list system message"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4220
+msgid "Invalid offline authorization request system message"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4340
 msgid "Invalid offline email pager system message"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4338
+#: src/icq/icq-srv.cpp:4315
 msgid "Invalid offline web panel system message"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:288
+#: src/icq/icq-srv.cpp:2654
+msgid "Invalid packet format in message through server"
+msgstr ""
+
+#: src/plugins/pluginmanager.cpp:292
 #, c-format
 msgid "Invalid plugin id (%d) in exit signal"
 msgstr ""
@@ -12212,19 +11324,32 @@ msgstr ""
 msgid "Invalid protocol plugin requested (%ld)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2971
+#: src/icq/threads.cpp:828
+msgid "Invalid server TCP socket in set."
+msgstr ""
+
+#: src/icq/threads.cpp:755
+msgid "Invalid server socket in set."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1833
+#, c-format
+msgid "Invalid servername (%s) or cookie (%s) in service redirect packet!"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2961
 msgid "Invalid tag in SMS message"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:448
+#: src/plugins/pluginmanager.cpp:452
 msgid "Invalid thread in registration attempt"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:464
+#: src/plugins/pluginmanager.cpp:468
 msgid "Invalid thread in unregistration attempt"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3148
+#: src/icq/icq-srv.cpp:3138
 msgid "Invalid web panel system message"
 msgstr ""
 
@@ -12352,18 +11477,27 @@ msgstr ""
 msgid "Licq Segmentation Violation Detected.\n"
 msgstr ""
 
-#: src/licq.cpp:428
+#: src/licq.cpp:431
 #, c-format
 msgid ""
 "Licq: %s cannot be opened for writing,\n"
 "      skipping lockfile protection."
 msgstr ""
 
-#: src/licq.cpp:445
+#: src/licq.cpp:487
+#, c-format
+msgid "Licq: Already running at pid %d."
+msgstr ""
+
+#: src/licq.cpp:448
 #, c-format
 msgid ""
 "Licq: Already running at pid %d.\n"
 "      Kill process or remove %s."
+msgstr ""
+
+#: src/licq.cpp:456 src/licq.cpp:482
+msgid "Licq: Unable to determine pid of running Licq instance."
 msgstr ""
 
 #: src/icq/codes.c:186
@@ -13263,6 +12397,10 @@ msgid ""
 "Disorders/Metabolic Disorders"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:2588
+msgid "List overflow."
+msgstr ""
+
 #: src/icq/codes.c:187
 msgid "Lithuania"
 msgstr ""
@@ -13276,7 +12414,7 @@ msgstr ""
 msgid "Loading %d users"
 msgstr ""
 
-#: src/contactlist/owner.cpp:96
+#: src/contactlist/owner.cpp:149
 #, c-format
 msgid "Loading owner configuration for %s"
 msgstr ""
@@ -13289,9 +12427,13 @@ msgstr ""
 msgid "Loading utilities"
 msgstr ""
 
-#: src/daemon.cpp:272
+#: src/daemon.cpp:296
 #, c-format
 msgid "Local TCP server started on port %d"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1477
+msgid "Logging off."
 msgstr ""
 
 #: src/icq/codes.c:188
@@ -13382,40 +12524,61 @@ msgstr ""
 msgid "Medical/Health"
 msgstr ""
 
-#: src/icq/icq.cpp:1073 src/icq/icq-srv.cpp:3023 src/icq/icq-srv.cpp:4216
-#: src/userevents.cpp:916
+#: src/icq/icq.cpp:1030 src/icq/icq-srv.cpp:3013 src/icq/icq-srv.cpp:4193
+#: src/userevents.cpp:178
 msgid "Message"
 msgstr ""
 
-#: src/userevents.cpp:601
+#: src/icq/icq-tcp.cpp:1579
+#, c-format
+msgid "Message from %s (%s) [Licq %s]."
+msgstr ""
+
+#: src/userevents.cpp:647
 #, c-format
 msgid ""
 "Message from %s (%s) through email pager:\n"
 "%s\n"
 msgstr ""
 
-#: src/userevents.cpp:561
+#: src/userevents.cpp:602
 #, c-format
 msgid ""
 "Message from %s (%s) through web panel:\n"
 "%s\n"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2698
+#: src/icq/icq-tcp.cpp:1583
+#, c-format
+msgid "Message from %s (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2688
 #, c-format
 msgid "Message from new user (%s), ignoring"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3327
+#: src/icq/icq-srv.cpp:2693
+#, c-format
+msgid "Message through server from %s (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3317
 #, c-format
 msgid "Message through server with unknown format: %04hx"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3142
+#: src/icq/icq-srv.cpp:3132
 msgid "Message through web panel"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4146
+#: src/icq/icq-srv.cpp:3490
+msgid ""
+"Message was sent to an offline user. It will be delivered when the user logs "
+"on."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4123
 #, c-format
 msgid "Meta request failed. Eventid %u, errorcode %u"
 msgstr ""
@@ -13452,8 +12615,13 @@ msgstr ""
 msgid "Montserrat"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4598
+#: src/icq/icq-srv.cpp:4575
 msgid "More info"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5047
+#, c-format
+msgid "More info on %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:208
@@ -14147,7 +13315,7 @@ msgstr ""
 msgid "Mozambique"
 msgstr ""
 
-#: src/userevents.cpp:331
+#: src/userevents.cpp:347
 msgid "Multiparty:\n"
 msgstr ""
 
@@ -15670,7 +14838,7 @@ msgstr ""
 msgid "New Caledonia"
 msgstr ""
 
-#: src/userevents.cpp:844
+#: src/userevents.cpp:909
 #, c-format
 msgid ""
 "New Email from %s (%s):\n"
@@ -15701,7 +14869,7 @@ msgstr ""
 msgid "Niue"
 msgstr ""
 
-#: src/fifo.cpp:591
+#: src/fifo.cpp:587
 #, c-format
 msgid "No account registered for plugin '%s'"
 msgstr ""
@@ -15710,18 +14878,35 @@ msgstr ""
 msgid "No error detected"
 msgstr ""
 
-#: src/licq.cpp:772
+#: src/icq/chat.cpp:683 src/icq/filetransfer.cpp:226
+msgid "No more ports available, add more or close open chat/file sessions."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1426
+msgid ""
+"No password set.  Edit ~/.licq/owner.Licq and fill in the password field."
+msgstr ""
+
+#: src/licq.cpp:770
 msgid ""
 "No plugins specified on the command-line (-p option).\n"
 "See the README for more information."
 msgstr ""
 
-#: src/icq/icq.cpp:162
-msgid "No ports available"
+#: src/daemon.cpp:300
+msgid "No ports available for local TCP server."
 msgstr ""
 
 #: src/proxy.cpp:72
 msgid "No proxy error detected"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4841
+msgid "No random chat user found."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1421
+msgid "No registered user, unable to process logon attempt."
 msgstr ""
 
 #: src/icq/codes.c:3551
@@ -15744,11 +14929,15 @@ msgstr ""
 msgid "Not Available"
 msgstr ""
 
+#: src/icq/threads.cpp:235
+msgid "Not connected to server, failing event."
+msgstr ""
+
 #: src/contactlist/user.cpp:1353
 msgid "Occ"
 msgstr ""
 
-#: src/contactlist/user.cpp:1353 src/icq/icq-tcp.cpp:2565
+#: src/icq/icq-tcp.cpp:2542 src/contactlist/user.cpp:1353
 msgid "Occupied"
 msgstr ""
 
@@ -15760,38 +14949,47 @@ msgstr ""
 msgid "Offline"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4432
+#: src/icq/icq-srv.cpp:4409
 #, c-format
 msgid "Offline %s from new user (%s), ignoring"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4438
+#: src/icq/icq-srv.cpp:4415
 #, c-format
 msgid "Offline %s through server from %s (%s)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4483
+#: src/icq/icq-srv.cpp:4460
 #, c-format
 msgid "Offline SMS from %s - %s (%s)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4275
+#: src/icq/icq-srv.cpp:4468
+#, c-format
+msgid "Offline SMS from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4252
 #, c-format
 msgid "Offline authorization granted by %s"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4263
+#: src/icq/icq-srv.cpp:4240
 #, c-format
 msgid "Offline authorization refused by %s"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4236
+#: src/icq/icq-srv.cpp:4213
 #, c-format
 msgid "Offline authorization request from %s"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4332
+#: src/icq/icq-srv.cpp:4309
 msgid "Offline message through web panel"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4270
+msgid "Offline server message."
 msgstr ""
 
 #: src/icq/codes.c:225
@@ -15806,8 +15004,13 @@ msgstr ""
 msgid "Online"
 msgstr ""
 
-#: src/fifo.cpp:949
+#: src/fifo.cpp:946
 msgid "Opening fifo"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5232
+#, c-format
+msgid "Organizations/Past Background info on %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:27 src/icq/codes.c:3608
@@ -16247,13 +15450,69 @@ msgid ""
 "Special Occasions and Holidays Heroes/The Easter Bunny"
 msgstr ""
 
+#: src/icq/icq-tcp.cpp:2996 src/icq/icq-tcp.cpp:3260
+#, c-format
+msgid "Our request was refused because %s is away."
+msgstr ""
+
 #: src/icq/codes.c:3387
 msgid "Outdoors"
 msgstr ""
 
-#: src/licq.cpp:350
+#: src/licq.cpp:353
 #, c-format
 msgid "Output redirected to \"%s\""
+msgstr ""
+
+#: src/buffer.cpp:456 src/buffer.cpp:470
+msgid "Pack(): Trying to pack more data than Licq::Buffer can hold!"
+msgstr ""
+
+#: src/buffer.cpp:443
+msgid "PackChar(): Trying to pack more data than Licq::Buffer can hold!"
+msgstr ""
+
+#: src/buffer.cpp:496
+msgid "PackString(): Trying to pack more data than Licq::Buffer can hold!"
+msgstr ""
+
+#: src/buffer.cpp:417
+msgid ""
+"PackUnsignedLong(): Trying to pack more data than Licq::Buffer can hold!"
+msgstr ""
+
+#: src/buffer.cpp:430
+msgid ""
+"PackUnsignedLongBE(): Trying to pack more data than Licq::Buffer can hold!"
+msgstr ""
+
+#: src/buffer.cpp:516
+msgid ""
+"PackUnsignedShort(): Trying to pack more data than Licq::Buffer can hold!"
+msgstr ""
+
+#: src/buffer.cpp:529
+msgid ""
+"PackUnsignedShortBE(): Trying to pack more data than Licq::Buffer can hold!"
+msgstr ""
+
+#: src/icq/oscarservice.cpp:225
+#, c-format
+msgid "Packet from unhandled channel %02x for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1756
+msgid "Packet on unhandled Channel 'Error' received!"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2585
+msgid "Packet was malformed."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:239
+#, c-format
+msgid ""
+"Packet with wrong version (0x%08lx) from new channel for service 0x%02X."
 msgstr ""
 
 #: src/icq/codes.c:226
@@ -16284,8 +15543,12 @@ msgstr ""
 msgid "Parties"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4525
+#: src/icq/icq-srv.cpp:4502
 msgid "Password change"
+msgstr ""
+
+#: src/icq/packet.cpp:791 src/icq/packet.cpp:839
+msgid "Password too long, truncated to 8 Characters!"
 msgstr ""
 
 #: src/icq/codes.c:26
@@ -16296,8 +15559,18 @@ msgstr ""
 msgid "Past Work Place"
 msgstr ""
 
+#: src/icq/filetransfer.cpp:262
+#, c-format
+msgid "Path %s is not a directory."
+msgstr ""
+
 #: src/icq/codes.c:3478
 msgid "Persian"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5203
+#, c-format
+msgid "Personal Interests info on %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:231
@@ -16312,25 +15585,55 @@ msgstr ""
 msgid "Philippines"
 msgstr ""
 
-#: src/userevents.cpp:729
+#: src/icq/icq-tcp.cpp:3098
+#, c-format
+msgid "Phone \"Follow Me\" status request from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2859
+#, c-format
+msgid "Phone Book reply from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2707
+#, c-format
+msgid "Phone Book request from %s."
+msgstr ""
+
+#: src/userevents.cpp:784
 #, c-format
 msgid ""
 "Phone: %s\n"
 "%s\n"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:267
+#: src/icq/icq-tcp.cpp:2949
+#, c-format
+msgid "Picture reply from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2722
+#, c-format
+msgid "Picture request from %s."
+msgstr ""
+
+#: src/plugins/pluginmanager.cpp:271
 #, c-format
 msgid "Plugin %s exited with code %d"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:298
+#: src/plugins/pluginmanager.cpp:302
 #, c-format
 msgid "Plugin %s failed to exit"
 msgstr ""
 
-#: src/userevents.cpp:915
-msgid "Plugin Event"
+#: src/licq.cpp:578
+#, c-format
+msgid "Plugin %s is no longer available, trying to load qt4-gui instead."
+msgstr ""
+
+#: src/licq.cpp:573
+msgid "Plugin kde-gui is no longer available, trying to load kde4-gui instead."
 msgstr ""
 
 #: src/icq/codes.c:233
@@ -16349,6 +15652,11 @@ msgstr ""
 msgid "Portuguese"
 msgstr ""
 
+#: src/icq/packet.cpp:1915 src/icq/packet.cpp:5269
+#, c-format
+msgid "Premature end of file (%s): %s."
+msgstr ""
+
 #: src/icq/codes.c:3553
 msgid "Professional"
 msgstr ""
@@ -16357,14 +15665,25 @@ msgstr ""
 msgid "Professional Org."
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:281
+#: src/plugins/pluginmanager.cpp:285
 #, c-format
 msgid "Protocol plugin %s exited with code %d"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:307
+#: src/plugins/pluginmanager.cpp:311
 #, c-format
 msgid "Protocol plugin %s failed to exit"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:242
+#, c-format
+msgid ""
+"Protocol prohibits for users to be in the root group. Aborting group change "
+"attempt for %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1643
+msgid "Proxy server not properly configured."
 msgstr ""
 
 #: src/icq/codes.c:3391
@@ -16383,35 +15702,341 @@ msgstr ""
 msgid "Qatar"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4814
+#: src/icq/icq-srv.cpp:4790
 msgid "Random chat group"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2960
+#: src/icq/icq-srv.cpp:4813
+#, c-format
+msgid "Random chat user found (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5625
+msgid "Rate limit exceeded."
+msgstr ""
+
+#: src/buffer.cpp:583
+msgid "Read too much TLV data!"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4084
+msgid "Received BOS rights."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2950
 msgid "Received SMS receipt indicating failure"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2956
+#: src/icq/icq-srv.cpp:2946
 msgid "Received SMS receipt indicating success"
 msgstr ""
 
-#: src/licq.cpp:219
+#: src/icq/icq-srv.cpp:2047
+#, c-format
+msgid "Received away message for %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3712
+msgid "Received contact list."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3719
+msgid "Received end of contact list."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4977
+#, c-format
+msgid "Received extended information for %s (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4850
+msgid "Received info update ack, without updating info."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5374
+#, c-format
+msgid "Received new uin (%lu) when already have a uin (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5379
+#, c-format
+msgid "Received new uin: %lu"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2066
+#, c-format
+msgid "Received old-style key request from %s (%s) but we do not support it."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2550
+msgid "Received rights for Contact List.."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3478
+msgid "Received rights for Instant Messaging.."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2028
+msgid "Received rights for Location Services."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2171
+#, c-format
+msgid ""
+"Received secure channel close from %s (%s) but we do not support OpenSSL."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2126
+#, c-format
+msgid ""
+"Received secure channel request from %s (%s) but we do not support OpenSSL."
+msgstr ""
+
+#: src/licq.cpp:220
 #, c-format
 msgid "Received signal %d, exiting"
 msgstr ""
 
-#: src/licq.cpp:352
+#: src/icq/icq-srv.cpp:3733
+msgid "Received updated contact information from server."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2065
+#, c-format
+msgid "Received user information for %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5456
+msgid "Received verification image."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1826
+#, c-format
+msgid "Redirect for service 0x%02X received."
+msgstr ""
+
+#: src/licq.cpp:355
 #, c-format
 msgid "Redirection to \"%s\" failed: %s"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2506
+#, c-format
+msgid "Refusal from %s (#%hu)%s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3427
+#, c-format
+msgid "Refusal from %s (#%lu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:796
+#, c-format
+msgid "Refusing authorization to user %s (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:777
+#, c-format
+msgid "Refusing chat request with %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:676
+#, c-format
+msgid "Refusing file transfer from %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:521
+msgid "Registering a new user..."
 msgstr ""
 
 #: src/icq/codes.c:3392
 msgid "Religion"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:755
+#: src/icq/icq-srv.cpp:394
+#, c-format
+msgid "Removing group from server side list (%s)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1118
+#, c-format
+msgid "Removing user %s from invisible list (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1071
+#, c-format
+msgid "Removing user %s from visible list (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:415
+#, c-format
+msgid "Renaming %s to %s..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:405
+#, c-format
+msgid "Renaming group with id %d to %s..."
+msgstr ""
+
+#: src/contactlist/usermanager.cpp:764
 #, c-format
 msgid "Renaming request for invalid group %u"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1912
+msgid "Requesting BOS rights."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:626
+#, c-format
+msgid "Requesting ICQphone status from %s through server."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:628
+#, c-format
+msgid "Requesting ICQphone status from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1908
+msgid "Requesting Instant Messaging rights."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:606
+#, c-format
+msgid "Requesting Phone \"Follow Me\" status from %s through server."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:608
+#, c-format
+msgid "Requesting Phone \"Follow Me\" status from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:504
+#, c-format
+msgid "Requesting Phone Book from %s through server."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:506
+#, c-format
+msgid "Requesting Phone Book from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:527
+#, c-format
+msgid "Requesting Picture from %s through server."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:529
+#, c-format
+msgid "Requesting Picture from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:223
+#, c-format
+msgid "Requesting auto response from %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:473
+#, c-format
+msgid "Requesting auto response from %s (%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:217
+#, c-format
+msgid "Requesting auto response from %s."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:170
+#, c-format
+msgid "Requesting buddy icon for %s (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1904
+msgid "Requesting contact list rights."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:586
+#, c-format
+msgid "Requesting file server status from %s through server."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:588
+#, c-format
+msgid "Requesting file server status from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:484
+#, c-format
+msgid "Requesting info plugin list from %s through server."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:486
+#, c-format
+msgid "Requesting info plugin list from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1892
+msgid "Requesting list rights."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1900
+msgid "Requesting location rights."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1454
+#, c-format
+msgid "Requesting logon salt (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:581
+#, c-format
+msgid "Requesting meta info for %s (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1803
+msgid "Requesting rate info..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5760
+#, c-format
+msgid "Requesting reverse connection from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1896
+msgid "Requesting roster rights."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1888
+msgid "Requesting self info."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:593
+#, c-format
+msgid "Requesting service socket for FAM 0x%02X (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:566
+#, c-format
+msgid "Requesting status plugin list from %s through server."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:568
+#, c-format
+msgid "Requesting status plugin list from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:880
+#, c-format
+msgid "Requesting user info (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:534
+msgid "Requesting verification image..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5278
+#, c-format
+msgid "Response to unknown extended info request for %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:3554
@@ -16426,8 +16051,43 @@ msgstr ""
 msgid "Retired"
 msgstr ""
 
+#: src/icq/icq-tcp.cpp:2536
+#, c-format
+msgid "Returned from %s (#%hu)%s."
+msgstr ""
+
 #: src/icq/codes.c:237
 msgid "Reunion Island"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1231
+#, c-format
+msgid "Reverse connect to %s failed: %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1225
+#, c-format
+msgid "Reverse connecting to %s at %s:%d."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2609 src/icq/icq-srv.cpp:2611 src/icq/icq-srv.cpp:3352
+#, c-format
+msgid "Reverse connection from %s failed."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1218
+#, c-format
+msgid "Reverse connection to unknown port (%d)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3411
+#, c-format
+msgid "Reverse connection with unknown id (%lu)"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1240
+#, c-format
+msgid "Reverse shaking hands with %s."
 msgstr ""
 
 #: src/icq/codes.c:238
@@ -16454,18 +16114,46 @@ msgstr ""
 msgid "Rwanda"
 msgstr ""
 
-#: src/userevents.cpp:941
+#: src/userevents.cpp:791
 msgid "SMS"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3303
+#: src/icq/icq-srv.cpp:4720
+msgid "SMS delivered."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4860
+msgid "SMS failed to send."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3293
 #, c-format
 msgid "SMS from %s - %s (%s)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2995
+#: src/icq/icq-srv.cpp:3301
+#, c-format
+msgid "SMS from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2985
 #, c-format
 msgid "SMS message packet was too large (claimed size: %lu bytes)"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4731
+#, c-format
+msgid "SMS not delivered, error #%s, param: %s"
+msgstr ""
+
+#: src/socket.cpp:1124
+#, c-format
+msgid "SSL_connect error %d, SSL_%d"
+msgstr ""
+
+#: src/socket.cpp:1120
+#, c-format
+msgid "SSL_connect error = %lx, %s:%i"
 msgstr ""
 
 #: src/icq/codes.c:242
@@ -16783,17 +16471,185 @@ msgstr ""
 msgid "Scotland"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:2142 src/icq/icq-tcp.cpp:2438
+#: src/icq/icq-srv.cpp:495
+#, c-format
+msgid "Searching for random chat user (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2153
+#, c-format
+msgid "Secure channel closed by %s (%s) [Licq %s]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2157
+#, c-format
+msgid "Secure channel closed by %s (%s)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2120 src/icq/icq-tcp.cpp:2416
 #, c-format
 msgid "Secure channel established with %s (%s)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4539
+#: src/icq/icq-tcp.cpp:2091
+#, c-format
+msgid "Secure channel request from %s (%s) [Licq %s]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2095
+#, c-format
+msgid "Secure channel request from %s (%s)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2397
+#, c-format
+msgid "Secure channel response from %s (%s) when no request in progress."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2373
+#, c-format
+msgid "Secure channel response from %s (%s)%s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2453
+#, c-format
+msgid "Secure channel with %s (%s) closed %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4516
 msgid "Security info"
 msgstr ""
 
 #: src/icq/codes.c:3601
 msgid "Self Improvement Group"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:284
+#, c-format
+msgid "Sending %sURL to %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:746
+#, c-format
+msgid "Sending %schat request to %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:434
+#, c-format
+msgid "Sending %scontact list to %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:364
+#, c-format
+msgid "Sending %sfile transfer to %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:176
+#, c-format
+msgid "Sending %smessage to %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1312
+#, c-format
+msgid "Sending SMS through server (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4745
+msgid "Sending SMS via SMTP not supported yet."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:534
+#, c-format
+msgid "Sending ack for rate-limits for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1933
+msgid "Sending capability settings (?)"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:731
+#, c-format
+msgid "Sending chat request to %s (#%hu)."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:544
+#, c-format
+msgid "Sending client ready for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4088
+msgid "Sending client ready..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1286
+#, c-format
+msgid "Sending contact list through server (#%hu)."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:478
+#, c-format
+msgid "Sending cookie for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:340
+#, c-format
+msgid "Sending file transfer to %s (#%hu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1037
+#, c-format
+msgid "Sending invisible list (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5415
+msgid "Sending md5 hashed password."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1280
+#, c-format
+msgid "Sending message through server (#%hu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1289
+#, c-format
+msgid "Sending misc through server (#%hu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4092
+msgid "Sending offline message request..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1799
+msgid "Sending our channel capability list..."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:497
+#, c-format
+msgid "Sending our families versions for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:827
+#, c-format
+msgid "Sending request for secure channel to %s (#%hu)."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:516
+#, c-format
+msgid "Sending request of rate-limits for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1283
+#, c-format
+msgid "Sending url through server (#%hu)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:544
+msgid "Sending verification for registration."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1017
+#, c-format
+msgid "Sending visible list (#%hu)..."
 msgstr ""
 
 #: src/icq/codes.c:249
@@ -16804,19 +16660,110 @@ msgstr ""
 msgid "Serbian"
 msgstr ""
 
-#: src/userevents.cpp:924
+#: src/userevents.cpp:847
 msgid "Server Message"
 msgstr ""
 
-#: src/licq.cpp:270
+#: src/icq/icq-srv.cpp:3540
+msgid "Server granted contact list rights."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2008
+msgid "Server is going to disconnect/pause. Lets reconnect to another one."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3802
+msgid "Server list update ack without request."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3093
+msgid "Server message."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:301
+#, c-format
+msgid "Server says he's ready for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1797
+msgid "Server says he's ready."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1977
+#, c-format
+msgid "Server says we are at %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1993
+#, c-format
+msgid "Server says we're now: %s"
+msgstr ""
+
+#: src/socket.cpp:630
+#, c-format
+msgid "Server send bad packet with suspiciously large size: %d."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1764
+#, c-format
+msgid "Server send unknown channel: %02x"
+msgstr ""
+
+#: src/icq/oscarservice.cpp:220
+#, c-format
+msgid "Server send us request for close service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1886
+msgid "Server sent us channel capability list (ignoring)."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:306
+#, c-format
+msgid "Server sent us channel capability list for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1921
+msgid "Server sent us rate information."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:311
+#, c-format
+msgid "Server sent us rate-limits information for service 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1864
+msgid "Service redirect packet for unallocated BART service."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1869
+#, c-format
+msgid "Service redirect packet for unhandled service 0x%02X."
+msgstr ""
+
+#: src/licq.cpp:273
 msgid "Session management is not supported by Licq.\n"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1925
+msgid "Setting ICQ Instant Messaging Mode."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:483
+#, c-format
+msgid "Setting random chat group (#%hu)..."
 msgstr ""
 
 #: src/icq/codes.c:250
 msgid "Seychelles"
 msgstr ""
 
-#: src/icq/threads.cpp:955
+#: src/icq/icq-tcp.cpp:1079
+#, c-format
+msgid "Shaking hands with %s (%s) [v%d]."
+msgstr ""
+
+#: src/icq/threads.cpp:938
 msgid "Shutting down daemon"
 msgstr ""
 
@@ -16834,6 +16781,11 @@ msgstr ""
 
 #: src/icq/codes.c:3395
 msgid "Skills"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3825
+#, c-format
+msgid "Skipping invalid server side list ack (%ld)."
 msgstr ""
 
 #: src/contactlist/usermanager.cpp:226
@@ -16861,6 +16813,16 @@ msgstr ""
 msgid "Social science"
 msgstr ""
 
+#: src/icq/threads.cpp:520
+#, c-format
+msgid "Socket %d does not exist (#%hu)."
+msgstr ""
+
+#: src/icq/threads.cpp:260
+#, c-format
+msgid "Socket not connected or invalid (#%hu)."
+msgstr ""
+
 #: src/icq/codes.c:255
 msgid "Solomon Islands"
 msgstr ""
@@ -16871,6 +16833,10 @@ msgstr ""
 
 #: src/icq/codes.c:256
 msgid "Somalia"
+msgstr ""
+
+#: src/icq/icq.cpp:1312
+msgid "Somebody else removed our connection record."
 msgstr ""
 
 #: src/icq/codes.c:257
@@ -16889,12 +16855,17 @@ msgstr ""
 msgid "Spanish"
 msgstr ""
 
-#: src/icq/icq.cpp:177
+#: src/icq/icq.cpp:148
 msgid "Spawning daemon threads"
 msgstr ""
 
 #: src/icq/codes.c:3602
 msgid "Spiritual/Religious Org."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3363 src/icq/icq-tcp.cpp:3458
+#, c-format
+msgid "Spoofed connection from %s as uin %s."
 msgstr ""
 
 #: src/icq/codes.c:3398
@@ -17385,14 +17356,34 @@ msgstr ""
 msgid "St. Vincent and the Grenadines"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:544
+#: src/plugins/pluginmanager.cpp:545
 #, c-format
 msgid "Starting plugin %s (version %s)"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:539
+#: src/plugins/pluginmanager.cpp:540
 #, c-format
 msgid "Starting protocol plugin %s (version %s)"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:864
+#, c-format
+msgid "Starting search by UIN for user (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:852
+#, c-format
+msgid "Starting white pages search (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3043
+#, c-format
+msgid "Status plugin list request from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3248
+#, c-format
+msgid "Status plugin not available from %s."
 msgstr ""
 
 #: src/icq/codes.c:2764
@@ -18055,6 +18046,11 @@ msgid ""
 "Studying Abroad - By Place of Origin"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:4754
+#, c-format
+msgid "Subject: %s"
+msgstr ""
+
 #: src/icq/codes.c:264
 msgid "Sudan"
 msgstr ""
@@ -18087,24 +18083,38 @@ msgstr ""
 msgid "Switzerland"
 msgstr ""
 
+#: src/translator.cpp:107
+#, c-format
+msgid "Syntax error in translation file '%s'."
+msgstr ""
+
 #: src/icq/codes.c:269
 msgid "Syrian Arab Republic"
 msgstr ""
 
-#: src/userevents.cpp:778
+#: src/userevents.cpp:838
 #, c-format
 msgid ""
 "System Server Message from %s (%s):\n"
 "%s\n"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:1451
+#: src/daemon.cpp:328
+#, c-format
+msgid "TCP high port (%d) is lower then TCP low port (%d)."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1429
 #, c-format
 msgid "TCP message from invalid UIN (%s, expect %s)"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:1449
+#: src/icq/icq-tcp.cpp:1427
 msgid "TCP message from self (probable spoof)"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2120
+msgid "TLV Error"
 msgstr ""
 
 #: src/icq/codes.c:3492
@@ -18361,7 +18371,13 @@ msgid ""
 "Corporations/Other Corporations"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:516
+#: src/icq/icq-srv.cpp:5645
+msgid ""
+"The requested network service is temporarily unavailable. Please try again "
+"later."
+msgstr ""
+
+#: src/plugins/pluginmanager.cpp:520
 msgid ""
 "This usually happens when your plugin\n"
 "is not kept in sync with the daemon.\n"
@@ -18372,6 +18388,11 @@ msgstr ""
 
 #: src/icq/codes.c:274
 msgid "Tinian Island"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4751
+#, c-format
+msgid "To: %s"
 msgstr ""
 
 #: src/icq/codes.c:275
@@ -18386,8 +18407,22 @@ msgstr ""
 msgid "Tonga"
 msgstr ""
 
+#: src/icq/chat.cpp:2325
+msgid "Too many connected clients, rejecting new connection."
+msgstr ""
+
+#: src/icq/threads.cpp:841
+#, c-format
+msgid "Too many connected sockets, rejecting connection from %s."
+msgstr ""
+
 #: src/icq/codes.c:3605
 msgid "Trade and Business Org."
+msgstr ""
+
+#: src/translator.cpp:130
+#, c-format
+msgid "Translation file '%s' corrupted."
 msgstr ""
 
 #: src/icq/codes.c:3400
@@ -18396,6 +18431,25 @@ msgstr ""
 
 #: src/icq/codes.c:278
 msgid "Trinidad and Tobago"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:153
+#, c-format
+msgid "Truncating message to %d characters to send through server."
+msgstr ""
+
+#: src/icq/packet.cpp:2604
+#, c-format
+msgid "Trying to export invalid user %s to server"
+msgstr ""
+
+#: src/icq/packet.cpp:2611
+#, c-format
+msgid "Trying to export non ICQ user %s to ICQ server."
+msgstr ""
+
+#: src/contactlist/user.cpp:1842
+msgid "Trying to load more categories than the max limit. Truncating."
 msgstr ""
 
 #: src/icq/codes.c:279
@@ -18422,9 +18476,29 @@ msgstr ""
 msgid "Tuvalu"
 msgstr ""
 
-#: src/icq/icq.cpp:1149 src/icq/icq-srv.cpp:3036 src/icq/icq-srv.cpp:4229
-#: src/userevents.cpp:919
+#: src/icq/icq-srv.cpp:3505
+#, c-format
+msgid "Typing status received for unknown user (%s)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1952
+#, c-format
+msgid "UIN: %lu Evil: %04hx"
+msgstr ""
+
+#: src/icq/icq.cpp:1106 src/icq/icq-srv.cpp:3026 src/icq/icq-srv.cpp:4206
+#: src/userevents.cpp:275
 msgid "URL"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1681
+#, c-format
+msgid "URL from %s (%s) [Licq %s]."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1684 src/icq/icq-tcp.cpp:2004
+#, c-format
+msgid "URL from %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:2920
@@ -19125,25 +19199,122 @@ msgstr ""
 msgid "Ukrainian"
 msgstr ""
 
-#: src/fifo.cpp:954
+#: src/icq/icq.cpp:133
+msgid "Unable to allocate TCP port for local server (No ports available)!"
+msgstr ""
+
+#: src/icq/filetransfer.cpp:249
+#, c-format
+msgid "Unable to create directory %s for file transfer."
+msgstr ""
+
+#: src/fifo.cpp:951
 #, c-format
 msgid "Unable to create fifo: %s"
 msgstr ""
 
-#: src/plugins/pluginmanager.cpp:511
+#: src/icq/icq-tcp.cpp:2807
+#, c-format
+msgid "Unable to delete %s's picture file (%s): %s."
+msgstr ""
+
+#: src/plugins/pluginmanager.cpp:515
 #, c-format
 msgid "Unable to load plugin (%s): %s"
 msgstr ""
 
-#: src/fifo.cpp:959
+#: src/contactlist/user.cpp:266
+#, c-format
+msgid "Unable to load user info from '%s'. Using default values."
+msgstr ""
+
+#: src/daemon.cpp:422
+#, c-format
+msgid "Unable to open \"%s\" for writing."
+msgstr ""
+
+#: src/fifo.cpp:956
 #, c-format
 msgid "Unable to open fifo: %s"
 msgstr ""
 
-#: src/contactlist/owner.cpp:72
+#: src/icq/icq-srv.cpp:5447
+#, c-format
+msgid "Unable to open file (%s): %s."
+msgstr ""
+
+#: src/contactlist/userhistory.cpp:120 src/contactlist/userhistory.cpp:361
+#, c-format
+msgid "Unable to open history file (%s): %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2958 src/icq/oscarservice.cpp:384
+#: src/icq/packet.cpp:1860 src/icq/packet.cpp:5213
+#, c-format
+msgid "Unable to open picture file (%s): %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3571
+msgid "Unable to parse contact list TLV, aborting!"
+msgstr ""
+
+#: src/buffer.cpp:591
+msgid "Unable to read requested amount of TLV data!"
+msgstr ""
+
+#: src/contactlist/owner.cpp:73
 #, c-format
 msgid ""
 "Unable to set %s to mode 0600. Your password is vulnerable if stored locally."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5700
+#, c-format
+msgid "Unable to sign on: NewServer: %s, cookie: %s."
+msgstr ""
+
+#: src/icq/icq.cpp:171
+#, c-format
+msgid "Unable to start BART service thread: %s."
+msgstr ""
+
+#: src/icq/icq.cpp:243
+#, c-format
+msgid "Unable to start BART service thread:%s."
+msgstr ""
+
+#: src/icq/icq.cpp:373
+#, c-format
+msgid "Unable to start event thread (#%hu): %s."
+msgstr ""
+
+#: src/icq/icq.cpp:153
+#, c-format
+msgid "Unable to start ping thread: %s."
+msgstr ""
+
+#: src/icq/icq.cpp:279
+#, c-format
+msgid "Unable to start server event thread (#%hu): %s."
+msgstr ""
+
+#: src/icq/icq.cpp:160
+#, c-format
+msgid "Unable to start users update thread: %s."
+msgstr ""
+
+#: src/icq/packet.cpp:1868
+#, c-format
+msgid "Unable to stat picture file (%s): %s."
+msgstr ""
+
+#: src/icq/packet.cpp:5221
+#, c-format
+msgid "Unable to stat picture file (%s):%s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4775
+msgid "Undeliverable SMS."
 msgstr ""
 
 #: src/icq/packet.cpp:368
@@ -19160,7 +19331,12 @@ msgstr ""
 msgid "Unencrypted Packet (%lu bytes)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:5323
+#: src/icq/icq-srv.cpp:3340
+#, c-format
+msgid "Unexpected new user in subtype 0x%04x."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5298
 #, c-format
 msgid "Unexpected result for %s."
 msgstr ""
@@ -19191,56 +19367,245 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: src/userevents.cpp:947
+#: src/icq/icq-srv.cpp:4107
+#, c-format
+msgid "Unknown BOS Family Subtype: %04hx"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2557
+#, c-format
+msgid "Unknown Buddy Family Subtype: %04hx"
+msgstr ""
+
+#: src/userevents.cpp:963
 msgid "Unknown Event"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2599
+#: src/icq/icq-srv.cpp:5590
+#, c-format
+msgid "Unknown Family on data channel: %04hx"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2591
 #, c-format
 msgid "Unknown ICBM error: 0x%04x"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4788
+#: src/icq/icq.cpp:1196 src/icq/icq-tcp.cpp:1924
+#, c-format
+msgid "Unknown ICBM plugin type: %s"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1001
+#, c-format
+msgid "Unknown ICQ TCP version (%d)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4072
+#, c-format
+msgid "Unknown List Family Subtype: %04hx"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2094
+#, c-format
+msgid "Unknown Location Family Subtype: %04hx"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3515
+#, c-format
+msgid "Unknown Message Family Subtype: %04hx"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4764
 msgid "Unknown SMS response"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:5334
+#: src/icq/icq-srv.cpp:2014
+#, c-format
+msgid "Unknown Service Family Subtype: %04hx"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1535
+#, c-format
+msgid "Unknown TCP status: %04X"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1410
+#, c-format
+msgid "Unknown TCP version %d from socket."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5309
 #, c-format
 msgid "Unknown Various Family Subtype: %04hx"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:5295
+#: src/icq/icq-tcp.cpp:2547
+#, c-format
+msgid "Unknown ack flag from %s (#%hu): %04x %s"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3288
+#, c-format
+msgid "Unknown channel %u from %s"
+msgstr ""
+
+#: src/contactlist/user.cpp:1235
+#, c-format
+msgid "Unknown channel %u."
+msgstr ""
+
+#: src/icq/packet.cpp:4253
+msgid "Unknown channel GUID."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3670
+msgid "Unknown channel in ack packet."
+msgstr ""
+
+#: src/contactlist/user.cpp:1188
+#, c-format
+msgid "Unknown channel type %u."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2299
+#, c-format
+msgid "Unknown direct ack ICBM plugin type: %s"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3847
+#, c-format
+msgid "Unknown error modifying server list: 0x%02X (ID: %s)"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3661
+#, c-format
+msgid "Unknown handshake response %2X,%8lX."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2454
+#, c-format
+msgid "Unknown index %d from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2398
+#, c-format
+msgid "Unknown info plugin update from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2738
+#, c-format
+msgid "Unknown info request from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:2825
+#, c-format
+msgid "Unknown info response with no data from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5270
 #, c-format
 msgid "Unknown info: %04hx"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5348
+msgid ""
+"Unknown logon error. There appears to be an issue with the ICQ servers. "
+"Please try again later."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:316
+#, c-format
+msgid "Unknown or unsupported service FAM subtype 0x%02X for service 0x%02X."
+msgstr ""
+
+#: src/icq/oscarservice.cpp:276
+#, c-format
+msgid "Unknown or usupported family %04hx on data channel of service %02X."
 msgstr ""
 
 #: src/proxy.cpp:78
 msgid "Unknown proxy error"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:1726 src/icq/icq-srv.cpp:1962 src/icq/icq-srv.cpp:4157
-#: src/icq/icq-srv.cpp:4164 src/icq/icq-srv.cpp:5461
+#: src/icq/icq-tcp.cpp:3002 src/icq/icq-tcp.cpp:3266
+#, c-format
+msgid "Unknown reply level %u from %s"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5684
+#, c-format
+msgid "Unknown runtime error form server: 0x%02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:1720 src/icq/icq-srv.cpp:1955 src/icq/icq-srv.cpp:4134
+#: src/icq/icq-srv.cpp:4141 src/icq/icq-srv.cpp:5436
 msgid "Unknown server response"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5653
+#, c-format
+msgid "Unknown sign on error: 0x%02X."
 msgstr ""
 
 #: src/sighandler.cpp:63 src/sighandler.cpp:78 src/sighandler.cpp:220
 msgid "Unknown signal.\n"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3225
+#: src/icq/icq-srv.cpp:2289
+#, c-format
+msgid "Unknown status flag for %s: 0x%08lX"
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3031
+#, c-format
+msgid "Unknown status plugin request level %u from %s."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:3118
+#, c-format
+msgid "Unknown status request from %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3215
 #, c-format
 msgid "Unknown system message (0x%04x)"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:2982
+#: src/icq/icq-srv.cpp:2972
 #, c-format
 msgid ""
 "Unknown tag in SMS message:\n"
 "%s"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:2129
+#, c-format
+msgid "Unknown user (%s) changed status."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2530
+#, c-format
+msgid "Unknown user (%s) has gone offline."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4886 src/icq/icq-srv.cpp:4970
+#, c-format
+msgid "Unmatched extended event (%d)!"
+msgstr ""
+
 #: src/icq/codes.c:61 src/icq/codes.c:3431 src/icq/codes.c:3532
 msgid "Unspecified"
+msgstr ""
+
+#: src/icq/oscarservice.cpp:271
+#, c-format
+msgid "Unsupported family %04hx on data channel of service %02X."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2485
+#, c-format
+msgid "Unsupported type 0x%02X of buddy icon for %s."
 msgstr ""
 
 #: src/icq/codes.c:3050
@@ -19295,11 +19660,89 @@ msgid ""
 "Ordinary/Unusual, Strange and Out of the Ordinary/Telepathy and ESP"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:3933
+#, c-format
+msgid "Updated %s successfully."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4854
+msgid "Updated information successfully."
+msgstr ""
+
+#: src/icq/threads.cpp:1032
+#, c-format
+msgid "Updating %s's info plugins."
+msgstr ""
+
+#: src/icq/threads.cpp:1044
+#, c-format
+msgid "Updating %s's status plugins."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:730
+#, c-format
+msgid "Updating Interests info (#%hu/#%d).."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:744
+#, c-format
+msgid "Updating Organizations/Backgrounds info (#%hu/#%d).."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:775
+#, c-format
+msgid "Updating about (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:702
+#, c-format
+msgid "Updating additional E-Mail info (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:966 src/icq/icq-srv.cpp:979
+#, c-format
+msgid "Updating contact list (#%hu)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:688
+#, c-format
+msgid "Updating general info (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:210 src/icq/icq-srv.cpp:3900
+#, c-format
+msgid "Updating group %s."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:718
+#, c-format
+msgid "Updating more info (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:671
+#, c-format
+msgid "Updating password (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:832
+#, c-format
+msgid "Updating security info (#%hu/#%d)..."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:199 src/icq/icq-srv.cpp:3895
+msgid "Updating top level group."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:762
+#, c-format
+msgid "Updating work info (#%hu/#%d)..."
+msgstr ""
+
 #: src/icq/codes.c:3499
 msgid "Urdu"
 msgstr ""
 
-#: src/userevents.cpp:257
+#: src/userevents.cpp:268
 #, c-format
 msgid ""
 "Url: %s\n"
@@ -19311,24 +19754,48 @@ msgstr ""
 msgid "Uruguay"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3117
+#: src/icq/icq-tcp.cpp:3713
+#, c-format
+msgid "User %s (%s) already has an associated socket."
+msgstr ""
+
+#: src/icq/icq-tcp.cpp:1450
+#, c-format
+msgid "User %s (%s) socket (%d) does not match incoming message (%d)."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3107
 #, c-format
 msgid "User %s added you to their contact list"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4307
+#: src/icq/icq-srv.cpp:4284
 #, c-format
 msgid "User %s added you to their contact list (offline)"
 msgstr ""
 
-#: src/userevents.cpp:470
+#: src/icq/icq-srv.cpp:4046
+#, c-format
+msgid "User %s added you to their contact list."
+msgstr ""
+
+#: src/userevents.cpp:501
 #, c-format
 msgid "User %s authorized you"
 msgstr ""
 
-#: src/userevents.cpp:516
+#: src/userevents.cpp:552
 #, c-format
 msgid "User %s refused to authorize you"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:2579
+msgid "User is offline."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:3842
+#, c-format
+msgid "User/Group %s not found on server list."
 msgstr ""
 
 #: src/icq/codes.c:290
@@ -19640,6 +20107,10 @@ msgstr ""
 msgid "Venezuela"
 msgstr ""
 
+#: src/icq/icq-srv.cpp:5326
+msgid "Verification required. Reconnecting..."
+msgstr ""
+
 #: src/icq/codes.c:294
 msgid "Vietnam"
 msgstr ""
@@ -19797,9 +20268,18 @@ msgstr ""
 msgid "Wallis and Futuna Islands"
 msgstr ""
 
+#: src/contactlist/user.cpp:1701
+#, c-format
+msgid "Warning: Invalid qualifier in command: %%%c."
+msgstr ""
+
 #: src/utility.cpp:84
 #, c-format
 msgid "Warning: unable to load utility \"%s\""
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5610
+msgid "We're logging off.."
 msgstr ""
 
 #: src/icq/codes.c:3560
@@ -19810,7 +20290,7 @@ msgstr ""
 msgid "Web Design"
 msgstr ""
 
-#: src/userevents.cpp:928
+#: src/userevents.cpp:611
 msgid "Web Panel"
 msgstr ""
 
@@ -19820,6 +20300,10 @@ msgstr ""
 
 #: src/icq/codes.c:298
 msgid "Western Samoa"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:4872
+msgid "WhitePages search found no users."
 msgstr ""
 
 #: src/icq/codes.c:3153 src/icq/codes.c:3402
@@ -20490,8 +20974,13 @@ msgid ""
 "Women/Women's Rights/Women's Rights in the Family/Women Rights in the Family"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:4646
+#: src/icq/icq-srv.cpp:4623
 msgid "Work info"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5151
+#, c-format
+msgid "Work info on %s (%s)."
 msgstr ""
 
 #: src/icq/codes.c:299
@@ -20504,6 +20993,16 @@ msgstr ""
 
 #: src/icq/codes.c:3503
 msgid "Yoruba"
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5669
+msgid "Your ICQ number is used from another location."
+msgstr ""
+
+#: src/icq/icq-srv.cpp:5674
+msgid ""
+"Your ICQ number is used from another location. Automatic reconnect is "
+"disabled."
 msgstr ""
 
 #: src/icq/codes.c:302
@@ -20526,6 +21025,11 @@ msgstr ""
 msgid "Zimbabwe"
 msgstr ""
 
+#: src/icq/oscarservice.cpp:197
+#, c-format
+msgid "bad start code %d for packet in socket of service 0x%02X."
+msgstr ""
+
 #: src/utility.cpp:132
 msgid "none"
 msgstr ""
@@ -20534,15 +21038,15 @@ msgstr ""
 msgid "server socket was closed!!!\n"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3955
+#: src/icq/icq-srv.cpp:3934
 msgid "top level"
 msgstr ""
 
-#: src/icq/icq.cpp:1265
+#: src/icq/icq.cpp:1221
 msgid "unknown event"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:178 src/icq/icq-tcp.cpp:287 src/icq/icq-tcp.cpp:367
-#: src/icq/icq-tcp.cpp:437 src/icq/icq-tcp.cpp:765
+#: src/icq/icq-tcp.cpp:177 src/icq/icq-tcp.cpp:285 src/icq/icq-tcp.cpp:365
+#: src/icq/icq-tcp.cpp:435 src/icq/icq-tcp.cpp:747
 msgid "urgent "
 msgstr ""
