@@ -51,7 +51,7 @@ function usage()
     echo "  -o dir       Save tarball in directory dir (default: ${TARDIR})"
     echo "  -n name      Name the tarball name (default: ${TARNAME})"
     echo "               DESC is replaced with the output from git describe"
-    echo "  -e           Don't set extra version"
+    echo "  -e           Don't set extra version (never done for tags)"
     echo "  -g, --gzip   Create a tar.gz archive"
     echo "  -b, --bzip2  Create a tar.bz archive"
     echo "  -s, --sign   Sign archive(s) with default GPG key"
@@ -101,6 +101,10 @@ fi
 if ! git rev-parse --verify --quiet "${TREEISH}" > /dev/null; then
     echo "$0: Bad treeish '${TREEISH}'"
     exit 1
+fi
+
+if git describe --exact-match "${TREEISH}" &> /dev/null; then
+    EXTRA_VERSION=false
 fi
 
 # Remove workdir
