@@ -147,11 +147,12 @@ trap abort SIGHUP SIGINT SIGQUIT
 TMPDIR=$(mktemp -d licq.XXXX) || failed "mktemp -d"
 TMPFILE="${TMPDIR}/.cmd.out"
 
+GITDESC="$(git describe ${TREEISH})"
+
 function expand_name()
 {
     local name="$1"
-    local desc="$(git describe ${TREEISH})"
-    name="${name//DESC/${desc}}"
+    name="${name//DESC/${GITDESC}}"
     echo "${name}"
 }
 
@@ -174,7 +175,7 @@ function gitexport()
    local dest="${LICQDIR}/$2"
    local skip_missing="${3:-false}"
 
-   echo -n "Exporting ${path} (${TREEISH})... "
+   echo -n "Exporting ${path} ($(git describe --all --long ${TREEISH}))... "
    if ${skip_missing} && ! git rev-parse --verify --quiet "${TREEISH}:${path}" > /dev/null; then
        echo "not found, skipping"
        return
@@ -230,9 +231,9 @@ for plugin in ${PLUGINS} ${OLD_PLUGINS}; do
 done
 
 if ${EXTRA_VERSION}; then
-   echo -n "Setting extra version (to -r${SVNREV})..."
+   echo -n "Setting extra version (to -${GITDESC//-/_})..."
    for file in $(find "${LICQDIR}" -name version.cmake -o -name LicqVersion.cmake); do
-      sed -i -r -e "s/^(set\(.*_VERSION_EXTRA).*\)/\1 \"-r${SVNREV}\"\)/g" ${file}
+      sed -i -r -e "s/^(set\(.*_VERSION_EXTRA).*\)/\1 \"-${GITDESC//-/_}\"\)/g" ${file}
    done
    echo "done"
 fi
