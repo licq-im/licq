@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-13 20:46+0200\n"
+"POT-Creation-Date: 2011-06-18 11:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -407,8 +407,8 @@ msgstr ""
 msgid "%sAccepting file transfer from %s (#%hu).\n"
 msgstr ""
 
-#: src/icq/icq.cpp:1193 src/icq/icq.cpp:1285 src/icq/icq-tcp.cpp:2591
-#: src/icq/icq-srv.cpp:3398 src/icq/icq-srv.cpp:3485
+#: src/icq/icq.cpp:1193 src/icq/icq.cpp:1285 src/icq/icq-srv.cpp:3398
+#: src/icq/icq-srv.cpp:3485 src/icq/icq-tcp.cpp:2591
 #, c-format
 msgid "%sAck for unknown event.\n"
 msgstr ""
@@ -2681,7 +2681,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:625
+#: src/contactlist/usermanager.cpp:634
 #, c-format
 msgid "Added group %s (%u) to list from server"
 msgstr ""
@@ -10079,12 +10079,12 @@ msgstr ""
 msgid "Grenada"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:596
+#: src/contactlist/usermanager.cpp:605
 #, c-format
 msgid "Group %s is already in list"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:748
+#: src/contactlist/usermanager.cpp:757
 #, c-format
 msgid "Group name %s is already in list"
 msgstr ""
@@ -12153,7 +12153,7 @@ msgstr ""
 msgid "Invalid Server Message"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031 src/icq/icq-srv.cpp:3033
+#: src/icq/icq-srv.cpp:3033 src/icq/icq-tcp.cpp:1711 src/icq/icq-tcp.cpp:2031
 msgid "Invalid URL message"
 msgstr ""
 
@@ -16409,7 +16409,7 @@ msgstr ""
 msgid "Religion"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:755
+#: src/contactlist/usermanager.cpp:764
 #, c-format
 msgid "Renaming request for invalid group %u"
 msgstr ""
