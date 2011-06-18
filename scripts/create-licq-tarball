@@ -98,6 +98,11 @@ if ! $CREATE_GZ && ! $CREATE_BZ2 ; then
     exit 1
 fi
 
+if ! git rev-parse --verify --quiet "${TREEISH}" > /dev/null; then
+    echo "$0: Bad treeish '${TREEISH}'"
+    exit 1
+fi
+
 # Remove workdir
 function cleanup()
 {
