@@ -71,8 +71,9 @@ int main(int argc, char **argv)
   threadArgc = argc;
   threadArgv = argv;
 
-  // TODO: Change 1 to e.g. __APPLE__
-#if 1
+  // On some systems (e.g. Mac OS X) the GUI plugin must run in the main thread
+  // and the daemon will run in a new thread.
+#if __APPLE__
   return PluginThread::createWithCurrentThread(&threadMain);
 #else
   return threadMain(PluginThread::Ptr());
