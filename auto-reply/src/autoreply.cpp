@@ -106,8 +106,8 @@ int CLicqAutoReply::Run()
   conf.get("FailOnExitCode", m_bFailOnExitCode, false);
   conf.get("AbortDeleteOnExitCode", m_bAbortDeleteOnExitCode, false);
   conf.get("SendThroughServer", m_bSendThroughServer, true);
-  conf.get("StartEnabled", m_bEnabled, false);
-  conf.get("DeleteMessage", m_bDelete, false);
+  conf.get("StartEnabled", m_bEnabled, m_bEnabled);
+  conf.get("DeleteMessage", m_bDelete, m_bDelete);
 
   // Log on if necessary
   if (m_szStatus != NULL)
