@@ -64,6 +64,17 @@ unsigned long LProto_SendFuncs()
       | Licq::ProtocolPlugin::CanSendAuthReq;
 }
 
+const char* LProto_DefSrvHost()
+{
+  static char defaultHost[] = "";
+  return defaultHost;
+}
+
+int LProto_DefSrvPort()
+{
+  return 5222;
+}
+
 int LProto_Main()
 {
   Jabber::Config config(LProto_ConfigFile());

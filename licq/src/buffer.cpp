@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -414,8 +414,8 @@ char* Buffer::PackUnsignedLong(unsigned long data)
 {
   if ( getDataSize() + 4 > getDataMaxSize() )
   {
-    gLog.warning(tr("%sPackUnsignedLong(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("PackUnsignedLong(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   *(uint32_t*)getDataPosWrite() = LE_32(data);
@@ -427,8 +427,8 @@ char* Buffer::PackUnsignedLongBE(unsigned long data)
 {
   if (getDataSize() + 4 > getDataMaxSize() )
   {
-    gLog.warning(tr("%sPackUnsignedLongBE(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("PackUnsignedLongBE(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   *(uint32_t*)getDataPosWrite() = BE_32(data);
@@ -440,8 +440,8 @@ char* Buffer::PackChar(char data)
 {
   if (getDataSize() + 1 > getDataMaxSize())
   {
-    gLog.warning(tr("%sPackChar(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("PackChar(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   *getDataPosWrite() = data;
@@ -453,8 +453,8 @@ char* Buffer::Pack(const char* data, int size)
 {
   if ( getDataSize() + size > getDataMaxSize() )
   {
-    gLog.warning(tr("%sPack(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("Pack(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   if (!size) return getDataPosWrite();
@@ -467,8 +467,8 @@ char* Buffer::Pack(Buffer* buf)
 {
   if ( getDataSize() + buf->getDataSize() > getDataMaxSize() )
   {
-    gLog.warning(tr("%sPack(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("Pack(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   memcpy(getDataPosWrite(), buf->getDataStart(), buf->getDataSize());
@@ -493,8 +493,8 @@ char* Buffer::PackString(const char* data, unsigned short max)
   if (max > 0 && n > max) n = max;
   if ( getDataSize()  + n + 1 > getDataMaxSize() )
   {
-    gLog.warning(tr("%sPackString(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("PackString(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   *(uint16_t*)getDataPosWrite() = LE_16(n + 1);
@@ -513,8 +513,8 @@ char* Buffer::PackUnsignedShort(unsigned short data)
 {
   if ( getDataSize() + 2 > getDataMaxSize() )
   {
-    gLog.warning(tr("%sPackUnsignedShort(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("PackUnsignedShort(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   *(uint16_t*)getDataPosWrite() = LE_16(data);
@@ -526,8 +526,8 @@ char* Buffer::PackUnsignedShortBE(unsigned short data)
 {
   if ( getDataSize() + 2 > getDataMaxSize() )
   {
-    gLog.warning(tr("%sPackUnsignedShortBE(): Trying to pack more data than "
-        "Licq::Buffer can hold!\n"), L_WARNxSTR);
+    gLog.warning(tr("PackUnsignedShortBE(): Trying to pack more data than "
+        "Licq::Buffer can hold!"));
     return getDataPosWrite();
   }
   *(uint16_t*)getDataPosWrite() = BE_16(data);
@@ -580,15 +580,15 @@ bool Buffer::readTLV(int nCount, int nBytes)
 
     if (nBytes > 0 && nCurBytes > nBytes)
     {
-      gLog.warning(tr("%sRead too much TLV data!\n"), L_WARNxSTR);
+      gLog.warning(tr("Read too much TLV data!"));
       return true;
     }
   }
 
   // Finish off the number of bytes we wanted
   if (nCurBytes < nBytes)
-  { 
-    gLog.warning(tr("%sUnable to read requested amount of TLV data!\n"), L_WARNxSTR);
+  {
+    gLog.warning(tr("Unable to read requested amount of TLV data!"));
     for (; nCurBytes < nBytes; nCurBytes++)
       UnpackChar();
   }

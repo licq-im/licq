@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -354,7 +354,7 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
     QVariant var = arg.index.data(ContactListModel::EventAnimationRole);
     if (var.isValid() && (var.toInt() & 1))
       icon = &iconman->iconForEvent(
-          arg.index.data(ContactListModel::EventSubCommandRole).toUInt());
+          arg.index.data(ContactListModel::EventTypeRole).toUInt());
     else
       icon = &iconman->iconForStatus(
           arg.index.data(ContactListModel::StatusRole).toUInt(),

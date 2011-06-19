@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,23 +21,23 @@
 
 #include "config.h"
 
-#include <QComboBox>
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSpinBox>
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/pluginmanager.h>
 
+#include "config/iconmanager.h"
 #include "core/messagebox.h"
-
 #include "helpers/support.h"
-
-#include "widgets/protocombobox.h"
+#include "widgets/skinnablelabel.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::OwnerEditDlg */
@@ -54,7 +54,7 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   lay->setColumnStretch(2, 2);
   lay->setColumnMinimumWidth(1, 8);
 
-  cmbProtocol = new ProtoComboBox(ppid == 0, this);
+  SkinnableLabel* protocolName = new SkinnableLabel();
 
   edtId = new QLineEdit();
   connect(edtId, SIGNAL(returnPressed()), SLOT(slot_ok()));
@@ -62,6 +62,10 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   edtPassword = new QLineEdit();
   edtPassword->setEchoMode(QLineEdit::Password);
   connect(edtPassword, SIGNAL(returnPressed()), SLOT(slot_ok()));
+
+  myHostEdit = new QLineEdit();
+  myPortSpin = new QSpinBox();
+  myPortSpin->setRange(0, 0xFFFF);
 
   int i = 0;
   QLabel* lbl;
@@ -72,14 +76,17 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   lay->addWidget(lbl, i, 0); \
   lay->addWidget(widget, i++, 2)
 
-  ADDWIDGET(tr("Pro&tocol:"), cmbProtocol);
+  ADDWIDGET(tr("Protocol:"), protocolName);
   ADDWIDGET(tr("&User ID:"), edtId);
   ADDWIDGET(tr("&Password:"), edtPassword);
 
-#undef ADDWIDGET
-
   chkSave = new QCheckBox(tr("&Save Password"));
   lay->addWidget(chkSave, i++, 0, 1, 3);
+
+  ADDWIDGET(tr("S&erver:"), myHostEdit);
+  ADDWIDGET(tr("P&ort:"), myPortSpin);
+
+#undef ADDWIDGET
 
   QDialogButtonBox* buttons = new QDialogButtonBox();
   buttons->addButton(QDialogButtonBox::Ok);
@@ -88,28 +95,35 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
   lay->addWidget(buttons, i++, 0, 1, 3);
 
-  // Set the fields
-  if (ppid != 0)
+
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
+  if (protocol.get() == NULL)
+  {
+    InformUser(this, tr("Protocol plugin is not loaded."));
+    close();
+    return;
+  }
+
+  protocolName->setText(protocol->getName());
+  protocolName->setPrependPixmap(IconManager::instance()->iconForProtocol(ppid));
+  myHostEdit->setText(protocol->getDefaultServerHost().c_str());
+  myPortSpin->setValue(protocol->getDefaultServerPort());
+
   {
     Licq::OwnerReadGuard o(ppid);
     if (o.isLocked())
     {
+      myNewOwner = false;
       edtId->setText(o->accountId().c_str());
       edtId->setEnabled(false);
       edtPassword->setText(o->password().c_str());
       chkSave->setChecked(o->SavePassword());
+      myHostEdit->setText(o->serverHost().c_str());
+      myPortSpin->setValue(o->serverPort());
     }
-
-    cmbProtocol->setCurrentPpid(ppid);
-    cmbProtocol->setEnabled(false);
-  }
-  else
-  {
-    if (cmbProtocol->count() == 0)
+    else
     {
-      InformUser(this, tr("Currently only one account per protocol is supported."));
-      close();
-      return;
+      myNewOwner = true;
     }
   }
 
@@ -120,7 +134,6 @@ void OwnerEditDlg::slot_ok()
 {
   QString id = edtId->text();
   QString pwd = edtPassword->text();
-  unsigned long ppid = myPpid == 0 ? cmbProtocol->currentPpid() : myPpid;
 
   if (id.isEmpty())
   {
@@ -128,18 +141,19 @@ void OwnerEditDlg::slot_ok()
     return;
   }
 
-  Licq::UserId ownerId(id.toLocal8Bit().data(), ppid);
+  Licq::UserId ownerId(id.toLocal8Bit().data(), myPpid);
 
-  if (myPpid == 0)
+  if (myNewOwner)
     Licq::gUserManager.addOwner(ownerId);
 
   {
-    Licq::OwnerWriteGuard o(ppid);
+    Licq::OwnerWriteGuard o(ownerId);
     if (!o.isLocked())
       return;
 
     o->setPassword(pwd.toLocal8Bit().data());
     o->SetSavePassword(chkSave->isChecked());
+    o->setServer(myHostEdit->text().toLatin1().data(), myPortSpin->value());
   }
 
   Licq::gDaemon.SaveConf();

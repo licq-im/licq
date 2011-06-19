@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@
 #include <cctype>
 
 #include <licq/daemon.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
 #include <licq/contactlist/user.h>
+#include <licq/userevents.h>
 
 #include "config/contactlist.h"
 
@@ -331,31 +331,37 @@ const QPixmap& IconManager::iconForStatus(unsigned status, const Licq::UserId& u
   return myStatusIconMap[QPair<ProtocolType, unsigned>(ProtocolIcq, User::OnlineStatus)];
 }
 
-const QPixmap& IconManager::iconForEvent(unsigned short subCommand)
+const QPixmap& IconManager::iconForProtocol(unsigned long protocolId)
+{
+  Licq::UserId userId = Licq::UserId("1", protocolId);
+  return iconForStatus(Licq::User::OnlineStatus, userId);
+}
+
+const QPixmap& IconManager::iconForEvent(unsigned eventType)
 {
   IconType icon;
-  switch(subCommand)
+  switch (eventType)
   {
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeUrl:
       icon = UrlMessageIcon;
       break;
-    case ICQ_CMDxSUB_CHAT:
+    case Licq::UserEvent::TypeChat:
       icon = ChatMessageIcon;
       break;
-    case ICQ_CMDxSUB_FILE:
+    case Licq::UserEvent::TypeFile:
       icon = FileMessageIcon;
       break;
-    case ICQ_CMDxSUB_CONTACTxLIST:
+    case Licq::UserEvent::TypeContactList:
       icon = ContactMessageIcon;
       break;
-    case ICQ_CMDxSUB_AUTHxREQUEST:
+    case Licq::UserEvent::TypeAuthRequest:
       icon = ReqAuthorizeMessageIcon;
       break;
-    case ICQ_CMDxSUB_AUTHxREFUSED:
-    case ICQ_CMDxSUB_AUTHxGRANTED:
+    case Licq::UserEvent::TypeAuthRefused:
+    case Licq::UserEvent::TypeAuthGranted:
       icon = AuthorizeMessageIcon;
       break;
-    case ICQ_CMDxSUB_MSG:
+    case Licq::UserEvent::TypeMessage:
     default:
       icon = StandardMessageIcon;
   }

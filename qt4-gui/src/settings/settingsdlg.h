@@ -66,7 +66,6 @@ public:
     OnEventPage,
     SoundsPage,
     NetworkPage,
-    IcqPage,
     StatusPage,
     RespMsgPage
   };

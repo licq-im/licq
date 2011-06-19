@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1492,21 +1492,21 @@ void CRMSClient::printUserEvent(const Licq::UserEvent* e, const string& alias)
   }
 
   std::ostringstream eventHeader;
-  switch (e->SubCommand())
+  switch (e->eventType())
   {
-    case ICQ_CMDxSUB_MSG:
+    case Licq::UserEvent::TypeMessage:
       eventHeader << CODE_VIEWxMSG << " Message";
       break;
 
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeUrl:
       eventHeader << CODE_VIEWxURL << " URL";
       break;
 
-    case ICQ_CMDxSUB_CHAT:
+    case Licq::UserEvent::TypeChat:
       eventHeader << CODE_VIEWxCHAT << " Chat Request";
       break;
 
-    case ICQ_CMDxSUB_FILE:
+    case Licq::UserEvent::TypeFile:
       eventHeader << CODE_VIEWxFILE << " File Request";
       break;
 

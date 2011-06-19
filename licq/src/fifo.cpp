@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -154,9 +154,8 @@ enum
 struct command_t
 {
   const char *const szName;
-  int (*fnc)(int, const char *const*, void *);
+  int (*fnc)(int, const char* const*);
   const char *const szHelp;
-  int bHelp;
 };
 
 static int process_tok(const command_t *table,const char *tok);
@@ -307,7 +306,7 @@ static bool atoid(const char* buff, bool bOnList, char** szId, unsigned long* nP
 }
 
 // status 
-static int fifo_status( int argc, const char *const *argv, void* /* data */)
+static int fifo_status(int argc, const char* const* argv)
 {
   const char *szStatus = argv[1];
 
@@ -340,7 +339,7 @@ static int fifo_status( int argc, const char *const *argv, void* /* data */)
 
 
 // auto_response <auto response>
-static int fifo_auto_response( int argc, const char *const *argv, void* /* data */)
+static int fifo_auto_response(int argc, const char* const* argv)
 {
   if( argc == 1 )
   {
@@ -355,7 +354,7 @@ static int fifo_auto_response( int argc, const char *const *argv, void* /* data 
 }
 
 // message <buddy> <message>
-static int fifo_message ( int argc, const char *const *argv, void* /* data */)
+static int fifo_message(int argc, const char* const* argv)
 {
   unsigned long nPPID;
   char *szId = 0;
@@ -378,7 +377,7 @@ static int fifo_message ( int argc, const char *const *argv, void* /* data */)
 }
 
 // url <buddy> <url> [<description>]
-static int fifo_url ( int argc, const char *const *argv, void* /* data */)
+static int fifo_url(int argc, const char* const* argv)
 {
   const char *szDescr;
   unsigned long nPPID;
@@ -404,9 +403,8 @@ static int fifo_url ( int argc, const char *const *argv, void* /* data */)
 }
 
 //sms <buddy> <message>
-static int fifo_sms(int argc, const char *const *argv, void *data)
+static int fifo_sms(int argc, const char *const *argv)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
   unsigned long nPPID;
   char *szId = 0;
 
@@ -430,7 +428,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
         }
       }
       if (!number.empty())
-        d->icqSendSms(userId, number, argv[2]);
+        gLicqDaemon->icqSendSms(userId, number, argv[2]);
       else
         gLog.error("Unable to send SMS to %s, no SMS number found", szId);
     }
@@ -446,22 +444,20 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
 }
 
 // sms-number <number> <message>
-static int fifo_sms_number(int argc, const char *const *argv, void *data)
+static int fifo_sms_number(int argc, const char *const *argv)
 {
-  CICQDaemon *d = (CICQDaemon *) data;
-
   if (argc < 3)
   {
     ReportMissingParams(argv[0]);
     return -1;
   }
 
-  d->icqSendSms(gUserManager.ownerUserId(LICQ_PPID), argv[1], argv[2]);
+  gLicqDaemon->icqSendSms(gUserManager.ownerUserId(LICQ_PPID), argv[1], argv[2]);
   return 0;
 }
 
 // redirect <file>
-static int fifo_redirect ( int argc, const char *const *argv, void* /* data */)
+static int fifo_redirect(int argc, const char* const* argv)
 {
   if( argc == 1 )
   {
@@ -482,7 +478,7 @@ static int fifo_redirect ( int argc, const char *const *argv, void* /* data */)
 }
 
 // debuglvl <level>
-static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
+static int fifo_debuglvl(int argc, const char* const* argv)
 {
   int nRet = 0; 
  
@@ -498,7 +494,7 @@ static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
 }
 
 // adduser <buddy>
-static int fifo_adduser(int argc, const char* const* argv, void* /* data */)
+static int fifo_adduser(int argc, const char* const* argv)
 {
   unsigned long nPPID;
   char *szId = 0;
@@ -522,7 +518,7 @@ static int fifo_adduser(int argc, const char* const* argv, void* /* data */)
 }
 
 // userinfo <buddy>
-static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
+static int fifo_userinfo(int argc, const char* const* argv)
 {
   unsigned long nPPID;
   char *szId = 0; 
@@ -552,7 +548,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void* /* data */)
   return ret;
 }
 
-static int fifo_setpicture(int argc, const char* const* argv, void* /* data */)
+static int fifo_setpicture(int argc, const char* const* argv)
 {
   if (argc < 2)
   {
@@ -621,14 +617,14 @@ static int fifo_setpicture(int argc, const char* const* argv, void* /* data */)
 }
 
 // exit
-static int fifo_exit(int /* argc */, const char* const* /* argv */, void* /* data */)
+static int fifo_exit(int /* argc */, const char* const* /* argv */)
 {
   gDaemon.Shutdown();
   return 0;
 }
 
 // ui_viewevent [<buddy>]
-static int fifo_ui_viewevent ( int argc, const char *const *argv, void* /* data */)
+static int fifo_ui_viewevent(int argc, const char* const* argv)
 {
   unsigned long nPPID;
   char *szId = 0; 
@@ -655,7 +651,7 @@ static int fifo_ui_viewevent ( int argc, const char *const *argv, void* /* data 
 }
 
 // ui_message <buddy>
-static int fifo_ui_message ( int argc, const char *const *argv, void* /* data */)
+static int fifo_ui_message(int argc, const char* const* argv)
 {
   unsigned long nPPID = 0;
   char *szId = 0;
@@ -678,7 +674,7 @@ static int fifo_ui_message ( int argc, const char *const *argv, void* /* data */
   return nRet;
 }
 
-static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void* /* data */)
+static int fifo_plugin_list(int /* argc */, const char* const* /* argv */)
 {
   Licq::GeneralPluginsList plugins;
   gPluginManager.getGeneralPluginsList(plugins);
@@ -690,7 +686,7 @@ static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void*
   return 0;
 }
 
-static int fifo_plugin_load(int argc, const char* const* argv, void* /* data */)
+static int fifo_plugin_load(int argc, const char* const* argv)
 {
   if (argc == 1)
   {
@@ -705,7 +701,7 @@ static int fifo_plugin_load(int argc, const char* const* argv, void* /* data */)
   return -1;
 }
 
-static int fifo_plugin_unload(int argc, const char* const* argv, void* /* data */)
+static int fifo_plugin_unload(int argc, const char* const* argv)
 {
   if( argc == 1 )
   {
@@ -728,7 +724,7 @@ static int fifo_plugin_unload(int argc, const char* const* argv, void* /* data *
   return -1;
 }
 
-static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */, void* /* data */)
+static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */)
 {
   Licq::ProtocolPluginsList plugins;
   gPluginManager.getProtocolPluginsList(plugins);
@@ -740,7 +736,7 @@ static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */,
   return 0;
 }
 
-static int fifo_proto_plugin_load(int argc, const char* const* argv, void* /* data */)
+static int fifo_proto_plugin_load(int argc, const char* const* argv)
 {
   if (argc == 1)
   {
@@ -755,7 +751,7 @@ static int fifo_proto_plugin_load(int argc, const char* const* argv, void* /* da
   return -1;
 }
 
-static int fifo_proto_plugin_unload(int argc, const char* const* argv, void* /* data */)
+static int fifo_proto_plugin_unload(int argc, const char* const* argv)
 {
   if (argc == 1)
   {
@@ -778,16 +774,43 @@ static int fifo_proto_plugin_unload(int argc, const char* const* argv, void* /* 
   return -1;
 }
 
-static int fifo_help ( int argc, const char *const *argv, void *data)
+static int fifo_help(int argc, const char *const *argv);
+
+static struct command_t fifocmd_table[]=
 {
-  struct command_t *table = (struct command_t *)data;
+  {"status",              fifo_status,              HELP_STATUS},
+  {"auto_response",       fifo_auto_response,       HELP_AUTO},
+  {"message",             fifo_message,             HELP_MSG},
+  {"url",                 fifo_url,                 HELP_URL},
+  {"sms",                 fifo_sms,                 HELP_SMS},
+  {"sms-number",          fifo_sms_number,          HELP_SMS_NUMBER},
+  {"redirect",            fifo_redirect,            HELP_REDIRECT},
+  {"debuglvl",            fifo_debuglvl,            HELP_DEBUGLVL},
+  {"adduser",             fifo_adduser,             HELP_ADDUSER},
+  {"userinfo",            fifo_userinfo,            HELP_USERINFO},
+  {"setpicture",          fifo_setpicture,          HELP_SETPICTURE},
+  {"exit",                fifo_exit,                HELP_EXIT},
+  {"ui_viewevent",        fifo_ui_viewevent,        HELP_UIVIEWEVENT},
+  {"ui_message",          fifo_ui_message,          HELP_UIMESSAGE},
+  {"list_plugins",        fifo_plugin_list,         HELP_PLUGINLIST},
+  {"load_plugin",         fifo_plugin_load,         HELP_PLUGINLOAD},
+  {"unload_plugin",       fifo_plugin_unload,       HELP_PLUGINUNLOAD},
+  {"list_proto_plugins",  fifo_proto_plugin_list,   HELP_PROTOPLUGINLIST},
+  {"load_proto_plugin",   fifo_proto_plugin_load,   HELP_PROTOPLUGINLOAD},
+  {"unload_proto_plugin", fifo_proto_plugin_unload, HELP_PROTOPLUGINUNLOAD},
+  {"help",                fifo_help,                HELP_HELP},
+  {NULL,                  NULL,                     NULL}
+};
+
+static int fifo_help(int argc, const char* const* argv)
+{
   int i,j;
 
   if( argc == 1 )
   {
     gLog.info(tr("%sFifo commands:\n"), L_FIFOxSTR);
-    for( i=0; table[i].fnc ; i++ )
-      gLog.info("%s%s\n",L_BLANKxSTR,table[i].szName);
+    for (i = 0; fifocmd_table[i].fnc; i++)
+      gLog.info("                %s", fifocmd_table[i].szName);
     gLog.info(tr("%s: Type `help command'\n"), L_FIFOxSTR);
   }
   else 
@@ -798,20 +821,20 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
       {
         // show help for all commands 
         j = 0;
-        while (table[j].szName)
+        while (fifocmd_table[j].szName)
         {
           gLog.info(tr("%s %s: help for `%s'\n%s\n"),
-                    L_FIFOxSTR, argv[0], table[j].szName, table[j].szHelp);
+              L_FIFOxSTR, argv[0], fifocmd_table[j].szName, fifocmd_table[j].szHelp);
           j++;
 	}
       }
       else
       {
         // show help for a specific command
-        j = process_tok(table, argv[i]);
+        j = process_tok(fifocmd_table, argv[i]);
         if (j >= 0)
           gLog.info(tr("%s %s: help for `%s'\n%s\n"),
-                    L_FIFOxSTR, argv[0], argv[i], table[j].szHelp);
+              L_FIFOxSTR, argv[0], argv[i], fifocmd_table[j].szHelp);
         else
           gLog.info(tr("%s %s: unknown command `%s'\n"),
                     L_FIFOxSTR, argv[0], argv[i]);
@@ -821,32 +844,6 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
   return 0;
 }
 
-
-static struct command_t fifocmd_table[]=
-{
-  {"status",              fifo_status,              HELP_STATUS,            0},
-  {"auto_response",       fifo_auto_response,       HELP_AUTO,              0},
-  {"message",             fifo_message,             HELP_MSG,               0},
-  {"url",                 fifo_url,                 HELP_URL,               0},
-  {"sms",                 fifo_sms,                 HELP_SMS,               0},
-  {"sms-number",          fifo_sms_number,          HELP_SMS_NUMBER,        0},
-  {"redirect",            fifo_redirect,            HELP_REDIRECT,          0},
-  {"debuglvl",            fifo_debuglvl,            HELP_DEBUGLVL,          0},
-  {"adduser",             fifo_adduser,             HELP_ADDUSER,           0},
-  {"userinfo",            fifo_userinfo,            HELP_USERINFO,          0},
-  {"setpicture",          fifo_setpicture,          HELP_SETPICTURE,        0},
-  {"exit",                fifo_exit,                HELP_EXIT,              0},
-  {"ui_viewevent",        fifo_ui_viewevent,        HELP_UIVIEWEVENT,       0},
-  {"ui_message",          fifo_ui_message,          HELP_UIMESSAGE,         0},
-  {"list_plugins",        fifo_plugin_list,         HELP_PLUGINLIST,        0},
-  {"load_plugin",         fifo_plugin_load,         HELP_PLUGINLOAD,        0},
-  {"unload_plugin",       fifo_plugin_unload,       HELP_PLUGINUNLOAD,      0},
-  {"list_proto_plugins",  fifo_proto_plugin_list,   HELP_PROTOPLUGINLIST,   0},
-  {"load_proto_plugin",   fifo_proto_plugin_load,   HELP_PROTOPLUGINLOAD,   0},
-  {"unload_proto_plugin", fifo_proto_plugin_unload, HELP_PROTOPLUGINUNLOAD, 0},
-  {"help",                fifo_help,                HELP_HELP,              1},
-  {NULL,                  NULL,                     NULL,                   0}
-};
 
 //-----ProcessFifo--------------------------------------------------------------
 static char getQuotedChar( char c )
@@ -1014,12 +1011,7 @@ void Fifo::process(const string& buf)
     default:
       argv[0] = (char *)fifocmd_table[index].szName;
       if( fifocmd_table[index].fnc )
-      {
-        if(fifocmd_table[index].bHelp)
-          fifocmd_table[index].fnc(argc,argv,(void *)fifocmd_table);
-        else
-          fifocmd_table[index].fnc(argc,argv,this);
-      }
+        fifocmd_table[index].fnc(argc, argv);
       break;
   }
   

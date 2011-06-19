@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -33,6 +33,7 @@
 #include <gloox/rostermanager.h>
 
 #include <licq/contactlist/user.h>
+#include <licq/daemon.h>
 #include <licq/logging/log.h>
 #include <licq/licqversion.h>
 
@@ -41,11 +42,12 @@
 using namespace Jabber;
 
 using Licq::User;
+using Licq::gDaemon;
 using Licq::gLog;
 using std::string;
 
-Client::Client(const Config& config, Handler& handler,
-               const string& username, const string& password) :
+Client::Client(const Config& config, Handler& handler, const string& username,
+    const string& password, const string& host, int port) :
   myHandler(handler),
   mySessionManager(NULL),
   myJid(username + "/" + config.getResource()),
@@ -67,29 +69,28 @@ Client::Client(const Config& config, Handler& handler,
 
   myClient.setTls(config.getTlsPolicy());
 
-  const Config::Proxy& proxy = config.getProxy();
-  if (proxy.myType == Config::Proxy::TYPE_DISABLED)
+  if (!gDaemon.proxyEnabled())
   {
-    if (!config.getServer().empty())
-      myClient.setServer(config.getServer());
-    if (config.getPort() != -1)
-      myClient.setPort(config.getPort());
+    if (!host.empty())
+      myClient.setServer(host);
+    if (port > 0)
+      myClient.setPort(port);
   }
-  else if (proxy.myType == Config::Proxy::TYPE_HTTP)
+  else if (gDaemon.proxyType() == Licq::Daemon::ProxyTypeHttp)
   {
     myTcpClient = new gloox::ConnectionTCPClient(
-      myClient.logInstance(), proxy.myServer, proxy.myPort);
+      myClient.logInstance(), gDaemon.proxyHost(), gDaemon.proxyPort());
 
     std::string server = myClient.server();
-    if (!config.getServer().empty())
-      server = config.getServer();
+    if (!host.empty())
+      server = host;
 
     gloox::ConnectionHTTPProxy* httpProxy =
       new gloox::ConnectionHTTPProxy(
         &myClient, myTcpClient, myClient.logInstance(),
-        server, config.getPort());
+        server, (port > 0 ? port : -1));
 
-    httpProxy->setProxyAuth(proxy.myUsername, proxy.myPassword);
+    httpProxy->setProxyAuth(gDaemon.proxyLogin(), gDaemon.proxyPasswd());
 
     myClient.setConnectionImpl(httpProxy);
   }
@@ -140,6 +141,9 @@ bool Client::isConnected()
 
 void Client::changeStatus(unsigned status, bool notifyHandler)
 {
+  // Must reset status to avoid sending the old status message
+  myClient.presence().resetStatus();
+
   string msg = myHandler.getStatusMessage(status);
   myClient.setPresence(statusToPresence(status), 0, msg);
   if (notifyHandler)
@@ -229,7 +233,8 @@ void Client::onDisconnect(gloox::ConnectionError error)
     case gloox::ConnNoError:
       break;
     case gloox::ConnStreamError:
-      gLog.error("stream error (%d)", myClient.streamError());
+      gLog.error("stream error (%d): %s", myClient.streamError(),
+          myClient.streamErrorText().c_str());
       break;
     case gloox::ConnStreamVersionError:
       gLog.error("incoming stream version not supported");
@@ -338,12 +343,12 @@ void Client::handleRoster(const gloox::Roster& roster)
 void Client::handleRosterPresence(const gloox::RosterItem& item,
                                   const string& /*resource*/,
                                   gloox::Presence::PresenceType presence,
-                                  const string& /*msg*/)
+                                  const string& msg)
 {
   TRACE();
 
   myHandler.onUserStatusChange(gloox::JID(item.jid()).bare(),
-      presenceToStatus(presence));
+      presenceToStatus(presence), msg);
 }
 
 void Client::handleSelfPresence(const gloox::RosterItem& /*item*/,
@@ -490,7 +495,12 @@ bool Client::addRosterItem(const gloox::RosterItem& item)
       || item.subscription() == gloox::S10nFrom)
     return false;
 
-  myHandler.onUserAdded(item.jid(), item.name(), item.groups());
+  // States where we have sent a subscription request that hasn't be answered
+  bool awaitAuth = item.subscription() == gloox::S10nNoneOut
+      || item.subscription() == gloox::S10nNoneOutIn
+      || item.subscription() == gloox::S10nFromOut;
+
+  myHandler.onUserAdded(item.jid(), item.name(), item.groups(), awaitAuth);
   return true;
 }
 

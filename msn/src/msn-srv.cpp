@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         gSocketMan.CloseSocket(m_nServerSocket, false, true);
   
         // Make the new connection
-        MSNLogon(host.c_str(), port, myStatus);
+        Logon(myStatus, host.c_str(), port);
       }
     }
     else if (strCmd == "USR")
@@ -525,12 +525,7 @@ void CMSN::SendPacket(CMSNPacket *p)
   delete p;
 }
 
-void CMSN::MSNLogon(const char *_szServer, int _nPort)
-{
-  MSNLogon(_szServer, _nPort, myOldStatus);
-}
-
-void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned status)
+void CMSN::Logon(unsigned status, string host, int port)
 {
   if (status == User::OfflineStatus)
     return;
@@ -546,14 +541,18 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned status)
     m_szUserName = strdup(o->accountId().c_str());
     myOwnerId = o->id();
     myPassword = o->password();
+    if (host.empty())
+      host = o->serverHost();
+    if (port == 0)
+      port = o->serverPort();
   }
 
   Licq::SrvSocket* sock = new Licq::SrvSocket(myOwnerId);
-  gLog.info("Server found at %s:%d", _szServer, _nPort);
+  gLog.info("Server found at %s:%d", host.c_str(), port);
 
-  if (!sock->connectTo(_szServer, _nPort))
+  if (!sock->connectTo(host, port))
   {
-    gLog.info("Connect failed to %s", _szServer);
+    gLog.info("Connect failed to %s", host.c_str());
     delete sock;
     return;
   }
@@ -606,7 +605,6 @@ void CMSN::MSNLogoff(bool bDisconnected)
     SendPacket(pSend);
   }
 
-  myOldStatus = myStatus;
   myStatus = User::OfflineStatus;
 
   // Don't try to send any more pings
@@ -763,8 +761,9 @@ void *MSNPing_tep(void *p)
       pthread_mutex_lock(&(pMSN->mutex_ServerSocket));
       gLog.info("Ping timeout, reconnecting...");
       pMSN->SetWaitingPingReply(false);
+      unsigned status = pMSN->status();
       pMSN->MSNLogoff();
-      pMSN->MSNLogon(pMSN->serverAddress().c_str(), pMSN->serverPort());
+      pMSN->Logon(status);
       pthread_mutex_unlock(&(pMSN->mutex_ServerSocket));
     }
     else if (pMSN->CanSendPing())

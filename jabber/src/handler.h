@@ -44,9 +44,11 @@ public:
   void onDisconnect(bool authError);
 
   void onUserAdded(const std::string& id, const std::string& name,
-                   const std::list<std::string>& groups);
+                   const std::list<std::string>& groups,
+                   bool awaitingAuthorization);
   void onUserRemoved(const std::string& id);
-  void onUserStatusChange(const std::string& id, unsigned status);
+  void onUserStatusChange(const std::string& id, unsigned status,
+                          const std::string& msg);
   void onUserInfo(const std::string& id, const VCardToUser& wrapper);
   void onRosterReceived(const std::set<std::string>& ids);
   void onUserAuthorizationRequest(const std::string& id,

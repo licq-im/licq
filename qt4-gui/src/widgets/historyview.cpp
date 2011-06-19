@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,10 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/userevents.h>
 
 #include "config/chat.h"
 
-#include "helpers/eventdesc.h"
 #include "helpers/usercodec.h"
 
 using namespace LicqQtGui;
@@ -407,7 +405,7 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
       codec = UserCodec::codecForUser(*u);
       if (event->isReceiver())
       {
-        contactName = QString::fromUtf8(u->GetAlias());
+        contactName = QString::fromUtf8(u->getAlias().c_str());
         if (myPpid == LICQ_PPID)
           for (int x = 0; x < myId.length(); ++x)
             if (!myId.at(x).isDigit())
@@ -423,7 +421,7 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
   {
     Licq::OwnerReadGuard o(myPpid);
     if (o.isLocked())
-      contactName = QString::fromUtf8(o->GetAlias());
+      contactName = QString::fromUtf8(o->getAlias().c_str());
   }
 
   // Fallback, in case we couldn't fetch User.
@@ -431,13 +429,13 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
     codec = QTextCodec::codecForName("UTF-8");
 
   QString messageText;
-  if (event->SubCommand() == ICQ_CMDxSUB_SMS)
+  if (event->eventType() == Licq::UserEvent::TypeSms)
     messageText = QString::fromUtf8(event->text().c_str());
   else
     messageText = codec->toUnicode(event->text().c_str());
 
   addMsg(event->isReceiver(), false,
-         (event->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(event) + " ")),
+      (event->eventType() == Licq::UserEvent::TypeMessage ? "" : (event->description() + " ").c_str()),
          date,
          event->IsDirect(),
          event->IsMultiRec(),
@@ -448,8 +446,8 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
   GotoEnd();
 
   if (event->isReceiver() &&
-      (event->SubCommand() == ICQ_CMDxSUB_MSG ||
-       event->SubCommand() == ICQ_CMDxSUB_URL))
+      (event->eventType() == Licq::UserEvent::TypeMessage ||
+      event->eventType() == Licq::UserEvent::TypeUrl))
     emit messageAdded();
 }
 

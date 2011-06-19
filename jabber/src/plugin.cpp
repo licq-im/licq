@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -253,6 +253,8 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
 
   string username;
   string password;
+  string host;
+  int port;
   {
     Licq::OwnerReadGuard owner(JABBER_PPID);
     if (!owner.isLocked())
@@ -263,10 +265,12 @@ void Plugin::doLogon(Licq::ProtoLogonSignal* signal)
 
     username = owner->accountId();
     password = owner->password();
+    host = owner->serverHost();
+    port = owner->serverPort();
   }
 
   if (myClient == NULL)
-    myClient = new Client(myConfig, *myHandler, username, password);
+    myClient = new Client(myConfig, *myHandler, username, password, host, port);
   else
     myClient->setPassword(password);
 

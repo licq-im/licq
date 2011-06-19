@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,13 +100,13 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
           (pUser->IgnoreList() && myCurrentGroup != IgnoreListGroupId) )
         continue;
 
-      if (nLen == 0 || strncasecmp(_szPartialMatch, pUser->GetAlias(), nLen) == 0)
+      if (nLen == 0 || strncasecmp(_szPartialMatch, pUser->getAlias().c_str(), nLen) == 0)
       {
         if (szMatch == 0)
-          szMatch = strdup(pUser->GetAlias());
+          szMatch = strdup(pUser->getAlias().c_str());
         else
-          szMatch[StrMatchLen(szMatch, pUser->GetAlias(), nLen)] = '\0';
-        _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->GetAlias()));
+          szMatch[StrMatchLen(szMatch, pUser->getAlias().c_str(), nLen)] = '\0';
+        _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->getAlias().c_str()));
       }
       else if (strncasecmp(_szPartialMatch, pUser->accountId().c_str(), nLen) == 0)
       {

@@ -23,8 +23,6 @@
 #include <string>
 #include <sys/socket.h>
 
-// proxy types
-#define PROXY_TYPE_HTTP 1
 
 namespace Licq
 {

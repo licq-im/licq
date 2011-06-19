@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,30 +30,31 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ProtoComboBox */
 
-ProtoComboBox::ProtoComboBox(QWidget* parent)
+ProtoComboBox::ProtoComboBox(unsigned filter, QWidget* parent)
   : QComboBox(parent)
 {
-  fillComboBox();
+  fillComboBox(filter);
 }
 
-ProtoComboBox::ProtoComboBox(bool skipExisting, QWidget* parent)
-  : QComboBox(parent)
+void ProtoComboBox::fillComboBox(unsigned filter)
 {
-  fillComboBox(skipExisting);
-}
-
-void ProtoComboBox::fillComboBox(bool skipExisting)
-{
-  QString id;
-
   Licq::ProtocolPluginsList protocols;
   Licq::gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     unsigned long ppid = protocol->getProtocolId();
     Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
-    if (userId.isValid() && skipExisting)
-      continue;
+    if (userId.isValid())
+    {
+      if (filter == FilterSkipOwners)
+        continue;
+    }
+    else
+    {
+      if (filter == FilterOwnersOnly)
+        continue;
+      userId = Licq::UserId("", ppid);
+    }
 
     addItem(
         IconManager::instance()->iconForStatus(Licq::User::OnlineStatus, userId), // icon

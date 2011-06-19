@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,6 +159,7 @@ protected:
   ContactListModel* myContactList;
   QAbstractProxyModel* myListProxy;
   QPoint myMousePressPos;
+  bool myIsMainView;
 
   /**
    * Overload branches drawing method with an empty one

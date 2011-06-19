@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2003-2010 Licq developers
+ * Copyright (C) 2003-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -362,9 +362,13 @@ bool Emoticons::setTheme(const QString& theme_in)
 
   if (theme.isEmpty() || theme == NO_THEME)
   {
+    if (pimpl->currentTheme == NO_THEME)
+      return true;
+
     pimpl->currentTheme = NO_THEME;
     pimpl->emoticons.clear();
     pimpl->fileSmiley.clear();
+    emit themeChanged();
     return true;
   }
 
@@ -378,16 +382,14 @@ bool Emoticons::setTheme(const QString& theme_in)
   QMap<QChar, QLinkedList<Emoticon> > emoticons;
   QMap<QString, QString> fileSmiley;
 
-  const bool parsed = parseXml(dir, &emoticons, &fileSmiley);
-  if (parsed)
-  {
-    pimpl->currentTheme = theme;
-    pimpl->emoticons = emoticons;
-    pimpl->fileSmiley = fileSmiley;
-    emit themeChanged();
-  }
+  if (!parseXml(dir, &emoticons, &fileSmiley))
+    return false;
 
-  return parsed;
+  pimpl->currentTheme = theme;
+  pimpl->emoticons = emoticons;
+  pimpl->fileSmiley = fileSmiley;
+  emit themeChanged();
+  return true;
 }
 
 QString Emoticons::theme() const

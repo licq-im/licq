@@ -102,7 +102,8 @@ void Handler::onDisconnect(bool authError)
 }
 
 void Handler::onUserAdded(
-    const string& id, const string& name, const std::list<string>& groups)
+    const string& id, const string& name, const std::list<string>& groups,
+    bool awaitingAuthorization)
 {
   TRACE();
 
@@ -135,6 +136,8 @@ void Handler::onUserAdded(
   if (!user->KeepAliasOnUpdate())
     user->setAlias(name);
 
+  user->SetAwaitingAuth(awaitingAuthorization);
+
   // Remove this line when SetGroups call above saves contact groups itself.
   user->SaveLicqInfo();
 
@@ -157,7 +160,8 @@ void Handler::onUserRemoved(const string& id)
   gUserManager.removeUser(UserId(id, JABBER_PPID), false);
 }
 
-void Handler::onUserStatusChange(const string& id, unsigned status)
+void Handler::onUserStatusChange(
+    const string& id, unsigned status, const string& msg)
 {
   TRACE();
 
@@ -165,6 +169,7 @@ void Handler::onUserStatusChange(const string& id, unsigned status)
   if (user.isLocked())
   {
     user->SetSendServer(true);
+    user->setAutoResponse(msg);
     user->statusChanged(status);
 
     if (status == Licq::User::OnlineStatus)

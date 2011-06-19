@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@
 #define LProto_Init LProto_icq_Init
 #define LProto_SendFuncs LProto_icq_SendFuncs
 #define LProto_Main LProto_icq_Main
+#define LProto_DefSrvHost LProto_icq_DefSrvHost
+#define LProto_DefSrvPort LProto_icq_DefSrvPort
 
 #include <licq/protocolbase.h>
 
@@ -68,6 +70,17 @@ unsigned long LProto_icq_SendFuncs()
       ProtocolPlugin::CanSendAuthReq | ProtocolPlugin::CanSendSms |
       ProtocolPlugin::CanSendSecure | ProtocolPlugin::CanSendDirect |
       ProtocolPlugin::CanHoldStatusMsg;
+}
+
+const char* LProto_icq_DefSrvHost()
+{
+  static char defaultHost[] = "login.icq.com";
+  return defaultHost;
+}
+
+int LProto_icq_DefSrvPort()
+{
+  return 5190;
 }
 
 int LProto_icq_Main()

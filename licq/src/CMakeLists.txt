@@ -27,6 +27,7 @@ set(licq_SRCS
   daemon.cpp
   event.cpp
   fifo.cpp
+  filter.cpp
   gpghelper.cpp
   hebrev.c
   licq.cpp
@@ -110,11 +111,15 @@ set(test_SRCS
 
 add_executable(licq ${licq_SRCS})
 
-# Add linker flags for thread support
-set_target_properties(licq PROPERTIES LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
+# Link with thread library
+target_link_libraries(licq ${CMAKE_THREAD_LIBS_INIT})
 
 # Must export symbols from daemon so that plugins can use them
-list(APPEND CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_EXPORTS_CXX_FLAG})
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_EXE_EXPORTS_CXX_FLAG}")
+
+# Print a message to stderr (and to the file <basedir>/licq.debug_rw_mutex) and
+# then abort if a (potential) deadlock is detected.
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DLICQDAEMON_DEBUG_RW_MUTEX=1")
 
 # To find public headers
 include_directories(BEFORE ${PROJECT_SOURCE_DIR}/include)
@@ -138,6 +143,7 @@ target_link_libraries(licq ${ICONV_LIBRARIES})
 target_link_libraries(licq ${OPENSSL_LIBRARIES})
 target_link_libraries(licq ${SOCKET_LIBRARIES})
 target_link_libraries(licq ${SOCKS5_LIBRARIES})
+target_link_libraries(licq ${Boost_LIBRARIES})
 
 install(TARGETS licq RUNTIME DESTINATION bin)
 
@@ -152,9 +158,8 @@ if (BUILD_TESTS)
   target_link_libraries(unittests ${CMAKE_DL_LIBS})
   target_link_libraries(unittests ${SOCKET_LIBRARIES})
 
-  # Add linker flags for thread support
-  set_target_properties(unittests PROPERTIES
-    LINK_FLAGS "${CMAKE_THREAD_LIBS_INIT}")
+  # Link with thread library
+  target_link_libraries(unittests ${CMAKE_THREAD_LIBS_INIT})
 
   add_test(licq unittests)
   add_dependencies(tests unittests)

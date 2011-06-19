@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2002-2009 Licq developers
+ * Copyright (C) 2002-2009,2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 
 #include <QDialog>
 
+#include <licq/userid.h>
+
 class QGroupBox;
 class QLabel;
 class QLineEdit;
@@ -30,20 +32,21 @@ class QPushButton;
 namespace LicqQtGui
 {
 class MLEdit;
+class ProtoComboBox;
 
 class ReqAuthDlg : public QDialog
 {
    Q_OBJECT
 
 public:
-   ReqAuthDlg(const QString& id = QString(), unsigned long ppid = 0, QWidget* parent = 0);
+   ReqAuthDlg(const Licq::UserId& userId = Licq::UserId(), QWidget* parent = 0);
 
 private:
-   unsigned long myPpid;
+   Licq::UserId myUserId;
    QPushButton* btnOk;
    QPushButton* btnCancel;
-   QLabel* lblUin;
-   QLineEdit* edtUin;
+   ProtoComboBox* myProtocolCombo;
+   QLineEdit* myIdEdit;
    QGroupBox* grpRequest;
    MLEdit* mleRequest;
 

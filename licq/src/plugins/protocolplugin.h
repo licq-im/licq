@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,12 +51,16 @@ public:
   // From Licq::ProtocolPlugin
   unsigned long getProtocolId() const;
   unsigned long getSendFunctions() const;
+  const std::string& getDefaultServerHost() const;
+  int getDefaultServerPort() const;
 
 private:
   // From Plugin
   bool initThreadEntry();
 
   unsigned long myProtocolId;
+  std::string myDefaultHost;
+  int myDefaultPort;
 
   std::queue<Licq::ProtocolSignal*> mySignals;
   Licq::Mutex mySignalsMutex;

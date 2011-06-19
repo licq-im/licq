@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -26,20 +26,10 @@
 
 using namespace Jabber;
 
-Config::Proxy::Proxy(const std::string& name) :
-  myName(name),
-  myType(TYPE_DISABLED),
-  myPort(-1)
-{
-  // Empty
-}
-
 Config::Config(const std::string& filename) :
   myFile(NULL),
-  myPort(-1),
   myTlsPolicy(gloox::TLSOptional),
-  myResource("Licq"),
-  myProxy("default")
+  myResource("Licq")
 {
   myFile = new Licq::IniFile(filename);
 
@@ -49,9 +39,6 @@ Config::Config(const std::string& filename) :
 
   std::string value;
   myFile->setSection("network");
-
-  myFile->get("Server", myServer);
-  myFile->get("Port", myPort, -1);
 
   myFile->get("TlsPolicy", value, "optional");
   if (value == "disabled")
@@ -63,31 +50,11 @@ Config::Config(const std::string& filename) :
 
   if (myFile->get("Resource", value) && !value.empty())
     myResource = value;
-
-  myFile->get("Proxy", value);
-  if (!value.empty() && myFile->setSection("proxy." + value, false))
-  {
-    myProxy.myName = value;
-
-    myFile->get("Type", value, "disabled");
-    if (value == "http")
-      myProxy.myType = Proxy::TYPE_HTTP;
-    else
-      myProxy.myType = Proxy::TYPE_DISABLED;
-
-    myFile->get("Server", myProxy.myServer);
-    myFile->get("Port", myProxy.myPort, -1);
-    myFile->get("Username", myProxy.myUsername);
-    myFile->get("Password", myProxy.myPassword);
-  }
 }
 
 Config::~Config()
 {
   myFile->setSection("network");
-
-  myFile->set("Server", myServer);
-  myFile->set("Port", myPort);
 
   if (myTlsPolicy == gloox::TLSDisabled)
     myFile->set("TlsPolicy", "disabled");
@@ -97,19 +64,6 @@ Config::~Config()
     myFile->set("TlsPolicy", "optional");
 
   myFile->set("Resource", myResource);
-
-  myFile->set("Proxy", myProxy.myName);
-  myFile->setSection("proxy." + myProxy.myName);
-
-  if (myProxy.myType == Proxy::TYPE_DISABLED)
-    myFile->set("Type", "disabled");
-  else if (myProxy.myType == Proxy::TYPE_HTTP)
-    myFile->set("Type", "http");
-
-  myFile->set("Server", myProxy.myServer);
-  myFile->set("Port", myProxy.myPort);
-  myFile->set("Username", myProxy.myUsername);
-  myFile->set("Password", myProxy.myPassword);
 
   myFile->writeFile();
   delete myFile;

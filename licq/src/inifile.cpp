@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,8 +76,8 @@ bool IniFile::loadFile()
     if (errno != ENOENT)
     {
       // Failure was not just a missing file, this is probably serious
-      gLog.error(tr("%sIniFile: I/O error, failed to open file.\nFile: %s\nError code: %i\n"),
-          L_ERRORxSTR, filename.c_str(), errno);
+      gLog.error(tr("IniFile: I/O error, failed to open file.\nFile: %s\nError code: %i"),
+          filename.c_str(), errno);
     }
 
     return false;
@@ -86,8 +86,8 @@ bool IniFile::loadFile()
   struct stat st;
   if (fstat(fd, &st) != 0)
   {
-    gLog.error(tr("%sIniFile: I/O error, failed to get file size.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, filename.c_str(), errno);
+    gLog.error(tr("IniFile: I/O error, failed to get file size.\nFile: %s\nError code: %i"),
+        filename.c_str(), errno);
     close(fd);
     return false;
   }
@@ -98,8 +98,8 @@ bool IniFile::loadFile()
 
   if (numRead < 0)
   {
-    gLog.error(tr("%sIniFile: I/O error, failed to read file.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, filename.c_str(), errno);
+    gLog.error(tr("IniFile: I/O error, failed to read file.\nFile: %s\nError code: %i"),
+        filename.c_str(), errno);
     close(fd);
     delete[] buffer;
     return false;
@@ -192,8 +192,8 @@ bool IniFile::writeFile(bool allowCreate)
     if (errno != ENOENT)
     {
       // Failure was not just a missing file, this is probably serious
-      gLog.error(tr("%sIniFile: I/O error, failed to get file size.\nFile: %s\nError code: %i\n"),
-          L_ERRORxSTR, filename.c_str(), errno);
+      gLog.error(tr("IniFile: I/O error, failed to get file size.\nFile: %s\nError code: %i"),
+          filename.c_str(), errno);
       return false;
     }
 
@@ -210,8 +210,8 @@ bool IniFile::writeFile(bool allowCreate)
 
   if (fd < 0)
   {
-    gLog.error(tr("%sIniFile: I/O error, failed to create file.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, tempFile.c_str(), errno);
+    gLog.error(tr("IniFile: I/O error, failed to create file.\nFile: %s\nError code: %i"),
+        tempFile.c_str(), errno);
     return false;
   }
 
@@ -221,8 +221,8 @@ bool IniFile::writeFile(bool allowCreate)
   if (numWritten != static_cast<ssize_t>(myConfigData.size() - 1))
   {
     // Write failed, remove temp file
-    gLog.error(tr("%sIniFile: I/O error, failed to write file.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, tempFile.c_str(), errno);
+    gLog.error(tr("IniFile: I/O error, failed to write file.\nFile: %s\nError code: %i"),
+        tempFile.c_str(), errno);
     close(fd);
     unlink(tempFile.c_str());
     return false;
@@ -232,8 +232,8 @@ bool IniFile::writeFile(bool allowCreate)
   if (close(fd) != 0 || rename(tempFile.c_str(), filename.c_str()) != 0)
   {
     // Close or rename file failed, data might not have made it to disk
-    gLog.error(tr("%sIniFile: I/O error, failed to replace file.\nFile: %s\nError code: %i\n"),
-        L_ERRORxSTR, filename.c_str(), errno);
+    gLog.error(tr("IniFile: I/O error, failed to replace file.\nFile: %s\nError code: %i"),
+        filename.c_str(), errno);
     unlink(tempFile.c_str());
     return false;
   }
@@ -509,8 +509,8 @@ bool IniFile::get(const string& key, boost::any& data) const
     return get(key, boost::any_cast<bool&>(data));
 
   // Unhandled data type
-  gLog.warning(tr("%sInternal Error: IniFile::get, key=%s, data.type=%s\n"),
-      L_WARNxSTR, key.c_str(), data.type().name());
+  gLog.warning(tr("Internal Error: IniFile::get, key=%s, data.type=%s"),
+      key.c_str(), data.type().name());
   return false;
 }
 
@@ -609,7 +609,7 @@ bool IniFile::set(const string& key, const boost::any& data)
   if (data.type() == typeid(bool))
     return set(key, boost::any_cast<bool>(data));
 
-  gLog.warning(tr("%sInternal Error: IniFile::set, key=%s, data.type=%s\n"),
-      L_WARNxSTR, key.c_str(), data.type().name());
+  gLog.warning(tr("Internal Error: IniFile::set, key=%s, data.type=%s"),
+      key.c_str(), data.type().name());
   return false;
 }

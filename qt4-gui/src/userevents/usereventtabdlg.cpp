@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include <licq/contactlist/user.h>
-#include <licq/icqdefines.h>
 #include <licq/userevents.h>
 
 #include <QAction>
@@ -175,7 +174,7 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
     if (!u.isLocked())
       newLabel += tr("[UNKNOWN_USER]");
     else
-      newLabel += QString::fromUtf8(u->GetAlias());
+      newLabel += QString::fromUtf8(u->getAlias().c_str());
   }
 
   myTabs->setTabText(myTabs->indexOf(tab), newLabel);
@@ -201,37 +200,37 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const Licq::User* u)
     return;
 
   int index = myTabs->indexOf(tab);
-  myTabs->setTabText(index, QString::fromUtf8(u->GetAlias()));
+  myTabs->setTabText(index, QString::fromUtf8(u->getAlias().c_str()));
 
   QIcon icon;
 
   if (u->NewMessages() > 0) // use an event icon
   {
-    unsigned short SubCommand = ICQ_CMDxSUB_MSG;
+    unsigned eventType = Licq::UserEvent::TypeMessage;
     for (unsigned short i = 0; i < u->NewMessages(); i++)
-      switch (u->EventPeek(i)->SubCommand())
+      switch (u->EventPeek(i)->eventType())
       {
-	case ICQ_CMDxSUB_FILE:
-	  SubCommand = ICQ_CMDxSUB_FILE;
-	  break;
-	case ICQ_CMDxSUB_CHAT:
-	  if (SubCommand != ICQ_CMDxSUB_FILE)
-	    SubCommand = ICQ_CMDxSUB_CHAT;
-	  break;
-	case ICQ_CMDxSUB_URL:
-	  if (SubCommand != ICQ_CMDxSUB_FILE &&
-	      SubCommand != ICQ_CMDxSUB_CHAT)
-	    SubCommand = ICQ_CMDxSUB_URL;
-	  break;
-	case ICQ_CMDxSUB_CONTACTxLIST:
-	  if (SubCommand != ICQ_CMDxSUB_FILE &&
-	      SubCommand != ICQ_CMDxSUB_CHAT &&
-	      SubCommand != ICQ_CMDxSUB_URL)
-	    SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
-	  break;
+        case Licq::UserEvent::TypeFile:
+          eventType = Licq::UserEvent::TypeFile;
+          break;
+        case Licq::UserEvent::TypeChat:
+          if (eventType != Licq::UserEvent::TypeFile)
+            eventType = Licq::UserEvent::TypeChat;
+          break;
+        case Licq::UserEvent::TypeUrl:
+          if (eventType != Licq::UserEvent::TypeFile &&
+              eventType != Licq::UserEvent::TypeChat)
+            eventType = Licq::UserEvent::TypeUrl;
+          break;
+        case Licq::UserEvent::TypeContactList:
+          if (eventType != Licq::UserEvent::TypeFile &&
+              eventType != Licq::UserEvent::TypeChat &&
+              eventType != Licq::UserEvent::TypeUrl)
+            eventType = Licq::UserEvent::TypeContactList;
+          break;
       }
 
-    icon = IconManager::instance()->iconForEvent(SubCommand);
+    icon = IconManager::instance()->iconForEvent(eventType);
     myTabs->setTabColor(tab, QColor("blue"));
 
     // to clear it..

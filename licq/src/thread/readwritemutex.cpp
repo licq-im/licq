@@ -17,8 +17,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "readwritemutex_debug.h"
-
 #include <licq/thread/condition.h>
 #include <licq/thread/mutex.h>
 #include <licq/thread/mutexlocker.h>

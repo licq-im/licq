@@ -78,6 +78,10 @@ public:
   Proxy* createProxy();
   bool proxyEnabled() const                     { return myProxyEnabled; }
   void setProxyEnabled(bool b)                  { myProxyEnabled = b; }
+  enum ProxyTypes
+  {
+    ProxyTypeHttp = 1,
+  };
   unsigned proxyType() const                    { return myProxyType; }
   void setProxyType(unsigned t)                 { myProxyType = t; }
   const std::string& proxyHost() const          { return myProxyHost; }

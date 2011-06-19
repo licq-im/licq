@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2; -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,6 @@ extern "C"
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
-#include <licq/icqdefines.h>
 #include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -648,7 +647,7 @@ bool LicqGui::removeUserFromList(const Licq::UserId& userId, QWidget* parent)
       return true;
     notInList = u->NotInList();
     warning = tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-        .arg(QString::fromUtf8(u->GetAlias()))
+        .arg(QString::fromUtf8(u->getAlias().c_str()))
         .arg(u->accountId().c_str());
   }
 
@@ -1107,8 +1106,8 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
       // if one of the new events is a msg in chatview mode,
       // change def function to send
       for (unsigned short i = 0; i < u->NewMessages(); i++)
-        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG ||
-            u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
+        if (u->EventPeek(i)->eventType() == Licq::UserEvent::TypeMessage ||
+            u->EventPeek(i)->eventType() == Licq::UserEvent::TypeUrl)
         {
           convoId = u->EventPeek(i)->ConvoId();
           send = true;
@@ -1243,8 +1242,8 @@ void LicqGui::showNextEvent(const Licq::UserId& uid)
 
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
-        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG ||
-            u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
+        if (u->EventPeek(i)->eventType() == Licq::UserEvent::TypeMessage ||
+            u->EventPeek(i)->eventType() == Licq::UserEvent::TypeUrl)
         {
           int convoId = u->EventPeek(i)->ConvoId();
           u.unlock();
@@ -1429,10 +1428,10 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
                 if (event->IsUrgent())
                   urgent = true;
 
-                switch (event->SubCommand())
+                switch (event->eventType())
                 {
-                  case ICQ_CMDxSUB_MSG:
-                  case ICQ_CMDxSUB_URL:
+                  case Licq::UserEvent::TypeMessage:
+                  case Licq::UserEvent::TypeUrl:
                     bCallSendMsg = true;
                     break;
                   default:

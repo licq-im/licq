@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,7 @@
 #include <QScrollBar>
 #include <QTextCodec>
 
-#include <licq/icqdefines.h>
 #include <licq/userevents.h>
-
-#include "helpers/eventdesc.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MessageList */
@@ -101,28 +98,28 @@ MessageListItem::~MessageListItem(void)
 
 void MessageListItem::SetEventLine()
 {
-  QString s = EventDescription(myMsg);
+  QString s = myMsg->description().c_str();
   QString text;
 
-  switch(myMsg->SubCommand())
+  switch (myMsg->eventType())
   {
-    case ICQ_CMDxSUB_MSG:
+    case Licq::UserEvent::TypeMessage:
       text = myCodec->toUnicode(myMsg->text().c_str());
       break;
 
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeUrl:
       text = myCodec->toUnicode(dynamic_cast<Licq::EventUrl*>(myMsg)->url().c_str());
       break;
 
-    case ICQ_CMDxSUB_CHAT:
+    case Licq::UserEvent::TypeChat:
       text = myCodec->toUnicode(dynamic_cast<Licq::EventChat*>(myMsg)->reason().c_str());
       break;
 
-    case ICQ_CMDxSUB_FILE:
+    case Licq::UserEvent::TypeFile:
       text = myCodec->toUnicode(dynamic_cast<Licq::EventFile*>(myMsg)->filename().c_str());
       break;
 
-    case ICQ_CMDxSUB_EMAILxALERT:
+    case Licq::UserEvent::TypeEmailAlert:
       text = myCodec->toUnicode(dynamic_cast<Licq::EventEmailAlert*>(myMsg)->from().c_str());
       break;
 

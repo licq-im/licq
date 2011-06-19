@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,6 @@
 
 #include "dialogs/keyrequestdlg.h"
 
-#include "helpers/eventdesc.h"
 #include "helpers/usercodec.h"
 
 #include "views/mmuserview.h"
@@ -246,12 +245,12 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
 
         bool bUseHTML = !isdigit(u->accountId()[1]);
         const QTextCodec* myCodec = UserCodec::codecForUser(*u);
-        QString contactName = QString::fromUtf8(u->GetAlias());
+        QString contactName = QString::fromUtf8(u->getAlias().c_str());
         QString ownerName;
         {
           Licq::OwnerReadGuard o(u->protocolId());
           if (o.isLocked())
-            ownerName = QString::fromUtf8(o->GetAlias());
+            ownerName = QString::fromUtf8(o->getAlias().c_str());
           else
             ownerName = QString(tr("Error! no owner set"));
         }
@@ -275,7 +274,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           QString str;
           date.setTime_t((*lHistoryIter)->Time());
           QString messageText;
-          if ((*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+          if ((*lHistoryIter)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
             messageText = QString::fromUtf8((*lHistoryIter)->text().c_str());
           else
             messageText = myCodec->toUnicode((*lHistoryIter)->text().c_str());
@@ -283,7 +282,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
           myHistoryView->addMsg(
               (*lHistoryIter)->isReceiver(),
               true,
-              (*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : EventDescription(*lHistoryIter) + " ",
+              (*lHistoryIter)->eventType() == Licq::UserEvent::TypeMessage ? "" : ((*lHistoryIter)->description() + " ").c_str(),
               date,
               (*lHistoryIter)->IsDirect(),
               (*lHistoryIter)->IsMultiRec(),
@@ -433,9 +432,12 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   }
   updateShortcuts();
 
+  updateEmoticons();
+  connect(Emoticons::self(), SIGNAL(themeChanged()), SLOT(updateEmoticons()));
+
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  connect(mySendServerCheck, SIGNAL(toggled(bool)), SLOT(sendServerToggled(bool)));
+  connect(mySendServerCheck, SIGNAL(triggered(bool)), SLOT(sendServerToggled(bool)));
 
   QSize dialogSize = Config::Chat::instance()->sendDialogSize();
   if (dialogSize.isValid())
@@ -508,6 +510,12 @@ void UserSendCommon::updateIcons()
   // Update message type icons in menu
   foreach (QAction* a, myEventTypeGroup->actions())
     a->setIcon(iconForType(a->data().toInt()));
+}
+
+void UserSendCommon::updateEmoticons()
+{
+  // Don't show tool button for emoticons if there are no emoticons to select
+  myEmoticon->setVisible(Emoticons::self()->emoticonsKeys().size() > 0);
 }
 
 void UserSendCommon::updateShortcuts()
@@ -613,7 +621,7 @@ void UserSendCommon::convoJoin(const Licq::UserId& userId)
     Licq::UserReadGuard u(userId);
     QString userName;
     if (u.isLocked())
-      userName = QString::fromUtf8(u->GetAlias());
+      userName = QString::fromUtf8(u->getAlias().c_str());
     else
       userName = "";
 
@@ -640,7 +648,7 @@ void UserSendCommon::convoLeave(const Licq::UserId& userId)
     Licq::UserWriteGuard u(userId);
     QString userName;
     if (u.isLocked())
-      userName = QString::fromUtf8(u->GetAlias());
+      userName = QString::fromUtf8(u->getAlias().c_str());
     else
       userName = "";
 
@@ -778,9 +786,9 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
   mySendServerCheck->setChecked(!online);
   myUrgentCheck->setChecked(level == ICQ_TCPxMSG_URGENT);
 
-  switch (e->userEvent()->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
+  switch (e->userEvent()->eventType())
   {
-    case ICQ_CMDxSUB_MSG:
+    case Licq::UserEvent::TypeMessage:
     {
       bool userOffline = true;
       {
@@ -849,7 +857,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeUrl:
     {
       const Licq::EventUrl* ue = dynamic_cast<const Licq::EventUrl*>(e->userEvent());
 
@@ -859,7 +867,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_CONTACTxLIST:
+    case Licq::UserEvent::TypeContactList:
     {
       const Licq::EventContactList* ue = dynamic_cast<const Licq::EventContactList*>(e->userEvent());
       const Licq::EventContactList::ContactList& clist = ue->Contacts();
@@ -878,7 +886,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_CHAT:
+    case Licq::UserEvent::TypeChat:
     {
       const Licq::EventChat* ue = dynamic_cast<const Licq::EventChat*>(e->userEvent());
 
@@ -894,7 +902,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_FILE:
+    case Licq::UserEvent::TypeFile:
     {
       const Licq::EventFile* ue = dynamic_cast<const Licq::EventFile*>(e->userEvent());
       list<string> filelist(ue->FileList());
@@ -906,7 +914,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       break;
     }
 
-    case ICQ_CMDxSUB_SMS:
+    case Licq::UserEvent::TypeSms:
     {
       const Licq::EventSms* ue = dynamic_cast<const Licq::EventSms*>(e->userEvent());
 
@@ -1178,7 +1186,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
       Licq::UserWriteGuard u(myUsers.front());
 
       msg = tr("%1 is in %2 mode:\n%3\nSend...")
-          .arg(QString::fromUtf8(u->GetAlias()))
+          .arg(QString::fromUtf8(u->getAlias().c_str()))
           .arg(u->statusString().c_str())
           .arg(myCodec->toUnicode(u->autoResponse().c_str()));
 
@@ -1270,8 +1278,8 @@ void UserSendCommon::clearNewEvents()
         {
           const Licq::UserEvent* e = u->EventPeek(i);
           if (e->Id() <= myHighestEventId && e->isReceiver() &&
-              (e->SubCommand() == ICQ_CMDxSUB_MSG ||
-               e->SubCommand() == ICQ_CMDxSUB_URL))
+              (e->eventType() == Licq::UserEvent::TypeMessage ||
+              e->eventType() == Licq::UserEvent::TypeUrl))
             idList.push_back(e->Id());
         }
 

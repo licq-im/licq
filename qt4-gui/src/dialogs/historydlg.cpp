@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
 #include <licq/userevents.h>
 
@@ -46,7 +45,6 @@
 #include "core/licqgui.h"
 #include "core/signalmanager.h"
 #include "core/usermenu.h"
-#include "helpers/eventdesc.h"
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
 #include "widgets/calendar.h"
@@ -176,7 +174,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
       name = myContactCodec->toUnicode(u->getFullName().c_str());
       if (!name.isEmpty())
         name = " (" + name + ")";
-      name.prepend(QString::fromUtf8(u->GetAlias()));
+      name.prepend(QString::fromUtf8(u->getAlias().c_str()));
     }
     setWindowTitle(tr("Licq - History ") + name);
 
@@ -221,7 +219,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
     myUseHtml = false;
 
     if (!myIsOwner)
-      myContactName = QString::fromUtf8(u->GetAlias());
+      myContactName = QString::fromUtf8(u->getAlias().c_str());
     QString myId = u->accountId().c_str();
     for (int x = 0; x < myId.length(); x++)
     {
@@ -236,7 +234,7 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   {
     Licq::OwnerReadGuard o(myUserId.protocolId());
     if (o.isLocked())
-      myOwnerName = QString::fromUtf8(o->GetAlias());
+      myOwnerName = QString::fromUtf8(o->getAlias().c_str());
   }
 
   // Mark all dates with activity so they are easier to find
@@ -335,7 +333,7 @@ void HistoryDlg::showHistory()
       continue;
 
     QString messageText;
-    if ((*item)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+    if ((*item)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
       messageText = QString::fromUtf8((*item)->text().c_str());
     else
       messageText = myContactCodec->toUnicode((*item)->text().c_str());
@@ -354,7 +352,7 @@ void HistoryDlg::showHistory()
 
     // Add entry to history view
     myHistoryView->addMsg((*item)->isReceiver(), false,
-        ((*item)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : (EventDescription(*item) + " ")),
+        ((*item)->eventType() == Licq::UserEvent::TypeMessage ? "" : ((*item)->description() + " ").c_str()),
         date,
         (*item)->IsDirect(),
         (*item)->IsMultiRec(),
@@ -408,7 +406,7 @@ void HistoryDlg::find(bool backwards)
     for (i = myHistoryList.begin(); i != myHistoryList.end(); ++i)
     {
       QString messageText;
-      if ((*i)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+      if ((*i)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
         messageText = QString::fromUtf8((*i)->text().c_str());
       else
         messageText = myContactCodec->toUnicode((*i)->text().c_str());
@@ -461,7 +459,7 @@ void HistoryDlg::find(bool backwards)
     if (mySearchPos != myHistoryList.end())
     {
       QString messageText;
-      if ((*mySearchPos)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+      if ((*mySearchPos)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
         messageText = QString::fromUtf8((*mySearchPos)->text().c_str());
       else
         messageText = myContactCodec->toUnicode((*mySearchPos)->text().c_str());

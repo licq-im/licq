@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,7 +154,7 @@ void CLicqConsole::PrintPrompt()
 void CLicqConsole::PrintStatus()
 {
   static char szMsgStr[16];
-  static char *szLastUser;
+  string lastUser;
 
   werase(winStatus->Win());
 
@@ -178,12 +178,12 @@ void CLicqConsole::PrintStatus()
   {
     Licq::UserReadGuard u(winMain->sLastContact);
     if (!u.isLocked())
-      szLastUser = strdup("<Removed>");
+      lastUser = "<Removed>";
     else
-      szLastUser = strdup(u->GetAlias());
+      lastUser = u->getAlias();
   }
   else
-    szLastUser = strdup("<None>");
+    lastUser = "<None>";
 
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_WHITE));
   mvwhline(winStatus->Win(), 0, 0, ACS_HLINE, COLS);
@@ -195,17 +195,16 @@ void CLicqConsole::PrintStatus()
     Licq::OwnerReadGuard o(LICQ_PPID);
     if (o.isLocked())
       winStatus->wprintf("%C%A[ %C%s %C(%C%s%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", 29,
-                       A_BOLD, 5,  o->GetAlias(), 29,
+          A_BOLD, 5,  o->getAlias().c_str(), 29,
         5, o->accountId().c_str(), 29,
         53, o->statusString().c_str(), 29,
                        53, CurrentGroupName(), 29,
                        53, szMsgStr, 29, 53,
-                       szLastUser, 29);
+          lastUser.c_str(), 29);
   }
 
   wclrtoeol(winStatus->Win());
   winStatus->RefreshWin();
-  free(szLastUser);
 }
 
 
@@ -608,7 +607,7 @@ void CLicqConsole::PrintInfo_General(const Licq::UserId& userId)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%s%A) General Info - %Z%s\n", u->GetAlias(), A_BOLD,
+  winMain->wprintf("%s %A(%Z%s%A) General Info - %Z%s\n", u->getAlias().c_str(), A_BOLD,
       A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%C%AName: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getFullName().c_str());
@@ -674,7 +673,7 @@ void CLicqConsole::PrintInfo_More(const Licq::UserId& userId)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%s%A) More Info - %Z%s\n", u->GetAlias(), A_BOLD,
+  winMain->wprintf("%s %A(%Z%s%A) More Info - %Z%s\n", u->getAlias().c_str(), A_BOLD,
       A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   unsigned int age = u->getUserInfoUint("Age");
@@ -724,7 +723,7 @@ void CLicqConsole::PrintInfo_Work(const Licq::UserId& userId)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%s%A) Work Info - %Z%s\n", u->GetAlias(), A_BOLD,
+  winMain->wprintf("%s %A(%Z%s%A) Work Info - %Z%s\n", u->getAlias().c_str(), A_BOLD,
       A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%C%ACompany Name: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getUserInfoString("CompanyName").c_str());
@@ -774,7 +773,7 @@ void CLicqConsole::PrintInfo_About(const Licq::UserId& userId)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%s%A) About Info - %Z%s\n", u->GetAlias(), A_BOLD,
+  winMain->wprintf("%s %A(%Z%s%A) About Info - %Z%s\n", u->getAlias().c_str(), A_BOLD,
       A_BOLD, u->accountId().c_str(), A_BOLD, A_BOLD, u->statusString().c_str());
 
   winMain->wprintf("%s\n", u->getUserInfoString("About").c_str());
@@ -793,17 +792,17 @@ void CLicqConsole::PrintInfo_About(const Licq::UserId& userId)
 void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
 {
   // Get the user's name
-  char szTitle[30];
+  string title;
   {
     Licq::UserReadGuard u(ftman->userId());
 
     // Make the title
-    strcpy(szTitle, (ftman->isReceiver() ? "File from " : "File to "));
-    strcat(szTitle, u->GetAlias());
+    title = (ftman->isReceiver() ? "File from " : "File to ");
+    title += u->getAlias();
   }
 
   // Current file name and Current File # slash Total Batch Files
-  PrintBoxTop(szTitle, COLOR_WHITE, 48);
+  PrintBoxTop(title.c_str(), COLOR_WHITE, 48);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("%ACurrent File: %Z", A_BOLD, A_BOLD);
   winMain->wprintf(ftman->fileName().c_str());

@@ -8,7 +8,7 @@ endif (NOT CMAKE_USE_PTHREADS_INIT)
 add_definitions(-D_REENTRANT)
 
 # Boost is required for all plugins as it is used in Licq includes
-find_package(Boost 1.36.0 REQUIRED)
+find_package(Boost 1.36.0 COMPONENTS regex REQUIRED)
 link_directories(${Boost_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIR})
 

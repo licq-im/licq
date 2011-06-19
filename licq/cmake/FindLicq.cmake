@@ -78,17 +78,18 @@ set(_licq_plugin_symbols
   LP_BuildDate LP_BuildTime LP_Usage
   LP_Init LP_Main LP_ConfigFile
   LProto_Name LProto_Version LProto_PPID
+  LProto_DefSrvHost LProto_DefSrvPort
   LProto_Init LProto_Main LProto_SendFuncs)
 
 macro (LICQ_ADD_PLUGIN _licq_plugin_name)
   add_library(${_licq_plugin_name} MODULE ${ARGN})
   set_target_properties(${_licq_plugin_name} PROPERTIES PREFIX "")
 
-  # Add linker flags for thread support
-  set(_link_flags "${CMAKE_THREAD_LIBS_INIT}")
+  # Link with thread library
+  target_link_libraries(${_licq_plugin_name} ${CMAKE_THREAD_LIBS_INIT})
 
   if (APPLE)
-    set(_link_flags "${_link_flags} -flat_namespace -undefined suppress")
+    set(_link_flags "-flat_namespace -undefined suppress")
 
     # Write the list of symbols that should be exported from the plugin to a
     # file and tell the linker about it. One symbol per line with a '_' prefix.
@@ -109,8 +110,7 @@ macro (LICQ_ADD_PLUGIN _licq_plugin_name)
     check_cxx_accepts_flag("-Wl,--version-script,${_version_script}"
       LD_ACCEPTS_VERSION_SCRIPT)
     if (LD_ACCEPTS_VERSION_SCRIPT)
-      set(_link_flags
-	"${_link_flags} -Wl,--version-script,'${_version_script}'")
+      set(_link_flags "-Wl,--version-script,'${_version_script}'")
     endif (LD_ACCEPTS_VERSION_SCRIPT)
   endif (APPLE)
 
@@ -135,22 +135,21 @@ macro (LICQ_CREATE_PLUGIN_VERSION_FILE dir)
   _licq_plugin_version_helper(RELEASE)
   _licq_plugin_version_helper(EXTRA \" \")
 
-  # When building from a svn working copy, set the extra version to the current
-  # revision, replacing any existing value.
-  find_package(Subversion QUIET)
-  if (Subversion_FOUND)
-    # The subversion_wc_info macro prints an error if the dir isn't a working
-    # copy. To avoid this, check if it is one before executing the macro.
-    execute_process(
-      COMMAND ${Subversion_SVN_EXECUTABLE} info ${PROJECT_SOURCE_DIR}
-      RESULT_VARIABLE _licq_plugin_svn_result
-      OUTPUT_QUIET ERROR_QUIET)
-
-    if (${_licq_plugin_svn_result} EQUAL 0)
-      subversion_wc_info(${PROJECT_SOURCE_DIR} Plugin)
-      set(_PLUGIN_VERSION_EXTRA "\"-r${Plugin_WC_LAST_CHANGED_REV}\"")
-    endif (${_licq_plugin_svn_result} EQUAL 0)
-  endif (Subversion_FOUND)
+  # When building from a git clone, set the extra version to the HEAD revision,
+  # replacing any existing value.
+  find_program(licq_git git)
+  if (licq_git)
+    execute_process(COMMAND ${licq_git} rev-parse HEAD
+      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+      RESULT_VARIABLE licq_git_result
+      OUTPUT_VARIABLE licq_git_output
+      ERROR_QUIET
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (${licq_git_result} EQUAL 0)
+      string(SUBSTRING ${licq_git_output} 0 7 licq_git_short)
+      set(_PLUGIN_VERSION_EXTRA "\"-${licq_git_short}\"")
+    endif (${licq_git_result} EQUAL 0)
+  endif (licq_git)
 
   # pluginversion.h content
   set(_plugin_version_file "${dir}/pluginversion.h")

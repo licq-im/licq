@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ STR_FUNC(Name);
 STR_FUNC(Version);
 STR_FUNC(ConfigFile);
 STR_FUNC(PPID);
+STR_FUNC(DefSrvHost);
 
 bool LProto_Init()
 {
@@ -40,6 +41,11 @@ bool LProto_Init()
 unsigned long LProto_SendFuncs()
 {
   return 42;
+}
+
+int LProto_DefSrvPort()
+{
+  return 12345;
 }
 
 int LProto_Main()
@@ -93,6 +99,8 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
   EXPECT_EQ(ppid, plugin.getProtocolId());
   EXPECT_TRUE(plugin.init());
   EXPECT_EQ(42u, plugin.getSendFunctions());
+  EXPECT_STREQ("DefSrvHost", plugin.getDefaultServerHost().c_str());
+  EXPECT_EQ(12345, plugin.getDefaultServerPort());
 }
 
 TEST_F(ProtocolPluginFixture, init)

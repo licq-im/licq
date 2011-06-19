@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2010 Licq developers
+ * Copyright (C) 2005-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,10 +65,10 @@ GPGKeySelect::GPGKeySelect(const Licq::UserId& userId, QWidget* parent)
       return;
 
     setWindowTitle(tr("Select GPG Key for user %1")
-        .arg(QString::fromUtf8(u->GetAlias())));
+        .arg(QString::fromUtf8(u->getAlias().c_str())));
 
     top_lay->addWidget(new QLabel(tr("Select a GPG key for user %1.")
-          .arg(QString::fromUtf8(u->GetAlias()))));
+        .arg(QString::fromUtf8(u->getAlias().c_str()))));
     if (u->gpgKey().empty())
       top_lay->addWidget(new QLabel(tr("Current key: No key selected")));
     else
@@ -227,7 +227,7 @@ void KeyView::testViewItem(QTreeWidgetItem* item, const Licq::User* u)
       val++;
     if (item->text(i).contains(u->getLastName().c_str(), Qt::CaseInsensitive))
       val++;
-    if (item->text(i).contains(u->GetAlias(), Qt::CaseInsensitive))
+    if (item->text(i).contains(u->getAlias().c_str(), Qt::CaseInsensitive))
       val++;
     if (item->text(i).contains(u->getEmail().c_str(), Qt::CaseInsensitive))
       val++;

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -23,6 +23,8 @@
 #include <stdlib.h>
 
 #include <licq/logging/log.h>
+
+#include "gettext.h"
 
 using namespace std;
 using Licq::Translator;
@@ -102,8 +104,8 @@ bool Translator::setTranslationMap(const string& mapFileName)
           inputs+0, inputs+1, inputs+2, inputs+3,
           inputs+4, inputs+5, inputs+6, inputs+7) < 8)
     {
-      gLog.error("%sSyntax error in translation file '%s'.\n",
-          L_ERRORxSTR, mapFileName.c_str());
+      gLog.error(tr("Syntax error in translation file '%s'."),
+          mapFileName.c_str());
       setDefaultTranslationMap();
       fclose(mapFile);
       return false;
@@ -125,8 +127,7 @@ bool Translator::setTranslationMap(const string& mapFileName)
   }
   else
   {
-    gLog.error("%sTranslation file '%s' corrupted.\n",
-        L_ERRORxSTR, mapFileName.c_str());
+    gLog.error(tr("Translation file '%s' corrupted."), mapFileName.c_str());
     setDefaultTranslationMap();
     return false;
   }

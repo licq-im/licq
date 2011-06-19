@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 #include <QDialog>
 
+class QMenu;
 class QPushButton;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -50,11 +51,9 @@ public:
 
 private slots:
   /**
-   * List was clicked
-   *
-   * @param item Current list item
+   * Selection has changed
    */
-  void listClicked(QTreeWidgetItem* item);
+  void listSelectionChanged();
 
   /**
    * Add an existing account
@@ -97,6 +96,9 @@ private slots:
    */
   void updateOwners();
 
+  /// Refresh protocol list
+  void updateProtocols();
+
 private:
   static OwnerManagerDlg* myInstance;
 
@@ -116,7 +118,8 @@ private:
   RegisterUserDlg* registerUserDlg;
 
   QTreeWidget* ownerView;
-  QPushButton* addButton;
+  QMenu* myAddMenu;
+  QPushButton* myAddButton;
   QPushButton* registerButton;
   QPushButton* modifyButton;
   QPushButton* removeButton;

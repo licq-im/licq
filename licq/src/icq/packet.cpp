@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -788,7 +788,7 @@ CPU_NewLogon::CPU_NewLogon(const string& password, const string& accountId, cons
   string pass(password);
   if (pass.size() > 8)
   {
-    gLog.warning(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
+    gLog.warning(tr("Password too long, truncated to 8 Characters!"));
     pass.erase(8);
   }
 
@@ -836,7 +836,7 @@ CPU_Logon::CPU_Logon(const string& password, const string& accountId, unsigned s
   string pass(password);
   if (pass.size() > 8)
   {
-    gLog.warning(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
+    gLog.warning(tr("Password too long, truncated to 8 Characters!"));
     pass.erase(8);
   }
 
@@ -1484,8 +1484,8 @@ CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
 
   default:
       nTypeLen = msgLen = 0;
-  	gLog.warning("%sCommand not implemented yet (%04X).\n", L_BLANKxSTR, msgType);
-		return;
+      gLog.warning(tr("Command not implemented yet (%04X)."), msgType);
+      return;
   }
 
   m_nSize += 11 + nTypeLen + accountId.size() + 4; // 11 all bytes pre-tlv
@@ -1857,16 +1857,16 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
     fd = open(filename.c_str(), O_RDONLY);
     if (fd == -1)
     {
-      gLog.error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-          filename.c_str(), L_BLANKxSTR, strerror(errno));
+      gLog.error(tr("Unable to open picture file (%s): %s."),
+          filename.c_str(), strerror(errno));
     }
     else
     {
       struct stat fi;
       if (fstat(fd, &fi) == -1)
       {
-        gLog.error("%sUnable to stat picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("Unable to stat picture file (%s): %s."),
+            filename.c_str(), strerror(errno));
       }
       else
       {
@@ -1906,14 +1906,14 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
       ssize_t nBytesRead = read(fd, buf, nToRead);
       if (nBytesRead == -1)
       {
-        gLog.error("%sFailed to read file (%s):\n%s%s.\n", L_ERRORxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("Failed to read file (%s): %s."),
+            filename.c_str(), strerror(errno));
         break;
       }
       if (nBytesRead == 0)
       {
-        gLog.error("%sPremature end of file (%s):\n%s%s.\n", L_ERRORxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("Premature end of file (%s): %s."),
+            filename.c_str(), strerror(errno));
         break;
       }
 
@@ -2581,12 +2581,9 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       nSize += pUser->accountId().size();
       nSize += 10;
 
-      char *szUnicode = strdup(pUser->GetAlias());
-      int nAliasLen = strlen(szUnicode);
+      string::size_type nAliasLen = pUser->getAlias().size();
       if (nAliasLen && _nType == ICQ_ROSTxNORMAL)
           nSize += 4 + nAliasLen;
-      if (szUnicode)
-        free(szUnicode);
     }
   }
 
@@ -2596,8 +2593,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
   for (i = users.begin(); i != users.end(); i++)
   {
     int nLen;
-    int nAliasSize = 0;
-    char *szUnicodeName = 0;
+    string unicodeName;
 
     m_nSID = gUserManager.GenerateSID();
 
@@ -2605,14 +2601,14 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     Licq::UserWriteGuard u(*i);
     if (!u.isLocked())
     {
-      gLog.warning("%sTrying to export invalid user %s to server\n", L_ERRORxSTR,
+      gLog.warning(tr("Trying to export invalid user %s to server"),
           i->toString().c_str());
       continue;
     }
 
     if (u->ppid() != LICQ_PPID)
     {
-      gLog.warning("%sTrying to export non ICQ user %s to ICQ server\n", L_ERRORxSTR,
+      gLog.warning(tr("Trying to export non ICQ user %s to ICQ server."),
           i->toString().c_str());
       continue;
     }
@@ -2660,8 +2656,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       }
 
       u->SetGSID(m_nGSID);
-      szUnicodeName = strdup(u->GetAlias());
-      nAliasSize = strlen(szUnicodeName);
+      unicodeName = u->getAlias();
     }
 
     string accountId = u->accountId();
@@ -2675,18 +2670,15 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     buffer->PackUnsignedShortBE(m_nSID);
     buffer->PackUnsignedShortBE(_nType);
 
-    if (nAliasSize)
+    if (!unicodeName.empty())
     {
-      buffer->PackUnsignedShortBE(nAliasSize+4);
+      buffer->PackUnsignedShortBE(unicodeName.size() + 4);
       buffer->PackUnsignedShortBE(0x0131);
-      buffer->PackUnsignedShortBE(nAliasSize);
-      buffer->Pack(szUnicodeName, nAliasSize);
+      buffer->PackUnsignedShortBE(unicodeName.size());
+      buffer->pack(unicodeName);
     }
     else
       buffer->PackUnsignedShortBE(0);
-
-    if (szUnicodeName)
-      free(szUnicodeName);
   }
 }
 
@@ -3634,7 +3626,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
   //ile (*sz != '\0' && strncasecmp(sz, "icq", 3) != 0) sz++;
   // (*sz != '\0')
   //
-  //gLog.warning("%sAlias may not contain \"icq\".\n", L_WARNxSTR);
+  //gLog.warning(tr("Alias may not contain \"icq\"."));
   //*sz = '-';
   //
 }
@@ -4216,9 +4208,9 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(unsigned char nChanne
     nOurId = 0x000003EA;
     GUID = PLUGIN_STATUSxMANAGER;
     break;
-  default:
-    gLog.warning("%sChannel %u is not implemented\n", L_WARNxSTR, nChannel);
-    return;
+    default:
+      gLog.warning(tr("Channel %u is not implemented"), nChannel);
+      return;
   }
 
   m_nChannel = nChannel;
@@ -4258,7 +4250,7 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(CBuffer *inbuf)
     m_nChannel = ICQ_CHNxSTATUS;
   else
   {
-    gLog.warning("%sUnknown channel GUID.\n", L_WARNxSTR);
+    gLog.warning(tr("Unknown channel GUID."));
     m_nChannel = ICQ_CHNxUNKNOWN;
   }
 }
@@ -4775,7 +4767,7 @@ string pipeInput(const string& message)
     Licq::UtilityInternalWindow win;
     if (!win.POpen(cmd))
     {
-      gLog.warning(tr("%sCould not execute \"%s\" for auto-response.\n"), L_WARNxSTR, cmd.c_str());
+      gLog.warning(tr("Could not execute \"%s\" for auto-response."), cmd.c_str());
     }
     else
     {
@@ -4790,7 +4782,7 @@ string pipeInput(const string& message)
       int i;
       if ((i = win.PClose()) != 0)
       {
-        gLog.warning(tr("%s%s returned abnormally: exit code %d\n"), L_WARNxSTR, cmd.c_str(), i);
+        gLog.warning(tr("%s returned abnormally: exit code %d."), cmd.c_str(), i);
         // do anything to cmdOutput ???
       }
     }
@@ -5218,16 +5210,16 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
     fd = open(filename.c_str(), O_RDONLY);
     if (fd == -1)
     {
-      gLog.error("%sUnable to open picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-          filename.c_str(), L_BLANKxSTR, strerror(errno));
+      gLog.error(tr("Unable to open picture file (%s): %s."),
+          filename.c_str(), strerror(errno));
     }
     else
     {
       struct stat fi;
       if (fstat(fd, &fi) == -1)
       {
-        gLog.error("%sUnable to stat picture file (%s):\n%s%s.\n", L_ERRORxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("Unable to stat picture file (%s):%s."),
+            filename.c_str(), strerror(errno));
       }
       else
       {
@@ -5268,14 +5260,14 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
       ssize_t nBytesRead = read(fd, buf, nToRead);
       if (nBytesRead == -1)
       {
-        gLog.error("%sFailed to read file (%s):\n%s%s.\n", L_ERRORxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("Failed to read file (%s): %s."),
+            filename.c_str(), strerror(errno));
         break;
       }
       if (nBytesRead == 0)
       {
-        gLog.error("%sPremature end of file (%s):\n%s%s.\n", L_ERRORxSTR,
-            filename.c_str(), L_BLANKxSTR, strerror(errno));
+        gLog.error(tr("Premature end of file (%s): %s."),
+            filename.c_str(), strerror(errno));
         break;
       }
 

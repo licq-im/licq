@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2009 Licq developers
+ * Copyright (C) 2004-2009,2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,17 +24,17 @@
 
 class QCheckBox;
 class QLineEdit;
+class QSpinBox;
 
 namespace LicqQtGui
 {
-class ProtoComboBox;
 
 class OwnerEditDlg : public QDialog
 {
   Q_OBJECT
 
 public:
-  OwnerEditDlg(unsigned long ppid = 0, QWidget* parent = NULL);
+  OwnerEditDlg(unsigned long ppid, QWidget* parent = NULL);
 
 private slots:
   void slot_ok();
@@ -42,9 +42,11 @@ private slots:
 private:
   QLineEdit* edtId;
   QLineEdit* edtPassword;
-  ProtoComboBox* cmbProtocol;
   QCheckBox* chkSave;
+  QLineEdit* myHostEdit;
+  QSpinBox* myPortSpin;
   unsigned long myPpid;
+  bool myNewOwner;
 };
 
 } // namespace LicqQtGui

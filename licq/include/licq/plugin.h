@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,6 +121,12 @@ public:
 
   /// Get the protocol's unique identifier.
   virtual unsigned long getProtocolId() const = 0;
+
+  /// Get default server host to connect to
+  virtual const std::string& getDefaultServerHost() const = 0;
+
+  /// Get default server port to connect to
+  virtual int getDefaultServerPort() const = 0;
 
   /**
    * Get protocol plugin supported features

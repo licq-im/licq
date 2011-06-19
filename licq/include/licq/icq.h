@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ typedef std::list<std::string> StringList;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
 class Color;
 class Proxy;
-class User;
 class UserId;
 }
 
@@ -55,9 +54,6 @@ enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED 
 class CICQDaemon : private boost::noncopyable
 {
 public:
-  static const char* const DefaultServerHost;
-  static const int DefaultServerPort = 5190;
-  static const int DefaultSslPort = 443;
   static const int MaxMessageSize = 6800; // Maybe a little bigger?
   static const int MaxOfflineMessageSize = 450;
 
@@ -147,12 +143,6 @@ public:
   virtual unsigned long icqSendSms(const Licq::UserId& userId,
       const std::string& number, const std::string& message) = 0;
 
-  // ICQ Server options
-  const std::string& icqServer() const          { return myIcqServer; }
-  void setIcqServer(const std::string& s)       { myIcqServer = s;  }
-  unsigned icqServerPort() const                { return myIcqServerPort; }
-  void setIcqServerPort(unsigned p)             { myIcqServerPort = p; }
-
   // Firewall options
   void SetDirectMode();
 
@@ -187,10 +177,6 @@ protected:
   EDaemonStatus m_eStatus;
 
   bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
-
-  // ICQ Server
-  std::string myIcqServer;
-  unsigned myIcqServerPort;
 
   // Proxy
   Licq::Proxy* m_xProxy;

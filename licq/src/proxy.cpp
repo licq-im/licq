@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -229,7 +229,7 @@ int HttpProxy::openProxyConnection(int sock, const string& remoteName, int remot
   if (sscanf(input_line, "HTTP/%d.%d %n%d", &ver_major, &ver_minor,
 	     &status_consumed, &status_code) != 3)
   {
-    gLog.warning(tr("%sCould not parse HTTP status line from proxy\n"), L_ERRORxSTR);
+    gLog.warning(tr("Could not parse HTTP status line from proxy."));
     myErrorType = ErrorInternal;
     close(sock);
     return -1;
@@ -237,8 +237,8 @@ int HttpProxy::openProxyConnection(int sock, const string& remoteName, int remot
   if (status_code == HTTP_STATUS_OK)
     return sock;
 
-  gLog.warning(tr("%sHTTPS proxy return error code: %d, error string:\n%s\n"),
-	      L_ERRORxSTR, status_code, input_line);
+  gLog.warning(tr("HTTPS proxy return error code: %d, error string: %s"),
+      status_code, input_line);
   myErrorType = ErrorInternal;
   close(sock);
   return -1;

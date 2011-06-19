@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -296,8 +296,8 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
   int s = getaddrinfo(remoteName.c_str(), NULL, &hints, &addrs);
   if(s != 0)
   {
-    gLog.warning(tr("%sError when trying to resolve %s. getaddrinfo() returned %d\n."),
-        L_WARNxSTR, remoteName.c_str(), s);
+    gLog.warning(tr("Error when trying to resolve %s. getaddrinfo() returned %d."),
+        remoteName.c_str(), s);
     return false;
   }
 
@@ -317,7 +317,7 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
     else if (remoteAddr->sa_family == AF_INET6)
       ((struct sockaddr_in6*)remoteAddr)->sin6_port = htons(remotePort);
 
-    gLog.info(tr("%sConnecting to %s:%i...\n"), L_SRVxSTR,
+    gLog.info(tr("Connecting to %s:%i..."),
         addrToString(remoteAddr).c_str(), remotePort);
 
     // Create socket of the returned type
@@ -331,7 +331,7 @@ int INetSocket::connectDirect(const string& remoteName, uint16_t remotePort, uin
     {
       close(sock);
       sock = -1;
-      gLog.warning(tr("%sFailed to set port range for socket.\n"), L_WARNxSTR);
+      gLog.warning(tr("Failed to set port range for socket."));
       continue;
     }
 #endif
@@ -580,8 +580,8 @@ bool SrvSocket::RecvPacket()
 {
   if (!myRecvBuffer.Empty())
   {
-    gLog.error("%sInternal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
-        L_WARNxSTR, myRecvBuffer.getDataSize());
+    gLog.error("Internal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).",
+        myRecvBuffer.getDataSize());
     return (true);
   }
 
@@ -611,8 +611,8 @@ bool SrvSocket::RecvPacket()
 
   // now we start to verify the FLAP header
   if (buffer[0] != 0x2a) {
-    gLog.warning("%sServer send bad packet start code: %d.\n", L_WARNxSTR, buffer[0]);
-    gLog.warning("%sSixbyte: %02x %02x %02x %02x %02x %02x\n", L_WARNxSTR,
+    gLog.warning("Server send bad packet start code: %d.", buffer[0]);
+    gLog.warning("Sixbyte: %02x %02x %02x %02x %02x %02x",
               buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5]);
     myErrorType = ErrorErrno;
     delete[] buffer;
@@ -627,7 +627,7 @@ bool SrvSocket::RecvPacket()
   // a large enough packet, if there is enough memory.  It is not a static
   // buffer like RecvRaw
   if (nLen >= MAX_RECV_SIZE) {
-    gLog.warning("%sServer send bad packet with suspiciously large size: %d.\n", L_WARNxSTR, nLen);
+    gLog.warning(tr("Server send bad packet with suspiciously large size: %d."), nLen);
     myErrorType = ErrorErrno;
     delete[] buffer;
     return false;
@@ -710,7 +710,7 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
   }
   else
   {
-    gLog.error(tr("%sCannot accept new connection, too many descriptors in use.\n"), L_ERRORxSTR);
+    gLog.error(tr("Cannot accept new connection, too many descriptors in use."));
     close(newDesc);
   }
 
@@ -873,8 +873,8 @@ bool TCPSocket::RecvPacket()
 {
   if (myRecvBuffer.Full())
   {
-    gLog.warning("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes).\n",
-        L_WARNxSTR, myRecvBuffer.getDataSize());
+    gLog.warning(tr("Internal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes)."),
+        myRecvBuffer.getDataSize());
     return (true);
   }
 
@@ -1117,11 +1117,11 @@ bool TCPSocket::SecureConnect()
     {
       case SSL_ERROR_SSL:
         err = ERR_get_error_line(&file, &line);
-        gLog.warning("%sSSL_connect error = %lx, %s:%i\n", L_WARNxSTR, err, file, line);
+        gLog.warning(tr("SSL_connect error = %lx, %s:%i"), err, file, line);
         ERR_clear_error();
         break;
       default:
-        gLog.warning("%sSSL_connect error %d, SSL_%d\n", L_WARNxSTR, i, j);
+        gLog.warning(tr("SSL_connect error %d, SSL_%d"), i, j);
         break;
     }
     return false;

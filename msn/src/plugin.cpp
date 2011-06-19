@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,17 @@ unsigned long LProto_SendFuncs()
   return Licq::ProtocolPlugin::CanSendMsg |
       Licq::ProtocolPlugin::CanSendAuth |
       Licq::ProtocolPlugin::CanSendAuthReq;
+}
+
+const char* LProto_DefSrvHost()
+{
+  static char defaultHost[] = "messenger.hotmail.com";
+  return defaultHost;
+}
+
+int LProto_DefSrvPort()
+{
+  return 1863;
 }
 
 int LProto_Main()

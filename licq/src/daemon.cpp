@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@
 #include <licq/logging/logutils.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -49,6 +48,7 @@
 #include "contactlist/usermanager.h"
 #include "gettext.h"
 #include "gpghelper.h"
+#include "filter.h"
 #include "icq/icq.h"
 #include "licq.h"
 #include "logging/filelogsink.h"
@@ -117,7 +117,7 @@ void Daemon::initialize()
   setTcpEnabled(!myBehindFirewall || (myBehindFirewall && myTcpEnabled));
 
   licqConf.get("ProxyEnabled", myProxyEnabled, false);
-  licqConf.get("ProxyServerType", myProxyType, PROXY_TYPE_HTTP);
+  licqConf.get("ProxyServerType", myProxyType, ProxyTypeHttp);
   licqConf.get("ProxyServer", myProxyHost, "");
   licqConf.get("ProxyServerPort", myProxyPort, 0);
   licqConf.get("ProxyAuthEnabled", myProxyAuthEnabled, false);
@@ -297,12 +297,11 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
   }
   else if (s->Error() == EADDRINUSE)
   {
-    gLog.warning(tr("%sNo ports available for local TCP server.\n"), L_WARNxSTR);
+    gLog.warning(tr("No ports available for local TCP server."));
   }
   else
   {
-    gLog.warning(tr("%sFailed to start local TCP server:\n%s"), L_WARNxSTR,
-        s->errorStr().c_str());
+    gLog.warning(tr("Failed to start local TCP server: %s"), s->errorStr().c_str());
   }
 
   return s->Descriptor();
@@ -326,8 +325,8 @@ void Licq::Daemon::setTcpPorts(unsigned lowPort, unsigned highPort)
   myTcpPortsHigh = highPort;
   if (myTcpPortsHigh < myTcpPortsLow)
   {
-    gLog.warning(tr("%sTCP high port (%d) is lower then TCP low port (%d).\n"),
-       L_WARNxSTR, myTcpPortsHigh, myTcpPortsLow);
+    gLog.warning(tr("TCP high port (%d) is lower then TCP low port (%d)."),
+        myTcpPortsHigh, myTcpPortsLow);
     myTcpPortsHigh = myTcpPortsLow + 10;
   }
 }
@@ -346,7 +345,7 @@ Licq::Proxy* Licq::Daemon::createProxy()
 
   switch (myProxyType)
   {
-    case PROXY_TYPE_HTTP :
+    case ProxyTypeHttp:
       Proxy = new HttpProxy();
       break;
     default:
@@ -375,13 +374,30 @@ unsigned long Daemon::getNextEventId()
 
 bool Daemon::addUserEvent(Licq::User* u, Licq::UserEvent* e)
 {
+  int filteraction = gFilterManager.filterEvent(u, e);
+  if (filteraction == Licq::FilterRule::ActionIgnore)
+  {
+    // Ignore => Just drop the event
+    gLog.info("Event dropped by filter");
+    delete e;
+    return false;
+  }
+
   if (u->isUser())
     e->AddToHistory(u, true);
+
+  if (filteraction == Licq::FilterRule::ActionSilent)
+  {
+    // Accept silently => Logged to history but don't notify plugins
+    delete e;
+    return false;
+  }
+
   // Don't log a user event if this user is on the ignore list
   if (u->IgnoreList() ||
       (e->IsMultiRec() && ignoreType(IgnoreMassMsg)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_EMAILxPAGER && ignoreType(IgnoreEmailPager)) ||
-      (e->SubCommand() == ICQ_CMDxSUB_WEBxPANEL && ignoreType(IgnoreWebPanel)) )
+      (e->eventType() == Licq::UserEvent::TypeEmailPager && ignoreType(IgnoreEmailPager)) ||
+      (e->eventType() == Licq::UserEvent::TypeWebPanel && ignoreType(IgnoreWebPanel)) )
   {
     delete e;
     return false;
@@ -403,7 +419,7 @@ void Daemon::rejectEvent(const UserId& userId, Licq::UserEvent* e)
   FILE* f = fopen(rejectFile.c_str(), "a");
   if (f == NULL)
   {
-    gLog.warning(tr("%sUnable to open \"%s\" for writing.\n"), L_WARNxSTR, rejectFile.c_str());
+    gLog.warning(tr("Unable to open \"%s\" for writing."), rejectFile.c_str());
   }
   else
   {

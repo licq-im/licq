@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1519,7 +1519,7 @@ void CLicqConsole::UserCommand_Info(const Licq::UserId& userId, char *)
                    "(U)pdate Info\n"
                    "for %s (%s)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
-      u->GetAlias(), u->accountId().c_str(), COLOR_WHITE, A_BOLD);
+      u->getAlias().c_str(), u->accountId().c_str(), COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
 }
 
@@ -1607,7 +1607,7 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
     szTime[16] = '\0';
     winMain->wprintf("%B%s from %b%s%B (%b%s%B) [%b%c%c%c%B]:\n%b%s\n",
         e->description().c_str(),
-                     u->isUser() ? u->GetAlias() : "Server",
+        u->isUser() ? u->getAlias().c_str() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
         e->text().c_str());
@@ -1619,7 +1619,7 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
     wattroff(winMain->Win(), A_BOLD);
 
     // Do we want to accept the file transfer?
-    if (e->SubCommand() == ICQ_CMDxSUB_FILE)
+    if (e->eventType() == Licq::UserEvent::TypeFile)
       FileChatOffer(e, userId);
 
     delete e;
@@ -1653,7 +1653,7 @@ void CLicqConsole::UserCommand_Remove(const Licq::UserId& userId, char *)
 
   winMain->wprintf("%C%ARemove %s (%s) from contact list (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
-      u->GetAlias(), u->accountId().c_str(), COLOR_WHITE, A_BOLD);
+      u->getAlias().c_str(), u->accountId().c_str(), COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
 }
 
@@ -1709,7 +1709,7 @@ void CLicqConsole::UserCommand_FetchAutoResponse(const Licq::UserId& userId, cha
     Licq::UserReadGuard u(userId);
     winMain->wprintf("%C%AFetching auto-response for %s (%s)...",
                    m_cColorInfo->nColor, m_cColorInfo->nAttr,
-      u->GetAlias(), u->accountId().c_str());
+        u->getAlias().c_str(), u->accountId().c_str());
     winMain->RefreshWin();
   }
 
@@ -1775,7 +1775,7 @@ int StrToRange(char *sz, int nLast, int nStart)
 void CLicqConsole::UserCommand_History(const Licq::UserId& userId, char *szArg)
 {
   Licq::HistoryList lHistory;
-  char *szFrom;
+  string from;
   {
     Licq::UserReadGuard u(userId);
     if (!u.isLocked())
@@ -1786,9 +1786,9 @@ void CLicqConsole::UserCommand_History(const Licq::UserId& userId, char *szArg)
       return;
     }
     if (Licq::gUserManager.isOwner(userId))
-      szFrom = strdup("Server");
+      from = "Server";
     else
-      szFrom = strdup(u->GetAlias());
+      from = u->getAlias();
   }
 
   unsigned short nLast = lHistory.size();
@@ -1806,7 +1806,6 @@ void CLicqConsole::UserCommand_History(const Licq::UserId& userId, char *szArg)
     {
       winMain->wprintf("%CNo System Events.\n", COLOR_WHITE);
     }
-    free(szFrom);
     return;
   }
 
@@ -1823,14 +1822,12 @@ void CLicqConsole::UserCommand_History(const Licq::UserId& userId, char *szArg)
   {
     winMain->wprintf("%CInvalid start range: %A%s\n", COLOR_RED,
                      A_BOLD, szStart);
-    free(szFrom);
     return;
   }
   else if (nStart > nLast || nStart < 1)
   {
     winMain->wprintf("%CStart value out of range, history contains %d events.\n",
                      COLOR_RED, nLast);
-    free(szFrom);
     return;
   }
 
@@ -1841,14 +1838,12 @@ void CLicqConsole::UserCommand_History(const Licq::UserId& userId, char *szArg)
     {
       winMain->wprintf("%CInvalid end range: %A%s\n", COLOR_RED,
                        A_BOLD, szEnd);
-      free(szFrom);
       return;
     }
     else if (nEnd > nLast || nEnd < 1)
     {
       winMain->wprintf("%CEnd value out of range, history contains %d events.\n",
                        COLOR_RED, nLast);
-      free(szFrom);
       return;
     }
   }
@@ -1858,8 +1853,7 @@ void CLicqConsole::UserCommand_History(const Licq::UserId& userId, char *szArg)
   }
 
   winMain->nLastHistory = nEnd;
-  PrintHistory(lHistory, nStart - 1, nEnd - 1, szFrom);
-  free(szFrom);
+  PrintHistory(lHistory, nStart - 1, nEnd - 1, from.c_str());
 }
 
 
@@ -1877,7 +1871,7 @@ void CLicqConsole::UserCommand_Msg(const Licq::UserId& userId, char *)
   winMain->state = STATE_MLE;
   winMain->data = new DataMsg(userId);
 
-  winMain->wprintf("%BEnter message to %b%s%B (%b%s%B):\n", u->GetAlias(),
+  winMain->wprintf("%BEnter message to %b%s%B (%b%s%B):\n", u->getAlias().c_str(),
       u->accountId().c_str());
   winMain->RefreshWin();
 }
@@ -1995,7 +1989,7 @@ void CLicqConsole::UserCommand_SendFile(const Licq::UserId& userId, char *)
 
   Licq::UserReadGuard u(userId);
   winMain->wprintf("%BEnter file to send to %b%s%B (%b%s%B):\n",
-      u->GetAlias(), u->accountId().c_str());
+      u->getAlias().c_str(), u->accountId().c_str());
   winMain->RefreshWin();
 }
 
@@ -2165,7 +2159,7 @@ void CLicqConsole::UserCommand_Url(const Licq::UserId& userId, char *)
 
   Licq::UserReadGuard u(userId);
   winMain->wprintf("%BEnter URL to %b%s%B (%b%ld%B): ",
-      u->GetAlias(), u->accountId().c_str());
+      u->getAlias().c_str(), u->accountId().c_str());
   winMain->RefreshWin();
 }
 
@@ -2270,7 +2264,7 @@ void CLicqConsole::UserCommand_Sms(const Licq::UserId& userId, char *)
   winMain->fProcessInput = &CLicqConsole::InputSms;
   winMain->state = STATE_MLE;
   winMain->data = new DataSms(userId);
-  winMain->wprintf("%BEnter SMS to %b%s%B (%b%s%B):\n", u->GetAlias(),
+  winMain->wprintf("%BEnter SMS to %b%s%B (%b%s%B):\n", u->getAlias().c_str(),
       u->getCellularNumber().c_str());
   winMain->RefreshWin();
 }
@@ -3216,29 +3210,29 @@ void CLicqConsole::UserCommand_Secure(const Licq::UserId& userId, char *szStatus
   if(szStatus == NULL)
   {
     winMain->wprintf("%ASecure channel is %s to %s\n", A_BOLD,
-                     bOpen ? "open" : "closed", u->GetAlias());
+        bOpen ? "open" : "closed", u->getAlias().c_str());
   }
   else if(strcasecmp(szStatus, "open") == 0 && bOpen)
   {
     winMain->wprintf("%ASecure channel already open to %s\n", A_BOLD,
-                     u->GetAlias());
+        u->getAlias().c_str());
   }
   else if(strcasecmp(szStatus, "close") == 0 && !bOpen)
   {
     winMain->wprintf("%ASecure channel already closed to %s\n", A_BOLD,
-                     u->GetAlias());
+        u->getAlias().c_str());
   }
   else if(strcasecmp(szStatus, "open") == 0)
   {
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
-                     u->GetAlias());
+        u->getAlias().c_str());
     u.unlock();
     winMain->event = gProtocolManager.secureChannelOpen(userId);
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
     winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
-                     u->GetAlias());
+        u->getAlias().c_str());
     u.unlock();
     winMain->event = gProtocolManager.secureChannelClose(userId);
   }

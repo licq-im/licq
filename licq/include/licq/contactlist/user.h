@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,6 @@ void* MonitorSockets_func();
 namespace LicqDaemon
 {
 class User;
-class UserEvent;
 class UserManager;
 }
 
@@ -50,6 +49,7 @@ namespace Licq
 {
 class IniFile;
 class TCPSocket;
+class UserEvent;
 
 typedef enum SecureChannelSupport_et_ {
   SECURE_CHANNEL_UNKNOWN = 0,
@@ -221,8 +221,6 @@ public:
 
   // General Info
   //!Retrieves the user's alias.
-  //LICQ_DEPRECATED // Use getAlias() instead
-  const char* GetAlias() const                  { return myAlias.c_str(); }
   const std::string& getAlias() const           { return myAlias; }
   //!Retrieves the user's first name.
   std::string getFirstName() const              { return getUserInfoString("FirstName"); }

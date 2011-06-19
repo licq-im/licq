@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,6 @@ Settings::Network::Network(SettingsDlg* parent)
 {
   parent->addPage(SettingsDlg::NetworkPage, createPageNetwork(parent),
       tr("Network"));
-  parent->addPage(SettingsDlg::IcqPage, createPageIcq(parent),
-      tr("ICQ"), SettingsDlg::NetworkPage);
 
   load();
 }
@@ -142,39 +140,6 @@ QWidget* Settings::Network::createPageNetwork(QWidget* parent)
   connect(myProxyAuthEnabledCheck, SIGNAL(toggled(bool)), myProxyPasswdEdit, SLOT(setEnabled(bool)));
 
 
-  myPageNetworkLayout->addWidget(myFirewallBox);
-  myPageNetworkLayout->addWidget(myProxyBox);
-  myPageNetworkLayout->addStretch(1);
-
-  return w;
-}
-
-QWidget* Settings::Network::createPageIcq(QWidget* parent)
-{
-  QWidget* w = new QWidget(parent);
-  myPageIcqLayout = new QVBoxLayout(w);
-  myPageIcqLayout->setContentsMargins(0, 0, 0, 0);
-
-  myIcqServerBox = new QGroupBox(tr("Server Settings"));
-  myIcqServerLayout = new QGridLayout(myIcqServerBox);
-
-
-  myIcqServerLabel = new QLabel(tr("ICQ server:"));
-  myIcqServerLayout->addWidget(myIcqServerLabel, 0, 0);
-
-  myIcqServerEdit = new QLineEdit();
-  myIcqServerLabel->setBuddy(myIcqServerEdit);
-  myIcqServerLayout->addWidget(myIcqServerEdit, 0, 1);
-
-  myIcqServerPortLabel = new QLabel(tr("ICQ server port:"));
-  myIcqServerLayout->addWidget(myIcqServerPortLabel, 1, 0);
-
-  myIcqServerPortSpin = new QSpinBox();
-  myIcqServerPortSpin->setRange(0, 0xFFFF);
-  myIcqServerPortLabel->setBuddy(myIcqServerPortSpin);
-  myIcqServerLayout->addWidget(myIcqServerPortSpin, 1, 1);
-
-
   myIcqConnectionBox = new QGroupBox(tr("Connection"));
   myIcqConnectionLayout = new QVBoxLayout(myIcqConnectionBox);
 
@@ -187,9 +152,10 @@ QWidget* Settings::Network::createPageIcq(QWidget* parent)
   myIcqConnectionLayout->addWidget(myReconnectAfterUinClashCheck);
 
 
-  myPageIcqLayout->addWidget(myIcqServerBox);
-  myPageIcqLayout->addWidget(myIcqConnectionBox);
-  myPageIcqLayout->addStretch(1);
+  myPageNetworkLayout->addWidget(myFirewallBox);
+  myPageNetworkLayout->addWidget(myProxyBox);
+  myPageNetworkLayout->addWidget(myIcqConnectionBox);
+  myPageNetworkLayout->addStretch(1);
 
   return w;
 }
@@ -219,7 +185,6 @@ void Settings::Network::useProxyToggled(bool useProxy)
       myProxyLoginEdit->setEnabled(true);
       myProxyPasswdEdit->setEnabled(true);
     }
-    myIcqServerPortSpin->setValue(CICQDaemon::DefaultSslPort);
   }
   else
   {
@@ -229,13 +194,11 @@ void Settings::Network::useProxyToggled(bool useProxy)
     myProxyAuthEnabledCheck->setEnabled(false);
     myProxyLoginEdit->setEnabled(false);
     myProxyPasswdEdit->setEnabled(false);
-    myIcqServerPortSpin->setValue(CICQDaemon::DefaultServerPort);
   }
 }
 
 void Settings::Network::load()
 {
-  myIcqServerEdit->setText(QString(gLicqDaemon->icqServer().c_str()));
   myFirewallCheck->setChecked(Licq::gDaemon.behindFirewall());
   myTcpEnabledCheck->setChecked(Licq::gDaemon.tcpEnabled());
   myPortLowSpin->setValue(Licq::gDaemon.tcpPortsLow());
@@ -264,10 +227,6 @@ void Settings::Network::load()
   myProxyLoginEdit->setText(Licq::gDaemon.proxyLogin().c_str());
   myProxyPasswdEdit->setText(Licq::gDaemon.proxyPasswd().c_str());
 
-  // Set server port after myProxyEnabledCheck as it will trigger useProxyToggled
-  // which overwrites server port field.
-  myIcqServerPortSpin->setValue(gLicqDaemon->icqServerPort());
-
   myReconnectAfterUinClashCheck->setChecked(gLicqDaemon->ReconnectAfterUinClash());
 
   if (!Licq::gDaemon.proxyEnabled())
@@ -287,8 +246,6 @@ void Settings::Network::load()
 
 void Settings::Network::apply()
 {
-  gLicqDaemon->setIcqServer(myIcqServerEdit->text().toLocal8Bit().data());
-  gLicqDaemon->setIcqServerPort(myIcqServerPortSpin->value());
   Licq::gDaemon.setTcpPorts(myPortLowSpin->value(), myPortHighSpin->value());
   Licq::gDaemon.setTcpEnabled(myTcpEnabledCheck->isChecked());
   Licq::gDaemon.setBehindFirewall(myFirewallCheck->isChecked());

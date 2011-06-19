@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2002-2010 Licq developers
+ * Copyright (C) 2002-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,14 +38,15 @@
 #include "helpers/usercodec.h"
 
 #include "widgets/mledit.h"
+#include "widgets/protocombobox.h"
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ReqAuthDlg */
 
-ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long ppid, QWidget* parent)
+ReqAuthDlg::ReqAuthDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent),
-    myPpid(ppid == 0 ? LICQ_PPID : ppid)
+    myUserId(userId)
 {
   Support::setWidgetProps(this, "RequestAuthDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
@@ -53,15 +54,25 @@ ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long ppid, QWidget* parent)
 
   QVBoxLayout* toplay = new QVBoxLayout(this);
 
-  lblUin = new QLabel(this);
-  lblUin->setAlignment(Qt::AlignCenter);
-  lblUin->setText(tr("Request authorization from (UIN):"));
-  edtUin = new QLineEdit(this);
-  edtUin->setMinimumWidth(90);
-  connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
+  QLabel* lblProtocol = new QLabel(this);
+  lblProtocol->setAlignment(Qt::AlignRight);
+  lblProtocol->setText(tr("&Protocol:"));
+  myProtocolCombo = new ProtoComboBox(ProtoComboBox::FilterOwnersOnly);
+  lblProtocol->setBuddy(myProtocolCombo);
+
+  QLabel* lblUin = new QLabel(this);
+  lblUin->setAlignment(Qt::AlignRight);
+  lblUin->setText(tr("&User ID:"));
+  myIdEdit = new QLineEdit(this);
+  myIdEdit->setMinimumWidth(90);
+  lblUin->setBuddy(myIdEdit);
+  connect(myIdEdit, SIGNAL(returnPressed()), SLOT(ok()) );
+
   QHBoxLayout* lay = new QHBoxLayout();
+  lay->addWidget(lblProtocol);
+  lay->addWidget(myProtocolCombo);
   lay->addWidget(lblUin);
-  lay->addWidget(edtUin);
+  lay->addWidget(myIdEdit);
 
   toplay->addLayout(lay);
   toplay->addSpacing(6);
@@ -85,25 +96,30 @@ ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long ppid, QWidget* parent)
 
   toplay->addWidget(buttons);
 
-  if (!id.isEmpty())
+  if (userId.isValid())
   {
-    edtUin->setText(id);
+    myIdEdit->setText(userId.accountId().c_str());
+    myIdEdit->setEnabled(false);
+    myProtocolCombo->setCurrentPpid(userId.protocolId());
+    myProtocolCombo->setEnabled(false);
     mleRequest->setFocus();
   }
   else
-    edtUin->setFocus();
+  {
+    myProtocolCombo->setFocus();
+  }
 
   show();
 }
 
 void ReqAuthDlg::ok()
 {
-  QString id = edtUin->text();
-  Licq::UserId userId(id.toLatin1().data(), myPpid);
+  Licq::UserId userId = myUserId;
+  if (!userId.isValid())
+    userId = Licq::UserId(myIdEdit->text().toLatin1().data(), myProtocolCombo->currentPpid());
 
-  if (!id.isEmpty())
+  if (userId.isValid())
   {
-    //TODO add a drop down list for protocol
     const QTextCodec* codec = UserCodec::codecForUserId(userId);
     gProtocolManager.requestAuthorization(userId, codec->fromUnicode(mleRequest->toPlainText()).data());
     close();

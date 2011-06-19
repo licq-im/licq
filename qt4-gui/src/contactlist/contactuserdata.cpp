@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -261,32 +261,35 @@ void ContactUserData::updateEvents(const Licq::User* u)
     myEvents = myNewMessages;
   }
 
-  myEventSubCommand = 0;
+  myEventType = 0;
 
   if (myNewMessages > 0)
   {
     for (unsigned short i = 0; i < myNewMessages; i++)
     {
-      switch (u->EventPeek(i)->SubCommand())
+      switch (u->EventPeek(i)->eventType())
       {
-        case ICQ_CMDxSUB_FILE:
-          myEventSubCommand = ICQ_CMDxSUB_FILE;
+        case Licq::UserEvent::TypeFile:
+          myEventType = Licq::UserEvent::TypeFile;
           break;
-        case ICQ_CMDxSUB_CHAT:
-          if (myEventSubCommand != ICQ_CMDxSUB_FILE)
-            myEventSubCommand = ICQ_CMDxSUB_CHAT;
+        case Licq::UserEvent::TypeChat:
+          if (myEventType != Licq::UserEvent::TypeFile)
+            myEventType = Licq::UserEvent::TypeChat;
           break;
-        case ICQ_CMDxSUB_URL:
-          if (myEventSubCommand != ICQ_CMDxSUB_FILE && myEventSubCommand != ICQ_CMDxSUB_CHAT)
-            myEventSubCommand = ICQ_CMDxSUB_URL;
+        case Licq::UserEvent::TypeUrl:
+          if (myEventType != Licq::UserEvent::TypeFile &&
+              myEventType != Licq::UserEvent::TypeChat)
+            myEventType = Licq::UserEvent::TypeUrl;
           break;
-        case ICQ_CMDxSUB_CONTACTxLIST:
-          if(myEventSubCommand != ICQ_CMDxSUB_FILE && myEventSubCommand != ICQ_CMDxSUB_CHAT && myEventSubCommand != ICQ_CMDxSUB_URL)
-            myEventSubCommand = ICQ_CMDxSUB_CONTACTxLIST;
-        case ICQ_CMDxSUB_MSG:
+        case Licq::UserEvent::TypeContactList:
+          if(myEventType != Licq::UserEvent::TypeFile &&
+              myEventType != Licq::UserEvent::TypeChat &&
+              myEventType != Licq::UserEvent::TypeUrl)
+            myEventType = Licq::UserEvent::TypeContactList;
+        case Licq::UserEvent::TypeMessage:
         default:
-          if (myEventSubCommand == 0)
-            myEventSubCommand = ICQ_CMDxSUB_MSG;
+          if (myEventType == 0)
+            myEventType = Licq::UserEvent::TypeMessage;
           break;
       }
       if (u->EventPeek(i)->IsUrgent())
@@ -653,8 +656,8 @@ QVariant ContactUserData::data(int column, int role) const
         return *myUserIcon;
       break;
 
-    case ContactListModel::EventSubCommandRole:
-      return myEventSubCommand;
+    case ContactListModel::EventTypeRole:
+      return myEventType;
 
     case ContactListModel::CarAnimationRole:
       if (myCarCounter > 0)

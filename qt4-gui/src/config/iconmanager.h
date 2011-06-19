@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -167,6 +167,15 @@ public:
       bool allowInvisible = false);
 
   /**
+   * Get icon for a protocol
+   * Note: Will always return ICQ icon for oscar protocol, never AIM
+   *
+   * @param protocolId Protocol to get icon for
+   * @return Online icon for the requested protocol
+   */
+  const QPixmap& iconForProtocol(unsigned long protocolId);
+
+  /**
    * Get icon for a user
    *
    * @param user An already locked object of LicqUser type
@@ -178,10 +187,10 @@ public:
   /**
    * Get icon for an event type
    *
-   * @param subCommand Message sub command to get icon for
+   * @param eventType Type of event to get message for
    * @return The requested icon if loaded, otherwise a null pixmap
    */
-  const QPixmap& iconForEvent(unsigned short subCommand);
+  const QPixmap& iconForEvent(unsigned eventType);
 
   const QString& iconSet() const { return myIconSet; }
   const QString& extendedIconSet() const { return myExtendedIconSet; }
