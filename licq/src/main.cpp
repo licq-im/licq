@@ -39,14 +39,14 @@ static char** threadArgv;
 static int threadMain(PluginThread::Ptr mainThread)
 {
   using LicqDaemon::gPluginManager;
-  gPluginManager.setMainThread(mainThread);
+  gPluginManager.setGuiThread(mainThread);
 
   int ret = 1;
   CLicq licq;
   if (licq.Init(threadArgc, threadArgv))
     ret = licq.Main();
 
-  gPluginManager.setMainThread(PluginThread::Ptr());
+  gPluginManager.setGuiThread(PluginThread::Ptr());
   return ret;
 }
 

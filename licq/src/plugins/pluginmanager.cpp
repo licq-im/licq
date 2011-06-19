@@ -75,12 +75,10 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     const std::string& name, int argc, char** argv, bool keep)
 {
   PluginThread::Ptr pluginThread;
-  if (myMainThread
-      && (name.find("qt4-gui") != std::string::npos
-          || name.find("kde4-gui") != std::string::npos))
+  if (myGuiThread && name.find("-gui") != std::string::npos)
   {
-    gLog.debug("Using main thread to load %s", name.c_str());
-    pluginThread.swap(myMainThread);
+    gLog.debug("Running %s in GUI thread", name.c_str());
+    pluginThread.swap(myGuiThread);
   }
   else
     pluginThread.reset(new PluginThread);
