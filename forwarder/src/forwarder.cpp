@@ -199,17 +199,21 @@ void CLicqForwarder::ProcessPipe()
     case Licq::GeneralPlugin::PipeSignal:
     {
       Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
-    if (m_bEnabled) ProcessSignal(s);
-    break;
-  }
+      if (m_bEnabled)
+        ProcessSignal(s);
+      delete s;
+      break;
+    }
 
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
       Licq::Event* e = Licq::gDaemon.PopPluginEvent();
-    if (m_bEnabled) ProcessEvent(e);
-    break;
-  }
+      if (m_bEnabled)
+        ProcessEvent(e);
+      delete e;
+      break;
+    }
 
     case Licq::GeneralPlugin::PipeShutdown:
     {
@@ -256,14 +260,13 @@ void CLicqForwarder::ProcessSignal(Licq::PluginSignal* s)
                    s->signal());
       break;
   }
-  delete s;
 }
 
 
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessEvent
  *-------------------------------------------------------------------------*/
-void CLicqForwarder::ProcessEvent(Licq::Event* e)
+void CLicqForwarder::ProcessEvent(Licq::Event* /* e */)
 {
 /*  switch (e->m_nCommand)
   {
@@ -288,7 +291,6 @@ void CLicqForwarder::ProcessEvent(Licq::Event* e)
   case ICQ_CMDxSND_SEARCHxUIN:
     break;
   }*/
-  delete e;
 }
 
 

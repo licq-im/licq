@@ -6,11 +6,14 @@ o RMS: Authentication can be configured instead of always using ICQ account
 
 
 New in 1.5.1
+o Package GTest with Licq to guarantee same version as GMock
 o Owners can no longer be removed when online to prevent contact list problems
+o AutoReply: Command line parameters -d and -e were ignored
 o ICQ: Buddy icons would fail to update for some contacts retrying every minute
 o Jabber: Use full name for contact if there is no nickname set
 o Jabber: Get away message for contacts
 o Jabber: Keep track of contacts pending for authorization
+o OSD: Default config would be written to file without path
 o RMS: Plugin could crash if bad parameters were given to some commands
 o Qt4-Gui: Ignored users were displayed in All Users list
 o Qt4-Gui: Several menu items and buttons were missing ... after caption

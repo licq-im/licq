@@ -1,7 +1,7 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
  * Copyright (C) 2003-2005 Martin Maurer (martinmaurer@gmx.at)
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -244,6 +244,7 @@ bool LP_Init(int /* argc */, char** /* argv */)
     Licq::IniFile conf(filename);
     if (!conf.loadFile()) // no configfile found
     {
+      filename = Licq::gDaemon.baseDir() + filename;
 	    FILE *f = fopen(filename.c_str(), "w");
 	    if (f) // create config file
 	    {
