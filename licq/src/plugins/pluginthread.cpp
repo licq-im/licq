@@ -35,7 +35,7 @@ struct PluginThread::Data
 {
   enum ThreadState
   {
-    STATE_STOPPED,
+    STATE_STOP,
     STATE_WAITING,
     STATE_LOAD_PLUGIN,
     STATE_INIT_PLUGIN,
@@ -63,7 +63,7 @@ struct PluginThread::Data
   void* (*myPluginStart)(void*);
   void* myPluginStartArgument;
 
-  Data() : myState(STATE_STOPPED) {}
+  Data() : myState(STATE_STOP) {}
 };
 
 static void* pluginThreadEntry(void* arg)
@@ -90,7 +90,7 @@ static void* pluginThreadEntry(void* arg)
 
     switch (data.myState)
     {
-      case PluginThread::Data::STATE_STOPPED:
+      case PluginThread::Data::STATE_STOP:
         break;
       case PluginThread::Data::STATE_WAITING:
       case PluginThread::Data::STATE_RUNNING:
@@ -210,7 +210,7 @@ void PluginThread::stop()
   MutexLocker locker(myData->myMutex);
   if (myData->myState != PluginThread::Data::STATE_EXITED)
   {
-    myData->myState = PluginThread::Data::STATE_STOPPED;
+    myData->myState = PluginThread::Data::STATE_STOP;
     myData->myCondition.signal();
   }
 }
