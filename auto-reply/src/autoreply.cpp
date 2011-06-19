@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,17 +157,21 @@ void CLicqAutoReply::ProcessPipe()
     case Licq::GeneralPlugin::PipeSignal:
     {
       Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
-    if (m_bEnabled) ProcessSignal(s);
-    break;
-  }
+      if (m_bEnabled)
+        ProcessSignal(s);
+      delete s;
+      break;
+    }
 
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
       Licq::Event* e = Licq::gDaemon.PopPluginEvent();
-    if (m_bEnabled) ProcessEvent(e);
-    break;
-  }
+      if (m_bEnabled)
+        ProcessEvent(e);
+      delete e;
+      break;
+    }
 
     case Licq::GeneralPlugin::PipeShutdown:
     {
@@ -211,7 +215,6 @@ void CLicqAutoReply::ProcessSignal(Licq::PluginSignal* s)
     default:
       break;
   }
-  delete s;
 }
 
 
@@ -233,8 +236,6 @@ void CLicqAutoReply::ProcessEvent(Licq::Event* e)
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }
-
-  delete e;
 }
 
 
