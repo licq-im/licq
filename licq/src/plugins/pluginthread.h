@@ -44,6 +44,13 @@ public:
 
   struct Data;
 
+  /**
+   * Create a new PluginThread instance, but without starting a new thread for
+   * it. Instead make it use the current thread (i.e. the caller's thread). The
+   * caller's execution will continue in a new thread with the entry point
+   * given in @a newThreadEntry. The argument to @a newThreadEntry will be the
+   * newly created PluginThread instance.
+   */
   static int createWithCurrentThread(int (*newThreadEntry)(PluginThread::Ptr));
 
   PluginThread();
@@ -75,7 +82,7 @@ private:
   struct NewThreadData;
   static void* newThreadEntry(void* data);
 
-  bool myIsThreadOwner;
+  const bool myIsThreadOwner;
   pthread_t myThread;
   Data* myData;
   void* myExitValue;
