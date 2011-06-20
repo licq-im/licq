@@ -221,7 +221,9 @@ if has_file "Makefile.cvs"; then
 fi
 
 # Remove symbolic links in plugins dir
-run find "${LICQDIR}/plugins" -type l -delete
+if has_file plugins; then
+   run find "${LICQDIR}/plugins" -type l -delete
+fi
 
 # List of plugins that should be exported. Plugins that no longer are on trunk
 # should be listed in OLD_PLUGINS so that this script can continue to work with
