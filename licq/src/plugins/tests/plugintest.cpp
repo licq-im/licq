@@ -33,6 +33,11 @@ STR_FUNC(Name);
 STR_FUNC(Version);
 STR_FUNC(ConfigFile);
 
+int Test_Init(int, char**)
+{
+  return true;
+}
+
 int Test_Main()
 {
   return 5;
@@ -47,17 +52,6 @@ class PluginTest : public Plugin
 public:
   PluginTest(DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
     Plugin(lib, thread, "Test") { /* Empty */ }
-
-  void init(void (*callback)(const Plugin&))
-  {
-    callInitInThread(callback);
-  }
-
-private:
-  bool initThreadEntry()
-  {
-    return true;
-  }
 };
 
 struct PluginFixture : public ::testing::Test
@@ -139,7 +133,7 @@ TEST_F(PluginFixture, runPluginWithCallbacks)
   InitCallbackCalled = false;
   StartCallbackCalled = false;
   ExitCallbackCalled = false;
-  plugin.init(&initCallback);
+  plugin.callInit(0, NULL, &initCallback);
   plugin.startThread(&startCallback, &exitCallback);
   EXPECT_FALSE(plugin.isThisThread());
   EXPECT_EQ(5, plugin.joinThread());

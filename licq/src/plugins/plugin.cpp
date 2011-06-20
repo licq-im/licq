@@ -19,12 +19,14 @@
 
 #include "plugin.h"
 
-#include <licq/thread/mutexlocker.h>
-
 #include <cassert>
+#include <cstring>
 #include <pthread.h>
+#include <unistd.h>
 
-using Licq::MutexLocker;
+// From licq.cpp
+extern char** global_argv;
+
 using namespace LicqDaemon;
 using namespace std;
 
@@ -36,8 +38,12 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
   myInitCallback(NULL),
   myStartCallback(NULL),
   myExitCallback(NULL),
+  myArgc(0),
+  myArgv(NULL),
+  myArgvCopy(NULL),
   myId(INVALID_ID)
 {
+  loadSymbol(prefix + "_Init", myInit);
   loadSymbol(prefix + "_Main", myMain);
   loadSymbol(prefix + "_Name", myName);
   loadSymbol(prefix + "_Version", myVersion);
@@ -55,7 +61,40 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
 
 Plugin::~Plugin()
 {
-  // Empty
+  for (int i = 0; i < myArgc; ++i)
+    ::free(myArgv[i]);
+  delete[] myArgv;
+  delete[] myArgvCopy;
+}
+
+bool Plugin::callInit(int argc, char** argv,
+                         void (*callback)(const Plugin&))
+{
+  assert(myInitCallback == NULL);
+
+  const size_t size = argc + 2;
+
+  myArgv = new char*[size];
+  myArgvCopy = new char*[size];
+
+  myArgv[size - 1] = NULL;
+
+  // TODO: use licq or libname?
+  //myArgv[0] = ::strdup(myLib->getName().c_str());
+  myArgv[0] = ::strdup(global_argv[0]);
+
+  for (int i = 0; i < argc; ++i)
+    myArgv[i + 1] = ::strdup(argv[i]);
+
+  myArgc = argc + 1;
+
+  // We need to create a copy of myArgv and pass that to the plugin, since
+  // e.g. KDE changes the pointers in argv (e.g. to strip the path in argv[0])
+  // and that messes up free, causing SIGSEGV in the destructor.
+  ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
+
+  myInitCallback = callback;
+  return myThread->initPlugin(&Plugin::initThreadEntry, this);
 }
 
 void Plugin::startThread(
@@ -120,13 +159,6 @@ void Plugin::shutdown()
   myPipe.putChar(PipeShutdown);
 }
 
-bool Plugin::callInitInThread(void (*initCallback)(const Plugin&))
-{
-  assert(myInitCallback == NULL);
-  myInitCallback = initCallback;
-  return myThread->initPlugin(&Plugin::initThreadEntry, this);
-}
-
 bool Plugin::initThreadEntry(void* plugin)
 {
   Plugin* thisPlugin = static_cast<Plugin*>(plugin);
@@ -134,7 +166,10 @@ bool Plugin::initThreadEntry(void* plugin)
   if (thisPlugin->myInitCallback)
     thisPlugin->myInitCallback(*thisPlugin);
 
-  return thisPlugin->initThreadEntry();
+  // Set optind to 0 so plugins can use getopt
+  optind = 0;
+
+  return (*thisPlugin->myInit)(thisPlugin->myArgc, thisPlugin->myArgvCopy);
 }
 
 void* Plugin::startThreadEntry(void* plugin)

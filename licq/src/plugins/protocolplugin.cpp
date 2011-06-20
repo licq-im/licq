@@ -31,7 +31,6 @@ ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
   Plugin(lib, pluginThread, icq ? "LProto_icq" : "LProto")
 {
   std::string prefix = (icq ? "LProto_icq" : "LProto");
-  loadSymbol(prefix + "_Init", myInit);
   loadSymbol(prefix + "_PPID", myPpid);
   loadSymbol(prefix + "_SendFuncs", mySendFunctions);
 
@@ -51,11 +50,6 @@ ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
 ProtocolPlugin::~ProtocolPlugin()
 {
   // Empty
-}
-
-bool ProtocolPlugin::init(void (*callback)(const Plugin&))
-{
-  return callInitInThread(callback);
 }
 
 void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
@@ -96,9 +90,4 @@ string ProtocolPlugin::defaultServerHost() const
 int ProtocolPlugin::defaultServerPort() const
 {
   return myDefaultPort;
-}
-
-bool ProtocolPlugin::initThreadEntry()
-{
-  return (*myInit)();
 }

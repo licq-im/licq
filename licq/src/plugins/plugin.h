@@ -50,6 +50,8 @@ public:
   /// Get the read end of the pipe used to communicate with the plugin.
   int getReadPipe() const { return myPipe.getReadFd(); }
 
+  bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL);
+
   /**
    * Start the plugin in a new thread.
    * @param startCallback will be called in the plugin's thread just before the
@@ -87,8 +89,6 @@ public:
   void shutdown();
 
 protected:
-  bool callInitInThread(void (*initCallback)(const Plugin&) = NULL);
-
   DynamicLibrary::Ptr myLib;
   Licq::Pipe myPipe;
 
@@ -97,7 +97,6 @@ protected:
 
 private:
   static bool initThreadEntry(void* plugin);
-  virtual bool initThreadEntry() = 0;
 
   static void* startThreadEntry(void* plugin);
 
@@ -107,10 +106,15 @@ private:
   void (*myExitCallback)(const Plugin&);
 
   // Function pointers
+  bool (*myInit)(int, char**);
   int (*myMain)();
   const char* (*myName)();
   const char* (*myVersion)();
   const char* (*myConfigFile)();
+
+  int myArgc;
+  char** myArgv;
+  char** myArgvCopy;
 
   // Unique plugin id
   unsigned short myId;
