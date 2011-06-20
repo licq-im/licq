@@ -52,6 +52,11 @@ public:
   void pushEvent(Licq::Event* event);
   Licq::Event* popEvent();
 
+  /// Check if the plugin is interested in the @a signal.
+  bool wantSignal(unsigned long signal) const;
+
+  void setSignalMask(unsigned long mask);
+
   // From Licq::GeneralPlugin
   bool isEnabled() const;
   std::string description() const;
@@ -67,6 +72,7 @@ private:
   char** myArgv;
   char** myArgvCopy;
 
+  unsigned long mySignalMask;
   std::queue<Licq::PluginSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 

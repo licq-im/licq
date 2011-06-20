@@ -116,6 +116,14 @@ TEST_F(GeneralPluginFixture, enableDisable)
   EXPECT_EQ('0', getPipeChar());
 }
 
+TEST_F(GeneralPluginFixture, signalmask)
+{
+  EXPECT_FALSE(plugin.wantSignal(1));
+  plugin.setSignalMask(0xf);
+  EXPECT_TRUE(plugin.wantSignal(1));
+  EXPECT_FALSE(plugin.wantSignal(0x10));
+}
+
 TEST_F(GeneralPluginFixture, pushPopSignal)
 {
   Licq::PluginSignal* signal = (Licq::PluginSignal*)10;

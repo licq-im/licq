@@ -35,7 +35,8 @@ GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
   Plugin(lib, pluginThread, "LP"),
   myArgc(0),
   myArgv(NULL),
-  myArgvCopy(NULL)
+  myArgvCopy(NULL),
+  mySignalMask(0)
 {
   loadSymbol("LP_Init", myInit);
   loadSymbol("LP_Status", myStatus);
@@ -116,6 +117,16 @@ Licq::Event* GeneralPlugin::popEvent()
     return event;
   }
   return NULL;
+}
+
+bool GeneralPlugin::wantSignal(unsigned long signalType) const
+{
+  return (signalType & mySignalMask);
+}
+
+void GeneralPlugin::setSignalMask(unsigned long signalMask)
+{
+  mySignalMask = signalMask;
 }
 
 bool GeneralPlugin::isEnabled() const

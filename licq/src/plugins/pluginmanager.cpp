@@ -445,10 +445,11 @@ bool PluginManager::startProtocolPlugin(const std::string& name)
   return false;
 }
 
-template<typename PluginsList>
-static int registerPlugin(PluginsList& plugins, unsigned long signalMask)
+int PluginManager::registerGeneralPlugin(unsigned long signalMask)
 {
-  BOOST_FOREACH(typename PluginsList::value_type plugin, plugins)
+  MutexLocker locker(myGeneralPluginsMutex);
+
+  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
   {
     if (plugin->isThisThread())
     {
@@ -461,10 +462,11 @@ static int registerPlugin(PluginsList& plugins, unsigned long signalMask)
   return -1;
 }
 
-template<typename PluginsList>
-static void unregisterPlugin(PluginsList& plugins)
+void PluginManager::unregisterGeneralPlugin()
 {
-  BOOST_FOREACH(typename PluginsList::value_type plugin, plugins)
+  MutexLocker locker(myGeneralPluginsMutex);
+
+  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
   {
     if (plugin->isThisThread())
     {
@@ -474,30 +476,36 @@ static void unregisterPlugin(PluginsList& plugins)
   }
 
   gLog.error(tr("Invalid thread in unregistration attempt"));
-}
 
-int PluginManager::registerGeneralPlugin(unsigned long signalMask)
-{
-  MutexLocker locker(myGeneralPluginsMutex);
-  return registerPlugin(myGeneralPlugins, signalMask);
-}
-
-void PluginManager::unregisterGeneralPlugin()
-{
-  MutexLocker locker(myGeneralPluginsMutex);
-  unregisterPlugin(myGeneralPlugins);
 }
 
 int PluginManager::registerProtocolPlugin()
 {
   MutexLocker locker(myProtocolPluginsMutex);
-  return registerPlugin(myProtocolPlugins, 0xffffffff);
+
+  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
+  {
+    if (plugin->isThisThread())
+    {
+      return plugin->getReadPipe();
+    }
+  }
+
+  gLog.error(tr("Invalid thread in registration attempt"));
+  return -1;
 }
 
 void PluginManager::unregisterProtocolPlugin()
 {
   MutexLocker locker(myProtocolPluginsMutex);
-  unregisterPlugin(myProtocolPlugins);
+
+  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
+  {
+    if (plugin->isThisThread())
+      return;
+  }
+
+  gLog.error(tr("Invalid thread in unregistration attempt"));
 }
 
 DynamicLibrary::Ptr PluginManager::loadPlugin(
