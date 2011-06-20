@@ -64,7 +64,7 @@ struct ProtocolPluginFixture : public ::testing::Test
   ProtocolPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(myLib, myThread)
+    plugin(1, myLib, myThread)
   {
     // Empty
   }
@@ -87,7 +87,7 @@ TEST(ProtocolPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(ProtocolPlugin plugin(lib, thread));
+  ASSERT_NO_THROW(ProtocolPlugin plugin(1, lib, thread));
 }
 
 TEST_F(ProtocolPluginFixture, callApiFunctions)

@@ -41,7 +41,7 @@ class GeneralPlugin : public Plugin,
 public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
-  GeneralPlugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread);
+  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread);
   virtual ~GeneralPlugin();
 
   void pushSignal(Licq::PluginSignal* signal);

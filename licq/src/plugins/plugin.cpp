@@ -30,7 +30,7 @@ extern char** global_argv;
 using namespace LicqDaemon;
 using namespace std;
 
-Plugin::Plugin(DynamicLibrary::Ptr lib,
+Plugin::Plugin(int id, DynamicLibrary::Ptr lib,
                PluginThread::Ptr pluginThread,
                const std::string& prefix) :
   myLib(lib),
@@ -41,7 +41,7 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
   myArgc(0),
   myArgv(NULL),
   myArgvCopy(NULL),
-  myId(INVALID_ID)
+  myId(id)
 {
   loadSymbol(prefix + "_Init", myInit);
   loadSymbol(prefix + "_Main", myMain);

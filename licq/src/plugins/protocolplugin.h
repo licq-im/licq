@@ -40,7 +40,7 @@ class ProtocolPlugin : public Plugin,
 public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
-  ProtocolPlugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
+  ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
                  bool icq = false);
   virtual ~ProtocolPlugin();
 

@@ -38,12 +38,10 @@ namespace LicqDaemon
 class Plugin : public virtual Licq::Plugin
 {
 public:
-  static const unsigned short INVALID_ID = USHRT_MAX;
-
   typedef boost::
   error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 
-  Plugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
+  Plugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
          const std::string& prefix);
   virtual ~Plugin();
 
@@ -76,9 +74,6 @@ public:
 
   /// Check if @a thread is the plugin's thread.
   inline bool isThread(const pthread_t& thread) const;
-
-  /// Set the plugin's unique id.
-  void setId(unsigned short id) { myId = id; }
 
   // From Licq::Plugin
   int id() const;
@@ -117,7 +112,7 @@ private:
   char** myArgvCopy;
 
   // Unique plugin id
-  unsigned short myId;
+  const int myId;
 };
 
 inline bool Plugin::isThread(const pthread_t& thread) const
