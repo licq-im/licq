@@ -153,11 +153,3 @@ TEST_F(PluginFixture, shutdown)
   plugin.shutdown();
   EXPECT_EQ('X', getPipeChar());
 }
-
-TEST_F(PluginFixture, signalmask)
-{
-  EXPECT_FALSE(plugin.wantSignal(1));
-  plugin.setSignalMask(0xf);
-  EXPECT_TRUE(plugin.wantSignal(1));
-  EXPECT_FALSE(plugin.wantSignal(0x10));
-}

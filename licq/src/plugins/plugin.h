@@ -78,11 +78,6 @@ public:
   /// Set the plugin's unique id.
   void setId(unsigned short id) { myId = id; }
 
-  void setSignalMask(unsigned long mask) { mySignalMask = mask; }
-
-  /// Check if the plugin is interested in the @a signal.
-  inline bool wantSignal(unsigned long signal);
-
   // From Licq::Plugin
   int id() const;
   std::string name() const;
@@ -107,7 +102,6 @@ private:
   static void* startThreadEntry(void* plugin);
 
   PluginThread::Ptr myThread;
-  unsigned long mySignalMask;
   void (*myInitCallback)(const Plugin&);
   void (*myStartCallback)(const Plugin&);
   void (*myExitCallback)(const Plugin&);
@@ -125,11 +119,6 @@ private:
 inline bool Plugin::isThread(const pthread_t& thread) const
 {
   return myThread->isThread(thread);
-}
-
-inline bool Plugin::wantSignal(unsigned long signal)
-{
-  return (signal & mySignalMask);
 }
 
 template<typename SymbolType>

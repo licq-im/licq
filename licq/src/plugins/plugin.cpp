@@ -33,7 +33,6 @@ Plugin::Plugin(DynamicLibrary::Ptr lib,
                const std::string& prefix) :
   myLib(lib),
   myThread(pluginThread),
-  mySignalMask(0),
   myInitCallback(NULL),
   myStartCallback(NULL),
   myExitCallback(NULL),
