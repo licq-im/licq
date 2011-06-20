@@ -32,7 +32,7 @@ const char* LProto_PPID();
 
 const char* LProto_ConfigFile();
 
-bool LProto_Init();
+bool LProto_Init(int, char**);
 
 unsigned long LProto_SendFuncs();
 

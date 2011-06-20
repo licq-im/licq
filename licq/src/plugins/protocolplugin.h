@@ -44,8 +44,6 @@ public:
                  bool icq = false);
   virtual ~ProtocolPlugin();
 
-  bool init(void (*callback)(const Plugin&) = NULL);
-
   void pushSignal(Licq::ProtocolSignal* signal);
   Licq::ProtocolSignal* popSignal();
 
@@ -56,9 +54,6 @@ public:
   int defaultServerPort() const;
 
 private:
-  // From Plugin
-  bool initThreadEntry();
-
   unsigned long myProtocolId;
   std::string myDefaultHost;
   int myDefaultPort;
@@ -66,7 +61,6 @@ private:
   std::queue<Licq::ProtocolSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 
-  bool (*myInit)();
   const char* (*myPpid)();
   unsigned long (*mySendFunctions)();
 };

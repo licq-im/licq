@@ -33,7 +33,7 @@ STR_FUNC(ConfigFile);
 STR_FUNC(PPID);
 STR_FUNC(DefSrvHost);
 
-bool LProto_Init()
+bool LProto_Init(int, char**)
 {
   return true;
 }
@@ -97,7 +97,7 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
   EXPECT_EQ("ConfigFile", plugin.configFile());
   unsigned long ppid = 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D';
   EXPECT_EQ(ppid, plugin.protocolId());
-  EXPECT_TRUE(plugin.init());
+  EXPECT_TRUE(plugin.callInit());
   EXPECT_EQ(42u, plugin.capabilities());
   EXPECT_EQ("DefSrvHost", plugin.defaultServerHost());
   EXPECT_EQ(12345, plugin.defaultServerPort());
@@ -105,7 +105,7 @@ TEST_F(ProtocolPluginFixture, callApiFunctions)
 
 TEST_F(ProtocolPluginFixture, init)
 {
-  EXPECT_TRUE(plugin.init());
+  EXPECT_TRUE(plugin.callInit());
 }
 
 TEST_F(ProtocolPluginFixture, runPlugin)

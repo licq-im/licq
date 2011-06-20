@@ -56,7 +56,7 @@ const char* LProto_icq_PPID()
   return ppid;
 }
 
-bool LProto_icq_Init()
+bool LProto_icq_Init(int, char**)
 {
   gIcqProtocol.initialize();
   return true;

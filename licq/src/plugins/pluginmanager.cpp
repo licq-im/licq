@@ -93,7 +93,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     GeneralPlugin::Ptr plugin(new GeneralPlugin(lib, pluginThread));
 
     // Let the plugin initialize itself
-    if (!plugin->init(argc, argv, &initPluginCallback))
+    if (!plugin->callInit(argc, argv, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
           plugin->name().c_str());
@@ -143,7 +143,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     ProtocolPlugin::Ptr plugin(new ProtocolPlugin(lib, pluginThread, icq));
 
     // Let the plugin initialize itself
-    if (!plugin->init(&initPluginCallback))
+    if (!plugin->callInit(0, NULL, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
           plugin->name().c_str());

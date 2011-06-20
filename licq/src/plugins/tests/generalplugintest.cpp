@@ -94,12 +94,12 @@ TEST_F(GeneralPluginFixture, callApiFunctions)
   EXPECT_EQ("Usage", plugin.usage());
   EXPECT_EQ("ConfigFile", plugin.configFile());
 
-  EXPECT_TRUE(plugin.init(0, 0));
+  EXPECT_TRUE(plugin.callInit(0, 0));
 }
 
 TEST_F(GeneralPluginFixture, init)
 {
-  EXPECT_TRUE(plugin.init(0, NULL));
+  EXPECT_TRUE(plugin.callInit(0, NULL));
 }
 
 TEST_F(GeneralPluginFixture, runPlugin)

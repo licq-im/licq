@@ -44,8 +44,6 @@ public:
   GeneralPlugin(DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread);
   virtual ~GeneralPlugin();
 
-  bool init(int argc, char** argv, void (*callback)(const Plugin&) = NULL);
-
   void pushSignal(Licq::PluginSignal* signal);
   Licq::PluginSignal* popSignal();
 
@@ -65,13 +63,6 @@ public:
   void disable();
 
 private:
-  // From Plugin
-  bool initThreadEntry();
-
-  int myArgc;
-  char** myArgv;
-  char** myArgvCopy;
-
   unsigned long mySignalMask;
   std::queue<Licq::PluginSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
@@ -80,7 +71,6 @@ private:
   Licq::Mutex myEventsMutex;
 
   // Function pointers
-  bool (*myInit)(int, char**);
   const char* (*myStatus)();
   const char* (*myDescription)();
   const char* (*myUsage)();

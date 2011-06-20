@@ -43,7 +43,7 @@ const char* LProto_PPID()
   return szId;
 }
 
-bool LProto_Init()
+bool LProto_Init(int, char**)
 {
   return true;
 }
