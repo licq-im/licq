@@ -47,6 +47,17 @@ class Handler;
 class SessionManager;
 class UserToVCard;
 
+class JClient : private boost::noncopyable,
+                public gloox::Client
+{
+public:
+  JClient(const gloox::JID& jid, const std::string& password, int port=-1);
+  virtual ~JClient();
+
+protected:
+  virtual bool checkStreamVersion(const std::string& version);
+};
+
 class Client : private boost::noncopyable,
                public gloox::ConnectionListener,
                public gloox::RosterListener,
@@ -120,7 +131,7 @@ private:
   Handler& myHandler;
   SessionManager* mySessionManager;
   gloox::JID myJid;
-  gloox::Client myClient;
+  JClient myClient;
   gloox::ConnectionTCPClient* myTcpClient;
   gloox::RosterManager* myRosterManager;
   gloox::VCardManager myVCardManager;

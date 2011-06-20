@@ -46,6 +46,26 @@ using Licq::gDaemon;
 using Licq::gLog;
 using std::string;
 
+JClient::JClient(const gloox::JID& jid, const string& password, int port) :
+  gloox::Client(jid, password, port)
+{
+  // EMPTY
+}
+
+JClient::~JClient()
+{
+  // EMPTY
+}
+
+bool JClient::checkStreamVersion(const string& version)
+{
+  // do not consider absence of the version as an error
+  if (version.empty())
+    return true;
+
+  return gloox::Client::checkStreamVersion(version);
+}
+
 Client::Client(const Config& config, Handler& handler, const string& username,
     const string& password, const string& host, int port) :
   myHandler(handler),
