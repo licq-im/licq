@@ -59,7 +59,7 @@ struct GeneralPluginFixture : public ::testing::Test
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(myLib, myThread)
+    plugin(1, myLib, myThread)
   {
     // Empty
   }
@@ -82,7 +82,7 @@ TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(GeneralPlugin plugin(lib, thread));
+  ASSERT_NO_THROW(GeneralPlugin plugin(1, lib, thread));
 }
 
 TEST_F(GeneralPluginFixture, callApiFunctions)

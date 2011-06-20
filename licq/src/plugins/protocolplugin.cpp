@@ -25,10 +25,10 @@ using Licq::MutexLocker;
 using namespace std;
 using namespace LicqDaemon;
 
-ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
+ProtocolPlugin::ProtocolPlugin(int id, DynamicLibrary::Ptr lib,
                                PluginThread::Ptr pluginThread,
                                bool icq) :
-  Plugin(lib, pluginThread, icq ? "LProto_icq" : "LProto")
+    Plugin(id, lib, pluginThread, icq ? "LProto_icq" : "LProto")
 {
   std::string prefix = (icq ? "LProto_icq" : "LProto");
   loadSymbol(prefix + "_PPID", myPpid);

@@ -27,9 +27,9 @@ using Licq::MutexLocker;
 using namespace LicqDaemon;
 using namespace std;
 
-GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
+GeneralPlugin::GeneralPlugin(int id, DynamicLibrary::Ptr lib,
                              PluginThread::Ptr pluginThread) :
-  Plugin(lib, pluginThread, "LP"),
+  Plugin(id, lib, pluginThread, "LP"),
   mySignalMask(0)
 {
   loadSymbol("LP_Status", myStatus);

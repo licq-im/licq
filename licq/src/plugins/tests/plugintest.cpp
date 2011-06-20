@@ -50,8 +50,8 @@ using namespace LicqDaemon;
 class PluginTest : public Plugin
 {
 public:
-  PluginTest(DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
-    Plugin(lib, thread, "Test") { /* Empty */ }
+  PluginTest(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
+    Plugin(id, lib, thread, "Test") { /* Empty */ }
 };
 
 struct PluginFixture : public ::testing::Test
@@ -63,7 +63,7 @@ struct PluginFixture : public ::testing::Test
   PluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(myLib, myThread)
+    plugin(1, myLib, myThread)
   {
     // Empty
   }
@@ -86,21 +86,16 @@ TEST(Plugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(PluginTest plugin(lib, thread));
+  ASSERT_NO_THROW(PluginTest plugin(1, lib, thread));
 }
 
 TEST_F(PluginFixture, callApiFunctions)
 {
+  EXPECT_EQ(1, plugin.id());
   EXPECT_EQ("Name", plugin.name());
   EXPECT_EQ("Version", plugin.version());
   EXPECT_EQ("ConfigFile", plugin.configFile());
   EXPECT_EQ("", plugin.libraryName());
-}
-
-TEST_F(PluginFixture, getSetId)
-{
-  plugin.setId(1);
-  EXPECT_EQ(1, plugin.id());
 }
 
 TEST_F(PluginFixture, runPlugin)

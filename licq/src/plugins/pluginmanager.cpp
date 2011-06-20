@@ -89,8 +89,17 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
 
   try
   {
+    // Generate an ID for the plugin
+    int pluginId;
+    {
+      // Lock both plugin mutexes to avoid race for myNextPluginId
+      MutexLocker generalLocker(myGeneralPluginsMutex);
+      MutexLocker protocolLocker(myProtocolPluginsMutex);
+      pluginId = myNextPluginId++;
+    }
+
     // Create plugin and resolve all symbols
-    GeneralPlugin::Ptr plugin(new GeneralPlugin(lib, pluginThread));
+    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginId, lib, pluginThread));
 
     // Let the plugin initialize itself
     if (!plugin->callInit(argc, argv, &initPluginCallback))
@@ -100,16 +109,11 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       throw std::exception();
     }
 
-    // Lock both to avoid race for myNextPluginId
-    MutexLocker generalLocker(myGeneralPluginsMutex);
-    MutexLocker protocolLocker(myProtocolPluginsMutex);
-
-    // Give plugin a unique ID and then directly unlock protocol lock
-    plugin->setId(myNextPluginId++);
-    protocolLocker.unlock();
-
     if (keep)
+    {
+      MutexLocker generalLocker(myGeneralPluginsMutex);
       myGeneralPlugins.push_back(plugin);
+    }
 
     return plugin;
   }
@@ -139,8 +143,27 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
 
   try
   {
+    // Generate an ID for the plugin
+    int pluginId;
+    {
+      // Lock both plugin mutexes to avoid race for myNextPluginId
+      MutexLocker generalLocker(myGeneralPluginsMutex);
+      MutexLocker protocolLocker(myProtocolPluginsMutex);
+      pluginId = myNextPluginId++;
+    }
+
     // Create plugin and resolve all symbols
-    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(lib, pluginThread, icq));
+    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginId, lib, pluginThread, icq));
+
+    {
+      // Check if we already got a plugin for this protocol
+      MutexLocker protocolLocker(myProtocolPluginsMutex);
+      BOOST_FOREACH(ProtocolPlugin::Ptr proto, myProtocolPlugins)
+      {
+        if (proto->protocolId() == plugin->protocolId())
+          throw std::exception();
+      }
+    }
 
     // Let the plugin initialize itself
     if (!plugin->callInit(0, NULL, &initPluginCallback))
@@ -150,24 +173,11 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
       throw std::exception();
     }
 
-    // Lock both to avoid race for myNextPluginId
-    MutexLocker generalLocker(myGeneralPluginsMutex);
-    MutexLocker protocolLocker(myProtocolPluginsMutex);
-
-    // Check if the plugin is already loaded
-    BOOST_FOREACH(ProtocolPlugin::Ptr proto, myProtocolPlugins)
-    {
-      if (proto->protocolId() == plugin->protocolId())
-        throw std::exception();
-    }
-
-    // Give plugin a unique ID and then directly unlock general lock
-    plugin->setId(myNextPluginId++);
-    generalLocker.unlock();
-
     if (keep)
+    {
+      MutexLocker protocolLocker(myProtocolPluginsMutex);
       myProtocolPlugins.push_back(plugin);
-    protocolLocker.unlock();
+    }
 
     // Let the plugins know about the new protocol plugin
     myPluginEventHandler.pushGeneralSignal(
@@ -298,7 +308,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   }
 
   gLog.error(tr("Invalid plugin id (%d) in exit signal"), exitId);
-  return Plugin::INVALID_ID;
+  return 0;
 }
 
 void PluginManager::cancelAllPlugins()
