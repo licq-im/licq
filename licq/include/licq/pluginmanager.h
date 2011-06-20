@@ -32,12 +32,6 @@ namespace Licq
 {
 typedef std::list<std::string> StringList;
 
-/// A list of pointers to GeneralPlugin instances.
-typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
-
-/// A list of pointers to ProtocolPlugin instances.
-typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
-
 /**
  * The class responsible for handling plugins.
  *

@@ -17,49 +17,72 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "plugin.h"
+#include <licq/plugin.h>
 
 #include <cassert>
+#include <cstdlib>
 #include <cstring>
-#include <pthread.h>
 #include <unistd.h>
+
+#include <licq/pipe.h>
+
+#include "utils/dynamiclibrary.h"
+#include "pluginthread.h"
 
 // From licq.cpp
 extern char** global_argv;
 
-using namespace LicqDaemon;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
+using namespace Licq;
 using namespace std;
 
-Plugin::Plugin(int id, DynamicLibrary::Ptr lib,
-               PluginThread::Ptr pluginThread,
-               const std::string& prefix) :
-  myLib(lib),
-  myThread(pluginThread),
-  myInitCallback(NULL),
-  myStartCallback(NULL),
-  myExitCallback(NULL),
-  myArgc(0),
-  myArgv(NULL),
-  myArgvCopy(NULL),
-  myId(id)
-{
-  loadSymbol(prefix + "_Init", myInit);
-  loadSymbol(prefix + "_Main", myMain);
-  loadSymbol(prefix + "_Name", myName);
-  loadSymbol(prefix + "_Version", myVersion);
 
-  try
-  {
-    // ConfigFile is not required
-    loadSymbol(prefix + "_ConfigFile", myConfigFile);
-  }
-  catch (DynamicLibrary::Exception&)
-  {
-    myConfigFile = NULL;
-  }
+class Plugin::Private
+{
+public:
+  Private(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread);
+  ~Private();
+
+  static bool initThreadEntry(void* plugin);
+  static void* startThreadEntry(void* plugin);
+
+  const int myId;
+  DynamicLibrary::Ptr myLib;
+  Licq::Pipe myPipe;
+
+  PluginThread::Ptr myThread;
+  void (*myInitCallback)(const Plugin&);
+  void (*myStartCallback)(const Plugin&);
+  void (*myExitCallback)(const Plugin&);
+
+  // Function pointers
+  bool (*myInit)(int, char**);
+  int (*myMain)();
+  const char* (*myName)();
+  const char* (*myVersion)();
+  const char* (*myConfigFile)();
+
+  int myArgc;
+  char** myArgv;
+  char** myArgvCopy;
+};
+
+Plugin::Private::Private(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread)
+  : myId(id),
+    myLib(lib),
+    myThread(thread),
+    myInitCallback(NULL),
+    myStartCallback(NULL),
+    myExitCallback(NULL),
+    myArgc(0),
+    myArgv(NULL),
+    myArgvCopy(NULL)
+{
+  // Empty
 }
 
-Plugin::~Plugin()
+Plugin::Private::~Private()
 {
   for (int i = 0; i < myArgc; ++i)
     ::free(myArgv[i]);
@@ -67,49 +90,84 @@ Plugin::~Plugin()
   delete[] myArgvCopy;
 }
 
+Plugin::Plugin(int id, LibraryPtr lib, ThreadPtr thread, const string& prefix)
+  : myPrivate(new Private(id, lib, thread))
+{
+  LICQ_D();
+
+  loadSymbol(prefix + "_Init", (void**)(&d->myInit));
+  loadSymbol(prefix + "_Main", (void**)(&d->myMain));
+  loadSymbol(prefix + "_Name", (void**)(&d->myName));
+  loadSymbol(prefix + "_Version", (void**)(&d->myVersion));
+
+  try
+  {
+    // ConfigFile is not required
+    loadSymbol(prefix + "_ConfigFile", (void**)(&d->myConfigFile));
+  }
+  catch (DynamicLibrary::Exception&)
+  {
+    d->myConfigFile = NULL;
+  }
+}
+
+Plugin::~Plugin()
+{
+  delete myPrivate;
+}
+
+bool Plugin::isThread(const pthread_t& thread) const
+{
+  LICQ_D();
+  return d->myThread->isThread(thread);
+}
+
 bool Plugin::callInit(int argc, char** argv,
                          void (*callback)(const Plugin&))
 {
-  assert(myInitCallback == NULL);
+  LICQ_D();
+  assert(d->myInitCallback == NULL);
 
   const size_t size = argc + 2;
 
-  myArgv = new char*[size];
-  myArgvCopy = new char*[size];
+  d->myArgv = new char*[size];
+  d->myArgvCopy = new char*[size];
 
-  myArgv[size - 1] = NULL;
+  d->myArgv[size - 1] = NULL;
 
   // TODO: use licq or libname?
-  //myArgv[0] = ::strdup(myLib->getName().c_str());
-  myArgv[0] = ::strdup(global_argv[0]);
+  //d->myArgv[0] = ::strdup(d->myLib->getName().c_str());
+  d->myArgv[0] = ::strdup(global_argv[0]);
 
   for (int i = 0; i < argc; ++i)
-    myArgv[i + 1] = ::strdup(argv[i]);
+    d->myArgv[i + 1] = ::strdup(argv[i]);
 
-  myArgc = argc + 1;
+  d->myArgc = argc + 1;
 
   // We need to create a copy of myArgv and pass that to the plugin, since
   // e.g. KDE changes the pointers in argv (e.g. to strip the path in argv[0])
   // and that messes up free, causing SIGSEGV in the destructor.
-  ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
+  ::memcpy(d->myArgvCopy, d->myArgv, size * sizeof(char*));
 
-  myInitCallback = callback;
-  return myThread->initPlugin(&Plugin::initThreadEntry, this);
+  d->myInitCallback = callback;
+  return d->myThread->initPlugin(&Private::initThreadEntry, this);
 }
 
 void Plugin::startThread(
     void (*startCallback)(const Plugin& plugin),
     void (*exitCallback)(const Plugin& plugin))
 {
-  assert(myStartCallback == NULL && myExitCallback == NULL);
-  myStartCallback = startCallback;
-  myExitCallback = exitCallback;
-  myThread->startPlugin(startThreadEntry, this);
+  LICQ_D();
+  assert(d->myStartCallback == NULL && d->myExitCallback == NULL);
+  d->myStartCallback = startCallback;
+  d->myExitCallback = exitCallback;
+  d->myThread->startPlugin(&Private::startThreadEntry, this);
 }
 
 int Plugin::joinThread()
 {
-  void* result = myThread->join();
+  LICQ_D();
+  void* result = d->myThread->join();
   if (result != NULL && result != PTHREAD_CANCELED)
   {
     int* retval = static_cast<int*>(result);
@@ -123,67 +181,103 @@ int Plugin::joinThread()
 
 void Plugin::cancelThread()
 {
-  myThread->cancel();
+  LICQ_D();
+  d->myThread->cancel();
 }
 
 int Plugin::id() const
 {
-  return myId;
+  LICQ_D_CONST();
+  return d->myId;
 }
 
 string Plugin::name() const
 {
-  return (*myName)();
+  LICQ_D_CONST();
+  return (*d->myName)();
 }
 
 string Plugin::version() const
 {
-  return (*myVersion)();
+  LICQ_D_CONST();
+  return (*d->myVersion)();
 }
 
 string Plugin::configFile() const
 {
-  if (myConfigFile)
-    return (*myConfigFile)();
+  LICQ_D_CONST();
+  if (d->myConfigFile != NULL)
+    return (*d->myConfigFile)();
   else
     return string();
 }
 
-string Plugin::libraryName() const
+const string& Plugin::libraryName() const
 {
-  return myLib->getName();
+  LICQ_D_CONST();
+  return d->myLib->getName();
 }
 
 void Plugin::shutdown()
 {
-  myPipe.putChar(PipeShutdown);
+  LICQ_D();
+  d->myPipe.putChar(PipeShutdown);
 }
 
-bool Plugin::initThreadEntry(void* plugin)
+int Plugin::getReadPipe() const
+{
+  LICQ_D_CONST();
+  return d->myPipe.getReadFd();
+}
+
+void Plugin::notify(char c)
+{
+  LICQ_D();
+  d->myPipe.putChar(c);
+}
+
+bool Plugin::Private::initThreadEntry(void* plugin)
 {
   Plugin* thisPlugin = static_cast<Plugin*>(plugin);
+  Plugin::Private* const d = thisPlugin->myPrivate;
 
-  if (thisPlugin->myInitCallback)
-    thisPlugin->myInitCallback(*thisPlugin);
+  if (d->myInitCallback)
+    d->myInitCallback(*thisPlugin);
 
   // Set optind to 0 so plugins can use getopt
   optind = 0;
 
-  return (*thisPlugin->myInit)(thisPlugin->myArgc, thisPlugin->myArgvCopy);
+  return (*d->myInit)(d->myArgc, d->myArgvCopy);
 }
 
-void* Plugin::startThreadEntry(void* plugin)
+void* Plugin::Private::startThreadEntry(void* plugin)
 {
   Plugin* thisPlugin = static_cast<Plugin*>(plugin);
+  Plugin::Private* const d = thisPlugin->myPrivate;
 
-  if (thisPlugin->myStartCallback)
-    (*thisPlugin->myStartCallback)(*thisPlugin);
+  if (d->myStartCallback != NULL)
+    (*d->myStartCallback)(*thisPlugin);
 
   int* retval = new int;
-  *retval = thisPlugin->myMain();
+  *retval = d->myMain();
 
-  if (thisPlugin->myExitCallback)
-    (*thisPlugin->myExitCallback)(*thisPlugin);
+  if (d->myExitCallback != NULL)
+    (*d->myExitCallback)(*thisPlugin);
 
   return retval;
 }
+
+void Plugin::loadSymbol(const std::string& name, void** symbol)
+{
+  LICQ_D();
+  try
+  {
+    d->myLib->getSymbol(name, symbol);
+  }
+  catch (DynamicLibrary::Exception& ex)
+  {
+    ex << errinfo_symbol_name(name);
+    throw;
+  }
+}
+

@@ -36,7 +36,13 @@
 #include <iterator>
 #include <glob.h>
 
+#include "../utils/dynamiclibrary.h"
+#include "pluginthread.h"
+
+using Licq::GeneralPlugin;
 using Licq::MutexLocker;
+using Licq::Plugin;
+using Licq::ProtocolPlugin;
 using Licq::StringList;
 using Licq::gDaemon;
 using Licq::gLog;
@@ -99,7 +105,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     }
 
     // Create plugin and resolve all symbols
-    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginId, lib, pluginThread));
+    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginId, lib, pluginThread), deletePlugin);
 
     // Let the plugin initialize itself
     if (!plugin->callInit(argc, argv, &initPluginCallback))
@@ -153,7 +159,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     }
 
     // Create plugin and resolve all symbols
-    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginId, lib, pluginThread, icq));
+    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginId, lib, pluginThread, icq), deletePlugin);
 
     {
       // Check if we already got a plugin for this protocol
@@ -244,6 +250,11 @@ void PluginManager::pluginHasExited(unsigned short id)
   myExitListSignal.signal();
 }
 
+void PluginManager::deletePlugin(Plugin* plugin)
+{
+  delete plugin;
+}
+
 unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
 {
   MutexLocker generalLocker(myGeneralPluginsMutex);
@@ -280,7 +291,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   protocolLocker.relock();
 
   // Check general plugins first
-  for (GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
+  for (Licq::GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
        plugin != myGeneralPlugins.end(); ++plugin)
   {
     if ((*plugin)->id() == exitId)
@@ -294,7 +305,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   }
 
   // Then check protocol plugins
-  for (ProtocolPluginsList::iterator plugin = myProtocolPlugins.begin();
+  for (Licq::ProtocolPluginsList::iterator plugin = myProtocolPlugins.begin();
        plugin != myProtocolPlugins.end(); ++plugin)
   {
     if ((*plugin)->id() == exitId)

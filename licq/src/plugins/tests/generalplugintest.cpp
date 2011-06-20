@@ -17,14 +17,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "../generalplugin.h"
+#include <licq/generalplugin.h>
 #include <licq/pluginbase.h>
 
 #include <gtest/gtest.h>
 
-// licq.cpp
-static const char* argv0 = "test";
-char** global_argv = const_cast<char**>(&argv0);
+#include "../../utils/dynamiclibrary.h"
+#include "../pluginthread.h"
 
 // Plugin API functions
 #define STR_FUNC(name)                          \
@@ -48,13 +47,32 @@ int LP_Main()
   return 20;
 }
 
-using namespace LicqDaemon;
+using Licq::GeneralPlugin;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
+
+class GeneralPluginTest : public GeneralPlugin
+{
+public:
+  GeneralPluginTest(int id, LibraryPtr lib, ThreadPtr thread) :
+      GeneralPlugin(id, lib, thread)
+  { /* Empty */ }
+
+  // Un-protect functions so we can test them without being the PluginManager
+  using GeneralPlugin::getReadPipe;
+  using GeneralPlugin::callInit;
+  using GeneralPlugin::joinThread;
+  using GeneralPlugin::popEvent;
+  using GeneralPlugin::popSignal;
+  using GeneralPlugin::setSignalMask;
+  using GeneralPlugin::startThread;
+};
 
 struct GeneralPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  GeneralPlugin plugin;
+  GeneralPluginTest plugin;
 
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
@@ -82,7 +100,7 @@ TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(GeneralPlugin plugin(1, lib, thread));
+  ASSERT_NO_THROW(GeneralPluginTest plugin(1, lib, thread));
 }
 
 TEST_F(GeneralPluginFixture, callApiFunctions)

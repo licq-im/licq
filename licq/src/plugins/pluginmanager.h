@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,19 +20,20 @@
 #ifndef LICQDAEMON_PLUGINMANAGER_H
 #define LICQDAEMON_PLUGINMANAGER_H
 
-#include "generalplugin.h"
-#include "plugineventhandler.h"
-#include "pluginthread.h"
-#include "protocolplugin.h"
-
 #include <licq/pluginmanager.h>
-#include <licq/thread/condition.h>
-#include <licq/thread/mutex.h>
-#include "utils/dynamiclibrary.h"
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <queue>
+
+#include <licq/generalplugin.h>
+#include <licq/protocolplugin.h>
+#include <licq/thread/condition.h>
+#include <licq/thread/mutex.h>
+
+#include "../utils/dynamiclibrary.h"
+#include "plugineventhandler.h"
+#include "pluginthread.h"
 
 namespace LicqDaemon
 {
@@ -48,9 +49,9 @@ public:
 
   void setGuiThread(PluginThread::Ptr guiThread) { myGuiThread = guiThread; }
 
-  GeneralPlugin::Ptr loadGeneralPlugin(
+  Licq::GeneralPlugin::Ptr loadGeneralPlugin(
       const std::string& name, int argc, char** argv, bool keep = true);
-  ProtocolPlugin::Ptr loadProtocolPlugin(
+  Licq::ProtocolPlugin::Ptr loadProtocolPlugin(
       const std::string& name, bool keep = true, bool icq = false);
 
   /// Start all plugins that have been loaded
@@ -99,12 +100,15 @@ public:
   void unregisterProtocolPlugin();
 
 private:
+  /// Helper function to delete a plugin
+  static void deletePlugin(Licq::Plugin* plugin);
+
   DynamicLibrary::Ptr loadPlugin(PluginThread::Ptr pluginThread,
                                  const std::string& name,
                                  const std::string& prefix);
 
-  void startPlugin(GeneralPlugin::Ptr plugin);
-  void startPlugin(ProtocolPlugin::Ptr plugin);
+  void startPlugin(Licq::GeneralPlugin::Ptr plugin);
+  void startPlugin(Licq::ProtocolPlugin::Ptr plugin);
 
   void getAvailablePlugins(Licq::StringList& plugins,
                            const std::string& prefix) const;
@@ -112,10 +116,10 @@ private:
   unsigned short myNextPluginId;
   PluginThread::Ptr myGuiThread;
 
-  GeneralPluginsList myGeneralPlugins;
+  Licq::GeneralPluginsList myGeneralPlugins;
   mutable Licq::Mutex myGeneralPluginsMutex;
 
-  ProtocolPluginsList myProtocolPlugins;
+  Licq::ProtocolPluginsList myProtocolPlugins;
   mutable Licq::Mutex myProtocolPluginsMutex;
 
   PluginEventHandler myPluginEventHandler;
