@@ -25,36 +25,6 @@
 #include "../../utils/dynamiclibrary.h"
 #include "../pluginthread.h"
 
-// Plugin API functions
-#define STR_FUNC(name)                          \
-  const char* LProto_ ## name()                 \
-  { static char name[] = #name; return name; }
-
-STR_FUNC(Name);
-STR_FUNC(Version);
-STR_FUNC(ConfigFile);
-STR_FUNC(PPID);
-STR_FUNC(DefSrvHost);
-
-bool LProto_Init(int, char**)
-{
-  return true;
-}
-
-unsigned long LProto_SendFuncs()
-{
-  return 42;
-}
-
-int LProto_DefSrvPort()
-{
-  return 12345;
-}
-
-int LProto_Main()
-{
-  return 10;
-}
 
 using Licq::ProtocolPlugin;
 using LicqDaemon::DynamicLibrary;
@@ -66,6 +36,33 @@ public:
   ProtocolPluginTest(int id, LibraryPtr lib, ThreadPtr thread) :
       ProtocolPlugin(id, lib, thread)
   { /* Empty */ }
+
+  std::string name() const
+  { return "Name"; }
+
+  std::string version() const
+  { return "Version"; }
+
+  std::string configFile() const
+  { return "ConfigFile"; }
+
+  unsigned long protocolId() const
+  { return 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D'; }
+
+  std::string defaultServerHost() const
+  { return "DefSrvHost"; }
+
+  int defaultServerPort() const
+  { return 12345; }
+
+  unsigned long capabilities() const
+  { return 42; }
+
+  bool init(int, char**)
+  { return true; }
+
+  int run()
+  { return 10; }
 
   // Un-protect functions so we can test them without being the PluginManager
   using ProtocolPlugin::getReadPipe;

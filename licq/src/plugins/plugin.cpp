@@ -44,7 +44,10 @@ public:
   Private(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread);
   ~Private();
 
+  /// Entry point for calling init() in plugin's thread
   static bool initThreadEntry(void* plugin);
+
+  /// Entry point for calling run() in plugin's thread
   static void* startThreadEntry(void* plugin);
 
   const int myId;
@@ -55,13 +58,6 @@ public:
   void (*myInitCallback)(const Plugin&);
   void (*myStartCallback)(const Plugin&);
   void (*myExitCallback)(const Plugin&);
-
-  // Function pointers
-  bool (*myInit)(int, char**);
-  int (*myMain)();
-  const char* (*myName)();
-  const char* (*myVersion)();
-  const char* (*myConfigFile)();
 
   int myArgc;
   char** myArgv;
@@ -90,25 +86,10 @@ Plugin::Private::~Private()
   delete[] myArgvCopy;
 }
 
-Plugin::Plugin(int id, LibraryPtr lib, ThreadPtr thread, const string& prefix)
+Plugin::Plugin(int id, LibraryPtr lib, ThreadPtr thread)
   : myPrivate(new Private(id, lib, thread))
 {
-  LICQ_D();
-
-  loadSymbol(prefix + "_Init", (void**)(&d->myInit));
-  loadSymbol(prefix + "_Main", (void**)(&d->myMain));
-  loadSymbol(prefix + "_Name", (void**)(&d->myName));
-  loadSymbol(prefix + "_Version", (void**)(&d->myVersion));
-
-  try
-  {
-    // ConfigFile is not required
-    loadSymbol(prefix + "_ConfigFile", (void**)(&d->myConfigFile));
-  }
-  catch (DynamicLibrary::Exception&)
-  {
-    d->myConfigFile = NULL;
-  }
+  // Empty
 }
 
 Plugin::~Plugin()
@@ -191,25 +172,9 @@ int Plugin::id() const
   return d->myId;
 }
 
-string Plugin::name() const
-{
-  LICQ_D_CONST();
-  return (*d->myName)();
-}
-
-string Plugin::version() const
-{
-  LICQ_D_CONST();
-  return (*d->myVersion)();
-}
-
 string Plugin::configFile() const
 {
-  LICQ_D_CONST();
-  if (d->myConfigFile != NULL)
-    return (*d->myConfigFile)();
-  else
-    return string();
+  return string();
 }
 
 const string& Plugin::libraryName() const
@@ -236,6 +201,12 @@ void Plugin::notify(char c)
   d->myPipe.putChar(c);
 }
 
+DynamicLibrary::Ptr Plugin::library()
+{
+  LICQ_D();
+  return d->myLib;
+}
+
 bool Plugin::Private::initThreadEntry(void* plugin)
 {
   Plugin* thisPlugin = static_cast<Plugin*>(plugin);
@@ -247,7 +218,7 @@ bool Plugin::Private::initThreadEntry(void* plugin)
   // Set optind to 0 so plugins can use getopt
   optind = 0;
 
-  return (*d->myInit)(d->myArgc, d->myArgvCopy);
+  return thisPlugin->init(d->myArgc, d->myArgvCopy);
 }
 
 void* Plugin::Private::startThreadEntry(void* plugin)
@@ -259,25 +230,10 @@ void* Plugin::Private::startThreadEntry(void* plugin)
     (*d->myStartCallback)(*thisPlugin);
 
   int* retval = new int;
-  *retval = d->myMain();
+  *retval = thisPlugin->run();
 
   if (d->myExitCallback != NULL)
     (*d->myExitCallback)(*thisPlugin);
 
   return retval;
 }
-
-void Plugin::loadSymbol(const std::string& name, void** symbol)
-{
-  LICQ_D();
-  try
-  {
-    d->myLib->getSymbol(name, symbol);
-  }
-  catch (DynamicLibrary::Exception& ex)
-  {
-    ex << errinfo_symbol_name(name);
-    throw;
-  }
-}
-

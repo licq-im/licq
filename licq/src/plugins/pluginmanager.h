@@ -93,14 +93,8 @@ public:
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
 
-  int registerGeneralPlugin(unsigned long signalMask);
-  void unregisterGeneralPlugin();
-
-  int registerProtocolPlugin();
-  void unregisterProtocolPlugin();
-
 private:
-  /// Helper function to delete a plugin
+  /// Helper function to delete a plugin and close library in the correct order
   static void deletePlugin(Licq::Plugin* plugin);
 
   DynamicLibrary::Ptr loadPlugin(PluginThread::Ptr pluginThread,

@@ -119,44 +119,6 @@ public:
    */
   virtual bool startProtocolPlugin(const std::string& name) = 0;
 
-  /**
-   * Registers current thread as new general plugin.
-   *
-   * General plugins must call this method when they have started to start
-   * receiving signals.
-   *
-   * @param signalMask A mask indicating which signals the plugin wish to
-   *        receive. Use the constant PluginSignal::SignalAll to receive all signals.
-   * @return The pipe to listen on for notifications.
-   */
-  virtual int registerGeneralPlugin(unsigned long signalMask) = 0;
-
-  /**
-   * Unregisters current thread as a general plugin.
-   *
-   * General plugins must call this method before they shutdown to stop
-   * receiving signal.
-   */
-  virtual void unregisterGeneralPlugin() = 0;
-
-  /**
-   * Registers current thread as a new protocol plugin.
-   *
-   * Protocol plugins must call this method when they have started to start
-   * receiving signals.
-   *
-   * @return The pipe to listen on for notifications.
-   */
-  virtual int registerProtocolPlugin() = 0;
-
-  /**
-   * Unregisters current thread as a protocol plugin.
-   *
-   * Protocol plugins must call this method before they shutdown to stop
-   * receiving signal.
-   */
-  virtual void unregisterProtocolPlugin() = 0;
-
 protected:
   virtual ~PluginManager() { /* Empty */ }
 };

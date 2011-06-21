@@ -28,7 +28,6 @@
 namespace LicqDaemon
 {
 class PluginEventHandler;
-class PluginManager;
 }
 
 namespace Licq
@@ -37,7 +36,10 @@ class Event;
 class PluginSignal;
 
 /**
- * A GeneralPlugin is a plugin that isn't a ProtocolPlugin, e.g. the GUI.
+ * Base class for general plugins
+ *
+ * All general plugins must have a subclass implementing this interface
+ * See documentation for Licq::Plugin for additional information
  */
 class GeneralPlugin : public Plugin
 {
@@ -51,13 +53,13 @@ public:
   typedef boost::shared_ptr<GeneralPlugin> Ptr;
 
   /// Get the plugin's status.
-  bool isEnabled() const;
+  virtual bool isEnabled() const;
 
   /// Get the plugin's description
-  std::string description() const;
+  virtual std::string description() const = 0;
 
   /// Get the plugin's usage instructions
-  std::string usage() const;
+  virtual std::string usage() const = 0;
 
   /// Ask the plugin to enable itself
   void enable();
@@ -70,6 +72,7 @@ public:
 
   /**
    * Push a signal to this plugin
+   * Called by anyone
    *
    * The signal will be added to the signal queue and the plugin will be
    * notified via its pipe.
@@ -83,6 +86,7 @@ public:
 
   /**
    * Push an event to this plugin
+   * Called by anyone
    *
    * The event will be added to the event queue and teh plugin will be
    * notified via its pipe.
@@ -97,6 +101,7 @@ public:
 protected:
   /**
    * Constructor
+   * NOT called in plugin thread
    *
    * @param id Unique id for this plugin
    * @param lib Library plugin was loaded from
@@ -109,6 +114,7 @@ protected:
 
   /**
    * Specify which signals to forward to plugin
+   * Called from plugin
    *
    * @param signalMask Mask of signals from PluginSignal::SignalType to accept
    */
@@ -116,6 +122,7 @@ protected:
 
   /**
    * Get a signal from the signal queue
+   * Called from plugin
    *
    * The plugin must call this function to fetch a signal after getting
    * notified via its pipe. The signal must be deleted by the plugin after
@@ -127,6 +134,7 @@ protected:
 
   /**
    * Get an event from the event queue
+   * Called from plugin
    *
    * The plugin must call this function to fetch an event after getting
    * notified via its pipe. The event must be deleted by the plugin after
@@ -138,9 +146,6 @@ protected:
 
 private:
   LICQ_DECLARE_PRIVATE();
-
-  /// Allow the plugin manager to access protected members
-  friend class LicqDaemon::PluginManager;
 
   /// Allow PluginEventHandler to call popSignal()
   friend class LicqDaemon::PluginEventHandler;

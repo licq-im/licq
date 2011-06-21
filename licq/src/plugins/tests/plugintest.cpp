@@ -29,29 +29,6 @@
 static const char* argv0 = "test";
 char** global_argv = const_cast<char**>(&argv0);
 
-extern "C" {
-
-// Plugin API functions
-#define STR_FUNC(name)                          \
-  const char* Test_ ## name()                   \
-  { static char name[] = #name; return name; }
-
-STR_FUNC(Name);
-STR_FUNC(Version);
-STR_FUNC(ConfigFile);
-
-bool Test_Init(int, char**)
-{
-  return true;
-}
-
-int Test_Main()
-{
-  return 5;
-}
-
-} // extern "C"
-
 using Licq::Plugin;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
@@ -60,7 +37,22 @@ class PluginTest : public Plugin
 {
 public:
   PluginTest(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
-    Plugin(id, lib, thread, "Test") { /* Empty */ }
+    Plugin(id, lib, thread) { /* Empty */ }
+
+  std::string name() const
+  { return "Name"; }
+
+  std::string version() const
+  { return "Version"; }
+
+  std::string configFile() const
+  { return "ConfigFile"; }
+
+  bool init(int, char**)
+  { return true; }
+
+  int run()
+  { return 5; }
 
   // Un-protect functions so we can test them without being the PluginManager
   using Plugin::callInit;
