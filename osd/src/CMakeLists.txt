@@ -1,6 +1,7 @@
 set(osd_SRCS
   licq-osd.cpp
   my_xosd.cpp
+  plugin.cpp
 )
 
 licq_add_plugin(licq_osd ${osd_SRCS})
