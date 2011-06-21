@@ -22,11 +22,13 @@
 
 #include <licq/logging/log.h>
 #include <licq/daemon.h>
+#include <licq/event.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logging/logservice.h>
 #include <licq/pluginbase.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolbase.h>
+#include <licq/protocolsignal.h>
 #include <licq/thread/mutexlocker.h>
 #include <licq/version.h>
 
@@ -60,9 +62,7 @@ Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 
 
 PluginManager::PluginManager() :
-  myNextPluginId(DAEMON_ID + 1),
-  myPluginEventHandler(myGeneralPlugins, myGeneralPluginsMutex,
-                       myProtocolPlugins, myProtocolPluginsMutex)
+  myNextPluginId(DAEMON_ID + 1)
 {
   // Empty
 }
@@ -240,9 +240,8 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     }
 
     // Let the plugins know about the new protocol plugin
-    myPluginEventHandler.pushGeneralSignal(
-        new Licq::PluginSignal(Licq::PluginSignal::SignalNewProtocol,
-            plugin->protocolId()));
+    pushGeneralSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalNewProtocol, plugin->protocolId()));
 
     return plugin;
   }
@@ -585,4 +584,48 @@ void PluginManager::startPlugin(ProtocolPlugin::Ptr plugin)
       plugin->name().c_str(), plugin->version().c_str());
 
   plugin->startThread(NULL, exitPluginCallback);
+}
+
+void PluginManager::pushGeneralEvent(Licq::Event* event)
+{
+  MutexLocker locker(myGeneralPluginsMutex);
+  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
+  {
+    if (plugin->isThread(event->thread_plugin))
+    {
+      plugin->pushEvent(event);
+      return;
+    }
+  }
+
+  // If no plugin got the event, then just delete it
+  delete event;
+}
+
+void PluginManager::pushGeneralSignal(Licq::PluginSignal* signal)
+{
+  MutexLocker locker(myGeneralPluginsMutex);
+  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
+  {
+    if (plugin->wantSignal(signal->signal()))
+      plugin->pushSignal(new Licq::PluginSignal(signal));
+  }
+  delete signal;
+}
+
+void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* signal,
+    unsigned long protocolId)
+{
+  MutexLocker locker(myProtocolPluginsMutex);
+  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
+  {
+    if (plugin->protocolId() == protocolId)
+    {
+      plugin->pushSignal(signal);
+      return;
+    }
+  }
+
+  Licq::gLog.error(tr("Invalid protocol plugin requested (%ld)"), protocolId);
+  delete signal;
 }

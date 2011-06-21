@@ -444,17 +444,17 @@ void Licq::Daemon::cancelEvent(Licq::Event* event)
 
 void Licq::Daemon::PushPluginEvent(Licq::Event* e)
 {
-  LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralEvent(e);
+  LicqDaemon::gPluginManager.pushGeneralEvent(e);
 }
 
 void Licq::Daemon::pushPluginSignal(PluginSignal* s)
 {
-  LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralSignal(s);
+  LicqDaemon::gPluginManager.pushGeneralSignal(s);
 }
 
 void Licq::Daemon::PushProtoSignal(Licq::ProtocolSignal* s, unsigned long _nPPID)
 {
-  LicqDaemon::gPluginManager.getPluginEventHandler().pushProtocolSignal(s, _nPPID);
+  LicqDaemon::gPluginManager.pushProtocolSignal(s, _nPPID);
 }
 
 void Licq::Daemon::pluginUIViewEvent(const Licq::UserId& userId)
