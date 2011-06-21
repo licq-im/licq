@@ -571,7 +571,7 @@ void CMSN::ProcessPipe()
   {
     case Licq::ProtocolPlugin::PipeSignal:
     {
-      Licq::ProtocolSignal* s = Licq::gDaemon.PopProtoSignal();
+      Licq::ProtocolSignal* s = popSignal();
       ProcessSignal(s);
       break;
     }

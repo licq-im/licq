@@ -22,7 +22,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/pluginbase.h>
 #include <licq/pluginsignal.h>
@@ -105,7 +104,7 @@ int AosdPlugin::run()
     {
       case Licq::GeneralPlugin::PipeSignal:
         {
-          Licq::PluginSignal* sig = Licq::gDaemon.popPluginSignal();
+          Licq::PluginSignal* sig = popSignal();
           if (sig != NULL)
           {
             if (!blocked)
@@ -118,7 +117,7 @@ int AosdPlugin::run()
 
       case Licq::GeneralPlugin::PipeEvent:
         {
-          Licq::Event* ev = Licq::gDaemon.PopPluginEvent();
+          Licq::Event* ev = popEvent();
           if (ev != NULL)
             delete ev;
         }

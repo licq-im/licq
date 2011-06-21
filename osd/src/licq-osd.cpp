@@ -352,7 +352,7 @@ int OsdPlugin::run()
       case Licq::GeneralPlugin::PipeSignal:
       {
 		// read the actual signal from the daemon
-        Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
+        Licq::PluginSignal* s = popSignal();
 		if (s)
 		{
 		    ProcessSignal(s);
@@ -368,7 +368,7 @@ int OsdPlugin::run()
       case Licq::GeneralPlugin::PipeEvent:
       {
         gLog.warning("Event received - should not happen in this plugin");
-        Licq::Event* e = Licq::gDaemon.PopPluginEvent();
+        Licq::Event* e = popEvent();
         delete e;
         break;
       }

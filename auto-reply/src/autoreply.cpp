@@ -40,7 +40,6 @@
 #include <licq/logging/log.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/inifile.h>
@@ -210,7 +209,7 @@ void CLicqAutoReply::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = popSignal();
       if (myIsEnabled)
         ProcessSignal(s);
       delete s;
@@ -220,7 +219,7 @@ void CLicqAutoReply::ProcessPipe()
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
-      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = popEvent();
       if (myIsEnabled)
         ProcessEvent(e);
       delete e;

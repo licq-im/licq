@@ -429,7 +429,7 @@ void CLicqRMS::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = popSignal();
       if (m_bEnabled)
         ProcessSignal(s);
       delete s;
@@ -439,7 +439,7 @@ void CLicqRMS::ProcessPipe()
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
-      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = popEvent();
       if (m_bEnabled)
         ProcessEvent(e);
       delete e;
