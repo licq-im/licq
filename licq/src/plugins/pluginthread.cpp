@@ -24,6 +24,7 @@
 #include <licq/thread/mutexlocker.h>
 
 #include <boost/exception_ptr.hpp>
+#include <csignal>
 
 const pthread_t INVALID_THREAD_ID = 0;
 
@@ -34,15 +35,16 @@ struct PluginThread::Data
 {
   enum ThreadState
   {
-    STATE_STOPPED,
+    STATE_STOP,
     STATE_WAITING,
     STATE_LOAD_PLUGIN,
     STATE_INIT_PLUGIN,
     STATE_START_PLUGIN,
-    STATE_RUNNING
+    STATE_RUNNING,
+    STATE_EXITED
   };
 
-  // Syncronization between main and plugin thread
+  // Syncronization between controlling thread and plugin thread
   Licq::Condition myCondition;
   Licq::Mutex myMutex;
   ThreadState myState;
@@ -60,11 +62,22 @@ struct PluginThread::Data
   // For plugin start
   void* (*myPluginStart)(void*);
   void* myPluginStartArgument;
+
+  Data() : myState(STATE_STOP) {}
 };
 
 static void* pluginThreadEntry(void* arg)
 {
-  PluginThread::Data& data = *reinterpret_cast<PluginThread::Data*>(arg);
+  PluginThread::Data& data = *static_cast<PluginThread::Data*>(arg);
+
+  // The following signals should not be directed to the plugin but to the
+  // daemon; thus we block them here.
+  sigset_t signals;
+  sigemptyset(&signals);
+  sigaddset(&signals, SIGHUP);
+  sigaddset(&signals, SIGINT);
+  sigaddset(&signals, SIGTERM);
+  ::pthread_sigmask(SIG_BLOCK, &signals, NULL);
 
   // Signal thread started
   MutexLocker locker(data.myMutex);
@@ -77,10 +90,11 @@ static void* pluginThreadEntry(void* arg)
 
     switch (data.myState)
     {
-      case PluginThread::Data::STATE_STOPPED:
+      case PluginThread::Data::STATE_STOP:
         break;
       case PluginThread::Data::STATE_WAITING:
       case PluginThread::Data::STATE_RUNNING:
+      case PluginThread::Data::STATE_EXITED:
         assert(false);
         break;
       case PluginThread::Data::STATE_LOAD_PLUGIN:
@@ -118,16 +132,70 @@ static void* pluginThreadEntry(void* arg)
   return NULL;
 }
 
-PluginThread::PluginThread() :
-  myData(new Data())
+struct PluginThread::NewThreadData
 {
-  myData->myState = PluginThread::Data::STATE_STOPPED;
-  ::pthread_create(&myThread, NULL, pluginThreadEntry, myData);
+  int (*myNewThreadEntry)(PluginThread::Ptr);
+  PluginThread::Ptr myPluginThread;
+};
 
-  // Wait for thread to start
-  MutexLocker locker(myData->myMutex);
-  if (myData->myState != PluginThread::Data::STATE_WAITING)
-    myData->myCondition.wait(myData->myMutex);
+int PluginThread::createWithCurrentThread(
+    int (*newThreadEntry)(PluginThread::Ptr))
+{
+  // Create a PluginThread instance referencing the current thread.
+  PluginThread::Ptr thread(new PluginThread(false));
+
+  NewThreadData data;
+  data.myNewThreadEntry = newThreadEntry;
+  data.myPluginThread = thread;
+
+  // Create a new thread that the caller will continue executing in.
+  pthread_t newThread;
+  ::pthread_create(&newThread, NULL, &PluginThread::newThreadEntry, &data);
+
+  // Call the regular plugin thread entry function. The execution will block
+  // there waiting for someone to use the PluginThread instance for running a
+  // plugin (or until it is stopped).
+  thread->myExitValue = pluginThreadEntry(thread->myData);
+
+  {
+    // Even if the thread will continue executing, from the PluginThread's
+    // perspective the thread is now dead, so mark it as appropiate.
+    MutexLocker locker(thread->myData->myMutex);
+    thread->myData->myState = PluginThread::Data::STATE_EXITED;
+    thread->myData->myCondition.signal();
+  }
+
+  thread.reset();
+
+  // Before returning to the original caller we must wait for the caller's new
+  // thread to exit.
+  void* result;
+  if (::pthread_join(newThread, &result) == 0
+      && result != NULL && result != PTHREAD_CANCELED)
+  {
+    int* retval = static_cast<int*>(result);
+    int value = *retval;
+    delete retval;
+    return value;
+  }
+  return -1;
+}
+
+PluginThread::PluginThread() :
+  myIsThreadOwner(true),
+  myData(new Data),
+  myExitValue(NULL)
+{
+  ::pthread_create(&myThread, NULL, pluginThreadEntry, myData);
+  waitForThreadToStart();
+}
+
+PluginThread::PluginThread(bool) :
+  myIsThreadOwner(false),
+  myData(new Data),
+  myExitValue(NULL)
+{
+  myThread = ::pthread_self();
 }
 
 PluginThread::~PluginThread()
@@ -140,14 +208,26 @@ PluginThread::~PluginThread()
 void PluginThread::stop()
 {
   MutexLocker locker(myData->myMutex);
-  myData->myState = PluginThread::Data::STATE_STOPPED;
-  myData->myCondition.signal();
+  if (myData->myState != PluginThread::Data::STATE_EXITED)
+  {
+    myData->myState = PluginThread::Data::STATE_STOP;
+    myData->myCondition.signal();
+  }
 }
 
 void* PluginThread::join()
 {
   if (isThread(INVALID_THREAD_ID))
     return NULL;
+
+  if (!myIsThreadOwner)
+  {
+    MutexLocker locker(myData->myMutex);
+    while (myData->myState != PluginThread::Data::STATE_EXITED)
+      myData->myCondition.wait(myData->myMutex);
+    myThread = INVALID_THREAD_ID;
+    return myExitValue;
+  }
 
   void* result;
   if (::pthread_join(myThread, &result) == 0)
@@ -160,7 +240,7 @@ void* PluginThread::join()
 
 void PluginThread::cancel()
 {
-  if (!isThread(INVALID_THREAD_ID))
+  if (myIsThreadOwner && !isThread(INVALID_THREAD_ID))
     ::pthread_cancel(myThread);
 }
 
@@ -230,4 +310,30 @@ void PluginThread::startPlugin(void* (*pluginStart)(void*), void* argument)
   // Reset myData
   myData->myPluginStart = NULL;
   myData->myPluginStartArgument = NULL;
+}
+
+void PluginThread::waitForThreadToStart()
+{
+  MutexLocker locker(myData->myMutex);
+  if (myData->myState != PluginThread::Data::STATE_WAITING)
+    myData->myCondition.wait(myData->myMutex);
+}
+
+void* PluginThread::newThreadEntry(void* voidData)
+{
+  // Wait for the old thread to reach the initial wait state in
+  // pluginThreadEntry.
+  NewThreadData* data = static_cast<NewThreadData*>(voidData);
+  data->myPluginThread->waitForThreadToStart();
+
+  // Continue the caller's execution in the given function.
+  int* retval = new int;
+  *retval = data->myNewThreadEntry(data->myPluginThread);
+
+  // Stop plugin thread before returning as if the new thread entry function
+  // never did anything with the plugin thread it will still be blocked waiting
+  // in the initial wait state.
+  data->myPluginThread->stop();
+  data->myPluginThread.reset();
+  return retval;
 }

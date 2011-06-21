@@ -46,6 +46,8 @@ public:
   PluginManager();
   ~PluginManager();
 
+  void setGuiThread(PluginThread::Ptr guiThread) { myGuiThread = guiThread; }
+
   GeneralPlugin::Ptr loadGeneralPlugin(
       const std::string& name, int argc, char** argv, bool keep = true);
   ProtocolPlugin::Ptr loadProtocolPlugin(
@@ -107,6 +109,7 @@ private:
                            const std::string& prefix) const;
 
   unsigned short myNextPluginId;
+  PluginThread::Ptr myGuiThread;
 
   GeneralPluginsList myGeneralPlugins;
   mutable Licq::Mutex myGeneralPluginsMutex;
