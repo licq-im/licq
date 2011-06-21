@@ -113,8 +113,10 @@ macro (LICQ_ADD_PLUGIN _licq_plugin_name)
     endif (LD_ACCEPTS_VERSION_SCRIPT)
   endif (APPLE)
 
-  set_target_properties(${_licq_plugin_name} PROPERTIES
-    LINK_FLAGS ${_link_flags})
+  if (_link_flags)
+    set_target_properties(${_licq_plugin_name} PROPERTIES
+      LINK_FLAGS ${_link_flags})
+  endif (_link_flags)
 
   install(TARGETS ${_licq_plugin_name} DESTINATION ${Licq_PLUGIN_DIR})
 endmacro (LICQ_ADD_PLUGIN)
