@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -23,7 +23,9 @@
 #ifndef JABBER_PLUGIN_H
 #define JABBER_PLUGIN_H
 
-#include <boost/noncopyable.hpp>
+#include <licq/protocolplugin.h>
+
+#include "config.h"
 
 namespace Licq
 {
@@ -50,13 +52,22 @@ class Client;
 class Config;
 class Handler;
 
-class Plugin : private boost::noncopyable
+class Plugin : public Licq::ProtocolPlugin
 {
 public:
-  explicit Plugin(const Config& config);
+  Plugin(int id, LibraryPtr lib, ThreadPtr thread);
   ~Plugin();
 
-  int run(int pipe);
+  // From Licq::ProtocolPlugin
+  std::string name() const;
+  std::string version() const;
+  std::string configFile() const;
+  unsigned long protocolId() const;
+  unsigned long capabilities() const;
+  std::string defaultServerHost() const;
+  int defaultServerPort() const;
+  bool init(int, char**);
+  int run();
 
 private:
   void processPipe(int pipe);
@@ -77,7 +88,7 @@ private:
   void doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal);
   void doRequestAuth(Licq::ProtoRequestAuthSignal* signal);
 
-  const Config& myConfig;
+  Config myConfig;
   Handler* myHandler;
   bool myDoRun;
   Client* myClient;
