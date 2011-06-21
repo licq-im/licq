@@ -25,11 +25,6 @@
 #include <boost/shared_ptr.hpp>
 #include <list>
 
-namespace LicqDaemon
-{
-class PluginEventHandler;
-}
-
 namespace Licq
 {
 class Event;
@@ -146,9 +141,6 @@ protected:
 
 private:
   LICQ_DECLARE_PRIVATE();
-
-  /// Allow PluginEventHandler to call popSignal()
-  friend class LicqDaemon::PluginEventHandler;
 };
 
 typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;

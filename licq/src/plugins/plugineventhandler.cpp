@@ -67,17 +67,6 @@ void PluginEventHandler::pushGeneralEvent(Licq::Event* event)
   delete event;
 }
 
-Licq::Event* PluginEventHandler::popGeneralEvent()
-{
-  MutexLocker locker(myGeneralPluginsMutex);
-  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
-  {
-    if (plugin->isThisThread())
-      return plugin->popEvent();
-  }
-  return NULL;
-}
-
 void PluginEventHandler::pushGeneralSignal(Licq::PluginSignal* signal)
 {
   MutexLocker locker(myGeneralPluginsMutex);
@@ -87,17 +76,6 @@ void PluginEventHandler::pushGeneralSignal(Licq::PluginSignal* signal)
       plugin->pushSignal(new Licq::PluginSignal(signal));
   }
   delete signal;
-}
-
-Licq::PluginSignal* PluginEventHandler::popGeneralSignal()
-{
-  MutexLocker locker(myGeneralPluginsMutex);
-  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
-  {
-    if (plugin->isThisThread())
-      return plugin->popSignal();
-  }
-  return NULL;
 }
 
 void PluginEventHandler::pushProtocolSignal(Licq::ProtocolSignal* signal,
@@ -115,15 +93,4 @@ void PluginEventHandler::pushProtocolSignal(Licq::ProtocolSignal* signal,
 
   Licq::gLog.error(tr("Invalid protocol plugin requested (%ld)"), ppid);
   delete signal;
-}
-
-Licq::ProtocolSignal* PluginEventHandler::popProtocolSignal()
-{
-  MutexLocker locker(myProtocolPluginsMutex);
-  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
-  {
-    if (plugin->isThisThread())
-      return plugin->popSignal();
-  }
-  return NULL;
 }
