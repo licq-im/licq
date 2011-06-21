@@ -43,12 +43,12 @@
 #include <licq/inifile.h>
 #include <licq/logging/logservice.h>
 #include <licq/logging/logutils.h>
-#include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/userevents.h>
 
 #include "event_data.h"
+#include "pluginversion.h"
 
 
 // Undefine what stupid ncurses defines as wclear(WINDOW *)
@@ -57,10 +57,7 @@
 using namespace std;
 using Licq::User;
 using Licq::gLog;
-using Licq::gPluginManager;
 using Licq::gProtocolManager;
-
-extern "C" const char *LP_Version();
 
 const char* CLicqConsole::GroupsSystemNames[NumSystemGroups+1] = {
   "All Users",
@@ -163,8 +160,62 @@ const char MLE_HELP[] =
 /*---------------------------------------------------------------------------
  * CLicqConsole::Constructor
  *-------------------------------------------------------------------------*/
-CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
+CLicqConsole::CLicqConsole(int id, LibraryPtr lib, ThreadPtr thread)
+  : Licq::GeneralPlugin(id, lib, thread)
 {
+  // Empty
+}
+
+CLicqConsole::~CLicqConsole()
+{
+  // Empty
+}
+
+string CLicqConsole::usage() const
+{
+  return "Usage:  Licq [ options ] -p console\n";
+}
+
+string CLicqConsole::name() const
+{
+  return "Console";
+}
+
+string CLicqConsole::version() const
+{
+  return PLUGIN_VERSION_STRING;
+}
+
+string CLicqConsole::description() const
+{
+  return "Console plugin based on ncurses";
+}
+
+string CLicqConsole::configFile() const
+{
+  return "licq_console.conf";
+}
+
+bool CLicqConsole::init(int argc, char **argv)
+{
+  //char *LocaleVal = new char;
+  //LocaleVal = setlocale (LC_ALL, "");
+  //bindtextdomain (PACKAGE, LOCALEDIR);
+  //textdomain (PACKAGE);
+  setlocale(LC_ALL, "");
+
+  // parse command line for arguments
+  int opt = 0;
+  while ( (opt = getopt(argc, argv, "h")) > 0)
+  {
+    switch (opt)
+    {
+      case 'h':  // help
+        puts(usage().c_str());
+        return false;
+    }
+  }
+
   // oh yeah, add in a variable for the
   // status window text and colors.. that'd be cool
   Licq::IniFile conf("licq_console.conf");
@@ -240,43 +291,23 @@ CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
 
   m_bExit = false;
   cdkUserList = 0;
+
+  return true;
 }
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::Destructor
- *-------------------------------------------------------------------------*/
-CLicqConsole::~CLicqConsole()
-{
-  for (unsigned short i = 0; i <= MAX_CON; i++)
-    delete winCon[i];
-  delete winConStatus;
-  delete winStatus;
-  delete winPrompt;
-  CWindow::EndScreen();
-}
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::Shutdown
- *-------------------------------------------------------------------------*/
-void CLicqConsole::Shutdown()
-{
-  gLog.info("Shutting down console");
-  Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
-  gPluginManager.unregisterGeneralPlugin();
-}
-
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::Run
  *-------------------------------------------------------------------------*/
-int CLicqConsole::Run()
+int CLicqConsole::run()
 {
   CWindow::StartScreen();
 
   // Register with the daemon, we want to receive all signals
-  m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalAll);
+  m_nPipe = getReadPipe();
+  setSignalMask(Licq::PluginSignal::SignalAll);
   m_bExit = false;
+
+  Licq::LogService& logService = Licq::gDaemon.getLogService();
 
   // Create the windows
   for (unsigned short i = 0; i <= MAX_CON; i++)
@@ -284,7 +315,7 @@ int CLicqConsole::Run()
     winCon[i] = new CWindow(LINES - 5, COLS - USER_WIN_WIDTH - 1, 2, USER_WIN_WIDTH + 1,
                             SCROLLBACK_BUFFER, true);
     if (winCon[i]->CDKScreen() == NULL)
-      return 0;
+      goto end;
     scrollok(winCon[i]->Win(), true);
     winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
     winCon[i]->data = NULL;
@@ -299,11 +330,9 @@ int CLicqConsole::Run()
   winBar = new CWindow(LINES - 5, 1, 2, COLS - USER_WIN_WIDTH - 1, false);
   winUsers = new CWindow(LINES - 5, USER_WIN_WIDTH, 2, 0, false, true);
   if (winUsers->CDKScreen() == NULL)
-    return 0;
+    goto end;
   winBar->SetActive(true);
   winUsers->SetActive(true);
-
-  Licq::LogService& logService = Licq::gDaemon.getLogService();
 
   myLogSink.reset(new Licq::PluginLogSink);
   myLogSink->setLogLevelsFromBitmask(
@@ -411,6 +440,18 @@ int CLicqConsole::Run()
   }
 
   winMain->wprintf("Exiting\n\n");
+
+end:
+  gLog.info("Shutting down console");
+  Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
+
+  for (unsigned short i = 0; i <= MAX_CON; i++)
+    delete winCon[i];
+  delete winConStatus;
+  delete winStatus;
+  delete winPrompt;
+  CWindow::EndScreen();
+
   return 0;
 }
 
@@ -1002,8 +1043,7 @@ void CLicqConsole::SwitchToCon(unsigned short nCon)
   wbkgdset(winConStatus->Win(), COLOR_PAIR(29));
   werase(winConStatus->Win());
   winConStatus->wprintf("%A[ %CLicq Console Plugin v%C%s%C (",
-                        A_BOLD, 5,
-                        53, LP_Version(), 29);
+      A_BOLD, 5, 53, version().c_str(), 29);
   if (m_nCon != 0)
     winConStatus->wprintf("%A%Cconsole %C%d", A_BOLD, 5,
                           53, m_nCon);
