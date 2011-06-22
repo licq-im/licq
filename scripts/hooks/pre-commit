@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# Copy to .git/hooks and make executable.
+#
+# Copyright (c) 2011 Erik Johansson <erijo@licq.org>
+# Distributed under the terms of the GNU GPL version 2.
+#
+
+year=$(date +%Y)
+
+error()
+{
+  echo "Error: $*" >& 2
+  exit 1
+}
+
+verify_copyright_year()
+{
+  file="$1"
+  if ! grep -q "Copyright" "$file"; then
+    if echo "$file" | grep -Eq '\.(c|cpp|h)$'; then
+      error "no copyright line in '$file'"
+    fi
+    return
+  fi
+
+  if ! grep -Eq "Copyright.*$year" "$file"; then
+    error "copyright line in '$file' does not include current year"
+  fi
+}
+
+for file in $(git diff-index --cached --name-only --diff-filter=AM HEAD); do
+  if echo "$file" | grep -q "3rdparty/"; then
+    continue
+  fi
+
+  verify_copyright_year "$file"
+done
