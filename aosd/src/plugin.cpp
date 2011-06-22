@@ -153,8 +153,4 @@ Licq::GeneralPlugin* AosdPluginFactory(int id,
   return new AosdPlugin(id, lib, thread);
 }
 
-struct Licq::GeneralPluginData LicqGeneralPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &AosdPluginFactory,         // pluginFactory
-};
+LICQ_GENERAL_PLUGIN_DATA(&AosdPluginFactory);

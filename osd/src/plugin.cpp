@@ -29,8 +29,4 @@ Licq::GeneralPlugin* OsdPluginFactory(int id,
   return new OsdPlugin(id, lib, thread);
 }
 
-struct Licq::GeneralPluginData LicqGeneralPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &OsdPluginFactory,          // pluginFactory
-};
+LICQ_GENERAL_PLUGIN_DATA(&OsdPluginFactory);

@@ -75,11 +75,26 @@ extern "C" {
  * When a plugin is first loaded, this pointer is fetched and used to get
  * the PluginData struct for the plugin.
  */
-extern struct Licq::GeneralPluginData* LicqPluginData;
+extern struct Licq::GeneralPluginData LicqGeneralPluginData;
 
 #ifdef __cplusplus
 }
 #endif
+
+
+/**
+ * Convenience macro to define plugin data in a plugin
+ *
+ * Note: <licq/version.h> must be included
+ *
+ * @param factory Pointer to the plugin factory function
+ */
+#define LICQ_GENERAL_PLUGIN_DATA(factory) \
+struct Licq::GeneralPluginData LicqGeneralPluginData = { \
+    {'L', 'i', 'c', 'q' }, \
+    LICQ_VERSION, \
+    factory, \
+}
 
 
 #endif

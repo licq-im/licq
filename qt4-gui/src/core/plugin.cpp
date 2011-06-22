@@ -176,8 +176,4 @@ Licq::GeneralPlugin* QtGuiPluginFactory(int id,
   return new LicqQtGui::QtGuiPlugin(id, lib, thread);
 }
 
-struct Licq::GeneralPluginData LicqGeneralPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &QtGuiPluginFactory,        // pluginFactory
-};
+LICQ_GENERAL_PLUGIN_DATA(&QtGuiPluginFactory);

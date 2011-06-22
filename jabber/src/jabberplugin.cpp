@@ -31,8 +31,4 @@ Licq::ProtocolPlugin* JabberPluginFactory(int id, Licq::Plugin::LibraryPtr lib,
   return new Jabber::Plugin(id, lib, thread);
 }
 
-struct Licq::ProtocolPluginData LicqProtocolPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &JabberPluginFactory,       // pluginFactory
-};
+LICQ_PROTOCOL_PLUGIN_DATA(&JabberPluginFactory);

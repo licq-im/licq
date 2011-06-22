@@ -28,8 +28,4 @@ Licq::ProtocolPlugin* MsnPluginFactory(int id, Licq::Plugin::LibraryPtr lib,
   return new CMSN(id, lib, thread);
 }
 
-struct Licq::ProtocolPluginData LicqProtocolPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &MsnPluginFactory,          // pluginFactory
-};
+LICQ_PROTOCOL_PLUGIN_DATA(&MsnPluginFactory);

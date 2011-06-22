@@ -29,8 +29,4 @@ Licq::GeneralPlugin* RmsPluginFactory(int id,
   return new CLicqRMS(id, lib, thread);
 }
 
-struct Licq::GeneralPluginData LicqGeneralPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &RmsPluginFactory,          // pluginFactory
-};
+LICQ_GENERAL_PLUGIN_DATA(&RmsPluginFactory);

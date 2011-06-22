@@ -74,11 +74,26 @@ extern "C" {
  * When a protocol is first loaded, this pointer is fetched and used to get
  * the ProtocolData struct for the protocol.
  */
-extern struct Licq::ProtocolPluginData* LicqProtocolData;
+extern struct Licq::ProtocolPluginData LicqProtocolPluginData;
 
 #ifdef __cplusplus
 }
 #endif
+
+
+/**
+ * Convenience macro to define plugin data in a plugin
+ *
+ * Note: <licq/version.h> must be included
+ *
+ * @param factory Pointer to the plugin factory function
+ */
+#define LICQ_PROTOCOL_PLUGIN_DATA(factory) \
+struct Licq::ProtocolPluginData LicqProtocolPluginData = { \
+    {'L', 'i', 'c', 'q' }, \
+    LICQ_VERSION, \
+    factory, \
+}
 
 
 #endif

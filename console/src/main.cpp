@@ -29,8 +29,4 @@ Licq::GeneralPlugin* ConsolePluginFactory(int id,
   return new CLicqConsole(id, lib, thread);
 }
 
-struct Licq::GeneralPluginData LicqGeneralPluginData = {
-    {'L', 'i', 'c', 'q' },      // licqMagic
-    LICQ_VERSION,               // licqVersion
-    &ConsolePluginFactory,      // pluginFactory
-};
+LICQ_GENERAL_PLUGIN_DATA(&ConsolePluginFactory);
