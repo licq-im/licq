@@ -17,65 +17,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/pluginmanager.h>
 #include <licq/protocolbase.h>
+#include <licq/version.h>
 
-#include "pluginversion.h"
 #include "msn.h"
 
-using Licq::gPluginManager;
-
-const char* LProto_Name()
+Licq::ProtocolPlugin* MsnPluginFactory(Licq::ProtocolPlugin::Params& p)
 {
-  static char szName[] = "MSN";
-  return szName;
+  return new CMSN(p);
 }
 
-const char* LProto_Version()
+void MsnPluginReaper(Licq::ProtocolPlugin* plugin)
 {
-  static char szVersion[] = PLUGIN_VERSION_STRING;
-  return szVersion;
+  delete dynamic_cast<CMSN*>(plugin);
 }
 
-const char* LProto_PPID()
-{
-  static char szId[] = "MSN_";
-  return szId;
-}
-
-bool LProto_Init(int, char**)
-{
-  return true;
-}
-
-unsigned long LProto_SendFuncs()
-{
-  return Licq::ProtocolPlugin::CanSendMsg |
-      Licq::ProtocolPlugin::CanSendAuth |
-      Licq::ProtocolPlugin::CanSendAuthReq;
-}
-
-const char* LProto_DefSrvHost()
-{
-  static char defaultHost[] = "messenger.hotmail.com";
-  return defaultHost;
-}
-
-int LProto_DefSrvPort()
-{
-  return 1863;
-}
-
-int LProto_Main()
-{
-  int nPipe = gPluginManager.registerProtocolPlugin();
-
-  CMSN* pMSN = new CMSN(nPipe);
-  pMSN->Run();
-
-  gPluginManager.unregisterProtocolPlugin();
-
-  delete pMSN;
-  
-  return 0;
-}
+LICQ_PROTOCOL_PLUGIN_DATA(&MsnPluginFactory, &MsnPluginReaper);

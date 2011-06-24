@@ -20,67 +20,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
-#include "plugin.h"
-#include "pluginversion.h"
-
-#include <licq/pluginmanager.h>
 #include <licq/protocolbase.h>
+#include <licq/version.h>
 
-const char* LProto_Name()
+#include "plugin.h"
+
+Licq::ProtocolPlugin* JabberPluginFactory(Licq::ProtocolPlugin::Params& p)
 {
-  static char name[] = "Jabber";
-  return name;
+  return new Jabber::Plugin(p);
 }
 
-const char* LProto_Version()
+void JabberPluginReaper(Licq::ProtocolPlugin* plugin)
 {
-  static char version[] = PLUGIN_VERSION_STRING;
-  return version;
+  delete dynamic_cast<Jabber::Plugin*>(plugin);
 }
 
-const char* LProto_ConfigFile()
-{
-  static char configFile[] = "licq_jabber.conf";
-  return configFile;
-}
-
-const char* LProto_PPID()
-{
-  static char ppid[] = "XMPP";
-  return ppid;
-}
-
-bool LProto_Init(int, char**)
-{
-  return true;
-}
-
-unsigned long LProto_SendFuncs()
-{
-  return Licq::ProtocolPlugin::CanSendMsg
-      | Licq::ProtocolPlugin::CanHoldStatusMsg
-      | Licq::ProtocolPlugin::CanSendAuth
-      | Licq::ProtocolPlugin::CanSendAuthReq;
-}
-
-const char* LProto_DefSrvHost()
-{
-  static char defaultHost[] = "";
-  return defaultHost;
-}
-
-int LProto_DefSrvPort()
-{
-  return 5222;
-}
-
-int LProto_Main()
-{
-  Jabber::Config config(LProto_ConfigFile());
-
-  int pipe = Licq::gPluginManager.registerProtocolPlugin();
-  int res = Jabber::Plugin(config).run(pipe);
-  Licq::gPluginManager.unregisterProtocolPlugin();
-  return res;
-}
+LICQ_PROTOCOL_PLUGIN_DATA(&JabberPluginFactory, &JabberPluginReaper);
