@@ -562,14 +562,14 @@ void CLicqConsole::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = popSignal();
       ProcessSignal(s);
       break;
     }
 
     case Licq::GeneralPlugin::PipeEvent:
     {
-      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = popEvent();
       ProcessEvent(e);
       break;
     }

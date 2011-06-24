@@ -180,7 +180,7 @@ void Plugin::processPipe(int pipe)
   {
     case Licq::ProtocolPlugin::PipeSignal:
     {
-      Licq::ProtocolSignal* signal = Licq::gDaemon.PopProtoSignal();
+      Licq::ProtocolSignal* signal = popSignal();
       processSignal(signal);
       delete signal;
       break;

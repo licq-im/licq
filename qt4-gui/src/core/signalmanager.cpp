@@ -28,7 +28,6 @@
 #include <licq/icqdefines.h>
 #include <licq/logging/log.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/generalplugin.h>
 #include <licq/pluginsignal.h>
@@ -223,14 +222,14 @@ void SignalManager::process()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
+      Licq::PluginSignal* s = gQtGuiPlugin->popSignal();
       ProcessSignal(s);
       break;
     }
 
     case Licq::GeneralPlugin::PipeEvent:
     {
-      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
+      Licq::Event* e = gQtGuiPlugin->popEvent();
       ProcessEvent(e);
       break;
     }
