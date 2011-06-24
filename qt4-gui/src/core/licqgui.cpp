@@ -409,9 +409,6 @@ void LicqGui::saveConfig()
 
 int LicqGui::Run()
 {
-  // Register with the daemon, we want to receive all signals
-  int pipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalAll);
-
   // Create the configuration handlers
   Config::General::createInstance(this);
   Config::ContactList::createInstance(this);
@@ -424,7 +421,7 @@ int LicqGui::Run()
 #endif
 
   // Create the main widgets
-  mySignalManager = new SignalManager(pipe);
+  mySignalManager = new SignalManager;
   myLogWindow = new LogWindow;
 
   using Licq::Log;
@@ -487,8 +484,6 @@ int LicqGui::Run()
   connect(&myAutoAwayTimer, SIGNAL(timeout()), SLOT(autoAway()));
 
   int r = exec();
-
-  gPluginManager.unregisterGeneralPlugin();
 
   gLog.info("Shutting down gui");
 
