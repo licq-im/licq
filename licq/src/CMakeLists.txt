@@ -69,7 +69,6 @@ set(licq_SRCS
   logging/streamlogsink.cpp
   logging/threadlog.cpp
 
-  plugins/plugineventhandler.cpp
   plugins/pluginmanager.cpp
 
   ${tested_SRCS}

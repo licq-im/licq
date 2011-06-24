@@ -32,7 +32,6 @@
 #include <licq/thread/mutex.h>
 
 #include "../utils/dynamiclibrary.h"
-#include "plugineventhandler.h"
 #include "pluginthread.h"
 
 namespace LicqDaemon
@@ -77,8 +76,6 @@ public:
   /// Cancel all plugins' threads.
   void cancelAllPlugins();
 
-  inline PluginEventHandler& getPluginEventHandler();
-
   size_t getGeneralPluginsCount() const;
 
   // From Licq::PluginManager
@@ -92,6 +89,9 @@ public:
 
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
+  void pushPluginEvent(Licq::Event* event);
+  void pushPluginSignal(Licq::PluginSignal* signal);
+  void pushProtocolSignal(Licq::ProtocolSignal* signal, unsigned long protocolId);
 
 private:
   /// Helper function to delete a general plugin and close library in the correct order
@@ -119,19 +119,12 @@ private:
   Licq::ProtocolPluginsList myProtocolPlugins;
   mutable Licq::Mutex myProtocolPluginsMutex;
 
-  PluginEventHandler myPluginEventHandler;
-
   Licq::Mutex myExitListMutex;
   Licq::Condition myExitListSignal;
   std::queue<unsigned short> myExitList;
 };
 
 extern PluginManager gPluginManager;
-
-inline PluginEventHandler& PluginManager::getPluginEventHandler()
-{
-  return myPluginEventHandler;
-}
 
 } // namespace LicqDaemon
 

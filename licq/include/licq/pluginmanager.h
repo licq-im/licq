@@ -125,6 +125,37 @@ public:
    */
   virtual bool startProtocolPlugin(const std::string& name) = 0;
 
+  /**
+   * Send an event to a general plugin
+   *
+   * Note: This function will return immediately. The event will be processed
+   * by the plugin asynchrony
+   *
+   * @param event Event to forward to the plugin, will be deleted by receiver
+   */
+  virtual void pushPluginEvent(Event* event) = 0;
+
+  /**
+   * Send a signal to all general plugins
+   *
+   * Note: This function will return immediately. The event will be processed
+   * by the plugin asynchrony
+   *
+   * @param signal Signal to forward to the plugins, will be deleted by receiver
+   */
+  virtual void pushPluginSignal(PluginSignal* signal) = 0;
+
+  /**
+   * Send a signal to a protocol plugin
+   *
+   * Note: This function will return immediately. The event will be processed
+   * by the plugin asynchrony
+   *
+   * @param signal Signal to forward to the plugin, will be deleted by receiver
+   * @param protocolId Protocol to forward signal to
+   */
+  virtual void pushProtocolSignal(ProtocolSignal* signal, unsigned long protocolId) = 0;
+
 protected:
   virtual ~PluginManager() { /* Empty */ }
 };
