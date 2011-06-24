@@ -162,7 +162,12 @@ static bool setupBaseDirPath(const std::string& path)
   {
     // Get current working directory
     // Linux uses PATH_MAX, BSD uses MAXPATHLEN, either seems to work on both
+#ifdef PATH_MAX
     char cwd[PATH_MAX];
+#else
+    // PATH_MAX is not defined on GNU Hurd
+    char cwd[4096];
+#endif
     if (::getcwd(cwd, sizeof(cwd)) == NULL)
     {
       ::fprintf(stderr, tr("Could not get current working directory\n"));
