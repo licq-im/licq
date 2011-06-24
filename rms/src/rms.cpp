@@ -48,14 +48,14 @@
 #include <licq/protocolmanager.h>
 #include <licq/userevents.h>
 
+#include "pluginversion.h"
+
 using namespace std;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
-
-extern "C" { const char *LP_Version(); }
 
 CLicqRMS *licqRMS = NULL;
 
@@ -177,13 +177,15 @@ static const unsigned short NUM_COMMANDS = sizeof(commands)/sizeof(*commands);
 /*---------------------------------------------------------------------------
  * CLicqRMS::Constructor
  *-------------------------------------------------------------------------*/
-CLicqRMS::CLicqRMS(bool bEnable, unsigned int port)
-  : myPort(port),
+CLicqRMS::CLicqRMS(Licq::GeneralPlugin::Params& p)
+  : GeneralPlugin(p),
+    m_bEnabled(true),
+    myPort(0),
     myAuthProtocol(LICQ_PPID)
 {
+  licqRMS = this;
   server = NULL;
   m_bExit = false;
-  m_bEnabled = bEnable;
 }
 
 
@@ -198,6 +200,65 @@ CLicqRMS::~CLicqRMS()
     delete *iter;
 }
 
+string CLicqRMS::name() const
+{
+  return "RMS";
+}
+
+string CLicqRMS::description() const
+{
+  return "Licq remote management server";
+}
+
+string CLicqRMS::version() const
+{
+  return PLUGIN_VERSION_STRING;
+}
+
+string CLicqRMS::usage() const
+{
+  return "Usage:  Licq [options] -p rms -- [ -h ] [ -d ]\n"
+      "         -h          : help\n"
+      "         -d          : start disabled\n";
+}
+
+string CLicqRMS::configFile() const
+{
+  return "licq_rms.conf";
+}
+
+bool CLicqRMS::isEnabled() const
+{
+  return m_bEnabled;
+}
+
+bool CLicqRMS::init(int argc, char** argv)
+{
+  //char *LocaleVal = new char;
+  //LocaleVal = setlocale (LC_ALL, "");
+  //bindtextdomain (PACKAGE, LOCALEDIR);
+  //textdomain (PACKAGE);
+
+  // parse command line for arguments
+  int i = 0;
+  while ( (i = getopt(argc, argv, "hdp:")) > 0)
+  {
+    switch (i)
+    {
+    case 'h':  // help
+      puts(usage().c_str());
+      return false;
+    case 'd': // enable
+      m_bEnabled = false;
+      break;
+    case 'p':
+      myPort = atol(optarg);
+      break;
+    }
+  }
+  return true;
+}
+
 /*---------------------------------------------------------------------------
  * CLicqRMS::Shutdown
  *-------------------------------------------------------------------------*/
@@ -207,20 +268,17 @@ void CLicqRMS::Shutdown()
 
   if (myLogSink)
     Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
-
-  gPluginManager.unregisterGeneralPlugin();
 }
 
 
 /*---------------------------------------------------------------------------
  * CLicqRMS::Run
  *-------------------------------------------------------------------------*/
-int CLicqRMS::Run()
+int CLicqRMS::run()
 {
-  // Register with the daemon, we only want the update user signal
-  m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalAll);
+  setSignalMask(Licq::PluginSignal::SignalAll);
 
-  Licq::IniFile conf("licq_rms.conf");
+  Licq::IniFile conf(configFile());
   if (conf.loadFile())
   {
     conf.setSection("RMS");
@@ -268,7 +326,10 @@ int CLicqRMS::Run()
   if (Licq::gDaemon.tcpPortsLow() != 0 && myPort == 0)
   {
     if (!Licq::gDaemon.StartTCPServer(server))
+    {
+      Shutdown();
       return 1;
+    }
   }
   else
   {
@@ -276,6 +337,7 @@ int CLicqRMS::Run()
     {
       gLog.error("Could not start server on port %u, "
           "maybe this port is already in use?", myPort);
+      Shutdown();
       return 1;
     };
   }
@@ -287,6 +349,8 @@ int CLicqRMS::Run()
   fd_set f;
   int l;
   int nResult;
+
+  int m_nPipe = getReadPipe();
 
   while (!m_bExit)
   {
@@ -349,6 +413,7 @@ int CLicqRMS::Run()
       }
     }
   }
+  Shutdown();
   return 0;
 }
 
@@ -359,7 +424,7 @@ int CLicqRMS::Run()
 void CLicqRMS::ProcessPipe()
 {
   char buf;
-  read(m_nPipe, &buf, 1);
+  read(getReadPipe(), &buf, 1);
   switch (buf)
   {
     case Licq::GeneralPlugin::PipeSignal:
@@ -525,7 +590,7 @@ CRMSClient::CRMSClient(Licq::TCPSocket* sin)
   gLog.info("Client connected from %s", sock.getRemoteIpString().c_str());
   fs = fdopen(sock.Descriptor(), "r+");
   fprintf(fs, "Licq Remote Management Server v%s\n"
-     "%d Enter your UIN:\n", LP_Version(), CODE_ENTERxUIN);
+      "%d Enter your UIN:\n", licqRMS->version().c_str(), CODE_ENTERxUIN);
   fflush(fs);
 
   m_szCheckId = 0;

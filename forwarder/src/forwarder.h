@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 #ifndef LICQEMAIL_H
 #define LICQEMAIL_H
 
+#include <licq/generalplugin.h>
+
 #include <string>
 
 #include <licq/userid.h>
@@ -36,18 +38,27 @@ class UserEvent;
 #define FORWARD_EMAIL 0
 #define FORWARD_ICQ 1
 
-class CLicqForwarder
+class CLicqForwarder : public Licq::GeneralPlugin
 {
 public:
-  CLicqForwarder(bool, bool, const std::string& startupStatus);
+  CLicqForwarder(Params& p);
   ~CLicqForwarder();
-  int Run();
-  void Shutdown();
-  bool Enabled() { return m_bEnabled; }
+
+  // From Licq::Plugin
+  std::string name() const;
+  std::string version() const;
+  std::string description() const;
+  std::string usage() const;
+  std::string configFile() const;
+  bool isEnabled() const;
+  bool init(int argc, char** argv);
+  int run();
 
 protected:
   int m_nPipe;
-  bool m_bExit, m_bEnabled, m_bDelete;
+  bool m_bExit;
+  bool myIsEnabled;
+  bool myMarkAsRead;
   std::string myStartupStatus;
 
   unsigned short m_nSMTPPort;
