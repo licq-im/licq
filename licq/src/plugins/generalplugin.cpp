@@ -23,97 +23,112 @@
 
 #include <cstring>
 
-using Licq::MutexLocker;
-using namespace LicqDaemon;
+using namespace Licq;
 using namespace std;
 
-GeneralPlugin::GeneralPlugin(int id, DynamicLibrary::Ptr lib,
-                             PluginThread::Ptr pluginThread) :
-  Plugin(id, lib, pluginThread, "LP"),
-  mySignalMask(0)
-{
-  loadSymbol("LP_Status", myStatus);
-  loadSymbol("LP_Description", myDescription);
-  loadSymbol("LP_Usage", myUsage);
-}
 
-GeneralPlugin::~GeneralPlugin()
+GeneralPlugin::Private::Private() :
+    mySignalMask(0)
 {
   // Empty
 }
 
-void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)
+
+GeneralPlugin::GeneralPlugin(int id, LibraryPtr lib, ThreadPtr thread)
+  : Plugin(id, lib, thread, "LP"),
+    myPrivate(new Private)
 {
-  MutexLocker locker(mySignalsMutex);
-  mySignals.push(signal);
-  locker.unlock();
-  myPipe.putChar(PipeSignal);
+  LICQ_D();
+
+  loadSymbol("LP_Status", (void**)(&d->myStatus));
+  loadSymbol("LP_Description", (void**)(&d->myDescription));
+  loadSymbol("LP_Usage", (void**)(&d->myUsage));
 }
 
-Licq::PluginSignal* GeneralPlugin::popSignal()
+GeneralPlugin::~GeneralPlugin()
 {
-  MutexLocker locker(mySignalsMutex);
-  if (!mySignals.empty())
+  delete myPrivate;
+}
+
+void GeneralPlugin::pushSignal(PluginSignal* signal)
+{
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  d->mySignals.push(signal);
+  notify(PipeSignal);
+}
+
+PluginSignal* GeneralPlugin::popSignal()
+{
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  if (!d->mySignals.empty())
   {
-    Licq::PluginSignal* signal = mySignals.front();
-    mySignals.pop();
+    PluginSignal* signal = d->mySignals.front();
+    d->mySignals.pop();
     return signal;
   }
   return NULL;
 }
 
-void GeneralPlugin::pushEvent(Licq::Event* event)
+void GeneralPlugin::pushEvent(Event* event)
 {
-  MutexLocker locker(myEventsMutex);
-  myEvents.push(event);
-  locker.unlock();
-  myPipe.putChar(PipeEvent);
+  LICQ_D();
+  MutexLocker locker(d->myEventsMutex);
+  d->myEvents.push(event);
+  notify(PipeEvent);
 }
 
-Licq::Event* GeneralPlugin::popEvent()
+Event* GeneralPlugin::popEvent()
 {
-  MutexLocker locker(myEventsMutex);
-  if (!myEvents.empty())
+  LICQ_D();
+  MutexLocker locker(d->myEventsMutex);
+  if (!d->myEvents.empty())
   {
-    Licq::Event* event = myEvents.front();
-    myEvents.pop();
+    Event* event = d->myEvents.front();
+    d->myEvents.pop();
     return event;
   }
   return NULL;
 }
 
-bool GeneralPlugin::wantSignal(unsigned long signalType) const
-{
-  return (signalType & mySignalMask);
-}
-
-void GeneralPlugin::setSignalMask(unsigned long signalMask)
-{
-  mySignalMask = signalMask;
-}
-
 bool GeneralPlugin::isEnabled() const
 {
-  const char* strStatus = (*myStatus)();
+  LICQ_D_CONST();
+  const char* strStatus = (*d->myStatus)();
   return (strstr(strStatus, "enabled") != NULL || strstr(strStatus, "running"));
 }
 
 string GeneralPlugin::description() const
 {
-  return (*myDescription)();
+  LICQ_D_CONST();
+  return (*d->myDescription)();
 }
 
 string GeneralPlugin::usage() const
 {
-  return (*myUsage)();
+  LICQ_D_CONST();
+  return (*d->myUsage)();
+}
+
+bool GeneralPlugin::wantSignal(unsigned long signalType) const
+{
+  LICQ_D_CONST();
+  return (signalType & d->mySignalMask);
+}
+
+void GeneralPlugin::setSignalMask(unsigned long signalMask)
+{
+  LICQ_D();
+  d->mySignalMask = signalMask;
 }
 
 void GeneralPlugin::enable()
 {
-  myPipe.putChar(PipeEnable);
+  notify(PipeEnable);
 }
 
 void GeneralPlugin::disable()
 {
-  myPipe.putChar(PipeDisable);
+  notify(PipeDisable);
 }

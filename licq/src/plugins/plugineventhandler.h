@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,12 @@
 #ifndef LICQDAEMON_PLUGINEVENTHANDLER_H
 #define LICQDAEMON_PLUGINEVENTHANDLER_H
 
-#include "generalplugin.h"
-#include "protocolplugin.h"
-
 #include <boost/noncopyable.hpp>
+
+#include <licq/generalplugin.h>
+#include <licq/pluginmanager.h>
+#include <licq/protocolplugin.h>
+#include <licq/thread/mutex.h>
 
 namespace Licq
 {
@@ -37,9 +39,9 @@ namespace LicqDaemon
 class PluginEventHandler : private boost::noncopyable
 {
 public:
-  PluginEventHandler(GeneralPluginsList& generalPlugins,
+  PluginEventHandler(Licq::GeneralPluginsList& generalPlugins,
                      Licq::Mutex& generalPluginsMutex,
-                     ProtocolPluginsList& protocolPlugins,
+                     Licq::ProtocolPluginsList& protocolPlugins,
                      Licq::Mutex& protocolPluginsMutex);
   ~PluginEventHandler();
 
@@ -53,10 +55,10 @@ public:
   Licq::ProtocolSignal* popProtocolSignal();
 
 private:
-  GeneralPluginsList& myGeneralPlugins;
+  Licq::GeneralPluginsList& myGeneralPlugins;
   Licq::Mutex& myGeneralPluginsMutex;
 
-  ProtocolPluginsList& myProtocolPlugins;
+  Licq::ProtocolPluginsList& myProtocolPlugins;
   Licq::Mutex& myProtocolPluginsMutex;
 };
 

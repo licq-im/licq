@@ -24,13 +24,22 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include "macro.h"
+
+namespace LicqDaemon
+{
+class PluginEventHandler;
+class PluginManager;
+}
+
 namespace Licq
 {
+class ProtocolSignal;
 
 /**
  * A ProtocolPlugin implements support for a specific IM protocol.
  */
-class ProtocolPlugin : public virtual Plugin
+class ProtocolPlugin : public Plugin
 {
 public:
   enum Capabilities
@@ -52,24 +61,63 @@ public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
   /// Get the protocol's unique identifier
-  virtual unsigned long protocolId() const = 0;
+  unsigned long protocolId() const;
 
   /// Get default server host to connect to
-  virtual std::string defaultServerHost() const = 0;
+  std::string defaultServerHost() const;
 
   /// Get default server port to connect to
-  virtual int defaultServerPort() const = 0;
+  int defaultServerPort() const;
 
   /**
    * Get protocol plugin supported features
    *
    * @return A mask of bits from Capabilities enum
    */
-  virtual unsigned long capabilities() const = 0;
+  unsigned long capabilities() const;
+
+  /**
+   * Push a signal to this protocol plugin
+   *
+   * The signal will be added to the signal queue and the plugin will be
+   * notified via its pipe.
+   *
+   * Note: This function will return immediately. The signal will be processed
+   * by the plugin asynchrony
+   *
+   * @param signal Signal to forward to the plugin
+   */
+  void pushSignal(ProtocolSignal* signal);
 
 protected:
+  /**
+   * Constructor
+   *
+   * @param id Unique id for this plugin
+   * @param lib Library plugin was loaded from
+   * @param thread Thread for plugin to run in
+   * @param icq True if this is the internal ICQ protocol plugin
+   */
+  ProtocolPlugin(int id, LibraryPtr lib, ThreadPtr thread, bool icq = false);
+
   /// Destructor
-  virtual ~ProtocolPlugin() { /* Empty */ }
+  virtual ~ProtocolPlugin();
+
+  /**
+   * Get a signal from the signal queue
+   *
+   * @return The oldest signal on the queue, or NULL if queue is empty
+   */
+  ProtocolSignal* popSignal();
+
+private:
+  LICQ_DECLARE_PRIVATE();
+
+  /// Allow the plugin manager to access protected members
+  friend class LicqDaemon::PluginManager;
+
+  /// Allow PluginEventHandler to call popSignal()
+  friend class LicqDaemon::PluginEventHandler;
 };
 
 } // namespace Licq

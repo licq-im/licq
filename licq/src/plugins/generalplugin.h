@@ -20,47 +20,19 @@
 #ifndef LICQDAEMON_GENERALPLUGIN_H
 #define LICQDAEMON_GENERALPLUGIN_H
 
-#include "plugin.h"
 #include <licq/generalplugin.h>
 
-#include <list>
 #include <queue>
+
+#include <licq/thread/mutex.h>
 
 namespace Licq
 {
-class Event;
-class PluginSignal;
-}
 
-namespace LicqDaemon
-{
-
-class GeneralPlugin : public Plugin,
-                      public Licq::GeneralPlugin
+class GeneralPlugin::Private
 {
 public:
-  typedef boost::shared_ptr<GeneralPlugin> Ptr;
-
-  GeneralPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread);
-  virtual ~GeneralPlugin();
-
-  void pushSignal(Licq::PluginSignal* signal);
-  Licq::PluginSignal* popSignal();
-
-  void pushEvent(Licq::Event* event);
-  Licq::Event* popEvent();
-
-  /// Check if the plugin is interested in the @a signal.
-  bool wantSignal(unsigned long signal) const;
-
-  void setSignalMask(unsigned long mask);
-
-  // From Licq::GeneralPlugin
-  bool isEnabled() const;
-  std::string description() const;
-  std::string usage() const;
-  void enable();
-  void disable();
+  Private();
 
 private:
   unsigned long mySignalMask;
@@ -74,10 +46,10 @@ private:
   const char* (*myStatus)();
   const char* (*myDescription)();
   const char* (*myUsage)();
+
+  friend class GeneralPlugin;
 };
 
-typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
-
-} // namespace LicqDaemon
+} // namespace Licq
 
 #endif

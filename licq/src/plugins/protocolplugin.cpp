@@ -21,52 +21,54 @@
 
 #include <licq/thread/mutexlocker.h>
 
-using Licq::MutexLocker;
+using namespace Licq;
 using namespace std;
-using namespace LicqDaemon;
 
-ProtocolPlugin::ProtocolPlugin(int id, DynamicLibrary::Ptr lib,
-                               PluginThread::Ptr pluginThread,
-                               bool icq) :
-    Plugin(id, lib, pluginThread, icq ? "LProto_icq" : "LProto")
+
+ProtocolPlugin::ProtocolPlugin(int id, LibraryPtr lib, ThreadPtr thread, bool icq)
+  : Plugin(id, lib, thread, icq ? "LProto_icq" : "LProto"),
+    myPrivate(new Private)
 {
+  LICQ_D();
+
   std::string prefix = (icq ? "LProto_icq" : "LProto");
-  loadSymbol(prefix + "_PPID", myPpid);
-  loadSymbol(prefix + "_SendFuncs", mySendFunctions);
+  loadSymbol(prefix + "_PPID", (void**)(&d->myPpid));
+  loadSymbol(prefix + "_SendFuncs", (void**)(&d->mySendFunctions));
 
-  const char* (*getDefaultHost)();
-  loadSymbol(prefix + "_DefSrvHost", getDefaultHost);
+  const char* (*getDefaultHost)() = NULL;
+  loadSymbol(prefix + "_DefSrvHost", (void**)(&getDefaultHost));
   if (getDefaultHost != NULL)
-    myDefaultHost = (*getDefaultHost)();
+    d->myDefaultHost = (*getDefaultHost)();
 
-  int (*getDefaultPort)();
-  loadSymbol(prefix + "_DefSrvPort", getDefaultPort);
-  myDefaultPort = (getDefaultPort == NULL ? 0 : (*getDefaultPort)() );
+  int (*getDefaultPort)() = NULL;
+  loadSymbol(prefix + "_DefSrvPort", (void**)(&getDefaultPort));
+  d->myDefaultPort = (getDefaultPort == NULL ? 0 : (*getDefaultPort)() );
 
-  const char* ppid = (*myPpid)();
-  myProtocolId = ppid[0] << 24 | ppid[1] << 16 | ppid[2] << 8 | ppid[3];
+  const char* ppid = (*d->myPpid)();
+  d->myProtocolId = ppid[0] << 24 | ppid[1] << 16 | ppid[2] << 8 | ppid[3];
 }
 
 ProtocolPlugin::~ProtocolPlugin()
 {
-  // Empty
+  delete myPrivate;
 }
 
-void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
+void ProtocolPlugin::pushSignal(ProtocolSignal* signal)
 {
-  MutexLocker locker(mySignalsMutex);
-  mySignals.push(signal);
-  locker.unlock();
-  myPipe.putChar(PipeSignal);
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  d->mySignals.push(signal);
+  notify(PipeSignal);
 }
 
-Licq::ProtocolSignal* ProtocolPlugin::popSignal()
+ProtocolSignal* ProtocolPlugin::popSignal()
 {
-  MutexLocker locker(mySignalsMutex);
-  if (!mySignals.empty())
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  if (!d->mySignals.empty())
   {
-    Licq::ProtocolSignal* signal = mySignals.front();
-    mySignals.pop();
+    ProtocolSignal* signal = d->mySignals.front();
+    d->mySignals.pop();
     return signal;
   }
   return NULL;
@@ -74,20 +76,24 @@ Licq::ProtocolSignal* ProtocolPlugin::popSignal()
 
 unsigned long ProtocolPlugin::protocolId() const
 {
-  return myProtocolId;
+  LICQ_D_CONST();
+  return d->myProtocolId;
 }
 
 unsigned long ProtocolPlugin::capabilities() const
 {
-  return (*mySendFunctions)();
+  LICQ_D_CONST();
+  return (*d->mySendFunctions)();
 }
 
 string ProtocolPlugin::defaultServerHost() const
 {
-  return myDefaultHost;
+  LICQ_D_CONST();
+  return d->myDefaultHost;
 }
 
 int ProtocolPlugin::defaultServerPort() const
 {
-  return myDefaultPort;
+  LICQ_D_CONST();
+  return d->myDefaultPort;
 }

@@ -22,6 +22,10 @@
 
 #include <gtest/gtest.h>
 
+#include "../../utils/dynamiclibrary.h"
+#include "../plugin.h"
+#include "../pluginthread.h"
+
 // Plugin API functions
 #define STR_FUNC(name)                          \
   const char* LProto_ ## name()                 \
@@ -53,13 +57,38 @@ int LProto_Main()
   return 10;
 }
 
-using namespace LicqDaemon;
+using Licq::ProtocolPlugin;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
+
+class ProtocolPluginTest : public ProtocolPlugin
+{
+public:
+  ProtocolPluginTest(int id, LibraryPtr lib, ThreadPtr thread) :
+      ProtocolPlugin(id, lib, thread)
+  { /* Empty */ }
+
+  bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL)
+  { return basePrivate()->callInit(argc, argv, callback); }
+
+  void startThread(void (*startCallback)(const Plugin&) = NULL,
+      void (*exitCallback)(const Plugin&) = NULL)
+  { basePrivate()->startThread(startCallback, exitCallback); }
+
+  int joinThread()
+  { return basePrivate()->joinThread(); }
+
+  // Un-protect functions so we can test them without being the PluginManager
+  using ProtocolPlugin::getReadPipe;
+  using ProtocolPlugin::popSignal;
+};
+
 
 struct ProtocolPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  ProtocolPlugin plugin;
+  ProtocolPluginTest plugin;
 
   ProtocolPluginFixture() :
     myLib(new DynamicLibrary("")),
@@ -87,7 +116,7 @@ TEST(ProtocolPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(ProtocolPlugin plugin(1, lib, thread));
+  ASSERT_NO_THROW(ProtocolPluginTest plugin(1, lib, thread));
 }
 
 TEST_F(ProtocolPluginFixture, callApiFunctions)

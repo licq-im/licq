@@ -22,6 +22,13 @@
 #include <gtest/gtest.h>
 #include <list>
 
+#include "../../utils/dynamiclibrary.h"
+#include "../pluginthread.h"
+
+// licq.cpp
+static const char* argv0 = "test";
+char** global_argv = const_cast<char**>(&argv0);
+
 extern "C" {
 
 // Plugin API functions
@@ -33,7 +40,7 @@ STR_FUNC(Name);
 STR_FUNC(Version);
 STR_FUNC(ConfigFile);
 
-int Test_Init(int, char**)
+bool Test_Init(int, char**)
 {
   return true;
 }
@@ -45,13 +52,28 @@ int Test_Main()
 
 } // extern "C"
 
-using namespace LicqDaemon;
+using Licq::Plugin;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
 
 class PluginTest : public Plugin
 {
 public:
   PluginTest(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
     Plugin(id, lib, thread, "Test") { /* Empty */ }
+
+  bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL)
+  { return myPrivate->callInit(argc, argv, callback); }
+
+  void startThread(void (*startCallback)(const Plugin&) = NULL,
+      void (*exitCallback)(const Plugin&) = NULL)
+  { myPrivate->startThread(startCallback, exitCallback); }
+
+  int joinThread()
+  { return myPrivate->joinThread(); }
+
+  // Un-protect functions so we can test them without being the PluginManager
+  using Plugin::getReadPipe;
 };
 
 struct PluginFixture : public ::testing::Test

@@ -20,38 +20,18 @@
 #ifndef LICQDAEMON_PROTOCOLPLUGIN_H
 #define LICQDAEMON_PROTOCOLPLUGIN_H
 
-#include "plugin.h"
 #include <licq/protocolplugin.h>
 
-#include <list>
 #include <queue>
+
+#include <licq/thread/mutex.h>
 
 namespace Licq
 {
-class ProtocolSignal;
-}
 
-namespace LicqDaemon
-{
-
-class ProtocolPlugin : public Plugin,
-                       public Licq::ProtocolPlugin
+class ProtocolPlugin::Private
 {
 public:
-  typedef boost::shared_ptr<ProtocolPlugin> Ptr;
-
-  ProtocolPlugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
-                 bool icq = false);
-  virtual ~ProtocolPlugin();
-
-  void pushSignal(Licq::ProtocolSignal* signal);
-  Licq::ProtocolSignal* popSignal();
-
-  // From Licq::ProtocolPlugin
-  unsigned long protocolId() const;
-  unsigned long capabilities() const;
-  std::string defaultServerHost() const;
-  int defaultServerPort() const;
 
 private:
   unsigned long myProtocolId;
@@ -63,10 +43,10 @@ private:
 
   const char* (*myPpid)();
   unsigned long (*mySendFunctions)();
+
+  friend class ProtocolPlugin;
 };
 
-typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
-
-} // namespace LicqDaemon
+} // namespace Licq
 
 #endif

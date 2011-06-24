@@ -22,9 +22,9 @@
 
 #include <gtest/gtest.h>
 
-// licq.cpp
-static const char* argv0 = "test";
-char** global_argv = const_cast<char**>(&argv0);
+#include "../../utils/dynamiclibrary.h"
+#include "../plugin.h"
+#include "../pluginthread.h"
 
 // Plugin API functions
 #define STR_FUNC(name)                          \
@@ -48,13 +48,39 @@ int LP_Main()
   return 20;
 }
 
-using namespace LicqDaemon;
+using Licq::GeneralPlugin;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
+
+class GeneralPluginTest : public GeneralPlugin
+{
+public:
+  GeneralPluginTest(int id, LibraryPtr lib, ThreadPtr thread) :
+      GeneralPlugin(id, lib, thread)
+  { /* Empty */ }
+
+  bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL)
+  { return basePrivate()->callInit(argc, argv, callback); }
+
+  void startThread(void (*startCallback)(const Plugin&) = NULL,
+      void (*exitCallback)(const Plugin&) = NULL)
+  { basePrivate()->startThread(startCallback, exitCallback); }
+
+  int joinThread()
+  { return basePrivate()->joinThread(); }
+
+  // Un-protect functions so we can test them without being the PluginManager
+  using GeneralPlugin::getReadPipe;
+  using GeneralPlugin::popEvent;
+  using GeneralPlugin::popSignal;
+  using GeneralPlugin::setSignalMask;
+};
 
 struct GeneralPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  GeneralPlugin plugin;
+  GeneralPluginTest plugin;
 
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
@@ -82,7 +108,7 @@ TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(GeneralPlugin plugin(1, lib, thread));
+  ASSERT_NO_THROW(GeneralPluginTest plugin(1, lib, thread));
 }
 
 TEST_F(GeneralPluginFixture, callApiFunctions)

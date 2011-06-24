@@ -20,82 +20,72 @@
 #ifndef LICQDAEMON_PLUGIN_H
 #define LICQDAEMON_PLUGIN_H
 
-#include "pluginthread.h"
+#include <licq/plugin.h>
 
 #include <licq/pipe.h>
-#include <licq/plugin.h>
-#include <licq/thread/mutex.h>
+
 #include "utils/dynamiclibrary.h"
+#include "pluginthread.h"
 
-#include <boost/exception/info.hpp>
-#include <boost/shared_ptr.hpp>
-#include <climits>
-#include <string>
-
-namespace LicqDaemon
+namespace Licq
 {
 
-class Plugin : public virtual Licq::Plugin
+class Plugin::Private
 {
 public:
-  typedef boost::
-  error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
+  Private(Plugin* plugin, int id, LicqDaemon::DynamicLibrary::Ptr lib,
+      LicqDaemon::PluginThread::Ptr thread);
+  ~Private();
 
-  Plugin(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr pluginThread,
-         const std::string& prefix);
-  virtual ~Plugin();
-
-  /// Get the read end of the pipe used to communicate with the plugin.
-  int getReadPipe() const { return myPipe.getReadFd(); }
-
+  /**
+   * Initialize the plugin
+   *
+   * This is a wrapper that initializes the plugin in it's thread and waits
+   * for the init function to return.
+   *
+   * @param argc Number of arguments for plugin
+   * @param argv Arguments for plugin
+   * @param callback Function to call in plugin's thread before calling plugin
+   * @return Return value from plugin initialization
+   */
   bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL);
 
   /**
-   * Start the plugin in a new thread.
-   * @param startCallback will be called in the plugin's thread just before the
-   * plugin's main function is called.
-   * @param exitCallback will be called in the plugin's thread just after the
-   * plugin returns from the main function.
+   * Start the plugin
+   *
+   * This is a wrapper that runs the plugin in its thread
+   * This function returns immediately
+   *
+   * @param startCallback Function to call in the plugin's thread just before
+   *                      the plugin's main function is called
+   * @param exitCallback Function to call when thread exists
    */
   void startThread(void (*startCallback)(const Plugin&) = NULL,
                    void (*exitCallback)(const Plugin&) = NULL);
 
   /**
-   * Wait for the plugin to stop.
-   * @returns The plugins exit code.
+   * Wait for the plugin to stop
+   *
+   * @return Exit code from plugin thread
    */
   int joinThread();
 
-  /// Cancels the plugin's thread.
+  /**
+   * Cancel the plugin's thread
+   */
   void cancelThread();
-
-  /// @return True when called from the plugin's main thread.
-  bool isThisThread() const { return isThread(::pthread_self()); }
-
-  /// Check if @a thread is the plugin's thread.
-  inline bool isThread(const pthread_t& thread) const;
-
-  // From Licq::Plugin
-  int id() const;
-  std::string name() const;
-  std::string version() const;
-  std::string configFile() const;
-  std::string libraryName() const;
-  void shutdown();
-
-protected:
-  DynamicLibrary::Ptr myLib;
-  Licq::Pipe myPipe;
-
-  template<typename SymbolType>
-  inline void loadSymbol(const std::string& name, SymbolType*& symbol);
 
 private:
   static bool initThreadEntry(void* plugin);
 
   static void* startThreadEntry(void* plugin);
 
-  PluginThread::Ptr myThread;
+  Plugin* const myPlugin;
+  const int myId;
+  LicqDaemon::DynamicLibrary::Ptr myLib;
+  Licq::Pipe myPipe;
+
+  LicqDaemon::PluginThread::Ptr myThread;
   void (*myInitCallback)(const Plugin&);
   void (*myStartCallback)(const Plugin&);
   void (*myExitCallback)(const Plugin&);
@@ -111,29 +101,9 @@ private:
   char** myArgv;
   char** myArgvCopy;
 
-  // Unique plugin id
-  const int myId;
+  friend class Plugin;
 };
 
-inline bool Plugin::isThread(const pthread_t& thread) const
-{
-  return myThread->isThread(thread);
-}
-
-template<typename SymbolType>
-inline void Plugin::loadSymbol(const std::string& name, SymbolType*& symbol)
-{
-  try
-  {
-    myLib->getSymbol(name, &symbol);
-  }
-  catch (DynamicLibrary::Exception& ex)
-  {
-    ex << errinfo_symbol_name(name);
-    throw;
-  }
-}
-
-} // namespace LicqDaemon
+} // namespace Licq
 
 #endif

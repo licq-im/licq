@@ -36,7 +36,14 @@
 #include <iterator>
 #include <glob.h>
 
+#include "../utils/dynamiclibrary.h"
+#include "plugin.h"
+#include "pluginthread.h"
+
+using Licq::GeneralPlugin;
 using Licq::MutexLocker;
+using Licq::Plugin;
+using Licq::ProtocolPlugin;
 using Licq::StringList;
 using Licq::gDaemon;
 using Licq::gLog;
@@ -99,10 +106,10 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     }
 
     // Create plugin and resolve all symbols
-    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginId, lib, pluginThread));
+    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginId, lib, pluginThread), deleteGeneralPlugin);
 
     // Let the plugin initialize itself
-    if (!plugin->callInit(argc, argv, &initPluginCallback))
+    if (!plugin->basePrivate()->callInit(argc, argv, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
           plugin->name().c_str());
@@ -153,7 +160,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     }
 
     // Create plugin and resolve all symbols
-    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginId, lib, pluginThread, icq));
+    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginId, lib, pluginThread, icq), deleteProtocolPlugin);
 
     {
       // Check if we already got a plugin for this protocol
@@ -166,7 +173,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     }
 
     // Let the plugin initialize itself
-    if (!plugin->callInit(0, NULL, &initPluginCallback))
+    if (!plugin->basePrivate()->callInit(0, NULL, &initPluginCallback))
     {
       gLog.error(tr("Failed to initialize plugin (%s)"),
           plugin->name().c_str());
@@ -244,6 +251,16 @@ void PluginManager::pluginHasExited(unsigned short id)
   myExitListSignal.signal();
 }
 
+void PluginManager::deleteGeneralPlugin(GeneralPlugin* plugin)
+{
+  delete plugin;
+}
+
+void PluginManager::deleteProtocolPlugin(ProtocolPlugin* plugin)
+{
+  delete plugin;
+}
+
 unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
 {
   MutexLocker generalLocker(myGeneralPluginsMutex);
@@ -280,12 +297,12 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   protocolLocker.relock();
 
   // Check general plugins first
-  for (GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
+  for (Licq::GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
        plugin != myGeneralPlugins.end(); ++plugin)
   {
     if ((*plugin)->id() == exitId)
     {
-      int result = (*plugin)->joinThread();
+      int result = (*plugin)->basePrivate()->joinThread();
       gLog.info(tr("Plugin %s exited with code %d"),
           (*plugin)->name().c_str(), result);
       myGeneralPlugins.erase(plugin);
@@ -294,12 +311,12 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   }
 
   // Then check protocol plugins
-  for (ProtocolPluginsList::iterator plugin = myProtocolPlugins.begin();
+  for (Licq::ProtocolPluginsList::iterator plugin = myProtocolPlugins.begin();
        plugin != myProtocolPlugins.end(); ++plugin)
   {
     if ((*plugin)->id() == exitId)
     {
-      int result = (*plugin)->joinThread();
+      int result = (*plugin)->basePrivate()->joinThread();
       gLog.info(tr("Protocol plugin %s exited with code %d"),
           (*plugin)->name().c_str(), result);
       myProtocolPlugins.erase(plugin);
@@ -318,7 +335,7 @@ void PluginManager::cancelAllPlugins()
     BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
     {
       gLog.warning(tr("Plugin %s failed to exit"), plugin->name().c_str());
-      plugin->cancelThread();
+      plugin->basePrivate()->cancelThread();
     }
   }
 
@@ -327,7 +344,7 @@ void PluginManager::cancelAllPlugins()
     BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
     {
       gLog.warning(tr("Protocol plugin %s failed to exit"), plugin->name().c_str());
-      plugin->cancelThread();
+      plugin->basePrivate()->cancelThread();
     }
   }
 }
@@ -564,7 +581,7 @@ void PluginManager::startPlugin(GeneralPlugin::Ptr plugin)
   gLog.info(tr("Starting plugin %s (version %s)"),
       plugin->name().c_str(), plugin->version().c_str());
 
-  plugin->startThread(NULL, exitPluginCallback);
+  plugin->basePrivate()->startThread(NULL, exitPluginCallback);
 }
 
 void PluginManager::startPlugin(ProtocolPlugin::Ptr plugin)
@@ -572,5 +589,5 @@ void PluginManager::startPlugin(ProtocolPlugin::Ptr plugin)
   gLog.info(tr("Starting protocol plugin %s (version %s)"),
       plugin->name().c_str(), plugin->version().c_str());
 
-  plugin->startThread(NULL, exitPluginCallback);
+  plugin->basePrivate()->startThread(NULL, exitPluginCallback);
 }

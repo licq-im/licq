@@ -29,12 +29,14 @@
 
 #include <boost/foreach.hpp>
 
+using Licq::GeneralPlugin;
 using Licq::MutexLocker;
+using Licq::ProtocolPlugin;
 using namespace LicqDaemon;
 
-PluginEventHandler::PluginEventHandler(GeneralPluginsList& generalPlugins,
+PluginEventHandler::PluginEventHandler(Licq::GeneralPluginsList& generalPlugins,
                                        Licq::Mutex& generalPluginsMutex,
-                                       ProtocolPluginsList& protocolPlugins,
+                                       Licq::ProtocolPluginsList& protocolPlugins,
                                        Licq::Mutex& protocolPluginsMutex) :
   myGeneralPlugins(generalPlugins),
   myGeneralPluginsMutex(generalPluginsMutex),

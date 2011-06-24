@@ -29,8 +29,6 @@
 namespace LicqDaemon
 {
 
-class Plugin;
-
 /**
  * The PluginThread class starts a new thread and loads, initializes and starts
  * the plugin in that thread. By loading the plugin in the same thread as it is
