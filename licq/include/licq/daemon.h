@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,16 +131,6 @@ public:
   void pluginUIViewEvent(const UserId& userId);
 
   void pluginUIMessage(const UserId& userId);
-
-  /**
-   * Get the next queued signal for a plugin
-   * Checks calling thread to determine which plugin queue to pop
-   *
-   * @return The next queued signal or NULL if the queue is empty
-   */
-  PluginSignal* popPluginSignal();
-  Event* PopPluginEvent();
-  ProtocolSignal* PopProtoSignal();
 
   /**
    * Get path for the base dir (e.g. /home/fred/.licq/)

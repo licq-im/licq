@@ -452,24 +452,9 @@ void Licq::Daemon::pushPluginSignal(PluginSignal* s)
   LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralSignal(s);
 }
 
-PluginSignal* Licq::Daemon::popPluginSignal()
-{
-  return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralSignal();
-}
-
-Licq::Event* Licq::Daemon::PopPluginEvent()
-{
-  return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralEvent();
-}
-
 void Licq::Daemon::PushProtoSignal(Licq::ProtocolSignal* s, unsigned long _nPPID)
 {
   LicqDaemon::gPluginManager.getPluginEventHandler().pushProtocolSignal(s, _nPPID);
-}
-
-Licq::ProtocolSignal* Licq::Daemon::PopProtoSignal()
-{
-  return LicqDaemon::gPluginManager.getPluginEventHandler().popProtocolSignal();
 }
 
 void Licq::Daemon::pluginUIViewEvent(const Licq::UserId& userId)

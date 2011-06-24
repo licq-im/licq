@@ -26,11 +26,6 @@
 
 #include "macro.h"
 
-namespace LicqDaemon
-{
-class PluginEventHandler;
-}
-
 namespace Licq
 {
 class Event;
@@ -149,9 +144,6 @@ private:
 
   /// Allow the plugin manager to access private members
   friend class LicqDaemon::PluginManager;
-
-  /// Allow PluginEventHandler to call popSignal()
-  friend class LicqDaemon::PluginEventHandler;
 };
 
 } // namespace Licq

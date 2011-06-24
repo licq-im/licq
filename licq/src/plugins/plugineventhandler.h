@@ -46,13 +46,10 @@ public:
   ~PluginEventHandler();
 
   void pushGeneralEvent(Licq::Event* event);
-  Licq::Event* popGeneralEvent();
 
   void pushGeneralSignal(Licq::PluginSignal* signal);
-  Licq::PluginSignal* popGeneralSignal();
 
   void pushProtocolSignal(Licq::ProtocolSignal* signal, unsigned long ppid);
-  Licq::ProtocolSignal* popProtocolSignal();
 
 private:
   Licq::GeneralPluginsList& myGeneralPlugins;
