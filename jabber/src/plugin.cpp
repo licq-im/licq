@@ -114,7 +114,6 @@ bool Plugin::init(int, char**)
 
 int Plugin::run()
 {
-  myConfig = Config(configFile());
   int pipe = getReadPipe();
 
   fd_set readFds;
