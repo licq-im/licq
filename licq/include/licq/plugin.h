@@ -40,9 +40,19 @@ namespace Licq
 {
 
 /**
- * The base class for plugin instances.
+ * Base class for plugin instances
  *
- * Plugins are handled using the PluginManager.
+ * All plugins must have a subclass implementing this interface
+ *
+ * Note: When a subclass is constructed, it should only perform minimal
+ * initialization needed for simple functions like name() and version() to
+ * be usable. Licq will call init() afterwards to properly initialze the
+ * plugin before run() is called to start the plugin.
+ *
+ * Although a plugin will run in a separate thread, calls to the public
+ * functions and the protected functions called from the protocol manager
+ * can be made from any thread. It is the responsibility of the plugin to make
+ * sure these functions are thread safe when needed.
  */
 class Plugin : private boost::noncopyable
 {
@@ -59,13 +69,13 @@ public:
   int id() const;
 
   /// Get the plugin's name.
-  std::string name() const;
+  virtual std::string name() const = 0;
 
   /// Get the plugin's version.
-  std::string version() const;
+  virtual std::string version() const = 0;
 
   /// Configuration file for the plugin. Empty string if none. Path is relative to BASE_DIR
-  std::string configFile() const;
+  virtual std::string configFile() const;
 
   /// Get the name of the library from where the plugin was loaded.
   const std::string& libraryName() const;
@@ -75,6 +85,7 @@ public:
 
   /**
    * Check if a thread belongs to this plugin
+   * Called by anyone
    *
    * @param thread Thread to test
    * @return True if thread is the main thread for this plugin
@@ -90,15 +101,35 @@ protected:
    * Constructor
    *
    * @param p Paramaters from PluginManager
-   * @param prefix Prefix for library symbols
    */
-  Plugin(Params& p, const std::string& prefix);
+  Plugin(Params& p);
 
   /// Destructor
   virtual ~Plugin();
 
   /**
+   * Initialize the plugin
+   * Called in plugin thread by PluginManager
+   *
+   * @param argc Number of command line parameters
+   * @param argv Command line parameters
+   * @return True if initialization was successful
+   */
+  virtual bool init(int argc, char** argv) = 0;
+
+  /**
+   * Run the plugin
+   * Called in plugin thread by PluginManager
+   *
+   * This function will be called in a separate thread and may block
+   *
+   * @return Exit code for the plugin
+   */
+  virtual int run() = 0;
+
+  /**
    * Get read end of pipe used to communicate with the plugin
+   * Called from plugin
    *
    * @return A file descriptor that can be polled for new events and signals
    */
@@ -110,9 +141,6 @@ protected:
    * @param c A character, will be received by plugin through it's read pipe
    */
   void notify(char c);
-
-  /// Load a symbol from the plugin library
-  void loadSymbol(const std::string& name, void** symbol);
 
 private:
   LICQ_DECLARE_PRIVATE();

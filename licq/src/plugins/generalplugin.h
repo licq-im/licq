@@ -25,6 +25,7 @@
 
 #include <queue>
 
+#include <licq/pluginbase.h>
 #include <licq/thread/mutex.h>
 
 namespace Licq
@@ -37,16 +38,21 @@ class GeneralPlugin::Params : public Plugin::Params
 {
 public:
   Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
-      LicqDaemon::PluginThread::Ptr thread) :
-    Plugin::Params(id, lib, thread)
+      LicqDaemon::PluginThread::Ptr thread, GeneralPluginReaperPtr reaper) :
+    Plugin::Params(id, lib, thread),
+    myReaper(reaper)
   { /* Empty */ }
-};
 
+  GeneralPluginReaperPtr myReaper;
+};
 
 class GeneralPlugin::Private
 {
 public:
-  Private();
+  Private(GeneralPluginReaperPtr reaper);
+
+  GeneralPluginReaperPtr reaper()
+  { return myReaper; }
 
 private:
   unsigned long mySignalMask;
@@ -56,10 +62,7 @@ private:
   std::queue<Licq::Event*> myEvents;
   Licq::Mutex myEventsMutex;
 
-  // Function pointers
-  const char* (*myStatus)();
-  const char* (*myDescription)();
-  const char* (*myUsage)();
+  GeneralPluginReaperPtr myReaper;
 
   friend class GeneralPlugin;
 };

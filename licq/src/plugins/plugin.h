@@ -91,9 +91,17 @@ public:
    */
   void cancelThread();
 
+  /**
+   * Get the library object for this plugin
+   */
+  LicqDaemon::DynamicLibrary::Ptr library()
+  { return myLib; }
+
 private:
+  /// Entry point for calling init() in plugin's thread
   static bool initThreadEntry(void* plugin);
 
+  /// Entry point for calling run() in plugin's thread
   static void* startThreadEntry(void* plugin);
 
   Plugin* const myPlugin;
@@ -105,13 +113,6 @@ private:
   void (*myInitCallback)(const Plugin&);
   void (*myStartCallback)(const Plugin&);
   void (*myExitCallback)(const Plugin&);
-
-  // Function pointers
-  bool (*myInit)(int, char**);
-  int (*myMain)();
-  const char* (*myName)();
-  const char* (*myVersion)();
-  const char* (*myConfigFile)();
 
   int myArgc;
   char** myArgv;

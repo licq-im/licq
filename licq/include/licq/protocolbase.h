@@ -20,30 +20,93 @@
 #ifndef LICQ_PROTOCOLBASE_H
 #define LICQ_PROTOCOLBASE_H
 
+#include "protocolplugin.h"
+
+namespace Licq
+{
+
+typedef ProtocolPlugin* (*ProtocolPluginFactoryPtr)(Licq::ProtocolPlugin::Params& p);
+
+typedef void (*ProtocolPluginReaperPtr)(Licq::ProtocolPlugin* plugin);
+
+/**
+ * This struct contains the initial data and functions needed by Licq
+ * to load a protocol plugin.
+ */
+struct ProtocolPluginData
+{
+  /**
+   * Magic value to identify an Licq protocol
+   * Must contain the characters 'L', 'i', 'c', 'q'
+   */
+  char licqMagic[4];
+
+  /**
+   * Version of Licq this plugin is built for
+   * Example of format: 1023 for version 1.2.3
+   * This field can be set to LICQ_VERSION (from licq/version.h) at build time
+   * Plugin load will be aborted unless major and minor versions match
+   *   e.g. Licq 1.5.3 will load a plugin for 1.5.1 but not 1.4.x or 1.6.x
+   */
+  int licqVersion;
+
+  /**
+   * Pointer to a factory function that creates and returns a ProtocolPlugin object
+   * This function will be called once when the plugin library is loaded
+   * Note that the plugin should not be (fully) initialized by this.
+   *   The init() and run() functions in Licq::Plugin will be called for this afterwards
+   *
+   * The factory function takes parameters that must be forwarded to the
+   * constructor of the ProtocolPlugin class.
+   */
+  ProtocolPluginFactoryPtr pluginFactory;
+
+  /**
+   * Pointer to function that deletes the plugin object
+   * This function will be called once after run() has returned and the plugin
+   *   thread has terminated but before the library is closed.
+   * Normally this function should only delete the plugin.
+   *
+   * @param plugin Pointer to plugin to delete
+   */
+  ProtocolPluginReaperPtr pluginReaper;
+};
+
+} // namespace Licq
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-const char* LProto_Name();
-
-const char* LProto_Version();
-
-const char* LProto_PPID();
-
-const char* LProto_ConfigFile();
-
-bool LProto_Init(int, char**);
-
-unsigned long LProto_SendFuncs();
-
-const char* LProto_DefSrvHost();
-
-int LProto_DefSrvPort();
-
-int LProto_Main();
+/**
+ * Each protocol must contain the following symbol
+ *
+ * When a protocol is first loaded, this pointer is fetched and used to get
+ * the ProtocolData struct for the protocol.
+ */
+extern struct Licq::ProtocolPluginData LicqProtocolPluginData;
 
 #ifdef __cplusplus
 }
 #endif
+
+
+/*
+ * Convenience macro to define plugin data in a plugin
+ *
+ * Note: <licq/version.h> must be included
+ *
+ * @param factory Pointer to the plugin factory function
+ * @param reaper Pointer to the plugin delete function
+ */
+#define LICQ_PROTOCOL_PLUGIN_DATA(factory, reaper) \
+struct Licq::ProtocolPluginData LicqProtocolPluginData = { \
+    {'L', 'i', 'c', 'q' }, \
+    LICQ_VERSION, \
+    factory, \
+    reaper, \
+}
+
 
 #endif

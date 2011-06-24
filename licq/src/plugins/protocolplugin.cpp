@@ -25,33 +25,18 @@ using namespace Licq;
 using namespace std;
 
 
-ProtocolPlugin::Private::Private()
+ProtocolPlugin::Private::Private(ProtocolPluginReaperPtr reaper) :
+    myReaper(reaper)
 {
   // Empty
 }
 
 
-ProtocolPlugin::ProtocolPlugin(Params& p, bool icq)
-  : Plugin(p, icq ? "LProto_icq" : "LProto"),
-    myPrivate(new Private)
+ProtocolPlugin::ProtocolPlugin(Params& p)
+  : Plugin(p),
+    myPrivate(new Private(p.myReaper))
 {
-  LICQ_D();
-
-  std::string prefix = (icq ? "LProto_icq" : "LProto");
-  loadSymbol(prefix + "_PPID", (void**)(&d->myPpid));
-  loadSymbol(prefix + "_SendFuncs", (void**)(&d->mySendFunctions));
-
-  const char* (*getDefaultHost)() = NULL;
-  loadSymbol(prefix + "_DefSrvHost", (void**)(&getDefaultHost));
-  if (getDefaultHost != NULL)
-    d->myDefaultHost = (*getDefaultHost)();
-
-  int (*getDefaultPort)() = NULL;
-  loadSymbol(prefix + "_DefSrvPort", (void**)(&getDefaultPort));
-  d->myDefaultPort = (getDefaultPort == NULL ? 0 : (*getDefaultPort)() );
-
-  const char* ppid = (*d->myPpid)();
-  d->myProtocolId = ppid[0] << 24 | ppid[1] << 16 | ppid[2] << 8 | ppid[3];
+  // Empty
 }
 
 ProtocolPlugin::~ProtocolPlugin()
@@ -78,28 +63,4 @@ ProtocolSignal* ProtocolPlugin::popSignal()
     return signal;
   }
   return NULL;
-}
-
-unsigned long ProtocolPlugin::protocolId() const
-{
-  LICQ_D_CONST();
-  return d->myProtocolId;
-}
-
-unsigned long ProtocolPlugin::capabilities() const
-{
-  LICQ_D_CONST();
-  return (*d->mySendFunctions)();
-}
-
-string ProtocolPlugin::defaultServerHost() const
-{
-  LICQ_D_CONST();
-  return d->myDefaultHost;
-}
-
-int ProtocolPlugin::defaultServerPort() const
-{
-  LICQ_D_CONST();
-  return d->myDefaultPort;
 }

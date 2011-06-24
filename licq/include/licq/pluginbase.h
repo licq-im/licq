@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,90 +20,94 @@
 #ifndef LICQ_PLUGINBASE_H
 #define LICQ_PLUGINBASE_H
 
-/*------------------------------------------------------------------------------
- * Plugin header file
- *
- * Note that these functions must be implemented in each plugin.
- *----------------------------------------------------------------------------*/
+#include "generalplugin.h"
+
+namespace Licq
+{
+
+typedef GeneralPlugin* (*GeneralPluginFactoryPtr)(Licq::GeneralPlugin::Params& p);
+
+typedef void (*GeneralPluginReaperPtr)(Licq::GeneralPlugin* plugin);
+
+/**
+ * This struct contains the initial data and functions needed by Licq
+ * to load a plugin.
+ */
+struct GeneralPluginData
+{
+  /**
+   * Magic value to identify an Licq plugin
+   * Must contain the characters 'L', 'i', 'c', 'q'
+   */
+  char licqMagic[4];
+
+  /**
+   * Version of Licq this plugin is built for
+   * Example of format: 1023 for version 1.2.3
+   * Note: This is NOT the plugin version
+   * This field can be set to LICQ_VERSION (from licq/version.h) at build time
+   * Plugin load will be aborted unless major and minor versions match
+   *   e.g. Licq 1.5.3 will load a plugin for 1.5.1 but not 1.4.x or 1.6.x
+   */
+  int licqVersion;
+
+  /**
+   * Pointer to a factory function that creates and returns a GeneralPlugin object
+   * This function will be called once when the plugin is loaded
+   * Note that the plugin should not be (fully) initialized by this.
+   *   The init and run functions in Licq::Plugin will be called for this afterwards
+   *
+   * The factory function takes parameters that must be forwarded to the
+   * constructor of the GeneralPlugin class.
+   */
+  GeneralPluginFactoryPtr pluginFactory;
+
+  /**
+   * Pointer to function that deletes the plugin object
+   * This function will be called once after run() has returned and the plugin
+   *   thread has terminated but before the library is closed.
+   * Normally this function should only delete the plugin.
+   *
+   * @param plugin Pointer to plugin to delete
+   */
+  GeneralPluginReaperPtr pluginReaper;
+};
+
+} // namespace Licq
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*------------------------------------------------------------------------------
- * Name
+/**
+ * Each plugin must contain the following symbol
  *
- * Returns the name of the plugin.  Should use a static character array.
- *----------------------------------------------------------------------------*/
-const char* LP_Name();
-
-
-/*------------------------------------------------------------------------------
- * Version
- *
- * Returns the version of the plugin.  Should use a static character array.
- *----------------------------------------------------------------------------*/
-const char* LP_Version();
-
-
-/*------------------------------------------------------------------------------
- * Status
- *
- * Returns the status of the plugin.  Typically this will be enabled or
- * disabled.  Rarely relevant for a main interface plugin.
- * Should use a static character array.
- *----------------------------------------------------------------------------*/
-const char* LP_Status();
-
-
-/*------------------------------------------------------------------------------
- * Description
- *
- * Returns a brief (one line) description of the plugin
- * Should use a static character array.
- *----------------------------------------------------------------------------*/
-const char* LP_Description();
-
-
-/*------------------------------------------------------------------------------
- * Usage
- *
- * Returns a usage string.
- *----------------------------------------------------------------------------*/
-const char* LP_Usage();
-
-
-/*------------------------------------------------------------------------------
- * Init
- *
- * This function is called to initialize the plugin.  It is passed the
- * relevant command line parameters to be parsed using getopt().  It should
- * return whether or not it started successfully.
- *----------------------------------------------------------------------------*/
-bool LP_Init(int, char **);
-
-
-/*------------------------------------------------------------------------------
- * Main
- *
- * This function is called to actually run the plugin.  It is run in it's own
- * thread so may block. It *must* register with the daemon before sending any
- * requests. It returns an integer return code.
- *----------------------------------------------------------------------------*/
-int LP_Main();
-
-
-/*------------------------------------------------------------------------------
- * ConfigFile
- *
- * This function returns the name of the configuration file referenced
- * from the BASE_DIR.  It can be left undefined if no config file is
- * used.
- *----------------------------------------------------------------------------*/
-const char* LP_ConfigFile();
+ * When a plugin is first loaded, this pointer is fetched and used to get
+ * the PluginData struct for the plugin.
+ */
+extern struct Licq::GeneralPluginData LicqGeneralPluginData;
 
 #ifdef __cplusplus
 }
 #endif
+
+
+/*
+ * Convenience macro to define plugin data in a plugin
+ *
+ * Note: <licq/version.h> must be included
+ *
+ * @param factory Pointer to the plugin factory function
+ * @param reaper Pointer to the plugin delete function
+ */
+#define LICQ_GENERAL_PLUGIN_DATA(factory, reaper) \
+struct Licq::GeneralPluginData LicqGeneralPluginData = { \
+    {'L', 'i', 'c', 'q' }, \
+    LICQ_VERSION, \
+    factory, \
+    reaper, \
+}
+
 
 #endif

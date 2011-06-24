@@ -29,7 +29,6 @@
 namespace LicqDaemon
 {
 class PluginEventHandler;
-class PluginManager;
 }
 
 namespace Licq
@@ -37,7 +36,10 @@ namespace Licq
 class ProtocolSignal;
 
 /**
- * A ProtocolPlugin implements support for a specific IM protocol.
+ * Base class for protocol plugins implementing support for an IM protocol
+ *
+ * All protocol plugins must have a subclass implementing this interface
+ * See documentation for Licq::Plugin for additional information
  */
 class ProtocolPlugin : public Plugin
 {
@@ -63,23 +65,24 @@ public:
   typedef boost::shared_ptr<ProtocolPlugin> Ptr;
 
   /// Get the protocol's unique identifier
-  unsigned long protocolId() const;
+  virtual unsigned long protocolId() const = 0;
 
   /// Get default server host to connect to
-  std::string defaultServerHost() const;
+  virtual std::string defaultServerHost() const = 0;
 
   /// Get default server port to connect to
-  int defaultServerPort() const;
+  virtual int defaultServerPort() const = 0;
 
   /**
    * Get protocol plugin supported features
    *
    * @return A mask of bits from Capabilities enum
    */
-  unsigned long capabilities() const;
+  virtual unsigned long capabilities() const = 0;
 
   /**
    * Push a signal to this protocol plugin
+   * Called by anyone
    *
    * The signal will be added to the signal queue and the plugin will be
    * notified via its pipe.
@@ -96,15 +99,19 @@ protected:
    * Constructor
    *
    * @param p Paramaters from PluginManager
-   * @param icq True if this is the internal ICQ protocol plugin
    */
-  ProtocolPlugin(Params& p, bool icq = false);
+  ProtocolPlugin(Params& p);
 
   /// Destructor
   virtual ~ProtocolPlugin();
 
   /**
    * Get a signal from the signal queue
+   * Called from protocol plugin
+   *
+   * The plugin must call this function to fetch a signal after getting
+   * notified via its pipe. The signal must be deleted by the plugin after
+   * processing.
    *
    * @return The oldest signal on the queue, or NULL if queue is empty
    */
@@ -113,7 +120,7 @@ protected:
 private:
   LICQ_DECLARE_PRIVATE();
 
-  /// Allow the plugin manager to access protected members
+  /// Allow the plugin manager to access private members
   friend class LicqDaemon::PluginManager;
 
   /// Allow PluginEventHandler to call popSignal()

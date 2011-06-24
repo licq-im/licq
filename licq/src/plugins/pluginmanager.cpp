@@ -24,8 +24,11 @@
 #include <licq/daemon.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logging/logservice.h>
+#include <licq/pluginbase.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolbase.h>
 #include <licq/thread/mutexlocker.h>
+#include <licq/version.h>
 
 #include <algorithm>
 #include <boost/exception/get_error_info.hpp>
@@ -38,6 +41,7 @@
 
 #include "../utils/dynamiclibrary.h"
 #include "generalplugin.h"
+#include "plugin.h"
 #include "pluginthread.h"
 #include "protocolplugin.h"
 
@@ -97,6 +101,30 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
 
   try
   {
+    // Get plugin data from library
+    struct Licq::GeneralPluginData* pluginData;
+    lib->getSymbol("LicqGeneralPluginData", &pluginData);
+
+    // Verify plugin data
+    if (pluginData == NULL ||
+        pluginData->licqMagic[0] != 'L' || pluginData->licqMagic[1] != 'i' ||
+        pluginData->licqMagic[2] != 'c' || pluginData->licqMagic[3] != 'q')
+    {
+      gLog.error(tr("Library %s does not contain a Licq plugin"), name.c_str());
+      return GeneralPlugin::Ptr();
+    }
+
+    // Make sure plugin version is supported
+    // We expect plugin API to stay the same between releases of the same major/minor version
+    if (pluginData->licqVersion / 10 != LICQ_VERSION / 10)
+    {
+      gLog.error(tr("Plugin in library %s was built for another Licq version (%i.%i.%i)"),
+          name.c_str(), Licq::extractMajorVersion(pluginData->licqVersion),
+          Licq::extractMinorVersion(pluginData->licqVersion),
+          Licq::extractReleaseVersion(pluginData->licqVersion));
+      return GeneralPlugin::Ptr();
+    }
+
     // Generate an ID for the plugin
     int pluginId;
     {
@@ -106,9 +134,9 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
       pluginId = myNextPluginId++;
     }
 
-    // Create plugin and resolve all symbols
-    GeneralPlugin::Params pluginParams(pluginId, lib, pluginThread);
-    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginParams), deleteGeneralPlugin);
+    // Create main plugin object
+    GeneralPlugin::Params pluginParams(pluginId, lib, pluginThread, pluginData->pluginReaper);
+    GeneralPlugin::Ptr plugin(pluginData->pluginFactory(pluginParams), deleteGeneralPlugin);
 
     // Let the plugin initialize itself
     if (!plugin->basePrivate()->callInit(argc, argv, &initPluginCallback))
@@ -152,6 +180,33 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
 
   try
   {
+    // Get plugin data from library
+    struct Licq::ProtocolPluginData* pluginData;
+    if (icq)
+      lib->getSymbol("IcqProtocolPluginData", &pluginData);
+    else
+      lib->getSymbol("LicqProtocolPluginData", &pluginData);
+
+    // Verify plugin data
+    if (pluginData == NULL ||
+        pluginData->licqMagic[0] != 'L' || pluginData->licqMagic[1] != 'i' ||
+        pluginData->licqMagic[2] != 'c' || pluginData->licqMagic[3] != 'q')
+    {
+      gLog.error(tr("Library %s does not contain a Licq plugin"), name.c_str());
+      return ProtocolPlugin::Ptr();
+    }
+
+    // Make sure plugin version is supported
+    // We expect plugin API to stay the same between releases of the same major/minor version
+    if (pluginData->licqVersion / 10 != LICQ_VERSION / 10)
+    {
+      gLog.error(tr("Plugin in library %s was built for another Licq version (%i.%i.%i)"),
+          name.c_str(), Licq::extractMajorVersion(pluginData->licqVersion),
+          Licq::extractMinorVersion(pluginData->licqVersion),
+          Licq::extractReleaseVersion(pluginData->licqVersion));
+      return ProtocolPlugin::Ptr();
+    }
+
     // Generate an ID for the plugin
     int pluginId;
     {
@@ -161,9 +216,9 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
       pluginId = myNextPluginId++;
     }
 
-    // Create plugin and resolve all symbols
-    ProtocolPlugin::Params pluginParams(pluginId, lib, pluginThread);
-    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginParams, icq), deleteProtocolPlugin);
+    // Create main plugin object
+    ProtocolPlugin::Params pluginParams(pluginId, lib, pluginThread, pluginData->pluginReaper);
+    ProtocolPlugin::Ptr plugin(pluginData->pluginFactory(pluginParams), deleteProtocolPlugin);
 
     {
       // Check if we already got a plugin for this protocol
@@ -256,12 +311,32 @@ void PluginManager::pluginHasExited(unsigned short id)
 
 void PluginManager::deleteGeneralPlugin(GeneralPlugin* plugin)
 {
-  delete plugin;
+  // Deleting the library object will close the plugin library.
+  // If we do this from Plugin::~Plugin() we will crash.
+
+  // Grab a pointer to the library before deleting the plugin, that way
+  //   the pointer in the plugin won't be the last instance triggering
+  //   the library to be closed.
+  DynamicLibrary::Ptr lib(plugin->basePrivate()->library());
+  plugin->myPrivate->reaper()(plugin);
+
+  // The plugin instance is gone, it's now safe to let the last library
+  //   pointer go out of scope and delete itself.
 }
 
 void PluginManager::deleteProtocolPlugin(ProtocolPlugin* plugin)
 {
-  delete plugin;
+  // Deleting the library object will close the plugin library.
+  // If we do this from Plugin::~Plugin() we will crash.
+
+  // Grab a pointer to the library before deleting the plugin, that way
+  //   the pointer in the plugin won't be the last instance triggering
+  //   the library to be closed.
+  DynamicLibrary::Ptr lib(plugin->basePrivate()->library());
+  plugin->myPrivate->reaper()(plugin);
+
+  // The plugin instance is gone, it's now safe to let the last library
+  //   pointer go out of scope and delete itself.
 }
 
 unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
@@ -473,69 +548,6 @@ bool PluginManager::startProtocolPlugin(const std::string& name)
     return true;
   }
   return false;
-}
-
-int PluginManager::registerGeneralPlugin(unsigned long signalMask)
-{
-  MutexLocker locker(myGeneralPluginsMutex);
-
-  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
-  {
-    if (plugin->isThisThread())
-    {
-      plugin->setSignalMask(signalMask);
-      return plugin->getReadPipe();
-    }
-  }
-
-  gLog.error(tr("Invalid thread in registration attempt"));
-  return -1;
-}
-
-void PluginManager::unregisterGeneralPlugin()
-{
-  MutexLocker locker(myGeneralPluginsMutex);
-
-  BOOST_FOREACH(GeneralPlugin::Ptr plugin, myGeneralPlugins)
-  {
-    if (plugin->isThisThread())
-    {
-      plugin->setSignalMask(0);
-      return;
-    }
-  }
-
-  gLog.error(tr("Invalid thread in unregistration attempt"));
-
-}
-
-int PluginManager::registerProtocolPlugin()
-{
-  MutexLocker locker(myProtocolPluginsMutex);
-
-  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
-  {
-    if (plugin->isThisThread())
-    {
-      return plugin->getReadPipe();
-    }
-  }
-
-  gLog.error(tr("Invalid thread in registration attempt"));
-  return -1;
-}
-
-void PluginManager::unregisterProtocolPlugin()
-{
-  MutexLocker locker(myProtocolPluginsMutex);
-
-  BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
-  {
-    if (plugin->isThisThread())
-      return;
-  }
-
-  gLog.error(tr("Invalid thread in unregistration attempt"));
 }
 
 DynamicLibrary::Ptr PluginManager::loadPlugin(

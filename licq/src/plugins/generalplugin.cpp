@@ -27,22 +27,19 @@ using namespace Licq;
 using namespace std;
 
 
-GeneralPlugin::Private::Private() :
-    mySignalMask(0)
+GeneralPlugin::Private::Private(GeneralPluginReaperPtr reaper) :
+    mySignalMask(0),
+    myReaper(reaper)
 {
   // Empty
 }
 
 
 GeneralPlugin::GeneralPlugin(Params& p)
-  : Plugin(p, "LP"),
-    myPrivate(new Private)
+  : Plugin(p),
+    myPrivate(new Private(p.myReaper))
 {
-  LICQ_D();
-
-  loadSymbol("LP_Status", (void**)(&d->myStatus));
-  loadSymbol("LP_Description", (void**)(&d->myDescription));
-  loadSymbol("LP_Usage", (void**)(&d->myUsage));
+  // Empty
 }
 
 GeneralPlugin::~GeneralPlugin()
@@ -94,21 +91,7 @@ Event* GeneralPlugin::popEvent()
 
 bool GeneralPlugin::isEnabled() const
 {
-  LICQ_D_CONST();
-  const char* strStatus = (*d->myStatus)();
-  return (strstr(strStatus, "enabled") != NULL || strstr(strStatus, "running"));
-}
-
-string GeneralPlugin::description() const
-{
-  LICQ_D_CONST();
-  return (*d->myDescription)();
-}
-
-string GeneralPlugin::usage() const
-{
-  LICQ_D_CONST();
-  return (*d->myUsage)();
+  return true;
 }
 
 bool GeneralPlugin::wantSignal(unsigned long signalType) const

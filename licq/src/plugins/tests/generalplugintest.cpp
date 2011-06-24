@@ -19,34 +19,13 @@
 
 #include "../generalplugin.h"
 #include <licq/pluginbase.h>
+#include <licq/pluginsignal.h>
 
 #include <gtest/gtest.h>
 
 #include "../../utils/dynamiclibrary.h"
 #include "../plugin.h"
 #include "../pluginthread.h"
-
-// Plugin API functions
-#define STR_FUNC(name)                          \
-  const char* LP_ ## name()                     \
-  { static char name[] = #name; return name; }
-
-STR_FUNC(Name);
-STR_FUNC(Version);
-STR_FUNC(Status);
-STR_FUNC(Description);
-STR_FUNC(Usage);
-STR_FUNC(ConfigFile);
-
-bool LP_Init(int /*argc*/, char** /*argv*/)
-{
-  return true;
-}
-
-int LP_Main()
-{
-  return 20;
-}
 
 using Licq::GeneralPlugin;
 using LicqDaemon::DynamicLibrary;
@@ -69,6 +48,30 @@ public:
   int joinThread()
   { return basePrivate()->joinThread(); }
 
+  std::string name() const
+  { return "Name"; }
+
+  std::string version() const
+  { return "Version"; }
+
+  std::string description() const
+  { return "Description"; }
+
+  std::string usage() const
+  { return "Usage"; }
+
+  std::string configFile() const
+  { return "ConfigFile"; }
+
+  bool isEnabled() const
+  { return false; }
+
+  bool init(int, char**)
+  { return true; }
+
+  int run()
+  { return 20; }
+
   // Un-protect functions so we can test them without being the PluginManager
   using GeneralPlugin::getReadPipe;
   using GeneralPlugin::popEvent;
@@ -86,7 +89,7 @@ struct GeneralPluginFixture : public ::testing::Test
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    myPluginParams(1, myLib, myThread),
+    myPluginParams(1, myLib, myThread, NULL),
     plugin(myPluginParams)
   {
     // Empty
@@ -110,7 +113,7 @@ TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  GeneralPlugin::Params pluginParams(1, lib, thread);
+  GeneralPlugin::Params pluginParams(1, lib, thread, NULL);
   ASSERT_NO_THROW(GeneralPluginTest plugin(pluginParams));
 }
 

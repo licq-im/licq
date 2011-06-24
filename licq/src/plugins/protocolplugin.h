@@ -25,6 +25,7 @@
 
 #include <queue>
 
+#include <licq/protocolbase.h>
 #include <licq/thread/mutex.h>
 
 namespace Licq
@@ -37,27 +38,27 @@ class ProtocolPlugin::Params : public Plugin::Params
 {
 public:
   Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
-      LicqDaemon::PluginThread::Ptr thread) :
-    Plugin::Params(id, lib, thread)
+      LicqDaemon::PluginThread::Ptr thread, ProtocolPluginReaperPtr reaper) :
+    Plugin::Params(id, lib, thread),
+    myReaper(reaper)
   { /* Empty */ }
-};
 
+  ProtocolPluginReaperPtr myReaper;
+};
 
 class ProtocolPlugin::Private
 {
 public:
-  Private();
+  Private(ProtocolPluginReaperPtr reaper);
+
+  ProtocolPluginReaperPtr reaper()
+  { return myReaper; }
 
 private:
-  unsigned long myProtocolId;
-  std::string myDefaultHost;
-  int myDefaultPort;
-
   std::queue<Licq::ProtocolSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
 
-  const char* (*myPpid)();
-  unsigned long (*mySendFunctions)();
+  ProtocolPluginReaperPtr myReaper;
 
   friend class ProtocolPlugin;
 };
