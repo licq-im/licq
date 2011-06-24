@@ -37,8 +37,9 @@
 #include <glob.h>
 
 #include "../utils/dynamiclibrary.h"
-#include "plugin.h"
+#include "generalplugin.h"
 #include "pluginthread.h"
+#include "protocolplugin.h"
 
 using Licq::GeneralPlugin;
 using Licq::MutexLocker;
@@ -106,7 +107,8 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     }
 
     // Create plugin and resolve all symbols
-    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginId, lib, pluginThread), deleteGeneralPlugin);
+    GeneralPlugin::Params pluginParams(pluginId, lib, pluginThread);
+    GeneralPlugin::Ptr plugin(new GeneralPlugin(pluginParams), deleteGeneralPlugin);
 
     // Let the plugin initialize itself
     if (!plugin->basePrivate()->callInit(argc, argv, &initPluginCallback))
@@ -160,7 +162,8 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     }
 
     // Create plugin and resolve all symbols
-    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginId, lib, pluginThread, icq), deleteProtocolPlugin);
+    ProtocolPlugin::Params pluginParams(pluginId, lib, pluginThread);
+    ProtocolPlugin::Ptr plugin(new ProtocolPlugin(pluginParams, icq), deleteProtocolPlugin);
 
     {
       // Check if we already got a plugin for this protocol

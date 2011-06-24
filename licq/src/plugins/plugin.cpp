@@ -56,8 +56,8 @@ Plugin::Private::~Private()
   delete[] myArgvCopy;
 }
 
-Plugin::Plugin(int id, LibraryPtr lib, ThreadPtr thread, const string& prefix)
-  : myPrivate(new Private(this, id, lib, thread))
+Plugin::Plugin(Params& p, const string& prefix)
+  : myPrivate(new Private(this, p.myId, p.myLib, p.myThread))
 {
   LICQ_D();
 

@@ -30,6 +30,22 @@
 namespace Licq
 {
 
+/**
+ * Temporary class used to hold initalization data for Plugin constructor
+ */
+class Plugin::Params
+{
+public:
+  Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
+      LicqDaemon::PluginThread::Ptr thread) :
+    myId(id), myLib(lib), myThread(thread)
+  { /* Empty */ }
+
+  int myId;
+  LicqDaemon::DynamicLibrary::Ptr myLib;
+  LicqDaemon::PluginThread::Ptr myThread;
+};
+
 class Plugin::Private
 {
 public:

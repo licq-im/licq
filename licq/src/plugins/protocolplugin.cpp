@@ -25,8 +25,14 @@ using namespace Licq;
 using namespace std;
 
 
-ProtocolPlugin::ProtocolPlugin(int id, LibraryPtr lib, ThreadPtr thread, bool icq)
-  : Plugin(id, lib, thread, icq ? "LProto_icq" : "LProto"),
+ProtocolPlugin::Private::Private()
+{
+  // Empty
+}
+
+
+ProtocolPlugin::ProtocolPlugin(Params& p, bool icq)
+  : Plugin(p, icq ? "LProto_icq" : "LProto"),
     myPrivate(new Private)
 {
   LICQ_D();

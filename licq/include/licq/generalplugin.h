@@ -43,6 +43,8 @@ class PluginSignal;
 class GeneralPlugin : public Plugin
 {
 public:
+  class Params;
+
   // Notification that general plugins can get via its pipe
   static const char PipeEvent = 'E';
   static const char PipeDisable = '0';
@@ -99,11 +101,9 @@ protected:
   /**
    * Constructor
    *
-   * @param id Unique id for this plugin
-   * @param lib Library plugin was loaded from
-   * @param thread Thread for plugin to run in
+   * @param p Paramaters from PluginManager
    */
-  GeneralPlugin(int id, LibraryPtr lib, ThreadPtr thread);
+  GeneralPlugin(Params& p);
 
   /// Destructor
   virtual ~GeneralPlugin();

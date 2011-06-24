@@ -21,6 +21,7 @@
 #define LICQDAEMON_GENERALPLUGIN_H
 
 #include <licq/generalplugin.h>
+#include "plugin.h"
 
 #include <queue>
 
@@ -28,6 +29,19 @@
 
 namespace Licq
 {
+
+/**
+ * Temporary class used to hold initalization data for GeneralPlugin constructor
+ */
+class GeneralPlugin::Params : public Plugin::Params
+{
+public:
+  Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
+      LicqDaemon::PluginThread::Ptr thread) :
+    Plugin::Params(id, lib, thread)
+  { /* Empty */ }
+};
+
 
 class GeneralPlugin::Private
 {

@@ -34,8 +34,8 @@ GeneralPlugin::Private::Private() :
 }
 
 
-GeneralPlugin::GeneralPlugin(int id, LibraryPtr lib, ThreadPtr thread)
-  : Plugin(id, lib, thread, "LP"),
+GeneralPlugin::GeneralPlugin(Params& p)
+  : Plugin(p, "LP"),
     myPrivate(new Private)
 {
   LICQ_D();

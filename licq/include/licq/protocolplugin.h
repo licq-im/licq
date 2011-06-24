@@ -42,6 +42,8 @@ class ProtocolSignal;
 class ProtocolPlugin : public Plugin
 {
 public:
+  class Params;
+
   enum Capabilities
   {
     CanSendMsg          = 1<<0,
@@ -93,12 +95,10 @@ protected:
   /**
    * Constructor
    *
-   * @param id Unique id for this plugin
-   * @param lib Library plugin was loaded from
-   * @param thread Thread for plugin to run in
+   * @param p Paramaters from PluginManager
    * @param icq True if this is the internal ICQ protocol plugin
    */
-  ProtocolPlugin(int id, LibraryPtr lib, ThreadPtr thread, bool icq = false);
+  ProtocolPlugin(Params& p, bool icq = false);
 
   /// Destructor
   virtual ~ProtocolPlugin();

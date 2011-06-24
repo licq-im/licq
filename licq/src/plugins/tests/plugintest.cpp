@@ -59,8 +59,8 @@ using LicqDaemon::PluginThread;
 class PluginTest : public Plugin
 {
 public:
-  PluginTest(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
-    Plugin(id, lib, thread, "Test") { /* Empty */ }
+  PluginTest(Params& p) :
+    Plugin(p, "Test") { /* Empty */ }
 
   bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL)
   { return myPrivate->callInit(argc, argv, callback); }
@@ -80,12 +80,14 @@ struct PluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
+  Plugin::Params myPluginParams;
   PluginTest plugin;
 
   PluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(1, myLib, myThread)
+    myPluginParams(1, myLib, myThread),
+    plugin(myPluginParams)
   {
     // Empty
   }
@@ -108,7 +110,8 @@ TEST(Plugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(PluginTest plugin(1, lib, thread));
+  Plugin::Params pluginParams(1, lib, thread);
+  ASSERT_NO_THROW(PluginTest plugin(pluginParams));
 }
 
 TEST_F(PluginFixture, callApiFunctions)

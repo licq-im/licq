@@ -22,7 +22,6 @@
 
 #include <boost/exception/info.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 #include <pthread.h>
 #include <string>
 
@@ -30,9 +29,7 @@
 
 namespace LicqDaemon
 {
-class DynamicLibrary;
 class PluginManager;
-class PluginThread;
 }
 
 class GeneralPluginTest;
@@ -50,11 +47,9 @@ namespace Licq
 class Plugin : private boost::noncopyable
 {
 public:
-  typedef boost::error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
+  class Params;
 
-  // Short names for convenience in sub plugins
-  typedef boost::shared_ptr<LicqDaemon::DynamicLibrary> LibraryPtr;
-  typedef boost::shared_ptr<LicqDaemon::PluginThread> ThreadPtr;
+  typedef boost::error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 
   // Notification that plugins can get via its pipe
   static const char PipeSignal = 'S';
@@ -94,12 +89,10 @@ protected:
   /**
    * Constructor
    *
-   * @param id Unique id for this plugin
-   * @param lib Library plugin was loaded from
-   * @param thread Thread for plugin to run in
+   * @param p Paramaters from PluginManager
    * @param prefix Prefix for library symbols
    */
-  Plugin(int id, LibraryPtr lib, ThreadPtr thread, const std::string& prefix);
+  Plugin(Params& p, const std::string& prefix);
 
   /// Destructor
   virtual ~Plugin();
