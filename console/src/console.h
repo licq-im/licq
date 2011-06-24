@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 
 #ifndef LICQCON_H
 #define LICQCON_H
+
+#include <licq/generalplugin.h>
 
 #include <list>
 #include <string>
@@ -80,13 +82,21 @@ struct SMacro
 typedef std::list<SMacro*> MacroList;
 
 
-class CLicqConsole
+class CLicqConsole : public Licq::GeneralPlugin
 {
 public:
+  CLicqConsole(int id, LibraryPtr lib, ThreadPtr thread);
   CLicqConsole(int, char **);
   ~CLicqConsole();
-  int Run();
-  void Shutdown();
+
+  // From Licq::Plugin
+  std::string name() const;
+  std::string version() const;
+  std::string description() const;
+  std::string usage() const;
+  std::string configFile() const;
+  bool init(int argc, char** argv);
+  int run();
 
   static const int SystemGroupOffset = 10000;
   static const int AllUsersGroupId = 0;

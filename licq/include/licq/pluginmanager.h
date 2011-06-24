@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,18 +24,13 @@
 #include <list>
 #include <string>
 
-#include "plugin.h"
+#include "generalplugin.h"
+#include "protocolplugin.h"
 
 
 namespace Licq
 {
 typedef std::list<std::string> StringList;
-
-/// A list of pointers to GeneralPlugin instances.
-typedef std::list<GeneralPlugin::Ptr> GeneralPluginsList;
-
-/// A list of pointers to ProtocolPlugin instances.
-typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
 
 /**
  * The class responsible for handling plugins.
@@ -125,42 +120,35 @@ public:
   virtual bool startProtocolPlugin(const std::string& name) = 0;
 
   /**
-   * Registers current thread as new general plugin.
+   * Send an event to a general plugin
    *
-   * General plugins must call this method when they have started to start
-   * receiving signals.
+   * Note: This function will return immediately. The event will be processed
+   * by the plugin asynchrony
    *
-   * @param signalMask A mask indicating which signals the plugin wish to
-   *        receive. Use the constant PluginSignal::SignalAll to receive all signals.
-   * @return The pipe to listen on for notifications.
+   * @param event Event to forward to the plugin, will be deleted by receiver
    */
-  virtual int registerGeneralPlugin(unsigned long signalMask) = 0;
+  virtual void pushGeneralEvent(Event* event) = 0;
 
   /**
-   * Unregisters current thread as a general plugin.
+   * Send a signal to all general plugins
    *
-   * General plugins must call this method before they shutdown to stop
-   * receiving signal.
+   * Note: This function will return immediately. The event will be processed
+   * by the plugin asynchrony
+   *
+   * @param signal Signal to forward to the plugins, will be deleted by receiver
    */
-  virtual void unregisterGeneralPlugin() = 0;
+  virtual void pushGeneralSignal(PluginSignal* signal) = 0;
 
   /**
-   * Registers current thread as a new protocol plugin.
+   * Send a signal to a protocol plugin
    *
-   * Protocol plugins must call this method when they have started to start
-   * receiving signals.
+   * Note: This function will return immediately. The event will be processed
+   * by the plugin asynchrony
    *
-   * @return The pipe to listen on for notifications.
+   * @param signal Signal to forward to the plugin, will be deleted by receiver
+   * @param protocolId Protocol to forward signal to
    */
-  virtual int registerProtocolPlugin() = 0;
-
-  /**
-   * Unregisters current thread as a protocol plugin.
-   *
-   * Protocol plugins must call this method before they shutdown to stop
-   * receiving signal.
-   */
-  virtual void unregisterProtocolPlugin() = 0;
+  virtual void pushProtocolSignal(ProtocolSignal* signal, unsigned long protocolId) = 0;
 
 protected:
   virtual ~PluginManager() { /* Empty */ }

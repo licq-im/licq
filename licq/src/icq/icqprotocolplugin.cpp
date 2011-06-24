@@ -17,52 +17,57 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "icq.h"
-
-#include <unistd.h>
-
-#include <licq/pluginmanager.h>
-#include <licq/version.h>
-
-#define LProto_Name LProto_icq_Name
-#define LProto_Version LProto_icq_Version
-#define LProto_PPID LProto_icq_PPID
-#define LProto_Init LProto_icq_Init
-#define LProto_SendFuncs LProto_icq_SendFuncs
-#define LProto_Main LProto_icq_Main
-#define LProto_DefSrvHost LProto_icq_DefSrvHost
-#define LProto_DefSrvPort LProto_icq_DefSrvPort
-
 #include <licq/protocolbase.h>
 
-using Licq::gPluginManager;
-using Licq::ProtocolPlugin;
+#include <licq/version.h>
+#include "icq.h"
 
-const char* LProto_icq_Name()
+#define LicqProtocolPluginData IcqProtocolPluginData
+
+class IcqProtocolPlugin : public Licq::ProtocolPlugin
 {
-  static char name[] = "ICQ";
-  return name;
+public:
+  IcqProtocolPlugin(int id, LibraryPtr lib, ThreadPtr thread);
+
+  // From Licq::ProtocolPlugin
+  std::string name() const;
+  std::string version() const;
+  unsigned long protocolId() const;
+  unsigned long capabilities() const;
+  std::string defaultServerHost() const;
+  int defaultServerPort() const;
+
+protected:
+  // From Licq::ProtocolPlugin
+  bool init(int, char**);
+  int run();
+
+private:
+
+};
+
+IcqProtocolPlugin::IcqProtocolPlugin(int id, LibraryPtr lib, ThreadPtr thread)
+  : ProtocolPlugin(id, lib, thread)
+{
+  // Empty
 }
 
-const char* LProto_icq_Version()
+std::string IcqProtocolPlugin::name() const
 {
-  static char version[] = LICQ_VERSION_STRING;
-  return version;
+  return "ICQ";
 }
 
-const char* LProto_icq_PPID()
+std::string IcqProtocolPlugin::version() const
 {
-  static char ppid[] = "Licq";
-  return ppid;
+  return LICQ_VERSION_STRING;
 }
 
-bool LProto_icq_Init()
+unsigned long IcqProtocolPlugin::protocolId() const
 {
-  gIcqProtocol.initialize();
-  return true;
+  return LICQ_PPID;
 }
 
-unsigned long LProto_icq_SendFuncs()
+unsigned long IcqProtocolPlugin::capabilities() const
 {
   return ProtocolPlugin::CanSendMsg | ProtocolPlugin::CanSendUrl |
       ProtocolPlugin::CanSendFile | ProtocolPlugin::CanSendChat |
@@ -72,20 +77,38 @@ unsigned long LProto_icq_SendFuncs()
       ProtocolPlugin::CanHoldStatusMsg;
 }
 
-const char* LProto_icq_DefSrvHost()
+std::string IcqProtocolPlugin::defaultServerHost() const
 {
-  static char defaultHost[] = "login.icq.com";
-  return defaultHost;
+  return "login.icq.com";
 }
 
-int LProto_icq_DefSrvPort()
+int IcqProtocolPlugin::defaultServerPort() const
 {
   return 5190;
 }
 
-int LProto_icq_Main()
+bool IcqProtocolPlugin::init(int, char**)
+{
+  gIcqProtocol.initialize();
+  return true;
+}
+
+int IcqProtocolPlugin::run()
 {
   if (!gIcqProtocol.start())
     return 1;
   return 0;
 }
+
+
+Licq::ProtocolPlugin* IcqPluginFactory(int id, Licq::Plugin::LibraryPtr lib,
+    Licq::Plugin::ThreadPtr thread)
+{
+  return new IcqProtocolPlugin(id, lib, thread);
+}
+
+struct Licq::ProtocolPluginData IcqProtocolPluginData = {
+    {'L', 'i', 'c', 'q' },      // licqMagic
+    LICQ_VERSION,               // licqVersion
+    &IcqPluginFactory,          // pluginFactory
+};

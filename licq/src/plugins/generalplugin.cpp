@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,135 +17,114 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "generalplugin.h"
+#include <licq/generalplugin.h>
 
+#include <queue>
+
+#include <licq/thread/mutex.h>
 #include <licq/thread/mutexlocker.h>
 
-#include <cstring>
+using namespace Licq;
+using namespace std;
 
-// From licq.cpp
-extern char** global_argv;
 
-using Licq::MutexLocker;
-using namespace LicqDaemon;
-
-GeneralPlugin::GeneralPlugin(DynamicLibrary::Ptr lib,
-                             PluginThread::Ptr pluginThread) :
-  Plugin(lib, pluginThread, "LP"),
-  myArgc(0),
-  myArgv(NULL),
-  myArgvCopy(NULL)
+class GeneralPlugin::Private
 {
-  loadSymbol("LP_Init", myInit);
-  loadSymbol("LP_Status", myStatus);
-  loadSymbol("LP_Description", myDescription);
-  loadSymbol("LP_Usage", myUsage);
+public:
+  Private();
+
+  unsigned long mySignalMask;
+  queue<PluginSignal*> mySignals;
+  Mutex mySignalsMutex;
+
+  queue<Event*> myEvents;
+  Mutex myEventsMutex;
+};
+
+GeneralPlugin::Private::Private() :
+    mySignalMask(0)
+{
+  // Empty
+}
+
+
+GeneralPlugin::GeneralPlugin(int id, LibraryPtr lib, ThreadPtr thread)
+  : Plugin(id, lib, thread),
+    myPrivate(new Private)
+{
+  // Empty
 }
 
 GeneralPlugin::~GeneralPlugin()
 {
-  for (int i = 0; i < myArgc; ++i)
-    ::free(myArgv[i]);
-  delete[] myArgv;
-  delete[] myArgvCopy;
+  delete myPrivate;
 }
 
-bool GeneralPlugin::init(int argc, char** argv,
-                         void (*callback)(const Plugin&))
+void GeneralPlugin::pushSignal(PluginSignal* signal)
 {
-  const size_t size = argc + 2;
-
-  myArgv = new char*[size];
-  myArgvCopy = new char*[size];
-
-  myArgv[size - 1] = NULL;
-
-  // TODO: use licq or libname?
-  //myArgv[0] = ::strdup(myLib->getName().c_str());
-  myArgv[0] = ::strdup(global_argv[0]);
-
-  for (int i = 0; i < argc; ++i)
-    myArgv[i + 1] = ::strdup(argv[i]);
-
-  myArgc = argc + 1;
-
-  // We need to create a copy of myArgv and pass that to the plugin, since
-  // e.g. KDE changes the pointers in argv (e.g. to strip the path in argv[0])
-  // and that messes up free, causing SIGSEGV in the destructor.
-  ::memcpy(myArgvCopy, myArgv, size * sizeof(char*));
-
-  return callInitInThread(callback);
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  d->mySignals.push(signal);
+  notify(PipeSignal);
 }
 
-void GeneralPlugin::pushSignal(Licq::PluginSignal* signal)
+PluginSignal* GeneralPlugin::popSignal()
 {
-  MutexLocker locker(mySignalsMutex);
-  mySignals.push(signal);
-  locker.unlock();
-  myPipe.putChar(PipeSignal);
-}
-
-Licq::PluginSignal* GeneralPlugin::popSignal()
-{
-  MutexLocker locker(mySignalsMutex);
-  if (!mySignals.empty())
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  if (!d->mySignals.empty())
   {
-    Licq::PluginSignal* signal = mySignals.front();
-    mySignals.pop();
+    PluginSignal* signal = d->mySignals.front();
+    d->mySignals.pop();
     return signal;
   }
   return NULL;
 }
 
-void GeneralPlugin::pushEvent(Licq::Event* event)
+void GeneralPlugin::pushEvent(Event* event)
 {
-  MutexLocker locker(myEventsMutex);
-  myEvents.push(event);
-  locker.unlock();
-  myPipe.putChar(PipeEvent);
+  LICQ_D();
+  MutexLocker locker(d->myEventsMutex);
+  d->myEvents.push(event);
+  notify(PipeEvent);
 }
 
-Licq::Event* GeneralPlugin::popEvent()
+Event* GeneralPlugin::popEvent()
 {
-  MutexLocker locker(myEventsMutex);
-  if (!myEvents.empty())
+  LICQ_D();
+  MutexLocker locker(d->myEventsMutex);
+  if (!d->myEvents.empty())
   {
-    Licq::Event* event = myEvents.front();
-    myEvents.pop();
+    Event* event = d->myEvents.front();
+    d->myEvents.pop();
     return event;
   }
   return NULL;
 }
 
-const char* GeneralPlugin::getStatus() const
+bool GeneralPlugin::isEnabled() const
 {
-  return (*myStatus)();
+  return true;
 }
 
-const char* GeneralPlugin::getDescription() const
+bool GeneralPlugin::wantSignal(unsigned long signalType) const
 {
-  return (*myDescription)();
+  LICQ_D_CONST();
+  return (signalType & d->mySignalMask);
 }
 
-const char* GeneralPlugin::getUsage() const
+void GeneralPlugin::setSignalMask(unsigned long signalMask)
 {
-  return (*myUsage)();
+  LICQ_D();
+  d->mySignalMask = signalMask;
 }
 
 void GeneralPlugin::enable()
 {
-  myPipe.putChar(PipeEnable);
+  notify(PipeEnable);
 }
 
 void GeneralPlugin::disable()
 {
-  myPipe.putChar(PipeDisable);
-}
-
-bool GeneralPlugin::initThreadEntry()
-{
-  // Set optind to 0 so plugins can use getopt
-  optind = 0;
-
-  return (*myInit)(myArgc, myArgvCopy);
+  notify(PipeDisable);
 }

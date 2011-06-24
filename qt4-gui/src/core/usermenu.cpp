@@ -301,7 +301,7 @@ void UserMenu::aboutToShowMenu()
 
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myPpid);
   if (protocol.get() != NULL)
-    sendFuncs = protocol->getSendFunctions();
+    sendFuncs = protocol->capabilities();
 
   mySendActions[SendMessage]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendMsg);
   mySendActions[SendUrl]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendUrl);

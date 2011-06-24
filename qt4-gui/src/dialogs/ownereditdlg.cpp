@@ -104,10 +104,10 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
     return;
   }
 
-  protocolName->setText(protocol->getName());
+  protocolName->setText(protocol->name().c_str());
   protocolName->setPrependPixmap(IconManager::instance()->iconForProtocol(ppid));
-  myHostEdit->setText(protocol->getDefaultServerHost().c_str());
-  myPortSpin->setValue(protocol->getDefaultServerPort());
+  myHostEdit->setText(protocol->defaultServerHost().c_str());
+  myPortSpin->setValue(protocol->defaultServerPort());
 
   {
     Licq::OwnerReadGuard o(ppid);

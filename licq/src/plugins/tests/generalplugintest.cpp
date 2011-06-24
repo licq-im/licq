@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,49 +17,70 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "../generalplugin.h"
+#include <licq/generalplugin.h>
 #include <licq/pluginbase.h>
+#include <licq/pluginsignal.h>
 
 #include <gtest/gtest.h>
 
-// licq.cpp
-static const char* argv0 = "test";
-char** global_argv = const_cast<char**>(&argv0);
+#include "../../utils/dynamiclibrary.h"
+#include "../pluginthread.h"
 
-// Plugin API functions
-#define STR_FUNC(name)                          \
-  const char* LP_ ## name()                     \
-  { static char name[] = #name; return name; }
+using Licq::GeneralPlugin;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
 
-STR_FUNC(Name);
-STR_FUNC(Version);
-STR_FUNC(Status);
-STR_FUNC(Description);
-STR_FUNC(Usage);
-STR_FUNC(ConfigFile);
-
-bool LP_Init(int /*argc*/, char** /*argv*/)
+class GeneralPluginTest : public GeneralPlugin
 {
-  return true;
-}
+public:
+  GeneralPluginTest(int id, LibraryPtr lib, ThreadPtr thread) :
+      GeneralPlugin(id, lib, thread)
+  { /* Empty */ }
 
-int LP_Main()
-{
-  return 20;
-}
+  std::string name() const
+  { return "Name"; }
 
-using namespace LicqDaemon;
+  std::string version() const
+  { return "Version"; }
+
+  std::string description() const
+  { return "Description"; }
+
+  std::string usage() const
+  { return "Usage"; }
+
+  std::string configFile() const
+  { return "ConfigFile"; }
+
+  bool isEnabled() const
+  { return false; }
+
+  bool init(int, char**)
+  { return true; }
+
+  int run()
+  { return 20; }
+
+  // Un-protect functions so we can test them without being the PluginManager
+  using GeneralPlugin::getReadPipe;
+  using GeneralPlugin::callInit;
+  using GeneralPlugin::joinThread;
+  using GeneralPlugin::popEvent;
+  using GeneralPlugin::popSignal;
+  using GeneralPlugin::setSignalMask;
+  using GeneralPlugin::startThread;
+};
 
 struct GeneralPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  GeneralPlugin plugin;
+  GeneralPluginTest plugin;
 
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(myLib, myThread)
+    plugin(1, myLib, myThread)
   {
     // Empty
   }
@@ -82,24 +103,24 @@ TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(GeneralPlugin plugin(lib, thread));
+  ASSERT_NO_THROW(GeneralPluginTest plugin(1, lib, thread));
 }
 
 TEST_F(GeneralPluginFixture, callApiFunctions)
 {
-  EXPECT_STREQ("Name", plugin.getName());
-  EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_STREQ("Status", plugin.getStatus());
-  EXPECT_STREQ("Description", plugin.getDescription());
-  EXPECT_STREQ("Usage", plugin.getUsage());
-  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
+  EXPECT_EQ("Name", plugin.name());
+  EXPECT_EQ("Version", plugin.version());
+  EXPECT_FALSE(plugin.isEnabled());
+  EXPECT_EQ("Description", plugin.description());
+  EXPECT_EQ("Usage", plugin.usage());
+  EXPECT_EQ("ConfigFile", plugin.configFile());
 
-  EXPECT_TRUE(plugin.init(0, 0));
+  EXPECT_TRUE(plugin.callInit(0, 0));
 }
 
 TEST_F(GeneralPluginFixture, init)
 {
-  EXPECT_TRUE(plugin.init(0, NULL));
+  EXPECT_TRUE(plugin.callInit(0, NULL));
 }
 
 TEST_F(GeneralPluginFixture, runPlugin)
@@ -114,6 +135,14 @@ TEST_F(GeneralPluginFixture, enableDisable)
   EXPECT_EQ('1', getPipeChar());
   plugin.disable();
   EXPECT_EQ('0', getPipeChar());
+}
+
+TEST_F(GeneralPluginFixture, signalmask)
+{
+  EXPECT_FALSE(plugin.wantSignal(1));
+  plugin.setSignalMask(0xf);
+  EXPECT_TRUE(plugin.wantSignal(1));
+  EXPECT_FALSE(plugin.wantSignal(0x10));
 }
 
 TEST_F(GeneralPluginFixture, pushPopSignal)

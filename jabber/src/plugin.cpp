@@ -23,6 +23,7 @@
 #include "client.h"
 #include "handler.h"
 #include "plugin.h"
+#include "pluginversion.h"
 #include "sessionmanager.h"
 #include "vcard.h"
 
@@ -33,7 +34,7 @@
 #include <licq/event.h>
 #include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
-#include <licq/plugin.h>
+#include <licq/protocolplugin.h>
 #include <licq/protocolsignal.h>
 #include <licq/statistics.h>
 #include <licq/userevents.h>
@@ -49,8 +50,11 @@ using std::string;
 
 const time_t PING_TIMEOUT = 60;
 
-Plugin::Plugin(const Config& config) :
-  myConfig(config),
+const char* const JabberConfigFile = "licq_jabber.conf";
+
+Plugin::Plugin(int id, LibraryPtr lib, ThreadPtr thread) :
+    Licq::ProtocolPlugin(id, lib, thread),
+    myConfig(JabberConfigFile),
   myHandler(NULL),
   myDoRun(false),
   myClient(NULL)
@@ -65,8 +69,53 @@ Plugin::~Plugin()
   delete myHandler;
 }
 
-int Plugin::run(int pipe)
+string Plugin::name() const
 {
+  return "Jabber";
+}
+
+string Plugin::version() const
+{
+  return PLUGIN_VERSION_STRING;
+}
+
+string Plugin::configFile() const
+{
+  return JabberConfigFile;
+}
+
+unsigned long Plugin::protocolId() const
+{
+  return JABBER_PPID;
+}
+
+unsigned long Plugin::capabilities() const
+{
+  return Licq::ProtocolPlugin::CanSendMsg
+      | Licq::ProtocolPlugin::CanHoldStatusMsg
+      | Licq::ProtocolPlugin::CanSendAuth
+      | Licq::ProtocolPlugin::CanSendAuthReq;
+}
+
+string Plugin::defaultServerHost() const
+{
+  return string();
+}
+
+int Plugin::defaultServerPort() const
+{
+  return 5222;
+}
+
+bool Plugin::init(int, char**)
+{
+  return true;
+}
+
+int Plugin::run()
+{
+  int pipe = getReadPipe();
+
   fd_set readFds;
 
   time_t lastPing = 0;
@@ -131,7 +180,7 @@ void Plugin::processPipe(int pipe)
   {
     case Licq::ProtocolPlugin::PipeSignal:
     {
-      Licq::ProtocolSignal* signal = Licq::gDaemon.PopProtoSignal();
+      Licq::ProtocolSignal* signal = popSignal();
       processSignal(signal);
       delete signal;
       break;

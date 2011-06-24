@@ -34,21 +34,18 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
-#include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
-extern "C" { const char *LP_Version(); }
+#include "pluginversion.h"
 
 using std::string;
 using Licq::gLog;
-using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
 using Licq::UserId;
@@ -58,13 +55,13 @@ const unsigned short SUBJ_CHARS = 20;
 /*---------------------------------------------------------------------------
  * CLicqForwarder::Constructor
  *-------------------------------------------------------------------------*/
-CLicqForwarder::CLicqForwarder(bool _bEnable, bool _bDelete, const string& startupStatus)
-  : myStartupStatus(startupStatus)
+CLicqForwarder::CLicqForwarder(int id, LibraryPtr lib, ThreadPtr thread)
+  : Licq::GeneralPlugin(id, lib, thread),
+    myIsEnabled(false),
+    myMarkAsRead(false)
 {
   tcp = new Licq::TCPSocket;
   m_bExit = false;
-  m_bEnabled = _bEnable;
-  m_bDelete = _bDelete;
 }
 
 
@@ -76,23 +73,79 @@ CLicqForwarder::~CLicqForwarder()
   delete tcp;
 }
 
-/*---------------------------------------------------------------------------
- * CLicqForwarder::Shutdown
- *-------------------------------------------------------------------------*/
-void CLicqForwarder::Shutdown()
+std::string CLicqForwarder::name() const
 {
-  gLog.info("Shutting down forwarder");
-  gPluginManager.unregisterGeneralPlugin();
+  return "ICQ Forwarder";
 }
 
+std::string CLicqForwarder::version() const
+{
+  return PLUGIN_VERSION_STRING;
+}
+
+std::string CLicqForwarder::description() const
+{
+  return "ICQ message forwarder to email/icq";
+}
+
+std::string CLicqForwarder::usage() const
+{
+  return
+      "Usage:  Licq [options] -p forwarder -- [ -h ] [ -e ] [ -l <status> ] [ -d ]\n"
+      "         -h          : help\n"
+      "         -e          : start enabled\n"
+      "         -l <status> : log on at startup\n"
+      "         -d          : delete new messages after forwarding\n";
+}
+
+std::string CLicqForwarder::configFile() const
+{
+  return "licq_forwarder.conf";
+}
+
+bool CLicqForwarder::isEnabled() const
+{
+  return myIsEnabled;
+}
+
+bool CLicqForwarder::init(int argc, char** argv)
+{
+  //char *LocaleVal = new char;
+  //LocaleVal = setlocale (LC_ALL, "");
+  //bindtextdomain (PACKAGE, LOCALEDIR);
+  //textdomain (PACKAGE);
+
+  // parse command line for arguments
+  int i = 0;
+  while ( (i = getopt(argc, argv, "hel:d")) > 0)
+  {
+    switch (i)
+    {
+      case 'h':  // help
+        puts(usage().c_str());
+        return false;
+      case 'e': // enable
+        myIsEnabled = true;
+        break;
+      case 'l': //log on
+        myStartupStatus = optarg;
+        break;
+      case 'd':
+        myMarkAsRead = true;
+        break;
+    }
+  }
+  return true;
+}
 
 /*---------------------------------------------------------------------------
  * CLicqForwarder::Run
  *-------------------------------------------------------------------------*/
-int CLicqForwarder::Run()
+int CLicqForwarder::run()
 {
   // Register with the daemon, we only want the update user signal
-  m_nPipe = gPluginManager.registerGeneralPlugin(Licq::PluginSignal::SignalUser);
+  m_nPipe = getReadPipe();
+  setSignalMask(Licq::PluginSignal::SignalUser);
 
   // Create our smtp information
   m_nSMTPPort = 25; //getservicebyname("smtp");
@@ -178,8 +231,7 @@ int CLicqForwarder::Run()
 bool CLicqForwarder::CreateDefaultConfig()
 {
   // Create licq_forwarder.conf
-  string filename = Licq::gDaemon.baseDir() + "licq_forwarder.conf";
-  FILE *f = fopen(filename.c_str(), "w");
+  FILE* f = fopen(configFile().c_str(), "w");
   if (f == NULL)
     return false;
   fprintf(f, "%s", FORWARDER_CONF);
@@ -198,8 +250,8 @@ void CLicqForwarder::ProcessPipe()
   {
     case Licq::GeneralPlugin::PipeSignal:
     {
-      Licq::PluginSignal* s = Licq::gDaemon.popPluginSignal();
-      if (m_bEnabled)
+      Licq::PluginSignal* s = popSignal();
+      if (myIsEnabled)
         ProcessSignal(s);
       delete s;
       break;
@@ -208,8 +260,8 @@ void CLicqForwarder::ProcessPipe()
     case Licq::GeneralPlugin::PipeEvent:
     {
       // An event is pending (should never happen)
-      Licq::Event* e = Licq::gDaemon.PopPluginEvent();
-      if (m_bEnabled)
+      Licq::Event* e = popEvent();
+      if (myIsEnabled)
         ProcessEvent(e);
       delete e;
       break;
@@ -225,16 +277,16 @@ void CLicqForwarder::ProcessPipe()
     case Licq::GeneralPlugin::PipeDisable:
     {
     gLog.info("Disabling forwarder");
-    m_bEnabled = false;
-    break;
-  }
+      myIsEnabled = false;
+      break;
+    }
 
     case Licq::GeneralPlugin::PipeEnable:
     {
     gLog.info("Enabling forwarder");
-    m_bEnabled = true;
-    break;
-  }
+      myIsEnabled = true;
+      break;
+    }
 
   default:
     gLog.warning("Unknown notification type from daemon: %c", buf[0]);
@@ -313,7 +365,7 @@ void CLicqForwarder::ProcessUserEvent(const UserId& userId, unsigned long nId)
   else
   {
     bool r = ForwardEvent(*u, e);
-    if (m_bDelete && r)
+    if (myMarkAsRead && r)
       u->EventClearId(nId);
   }
 }

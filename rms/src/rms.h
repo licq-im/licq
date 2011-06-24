@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 
 #ifndef LICQRMS_H
 #define LICQRMS_H
+
+#include <licq/generalplugin.h>
 
 #include <list>
 
@@ -40,17 +42,24 @@ const unsigned short MAX_TEXT_LENGTH = 1024 * 8;
 typedef std::list<class CRMSClient*> ClientList;
 typedef std::list<unsigned long> TagList;
 
-class CLicqRMS
+class CLicqRMS : public Licq::GeneralPlugin
 {
 public:
-  CLicqRMS(bool, unsigned int port);
+  CLicqRMS(int id, LibraryPtr lib, ThreadPtr thread);
   ~CLicqRMS();
-  int Run();
   void Shutdown();
-  bool Enabled() { return m_bEnabled; }
+
+  // From Licq::Plugin
+  std::string name() const;
+  std::string version() const;
+  std::string description() const;
+  std::string usage() const;
+  std::string configFile() const;
+  bool isEnabled() const;
+  bool init(int argc, char** argv);
+  int run();
 
 protected:
-  int m_nPipe;
   bool m_bExit, m_bEnabled;
 
   unsigned int myPort;

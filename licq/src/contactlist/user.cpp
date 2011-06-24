@@ -1548,9 +1548,9 @@ string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool a
             szok = false;
             BOOST_FOREACH(Licq::ProtocolPlugin::Ptr plugin, plugins)
             {
-              if (myId.protocolId() == plugin->getProtocolId())
+              if (myId.protocolId() == plugin->protocolId())
               {
-                sz = plugin->getName();
+                sz = plugin->name();
                 szok = true;
                 break;
               }

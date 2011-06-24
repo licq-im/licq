@@ -302,8 +302,8 @@ void CLicqConsole::MenuPlugins(char* /* _szArg */)
   {
     PrintBoxLeft();
     winMain->wprintf("[%3d] %s v%s - %s",
-                     plugin->getId(), plugin->getName(),
-                     plugin->getVersion(), plugin->getStatus());
+        plugin->id(), plugin->name().c_str(),
+        plugin->version().c_str(), (plugin->isEnabled() ? "enabled" : "disabled"));
     PrintBoxRight(70);
   }
 
@@ -311,8 +311,8 @@ void CLicqConsole::MenuPlugins(char* /* _szArg */)
   {
     PrintBoxLeft();
     winMain->wprintf("[%3d] %s v%s",
-                     protocol->getId(), protocol->getName(),
-                     protocol->getVersion());
+        protocol->id(), protocol->name().c_str(),
+        protocol->version().c_str());
     PrintBoxRight(70);
   }
   PrintBoxBottom(70);
@@ -564,7 +564,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
   gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
-    unsigned long nPPID = protocol->getProtocolId();
+    unsigned long nPPID = protocol->protocolId();
     gProtocolManager.setStatus(Licq::gUserManager.ownerUserId(nPPID), status);
   }
 }
@@ -618,9 +618,9 @@ bool CLicqConsole::GetContactFromArg(char **p_szArg, Licq::UserId& userId)
     gPluginManager.getProtocolPluginsList(protocols);
     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
     {
-      if (strcasecmp(protocol->getName(), strProtocol.c_str()) == 0)
+      if (strcasecmp(protocol->name().c_str(), strProtocol.c_str()) == 0)
       {
-        nPPID = protocol->getProtocolId();
+        nPPID = protocol->protocolId();
         szArg[strArg.find_last_of(".")] = '\0';
         string tmp(strArg, 0, nPos);
         tmp.append(strArg, s, strArg.size());

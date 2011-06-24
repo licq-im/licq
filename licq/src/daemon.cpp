@@ -444,32 +444,17 @@ void Licq::Daemon::cancelEvent(Licq::Event* event)
 
 void Licq::Daemon::PushPluginEvent(Licq::Event* e)
 {
-  LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralEvent(e);
+  LicqDaemon::gPluginManager.pushGeneralEvent(e);
 }
 
 void Licq::Daemon::pushPluginSignal(PluginSignal* s)
 {
-  LicqDaemon::gPluginManager.getPluginEventHandler().pushGeneralSignal(s);
-}
-
-PluginSignal* Licq::Daemon::popPluginSignal()
-{
-  return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralSignal();
-}
-
-Licq::Event* Licq::Daemon::PopPluginEvent()
-{
-  return LicqDaemon::gPluginManager.getPluginEventHandler().popGeneralEvent();
+  LicqDaemon::gPluginManager.pushGeneralSignal(s);
 }
 
 void Licq::Daemon::PushProtoSignal(Licq::ProtocolSignal* s, unsigned long _nPPID)
 {
-  LicqDaemon::gPluginManager.getPluginEventHandler().pushProtocolSignal(s, _nPPID);
-}
-
-Licq::ProtocolSignal* Licq::Daemon::PopProtoSignal()
-{
-  return LicqDaemon::gPluginManager.getPluginEventHandler().popProtocolSignal();
+  LicqDaemon::gPluginManager.pushProtocolSignal(s, _nPPID);
 }
 
 void Licq::Daemon::pluginUIViewEvent(const Licq::UserId& userId)

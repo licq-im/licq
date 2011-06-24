@@ -20,123 +20,194 @@
 #ifndef LICQ_PLUGIN_H
 #define LICQ_PLUGIN_H
 
+#include <boost/exception/info.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
+#include <pthread.h>
 #include <string>
+
+#include "macro.h"
+
+namespace LicqDaemon
+{
+class DynamicLibrary;
+class PluginManager;
+class PluginThread;
+}
+
+class GeneralPluginTest;
+class PluginTest;
+class ProtocolPluginTest;
 
 namespace Licq
 {
 
 /**
- * The base class for plugin instances.
+ * Base class for plugin instances
  *
- * Plugins are handled using the PluginManager.
+ * All plugins must have a subclass implementing this interface
+ *
+ * Note: When a subclass is constructed, it should only perform minimal
+ * initialization needed for simple functions like name() and version() to
+ * be usable. Licq will call init() afterwards to properly initialze the
+ * plugin before run() is called to start the plugin.
+ *
+ * Although a plugin will run in a separate thread, calls to the public
+ * functions and the protected functions called from the protocol manager
+ * can be made from any thread. It is the responsibility of the plugin to make
+ * sure these functions are thread safe when needed.
  */
 class Plugin : private boost::noncopyable
 {
 public:
+  typedef boost::error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
+
+  // Short names for convenience in sub plugins
+  typedef boost::shared_ptr<LicqDaemon::DynamicLibrary> LibraryPtr;
+  typedef boost::shared_ptr<LicqDaemon::PluginThread> ThreadPtr;
+
   // Notification that plugins can get via its pipe
   static const char PipeSignal = 'S';
   static const char PipeShutdown = 'X';
 
   /// Get the plugin's unique id.
-  virtual unsigned short getId() const = 0;
+  int id() const;
 
   /// Get the plugin's name.
-  virtual const char* getName() const = 0;
+  virtual std::string name() const = 0;
 
   /// Get the plugin's version.
-  virtual const char* getVersion() const = 0;
+  virtual std::string version() const = 0;
 
-  /// Get the name of the plugin's config file. Can be NULL if the plugin
-  /// doesn't have a config file.
-  virtual const char* getConfigFile() const = 0;
+  /// Configuration file for the plugin. Empty string if none. Path is relative to BASE_DIR
+  virtual std::string configFile() const;
 
   /// Get the name of the library from where the plugin was loaded.
-  virtual const std::string& getLibraryName() const = 0;
+  const std::string& libraryName() const;
 
   /// Ask the plugin to shutdown.
-  virtual void shutdown() = 0;
-
-protected:
-  virtual ~Plugin() { /* Empty */ }
-};
-
-/**
- * A GeneralPlugin is a plugin that isn't a ProtocolPlugin, e.g. the GUI.
- */
-class GeneralPlugin : public virtual Plugin
-{
-public:
-  // Notification that general plugins can get via its pipe
-  static const char PipeEvent = 'E';
-  static const char PipeDisable = '0';
-  static const char PipeEnable = '1';
-
-  /// A smart pointer to a GeneralPlugin instance.
-  typedef boost::shared_ptr<GeneralPlugin> Ptr;
-
-  /// Get the plugin's status.
-  virtual const char* getStatus() const = 0;
-
-  /// Get the plugin's description.
-  virtual const char* getDescription() const = 0;
-
-  /// Get the plugin's usage instructions.
-  virtual const char* getUsage() const = 0;
-
-  /// Ask the plugin to enable itself.
-  virtual void enable() = 0;
-
-  /// Ask the plugin to disable itself.
-  virtual void disable() = 0;
-
-protected:
-  virtual ~GeneralPlugin() { /* Empty */ }
-};
-
-/**
- * A ProtocolPlugin implements support for a specific IM protocol.
- */
-class ProtocolPlugin : public virtual Plugin
-{
-public:
-  enum Capabilities
-  {
-    CanSendMsg          = 1<<0,
-    CanSendUrl          = 1<<1,
-    CanSendFile         = 1<<2,
-    CanSendChat         = 1<<3,
-    CanSendContact      = 1<<4,
-    CanSendAuth         = 1<<5,
-    CanSendAuthReq      = 1<<6,
-    CanSendSms          = 1<<7,
-    CanSendSecure       = 1<<8,
-    CanSendDirect       = 1<<9,
-    CanHoldStatusMsg     = 1<<10,
-  };
-
-  /// A smart pointer to a ProtocolPlugin instance.
-  typedef boost::shared_ptr<ProtocolPlugin> Ptr;
-
-  /// Get the protocol's unique identifier.
-  virtual unsigned long getProtocolId() const = 0;
-
-  /// Get default server host to connect to
-  virtual const std::string& getDefaultServerHost() const = 0;
-
-  /// Get default server port to connect to
-  virtual int getDefaultServerPort() const = 0;
+  void shutdown();
 
   /**
-   * Get protocol plugin supported features
+   * Check if a thread belongs to this plugin
+   * Called by anyone
    *
-   * @return A mask of bits from Capabilities enum
+   * @param thread Thread to test
+   * @return True if thread is the main thread for this plugin
    */
-  virtual unsigned long getSendFunctions() const = 0;
+  bool isThread(const pthread_t& thread) const;
+
+  /// Convenience function to check the current thread belongs to this plugin
+  bool isThisThread() const
+  { return isThread(::pthread_self()); }
 
 protected:
-  virtual ~ProtocolPlugin() { /* Empty */ }
+  /**
+   * Constructor
+   * NOT called in plugin thread
+   *
+   * @param id Unique id for this plugin
+   * @param lib Library plugin was loaded from
+   * @param thread Thread for plugin to run in
+   */
+  Plugin(int id, LibraryPtr lib, ThreadPtr thread);
+
+  /// Destructor
+  virtual ~Plugin();
+
+  /**
+   * Initialize the plugin
+   * Called in plugin thread by PluginManager
+   *
+   * @param argc Number of command line parameters
+   * @param argv Command line parameters
+   * @return True if initialization was successful
+   */
+  virtual bool init(int argc, char** argv) = 0;
+
+  /**
+   * Run the plugin
+   * Called in plugin thread by PluginManager
+   *
+   * This function will be called in a separate thread and may block
+   *
+   * @return Exit code for the plugin
+   */
+  virtual int run() = 0;
+
+  /**
+   * Get read end of pipe used to communicate with the plugin
+   * Called from plugin
+   *
+   * @return A file descriptor that can be polled for new events and signals
+   */
+  int getReadPipe() const;
+
+  /**
+   * Send a notification to the plugin
+   *
+   * @param c A character, will be received by plugin through it's read pipe
+   */
+  void notify(char c);
+
+private:
+  LICQ_DECLARE_PRIVATE();
+
+  /**
+   * Initialize the plugin
+   * Called from PluginManager
+   *
+   * This is a wrapper that calls init() from the plugin's thread and waits
+   * for init() to return.
+   *
+   * @param argc Number of arguments for plugin
+   * @param argv Arguments for plugin
+   * @param callback Function to call in plugin's thread before calling plugin
+   * @return Return value from init()
+   */
+  bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL);
+
+  /**
+   * Start the plugin
+   * Called from PluginManager
+   *
+   * This is a wrapper that calls run() from the plugin's thread.
+   * This function returns immediately
+   *
+   * @param startCallback Function to call in the plugin's thread just before
+   *                      the plugin's main function is called
+   * @param exitCallback Function to call when thread exists
+   */
+  void startThread(void (*startCallback)(const Plugin&) = NULL,
+      void (*exitCallback)(const Plugin&) = NULL);
+
+  /**
+   * Wait for the plugin to stop
+   * Called from PluginManager
+   *
+   * @return Exit code from run()
+   */
+  int joinThread();
+
+  /**
+   * Cancel the plugin's thread
+   * Called from PluginManager
+   */
+  void cancelThread();
+
+  /**
+   * Get the library object for this plugin
+   * Called from PluginManager
+   */
+  LibraryPtr library();
+
+  /// Allow the plugin manager to access private members
+  friend class LicqDaemon::PluginManager;
+
+  /// Allow the unit tests to test private members
+  friend class ::PluginTest;
+  friend class ::GeneralPluginTest;
+  friend class ::ProtocolPluginTest;
 };
 
 } // namespace Licq

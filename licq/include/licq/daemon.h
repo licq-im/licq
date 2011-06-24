@@ -133,16 +133,6 @@ public:
   void pluginUIMessage(const UserId& userId);
 
   /**
-   * Get the next queued signal for a plugin
-   * Checks calling thread to determine which plugin queue to pop
-   *
-   * @return The next queued signal or NULL if the queue is empty
-   */
-  PluginSignal* popPluginSignal();
-  Event* PopPluginEvent();
-  ProtocolSignal* PopProtoSignal();
-
-  /**
    * Get path for the base dir (e.g. /home/fred/.licq/)
    *
    * @return Full path for base dir, ending with a slash

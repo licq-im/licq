@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,8 @@
 #include <pthread.h>
 #include <list>
 
-#include <licq/plugin.h>
+#include <licq/generalplugin.h>
+#include <licq/protocolplugin.h>
 
 extern char **global_argv;
 extern int global_argc;

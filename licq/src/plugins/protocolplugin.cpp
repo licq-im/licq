@@ -17,88 +17,54 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "protocolplugin.h"
+#include <licq/protocolplugin.h>
 
+#include <queue>
+
+#include <licq/thread/mutex.h>
 #include <licq/thread/mutexlocker.h>
 
-using Licq::MutexLocker;
+using namespace Licq;
 using namespace std;
-using namespace LicqDaemon;
 
-ProtocolPlugin::ProtocolPlugin(DynamicLibrary::Ptr lib,
-                               PluginThread::Ptr pluginThread,
-                               bool icq) :
-  Plugin(lib, pluginThread, icq ? "LProto_icq" : "LProto")
+
+class ProtocolPlugin::Private
 {
-  std::string prefix = (icq ? "LProto_icq" : "LProto");
-  loadSymbol(prefix + "_Init", myInit);
-  loadSymbol(prefix + "_PPID", myPpid);
-  loadSymbol(prefix + "_SendFuncs", mySendFunctions);
+public:
+  queue<ProtocolSignal*> mySignals;
+  Mutex mySignalsMutex;
+};
 
-  const char* (*getDefaultHost)();
-  loadSymbol(prefix + "_DefSrvHost", getDefaultHost);
-  if (getDefaultHost != NULL)
-    myDefaultHost = (*getDefaultHost)();
 
-  int (*getDefaultPort)();
-  loadSymbol(prefix + "_DefSrvPort", getDefaultPort);
-  myDefaultPort = (getDefaultPort == NULL ? 0 : (*getDefaultPort)() );
-
-  const char* ppid = (*myPpid)();
-  myProtocolId = ppid[0] << 24 | ppid[1] << 16 | ppid[2] << 8 | ppid[3];
-}
-
-ProtocolPlugin::~ProtocolPlugin()
+ProtocolPlugin::ProtocolPlugin(int id, LibraryPtr lib, ThreadPtr thread)
+  : Plugin(id, lib, thread),
+    myPrivate(new Private)
 {
   // Empty
 }
 
-bool ProtocolPlugin::init(void (*callback)(const Plugin&))
+ProtocolPlugin::~ProtocolPlugin()
 {
-  return callInitInThread(callback);
+  delete myPrivate;
 }
 
-void ProtocolPlugin::pushSignal(Licq::ProtocolSignal* signal)
+void ProtocolPlugin::pushSignal(ProtocolSignal* signal)
 {
-  MutexLocker locker(mySignalsMutex);
-  mySignals.push(signal);
-  locker.unlock();
-  myPipe.putChar(PipeSignal);
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  d->mySignals.push(signal);
+  notify(PipeSignal);
 }
 
-Licq::ProtocolSignal* ProtocolPlugin::popSignal()
+ProtocolSignal* ProtocolPlugin::popSignal()
 {
-  MutexLocker locker(mySignalsMutex);
-  if (!mySignals.empty())
+  LICQ_D();
+  MutexLocker locker(d->mySignalsMutex);
+  if (!d->mySignals.empty())
   {
-    Licq::ProtocolSignal* signal = mySignals.front();
-    mySignals.pop();
+    ProtocolSignal* signal = d->mySignals.front();
+    d->mySignals.pop();
     return signal;
   }
   return NULL;
-}
-
-unsigned long ProtocolPlugin::getProtocolId() const
-{
-  return myProtocolId;
-}
-
-unsigned long ProtocolPlugin::getSendFunctions() const
-{
-  return (*mySendFunctions)();
-}
-
-const string& ProtocolPlugin::getDefaultServerHost() const
-{
-  return myDefaultHost;
-}
-
-int ProtocolPlugin::getDefaultServerPort() const
-{
-  return myDefaultPort;
-}
-
-bool ProtocolPlugin::initThreadEntry()
-{
-  return (*myInit)();
 }

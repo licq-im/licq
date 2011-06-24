@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,47 +17,48 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "../plugin.h"
+#include <licq/plugin.h>
 
 #include <gtest/gtest.h>
 #include <list>
 
-extern "C" {
+#include "../../utils/dynamiclibrary.h"
+#include "../pluginthread.h"
 
-// Plugin API functions
-#define STR_FUNC(name)                          \
-  const char* Test_ ## name()                   \
-  { static char name[] = #name; return name; }
+// licq.cpp
+static const char* argv0 = "test";
+char** global_argv = const_cast<char**>(&argv0);
 
-STR_FUNC(Name);
-STR_FUNC(Version);
-STR_FUNC(ConfigFile);
-
-int Test_Main()
-{
-  return 5;
-}
-
-} // extern "C"
-
-using namespace LicqDaemon;
+using Licq::Plugin;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
 
 class PluginTest : public Plugin
 {
 public:
-  PluginTest(DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
-    Plugin(lib, thread, "Test") { /* Empty */ }
+  PluginTest(int id, DynamicLibrary::Ptr lib, PluginThread::Ptr thread) :
+    Plugin(id, lib, thread) { /* Empty */ }
 
-  void init(void (*callback)(const Plugin&))
-  {
-    callInitInThread(callback);
-  }
+  std::string name() const
+  { return "Name"; }
 
-private:
-  bool initThreadEntry()
-  {
-    return true;
-  }
+  std::string version() const
+  { return "Version"; }
+
+  std::string configFile() const
+  { return "ConfigFile"; }
+
+  bool init(int, char**)
+  { return true; }
+
+  int run()
+  { return 5; }
+
+  // Un-protect functions so we can test them without being the PluginManager
+  using Plugin::callInit;
+  using Plugin::getReadPipe;
+  using Plugin::joinThread;
+  using Plugin::startThread;
 };
 
 struct PluginFixture : public ::testing::Test
@@ -69,7 +70,7 @@ struct PluginFixture : public ::testing::Test
   PluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(myLib, myThread)
+    plugin(1, myLib, myThread)
   {
     // Empty
   }
@@ -92,21 +93,16 @@ TEST(Plugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(PluginTest plugin(lib, thread));
+  ASSERT_NO_THROW(PluginTest plugin(1, lib, thread));
 }
 
 TEST_F(PluginFixture, callApiFunctions)
 {
-  EXPECT_STREQ("Name", plugin.getName());
-  EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
-  EXPECT_EQ("", plugin.getLibraryName());
-}
-
-TEST_F(PluginFixture, getSetId)
-{
-  plugin.setId(1);
-  EXPECT_EQ(1, plugin.getId());
+  EXPECT_EQ(1, plugin.id());
+  EXPECT_EQ("Name", plugin.name());
+  EXPECT_EQ("Version", plugin.version());
+  EXPECT_EQ("ConfigFile", plugin.configFile());
+  EXPECT_EQ("", plugin.libraryName());
 }
 
 TEST_F(PluginFixture, runPlugin)
@@ -139,7 +135,7 @@ TEST_F(PluginFixture, runPluginWithCallbacks)
   InitCallbackCalled = false;
   StartCallbackCalled = false;
   ExitCallbackCalled = false;
-  plugin.init(&initCallback);
+  plugin.callInit(0, NULL, &initCallback);
   plugin.startThread(&startCallback, &exitCallback);
   EXPECT_FALSE(plugin.isThisThread());
   EXPECT_EQ(5, plugin.joinThread());
@@ -152,12 +148,4 @@ TEST_F(PluginFixture, shutdown)
 {
   plugin.shutdown();
   EXPECT_EQ('X', getPipeChar());
-}
-
-TEST_F(PluginFixture, signalmask)
-{
-  EXPECT_FALSE(plugin.wantSignal(1));
-  plugin.setSignalMask(0xf);
-  EXPECT_TRUE(plugin.wantSignal(1));
-  EXPECT_FALSE(plugin.wantSignal(0x10));
 }

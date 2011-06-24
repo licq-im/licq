@@ -17,54 +17,72 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "../protocolplugin.h"
+#include <licq/protocolplugin.h>
 #include <licq/protocolbase.h>
 
 #include <gtest/gtest.h>
 
-// Plugin API functions
-#define STR_FUNC(name)                          \
-  const char* LProto_ ## name()                 \
-  { static char name[] = #name; return name; }
+#include "../../utils/dynamiclibrary.h"
+#include "../pluginthread.h"
 
-STR_FUNC(Name);
-STR_FUNC(Version);
-STR_FUNC(ConfigFile);
-STR_FUNC(PPID);
-STR_FUNC(DefSrvHost);
 
-bool LProto_Init()
+using Licq::ProtocolPlugin;
+using LicqDaemon::DynamicLibrary;
+using LicqDaemon::PluginThread;
+
+class ProtocolPluginTest : public ProtocolPlugin
 {
-  return true;
-}
+public:
+  ProtocolPluginTest(int id, LibraryPtr lib, ThreadPtr thread) :
+      ProtocolPlugin(id, lib, thread)
+  { /* Empty */ }
 
-unsigned long LProto_SendFuncs()
-{
-  return 42;
-}
+  std::string name() const
+  { return "Name"; }
 
-int LProto_DefSrvPort()
-{
-  return 12345;
-}
+  std::string version() const
+  { return "Version"; }
 
-int LProto_Main()
-{
-  return 10;
-}
+  std::string configFile() const
+  { return "ConfigFile"; }
 
-using namespace LicqDaemon;
+  unsigned long protocolId() const
+  { return 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D'; }
+
+  std::string defaultServerHost() const
+  { return "DefSrvHost"; }
+
+  int defaultServerPort() const
+  { return 12345; }
+
+  unsigned long capabilities() const
+  { return 42; }
+
+  bool init(int, char**)
+  { return true; }
+
+  int run()
+  { return 10; }
+
+  // Un-protect functions so we can test them without being the PluginManager
+  using ProtocolPlugin::getReadPipe;
+  using ProtocolPlugin::callInit;
+  using ProtocolPlugin::joinThread;
+  using ProtocolPlugin::popSignal;
+  using ProtocolPlugin::startThread;
+};
+
 
 struct ProtocolPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  ProtocolPlugin plugin;
+  ProtocolPluginTest plugin;
 
   ProtocolPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    plugin(myLib, myThread)
+    plugin(1, myLib, myThread)
   {
     // Empty
   }
@@ -87,25 +105,25 @@ TEST(ProtocolPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ASSERT_NO_THROW(ProtocolPlugin plugin(lib, thread));
+  ASSERT_NO_THROW(ProtocolPluginTest plugin(1, lib, thread));
 }
 
 TEST_F(ProtocolPluginFixture, callApiFunctions)
 {
-  EXPECT_STREQ("Name", plugin.getName());
-  EXPECT_STREQ("Version", plugin.getVersion());
-  EXPECT_STREQ("ConfigFile", plugin.getConfigFile());
+  EXPECT_EQ("Name", plugin.name());
+  EXPECT_EQ("Version", plugin.version());
+  EXPECT_EQ("ConfigFile", plugin.configFile());
   unsigned long ppid = 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D';
-  EXPECT_EQ(ppid, plugin.getProtocolId());
-  EXPECT_TRUE(plugin.init());
-  EXPECT_EQ(42u, plugin.getSendFunctions());
-  EXPECT_STREQ("DefSrvHost", plugin.getDefaultServerHost().c_str());
-  EXPECT_EQ(12345, plugin.getDefaultServerPort());
+  EXPECT_EQ(ppid, plugin.protocolId());
+  EXPECT_TRUE(plugin.callInit());
+  EXPECT_EQ(42u, plugin.capabilities());
+  EXPECT_EQ("DefSrvHost", plugin.defaultServerHost());
+  EXPECT_EQ(12345, plugin.defaultServerPort());
 }
 
 TEST_F(ProtocolPluginFixture, init)
 {
-  EXPECT_TRUE(plugin.init());
+  EXPECT_TRUE(plugin.callInit());
 }
 
 TEST_F(ProtocolPluginFixture, runPlugin)

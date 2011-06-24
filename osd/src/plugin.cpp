@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,15 +17,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/protocolbase.h>
+#include <licq/pluginbase.h>
 #include <licq/version.h>
 
-#include "msn.h"
+#include "licq-osd.h"
 
-Licq::ProtocolPlugin* MsnPluginFactory(int id, Licq::Plugin::LibraryPtr lib,
-    Licq::Plugin::ThreadPtr thread)
+
+Licq::GeneralPlugin* OsdPluginFactory(int id,
+    Licq::Plugin::LibraryPtr lib, Licq::Plugin::ThreadPtr thread)
 {
-  return new CMSN(id, lib, thread);
+  return new OsdPlugin(id, lib, thread);
 }
 
-LICQ_PROTOCOL_PLUGIN_DATA(&MsnPluginFactory);
+LICQ_GENERAL_PLUGIN_DATA(&OsdPluginFactory);

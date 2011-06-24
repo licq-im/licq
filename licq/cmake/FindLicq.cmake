@@ -73,13 +73,7 @@ if (NOT licq_target_prefix)
 endif (NOT licq_target_prefix)
 
 # These symbols must be exported from the plugin
-set(_licq_plugin_symbols
-  LP_Name LP_Version LP_Status LP_Description
-  LP_BuildDate LP_BuildTime LP_Usage
-  LP_Init LP_Main LP_ConfigFile
-  LProto_Name LProto_Version LProto_PPID
-  LProto_DefSrvHost LProto_DefSrvPort
-  LProto_Init LProto_Main LProto_SendFuncs)
+set(_licq_plugin_symbols LicqGeneralPluginData LicqProtocolPluginData)
 
 macro (LICQ_ADD_PLUGIN _licq_plugin_name)
   add_library(${_licq_plugin_name} MODULE ${ARGN})

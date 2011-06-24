@@ -20,6 +20,8 @@
 #ifndef __MSN_H
 #define __MSN_H
 
+#include <licq/protocolplugin.h>
+
 #include <list>
 #include <pthread.h>
 #include <string>
@@ -35,7 +37,6 @@ namespace Licq
 {
 class Event;
 class PluginSignal;
-class ProtocolSignal;
 }
 
 const char CONTACT_LIST[] = "FL";
@@ -78,13 +79,21 @@ struct SStartMessage
 
 typedef std::list<SStartMessage*> StartList;
 
-class CMSN
+class CMSN : public Licq::ProtocolPlugin
 {
 public:
-  CMSN(int);
+  CMSN(int id, LibraryPtr lib, ThreadPtr thread);
   ~CMSN();
 
-  void Run();
+  // From Licq::ProtocolPlugin
+  std::string name() const;
+  std::string version() const;
+  unsigned long protocolId() const;
+  unsigned long capabilities() const;
+  std::string defaultServerHost() const;
+  int defaultServerPort() const;
+  bool init(int, char**);
+  int run();
 
   void MSNPing();
   bool Connected() { return m_nServerSocket != -1; }
@@ -167,7 +176,6 @@ private:
 
   // Variables
   bool m_bExit;
-  int m_nPipe;
   int m_nServerSocket;
   int m_nNexusSocket;
   int m_nSSLSocket;
