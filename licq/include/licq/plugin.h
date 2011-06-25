@@ -31,10 +31,6 @@ namespace LicqDaemon
 class PluginManager;
 }
 
-class GeneralPluginTest;
-class PluginTest;
-class ProtocolPluginTest;
-
 namespace Licq
 {
 
@@ -147,11 +143,6 @@ private:
 
   /// Allow the plugin manager to access private members
   friend class LicqDaemon::PluginManager;
-
-  /// Allow the unit tests to test private members
-  friend class ::PluginTest;
-  friend class ::GeneralPluginTest;
-  friend class ::ProtocolPluginTest;
 };
 
 } // namespace Licq

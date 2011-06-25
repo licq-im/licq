@@ -17,8 +17,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+// Steal the PluginManager's friend declaration
+#define PluginManager ProtocolPluginTest
 #include "../protocolplugin.h"
 #include <licq/protocolbase.h>
+#undef PluginManager
 
 #include <gtest/gtest.h>
 
@@ -30,6 +33,9 @@
 using Licq::ProtocolPlugin;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
+
+namespace LicqDaemon
+{
 
 class ProtocolPluginTest : public ProtocolPlugin
 {
@@ -80,6 +86,9 @@ public:
   using ProtocolPlugin::popSignal;
 };
 
+} // namespace LicqDaemon
+
+using LicqDaemon::ProtocolPluginTest;
 
 struct ProtocolPluginFixture : public ::testing::Test
 {

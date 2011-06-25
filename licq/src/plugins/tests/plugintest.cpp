@@ -17,7 +17,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+// Steal the PluginManager's friend declaration
+#define PluginManager PluginTest
 #include "../plugin.h"
+#undef PluginManager
 
 #include <gtest/gtest.h>
 #include <list>
@@ -32,6 +35,9 @@ char** global_argv = const_cast<char**>(&argv0);
 using Licq::Plugin;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
+
+namespace LicqDaemon
+{
 
 class PluginTest : public Plugin
 {
@@ -67,6 +73,10 @@ public:
   // Un-protect functions so we can test them without being the PluginManager
   using Plugin::getReadPipe;
 };
+
+} // namespace LicqDaemon
+
+using LicqDaemon::PluginTest;
 
 struct PluginFixture : public ::testing::Test
 {

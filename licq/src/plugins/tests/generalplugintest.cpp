@@ -17,8 +17,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+// Steal the PluginManager's friend declaration
+#define PluginManager GeneralPluginTest
 #include "../generalplugin.h"
 #include <licq/pluginbase.h>
+#undef PluginManager
+
 #include <licq/pluginsignal.h>
 
 #include <gtest/gtest.h>
@@ -30,6 +34,9 @@
 using Licq::GeneralPlugin;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
+
+namespace LicqDaemon
+{
 
 class GeneralPluginTest : public GeneralPlugin
 {
@@ -78,6 +85,10 @@ public:
   using GeneralPlugin::popSignal;
   using GeneralPlugin::setSignalMask;
 };
+
+} // namespace LicqDaemon
+
+using LicqDaemon::GeneralPluginTest;
 
 struct GeneralPluginFixture : public ::testing::Test
 {
