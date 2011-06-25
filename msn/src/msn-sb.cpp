@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/oneventmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
@@ -88,10 +89,12 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       convo->addUser(userId);
 
       // Notify the plugins of the new CID
-      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+      Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalConversation,
           Licq::PluginSignal::ConvoCreate, userId, 0, SocketToCID(nSock)));
 
-      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+      Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalConversation,
           Licq::PluginSignal::ConvoJoin, userId, 0, SocketToCID(nSock)));
 
       gLog.info("%s joined the conversation", userId.toString().c_str());
@@ -124,7 +127,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         if (u.isLocked())
         {
           u->setIsTyping(true);
-          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserTyping, u->id(), SocketToCID(nSock)));
         }
       }
@@ -242,7 +246,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           }
           Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
         }
-	Licq::gDaemon.PushPluginEvent(e);
+	Licq::gPluginManager.pushPluginEvent(e);
       }
       else
       {
@@ -299,11 +303,13 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         convo->addUser(userId);
 
         // Notify the plugins of the new CID
-        Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+        Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+            Licq::PluginSignal::SignalConversation,
             Licq::PluginSignal::ConvoCreate, userId, 0, SocketToCID(nSock)));
 
         // Notify the plugins
-        Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+        Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+            Licq::PluginSignal::SignalConversation,
             Licq::PluginSignal::ConvoJoin, userId, 0, SocketToCID(nSock)));
       }
 
@@ -324,7 +330,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       UserId userId(packet->GetParameter(), MSN_PPID);
       gLog.info("Connection with %s closed", userId.toString().c_str());
 
-      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+      Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalConversation,
           Licq::PluginSignal::ConvoLeave, userId, 0, SocketToCID(nSock)));
 
       Conversation* convo = gConvoManager.getFromSocket(nSock);
@@ -367,7 +374,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           gLog.error("User not online");
           pStart = *it;
           pStart->m_pEvent->m_eResult = Licq::Event::ResultFailed;
-          Licq::gDaemon.PushPluginEvent(pStart->m_pEvent);
+          Licq::gPluginManager.pushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
           break; 
         }
@@ -412,7 +419,8 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   {
     gLog.info("Connection with %s lost", userId.toString().c_str());
 
-    Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+    Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalConversation,
         Licq::PluginSignal::ConvoLeave, userId, 0, SocketToCID(nSock)));
 
     Conversation* convo = gConvoManager.getFromSocket(nSock);
@@ -661,7 +669,8 @@ void CMSN::killConversation(int sock)
     BOOST_FOREACH(const UserId& userId, users)
     {
       // Signal that user is removed
-      Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalConversation,
+      Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalConversation,
           Licq::PluginSignal::ConvoLeave, userId, 0, convoId));
 
       // Remove user from the conversation

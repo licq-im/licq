@@ -30,6 +30,7 @@
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
@@ -1649,7 +1650,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
         u->SetLastCheckedAutoResponse();
 
-          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserEvents, u->id()));
           break;
       }
@@ -2114,7 +2116,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         }
 
         u->SetSendServer(false);
-          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserSecurity, u->id(), 1));
 
           gLog.info(tr("Secure channel established with %s (%s)"),
@@ -2163,7 +2166,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         pSock->SecureStop();
         u->SetSecure(false);
-          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserSecurity, u->id(), 0));
           break;
 
@@ -2381,7 +2385,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.info(tr("%s (%s) does not support OpenSSL."),
                 u->getAlias().c_str(), userId.toString().c_str());
           u->SetSecure(false);
-            gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserSecurity, u->id(), 0));
           // find the event, fail it
             e = DoneEvent(sockfd, theSequence, Licq::Event::ResultFailed);
@@ -2401,7 +2406,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               u.unlock();
               if (bNewUser)
                 Licq::gUserManager.removeUser(userId, false);
-              gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                  Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserSecurity, userId, 0));
             return false;
           }
@@ -2416,7 +2422,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.info(tr("Secure channel established with %s (%s)"),
                   u->getAlias().c_str(), userId.toString().c_str());
             u->SetSecure(true);
-              gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                  Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserSecurity, u->id(), 1));
             }
           }
@@ -2471,7 +2478,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         pSock->SecureStop();
         u->SetSecure(false);
-          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserSecurity, u->id(), 0));
 
           u.unlock();
@@ -2813,7 +2821,8 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             u->SetEnableSave(true);
             u->SavePictureInfo();
 
-              gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                  Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserPicture, u->id()));
             }
           else if (memcmp(GUID, PLUGIN_QUERYxINFO, GUID_LENGTH) == 0)
@@ -2939,7 +2948,8 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             u->SavePhoneBookInfo();
                   delete [] pb;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -2969,7 +2979,8 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
             u->SetEnableSave(true);
             u->SavePictureInfo();
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserPicture, u->id()));
                 break;
               }
@@ -3237,7 +3248,8 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
         }
 
         // Which plugin?
-            gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserPluginStatus, u->id(), 0));
 
         ProcessDoneEvent(e);

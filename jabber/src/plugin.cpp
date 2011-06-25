@@ -30,10 +30,10 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/statistics.h>
 #include <licq/userevents.h>
@@ -376,7 +376,7 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
     Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }
 
-  Licq::gDaemon.PushPluginEvent(event);
+  Licq::gPluginManager.pushPluginEvent(event);
 }
 
 void Plugin::doNotifyTyping(Licq::ProtoTypingNotificationSignal* signal)

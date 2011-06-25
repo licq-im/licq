@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 #include "msn.h"
 #include "msnpacket.h"
 
-#include <licq/daemon.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/logging/log.h>
@@ -112,7 +112,8 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   else if (strFirstLine == "HTTP/1.1 401 Unauthorized")
   {
     gLog.error("Invalid password");
-    Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
+    Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalLogoff,
         Licq::PluginSignal::LogoffPassword, UserId(m_szUserName, MSN_PPID)));
   }
   else

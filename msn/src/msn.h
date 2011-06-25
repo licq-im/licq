@@ -36,7 +36,6 @@
 namespace Licq
 {
 class Event;
-class PluginSignal;
 }
 
 const char CONTACT_LIST[] = "FL";
@@ -167,9 +166,6 @@ private:
    * @param sock Socket to clear conversations for
    */
   void killConversation(int sock);
-
-  // Interface to CICQDaemon
-  void pushPluginSignal(Licq::PluginSignal* p);
 
   // Config
   unsigned long m_nListVersion;

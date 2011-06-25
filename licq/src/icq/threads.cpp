@@ -878,7 +878,8 @@ void *MonitorSockets_func()
             {
               u->ClearSocketDesc(ICQ_CHNxNONE);
               u->SetSecure(false);
-              Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+              Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                  Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserSecurity, u->id(), 0));
             }
           }

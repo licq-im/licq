@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2010 Licq developers
+ * Copyright (C) 2005-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include <unistd.h>
 
 #include <licq/contactlist/user.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 
 using namespace std;
@@ -247,7 +248,8 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
           if (u.isLocked())
           {
             u->SetPicturePresent(true);
-            m_pMSN->pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserPicture, u->id()));
           }
         }

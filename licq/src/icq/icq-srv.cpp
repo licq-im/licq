@@ -33,6 +33,7 @@
 #include <licq/icqchat.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/oneventmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/socket.h>
@@ -55,6 +56,7 @@ using Licq::Owner;
 using Licq::StringList;
 using Licq::User;
 using Licq::gLog;
+using Licq::gPluginManager;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
 using LicqDaemon::Daemon;
@@ -1347,7 +1349,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
            e->m_nChannel == ICQ_CHNxSTATUS)
   {
     if (e->m_nCommand == ICQ_CMDxTCP_START)
-      gDaemon.PushPluginEvent(e);
+      gPluginManager.pushPluginEvent(e);
     else
       delete e;
   }
@@ -1363,7 +1365,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
       case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxREQUESTxUSERxINFO):
       case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ):
       case MAKESNAC(ICQ_SNACxFAM_BART, ICQ_SNACxBART_DOWNLOADxREQUEST):
-        gDaemon.PushPluginEvent(e);
+        gPluginManager.pushPluginEvent(e);
         break;
 
       // Other events
@@ -1376,7 +1378,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
           case Licq::Event::ResultFailed:
           case Licq::Event::ResultSuccess:
           case Licq::Event::ResultCancelled:
-            gDaemon.PushPluginEvent(e);
+            gPluginManager.pushPluginEvent(e);
             break;
 
           case Licq::Event::ResultAcked:
@@ -1591,7 +1593,8 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
 
   myRegisterPasswd = "";
 
-  gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
+  gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+      Licq::PluginSignal::SignalLogoff,
       Licq::PluginSignal::LogoffRequested, Licq::gUserManager.ownerUserId(LICQ_PPID)));
 
   // Mark all users as offline, this also updates the last seen
@@ -2083,7 +2086,8 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       if (e)
         ProcessDoneEvent(e);
 
-        gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+        gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+            Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserInfo, userId));
       }
 
@@ -2445,7 +2449,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
 
         // Which Plugin?
-            gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserPluginStatus, u->id()));
             break;
           }
@@ -2541,7 +2546,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     u->SetClientTimestamp(0);
       u->setIsTyping(false);
       u->statusChanged(User::OfflineStatus);
-      gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalUser,
           Licq::PluginSignal::UserTyping, u->id()));
       break;
     }
@@ -2724,7 +2730,8 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           if (gDaemon.addUserEvent(*u, e))
             gOnEventManager.performOnEvent(OnEventData::OnEventMessage, *u);
-          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserTyping, u->id()));
           break;
         }
@@ -2916,7 +2923,8 @@ However it seems to always think contact is online instead of away/occupied/etc.
         break;
       }
 
-          gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserTyping, userId));
           break;
         }
@@ -3248,7 +3256,8 @@ However it seems to always think contact is online instead of away/occupied/etc.
 
                 if (gDaemon.addUserEvent(*u, eEvent))
                   gOnEventManager.performOnEvent(onEventType, *u);
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserTyping, u->id()));
                 break;
 	      }
@@ -3506,7 +3515,8 @@ However it seems to always think contact is online instead of away/occupied/etc.
         break;
       }
       u->setIsTyping(nTyping == ICQ_TYPING_ACTIVE);
-      gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalUser,
           Licq::PluginSignal::UserTyping, u->id()));
     delete [] szId;
     break;
@@ -3660,7 +3670,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               // assigned to
               //if (Licq::gUserManager.UpdateUsersInGroups())
               //{
-              //  gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalList,
+              //  gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              //      Licq::PluginSignal::SignalList,
               //      Licq::PluginSignal::ListInvalidate, 0));
               //}
             }
@@ -3767,7 +3778,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           u->AddTLV(iter->second);
 
         u->SaveLicqInfo();
-        gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+        gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+            Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserGroups, u->id()));
       }
 
@@ -3917,8 +3929,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               if (u.isLocked())
               {
                 u->addToGroup(Licq::gUserManager.GetGroupFromID(e->ExtraInfo()));
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalAddedToServer,
-                    0, u->id()));
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalAddedToServer, 0, u->id()));
               }
             }
 
@@ -4098,7 +4110,8 @@ void IcqProtocol::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
     // ### FIX subsequence !!
       Licq::Event* e = DoneExtendedServerEvent(0, Licq::Event::ResultSuccess);
     if (e != NULL) ProcessDoneEvent(e);
-      gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogon, 0));
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalLogon, 0));
 
     //icqSetStatus(m_nDesiredStatus);
       break;
@@ -4875,7 +4888,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           e2->m_pSearchAck = NULL; // Search ack is null lets plugins know no results found
           e2->m_nCommand = ICQ_CMDxSND_META;
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
-              gDaemon.PushPluginEvent(e2);
+              gPluginManager.pushPluginEvent(e2);
               DoneEvent(e, Licq::Event::ResultSuccess);
               break;
             }
@@ -4936,7 +4949,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               e2->m_pSearchAck->myMore = 0;
         }
 
-            gDaemon.PushPluginEvent(e2);
+            gPluginManager.pushPluginEvent(e2);
 
         if (nSubtype & 0x0008)
               DoneEvent(e, Licq::Event::ResultSuccess); // Remove it from the running event list
@@ -5036,9 +5049,11 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserBasic, u->id()));
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -5091,7 +5106,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -5112,7 +5128,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -5142,7 +5159,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -5172,7 +5190,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
 
@@ -5192,7 +5211,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -5220,7 +5240,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -5262,7 +5283,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 u->saveUserInfo();
           u->SaveLicqInfo();
 
-                gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+                gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                    Licq::PluginSignal::SignalUser,
                     Licq::PluginSignal::UserInfo, u->id()));
                 break;
               }
@@ -5280,7 +5302,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               }
             }
 
-            gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserInfo, u->id()));
           }
 
@@ -5390,7 +5413,8 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       myRegisterPasswd = "";
       gDaemon.SaveConf();
 
-      gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalNewOwner,
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalNewOwner,
           0, Licq::UserId(), LICQ_PPID));
 
       // Reconnect now
@@ -5454,7 +5478,8 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       
       // Push a signal to the plugin to load the file
       gLog.info(tr("Received verification image."));
-      gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalVerifyImage,
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalVerifyImage,
           0, Licq::UserId(), LICQ_PPID));
       break;
     }
@@ -5531,11 +5556,14 @@ void IcqProtocol::ProcessUserList()
 
     // Save GSID, SID and group memberships
     u->SaveLicqInfo();
-    gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+    gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalUser,
         Licq::PluginSignal::UserBasic, u->id()));
-    gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+    gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalUser,
         Licq::PluginSignal::UserGroups, u->id()));
-    gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+    gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalUser,
         Licq::PluginSignal::UserSettings, u->id()));
   }
 
@@ -5623,14 +5651,16 @@ bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
     case 0x1D:
     case 0x18:
       gLog.error(tr("Rate limit exceeded."));
-      gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalLogoff,
           Licq::PluginSignal::LogoffRate, Licq::gUserManager.ownerUserId(LICQ_PPID)));
       break;
 
     case 0x04:
     case 0x05:
       gLog.error(tr("Invalid UIN and password combination."));
-      gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalLogoff,
           Licq::PluginSignal::LogoffPassword, Licq::gUserManager.ownerUserId(LICQ_PPID)));
       break;
 

@@ -24,6 +24,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/icqdefines.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
 #include <licq/userid.h>
@@ -42,6 +43,7 @@ using Licq::UserId;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
 using Licq::gLog;
+using Licq::gPluginManager;
 using Licq::gUserManager;
 
 
@@ -78,7 +80,7 @@ bool ProtocolManager::isProtocolConnected(const UserId& userId)
 
 void ProtocolManager::pushProtoSignal(Licq::ProtocolSignal* s, const UserId& userId)
 {
-  gDaemon.PushProtoSignal(s, userId.protocolId());
+  gPluginManager.pushProtocolSignal(s, userId.protocolId());
 }
 
 void ProtocolManager::addUser(const UserId& userId, int groupId)

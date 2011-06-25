@@ -34,7 +34,6 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/conversation.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
 #include <licq/protocolsignal.h>
@@ -764,9 +763,4 @@ CMSNDataEvent *CMSN::FetchStartDataEvent(const string &_strUser)
   }
 
   return pReturn;  
-}
-
-void CMSN::pushPluginSignal(Licq::PluginSignal* p)
-{
-  Licq::gDaemon.pushPluginSignal(p);
 }

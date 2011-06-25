@@ -442,29 +442,14 @@ void Licq::Daemon::cancelEvent(Licq::Event* event)
   gIcqProtocol.CancelEvent(event);
 }
 
-void Licq::Daemon::PushPluginEvent(Licq::Event* e)
-{
-  LicqDaemon::gPluginManager.pushPluginEvent(e);
-}
-
-void Licq::Daemon::pushPluginSignal(PluginSignal* s)
-{
-  LicqDaemon::gPluginManager.pushPluginSignal(s);
-}
-
-void Licq::Daemon::PushProtoSignal(Licq::ProtocolSignal* s, unsigned long _nPPID)
-{
-  LicqDaemon::gPluginManager.pushProtocolSignal(s, _nPPID);
-}
-
 void Licq::Daemon::pluginUIViewEvent(const Licq::UserId& userId)
 {
-  pushPluginSignal(new PluginSignal(PluginSignal::SignalUiViewEvent, 0, userId));
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUiViewEvent, 0, userId));
 }
 
 void Licq::Daemon::pluginUIMessage(const Licq::UserId& userId)
 {
-  pushPluginSignal(new PluginSignal(PluginSignal::SignalUiMessage, 0, userId));
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUiMessage, 0, userId));
 }
 
 void Daemon::shutdownPlugins()

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -32,6 +32,7 @@
 #include <licq/icqdefines.h>
 #include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/socket.h>
@@ -65,7 +66,7 @@ void Handler::onConnect(const string& ip, int port, unsigned status)
     owner->SetTimezone(Licq::User::SystemTimezone());
   }
 
-  Licq::gDaemon.pushPluginSignal(
+  Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalLogon,
                              0, UserId(), JABBER_PPID));
 }
@@ -93,7 +94,7 @@ void Handler::onDisconnect(bool authError)
 
   gUserManager.ownerStatusChanged(JABBER_PPID, Licq::User::OfflineStatus);
 
-  Licq::gDaemon.pushPluginSignal(
+  Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalLogoff,
                              authError ?
                              Licq::PluginSignal::LogoffPassword :
@@ -141,10 +142,10 @@ void Handler::onUserAdded(
   // Remove this line when SetGroups call above saves contact groups itself.
   user->SaveLicqInfo();
 
-  Licq::gDaemon.pushPluginSignal(
+  Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                              Licq::PluginSignal::UserBasic, userId));
-  Licq::gDaemon.pushPluginSignal(
+  Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                              Licq::PluginSignal::UserGroups, userId));
 
@@ -198,7 +199,7 @@ void Handler::onUserInfo(const string& id, const VCardToUser& wrapper)
 
   if (updated)
   {
-    Licq::gDaemon.pushPluginSignal(
+    Licq::gPluginManager.pushPluginSignal(
         new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                                Licq::PluginSignal::UserBasic, userId));
   }
@@ -272,7 +273,7 @@ void Handler::onNotifyTyping(const string& from, bool active)
   {
     user->setIsTyping(active);
 
-    Licq::gDaemon.pushPluginSignal(
+    Licq::gPluginManager.pushPluginSignal(
         new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                                Licq::PluginSignal::UserTyping,
                                user->id(),

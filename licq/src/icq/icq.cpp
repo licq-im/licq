@@ -26,6 +26,7 @@
 #include <licq/logging/log.h>
 #include <licq/statistics.h>
 #include <licq/oneventmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
@@ -734,8 +735,8 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
   case ICQ_CMDxSND_VISIBLExLIST:
   case ICQ_CMDxSND_INVISIBLExLIST:
   case ICQ_CMDxSND_MODIFYxVIEWxLIST:
-    PushPluginEvent(e);
-    break;
+      Licq::gPluginManager.pushPluginEvent(e);
+      break;
 
   case ICQ_CMDxSND_SETxSTATUS:
       if (e->m_eResult == Licq::Event::ResultAcked)
@@ -743,8 +744,8 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
         Licq::OwnerWriteGuard o(LICQ_PPID);
       ChangeUserStatus(o, ((CPU_SetStatus *)e->m_pPacket)->Status() );
       }
-    PushPluginEvent(e);
-    break;
+      Licq::gPluginManager.pushPluginEvent(e);
+      break;
 
   case ICQ_CMDxSND_SETxRANDOMxCHAT:
       if (e->m_eResult == Licq::Event::ResultAcked)
@@ -752,8 +753,8 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
         Licq::OwnerWriteGuard o(LICQ_PPID);
       o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)e->m_pPacket)->Group());
       }
-    PushPluginEvent(e);
-    break;
+      Licq::gPluginManager.pushPluginEvent(e);
+      break;
 
   // Extended events
   case ICQ_CMDxSND_LOGON:
@@ -774,7 +775,7 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
         case Licq::Event::ResultFailed:
         case Licq::Event::ResultSuccess:
         case Licq::Event::ResultCancelled:
-        PushPluginEvent(e);
+          Licq::gPluginManager.pushPluginEvent(e);
           break;
         case Licq::Event::ResultAcked:  // push to extended event list
         PushExtendedEvent(e);
@@ -1160,7 +1161,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         Licq::gStatistics.increase(Licq::Statistics::AutoResponseCheckedCounter);
     u->SetLastCheckedAutoResponse();
 
-        gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+        Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+            Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserEvents, u->id()));
       }
     return;

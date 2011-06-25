@@ -527,7 +527,7 @@ User::~User()
     m_vcMessages.pop_back();
     decNumUserEvents();
 
-    gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
         PluginSignal::UserEvents, myId, nId));
   }
 
@@ -725,7 +725,7 @@ void User::SetPermanent()
   saveAll();
 
   // Notify the plugins of the change
-  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
       PluginSignal::UserSettings, myId, 0));
 }
 
@@ -896,7 +896,7 @@ void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
   if (oldStatus != newStatus)
   {
     Touch();
-    gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
         PluginSignal::UserStatus, myId, arg));
   }
 }
@@ -1204,7 +1204,7 @@ void Licq::User::SetSocketDesc(Licq::TCPSocket* s)
   {
     m_bSecure = s->Secure();
     if (m_bOnContactList)
-      gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+      gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
           PluginSignal::UserSecurity, myId, m_bSecure ? 1 : 0));
   }
 
@@ -1246,7 +1246,7 @@ void Licq::User::ClearSocketDesc(unsigned char nChannel)
   }
 
   if (m_bOnContactList)
-    gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
         PluginSignal::UserSecurity, myId, 0));
 }
 
@@ -2016,7 +2016,7 @@ void Licq::User::EventPush(Licq::UserEvent *e)
   Touch();
   SetLastReceivedEvent();
 
-  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
       PluginSignal::UserEvents, myId, e->Id(), e->ConvoId()));
 }
 
@@ -2076,7 +2076,7 @@ Licq::UserEvent *Licq::User::EventPop()
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
       PluginSignal::UserEvents, myId, e->Id()));
 
   return e;
@@ -2095,7 +2095,7 @@ void Licq::User::EventClear(unsigned short index)
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
       PluginSignal::UserEvents, myId, -id));
 }
 
@@ -2111,7 +2111,7 @@ void Licq::User::EventClearId(int id)
       decNumUserEvents();
       SaveNewMessagesInfo();
 
-      gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+      gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
           PluginSignal::UserEvents, myId, -id));
       break;
     }

@@ -37,6 +37,7 @@
 #include <licq/logging/logservice.h>
 #include <licq/md5.h>
 #include <licq/oneventmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>
@@ -195,7 +196,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserBasic, u->id()));
         }
         u->setUserInfoString("Email1", strUser);
@@ -204,7 +206,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         u->SetNewUser(false);
         u->SetEnableSave(true);
         u->SaveLicqInfo();
-        Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+        Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+            Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserInfo, u->id()));
       }
     }
@@ -249,7 +252,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
             string strDecodedNick = Decode(strNick);
             u->setAlias(strDecodedNick);
           }
-          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserBasic, u->id()));
         }
       }
@@ -336,7 +340,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->setAlias(strDecodedNick);
-          Licq::gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+              Licq::PluginSignal::SignalUser,
               Licq::PluginSignal::UserBasic, u->id()));
         }
 
@@ -475,7 +480,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           gLog.error("Cannot send messages while invisible");
           pStart = *it;
           pStart->m_pEvent->m_eResult = Licq::Event::ResultFailed;
-          Licq::gDaemon.PushPluginEvent(pStart->m_pEvent);
+          Licq::gPluginManager.pushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
           break; 
         }

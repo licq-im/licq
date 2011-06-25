@@ -21,6 +21,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/byteorder.h>
 #include <licq/event.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/socket.h>
@@ -396,7 +397,8 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
               u->SetEnableSave(true);
             }
             u->SavePictureInfo();
-            gDaemon.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+                Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserPicture, u->id()));
 
             Licq::Event* e = gIcqProtocol.DoneServerEvent(RequestId, Licq::Event::ResultSuccess);

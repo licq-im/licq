@@ -118,16 +118,6 @@ public:
   bool ignoreType(unsigned type) const          { return (myIgnoreTypes & type); }
   void setIgnoreType(unsigned type, bool ignore);
 
-  /**
-   * Add a signal to the signal queues of all plugins.
-   *
-   * @param signal Signal to send
-   */
-  void pushPluginSignal(PluginSignal* signal);
-
-  void PushPluginEvent(Event*);
-  void PushProtoSignal(ProtocolSignal* s, unsigned long ppid);
-
   void pluginUIViewEvent(const UserId& userId);
 
   void pluginUIMessage(const UserId& userId);
