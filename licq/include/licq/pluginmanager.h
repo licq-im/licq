@@ -49,7 +49,7 @@ typedef std::list<ProtocolPlugin::Ptr> ProtocolPluginsList;
  *     Licq::gPluginManager.getProtocolPluginsList(protocols);
  *     BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
  *     {
- *       unsigned long protocolId = protocol->getProtocolId();
+ *       unsigned long protocolId = protocol->protocolId();
  *       ...
  *     }
  */
