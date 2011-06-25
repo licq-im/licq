@@ -19,11 +19,7 @@ set(licq_HEADERS
   oneventmanager.h
   packet.h
   pipe.h
-  plugin.h
-  pluginbase.h
-  pluginmanager.h
   pluginsignal.h
-  protocolbase.h
   protocolmanager.h
   protocolsignal.h
   proxy.h
@@ -43,4 +39,5 @@ install(FILES ${licq_HEADERS} DESTINATION "${Licq_INCLUDE_DIR}/licq")
 add_subdirectory(contactlist)
 add_subdirectory(exceptions)
 add_subdirectory(logging)
+add_subdirectory(plugin)
 add_subdirectory(thread)

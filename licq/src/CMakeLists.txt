@@ -8,10 +8,10 @@ set(tested_SRCS
   logging/logutils.cpp
   logging/pluginlogsink.cpp
 
-  plugins/generalplugin.cpp
-  plugins/plugin.cpp
-  plugins/pluginthread.cpp
-  plugins/protocolplugin.cpp
+  plugin/generalplugin.cpp
+  plugin/plugin.cpp
+  plugin/pluginthread.cpp
+  plugin/protocolplugin.cpp
 
   thread/condition.cpp
   thread/mutexlocker.cpp
@@ -69,7 +69,7 @@ set(licq_SRCS
   logging/streamlogsink.cpp
   logging/threadlog.cpp
 
-  plugins/pluginmanager.cpp
+  plugin/pluginmanager.cpp
 
   ${tested_SRCS}
 )
@@ -84,10 +84,10 @@ set(test_SRCS
   logging/tests/logutilstest.cpp
   logging/tests/pluginlogsinktest.cpp
 
-  plugins/tests/generalplugintest.cpp
-  plugins/tests/plugintest.cpp
-  plugins/tests/pluginthreadtest.cpp
-  plugins/tests/protocolplugintest.cpp
+  plugin/tests/generalplugintest.cpp
+  plugin/tests/plugintest.cpp
+  plugin/tests/pluginthreadtest.cpp
+  plugin/tests/protocolplugintest.cpp
 
   thread/tests/conditiontest.cpp
   thread/tests/mutextest.cpp

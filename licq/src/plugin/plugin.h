@@ -20,7 +20,7 @@
 #ifndef LICQDAEMON_PLUGIN_H
 #define LICQDAEMON_PLUGIN_H
 
-#include <licq/plugin.h>
+#include <licq/plugin/plugin.h>
 
 #include <licq/pipe.h>
 

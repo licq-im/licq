@@ -28,7 +28,7 @@
 #include "../gettext.h"
 #include "../licq.h"
 #include "../statistics.h"
-#include "../plugins/pluginmanager.h"
+#include "../plugin/pluginmanager.h"
 #include "oscarservice.h"
 
 #define MAX_CONNECTS  256

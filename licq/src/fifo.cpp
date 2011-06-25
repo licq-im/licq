@@ -43,7 +43,7 @@
 #include <licq/icq.h>
 #include <licq/logging/log.h>
 #include <licq/logging/logutils.h>
-#include <licq/pluginmanager.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>

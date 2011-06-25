@@ -18,10 +18,12 @@
  */
 
 // Steal the PluginManager's friend declaration
-#define PluginManager ProtocolPluginTest
-#include "../protocolplugin.h"
-#include <licq/protocolbase.h>
+#define PluginManager GeneralPluginTest
+#include "../generalplugin.h"
+#include <licq/plugin/generalbase.h>
 #undef PluginManager
+
+#include <licq/pluginsignal.h>
 
 #include <gtest/gtest.h>
 
@@ -29,19 +31,18 @@
 #include "../plugin.h"
 #include "../pluginthread.h"
 
-
-using Licq::ProtocolPlugin;
+using Licq::GeneralPlugin;
 using LicqDaemon::DynamicLibrary;
 using LicqDaemon::PluginThread;
 
 namespace LicqDaemon
 {
 
-class ProtocolPluginTest : public ProtocolPlugin
+class GeneralPluginTest : public GeneralPlugin
 {
 public:
-  ProtocolPluginTest(Params& p) :
-      ProtocolPlugin(p)
+  GeneralPluginTest(Params& p) :
+      GeneralPlugin(p)
   { /* Empty */ }
 
   bool callInit(int argc = 0, char** argv = NULL, void (*callback)(const Plugin&) = NULL)
@@ -60,44 +61,43 @@ public:
   std::string version() const
   { return "Version"; }
 
+  std::string description() const
+  { return "Description"; }
+
+  std::string usage() const
+  { return "Usage"; }
+
   std::string configFile() const
   { return "ConfigFile"; }
 
-  unsigned long protocolId() const
-  { return 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D'; }
-
-  std::string defaultServerHost() const
-  { return "DefSrvHost"; }
-
-  int defaultServerPort() const
-  { return 12345; }
-
-  unsigned long capabilities() const
-  { return 42; }
+  bool isEnabled() const
+  { return false; }
 
   bool init(int, char**)
   { return true; }
 
   int run()
-  { return 10; }
+  { return 20; }
 
   // Un-protect functions so we can test them without being the PluginManager
-  using ProtocolPlugin::getReadPipe;
-  using ProtocolPlugin::popSignal;
+  using GeneralPlugin::getReadPipe;
+  using GeneralPlugin::popEvent;
+  using GeneralPlugin::popSignal;
+  using GeneralPlugin::setSignalMask;
 };
 
 } // namespace LicqDaemon
 
-using LicqDaemon::ProtocolPluginTest;
+using LicqDaemon::GeneralPluginTest;
 
-struct ProtocolPluginFixture : public ::testing::Test
+struct GeneralPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
   PluginThread::Ptr myThread;
-  ProtocolPlugin::Params myPluginParams;
-  ProtocolPluginTest plugin;
+  GeneralPlugin::Params myPluginParams;
+  GeneralPluginTest plugin;
 
-  ProtocolPluginFixture() :
+  GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
     myPluginParams(1, myLib, myThread, NULL),
@@ -106,7 +106,7 @@ struct ProtocolPluginFixture : public ::testing::Test
     // Empty
   }
 
-  ~ProtocolPluginFixture()
+  ~GeneralPluginFixture()
   {
     myThread->cancel();
   }
@@ -120,41 +120,56 @@ struct ProtocolPluginFixture : public ::testing::Test
   }
 };
 
-TEST(ProtocolPlugin, load)
+TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ProtocolPlugin::Params pluginParams(1, lib, thread, NULL);
-  ASSERT_NO_THROW(ProtocolPluginTest plugin(pluginParams));
+  GeneralPlugin::Params pluginParams(1, lib, thread, NULL);
+  ASSERT_NO_THROW(GeneralPluginTest plugin(pluginParams));
 }
 
-TEST_F(ProtocolPluginFixture, callApiFunctions)
+TEST_F(GeneralPluginFixture, callApiFunctions)
 {
   EXPECT_EQ("Name", plugin.name());
   EXPECT_EQ("Version", plugin.version());
+  EXPECT_FALSE(plugin.isEnabled());
+  EXPECT_EQ("Description", plugin.description());
+  EXPECT_EQ("Usage", plugin.usage());
   EXPECT_EQ("ConfigFile", plugin.configFile());
-  unsigned long ppid = 'P' << 24 | 'P' << 16 | 'I' << 8 | 'D';
-  EXPECT_EQ(ppid, plugin.protocolId());
-  EXPECT_TRUE(plugin.callInit());
-  EXPECT_EQ(42u, plugin.capabilities());
-  EXPECT_EQ("DefSrvHost", plugin.defaultServerHost());
-  EXPECT_EQ(12345, plugin.defaultServerPort());
+
+  EXPECT_TRUE(plugin.callInit(0, 0));
 }
 
-TEST_F(ProtocolPluginFixture, init)
+TEST_F(GeneralPluginFixture, init)
 {
-  EXPECT_TRUE(plugin.callInit());
+  EXPECT_TRUE(plugin.callInit(0, NULL));
 }
 
-TEST_F(ProtocolPluginFixture, runPlugin)
+TEST_F(GeneralPluginFixture, runPlugin)
 {
   plugin.startThread();
-  EXPECT_EQ(10, plugin.joinThread());
+  EXPECT_EQ(20, plugin.joinThread());
 }
 
-TEST_F(ProtocolPluginFixture, pushPopSignal)
+TEST_F(GeneralPluginFixture, enableDisable)
 {
-  Licq::ProtocolSignal* signal = (Licq::ProtocolSignal*)10;
+  plugin.enable();
+  EXPECT_EQ('1', getPipeChar());
+  plugin.disable();
+  EXPECT_EQ('0', getPipeChar());
+}
+
+TEST_F(GeneralPluginFixture, signalmask)
+{
+  EXPECT_FALSE(plugin.wantSignal(1));
+  plugin.setSignalMask(0xf);
+  EXPECT_TRUE(plugin.wantSignal(1));
+  EXPECT_FALSE(plugin.wantSignal(0x10));
+}
+
+TEST_F(GeneralPluginFixture, pushPopSignal)
+{
+  Licq::PluginSignal* signal = (Licq::PluginSignal*)10;
   plugin.pushSignal(signal);
   plugin.pushSignal(signal);
 
@@ -165,7 +180,25 @@ TEST_F(ProtocolPluginFixture, pushPopSignal)
   EXPECT_EQ(signal, plugin.popSignal());
 }
 
-TEST_F(ProtocolPluginFixture, popSignalEmpty)
+TEST_F(GeneralPluginFixture, popSignalEmpty)
 {
-  EXPECT_EQ(static_cast<Licq::ProtocolSignal*>(NULL), plugin.popSignal());
+  EXPECT_EQ(static_cast<Licq::PluginSignal*>(NULL), plugin.popSignal());
+}
+
+TEST_F(GeneralPluginFixture, pushPopEvent)
+{
+  Licq::Event* event = (Licq::Event*)20;
+  plugin.pushEvent(event);
+  plugin.pushEvent(event);
+
+  EXPECT_EQ('E', getPipeChar());
+  EXPECT_EQ(event, plugin.popEvent());
+
+  EXPECT_EQ('E', getPipeChar());
+  EXPECT_EQ(event, plugin.popEvent());
+}
+
+TEST_F(GeneralPluginFixture, popEventEmpty)
+{
+  EXPECT_EQ(static_cast<Licq::Event*>(NULL), plugin.popEvent());
 }

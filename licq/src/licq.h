@@ -26,8 +26,8 @@
 #include <pthread.h>
 #include <list>
 
-#include <licq/generalplugin.h>
-#include <licq/protocolplugin.h>
+#include <licq/plugin/generalplugin.h>
+#include <licq/plugin/protocolplugin.h>
 
 extern char **global_argv;
 extern int global_argc;

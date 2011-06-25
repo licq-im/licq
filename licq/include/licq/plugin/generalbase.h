@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQ_PLUGINBASE_H
-#define LICQ_PLUGINBASE_H
+#ifndef LICQ_GENERALBASE_H
+#define LICQ_GENERALBASE_H
 
 #include "generalplugin.h"
 

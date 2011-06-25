@@ -29,7 +29,7 @@
 
 #include <licq/daemon.h>
 #include <licq/icqdefines.h>
-#include <licq/pluginmanager.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "gettext.h"
 #include <licq/logging/log.h>

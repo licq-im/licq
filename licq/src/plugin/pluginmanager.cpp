@@ -25,9 +25,9 @@
 #include <licq/event.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logging/logservice.h>
-#include <licq/pluginbase.h>
+#include <licq/plugin/generalbase.h>
+#include <licq/plugin/protocolbase.h>
 #include <licq/pluginsignal.h>
-#include <licq/protocolbase.h>
 #include <licq/protocolsignal.h>
 #include <licq/thread/mutexlocker.h>
 #include <licq/version.h>

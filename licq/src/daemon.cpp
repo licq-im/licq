@@ -52,7 +52,7 @@
 #include "icq/icq.h"
 #include "licq.h"
 #include "logging/filelogsink.h"
-#include "plugins/pluginmanager.h"
+#include "plugin/pluginmanager.h"
 
 using namespace std;
 using namespace LicqDaemon;

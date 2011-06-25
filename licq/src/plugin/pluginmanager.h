@@ -20,14 +20,14 @@
 #ifndef LICQDAEMON_PLUGINMANAGER_H
 #define LICQDAEMON_PLUGINMANAGER_H
 
-#include <licq/pluginmanager.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <queue>
 
-#include <licq/generalplugin.h>
-#include <licq/protocolplugin.h>
+#include <licq/plugin/generalplugin.h>
+#include <licq/plugin/protocolplugin.h>
 #include <licq/thread/condition.h>
 #include <licq/thread/mutex.h>
 

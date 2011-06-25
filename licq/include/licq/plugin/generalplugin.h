@@ -24,7 +24,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "macro.h"
+#include "../macro.h"
 
 namespace Licq
 {

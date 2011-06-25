@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -15,8 +15,8 @@
 #include <locale>
 
 #include "licq.h"
-#include "plugins/pluginmanager.h"
-#include "plugins/pluginthread.h"
+#include "plugin/pluginmanager.h"
+#include "plugin/pluginthread.h"
 
 #ifdef USE_SOCKS5
 #define SOCKS

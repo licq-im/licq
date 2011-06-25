@@ -39,7 +39,7 @@
 #include "gettext.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
-#include "plugins/pluginmanager.h"
+#include "plugin/pluginmanager.h"
 #include "sarmanager.h"
 #include "statistics.h"
 #include "support.h"

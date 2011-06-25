@@ -20,12 +20,12 @@
 #ifndef LICQDAEMON_GENERALPLUGIN_H
 #define LICQDAEMON_GENERALPLUGIN_H
 
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 #include "plugin.h"
 
 #include <queue>
 
-#include <licq/pluginbase.h>
+#include <licq/plugin/generalbase.h>
 #include <licq/thread/mutex.h>
 
 namespace Licq

@@ -24,7 +24,7 @@
 #include <pthread.h>
 #include <string>
 
-#include "macro.h"
+#include "../macro.h"
 
 namespace LicqDaemon
 {
