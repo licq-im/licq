@@ -57,8 +57,8 @@
 #include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
+#include <licq/plugin/protocolplugin.h>
 #include <licq/pluginsignal.h>
-#include <licq/protocolplugin.h>
 #include <licq/protocolmanager.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>

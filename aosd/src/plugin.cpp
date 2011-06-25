@@ -23,7 +23,7 @@
 #include <cstring>
 
 #include <licq/event.h>
-#include <licq/pluginbase.h>
+#include <licq/plugin/generalbase.h>
 #include <licq/pluginsignal.h>
 #include <licq/version.h>
 

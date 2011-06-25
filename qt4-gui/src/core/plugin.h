@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 
 
 namespace LicqQtGui

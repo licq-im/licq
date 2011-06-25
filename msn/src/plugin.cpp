@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/protocolbase.h>
+#include <licq/plugin/protocolbase.h>
 #include <licq/version.h>
 
 #include "msn.h"

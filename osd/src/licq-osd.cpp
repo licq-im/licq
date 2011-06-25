@@ -38,8 +38,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
-#include <licq/pluginbase.h>
-#include <licq/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/userevents.h>
 
@@ -51,7 +49,6 @@ using namespace std;
 using Licq::User;
 using Licq::UserId;
 using Licq::gLog;
-using Licq::gPluginManager;
 using Licq::gUserManager;
 
 //#if CVSLICQ==1

@@ -36,7 +36,7 @@
 #endif
 
 #include <licq/daemon.h>
-#include <licq/pluginbase.h>
+#include <licq/plugin/generalbase.h>
 #include <licq/logging/log.h>
 #include <licq/version.h>
 

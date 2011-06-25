@@ -20,7 +20,7 @@
 #ifndef LICQEMAIL_H
 #define LICQEMAIL_H
 
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 
 #include <string>
 

@@ -20,8 +20,8 @@
 #ifndef PLUGINDLG_H
 #define PLUGINDLG_H
 
-#include <licq/generalplugin.h>
-#include <licq/protocolplugin.h>
+#include <licq/plugin/generalplugin.h>
+#include <licq/plugin/protocolplugin.h>
 
 #include <QMap>
 #include <QDialog>

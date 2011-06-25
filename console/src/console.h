@@ -20,7 +20,7 @@
 #ifndef LICQCON_H
 #define LICQCON_H
 
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 
 #include <list>
 #include <string>

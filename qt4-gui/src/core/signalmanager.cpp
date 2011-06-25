@@ -29,7 +29,7 @@
 #include <licq/logging/log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 

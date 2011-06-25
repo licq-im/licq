@@ -20,7 +20,7 @@
 #ifndef __MSN_H
 #define __MSN_H
 
-#include <licq/protocolplugin.h>
+#include <licq/plugin/protocolplugin.h>
 
 #include <list>
 #include <pthread.h>

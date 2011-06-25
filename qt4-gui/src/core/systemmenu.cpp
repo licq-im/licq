@@ -33,7 +33,7 @@
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
-#include <licq/pluginmanager.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "config/contactlist.h"
 #include "config/general.h"

@@ -20,7 +20,7 @@
 #ifndef LICQRMS_H
 #define LICQRMS_H
 
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 
 #include <list>
 

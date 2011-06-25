@@ -23,7 +23,7 @@
 #ifndef JABBER_PLUGIN_H
 #define JABBER_PLUGIN_H
 
-#include <licq/protocolplugin.h>
+#include <licq/plugin/protocolplugin.h>
 
 #include "config.h"
 

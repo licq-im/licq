@@ -20,7 +20,7 @@
 #ifndef LICQAUTOREPLY_H
 #define LICQAUTOREPLY_H
 
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 
 #include <string>
 

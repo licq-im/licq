@@ -39,7 +39,7 @@
 #include <QVBoxLayout>
 
 #include <licq/daemon.h>
-#include <licq/pluginmanager.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "core/mainwin.h"
 #include "core/messagebox.h"

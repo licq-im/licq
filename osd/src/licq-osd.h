@@ -20,7 +20,7 @@
 #ifndef LICQOSD_H
 #define LICQOSD_H
 
-#include <licq/generalplugin.h>
+#include <licq/plugin/generalplugin.h>
 
 
 class OsdPlugin : public Licq::GeneralPlugin

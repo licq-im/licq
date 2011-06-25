@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <licq/pluginbase.h>
+#include <licq/plugin/generalbase.h>
 #include <licq/version.h>
 
 #include "rms.h"

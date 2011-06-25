@@ -34,7 +34,6 @@
 #include <licq/event.h>
 #include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
-#include <licq/protocolplugin.h>
 #include <licq/protocolsignal.h>
 #include <licq/statistics.h>
 #include <licq/userevents.h>

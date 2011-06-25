@@ -32,7 +32,7 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
-#include <licq/pluginmanager.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "config/iconmanager.h"
 #include "core/messagebox.h"

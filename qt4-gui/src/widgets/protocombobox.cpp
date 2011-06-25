@@ -23,7 +23,7 @@
 #include <boost/foreach.hpp>
 
 #include <licq/contactlist/usermanager.h>
-#include <licq/pluginmanager.h>
+#include <licq/plugin/pluginmanager.h>
 
 #include "config/iconmanager.h"
 
