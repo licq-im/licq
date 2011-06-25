@@ -33,7 +33,6 @@
 #include <licq/version.h>
 
 #include <algorithm>
-#include <boost/exception/get_error_info.hpp>
 #include <boost/foreach.hpp>
 #include <cassert>
 #include <cctype>
@@ -157,10 +156,8 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
   catch (const DynamicLibrary::Exception& ex)
   {
     std::string error = ex.getSystemError();
-    std::string symbol =
-        *boost::get_error_info<Plugin::errinfo_symbol_name>(ex);
-    gLog.error(tr("Failed to find %s in plugin (%s): %s"),
-               symbol.c_str(), name.c_str(), error.c_str());
+    gLog.error(tr("Failed to load plugin (%s): %s"),
+        name.c_str(), error.c_str());
   }
   catch (const std::exception&)
   {
@@ -253,10 +250,8 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
   catch (const DynamicLibrary::Exception& ex)
   {
     std::string error = ex.getSystemError();
-    std::string symbol =
-        *boost::get_error_info<Plugin::errinfo_symbol_name>(ex);
-    gLog.error(tr("Failed to find %s in plugin (%s): %s"),
-                  symbol.c_str(), name.c_str(), error.c_str());
+    gLog.error(tr("Failed to load plugin (%s): %s"),
+        name.c_str(), error.c_str());
   }
   catch (const std::exception&)
   {

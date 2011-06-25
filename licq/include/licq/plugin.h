@@ -20,7 +20,6 @@
 #ifndef LICQ_PLUGIN_H
 #define LICQ_PLUGIN_H
 
-#include <boost/exception/info.hpp>
 #include <boost/noncopyable.hpp>
 #include <pthread.h>
 #include <string>
@@ -58,8 +57,6 @@ class Plugin : private boost::noncopyable
 {
 public:
   class Params;
-
-  typedef boost::error_info<struct tag_errinfo_symbol_name, std::string> errinfo_symbol_name;
 
   // Notification that plugins can get via its pipe
   static const char PipeSignal = 'S';
