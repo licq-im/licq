@@ -877,7 +877,8 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
     else
     {
       // Restore focus to however had it before we created the new event tab
-      oldFocus->setFocus(Qt::OtherFocusReason);
+      if (oldFocus != NULL)
+        oldFocus->setFocus(Qt::OtherFocusReason);
     }
 
     // Check if we want the window sticky
@@ -893,6 +894,12 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
     // FIXME: When restoring from minimized, the window isn't activated (at least not on KDE)
     msgWindow->raise();
     msgWindow->activateWindow();
+  }
+  else
+  {
+    // Restore focus to however had it before we created the new event window
+    if (oldFocus != NULL)
+      oldFocus->activateWindow();
   }
 
   // Since daemon doesn't notify us when an event is sent we need to take care of it ourselfs
