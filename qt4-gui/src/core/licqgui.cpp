@@ -831,6 +831,10 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
 
   UserEventCommon* e = NULL;
 
+  // Creating a new message dialog may steal focus
+  // Save the widget currently in focus so we can restore it afterwards
+  QWidget* oldFocus = QApplication::focusWidget();
+
   switch (fcn)
   {
     case MessageEvent:
@@ -870,6 +874,11 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
     myUserEventTabDlg->addTab(e);
     if (activateMsgwin)
       myUserEventTabDlg->selectTab(e);
+    else
+    {
+      // Restore focus to however had it before we created the new event tab
+      oldFocus->setFocus(Qt::OtherFocusReason);
+    }
 
     // Check if we want the window sticky
     if (Config::Chat::instance()->msgWinSticky())
