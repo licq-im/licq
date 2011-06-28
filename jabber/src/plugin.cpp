@@ -356,8 +356,7 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
       signal->userId().accountId(), signal->message(), signal->flags() & 0x40);
 
   Licq::EventMsg* message = new Licq::EventMsg(
-      signal->message().c_str(), 0, Licq::UserEvent::TimeNow, 0);
-  message->setIsReceiver(false);
+      signal->message().c_str(), Licq::EventMsg::TimeNow, Licq::EventMsg::FlagSender);
 
   Licq::Event* event = new Licq::Event(signal->eventId(), 0, NULL,
       Licq::Event::ConnectServer, signal->userId(), message);

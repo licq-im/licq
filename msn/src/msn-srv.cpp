@@ -231,7 +231,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         gLog.info("Authorization request from %s", strUser.c_str());
 
         Licq::UserEvent* e = new Licq::EventAuthRequest(userId,
-          strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+            strNick.c_str(), "", "", "", "", time(0), 0);
 
         Licq::OwnerWriteGuard o(MSN_PPID);
         if (Licq::gDaemon.addUserEvent(*o, e))

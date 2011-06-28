@@ -43,7 +43,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/userevents.h>
@@ -687,10 +686,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
 
   myMessageView->GotoHome();
 
-  if (m->isReceiver() &&
-      (m->Command() == ICQ_CMDxTCP_START ||
-       m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE ||
-       m->Command() == ICQ_CMDxRCV_SYSxMSGxOFFLINE))
+  if (m->isReceiver())
   {
     switch (m->eventType())
     {

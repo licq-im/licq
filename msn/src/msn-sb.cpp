@@ -143,7 +143,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           (*packet) >> szMsg[i];
         szMsg[i] = '\0';
 
-        Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMsg), ICQ_CMDxRCV_SYSxMSGxOFFLINE,
+        Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMsg),
             time(0), 0, SocketToCID(nSock));
         Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
         if (u.isLocked())
@@ -609,7 +609,6 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
   string msgDos = Licq::gTranslator.returnToDos(message);
   CMSNPacket* pSend = new CPS_MSNMessage(msgDos.c_str());
   Licq::EventMsg* m = new Licq::EventMsg(msgDos, 0, Licq::UserEvent::TimeNow, 0);
-  m->setIsReceiver(false);
   Licq::Event* e = new Licq::Event(eventId, 0, pSend, Licq::Event::ConnectServer, userId, m);
   e->thread_plugin = _tPlugin;  
 

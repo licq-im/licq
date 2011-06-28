@@ -297,8 +297,6 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
     return NULL;
   }
 
-  if (ue != NULL)
-    ue->setIsReceiver(false);
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer, userId, ue);
 
 	if (e == NULL)  return NULL;
@@ -337,8 +335,6 @@ Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Li
     return NULL;
   }
 
-  if (ue != NULL)
-    ue->setIsReceiver(false);
   Licq::Event* e = new Licq::Event(eventId, pUser->SocketDesc(packet->Channel()), packet,
       Licq::Event::ConnectUser, pUser->id(), ue);
 
@@ -1020,7 +1016,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     }
 
       Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
-          ICQ_CMDxRCV_SYSxMSGxONLINE, Licq::EventMsg::TimeNow, nFlags);
+          Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
@@ -1097,7 +1093,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
   case ICQ_CMDxSUB_URL:
   {
-      Licq::EventUrl* e = Licq::EventUrl::Parse(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
+      Licq::EventUrl* e = Licq::EventUrl::Parse(message,
           Licq::EventUrl::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_URL, true,
@@ -1113,7 +1109,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   case ICQ_CMDxSUB_CONTACTxLIST:
   {
       Licq::EventContactList* e = Licq::EventContactList::Parse(message,
-          ICQ_CMDxRCV_SYSxMSGxONLINE, Licq::EventContactList::TimeNow, nFlags);
+          Licq::EventContactList::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_CONTACTxLIST,
                                            true, nLevel);

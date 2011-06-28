@@ -29,7 +29,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
-#include <licq/icqdefines.h>
 #include <licq/logging/log.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
@@ -236,7 +235,7 @@ void Handler::onUserAuthorizationRequest(
       string(), string(), // first and last name
       string(), // email
       message,
-      ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+      time(0), 0);
 
   Licq::OwnerWriteGuard owner(JABBER_PPID);
   if (Licq::gDaemon.addUserEvent(*owner, event))
@@ -252,7 +251,7 @@ void Handler::onMessage(const string& from, const string& message, time_t sent,
   TRACE();
 
   Licq::EventMsg* event = new Licq::EventMsg(
-      message.c_str(), ICQ_CMDxRCV_SYSxMSGxOFFLINE, sent,
+      message.c_str(), sent,
       urgent ? unsigned(Licq::UserEvent::FlagUrgent) : 0,
       getConvoId(from));
 

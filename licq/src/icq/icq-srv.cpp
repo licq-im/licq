@@ -1295,8 +1295,6 @@ Licq::Event* IcqProtocol::icqSendThroughServer(unsigned long eventId, const Licq
   if (gDaemon.shuttingDown())
     return NULL;
 
-  if (ue != NULL)
-    ue->setIsReceiver(false);
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, p, Licq::Event::ConnectServer, userId, ue);
   if (e == NULL) return 0;
   e->m_NoAck = true;
@@ -1308,8 +1306,8 @@ Licq::Event* IcqProtocol::icqSendThroughServer(unsigned long eventId, const Licq
 unsigned long IcqProtocol::icqSendSms(const Licq::UserId& userId,
     const string& number, const string& message)
 {
-  Licq::EventSms* ue = new Licq::EventSms(number, message, ICQ_CMDxSND_THRUxSERVER,
-      Licq::EventSms::TimeNow, LICQ_VERSION);
+  Licq::EventSms* ue = new Licq::EventSms(number, message,
+      Licq::EventSms::TimeNow, LICQ_VERSION | Licq::EventSms::FlagSender);
   CPU_SendSms* p = new CPU_SendSms(number, message);
   gLog.info(tr("Sending SMS through server (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
   Licq::Event* e = SendExpectEvent_Server(userId, p, ue);
@@ -2717,7 +2715,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           }
 
       // now send the message to the user
-          Licq::EventMsg* e = new Licq::EventMsg(m, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
+          Licq::EventMsg* e = new Licq::EventMsg(m, nTimeSent, 0);
 
       if (ignore)
       {
@@ -3017,7 +3015,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
         case ICQ_CMDxSUB_MSG:
             {
               Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
-                  ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+                  nTimeSent, nMask);
               type = tr("Message");
               onEventType = OnEventData::OnEventMessage;
           eEvent = e;
@@ -3025,7 +3023,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
         }
         case ICQ_CMDxSUB_URL:
         {
-          Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+          Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, nTimeSent, nMask);
           if (e == NULL)
           {
             packet.log(Log::Warning, tr("Invalid URL message"));
@@ -3058,7 +3056,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
                                                        szFields[0], szFields[1],
                                                        szFields[2], szFields[3],
                                                        szFields[5],
-                                                       ICQ_CMDxRCV_SYSxMSGxONLINE,
                                                        nTimeSent, 0);
 
           delete [] szFields;
@@ -3073,7 +3070,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
           gTranslator.ServerToClient(szMessage);
 
               Licq::EventAuthRefused* e = new Licq::EventAuthRefused(userId, szMessage,
-                                                       ICQ_CMDxRCV_SYSxMSGxONLINE, 
                                                        nTimeSent, 0);
           eEvent = e;
           break;
@@ -3092,7 +3088,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
               }
 
               Licq::EventAuthGranted* e = new Licq::EventAuthGranted(userId,
-            szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
+                  szMessage, nTimeSent, 0);
           eEvent = e;
           break;
         }
@@ -3129,7 +3125,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
           gTranslator.ServerToClient (szFields[2]);  // last name
 
               Licq::EventAdded* e = new Licq::EventAdded(userId, szFields[0],
-            szFields[1], szFields[2], szFields[3], ICQ_CMDxRCV_SYSxMSGxONLINE,
+                  szFields[1], szFields[2], szFields[3],
             nTimeSent, 0);
           delete [] szFields;
           eEvent = e;
@@ -3155,8 +3151,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
 
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3],
-                                                 szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                                 nTimeSent, 0);
+                  szFields[5], nTimeSent, 0);
           delete [] szFields;
           eEvent = e;
           break;
@@ -3181,8 +3176,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
 
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3],
-                                                     szFields[5], ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                                     nTimeSent, 0);
+                  szFields[5], nTimeSent, 0);
           delete [] szFields;
           eEvent = e;
           break;
@@ -3190,7 +3184,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
         case ICQ_CMDxSUB_CONTACTxLIST:
         {
           Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
-              ICQ_CMDxRCV_SYSxMSGxONLINE,nTimeSent, nMask);
+                  nTimeSent, nMask);
           if (e == NULL)
           {
             packet.log(Log::Warning, tr("Invalid Contact List message"));
@@ -3204,8 +3198,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
         }
         case ICQ_CMDxSUB_SMS:
         {
-          Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
-              nTimeSent, nMask);
+              Licq::EventSms* e = Licq::EventSms::Parse(szMessage, nTimeSent, nMask);
           if (e == NULL)
           {
             packet.log(Log::Warning, tr("Invalid SMS message"));
@@ -3990,7 +3983,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       szMsg[nMsgLen] = '\0';
 
       Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId, "", "", "", "", nMsgLen ? szMsg : "",
-                                                   ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+          time(0), 0);
 
       Licq::OwnerWriteGuard o(LICQ_PPID);
       if (gDaemon.addUserEvent(*o, e))
@@ -4023,8 +4016,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       Licq::UserEvent* eEvent;
       if (granted)
       {
-        eEvent = new Licq::EventAuthGranted(userId, szMsg,
-           ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+        eEvent = new Licq::EventAuthGranted(userId, szMsg, time(0), 0);
 
         Licq::UserWriteGuard u(userId);
         if (u.isLocked())
@@ -4035,8 +4027,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
       {
-        eEvent = new Licq::EventAuthRefused(userId, szMsg,
-            ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+        eEvent = new Licq::EventAuthRefused(userId, szMsg, time(0), 0);
       }
 
       Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -4058,7 +4049,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       gLog.info(tr("User %s added you to their contact list."), szId);
 
       Licq::EventAdded* e = new Licq::EventAdded(userId, "", "", "", "",
-                                       ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+          time(0), 0);
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
         if (gDaemon.addUserEvent(*o, e))
@@ -4187,7 +4178,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
       // Msg type & flags
       unsigned short nTypeMsg = msg.UnpackUnsignedShort();
-          unsigned long nMask = ((nTypeMsg & ICQ_CMDxSUB_FxMULTIREC) ? (int)Licq::UserEvent::FlagMultiRec : 0);
+          unsigned long nMask = Licq::UserEvent::FlagOffline |
+              ((nTypeMsg & ICQ_CMDxSUB_FxMULTIREC) ? (int)Licq::UserEvent::FlagMultiRec : 0);
       nTypeMsg &= ~ICQ_CMDxSUB_FxMULTIREC;
       
       char* szMessage = new char[msg.getDataMaxSize()];
@@ -4202,7 +4194,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         case ICQ_CMDxSUB_MSG:
             {
               Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
-                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+                  nTimeSent, nMask);
 	      type = tr("Message");
               onEventType = OnEventData::OnEventMessage;
 	  eEvent = e;
@@ -4210,7 +4202,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_URL:
         {
-          Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+          Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, nTimeSent, nMask);
 	  if (e == NULL)
 	  {
             packet.log(Log::Warning, tr("Invalid offline URL message"));
@@ -4243,7 +4235,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
               Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId,
                   szFields[0], szFields[1], szFields[2], szFields[3],
-                  szFields[5], ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+                  szFields[5], nTimeSent, Licq::EventAuthRequest::FlagOffline);
               delete [] szFields;
 	  eEvent = e;
 	  break;
@@ -4256,7 +4248,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient(szMessage);
 
               Licq::EventAuthRefused* e = new Licq::EventAuthRefused(userId,
-                  szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+                  szMessage, nTimeSent, Licq::EventAuthRefused::FlagOffline);
 	  eEvent = e;
 	  break;
 	}
@@ -4274,7 +4266,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               }
 
               Licq::EventAuthGranted* e = new Licq::EventAuthGranted(userId,
-                  szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+                  szMessage, nTimeSent, Licq::EventAuthGranted::FlagOffline);
 	  eEvent = e;
 	  break;
 	}
@@ -4312,7 +4304,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
               Licq::EventAdded* e = new Licq::EventAdded(userId, szFields[0],
                   szFields[1], szFields[2], szFields[3],
-                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+                  nTimeSent, Licq::EventAdded::FlagOffline);
               delete [] szFields;
 	  eEvent = e;
 	  break;
@@ -4337,7 +4329,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3], szFields[5],
-                                                 ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+                  nTimeSent, Licq::EventWebPanel::FlagOffline);
           delete [] szFields;	
           eEvent = e;
           break;
@@ -4362,7 +4354,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3], szFields[5],
-                                                     ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+                  nTimeSent, Licq::EventEmailPager::FlagOffline);
 	  delete [] szFields;	
 	  eEvent = e;
 	  break;
@@ -4370,7 +4362,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	case ICQ_CMDxSUB_CONTACTxLIST:
         {
           Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
-              ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+                  nTimeSent, nMask);
           if (e == NULL)
           {
             packet.log(Log::Warning, tr("Invalid offline Contact List message"));
@@ -4383,7 +4375,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_SMS:
         {
-          Licq::EventSms* e = Licq::EventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+              Licq::EventSms* e = Licq::EventSms::Parse(szMessage, nTimeSent, nMask);
 	  if (e == NULL)
           {
             packet.log(Log::Warning, tr("Invalid SMS message"));

@@ -76,7 +76,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   }
   Licq::EventMsg* e = NULL;
 
-  unsigned long f = Licq::UserEvent::FlagLicqVerMask;
+  unsigned long f = Licq::EventMsg::FlagLicqVerMask | Licq::EventMsg::FlagSender;
 
   char *cipher = NULL;
   bool useGpg = false;
@@ -147,7 +147,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       }
     }
 
-     e = new Licq::EventMsg(m, ICQ_CMDxSND_THRUxSERVER, Licq::EventMsg::TimeNow, f);
+     e = new Licq::EventMsg(m, Licq::EventMsg::TimeNow, f);
      unsigned short nMaxSize = bUserOffline ? MaxOfflineMessageSize : MaxMessageSize;
      if (strlen(szMessage) > nMaxSize)
     {
@@ -166,7 +166,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       return;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    e = new Licq::EventMsg(m, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, f);
+    e = new Licq::EventMsg(m, Licq::EventMsg::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     string message;
     if (cipher != NULL)
@@ -249,7 +249,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   m += '\xFE';
   m += url;
 
-  unsigned long f = Licq::UserEvent::FlagLicqVerMask;
+  unsigned long f = Licq::EventUrl::FlagLicqVerMask | Licq::EventUrl::FlagSender;
   if (!viaServer)
     f |= Licq::UserEvent::FlagDirect;
   if (nLevel == ICQ_TCPxMSG_URGENT)
@@ -266,7 +266,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
         nCharset = 3;
     }
 
-    e = new Licq::EventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER,
+    e = new Licq::EventUrl(url.c_str(), description,
         Licq::EventUrl::TimeNow, f);
     icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
@@ -279,7 +279,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
       return;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    e = new Licq::EventUrl(url.c_str(), description, ICQ_CMDxTCP_START, Licq::EventUrl::TimeNow, f);
+    e = new Licq::EventUrl(url.c_str(), description, Licq::EventUrl::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Url* p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("Sending %sURL to %s (#%hu)."),
@@ -315,7 +315,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
 
   if (bServer)
   {
-    unsigned long f = LICQ_VERSION;
+    unsigned long f = LICQ_VERSION | Licq::EventFile::FlagSender;
     //flags through server are a little different
     if (nLevel == ICQ_TCPxMSG_NORMAL)
       nLevel = ICQ_TCPxMSG_NORMAL2;
@@ -354,7 +354,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      unsigned long f = Licq::UserEvent::FlagDirect | Licq::UserEvent::FlagLicqVerMask;
+      unsigned long f = Licq::EventFile::FlagLicqVerMask | Licq::EventFile::FlagDirect | Licq::EventFile::FlagSender;
       if (nLevel == ICQ_TCPxMSG_URGENT)
         f |= Licq::UserEvent::FlagUrgent;
       if (u->Secure())
@@ -406,7 +406,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
 
   Licq::EventContactList* e = NULL;
 
-  unsigned long f = Licq::UserEvent::FlagLicqVerMask;
+  unsigned long f = Licq::EventContactList::FlagLicqVerMask | Licq::EventContactList::FlagSender;
   if (online)
     f |= Licq::UserEvent::FlagDirect;
   if (nLevel == ICQ_TCPxMSG_URGENT)
@@ -416,7 +416,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
 
   if (!online) // send offline
   {
-    e = new Licq::EventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, Licq::EventContactList::TimeNow, f);
+    e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
     icqSendThroughServer(eventId, userId,
       ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
       m, e);
@@ -429,7 +429,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
       return 0;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    e = new Licq::EventContactList(vc, false, ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, f);
+    e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("Sending %scontact list to %s (#%hu)."),
@@ -711,7 +711,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   Licq::Event* result = NULL;
   if (bServer)
   {
-    f = Licq::UserEvent::FlagLicqVerMask;
+    f = Licq::EventChat::FlagLicqVerMask | Licq::EventChat::FlagSender;
 
     //flags through server are a little different
     if (nLevel == ICQ_TCPxMSG_NORMAL)
@@ -737,7 +737,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   {
     CPT_ChatRequest* p = new CPT_ChatRequest(reasonDos, chatUsers, nPort,
         nLevel, *u, (u->Version() > 7));
-    f = Licq::UserEvent::FlagDirect | Licq::UserEvent::FlagLicqVerMask;
+    f = Licq::EventChat::FlagLicqVerMask | Licq::EventChat::FlagDirect | Licq::EventChat::FlagSender;
     if (nLevel == ICQ_TCPxMSG_URGENT)
       f |= Licq::UserEvent::FlagUrgent;
     if (u->Secure())
@@ -1587,7 +1587,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         AckTCP(p, pSock);
 
           Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
-              ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, nMask);
+              Licq::EventMsg::TimeNow, nMask);
         e->SetColor(fore, back);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
@@ -1685,7 +1685,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
             gLog.info(tr("URL from %s (%s)."), u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventUrl* e = Licq::EventUrl::Parse(message, ICQ_CMDxTCP_START, Licq::EventUrl::TimeNow, nMask);
+          Licq::EventUrl* e = Licq::EventUrl::Parse(message, Licq::EventUrl::TimeNow, nMask);
         if (e == NULL)
         {
           packet.log(Log::Warning, tr("Invalid URL message"));
@@ -1754,7 +1754,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.info(tr("Contact list from %s (%s).\n"),
                 u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventContactList* e = Licq::EventContactList::Parse(message, ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, nMask);
+          Licq::EventContactList* e = Licq::EventContactList::Parse(message, Licq::EventContactList::TimeNow, nMask);
         if (e == NULL)
         {
           packet.log(Log::Warning, tr("Invalid contact list message"));
@@ -2004,8 +2004,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				case ICQ_CMDxSUB_URL:
 				{
               gLog.info(tr("URL from %s (%s)."), u->getAlias().c_str(), userId.toString().c_str());
-                Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, ICQ_CMDxTCP_START,
-                    Licq::EventUrl::TimeNow, nMask);
+                Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, Licq::EventUrl::TimeNow, nMask);
 					if (e == NULL)
 					{
                                           packet.log(Log::Warning, tr("Invalid URL message"));
@@ -2033,7 +2032,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.info(tr("Contact list from %s (%s)."),
                   u->getAlias().c_str(), userId.toString().c_str());
                 Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
-                    ICQ_CMDxTCP_START, Licq::EventContactList::TimeNow, nMask);
+                    Licq::EventContactList::TimeNow, nMask);
 					if (e == NULL)
 					{
                                           packet.log(Log::Warning, tr("Invalid contact list message"));

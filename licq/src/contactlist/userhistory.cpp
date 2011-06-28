@@ -148,6 +148,16 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     nCommand = atoi(&sz[13]);
     nFlags = atoi(&sz[20]) << 16;
     tTime = (time_t)atoi(&sz[27]);
+
+    // nCommand == ICQ_CMDxTCP_START => FlagDirect (already present in flags)
+    // nCommand == ICQ_CMDxSND_THRUxSERVER => FlagSender (present in cDir)
+    // nCommand == ICQ_CMDxRCV_SYSxMSGxONLINE => No additional flags set
+    if (nCommand == ICQ_CMDxRCV_SYSxMSGxOFFLINE)
+      nFlags |= Licq::UserEvent::FlagOffline;
+
+    if (cDir != 'R')
+      nFlags |= Licq::UserEvent::FlagSender;
+
     // Now read in the message
     szMsg[0] = '\0';
     e = NULL;
@@ -156,7 +166,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     case ICQ_CMDxSUB_MSG:
     {
       GET_VALID_LINES;
-        e = new Licq::EventMsg(szMsg, nCommand, tTime, nFlags);
+        e = new Licq::EventMsg(szMsg, tTime, nFlags);
         break;
     }
     case ICQ_CMDxSUB_CHAT:
@@ -198,9 +208,9 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       GET_VALID_LINE_OR_BREAK;
         string url = &szResult[1];
       GET_VALID_LINES;
-        e = new Licq::EventUrl(url, szMsg, nCommand, tTime, nFlags);
-      break;
-    }
+        e = new Licq::EventUrl(url, szMsg, tTime, nFlags);
+        break;
+      }
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       GET_VALID_LINE_OR_BREAK;
@@ -215,25 +225,25 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         string email = &szResult[1];
       GET_VALID_LINES;
         e = new Licq::EventAuthRequest(userId, alias, firstName, lastName,
-            email, szMsg, nCommand, tTime, nFlags);
-      break;
-    }
+            email, szMsg, tTime, nFlags);
+        break;
+      }
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       GET_VALID_LINE_OR_BREAK;
         UserId userId(&szResult[1], myPpid);
       GET_VALID_LINES;
-        e = new Licq::EventAuthGranted(userId, szMsg, nCommand, tTime, nFlags);
-      break;
-    }
+        e = new Licq::EventAuthGranted(userId, szMsg, tTime, nFlags);
+        break;
+      }
     case ICQ_CMDxSUB_AUTHxREFUSED:
     {
       GET_VALID_LINE_OR_BREAK;
         UserId userId(&szResult[1], myPpid);
       GET_VALID_LINES;
-        e = new Licq::EventAuthRefused(userId, szMsg, nCommand, tTime, nFlags);
-      break;
-    }
+        e = new Licq::EventAuthRefused(userId, szMsg, tTime, nFlags);
+        break;
+      }
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       GET_VALID_LINE_OR_BREAK;
@@ -247,7 +257,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       GET_VALID_LINE_OR_BREAK;
         string email = &szResult[1];
         e = new Licq::EventAdded(userId, alias, firstName, lastName, email,
-                            nCommand, tTime, nFlags);
+            tTime, nFlags);
       break;
     }
     case ICQ_CMDxSUB_WEBxPANEL:
@@ -257,10 +267,9 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       GET_VALID_LINE_OR_BREAK;
         string email = &szResult[1];
       GET_VALID_LINES;
-        e = new Licq::EventWebPanel(name, email, szMsg,
-                             nCommand, tTime, nFlags);
-      break;
-    }
+        e = new Licq::EventWebPanel(name, email, szMsg, tTime, nFlags);
+        break;
+      }
     case ICQ_CMDxSUB_EMAILxPAGER:
     {
       GET_VALID_LINE_OR_BREAK;
@@ -268,10 +277,9 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       GET_VALID_LINE_OR_BREAK;
         string email = &szResult[1];
       GET_VALID_LINES;
-        e = new Licq::EventWebPanel(name, email, szMsg,
-                             nCommand, tTime, nFlags);
-      break;
-    }
+        e = new Licq::EventEmailPager(name, email, szMsg, tTime, nFlags);
+        break;
+      }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
       Licq::EventContactList::ContactList vc;
@@ -289,7 +297,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
           }
         b = !b;
       }
-        e = new Licq::EventContactList(vc, false, nCommand, tTime, nFlags);
+        e = new Licq::EventContactList(vc, false, tTime, nFlags);
         break;
     }
     case ICQ_CMDxSUB_SMS:
@@ -297,9 +305,9 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       GET_VALID_LINE_OR_BREAK;
         string number = &szResult[1];
       GET_VALID_LINES;
-        e = new Licq::EventSms(number, szMsg, nCommand, tTime, nFlags);
-      break;
-    }
+        e = new Licq::EventSms(number, szMsg, tTime, nFlags);
+        break;
+      }
     case ICQ_CMDxSUB_MSGxSERVER:
     {
       GET_VALID_LINE_OR_BREAK;
@@ -326,7 +334,6 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     }
     if (e != NULL)
     {
-      e->setIsReceiver(cDir == 'R');
       e->SetPending(false);
       lHistory.push_back(e);
     }
