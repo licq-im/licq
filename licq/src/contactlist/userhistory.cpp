@@ -268,7 +268,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       GET_VALID_LINE_OR_BREAK;
         string email = &szResult[1];
       GET_VALID_LINES;
-        e = new Licq::EventWebPanel(name, email, szMsg,
+        e = new Licq::EventEmailPager(name, email, szMsg,
                              nCommand, tTime, nFlags);
       break;
     }
