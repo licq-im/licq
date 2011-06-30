@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -1815,10 +1815,10 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
   ChatUserList::iterator iter;
   ChatUserList::iterator u_iter;
   bool ok = false;
-  Licq::UserId userId(id, LICQ_PPID);
 
   if (id != NULL)
   {
+    Licq::UserId userId(id, LICQ_PPID);
     for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); ++u_iter)
     {
       if ((*u_iter)->userId() == userId)
