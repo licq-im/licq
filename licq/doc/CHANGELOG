@@ -3,6 +3,7 @@ Change log for Licq.
 New in 1.5.1
 o Package GTest with Licq to guarantee same version as GMock
 o Owners can no longer be removed when online to prevent contact list problems
+o Build: Various fixes to reduce problems when building
 o AutoReply: Command line parameters -d and -e were ignored
 o ICQ: Buddy icons would fail to update for some contacts retrying every minute
 o Jabber: Use full name for contact if there is no nickname set
