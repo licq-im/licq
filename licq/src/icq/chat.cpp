@@ -1811,10 +1811,10 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
   ChatUserList::iterator iter;
   ChatUserList::iterator u_iter;
   bool ok = false;
-  Licq::UserId userId(id, LICQ_PPID);
 
   if (id != NULL)
   {
+    Licq::UserId userId(id, LICQ_PPID);
     for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); ++u_iter)
     {
       if ((*u_iter)->userId() == userId)

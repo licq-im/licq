@@ -1,0 +1,13 @@
+      LICQ v1.6.0 README
+      http://www.licq.org/
+      #Licq on irc.freenode.net
+
+This is the development version of the future Licq 1.6.0.
+This is a work in progress and should not be relied on to be a stable
+release at any time before the final release is made.
+
+For general information on how to build and run Licq, see doc/README.
+For information about building and using the different plugins, see README or
+doc/README for the respective plugins.
+
+The Licq Team
