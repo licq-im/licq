@@ -1,7 +1,6 @@
-# translation of sv.po to
-# Swedish translations for licq_osd_plugin package.
-# Copyright (C) 2003 Martin Maurer
-# This file is distributed under the same license as the licq_osd_plugin package.
+# Swedish translation for Licq OSD plugin package.
+# Copyright (C) 2003-2011 Licq Developers
+# This file is distributed under the same license as the Licq OSD plugin package.
 #
 # Martin Maurer <martinmaurer@gmx.at>, 2003.
 # Erik Johansson <erik@ejohansson.se>, 2006.
@@ -9,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sv\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-09-13 20:47+0200\n"
+"POT-Creation-Date: 2011-07-01 18:00+0200\n"
 "PO-Revision-Date: 2006-10-01 21:58+0200\n"
 "Last-Translator: Erik Johansson <erik@ejohansson.se>\n"
 "Language-Team:  <erik@ejohansson.se>\n"
@@ -19,23 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/licq-osd.cpp:593
+#: src/licq-osd.cpp:594
 msgid " changed status to: "
 msgstr " ändrade status till: "
 
-#: src/licq-osd.cpp:535
+#: src/licq-osd.cpp:536
 msgid " checked your auto-response"
 msgstr " kontrollerade ditt auto-meddelande"
 
-#: src/licq-osd.cpp:580
+#: src/licq-osd.cpp:581
 msgid " logged off"
 msgstr " kopplade från"
 
-#: src/licq-osd.cpp:578
+#: src/licq-osd.cpp:579
 msgid " logged on"
 msgstr " anslöt"
 
-#: src/licq-osd.cpp:562
+#: src/licq-osd.cpp:563
 msgid "Message from "
 msgstr "Meddelande från "
 
@@ -47,39 +46,39 @@ msgstr "System"
 msgid "XOSD plugin initialized"
 msgstr "XOSD plugin initierad"
 
-#: src/licq-osd.cpp:603
+#: src/licq-osd.cpp:604
 msgid "away"
 msgstr "inte vid datorn"
 
-#: src/licq-osd.cpp:597
+#: src/licq-osd.cpp:598
 msgid "do not disturb"
 msgstr "stör ej"
 
-#: src/licq-osd.cpp:605
+#: src/licq-osd.cpp:606
 msgid "free for chat"
 msgstr "tillgänglig för chat"
 
-#: src/licq-osd.cpp:609
+#: src/licq-osd.cpp:610
 msgid "idle"
 msgstr ""
 
-#: src/licq-osd.cpp:607
+#: src/licq-osd.cpp:608
 msgid "invisible"
 msgstr "osynlig"
 
-#: src/licq-osd.cpp:601
+#: src/licq-osd.cpp:602
 msgid "not available"
 msgstr "inte tillgänglig"
 
-#: src/licq-osd.cpp:599
+#: src/licq-osd.cpp:600
 msgid "occupied"
 msgstr "upptagen"
 
-#: src/licq-osd.cpp:595
+#: src/licq-osd.cpp:596
 msgid "offline"
 msgstr "frånkopplad"
 
-#: src/licq-osd.cpp:611
+#: src/licq-osd.cpp:612
 msgid "online"
 msgstr "ansluten"
 

@@ -1,5 +1,5 @@
 # Belarussian translation for Licq daemon.
-# Copyright (C) 2008 Licq Developers
+# Copyright (C) 2008-2011 Licq Developers
 # This file is distributed under the same license as the Licq package.
 # Alexey Ivaniuk aka Varjat <varjat@gmail.com>, 2008.
 #
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-06-18 11:41+0200\n"
+"POT-Creation-Date: 2011-07-01 17:57+0200\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
@@ -207,7 +207,7 @@ msgstr ""
 msgid " (cancelled)"
 msgstr "(спынена)"
 
-#: src/licq.cpp:363
+#: src/licq.cpp:368
 msgid "$HOME not set or invalid; unable to determine config base directory"
 msgstr ""
 
@@ -295,12 +295,12 @@ msgstr "%s%s няспраўнае абнаўленьне.\n"
 msgid "%s updated."
 msgstr "%s%s абноўлена.\n"
 
-#: src/licq.cpp:316
+#: src/licq.cpp:321
 #, c-format
 msgid "%s version %s, compiled on %s\n"
 msgstr "%s вэрсыі %s, скампілявана %s\n"
 
-#: src/licq.cpp:828
+#: src/licq.cpp:833
 #, c-format
 msgid ""
 "%s version %s.\n"
@@ -1454,12 +1454,12 @@ msgstr "%sНяспраўны сокет паслужніка.\n"
 msgid "%sInvalid servername (%s) or cookie (%s) in service redirect packet!\n"
 msgstr ""
 
-#: src/licq.cpp:486
+#: src/licq.cpp:491
 #, c-format
 msgid "%sLicq: Already running at pid %d.\n"
 msgstr "%sLicq: Ужо запушчана з pid %d.\n"
 
-#: src/licq.cpp:453 src/licq.cpp:480
+#: src/licq.cpp:458 src/licq.cpp:485
 #, c-format
 msgid "%sLicq: Unable to determine pid of running Licq instance.\n"
 msgstr "%sLicq: Немагчыма вызначыць pid запушчанага экзэмпляру Licq.\n"
@@ -1627,12 +1627,12 @@ msgstr "%sПароль занадта доўгі, абмяжоўваем 8 сы�
 msgid "%sPath %s is not a directory.\n"
 msgstr "%sШлях %s не з'яўляецца каталёгам.\n"
 
-#: src/licq.cpp:578
+#: src/licq.cpp:583
 #, c-format
 msgid "%sPlugin %s is no longer available, trying to load qt4-gui instead.\n"
 msgstr ""
 
-#: src/licq.cpp:573
+#: src/licq.cpp:578
 #, c-format
 msgid ""
 "%sPlugin kde-gui is no longer available, trying to load kde4-gui instead.\n"
@@ -5375,7 +5375,7 @@ msgstr "Коста Рыка"
 msgid "Cote d'Ivoire"
 msgstr "Котд'івуар"
 
-#: src/licq.cpp:167
+#: src/licq.cpp:172
 msgid "Could not get current working directory\n"
 msgstr ""
 
@@ -12620,7 +12620,7 @@ msgstr "Лівійская Арабская Ямахірыя"
 msgid "Licq Segmentation Violation Detected.\n"
 msgstr "Выяўлена памылка сэгментацыі Licq.\n"
 
-#: src/licq.cpp:428
+#: src/licq.cpp:433
 #, fuzzy, c-format
 msgid ""
 "Licq: %s cannot be opened for writing,\n"
@@ -12629,7 +12629,7 @@ msgstr ""
 "%sLicq: %s не можа быць адчынены на запіс.\n"
 "%s      Прапускаем абарону лок-файлам.\n"
 
-#: src/licq.cpp:445
+#: src/licq.cpp:450
 #, fuzzy, c-format
 msgid ""
 "Licq: Already running at pid %d.\n"
@@ -15998,7 +15998,7 @@ msgstr ""
 msgid "No error detected"
 msgstr "Памылкі ня знойдзены"
 
-#: src/licq.cpp:772
+#: src/licq.cpp:777
 #, fuzzy
 msgid ""
 "No plugins specified on the command-line (-p option).\n"
@@ -16545,7 +16545,7 @@ msgstr ""
 msgid "Outdoors"
 msgstr ""
 
-#: src/licq.cpp:350
+#: src/licq.cpp:355
 #, fuzzy, c-format
 msgid "Output redirected to \"%s\""
 msgstr "%sВывад перанакіраваны да \"%s\".\n"
@@ -16697,12 +16697,12 @@ msgstr "%sАтрымана СМС-падцьверджаньне аб няўда
 msgid "Received SMS receipt indicating success"
 msgstr "%sАтрымана СМС-падцьверджаньне аб пасьпяховай дастаўцы.\n"
 
-#: src/licq.cpp:219
+#: src/licq.cpp:224
 #, fuzzy, c-format
 msgid "Received signal %d, exiting"
 msgstr "%sАтрыман сьпіс кантактаў.\n"
 
-#: src/licq.cpp:352
+#: src/licq.cpp:357
 #, fuzzy, c-format
 msgid "Redirection to \"%s\" failed: %s"
 msgstr ""
@@ -17113,7 +17113,7 @@ msgstr "Сэрбская"
 msgid "Server Message"
 msgstr "Паведамленьне з паслужніка"
 
-#: src/licq.cpp:270
+#: src/licq.cpp:275
 msgid "Session management is not supported by Licq.\n"
 msgstr "Кіраваньне сэсіямі не падтрымліваецца Licq.\n"
 

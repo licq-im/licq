@@ -31,7 +31,7 @@ if (GETTEXT_XGETTEXT_EXECUTABLE)
     ${GETTEXT_XGETTEXT_EXECUTABLE}
       --directory ${PROJECT_SOURCE_DIR}
       --output="${CMAKE_CURRENT_SOURCE_DIR}/licq_osd_plugin.pot"
-      --default-domain=licq_osd_plugin
+      --default-domain='Licq OSD plugin'
       --add-comments=TRANSLATORS:
       --keyword=_
       --keyword=N_
