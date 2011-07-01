@@ -1810,7 +1810,7 @@ Rebuild Licq with OpenSSL support.</source>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="649"/>
+        <location filename="../src/core/licqgui.cpp" line="644"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -2520,8 +2520,8 @@ Note that only one account per protocol is supported in Licq.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/plugindlg.cpp" line="324"/>
-        <location filename="../src/dialogs/plugindlg.cpp" line="364"/>
+        <location filename="../src/dialogs/plugindlg.cpp" line="322"/>
+        <location filename="../src/dialogs/plugindlg.cpp" line="362"/>
         <source>(Unloaded)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6974,121 +6974,121 @@ Do you really want to send it?</source>
 <context>
     <name>LicqQtGui::UserViewEvent</name>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="122"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="121"/>
         <source>Aut&amp;o Close</source>
         <translation type="unfinished">Fermer aut&amp;omatiquement</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="129"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="261"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="128"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="260"/>
         <source>Nex&amp;t</source>
         <translation type="unfinished">Suivan&amp;t</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="134"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="133"/>
         <source>&amp;Close</source>
         <translation type="unfinished">Fermer</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="135"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="134"/>
         <source>Normal Click - Close Window
 &lt;CTRL&gt;+Click - also delete User</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="259"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="258"/>
         <source>Nex&amp;t (%1)</source>
         <translation type="unfinished">Suivan&amp;t (%1)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="699"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="719"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="730"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="695"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="715"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="726"/>
         <source>&amp;Reply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="701"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="697"/>
         <source>
 --------------------
 Request was cancelled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="706"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="702"/>
         <source>A&amp;ccept</source>
         <translation type="unfinished">A&amp;ccepter</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="707"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="739"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="703"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="735"/>
         <source>&amp;Refuse</source>
         <translation type="unfinished">&amp;Refuser</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="714"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="710"/>
         <source>&amp;Join</source>
         <translation type="unfinished">Re&amp;joindre</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="720"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="731"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="716"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="727"/>
         <source>&amp;Quote</source>
         <translation type="unfinished">Citer</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="721"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="732"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="717"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="728"/>
         <source>&amp;Forward</source>
         <translation type="unfinished">&amp;Faire suivre</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="722"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="718"/>
         <source>Start Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="733"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="729"/>
         <source>&amp;View</source>
         <translation type="unfinished">&amp;Voir</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="738"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="734"/>
         <source>A&amp;uthorize</source>
         <translation type="unfinished">A&amp;utoriser</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="742"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="751"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="760"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="772"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="738"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="747"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="756"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="768"/>
         <source>A&amp;dd User</source>
         <translation type="unfinished">Ajouter utilisateur</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="769"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="765"/>
         <source>A&amp;dd %1 Users</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="498"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="497"/>
         <source>Chat</source>
         <translation type="unfinished">Dialogue</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="519"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="518"/>
         <source>File Transfer</source>
         <translation type="unfinished">Transfert de fichier</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="777"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="773"/>
         <source>&amp;View Email</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="743"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="752"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="761"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="739"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="748"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="757"/>
         <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>

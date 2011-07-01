@@ -1857,7 +1857,7 @@ Rebuild Licq with OpenSSL support.</source>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="649"/>
+        <location filename="../src/core/licqgui.cpp" line="644"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -2587,8 +2587,8 @@ Note that only one account per protocol is supported in Licq.</source>
         <translation>Втулка %1 не використовує файл налаштувань</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/plugindlg.cpp" line="324"/>
-        <location filename="../src/dialogs/plugindlg.cpp" line="364"/>
+        <location filename="../src/dialogs/plugindlg.cpp" line="322"/>
+        <location filename="../src/dialogs/plugindlg.cpp" line="362"/>
         <source>(Unloaded)</source>
         <translation>(Незавантаженно)</translation>
     </message>
@@ -7098,42 +7098,42 @@ Do you really want to send it?</source>
 <context>
     <name>LicqQtGui::UserViewEvent</name>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="122"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="121"/>
         <source>Aut&amp;o Close</source>
         <translation>Ав&amp;томатичне закриття</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="129"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="261"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="128"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="260"/>
         <source>Nex&amp;t</source>
         <translation>Д&amp;алі</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="134"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="133"/>
         <source>&amp;Close</source>
         <translation>&amp;Закрити</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="135"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="134"/>
         <source>Normal Click - Close Window
 &lt;CTRL&gt;+Click - also delete User</source>
         <translation>Нормальне клацання - Закриває вікно
 &lt;CTRL&gt;+Клацання - також і видаляє користувача</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="259"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="258"/>
         <source>Nex&amp;t (%1)</source>
         <translation>Д&amp;алі (%1)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="699"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="719"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="730"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="695"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="715"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="726"/>
         <source>&amp;Reply</source>
         <translation>&amp;Відповісти</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="701"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="697"/>
         <source>
 --------------------
 Request was cancelled.</source>
@@ -7142,80 +7142,80 @@ Request was cancelled.</source>
 Запит було скасовано.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="706"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="702"/>
         <source>A&amp;ccept</source>
         <translation>&amp;Прийняти</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="707"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="739"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="703"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="735"/>
         <source>&amp;Refuse</source>
         <translation>В&amp;ідмовитися</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="714"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="710"/>
         <source>&amp;Join</source>
         <translation>&amp;Під&apos;єднатися</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="720"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="731"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="716"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="727"/>
         <source>&amp;Quote</source>
         <translation>&amp;Цитувати</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="721"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="732"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="717"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="728"/>
         <source>&amp;Forward</source>
         <translation>&amp;Переслати</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="722"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="718"/>
         <source>Start Chat</source>
         <translation>Запустити чат</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="733"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="729"/>
         <source>&amp;View</source>
         <translation>&amp;Переглянути</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="738"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="734"/>
         <source>A&amp;uthorize</source>
         <translation>&amp;Авторизувати</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="742"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="751"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="760"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="772"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="738"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="747"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="756"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="768"/>
         <source>A&amp;dd User</source>
         <translation>&amp;Додати користувача</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="769"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="765"/>
         <source>A&amp;dd %1 Users</source>
         <translation>&amp;Додати %1 користувачів</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="777"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="773"/>
         <source>&amp;View Email</source>
         <translation>&amp;Перегрянути Email</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="498"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="497"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="519"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="518"/>
         <source>File Transfer</source>
         <translation>Надсилання файла</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="743"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="752"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="761"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="739"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="748"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="757"/>
         <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>
