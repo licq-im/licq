@@ -25,6 +25,9 @@ verify_copyright_year()
   fi
 
   if ! grep -Eq "Copyright.*$year" "$file"; then
+    if echo "$file" | grep -Eq '\.pot$'; then
+      return
+    fi
     error "copyright line in '$file' does not include current year"
   fi
 }
