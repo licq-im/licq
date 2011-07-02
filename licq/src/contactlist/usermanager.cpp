@@ -24,7 +24,6 @@
 
 #include <licq/logging/log.h>
 #include <licq/daemon.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -1086,7 +1085,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
     if (userId.protocolId() == LICQ_PPID)
     {
       if (inGroup) // Server group can only be changed, not removed
-        gIcqProtocol.icqChangeGroup(userId, groupId, gsid, ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
+        gIcqProtocol.icqChangeGroup(userId, groupId, gsid);
     }
     else
       gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId), userId.protocolId());

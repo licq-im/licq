@@ -233,8 +233,7 @@ void IcqProtocol::icqAddGroup(const string& groupName)
 }
 
 void IcqProtocol::icqChangeGroup(const Licq::UserId& userId,
-                                unsigned short _nNewGroup, unsigned short _nOldGSID,
-                                unsigned short _nNewType, unsigned short _nOldType)
+    unsigned short _nNewGroup, unsigned short _nOldGSID)
 {
   if (!UseServerContactList())
     return;
@@ -265,13 +264,13 @@ void IcqProtocol::icqChangeGroup(const Licq::UserId& userId,
   {
     // Don't attempt removing users from the root group, they can't be there
     CSrvPacketTcp* pRemove =
-        new CPU_RemoveFromServerList(userId.accountId(), _nOldGSID, nSID, _nOldType);
+        new CPU_RemoveFromServerList(userId.accountId(), _nOldGSID, nSID, ICQ_ROSTxNORMAL);
     addToModifyUsers(pRemove->SubSequence(), userId.accountId());
     SendExpectEvent_Server(pRemove, NULL);
   }
 
   // Add the user, with the new group
-  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), _nNewType, _nNewGroup);
+  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxNORMAL, _nNewGroup);
   addToModifyUsers(pAdd->SubSequence(), userId.accountId());
   SendExpectEvent_Server(pAdd, NULL);
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,8 +217,7 @@ public:
   void icqAddGroup(const std::string& groupName);
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
   void icqRemoveGroup(int groupId);
-  void icqChangeGroup(const Licq::UserId& userId, unsigned short _nNewGroup, unsigned short _nOldGSID,
-                      unsigned short _nNewType, unsigned short _nOldType);
+  void icqChangeGroup(const Licq::UserId& userId, unsigned short _nNewGroup, unsigned short _nOldGSID);
   void icqRenameGroup(const std::string& newName, unsigned short _nGSID);
   void icqRenameUser(const Licq::UserId& userId, const std::string& newAlias);
   void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);
