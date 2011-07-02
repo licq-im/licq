@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -12,6 +12,7 @@
 
 #include <assert.h>
 
+#include <licq/icqdefines.h>
 #include <licq/packet.h>
 #include <licq/userevents.h>
 #include <licq/logging/log.h>

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
 #define LICQ_PACKET_H
 
 #include <cstdlib> // NULL
-
-#include "icqdefines.h" // ICQ_CHNxNONE
 
 class INetSocket;
 
@@ -45,7 +43,7 @@ public:
   virtual unsigned short Command() = 0;
   virtual unsigned short SubCommand() = 0;
 
-  virtual unsigned char  Channel()   { return ICQ_CHNxNONE; }
+  virtual unsigned char  Channel();
   virtual unsigned long  SNAC()      { return 0; }
   virtual unsigned short ExtraInfo() { return 0; }
 
