@@ -80,7 +80,16 @@ public:
     TypeUnknownSys      = 0xFFFF,
   };
 
-  // Use this constant for constructor to get current time
+  // Only used for history files, must be same as ICQ protocol commands
+  enum HistoryCommand
+  {
+    CommandDirect       = 0x07EE,
+    CommandSent         = 0x010E,
+    CommandRcvOnline    = 0x0104,
+    CommandRcvOffline   = 0x00DC,
+    CommandCancelled    = 0x07D0,
+  };
+
   static const time_t TimeNow = 0;
 
   UserEvent(EventType eventType,
@@ -160,7 +169,6 @@ protected:
   friend class LicqDaemon::Daemon;
   friend class ::CMSN;
   friend class Jabber::Plugin;
-  friend class LicqDaemon::UserHistory;
   friend class User;
 };
 

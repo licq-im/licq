@@ -28,7 +28,6 @@
 
 #include <licq/gpghelper.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/translator.h>
 
 #include "contactlist/user.h"
@@ -138,13 +137,13 @@ int UserEvent::AddToHistory_Header(bool isReceiver, char* szOut) const
   if (myEventType == TypeUnknownSys)
     m_nCommand = (dynamic_cast<const EventUnknownSysMsg*>(this))->Command();
   else if (m_nFlags & FlagDirect)
-    m_nCommand = ICQ_CMDxTCP_START;
+    m_nCommand = CommandDirect;
   else if (m_nFlags & FlagSender)
-    m_nCommand = ICQ_CMDxSND_THRUxSERVER;
+    m_nCommand = CommandSent;
   else if (m_nFlags & FlagOffline)
-    m_nCommand = ICQ_CMDxRCV_SYSxMSGxOFFLINE;
+    m_nCommand = CommandRcvOffline;
   else
-    m_nCommand = ICQ_CMDxRCV_SYSxMSGxONLINE;
+    m_nCommand = CommandRcvOnline;
 
   return sprintf(szOut, "[ %c | %04d | %04d | %04d | %lu ]\n",
       isReceiver ? 'R' : 'S', (myEventType != TypeUnknownSys ? myEventType :
