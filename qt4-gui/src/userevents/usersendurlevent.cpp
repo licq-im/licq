@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 #include <licq/event.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 
 #include "config/chat.h"
 
@@ -154,14 +155,20 @@ void UserSendUrlEvent::send()
       return;
   }
 
+  unsigned flags = 0;
+  if (!mySendServerCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendDirect;
+  if (myUrgentCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendUrgent;
+  if (myMassMessageCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendToMultiple;
+
   unsigned long icqEventTag;
   icqEventTag = gProtocolManager.sendUrl(
       myUsers.front(),
       myUrlEdit->text().toLatin1().data(),
       myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
-      mySendServerCheck->isChecked(),
-      myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-      myMassMessageCheck->isChecked(),
+      flags,
       &myIcqColor);
 
   myEventTag.push_back(icqEventTag);

@@ -33,7 +33,6 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/icqdefines.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
@@ -396,7 +395,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   string text = "[ " + e->description() + " from " + u->getAlias() + " (" +
       u->accountId() + ") sent " + szTime + " ]\n\n" + e->text() + "\n";
-  unsigned long tag = gProtocolManager.sendMessage(myUserId, text, true, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = gProtocolManager.sendMessage(myUserId, text);
   if (tag == 0)
   {
     gLog.warning("Sending message to %s failed", myUserId.toString().c_str());

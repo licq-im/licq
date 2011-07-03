@@ -31,8 +31,8 @@
 #include <licq/contactlist/user.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/userevents.h>
 
 #include "config/chat.h"
@@ -158,21 +158,25 @@ void UserSendChatEvent::send()
 
   unsigned long icqEventTag;
 
+  unsigned flags = 0;
+  if (myUrgentCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendUrgent;
+  if (!mySendServerCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendDirect;
+
   if (myChatPort == 0)
     //TODO in daemon
     icqEventTag = gLicqDaemon->icqChatRequest(
         myUsers.front(),
         myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
-        myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-        mySendServerCheck->isChecked());
+        flags);
   else
     icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
         myUsers.front(),
         myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
         myCodec->fromUnicode(myChatClients).data(),
         myChatPort,
-        myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-        mySendServerCheck->isChecked());
+        flags);
 
   myEventTag.push_back(icqEventTag);
 

@@ -202,8 +202,7 @@ void ProtocolManager::sendTypingNotification(const UserId& userId, bool active, 
 }
 
 unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& message,
-    bool viaServer, unsigned short flags, bool multipleRecipients, const Licq::Color* color,
-    unsigned long convoId)
+    unsigned flags, const Licq::Color* color, unsigned long convoId)
 {
   if (!isProtocolConnected(userId))
     return 0;
@@ -211,7 +210,7 @@ unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& m
   unsigned long eventId = getNextEventId();
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqSendMessage(eventId, userId, message, viaServer, flags, multipleRecipients, color);
+    gIcqProtocol.icqSendMessage(eventId, userId, message, flags, color);
   else
     pushProtoSignal(new Licq::ProtoSendMessageSignal(eventId, userId, message, flags, convoId), userId);
 
@@ -219,8 +218,7 @@ unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& m
 }
 
 unsigned long ProtocolManager::sendUrl(const UserId& userId, const string& url,
-    const string& message, bool viaServer, unsigned short flags,
-    bool multipleRecipients, const Licq::Color* color)
+    const string& message, unsigned flags, const Licq::Color* color)
 {
   if (!isProtocolConnected(userId))
     return 0;
@@ -228,7 +226,7 @@ unsigned long ProtocolManager::sendUrl(const UserId& userId, const string& url,
   unsigned long eventId = getNextEventId();
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqSendUrl(eventId, userId, url, message, viaServer, flags, multipleRecipients, color);
+    gIcqProtocol.icqSendUrl(eventId, userId, url, message, flags, color);
   else
     eventId = 0;
 
@@ -252,7 +250,7 @@ unsigned long ProtocolManager::requestUserAutoResponse(const UserId& userId)
 
 unsigned long ProtocolManager::fileTransferPropose(const UserId& userId,
     const string& filename, const string& message, const list<string>& files,
-    unsigned short flags, bool viaServer)
+    unsigned flags)
 {
   if (!isProtocolConnected(userId))
     return 0;
@@ -260,7 +258,7 @@ unsigned long ProtocolManager::fileTransferPropose(const UserId& userId,
   unsigned long eventId = getNextEventId();
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqFileTransfer(eventId, userId, filename, message, files, flags, viaServer);
+    gIcqProtocol.icqFileTransfer(eventId, userId, filename, message, files, flags);
   else
     pushProtoSignal(new Licq::ProtoSendFileSignal(eventId, userId, filename, message, files), userId);
 

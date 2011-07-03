@@ -352,8 +352,10 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
 {
   assert(myClient != NULL);
 
+  bool isUrgent = (signal->flags() & Licq::ProtocolSignal::SendUrgent);
+
   myClient->getSessionManager()->sendMessage(
-      signal->userId().accountId(), signal->message(), signal->flags() & 0x40);
+      signal->userId().accountId(), signal->message(), isUrgent);
 
   Licq::EventMsg* message = new Licq::EventMsg(
       signal->message().c_str(), Licq::EventMsg::TimeNow, Licq::EventMsg::FlagSender);

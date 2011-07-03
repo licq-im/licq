@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ protected:
   int myType;
   std::list<unsigned long> myEventTag;
 
-  void retrySend(const Licq::Event* e, bool online, unsigned short level);
+  void retrySend(const Licq::Event* e, unsigned flags);
 
   /**
    * A user has been update, this virtual function allows subclasses to add additional handling

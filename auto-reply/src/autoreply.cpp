@@ -45,6 +45,7 @@
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/userevents.h>
 
 #include "pluginversion.h"
@@ -285,8 +286,10 @@ void CLicqAutoReply::ProcessEvent(Licq::Event* e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
       user_event = e->userEvent();
-      gProtocolManager.sendMessage(e->userId(), user_event->text(), m_bSendThroughServer,
-        ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
+      unsigned flags = Licq::ProtocolSignal::SendUrgent; //urgent, because, hey, he asked us, right?
+      if (!m_bSendThroughServer)
+        flags |= Licq::ProtocolSignal::SendDirect;
+      gProtocolManager.sendMessage(e->userId(), user_event->text(), flags);
     }
   }
 }
@@ -358,11 +361,11 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
     return !m_bAbortDeleteOnExitCode;
   }
 
-  char *szText = new char[4096 + 256];
-  sprintf(szText, "%s", m_szMessage);
-  unsigned long tag = gProtocolManager.sendMessage(userId, szText, m_bSendThroughServer,
-     ICQ_TCPxMSG_URGENT);
-  delete []szText;
+  unsigned flags = Licq::ProtocolSignal::SendUrgent;
+  if (!m_bSendThroughServer)
+    flags |= Licq::ProtocolSignal::SendDirect;
+
+  unsigned long tag = gProtocolManager.sendMessage(userId, m_szMessage, flags);
 
   Licq::UserReadGuard u(userId);
   if (!u.isLocked())

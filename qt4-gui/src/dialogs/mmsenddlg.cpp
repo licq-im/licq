@@ -42,6 +42,7 @@
 #include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/translator.h>
 
 #include "core/signalmanager.h"
@@ -233,7 +234,7 @@ void MMSendDlg::SendNext()
         }
 
         icqEventTag = gProtocolManager.sendMessage(userId, messageRaw.data(),
-            true, ICQ_TCPxMSG_NORMAL, true);
+            Licq::ProtocolSignal::SendToMultiple);
 
         wholeMessagePos += Licq::gTranslator.returnToDos(messageRaw.data()).size();
       }
@@ -253,7 +254,7 @@ void MMSendDlg::SendNext()
       }
 
       icqEventTag = gProtocolManager.sendUrl(userId, s2.toLatin1().data(),
-          codec->fromUnicode(s1).data(), true, ICQ_TCPxMSG_NORMAL, true);
+          codec->fromUnicode(s1).data(), Licq::ProtocolSignal::SendToMultiple);
       break;
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
@@ -266,7 +267,7 @@ void MMSendDlg::SendNext()
             .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
-      icqEventTag = gLicqDaemon->icqSendContactList(userId, *myUsers, false, ICQ_TCPxMSG_NORMAL);
+      icqEventTag = gLicqDaemon->icqSendContactList(userId, *myUsers);
       break;
     }
   }

@@ -38,7 +38,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
 #include <licq/logging/logservice.h>
@@ -1250,8 +1249,7 @@ int CRMSClient::Process_MESSAGE_text()
 {
   //XXX Give a tag...
   myText.erase(myText.size() - 1);
-  unsigned long tag = gProtocolManager.sendMessage(myUserId, myText,
-      true, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = gProtocolManager.sendMessage(myUserId, myText);
 
   fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
       tag, myUserId.toString().c_str());
@@ -1309,8 +1307,7 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  unsigned long tag = gProtocolManager.sendUrl(myUserId, myLine,
-      myText, true, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = gProtocolManager.sendUrl(myUserId, myLine, myText);
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
       tag, myUserId.toString().c_str());

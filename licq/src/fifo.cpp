@@ -366,7 +366,7 @@ static int fifo_message(int argc, const char* const* argv)
   }
 
   if (atoid(argv[1], false, &szId, &nPPID))
-    gProtocolManager.sendMessage(UserId(szId, nPPID), argv[2], true, 0);
+    gProtocolManager.sendMessage(UserId(szId, nPPID), argv[2]);
 
   else
     ReportBadBuddy(argv[0], argv[1]);

@@ -61,17 +61,16 @@ public:
   //   to call them yet and needs to be callable from plugins for now
 
   virtual unsigned long icqSendContactList(const Licq::UserId& userId, const Licq::StringList& users,
-     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
-     const Licq::Color* pColor = NULL) = 0;
+      unsigned flags = 0, const Licq::Color* pColor = NULL) = 0;
 
   // Auto Response
   virtual unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false) = 0;
   // Chat Request
   virtual unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
-     unsigned short nLevel, bool bServer) = 0;
+      unsigned flags = 0) = 0;
   virtual unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
      const std::string& reason, const std::string& chatUsers, unsigned short nPort,
-     unsigned short nLevel, bool bServer) = 0;
+      unsigned flags = 0) = 0;
   virtual void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect) = 0;
   virtual void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,

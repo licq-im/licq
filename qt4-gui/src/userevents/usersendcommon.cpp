@@ -60,6 +60,7 @@
 #include <licq/plugin/protocolplugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
@@ -778,13 +779,13 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
   return e;
 }
 
-void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short level)
+void UserSendCommon::retrySend(const Licq::Event* e, unsigned flags)
 {
   QString accountId = myUsers.front().accountId().c_str();
 
   unsigned long icqEventTag = 0;
-  mySendServerCheck->setChecked(!online);
-  myUrgentCheck->setChecked(level == ICQ_TCPxMSG_URGENT);
+  mySendServerCheck->setChecked((flags & Licq::ProtocolSignal::SendDirect) == 0);
+  myUrgentCheck->setChecked(flags & Licq::ProtocolSignal::SendUrgent);
 
   switch (e->userEvent()->eventType())
   {
@@ -845,7 +846,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
         }
 
         icqEventTag = gProtocolManager.sendMessage(myUsers.front(), messageRaw.data(),
-            !online, level, false, &myIcqColor);
+            flags, &myIcqColor);
 
         myEventTag.push_back(icqEventTag);
 
@@ -862,7 +863,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       const Licq::EventUrl* ue = dynamic_cast<const Licq::EventUrl*>(e->userEvent());
 
       icqEventTag = gProtocolManager.sendUrl(myUsers.front(), ue->url(),
-          ue->description(), !online, level, false, &myIcqColor);
+          ue->description(), flags, &myIcqColor);
 
       break;
     }
@@ -881,7 +882,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
         break;
 
       icqEventTag = gLicqDaemon->icqSendContactList(myUsers.front(),
-          users, online, level, false, &myIcqColor);
+          users, flags, &myIcqColor);
 
       break;
     }
@@ -893,11 +894,11 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
       if (ue->clients().empty())
         //TODO in the daemon
         icqEventTag = gLicqDaemon->icqChatRequest(myUsers.front(),
-            ue->reason(), level, !online);
+            ue->reason(), flags);
       else
         //TODO in the daemon
         icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(myUsers.front(),
-            ue->reason(), ue->clients(), ue->Port(), level, !online);
+            ue->reason(), ue->clients(), ue->Port(), flags);
 
       break;
     }
@@ -909,7 +910,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, bool online, unsigned short
 
       //TODO in the daemon
       icqEventTag = gProtocolManager.fileTransferPropose(myUsers.front(),
-          ue->filename(), ue->fileDescription(), filelist, level, !online);
+          ue->filename(), ue->fileDescription(), filelist, flags);
 
       break;
     }
@@ -1173,7 +1174,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
       // Remember that we want to send through server
       mySendServerCheck->setChecked(true);
 
-      retrySend(e, false, ICQ_TCPxMSG_NORMAL);
+      retrySend(e, 0);
     }
     return;
   }
@@ -1194,22 +1195,24 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
     }
 
     // if the original message was through server, send this one through server
-    bool throughServer = false;
+    unsigned flags = 0;
     switch (e->Channel())
     {
       case ICQ_CHNxNONE: // Fall through
       case ICQ_CHNxINFO:
       case ICQ_CHNxSTATUS:
-        throughServer = true;
+        break;
+      default:
+        flags |= Licq::ProtocolSignal::SendDirect;
     }
 
     switch (QueryUser(this, msg, tr("Urgent"), tr(" to Contact List"), tr("Cancel")))
     {
       case 0:
-        retrySend(e, throughServer, ICQ_TCPxMSG_URGENT);
+        retrySend(e, flags | Licq::ProtocolSignal::SendUrgent);
         break;
       case 1:
-        retrySend(e, throughServer, ICQ_TCPxMSG_LIST);
+        retrySend(e, flags | Licq::ProtocolSignal::SendToList);
         break;
       case 2:
         break;

@@ -32,6 +32,7 @@
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolsignal.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
@@ -57,8 +58,7 @@ using LicqDaemon::gDaemon;
 
 
 void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const string& message,
-   bool viaServer, unsigned short nLevel, bool bMultipleRecipients,
-   const Licq::Color* pColor)
+    unsigned flags, const Licq::Color* pColor)
 {
   const string accountId = userId.accountId();
   const char* m = message.c_str();
@@ -93,13 +93,19 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       cipher = Licq::gGpgHelper.Encrypt(mDos, userId);
   }
 
+  unsigned short nLevel = ICQ_TCPxMSG_NORMAL;
   if (cipher)
     f |= Licq::UserEvent::FlagEncrypted;
-  if (!viaServer)
+  if (flags & Licq::ProtocolSignal::SendDirect)
     f |= Licq::UserEvent::FlagDirect;
-  if (nLevel == ICQ_TCPxMSG_URGENT)
+  if (flags & Licq::ProtocolSignal::SendUrgent)
+  {
     f |= Licq::UserEvent::FlagUrgent;
-  if (bMultipleRecipients)
+    nLevel = ICQ_TCPxMSG_URGENT;
+  }
+  else if (flags & Licq::ProtocolSignal::SendToList)
+    nLevel = ICQ_TCPxMSG_LIST;
+  if (flags & Licq::ProtocolSignal::SendToMultiple)
     f |= Licq::UserEvent::FlagMultiRec;
 
   // What kinda encoding do we have here?
@@ -109,7 +115,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
 
   szMessage =  cipher ? cipher : mDos;
 
-  if (viaServer)
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0)
   {
     if (!bUserOffline && cipher == 0)
     {
@@ -154,13 +160,14 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       gLog.warning(tr("Truncating message to %d characters to send through server."), nMaxSize);
        szMessage[nMaxSize] = '\0';
      }
-     icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+     icqSendThroughServer(eventId, userId,
+        ICQ_CMDxSUB_MSG | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0),
                           cipher ? cipher : szMessage, e, nCharset, nUTFLen);
   }
 
   Licq::UserWriteGuard u(userId);
 
-  if (!viaServer)
+  if (flags & Licq::ProtocolSignal::SendDirect)
   {
     if (!u.isLocked())
       return;
@@ -173,16 +180,16 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       message = cipher;
     else
       message.assign(szMessage, nUTFLen);
-    CPT_Message* p = new CPT_Message(message, nLevel, bMultipleRecipients, pColor, *u);
+    CPT_Message* p = new CPT_Message(message, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
     gLog.info(tr("Sending %smessage to %s (#%hu)."),
-       nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
+        (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
   }
 
   if (u.isLocked())
   {
-    u->SetSendServer(viaServer);
+    u->SetSendServer((flags & Licq::ProtocolSignal::SendDirect) == 0);
     u->SetSendLevel(nLevel);
   }
 
@@ -230,8 +237,7 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool
 }
 
 void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, const string& url,
-   const string& message, bool viaServer, unsigned short nLevel,
-   bool bMultipleRecipients, const Licq::Color* pColor)
+    const string& message, unsigned flags, const Licq::Color* pColor)
 {
   if (Licq::gUserManager.isOwner(userId))
     return;
@@ -244,20 +250,28 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   Licq::EventUrl* e = NULL;
   string m = gTranslator.clientToServer(message, true);
   int n = url.size() + m.size() + 2;
-  if (viaServer && n > MaxMessageSize)
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && n > MaxMessageSize)
     m.erase(MaxMessageSize - url.size() - 2);
   m += '\xFE';
   m += url;
 
   unsigned long f = Licq::EventUrl::FlagLicqVerMask | Licq::EventUrl::FlagSender;
-  if (!viaServer)
+  unsigned short nLevel = ICQ_TCPxMSG_NORMAL;
+  if (flags & Licq::ProtocolSignal::SendDirect)
     f |= Licq::UserEvent::FlagDirect;
-  if (nLevel == ICQ_TCPxMSG_URGENT)
+  if (flags & Licq::ProtocolSignal::SendUrgent)
+  {
     f |= Licq::UserEvent::FlagUrgent;
-  if (bMultipleRecipients)
+    nLevel = ICQ_TCPxMSG_URGENT;
+  }
+  else if (flags & Licq::ProtocolSignal::SendToList)
+  {
+    nLevel = ICQ_TCPxMSG_LIST;
+  }
+  if (flags & Licq::ProtocolSignal::SendToMultiple)
     f |= Licq::UserEvent::FlagMultiRec;
 
-  if (viaServer)
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0)
   {
     unsigned short nCharset = 0;
     {
@@ -268,12 +282,13 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
 
     e = new Licq::EventUrl(url.c_str(), description,
         Licq::EventUrl::TimeNow, f);
-    icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
+    icqSendThroughServer(eventId, userId,
+        ICQ_CMDxSUB_URL | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
 
   Licq::UserWriteGuard u(userId);
 
-  if (!viaServer)
+  if (flags & Licq::ProtocolSignal::SendDirect)
   {
     if (!u.isLocked())
       return;
@@ -281,15 +296,15 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
       f |= Licq::UserEvent::FlagEncrypted;
     e = new Licq::EventUrl(url.c_str(), description, Licq::EventUrl::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_Url* p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, *u);
+    CPT_Url* p = new CPT_Url(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
     gLog.info(tr("Sending %sURL to %s (#%hu)."),
-       nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
+        (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
   }
   if (u.isLocked())
   {
-    u->SetSendServer(viaServer);
+    u->SetSendServer((flags & Licq::ProtocolSignal::SendDirect) == 0);
     u->SetSendLevel(nLevel);
   }
 
@@ -301,7 +316,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
 }
 
 void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const string& filename,
-    const string& message, const list<string>& lFileList, unsigned short nLevel, bool bServer)
+    const string& message, const list<string>& lFileList, unsigned flags)
 {
   if (Licq::gUserManager.isOwner(userId))
     return;
@@ -313,19 +328,21 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   if (!u.isLocked())
     return;
 
-  if (bServer)
+  unsigned short nLevel;
+
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0)
   {
     unsigned long f = LICQ_VERSION | Licq::EventFile::FlagSender;
     //flags through server are a little different
-    if (nLevel == ICQ_TCPxMSG_NORMAL)
-      nLevel = ICQ_TCPxMSG_NORMAL2;
-    else if (nLevel == ICQ_TCPxMSG_URGENT)
+    if (flags & Licq::ProtocolSignal::SendUrgent)
     {
       f |= Licq::UserEvent::FlagUrgent;
       nLevel = ICQ_TCPxMSG_URGENT2;
     }
-    else if (nLevel == ICQ_TCPxMSG_LIST)
+    else if (flags & Licq::ProtocolSignal::SendToList)
       nLevel = ICQ_TCPxMSG_LIST2;
+    else
+      nLevel = ICQ_TCPxMSG_NORMAL2;
 
     CPU_FileTransfer* p = new CPU_FileTransfer(*u, lFileList, filename,
         dosDesc, nLevel, (u->Version() > 7));
@@ -346,6 +363,20 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   }
   else
   {
+    unsigned long f = Licq::EventFile::FlagLicqVerMask | Licq::EventFile::FlagDirect | Licq::EventFile::FlagSender;
+
+    if (flags & Licq::ProtocolSignal::SendUrgent)
+    {
+      f |= Licq::UserEvent::FlagUrgent;
+      nLevel = ICQ_TCPxMSG_URGENT;
+    }
+    else if (flags & Licq::ProtocolSignal::SendToList)
+      nLevel = ICQ_TCPxMSG_LIST;
+    else
+      nLevel = ICQ_TCPxMSG_NORMAL;
+    if (u->Secure())
+      f |= Licq::UserEvent::FlagEncrypted;
+
     CPT_FileTransfer* p = new CPT_FileTransfer(lFileList, filename, dosDesc, nLevel, *u);
 
     if (!p->IsValid())
@@ -354,30 +385,23 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      unsigned long f = Licq::EventFile::FlagLicqVerMask | Licq::EventFile::FlagDirect | Licq::EventFile::FlagSender;
-      if (nLevel == ICQ_TCPxMSG_URGENT)
-        f |= Licq::UserEvent::FlagUrgent;
-      if (u->Secure())
-        f |= Licq::UserEvent::FlagEncrypted;
-
       e = new Licq::EventFile(filename, p->description(), p->GetFileSize(),
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("Sending %sfile transfer to %s (#%hu)."),
-                nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "", 
+          (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
           u->getAlias().c_str(), -p->Sequence());
 
       SendExpectEvent_Client(eventId, *u, p, e);
     }
   }
 
-  u->SetSendServer(bServer);
+  u->SetSendServer((flags & Licq::ProtocolSignal::SendDirect) == 0);
   u->SetSendLevel(nLevel);
 }
 
 //-----CICQDaemon::sendContactList-------------------------------------------
 unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
-   const StringList& users, bool online, unsigned short nLevel,
-   bool bMultipleRecipients, const Licq::Color* pColor)
+   const StringList& users, unsigned flags, const Licq::Color* pColor)
 {
   unsigned long eventId = gDaemon.getNextEventId();
   if (Licq::gUserManager.isOwner(userId))
@@ -397,7 +421,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
     vc.push_back(new Licq::EventContactList::Contact(uId, !u.isLocked() ? "" : u->getAlias()));
   }
 
-  if (!online && p > MaxMessageSize)
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && p > MaxMessageSize)
   {
     gLog.warning(tr("Contact list too large to send through server."));
     delete []m;
@@ -407,23 +431,29 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   Licq::EventContactList* e = NULL;
 
   unsigned long f = Licq::EventContactList::FlagLicqVerMask | Licq::EventContactList::FlagSender;
-  if (online)
+  unsigned short nLevel = ICQ_TCPxMSG_NORMAL;
+  if (flags & Licq::ProtocolSignal::SendDirect)
     f |= Licq::UserEvent::FlagDirect;
-  if (nLevel == ICQ_TCPxMSG_URGENT)
+  if (flags & Licq::ProtocolSignal::SendUrgent)
+  {
     f |= Licq::UserEvent::FlagUrgent;
-  if (bMultipleRecipients)
+    nLevel = ICQ_TCPxMSG_URGENT;
+  }
+  else if (flags & Licq::ProtocolSignal::SendToList)
+    nLevel = ICQ_TCPxMSG_LIST;
+  if (flags & Licq::ProtocolSignal::SendToMultiple)
     f |= Licq::UserEvent::FlagMultiRec;
 
-  if (!online) // send offline
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0) // send offline
   {
     e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
     icqSendThroughServer(eventId, userId,
-      ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
+      ICQ_CMDxSUB_CONTACTxLIST | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0),
       m, e);
   }
 
   Licq::UserWriteGuard u(userId);
-  if (online)
+  if (flags & Licq::ProtocolSignal::SendDirect)
   {
     if (!u.isLocked())
       return 0;
@@ -431,15 +461,15 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
       f |= Licq::UserEvent::FlagEncrypted;
     e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, *u);
+    CPT_ContactList *p = new CPT_ContactList(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
     gLog.info(tr("Sending %scontact list to %s (#%hu)."),
-       nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
+        (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
   }
   if (u.isLocked())
   {
-    u->SetSendServer(!online);
+    u->SetSendServer((flags & Licq::ProtocolSignal::SendDirect) == 0);
     u->SetSendLevel(nLevel);
   }
 
@@ -690,14 +720,14 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
 }
 
 unsigned long IcqProtocol::icqChatRequest(const Licq::UserId& userId, const string& reason,
-                                         unsigned short nLevel, bool bServer)
+    unsigned flags)
 {
-  return icqMultiPartyChatRequest(userId, reason, "", 0, nLevel, bServer);
+  return icqMultiPartyChatRequest(userId, reason, "", 0, flags);
 }
 
 unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
    const string& reason, const string& chatUsers, unsigned short nPort,
-   unsigned short nLevel, bool bServer)
+   unsigned flags)
 {
   if (Licq::gUserManager.isOwner(userId))
     return 0;
@@ -708,21 +738,22 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   string reasonDos = gTranslator.clientToServer(reason, true);
 
   unsigned long f;
+  unsigned short nLevel;
   Licq::Event* result = NULL;
-  if (bServer)
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0)
   {
     f = Licq::EventChat::FlagLicqVerMask | Licq::EventChat::FlagSender;
 
     //flags through server are a little different
-    if (nLevel == ICQ_TCPxMSG_NORMAL)
-      nLevel = ICQ_TCPxMSG_NORMAL2;
-    else if (nLevel == ICQ_TCPxMSG_URGENT)
+    if (flags & Licq::ProtocolSignal::SendUrgent)
     {
       f |= Licq::UserEvent::FlagUrgent;
       nLevel = ICQ_TCPxMSG_URGENT2;
     }
-    else if (nLevel == ICQ_TCPxMSG_LIST)
+    else if (flags & Licq::ProtocolSignal::SendToList)
       nLevel = ICQ_TCPxMSG_LIST2;
+    else
+      nLevel = ICQ_TCPxMSG_NORMAL2;
 
     CPU_ChatRequest *p = new CPU_ChatRequest(reasonDos,
         chatUsers, nPort, nLevel, *u, (u->Version() > 7));
@@ -735,22 +766,29 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
     }
   else
   {
-    CPT_ChatRequest* p = new CPT_ChatRequest(reasonDos, chatUsers, nPort,
-        nLevel, *u, (u->Version() > 7));
     f = Licq::EventChat::FlagLicqVerMask | Licq::EventChat::FlagDirect | Licq::EventChat::FlagSender;
-    if (nLevel == ICQ_TCPxMSG_URGENT)
+    nLevel = ICQ_TCPxMSG_NORMAL;
+    if (flags & Licq::ProtocolSignal::SendUrgent)
+    {
       f |= Licq::UserEvent::FlagUrgent;
+      nLevel = ICQ_TCPxMSG_URGENT;
+    }
+    else if (flags & Licq::ProtocolSignal::SendToList)
+      nLevel = ICQ_TCPxMSG_LIST;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
+
+    CPT_ChatRequest* p = new CPT_ChatRequest(reasonDos, chatUsers, nPort,
+        nLevel, *u, (u->Version() > 7));
     Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
         Licq::UserEvent::TimeNow, f);
     gLog.info(tr("Sending %schat request to %s (#%hu)."),
-        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
+        (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     result = SendExpectEvent_Client(*u, p, e);
 	}
 	
-	u->SetSendServer(bServer);
+  u->SetSendServer((flags & Licq::ProtocolSignal::SendDirect) == 0);
   u->SetSendLevel(nLevel);
 
   if (result != NULL)

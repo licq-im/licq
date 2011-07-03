@@ -38,8 +38,8 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/userevents.h>
 
 #include "core/gui-defines.h"
@@ -217,6 +217,12 @@ void UserSendFileEvent::send()
     return;
   }
 
+  unsigned flags = 0;
+  if (!mySendServerCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendDirect;
+  if (myUrgentCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendUrgent;
+
   unsigned long icqEventTag;
   //TODO in daemon
   icqEventTag = gProtocolManager.fileTransferPropose(
@@ -224,8 +230,7 @@ void UserSendFileEvent::send()
       myCodec->fromUnicode(myFileEdit->text()).data(),
       myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
       myFileList,
-      myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-      mySendServerCheck->isChecked());
+      flags);
 
   myEventTag.push_back(icqEventTag);
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,16 +72,13 @@ public:
    *
    * @param userId User to send message to
    * @param message The message to be sent
-   * @param viaServer True to send via server or false to use direct connection (ICQ only)
-   * @param flags Any special flags (ICQ only)
-   * @param multipleRecipients True if sending the same message to more than one user (ICQ only)
+   * @param flags Flags from ProtocolSignal::SendFlags
    * @param color The color of the text and background (ICQ only)
    * @param convoId Conversation ID for group messages (Non-ICQ only)
    * @return Event id
    */
   virtual unsigned long sendMessage(const UserId& userId, const std::string& message,
-      bool viaServer, unsigned short flags, bool multipleRecipients = false,
-      const Color* color = NULL, unsigned long convoId = 0) = 0;
+      unsigned flags = 0, const Color* color = NULL, unsigned long convoId = 0) = 0;
 
   /**
    * Send URL message to a user
@@ -89,15 +86,12 @@ public:
    * @param userId User to sent URL to
    * @param url The URL to be sent
    * @param message Message or description of URL
-   * @param viaServer True to send via server or false to use direct connection (ICQ only)
-   * @param flags Any special flags (ICQ only)
-   * @param multipleRecipients True if sending the same message to more than one user (ICQ only)
+   * @param flags Flags from ProtocolSignal::SendFlags
    * @param color The color of the text and background (ICQ only)
    * @return Event id
    */
   virtual unsigned long sendUrl(const UserId& userId, const std::string& url,
-      const std::string& message, bool viaServer, unsigned short flags,
-      bool multipleRecipients = false, const Color* color = NULL) = 0;
+      const std::string& message, unsigned flags = 0, const Color* color = NULL) = 0;
 
   /**
    * Request user auto response from server
@@ -114,13 +108,12 @@ public:
    * @param filename Name of file to send
    * @param message Message or description of file(s)
    * @param files List of files to send
-   * @param flags Any special flags (ICQ only)
-   * @param viaServer True to send via server or false to use direct connection (ICQ only)
+   * @param flags Flags from ProtocolSignal::SendFlags
    * @return Event id
    */
   virtual unsigned long fileTransferPropose(const UserId& userId,
       const std::string& filename, const std::string& message,
-      const std::list<std::string>& files, unsigned short flags, bool viaServer) = 0;
+      const std::list<std::string>& files, unsigned flags = 0) = 0;
 
   /**
    * Refuse a proposed file transfer

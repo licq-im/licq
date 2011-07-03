@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,15 @@ public:
     SignalOpenSecure    = 27,   // Request secure channel with user
     SignalCloseSecure   = 28,   // Close secure channel with user
     SignalRequestAuth   = 29,   // Request authorization from user
+  };
+
+  // Flags for send events
+  enum SendFlags
+  {
+    SendToList          = 1,    // Flag a message as low prio (send to contact list)
+    SendUrgent          = 2,    // Flag a message as urgent
+    SendDirect          = 4,    // Don't send message via server (if supported by protocol)
+    SendToMultiple      = 8,    // Message is sent to multiple recipients
   };
 
   ProtocolSignal(SignalType signal, const UserId& userId = UserId(), unsigned long eventId = 0)
@@ -181,7 +190,7 @@ class ProtoSendMessageSignal : public ProtocolSignal
 {
 public:
   ProtoSendMessageSignal(unsigned long eventId, const UserId& userId,
-      const std::string& message, unsigned short flags,
+      const std::string& message, unsigned flags,
       unsigned long convoId = 0)
     : ProtocolSignal(SignalSendMessage, userId, eventId),
       myMessage(message),
@@ -192,13 +201,13 @@ public:
   //! The message to be sent
   const std::string& message() const { return myMessage; }
   //! The message flags
-  unsigned short flags() const { return myFlags; }
+  unsigned flags() const { return myFlags; }
   //! The conversation id to use (gets the socket).
   unsigned long convoId() const { return myConvoId; }
 
 private:
   std::string myMessage;
-  unsigned short myFlags;
+  unsigned myFlags;
   unsigned long myConvoId;
 };
 

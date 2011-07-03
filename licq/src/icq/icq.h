@@ -121,15 +121,14 @@ public:
   void SetUseServerSideBuddyIcons(bool b);
 
   unsigned long icqSendContactList(const Licq::UserId& userId, const Licq::StringList& users,
-     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
-     const Licq::Color* pColor = NULL);
+      unsigned flags = 0, const Licq::Color* pColor = NULL);
 
   unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
-     unsigned short nLevel, bool bServer);
+      unsigned flags);
   unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
      const std::string& reason, const std::string& chatUsers, unsigned short nPort,
-     unsigned short nLevel, bool bServer);
+      unsigned flags = 0);
   void icqChatRequestRefuse(const Licq::UserId& userId, const std::string& reason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(const Licq::UserId& userId, unsigned short nPort,
@@ -186,14 +185,11 @@ public:
   unsigned long icqSendSms(const Licq::UserId& userId, const std::string& number, const std::string& message);
 
   void icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
-      bool viaServer, unsigned short nLevel, bool bMultipleRecipients = false,
-      const Licq::Color* pColor = NULL);
+      unsigned flags = 0, const Licq::Color* pColor = NULL);
   void icqSendUrl(unsigned long eventId, const Licq::UserId& userId, const std::string& url,
-      const std::string& message, bool viaServer, unsigned short nLevel,
-      bool bMultipleRecipients = false, const Licq::Color* pColor = NULL);
+      const std::string& message, unsigned flags = 0, const Licq::Color* pColor = NULL);
   void icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
-      const std::string& message, const std::list<std::string>& fileList,
-     unsigned short nLevel, bool bServer);
+      const std::string& message, const std::list<std::string>& fileList, unsigned flags = 0);
   void icqFileTransferRefuse(const Licq::UserId& userId, const std::string& message,
       unsigned short nSequence, const unsigned long nMsgID[], bool viaServer);
   void icqFileTransferCancel(const Licq::UserId& userId, unsigned short nSequence);

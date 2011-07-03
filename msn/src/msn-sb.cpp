@@ -31,6 +31,7 @@
 #include <licq/conversation.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
+#include <licq/icqdefines.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>

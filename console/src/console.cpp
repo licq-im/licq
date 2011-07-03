@@ -45,6 +45,7 @@
 #include <licq/logging/logutils.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/userevents.h>
 
 #include "event_data.h"
@@ -1980,11 +1981,17 @@ void CLicqConsole::InputMessage(int cIn)
       *sz = '\0';
       sz += 2;
       bool bDirect = SendDirect(data->userId, *sz);
+
+        unsigned flags = 0;
+        if (bDirect)
+          flags |= Licq::ProtocolSignal::SendDirect;
+        if (*sz == 'u')
+          flags |= Licq::ProtocolSignal::SendUrgent;
+
       winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg,
-          !bDirect, *sz == 'u');
+        winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg, flags);
       winMain->state = STATE_PENDING;
       break;
     }
@@ -1998,8 +2005,7 @@ void CLicqConsole::InputMessage(int cIn)
     {
       winMain->wprintf("%C%ASending message through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg,
-            true, false);
+        winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg);
       winMain->state = STATE_PENDING;
     }
     else
@@ -2115,10 +2121,12 @@ void CLicqConsole::InputSendFile(int cIn)
 
       list<string> lFileList;
       lFileList.push_back(data->szFileName);
+      unsigned flags = 0;
+      if (bDirect)
+        flags |= Licq::ProtocolSignal::SendDirect;
 
       winMain->event = gProtocolManager.fileTransferPropose(data->userId,
-              data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
-                       !bDirect);
+          data->szFileName, data->szDescription, lFileList, flags);
       break;
     }
   case STATE_QUERY:
@@ -2254,11 +2262,18 @@ void CLicqConsole::InputUrl(int cIn)
       *sz = '\0';
       sz++;
       bool bDirect = SendDirect(data->userId, *sz);
+
+        unsigned flags = 0;
+        if (bDirect)
+          flags |= Licq::ProtocolSignal::SendDirect;
+        if (*sz == 'u')
+          flags |= Licq::ProtocolSignal::SendUrgent;
+
       winMain->wprintf("%C%ASending URL %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
       winMain->event = gProtocolManager.sendUrl(data->userId, data->szUrl,
-          data->szDesc, !bDirect, *sz == 'u');
+          data->szDesc, flags);
       winMain->state = STATE_PENDING;
       break;
     }
@@ -2273,7 +2288,7 @@ void CLicqConsole::InputUrl(int cIn)
       winMain->wprintf("%C%ASending URL through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
         winMain->event = gProtocolManager.sendUrl(data->userId, data->szUrl,
-            data->szDesc, true, false);
+            data->szDesc);
       winMain->state = STATE_PENDING;
     }
     else
