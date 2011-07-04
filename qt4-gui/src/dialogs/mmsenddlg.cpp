@@ -40,10 +40,10 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/translator.h>
+#include <licq/userevents.h>
 
 #include "core/signalmanager.h"
 
@@ -91,7 +91,7 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
 
 int MMSendDlg::go_message(const QString& msg)
 {
-  m_nEventType = ICQ_CMDxSUB_MSG;
+  myEventType = Licq::UserEvent::TypeMessage;
   s1 = msg;
 
   setWindowTitle(tr("Multiple Recipient Message"));
@@ -104,7 +104,7 @@ int MMSendDlg::go_message(const QString& msg)
 
 int MMSendDlg::go_url(const QString& url, const QString& desc)
 {
-  m_nEventType = ICQ_CMDxSUB_URL;
+  myEventType = Licq::UserEvent::TypeUrl;
   s1 = desc;
   s2 = url;
 
@@ -118,7 +118,7 @@ int MMSendDlg::go_url(const QString& url, const QString& desc)
 
 int MMSendDlg::go_contact(StringList& users)
 {
-  m_nEventType = ICQ_CMDxSUB_CONTACTxLIST;
+  myEventType = Licq::UserEvent::TypeContactList;
   myUsers = &users;
 
   setWindowTitle(tr("Multiple Recipient Contact List"));
@@ -171,9 +171,9 @@ void MMSendDlg::SendNext()
   if (!userId.isValid())
     return;
 
-  switch (m_nEventType)
+  switch (myEventType)
   {
-    case ICQ_CMDxSUB_MSG:
+    case Licq::UserEvent::TypeMessage:
     {
       const QTextCodec* codec;
       {
@@ -241,7 +241,7 @@ void MMSendDlg::SendNext()
 
       break;
     }
-    case ICQ_CMDxSUB_URL:
+    case Licq::UserEvent::TypeUrl:
     {
       const QTextCodec* codec;
       {
@@ -257,7 +257,7 @@ void MMSendDlg::SendNext()
           codec->fromUnicode(s1).data(), Licq::ProtocolSignal::SendToMultiple);
       break;
     }
-    case ICQ_CMDxSUB_CONTACTxLIST:
+    case Licq::UserEvent::TypeContactList:
     {
       {
         Licq::UserReadGuard u(userId);
