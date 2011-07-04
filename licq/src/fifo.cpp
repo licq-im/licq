@@ -392,7 +392,7 @@ static int fifo_url(int argc, const char* const* argv)
   if (atoid(argv[1], false, &szId, &nPPID))
   {
     szDescr = (argc > 3) ? argv[3] : "" ;
-    gProtocolManager.sendUrl(UserId(szId, nPPID), argv[2], szDescr, true, false);
+    gProtocolManager.sendUrl(UserId(szId, nPPID), argv[2], szDescr);
   }
   else
     ReportBadBuddy(argv[0],argv[1]);
