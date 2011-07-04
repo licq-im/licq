@@ -540,12 +540,12 @@ public:
   bool StatusWebPresence() const;
   bool StatusHideIp() const;
   bool StatusBirthday() const;
-  unsigned long PhoneFollowMeStatus() const     { return m_nPhoneFollowMeStatus; }
-  unsigned long ICQphoneStatus() const          { return m_nICQphoneStatus; }
-  unsigned long SharedFilesStatus() const       { return m_nSharedFilesStatus; }
-  void SetPhoneFollowMeStatus(unsigned long n)  { m_nPhoneFollowMeStatus = n; SaveLicqInfo(); }
-  void SetICQphoneStatus(unsigned long n)       { m_nICQphoneStatus = n; }
-  void SetSharedFilesStatus(unsigned long n)    { m_nSharedFilesStatus = n; }  
+  unsigned phoneFollowMeStatus() const          { return myPhoneFollowMeStatus; }
+  unsigned icqPhoneStatus() const               { return myIcqPhoneStatus; }
+  unsigned sharedFilesStatus() const            { return mySharedFilesStatus; }
+  void setPhoneFollowMeStatus(unsigned n)       { myPhoneFollowMeStatus = n; SaveLicqInfo(); }
+  void setIcqPhoneStatus(unsigned n)            { myIcqPhoneStatus = n; }
+  void setSharedFilesStatus(unsigned n)         { mySharedFilesStatus = n; }
   virtual void SetStatusOffline();
   bool Away() const;
 
@@ -812,7 +812,7 @@ protected:
   unsigned myStatus;
   UserGroupList myGroups;               /**< List of user groups */
   unsigned short m_nSequence;
-  unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
+  unsigned myPhoneFollowMeStatus, myIcqPhoneStatus, mySharedFilesStatus;
   char m_nMode;
   std::string myClientInfo;
   std::string myAutoResponse;

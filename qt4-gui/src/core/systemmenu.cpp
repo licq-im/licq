@@ -32,7 +32,6 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/plugin/pluginmanager.h>
 
 #include "config/contactlist.h"
@@ -131,9 +130,9 @@ SystemMenu::SystemMenu(QWidget* parent)
     a->setCheckable(true); \
     a->setData(static_cast<unsigned int>(data)); \
     myFollowMeMenu->addAction(a);
-  ADD_PFM(tr("Don't Show"), ICQ_PLUGIN_STATUSxINACTIVE);
-  ADD_PFM(tr("Available"), ICQ_PLUGIN_STATUSxACTIVE);
-  ADD_PFM(tr("Busy"), ICQ_PLUGIN_STATUSxBUSY);
+  ADD_PFM(tr("Don't Show"), CICQDaemon::IcqPluginInactive);
+  ADD_PFM(tr("Available"), CICQDaemon::IcqPluginActive);
+  ADD_PFM(tr("Busy"), CICQDaemon::IcqPluginBusy);
 #undef ADD_PFM
 
   // Sub menu Status
@@ -427,7 +426,7 @@ void SystemMenu::aboutToShowFollowMeMenu()
   if (!o.isLocked())
     return;
 
-  int status = o->PhoneFollowMeStatus();
+  int status = o->phoneFollowMeStatus();
 
   foreach (QAction* a, myFollowMeActions->actions())
     if (a->data().toInt() == status)

@@ -608,7 +608,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
 
   // Set the status flags
   unsigned long s;
-  unsigned long pfm;
+  unsigned pfm;
   bool Invisible;
   bool goInvisible;
   bool isLogon;
@@ -616,7 +616,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
     s = o->AddStatusFlags(newStatus);
-    pfm = o->PhoneFollowMeStatus();
+    pfm = o->phoneFollowMeStatus();
     Invisible = o->isInvisible();
     goInvisible = (newStatus & ICQ_STATUS_FxPRIVATE);
     isLogon = !o->isOnline();
@@ -656,9 +656,10 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
 
   SendEvent_Server(p);
 
-  if (pfm)
+  if (pfm != IcqPluginInactive)
   {
-    p = new CPU_UpdateStatusTimestamp(PLUGIN_FOLLOWxME, pfm, s);
+    p = new CPU_UpdateStatusTimestamp(PLUGIN_FOLLOWxME,
+        (pfm == IcqPluginBusy ? ICQ_PLUGIN_STATUSxBUSY : ICQ_PLUGIN_STATUSxACTIVE), s);
     SendEvent_Server(p);
   }
 
@@ -930,18 +931,25 @@ void IcqProtocol::icqUpdatePictureTimestamp()
 }
 
 //-----icqSetPhoneFollowMeStatus------------------------------------------------
-void IcqProtocol::icqSetPhoneFollowMeStatus(unsigned long nNewStatus)
+void IcqProtocol::icqSetPhoneFollowMeStatus(unsigned newStatus)
 {
   bool bOffline;
   {
     Licq::OwnerWriteGuard o(LICQ_PPID);
     o->SetClientStatusTimestamp(time(NULL));
-    o->SetPhoneFollowMeStatus(nNewStatus);
+    o->setPhoneFollowMeStatus(newStatus);
     bOffline = !o->isOnline();
   }
 
   if (!bOffline)
   {
+    unsigned long nNewStatus;
+    switch (newStatus)
+    {
+      case IcqPluginActive: nNewStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
+      case IcqPluginBusy: nNewStatus = ICQ_PLUGIN_STATUSxBUSY; break;
+      default: nNewStatus = ICQ_PLUGIN_STATUSxINACTIVE; break;
+    }
     CPU_UpdateStatusTimestamp *p =
       new CPU_UpdateStatusTimestamp(PLUGIN_FOLLOWxME, nNewStatus);
     SendEvent_Server(p);
@@ -1981,12 +1989,12 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
 
       Licq::OwnerWriteGuard o(LICQ_PPID);
-    unsigned long nPFM = o->PhoneFollowMeStatus();
+      unsigned pfm = o->phoneFollowMeStatus();
     // Workaround for the ICQ4.0 problem of it not liking the PFM flags
     m_nDesiredStatus &= ~(ICQ_STATUS_FxPFM | ICQ_STATUS_FxPFMxAVAILABLE);
-    if (nPFM != ICQ_PLUGIN_STATUSxINACTIVE)
+      if (pfm != IcqPluginInactive)
       m_nDesiredStatus |= ICQ_STATUS_FxPFM;
-    if (nPFM == ICQ_PLUGIN_STATUSxACTIVE)
+      if (pfm == IcqPluginActive)
       m_nDesiredStatus |= ICQ_STATUS_FxPFMxAVAILABLE;
       ChangeUserStatus(*o, m_nDesiredStatus);
     o->SetOnlineSince(nOnlineSince);
@@ -2298,11 +2306,11 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         nOldStatus == ICQ_STATUS_OFFLINE)
     {
       //we don't know what the new values are yet, so don't show anything
-      u->SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxINACTIVE);
-      u->SetICQphoneStatus(ICQ_PLUGIN_STATUSxINACTIVE);
-      u->SetSharedFilesStatus(ICQ_PLUGIN_STATUSxINACTIVE);
-    }
-    
+        u->setPhoneFollowMeStatus(IcqPluginInactive);
+        u->setIcqPhoneStatus(IcqPluginInactive);
+        u->setSharedFilesStatus(IcqPluginInactive);
+      }
+
     if (packet.hasTLV(0x000D))
     {
       CBuffer capBuf = packet.UnpackTLV(0x000D);
@@ -2412,32 +2420,45 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
         unsigned long nPluginStatus = msg.UnpackUnsignedLong();
         const char* state;
+            unsigned pluginStatus;
         switch (nPluginStatus)
         {
-          case ICQ_PLUGIN_STATUSxINACTIVE: state = "inactive"; break;
-          case ICQ_PLUGIN_STATUSxACTIVE:   state = "active";   break;
-          case ICQ_PLUGIN_STATUSxBUSY:     state = "busy";     break;
-          default:                         state = "unknown";  break;
-        }
+              case ICQ_PLUGIN_STATUSxINACTIVE:
+                state = "inactive";
+                pluginStatus = IcqPluginInactive;
+                break;
+              case ICQ_PLUGIN_STATUSxACTIVE:
+                state = "active";
+                pluginStatus = IcqPluginActive;
+                break;
+              case ICQ_PLUGIN_STATUSxBUSY:
+                state = "busy";
+                pluginStatus = IcqPluginBusy;
+                break;
+              default:
+                state = "unknown";
+                pluginStatus = IcqPluginInactive;
+                break;
+            }
 
         if (memcmp(plugin, PLUGIN_FOLLOWxME, GUID_LENGTH) == 0)
         {
               gLog.info(tr("%s changed Phone \"Follow Me\" status to %s."),
                   u->getAlias().c_str(), state);
-            u->SetPhoneFollowMeStatus(nPluginStatus);
-        }
+              u->setPhoneFollowMeStatus(pluginStatus);
+            }
         else if (memcmp(plugin, PLUGIN_FILExSERVER, GUID_LENGTH) == 0)
         {
               gLog.info(tr("%s changed Shared Files Directory status to %s."),
                   u->getAlias().c_str(), state);
-            u->SetSharedFilesStatus(nPluginStatus);
-        }
+              u->setSharedFilesStatus(pluginStatus);
+            }
         else if (memcmp(plugin, PLUGIN_ICQxPHONE, GUID_LENGTH) == 0)
         {
               gLog.info(tr("%s changed ICQphone status to %s."),
                   u->getAlias().c_str(), state);
-            u->SetICQphoneStatus(nPluginStatus);
-        }
+              u->setIcqPhoneStatus(pluginStatus);
+            }
 
         // if status was up to date then we don't need to reask the user
         if (u->OurClientStatusTimestamp() == u->ClientStatusTimestamp() &&

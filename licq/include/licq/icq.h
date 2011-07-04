@@ -57,6 +57,13 @@ public:
   static const int MaxMessageSize = 6800; // Maybe a little bigger?
   static const int MaxOfflineMessageSize = 450;
 
+  enum IcqPluginStatus
+  {
+    IcqPluginInactive = 0,
+    IcqPluginActive = 1,
+    IcqPluginBusy = 2,
+  };
+
   // ICQ functions still public as they don't have any general proto functions
   //   to call them yet and needs to be callable from plugins for now
 
@@ -127,7 +134,7 @@ public:
   virtual void icqAlertUser(const Licq::UserId& userId) = 0;
   virtual void icqUpdatePhoneBookTimestamp() = 0;
   virtual void icqUpdatePictureTimestamp() = 0;
-  virtual void icqSetPhoneFollowMeStatus(unsigned long nNewStatus) = 0;
+  virtual void icqSetPhoneFollowMeStatus(unsigned newStatus) = 0;
   virtual void icqUpdateContactList() = 0;
   virtual void icqCheckInvisible(const Licq::UserId& userId) = 0;
 

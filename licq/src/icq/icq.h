@@ -179,7 +179,7 @@ public:
   void icqAlertUser(const Licq::UserId& userId);
   void icqUpdatePhoneBookTimestamp();
   void icqUpdatePictureTimestamp();
-  void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
+  void icqSetPhoneFollowMeStatus(unsigned newStatus);
   void icqUpdateContactList();
   void icqCheckInvisible(const Licq::UserId& userId);
   unsigned long icqSendSms(const Licq::UserId& userId, const std::string& number, const std::string& message);

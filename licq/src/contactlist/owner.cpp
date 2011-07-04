@@ -28,6 +28,7 @@
 #include <unistd.h>
 
 #include <licq/daemon.h>
+#include <licq/icq.h>
 #include <licq/icqdefines.h>
 #include <licq/plugin/pluginmanager.h>
 
@@ -192,9 +193,9 @@ unsigned long Licq::Owner::AddStatusFlags(unsigned long s) const
     s |= ICQ_STATUS_FxHIDExIP;
   if (Birthday() == 0)
     s |= ICQ_STATUS_FxBIRTHDAY;
-  if (PhoneFollowMeStatus() != ICQ_PLUGIN_STATUSxINACTIVE)
+  if (phoneFollowMeStatus() != CICQDaemon::IcqPluginInactive)
     s |= ICQ_STATUS_FxPFM;
-  if (PhoneFollowMeStatus() == ICQ_PLUGIN_STATUSxACTIVE)
+  if (phoneFollowMeStatus() == CICQDaemon::IcqPluginActive)
     s |= ICQ_STATUS_FxPFMxAVAILABLE;
 
   return s;

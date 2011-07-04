@@ -31,7 +31,7 @@
 
 // Licq
 #include <licq/contactlist/user.h>
-#include <licq/icqdefines.h>
+#include <licq/icq.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>
@@ -151,9 +151,9 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
 
   if (subSignal == 0 || subSignal == Licq::PluginSignal::UserPluginStatus)
   {
-    myPhoneFollowMeStatus = u->PhoneFollowMeStatus();
-    myIcqPhoneStatus = u->ICQphoneStatus();
-    mySharedFilesStatus = u->SharedFilesStatus();
+    myPhoneFollowMeStatus = u->phoneFollowMeStatus();
+    myIcqPhoneStatus = u->icqPhoneStatus();
+    mySharedFilesStatus = u->sharedFilesStatus();
   }
 
   if (subSignal == 0 || subSignal == Licq::PluginSignal::UserInfo)
@@ -323,17 +323,17 @@ void ContactUserData::updateExtendedStatus()
   if (myStatusTyping && myPpid == LICQ_PPID)
     myExtendedStatus |= ContactListModel::TypingStatus;
 
-  if (myPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxACTIVE)
+  if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginActive)
     myExtendedStatus |= ContactListModel::PhoneFollowMeActiveStatus;
-  else if (myPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxBUSY)
+  else if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginBusy)
     myExtendedStatus |= ContactListModel::PhoneFollowMeBusyStatus;
 
-  if (myIcqPhoneStatus == ICQ_PLUGIN_STATUSxACTIVE)
+  if (myIcqPhoneStatus == CICQDaemon::IcqPluginActive)
     myExtendedStatus |= ContactListModel::IcqPhoneActiveStatus;
-  else if (myIcqPhoneStatus == ICQ_PLUGIN_STATUSxBUSY)
+  else if (myIcqPhoneStatus == CICQDaemon::IcqPluginBusy)
     myExtendedStatus |= ContactListModel::IcqPhoneBusyStatus;
 
-  if (mySharedFilesStatus == ICQ_PLUGIN_STATUSxACTIVE)
+  if (mySharedFilesStatus == CICQDaemon::IcqPluginActive)
     myExtendedStatus |= ContactListModel::SharedFilesStatus;
 
   if (myCustomAR)
@@ -721,17 +721,17 @@ QString ContactUserData::tooltip() const
   {
     if (myStatusTyping)
       s += "<br>" + tr("Typing a message");
-    if (myPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxACTIVE)
+    if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginActive)
       s += "<br>" + tr("Phone &quot;Follow Me&quot;: Available");
-    else if (myPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxBUSY)
+    else if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginBusy)
       s += "<br>" + tr("Phone &quot;Follow Me&quot;: Busy");
 
-    if (myIcqPhoneStatus == ICQ_PLUGIN_STATUSxACTIVE)
+    if (myIcqPhoneStatus == CICQDaemon::IcqPluginActive)
       s += "<br>" + tr("ICQphone: Available");
-    else if (myIcqPhoneStatus == ICQ_PLUGIN_STATUSxBUSY)
+    else if (myIcqPhoneStatus == CICQDaemon::IcqPluginBusy)
       s += "<br>" + tr("ICQphone: Busy");
 
-    if (mySharedFilesStatus == ICQ_PLUGIN_STATUSxACTIVE)
+    if (mySharedFilesStatus == CICQDaemon::IcqPluginActive)
       s += "<br>" + tr("File Server: Enabled");
   }
 

@@ -3107,7 +3107,12 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
         unsigned long nStatus;
         {
           Licq::OwnerReadGuard o(LICQ_PPID);
-          nStatus = o->SharedFilesStatus();
+          switch (o->sharedFilesStatus())
+          {
+            case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
+            case IcqPluginBusy: nStatus = ICQ_PLUGIN_STATUSxBUSY; break;
+            default: nStatus = ICQ_PLUGIN_STATUSxINACTIVE; break;
+          }
         }
         if (pSock)
         {
@@ -3127,7 +3132,12 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
         unsigned long nStatus;
         {
           Licq::OwnerReadGuard o(LICQ_PPID);
-          nStatus = o->ICQphoneStatus();
+          switch (o->icqPhoneStatus())
+          {
+            case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
+            case IcqPluginBusy: nStatus = ICQ_PLUGIN_STATUSxBUSY; break;
+            default: nStatus = ICQ_PLUGIN_STATUSxINACTIVE; break;
+          }
         }
         if (pSock)
         {
@@ -3147,7 +3157,12 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
         unsigned long nStatus;
         {
           Licq::OwnerReadGuard o(LICQ_PPID);
-          nStatus = o->PhoneFollowMeStatus();
+          switch (o->phoneFollowMeStatus())
+          {
+            case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
+            case IcqPluginBusy: nStatus = ICQ_PLUGIN_STATUSxBUSY; break;
+            default: nStatus = ICQ_PLUGIN_STATUSxINACTIVE; break;
+          }
         }
         if (pSock)
         {
@@ -3260,29 +3275,42 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
           u->SetOurClientStatusTimestamp(nTime);
 
         const char* szState;
+            unsigned pluginState;
         switch (nState)
         {
-          case ICQ_PLUGIN_STATUSxINACTIVE: szState = "inactive"; break;
-          case ICQ_PLUGIN_STATUSxACTIVE:   szState = "active";   break;
-          case ICQ_PLUGIN_STATUSxBUSY:     szState = "busy";     break;
-          default:                         szState = "unknown";  break;
-        }
+              case ICQ_PLUGIN_STATUSxINACTIVE:
+                szState = "inactive";
+                pluginState = IcqPluginInactive;
+                break;
+              case ICQ_PLUGIN_STATUSxACTIVE:
+                szState = "active";
+                pluginState = IcqPluginActive;
+                break;
+              case ICQ_PLUGIN_STATUSxBUSY:
+                szState = "busy";
+                pluginState = IcqPluginBusy;
+                break;
+              default:
+                szState = "unknown";
+                pluginState = IcqPluginInactive;
+                break;
+            }
 
         if (memcmp(GUID, PLUGIN_FILExSERVER, GUID_LENGTH) == 0)
         {
               gLog.info(tr("%s's Shared Files Directory is %s."), u->getAlias().c_str(), szState);
-          u->SetSharedFilesStatus(nState);
-        }
+              u->setSharedFilesStatus(pluginState);
+            }
         else if (memcmp(GUID, PLUGIN_FOLLOWxME, GUID_LENGTH) == 0)
         {
               gLog.info(tr("%s's Phone \"Follow Me\" is %s."), u->getAlias().c_str(), szState);
-          u->SetPhoneFollowMeStatus(nState);
-        }
+              u->setPhoneFollowMeStatus(pluginState);
+            }
         else if (memcmp(GUID, PLUGIN_ICQxPHONE, GUID_LENGTH) == 0)
         {
               gLog.info(tr("%s's ICQphone is %s."), u->getAlias().c_str(), szState);
-          u->SetICQphoneStatus(nState);
-        }
+              u->setIcqPhoneStatus(pluginState);
+            }
 
         // Which plugin?
             Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(

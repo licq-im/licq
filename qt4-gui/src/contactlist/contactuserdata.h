@@ -252,7 +252,7 @@ private:
   time_t myTouched;
   unsigned short myNewMessages;
   unsigned myEventType;
-  unsigned long myPhoneFollowMeStatus, myIcqPhoneStatus, mySharedFilesStatus;
+  unsigned myPhoneFollowMeStatus, myIcqPhoneStatus, mySharedFilesStatus;
   unsigned int myExtendedStatus;
   ContactListModel::SubGroupType mySubGroup;
   QString mySortKey;

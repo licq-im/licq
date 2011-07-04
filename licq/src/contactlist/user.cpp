@@ -441,9 +441,9 @@ void User::LoadLicqInfo()
   myConf.get("OurClientTimestamp", m_nOurClientTimestamp, 0);
   myConf.get("OurClientInfoTimestamp", m_nOurClientInfoTimestamp, 0);
   myConf.get("OurClientStatusTimestamp", m_nOurClientStatusTimestamp, 0);
-  myConf.get("PhoneFollowMeStatus", m_nPhoneFollowMeStatus, ICQ_PLUGIN_STATUSxINACTIVE);
-  myConf.get("ICQphoneStatus", m_nICQphoneStatus, ICQ_PLUGIN_STATUSxINACTIVE);
-  myConf.get("SharedFilesStatus", m_nSharedFilesStatus, ICQ_PLUGIN_STATUSxINACTIVE);
+  myConf.get("PhoneFollowMeStatus", myPhoneFollowMeStatus, CICQDaemon::IcqPluginInactive);
+  myConf.get("ICQphoneStatus", myIcqPhoneStatus, CICQDaemon::IcqPluginInactive);
+  myConf.get("SharedFilesStatus", mySharedFilesStatus, CICQDaemon::IcqPluginInactive);
   myConf.get("UseGPG", m_bUseGPG, false );
   myConf.get("GPGKey", myGpgKey, "");
   myConf.get("SendServer", m_bSendServer, false);
@@ -668,9 +668,9 @@ void User::Init()
   m_nOurClientInfoTimestamp = 0;
   m_nOurClientStatusTimestamp = 0;
   m_bUserUpdated = false;
-  m_nPhoneFollowMeStatus = ICQ_PLUGIN_STATUSxINACTIVE;
-  m_nICQphoneStatus = ICQ_PLUGIN_STATUSxINACTIVE;
-  m_nSharedFilesStatus = ICQ_PLUGIN_STATUSxINACTIVE;
+  myPhoneFollowMeStatus = CICQDaemon::IcqPluginInactive;
+  myIcqPhoneStatus = CICQDaemon::IcqPluginInactive;
+  mySharedFilesStatus = CICQDaemon::IcqPluginInactive;
   Touch();
   for (unsigned short i = 0; i < 4; i++)
     m_nLastCounters[i] = 0;
@@ -882,12 +882,12 @@ void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
     if (s & ICQ_STATUS_FxPFM)
     {
       if (s & ICQ_STATUS_FxPFMxAVAILABLE)
-        SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxACTIVE);
+        setPhoneFollowMeStatus(CICQDaemon::IcqPluginActive);
       else
-        SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxBUSY);
+        setPhoneFollowMeStatus(CICQDaemon::IcqPluginBusy);
     }
     else if (Version() < 7)
-      SetPhoneFollowMeStatus(ICQ_PLUGIN_STATUSxINACTIVE);
+      setPhoneFollowMeStatus(CICQDaemon::IcqPluginInactive);
   }
 
   // Say that we know their status for sure
@@ -1944,9 +1944,9 @@ void User::SaveLicqInfo()
   myConf.set("OurClientTimestamp", m_nOurClientTimestamp);
   myConf.set("OurClientInfoTimestamp", m_nOurClientInfoTimestamp);
   myConf.set("OurClientStatusTimestamp", m_nOurClientStatusTimestamp);
-  myConf.set("PhoneFollowMeStatus", m_nPhoneFollowMeStatus);
-  myConf.set("ICQphoneStatus", m_nICQphoneStatus);
-  myConf.set("SharedFilesStatus", m_nSharedFilesStatus);
+  myConf.set("PhoneFollowMeStatus", myPhoneFollowMeStatus);
+  myConf.set("ICQphoneStatus", myIcqPhoneStatus);
+  myConf.set("SharedFilesStatus", mySharedFilesStatus);
   myConf.set("UseGPG", m_bUseGPG );
   myConf.set("GPGKey", myGpgKey );
   myConf.set("SendServer", m_bSendServer);
