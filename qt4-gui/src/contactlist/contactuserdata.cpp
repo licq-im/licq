@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -788,9 +788,9 @@ QString ContactUserData::tooltip() const
     s += "<br>" + tr("O: ") + t.toString();
   }
 
-  if (config->popupOnlineSince() && u->isOnline())
+  if (config->popupOnlineSince() && u->isOnline() && u->OnlineSince() > 0 && u->OnlineSince() <= time(0))
   {
-    time_t nLoggedIn = (time(0) > u->OnlineSince() ? time(0) - u->OnlineSince() : 0);
+    time_t nLoggedIn = time(0) - u->OnlineSince();
     unsigned long nWeek, nDay, nHour, nMinute;
     nWeek = nLoggedIn / 604800;
     nDay = (nLoggedIn % 604800) / 86400;

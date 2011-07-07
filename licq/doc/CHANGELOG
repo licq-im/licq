@@ -1,5 +1,9 @@
 Change log for Licq.
 
+New in 1.5.2
+o Qt4-Gui: Don't show online time if it isn't known
+
+
 New in 1.5.1
 o Package GTest with Licq to guarantee same version as GMock
 o Owners can no longer be removed when online to prevent contact list problems
