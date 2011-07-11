@@ -2517,8 +2517,6 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     u->SetClientInfoTimestamp(nInfoPluginTimestamp);
     u->SetClientStatusTimestamp(nStatusPluginTimestamp);
 
-      if (nOldStatus == ICQ_STATUS_OFFLINE)
-        gOnEventManager.performOnEvent(OnEventData::OnEventOnline, *u);
       break;
     }
   case ICQ_SNACxSUB_OFFLINExLIST:

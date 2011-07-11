@@ -507,6 +507,8 @@ public:
   /**
    * Change status for a user (or owner) and signal plugins
    * This function is used by protocol plugins to report status changes
+   * A PluginSignal for the status changed is automatically sent and if
+   * changing from offline, an OnEventOnline is also triggered.
    *
    * @param newStatus New status for user
    * @param onlineSince Time user came online or zero for now. Ignored unless changing from offline

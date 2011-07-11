@@ -39,6 +39,7 @@
 #include <licq/inifile.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
@@ -53,11 +54,13 @@ using std::string;
 using std::vector;
 using Licq::ICQUserPhoneBook;
 using Licq::IniFile;
+using Licq::OnEventData;
 using Licq::PluginSignal;
 using Licq::SecureChannelSupport_et;
 using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gLog;
+using Licq::gOnEventManager;
 using Licq::gPluginManager;
 using Licq::gUserManager;
 using namespace LicqDaemon;
@@ -902,6 +905,9 @@ void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince, unsigned 
     Touch();
     gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
         PluginSignal::UserStatus, myId, arg));
+
+    if (isUser() && oldStatus == OfflineStatus)
+      gOnEventManager.performOnEvent(OnEventData::OnEventOnline, this);
   }
 }
 

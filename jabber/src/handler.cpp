@@ -177,9 +177,6 @@ void Handler::onUserStatusChange(
     user->SetSendServer(true);
     user->setAutoResponse(msg);
     user->statusChanged(status);
-
-    if (status == Licq::User::OnlineStatus)
-      gOnEventManager.performOnEvent(OnEventData::OnEventOnline, *user);
   }
 }
 

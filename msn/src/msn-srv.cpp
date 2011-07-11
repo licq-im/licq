@@ -356,9 +356,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 
         gLog.info("%s changed status (%s)", u->getAlias().c_str(), strStatus.c_str());
         u->statusChanged(status);
-
-        if (strCmd == "NLN" && status == User::OnlineStatus)
-          gOnEventManager.performOnEvent(OnEventData::OnEventOnline, *u);
       }
     }
     else if (strCmd == "FLN")
