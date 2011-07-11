@@ -509,9 +509,10 @@ public:
    * This function is used by protocol plugins to report status changes
    *
    * @param newStatus New status for user
+   * @param onlineSince Time user came online or zero for now. Ignored unless changing from offline
    * @param icqStatus ICQ phone flags (only used by ICQ protocol)
    */
-  void statusChanged(unsigned newStatus, unsigned long icqStatus = 0);
+  void statusChanged(unsigned newStatus, time_t onlineSince = 0, unsigned long icqStatus = 0);
 
   /**
    * Convenience function to check if if user is online
@@ -777,7 +778,6 @@ protected:
   void SetLastReceivedEvent()       { m_nLastCounters[LAST_RECV_EVENT] = time(NULL); }
   void SetLastCheckedAutoResponse() { m_nLastCounters[LAST_CHECKED_AR] = time(NULL); }
 
-  void SetOnlineSince(time_t t)     { m_nOnlineSince = t; }
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 

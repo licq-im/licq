@@ -333,7 +333,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
       if (u.isLocked())
       {
-        u->SetOnlineSince(time(NULL)); // Not in this protocol
         u->SetSendServer(true); // no direct connections
 
         if (!u->KeepAliasOnUpdate())

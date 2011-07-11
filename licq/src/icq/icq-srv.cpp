@@ -1996,8 +1996,7 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       m_nDesiredStatus |= ICQ_STATUS_FxPFM;
       if (pfm == IcqPluginActive)
       m_nDesiredStatus |= ICQ_STATUS_FxPFMxAVAILABLE;
-      ChangeUserStatus(*o, m_nDesiredStatus);
-    o->SetOnlineSince(nOnlineSince);
+      ChangeUserStatus(*o, m_nDesiredStatus, nOnlineSince);
       gLog.info(tr("Server says we're now: %s"), o->statusString().c_str());
       break;
     }
@@ -2176,11 +2175,9 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       u->SetRegisteredTime(registeredTimestamp);
     }
 
+      time_t onlineSince = 0;
     if (packet.getTLVLen(0x0003) == 4)
-    {
-      time_t nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
-      u->SetOnlineSince(nOnlineSince);
-    }
+        onlineSince = packet.UnpackUnsignedLongTLV(0x0003);
 
     if (packet.getTLVLen(0x0004) == 2)
     {
@@ -2244,7 +2241,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           if (!extraInfo.empty())
             extraInfo = " [" + extraInfo + "]";
 
-        ChangeUserStatus(*u, nNewStatus);
+          ChangeUserStatus(*u, nNewStatus, onlineSince);
           gLog.info(tr("%s (%s) changed status: %s (v%d)%s."),
               u->getAlias().c_str(), u->id().toString().c_str(),
               u->statusString().c_str(), tcpVersion & 0x0F, extraInfo.c_str());
@@ -2291,7 +2288,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     {
       if (nOldStatus != nNewStatus)
       {
-        ChangeUserStatus(*u, nNewStatus);
+          ChangeUserStatus(*u, nNewStatus, onlineSince);
           gLog.info(tr("%s changed status: %s (AIM)."),
               u->getAlias().c_str(), u->statusString().c_str());
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )

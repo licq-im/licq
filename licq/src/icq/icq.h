@@ -340,7 +340,7 @@ private:
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, Licq::TCPSocket*);
 
-  void ChangeUserStatus(Licq::User* u, unsigned long s);
+  void ChangeUserStatus(Licq::User* u, unsigned long s, time_t onlineSince = 0);
   std::string findUserByCellular(const std::string& cellular);
   bool hasServerEvent(unsigned long subSequence) const;
   void StupidChatLinkageFix();

@@ -855,7 +855,7 @@ const string& Licq::User::userEncoding() const
     return myEncoding;
 }
 
-void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
+void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince, unsigned long s)
 {
   unsigned oldStatus = status();
   int arg = 0;
@@ -871,8 +871,12 @@ void Licq::User::statusChanged(unsigned newStatus, unsigned long s)
   }
   else
   {
-    if (!isOnline())
+    if (oldStatus == User::OfflineStatus)
+    {
+      // We going from offline to something else
+      m_nOnlineSince = (onlineSince != 0 ? onlineSince : time(NULL));
       arg = 1;
+    }
     if (s != 0)
       SetStatus(s);
     else

@@ -250,9 +250,9 @@ void IcqProtocol::SetUseServerSideBuddyIcons(bool b)
     m_bUseBART = b;
 }
 
-void IcqProtocol::ChangeUserStatus(Licq::User* u, unsigned long s)
+void IcqProtocol::ChangeUserStatus(Licq::User* u, unsigned long s, time_t onlineSince)
 {
-  u->statusChanged(Licq::User::statusFromIcqStatus(s), s);
+  u->statusChanged(Licq::User::statusFromIcqStatus(s), onlineSince, s);
 }
 
 /*----------------------------------------------------------------------------
