@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 class CMSN;
 class CSocketManager;
 class IcqProtocol;
-namespace Jabber { class Plugin; }
+namespace Jabber { class Handler; class Plugin; }
 void* MonitorSockets_tep(void *);
 
 
@@ -894,6 +894,7 @@ protected:
   friend class LicqDaemon::UserManager;
   friend class ::CMSN;
   friend class ::IcqProtocol;
+  friend class Jabber::Handler;
   friend class Jabber::Plugin;
   friend void* ::MonitorSockets_tep(void *);
 };

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -168,6 +168,9 @@ void Handler::onUserStatusChange(
   Licq::UserWriteGuard user(Licq::UserId(id, JABBER_PPID));
   if (user.isLocked())
   {
+    if (user->status() == Licq::User::OfflineStatus)
+      user->SetOnlineSince(time(NULL));
+
     user->SetSendServer(true);
     user->setAutoResponse(msg);
     user->statusChanged(status);

@@ -1,6 +1,7 @@
 Change log for Licq.
 
 New in 1.5.2
+o Jabber: Keep track of when contacts went online
 o Qt4-Gui: Don't show online time if it isn't known
 
 
