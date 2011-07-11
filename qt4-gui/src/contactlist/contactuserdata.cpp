@@ -791,9 +791,9 @@ QString ContactUserData::tooltip() const
     s += "<br>" + tr("O: ") + t.toString();
   }
 
-  if (config->popupOnlineSince() && u->isOnline())
+  if (config->popupOnlineSince() && u->isOnline() && u->OnlineSince() > 0 && u->OnlineSince() <= time(0))
   {
-    time_t nLoggedIn = (time(0) > u->OnlineSince() ? time(0) - u->OnlineSince() : 0);
+    time_t nLoggedIn = time(0) - u->OnlineSince();
     unsigned long nWeek, nDay, nHour, nMinute;
     nWeek = nLoggedIn / 604800;
     nDay = (nLoggedIn % 604800) / 86400;

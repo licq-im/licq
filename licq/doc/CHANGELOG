@@ -5,6 +5,11 @@ o Jabber: Connect thru HTTP proxy
 o RMS: Authentication can be configured instead of always using ICQ account
 
 
+New in 1.5.2
+o Jabber: Keep track of when contacts went online
+o Qt4-Gui: Don't show online time if it isn't known
+
+
 New in 1.5.1
 o Package GTest with Licq to guarantee same version as GMock
 o Owners can no longer be removed when online to prevent contact list problems
