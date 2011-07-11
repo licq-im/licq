@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ public:
   {
     SignalList          = 1<<0,         // Contact list has changed
     SignalUser          = 1<<1,         // A user has changed
-    SignalLogon         = 1<<2,         // Owner logged on, argument is protocolId
+    SignalLogon         = 1<<2,         // Owner logged on, userId is owner
     SignalLogoff        = 1<<3,         // Owner logged off, userId is owner
     SignalOnEvent       = 1<<4,         // ?
     SignalUiViewEvent   = 1<<5,         // UI should popup oldest unread event for userId (if set)

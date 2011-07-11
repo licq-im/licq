@@ -67,7 +67,7 @@ void Handler::onConnect(const string& ip, int port, unsigned status)
 
   Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalLogon,
-                             0, UserId(), JABBER_PPID));
+      0, gUserManager.ownerUserId(JABBER_PPID)));
 }
 
 void Handler::onChangeStatus(unsigned status)

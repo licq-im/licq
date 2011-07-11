@@ -4123,7 +4123,7 @@ void IcqProtocol::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
       Licq::Event* e = DoneExtendedServerEvent(0, Licq::Event::ResultSuccess);
     if (e != NULL) ProcessDoneEvent(e);
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
-          Licq::PluginSignal::SignalLogon, 0));
+          Licq::PluginSignal::SignalLogon, 0, Licq::gUserManager.ownerUserId(LICQ_PPID)));
 
     //icqSetStatus(m_nDesiredStatus);
       break;
