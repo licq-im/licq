@@ -307,7 +307,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           User::statusToString(status, true, false).c_str());
       myStatus = status;
 
-      gUserManager.ownerStatusChanged(MSN_PPID, status);
+      Licq::OwnerWriteGuard o(MSN_PPID);
+      if (o.isLocked())
+        o->statusChanged(status);
     }
     else if (strCmd == "ILN" || strCmd == "NLN")
     {
@@ -638,7 +640,9 @@ void CMSN::MSNLogoff(bool bDisconnected)
     }
   }
 
-  gUserManager.ownerStatusChanged(MSN_PPID, User::OfflineStatus);
+  Licq::OwnerWriteGuard o(MSN_PPID);
+  if (o.isLocked())
+    o->statusChanged(Licq::User::OfflineStatus);
 }
 
 void CMSN::MSNAddUser(const UserId& userId)

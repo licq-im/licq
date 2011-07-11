@@ -889,7 +889,6 @@ protected:
 
   static pthread_mutex_t mutex_nNumUserEvents;
 
-  friend class LicqDaemon::UserManager;
   friend class ::CMSN;
   friend class ::IcqProtocol;
   friend class Jabber::Plugin;

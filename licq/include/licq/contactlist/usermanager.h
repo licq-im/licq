@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,24 +223,6 @@ public:
    */
   void removeUserFromGroup(const UserId& userId, int groupId)
   { setUserInGroup(userId, groupId, false); }
-
-  /**
-   * Convenience function to change status for a user (or owner) and signal plugins
-   * This function is used by protocol plugins to report status changes
-   *
-   * @Param userId User to change status for
-   * @param newStatus New status for user/owner
-   */
-  virtual void userStatusChanged(const UserId& userId, unsigned newStatus) = 0;
-
-  /**
-   * Convenience function to change status for an owner and signal plugins
-   * This function is used by protocol plugins to report status changes
-   *
-   * @Param userId User to change status for
-   * @param newStatus New status for owner
-   */
-  virtual void ownerStatusChanged(unsigned long protocolId, unsigned newStatus) = 0;
 
   virtual void SaveAllUsers() = 0;
   virtual const std::string& defaultUserEncoding() = 0;

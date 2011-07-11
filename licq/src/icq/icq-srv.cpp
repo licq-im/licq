@@ -1594,7 +1594,11 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
   pthread_mutex_unlock(&mutex_extendedevents);
 #endif
 
-  Licq::gUserManager.ownerStatusChanged(LICQ_PPID, Licq::User::OfflineStatus);
+  {
+    Licq::OwnerWriteGuard o(LICQ_PPID);
+    if (o.isLocked())
+      o->statusChanged(Licq::User::OfflineStatus);
+  }
 
   myRegisterPasswd = "";
 

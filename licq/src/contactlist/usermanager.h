@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,8 +162,6 @@ public:
   std::string GetGroupNameFromGroup(int groupId);
   void setUserInGroup(const Licq::UserId& userId, int groupId,
       bool inGroup, bool updateServer = true);
-  void userStatusChanged(const Licq::UserId& userId, unsigned newStatus);
-  void ownerStatusChanged(unsigned long protocolId, unsigned newStatus);
   void SaveAllUsers();
   const std::string& defaultUserEncoding();
   void setDefaultUserEncoding(const std::string& defaultEncoding);

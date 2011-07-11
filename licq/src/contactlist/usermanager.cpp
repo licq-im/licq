@@ -1095,20 +1095,6 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
   notifyUserUpdated(userId, PluginSignal::UserGroups);
 }
 
-void UserManager::userStatusChanged(const UserId& userId, unsigned newStatus)
-{
-  Licq::UserWriteGuard u(userId);
-  if (u.isLocked())
-    u->statusChanged(newStatus);
-}
-
-void UserManager::ownerStatusChanged(unsigned long protocolId, unsigned newStatus)
-{
-  Licq::OwnerWriteGuard o(protocolId);
-  if (o.isLocked())
-    o->statusChanged(newStatus);
-}
-
 const string& UserManager::defaultUserEncoding()
 {
   return myDefaultEncoding;
