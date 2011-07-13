@@ -57,12 +57,14 @@ void Handler::onConnect(const string& ip, int port, unsigned status)
 {
   TRACE();
 
-  Licq::OwnerWriteGuard owner(JABBER_PPID);
-  if (owner.isLocked())
   {
-    owner->statusChanged(status);
-    owner->SetIpPort(Licq::INetSocket::ipToInt(ip), port);
-    owner->SetTimezone(Licq::User::SystemTimezone());
+    Licq::OwnerWriteGuard owner(JABBER_PPID);
+    if (owner.isLocked())
+    {
+      owner->statusChanged(status);
+      owner->SetIpPort(Licq::INetSocket::ipToInt(ip), port);
+      owner->SetTimezone(Licq::User::SystemTimezone());
+    }
   }
 
   Licq::gPluginManager.pushPluginSignal(
