@@ -1345,20 +1345,21 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
     Licq::gStatistics.increase(Licq::Statistics::EventsSentCounter);
   }
 
+  CSrvPacketTcp* srvPacket = dynamic_cast<CSrvPacketTcp*>(e->m_pPacket);
+
   // Process the event, first by channel
-  if (e->m_nChannel == ICQ_CHNxNEW || e->m_nChannel == ICQ_CHNxPING)
-  {
-    delete e;
-  }
-  else if (e->m_nChannel == ICQ_CHNxNONE || e->m_nChannel == ICQ_CHNxINFO ||
-           e->m_nChannel == ICQ_CHNxSTATUS)
+  if (srvPacket == NULL)
   {
     if (e->m_nCommand == ICQ_CMDxTCP_START)
       gPluginManager.pushPluginEvent(e);
     else
       delete e;
   }
-  else if (e->m_nChannel == ICQ_CHNxDATA)
+  else if (srvPacket->icqChannel() == ICQ_CHNxNEW || srvPacket->icqChannel() == ICQ_CHNxPING)
+  {
+    delete e;
+  }
+  else if (srvPacket->icqChannel() == ICQ_CHNxDATA)
   {
     // Now process by command
     switch (e->m_nSNAC)
@@ -1533,7 +1534,8 @@ void IcqProtocol::postLogoff(int nSD, Licq::Event* cancelledEvent)
   iter = m_lxRunningEvents.begin();
   while (iter != m_lxRunningEvents.end())
   {
-    if ((*iter)->m_nSocketDesc == nSD || (*iter)->Channel() == ICQ_CHNxNEW)
+    CSrvPacketTcp* srvPacket = dynamic_cast<CSrvPacketTcp*>((*iter)->m_pPacket);
+    if ((*iter)->m_nSocketDesc == nSD || (srvPacket != NULL && srvPacket->icqChannel() == ICQ_CHNxNEW))
     {
       Licq::Event* e = *iter;
       gLog.info("Event #%hu is still on the running queue!\n", e->Sequence());

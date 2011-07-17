@@ -287,7 +287,7 @@ void IcqProtocol::SendEvent_Server(CPacket *packet)
 }
 
 Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId,
-    Licq::Packet *packet, Licq::UserEvent *ue, bool bExtendedEvent)
+    CSrvPacketTcp *packet, Licq::UserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
   if (gDaemon.shuttingDown())
@@ -325,7 +325,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
 }
 
 Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq::User* pUser,
-    Licq::Packet* packet, Licq::UserEvent *ue)
+    CPacketTcp* packet, Licq::UserEvent *ue)
 {
   // If we are already shutting down, don't start any events
   if (gDaemon.shuttingDown())
@@ -335,16 +335,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Li
     return NULL;
   }
 
-  int channel;
-  switch (packet->Channel())
-  {
-    case ICQ_CHNxNONE: channel = Licq::TCPSocket::ChannelNormal; break;
-    case ICQ_CHNxINFO: channel = Licq::TCPSocket::ChannelInfo; break;
-    case ICQ_CHNxSTATUS: channel = Licq::TCPSocket::ChannelStatus; break;
-    default: channel = Licq::TCPSocket::ChannelUnknown;
-  }
-
-  Licq::Event* e = new Licq::Event(eventId, pUser->socketDesc(channel), packet,
+  Licq::Event* e = new Licq::Event(eventId, pUser->socketDesc(packet->channel()), packet,
       Licq::Event::ConnectUser, pUser->id(), ue);
 
   if (e == NULL) return NULL;
@@ -1350,17 +1341,17 @@ done:
   return bSuccess;
 }
 
-Licq::Event* IcqProtocol::SendExpectEvent_Server(const Licq::UserId& userId, Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent)
+Licq::Event* IcqProtocol::SendExpectEvent_Server(const Licq::UserId& userId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent)
 {
   return SendExpectEvent_Server(gDaemon.getNextEventId(), userId, packet, ue, extendedEvent);
 }
 
-Licq::Event* IcqProtocol::SendExpectEvent_Server(Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent)
+Licq::Event* IcqProtocol::SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent)
 {
   return SendExpectEvent_Server(gDaemon.getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
 }
 
-Licq::Event* IcqProtocol::SendExpectEvent_Client(const Licq::User* user, Licq::Packet* packet, Licq::UserEvent* ue)
+Licq::Event* IcqProtocol::SendExpectEvent_Client(const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue)
 {
   return SendExpectEvent_Client(gDaemon.getNextEventId(), user, packet, ue);
 }

@@ -32,7 +32,6 @@ Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
   if (p)
   {
     m_pPacket = p;
-    m_nChannel = p->Channel();
     m_nCommand = p->Command();
     m_nSNAC = p->SNAC();
     m_nSubCommand = p->SubCommand();
@@ -43,7 +42,6 @@ Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
   } else
   {
     m_pPacket = NULL;
-    m_nChannel = 0;
     m_nCommand = 0;
     m_nSNAC = 0;
     m_nSubCommand = 0;
@@ -76,7 +74,6 @@ Event::Event(const Event* e)
   m_Deleted = false;
   m_NoAck = false;
   m_bCancelled = e->m_bCancelled;
-  m_nChannel = e->m_nChannel;
   m_nSNAC = e->m_nSNAC;
   m_nCommand = e->m_nCommand;
   m_nSubCommand = e->m_nSubCommand;
@@ -120,7 +117,6 @@ Event::~Event()
 void Event::AttachPacket(Licq::Packet* p)
 {
   m_pPacket = p;
-  m_nChannel = p->Channel();
   m_nCommand = p->Command();
   m_nSNAC = p->SNAC();
   m_nSubCommand = p->SubCommand();

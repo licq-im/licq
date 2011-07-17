@@ -184,10 +184,6 @@ public:
   //!message was sent direct).
   int SubResult() const { return m_nSubResult; }
 
-  //!This is used to identify what channel the event was sent on.  This is
-  //!only non-zero for server events.
-  unsigned char Channel() const { return m_nChannel; }
-
   //!The SNAC returned as an unsigned long.  The upper 2 bytes is the family
   //!and the lower 2 bytes is the subtype.  To compare SNAC's use the SNAC
   //!macro to convert it to an unsigned long: MAKESNAC(family, subtype).
@@ -267,7 +263,6 @@ protected:
   bool           m_bCancelled : 1;
   bool           m_Deleted : 1;
   bool           m_NoAck : 1;
-  unsigned char  m_nChannel;
   unsigned long  m_nSNAC;
   unsigned short m_nCommand;
   unsigned short m_nSubCommand;

@@ -2783,7 +2783,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
           gLog.warning(tr("Unknown info request from %s."), u->getAlias().c_str());
         if (pSock)
         {
-          CPT_PluginError p(u, nSequence, ICQ_CHNxINFO);
+            CPT_PluginError p(u, nSequence, Licq::TCPSocket::ChannelInfo);
           AckTCP(p, pSock);
         }
         else
@@ -2825,13 +2825,14 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               }
 
           const char *GUID;
+              CPacketTcp* packetTcp = dynamic_cast<CPacketTcp*>(e->m_pPacket);
           if (e->SNAC() ==
                     MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) &&
               e->ExtraInfo() == ServerInfoPluginRequest)
           {
             GUID = ((CPU_InfoPluginReq *)e->m_pPacket)->RequestGUID();
-          }
-          else if (e->Channel() == ICQ_CHNxINFO &&
+              }
+              else if (packetTcp != NULL && packetTcp->channel() == Licq::TCPSocket::ChannelInfo &&
                    e->ExtraInfo() == DirectInfoPluginRequest)
           {
             GUID = ((CPT_InfoPluginReq *)e->m_pPacket)->RequestGUID();
@@ -3181,7 +3182,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
           gLog.warning(tr("Unknown status request from %s."), u->getAlias().c_str());
         if (pSock)
         {
-          CPT_PluginError p(u, nSequence, ICQ_CHNxSTATUS);
+            CPT_PluginError p(u, nSequence, Licq::TCPSocket::ChannelStatus);
           AckTCP(p, pSock);
         }
         else
@@ -3249,13 +3250,14 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
             }
 
         const char *GUID;
+            CPacketTcp* packetTcp = dynamic_cast<CPacketTcp*>(e->m_pPacket);
         if (e->SNAC() ==
                   MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) &&
             e->ExtraInfo() == ServerStatusPluginRequest)
         {
           GUID = ((CPU_StatusPluginReq *)e->m_pPacket)->RequestGUID();
-        }
-        else if (e->Channel() == ICQ_CHNxINFO &&
+            }
+            else if (packetTcp != NULL && packetTcp->channel() == Licq::TCPSocket::ChannelInfo &&
                  e->ExtraInfo() == DirectStatusPluginRequest)
         {
           GUID = ((CPT_StatusPluginReq *)e->m_pPacket)->RequestGUID();

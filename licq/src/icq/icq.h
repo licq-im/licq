@@ -35,6 +35,7 @@
 
 class COscarService;
 class CPacketTcp;
+class CSrvPacketTcp;
 
 namespace Licq
 {
@@ -326,15 +327,15 @@ private:
   bool SendEvent(int nSD, Licq::Packet &, bool);
   bool SendEvent(Licq::INetSocket *, Licq::Packet &, bool);
   void SendEvent_Server(Licq::Packet *packet);
-  Licq::Event* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, Licq::Packet*, Licq::UserEvent*, bool = false);
-  Licq::Event* SendExpectEvent_Server(const Licq::UserId& userId, Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent = false);
+  Licq::Event* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, CSrvPacketTcp*, Licq::UserEvent*, bool = false);
+  Licq::Event* SendExpectEvent_Server(const Licq::UserId& userId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false);
 
-  Licq::Event* SendExpectEvent_Server(unsigned long eventId, Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent = false)
+  Licq::Event* SendExpectEvent_Server(unsigned long eventId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false)
   { return SendExpectEvent_Server(eventId, Licq::UserId(), packet, ue, extendedEvent); }
 
-  Licq::Event* SendExpectEvent_Server(Licq::Packet* packet, Licq::UserEvent* ue, bool extendedEvent = false);
-  Licq::Event* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, Licq::Packet* packet, Licq::UserEvent* ue);
-  Licq::Event* SendExpectEvent_Client(const Licq::User* user, Licq::Packet* packet, Licq::UserEvent* ue);
+  Licq::Event* SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false);
+  Licq::Event* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue);
+  Licq::Event* SendExpectEvent_Client(const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue);
   Licq::Event* SendExpectEvent(Licq::Event*, void *(*fcn)(void *));
 
   void AckTCP(CPacketTcp &, int);

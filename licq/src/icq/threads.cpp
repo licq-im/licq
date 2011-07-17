@@ -18,7 +18,6 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/icqdefines.h>
-#include <licq/packet.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/logging/log.h>
@@ -30,6 +29,7 @@
 #include "../statistics.h"
 #include "../plugin/pluginmanager.h"
 #include "oscarservice.h"
+#include "packet.h"
 
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
@@ -113,7 +113,8 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
     for (iter = gIcqProtocol.m_lxSendQueue_Server.begin();
          iter != gIcqProtocol.m_lxSendQueue_Server.end(); ++iter)
     {
-      if ((*iter)->Channel() == ICQ_CHNxNEW)
+      CSrvPacketTcp* srvPacket = dynamic_cast<CSrvPacketTcp*>((*iter)->m_pPacket);
+      if (srvPacket != NULL && srvPacket->icqChannel() == ICQ_CHNxNEW)
       {
         e = *iter;
         nNext = e->Sequence() + 1;
@@ -182,8 +183,9 @@ void *ProcessRunningEvent_Server_tep(void* /* p */)
     if (e->m_nSocketDesc == -1)
     {
       // Connect to the server if we are logging on
-      if (e->m_pPacket->Channel() == ICQ_CHNxNEW)
-      {
+    CSrvPacketTcp* srvPacket = dynamic_cast<CSrvPacketTcp*>(e->m_pPacket);
+    if (srvPacket != NULL && srvPacket->icqChannel() == ICQ_CHNxNEW)
+    {
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
       gLog.info(tr("Connecting to login server."));
 
@@ -385,14 +387,8 @@ void *ProcessRunningEvent_Client_tep(void *p)
   {
     Licq::UserId userId = e->userId();
     string id = userId.accountId();
-    int channel;
-    switch (e->Channel())
-    {
-      case ICQ_CHNxNONE: channel = Licq::TCPSocket::ChannelNormal; break;
-      case ICQ_CHNxINFO: channel = Licq::TCPSocket::ChannelInfo; break;
-      case ICQ_CHNxSTATUS: channel = Licq::TCPSocket::ChannelStatus; break;
-      default: channel = Licq::TCPSocket::ChannelUnknown;
-    }
+    CPacketTcp* packetTcp = dynamic_cast<CPacketTcp*>(e->m_pPacket);
+    int channel = (packetTcp != NULL ? packetTcp->channel() : Licq::TCPSocket::ChannelNormal);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     unsigned long nVersion;

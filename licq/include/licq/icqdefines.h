@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,11 +41,6 @@ const unsigned char ICQ_CHNxDATA                   = 0x02;
 const unsigned char ICQ_CHNxERROR                  = 0x03;
 const unsigned char ICQ_CHNxCLOSE                  = 0x04;
 const unsigned char ICQ_CHNxPING                   = 0x05;
-// Licq internal
-const unsigned char ICQ_CHNxNONE                   = 0xFC;
-const unsigned char ICQ_CHNxINFO                   = 0xFD;
-const unsigned char ICQ_CHNxSTATUS                 = 0xFE;
-const unsigned char ICQ_CHNxUNKNOWN                = 0xFF;
 
 // Server SNAC families
 const unsigned short ICQ_SNACxFAM_SERVICE          = 0x0001;

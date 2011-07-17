@@ -112,7 +112,7 @@ public:
   virtual ~CSrvPacketTcp();
 
   // Packet details
-  virtual unsigned char  Channel()     { return m_nChannel; }
+  unsigned char icqChannel() const { return myIcqChannel; }
   virtual unsigned short Sequence()    { return m_nSequence; }
   virtual unsigned short SubSequence() { return m_nSubSequence; }
   virtual unsigned long  SNAC() { return ((m_nFamily << 16) | (m_nSubType)); }
@@ -135,7 +135,7 @@ protected:
   static unsigned short s_nSubSequence;
   static pthread_mutex_t s_xMutex;
 
-  unsigned char  m_nChannel;
+  unsigned char myIcqChannel;
   unsigned short m_nSequence;
   unsigned short m_nSubSequence;
   unsigned short m_nFamily;
@@ -1323,11 +1323,9 @@ public:
   CPacketTcp_Handshake_Confirm(CBuffer *inbuf);
 
   int channel() const { return myChannel; }
-  virtual unsigned char Channel() { return m_nChannel; }
   unsigned long Id() { return m_nId; }
 protected:
   int myChannel;
-  unsigned char m_nChannel;
   unsigned long m_nId;
 };
 
@@ -1339,6 +1337,7 @@ public:
    virtual ~CPacketTcp();
 
    virtual CBuffer *Finalize(Licq::INetSocket*);
+  int channel() const { return myChannel; }
    virtual unsigned short Sequence()   { return m_nSequence; }
    virtual unsigned short SubSequence()   { return 0; }
    virtual unsigned short Command()    { return m_nCommand; }
@@ -1348,7 +1347,7 @@ public:
    unsigned short Level()  { return m_nLevel; }
    unsigned short Version()  { return m_nVersion; }
 protected:
-   CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
+  CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int channel,
       const std::string& message, bool _bAccept, unsigned short nLevel,
       Licq::User* _cUser);
    void InitBuffer();
@@ -1365,6 +1364,7 @@ protected:
    unsigned long  m_nSourceUin;
    unsigned long  m_nCommand;
    unsigned short m_nSubCommand;
+  int myChannel;
    std::string myMessage;
    unsigned long  m_nLocalPort;
    unsigned short m_nStatus;
@@ -1633,11 +1633,7 @@ class CPT_PluginError : public CPacketTcp
 {
 public:
   CPT_PluginError(Licq::User* _cUser, unsigned short nSequence,
-     unsigned char nChannel);
-   virtual unsigned char Channel() { return m_nChannel; }
-
-protected:
-   unsigned char m_nChannel;
+      int channel);
 };
 
 //----Request info plugin list--------------------------------------------------
@@ -1645,7 +1641,6 @@ class CPT_InfoPluginReq : public CPacketTcp
 {
 public:
   CPT_InfoPluginReq(Licq::User* _cUser, const char* GUID, unsigned long int nTime);
-   virtual unsigned char Channel()   { return ICQ_CHNxINFO; }
    virtual const char *RequestGUID()        { return m_ReqGUID; }
    virtual unsigned short ExtraInfo() { return DirectInfoPluginRequest; }
 
@@ -1658,7 +1653,6 @@ class CPT_InfoPhoneBookResp : public CPacketTcp
 {
 public:
   CPT_InfoPhoneBookResp(Licq::User* _cUser, unsigned short nSequence);
-   virtual unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
 //-----Response to picture request----------------------------------------------
@@ -1666,7 +1660,6 @@ class CPT_InfoPictureResp : public CPacketTcp
 {
 public:
   CPT_InfoPictureResp(Licq::User* _cUser, unsigned short nSequence);
-   virtual unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
 //----Response to info plugin list request--------------------------------------
@@ -1674,7 +1667,6 @@ class CPT_InfoPluginListResp : public CPacketTcp
 {
 public:
   CPT_InfoPluginListResp(Licq::User* _cUser, unsigned short nSequence);
-   virtual unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
 //----Send status plugin request------------------------------------------------
@@ -1682,7 +1674,6 @@ class CPT_StatusPluginReq : public CPacketTcp
 {
 public:
   CPT_StatusPluginReq(Licq::User* _cUser, const char* GUID, unsigned long nTime);
-   virtual unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
    virtual unsigned short ExtraInfo() { return DirectStatusPluginRequest;}
    virtual const char *RequestGUID() { return m_ReqGUID; }
 
@@ -1695,7 +1686,6 @@ class CPT_StatusPluginListResp : public CPacketTcp
 {
 public:
   CPT_StatusPluginListResp(Licq::User* _cUser, unsigned short nSequence);
-  virtual unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
 };
 
 //----Response to status request------------------------------------------------
@@ -1704,7 +1694,6 @@ class CPT_StatusPluginResp : public CPacketTcp
 public:
   CPT_StatusPluginResp(Licq::User* _cUser, unsigned short nSequence,
                        unsigned long nStatus);
-  virtual unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
 };
 
 

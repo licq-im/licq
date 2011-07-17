@@ -1196,15 +1196,8 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
 
     // if the original message was through server, send this one through server
     unsigned flags = 0;
-    switch (e->Channel())
-    {
-      case ICQ_CHNxNONE: // Fall through
-      case ICQ_CHNxINFO:
-      case ICQ_CHNxSTATUS:
-        break;
-      default:
-        flags |= Licq::ProtocolSignal::SendDirect;
-    }
+    if (e->userEvent()->IsDirect())
+      flags |= Licq::ProtocolSignal::SendDirect;
 
     switch (QueryUser(this, msg, tr("Urgent"), tr(" to Contact List"), tr("Cancel")))
     {

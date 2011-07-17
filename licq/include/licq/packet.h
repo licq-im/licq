@@ -43,7 +43,6 @@ public:
   virtual unsigned short Command() = 0;
   virtual unsigned short SubCommand() = 0;
 
-  virtual unsigned char  Channel();
   virtual unsigned long  SNAC()      { return 0; }
   virtual unsigned short ExtraInfo() { return 0; }
 

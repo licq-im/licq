@@ -37,8 +37,3 @@ Licq::Packet::~Packet()
 {
   delete buffer;
 }
-
-unsigned char Licq::Packet::Channel()
-{
-  return ICQ_CHNxNONE;
-}
