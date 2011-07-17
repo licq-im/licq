@@ -421,7 +421,7 @@ unsigned long ProtocolManager::requestUserPicture(const UserId& userId)
       return 0;
 
     iconHashSize = user->buddyIconHash().size();
-    sendServer = (user->SocketDesc(ICQ_CHNxINFO) < 0);
+    sendServer = (user->infoSocketDesc() < 0);
   }
 
   unsigned long eventId = 0;

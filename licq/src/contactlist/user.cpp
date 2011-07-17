@@ -659,7 +659,7 @@ void User::Init()
   SetShowAwayMsg(false);
   SetSequence(static_cast<unsigned short>(-1)); // set all bits 0xFFFF
   SetOfflineOnDisconnect(false);
-  ClearSocketDesc();
+  clearAllSocketDesc();
   m_nIp = m_nPort = m_nIntIp = 0;
   m_nMode = MODE_DIRECT;
   m_nVersion = 0;
@@ -1165,49 +1165,48 @@ const string& User::historyFile() const
 
 void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 {
-  if ((SocketDesc(ICQ_CHNxNONE) != -1 || SocketDesc(ICQ_CHNxINFO) != -1
-       || SocketDesc(ICQ_CHNxSTATUS) != -1) &&
+  if ((myNormalSocketDesc != -1 || myInfoSocketDesc != -1 || myStatusSocketDesc != -1) &&
       ( (Ip() != 0 && Ip() != _nIp) || (Port() != 0 && Port() != _nPort)) )
   {
     // Close our socket, but don't let socket manager try and clear
     // our socket descriptor
-    if (SocketDesc(ICQ_CHNxNONE) != -1)
-      gSocketManager.CloseSocket(SocketDesc(ICQ_CHNxNONE), false);
-    if (SocketDesc(ICQ_CHNxINFO) != -1)
-      gSocketManager.CloseSocket(SocketDesc(ICQ_CHNxINFO), false);
-    if (SocketDesc(ICQ_CHNxSTATUS) != -1)
-      gSocketManager.CloseSocket(SocketDesc(ICQ_CHNxSTATUS), false);
-    ClearSocketDesc();
+    if (myNormalSocketDesc != -1)
+      gSocketManager.CloseSocket(myNormalSocketDesc, false);
+    if (myInfoSocketDesc != -1)
+      gSocketManager.CloseSocket(myInfoSocketDesc, false);
+    if (myStatusSocketDesc != -1)
+      gSocketManager.CloseSocket(myStatusSocketDesc, false);
+    clearAllSocketDesc();
   }
   m_nIp = _nIp;
   m_nPort = _nPort;
   SaveLicqInfo();
 }
 
-int Licq::User::SocketDesc(unsigned char nChannel) const
+int Licq::User::socketDesc(int channel) const
 {
-  switch (nChannel)
+  switch (channel)
   {
-  case ICQ_CHNxNONE:
-    return m_nNormalSocketDesc;
-  case ICQ_CHNxINFO:
-    return m_nInfoSocketDesc;
-  case ICQ_CHNxSTATUS:
-    return m_nStatusSocketDesc;
+    case TCPSocket::ChannelNormal:
+      return myNormalSocketDesc;
+    case TCPSocket::ChannelInfo:
+      return myInfoSocketDesc;
+    case TCPSocket::ChannelStatus:
+      return myStatusSocketDesc;
   }
-  gLog.warning(tr("Unknown channel type %u."), nChannel);
+  gLog.warning(tr("Unknown channel type %u."), channel);
 
   return 0;
 }
 
-void Licq::User::SetSocketDesc(Licq::TCPSocket* s)
+void Licq::User::setSocketDesc(Licq::TCPSocket* s)
 {
-  if (s->Channel() == ICQ_CHNxNONE)
-    m_nNormalSocketDesc = s->Descriptor();
-  else if (s->Channel() == ICQ_CHNxINFO)
-    m_nInfoSocketDesc = s->Descriptor();
-  else if (s->Channel() == ICQ_CHNxSTATUS)
-    m_nStatusSocketDesc = s->Descriptor();
+  if (s->channel() == TCPSocket::ChannelNormal)
+    myNormalSocketDesc = s->Descriptor();
+  else if (s->channel() == TCPSocket::ChannelInfo)
+    myInfoSocketDesc = s->Descriptor();
+  else if (s->channel() == TCPSocket::ChannelStatus)
+    myStatusSocketDesc = s->Descriptor();
   m_nLocalPort = s->getLocalPort();
   m_nConnectionVersion = s->Version();
   if (m_bSecure != s->Secure())
@@ -1225,30 +1224,30 @@ void Licq::User::SetSocketDesc(Licq::TCPSocket* s)
   SetSendServer(false);
 }
 
-void Licq::User::ClearSocketDesc(unsigned char nChannel)
+void Licq::User::clearSocketDesc(int channel)
 {
-  switch (nChannel)
+  switch (channel)
   {
-  case ICQ_CHNxNONE:
-    m_nNormalSocketDesc = -1;
-    break;
-  case ICQ_CHNxINFO:
-    m_nInfoSocketDesc = -1;
-    break;
-  case ICQ_CHNxSTATUS:
-    m_nStatusSocketDesc = -1;
-    break;
-  case 0x00: // Used as default value to clear all socket descriptors
-    m_nNormalSocketDesc = m_nInfoSocketDesc = m_nStatusSocketDesc = -1;
-    break;
+    case TCPSocket::ChannelNormal:
+      myNormalSocketDesc = -1;
+      break;
+    case TCPSocket::ChannelInfo:
+      myInfoSocketDesc = -1;
+      break;
+    case TCPSocket::ChannelStatus:
+      myStatusSocketDesc = -1;
+      break;
+    case -1: // Used as default value to clear all socket descriptors
+      myNormalSocketDesc = -1;
+      myInfoSocketDesc = -1;
+      myStatusSocketDesc = -1;
+      break;
     default:
-      gLog.info(tr("Unknown channel %u."), nChannel);
+      gLog.info(tr("Unknown channel %u."), channel);
       return;
   }
 
-  if (m_nStatusSocketDesc == -1 &&
-      m_nInfoSocketDesc == -1 &&
-      m_nNormalSocketDesc == -1)
+  if (myStatusSocketDesc == -1 && myInfoSocketDesc == -1 && myNormalSocketDesc == -1)
   {
     m_nLocalPort = 0;
     m_nConnectionVersion = 0;
@@ -1260,9 +1259,14 @@ void Licq::User::ClearSocketDesc(unsigned char nChannel)
         PluginSignal::UserSecurity, myId, 0));
 }
 
+void Licq::User::clearAllSocketDesc()
+{
+  clearSocketDesc(-1);
+}
+
 void Licq::User::clearNormalSocketDesc()
 {
-  ClearSocketDesc(ICQ_CHNxNONE);
+  clearSocketDesc(TCPSocket::ChannelNormal);
 }
 
 unsigned short Licq::User::ConnectionVersion() const
@@ -1456,11 +1460,11 @@ string Licq::User::portToString() const
 
 string Licq::User::internalIpToString() const
 {
-  int socket = SocketDesc(ICQ_CHNxNONE);
+  int socket = myNormalSocketDesc;
   if (socket < 0)
-    socket = SocketDesc(ICQ_CHNxINFO);
+    socket = myInfoSocketDesc;
   if (socket < 0)
-    socket = SocketDesc(ICQ_CHNxSTATUS);
+    socket = myStatusSocketDesc;
 
   if (socket > 0)		// First check if we are connected
   {

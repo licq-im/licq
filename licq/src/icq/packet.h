@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1319,12 +1319,14 @@ public:
 class CPacketTcp_Handshake_Confirm : public CPacketTcp_Handshake
 {
 public:
-  CPacketTcp_Handshake_Confirm(unsigned char nChannel, unsigned short nSequence);
+  CPacketTcp_Handshake_Confirm(int channel, unsigned short nSequence);
   CPacketTcp_Handshake_Confirm(CBuffer *inbuf);
 
+  int channel() const { return myChannel; }
   virtual unsigned char Channel() { return m_nChannel; }
   unsigned long Id() { return m_nId; }
 protected:
+  int myChannel;
   unsigned char m_nChannel;
   unsigned long m_nId;
 };

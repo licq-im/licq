@@ -49,7 +49,6 @@ extern "C" {
 #endif
 
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/proxy.h>
 #include <licq/logging/log.h>
 
@@ -178,8 +177,7 @@ INetSocket::INetSocket(int sockType, const string& logId, const UserId& userId)
     myVersion(0),
     myErrorType(ErrorNone),
     myProxy(NULL),
-    myUserId(userId),
-    myChannel(ICQ_CHNxNONE)
+    myUserId(userId)
 {
   memset(&myRemoteAddr, 0, sizeof(myRemoteAddrStorage));
   memset(&myLocalAddr, 0, sizeof(myLocalAddrStorage));
@@ -662,13 +660,15 @@ bool SrvSocket::RecvPacket()
 
 //=====TCPSocket===============================================================
 TCPSocket::TCPSocket(const UserId& userId)
-  : INetSocket(SOCK_STREAM, "TCP", userId)
+  : INetSocket(SOCK_STREAM, "TCP", userId),
+    myChannel(ChannelNormal)
 {
   m_p_SSL = NULL;
 }
 
 TCPSocket::TCPSocket()
-  : INetSocket(SOCK_STREAM, "TCP", UserId())
+  : INetSocket(SOCK_STREAM, "TCP", UserId()),
+    myChannel(ChannelNormal)
 {
   m_p_SSL = NULL;
 }

@@ -31,7 +31,6 @@
 #include <licq/conversation.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -505,8 +504,8 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     if (u.isLocked())
     {
       if (pStart->m_bDataConnection)
-        sock->SetChannel(ICQ_CHNxINFO);
-      u->SetSocketDesc(sock);
+        sock->setChannel(Licq::TCPSocket::ChannelInfo);
+      u->setSocketDesc(sock);
     }
   }
   gSocketMan.DropSocket(sock);
@@ -556,7 +555,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   {
     bool newUser = false;
     Licq::UserWriteGuard u(userId, true, &newUser);
-    u->SetSocketDesc(sock);
+    u->setSocketDesc(sock);
     if (newUser)
     {
       u->SetEnableSave(false);

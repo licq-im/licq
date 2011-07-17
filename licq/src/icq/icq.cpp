@@ -335,7 +335,16 @@ Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Li
     return NULL;
   }
 
-  Licq::Event* e = new Licq::Event(eventId, pUser->SocketDesc(packet->Channel()), packet,
+  int channel;
+  switch (packet->Channel())
+  {
+    case ICQ_CHNxNONE: channel = Licq::TCPSocket::ChannelNormal; break;
+    case ICQ_CHNxINFO: channel = Licq::TCPSocket::ChannelInfo; break;
+    case ICQ_CHNxSTATUS: channel = Licq::TCPSocket::ChannelStatus; break;
+    default: channel = Licq::TCPSocket::ChannelUnknown;
+  }
+
+  Licq::Event* e = new Licq::Event(eventId, pUser->socketDesc(channel), packet,
       Licq::Event::ConnectUser, pUser->id(), ue);
 
   if (e == NULL) return NULL;

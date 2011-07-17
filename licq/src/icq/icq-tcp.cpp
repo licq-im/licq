@@ -671,7 +671,7 @@ void IcqProtocol::icqFileTransferCancel(const Licq::UserId& userId, unsigned sho
     return;
   gLog.info(tr("Cancelling file transfer to %s (#%hu)."), u->getAlias().c_str(), -nSequence);
   CPT_CancelFile p(nSequence, *u);
-  AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
+  AckTCP(p, u->normalSocketDesc());
 }
 
 void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned short nPort,
@@ -686,7 +686,7 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
   if (!viaServer)
   {
     CPT_AckFileAccept p(nPort, nSequence, *u);
-    AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
+    AckTCP(p, u->normalSocketDesc());
   }
   else
   {
@@ -709,7 +709,7 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
   if (!viaServer)
   {
     CPT_AckFileRefuse p(reasonDos, nSequence, *u);
-    AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
+    AckTCP(p, u->normalSocketDesc());
   }
   else
   {
@@ -803,7 +803,7 @@ void IcqProtocol::icqChatRequestCancel(const Licq::UserId& userId, unsigned shor
     return;
   gLog.info(tr("Cancelling chat request with %s (#%hu)."), u->getAlias().c_str(), -nSequence);
   CPT_CancelChat p(nSequence, *u);
-  AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
+  AckTCP(p, u->normalSocketDesc());
 }
 
 void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string& reason,
@@ -819,9 +819,9 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
 	if (bDirect)
   {
     CPT_AckChatRefuse p(reasonDos, nSequence, *u);
-		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
-	}
-	else
+    AckTCP(p, u->normalSocketDesc());
+  }
+  else
   {
     CPU_AckChatRefuse* p = new CPU_AckChatRefuse(*u, nMsgID, nSequence, reasonDos);
 		SendEvent_Server(p);
@@ -842,9 +842,9 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
 	if (bDirect)
   {
     CPT_AckChatAccept p(nPort, clients, nSequence, *u, u->Version() > 7);
-		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
-	}
-	else
+    AckTCP(p, u->normalSocketDesc());
+  }
+  else
   {
     CPU_AckChatAccept* p = new CPU_AckChatAccept(*u, clients, nMsgID, nSequence, nPort);
 		SendEvent_Server(p);
@@ -1058,7 +1058,7 @@ sock_error:
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-int IcqProtocol::connectToUser(const Licq::UserId& userId, unsigned char nChannel)
+int IcqProtocol::connectToUser(const Licq::UserId& userId, int channel)
 {
   {
     Licq::UserReadGuard u(userId);
@@ -1066,7 +1066,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, unsigned char nChanne
       return -1;
 
     // Check that we need to connect at all
-    int sd = u->SocketDesc(nChannel);
+    int sd = u->socketDesc(channel);
     if (sd != -1)
     {
       gLog.warning(tr("Connection attempted to already connected user (%s)."),
@@ -1093,7 +1093,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, unsigned char nChanne
 
   {
     Licq::UserWriteGuard u(userId);
-    int sd = u->SocketDesc(ICQ_CHNxNONE);
+    int sd = u->normalSocketDesc();
     if (sd == -1)
       u->SetConnectionInProgress(true);
     else
@@ -1113,7 +1113,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, unsigned char nChanne
     delete s;
     return -1;
   }
-  s->SetChannel(nChannel);
+  s->setChannel(channel);
 
   gLog.info(tr("Shaking hands with %s (%s) [v%d]."),
       alias.c_str(), userId.toString().c_str(), nVersion);
@@ -1135,7 +1135,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, unsigned char nChanne
     Licq::UserWriteGuard u(userId);
     if (!u.isLocked())
       return -1;
-    u->SetSocketDesc(s);
+    u->setSocketDesc(s);
     u->SetConnectionInProgress(false);
   }
 
@@ -1311,7 +1311,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
     {
       Licq::UserWriteGuard u(userId);
       if (u.isLocked())
-        u->SetSocketDesc(s);
+        u->setSocketDesc(s);
     }
 
     // Add the new socket to the socket manager, alert the thread
@@ -1423,7 +1423,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       packet.incDataPosRead(headerLen - 2);
       newCommand = packet.UnpackUnsignedShort();
 
-      if (pSock->Channel() == ICQ_CHNxNONE)
+      if (pSock->channel() == Licq::TCPSocket::ChannelNormal)
       {
         ackFlags = packet.UnpackUnsignedShort();
         msgFlags = packet.UnpackUnsignedShort();
@@ -1481,19 +1481,19 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   bool bNewUser = false;
   Licq::UserWriteGuard u(userId, true, &bNewUser);
   if (bNewUser)
-    u->SetSocketDesc(pSock);
+    u->setSocketDesc(pSock);
 
   // Check for spoofing
-  if (u->SocketDesc(pSock->Channel()) != sockfd)
+  if (u->socketDesc(pSock->channel()) != sockfd)
   {
     gLog.warning(tr("User %s (%s) socket (%d) does not match incoming message (%d)."),
         u->getAlias().c_str(), u->accountId().c_str(),
-              u->SocketDesc(pSock->Channel()), sockfd);
+              u->socketDesc(pSock->channel()), sockfd);
   }
 
-  if (pSock->Channel() != ICQ_CHNxNONE)
+  if (pSock->channel() != Licq::TCPSocket::ChannelNormal)
   {
-    errorOccured = ProcessPluginMessage(packet, *u, pSock->Channel(),
+    errorOccured = processPluginMessage(packet, *u, pSock->channel(),
                                         command == ICQ_CMDxTCP_ACK,
                                         0, 0, theSequence, pSock);
   }
@@ -2702,8 +2702,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   return !errorOccured;
 }
 
-bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
-                                      unsigned char nChannel,
+bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
+    int channel,
                                       bool bIsAck,
                                       unsigned long nMsgID1,
                                       unsigned long nMsgID2,
@@ -2712,10 +2712,10 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
 {
   bool errorOccured = false;
 
-  switch (nChannel)
+  switch (channel)
   {
-  case ICQ_CHNxINFO:
-  {
+    case Licq::TCPSocket::ChannelInfo:
+    {
     packet.incDataPosRead(2);
     char error_level = packet.UnpackChar();
 
@@ -3065,10 +3065,10 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
 
     }
 
-    break;
-  }
-  case ICQ_CHNxSTATUS:
-  {
+      break;
+    }
+    case Licq::TCPSocket::ChannelStatus:
+    {
     packet.incDataPosRead(2);
     char error_level = packet.UnpackChar();
 
@@ -3362,7 +3362,7 @@ bool IcqProtocol::ProcessPluginMessage(CBuffer &packet, Licq::User* u,
   }
     default:
     {
-      gLog.warning(tr("Unknown channel %u from %s"), nChannel, u->getAlias().c_str());
+      gLog.warning(tr("Unknown channel %u from %s"), channel, u->getAlias().c_str());
     if (!pSock)
     {
       CPU_NoManager *p = new CPU_NoManager(u, nMsgID1, nMsgID2);
@@ -3491,7 +3491,7 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
             }
             if ((*iter)->nId == p_in.Id() && (*iter)->myIdString == id)
             {
-              s->SetChannel((*iter)->nData);
+              s->setChannel((*iter)->nData);
               (*iter)->bSuccess = true;
               (*iter)->bFinished = true;
               if (!Handshake_SendConfirm_v7(s))
@@ -3699,7 +3699,7 @@ sock_error:
 bool IcqProtocol::Handshake_SendConfirm_v7(Licq::TCPSocket* s)
 {
   // Send handshake accepted
-  CPacketTcp_Handshake_Confirm p_confirm(s->Channel(), 0);
+  CPacketTcp_Handshake_Confirm p_confirm(s->channel(), 0);
   if (!s->SendPacket(p_confirm.getBuffer()))
     return false;
 
@@ -3740,8 +3740,8 @@ bool IcqProtocol::Handshake_RecvConfirm_v7(Licq::TCPSocket* s)
     }
     b.Reset();
     CPacketTcp_Handshake_Confirm p_confirm_in(&b);
-    if (p_confirm_in.Channel() != ICQ_CHNxUNKNOWN)
-      s->SetChannel(p_confirm_in.Channel());
+    if (p_confirm_in.channel() != Licq::TCPSocket::ChannelUnknown)
+      s->setChannel(p_confirm_in.channel());
     else
     {
       gLog.warning(tr("Unknown channel in ack packet."));
@@ -3750,7 +3750,7 @@ bool IcqProtocol::Handshake_RecvConfirm_v7(Licq::TCPSocket* s)
 
     s->ClearRecvBuffer();
 
-    CPacketTcp_Handshake_Confirm p_confirm_out(p_confirm_in.Channel(),
+    CPacketTcp_Handshake_Confirm p_confirm_out(p_confirm_in.channel(),
                                                        p_confirm_in.Id());
 
     if (s->SendPacket(p_confirm_out.getBuffer()))
@@ -3783,17 +3783,17 @@ bool IcqProtocol::ProcessTcpHandshake(Licq::TCPSocket* s)
   {
     gLog.info(tr("Connection from %s (%s) [v%ld]."),
         u->getAlias().c_str(), userId.toString().c_str(), s->Version());
-    if (u->SocketDesc(s->Channel()) != s->Descriptor())
+    if (u->socketDesc(s->channel()) != s->Descriptor())
     {
-      if (u->SocketDesc(s->Channel()) != -1)
+      if (u->socketDesc(s->channel()) != -1)
       {
         gLog.warning(tr("User %s (%s) already has an associated socket."),
             u->getAlias().c_str(), userId.toString().c_str());
         return true;
-/*        gSocketManager.CloseSocket(u->SocketDesc(s->Channel()), false);
-        u->ClearSocketDesc(s->Channel());*/
+/*        gSocketManager.CloseSocket(u->socketDesc(s->channel()), false);
+        u->clearSocketDesc(s->channel());*/
       }
-      u->SetSocketDesc(s);
+      u->setSocketDesc(s);
     }
   }
   else

@@ -2809,7 +2809,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
         pthread_t t;
         CReverseConnectToUserData *data = new CReverseConnectToUserData(
-            id, nId, ICQ_CHNxUNKNOWN, nIp, nPort,
+                id, nId, Licq::TCPSocket::ChannelUnknown, nIp, nPort,
                                nVersion, nFailedPort, nMsgID[0], nMsgID[1]);
         pthread_create(&t, NULL, &ReverseConnectToUser_tep, data);
         break;
@@ -2839,17 +2839,18 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       if (memcmp(GUID, PLUGIN_NORMAL, GUID_LENGTH) != 0)
       {
-        unsigned char nChannel = ICQ_CHNxUNKNOWN;
-
+            int channel;
         if (memcmp(GUID, PLUGIN_INFOxMANAGER, GUID_LENGTH) == 0)
-          nChannel = ICQ_CHNxINFO;
+              channel = Licq::TCPSocket::ChannelInfo;
         else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, GUID_LENGTH) == 0)
-          nChannel = ICQ_CHNxSTATUS;
+              channel = Licq::TCPSocket::ChannelStatus;
+            else
+              channel = Licq::TCPSocket::ChannelUnknown;
 
         bool bNewUser = false;
             Licq::UserWriteGuard u(userId, true, &bNewUser);
 
-            ProcessPluginMessage(advMsg, *u, nChannel, bIsAck, nMsgID[0], nMsgID[1],
+            processPluginMessage(advMsg, *u, channel, bIsAck, nMsgID[0], nMsgID[1],
                              nSequence, NULL);
 
         if (bNewUser)
@@ -3422,13 +3423,15 @@ However it seems to always think contact is online instead of away/occupied/etc.
     
     if (memcmp(GUID, PLUGIN_NORMAL, GUID_LENGTH) != 0)
     {
-      unsigned char nChannel = ICQ_CHNxUNKNOWN;
+        int channel;
       if (memcmp(GUID, PLUGIN_INFOxMANAGER, GUID_LENGTH) == 0)
-        nChannel = ICQ_CHNxINFO;
+          channel = Licq::TCPSocket::ChannelInfo;
       else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, GUID_LENGTH) == 0)
-        nChannel = ICQ_CHNxSTATUS;
+          channel = Licq::TCPSocket::ChannelStatus;
+        else
+          channel = Licq::TCPSocket::ChannelUnknown;
 
-        ProcessPluginMessage(packet, *u, nChannel, true, 0, nMsgID, nSequence, 0);
+        processPluginMessage(packet, *u, channel, true, 0, nMsgID, nSequence, 0);
 
         break;
       }

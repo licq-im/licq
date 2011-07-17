@@ -630,7 +630,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
       if (u->normalSocketDesc() != -1)
       {
         gSocketMan.CloseSocket(u->normalSocketDesc(), false, true);
-        u->ClearSocketDesc();
+        u->clearAllSocketDesc();
       }
       if (u->isOnline())
         u->statusChanged(User::OfflineStatus);

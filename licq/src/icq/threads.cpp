@@ -385,7 +385,14 @@ void *ProcessRunningEvent_Client_tep(void *p)
   {
     Licq::UserId userId = e->userId();
     string id = userId.accountId();
-    unsigned char nChannel = e->Channel();
+    int channel;
+    switch (e->Channel())
+    {
+      case ICQ_CHNxNONE: channel = Licq::TCPSocket::ChannelNormal; break;
+      case ICQ_CHNxINFO: channel = Licq::TCPSocket::ChannelInfo; break;
+      case ICQ_CHNxSTATUS: channel = Licq::TCPSocket::ChannelStatus; break;
+      default: channel = Licq::TCPSocket::ChannelUnknown;
+    }
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     unsigned long nVersion;
@@ -424,7 +431,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     int socket = -1;
     if (!bSendIntIp && nVersion > 6 && nMode != MODE_DIRECT)
     {
-      int nId = gIcqProtocol.requestReverseConnection(userId, nChannel, nIP, nLocalPort, nRemotePort);
+      int nId = gIcqProtocol.requestReverseConnection(userId, channel, nIP, nLocalPort, nRemotePort);
       if (nId != -1)
       {
         gIcqProtocol.waitForReverseConnection(nId, userId);
@@ -441,7 +448,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
           }
           pthread_exit(NULL);
         }
-        socket = u->SocketDesc(nChannel);
+        socket = u->socketDesc(channel);
       }
       
       // if we failed, try direct anyway
@@ -451,12 +458,12 @@ void *ProcessRunningEvent_Client_tep(void *p)
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-        socket = gIcqProtocol.connectToUser(userId, nChannel);
+        socket = gIcqProtocol.connectToUser(userId, channel);
       }
     }
     else
     {
-      socket = gIcqProtocol.connectToUser(userId, nChannel);
+      socket = gIcqProtocol.connectToUser(userId, channel);
 
       // if we failed, try through server
       if (socket == -1)
@@ -465,7 +472,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-        int nId = gIcqProtocol.requestReverseConnection(userId, nChannel, nIP,
+        int nId = gIcqProtocol.requestReverseConnection(userId, channel, nIP,
                                               nLocalPort, nRemotePort);
         if (nId != -1)
         {
@@ -483,7 +490,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
             }
             pthread_exit(NULL);
           }
-          socket = u->SocketDesc(nChannel);
+          socket = u->socketDesc(channel);
         }
       }
     }
@@ -876,7 +883,7 @@ void *MonitorSockets_func()
             Licq::UserWriteGuard u(tcp->userId());
             if (u.isLocked() && u->Secure())
             {
-              u->ClearSocketDesc(ICQ_CHNxNONE);
+              u->clearNormalSocketDesc();
               u->SetSecure(false);
               Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                   Licq::PluginSignal::SignalUser,

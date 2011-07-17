@@ -718,15 +718,14 @@ public:
   TlvList GetTLVList()                          { return myTLVs; }
   const TlvList GetTLVList() const              { return myTLVs; }
 
+  int socketDesc(int channel) const;
+  void clearSocketDesc(int channel);
+  void clearAllSocketDesc();
+  void setSocketDesc(TCPSocket* s);
 
-  // Don't call these:
-  int SocketDesc(unsigned char channel) const;
-  void ClearSocketDesc(unsigned char nChannel = 0x00);
-  void SetSocketDesc(TCPSocket*);
-
-  // Convenience functions so plugins don't need to know ICQ_CHNx constants
-  int normalSocketDesc() const                  { return m_nNormalSocketDesc; }
-  int infoSocketDesc() const                    { return m_nInfoSocketDesc; }
+  // Convenience functions so plugins don't need to know TCPSocket::ChannelTypes
+  int normalSocketDesc() const                  { return myNormalSocketDesc; }
+  int infoSocketDesc() const                    { return myInfoSocketDesc; }
   void clearNormalSocketDesc();
 
   // Events functions
@@ -796,7 +795,9 @@ protected:
 
   UserId myId;
 
-  int m_nNormalSocketDesc, m_nInfoSocketDesc, m_nStatusSocketDesc;
+  int myNormalSocketDesc;
+  int myInfoSocketDesc;
+  int myStatusSocketDesc;
   time_t m_nTouched;
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;

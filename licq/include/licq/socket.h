@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,9 +194,6 @@ public:
    */
   static int connectDirect(const std::string& remoteName, uint16_t remotePort, uint16_t sockType, struct sockaddr* remoteAddr);
 
-  void SetChannel(unsigned char channel) { myChannel = channel; }
-  unsigned char Channel() const { return myChannel; }
-
 protected:
   enum ErrorType
   {
@@ -230,7 +227,6 @@ protected:
   ErrorType myErrorType;
   Proxy* myProxy;
   UserId myUserId;
-  unsigned char myChannel;
   Mutex myMutex;
 };
 
@@ -264,9 +260,21 @@ public:
   bool SecureListen();
   void SecureStop();
 
+  enum ChannelType
+  {
+    ChannelUnknown,
+    ChannelNormal,
+    ChannelInfo,
+    ChannelStatus,
+  };
+
+  void setChannel(int channel) { myChannel = channel; }
+  int channel() const { return myChannel; }
+
 protected:
   void* m_p_SSL;
   pthread_mutex_t mutex_ssl;
+  int myChannel;
 };
 
 

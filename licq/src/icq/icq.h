@@ -266,7 +266,7 @@ public:
       const unsigned long nMsgID[], unsigned short nSequence,
      bool bIsAck, bool &bNewUser);
 
-  bool ProcessPluginMessage(Licq::Buffer& packet, Licq::User* user, unsigned char nChannel,
+  bool processPluginMessage(Licq::Buffer& packet, Licq::User* user, int channel,
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
      Licq::TCPSocket* pSock);
@@ -306,7 +306,7 @@ public:
 
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
-  int connectToUser(const Licq::UserId& userId, unsigned char channel);
+  int connectToUser(const Licq::UserId& userId, int channel);
   int reverseConnectToUser(const Licq::UserId& userId, unsigned long nIp,
      unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
      unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2);

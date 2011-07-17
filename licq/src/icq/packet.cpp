@@ -4186,34 +4186,36 @@ CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
   buffer->PackUnsignedLong(1);
 }
 
-CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(unsigned char nChannel,
+CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(int channel,
   unsigned short nSequence)
+  : myChannel(channel)
 {
   m_nSize = 33;
   buffer = new CBuffer(m_nSize);
 
   const char *GUID;
   unsigned long nOurId;
-  switch (nChannel)
+  switch (channel)
   {
-  case ICQ_CHNxNONE:
+    case Licq::TCPSocket::ChannelNormal:
+      m_nChannel = ICQ_CHNxNONE;
     nOurId = 0x00000001;
     GUID = PLUGIN_NORMAL;
-    break;
- case ICQ_CHNxINFO:
+      break;
+    case Licq::TCPSocket::ChannelInfo:
+      m_nChannel = ICQ_CHNxINFO;
     nOurId = 0x000003EB;
     GUID = PLUGIN_INFOxMANAGER;
-    break;
-  case ICQ_CHNxSTATUS:
+      break;
+    case Licq::TCPSocket::ChannelStatus:
+      m_nChannel = ICQ_CHNxSTATUS;
     nOurId = 0x000003EA;
     GUID = PLUGIN_STATUSxMANAGER;
     break;
     default:
-      gLog.warning(tr("Channel %u is not implemented"), nChannel);
+      gLog.warning(tr("Channel %u is not implemented"), channel);
       return;
   }
-
-  m_nChannel = nChannel;
 
   buffer->PackChar(0x03);
   buffer->PackUnsignedLong(0x0000000A);
@@ -4243,14 +4245,24 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(CBuffer *inbuf)
     (*inbuf) >> GUID[i];
 
   if (memcmp(GUID, PLUGIN_NORMAL, 16) == 0)
+  {
+    myChannel = Licq::TCPSocket::ChannelNormal;
     m_nChannel = ICQ_CHNxNONE;
+  }
   else if (memcmp(GUID, PLUGIN_INFOxMANAGER, 16) == 0)
+  {
+    myChannel = Licq::TCPSocket::ChannelInfo;
     m_nChannel = ICQ_CHNxINFO;
+  }
   else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, 16) == 0)
+  {
+    myChannel = Licq::TCPSocket::ChannelStatus;
     m_nChannel = ICQ_CHNxSTATUS;
+  }
   else
   {
     gLog.warning(tr("Unknown channel GUID."));
+    myChannel = Licq::TCPSocket::ChannelUnknown;
     m_nChannel = ICQ_CHNxUNKNOWN;
   }
 }
