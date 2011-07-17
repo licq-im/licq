@@ -608,7 +608,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
 
   string msgDos = Licq::gTranslator.returnToDos(message);
   CMSNPacket* pSend = new CPS_MSNMessage(msgDos.c_str());
-  Licq::EventMsg* m = new Licq::EventMsg(msgDos, 0, Licq::UserEvent::TimeNow, 0);
+  Licq::EventMsg* m = new Licq::EventMsg(msgDos, Licq::UserEvent::TimeNow, Licq::EventMsg::FlagSender);
   Licq::Event* e = new Licq::Event(eventId, 0, pSend, Licq::Event::ConnectServer, userId, m);
   e->thread_plugin = _tPlugin;  
 
