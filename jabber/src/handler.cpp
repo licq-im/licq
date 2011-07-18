@@ -76,9 +76,9 @@ void Handler::onChangeStatus(unsigned status)
 {
   TRACE();
 
-  Licq::OwnerWriteGuard o(JABBER_PPID);
-  if (o.isLocked())
-    o->statusChanged(status);
+  Licq::OwnerWriteGuard owner(JABBER_PPID);
+  if (owner.isLocked())
+    owner->statusChanged(status);
 }
 
 void Handler::onDisconnect(bool authError)
@@ -87,18 +87,18 @@ void Handler::onDisconnect(bool authError)
 
   {
     Licq::UserListGuard userList(JABBER_PPID);
-    BOOST_FOREACH(Licq::User* user, **userList)
+    BOOST_FOREACH(Licq::User* licqUser, **userList)
     {
-      Licq::UserWriteGuard u(user);
-      if (u->isOnline())
-        u->statusChanged(Licq::User::OfflineStatus);
+      Licq::UserWriteGuard user(licqUser);
+      if (user->isOnline())
+        user->statusChanged(Licq::User::OfflineStatus);
     }
   }
 
   {
-    Licq::OwnerWriteGuard o(JABBER_PPID);
-    if (o.isLocked())
-      o->statusChanged(Licq::User::OfflineStatus);
+    Licq::OwnerWriteGuard owner(JABBER_PPID);
+    if (owner.isLocked())
+      owner->statusChanged(Licq::User::OfflineStatus);
   }
 
   Licq::gPluginManager.pushPluginSignal(
