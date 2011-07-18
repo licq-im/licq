@@ -46,9 +46,6 @@ public:
   virtual unsigned long  SNAC()      { return 0; }
   virtual unsigned short ExtraInfo() { return 0; }
 
-
-  static void SetMode(char c) { s_nMode = c; }
-  static char Mode()  { return s_nMode; }
   static void SetLocalIp(unsigned long n)  {  s_nLocalIp = n; }
   static void SetLocalPort(unsigned short n)  {  s_nLocalPort = n; }
   static void SetRealIp(unsigned long n)  {  s_nRealIp = n; }
@@ -65,7 +62,6 @@ protected:
   static unsigned long s_nLocalIp;
   static unsigned long s_nRealIp;
   static unsigned short s_nLocalPort;
-  static char s_nMode;
 };
 
 } // namespace Licq

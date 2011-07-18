@@ -310,13 +310,13 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
 void Licq::Daemon::setTcpEnabled(bool b)
 {
   myTcpEnabled = b;
-  gLicqDaemon->SetDirectMode();
+  gLicqDaemon->setDirectMode();
 }
 
 void Licq::Daemon::setBehindFirewall(bool b)
 {
   myBehindFirewall = b;
-  gLicqDaemon->SetDirectMode();
+  gLicqDaemon->setDirectMode();
 }
 
 void Licq::Daemon::setTcpPorts(unsigned lowPort, unsigned highPort)

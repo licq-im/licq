@@ -20,12 +20,10 @@
 #include <licq/packet.h>
 
 #include <licq/buffer.h>
-#include <licq/icqdefines.h>
 
 unsigned long Licq::Packet::s_nLocalIp = 0;
 unsigned long Licq::Packet::s_nRealIp = 0;
 unsigned short Licq::Packet::s_nLocalPort = 0;
-char Licq::Packet::s_nMode = MODE_DIRECT;
 
 Licq::Packet::Packet()
   : buffer(NULL)

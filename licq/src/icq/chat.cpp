@@ -327,7 +327,7 @@ CPChat_ColorFont::CPChat_ColorFont(const string& localName, unsigned short nLoca
   buffer->PackUnsignedLong(m_nPort);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedShort(m_nSession);
   buffer->PackUnsignedLong(m_nFontSize);
   buffer->PackUnsignedLong(m_nFontFace);
@@ -420,7 +420,7 @@ CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
   buffer->PackUnsignedLong(m_nPort);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedShort(nSession);//0x5A89);
   buffer->PackUnsignedLong(m_nFontSize);
   buffer->PackUnsignedLong(m_nFontFace);

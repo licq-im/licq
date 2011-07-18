@@ -55,6 +55,7 @@ IcqProtocol gIcqProtocol;
 Licq::SocketManager gSocketManager;
 
 IcqProtocol::IcqProtocol()
+  : myDirectMode(true)
 {
   // Empty
 }
@@ -195,10 +196,9 @@ void IcqProtocol::save(Licq::IniFile& licqConf)
   licqConf.set("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
 }
 
-void CICQDaemon::SetDirectMode()
+void IcqProtocol::setDirectMode()
 {
-  bool bDirect = (!gDaemon.behindFirewall() || (gDaemon.behindFirewall() && gDaemon.tcpEnabled()));
-  CPacket::SetMode(bDirect ? MODE_DIRECT : MODE_INDIRECT);
+  myDirectMode = (!gDaemon.behindFirewall() || (gDaemon.behindFirewall() && gDaemon.tcpEnabled()));
 }
 
 void CICQDaemon::InitProxy()

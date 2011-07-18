@@ -150,7 +150,7 @@ public:
       const std::string& number, const std::string& message) = 0;
 
   // Firewall options
-  void SetDirectMode();
+  virtual void setDirectMode() = 0;
 
   // Proxy options
   void InitProxy();

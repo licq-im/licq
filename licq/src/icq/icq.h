@@ -318,6 +318,9 @@ public:
   void PushEvent(Licq::Event*);
   void PushExtendedEvent(Licq::Event*);
 
+  void setDirectMode();
+  bool directMode() const { return myDirectMode; }
+
 private:
   static const int PingFrequency = 60;
   static const int UpdateFrequency = 60;
@@ -365,6 +368,7 @@ private:
   time_t m_tLogonTime;
   std::string myRegisterPasswd;
   pthread_t m_nRegisterThreadId;
+  bool myDirectMode;
 
   // Services
   COscarService *m_xBARTService;

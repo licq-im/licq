@@ -1103,7 +1103,7 @@ CPU_SetStatus::CPU_SetStatus(unsigned long _nNewStatus)
     buffer->PackUnsignedLongBE(0x000C0025); // TLV
     buffer->PackUnsignedLong(s_nLocalIp);    // direct connection info
     buffer->PackUnsignedLongBE(s_nLocalPort);
-    buffer->PackChar(s_nMode);
+    buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
     buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
     buffer->PackUnsignedLongBE(0x00000000);    // local direction conn cookie
     buffer->PackUnsignedLongBE(0x00000050);
@@ -1139,7 +1139,7 @@ void CPU_SetStatusFamily::InitBuffer()
   buffer->PackUnsignedLongBE(0x000c0025);    // TLV
   buffer->PackUnsignedLong(s_nLocalIp);      // direct connection info
   buffer->PackUnsignedLongBE(s_nLocalPort);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedShortBE(ICQ_VERSION_TCP);
   buffer->PackUnsignedLongBE(0x00000000);    // local direction conn cookie
   buffer->PackUnsignedLongBE(0x00000050);
@@ -3510,7 +3510,7 @@ CPU_SetRandomChatGroup::CPU_SetRandomChatGroup(unsigned long nGroup)
     buffer->PackUnsignedLong(RealIp());
     buffer->PackUnsignedLong(0); // port
     buffer->PackUnsignedLong(LocalIp());
-    buffer->PackChar(Mode());
+    buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
     buffer->PackUnsignedLong(ICQ_VERSION_TCP);
     buffer->PackUnsignedLong(0x00000000);
     buffer->PackUnsignedLong(0x00000050);
@@ -4035,7 +4035,7 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
   buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedLong(m_nLocalPort);
 }
 
@@ -4053,7 +4053,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
   buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp); // maybe should be 0
   buffer->PackUnsignedLong(s_nRealIp);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedLong(m_nLocalPort);
 }
 
@@ -4076,7 +4076,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
 
   char id[16];
@@ -4135,7 +4135,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackUnsignedLong(s_nLocalIp);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
 
   char id[16];
@@ -4438,7 +4438,7 @@ void CPacketTcp::InitBuffer_v2()
   buffer->PackUnsignedLong(s_nRealIp);
   m_szLocalPortOffset = buffer->getDataPosWrite();
   buffer->PackUnsignedLong(m_nLocalPort);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort(m_nMsgType);
 }
@@ -4470,7 +4470,7 @@ void CPacketTcp::InitBuffer_v4()
   buffer->PackUnsignedLong(s_nRealIp);
   m_szLocalPortOffset = buffer->getDataPosWrite();
   buffer->PackUnsignedLong(m_nLocalPort);
-  buffer->PackChar(s_nMode);
+  buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort(m_nMsgType);
 }
