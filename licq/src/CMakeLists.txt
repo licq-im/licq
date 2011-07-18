@@ -152,6 +152,10 @@ if (BUILD_TESTS)
 
   add_executable(unittests ${test_SRCS})
 
+  # Make the unit test run after it has been built
+  add_custom_command(TARGET unittests POST_BUILD
+    COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
+
   target_link_libraries(unittests ${GTEST_LIBRARIES})
   target_link_libraries(unittests ${GMOCK_LIBRARIES})
   target_link_libraries(unittests ${CMAKE_DL_LIBS})
