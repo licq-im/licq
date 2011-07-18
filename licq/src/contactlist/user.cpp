@@ -661,7 +661,7 @@ void User::Init()
   SetOfflineOnDisconnect(false);
   clearAllSocketDesc();
   m_nIp = m_nPort = m_nIntIp = 0;
-  m_nMode = MODE_DIRECT;
+  myDirectMode = true;
   m_nVersion = 0;
   m_nCookie = 0;
   m_nClientTimestamp = 0;

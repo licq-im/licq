@@ -392,7 +392,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     unsigned long nVersion;
-    unsigned char nMode;
+    bool directMode;
     unsigned short nRemotePort;
     bool bSendIntIp;
     {
@@ -411,7 +411,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
       }
 
       nVersion = u->Version();
-      nMode = u->Mode();
+      directMode = u->directMode();
       nRemotePort = u->Port();
       bSendIntIp = u->SendIntIp();
     }
@@ -425,7 +425,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     }
 
     int socket = -1;
-    if (!bSendIntIp && nVersion > 6 && nMode != MODE_DIRECT)
+    if (!bSendIntIp && nVersion > 6 && !directMode)
     {
       int nId = gIcqProtocol.requestReverseConnection(userId, channel, nIP, nLocalPort, nRemotePort);
       if (nId != -1)

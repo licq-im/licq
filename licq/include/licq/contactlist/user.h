@@ -301,7 +301,7 @@ public:
   bool EnableSave() const                       { return m_bEnableSave; }
   bool ShowAwayMsg() const                      { return m_bShowAwayMsg; }
   unsigned short Sequence(bool = false);
-  char Mode() const                             { return m_nMode; }
+  bool directMode() const                       { return myDirectMode; }
   unsigned long Version() const                 { return m_nVersion; }
   const std::string& clientInfo() const         { return myClientInfo; }
   unsigned long ClientTimestamp() const         { return m_nClientTimestamp; }
@@ -428,7 +428,7 @@ public:
   void setUserEncoding(const std::string& s) { myEncoding = s; }
   void SetSupportsUTF8(bool b)        { m_bSupportsUTF8 = b; }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
-  void SetMode(char s)                { m_nMode = s; }
+  void setDirectMode(bool direct)       { myDirectMode = direct; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
   void setClientInfo(const std::string& s)      { myClientInfo = s; }
   void SetClientTimestamp(unsigned long s) { m_nClientTimestamp = s; }
@@ -816,7 +816,7 @@ protected:
   UserGroupList myGroups;               /**< List of user groups */
   unsigned short m_nSequence;
   unsigned myPhoneFollowMeStatus, myIcqPhoneStatus, mySharedFilesStatus;
-  char m_nMode;
+  bool myDirectMode;
   std::string myClientInfo;
   std::string myAutoResponse;
   std::string myEncoding;

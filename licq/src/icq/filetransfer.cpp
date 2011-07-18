@@ -337,7 +337,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
     if (!u.isLocked())
       return false;
 
-    bTryDirect = u->Version() <= 6 || u->Mode() == MODE_DIRECT;
+    bTryDirect = u->Version() <= 6 || u->directMode();
     bSendIntIp = u->SendIntIp();
   }
 

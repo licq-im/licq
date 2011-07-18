@@ -126,7 +126,7 @@ CChatClient::CChatClient(const Licq::User* u)
   myUserId = u->id();
   m_nIp = u->Ip();
   m_nIntIp = u->IntIp();
-  m_nMode = u->Mode();
+  m_nMode = (u->directMode() ? MODE_DIRECT : MODE_INDIRECT);
   m_nSession = 0;
   m_nHandshake = 0x65;
 
@@ -753,7 +753,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
     if (temp_user.isLocked())
     {
       bSendIntIp = temp_user->SendIntIp();
-      bTryDirect = temp_user->Version() <= 6 || temp_user->Mode() == MODE_DIRECT;
+      bTryDirect = temp_user->Version() <= 6 || temp_user->directMode();
     }
   }
 

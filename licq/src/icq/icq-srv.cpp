@@ -2281,12 +2281,12 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       {
         gLog.unknown("Unknown peer-to-peer mode for %s (%s): %d",
               u->getAlias().c_str(), u->accountId().c_str(), mode);
-        u->SetMode(MODE_DIRECT);
+        u->setDirectMode(true);
         u->SetSendServer(false);
       }
       else
       {
-        u->SetMode(mode);
+        u->setDirectMode(mode == MODE_DIRECT);
         u->SetSendServer(mode == MODE_INDIRECT);
       }
     }
@@ -4854,7 +4854,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetIntIp(nIp);
 
           msg >> nMode;
-          u->SetMode(nMode);
+          u->setDirectMode(nMode == MODE_DIRECT);
           if (nMode != MODE_DIRECT)
             u->SetSendServer(true);
 
