@@ -98,12 +98,9 @@ set(test_SRCS
   utils/tests/dynamiclibrarytest.cpp
   utils/tests/pipetest.cpp
 
-  # Needed or IniFile won't find gLog
-  logging/logservice.cpp
-  logging/threadlog.cpp
-
-  # A dummy gDaemon to make tests compile without having to pull in the read daemon.cpp
+  # Dummy global instances to make tests compile
   tests/daemon_dummy.cpp
+  tests/log_dummy.cpp
 
   ${tested_SRCS}
 )
