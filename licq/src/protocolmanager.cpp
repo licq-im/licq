@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,7 +384,7 @@ unsigned long ProtocolManager::updateOwnerInfo(const UserId& ownerId)
 
       alias = owner->getAlias();
       firstName = owner->getFirstName();
-      firstName = owner->getLastName();
+      lastName = owner->getLastName();
       email = owner->getUserInfoString("Email1");
       address = owner->getUserInfoString("Address");
       city = owner->getUserInfoString("City");
