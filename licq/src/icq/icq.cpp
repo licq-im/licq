@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -1061,7 +1061,23 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       fore = 0x000000;
     }
 
-      Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
+      string m = Licq::gTranslator.serverToClient(message);
+
+      // Check if message is marked as UTF8
+      unsigned long guidlen;
+      packet >> guidlen;
+      if (guidlen == sizeof(ICQ_CAPABILITY_UTF8_STR)-1)
+      {
+        string guid = packet.unpackRawString(guidlen);
+        if (guid == ICQ_CAPABILITY_UTF8_STR)
+        {
+          // Message is UTF8
+          m = Licq::gTranslator.fromUnicode(m);
+        }
+      }
+      // TODO: Could there be multiple GUIDs that we need to check?
+
+      Licq::EventMsg* e = new Licq::EventMsg(m,
           ICQ_CMDxRCV_SYSxMSGxONLINE, Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 

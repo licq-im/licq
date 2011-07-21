@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -559,6 +559,7 @@ const char ICQ_CAPABILITY_DIRECT[]    = { 0x09, 0x46, 0x13, 0x44, 0x4C, 0x7F,
 const char ICQ_CAPABILITY_UTF8[]      = { 0x09, 0x46, 0x13, 0x4E, 0x4C, 0x7F,
                                           0x11, 0xD1, 0x82, 0x22, 0x44, 0x45,
                                           0x53, 0x54, 0x00, 0x00 };
+const char ICQ_CAPABILITY_UTF8_STR[]  = "{0946134E-4C7F-11D1-8222-444553540000}";
 
 const char ICQ_CAPABILITY_RTFxMSGS[]  = { 0x97, 0xB1, 0x27, 0x51, 0x24, 0x3C,
                                           0x43, 0x34, 0xAD, 0x22, 0xD6, 0xAB,
