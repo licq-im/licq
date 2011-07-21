@@ -384,7 +384,7 @@ unsigned long ProtocolManager::updateOwnerInfo(const UserId& ownerId)
 
       alias = owner->getAlias();
       firstName = owner->getFirstName();
-      firstName = owner->getLastName();
+      lastName = owner->getLastName();
       email = owner->getUserInfoString("Email1");
       address = owner->getUserInfoString("Address");
       city = owner->getUserInfoString("City");

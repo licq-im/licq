@@ -238,7 +238,7 @@ public:
   void icqRequestSystemMsg();
   Licq::Event* icqSendThroughServer(unsigned long eventId, const Licq::UserId& userId,
       unsigned char format, const std::string& message, Licq::UserEvent*,
-      unsigned short = 0, size_t = 0);
+      unsigned short = 0);
 
   void CheckExport();
   bool openConnectionToUser(const Licq::UserId& userId, Licq::TCPSocket* sock,

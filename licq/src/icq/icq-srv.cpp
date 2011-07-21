@@ -1270,8 +1270,7 @@ void IcqProtocol::icqClearServerList()
 
 //-----icqSendThroughServer-----------------------------------------------------
 Licq::Event* IcqProtocol::icqSendThroughServer(unsigned long eventId, const Licq::UserId& userId,
-    unsigned char format, const string& message, Licq::UserEvent* ue, unsigned short nCharset,
-  size_t nMsgLen)
+    unsigned char format, const string& message, Licq::UserEvent* ue, unsigned short nCharset)
 {
   Licq::Event* result;
   bool bOffline = true;
@@ -1281,7 +1280,7 @@ Licq::Event* IcqProtocol::icqSendThroughServer(unsigned long eventId, const Licq
       bOffline = !u->isOnline();
   }
 
-  CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), format, message, nCharset, bOffline, nMsgLen);
+  CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), format, message, nCharset, bOffline);
 
   switch (format)
   {

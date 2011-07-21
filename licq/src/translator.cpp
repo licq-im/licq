@@ -411,7 +411,7 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
   }
 
   *outPtr = '\0';
-  string ret(result);
+  string ret(result, outSize - outLen);
   delete[] result;
   return ret;
 }

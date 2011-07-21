@@ -678,8 +678,7 @@ class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
   CPU_ThroughServer(const std::string& accountId, unsigned char format, const std::string& message,
-                    unsigned short _nCharset = 0, bool bOffline = true,
-                    size_t _nLen = 0);
+      unsigned short _nCharset = 0, bool bOffline = true);
 protected:
   unsigned char  m_nMsgType;
 };
