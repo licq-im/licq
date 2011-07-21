@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -678,8 +678,7 @@ class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
   CPU_ThroughServer(const std::string& accountId, unsigned char format, const std::string& message,
-                    unsigned short _nCharset = 0, bool bOffline = true,
-                    size_t _nLen = 0);
+      unsigned short _nCharset = 0, bool bOffline = true);
 protected:
   unsigned char  m_nMsgType;
 };

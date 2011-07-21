@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -410,7 +410,7 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
   }
 
   *outPtr = '\0';
-  string ret(result);
+  string ret(result, outSize - outLen);
   delete[] result;
   return ret;
 }

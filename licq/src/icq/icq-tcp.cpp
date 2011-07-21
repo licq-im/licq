@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -60,42 +60,35 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
    const Licq::Color* pColor)
 {
   const string accountId = userId.accountId();
-  const char* m = message.c_str();
+  string m = gTranslator.clientToServer(message, true);
 
-  char *mDos = NULL;
-  char *szMessage = NULL;
-  bool bUTF16 = false;
   bool bUserOffline = true;
-  if (m != NULL)
-  {
-    string m2 = gTranslator.clientToServer(message, true);
-    mDos = new char[m2.size()+1];
-    strncpy(mDos, m2.c_str(), m2.size());
-    mDos[m2.size()] = '\0';
-  }
   Licq::EventMsg* e = NULL;
 
   unsigned long f = Licq::UserEvent::FlagLicqVerMask;
-
-  char *cipher = NULL;
   bool useGpg = false;
   {
+    Licq::UserReadGuard u(userId);
+    if (u.isLocked())
     {
-      Licq::UserReadGuard u(userId);
-      if (u.isLocked())
-      {
-        bUserOffline = !u->isOnline();
+      bUserOffline = !u->isOnline();
+      if (!bUserOffline)
         useGpg = u->UseGPG();
-      }
     }
-    if (useGpg && !bUserOffline)
-      cipher = Licq::gGpgHelper.Encrypt(mDos, userId);
+  }
+  if (useGpg)
+  {
+    char* cipher = Licq::gGpgHelper.Encrypt(m.c_str(), userId);
+    if (cipher != NULL)
+    {
+      m = cipher;
+      free(cipher);
+      f |= Licq::UserEvent::FlagEncrypted;
+    }
+    else
+      useGpg = false;
   }
 
-  if (cipher)
-    f |= Licq::UserEvent::FlagEncrypted;
-  if (!viaServer)
-    f |= Licq::UserEvent::FlagDirect;
   if (nLevel == ICQ_TCPxMSG_URGENT)
     f |= Licq::UserEvent::FlagUrgent;
   if (bMultipleRecipients)
@@ -103,16 +96,13 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
 
   // What kinda encoding do we have here?
   unsigned short nCharset = CHARSET_ASCII;
-  size_t nUTFLen = 0;
   string fromEncoding;
-
-  szMessage =  cipher ? cipher : mDos;
 
   if (viaServer)
   {
-    if (!bUserOffline && cipher == 0)
+    if (!bUserOffline && !useGpg)
     {
-      if (!gTranslator.isAscii(mDos))
+      if (!gTranslator.isAscii(m))
       {
         Licq::UserReadGuard u(userId);
         if (u.isLocked() && !u->userEncoding().empty())
@@ -135,45 +125,37 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
 
       if (nCharset == CHARSET_UNICODE)
       {
-        bUTF16 = true;
         if (fromEncoding.empty())
           fromEncoding = nl_langinfo(CODESET);
-        string msgUtf16 = gTranslator.toUtf16(mDos, fromEncoding);
-        nUTFLen = msgUtf16.size();
-        szMessage = new char[msgUtf16.size()+1];
-        strncpy(szMessage, msgUtf16.c_str(), msgUtf16.size());
-        szMessage[msgUtf16.size()] = '\0';
+        m = gTranslator.toUtf16(m, fromEncoding);
       }
     }
 
-     e = new Licq::EventMsg(m, ICQ_CMDxSND_THRUxSERVER, Licq::EventMsg::TimeNow, f);
+    e = new Licq::EventMsg(message, ICQ_CMDxSND_THRUxSERVER, Licq::EventMsg::TimeNow, f);
      unsigned short nMaxSize = bUserOffline ? MaxOfflineMessageSize : MaxMessageSize;
-     if (strlen(szMessage) > nMaxSize)
-     {
+    if (m.size() > nMaxSize)
+    {
        gLog.warning(tr("%sTruncating message to %d characters to send through server.\n"),
                  L_WARNxSTR, nMaxSize);
-       szMessage[nMaxSize] = '\0';
-     }
+      m.resize(nMaxSize);
+    }
      icqSendThroughServer(eventId, userId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
-                          cipher ? cipher : szMessage, e, nCharset, nUTFLen);
+        m, e, nCharset);
   }
 
   Licq::UserWriteGuard u(userId);
 
   if (!viaServer)
   {
+    f |= Licq::UserEvent::FlagDirect;
+
     if (!u.isLocked())
       return;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    e = new Licq::EventMsg(m, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, f);
+    e = new Licq::EventMsg(message, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
-    string message;
-    if (cipher != NULL)
-      message = cipher;
-    else
-      message.assign(szMessage, nUTFLen);
-    CPT_Message* p = new CPT_Message(message, nLevel, bMultipleRecipients, pColor, *u);
+    CPT_Message* p = new CPT_Message(m, nLevel, bMultipleRecipients, pColor, *u);
     gLog.info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
@@ -188,13 +170,6 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
 
   if (pColor != NULL)
     Licq::Color::setDefaultColors(pColor);
-
-  if (bUTF16 && szMessage)
-    delete [] szMessage;
-  if (cipher)
-    free(cipher);
-  if (mDos)
-    delete [] mDos;
 }
 
 unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool bServer)

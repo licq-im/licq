@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -1449,18 +1449,12 @@ CPU_CheckInvisible::CPU_CheckInvisible(const string& accountId)
 
 //-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
-    unsigned char msgType, const string& message,
-                                     unsigned short nCharset, bool bOffline,
-                                     size_t nLen)
+    unsigned char msgType, const string& message, unsigned short nCharset, bool bOffline)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
 	m_nSubCommand = msgType;
 
-  int msgLen;
-  if (nLen)
-    msgLen = nLen;
-  else
-    msgLen = message.size();
+  int msgLen = message.size();
   unsigned short nFormat = 0;
   int nTypeLen = 0, nTLVType = 0;
   CBuffer tlvData;
