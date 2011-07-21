@@ -1449,8 +1449,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
   message = strdup(parseRtf(messageTmp).c_str());
 
-  if (nInVersion <= 4)
-  {
+    if (nInVersion < 6)
+    {
     // read in some more stuff common to all tcp packets
     packet >> senderIp
            >> localIp
@@ -1535,8 +1535,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -1544,8 +1544,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        else {
+
+              packet >> licqChar >> licqVersion;
+              nMask |= licqVersion;
+            }
+            else
+            {
           packet >> fore >> back;
           if( fore == back ) {
             back = 0xFFFFFF;
@@ -1553,8 +1557,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
         }
 
-				packet >> licqChar >> licqVersion;
-				nMask |= licqVersion;
 				if (licqChar == 'L')
             gLog.info(tr("%sMessage from %s (%s) [Licq %s].\n"), L_TCPxSTR,
                 u->getAlias().c_str(), userId.toString().c_str(),
@@ -1602,9 +1604,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
       case ICQ_CMDxTCP_READxFFCxMSG:
       case ICQ_CMDxTCP_READxAWAYxMSG:  // read away message
-      {
-        if (nInVersion <= 4)
-        {
+          {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -1612,10 +1614,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        else
+
+              packet >> licqChar >> licqVersion;
+            }
+            else
           packet >> junkLong >> junkLong;
-        packet >> licqChar >> licqVersion;
+
         if (licqChar == 'L')
             gLog.info(tr("%s%s (%s) requested auto response [Licq %s].\n"), L_TCPxSTR,
                 u->getAlias().c_str(), userId.toString().c_str(),
@@ -1637,8 +1641,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxSUB_URL:  // url sent
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -1646,8 +1650,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        else {
+
+              packet >> licqChar >> licqVersion;
+              nMask |= licqVersion;
+            }
+            else
+            {
           packet >> fore >> back;
           if(fore == back)
           {
@@ -1655,8 +1663,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             back = 0xFFFFFF;
           }
         }
-        packet >> licqChar >> licqVersion;
-        nMask |= licqVersion;
         if (licqChar == 'L')
             gLog.info(tr("%sURL from %s (%s) [Licq %s].\n"), L_TCPxSTR, u->GetAlias(),
                 userId.toString().c_str(), Licq::UserEvent::licqVersionToString(licqVersion).c_str());
@@ -1705,8 +1711,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxSUB_CONTACTxLIST:
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -1714,16 +1720,18 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        else {
+
+              packet >> licqChar >> licqVersion;
+              nMask |= licqVersion;
+            }
+            else
+            {
           packet >> fore >> back;
           if(fore == back) {
             fore = 0x000000;
             back = 0xFFFFFF;
           }
         }
-        packet >> licqChar >> licqVersion;
-        nMask |= licqVersion;
         if (licqChar == 'L')
             gLog.info(tr("%sContact list from %s (%s) [Licq %s].\n"), L_TCPxSTR,
                 u->getAlias().c_str(), userId.toString().c_str(),
@@ -1777,8 +1785,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet.UnpackString(szChatClients, sizeof(szChatClients));
         packet.UnpackUnsignedLong(); // reversed port
         unsigned short nPort = packet.UnpackUnsignedLong();
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -1786,8 +1794,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
         if (licqChar == 'L')
             gLog.info(tr("%sChat request from %s (%s) [Licq %s].\n"), L_TCPxSTR,
@@ -1829,8 +1838,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           string filename = packet.unpackRawString(nLenFilename);
         packet >> nFileLength
                >> junkLong;
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -1838,8 +1847,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
         if (licqChar == 'L')
             gLog.info(tr("%sFile transfer request from %s (%s) [Licq %s].\n"),
@@ -2055,8 +2065,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxSUB_SECURExOPEN:
       {
 #ifdef USE_OPENSSL
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -2064,8 +2074,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
         if (licqChar == 'L')
             gLog.info(tr("%sSecure channel request from %s (%s) [Licq %s].\n"),
@@ -2117,8 +2128,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxSUB_SECURExCLOSE:
       {
 #ifdef USE_OPENSSL
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -2126,8 +2137,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
         if (licqChar == 'L')
             gLog.info(tr("%sSecure channel closed by %s (%s) [Licq %s].\n"),
@@ -2183,8 +2195,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxTCP_READxFFCxMSG:
       case ICQ_CMDxSUB_URL:
       case ICQ_CMDxSUB_CONTACTxLIST:
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -2192,10 +2204,11 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        else
+
+              packet >> licqChar >> licqVersion;
+            }
+            else
           packet >> junkLong >> junkLong;
-        packet >> licqChar >> licqVersion;
         break;
 
       case ICQ_CMDxSUB_CHAT:
@@ -2204,8 +2217,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet.UnpackString(ul, sizeof(ul));
         packet >> nPortReversed   // port backwards
                >> nPort;    // port to connect to for chat
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -2213,8 +2226,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
         if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
 
@@ -2232,8 +2246,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
          for (int i = 0; i < junkShort; i++) packet >> junkChar;
          packet >> junkLong
                 >> nPort;
-         if (nInVersion <= 4)
-         {
+            if (nInVersion < 6)
+            {
            if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
            {
@@ -2241,8 +2255,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
            }
            else
              packet >> theSequence;
-         }
-         packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
          // Some clients only send the first port (reversed)
          if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
@@ -2335,8 +2350,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 #ifdef USE_OPENSSL
       case ICQ_CMDxSUB_SECURExOPEN:
       {
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -2344,8 +2359,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
         char l[32] = "";
           if (licqChar == 'L')
@@ -2415,8 +2431,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
       case ICQ_CMDxSUB_SECURExCLOSE:
       {
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
           {
@@ -2424,8 +2440,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           }
           else
             packet >> theSequence;
-        }
-        packet >> licqChar >> licqVersion;
+
+              packet >> licqChar >> licqVersion;
+            }
 
         char l[32] = "";
           if (licqChar == 'L')
@@ -2564,8 +2581,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       {
           gLog.info(tr("%sChat request from %s (%s) cancelled.\n"), L_TCPxSTR,
               u->GetAlias(), userId.toString().c_str());
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           packet >> junkLong >> junkLong >> junkShort >> junkChar;
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
@@ -2590,8 +2607,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       {
           gLog.info(tr("%sFile transfer request from %s (%s) cancelled.\n"),
               L_TCPxSTR, u->GetAlias(), userId.toString().c_str());
-        if (nInVersion <= 4)
-        {
+            if (nInVersion < 6)
+            {
           packet >> junkLong >> junkShort >> junkChar >> junkLong >> junkLong;
           if (packet.getDataPosRead() + 4 >
                               (packet.getDataStart() + packet.getDataSize()))
