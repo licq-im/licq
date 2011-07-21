@@ -1015,8 +1015,23 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       fore = 0x000000;
     }
 
-      Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
-          Licq::EventMsg::TimeNow, nFlags);
+      string m = Licq::gTranslator.serverToClient(message);
+
+      // Check if message is marked as UTF8
+      unsigned long guidlen;
+      packet >> guidlen;
+      if (guidlen == sizeof(ICQ_CAPABILITY_UTF8_STR)-1)
+      {
+        string guid = packet.unpackRawString(guidlen);
+        if (guid == ICQ_CAPABILITY_UTF8_STR)
+        {
+          // Message is UTF8
+          m = Licq::gTranslator.fromUnicode(m);
+        }
+      }
+      // TODO: Could there be multiple GUIDs that we need to check?
+
+      Licq::EventMsg* e = new Licq::EventMsg(m, Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],

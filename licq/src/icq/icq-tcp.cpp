@@ -83,8 +83,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     if (cipher != NULL)
     {
       m = cipher;
-      if (cipher)
-        free(cipher);
+      free(cipher);
       f |= Licq::UserEvent::FlagEncrypted;
     }
     else
@@ -102,41 +101,24 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   if (flags & Licq::ProtocolSignal::SendToMultiple)
     f |= Licq::UserEvent::FlagMultiRec;
 
-  // What kinda encoding do we have here?
-  unsigned short nCharset = CHARSET_ASCII;
-  string fromEncoding;
-
   if ((flags & Licq::ProtocolSignal::SendDirect) == 0)
   {
-    if (!bUserOffline && !useGpg)
+    unsigned short nCharset = CHARSET_ASCII;
+
+    if (!useGpg && !gTranslator.isAscii(m))
     {
-      if (!gTranslator.isAscii(m))
+      nCharset = CHARSET_UNICODE;
+
+      string fromEncoding;
       {
         Licq::UserReadGuard u(userId);
         if (u.isLocked() && !u->userEncoding().empty())
           fromEncoding = u->userEncoding();
-
-        if (u.isLocked() && isdigit(u->accountId()[0]))
-        {
-          // ICQ Users can send a flag that says UTF8/16 is ok
-          if (u->SupportsUTF8())
-            nCharset = CHARSET_UNICODE;
-          else if (!u->userEncoding().empty())
-            nCharset = CHARSET_CUSTOM;
-        }
-        else if (u.isLocked() && !(isdigit(u->accountId()[0])))
-        {
-          // AIM users support UTF8/16
-          nCharset = CHARSET_UNICODE;
-        }
       }
 
-      if (nCharset == CHARSET_UNICODE)
-      {
-        if (fromEncoding.empty())
-          fromEncoding = nl_langinfo(CODESET);
-        m = gTranslator.toUtf16(m, fromEncoding);
-      }
+      if (fromEncoding.empty())
+        fromEncoding = nl_langinfo(CODESET);
+      m = gTranslator.toUtf16(m, fromEncoding);
     }
 
     e = new Licq::EventMsg(message, Licq::EventMsg::TimeNow, f);

@@ -212,7 +212,7 @@ string Buffer::unpackRawString(size_t size)
   char* c = new char[size];
   for (size_t i = 0; i < size; ++i)
     *this >> c[i];
-  string ret(c);
+  string ret(c, size);
   delete [] c;
   return ret;
 }
@@ -271,10 +271,8 @@ string Buffer::unpackString()
   unsigned short nLen;
   *this >> nLen;
   char* sz = new char[nLen+1];
-  sz[0] = '\0';
   for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
-  sz[nLen] = '\0';
-  string ret = sz;
+  string ret(sz, nLen);
   delete[] sz;
   return ret;
 }
