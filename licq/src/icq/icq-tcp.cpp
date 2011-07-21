@@ -1534,6 +1534,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     {
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
+            string msg = Licq::gTranslator.serverToClient(message);
+
         unsigned long back = 0xFFFFFF, fore = 0x000000;
             if (nInVersion < 6)
             {
@@ -1555,7 +1557,21 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             back = 0xFFFFFF;
             fore = 0x000000;
           }
-        }
+
+              // Check if message is marked as UTF8
+              unsigned long guidlen;
+              packet >> guidlen;
+              if (guidlen == sizeof(ICQ_CAPABILITY_UTF8_STR)-1)
+              {
+                string guid = packet.unpackRawString(guidlen);
+                if (guid == ICQ_CAPABILITY_UTF8_STR)
+                {
+                  // Message is UTF8
+                  msg = Licq::gTranslator.fromUnicode(msg);
+                }
+              }
+              // TODO: Could there be multiple GUIDs that we need to check?
+            }
 
 				if (licqChar == 'L')
             gLog.info(tr("%sMessage from %s (%s) [Licq %s].\n"), L_TCPxSTR,
@@ -1567,7 +1583,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           CPT_AckGeneral p(newCommand, theSequence, true, bAccept, *u);
         AckTCP(p, pSock);
 
-          Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(message),
+          Licq::EventMsg* e = new Licq::EventMsg(msg,
               ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, nMask);
         e->SetColor(fore, back);
 
