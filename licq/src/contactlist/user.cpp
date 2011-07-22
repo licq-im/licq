@@ -681,6 +681,7 @@ void User::Init()
     m_nLastCounters[i] = 0;
   m_nOnlineSince = 0;
   m_nIdleSince = 0;
+  myAwaySince = 0;
   m_nRegisteredTime = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
   m_bKeepAliasOnUpdate = false;

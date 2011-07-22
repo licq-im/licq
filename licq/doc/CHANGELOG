@@ -1,6 +1,7 @@
 Change log for Licq.
 
 New in 1.6.0
+o ICQ: Keep track of when contacts went away
 o Jabber: Connect thru HTTP proxy
 o RMS: Authentication can be configured instead of always using ICQ account
 

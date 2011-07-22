@@ -2199,6 +2199,22 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       u->SetRegisteredTime(registeredTimestamp);
     }
 
+      if (packet.getTLVLen(0x0029) == 4)
+      {
+        time_t awaySince = packet.UnpackUnsignedLongTLV(0x0029);
+        u->setAwaySince(awaySince);
+      }
+      else if ((nNewStatus & 0xFFFF) == ICQ_STATUS_OFFLINE || (nNewStatus & 0xFFFF) == ICQ_STATUS_ONLINE)
+      {
+        // User is not away
+        u->setAwaySince(0);
+      }
+      else
+      {
+        // User is away but no time given by server, assume it happened now
+        u->setAwaySince(time(NULL));
+      }
+
     if (packet.getTLVLen(0x000c) == 0x25)
     {
       CBuffer msg = packet.UnpackTLV(0x000c);

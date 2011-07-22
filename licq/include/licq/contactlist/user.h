@@ -336,6 +336,14 @@ public:
   const std::string& customAutoResponse() const { return myCustomAutoResponse; }
   bool NotInList() const                        { return m_bNotInList; }
 
+  /// Time when user went away or zero if online/offline or time not known
+  time_t awaySince() const
+  { return myAwaySince; }
+
+  /// Set time when user went away
+  void setAwaySince(time_t t)
+  { myAwaySince = t; }
+
   /// Convert a unixtime to a relative string (e.g. "1 Hour 47 Minutes")
   static std::string RelativeStrTime(time_t t);
 
@@ -805,6 +813,7 @@ protected:
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;
   time_t m_nIdleSince;
+  time_t myAwaySince;
   time_t m_nRegisteredTime;
   bool m_bOnContactList;
   unsigned long m_nIp, m_nIntIp, m_nVersion, m_nClientTimestamp, m_nCookie;
