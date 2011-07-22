@@ -4549,7 +4549,7 @@ void CPacketTcp::PostBuffer_v7()
 
 //-----Message------------------------------------------------------------------
 CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
-    const Licq::Color* pColor, ICQUser *pUser)
+    const Licq::Color* pColor, ICQUser *pUser, bool isUtf8)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
         message, true, nLevel, pUser)
@@ -4566,6 +4566,12 @@ CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
     {
       buffer->PackUnsignedLong(pColor->foreground());
       buffer->PackUnsignedLong(pColor->background());
+    }
+
+    if (isUtf8)
+    {
+      buffer->PackUnsignedLong(sizeof(ICQ_CAPABILITY_UTF8_STR)-1);
+      buffer->Pack(ICQ_CAPABILITY_UTF8_STR, sizeof(ICQ_CAPABILITY_UTF8_STR)-1);
     }
   }
   PostBuffer();

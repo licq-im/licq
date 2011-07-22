@@ -94,6 +94,15 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   if (bMultipleRecipients)
     f |= Licq::UserEvent::FlagMultiRec;
 
+  string fromEncoding;
+  {
+    Licq::UserReadGuard u(userId);
+    if (u.isLocked() && !u->userEncoding().empty())
+      fromEncoding = u->userEncoding();
+  }
+  if (fromEncoding.empty())
+    fromEncoding = nl_langinfo(CODESET);
+
   if (viaServer)
   {
     unsigned short nCharset = CHARSET_ASCII;
@@ -101,16 +110,6 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     if (!useGpg && !gTranslator.isAscii(m))
     {
       nCharset = CHARSET_UNICODE;
-
-      string fromEncoding;
-      {
-        Licq::UserReadGuard u(userId);
-        if (u.isLocked() && !u->userEncoding().empty())
-          fromEncoding = u->userEncoding();
-      }
-
-      if (fromEncoding.empty())
-        fromEncoding = nl_langinfo(CODESET);
       m = gTranslator.toUtf16(m, fromEncoding);
     }
 
@@ -138,7 +137,8 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       f |= Licq::UserEvent::FlagEncrypted;
     e = new Licq::EventMsg(message, ICQ_CMDxTCP_START, Licq::EventMsg::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_Message* p = new CPT_Message(m, nLevel, bMultipleRecipients, pColor, *u);
+    bool isUtf8 = (!gTranslator.isAscii(m) && fromEncoding == "UTF-8");
+    CPT_Message* p = new CPT_Message(m, nLevel, bMultipleRecipients, pColor, *u, isUtf8);
     gLog.info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
