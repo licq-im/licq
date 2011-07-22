@@ -336,6 +336,9 @@ public:
   const std::string& customAutoResponse() const { return myCustomAutoResponse; }
   bool NotInList() const                        { return m_bNotInList; }
 
+  /// Convert a unixtime to a relative string (e.g. "1 Hour 47 Minutes")
+  static std::string RelativeStrTime(time_t t);
+
   enum usprintf_quotes
   {
     usprintf_quotenone,

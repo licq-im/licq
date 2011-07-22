@@ -792,48 +792,10 @@ QString ContactUserData::tooltip() const
   }
 
   if (config->popupOnlineSince() && u->isOnline() && u->OnlineSince() > 0 && u->OnlineSince() <= time(0))
-  {
-    time_t nLoggedIn = time(0) - u->OnlineSince();
-    unsigned long nWeek, nDay, nHour, nMinute;
-    nWeek = nLoggedIn / 604800;
-    nDay = (nLoggedIn % 604800) / 86400;
-    nHour = (nLoggedIn % 86400) / 3600;
-    nMinute = (nLoggedIn % 3600) / 60;
-
-    QString ds, temp;
-    if (nWeek != 0)
-    {
-      ds += temp.setNum(nWeek);
-      ds += " ";
-      ds += (nWeek > 1 ? tr(" weeks") : tr(" week"));
-    }
-    if (nDay != 0)
-    {
-      if (nWeek != 0) ds += " ";
-      ds += temp.setNum(nDay);
-      ds += " ";
-      ds += (nDay > 1 ? tr(" days") : tr(" day"));
-    }
-    if (nHour != 0)
-    {
-      if (nWeek != 0 || nDay != 0) ds += " ";
-      ds += temp.setNum(nHour);
-      ds += (nHour > 1 ? tr(" hours") : tr(" hour"));
-    }
-    if (nMinute != 0)
-    {
-      if (nWeek != 0 || nDay != 0 || nHour != 0) ds += " ";
-      ds += temp.setNum(nMinute);
-      ds += (nMinute > 1 ? tr(" minutes") : tr(" minute"));
-    }
-    if (nWeek == 0 && nDay == 0 && nHour == 0 && nMinute == 0)
-      ds += tr("0 minutes");
-
-    s += "<br>" + tr("Logged In: ") + ds;
-  }
+    s += "<br>" + tr("Logged In: ") + User::RelativeStrTime(u->OnlineSince()).c_str();
 
   if (config->popupIdleTime() && u->IdleSince())
-    s += "<br>" + tr("Idle: ") + u->usprintf("%I").c_str();
+    s += "<br>" + tr("Idle: ") + User::RelativeStrTime(u->IdleSince()).c_str();
 
   if (config->popupLocalTime())
     s += "<br>" + tr("Local time: ") + u->usprintf("%F").c_str();

@@ -26,6 +26,7 @@
 #include <cstdio>
 #include <ctime>
 #include <netinet/in.h>
+#include <sstream>
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -51,6 +52,7 @@ using boost::any_cast;
 using boost::bad_any_cast;
 using std::map;
 using std::string;
+using std::stringstream;
 using std::vector;
 using Licq::ICQUserPhoneBook;
 using Licq::IniFile;
@@ -1672,30 +1674,7 @@ string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool a
             if (m_nIdleSince == 0)
               sz = tr("Active");
             else
-            {
-              unsigned short nDays, nHours, nMinutes;
-              char buf[128];
-              time_t nIdleTime = (time(NULL) > m_nIdleSince ? time(NULL) - m_nIdleSince : 0);
-              nDays = nIdleTime / ( 60 * 60 * 24);
-              nHours = (nIdleTime % (60 * 60 * 24)) / (60 * 60);
-              nMinutes = (nIdleTime % (60 * 60)) / 60;
-
-              if (nDays)
-              {
-                snprintf(buf, 128, (nDays > 1 ? tr("%d days ") : tr("%d day ")), nDays);
-                sz += buf;
-              }
-              if (nHours)
-              {
-                snprintf(buf, 128, (nHours > 1 ? tr("%d hours ") : tr("%d hour ")), nHours);
-                sz += buf;
-              }
-              if (nMinutes)
-              {
-                snprintf(buf, 128, (nMinutes > 1 ? tr("%d minutes") : tr("%d minute")), nMinutes);
-                sz += buf;
-              }
-            }
+              sz = RelativeStrTime(m_nIdleSince);
             break;
           }
 
@@ -1777,6 +1756,36 @@ string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool a
     }
   }
   return s;
+}
+
+string Licq::User::RelativeStrTime(time_t t)
+{
+  time_t diff = time(NULL) - t;
+
+  if (diff < 30)
+    return tr("now");
+
+  // Round to nearest minute
+  diff += 30;
+
+  stringstream buf;
+
+  int days = diff / 86400;
+  if (days > 0)
+    buf << days << (days == 1 ? tr(" day ") : tr(" days "));
+
+  int hours = (diff % 86400) / 3600;
+  if (hours > 0)
+    buf << hours << (hours == 1 ? tr(" hour ") : tr(" hours "));
+
+  int minutes = (diff % 3600) / 60;
+  if (minutes > 0)
+    buf << minutes << (minutes == 1 ? tr(" minute ") : tr(" minutes "));
+
+  // Remove the trailing space
+  string ret = buf.str();
+  ret.erase(ret.size() - 1);
+  return ret;
 }
 
 string UserId::normalizeId(const string& accountId, unsigned long ppid)
