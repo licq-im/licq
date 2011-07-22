@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -300,14 +300,16 @@ QWidget* Settings::ContactList::createPageContactInfo(QWidget* parent)
   myPopupLayout->addWidget(myPopupLastOnlineCheck, 1, 1);
   myPopupOnlineSinceCheck = new QCheckBox(tr("Online time"));
   myPopupLayout->addWidget(myPopupOnlineSinceCheck, 2, 1);
+  myPopupAwayTimeCheck = new QCheckBox(tr("Away time"));
+  myPopupLayout->addWidget(myPopupAwayTimeCheck, 3, 1);
   myPopupIdleTimeCheck = new QCheckBox(tr("Idle time"));
-  myPopupLayout->addWidget(myPopupIdleTimeCheck, 3, 1);
+  myPopupLayout->addWidget(myPopupIdleTimeCheck, 4, 1);
   myPopupLocalTimeCheck = new QCheckBox(tr("Local time"));
-  myPopupLayout->addWidget(myPopupLocalTimeCheck, 4, 1);
+  myPopupLayout->addWidget(myPopupLocalTimeCheck, 5, 1);
   myPopupIdCheck = new QCheckBox(tr("Protocol ID"));
-  myPopupLayout->addWidget(myPopupIdCheck, 5, 1);
+  myPopupLayout->addWidget(myPopupIdCheck, 6, 1);
   myPopupAuthCheck = new QCheckBox(tr("Authorization status"));
-  myPopupLayout->addWidget(myPopupAuthCheck, 6, 1);
+  myPopupLayout->addWidget(myPopupAuthCheck, 7, 1);
 
   myAutoUpdateBox = new QGroupBox(tr("Automatic Update"));
   myAutoUpdateLayout = new QVBoxLayout(myAutoUpdateBox);
@@ -408,6 +410,7 @@ void Settings::ContactList::load()
   myPopupIpCheck->setChecked(contactListConfig->popupIP());
   myPopupLastOnlineCheck->setChecked(contactListConfig->popupLastOnline());
   myPopupOnlineSinceCheck->setChecked(contactListConfig->popupOnlineSince());
+  myPopupAwayTimeCheck->setChecked(contactListConfig->popupAwayTime());
   myPopupIdleTimeCheck->setChecked(contactListConfig->popupIdleTime());
   myPopupLocalTimeCheck->setChecked(contactListConfig->popupLocalTime());
   myPopupIdCheck->setChecked(contactListConfig->popupID());
@@ -480,6 +483,7 @@ void Settings::ContactList::apply()
   contactListConfig->setPopupIP(myPopupIpCheck->isChecked());
   contactListConfig->setPopupLastOnline(myPopupLastOnlineCheck->isChecked());
   contactListConfig->setPopupOnlineSince(myPopupOnlineSinceCheck->isChecked());
+  contactListConfig->setPopupAwayTime(myPopupAwayTimeCheck->isChecked());
   contactListConfig->setPopupIdleTime(myPopupIdleTimeCheck->isChecked());
   contactListConfig->setPopupLocalTime(myPopupLocalTimeCheck->isChecked());
   contactListConfig->setPopupID(myPopupIdCheck->isChecked());

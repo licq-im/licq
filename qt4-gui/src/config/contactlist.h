@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,6 +122,7 @@ public:
   bool popupIP() const { return myPopupIP; }
   bool popupLastOnline() const { return myPopupLastOnline; }
   bool popupOnlineSince() const { return myPopupOnlineSince; }
+  bool popupAwayTime() const { return myPopupAwayTime; }
   bool popupIdleTime() const { return myPopupIdleTime; }
   bool popupLocalTime() const { return myPopupLocalTime; }
   bool popupID() const { return myPopupID; }
@@ -180,6 +181,7 @@ public slots:
   void setPopupIP(bool popupIP);
   void setPopupLastOnline(bool popupLastOnline);
   void setPopupOnlineSince(bool popupOnlineSince);
+  void setPopupAwayTime(bool popupAwayTime);
   void setPopupIdleTime(bool popupIdleTime);
   void setPopupLocalTime(bool popupLocalTime);
   void setPopupID(bool popupID);
@@ -271,6 +273,7 @@ private:
   bool myPopupIP;
   bool myPopupLastOnline;
   bool myPopupOnlineSince;
+  bool myPopupAwayTime;
   bool myPopupIdleTime;
   bool myPopupLocalTime;
   bool myPopupID;

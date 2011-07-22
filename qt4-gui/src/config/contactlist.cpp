@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,6 +136,7 @@ void Config::ContactList::loadConfiguration(Licq::IniFile& iniFile)
   iniFile.get("showPopIP", myPopupIP, false);
   iniFile.get("showPopLastOnelin", myPopupLastOnline, false);
   iniFile.get("showPopOnlineSince", myPopupOnlineSince, false);
+  iniFile.get("showPopAwayTime", myPopupAwayTime, true);
   iniFile.get("showPopIdleTime", myPopupIdleTime, true);
   iniFile.get("showPopLocalTime", myPopupLocalTime, false);
   iniFile.get("showPopID", myPopupID, true);
@@ -191,6 +192,7 @@ void Config::ContactList::saveConfiguration(Licq::IniFile& iniFile) const
   iniFile.set("showPopIP", myPopupIP);
   iniFile.set("showPopLastOnelin", myPopupLastOnline);
   iniFile.set("showPopOnlineSince", myPopupOnlineSince);
+  iniFile.set("showPopAwayTime", myPopupAwayTime);
   iniFile.set("showPopIdleTime", myPopupIdleTime);
   iniFile.set("showPopLocalTime", myPopupLocalTime);
   iniFile.set("showPopID", myPopupID);
@@ -500,6 +502,11 @@ void Config::ContactList::setPopupLastOnline(bool popupLastOnline)
 void Config::ContactList::setPopupOnlineSince(bool popupOnlineSince)
 {
   myPopupOnlineSince = popupOnlineSince;
+}
+
+void Config::ContactList::setPopupAwayTime(bool popupAwayTime)
+{
+  myPopupAwayTime = popupAwayTime;
 }
 
 void Config::ContactList::setPopupIdleTime(bool popupIdleTime)

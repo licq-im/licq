@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009 Licq developers
+ * Copyright (C) 2007-2009,2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,6 +141,7 @@ private:
   QCheckBox* myPopupIpCheck;
   QCheckBox* myPopupLastOnlineCheck;
   QCheckBox* myPopupOnlineSinceCheck;
+  QCheckBox* myPopupAwayTimeCheck;
   QCheckBox* myPopupIdleTimeCheck;
   QCheckBox* myPopupLocalTimeCheck;
   QCheckBox* myPopupIdCheck;
