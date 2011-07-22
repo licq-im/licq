@@ -1383,7 +1383,7 @@ class CPT_Message : public CPacketTcp
 {
 public:
    CPT_Message(const std::string& message, unsigned short nLevel, bool bMR,
-      const Licq::Color* pColor, Licq::User* pUser);
+      const Licq::Color* pColor, Licq::User* pUser, bool isUtf8);
 };
 
 
