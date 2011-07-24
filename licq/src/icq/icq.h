@@ -350,6 +350,23 @@ private:
   void StupidChatLinkageFix();
   void addToModifyUsers(unsigned long unique_id, const std::string data);
 
+  /**
+   * Identify a user client based on available data
+   *
+   * @param caps Raw capabilities data
+   * @param numCaps Size of capabilities data
+   * @param userClass User class
+   * @param tcpVersion Protocol version for direct contact
+   * @param ts1 Last info update time
+   * @param ts2 Last ext info update time
+   * @param ts3 Last ext status update time
+   * @param onlineSince Time user went online
+   * @param webPort Web front port
+   * @return Empty string if detection failed, otherwise name and (if possible) version of user client
+   */
+  std::string detectUserClient(const char* caps, int capSize, int userClass,
+      int tcpVersion, unsigned ts1, unsigned ts2, unsigned ts3,
+      time_t onlineSince, int webPort);
 
   Licq::Pipe myNewSocketPipe;
   unsigned long m_nDesiredStatus;

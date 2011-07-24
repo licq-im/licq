@@ -64,6 +64,7 @@ set(licq_SRCS
   icq/oscarservice.cpp
   icq/packet.cpp
   icq/threads.cpp
+  icq/userclients.cpp
 
   logging/logservice.cpp
   logging/streamlogsink.cpp

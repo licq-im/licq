@@ -580,20 +580,12 @@ const char ICQ_CAPABILITY_BART[]      = { 0x09, 0x46, 0x13, 0x46, 0x4C, 0x7F,
                                           0x11, 0xD1, 0x82, 0x22, 0x44, 0x45,
                                           0x53, 0x54, 0x00, 0x00 };
 
+const char ICQ_CAPABILITY_FILE[]      = { 0x09, 0x46, 0x13, 0x43, 0x4C, 0x7F,
+                                          0x11, 0xD1, 0x82, 0x22, 0x44, 0x45,
+                                          0x53, 0x54, 0x00, 0x00 };
+
 const char ICQ_CAPABILITY_LICQxVER[]  = { 'L',  'i',  'c',  'q',  ' ',  'c',
                                           'l',  'i',  'e',  'n',  't',  ' ',
-                                          0x00, 0x00, 0x00, 0x00 };
- 
-const char ICQ_CAPABILITY_SIMxVER[]   = { 'S',  'I',  'M',  ' ',  'c',  'l', 
-                                          'i',  'e',  'n',  't',  ' ',  ' ',
-                                          0x00, 0x00, 0x00, 0x00 };
-
-const char ICQ_CAPABILITY_KOPETExVER[] ={ 'K',  'o',  'p',  'e',  't',  'e',
-                                          ' ',  'I',  'C',  'Q',  ' ',  ' ',
-                                          0x00, 0x00, 0x00, 0x00 };
-
-const char ICQ_CAPABILITY_MICQxVER[]  = { 'm',  'I',  'C',  'Q',  ' ', 0xA9,
-                                          ' ',  'R',  '.',  'K',  '.',  ' ', 
                                           0x00, 0x00, 0x00, 0x00 };
 
 // XtraAway

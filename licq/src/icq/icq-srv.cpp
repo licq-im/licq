@@ -2151,14 +2151,19 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     nUserIP = 0;
 
     // AIM status
+      int userClass;
     if (packet.getTLVLen(0x0001) == 2)
     {
-      unsigned short nStatus = packet.UnpackUnsignedShortTLV(0x0001);
-      if (nStatus & 0x0020)
+        userClass = packet.UnpackUnsignedShortTLV(0x0001);
+        if (userClass & 0x0020)
         nNewStatus = ICQ_STATUS_AWAY;
       else
         nNewStatus = ICQ_STATUS_ONLINE;
     }
+      else
+      {
+        userClass = (isalpha(szId[0]) ? 0x10 : 0x50);
+      }
 
     // ICQ status
     if (packet.getTLVLen(0x0006))
@@ -2215,6 +2220,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         u->setAwaySince(time(NULL));
       }
 
+      unsigned tcpVersion = 0;
+      unsigned webPort = 0;
     if (packet.getTLVLen(0x000c) == 0x25)
     {
       CBuffer msg = packet.UnpackTLV(0x000c);
@@ -2222,9 +2229,9 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       intIP = msg.UnpackUnsignedLong();
       userPort = msg.UnpackUnsignedLongBE();
       mode = msg.UnpackChar();
-      unsigned short tcpVersion = msg.UnpackUnsignedShortBE();
+        tcpVersion = msg.UnpackUnsignedShortBE();
       nCookie = msg.UnpackUnsignedLongBE();
-      msg.UnpackUnsignedLongBE();
+        webPort = msg.UnpackUnsignedLongBE();
       unsigned long tcount = msg.UnpackUnsignedLongBE();
       nInfoTimestamp = msg.UnpackUnsignedLongBE();  // will be licq version
       nStatusPluginTimestamp = msg.UnpackUnsignedLongBE();
@@ -2238,34 +2245,14 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         
       msg.UnpackUnsignedShortBE();
 
-        string extraInfo;
-      if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
-          extraInfo = "Licq " + Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF) + "/SSL";
-      else if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-          extraInfo = "Licq " + Licq::UserEvent::licqVersionToString(nInfoTimestamp & 0xFFFF);
-      else if (nInfoTimestamp == 0xffffffff)
-          extraInfo = "MIRANDA";
-      else if (nInfoTimestamp == 0xFFFFFF8F)
-          extraInfo = "StrICQ";
-      else if (nInfoTimestamp == 0xFFFFFF42)
-          extraInfo ="mICQ";
-      else if (nInfoTimestamp == 0xFFFFFF7F)
-          extraInfo = "&RQ";
-      else if (nInfoTimestamp == 0xFFFFFFAB)
-          extraInfo = "YSM";
-
-        u->setClientInfo(extraInfo);
       u->SetVersion(tcpVersion);
       
       if (nOldStatus != nNewStatus)
       {
-          if (!extraInfo.empty())
-            extraInfo = " [" + extraInfo + "]";
-
           ChangeUserStatus(*u, nNewStatus, onlineSince);
-          gLog.info(tr("%s (%s) changed status: %s (v%d)%s."),
+          gLog.info(tr("%s (%s) changed status: %s (v%d)."),
               u->getAlias().c_str(), u->id().toString().c_str(),
-              u->statusString().c_str(), tcpVersion & 0x0F, extraInfo.c_str());
+              u->statusString().c_str(), tcpVersion & 0x0F);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
           gLog.unknown("Unknown status flag for %s (%s): 0x%08lX",
                 u->getAlias().c_str(), u->accountId().c_str(),
@@ -2329,69 +2316,28 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         u->setSharedFilesStatus(IcqPluginInactive);
       }
 
+      char* caps = NULL;
+      int capSize = 0;
     if (packet.hasTLV(0x000D))
     {
       CBuffer capBuf = packet.UnpackTLV(0x000D);
-      int nCapSize = packet.getTLVLen(0x000D);
-      char *caps = new char[nCapSize];    
-      for (unsigned short i = 0; i < nCapSize; i++)
-        capBuf >> caps[i];
+        capSize = packet.getTLVLen(0x000D);
+        caps = new char[capSize];
+        capBuf.UnpackRaw(caps, capSize);
 
       // Check if they support UTF8
       bool bUTF8 = false;
-
-      // Check capability flags for their client version
-      string version = "";
-      char tmpVer[24];
-      unsigned int ver1, ver2, ver3;
-
-      for (int i = 0; i < (nCapSize / CAP_LENGTH); i++)
-      {
+        for (int i = 0; i < (capSize / CAP_LENGTH); i++)
+        {
         if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_UTF8, CAP_LENGTH) == 0)
         {
           bUTF8 = true;
         }
-        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_LICQxVER,
-                 strlen(ICQ_CAPABILITY_LICQxVER)) == 0)
-        {
-          char *verStr = caps+((i+1)*CAP_LENGTH-4);
-          ver1 = verStr[0];
-          ver2 = verStr[1]%100;
-          ver3 = verStr[2];
-          snprintf(tmpVer, sizeof(tmpVer)-1, "%u.%u.%u", ver1, ver2, ver3);
-          version = "Licq v" + string(tmpVer);
-          if (verStr[3] == 1)
-            version += "/SSL";
         }
-        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_KOPETExVER,
-                 strlen(ICQ_CAPABILITY_KOPETExVER)) == 0)
-        {
-          char *verStr = caps+((i+1)*CAP_LENGTH-4);
-          ver1 = verStr[0];
-          ver2 = verStr[1];
-          ver3 = verStr[2]*100;
-          ver3 += verStr[3];
-          snprintf(tmpVer, sizeof(tmpVer)-1, "%u.%u.%u", ver1, ver2, ver3);
-          version = "Kopete v" + string(tmpVer);
-        }
-        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_SIMxVER,
-                 strlen(ICQ_CAPABILITY_SIMxVER)) == 0)
-        {
-          version = "SIM";
-        }
-        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_MICQxVER,
-                 strlen(ICQ_CAPABILITY_MICQxVER)) == 0)
-        {
-          version = "mICQ";
-        }
-      }  
-      delete [] caps;
 
         if (u.isLocked())
         {
         u->SetSupportsUTF8(bUTF8);
-        if (version != "")
-            u->setClientInfo(version);
       }
     }
     
@@ -2533,6 +2479,21 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     u->SetClientTimestamp(nInfoTimestamp);
     u->SetClientInfoTimestamp(nInfoPluginTimestamp);
     u->SetClientStatusTimestamp(nStatusPluginTimestamp);
+
+      if (nOldStatus == ICQ_STATUS_OFFLINE || u->clientInfo().empty())
+      {
+        string userClient = detectUserClient(caps, capSize, userClass, tcpVersion,
+            nInfoTimestamp, nInfoPluginTimestamp, nStatusPluginTimestamp,
+            onlineSince, webPort);
+        if (!userClient.empty())
+        {
+          gLog.info(tr("Identified user client as %s"), userClient.c_str());
+          u->setClientInfo(userClient);
+        }
+      }
+
+      if (caps != NULL)
+        delete[] caps;
 
       break;
     }
