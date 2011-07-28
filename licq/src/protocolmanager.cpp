@@ -155,7 +155,7 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
   }
 
   unsigned long eventId = 0;
-  unsigned long icqStatus = User::icqStatusFromStatus(newStatus);
+  unsigned long icqStatus = IcqProtocol::icqStatusFromStatus(newStatus);
   if (newStatus & User::InvisibleStatus)
     icqStatus |= ICQ_STATUS_FxPRIVATE;
 

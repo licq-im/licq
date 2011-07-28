@@ -923,7 +923,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
         else
         {
           Licq::UserReadGuard u(e->userId());
-          if (u.isLocked() && u->Away() && u->ShowAwayMsg())
+          if (u.isLocked() && u->isAway() && u->ShowAwayMsg())
             win->wprintf("%s\n", u->autoResponse().c_str());
         }
 

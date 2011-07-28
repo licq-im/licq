@@ -321,6 +321,10 @@ public:
   void setDirectMode();
   bool directMode() const { return myDirectMode; }
 
+  static unsigned short icqStatusFromStatus(unsigned status);
+  static unsigned statusFromIcqStatus(unsigned short icqStatus);
+  static unsigned long addStatusFlags(unsigned long nStatus, const Licq::User* u);
+
 private:
   static const int PingFrequency = 60;
   static const int UpdateFrequency = 60;

@@ -183,24 +183,6 @@ Owner::~Owner()
   }
 }
 
-unsigned long Licq::Owner::AddStatusFlags(unsigned long s) const
-{
-  s &= 0x0000FFFF;
-
-  if (WebAware())
-    s |= ICQ_STATUS_FxWEBxPRESENCE;
-  if (HideIp())
-    s |= ICQ_STATUS_FxHIDExIP;
-  if (Birthday() == 0)
-    s |= ICQ_STATUS_FxBIRTHDAY;
-  if (phoneFollowMeStatus() != CICQDaemon::IcqPluginInactive)
-    s |= ICQ_STATUS_FxPFM;
-  if (phoneFollowMeStatus() == CICQDaemon::IcqPluginActive)
-    s |= ICQ_STATUS_FxPFMxAVAILABLE;
-
-  return s;
-}
-
 void Owner::SaveLicqInfo()
 {
   if (!EnableSave()) return;
@@ -237,11 +219,6 @@ void Owner::SaveLicqInfo()
         myConf.filename().c_str());
     return;
   }
-}
-
-void Licq::Owner::SetStatusOffline()
-{
-  SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
 }
 
 void Licq::Owner::SetPicture(const char *f)

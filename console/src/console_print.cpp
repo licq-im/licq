@@ -321,7 +321,7 @@ void CLicqConsole::CreateUserList()
       continue;
 
     s = new SUser;
-    sprintf(s->szKey, "%05u%010lu", pUser->Status(), pUser->Touched() ^ 0xFFFFFFFF);
+    sprintf(s->szKey, "%05u%010lu", pUser->status(), pUser->Touched() ^ 0xFFFFFFFF);
     s->userId = pUser->id();
     s->bOffline = !pUser->isOnline();
 

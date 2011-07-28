@@ -330,8 +330,7 @@ public:
   bool AcceptInNA() const                       { return myAcceptInNotAvailable; }
   bool AcceptInOccupied() const                 { return myAcceptInOccupied; }
   bool AcceptInDND() const                      { return myAcceptInDoNotDisturb; }
-  unsigned short StatusToUser() const           { return m_nStatusToUser; }
-  unsigned statusToUser() const                 { return statusFromIcqStatus(m_nStatusToUser); }
+  unsigned statusToUser() const                 { return myStatusToUser; }
   bool KeepAliasOnUpdate() const                { return m_bKeepAliasOnUpdate; }
   const std::string& customAutoResponse() const { return myCustomAutoResponse; }
   bool NotInList() const                        { return m_bNotInList; }
@@ -459,8 +458,7 @@ public:
   void SetAcceptInDND(bool s)           { myAcceptInDoNotDisturb = s; SaveLicqInfo(); }
   void SetUseGPG(bool b)                        { m_bUseGPG = b; SaveLicqInfo(); }
   void setGpgKey(const std::string& c) { myGpgKey = c; SaveLicqInfo(); }
-  void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
-  void setStatusToUser(unsigned s) { SetStatusToUser(icqStatusFromStatus(s)); }
+  void setStatusToUser(unsigned s)      { myStatusToUser = s; SaveLicqInfo(); }
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void setCustomAutoResponse(const std::string& s) { myCustomAutoResponse = s; SaveLicqInfo(); }
   void clearCustomAutoResponse()            { setCustomAutoResponse(""); }
@@ -523,9 +521,8 @@ public:
    *
    * @param newStatus New status for user
    * @param onlineSince Time user came online or zero for now. Ignored unless changing from offline
-   * @param icqStatus ICQ phone flags (only used by ICQ protocol)
    */
-  void statusChanged(unsigned newStatus, time_t onlineSince = 0, unsigned long icqStatus = 0);
+  void statusChanged(unsigned newStatus, time_t onlineSince = 0);
 
   /**
    * Convenience function to check if if user is online
@@ -536,6 +533,14 @@ public:
   { return (myStatus & OnlineStatus) != 0; }
 
   /**
+   * Convenience function to check if user is away
+   *
+   * @return True if user is away/na/occupied/dnd
+   */
+  bool isAway() const
+  { return (status() & AwayStatuses) != 0; }
+
+  /**
    * Convenience function to check if user is invisible
    *
    * @return True if user is online and invisible
@@ -543,25 +548,31 @@ public:
   bool isInvisible() const
   { return (myStatus & InvisibleStatus) != 0; }
 
-  // Functions for use during transition from ICQ status
-  static unsigned short icqStatusFromStatus(unsigned status);
-  static unsigned statusFromIcqStatus(unsigned short icqStatus);
-
-  /// Get switch-able version of ICQ status
-  unsigned short Status() const;
-  /// Get ICQ status flags (mask of ICQ_STATUS_xxx flags)
-  unsigned long StatusFull() const              { return m_nStatus; }
-  bool StatusWebPresence() const;
-  bool StatusHideIp() const;
-  bool StatusBirthday() const;
   unsigned phoneFollowMeStatus() const          { return myPhoneFollowMeStatus; }
   unsigned icqPhoneStatus() const               { return myIcqPhoneStatus; }
   unsigned sharedFilesStatus() const            { return mySharedFilesStatus; }
   void setPhoneFollowMeStatus(unsigned n)       { myPhoneFollowMeStatus = n; SaveLicqInfo(); }
   void setIcqPhoneStatus(unsigned n)            { myIcqPhoneStatus = n; }
   void setSharedFilesStatus(unsigned n)         { mySharedFilesStatus = n; }
-  virtual void SetStatusOffline();
-  bool Away() const;
+
+  bool webPresence() const                      { return myWebPresence; }
+  bool hideIp() const                           { return myHideIp; }
+  bool birthdayFlag() const                     { return myBirthdayFlag; }
+  bool homepageFlag() const                     { return myHomepageFlag; }
+  void setWebPresence(bool f)                   { myWebPresence = f; }
+  void setHideIp(bool f)                        { myHideIp = f; }
+  void setBirthdayFlag(bool f)                  { myBirthdayFlag = f; }
+  void setHomepageFlag(bool f)                  { myHomepageFlag = f; }
+
+  enum DirectFlags
+  {
+    DirectDisabled,             // Direct contact not possible
+    DirectAnyone,               // Direct contact with anyone
+    DirectListed,               // Direct contact only with contacts in list
+    DirectAuth,                 // Direct contact only with authorized contacts
+  };
+  unsigned directFlag() const                   { return myDirectFlag; }
+  void setDirectFlag(unsigned n)                { myDirectFlag = n; }
 
   /**
    * Convert user status to a string
@@ -793,17 +804,6 @@ protected:
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 
-  /**
-   * Set status
-   * Note: This function is internal for user/owner, plugins use changeStatus()
-   *
-   * @param status New status for user
-   */
-  void setStatus(unsigned status);
-
-  /// Set ICQ status flags (also updates generic status flags)
-  void SetStatus(unsigned long n);
-
   UserId myId;
 
   int myNormalSocketDesc;
@@ -823,11 +823,15 @@ protected:
   bool m_bUserUpdated;
   unsigned m_nPort, m_nLocalPort, m_nConnectionVersion;
   bool myIsTyping;
-  unsigned long m_nStatus;
   unsigned myStatus;
   UserGroupList myGroups;               /**< List of user groups */
   unsigned short m_nSequence;
   unsigned myPhoneFollowMeStatus, myIcqPhoneStatus, mySharedFilesStatus;
+  bool myWebPresence;
+  bool myHideIp;
+  bool myBirthdayFlag;
+  bool myHomepageFlag;
+  unsigned myDirectFlag;
   bool myDirectMode;
   std::string myClientInfo;
   std::string myAutoResponse;
@@ -847,7 +851,8 @@ protected:
        m_bConnectionInProgress,
        m_bSecure,
        m_bNotInList;
-  unsigned short m_nStatusToUser, m_nSendLevel;
+  unsigned short m_nSendLevel;
+  unsigned myStatusToUser;
   bool m_bKeepAliasOnUpdate;
   bool myOnEventsBlocked;
 

@@ -422,8 +422,20 @@ void User::LoadLicqInfo()
   myAutoSecure                  = (autoAcceptFlags & 0x0400);
 
   unsigned icqStatusToUser;
-  myConf.get("StatusToUser", icqStatusToUser, ICQ_STATUS_OFFLINE);
-  m_nStatusToUser = icqStatusToUser;
+  myConf.get("StatusToUser", icqStatusToUser, 0xFFFF);
+  if (icqStatusToUser == 0xFFFF)
+    myStatusToUser = OfflineStatus;
+  else
+  {
+    myStatusToUser = OnlineStatus;
+    if (icqStatusToUser & 0x0002)       myStatusToUser |= DoNotDisturbStatus;
+    else if (icqStatusToUser & 0x0010)  myStatusToUser |= OccupiedStatus;
+    else if (icqStatusToUser & 0x0004)  myStatusToUser |= NotAvailableStatus;
+    else if (icqStatusToUser & 0x0001)  myStatusToUser |= AwayStatus;
+    else if (icqStatusToUser & 0x0020)  myStatusToUser |= FreeForChatStatus;
+    if (icqStatusToUser & 0x0100)       myStatusToUser |= InvisibleStatus;
+  }
+
   if (isUser()) // Only allow to keep a modified alias for user uins
     myConf.get("KeepAliasOnUpdate", m_bKeepAliasOnUpdate, false);
   else
@@ -654,7 +666,7 @@ void User::Init()
   myGpgKey = "";
 
   // gui plugin compat
-  SetStatus(ICQ_STATUS_OFFLINE);
+  myStatus = OfflineStatus;
   myAutoResponse = "";
   SetSendServer(false);
   SetSendIntIp(false);
@@ -676,6 +688,11 @@ void User::Init()
   myPhoneFollowMeStatus = CICQDaemon::IcqPluginInactive;
   myIcqPhoneStatus = CICQDaemon::IcqPluginInactive;
   mySharedFilesStatus = CICQDaemon::IcqPluginInactive;
+  myWebPresence = false;
+  myHideIp = false;
+  myBirthdayFlag = false;
+  myHomepageFlag = false;
+  myDirectFlag = DirectAnyone;
   Touch();
   for (unsigned short i = 0; i < 4; i++)
     m_nLastCounters[i] = 0;
@@ -683,9 +700,8 @@ void User::Init()
   m_nIdleSince = 0;
   myAwaySince = 0;
   m_nRegisteredTime = 0;
-  m_nStatusToUser = ICQ_STATUS_OFFLINE;
+  myStatusToUser = OfflineStatus;
   m_bKeepAliasOnUpdate = false;
-  m_nStatus = ICQ_STATUS_OFFLINE;
   myAutoAcceptChat = false;
   myAutoAcceptFile = false;
   myAutoSecure = false;
@@ -861,7 +877,7 @@ const string& Licq::User::userEncoding() const
     return myEncoding;
 }
 
-void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince, unsigned long s)
+void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince)
 {
   unsigned oldStatus = status();
   int arg = 0;
@@ -872,8 +888,14 @@ void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince, unsigned 
   if (newStatus == User::OfflineStatus)
   {
     if (isOnline())
+    {
       arg = -1;
-    SetStatusOffline();
+      m_nLastCounters[LAST_ONLINE] = time(NULL);
+      SaveLicqInfo();
+    }
+
+    setIsTyping(false);
+    SetUserUpdated(false);
   }
   else
   {
@@ -883,22 +905,9 @@ void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince, unsigned 
       m_nOnlineSince = (onlineSince != 0 ? onlineSince : time(NULL));
       arg = 1;
     }
-    if (s != 0)
-      SetStatus(s);
-    else
-      setStatus(newStatus);
-
-    //This is the v6 way of telling us phone follow me status
-    if (s & ICQ_STATUS_FxPFM)
-    {
-      if (s & ICQ_STATUS_FxPFMxAVAILABLE)
-        setPhoneFollowMeStatus(CICQDaemon::IcqPluginActive);
-      else
-        setPhoneFollowMeStatus(CICQDaemon::IcqPluginBusy);
-    }
-    else if (Version() < 7)
-      setPhoneFollowMeStatus(CICQDaemon::IcqPluginInactive);
   }
+
+  myStatus = newStatus;
 
   // Say that we know their status for sure
   SetOfflineOnDisconnect(false);
@@ -912,121 +921,6 @@ void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince, unsigned 
     if (isUser() && oldStatus == OfflineStatus)
       gOnEventManager.performOnEvent(OnEventData::OnEventOnline, this);
   }
-}
-
-void Licq::User::setStatus(unsigned status)
-{
-  myStatus = status;
-
-  // Build ICQ status equivalent for compatibility with old code
-  m_nStatus &= (ICQ_STATUS_FxFLAGS & ~ICQ_STATUS_FxPFMxAVAILABLE);
-  if (status == OfflineStatus)
-    m_nStatus = ICQ_STATUS_OFFLINE;
-  if (status & InvisibleStatus)
-    m_nStatus |= ICQ_STATUS_FxPRIVATE;
-  if (status & AwayStatus)
-    m_nStatus |= ICQ_STATUS_AWAY;
-  if (status & NotAvailableStatus)
-    m_nStatus |= ICQ_STATUS_NA | ICQ_STATUS_AWAY;
-  if (status & OccupiedStatus)
-    m_nStatus |= ICQ_STATUS_OCCUPIED | ICQ_STATUS_AWAY;
-  if (status & DoNotDisturbStatus)
-    m_nStatus |= ICQ_STATUS_DND | ICQ_STATUS_AWAY | ICQ_STATUS_OCCUPIED;
-  if (status & FreeForChatStatus)
-    m_nStatus |= ICQ_STATUS_FREEFORCHAT;
-}
-
-void Licq::User::SetStatus(unsigned long n)
-{
-  m_nStatus = n;
-
-  // Build status from ICQ flags
-  myStatus = statusFromIcqStatus(m_nStatus & 0xFFFF);
-  if (myStatus != OfflineStatus && m_nIdleSince != 0)
-    myStatus |= IdleStatus;
-}
-
-unsigned short Licq::User::icqStatusFromStatus(unsigned status)
-{
-  if (status == OfflineStatus)
-    return ICQ_STATUS_OFFLINE;
-  if (status & DoNotDisturbStatus)
-    return ICQ_STATUS_DND | ICQ_STATUS_AWAY | ICQ_STATUS_OCCUPIED;
-  if (status & OccupiedStatus)
-    return ICQ_STATUS_OCCUPIED | ICQ_STATUS_AWAY;
-  if (status & NotAvailableStatus)
-    return ICQ_STATUS_NA | ICQ_STATUS_AWAY;
-  if (status & AwayStatus)
-    return ICQ_STATUS_AWAY;
-  if (status & FreeForChatStatus)
-    return ICQ_STATUS_FREEFORCHAT;
-  if (status & InvisibleStatus)
-   return ICQ_STATUS_FxPRIVATE;
-  return ICQ_STATUS_ONLINE;
-}
-
-unsigned Licq::User::statusFromIcqStatus(unsigned short icqStatus)
-{
-  // Build status from ICQ flags
-  if (icqStatus == ICQ_STATUS_OFFLINE)
-    return OfflineStatus;
-
-  unsigned status = OnlineStatus;
-  if (icqStatus & ICQ_STATUS_FxPRIVATE)
-    status |= InvisibleStatus;
-  if (icqStatus & ICQ_STATUS_DND)
-    status |= DoNotDisturbStatus;
-  else if (icqStatus & ICQ_STATUS_OCCUPIED)
-    status |= OccupiedStatus;
-  else if (icqStatus & ICQ_STATUS_NA)
-    status |= NotAvailableStatus;
-  else if (icqStatus & ICQ_STATUS_AWAY)
-    status |= AwayStatus;
-  if (icqStatus & ICQ_STATUS_FREEFORCHAT)
-    status |= FreeForChatStatus;
-
-  return status;
-}
-
-unsigned short Licq::User::Status() const
-// guarantees to return a unique status that switch can be run on
-{
-   if (!isOnline()) return ICQ_STATUS_OFFLINE;
-   else if (m_nStatus & ICQ_STATUS_DND) return ICQ_STATUS_DND;
-   else if (m_nStatus & ICQ_STATUS_OCCUPIED) return ICQ_STATUS_OCCUPIED;
-   else if (m_nStatus & ICQ_STATUS_NA) return ICQ_STATUS_NA;
-   else if (m_nStatus & ICQ_STATUS_AWAY) return ICQ_STATUS_AWAY;
-   else if (m_nStatus & ICQ_STATUS_FREEFORCHAT) return ICQ_STATUS_FREEFORCHAT;
-   else if ((m_nStatus & 0xFF) == 0x00) return ICQ_STATUS_ONLINE;
-   else return (ICQ_STATUS_OFFLINE - 1);
-}
-
-bool Licq::User::StatusWebPresence() const
-{
-  return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;
-}
-
-bool Licq::User::StatusHideIp() const
-{
-  return m_nStatus & ICQ_STATUS_FxHIDExIP;
-}
-
-bool Licq::User::StatusBirthday() const
-{
-  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;
-}
-
-void Licq::User::SetStatusOffline()
-{
-  if (isOnline())
-  {
-    m_nLastCounters[LAST_ONLINE] = time(NULL);
-    SaveLicqInfo();
-  }
-
-  setIsTyping(false);
-  SetUserUpdated(false);
-  SetStatus(ICQ_STATUS_OFFLINE);
 }
 
 /* Birthday: checks to see if the users birthday is within the next nRange
@@ -1044,7 +938,7 @@ int Licq::User::Birthday(unsigned short nRange) const
 
   if (birthMonth == 0 || birthDay == 0)
   {
-    if (StatusBirthday() && isUser()) return 0;
+    if (birthdayFlag() && isUser()) return 0;
     return -1;
   }
 
@@ -1118,13 +1012,6 @@ void Licq::User::setAlias(const string& alias)
   }
 
   saveUserInfo();
-}
-
-bool Licq::User::Away() const
-{
-   unsigned short n = Status();
-   return (n == ICQ_STATUS_AWAY || n == ICQ_STATUS_NA ||
-           n == ICQ_STATUS_DND || n == ICQ_STATUS_OCCUPIED);
 }
 
 void User::setHistoryFile(const std::string& file)
@@ -1442,7 +1329,7 @@ string Licq::User::ipToString() const
   else                          // Otherwise we don't know
     ip = tr("Unknown");
 
-  if (StatusHideIp())
+  if (hideIp())
     return "(" + ip + ")";
   else
     return ip;
@@ -1953,7 +1840,19 @@ void User::SaveLicqInfo()
   if (myAutoSecure)             autoAcceptFlags |= 0x0400;
   myConf.set("AutoAccept", autoAcceptFlags);
 
-  myConf.set("StatusToUser", m_nStatusToUser);
+  unsigned icqStatusToUser = 0xFFFF;
+  if (myStatusToUser & OnlineStatus)
+  {
+    if (myStatusToUser & DoNotDisturbStatus)      icqStatusToUser = 0x0013;
+    else if (myStatusToUser & OccupiedStatus)     icqStatusToUser = 0x0011;
+    else if (myStatusToUser & NotAvailableStatus) icqStatusToUser = 0x0005;
+    else if (myStatusToUser & AwayStatus)         icqStatusToUser = 0x0001;
+    else if (myStatusToUser & FreeForChatStatus)  icqStatusToUser = 0x0020;
+    else                                          icqStatusToUser = 0;
+    if (myStatusToUser & InvisibleStatus)         icqStatusToUser |= 0x0100;
+  }
+  myConf.set("StatusToUser", icqStatusToUser);
+
   myConf.set("CustomAutoRsp", customAutoResponse());
   myConf.set("SendIntIp", m_bSendIntIp);
   myConf.set("UserEncoding", myEncoding);

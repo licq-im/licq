@@ -1429,10 +1429,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   }
 
   // Store our status for later use
-  unsigned short nOwnerStatus;
+  unsigned ownerStatus;
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    nOwnerStatus = o->Status();
+    ownerStatus = o->status();
   }
 
   // find which user was sent
@@ -1487,12 +1487,12 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
   bool bAccept = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
   // Flag as sent urgent as well if we are in occ or dnd and auto-accept is on
-  if ( ((nOwnerStatus == ICQ_STATUS_OCCUPIED || u->StatusToUser() == ICQ_STATUS_OCCUPIED)
-         && u->AcceptInOccupied() ) ||
-       ((nOwnerStatus == ICQ_STATUS_DND || u->StatusToUser() == ICQ_STATUS_DND)
-         && u->AcceptInDND() ) ||
-       (u->StatusToUser() != ICQ_STATUS_OFFLINE && u->StatusToUser() != ICQ_STATUS_OCCUPIED
-         && u->StatusToUser() != ICQ_STATUS_DND) )
+  if ( (((ownerStatus & Licq::User::OccupiedStatus) || (u->statusToUser() & Licq::User::OccupiedStatus))
+          && u->AcceptInOccupied() ) ||
+      (((ownerStatus & Licq::User::DoNotDisturbStatus) || (u->statusToUser() & Licq::User::DoNotDisturbStatus))
+          && u->AcceptInDND() ) ||
+      (u->statusToUser() != Licq::User::OfflineStatus
+          && (u->statusToUser() & (Licq::User::OccupiedStatus | Licq::User::DoNotDisturbStatus)) == 0) )
     bAccept = true;
 
   //fprintf(stderr, "status: %04X (%04X)  msgtype: %04X\n", ackFlags, u->Status(), msgFlags);
@@ -1532,15 +1532,15 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           gLog.warning(tr("Unknown TCP status: %04X"), msgFlags);
           break;
       }
-    //fprintf(stderr, "%08lX\n", (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
+      //fprintf(stderr, "%08lX\n", addStatusFlags(ns, u));
     /*if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
         !((ns & ICQ_STATUS_FxPRIVATE) && !u->isOnline()))*/
     if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
-        !(ns == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
-        ns != (u->Status() | (u->isInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
-    {
+          !(ns == ICQ_STATUS_ONLINE && (u->status() & Licq::User::FreeForChatStatus)) &&
+          ns != (icqStatusFromStatus(u->status()) | (u->isInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
+      {
       bool r = u->OfflineOnDisconnect() || !u->isOnline();
-        ChangeUserStatus(*u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
+        u->statusChanged(statusFromIcqStatus(ns));
         gLog.info(tr("%s (%s) is %s to us."), u->getAlias().c_str(),
             u->id().toString().c_str(), u->statusString().c_str());
       if (r) u->SetOfflineOnDisconnect(true);
@@ -1606,8 +1606,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
         {
-          if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
-          {
+            if (ownerStatus & (Licq::User::OccupiedStatus | Licq::User::DoNotDisturbStatus))
+            {
             delete e;
             break;
           }
@@ -1717,8 +1717,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
         {
-          if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
-          {
+            if (ownerStatus & (Licq::User::OccupiedStatus | Licq::User::DoNotDisturbStatus))
+            {
             delete e;
             break;
           }
@@ -1788,8 +1788,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
         {
-          if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
-          {
+            if (ownerStatus & (Licq::User::OccupiedStatus | Licq::User::DoNotDisturbStatus))
+            {
             delete e;
             break;
           }

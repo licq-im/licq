@@ -252,7 +252,32 @@ void IcqProtocol::SetUseServerSideBuddyIcons(bool b)
 
 void IcqProtocol::ChangeUserStatus(Licq::User* u, unsigned long s, time_t onlineSince)
 {
-  u->statusChanged(Licq::User::statusFromIcqStatus(s), onlineSince, s);
+  //This is the v6 way of telling us phone follow me status
+  if (s & ICQ_STATUS_FxPFM)
+  {
+    if (s & ICQ_STATUS_FxPFMxAVAILABLE)
+      u->setPhoneFollowMeStatus(IcqPluginActive);
+    else
+      u->setPhoneFollowMeStatus(IcqPluginBusy);
+  }
+  else if (u->Version() < 7)
+    u->setPhoneFollowMeStatus(IcqPluginInactive);
+
+  u->setWebPresence(s & ICQ_STATUS_FxWEBxPRESENCE);
+  u->setHideIp(s & ICQ_STATUS_FxHIDExIP);
+  u->setBirthdayFlag(s & ICQ_STATUS_FxBIRTHDAY);
+  u->setHomepageFlag(s & ICQ_STATUS_FxICQxHOMEPAGE);
+
+  if (s & ICQ_STATUS_FxDIRECTxDISABLED)
+    u->setDirectFlag(Licq::User::DirectDisabled);
+  else if (s & ICQ_STATUS_FxDIRECTxLISTED)
+    u->setDirectFlag(Licq::User::DirectListed);
+  else if (s & ICQ_STATUS_FxDIRECTxAUTH)
+    u->setDirectFlag(Licq::User::DirectAuth);
+  else
+    u->setDirectFlag(Licq::User::DirectAnyone);
+
+  u->statusChanged(statusFromIcqStatus(s), onlineSince);
 }
 
 /*----------------------------------------------------------------------------
@@ -1381,6 +1406,82 @@ string CICQDaemon::getXmlTag(const string& xmlSource, const string& tagName)
   if (startPos > endPos)
     return "";
   return xmlSource.substr(startPos, endPos - startPos);
+}
+
+unsigned short IcqProtocol::icqStatusFromStatus(unsigned status)
+{
+  if (status == Licq::User::OfflineStatus)
+    return ICQ_STATUS_OFFLINE;
+  if (status & Licq::User::DoNotDisturbStatus)
+    return ICQ_STATUS_DND | ICQ_STATUS_AWAY | ICQ_STATUS_OCCUPIED;
+  if (status & Licq::User::OccupiedStatus)
+    return ICQ_STATUS_OCCUPIED | ICQ_STATUS_AWAY;
+  if (status & Licq::User::NotAvailableStatus)
+    return ICQ_STATUS_NA | ICQ_STATUS_AWAY;
+  if (status & Licq::User::AwayStatus)
+    return ICQ_STATUS_AWAY;
+  if (status & Licq::User::FreeForChatStatus)
+    return ICQ_STATUS_FREEFORCHAT;
+  if (status & Licq::User::InvisibleStatus)
+    return ICQ_STATUS_FxPRIVATE;
+  return ICQ_STATUS_ONLINE;
+}
+
+unsigned IcqProtocol::statusFromIcqStatus(unsigned short icqStatus)
+{
+  // Build status from ICQ flags
+  if (icqStatus == ICQ_STATUS_OFFLINE)
+    return Licq::User::OfflineStatus;
+
+  unsigned status = Licq::User::OnlineStatus;
+  if (icqStatus & ICQ_STATUS_FxPRIVATE)
+    status |= Licq::User::InvisibleStatus;
+  if (icqStatus & ICQ_STATUS_DND)
+    status |= Licq::User::DoNotDisturbStatus;
+  else if (icqStatus & ICQ_STATUS_OCCUPIED)
+    status |= Licq::User::OccupiedStatus;
+  else if (icqStatus & ICQ_STATUS_NA)
+    status |= Licq::User::NotAvailableStatus;
+  else if (icqStatus & ICQ_STATUS_AWAY)
+    status |= Licq::User::AwayStatus;
+  if (icqStatus & ICQ_STATUS_FREEFORCHAT)
+    status |= Licq::User::FreeForChatStatus;
+
+  return status;
+}
+
+unsigned long IcqProtocol::addStatusFlags(unsigned long s, const Licq::User* u)
+{
+  s &= 0x0000FFFF;
+
+  if (u->webPresence())
+    s |= ICQ_STATUS_FxWEBxPRESENCE;
+  if (u->hideIp())
+    s |= ICQ_STATUS_FxHIDExIP;
+  if (u->birthdayFlag())
+    s |= ICQ_STATUS_FxBIRTHDAY;
+  if (u->homepageFlag())
+    s |= ICQ_STATUS_FxICQxHOMEPAGE;
+
+  if (u->phoneFollowMeStatus() != IcqPluginInactive)
+    s |= ICQ_STATUS_FxPFM;
+  if (u->phoneFollowMeStatus() == IcqPluginActive)
+    s |= ICQ_STATUS_FxPFMxAVAILABLE;
+
+  switch (u->directFlag())
+  {
+    case Licq::User::DirectDisabled:
+      s |= ICQ_STATUS_FxDIRECTxDISABLED;
+      break;
+    case Licq::User::DirectListed:
+      s |= ICQ_STATUS_FxDIRECTxLISTED;
+      break;
+    case Licq::User::DirectAuth:
+      s |= ICQ_STATUS_FxDIRECTxAUTH;
+      break;
+  }
+
+  return s;
 }
 
 

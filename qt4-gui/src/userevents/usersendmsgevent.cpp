@@ -74,7 +74,7 @@ bool UserSendMsgEvent::sendDone(const Licq::Event* /* e */)
   {
     Licq::UserReadGuard u(myUsers.front());
     if (u.isLocked())
-      showAwayDlg = u->Away() && u->ShowAwayMsg();
+      showAwayDlg = u->isAway() && u->ShowAwayMsg();
   }
 
   if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())

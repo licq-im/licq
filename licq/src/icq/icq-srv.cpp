@@ -448,21 +448,19 @@ void IcqProtocol::icqFetchAutoResponseServer(unsigned long eventId, const Licq::
       if (!u.isLocked())
         return;
 
-    switch (u->Status())
-    {
-    case ICQ_STATUS_AWAY:
-      nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
-    case ICQ_STATUS_NA:
-      nCmd = ICQ_CMDxTCP_READxNAxMSG; break;
-    case ICQ_STATUS_DND:
-      nCmd = ICQ_CMDxTCP_READxDNDxMSG; break;
-    case ICQ_STATUS_OCCUPIED:
-      nCmd = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
-    case ICQ_STATUS_FREEFORCHAT:
-      nCmd = ICQ_CMDxTCP_READxFFCxMSG; break;
-    default:
-      nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
-      }
+      unsigned status = u->status();
+      if (status & Licq::User::DoNotDisturbStatus)
+        nCmd = ICQ_CMDxTCP_READxDNDxMSG;
+      else if (status & Licq::User::OccupiedStatus)
+        nCmd = ICQ_CMDxTCP_READxOCCUPIEDxMSG;
+      else if (status & Licq::User::NotAvailableStatus)
+        nCmd = ICQ_CMDxTCP_READxNAxMSG;
+      else if (status & Licq::User::AwayStatus)
+        nCmd = ICQ_CMDxTCP_READxAWAYxMSG;
+      else if (status & Licq::User::FreeForChatStatus)
+        nCmd = ICQ_CMDxTCP_READxFFCxMSG;
+      else
+        nCmd = ICQ_CMDxTCP_READxAWAYxMSG;
     }
 
     p = new CPU_ThroughServer(userId.accountId(), nCmd, string());
@@ -555,7 +553,7 @@ void IcqProtocol::icqRelogon()
   if (m_eStatus == STATUS_ONLINE)
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    status = o->StatusFull();
+    status = addStatusFlags(icqStatusFromStatus(o->status()), *o);
   }
   else
   {
@@ -615,7 +613,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
   int nPDINFO;
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    s = o->AddStatusFlags(newStatus);
+    s = addStatusFlags(newStatus, *o);
     pfm = o->phoneFollowMeStatus();
     Invisible = o->isInvisible();
     goInvisible = (newStatus & ICQ_STATUS_FxPRIVATE);
@@ -651,7 +649,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
     p = new CPU_SetStatus(s);
 
   gLog.info(tr("Changing status to %s (#%hu)..."),
-      Licq::User::statusToString(Licq::User::statusFromIcqStatus(newStatus)).c_str(), p->Sequence());
+      Licq::User::statusToString(statusFromIcqStatus(newStatus)).c_str(), p->Sequence());
   m_nDesiredStatus = s;
 
   SendEvent_Server(p);
@@ -824,7 +822,7 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, boo
     o->SetHideIp(bHideIp);
     o->SetEnableSave(true);
     o->SaveLicqInfo();
-    s = o->StatusFull();
+    s = addStatusFlags(icqStatusFromStatus(o->status()), *o);
   }
   // Set status to ensure the status flags are set
   icqSetStatus(s);
@@ -1434,7 +1432,7 @@ unsigned long IcqProtocol::icqLogon(unsigned short logonStatus)
       return 0;
     }
 
-    m_nDesiredStatus = o->AddStatusFlags(logonStatus);
+    m_nDesiredStatus = addStatusFlags(logonStatus, *o);
   }
 
   CPU_ConnectStart *startPacket = new CPU_ConnectStart();
@@ -2147,7 +2145,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
     // 0 if not set -> Online
     unsigned long nNewStatus = 0;
-    unsigned long nOldStatus = u->StatusFull();
+      unsigned long nOldStatus = addStatusFlags(icqStatusFromStatus(u->status()), *u);
     nUserIP = 0;
 
     // AIM status
@@ -2246,9 +2244,9 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       msg.UnpackUnsignedShortBE();
 
       u->SetVersion(tcpVersion);
-      
-      if (nOldStatus != nNewStatus)
-      {
+
+        if (nOldStatus != (nNewStatus & ~ICQ_STATUS_FxUNKNOWNxFLAGS))
+        {
           ChangeUserStatus(*u, nNewStatus, onlineSince);
           gLog.info(tr("%s (%s) changed status: %s (v%d)."),
               u->getAlias().c_str(), u->id().toString().c_str(),
@@ -2293,9 +2291,9 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       }
     }
     else // for AIM users
-    {
-      if (nOldStatus != nNewStatus)
       {
+        if (nOldStatus != (nNewStatus & ~ICQ_STATUS_FxUNKNOWNxFLAGS))
+        {
           ChangeUserStatus(*u, nNewStatus, onlineSince);
           gLog.info(tr("%s changed status: %s (AIM)."),
               u->getAlias().c_str(), u->statusString().c_str());
@@ -2889,11 +2887,11 @@ However it seems to always think contact is online instead of away/occupied/etc.
 
       // Special status to us?
       if (!bIsAck && !bNewUser && nStatus != ICQ_STATUS_OFFLINE &&
-          !(nStatus == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
-          nStatus != (u->Status() | (u->isInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
-      {
+            !(nStatus == ICQ_STATUS_ONLINE && u->singleStatus() == Licq::User::FreeForChatStatus) &&
+            nStatus != (icqStatusFromStatus(u->status()) | (u->isInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
+        {
         bool r = u->OfflineOnDisconnect() || !u->isOnline();
-        ChangeUserStatus(*u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | nStatus);
+          u->statusChanged(statusFromIcqStatus(nStatus));
         gLog.info(tr("%s (%s) is %s to us."), u->getAlias().c_str(),
               u->id().toString().c_str(), u->statusString().c_str());
         if (r) u->SetOfflineOnDisconnect(true);
@@ -3684,7 +3682,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             gLog.info(tr("Got Privacy Setting."));
             o->SetPDINFO(nID);
             if (cPrivacySettings == ICQ_PRIVACY_ALLOW_FOLLOWING)
-              ChangeUserStatus(*o, o->StatusFull() | ICQ_STATUS_FxPRIVATE);
+              o->statusChanged(o->status() | Licq::User::InvisibleStatus);
             break;
           }
         }  // switch (nType)

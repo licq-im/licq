@@ -47,7 +47,6 @@ public:
   bool HideIp() const                           { return m_bHideIp; }
   bool SavePassword() const                     { return m_bSavePassword; }
   unsigned long RandomChatGroup() const         { return m_nRandomChatGroup; }
-  unsigned long AddStatusFlags(unsigned long nStatus) const;
 
   /**
    * Get status to change to at startup
@@ -88,7 +87,6 @@ public:
 
   // Virtual overloaded functions
   virtual void SaveLicqInfo() = 0;
-  virtual void SetStatusOffline();
 
   virtual bool isUser() const                   { return false; }
 protected:

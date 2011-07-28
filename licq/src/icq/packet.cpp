@@ -1177,7 +1177,7 @@ CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
   unsigned long timestamp;
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    m_nNewStatus = o->StatusFull();
+    m_nNewStatus = IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
     timestamp = o->ClientInfoTimestamp();
   }
 
@@ -1204,7 +1204,8 @@ CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const char *GUID,
   unsigned long clientTime;
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    m_nNewStatus = nStatus != ICQ_STATUS_OFFLINE ? nStatus : o->StatusFull();
+    m_nNewStatus = nStatus != ICQ_STATUS_OFFLINE ? nStatus :
+        IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
     clientTime = o->ClientStatusTimestamp();
   }
 
@@ -1231,7 +1232,7 @@ CPU_UpdateTimestamp::CPU_UpdateTimestamp()
   : CPU_SetStatusFamily()
 {
   Licq::OwnerReadGuard o(LICQ_PPID);
-  m_nNewStatus = o->StatusFull();
+  m_nNewStatus = IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
 
   m_nSize += 4 + 1 + 4;
 
@@ -2043,15 +2044,20 @@ CPU_AdvancedMessage::CPU_AdvancedMessage(const ICQUser* u, unsigned short _nMsgT
   if (!_bAck && _nMsgType == ICQ_CMDxTCP_READxAWAYxMSG)
   {
     // Get the correct message
-    switch(m_pUser->Status())
-    {
-      case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
-      case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;
-      case ICQ_STATUS_DND: m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG; break;
-      case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
-      case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
-      default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
-    }
+    unsigned status = m_pUser->status();
+    if (status & Licq::User::DoNotDisturbStatus)
+      m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG;
+    else if (status & Licq::User::OccupiedStatus)
+      m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG;
+    else if (status & Licq::User::NotAvailableStatus)
+      m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG;
+    else if (status & Licq::User::AwayStatus)
+      m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG;
+    else if (status & Licq::User::FreeForChatStatus)
+      m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG;
+    else
+      m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG;
+
     InitBuffer();
   }
   else
@@ -2067,9 +2073,10 @@ void CPU_AdvancedMessage::InitBuffer()
   unsigned short nStatus;
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    nStatus = o->Status();
-    if (m_pUser->StatusToUser() != ICQ_STATUS_OFFLINE)
-      nStatus = m_pUser->StatusToUser();
+    if (m_pUser->statusToUser() != Licq::User::OfflineStatus)
+      nStatus = IcqProtocol::icqStatusFromStatus(m_pUser->statusToUser());
+    else
+      nStatus = IcqProtocol::icqStatusFromStatus(o->status());
   }
 
   // XXX Is this really a status? XXX
@@ -2240,37 +2247,35 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
   else
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
-    unsigned short s = o->Status();
-    if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
-      s = u->StatusToUser();
-  
+    unsigned short s;
+    if (u->statusToUser() != Licq::User::OfflineStatus)
+      s = IcqProtocol::icqStatusFromStatus(u->statusToUser());
+    else
+      s = IcqProtocol::icqStatusFromStatus(o->status());
+
     if (!bAccept)
       m_nStatus = ICQ_TCPxACK_REFUSE;
     else
     {
-      switch (s)
-      {
-        case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
-        case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
-        case ICQ_STATUS_DND:
-          m_nStatus = ICQ_TCPxACK_DNDxCAR;
-          break;
-        case ICQ_STATUS_OCCUPIED:
-          m_nStatus = ICQ_TCPxACK_OCCUPIEDxCAR;
-          break;
-        case ICQ_STATUS_ONLINE:
-        case ICQ_STATUS_FREEFORCHAT:
-        default: m_nStatus = ICQ_TCPxACK_ONLINE; break;
-      }
+      if (s & Licq::User::DoNotDisturbStatus)
+        m_nStatus = ICQ_TCPxACK_DNDxCAR;
+      else if (s & Licq::User::OccupiedStatus)
+        m_nStatus = ICQ_TCPxACK_OCCUPIEDxCAR;
+      else if (s & Licq::User::NotAvailableStatus)
+        m_nStatus = ICQ_TCPxACK_NA;
+      else if (s & Licq::User::AwayStatus)
+        m_nStatus = ICQ_TCPxACK_AWAY;
+      else
+        m_nStatus = ICQ_TCPxACK_ONLINE;
     }
   
     // don't send out AutoResponse if we're online
     // it could contain stuff the other site shouldn't be able to read
     // also some clients always pop up the auto response
     // window when they receive one, annoying for them..
-    if(((u->StatusToUser() != ICQ_STATUS_OFFLINE &&
-        u->StatusToUser() != ICQ_STATUS_ONLINE)  ?
-        u->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
+    if(((u->statusToUser() != Licq::User::OfflineStatus &&
+        u->statusToUser() != Licq::User::OnlineStatus)  ?
+        u->statusToUser() : o->status()) != Licq::User::OfflineStatus)
     {
       myMessage = u->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
 
@@ -4268,8 +4273,11 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
 {
   // Setup the message type and status fields using our online status
   Licq::OwnerReadGuard o(LICQ_PPID);
-  unsigned short s = o->Status();
-  if (user->StatusToUser() != ICQ_STATUS_OFFLINE) s = user->StatusToUser();
+  unsigned short s;
+  if (user->statusToUser() != Licq::User::OfflineStatus)
+    s = IcqProtocol::icqStatusFromStatus(user->statusToUser());
+  else
+    s = IcqProtocol::icqStatusFromStatus(o->status());
   m_nLevel = nLevel;
   m_nVersion = user->ConnectionVersion();
   bool bHack = (m_nVersion >= 7 && 
@@ -4628,15 +4636,19 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
         Licq::TCPSocket::ChannelNormal, "", true, ICQ_TCPxMSG_AUTOxREPLY, _cUser)
 {
   // Properly set the subcommand to get the correct away message
-  switch(_cUser->Status())
-  {
-    case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
-    case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;
-    case ICQ_STATUS_DND: m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG; break;
-    case ICQ_STATUS_OCCUPIED: m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG; break;
-    case ICQ_STATUS_FREEFORCHAT: m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG; break;
-    default: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
-  }
+  unsigned status = _cUser->status();
+  if (status & Licq::User::DoNotDisturbStatus)
+    m_nSubCommand = ICQ_CMDxTCP_READxDNDxMSG;
+  else if (status & Licq::User::OccupiedStatus)
+    m_nSubCommand = ICQ_CMDxTCP_READxOCCUPIEDxMSG;
+  else if (status & Licq::User::NotAvailableStatus)
+    m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG;
+  else if (status & Licq::User::AwayStatus)
+    m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG;
+  else if (status & Licq::User::FreeForChatStatus)
+    m_nSubCommand = ICQ_CMDxTCP_READxFFCxMSG;
+  else
+    m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG;
 
   InitBuffer();
   if (m_nVersion == 6)
@@ -4818,9 +4830,9 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
   // it could contain stuff the other site shouldn't be able to read
   // also some clients always pop up the auto response
   // window when they receive one, annoying for them..
-  if(((pUser->StatusToUser() != ICQ_STATUS_OFFLINE &&
-       pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
-      pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
+  if(((pUser->statusToUser() != Licq::User::OfflineStatus &&
+      pUser->statusToUser() != Licq::User::OnlineStatus)  ?
+      pUser->statusToUser() : o->status()) != Licq::User::OfflineStatus)
   {
     myMessage = pUser->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
 
