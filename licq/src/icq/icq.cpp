@@ -1412,19 +1412,25 @@ unsigned short IcqProtocol::icqStatusFromStatus(unsigned status)
 {
   if (status == Licq::User::OfflineStatus)
     return ICQ_STATUS_OFFLINE;
+
+  unsigned short icqStatus;
   if (status & Licq::User::DoNotDisturbStatus)
-    return ICQ_STATUS_DND | ICQ_STATUS_AWAY | ICQ_STATUS_OCCUPIED;
-  if (status & Licq::User::OccupiedStatus)
-    return ICQ_STATUS_OCCUPIED | ICQ_STATUS_AWAY;
-  if (status & Licq::User::NotAvailableStatus)
-    return ICQ_STATUS_NA | ICQ_STATUS_AWAY;
-  if (status & Licq::User::AwayStatus)
-    return ICQ_STATUS_AWAY;
-  if (status & Licq::User::FreeForChatStatus)
-    return ICQ_STATUS_FREEFORCHAT;
+    icqStatus = ICQ_STATUS_DND | ICQ_STATUS_AWAY | ICQ_STATUS_OCCUPIED;
+  else if (status & Licq::User::OccupiedStatus)
+    icqStatus = ICQ_STATUS_OCCUPIED | ICQ_STATUS_AWAY;
+  else if (status & Licq::User::NotAvailableStatus)
+    icqStatus = ICQ_STATUS_NA | ICQ_STATUS_AWAY;
+  else if (status & Licq::User::AwayStatus)
+    icqStatus = ICQ_STATUS_AWAY;
+  else if (status & Licq::User::FreeForChatStatus)
+    icqStatus = ICQ_STATUS_FREEFORCHAT;
+  else
+    icqStatus = ICQ_STATUS_ONLINE;
+
   if (status & Licq::User::InvisibleStatus)
-    return ICQ_STATUS_FxPRIVATE;
-  return ICQ_STATUS_ONLINE;
+    icqStatus |= ICQ_STATUS_FxPRIVATE;
+
+  return icqStatus;
 }
 
 unsigned IcqProtocol::statusFromIcqStatus(unsigned short icqStatus)
