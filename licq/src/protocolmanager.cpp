@@ -23,7 +23,6 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/icqdefines.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
@@ -155,10 +154,6 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
   }
 
   unsigned long eventId = 0;
-  unsigned long icqStatus = IcqProtocol::icqStatusFromStatus(newStatus);
-  if (newStatus & User::InvisibleStatus)
-    icqStatus |= ICQ_STATUS_FxPRIVATE;
-
   if (newStatus == User::OfflineStatus)
   {
     if (isOffline)
@@ -172,14 +167,14 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
   else if(isOffline)
   {
     if (ownerId.protocolId() == LICQ_PPID)
-      eventId = gIcqProtocol.icqLogon(icqStatus);
+      eventId = gIcqProtocol.logon(newStatus);
     else
       pushProtoSignal(new Licq::ProtoLogonSignal(newStatus), ownerId);
   }
   else
   {
     if (ownerId.protocolId() == LICQ_PPID)
-      eventId = gIcqProtocol.icqSetStatus(icqStatus);
+      eventId = gIcqProtocol.setStatus(newStatus);
     else
       pushProtoSignal(new Licq::ProtoChangeStatusSignal(newStatus), ownerId);
   }

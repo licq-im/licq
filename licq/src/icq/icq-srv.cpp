@@ -563,7 +563,8 @@ void IcqProtocol::icqRelogon()
   icqLogoff();
   m_eStatus = STATUS_OFFLINE_MANUAL;
 
-  icqLogon(status);
+  m_nDesiredStatus = status;
+  icqLogon();
 
 //  m_eStatus = STATUS_OFFLINE_FORCED;
 }
@@ -592,6 +593,11 @@ void IcqProtocol::icqRequestService(unsigned short nFam)
   gLog.info(tr("Requesting service socket for FAM 0x%02X (#%hu/#%d)..."),
       nFam, p->Sequence(), p->SubSequence());
   SendEvent_Server(p);
+}
+
+unsigned long IcqProtocol::setStatus(unsigned newStatus)
+{
+  return icqSetStatus(icqStatusFromStatus(newStatus));
 }
 
 unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
@@ -1412,7 +1418,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
   }
 }
 
-unsigned long IcqProtocol::icqLogon(unsigned short logonStatus)
+unsigned long IcqProtocol::logon(unsigned logonStatus)
 {
   if (m_bLoggingOn)
   {
@@ -1432,9 +1438,14 @@ unsigned long IcqProtocol::icqLogon(unsigned short logonStatus)
       return 0;
     }
 
-    m_nDesiredStatus = addStatusFlags(logonStatus, *o);
+    m_nDesiredStatus = addStatusFlags(icqStatusFromStatus(logonStatus), *o);
   }
 
+  return icqLogon();
+}
+
+unsigned long IcqProtocol::icqLogon()
+{
   CPU_ConnectStart *startPacket = new CPU_ConnectStart();
   SendEvent_Server(startPacket);
 
@@ -5414,7 +5425,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       m_bLoggingOn = false; 
       gSocketManager.CloseSocket(nSD);
       postLogoff(nSD, NULL);
-      icqLogon(ICQ_STATUS_ONLINE);
+      logon(Licq::User::OnlineStatus);
       break;
     }
 

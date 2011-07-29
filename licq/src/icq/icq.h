@@ -201,11 +201,11 @@ public:
   void icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId);
   void icqOpenSecureChannelCancel(const Licq::UserId& userId, unsigned short nSequence);
   void icqFetchAutoResponseServer(unsigned long eventId, const Licq::UserId& userId);
-  unsigned long icqLogon(unsigned short logonStatus);
+  unsigned long logon(unsigned logonStatus);
   unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const Licq::UserId& userId);
   unsigned long icqRequestMetaInfo(const Licq::UserId& userId);
-  unsigned long icqSetStatus(unsigned short newStatus);
+  unsigned long setStatus(unsigned newStatus);
   void icqLogoff();
   void postLogoff(int nSD, Licq::Event* cancelledEvent);
   void icqRelogon();
@@ -353,6 +353,9 @@ private:
   bool hasServerEvent(unsigned long subSequence) const;
   void StupidChatLinkageFix();
   void addToModifyUsers(unsigned long unique_id, const std::string data);
+
+  unsigned long icqLogon();
+  unsigned long icqSetStatus(unsigned short newStatus);
 
   /**
    * Identify a user client based on available data
