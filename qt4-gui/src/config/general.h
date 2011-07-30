@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,6 @@ public:
 
   // Get functions
   bool useDoubleReturn() const { return myUseDoubleReturn; }
-  const QString& msgPopupKey() const { return myMsgPopupKey; }
   const QFont& defaultFont() const { return myDefaultFont; }
   const QFont& defaultFixedFont() const { return myDefaultFixedFont; }
   QFont normalFont() const;
@@ -127,7 +126,6 @@ public slots:
 
   // Set functions
   void setUseDoubleReturn(bool useDoubleReturn);
-  void setMsgPopupKey(const QString& msgPopupKey);
   void setNormalFont(const QString& normalFont);
   void setEditFont(const QString& editFont);
   void setHistoryFont(const QString& historyFont);
@@ -207,7 +205,6 @@ private:
 
   // General configuration
   bool myUseDoubleReturn;
-  QString myMsgPopupKey;
   QFont myDefaultFont;
   QFont myDefaultFixedFont;
   QFont myEditFont;

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2009-2010 Licq developers
+ * Copyright (C) 2009-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,11 @@ Config::Shortcuts::Shortcuts(QObject* parent)
   ADD_SHORTCUT(ChatUserInfo, "Chat.UserInfo", Qt::ALT + Qt::Key_I)
   ADD_SHORTCUT(ChatUserMenu, "Chat.UserMenu", Qt::ALT + Qt::Key_M)
 
+  // Shortcuts available outside Licq
+#ifdef Q_WS_X11
+  ADD_SHORTCUT(GlobalPopupMessage, "Global.PopupMessage", 0)
+#endif
+
   // Shortcuts for MLEdit used for text input in several dialogs including message dialog
   ADD_SHORTCUT(InputClear, "Input.Clear", Qt::CTRL + Qt::Key_L)
   ADD_SHORTCUT(InputDeleteLine, "Input.DeleteLine", Qt::CTRL + Qt::Key_U)
@@ -111,15 +116,30 @@ Config::Shortcuts::Shortcuts(QObject* parent)
 
 void Config::Shortcuts::loadConfiguration(Licq::IniFile& iniFile)
 {
+  std::string s;
+
+#ifdef Q_WS_X11
+  // Old varibable for backwards compatibility
+  iniFile.setSection("functions");
+  iniFile.get("MsgPopupKey", s, "none");
+  QString oldMsgPopupKey = (s != "none" ? QString::fromLatin1(s.c_str()) : QString());
+#endif
+
   iniFile.setSection("shortcuts");
 
   QMap<ShortcutType, QString>::iterator i;
   for (i = myConfigKeysMap.begin(); i != myConfigKeysMap.end(); ++i)
   {
-    std::string s;
     iniFile.get(i.value().toAscii().data(), s);
     if (s.empty())
-      myShortcutsMap[i.key()] = QKeySequence(myDefaultShortcutsMap[i.key()]);
+    {
+#ifdef Q_WS_X11
+      if (i.key() == GlobalPopupMessage && !oldMsgPopupKey.isEmpty())
+        myShortcutsMap[i.key()] = QKeySequence(oldMsgPopupKey);
+      else
+#endif
+        myShortcutsMap[i.key()] = QKeySequence(myDefaultShortcutsMap[i.key()]);
+    }
     else if(s == "None")
       myShortcutsMap[i.key()] = QKeySequence();
     else

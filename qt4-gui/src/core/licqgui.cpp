@@ -167,7 +167,7 @@ LicqGui::LicqGui(int& argc, char** argv) :
   myStartHidden(false),
   myDisableDockIcon(false),
   myUserEventTabDlg(NULL),
-  grabKeysym(0)
+  myPopupMessageKey(0)
 {
   assert(gLicqGui == NULL);
   gLicqGui = this;
@@ -416,8 +416,8 @@ int LicqGui::Run()
   Config::Shortcuts::createInstance(this);
 
 #ifdef Q_WS_X11
-  connect(Config::General::instance(),
-      SIGNAL(msgPopupKeyChanged(QString)), SLOT(grabKey(QString)));
+  connect(Config::Shortcuts::instance(), SIGNAL(shortcutsChanged()),
+      SLOT(updateGlobalShortcuts()));
 #endif
 
   // Create the main widgets
@@ -513,14 +513,14 @@ void LicqGui::saveState(QSessionManager& sm)
 #if defined(Q_WS_X11)
 bool LicqGui::x11EventFilter(XEvent* event)
 {
-  if (event->type == KeyPress && grabKeysym)
+  if (event->type == KeyPress && myPopupMessageKey != 0)
   {
     Display* dsp = QX11Info::display();
     unsigned int mod = event->xkey.state & (ControlMask | ShiftMask | Mod1Mask);
     unsigned int keysym = XKeycodeToKeysym(dsp, event->xkey.keycode, 0);
 
-    if (keysym == Support::keyToXSym(grabKeysym) &&
-        mod == Support::keyToXMod(grabKeysym))
+    if (keysym == Support::keyToXSym(myPopupMessageKey) &&
+        mod == Support::keyToXMod(myPopupMessageKey))
       showNextEvent();
 
     if (!QWidget::keyboardGrabber())
@@ -537,34 +537,29 @@ bool LicqGui::x11EventFilter(XEvent* event)
 #endif
 }
 
-void LicqGui::grabKey(const QString& key)
+void LicqGui::updateGlobalShortcuts()
 {
+  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+  int newPopup = shortcuts->getShortcut(Config::Shortcuts::GlobalPopupMessage);
+  if (myPopupMessageKey == newPopup)
+    return;
+
   Display* dsp = QX11Info::display();
   Qt::HANDLE rootWin = QX11Info::appRootWindow();
 
-  // Stop grabbing old key
-  if (grabKeysym != 0)
-  {
-    XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(grabKeysym)),
-        Support::keyToXMod(grabKeysym), rootWin, false,
+  // Ungrab all current keys that have changed
+  if (myPopupMessageKey != 0 && myPopupMessageKey != newPopup)
+    XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(myPopupMessageKey)),
+        Support::keyToXMod(myPopupMessageKey), rootWin, false,
         GrabModeAsync, GrabModeSync);
-    grabKeysym = 0;
-  }
 
-  if (key.isEmpty())
-    return;
+  // Grab new keys that have changed
+  if (newPopup != 0 && newPopup != myPopupMessageKey)
+    XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(newPopup)),
+        Support::keyToXMod(newPopup), rootWin, true,
+        GrabModeAsync, GrabModeSync);
 
-  grabKeysym = QKeySequence(key);
-
-  if (grabKeysym == 0)
-  {
-    gLog.error("Unknown popup key: %s", key.toLatin1().data());
-    return;
-  }
-
-  XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(grabKeysym)),
-      Support::keyToXMod(grabKeysym), rootWin, true,
-      GrabModeAsync, GrabModeSync);
+  myPopupMessageKey = newPopup;
 }
 #endif /* defined(Q_WS_X11) */
 

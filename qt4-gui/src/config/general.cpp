@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,10 +67,6 @@ void Config::General::loadConfiguration(Licq::IniFile& iniFile)
 {
   std::string s;
 
-  iniFile.setSection("functions");
-  iniFile.get("MsgPopupKey", s, "none");
-  myMsgPopupKey = (s != "none" ? QString::fromLatin1(s.c_str()) : QString());
-
   iniFile.setSection("appearance");
   iniFile.get("UseDoubleReturn", myUseDoubleReturn, false);
 
@@ -127,7 +123,6 @@ void Config::General::loadConfiguration(Licq::IniFile& iniFile)
     yPos = 0;
   myMainwinRect.setRect(xPos, yPos, wVal, hVal);
 
-  emit msgPopupKeyChanged(myMsgPopupKey);
   emit mainwinChanged();
   emit dockModeChanged();
   emit fontChanged();
@@ -136,9 +131,6 @@ void Config::General::loadConfiguration(Licq::IniFile& iniFile)
 
 void Config::General::saveConfiguration(Licq::IniFile& iniFile) const
 {
-  iniFile.setSection("functions");
-  iniFile.set("MsgPopupKey", myMsgPopupKey.isEmpty() ? "none" : myMsgPopupKey.toLatin1());
-
   iniFile.setSection("appearance");
   iniFile.set("UseDoubleReturn", myUseDoubleReturn);
 
@@ -226,15 +218,6 @@ void Config::General::setUseDoubleReturn(bool useDoubleReturn)
     return;
 
   myUseDoubleReturn = useDoubleReturn;
-}
-
-void Config::General::setMsgPopupKey(const QString& msgPopupKey)
-{
-  if (msgPopupKey == myMsgPopupKey)
-    return;
-
-  myMsgPopupKey = msgPopupKey;
-  emit msgPopupKeyChanged(myMsgPopupKey);
 }
 
 QFont Config::General::normalFont() const

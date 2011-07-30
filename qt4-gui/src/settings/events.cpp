@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include "config/chat.h"
 #include "config/contactlist.h"
 #include "config/general.h"
+#include "config/shortcuts.h"
 #include "widgets/shortcutedit.h"
 
 #include "oneventbox.h"
@@ -111,6 +112,7 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   myFlashUrgentCheck->setToolTip(tr("Only urgent events will blink"));
   myMsgActionsLayout->addWidget(myFlashUrgentCheck, 2, 1);
 
+#ifdef Q_WS_X11
   QHBoxLayout* hotKeyLayout = new QHBoxLayout();
   myHotKeyLabel = new QLabel(tr("Hot key:"));
   hotKeyLayout->addWidget(myHotKeyLabel);
@@ -121,6 +123,7 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   myHotKeyLabel->setBuddy(myHotKeyEdit);
   hotKeyLayout->addWidget(myHotKeyEdit);
   myMsgActionsLayout->addLayout(hotKeyLayout, 3, 1);
+#endif
 
   myParanoiaBox = new QGroupBox(tr("Paranoia"));
   myParanoiaLayout = new QVBoxLayout(myParanoiaBox);
@@ -175,10 +178,14 @@ void Settings::Events::load()
   Config::Chat* chatConfig = Config::Chat::instance();
   Config::ContactList* contactListConfig = Config::ContactList::instance();
   Config::General* generalConfig = Config::General::instance();
+  Config::Shortcuts* shortcutConfig = Config::Shortcuts::instance();
 
   myAutoRaiseCheck->setChecked(generalConfig->autoRaiseMainwin());
   myBoldOnMsgCheck->setChecked(generalConfig->boldOnMsg());
-  myHotKeyEdit->setKeySequence(QKeySequence(generalConfig->msgPopupKey()));
+
+#ifdef Q_WS_X11
+  myHotKeyEdit->setKeySequence(shortcutConfig->getShortcut(Config::Shortcuts::GlobalPopupMessage));
+#endif
 
   Config::ContactList::FlashMode flash = contactListConfig->flash();
   myFlashUrgentCheck->setChecked(flash == Config::ContactList::FlashUrgent || flash == Config::ContactList::FlashAll);
@@ -205,13 +212,17 @@ void Settings::Events::apply()
   Config::Chat* chatConfig = Config::Chat::instance();
   Config::ContactList* contactListConfig = Config::ContactList::instance();
   Config::General* generalConfig = Config::General::instance();
+  Config::Shortcuts* shortcutConfig = Config::Shortcuts::instance();
   chatConfig->blockUpdates(true);
   contactListConfig->blockUpdates(true);
   generalConfig->blockUpdates(true);
 
   generalConfig->setAutoRaiseMainwin(myAutoRaiseCheck->isChecked());
   generalConfig->setBoldOnMsg(myBoldOnMsgCheck->isChecked());
-  generalConfig->setMsgPopupKey(myHotKeyEdit->keySequence().toString(QKeySequence::PortableText));
+
+#ifdef Q_WS_X11
+  shortcutConfig->setShortcut(Config::Shortcuts::GlobalPopupMessage, myHotKeyEdit->keySequence());
+#endif
 
   if (myFlashAllCheck->isChecked())
     contactListConfig->setFlash(Config::ContactList::FlashAll);

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -250,7 +250,7 @@ signals:
 
 private slots:
 #ifdef Q_WS_X11
-  void grabKey(const QString& key);
+  void updateGlobalShortcuts();
 #endif
 
   void userDlgFinished(UserDlg* dialog);
@@ -352,8 +352,11 @@ private:
   UserDlgList myUserDlgList;
   UserSendEventList myUserSendList;
 
+#ifdef Q_WS_X11
+  int myPopupMessageKey;
+#endif
+
   QStringList myCmdLineParams;
-  int grabKeysym;
   QTimer myAutoAwayTimer;
 };
 

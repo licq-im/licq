@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,8 +86,10 @@ private:
   QCheckBox* myIgnoreWebPanelCheck;
   QCheckBox* myIgnoreMassMsgCheck;
   QCheckBox* myIgnoreEmailPagerCheck;
+#ifdef Q_WS_X11
   QLabel* myHotKeyLabel;
   ShortcutEdit* myHotKeyEdit;
+#endif
   QCheckBox* myAutoUrgentCheck;
 
   // Widget for sounds settings
