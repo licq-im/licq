@@ -354,6 +354,7 @@ private:
 
 #ifdef Q_WS_X11
   int myPopupMessageKey;
+  int myShowMainwinKey;
 #endif
 
   QStringList myCmdLineParams;

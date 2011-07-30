@@ -40,6 +40,7 @@ class QWidget;
 namespace LicqQtGui
 {
 class SettingsDlg;
+class ShortcutEdit;
 
 namespace Settings
 {
@@ -109,6 +110,10 @@ private:
   QCheckBox* myDragMovesUserCheck;
   QLabel* myGuiStyleLabel;
   QComboBox* myGuiStyleCombo;
+#ifdef Q_WS_X11
+  QLabel* myHotKeyLabel;
+  ShortcutEdit* myHotKeyEdit;
+#endif
 
   // Widgets for contact list column settings
   QVBoxLayout* myPageColumnsLayout;

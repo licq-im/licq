@@ -5,6 +5,7 @@ o ICQ: Keep track of when contacts went away
 o ICQ: Added detection of several other user clients
 o Jabber: Connect thru HTTP proxy
 o RMS: Authentication can be configured instead of always using ICQ account
+o Qt4-Gui: Added global shortcut to show/hide contact list window
 
 
 New in 1.5.2

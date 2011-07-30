@@ -167,7 +167,8 @@ LicqGui::LicqGui(int& argc, char** argv) :
   myStartHidden(false),
   myDisableDockIcon(false),
   myUserEventTabDlg(NULL),
-  myPopupMessageKey(0)
+  myPopupMessageKey(0),
+  myShowMainwinKey(0)
 {
   assert(gLicqGui == NULL);
   gLicqGui = this;
@@ -513,7 +514,7 @@ void LicqGui::saveState(QSessionManager& sm)
 #if defined(Q_WS_X11)
 bool LicqGui::x11EventFilter(XEvent* event)
 {
-  if (event->type == KeyPress && myPopupMessageKey != 0)
+  if (event->type == KeyPress && (myPopupMessageKey != 0 || myShowMainwinKey != 0))
   {
     Display* dsp = QX11Info::display();
     unsigned int mod = event->xkey.state & (ControlMask | ShiftMask | Mod1Mask);
@@ -522,6 +523,9 @@ bool LicqGui::x11EventFilter(XEvent* event)
     if (keysym == Support::keyToXSym(myPopupMessageKey) &&
         mod == Support::keyToXMod(myPopupMessageKey))
       showNextEvent();
+    else if (keysym == Support::keyToXSym(myShowMainwinKey) &&
+        mod == Support::keyToXMod(myShowMainwinKey))
+      myMainWindow->trayIconClicked();
 
     if (!QWidget::keyboardGrabber())
     {
@@ -541,7 +545,8 @@ void LicqGui::updateGlobalShortcuts()
 {
   Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
   int newPopup = shortcuts->getShortcut(Config::Shortcuts::GlobalPopupMessage);
-  if (myPopupMessageKey == newPopup)
+  int newMainwin = shortcuts->getShortcut(Config::Shortcuts::GlobalShowMainwin);
+  if (myPopupMessageKey == newPopup && myShowMainwinKey == newMainwin)
     return;
 
   Display* dsp = QX11Info::display();
@@ -552,14 +557,23 @@ void LicqGui::updateGlobalShortcuts()
     XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(myPopupMessageKey)),
         Support::keyToXMod(myPopupMessageKey), rootWin, false,
         GrabModeAsync, GrabModeSync);
+  if (myShowMainwinKey != 0 && myShowMainwinKey != newMainwin)
+    XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(myShowMainwinKey)),
+        Support::keyToXMod(myShowMainwinKey), rootWin, false,
+        GrabModeAsync, GrabModeSync);
 
   // Grab new keys that have changed
   if (newPopup != 0 && newPopup != myPopupMessageKey)
     XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(newPopup)),
         Support::keyToXMod(newPopup), rootWin, true,
         GrabModeAsync, GrabModeSync);
+  if (newMainwin != 0 && newMainwin != myShowMainwinKey)
+    XGrabKey(dsp, XKeysymToKeycode(dsp, Support::keyToXSym(newMainwin)),
+        Support::keyToXMod(newMainwin), rootWin, true,
+        GrabModeAsync, GrabModeSync);
 
   myPopupMessageKey = newPopup;
+  myShowMainwinKey = newMainwin;
 }
 #endif /* defined(Q_WS_X11) */
 

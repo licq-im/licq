@@ -71,6 +71,7 @@ Config::Shortcuts::Shortcuts(QObject* parent)
   // Shortcuts available outside Licq
 #ifdef Q_WS_X11
   ADD_SHORTCUT(GlobalPopupMessage, "Global.PopupMessage", 0)
+  ADD_SHORTCUT(GlobalShowMainwin, "Global.ShowMainwin", 0)
 #endif
 
   // Shortcuts for MLEdit used for text input in several dialogs including message dialog

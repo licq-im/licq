@@ -69,6 +69,7 @@ public:
     ChatUserMenu,
 #ifdef Q_WS_X11
     GlobalPopupMessage,
+    GlobalShowMainwin,
 #endif
     InputClear,
     InputDeleteLine,
