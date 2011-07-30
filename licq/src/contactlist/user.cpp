@@ -1204,15 +1204,6 @@ time_t Licq::User::LocalTime() const
   return time(NULL) + LocalTimeOffset();
 }
 
-unsigned short Licq::User::LicqVersion() const
-{
-  if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL ||
-       (m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-    return m_nClientTimestamp & 0x0000FFFF;
-
-  return LicqVersionUnknown;
-}
-
 unsigned Licq::User::singleStatus(unsigned status)
 {
   if (status == OfflineStatus)

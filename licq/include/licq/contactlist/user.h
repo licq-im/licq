@@ -168,7 +168,6 @@ public:
 
   static const unsigned short AgeUnspecified = 0xFFFF;
   static const char TimezoneUnknown = (char)-100;
-  static const unsigned short LicqVersionUnknown = 0;
 
 
   virtual void RemoveFiles() = 0;
@@ -305,7 +304,6 @@ public:
   unsigned long ClientStatusTimestamp() const   { return m_nClientStatusTimestamp; }
   unsigned long OurClientStatusTimestamp() const { return m_nOurClientStatusTimestamp; }
   bool UserUpdated() const                      { return m_bUserUpdated; }
-  unsigned short LicqVersion() const;
   unsigned short ConnectionVersion() const;
   time_t LastOnline() const                     { return m_nLastCounters[LAST_ONLINE]; }
   time_t LastSentEvent() const                  { return m_nLastCounters[LAST_SENT_EVENT]; }
