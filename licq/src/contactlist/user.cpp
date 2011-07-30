@@ -58,7 +58,6 @@ using Licq::ICQUserPhoneBook;
 using Licq::IniFile;
 using Licq::OnEventData;
 using Licq::PluginSignal;
-using Licq::SecureChannelSupport_et;
 using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gLog;
@@ -693,6 +692,7 @@ void User::Init()
   myBirthdayFlag = false;
   myHomepageFlag = false;
   myDirectFlag = DirectAnyone;
+  mySecureChannelSupport = SecureChannelUnknown;
   Touch();
   for (unsigned short i = 0; i < 4; i++)
     m_nLastCounters[i] = 0;
@@ -1202,16 +1202,6 @@ int Licq::User::LocalTimeOffset() const
 time_t Licq::User::LocalTime() const
 {
   return time(NULL) + LocalTimeOffset();
-}
-
-SecureChannelSupport_et Licq::User::SecureChannelSupport() const
-{
-  if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
-    return SECURE_CHANNEL_SUPPORTED;
-  else if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-    return SECURE_CHANNEL_NOTSUPPORTED;
-  else
-    return SECURE_CHANNEL_UNKNOWN;
 }
 
 unsigned short Licq::User::LicqVersion() const

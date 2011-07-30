@@ -3254,7 +3254,7 @@ void CLicqConsole::UserCommand_Secure(const Licq::UserId& userId, char *szStatus
     return;
   }
 
-  if(u->SecureChannelSupport() != Licq::SECURE_CHANNEL_SUPPORTED)
+  if(u->secureChannelSupport() != Licq::User::SecureChannelSupported)
   {
     winMain->wprintf("%CThe remote end is not using a supported client.  "
                      "This may not work!\n", COLOR_RED);

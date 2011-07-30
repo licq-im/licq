@@ -1482,7 +1482,7 @@ void UserSendCommon::sendTrySecure()
     if (u.isLocked())
     {
       autoSecure = (u->AutoSecure() && Licq::gDaemon.haveCryptoSupport() &&
-          u->SecureChannelSupport() == Licq::SECURE_CHANNEL_SUPPORTED &&
+          u->secureChannelSupport() == Licq::User::SecureChannelSupported &&
           !mySendServerCheck->isChecked() && !u->Secure());
     }
   }

@@ -51,12 +51,6 @@ class IniFile;
 class TCPSocket;
 class UserEvent;
 
-typedef enum SecureChannelSupport_et_ {
-  SECURE_CHANNEL_UNKNOWN = 0,
-  SECURE_CHANNEL_NOTSUPPORTED = 1,
-  SECURE_CHANNEL_SUPPORTED = 2
-} SecureChannelSupport_et;
-
 const unsigned short NORMAL_SID         = 0;
 const unsigned short INV_SID            = 1;
 const unsigned short VIS_SID            = 2;
@@ -311,7 +305,6 @@ public:
   unsigned long ClientStatusTimestamp() const   { return m_nClientStatusTimestamp; }
   unsigned long OurClientStatusTimestamp() const { return m_nOurClientStatusTimestamp; }
   bool UserUpdated() const                      { return m_bUserUpdated; }
-  SecureChannelSupport_et SecureChannelSupport() const;
   unsigned short LicqVersion() const;
   unsigned short ConnectionVersion() const;
   time_t LastOnline() const                     { return m_nLastCounters[LAST_ONLINE]; }
@@ -574,6 +567,15 @@ public:
   unsigned directFlag() const                   { return myDirectFlag; }
   void setDirectFlag(unsigned n)                { myDirectFlag = n; }
 
+  enum SecureChannelSupport
+  {
+    SecureChannelUnknown,
+    SecureChannelNotSupported,
+    SecureChannelSupported,
+  };
+  unsigned secureChannelSupport() const         { return mySecureChannelSupport; }
+  void setSecureChannelSupport(unsigned n)      { mySecureChannelSupport = n; }
+
   /**
    * Convert user status to a string
    *
@@ -833,6 +835,7 @@ protected:
   bool myHomepageFlag;
   unsigned myDirectFlag;
   bool myDirectMode;
+  unsigned mySecureChannelSupport;
   std::string myClientInfo;
   std::string myAutoResponse;
   std::string myEncoding;

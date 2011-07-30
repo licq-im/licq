@@ -61,16 +61,16 @@ KeyRequestDlg::KeyRequestDlg(const Licq::UserId& userId, QWidget* parent)
                   "with Diffie-Hellman key exchange and\n"
                   "the TLS version 1 protocol.\n\n");
   QString t2;
-  switch (u->SecureChannelSupport())
+  switch (u->secureChannelSupport())
   {
-    case Licq::SECURE_CHANNEL_SUPPORTED:
+    case Licq::User::SecureChannelSupported:
       t2 = tr("The remote uses Licq %1/SSL.")
         .arg(Licq::UserEvent::licqVersionToString(u->LicqVersion()).c_str());
       if (Licq::gDaemon.haveCryptoSupport())
         QTimer::singleShot(0, this, SLOT(startSend()));
       break;
 
-    case Licq::SECURE_CHANNEL_NOTSUPPORTED:
+    case Licq::User::SecureChannelNotSupported:
       t2 = tr("The remote uses Licq %1, however it\n"
               "has no secure channel support compiled in.\n"
               "This probably won't work.")

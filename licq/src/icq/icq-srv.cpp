@@ -2489,6 +2489,13 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     u->SetClientInfoTimestamp(nInfoPluginTimestamp);
     u->SetClientStatusTimestamp(nStatusPluginTimestamp);
 
+      if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
+        u->setSecureChannelSupport(Licq::User::SecureChannelSupported);
+      else if ((nInfoTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+        u->setSecureChannelSupport(Licq::User::SecureChannelNotSupported);
+      else
+        u->setSecureChannelSupport(Licq::User::SecureChannelUnknown);
+
       if (nOldStatus == ICQ_STATUS_OFFLINE || u->clientInfo().empty())
       {
         string userClient = detectUserClient(caps, capSize, userClass, tcpVersion,
