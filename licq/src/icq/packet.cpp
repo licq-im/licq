@@ -4280,10 +4280,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
     s = IcqProtocol::icqStatusFromStatus(o->status());
   m_nLevel = nLevel;
   m_nVersion = user->ConnectionVersion();
-  bool bHack = (m_nVersion >= 7 && 
-               (user->LicqVersion() == 0 || user->LicqVersion() >= 1022));
-
-  if (bHack)
+  if (m_nVersion >= 7)
   {
     if (nLevel & ICQ_TCPxMSG_URGENT)
     {
@@ -4304,7 +4301,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
     {
       m_nStatus = 0;
       m_nMsgType = nLevel;
-      if (bHack)
+      if (m_nVersion >= 7)
       {
         m_nStatus = s;
         break;

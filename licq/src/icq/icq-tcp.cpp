@@ -1388,16 +1388,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet >> messageLen;
 
         // Stupid AOL
-        Licq::UserReadGuard u(userId);
-        if (u.isLocked() && (u->LicqVersion() == 0 || u->LicqVersion() >= 1022))
-        {
-          msgFlags <<= 4;
-          msgFlags &= 0x0060;
-          if (msgFlags & ICQ_TCPxMSG_URGENT)
-            msgFlags = ICQ_TCPxMSG_LIST;
-          else if (msgFlags & ICQ_TCPxMSG_LIST)
-            msgFlags = ICQ_TCPxMSG_URGENT;
-        }
+        if (msgFlags & ICQ_TCPxMSG_URGENT2)
+          msgFlags |= ICQ_TCPxMSG_URGENT;
+        if (msgFlags & ICQ_TCPxMSG_LIST2)
+          msgFlags |= ICQ_TCPxMSG_LIST;
       }
       
       break;
