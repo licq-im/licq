@@ -28,8 +28,6 @@
 #include <unistd.h>
 
 #include <licq/daemon.h>
-#include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/plugin/pluginmanager.h>
 
 #include "gettext.h"
@@ -83,7 +81,7 @@ Owner::Owner(const UserId& id)
   myConf.get("Password", myPassword, "");
   myConf.get("WebPresence", m_bWebAware, false);
   myConf.get("HideIP", m_bHideIp, false);
-  myConf.get("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
+  myConf.get("RCG", myRandomChatGroup, 0);
   myConf.get("AutoResponse", myAutoResponse, "");
   string statusStr;
   myConf.get("StartupStatus", statusStr, "");
@@ -203,7 +201,7 @@ void Owner::SaveLicqInfo()
   myConf.set("StartupStatus", User::statusToString(myStartupStatus));
   myConf.set("ServerHost", myServerHost);
   myConf.set("ServerPort", myServerPort);
-  myConf.set("RCG", RandomChatGroup());
+  myConf.set("RCG", myRandomChatGroup);
   myConf.set("SSTime", (unsigned long)m_nSSTime);
   myConf.set("SSCount", mySsCount);
   myConf.set("PDINFO", myPDINFO);

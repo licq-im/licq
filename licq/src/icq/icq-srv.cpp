@@ -476,9 +476,9 @@ void IcqProtocol::icqFetchAutoResponseServer(unsigned long eventId, const Licq::
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------
-unsigned long IcqProtocol::icqSetRandomChatGroup(unsigned long _nGroup)
+unsigned long IcqProtocol::setRandomChatGroup(unsigned chatGroup)
 {
-  CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(_nGroup);
+  CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(chatGroup);
   gLog.info(tr("Setting random chat group (#%hu)..."), p->Sequence());
 
   Licq::Event* e = SendExpectEvent_Server(p, NULL);
@@ -488,9 +488,9 @@ unsigned long IcqProtocol::icqSetRandomChatGroup(unsigned long _nGroup)
 }
 
 //-----icqRandomChatSearch------------------------------------------------------
-unsigned long IcqProtocol::icqRandomChatSearch(unsigned long _nGroup)
+unsigned long IcqProtocol::randomChatSearch(unsigned chatGroup)
 {
-  CPU_RandomChatSearch *p = new CPU_RandomChatSearch(_nGroup);
+  CPU_RandomChatSearch *p = new CPU_RandomChatSearch(chatGroup);
   gLog.info(tr("Searching for random chat user (#%hu)..."), p->Sequence());
 
   Licq::Event* e = SendExpectEvent_Server(p, NULL);
@@ -4815,9 +4815,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
               Licq::OwnerWriteGuard o(LICQ_PPID);
-          o->SetRandomChatGroup(((CPU_SetRandomChatGroup *)pEvent->m_pPacket)->Group());
-        }
-      }
+              o->setRandomChatGroup(((CPU_SetRandomChatGroup *)pEvent->m_pPacket)->Group());
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_RANDOMxUSERxRSP)
       {
             Licq::Event* e = DoneServerEvent(nSubSequence,

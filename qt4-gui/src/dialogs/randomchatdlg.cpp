@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -45,6 +44,34 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::RandomChatDlg */
 /* TRANSLATOR LicqQtGui::SetRandomChatGroupDlg */
+
+void RandomChatDlg::fillGroupsList(QListWidget* list, bool addNone, unsigned def)
+{
+  QListWidgetItem* item;
+
+#define ADD_RCG(id, text) \
+  item = new QListWidgetItem(text, list); \
+  item->setData(Qt::UserRole, id); \
+  if (def == id) \
+    list->setCurrentItem(item);
+
+  if (addNone)
+  {
+    ADD_RCG(CICQDaemon::RandomChatGroupNone,    tr("(none)"))
+  }
+  ADD_RCG(CICQDaemon::RandomChatGroupGeneral,   tr("General"));
+  ADD_RCG(CICQDaemon::RandomChatGroupRomance,   tr("Romance"));
+  ADD_RCG(CICQDaemon::RandomChatGroupGames,     tr("Games"));
+  ADD_RCG(CICQDaemon::RandomChatGroupStudents,  tr("Students"));
+  ADD_RCG(CICQDaemon::RandomChatGroup20Some,    tr("20 Something"));
+  ADD_RCG(CICQDaemon::RandomChatGroup30Some,    tr("30 Something"));
+  ADD_RCG(CICQDaemon::RandomChatGroup40Some,    tr("40 Something"));
+  ADD_RCG(CICQDaemon::RandomChatGroup50Plus,    tr("50 Plus"));
+  ADD_RCG(CICQDaemon::RandomChatGroupSeekF,     tr("Seeking Women"));
+  ADD_RCG(CICQDaemon::RandomChatGroupSeekM,     tr("Seeking Men"));
+
+#undef ADD_RCG
+}
 
 RandomChatDlg::RandomChatDlg(QWidget* parent)
   : QDialog(parent),
@@ -68,18 +95,7 @@ RandomChatDlg::RandomChatDlg(QWidget* parent)
   connect(myCancelButton, SIGNAL(clicked()), SLOT(close()));
 
   // Fill in the combo box
-  myGroupsList->addItem(tr("General"));
-  myGroupsList->addItem(tr("Romance"));
-  myGroupsList->addItem(tr("Games"));
-  myGroupsList->addItem(tr("Students"));
-  myGroupsList->addItem(tr("20 Something"));
-  myGroupsList->addItem(tr("30 Something"));
-  myGroupsList->addItem(tr("40 Something"));
-  myGroupsList->addItem(tr("50 Plus"));
-  myGroupsList->addItem(tr("Seeking Women"));
-  myGroupsList->addItem(tr("Seeking Men"));
-
-  myGroupsList->setCurrentRow(0);
+  fillGroupsList(myGroupsList, false, 0);
 
   show();
 }
@@ -95,21 +111,8 @@ void RandomChatDlg::okPressed()
   myOkButton->setEnabled(false);
   connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
       SLOT(userEventDone(const Licq::Event*)));
-  unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
-  switch(myGroupsList->currentRow())
-  {
-    case 0: nGroup = ICQ_RANDOMxCHATxGROUP_GENERAL; break;
-    case 1: nGroup = ICQ_RANDOMxCHATxGROUP_ROMANCE; break;
-    case 2: nGroup = ICQ_RANDOMxCHATxGROUP_GAMES; break;
-    case 3: nGroup = ICQ_RANDOMxCHATxGROUP_STUDENTS; break;
-    case 4: nGroup = ICQ_RANDOMxCHATxGROUP_20SOME; break;
-    case 5: nGroup = ICQ_RANDOMxCHATxGROUP_30SOME; break;
-    case 6: nGroup = ICQ_RANDOMxCHATxGROUP_40SOME; break;
-    case 7: nGroup = ICQ_RANDOMxCHATxGROUP_50PLUS; break;
-    case 8: nGroup = ICQ_RANDOMxCHATxGROUP_MxSEEKxF; break;
-    case 9: nGroup = ICQ_RANDOMxCHATxGROUP_FxSEEKxM; break;
-  }
-  myTag = gLicqDaemon->icqRandomChatSearch(nGroup);
+  unsigned chatGroup = myGroupsList->currentItem()->data(Qt::UserRole).toInt();
+  myTag = gLicqDaemon->randomChatSearch(chatGroup);
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 
@@ -172,41 +175,15 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
   connect(myOkButton, SIGNAL(clicked()), SLOT(okPressed()));
   connect(myCancelButton, SIGNAL(clicked()), SLOT(close()));
 
-  // Fill in the combo box
-  myGroupsList->addItem(tr("(none)"));
-  myGroupsList->addItem(tr("General"));
-  myGroupsList->addItem(tr("Romance"));
-  myGroupsList->addItem(tr("Games"));
-  myGroupsList->addItem(tr("Students"));
-  myGroupsList->addItem(tr("20 Something"));
-  myGroupsList->addItem(tr("30 Something"));
-  myGroupsList->addItem(tr("40 Something"));
-  myGroupsList->addItem(tr("50 Plus"));
-  myGroupsList->addItem(tr("Seeking Women"));
-  myGroupsList->addItem(tr("Seeking Men"));
-
   Licq::OwnerReadGuard o(LICQ_PPID);
   if (!o.isLocked())
   {
     close();
     return;
   }
-  switch(o->RandomChatGroup())
-  {
-    case ICQ_RANDOMxCHATxGROUP_GENERAL: myGroupsList->setCurrentRow(1); break;
-    case ICQ_RANDOMxCHATxGROUP_ROMANCE: myGroupsList->setCurrentRow(2); break;
-    case ICQ_RANDOMxCHATxGROUP_GAMES: myGroupsList->setCurrentRow(3); break;
-    case ICQ_RANDOMxCHATxGROUP_STUDENTS: myGroupsList->setCurrentRow(4); break;
-    case ICQ_RANDOMxCHATxGROUP_20SOME: myGroupsList->setCurrentRow(5); break;
-    case ICQ_RANDOMxCHATxGROUP_30SOME: myGroupsList->setCurrentRow(6); break;
-    case ICQ_RANDOMxCHATxGROUP_40SOME: myGroupsList->setCurrentRow(7); break;
-    case ICQ_RANDOMxCHATxGROUP_50PLUS: myGroupsList->setCurrentRow(8); break;
-    case ICQ_RANDOMxCHATxGROUP_MxSEEKxF: myGroupsList->setCurrentRow(9); break;
-    case ICQ_RANDOMxCHATxGROUP_FxSEEKxM: myGroupsList->setCurrentRow(10); break;
-    case ICQ_RANDOMxCHATxGROUP_NONE:
-    default:
-      myGroupsList->setCurrentRow(0); break;
-  }
+
+  // Fill in the combo box
+  RandomChatDlg::fillGroupsList(myGroupsList, true, o->randomChatGroup());
 
   show();
 }
@@ -223,22 +200,8 @@ void SetRandomChatGroupDlg::okPressed()
   myCancelButton = new QPushButton(tr("&Cancel"), this);
   connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
       SLOT(userEventDone(const Licq::Event*)));
-  unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
-  switch(myGroupsList->currentRow())
-  {
-    case 0: nGroup = ICQ_RANDOMxCHATxGROUP_NONE; break;
-    case 1: nGroup = ICQ_RANDOMxCHATxGROUP_GENERAL; break;
-    case 2: nGroup = ICQ_RANDOMxCHATxGROUP_ROMANCE; break;
-    case 3: nGroup = ICQ_RANDOMxCHATxGROUP_GAMES; break;
-    case 4: nGroup = ICQ_RANDOMxCHATxGROUP_STUDENTS; break;
-    case 5: nGroup = ICQ_RANDOMxCHATxGROUP_20SOME; break;
-    case 6: nGroup = ICQ_RANDOMxCHATxGROUP_30SOME; break;
-    case 7: nGroup = ICQ_RANDOMxCHATxGROUP_40SOME; break;
-    case 8: nGroup = ICQ_RANDOMxCHATxGROUP_50PLUS; break;
-    case 9: nGroup = ICQ_RANDOMxCHATxGROUP_MxSEEKxF; break;
-    case 10: nGroup = ICQ_RANDOMxCHATxGROUP_FxSEEKxM; break;
-  }
-  myTag = gLicqDaemon->icqSetRandomChatGroup(nGroup);
+  unsigned chatGroup = myGroupsList->currentItem()->data(Qt::UserRole).toInt();
+  myTag = gLicqDaemon->setRandomChatGroup(chatGroup);
   setWindowTitle(tr("Setting Random Chat Group..."));
 }
 

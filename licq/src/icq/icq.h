@@ -166,8 +166,8 @@ public:
       const Licq::UserCategoryMap& background);
   unsigned long icqSetAbout(const std::string& about);
   unsigned long icqSetPassword(const std::string& password);
-  unsigned long icqSetRandomChatGroup(unsigned long nGroup);
-  unsigned long icqRandomChatSearch(unsigned long nGroup);
+  unsigned long setRandomChatGroup(unsigned chatGroup);
+  unsigned long randomChatSearch(unsigned chatGroup);
   unsigned long icqSearchWhitePages(const std::string& firstName, const std::string& lastName,
       const std::string& alias, const std::string& email, unsigned short minAge, unsigned short maxAge,
       char gender, char language, const std::string& city, const std::string& state,

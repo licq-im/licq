@@ -42,11 +42,15 @@ public:
   virtual void SetWebAwareStatus(char c) { SetWebAware(c); }
   void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
   void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
-  void SetRandomChatGroup(unsigned long n)  { m_nRandomChatGroup = n; SaveLicqInfo(); }
   bool WebAware() const                         { return m_bWebAware; }
   bool HideIp() const                           { return m_bHideIp; }
   bool SavePassword() const                     { return m_bSavePassword; }
-  unsigned long RandomChatGroup() const         { return m_nRandomChatGroup; }
+
+  /// Current random chat group (ICQ specific, 0=none)
+  unsigned randomChatGroup() const              { return myRandomChatGroup; }
+
+  /// Set current random chat group, use IcqProtocol::setRandomChatGroup() from plugins
+  void setRandomChatGroup(unsigned n)           { myRandomChatGroup = n; SaveLicqInfo(); }
 
   /**
    * Get status to change to at startup
@@ -100,7 +104,7 @@ protected:
        m_bWebAware,
        m_bHideIp,
        m_bSavePassword;
-  unsigned long  m_nRandomChatGroup;
+  unsigned myRandomChatGroup;
   unsigned mySsCount;
   time_t m_nSSTime;
   unsigned myPDINFO;

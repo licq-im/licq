@@ -120,8 +120,6 @@ public:
   virtual unsigned long icqSetOrgBackInfo(const Licq::UserCategoryMap& orgs,
       const Licq::UserCategoryMap& background) = 0;
   virtual unsigned long icqSetAbout(const std::string& about) = 0;
-  virtual unsigned long icqSetRandomChatGroup(unsigned long nGroup) = 0;
-  virtual unsigned long icqRandomChatSearch(unsigned long nGroup) = 0;
   virtual unsigned long icqSearchWhitePages(const std::string& firstName, const std::string& lastName,
       const std::string& alias, const std::string& email, unsigned short minAge, unsigned short maxAge,
       char gender, char language, const std::string& city, const std::string& state,
@@ -137,6 +135,23 @@ public:
   virtual void icqSetPhoneFollowMeStatus(unsigned newStatus) = 0;
   virtual void icqUpdateContactList() = 0;
   virtual void icqCheckInvisible(const Licq::UserId& userId) = 0;
+
+  enum RandomChatGroups
+  {
+    RandomChatGroupNone         = 0,
+    RandomChatGroupGeneral      = 1,
+    RandomChatGroupRomance      = 2,
+    RandomChatGroupGames        = 3,
+    RandomChatGroupStudents     = 4,
+    RandomChatGroup20Some       = 6,
+    RandomChatGroup30Some       = 7,
+    RandomChatGroup40Some       = 8,
+    RandomChatGroup50Plus       = 9,
+    RandomChatGroupSeekF        = 10,
+    RandomChatGroupSeekM        = 11,
+  };
+  virtual unsigned long setRandomChatGroup(unsigned chatGroup) = 0;
+  virtual unsigned long randomChatSearch(unsigned chatGroup) = 0;
 
   virtual void CheckExport() = 0;
 
