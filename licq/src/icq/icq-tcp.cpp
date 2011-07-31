@@ -1501,7 +1501,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     unsigned short s = 0, ns = 0;
 
     // Stupid AOL
-    if (nInVersion >= 7  && (u->LicqVersion() == 0 || u->LicqVersion() >= 1022))
+    if (nInVersion >= 7)
     {
       s = 0;
       ns = ackFlags;

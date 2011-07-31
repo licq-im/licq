@@ -36,7 +36,6 @@
 #include <licq/logging/log.h>
 #include <licq/icq.h> // For VersionToUse()
 #include <licq/icqcodes.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
