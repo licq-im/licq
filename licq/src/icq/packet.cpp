@@ -2452,11 +2452,12 @@ CPU_SendSms::CPU_SendSms(const string& number, const string& message)
   char szParsedNumber[17] = "+";
   ParseDigits(&szParsedNumber[1], number.c_str(), 15);
 
-  Licq::OwnerReadGuard o(LICQ_PPID);
-
-  snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
-      szParsedNumber, message.c_str(), o->accountId().c_str(), o->getAlias().c_str(), szTime);
-  szXmlStr[459] = '\0';
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
+        szParsedNumber, message.c_str(), o->accountId().c_str(), o->getAlias().c_str(), szTime);
+    szXmlStr[459] = '\0';
+  }
 
   int nLenXmlStr = strlen_safe(szXmlStr) + 1;
   int packetSize = 2+2+2+4+2+2+2 + 22 + 2 + nLenXmlStr;
