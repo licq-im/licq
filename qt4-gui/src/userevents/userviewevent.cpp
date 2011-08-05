@@ -243,8 +243,6 @@ void UserViewEvent::sendMsg(QString text)
   QTimer::singleShot(10, e, SLOT(show()));
 
   connect(e, SIGNAL(autoCloseNotify()), SLOT(autoClose()));
-  connect(e, SIGNAL(msgTypeChanged(UserSendEvent*, UserSendEvent*)),
-      SLOT(msgTypeChanged(UserSendEvent*, UserSendEvent*)));
 }
 
 void UserViewEvent::updateNextButton()
@@ -641,17 +639,6 @@ void UserViewEvent::closeDialog()
 {
   myDeleteUser = myCloseButton->modifiersWhenPressed() & Qt::ControlModifier;
   close();
-}
-
-void UserViewEvent::msgTypeChanged(UserSendEvent* from, UserSendEvent* to)
-{
-  disconnect(from, SIGNAL(autoCloseNotify()), this, SLOT(autoClose()));
-  disconnect(from, SIGNAL(msgTypeChanged(UserSendEvent*, UserSendEvent*)),
-      this, SLOT(msgTypeChanged(UserSendEvent*, UserSendEvent*)));
-
-  connect(to, SIGNAL(autoCloseNotify()), SLOT(autoClose()));
-  connect(to, SIGNAL(msgTypeChanged(UserSendEvent*, UserSendEvent*)),
-      SLOT(msgTypeChanged(UserSendEvent*, UserSendEvent*)));
 }
 
 void UserViewEvent::printMessage(QTreeWidgetItem* item)

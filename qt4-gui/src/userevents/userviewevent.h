@@ -40,7 +40,6 @@ namespace LicqQtGui
 class MLView;
 class MessageList;
 class SkinnableButton;
-class UserSendEvent;
 
 class UserViewEvent : public UserEventCommon
 {
@@ -105,7 +104,6 @@ private slots:
   void readNext();
   void clearEvent();
   void closeDialog();
-  void msgTypeChanged(UserSendEvent* from, UserSendEvent* to);
   void printMessage(QTreeWidgetItem* item);
   void sentEvent(const Licq::Event* e);
   void setEncoding();

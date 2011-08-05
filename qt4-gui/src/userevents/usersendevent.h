@@ -84,7 +84,6 @@ public:
 
 signals:
   void autoCloseNotify();
-  void msgTypeChanged(UserSendEvent* from, UserSendEvent* to);
 
   /**
    * Since daemon doesn't notify us when an event is sent we'll have to handle
@@ -100,9 +99,8 @@ public slots:
    * Convert dialog to a specified event type
    *
    * @param type Type of event to switch to
-   * @return Pointer to new window (if replaced), otherwise to this window
    */
-  UserSendEvent* changeEventType(int type);
+  void changeEventType(int type);
 
 protected:
   Licq::Color myIcqColor;

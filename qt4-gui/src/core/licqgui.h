@@ -124,16 +124,6 @@ public:
   UserEventCommon* showEventDialog(int fcn, const Licq::UserId& userId, int convoId = -1, bool autoPopup = false);
 
   /**
-   * Replace event dialog
-   * Called when event type is changed and dialog is replaced
-   *
-   * @param oldDialog Old (current) event dialog
-   * @param newDialog New event dialog
-   * @param userId Contact id
-   */
-  void replaceEventDialog(UserSendEvent* oldDialog, UserSendEvent* newDialog, const Licq::UserId& userId);
-
-  /**
    * Toggle floaty for a contact
    *
    * @param userId Contact id

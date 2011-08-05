@@ -815,7 +815,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
         }
 
         // Make the existing event dialog change to the new event type
-        e = e->changeEventType(fcn);
+        e->changeEventType(fcn);
         return e;
       }
     }
@@ -889,15 +889,6 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
   myUserSendList.append(static_cast<UserSendEvent*>(e));
 
   return e;
-}
-
-void LicqGui::replaceEventDialog(UserSendEvent* oldDialog, UserSendEvent* newDialog, const Licq::UserId& userId)
-{
-  disconnect(oldDialog, SIGNAL(finished(const Licq::UserId&)), this, SLOT(sendEventFinished(const Licq::UserId&)));
-  sendEventFinished(userId);
-  connect(newDialog, SIGNAL(eventSent(const Licq::Event*)), SIGNAL(eventSent(const Licq::Event*)));
-  connect(newDialog, SIGNAL(finished(const Licq::UserId&)), SLOT(sendEventFinished(const Licq::UserId&)));
-    myUserSendList.append(newDialog);
 }
 
 void LicqGui::showMessageDialog(const Licq::UserId& userId)

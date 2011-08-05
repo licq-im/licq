@@ -890,81 +890,43 @@ void UserSendEvent::windowActivationChange(bool oldActive)
   QWidget::windowActivationChange(oldActive);
 }
 
-UserSendEvent* UserSendEvent::changeEventType(int type)
+void UserSendEvent::changeEventType(int type)
 {
   if (myType == type)
-    return this;
-
-  UserSendEvent* e = 0;
-  QWidget* parent = 0;
-
-  UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabExists(this))
-    parent = tabDlg;
-
-  Licq::UserId userId = myUsers.front();
+    return;
 
   switch (type)
   {
     case MessageEvent:
       if ((mySendFuncs & Licq::ProtocolPlugin::CanSendMsg) == 0)
-        return NULL;
+        return;
       break;
     case UrlEvent:
       if ((mySendFuncs & Licq::ProtocolPlugin::CanSendUrl) == 0)
-        return NULL;
+        return;
       break;
     case ChatEvent:
       if ((mySendFuncs & Licq::ProtocolPlugin::CanSendChat) == 0)
-        return NULL;
+        return;
       break;
     case FileEvent:
       if ((mySendFuncs & Licq::ProtocolPlugin::CanSendFile) == 0)
-        return NULL;
+        return;
       break;
     case ContactEvent:
       if ((mySendFuncs & Licq::ProtocolPlugin::CanSendContact) == 0)
-        return NULL;
+        return;
       break;
     case SmsEvent:
       if ((mySendFuncs & Licq::ProtocolPlugin::CanSendSms) == 0)
-        return NULL;
+        return;
       break;
     default:
       assert(false);
   }
 
-  e = new UserSendEvent(type, userId, parent);
-
-  if (e != NULL)
-  {
-    e->myMessageEdit->setText(myMessageEdit->toPlainText());
-    e->myMessageEdit->document()->setModified(myMessageEdit->document()->isModified());
-
-    if (e->myHistoryView != 0 && myHistoryView != 0)
-    {
-      e->myHistoryView->setHtml(myHistoryView->toHtml());
-      e->myHistoryView->GotoEnd();
-    }
-
-    if (parent == 0)
-    {
-      QPoint p = topLevelWidget()->pos();
-      e->move(p);
-    }
-
-    gLicqGui->replaceEventDialog(this, e, userId);
-    emit msgTypeChanged(this, e);
-
-    if (parent == 0)
-    {
-      QTimer::singleShot(10, e, SLOT(show()));
-      QTimer::singleShot(100, this, SLOT(close()));
-    }
-    else
-      tabDlg->replaceTab(this, e);
-  }
-  return e;
+  myType = type;
+  setEventType();
 }
 
 void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
