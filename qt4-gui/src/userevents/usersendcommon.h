@@ -23,6 +23,9 @@
 
 #include "usereventcommon.h"
 
+#include <list>
+#include <string>
+
 #include <licq/color.h>
 
 class QGroupBox;
@@ -51,13 +54,16 @@ public:
    * @param type Type of event
    * @param userId User to open dialog for
    * @param parent Parent widget
-   * @param name Object name of widget
    */
-  UserSendCommon(int type, const Licq::UserId& userId, QWidget* parent = 0, const char* name = 0);
+  UserSendCommon(int type, const Licq::UserId& userId, QWidget* parent = 0);
   virtual ~UserSendCommon();
   virtual bool eventFilter(QObject* watched, QEvent* e);
 
   void setText(const QString& text);
+  void setUrl(const QString& url, const QString& description);
+  void setContact(const Licq::UserId& userId);
+  void setFile(const QString& file, const QString& description);
+  void addFile(const QString& file);
 
   /**
    * Someone joined the conversation
@@ -132,7 +138,6 @@ protected:
    */
   virtual void userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
   void updatePicture(const Licq::User* u = NULL);
-  bool checkSecure();
 
   /**
    * Get icon for a message type
@@ -141,9 +146,6 @@ protected:
    * @return Message icon
    */
   const QPixmap& iconForType(int type) const;
-
-  virtual void resetSettings() = 0;
-  virtual bool sendDone(const Licq::Event* e) = 0;
 
   /**
    * Widget is about to be closed
@@ -174,8 +176,11 @@ protected slots:
    */
   virtual void updateShortcuts();
 
-  virtual void send();
-  virtual void eventDoneReceived(const Licq::Event* e);
+private slots:
+  /// Send button was pressed
+  void send();
+
+  void eventDoneReceived(const Licq::Event* e);
 
   void cancelSend();
   void changeEventType(QAction* action);
@@ -209,6 +214,53 @@ protected slots:
    * @param event The drop event
    */
   void dropEvent(QDropEvent* event);
+
+  /// Select chat to invite user to
+  void chatInviteUser();
+
+  /// File browse button was pressed
+  void fileBrowse();
+
+  /// File edit button was pressed
+  void fileEditList();
+
+  /// Update counter for remaining SMS characters
+  void smsCount();
+
+private:
+  /// Show/hide controls for current event type
+  void setEventType();
+
+  /// Common base part of send function
+  void sendBase();
+
+  /// Update label for file transfer
+  void fileUpdateLabel(unsigned count);
+
+
+  QString myTitle;
+
+  QWidget* myUrlControls;
+  InfoField* myUrlEdit;
+
+  QWidget* myContactsControls;
+  MMUserView* myContactsList;
+
+  QWidget* myChatControls;
+  InfoField* myChatItemEdit;
+  QPushButton* myChatInviteButton;
+  unsigned short myChatPort;
+  QString myChatClients;
+
+  QWidget* myFileControls;
+  InfoField* myFileEdit;
+  QPushButton* myFileBrowseButton;
+  QPushButton* myFileEditButton;
+  std::list<std::string> myFileList;
+
+  QWidget* mySmsControls;
+  InfoField* mySmsPhoneEdit;
+  InfoField* mySmsCountEdit;
 };
 
 } // namespace LicqQtGui

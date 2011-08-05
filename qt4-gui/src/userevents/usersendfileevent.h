@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,6 @@
 #ifndef USERSENDFILEEVENT_H
 #define USERSENDFILEEVENT_H
 
-#include <list>
-#include <string>
-
-class QLabel;
-
 #include "usersendcommon.h"
 
 namespace LicqQtGui
@@ -44,25 +39,6 @@ public:
    */
   UserSendFileEvent(const Licq::UserId& userId, QWidget* parent = 0);
   virtual ~UserSendFileEvent();
-
-  void setFile(const QString& file, const QString& description);
-  void addFile(const QString& file);
-
-private:
-  QLabel* myFileLabel;
-  InfoField* myFileEdit;
-  QPushButton* myBrowseButton;
-  QPushButton* myEditButton;
-  std::list<std::string> myFileList;
-
-  virtual bool sendDone(const Licq::Event* e);
-  virtual void resetSettings();
-
-private slots:
-  void browseFile();
-  void editFileList();
-  void updateLabel(unsigned count);
-  virtual void send();
 };
 
 } //namespace LicqQtGui

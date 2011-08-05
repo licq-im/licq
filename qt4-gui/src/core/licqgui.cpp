@@ -1167,9 +1167,9 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
     {
       UserEventCommon* ec = showEventDialog(UrlEvent, userId);
-      if (!ec || ec->objectName() != "UserSendUrlEvent")
-        return;
       UserSendUrlEvent* e = dynamic_cast<UserSendUrlEvent*>(ec);
+      if (e == NULL)
+        return;
       // Set the url
       e->setUrl(c, "");
       // Clear the buffer now
@@ -1180,9 +1180,9 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         (c.left(5) == "file:" || c.left(1) == "/"))
     {
       UserEventCommon* ec = showEventDialog(FileEvent, userId);
-      if (!ec || ec->objectName() != "UserSendFileEvent")
-        return;
       UserSendFileEvent* e = dynamic_cast<UserSendFileEvent*>(ec);
+      if (e == NULL)
+        return;
       // Set the file
       if(c.left(5) == "file:")
         c.remove(0, 5);

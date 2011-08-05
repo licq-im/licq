@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,13 +39,6 @@ public:
    */
   UserSendMsgEvent(const Licq::UserId& userId, QWidget* parent = 0);
   virtual ~UserSendMsgEvent();
-
-private:
-  virtual bool sendDone(const Licq::Event* e);
-  virtual void resetSettings();
-
-private slots:
-  virtual void send();
 };
 
 } //namespace LicqQtGui

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@
 
 #include "usersendcommon.h"
 
-class QLabel;
-
 namespace LicqQtGui
 {
 
@@ -41,19 +39,6 @@ public:
    */
   UserSendSmsEvent(const Licq::UserId& userId, QWidget* parent = 0);
   virtual ~UserSendSmsEvent();
-
-private:
-  QLabel* myNumberLabel;
-  QLabel* myCountLabel;
-  InfoField* myNumberField;
-  InfoField* myCountField;
-
-  virtual bool sendDone(const Licq::Event* e);
-  virtual void resetSettings();
-
-private slots:
-  virtual void send();
-  void count();
 };
 
 } //namespace LicqQtGui

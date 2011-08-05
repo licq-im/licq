@@ -32,7 +32,10 @@
 #include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QDropEvent>
+#include <QFileInfo>
+#include <QFileDialog>
 #include <QGroupBox>
+#include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
@@ -47,6 +50,7 @@
 
 #ifdef USE_KDE
 #include <KDE/KColorDialog>
+#include <KDE/KFileDialog>
 #endif
 
 #include <licq/logging/log.h>
@@ -75,7 +79,13 @@
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
+#include "dialogs/chatdlg.h"
+#include "dialogs/filedlg.h"
+#include "dialogs/editfilelistdlg.h"
+#include "dialogs/joinchatdlg.h"
 #include "dialogs/keyrequestdlg.h"
+#include "dialogs/mmsenddlg.h"
+#include "dialogs/showawaymsgdlg.h"
 
 #include "helpers/usercodec.h"
 
@@ -111,8 +121,8 @@ bool orderMessagePairs(const messagePair& mp1, const messagePair& mp2)
   return (mp1.first->Time() < mp2.first->Time());
 }
 
-UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* parent, const char* name)
-  : UserEventCommon(userId, parent, name),
+UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* parent)
+  : UserEventCommon(userId, parent, "UserSendEvent"),
     myType(type)
 {
   myMassMessageBox = NULL;
@@ -221,7 +231,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   buttons->setVisible(Config::Chat::instance()->showDlgButtons());
 
   myViewSplitter = new QSplitter(Qt::Vertical);
-  myTopLayout->addWidget(myViewSplitter);
+  myMainWidget->addWidget(myViewSplitter);
 
   myHistoryView = 0;
   if (Config::Chat::instance()->msgChatView())
@@ -400,6 +410,80 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   // Disable drops for edit box so our own handler gets them
   myMessageEdit->setAcceptDrops(false);
 
+
+  // Extra controls for URL
+  myUrlControls = new QWidget();
+  QHBoxLayout* urlLayout = new QHBoxLayout(myUrlControls);
+  QLabel* urlLabel = new QLabel(tr("URL:"));
+  urlLayout->addWidget(urlLabel);
+  myUrlEdit = new InfoField(false);
+  urlLayout->addWidget(myUrlEdit);
+  urlLabel->setBuddy(myUrlEdit);
+  myUrlEdit->installEventFilter(this);
+  myUrlControls->setVisible(false);
+  myMainWidget->addWidget(myUrlControls);
+
+  // Extra controls for Chat Request
+  myChatControls = new QWidget();
+  QHBoxLayout* chatLayout = new QHBoxLayout(myChatControls);
+  QLabel* chatLabel = new QLabel(tr("Multiparty:"));
+  chatLayout->addWidget(chatLabel);
+  myChatItemEdit = new InfoField(false);
+  chatLayout->addWidget(myChatItemEdit);
+  myChatInviteButton = new QPushButton(tr("Invite"));
+  chatLayout->addWidget(myChatInviteButton);
+  myChatControls->setVisible(false);
+  myMainWidget->addWidget(myChatControls);
+  myChatPort = 0;
+
+  // Extra controls for File Transfer
+  myFileControls = new QWidget();
+  QHBoxLayout* fileLayout = new QHBoxLayout(myFileControls);
+  QLabel* fileLabel = new QLabel(tr("File(s):"));
+  fileLayout->addWidget(fileLabel);
+  myFileEdit = new InfoField(true);
+  fileLayout->addWidget(myFileEdit);
+  myFileBrowseButton = new QPushButton(tr("Browse"));
+  fileLayout->addWidget(myFileBrowseButton);
+  myFileEditButton = new QPushButton(tr("Edit"));
+  myFileEditButton->setEnabled(false);
+  fileLayout->addWidget(myFileEditButton);
+  myFileControls->setVisible(false);
+  myMainWidget->addWidget(myFileControls);
+
+  // Extra controls for Contacts
+  myContactsControls = new QWidget();
+  QVBoxLayout* contactsLayout = new QVBoxLayout(myContactsControls);
+  contactsLayout->setContentsMargins(0, 0, 0, 0);
+  myContactsControls->setToolTip(tr("Drag Users Here - Right Click for Options"));
+  myContactsList = new MMUserView(myUsers.front(), gGuiContactList);
+  myContactsList->installEventFilter(this);
+  contactsLayout->addWidget(myContactsList);
+  myContactsControls->setVisible(false);
+  myMainWidget->addWidget(myContactsControls);
+
+  // Extra controls for SMS
+  mySmsControls = new QWidget();
+  QHBoxLayout* smsLayout = new QHBoxLayout(mySmsControls);
+  QLabel* smsPhoneLabel = new QLabel(tr("Phone:"));
+  smsLayout->addWidget(smsPhoneLabel);
+  mySmsPhoneEdit = new InfoField(false);
+  smsLayout->addWidget(mySmsPhoneEdit);
+  mySmsPhoneEdit->setFixedWidth(qMax(140, mySmsPhoneEdit->sizeHint().width()));
+  mySmsPhoneEdit->installEventFilter(this);
+  smsPhoneLabel->setBuddy(mySmsPhoneEdit);
+  smsLayout->addStretch(1);
+  QLabel* smsCountLabel = new QLabel(tr("Chars left:"));
+  smsLayout->addWidget(smsCountLabel);
+  mySmsCountEdit = new InfoField(true);
+  mySmsCountEdit->setFixedWidth(40);
+  mySmsCountEdit->setAlignment(Qt::AlignCenter);
+  smsLayout->addWidget(mySmsCountEdit);
+  smsCountLabel->setBuddy(mySmsCountEdit);
+  mySmsControls->setVisible(false);
+  myMainWidget->addWidget(mySmsControls);
+
+
   if (Config::Chat::instance()->msgChatView())
   {
     myViewSplitter->setStretchFactor(myViewSplitter->indexOf(myHistoryView), 1);
@@ -430,6 +514,7 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   {
     Licq::UserReadGuard u(myUsers.front());
     updatePicture(*u);
+    mySmsPhoneEdit->setText(myCodec->toUnicode(u->getCellularNumber().c_str()));
   }
   updateShortcuts();
 
@@ -440,11 +525,19 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   connect(mySendServerCheck, SIGNAL(triggered(bool)), SLOT(sendServerToggled(bool)));
 
+  connect(myChatInviteButton, SIGNAL(clicked()), SLOT(chatInviteUser()));
+  connect(myFileBrowseButton, SIGNAL(clicked()), SLOT(fileBrowse()));
+  connect(myFileEditButton, SIGNAL(clicked()), SLOT(fileEditList()));
+  connect(myMessageEdit, SIGNAL(textChanged()), SLOT(smsCount()));
+
   QSize dialogSize = Config::Chat::instance()->sendDialogSize();
   if (dialogSize.isValid())
     resize(dialogSize);
 
   setAcceptDrops(true);
+
+  setEventType();
+  smsCount();
 }
 
 UserSendCommon::~UserSendCommon()
@@ -489,8 +582,76 @@ bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
     }
     return false;
   }
+  else if (watched == myUrlEdit || watched == myContactsList || watched == mySmsPhoneEdit)
+  {
+    if (e->type() == QEvent::KeyPress)
+    {
+      QKeyEvent* key = dynamic_cast<QKeyEvent*>(e);
+      const bool isEnter = (key->key() == Qt::Key_Enter || key->key() == Qt::Key_Return);
+      if (isEnter && (Config::Chat::instance()->singleLineChatMode() || key->modifiers() & Qt::ControlModifier))
+      {
+        mySendButton->animateClick();
+        return true; // filter the event out
+      }
+    }
+    return false;
+  }
   else
     return UserEventCommon::eventFilter(watched, e);
+}
+
+void UserSendCommon::setEventType()
+{
+  myMassMessageCheck->setEnabled(myType == MessageEvent || myType == UrlEvent);
+  myForeColor->setEnabled(myType == MessageEvent || myType == UrlEvent);
+  myBackColor->setEnabled(myType == MessageEvent || myType == UrlEvent);
+  myEmoticon->setEnabled(myType != ContactEvent);
+  mySendServerCheck->setEnabled(myType != SmsEvent);
+  myUrgentCheck->setEnabled(myType != SmsEvent);
+  myEncoding->setEnabled(myType != SmsEvent); // SMSs are always UTF-8
+
+  myMessageEdit->setVisible(myType != ContactEvent);
+
+  switch (myType)
+  {
+    case UrlEvent:
+      myTitle = myBaseTitle + tr(" - URL");
+      break;
+    case ChatEvent:
+      myTitle = myBaseTitle + tr(" - Chat Request");
+      myMassMessageCheck->setChecked(false);
+      break;
+    case FileEvent:
+      myTitle = myBaseTitle + tr(" - File Transfer");
+      myMassMessageCheck->setChecked(false);
+      break;
+    case ContactEvent:
+      myTitle = myBaseTitle + tr(" - Contact List");
+      myMassMessageCheck->setChecked(false);
+      break;
+    case SmsEvent:
+      myTitle = myBaseTitle + tr(" - SMS");
+      myMassMessageCheck->setChecked(false);
+      mySendServerCheck->setChecked(true);
+      myUrgentCheck->setChecked(false);
+      break;
+    case MessageEvent:
+    default:
+      myTitle = myBaseTitle + tr(" - Message");
+      break;
+  }
+  setWindowTitle(myTitle);
+
+  myUrlControls->setVisible(myType == UrlEvent);
+  myChatControls->setVisible(myType == ChatEvent);
+  myFileControls->setVisible(myType == FileEvent);
+  myContactsControls->setVisible(myType == ContactEvent);
+  mySmsControls->setVisible(myType == SmsEvent);
+
+  myEventTypeGroup->actions().at(myType)->setChecked(true);
+
+  if (myType != ContactEvent)
+    myMessageEdit->setFocus();
 }
 
 void UserSendCommon::updateIcons()
@@ -604,12 +765,45 @@ const QPixmap& UserSendCommon::iconForType(int type) const
 
 void UserSendCommon::setText(const QString& text)
 {
-  if (myMessageEdit == 0)
-    return;
-
   myMessageEdit->setText(text);
   myMessageEdit->GotoEnd();
   myMessageEdit->document()->setModified(false);
+}
+
+void UserSendCommon::setUrl(const QString& url, const QString& description)
+{
+  myUrlEdit->setText(url);
+  setText(description);
+}
+
+void UserSendCommon::setContact(const Licq::UserId& userId)
+{
+  Licq::UserReadGuard u(userId);
+  if (u.isLocked())
+    myContactsList->add(u->id());
+}
+
+void UserSendCommon::setFile(const QString& file, const QString& description)
+{
+  QFileInfo fileinfo(file);
+  if (fileinfo.exists() && fileinfo.isFile() && fileinfo.isReadable())
+  {
+    myFileEdit->setText(file);
+    setText(description);
+    myFileList.push_back(strdup(file.toLocal8Bit()));
+    myFileEditButton->setEnabled(true);
+  }
+}
+
+void UserSendCommon::addFile(const QString& file)
+{
+  if (myFileList.empty())
+    return;
+
+  myFileList.push_back(strdup(file.toLocal8Bit()));
+
+  myFileEditButton->setEnabled(true);
+  fileUpdateLabel(myFileList.size());
 }
 
 void UserSendCommon::convoJoin(const Licq::UserId& userId)
@@ -748,11 +942,9 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
 
   if (e != NULL)
   {
-    if (e->myMessageEdit != 0 && myMessageEdit != 0)
-    {
-      e->myMessageEdit->setText(myMessageEdit->toPlainText());
-      e->myMessageEdit->document()->setModified(myMessageEdit->document()->isModified());
-    }
+    e->myMessageEdit->setText(myMessageEdit->toPlainText());
+    e->myMessageEdit->document()->setModified(myMessageEdit->document()->isModified());
+
     if (e->myHistoryView != 0 && myHistoryView != 0)
     {
       e->myHistoryView->setHtml(myHistoryView->toHtml());
@@ -936,7 +1128,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, unsigned flags)
   if (icqEventTag)
     myEventTag.push_back(icqEventTag);
 
-  UserSendCommon::send();
+  sendBase();
 }
 
 void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
@@ -1000,34 +1192,224 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
   }
 }
 
-bool UserSendCommon::checkSecure()
+void UserSendCommon::send()
 {
-  bool secure;
+  if (myType == MessageEvent || myType == SmsEvent)
   {
-    Licq::UserReadGuard u(myUsers.front());
-    if (!u.isLocked())
-      return false;
-    secure = u->Secure() || u->AutoSecure();
+    // don't let the user send empty messages
+    if (myMessageEdit->toPlainText().trimmed().isEmpty())
+      return;
+
+    // do nothing if a command is already being processed
+    if (myEventTag.size() > 0 && myEventTag.front() != 0)
+      return;
+
+    if (!myMessageEdit->document()->isModified() &&
+        !QueryYesNo(this, (myType == SmsEvent ?
+            tr("You didn't edit the SMS.\nDo you really want to send it?") :
+            tr("You didn't edit the message.\nDo you really want to send it?"))))
+      return;
   }
 
-  bool send_ok = true;
+  if (myType == UrlEvent && myUrlEdit->text().trimmed().isEmpty())
+  {
+    InformUser(this, tr("No URL specified"));
+    return;
+  }
+  if (myType == FileEvent && myFileEdit->text().trimmed().isEmpty())
+  {
+    WarnUser(this, tr("You must specify a file to transfer!"));
+    return;
+  }
+  if (myType == ContactEvent && myContactsList->contacts().empty())
+    return;
 
-  if (mySendServerCheck->isChecked() && secure)
+  bool secure = false;;
+  bool offline = true;
+  {
+    Licq::UserReadGuard u(myUsers.front());
+    if (u.isLocked())
+    {
+      secure = u->Secure() || u->AutoSecure();
+      offline = !u->isOnline();
+    }
+  }
+
+  if ((myType == MessageEvent || myType == UrlEvent || myType == ContactEvent) &&
+      secure && mySendServerCheck->isChecked())
   {
     if (!QueryYesNo(this, tr("Message can't be sent securely through the server!\n"
             "Send anyway?")))
-      send_ok = false;
+      return;
+
+    Licq::UserWriteGuard u(myUsers.front());
+    if (u.isLocked())
+      u->SetAutoSecure(false);
+  }
+
+
+  // Take care of typing notification now`
+  if (mySendTypingTimer->isActive())
+    mySendTypingTimer->stop();
+
+  if (myType != ContactEvent)
+    connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
+  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
+
+  StringList contacts;
+  Licq::UserId userId;
+  foreach (userId, myContactsList->contacts())
+  {
+    contacts.push_back(userId.accountId());
+  }
+
+  if (myMassMessageCheck->isChecked())
+  {
+    MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
+    connect(m, SIGNAL(eventSent(const Licq::Event*)), SIGNAL(eventSent(const Licq::Event*)));
+    int r = QDialog::Accepted;
+    if (myType == UrlEvent)
+      r = m->go_url(myUrlEdit->text(), myMessageEdit->toPlainText());
+    else if (myType == ContactEvent)
+      r = m->go_contact(contacts);
     else
+      m->go_message(myMessageEdit->toPlainText());
+    delete m;
+    if (r != QDialog::Accepted)
+      return;
+  }
+
+  unsigned flags = 0;
+  if (!mySendServerCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendDirect;
+  if (myUrgentCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendUrgent;
+  if (myMassMessageCheck->isChecked())
+    flags |= Licq::ProtocolSignal::SendToMultiple;
+
+  if (myType == MessageEvent)
+  {
+    QByteArray wholeMessageRaw(Licq::gTranslator.returnToDos(myCodec->fromUnicode(myMessageEdit->toPlainText()).data()).c_str());
+    int wholeMessagePos = 0;
+
+    bool needsSplitting = false;
+    // If we send through server (= have message limit), and we've crossed the limit
+    unsigned short maxSize = offline ? CICQDaemon::MaxOfflineMessageSize : CICQDaemon::MaxMessageSize;
+    if (mySendServerCheck->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > maxSize))
+      needsSplitting = true;
+
+    while (wholeMessageRaw.length() > wholeMessagePos)
     {
-      Licq::UserWriteGuard u(myUsers.front());
-      if (u.isLocked())
-        u->SetAutoSecure(false);
+      QByteArray messageRaw;
+
+      if (needsSplitting)
+      {
+        // This is a bit ugly but adds safety. We don't simply search
+        // for a whitespace to cut at in the encoded text (since we don't
+        // really know how spaces are represented in its encoding), so
+        // we take the maximum length, then convert back to a Unicode string
+        // and then search for Unicode whitespaces.
+        messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos, maxSize).data()).c_str();
+        QString message = myCodec->toUnicode(messageRaw);
+
+        if (wholeMessageRaw.length() - wholeMessagePos > maxSize)
+        {
+          // We try to find the optimal place to cut
+          // (according to our narrow-minded Latin1 idea of optimal :)
+          // prefer keeping sentences intact 1st
+          int foundIndex = message.lastIndexOf(QRegExp("[\\.\\n]"));
+          // slicing at 0 position would be useless
+          if (foundIndex <= 0)
+            foundIndex = message.lastIndexOf(QRegExp("\\s"));
+
+          if (foundIndex > 0)
+          {
+            message.truncate(foundIndex + 1);
+            messageRaw = myCodec->fromUnicode(message);
+          }
+        }
+      }
+      else
+      {
+        messageRaw = myCodec->fromUnicode(myMessageEdit->toPlainText());
+      }
+
+      unsigned long icqEventTag = gProtocolManager.sendMessage(
+          myUsers.front(),
+          messageRaw.data(),
+          flags,
+          &myIcqColor,
+          myConvoId);
+      if (icqEventTag != 0)
+        myEventTag.push_back(icqEventTag);
+
+      wholeMessagePos += Licq::gTranslator.returnToDos(messageRaw.data()).size();
     }
   }
-  return send_ok;
+  else
+  {
+    unsigned long icqEventTag = 0;
+
+    switch (myType)
+    {
+      case UrlEvent:
+        icqEventTag = gProtocolManager.sendUrl(
+            myUsers.front(),
+            myUrlEdit->text().toLatin1().data(),
+            myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+            flags,
+            &myIcqColor);
+        break;
+
+      case ContactEvent:
+        //TODO Fix this for new protocol plugin
+        icqEventTag = gLicqDaemon->icqSendContactList(
+            myUsers.front(),
+            contacts,
+            flags,
+            &myIcqColor);
+        break;
+
+      case ChatEvent:
+        if (myChatPort == 0)
+          //TODO in daemon
+          icqEventTag = gLicqDaemon->icqChatRequest(
+              myUsers.front(),
+              myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+              flags);
+        else
+          icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
+              myUsers.front(),
+              myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+              myCodec->fromUnicode(myChatClients).data(),
+              myChatPort,
+              flags);
+        break;
+
+      case FileEvent:
+        //TODO in daemon
+        icqEventTag = gProtocolManager.fileTransferPropose(
+            myUsers.front(),
+            myCodec->fromUnicode(myFileEdit->text()).data(),
+            myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+            myFileList,
+            flags);
+        break;
+
+      case SmsEvent:
+        icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
+            mySmsPhoneEdit->text().toLatin1().data(),
+            myMessageEdit->toPlainText().toUtf8().data());
+        break;
+    }
+
+    myEventTag.push_back(icqEventTag);
+  }
+
+  sendBase();
 }
 
-void UserSendCommon::send()
+void UserSendCommon::sendBase()
 {
   if (!Config::Chat::instance()->manualNewUser())
   {
@@ -1057,7 +1439,7 @@ void UserSendCommon::send()
     myProgressMsg = tr("Sending ");
     myProgressMsg += via_server ? tr("via server") : tr("direct");
     myProgressMsg += "...";
-    QString title = myBaseTitle + " [" + myProgressMsg + "]";
+    QString title = myTitle + " [" + myProgressMsg + "]";
 
     UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
     if (tabDlg != NULL && tabDlg->tabIsSelected(this))
@@ -1067,9 +1449,7 @@ void UserSendCommon::send()
     setCursor(Qt::WaitCursor);
     mySendButton->setText(tr("&Cancel"));
     myCloseButton->setEnabled(false);
-
-    if (myMessageEdit != NULL)
-      myMessageEdit->setEnabled(false);
+    myMessageEdit->setEnabled(false);
 
     disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(send()));
     connect(mySendButton, SIGNAL(clicked()), SLOT(cancelSend()));
@@ -1083,7 +1463,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
 {
   if (e == NULL)
   {
-    QString title = myBaseTitle + " [" + myProgressMsg + tr("error") + "]";
+    QString title = myTitle + " [" + myProgressMsg + tr("error") + "]";
 
     UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
     if (tabDlg != NULL && tabDlg->tabIsSelected(this))
@@ -1133,7 +1513,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
     default:
       break;
   }
-  title = myBaseTitle + " [" + myProgressMsg + result + "]";
+  title = myTitle + " [" + myProgressMsg + result + "]";
 
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
@@ -1144,9 +1524,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
   setCursor(Qt::ArrowCursor);
   mySendButton->setText(tr("&Send"));
   myCloseButton->setEnabled(true);
-
-  if (myMessageEdit != NULL)
-    myMessageEdit->setEnabled(true);
+  myMessageEdit->setEnabled(true);
 
   disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(cancelSend()));
   connect(mySendButton, SIGNAL(clicked()), SLOT(send()));
@@ -1161,7 +1539,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
         this, SLOT(eventDoneReceived(const Licq::Event*)));
   }
 
-  if (myMessageEdit != NULL)
+  if (myType != ContactEvent)
     if(tabDlg == NULL || !tabDlg->tabExists(this) || tabDlg->tabIsSelected(this))
       myMessageEdit->setFocus();
 
@@ -1214,21 +1592,106 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
   }
 
   emit autoCloseNotify();
-  if (sendDone(e))
-  {
-    emit eventSent(e);
-    if (Config::Chat::instance()->msgChatView() && myHistoryView != NULL)
-    {
-      myHistoryView->GotoEnd();
-      resetSettings();
 
-      // After sending URI/File/Contact/ChatRequest switch back to text message
-      if (myType != MessageEvent)
-        changeEventType(MessageEvent);
+
+  switch (myType)
+  {
+    case UrlEvent:
+    case ContactEvent:
+    case MessageEvent:
+    {
+      if (e->Command() != ICQ_CMDxTCP_START)
+        break;
+
+      myMessageEdit->setText(QString::null);
+
+      bool showAwayDlg = false;
+      {
+        Licq::UserReadGuard u(myUsers.front());
+        if (u.isLocked())
+          showAwayDlg = u->isAway() && u->ShowAwayMsg();
+      }
+
+      if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
+        new ShowAwayMsgDlg(myUsers.front());
+
+      break;
     }
-    else
-      close();
+
+    case FileEvent:
+      if (!e->ExtendedAck() || !e->ExtendedAck()->accepted())
+      {
+        Licq::UserReadGuard u(myUsers.front());
+        if (!u.isLocked())
+          break;
+        QString s = !e->ExtendedAck() ?
+          tr("No reason provided") :
+          myCodec->toUnicode(e->ExtendedAck()->response().c_str());
+        QString result = tr("File transfer with %1 refused:\n%2")
+          .arg(QString::fromUtf8(u->getAlias().c_str()))
+          .arg(s);
+        u.unlock();
+        InformUser(this, result);
+      }
+      else
+      {
+        const Licq::EventFile* f = dynamic_cast<const Licq::EventFile*>(e->userEvent());
+        FileDlg* fileDlg = new FileDlg(myUsers.front());
+        fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->port());
+      }
+      break;
+
+    case ChatEvent:
+      if (!e->ExtendedAck() || !e->ExtendedAck()->accepted())
+      {
+        Licq::UserReadGuard u(myUsers.front());
+        QString s = !e->ExtendedAck() ?
+          tr("No reason provided") :
+          myCodec->toUnicode(e->ExtendedAck()->response().c_str());
+        QString result = tr("Chat with %1 refused:\n%2")
+          .arg(!u.isLocked() ? u->accountId().c_str() : QString::fromUtf8(u->getAlias().c_str()))
+          .arg(s);
+        u.unlock();
+        InformUser(this, result);
+      }
+      else
+      {
+        const Licq::EventChat* c = dynamic_cast<const Licq::EventChat*>(e->userEvent());
+        if (c->Port() == 0)  // If we requested a join, no need to do anything
+        {
+          ChatDlg* chatDlg = new ChatDlg(myUsers.front());
+          chatDlg->StartAsClient(e->ExtendedAck()->port());
+        }
+      }
+      break;
   }
+
+  emit eventSent(e);
+  if (Config::Chat::instance()->msgChatView() && myHistoryView != NULL)
+  {
+    myHistoryView->GotoEnd();
+
+    myMessageEdit->clear();
+    myMessageEdit->setFocus();
+
+    // Makes the cursor blink so that the user sees that the text edit has focus.
+    myMessageEdit->moveCursor(QTextCursor::Start);
+
+    myUrlEdit->clear();
+    myChatItemEdit->clear();
+    myFileEdit->clear();
+    myFileList.clear();
+    myFileEditButton->setEnabled(false);
+    myContactsList->clear();
+
+    massMessageToggled(false);
+
+    // After sending URI/File/Contact/ChatRequest switch back to text message
+    if (myType != MessageEvent)
+      changeEventType(MessageEvent);
+  }
+  else
+    close();
 }
 
 void UserSendCommon::cancelSend()
@@ -1243,7 +1706,7 @@ void UserSendCommon::cancelSend()
 
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
+    tabDlg->setWindowTitle(myTitle);
 
   Licq::gDaemon.cancelEvent(icqEventTag);
 }
@@ -1297,8 +1760,7 @@ void UserSendCommon::closeDialog()
     clearNewEvents();
   }
 
-  if (myMessageEdit)
-    Config::Chat::instance()->setCheckSpelling(myMessageEdit->checkSpellingEnabled());
+  Config::Chat::instance()->setCheckSpelling(myMessageEdit->checkSpellingEnabled());
   close();
 }
 
@@ -1335,8 +1797,7 @@ void UserSendCommon::showEmoticonsMenu()
 
 void UserSendCommon::insertEmoticon(const QString& value)
 {
-  if (myMessageEdit)
-    myMessageEdit->insertPlainText(value);
+  myMessageEdit->insertPlainText(value);
 }
 
 /*! This slot creates/removes a little widget into the usereventdlg
@@ -1378,9 +1839,9 @@ void UserSendCommon::resetTitle()
 {
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
-    tabDlg->setWindowTitle(myBaseTitle);
+    tabDlg->setWindowTitle(myTitle);
 
-  setWindowTitle(myBaseTitle);
+  setWindowTitle(myTitle);
 }
 
 void UserSendCommon::sendServerToggled(bool sendServer)
@@ -1395,9 +1856,6 @@ void UserSendCommon::sendServerToggled(bool sendServer)
 
 void UserSendCommon::setBackgroundICQColor()
 {
-  if (myMessageEdit == NULL)
-    return;
-
   QColor c = myMessageEdit->palette().color(QPalette::Base);
 #ifdef USE_KDE
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted)
@@ -1414,9 +1872,6 @@ void UserSendCommon::setBackgroundICQColor()
 
 void UserSendCommon::setForegroundICQColor()
 {
-  if (myMessageEdit == NULL)
-    return;
-
   QColor c = myMessageEdit->palette().color(QPalette::Text);
 #ifdef USE_KDE
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted)
@@ -1439,7 +1894,7 @@ void UserSendCommon::showSendTypeMenu()
 
 void UserSendCommon::messageTextChanged()
 {
-  if (myMessageEdit == NULL || myMessageEdit->toPlainText().isEmpty())
+  if (myMessageEdit->toPlainText().isEmpty())
     return;
 
   myTempMessage = myMessageEdit->toPlainText();
@@ -1450,12 +1905,6 @@ void UserSendCommon::messageTextChanged()
 
 void UserSendCommon::textChangedTimeout()
 {
-  if (myMessageEdit == NULL)
-  {
-    mySendTypingTimer->stop();
-    return;
-  }
-
   QString str = myMessageEdit->toPlainText();
 
   if (str != myTempMessage)
@@ -1518,4 +1967,86 @@ void UserSendCommon::dropEvent(QDropEvent* event)
 
   if (gLicqGui->userDropEvent(myUsers.front(), *event->mimeData()))
     event->acceptProposedAction();
+}
+
+void UserSendCommon::chatInviteUser()
+{
+  if (myChatPort == 0)
+  {
+    if (ChatDlg::chatDlgs.size() > 0)
+    {
+      ChatDlg* chatDlg = NULL;
+      JoinChatDlg* j = new JoinChatDlg(true, this);
+      if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
+      {
+        myChatItemEdit->setText(j->ChatClients());
+        myChatPort = chatDlg->LocalPort();
+        myChatClients = chatDlg->ChatName() + ", " + chatDlg->ChatClients();
+      }
+      delete j;
+      myChatInviteButton->setText(tr("Clear"));
+    }
+  }
+  else
+  {
+    myChatPort = 0;
+    myChatClients = "";
+    myChatItemEdit->setText("");
+    myChatInviteButton->setText(tr("Invite"));
+  }
+}
+
+void UserSendCommon::fileBrowse()
+{
+#ifdef USE_KDE
+  QStringList fl = KFileDialog::getOpenFileNames(KUrl(), QString(), this, tr("Select files to send"));
+#else
+  QStringList fl = QFileDialog::getOpenFileNames(this, tr("Select files to send"));
+#endif
+
+  if (fl.isEmpty())
+    return;
+
+  QStringList::ConstIterator it = fl.begin();
+
+  for(; it != fl.end(); it++)
+    myFileList.push_back(strdup((*it).toLocal8Bit()));
+
+  fileUpdateLabel(myFileList.size());
+}
+
+void UserSendCommon::fileEditList()
+{
+  EditFileListDlg* dlg = new EditFileListDlg(&myFileList);
+  connect(dlg, SIGNAL(fileDeleted(unsigned)), SLOT(fileUpdateLabel(unsigned)));
+}
+
+void UserSendCommon::fileUpdateLabel(unsigned count)
+{
+  myFileEditButton->setEnabled(count > 0);
+
+  QString f;
+
+  switch (count)
+  {
+    case 0:
+      f = QString::null;
+      break;
+
+    case 1:
+      f = myFileList.front().c_str();
+      break;
+
+    default:
+      f = QString(tr("%1 Files")).arg(count);
+      break;
+  }
+
+  myFileEdit->setText(f);
+}
+
+void UserSendCommon::smsCount()
+{
+  int len = 160 - strlen(myMessageEdit->toPlainText().toUtf8().data());
+  mySmsCountEdit->setText((len >= 0) ? len : 0);
 }
