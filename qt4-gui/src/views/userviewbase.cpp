@@ -27,11 +27,6 @@
 
 #include "contactlist/contactlist.h"
 
-#include "userevents/usersendcontactevent.h"
-#include "userevents/usersendfileevent.h"
-#include "userevents/usersendmsgevent.h"
-#include "userevents/usersendurlevent.h"
-
 #include "config/contactlist.h"
 #include "config/skin.h"
 

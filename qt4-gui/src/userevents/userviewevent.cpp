@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@
 #include "widgets/mlview.h"
 #include "widgets/skinnablebutton.h"
 
-#include "usersendmsgevent.h"
+#include "usersendevent.h"
 
 using Licq::gProtocolManager;
 using namespace LicqQtGui;
@@ -227,7 +227,7 @@ void UserViewEvent::generateReply()
 
 void UserViewEvent::sendMsg(QString text)
 {
-  UserSendMsgEvent* e = new UserSendMsgEvent(myUsers.front());
+  UserSendEvent* e = new UserSendEvent(MessageEvent, myUsers.front());
 
   e->setText(text);
 
@@ -243,8 +243,8 @@ void UserViewEvent::sendMsg(QString text)
   QTimer::singleShot(10, e, SLOT(show()));
 
   connect(e, SIGNAL(autoCloseNotify()), SLOT(autoClose()));
-  connect(e, SIGNAL(msgTypeChanged(UserSendCommon*, UserSendCommon*)),
-      SLOT(msgTypeChanged(UserSendCommon*, UserSendCommon*)));
+  connect(e, SIGNAL(msgTypeChanged(UserSendEvent*, UserSendEvent*)),
+      SLOT(msgTypeChanged(UserSendEvent*, UserSendEvent*)));
 }
 
 void UserViewEvent::updateNextButton()
@@ -643,15 +643,15 @@ void UserViewEvent::closeDialog()
   close();
 }
 
-void UserViewEvent::msgTypeChanged(UserSendCommon* from, UserSendCommon* to)
+void UserViewEvent::msgTypeChanged(UserSendEvent* from, UserSendEvent* to)
 {
   disconnect(from, SIGNAL(autoCloseNotify()), this, SLOT(autoClose()));
-  disconnect(from, SIGNAL(msgTypeChanged(UserSendCommon*, UserSendCommon*)),
-      this, SLOT(msgTypeChanged(UserSendCommon*, UserSendCommon*)));
+  disconnect(from, SIGNAL(msgTypeChanged(UserSendEvent*, UserSendEvent*)),
+      this, SLOT(msgTypeChanged(UserSendEvent*, UserSendEvent*)));
 
   connect(to, SIGNAL(autoCloseNotify()), SLOT(autoClose()));
-  connect(to, SIGNAL(msgTypeChanged(UserSendCommon*, UserSendCommon*)),
-      SLOT(msgTypeChanged(UserSendCommon*, UserSendCommon*)));
+  connect(to, SIGNAL(msgTypeChanged(UserSendEvent*, UserSendEvent*)),
+      SLOT(msgTypeChanged(UserSendEvent*, UserSendEvent*)));
 }
 
 void UserViewEvent::printMessage(QTreeWidgetItem* item)

@@ -53,12 +53,12 @@ class UserEventCommon;
 class UserEventTabDlg;
 class UserDlg;
 class UserMenu;
-class UserSendCommon;
+class UserSendEvent;
 class UserViewEvent;
 
 typedef QList<UserViewEvent*> UserViewEventList;
 typedef QList<UserDlg*> UserDlgList;
-typedef QList<UserSendCommon*> UserSendEventList;
+typedef QList<UserSendEvent*> UserSendEventList;
 
 #ifdef USE_KDE
 class LicqGui : public KApplication
@@ -131,7 +131,7 @@ public:
    * @param newDialog New event dialog
    * @param userId Contact id
    */
-  void replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, const Licq::UserId& userId);
+  void replaceEventDialog(UserSendEvent* oldDialog, UserSendEvent* newDialog, const Licq::UserId& userId);
 
   /**
    * Toggle floaty for a contact

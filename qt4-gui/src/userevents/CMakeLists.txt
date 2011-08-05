@@ -3,13 +3,7 @@ set(userevents_SRCS
   selectemoticon.cpp
   usereventcommon.cpp
   usereventtabdlg.cpp
-  usersendchatevent.cpp
-  usersendcommon.cpp
-  usersendcontactevent.cpp
-  usersendfileevent.cpp
-  usersendmsgevent.cpp
-  usersendsmsevent.cpp
-  usersendurlevent.cpp
+  usersendevent.cpp
   userviewevent.cpp
 )
 

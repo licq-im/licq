@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef USERSENDCOMMON_H
-#define USERSENDCOMMON_H
+#ifndef LICQGUI_USERSENDEVENT_H
+#define LICQGUI_USERSENDEVENT_H
 
 #include "usereventcommon.h"
 
@@ -44,7 +44,7 @@ class HistoryView;
 class MLEdit;
 class MMUserView;
 
-class UserSendCommon : public UserEventCommon
+class UserSendEvent : public UserEventCommon
 {
   Q_OBJECT
 public:
@@ -55,8 +55,8 @@ public:
    * @param userId User to open dialog for
    * @param parent Parent widget
    */
-  UserSendCommon(int type, const Licq::UserId& userId, QWidget* parent = 0);
-  virtual ~UserSendCommon();
+  UserSendEvent(int type, const Licq::UserId& userId, QWidget* parent = 0);
+  virtual ~UserSendEvent();
   virtual bool eventFilter(QObject* watched, QEvent* e);
 
   void setText(const QString& text);
@@ -84,7 +84,7 @@ public:
 
 signals:
   void autoCloseNotify();
-  void msgTypeChanged(UserSendCommon* from, UserSendCommon* to);
+  void msgTypeChanged(UserSendEvent* from, UserSendEvent* to);
 
   /**
    * Since daemon doesn't notify us when an event is sent we'll have to handle
@@ -102,7 +102,7 @@ public slots:
    * @param type Type of event to switch to
    * @return Pointer to new window (if replaced), otherwise to this window
    */
-  UserSendCommon* changeEventType(int type);
+  UserSendEvent* changeEventType(int type);
 
 protected:
   Licq::Color myIcqColor;

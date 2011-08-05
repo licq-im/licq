@@ -43,8 +43,7 @@
 
 #include "helpers/support.h"
 
-#include "userevents/usersendmsgevent.h"
-#include "userevents/usersendurlevent.h"
+#include "userevents/usersendevent.h"
 
 #include "widgets/infofield.h"
 
@@ -116,7 +115,7 @@ void ForwardDlg::slot_ok()
     case Licq::UserEvent::TypeMessage:
     {
       s1.prepend(tr("Forwarded message:\n"));
-      UserSendMsgEvent* e = new UserSendMsgEvent(myUserId);
+      UserSendEvent* e = new UserSendEvent(MessageEvent, myUserId);
       e->setText(s1);
       e->show();
       break;
@@ -124,7 +123,7 @@ void ForwardDlg::slot_ok()
     case Licq::UserEvent::TypeUrl:
     {
       s1.prepend(tr("Forwarded URL:\n"));
-      UserSendUrlEvent* e = new UserSendUrlEvent(myUserId);
+      UserSendEvent* e = new UserSendEvent(UrlEvent, myUserId);
       e->setUrl(s2, s1);
       e->show();
       break;

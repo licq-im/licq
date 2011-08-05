@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "usersendcommon.h"
+#include "usersendevent.h"
 
 #include "config.h"
 
@@ -98,19 +98,13 @@
 
 #include "selectemoticon.h"
 #include "usereventtabdlg.h"
-#include "usersendchatevent.h"
-#include "usersendcontactevent.h"
-#include "usersendfileevent.h"
-#include "usersendmsgevent.h"
-#include "usersendsmsevent.h"
-#include "usersendurlevent.h"
 
 using namespace std;
 using Licq::StringList;
 using Licq::gProtocolManager;
 using Licq::gConvoManager;
 using namespace LicqQtGui;
-/* TRANSLATOR LicqQtGui::UserSendCommon */
+/* TRANSLATOR LicqQtGui::UserSendEvent */
 
 const size_t SHOW_RECENT_NUM = 5;
 
@@ -121,7 +115,7 @@ bool orderMessagePairs(const messagePair& mp1, const messagePair& mp2)
   return (mp1.first->Time() < mp2.first->Time());
 }
 
-UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* parent)
+UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* parent)
   : UserEventCommon(userId, parent, "UserSendEvent"),
     myType(type)
 {
@@ -540,12 +534,12 @@ UserSendCommon::UserSendCommon(int type, const Licq::UserId& userId, QWidget* pa
   smsCount();
 }
 
-UserSendCommon::~UserSendCommon()
+UserSendEvent::~UserSendEvent()
 {
   // Empty
 }
 
-void UserSendCommon::closeEvent(QCloseEvent* event)
+void UserSendEvent::closeEvent(QCloseEvent* event)
 {
   UserEventCommon::closeEvent(event);
 
@@ -558,7 +552,7 @@ void UserSendCommon::closeEvent(QCloseEvent* event)
   }
 }
 
-bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
+bool UserSendEvent::eventFilter(QObject* watched, QEvent* e)
 {
   if (watched == myMessageEdit)
   {
@@ -600,7 +594,7 @@ bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
     return UserEventCommon::eventFilter(watched, e);
 }
 
-void UserSendCommon::setEventType()
+void UserSendEvent::setEventType()
 {
   myMassMessageCheck->setEnabled(myType == MessageEvent || myType == UrlEvent);
   myForeColor->setEnabled(myType == MessageEvent || myType == UrlEvent);
@@ -654,7 +648,7 @@ void UserSendCommon::setEventType()
     myMessageEdit->setFocus();
 }
 
-void UserSendCommon::updateIcons()
+void UserSendEvent::updateIcons()
 {
   UserEventCommon::updateIcons();
 
@@ -674,13 +668,13 @@ void UserSendCommon::updateIcons()
     a->setIcon(iconForType(a->data().toInt()));
 }
 
-void UserSendCommon::updateEmoticons()
+void UserSendEvent::updateEmoticons()
 {
   // Don't show tool button for emoticons if there are no emoticons to select
   myEmoticon->setVisible(Emoticons::self()->emoticonsKeys().size() > 0);
 }
 
-void UserSendCommon::updateShortcuts()
+void UserSendEvent::updateShortcuts()
 {
   UserEventCommon::updateShortcuts();
 
@@ -704,7 +698,7 @@ void UserSendCommon::updateShortcuts()
   pushToolTip(myBackColor, tr("Change background color"));
 }
 
-void UserSendCommon::updatePicture(const Licq::User* u)
+void UserSendEvent::updatePicture(const Licq::User* u)
 {
   if (u == NULL)
     return;
@@ -738,7 +732,7 @@ void UserSendCommon::updatePicture(const Licq::User* u)
   }
 }
 
-const QPixmap& UserSendCommon::iconForType(int type) const
+const QPixmap& UserSendEvent::iconForType(int type) const
 {
   switch (type)
   {
@@ -763,27 +757,27 @@ const QPixmap& UserSendCommon::iconForType(int type) const
   }
 }
 
-void UserSendCommon::setText(const QString& text)
+void UserSendEvent::setText(const QString& text)
 {
   myMessageEdit->setText(text);
   myMessageEdit->GotoEnd();
   myMessageEdit->document()->setModified(false);
 }
 
-void UserSendCommon::setUrl(const QString& url, const QString& description)
+void UserSendEvent::setUrl(const QString& url, const QString& description)
 {
   myUrlEdit->setText(url);
   setText(description);
 }
 
-void UserSendCommon::setContact(const Licq::UserId& userId)
+void UserSendEvent::setContact(const Licq::UserId& userId)
 {
   Licq::UserReadGuard u(userId);
   if (u.isLocked())
     myContactsList->add(u->id());
 }
 
-void UserSendCommon::setFile(const QString& file, const QString& description)
+void UserSendEvent::setFile(const QString& file, const QString& description)
 {
   QFileInfo fileinfo(file);
   if (fileinfo.exists() && fileinfo.isFile() && fileinfo.isReadable())
@@ -795,7 +789,7 @@ void UserSendCommon::setFile(const QString& file, const QString& description)
   }
 }
 
-void UserSendCommon::addFile(const QString& file)
+void UserSendEvent::addFile(const QString& file)
 {
   if (myFileList.empty())
     return;
@@ -806,7 +800,7 @@ void UserSendCommon::addFile(const QString& file)
   fileUpdateLabel(myFileList.size());
 }
 
-void UserSendCommon::convoJoin(const Licq::UserId& userId)
+void UserSendEvent::convoJoin(const Licq::UserId& userId)
 {
   if (!userId.isValid())
     return;
@@ -833,7 +827,7 @@ void UserSendCommon::convoJoin(const Licq::UserId& userId)
     tabDlg->updateConvoLabel(this);
 }
 
-void UserSendCommon::convoLeave(const Licq::UserId& userId)
+void UserSendEvent::convoLeave(const Licq::UserId& userId)
 {
   if (!userId.isValid())
     return;
@@ -889,19 +883,19 @@ void UserSendCommon::convoLeave(const Licq::UserId& userId)
   }
 }
 
-void UserSendCommon::windowActivationChange(bool oldActive)
+void UserSendEvent::windowActivationChange(bool oldActive)
 {
   if (isActiveWindow())
     QTimer::singleShot(clearDelay, this, SLOT(clearNewEvents()));
   QWidget::windowActivationChange(oldActive);
 }
 
-UserSendCommon* UserSendCommon::changeEventType(int type)
+UserSendEvent* UserSendEvent::changeEventType(int type)
 {
   if (myType == type)
     return this;
 
-  UserSendCommon* e = 0;
+  UserSendEvent* e = 0;
   QWidget* parent = 0;
 
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
@@ -913,32 +907,34 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
   switch (type)
   {
     case MessageEvent:
-      if (mySendFuncs & Licq::ProtocolPlugin::CanSendMsg)
-        e = new UserSendMsgEvent(userId, parent);
+      if ((mySendFuncs & Licq::ProtocolPlugin::CanSendMsg) == 0)
+        return NULL;
       break;
     case UrlEvent:
-      if (mySendFuncs & Licq::ProtocolPlugin::CanSendUrl)
-        e = new UserSendUrlEvent(userId, parent);
+      if ((mySendFuncs & Licq::ProtocolPlugin::CanSendUrl) == 0)
+        return NULL;
       break;
     case ChatEvent:
-      if (mySendFuncs & Licq::ProtocolPlugin::CanSendChat)
-        e = new UserSendChatEvent(userId, parent);
+      if ((mySendFuncs & Licq::ProtocolPlugin::CanSendChat) == 0)
+        return NULL;
       break;
     case FileEvent:
-      if (mySendFuncs & Licq::ProtocolPlugin::CanSendFile)
-        e = new UserSendFileEvent(userId, parent);
+      if ((mySendFuncs & Licq::ProtocolPlugin::CanSendFile) == 0)
+        return NULL;
       break;
     case ContactEvent:
-      if (mySendFuncs & Licq::ProtocolPlugin::CanSendContact)
-        e = new UserSendContactEvent(userId, parent);
+      if ((mySendFuncs & Licq::ProtocolPlugin::CanSendContact) == 0)
+        return NULL;
       break;
     case SmsEvent:
-      if (mySendFuncs & Licq::ProtocolPlugin::CanSendSms)
-        e = new UserSendSmsEvent(userId, parent);
+      if ((mySendFuncs & Licq::ProtocolPlugin::CanSendSms) == 0)
+        return NULL;
       break;
     default:
       assert(false);
   }
+
+  e = new UserSendEvent(type, userId, parent);
 
   if (e != NULL)
   {
@@ -971,7 +967,7 @@ UserSendCommon* UserSendCommon::changeEventType(int type)
   return e;
 }
 
-void UserSendCommon::retrySend(const Licq::Event* e, unsigned flags)
+void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
 {
   QString accountId = myUsers.front().accountId().c_str();
 
@@ -1119,7 +1115,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, unsigned flags)
 
     default:
     {
-      Licq::gLog.warning("Internal error: UserSendCommon::RetrySend()\n"
+      Licq::gLog.warning("Internal error: UserSendEvent::RetrySend()\n"
                       "Unknown sub-command %d", e->SubCommand());
       break;
     }
@@ -1131,7 +1127,7 @@ void UserSendCommon::retrySend(const Licq::Event* e, unsigned flags)
   sendBase();
 }
 
-void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
+void UserSendEvent::userUpdated(const Licq::UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   Licq::UserWriteGuard u(userId);
 
@@ -1192,7 +1188,7 @@ void UserSendCommon::userUpdated(const Licq::UserId& userId, unsigned long subSi
   }
 }
 
-void UserSendCommon::send()
+void UserSendEvent::send()
 {
   if (myType == MessageEvent || myType == SmsEvent)
   {
@@ -1409,7 +1405,7 @@ void UserSendCommon::send()
   sendBase();
 }
 
-void UserSendCommon::sendBase()
+void UserSendEvent::sendBase()
 {
   if (!Config::Chat::instance()->manualNewUser())
   {
@@ -1459,7 +1455,7 @@ void UserSendCommon::sendBase()
   }
 }
 
-void UserSendCommon::eventDoneReceived(const Licq::Event* e)
+void UserSendEvent::eventDoneReceived(const Licq::Event* e)
 {
   if (e == NULL)
   {
@@ -1694,7 +1690,7 @@ void UserSendCommon::eventDoneReceived(const Licq::Event* e)
     close();
 }
 
-void UserSendCommon::cancelSend()
+void UserSendEvent::cancelSend()
 {
   unsigned long icqEventTag = 0;
 
@@ -1711,12 +1707,12 @@ void UserSendCommon::cancelSend()
   Licq::gDaemon.cancelEvent(icqEventTag);
 }
 
-void UserSendCommon::changeEventType(QAction* action)
+void UserSendEvent::changeEventType(QAction* action)
 {
   changeEventType(action->data().toInt());
 }
 
-void UserSendCommon::clearNewEvents()
+void UserSendEvent::clearNewEvents()
 {
   // Iterate all users in the conversation
   for (list<Licq::UserId>::iterator it = myUsers.begin(); it != myUsers.end(); ++it)
@@ -1749,7 +1745,7 @@ void UserSendCommon::clearNewEvents()
   }
 }
 
-void UserSendCommon::closeDialog()
+void UserSendEvent::closeDialog()
 {
   gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
@@ -1764,7 +1760,7 @@ void UserSendCommon::closeDialog()
   close();
 }
 
-void UserSendCommon::showEmoticonsMenu()
+void UserSendEvent::showEmoticonsMenu()
 {
   // If no emoticons are available, don't display an empty window
   if (Emoticons::self()->emoticonsKeys().size() <= 0)
@@ -1795,7 +1791,7 @@ void UserSendCommon::showEmoticonsMenu()
   p->show();
 }
 
-void UserSendCommon::insertEmoticon(const QString& value)
+void UserSendEvent::insertEmoticon(const QString& value)
 {
   myMessageEdit->insertPlainText(value);
 }
@@ -1803,7 +1799,7 @@ void UserSendCommon::insertEmoticon(const QString& value)
 /*! This slot creates/removes a little widget into the usereventdlg
  *  which enables the user to collect users for mass messaging.
  */
-void UserSendCommon::massMessageToggled(bool b)
+void UserSendEvent::massMessageToggled(bool b)
 {
   if (myMassMessageBox == NULL)
   {
@@ -1826,7 +1822,7 @@ void UserSendCommon::massMessageToggled(bool b)
   myMassMessageBox->setVisible(b);
 }
 
-void UserSendCommon::messageAdded()
+void UserSendEvent::messageAdded()
 {
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (isActiveWindow() &&
@@ -1835,7 +1831,7 @@ void UserSendCommon::messageAdded()
     QTimer::singleShot(clearDelay, this, SLOT(clearNewEvents()));
 }
 
-void UserSendCommon::resetTitle()
+void UserSendEvent::resetTitle()
 {
   UserEventTabDlg* tabDlg = gLicqGui->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
@@ -1844,7 +1840,7 @@ void UserSendCommon::resetTitle()
   setWindowTitle(myTitle);
 }
 
-void UserSendCommon::sendServerToggled(bool sendServer)
+void UserSendEvent::sendServerToggled(bool sendServer)
 {
   // When the "Send through server" checkbox is toggled by the user,
   // we save the setting to disk, so it is persistent.
@@ -1854,7 +1850,7 @@ void UserSendCommon::sendServerToggled(bool sendServer)
     u->SetSendServer(sendServer);
 }
 
-void UserSendCommon::setBackgroundICQColor()
+void UserSendEvent::setBackgroundICQColor()
 {
   QColor c = myMessageEdit->palette().color(QPalette::Base);
 #ifdef USE_KDE
@@ -1870,7 +1866,7 @@ void UserSendCommon::setBackgroundICQColor()
   myMessageEdit->setBackground(c);
 }
 
-void UserSendCommon::setForegroundICQColor()
+void UserSendEvent::setForegroundICQColor()
 {
   QColor c = myMessageEdit->palette().color(QPalette::Text);
 #ifdef USE_KDE
@@ -1886,13 +1882,13 @@ void UserSendCommon::setForegroundICQColor()
   myMessageEdit->setForeground(c);
 }
 
-void UserSendCommon::showSendTypeMenu()
+void UserSendEvent::showSendTypeMenu()
 {
   // Menu is normally delayed but if we use InstantPopup mode shortcut won't work
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myEventTypeMenu))->showMenu();
 }
 
-void UserSendCommon::messageTextChanged()
+void UserSendEvent::messageTextChanged()
 {
   if (myMessageEdit->toPlainText().isEmpty())
     return;
@@ -1903,7 +1899,7 @@ void UserSendCommon::messageTextChanged()
   mySendTypingTimer->start(5000);
 }
 
-void UserSendCommon::textChangedTimeout()
+void UserSendEvent::textChangedTimeout()
 {
   QString str = myMessageEdit->toPlainText();
 
@@ -1923,7 +1919,7 @@ void UserSendCommon::textChangedTimeout()
   }
 }
 
-void UserSendCommon::sendTrySecure()
+void UserSendEvent::sendTrySecure()
 {
   bool autoSecure = false;
   {
@@ -1948,20 +1944,20 @@ void UserSendCommon::sendTrySecure()
     send();
 }
 
-void UserSendCommon::resizeEvent(QResizeEvent* event)
+void UserSendEvent::resizeEvent(QResizeEvent* event)
 {
   Config::Chat::instance()->setSendDialogSize(size());
   UserEventCommon::resizeEvent(event);
 }
 
-void UserSendCommon::dragEnterEvent(QDragEnterEvent* event)
+void UserSendEvent::dragEnterEvent(QDragEnterEvent* event)
 {
   if (event->mimeData()->hasText() ||
       event->mimeData()->hasUrls())
     event->acceptProposedAction();
 }
 
-void UserSendCommon::dropEvent(QDropEvent* event)
+void UserSendEvent::dropEvent(QDropEvent* event)
 {
   event->ignore();
 
@@ -1969,7 +1965,7 @@ void UserSendCommon::dropEvent(QDropEvent* event)
     event->acceptProposedAction();
 }
 
-void UserSendCommon::chatInviteUser()
+void UserSendEvent::chatInviteUser()
 {
   if (myChatPort == 0)
   {
@@ -1996,7 +1992,7 @@ void UserSendCommon::chatInviteUser()
   }
 }
 
-void UserSendCommon::fileBrowse()
+void UserSendEvent::fileBrowse()
 {
 #ifdef USE_KDE
   QStringList fl = KFileDialog::getOpenFileNames(KUrl(), QString(), this, tr("Select files to send"));
@@ -2015,13 +2011,13 @@ void UserSendCommon::fileBrowse()
   fileUpdateLabel(myFileList.size());
 }
 
-void UserSendCommon::fileEditList()
+void UserSendEvent::fileEditList()
 {
   EditFileListDlg* dlg = new EditFileListDlg(&myFileList);
   connect(dlg, SIGNAL(fileDeleted(unsigned)), SLOT(fileUpdateLabel(unsigned)));
 }
 
-void UserSendCommon::fileUpdateLabel(unsigned count)
+void UserSendEvent::fileUpdateLabel(unsigned count)
 {
   myFileEditButton->setEnabled(count > 0);
 
@@ -2045,7 +2041,7 @@ void UserSendCommon::fileUpdateLabel(unsigned count)
   myFileEdit->setText(f);
 }
 
-void UserSendCommon::smsCount()
+void UserSendEvent::smsCount()
 {
   int len = 160 - strlen(myMessageEdit->toPlainText().toUtf8().data());
   mySmsCountEdit->setText((len >= 0) ? len : 0);

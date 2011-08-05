@@ -109,12 +109,7 @@ extern "C"
 
 #include "userevents/usereventcommon.h"
 #include "userevents/usereventtabdlg.h"
-#include "userevents/usersendchatevent.h"
-#include "userevents/usersendcontactevent.h"
-#include "userevents/usersendfileevent.h"
-#include "userevents/usersendmsgevent.h"
-#include "userevents/usersendsmsevent.h"
-#include "userevents/usersendurlevent.h"
+#include "userevents/usersendevent.h"
 #include "userevents/userviewevent.h"
 
 #include "views/floatyview.h"
@@ -790,7 +785,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
   {
     for (int i = 0; i < myUserSendList.size(); ++i)
     {
-      UserSendCommon* e = myUserSendList.at(i);
+      UserSendEvent* e = myUserSendList.at(i);
 
       // Protocols (MSN only atm) that support convo ids are differentiated from
       // the icq protocol because the convo id will be the server socket.. which does
@@ -844,35 +839,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
   // Save the widget currently in focus so we can restore it afterwards
   QWidget* oldFocus = QApplication::focusWidget();
 
-  switch (fcn)
-  {
-    case MessageEvent:
-      e = new UserSendMsgEvent(userId, parent);
-      break;
-
-    case UrlEvent:
-      e = new UserSendUrlEvent(userId, parent);
-      break;
-
-    case ChatEvent:
-      e = new UserSendChatEvent(userId, parent);
-      break;
-
-    case FileEvent:
-      e = new UserSendFileEvent(userId, parent);
-      break;
-
-    case ContactEvent:
-      e = new UserSendContactEvent(userId, parent);
-      break;
-
-    case SmsEvent:
-      e = new UserSendSmsEvent(userId, parent);
-      break;
-
-    default:
-      gLog.warning("Unknown callFunction() fcn: %d", fcn);
-  }
+  e = new UserSendEvent(fcn, userId, parent);
   if (e == NULL) return NULL;
 
   QWidget* msgWindow = e;
@@ -919,12 +886,12 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const Licq::UserId& userId, i
   // make sure we only remember one, or it will get complicated
   sendEventFinished(userId);
   connect(e, SIGNAL(finished(const Licq::UserId&)), SLOT(sendEventFinished(const Licq::UserId&)));
-  myUserSendList.append(static_cast<UserSendCommon*>(e));
+  myUserSendList.append(static_cast<UserSendEvent*>(e));
 
   return e;
 }
 
-void LicqGui::replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, const Licq::UserId& userId)
+void LicqGui::replaceEventDialog(UserSendEvent* oldDialog, UserSendEvent* newDialog, const Licq::UserId& userId)
 {
   disconnect(oldDialog, SIGNAL(finished(const Licq::UserId&)), this, SLOT(sendEventFinished(const Licq::UserId&)));
   sendEventFinished(userId);
@@ -940,7 +907,7 @@ void LicqGui::showMessageDialog(const Licq::UserId& userId)
 
 void LicqGui::sendMsg(const Licq::UserId& userId, const QString& message)
 {
-  UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(MessageEvent, userId));
+  UserSendEvent* event = dynamic_cast<UserSendEvent*>(showEventDialog(MessageEvent, userId));
   if (event == 0)
     return;
 
@@ -949,7 +916,7 @@ void LicqGui::sendMsg(const Licq::UserId& userId, const QString& message)
 
 void LicqGui::sendFileTransfer(const Licq::UserId& userId, const QString& filename, const QString& description)
 {
-  UserSendFileEvent* event = dynamic_cast<UserSendFileEvent*>(showEventDialog(FileEvent, userId));
+  UserSendEvent* event = dynamic_cast<UserSendEvent*>(showEventDialog(FileEvent, userId));
   if (event == 0)
     return;
 
@@ -958,7 +925,7 @@ void LicqGui::sendFileTransfer(const Licq::UserId& userId, const QString& filena
 
 void LicqGui::sendChatRequest(const Licq::UserId& userId)
 {
-  UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(ChatEvent, userId));
+  UserSendEvent* event = dynamic_cast<UserSendEvent*>(showEventDialog(ChatEvent, userId));
   if (event == 0)
     return;
 }
@@ -976,7 +943,7 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
     {
       // Local file(s), open send file dialog
       UserEventCommon* x = showEventDialog(FileEvent, userId);
-      UserSendFileEvent* sendFile = dynamic_cast<UserSendFileEvent*>(x);
+      UserSendEvent* sendFile = dynamic_cast<UserSendEvent*>(x);
       if (!sendFile)
         return false;
 
@@ -994,7 +961,7 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
     else
     {
       // Not local file, open URL dialog
-      UserSendUrlEvent* sendUrl = dynamic_cast<UserSendUrlEvent*>(showEventDialog(UrlEvent, userId));
+      UserSendEvent* sendUrl = dynamic_cast<UserSendEvent*>(showEventDialog(UrlEvent, userId));
       if (!sendUrl)
         return false;
 
@@ -1032,7 +999,7 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
       if (!dropUserId.isValid() || userId == dropUserId)
         return false;
 
-      UserSendContactEvent* sendContact = dynamic_cast<UserSendContactEvent*>(showEventDialog(ContactEvent, userId));
+      UserSendEvent* sendContact = dynamic_cast<UserSendEvent*>(showEventDialog(ContactEvent, userId));
       if (!sendContact)
         return false;
 
@@ -1041,7 +1008,7 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
     }
     else
     {
-      UserSendMsgEvent* sendMsg = dynamic_cast<UserSendMsgEvent*>(showEventDialog(MessageEvent, userId));
+      UserSendEvent* sendMsg = dynamic_cast<UserSendEvent*>(showEventDialog(MessageEvent, userId));
       if (!sendMsg)
         return false;
 
@@ -1097,7 +1064,7 @@ void LicqGui::sendEventFinished(const Licq::UserId& userId)
   // go through the whole list, since there might be more than one hit
   for (int i = 0; i < myUserSendList.size(); ++i)
   {
-    UserSendCommon* item = myUserSendList.at(i);
+    UserSendEvent* item = myUserSendList.at(i);
     if (item->userId() == userId)
       myUserSendList.removeAll(item);
   }
@@ -1167,7 +1134,7 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
     {
       UserEventCommon* ec = showEventDialog(UrlEvent, userId);
-      UserSendUrlEvent* e = dynamic_cast<UserSendUrlEvent*>(ec);
+      UserSendEvent* e = dynamic_cast<UserSendEvent*>(ec);
       if (e == NULL)
         return;
       // Set the url
@@ -1180,7 +1147,7 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
         (c.left(5) == "file:" || c.left(1) == "/"))
     {
       UserEventCommon* ec = showEventDialog(FileEvent, userId);
-      UserSendFileEvent* e = dynamic_cast<UserSendFileEvent*>(ec);
+      UserSendEvent* e = dynamic_cast<UserSendEvent*>(ec);
       if (e == NULL)
         return;
       // Set the file
@@ -1372,7 +1339,7 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const Lic
       // if their send box is open, kill it
       for (int i = 0; i < myUserSendList.size(); ++i)
       {
-        UserSendCommon* item = myUserSendList.at(i);
+        UserSendEvent* item = myUserSendList.at(i);
         if (item->userId() == userId)
         {
           if (myUserEventTabDlg && myUserEventTabDlg->tabExists(item))
@@ -1501,7 +1468,7 @@ void LicqGui::userUpdated(const Licq::UserId& userId, unsigned long subSignal, i
         // First, update the window if available
         for (int i = 0; i < myUserSendList.size(); ++i)
         {
-          UserSendCommon* item = myUserSendList.at(i);
+          UserSendEvent* item = myUserSendList.at(i);
 
           if (item->ppid() == MSN_PPID)
           {
@@ -1527,7 +1494,7 @@ void LicqGui::convoSet(const Licq::UserId& userId, unsigned long convoId)
 {
   for (int i = 0; i < myUserSendList.size(); ++i)
   {
-    UserSendCommon* item = myUserSendList.at(i);
+    UserSendEvent* item = myUserSendList.at(i);
     if (item->userId() == userId)
     {
       item->setConvoId(convoId);
@@ -1540,7 +1507,7 @@ void LicqGui::convoJoin(const Licq::UserId& userId, unsigned long ppid, unsigned
 {
   for (int i = 0; i < myUserSendList.size(); ++i)
   {
-    UserSendCommon* item = myUserSendList.at(i);
+    UserSendEvent* item = myUserSendList.at(i);
     if (item->ppid() == ppid && item->convoId() == convoId)
     {
       item->convoJoin(userId);
@@ -1553,7 +1520,7 @@ void LicqGui::convoLeave(const Licq::UserId& userId, unsigned long ppid, unsigne
 {
   for (int i = 0; i < myUserSendList.size(); ++i)
   {
-    UserSendCommon* item = myUserSendList.at(i);
+    UserSendEvent* item = myUserSendList.at(i);
     if (item->ppid() == ppid && item->convoId() == convoId &&
         item->isUserInConvo(userId))
     {

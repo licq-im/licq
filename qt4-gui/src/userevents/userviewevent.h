@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ namespace LicqQtGui
 class MLView;
 class MessageList;
 class SkinnableButton;
-class UserSendCommon;
+class UserSendEvent;
 
 class UserViewEvent : public UserEventCommon
 {
@@ -105,7 +105,7 @@ private slots:
   void readNext();
   void clearEvent();
   void closeDialog();
-  void msgTypeChanged(UserSendCommon* from, UserSendCommon* to);
+  void msgTypeChanged(UserSendEvent* from, UserSendEvent* to);
   void printMessage(QTreeWidgetItem* item);
   void sentEvent(const Licq::Event* e);
   void setEncoding();

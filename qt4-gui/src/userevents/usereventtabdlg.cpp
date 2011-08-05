@@ -43,7 +43,7 @@
 #include "widgets/tabwidget.h"
 
 #include "usereventcommon.h"
-#include "usersendcommon.h"
+#include "usersendevent.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserEventTabDlg */
@@ -331,7 +331,7 @@ void UserEventTabDlg::clearEvents(QWidget* tab)
   if (!isActiveWindow())
     return;
 
-  UserSendCommon* e = dynamic_cast<UserSendCommon*>(tab);
+  UserSendEvent* e = dynamic_cast<UserSendEvent*>(tab);
   QTimer::singleShot(e->clearDelay, e, SLOT(clearNewEvents()));
 }
 
