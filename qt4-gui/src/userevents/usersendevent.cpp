@@ -1232,7 +1232,6 @@ void UserSendEvent::send()
       r = m->go_contact(contacts);
     else
       m->go_message(myMessageEdit->toPlainText());
-    delete m;
     if (r != QDialog::Accepted)
       return;
   }

@@ -13,6 +13,7 @@ o ICQ: Sending owner info set first name to last name and removed last name
 o ICQ: Fix some encoding problems with unicode messages
 o Jabber: Keep track of when contacts went online
 o Qt4-Gui: Don't show online time if it isn't known
+o Qt4-Gui: Fix multiple recipients didn't work with URL or contacts
 
 
 New in 1.5.1

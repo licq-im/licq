@@ -63,7 +63,6 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
     icqEventTag(0)
 {
   Support::setWidgetProps(this, "MMSendDialog");
-  setModal(true);
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   QVBoxLayout* v = new QVBoxLayout(this);
@@ -98,7 +97,7 @@ int MMSendDlg::go_message(const QString& msg)
 
   // Start
   SendNext();
-  show();
+  exec();
   return 0;
 }
 
@@ -112,8 +111,7 @@ int MMSendDlg::go_url(const QString& url, const QString& desc)
 
   // Start
   SendNext();
-  show();
-  return result();
+  return exec();
 }
 
 int MMSendDlg::go_contact(StringList& users)
@@ -125,8 +123,7 @@ int MMSendDlg::go_contact(StringList& users)
 
   // Start
   SendNext();
-  show();
-  return result();
+  return exec();
 }
 
 void MMSendDlg::slot_done(const Licq::Event* e)
