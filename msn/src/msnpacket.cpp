@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,11 @@
 #include <cstring>
 #include <string>
 
+#include <licq/daemon.h>
 #include <licq/md5.h>
 
 #include "msn_constants.h"
+#include "pluginversion.h"
 
 using namespace std;
 
@@ -169,7 +171,9 @@ char* CMSNPacket::CreateGUID()
   return szGUID;
 }
 
-CMSNPayloadPacket::CMSNPayloadPacket(bool _bAck) : CMSNPacket(), m_bAck(_bAck)
+CMSNPayloadPacket::CMSNPayloadPacket(char msgType)
+  : CMSNPacket(),
+  myMsgType(msgType)
 {
   m_nPayloadSize = 0;
 }
@@ -181,7 +185,7 @@ void CMSNPayloadPacket::InitBuffer()
   char buf[32];
   
   m_nSize = snprintf(buf, 32, "%s %hu %c %lu\r\n", m_szCommand, m_nSequence,
-    m_bAck ? 'A' : 'N', m_nPayloadSize);
+      myMsgType, m_nPayloadSize);
   m_nSize += m_nPayloadSize;
   
   m_pBuffer = new CMSNBuffer(m_nSize);
@@ -195,7 +199,7 @@ CMSNP2PPacket::CMSNP2PPacket(const char *szTo, unsigned long nSessionId,
 			     unsigned long nLen, unsigned long nFlag,
 			     unsigned long nAckId, unsigned long nAckUniqueId,
 			     unsigned long nAckDataHI,unsigned long nAckDataLO)
-  : CMSNPayloadPacket(true)
+  : CMSNPayloadPacket('A')
 {
   m_szToEmail = (szTo ? strdup(szTo) : strdup(""));
   m_szCallGUID = 0;
@@ -538,7 +542,8 @@ CPS_MSN_SBAnswer::CPS_MSN_SBAnswer(const char *szSession, const char *szCookie,
   m_pBuffer->Pack("\r\n", 2);
 }
 
-CPS_MSNMessage::CPS_MSNMessage(const char *szMsg) : CMSNPayloadPacket(true)
+CPS_MSNMessage::CPS_MSNMessage(const char *szMsg)
+  : CMSNPayloadPacket('A')
 {
   m_szCommand = strdup("MSG");
   char szParams[] = "MIME-Version: 1.0\r\n"
@@ -552,6 +557,19 @@ CPS_MSNMessage::CPS_MSNMessage(const char *szMsg) : CMSNPayloadPacket(true)
   
   m_pBuffer->Pack(szParams, strlen(szParams));
   m_pBuffer->Pack(m_szMsg, strlen(m_szMsg));
+}
+
+CPS_MsnClientCaps::CPS_MsnClientCaps()
+   : CMSNPayloadPacket('U')
+{
+  m_szCommand = strdup("MSG");
+  string params = string("MIME-Version: 1.0\r\n"
+      "Content-Type: text/x-clientcaps\r\n\r\n"
+      "Client-Name: Licq ") + Licq::gDaemon.Version() + " (MSN " PLUGIN_VERSION_STRING ")\r\n";
+  m_nPayloadSize = params.size();
+
+  CMSNPayloadPacket::InitBuffer();
+  m_pBuffer->pack(params);
 }
 
 CPS_MSNPing::CPS_MSNPing() : CMSNPacket(true)
@@ -585,7 +603,7 @@ CPS_MSNCall::CPS_MSNCall(const char *szUser) : CMSNPacket()
 }
 
 CPS_MSNTypingNotification::CPS_MSNTypingNotification(const char *szEmail)
-  : CMSNPayloadPacket(false)
+  : CMSNPayloadPacket('N')
 {
   m_szCommand = strdup("MSG");
   char szParams1[] = "MIME-Version: 1.0\r\n"
@@ -602,7 +620,7 @@ CPS_MSNTypingNotification::CPS_MSNTypingNotification(const char *szEmail)
 }
 
 CPS_MSNCancelInvite::CPS_MSNCancelInvite(const string& cookie, const string& code)
-  : CMSNPayloadPacket(false)
+  : CMSNPayloadPacket('N')
 {
   m_szCommand = strdup("MSG");
 

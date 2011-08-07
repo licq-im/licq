@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,14 +66,14 @@ protected:
 class CMSNPayloadPacket : public CMSNPacket
 {
 public:
-  CMSNPayloadPacket(bool);
+  CMSNPayloadPacket(char msgType);
   virtual ~CMSNPayloadPacket() { }
   
   virtual void InitBuffer();
   
 protected:
   unsigned long m_nPayloadSize;
-  bool m_bAck;
+  char myMsgType;
 };
 
 class CMSNP2PPacket : public CMSNPayloadPacket
@@ -261,6 +261,12 @@ public:
   
 protected:
   char *m_szMsg;
+};
+
+class CPS_MsnClientCaps : public CMSNPayloadPacket
+{
+public:
+  CPS_MsnClientCaps();
 };
 
 class CPS_MSNPing : public CMSNPacket

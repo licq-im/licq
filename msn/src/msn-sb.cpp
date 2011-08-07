@@ -101,8 +101,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     }
     else if (strCmd == "ANS")
     {
-      // just OK, ready to talk
-      // we can ignore this
+      // Send our capabilities
+      Send_SB_Packet(Licq::UserId(), new CPS_MsnClientCaps(), nSock);
     }
     else if (strCmd == "MSG")
     {
@@ -201,6 +201,19 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 	  }
 	}
       }
+      else if (strncmp(strType.c_str(), "text/x-clientcaps", 17) == 0)
+      {
+        packet->SkipRN();
+        packet->ParseHeaders();
+        string userClient = packet->GetValue("Client-Name");
+        if (!userClient.empty())
+        {
+          gLog.info("Identified user client as %s", userClient.c_str());
+
+          Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
+          u->setClientInfo(userClient);
+        }
+      }
       else
       {
         gLog.info("Message from %s with unknown content type (%s)",
@@ -293,7 +306,10 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           break;
         }
       }
-      
+
+      // Send our capabilities
+      Send_SB_Packet(userId, new CPS_MsnClientCaps(), nSock);
+
       if ((pStart && pStart->m_bDataConnection == false) || pStart == 0)
       {
         // Add the user to the conversation
@@ -415,7 +431,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
     s = gSocketMan.FetchSocket(nSocket);
   if (!s) return;
   Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
-  if (!sock->SendRaw(p->getBuffer()))
+  if (!sock->SendRaw(p->getBuffer()) && userId.isValid())
   {
     gLog.info("Connection with %s lost", userId.toString().c_str());
 
