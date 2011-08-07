@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,6 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
     icqEventTag(0)
 {
   Support::setWidgetProps(this, "MMSendDialog");
-  setModal(true);
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   QVBoxLayout* v = new QVBoxLayout(this);
@@ -97,7 +96,7 @@ int MMSendDlg::go_message(const QString& msg)
 
   // Start
   SendNext();
-  show();
+  exec();
   return 0;
 }
 
@@ -111,8 +110,7 @@ int MMSendDlg::go_url(const QString& url, const QString& desc)
 
   // Start
   SendNext();
-  show();
-  return result();
+  return exec();
 }
 
 int MMSendDlg::go_contact(StringList& users)
@@ -124,8 +122,7 @@ int MMSendDlg::go_contact(StringList& users)
 
   // Start
   SendNext();
-  show();
-  return result();
+  return exec();
 }
 
 void MMSendDlg::slot_done(const Licq::Event* e)

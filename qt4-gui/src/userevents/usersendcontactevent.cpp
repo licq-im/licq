@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,7 +145,6 @@ void UserSendContactEvent::send()
     MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
     connect(m, SIGNAL(eventSent(const Licq::Event*)), SIGNAL(eventSent(const Licq::Event*)));
     int r = m->go_contact(users);
-    delete m;
     if (r != QDialog::Accepted) return;
   }
 
