@@ -794,7 +794,7 @@ QString ContactUserData::tooltip() const
   if (config->popupOnlineSince() && u->isOnline() && u->OnlineSince() > 0 && u->OnlineSince() <= time(0))
     s += "<br>" + tr("Logged In: ") + User::RelativeStrTime(u->OnlineSince()).c_str();
 
-  if (config->popupAwayTime() && u->awaySince())
+  if (config->popupAwayTime() && (myStatus & User::AwayStatuses) && u->awaySince())
     s += "<br>" + tr("Away: ") + User::RelativeStrTime(u->awaySince()).c_str();
 
   if (config->popupIdleTime() && u->IdleSince())
