@@ -33,8 +33,6 @@ namespace Licq
 class Owner : public virtual User
 {
 public:
-  bool Exception() const                        { return m_bException; }
-
   // Owner specific functions
   const std::string& password() const           { return myPassword; }
   void setPassword(const std::string& s)        { myPassword = s; SaveLicqInfo(); }
@@ -100,8 +98,7 @@ protected:
   unsigned myStartupStatus;
   std::string myServerHost;
   int myServerPort;
-  bool m_bException,
-       m_bWebAware,
+  bool m_bWebAware,
        m_bHideIp,
        m_bSavePassword;
   unsigned myRandomChatGroup;

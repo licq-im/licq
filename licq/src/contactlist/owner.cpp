@@ -48,7 +48,6 @@ Owner::Owner(const UserId& id)
   m_bNotInList = false;
   m_bOnContactList = true;
 
-  m_bException = false;
   m_bSavePassword = true;
   myPassword = "";
   myPDINFO = 0;
