@@ -351,9 +351,9 @@ void User::loadUserInfo()
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
     myConf.get(i->first, i->second);
 
-  loadCategory(myInterests, myConf, "Interests");
-  loadCategory(myBackgrounds, myConf, "Backgrounds");
-  loadCategory(myOrganizations, myConf, "Organizations");
+  loadCategory(myInterests, "Interests");
+  loadCategory(myBackgrounds, "Backgrounds");
+  loadCategory(myOrganizations, "Organizations");
 }
 
 void User::LoadPhoneBookInfo()
@@ -1696,9 +1696,9 @@ void User::saveUserInfo()
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
     myConf.set(i->first, i->second);
 
-  saveCategory(myInterests, myConf, "Interests");
-  saveCategory(myBackgrounds, myConf, "Backgrounds");
-  saveCategory(myOrganizations, myConf, "Organizations");
+  saveCategory(myInterests, "Interests");
+  saveCategory(myBackgrounds, "Backgrounds");
+  saveCategory(myOrganizations, "Organizations");
 
   if (!myConf.writeFile())
   {
@@ -1708,32 +1708,32 @@ void User::saveUserInfo()
   }
 }
 
-void Licq::User::saveCategory(const UserCategoryMap& category, IniFile& file, const string& key)
+void User::saveCategory(const Licq::UserCategoryMap& category, const string& key)
 {
-  file.set(key + 'N', category.size());
+  myConf.set(key + 'N', category.size());
 
-  UserCategoryMap::const_iterator i;
+  Licq::UserCategoryMap::const_iterator i;
   unsigned int count = 0;
   for (i = category.begin(); i != category.end(); ++i)
   {
     char n[10];
     snprintf(n, sizeof(n), "%04X", count);
-    file.set(key + "Cat" + n, i->first);
-    file.set(key + "Desc" + n, i->second);
+    myConf.set(key + "Cat" + n, i->first);
+    myConf.set(key + "Desc" + n, i->second);
     ++count;
   }
 }
 
-void Licq::User::loadCategory(UserCategoryMap& category, IniFile& file, const string& key)
+void User::loadCategory(Licq::UserCategoryMap& category, const string& key)
 {
   category.clear();
   unsigned int count;
-  file.get(key + 'N', count, 0);
+  myConf.get(key + 'N', count, 0);
 
-  if (count > MAX_CATEGORIES)
+  if (count > Licq::MAX_CATEGORIES)
   {
     gLog.warning(tr("Trying to load more categories than the max limit. Truncating."));
-    count = MAX_CATEGORIES;
+    count = Licq::MAX_CATEGORIES;
   }
 
   for (unsigned int i = 0; i < count; ++i)
@@ -1742,11 +1742,11 @@ void Licq::User::loadCategory(UserCategoryMap& category, IniFile& file, const st
     snprintf(n, sizeof(n), "%04X", i);
 
     unsigned int cat;
-    if (!file.get(key + "Cat" + n, cat))
+    if (!myConf.get(key + "Cat" + n, cat))
       continue;
 
     string descr;
-    if (!file.get(key + "Desc" + n, descr))
+    if (!myConf.get(key + "Desc" + n, descr))
       continue;
 
     category[cat] = descr;

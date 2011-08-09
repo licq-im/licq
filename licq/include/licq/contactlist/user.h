@@ -170,8 +170,6 @@ public:
   static const char TimezoneUnknown = (char)-100;
 
 
-  virtual void RemoveFiles() = 0;
-
   void saveAll();
   virtual void SaveLicqInfo() = 0;
   virtual void saveUserInfo() = 0;
@@ -453,8 +451,6 @@ public:
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void setCustomAutoResponse(const std::string& s) { myCustomAutoResponse = s; SaveLicqInfo(); }
   void clearCustomAutoResponse()            { setCustomAutoResponse(""); }
-
-  virtual void SetPermanent() = 0;
 
   // Dynamic info fields for protocol plugins
   bool SetPPField(const std::string &, const std::string &);
@@ -769,29 +765,6 @@ public:
 
 protected:
   virtual ~User() { /* Empty */ }
-
-  /**
-   * Save a category list
-   *
-   * @param category The category map to save
-   * @param file User file, must already be open
-   * @param key Base name of key in file for entries
-   */
-  void saveCategory(const UserCategoryMap& category, IniFile& file,
-      const std::string& key);
-
-  /**
-   * Load a category list
-   *
-   * @param category The category map to save
-   * @param file User file, must already be open
-   * @param key Base name of key in file for entries
-   */
-  void loadCategory(UserCategoryMap& category, IniFile& file,
-      const std::string& key);
-
-  virtual void SetDefaults() = 0;
-  virtual void AddToContactList() = 0;
 
   void SetSecure(bool s) { m_bSecure = s; }
   bool ConnectionInProgress() const { return m_bConnectionInProgress; }

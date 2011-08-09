@@ -353,7 +353,7 @@ bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
     if (!user->NotInList())
       return false;
 
-    user->SetPermanent();
+    dynamic_cast<User*>(*user)->SetPermanent();
   }
 
   // Add user to server side list
