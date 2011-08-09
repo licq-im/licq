@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,20 +42,13 @@ public:
   static const char* const HistoryOldExt;
 
   /**
-   * Constructor to create a user object for an existing contact
-   *
-   * @param id User id
-   * @param filename Filename to read user data from
-   */
-  User(const Licq::UserId& id, const std::string& filename);
-
-  /**
    * Constructor to create a user object for a new contact
    *
    * @param id User id
    * @param temporary False if user is added permanently to list
+   * @param isOwner True if this is an owner
    */
-  User(const Licq::UserId& id, bool temporary = false);
+  User(const Licq::UserId& id, bool temporary = false, bool isOwner = false);
 
   ~User();
 

@@ -257,48 +257,50 @@ bool ICQUserPhoneBook::LoadFromDisk(IniFile& conf)
 unsigned short Licq::User::s_nNumUserEvents = 0;
 pthread_mutex_t Licq::User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
-User::User(const UserId& id, const string& filename)
+
+User::User(const UserId& id, bool temporary, bool isOwner)
   : myHistory(id.protocolId())
 {
   myId = id;
 
   Init();
-  myConf.setFilename(filename);
-  if (!LoadInfo())
-  {
-    gLog.error(tr("Unable to load user info from '%s'. Using default values."),
-        filename.c_str());
-    SetDefaults();
-  }
-}
-
-User::User(const UserId& id, bool temporary)
-  : myHistory(id.protocolId())
-{
-  myId = id;
-
-  Init();
-  SetDefaults();
   m_bNotInList = temporary;
-  if (!m_bNotInList)
-  {
-    char p[5];
-    Licq::protocolId_toStr(p, myId.protocolId());
 
-    string filename = ConfigDir;
+  // Build filename for user properties
+  char p[5];
+  Licq::protocolId_toStr(p, myId.protocolId());
+  string filename;
+  if (isOwner)
+  {
+    filename = "owner.";
+    filename += p;
+  }
+  else
+  {
+    filename = ConfigDir;
     filename += myId.accountId();
     filename += ".";
     filename += p;
-    myConf.setFilename(filename);
-
-    // Create file so load won't fail later
-    if (!myConf.loadFile())
-    {
-      myConf.setSection("user");
-      if (!myConf.writeFile())
-        gLog.error(tr("Error opening '%s' for writing."), myConf.filename().c_str());
-    }
   }
+  myConf.setFilename(filename);
+
+  if (m_bNotInList)
+  {
+    SetDefaults();
+    return;
+  }
+
+
+  // Make sure we have a file so load won't fail
+  if (!myConf.loadFile())
+  {
+    myConf.setSection("user");
+    if (!myConf.writeFile())
+      gLog.error(tr("Error opening '%s' for writing."), myConf.filename().c_str());
+    SetDefaults();
+  }
+
+  LoadInfo();
 }
 
 void User::AddToContactList()

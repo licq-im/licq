@@ -41,11 +41,8 @@ using namespace LicqDaemon;
 
 
 Owner::Owner(const UserId& id)
-  : User(id, true)
+  : User(id, false, true)
 {
-  // Pretend to be temporary to LicqUser constructior so it doesn't setup myConf
-  // Restore NotInList flag to proper value when we get here
-  m_bNotInList = false;
   m_bOnContactList = true;
 
   m_bSavePassword = true;
@@ -54,26 +51,17 @@ Owner::Owner(const UserId& id)
 
   myPictureFileName = gDaemon.baseDir() + "owner.pic";
 
-  // Get data from the config file
   char p[5];
   Licq::protocolId_toStr(p, myId.protocolId());
-  string filename = "owner.";
-  filename += p;
-  myConf.setFilename(filename);
-  myConf.loadFile();
-  myConf.setSection("user");
-  myConf.writeFile();
 
   // Make sure config file is mode 0600
-  filename = gDaemon.baseDir() + filename;
+  string filename = gDaemon.baseDir() + myConf.filename();
   if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) == -1)
   {
     gLog.warning(tr("Unable to set %s to mode 0600. Your password is vulnerable if stored locally."),
         filename.c_str());
   }
 
-  // And finally our favorite function
-  LoadInfo();
   // Owner encoding fixup to be UTF-8 by default
   if (myEncoding.empty())
     myEncoding = "UTF-8";

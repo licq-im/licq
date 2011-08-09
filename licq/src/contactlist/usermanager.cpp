@@ -227,9 +227,6 @@ bool UserManager::Load()
       gLog.warning(tr("Skipping user %i, empty key"), i);
       continue;
     }
-    string filename = User::ConfigDir;
-    filename += '/';
-    filename += userFile;
     size_t sz = userFile.rfind('.');
     if (sz == string::npos)
     {
@@ -242,7 +239,7 @@ bool UserManager::Load()
     unsigned long protocolId = (userFile[sz+1] << 24) | (userFile[sz+2] << 16) | (userFile[sz+3] << 8) | userFile[sz+4];
 
     UserId userId(accountId, protocolId);
-    User* u = new User(userId, filename);
+    User* u = new User(userId);
     u->AddToContactList();
     myUsers[userId] = u;
   }
