@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,9 +61,7 @@ void Group::save(Licq::IniFile& file, int num) const
   map<unsigned long, unsigned long>::const_iterator i;
   for (i = myServerIds.begin(); i != myServerIds.end(); ++i)
   {
-    char pidstr[5];
-    Licq::protocolId_toStr(pidstr, i->first);
-    sprintf(key, "Group%d.ServerId.%s", num, pidstr);
+    sprintf(key, "Group%d.ServerId.%s", num, Licq::protocolId_toString(i->first).c_str());
     file.set(key, i->second);
   }
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,9 @@ namespace Licq
 
 // Convenience function to convert protocolId to a string
 // ret must be able to hold at least 5 characters
-inline char* protocolId_toStr(char* ret, unsigned long protocolId)
+inline std::string protocolId_toString(unsigned long protocolId)
 {
+  char ret[5];
   ret[0] = ((protocolId & 0xFF000000) >> 24);
   ret[1] = ((protocolId & 0x00FF0000) >> 16);
   ret[2] = ((protocolId & 0x0000FF00) >> 8);
@@ -127,7 +128,7 @@ public:
    * @return A printable string of user id
    */
   std::string toString() const
-  { char p[5]; protocolId_toStr(p, myProtocolId); return p + myAccountId; }
+  { return protocolId_toString(myProtocolId) + myAccountId; }
 
   /**
    * Normalize an account id

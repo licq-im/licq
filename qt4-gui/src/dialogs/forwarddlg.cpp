@@ -155,9 +155,7 @@ void ForwardDlg::dropEvent(QDropEvent* de)
     BOOST_FOREACH(Licq::Owner* owner, **ownerList)
     {
       unsigned long ppid = owner->ppid();
-      char ppidStr[5];
-      Licq::protocolId_toStr(ppidStr, ppid);
-      if (text.startsWith(ppidStr))
+      if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
       {
         nPPID = ppid;
         break;

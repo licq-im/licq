@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,9 +159,7 @@ void MMUserView::dropEvent(QDropEvent* event)
       BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
         unsigned long protocolId = owner->ppid();
-        char ppidStr[5];
-        Licq::protocolId_toStr(ppidStr, protocolId);
-        if (text.startsWith(ppidStr))
+        if (text.startsWith(Licq::protocolId_toString(protocolId).c_str()))
         {
           ppid = protocolId;
           break;

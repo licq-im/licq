@@ -366,9 +366,7 @@ void UserView::mouseMoveEvent(QMouseEvent* event)
   if ((event->buttons() & Qt::LeftButton) && !myMousePressPos.isNull() &&
       (QPoint(event->pos() - myMousePressPos).manhattanLength() >= QApplication::startDragDistance()))
   {
-    char p[5];
-    Licq::protocolId_toStr(p, ppid);
-    QString data(p);
+    QString data(Licq::protocolId_toString(ppid).c_str());
     data += id;
 
     QDrag* drag = new QDrag(this);

@@ -267,20 +267,18 @@ User::User(const UserId& id, bool temporary, bool isOwner)
   m_bNotInList = temporary;
 
   // Build filename for user properties
-  char p[5];
-  Licq::protocolId_toStr(p, myId.protocolId());
   string filename;
   if (isOwner)
   {
     filename = "owner.";
-    filename += p;
+    filename += Licq::protocolId_toString(myId.protocolId());
   }
   else
   {
     filename = ConfigDir;
     filename += myId.accountId();
     filename += ".";
-    filename += p;
+    filename += Licq::protocolId_toString(myId.protocolId());
   }
   myConf.setFilename(filename);
 
@@ -1010,9 +1008,8 @@ void User::setHistoryFile(const std::string& file)
   string realFile;
   if (file == "default")
   {
-    char p[5];
-    Licq::protocolId_toStr(p, myId.protocolId());
-    realFile = gDaemon.baseDir() + HistoryDir + myId.accountId() + '.' + p + HistoryExt;
+    realFile = gDaemon.baseDir() + HistoryDir + myId.accountId() + '.' +
+        Licq::protocolId_toString(myId.protocolId()) + HistoryExt;
   }
   else if (file != "none")
   {

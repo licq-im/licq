@@ -51,9 +51,6 @@ Owner::Owner(const UserId& id)
 
   myPictureFileName = gDaemon.baseDir() + "owner.pic";
 
-  char p[5];
-  Licq::protocolId_toStr(p, myId.protocolId());
-
   // Make sure config file is mode 0600
   string filename = gDaemon.baseDir() + myConf.filename();
   if (chmod(filename.c_str(), S_IRUSR | S_IWUSR) == -1)
@@ -135,7 +132,7 @@ Owner::Owner(const UserId& id)
   gLog.info(tr("Loading owner configuration for %s"), myId.toString().c_str());
 
   setHistoryFile(gDaemon.baseDir() + HistoryDir + "owner." + myId.accountId() +
-      "." + p + HistoryExt);
+      "." + Licq::protocolId_toString(myId.protocolId()) + HistoryExt);
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TimezoneUnknown)
   {

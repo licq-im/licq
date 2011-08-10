@@ -221,9 +221,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
           BOOST_FOREACH(Licq::Owner* owner, **ownerList)
           {
             unsigned long ppid = owner->ppid();
-            char ppidStr[5];
-            Licq::protocolId_toStr(ppidStr, ppid);
-            if (text.startsWith(ppidStr))
+            if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
             {
               dropPpid = ppid;
               break;

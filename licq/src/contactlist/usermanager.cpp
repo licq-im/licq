@@ -271,9 +271,7 @@ void UserManager::saveUserList() const
     char key[20];
     sprintf(key, "User%i", count);
 
-    char ps[5];
-    Licq::protocolId_toStr(ps, ppid);
-    usersConf.set(key, accountId + "." + ps);
+    usersConf.set(key, accountId + "." + Licq::protocolId_toString(ppid));
   }
   usersConf.set("NumOfUsers", count);
   usersConf.writeFile();

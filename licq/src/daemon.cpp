@@ -240,16 +240,14 @@ void Daemon::SaveConf()
       Licq::OwnerWriteGuard o(owner);
 
       char szOwnerId[12], szOwnerPPID[14];
-      char szPPID[5];
       sprintf(szOwnerId, "Owner%d.Id", n);
       sprintf(szOwnerPPID, "Owner%d.PPID", n++);
 
       o->SaveLicqInfo();
       if (o->accountId() != "0")
       {
-        Licq::protocolId_toStr(szPPID, o->protocolId());
         licqConf.set(szOwnerId, o->accountId());
-        licqConf.set(szOwnerPPID, szPPID);
+        licqConf.set(szOwnerPPID, Licq::protocolId_toString(o->protocolId()));
       }
     }
   }
