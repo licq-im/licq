@@ -400,7 +400,7 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
     if (u.isLocked())
     {
       myId = u->accountId().c_str();
-      myPpid = u->ppid();
+      myPpid = u->protocolId();
 
       codec = UserCodec::codecForUser(*u);
       if (event->isReceiver())

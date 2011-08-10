@@ -158,7 +158,7 @@ void MMUserView::dropEvent(QDropEvent* event)
       Licq::OwnerListGuard ownerList;
       BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
-        unsigned long protocolId = owner->ppid();
+        unsigned long protocolId = owner->protocolId();
         if (text.startsWith(Licq::protocolId_toString(protocolId).c_str()))
         {
           ppid = protocolId;

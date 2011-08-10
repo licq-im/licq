@@ -362,7 +362,7 @@ void OnEventManager::performOnEvent(OnEventData::OnEventType event, const Licq::
     if (user->isUser())
     {
       // Get owner for this user
-      Licq::OwnerReadGuard o(user->ppid());
+      Licq::OwnerReadGuard o(user->protocolId());
       ownerStatus = o->status();
     }
     else

@@ -260,7 +260,7 @@ void UserManager::saveUserList() const
     i->second->lockRead();
     bool temporary = i->second->NotInList();
     string accountId = i->second->accountId();
-    unsigned long ppid = i->second->ppid();
+    unsigned long ppid = i->second->protocolId();
     i->second->unlockRead();
 
     // Only save users that's been permanently added

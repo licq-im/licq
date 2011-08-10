@@ -2606,7 +2606,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
       continue;
     }
 
-    if (u->ppid() != LICQ_PPID)
+    if (u->protocolId() != LICQ_PPID)
     {
       gLog.warning(tr("Trying to export non ICQ user %s to ICQ server."),
           i->toString().c_str());

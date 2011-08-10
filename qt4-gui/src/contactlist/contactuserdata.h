@@ -241,8 +241,6 @@ private slots:
 
 private:
   Licq::UserId myUserId;
-  QString myAccountId;
-  unsigned long myPpid;
   unsigned myStatus;
   int myEvents;
   bool myStatusInvisible, myStatusTyping, myCustomAR, mySecure, myFlash;

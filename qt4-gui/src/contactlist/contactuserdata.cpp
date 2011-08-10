@@ -73,8 +73,6 @@ ContactUserData::ContactUserData(const Licq::User* licqUser, QObject* parent)
     myUserIcon(NULL)
 {
   myUserId = licqUser->id();
-  myPpid = licqUser->protocolId();
-  myAccountId = licqUser->realAccountId().c_str();
 
   if (myRefreshTimer == NULL)
   {
@@ -320,7 +318,7 @@ void ContactUserData::updateExtendedStatus()
   if (myStatusInvisible)
     myExtendedStatus |= ContactListModel::InvisibleStatus;
 
-  if (myStatusTyping && myPpid == LICQ_PPID)
+  if (myStatusTyping && myUserId.protocolId() == LICQ_PPID)
     myExtendedStatus |= ContactListModel::TypingStatus;
 
   if (myPhoneFollowMeStatus == CICQDaemon::IcqPluginActive)
@@ -624,10 +622,10 @@ QVariant ContactUserData::data(int column, int role) const
       return QVariant::fromValue(myUserId);
 
     case ContactListModel::AccountIdRole:
-      return myAccountId;
+      return myUserId.accountId().c_str();
 
     case ContactListModel::PpidRole:
-      return static_cast<unsigned int>(myPpid);
+      return static_cast<unsigned int>(myUserId.protocolId());
 
     case ContactListModel::ItemTypeRole:
       return ContactListModel::UserItem;

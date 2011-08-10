@@ -1125,7 +1125,7 @@ void UserSendEvent::userUpdated(const Licq::UserId& userId, unsigned long subSig
         e = u->EventPeekId(argument);
 
         if (e != NULL)
-          if (u->ppid() != MSN_PPID || cid == myConvoId)
+          if (u->protocolId() != MSN_PPID || cid == myConvoId)
           {
             u.unlock();
             myHistoryView->addMsg(e, userId);

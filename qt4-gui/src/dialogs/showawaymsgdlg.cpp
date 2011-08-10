@@ -167,7 +167,7 @@ void ShowAwayMsgDlg::doneEvent(const Licq::Event* e)
        e->ExtendedAck()->response().c_str() :
        u->autoResponse().c_str();
 
-    if (u->ppid() == LICQ_PPID && QString(u->accountId().c_str())[0].isLetter())
+    if (u->protocolId() == LICQ_PPID && QString(u->accountId().c_str())[0].isLetter())
     {
       // Strip HTML
       QString strResponse(codec->toUnicode(szAutoResp));

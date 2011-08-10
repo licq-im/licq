@@ -972,7 +972,7 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
       Licq::OwnerListGuard ownerList;
       BOOST_FOREACH(Licq::Owner* owner, **ownerList)
       {
-        unsigned long ppid = owner->ppid();
+        unsigned long ppid = owner->protocolId();
         if (text.startsWith(Licq::protocolId_toString(ppid).c_str()))
         {
           dropPpid = ppid;

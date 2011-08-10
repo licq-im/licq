@@ -201,15 +201,6 @@ public:
   unsigned long protocolId() const
   { return myId.protocolId(); }
 
-  unsigned long ppid() const                    { return myId.protocolId(); }
-
-  /**
-   * Get normalized account id that can be used when comparing ids
-   *
-   * @return normalized account id
-   */
-  const std::string& realAccountId() const      { return accountId(); }
-
   // General Info
   //!Retrieves the user's alias.
   const std::string& getAlias() const           { return myAlias; }

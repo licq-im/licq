@@ -75,8 +75,8 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
     Licq::UserReadGuard user(userId);
     if (user.isLocked())
     {
-      myId = user->realAccountId().c_str();
-      myPpid = user->ppid();
+      myId = user->accountId().c_str();
+      myPpid = user->protocolId();
     }
   }
 
