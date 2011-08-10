@@ -725,16 +725,6 @@ void User::SetPermanent()
   // Set the flags and check for history file to recover
   AddToContactList();
 
-  // Create the user file
-  char p[5];
-  Licq::protocolId_toStr(p, myId.protocolId());
-
-  string filename = ConfigDir;
-  filename += myId.accountId();
-  filename += ".";
-  filename += p;
-  myConf.setFilename(filename);
-
   // Create file so save will have something to write in
   if (!myConf.loadFile())
   {
