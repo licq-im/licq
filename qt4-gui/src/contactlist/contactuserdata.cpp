@@ -496,8 +496,8 @@ bool ContactUserData::setData(const QVariant& value, int role)
       return false;
 
     myAlias = value.toString();
-    u->setAlias(myAlias.toUtf8().data());
     u->SetKeepAliasOnUpdate(true);
+    u->setAlias(myAlias.toUtf8().data());
 
     // Daemon doesn't send signal when alias is changed so trigger update from here
     updateText(*u);
