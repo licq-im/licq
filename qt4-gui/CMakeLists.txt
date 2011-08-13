@@ -28,17 +28,13 @@ set(LIBRARIES)
 # Check for X11 and (optional) screensaver support
 if (NOT APPLE)
   find_package(X11 REQUIRED)
-  include_directories(${X11_INCLUDE_DIR})
 
-  set(CMAKE_REQUIRED_LIBRARIES ${X11_LIBRARIES})
-  check_library_exists(Xss XScreenSaverRegister "" HAVE_LIBXSS)
-  check_include_file(X11/extensions/scrnsaver.h HAVE_SCRNSAVER_H)
-  set(CMAKE_REQUIRED_LIBRARIES)
-
-  if (HAVE_SCRNSAVER_H AND HAVE_LIBXSS)
-    set(X11_LIBRARIES ${X11_LIBRARIES} Xss)
+  if (X11_Xscreensaver_FOUND)
+    set(X11_LIBRARIES ${X11_LIBRARIES} ${X11_Xscreensaver_LIB})
     set(USE_SCRNSAVER 1)
-  endif (HAVE_SCRNSAVER_H AND HAVE_LIBXSS)
+  endif (X11_Xscreensaver_FOUND)
+
+  include_directories(${X11_INCLUDE_DIR})
   set(LIBRARIES ${LIBRARIES} ${X11_LIBRARIES})
 endif (NOT APPLE)
 
