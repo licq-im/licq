@@ -3,6 +3,7 @@
 # Copy to .git/hooks and make executable.
 #
 # Copyright (c) 2011 Erik Johansson <erijo@licq.org>
+# Copyright (c) 2011 Anders Olofsson <flynd@licq.org>
 # Distributed under the terms of the GNU GPL version 2.
 #
 
@@ -17,14 +18,15 @@ error()
 verify_copyright_year()
 {
   file="$1"
-  if ! grep -q "Copyright" "$file"; then
+  sha1="$2"
+  if ! git cat-file -p $sha1 | grep -q "Copyright"; then
     if echo "$file" | grep -Eq '\.(c|cpp|h)$'; then
       error "no copyright line in '$file'"
     fi
     return
   fi
 
-  if ! grep -Eq "Copyright.*$year" "$file"; then
+  if ! git cat-file -p $sha1 | grep -Eq "Copyright.*$year"; then
     if echo "$file" | grep -Eq '\.pot$'; then
       return
     fi
@@ -32,10 +34,21 @@ verify_copyright_year()
   fi
 }
 
-for file in $(git diff-index --cached --name-only --diff-filter=AM HEAD); do
-  if echo "$file" | grep -q "3rdparty/"; then
+
+# Loop on lines, not words
+IFS="
+"
+
+for file in $(git diff-index --cached --full-index --diff-filter=AM HEAD); do
+  sha1_staged=$(echo $file | cut -d' ' -f4)
+  filename=$(echo $file | cut -d'	' -f2)
+
+  if echo "$filename" | grep -q "3rdparty/"; then
     continue
   fi
 
-  verify_copyright_year "$file"
+  verify_copyright_year "$filename" "$sha1_staged"
 done
+unset IFS
+
+exit 0
