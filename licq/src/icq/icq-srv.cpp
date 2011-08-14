@@ -4142,7 +4142,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       unsigned short errorcode = packet.UnpackUnsignedShortBE();
       gLog.info(tr("Meta request failed. Eventid %u, errorcode %u"), nSubSequence, errorcode);
       Licq::Event* pEvent = DoneServerEvent(nSubSequence, Licq::Event::ResultFailed);
-      ProcessDoneEvent(pEvent);
+      if (pEvent != NULL)
+        ProcessDoneEvent(pEvent);
       break;
     }
 
