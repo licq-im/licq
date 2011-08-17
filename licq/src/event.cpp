@@ -12,7 +12,6 @@
 
 #include <assert.h>
 
-#include <licq/icqdefines.h>
 #include <licq/packet.h>
 #include <licq/userevents.h>
 #include <licq/logging/log.h>
@@ -56,7 +55,7 @@ Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
   m_nSocketDesc = _nSocketDesc;
   m_pExtendedAck = NULL;
   m_pSearchAck = NULL;
-  m_nSubResult = ICQ_TCPxACK_ACCEPT;
+  mySubResult = SubResultAccept;
   thread_plugin = pthread_self();
   thread_running = false;
 
@@ -84,7 +83,7 @@ Event::Event(const Event* e)
   myUserId = e->myUserId;
   m_eConnect = e->m_eConnect;
   m_eResult = e->m_eResult;
-  m_nSubResult = e->m_nSubResult;
+  mySubResult = e->mySubResult;
   if (e->m_pUserEvent != NULL)
     m_pUserEvent = e->m_pUserEvent->Copy();
   else

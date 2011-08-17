@@ -2448,8 +2448,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             }
           }
 
-        // finish up
-        e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
+          // finish up
+          e->mySubResult = Licq::Event::SubResultAccept;
           u.unlock();
           if (bNewUser)
             Licq::gUserManager.removeUser(userId, false);
@@ -2507,8 +2507,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           if (bNewUser)
             Licq::gUserManager.removeUser(userId, false);
 
-        // finish up
-        e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
+          // finish up
+          e->mySubResult = Licq::Event::SubResultAccept;
         ProcessDoneEvent(e);
 
         // get out of here now as we don't want standard ack processing
@@ -2529,14 +2529,14 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     // translating string with translation table
     gTranslator.ServerToClient (message);
     // output the away message if there is one (ie if user status is not online)
-    int nSubResult;
+      unsigned subResult;
     if (ackFlags == ICQ_TCPxACK_REFUSE)
     {
       gLog.info(tr("Refusal from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
-      nSubResult = ICQ_TCPxACK_REFUSE;
-    }
-    else
-    {
+        subResult = Licq::Event::SubResultRefuse;
+      }
+      else
+      {
       // Update the away message if it's changed
       if (u->autoResponse() != message)
       {
@@ -2550,32 +2550,32 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         case ICQ_TCPxACK_ONLINE:
           gLog.info(tr("Ack from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
             if (pExtendedAck && !pExtendedAck->accepted())
-            nSubResult = ICQ_TCPxACK_RETURN;
-          else
-            nSubResult = ICQ_TCPxACK_ACCEPT;
-          break;
+              subResult = Licq::Event::SubResultReturn;
+            else
+              subResult = Licq::Event::SubResultAccept;
+            break;
         case ICQ_TCPxACK_AWAY:
         case ICQ_TCPxACK_NA:
         case ICQ_TCPxACK_OCCUPIEDx2: //auto decline due to occupied mode
           gLog.info(tr("Ack from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
-          nSubResult = ICQ_TCPxACK_REFUSE;
-          break;
+            subResult = Licq::Event::SubResultRefuse;
+            break;
         case ICQ_TCPxACK_OCCUPIED:
         case ICQ_TCPxACK_DND:
           gLog.info(tr("Returned from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
-          nSubResult = ICQ_TCPxACK_RETURN;
-          break;
+            subResult = Licq::Event::SubResultReturn;
+            break;
         case ICQ_TCPxACK_OCCUPIEDxCAR:
         case ICQ_TCPxACK_DNDxCAR:
           gLog.info(tr("Custom %s response from %s (#%hu)%s."),
               (ackFlags == ICQ_TCPxACK_DNDxCAR ? tr("DnD") : tr("Occupied")),
               u->getAlias().c_str(), -theSequence, l);
-          nSubResult = ICQ_TCPxACK_ACCEPT; // FIXME: or should this be ACK_RETURN ?
-          break;
-        default:
+            subResult = Licq::Event::SubResultAccept; // FIXME: or should this be ACK_RETURN ?
+            break;
+          default:
           gLog.unknown(tr("Unknown ack flag from %s (#%hu): %04x %s"),
               u->getAlias().c_str(), -theSequence, ackFlags, l);
-          nSubResult = ICQ_TCPxACK_ACCEPT;
+            subResult = Licq::Event::SubResultAccept;
       }
     }
 
@@ -2583,7 +2583,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     if (e != NULL)
     {
       e->m_pExtendedAck = pExtendedAck;
-      e->m_nSubResult = nSubResult;
+        e->mySubResult = subResult;
 
         u.unlock();
         if (bNewUser)

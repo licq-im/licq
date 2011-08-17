@@ -1336,7 +1336,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
   // Write the event to the history file if appropriate
   if (e->m_pUserEvent != NULL &&
       (e->m_eResult == Licq::Event::ResultAcked || e->m_eResult == Licq::Event::ResultSuccess) &&
-      e->m_nSubResult != ICQ_TCPxACK_RETURN)
+      e->subResult() != Licq::Event::SubResultReturn)
   {
     Licq::UserWriteGuard u(e->userId());
     if (u.isLocked())
@@ -3373,11 +3373,11 @@ However it seems to always think contact is online instead of away/occupied/etc.
       }
     }
     pthread_mutex_unlock(&mutex_reverseconnect);
-    
-    int nSubResult;
+
+      unsigned subResult;
     if (bFound)
     {
-      nSubResult = ICQ_TCPxACK_REFUSE;
+        subResult = Licq::Event::SubResultRefuse;
       pExtendedAck = NULL;
       pthread_cond_broadcast(&cond_reverseconnect_done);
         return;
@@ -3441,7 +3441,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
     if (nAckFlags == ICQ_TCPxACK_REFUSE)
       {
         pExtendedAck = new Licq::ExtendedData(false, 0, szMessage);
-      nSubResult = ICQ_TCPxACK_REFUSE;
+        subResult = Licq::Event::SubResultRefuse;
         gLog.info(tr("Refusal from %s (#%lu)."), u->getAlias().c_str(), nMsgID);
       }
       else
@@ -3462,15 +3462,15 @@ However it seems to always think contact is online instead of away/occupied/etc.
           nAckFlags != ICQ_TCPxACK_ACCEPT &&
           nAckFlags != ICQ_TCPxACK_OCCUPIED &&
           nAckFlags != ICQ_TCPxACK_DND)
-      {
-        nSubResult = ICQ_TCPxACK_REFUSE;
-      }
-      else
-      {
-        nSubResult = ICQ_TCPxACK_RETURN;
-      }
+        {
+          subResult = Licq::Event::SubResultRefuse;
+        }
+        else
+        {
+          subResult = Licq::Event::SubResultReturn;
+        }
 
-        pExtendedAck = new Licq::ExtendedData(nSubResult == ICQ_TCPxACK_RETURN, 0, szMessage);
+        pExtendedAck = new Licq::ExtendedData(subResult == Licq::Event::SubResultReturn, 0, szMessage);
       }
         u.unlock();
       delete [] szMessage;
@@ -3479,7 +3479,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
     if (e)
     {
       e->m_pExtendedAck = pExtendedAck;
-      e->m_nSubResult = nSubResult;
+      e->mySubResult = subResult;
       ProcessDoneEvent(e);
       return;
     }
@@ -3501,7 +3501,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
       Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultAcked);
     if (e)
     {
-      e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
+        e->mySubResult = Licq::Event::SubResultAccept;
       ProcessDoneEvent(e);
     }
 

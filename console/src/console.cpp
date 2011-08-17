@@ -873,13 +873,13 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
     case ICQ_CMDxTCP_START:
       {
         const Licq::UserEvent* ue = e->userEvent();
-        if (e->SubResult() == ICQ_TCPxACK_RETURN)
+        if (e->subResult() == Licq::Event::SubResultReturn)
         {
           Licq::UserReadGuard u(e->userId());
           win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
               u->getAlias().c_str(), u->statusString().c_str(), u->autoResponse().c_str());
         }
-        else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
+        else if (e->subResult() == Licq::Event::SubResultRefuse)
         {
           Licq::UserReadGuard u(e->userId());
           win->wprintf("%s refused %s.\n",

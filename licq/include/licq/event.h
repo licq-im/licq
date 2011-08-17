@@ -170,19 +170,21 @@ public:
     ResultCancelled,    // Event cancelled by the user
   };
 
+  enum SubResultType
+  {
+    SubResultAccept,    // Event was accepted by recipient
+    SubResultRefuse,    // Event was rejected by recipient
+    SubResultReturn,    // Recipient is DND/Occupied, message needs to be resent with flags for urgent or to contact list
+  };
+
   // Accessors
 
   //!This is the result of the event.
   ResultType Result() const { return m_eResult; }
 
-  //!This will be either ICQ_TCPxACK_ACCEPT if the event was accepted by
-  //!the other side, ICQ_TCPxACK_REJECT if the event was rejected by the
-  //!other side (should never happen really), or ICQ_TCPxACK_RETURN if the
-  //!other side returned the event (meaning they are in occupied or dnd so
-  //!the message would need to be sent urgent or to contact list).  This
-  //!field is only relevant if the command was ICQ_CMDxTCP_START (ie the
-  //!message was sent direct).
-  int SubResult() const { return m_nSubResult; }
+  /// One of SubResultType above. This field is only relevant if the command
+  /// was ICQ_CMDxTCP_START (ie the message was sent direct).
+  unsigned subResult() const { return mySubResult; }
 
   //!The SNAC returned as an unsigned long.  The upper 2 bytes is the family
   //!and the lower 2 bytes is the subtype.  To compare SNAC's use the SNAC
@@ -259,7 +261,7 @@ protected:
 
   ConnectType    m_eConnect;
   ResultType m_eResult;
-  int            m_nSubResult;
+  unsigned mySubResult;
   bool           m_bCancelled : 1;
   bool           m_Deleted : 1;
   bool           m_NoAck : 1;

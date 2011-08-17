@@ -1516,7 +1516,7 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
 
   QString msg;
 
-  if (e->SubResult() == ICQ_TCPxACK_RETURN)
+  if (e->subResult() == Licq::Event::SubResultReturn)
   {
     {
       Licq::UserWriteGuard u(myUsers.front());

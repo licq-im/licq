@@ -714,7 +714,7 @@ void CICQDaemon::ProcessDoneEvent(Licq::Event* e)
   // Write the event to the history file if appropriate
   if (e->m_pUserEvent != NULL &&
       e->m_eResult == Licq::Event::ResultAcked &&
-      e->m_nSubResult != ICQ_TCPxACK_RETURN)
+      e->subResult != Licq::Event::SubResultReturn)
   {
     Licq::UserReadGuard(e->userId());
     if (u.isLocked())
@@ -1179,7 +1179,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         if (e)
       {
         e->m_pExtendedAck = new Licq::ExtendedData(true, 0, message);
-        e->m_nSubResult = ICQ_TCPxACK_RETURN;
+          e->mySubResult = Licq::Event::SubResultReturn;
         ProcessDoneEvent(e);
       }
         else
@@ -1267,7 +1267,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     if (pAckEvent)
     {
       pAckEvent->m_pExtendedAck = pExtendedAck;
-      pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
+      pAckEvent->mySubResult = Licq::Event::SubResultAccept;
       gLog.info(tr("%s accepted from %s (%s)."), szType,
           u->getAlias().c_str(), u->accountId().c_str());
       u->unlockWrite();
