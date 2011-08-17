@@ -38,7 +38,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 
 #include "core/signalmanager.h"
 
@@ -155,10 +154,7 @@ void ShowAwayMsgDlg::doneEvent(const Licq::Event* e)
 
   icqEventTag = 0;
 
-  if (isOk &&
-      (e->Command() == ICQ_CMDxTCP_START ||
-       e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) ||
-       e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)))
+  if (isOk)
   {
     Licq::UserReadGuard u(myUserId);
     const QTextCodec* codec = UserCodec::codecForUser(*u);
