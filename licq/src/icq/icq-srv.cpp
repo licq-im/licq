@@ -4895,8 +4895,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               e = DoneExtendedServerEvent(nSubSequence, Licq::Event::ResultSuccess);
               Licq::Event* e2 = new Licq::Event(e);
           e2->m_pSearchAck = NULL; // Search ack is null lets plugins know no results found
-          e2->m_nCommand = ICQ_CMDxSND_META;
-          e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
               e2->myCommand = Licq::Event::CommandSearch;
               e2->myFlags |= Licq::Event::FlagSearchDone;
               gPluginManager.pushPluginEvent(e2);
@@ -4943,12 +4941,10 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
             Licq::Event* e2 = new Licq::Event(e);
         // JON: Hack it so it is backwards compatible with plugins for now.
-        e2->m_nCommand = ICQ_CMDxSND_META;
         e2->m_pSearchAck = s;
         if (nSubtype & 0x0008)
         {
           unsigned long nMore = 0;
-          e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
               e2->myCommand = Licq::Event::CommandSearch;
               e2->myFlags |= Licq::Event::FlagSearchDone;
           nMore = msg.UnpackUnsignedLong();
@@ -4958,7 +4954,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         }
         else
         {
-          e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;
               e2->myCommand = Licq::Event::CommandSearch;
               e2->m_pSearchAck->myMore = 0;
         }

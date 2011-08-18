@@ -214,16 +214,6 @@ public:
   //!macro to convert it to an unsigned long: MAKESNAC(family, subtype).
   unsigned long SNAC() const { return m_nSNAC; }
 
-  //!The command, for example ICQ_CMDxTCP_START.  This is only non-zero
-  //!for direct connection events.
-  unsigned short Command() const { return m_nCommand; }
-
-  //!The subcommand, relevant only if this was a message/url/chat/file,
-  //!in which case Command() will be ICQ_CMDxTCP_START or SNAC() will be
-  //!MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_CMDxSND_THRU_SERVER) and this
-  //!field will be ICQ_CMDxSUB_MSG...
-  unsigned short SubCommand() const { return m_nSubCommand; }
-
   //!This is used to identify events internally, but is necessary for
   //!accepting/rejecting chat or file requests.
   unsigned short Sequence() const { return m_nSequence; }
@@ -291,8 +281,6 @@ protected:
   bool           m_Deleted : 1;
   bool           m_NoAck : 1;
   unsigned long  m_nSNAC;
-  unsigned short m_nCommand;
-  unsigned short m_nSubCommand;
   unsigned short m_nSequence;
   unsigned short m_nSubSequence;
   unsigned short m_nSubType;

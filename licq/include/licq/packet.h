@@ -40,7 +40,6 @@ public:
 
   virtual unsigned short Sequence() = 0;
   virtual unsigned short SubSequence() = 0;
-  virtual unsigned short Command() = 0;
   virtual unsigned short SubCommand() = 0;
 
   virtual unsigned long  SNAC()      { return 0; }

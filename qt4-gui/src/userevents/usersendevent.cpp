@@ -1075,11 +1075,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
     }
 
     default:
-    {
-      Licq::gLog.warning("Internal error: UserSendEvent::RetrySend()\n"
-                      "Unknown sub-command %d", e->SubCommand());
       break;
-    }
   }
 
   if (icqEventTag)

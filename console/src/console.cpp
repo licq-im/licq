@@ -759,11 +759,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
     }
   }
   if (win == NULL)
-  {
-    gLog.warning("Internal error: CLicqConsole::ProcessDoneEvent(): Unknown "
-                 "event from daemon: %d", e->SubCommand());
     return;
-  }
 
   bool isOk = (e != NULL && (e->Result() == Licq::Event::ResultAcked || e->Result() == Licq::Event::ResultSuccess));
 
@@ -901,11 +897,7 @@ void CLicqConsole::ProcessDoneSearch(Licq::Event* e)
     }
   }
   if (win == NULL)
-  {
-    gLog.warning("Internal error: CLicqConsole::ProcessEvent(): Unknown "
-                 "event from daemon: %d", e->Command());
     return;
-  }
 
   if (e->SearchAck() != NULL && e->SearchAck()->userId().isValid())
   {

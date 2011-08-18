@@ -118,9 +118,6 @@ public:
   virtual unsigned long  SNAC() { return ((m_nFamily << 16) | (m_nSubType)); }
   virtual unsigned short SubCommand()  { return m_nSubCommand; }
 
-  // Not used anymore here, use SNAC instead.
-  virtual unsigned short Command()     { return 0; }
-
   // Misc.
   virtual unsigned short ExtraInfo() { return m_nExtraInfo; }
   virtual CBuffer *Finalize(Licq::INetSocket*);
@@ -158,7 +155,6 @@ public:
    virtual CBuffer *Finalize(Licq::INetSocket*);
    virtual unsigned short Sequence() { return m_nSequence; }
    virtual unsigned short SubSequence() { return m_nSubSequence; }
-   virtual unsigned short Command()  { return m_nCommand; }
    virtual unsigned short SubCommand()  { return 0; }
 protected:
    CPacketUdp(unsigned short _nCommand);
@@ -270,7 +266,6 @@ public:
 
   virtual unsigned short Sequence() { return m_nSequence; }
   virtual unsigned short SubSequence() { return 0; }
-  virtual unsigned short Command()  { return m_nCommand; }
   virtual unsigned short SubCommand() { return 0; }
 protected:
   virtual unsigned long getSize()       { return 1; }
@@ -1216,7 +1211,6 @@ class CPacketTcp_Handshake : public CPacket
 public:
   virtual unsigned short Sequence()   { return 0; }
   virtual unsigned short SubSequence()   { return 0; }
-  virtual unsigned short Command()    { return ICQ_CMDxTCP_HANDSHAKE; }
   virtual unsigned short SubCommand() { return 0; }
 };
 
@@ -1339,7 +1333,6 @@ public:
   int channel() const { return myChannel; }
    virtual unsigned short Sequence()   { return m_nSequence; }
    virtual unsigned short SubSequence()   { return 0; }
-   virtual unsigned short Command()    { return m_nCommand; }
    virtual unsigned short SubCommand() { return m_nSubCommand; }
 
    char *LocalPortOffset()  {  return m_szLocalPortOffset; }
@@ -1705,7 +1698,6 @@ public:
 
   virtual unsigned short Sequence()    { return 0; };
   virtual unsigned short SubSequence() { return 0; };
-  virtual unsigned short Command()     { return 0; };
   virtual unsigned short SubCommand()  { return 0; };
 protected:
    void InitBuffer()   { buffer = new CBuffer(m_nSize); };
@@ -1779,7 +1771,6 @@ class CPacketChat : public Licq::Packet
 public:
   virtual unsigned short Sequence()   { return 0; };
   virtual unsigned short SubSequence()   { return 0; };
-  virtual unsigned short Command()    { return 0; };
   virtual unsigned short SubCommand() { return 0; };
 protected:
    void InitBuffer();

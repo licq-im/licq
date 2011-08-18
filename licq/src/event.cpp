@@ -31,9 +31,7 @@ Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
   if (p)
   {
     m_pPacket = p;
-    m_nCommand = p->Command();
     m_nSNAC = p->SNAC();
-    m_nSubCommand = p->SubCommand();
     m_nSequence = p->Sequence();
     m_nSubSequence = p->SubSequence();
     m_nSubType = (p->SNAC() & 0xFFFF);
@@ -41,9 +39,7 @@ Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
   } else
   {
     m_pPacket = NULL;
-    m_nCommand = 0;
     m_nSNAC = 0;
-    m_nSubCommand = 0;
     m_nSequence = 0;
     m_nSubSequence = 0;
     m_nSubType = 0;
@@ -76,8 +72,6 @@ Event::Event(const Event* e)
   m_NoAck = false;
   m_bCancelled = e->m_bCancelled;
   m_nSNAC = e->m_nSNAC;
-  m_nCommand = e->m_nCommand;
-  m_nSubCommand = e->m_nSubCommand;
   m_nSequence = e->m_nSequence;
   m_nSubSequence = e->m_nSubSequence;
   m_nSubType = e->m_nSubType;
@@ -120,9 +114,7 @@ Event::~Event()
 void Event::AttachPacket(Licq::Packet* p)
 {
   m_pPacket = p;
-  m_nCommand = p->Command();
   m_nSNAC = p->SNAC();
-  m_nSubCommand = p->SubCommand();
   m_nSequence = p->Sequence();
   m_nSubSequence = p->SubSequence();
   m_nSubType = (p->SNAC() & 0xFFFF);
