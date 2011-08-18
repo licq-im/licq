@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,6 @@ private slots:
 
   void slot_logon();
   void slot_protocolPlugin(unsigned long);
-  void slot_doneOwnerFcn(const Licq::Event* event);
   void slot_updateContactList();
   void slot_updatedUser(const Licq::UserId& userId, unsigned long subSignal, int argument);
 

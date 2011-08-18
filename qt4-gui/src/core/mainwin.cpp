@@ -72,7 +72,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
 
 #include "config/contactlist.h"
@@ -226,8 +225,6 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SLOT(updateStatus()));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
       SLOT(updateStatus()));
-  connect(gGuiSignalManager, SIGNAL(doneOwnerFcn(const Licq::Event*)),
-      SLOT(slot_doneOwnerFcn(const Licq::Event*)));
   connect(gGuiSignalManager, SIGNAL(logon()),
       SLOT(slot_logon()));
   connect(gGuiSignalManager, SIGNAL(protocolPlugin(unsigned long)),
@@ -1050,29 +1047,6 @@ void MainWindow::slot_protocolPlugin(unsigned long nPPID)
   // let KDE IM interface know about the new protocol
   // kdeIMInterface->addProtocol(QString(pName), nPPID);
 #endif
-}
-
-void MainWindow::slot_doneOwnerFcn(const Licq::Event* e)
-{
-  updateStatus();
-  switch (e->SNAC())
-  {
-    case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
-      if (e->Result() != Licq::Event::ResultSuccess)
-        WarnUser(this, tr("Logon failed.\nSee network window for details."));
-      break;
-
-/*
-    case ICQ_MDxSND_AUTHORIZE:
-       if (e->Result() != Licq::Event::ResultAcked)
-         WarnUser(this, tr("Error sending authorization."));
-       else
-         InformUser(this, tr("Authorization granted."));
-       break;
-*/
-    default:
-       break;
-  }
 }
 
 void MainWindow::slot_updateContactList()
