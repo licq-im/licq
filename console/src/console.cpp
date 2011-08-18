@@ -664,6 +664,7 @@ void CLicqConsole::ProcessEvent(Licq::Event* e)
   if (e->SNAC() == 0) {
     // Not from ICQ
     ProcessDoneEvent(e); //FIXME
+    delete e;
     return;
   }
   

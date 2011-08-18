@@ -166,6 +166,7 @@ void SignalManager::ProcessEvent(Licq::Event* ev)
   {
     // Not from ICQ
     emit doneUserFcn(ev); //FIXME
+    delete ev;
     return;
   }
 
