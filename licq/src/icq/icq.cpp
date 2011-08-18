@@ -21,7 +21,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
 #include <licq/statistics.h>
@@ -35,6 +34,7 @@
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../support.h"
+#include "defines.h"
 #include "oscarservice.h"
 #include "packet.h"
 

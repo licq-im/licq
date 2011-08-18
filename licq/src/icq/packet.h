@@ -28,9 +28,10 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/icqchat.h> // ChatClientList
-#include <licq/icqdefines.h>
 #include <licq/userid.h>
 #include <licq/packet.h>
+
+#include "defines.h"
 
 namespace Licq
 {

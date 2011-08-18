@@ -11,7 +11,6 @@ set(licq_HEADERS
   icq.h
   icqchat.h
   icqcodes.h
-  icqdefines.h
   icqfiletransfer.h
   inifile.h
   macro.h

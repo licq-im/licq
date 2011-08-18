@@ -24,7 +24,6 @@
 #include <licq/byteorder.h>
 #include <licq/color.h>
 #include <licq/contactlist/owner.h>
-#include <licq/icqdefines.h>
 #include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
@@ -36,6 +35,7 @@
 #include "../contactlist/usermanager.h"
 #include "../gettext.h"
 #include "../support.h"
+#include "defines.h"
 #include "icq.h"
 #include "packet.h"
 

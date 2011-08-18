@@ -29,7 +29,7 @@
 #include <cstring>
 #include <sstream>
 
-#include <licq/icqdefines.h>
+#include "defines.h"
 
 using std::string;
 using std::stringstream;

@@ -17,7 +17,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/logging/log.h>
@@ -28,6 +27,7 @@
 #include "../licq.h"
 #include "../statistics.h"
 #include "../plugin/pluginmanager.h"
+#include "defines.h"
 #include "oscarservice.h"
 #include "packet.h"
 
