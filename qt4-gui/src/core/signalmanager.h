@@ -69,7 +69,6 @@ signals:
    */
   void updatedStatus(unsigned long ppid);
 
-  void doneOwnerFcn(const Licq::Event* ev);
   void doneUserFcn(const Licq::Event* ev);
   void searchResult(const Licq::Event* ev);
   void logon();

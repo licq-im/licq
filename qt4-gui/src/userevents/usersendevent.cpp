@@ -60,7 +60,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq.h>
-#include <licq/icqdefines.h>
 #include <licq/plugin/protocolplugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -1502,7 +1501,8 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
 
   if (e->Result() != Licq::Event::ResultAcked)
   {
-    if (e->Command() == ICQ_CMDxTCP_START && e->Result() != Licq::Event::ResultCancelled &&
+    if ((e->flags() & Licq::Event::FlagDirect) &&
+        e->Result() != Licq::Event::ResultCancelled &&
        (Config::Chat::instance()->autoSendThroughServer() ||
          QueryYesNo(this, tr("Direct send failed,\nsend through server?"))) )
     {
@@ -1557,7 +1557,7 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
     case ContactEvent:
     case MessageEvent:
     {
-      if (e->Command() != ICQ_CMDxTCP_START)
+      if ((e->flags() & Licq::Event::FlagDirect) == 0)
         break;
 
       myMessageEdit->setText(QString::null);

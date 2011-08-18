@@ -177,7 +177,30 @@ public:
     SubResultReturn,    // Recipient is DND/Occupied, message needs to be resent with flags for urgent or to contact list
   };
 
+  enum Commands
+  {
+    CommandOther        = 0,            // Command not in this list
+    CommandMessage      = 1,            // Plain text message
+    CommandUrl          = 2,            // URL message
+    CommandFile         = 3,            // File transfer proposal
+    CommandChatInvite   = 4,            // Chat invitation
+    CommandSearch       = 5,            // Search (last event)
+    CommandSecureOpen   = 6,            // Open secure channel
+  };
+
+  enum Flags
+  {
+    FlagDirect          = 0x0001,       // Message/Url/... was sent direct
+    FlagSearchDone      = 0x0002,       // This is the last search result
+  };
+
   // Accessors
+
+  /// One of CommandType above
+  unsigned command() const { return myCommand; }
+
+  /// Bitmask from Flags above
+  unsigned flags() const { return myFlags; }
 
   //!This is the result of the event.
   ResultType Result() const { return m_eResult; }
@@ -260,6 +283,8 @@ protected:
   unsigned long EventId() const;
 
   ConnectType    m_eConnect;
+  unsigned myCommand;
+  unsigned myFlags;
   ResultType m_eResult;
   unsigned mySubResult;
   bool           m_bCancelled : 1;

@@ -344,6 +344,7 @@ private:
   Licq::Event* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue);
   Licq::Event* SendExpectEvent_Client(const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue);
   Licq::Event* SendExpectEvent(Licq::Event*, void *(*fcn)(void *));
+  unsigned eventCommandFromPacket(Licq::Packet* p);
 
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, Licq::TCPSocket*);

@@ -362,6 +362,7 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
 
   Licq::Event* event = new Licq::Event(signal->eventId(), 0, NULL,
       Licq::Event::ConnectServer, signal->userId(), message);
+  event->myCommand = Licq::Event::CommandMessage;
   event->thread_plugin = signal->callerThread();
   event->m_eResult = Licq::Event::ResultAcked;
 

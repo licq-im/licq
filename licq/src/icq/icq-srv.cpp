@@ -1306,7 +1306,7 @@ Licq::Event* IcqProtocol::icqSendThroughServer(unsigned long eventId, const Licq
     return NULL;
 
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, p, Licq::Event::ConnectServer, userId, ue);
-  if (e == NULL) return 0;
+  e->myCommand = eventCommandFromPacket(p);
   e->m_NoAck = true;
 
   result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
@@ -1353,7 +1353,7 @@ void IcqProtocol::ProcessDoneEvent(Licq::Event* e)
   // Process the event, first by channel
   if (srvPacket == NULL)
   {
-    if (e->m_nCommand == ICQ_CMDxTCP_START)
+    if (e->flags() & Licq::Event::FlagDirect)
       gPluginManager.pushPluginEvent(e);
     else
       delete e;
@@ -4897,6 +4897,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           e2->m_pSearchAck = NULL; // Search ack is null lets plugins know no results found
           e2->m_nCommand = ICQ_CMDxSND_META;
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
+              e2->myCommand = Licq::Event::CommandSearch;
+              e2->myFlags |= Licq::Event::FlagSearchDone;
               gPluginManager.pushPluginEvent(e2);
               DoneEvent(e, Licq::Event::ResultSuccess);
               break;
@@ -4947,6 +4949,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           unsigned long nMore = 0;
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
+              e2->myCommand = Licq::Event::CommandSearch;
+              e2->myFlags |= Licq::Event::FlagSearchDone;
           nMore = msg.UnpackUnsignedLong();
           // No more subtraction by 1, and now it seems to always be 0
               e2->m_pSearchAck->myMore = nMore;
@@ -4955,6 +4959,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         else
         {
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;
+              e2->myCommand = Licq::Event::CommandSearch;
               e2->m_pSearchAck->myMore = 0;
         }
 

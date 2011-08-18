@@ -41,7 +41,6 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
-#include <licq/icqdefines.h>
 #include <licq/inifile.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -281,9 +280,9 @@ void CLicqAutoReply::ProcessEvent(Licq::Event* e)
 
   if (e->Result() != Licq::Event::ResultAcked)
   {
-    if (e->Command() == ICQ_CMDxTCP_START &&
-        (e->SubCommand() != ICQ_CMDxSUB_CHAT &&
-         e->SubCommand() != ICQ_CMDxSUB_FILE))
+    if ((e->flags() & Licq::Event::FlagDirect) &&
+        (e->command() != Licq::Event::CommandChatInvite &&
+        e->command() != Licq::Event::CommandFile))
     {
       user_event = e->userEvent();
       unsigned flags = Licq::ProtocolSignal::SendUrgent; //urgent, because, hey, he asked us, right?

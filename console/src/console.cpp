@@ -38,7 +38,6 @@
 #include <licq/event.h>
 #include <licq/icq.h>
 #include <licq/icqcodes.h>
-#include <licq/icqdefines.h>
 #include <licq/icqfiletransfer.h>
 #include <licq/inifile.h>
 #include <licq/logging/logservice.h>
@@ -654,64 +653,10 @@ void CLicqConsole::ProcessSignal(Licq::PluginSignal* s)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::ProcessEvent(Licq::Event* e)
 {
-  if (e->Command() == ICQ_CMDxTCP_START) // direct connection check
-  {
+  if (e->command() == Licq::Event::CommandSearch)
+    ProcessDoneSearch(e);
+  else
     ProcessDoneEvent(e);
-    delete e;
-    return;
-  }
-
-  if (e->SNAC() == 0) {
-    // Not from ICQ
-    ProcessDoneEvent(e); //FIXME
-    delete e;
-    return;
-  }
-  
-  switch (e->SNAC())
-  {
-    // Event commands for a user
-  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxMESSAGE):
-  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG):
-  case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
-    {
-      ProcessDoneEvent(e);
-      break;
-    }
-
-    // The all being meta snac
-  case MAKESNAC(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA):
-    {
-      if (e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
-          e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
-        ProcessDoneSearch(e);
-      else
-        ProcessDoneEvent(e);
-      break;
-    }
-
-    // Commands related to the basic operation
-  case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
-  case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
-  case ICQ_CMDxSND_LOGON:
-      if (e->Result() != Licq::Event::ResultSuccess)
-      winMain->wprintf("%CLogon failed.  See the log console for details.\n", COLOR_RED);
-    break;
-
-  case ICQ_CMDxSND_REGISTERxUSER:
-    // Needs to be better dealt with...
-    // How's this then?
-      winMain->wprintf("Registration complete!\nYour UIN is %s\n",
-          Licq::gUserManager.ownerUserId(LICQ_PPID).accountId().c_str());
-    winMain->fProcessInput = &CLicqConsole::InputCommand;
-    PrintStatus();
-    break;
-
-  default:
-    gLog.warning("Internal error: CLicqConsole::ProcessEvent(): Unknown event "
-                 "SNAC received from daemon: 0x%08lX", e->SNAC());
-    break;
-  }
   delete e;
 }
 
@@ -854,10 +799,10 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
 
   if (!isOk)
   {
-    if (e->Command() == ICQ_CMDxTCP_START &&
-        (e->SubCommand() == ICQ_CMDxSUB_MSG ||
-         e->SubCommand() == ICQ_CMDxSUB_URL ||
-         e->SubCommand() == ICQ_CMDxSUB_FILE) )
+    if ((e->flags() & Licq::Event::FlagDirect) &&
+        (e->command() == Licq::Event::CommandMessage ||
+        e->command() == Licq::Event::CommandUrl ||
+        e->command() == Licq::Event::CommandFile) )
     {
       win->wprintf("%C%ADirect send failed, send through server (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr, COLOR_WHITE,
@@ -869,10 +814,8 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
   }
   else
   {
-    switch(e->Command())
+    if (e->flags() & Licq::Event::FlagDirect)
     {
-    case ICQ_CMDxTCP_START:
-      {
         const Licq::UserEvent* ue = e->userEvent();
         if (e->subResult() == Licq::Event::SubResultReturn)
         {
@@ -885,9 +828,9 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
           Licq::UserReadGuard u(e->userId());
           win->wprintf("%s refused %s.\n",
               u->getAlias().c_str(), ue->description().c_str());
-        }
-        else if(e->SubCommand() == ICQ_CMDxSUB_FILE)
-        {
+      }
+      else if (e->command() == Licq::Event::CommandFile)
+      {
           const Licq::ExtendedData* ea = e->ExtendedAck();
 
           if (ea == NULL || ue == NULL)
@@ -927,19 +870,6 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
           if (u.isLocked() && u->isAway() && u->ShowAwayMsg())
             win->wprintf("%s\n", u->autoResponse().c_str());
         }
-
-        break;
-      } // case
-
-    case ICQ_CMDxSND_THRUxSERVER:
-    case ICQ_CMDxSND_USERxGETINFO:
-    case ICQ_CMDxSND_USERxGETDETAILS:
-    case ICQ_CMDxSND_UPDATExBASIC:
-    case ICQ_CMDxSND_UPDATExDETAIL:
-    case ICQ_CMDxSND_META:
-    default:
-      break;
-
     }
   }
 

@@ -49,6 +49,8 @@ Event::Event(unsigned long id, int _nSocketDesc, Licq::Packet* p,
     m_nSubType = 0;
     m_nExtraInfo = 0;
   }
+  myCommand = CommandOther;
+  myFlags = 0;
   myUserId = userId;
   m_eConnect = _eConnect;
   m_pUserEvent = e;
@@ -80,6 +82,8 @@ Event::Event(const Event* e)
   m_nSubSequence = e->m_nSubSequence;
   m_nSubType = e->m_nSubType;
   m_nExtraInfo = e->m_nExtraInfo;
+  myCommand = e->myCommand;
+  myFlags = e->myFlags;
   myUserId = e->myUserId;
   m_eConnect = e->m_eConnect;
   m_eResult = e->m_eResult;

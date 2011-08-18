@@ -280,6 +280,21 @@ void IcqProtocol::ChangeUserStatus(Licq::User* u, unsigned long s, time_t online
   u->statusChanged(statusFromIcqStatus(s), onlineSince);
 }
 
+unsigned IcqProtocol::eventCommandFromPacket(Licq::Packet* p)
+{
+  if (p->SubCommand() == ICQ_CMDxSUB_MSG)
+    return Licq::Event::CommandMessage;
+  if (p->SubCommand() == ICQ_CMDxSUB_URL)
+    return Licq::Event::CommandUrl;
+  if (p->SubCommand() == ICQ_CMDxSUB_FILE)
+    return Licq::Event::CommandFile;
+  if (p->SubCommand() == ICQ_CMDxSUB_CHAT)
+    return Licq::Event::CommandChatInvite;
+  if (p->SubCommand() == ICQ_CMDxSUB_SECURExOPEN)
+    return Licq::Event::CommandSecureOpen;
+  return Licq::Event::CommandOther;
+}
+
 /*----------------------------------------------------------------------------
  * CICQDaemon::SendEvent
  *
@@ -291,9 +306,8 @@ void IcqProtocol::SendEvent_Server(CPacket *packet)
 #if 1
   unsigned long eventId = gDaemon.getNextEventId();
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer);
+  e->myCommand = eventCommandFromPacket(packet);
 
-  if (e == NULL)  return;
- 
   pthread_mutex_lock(&mutex_sendqueue_server);
   m_lxSendQueue_Server.push_back(e);
   pthread_mutex_unlock(&mutex_sendqueue_server);
@@ -323,8 +337,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
   }
 
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer, userId, ue);
-
-	if (e == NULL)  return NULL;
+  e->myCommand = eventCommandFromPacket(packet);
 
   if (bExtendedEvent) PushExtendedEvent(e);
 
@@ -362,8 +375,8 @@ Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Li
 
   Licq::Event* e = new Licq::Event(eventId, pUser->socketDesc(packet->channel()), packet,
       Licq::Event::ConnectUser, pUser->id(), ue);
-
-  if (e == NULL) return NULL;
+  e->myCommand = eventCommandFromPacket(packet);
+  e->myFlags |= Licq::Event::FlagDirect;
 
   return SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
 }
@@ -974,11 +987,11 @@ void IcqProtocol::CancelEvent(Licq::Event* e)
 {
   e->m_eResult = Licq::Event::ResultCancelled;
 
-  if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
+  if (e->command() == Licq::Event::CommandChatInvite)
     icqChatRequestCancel(e->userId(), e->m_nSequence);
-  else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
+  else if (e->command() == Licq::Event::CommandFile)
     icqFileTransferCancel(e->userId(), e->m_nSequence);
-  else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)
+  else if (e->command() == Licq::Event::CommandSecureOpen)
     icqOpenSecureChannelCancel(e->userId(), e->m_nSequence);
 
   ProcessDoneEvent(e);

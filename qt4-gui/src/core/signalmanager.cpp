@@ -25,7 +25,6 @@
 #include <QApplication>
 #include <QSocketNotifier>
 
-#include <licq/icqdefines.h>
 #include <licq/logging/log.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
@@ -155,61 +154,10 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
 
 void SignalManager::ProcessEvent(Licq::Event* ev)
 {
-  if (ev->Command() == ICQ_CMDxTCP_START) // direct connection check
-  {
+  if (ev->command() == Licq::Event::CommandSearch)
+    emit searchResult(ev);
+  else
     emit doneUserFcn(ev);
-    delete ev;
-    return;
-  }
-
-  if (ev->SNAC() == 0)
-  {
-    // Not from ICQ
-    emit doneUserFcn(ev); //FIXME
-    delete ev;
-    return;
-  }
-
-  switch (ev->SNAC())
-  {
-    // Event commands for a user
-    case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxMESSAGE):
-    case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG):
-    case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
-    case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxREQUESTxUSERxINFO):
-    case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ):
-    case MAKESNAC(ICQ_SNACxFAM_BART, ICQ_SNACxBART_DOWNLOADxREQUEST):
-      emit doneUserFcn(ev);
-      break;
-
-    // The all being meta snac
-    case MAKESNAC(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA):
-      if (ev->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER ||
-          ev->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxFOUND)
-        emit searchResult(ev);
-      else
-        if (ev->SubCommand() == ICQ_CMDxSND_SYSxMSGxREQ ||
-            ev->SubCommand() == ICQ_CMDxSND_SYSxMSGxDONExACK)
-          emit doneOwnerFcn(ev);
-        else
-          emit doneUserFcn(ev);
-      break;
-
-    // Commands related to the basic operation
-    case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
-    case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
-    case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST):
-    case MAKESNAC(ICQ_SNACxFAM_AUTH, ICQ_SNACxREGISTER_USER):
-      emit doneOwnerFcn(ev);
-      break;
-
-    default:
-      gLog.warning("Internal error: SignalManager::ProcessEvent(): "
-          "Unknown event SNAC received from daemon: 0x%08lX",
-          ev->SNAC());
-      break;
-  }
-
   delete ev;
 }
 
