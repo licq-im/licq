@@ -34,9 +34,9 @@
 
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/icqdefines.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/userevents.h>
 
 #include "config/chat.h"
 #include "config/iconmanager.h"
@@ -145,7 +145,7 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
         setWindowIcon(IconManager::instance()->iconForUser(*u));
       else
       {
-        setWindowIcon(IconManager::instance()->iconForEvent(ICQ_CMDxSUB_MSG));
+        setWindowIcon(IconManager::instance()->iconForEvent(Licq::UserEvent::TypeMessage));
         flashTaskbar();
       }
 
@@ -491,7 +491,7 @@ void UserEventCommon::updatedUser(const Licq::UserId& userId, unsigned long subS
         setWindowIcon(IconManager::instance()->iconForUser(*u));
       else
       {
-        setWindowIcon(IconManager::instance()->iconForEvent(ICQ_CMDxSUB_MSG));
+        setWindowIcon(IconManager::instance()->iconForEvent(Licq::UserEvent::TypeMessage));
         flashTaskbar();
       }
 
