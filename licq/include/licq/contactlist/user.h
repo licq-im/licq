@@ -65,10 +65,10 @@ const unsigned int MAX_CATEGORIES = 4;
 
 typedef enum
 {
-  CAT_INTERESTS,
-  CAT_ORGANIZATION,
-  CAT_BACKGROUND,
-  CAT_MAX
+  CAT_INTERESTS         = 1,
+  CAT_ORGANIZATION      = 2,
+  CAT_BACKGROUND        = 3,
+  CAT_MAX               = 3,
 } UserCat;
 
 typedef std::vector <class UserEvent*> UserEventList;
@@ -101,24 +101,24 @@ const unsigned short MAX_PICTURE_SIZE      = 8081;
 
 enum EPhoneType
 {
-  TYPE_PHONE,
-  TYPE_CELLULAR,
-  TYPE_CELLULARxSMS,
-  TYPE_FAX,
-  TYPE_PAGER,
-  TYPE_MAX
+  TYPE_PHONE            = 1,
+  TYPE_CELLULAR         = 2,
+  TYPE_CELLULARxSMS     = 3,
+  TYPE_FAX              = 4,
+  TYPE_PAGER            = 5,
+  TYPE_MAX              = 5
 };
 
 enum EGatewayType
 {
   GATEWAY_BUILTIN = 1,
-  GATEWAY_CUSTOM
+  GATEWAY_CUSTOM = 2,
 };
 
 enum EPublish
 {
   PUBLISH_ENABLE = 1,
-  PUBLISH_DISABLE
+  PUBLISH_DISABLE = 2,
 };
 
 class ICQUserPhoneBook
@@ -328,9 +328,9 @@ public:
 
   enum usprintf_quotes
   {
-    usprintf_quotenone,
-    usprintf_quotepipe,
-    usprintf_quoteall,
+    usprintf_quotenone  = 0,
+    usprintf_quotepipe  = 1,
+    usprintf_quoteall   = 2,
   };
 
   /**
@@ -544,19 +544,19 @@ public:
 
   enum DirectFlags
   {
-    DirectDisabled,             // Direct contact not possible
-    DirectAnyone,               // Direct contact with anyone
-    DirectListed,               // Direct contact only with contacts in list
-    DirectAuth,                 // Direct contact only with authorized contacts
+    DirectDisabled      = 0,    // Direct contact not possible
+    DirectAnyone        = 1,    // Direct contact with anyone
+    DirectListed        = 2,    // Direct contact only with contacts in list
+    DirectAuth          = 3,    // Direct contact only with authorized contacts
   };
   unsigned directFlag() const                   { return myDirectFlag; }
   void setDirectFlag(unsigned n)                { myDirectFlag = n; }
 
   enum SecureChannelSupport
   {
-    SecureChannelUnknown,
-    SecureChannelNotSupported,
-    SecureChannelSupported,
+    SecureChannelUnknown        = 0,
+    SecureChannelNotSupported   = 1,
+    SecureChannelSupported      = 2,
   };
   unsigned secureChannelSupport() const         { return mySecureChannelSupport; }
   void setSecureChannelSupport(unsigned n)      { mySecureChannelSupport = n; }

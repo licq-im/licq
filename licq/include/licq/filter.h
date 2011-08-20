@@ -47,9 +47,9 @@ struct FilterRule
   // Action to perform if rule matches
   enum ActionType
   {
-    ActionAccept,
-    ActionSilent,
-    ActionIgnore,
+    ActionAccept        = 1,
+    ActionSilent        = 2,
+    ActionIgnore        = 3,
   };
   int action;
 };

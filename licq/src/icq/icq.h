@@ -108,6 +108,7 @@ public:
   bool bFinished;
 };
 
+enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
 class IcqProtocol : public CICQDaemon
 {
@@ -318,6 +319,8 @@ public:
   void PushEvent(Licq::Event*);
   void PushExtendedEvent(Licq::Event*);
 
+  EDaemonStatus Status() const                  { return m_eStatus; }
+
   void setDirectMode();
   bool directMode() const { return myDirectMode; }
 
@@ -394,6 +397,7 @@ private:
   std::string myRegisterPasswd;
   pthread_t m_nRegisterThreadId;
   bool myDirectMode;
+  EDaemonStatus m_eStatus;
 
   // Services
   COscarService *m_xBARTService;

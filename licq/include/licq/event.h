@@ -155,26 +155,26 @@ class Event
 public:
   enum ConnectType
   {
-    ConnectServer,
-    ConnectUser,
-    ConnectNone,
+    ConnectNone         = 0,
+    ConnectServer       = 1,
+    ConnectUser         = 2,
   };
 
   enum ResultType
   {
-    ResultAcked,        // Event acked by reciepient
-    ResultSuccess,      // Event successfully sent
-    ResultFailed,       // Event failed
-    ResultTimedout,     // Time out while communicating with remote socket
-    ResultError,        // Other error
-    ResultCancelled,    // Event cancelled by the user
+    ResultAcked         = 1,    // Event acked by reciepient
+    ResultSuccess       = 2,    // Event successfully sent
+    ResultFailed        = 3,    // Event failed
+    ResultTimedout      = 4,    // Time out while communicating with remote socket
+    ResultError         = 5,    // Other error
+    ResultCancelled     = 6,    // Event cancelled by the user
   };
 
   enum SubResultType
   {
-    SubResultAccept,    // Event was accepted by recipient
-    SubResultRefuse,    // Event was rejected by recipient
-    SubResultReturn,    // Recipient is DND/Occupied, message needs to be resent with flags for urgent or to contact list
+    SubResultAccept     = 1,    // Event was accepted by recipient
+    SubResultRefuse     = 2,    // Event was rejected by recipient
+    SubResultReturn     = 3,    // Recipient is DND/Occupied, message needs to be resent with flags for urgent or to contact list
   };
 
   enum Commands

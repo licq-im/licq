@@ -580,7 +580,7 @@ void *OscarServiceSendQueue_tep(void *p)
         continue;
       }
 
-      if (gLicqDaemon->Status() != STATUS_ONLINE)
+      if (gIcqProtocol.Status() != STATUS_ONLINE)
       {
         gLog.warning(tr("Can't send event for service 0x%02X because we are not online."),
             os->myFam);

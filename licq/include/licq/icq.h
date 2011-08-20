@@ -49,7 +49,6 @@ void *UpdateUsers_tep(void *p);
 
 
 //=====CICQDaemon===============================================================
-enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
 class CICQDaemon : private boost::noncopyable
 {
@@ -155,8 +154,6 @@ public:
 
   virtual void CheckExport() = 0;
 
-  EDaemonStatus Status() const                  { return m_eStatus; }
-
   virtual void UpdateAllUsers() = 0;
   virtual void updateAllUsersInGroup(int groupId) = 0;
 
@@ -194,8 +191,6 @@ public:
 
 protected:
   virtual ~CICQDaemon() { /* Empty */ }
-
-  EDaemonStatus m_eStatus;
 
   bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
 

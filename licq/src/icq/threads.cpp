@@ -628,18 +628,17 @@ void *ReverseConnectToUser_tep(void *v)
  *
  * Thread entry point to ping the server every n minutes.
  *----------------------------------------------------------------------------*/
-void *Ping_tep(void *p)
+void *Ping_tep(void * /*p*/)
 {
   pthread_detach(pthread_self());
 
-  CICQDaemon *d = (CICQDaemon *)p;
   struct timeval tv;
 
   while (true)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
     LicqDaemon::gStatistics.flush();
-    switch(d->m_eStatus)
+    switch (gIcqProtocol.Status())
     {
     case STATUS_ONLINE:
         gIcqProtocol.icqPing();
@@ -981,7 +980,7 @@ void *UpdateUsers_tep(void *p)
 
   while (true)
   {
-    if (d->m_eStatus == STATUS_ONLINE)
+    if (gIcqProtocol.Status() == STATUS_ONLINE)
     {
       pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
       Licq::UserListGuard userList(LICQ_PPID);

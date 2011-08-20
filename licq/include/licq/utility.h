@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,12 @@ protected:
 class Utility
 {
 public:
-  enum WinType { WinLicq, WinTerm, WinGui };
+  enum WinType
+  {
+    WinLicq     = 1,
+    WinTerm     = 2,
+    WinGui      = 3,
+  };
 
   Utility(const std::string& filename);
   ~Utility();

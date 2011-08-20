@@ -197,10 +197,10 @@ public:
 protected:
   enum ErrorType
   {
-    ErrorNone,
-    ErrorErrno,
-    ErrorInternal,
-    ErrorProxy,
+    ErrorNone           = 0,
+    ErrorErrno          = 1,
+    ErrorInternal       = 2,
+    ErrorProxy          = 3,
   };
 
   bool SetLocalAddress(bool bIp = true);
@@ -262,10 +262,10 @@ public:
 
   enum ChannelType
   {
-    ChannelUnknown,
-    ChannelNormal,
-    ChannelInfo,
-    ChannelStatus,
+    ChannelUnknown      = 0,
+    ChannelNormal       = 1,
+    ChannelInfo         = 2,
+    ChannelStatus       = 3,
   };
 
   void setChannel(int channel) { myChannel = channel; }
