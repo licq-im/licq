@@ -27,6 +27,8 @@
 
 #include "config.h"
 
+#include <gloox/gloox.h>
+
 namespace Licq
 {
 class ProtoAddUserSignal;
@@ -43,6 +45,7 @@ class ProtoTypingNotificationSignal;
 class ProtoUpdateInfoSignal;
 class ProtoSendMessageSignal;
 class ProtocolSignal;
+class UserId;
 }
 
 namespace Jabber
@@ -72,6 +75,7 @@ public:
 private:
   void processPipe(int pipe);
   void processSignal(Licq::ProtocolSignal* signal);
+  void getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames);
 
   void doLogon(Licq::ProtoLogonSignal* signal);
   void doChangeStatus(Licq::ProtoChangeStatusSignal* signal);

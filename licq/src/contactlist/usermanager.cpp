@@ -322,13 +322,13 @@ bool UserManager::addUser(const UserId& uid,
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListUserAdded, uid, groupId));
 
+  // Set initial group membership but let add signal below update the server
+  if (groupId != 0)
+    setUserInGroup(uid, groupId, true, false);
+
   // Add user to server side list
   if (permanent && addToServer)
     gProtocolManager.addUser(uid, groupId);
-
-  // Set initial group membership, also sets server group for user
-  if (groupId != 0)
-    setUserInGroup(uid, groupId, true, permanent && addToServer);
 
   return true;
 }

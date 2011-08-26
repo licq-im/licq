@@ -81,7 +81,7 @@ public:
   void changeStatus(unsigned status, bool notifyHandler = true);
   void getVCard(const std::string& user);
   void setOwnerVCard(const UserToVCard& wrapper);
-  void addUser(const std::string& user, bool notify);
+  void addUser(const std::string& user, const gloox::StringList& groupNames, bool notify);
   void changeUserGroups(const std::string& user,
                         const gloox::StringList& groups);
   void removeUser(const std::string& user);
