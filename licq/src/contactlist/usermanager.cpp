@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,13 +326,13 @@ bool UserManager::addUser(const UserId& uid,
   gDaemon.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListUserAdded, uid, groupId));
 
+  // Set initial group membership but let add signal below update the server
+  if (groupId != 0)
+    setUserInGroup(uid, groupId, true, false);
+
   // Add user to server side list
   if (permanent && addToServer)
     gProtocolManager.addUser(uid, groupId);
-
-  // Set initial group membership, also sets server group for user
-  if (groupId != 0)
-    setUserInGroup(uid, groupId, true, permanent && addToServer);
 
   return true;
 }
