@@ -93,6 +93,7 @@ extern "C"
 
 #include "contactlist/contactlist.h"
 
+#include "dialogs/reqauthdlg.h"
 #include "dialogs/logwindow.h"
 
 #include "dockicons/dockicon.h"
@@ -1342,7 +1343,17 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const Lic
 
       break;
     }
-
+    case Licq::PluginSignal::ListUserAdded:
+    {
+      bool awaitingAuth;
+      {
+        Licq::UserReadGuard u(userId);
+        awaitingAuth = (u.isLocked() && u->GetAwaitingAuth());
+      }
+      if (awaitingAuth)
+        new ReqAuthDlg(userId);
+      break;
+    }
     case Licq::PluginSignal::ListInvalidate:
     case Licq::PluginSignal::ListGroupAdded:
     case Licq::PluginSignal::ListGroupRemoved:

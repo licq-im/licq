@@ -7,6 +7,7 @@ o Jabber: Connect thru HTTP proxy
 o MSN: Added user client detection
 o RMS: Authentication can be configured instead of always using ICQ account
 o Qt4-Gui: Added global shortcut to show/hide contact list window
+o Qt4-Gui: Show authorization request dialog when adding a contact
 
 
 New in 1.5.2
