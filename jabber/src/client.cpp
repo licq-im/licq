@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -132,12 +132,12 @@ void Client::setOwnerVCard(const UserToVCard& wrapper)
   myVCardManager.storeVCard(card, this);
 }
 
-void Client::addUser(const string& user, bool notify)
+void Client::addUser(const string& user, const gloox::StringList& groupNames, bool notify)
 {
   if (notify)
-    myRosterManager->subscribe(gloox::JID(user));
+    myRosterManager->subscribe(gloox::JID(user), user, groupNames);
   else
-    myRosterManager->add(gloox::JID(user), user, gloox::StringList());
+    myRosterManager->add(gloox::JID(user), user, groupNames);
 }
 
 void Client::changeUserGroups(

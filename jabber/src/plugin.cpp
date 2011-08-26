@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -19,6 +19,8 @@
  * along with Licq; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include <boost/foreach.hpp>
 
 #include "client.h"
 #include "handler.h"
@@ -358,30 +360,34 @@ void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
 void Plugin::doAddUser(Licq::ProtoAddUserSignal* signal)
 {
   assert(myClient != NULL);
-  myClient->addUser(signal->userId().accountId(), true);
+  const Licq::UserId userId = signal->userId();
+  gloox::StringList groupNames;
+  getUserGroups(userId, groupNames);
+  myClient->addUser(userId.accountId(), groupNames, true);
 }
 
 void Plugin::doChangeUserGroups(Licq::ProtoChangeUserGroupsSignal* signal)
 {
   assert(myClient != NULL);
   const Licq::UserId userId = signal->userId();
-
-  // Get names of all group user is member of
   gloox::StringList groupNames;
-  {
-    Licq::UserReadGuard u(userId);
-    if (!u.isLocked())
-      return;
-    const Licq::UserGroupList groups = u->GetGroups();
-    for (Licq::UserGroupList::const_iterator i = groups.begin();
-         i != groups.end(); ++i)
-    {
-      string groupName = Licq::gUserManager. GetGroupNameFromGroup(*i);
-      if (!groupName.empty())
-        groupNames.push_back(groupName);
-    }
-  }
+  getUserGroups(userId, groupNames);
   myClient->changeUserGroups(userId.accountId(), groupNames);
+}
+
+void Plugin::getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames)
+{
+  Licq::UserReadGuard u(userId);
+  if (!u.isLocked())
+    return;
+
+  const Licq::UserGroupList groups = u->GetGroups();
+  BOOST_FOREACH(int groupId, groups)
+  {
+    string groupName = Licq::gUserManager.GetGroupNameFromGroup(groupId);
+    if (!groupName.empty())
+      retGroupNames.push_back(groupName);
+  }
 }
 
 void Plugin::doRemoveUser(Licq::ProtoRemoveUserSignal* signal)

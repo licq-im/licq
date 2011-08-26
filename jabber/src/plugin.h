@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -25,6 +25,8 @@
 
 #include <boost/noncopyable.hpp>
 
+#include <gloox/gloox.h>
+
 namespace Licq
 {
 class ProtoAddUserSignal;
@@ -41,6 +43,7 @@ class ProtoTypingNotificationSignal;
 class ProtoUpdateInfoSignal;
 class ProtoSendMessageSignal;
 class ProtocolSignal;
+class UserId;
 }
 
 namespace Jabber
@@ -61,6 +64,7 @@ public:
 private:
   void processPipe(int pipe);
   void processSignal(Licq::ProtocolSignal* signal);
+  void getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames);
 
   void doLogon(Licq::ProtoLogonSignal* signal);
   void doChangeStatus(Licq::ProtoChangeStatusSignal* signal);
