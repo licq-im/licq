@@ -40,11 +40,11 @@ public:
 
   enum Level
   {
-    Unknown     = 0, /// Unknown packets or bytes.
-    Debug       = 1, /// Debugging aid.
+    Unknown     = 1, /// Unknown packets or bytes.
     Info        = 2, /// Basic information about what's going on.
     Warning     = 3, /// Warnings which are not critical but could be important.
     Error       = 4, /// Critical errors which should be brought to the attention of the user.
+    Debug       = 5, /// Debugging aid.
   };
 
   class Stream;
