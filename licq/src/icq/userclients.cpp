@@ -480,7 +480,9 @@ static string detectFromTimestamps(int tcpVersion, unsigned ts1, unsigned ts2,
     buf << "LocID v" << ((ts2>>8)&0xF) << '.' << ((ts2>>4)&0xF) << (ts2&0xF) << " p" << ((ts2>>16)&0xFF);
     return buf.str();
   }
-  else if (ts1 == ts2 && ts2 == ts3 && tcpVersion == 8 && ts1 < onlineSince+3600 && ts1 > onlineSince-3600)
+  else if (ts1 == ts2 && ts2 == ts3 && tcpVersion == 8
+           && static_cast<time_t>(ts1) < onlineSince + 3600
+           && static_cast<time_t>(ts1) > onlineSince - 3600)
     return "Spam Bot";
 
   else if (ts1 == 0 && ts2 == 0 && ts3 == 0 && tcpVersion == 0 && capSize == 0 && webPort == 0x75BB)
