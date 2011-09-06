@@ -169,9 +169,12 @@ add_custom_target(uninstall
 
 add_subdirectory(cmake)
 add_subdirectory(include)
-add_subdirectory(po)
 add_subdirectory(share)
 add_subdirectory(src)
+
+if (ENABLE_NLS)
+  add_subdirectory(po)
+endif (ENABLE_NLS)
 
 if (BUILD_PLUGINS)
   add_subdirectory(plugins)
