@@ -59,7 +59,7 @@ for root in $@; do
 	   			c = "";
 	   		else 
 	   			c = "|";
-	   		ba = sprintf("%s%sGroup%d.id",ba,c,i);
+	   		ba = sprintf("%s%sGroup%d.ServerId.Licq",ba,c,i);
 	   	}
 	   	print ba
 	   }'`
