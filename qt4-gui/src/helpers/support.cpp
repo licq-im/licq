@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2006-2010 Licq developers
+ * Copyright (C) 2006-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -303,7 +303,7 @@ unsigned Support::keyToXSym(int keyCode)
   {
     toks[nb_toks] = next_tok;
     nb_toks++;
-    if (nb_toks == 5)
+    if (nb_toks >= 4)
       return 0;
     next_tok = strtok(0L, "+");
   } while (next_tok != 0L);
