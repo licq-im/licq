@@ -148,20 +148,24 @@ if (BUILD_TESTS)
   include_directories(${GTEST_INCLUDE_DIRS})
   include_directories(${GMOCK_INCLUDE_DIRS})
 
-  add_executable(unittests ${test_SRCS})
+  add_executable(unittest ${test_SRCS})
 
-  # Make the unit test run after it has been built
-  add_custom_command(TARGET unittests POST_BUILD
-    COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
-
-  target_link_libraries(unittests ${GTEST_LIBRARIES})
-  target_link_libraries(unittests ${GMOCK_LIBRARIES})
-  target_link_libraries(unittests ${CMAKE_DL_LIBS})
-  target_link_libraries(unittests ${SOCKET_LIBRARIES})
+  target_link_libraries(unittest ${GTEST_LIBRARIES})
+  target_link_libraries(unittest ${GMOCK_LIBRARIES})
+  target_link_libraries(unittest ${CMAKE_DL_LIBS})
+  target_link_libraries(unittest ${SOCKET_LIBRARIES})
 
   # Link with thread library
-  target_link_libraries(unittests ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(unittest ${CMAKE_THREAD_LIBS_INIT})
 
-  add_test(licq unittests)
-  add_dependencies(tests unittests)
+  add_test(licq unittest)
+
+  set(unittest_stamp
+    "${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/unittest.stamp")
+  add_custom_command(OUTPUT "${unittest_stamp}"
+    COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS)
+    COMMAND ${CMAKE_COMMAND} -E touch "${unittest_stamp}"
+    COMMENT "Running unit test"
+    DEPENDS unittest)
+  add_custom_target(unittest_run ALL DEPENDS "${unittest_stamp}")
 endif (BUILD_TESTS)

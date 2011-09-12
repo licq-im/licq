@@ -112,8 +112,6 @@ endif (USE_SOCKS5)
 
 if (BUILD_TESTS)
   enable_testing()
-  # Target 'tests' runs the unit test unconditionally
-  add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND} $(ARGS))
 
   # Google Test
   add_subdirectory(3rdparty/gtest)
