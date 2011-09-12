@@ -27,8 +27,6 @@ namespace Licq
 
 typedef ProtocolPlugin* (*ProtocolPluginFactoryPtr)(Licq::ProtocolPlugin::Params& p);
 
-typedef void (*ProtocolPluginReaperPtr)(Licq::ProtocolPlugin* plugin);
-
 /**
  * This struct contains the initial data and functions needed by Licq
  * to load a protocol plugin.
@@ -60,16 +58,6 @@ struct ProtocolPluginData
    * constructor of the ProtocolPlugin class.
    */
   ProtocolPluginFactoryPtr pluginFactory;
-
-  /**
-   * Pointer to function that deletes the plugin object
-   * This function will be called once after run() has returned and the plugin
-   *   thread has terminated but before the library is closed.
-   * Normally this function should only delete the plugin.
-   *
-   * @param plugin Pointer to plugin to delete
-   */
-  ProtocolPluginReaperPtr pluginReaper;
 };
 
 } // namespace Licq
@@ -98,14 +86,12 @@ extern struct Licq::ProtocolPluginData LicqProtocolPluginData;
  * Note: <licq/version.h> must be included
  *
  * @param factory Pointer to the plugin factory function
- * @param reaper Pointer to the plugin delete function
  */
-#define LICQ_PROTOCOL_PLUGIN_DATA(factory, reaper) \
+#define LICQ_PROTOCOL_PLUGIN_DATA(factory) \
 struct Licq::ProtocolPluginData LicqProtocolPluginData = { \
     {'L', 'i', 'c', 'q' }, \
     LICQ_VERSION, \
     factory, \
-    reaper, \
 }
 
 

@@ -27,9 +27,8 @@ using namespace Licq;
 using namespace std;
 
 
-GeneralPlugin::Private::Private(GeneralPluginReaperPtr reaper) :
-    mySignalMask(0),
-    myReaper(reaper)
+GeneralPlugin::Private::Private() :
+    mySignalMask(0)
 {
   // Empty
 }
@@ -37,7 +36,7 @@ GeneralPlugin::Private::Private(GeneralPluginReaperPtr reaper) :
 
 GeneralPlugin::GeneralPlugin(Params& p)
   : Plugin(p),
-    myPrivate(new Private(p.myReaper))
+    myPrivate(new Private())
 {
   // Empty
 }

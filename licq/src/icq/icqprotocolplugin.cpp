@@ -41,6 +41,7 @@ protected:
   // From Licq::ProtocolPlugin
   bool init(int, char**);
   int run();
+  void destructor();
 
 private:
 
@@ -100,20 +101,18 @@ int IcqProtocolPlugin::run()
   return 0;
 }
 
+void IcqProtocolPlugin::destructor()
+{
+  delete this;
+}
 
 Licq::ProtocolPlugin* IcqPluginFactory(Licq::ProtocolPlugin::Params& p)
 {
   return new IcqProtocolPlugin(p);
 }
 
-void IcqPluginReaper(Licq::ProtocolPlugin* plugin)
-{
-  delete dynamic_cast<IcqProtocolPlugin*>(plugin);
-}
-
 struct Licq::ProtocolPluginData IcqProtocolPluginData = {
     {'L', 'i', 'c', 'q' },      // licqMagic
     LICQ_VERSION,               // licqVersion
     &IcqPluginFactory,          // pluginFactory
-    &IcqPluginReaper,           // pluginReaper
 };

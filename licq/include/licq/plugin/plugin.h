@@ -121,6 +121,14 @@ protected:
   virtual int run() = 0;
 
   /**
+   * Delete the plugin object from the plugins context
+   * This function will be called once after run() has returned and the plugin
+   *   thread has terminated but before the library is closed.
+   * Normally this function should only contain "delete this;"
+   */
+  virtual void destructor() = 0;
+
+  /**
    * Get read end of pipe used to communicate with the plugin
    * Called from plugin
    *

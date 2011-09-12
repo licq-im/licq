@@ -79,6 +79,9 @@ public:
   int run()
   { return 20; }
 
+  void destructor()
+  { delete this; }
+
   // Un-protect functions so we can test them without being the PluginManager
   using GeneralPlugin::getReadPipe;
   using GeneralPlugin::popEvent;
@@ -100,7 +103,7 @@ struct GeneralPluginFixture : public ::testing::Test
   GeneralPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    myPluginParams(1, myLib, myThread, NULL),
+    myPluginParams(1, myLib, myThread),
     plugin(myPluginParams)
   {
     // Empty
@@ -124,7 +127,7 @@ TEST(GeneralPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  GeneralPlugin::Params pluginParams(1, lib, thread, NULL);
+  GeneralPlugin::Params pluginParams(1, lib, thread);
   ASSERT_NO_THROW(GeneralPluginTest plugin(pluginParams));
 }
 

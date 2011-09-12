@@ -70,6 +70,9 @@ public:
   int run()
   { return 5; }
 
+  void destructor()
+  { delete this; }
+
   // Un-protect functions so we can test them without being the PluginManager
   using Plugin::getReadPipe;
 };

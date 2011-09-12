@@ -38,21 +38,15 @@ class GeneralPlugin::Params : public Plugin::Params
 {
 public:
   Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
-      LicqDaemon::PluginThread::Ptr thread, GeneralPluginReaperPtr reaper) :
-    Plugin::Params(id, lib, thread),
-    myReaper(reaper)
+      LicqDaemon::PluginThread::Ptr thread) :
+    Plugin::Params(id, lib, thread)
   { /* Empty */ }
-
-  GeneralPluginReaperPtr myReaper;
 };
 
 class GeneralPlugin::Private
 {
 public:
-  Private(GeneralPluginReaperPtr reaper);
-
-  GeneralPluginReaperPtr reaper()
-  { return myReaper; }
+  Private();
 
 private:
   unsigned long mySignalMask;
@@ -61,8 +55,6 @@ private:
 
   std::queue<Licq::Event*> myEvents;
   Licq::Mutex myEventsMutex;
-
-  GeneralPluginReaperPtr myReaper;
 
   friend class GeneralPlugin;
 };

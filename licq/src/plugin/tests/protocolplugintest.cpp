@@ -81,6 +81,9 @@ public:
   int run()
   { return 10; }
 
+  void destructor()
+  { delete this; }
+
   // Un-protect functions so we can test them without being the PluginManager
   using ProtocolPlugin::getReadPipe;
   using ProtocolPlugin::popSignal;
@@ -100,7 +103,7 @@ struct ProtocolPluginFixture : public ::testing::Test
   ProtocolPluginFixture() :
     myLib(new DynamicLibrary("")),
     myThread(new PluginThread()),
-    myPluginParams(1, myLib, myThread, NULL),
+    myPluginParams(1, myLib, myThread),
     plugin(myPluginParams)
   {
     // Empty
@@ -124,7 +127,7 @@ TEST(ProtocolPlugin, load)
 {
   DynamicLibrary::Ptr lib(new DynamicLibrary(""));
   PluginThread::Ptr thread(new PluginThread());
-  ProtocolPlugin::Params pluginParams(1, lib, thread, NULL);
+  ProtocolPlugin::Params pluginParams(1, lib, thread);
   ASSERT_NO_THROW(ProtocolPluginTest plugin(pluginParams));
 }
 

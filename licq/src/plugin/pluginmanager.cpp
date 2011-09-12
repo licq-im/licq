@@ -134,7 +134,7 @@ GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(
     }
 
     // Create main plugin object
-    GeneralPlugin::Params pluginParams(pluginId, lib, pluginThread, pluginData->pluginReaper);
+    GeneralPlugin::Params pluginParams(pluginId, lib, pluginThread);
     GeneralPlugin::Ptr plugin(pluginData->pluginFactory(pluginParams), deleteGeneralPlugin);
 
     // Let the plugin initialize itself
@@ -214,7 +214,7 @@ loadProtocolPlugin(const std::string& name, bool keep, bool icq)
     }
 
     // Create main plugin object
-    ProtocolPlugin::Params pluginParams(pluginId, lib, pluginThread, pluginData->pluginReaper);
+    ProtocolPlugin::Params pluginParams(pluginId, lib, pluginThread);
     ProtocolPlugin::Ptr plugin(pluginData->pluginFactory(pluginParams), deleteProtocolPlugin);
 
     {
@@ -312,7 +312,7 @@ void PluginManager::deleteGeneralPlugin(GeneralPlugin* plugin)
   //   the pointer in the plugin won't be the last instance triggering
   //   the library to be closed.
   DynamicLibrary::Ptr lib(plugin->basePrivate()->library());
-  plugin->myPrivate->reaper()(plugin);
+  plugin->destructor();
 
   // The plugin instance is gone, it's now safe to let the last library
   //   pointer go out of scope and delete itself.
@@ -327,7 +327,7 @@ void PluginManager::deleteProtocolPlugin(ProtocolPlugin* plugin)
   //   the pointer in the plugin won't be the last instance triggering
   //   the library to be closed.
   DynamicLibrary::Ptr lib(plugin->basePrivate()->library());
-  plugin->myPrivate->reaper()(plugin);
+  plugin->destructor();
 
   // The plugin instance is gone, it's now safe to let the last library
   //   pointer go out of scope and delete itself.

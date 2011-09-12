@@ -27,8 +27,6 @@ namespace Licq
 
 typedef GeneralPlugin* (*GeneralPluginFactoryPtr)(Licq::GeneralPlugin::Params& p);
 
-typedef void (*GeneralPluginReaperPtr)(Licq::GeneralPlugin* plugin);
-
 /**
  * This struct contains the initial data and functions needed by Licq
  * to load a plugin.
@@ -61,16 +59,6 @@ struct GeneralPluginData
    * constructor of the GeneralPlugin class.
    */
   GeneralPluginFactoryPtr pluginFactory;
-
-  /**
-   * Pointer to function that deletes the plugin object
-   * This function will be called once after run() has returned and the plugin
-   *   thread has terminated but before the library is closed.
-   * Normally this function should only delete the plugin.
-   *
-   * @param plugin Pointer to plugin to delete
-   */
-  GeneralPluginReaperPtr pluginReaper;
 };
 
 } // namespace Licq
@@ -99,14 +87,12 @@ extern struct Licq::GeneralPluginData LicqGeneralPluginData;
  * Note: <licq/version.h> must be included
  *
  * @param factory Pointer to the plugin factory function
- * @param reaper Pointer to the plugin delete function
  */
-#define LICQ_GENERAL_PLUGIN_DATA(factory, reaper) \
+#define LICQ_GENERAL_PLUGIN_DATA(factory) \
 struct Licq::GeneralPluginData LicqGeneralPluginData = { \
     {'L', 'i', 'c', 'q' }, \
     LICQ_VERSION, \
     factory, \
-    reaper, \
 }
 
 

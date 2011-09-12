@@ -38,27 +38,19 @@ class ProtocolPlugin::Params : public Plugin::Params
 {
 public:
   Params(int id, LicqDaemon::DynamicLibrary::Ptr lib,
-      LicqDaemon::PluginThread::Ptr thread, ProtocolPluginReaperPtr reaper) :
-    Plugin::Params(id, lib, thread),
-    myReaper(reaper)
+      LicqDaemon::PluginThread::Ptr thread) :
+    Plugin::Params(id, lib, thread)
   { /* Empty */ }
-
-  ProtocolPluginReaperPtr myReaper;
 };
 
 class ProtocolPlugin::Private
 {
 public:
-  Private(ProtocolPluginReaperPtr reaper);
-
-  ProtocolPluginReaperPtr reaper()
-  { return myReaper; }
+  Private();
 
 private:
   std::queue<Licq::ProtocolSignal*> mySignals;
   Licq::Mutex mySignalsMutex;
-
-  ProtocolPluginReaperPtr myReaper;
 
   friend class ProtocolPlugin;
 };

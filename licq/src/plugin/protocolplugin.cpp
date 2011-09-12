@@ -25,8 +25,7 @@ using namespace Licq;
 using namespace std;
 
 
-ProtocolPlugin::Private::Private(ProtocolPluginReaperPtr reaper) :
-    myReaper(reaper)
+ProtocolPlugin::Private::Private()
 {
   // Empty
 }
@@ -34,7 +33,7 @@ ProtocolPlugin::Private::Private(ProtocolPluginReaperPtr reaper) :
 
 ProtocolPlugin::ProtocolPlugin(Params& p)
   : Plugin(p),
-    myPrivate(new Private(p.myReaper))
+    myPrivate(new Private())
 {
   // Empty
 }
