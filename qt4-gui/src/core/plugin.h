@@ -47,8 +47,10 @@ public:
   std::string configFile() const;
 
 protected:
+  // From Licq::GeneralPlugin
   bool init(int argc, char** argv);
   int run();
+  void destructor();
 
 private:
   int myArgc;

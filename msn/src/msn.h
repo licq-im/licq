@@ -91,8 +91,6 @@ public:
   unsigned long capabilities() const;
   std::string defaultServerHost() const;
   int defaultServerPort() const;
-  bool init(int, char**);
-  int run();
 
   void MSNPing();
   bool Connected() { return m_nServerSocket != -1; }
@@ -105,6 +103,12 @@ public:
   void SetWaitingPingReply(bool b) { m_bWaitingPingReply = b; }
 
   pthread_mutex_t mutex_ServerSocket; // Ugly, but whatever.
+
+protected:
+  // From Licq::ProtocolPlugin
+  bool init(int, char**);
+  int run();
+  void destructor();
 
 private:
   /**

@@ -28,9 +28,4 @@ Licq::GeneralPlugin* RmsPluginFactory(Licq::GeneralPlugin::Params& p)
   return new CLicqRMS(p);
 }
 
-void RmsPluginReaper(Licq::GeneralPlugin* plugin)
-{
-  delete dynamic_cast<CLicqRMS*>(plugin);
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&RmsPluginFactory, &RmsPluginReaper);;
+LICQ_GENERAL_PLUGIN_DATA(&RmsPluginFactory);

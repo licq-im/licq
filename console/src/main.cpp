@@ -28,9 +28,4 @@ Licq::GeneralPlugin* ConsolePluginFactory(Licq::GeneralPlugin::Params& p)
   return new CLicqConsole(p);
 }
 
-void ConsolePluginReaper(Licq::GeneralPlugin* plugin)
-{
-  delete dynamic_cast<CLicqConsole*>(plugin);
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&ConsolePluginFactory, &ConsolePluginReaper);;;
+LICQ_GENERAL_PLUGIN_DATA(&ConsolePluginFactory);

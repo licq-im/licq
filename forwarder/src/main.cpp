@@ -28,9 +28,4 @@ Licq::GeneralPlugin* ForwarderPluginFactory(Licq::GeneralPlugin::Params& p)
   return new CLicqForwarder(p);
 }
 
-void ForwarderPluginReaper(Licq::GeneralPlugin* plugin)
-{
-  delete dynamic_cast<CLicqForwarder*>(plugin);
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&ForwarderPluginFactory, &ForwarderPluginReaper);;;
+LICQ_GENERAL_PLUGIN_DATA(&ForwarderPluginFactory);

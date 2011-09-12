@@ -224,6 +224,11 @@ int CLicqForwarder::run()
   return 0;
 }
 
+void CLicqForwarder::destructor()
+{
+  delete this;
+}
+
 /*---------------------------------------------------------------------------
  * CLicqForwarder::CreateDefaultConfig
  *-------------------------------------------------------------------------*/

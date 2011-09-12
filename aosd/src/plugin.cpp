@@ -146,15 +146,15 @@ int AosdPlugin::run()
   return 0;
 }
 
+void AosdPlugin::destructor()
+{
+  delete this;
+}
+
 
 Licq::GeneralPlugin* AosdPluginFactory(Licq::GeneralPlugin::Params& p)
 {
   return new AosdPlugin(p);
 }
 
-void AosdPluginReaper(Licq::GeneralPlugin* plugin)
-{
-  delete dynamic_cast<AosdPlugin*>(plugin);
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&AosdPluginFactory, &AosdPluginReaper);
+LICQ_GENERAL_PLUGIN_DATA(&AosdPluginFactory);

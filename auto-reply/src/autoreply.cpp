@@ -197,6 +197,10 @@ int CLicqAutoReply::run()
   return 0;
 }
 
+void CLicqAutoReply::destructor()
+{
+  delete this;
+}
 
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::ProcessPipe

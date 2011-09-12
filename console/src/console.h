@@ -89,14 +89,12 @@ public:
   CLicqConsole(int, char **);
   ~CLicqConsole();
 
-  // From Licq::Plugin
+  // From Licq::GeneralPlugin
   std::string name() const;
   std::string version() const;
   std::string description() const;
   std::string usage() const;
   std::string configFile() const;
-  bool init(int argc, char** argv);
-  int run();
 
   static const int SystemGroupOffset = 10000;
   static const int AllUsersGroupId = 0;
@@ -111,6 +109,11 @@ public:
   bool userIsInGroup(const Licq::User* user, int groupId);
 
 protected:
+  // From Licq::GeneralPlugin
+  bool init(int argc, char** argv);
+  int run();
+  void destructor();
+
   int m_nPipe;
   bool m_bExit;
   fd_set fdSet;

@@ -416,6 +416,10 @@ int CLicqRMS::run()
   return 0;
 }
 
+void CLicqRMS::destructor()
+{
+  delete this;
+}
 
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessPipe

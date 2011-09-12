@@ -28,9 +28,4 @@ Licq::GeneralPlugin* OsdPluginFactory(Licq::GeneralPlugin::Params& p)
   return new OsdPlugin(p);
 }
 
-void OsdPluginReaper(Licq::GeneralPlugin* plugin)
-{
-  delete dynamic_cast<OsdPlugin*>(plugin);
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&OsdPluginFactory, &OsdPluginReaper);
+LICQ_GENERAL_PLUGIN_DATA(&OsdPluginFactory);

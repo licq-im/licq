@@ -169,15 +169,15 @@ int QtGuiPlugin::run()
   return result;
 }
 
+void QtGuiPlugin::destructor()
+{
+  delete this;
+}
+
 
 Licq::GeneralPlugin* QtGuiPluginFactory(Licq::GeneralPlugin::Params& p)
 {
   return new LicqQtGui::QtGuiPlugin(p);
 }
 
-void QtGuiPluginReaper(Licq::GeneralPlugin* plugin)
-{
-  delete dynamic_cast<LicqQtGui::QtGuiPlugin*>(plugin);
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&QtGuiPluginFactory, &QtGuiPluginReaper);
+LICQ_GENERAL_PLUGIN_DATA(&QtGuiPluginFactory);

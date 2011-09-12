@@ -27,9 +27,4 @@ Licq::ProtocolPlugin* MsnPluginFactory(Licq::ProtocolPlugin::Params& p)
   return new CMSN(p);
 }
 
-void MsnPluginReaper(Licq::ProtocolPlugin* plugin)
-{
-  delete dynamic_cast<CMSN*>(plugin);
-}
-
-LICQ_PROTOCOL_PLUGIN_DATA(&MsnPluginFactory, &MsnPluginReaper);
+LICQ_PROTOCOL_PLUGIN_DATA(&MsnPluginFactory);

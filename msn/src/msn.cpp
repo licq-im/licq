@@ -562,6 +562,11 @@ int CMSN::run()
   return 0;
 }
 
+void CMSN::destructor()
+{
+  delete this;
+}
+
 void CMSN::ProcessPipe()
 {
   char buf[16];

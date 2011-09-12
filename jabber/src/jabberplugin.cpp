@@ -30,9 +30,4 @@ Licq::ProtocolPlugin* JabberPluginFactory(Licq::ProtocolPlugin::Params& p)
   return new Jabber::Plugin(p);
 }
 
-void JabberPluginReaper(Licq::ProtocolPlugin* plugin)
-{
-  delete dynamic_cast<Jabber::Plugin*>(plugin);
-}
-
-LICQ_PROTOCOL_PLUGIN_DATA(&JabberPluginFactory, &JabberPluginReaper);
+LICQ_PROTOCOL_PLUGIN_DATA(&JabberPluginFactory);

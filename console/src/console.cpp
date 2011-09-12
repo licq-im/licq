@@ -455,6 +455,11 @@ end:
   return 0;
 }
 
+void CLicqConsole::destructor()
+{
+  delete this;
+}
+
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::DoneOptions

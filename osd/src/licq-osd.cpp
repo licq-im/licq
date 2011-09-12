@@ -400,6 +400,10 @@ int OsdPlugin::run()
     return 0;
 }
 
+void OsdPlugin::destructor()
+{
+  delete this;
+}
 
 void ProcessSignal(Licq::PluginSignal* s)
 {

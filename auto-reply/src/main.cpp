@@ -28,9 +28,4 @@ Licq::GeneralPlugin* AutoReplyPluginFactory(Licq::GeneralPlugin::Params& p)
   return new CLicqAutoReply(p);
 }
 
-void AutoReplyPluginReaper(Licq::GeneralPlugin* plugin)
-{
-  delete dynamic_cast<CLicqAutoReply*>(plugin);
-}
-
-LICQ_GENERAL_PLUGIN_DATA(&AutoReplyPluginFactory, &AutoReplyPluginReaper);;
+LICQ_GENERAL_PLUGIN_DATA(&AutoReplyPluginFactory);

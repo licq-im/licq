@@ -44,17 +44,20 @@ public:
   CLicqForwarder(Params& p);
   ~CLicqForwarder();
 
-  // From Licq::Plugin
+  // From Licq::GeneralPlugin
   std::string name() const;
   std::string version() const;
   std::string description() const;
   std::string usage() const;
   std::string configFile() const;
   bool isEnabled() const;
-  bool init(int argc, char** argv);
-  int run();
 
 protected:
+  // From Licq::GeneralPlugin
+  bool init(int argc, char** argv);
+  int run();
+  void destructor();
+
   int m_nPipe;
   bool m_bExit;
   bool myIsEnabled;

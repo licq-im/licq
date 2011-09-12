@@ -172,6 +172,11 @@ int Plugin::run()
   return 0;
 }
 
+void Plugin::destructor()
+{
+  delete this;
+}
+
 void Plugin::processPipe(int pipe)
 {
   char ch;

@@ -69,10 +69,13 @@ public:
   unsigned long capabilities() const;
   std::string defaultServerHost() const;
   int defaultServerPort() const;
-  bool init(int, char**);
-  int run();
 
 private:
+  // From Licq::ProtocolPlugin
+  bool init(int, char**);
+  int run();
+  void destructor();
+
   void processPipe(int pipe);
   void processSignal(Licq::ProtocolSignal* signal);
   void getUserGroups(const Licq::UserId& userId, gloox::StringList& retGroupNames);
