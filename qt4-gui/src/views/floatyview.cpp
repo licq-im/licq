@@ -39,7 +39,7 @@ using namespace LicqQtGui;
 UserFloatyList FloatyView::floaties;
 
 FloatyView::FloatyView(ContactListModel* contactList, const Licq::UserId& userId,  QWidget* parent)
-  : UserViewBase(contactList, parent),
+  : UserViewBase(contactList, true, parent),
   myUserId(userId)
 {
   setWindowFlags(Qt::FramelessWindowHint);

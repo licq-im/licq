@@ -49,9 +49,10 @@ public:
    * Constructor
    *
    * @param contactList The contact list instance
+   * @param useSkin Enable skin and event animations
    * @param parent Parent object
    */
-  UserViewBase(ContactListModel* contactList, QWidget* parent = 0);
+  UserViewBase(ContactListModel* contactList, bool useSkin = true, QWidget* parent = 0);
 
   /**
    * Destructor

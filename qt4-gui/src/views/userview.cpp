@@ -38,7 +38,7 @@ using Licq::UserId;
 using namespace LicqQtGui;
 
 UserView::UserView(ContactListModel* contactList, QWidget* parent)
-  : UserViewBase(contactList, parent)
+  : UserViewBase(contactList, true, parent)
 {
   myRemovedUserTimer = new QTimer(this);
   myRemovedUserTimer->setSingleShot(true);

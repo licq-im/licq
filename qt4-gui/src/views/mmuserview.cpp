@@ -51,7 +51,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMUserView */
 
 MMUserView::MMUserView(const Licq::UserId& userId, ContactListModel* contactList, QWidget* parent)
-  : UserViewBase(contactList, parent),
+  : UserViewBase(contactList, false, parent),
     myUserId(userId)
 {
   // Use a proxy model for sorting and filtering

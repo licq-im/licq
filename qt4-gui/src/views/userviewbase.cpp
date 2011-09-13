@@ -39,13 +39,13 @@
 
 using namespace LicqQtGui;
 
-UserViewBase::UserViewBase(ContactListModel* contactList, QWidget* parent)
+UserViewBase::UserViewBase(ContactListModel* contactList, bool useSkin, QWidget* parent)
   : QTreeView(parent),
     myContactList(contactList),
     myIsMainView(false),
     myAllowScrollTo(false)
 {
-  setItemDelegate(new ContactDelegate(this, this));
+  setItemDelegate(new ContactDelegate(this, useSkin, this));
   setEditTriggers(EditKeyPressed);
 
   // Look'n'Feel
@@ -54,12 +54,15 @@ UserViewBase::UserViewBase(ContactListModel* contactList, QWidget* parent)
   setAcceptDrops(true);
   setRootIsDecorated(false);
   setAllColumnsShowFocus(true);
-  applySkin();
 
   connect(this, SIGNAL(doubleClicked(const QModelIndex&)),
       SLOT(slotDoubleClicked(const QModelIndex&)));
 
-  connect(Config::Skin::active(), SIGNAL(frameChanged()), SLOT(applySkin()));
+  if (useSkin)
+  {
+    applySkin();
+    connect(Config::Skin::active(), SIGNAL(frameChanged()), SLOT(applySkin()));
+  }
 }
 
 UserViewBase::~UserViewBase()

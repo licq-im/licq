@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,9 +49,10 @@ public:
    * Constructor
    *
    * @param userView The contact list view the we will render for
+   * @param useSkin Enable skin and event animations
    * @param parent Parent object
    */
-  ContactDelegate(UserViewBase* userView, QObject* parent = 0);
+  ContactDelegate(UserViewBase* userView, bool useSkin = true, QObject* parent = 0);
 
   /**
    * Calculate how large the a table cell needs to be to display the data
@@ -213,6 +214,7 @@ private:
   void drawExtIcons(Parameters& arg) const;
 
   UserViewBase* myUserView;
+  bool myUseSkin;
 };
 
 } // nemaspace LicqQtGui

@@ -38,9 +38,10 @@
 using Licq::User;
 using namespace LicqQtGui;
 
-ContactDelegate::ContactDelegate(UserViewBase* userView, QObject* parent)
+ContactDelegate::ContactDelegate(UserViewBase* userView, bool useSkin, QObject* parent)
   : QAbstractItemDelegate(parent),
-    myUserView(userView)
+    myUserView(userView),
+    myUseSkin(useSkin)
 {
   // Empty
 }
@@ -190,6 +191,15 @@ void ContactDelegate::fillBackground(Parameters& arg) const
 #define FILL(color) \
   arg.p->fillRect(0, 0, arg.width, arg.height, (color))
 
+  if (!myUseSkin)
+  {
+    if (arg.option.state & QStyle::State_Selected)
+      FILL(arg.option.palette.brush(arg.cg, QPalette::Highlight));
+    else
+      FILL(arg.option.palette.brush(arg.cg, QPalette::Base));
+    return;
+  }
+
   // we assume the same coloring for groups and bars, since they are
   // mutually exclusive.
   if (arg.itemType == ContactListModel::GroupItem ||
@@ -227,7 +237,7 @@ void ContactDelegate::fillBackground(Parameters& arg) const
 
 void ContactDelegate::drawGrid(Parameters& arg, bool last) const
 {
-  if (Config::ContactList::instance()->showGridLines() &&
+  if (myUseSkin && Config::ContactList::instance()->showGridLines() &&
       arg.itemType == ContactListModel::UserItem)
   {
     arg.p->setPen(arg.skin->gridlineColor);
@@ -299,7 +309,7 @@ void ContactDelegate::prepareForeground(Parameters& arg, QVariant animate) const
         break;
   }
 
-  if (textColor.isValid())
+  if (textColor.isValid() && myUseSkin)
   {
     arg.option.palette.setColor(QPalette::Text, textColor);
     arg.p->setPen(textColor);
@@ -352,7 +362,7 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
   if (arg.itemType == ContactListModel::UserItem)
   {
     QVariant var = arg.index.data(ContactListModel::EventAnimationRole);
-    if (var.isValid() && (var.toInt() & 1))
+    if (myUseSkin && var.isValid() && (var.toInt() & 1))
       icon = &iconman->iconForEvent(
           arg.index.data(ContactListModel::EventTypeRole).toUInt());
     else
@@ -386,6 +396,9 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
 
 void ContactDelegate::drawCarAnimation(Parameters& arg, int counter) const
 {
+  if (!myUseSkin)
+    return;
+
   QPen tmp = arg.p->pen();
   arg.p->setPen((counter & 1) ? Qt::white : Qt::black);
 
@@ -431,6 +444,9 @@ void ContactDelegate::drawText(Parameters& arg) const
 
 void ContactDelegate::drawExtIcons(Parameters& arg) const
 {
+  if (!myUseSkin)
+    return;
+
   if (arg.itemType == ContactListModel::GroupItem)
   {
     if (arg.index.data(ContactListModel::UnreadEventsRole).toInt() > 0 &&
