@@ -192,6 +192,7 @@ void Plugin::processPipe(int pipe)
       break;
     }
     case Licq::ProtocolPlugin::PipeShutdown:
+      doLogoff();
       myDoRun = false;
       break;
     default:
