@@ -65,9 +65,9 @@ const unsigned int MAX_CATEGORIES = 4;
 
 typedef enum
 {
-  CAT_INTERESTS         = 1,
-  CAT_ORGANIZATION      = 2,
-  CAT_BACKGROUND        = 3,
+  CAT_INTERESTS         = 0,
+  CAT_ORGANIZATION      = 1,
+  CAT_BACKGROUND        = 2,
   CAT_MAX               = 3,
 } UserCat;
 
@@ -101,11 +101,11 @@ const unsigned short MAX_PICTURE_SIZE      = 8081;
 
 enum EPhoneType
 {
-  TYPE_PHONE            = 1,
-  TYPE_CELLULAR         = 2,
-  TYPE_CELLULARxSMS     = 3,
-  TYPE_FAX              = 4,
-  TYPE_PAGER            = 5,
+  TYPE_PHONE            = 0,
+  TYPE_CELLULAR         = 1,
+  TYPE_CELLULARxSMS     = 2,
+  TYPE_FAX              = 3,
+  TYPE_PAGER            = 4,
   TYPE_MAX              = 5
 };
 
