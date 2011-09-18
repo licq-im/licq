@@ -136,7 +136,7 @@ int QtGuiPlugin::run()
 
   KCmdLineArgs::init(myArgc, myArgv,
                      "licq", "qt4-gui",
-                     ki18n(LP_Name()), PLUGIN_VERSION_STRING);
+      ki18n(DISPLAY_PLUGIN_NAME), PLUGIN_VERSION_STRING);
 #endif
 
   LicqQtGui::LicqGui* licqQtGui = new LicqQtGui::LicqGui(myArgc, myArgv);
