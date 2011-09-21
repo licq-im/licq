@@ -31,6 +31,9 @@
 /* Define if backtrace function is available */
 #cmakedefine HAVE_BACKTRACE 1
 
+/* Define if prctl function is available */
+#cmakedefine HAVE_PRCTL 1
+
 /* Directory where plugins go */
 #define INSTALL_LIBDIR "@Licq_PLUGIN_DIR@/"
 

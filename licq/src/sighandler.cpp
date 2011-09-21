@@ -1,9 +1,23 @@
-// -*- c-basic-offset: 2 -*-
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2011 Licq Developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Please refer to the COPYRIGHT file distributed with this source
+ * distribution for the names of the individual contributors.
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -22,6 +36,10 @@
 
 #ifdef HAVE_BACKTRACE
 #include <execinfo.h>
+#endif
+
+#ifdef HAVE_PRCTL
+#include <sys/prctl.h>
 #endif
 
 #include <licq/daemon.h>
@@ -107,6 +125,12 @@ void licq_handle_sigabrt(int s)
     fclose(cmdfile);
 
     fprintf(stderr, "\nUsing gdb to save backtrace to %s\n", btfile2.c_str());
+
+#if HAVE_PRCTL && defined(PR_SET_PTRACER)
+    // Allow gdb to attach to this process on Ubuntu. For more info, see
+    // https://wiki.ubuntu.com/SecurityTeam/Roadmap/KernelHardening#ptrace
+    ::prctl(PR_SET_PTRACER, getpid(), 0, 0, 0);
+#endif
 
     char parentPid[16];
     snprintf(parentPid, 16, "%u", (int)getpid());

@@ -37,6 +37,7 @@ endif (HAVE_LIBNSL)
 # Functions
 check_function_exists(readdir_r HAVE_READDIR_R)
 check_function_exists(backtrace HAVE_BACKTRACE)
+check_function_exists(prctl HAVE_PRCTL)
 
 if(CMAKE_SYSTEM MATCHES "SunOS.*")
   # Make readdir_r on Solaris behave normally
