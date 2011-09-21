@@ -328,7 +328,7 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
       u.unlock();
 
       // Now add messages that are a part of this convo
-      if (myPpid != LICQ_PPID)
+      if (myConvoId != 0)
       {
         Licq::UserListGuard userList(myPpid);
         BOOST_FOREACH(const Licq::User* user, **userList)
