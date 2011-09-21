@@ -47,7 +47,8 @@ using std::string;
 
 #define TRACE() Licq::gLog.debug("In Handler::%s()", __func__)
 
-Handler::Handler()
+Handler::Handler() :
+  myNextConvoId(1)
 {
   // Empty
 }
@@ -256,7 +257,8 @@ void Handler::onMessage(const string& from, const string& message, time_t sent,
 
   Licq::EventMsg* event = new Licq::EventMsg(
       message.c_str(), sent,
-      urgent ? unsigned(Licq::UserEvent::FlagUrgent) : 0);
+      urgent ? unsigned(Licq::UserEvent::FlagUrgent) : 0,
+      getConvoId(from));
 
   Licq::UserWriteGuard user(UserId(from, JABBER_PPID), true);
 
@@ -278,7 +280,8 @@ void Handler::onNotifyTyping(const string& from, bool active)
     Licq::gPluginManager.pushPluginSignal(
         new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
                                Licq::PluginSignal::UserTyping,
-                               user->id()));
+                               user->id(),
+                               getConvoId(from)));
   }
 }
 
@@ -292,4 +295,12 @@ string Handler::getStatusMessage(unsigned status)
     return string();
 
   return o->autoResponse();
+}
+
+unsigned long Handler::getConvoId(const string& from)
+{
+  std::map<string, unsigned long>::iterator it = myConvoIds.find(from);
+  if (it == myConvoIds.end())
+    it = myConvoIds.insert(std::make_pair(from, myNextConvoId++)).first;
+  return it->second;
 }
