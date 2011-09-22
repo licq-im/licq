@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,16 +46,16 @@ class ContactList : public QObject
 public:
   enum AlignmentMode
   {
-    AlignLeft,
-    AlignRight,
-    AlignCenter
+    AlignLeft = 0,
+    AlignRight = 1,
+    AlignCenter = 2,
   };
 
   enum FlashMode
   {
-    FlashNone,
-    FlashAll,
-    FlashUrgent
+    FlashNone = 0,
+    FlashAll = 1,
+    FlashUrgent = 2,
   };
 
   /**
