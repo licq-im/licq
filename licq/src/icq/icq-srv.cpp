@@ -2331,7 +2331,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     {
       CBuffer capBuf = packet.UnpackTLV(0x000D);
         capSize = packet.getTLVLen(0x000D);
-        caps = new char[capSize];
+        caps = new char[capSize+1];
         capBuf.UnpackRaw(caps, capSize);
 
       // Check if they support UTF8
