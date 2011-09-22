@@ -111,7 +111,7 @@ void AuthUserDlg::ok()
     return;
 
   if (!myUserId.isValid())
-    myUserId = Licq::UserId(myUin->text().trimmed().toLatin1().data(), LICQ_PPID);
+    myUserId = Licq::UserId(myUin->text().trimmed().toLatin1().constData(), LICQ_PPID);
 
   if (myUserId.isValid())
   {

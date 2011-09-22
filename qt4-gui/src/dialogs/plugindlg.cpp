@@ -182,7 +182,7 @@ void PluginDlg::slot_standard(QTableWidgetItem* item)
     if (state == true)
     {
       QString pluginName = tblStandard->item(nRow, 1)->text();
-      gPluginManager.startGeneralPlugin(pluginName.toLatin1().data(), 0, NULL);
+      gPluginManager.startGeneralPlugin(pluginName.toLatin1().constData(), 0, NULL);
     }
     else if (plugin.get() != NULL)
     {
@@ -229,7 +229,7 @@ void PluginDlg::slot_protocol(QTableWidgetItem* item)
     if (state == true)
     {
       QString pluginName = tblProtocol->item(nRow, 1)->text();
-      gPluginManager.startProtocolPlugin(pluginName.toLatin1().data());
+      gPluginManager.startProtocolPlugin(pluginName.toLatin1().constData());
     }
     else if (plugin.get() != NULL)
     {

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,7 +350,7 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
   unsigned char encoding = UserCodec::charsetForName(codec->name());
   //TODO in daemon
   chatman = new CChatManager(
-      myId.toULong(), fi.family().toLocal8Bit().data(), encoding, style,
+      myId.toULong(), fi.family().toLocal8Bit().constData(), encoding, style,
       fi.pointSize(), fi.bold(), fi.italic(), fi.underline(), fi.strikeOut());
 
   sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
@@ -459,7 +459,7 @@ void ChatDlg::sendFontInfo()
 
   unsigned char encoding = UserCodec::charsetForName(codec->name());
 
-  chatman->changeFontFamily(fi.family().toLocal8Bit().data(), encoding, style);
+  chatman->changeFontFamily(fi.family().toLocal8Bit().constData(), encoding, style);
 }
 
 // -----------------------------------------------------------------------------

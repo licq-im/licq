@@ -236,7 +236,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
           return;
 
         QString dropId = text.mid(4);
-        Licq::UserId dropUserId(dropId.toLatin1().data(), dropPpid);
+        Licq::UserId dropUserId(dropId.toLatin1().constData(), dropPpid);
 
         if (dropUserId.isValid())
         {

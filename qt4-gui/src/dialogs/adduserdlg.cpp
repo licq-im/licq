@@ -99,7 +99,7 @@ AddUserDlg::AddUserDlg(const Licq::UserId& userId, QWidget* parent)
 void AddUserDlg::ok()
 {
   QString accountId = myId->text().trimmed();
-  Licq::UserId userId(accountId.toLatin1().data(), myProtocol->currentPpid());
+  Licq::UserId userId(accountId.toLatin1().constData(), myProtocol->currentPpid());
   int group = myGroup->currentGroupId();
   bool notify = myNotify->isChecked();
   bool added = false;

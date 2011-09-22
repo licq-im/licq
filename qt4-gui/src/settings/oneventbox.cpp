@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,14 +162,14 @@ void OnEventBox::apply(OnEventData* eventData)
     eventData->setEnabled(OnEventData::EnabledDefault);
 
   if (myIsGlobal || myOverCommandCheck->isChecked())
-    eventData->setCommand(myCommandEdit->fileName().toLatin1().data());
+    eventData->setCommand(myCommandEdit->fileName().toLatin1().constData());
   else
     eventData->setCommand(OnEventData::Default);
 
   for (int i = 0; i < OnEventData::NumOnEventTypes; ++i)
   {
     if (myIsGlobal || myOverParameterCheck[i]->isChecked())
-      eventData->setParameter(i, myParameterEdit[i]->fileName().toLatin1().data());
+      eventData->setParameter(i, myParameterEdit[i]->fileName().toLatin1().constData());
     else
       eventData->setParameter(i, OnEventData::Default);
   }

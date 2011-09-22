@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -579,7 +579,7 @@ void UserPages::Info::loadPageMore(const Licq::User* u)
 
   for (unsigned short i = 0; i < 3; i++)
   {
-    unsigned int language = u->getUserInfoUint(QString("Language%1").arg(i).toLatin1().data());
+    unsigned int language = u->getUserInfoUint(QString("Language%1").arg(i).toLatin1().constData());
     const SLanguage* l = GetLanguageByCode(language);
     if (m_bOwner)
     {
@@ -605,7 +605,7 @@ void UserPages::Info::loadPageMore(const Licq::User* u)
   if (u->getUserInfoBool("ICQHomepagePresent"))
   {
     QString url;
-    url.sprintf("(http://%s.homepage.icq.com/)", myId.toLatin1().data());
+    url.sprintf("(http://%s.homepage.icq.com/)", myId.toLatin1().constData());
     lblICQHomepage->setText(tr("User has an ICQ Homepage ") + url);
   }
   else
@@ -615,7 +615,7 @@ void UserPages::Info::loadPageMore(const Licq::User* u)
 void UserPages::Info::savePageMore(Licq::User* u)
 {
   u->setUserInfoUint("Age", nfoAge->text().toULong());
-  u->setUserInfoString("Homepage", nfoHomepage->text().toLocal8Bit().data());
+  u->setUserInfoString("Homepage", nfoHomepage->text().toLocal8Bit().constData());
   if (m_bOwner)
   {
     u->setUserInfoUint("Gender", cmbGender->currentIndex());
@@ -1594,7 +1594,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     icqEventTag = gLicqDaemon->icqSetMoreInfo(
         nfoAge->text().toUShort(),
         cmbGender->currentIndex(),
-          nfoHomepage->text().toLocal8Bit().data(),
+          nfoHomepage->text().toLocal8Bit().constData(),
         spnBirthYear->value(),
         spnBirthMonth->value(),
         spnBirthDay->value(),
@@ -1625,7 +1625,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
           codec->fromUnicode(nfoCompanyDepartment->text()).data(),
           codec->fromUnicode(nfoCompanyPosition->text()).data(),
         occupation,
-          nfoCompanyHomepage->text().toLocal8Bit().data());
+          nfoCompanyHomepage->text().toLocal8Bit().constData());
   break;
 
     case UserDlg::AboutPage:

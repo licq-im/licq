@@ -298,7 +298,7 @@ void LicqGui::loadGuiConfig()
   IconManager::createInstance(myIcons, myExtendedIcons, this);
 
   // Load Emoticons
-  guiConf.get("Emoticons", s, Emoticons::DEFAULT_THEME.toLatin1().data());
+  guiConf.get("Emoticons", s, Emoticons::DEFAULT_THEME.toLatin1().constData());
   QStringList emoticonsDirs;
   emoticonsDirs += QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR + EMOTICONS_DIR;
   emoticonsDirs += QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + QTGUI_DIR + EMOTICONS_DIR;
@@ -985,7 +985,7 @@ bool LicqGui::userDropEvent(const Licq::UserId& userId, const QMimeData& mimeDat
     if (dropPpid != 0 && text.length() > 4)
     {
       QString dropId = text.mid(4);
-      Licq::UserId dropUserId(dropId.toLatin1().data(), dropPpid);
+      Licq::UserId dropUserId(dropId.toLatin1().constData(), dropPpid);
       if (!dropUserId.isValid() || userId == dropUserId)
         return false;
 
@@ -1660,7 +1660,7 @@ void LicqGui::autoAway()
       if (!autoResponse.isNull())
       {
         Licq::OwnerWriteGuard o(owner);
-        o->setAutoResponse(autoResponse.toLocal8Bit().data());
+        o->setAutoResponse(autoResponse.toLocal8Bit().constData());
       }
 
       //gLog.info("Auto-away changing status to %u (from %u, PPID 0x%lx)",

@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -210,7 +210,7 @@ void Settings::Skin::load()
   skinsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   if (skinsPath.count() == 0 && skinsUserPath.count() == 0)
   {
-    Licq::gLog.error("Error reading %s directory", skinsPath.path().toLatin1().data());
+    Licq::gLog.error("Error reading %s directory", skinsPath.path().toLatin1().constData());
     mySkinCombo->addItem(tr("Error"));
     mySkinCombo->setEnabled(false);
   }
@@ -271,7 +271,7 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
   iconsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
   if (iconsPath.count() == 0 && iconsUserPath.count() == 0)
   {
-    Licq::gLog.error("Error reading %s directory", iconsPath.path().toLatin1().data());
+    Licq::gLog.error("Error reading %s directory", iconsPath.path().toLatin1().constData());
     iconCombo->addItem(tr("Error"));
     iconCombo->setEnabled(false);
   }
@@ -282,7 +282,7 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
     {
       iconsPath.cd(iconset);
       QString iconsFile = QString("%1/%2.icons").arg(iconsPath.path()).arg(iconset);
-      Licq::IniFile iconsConf(iconsFile.toLocal8Bit().data());
+      Licq::IniFile iconsConf(iconsFile.toLocal8Bit().constData());
       if (!iconsConf.loadFile())
       {
         WarnUser(dynamic_cast<SettingsDlg*>(parent()),
@@ -307,7 +307,7 @@ void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo
     {
       iconsUserPath.cd(iconset);
       QString iconsFile = QString("%1/%2.icons").arg(iconsUserPath.path()).arg(iconset);
-      Licq::IniFile iconsConf(iconsFile.toLocal8Bit().data());
+      Licq::IniFile iconsConf(iconsFile.toLocal8Bit().constData());
       if (iconsConf.loadFile())
       {
         WarnUser(dynamic_cast<SettingsDlg*>(parent()),
@@ -350,11 +350,11 @@ void Settings::Skin::apply()
 
   if (!iconManager->loadIcons(myIconCombo->currentText()))
     WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to load icons\n%1.")
-        .arg(myIconCombo->currentText().toLocal8Bit().data()));
+        .arg(myIconCombo->currentText().toLocal8Bit().constData()));
 
   if (!iconManager->loadExtendedIcons(myExtIconCombo->currentText()))
     WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to load extended icons\n%1.")
-        .arg(myExtIconCombo->currentText().toLocal8Bit().data()));
+        .arg(myExtIconCombo->currentText().toLocal8Bit().constData()));
 
   Emoticons::self()->setTheme(myEmoticonCombo->currentText());
 }
@@ -395,11 +395,11 @@ IconList Settings::Skin::loadIcons(const QString& iconSet, const QString& subdir
   QString iconListName = iconSet + ".icons";
   QString subpath = QString(QTGUI_DIR) + subdir + iconSet + "/";
   QString iconsPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subpath;
-  Licq::IniFile iconsFile((iconsPath + iconListName).toLocal8Bit().data());
+  Licq::IniFile iconsFile((iconsPath + iconListName).toLocal8Bit().constData());
   if (!iconsFile.loadFile())
   {
     iconsPath = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subpath;
-    iconsFile.setFilename((iconsPath + iconListName).toLocal8Bit().data());
+    iconsFile.setFilename((iconsPath + iconListName).toLocal8Bit().constData());
     if (!iconsFile.loadFile())
     {
       WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to open icons file\n%1").arg(iconsPath + iconListName));

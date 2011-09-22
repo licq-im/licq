@@ -158,7 +158,7 @@ void Config::Shortcuts::saveConfiguration(Licq::IniFile& iniFile) const
   for (i = myConfigKeysMap.begin(); i != myConfigKeysMap.end(); ++i)
     iniFile.set(i.value().toAscii().data(),
         myShortcutsMap[i.key()].isEmpty() ? "None" :
-        myShortcutsMap[i.key()].toString(QKeySequence::PortableText).toLatin1().data());
+        myShortcutsMap[i.key()].toString(QKeySequence::PortableText).toLatin1().constData());
 }
 
 void Config::Shortcuts::blockUpdates(bool block)

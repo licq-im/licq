@@ -91,10 +91,10 @@ IconManager::IconManager(const QString& iconSet, const QString& extendedIconSet,
   : QObject(parent)
 {
   if (!loadIcons(iconSet))
-    Licq::gLog.warning("Unable to load icons %s", iconSet.toLocal8Bit().data());
+    Licq::gLog.warning("Unable to load icons %s", iconSet.toLocal8Bit().constData());
 
   if (!loadExtendedIcons(extendedIconSet))
-    Licq::gLog.warning("Unable to load extended icons %s", extendedIconSet.toLocal8Bit().data());
+    Licq::gLog.warning("Unable to load extended icons %s", extendedIconSet.toLocal8Bit().constData());
 }
 
 bool IconManager::loadIcons(const QString& iconSet)
@@ -102,11 +102,11 @@ bool IconManager::loadIcons(const QString& iconSet)
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + ICONS_DIR + iconSet + "/";
   QString iconPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
-  Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().data());
+  Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().constData());
   if (!iconsConf.loadFile())
   {
     iconPath = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subdir;
-    iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().data());
+    iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().constData());
     if (!iconsConf.loadFile())
       return false;
   }
@@ -237,11 +237,11 @@ bool IconManager::loadExtendedIcons(const QString& iconSet)
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + EXTICONS_DIR + iconSet + "/";
   QString iconPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
-  Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().data());
+  Licq::IniFile iconsConf((iconPath + iconListName).toLocal8Bit().constData());
   if (!iconsConf.loadFile())
   {
     iconPath = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subdir;
-    iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().data());
+    iconsConf.setFilename((iconPath + iconListName).toLocal8Bit().constData());
     if (!iconsConf.loadFile())
       return false;
   }

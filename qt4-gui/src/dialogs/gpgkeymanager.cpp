@@ -247,7 +247,7 @@ void KeyList::dropEvent(QDropEvent* event)
   if (nPPID == 0)
     return;
 
-  editUser(Licq::UserId(text.mid(4).toLatin1().data(), nPPID));
+  editUser(Licq::UserId(text.mid(4).toLatin1().constData(), nPPID));
 }
 
 void KeyList::resizeEvent(QResizeEvent* e)

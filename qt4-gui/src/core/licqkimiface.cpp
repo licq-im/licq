@@ -1,7 +1,7 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
  * Copyright (C) 2005 Kevin Krammer <kevin.krammer@gmx.at>
- * Copyright (C) 2006-2010 Licq developers
+ * Copyright (C) 2006-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -283,7 +283,7 @@ QPixmap LicqKIMIface::icon(const QString& uid)
 
     if (licqID.isEmpty()) return QPixmap();
 
-  Licq::UserId userId(licqID.toLatin1().data(), PPID);
+  Licq::UserId userId(licqID.toLatin1().constData(), PPID);
   unsigned status = 0;
 
   {
@@ -332,7 +332,7 @@ void LicqKIMIface::messageContact(const QString& uid, const QString& message)
 
     if (licqID.isEmpty()) return;
 
-  Licq::UserId userId(licqID.toLatin1().data(), PPID);
+  Licq::UserId userId(licqID.toLatin1().constData(), PPID);
   if (!Licq::gUserManager.userExists(userId))
     return;
 
@@ -350,7 +350,7 @@ void LicqKIMIface::messageNewContact(const QString& contactId, const QString& pr
     unsigned long PPID = idForProtocol(protocol);
     if (PPID == 0) return;
 
-  Licq::UserId userId(contactId.toLatin1().data(), PPID);
+  Licq::UserId userId(contactId.toLatin1().constData(), PPID);
 
     // check if user exists
   if (Licq::gUserManager.userExists(userId))
@@ -368,7 +368,7 @@ void LicqKIMIface::chatWithContact(const QString& uid)
 
     if (licqID.isEmpty()) return;
 
-  Licq::UserId userId(licqID.toLatin1().data(), PPID);
+  Licq::UserId userId(licqID.toLatin1().constData(), PPID);
   if (!Licq::gUserManager.userExists(userId))
     return;
 
@@ -391,7 +391,7 @@ void LicqKIMIface::sendFile(const QString& uid, const KURL& sourceURL,
 
     if (licqID.isEmpty()) return;
 
-  Licq::UserId userId(licqID.toLatin1().data(), PPID);
+  Licq::UserId userId(licqID.toLatin1().constData(), PPID);
   if (!Licq::gUserManager.userExists(userId))
     return;
 
@@ -410,7 +410,7 @@ bool LicqKIMIface::addContact(const QString& contactId,
     unsigned long PPID = idForProtocol(protocol);
     if (PPID == 0) return false;
 
-  Licq::UserId userId(contactId.toLatin1().data(), PPID);
+  Licq::UserId userId(contactId.toLatin1().constData(), PPID);
 
     // check if user already exists
   if (Licq::gUsermanager.userExists(userId))

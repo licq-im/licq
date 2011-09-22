@@ -381,7 +381,7 @@ void UserEventCommon::setEncoding(QAction* action)
       if (u.isLocked())
       {
         u->SetEnableSave(false);
-        u->setUserEncoding(encoding.toLatin1().data());
+        u->setUserEncoding(encoding.toLatin1().constData());
         u->SetEnableSave(true);
         u->SaveLicqInfo();
       }

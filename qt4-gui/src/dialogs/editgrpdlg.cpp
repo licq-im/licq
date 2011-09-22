@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -244,9 +244,9 @@ void EditGrpDlg::slot_edit()
 void EditGrpDlg::slot_editok()
 {
   if (myEditGroupId == 0)
-    myEditGroupId = Licq::gUserManager.AddGroup(edtName->text().toLocal8Bit().data());
+    myEditGroupId = Licq::gUserManager.AddGroup(edtName->text().toLocal8Bit().constData());
   else
-    Licq::gUserManager.RenameGroup(myEditGroupId, edtName->text().toLocal8Bit().data());
+    Licq::gUserManager.RenameGroup(myEditGroupId, edtName->text().toLocal8Bit().constData());
   RefreshList();
   setCurrentGroupId(myEditGroupId);
 

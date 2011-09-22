@@ -166,7 +166,7 @@ void ForwardDlg::dropEvent(QDropEvent* de)
   if (nPPID == 0 || text.length() <= 4)
     return;
 
-  myUserId = Licq::UserId(text.toLatin1().data(), nPPID);
+  myUserId = Licq::UserId(text.toLatin1().constData(), nPPID);
 
   Licq::UserReadGuard u(myUserId);
   if (!u.isLocked())

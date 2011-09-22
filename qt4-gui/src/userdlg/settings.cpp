@@ -385,7 +385,7 @@ void UserPages::Settings::apply(Licq::User* user)
   user->setStatusToUser(statusToUser);
 
   // Set auto response (empty string will disable custom auto response)
-  user->setCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit().data());
+  user->setCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit().constData());
 
   // Save onevent settings
   Licq::OnEventData* userData = Licq::gOnEventManager.lockUser(user->id(), true);

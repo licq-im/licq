@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,7 +178,7 @@ void UtilityDlg::slot_run()
     unsigned short i = 0;
     for (iter = edtFields.begin(); iter != edtFields.end(); iter++)
     {
-      vszFields[i++] = strdup((*iter)->text().toLocal8Bit().data());
+      vszFields[i++] = strdup((*iter)->text().toLocal8Bit().constData());
     }
     myUtility->setUserFields(vszFields);
 
@@ -203,7 +203,7 @@ void UtilityDlg::slot_run()
     case Utility::WinGui:
     {
       myUtility->setBackgroundTask();
-      nSystemResult = system(cmd.toLocal8Bit().data());
+      nSystemResult = system(cmd.toLocal8Bit().constData());
       break;
     }
     case Utility::WinTerm:
@@ -225,7 +225,7 @@ void UtilityDlg::slot_run()
       splOutput->show();
       resize(width(), 300);
       myInternalWindow = new Licq::UtilityInternalWindow;
-      if (myInternalWindow->POpen(cmd.toLocal8Bit().data()))
+      if (myInternalWindow->POpen(cmd.toLocal8Bit().constData()))
       {
         m_bStdOutClosed = m_bStdErrClosed = false;
         snOut = new QSocketNotifier(fileno(myInternalWindow->StdOut()), QSocketNotifier::Read, this);

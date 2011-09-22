@@ -116,7 +116,7 @@ void ReqAuthDlg::ok()
 {
   Licq::UserId userId = myUserId;
   if (!userId.isValid())
-    userId = Licq::UserId(myIdEdit->text().toLatin1().data(), myProtocolCombo->currentPpid());
+    userId = Licq::UserId(myIdEdit->text().toLatin1().constData(), myProtocolCombo->currentPpid());
 
   if (userId.isValid())
   {

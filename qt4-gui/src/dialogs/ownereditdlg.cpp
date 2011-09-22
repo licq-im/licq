@@ -141,7 +141,7 @@ void OwnerEditDlg::slot_ok()
     return;
   }
 
-  Licq::UserId ownerId(id.toLocal8Bit().data(), myPpid);
+  Licq::UserId ownerId(id.toLocal8Bit().constData(), myPpid);
 
   if (myNewOwner)
     Licq::gUserManager.addOwner(ownerId);
@@ -151,9 +151,9 @@ void OwnerEditDlg::slot_ok()
     if (!o.isLocked())
       return;
 
-    o->setPassword(pwd.toLocal8Bit().data());
+    o->setPassword(pwd.toLocal8Bit().constData());
     o->SetSavePassword(chkSave->isChecked());
-    o->setServer(myHostEdit->text().toLatin1().data(), myPortSpin->value());
+    o->setServer(myHostEdit->text().toLatin1().constData(), myPortSpin->value());
   }
 
   Licq::gDaemon.SaveConf();

@@ -99,7 +99,7 @@ void CustomAutoRespDlg::ok()
   {
     Licq::UserWriteGuard u(myUserId);
     if (u.isLocked())
-      u->setCustomAutoResponse(s.toLocal8Bit().data());
+      u->setCustomAutoResponse(s.toLocal8Bit().constData());
   }
 
   // Notify all plugins (including ourselves)

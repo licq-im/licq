@@ -175,7 +175,7 @@ void MMUserView::dropEvent(QDropEvent* event)
     if (id.isEmpty())
       return;
 
-    add(Licq::UserId(id.toLatin1().data(), ppid));
+    add(Licq::UserId(id.toLatin1().constData(), ppid));
   }
   else
     return; // Not accepted

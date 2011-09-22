@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -622,7 +622,7 @@ void Settings::Chat::apply()
 
   Licq::gDaemon.setSendTypingNotification(mySendTNCheck->isChecked());
 
-  Licq::gDaemon.setTerminal(myTerminalEdit->text().toLocal8Bit().data());
+  Licq::gDaemon.setTerminal(myTerminalEdit->text().toLocal8Bit().constData());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
     Licq::gUserManager.setDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()).data());

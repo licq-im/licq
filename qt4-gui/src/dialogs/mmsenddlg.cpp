@@ -250,7 +250,7 @@ void MMSendDlg::SendNext()
             .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
-      icqEventTag = gProtocolManager.sendUrl(userId, s2.toLatin1().data(),
+      icqEventTag = gProtocolManager.sendUrl(userId, s2.toLatin1().constData(),
           codec->fromUnicode(s1).data(), Licq::ProtocolSignal::SendToMultiple);
       break;
     }

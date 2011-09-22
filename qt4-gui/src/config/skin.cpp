@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ Config::Skin::Skin(const QString& skinName, QObject* parent)
 
 void Config::Skin::loadSkin(const QString& skinName)
 {
-  Licq::gLog.info("Applying %s skin", skinName.toLocal8Bit().data());
+  Licq::gLog.info("Applying %s skin", skinName.toLocal8Bit().constData());
 
   // Set default values even if skin is valid as skin may not include all settings
   SetDefaultValues();
@@ -64,11 +64,11 @@ void Config::Skin::loadSkin(const QString& skinName)
   QString skinFileName = skinName + ".skin";
   QString subdir = QString(QTGUI_DIR) + SKINS_DIR + skinName + "/";
   QString baseSkinDir = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
-  Licq::IniFile skinFile((baseSkinDir + skinFileName).toLocal8Bit().data());
+  Licq::IniFile skinFile((baseSkinDir + skinFileName).toLocal8Bit().constData());
   if (!skinFile.loadFile())
   {
     baseSkinDir = QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + subdir;
-    skinFile.setFilename((baseSkinDir + skinFileName).toLocal8Bit().data());
+    skinFile.setFilename((baseSkinDir + skinFileName).toLocal8Bit().constData());
     if (!skinFile.loadFile())
     {
       emit changed();
@@ -230,40 +230,40 @@ void Config::FrameSkin::loadSkin(const Licq::IniFile& skinFile,
     const QString& name, const QString& baseSkinDir)
 {
   std::string temp;
-  skinFile.get((name + ".pixmap").toLatin1().data(), temp, "none");
+  skinFile.get((name + ".pixmap").toLatin1().constData(), temp, "none");
   if (temp != "none")
     if (!pixmap.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str())))
       Licq::gLog.error("Error loading background pixmap (%s)", temp.c_str());
 
-  skinFile.get((name + ".mask").toLatin1().data(), temp, "none");
+  skinFile.get((name + ".mask").toLatin1().constData(), temp, "none");
   if (temp != "none")
     if (!mask.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str())))
       Licq::gLog.error("Error loading background mask (%s)", temp.c_str());
 
-  skinFile.get((name + ".border.top").toLatin1().data(), border.top);
-  skinFile.get((name + ".border.bottom").toLatin1().data(), border.bottom);
-  skinFile.get((name + ".border.left").toLatin1().data(), border.left);
-  skinFile.get((name + ".border.right").toLatin1().data(), border.right);
-  skinFile.get((name + ".hasMenuBar").toLatin1().data(), hasMenuBar, hasMenuBar);
-  skinFile.get((name + ".frameStyle").toLatin1().data(), frameStyle, frameStyle);
-  skinFile.get((name + ".transparent").toLatin1().data(), transparent, transparent);
+  skinFile.get((name + ".border.top").toLatin1().constData(), border.top);
+  skinFile.get((name + ".border.bottom").toLatin1().constData(), border.bottom);
+  skinFile.get((name + ".border.left").toLatin1().constData(), border.left);
+  skinFile.get((name + ".border.right").toLatin1().constData(), border.right);
+  skinFile.get((name + ".hasMenuBar").toLatin1().constData(), hasMenuBar, hasMenuBar);
+  skinFile.get((name + ".frameStyle").toLatin1().constData(), frameStyle, frameStyle);
+  skinFile.get((name + ".transparent").toLatin1().constData(), transparent, transparent);
 }
 
 void Config::ShapeSkin::loadSkin(const Licq::IniFile& skinFile, const QString& name)
 {
   int x1, y1, x2, y2;
-  skinFile.get((name + ".rect.x1").toLatin1().data(), x1);
-  skinFile.get((name + ".rect.y1").toLatin1().data(), y1);
-  skinFile.get((name + ".rect.x2").toLatin1().data(), x2);
-  skinFile.get((name + ".rect.y2").toLatin1().data(), y2);
+  skinFile.get((name + ".rect.x1").toLatin1().constData(), x1);
+  skinFile.get((name + ".rect.y1").toLatin1().constData(), y1);
+  skinFile.get((name + ".rect.x2").toLatin1().constData(), x2);
+  skinFile.get((name + ".rect.y2").toLatin1().constData(), y2);
   rect.setCoords(x1, y1, x2, y2);
 
   std::string temp;
-  skinFile.get((name + ".color.fg").toLatin1().data(), temp, "default");
+  skinFile.get((name + ".color.fg").toLatin1().constData(), temp, "default");
   foreground = (temp == "default" ? QColor() : QColor(temp.c_str()));
   if (temp == "transparent")
     foreground.setAlpha(0);
-  skinFile.get((name + ".color.bg").toLatin1().data(), temp, "default");
+  skinFile.get((name + ".color.bg").toLatin1().constData(), temp, "default");
   background = (temp == "default" ? QColor() : QColor(temp.c_str()));
   if (temp == "transparent")
     background.setAlpha(0);
@@ -274,18 +274,18 @@ void Config::ButtonSkin::loadSkin(const Licq::IniFile& skinFile, const QString& 
   Config::ShapeSkin::loadSkin(skinFile, name);
 
   std::string temp;
-  skinFile.get((name + ".caption").toLatin1().data(), temp, "default");
+  skinFile.get((name + ".caption").toLatin1().constData(), temp, "default");
   caption = (temp == "default" ? QString() : QString::fromLocal8Bit(temp.c_str()));
 
-  skinFile.get((name + ".pixmapUpFocus").toLatin1().data(), temp, "none");
+  skinFile.get((name + ".pixmapUpFocus").toLatin1().constData(), temp, "none");
   if (temp != "none")
     pixmapUpFocus.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str()));
 
-  skinFile.get((name + ".pixmapUpNoFocus").toLatin1().data(), temp, "none");
+  skinFile.get((name + ".pixmapUpNoFocus").toLatin1().constData(), temp, "none");
   if (temp != "none")
     pixmapUpNoFocus.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str()));
 
-  skinFile.get((name + ".pixmapDown").toLatin1().data(), temp, "none");
+  skinFile.get((name + ".pixmapDown").toLatin1().constData(), temp, "none");
   if (temp != "none")
     pixmapDown.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str()));
 }
@@ -296,12 +296,12 @@ void Config::LabelSkin::loadSkin(const Licq::IniFile& skinFile, const QString& n
   transparent = (background.alpha() == 0);
 
   std::string temp;
-  skinFile.get((name + ".pixmap").toLatin1().data(), temp, "none");
+  skinFile.get((name + ".pixmap").toLatin1().constData(), temp, "none");
   if (temp != "none")
     pixmap.load(baseSkinDir + QString::fromLocal8Bit(temp.c_str()));
 
-  skinFile.get((name + ".margin").toLatin1().data(), margin, margin);
-  skinFile.get((name + ".frameStyle").toLatin1().data(), frameStyle, frameStyle);
+  skinFile.get((name + ".margin").toLatin1().constData(), margin, margin);
+  skinFile.get((name + ".frameStyle").toLatin1().constData(), frameStyle, frameStyle);
 }
 
 void Config::ShapeSkin::AdjustForMenuBar(int h_old, int h_new)

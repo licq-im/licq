@@ -120,12 +120,12 @@ void Config::ContactList::loadConfiguration(Licq::IniFile& iniFile)
     int us;
 
     QString key = QString("Column%1.").arg(i + 1);
-    iniFile.get((key + "Title").toLatin1().data(), s, (i == 0 ? "Alias" : ""));
+    iniFile.get((key + "Title").toLatin1().constData(), s, (i == 0 ? "Alias" : ""));
     myColumnHeading[i] = QString::fromLocal8Bit(s.c_str());
-    iniFile.get((key + "Format").toLatin1().data(), s, (i == 0 ? "%a" : ""));
+    iniFile.get((key + "Format").toLatin1().constData(), s, (i == 0 ? "%a" : ""));
     myColumnFormat[i] = QString::fromLocal8Bit(s.c_str());
-    iniFile.get((key + "Width").toLatin1().data(), myColumnWidth[i], 100);
-    iniFile.get((key + "Align").toLatin1().data(), us, AlignLeft);
+    iniFile.get((key + "Width").toLatin1().constData(), myColumnWidth[i], 100);
+    iniFile.get((key + "Align").toLatin1().constData(), us, AlignLeft);
     myColumnAlignment[i] = static_cast<AlignmentMode>(us);
   }
   for (int i = myColumnCount; i < MAX_COLUMNCOUNT; ++i)
@@ -184,10 +184,10 @@ void Config::ContactList::saveConfiguration(Licq::IniFile& iniFile) const
   for (int i = 0; i < myColumnCount; i++)
   {
     QString key = QString("Column%1.").arg(i + 1);
-    iniFile.set((key + "Title").toLatin1().data(), myColumnHeading[i].toLocal8Bit().data());
-    iniFile.set((key + "Format").toLatin1().data(), myColumnFormat[i].toLocal8Bit().data());
-    iniFile.set((key + "Width").toLatin1().data(), myColumnWidth[i]);
-    iniFile.set((key + "Align").toLatin1().data(), static_cast<int>(myColumnAlignment[i]));
+    iniFile.set((key + "Title").toLatin1().constData(), myColumnHeading[i].toLocal8Bit().constData());
+    iniFile.set((key + "Format").toLatin1().constData(), myColumnFormat[i].toLocal8Bit().constData());
+    iniFile.set((key + "Width").toLatin1().constData(), myColumnWidth[i]);
+    iniFile.set((key + "Align").toLatin1().constData(), static_cast<int>(myColumnAlignment[i]));
   }
 
   iniFile.set("showPopPicture", myPopupPicture);

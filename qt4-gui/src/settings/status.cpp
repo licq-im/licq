@@ -278,8 +278,8 @@ void Settings::Status::saveSar()
 {
   Licq::SarList& sars(gSarManager.getList(static_cast<SarManager::List>(mySarGroupCombo->currentIndex())));
   Licq::SavedAutoResponse& sar(sars[mySarMsgCombo->currentIndex()]);
-  sar.name = mySarMsgCombo->currentText().toLocal8Bit().data();
-  sar.text = mySartextEdit->toPlainText().toLocal8Bit().data();
+  sar.name = mySarMsgCombo->currentText().toLocal8Bit().constData();
+  sar.text = mySartextEdit->toPlainText().toLocal8Bit().constData();
   gSarManager.releaseList(true);
 
   buildAutoStatusCombos(0);

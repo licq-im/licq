@@ -1307,7 +1307,7 @@ void UserSendEvent::send()
       case UrlEvent:
         icqEventTag = gProtocolManager.sendUrl(
             myUsers.front(),
-            myUrlEdit->text().toLatin1().data(),
+            myUrlEdit->text().toLatin1().constData(),
             myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
             flags,
             &myIcqColor);
@@ -1350,7 +1350,7 @@ void UserSendEvent::send()
 
       case SmsEvent:
         icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
-            mySmsPhoneEdit->text().toLatin1().data(),
+            mySmsPhoneEdit->text().toLatin1().constData(),
             myMessageEdit->toPlainText().toUtf8().data());
         break;
     }

@@ -251,11 +251,11 @@ void Settings::Network::apply()
   Licq::gDaemon.setBehindFirewall(myFirewallCheck->isChecked());
   Licq::gDaemon.setProxyEnabled(myProxyEnabledCheck->isChecked());
   Licq::gDaemon.setProxyType(myProxyTypeCombo->currentIndex() + 1);
-  Licq::gDaemon.setProxyHost(myProxyHostEdit->text().toLocal8Bit().data());
+  Licq::gDaemon.setProxyHost(myProxyHostEdit->text().toLocal8Bit().constData());
   Licq::gDaemon.setProxyPort(myProxyPortSpin->value());
   Licq::gDaemon.setProxyAuthEnabled(myProxyAuthEnabledCheck->isChecked());
-  Licq::gDaemon.setProxyLogin(myProxyLoginEdit->text().toLocal8Bit().data());
-  Licq::gDaemon.setProxyPasswd(myProxyPasswdEdit->text().toLocal8Bit().data());
+  Licq::gDaemon.setProxyLogin(myProxyLoginEdit->text().toLocal8Bit().constData());
+  Licq::gDaemon.setProxyPasswd(myProxyPasswdEdit->text().toLocal8Bit().constData());
 
   gLicqDaemon->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
 }
