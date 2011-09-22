@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2002-2010 Licq developers
+ * Copyright (C) 2002-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,8 @@ using namespace LicqQtGui;
 
 MLView::MLView(QWidget* parent)
   : QTextBrowser(parent),
-    m_handleLinks(true)
+    m_handleLinks(true),
+    myLinesHint(0)
 {
   setLineWrapMode(QTextEdit::WidgetWidth);
   setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
