@@ -46,16 +46,16 @@ class ContactList : public QObject
 public:
   enum AlignmentMode
   {
-    AlignLeft,
-    AlignRight,
-    AlignCenter
+    AlignLeft = 0,
+    AlignRight = 1,
+    AlignCenter = 2,
   };
 
   enum FlashMode
   {
-    FlashNone,
-    FlashAll,
-    FlashUrgent
+    FlashNone = 0,
+    FlashAll = 1,
+    FlashUrgent = 2,
   };
 
   /**
