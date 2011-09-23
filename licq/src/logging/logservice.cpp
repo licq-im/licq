@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,25 +23,23 @@
 
 using namespace LicqDaemon;
 
-static LogService* gLogService = NULL;
 
-LogService& LogService::instance()
-{
-  assert(gLogService != NULL);
-  return *gLogService;
-}
+// Declare global LogService (internal for daemon)
+LicqDaemon::LogService LicqDaemon::gLogService;
+
+// Declare global Licq::LogService to refer to the internal LogService
+Licq::LogService& Licq::gLogService(LicqDaemon::gLogService);
+
 
 LogService::LogService() :
   myLog("licq", myLogDistributor)
 {
-  assert(gLogService == NULL);
-  gLogService = this;
+  // Empty
 }
 
 LogService::~LogService()
 {
-  assert(gLogService == this);
-  gLogService = NULL;
+  // Empty
 }
 
 Log* LogService::getThreadLog() const

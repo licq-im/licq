@@ -140,7 +140,7 @@ void Daemon::initialize()
         Licq::LogUtils::convertOldBitmaskToNew(myErrorTypes));
     logSink->setLogPackets(true);
     if (logSink->isOpen())
-      getLogService().registerLogSink(logSink);
+      Licq::gLogService.registerLogSink(logSink);
     else
       gLog.error("Unable to open %s as error log:\n%s",
                  errorFile.c_str(), strerror(errno));
@@ -164,11 +164,6 @@ void Daemon::initialize()
 
   // Init event id counter
   myNextEventId = 1;
-}
-
-Licq::LogService& Daemon::getLogService()
-{
-  return licq->getLogService();
 }
 
 const char* Daemon::Version() const

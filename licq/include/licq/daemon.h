@@ -28,7 +28,6 @@ namespace Licq
 {
 
 class Event;
-class LogService;
 class PluginSignal;
 class ProtocolSignal;
 class Proxy;
@@ -62,8 +61,6 @@ public:
    * @return True if SSL support is available in daemon
    */
   bool haveCryptoSupport() const;
-
-  virtual LogService& getLogService() = 0;
 
   // Firewall options
   bool tcpEnabled() const                       { return myTcpEnabled; }

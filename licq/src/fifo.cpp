@@ -42,6 +42,7 @@
 #include <licq/daemon.h>
 #include <licq/icq.h>
 #include <licq/logging/log.h>
+#include <licq/logging/logservice.h>
 #include <licq/logging/logutils.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -57,6 +58,7 @@ using std::string;
 using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gLog;
+using Licq::gLogService;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
@@ -487,7 +489,7 @@ static int fifo_debuglvl(int argc, const char* const* argv)
   else
   {
     unsigned int mask = Licq::LogUtils::convertOldBitmaskToNew(::atoi(argv[1]));
-    LogService::instance().getDefaultLogSink()->setLogLevelsFromBitmask(mask);
+    gLogService.getDefaultLogSink()->setLogLevelsFromBitmask(mask);
   }
 
   return -nRet;

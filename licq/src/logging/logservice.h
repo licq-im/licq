@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,6 @@ namespace LicqDaemon
 class LogService : public Licq::LogService
 {
 public:
-  static LogService& instance();
-
   LogService();
   ~LogService();
 
@@ -54,6 +52,8 @@ private:
   Licq::ThreadSpecificData<Log> myThreadLogs;
   Licq::AdjustableLogSink::Ptr myDefaultLogSink;
 };
+
+extern LogService gLogService;
 
 } // namespace LicqDaemon
 

@@ -21,7 +21,6 @@
 #define LICQ_H
 
 #include "config.h"
-#include "logging/logservice.h"
 
 #include <pthread.h>
 #include <list>
@@ -57,8 +56,6 @@ public:
   bool Install();
   void SaveLoadedPlugins();
 
-  inline LicqDaemon::LogService& getLogService();
-
 protected:
   bool upgradeLicq128(Licq::IniFile& licqConf);
 
@@ -68,14 +65,8 @@ protected:
   LoadProtoPlugin(const char *, bool keep = true);
 
 private:
-  LicqDaemon::LogService myLogService;
   boost::shared_ptr<LicqDaemon::StreamLogSink> myConsoleLog;
   int myConsoleLogLevel;
 };
-
-inline LicqDaemon::LogService& CLicq::getLogService()
-{
-  return myLogService;
-}
 
 #endif

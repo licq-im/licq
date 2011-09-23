@@ -307,8 +307,6 @@ int CLicqConsole::run()
   setSignalMask(Licq::PluginSignal::SignalAll);
   m_bExit = false;
 
-  Licq::LogService& logService = Licq::gDaemon.getLogService();
-
   // Create the windows
   for (unsigned short i = 0; i <= MAX_CON; i++)
   {
@@ -336,15 +334,15 @@ int CLicqConsole::run()
 
   myLogSink.reset(new Licq::PluginLogSink);
   myLogSink->setLogLevelsFromBitmask(
-      logService.getDefaultLogSink()->getLogLevelsBitmask());
+      Licq::gLogService.getDefaultLogSink()->getLogLevelsBitmask());
   myLogSink->setLogLevel(Licq::Log::Unknown, true);
   myLogSink->setLogLevel(Licq::Log::Info, true);
   myLogSink->setLogLevel(Licq::Log::Warning, true);
   myLogSink->setLogLevel(Licq::Log::Error, true);
-  logService.registerLogSink(myLogSink);
+  Licq::gLogService.registerLogSink(myLogSink);
 
   // Disable default log sink to stop it from messing with the console
-  logService.getDefaultLogSink()->setLogLevelsFromBitmask(0);
+  Licq::gLogService.getDefaultLogSink()->setLogLevelsFromBitmask(0);
 
   winMain = winCon[1];
   winLog = winCon[0];
@@ -443,7 +441,7 @@ int CLicqConsole::run()
 
 end:
   gLog.info("Shutting down console");
-  Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
+  Licq::gLogService.unregisterLogSink(myLogSink);
 
   for (unsigned short i = 0; i <= MAX_CON; i++)
     delete winCon[i];

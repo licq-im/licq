@@ -53,6 +53,7 @@ using Licq::ProtocolPlugin;
 using Licq::StringList;
 using Licq::gDaemon;
 using Licq::gLog;
+using Licq::gLogService;
 using namespace LicqDaemon;
 using namespace std;
 
@@ -79,7 +80,7 @@ static void initPluginCallback(const Plugin& plugin)
 {
   string name = plugin.name();
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  gDaemon.getLogService().createThreadLog(name);
+  gLogService.createThreadLog(name);
 }
 
 GeneralPlugin::Ptr PluginManager::loadGeneralPlugin(

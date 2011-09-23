@@ -266,7 +266,7 @@ void CLicqRMS::Shutdown()
   gLog.info("Shutting down remote manager server");
 
   if (myLogSink)
-    Licq::gDaemon.getLogService().unregisterLogSink(myLogSink);
+    Licq::gLogService.unregisterLogSink(myLogSink);
 }
 
 
@@ -1458,7 +1458,7 @@ int CRMSClient::Process_LOG()
   if (!licqRMS->myLogSink)
   {
     licqRMS->myLogSink.reset(new Licq::PluginLogSink);
-    Licq::gDaemon.getLogService().registerLogSink(licqRMS->myLogSink);
+    Licq::gLogService.registerLogSink(licqRMS->myLogSink);
   }
 
   unsigned short lt = strtoul(data_arg, (char**)NULL, 10);

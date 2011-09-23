@@ -37,6 +37,7 @@
 #include "fifo.h"
 #include "filter.h"
 #include "gettext.h"
+#include "logging/logservice.h"
 #include "logging/streamlogsink.h"
 #include "oneventmanager.h"
 #include "plugin/pluginmanager.h"
@@ -52,6 +53,7 @@ using LicqDaemon::PluginManager;
 using LicqDaemon::gDaemon;
 using LicqDaemon::gFifo;
 using LicqDaemon::gFilterManager;
+using LicqDaemon::gLogService;
 using LicqDaemon::gOnEventManager;
 using LicqDaemon::gSarManager;
 using LicqDaemon::gPluginManager;
@@ -255,7 +257,7 @@ bool CLicq::Init(int argc, char **argv)
   myConsoleLog.reset(new LicqDaemon::StreamLogSink(std::cerr));
   myConsoleLog->setLogLevel(Licq::Log::Error, true);
   myConsoleLog->setLogLevel(Licq::Log::Warning, true);
-  myLogService.registerDefaultLogSink(myConsoleLog);
+  gLogService.registerDefaultLogSink(myConsoleLog);
 
   gDaemon.preInitialize(this);
 
@@ -634,7 +636,7 @@ CLicq::~CLicq()
 {
   gFifo.shutdown();
 
-  myLogService.unregisterLogSink(myConsoleLog);
+  gLogService.unregisterLogSink(myConsoleLog);
 }
 
 

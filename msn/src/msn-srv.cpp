@@ -755,7 +755,7 @@ void *MSNPing_tep(void *p)
 {
   CMSN *pMSN = (CMSN *)p;
 
-  Licq::gDaemon.getLogService().createThreadLog("msn-ping");
+  Licq::gLogService.createThreadLog("msn-ping");
   
   while (true)
   {
