@@ -1,7 +1,7 @@
 // -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2011 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -127,7 +127,7 @@ int strlen_safe(const char *sz)
 int my_alphasort(const void *a, const void *b)
 /*const struct dirent **a, const struct dirent **b)*/
 {
-  return strcmp( (*(struct dirent **)a)->d_name, (*(struct dirent **)b)->d_name );
+  return strcmp( (*(const struct dirent* const*)a)->d_name, (*(const struct dirent* const*)b)->d_name );
 }
 
 

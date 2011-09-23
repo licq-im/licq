@@ -870,7 +870,7 @@ static char getQuotedChar( char c )
  * given a command line string p, fills argv and argc. 
  * p is modified.
  */
-static bool line2argv( char *p, char **argv, int *argc, int size )
+static bool line2argv( char *p, const char **argv, int *argc, int size )
 {
   char *q;
   bool bQuote;
@@ -992,7 +992,7 @@ void Fifo::process(const string& buf)
 {
 #ifdef USE_FIFO
   int argc, index;
-  char * argv[MAX_ARGV];
+  const char* argv[MAX_ARGV];
   char *szBuf = strdup(buf.c_str());
 
   if( szBuf == NULL )
@@ -1011,7 +1011,7 @@ void Fifo::process(const string& buf)
     case CL_NONE:
       break;
     default:
-      argv[0] = (char *)fifocmd_table[index].szName;
+      argv[0] = fifocmd_table[index].szName;
       if( fifocmd_table[index].fnc )
         fifocmd_table[index].fnc(argc, argv);
       break;
