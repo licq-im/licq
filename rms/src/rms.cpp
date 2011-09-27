@@ -37,7 +37,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
 #include <licq/logging/logservice.h>

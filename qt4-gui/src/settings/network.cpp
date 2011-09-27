@@ -32,7 +32,7 @@
 #include <QVBoxLayout>
 
 #include <licq/daemon.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 
 #include "settingsdlg.h"
 

@@ -61,7 +61,7 @@
 #include <QFileDialog>
 #endif
 
-#include <licq/icqchat.h>
+#include <licq/icq/chat.h>
 #include <licq/logging/log.h>
 
 #include "config/chat.h"

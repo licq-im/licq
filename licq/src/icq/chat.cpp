@@ -8,7 +8,7 @@
 
 #include "config.h"
 
-#include <licq/icqchat.h>
+#include <licq/icq/chat.h>
 
 #include <cctype>
 #include <cstdio>
@@ -21,12 +21,10 @@
 #include <licq/daemon.h>
 #include <licq/translator.h>
 
-#include "icq/icq.h"
-#include "icq/packet.h"
-#include "support.h"
-
-// Localization
-#include "gettext.h"
+#include "icq.h"
+#include "packet.h"
+#include "../gettext.h"
+#include "../support.h"
 
 using namespace std;
 using Licq::gDaemon;

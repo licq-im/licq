@@ -27,8 +27,8 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/gpghelper.h>
-#include <licq/icqchat.h>
-#include <licq/icqfiletransfer.h>
+#include <licq/icq/chat.h>
+#include <licq/icq/filetransfer.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>

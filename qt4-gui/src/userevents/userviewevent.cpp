@@ -42,7 +42,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/userevents.h>

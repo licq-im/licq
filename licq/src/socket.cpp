@@ -48,7 +48,6 @@ extern "C" {
   #define socklen_t SOCKS5_OPTLEN
 #endif
 
-#include <licq/icq.h>
 #include <licq/proxy.h>
 #include <licq/logging/log.h>
 

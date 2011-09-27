@@ -37,7 +37,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 
 #include "core/signalmanager.h"
 

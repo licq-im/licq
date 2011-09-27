@@ -455,7 +455,7 @@ char *yytext_ptr;
      *                                                                         *
      ***************************************************************************/
 
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 #include <licq/translator.h>
 
 #include <vector>

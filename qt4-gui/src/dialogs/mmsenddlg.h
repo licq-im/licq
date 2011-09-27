@@ -25,7 +25,7 @@
 #include <QDialog>
 #include <QString>
 
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 
 class QGroupBox;
 class QProgressBar;

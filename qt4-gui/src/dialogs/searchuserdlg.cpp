@@ -38,8 +38,8 @@
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
-#include <licq/icq.h>
-#include <licq/icqcodes.h>
+#include <licq/icq/icq.h>
+#include <licq/icq/codes.h>
 
 #include "contactlist/contactlist.h"
 

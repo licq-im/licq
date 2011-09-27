@@ -27,8 +27,8 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/icqcodes.h>
-#include <licq/icqfiletransfer.h>
+#include <licq/icq/codes.h>
+#include <licq/icq/filetransfer.h>
 #include <licq/socket.h> // For ip_ntoa
 #include <licq/userevents.h>
 

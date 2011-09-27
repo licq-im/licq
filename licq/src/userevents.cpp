@@ -27,7 +27,7 @@
 #include <sstream>
 
 #include <licq/gpghelper.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 #include <licq/translator.h>
 
 #include "contactlist/user.h"

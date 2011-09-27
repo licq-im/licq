@@ -33,7 +33,7 @@
 
 #include <licq/contactlist/owner.h>
 #include <licq/daemon.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"

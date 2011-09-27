@@ -59,7 +59,7 @@
 #include <licq/conversation.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 #include <licq/plugin/protocolplugin.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>

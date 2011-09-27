@@ -38,7 +38,7 @@
 # include <QStyleFactory>
 #endif
 
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 
 #include "config/chat.h"
 #include "config/contactlist.h"

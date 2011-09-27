@@ -8,7 +8,7 @@
 
 #include "config.h"
 
-#include <licq/icqfiletransfer.h>
+#include <licq/icq//filetransfer.h>
 
 #include <cstdio>
 #include <ctype.h>
@@ -21,17 +21,15 @@
 #include <string.h>
 #include <sys/time.h>
 
-// Localization
-#include "gettext.h"
-
 #include <licq/logging/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 
-#include "icq/icq.h"
-#include "icq/packet.h"
-#include "support.h"
+#include "icq.h"
+#include "packet.h"
+#include "../gettext.h"
+#include "../support.h"
 
 #define DEBUG_THREADS(x)
 

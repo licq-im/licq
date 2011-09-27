@@ -27,7 +27,7 @@
 #include <QLineEdit>
 
 #include <licq/contactlist/usermanager.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 
 #include "config/contactlist.h"
 #include "contactlist/contactlist.h"

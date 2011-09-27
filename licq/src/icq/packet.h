@@ -27,7 +27,7 @@
 #include <string>
 
 #include <licq/contactlist/user.h>
-#include <licq/icqchat.h> // ChatClientList
+#include <licq/icq/chat.h> // ChatClientList
 #include <licq/userid.h>
 #include <licq/packet.h>
 

@@ -31,7 +31,7 @@
 
 // Licq
 #include <licq/contactlist/user.h>
-#include <licq/icq.h>
+#include <licq/icq/icq.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>

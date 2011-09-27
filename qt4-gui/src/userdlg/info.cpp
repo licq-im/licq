@@ -55,8 +55,8 @@
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
-#include <licq/icq.h>
-#include <licq/icqcodes.h>
+#include <licq/icq/icq.h>
+#include <licq/icq/codes.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/logging/log.h>
