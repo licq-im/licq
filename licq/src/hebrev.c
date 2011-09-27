@@ -1,4 +1,3 @@
-// -*- c-basic-offset: 2 -*-
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
  * Copyright (C) 1998 - 2009 Licq developers
