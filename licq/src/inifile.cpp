@@ -514,6 +514,43 @@ bool IniFile::get(const string& key, boost::any& data) const
   return false;
 }
 
+bool IniFile::getHex(const string& key, string& data, const string& defValue) const
+{
+  string strData;
+  if (!get(key, strData))
+  {
+    data = defValue;
+    return false;
+  }
+
+  data.clear();
+  int high = -1;
+  for (string::const_iterator i = strData.begin(); i != strData.end(); ++i)
+  {
+    int digit;
+    if (*i >= '0' && *i <= '9')
+      digit = *i - '0';
+    else if (*i >= 'A' && *i <= 'F')
+      digit = *i - 'A' + 10;
+    else if (*i >= 'a' && *i <= 'f')
+      digit = *i - 'a' + 10;
+    else
+      break;
+
+    if (high == -1)
+    {
+      high = digit << 4;
+    }
+    else
+    {
+      data += (char)(high | digit);
+      high = -1;
+    }
+  }
+
+  return true;
+}
+
 bool IniFile::set(const string& key, const string& data)
 {
   if (mySectionStart == string::npos)
@@ -612,4 +649,16 @@ bool IniFile::set(const string& key, const boost::any& data)
   gLog.warning(tr("Internal Error: IniFile::set, key=%s, data.type=%s"),
       key.c_str(), data.type().name());
   return false;
+}
+
+bool IniFile::setHex(const string& key, const string& data)
+{
+  static const char* const hexChars = "0123456789ABCDEF";
+  string strData;
+  for (string::const_iterator i = data.begin(); i != data.end(); ++i)
+  {
+    strData += hexChars[(*i >> 4) & 0x0F];
+    strData += hexChars[*i & 0x0F];
+  }
+  return set(key, strData);
 }

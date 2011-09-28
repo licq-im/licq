@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,6 +184,17 @@ public:
   bool get(const std::string& key, boost::any& data) const;
 
   /**
+   * Get a hex encoded value from the configuration
+   *
+   * @param key Key of the value to read
+   * @param data Raw data converted from hex
+   * @param defValue Default value to set if key doesn't exist
+   * @return True if value was found or false if default value was used
+   */
+  bool getHex(const std::string& key, std::string& data,
+      const std::string& defValue = "") const;
+
+  /**
    * Set a string value in the configuration
    *
    * @param key Key of value to set
@@ -248,6 +259,15 @@ public:
    * @return True if value was set, false on error
    */
   bool set(const std::string& key, const boost::any& data);
+
+  /**
+   * Set a hex encoded value in the configuration
+   *
+   * @param key Key of value to set
+   * @param data Raw data to convert to hex and set
+   * @return True if value was set, false on error
+   */
+  bool setHex(const std::string& key, const std::string& data);
 
 private:
   std::string myConfigData;
