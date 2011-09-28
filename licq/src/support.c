@@ -31,27 +31,6 @@
 #include "support.h"
 
 
-char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen)
-{
-  if (szDest == NULL || szSource == NULL)
-    return szDest;
-  unsigned int n = 0;
-  char *szCur = szDest;
-
-  while ((*szSource) && (n < nLen))
-  {
-    if (isdigit(*szSource))
-    {
-      *szCur++ = *szSource++;
-      n++;
-    } else
-      szSource++;
-  }
-  *szCur = '\0';
-  
-  return szDest;
-}
-
 int Redirect(const char *_szFile)
 {
   int fd = open(_szFile, O_WRONLY | O_CREAT | O_APPEND, 00660);
@@ -60,11 +39,6 @@ int Redirect(const char *_szFile)
   return 1;
 }
 
-
-int strlen_safe(const char *sz)
-{
-  return sz == NULL ? 0 : strlen(sz);
-}
 
 /*=====ALPHASORT==============================================================*/
 int my_alphasort(const void *a, const void *b)

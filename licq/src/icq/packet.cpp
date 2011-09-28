@@ -33,7 +33,6 @@
 #include "../contactlist/group.h"
 #include "../contactlist/usermanager.h"
 #include "../gettext.h"
-#include "../support.h"
 #include "defines.h"
 #include "icq.h"
 #include "packet.h"
@@ -2446,17 +2445,16 @@ CPU_SendSms::CPU_SendSms(const string& number, const string& message)
   tmTime = gmtime(&tTime);
   strftime(szTime, 30, "%a, %d %b %Y %T %Z", tmTime);
 
-  char szParsedNumber[17] = "+";
-  ParseDigits(&szParsedNumber[1], number.c_str(), 15);
+  string parsedNumber = IcqProtocol::parseDigits(number);
 
   {
     Licq::OwnerReadGuard o(LICQ_PPID);
     snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
-        szParsedNumber, message.c_str(), o->accountId().c_str(), o->getAlias().c_str(), szTime);
+        parsedNumber.c_str(), message.c_str(), o->accountId().c_str(), o->getAlias().c_str(), szTime);
     szXmlStr[459] = '\0';
   }
 
-  int nLenXmlStr = strlen_safe(szXmlStr) + 1;
+  int nLenXmlStr = strlen(szXmlStr) + 1;
   int packetSize = 2+2+2+4+2+2+2 + 22 + 2 + nLenXmlStr;
   m_nSize += packetSize;
   InitBuffer();
@@ -3729,7 +3727,7 @@ CPU_Meta_SetInterestsInfo::CPU_Meta_SetInterestsInfo(const UserCategoryMap& inte
     char* tmp = strdup(i->second.c_str());
     gTranslator.ClientToServer(tmp);
     myInterests[i->first] = tmp;
-    packetSize += 2 + 2 + strlen_safe(tmp) + 1;
+    packetSize += 2 + 2 + strlen(tmp) + 1;
     free(tmp);
   }
 
@@ -3767,7 +3765,7 @@ CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(const UserCategoryMap& orgs,
     char* tmp = strdup(i->second.c_str());
     gTranslator.ClientToServer(tmp);
     myOrganizations[i->first] = tmp;
-    packetSize += 2 + 2 + strlen_safe(tmp) + 1;
+    packetSize += 2 + 2 + strlen(tmp) + 1;
     free(tmp);
   }
   for (i = background.begin(); i != background.end(); ++i)
@@ -3775,7 +3773,7 @@ CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(const UserCategoryMap& orgs,
     char* tmp = strdup(i->second.c_str());
     gTranslator.ClientToServer(tmp);
     myBackgrounds[i->first] = tmp;
-    packetSize += 2 + 2 + strlen_safe(tmp) + 1;
+    packetSize += 2 + 2 + strlen(tmp) + 1;
     free(tmp);
   }
 

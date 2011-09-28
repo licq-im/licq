@@ -44,7 +44,6 @@
 
 #include "../daemon.h"
 #include "../gettext.h"
-#include "../support.h"
 #include "oscarservice.h"
 #include "packet.h"
 
@@ -1707,18 +1706,26 @@ int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
   return nSocket;
 }
 
+string IcqProtocol::parseDigits(const string& number)
+{
+  string ret;
+
+  for (size_t i = 0; i < number.size(); ++i)
+    if (isdigit(number[i]))
+      ret += number[i];
+  return ret;
+}
+
 string IcqProtocol::findUserByCellular(const string& cellular)
 {
-  char szParsedNumber1[16], szParsedNumber2[16];
+  string parsedCellular = parseDigits(cellular);
 
   Licq::UserListGuard userList;
   BOOST_FOREACH(const Licq::User* user, **userList)
   {
     Licq::UserReadGuard u(user);
 
-    ParseDigits(szParsedNumber1, u->getCellularNumber().c_str(), 15);
-    ParseDigits(szParsedNumber2, cellular.c_str(), 15);
-    if (!strcmp(szParsedNumber1, szParsedNumber2))
+    if (parseDigits(u->getCellularNumber()) == parsedCellular)
       return u->accountId();
   }
 

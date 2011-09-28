@@ -43,13 +43,7 @@ const unsigned short MAX_UIN_DIGITS  = 13;
 
 /* Basic support functions */
 
-char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen);
-
-int UinString(char *_szBuf, size_t _nSize, unsigned long _nUin);
-
 int Redirect(const char *);
-
-int strlen_safe(const char *);
 
 int scandir_alpha_r(const char *dir, struct dirent ***namelist,
               int (*select)(const struct dirent *));

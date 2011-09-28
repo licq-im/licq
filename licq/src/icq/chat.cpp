@@ -23,7 +23,6 @@
 #include "icq.h"
 #include "packet.h"
 #include "../gettext.h"
-#include "../support.h"
 
 using namespace std;
 using Licq::gDaemon;

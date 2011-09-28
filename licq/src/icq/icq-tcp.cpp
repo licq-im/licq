@@ -41,7 +41,6 @@
 
 #include "../daemon.h"
 #include "../gettext.h"
-#include "../support.h"
 #include "oscarservice.h"
 #include "packet.h"
 
