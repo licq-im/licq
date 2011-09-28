@@ -37,7 +37,6 @@ set(licq_SRCS
   packet.cpp
   protocolmanager.cpp
   proxy.cpp
-  rtf.cc
   sarmanager.cpp
   sighandler.cpp
   socket.cpp
@@ -62,6 +61,7 @@ set(licq_SRCS
   icq/icqprotocolplugin.cpp
   icq/oscarservice.cpp
   icq/packet.cpp
+  icq/rtf.cc
   icq/threads.cpp
   icq/userclients.cpp
 

@@ -329,6 +329,7 @@ public:
   static unsigned long addStatusFlags(unsigned long nStatus, const Licq::User* u);
 
   static std::string parseDigits(const std::string& number);
+  static std::string parseRtf(const std::string& rtf);
 
 private:
   static const int PingFrequency = 60;

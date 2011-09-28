@@ -16,7 +16,7 @@
      *                                                                         *
      ***************************************************************************/
 
-#include <licq/icq/icq.h>
+#include "icq.h"
 #include <licq/translator.h>
 
 #include <vector>
@@ -147,15 +147,14 @@ public:
 class RTF2HTML
 {
 public:
-    RTF2HTML(CICQDaemon *server)
-            : rtf_ptr(NULL), m_pDaemon(server), cur_level(this) {}
+  RTF2HTML()
+    : rtf_ptr(NULL), cur_level(this) {}
     std::string Parse(const char *rtf);
     void PrintUnquoted(const char *str, ...);
     void PrintQuoted(const char *str);
 protected:
     std::string s;
     const char *rtf_ptr;
-    CICQDaemon *m_pDaemon;
     void PutTag(Tag n) { tags.push(n); }
     std::vector<OutTag> oTags;
     std::stack<Tag> tags;
@@ -841,13 +840,13 @@ std::string RTF2HTML::Parse(const char *rtf)
     return s;
 }
 
-std::string CICQDaemon::parseRtf(const std::string& rtf)
+std::string IcqProtocol::parseRtf(const std::string& rtf)
 {
     std::string str;
     char _RTF[] = "{\\rtf";
   if ((rtf.size() > strlen(_RTF)) && !memcmp(rtf.c_str(), _RTF, strlen(_RTF)))
-    {
-      RTF2HTML p(this);
+  {
+    RTF2HTML p;
     str = p.Parse(rtf.c_str());
     }
     else
