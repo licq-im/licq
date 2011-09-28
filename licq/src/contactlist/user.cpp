@@ -365,8 +365,8 @@ void User::LoadPictureInfo()
   myConf.get("PicturePresent", m_bPicturePresent, false);
   myConf.get("BuddyIconType", myBuddyIconType, 0);
   myConf.get("BuddyIconHashType", myBuddyIconHashType, 0);
-  myConf.get("BuddyIconHash", myBuddyIconHash, "");
-  myConf.get("OurBuddyIconHash", myOurBuddyIconHash, "");
+  myConf.getHex("BuddyIconHash", myBuddyIconHash, "");
+  myConf.getHex("OurBuddyIconHash", myOurBuddyIconHash, "");
 }
 
 void User::LoadLicqInfo()
@@ -655,8 +655,8 @@ void User::Init()
   m_bPicturePresent = false;
   myBuddyIconType = 0;
   myBuddyIconHashType = 0;
-  myBuddyIconHash = "";
-  myOurBuddyIconHash = "";
+  myBuddyIconHash.clear();
+  myOurBuddyIconHash.clear();
 
   myPictureFileName = gDaemon.baseDir() + ConfigDir + myId.accountId() + ".pic";
 
@@ -1761,8 +1761,8 @@ void User::SavePictureInfo()
   myConf.set("PicturePresent", m_bPicturePresent);
   myConf.set("BuddyIconType", myBuddyIconType);
   myConf.set("BuddyIconHashType", myBuddyIconHashType);
-  myConf.set("BuddyIconHash", myBuddyIconHash);
-  myConf.set("OurBuddyIconHash", myOurBuddyIconHash);
+  myConf.setHex("BuddyIconHash", myBuddyIconHash);
+  myConf.setHex("OurBuddyIconHash", myOurBuddyIconHash);
   if (!myConf.writeFile())
   {
     gLog.error(tr("Error opening '%s' for writing. See log for details."),

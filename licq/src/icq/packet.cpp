@@ -1030,10 +1030,8 @@ CPU_RequestBuddyIcon::CPU_RequestBuddyIcon(const string& accountId,
       const string& buddyIconHash, unsigned short nService)
   : CPU_CommonFamily(ICQ_SNACxFAM_BART, ICQ_SNACxBART_DOWNLOADxREQUEST)
 {
-  int nHashLength = buddyIconHash.size()/2;
-  boost::scoped_array<char> Hash(new char[nHashLength]);
   m_nService = nService;
-  m_nSize += 6 + accountId.size() + nHashLength;
+  m_nSize += 6 + accountId.size() + buddyIconHash.size();
 
   InitBuffer();
 
@@ -1042,8 +1040,8 @@ CPU_RequestBuddyIcon::CPU_RequestBuddyIcon(const string& accountId,
   buffer->PackChar(0x01);	// number of hashes being requested in this packet
   buffer->PackUnsignedShortBE(_nBuddyIconType);
   buffer->PackChar(_nBuddyIconHashType);
-  buffer->PackChar(nHashLength);
-  buffer->Pack(ReadHex(Hash.get(), buddyIconHash.c_str(), nHashLength), nHashLength);
+  buffer->PackChar(buddyIconHash.size());
+  buffer->pack(buddyIconHash);
 }
 
 //-----RequestService-----------------------------------------------------------

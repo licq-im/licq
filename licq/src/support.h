@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,9 +46,6 @@ const unsigned short MAX_UIN_DIGITS  = 13;
 char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen);
 
 int UinString(char *_szBuf, size_t _nSize, unsigned long _nUin);
-
-char *PrintHex(char *szPrint, const char *szHex, size_t nSize);
-char *ReadHex(char *szHex, const char *szRead, size_t nSize);
 
 int Redirect(const char *);
 

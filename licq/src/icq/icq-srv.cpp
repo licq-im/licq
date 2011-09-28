@@ -2464,11 +2464,8 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         {
           if (HashType == 1 && HashLength > 0 && HashLength <= 16)
           {
-            boost::scoped_array<char> Hash(new char[HashLength]);
-            boost::scoped_array<char> HashHex(new char[HashLength*2 + 1]);
-            
-            BART_info.UnpackBinBlock(Hash.get(), HashLength);
-              u->setBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
+              string hash = BART_info.unpackRawString(HashLength);
+              u->setBuddyIconHash(hash);
               u->setBuddyIconType(IconType);
               u->setBuddyIconHashType(HashType);
             u->SavePictureInfo();

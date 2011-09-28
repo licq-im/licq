@@ -52,62 +52,6 @@ char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen)
   return szDest;
 }
 
-char *PrintHex(char *szPrint, const char *szHex, size_t nSize)
-{
-  size_t i, j = 0;
-
-  for(i = 0; i < nSize ; i++)
-  {
-    unsigned char byte = (unsigned char)szHex[i];
-
-    unsigned char high = (byte >> 4) & 0x0f;
-    unsigned char low = byte & 0x0f;
-
-    if (high > 9)
-      szPrint[j++] = 'A' + (high - 10);
-    else
-      szPrint[j++] = '0' + high;
-
-    if (low > 9)
-      szPrint[j++] = 'A' + (low - 10);
-    else
-      szPrint[j++] = '0' + low;
-  }
-  szPrint[j] = '\0';
-
-  return szPrint;
-}
-
-char *ReadHex(char *szHex, const char *szRead, size_t nSize)
-{
-  size_t i, j = 0;
-  for(i = 0; i < nSize ; i++)
-  {
-    unsigned char digit, high, low;
-
-    if (szRead[j] == '\0') break;
-    digit = (unsigned char)szRead[j++];
-    high = 0;
-    if (digit >= 'A')
-      high = digit - 'A' + 10;
-    else if (digit >= '0')
-      high = digit - '0';
-    high <<= 4;
-
-    if (szRead[j] == '\0') break;
-    digit = (unsigned char)szRead[j++];
-    low = 0;
-    if (digit >= 'A')
-      low = digit - 'A' + 10;
-    else if (digit >= '0')
-      low = digit - '0';
-
-    szHex[i] = high + low;
-  }
-  
-  return szHex;
-}
-
 int Redirect(const char *_szFile)
 {
   int fd = open(_szFile, O_WRONLY | O_CREAT | O_APPEND, 00660);

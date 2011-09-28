@@ -28,7 +28,6 @@
 
 #include "../daemon.h"
 #include "../gettext.h"
-#include "../support.h"
 #include "icq.h"
 #include "packet.h"
 
@@ -364,15 +363,13 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
         {
           if ((HashType == 0 || HashType == 1) && HashLength > 0 && HashLength <= 16)
           {
-            boost::scoped_array<char> Hash(new char[HashLength]);
-            boost::scoped_array<char> HashHex(new char[HashLength*2 + 1]);
-            packet.UnpackBinBlock(Hash.get(), HashLength);
+            string hash = packet.unpackRawString(HashLength);
             packet.UnpackChar(); // unknown (command ?)
             packet.UnpackUnsignedShortBE(); // IconType once more
             packet.UnpackChar(); // HashType once more
             char HashLength2 = packet.UnpackChar(); // Hash once more
             packet.incDataPosRead(HashLength2); // Hash once more
-            u->setOurBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
+            u->setOurBuddyIconHash(hash);
 
             gLog.info(tr("Buddy icon reply for %s."), u->getAlias().c_str());
             unsigned short IconLen = packet.UnpackUnsignedShortBE();
