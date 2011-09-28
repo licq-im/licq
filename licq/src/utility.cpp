@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2010 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2011 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -21,6 +33,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -29,7 +42,6 @@
 #include <licq/logging/log.h>
 
 #include "gettext.h"
-#include "support.h"
 
 using namespace std;
 using Licq::Utility;
@@ -39,13 +51,6 @@ using Licq::UtilityUserField;
 
 Licq::UtilityManager Licq::gUtilityManager;
 
-
-int SelectUtility(const struct dirent *d)
-{
-  const char* pcDot = strrchr(d->d_name, '.');
-  if (pcDot == NULL) return (0);
-  return (strcmp(pcDot, ".utility") == 0);
-}
 
 UtilityManager::UtilityManager()
 {
@@ -59,34 +64,39 @@ UtilityManager::~UtilityManager()
     delete *iter;
 }
 
-int UtilityManager::loadUtilities(const string& dir)
+int UtilityManager::loadUtilities(const string& dirname)
 {
-  struct dirent **namelist;
-
   gLog.info(tr("Loading utilities"));
-  int n = scandir_alpha_r(dir.c_str(), &namelist, SelectUtility);
-  if (n < 0)
+
+  DIR* dir = opendir(dirname.c_str());
+  if (dir == NULL)
   {
     gLog.error("Error reading utility directory \"%s\":\n%s",
-        dir.c_str(), strerror(errno));
+        dirname.c_str(), strerror(errno));
     return (0);
   }
 
-  Utility* p;
-  for (unsigned short i = 0; i < n; i++)
+  char* ent = new char[offsetof(struct dirent, d_name) +
+      pathconf(dirname.c_str(), _PC_NAME_MAX) + 1];
+  struct dirent* res;
+
+  while (readdir_r(dir, (struct dirent*)ent, &res) == 0 && res != NULL)
   {
-    string filename = dir + "/" + namelist[i]->d_name;
-    free (namelist[i]);
-    p = new Utility(filename);
+    const char* dot = strrchr(res->d_name, '.');
+    if (dot == NULL || strcmp(dot, ".utility") != 0)
+      continue;
+
+    string filename = dirname + "/" + res->d_name;
+    Utility* p = new Utility(filename);
     if (p->isFailed())
     {
-      gLog.warning(tr("Warning: unable to load utility \"%s\""),
-                   namelist[i]->d_name);
+      gLog.warning(tr("Warning: unable to load utility \"%s\""), res->d_name);
       continue;
     }
     myUtilities.push_back(p);
   }
-  free(namelist);
+  delete [] ent;
+  closedir(dir);
 
   return myUtilities.size();
 }

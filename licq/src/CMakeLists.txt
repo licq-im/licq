@@ -43,7 +43,6 @@ set(licq_SRCS
   socket.cpp
   socketmanager.cpp
   statistics.cpp
-  support.c
   translator.cpp
   userevents.cpp
   utility.cpp

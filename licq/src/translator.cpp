@@ -414,3 +414,27 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
   delete[] result;
   return ret;
 }
+
+
+#if defined(__APPLE__) && defined(__amd64__)
+#define LIBICONV_PLUG 1
+#include <iconv.h>
+// The following symbols are not defined on 64-bit OS X but are needed by
+// libintl. Taken in part from
+// http://opensource.apple.com/source/libiconv/libiconv-26/patches/unix03.patch
+iconv_t libiconv_open(const char* tocode, const char* fromcode)
+{
+  return iconv_open(tocode, fromcode);
+}
+
+size_t libiconv(iconv_t cd, const char** inbuf, size_t* inbytesleft,
+		char** outbuf, size_t* outbytesleft)
+{
+  return iconv(cd, (char **)inbuf, inbytesleft, outbuf, outbytesleft);
+}
+
+int libiconv_close(iconv_t cd)
+{
+  return iconv_close(cd);
+}
+#endif

@@ -51,7 +51,6 @@
 
 #include "gettext.h"
 #include "licq.h"
-#include "support.h"
 
 using std::string;
 using Licq::UserId;
@@ -145,6 +144,8 @@ static const char* const HELP_HELP = tr(
         "\thelp <<command> | all>\n" 
         "\t\tPrint help information for <command> or for all commands.\n");
 #define MAX_ARGV 64
+
+const unsigned short MAX_UIN_DIGITS  = 13;
 
 enum 
 {
@@ -466,7 +467,8 @@ static int fifo_redirect(int argc, const char* const* argv)
     return -1;
   }
 
-  if ( !Redirect(argv[1]) )
+  int fd = open(argv[1], O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+  if (fd == -1 || dup2(fd, STDERR_FILENO) == -1)
   {
     gLog.warning(tr("%s: redirection to \"%s\" failed: %s"),
         argv[0], argv[1],strerror(errno));

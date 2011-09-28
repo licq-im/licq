@@ -8,10 +8,12 @@
 #include "config.h"
 
 #include <boost/foreach.hpp>
+#include <boost/scoped_array.hpp>
 #include <cerrno>
 #include <csignal>
 #include <cstdlib>
 #include <cstring>
+#include <dirent.h>
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <getopt.h>
@@ -42,7 +44,6 @@
 #include "plugin/pluginmanager.h"
 #include "sarmanager.h"
 #include "statistics.h"
-#include "support.h"
 
 using namespace std;
 using Licq::GeneralPlugin;
@@ -227,22 +228,6 @@ void handleExitSignal(int signal)
   gDaemon.Shutdown();
 }
 
-/*-----Helper functions for CLicq::UpgradeLicq-----------------------------*/
-int SelectUserUtility(const struct dirent *d)
-{
-  const char* pcDot = strrchr(d->d_name, '.');
-  if (pcDot == NULL) return (0);
-  return (strcmp(pcDot, ".uin") == 0);
-}
-
-int SelectHistoryUtility(const struct dirent *d)
-{
-  const char* pcDot = strchr(d->d_name, '.');
-  if (pcDot == NULL) return (0);
-  return (strcmp(pcDot, ".history") == 0 ||
-          strcmp(pcDot, ".history.removed") == 0);
-}
-
 char **global_argv = NULL;
 int global_argc = 0;
 
@@ -340,7 +325,10 @@ bool CLicq::Init(int argc, char **argv)
   // See if redirection works, set bUseColor to false if we redirect
   // to a file.
   if (szRedirect)
-    bRedirect_ok = Redirect(szRedirect);
+  {
+    int fd = open(szRedirect, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+    bRedirect_ok = (fd != -1 && dup2(fd, STDERR_FILENO) != -1);
+  }
 
   if(!isatty(STDERR_FILENO))
     bUseColor = false;
@@ -683,46 +671,65 @@ bool CLicq::upgradeLicq128(Licq::IniFile& licqConf)
     return false;
 
   // Update all the user files and update users.conf
-  struct dirent **UinFiles;
   string strUserDir = strBaseDir + "users";
-  int n = scandir_alpha_r(strUserDir.c_str(), &UinFiles, SelectUserUtility);
-  if (n != 0)
+  DIR* userDir = opendir(strUserDir.c_str());
+  if (userDir != NULL)
   {
     Licq::IniFile userConf("users.conf");
     if (!userConf.loadFile())
       return false;
     userConf.setSection("users");
-    userConf.set("NumOfUsers", n);
-    for (int i = 0; i < n; i++)
+    int n = 0;
+
+    boost::scoped_array<char> ent(new char[offsetof(struct dirent, d_name) +
+        pathconf(strUserDir.c_str(), _PC_NAME_MAX) + 1]);
+    struct dirent* res;
+
+    while (readdir_r(userDir, (struct dirent*)ent.get(), &res) == 0 && res != NULL)
     {
+      const char* dot = strrchr(res->d_name, '.');
+      if (dot == NULL || strcmp(dot, ".uin") != 0)
+        continue;
+
       char szKey[20];
-      snprintf(szKey, sizeof(szKey), "User%d", i+1);
-      string strFileName = strUserDir + "/" + UinFiles[i]->d_name;
-      string strNewName = UinFiles[i]->d_name;
+      snprintf(szKey, sizeof(szKey), "User%d", n+1);
+      string strFileName = strUserDir + "/" + res->d_name;
+      string strNewName = res->d_name;
       strNewName.replace(strNewName.find(".uin", 0), 4, ".Licq");
       string strNewFile = strUserDir + "/" + strNewName;
       if (rename(strFileName.c_str(), strNewFile.c_str()))
         return false;
       userConf.set(szKey, strNewName);
+      ++n;
     }
+    userConf.set("NumOfUsers", n);
     userConf.writeFile();
+    closedir(userDir);
   }
 
+
   // Rename the history files
-  struct dirent **HistoryFiles;
   string strHistoryDir = strBaseDir + "history";
-  int nNumHistory = scandir_alpha_r(strHistoryDir.c_str(), &HistoryFiles,
-    SelectHistoryUtility);
-  if (nNumHistory)
+  DIR* historyDir = opendir(strHistoryDir.c_str());
+  if (historyDir != NULL)
   {
-    for (unsigned short i = 0; i < nNumHistory; i++)
+    boost::scoped_array<char> ent(new char[offsetof(struct dirent, d_name) +
+        pathconf(strHistoryDir.c_str(), _PC_NAME_MAX) + 1]);
+    struct dirent* res;
+
+    while (readdir_r(historyDir, (struct dirent*)ent.get(), &res) == 0 && res != NULL)
     {
-      string strFileName = strHistoryDir + "/" + HistoryFiles[i]->d_name;
-      string strNewFile = strHistoryDir + "/" + HistoryFiles[i]->d_name;
+      const char* dot = strrchr(res->d_name, '.');
+      if (dot == NULL || (strcmp(dot, ".history") != 0 && strcmp(dot, ".history.removed") != 0))
+        continue;
+
+      string strFileName = strHistoryDir + "/" + res->d_name;
+      string strNewFile = strHistoryDir + "/" + res->d_name;
       strNewFile.replace(strNewFile.find(".history", 0), 8, ".Licq.history");
       if (rename(strFileName.c_str(), strNewFile.c_str()))
         return false;
     }
+    closedir(historyDir);
   }
   
   return true;

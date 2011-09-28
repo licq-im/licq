@@ -20,7 +20,6 @@
 #include <licq/logging/log.h>
 
 #include "gettext.h"
-#include "support.h"
 
 using namespace std;
 using Licq::Buffer;
