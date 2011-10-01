@@ -1428,7 +1428,10 @@ int CRMSClient::Process_AR_text()
   {
     Licq::OwnerWriteGuard o(LICQ_PPID);
     if (o.isLocked())
+    {
       o->setAutoResponse(myText);
+      o->save(Licq::Owner::SaveOwnerInfo);
+    }
   }
   else
   {

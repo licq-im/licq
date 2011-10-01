@@ -1660,6 +1660,7 @@ void LicqGui::autoAway()
       {
         Licq::OwnerWriteGuard o(owner);
         o->setAutoResponse(autoResponse.toLocal8Bit().constData());
+        o->save(Licq::Owner::SaveOwnerInfo);
       }
 
       //gLog.info("Auto-away changing status to %u (from %u, PPID 0x%lx)",

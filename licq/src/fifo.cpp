@@ -334,6 +334,7 @@ static int fifo_status(int argc, const char* const* argv)
   {
     Licq::OwnerWriteGuard o(LICQ_PPID);
     o->setAutoResponse(argv[2]);
+    o->save(Licq::Owner::SaveOwnerInfo);
   }
 
   return 0;
@@ -351,6 +352,7 @@ static int fifo_auto_response(int argc, const char* const* argv)
 
   Licq::OwnerWriteGuard o(LICQ_PPID);
   o->setAutoResponse(argv[1]);
+  o->save(Licq::Owner::SaveOwnerInfo);
 
   return 0;
 }

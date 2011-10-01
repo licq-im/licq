@@ -2104,6 +2104,7 @@ void CLicqConsole::InputAutoResponse(int cIn)
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
         o->setAutoResponse(data->szRsp);
+        o->save(Licq::Owner::SaveOwnerInfo);
       }
       winMain->wprintf("%C%AAuto-response set.\n",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);

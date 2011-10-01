@@ -153,7 +153,6 @@ Owner::~Owner()
      return;
   }
   myConf.setSection("user");
-  myConf.set("AutoResponse", myAutoResponse);
   myConf.set("SSTime", (unsigned long)m_nSSTime);
   myConf.set("SSCount", mySsCount);
   myConf.set("PDINFO", myPDINFO);
@@ -178,6 +177,7 @@ void Owner::saveOwnerInfo()
   myConf.set("SSTime", (unsigned long)m_nSSTime);
   myConf.set("SSCount", mySsCount);
   myConf.set("PDINFO", myPDINFO);
+  myConf.set("AutoResponse", myAutoResponse);
 
   if (m_bSavePassword)
     myConf.set("Password", myPassword);

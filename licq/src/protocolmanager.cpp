@@ -150,7 +150,10 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
 
     isOffline = !owner->isOnline();
     if (message != KeepAutoResponse)
+    {
       owner->setAutoResponse(message);
+      owner->save(Licq::Owner::SaveOwnerInfo);
+    }
   }
 
   unsigned long eventId = 0;
