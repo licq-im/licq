@@ -20,6 +20,7 @@
 #ifndef LICQ_INIFILE_H
 #define LICQ_INIFILE_H
 
+#include <ctime>
 #include <list>
 #include <string>
 #include <boost/any.hpp>
@@ -275,6 +276,7 @@ private:
   std::string::size_type mySectionEnd;
   std::string myFilename;
   bool myIsModified;
+  time_t myLastTimestamp;
 };
 
 } // namespace Licq

@@ -39,7 +39,8 @@ IniFile::IniFile(const string& filename)
   : myConfigData("\n"),
     mySectionStart(string::npos),
     mySectionEnd(string::npos),
-    myIsModified(true)
+    myIsModified(true),
+    myLastTimestamp(0)
 {
   if (!filename.empty())
     setFilename(filename);
@@ -56,6 +57,7 @@ void IniFile::setFilename(const std::string& filename)
 
   // If filename has changed we most likely want to allow write
   myIsModified = true;
+  myLastTimestamp = 0;
 }
 
 bool IniFile::loadFile()
@@ -92,6 +94,15 @@ bool IniFile::loadFile()
     return false;
   }
 
+  if (!myIsModified && myLastTimestamp != 0 && myLastTimestamp == st.st_mtime)
+  {
+    // File hasn't changed, no need to reread it
+    mySectionStart = string::npos;
+    mySectionEnd = string::npos;
+    close(fd);
+    return true;
+  }
+
   // Read entire file at once
   char* buffer = new char[st.st_size + 1];
   ssize_t numRead = read(fd, buffer, st.st_size);
@@ -112,6 +123,7 @@ bool IniFile::loadFile()
 
   loadRawConfiguration(buffer);
   delete [] buffer;
+  myLastTimestamp = st.st_mtime;
   return true;
 }
 
@@ -168,6 +180,7 @@ void IniFile::loadRawConfiguration(const string& rawConfig)
 
   // We currently have no changes to write
   myIsModified = false;
+  myLastTimestamp = 0;
 }
 
 bool IniFile::writeFile(bool allowCreate)
@@ -237,6 +250,10 @@ bool IniFile::writeFile(bool allowCreate)
     unlink(tempFile.c_str());
     return false;
   }
+
+  // Save new file modification time
+  if (stat(filename.c_str(), &st) == 0)
+    myLastTimestamp = st.st_mtime;
 
   // Changes are written, mark data as unchanged
   myIsModified = false;
