@@ -78,7 +78,6 @@ protected:
   virtual void savePictureInfo();
 
   void setHistoryFile(const std::string& file);
-  bool LoadInfo();
   void LoadLicqInfo();
   void LoadPhoneBookInfo();
   void LoadPictureInfo();

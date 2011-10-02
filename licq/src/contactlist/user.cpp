@@ -280,8 +280,15 @@ User::User(const UserId& id, bool temporary, bool isOwner)
       gLog.error(tr("Error opening '%s' for writing."), myConf.filename().c_str());
     SetDefaults();
   }
+  else
+  {
+    myConf.setSection("user");
+  }
 
-  LoadInfo();
+  loadUserInfo();
+  LoadPhoneBookInfo();
+  LoadPictureInfo();
+  LoadLicqInfo();
 }
 
 void User::AddToContactList()
@@ -302,20 +309,6 @@ void User::AddToContactList()
       }
     }
   }
-}
-
-bool User::LoadInfo()
-{
-  if (!myConf.loadFile())
-    return false;
-  myConf.setSection("user");
-
-  loadUserInfo();
-  LoadPhoneBookInfo();
-  LoadPictureInfo();
-  LoadLicqInfo();
-
-  return true;
 }
 
 void User::loadUserInfo()
