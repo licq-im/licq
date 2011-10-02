@@ -146,7 +146,7 @@ void Handler::onUserAdded(
   user->SetAwaitingAuth(awaitingAuthorization);
 
   // Remove this line when SetGroups call above saves contact groups itself.
-  user->SaveLicqInfo();
+  user->save(Licq::User::SaveLicqInfo);
 
   Licq::gPluginManager.pushPluginSignal(
       new Licq::PluginSignal(Licq::PluginSignal::SignalUser,

@@ -169,13 +169,23 @@ public:
   static const unsigned short AgeUnspecified = 0xFFFF;
   static const char TimezoneUnknown = (char)-100;
 
+  enum SaveGroups
+  {
+    SaveAll             = 0xFFFF, // Save everything
+    SaveUserInfo        = 0x0001, // Save contact information (name, alias,...)
+    SaveLicqInfo        = 0x0002, // Save Licq specific data (timestamps, groups,...)
+    SaveOwnerInfo       = 0x0004, // Save owner data (awaymsg, server,...)
+    SaveNewMessagesInfo = 0x0008, // Save status of unread messages
+    SavePictureInfo     = 0x0010, // Save picture information
+    SavePhoneBook       = 0x0020, // Save ICQ Phone Book
+  };
 
-  void saveAll();
-  virtual void SaveLicqInfo() = 0;
-  virtual void saveUserInfo() = 0;
-  virtual void SavePhoneBookInfo() = 0;
-  virtual void SavePictureInfo() = 0;
-  virtual void SaveNewMessagesInfo() = 0;
+  /**
+   * Write user data to file
+   *
+   * @param group Sub part of data to update (from SaveGroups above)
+   */
+  virtual void save(unsigned group = SaveAll) = 0;
 
   /**
    * Get id for user. This is an id used locally by Licq and is persistant for
@@ -346,8 +356,8 @@ public:
 
   // General Info
   void setAlias(const std::string& alias);
-  void SetTimezone (const char n)            {  m_nTimezone = n; saveUserInfo();  }
-  void SetAuthorization (bool n)             {  m_bAuthorization = n; saveUserInfo();  }
+  void SetTimezone (const char n)            {  m_nTimezone = n; save(SaveUserInfo);  }
+  void SetAuthorization (bool n)             {  m_bAuthorization = n; save(SaveUserInfo);  }
 
   /**
    * Get string user info
@@ -398,7 +408,7 @@ public:
   virtual void setUserInfoBool(const std::string& key, bool value) = 0;
 
   // Picture info
-  void SetPicturePresent(bool b)      { m_bPicturePresent = b; SavePictureInfo(); }
+  void SetPicturePresent(bool b)      { m_bPicturePresent = b; save(SavePictureInfo); }
   void setBuddyIconType(unsigned s)     { myBuddyIconType = s; }
   void setBuddyIconHashType(char s)     { myBuddyIconHashType = s; }
   void setBuddyIconHash(const std::string& s) { myBuddyIconHash = s; }
@@ -411,7 +421,7 @@ public:
   void SetVisibleSID(unsigned short s){ m_nSID[VIS_SID] = s; }
   void SetGSID(unsigned short s)      { m_nGSID = s; }
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
-  void SetSendServer(bool s)          { m_bSendServer = s; SaveLicqInfo(); }
+  void SetSendServer(bool s)          { m_bSendServer = s; save(SaveLicqInfo); }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned short s)  { m_nSequence = s; }
   void setAutoResponse(const std::string& s) { myAutoResponse = s; }
@@ -429,18 +439,18 @@ public:
   void SetOurClientStatusTimestamp(unsigned long s) { m_nOurClientStatusTimestamp = s; }
   void SetUserUpdated(bool s)         { m_bUserUpdated = s; }
   void SetConnectionVersion(unsigned short s)    { m_nConnectionVersion = s; }
-  void SetAutoChatAccept(bool s)        { myAutoAcceptChat = s; SaveLicqInfo(); }
-  void SetAutoFileAccept(bool s)        { myAutoAcceptFile = s; SaveLicqInfo(); }
-  void SetAutoSecure(bool s)            { myAutoSecure = s; SaveLicqInfo(); }
-  void SetAcceptInAway(bool s)          { myAcceptInAway = s; SaveLicqInfo(); }
-  void SetAcceptInNA(bool s)            { myAcceptInNotAvailable = s; SaveLicqInfo(); }
-  void SetAcceptInOccupied(bool s)      { myAcceptInOccupied = s; SaveLicqInfo(); }
-  void SetAcceptInDND(bool s)           { myAcceptInDoNotDisturb = s; SaveLicqInfo(); }
-  void SetUseGPG(bool b)                        { m_bUseGPG = b; SaveLicqInfo(); }
-  void setGpgKey(const std::string& c) { myGpgKey = c; SaveLicqInfo(); }
-  void setStatusToUser(unsigned s)      { myStatusToUser = s; SaveLicqInfo(); }
+  void SetAutoChatAccept(bool s)        { myAutoAcceptChat = s; save(SaveLicqInfo); }
+  void SetAutoFileAccept(bool s)        { myAutoAcceptFile = s; save(SaveLicqInfo); }
+  void SetAutoSecure(bool s)            { myAutoSecure = s; save(SaveLicqInfo); }
+  void SetAcceptInAway(bool s)          { myAcceptInAway = s; save(SaveLicqInfo); }
+  void SetAcceptInNA(bool s)            { myAcceptInNotAvailable = s; save(SaveLicqInfo); }
+  void SetAcceptInOccupied(bool s)      { myAcceptInOccupied = s; save(SaveLicqInfo); }
+  void SetAcceptInDND(bool s)           { myAcceptInDoNotDisturb = s; save(SaveLicqInfo); }
+  void SetUseGPG(bool b)                        { m_bUseGPG = b; save(SaveLicqInfo); }
+  void setGpgKey(const std::string& c) { myGpgKey = c; save(SaveLicqInfo); }
+  void setStatusToUser(unsigned s)      { myStatusToUser = s; save(SaveLicqInfo); }
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
-  void setCustomAutoResponse(const std::string& s) { myCustomAutoResponse = s; SaveLicqInfo(); }
+  void setCustomAutoResponse(const std::string& s) { myCustomAutoResponse = s; save(SaveLicqInfo); }
   void clearCustomAutoResponse()            { setCustomAutoResponse(""); }
 
   // Dynamic info fields for protocol plugins
@@ -529,7 +539,7 @@ public:
   unsigned phoneFollowMeStatus() const          { return myPhoneFollowMeStatus; }
   unsigned icqPhoneStatus() const               { return myIcqPhoneStatus; }
   unsigned sharedFilesStatus() const            { return mySharedFilesStatus; }
-  void setPhoneFollowMeStatus(unsigned n)       { myPhoneFollowMeStatus = n; SaveLicqInfo(); }
+  void setPhoneFollowMeStatus(unsigned n)       { myPhoneFollowMeStatus = n; save(SaveLicqInfo); }
   void setIcqPhoneStatus(unsigned n)            { myIcqPhoneStatus = n; }
   void setSharedFilesStatus(unsigned n)         { mySharedFilesStatus = n; }
 

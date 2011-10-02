@@ -382,7 +382,7 @@ void UserEventCommon::setEncoding(QAction* action)
         u->SetEnableSave(false);
         u->setUserEncoding(encoding.toLatin1().constData());
         u->SetEnableSave(true);
-        u->SaveLicqInfo();
+        u->save(Licq::User::SaveLicqInfo);
       }
     }
 

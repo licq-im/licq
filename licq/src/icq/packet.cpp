@@ -3032,8 +3032,8 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
       if (pUser->GetSID() == 0 && pUser->GetVisibleSID() == 0 &&
           pUser->GetInvisibleSID() == 0)
         pUser->SetAwaitingAuth(false);
-        
-      pUser->SaveLicqInfo();
+
+      pUser->save(Licq::User::SaveLicqInfo);
     }
   }
 }

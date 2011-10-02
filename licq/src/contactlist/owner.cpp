@@ -165,19 +165,8 @@ Owner::~Owner()
   }
 }
 
-void Owner::SaveLicqInfo()
+void Owner::saveOwnerInfo()
 {
-  if (!EnableSave()) return;
-
-  User::SaveLicqInfo();
-
-  if (!myConf.loadFile())
-  {
-     gLog.error("Error opening '%s' for reading. See log for details.",
-         myConf.filename().c_str());
-     return;
-  }
-  myConf.setSection("user");
   myConf.set("Uin", accountId());
   myConf.set("WebPresence", WebAware());
   myConf.set("HideIP", HideIp());
@@ -194,13 +183,6 @@ void Owner::SaveLicqInfo()
     myConf.set("Password", myPassword);
   else
     myConf.set("Password", "");
-
-  if (!myConf.writeFile())
-  {
-    gLog.error("Error opening '%s' for writing. See log for details.",
-        myConf.filename().c_str());
-    return;
-  }
 }
 
 void Licq::Owner::SetPicture(const char *f)

@@ -78,7 +78,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           u->SetEnableSave(false);
           u->setUserEncoding("UTF-8");
           u->SetEnableSave(true);
-          u->SaveLicqInfo();
+          u->save(Licq::User::SaveLicqInfo);
         }
       }
 
@@ -573,7 +573,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
       u->SetEnableSave(false);
       u->setUserEncoding("UTF-8");
       u->SetEnableSave(true);
-      u->SaveLicqInfo();
+      u->save(Licq::User::SaveLicqInfo);
     }
   }
 

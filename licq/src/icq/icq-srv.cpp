@@ -330,7 +330,7 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
       u->SetInvisibleSID(0);
       u->SetVisibleList(false);
       u->SetInvisibleList(false);
-      u->SaveLicqInfo();
+      u->save(Licq::User::SaveLicqInfo);
     }
 
     CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(userId.accountId(),
@@ -825,7 +825,7 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, boo
     o->SetWebAware(bWebAware);
     o->SetHideIp(bHideIp);
     o->SetEnableSave(true);
-    o->SaveLicqInfo();
+    o->save(Licq::User::SaveLicqInfo);
     s = addStatusFlags(icqStatusFromStatus(o->status()), *o);
   }
   // Set status to ensure the status flags are set
@@ -2103,7 +2103,7 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->saveUserInfo();
+          u->save(Licq::User::SaveUserInfo);
         }
 
         Licq::Event* e = DoneServerEvent(nSubSequence, Licq::Event::ResultSuccess);
@@ -2475,10 +2475,10 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
               u->setBuddyIconHash(hash);
               u->setBuddyIconType(IconType);
               u->setBuddyIconHashType(HashType);
-            u->SavePictureInfo();
+              u->save(Licq::User::SavePictureInfo);
+            }
+            break;
           }
-          break;
-        }
 
         default:	// Unsupported types of BART
           gLog.warning(tr("Unsupported type 0x%02X of buddy icon for %s."),
@@ -3789,7 +3789,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         for (iter = tlvList.begin(); iter != tlvList.end(); ++iter)
           u->AddTLV(iter->second);
 
-        u->SaveLicqInfo();
+        u->save(Licq::User::SaveLicqInfo);
         gPluginManager.pushPluginSignal(new Licq::PluginSignal(
             Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserGroups, u->id()));
@@ -4533,9 +4533,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           o->SetEnableSave(false);
               o->setPassword(((CPU_SetPassword *)pEvent->m_pPacket)->myPassword);
           o->SetEnableSave(true);
-          o->SaveLicqInfo();
-        }
-      }
+              o->save(Licq::Owner::SaveOwnerInfo);
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_SECURITYxRSP)
           {
             type = tr("Security info");
@@ -4571,9 +4571,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           o->SetEnableSave(true);
-              o->saveUserInfo();
-        }
-      }
+              o->save(Licq::Owner::SaveUserInfo);
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_EMAILxINFOxRSP)
           {
             type = tr("E-mail info");
@@ -4592,9 +4592,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           o->SetEnableSave(true);
-              o->saveUserInfo();
-        }
-      }
+              o->save(Licq::Owner::SaveUserInfo);
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_MORExINFOxRSP)
           {
             type = tr("More info");
@@ -4619,9 +4619,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           o->SetEnableSave(true);
-              o->saveUserInfo();
-        }
-      }
+              o->save(Licq::Owner::SaveUserInfo);
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_INTERESTSxINFOxRSP)
           {
             type = "Interests info";
@@ -4640,9 +4640,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 o->getInterests()[i->first] = gTranslator.serverToClient(i->second);;
 
           o->SetEnableSave(true);
-              o->saveUserInfo();
-        }
-      }
+              o->save(Licq::Owner::SaveUserInfo);
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_WORKxINFOxRSP)
           {
             type = tr("Work info");
@@ -4670,9 +4670,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           o->SetEnableSave(true);
-              o->saveUserInfo();
-        }
-      }
+              o->save(Licq::Owner::SaveUserInfo);
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_ABOUTxRSP)
           {
             type = tr("About");
@@ -4689,9 +4689,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           o->SetEnableSave(true);
-              o->saveUserInfo();
-        }
-      }
+              o->save(Licq::Owner::SaveUserInfo);
+            }
+          }
       else if (nSubtype == ICQ_CMDxMETA_SENDxSMSxRSP)
       {
         // this one sucks, it could be sms or organization response
@@ -4719,9 +4719,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                   o->getBackgrounds()[i->first] = gTranslator.serverToClient(i->second);;
 
             o->SetEnableSave(true);
-                o->saveUserInfo();
-          }
-        }
+                o->save(Licq::Owner::SaveUserInfo);
+              }
+            }
         else if (pEvent != NULL &&
                 pEvent->m_pPacket->SubCommand() == ICQ_CMDxMETA_SENDxSMS)
             {
@@ -5056,7 +5056,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
+                u->save(Licq::User::SaveUserInfo);
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5113,7 +5113,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
+                u->save(Licq::User::SaveUserInfo);
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5135,7 +5135,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
+                u->save(Licq::User::SaveUserInfo);
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5166,7 +5166,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
+                u->save(Licq::User::SaveUserInfo);
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5197,7 +5197,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
+                u->save(Licq::User::SaveUserInfo);
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5218,7 +5218,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
+                u->save(Licq::User::SaveUserInfo);
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5247,7 +5247,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
+                u->save(Licq::User::SaveUserInfo);
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5292,8 +5292,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-                u->saveUserInfo();
-          u->SaveLicqInfo();
+                u->save(Licq::User::SaveUserInfo | Licq::User::SaveLicqInfo);
 
                 gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                     Licq::PluginSignal::SignalUser,
@@ -5567,7 +5566,7 @@ void IcqProtocol::ProcessUserList()
     }
 
     // Save GSID, SID and group memberships
-    u->SaveLicqInfo();
+    u->save(Licq::User::SaveLicqInfo);
     gPluginManager.pushPluginSignal(new Licq::PluginSignal(
         Licq::PluginSignal::SignalUser,
         Licq::PluginSignal::UserBasic, u->id()));

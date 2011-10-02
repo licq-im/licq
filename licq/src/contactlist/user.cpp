@@ -140,15 +140,6 @@ bool ICQUserPhoneBook::SaveToDisk(IniFile& conf)
 {
   char buff[40];
 
-  if (!conf.loadFile())
-  {
-    gLog.error(tr("Error opening '%s' for reading. See log for details."),
-        conf.filename().c_str());
-    return false;
-  }
-
-  conf.setSection("user");
-
   conf.set("PhoneEntries", (unsigned long)PhoneBookVector.size());
 
   for (unsigned long i = 0 ; i < PhoneBookVector.size(); i++)
@@ -190,13 +181,6 @@ bool ICQUserPhoneBook::SaveToDisk(IniFile& conf)
     conf.set(buff, PhoneBookVector[i].nPublish);
   }
 
-  if (!conf.writeFile())
-  {
-    gLog.error(tr("Error opening '%s' for writing. See log for details."),
-        conf.filename().c_str());
-    return false;
-  }
-
   return true;
 }
 
@@ -206,7 +190,6 @@ bool ICQUserPhoneBook::LoadFromDisk(IniFile& conf)
   struct PhoneBookEntry entry;
 
   Clean();
-  conf.setSection("user");
 
   unsigned long nNumEntries;
   conf.get("PhoneEntries", nNumEntries);
@@ -733,7 +716,7 @@ void User::SetPermanent()
 
 
   // Save all the info now
-  saveAll();
+  save(SaveAll);
 
   // Notify the plugins of the change
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
@@ -812,7 +795,7 @@ void User::setUserInfoString(const string& key, const string& value)
 }
 
   i->second = value;
-  saveUserInfo();
+  save(SaveUserInfo);
 }
 
 void User::setUserInfoUint(const string& key, unsigned int value)
@@ -824,7 +807,7 @@ void User::setUserInfoUint(const string& key, unsigned int value)
 }
 
   i->second = value;
-  saveUserInfo();
+  save(SaveUserInfo);
 }
 
 void User::setUserInfoBool(const string& key, bool value)
@@ -836,7 +819,7 @@ void User::setUserInfoBool(const string& key, bool value)
 }
 
   i->second = value;
-  saveUserInfo();
+  save(SaveUserInfo);
 }
 
 std::string Licq::User::getFullName() const
@@ -880,7 +863,7 @@ void Licq::User::statusChanged(unsigned newStatus, time_t onlineSince)
     {
       arg = -1;
       m_nLastCounters[LAST_ONLINE] = time(NULL);
-      SaveLicqInfo();
+      save(SaveLicqInfo);
     }
 
     setIsTyping(false);
@@ -1000,7 +983,7 @@ void Licq::User::setAlias(const string& alias)
     AddTLV(aliasTLV);
   }
 
-  saveUserInfo();
+  save(SaveUserInfo);
 }
 
 void User::setHistoryFile(const std::string& file)
@@ -1018,7 +1001,7 @@ void User::setHistoryFile(const std::string& file)
   }
 
   myHistory.setFile(realFile, file);
-  SaveLicqInfo();
+  save(SaveLicqInfo);
 }
 
 int User::GetHistory(Licq::HistoryList& history) const
@@ -1058,7 +1041,7 @@ void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   }
   m_nIp = _nIp;
   m_nPort = _nPort;
-  SaveLicqInfo();
+  save(SaveLicqInfo);
 }
 
 int Licq::User::socketDesc(int channel) const
@@ -1665,15 +1648,6 @@ string UserId::normalizeId(const string& accountId, unsigned long ppid)
 
 void User::saveUserInfo()
 {
-  if (!EnableSave()) return;
-
-  if (!myConf.loadFile())
-  {
-    gLog.error(tr("Error opening '%s' for reading. See log for details."),
-        myConf.filename().c_str());
-    return;
-  }
-  myConf.setSection("user");
   myConf.set("Alias", myAlias);
   myConf.set("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
   myConf.set("Timezone", m_nTimezone);
@@ -1686,13 +1660,6 @@ void User::saveUserInfo()
   saveCategory(myInterests, "Interests");
   saveCategory(myBackgrounds, "Backgrounds");
   saveCategory(myOrganizations, "Organizations");
-
-  if (!myConf.writeFile())
-  {
-    gLog.error(tr("Error opening '%s' for writing. See log for details."),
-        myConf.filename().c_str());
-    return;
-  }
 }
 
 void User::saveCategory(const Licq::UserCategoryMap& category, const string& key)
@@ -1740,49 +1707,18 @@ void User::loadCategory(Licq::UserCategoryMap& category, const string& key)
   }
 }
 
-void User::SavePhoneBookInfo()
+void User::savePictureInfo()
 {
-  if (!EnableSave()) return;
-
-  m_PhoneBook->SaveToDisk(myConf);
-}
-
-void User::SavePictureInfo()
-{
-  if (!EnableSave()) return;
-
-  if (!myConf.loadFile())
-  {
-    gLog.error(tr("Error opening '%s' for reading. See log for details."),
-        myConf.filename().c_str());
-    return;
-  }
-  myConf.setSection("user");
   myConf.set("PicturePresent", m_bPicturePresent);
   myConf.set("BuddyIconType", myBuddyIconType);
   myConf.set("BuddyIconHashType", myBuddyIconHashType);
   myConf.setHex("BuddyIconHash", myBuddyIconHash);
   myConf.setHex("OurBuddyIconHash", myOurBuddyIconHash);
-  if (!myConf.writeFile())
-  {
-    gLog.error(tr("Error opening '%s' for writing. See log for details."),
-        myConf.filename().c_str());
-    return;
-  }
 }
 
-void User::SaveLicqInfo()
+void User::saveLicqInfo()
 {
-   if (!EnableSave()) return;
-
-  if (!myConf.loadFile())
-  {
-    gLog.error(tr("Error opening '%s' for reading. See log for details."),
-        myConf.filename().c_str());
-    return;
-  }
    char buf[64];
-  myConf.setSection("user");
   myConf.set("History", historyName());
   myConf.set("OnVisibleList", myOnVisibleList);
   myConf.set("OnInvisibleList", myOnInvisibleList);
@@ -1863,18 +1799,22 @@ void User::SaveLicqInfo()
     myConf.set(buf, *g);
     ++i;
   }
-
-  if (!myConf.writeFile())
-  {
-    gLog.error(tr("Error opening '%s' for writing. See log for details."),
-        myConf.filename().c_str());
-    return;
-  }
 }
 
-void User::SaveNewMessagesInfo()
+void User::saveNewMessagesInfo()
 {
-   if (!EnableSave()) return;
+  myConf.set("NewMessages", NewMessages());
+}
+
+void User::saveOwnerInfo()
+{
+  // Empty here, overloaded by owner object
+}
+
+void User::save(unsigned group)
+{
+  if (!EnableSave())
+    return;
 
   if (!myConf.loadFile())
   {
@@ -1882,29 +1822,32 @@ void User::SaveNewMessagesInfo()
         myConf.filename().c_str());
     return;
   }
+
   myConf.setSection("user");
-  myConf.set("NewMessages", NewMessages());
+
+  if (group & SaveUserInfo)
+    saveUserInfo();
+  if (group & SaveLicqInfo)
+    saveLicqInfo();
+  if (group & SaveOwnerInfo)
+    saveOwnerInfo();
+  if (group & SaveNewMessagesInfo)
+    saveNewMessagesInfo();
+  if (group & SavePictureInfo)
+    savePictureInfo();
+  if (group & SavePhoneBook)
+    m_PhoneBook->SaveToDisk(myConf);
+
   if (!myConf.writeFile())
-  {
     gLog.error(tr("Error opening '%s' for writing. See log for details."),
         myConf.filename().c_str());
-    return;
-  }
-}
-
-void Licq::User::saveAll()
-{
-  SaveLicqInfo();
-  saveUserInfo();
-  SavePhoneBookInfo();
-  SavePictureInfo();
 }
 
 void Licq::User::EventPush(Licq::UserEvent *e)
 {
   m_vcMessages.push_back(e);
   incNumUserEvents();
-  SaveNewMessagesInfo();
+  save(SaveNewMessagesInfo);
   Touch();
   SetLastReceivedEvent();
 
@@ -1966,7 +1909,7 @@ Licq::UserEvent *Licq::User::EventPop()
     m_vcMessages[i] = m_vcMessages[i + 1];
   m_vcMessages.pop_back();
   decNumUserEvents();
-  SaveNewMessagesInfo();
+  save(SaveNewMessagesInfo);
 
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
       PluginSignal::UserEvents, myId, e->Id()));
@@ -1985,7 +1928,7 @@ void Licq::User::EventClear(unsigned short index)
     m_vcMessages[i] = m_vcMessages[i + 1];
   m_vcMessages.pop_back();
   decNumUserEvents();
-  SaveNewMessagesInfo();
+  save(SaveNewMessagesInfo);
 
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
       PluginSignal::UserEvents, myId, -id));
@@ -2001,7 +1944,7 @@ void Licq::User::EventClearId(int id)
       delete *iter;
       m_vcMessages.erase(iter);
       decNumUserEvents();
-      SaveNewMessagesInfo();
+      save(SaveNewMessagesInfo);
 
       gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
           PluginSignal::UserEvents, myId, -id));
@@ -2029,13 +1972,13 @@ void Licq::User::addToGroup(int groupId)
     return;
 
   myGroups.insert(groupId);
-  SaveLicqInfo();
+  save(SaveLicqInfo);
 }
 
 bool Licq::User::removeFromGroup(int groupId)
 {
   bool inGroup = myGroups.erase(groupId);
-  SaveLicqInfo();
+  save(SaveLicqInfo);
   return inGroup;
 }
 

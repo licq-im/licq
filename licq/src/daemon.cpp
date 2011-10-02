@@ -238,7 +238,7 @@ void Daemon::SaveConf()
       sprintf(szOwnerId, "Owner%d.Id", n);
       sprintf(szOwnerPPID, "Owner%d.PPID", n++);
 
-      o->SaveLicqInfo();
+      o->save(Licq::User::SaveOwnerInfo);
       if (o->accountId() != "0")
       {
         licqConf.set(szOwnerId, o->accountId());

@@ -304,7 +304,7 @@ bool UserManager::addUser(const UserId& uid,
     // Set this user to be on the contact list
     pUser->AddToContactList();
     //pUser->SetEnableSave(true);
-    pUser->saveAll();
+    pUser->save(User::SaveAll);
   }
 
   // Store the user in the lookup map
@@ -967,7 +967,7 @@ void UserManager::SaveAllUsers()
   {
     Licq::UserWriteGuard u(user);
     if (!u->NotInList())
-      u->saveAll();
+      u->save(Licq::User::SaveAll);
   }
 }
 

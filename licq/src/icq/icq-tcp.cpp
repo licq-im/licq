@@ -2839,7 +2839,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
             u->SetEnableSave(false);
             u->SetPicturePresent(false);
             u->SetEnableSave(true);
-            u->SavePictureInfo();
+              u->save(Licq::User::SavePictureInfo);
 
               Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                   Licq::PluginSignal::SignalUser,
@@ -2965,7 +2965,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               u->GetPhoneBook()->AddEntry(&pb[i]);
             }
             u->SetEnableSave(true);
-            u->SavePhoneBookInfo();
+                u->save(Licq::User::SavePhoneBook);
                   delete [] pb;
 
                 Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
@@ -2997,7 +2997,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
             u->SetEnableSave(false);
             u->SetPicturePresent(true);
             u->SetEnableSave(true);
-            u->SavePictureInfo();
+                u->save(Licq::User::SavePictureInfo);
 
                 Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                     Licq::PluginSignal::SignalUser,

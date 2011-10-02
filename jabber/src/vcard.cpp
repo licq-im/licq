@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -79,6 +79,6 @@ bool VCardToUser::updateUser(Licq::User* user) const
   if (emails.begin() != emails.end())
     user->setUserInfoString("Email1", emails.begin()->userid);
 
-  user->SaveLicqInfo();
+  user->save(Licq::User::SaveLicqInfo);
   return true;
 }

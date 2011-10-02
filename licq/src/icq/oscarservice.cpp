@@ -392,7 +392,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
               u->SetPicturePresent(true);
               u->SetEnableSave(true);
             }
-            u->SavePictureInfo();
+            u->save(Licq::User::SavePictureInfo);
             Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                 Licq::PluginSignal::SignalUser,
                 Licq::PluginSignal::UserPicture, u->id()));

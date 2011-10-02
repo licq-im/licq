@@ -594,7 +594,7 @@ static int fifo_setpicture(int argc, const char* const* argv)
         o->SetPicture(NULL);
       else
         o->SetPicture(argv[1]);
-      o->SavePictureInfo();
+      o->save(Licq::Owner::SavePictureInfo);
       Licq::gUserManager.notifyUserUpdated(o->id(), Licq::PluginSignal::UserPicture);
     }
   }
@@ -610,7 +610,7 @@ static int fifo_setpicture(int argc, const char* const* argv)
         o->SetPicture(NULL);
       else
         o->SetPicture(argv[1]);
-      o->SavePictureInfo();
+      o->save(Licq::Owner::SavePictureInfo);
       Licq::gUserManager.notifyUserUpdated(o->id(), Licq::PluginSignal::UserPicture);
     }
   }

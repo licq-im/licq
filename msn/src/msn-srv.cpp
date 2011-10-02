@@ -205,7 +205,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         u->setUserInfoString("Homepage", strURL);
         u->SetNewUser(false);
         u->SetEnableSave(true);
-        u->SaveLicqInfo();
+        u->save(Licq::User::SaveLicqInfo);
         Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
             Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserInfo, u->id()));
@@ -651,7 +651,7 @@ void CMSN::MSNAddUser(const UserId& userId)
       u->SetEnableSave(false);
       u->setUserEncoding("UTF-8");
       u->SetEnableSave(true);
-      u->SaveLicqInfo();
+      u->save(Licq::User::SaveLicqInfo);
     }
   }
 

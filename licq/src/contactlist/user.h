@@ -55,12 +55,8 @@ public:
   void writeToHistory(const std::string& text);
 
   // From Licq::User
+  void save(unsigned group);
   void RemoveFiles();
-  void SaveLicqInfo();
-  void saveUserInfo();
-  void SavePhoneBookInfo();
-  void SavePictureInfo();
-  void SaveNewMessagesInfo();
   std::string getUserInfoString(const std::string& key) const;
   unsigned int getUserInfoUint(const std::string& key) const;
   bool getUserInfoBool(const std::string& key) const;
@@ -75,6 +71,12 @@ public:
   void AddToContactList();
 
 protected:
+  virtual void saveLicqInfo();
+  virtual void saveUserInfo();
+  virtual void saveOwnerInfo();
+  virtual void saveNewMessagesInfo();
+  virtual void savePictureInfo();
+
   void setHistoryFile(const std::string& file);
   bool LoadInfo();
   void LoadLicqInfo();

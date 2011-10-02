@@ -212,7 +212,7 @@ void UserDlg::apply()
     myUserSettings->apply(*user);
 
     user->SetEnableSave(true);
-    user->saveAll();
+    user->save(Licq::User::SaveAll);
   }
 
   // Special stuff that must be called without holding lock

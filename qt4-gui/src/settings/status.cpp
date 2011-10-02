@@ -349,6 +349,6 @@ void Settings::Status::apply()
       continue;
 
     o->setStartupStatus(status);
-    o->SaveLicqInfo();
+    o->save(Licq::Owner::SaveOwnerInfo);
   }
 }

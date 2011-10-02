@@ -35,11 +35,11 @@ class Owner : public virtual User
 public:
   // Owner specific functions
   const std::string& password() const           { return myPassword; }
-  void setPassword(const std::string& s)        { myPassword = s; SaveLicqInfo(); }
-  void SetWebAware(bool b)     {  m_bWebAware = b; SaveLicqInfo(); }
+  void setPassword(const std::string& s)        { myPassword = s; save(SaveOwnerInfo); }
+  void SetWebAware(bool b)     {  m_bWebAware = b; save(SaveOwnerInfo); }
   virtual void SetWebAwareStatus(char c) { SetWebAware(c); }
-  void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
-  void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
+  void SetHideIp(bool b)       {  m_bHideIp = b; save(SaveOwnerInfo); }
+  void SetSavePassword(bool b) {  m_bSavePassword = b; save(SaveOwnerInfo); }
   bool WebAware() const                         { return m_bWebAware; }
   bool HideIp() const                           { return m_bHideIp; }
   bool SavePassword() const                     { return m_bSavePassword; }
@@ -48,7 +48,7 @@ public:
   unsigned randomChatGroup() const              { return myRandomChatGroup; }
 
   /// Set current random chat group, use IcqProtocol::setRandomChatGroup() from plugins
-  void setRandomChatGroup(unsigned n)           { myRandomChatGroup = n; SaveLicqInfo(); }
+  void setRandomChatGroup(unsigned n)           { myRandomChatGroup = n; save(SaveOwnerInfo); }
 
   /**
    * Get status to change to at startup
@@ -75,7 +75,7 @@ public:
    * @param port Port to connect to
    */
   void setServer(const std::string& host, int port)
-  { myServerHost = host; myServerPort = port; SaveLicqInfo(); }
+  { myServerHost = host; myServerPort = port; save(SaveOwnerInfo); }
 
   // Server Side List functions
   time_t GetSSTime() const                      { return m_nSSTime; }
@@ -83,12 +83,9 @@ public:
   unsigned short GetSSCount() const             { return mySsCount; }
   void SetSSCount(unsigned short n)             { mySsCount = n; }
   unsigned short GetPDINFO() const              { return myPDINFO; }
-  void SetPDINFO(unsigned short n)              { myPDINFO = n; SaveLicqInfo(); }
+  void SetPDINFO(unsigned short n)              { myPDINFO = n; save(SaveOwnerInfo); }
 
   void SetPicture(const char *f);
-
-  // Virtual overloaded functions
-  virtual void SaveLicqInfo() = 0;
 
   virtual bool isUser() const                   { return false; }
 protected:

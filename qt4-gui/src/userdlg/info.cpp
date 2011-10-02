@@ -1524,7 +1524,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
     if (!m_bOwner)
       u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
     u->SetEnableSave(true);
-    u->saveUserInfo();
+    u->save(Licq::User::SaveUserInfo);
   }
 
   unsigned long icqEventTag;
