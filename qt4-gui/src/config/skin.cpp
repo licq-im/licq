@@ -41,13 +41,17 @@ void Config::Skin::createInstance(const QString& skinName, QObject* parent)
 }
 
 Config::Skin::Skin(const QString& skinName, QObject* parent)
-  : QObject(parent)
+  : QObject(parent),
+    mySkinName("\0")
 {
   loadSkin(skinName);
 }
 
 void Config::Skin::loadSkin(const QString& skinName)
 {
+  if (skinName == mySkinName)
+    return;
+
   Licq::gLog.info("Applying %s skin", skinName.toLocal8Bit().constData());
 
   // Set default values even if skin is valid as skin may not include all settings

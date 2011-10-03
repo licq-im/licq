@@ -87,7 +87,9 @@ void IconManager::createInstance(const QString& iconSet, const QString& extended
 }
 
 IconManager::IconManager(const QString& iconSet, const QString& extendedIconSet, QObject* parent)
-  : QObject(parent)
+  : QObject(parent),
+    myIconSet("\0"),
+    myExtendedIconSet("\0")
 {
   if (!loadIcons(iconSet))
     Licq::gLog.warning("Unable to load icons %s", iconSet.toLocal8Bit().constData());
@@ -98,6 +100,9 @@ IconManager::IconManager(const QString& iconSet, const QString& extendedIconSet,
 
 bool IconManager::loadIcons(const QString& iconSet)
 {
+  if (iconSet == myIconSet)
+    return true;
+
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + ICONS_DIR + iconSet + "/";
   QString iconPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
@@ -233,6 +238,9 @@ bool IconManager::loadIcons(const QString& iconSet)
 
 bool IconManager::loadExtendedIcons(const QString& iconSet)
 {
+  if (iconSet == myExtendedIconSet)
+    return true;
+
   QString iconListName = iconSet + ".icons";
   QString subdir = QString(QTGUI_DIR) + EXTICONS_DIR + iconSet + "/";
   QString iconPath = QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + subdir;
