@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,8 +75,7 @@ public:
    *
    * @param enabled value from EnableLevel
    */
-  void setEnabled(int enabled)
-  { myEnabled = enabled; }
+  virtual void setEnabled(int enabled) = 0;
 
   /**
    * Should we notify for online users during sign on
@@ -91,8 +90,7 @@ public:
    *
    * @param enabled zero/one to set disabled/enabled, -1 to not override
    */
-  void setAlwaysOnlineNotify(int alwaysOnlineNotify)
-  { myAlwaysOnlineNotify = alwaysOnlineNotify; }
+  virtual void setAlwaysOnlineNotify(int alwaysOnlineNotify) = 0;
 
   /**
    * Get command to run for invoking on events
@@ -107,8 +105,7 @@ public:
    *
    * @param command Command including any static parameters
    */
-  void setCommand(const std::string& command)
-  { myCommand = command; }
+  virtual void setCommand(const std::string& command) = 0;
 
   /**
    * Get parameters for a specific event
@@ -126,8 +123,7 @@ public:
    * @param event Event to set parameters for
    * @param parameter Parameter(s) to set
    */
-  void setParameter(int event, const std::string& parameter)
-  { myParameters[event] = parameter; }
+  virtual void setParameter(int event, const std::string& parameter) = 0;
 
 protected:
   virtual ~OnEventData() { /* Empty */ }

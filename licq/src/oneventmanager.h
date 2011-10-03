@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,10 +84,25 @@ public:
    */
   void merge(const Licq::OnEventData* data);
 
+  /**
+   * Check if object has been modified
+   *
+   * @return True if any member has been modified
+   */
+  bool hasChanged() const
+  { return myHasChanged; }
+
+  // From Licq::OnEventData
+  void setEnabled(int enabled);
+  void setAlwaysOnlineNotify(int alwaysOnlineNotify);
+  void setCommand(const std::string& command);
+  void setParameter(int event, const std::string& parameter);
+
 private:
   std::string myIniSection;
   bool myIsGlobal;
   Licq::UserId myUserId;
+  mutable bool myHasChanged;
 };
 
 class OnEventManager : public Licq::OnEventManager
