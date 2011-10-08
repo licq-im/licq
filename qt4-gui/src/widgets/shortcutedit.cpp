@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2009 Licq developers
+ * Copyright (C) 2009,2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,13 @@ void ShortcutButton::setShortcut(const QKeySequence& shortcut)
   myShortcut = shortcut;
   updateText();
   emit shortcutChanged(myShortcut);
+}
+
+void ShortcutButton::clearShortcut()
+{
+  if (myCapturing)
+    stopCapture(false);
+  setShortcut(QKeySequence());
 }
 
 void ShortcutButton::updateText()
