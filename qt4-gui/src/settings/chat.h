@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,12 @@ private:
   QComboBox* myChatDateFormatCombo;
   QCheckBox* myChatVertSpacingCheck;
   QCheckBox* myChatLineBreakCheck;
-  QCheckBox* myShowHistoryCheck;
+  QLabel* myHistoryCountLabel1;
+  QLabel* myHistoryCountLabel2;
+  QSpinBox* myHistoryCountSpin;
+  QLabel* myHistoryTimeLabel1;
+  QLabel* myHistoryTimeLabel2;
+  QSpinBox* myHistoryTimeSpin;
   QCheckBox* myShowNoticesCheck;
   QLabel* myColorRcvLabel;
   QLabel* myColorSntLabel;

@@ -8,6 +8,7 @@ o MSN: Added user client detection
 o RMS: Authentication can be configured instead of always using ICQ account
 o Qt4-Gui: Added global shortcut to show/hide contact list window
 o Qt4-Gui: Show authorization request dialog when adding a contact
+o Qt4-Gui: Option to show recent messages based on message age
 
 
 New in 1.5.2

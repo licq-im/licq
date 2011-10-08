@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,8 @@ public:
   bool showDlgButtons() const { return myShowDlgButtons; }
   bool showAllEncodings() const { return myShowAllEncodings; }
   bool tabbedChatting() const { return myTabbedChatting; }
-  bool showHistory() const { return myShowHistory; }
+  int showHistoryCount() const { return myShowHistoryCount; }
+  int showHistoryTime() const { return myShowHistoryTime; }
   bool showNotices() const { return myShowNotices; }
   bool showUserPic() const { return myShowUserPic; }
   bool showUserPicHidden() const { return myShowUserPicHidden; }
@@ -135,7 +136,8 @@ public slots:
   void setShowDlgButtons(bool showDlgButtons);
   void setShowAllEncodings(bool showAllEncodings);
   void setTabbedChatting(bool tabbedChatting);
-  void setShowHistory(bool showHistory);
+  void setShowHistoryCount(int showHistoryCount);
+  void setShowHistoryTime(int showHistoryTime);
   void setShowNotices(bool showNotices);
   void setShowUserPic(bool showUserPic);
   void setShowUserPicHidden(bool showUserPicHidden);
@@ -189,7 +191,8 @@ private:
   bool myShowDlgButtons;
   bool myShowAllEncodings;
   bool myTabbedChatting;
-  bool myShowHistory;
+  int myShowHistoryCount;
+  int myShowHistoryTime;
   bool myShowNotices;
   bool myChatVertSpacing;
   bool myChatAppendLineBreak;

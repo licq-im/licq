@@ -21,7 +21,8 @@
 
 #include "config.h"
 
-#include <assert.h>
+#include <cassert>
+#include <ctime>
 #include <boost/foreach.hpp>
 
 #include <QAction>
@@ -103,8 +104,6 @@ using Licq::gProtocolManager;
 using Licq::gConvoManager;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendEvent */
-
-const size_t SHOW_RECENT_NUM = 5;
 
 typedef pair<const Licq::UserEvent*, Licq::UserId> messagePair;
 
@@ -233,9 +232,11 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
 
     Licq::UserReadGuard u(myUsers.front());
     int userSocketDesc = (u.isLocked() ? u->normalSocketDesc() : -1);
-    if (u.isLocked() && Config::Chat::instance()->showHistory())
+    int historyCount = Config::Chat::instance()->showHistoryCount();
+    int historyTime = Config::Chat::instance()->showHistoryTime();
+    if (u.isLocked() && (historyCount > 0 || historyTime > 0))
     {
-      // Show the last SHOW_RECENT_NUM messages in the history
+      // Show recent messages in the history
       Licq::HistoryList lHistoryList;
       if (u->GetHistory(lHistoryList))
       {
@@ -243,8 +244,24 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
         // Make sure we don't show the new messages waiting.
         unsigned short nNewMessages = u->NewMessages();
         Licq::HistoryList::iterator lHistoryIter = lHistoryList.end();
-        for (size_t i = 0; i < (SHOW_RECENT_NUM + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
+        for (size_t i = 0; i < (historyCount + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
           lHistoryIter--;
+
+        time_t timeLimit = time(NULL) - historyTime;
+        while (lHistoryIter != lHistoryList.begin())
+        {
+          lHistoryIter--;
+
+          if ((*lHistoryIter)->Time() < timeLimit)
+          {
+            // Found a message that is older than we want, go back one step and stop looking
+            lHistoryIter++;
+            break;
+          }
+
+          // One more message from history to show
+          historyCount++;
+        }
 
         bool bUseHTML = !isdigit(u->accountId()[1]);
         const QTextCodec* myCodec = UserCodec::codecForUser(*u);
@@ -261,10 +278,10 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
         // Iterate through each message to add
         // Only show old messages as recent ones. Don't show duplicates.
         int nMaxNumToShow;
-        if (lHistoryList.size() <= SHOW_RECENT_NUM)
+        if (lHistoryList.size() <= static_cast<size_t>(historyCount))
           nMaxNumToShow = lHistoryList.size() - nNewMessages;
         else
-          nMaxNumToShow = SHOW_RECENT_NUM;
+          nMaxNumToShow = historyCount;
 
         // Safety net
         if (nMaxNumToShow < 0)

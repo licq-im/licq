@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,10 @@ void Config::Chat::loadConfiguration(Licq::IniFile& iniFile)
   iniFile.get("SendFromClipboard", mySendFromClipboard, true);
   iniFile.get("MsgChatView", myMsgChatView, true );
   iniFile.get("TabbedChatting", myTabbedChatting, true);
-  iniFile.get("ShowHistory", myShowHistory, true);
+  bool oldShowHistory;
+  iniFile.get("ShowHistory", oldShowHistory, true);
+  iniFile.get("ShowHistoryCount", myShowHistoryCount, (oldShowHistory ? 5 : 0));
+  iniFile.get("ShowHistoryTime", myShowHistoryTime, 0);
   iniFile.get("ShowNotices", myShowNotices, true);
   iniFile.get("AutoPosReplyWin", myAutoPosReplyWin, true);
   iniFile.get("AutoSendThroughServer", myAutoSendThroughServer, false);
@@ -126,7 +129,8 @@ void Config::Chat::saveConfiguration(Licq::IniFile& iniFile) const
   iniFile.set("SendFromClipboard", mySendFromClipboard);
   iniFile.set("MsgChatView", myMsgChatView);
   iniFile.set("TabbedChatting", myTabbedChatting);
-  iniFile.set("ShowHistory", myShowHistory);
+  iniFile.set("ShowHistoryCount", myShowHistoryCount);
+  iniFile.set("ShowHistoryTime", myShowHistoryTime);
   iniFile.set("ShowNotices", myShowNotices);
   iniFile.set("AutoPosReplyWin", myAutoPosReplyWin);
   iniFile.set("AutoSendThroughServer", myAutoSendThroughServer);
@@ -265,12 +269,20 @@ void Config::Chat::setTabbedChatting(bool tabbedChatting)
   myTabbedChatting = tabbedChatting;
 }
 
-void Config::Chat::setShowHistory(bool showHistory)
+void Config::Chat::setShowHistoryCount(int showHistoryCount)
 {
-  if (showHistory == myShowHistory)
+  if (showHistoryCount == myShowHistoryCount)
     return;
 
-  myShowHistory = showHistory;
+  myShowHistoryCount = showHistoryCount;
+}
+
+void Config::Chat::setShowHistoryTime(int showHistoryTime)
+{
+  if (showHistoryTime == myShowHistoryTime)
+    return;
+
+  myShowHistoryTime = showHistoryTime;
 }
 
 void Config::Chat::setShowNotices(bool showNotices)
