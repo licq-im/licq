@@ -273,7 +273,7 @@ QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
   myChatDispLayout->addLayout(myChatLayoutStyle);
 
   QHBoxLayout* myChatLayoutDateFormat = new QHBoxLayout();
-  myChatDateFormatLabel = new QLabel(tr("Date format:"));
+  myChatDateFormatLabel = new QLabel(tr("Time format:"));
   myChatDateFormatLabel->setToolTip(tr(helpDateFormat));
   myChatLayoutDateFormat->addWidget(myChatDateFormatLabel);
   myChatDateFormatCombo = new QComboBox();
@@ -297,7 +297,7 @@ QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
   myChatLineBreakCheck->setToolTip(tr("Insert a line between each message."));
   myChatDispLayout->addWidget(myChatLineBreakCheck);
 
-  myShowNoticesCheck = new QCheckBox(tr("Show join/left notices"));
+  myShowNoticesCheck = new QCheckBox(tr("Show joined/left notices"));
   myShowNoticesCheck->setToolTip(tr("Show a notice in the chat window when a user joins or leaves the conversation."));
   connect(myShowNoticesCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
   myChatDispLayout->addWidget(myShowNoticesCheck);
@@ -410,7 +410,7 @@ QWidget* Settings::Chat::createPageHistDisp(QWidget* parent)
   myHistDispLayout->addLayout(myHistStyleLayout);
 
   QHBoxLayout* myHistDateFormatLayout = new QHBoxLayout();
-  myHistDateFormatLabel = new QLabel(tr("Date format:"));
+  myHistDateFormatLabel = new QLabel(tr("Time format:"));
   myHistDateFormatLabel->setToolTip(tr(helpDateFormat));
   myHistDateFormatLayout->addWidget(myHistDateFormatLabel);
   myHistDateFormatCombo = new QComboBox();

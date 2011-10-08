@@ -108,7 +108,7 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
   layMain->addWidget(boxIcons);
 
   // Skin Box
-  QLabel* lblSkin = new QLabel(tr("S&kins:"));
+  QLabel* lblSkin = new QLabel(tr("S&kin:"));
   laySkin->addWidget(lblSkin);
 
   mySkinPreview = new QLabel();
