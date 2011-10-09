@@ -138,8 +138,22 @@ public:
 
 protected:
   virtual void AddToHistory(User* user, bool isReceiver) const = 0;
-  int AddToHistory_Header(bool isReceiver, char* szOut) const;
-  void AddToHistory_Flush(User* u, const std::string& text) const;
+
+  /**
+   * Construct a header for the history entry
+   *
+   * @param isReceived True if message was received
+   * @return String with header data formated for history
+   */
+  std::string historyHeader(bool isReceiver) const;
+
+  /**
+   * Write to user history
+   *
+   * @param User to write to, must be write locked
+   * @param text History entry, including header and formatting
+   */
+  void writeUserHistory(User* u, const std::string& text) const;
 
   void Cancel() { m_nFlags |= FlagCancelled; }
   void SetColor(unsigned fore, unsigned back) { myColor.set(fore, back); }
