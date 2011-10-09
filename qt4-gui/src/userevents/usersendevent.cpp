@@ -244,7 +244,7 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
         // Make sure we don't show the new messages waiting.
         unsigned short nNewMessages = u->NewMessages();
         Licq::HistoryList::iterator lHistoryIter = lHistoryList.end();
-        for (size_t i = 0; i < (historyCount + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
+        for (int i = 0; i < historyCount + nNewMessages && lHistoryIter != lHistoryList.begin(); i++)
           lHistoryIter--;
 
         time_t timeLimit = time(NULL) - historyTime;
