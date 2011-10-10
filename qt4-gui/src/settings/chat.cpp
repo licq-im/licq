@@ -157,8 +157,12 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myDictionaryEdit->setEnabled(false);
   connect(myCheckSpelling, SIGNAL(toggled(bool)), myDictionaryLabel, SLOT(setEnabled(bool)));
   connect(myCheckSpelling, SIGNAL(toggled(bool)), myDictionaryEdit, SLOT(setEnabled(bool)));
-  myChatLayout->addLayout(dictionaryLayout, 7, 1);
+  myChatLayout->addLayout(dictionaryLayout, 8, 0, 1, 2);
 #endif
+
+  // Make the columns evenly wide
+  myChatLayout->setColumnStretch(0, 1);
+  myChatLayout->setColumnStretch(1, 1);
 
   myLocaleBox = new QGroupBox(tr("Localization"));
   myLocaleLayout = new QVBoxLayout(myLocaleBox);

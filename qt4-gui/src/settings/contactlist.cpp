@@ -183,6 +183,7 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   QHBoxLayout* hotKeyLayout = new QHBoxLayout();
   myHotKeyLabel = new QLabel(tr("Hot key:"));
   hotKeyLayout->addWidget(myHotKeyLabel);
+  hotKeyLayout->addStretch();
   myHotKeyLabel->setToolTip(tr("Hotkey to show/hide the contact list window."));
   myHotKeyEdit = new ShortcutEdit();
   myHotKeyEdit->setToolTip(myHotKeyLabel->toolTip());
@@ -216,6 +217,10 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   mySortByLabel->setBuddy(mySortByCombo);
   mySortByLayout->addWidget(mySortByCombo);
   myBehaviourLayout->addLayout(mySortByLayout, 2, 1);
+
+  // Make the columns evenly wide
+  myBehaviourLayout->setColumnStretch(0, 1);
+  myBehaviourLayout->setColumnStretch(1, 1);
 
   myPageContactListLayout->addWidget(myAppearanceBox);
   myPageContactListLayout->addWidget(myBehaviourBox);

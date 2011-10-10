@@ -115,6 +115,7 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   QHBoxLayout* hotKeyLayout = new QHBoxLayout();
   myHotKeyLabel = new QLabel(tr("Hot key:"));
   hotKeyLayout->addWidget(myHotKeyLabel);
+  hotKeyLayout->addStretch();
   myHotKeyLabel->setToolTip(tr("Hotkey to pop up the next pending message.\n"
       "Enter the hotkey literally, like \"shift+f10\", or \"none\" for disabling."));
   myHotKeyEdit = new ShortcutEdit();
@@ -123,6 +124,10 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   hotKeyLayout->addWidget(myHotKeyEdit);
   myMsgActionsLayout->addLayout(hotKeyLayout, 3, 1);
 #endif
+
+  // Make the columns evenly wide
+  myMsgActionsLayout->setColumnStretch(0, 1);
+  myMsgActionsLayout->setColumnStretch(1, 1);
 
   myParanoiaBox = new QGroupBox(tr("Paranoia"));
   myParanoiaLayout = new QVBoxLayout(myParanoiaBox);
