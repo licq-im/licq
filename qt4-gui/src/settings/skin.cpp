@@ -67,7 +67,8 @@ enum {
 };
 
 Settings::Skin::Skin(SettingsDlg* parent)
-  : QObject(parent)
+  : QObject(parent),
+    myDisableUpdate(false)
 {
   parent->addPage(SettingsDlg::SkinPage, createPageSkin(parent),
       tr("Skin"), SettingsDlg::ContactListPage);
@@ -202,6 +203,9 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
 
 void Settings::Skin::load()
 {
+  // Don't trigger updates while we're populating comboboxes
+  myDisableUpdate = true;
+
   // Load up the available packs
   QDir skinsPath(QString::fromLocal8Bit(Licq::gDaemon.shareDir().c_str()) + QTGUI_DIR + SKINS_DIR);
   QDir skinsUserPath(QString::fromLocal8Bit(Licq::gDaemon.baseDir().c_str()) + QTGUI_DIR + SKINS_DIR);
@@ -255,6 +259,7 @@ void Settings::Skin::load()
     myEmoticonCombo->setCurrentIndex(index);
 
   // Create initial preview
+  myDisableUpdate = false;
   previewSkin(mySkinCombo->currentText());
   previewIcons(myIconCombo->currentText());
   previewExtIcons(myExtIconCombo->currentText());
@@ -374,16 +379,22 @@ void Settings::Skin::editSkin()
 
 void Settings::Skin::previewSkin(const QString& skin)
 {
+  if (myDisableUpdate)
+    return;
   mySkinPreview->setPixmap(renderSkin(skin));
 }
 
 void Settings::Skin::previewIcons(const QString& icon)
 {
+  if (myDisableUpdate)
+    return;
   myIconPreview->setPixmapList(loadIcons(icon, ICONS_DIR, myIconNames));
 }
 
 void Settings::Skin::previewExtIcons(const QString& extIcon)
 {
+  if (myDisableUpdate)
+    return;
   myExtIconPreview->setPixmapList(loadIcons(extIcon, EXTICONS_DIR, myExtIconNames));
 }
 
@@ -420,6 +431,9 @@ IconList Settings::Skin::loadIcons(const QString& iconSet, const QString& subdir
 
 void Settings::Skin::previewEmoticons(const QString& emoticon)
 {
+  if (myDisableUpdate)
+    return;
+
   IconList icons;
   const QStringList files = Emoticons::self()->fileList(emoticon);
   foreach (const QString& i, files)

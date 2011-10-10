@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2009 Licq developers
+ * Copyright (C) 1999-2009,2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,6 +168,7 @@ private:
   SkinBrowserPreviewArea* myEmoticonPreview;
   QStringList myIconNames;
   QStringList myExtIconNames;
+  bool myDisableUpdate;
 };
 
 } // namespace Settings
