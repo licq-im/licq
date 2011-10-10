@@ -59,7 +59,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::Settings::Skin */
 
 enum {
-  MAX_HEIGHT = 190, /* Height of icon preview widget, this is
+  MAX_HEIGHT = 12*19, /* Height of icon preview widget, this is
                        (number-of-Icons) / 3 * 19.
                        if the result isn't a multiple of 19,
                        round it up to become a multiple of 19 */
@@ -91,8 +91,8 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
                    << "Chat" << "File" << "SMS" << "Contact" << "Authorize" << "ReqAuthorize"
                    << "SecureOff" << "SecureOn" << "Search" << "Remove" << "History"
                    << "Info" << "AIMOnline" << "AIMOffline" << "AIMAway"
-                   << "MSNOnline" << "MSNOffline" << "MSNAway"
-                   << "MSNOccupied" << "MSNPrivate";
+      << "MSNOnline" << "MSNOffline" << "MSNAway" << "MSNOccupied" << "MSNPrivate"
+      << "XMPPOnline" << "XMPPFFC" << "XMPPOffline" << "XMPPAway" << "XMPPNA" << "XMPPDND";
 
   myExtIconNames << "Collapsed" << "Expanded" << "Birthday" << "Cellular"
                       << "CustomAR" << "Invisible" << "Typing" << "Phone"
