@@ -1919,12 +1919,12 @@ Desea cargar el anterior?</translation>
 <context>
     <name>LicqQtGui::MLView</name>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="293"/>
+        <location filename="../src/widgets/mlview.cpp" line="294"/>
         <source>Copy URL</source>
         <translation>Copiar URL</translation>
     </message>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="295"/>
+        <location filename="../src/widgets/mlview.cpp" line="296"/>
         <source>Quote</source>
         <translation>Cita</translation>
     </message>
@@ -1932,42 +1932,42 @@ Desea cargar el anterior?</translation>
 <context>
     <name>LicqQtGui::MMSendDlg</name>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="96"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="95"/>
         <source>Multiple Recipient Message</source>
         <translation>Mensaje a Múltiples Destinatarios</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="110"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="109"/>
         <source>Multiple Recipient URL</source>
         <translation>URL a Múltiples Destinatarios</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="123"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="121"/>
         <source>Multiple Recipient Contact List</source>
         <translation>Lista de Contactos a Múltiples Destinatarios.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="142"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="139"/>
         <source>failed</source>
         <translation>falló</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="143"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="140"/>
         <source>&amp;Close</source>
         <translation>&amp;Cerrar</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="183"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="180"/>
         <source>Sending mass message to %1...</source>
         <translation>Enviando mensaje masivo a %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="250"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="247"/>
         <source>Sending mass URL to %1...</source>
         <translation>Enviando URL masiva a %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="263"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="260"/>
         <source>Sending mass list to %1...</source>
         <translation>Enviando lista masiva a %1</translation>
     </message>

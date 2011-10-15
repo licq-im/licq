@@ -1926,12 +1926,12 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MLView</name>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="293"/>
+        <location filename="../src/widgets/mlview.cpp" line="294"/>
         <source>Copy URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="295"/>
+        <location filename="../src/widgets/mlview.cpp" line="296"/>
         <source>Quote</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1939,42 +1939,42 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MMSendDlg</name>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="96"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="95"/>
         <source>Multiple Recipient Message</source>
         <translation type="unfinished">Üzenet küldése több címzettnek</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="110"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="109"/>
         <source>Multiple Recipient URL</source>
         <translation type="unfinished">URL küldése több címzettnek</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="123"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="121"/>
         <source>Multiple Recipient Contact List</source>
         <translation type="unfinished">Felhasználó Lista küldése több címzettnek</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="142"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="139"/>
         <source>failed</source>
         <translation type="unfinished">hiba</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="143"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="140"/>
         <source>&amp;Close</source>
         <translation type="unfinished">&amp;Bezár</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="183"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="180"/>
         <source>Sending mass message to %1...</source>
         <translation type="unfinished">Üzenet küldése neki: %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="250"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="247"/>
         <source>Sending mass URL to %1...</source>
         <translation type="unfinished">URL küldése neki: %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="263"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="260"/>
         <source>Sending mass list to %1...</source>
         <translation type="unfinished">Lista küldése neki: %1...</translation>
     </message>
