@@ -74,6 +74,7 @@ GPGKeyManager::GPGKeyManager(QWidget* parent)
   connect(lst_keyList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
       SLOT(slot_doubleClicked(QTreeWidgetItem*)));
   lay_main->addWidget(lst_keyList);
+  connect(lst_keyList, SIGNAL(itemSelectionChanged()), SLOT(keySelectionChanged()));
 
   myUsersMenu = new QMenu(this);
   connect(myUsersMenu, SIGNAL(aboutToShow()), SLOT(showAddMenu()));
@@ -82,23 +83,22 @@ GPGKeyManager::GPGKeyManager(QWidget* parent)
   QDialogButtonBox* buttons = new QDialogButtonBox();
   lay_main->addWidget(buttons);
 
-  QPushButton* btn;
-  btn = buttons->addButton(tr("&Add"), QDialogButtonBox::ActionRole);
-  btn->setMenu(myUsersMenu);
+  QPushButton* addButton = buttons->addButton(tr("&Add"), QDialogButtonBox::ActionRole);
+  addButton->setMenu(myUsersMenu);
 
-#define BUTTON(role, name, slot) \
+#define BUTTON(btn, role, name, slot) \
   btn = buttons->addButton(name, QDialogButtonBox::role); \
   connect(btn, SIGNAL(clicked()), SLOT(slot()))
 
-  BUTTON(ActionRole, tr("&Edit..."), slot_edit);
-  BUTTON(ActionRole, tr("&Remove"), slot_remove);
+  BUTTON(myEditButton, ActionRole, tr("&Edit..."), slot_edit);
+  BUTTON(myRemoveButton, ActionRole, tr("&Remove"), slot_remove);
 
 #undef BUTTON
   buttons->addButton(QDialogButtonBox::Close);
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
 
   initKeyList();
-
+  keySelectionChanged();
   show();
 }
 
@@ -175,6 +175,13 @@ void GPGKeyManager::initKeyList()
   }
 
   lst_keyList->resizeColumnsToContents();
+}
+
+void GPGKeyManager::keySelectionChanged()
+{
+  bool hasSelection = !lst_keyList->selectedItems().isEmpty();
+  myEditButton->setEnabled(hasSelection);
+  myRemoveButton->setEnabled(hasSelection);
 }
 
 // THE KEYLIST

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2010 Licq developers
+ * Copyright (C) 2005-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 
 class QAction;
 class QMenu;
+class QPushButton;
 
 namespace Licq
 {
@@ -56,6 +57,11 @@ private slots:
   void slot_edit();
   void slot_remove();
   void slot_doubleClicked(QTreeWidgetItem* item);
+  void keySelectionChanged();
+
+private:
+  QPushButton* myEditButton;
+  QPushButton* myRemoveButton;
 };
 
 class KeyList : public QTreeWidget
