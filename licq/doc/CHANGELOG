@@ -1,24 +1,29 @@
 Change log for Licq.
 
 New in 1.6.0
+o Reduce number of reads and writes of config files
+o Let GUI run in main thread on Mac OS X
+o Build: Improved detection of libcdk and X11 scrnsaver
+o Plugin API: Replace ICQ specific constants
+o Plugin API: Replace exported plugin symbols with a single struct
+o Plugin API: Define values for all enums to reduce future ABI breaking
 o ICQ: Keep track of when contacts went away
-o ICQ: Added detection of several other user clients
-o Jabber: Connect thru HTTP proxy
-o MSN: Added user client detection
-o RMS: Authentication can be configured instead of always using ICQ account
-o Qt4-Gui: Added global shortcut to show/hide contact list window
-o Qt4-Gui: Show authorization request dialog when adding a contact
-o Qt4-Gui: Option to show recent messages based on message age
-
-
-New in 1.5.2
-o ICQ: Sending owner info set first name to last name and removed last name
-o ICQ: Fix some encoding problems with unicode messages
+o ICQ: Add detection of several other user clients
+o ICQ: Fix owner info to send correct first name and last name
+o ICQ: Fix several encoding problems with unicode messages
+o Jabber: Add support to connect through HTTP proxy
 o Jabber: Keep track of when contacts went online
 o Jabber: Set group membership when adding contact
+o MSN: Add user client detection
+o RMS: Authentication can be configured instead of always using ICQ account
+o Qt4-Gui: Add global shortcut to show/hide main window
+o Qt4-Gui: Show authorization request dialog when adding a contact
+o Qt4-Gui: Option to show recent messages based on message age
+o Qt4-Gui: Server address can be configured for all accounts
 o Qt4-Gui: Don't show online time if it isn't known
-o Qt4-Gui: Fix multiple recipients didn't work with URL or contacts
-o Qt4-Gui: Save user alias after changing it from contact list
+o Qt4-Gui: Fix multiple recipients to work with URLs and contacts
+o Qt4-Gui: Fix user alias to be saved after edit from contact list
+o Qt4-Gui: Fix auto-popup to not steal focus between tabs/windows
 
 
 New in 1.5.1
