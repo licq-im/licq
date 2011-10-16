@@ -4,7 +4,7 @@
 
 # Licq version
 set(LICQ_VERSION_MAJOR 1)          # 0 <= major   <= 64
-set(LICQ_VERSION_MINOR 6)          # 0 <= minor   <= 99
+set(LICQ_VERSION_MINOR 7)          # 0 <= minor   <= 99
 set(LICQ_VERSION_RELEASE 0)        # 0 <= release <=  9
 set(LICQ_VERSION_EXTRA "-dev")     # Any string
 set(LICQ_VERSION_PLUGIN_ABI 0)     # Increase when breaking plugin ABI
