@@ -139,7 +139,7 @@ Sie können mir eine Nachricht hinterlassen.
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="98"/>
         <source>&amp;Hints...</source>
-        <translation type="unfinished">&amp;Tipps...</translation>
+        <translation>&amp;Tipps...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="278"/>
@@ -149,7 +149,7 @@ Sie können mir eine Nachricht hinterlassen.
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="149"/>
         <source>&amp;Edit Items...</source>
-        <translation type="unfinished">&amp;Bearbeiten...</translation>
+        <translation>&amp;Bearbeiten...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/awaymsgdlg.cpp" line="99"/>
@@ -546,7 +546,7 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="795"/>
         <source>Away: </source>
-        <translation type="unfinished"></translation>
+        <translation>Abwesend: </translation>
     </message>
     <message>
         <location filename="../src/contactlist/contactuserdata.cpp" line="798"/>
@@ -1218,7 +1218,7 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/dialogs/forwarddlg.cpp" line="73"/>
         <source>Unable to forward this message type (%s).</source>
-        <translation type="unfinished">Dieser Nachrichtentyp lässt sich nicht weiterleiten (%s).</translation>
+        <translation>Dieser Nachrichtentyp lässt sich nicht weiterleiten (%s).</translation>
     </message>
     <message>
         <location filename="../src/dialogs/forwarddlg.cpp" line="78"/>
@@ -1275,7 +1275,7 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="93"/>
         <source>&amp;Edit...</source>
-        <translation type="unfinished">&amp;Bearbeiten...</translation>
+        <translation>&amp;Bearbeiten...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="72"/>
@@ -1593,12 +1593,12 @@ Beschreibung: %2</translation>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
@@ -1655,14 +1655,14 @@ TLS-Protokoll Version 1 aufgebaut.
         <source>The remote uses %1, however it
 has no secure channel support compiled in.
 This probably won&apos;t work.</source>
-        <translation type="unfinished">Der entfernte Benutzer verwendet zwar %1, doch er
+        <translation>Der entfernte Benutzer verwendet zwar %1, doch er
 hat keine SSL-Unterstützung einkompiliert.
 Dies wird nicht funktionieren.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="66"/>
         <source>The remote uses %1.</source>
-        <translation type="unfinished">Der entfernte Benutzer verwendet %1.</translation>
+        <translation>Der entfernte Benutzer verwendet %1.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/keyrequestdlg.cpp" line="138"/>
@@ -1761,13 +1761,13 @@ Wollen sie die die alte Version laden?</translation>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="84"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="151"/>
         <location filename="../src/dialogs/logwindow.cpp" line="154"/>
         <source>Licq - Save Network Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Netzwerkprotokoll speichern</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="164"/>
@@ -2260,7 +2260,7 @@ Doppelklick - Auto Antwort setzen</translation>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="79"/>
         <source>Protocol:</source>
-        <translation type="unfinished">Protokoll:</translation>
+        <translation>Protokoll:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="80"/>
@@ -2280,17 +2280,17 @@ Doppelklick - Auto Antwort setzen</translation>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="86"/>
         <source>S&amp;erver:</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;erver:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="87"/>
         <source>P&amp;ort:</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;ort:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="102"/>
         <source>Protocol plugin is not loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Protokoll-Plugin ist nicht geladen.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="140"/>
@@ -2313,7 +2313,7 @@ Doppelklick - Auto Antwort setzen</translation>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="98"/>
         <source>D&amp;elete...</source>
-        <translation type="unfinished">&amp;Löschen...</translation>
+        <translation>&amp;Löschen...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="70"/>
@@ -2336,12 +2336,12 @@ neu. Registrieren Sie danach einen neuen Benutzer.</translation>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="95"/>
         <source>&amp;Modify...</source>
-        <translation type="unfinished">&amp;Bearbeiten...</translation>
+        <translation>&amp;Bearbeiten...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="92"/>
         <source>&amp;Register...</source>
-        <translation type="unfinished">&amp;Registrieren...</translation>
+        <translation>&amp;Registrieren...</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownermanagerdlg.cpp" line="77"/>
@@ -2465,7 +2465,7 @@ Ihrer Zugänge. Es wird nur ein Zugang pro Protokoll unterstützt.</translation>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="59"/>
         <source>(none)</source>
-        <translation type="unfinished">(keine)</translation>
+        <translation>(keine)</translation>
     </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="62"/>
@@ -2664,12 +2664,12 @@ Nachdem sie Online sind, können sie ihre persönlichen Informationen an den Ser
     <message>
         <location filename="../src/dialogs/reqauthdlg.cpp" line="58"/>
         <source>&amp;Protocol:</source>
-        <translation type="unfinished">&amp;Protokoll:</translation>
+        <translation>&amp;Protokoll:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/reqauthdlg.cpp" line="64"/>
         <source>&amp;User ID:</source>
-        <translation type="unfinished">&amp;Benutzer-ID:</translation>
+        <translation>&amp;Benutzer-ID:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/reqauthdlg.cpp" line="79"/>
@@ -3310,12 +3310,12 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
         <location filename="../src/settings/chat.cpp" line="280"/>
         <location filename="../src/settings/chat.cpp" line="417"/>
         <source>Time format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitformat:</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="304"/>
         <source>Show joined/left notices</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige Betreten- / Verlassen-Meldungen</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="294"/>
@@ -3347,22 +3347,22 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
     <message>
         <location filename="../src/settings/chat.cpp" line="310"/>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="313"/>
         <source>minutes of recent messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Minuten der jüngsten Nachrichten</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="323"/>
         <source>Show at least</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige mindestens</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="326"/>
         <source>recent messages</source>
-        <translation type="unfinished"></translation>
+        <translation>jüngste Nachrichten</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="339"/>
@@ -3689,12 +3689,12 @@ Benutzer immer anzeigen</translation>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="184"/>
         <source>Hot key:</source>
-        <translation type="unfinished">Kurzbefehl:</translation>
+        <translation>Kurzbefehl:</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="187"/>
         <source>Hotkey to show/hide the contact list window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurzbefehl um die Kontaktliste anzuzeigen/zu verstecken.</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="205"/>
@@ -3850,7 +3850,7 @@ Benutzer immer anzeigen</translation>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="320"/>
         <source>Away time</source>
-        <translation type="unfinished"></translation>
+        <translation>Abwesendzeit</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="322"/>
@@ -4718,7 +4718,7 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
     <message>
         <location filename="../src/settings/skin.cpp" line="112"/>
         <source>S&amp;kin:</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;kin:</translation>
     </message>
     <message>
         <location filename="../src/settings/skin.cpp" line="132"/>
@@ -5562,42 +5562,42 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/usermenu.cpp" line="78"/>
         <source>Send &amp;Message...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende &amp;Nachricht...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="79"/>
         <source>Send &amp;URL...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende &amp;URL...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="80"/>
         <source>Send &amp;Chat Request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende &amp;Chatanfrage...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="81"/>
         <source>Send &amp;File Transfer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende &amp;Dateiübertragung...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="82"/>
         <source>Send Contact &amp;List...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende &amp;Kontaktliste...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="83"/>
         <source>Send &amp;Authorization...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende &amp;Autorisierung...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="84"/>
         <source>Send Authorization Re&amp;quest...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende Autorisierun&amp;gsanfrage...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="85"/>
         <source>Send &amp;SMS...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende &amp;SMS...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="87"/>
@@ -5717,42 +5717,42 @@ zurückgesetzt werden?</translation>
     <message>
         <location filename="../src/core/usermenu.cpp" line="162"/>
         <source>&amp;View Event...</source>
-        <translation type="unfinished">&amp;Ereignis öffnen...</translation>
+        <translation>&amp;Ereignis öffnen...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="176"/>
         <source>Set GPG key...</source>
-        <translation type="unfinished">GPG-Schlüssel setzen...</translation>
+        <translation>GPG-Schlüssel setzen...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="180"/>
         <source>View &amp;History...</source>
-        <translation type="unfinished">&amp;Verlauf...</translation>
+        <translation>&amp;Verlauf...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="181"/>
         <source>&amp;Info...</source>
-        <translation type="unfinished">&amp;Info....</translation>
+        <translation>&amp;Info....</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="258"/>
         <source>Check %1 Response...</source>
-        <translation type="unfinished">%1-Antwort &amp;lesen...</translation>
+        <translation>Lies %1 Antwort...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="261"/>
         <source>Check Auto Response...</source>
-        <translation type="unfinished">Auto-Antwort &amp;lesen...</translation>
+        <translation>Lies Autoantwort...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="289"/>
         <source>Close &amp;Secure Channel...</source>
-        <translation type="unfinished">Schließe &amp;sichere Verbindung...</translation>
+        <translation>Schließe &amp;sichere Verbindung...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="294"/>
         <source>Request &amp;Secure Channel...</source>
-        <translation type="unfinished">&amp;Verschlüsselung aktivieren...</translation>
+        <translation>&amp;Verschlüsselung aktivieren...</translation>
     </message>
     <message>
         <location filename="../src/core/usermenu.cpp" line="168"/>
@@ -6521,275 +6521,275 @@ Ein anderes Bild auswählen?</translation>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="157"/>
         <source>Message</source>
-        <translation type="unfinished">Nachricht</translation>
+        <translation>Nachricht</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="158"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="159"/>
         <source>Chat Request</source>
-        <translation type="unfinished">Chat-Anfrage</translation>
+        <translation>Chat-Anfrage</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="160"/>
         <source>File Transfer</source>
-        <translation type="unfinished">Dateiübertragung</translation>
+        <translation>Dateiübertragung</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="161"/>
         <source>Contact List</source>
-        <translation type="unfinished">Kontaktliste</translation>
+        <translation>Kontaktliste</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="162"/>
         <source>SMS</source>
-        <translation type="unfinished">SMS</translation>
+        <translation>SMS</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="169"/>
         <source>Message type</source>
-        <translation type="unfinished">Nachrichtentyp</translation>
+        <translation>Nachrichtentyp</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="174"/>
         <location filename="../src/userevents/usersendevent.cpp" line="708"/>
         <source>Send through server</source>
-        <translation type="unfinished">Über Server senden</translation>
+        <translation>Über Server senden</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="196"/>
         <location filename="../src/userevents/usersendevent.cpp" line="709"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1549"/>
         <source>Urgent</source>
-        <translation type="unfinished">Dringend</translation>
+        <translation>Dringend</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="199"/>
         <source>Multiple Recipients</source>
-        <translation type="unfinished">Mehrere Empfänger</translation>
+        <translation>Mehrere Empfänger</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="205"/>
         <source>Smileys</source>
-        <translation type="unfinished">Smileys</translation>
+        <translation>Smileys</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="206"/>
         <source>Text Color...</source>
-        <translation type="unfinished">Textfarbe...</translation>
+        <translation>Textfarbe...</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="207"/>
         <source>Background Color...</source>
-        <translation type="unfinished">Hintergrundfarbe...</translation>
+        <translation>Hintergrundfarbe...</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="212"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1493"/>
         <source>&amp;Send</source>
-        <translation type="unfinished">&amp;Senden</translation>
+        <translation>&amp;Senden</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="275"/>
         <source>Error! no owner set</source>
-        <translation type="unfinished">Fehler! Kein Zugang eingerichtet</translation>
+        <translation>Fehler! Kein Zugang eingerichtet</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="426"/>
         <source>URL:</source>
-        <translation type="unfinished">URL:</translation>
+        <translation>URL:</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="438"/>
         <source>Multiparty:</source>
-        <translation type="unfinished">Mehrbenutzer:</translation>
+        <translation>Mehrbenutzer:</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="442"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1964"/>
         <source>Invite</source>
-        <translation type="unfinished">Einladen</translation>
+        <translation>Einladen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="451"/>
         <source>File(s):</source>
-        <translation type="unfinished">Datei(en):</translation>
+        <translation>Datei(en):</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="455"/>
         <source>Browse</source>
-        <translation type="unfinished">Durchsuchen</translation>
+        <translation>Durchsuchen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="457"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="467"/>
         <source>Drag Users Here - Right Click for Options</source>
-        <translation type="unfinished">Benutzer hierher ziehen - Klick mit rechter Maustaste für Einstellungen</translation>
+        <translation>Benutzer hierher ziehen - Klick mit rechter Maustaste für Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="477"/>
         <source>Phone:</source>
-        <translation type="unfinished">Telefon:</translation>
+        <translation>Telefon:</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="485"/>
         <source>Chars left:</source>
-        <translation type="unfinished">Verbleibende Zeichen:</translation>
+        <translation>Verbleibende Zeichen:</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="627"/>
         <source> - URL</source>
-        <translation type="unfinished"> - URL</translation>
+        <translation> - URL</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="630"/>
         <source> - Chat Request</source>
-        <translation type="unfinished"> - Chat-Anfrage</translation>
+        <translation> - Chat-Anfrage</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="634"/>
         <source> - File Transfer</source>
-        <translation type="unfinished"> - Dateiübertragung</translation>
+        <translation> - Dateiübertragung</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="638"/>
         <source> - Contact List</source>
-        <translation type="unfinished"> - Kontaktliste</translation>
+        <translation> - Kontaktliste</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="642"/>
         <source> - SMS</source>
-        <translation type="unfinished"> - SMS</translation>
+        <translation> - SMS</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="649"/>
         <source> - Message</source>
-        <translation type="unfinished"> - Nachricht</translation>
+        <translation> - Nachricht</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="707"/>
         <source>Select type of message to send</source>
-        <translation type="unfinished">Wähle Typ der zu Sendenden Nachricht</translation>
+        <translation>Wähle Typ der zu Sendenden Nachricht</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="710"/>
         <source>Multiple recipients</source>
-        <translation type="unfinished">Mehrere Empfänger</translation>
+        <translation>Mehrere Empfänger</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="711"/>
         <source>Insert smileys</source>
-        <translation type="unfinished">Füge Smileys ein</translation>
+        <translation>Füge Smileys ein</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="712"/>
         <source>Change text color</source>
-        <translation type="unfinished">Ändere Textfarbe</translation>
+        <translation>Ändere Textfarbe</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="713"/>
         <source>Change background color</source>
-        <translation type="unfinished">Ändere Hintergrundfarbe</translation>
+        <translation>Ändere Hintergrundfarbe</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="833"/>
         <source>%1 has joined the conversation.</source>
-        <translation type="unfinished">%1 hat die Unterhaltung betreten.</translation>
+        <translation>%1 hat die Unterhaltung betreten.</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="860"/>
         <source>%1 has left the conversation.</source>
-        <translation type="unfinished">%1 hat die Unterhaltung verlassen.</translation>
+        <translation>%1 hat die Unterhaltung verlassen.</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1178"/>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
-        <translation type="unfinished">Sie haben die SMS nicht bearbeitet.
+        <translation>Sie haben die SMS nicht bearbeitet.
 Möchten Sie sie wirklich senden?</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1179"/>
         <source>You didn&apos;t edit the message.
 Do you really want to send it?</source>
-        <translation type="unfinished">Sie haben die Nachricht nicht bearbeitet.
+        <translation>Sie haben die Nachricht nicht bearbeitet.
 Wollen Sie sie wirklich senden?</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1185"/>
         <source>No URL specified</source>
-        <translation type="unfinished">Keine URL angegeben</translation>
+        <translation>Keine URL angegeben</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1190"/>
         <source>You must specify a file to transfer!</source>
-        <translation type="unfinished">Es muss eine zu sendende Datei angegeben werden!</translation>
+        <translation>Es muss eine zu sendende Datei angegeben werden!</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1210"/>
         <source>Message can&apos;t be sent securely through the server!
 Send anyway?</source>
-        <translation type="unfinished">Nachricht kann nicht verschlüsselt über den Server gesendet werden!
+        <translation>Nachricht kann nicht verschlüsselt über den Server gesendet werden!
 Trotzdem senden?</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1407"/>
         <source>Sending </source>
-        <translation type="unfinished">Sende </translation>
+        <translation>Sende </translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1408"/>
         <source>via server</source>
-        <translation type="unfinished">über Server</translation>
+        <translation>über Server</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1408"/>
         <source>direct</source>
-        <translation type="unfinished">direkt</translation>
+        <translation>direkt</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1418"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">Ab&amp;brechen</translation>
+        <translation>Ab&amp;brechen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1434"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1479"/>
         <source>error</source>
-        <translation type="unfinished">fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1466"/>
         <source>done</source>
-        <translation type="unfinished">fertig</translation>
+        <translation>fertig</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1470"/>
         <source>cancelled</source>
-        <translation type="unfinished">abgebrochen</translation>
+        <translation>abgebrochen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1473"/>
         <source>failed</source>
-        <translation type="unfinished">fehlgeschlagen</translation>
+        <translation>fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1476"/>
         <source>timed out</source>
-        <translation type="unfinished">Zeitüberschreitung</translation>
+        <translation>Zeitüberschreitung</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1519"/>
         <source>Direct send failed,
 send through server?</source>
-        <translation type="unfinished">Direkter Versand fehlgeschlagen,
+        <translation>Direkter Versand fehlgeschlagen,
 über Server senden?</translation>
     </message>
     <message>
@@ -6797,62 +6797,62 @@ send through server?</source>
         <source>%1 is in %2 mode:
 %3
 Send...</source>
-        <translation type="unfinished">%1 ist im %2-Modus:
+        <translation>%1 ist im %2-Modus:
 %3
 Senden...</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1549"/>
         <source> to Contact List</source>
-        <translation type="unfinished">zur Kontaktliste.</translation>
+        <translation> zur Kontaktliste</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1549"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1597"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1618"/>
         <source>No reason provided</source>
-        <translation type="unfinished">Kein Grund angegeben</translation>
+        <translation>Kein Grund angegeben</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1599"/>
         <source>File transfer with %1 refused:
 %2</source>
-        <translation type="unfinished">Dateiübertragung mit %1 abgelehnt:
+        <translation>Dateiübertragung mit %1 abgelehnt:
 %2</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1620"/>
         <source>Chat with %1 refused:
 %2</source>
-        <translation type="unfinished">Chat mit %1 abgelehnt:
+        <translation>Chat mit %1 abgelehnt:
 %2</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1787"/>
         <source>Drag Users Here
 Right Click for Options</source>
-        <translation type="unfinished">Benutzer hierher ziehen.
+        <translation>Benutzer hierher ziehen.
 Klick mit rechter Maustaste für Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1956"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1971"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1973"/>
         <source>Select files to send</source>
-        <translation type="unfinished">Dateien zum Versenden auswählen</translation>
+        <translation>Dateien zum Versenden auswählen</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="2010"/>
         <source>%1 Files</source>
-        <translation type="unfinished">%1 Dateien</translation>
+        <translation>%1 Dateien</translation>
     </message>
 </context>
 <context>
