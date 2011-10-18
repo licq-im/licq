@@ -1638,8 +1638,6 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
   emit eventSent(e);
   if (Config::Chat::instance()->msgChatView() && myHistoryView != NULL)
   {
-    myHistoryView->GotoEnd();
-
     myMessageEdit->clear();
     myMessageEdit->setFocus();
 

@@ -442,7 +442,6 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
          event->IsEncrypted(),
          contactName,
          MLView::toRichText(messageText, true, bUseHTML));
-  GotoEnd();
 
   if (event->isReceiver() &&
       (event->eventType() == Licq::UserEvent::TypeMessage ||
@@ -509,5 +508,4 @@ void HistoryView::addNotice(const QDateTime& dt, QString messageText)
   }
 
   internalAddMsg(s);
-  GotoEnd();
 }
