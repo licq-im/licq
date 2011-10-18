@@ -51,11 +51,34 @@ MLView::MLView(QWidget* parent)
   connect(Config::General::instance(), SIGNAL(fontChanged()), SLOT(updateFont()));
 }
 
-void MLView::appendNoNewLine(const QString& s)
+void MLView::append(const QString& s, bool richText)
 {
+  // Remember where we are before adding anything
+  QScrollBar* scrollBar = verticalScrollBar();
+  bool wasAtEnd = (scrollBar->value() == scrollBar->maximum());
+
   QTextCursor tc = textCursor();
+  int anchor = tc.anchor();
+  int pos = tc.position();
+
   tc.movePosition(QTextCursor::End);
-  tc.insertHtml(s);
+  if (richText)
+  {
+    tc.insertBlock(tc.blockFormat(), tc.charFormat());
+    tc.insertHtml(s);
+  }
+  else
+  {
+    tc.insertText(s);
+  }
+
+  // Restore selection (if any)
+  tc.setPosition(anchor, QTextCursor::MoveAnchor);
+  tc.setPosition(pos, QTextCursor::KeepAnchor);
+
+  // Scroll window down to tail output but only if user hasn't moved it
+  if (wasAtEnd)
+    scrollBar->setValue(scrollBar->maximum());
 }
 
 QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML, QRegExp highlight)
@@ -403,4 +426,16 @@ QSize MLView::sizeHint() const
   if (myLinesHint > 0)
     s.setHeight(heightForLines(myLinesHint));
   return s;
+}
+
+void MLView::resizeEvent(QResizeEvent* event)
+{
+  QScrollBar* scrollBar = verticalScrollBar();
+  bool wasAtEnd = (scrollBar->value() == scrollBar->maximum());
+
+  QTextBrowser::resizeEvent(event);
+
+  // If we were tailing something before resize, make sure scrollbar is still at the end
+  if (wasAtEnd)
+    scrollBar->setValue(scrollBar->maximum());
 }

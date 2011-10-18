@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2002-2009 Licq developers
+ * Copyright (C) 2002-2009,2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ public:
   MLView(QWidget* parent = 0);
   virtual ~MLView() {}
 
-  void appendNoNewLine(const QString& s);
   void GotoHome();
   void GotoEnd();
 
@@ -71,8 +70,17 @@ public:
 protected:
   virtual void contextMenuEvent(QContextMenuEvent* event);
   virtual QMimeData* createMimeDataFromSelection() const;
+  virtual void resizeEvent(QResizeEvent* event);
 
 public slots:
+  /**
+   * Append text to view area
+   *
+   * @param s Text to add
+   * @param True if s is rich text, false for plain text
+   */
+  void append(const QString& s, bool richText = true);
+
   virtual void setSource(const QUrl& url);
 
   /**

@@ -28,6 +28,7 @@
 #include <QDialogButtonBox>
 #include <QFile>
 #include <QPushButton>
+#include <QScrollBar>
 #include <QShowEvent>
 #include <QSocketNotifier>
 #include <QTextStream>
@@ -46,7 +47,7 @@
 
 #include "helpers/support.h"
 
-#include "widgets/mledit.h"
+#include "widgets/mlview.h"
 
 #undef connect
 
@@ -62,11 +63,9 @@ LogWindow::LogWindow(QWidget* parent)
 
   QVBoxLayout* top_lay = new QVBoxLayout(this);
 
-  outputBox = new MLEdit(false, this, true);
-  outputBox->setReadOnly(true);
-  outputBox->setMinimumHeight(outputBox->frameWidth() * 2
-      + 16 * outputBox->fontMetrics().lineSpacing());
-  outputBox->setMinimumWidth(outputBox->minimumHeight() * 2);
+  outputBox = new MLView(this);
+  outputBox->setSizeHintLines(16);
+  outputBox->setMinimumWidth(outputBox->sizeHint().height() * 2);
 
   QTextDocument* doc = outputBox->document();
   // hardcoded limit, maybe should be user configurable?
@@ -92,8 +91,6 @@ LogWindow::LogWindow(QWidget* parent)
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
 
   top_lay->addWidget(buttons);
-
-  adjustSize();
 
   myLogSink.reset(new PluginLogSink());
   Licq::gLogService.registerLogSink(myLogSink);
@@ -135,8 +132,7 @@ void LogWindow::log(int /*fd*/)
     str += QString::fromUtf8(packetToString(message).c_str()) + '\n';
   }
 
-  outputBox->appendNoNewLine(str);
-  outputBox->GotoEnd();
+  outputBox->append(str, false);
 
   if (message->level == Licq::Log::Error)
     CriticalUser(NULL, str);
