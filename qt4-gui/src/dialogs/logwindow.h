@@ -24,6 +24,8 @@
 
 #include <licq/logging/pluginlogsink.h>
 
+class QAction;
+class QMenu;
 class QShowEvent;
 class QSocketNotifier;
 
@@ -39,14 +41,15 @@ public:
   LogWindow(QWidget* parent = 0);
   ~LogWindow();
 
-  Licq::PluginLogSink::Ptr pluginLogSink() { return myLogSink; }
-
 private:
   MLView* outputBox;
   QSocketNotifier* sn;
   Licq::PluginLogSink::Ptr myLogSink;
+  QMenu* myDebugMenu;
 
 private slots:
+  void aboutToShowDebugMenu();
+  void changeDebug(QAction* action);
   void log(int fd);
   void save();
 };

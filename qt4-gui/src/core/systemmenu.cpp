@@ -25,7 +25,6 @@
 
 #include <QList>
 
-#include <licq/logging/log.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
@@ -60,10 +59,6 @@
 #include "licqgui.h"
 #include "mainwin.h"
 
-const int LOG_SET_ALL = -1;
-const int LOG_CLEAR_ALL = -2;
-const int LOG_PACKETS = -3;
-
 using Licq::User;
 using namespace LicqQtGui;
 using namespace LicqQtGui::SystemMenuPrivate;
@@ -75,33 +70,12 @@ SystemMenu::SystemMenu(QWidget* parent)
 {
   QAction* a;
 
-  // Sub menu Debug
-  myDebugMenu = new QMenu(tr("Debug Level"));
-  connect(myDebugMenu, SIGNAL(triggered(QAction*)), SLOT(changeDebug(QAction*)));
-  connect(myDebugMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowDebugMenu()));
-#define ADD_DEBUG(text, data, checkable) \
-    a = myDebugMenu->addAction(text); \
-    a->setCheckable(checkable); \
-    a->setData(data);
-  ADD_DEBUG(tr("Status Info"), Licq::Log::Info, true)
-  ADD_DEBUG(tr("Unknown Packets"), Licq::Log::Unknown, true)
-  ADD_DEBUG(tr("Errors"), Licq::Log::Error, true)
-  ADD_DEBUG(tr("Warnings"), Licq::Log::Warning, true)
-  ADD_DEBUG(tr("Debug"), Licq::Log::Debug, true)
-  ADD_DEBUG(tr("Raw Packets"), LOG_PACKETS, true)
-  myDebugMenu->addSeparator();
-  ADD_DEBUG(tr("Set All"), LOG_SET_ALL, false)
-  ADD_DEBUG(tr("Clear All"), LOG_CLEAR_ALL, false)
-#undef ADD_DEBUG
-
   // Sub menu System Functions
   myOwnerAdmMenu = new QMenu(tr("S&ystem Functions"));
   myOwnerAdmMenu->addAction(tr("&View System Messages..."), gLicqGui, SLOT(showAllOwnerEvents()));
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmSeparator = myOwnerAdmMenu->addSeparator();
   myAccountManagerAction = myOwnerAdmMenu->addAction(tr("&Account Manager..."), this, SLOT(showOwnerManagerDlg()));
-  myOwnerAdmMenu->addSeparator();
-  myOwnerAdmMenu->addMenu(myDebugMenu);
 
   // Sub menu User Functions
   myUserAdmMenu = new QMenu(tr("User &Functions"));
@@ -439,49 +413,6 @@ void SystemMenu::aboutToShowGroupMenu()
   foreach (QAction* a, myUserGroupActions->actions())
     if (a->data().toInt() == gid)
       a->setChecked(true);
-}
-
-void SystemMenu::aboutToShowDebugMenu()
-{
-  using Licq::Log;
-
-  Licq::PluginLogSink::Ptr sink = gLicqGui->logWindow()->pluginLogSink();
-
-  foreach (QAction* action, myDebugMenu->actions())
-  {
-    if (action->isCheckable())
-    {
-      if (action->data().toInt() == LOG_PACKETS)
-        action->setChecked(sink->isLoggingPackets());
-      else
-      {
-        Log::Level level = static_cast<Log::Level>(action->data().toInt());
-        action->setChecked(sink->isLogging(level));
-      }
-    }
-  }
-}
-
-void SystemMenu::changeDebug(QAction* action)
-{
-  Licq::PluginLogSink::Ptr sink = gLicqGui->logWindow()->pluginLogSink();
-
-  const int data = action->data().toInt();
-  if (data == LOG_SET_ALL || data == LOG_CLEAR_ALL)
-  {
-    const bool enable = data == LOG_SET_ALL;
-    sink->setAllLogLevels(enable);
-    sink->setLogPackets(enable);
-  }
-  else if (data == LOG_PACKETS)
-  {
-    sink->setLogPackets(action->isChecked());
-  }
-  else
-  {
-    Licq::Log::Level level = static_cast<Licq::Log::Level>(data);
-    sink->setLogLevel(level, action->isChecked());
-  }
 }
 
 void SystemMenu::setCurrentGroup(QAction* action)

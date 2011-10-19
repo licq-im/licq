@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,8 +123,6 @@ private slots:
   void aboutToShowMenu();
   void aboutToShowGroupMenu();
   void aboutToShowFollowMeMenu();
-  void aboutToShowDebugMenu();
-  void changeDebug(QAction* action);
   void setFollowMeStatus(QAction* action);
   void setMainStatus(QAction* action);
   void toggleMainInvisibleStatus();
@@ -194,7 +192,6 @@ private:
   QAction* myStatusInvisibleAction;
 
   // Sub menus
-  QMenu* myDebugMenu;
   QMenu* myOwnerAdmMenu;
   QMenu* myUserAdmMenu;
   QMenu* myStatusMenu;

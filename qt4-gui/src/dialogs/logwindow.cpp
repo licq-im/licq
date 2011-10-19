@@ -27,6 +27,8 @@
 #include <QDateTime>
 #include <QDialogButtonBox>
 #include <QFile>
+#include <QHBoxLayout>
+#include <QMenu>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QShowEvent>
@@ -40,6 +42,7 @@
 #include <QFileDialog>
 #endif
 
+#include <licq/logging/log.h>
 #include <licq/logging/logservice.h>
 #include <licq/logging/logutils.h>
 
@@ -50,6 +53,10 @@
 #include "widgets/mlview.h"
 
 #undef connect
+
+const int LOG_SET_ALL = -1;
+const int LOG_CLEAR_ALL = -2;
+const int LOG_PACKETS = -3;
 
 using Licq::PluginLogSink;
 using namespace LicqQtGui;
@@ -74,6 +81,32 @@ LogWindow::LogWindow(QWidget* parent)
 
   top_lay->addWidget(outputBox);
 
+  QHBoxLayout* buttonsLayout = new QHBoxLayout();
+
+  // Sub menu Debug
+  myDebugMenu = new QMenu();
+  connect(myDebugMenu, SIGNAL(triggered(QAction*)), SLOT(changeDebug(QAction*)));
+  connect(myDebugMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowDebugMenu()));
+  QAction* a;
+#define ADD_DEBUG(text, data, checkable) \
+    a = myDebugMenu->addAction(text); \
+    a->setCheckable(checkable); \
+    a->setData(data);
+  ADD_DEBUG(tr("Status Info"), Licq::Log::Info, true)
+  ADD_DEBUG(tr("Unknown Packets"), Licq::Log::Unknown, true)
+  ADD_DEBUG(tr("Errors"), Licq::Log::Error, true)
+  ADD_DEBUG(tr("Warnings"), Licq::Log::Warning, true)
+  ADD_DEBUG(tr("Debug"), Licq::Log::Debug, true)
+  ADD_DEBUG(tr("Raw Packets"), LOG_PACKETS, true)
+  myDebugMenu->addSeparator();
+  ADD_DEBUG(tr("Set All"), LOG_SET_ALL, false)
+  ADD_DEBUG(tr("Clear All"), LOG_CLEAR_ALL, false)
+#undef ADD_DEBUG
+
+  QPushButton* debugLevelButton = new QPushButton(tr("Log Level"));
+  debugLevelButton->setMenu(myDebugMenu);
+  buttonsLayout->addWidget(debugLevelButton);
+
   QDialogButtonBox* buttons = new QDialogButtonBox(
       QDialogButtonBox::Close);
 
@@ -90,10 +123,15 @@ LogWindow::LogWindow(QWidget* parent)
   btnClear->setAutoDefault(false);
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
 
-  top_lay->addWidget(buttons);
+  buttonsLayout->addWidget(buttons);
+  top_lay->addLayout(buttonsLayout);
 
   myLogSink.reset(new PluginLogSink());
   Licq::gLogService.registerLogSink(myLogSink);
+  myLogSink->setLogLevel(Licq::Log::Unknown, true);
+  myLogSink->setLogLevel(Licq::Log::Info, true);
+  myLogSink->setLogLevel(Licq::Log::Warning, true);
+  myLogSink->setLogLevel(Licq::Log::Error, true);
 
   sn = new QSocketNotifier(myLogSink->getReadPipe(), QSocketNotifier::Read, this);
   connect(sn, SIGNAL(activated(int)), SLOT(log(int)));
@@ -164,5 +202,42 @@ void LogWindow::save()
     QTextStream t(&f);
     t << outputBox->toPlainText();
     f.close();
+  }
+}
+
+void LogWindow::aboutToShowDebugMenu()
+{
+  foreach (QAction* action, myDebugMenu->actions())
+  {
+    if (action->isCheckable())
+    {
+      if (action->data().toInt() == LOG_PACKETS)
+        action->setChecked(myLogSink->isLoggingPackets());
+      else
+      {
+        Licq::Log::Level level = static_cast<Licq::Log::Level>(action->data().toInt());
+        action->setChecked(myLogSink->isLogging(level));
+      }
+    }
+  }
+}
+
+void LogWindow::changeDebug(QAction* action)
+{
+  const int data = action->data().toInt();
+  if (data == LOG_SET_ALL || data == LOG_CLEAR_ALL)
+  {
+    const bool enable = data == LOG_SET_ALL;
+    myLogSink->setAllLogLevels(enable);
+    myLogSink->setLogPackets(enable);
+  }
+  else if (data == LOG_PACKETS)
+  {
+    myLogSink->setLogPackets(action->isChecked());
+  }
+  else
+  {
+    Licq::Log::Level level = static_cast<Licq::Log::Level>(data);
+    myLogSink->setLogLevel(level, action->isChecked());
   }
 }

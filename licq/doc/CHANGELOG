@@ -1,5 +1,9 @@
 Change log for Licq.
 
+New in 1.7.0
+o Qt4-Gui: Moved debug level menu to log window
+
+
 New in 1.6.0
 o Reduce number of reads and writes of config files
 o Let GUI run in main thread on Mac OS X

@@ -71,7 +71,6 @@ extern "C"
 #endif /* defined(Q_WS_X11) */
 
 #include <licq/inifile.h>
-#include <licq/logging/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
@@ -419,12 +418,6 @@ int LicqGui::Run()
   // Create the main widgets
   mySignalManager = new SignalManager;
   myLogWindow = new LogWindow;
-
-  using Licq::Log;
-  myLogWindow->pluginLogSink()->setLogLevel(Log::Unknown, true);
-  myLogWindow->pluginLogSink()->setLogLevel(Log::Info, true);
-  myLogWindow->pluginLogSink()->setLogLevel(Log::Warning, true);
-  myLogWindow->pluginLogSink()->setLogLevel(Log::Error, true);
 
   // Check for qt-gui directory in current base dir
   if (!QDir(QString("%1%2").arg(Licq::gDaemon.baseDir().c_str()).arg(QTGUI_DIR)).exists())
