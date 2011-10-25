@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-10-15 18:21+0200\n"
+"POT-Creation-Date: 2011-10-25 19:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -248,7 +248,7 @@ msgstr ""
 msgid "%s (%s) requested auto response [Licq %s]."
 msgstr ""
 
-#: src/icq/icq.cpp:1201 src/icq/icq-tcp.cpp:1652
+#: src/icq/icq-tcp.cpp:1652 src/icq/icq.cpp:1201
 #, c-format
 msgid "%s (%s) requested auto response."
 msgstr ""
@@ -770,8 +770,8 @@ msgstr ""
 msgid "Ack for unknown event from %s."
 msgstr ""
 
-#: src/icq/icq.cpp:1197 src/icq/icq.cpp:1290 src/icq/icq-srv.cpp:3404
-#: src/icq/icq-srv.cpp:3491 src/icq/icq-tcp.cpp:2595
+#: src/icq/icq-srv.cpp:3404 src/icq/icq-srv.cpp:3491 src/icq/icq-tcp.cpp:2595
+#: src/icq/icq.cpp:1197 src/icq/icq.cpp:1290
 msgid "Ack for unknown event."
 msgstr ""
 
@@ -1529,7 +1529,7 @@ msgstr ""
 msgid "Auto response from %s (#%hu)%s."
 msgstr ""
 
-#: src/icq/icq.cpp:1187 src/icq/icq-srv.cpp:3457
+#: src/icq/icq-srv.cpp:3457 src/icq/icq.cpp:1187
 #, c-format
 msgid "Auto response from %s (#%lu)."
 msgstr ""
@@ -10799,7 +10799,7 @@ msgid ""
 "Internal error: FileTransferManager::ProcessPacket(), invalid state (%d)."
 msgstr ""
 
-#: src/icq/icq.cpp:816 src/icq/icq-srv.cpp:1396
+#: src/icq/icq-srv.cpp:1396 src/icq/icq.cpp:816
 #, c-format
 msgid ""
 "Internal error: ProcessDoneEvents(): Invalid result for extended event (%d)."
@@ -12519,7 +12519,7 @@ msgstr ""
 msgid "Medical/Health"
 msgstr ""
 
-#: src/icq/icq.cpp:1078 src/icq/icq-srv.cpp:3036 src/icq/icq-srv.cpp:4218
+#: src/icq/icq-srv.cpp:3036 src/icq/icq-srv.cpp:4218 src/icq/icq.cpp:1078
 #: src/userevents.cpp:191
 msgid "Message"
 msgstr ""
@@ -14923,7 +14923,7 @@ msgstr ""
 msgid "Occ"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:2569 src/contactlist/user.cpp:1202
+#: src/contactlist/user.cpp:1202 src/icq/icq-tcp.cpp:2569
 msgid "Occupied"
 msgstr ""
 
@@ -18475,7 +18475,7 @@ msgstr ""
 msgid "UIN: %lu Evil: %04hx"
 msgstr ""
 
-#: src/icq/icq.cpp:1154 src/icq/icq-srv.cpp:3049 src/icq/icq-srv.cpp:4231
+#: src/icq/icq-srv.cpp:3049 src/icq/icq-srv.cpp:4231 src/icq/icq.cpp:1154
 #: src/userevents.cpp:289
 msgid "URL"
 msgstr ""
@@ -19375,7 +19375,7 @@ msgstr ""
 msgid "Unknown ICBM error: 0x%04x"
 msgstr ""
 
-#: src/icq/icq.cpp:1245 src/icq/icq-tcp.cpp:1939
+#: src/icq/icq-tcp.cpp:1939 src/icq/icq.cpp:1245
 #, c-format
 msgid "Unknown ICBM plugin type: %s"
 msgstr ""
