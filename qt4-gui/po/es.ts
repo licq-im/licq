@@ -1584,12 +1584,12 @@ Descripción: %2</translation>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>Yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>No</source>
         <translation>No</translation>
     </message>
@@ -1721,7 +1721,7 @@ Podría no funcionar.</translation>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="648"/>
+        <location filename="../src/core/licqgui.cpp" line="641"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1730,7 +1730,7 @@ from your contact list?</source>
 de su lista de contactos?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="269"/>
+        <location filename="../src/core/licqgui.cpp" line="268"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation>Hubo un error al cargar el fichero de configuración por defecto. 
@@ -1740,30 +1740,75 @@ Desea cargar el anterior?</translation>
 <context>
     <name>LicqQtGui::LogWindow</name>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="61"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="69"/>
         <source>Licq - Network Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="84"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="95"/>
+        <source>Status Info</source>
+        <translation type="unfinished">Información de Estado</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="96"/>
+        <source>Unknown Packets</source>
+        <translation type="unfinished">Paquetes Desconocidos</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="97"/>
+        <source>Errors</source>
+        <translation type="unfinished">Errores</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="98"/>
+        <source>Warnings</source>
+        <translation type="unfinished">Advertencias</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="99"/>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="100"/>
+        <source>Raw Packets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="102"/>
+        <source>Set All</source>
+        <translation type="unfinished">Activar Todos</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="103"/>
+        <source>Clear All</source>
+        <translation type="unfinished">Limpiar Todos</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="106"/>
+        <source>Log Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="116"/>
         <source>Save...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="151"/>
-        <location filename="../src/dialogs/logwindow.cpp" line="154"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="185"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="188"/>
         <source>Licq - Save Network Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="164"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="198"/>
         <source>Failed to open file:
 %1</source>
         <translation>Fallo al abrir archivo: 
 %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="89"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="121"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
@@ -1779,12 +1824,12 @@ Desea cargar el anterior?</translation>
 <context>
     <name>LicqQtGui::MLView</name>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="293"/>
+        <location filename="../src/widgets/mlview.cpp" line="316"/>
         <source>Copy URL</source>
         <translation>Copiar URL</translation>
     </message>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="295"/>
+        <location filename="../src/widgets/mlview.cpp" line="318"/>
         <source>Quote</source>
         <translation>Cita</translation>
     </message>
@@ -5024,227 +5069,210 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenu</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="79"/>
         <source>Debug Level</source>
-        <translation>Nivel de Depuración</translation>
+        <translation type="obsolete">Nivel de Depuración</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="86"/>
         <source>Status Info</source>
-        <translation>Información de Estado</translation>
+        <translation type="obsolete">Información de Estado</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="87"/>
         <source>Unknown Packets</source>
-        <translation>Paquetes Desconocidos</translation>
+        <translation type="obsolete">Paquetes Desconocidos</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>Errors</source>
-        <translation>Errores</translation>
+        <translation type="obsolete">Errores</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="89"/>
         <source>Warnings</source>
-        <translation>Advertencias</translation>
+        <translation type="obsolete">Advertencias</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="93"/>
         <source>Set All</source>
-        <translation>Activar Todos</translation>
+        <translation type="obsolete">Activar Todos</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="94"/>
         <source>Clear All</source>
-        <translation>Limpiar Todos</translation>
+        <translation type="obsolete">Limpiar Todos</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="99"/>
+        <location filename="../src/core/systemmenu.cpp" line="75"/>
         <source>&amp;View System Messages...</source>
         <translation>&amp;Ver Mensajes del Sistema...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="108"/>
+        <location filename="../src/core/systemmenu.cpp" line="82"/>
         <source>&amp;Add User...</source>
         <translation>&amp;Agregar Usuario...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="110"/>
+        <location filename="../src/core/systemmenu.cpp" line="84"/>
         <source>S&amp;earch for User...</source>
         <translation>Buscar Usuario...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="111"/>
+        <location filename="../src/core/systemmenu.cpp" line="85"/>
         <source>A&amp;uthorize User...</source>
         <translation>A&amp;utorizar Usuario...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="112"/>
+        <location filename="../src/core/systemmenu.cpp" line="86"/>
         <source>Re&amp;quest Authorization...</source>
         <translation>P&amp;edir Autorización...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="115"/>
+        <location filename="../src/core/systemmenu.cpp" line="89"/>
         <source>&amp;Popup All Messages...</source>
         <translation>Mostrar mensajes en ventanas emergentes...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="116"/>
+        <location filename="../src/core/systemmenu.cpp" line="90"/>
         <source>Edit &amp;Groups...</source>
         <translation>Editar &amp;Grupos...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="118"/>
+        <location filename="../src/core/systemmenu.cpp" line="92"/>
         <source>Update All Users</source>
         <translation>Actualizar Todos los Usuarios</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="119"/>
+        <location filename="../src/core/systemmenu.cpp" line="93"/>
         <source>Update Current Group</source>
         <translation>Actualizar Grupo Actual</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="120"/>
+        <location filename="../src/core/systemmenu.cpp" line="94"/>
         <source>&amp;Redraw User Window</source>
         <translation>&amp;Redibujar Ventana de Usuario</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="121"/>
+        <location filename="../src/core/systemmenu.cpp" line="95"/>
         <source>&amp;Save All Users</source>
         <translation>Guardar Todo&amp;s los Usuarios</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="132"/>
+        <location filename="../src/core/systemmenu.cpp" line="106"/>
         <source>Don&apos;t Show</source>
         <translation>No Mostrar</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="133"/>
+        <location filename="../src/core/systemmenu.cpp" line="107"/>
         <source>Available</source>
         <translation>Disponible</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="134"/>
+        <location filename="../src/core/systemmenu.cpp" line="108"/>
         <source>Busy</source>
         <translation>Ocupado/a</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="138"/>
+        <location filename="../src/core/systemmenu.cpp" line="112"/>
         <source>&amp;Status</source>
         <translation>E&amp;stado</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="163"/>
+        <location filename="../src/core/systemmenu.cpp" line="137"/>
         <source>&amp;Group</source>
         <translation>&amp;Grupo</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="183"/>
+        <location filename="../src/core/systemmenu.cpp" line="157"/>
         <source>&amp;Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="184"/>
+        <location filename="../src/core/systemmenu.cpp" line="158"/>
         <source>&amp;Hints...</source>
         <translation>Sugerencias...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="185"/>
+        <location filename="../src/core/systemmenu.cpp" line="159"/>
         <source>&amp;About...</source>
         <translation>&amp;Acerca De...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="186"/>
+        <location filename="../src/core/systemmenu.cpp" line="160"/>
         <source>&amp;Statistics...</source>
         <translation>E&amp;stadísticas</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="193"/>
+        <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>Set &amp;Auto Response...</source>
         <translation>Configurar Respuesta &amp;Automática...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="195"/>
+        <location filename="../src/core/systemmenu.cpp" line="169"/>
         <source>&amp;Network Window...</source>
         <translation>Ve&amp;ntana de Red...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="196"/>
+        <location filename="../src/core/systemmenu.cpp" line="170"/>
         <source>&amp;Mini Mode</source>
         <translation>Modo &amp;Miniatura</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="198"/>
+        <location filename="../src/core/systemmenu.cpp" line="172"/>
         <source>Show Offline &amp;Users</source>
         <translation>Mostrar &amp;Usuarios Fuera de línea</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="203"/>
+        <location filename="../src/core/systemmenu.cpp" line="177"/>
         <source>&amp;Plugin Manager...</source>
         <translation>Gestor de A&amp;pliques...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="208"/>
+        <location filename="../src/core/systemmenu.cpp" line="182"/>
         <source>Sa&amp;ve Settings</source>
         <translation>Guardar Configuración</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="210"/>
+        <location filename="../src/core/systemmenu.cpp" line="184"/>
         <source>E&amp;xit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="98"/>
+        <location filename="../src/core/systemmenu.cpp" line="74"/>
         <source>S&amp;ystem Functions</source>
         <translation>Funciones del Sistema</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="90"/>
-        <source>Debug</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="91"/>
-        <source>Raw Packets</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="102"/>
+        <location filename="../src/core/systemmenu.cpp" line="78"/>
         <source>&amp;Account Manager...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="107"/>
+        <location filename="../src/core/systemmenu.cpp" line="81"/>
         <source>User &amp;Functions</source>
         <translation>&amp;Funciones de Usuario</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="109"/>
+        <location filename="../src/core/systemmenu.cpp" line="83"/>
         <source>A&amp;dd Group...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="113"/>
+        <location filename="../src/core/systemmenu.cpp" line="87"/>
         <source>ICQ Ra&amp;ndom Chat...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="124"/>
+        <location filename="../src/core/systemmenu.cpp" line="98"/>
         <source>ICQ Phone &quot;Follow Me&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="200"/>
+        <location filename="../src/core/systemmenu.cpp" line="174"/>
         <source>Sh&amp;ow Empty Groups</source>
         <translation>M&amp;ostrar Grupos Vacíos</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="202"/>
+        <location filename="../src/core/systemmenu.cpp" line="176"/>
         <source>S&amp;ettings...</source>
         <translation>Configuración...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="204"/>
+        <location filename="../src/core/systemmenu.cpp" line="178"/>
         <source>GPG &amp;Key Manager...</source>
         <translation>Manejador de claves GPG...</translation>
     </message>
@@ -5252,22 +5280,22 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="613"/>
+        <location filename="../src/core/systemmenu.cpp" line="544"/>
         <source>&amp;Info...</source>
         <translation>&amp;Info...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="614"/>
+        <location filename="../src/core/systemmenu.cpp" line="545"/>
         <source>View &amp;History...</source>
         <translation>Ver &amp;Historial...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="617"/>
+        <location filename="../src/core/systemmenu.cpp" line="548"/>
         <source>&amp;Security Options...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="618"/>
+        <location filename="../src/core/systemmenu.cpp" line="549"/>
         <source>&amp;Random Chat Group...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6612,7 +6640,7 @@ Desea seleccionar otro foto?</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="442"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1964"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1962"/>
         <source>Invite</source>
         <translation type="unfinished">Invitar</translation>
     </message>
@@ -6834,25 +6862,25 @@ Enviar...</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1787"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1785"/>
         <source>Drag Users Here
 Right Click for Options</source>
         <translation type="unfinished">Arrastre los Usuarios Aquí
 Pulse con el Botón Derecho para Opciones</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1956"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1954"/>
         <source>Clear</source>
         <translation type="unfinished">Limpiar</translation>
     </message>
     <message>
+        <location filename="../src/userevents/usersendevent.cpp" line="1969"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1971"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1973"/>
         <source>Select files to send</source>
         <translation type="unfinished">Seleccione los archivos a enviar</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="2010"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="2008"/>
         <source>%1 Files</source>
         <translation type="unfinished">%1 Ficheros</translation>
     </message>

@@ -1593,12 +1593,12 @@ Description: %2</source>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>No</source>
         <translation>Не</translation>
     </message>
@@ -1735,7 +1735,7 @@ Rebuild Licq with OpenSSL support.</source>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="648"/>
+        <location filename="../src/core/licqgui.cpp" line="641"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1744,7 +1744,7 @@ from your contact list?</source>
 з Вашага сьпісу кантактаў?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="269"/>
+        <location filename="../src/core/licqgui.cpp" line="268"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation>Падчас спробы прачытаць файл усталёвак здарылася памылка.
@@ -1754,30 +1754,75 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::LogWindow</name>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="61"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="69"/>
         <source>Licq - Network Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="84"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="95"/>
+        <source>Status Info</source>
+        <translation type="unfinished">Дадзеныя стану</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="96"/>
+        <source>Unknown Packets</source>
+        <translation type="unfinished">Невядомыя пакеты</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="97"/>
+        <source>Errors</source>
+        <translation type="unfinished">Памылкі</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="98"/>
+        <source>Warnings</source>
+        <translation type="unfinished">Папярэджваньні</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="99"/>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="100"/>
+        <source>Raw Packets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="102"/>
+        <source>Set All</source>
+        <translation type="unfinished">Усталяваць усё</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="103"/>
+        <source>Clear All</source>
+        <translation type="unfinished">Зьняць усё</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="106"/>
+        <source>Log Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/logwindow.cpp" line="116"/>
         <source>Save...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="151"/>
-        <location filename="../src/dialogs/logwindow.cpp" line="154"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="185"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="188"/>
         <source>Licq - Save Network Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="164"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="198"/>
         <source>Failed to open file:
 %1</source>
         <translation>Немагчыма адчыніць файл:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/logwindow.cpp" line="89"/>
+        <location filename="../src/dialogs/logwindow.cpp" line="121"/>
         <source>Clear</source>
         <translation>Ачысьціць</translation>
     </message>
@@ -1793,12 +1838,12 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MLView</name>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="293"/>
+        <location filename="../src/widgets/mlview.cpp" line="316"/>
         <source>Copy URL</source>
         <translation>Капіяваць спасылку</translation>
     </message>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="295"/>
+        <location filename="../src/widgets/mlview.cpp" line="318"/>
         <source>Quote</source>
         <translation>Цытаваць</translation>
     </message>
@@ -5030,227 +5075,210 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenu</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="79"/>
         <source>Debug Level</source>
-        <translation>Узровень адладкі</translation>
+        <translation type="obsolete">Узровень адладкі</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="86"/>
         <source>Status Info</source>
-        <translation>Дадзеныя стану</translation>
+        <translation type="obsolete">Дадзеныя стану</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="87"/>
         <source>Unknown Packets</source>
-        <translation>Невядомыя пакеты</translation>
+        <translation type="obsolete">Невядомыя пакеты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>Errors</source>
-        <translation>Памылкі</translation>
+        <translation type="obsolete">Памылкі</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="89"/>
         <source>Warnings</source>
-        <translation>Папярэджваньні</translation>
+        <translation type="obsolete">Папярэджваньні</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="93"/>
         <source>Set All</source>
-        <translation>Усталяваць усё</translation>
+        <translation type="obsolete">Усталяваць усё</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="94"/>
         <source>Clear All</source>
-        <translation>Зьняць усё</translation>
+        <translation type="obsolete">Зьняць усё</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="99"/>
+        <location filename="../src/core/systemmenu.cpp" line="75"/>
         <source>&amp;View System Messages...</source>
         <translation>Пр&amp;агляд сістэмных маведамленьняў...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="108"/>
+        <location filename="../src/core/systemmenu.cpp" line="82"/>
         <source>&amp;Add User...</source>
         <translation>&amp;дадаць карыстальніка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="110"/>
+        <location filename="../src/core/systemmenu.cpp" line="84"/>
         <source>S&amp;earch for User...</source>
         <translation>&amp;Пошук карыстальніка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="111"/>
+        <location filename="../src/core/systemmenu.cpp" line="85"/>
         <source>A&amp;uthorize User...</source>
         <translation>А&amp;ўтарызаваць карыстальніка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="112"/>
+        <location filename="../src/core/systemmenu.cpp" line="86"/>
         <source>Re&amp;quest Authorization...</source>
         <translation>&amp;Запытаць аўтарызацыю...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="115"/>
+        <location filename="../src/core/systemmenu.cpp" line="89"/>
         <source>&amp;Popup All Messages...</source>
         <translation>Паказаць &amp;усе паведамленьні...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="116"/>
+        <location filename="../src/core/systemmenu.cpp" line="90"/>
         <source>Edit &amp;Groups...</source>
         <translation>Рэдагаваць &amp;гурты...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="118"/>
+        <location filename="../src/core/systemmenu.cpp" line="92"/>
         <source>Update All Users</source>
         <translation>Абнавіць усіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="119"/>
+        <location filename="../src/core/systemmenu.cpp" line="93"/>
         <source>Update Current Group</source>
         <translation>Аднавіць цякучы гурт</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="120"/>
+        <location filename="../src/core/systemmenu.cpp" line="94"/>
         <source>&amp;Redraw User Window</source>
         <translation>П&amp;ерамаляваць акенца карыстальніка</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="121"/>
+        <location filename="../src/core/systemmenu.cpp" line="95"/>
         <source>&amp;Save All Users</source>
         <translation>&amp;Захаваць усіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="132"/>
+        <location filename="../src/core/systemmenu.cpp" line="106"/>
         <source>Don&apos;t Show</source>
         <translation>Не паказваць</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="133"/>
+        <location filename="../src/core/systemmenu.cpp" line="107"/>
         <source>Available</source>
         <translation>Даступны</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="134"/>
+        <location filename="../src/core/systemmenu.cpp" line="108"/>
         <source>Busy</source>
         <translation>Заняты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="138"/>
+        <location filename="../src/core/systemmenu.cpp" line="112"/>
         <source>&amp;Status</source>
         <translation>С&amp;тан</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="163"/>
+        <location filename="../src/core/systemmenu.cpp" line="137"/>
         <source>&amp;Group</source>
         <translation>&amp;Гурты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="183"/>
+        <location filename="../src/core/systemmenu.cpp" line="157"/>
         <source>&amp;Help</source>
         <translation>Дапа&amp;мога</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="184"/>
+        <location filename="../src/core/systemmenu.cpp" line="158"/>
         <source>&amp;Hints...</source>
         <translation>Пара&amp;ды...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="185"/>
+        <location filename="../src/core/systemmenu.cpp" line="159"/>
         <source>&amp;About...</source>
         <translation>Зьв&amp;есткі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="186"/>
+        <location filename="../src/core/systemmenu.cpp" line="160"/>
         <source>&amp;Statistics...</source>
         <translation>Стат&amp;ыстыка...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="193"/>
+        <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>Set &amp;Auto Response...</source>
         <translation>Усталяваць &amp;аўта-адказ...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="195"/>
+        <location filename="../src/core/systemmenu.cpp" line="169"/>
         <source>&amp;Network Window...</source>
         <translation>Акенца сетк&amp;і...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="196"/>
+        <location filename="../src/core/systemmenu.cpp" line="170"/>
         <source>&amp;Mini Mode</source>
         <translation>Р&amp;эжым &quot;Міні&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="198"/>
+        <location filename="../src/core/systemmenu.cpp" line="172"/>
         <source>Show Offline &amp;Users</source>
         <translation>Паказваць &amp;усіх карыстальнікаў</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="203"/>
+        <location filename="../src/core/systemmenu.cpp" line="177"/>
         <source>&amp;Plugin Manager...</source>
         <translation>П&amp;шырэньні...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="208"/>
+        <location filename="../src/core/systemmenu.cpp" line="182"/>
         <source>Sa&amp;ve Settings</source>
         <translation>За&amp;хаваць наладкі</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="210"/>
+        <location filename="../src/core/systemmenu.cpp" line="184"/>
         <source>E&amp;xit</source>
         <translation>В&amp;ыйсьце</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="98"/>
+        <location filename="../src/core/systemmenu.cpp" line="74"/>
         <source>S&amp;ystem Functions</source>
         <translation>Сыст&amp;эмныя прылады</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="90"/>
-        <source>Debug</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="91"/>
-        <source>Raw Packets</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/systemmenu.cpp" line="102"/>
+        <location filename="../src/core/systemmenu.cpp" line="78"/>
         <source>&amp;Account Manager...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="107"/>
+        <location filename="../src/core/systemmenu.cpp" line="81"/>
         <source>User &amp;Functions</source>
         <translation>Карыс&amp;тальніцкія прылады</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="109"/>
+        <location filename="../src/core/systemmenu.cpp" line="83"/>
         <source>A&amp;dd Group...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="113"/>
+        <location filename="../src/core/systemmenu.cpp" line="87"/>
         <source>ICQ Ra&amp;ndom Chat...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="124"/>
+        <location filename="../src/core/systemmenu.cpp" line="98"/>
         <source>ICQ Phone &quot;Follow Me&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="200"/>
+        <location filename="../src/core/systemmenu.cpp" line="174"/>
         <source>Sh&amp;ow Empty Groups</source>
         <translation>Паказва&amp;ць пустыя гурты</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="202"/>
+        <location filename="../src/core/systemmenu.cpp" line="176"/>
         <source>S&amp;ettings...</source>
         <translation>&amp;Наладкі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="204"/>
+        <location filename="../src/core/systemmenu.cpp" line="178"/>
         <source>GPG &amp;Key Manager...</source>
         <translation>На&amp;ладкі GPG...</translation>
     </message>
@@ -5258,22 +5286,22 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="613"/>
+        <location filename="../src/core/systemmenu.cpp" line="544"/>
         <source>&amp;Info...</source>
         <translation>&amp;дадзеныя...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="614"/>
+        <location filename="../src/core/systemmenu.cpp" line="545"/>
         <source>View &amp;History...</source>
         <translation>Прагл&amp;яд гісторыі...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="617"/>
+        <location filename="../src/core/systemmenu.cpp" line="548"/>
         <source>&amp;Security Options...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="618"/>
+        <location filename="../src/core/systemmenu.cpp" line="549"/>
         <source>&amp;Random Chat Group...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6624,7 +6652,7 @@ Select another picture?</source>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="442"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1964"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1962"/>
         <source>Invite</source>
         <translation type="unfinished">Запрасіць</translation>
     </message>
@@ -6847,25 +6875,25 @@ Send...</source>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1787"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1785"/>
         <source>Drag Users Here
 Right Click for Options</source>
         <translation type="unfinished">Перацягніце карыстальнікаў сюды
 Правы клік дзеля варыянтаў</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="1956"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="1954"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/userevents/usersendevent.cpp" line="1969"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1971"/>
-        <location filename="../src/userevents/usersendevent.cpp" line="1973"/>
         <source>Select files to send</source>
         <translation type="unfinished">Абярыце файлы дзеля адсылкі</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendevent.cpp" line="2010"/>
+        <location filename="../src/userevents/usersendevent.cpp" line="2008"/>
         <source>%1 Files</source>
         <translation type="unfinished">%1 файлаў</translation>
     </message>
