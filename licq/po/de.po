@@ -250,7 +250,7 @@ msgstr " hat Ihre Autorisation abgelehnt"
 
 #: src/userevents.cpp:642
 msgid " through email pager"
-msgstr " über den Email-Pager\n"
+msgstr " über den Email-Pager"
 
 #: src/userevents.cpp:599
 msgid " through web panel"
@@ -1608,7 +1608,7 @@ msgstr "Autorisationsanfrage von %s."
 #: src/icq/icq-srv.cpp:790
 #, c-format
 msgid "Authorizing user %s."
-msgstr "Benutzer %s wird autorisiert.\n"
+msgstr "Benutzer %s wird autorisiert."
 
 #: src/statistics.cpp:41
 msgid "Auto Response Checked"
@@ -2545,7 +2545,7 @@ msgstr "Chatanfrage von %s (%s) abgebrochen."
 #: src/icq/icq-tcp.cpp:1831 src/icq/icq-tcp.cpp:1995
 #, c-format
 msgid "Chat request from %s (%s)."
-msgstr "%sChat-Anfrage von %s (%s).\n"
+msgstr "%sChat-Anfrage von %s (%s)."
 
 #: src/icq/codes.c:553
 msgid "Chat, Mingling, Virtual Hangout"
@@ -4125,7 +4125,7 @@ msgstr "Fehler beim Öffnen von '%s' zum Lesen. Siehe Log für weitere Details."
 #: src/contactlist/user.cpp:280 src/contactlist/user.cpp:707
 #, c-format
 msgid "Error opening '%s' for writing."
-msgstr "\"%s\" lässt sich nicht zum schreiben öffnen.\n"
+msgstr "\"%s\" lässt sich nicht zum schreiben öffnen."
 
 #: src/contactlist/user.cpp:1835
 #, c-format
@@ -4183,9 +4183,7 @@ msgstr "Ereignis #%hu ist noch in der Warteschlange!\n"
 #: src/icq/oscarservice.cpp:617
 #, c-format
 msgid "Event for unknown or unsupported service 0x%02X failed."
-msgstr ""
-"Ereignis für unbekannten oder nicht unterstützten Dienst 0x%02X "
-"fehlgeschlagen.\n"
+msgstr "Ereignis für unbekannten oder nicht unterstützten Dienst 0x%02X fehlgeschlagen."
 
 #: src/icq/oscarservice.cpp:177
 #, c-format
@@ -4803,7 +4801,7 @@ msgstr "Dateiübertragung: Sende %s (%ld Bytes)."
 #: src/icq/filetransfer.cpp:933
 #, c-format
 msgid "File Transfer: Sent %s, %d too many bytes."
-msgstr "Dateiübertagung: %s gesendet, %d zuviele Bytes.\n"
+msgstr "Dateiübertagung: %s gesendet, %d zuviele Bytes."
 
 #: src/icq/filetransfer.cpp:929
 #, c-format
@@ -4845,8 +4843,7 @@ msgstr "Dateiübertragung: Konnte neue Verbindung nicht annehmen."
 
 #: src/icq/filetransfer.cpp:856
 msgid "File Transfer: Unable to send file receive start packet."
-msgstr ""
-"Dateiübertragung: Konnte Startpaket für den Dateiempfang nicht senden.\n"
+msgstr "Dateiübertragung: Konnte Startpaket für den Dateiempfang nicht senden."
 
 #: src/icq/filetransfer.cpp:786
 msgid "File Transfer: Unknown packet received during file send"
@@ -4960,7 +4957,7 @@ msgstr "Von %s (%s)"
 #: src/icq/icq-srv.cpp:4773
 #, c-format
 msgid "From: %s"
-msgstr "Von: %s\n"
+msgstr "Von: %s"
 
 #: src/contactlist/user.cpp:1461
 #, c-format
@@ -9226,7 +9223,7 @@ msgstr ""
 #: src/icq/icq-tcp.cpp:1006 src/icq/icq-tcp.cpp:3679 src/icq/icq-tcp.cpp:3748
 #, c-format
 msgid "Handshake socket error: %s."
-msgstr "Protokollverhandlungs-Socket-Fehler: %s.\n"
+msgstr "Protokollverhandlungs-Socket-Fehler: %s."
 
 #: src/icq/codes.c:3386
 msgid "Health and Beauty"
@@ -11003,7 +11000,7 @@ msgstr "Interner Proxyfehler"
 
 #: src/icq/codes.c:3609
 msgid "International Org."
-msgstr "Internationale Organisation"
+msgstr "Internationale Org."
 
 #: src/icq/codes.c:3391
 msgid "Internet"
@@ -12692,9 +12689,8 @@ msgid "Mayotte Island"
 msgstr "Mayotte Insel"
 
 #: src/icq/codes.c:3394
-#, fuzzy
 msgid "Media"
-msgstr "Mazedonisch"
+msgstr ""
 
 #: src/icq/codes.c:3561
 msgid "Medical/Health"
@@ -12722,7 +12718,7 @@ msgstr "Nachricht von %s (%s)."
 #: src/icq/icq-srv.cpp:2708
 #, c-format
 msgid "Message from new user (%s), ignoring"
-msgstr "Nachricht von neuem Benutzer (%s), wird ignoriert."
+msgstr "Nachricht von neuem Benutzer (%s), wird ignoriert"
 
 #: src/icq/icq-srv.cpp:2713
 #, c-format
@@ -16089,7 +16085,7 @@ msgstr "Benenne Gruppe mit der ID %d zu %s um..."
 #: src/contactlist/usermanager.cpp:760
 #, c-format
 msgid "Renaming request for invalid group %u"
-msgstr "Umbenennung für ungültige Gruppe %u."
+msgstr "Umbenennung für ungültige Gruppe %u"
 
 #: src/icq/icq-srv.cpp:1940
 msgid "Requesting BOS rights."
@@ -16697,7 +16693,7 @@ msgstr "Verschlüsselte Verbindung wurde von %s (%s) geschlossen."
 #: src/icq/icq-tcp.cpp:2136 src/icq/icq-tcp.cpp:2440
 #, c-format
 msgid "Secure channel established with %s (%s)"
-msgstr "Verschlüsselte Verbindung mit %s (%s) aufgebaut."
+msgstr "Verschlüsselte Verbindung mit %s (%s) aufgebaut"
 
 #: src/icq/icq-tcp.cpp:2106
 #, c-format
@@ -17073,7 +17069,7 @@ msgstr "Spanisch"
 
 #: src/icq/icq.cpp:148
 msgid "Spawning daemon threads"
-msgstr "Daemon-Threads werden erzeugt."
+msgstr "Daemon-Threads werden erzeugt"
 
 #: src/icq/codes.c:3614
 msgid "Spiritual/Religious Org."
@@ -19624,7 +19620,7 @@ msgstr "Unbekannter ICBM Plugin-Typ: %s"
 #: src/icq/icq-tcp.cpp:996
 #, c-format
 msgid "Unknown ICQ TCP version (%d)."
-msgstr "Unbekannte TCP-Version (%d).\n"
+msgstr "Unbekannte TCP-Version (%d)."
 
 #: src/icq/icq-srv.cpp:4094
 #, c-format
