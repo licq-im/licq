@@ -1576,12 +1576,12 @@ Beschreibung: %2</translation>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3058,7 +3058,7 @@ Please create one first.</source>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="225"/>
         <source>error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler</translation>
     </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="228"/>
@@ -5404,7 +5404,7 @@ reset your statistics?</source>
         <location filename="../src/userdlg/userdlg.cpp" line="249"/>
         <location filename="../src/userdlg/userdlg.cpp" line="265"/>
         <source>error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler</translation>
     </message>
     <message>
         <location filename="../src/userdlg/userdlg.cpp" line="256"/>
@@ -6705,7 +6705,7 @@ Send anyway?</source>
         <location filename="../src/userevents/usersendevent.cpp" line="1434"/>
         <location filename="../src/userevents/usersendevent.cpp" line="1479"/>
         <source>error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fehler</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1466"/>

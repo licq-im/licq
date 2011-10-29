@@ -1576,12 +1576,12 @@ Opis: %2</translation>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>Yes</source>
         <translation type="unfinished">Tak</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="293"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="300"/>
         <source>No</source>
         <translation type="unfinished">Nie</translation>
     </message>
@@ -1803,7 +1803,7 @@ Would you like to try loading the old one?</source>
     <message>
         <location filename="../src/dialogs/mmsenddlg.cpp" line="139"/>
         <source>failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">próba nieudana</translation>
     </message>
     <message>
         <location filename="../src/dialogs/mmsenddlg.cpp" line="140"/>
@@ -3049,7 +3049,7 @@ Please create one first.</source>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="219"/>
         <source>failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">próba nieudana</translation>
     </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="222"/>
@@ -5415,7 +5415,7 @@ reset your statistics?</source>
     <message>
         <location filename="../src/userdlg/userdlg.cpp" line="259"/>
         <source>failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">próba nieudana</translation>
     </message>
     <message>
         <location filename="../src/userdlg/userdlg.cpp" line="262"/>
@@ -6724,7 +6724,7 @@ Send anyway?</source>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1473"/>
         <source>failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">próba nieudana</translation>
     </message>
     <message>
         <location filename="../src/userevents/usersendevent.cpp" line="1476"/>
