@@ -1,19 +1,13 @@
-      LICQ v1.6.0 README
+      LICQ v1.6.1 README
       http://www.licq.org/
       #Licq on irc.freenode.net
 
-This is both a bugfix release and contains some new features.
-Changes include HTTP proxy support for Jabber protocol, improved user
-client detection for both ICQ and MSN protocols, and several
-corrections to improve unicode handling in ICQ protocol.
-
-For more information on what has changed since Licq 1.5.1, see doc/CHANGELOG.
+This is the development version of the future Licq 1.6.1.
+This is a work in progress and should not be relied on to be a stable
+release at any time before the final release is made.
 
 For general information on how to build and run Licq, see doc/README.
 For information about building and using the different plugins, see README or
 doc/README for the respective plugins.
-
-We hope you enjoy this release and feel free to come by #Licq to let us know
-what you think, get help, help others or just to keep us company.
 
 The Licq Team
