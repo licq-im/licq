@@ -2,6 +2,7 @@ Change log for Licq.
 
 New in 1.6.1
 o Qt4-Gui: Handle meta key in global hotkeys
+o Qt4-Gui: Fix global hotkeys to work with Caps-/Numlock active
 
 New in 1.6.0
 o Reduce number of reads and writes of config files

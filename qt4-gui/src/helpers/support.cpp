@@ -260,11 +260,11 @@ void Support::undockWindow(WId win, WId handler)
 #endif
 }
 
+#if defined(Q_WS_X11)
 unsigned Support::keyToXMod(int keyCode)
 {
   unsigned mod = 0;
 
-#if defined(Q_WS_X11)
   if (keyCode != 0)
   {
     if (keyCode & Qt::SHIFT)
@@ -276,7 +276,6 @@ unsigned Support::keyToXMod(int keyCode)
     if (keyCode & Qt::META)
       mod |= Mod4Mask;
   }
-#endif
 
   return mod;
 }
@@ -285,7 +284,6 @@ unsigned Support::keyToXSym(int keyCode)
 {
   unsigned keysym = 0;
 
-#if defined(Q_WS_X11)
   char* toks[4];
   char* next_tok;
   char sKey[100];
@@ -333,12 +331,28 @@ unsigned Support::keyToXSym(int keyCode)
         return 0;
     }
   }
-#endif
 
   return keysym;
 }
 
-#if defined(Q_WS_X11)
+void Support::grabKey(Display* dsp, Qt::HANDLE rootWin, int key, bool enable)
+{
+  KeyCode keycode = XKeysymToKeycode(dsp, keyToXSym(key));
+  unsigned basemod = keyToXMod(key);
+
+  // No extra modifiers
+  XGrabKey(dsp, keycode, basemod, rootWin, enable, GrabModeAsync, GrabModeSync);
+
+  // Caps Lock
+  XGrabKey(dsp, keycode, basemod | LockMask, rootWin, enable, GrabModeAsync, GrabModeSync);
+
+  // Num Lock
+  XGrabKey(dsp, keycode, basemod | Mod2Mask, rootWin, enable, GrabModeAsync, GrabModeSync);
+
+  // Caps Lock & Num Lock
+  XGrabKey(dsp, keycode, basemod | LockMask | Mod2Mask, rootWin, enable, GrabModeAsync, GrabModeSync);
+}
+
 unsigned char* Support::getWindowProperty(WId win, const char* prop)
 {
   Display* dsp = QX11Info::display();
