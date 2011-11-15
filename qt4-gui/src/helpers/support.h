@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2006-2009 Licq developers
+ * Copyright (C) 2006-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ public:
    */
   static void undockWindow(WId win, WId handler);
 
+#if defined(Q_WS_X11)
   /**
    * Translates @a keyCode into @return XModifier
    */
@@ -89,6 +90,17 @@ public:
    * Translates @a keyCode into @return XKeySymbol
    */
   static unsigned keyToXSym(int keyCode);
+
+  /**
+   * Grab/ungrab a global hotkey
+   *
+   * @param dsp X11 Display
+   * @param rootWin Root window that will get key events
+   * @param key Key to grab/ungrab
+   * @param enable True to grab, false to ungrab
+   */
+  static void grabKey(Display* dsp, Qt::HANDLE rootWin, int key, bool enable);
+#endif
 
 private:
 #if defined(Q_WS_X11)
