@@ -273,6 +273,8 @@ unsigned Support::keyToXMod(int keyCode)
       mod |= ControlMask;
     if (keyCode & Qt::ALT)
       mod |= Mod1Mask;
+    if (keyCode & Qt::META)
+      mod |= Mod4Mask;
   }
 #endif
 
@@ -316,7 +318,8 @@ unsigned Support::keyToXSym(int keyCode)
   {
     if (qstricmp(toks[i], "SHIFT") != 0 &&
         qstricmp(toks[i], "CTRL")  != 0 &&
-        qstricmp(toks[i], "ALT")   != 0)
+        qstricmp(toks[i], "ALT")   != 0 &&
+        qstricmp(toks[i], "META")  != 0)
     {
       if (keyFound)
         return 0;

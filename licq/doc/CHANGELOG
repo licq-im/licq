@@ -1,5 +1,8 @@
 Change log for Licq.
 
+New in 1.6.1
+o Qt4-Gui: Handle meta key in global hotkeys
+
 New in 1.6.0
 o Reduce number of reads and writes of config files
 o Let GUI run in main thread on Mac OS X

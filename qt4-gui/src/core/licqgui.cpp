@@ -512,7 +512,7 @@ bool LicqGui::x11EventFilter(XEvent* event)
   if (event->type == KeyPress && (myPopupMessageKey != 0 || myShowMainwinKey != 0))
   {
     Display* dsp = QX11Info::display();
-    unsigned int mod = event->xkey.state & (ControlMask | ShiftMask | Mod1Mask);
+    unsigned int mod = event->xkey.state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
     unsigned int keysym = XKeycodeToKeysym(dsp, event->xkey.keycode, 0);
 
     if (keysym == Support::keyToXSym(myPopupMessageKey) &&
