@@ -127,6 +127,7 @@ public:
 protected:
   CSrvPacketTcp(unsigned char);
   void InitBuffer();
+  static void initSequence(int service);
 
   static bool s_bRegistered;
   static unsigned short s_nSequence[32];
