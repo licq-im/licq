@@ -1718,7 +1718,8 @@ void UserSendEvent::clearNewEvents()
 
 void UserSendEvent::closeDialog()
 {
-  gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
+  if (mySendTypingTimer->isActive())
+    gProtocolManager.sendTypingNotification(myUsers.front(), false, myConvoId);
 
   if (Config::Chat::instance()->msgChatView())
   {
