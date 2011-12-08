@@ -219,13 +219,10 @@ TEST(Log, streamCopyConstructor)
   }
 }
 
-namespace
-{
 struct Custom
 {
   int myValue;
 };
-}
 
 static std::ostream& operator<<(std::ostream& os, const Custom& c)
 {
