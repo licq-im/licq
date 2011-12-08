@@ -144,7 +144,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     if (pColor != NULL) e->SetColor(pColor);
     bool isUtf8 = (!gTranslator.isAscii(m) && fromEncoding == "UTF-8");
     CPT_Message* p = new CPT_Message(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u, isUtf8);
-    gLog.info(tr("Sending %smessage to %s (#%hu)."),
+    gLog.info(tr("Sending %smessage to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
@@ -184,7 +184,7 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool
   else
   {
     CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(*u);
-    gLog.info(tr("Requesting auto response from %s (#%hu)."),
+    gLog.info(tr("Requesting auto response from %s (#%d)."),
         u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, NULL);
   }
@@ -253,7 +253,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
     e = new Licq::EventUrl(url.c_str(), description, Licq::EventUrl::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Url* p = new CPT_Url(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
-    gLog.info(tr("Sending %sURL to %s (#%hu)."),
+    gLog.info(tr("Sending %sURL to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
@@ -311,7 +311,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     {
       e = new Licq::EventFile(filename, p->description(), p->GetFileSize(),
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
-      gLog.info(tr("Sending file transfer to %s (#%hu)."),
+      gLog.info(tr("Sending file transfer to %s (#%d)."),
           u->getAlias().c_str(), -p->Sequence());
 
       SendExpectEvent_Server(userId, p, e);
@@ -343,7 +343,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     {
       e = new Licq::EventFile(filename, p->description(), p->GetFileSize(),
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
-      gLog.info(tr("Sending %sfile transfer to %s (#%hu)."),
+      gLog.info(tr("Sending %sfile transfer to %s (#%d)."),
           (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
           u->getAlias().c_str(), -p->Sequence());
 
@@ -418,7 +418,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
     e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
-    gLog.info(tr("Sending %scontact list to %s (#%hu)."),
+    gLog.info(tr("Sending %scontact list to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     SendExpectEvent_Client(eventId, *u, p, e);
@@ -625,7 +625,7 @@ void IcqProtocol::icqFileTransferCancel(const Licq::UserId& userId, unsigned sho
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
-  gLog.info(tr("Cancelling file transfer to %s (#%hu)."), u->getAlias().c_str(), -nSequence);
+  gLog.info(tr("Cancelling file transfer to %s (#%d)."), u->getAlias().c_str(), -nSequence);
   CPT_CancelFile p(nSequence, *u);
   AckTCP(p, u->normalSocketDesc());
 }
@@ -638,7 +638,7 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
-  gLog.info(tr("Accepting file transfer from %s (#%hu)."), u->getAlias().c_str(), -nSequence);
+  gLog.info(tr("Accepting file transfer from %s (#%d)."), u->getAlias().c_str(), -nSequence);
   if (!viaServer)
   {
     CPT_AckFileAccept p(nPort, nSequence, *u);
@@ -660,7 +660,7 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
-  gLog.info(tr("Refusing file transfer from %s (#%hu)."), u->getAlias().c_str(), -nSequence);
+  gLog.info(tr("Refusing file transfer from %s (#%d)."), u->getAlias().c_str(), -nSequence);
 
   if (!viaServer)
   {
@@ -716,7 +716,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
 
     Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
         Licq::EventChat::TimeNow, f);
-    gLog.info(tr("Sending chat request to %s (#%hu)."), u->getAlias().c_str(), -p->Sequence());
+    gLog.info(tr("Sending chat request to %s (#%d)."), u->getAlias().c_str(), -p->Sequence());
 
       result = SendExpectEvent_Server(u->id(), p, e);
     }
@@ -738,7 +738,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
         nLevel, *u, (u->Version() > 7));
     Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
         Licq::UserEvent::TimeNow, f);
-    gLog.info(tr("Sending %schat request to %s (#%hu)."),
+    gLog.info(tr("Sending %schat request to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
     result = SendExpectEvent_Client(*u, p, e);
@@ -757,7 +757,7 @@ void IcqProtocol::icqChatRequestCancel(const Licq::UserId& userId, unsigned shor
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
-  gLog.info(tr("Cancelling chat request with %s (#%hu)."), u->getAlias().c_str(), -nSequence);
+  gLog.info(tr("Cancelling chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
   CPT_CancelChat p(nSequence, *u);
   AckTCP(p, u->normalSocketDesc());
 }
@@ -769,7 +769,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
-  gLog.info(tr("Refusing chat request with %s (#%hu)."), u->getAlias().c_str(), -nSequence);
+  gLog.info(tr("Refusing chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
   string reasonDos = gTranslator.clientToServer(reason, true);
 
 	if (bDirect)
@@ -793,7 +793,7 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
-  gLog.info(tr("Accepting chat request with %s (#%hu)."), u->getAlias().c_str(), -nSequence);
+  gLog.info(tr("Accepting chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
 
 	if (bDirect)
   {
@@ -819,7 +819,7 @@ void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const Licq::UserId
     return;
 
   CPT_OpenSecureChannel *pkt = new CPT_OpenSecureChannel(*u);
-  gLog.info(tr("Sending request for secure channel to %s (#%hu)."),
+  gLog.info(tr("Sending request for secure channel to %s (#%d)."),
       u->getAlias().c_str(), -pkt->Sequence());
   SendExpectEvent_Client(eventId, *u, pkt, NULL);
 
@@ -839,7 +839,7 @@ void IcqProtocol::icqCloseSecureChannel(unsigned long eventId, const Licq::UserI
     return;
 
   CPT_CloseSecureChannel *pkt = new CPT_CloseSecureChannel(*u);
-  gLog.info(tr("Closing secure channel with %s (#%hu)."),
+  gLog.info(tr("Closing secure channel with %s (#%d)."),
       u->getAlias().c_str(), -pkt->Sequence());
   SendExpectEvent_Client(eventId, *u, pkt, NULL);
 
@@ -857,7 +857,7 @@ void IcqProtocol::icqOpenSecureChannelCancel(const Licq::UserId& userId,
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
-  gLog.info(tr("Cancelling secure channel request to %s (#%hu)."),
+  gLog.info(tr("Cancelling secure channel request to %s (#%d)."),
       u->getAlias().c_str(), -nSequence);
   // XXX Tear down tcp connection ??
 }
@@ -2530,7 +2530,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       unsigned subResult;
     if (ackFlags == ICQ_TCPxACK_REFUSE)
     {
-      gLog.info(tr("Refusal from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
+      gLog.info(tr("Refusal from %s (#%d)%s."), u->getAlias().c_str(), -theSequence, l);
         subResult = Licq::Event::SubResultRefuse;
       }
       else
@@ -2540,13 +2540,13 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       {
           u->setAutoResponse(message);
         u->SetShowAwayMsg(*message);
-        gLog.info(tr("Auto response from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
+        gLog.info(tr("Auto response from %s (#%d)%s."), u->getAlias().c_str(), -theSequence, l);
       }
 
       switch(ackFlags)
       {
         case ICQ_TCPxACK_ONLINE:
-          gLog.info(tr("Ack from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
+          gLog.info(tr("Ack from %s (#%d)%s."), u->getAlias().c_str(), -theSequence, l);
             if (pExtendedAck && !pExtendedAck->accepted())
               subResult = Licq::Event::SubResultReturn;
             else
@@ -2555,23 +2555,23 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         case ICQ_TCPxACK_AWAY:
         case ICQ_TCPxACK_NA:
         case ICQ_TCPxACK_OCCUPIEDx2: //auto decline due to occupied mode
-          gLog.info(tr("Ack from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
+          gLog.info(tr("Ack from %s (#%d)%s."), u->getAlias().c_str(), -theSequence, l);
             subResult = Licq::Event::SubResultRefuse;
             break;
         case ICQ_TCPxACK_OCCUPIED:
         case ICQ_TCPxACK_DND:
-          gLog.info(tr("Returned from %s (#%hu)%s."), u->getAlias().c_str(), -theSequence, l);
+          gLog.info(tr("Returned from %s (#%d)%s."), u->getAlias().c_str(), -theSequence, l);
             subResult = Licq::Event::SubResultReturn;
             break;
         case ICQ_TCPxACK_OCCUPIEDxCAR:
         case ICQ_TCPxACK_DNDxCAR:
-          gLog.info(tr("Custom %s response from %s (#%hu)%s."),
+          gLog.info(tr("Custom %s response from %s (#%d)%s."),
               (ackFlags == ICQ_TCPxACK_DNDxCAR ? tr("DnD") : tr("Occupied")),
               u->getAlias().c_str(), -theSequence, l);
             subResult = Licq::Event::SubResultAccept; // FIXME: or should this be ACK_RETURN ?
             break;
           default:
-          gLog.unknown(tr("Unknown ack flag from %s (#%hu): %04x %s"),
+          gLog.unknown(tr("Unknown ack flag from %s (#%d): %04x %s"),
               u->getAlias().c_str(), -theSequence, ackFlags, l);
             subResult = Licq::Event::SubResultAccept;
       }

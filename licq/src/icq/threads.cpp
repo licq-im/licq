@@ -570,7 +570,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned short nSequence = e->m_nSequence;
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    gLog.warning(tr("Error sending event (#%hu): %s."), -nSequence, errorStr.c_str());
+    gLog.warning(tr("Error sending event (#%d): %s."), -nSequence, errorStr.c_str());
     gIcqProtocol.myNewSocketPipe.putChar('S');
     // Kill the event, do after the above as ProcessDoneEvent erase the event
     if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
