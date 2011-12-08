@@ -39,13 +39,12 @@
 
 #include "contactlist/contactlist.h"
 
-#include "dialogs/authuserdlg.h"
+#include "dialogs/authdlg.h"
 #include "dialogs/awaymsgdlg.h"
 #include "dialogs/customautorespdlg.h"
 #include "dialogs/gpgkeyselect.h"
 #include "dialogs/historydlg.h"
 #include "dialogs/keyrequestdlg.h"
-#include "dialogs/reqauthdlg.h"
 #include "dialogs/showawaymsgdlg.h"
 #include "dialogs/utilitydlg.h"
 
@@ -462,11 +461,11 @@ void UserMenu::send(QAction* action)
   switch (index)
   {
     case SendAuthorize:
-      new AuthUserDlg(myUserId, true);
+      new AuthDlg(AuthDlg::GrantAuth, myUserId);
       break;
 
     case SendReqAuthorize:
-      new ReqAuthDlg(myUserId);
+      new AuthDlg(AuthDlg::RequestAuth, myUserId);
       break;
 
     case SendKey:

@@ -55,7 +55,7 @@
 #include "core/signalmanager.h"
 
 #include "dialogs/adduserdlg.h"
-#include "dialogs/authuserdlg.h"
+#include "dialogs/authdlg.h"
 #include "dialogs/chatdlg.h"
 #include "dialogs/filedlg.h"
 #include "dialogs/forwarddlg.h"
@@ -326,7 +326,7 @@ void UserViewEvent::read1()
     case Licq::UserEvent::TypeAuthRequest:
     {
       Licq::EventAuthRequest* p = dynamic_cast<Licq::EventAuthRequest*>(myCurrentEvent);
-      new AuthUserDlg(p->userId(), true);
+      new AuthDlg(AuthDlg::GrantAuth, p->userId());
       break;
     }
 
@@ -466,7 +466,7 @@ void UserViewEvent::read2()
     case Licq::UserEvent::TypeAuthRequest:
     {
       Licq::EventAuthRequest* p = dynamic_cast<Licq::EventAuthRequest*>(myCurrentEvent);
-      new AuthUserDlg(p->userId(), false);
+      new AuthDlg(AuthDlg::RefuseAuth, p->userId());
       break;
     }
   } // switch

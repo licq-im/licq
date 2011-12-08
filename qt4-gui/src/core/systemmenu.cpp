@@ -41,7 +41,7 @@
 
 #include "dialogs/addgroupdlg.h"
 #include "dialogs/adduserdlg.h"
-#include "dialogs/authuserdlg.h"
+#include "dialogs/authdlg.h"
 #include "dialogs/awaymsgdlg.h"
 #include "dialogs/editgrpdlg.h"
 #include "dialogs/historydlg.h"
@@ -49,7 +49,6 @@
 #include "dialogs/ownermanagerdlg.h"
 #include "dialogs/plugindlg.h"
 #include "dialogs/randomchatdlg.h"
-#include "dialogs/reqauthdlg.h"
 #include "dialogs/searchuserdlg.h"
 #include "dialogs/securitydlg.h"
 #include "dialogs/gpgkeymanager.h"
@@ -497,12 +496,12 @@ void SystemMenu::showSearchUserDlg()
 
 void SystemMenu::showAuthUserDlg()
 {
-  new AuthUserDlg(Licq::UserId(), true);
+  new AuthDlg(AuthDlg::GrantAuth);
 }
 
 void SystemMenu::showReqAuthDlg()
 {
-  new ReqAuthDlg();
+  new AuthDlg(AuthDlg::RequestAuth);
 }
 
 void SystemMenu::showEditGrpDlg()

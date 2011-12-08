@@ -3,7 +3,7 @@ set(dialogs_SRCS
   aboutdlg.cpp
   addgroupdlg.cpp
   adduserdlg.cpp
-  authuserdlg.cpp
+  authdlg.cpp
   awaymsgdlg.cpp
   chatdlg.cpp
   customautorespdlg.cpp
@@ -29,7 +29,6 @@ set(dialogs_SRCS
   randomchatdlg.cpp
   refusedlg.cpp
   registeruser.cpp
-  reqauthdlg.cpp
   searchuserdlg.cpp
   securitydlg.cpp
   showawaymsgdlg.cpp

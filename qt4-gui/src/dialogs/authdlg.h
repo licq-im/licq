@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef AUTHUSERDLG_H
-#define AUTHUSERDLG_H
+#ifndef AUTHDLG_H
+#define AUTHDLG_H
 
 #include <QDialog>
 
@@ -29,23 +29,43 @@ class QLineEdit;
 namespace LicqQtGui
 {
 class MLEdit;
+class ProtoComboBox;
 
-class AuthUserDlg : public QDialog
+
+class AuthDlg : public QDialog
 {
    Q_OBJECT
 
 public:
-  AuthUserDlg(const Licq::UserId& userId, bool grant, QWidget* parent = 0);
+  enum AuthDlgType
+  {
+    RequestAuth,        // Request for authorization from user
+    GrantAuth,          // Grant authorization for user
+    RefuseAuth,         // Refuse authorization for user
+  };
 
-private:
-  QLineEdit* myUin;
-  MLEdit* myResponse;
-
-  Licq::UserId myUserId;
-  bool myGrant;
+  /**
+   * Constructor
+   *
+   * @param type Type of authorization dialog
+   * @param userId User id to act on or invalid to let user enter
+   * @param parent Parent widget
+   */
+  AuthDlg(enum AuthDlgType type, const Licq::UserId& userId = Licq::UserId(),
+      QWidget* parent = 0);
 
 private slots:
-  void ok();
+  /**
+   * Send request/reply
+   */
+  void send();
+
+private:
+  enum AuthDlgType myType;
+  Licq::UserId myUserId;
+  ProtoComboBox* myProtocolCombo;
+  QLineEdit* myAccountIdEdit;
+  MLEdit* myMessageEdit;
 };
 
 } // namespace LicqQtGui
