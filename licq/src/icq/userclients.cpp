@@ -36,7 +36,8 @@ using std::stringstream;
 
 const int CAP_LENGTH = 16;
 
-const char* findCapability(const char* caps, int capSize, const char* needle, int needleSize = CAP_LENGTH)
+const char* findCapability(const char* caps, int capSize,
+                           const uint8_t* needle, int needleSize = CAP_LENGTH)
 {
   while (capSize >= CAP_LENGTH)
   {
@@ -46,6 +47,13 @@ const char* findCapability(const char* caps, int capSize, const char* needle, in
     capSize -= CAP_LENGTH;
   }
   return NULL;
+}
+
+const char* findCapability(const char* caps, int capSize,
+                           const char* needle, int needleSize = CAP_LENGTH)
+{
+  return findCapability(
+      caps, capSize, reinterpret_cast<const uint8_t*>(needle), needleSize);
 }
 
 static void appendVersion(stringstream& buf, int min, const char* ver)

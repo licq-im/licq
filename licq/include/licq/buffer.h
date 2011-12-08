@@ -78,7 +78,8 @@ public:
    char *PackUnsignedLongBE(unsigned long data);
 
   char* Pack(Buffer*);
-   char *Pack(const char *data, int size);
+  char* Pack(const char* data, int size);
+  char* Pack(const uint8_t* data, int size);
 
   char* pack(const std::string& data)
   { return Pack(data.c_str(), data.size()); }

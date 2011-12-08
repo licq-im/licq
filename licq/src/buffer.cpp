@@ -447,6 +447,11 @@ char* Buffer::PackChar(char data)
 
 char* Buffer::Pack(const char* data, int size)
 {
+  return Pack(reinterpret_cast<const uint8_t*>(data), size);
+}
+
+char* Buffer::Pack(const uint8_t* data, int size)
+{
   if ( getDataSize() + size > getDataMaxSize() )
   {
     gLog.warning(tr("Pack(): Trying to pack more data than "

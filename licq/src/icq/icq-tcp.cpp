@@ -438,7 +438,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
 
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------
 unsigned long IcqProtocol::icqRequestInfoPlugin(Licq::User* u, bool bServer,
-                                               const char *GUID)
+                                               const uint8_t* GUID)
 {
   Licq::Event* result = NULL;
   if (bServer)
@@ -520,7 +520,7 @@ unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId, bool bS
 
 //-----CICQDaemon::sendStatusPluginReq------------------------------------------
 unsigned long IcqProtocol::icqRequestStatusPlugin(Licq::User* u, bool bServer,
-                                                 const char *GUID)
+                                                 const uint8_t* GUID)
 {
   Licq::Event* result = NULL;
   if (bServer)

@@ -1163,7 +1163,7 @@ CPU_SetLogonStatus::CPU_SetLogonStatus(unsigned long _nNewStatus)
   InitBuffer();
 }
 
-CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
+CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const uint8_t* GUID)
   : CPU_SetStatusFamily()
 {
   unsigned long timestamp;
@@ -1188,7 +1188,7 @@ CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const char *GUID)
   buffer->PackChar(0);                    //No info follows ??
 }
 
-CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const char *GUID,
+CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const uint8_t* GUID,
                                                      unsigned long nState,
                                                      unsigned long nStatus)
   : CPU_SetStatusFamily()
@@ -1521,7 +1521,7 @@ CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
 
 //-----Type2Message-------------------------------------------------------------
 CPU_Type2Message::CPU_Type2Message(const ICQUser* u, bool _bAck, bool _bDirectInfo,
-                                   const char *cap,
+                                   const uint8_t *cap,
                                    unsigned long nMsgID1,
                                    unsigned long nMsgID2)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
@@ -1643,7 +1643,7 @@ CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(const string& accountId,
 
 //-----PluginMessage-----------------------------------------------------------
 CPU_PluginMessage::CPU_PluginMessage(const ICQUser* u, bool bAck,
-                                     const char *PluginGUID,
+                                     const uint8_t* PluginGUID,
                                      unsigned long nMsgID1,
                                      unsigned long nMsgID2)
   : CPU_Type2Message(u, bAck, false, ICQ_CAPABILITY_SRVxRELAY, nMsgID1, nMsgID2)
@@ -1675,7 +1675,7 @@ void CPU_PluginMessage::InitBuffer()
 //-----Send error reply------------------------------------------------------
 CPU_PluginError::CPU_PluginError(const ICQUser* u, unsigned long nMsgID1,
                                  unsigned long nMsgID2,
-                                 unsigned short nSequence, const char *cap)
+                                 unsigned short nSequence, const uint8_t* cap)
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true, 0, cap)
 {
   // this is a bit of a hack
@@ -1684,7 +1684,7 @@ CPU_PluginError::CPU_PluginError(const ICQUser* u, unsigned long nMsgID1,
 }
 
 //-----Send info plugin request------------------------------------------------
-CPU_InfoPluginReq::CPU_InfoPluginReq(const ICQUser* u, const char *GUID,
+CPU_InfoPluginReq::CPU_InfoPluginReq(const ICQUser* u, const uint8_t* GUID,
                                      unsigned long nTime)
   : CPU_PluginMessage(u, false, PLUGIN_INFOxMANAGER)
 {
@@ -1922,7 +1922,7 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
 }
 
 //-----Send status plugin request---------------------------------------------
-CPU_StatusPluginReq::CPU_StatusPluginReq(const ICQUser* u, const char *GUID,
+CPU_StatusPluginReq::CPU_StatusPluginReq(const ICQUser* u, const uint8_t* GUID,
                                          unsigned long nTime)
   : CPU_PluginMessage(u, false, PLUGIN_STATUSxMANAGER)
 {
@@ -2215,7 +2215,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
                                            unsigned short nSequence,
                                            unsigned short nMsgType,
                                            bool bAccept, unsigned short nLevel,
-                                           const char *GUID)
+                                           const uint8_t* GUID)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
   myAccountId = u->accountId();
@@ -4184,7 +4184,7 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(int channel,
   m_nSize = 33;
   buffer = new CBuffer(m_nSize);
 
-  const char *GUID;
+  const uint8_t* GUID;
   unsigned long nOurId;
   switch (channel)
   {
@@ -5117,7 +5117,7 @@ CPT_PluginError::CPT_PluginError(ICQUser *_cUser, unsigned short nSequence,
 }
 
 //-----Send info plugin request------------------------------------------------
-CPT_InfoPluginReq::CPT_InfoPluginReq(ICQUser *_cUser, const char *GUID,
+CPT_InfoPluginReq::CPT_InfoPluginReq(ICQUser *_cUser, const uint8_t* GUID,
   unsigned long nTime)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelInfo, "", true, 0, _cUser)
 {
@@ -5353,7 +5353,7 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(ICQUser *_cUser,
 }
 
 //-----Send status plugin request----------------------------------------------
-CPT_StatusPluginReq::CPT_StatusPluginReq(ICQUser *_cUser, const char *GUID,
+CPT_StatusPluginReq::CPT_StatusPluginReq(ICQUser *_cUser, const uint8_t* GUID,
   unsigned long nTime)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelStatus, "", true, 0, _cUser)
 {

@@ -60,7 +60,7 @@ const unsigned short CAP_LENGTH                  = 16;
 struct PluginList
 {
   const char* const name;
-  const char* const guid;
+  const uint8_t* const guid;
   const char* const description;
 };
 
@@ -489,13 +489,13 @@ public:
 class CPU_UpdateInfoTimestamp : public CPU_SetStatusFamily
 {
 public:
-  CPU_UpdateInfoTimestamp(const char *GUID);
+  CPU_UpdateInfoTimestamp(const uint8_t* GUID);
 };
 
 class CPU_UpdateStatusTimestamp : public CPU_SetStatusFamily
 {
 public:
-  CPU_UpdateStatusTimestamp(const char *GUID, unsigned long nState,
+  CPU_UpdateStatusTimestamp(const uint8_t* GUID, unsigned long nState,
     unsigned long nStatus = ICQ_STATUS_OFFLINE);
 };
 
@@ -684,7 +684,7 @@ protected:
 class CPU_Type2Message : public CPU_CommonFamily
 {
 public:
-  CPU_Type2Message(const Licq::User* u, bool _bAck, bool _bDirectInfo, const char* cap,
+  CPU_Type2Message(const Licq::User* u, bool _bAck, bool _bDirectInfo, const uint8_t* cap,
                    unsigned long nMsgID1 = 0,
                    unsigned long nMsgID2 = 0);
 protected:
@@ -694,7 +694,7 @@ protected:
   bool m_bAck;
   bool m_bDirectInfo;
   unsigned long m_nMsgID[2];
-  char m_cap[CAP_LENGTH];
+  uint8_t m_cap[CAP_LENGTH];
   unsigned long m_nExtraLen; // length of data following 0x2711 tlv
 };
 
@@ -719,20 +719,20 @@ public:
 class CPU_PluginMessage : public CPU_Type2Message
 {
 public:
-  CPU_PluginMessage(const Licq::User* u, bool bAck, const char *PluginGUID,
+  CPU_PluginMessage(const Licq::User* u, bool bAck, const uint8_t* PluginGUID,
                     unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
 
 protected:
   void InitBuffer();
 
-  char m_PluginGUID[GUID_LENGTH];
+  uint8_t m_PluginGUID[GUID_LENGTH];
 };
 
 //-----InfoPluginRequest-------------------------------------------------------
 class CPU_InfoPluginReq : public CPU_PluginMessage
 {
 public:
-  CPU_InfoPluginReq(const Licq::User* u, const char *GUID, unsigned long nTime);
+  CPU_InfoPluginReq(const Licq::User* u, const uint8_t* GUID, unsigned long nTime);
   virtual const char *RequestGUID() { return m_ReqGUID; }
   virtual unsigned short ExtraInfo() { return ServerInfoPluginRequest; }
 
@@ -744,7 +744,7 @@ protected:
 class CPU_StatusPluginReq : public CPU_PluginMessage
 {
 public:
-  CPU_StatusPluginReq(const Licq::User* u, const char *GUID, unsigned long nTime);
+  CPU_StatusPluginReq(const Licq::User* u, const uint8_t* GUID, unsigned long nTime);
   virtual unsigned short ExtraInfo() { return ServerStatusPluginRequest; }
   virtual const char *RequestGUID() { return m_ReqGUID; }
 
@@ -799,7 +799,7 @@ public:
   CPU_AckThroughServer(const Licq::User* u, unsigned long msgid1,
                          unsigned long msgid2, unsigned short sequence,
                          unsigned short msgType, bool bAccept,
-                         unsigned short nLevel, const char *GUID);
+                         unsigned short nLevel, const uint8_t* GUID);
 protected:
   void InitBuffer();
 
@@ -807,7 +807,7 @@ protected:
   unsigned short m_nSequence, m_nMsgType, m_nStatus, m_nLevel;
   std::string myAccountId;
   std::string myMessage;
-  char m_GUID[GUID_LENGTH];
+  uint8_t m_GUID[GUID_LENGTH];
 };
 
 //-----AckGeneral--------------------------------------------------------------
@@ -857,7 +857,7 @@ class CPU_PluginError : public CPU_AckThroughServer
 {
 public:
   CPU_PluginError(const Licq::User* u, unsigned long nMsgID1, unsigned long nMsgID2,
-                  unsigned short nSequence, const char *GUID);
+                  unsigned short nSequence, const uint8_t* GUID);
 };
 
 //-----InfoPluginListResp------------------------------------------------------
@@ -1634,7 +1634,7 @@ public:
 class CPT_InfoPluginReq : public CPacketTcp
 {
 public:
-  CPT_InfoPluginReq(Licq::User* _cUser, const char* GUID, unsigned long int nTime);
+  CPT_InfoPluginReq(Licq::User* _cUser, const uint8_t* GUID, unsigned long int nTime);
    virtual const char *RequestGUID()        { return m_ReqGUID; }
    virtual unsigned short ExtraInfo() { return DirectInfoPluginRequest; }
 
@@ -1667,7 +1667,7 @@ public:
 class CPT_StatusPluginReq : public CPacketTcp
 {
 public:
-  CPT_StatusPluginReq(Licq::User* _cUser, const char* GUID, unsigned long nTime);
+  CPT_StatusPluginReq(Licq::User* _cUser, const uint8_t* GUID, unsigned long nTime);
    virtual unsigned short ExtraInfo() { return DirectStatusPluginRequest;}
    virtual const char *RequestGUID() { return m_ReqGUID; }
 

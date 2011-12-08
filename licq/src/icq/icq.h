@@ -296,9 +296,9 @@ public:
   bool ProcessTcpPacket(Licq::TCPSocket*);
   bool ProcessTcpHandshake(Licq::TCPSocket*);
 
-  unsigned long icqRequestInfoPlugin(Licq::User* user, bool, const char *);
-  unsigned long icqRequestStatusPlugin(Licq::User* user, bool, const char *);
-  void icqUpdateInfoTimestamp(const char *);
+  unsigned long icqRequestInfoPlugin(Licq::User* user, bool, const uint8_t*);
+  unsigned long icqRequestStatusPlugin(Licq::User* user, bool, const uint8_t*);
+  void icqUpdateInfoTimestamp(const uint8_t*);
 
   static bool handshake_Send(Licq::TCPSocket*, const Licq::UserId& userId, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);

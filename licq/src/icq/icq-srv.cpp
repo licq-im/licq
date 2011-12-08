@@ -898,7 +898,7 @@ void IcqProtocol::icqPing()
 }
 
 //-----icqUpdateInfoTimestamp---------------------------------------------------
-void IcqProtocol::icqUpdateInfoTimestamp(const char *GUID)
+void IcqProtocol::icqUpdateInfoTimestamp(const uint8_t* GUID)
 {
   CPU_UpdateInfoTimestamp *p = new CPU_UpdateInfoTimestamp(GUID);
   SendEvent_Server(p);
