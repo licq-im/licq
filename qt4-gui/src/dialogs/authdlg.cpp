@@ -1,0 +1,161 @@
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2011 Licq developers <licq-dev@googlegroups.com>
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+#include "authdlg.h"
+
+#include "config.h"
+
+#include <QDialogButtonBox>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QTextCodec>
+#include <QVBoxLayout>
+
+#include <licq/userid.h>
+#include <licq/protocolmanager.h>
+
+#include "helpers/support.h"
+#include "helpers/usercodec.h"
+
+#include "widgets/mledit.h"
+#include "widgets/protocombobox.h"
+
+using Licq::gProtocolManager;
+using namespace LicqQtGui;
+/* TRANSLATOR LicqQtGui::AuthDlg */
+
+AuthDlg::AuthDlg(enum AuthDlgType type, const Licq::UserId& userId, QWidget* parent)
+  : QDialog(parent),
+    myType(type),
+    myUserId(userId)
+{
+  Support::setWidgetProps(this, "AuthDialog");
+  setAttribute(Qt::WA_DeleteOnClose, true);
+
+  QString messageTitle;
+  switch (myType)
+  {
+    default:
+    case RequestAuth:
+      setWindowTitle(tr("Licq - Request Authorization"));
+      messageTitle = tr("Request");
+      break;
+    case GrantAuth:
+      setWindowTitle(tr("Licq - Grant Authorization"));
+      messageTitle = tr("Response");
+      break;
+    case RefuseAuth:
+      setWindowTitle(tr("Licq - Refuse Authorization"));
+      messageTitle = tr("Response");
+      break;
+  }
+
+  QVBoxLayout* dialogLayout = new QVBoxLayout(this);
+  QHBoxLayout* userIdLayout = new QHBoxLayout();
+
+  QLabel* protocolLabel = new QLabel(this);
+  protocolLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+  protocolLabel->setText(tr("&Protocol:"));
+  myProtocolCombo = new ProtoComboBox(ProtoComboBox::FilterOwnersOnly);
+  protocolLabel->setBuddy(myProtocolCombo);
+  userIdLayout->addWidget(protocolLabel);
+  userIdLayout->addWidget(myProtocolCombo);
+
+  QLabel* accountIdLabel = new QLabel(this);
+  accountIdLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+  accountIdLabel->setText(tr("&User Id:"));
+  myAccountIdEdit = new QLineEdit(this);
+  myAccountIdEdit->setMinimumWidth(90);
+  accountIdLabel->setBuddy(myAccountIdEdit);
+  connect(myAccountIdEdit, SIGNAL(returnPressed()), SLOT(send()) );
+  userIdLayout->addWidget(accountIdLabel);
+  userIdLayout->addWidget(myAccountIdEdit);
+
+  dialogLayout->addLayout(userIdLayout);
+  dialogLayout->addSpacing(6);
+
+  QGroupBox* messageBox = new QGroupBox(messageTitle, this);
+  dialogLayout->addWidget(messageBox);
+  dialogLayout->setStretchFactor(messageBox, 2);
+
+  QVBoxLayout* messageLayout = new QVBoxLayout(messageBox);
+  myMessageEdit = new MLEdit(true);
+  myMessageEdit->setSizeHintLines(5);
+  messageLayout->addWidget(myMessageEdit);
+
+  QDialogButtonBox* buttons = new QDialogButtonBox();
+  QPushButton* okButton = buttons->addButton(QDialogButtonBox::Ok);
+  QPushButton* cancelButton = buttons->addButton(QDialogButtonBox::Cancel);
+
+  connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), this, SLOT(send()));
+  connect(okButton, SIGNAL(clicked()), SLOT(send()) );
+  connect(cancelButton, SIGNAL(clicked()), SLOT(close()) );
+
+  dialogLayout->addWidget(buttons);
+
+  if (userId.isValid())
+  {
+    myProtocolCombo->setCurrentPpid(userId.protocolId());
+    myProtocolCombo->setEnabled(false);
+    myAccountIdEdit->setText(userId.accountId().c_str());
+    myAccountIdEdit->setEnabled(false);
+    myMessageEdit->setFocus();
+  }
+  else
+  {
+    myProtocolCombo->setFocus();
+  }
+
+  show();
+}
+
+void AuthDlg::send()
+{
+  Licq::UserId userId = myUserId;
+  if (!userId.isValid())
+  {
+    userId = Licq::UserId(myAccountIdEdit->text().toLatin1().constData(),
+        myProtocolCombo->currentPpid());
+  }
+
+  if (userId.isValid())
+  {
+    QByteArray messageText = UserCodec::codecForUserId(userId)->
+        fromUnicode(myMessageEdit->toPlainText());
+
+    switch (myType)
+    {
+      default:
+      case RequestAuth:
+        gProtocolManager.requestAuthorization(userId, messageText.constData());
+        break;
+      case GrantAuth:
+        gProtocolManager.authorizeReply(userId, true, messageText.constData());
+        break;
+      case RefuseAuth:
+        gProtocolManager.authorizeReply(userId, false, messageText.constData());
+        break;
+    }
+
+    close();
+  }
+}
