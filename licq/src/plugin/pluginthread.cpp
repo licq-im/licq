@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,10 @@ static void* pluginThreadEntry(void* arg)
 
   while (data.myState == PluginThread::Data::STATE_WAITING)
   {
-    data.myCondition.wait(data.myMutex);
+    do
+    {
+      data.myCondition.wait(data.myMutex);
+    } while (data.myState == PluginThread::Data::STATE_WAITING);
 
     switch (data.myState)
     {
