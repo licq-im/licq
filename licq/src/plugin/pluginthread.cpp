@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2011 Licq developers
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,10 @@ static void* pluginThreadEntry(void* arg)
 
   while (data.myState == PluginThread::Data::STATE_WAITING)
   {
-    data.myCondition.wait(data.myMutex);
+    do
+    {
+      data.myCondition.wait(data.myMutex);
+    } while (data.myState == PluginThread::Data::STATE_WAITING);
 
     switch (data.myState)
     {
@@ -95,6 +98,7 @@ static void* pluginThreadEntry(void* arg)
       case PluginThread::Data::STATE_WAITING:
       case PluginThread::Data::STATE_RUNNING:
       case PluginThread::Data::STATE_EXITED:
+      default:
         assert(false);
         break;
       case PluginThread::Data::STATE_LOAD_PLUGIN:
@@ -105,6 +109,7 @@ static void* pluginThreadEntry(void* arg)
         catch (const DynamicLibrary::Exception&)
         {
           data.myException = boost::current_exception();
+          data.myState = PluginThread::Data::STATE_EXITED;
           data.myCondition.signal();
           return NULL;
         }
@@ -260,7 +265,10 @@ DynamicLibrary::Ptr PluginThread::loadPlugin(const std::string& path)
   myData->myCondition.signal();
 
   // Wait for thread to load plugin
-  myData->myCondition.wait(myData->myMutex);
+  do
+  {
+    myData->myCondition.wait(myData->myMutex);
+  } while (myData->myState == PluginThread::Data::STATE_LOAD_PLUGIN);
   if (myData->myException)
     boost::rethrow_exception(myData->myException);
 
@@ -284,7 +292,10 @@ bool PluginThread::initPlugin(bool (*pluginInit)(void*), void* argument)
   myData->myCondition.signal();
 
   // Wait for thread to initialize plugin
-  myData->myCondition.wait(myData->myMutex);
+  do
+  {
+    myData->myCondition.wait(myData->myMutex);
+  } while (myData->myState == PluginThread::Data::STATE_INIT_PLUGIN);
 
   // Get result and reset myData
   bool result = myData->myPluginInitResult;
@@ -305,7 +316,10 @@ void PluginThread::startPlugin(void* (*pluginStart)(void*), void* argument)
   myData->myCondition.signal();
 
   // Wait for thread to start plugin
-  myData->myCondition.wait(myData->myMutex);
+  do
+  {
+    myData->myCondition.wait(myData->myMutex);
+  } while (myData->myState == PluginThread::Data::STATE_START_PLUGIN);
 
   // Reset myData
   myData->myPluginStart = NULL;
@@ -315,7 +329,7 @@ void PluginThread::startPlugin(void* (*pluginStart)(void*), void* argument)
 void PluginThread::waitForThreadToStart()
 {
   MutexLocker locker(myData->myMutex);
-  if (myData->myState != PluginThread::Data::STATE_WAITING)
+  while (myData->myState != PluginThread::Data::STATE_WAITING)
     myData->myCondition.wait(myData->myMutex);
 }
 
