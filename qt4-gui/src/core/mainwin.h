@@ -115,6 +115,12 @@ public slots:
   void showAutoResponseHints(QWidget* parent = 0);
   void hide();
 
+  /**
+   * Show and raise main window
+   * Also restore properties that are lost on hide
+   */
+  void unhide();
+
 private:
   QString myCaption;
   bool myInMiniMode;

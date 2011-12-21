@@ -98,6 +98,8 @@ public:
   {
     PluginViewEvent     = 1,            // UI should popup oldest unread event for userId (if set)
     PluginStartMessage  = 2,            // UI should open message dialog for userId
+    PluginShowUserList  = 3,            // UI should show (if hidden) and raise contact list
+    PluginHideUserList  = 4,            // UI should hide contact list
   };
 
   /**

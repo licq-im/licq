@@ -89,6 +89,17 @@ signals:
    * @param userId User to open dialog for
    */
   void ui_message(const Licq::UserId& userId);
+
+  /**
+   * Show and raise the user list (main window)
+   */
+  void ui_showuserlist();
+
+  /**
+   * Hide the user list (main window)
+   */
+  void ui_hideuserlist();
+
   void protocolPlugin(unsigned long);
 
   /**

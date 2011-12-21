@@ -111,6 +111,14 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
         case Licq::PluginSignal::PluginStartMessage:
           emit ui_message(userId);
           break;
+
+        case Licq::PluginSignal::PluginShowUserList:
+          emit ui_showuserlist();
+          break;
+
+        case Licq::PluginSignal::PluginHideUserList:
+          emit ui_hideuserlist();
+          break;
       }
       break;
     }

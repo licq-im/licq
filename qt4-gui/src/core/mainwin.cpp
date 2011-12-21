@@ -234,6 +234,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       mySystemMenu, SLOT(addOwner(const Licq::UserId&)));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),
       mySystemMenu, SLOT(removeOwner(const Licq::UserId&)));
+  connect(gGuiSignalManager, SIGNAL(ui_showuserlist()), SLOT(unhide()));
+  connect(gGuiSignalManager, SIGNAL(ui_hideuserlist()), SLOT(hide()));
 
   if (conf->mainwinRect().isValid())
     setGeometry(conf->mainwinRect());
@@ -350,27 +352,28 @@ void MainWindow::updateShortcuts()
 void MainWindow::trayIconClicked()
 {
   if (isVisible() && !isMinimized() && isActiveWindow())
-  {
     hide();
-  }
   else
-  {
-    show();
+    unhide();
+}
+
+void MainWindow::unhide()
+{
+  show();
 #ifdef USE_KDE
-    KWindowSystem::setOnDesktop(winId(), KWindowSystem::currentDesktop());
+  KWindowSystem::setOnDesktop(winId(), KWindowSystem::currentDesktop());
 #endif
-    if (isMaximized())
-      showMaximized();
-    else
-      showNormal();
+  if (isMaximized())
+    showMaximized();
+  else
+    showNormal();
 
-    // Sticky state is lost when window is hidden so restore it now
-    if (Config::General::instance()->mainwinSticky())
-      setMainwinSticky(true);
+  // Sticky state is lost when window is hidden so restore it now
+  if (Config::General::instance()->mainwinSticky())
+    setMainwinSticky(true);
 
-    activateWindow();
-    raise();
-  }
+  activateWindow();
+  raise();
 }
 
 void MainWindow::updateSkin()

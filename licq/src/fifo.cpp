@@ -121,6 +121,12 @@ static const char* const HELP_UIVIEWEVENT = tr(
 static const char* const HELP_UIMESSAGE = tr(
         "\tui_message <buddy>\n"
         "\t\tOpen the plugin message composer to <buddy>\n");
+static const char* const HELP_UISHOWUSERLIST = tr(
+    "\tui_showuserlist\n"
+    "\t\tShow and raise the contact list window\n");
+static const char* const HELP_UIHIDEUSERLIST = tr(
+    "\tui_hideuserlist\n"
+    "\t\tHide the contact list window\n");
 static const char* const HELP_PLUGINLIST = tr(
 		"\tlist_plugins\n"
 		"\t\tLists the loaded UI plugins\n");
@@ -684,6 +690,20 @@ static int fifo_ui_message(int argc, const char* const* argv)
   return nRet;
 }
 
+static int fifo_ui_showuserlist(int /* argc */, const char* const* /* argv */)
+{
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalPluginEvent,
+      PluginSignal::PluginShowUserList));
+  return 0;
+}
+
+static int fifo_ui_hideuserlist(int /* argc */, const char* const* /* argv */)
+{
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalPluginEvent,
+      PluginSignal::PluginHideUserList));
+  return 0;
+}
+
 static int fifo_plugin_list(int /* argc */, const char* const* /* argv */)
 {
   Licq::GeneralPluginsList plugins;
@@ -802,6 +822,8 @@ static struct command_t fifocmd_table[]=
   {"exit",                fifo_exit,                HELP_EXIT},
   {"ui_viewevent",        fifo_ui_viewevent,        HELP_UIVIEWEVENT},
   {"ui_message",          fifo_ui_message,          HELP_UIMESSAGE},
+  {"ui_showuserlist",     fifo_ui_showuserlist,     HELP_UISHOWUSERLIST},
+  {"ui_hideuserlist",     fifo_ui_hideuserlist,     HELP_UIHIDEUSERLIST},
   {"list_plugins",        fifo_plugin_list,         HELP_PLUGINLIST},
   {"load_plugin",         fifo_plugin_load,         HELP_PLUGINLOAD},
   {"unload_plugin",       fifo_plugin_unload,       HELP_PLUGINUNLOAD},
