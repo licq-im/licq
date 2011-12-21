@@ -53,6 +53,7 @@
 #include "licq.h"
 
 using std::string;
+using Licq::PluginSignal;
 using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gLog;
@@ -647,7 +648,8 @@ static int fifo_ui_viewevent(int argc, const char* const* argv)
     return 0;
   }
 
-  gDaemon.pluginUIViewEvent(UserId(szId, nPPID));
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalPluginEvent,
+      PluginSignal::PluginViewEvent, UserId(szId, nPPID)));
 
   if (szId != NULL)
     free(szId);
@@ -668,7 +670,10 @@ static int fifo_ui_message(int argc, const char* const* argv)
     nRet = -1;
   }
   else if (atoid(argv[1], true, &szId, &nPPID))
-    gDaemon.pluginUIMessage(UserId(szId, nPPID));
+  {
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalPluginEvent,
+        PluginSignal::PluginStartMessage, UserId(szId, nPPID)));
+  }
   else
   {
     ReportBadBuddy(argv[0],argv[1]);

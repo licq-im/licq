@@ -115,10 +115,6 @@ public:
   bool ignoreType(unsigned type) const          { return (myIgnoreTypes & type); }
   void setIgnoreType(unsigned type, bool ignore);
 
-  void pluginUIViewEvent(const UserId& userId);
-
-  void pluginUIMessage(const UserId& userId);
-
   /**
    * Get path for the base dir (e.g. /home/fred/.licq/)
    *

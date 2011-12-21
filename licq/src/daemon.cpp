@@ -57,7 +57,6 @@
 using namespace std;
 using namespace LicqDaemon;
 using Licq::gLog;
-using Licq::PluginSignal;
 using Licq::User;
 using Licq::UserId;
 
@@ -433,16 +432,6 @@ void Licq::Daemon::cancelEvent(unsigned long eventId)
 void Licq::Daemon::cancelEvent(Licq::Event* event)
 {
   gIcqProtocol.CancelEvent(event);
-}
-
-void Licq::Daemon::pluginUIViewEvent(const Licq::UserId& userId)
-{
-  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUiViewEvent, 0, userId));
-}
-
-void Licq::Daemon::pluginUIMessage(const Licq::UserId& userId)
-{
-  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUiMessage, 0, userId));
 }
 
 void Daemon::shutdownPlugins()

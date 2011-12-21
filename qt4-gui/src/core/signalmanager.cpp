@@ -100,15 +100,20 @@ void SignalManager::ProcessSignal(Licq::PluginSignal* sig)
       emit logoff();
       break;
 
-    case Licq::PluginSignal::SignalUiViewEvent:
-      emit ui_viewevent(userId);
-      break;
+    case Licq::PluginSignal::SignalPluginEvent:
+    {
+      switch (sig->subSignal())
+      {
+        case Licq::PluginSignal::PluginViewEvent:
+          emit ui_viewevent(userId);
+          break;
 
-    case Licq::PluginSignal::SignalUiMessage:
-      //TODO
-      emit ui_message(userId);
+        case Licq::PluginSignal::PluginStartMessage:
+          emit ui_message(userId);
+          break;
+      }
       break;
-
+    }
     case Licq::PluginSignal::SignalAddedToServer:
       //TODO
       gProtocolManager.updateUserAlias(userId);

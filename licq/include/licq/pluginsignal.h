@@ -43,15 +43,14 @@ public:
     SignalLogon         = 1<<2,         // Owner logged on, userId is owner
     SignalLogoff        = 1<<3,         // Owner logged off, userId is owner
     SignalOnEvent       = 1<<4,         // ?
-    SignalUiViewEvent   = 1<<5,         // UI should popup oldest unread event for userId (if set)
-    SignalUiMessage     = 1<<6,         // UI should open message dialog for userId
     SignalAddedToServer = 1<<7,         // userId has been successfully added to server list
     SignalNewProtocol   = 1<<8,         // A new protocol plugin has been loaded, subtype is protocolId
     SignalConversation  = 1<<9,         // Conversation signal
     SignalVerifyImage   = 1<<17,        // A registration verification image is available as basedir/verify.jpg
     SignalNewOwner      = 1<<18,        // Registration complete, userId is new owner
+    SignalPluginEvent   = 1<<19,        // Event to perform in a plugin, subtype specifies event
 
-    SignalAll           = 0x000603ff,   // Mask for all known signals
+    SignalAll           = 0x000e039f,   // Mask for all known signals
   };
 
   enum ListSubSignal
@@ -93,6 +92,12 @@ public:
     ConvoCreate         = 1,            // Conversation created for userId
     ConvoJoin           = 2,            // userId joinded conversation
     ConvoLeave          = 3,            // userId left conversation
+  };
+
+  enum PluginSubSignal
+  {
+    PluginViewEvent     = 1,            // UI should popup oldest unread event for userId (if set)
+    PluginStartMessage  = 2,            // UI should open message dialog for userId
   };
 
   /**
