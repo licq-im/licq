@@ -636,7 +636,7 @@ void ProcessSignal(Licq::PluginSignal* s)
 	break;
 	// we are not interested in those
     case Licq::PluginSignal::SignalAddedToServer:
-    case Licq::PluginSignal::SignalUiMessage:
+    case Licq::PluginSignal::SignalPluginEvent:
       break;
     default: // shouldnt happen
       gLog.warning("Unknown signal %d", s->signal());
