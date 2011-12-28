@@ -25,7 +25,6 @@
 #include <sstream>
 
 #include <licq/gpghelper.h>
-#include <licq/icq/icq.h>
 #include <licq/translator.h>
 
 #include "contactlist/user.h"
@@ -305,24 +304,6 @@ void Licq::EventUrl::AddToHistory(User* u, bool isReceiver) const
   str += '\n';
   str += addStrWithColons(myUrlDescription);
   writeUserHistory(u, str);
-}
-
-
-Licq::EventUrl* Licq::EventUrl::Parse(char *sz, time_t nTime,
-  unsigned long nFlags, unsigned long nConvoId)
-{
-  // parse the message into url and url description
-  char **szUrl = new char*[2]; // desc, url
-  if (!ParseFE(sz, &szUrl, 2))
-  {
-    delete []szUrl;
-    return NULL;
-  }
-
-  EventUrl* e = new EventUrl(szUrl[1], szUrl[0], nTime, nFlags, nConvoId);
-  delete []szUrl;
-
-  return e;
 }
 
 //=====CEventChat===============================================================
@@ -728,31 +709,6 @@ void Licq::EventContactList::AddToHistory(User* u, bool isReceiver) const
   writeUserHistory(u, buf.str());
 }
 
-
-Licq::EventContactList* Licq::EventContactList::Parse(char *sz, time_t nTime, unsigned long nFlags)
-{
-  unsigned short i = 0;
-  while (sz[i] != '\0' && (unsigned char)sz[i] != 0xFE) i++;
-  sz[i] = '\0';
-  int nNumContacts = atoi(sz);
-  char **szFields = new char*[nNumContacts * 2 + 1];
-  if (!ParseFE(&sz[++i], &szFields, nNumContacts * 2 + 1))
-  {
-    delete []szFields;
-    return NULL;
-  }
-
-  ContactList vc;
-  for (i = 0; i < nNumContacts * 2; i += 2)
-  {
-    UserId userId(szFields[i], LICQ_PPID);
-    vc.push_back(new Contact(userId, szFields[i + 1]));
-  }
-  delete[] szFields;
-
-  return new EventContactList(vc, false, nTime, nFlags);
-}
-
 //=====CEventSms===============================================================
 Licq::EventSms::EventSms(const string& number, const string& message,
     time_t _tTime, unsigned long _nFlags)
@@ -795,19 +751,6 @@ void Licq::EventSms::AddToHistory(User* u, bool isReceiver) const
   str += addStrWithColons(myMessage);
   writeUserHistory(u, str);
 }
-
-Licq::EventSms* Licq::EventSms::Parse(const std::string& s, time_t nTime, unsigned long nFlags)
-{
-  string xmlSms = CICQDaemon::getXmlTag(s, "sms_message");
-  if (xmlSms.empty())
-    return NULL;
-
-  string number = CICQDaemon::getXmlTag(xmlSms, "sender");
-  string msg = CICQDaemon::getXmlTag(xmlSms, "text");
-
-  return new EventSms(number, msg, nTime, nFlags);
-}
-
 
 //=====CEventServerMessage=====================================================
 Licq::EventServerMessage::EventServerMessage(const string& name,
@@ -853,23 +796,6 @@ void Licq::EventServerMessage::AddToHistory(User* u, bool isReceiver) const
   buf << addStrWithColons(myMessage);
   writeUserHistory(u, buf.str());
 }
-
-
-Licq::EventServerMessage* Licq::EventServerMessage::Parse(char *sz, unsigned short /* nCmd */,
-    time_t nTime, unsigned long /* nFlags */)
-{
-  char **szMsg = new char*[6]; // name, email, msg
-  if (!ParseFE(sz, &szMsg, 6))
-  {
-    delete [] szMsg;
-    return NULL;
-  }
-
-  EventServerMessage* e = new EventServerMessage(szMsg[0], szMsg[3], szMsg[5], nTime);
-  delete [] szMsg;
-  return e;
-}
-
 
 //=====CEventEmailAlert=====================================================
 Licq::EventEmailAlert::EventEmailAlert(const string& name, const string& to,

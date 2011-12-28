@@ -38,9 +38,11 @@
 
 using namespace std;
 using namespace LicqDaemon;
+using Licq::Log;
 using Licq::OnEventData;
 using Licq::gLog;
 using Licq::gOnEventManager;
+using Licq::gPluginManager;
 
 
 std::list <CReverseConnectToUserData *> IcqProtocol::m_lReverseConnect;
@@ -1139,9 +1141,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   }
 
   case ICQ_CMDxSUB_URL:
-  {
-      Licq::EventUrl* e = Licq::EventUrl::Parse(message,
-          Licq::EventUrl::TimeNow, nFlags);
+    {
+      pEvent = parseUrlEvent(message, Licq::EventUrl::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_URL, true,
                                            nLevel);
@@ -1149,13 +1150,11 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
     szType = strdup(tr("URL"));
       onEventType = OnEventData::OnEventUrl;
-    pEvent = e;
-    break;
-  }
-
+      break;
+    }
   case ICQ_CMDxSUB_CONTACTxLIST:
-  {
-      Licq::EventContactList* e = Licq::EventContactList::Parse(message,
+    {
+      pEvent = parseContactEvent(message,
           Licq::EventContactList::TimeNow, nFlags);
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_CONTACTxLIST,
@@ -1164,10 +1163,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
     szType = strdup(tr("Contact list"));
       onEventType = OnEventData::OnEventMessage;
-    pEvent = e;
-    break;
-  }
-
+      break;
+    }
   case ICQ_CMDxTCP_READxNAxMSG:
   case ICQ_CMDxTCP_READxDNDxMSG:
   case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
@@ -1320,6 +1317,273 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   }
 
   if (szType)  free(szType);
+}
+
+void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
+    const Licq::UserId& userId, string& message, time_t timeSent,
+    unsigned long flags)
+{
+  if (type & ICQ_CMDxSUB_FxMULTIREC)
+  {
+    flags |= Licq::UserEvent::FlagMultiRec;
+    type &= ~ICQ_CMDxSUB_FxMULTIREC;
+  }
+
+  // Drop trailing nul characters from message
+  while (message.size() > 0 && message[message.size()-1] == '\0')
+    message.resize(message.size()-1);
+
+  OnEventData::OnEventType onEventType = OnEventData::OnEventMessage;
+  Licq::UserEvent* ue;
+
+  switch (type)
+  {
+    case ICQ_CMDxSUB_MSG:
+    {
+      onEventType = OnEventData::OnEventMessage;
+      ue = new Licq::EventMsg(message, timeSent, flags);
+      break;
+    }
+    case ICQ_CMDxSUB_URL:
+    {
+      onEventType = OnEventData::OnEventUrl;
+      ue = parseUrlEvent(message, timeSent, flags);
+      if (ue == NULL)
+      {
+        packet.log(Log::Warning, tr("Invalid URL message"));
+        return;
+      }
+      break;
+    }
+    case ICQ_CMDxSUB_AUTHxREQUEST:
+    {
+      gLog.info(tr("Authorization request from %s"), userId.toString().c_str());
+
+      vector<string> parts; // alias, first name, last name, email, auth, comment
+      splitFE(parts, message, 6);
+      if (parts.size() != 6)
+      {
+        packet.log(Log::Warning, tr("Invalid authorization request system message"));
+        return;
+      }
+
+      ue = new Licq::EventAuthRequest(userId, parts.at(0), parts.at(1),
+          parts.at(2), parts.at(3), parts.at(5), timeSent, flags);
+      break;
+    }
+    case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
+    {
+      gLog.info(tr("Authorization refused by %s"), userId.toString().c_str());
+      ue = new Licq::EventAuthRefused(userId, message, timeSent, flags);
+      break;
+    }
+    case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
+    {
+      gLog.info(tr("Authorization granted by %s"), userId.toString().c_str());
+
+      {
+        Licq::UserWriteGuard u(userId);
+        if (u.isLocked())
+          u->SetAwaitingAuth(false);
+      }
+
+      ue = new Licq::EventAuthGranted(userId, message, timeSent, flags);
+      break;
+    }
+    case ICQ_CMDxSUB_MSGxSERVER:
+    {
+      gLog.info(tr("Server message."));
+
+      vector<string> parts;
+      splitFE(parts, message, 6);
+      if (parts.size() != 6)
+      {
+        packet.log(Log::Warning, tr("Invalid Server Message"));
+        return;
+      }
+
+      ue = new Licq::EventServerMessage(parts.at(0), parts.at(3), parts.at(5), timeSent);
+      break;
+    }
+    case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
+    {
+      gLog.info(tr("User %s added you to their contact list"), userId.toString().c_str());
+
+      vector<string> parts; // alias, first name, last name, email, auth, comment
+      splitFE(parts, message, 6);
+      if (parts.size() != 6)
+      {
+        packet.log(Log::Warning, tr("Invalid added to list system message"));
+        return;
+      }
+
+      ue = new Licq::EventAdded(userId, parts.at(0), parts.at(1),
+            parts.at(2), parts.at(3), timeSent, flags);
+      break;
+    }
+    case ICQ_CMDxSUB_WEBxPANEL:
+    {
+      gLog.info(tr("Message through web panel"));
+
+      vector<string> parts; // name, ?, ?, email, ?, message
+      splitFE(parts, message, 6);
+      if (parts.size() != 6)
+      {
+        packet.log(Log::Warning, tr("Invalid web panel system message"));
+        return;
+      }
+
+      gLog.info(tr("From %s (%s)"), parts.at(0).c_str(), parts.at(3).c_str());
+      ue = new Licq::EventWebPanel(parts.at(0), parts.at(3), parts.at(5),
+          timeSent, flags);
+      break;
+    }
+    case ICQ_CMDxSUB_EMAILxPAGER:
+    {
+      gLog.info(tr("Email pager message"));
+
+      vector<string> parts; // name, ?, ?, email, ?, message
+      splitFE(parts, message);
+      if (parts.size() != 6)
+      {
+        packet.log(Log::Warning, tr("Invalid email pager system message"));
+        return;
+      }
+
+      gLog.info(tr("From %s (%s)"), parts.at(0).c_str(), parts.at(3).c_str());
+      ue = new Licq::EventEmailPager(parts.at(0), parts.at(3), parts.at(5),
+            timeSent, flags);
+      break;
+    }
+    case ICQ_CMDxSUB_CONTACTxLIST:
+    {
+      onEventType = OnEventData::OnEventMessage;
+      ue = parseContactEvent(message, timeSent, flags);
+      if (ue == NULL)
+      {
+        packet.log(Log::Warning, tr("Invalid Contact List message"));
+        return;
+      }
+      break;
+    }
+    case ICQ_CMDxSUB_SMS:
+    {
+      string xmlSms = getXmlTag(message, "sms_message");
+      if (xmlSms.empty())
+      {
+        packet.log(Log::Warning, tr("Invalid SMS message"));
+        return;
+      }
+
+      string number = getXmlTag(xmlSms, "sender");
+      string msg = getXmlTag(xmlSms, "text");
+
+      ue = new Licq::EventSms(number, msg, timeSent, flags);
+      break;
+    }
+    default:
+    {
+      size_t pos = 0;
+      while ((pos = message.find('\xFE')) != string::npos)
+        message[pos] = '\n';
+
+      packet.log(Log::Unknown, "Unknown system message (0x%04x)", type);
+      ue = new Licq::EventUnknownSysMsg(type,
+            ICQ_CMDxRCV_SYSxMSGxOFFLINE, userId, message, timeSent, 0);
+      break;
+    }
+  }
+
+  switch (type)
+  {
+    case ICQ_CMDxSUB_MSG:
+    case ICQ_CMDxSUB_URL:
+    case ICQ_CMDxSUB_CONTACTxLIST:
+    {
+      // Get the user and allow adding unless we ignore new users
+      Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
+      if (!u.isLocked())
+      {
+        gLog.info(tr("%s from new user (%s), ignoring"),
+            ue->description().c_str(), userId.toString().c_str());
+        gDaemon.rejectEvent(userId, ue);
+        break;
+      }
+      else
+        gLog.info(tr("%s through server from %s (%s)"),
+            ue->description().c_str(), u->getAlias().c_str(), userId.toString().c_str());
+
+      u->setIsTyping(false);
+
+      if (gDaemon.addUserEvent(*u, ue))
+        gOnEventManager.performOnEvent(onEventType, *u);
+
+      gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalUser, Licq::PluginSignal::UserTyping, u->id()));
+
+      break;
+    }
+    case ICQ_CMDxSUB_AUTHxREQUEST:
+    case ICQ_CMDxSUB_AUTHxREFUSED:
+    case ICQ_CMDxSUB_AUTHxGRANTED:
+    case ICQ_CMDxSUB_MSGxSERVER:
+    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+    case ICQ_CMDxSUB_WEBxPANEL:
+    case ICQ_CMDxSUB_EMAILxPAGER:
+    {
+      bool bIgnore;
+      {
+        Licq::UserReadGuard u(userId);
+        bIgnore = (u.isLocked() && u->IgnoreList());
+      }
+
+      if (bIgnore)
+      {
+        delete ue; // Processing stops here, needs to be deleted
+        gLog.info("Ignored!");
+        break;
+      }
+
+      Licq::OwnerWriteGuard o(LICQ_PPID);
+      if (gDaemon.addUserEvent(*o, ue))
+      {
+        ue->AddToHistory(*o, true);
+        gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
+      }
+      break;
+    }
+
+    case ICQ_CMDxSUB_SMS:
+    {
+      Licq::EventSms* eSms = dynamic_cast<Licq::EventSms*>(ue);
+      string idSms = findUserByCellular(eSms->number());
+
+      if (!idSms.empty())
+      {
+        Licq::UserWriteGuard u(Licq::UserId(idSms.c_str(), LICQ_PPID));
+        gLog.info(tr("SMS from %s - %s (%s)"), eSms->number().c_str(),
+            u->getAlias().c_str(), idSms.c_str());
+        if (gDaemon.addUserEvent(*u, ue))
+          gOnEventManager.performOnEvent(OnEventData::OnEventSms, *u);
+      }
+      else
+      {
+        Licq::OwnerWriteGuard o(LICQ_PPID);
+        gLog.info(tr("SMS from %s."), eSms->number().c_str());
+        if (gDaemon.addUserEvent(*o, ue))
+        {
+          ue->AddToHistory(*o, true);
+          gOnEventManager.performOnEvent(OnEventData::OnEventSms, *o);
+        }
+      }
+      break;
+    }
+    default:
+    {
+      Licq::OwnerWriteGuard o(LICQ_PPID);
+      gDaemon.addUserEvent(*o, ue);
+    }
+  }
 }
 
 bool IcqProtocol::waitForReverseConnection(unsigned short id, const Licq::UserId& userId)
@@ -1496,6 +1760,57 @@ unsigned long IcqProtocol::addStatusFlags(unsigned long s, const Licq::User* u)
   return s;
 }
 
+void IcqProtocol::splitFE(vector<string>& ret, const string& s, int maxcount)
+{
+  size_t pos = 0;
+  while (maxcount == 0 || maxcount > 1)
+  {
+    size_t pos2 = s.find('\xFE', pos);
+    if (pos2 == string::npos)
+      break;
+
+    ret.push_back(s.substr(pos, pos2-pos));
+    if (maxcount > 0)
+      maxcount--;
+    pos = pos2 + 1;
+  }
+
+  ret.push_back(s.substr(pos));
+}
+
+Licq::EventUrl* IcqProtocol::parseUrlEvent(const string& s, time_t timeSent,
+    unsigned long flags, unsigned long convoId)
+{
+  vector<string> parts;
+  splitFE(parts, s, 2);
+  if (parts.size() < 2)
+    return NULL;
+
+  // Part 0 is URL, part 1 is description
+  return new Licq::EventUrl(parts.at(1), parts.at(0), timeSent, flags, convoId);
+}
+
+Licq::EventContactList* IcqProtocol::parseContactEvent(const string& s,
+    time_t timeSent, unsigned long flags)
+{
+  vector<string> parts;
+  splitFE(parts, s);
+
+  // First part is number of contacts in the list
+  size_t count = atoi(parts.at(0).c_str());
+  if (parts.size() < count*2+2)
+    return NULL;
+
+  Licq::EventContactList::ContactList vc;
+  for (size_t i = 0; i < count; ++i)
+  {
+    Licq::UserId userId(parts.at(i*2+1), LICQ_PPID);
+    vc.push_back(new Licq::EventContactList::Contact(userId, parts.at(i*2+2)));
+  }
+
+  return new Licq::EventContactList(vc, false, timeSent, flags);
+}
+
 
 CReverseConnectToUserData::CReverseConnectToUserData(const char* idString, unsigned long id,
       unsigned long data, unsigned long ip, unsigned short port,
@@ -1511,30 +1826,6 @@ CReverseConnectToUserData::CReverseConnectToUserData(const char* idString, unsig
 CReverseConnectToUserData::~CReverseConnectToUserData()
 {
   // Empty
-}
-
-//-----ParseFE------------------------------------------------------------------
-bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
-{
-  char *pcEnd = szBuffer, *pcStart;
-  unsigned short i = 0;
-
-  // Clear the character pointers
-  memset(*szSubStr, 0, nNumSubStr * sizeof(char *));
-
-  while (*pcEnd && i < nNumSubStr)
-  {
-     pcStart = pcEnd;
-
-     while (*pcEnd && (unsigned char)*pcEnd != (unsigned char)0xFE)  pcEnd++;
-     if ((unsigned char)*pcEnd == (unsigned char)'\xFE')  *pcEnd++ = '\0';
-
-     (*szSubStr)[i++] = pcStart;
-  }
-
-  while(i < nNumSubStr)  (*szSubStr)[i++] = pcEnd;
-
-  return (!*pcEnd);
 }
 
 CUserProperties::CUserProperties()

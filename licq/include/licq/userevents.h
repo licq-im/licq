@@ -246,8 +246,6 @@ public:
   const std::string& url() const { return myUrl; }
   const std::string& urlDescription() const { return myUrlDescription; }
 
-  static EventUrl *Parse(char *sz, time_t nTime,
-     unsigned long nFlags, unsigned long nConvoId = 0);
 protected:
   void CreateDescription() const;
   std::string eventName() const;
@@ -440,7 +438,6 @@ public:
 
   const ContactList &Contacts() const { return m_vszFields; }
 
-  static EventContactList *Parse(char *sz, time_t nTime, unsigned long nFlags);
 protected:
   void CreateDescription() const;
   std::string eventName() const;
@@ -460,7 +457,6 @@ public:
   const std::string& message() const { return myMessage; }
   virtual void AddToHistory(User* u, bool isReceiver) const;
 
-  static EventSms* Parse(const std::string& s, time_t nTime, unsigned long nFlags);
 protected:
   void CreateDescription() const;
   std::string eventName() const;
@@ -478,8 +474,6 @@ public:
   virtual EventServerMessage* Copy() const;
   const std::string& message() const { return myMessage; }
   virtual void AddToHistory(User* u, bool isReceiver) const;
-
-  static EventServerMessage *Parse(char *, unsigned short, time_t, unsigned long);
 
 protected:
  void CreateDescription() const;

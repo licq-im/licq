@@ -25,10 +25,12 @@
 #include <boost/shared_array.hpp>
 #include <list>
 #include <map>
+#include <vector>
 #include <pthread.h>
 
 #include <licq/buffer.h>
 #include <licq/event.h>
+#include <licq/oneventmanager.h>
 #include <licq/pipe.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
@@ -39,6 +41,10 @@ class CSrvPacketTcp;
 
 namespace Licq
 {
+class EventContactList;
+class EventServerMessage;
+class EventSms;
+class EventUrl;
 class INetSocket;
 class IniFile;
 class Packet;
@@ -354,6 +360,34 @@ private:
 
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, Licq::TCPSocket*);
+
+  /**
+   * Split a string into parts delimited by 0xFE
+   *
+   * @param ret List to return substrings in
+   * @param s String to split
+   * @param count Number of substrings to find or zero to get all
+   */
+  static void splitFE(std::vector<std::string>& ret, const std::string& s, int count = 0);
+
+  static Licq::EventUrl* parseUrlEvent(const std::string& s, time_t timeSent,
+      unsigned long flags, unsigned long convoId = 0);
+  static Licq::EventContactList* parseContactEvent(const std::string& s,
+      time_t timeSent, unsigned long flags);
+
+  /**
+   * Parse a message into a Licq user event object
+   *
+   * @param type Message type (ICQ protocol constant)
+   * @param packet Packet to log on failure
+   * @param userId Id of user associated with message
+   * @param message Message block to parse
+   * @param timeSent Timestamp of message
+   * @param flags User event flags
+   */
+  void processServerMessage(int type, Licq::Buffer& packet,
+      const Licq::UserId& userId, std::string& message, time_t timeSent,
+      unsigned long flags);
 
   void ChangeUserStatus(Licq::User* u, unsigned long s, time_t onlineSince = 0);
   std::string findUserByCellular(const std::string& cellular);

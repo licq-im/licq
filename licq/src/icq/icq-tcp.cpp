@@ -1287,7 +1287,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                  headerLen, ackFlags, msgFlags, licqVersion, theSequence;
   char licqChar = '\0', junkChar;
   bool errorOccured = false;
-  char *message = 0;
   Licq::UserId userId;
 
   // only used for v7,v8
@@ -1451,12 +1450,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   {
   
   // read in the message minus any stupid DOS \r's
-  string messageTmp = packet.unpackRawString(messageLen);
-  size_t pos;
-  while ((pos = messageTmp.find(0x0D)) != string::npos)
-    messageTmp.erase(pos, 1);
-
-  message = strdup(parseRtf(messageTmp).c_str());
+    string message = parseRtf(gTranslator.returnToUnix(packet.unpackRawString(messageLen)));
 
     if (nInVersion < 6)
     {
@@ -1543,8 +1537,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     {
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
-            string msg = message;
-
         unsigned long back = 0xFFFFFF, fore = 0x000000;
             if (nInVersion < 6)
             {
@@ -1576,7 +1568,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                 if (guid == ICQ_CAPABILITY_UTF8_STR)
                 {
                   // Message is UTF8
-                  msg = Licq::gTranslator.fromUnicode(msg);
+                  message = Licq::gTranslator.fromUnicode(message);
                 }
               }
               // TODO: Could there be multiple GUIDs that we need to check?
@@ -1592,7 +1584,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           CPT_AckGeneral p(newCommand, theSequence, true, bAccept, *u);
         AckTCP(p, pSock);
 
-          Licq::EventMsg* e = new Licq::EventMsg(msg, Licq::EventMsg::TimeNow, nMask);
+          Licq::EventMsg* e = new Licq::EventMsg(message, Licq::EventMsg::TimeNow, nMask);
         e->SetColor(fore, back);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
@@ -1694,7 +1686,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
             gLog.info(tr("URL from %s (%s)."), u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventUrl* e = Licq::EventUrl::Parse(message, Licq::EventUrl::TimeNow, nMask);
+          Licq::EventUrl* e = parseUrlEvent(message, Licq::EventUrl::TimeNow, nMask);
         if (e == NULL)
         {
           packet.log(Log::Warning, tr("Invalid URL message"));
@@ -1765,7 +1757,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.info(tr("Contact list from %s (%s).\n"),
                 u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventContactList* e = Licq::EventContactList::Parse(message, Licq::EventContactList::TimeNow, nMask);
+          Licq::EventContactList* e = parseContactEvent(message, Licq::EventContactList::TimeNow, nMask);
         if (e == NULL)
         {
           packet.log(Log::Warning, tr("Invalid contact list message"));
@@ -1936,10 +1928,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             break;
           }
 
-          char* szMessage = new char[nLongLen+1];
-				for (unsigned long i = 0; i < nLongLen; i++)
-					packet >> szMessage[i];
-				szMessage[nLongLen] = '\0';
+            string icbmMessage = packet.unpackRawString(nLongLen);
 
 				switch (nICBMCommand)
 				{
@@ -1958,7 +1947,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
               list<string> filelist;
               filelist.push_back(filename);
-                Licq::EventFile* e = new Licq::EventFile(filename.c_str(), szMessage, nFileSize,
+                Licq::EventFile* e = new Licq::EventFile(filename, icbmMessage, nFileSize,
                     filelist, theSequence, Licq::EventFile::TimeNow, nMask);
 					if (bNewUser)
 					{
@@ -1988,7 +1977,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.info(tr("Chat request from %s (%s)."),
                   u->getAlias().c_str(), userId.toString().c_str());
 
-                Licq::EventChat* e = new Licq::EventChat(szMessage, szChatClients, nPort,
+                Licq::EventChat* e = new Licq::EventChat(icbmMessage, szChatClients, nPort,
                     theSequence, Licq::EventChat::TimeNow, nMask);
 					if (bNewUser)
 					{
@@ -2008,7 +1997,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				case ICQ_CMDxSUB_URL:
 				{
               gLog.info(tr("URL from %s (%s)."), u->getAlias().c_str(), userId.toString().c_str());
-                Licq::EventUrl* e = Licq::EventUrl::Parse(szMessage, Licq::EventUrl::TimeNow, nMask);
+                Licq::EventUrl* e = parseUrlEvent(icbmMessage, Licq::EventUrl::TimeNow, nMask);
 					if (e == NULL)
 					{
                                           packet.log(Log::Warning, tr("Invalid URL message"));
@@ -2035,7 +2024,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				{
               gLog.info(tr("Contact list from %s (%s)."),
                   u->getAlias().c_str(), userId.toString().c_str());
-                Licq::EventContactList* e = Licq::EventContactList::Parse(szMessage,
+                Licq::EventContactList* e = parseContactEvent(icbmMessage,
                     Licq::EventContactList::TimeNow, nMask);
 					if (e == NULL)
 					{
@@ -2060,8 +2049,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                 break;
               }
           } // switch nICBMCommand
-          delete [] szMessage;
-
           break;
         }
 
@@ -2336,7 +2323,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 						nPort = nPortReversed;
 
               pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort,
-                  message[0] != '\0' ? message : msg.c_str());
+                  !message.empty() ? message : msg.c_str());
 	      break;
 	    }
 				case ICQ_CMDxSUB_CHAT:
@@ -2356,7 +2343,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           bool bAccepted = (nPort != 0 && ul[0] == '\0') ||
                            (nPort == 0 && ul[0] != '\0');
               pExtendedAck = new Licq::ExtendedData(bAccepted, nPort,
-                  message[0] != '\0' ? message : msg.c_str());
+                  !message.empty() ? message : msg.c_str());
 	      break;
 	    }
 	  } // switch nICBMCommand
@@ -2388,9 +2375,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
           Licq::Event* e = NULL;
 
-        // Check if the response is ok
-        if (message[0] == '\0')
-        {
+          // Check if the response is ok
+          if (message.empty())
+          {
             gLog.info(tr("%s (%s) does not support OpenSSL."),
                 u->getAlias().c_str(), userId.toString().c_str());
           u->SetSecure(false);
@@ -2528,7 +2515,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       if (u->autoResponse() != message)
       {
           u->setAutoResponse(message);
-        u->SetShowAwayMsg(*message);
+          u->SetShowAwayMsg(!message.empty());
         gLog.info(tr("Auto response from %s (#%d)%s."), u->getAlias().c_str(), -theSequence, l);
       }
 
@@ -2668,8 +2655,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     Licq::gUserManager.removeUser(userId, false);
     return false;
   }
-  if (message)
-    delete [] message;
   return !errorOccured;
 }
 

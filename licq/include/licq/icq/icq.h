@@ -210,7 +210,6 @@ protected:
 extern CICQDaemon *gLicqDaemon;
 
 // Helper functions for the daemon
-bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
 unsigned short VersionToUse(unsigned short);
 
 #endif
