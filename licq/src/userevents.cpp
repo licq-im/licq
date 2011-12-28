@@ -150,7 +150,7 @@ string UserEvent::historyHeader(bool isReceiver) const
   buf << m_nCommand;
   buf << " | ";
   buf.width(4);
-  buf << (((unsigned short)(m_nFlags >> 16)) & 0x801F);
+  buf << (((unsigned short)((m_nFlags | FlagUnicode) >> 16)) & 0xC01F);
   buf << " | ";
   buf.width(1);
   buf << (unsigned long)m_tTime << " ]\n";

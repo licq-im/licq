@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,9 +47,10 @@ public:
    * Call clear to free up the memory used by the history list
    *
    * @param history List to put all history entries in
+   * @param userEncoding Default encoding to use if unknown
    * @return True if history was read
    */
-  bool load(Licq::HistoryList& history) const;
+  bool load(Licq::HistoryList& history, const std::string& userEncoding) const;
 
   /**
    * Frees up memory used by a history list

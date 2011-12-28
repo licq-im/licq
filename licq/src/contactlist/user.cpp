@@ -999,7 +999,7 @@ void User::setHistoryFile(const std::string& file)
 
 int User::GetHistory(Licq::HistoryList& history) const
 {
-  return myHistory.load(history);
+  return myHistory.load(history, userEncoding());
 }
 
 void Licq::User::ClearHistory(HistoryList& h)

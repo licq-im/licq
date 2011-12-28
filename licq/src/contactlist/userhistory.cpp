@@ -32,6 +32,7 @@
 #include <unistd.h>
 
 #include <licq/logging/log.h>
+#include <licq/translator.h>
 #include <licq/userevents.h>
 #include <licq/userid.h>
 
@@ -42,6 +43,7 @@
 using namespace std;
 using Licq::UserId;
 using Licq::gLog;
+using Licq::gTranslator;
 using LicqDaemon::UserHistory;
 
 UserHistory::UserHistory(unsigned long ppid)
@@ -79,7 +81,7 @@ void UserHistory::setFile(const string& filename, const string& description)
     while ((szResult = fgets(sz, sizeof(sz), f)) != NULL && sz[0] == ':') ; \
   }
 
-bool UserHistory::load(Licq::HistoryList& lHistory) const
+bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) const
 {
   if (myFilename.empty())
     return false;
@@ -134,6 +136,14 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
     if (cDir != 'R')
       nFlags |= Licq::UserEvent::FlagSender;
 
+    bool convertToUtf8 = true;
+    if (nFlags & Licq::UserEvent::FlagUnicode)
+    {
+      // Message is already UTF8 encoded
+      convertToUtf8 = false;
+      nFlags &= ~Licq::UserEvent::FlagUnicode;
+    }
+
     // Now read in the message
     e = NULL;
     switch (nSubCommand)
@@ -142,6 +152,8 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
       {
         string message;
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+          message = gTranslator.toUtf8(message, userEncoding);
         e = new Licq::EventMsg(message, tTime, nFlags);
         break;
       }
@@ -151,6 +163,8 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         {
           string message;
           GET_VALID_LINES(message);
+          if (convertToUtf8)
+            message = gTranslator.toUtf8(message, userEncoding);
           e = new Licq::EventChat(message, 0, tTime, nFlags);
         }
         else
@@ -169,6 +183,11 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
           GET_VALID_LINE_OR_BREAK(sizeStr);
           unsigned long nSize = atoi(sizeStr.c_str());
           GET_VALID_LINES(message);
+          if (convertToUtf8)
+          {
+            file = gTranslator.toUtf8(file);
+            message = gTranslator.toUtf8(message, userEncoding);
+          }
           list<string> filelist;
           filelist.push_back(file);
           e = new Licq::EventFile(file, message, nSize, filelist, 0, tTime, nFlags);
@@ -185,6 +204,11 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         string url, message;
         GET_VALID_LINE_OR_BREAK(url);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+        {
+          url = gTranslator.toUtf8(url);
+          message = gTranslator.toUtf8(message, userEncoding);
+        }
         e = new Licq::EventUrl(url, message, tTime, nFlags);
         break;
       }
@@ -197,6 +221,14 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         GET_VALID_LINE_OR_BREAK(lastName);
         GET_VALID_LINE_OR_BREAK(email);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+        {
+          alias = gTranslator.toUtf8(alias);
+          firstName = gTranslator.toUtf8(firstName);
+          lastName = gTranslator.toUtf8(lastName);
+          email = gTranslator.toUtf8(email);
+          message = gTranslator.toUtf8(message, userEncoding);
+        }
         e = new Licq::EventAuthRequest(UserId(accountId, myPpid), alias,
             firstName, lastName, email, message, tTime, nFlags);
         break;
@@ -206,6 +238,8 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         string accountId, message;
         GET_VALID_LINE_OR_BREAK(accountId);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+          message = gTranslator.toUtf8(message, userEncoding);
         e = new Licq::EventAuthGranted(UserId(accountId, myPpid), message,
             tTime, nFlags);
         break;
@@ -215,6 +249,8 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         string accountId, message;
         GET_VALID_LINE_OR_BREAK(accountId);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+          message = gTranslator.toUtf8(message, userEncoding);
         e = new Licq::EventAuthRefused(UserId(accountId, myPpid), message,
             tTime, nFlags);
         break;
@@ -227,6 +263,13 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         GET_VALID_LINE_OR_BREAK(firstName);
         GET_VALID_LINE_OR_BREAK(lastName);
         GET_VALID_LINE_OR_BREAK(email);
+        if (convertToUtf8)
+        {
+          alias = gTranslator.toUtf8(alias);
+          firstName = gTranslator.toUtf8(firstName);
+          lastName = gTranslator.toUtf8(lastName);
+          email = gTranslator.toUtf8(email);
+        }
         e = new Licq::EventAdded(UserId(accountId, myPpid), alias, firstName,
             lastName, email, tTime, nFlags);
         break;
@@ -237,6 +280,12 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         GET_VALID_LINE_OR_BREAK(name);
         GET_VALID_LINE_OR_BREAK(email);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+        {
+          name = gTranslator.toUtf8(name);
+          email = gTranslator.toUtf8(email);
+          message = gTranslator.toUtf8(message, userEncoding);
+        }
         e = new Licq::EventWebPanel(name, email, message, tTime, nFlags);
         break;
       }
@@ -246,6 +295,12 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         GET_VALID_LINE_OR_BREAK(name);
         GET_VALID_LINE_OR_BREAK(email);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+        {
+          name = gTranslator.toUtf8(name);
+          email = gTranslator.toUtf8(email);
+          message = gTranslator.toUtf8(message, userEncoding);
+        }
         e = new Licq::EventEmailPager(name, email, message, tTime, nFlags);
         break;
       }
@@ -257,6 +312,8 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
           string accountId, alias;
           GET_VALID_LINE_OR_BREAK(accountId);
           GET_VALID_LINE_OR_BREAK(alias);
+          if (convertToUtf8)
+            alias = gTranslator.toUtf8(alias);
           vc.push_back(new Licq::EventContactList::Contact(UserId(accountId, myPpid), alias));
         }
         e = new Licq::EventContactList(vc, false, tTime, nFlags);
@@ -267,6 +324,8 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         string number, message;
         GET_VALID_LINE_OR_BREAK(number);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+          message = gTranslator.toUtf8(message, userEncoding);
         e = new Licq::EventSms(number, message, tTime, nFlags);
         break;
       }
@@ -276,6 +335,12 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         GET_VALID_LINE_OR_BREAK(name);
         GET_VALID_LINE_OR_BREAK(email);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+        {
+          name = gTranslator.toUtf8(name);
+          email = gTranslator.toUtf8(email);
+          message = gTranslator.toUtf8(message, userEncoding);
+        }
         e = new Licq::EventServerMessage(name, email, message, tTime);
         break;
       }
@@ -285,6 +350,12 @@ bool UserHistory::load(Licq::HistoryList& lHistory) const
         GET_VALID_LINE_OR_BREAK(name);
         GET_VALID_LINE_OR_BREAK(email);
         GET_VALID_LINES(message);
+        if (convertToUtf8)
+        {
+          name = gTranslator.toUtf8(name);
+          email = gTranslator.toUtf8(email);
+          message = gTranslator.toUtf8(message, userEncoding);
+        }
         e = new Licq::EventEmailAlert(name, 0, email, message, tTime);
         break;
       }

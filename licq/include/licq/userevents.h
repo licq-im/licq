@@ -57,6 +57,7 @@ public:
     FlagEncrypted       = 0x00100000,
     FlagSender          = 0x00200000,
     FlagOffline         = 0x00400000,
+    FlagUnicode         = 0x40000000,   // Only used in history files for UTF8 encoded messages
     FlagUnknown         = 0x80000000,
   };
 
