@@ -574,7 +574,6 @@ void Level::flush()
     if (encoding == NULL) encoding = p->encoding;
     p->icq->client->toUTF(text, encoding);*/
 /*text = Licq::gTranslator.toUnicode(text);*/
-  text = Licq::gTranslator.serverToClient(text);
     p->PrintQuoted(text.c_str());
     text = "";
 }

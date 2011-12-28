@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2010 Licq developers
+ * Copyright (C) 2000-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,17 +38,6 @@ public:
   Translator();
   ~Translator();
 
-  void setDefaultTranslationMap();
-  bool setTranslationMap(const std::string& mapFileName);
-  bool isDefaultMap() { return myMapDefault; }
-  const std::string& getMapName() const { return myMapName; }
-  const std::string& getMapFileName() const { return myMapFileName; }
-
-  std::string serverToClient(const std::string& s, bool removeCR = false);
-  char serverToClient(char c);
-  std::string clientToServer(const std::string& s, bool addCR = false);
-  char clientToServer(char c);
-
   bool isAscii(const std::string& s);
 
   std::string fromUnicode(const std::string& s, const std::string& toEncoding = "");
@@ -66,11 +55,6 @@ public:
    */
   std::string returnToUnix(const std::string& s);
 
-  void ServerToClient(char* array);
-  void ServerToClient(char& value);
-  void ClientToServer(char* array);
-  void ClientToServer(char& value);
-
   bool utf16to8(unsigned long c, std::string &s);
 
 protected:
@@ -78,12 +62,6 @@ protected:
 
   std::string iconvConvert(const std::string& s, const std::string& to, const std::string& from,
       bool& ok, int length = -1, size_t* outDone = NULL);
-
-  bool myMapDefault;
-  std::string myMapName;
-  std::string myMapFileName;
-  unsigned char serverToClientTab[256];
-  unsigned char clientToServerTab[256];
 };
 
 extern Translator gTranslator;

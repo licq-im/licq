@@ -59,7 +59,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     unsigned flags, const Licq::Color* pColor)
 {
   const string accountId = userId.accountId();
-  string m = gTranslator.clientToServer(message, true);
+  string m = gTranslator.returnToDos(message);
 
   bool bUserOffline = true;
   Licq::EventMsg* e = NULL;
@@ -204,7 +204,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   // make the URL info string
   char *szDescDos = NULL;
   Licq::EventUrl* e = NULL;
-  string m = gTranslator.clientToServer(message, true);
+  string m = gTranslator.returnToDos(message);
   int n = url.size() + m.size() + 2;
   if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && n > MaxMessageSize)
     m.erase(MaxMessageSize - url.size() - 2);
@@ -277,7 +277,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   if (Licq::gUserManager.isOwner(userId))
     return;
 
-  string dosDesc = gTranslator.clientToServer(message, true);
+  string dosDesc = gTranslator.returnToDos(message);
   Licq::EventFile* e = NULL;
 
   Licq::UserWriteGuard u(userId);
@@ -656,7 +656,7 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
     unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer)
 {
    // add to history ??
-  string reasonDos = gTranslator.clientToServer(message, true);
+  string reasonDos = gTranslator.returnToDos(message);
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
@@ -691,7 +691,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
-  string reasonDos = gTranslator.clientToServer(reason, true);
+  string reasonDos = gTranslator.returnToDos(reason);
 
   unsigned long f;
   unsigned short nLevel;
@@ -770,7 +770,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
   if (!u.isLocked())
     return;
   gLog.info(tr("Refusing chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
-  string reasonDos = gTranslator.clientToServer(reason, true);
+  string reasonDos = gTranslator.returnToDos(reason);
 
 	if (bDirect)
   {
@@ -1543,7 +1543,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     {
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
-            string msg = Licq::gTranslator.serverToClient(message);
+            string msg = message;
 
         unsigned long back = 0xFFFFFF, fore = 0x000000;
             if (nInVersion < 6)
@@ -1831,8 +1831,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.info(tr("Chat request from %s (%s)."),
                 u->getAlias().c_str(), userId.toString().c_str());
 
-        // translating string with translation table
-        gTranslator.ServerToClient (message);
           Licq::EventChat* e = new Licq::EventChat(message, szChatClients, nPort, theSequence,
               Licq::EventChat::TimeNow, nMask | licqVersion);
 
@@ -1887,8 +1885,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         list<string> filelist;
         filelist.push_back(filename);
 
-        // translating string with translation table
-        gTranslator.ServerToClient (message);
           Licq::EventFile* e = new Licq::EventFile(filename.c_str(), message, nFileLength,
               filelist, theSequence, Licq::EventFile::TimeNow, nMask | licqVersion);
         // Add the user to our list if they are new
@@ -1962,9 +1958,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
               list<string> filelist;
               filelist.push_back(filename);
-
-					// translating string with translation table
-					gTranslator.ServerToClient(szMessage);
                 Licq::EventFile* e = new Licq::EventFile(filename.c_str(), szMessage, nFileSize,
                     filelist, theSequence, Licq::EventFile::TimeNow, nMask);
 					if (bNewUser)
@@ -1995,8 +1988,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.info(tr("Chat request from %s (%s)."),
                   u->getAlias().c_str(), userId.toString().c_str());
 
-					// translating string with translation table
-					gTranslator.ServerToClient(szMessage);
                 Licq::EventChat* e = new Licq::EventChat(szMessage, szChatClients, nPort,
                     theSequence, Licq::EventChat::TimeNow, nMask);
 					if (bNewUser)
@@ -2524,8 +2515,6 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       if (licqChar == 'L')
         sprintf(l, " [Licq %s]", Licq::UserEvent::licqVersionToString(licqVersion).c_str());
 
-    // translating string with translation table
-    gTranslator.ServerToClient (message);
     // output the away message if there is one (ie if user status is not online)
       unsigned subResult;
     if (ackFlags == ICQ_TCPxACK_REFUSE)
@@ -2895,7 +2884,6 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               for (unsigned long j = 0; j < nLen; j++)
                       packet >> buf[j];
                     buf[nLen] = '\0';
-                    gTranslator.ServerToClient(buf);
                     pb[i].description = buf;
                     delete[] buf;
 
@@ -2904,7 +2892,6 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               for (unsigned long j = 0; j < nLen; j++)
                       packet >> buf[j];
                     buf[nLen] = '\0';
-                    gTranslator.ServerToClient(buf);
                     pb[i].areaCode = buf;
                     delete[] buf;
 
@@ -2913,7 +2900,6 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               for (unsigned long j = 0; j < nLen; j++)
                       packet >> buf[j];
                     buf[nLen] = '\0';
-                    gTranslator.ServerToClient(buf);
                     pb[i].phoneNumber = buf;
                     delete[] buf;
 
@@ -2922,7 +2908,6 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               for (unsigned long j = 0; j < nLen; j++)
                       packet >> buf[j];
                     buf[nLen] = '\0';
-                    gTranslator.ServerToClient(buf);
                     pb[i].extension = buf;
                     delete[] buf;
 
@@ -2931,7 +2916,6 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               for (unsigned long j = 0; j < nLen; j++)
                       packet >> buf[j];
                     buf[nLen] = '\0';
-                    gTranslator.ServerToClient(buf);
                     pb[i].country = buf;
                     delete[] buf;
 
@@ -2948,7 +2932,6 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
               for (unsigned long j = 0; j < nLen; j++)
                       packet >> buf[j];
                     buf[nLen] = '\0';
-                    gTranslator.ServerToClient(buf);
                     pb[i].gateway = buf;
                     delete[] buf;
 

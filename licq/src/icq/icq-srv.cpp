@@ -774,7 +774,7 @@ unsigned long IcqProtocol::icqSetWorkInfo(const string& city, const string& stat
 //-----icqSetAbout-----------------------------------------------------------
 unsigned long IcqProtocol::icqSetAbout(const string& about)
 {
-  CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(gTranslator.clientToServer(about, true));
+  CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(gTranslator.returnToDos(about));
 
   gLog.info(tr("Updating about (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
 
@@ -796,7 +796,7 @@ unsigned long IcqProtocol::icqAuthorizeGrant(const Licq::UserId& userId, const s
 unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const string& message)
 {
   CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), ICQ_CMDxSUB_AUTHxREFUSED,
-      gTranslator.clientToServer(message, true));
+      gTranslator.returnToDos(message));
   gLog.info(tr("Refusing authorization to user %s (#%hu)..."),
       userId.accountId().c_str(), p->Sequence());
 
@@ -2090,7 +2090,6 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
     if (szInfo)
     {
         gLog.info(tr("Received user information for %s."), szId);
-      gTranslator.ServerToClient(szInfo);
         {
           Licq::UserWriteGuard u(userId);
           u->SetEnableSave(false);
@@ -2693,13 +2692,10 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       
       nMsgLen -= 4;
 
-      char* szMessage = new char[nMsgLen+1];
-      for (int i = 0; i < nMsgLen; i++)
-        szMessage[i] = msgTxt.UnpackChar();
-      szMessage[nMsgLen] = '\0';
-      
+          string message = msgTxt.unpackRawString(nMsgLen);
+
       bool ignore = false;
-          string m;
+          string userEncoding;
       // Get the user and allow adding unless we ignore new users
           {
             Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
@@ -2710,28 +2706,20 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           ignore = true;
             }
             else
+            {
+              userEncoding = u->userEncoding();
               gLog.info(tr("Message through server from %s (%s)."),
                   u->getAlias().c_str(), szId);
+            }
+          }
 
       if (nEncoding == 2) // utf-8 or utf-16?
-      {
-            const char* szEncoding = ignore ? "" : u->userEncoding().c_str();
-            string tmpMsg = gTranslator.fromUtf16(string(szMessage, nMsgLen), szEncoding);
-            delete [] szMessage;
-            szMessage = new char[tmpMsg.size()+1];
-            strncpy(szMessage, tmpMsg.c_str(), tmpMsg.size());
-            szMessage[tmpMsg.size()] = '\0';
-          }
+            message = gTranslator.fromUtf16(message, userEncoding);
 
-            m = gTranslator.serverToClient(szMessage, true);
-      delete [] szMessage;
-
-          // Unlock user mutex before parsing message so we don't block other threads
-          //   for a long time since parser may blocks to prompt for GPG passphrase.
-          }
+          message = gTranslator.returnToUnix(message);
 
       // now send the message to the user
-          Licq::EventMsg* e = new Licq::EventMsg(m, nTimeSent, 0);
+          Licq::EventMsg* e = new Licq::EventMsg(message, nTimeSent, 0);
 
       if (ignore)
       {
@@ -2885,9 +2873,6 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
           char* szMsg = strdup(parseRtf(szTmpMsg).c_str());
 
-      // Seems to be misplaced, don't do it here
-      //gTranslator.ServerToClient(szMsg);
-
       bool bNewUser = false;
           Licq::UserWriteGuard u(userId, true, &bNewUser);
 
@@ -2918,13 +2903,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
         if (r) u->SetOfflineOnDisconnect(true);
       }
 */
-
-      if (u->Version() == 0x0A)
-      {
-        // We removed the conversion from before, but with this version we need
-        // it back. Go figure.
-        gTranslator.ClientToServer(szMsg);
-      }
 
       // Handle it
           ProcessMessage(*u, advMsg, szMsg, nMsgType, nMask, nMsgID,
@@ -3031,8 +3009,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
       {
         case ICQ_CMDxSUB_MSG:
             {
-              Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
-                  nTimeSent, nMask);
+              Licq::EventMsg* e = new Licq::EventMsg(szMessage, nTimeSent, nMask);
               type = tr("Message");
               onEventType = OnEventData::OnEventMessage;
           eEvent = e;
@@ -3063,12 +3040,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
             break;
           }
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient (szFields[0]);  // alias
-          gTranslator.ServerToClient (szFields[1]);  // first name
-          gTranslator.ServerToClient (szFields[2]);  // last name
-          gTranslator.ServerToClient (szFields[5]);  // comment
-
               Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId,
                                                        szFields[0], szFields[1],
                                                        szFields[2], szFields[3],
@@ -3083,9 +3054,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
         {
           gLog.info(tr("Authorization refused by %s"), szId);
 
-          // Translating string with Translation Table
-          gTranslator.ServerToClient(szMessage);
-
               Licq::EventAuthRefused* e = new Licq::EventAuthRefused(userId, szMessage,
                                                        nTimeSent, 0);
           eEvent = e;
@@ -3094,9 +3062,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
         case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
         {
           gLog.info(tr("Authorization granted by %s"), szId);
-
-          // translating string with Translation Table
-          gTranslator.ServerToClient (szMessage);
 
               {
                 Licq::UserWriteGuard u(userId);
@@ -3136,11 +3101,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
             break;
           }
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient (szFields[0]);  // alias
-          gTranslator.ServerToClient (szFields[1]);  // first name
-          gTranslator.ServerToClient (szFields[2]);  // last name
-
               Licq::EventAdded* e = new Licq::EventAdded(userId, szFields[0],
                   szFields[1], szFields[2], szFields[3],
             nTimeSent, 0);
@@ -3161,11 +3121,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
             break;
           }
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient(szFields[0]);  // name
-          gTranslator.ServerToClient(szFields[3]);  // email
-          gTranslator.ServerToClient(szFields[5]);  // message
-
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3],
                   szFields[5], nTimeSent, 0);
@@ -3185,11 +3140,6 @@ However it seems to always think contact is online instead of away/occupied/etc.
             delete [] szFields;
             break;
           }
-
-          // translating string with Translation Table
-          gTranslator.ServerToClient(szFields[0]);  // name
-          gTranslator.ServerToClient(szFields[3]);  // email
-          gTranslator.ServerToClient(szFields[5]);  // message
 
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3],
@@ -3435,25 +3385,21 @@ However it seems to always think contact is online instead of away/occupied/etc.
 
     packet >> nAckFlags >> nMsgFlags >> nLen;
 
-    char* szMessage = new char[nLen + 1];
-    for (unsigned short i = 0; i < nLen; i++)
-      packet >> szMessage[i];
-    szMessage[nLen] = '\0';
-    gTranslator.ServerToClient(szMessage);
-    
+      string message = packet.unpackRawString(nLen);
+
     if (nAckFlags == ICQ_TCPxACK_REFUSE)
       {
-        pExtendedAck = new Licq::ExtendedData(false, 0, szMessage);
+        pExtendedAck = new Licq::ExtendedData(false, 0, message);
         subResult = Licq::Event::SubResultRefuse;
         gLog.info(tr("Refusal from %s (#%lu)."), u->getAlias().c_str(), nMsgID);
       }
       else
       {
       // Update the away message if it's changed
-      if (u->autoResponse() != szMessage)
+      if (u->autoResponse() != message)
       {
-        u->setAutoResponse(szMessage);
-        u->SetShowAwayMsg(*szMessage);
+        u->setAutoResponse(message);
+        u->SetShowAwayMsg(!message.empty());
           gLog.info(tr("Auto response from %s (#%lu)."), u->getAlias().c_str(), nMsgID);
         }
 
@@ -3473,10 +3419,9 @@ However it seems to always think contact is online instead of away/occupied/etc.
           subResult = Licq::Event::SubResultReturn;
         }
 
-        pExtendedAck = new Licq::ExtendedData(subResult == Licq::Event::SubResultReturn, 0, szMessage);
+        pExtendedAck = new Licq::ExtendedData(subResult == Licq::Event::SubResultReturn, 0, message);
       }
         u.unlock();
-      delete [] szMessage;
 
       Licq::Event* e = DoneServerEvent(nMsgID, Licq::Event::ResultAcked);
     if (e)
@@ -4213,8 +4158,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         case ICQ_CMDxSUB_MSG:
             {
-              Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(szMessage),
-                  nTimeSent, nMask);
+              Licq::EventMsg* e = new Licq::EventMsg(szMessage, nTimeSent, nMask);
 	      type = tr("Message");
               onEventType = OnEventData::OnEventMessage;
 	  eEvent = e;
@@ -4247,12 +4191,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient (szFields[0]);  // alias
-          gTranslator.ServerToClient (szFields[1]);  // first name
-          gTranslator.ServerToClient (szFields[2]);  // last name
-          gTranslator.ServerToClient (szFields[5]);  // comment
-
               Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId,
                   szFields[0], szFields[1], szFields[2], szFields[3],
                   szFields[5], nTimeSent, Licq::EventAuthRequest::FlagOffline);
@@ -4264,9 +4202,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           gLog.info(tr("Offline authorization refused by %s"), id);
 
-          // Translating string with Translation Table
-          gTranslator.ServerToClient(szMessage);
-
               Licq::EventAuthRefused* e = new Licq::EventAuthRefused(userId,
                   szMessage, nTimeSent, Licq::EventAuthRefused::FlagOffline);
 	  eEvent = e;
@@ -4275,9 +4210,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
         {
           gLog.info(tr("Offline authorization granted by %s"), id);
-
-          // translating string with Translation Table
-          gTranslator.ServerToClient (szMessage);
 
               {
                 Licq::UserWriteGuard u(userId);
@@ -4317,11 +4249,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient (szFields[0]);  // alias
-          gTranslator.ServerToClient (szFields[1]);  // first name
-          gTranslator.ServerToClient (szFields[2]);  // last name
-
               Licq::EventAdded* e = new Licq::EventAdded(userId, szFields[0],
                   szFields[1], szFields[2], szFields[3],
                   nTimeSent, Licq::EventAdded::FlagOffline);
@@ -4342,11 +4269,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient(szFields[0]);  // name
-          gTranslator.ServerToClient(szFields[3]);  // email
-          gTranslator.ServerToClient(szFields[5]);  // message
-
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventWebPanel* e = new Licq::EventWebPanel(szFields[0], szFields[3], szFields[5],
                   nTimeSent, Licq::EventWebPanel::FlagOffline);
@@ -4366,11 +4288,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             delete [] szFields;
             break;
           }
-
-	  // translating string with Translation Table
-          gTranslator.ServerToClient(szFields[0]);  // name
-          gTranslator.ServerToClient(szFields[3]);  // email
-          gTranslator.ServerToClient(szFields[5]);  // message
 
           gLog.info(tr("From %s (%s)"), szFields[0], szFields[3]);
               Licq::EventEmailPager* e = new Licq::EventEmailPager(szFields[0], szFields[3], szFields[5],
@@ -4554,17 +4471,17 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
               Licq::OwnerWriteGuard o(LICQ_PPID);
               o->SetEnableSave(false);
-              o->setAlias(gTranslator.serverToClient(p->myAlias));
-              o->setUserInfoString("FirstName", gTranslator.serverToClient(p->myFirstName));
-              o->setUserInfoString("LastName", gTranslator.serverToClient(p->myLastName));
-              o->setUserInfoString("Email1", gTranslator.serverToClient(p->myEmailPrimary));
-              o->setUserInfoString("City", gTranslator.serverToClient(p->myCity));
-              o->setUserInfoString("State", gTranslator.serverToClient(p->myState));
-              o->setUserInfoString("PhoneNumber", gTranslator.serverToClient(p->myPhoneNumber));
-              o->setUserInfoString("FaxNumber", gTranslator.serverToClient(p->myFaxNumber));
-              o->setUserInfoString("Address", gTranslator.serverToClient(p->myAddress));
-              o->setUserInfoString("CellularNumber", gTranslator.serverToClient(p->myCellularNumber));
-              o->setUserInfoString("Zipcode", gTranslator.serverToClient(p->myZipCode));
+              o->setAlias(p->myAlias);
+              o->setUserInfoString("FirstName", p->myFirstName);
+              o->setUserInfoString("LastName", p->myLastName);
+              o->setUserInfoString("Email1", p->myEmailPrimary);
+              o->setUserInfoString("City", p->myCity);
+              o->setUserInfoString("State", p->myState);
+              o->setUserInfoString("PhoneNumber", p->myPhoneNumber);
+              o->setUserInfoString("FaxNumber", p->myFaxNumber);
+              o->setUserInfoString("Address", p->myAddress);
+              o->setUserInfoString("CellularNumber", p->myCellularNumber);
+              o->setUserInfoString("Zipcode", p->myZipCode);
               o->setUserInfoUint("Country", p->m_nCountryCode);
           o->SetTimezone(p->m_nTimezone);
               o->setUserInfoBool("HideEmail", p->m_nHideEmail); // 0 = no, 1 = yes
@@ -4587,8 +4504,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               Licq::OwnerWriteGuard o(LICQ_PPID);
 
           o->SetEnableSave(false);
-              o->setUserInfoString("Email2", gTranslator.serverToClient(p->myEmailSecondary));
-              o->setUserInfoString("Email0", gTranslator.serverToClient(p->myEmailOld));
+              o->setUserInfoString("Email2", p->myEmailSecondary);
+              o->setUserInfoString("Email0", p->myEmailOld);
 
           // save the user infomation
           o->SetEnableSave(true);
@@ -4609,7 +4526,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           o->SetEnableSave(false);
               o->setUserInfoUint("Age", p->m_nAge);
               o->setUserInfoUint("Gender", p->m_nGender);
-              o->setUserInfoString("Homepage", gTranslator.serverToClient(p->myHomepage));
+              o->setUserInfoString("Homepage", p->myHomepage);
               o->setUserInfoUint("BirthYear", p->m_nBirthYear);
               o->setUserInfoUint("BirthMonth", p->m_nBirthMonth);
               o->setUserInfoUint("BirthDay", p->m_nBirthDay);
@@ -4637,7 +4554,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               o->getInterests().clear();
               UserCategoryMap::iterator i;
               for (i = p->myInterests.begin(); i != p->myInterests.end(); ++i)
-                o->getInterests()[i->first] = gTranslator.serverToClient(i->second);;
+                o->getInterests()[i->first] = i->second;
 
           o->SetEnableSave(true);
               o->save(Licq::Owner::SaveUserInfo);
@@ -4655,18 +4572,18 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
               Licq::OwnerWriteGuard o(LICQ_PPID);
           o->SetEnableSave(false);
-              o->setUserInfoString("CompanyCity", gTranslator.serverToClient(p->myCity));
-              o->setUserInfoString("CompanyState", gTranslator.serverToClient(p->myState));
-              o->setUserInfoString("CompanyPhoneNumber", gTranslator.serverToClient(p->myPhoneNumber));
-              o->setUserInfoString("CompanyFaxNumber", gTranslator.serverToClient(p->myFaxNumber));
-              o->setUserInfoString("CompanyAddress", gTranslator.serverToClient(p->myAddress));
-              o->setUserInfoString("CompanyZip", gTranslator.serverToClient(p->myZip));
+              o->setUserInfoString("CompanyCity", p->myCity);
+              o->setUserInfoString("CompanyState", p->myState);
+              o->setUserInfoString("CompanyPhoneNumber", p->myPhoneNumber);
+              o->setUserInfoString("CompanyFaxNumber", p->myFaxNumber);
+              o->setUserInfoString("CompanyAddress", p->myAddress);
+              o->setUserInfoString("CompanyZip", p->myZip);
               o->setUserInfoUint("CompanyCountry", p->m_nCompanyCountry);
-              o->setUserInfoString("CompanyName", gTranslator.serverToClient(p->myName));
-              o->setUserInfoString("CompanyDepartment", gTranslator.serverToClient(p->myDepartment));
-              o->setUserInfoString("CompanyPosition", gTranslator.serverToClient(p->myPosition));
+              o->setUserInfoString("CompanyName", p->myName);
+              o->setUserInfoString("CompanyDepartment", p->myDepartment);
+              o->setUserInfoString("CompanyPosition", p->myPosition);
               o->setUserInfoUint("CompanyOccupation", p->m_nCompanyOccupation);
-              o->setUserInfoString("CompanyHomepage", gTranslator.serverToClient(p->myHomepage));
+              o->setUserInfoString("CompanyHomepage", p->myHomepage);
 
           // save the user infomation
           o->SetEnableSave(true);
@@ -4684,8 +4601,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           CPU_Meta_SetAbout *p = (CPU_Meta_SetAbout *)pEvent->m_pPacket;
               Licq::OwnerWriteGuard o(LICQ_PPID);
           o->SetEnableSave(false);
-              o->setUserInfoString("About",
-                  gTranslator.serverToClient(p->myAbout, true));
+              o->setUserInfoString("About", gTranslator.returnToUnix(p->myAbout));
 
           // save the user infomation
           o->SetEnableSave(true);
@@ -4712,11 +4628,11 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 o->getOrganizations().clear();
                 UserCategoryMap::iterator i;
                 for (i = p->myOrganizations.begin(); i != p->myOrganizations.end(); ++i)
-                  o->getOrganizations()[i->first] = gTranslator.serverToClient(i->second);
+                  o->getOrganizations()[i->first] = i->second;
 
                 o->getBackgrounds().clear();
                 for (i = p->myBackgrounds.begin(); i != p->myBackgrounds.end(); ++i)
-                  o->getBackgrounds()[i->first] = gTranslator.serverToClient(i->second);;
+                  o->getBackgrounds()[i->first] = i->second;
 
             o->SetEnableSave(true);
                 o->save(Licq::Owner::SaveUserInfo);
@@ -4922,9 +4838,9 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
             Licq::SearchData* s = new Licq::SearchData(foundUserId);
 
-            s->myAlias = gTranslator.serverToClient(msg.unpackString());
-            s->myFirstName = gTranslator.serverToClient(msg.unpackString());
-            s->myLastName = gTranslator.serverToClient(msg.unpackString());
+            s->myAlias = msg.unpackString();
+            s->myFirstName = msg.unpackString();
+            s->myLastName = msg.unpackString();
             s->myEmail = msg.unpackString();
             s->myAuth = msg.UnpackChar(); // authorization required
             s->myStatus = msg.UnpackChar();
@@ -5017,20 +4933,19 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (!u->m_bKeepAliasOnUpdate || userId == Licq::gUserManager.ownerUserId(LICQ_PPID))
           {
                   alias = gTranslator.toUnicode(alias, u->userEncoding());
-                  alias = gTranslator.serverToClient(alias);
                   u->setAlias(alias);
             //printf("Alias: %s\n", szUTFAlias);
                 }
-                u->setUserInfoString("FirstName", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("LastName", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("Email1", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("City", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("State", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("PhoneNumber", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("FaxNumber", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("Address", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CellularNumber", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("Zipcode", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("FirstName", msg.unpackString());
+                u->setUserInfoString("LastName", msg.unpackString());
+                u->setUserInfoString("Email1", msg.unpackString());
+                u->setUserInfoString("City", msg.unpackString());
+                u->setUserInfoString("State", msg.unpackString());
+                u->setUserInfoString("PhoneNumber", msg.unpackString());
+                u->setUserInfoString("FaxNumber", msg.unpackString());
+                u->setUserInfoString("Address", msg.unpackString());
+                u->setUserInfoString("CellularNumber", msg.unpackString());
+                u->setUserInfoString("Zipcode", msg.unpackString());
                 u->setUserInfoUint("Country", msg.UnpackUnsignedShort() );
           u->SetTimezone( msg.UnpackChar() );
           u->SetAuthorization( !msg.UnpackChar() );
@@ -5077,7 +4992,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetEnableSave(false);
                 u->setUserInfoUint("Age", msg.UnpackUnsignedShort());
                 u->setUserInfoUint("Gender", msg.UnpackChar());
-                u->setUserInfoString("Homepage", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("Homepage", msg.unpackString());
                 u->setUserInfoUint("BirthYear", msg.UnpackUnsignedShort());
                 u->setUserInfoUint("BirthMonth", msg.UnpackChar());
                 u->setUserInfoUint("BirthDay", msg.UnpackChar());
@@ -5130,8 +5045,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           u->SetEnableSave(false);
           int nEmail = (int)msg.UnpackChar();
-                u->setUserInfoString("Email2", nEmail > 0 ? gTranslator.serverToClient(msg.unpackString()) : "");
-                u->setUserInfoString("Email0", nEmail > 1 ? gTranslator.serverToClient(msg.unpackString()) : "");
+                u->setUserInfoString("Email2", nEmail > 0 ? msg.unpackString() : "");
+                u->setUserInfoString("Email0", nEmail > 1 ? msg.unpackString() : "");
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5159,7 +5074,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           {
                   u->setUserInfoUint("HomepageCatCode", msg.UnpackUnsignedShort());
                   u->setUserInfoString("HomepageDesc",
-                      gTranslator.serverToClient(msg.unpackString(), true));
+                      gTranslator.returnToUnix(msg.unpackString()));
                 }
 
                 u->setUserInfoBool("ICQHomepagePresent", msg.UnpackChar());
@@ -5182,18 +5097,18 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                     u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
-                u->setUserInfoString("CompanyCity", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CompanyState", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CompanyPhoneNumber", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CompanyFaxNumber", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CompanyAddress", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CompanyZip", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyCity", msg.unpackString());
+                u->setUserInfoString("CompanyState", msg.unpackString());
+                u->setUserInfoString("CompanyPhoneNumber", msg.unpackString());
+                u->setUserInfoString("CompanyFaxNumber", msg.unpackString());
+                u->setUserInfoString("CompanyAddress", msg.unpackString());
+                u->setUserInfoString("CompanyZip", msg.unpackString());
                 u->setUserInfoUint("CompanyCountry", msg.UnpackUnsignedShort());
-                u->setUserInfoString("CompanyName", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CompanyDepartment", gTranslator.serverToClient(msg.unpackString()));
-                u->setUserInfoString("CompanyPosition", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyName", msg.unpackString());
+                u->setUserInfoString("CompanyDepartment", msg.unpackString());
+                u->setUserInfoString("CompanyPosition", msg.unpackString());
                 u->setUserInfoUint("CompanyOccupation", msg.UnpackUnsignedShort());
-                u->setUserInfoString("CompanyHomepage", gTranslator.serverToClient(msg.unpackString()));
+                u->setUserInfoString("CompanyHomepage", msg.unpackString());
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5214,7 +5129,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           u->SetEnableSave(false);
                 u->setUserInfoString("About",
-                    gTranslator.serverToClient(msg.unpackString(), true));
+                    gTranslator.returnToUnix(msg.unpackString()));
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -5242,7 +5157,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
                 {
             unsigned short cat = msg.UnpackUnsignedShort();
-                  u->getInterests()[cat] = gTranslator.serverToClient(msg.unpackString());
+                  u->getInterests()[cat] = msg.unpackString();
                 }
 
           // save the user infomation
@@ -5274,7 +5189,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
                 {
             unsigned short cat = msg.UnpackUnsignedShort();
-                  u->getBackgrounds()[cat] = gTranslator.serverToClient(msg.unpackString());
+                  u->getBackgrounds()[cat] = msg.unpackString();
                 }
 
           //---- Organizations
@@ -5284,7 +5199,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
           {
             unsigned short cat = msg.UnpackUnsignedShort();
-                  u->getOrganizations()[cat] = gTranslator.serverToClient(msg.unpackString());;
+                  u->getOrganizations()[cat] = msg.unpackString();;
                 }
 
           // our user info is now up to date

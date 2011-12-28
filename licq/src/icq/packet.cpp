@@ -2280,10 +2280,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
     else
       myMessage.clear();
 
-    // Check for pipes, should possibly go after the ClientToServer call
     myMessage = pipeInput(myMessage);
-
-    myMessage = gTranslator.clientToServer(myMessage);
 
     // If message is 8099 characters or longer the server will disconnect us so better to truncate
     if (myMessage.size() >= 8099)
@@ -3219,16 +3216,16 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const string& firstName, const string
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand);
 
-  packSearch(ICQ_CMDxWPxFNAME, gTranslator.clientToServer(firstName));
-  packSearch(ICQ_CMDxWPxLNAME, gTranslator.clientToServer(lastName));
-  packSearch(ICQ_CMDxWPxALIAS, gTranslator.clientToServer(alias));
-  packSearch(ICQ_CMDxWPxEMAIL, gTranslator.clientToServer(email));
-  packSearch(ICQ_CMDxWPxCITY, gTranslator.clientToServer(city));
-  packSearch(ICQ_CMDxWPxSTATE, gTranslator.clientToServer(state));
-  packSearch(ICQ_CMDxWPxCOMPANY, gTranslator.clientToServer(coName));
-  packSearch(ICQ_CMDxWPxCODEPT, gTranslator.clientToServer(coDept));
-  packSearch(ICQ_CMDxWPxCOPOS, gTranslator.clientToServer(coPos));
-  packSearch(ICQ_CMDxWPxKEYWORD, gTranslator.clientToServer(keyword));
+  packSearch(ICQ_CMDxWPxFNAME, firstName);
+  packSearch(ICQ_CMDxWPxLNAME, lastName);
+  packSearch(ICQ_CMDxWPxALIAS, alias);
+  packSearch(ICQ_CMDxWPxEMAIL, email);
+  packSearch(ICQ_CMDxWPxCITY, city);
+  packSearch(ICQ_CMDxWPxSTATE, state);
+  packSearch(ICQ_CMDxWPxCOMPANY, coName);
+  packSearch(ICQ_CMDxWPxCODEPT, coDept);
+  packSearch(ICQ_CMDxWPxCOPOS, coPos);
+  packSearch(ICQ_CMDxWPxKEYWORD, keyword);
 
   if (nMinAge)
   {
@@ -3316,10 +3313,10 @@ CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const string& alias,
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
 
-  myAlias = buffer->packString(gTranslator.clientToServer(alias));
-  myFirstName = buffer->packString(gTranslator.clientToServer(firstName));
-  myLastName = buffer->packString(gTranslator.clientToServer(lastName));
-  myEmail = buffer->packString(gTranslator.clientToServer(email));
+  myAlias = buffer->packString(alias);
+  myFirstName = buffer->packString(firstName);
+  myLastName = buffer->packString(lastName);
+  myEmail = buffer->packString(email);
   buffer->PackChar(m_nAuthorization);
 
 }
@@ -3345,14 +3342,14 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const string& city,
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
 
-  myCity = buffer->packString(gTranslator.clientToServer(city));
+  myCity = buffer->packString(city);
   buffer->PackUnsignedShort(m_nCountry);
   buffer->PackChar(m_cTimezone);
-  myState = buffer->packString(gTranslator.clientToServer(state), 5);
+  myState = buffer->packString(state, 5);
   buffer->PackUnsignedShort(m_nAge);
   buffer->PackChar(m_cSex);
-  myPhone = buffer->packString(gTranslator.clientToServer(phone));
-  myHomepage = buffer->packString(gTranslator.clientToServer(homepage));
+  myPhone = buffer->packString(phone);
+  myHomepage = buffer->packString(homepage);
   myAbout = buffer->packString(about);
   buffer->PackUnsignedLong(m_nZipcode);
 
@@ -3565,48 +3562,48 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
   
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxALIAS);
   buffer->PackUnsignedShort(alias.size()+3);
-  myAlias = buffer->packString(gTranslator.clientToServer(alias));
+  myAlias = buffer->packString(alias);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxFNAME);
   buffer->PackUnsignedShort(firstName.size()+3);
-  myFirstName = buffer->packString(gTranslator.clientToServer(firstName));
+  myFirstName = buffer->packString(firstName);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxLNAME);
   buffer->PackUnsignedShort(lastName.size()+3);
-  myLastName = buffer->packString(gTranslator.clientToServer(lastName));
+  myLastName = buffer->packString(lastName);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxEMAIL);
   buffer->PackUnsignedShort(emailPrimary.size()+3);
-  myEmailPrimary = buffer->packString(gTranslator.clientToServer(emailPrimary));
+  myEmailPrimary = buffer->packString(emailPrimary);
   buffer->PackChar(m_nHideEmail);
   
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCITY);
   buffer->PackUnsignedShort(city.size()+3);
-  myCity = buffer->packString(gTranslator.clientToServer(city));
+  myCity = buffer->packString(city);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxSTATE);
   buffer->PackUnsignedShort(state.size()+3);
-  myState = buffer->packString(gTranslator.clientToServer(state));
+  myState = buffer->packString(state);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExHOME);
   buffer->PackUnsignedShort(phoneNumber.size()+3);
-  myPhoneNumber = buffer->packString(gTranslator.clientToServer(phoneNumber));
+  myPhoneNumber = buffer->packString(phoneNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_FAX);
   buffer->PackUnsignedShort(faxNumber.size()+3);
-  myFaxNumber = buffer->packString(gTranslator.clientToServer(faxNumber));
+  myFaxNumber = buffer->packString(faxNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ADDR);
   buffer->PackUnsignedShort(address.size()+3);
-  myAddress = buffer->packString(gTranslator.clientToServer(address));
+  myAddress = buffer->packString(address);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExCELL);
   buffer->PackUnsignedShort(cellularNumber.size()+3);
-  myCellularNumber = buffer->packString(gTranslator.clientToServer(cellularNumber));
+  myCellularNumber = buffer->packString(cellularNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ZIP);
   buffer->PackUnsignedShort(zipCode.size()+3);
-  myZipCode = buffer->packString(gTranslator.clientToServer(zipCode));
+  myZipCode = buffer->packString(zipCode);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOUNTRY);
   buffer->PackUnsignedShort(0x0002);
@@ -3644,9 +3641,9 @@ CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo(const string& emailSecondary, const
 
   buffer->PackChar(2);
   buffer->PackChar(0);
-  myEmailSecondary = buffer->packString(gTranslator.clientToServer(emailSecondary));
+  myEmailSecondary = buffer->packString(emailSecondary);
   buffer->PackChar(0);
-  myEmailOld = buffer->packString(gTranslator.clientToServer(emailOld));
+  myEmailOld = buffer->packString(emailOld);
 }
 
 //-----Meta_SetMoreInfo------------------------------------------------------
@@ -3689,7 +3686,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge, char nGender,
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOMEPAGE);
   buffer->PackUnsignedShort(homepage.size()+3);
-  myHomepage = buffer->packString(gTranslator.clientToServer(homepage));
+  myHomepage = buffer->packString(homepage);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxBIRTHDAY);
   buffer->PackUnsignedShort(0x0006);
@@ -3720,11 +3717,8 @@ CPU_Meta_SetInterestsInfo::CPU_Meta_SetInterestsInfo(const UserCategoryMap& inte
   UserCategoryMap::const_iterator i;
   for (i = interests.begin(); i != interests.end(); ++i)
   {
-    char* tmp = strdup(i->second.c_str());
-    gTranslator.ClientToServer(tmp);
-    myInterests[i->first] = tmp;
-    packetSize += 2 + 2 + strlen(tmp) + 1;
-    free(tmp);
+    myInterests[i->first] = i->second;
+    packetSize += 2 + 2 + i->second.size() + 1;
   }
 
   m_nSize += packetSize;
@@ -3758,19 +3752,13 @@ CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(const UserCategoryMap& orgs,
   UserCategoryMap::const_iterator i;
   for (i = orgs.begin(); i != orgs.end(); ++i)
   {
-    char* tmp = strdup(i->second.c_str());
-    gTranslator.ClientToServer(tmp);
-    myOrganizations[i->first] = tmp;
-    packetSize += 2 + 2 + strlen(tmp) + 1;
-    free(tmp);
+    myOrganizations[i->first] = i->second;
+    packetSize += 2 + 2 + i->second.size() + 1;
   }
   for (i = background.begin(); i != background.end(); ++i)
   {
-    char* tmp = strdup(i->second.c_str());
-    gTranslator.ClientToServer(tmp);
-    myBackgrounds[i->first] = tmp;
-    packetSize += 2 + 2 + strlen(tmp) + 1;
-    free(tmp);
+    myBackgrounds[i->first] = i->second;
+    packetSize += 2 + 2 + i->second.size() + 1;
   }
 
   m_nSize += packetSize;
@@ -3831,27 +3819,27 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& sta
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_CITY);
   buffer->PackUnsignedShort(city.size()+3);
-  myCity = buffer->packString(gTranslator.clientToServer(city));
+  myCity = buffer->packString(city);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_STATE);
   buffer->PackUnsignedShort(statebuf.size()+3);
-  myState = buffer->packString(gTranslator.clientToServer(statebuf));
+  myState = buffer->packString(statebuf);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_PHONE);
   buffer->PackUnsignedShort(phoneNumber.size()+3);
-  myPhoneNumber = buffer->packString(gTranslator.clientToServer(phoneNumber));
+  myPhoneNumber = buffer->packString(phoneNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_FAX);
   buffer->PackUnsignedShort(faxNumber.size()+3);
-  myFaxNumber = buffer->packString(gTranslator.clientToServer(faxNumber));
+  myFaxNumber = buffer->packString(faxNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ADDR);
   buffer->PackUnsignedShort(address.size()+3);
-  myAddress = buffer->packString(gTranslator.clientToServer(address));
+  myAddress = buffer->packString(address);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ZIP);
   buffer->PackUnsignedShort(zip.size()+3);
-  myZip = buffer->packString(gTranslator.clientToServer(zip));
+  myZip = buffer->packString(zip);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_COUNTRY);
   buffer->PackUnsignedShort(0x0002);
@@ -3859,15 +3847,15 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& sta
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOMPANY);
   buffer->PackUnsignedShort(name.size()+3);
-  myName = buffer->packString(gTranslator.clientToServer(name));
+  myName = buffer->packString(name);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCODEPT);
   buffer->PackUnsignedShort(department.size()+3);
-  myDepartment = buffer->packString(gTranslator.clientToServer(department));
+  myDepartment = buffer->packString(department);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOPOS);
   buffer->PackUnsignedShort(position.size()+3);
-  myPosition = buffer->packString(gTranslator.clientToServer(position));
+  myPosition = buffer->packString(position);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxOCCUP);
   buffer->PackUnsignedShort(0x0002);
@@ -3875,7 +3863,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& sta
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_URL);
   buffer->PackUnsignedShort(homepage.size()+3);
-  myHomepage = buffer->packString(gTranslator.clientToServer(homepage));
+  myHomepage = buffer->packString(homepage);
 }
 
 //-----Meta_SetAbout---------------------------------------------------------
@@ -4834,10 +4822,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
   else
     myMessage.clear();
 
-  // Check for pipes, should possibly go after the ClientToServer call
   myMessage = pipeInput(myMessage);
-
-  myMessage = gTranslator.clientToServer(myMessage);
 
   m_nSize += myMessage.size();
 }

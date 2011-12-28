@@ -139,8 +139,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         bSkipPacket = false;  
         string msg = packet->unpackRawString(nSize);
 
-        Licq::EventMsg* e = new Licq::EventMsg(Licq::gTranslator.serverToClient(msg),
-            time(0), 0, SocketToCID(nSock));
+        Licq::EventMsg* e = new Licq::EventMsg(msg, time(0), 0, SocketToCID(nSock));
         Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
         if (u.isLocked())
           u->setIsTyping(false);

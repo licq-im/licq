@@ -319,8 +319,6 @@ Licq::EventUrl* Licq::EventUrl::Parse(char *sz, time_t nTime,
     return NULL;
   }
 
-  // translating string with Translation Table
-  Licq::gTranslator.ServerToClient(szUrl[0]);
   EventUrl* e = new EventUrl(szUrl[1], szUrl[0], nTime, nFlags, nConvoId);
   delete []szUrl;
 
@@ -744,11 +742,9 @@ Licq::EventContactList* Licq::EventContactList::Parse(char *sz, time_t nTime, un
     return NULL;
   }
 
-  // Translate the aliases
   ContactList vc;
   for (i = 0; i < nNumContacts * 2; i += 2)
   {
-    Licq::gTranslator.ServerToClient(szFields[i + 1]);
     UserId userId(szFields[i], LICQ_PPID);
     vc.push_back(new Contact(userId, szFields[i + 1]));
   }

@@ -1051,7 +1051,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       fore = 0x000000;
     }
 
-      string m = Licq::gTranslator.serverToClient(message);
+      string m = message;
 
       // Check if message is marked as UTF8
       unsigned long guidlen;
@@ -1086,8 +1086,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     char szChatClients[1024];
     unsigned short nPortReversed;
 
-      Licq::gTranslator.ServerToClient(message);
-
     packet.UnpackString(szChatClients, sizeof(szChatClients));
     nPortReversed = packet.UnpackUnsignedShortBE();
     packet.incDataPosRead(2);
@@ -1112,8 +1110,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   {
     unsigned short nFilenameLen;
     unsigned long nFileSize;
-
-    Licq::gTranslator.ServerToClient(message);
 
     // Port reversed: garbage when the request is refused
     packet.UnpackUnsignedShortBE();
@@ -1266,7 +1262,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   }
 
   default:
-      Licq::gTranslator.ServerToClient(message);
     szType = strdup(tr("unknown event"));
   } // switch nMsgType
 

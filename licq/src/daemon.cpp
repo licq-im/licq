@@ -145,11 +145,6 @@ void Daemon::initialize()
                  errorFile.c_str(), strerror(errno));
   }
 
-  // Loading translation table from file
-  licqConf.get("Translation", temp, "none");
-  if (!temp.empty() && temp != "none")
-    Licq::gTranslator.setTranslationMap(shareDir() + TranslationDir + "/" + temp);
-
   // Misc
   licqConf.get("Terminal", myTerminal, "xterm -T Licq -e ");
   licqConf.get("SendTypingNotification", mySendTypingNotification, true);
@@ -207,16 +202,6 @@ void Daemon::SaveConf()
   licqConf.set("Errors", myErrorFile);
   licqConf.set("ErrorTypes", myErrorTypes);
 
-  string translation = Licq::gTranslator.getMapName();
-  if (translation.empty())
-    translation = "none";
-  else
-  {
-    size_t pos = translation.rfind('/');
-    if (pos != string::npos)
-      translation.erase(0, pos+1);
-  }
-  licqConf.set("Translation", translation);
   licqConf.set("Terminal", myTerminal);
   licqConf.set("SendTypingNotification", mySendTypingNotification);
   licqConf.set("IgnoreTypes", myIgnoreTypes);

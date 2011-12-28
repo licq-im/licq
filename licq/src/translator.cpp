@@ -15,8 +15,6 @@
 
 #include <licq/translator.h>
 
-#include <cerrno>
-#include <cstdio>
 #include <string.h>
 #include <iconv.h>
 #include <stdlib.h>
@@ -32,183 +30,12 @@ Licq::Translator Licq::gTranslator;
 
 Translator::Translator()
 {
-  setDefaultTranslationMap();
+  // Empty
 }
 
 Translator::~Translator()
 {
   // Empty
-}
-
-void Translator::setDefaultTranslationMap()
-{
-  if (myMapDefault)
-    return;
-
-  for (int i = 0; i < 256; i++)
-  {
-    serverToClientTab[i]=i;
-    clientToServerTab[i]=i;
-  }
-
-  myMapDefault = true;
-
-  myMapName = "";
-  myMapFileName = "";
-}
-
-bool Translator::setTranslationMap(const string& mapFileName)
-{
-  // Map name is the file name with no path
-  size_t sep = mapFileName.rfind('/');
-  string mapName = (sep == string::npos ? mapFileName : mapFileName.substr(sep+1));
-
-  if (mapName == "LATIN_1")
-  {
-    setDefaultTranslationMap();
-    return true;
-  }
-
-  FILE* mapFile = fopen(mapFileName.c_str(), "r");
-  if (mapFile == NULL)
-  {
-    gLog.error("Could not open the translation file (%s) for reading:\n%s",
-        mapFileName.c_str(), strerror(errno));
-    setDefaultTranslationMap();
-    return false;
-  }
-
-  // translat.c :
-  // Any problems in the translation tables between hosts are
-  // almost certain to be caused here.
-  // many scanf implementations do not work as defined. In particular,
-  // scanf should ignore white space including new lines (many stop
-  // at the new line character, hence the fgets and sscanf workaround),
-  // many fail to read 0xab as a hexadecimal number (failing on the
-  // x) despite the 0x being defined as optionally existing on input,
-  // and others zero out all the output variables if there is trailing
-  // non white space in the format string which doesn't appear on the
-  // input. Overall, the standard I/O libraries have a tendancy not
-  // to be very standard.
-
-  char buffer[80];
-  int inputs[8];
-  unsigned char temp_table[512];
-  int c = 0;
-
-  while (fgets(buffer, 80, mapFile) != NULL &&
-      c < 512)
-  {
-    if (sscanf(buffer, "0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x",
-          inputs+0, inputs+1, inputs+2, inputs+3,
-          inputs+4, inputs+5, inputs+6, inputs+7) < 8)
-    {
-      gLog.error(tr("Syntax error in translation file '%s'."),
-          mapFileName.c_str());
-      setDefaultTranslationMap();
-      fclose(mapFile);
-      return false;
-    }
-
-    for (int j = 0; j < 8; j++)
-      temp_table[c++] = (unsigned char)inputs[j];
-  }
-
-  fclose(mapFile);
-
-  if (c == 512)
-  {
-    for (c = 0; c < 256; c++)
-    {
-      serverToClientTab[c] = temp_table[c];
-      clientToServerTab[c] = temp_table[c | 256];
-    }
-  }
-  else
-  {
-    gLog.error(tr("Translation file '%s' corrupted."), mapFileName.c_str());
-    setDefaultTranslationMap();
-    return false;
-  }
-
-  myMapDefault = false;
-  myMapName = mapName;
-  myMapFileName = mapFileName;
-  return true;
-}
-
-string Translator::serverToClient(const string& s, bool removeCR)
-{
-  if (myMapDefault)
-    return s;
-
-  string s2(removeCR ? returnToUnix(s) : s);
-
-  string ret;
-  for (size_t i = 0; i < s.size(); ++i)
-    ret += serverToClientTab[(unsigned)s2[i]];
-  return ret;
-}
-
-char Translator::serverToClient(char c)
-{
-  return myMapDefault ? c : serverToClientTab[(unsigned)c];
-}
-
-string Translator::clientToServer(const string& s, bool addCR)
-{
-  if (myMapDefault)
-    return s;
-
-  string s2(addCR ? returnToDos(s) : s);
-
-  string ret;
-  for (size_t i = 0; i < s.size(); ++i)
-    ret += clientToServerTab[(unsigned)s[i]];
-  return ret;
-}
-
-char Translator::clientToServer(char c)
-{
-  return myMapDefault ? c : clientToServerTab[(unsigned)c];
-}
-
-void Translator::ServerToClient(char* array)
-{
-  if (array == NULL || myMapDefault)
-    return;
-
-  char* ptr = array;
-  while (*ptr)
-  {
-    *ptr = serverToClientTab[(unsigned char)(*ptr)];
-    ptr++;
-  }
-}
-
-void Translator::ServerToClient(char& value)
-{
-  if (!myMapDefault)
-    value = serverToClientTab[(unsigned char)(value)];
-}
-
-void Translator::ClientToServer(char* array)
-{
-  if (array == NULL || myMapDefault)
-    return;
-
-  char *ptr = array;
-  while (*ptr)
-  {
-    *ptr = clientToServerTab[(unsigned char)(*ptr)];
-    ptr++;
-  }
-}
-
-void Translator::ClientToServer(char& value)
-{
-  if (!myMapDefault)
-    value = clientToServerTab[(unsigned char)(value)];
 }
 
 bool Translator::isAscii(const string& s)

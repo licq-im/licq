@@ -1459,7 +1459,6 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       {
         if (!iscntrl((int)(unsigned char)chatChar))
         {
-          Licq::gTranslator.ServerToClient(chatChar);
           char tempStr[2] = { chatChar, '\0' };
           // Add to the users irc line buffer
           u->myLinebuf += tempStr;
@@ -1766,7 +1765,6 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
         {
           if (!iscntrl((int)(unsigned char)chatChar))
           {
-            Licq::gTranslator.ServerToClient(chatChar);
             char tempStr[2] = { chatChar, '\0' };
             // Add to the users irc line buffer
             u->myLinebuf += tempStr;
@@ -1950,7 +1948,6 @@ void CChatManager::SendLaugh()
 void CChatManager::SendCharacter(char c)
 {
   CBuffer buf(1);
-  Licq::gTranslator.ClientToServer(c);
   buf.PackChar(c);
   SendBuffer_Raw(&buf);
 }
