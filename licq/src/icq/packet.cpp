@@ -2269,12 +2269,14 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
         u->statusToUser() != Licq::User::OnlineStatus)  ?
         u->statusToUser() : o->status()) != Licq::User::OfflineStatus)
     {
-      myMessage = u->usprintf(o->autoResponse(), Licq::User::usprintf_quotepipe, true);
+      myMessage = u->usprintf(gTranslator.fromUtf8(o->autoResponse()),
+          Licq::User::usprintf_quotepipe, true);
 
       if (!u->customAutoResponse().empty())
       {
         myMessage += "\r\n--------------------\r\n";
-        myMessage += u->usprintf(u->customAutoResponse(), Licq::User::usprintf_quotepipe, true);
+        myMessage += u->usprintf(gTranslator.fromUtf8(u->customAutoResponse()),
+            Licq::User::usprintf_quotepipe, true);
       }
     }
     else
@@ -4816,7 +4818,8 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
     if (!pUser->customAutoResponse().empty())
     {
       myMessage += "\r\n--------------------\r\n";
-      myMessage += pUser->usprintf(pUser->customAutoResponse().c_str(), Licq::User::usprintf_quotepipe, true);
+      myMessage += pUser->usprintf(gTranslator.fromUtf8(pUser->customAutoResponse()),
+          Licq::User::usprintf_quotepipe, true);
     }
   }
   else

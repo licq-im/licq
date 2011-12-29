@@ -86,8 +86,6 @@
 #include "dialogs/mmsenddlg.h"
 #include "dialogs/showawaymsgdlg.h"
 
-#include "helpers/usercodec.h"
-
 #include "views/mmuserview.h"
 #include "views/userview.h"
 
@@ -264,7 +262,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
         }
 
         bool bUseHTML = !isdigit(u->accountId()[1]);
-        const QTextCodec* myCodec = UserCodec::codecForUser(*u);
         QString contactName = QString::fromUtf8(u->getAlias().c_str());
         QString ownerName;
         {
@@ -293,11 +290,7 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
         {
           QString str;
           date.setTime_t((*lHistoryIter)->Time());
-          QString messageText;
-          if ((*lHistoryIter)->eventType() == Licq::UserEvent::TypeSms) // SMSs are always in UTF-8
-            messageText = QString::fromUtf8((*lHistoryIter)->text().c_str());
-          else
-            messageText = myCodec->toUnicode((*lHistoryIter)->text().c_str());
+          QString messageText = QString::fromUtf8((*lHistoryIter)->text().c_str());
 
           myHistoryView->addMsg(
               (*lHistoryIter)->isReceiver(),
@@ -986,7 +979,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
           messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos, maxSize).data()).c_str();
-          message = myCodec->toUnicode(messageRaw);
+          message = QString::fromUtf8(messageRaw);
 
           if ((wholeMessageRaw.length() - wholeMessagePos) > maxSize)
           {
@@ -1001,7 +994,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
             if (foundIndex > 0)
             {
               message.truncate(foundIndex + 1);
-              messageRaw = myCodec->fromUnicode(message);
+              messageRaw = message.toUtf8();
             }
           }
         }
@@ -1086,7 +1079,7 @@ void UserSendEvent::retrySend(const Licq::Event* e, unsigned flags)
 
       //TODO in the daemon
       icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
-          ue->number().c_str(), ue->message().c_str());
+          ue->number(), ue->message());
       break;
     }
 
@@ -1257,7 +1250,7 @@ void UserSendEvent::send()
 
   if (myType == MessageEvent)
   {
-    QByteArray wholeMessageRaw(Licq::gTranslator.returnToDos(myCodec->fromUnicode(myMessageEdit->toPlainText()).data()).c_str());
+    QByteArray wholeMessageRaw(Licq::gTranslator.returnToDos(myMessageEdit->toPlainText().toUtf8().data()).c_str());
     int wholeMessagePos = 0;
 
     bool needsSplitting = false;
@@ -1278,7 +1271,7 @@ void UserSendEvent::send()
         // we take the maximum length, then convert back to a Unicode string
         // and then search for Unicode whitespaces.
         messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos, maxSize).data()).c_str();
-        QString message = myCodec->toUnicode(messageRaw);
+        QString message = QString::fromUtf8(messageRaw);
 
         if (wholeMessageRaw.length() - wholeMessagePos > maxSize)
         {
@@ -1293,13 +1286,13 @@ void UserSendEvent::send()
           if (foundIndex > 0)
           {
             message.truncate(foundIndex + 1);
-            messageRaw = myCodec->fromUnicode(message);
+            messageRaw = message.toUtf8();
           }
         }
       }
       else
       {
-        messageRaw = myCodec->fromUnicode(myMessageEdit->toPlainText());
+        messageRaw = myMessageEdit->toPlainText().toUtf8();
       }
 
       unsigned long icqEventTag = gProtocolManager.sendMessage(
@@ -1323,8 +1316,8 @@ void UserSendEvent::send()
       case UrlEvent:
         icqEventTag = gProtocolManager.sendUrl(
             myUsers.front(),
-            myUrlEdit->text().toLatin1().constData(),
-            myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+            myUrlEdit->text().toUtf8().constData(),
+            myMessageEdit->toPlainText().toUtf8().data(),
             flags,
             &myIcqColor);
         break;
@@ -1343,13 +1336,13 @@ void UserSendEvent::send()
           //TODO in daemon
           icqEventTag = gLicqDaemon->icqChatRequest(
               myUsers.front(),
-              myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+              myMessageEdit->toPlainText().toUtf8().data(),
               flags);
         else
           icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
               myUsers.front(),
-              myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
-              myCodec->fromUnicode(myChatClients).data(),
+              myMessageEdit->toPlainText().toUtf8().data(),
+              myChatClients.toUtf8().data(),
               myChatPort,
               flags);
         break;
@@ -1358,15 +1351,15 @@ void UserSendEvent::send()
         //TODO in daemon
         icqEventTag = gProtocolManager.fileTransferPropose(
             myUsers.front(),
-            myCodec->fromUnicode(myFileEdit->text()).data(),
-            myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+            QFile::encodeName(myFileEdit->text()).data(),
+            myMessageEdit->toPlainText().toUtf8().data(),
             myFileList,
             flags);
         break;
 
       case SmsEvent:
         icqEventTag = gLicqDaemon->icqSendSms(myUsers.front(),
-            mySmsPhoneEdit->text().toLatin1().constData(),
+            mySmsPhoneEdit->text().toUtf8().constData(),
             myMessageEdit->toPlainText().toUtf8().data());
         break;
     }
@@ -1536,7 +1529,7 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
       msg = tr("%1 is in %2 mode:\n%3\nSend...")
           .arg(QString::fromUtf8(u->getAlias().c_str()))
           .arg(u->statusString().c_str())
-          .arg(myCodec->toUnicode(u->autoResponse().c_str()));
+          .arg(QString::fromUtf8(u->autoResponse().c_str()));
 
       u->SetShowAwayMsg(false);
     }
@@ -1595,7 +1588,7 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
           break;
         QString s = !e->ExtendedAck() ?
           tr("No reason provided") :
-          myCodec->toUnicode(e->ExtendedAck()->response().c_str());
+            QString::fromUtf8(e->ExtendedAck()->response().c_str());
         QString result = tr("File transfer with %1 refused:\n%2")
           .arg(QString::fromUtf8(u->getAlias().c_str()))
           .arg(s);
@@ -1616,7 +1609,7 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
         Licq::UserReadGuard u(myUsers.front());
         QString s = !e->ExtendedAck() ?
           tr("No reason provided") :
-          myCodec->toUnicode(e->ExtendedAck()->response().c_str());
+            QString::fromUtf8(e->ExtendedAck()->response().c_str());
         QString result = tr("Chat with %1 refused:\n%2")
           .arg(!u.isLocked() ? u->accountId().c_str() : QString::fromUtf8(u->getAlias().c_str()))
           .arg(s);

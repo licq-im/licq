@@ -45,6 +45,7 @@
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
+#include <licq/translator.h>
 #include <licq/userevents.h>
 
 #include "pluginversion.h"
@@ -343,7 +344,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
   }
   if (m_bPassMessage)
   {
-    fprintf(fStdIn, "%s\n", event->text().c_str());
+    fprintf(fStdIn, "%s\n", event->textLoc().c_str());
     fclose(fStdIn);
     fStdIn = NULL;
   }
@@ -368,7 +369,8 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const Licq::UserEvent*
   if (!m_bSendThroughServer)
     flags |= Licq::ProtocolSignal::SendDirect;
 
-  unsigned long tag = gProtocolManager.sendMessage(userId, m_szMessage, flags);
+  unsigned long tag = gProtocolManager.sendMessage(userId,
+      Licq::gTranslator.toUtf8(m_szMessage), flags);
 
   Licq::UserReadGuard u(userId);
   if (!u.isLocked())

@@ -32,7 +32,6 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRegExp>
-#include <QTextCodec>
 #include <QVBoxLayout>
 
 #include <licq/contactlist/user.h>
@@ -47,7 +46,6 @@
 #include "core/signalmanager.h"
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 #include "views/mmuserview.h"
 
@@ -171,18 +169,16 @@ void MMSendDlg::SendNext()
   {
     case Licq::UserEvent::TypeMessage:
     {
-      const QTextCodec* codec;
       {
         Licq::UserReadGuard u(userId);
         if (!u.isLocked())
           return;
-        codec = UserCodec::codecForUser(*u);
         grpSending->setTitle(tr("Sending mass message to %1...")
             .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
       // create initial strings (implicit copying, no allocation impact :)
-      QByteArray wholeMessageRaw(Licq::gTranslator.returnToDos(codec->fromUnicode(s1).data()).c_str());
+      QByteArray wholeMessageRaw(Licq::gTranslator.returnToDos(s1.toUtf8().data()).c_str());
       int wholeMessagePos = 0;
 
       bool needsSplitting = false;
@@ -205,7 +201,7 @@ void MMSendDlg::SendNext()
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
           messageRaw = Licq::gTranslator.returnToUnix(wholeMessageRaw.mid(wholeMessagePos, CICQDaemon::MaxMessageSize).data()).c_str();
-          message = codec->toUnicode(messageRaw);
+          message = QString::fromUtf8(messageRaw);
 
           if ((wholeMessageRaw.length() - wholeMessagePos) > CICQDaemon::MaxMessageSize)
           {
@@ -220,37 +216,35 @@ void MMSendDlg::SendNext()
             if (foundIndex > 0)
             {
               message.truncate(foundIndex);
-              messageRaw = codec->fromUnicode(message);
+              messageRaw = message.toUtf8();
             }
           }
         }
         else
         {
-          messageRaw = codec->fromUnicode(s1);
+          messageRaw = s1.toUtf8();
         }
 
         icqEventTag = gProtocolManager.sendMessage(userId, messageRaw.data(),
             Licq::ProtocolSignal::SendToMultiple);
 
-        wholeMessagePos += Licq::gTranslator.returnToDos(messageRaw.data()).size();
+        wholeMessagePos += Licq::gTranslator.returnToDos(messageRaw.constData()).size();
       }
 
       break;
     }
     case Licq::UserEvent::TypeUrl:
     {
-      const QTextCodec* codec;
       {
         Licq::UserReadGuard u(userId);
         if (!u.isLocked())
           return;
-        codec = UserCodec::codecForUser(*u);
         grpSending->setTitle(tr("Sending mass URL to %1...")
             .arg(QString::fromUtf8(u->getAlias().c_str())));
       }
 
-      icqEventTag = gProtocolManager.sendUrl(userId, s2.toLatin1().constData(),
-          codec->fromUnicode(s1).data(), Licq::ProtocolSignal::SendToMultiple);
+      icqEventTag = gProtocolManager.sendUrl(userId, s2.toUtf8().constData(),
+          s1.toUtf8().constData(), Licq::ProtocolSignal::SendToMultiple);
       break;
     }
     case Licq::UserEvent::TypeContactList:

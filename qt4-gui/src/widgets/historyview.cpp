@@ -21,7 +21,6 @@
 
 #include <QDateTime>
 #include <QRegExp>
-#include <QTextCodec>
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -29,8 +28,6 @@
 #include <licq/userevents.h>
 
 #include "config/chat.h"
-
-#include "helpers/usercodec.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::HistoryView */
@@ -388,7 +385,6 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
   bool bUseHTML = false;
 
   QString contactName;
-  const QTextCodec* codec = NULL;
 
   Licq::UserId userId = uid.isValid() ? uid : myUserId;
 
@@ -401,7 +397,6 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
       myId = u->accountId().c_str();
       myPpid = u->protocolId();
 
-      codec = UserCodec::codecForUser(*u);
       if (event->isReceiver())
       {
         contactName = QString::fromUtf8(u->getAlias().c_str());
@@ -423,15 +418,7 @@ void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
       contactName = QString::fromUtf8(o->getAlias().c_str());
   }
 
-  // Fallback, in case we couldn't fetch User.
-  if (codec == NULL)
-    codec = QTextCodec::codecForName("UTF-8");
-
-  QString messageText;
-  if (event->eventType() == Licq::UserEvent::TypeSms)
-    messageText = QString::fromUtf8(event->text().c_str());
-  else
-    messageText = codec->toUnicode(event->text().c_str());
+  QString messageText = QString::fromUtf8(event->text().c_str());
 
   addMsg(event->isReceiver(), false,
       (event->eventType() == Licq::UserEvent::TypeMessage ? "" : (event->description() + " ").c_str()),

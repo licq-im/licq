@@ -43,6 +43,7 @@ using Licq::OnEventData;
 using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gPluginManager;
+using Licq::gTranslator;
 
 
 std::list <CReverseConnectToUserData *> IcqProtocol::m_lReverseConnect;
@@ -1018,7 +1019,7 @@ void IcqProtocol::updateAllUsersInGroup(int groupId)
 }
 
 //-----ProcessMessage-----------------------------------------------------------
-void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
+void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& message,
     unsigned short nMsgType, unsigned long nMask, const unsigned long nMsgID[2],
                                 unsigned short nSequence, bool bIsAck,
                                 bool &bNewUser)
@@ -1053,23 +1054,21 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       fore = 0x000000;
     }
 
-      string m = message;
-
       // Check if message is marked as UTF8
       unsigned long guidlen;
       packet >> guidlen;
-      if (guidlen == sizeof(ICQ_CAPABILITY_UTF8_STR)-1)
+      bool isUtf8 = false;
+      while (guidlen >= 38)
       {
-        string guid = packet.unpackRawString(guidlen);
+        string guid = packet.unpackRawString(38);
         if (guid == ICQ_CAPABILITY_UTF8_STR)
-        {
-          // Message is UTF8
-          m = Licq::gTranslator.fromUnicode(m);
-        }
+          isUtf8 = true;
+        guidlen -= 38;
       }
-      // TODO: Could there be multiple GUIDs that we need to check?
 
-      Licq::EventMsg* e = new Licq::EventMsg(m, Licq::EventMsg::TimeNow, nFlags);
+      Licq::EventMsg* e = new Licq::EventMsg(
+          (isUtf8 ? message : Licq::gTranslator.fromUtf8(message, u->userEncoding())),
+          Licq::EventMsg::TimeNow, nFlags);
     e->SetColor(fore, back);
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
@@ -1126,7 +1125,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
         list<string> filelist;
         filelist.push_back(filename);
 
-        Licq::EventFile* e = new Licq::EventFile(filename.c_str(), message, nFileSize,
+        Licq::EventFile* e = new Licq::EventFile(filename,
+            Licq::gTranslator.fromUtf8(message, u->userEncoding()), nFileSize,
             filelist, nSequence, Licq::EventFile::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
         onEventType = OnEventData::OnEventFile;
       pEvent = e;
@@ -1142,7 +1142,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
 
   case ICQ_CMDxSUB_URL:
     {
-      pEvent = parseUrlEvent(message, Licq::EventUrl::TimeNow, nFlags);
+      pEvent = parseUrlEvent(message, Licq::EventUrl::TimeNow, nFlags, u->userEncoding());
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_URL, true,
                                            nLevel);
@@ -1154,8 +1154,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
     }
   case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      pEvent = parseContactEvent(message,
-          Licq::EventContactList::TimeNow, nFlags);
+      pEvent = parseContactEvent(message, Licq::EventContactList::TimeNow,
+          nFlags, u->userEncoding());
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, ICQ_CMDxSUB_CONTACTxLIST,
                                            true, nLevel);
@@ -1173,16 +1173,17 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   {
     if (bIsAck)
     {
-      if (u->autoResponse() != message)
-      {
-        u->setAutoResponse(message);
-        u->SetShowAwayMsg(*message);
+        string msgUtf8 = gTranslator.toUtf8(message, u->userEncoding());
+        if (u->autoResponse() != msgUtf8)
+        {
+          u->setAutoResponse(msgUtf8);
+          u->SetShowAwayMsg(!msgUtf8.empty());
           gLog.info(tr("Auto response from %s (#%lu)."), u->getAlias().c_str(), nMsgID[1]);
         }
         Licq::Event* e = DoneServerEvent(nMsgID[1], Licq::Event::ResultAcked);
         if (e)
-      {
-        e->m_pExtendedAck = new Licq::ExtendedData(true, 0, message);
+        {
+          e->m_pExtendedAck = new Licq::ExtendedData(true, 0, msgUtf8);
           e->mySubResult = Licq::Event::SubResultReturn;
         ProcessDoneEvent(e);
       }
@@ -1240,23 +1241,16 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
       }
 
     packet >> nLongLen;
-      char* szMessage = new char[nLongLen+1];
-    for (unsigned long i = 0; i < nLongLen; i++)
-      packet >> szMessage[i];
-    szMessage[nLongLen] = '\0';
+      string msg2 = packet.unpackRawString(nLongLen);
 
     /* if the auto response is non empty then this is a decline and we want
        to show the auto response rather than our original message */
-    char *msg = (message[0] != '\0') ? message : szMessage;
 
     // recursion
-    ProcessMessage(u, packet, msg, nCommand, nMask, nMsgID,
-                   nSequence, bIsAck, bNewUser);
-      delete [] szMessage;
-    return;
-
-    break; // bah!
-  }
+      ProcessMessage(u, packet, (message.empty() ? msg2 : message), nCommand,
+          nMask, nMsgID, nSequence, bIsAck, bNewUser);
+      return;
+    }
 
   default:
     szType = strdup(tr("unknown event"));
@@ -1265,7 +1259,8 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, char *message,
   if (bIsAck)
   {
     Licq::Event* pAckEvent = DoneServerEvent(nMsgID[1], Licq::Event::ResultAcked);
-    Licq::ExtendedData* pExtendedAck = new Licq::ExtendedData(true, nPort, message);
+    Licq::ExtendedData* pExtendedAck = new Licq::ExtendedData(true, nPort,
+        gTranslator.toUtf8(message, u->userEncoding()));
 
     if (pAckEvent)
     {
@@ -1333,6 +1328,8 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
   while (message.size() > 0 && message[message.size()-1] == '\0')
     message.resize(message.size()-1);
 
+  string userEncoding = getUserEncoding(userId);
+
   OnEventData::OnEventType onEventType = OnEventData::OnEventMessage;
   Licq::UserEvent* ue;
 
@@ -1341,13 +1338,15 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
     case ICQ_CMDxSUB_MSG:
     {
       onEventType = OnEventData::OnEventMessage;
-      ue = new Licq::EventMsg(message, timeSent, flags);
+      ue = new Licq::EventMsg(
+          gTranslator.toUtf8(gTranslator.returnToUnix(message), userEncoding),
+          timeSent, flags);
       break;
     }
     case ICQ_CMDxSUB_URL:
     {
       onEventType = OnEventData::OnEventUrl;
-      ue = parseUrlEvent(message, timeSent, flags);
+      ue = parseUrlEvent(message, timeSent, flags, userEncoding);
       if (ue == NULL)
       {
         packet.log(Log::Warning, tr("Invalid URL message"));
@@ -1360,21 +1359,23 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       gLog.info(tr("Authorization request from %s"), userId.toString().c_str());
 
       vector<string> parts; // alias, first name, last name, email, auth, comment
-      splitFE(parts, message, 6);
+      splitFE(parts, message, 6, userEncoding);
       if (parts.size() != 6)
       {
         packet.log(Log::Warning, tr("Invalid authorization request system message"));
         return;
       }
 
-      ue = new Licq::EventAuthRequest(userId, parts.at(0), parts.at(1),
-          parts.at(2), parts.at(3), parts.at(5), timeSent, flags);
+      ue = new Licq::EventAuthRequest(userId, parts.at(0), parts.at(1), parts.at(2),
+          parts.at(3), gTranslator.returnToUnix(parts.at(5)), timeSent, flags);
       break;
     }
     case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
     {
       gLog.info(tr("Authorization refused by %s"), userId.toString().c_str());
-      ue = new Licq::EventAuthRefused(userId, message, timeSent, flags);
+      ue = new Licq::EventAuthRefused(userId,
+          gTranslator.returnToUnix(gTranslator.toUtf8(message, userEncoding)),
+          timeSent, flags);
       break;
     }
     case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
@@ -1387,7 +1388,9 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
           u->SetAwaitingAuth(false);
       }
 
-      ue = new Licq::EventAuthGranted(userId, message, timeSent, flags);
+      ue = new Licq::EventAuthGranted(userId,
+          gTranslator.returnToUnix(gTranslator.toUtf8(message, userEncoding)),
+          timeSent, flags);
       break;
     }
     case ICQ_CMDxSUB_MSGxSERVER:
@@ -1395,14 +1398,15 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       gLog.info(tr("Server message."));
 
       vector<string> parts;
-      splitFE(parts, message, 6);
+      splitFE(parts, message, 6, userEncoding);
       if (parts.size() != 6)
       {
         packet.log(Log::Warning, tr("Invalid Server Message"));
         return;
       }
 
-      ue = new Licq::EventServerMessage(parts.at(0), parts.at(3), parts.at(5), timeSent);
+      ue = new Licq::EventServerMessage(parts.at(0), parts.at(3),
+          gTranslator.returnToUnix(parts.at(5)), timeSent);
       break;
     }
     case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
@@ -1410,15 +1414,15 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       gLog.info(tr("User %s added you to their contact list"), userId.toString().c_str());
 
       vector<string> parts; // alias, first name, last name, email, auth, comment
-      splitFE(parts, message, 6);
+      splitFE(parts, message, 6, userEncoding);
       if (parts.size() != 6)
       {
         packet.log(Log::Warning, tr("Invalid added to list system message"));
         return;
       }
 
-      ue = new Licq::EventAdded(userId, parts.at(0), parts.at(1),
-            parts.at(2), parts.at(3), timeSent, flags);
+      ue = new Licq::EventAdded(userId, parts.at(0), parts.at(1), parts.at(2),
+          parts.at(3), timeSent, flags);
       break;
     }
     case ICQ_CMDxSUB_WEBxPANEL:
@@ -1426,7 +1430,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       gLog.info(tr("Message through web panel"));
 
       vector<string> parts; // name, ?, ?, email, ?, message
-      splitFE(parts, message, 6);
+      splitFE(parts, message, 6, userEncoding);
       if (parts.size() != 6)
       {
         packet.log(Log::Warning, tr("Invalid web panel system message"));
@@ -1434,8 +1438,8 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       }
 
       gLog.info(tr("From %s (%s)"), parts.at(0).c_str(), parts.at(3).c_str());
-      ue = new Licq::EventWebPanel(parts.at(0), parts.at(3), parts.at(5),
-          timeSent, flags);
+      ue = new Licq::EventWebPanel(parts.at(0), parts.at(3),
+          gTranslator.returnToUnix(parts.at(5)), timeSent, flags);
       break;
     }
     case ICQ_CMDxSUB_EMAILxPAGER:
@@ -1443,7 +1447,7 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       gLog.info(tr("Email pager message"));
 
       vector<string> parts; // name, ?, ?, email, ?, message
-      splitFE(parts, message);
+      splitFE(parts, message, 6, userEncoding);
       if (parts.size() != 6)
       {
         packet.log(Log::Warning, tr("Invalid email pager system message"));
@@ -1451,14 +1455,14 @@ void IcqProtocol::processServerMessage(int type, Licq::Buffer &packet,
       }
 
       gLog.info(tr("From %s (%s)"), parts.at(0).c_str(), parts.at(3).c_str());
-      ue = new Licq::EventEmailPager(parts.at(0), parts.at(3), parts.at(5),
-            timeSent, flags);
+      ue = new Licq::EventEmailPager(parts.at(0), parts.at(3),
+          gTranslator.returnToUnix(parts.at(5)), timeSent, flags);
       break;
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
       onEventType = OnEventData::OnEventMessage;
-      ue = parseContactEvent(message, timeSent, flags);
+      ue = parseContactEvent(message, timeSent, flags, userEncoding);
       if (ue == NULL)
       {
         packet.log(Log::Warning, tr("Invalid Contact List message"));
@@ -1760,7 +1764,17 @@ unsigned long IcqProtocol::addStatusFlags(unsigned long s, const Licq::User* u)
   return s;
 }
 
-void IcqProtocol::splitFE(vector<string>& ret, const string& s, int maxcount)
+string IcqProtocol::getUserEncoding(const Licq::UserId& userId)
+{
+  Licq::UserReadGuard u(userId);
+  if (u.isLocked())
+    return u->userEncoding();
+  else
+    return Licq::gUserManager.defaultUserEncoding();
+}
+
+void IcqProtocol::splitFE(vector<string>& ret, const string& s, int maxcount,
+    const string& userEncoding)
 {
   size_t pos = 0;
   while (maxcount == 0 || maxcount > 1)
@@ -1769,32 +1783,33 @@ void IcqProtocol::splitFE(vector<string>& ret, const string& s, int maxcount)
     if (pos2 == string::npos)
       break;
 
-    ret.push_back(s.substr(pos, pos2-pos));
+    ret.push_back(gTranslator.toUtf8(s.substr(pos, pos2-pos), userEncoding));
     if (maxcount > 0)
       maxcount--;
     pos = pos2 + 1;
   }
 
-  ret.push_back(s.substr(pos));
+  ret.push_back(gTranslator.toUtf8(s.substr(pos), userEncoding));
 }
 
 Licq::EventUrl* IcqProtocol::parseUrlEvent(const string& s, time_t timeSent,
-    unsigned long flags, unsigned long convoId)
+    unsigned long flags, const string& userEncoding)
 {
   vector<string> parts;
-  splitFE(parts, s, 2);
+  splitFE(parts, s, 2, userEncoding);
   if (parts.size() < 2)
     return NULL;
 
   // Part 0 is URL, part 1 is description
-  return new Licq::EventUrl(parts.at(1), parts.at(0), timeSent, flags, convoId);
+  return new Licq::EventUrl(gTranslator.returnToUnix(parts.at(1)),
+      parts.at(0), timeSent, flags);
 }
 
 Licq::EventContactList* IcqProtocol::parseContactEvent(const string& s,
-    time_t timeSent, unsigned long flags)
+    time_t timeSent, unsigned long flags, const string& userEncoding)
 {
   vector<string> parts;
-  splitFE(parts, s);
+  splitFE(parts, s, 0, userEncoding);
 
   // First part is number of contacts in the list
   size_t count = atoi(parts.at(0).c_str());

@@ -137,7 +137,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         gLog.info("Message from %s", strUser.c_str());
 
         bSkipPacket = false;  
-        string msg = packet->unpackRawString(nSize);
+        string msg = Licq::gTranslator.returnToUnix(packet->unpackRawString(nSize));
 
         Licq::EventMsg* e = new Licq::EventMsg(msg, time(0), 0, SocketToCID(nSock));
         Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
@@ -619,7 +619,7 @@ void CMSN::MSNSendMessage(unsigned long eventId, const UserId& userId, const str
 
   string msgDos = Licq::gTranslator.returnToDos(message);
   CMSNPacket* pSend = new CPS_MSNMessage(msgDos.c_str());
-  Licq::EventMsg* m = new Licq::EventMsg(msgDos, Licq::UserEvent::TimeNow, Licq::EventMsg::FlagSender);
+  Licq::EventMsg* m = new Licq::EventMsg(message, Licq::UserEvent::TimeNow, Licq::EventMsg::FlagSender);
   Licq::Event* e = new Licq::Event(eventId, 0, pSend, Licq::Event::ConnectServer, userId, m);
   e->myCommand = Licq::Event::CommandMessage;
   e->thread_plugin = _tPlugin;  

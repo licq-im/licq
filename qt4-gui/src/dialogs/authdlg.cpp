@@ -27,14 +27,12 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QTextCodec>
 #include <QVBoxLayout>
 
 #include <licq/userid.h>
 #include <licq/protocolmanager.h>
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 #include "widgets/mledit.h"
 #include "widgets/protocombobox.h"
@@ -139,8 +137,7 @@ void AuthDlg::send()
 
   if (userId.isValid())
   {
-    QByteArray messageText = UserCodec::codecForUserId(userId)->
-        fromUnicode(myMessageEdit->toPlainText());
+    QByteArray messageText = myMessageEdit->toPlainText().toUtf8();
 
     switch (myType)
     {

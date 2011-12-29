@@ -398,8 +398,9 @@ bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent
   char szTime[64];
   time_t t = e->Time();
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
-  string text = "[ " + e->description() + " from " + u->getAlias() + " (" +
-      u->accountId() + ") sent " + szTime + " ]\n\n" + e->text() + "\n";
+  string text = "[ " + Licq::gTranslator.toUtf8(e->description()) + " from " +
+      u->getAlias() + " (" + u->accountId() + ") sent " + szTime + " ]\n\n" +
+      e->text() + "\n";
   unsigned long tag = gProtocolManager.sendMessage(myUserId, text);
   if (tag == 0)
   {
@@ -443,22 +444,24 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   // ctime returns a string ending with \n, drop it
   headDate.erase(headDate.size()-1);
 
+  string eventText = e->textLoc();
+
   switch (e->eventType())
   {
     case Licq::UserEvent::TypeMessage:
     case Licq::UserEvent::TypeChat:
     {
-      string s = e->text().substr(0, SUBJ_CHARS);
+      string s = eventText.substr(0, SUBJ_CHARS);
       size_t pos = s.find('\n');
       if (pos != string::npos)
         s.erase(pos);
       subject = "Subject: " + e->description() + " [" + s +
-          (e->text().size() > SUBJ_CHARS ? "..." : "") + "]";
+          (eventText.size() > SUBJ_CHARS ? "..." : "") + "]";
       break;
     }
     case Licq::UserEvent::TypeUrl:
       subject = "Subject: " + e->description() + " [" +
-          dynamic_cast<const Licq::EventUrl*>(e)->url() + "]";
+          Licq::gTranslator.fromUtf8(dynamic_cast<const Licq::EventUrl*>(e)->url()) + "]";
       break;
     case Licq::UserEvent::TypeFile:
       subject = "Subject: " + e->description() + " [" +
@@ -537,7 +540,7 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
     return false;
   }
 
-  string textDos = Licq::gTranslator.returnToDos(e->text());
+  string textDos = Licq::gTranslator.returnToDos(eventText);
   string msg = headDate + "\r\n" + headFrom + "\r\n" + headTo + "\r\n" +
       headReplyTo + "\r\n" + subject + "\r\n\r\n" + textDos + "\r\n.\r\n";
   fprintf(fs, "%s", msg.c_str());

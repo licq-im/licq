@@ -109,6 +109,18 @@ string Translator::toUtf16(const string& s, const string& fromEncoding)
   return iconvConvert(s, "UCS-2BE", from, ok);
 }
 
+string Translator::fromUtf8(const string& s, const string& toEncoding)
+{
+  bool ok;
+  return iconvConvert(s, nameForIconv(toEncoding), "UTF-8", ok);
+}
+
+string Translator::toUtf8(const string& s, const string& fromEncoding)
+{
+  bool ok;
+  return iconvConvert(s, "UTF-8", nameForIconv(fromEncoding), ok);
+}
+
 bool Translator::utf16to8(unsigned long c, string& s)
 {
   if (c <= 0x7F)
@@ -197,12 +209,15 @@ string Translator::returnToUnix(const string& s)
 }
 
 string Translator::iconvConvert(const string& s, const string& to, const string& from,
-    bool& ok, int length, size_t* outDone)
+    bool& ok)
 {
   ok = true;
 
-  size_t inLen = (length > -1 ? static_cast<size_t>(length) : s.size());
-  size_t outLen = inLen * (length == -2 ? 3 : 2);
+  if (to == from)
+    return s;
+
+  size_t inLen = s.size();
+  size_t outLen = inLen * 2;
   size_t outSize = outLen;
 
   char* result = new char[outLen + 1];
@@ -223,9 +238,6 @@ string Translator::iconvConvert(const string& s, const string& to, const string&
     const char* inPtr = s.c_str();
     size_t ret = iconv(tr, (ICONV_CONST char**)&inPtr, &inLen, &outPtr, &outLen);
     iconv_close(tr);
-
-    if (outDone != NULL)
-      *outDone = outSize - outLen;
 
     if (ret == (size_t)(-1))
     {

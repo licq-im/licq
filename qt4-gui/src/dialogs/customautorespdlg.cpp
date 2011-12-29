@@ -76,7 +76,7 @@ CustomAutoRespDlg::CustomAutoRespDlg(const Licq::UserId& userId, QWidget* parent
   setWindowTitle(tr("Set Custom Auto Response for %1")
       .arg(QString::fromUtf8(u->getAlias().c_str())));
   if (!u->customAutoResponse().empty())
-    myMessage->setText(QString::fromLocal8Bit(u->customAutoResponse().c_str()));
+    myMessage->setText(QString::fromUtf8(u->customAutoResponse().c_str()));
   else
   {
     unsigned status = u->statusToUser();
@@ -98,7 +98,7 @@ void CustomAutoRespDlg::ok()
   {
     Licq::UserWriteGuard u(myUserId);
     if (u.isLocked())
-      u->setCustomAutoResponse(s.toLocal8Bit().constData());
+      u->setCustomAutoResponse(s.toUtf8().constData());
   }
 
   // Notify all plugins (including ourselves)

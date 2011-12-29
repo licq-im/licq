@@ -414,7 +414,6 @@ void ProcessSignal(Licq::PluginSignal* s)
     bool want_osd_msgs_only=false; // though we don't want OSD we want msgs
     bool secure=false;
   unsigned status = User::OnlineStatus;
-  string userencoding;
   const Licq::UserEvent* e = NULL;
 
   switch (s->signal()) // signaltype
@@ -493,7 +492,6 @@ void ProcessSignal(Licq::PluginSignal* s)
 		    notify=u->OnlineNotify();
 		    ignore=u->InvisibleList() || u->IgnoreList();
           status = u->status();
-          userencoding = u->userEncoding(); // needed in translate function
             secure=u->Secure();
 
           username = my_translate(s->userId(), username, "UTF-8");
@@ -558,7 +556,7 @@ void ProcessSignal(Licq::PluginSignal* s)
 		    string msg="";
 		    if (secure && config.marksecuremessages)
 			msg="(S) ";
-          msg += my_translate(s->userId(), e->text(), userencoding.c_str());
+          msg += my_translate(s->userId(), e->text(), "UTF-8");
 		    my_xosd_display(username.c_str(), msg.c_str(), config.colour);
 		}
 		if (

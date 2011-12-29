@@ -10,6 +10,7 @@
 #include "icq.h"
 
 #include <ctime>
+#include <sstream>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -99,15 +100,6 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
   if (flags & Licq::ProtocolSignal::SendToMultiple)
     f |= Licq::UserEvent::FlagMultiRec;
 
-  string fromEncoding;
-  {
-    Licq::UserReadGuard u(userId);
-    if (u.isLocked() && !u->userEncoding().empty())
-      fromEncoding = u->userEncoding();
-  }
-  if (fromEncoding.empty())
-    fromEncoding = nl_langinfo(CODESET);
-
   if ((flags & Licq::ProtocolSignal::SendDirect) == 0)
   {
     unsigned short nCharset = CHARSET_ASCII;
@@ -115,7 +107,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     if (!useGpg && !gTranslator.isAscii(m))
     {
       nCharset = CHARSET_UNICODE;
-      m = gTranslator.toUtf16(m, fromEncoding);
+      m = gTranslator.fromUtf8(m, "UCS-2BE");
     }
 
     e = new Licq::EventMsg(message, Licq::EventMsg::TimeNow, f);
@@ -142,8 +134,8 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       f |= Licq::UserEvent::FlagEncrypted;
     e = new Licq::EventMsg(message, Licq::EventMsg::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
-    bool isUtf8 = (!gTranslator.isAscii(m) && fromEncoding == "UTF-8");
-    CPT_Message* p = new CPT_Message(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u, isUtf8);
+    CPT_Message* p = new CPT_Message(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple,
+        pColor, *u, !gTranslator.isAscii(m));
     gLog.info(tr("Sending %smessage to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
@@ -198,18 +190,16 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
   if (Licq::gUserManager.isOwner(userId))
     return;
 
+  string userEncoding = getUserEncoding(userId);
   const string accountId = userId.accountId();
-  const char* description = message.c_str();
 
   // make the URL info string
-  char *szDescDos = NULL;
-  Licq::EventUrl* e = NULL;
-  string m = gTranslator.returnToDos(message);
+  string m = gTranslator.fromUtf8(gTranslator.returnToDos(message), userEncoding);
   int n = url.size() + m.size() + 2;
   if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && n > MaxMessageSize)
     m.erase(MaxMessageSize - url.size() - 2);
   m += '\xFE';
-  m += url;
+  m += gTranslator.fromUtf8(url, userEncoding);
 
   unsigned long f = Licq::EventUrl::FlagLicqVerMask | Licq::EventUrl::FlagSender;
   unsigned short nLevel = ICQ_TCPxMSG_NORMAL;
@@ -236,8 +226,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
         nCharset = 3;
     }
 
-    e = new Licq::EventUrl(url.c_str(), description,
-        Licq::EventUrl::TimeNow, f);
+    Licq::EventUrl* e = new Licq::EventUrl(url, message, Licq::EventUrl::TimeNow, f);
     icqSendThroughServer(eventId, userId,
         ICQ_CMDxSUB_URL | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
@@ -250,7 +239,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
       return;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    e = new Licq::EventUrl(url.c_str(), description, Licq::EventUrl::TimeNow, f);
+    Licq::EventUrl* e = new Licq::EventUrl(url, message, Licq::EventUrl::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Url* p = new CPT_Url(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
     gLog.info(tr("Sending %sURL to %s (#%d)."),
@@ -266,9 +255,6 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
 
   if (pColor != NULL)
     Licq::Color::setDefaultColors(pColor);
-
-  if (szDescDos)
-    delete [] szDescDos;
 }
 
 void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const string& filename,
@@ -277,12 +263,11 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   if (Licq::gUserManager.isOwner(userId))
     return;
 
-  string dosDesc = gTranslator.returnToDos(message);
-  Licq::EventFile* e = NULL;
-
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
+
+  string dosDesc = gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding());
 
   unsigned short nLevel;
 
@@ -309,7 +294,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      e = new Licq::EventFile(filename, p->description(), p->GetFileSize(),
+      Licq::EventFile* e = new Licq::EventFile(filename, message, p->GetFileSize(),
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("Sending file transfer to %s (#%d)."),
           u->getAlias().c_str(), -p->Sequence());
@@ -341,7 +326,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      e = new Licq::EventFile(filename, p->description(), p->GetFileSize(),
+      Licq::EventFile* e = new Licq::EventFile(filename, message, p->GetFileSize(),
           lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("Sending %sfile transfer to %s (#%d)."),
           (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
@@ -363,8 +348,10 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  char *m = new char[3 + users.size() * 80];
-  int p = sprintf(m, "%d%c", int(users.size()), char(0xFE));
+  string userEncoding = getUserEncoding(userId);
+
+  stringstream buf;
+  buf << users.size() << '\xFE';
   Licq::EventContactList::ContactList vc;
 
   StringList::const_iterator iter;
@@ -372,19 +359,18 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   {
     Licq::UserId uId(*iter, LICQ_PPID);
     Licq::UserReadGuard u(uId);
-    p += sprintf(&m[p], "%s%c%s%c", iter->c_str(), char(0xFE),
-       !u.isLocked() ? "" : u->getAlias().c_str(), char(0xFE));
-    vc.push_back(new Licq::EventContactList::Contact(uId, !u.isLocked() ? "" : u->getAlias()));
+    string alias = (u.isLocked() ? u->getAlias() : "");
+    buf << *iter << '\xFE';
+    buf << gTranslator.fromUtf8(alias, userEncoding) << '\xFE';
+    vc.push_back(new Licq::EventContactList::Contact(uId, alias));
   }
+  string m = buf.str();
 
-  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && p > MaxMessageSize)
+  if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && (int)m.size() > MaxMessageSize)
   {
     gLog.warning(tr("Contact list too large to send through server."));
-    delete []m;
     return 0;
   }
-
-  Licq::EventContactList* e = NULL;
 
   unsigned long f = Licq::EventContactList::FlagLicqVerMask | Licq::EventContactList::FlagSender;
   unsigned short nLevel = ICQ_TCPxMSG_NORMAL;
@@ -402,7 +388,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
 
   if ((flags & Licq::ProtocolSignal::SendDirect) == 0) // send offline
   {
-    e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
+    Licq::EventContactList* e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
     icqSendThroughServer(eventId, userId,
       ICQ_CMDxSUB_CONTACTxLIST | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0),
       m, e);
@@ -415,7 +401,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
       return 0;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
+    Licq::EventContactList* e = new Licq::EventContactList(vc, false, Licq::EventContactList::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
     gLog.info(tr("Sending %scontact list to %s (#%d)."),
@@ -432,7 +418,6 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
   if (pColor != NULL)
     Licq::Color::setDefaultColors(pColor);
 
-  delete []m;
   return eventId;
 }
 
@@ -646,8 +631,9 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
   }
   else
   {
-    CPU_AckFileAccept *p = new CPU_AckFileAccept(*u, nMsgID,
-        nSequence, nPort, message, filename, nFileSize);
+    CPU_AckFileAccept *p = new CPU_AckFileAccept(*u, nMsgID, nSequence, nPort,
+        gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding()),
+        filename, nFileSize);
     SendEvent_Server(p);
   }
 }
@@ -656,10 +642,10 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
     unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer)
 {
    // add to history ??
-  string reasonDos = gTranslator.returnToDos(message);
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
+  string reasonDos = gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding());
   gLog.info(tr("Refusing file transfer from %s (#%d)."), u->getAlias().c_str(), -nSequence);
 
   if (!viaServer)
@@ -691,7 +677,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   Licq::UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
-  string reasonDos = gTranslator.returnToDos(reason);
+  string reasonDos = gTranslator.toUtf8(gTranslator.returnToDos(reason), u->userEncoding());
 
   unsigned long f;
   unsigned short nLevel;
@@ -714,7 +700,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
     CPU_ChatRequest *p = new CPU_ChatRequest(reasonDos,
         chatUsers, nPort, nLevel, *u, (u->Version() > 7));
 
-    Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
+    Licq::EventChat* e = new Licq::EventChat(reason, chatUsers, nPort, p->Sequence(),
         Licq::EventChat::TimeNow, f);
     gLog.info(tr("Sending chat request to %s (#%d)."), u->getAlias().c_str(), -p->Sequence());
 
@@ -736,7 +722,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
 
     CPT_ChatRequest* p = new CPT_ChatRequest(reasonDos, chatUsers, nPort,
         nLevel, *u, (u->Version() > 7));
-    Licq::EventChat* e = new Licq::EventChat(reason, chatUsers.c_str(), nPort, p->Sequence(),
+    Licq::EventChat* e = new Licq::EventChat(reason, chatUsers, nPort, p->Sequence(),
         Licq::UserEvent::TimeNow, f);
     gLog.info(tr("Sending %schat request to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
@@ -770,7 +756,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
   if (!u.isLocked())
     return;
   gLog.info(tr("Refusing chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
-  string reasonDos = gTranslator.returnToDos(reason);
+  string reasonDos = gTranslator.fromUtf8(gTranslator.returnToDos(reason), u->userEncoding());
 
 	if (bDirect)
   {
@@ -1538,6 +1524,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       case ICQ_CMDxSUB_MSG:  // straight message from a user
       {
         unsigned long back = 0xFFFFFF, fore = 0x000000;
+          bool isUtf8 = false;
             if (nInVersion < 6)
             {
           if (packet.getDataPosRead() + 4 >
@@ -1562,17 +1549,14 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               // Check if message is marked as UTF8
               unsigned long guidlen;
               packet >> guidlen;
-              if (guidlen == sizeof(ICQ_CAPABILITY_UTF8_STR)-1)
-              {
-                string guid = packet.unpackRawString(guidlen);
-                if (guid == ICQ_CAPABILITY_UTF8_STR)
-                {
-                  // Message is UTF8
-                  message = Licq::gTranslator.fromUnicode(message);
-                }
-              }
-              // TODO: Could there be multiple GUIDs that we need to check?
+            while (guidlen >= 38)
+            {
+              string guid = packet.unpackRawString(38);
+              if (guid == ICQ_CAPABILITY_UTF8_STR)
+                isUtf8 = true;
+              guidlen -= 38;
             }
+          }
 
 				if (licqChar == 'L')
             gLog.info(tr("Message from %s (%s) [Licq %s]."),
@@ -1584,7 +1568,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           CPT_AckGeneral p(newCommand, theSequence, true, bAccept, *u);
         AckTCP(p, pSock);
 
-          Licq::EventMsg* e = new Licq::EventMsg(message, Licq::EventMsg::TimeNow, nMask);
+          Licq::EventMsg* e = new Licq::EventMsg(
+              (isUtf8 ? message : gTranslator.toUtf8(message, u->userEncoding())),
+              Licq::EventMsg::TimeNow, nMask);
         e->SetColor(fore, back);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
@@ -1686,7 +1672,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
           else
             gLog.info(tr("URL from %s (%s)."), u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventUrl* e = parseUrlEvent(message, Licq::EventUrl::TimeNow, nMask);
+          Licq::EventUrl* e = parseUrlEvent(message, Licq::EventUrl::TimeNow, nMask, u->userEncoding());
         if (e == NULL)
         {
           packet.log(Log::Warning, tr("Invalid URL message"));
@@ -1757,7 +1743,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.info(tr("Contact list from %s (%s).\n"),
                 u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventContactList* e = parseContactEvent(message, Licq::EventContactList::TimeNow, nMask);
+          Licq::EventContactList* e = parseContactEvent(message, Licq::EventContactList::TimeNow,
+              nMask, u->userEncoding());
         if (e == NULL)
         {
           packet.log(Log::Warning, tr("Invalid contact list message"));
@@ -1798,6 +1785,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       // Chat Request
       case ICQ_CMDxSUB_CHAT:
       {
+          string msgUtf8 = gTranslator.toUtf8(message, u->userEncoding());
+
         char szChatClients[1024];
         packet.UnpackString(szChatClients, sizeof(szChatClients));
         packet.UnpackUnsignedLong(); // reversed port
@@ -1823,7 +1812,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.info(tr("Chat request from %s (%s)."),
                 u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventChat* e = new Licq::EventChat(message, szChatClients, nPort, theSequence,
+          Licq::EventChat* e = new Licq::EventChat(msgUtf8, szChatClients, nPort, theSequence,
               Licq::EventChat::TimeNow, nMask | licqVersion);
 
         // Add the user to our list if they are new
@@ -1846,6 +1835,8 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       // File transfer
       case ICQ_CMDxSUB_FILE:
       {
+          string msgUtf8 = gTranslator.toUtf8(message, u->userEncoding());
+
         unsigned short nLenFilename;
         unsigned long nFileLength;
         packet >> junkLong
@@ -1877,7 +1868,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         list<string> filelist;
         filelist.push_back(filename);
 
-          Licq::EventFile* e = new Licq::EventFile(filename.c_str(), message, nFileLength,
+          Licq::EventFile* e = new Licq::EventFile(filename, msgUtf8, nFileLength,
               filelist, theSequence, Licq::EventFile::TimeNow, nMask | licqVersion);
         // Add the user to our list if they are new
         if (bNewUser)
@@ -1933,12 +1924,14 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				switch (nICBMCommand)
 				{
 				case ICQ_CMDxSUB_FILE:
-				{
+              {
+                icbmMessage = gTranslator.toUtf8(icbmMessage, u->userEncoding());
+
 					unsigned long nFileSize;
 					packet.incDataPosRead(2); // port (BE)
 					packet.incDataPosRead(2); // unknown
 					packet >> nLen; // filename len, including NULL
-              string filename = packet.unpackRawString(nLen);
+                string filename = packet.unpackRawString(nLen);
 					packet >> nFileSize;
 					packet.incDataPosRead(2); // reversed port (BE)
 
@@ -1964,8 +1957,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
                 gOnEventManager.performOnEvent(OnEventData::OnEventFile, *u);
                 break;
               }
-				case ICQ_CMDxSUB_CHAT:
-				{
+              case ICQ_CMDxSUB_CHAT:
+              {
+                icbmMessage = gTranslator.toUtf8(icbmMessage, u->userEncoding());
+
 					char szChatClients[1024];
  					packet.UnpackString(szChatClients, sizeof(szChatClients));
 					nPort = packet.UnpackUnsignedShortBE();
@@ -1997,7 +1992,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 				case ICQ_CMDxSUB_URL:
 				{
               gLog.info(tr("URL from %s (%s)."), u->getAlias().c_str(), userId.toString().c_str());
-                Licq::EventUrl* e = parseUrlEvent(icbmMessage, Licq::EventUrl::TimeNow, nMask);
+                Licq::EventUrl* e = parseUrlEvent(icbmMessage, Licq::EventUrl::TimeNow, nMask, u->userEncoding());
 					if (e == NULL)
 					{
                                           packet.log(Log::Warning, tr("Invalid URL message"));
@@ -2025,7 +2020,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.info(tr("Contact list from %s (%s)."),
                   u->getAlias().c_str(), userId.toString().c_str());
                 Licq::EventContactList* e = parseContactEvent(icbmMessage,
-                    Licq::EventContactList::TimeNow, nMask);
+                    Licq::EventContactList::TimeNow, nMask, u->userEncoding());
 					if (e == NULL)
 					{
                                           packet.log(Log::Warning, tr("Invalid contact list message"));
@@ -2236,9 +2231,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
         if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
 
-          pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort, message);
-          break;
-        }
+            pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort,
+                gTranslator.toUtf8(message, u->userEncoding()));
+            break;
+          }
 
       case ICQ_CMDxSUB_FILE:
       {
@@ -2266,9 +2262,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
          // Some clients only send the first port (reversed)
          if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
 
-          pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort, message);
-          break;
-        }
+            pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort,
+                gTranslator.toUtf8(message, u->userEncoding()));
+            break;
+          }
 
 		  case ICQ_CMDxSUB_ICBM:
 			{
@@ -2322,10 +2319,10 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 					if (nPort == 0)
 						nPort = nPortReversed;
 
-              pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort,
-                  !message.empty() ? message : msg.c_str());
-	      break;
-	    }
+                pExtendedAck = new Licq::ExtendedData(nPort != 0, nPort,
+                    gTranslator.toUtf8((!message.empty() ? message : msg), u->userEncoding()));
+                break;
+              }
 				case ICQ_CMDxSUB_CHAT:
 				{
 					char ul[1024];
@@ -2342,14 +2339,14 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
              rejected if it's 0) */
           bool bAccepted = (nPort != 0 && ul[0] == '\0') ||
                            (nPort == 0 && ul[0] != '\0');
-              pExtendedAck = new Licq::ExtendedData(bAccepted, nPort,
-                  !message.empty() ? message : msg.c_str());
-	      break;
-	    }
-	  } // switch nICBMCommand
+                pExtendedAck = new Licq::ExtendedData(bAccepted, nPort,
+                    gTranslator.toUtf8((!message.empty() ? message : msg), u->userEncoding()));
+                break;
+              }
+            } // switch nICBMCommand
 
-	  break;
-	}
+            break;
+          }
 
 #ifdef USE_OPENSSL
       case ICQ_CMDxSUB_SECURExOPEN:
@@ -2512,10 +2509,11 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       else
       {
       // Update the away message if it's changed
-      if (u->autoResponse() != message)
-      {
-          u->setAutoResponse(message);
-          u->SetShowAwayMsg(!message.empty());
+        string awayMsg = gTranslator.toUtf8(message, u->userEncoding());
+        if (u->autoResponse() != awayMsg)
+        {
+          u->setAutoResponse(awayMsg);
+          u->SetShowAwayMsg(!awayMsg.empty());
         gLog.info(tr("Auto response from %s (#%d)%s."), u->getAlias().c_str(), -theSequence, l);
       }
 

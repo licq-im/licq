@@ -36,7 +36,6 @@
 #include <QMimeData>
 #include <QSessionManager>
 #include <QStyle>
-#include <QTextCodec>
 #include <QTranslator>
 #include <QUrl>
 
@@ -102,7 +101,6 @@ extern "C"
 #endif
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 #include "userdlg/userdlg.h"
 
@@ -613,9 +611,8 @@ void LicqGui::changeStatus(unsigned status, const Licq::UserId& userId, bool inv
     }
   }
 
-  const QTextCodec* codec = UserCodec::defaultEncoding();
   gProtocolManager.setStatus(userId, status,
-      (autoMessage.isNull() ? gProtocolManager.KeepAutoResponse : codec->fromUnicode(autoMessage).data()));
+      (autoMessage.isNull() ? gProtocolManager.KeepAutoResponse : autoMessage.toUtf8().constData()));
 }
 
 bool LicqGui::removeUserFromList(const Licq::UserId& userId, QWidget* parent)
@@ -1644,7 +1641,7 @@ void LicqGui::autoAway()
       if (!autoResponse.isNull())
       {
         Licq::OwnerWriteGuard o(owner);
-        o->setAutoResponse(autoResponse.toLocal8Bit().constData());
+        o->setAutoResponse(autoResponse.toUtf8().constData());
         o->save(Licq::Owner::SaveOwnerInfo);
       }
 

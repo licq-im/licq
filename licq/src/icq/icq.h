@@ -268,12 +268,6 @@ public:
   Licq::Event* DoneExtendedEvent(Licq::Event*, Licq::Event::ResultType);
   Licq::Event* DoneExtendedEvent(unsigned long tag, Licq::Event::ResultType _eResult);
 
-  // Common message handler
-  void ProcessMessage(Licq::User* user, Licq::Buffer& packet, char* message,
-     unsigned short nMsgType, unsigned long nMask,
-      const unsigned long nMsgID[], unsigned short nSequence,
-     bool bIsAck, bool &bNewUser);
-
   bool processPluginMessage(Licq::Buffer& packet, Licq::User* user, int channel,
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
@@ -361,19 +355,29 @@ private:
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, Licq::TCPSocket*);
 
+  static std::string getUserEncoding(const Licq::UserId& userId);
+
   /**
    * Split a string into parts delimited by 0xFE
    *
    * @param ret List to return substrings in
    * @param s String to split
    * @param count Number of substrings to find or zero to get all
+   * @param userEncoding Encoding to convert resulting strings from
    */
-  static void splitFE(std::vector<std::string>& ret, const std::string& s, int count = 0);
+  static void splitFE(std::vector<std::string>& ret, const std::string& s,
+      int count, const std::string& userEncoding);
 
   static Licq::EventUrl* parseUrlEvent(const std::string& s, time_t timeSent,
-      unsigned long flags, unsigned long convoId = 0);
+      unsigned long flags, const std::string& userEncoding);
   static Licq::EventContactList* parseContactEvent(const std::string& s,
-      time_t timeSent, unsigned long flags);
+      time_t timeSent, unsigned long flags, const std::string& userEncoding);
+
+  // Common message handler
+  void ProcessMessage(Licq::User* user, Licq::Buffer& packet,
+      const std::string& message, unsigned short nMsgType, unsigned long nMask,
+      const unsigned long nMsgID[], unsigned short nSequence, bool bIsAck,
+      bool &bNewUser);
 
   /**
    * Parse a message into a Licq user event object

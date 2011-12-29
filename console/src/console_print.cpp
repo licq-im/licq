@@ -570,7 +570,7 @@ void CLicqConsole::PrintHistory(Licq::HistoryList& lHistory, unsigned short nSta
         (*it)->isReceiver() ? "from" : "to", szFrom,
                      szTime, (*it)->IsDirect() ? 'D' : '-',
                      (*it)->IsMultiRec() ? 'M' : '-', (*it)->IsUrgent() ? 'U' : '-',
-        A_BOLD, (*it)->text().c_str());
+        A_BOLD, (*it)->textLoc().c_str());
 
     n++;
     it++;

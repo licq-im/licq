@@ -149,7 +149,7 @@ UserViewEvent::UserViewEvent(const Licq::UserId& userId, QWidget* parent)
         i = 0;
     }
 
-    MessageListItem* e = new MessageListItem(u->EventPeek(i), myCodec, myMessageList);
+    MessageListItem* e = new MessageListItem(u->EventPeek(i), myMessageList);
     myHighestEventId = u->EventPeek(i)->Id();
 
     /* Create items for all the messages which already await
@@ -164,7 +164,7 @@ UserViewEvent::UserViewEvent(const Licq::UserId& userId, QWidget* parent)
           (event->eventType() != Licq::UserEvent::TypeMessage &&
           event->eventType() != Licq::UserEvent::TypeUrl))
       {
-        new MessageListItem(event, myCodec, myMessageList);
+        new MessageListItem(event, myMessageList);
         // Make sure we don't add this message again,
         // even if we receive an userUpdated signal for it.
         if (myHighestEventId < event->Id())
@@ -282,7 +282,7 @@ void UserViewEvent::userUpdated(const Licq::UserId& userId, unsigned long subSig
           e->eventType() != Licq::UserEvent::TypeUrl)))
       {
          myHighestEventId = eventId;
-         MessageListItem* m = new MessageListItem(e, myCodec, myMessageList);
+         MessageListItem* m = new MessageListItem(e, myMessageList);
          myMessageList->scrollToItem(m);
       }
     }
@@ -367,7 +367,7 @@ void UserViewEvent::read1()
       QString url = Licq::gDaemon.baseDir().c_str();
       url += ".msn_email.html";
 
-      QString strUser = p->to().c_str();
+      QString strUser = QString::fromUtf8(p->to().c_str());
       QString strHTML = QString(
           "<html><head><noscript><meta http-equiv=Refresh content=\"0; url=http://www.hotmail.com\">"
           "</noscript></head><body onload=\"document.pform.submit(); \"><form name=\"pform\" action=\""
@@ -378,15 +378,15 @@ void UserViewEvent::read1()
           "type=\"hidden\" name=\"rru\" value=\"%7\"><input type=\"hidden\" name=\"auth\" value=\"%8\""
           "><input type=\"hidden\" name=\"creds\" value=\"%9\"><input type=\"hidden\" name=\"svc\" value=\"mail\">"
           "<input type=\"hidden\" name=\"js\"value=\"yes\"></form></body></html>")
-        .arg(p->postUrl().c_str())
+        .arg(QString::fromUtf8(p->postUrl().c_str()))
         .arg(strUser.left(strUser.indexOf("@")))
         .arg(strUser)
-        .arg(p->sid().c_str())
-        .arg(p->kv().c_str())
-        .arg(p->id().c_str())
-        .arg(p->msgUrl().c_str())
-        .arg(p->mspAuth().c_str())
-        .arg(p->creds().c_str());
+        .arg(QString::fromUtf8(p->sid().c_str()))
+        .arg(QString::fromUtf8(p->kv().c_str()))
+        .arg(QString::fromUtf8(p->id().c_str()))
+        .arg(QString::fromUtf8(p->msgUrl().c_str()))
+        .arg(QString::fromUtf8(p->mspAuth().c_str()))
+        .arg(QString::fromUtf8(p->creds().c_str()));
 
       QFile fileHTML(url);
       fileHTML.open(QIODevice::WriteOnly);
@@ -501,9 +501,8 @@ void UserViewEvent::read3()
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->icqChatRequestRefuse(
-            myUsers.front(),
-            myCodec->fromUnicode(r->RefuseMessage()).data(), myCurrentEvent->Sequence(),
+        gLicqDaemon->icqChatRequestRefuse(myUsers.front(),
+            r->RefuseMessage().toUtf8().data(), myCurrentEvent->Sequence(),
             c->MessageID(), c->IsDirect());
       }
       delete r;
@@ -522,9 +521,8 @@ void UserViewEvent::read3()
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        gProtocolManager.fileTransferRefuse(
-            myUsers.front(),
-            myCodec->fromUnicode(r->RefuseMessage()).data(), myCurrentEvent->Sequence(),
+        gProtocolManager.fileTransferRefuse(myUsers.front(),
+            r->RefuseMessage().toUtf8().data(), myCurrentEvent->Sequence(),
             f->MessageID()[0], f->MessageID()[1], !f->IsDirect());
       }
       delete r;
@@ -580,7 +578,7 @@ void UserViewEvent::read4()
     }
 
     case Licq::UserEvent::TypeUrl:   // view a url
-      gLicqGui->viewUrl(dynamic_cast<Licq::EventUrl*>(myCurrentEvent)->url().c_str());
+      gLicqGui->viewUrl(QString::fromUtf8(dynamic_cast<const Licq::EventUrl*>(myCurrentEvent)->url().c_str()));
       break;
 
     case Licq::UserEvent::TypeAuthRequest:
@@ -661,10 +659,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
   myMessageView->setForeground(QColor(m->color()->foreRed(), m->color()->foreGreen(), m->color()->foreBlue()));
 
   // Set the text
-  if (m->eventType() == Licq::UserEvent::TypeSms)
-     myMessageText = QString::fromUtf8(m->text().c_str());
-  else
-     myMessageText = myCodec->toUnicode(m->text().c_str());
+  myMessageText = QString::fromUtf8(m->text().c_str());
 
   QString colorAttr;
   colorAttr.sprintf("#%02x%02x%02x", m->color()->foreRed(), m->color()->foreGreen(), m->color()->foreBlue());
@@ -786,7 +781,7 @@ void UserViewEvent::sentEvent(const Licq::Event* e)
     return;
 
   if (!Config::Chat::instance()->msgChatView())
-    new MessageListItem(e->userEvent(), myCodec, myMessageList);
+    new MessageListItem(e->userEvent(), myMessageList);
 }
 
 void UserViewEvent::setEncoding()

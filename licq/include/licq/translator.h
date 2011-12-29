@@ -45,6 +45,9 @@ public:
   std::string fromUtf16(const std::string& s, const std::string& toEncoding);
   std::string toUtf16(const std::string& s, const std::string& fromEncoding);
 
+  std::string fromUtf8(const std::string& s, const std::string& toEncoding = "");
+  std::string toUtf8(const std::string& s, const std::string& fromEncoding = "");
+
   /**
    * Converts a unix style string (LF) to dos style (LFCR)
    */
@@ -60,8 +63,8 @@ public:
 protected:
   std::string nameForIconv(const std::string& licqName);
 
-  std::string iconvConvert(const std::string& s, const std::string& to, const std::string& from,
-      bool& ok, int length = -1, size_t* outDone = NULL);
+  std::string iconvConvert(const std::string& s, const std::string& to,
+      const std::string& from, bool& ok);
 };
 
 extern Translator gTranslator;

@@ -99,7 +99,21 @@ public:
   virtual ~UserEvent();
 
   virtual UserEvent* Copy() const = 0;
+
+  /**
+   * Description (including message text) of event
+   *
+   * @return Text description (in UTF-8)
+   */
   const std::string& text() const;
+
+  /**
+   * Description (including message text) of event
+   *
+   * @return Text description (converted to current locale)
+   */
+  const std::string& textLoc() const;
+
   std::string description() const;
   time_t Time() const { return m_tTime; }
   const std::string licqVersionStr() const
@@ -168,7 +182,7 @@ protected:
 
   // m_szText is not initialized until it is accessed. Allow this delayed
   // initialization even if called in const context.
-  mutable std::string myText;
+  mutable std::string myText, myTextLoc;
   unsigned myEventType;
    unsigned short m_nSequence;
    int            m_nId;

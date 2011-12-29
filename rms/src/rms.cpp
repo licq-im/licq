@@ -45,6 +45,7 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
+#include <licq/translator.h>
 #include <licq/userevents.h>
 
 #include "pluginversion.h"
@@ -1253,7 +1254,8 @@ int CRMSClient::Process_MESSAGE_text()
 {
   //XXX Give a tag...
   myText.erase(myText.size() - 1);
-  unsigned long tag = gProtocolManager.sendMessage(myUserId, myText);
+  unsigned long tag = gProtocolManager.sendMessage(myUserId,
+      Licq::gTranslator.toUtf8(myText));
 
   fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
       tag, myUserId.toString().c_str());
@@ -1311,7 +1313,8 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  unsigned long tag = gProtocolManager.sendUrl(myUserId, myLine, myText);
+  unsigned long tag = gProtocolManager.sendUrl(myUserId, myLine,
+      Licq::gTranslator.toUtf8(myText));
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
       tag, myUserId.toString().c_str());
@@ -1379,7 +1382,8 @@ int CRMSClient::Process_SMS_message()
   char id[16];
   snprintf(id, 16, "%lu", m_nUin);
   Licq::UserId userId(id, LICQ_PPID);
-  unsigned long tag = gLicqDaemon->icqSendSms(userId, myLine, myText);
+  unsigned long tag = gLicqDaemon->icqSendSms(userId, myLine,
+      Licq::gTranslator.toUtf8(myText));
 
   fprintf(fs, "%d [%lu] Sending SMS to %lu (%s).\n", CODE_COMMANDxSTART,
      tag, m_nUin, myLine.c_str());
@@ -1424,12 +1428,14 @@ int CRMSClient::Process_AR()
 
 int CRMSClient::Process_AR_text()
 {
+  string textUtf8 = Licq::gTranslator.toUtf8(myText);
+
   if (!myUserId.isValid())
   {
     Licq::OwnerWriteGuard o(LICQ_PPID);
     if (o.isLocked())
     {
-      o->setAutoResponse(myText);
+      o->setAutoResponse(textUtf8);
       o->save(Licq::Owner::SaveOwnerInfo);
     }
   }
@@ -1437,7 +1443,7 @@ int CRMSClient::Process_AR_text()
   {
     Licq::UserWriteGuard u(myUserId);
     if (u.isLocked())
-      u->setCustomAutoResponse(myText);
+      u->setCustomAutoResponse(textUtf8);
   }
 
   fprintf(fs, "%d Auto response saved.\n", CODE_RESULTxSUCCESS);
@@ -1599,7 +1605,7 @@ void CRMSClient::printUserEvent(const Licq::UserEvent* e, const string& alias)
 
   // Message
   fprintf(fs, "%d Message Start\n", CODE_VIEWxTEXTxSTART);
-  fputs(e->text().c_str(), fs);
+  fputs(e->textLoc().c_str(), fs);
   fprintf(fs, "\n%d Message Complete\n", CODE_VIEWxTEXTxEND);
 }
 

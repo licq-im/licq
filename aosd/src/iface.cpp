@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,8 +127,7 @@ void Iface::processSignal(Licq::PluginSignal* sig)
             if (conf->markSecure && user->Secure())
               msg += " (S)";
             msg += ": ";
-            msg += Licq::gTranslator.toUnicode(ue->text(),
-                user->userEncoding());
+            msg += ue->text();
           }
           break;
       }

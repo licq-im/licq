@@ -43,8 +43,6 @@
 #include "core/gui-defines.h"
 #include "core/messagebox.h"
 
-#include "helpers/usercodec.h"
-
 using std::set;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMUserView */

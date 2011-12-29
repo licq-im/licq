@@ -31,7 +31,6 @@
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QPushButton>
-#include <QTextCodec>
 #include <QTimer>
 #include <QVBoxLayout>
 
@@ -43,7 +42,6 @@
 #include "core/licqgui.h"
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 #include "settings/settingsdlg.h"
 
@@ -166,8 +164,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
 
         if (!o->autoResponse().empty())
         {
-          const QTextCodec* codec = UserCodec::defaultEncoding();
-          autoResponse = codec->toUnicode(o->autoResponse().c_str());
+          autoResponse = QString::fromUtf8(o->autoResponse().c_str());
           break;
         }
       }
@@ -183,10 +180,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned status, bool autoClose, unsigned lo
           .arg(QString::fromUtf8(o->getAlias().c_str())));
 
       if (!o->autoResponse().empty())
-      {
-        const QTextCodec* codec = UserCodec::defaultEncoding();
-        autoResponse = codec->toUnicode(o->autoResponse().c_str());
-      }
+        autoResponse = QString::fromUtf8(o->autoResponse().c_str());
     }
 
     if (!autoResponse.isEmpty())

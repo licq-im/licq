@@ -60,6 +60,7 @@ using Licq::gLog;
 using Licq::gLogService;
 using Licq::gPluginManager;
 using Licq::gProtocolManager;
+using Licq::gTranslator;
 using Licq::gUserManager;
 using namespace LicqDaemon;
 
@@ -340,7 +341,7 @@ static int fifo_status(int argc, const char* const* argv)
   if( argc > 2 )
   {
     Licq::OwnerWriteGuard o(LICQ_PPID);
-    o->setAutoResponse(argv[2]);
+    o->setAutoResponse(gTranslator.toUtf8(argv[2]));
     o->save(Licq::Owner::SaveOwnerInfo);
   }
 
@@ -358,7 +359,7 @@ static int fifo_auto_response(int argc, const char* const* argv)
   }
 
   Licq::OwnerWriteGuard o(LICQ_PPID);
-  o->setAutoResponse(argv[1]);
+  o->setAutoResponse(gTranslator.toUtf8(argv[1]));
   o->save(Licq::Owner::SaveOwnerInfo);
 
   return 0;
@@ -377,7 +378,7 @@ static int fifo_message(int argc, const char* const* argv)
   }
 
   if (atoid(argv[1], false, &szId, &nPPID))
-    gProtocolManager.sendMessage(UserId(szId, nPPID), argv[2]);
+    gProtocolManager.sendMessage(UserId(szId, nPPID), gTranslator.toUtf8(argv[2]));
 
   else
     ReportBadBuddy(argv[0], argv[1]);
@@ -403,7 +404,8 @@ static int fifo_url(int argc, const char* const* argv)
   if (atoid(argv[1], false, &szId, &nPPID))
   {
     szDescr = (argc > 3) ? argv[3] : "" ;
-    gProtocolManager.sendUrl(UserId(szId, nPPID), argv[2], szDescr);
+    gProtocolManager.sendUrl(UserId(szId, nPPID), gTranslator.toUtf8(argv[2]),
+        gTranslator.toUtf8(szDescr));
   }
   else
     ReportBadBuddy(argv[0],argv[1]);
@@ -439,7 +441,7 @@ static int fifo_sms(int argc, const char *const *argv)
         }
       }
       if (!number.empty())
-        gLicqDaemon->icqSendSms(userId, number, argv[2]);
+        gLicqDaemon->icqSendSms(userId, number, gTranslator.toUtf8(argv[2]));
       else
         gLog.error("Unable to send SMS to %s, no SMS number found", szId);
     }
@@ -463,7 +465,7 @@ static int fifo_sms_number(int argc, const char *const *argv)
     return -1;
   }
 
-  gLicqDaemon->icqSendSms(gUserManager.ownerUserId(LICQ_PPID), argv[1], argv[2]);
+  gLicqDaemon->icqSendSms(gUserManager.ownerUserId(LICQ_PPID), argv[1], gTranslator.toUtf8(argv[2]));
   return 0;
 }
 

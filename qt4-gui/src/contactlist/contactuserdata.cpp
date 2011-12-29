@@ -422,10 +422,7 @@ bool ContactUserData::updateText(const Licq::User* licqUser)
   {
     QString format = Config::ContactList::instance()->columnFormat(i);
     format.replace("%a", "@_USER_ALIAS_@");
-
-    const QTextCodec* codec = UserCodec::codecForUser(licqUser);
-    QString newStr = codec->toUnicode(licqUser->usprintf(codec->fromUnicode(format).data()).c_str());
-
+    QString newStr = QString::fromLocal8Bit(licqUser->usprintf(format.toLocal8Bit().constData()).c_str());
     newStr.replace("@_USER_ALIAS_@", myAlias);
 
     if (newStr != myText[i])
@@ -746,7 +743,7 @@ QString ContactUserData::tooltip() const
 
   if (!u->autoResponse().empty() && myStatus & User::MessageStatuses)
     s += "<br><u>" + tr("Auto Response:") + "</u><br>&nbsp;&nbsp;&nbsp;" +
-      codec->toUnicode(u->autoResponse().c_str()).trimmed()
+      QString::fromUtf8(u->autoResponse().c_str()).trimmed()
       .replace("\n", "<br>&nbsp;&nbsp;&nbsp;");
 
   if (config->popupEmail())

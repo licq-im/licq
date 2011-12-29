@@ -22,11 +22,11 @@
 #include "config.h"
 
 #include <QDateTime>
+#include <QFile>
 #include <QHeaderView>
 #include <QPainter>
 #include <QResizeEvent>
 #include <QScrollBar>
-#include <QTextCodec>
 
 #include <licq/userevents.h>
 
@@ -34,13 +34,11 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MessageList */
 /* TRANSLATOR LicqQtGui::MessageListItem */
 
-MessageListItem::MessageListItem(const Licq::UserEvent* theMsg, const QTextCodec* codec, QTreeWidget* parent)
+MessageListItem::MessageListItem(const Licq::UserEvent* theMsg, QTreeWidget* parent)
   : QTreeWidgetItem(parent)
 {
   // Keep a copy of the event
   myMsg = theMsg->Copy();
-
-  myCodec = codec;
 
   myUnread = (myMsg->isReceiver());
 
@@ -103,23 +101,23 @@ void MessageListItem::SetEventLine()
   switch (myMsg->eventType())
   {
     case Licq::UserEvent::TypeMessage:
-      text = myCodec->toUnicode(myMsg->text().c_str());
+      text = QString::fromUtf8(dynamic_cast<Licq::EventMsg*>(myMsg)->message().c_str());
       break;
 
     case Licq::UserEvent::TypeUrl:
-      text = myCodec->toUnicode(dynamic_cast<Licq::EventUrl*>(myMsg)->url().c_str());
+      text = QString::fromUtf8(dynamic_cast<Licq::EventUrl*>(myMsg)->url().c_str());
       break;
 
     case Licq::UserEvent::TypeChat:
-      text = myCodec->toUnicode(dynamic_cast<Licq::EventChat*>(myMsg)->reason().c_str());
+      text = QString::fromUtf8(dynamic_cast<Licq::EventChat*>(myMsg)->reason().c_str());
       break;
 
     case Licq::UserEvent::TypeFile:
-      text = myCodec->toUnicode(dynamic_cast<Licq::EventFile*>(myMsg)->filename().c_str());
+      text = QFile::decodeName(dynamic_cast<Licq::EventFile*>(myMsg)->filename().c_str());
       break;
 
     case Licq::UserEvent::TypeEmailAlert:
-      text = myCodec->toUnicode(dynamic_cast<Licq::EventEmailAlert*>(myMsg)->from().c_str());
+      text = QString::fromUtf8(dynamic_cast<Licq::EventEmailAlert*>(myMsg)->from().c_str());
       break;
 
     default:

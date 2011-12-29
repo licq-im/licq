@@ -56,7 +56,6 @@
 #include <QShortcut>
 #include <QStyle>
 #include <QStyleFactory>
-#include <QTextCodec>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
@@ -95,7 +94,6 @@
 #include "dialogs/userselectdlg.h"
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 #include "widgets/skinnablebutton.h"
 #include "widgets/skinnablecombobox.h"

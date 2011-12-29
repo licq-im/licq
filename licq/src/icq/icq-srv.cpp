@@ -795,8 +795,9 @@ unsigned long IcqProtocol::icqAuthorizeGrant(const Licq::UserId& userId, const s
 
 unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const string& message)
 {
+  string userEncoding = getUserEncoding(userId);
   CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), ICQ_CMDxSUB_AUTHxREFUSED,
-      gTranslator.returnToDos(message));
+      gTranslator.returnToDos(gTranslator.fromUtf8(message)));
   gLog.info(tr("Refusing authorization to user %s (#%hu)..."),
       userId.accountId().c_str(), p->Sequence());
 
@@ -808,7 +809,9 @@ unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const 
 
 void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const string& message)
 {
-  CSrvPacketTcp* p = new CPU_RequestAuth(userId.accountId(), message);
+  string userEncoding = getUserEncoding(userId);
+  CSrvPacketTcp* p = new CPU_RequestAuth(userId.accountId(),
+      gTranslator.fromUtf8(message, userEncoding));
   SendEvent_Server(p);
 }
 
@@ -2074,10 +2077,11 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
         gLog.info(tr("Received away message for %s."), szId);
         {
           Licq::UserWriteGuard u(userId);
-          if (szAwayMsg != u->autoResponse())
+          string awayMsgUtf8 = gTranslator.toUtf8(szAwayMsg, u->userEncoding());
+          if (awayMsgUtf8 != u->autoResponse())
           {
-            u->setAutoResponse(szAwayMsg);
-            u->SetShowAwayMsg(*szAwayMsg);
+            u->setAutoResponse(awayMsgUtf8);
+            u->SetShowAwayMsg(!awayMsgUtf8.empty());
           }
         }
 
@@ -2713,9 +2717,16 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             }
           }
 
-      if (nEncoding == 2) // utf-8 or utf-16?
-            message = gTranslator.fromUtf16(message, userEncoding);
-
+          switch (nEncoding)
+          {
+            case 2: // UCS-2 Big Endian encoding
+              message = gTranslator.toUtf8(message, "UCS-2BE");
+              break;
+            case 0: // US-ASCII
+            case 3: // Local 8bit encoding
+            default:
+              message = gTranslator.toUtf8(message, (ignore ? "" : userEncoding));
+          }
           message = gTranslator.returnToUnix(message);
 
       // now send the message to the user
@@ -3100,7 +3111,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
 
     packet >> nAckFlags >> nMsgFlags >> nLen;
 
-      string message = packet.unpackRawString(nLen);
+      string message = gTranslator.toUtf8(packet.unpackRawString(nLen), u->userEncoding());
 
     if (nAckFlags == ICQ_TCPxACK_REFUSE)
       {
@@ -3640,6 +3651,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     {
       char *szId = packet.UnpackUserString();
       Licq::UserId userId(szId, LICQ_PPID);
+      string userEncoding = getUserEncoding(userId);
       bool bIgnore;
       {
         Licq::UserReadGuard u(userId);
@@ -3654,14 +3666,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
       gLog.info(tr("Authorization request from %s."), szId);
 
-      unsigned short nMsgLen;
-      packet >> nMsgLen;
-      char *szMsg = new char[nMsgLen+1];
-      for (int i = 0; i < nMsgLen; i++)
-        packet >> szMsg[i];
-      szMsg[nMsgLen] = '\0';
-
-      Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId, "", "", "", "", nMsgLen ? szMsg : "",
+      string msg = gTranslator.returnToUnix(gTranslator.toUtf8(packet.unpackString(), userEncoding));
+      Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId, "", "", "", "", msg,
           time(0), 0);
 
       Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -3672,7 +3678,6 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       delete [] szId;
-      delete [] szMsg;
       break;
     }
 
@@ -3680,22 +3685,18 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     {
       char *szId = packet.UnpackUserString();
       Licq::UserId userId(szId, LICQ_PPID);
+      string userEncoding = getUserEncoding(userId);
       unsigned char granted;
 
       packet >> granted;
-      unsigned short nMsgLen;
-      packet >> nMsgLen;
-      char *szMsg = new char[nMsgLen+1];
-      for (int i = 0; i < nMsgLen; i++)
-       packet >> szMsg[i];
-      szMsg[nMsgLen] = '\0';
+      string msg = gTranslator.returnToUnix(gTranslator.toUtf8(packet.unpackString(), userEncoding));
 
       gLog.info(tr("Authorization %s by %s."), granted ? "granted" : "refused", szId);
 
       Licq::UserEvent* eEvent;
       if (granted)
       {
-        eEvent = new Licq::EventAuthGranted(userId, szMsg, time(0), 0);
+        eEvent = new Licq::EventAuthGranted(userId, msg, time(0), 0);
 
         Licq::UserWriteGuard u(userId);
         if (u.isLocked())
@@ -3706,7 +3707,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
       {
-        eEvent = new Licq::EventAuthRefused(userId, szMsg, time(0), 0);
+        eEvent = new Licq::EventAuthRefused(userId, msg, time(0), 0);
       }
 
       Licq::OwnerWriteGuard o(LICQ_PPID);
@@ -3717,7 +3718,6 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       delete [] szId;
-      delete [] szMsg;
       break;
     }
 

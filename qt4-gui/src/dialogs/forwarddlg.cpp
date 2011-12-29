@@ -62,12 +62,12 @@ ForwardDlg::ForwardDlg(Licq::UserEvent* e, QWidget* p)
   {
     case Licq::UserEvent::TypeMessage:
       t = tr("Message");
-      s1 = QString::fromLocal8Bit(dynamic_cast<Licq::EventMsg*>(e)->message().c_str());
+      s1 = QString::fromUtf8(dynamic_cast<Licq::EventMsg*>(e)->message().c_str());
       break;
     case Licq::UserEvent::TypeUrl:
       t = tr("URL");
-      s1 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->url().c_str());
-      s2 = QString::fromLocal8Bit(dynamic_cast<Licq::EventUrl*>(e)->description().c_str());
+      s1 = QString::fromUtf8(dynamic_cast<Licq::EventUrl*>(e)->url().c_str());
+      s2 = QString::fromUtf8(dynamic_cast<Licq::EventUrl*>(e)->description().c_str());
       break;
     default:
       WarnUser(this, tr("Unable to forward this message type (%s).")

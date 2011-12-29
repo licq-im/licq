@@ -38,14 +38,11 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSocketNotifier>
-#include <QTextCodec>
 
 #include <licq/icq/filetransfer.h>
 #include <licq/logging/log.h>
 
 #include "core/messagebox.h"
-
-#include "helpers/usercodec.h"
 
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"
@@ -276,8 +273,6 @@ void FileDlg::slot_ft()
   char buf[32];
   read(ftman->Pipe(), buf, 32);
 
-  const QTextCodec* codec = UserCodec::codecForUserId(myUserId);
-
   CFileTransferEvent* e = NULL;
   while ( (e = ftman->PopFileTransferEvent()) != NULL)
   {
@@ -285,7 +280,7 @@ void FileDlg::slot_ft()
     {
       case FT_STARTxBATCH:
       {
-        setWindowTitle(QString(tr("Licq - File Transfer (%1)")).arg(codec->toUnicode(ftman->remoteName().c_str())));
+        setWindowTitle(QString(tr("Licq - File Transfer (%1)")).arg(QString::fromUtf8(ftman->remoteName().c_str())));
         nfoTotalFiles->setText(QString("%1 / %2").arg(1).arg(ftman->BatchFiles()));
         nfoBatchSize->setText(encodeFSize(ftman->BatchSize()));
         barBatchTransfer->setMaximum(ftman->BatchSize() / 1024);
@@ -296,7 +291,7 @@ void FileDlg::slot_ft()
       case FT_CONFIRMxFILE:
       {
         // Use this opportunity to encode the filename
-        ftman->startReceivingFile(QFile::encodeName(codec->toUnicode(ftman->fileName().c_str())).data());
+        ftman->startReceivingFile(ftman->fileName());
         break;
       }
 
@@ -324,9 +319,13 @@ void FileDlg::slot_ft()
       {
         slot_update();
         if (ftman->isReceiver())
-          mleStatus->append(tr("Received %1 from %2 successfully.").arg(QFile::decodeName(e->fileName().c_str())).arg(codec->toUnicode(ftman->remoteName().c_str())));
+          mleStatus->append(tr("Received %1 from %2 successfully.")
+              .arg(QFile::decodeName(e->fileName().c_str()))
+              .arg(QString::fromUtf8(ftman->remoteName().c_str())));
         else
-          mleStatus->append(tr("Sent %1 to %2 successfully.").arg(QFile::decodeName(e->fileName().c_str())).arg(codec->toUnicode(ftman->remoteName().c_str())));
+          mleStatus->append(tr("Sent %1 to %2 successfully.")
+              .arg(QFile::decodeName(e->fileName().c_str()))
+              .arg(QString::fromUtf8(ftman->remoteName().c_str())));
         break;
       }
 

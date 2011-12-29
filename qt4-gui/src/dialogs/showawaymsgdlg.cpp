@@ -30,7 +30,6 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QRegExp>
-#include <QTextCodec>
 #include <QVBoxLayout>
 
 #include <licq/contactlist/user.h>
@@ -41,7 +40,6 @@
 #include "core/signalmanager.h"
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 #include "widgets/mledit.h"
 
@@ -80,7 +78,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
   bool bSendServer = true;
   {
     Licq::UserReadGuard u(myUserId);
-    const QTextCodec* codec = UserCodec::codecForUser(*u);
     chkShowAgain->setChecked(u->ShowAwayMsg());
 
     setWindowTitle(QString(tr("%1 Response for %2"))
@@ -90,7 +87,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
     if (fetch)
       bSendServer = (u->normalSocketDesc() <= 0 && u->Version() > 6);
     else
-      mleAwayMsg->setText(codec->toUnicode(u->autoResponse().c_str()));
+      mleAwayMsg->setText(QString::fromUtf8(u->autoResponse().c_str()));
   }
 
   if (fetch)
@@ -156,23 +153,19 @@ void ShowAwayMsgDlg::doneEvent(const Licq::Event* e)
   if (isOk)
   {
     Licq::UserReadGuard u(myUserId);
-    const QTextCodec* codec = UserCodec::codecForUser(*u);
-    const char* szAutoResp =
+    QString strResponse = QString::fromUtf8(
       (e->ExtendedAck() && !e->ExtendedAck()->accepted()) ?
        e->ExtendedAck()->response().c_str() :
-       u->autoResponse().c_str();
+       u->autoResponse().c_str());
 
     if (u->protocolId() == LICQ_PPID && QString(u->accountId().c_str())[0].isLetter())
     {
       // Strip HTML
-      QString strResponse(codec->toUnicode(szAutoResp));
       QRegExp regExp("<.*>");
       regExp.setMinimal(true);
       strResponse.replace(regExp, "");
-      mleAwayMsg->setText(strResponse);
     }
-    else
-      mleAwayMsg->setText(codec->toUnicode(szAutoResp));
+    mleAwayMsg->setText(strResponse);
 
     mleAwayMsg->setEnabled(true);
   }

@@ -293,7 +293,7 @@ void UserPages::Settings::load(const Licq::User* user)
   myStatusOccupiedRadio->setEnabled(isIcq);
   myStatusDndRadio->setEnabled(isIcq);
 
-  myAutoRespEdit->setText(QString::fromLocal8Bit(user->customAutoResponse().c_str()));
+  myAutoRespEdit->setText(QString::fromUtf8(user->customAutoResponse().c_str()));
 
   unsigned long sendFuncs = 0;
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
@@ -386,7 +386,7 @@ void UserPages::Settings::apply(Licq::User* user)
   user->setStatusToUser(statusToUser);
 
   // Set auto response (empty string will disable custom auto response)
-  user->setCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit().constData());
+  user->setCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toUtf8().constData());
 
   // Save onevent settings
   Licq::OnEventData* userData = Licq::gOnEventManager.lockUser(user->id(), true);

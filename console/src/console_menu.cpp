@@ -33,6 +33,7 @@
 #include <licq/icq/icq.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/protocolmanager.h>
+#include <licq/translator.h>
 
 using namespace std;
 using Licq::gPluginManager;
@@ -896,7 +897,7 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
     {
       Licq::OwnerReadGuard o(LICQ_PPID);
       winMain->wprintf("%B%CAuto response:\n%b%s\n",
-          COLOR_WHITE, o->autoResponse().c_str());
+          COLOR_WHITE, Licq::gTranslator.fromUtf8(o->autoResponse()).c_str());
     }
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)

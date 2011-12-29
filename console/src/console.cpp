@@ -45,6 +45,7 @@
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
+#include <licq/translator.h>
 #include <licq/userevents.h>
 
 #include "event_data.h"
@@ -820,7 +821,8 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
         {
           Licq::UserReadGuard u(e->userId());
           win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
-              u->getAlias().c_str(), u->statusString().c_str(), u->autoResponse().c_str());
+              u->getAlias().c_str(), u->statusString().c_str(),
+              Licq::gTranslator.fromUtf8(u->autoResponse()).c_str());
         }
         else if (e->subResult() == Licq::Event::SubResultRefuse)
         {
@@ -843,7 +845,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
           {
             Licq::UserReadGuard u(e->userId());
             win->wprintf("%s refused file: %s\n", u->getAlias().c_str(),
-                ea->response().c_str());
+                Licq::gTranslator.fromUtf8(ea->response()).c_str());
           }
 
           else
@@ -867,7 +869,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
         {
           Licq::UserReadGuard u(e->userId());
           if (u.isLocked() && u->isAway() && u->ShowAwayMsg())
-            win->wprintf("%s\n", u->autoResponse().c_str());
+            win->wprintf("%s\n", Licq::gTranslator.fromUtf8(u->autoResponse()).c_str());
         }
     }
   }
@@ -1577,7 +1579,7 @@ void CLicqConsole::UserCommand_View(const Licq::UserId& userId, char *)
         u->isUser() ? u->getAlias().c_str() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
-        e->text().c_str());
+        e->textLoc().c_str());
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
       waddch(winMain->Win(), ACS_HLINE);
@@ -1917,7 +1919,8 @@ void CLicqConsole::InputMessage(int cIn)
       winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-        winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg, flags);
+        winMain->event = gProtocolManager.sendMessage(data->userId,
+            Licq::gTranslator.toUtf8(data->szMsg), flags);
       winMain->state = STATE_PENDING;
       break;
     }
@@ -1931,7 +1934,8 @@ void CLicqConsole::InputMessage(int cIn)
     {
       winMain->wprintf("%C%ASending message through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        winMain->event = gProtocolManager.sendMessage(data->userId, data->szMsg);
+        winMain->event = gProtocolManager.sendMessage(data->userId,
+            Licq::gTranslator.toUtf8(data->szMsg));
       winMain->state = STATE_PENDING;
     }
     else
@@ -2052,7 +2056,8 @@ void CLicqConsole::InputSendFile(int cIn)
         flags |= Licq::ProtocolSignal::SendDirect;
 
       winMain->event = gProtocolManager.fileTransferPropose(data->userId,
-          data->szFileName, data->szDescription, lFileList, flags);
+          data->szFileName, Licq::gTranslator.toUtf8(data->szDescription),
+          lFileList, flags);
       break;
     }
   case STATE_QUERY:
@@ -2103,7 +2108,7 @@ void CLicqConsole::InputAutoResponse(int cIn)
       *sz = '\0';
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
-        o->setAutoResponse(data->szRsp);
+        o->setAutoResponse(Licq::gTranslator.toUtf8(data->szRsp));
         o->save(Licq::Owner::SaveOwnerInfo);
       }
       winMain->wprintf("%C%AAuto-response set.\n",
@@ -2199,8 +2204,9 @@ void CLicqConsole::InputUrl(int cIn)
       winMain->wprintf("%C%ASending URL %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      winMain->event = gProtocolManager.sendUrl(data->userId, data->szUrl,
-          data->szDesc, flags);
+      winMain->event = gProtocolManager.sendUrl(data->userId,
+          Licq::gTranslator.toUtf8(data->szUrl),
+          Licq::gTranslator.toUtf8(data->szDesc), flags);
       winMain->state = STATE_PENDING;
       break;
     }
@@ -2214,8 +2220,9 @@ void CLicqConsole::InputUrl(int cIn)
     {
       winMain->wprintf("%C%ASending URL through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        winMain->event = gProtocolManager.sendUrl(data->userId, data->szUrl,
-            data->szDesc);
+        winMain->event = gProtocolManager.sendUrl(data->userId,
+            Licq::gTranslator.toUtf8(data->szUrl),
+            Licq::gTranslator.toUtf8(data->szDesc));
       winMain->state = STATE_PENDING;
     }
     else
@@ -2293,7 +2300,7 @@ void CLicqConsole::InputSms(int cIn)
       winMain->wprintf("%C%ASending SMS to %s ...", m_cColorInfo->nColor,
           m_cColorInfo->nAttr, u->getCellularNumber().c_str());
       winMain->event = gLicqDaemon->icqSendSms(data->userId,
-          u->getCellularNumber().c_str(), data->szMsg);
+          u->getCellularNumber(), data->szMsg);
       winMain->state = STATE_PENDING;
       break;
     }
@@ -2347,7 +2354,8 @@ void CLicqConsole::InputAuthorize(int cIn)
         winMain->wprintf("%C%ARefusing authorizing to %s...", m_cColorInfo->nColor,
             m_cColorInfo->nAttr, data->userId.toString().c_str());
       }
-      winMain->event = gProtocolManager.authorizeReply(data->userId, data->bUrgent, data->szMsg);
+      winMain->event = gProtocolManager.authorizeReply(data->userId, data->bUrgent,
+          Licq::gTranslator.toUtf8(data->szMsg));
 
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       if (winMain->data != NULL)                           
@@ -3149,7 +3157,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
       // XXX hack
       gProtocolManager.fileTransferRefuse(data->userId,
-          data->szReason, f->Sequence(), 0, 0, false);
+          Licq::gTranslator.toUtf8(data->szReason), f->Sequence(), 0, 0, false);
 
       // We are done now
       winMain->wprintf("%ARefusing file from %s with reason: %Z%s\n",
