@@ -766,7 +766,7 @@ string my_translate(const UserId& /* userId */, const string& msg, const char* u
           gLog.info("No translation needs to be done");
     return msg;
   }
-    conv=iconv_open(config.localencoding.c_str(), get_iconv_encoding_name(userenc));
+  conv = iconv_open((config.localencoding + "//IGNORE").c_str(), get_iconv_encoding_name(userenc));
 
     // no translation possible?
     if (conv==(iconv_t)-1)
