@@ -30,7 +30,6 @@
 #include <QPushButton>
 #include <QShortcut>
 #include <QSplitter>
-#include <QTextCodec>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 

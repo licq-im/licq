@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2011 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QRegExp;
-class QTextCodec;
 
 namespace Licq
 {
@@ -152,7 +151,6 @@ private:
   bool myIsOwner;
   QString myContactName;
   QString myOwnerName;
-  const QTextCodec* myContactCodec;
   bool myUseHtml;
   bool myPatternChanged;
 

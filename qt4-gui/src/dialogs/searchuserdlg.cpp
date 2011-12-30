@@ -30,7 +30,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QTextCodec>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
@@ -244,25 +243,22 @@ void SearchUserDlg::startSearch()
 
   if (edtUin->text().trimmed().isEmpty())
   {
-    QTextCodec* codec = QTextCodec::codecForName(Licq::gUserManager.defaultUserEncoding().c_str());
-    if (codec == 0)
-      codec = QTextCodec::codecForLocale();
     searchTag = gLicqDaemon->icqSearchWhitePages(
-        codec->fromUnicode(edtFirst->text()).data(),
-        codec->fromUnicode(edtLast->text()).data(),
-        codec->fromUnicode(edtNick->text()).data(),
-        edtEmail->text().toLocal8Bit().constData(),
+        edtFirst->text().toUtf8().constData(),
+        edtLast->text().toUtf8().constData(),
+        edtNick->text().toUtf8().constData(),
+        edtEmail->text().toUtf8().constData(),
         mins[cmbAge->currentIndex()],
         maxs[cmbAge->currentIndex()],
         cmbGender->currentIndex(),
         GetLanguageByIndex(cmbLanguage->currentIndex())->nCode,
-        codec->fromUnicode(edtCity->text()).data(),
-        codec->fromUnicode(edtState->text()).data(),
+        edtCity->text().toUtf8().constData(),
+        edtState->text().toUtf8().constData(),
         GetCountryByIndex(cmbCountry->currentIndex())->nCode,
-        codec->fromUnicode(edtCoName->text()).data(),
-        codec->fromUnicode(edtCoDept->text()).data(),
-        codec->fromUnicode(edtCoPos->text()).data(),
-        codec->fromUnicode(edtKeyword->text()).data(),
+        edtCoName->text().toUtf8().constData(),
+        edtCoDept->text().toUtf8().constData(),
+        edtCoPos->text().toUtf8().constData(),
+        edtKeyword->text().toUtf8().constData(),
         chkOnlineOnly->isChecked());
   }
   else
@@ -340,17 +336,14 @@ void SearchUserDlg::searchFound(const Licq::SearchData* s)
 {
   QString text;
   QTreeWidgetItem* item = new QTreeWidgetItem(foundView);
-  QTextCodec* codec = QTextCodec::codecForName(Licq::gUserManager.defaultUserEncoding().c_str());
-  if (codec == NULL)
-    codec = QTextCodec::codecForLocale();
 
   item->setData(0, Qt::UserRole, QVariant::fromValue(s->userId()));
-  item->setText(0, codec->toUnicode(s->alias().c_str()));
+  item->setText(0, QString::fromUtf8(s->alias().c_str()));
 
   item->setTextAlignment(1, Qt::AlignRight);
   item->setText(1, s->userId().accountId().c_str());
 
-  item->setText(2, codec->toUnicode(s->firstName().c_str()) + " " + codec->toUnicode(s->lastName().c_str()));
+  item->setText(2, QString::fromUtf8(s->firstName().c_str()) + " " + QString::fromUtf8(s->lastName().c_str()));
 
   item->setText(3, s->email().c_str());
 

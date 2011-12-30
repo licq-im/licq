@@ -25,7 +25,6 @@
 #include <QDateTime>
 #include <QHBoxLayout>
 #include <QMenu>
-#include <QTextCodec>
 #include <QTimer>
 #include <QToolBar>
 #include <QToolButton>
@@ -85,7 +84,6 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
   if (protocol.get() != NULL)
     mySendFuncs = protocol->capabilities();
 
-  myCodec = QTextCodec::codecForLocale();
   myIsOwner = Licq::gUserManager.isOwner(myUsers.front());
   myDeleteUser = false;
   myConvoId = 0;
@@ -136,6 +134,7 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
   myTimeTimer = NULL;
   myTypingTimer = NULL;
 
+  QString userEncoding;
   {
     Licq::UserReadGuard u(myUsers.front());
     if (u.isLocked())
@@ -151,26 +150,23 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
       updateWidgetInfo(*u);
 
       // restore prefered encoding
-      myCodec = UserCodec::codecForUser(*u);
+      userEncoding = u->userEncoding().c_str();
 
       setTyping(u->isTyping());
+    }
+    else
+    {
+      userEncoding = Licq::gUserManager.defaultUserEncoding().c_str();
     }
   }
 
   myEncodingsGroup = new QActionGroup(this);
   connect(myEncodingsGroup, SIGNAL(triggered(QAction*)), SLOT(setEncoding(QAction*)));
 
-  QString codec_name = QString::fromLatin1(myCodec->name()).toLower();
-
   // populate the popup menu
   for (UserCodec::encoding_t* it = &UserCodec::m_encodings[0]; it->encoding != NULL; ++it)
   {
-    // Use check_codec since the QTextCodec name will be different from the
-    // user codec. But QTextCodec will recognize both, so let's make it standard
-    // for the purpose of checking for the same string.
-    QTextCodec* check_codec = QTextCodec::codecForName(it->encoding);
-
-    bool currentCodec = check_codec != NULL && QString::fromLatin1(check_codec->name()).toLower() == codec_name;
+    bool currentCodec = it->encoding == userEncoding;
 
     if (!currentCodec && !Config::Chat::instance()->showAllEncodings() && !it->isMinimal)
       continue;
@@ -290,8 +286,6 @@ void UserEventCommon::flashTaskbar()
 
 void UserEventCommon::updateWidgetInfo(const Licq::User* u)
 {
-  const QTextCodec* codec = UserCodec::codecForUser(u);
-
   if (u->GetTimezone() == Licq::User::TimezoneUnknown)
     myTimezone->setText(tr("Unknown"));
   else
@@ -318,7 +312,7 @@ void UserEventCommon::updateWidgetInfo(const Licq::User* u)
   else
     mySecure->setIcon(IconManager::instance()->getIcon(IconManager::SecureOffIcon));
 
-  QString tmp = codec->toUnicode(u->getFullName().c_str());
+  QString tmp = QString::fromUtf8(u->getFullName().c_str());
   if (!tmp.isEmpty())
     tmp = " (" + tmp + ")";
   myBaseTitle = QString::fromUtf8(u->getAlias().c_str()) + tmp;
@@ -365,15 +359,6 @@ void UserEventCommon::setEncoding(QAction* action)
 
   if (!encoding.isNull())
   {
-    QTextCodec* codec = QTextCodec::codecForName(encoding.toLatin1());
-    if (codec == NULL)
-    {
-      WarnUser(this, tr("Unable to load encoding <b>%1</b>.<br>"
-            "Message contents may appear garbled.").arg(encoding));
-      return;
-    }
-    myCodec = codec;
-
     /* save preferred character set */
     {
       Licq::UserWriteGuard u(myUsers.front());

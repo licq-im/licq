@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include <cstdio>
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGroupBox>
@@ -30,7 +31,6 @@
 #include <QPushButton>
 #include <QRegExp>
 #include <QShortcut>
-#include <QTextCodec>
 #include <QVBoxLayout>
 
 #include <licq/contactlist/owner.h>
@@ -45,7 +45,6 @@
 #include "core/signalmanager.h"
 #include "core/usermenu.h"
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 #include "widgets/calendar.h"
 #include "widgets/historyview.h"
 
@@ -164,13 +163,10 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
     Licq::UserReadGuard u(myUserId);
 
     QString name = tr("INVALID USER");
-    myContactCodec = QTextCodec::codecForLocale();
 
     if (u.isLocked())
     {
-      myContactCodec = UserCodec::codecForUser(*u);
-
-      name = myContactCodec->toUnicode(u->getFullName().c_str());
+      name = QString::fromUtf8(u->getFullName().c_str());
       if (!name.isEmpty())
         name = " (" + name + ")";
       name.prepend(QString::fromUtf8(u->getAlias().c_str()));

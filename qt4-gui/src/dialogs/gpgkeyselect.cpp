@@ -223,13 +223,13 @@ void KeyView::testViewItem(QTreeWidgetItem* item, const Licq::User* u)
   int val = 0;
   for (int i = 0; i < 2; ++i)
   {
-    if (item->text(i).contains(u->getFirstName().c_str(), Qt::CaseInsensitive))
+    if (item->text(i).contains(QString::fromUtf8(u->getFirstName().c_str()), Qt::CaseInsensitive))
       val++;
-    if (item->text(i).contains(u->getLastName().c_str(), Qt::CaseInsensitive))
+    if (item->text(i).contains(QString::fromUtf8(u->getLastName().c_str()), Qt::CaseInsensitive))
       val++;
-    if (item->text(i).contains(u->getAlias().c_str(), Qt::CaseInsensitive))
+    if (item->text(i).contains(QString::fromUtf8(u->getAlias().c_str()), Qt::CaseInsensitive))
       val++;
-    if (item->text(i).contains(u->getEmail().c_str(), Qt::CaseInsensitive))
+    if (item->text(i).contains(QString::fromUtf8(u->getEmail().c_str()), Qt::CaseInsensitive))
       val++;
   }
 

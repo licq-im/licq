@@ -24,7 +24,6 @@
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QTextCodec>
 #include <QTimer>
 #include <QVBoxLayout>
 
@@ -36,7 +35,6 @@
 #include "core/signalmanager.h"
 #include "core/usermenu.h"
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 #include "widgets/treepager.h"
 
 #include "info.h"
@@ -104,8 +102,7 @@ UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
      Licq::UserReadGuard user(myUserId);
     if (user.isLocked())
     {
-      const QTextCodec* codec = UserCodec::codecForUser(*user);
-      QString name = codec->toUnicode(user->getFullName().c_str());
+      QString name = QString::fromUtf8(user->getFullName().c_str());
       if (!name.isEmpty())
         name = " (" + name + ")";
       myBasicTitle = tr("Licq - Info ") + QString::fromUtf8(user->getAlias().c_str()) + name;

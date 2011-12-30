@@ -616,7 +616,7 @@ void UserMenu::toggleSystemGroup(QAction* action)
       Licq::UserReadGuard u(myUserId);
       if (!u.isLocked())
         return;
-      alias = u->getAlias().c_str();
+      alias = QString::fromUtf8(u->getAlias().c_str());
     }
 
     if(!QueryYesNo(this, tr("Do you really want to add\n%1 (%2)\nto your ignore list?")

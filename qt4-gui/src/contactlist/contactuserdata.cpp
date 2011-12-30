@@ -26,7 +26,6 @@
 // Qt
 #include <QDateTime>
 #include <QImage>
-#include <QTextCodec>
 
 // Licq
 #include <licq/contactlist/user.h>
@@ -39,8 +38,6 @@
 #include "config/contactlist.h"
 
 #include "core/gui-defines.h"
-
-#include "helpers/usercodec.h"
 
 #include "contactgroup.h"
 #include "contactuser.h"
@@ -686,7 +683,6 @@ QString ContactUserData::tooltip() const
 
   Config::ContactList* config = Config::ContactList::instance();
 
-  const QTextCodec* codec = UserCodec::codecForUser(*u);
   QString s = "<nobr>";
   if (config->popupPicture() && u->GetPicturePresent())
   {
@@ -705,7 +701,7 @@ QString ContactUserData::tooltip() const
   {
     string fullName = u->getFullName();
     if (!fullName.empty())
-      s += "<br>" + codec->toUnicode(fullName.c_str());
+      s += "<br>" + QString::fromUtf8(fullName.c_str());
   }
 
   if (myBirthday)
@@ -739,7 +735,7 @@ QString ContactUserData::tooltip() const
     s += "<br>" + tr("Awaiting authorization");
 
   if (u->isOnline() && !u->clientInfo().empty())
-    s += "<br>" + codec->toUnicode(u->clientInfo().c_str());
+    s += "<br>" + QString::fromUtf8(u->clientInfo().c_str());
 
   if (!u->autoResponse().empty() && myStatus & User::MessageStatuses)
     s += "<br><u>" + tr("Auto Response:") + "</u><br>&nbsp;&nbsp;&nbsp;" +
@@ -750,20 +746,20 @@ QString ContactUserData::tooltip() const
   {
     string email = u->getEmail();
     if (!email.empty())
-      s += "<br>" + tr("E: ") + codec->toUnicode(email.c_str());
+      s += "<br>" + tr("E: ") + QString::fromUtf8(email.c_str());
   }
 
   if (config->popupPhone() && myPhone)
-    s += "<br>" + tr("P: ") + codec->toUnicode(u->getUserInfoString("PhoneNumber").c_str());
+    s += "<br>" + tr("P: ") + QString::fromUtf8(u->getUserInfoString("PhoneNumber").c_str());
 
   if (config->popupCellular() && myCellular)
-    s += "<br>" + tr("C: ") + codec->toUnicode(u->getCellularNumber().c_str());
+    s += "<br>" + tr("C: ") + QString::fromUtf8(u->getCellularNumber().c_str());
 
   if (config->popupFax())
   {
     string faxNumber = u->getUserInfoString("FaxNumber");
     if (!faxNumber.empty())
-      s += "<br>" + tr("F: ") + codec->toUnicode(faxNumber.c_str());
+      s += "<br>" + tr("F: ") + QString::fromUtf8(faxNumber.c_str());
   }
 
   if (config->popupIP() && (u->Ip() || u->IntIp()))

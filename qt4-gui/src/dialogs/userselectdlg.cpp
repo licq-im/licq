@@ -93,7 +93,9 @@ UserSelectDlg::UserSelectDlg(QWidget* parent)
       close();
       return;
     }
-    cmbUser->addItem(QString("%1 (%2)").arg(o->getAlias().c_str()).arg(o->accountId().c_str()));
+    cmbUser->addItem(QString("%1 (%2)")
+        .arg(QString::fromUtf8(o->getAlias().c_str()))
+        .arg(o->accountId().c_str()));
     edtPassword->setText(o->password().c_str());
   }
 

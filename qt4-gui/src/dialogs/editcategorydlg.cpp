@@ -23,12 +23,10 @@
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLineEdit>
-#include <QTextCodec>
 
 #include <licq/contactlist/owner.h>
 #include <licq/icq/codes.h>
 
-#include "helpers/usercodec.h"
 #include "helpers/support.h"
 
 using namespace LicqQtGui;
@@ -87,7 +85,7 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
     if (it != category.end())
     {
       selection_id = it->first;
-      descr = it->second.c_str();
+      descr = QString::fromUtf8(it->second.c_str());
       ++it;
     }
     else
@@ -98,7 +96,7 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 
     for (int j = 0; j < tableSize ; j++)
     {
-      myCats[i]->addItem(getEntry(j)->szName);
+      myCats[i]->addItem(QString::fromUtf8(getEntry(j)->szName));
       if (getEntry(j)->nCode == selection_id)
         selected = j + 1;
     }
@@ -130,20 +128,11 @@ EditCategoryDlg::EditCategoryDlg(Licq::UserCat cat, const Licq::UserCategoryMap&
 
 void EditCategoryDlg::ok()
 {
-  const QTextCodec* codec;
-  {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (o.isLocked())
-      codec = UserCodec::codecForUser(*o);
-    else
-      codec = UserCodec::defaultEncoding();
-  }
-
   Licq::UserCategoryMap cat;
   for (unsigned short i = 0; i < myNumCats; i++)
   {
     if (myCats[i]->currentIndex() != 0)
-      cat[getEntry(myCats[i]->currentIndex() - 1)->nCode] = codec->fromUnicode(myDescr[i]->text()).data();
+      cat[getEntry(myCats[i]->currentIndex() - 1)->nCode] = myDescr[i]->text().toUtf8().constData();
   }
 
   emit updated(myUserCat, cat);

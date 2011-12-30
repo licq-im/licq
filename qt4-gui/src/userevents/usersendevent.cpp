@@ -43,7 +43,6 @@
 #include <QPushButton>
 #include <QShortcut>
 #include <QSplitter>
-#include <QTextCodec>
 #include <QToolBar>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -516,7 +515,7 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   {
     Licq::UserReadGuard u(myUsers.front());
     updatePicture(*u);
-    mySmsPhoneEdit->setText(myCodec->toUnicode(u->getCellularNumber().c_str()));
+    mySmsPhoneEdit->setText(QString::fromUtf8(u->getCellularNumber().c_str()));
   }
   updateShortcuts();
 

@@ -64,7 +64,7 @@ KeyRequestDlg::KeyRequestDlg(const Licq::UserId& userId, QWidget* parent)
   {
     case Licq::User::SecureChannelSupported:
       t2 = tr("The remote uses %1.")
-        .arg(u->clientInfo().c_str());
+        .arg(QString::fromUtf8(u->clientInfo().c_str()));
       if (Licq::gDaemon.haveCryptoSupport())
         QTimer::singleShot(0, this, SLOT(startSend()));
       break;
@@ -73,7 +73,7 @@ KeyRequestDlg::KeyRequestDlg(const Licq::UserId& userId, QWidget* parent)
       t2 = tr("The remote uses %1, however it\n"
               "has no secure channel support compiled in.\n"
               "This probably won't work.")
-        .arg(u->clientInfo().c_str());
+        .arg(QString::fromUtf8(u->clientInfo().c_str()));
       break;
 
     default:

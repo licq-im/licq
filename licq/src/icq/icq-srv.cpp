@@ -4378,9 +4378,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           // Skip the alias if user wants to keep his own.
           if (!u->m_bKeepAliasOnUpdate || userId == Licq::gUserManager.ownerUserId(LICQ_PPID))
           {
-                  alias = gTranslator.toUnicode(alias, u->userEncoding());
                   u->setAlias(alias);
-            //printf("Alias: %s\n", szUTFAlias);
                 }
                 u->setUserInfoString("FirstName", msg.unpackString());
                 u->setUserInfoString("LastName", msg.unpackString());

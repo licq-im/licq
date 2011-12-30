@@ -29,7 +29,6 @@
 #include <QLineEdit>
 #include <QPixmap>
 #include <QPushButton>
-#include <QTextCodec>
 
 #include <licq/contactlist/owner.h>
 #include <licq/icq/codes.h>
@@ -39,7 +38,6 @@
 #include "core/messagebox.h"
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::EditPhoneDlg */
@@ -51,17 +49,6 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
   Support::setWidgetProps(this, "EditPhoneDlg");
   setAttribute(Qt::WA_DeleteOnClose, true);
   setModal(true);
-
-  const QTextCodec* codec;
-  {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (!o.isLocked())
-    {
-      close();
-      return;
-    }
-    codec = UserCodec::codecForUser(*o);
-  }
 
   m_nEntry = nEntry;
 
@@ -163,18 +150,18 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
 
   if (pbe)
   {
-    cmbDescription->addItem(codec->toUnicode(pbe->description.c_str()));
+    cmbDescription->addItem(QString::fromUtf8(pbe->description.c_str()));
     cmbDescription->setCurrentIndex(cmbDescription->count() - 1);
     cmbType->setCurrentIndex(pbe->nType);
     const struct SCountry* c = GetCountryByName(pbe->country.c_str());
     if (c)
       cmbCountry->setCurrentIndex(c->nIndex);
-    leAreaCode->setText(codec->toUnicode(pbe->areaCode.c_str()));
-    leNumber->setText(codec->toUnicode(pbe->phoneNumber.c_str()));
+    leAreaCode->setText(QString::fromUtf8(pbe->areaCode.c_str()));
+    leNumber->setText(QString::fromUtf8(pbe->phoneNumber.c_str()));
     // avoid duplicating the pager number in the extension field
     if (pbe->nType != Licq::TYPE_PAGER || pbe->phoneNumber != pbe->extension)
     {
-      leExtension->setText(codec->toUnicode(pbe->extension.c_str()));
+      leExtension->setText(QString::fromUtf8(pbe->extension.c_str()));
     }
     if (pbe->nGatewayType == Licq::GATEWAY_BUILTIN)
     {
@@ -182,12 +169,12 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct Licq::PhoneBookEntry* p
       if (p)
         cmbProvider->setCurrentIndex(p->nIndex + 1);
       else if (!pbe->gateway.empty())
-        leGateway->setText(codec->toUnicode(pbe->gateway.c_str()));
+        leGateway->setText(QString::fromUtf8(pbe->gateway.c_str()));
       else
         leGateway->setText(tr("@"));
     }
     else
-      leGateway->setText(codec->toUnicode(pbe->gateway.c_str()));
+      leGateway->setText(QString::fromUtf8(pbe->gateway.c_str()));
 
     cbRemove0s->setChecked(pbe->nRemoveLeading0s);
   }
@@ -236,33 +223,22 @@ void EditPhoneDlg::ok()
     return;
   }
 
-  const QTextCodec* codec;
-  {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (!o.isLocked())
-    {
-      close();
-      return;
-    }
-    codec = UserCodec::codecForUser(*o);
-  }
-
   struct Licq::PhoneBookEntry pbe;
   memset(&pbe, 0, sizeof(pbe));
 
-  pbe.description = codec->fromUnicode(cmbDescription->currentText()).data();
+  pbe.description = cmbDescription->currentText().toUtf8().constData();
 
   if (leAreaCode->isEnabled())
-    pbe.areaCode = codec->fromUnicode(leAreaCode->text()).data();
+    pbe.areaCode = leAreaCode->text().toUtf8().constData();
   else
     pbe.areaCode = "";
 
-  pbe.phoneNumber = codec->fromUnicode(leNumber->text()).data();
+  pbe.phoneNumber = leNumber->text().toUtf8().constData();
 
   pbe.nType = cmbType->currentIndex();
 
   if (leExtension->isEnabled())
-    pbe.extension = codec->fromUnicode(leExtension->text()).data();
+    pbe.extension = leExtension->text().toUtf8().constData();
   else if (pbe.nType == Licq::TYPE_PAGER)
     // need to store the number in extension as well for some reason
     pbe.extension = pbe.phoneNumber;
@@ -270,18 +246,18 @@ void EditPhoneDlg::ok()
     pbe.extension = "";
 
   if (cmbCountry->isEnabled() && cmbCountry->currentIndex() != 0)
-    pbe.country = codec->fromUnicode(cmbCountry->currentText()).data();
+    pbe.country = cmbCountry->currentText().toUtf8().constData();
   else
     pbe.country = "";
 
   if (leGateway->isEnabled())
   {
-    pbe.gateway = codec->fromUnicode(leGateway->text()).data();
+    pbe.gateway = leGateway->text().toUtf8().constData();
     pbe.nGatewayType = Licq::GATEWAY_CUSTOM;
   }
   else if (cmbProvider->isEnabled())
   {
-    pbe.gateway = codec->fromUnicode(cmbProvider->currentText()).data();
+    pbe.gateway = cmbProvider->currentText().toUtf8().constData();
     pbe.nGatewayType = Licq::GATEWAY_BUILTIN;
   }
   else
