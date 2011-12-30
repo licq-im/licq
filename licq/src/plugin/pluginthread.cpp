@@ -98,7 +98,6 @@ static void* pluginThreadEntry(void* arg)
       case PluginThread::Data::STATE_WAITING:
       case PluginThread::Data::STATE_RUNNING:
       case PluginThread::Data::STATE_EXITED:
-      default:
         assert(false);
         break;
       case PluginThread::Data::STATE_LOAD_PLUGIN:
@@ -259,6 +258,8 @@ DynamicLibrary::Ptr PluginThread::loadPlugin(const std::string& path)
   assert(!isThread(INVALID_THREAD_ID));
 
   MutexLocker locker(myData->myMutex);
+  assert(myData->myState == PluginThread::Data::STATE_WAITING);
+
   myData->myState = PluginThread::Data::STATE_LOAD_PLUGIN;
   myData->myPluginPath = path;
   myData->myException = boost::exception_ptr();
@@ -269,6 +270,7 @@ DynamicLibrary::Ptr PluginThread::loadPlugin(const std::string& path)
   {
     myData->myCondition.wait(myData->myMutex);
   } while (myData->myState == PluginThread::Data::STATE_LOAD_PLUGIN);
+
   if (myData->myException)
     boost::rethrow_exception(myData->myException);
 
@@ -285,6 +287,8 @@ bool PluginThread::initPlugin(bool (*pluginInit)(void*), void* argument)
   assert(!isThread(INVALID_THREAD_ID));
 
   MutexLocker locker(myData->myMutex);
+  assert(myData->myState == PluginThread::Data::STATE_WAITING);
+
   myData->myState = PluginThread::Data::STATE_INIT_PLUGIN;
   myData->myPluginInit = pluginInit;
   myData->myPluginInitArgument = argument;
@@ -310,6 +314,8 @@ void PluginThread::startPlugin(void* (*pluginStart)(void*), void* argument)
   assert(!isThread(INVALID_THREAD_ID));
 
   MutexLocker locker(myData->myMutex);
+  assert(myData->myState == PluginThread::Data::STATE_WAITING);
+
   myData->myState = PluginThread::Data::STATE_START_PLUGIN;
   myData->myPluginStart = pluginStart;
   myData->myPluginStartArgument = argument;
