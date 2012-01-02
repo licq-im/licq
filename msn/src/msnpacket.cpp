@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,18 +247,18 @@ void CMSNP2PPacket::InitBuffer()
   m_pBuffer->Pack(szMsgBuf, strlen(szMsgBuf));
 
   // Binary header - 48 bytes
-  m_pBuffer->PackUnsignedLong(m_nSessionId);
-  m_pBuffer->PackUnsignedLong(m_nBaseId);
-  m_pBuffer->PackUnsignedLong(m_nDataOffsetLO);
-  m_pBuffer->PackUnsignedLong(m_nDataOffsetHI);
-  m_pBuffer->PackUnsignedLong(m_nDataSizeLO);
-  m_pBuffer->PackUnsignedLong(m_nDataSizeHI);
-  m_pBuffer->PackUnsignedLong(m_nLen);
-  m_pBuffer->PackUnsignedLong(m_nFlag);
-  m_pBuffer->PackUnsignedLong(m_nAckId);
-  m_pBuffer->PackUnsignedLong(m_nAckUniqueId);
-  m_pBuffer->PackUnsignedLong(m_nAckDataLO);
-  m_pBuffer->PackUnsignedLong(m_nAckDataHI);
+  m_pBuffer->packUInt32LE(m_nSessionId);
+  m_pBuffer->packUInt32LE(m_nBaseId);
+  m_pBuffer->packUInt32LE(m_nDataOffsetLO);
+  m_pBuffer->packUInt32LE(m_nDataOffsetHI);
+  m_pBuffer->packUInt32LE(m_nDataSizeLO);
+  m_pBuffer->packUInt32LE(m_nDataSizeHI);
+  m_pBuffer->packUInt32LE(m_nLen);
+  m_pBuffer->packUInt32LE(m_nFlag);
+  m_pBuffer->packUInt32LE(m_nAckId);
+  m_pBuffer->packUInt32LE(m_nAckUniqueId);
+  m_pBuffer->packUInt32LE(m_nAckDataLO);
+  m_pBuffer->packUInt32LE(m_nAckDataHI);
 }
 
 CPS_MSNVersion::CPS_MSNVersion() : CMSNPacket()
@@ -688,10 +688,10 @@ CPS_MSNInvitation::CPS_MSNInvitation(const char* szToEmail,
   m_nPayloadSize = strMsg.size();
   CMSNP2PPacket::InitBuffer();
 
-  m_pBuffer->Pack(strMsg.c_str(), strMsg.size());
+  m_pBuffer->pack(strMsg);
 
   // Footer
-  m_pBuffer->PackUnsignedLong(0);
+  m_pBuffer->packUInt32LE(0);
 }
 
 CPS_MSNP2PBye::CPS_MSNP2PBye(const char *_szToEmail, const char* _szFromEmail,
@@ -729,10 +729,10 @@ CPS_MSNP2PBye::CPS_MSNP2PBye(const char *_szToEmail, const char* _szFromEmail,
   m_nPayloadSize = strMsg.size();
   CMSNP2PPacket::InitBuffer();
 
-  m_pBuffer->Pack(strMsg.c_str(), strMsg.size());
+  m_pBuffer->pack(strMsg);
 
   // Footer
-  m_pBuffer->PackUnsignedLong(0);
+  m_pBuffer->packUInt32LE(0);
 }
 
 CPS_MSNP2PAck::CPS_MSNP2PAck(const char *_szToEmail, unsigned long _nSessionId,
@@ -748,5 +748,5 @@ CPS_MSNP2PAck::CPS_MSNP2PAck(const char *_szToEmail, unsigned long _nSessionId,
   // No data...
   CMSNP2PPacket::InitBuffer();
 
-  m_pBuffer->PackUnsignedLong(0);
+  m_pBuffer->packUInt32LE(0);
 }

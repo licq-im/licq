@@ -171,55 +171,31 @@ void Buffer::Create(unsigned long _nDataSize)
 //----->>-----------------------------------------------------------------------
 Buffer& Buffer::operator>>(char& in)
 {
-   if(getDataPosRead() + sizeof(char) > (getDataStart() + getDataSize()))
-      in = 0;
-   else
-   {
-      in = *((char *)getDataPosRead());
-      incDataPosRead(sizeof(char));
-   }
-   return(*this);
+  in = unpackInt8();
+  return *this;
 }
 
 Buffer& Buffer::operator>>(unsigned char& in)
 {
-   if(getDataPosRead() + sizeof(unsigned char) > (getDataStart() + getDataSize()))
-      in = 0;
-   else
-   {
-      in = *((unsigned char *)getDataPosRead());
-      incDataPosRead(sizeof(unsigned char));
-   }
-   return(*this);
+  in = unpackUInt8();
+  return *this;
 }
 
 Buffer& Buffer::operator>>(unsigned short& in)
 {
-   if(getDataPosRead() + 2 > (getDataStart() + getDataSize()))
-      in = 0;
-   else
-   {
-      in = LE_16(*(uint16_t*)getDataPosRead());
-      incDataPosRead(2);
-   }
-   return(*this);
+  in = unpackUInt16LE();
+  return *this;
 }
 
 Buffer& Buffer::operator>>(unsigned long& in)
 {
-  if(getDataPosRead() + 4 > (getDataStart() + getDataSize()))
-    in = 0;
-  else
-  {
-    in = LE_32(*(uint32_t*)getDataPosRead());
-    incDataPosRead(4);
-  }
-  return(*this);
+  in = unpackUInt32LE();
+  return *this;
 }
 
 string Buffer::unpackRawString(size_t size)
 {
-  if (size > remainingDataToRead())
+  if (remainingDataToRead() < size)
     size = remainingDataToRead();
   string ret(getDataPosRead(), size);
   incDataPosRead(size);
@@ -228,81 +204,93 @@ string Buffer::unpackRawString(size_t size)
 
 string Buffer::unpackByteString()
 {
-  uint8_t len = UnpackChar();
+  uint8_t len = unpackUInt8();
   return unpackRawString(len);
 }
 
 string Buffer::unpackShortStringLE()
 {
-  uint16_t len = UnpackUnsignedShort();
+  uint16_t len = unpackUInt16LE();
   return unpackRawString(len);
 }
 
 string Buffer::unpackShortStringBE()
 {
-  uint16_t len = UnpackUnsignedShortBE();
+  uint16_t len = unpackUInt16BE();
   return unpackRawString(len);
 }
 
 string Buffer::unpackLongStringLE()
 {
-  uint32_t len = UnpackUnsignedLong();
+  uint32_t len = unpackUInt32LE();
   return unpackRawString(len);
 }
 
 string Buffer::unpackLongStringBE()
 {
-  uint32_t len = UnpackUnsignedLongBE();
+  uint32_t len = unpackUInt32BE();
   return unpackRawString(len);
 }
 
-unsigned long Buffer::UnpackUnsignedLong()
+uint32_t Buffer::unpackUInt32LE()
 {
-  unsigned long n;
-  *this >> n;
+  if (remainingDataToRead() < 4)
+    return 0;
+
+  uint32_t n = LE_32(*(uint32_t*)getDataPosRead());
+  incDataPosRead(4);
   return n;
 }
 
-unsigned long Buffer::UnpackUnsignedLongBE()
+uint32_t Buffer::unpackUInt32BE()
 {
-  unsigned long n;
-  if(getDataPosRead() + 4 > (getDataStart() + getDataSize()))
-    n = 0;
-  else
-  {
-    n = BE_32(*(uint32_t*)getDataPosRead());
-    incDataPosRead(4);
-  }
+  if (remainingDataToRead() < 4)
+    return 0;
+
+  uint32_t n = BE_32(*(uint32_t*)getDataPosRead());
+  incDataPosRead(4);
   return n;
 }
 
-unsigned short Buffer::UnpackUnsignedShort()
+uint16_t Buffer::unpackUInt16LE()
 {
-  unsigned short n;
-  *this >> n;
+  if (remainingDataToRead() < 2)
+    return 0;
+
+  uint16_t n = LE_16(*(uint16_t*)getDataPosRead());
+  incDataPosRead(2);
   return n;
 }
 
-unsigned short Buffer::UnpackUnsignedShortBE()
+uint16_t Buffer::unpackUInt16BE()
 {
-  unsigned short n;
-  if (getDataPosRead() + 2 > (getDataStart() + getDataSize()))
-    n = 0;
-  else
-  {
-    n = BE_16(*(uint16_t*)getDataPosRead());
-    incDataPosRead(2);
-  }
+  if (remainingDataToRead() < 2)
+    return 0;
+
+  uint16_t n = BE_16(*(uint16_t*)getDataPosRead());
+  incDataPosRead(2);
   return n;
 }
 
-char Buffer::UnpackChar()
+uint8_t Buffer::unpackUInt8()
 {
-  char n;
-  *this >> n;
+  if (remainingDataToRead() < 1)
+    return 0;
+
+  uint8_t n = *((uint8_t*)getDataPosRead());
+  incDataPosRead(1);
   return n;
 }
 
+int8_t Buffer::unpackInt8()
+{
+  if (remainingDataToRead() < 1)
+    return 0;
+
+  int8_t n = *((int8_t*)getDataPosRead());
+  incDataPosRead(1);
+  return n;
+}
 
 
 //-----clear--------------------------------------------------------------------
@@ -348,43 +336,70 @@ Buffer::~Buffer()
 }
 
 //-----add----------------------------------------------------------------------
-char* Buffer::PackUnsignedLong(unsigned long data)
+void Buffer::packUInt32LE(uint32_t data)
 {
-  if ( getDataSize() + 4 > getDataMaxSize() )
+  if (remainingDataToWrite() < 4)
   {
-    gLog.warning(tr("PackUnsignedLong(): Trying to pack more data than "
-        "Licq::Buffer can hold!"));
-    return getDataPosWrite();
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
   }
   *(uint32_t*)getDataPosWrite() = LE_32(data);
   incDataPosWrite(4);
-  return getDataPosWrite() - 4;
 }
 
-char* Buffer::PackUnsignedLongBE(unsigned long data)
+void Buffer::packUInt32BE(uint32_t data)
 {
-  if (getDataSize() + 4 > getDataMaxSize() )
+  if (remainingDataToWrite() < 4)
   {
-    gLog.warning(tr("PackUnsignedLongBE(): Trying to pack more data than "
-        "Licq::Buffer can hold!"));
-    return getDataPosWrite();
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
   }
   *(uint32_t*)getDataPosWrite() = BE_32(data);
   incDataPosWrite(4);
-  return getDataPosWrite() - 4;
 }
 
-char* Buffer::PackChar(char data)
+void Buffer::packUInt16LE(uint16_t data)
 {
-  if (getDataSize() + 1 > getDataMaxSize())
+  if (remainingDataToWrite() < 2)
   {
-    gLog.warning(tr("PackChar(): Trying to pack more data than "
-        "Licq::Buffer can hold!"));
-    return getDataPosWrite();
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
   }
-  *getDataPosWrite() = data;
+  *(uint16_t*)getDataPosWrite() = LE_16(data);
+  incDataPosWrite(2);
+}
+
+void Buffer::packUInt16BE(uint16_t data)
+{
+  if (remainingDataToWrite() < 2)
+  {
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
+  }
+  *(uint16_t*)getDataPosWrite() = BE_16(data);
+  incDataPosWrite(2);
+}
+
+void Buffer::packUInt8(uint8_t data)
+{
+  if (remainingDataToWrite() < 1)
+  {
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
+  }
+  *(uint8_t*)getDataPosWrite() = data;
   incDataPosWrite(1);
-  return getDataPosWrite() - 1;
+}
+
+void Buffer::packInt8(int8_t data)
+{
+  if (remainingDataToWrite() < 1)
+  {
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
+  }
+  *(int8_t*)getDataPosWrite() = data;
+  incDataPosWrite(1);
 }
 
 char* Buffer::Pack(const char* data, int size)
@@ -422,11 +437,11 @@ char* Buffer::Pack(Buffer* buf)
 char* Buffer::PackLNTS(const char* data)
 {
   int size = (data == NULL ? 1 : strlen(data) + 1);
-  PackUnsignedShort(size);
+  packUInt16LE(size);
   if (data != NULL)
     Pack(data, size);
   else
-    PackChar('\0');
+    packInt8('\0');
   return getDataPosWrite() - size;
 }
 
@@ -450,32 +465,6 @@ char* Buffer::PackString(const char* data, unsigned short max)
   *getDataPosWrite() = '\0';
   incDataPosWrite(1);
   return getDataPosWrite() - 2 - n - 1;
-}
-
-char* Buffer::PackUnsignedShort(unsigned short data)
-{
-  if ( getDataSize() + 2 > getDataMaxSize() )
-  {
-    gLog.warning(tr("PackUnsignedShort(): Trying to pack more data than "
-        "Licq::Buffer can hold!"));
-    return getDataPosWrite();
-  }
-  *(uint16_t*)getDataPosWrite() = LE_16(data);
-  incDataPosWrite(2);
-  return getDataPosWrite() - 2;
-}
-
-char* Buffer::PackUnsignedShortBE(unsigned short data)
-{
-  if ( getDataSize() + 2 > getDataMaxSize() )
-  {
-    gLog.warning(tr("PackUnsignedShortBE(): Trying to pack more data than "
-        "Licq::Buffer can hold!"));
-    return getDataPosWrite();
-  }
-  *(uint16_t*)getDataPosWrite() = BE_16(data);
-  incDataPosWrite(2);
-  return getDataPosWrite() - 2;
 }
 
 //-----TLV----------------------------------------------------------------------
@@ -533,7 +522,7 @@ bool Buffer::readTLV(int nCount, int nBytes)
   {
     gLog.warning(tr("Unable to read requested amount of TLV data!"));
     for (; nCurBytes < nBytes; nCurBytes++)
-      UnpackChar();
+      unpackInt8();
   }
 
   return true;
@@ -542,22 +531,22 @@ bool Buffer::readTLV(int nCount, int nBytes)
 void Buffer::PackTLV(unsigned short nType, unsigned short nSize,
 		       const char *data)
 {
-  PackUnsignedShortBE(nType);
-  PackUnsignedShortBE(nSize);
+  packUInt16BE(nType);
+  packUInt16BE(nSize);
   Pack(data, nSize);
 }
 
 void Buffer::PackTLV(unsigned short nType, unsigned short nSize, Buffer* b)
 {
-  PackUnsignedShortBE(nType);
-  PackUnsignedShortBE(nSize);
+  packUInt16BE(nType);
+  packUInt16BE(nSize);
   Pack(b);
 }
 
 void Buffer::PackTLV(const TlvPtr& tlv)
 {
-  PackUnsignedShortBE(tlv->myType);
-  PackUnsignedShortBE(tlv->myLen);
+  packUInt16BE(tlv->myType);
+  packUInt16BE(tlv->myLen);
   Pack(reinterpret_cast<const char *>(tlv->myData.get()), tlv->myLen);
 }
 
@@ -565,11 +554,11 @@ void Buffer::PackTLV(const TlvPtr& tlv)
 void Buffer::PackFNACHeader(unsigned short nFamily, unsigned short nSubtype,
 			     char nFlag1, char nFlag2, unsigned long nSeq)
 {
-  PackUnsignedShortBE(nFamily);
-  PackUnsignedShortBE(nSubtype);
-  PackChar(nFlag1);
-  PackChar(nFlag2);
-  PackUnsignedLongBE(nSeq);
+  packUInt16BE(nFamily);
+  packUInt16BE(nSubtype);
+  packInt8(nFlag1);
+  packInt8(nFlag2);
+  packUInt32BE(nSeq);
 }
 #endif
 
@@ -589,66 +578,49 @@ bool Buffer::hasTLV(unsigned short nType)
   return found;
 }
 
-unsigned long Buffer::UnpackUnsignedLongTLV(unsigned short nType)
+uint32_t Buffer::unpackTlvUInt32(int type)
 {
-  unsigned long nRet = 0;
-
   try
   {
-    TlvPtr tlv = getTLV(nType);
-    if (tlv->myLen > 3)
-    {
-      nRet |= (*((tlv->myData.get())+0) << 24);
-      nRet |= (*((tlv->myData.get())+1) << 16);
-      nRet |= (*((tlv->myData.get())+2) << 8);
-      nRet |= (*((tlv->myData.get())+3));
-    }
+    TlvPtr tlv = getTLV(type);
+    if (tlv->myLen >= 4)
+      return BE_32(*(uint32_t*)(tlv->myData.get()));
   }
   catch (...)
   {
     // TODO Throw an exception
   }
-
-  return nRet;
+  return 0;
 }
 
-unsigned short Buffer::UnpackUnsignedShortTLV(unsigned short nType)
+uint16_t Buffer::unpackTlvUInt16(int type)
 {
-  unsigned short nRet = 0;
-
   try
   {
-    TlvPtr tlv = getTLV(nType);
-    if (tlv->myLen > 1)
-    {
-      nRet |= (*((tlv->myData.get())+0) << 8);
-      nRet |= (*((tlv->myData.get())+1));
-    }
+    TlvPtr tlv = getTLV(type);
+    if (tlv->myLen >= 2)
+      return BE_16(*(uint16_t*)(tlv->myData.get()));
   }
   catch (...)
   {
     // TODO Throw an exception
   }
-
-  return nRet;
+  return 0;
 }
 
-unsigned char Buffer::UnpackCharTLV(unsigned short nType)
+uint8_t Buffer::unpackTlvUInt8(int type)
 {
-  unsigned char nRet = 0;
-
   try
   {
-    TlvPtr tlv = getTLV(nType);
-    if (tlv->myLen > 0)
-      nRet = *(tlv->myData.get());
+    TlvPtr tlv = getTLV(type);
+    if (tlv->myLen >= 1)
+      return *(uint8_t*)(tlv->myData.get());
   }
   catch (...)
   {
     // TODO Throw an exception
   }
-
-  return nRet;
+  return 0;
 }
 
 string Buffer::unpackTlvString(int type)

@@ -74,8 +74,6 @@ public:
   char* PackBE(Buffer*);
    char *PackBE(const char *data, int size);
    char *PackStringBE(const char *data, unsigned short max = 0);
-   char *PackUnsignedShortBE(unsigned short data);
-   char *PackUnsignedLongBE(unsigned long data);
 
   char* Pack(Buffer*);
   char* Pack(const char* data, int size);
@@ -88,10 +86,33 @@ public:
    char *PackString(const char *data, unsigned short max = 0);
   char* packString(const std::string& data, unsigned short max = 0)
   { return PackString(data.c_str(), max); }
-   char *PackUnsignedShort(unsigned short data);
-   char *PackUnsignedLong(unsigned long data);
-   char *PackChar(char data);
+
+  /// Add an unsigned 32 bit little endian integer from the buffer
+  void packUInt32LE(uint32_t data);
+
+  /// Add an unsigned 32 bit big endian integer from the buffer
+  void packUInt32BE(uint32_t data);
+
+  /// Add an unsigned 16 bit little endian integer from the buffer
+  void packUInt16LE(uint16_t data);
+
+  /// Add an unsigned 16 bit big endian integer from the buffer
+  void packUInt16BE(uint16_t data);
+
+  /// Add an unsigned 8 bit integer from the buffer
+  void packUInt8(uint8_t data);
+
+  /// Add an signed 8 bit integer from the buffer
+  void packInt8(int8_t data);
+
   void Copy(Buffer*);
+
+  // Deprecated add functions
+  void PackUnsignedLong(unsigned long data) { packUInt32LE(data); }
+  void PackUnsignedLongBE(unsigned long data) { packUInt32BE(data); }
+  void PackUnsignedShort(unsigned short data) { packUInt16LE(data); }
+  void PackUnsignedShortBE(unsigned short data) { packUInt16BE(data); }
+  void PackChar(char data) { packInt8(data); }
 
    /**
     * Log the packet with the given message.
@@ -108,10 +129,6 @@ public:
    bool Full() const;
    bool End()  { return ( getDataPosRead() >= (getDataStart() + getDataSize()) ); }
    void Create(unsigned long _nDataSize = 0);
-
-   //-- Big Endian --
-   unsigned long UnpackUnsignedLongBE();
-   unsigned short UnpackUnsignedShortBE();
 
   Buffer& operator>>(char &in);
   Buffer& operator>>(unsigned char &in);
@@ -166,9 +183,30 @@ public:
    */
   std::string unpackLongStringBE();
 
-   unsigned long UnpackUnsignedLong();
-   unsigned short UnpackUnsignedShort();
-   char UnpackChar();
+  /// Get an unsigned 32 bit little endian integer from the buffer
+  uint32_t unpackUInt32LE();
+
+  /// Get an unsigned 32 bit big endian integer from the buffer
+  uint32_t unpackUInt32BE();
+
+  /// Get an unsigned 16 bit little endian integer from the buffer
+  uint16_t unpackUInt16LE();
+
+  /// Get an unsigned 16 bit big endian integer from the buffer
+  uint16_t unpackUInt16BE();
+
+  /// Get an unsigned 8 bit integer from the buffer
+  uint8_t unpackUInt8();
+
+  /// Get a signed 8 bit integer from the buffer
+  int8_t unpackInt8();
+
+  // Deprecated integer access functions
+  unsigned long UnpackUnsignedLongBE() { return unpackUInt32BE(); }
+  unsigned short UnpackUnsignedShortBE() { return unpackUInt16BE(); }
+  unsigned long UnpackUnsignedLong() { return unpackUInt32LE(); }
+  unsigned short UnpackUnsignedShort() { return unpackUInt16LE(); }
+  char UnpackChar() { return unpackInt8(); }
 
    char *getDataStart() const           { return m_pDataStart; };
    char *getDataPosRead() const         { return m_pDataPosRead; };
@@ -181,6 +219,12 @@ public:
    */
   size_t remainingDataToRead() const
   { return m_pDataPosWrite - m_pDataPosRead; }
+
+  /**
+   * Get number of available bytes left to write
+   */
+  size_t remainingDataToWrite() const
+  { return m_pDataStart + m_nDataSize - m_pDataPosWrite; }
 
    void setDataSize(unsigned long _nDataSize)  { m_nDataSize = _nDataSize; };
    void setDataPosWrite(char *_pDataPosWrite)  { m_pDataPosWrite = _pDataPosWrite; };
@@ -199,14 +243,19 @@ public:
    unsigned short getTLVLen(unsigned short);
    bool hasTLV(unsigned short);
 
-   unsigned long UnpackUnsignedLongTLV(unsigned short);
-   unsigned short UnpackUnsignedShortTLV(unsigned short);
-   unsigned char UnpackCharTLV(unsigned short);
+  uint32_t unpackTlvUInt32(int type);
+  uint16_t unpackTlvUInt16(int type);
+  uint8_t unpackTlvUInt8(int type);
   std::string unpackTlvString(int type);
   Buffer UnpackTLV(unsigned short);
 
   TlvList getTlvList();
   TlvPtr getTLV(unsigned short _nType);
+
+  // Deprecated TLV access functions
+  unsigned long UnpackUnsignedLongTLV(unsigned short type) { return unpackTlvUInt32(type); }
+  unsigned short UnpackUnsignedShortTLV(unsigned short type) { return unpackTlvUInt16(type); }
+  unsigned char UnpackCharTLV(unsigned short type) { return unpackTlvUInt8(type); }
 
 private:
   Buffer& operator=(const Buffer&);
