@@ -2,6 +2,7 @@ Change log for Licq.
 
 New in 1.7.0
 o Fifo: Added commands to show/hide UI contact list window
+o Icq: Fixed several memory leaks
 o Qt4-Gui: Moved debug level menu to log window
 
 

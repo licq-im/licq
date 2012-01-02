@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2011 Licq developers
+ * Copyright (C) 2005-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,21 +133,12 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	  else
 	  {
 	    // Get it from the body
-	    char szStatusLine[128];
 	    int nToRead = strstr(p->getDataPosRead(), "\r\n")+2-p->getDataPosRead();
-	    if (nToRead > 128)
-	    {
-	      gLog.warning("Display Picture: Received unusually long status "
-                           "line, aborting");
-	      // close connection
-	      return -1;
-	    }
-	    p->UnpackRaw(szStatusLine, nToRead);
-	    string strStatus(szStatusLine);
+	    string strStatus = p->unpackRawString(nToRead);
 	    if (strStatus != "MSNSLP/1.0 200 OK\r\n")
 	    {
 	      gLog.error("Display Picture: Encountered an error before the "
-                         "session id was received: %s", szStatusLine);
+                  "session id was received: %s", strStatus.c_str());
 	      // close connection
 	      return -1;
 	    }

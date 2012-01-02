@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,8 +70,8 @@ public:
   CUserProperties();
 
 private:
-  boost::shared_array<char> newAlias;
-  boost::shared_array<char> newCellular;
+  std::string newAlias;
+  std::string newCellular;
 
   unsigned short normalSid;
   unsigned short groupId;
@@ -306,7 +306,7 @@ public:
   static bool Handshake_Recv(Licq::TCPSocket*, unsigned short, bool = true, bool = false);
   static bool Handshake_RecvConfirm_v7(Licq::TCPSocket*);
 
-  int ConnectToServer(const char* server, unsigned short port);
+  int ConnectToServer(const std::string& server, unsigned short port);
   int ConnectToLoginServer();
   int connectToUser(const Licq::UserId& userId, int channel);
   int reverseConnectToUser(const Licq::UserId& userId, unsigned long nIp,

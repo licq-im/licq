@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -1648,14 +1660,14 @@ int IcqProtocol::ConnectToLoginServer()
   }
 
   // Which protocol plugin?
-  int r = ConnectToServer(serverHost.c_str(), serverPort);
+  int r = ConnectToServer(serverHost, serverPort);
 
   myNewSocketPipe.putChar('S');
 
   return r;
 }
 
-int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
+int IcqProtocol::ConnectToServer(const string& server, unsigned short port)
 {
   Licq::SrvSocket* s = new Licq::SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
 
@@ -1674,7 +1686,7 @@ int IcqProtocol::ConnectToServer(const char* server, unsigned short port)
     m_xProxy = NULL;
   }
 
-  if (!s->connectTo(string(server), port, m_xProxy))
+  if (!s->connectTo(server, port, m_xProxy))
   {
     delete s;
     return -1;
@@ -1856,24 +1868,23 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
       gLog.info(tr("Redirect for service 0x%02X received."), nFam);
 
-      char *szServer = packet.UnpackStringTLV(0x0005);
-      char *szCookie = packet.UnpackStringTLV(0x0006);
-      unsigned short nCookieLen = packet.getTLVLen(0x0006);
-      if (!szServer || !szCookie)
+      string server = packet.unpackTlvString(0x0005);
+      string cookie = packet.unpackTlvString(0x0006);
+      if (server.empty() || cookie.empty())
       {
         gLog.warning(tr("Invalid servername (%s) or cookie (%s) in service redirect packet!"),
-            szServer ? szServer : "(null)", szCookie ? szCookie : "(null)");
-        if (szServer) delete [] szServer;
-        if (szCookie) delete [] szCookie;
+            server.c_str(), cookie.c_str());
         break;
       }
+      unsigned short nCookieLen = packet.getTLVLen(0x0006);
+      cookie.resize(nCookieLen);
 
-      char *szPort = strchr(szServer, ':');
       unsigned short nPort;
-      if (szPort)
+      size_t pos = server.find(':');
+      if (pos != string::npos)
       {
-        *szPort++ = '\0';
-        nPort = atoi(szPort);
+        nPort = atoi(server.c_str() + pos + 1);
+        server.resize(pos);
       }
       else
       {
@@ -1886,7 +1897,7 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
         case ICQ_SNACxFAM_BART:
           if (m_xBARTService)
           {
-            m_xBARTService->SetConnectCredential(szServer, nPort, szCookie, nCookieLen);
+            m_xBARTService->setConnectCredential(server, nPort, cookie);
             m_xBARTService->ChangeStatus(STATUS_SERVICE_REQ_ACKED);
             break;
           }
@@ -1899,9 +1910,6 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
         default:
           gLog.warning(tr("Service redirect packet for unhandled service 0x%02X."), nFam);
       }
-
-      delete [] szServer;
-      delete [] szCookie;
       break;
     }
 
@@ -1971,16 +1979,16 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
   case ICQ_SNACxRCV_NAMExINFO:
   {
     unsigned short evil, tlvBlocks;
-    unsigned long nUin, realIP;
+      unsigned long realIP;
     time_t nOnlineSince = 0;
 
       gLog.info(tr("Got Name Info from Server"));
 
-    nUin = packet.UnpackUinString();
+      string id = packet.unpackByteString();
     evil = packet.UnpackUnsignedShortBE();
     tlvBlocks = packet.UnpackUnsignedShortBE();
 
-      gLog.info(tr("UIN: %lu Evil: %04hx"), nUin, evil);
+      gLog.info(tr("UIN: %s Evil: %04hx"), id.c_str(), evil);
 
     if (!packet.readTLV(tlvBlocks)) {
       packet.log(Log::Unknown, tr("Unknown server response"));
@@ -2060,9 +2068,8 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
 
   case ICQ_SNACxREPLYxUSERxINFO:
   {
-    char *szId = packet.UnpackUserString();
-    if (!szId) break;
-      Licq::UserId userId(szId, LICQ_PPID);
+      string id = packet.unpackByteString();
+      Licq::UserId userId(id, LICQ_PPID);
     packet.UnpackUnsignedLongBE(); // Unknown
     
     if (!packet.readTLV())
@@ -2070,14 +2077,14 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       gLog.error(tr("Error during parsing user information packet!"));
       break;
     }
-   
-    char *szAwayMsg = packet.UnpackStringTLV(0x0004);
-    if (szAwayMsg)
-    {
-        gLog.info(tr("Received away message for %s."), szId);
+
+      if (packet.hasTLV(0x0004))
+      {
+        string awayMsg = packet.unpackTlvString(0x0004);
+        gLog.info(tr("Received away message for %s."), id.c_str());
         {
           Licq::UserWriteGuard u(userId);
-          string awayMsgUtf8 = gTranslator.toUtf8(szAwayMsg, u->userEncoding());
+          string awayMsgUtf8 = gTranslator.toUtf8(awayMsg, u->userEncoding());
           if (awayMsgUtf8 != u->autoResponse())
           {
             u->setAutoResponse(awayMsgUtf8);
@@ -2090,19 +2097,14 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
         ProcessDoneEvent(e);
     }
 
-    char *szInfo = packet.UnpackStringTLV(0x0002);
-    if (szInfo)
-    {
-        gLog.info(tr("Received user information for %s."), szId);
+      if (packet.hasTLV(0x0002))
+      {
+        string info = packet.unpackTlvString(0x0002);
+        gLog.info(tr("Received user information for %s."), id.c_str());
         {
           Licq::UserWriteGuard u(userId);
           u->SetEnableSave(false);
-          u->setUserInfoString("About", szInfo);
-          delete [] szInfo;
-
-          // translating string with Translation Table
-
-          delete [] szId;
+          u->setUserInfoString("About", gTranslator.toUtf8(info, u->userEncoding()));
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -2139,11 +2141,10 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
                   nUserIP;
     time_t registeredTimestamp;
     unsigned char mode;
-    char *szId;
 
     packet.UnpackUnsignedLongBE();
     packet.UnpackUnsignedShortBE();
-    szId = packet.UnpackUserString();
+      string id = packet.unpackByteString();
 
     packet.UnpackUnsignedLongBE(); // tlvcount
 
@@ -2154,14 +2155,12 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
 //     userIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
 //      userIP = BSWAP_32(userIP);
-      Licq::UserWriteGuard u(Licq::UserId(szId, LICQ_PPID));
+      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
       if (!u.isLocked())
       {
-        gLog.warning(tr("Unknown user (%s) changed status."), szId);
-      delete [] szId;
+        gLog.warning(tr("Unknown user (%s) changed status."), id.c_str());
       break;
     }
-    delete [] szId;
 
     // 0 if not set -> Online
     unsigned long nNewStatus = 0;
@@ -2180,7 +2179,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
       else
       {
-        userClass = (isalpha(szId[0]) ? 0x10 : 0x50);
+        userClass = (isalpha(id[0]) ? 0x10 : 0x50);
       }
 
     // ICQ status
@@ -2334,21 +2333,19 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         u->setSharedFilesStatus(IcqPluginInactive);
       }
 
-      char* caps = NULL;
-      int capSize = 0;
+      string caps;
     if (packet.hasTLV(0x000D))
     {
       CBuffer capBuf = packet.UnpackTLV(0x000D);
-        capSize = packet.getTLVLen(0x000D);
-        caps = new char[capSize+1];
-        capBuf.UnpackRaw(caps, capSize);
+        int capSize = packet.getTLVLen(0x000D);
+        caps = packet.unpackRawString(capSize);
 
       // Check if they support UTF8
       bool bUTF8 = false;
         for (int i = 0; i < (capSize / CAP_LENGTH); i++)
         {
-        if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_UTF8, CAP_LENGTH) == 0)
-        {
+          if (memcmp(caps.c_str()+(i * CAP_LENGTH), ICQ_CAPABILITY_UTF8, CAP_LENGTH) == 0)
+          {
           bUTF8 = true;
         }
         }
@@ -2504,7 +2501,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
       if (nOldStatus == ICQ_STATUS_OFFLINE || u->clientInfo().empty())
       {
-        string userClient = detectUserClient(caps, capSize, userClass, tcpVersion,
+        string userClient = detectUserClient(caps.c_str(), caps.size(), userClass, tcpVersion,
             nInfoTimestamp, nInfoPluginTimestamp, nStatusPluginTimestamp,
             onlineSince, webPort);
         if (!userClient.empty())
@@ -2514,19 +2511,15 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         }
       }
 
-      if (caps != NULL)
-        delete[] caps;
-
       break;
     }
   case ICQ_SNACxSUB_OFFLINExLIST:
   {
-    char *szId;
     bool bFake = false;
 
     packet.UnpackUnsignedLongBE();
     packet.UnpackUnsignedShortBE();
-    szId = packet.UnpackUserString();
+      string id = packet.unpackByteString();
 
     if (packet.readTLV())
     {
@@ -2536,24 +2529,21 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
     // AIM users send this when they really do go offline, so skip it if it is
     // an AIM user
-    if (bFake && isdigit(szId[0]))
+    if (bFake && isdigit(id[0]))
     {
-        Licq::UserReadGuard user(Licq::UserId(szId, LICQ_PPID));
+        Licq::UserReadGuard user(Licq::UserId(id, LICQ_PPID));
       //XXX Debug output
       //gLog.error(tr("Ignoring fake offline: %s (%s)"),
-      //    user->getAlias().c_str(), szId);
-      delete [] szId;
-      break;
-    }
-
-      Licq::UserWriteGuard u(Licq::UserId(szId, LICQ_PPID));
-      if (!u.isLocked())
-      {
-        gLog.warning(tr("Unknown user (%s) has gone offline."), szId);
-        delete [] szId;
+        //    user->getAlias().c_str(), id.c_str());
         break;
       }
-      delete [] szId;
+
+      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+      if (!u.isLocked())
+      {
+        gLog.warning(tr("Unknown user (%s) has gone offline."), id.c_str());
+        break;
+      }
 
       // Server told us something we already know
       if (u->status() == User::OfflineStatus)
@@ -2654,14 +2644,13 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     unsigned long nMsgID[2];
     unsigned long nTimeSent;
     unsigned short mFormat, nMsgLen, nTLVs;
-    char *szId;
 
     nMsgID[0] = packet.UnpackUnsignedLongBE();
     nMsgID[1] = packet.UnpackUnsignedLongBE();
     nTimeSent   = time(0L);
     mFormat    = packet.UnpackUnsignedShortBE();
-    szId       = packet.UnpackUserString();
-      Licq::UserId userId(szId, LICQ_PPID);
+      string id = packet.unpackByteString();
+      Licq::UserId userId(id, LICQ_PPID);
 
     //TODO Check this again with new protocol plugin support
     //if (nUin < 10000 && nUin != ICQ_UINxPAGER && nUin != ICQ_UINxSMS)
@@ -2705,7 +2694,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             Licq::UserWriteGuard u(userId, !gDaemon.ignoreType(Daemon::IgnoreNewUsers));
             if (!u.isLocked())
             {
-          gLog.info(tr("Message from new user (%s), ignoring"), szId);
+              gLog.info(tr("Message from new user (%s), ignoring"), id.c_str());
           //TODO
           ignore = true;
             }
@@ -2713,7 +2702,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             {
               userEncoding = u->userEncoding();
               gLog.info(tr("Message through server from %s (%s)."),
-                  u->getAlias().c_str(), szId);
+                  u->getAlias().c_str(), id.c_str());
             }
           }
 
@@ -2966,43 +2955,21 @@ However it seems to always think contact is online instead of away/occupied/etc.
             return;
         }
 
-        unsigned long nTagLength = msgTxt.UnpackUnsignedLong();
-        // Refuse irreasonable tag sizes
-        if (nTagLength > 255)
+        string tag = msgTxt.unpackLongStringLE();
+        if (tag != "ICQSMS")
         {
-          gLog.unknown(tr("Invalid tag in SMS message"));
+          gLog.unknown(tr("Unknown tag in SMS message: %s"), tag.c_str());
           return;
         }
-
-        char* szTag = new char[nTagLength + 1];
-        for (unsigned long i = 0; i < nTagLength; ++i)
-          szTag[i] = msgTxt.UnpackChar();
-        szTag[nTagLength] = '\0';
-
-        if (strcmp(szTag, "ICQSMS") != 0)
-        {
-          gLog.unknown(tr("Unknown tag in SMS message:\n%s"), szTag);
-          delete [] szTag;
-          return;
-        }
-        delete [] szTag;
 
         msgTxt.incDataPosRead(3);
 
         msgTxt.UnpackUnsignedLong(); // length till end of the message (useless)
-        unsigned long nSMSLength = msgTxt.UnpackUnsignedLong();
-        // Refuse irreasonable SMS sizes (something must've went wrong)
-        if (nSMSLength > 0x7fff)
-        {
-          gLog.unknown(tr("SMS message packet was too large (claimed size: %lu bytes)"),
-                       nSMSLength);
-          return;
-        }
-            message = msgTxt.unpackRawString(nSMSLength);
+            message = msgTxt.unpackLongStringLE();
           }
           else
           {
-            message = gTranslator.returnToUnix(msgTxt.unpackString());
+            message = gTranslator.returnToUnix(msgTxt.unpackShortStringLE());
           }
 
           processServerMessage(nTypeMsg, packet, userId, message, nTimeSent, nMask);
@@ -3013,21 +2980,18 @@ However it seems to always think contact is online instead of away/occupied/etc.
                    mFormat);
         break;
     }
-    delete [] szId;
     break;
   }
   case ICQ_SNACxMSG_SERVERxREPLYxMSG:
   {
 		unsigned short nLen, nSequence, nMsgType, nAckFlags, nMsgFlags;
-		unsigned long nUin, nMsgID;
+      unsigned long nMsgID;
       Licq::ExtendedData* pExtendedAck = 0;
 
 	 	packet.incDataPosRead(4); // msg id
 		nMsgID = packet.UnpackUnsignedLongBE(); // lower bits, what licq uses
 		packet.UnpackUnsignedShortBE(); // Format
-		nUin = packet.UnpackUinString();
-      char id[16];
-      snprintf(id, 15, "%lu", nUin);
+      string id = packet.unpackByteString();
 
       Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
       if (!u.isLocked())
@@ -3109,9 +3073,9 @@ However it seems to always think contact is online instead of away/occupied/etc.
         break;
       }
 
-    packet >> nAckFlags >> nMsgFlags >> nLen;
+      packet >> nAckFlags >> nMsgFlags;
 
-      string message = gTranslator.toUtf8(packet.unpackRawString(nLen), u->userEncoding());
+      string message = gTranslator.toUtf8(packet.unpackShortStringLE(), u->userEncoding());
 
     if (nAckFlags == ICQ_TCPxACK_REFUSE)
       {
@@ -3188,20 +3152,19 @@ However it seems to always think contact is online instead of away/occupied/etc.
     packet.UnpackUnsignedLongBE(); // timestamp
     packet.UnpackUnsignedLongBE(); // message id
     packet.UnpackUnsignedShortBE(); // format (only seen 1)
-    const char *szId = packet.UnpackUserString();
+      string id = packet.unpackByteString();
     unsigned short nTyping = packet.UnpackUnsignedShortBE();
 
-      Licq::UserWriteGuard u(Licq::UserId(szId, LICQ_PPID));
+      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
       if (!u.isLocked())
       {
-        gLog.warning(tr("Typing status received for unknown user (%s)."), szId);
+        gLog.warning(tr("Typing status received for unknown user (%s)."), id.c_str());
         break;
       }
       u->setIsTyping(nTyping == ICQ_TYPING_ACTIVE);
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
           Licq::PluginSignal::SignalUser,
           Licq::PluginSignal::UserTyping, u->id()));
-    delete [] szId;
     break;
   }
     default:
@@ -3250,7 +3213,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       while (nPacketCount-- != 0)
       {
         // Can't use UnpackUserString because this may be a group name
-        char* szId = packet.UnpackStringBE();
+        string id = packet.unpackShortStringBE();
         unsigned short nTag = packet.UnpackUnsignedShortBE();
         unsigned short nID = packet.UnpackUnsignedShortBE();
         unsigned short nType = packet.UnpackUnsignedShortBE();
@@ -3262,7 +3225,6 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           if (!packet.readTLV(-1, nByteLen))
           {
             gLog.error(tr("Unable to parse contact list TLV, aborting!"));
-            delete[] szId;
             return;
           }
         }
@@ -3278,7 +3240,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               break;
 
             std::pair<ContactUserListIter, bool> ret =
-              receivedUserList.insert(make_pair(szId, (CUserProperties*)NULL));
+              receivedUserList.insert(make_pair(id, (CUserProperties*)NULL));
 
             ContactUserListIter iter = ret.first;
             if (ret.second) // we inserted a new NULL pair
@@ -3292,7 +3254,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
 #define COPYTLV(type, var) \
             if (packet.hasTLV(type)) \
-              data->var.reset(packet.UnpackStringTLV(type))
+              data->var = packet.unpackTlvString(type)
 
             COPYTLV(0x0131, newAlias);
             COPYTLV(0x013A, newCellular);
@@ -3328,24 +3290,23 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           {
             if (!UseServerContactList()) break; 
 
-            if (szId[0] != '\0' && nTag != 0)
+            if (id[0] != '\0' && nTag != 0)
             {
               // Rename the group if we have it already or else add it
               unsigned short nGroup = Licq::gUserManager.GetGroupFromID(nTag);
-              string unicodeName = gTranslator.fromUnicode(szId);
 
               if (nGroup == 0)
               {
-                if (!Licq::gUserManager.AddGroup(unicodeName, nTag))
+                if (!Licq::gUserManager.AddGroup(id, nTag))
                 {
-                  nGroup = Licq::gUserManager.GetGroupFromName(unicodeName);
+                  nGroup = Licq::gUserManager.GetGroupFromName(id);
                   if (nGroup != 0)
                     Licq::gUserManager.ModifyGroupID(nGroup, nTag);
                 }
               }
               else
               {
-                Licq::gUserManager.RenameGroup(nGroup, unicodeName, false);
+                Licq::gUserManager.RenameGroup(nGroup, id, false);
               }
 
               // This is bad, i don't think we want to call this at all..
@@ -3378,9 +3339,6 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
         }  // switch (nType)
-
-        if (szId)
-          delete[] szId;
       } // for count
 
       // First time we get this packet, check to upload our local list
@@ -3426,8 +3384,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     {
       gLog.info(tr("Received updated contact information from server."));
 
-      char *szId = packet.UnpackStringBE();
-      if (szId == 0)
+      string id = packet.unpackShortStringBE();
+      if (id.empty())
       {
         gLog.error(tr("Did not receive user ID."));
         break;
@@ -3445,7 +3403,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         break;
       }
 
-      Licq::UserWriteGuard u(Licq::UserId(szId, LICQ_PPID));
+      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
       if (u.isLocked())
       {
         // First update their gsid/sid
@@ -3465,8 +3423,6 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             Licq::PluginSignal::SignalUser,
             Licq::PluginSignal::UserGroups, u->id()));
       }
-
-      delete [] szId;
 
       break;
     }
@@ -3649,8 +3605,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
     case ICQ_SNACxLIST_AUTHxREQxSRV:
     {
-      char *szId = packet.UnpackUserString();
-      Licq::UserId userId(szId, LICQ_PPID);
+      string id = packet.unpackByteString();
+      Licq::UserId userId(id, LICQ_PPID);
       string userEncoding = getUserEncoding(userId);
       bool bIgnore;
       {
@@ -3659,14 +3615,11 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       if (bIgnore)
-      {
-        delete [] szId;
         break;
-      }
 
-      gLog.info(tr("Authorization request from %s."), szId);
+      gLog.info(tr("Authorization request from %s."), id.c_str());
 
-      string msg = gTranslator.returnToUnix(gTranslator.toUtf8(packet.unpackString(), userEncoding));
+      string msg = gTranslator.returnToUnix(gTranslator.toUtf8(packet.unpackShortStringLE(), userEncoding));
       Licq::EventAuthRequest* e = new Licq::EventAuthRequest(userId, "", "", "", "", msg,
           time(0), 0);
 
@@ -3676,22 +3629,20 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         e->AddToHistory(*o, true);
         gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
       }
-
-      delete [] szId;
       break;
     }
 
     case ICQ_SNACxLIST_AUTHxRESPONS: // The resonse to our authorization request
     {
-      char *szId = packet.UnpackUserString();
-      Licq::UserId userId(szId, LICQ_PPID);
+      string id = packet.unpackByteString();
+      Licq::UserId userId(id, LICQ_PPID);
       string userEncoding = getUserEncoding(userId);
       unsigned char granted;
 
       packet >> granted;
-      string msg = gTranslator.returnToUnix(gTranslator.toUtf8(packet.unpackString(), userEncoding));
+      string msg = gTranslator.returnToUnix(gTranslator.toUtf8(packet.unpackShortStringLE(), userEncoding));
 
-      gLog.info(tr("Authorization %s by %s."), granted ? "granted" : "refused", szId);
+      gLog.info(tr("Authorization %s by %s."), granted ? "granted" : "refused", id.c_str());
 
       Licq::UserEvent* eEvent;
       if (granted)
@@ -3716,16 +3667,14 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         eEvent->AddToHistory(*o, true);
         gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
       }
-
-      delete [] szId;
       break;
     }
 
     case ICQ_SNACxLIST_AUTHxADDED: // You were added to a contact list
     {
-      char *szId = packet.UnpackUserString();
-      Licq::UserId userId(szId, LICQ_PPID);
-      gLog.info(tr("User %s added you to their contact list."), szId);
+      string id = packet.unpackByteString();
+      Licq::UserId userId(id, LICQ_PPID);
+      gLog.info(tr("User %s added you to their contact list."), id.c_str());
 
       Licq::EventAdded* e = new Licq::EventAdded(userId, "", "", "", "",
           time(0), 0);
@@ -3737,8 +3686,6 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           gOnEventManager.performOnEvent(OnEventData::OnEventSysMsg, *o);
         }
       }
-
-      delete [] szId;
       break;
     }
 
@@ -3863,7 +3810,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       nTypeMsg &= ~ICQ_CMDxSUB_FxMULTIREC;
 
       // 2 byte length little endian + string
-          string message = msg.unpackString();
+          string message = msg.unpackShortStringLE();
           processServerMessage(nTypeMsg, packet, userId, message, nTimeSent, nMask);
           break;
         }
@@ -4087,15 +4034,12 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         else if (pEvent != NULL &&
                 pEvent->m_pPacket->SubCommand() == ICQ_CMDxMETA_SENDxSMS)
             {
-              char *szTag, *szXml;
-
           msg.UnpackUnsignedShortBE();
           msg.UnpackUnsignedShortBE();
           msg.UnpackUnsignedShortBE();
-  
-          szTag = msg.UnpackStringBE();
-          szXml = msg.UnpackStringBE();
-              string smsResponse = getXmlTag(szXml, "sms_response");
+              msg.unpackShortStringBE(); // tag
+              string xml = msg.unpackShortStringBE();
+              string smsResponse = getXmlTag(xml, "sms_response");
 
               if (!smsResponse.empty())
               {
@@ -4167,9 +4111,6 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               }
             }
           }
-  
-          delete [] szTag;
-          delete [] szXml;
         }
       }
       else if (nSubtype == ICQ_CMDxMETA_SETxRANDxCHATxRSP)
@@ -4284,10 +4225,10 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
             Licq::SearchData* s = new Licq::SearchData(foundUserId);
 
-            s->myAlias = msg.unpackString();
-            s->myFirstName = msg.unpackString();
-            s->myLastName = msg.unpackString();
-            s->myEmail = msg.unpackString();
+            s->myAlias = msg.unpackShortStringLE();
+            s->myFirstName = msg.unpackShortStringLE();
+            s->myLastName = msg.unpackShortStringLE();
+            s->myEmail = msg.unpackShortStringLE();
             s->myAuth = msg.UnpackChar(); // authorization required
             s->myStatus = msg.UnpackChar();
         msg.UnpackChar(); // unknown
@@ -4374,22 +4315,22 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // main home info
           u->SetEnableSave(false);
-                string alias = msg.unpackString();
+                string alias = msg.unpackShortStringLE();
           // Skip the alias if user wants to keep his own.
           if (!u->m_bKeepAliasOnUpdate || userId == Licq::gUserManager.ownerUserId(LICQ_PPID))
           {
                   u->setAlias(alias);
                 }
-                u->setUserInfoString("FirstName", msg.unpackString());
-                u->setUserInfoString("LastName", msg.unpackString());
-                u->setUserInfoString("Email1", msg.unpackString());
-                u->setUserInfoString("City", msg.unpackString());
-                u->setUserInfoString("State", msg.unpackString());
-                u->setUserInfoString("PhoneNumber", msg.unpackString());
-                u->setUserInfoString("FaxNumber", msg.unpackString());
-                u->setUserInfoString("Address", msg.unpackString());
-                u->setUserInfoString("CellularNumber", msg.unpackString());
-                u->setUserInfoString("Zipcode", msg.unpackString());
+                u->setUserInfoString("FirstName", msg.unpackShortStringLE());
+                u->setUserInfoString("LastName", msg.unpackShortStringLE());
+                u->setUserInfoString("Email1", msg.unpackShortStringLE());
+                u->setUserInfoString("City", msg.unpackShortStringLE());
+                u->setUserInfoString("State", msg.unpackShortStringLE());
+                u->setUserInfoString("PhoneNumber", msg.unpackShortStringLE());
+                u->setUserInfoString("FaxNumber", msg.unpackShortStringLE());
+                u->setUserInfoString("Address", msg.unpackShortStringLE());
+                u->setUserInfoString("CellularNumber", msg.unpackShortStringLE());
+                u->setUserInfoString("Zipcode", msg.unpackShortStringLE());
                 u->setUserInfoUint("Country", msg.UnpackUnsignedShort() );
           u->SetTimezone( msg.UnpackChar() );
           u->SetAuthorization( !msg.UnpackChar() );
@@ -4436,7 +4377,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetEnableSave(false);
                 u->setUserInfoUint("Age", msg.UnpackUnsignedShort());
                 u->setUserInfoUint("Gender", msg.UnpackChar());
-                u->setUserInfoString("Homepage", msg.unpackString());
+                u->setUserInfoString("Homepage", msg.unpackShortStringLE());
                 u->setUserInfoUint("BirthYear", msg.UnpackUnsignedShort());
                 u->setUserInfoUint("BirthMonth", msg.UnpackChar());
                 u->setUserInfoUint("BirthDay", msg.UnpackChar());
@@ -4448,8 +4389,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 /*
           if (unsigned short tmp = msg.UnpackUnsignedShort()) //??
             gLog.error("Unknown value %x\n", tmp);
-          char *city = msg.UnpackString();        //Originally from city
-          char *state = msg.UnpackString();        //Originally from state
+                string city = msg.unpackShortStringLE(); //Originally from city
+                string state = msg.unpackShortStringLE(); //Originally from state
           const struct SCountry *sc = GetCountryByCode(msg.UnpackUnsignedShort()); //Originally from country
           char *country = "unknown";
           if (sc)
@@ -4467,7 +4408,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             case 40: mstatus = "Widowed"; break;
           }
                 gLog.info(tr("%s status is %s, originally from: %s, %s, %s"),
-                    u->getAlias().c_str(), mstatus, city, state, country);
+                    u->getAlias().c_str(), mstatus, city.c_str(), state.c_str(), country);
           */
 
           // save the user infomation
@@ -4489,8 +4430,8 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           u->SetEnableSave(false);
           int nEmail = (int)msg.UnpackChar();
-                u->setUserInfoString("Email2", nEmail > 0 ? msg.unpackString() : "");
-                u->setUserInfoString("Email0", nEmail > 1 ? msg.unpackString() : "");
+                u->setUserInfoString("Email2", nEmail > 0 ? msg.unpackShortStringLE() : "");
+                u->setUserInfoString("Email0", nEmail > 1 ? msg.unpackShortStringLE() : "");
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -4518,7 +4459,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           {
                   u->setUserInfoUint("HomepageCatCode", msg.UnpackUnsignedShort());
                   u->setUserInfoString("HomepageDesc",
-                      gTranslator.returnToUnix(msg.unpackString()));
+                      gTranslator.returnToUnix(msg.unpackShortStringLE()));
                 }
 
                 u->setUserInfoBool("ICQHomepagePresent", msg.UnpackChar());
@@ -4541,18 +4482,18 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                     u->getAlias().c_str(), u->accountId().c_str());
 
           u->SetEnableSave(false);
-                u->setUserInfoString("CompanyCity", msg.unpackString());
-                u->setUserInfoString("CompanyState", msg.unpackString());
-                u->setUserInfoString("CompanyPhoneNumber", msg.unpackString());
-                u->setUserInfoString("CompanyFaxNumber", msg.unpackString());
-                u->setUserInfoString("CompanyAddress", msg.unpackString());
-                u->setUserInfoString("CompanyZip", msg.unpackString());
+                u->setUserInfoString("CompanyCity", msg.unpackShortStringLE());
+                u->setUserInfoString("CompanyState", msg.unpackShortStringLE());
+                u->setUserInfoString("CompanyPhoneNumber", msg.unpackShortStringLE());
+                u->setUserInfoString("CompanyFaxNumber", msg.unpackShortStringLE());
+                u->setUserInfoString("CompanyAddress", msg.unpackShortStringLE());
+                u->setUserInfoString("CompanyZip", msg.unpackShortStringLE());
                 u->setUserInfoUint("CompanyCountry", msg.UnpackUnsignedShort());
-                u->setUserInfoString("CompanyName", msg.unpackString());
-                u->setUserInfoString("CompanyDepartment", msg.unpackString());
-                u->setUserInfoString("CompanyPosition", msg.unpackString());
+                u->setUserInfoString("CompanyName", msg.unpackShortStringLE());
+                u->setUserInfoString("CompanyDepartment", msg.unpackShortStringLE());
+                u->setUserInfoString("CompanyPosition", msg.unpackShortStringLE());
                 u->setUserInfoUint("CompanyOccupation", msg.UnpackUnsignedShort());
-                u->setUserInfoString("CompanyHomepage", msg.unpackString());
+                u->setUserInfoString("CompanyHomepage", msg.unpackShortStringLE());
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -4573,7 +4514,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           u->SetEnableSave(false);
                 u->setUserInfoString("About",
-                    gTranslator.returnToUnix(msg.unpackString()));
+                    gTranslator.returnToUnix(msg.unpackShortStringLE()));
 
           // save the user infomation
           u->SetEnableSave(true);
@@ -4601,7 +4542,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
                 {
             unsigned short cat = msg.UnpackUnsignedShort();
-                  u->getInterests()[cat] = msg.unpackString();
+                  u->getInterests()[cat] = msg.unpackShortStringLE();
                 }
 
           // save the user infomation
@@ -4633,7 +4574,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
                 {
             unsigned short cat = msg.UnpackUnsignedShort();
-                  u->getBackgrounds()[cat] = msg.unpackString();
+                  u->getBackgrounds()[cat] = msg.unpackShortStringLE();
                 }
 
           //---- Organizations
@@ -4643,7 +4584,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 for (i = 0; i < n; ++i)
           {
             unsigned short cat = msg.UnpackUnsignedShort();
-                  u->getOrganizations()[cat] = msg.unpackString();;
+                  u->getOrganizations()[cat] = msg.unpackShortStringLE();;
                 }
 
           // our user info is now up to date
@@ -4800,7 +4741,7 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
 
     case ICQ_SNACxAUTHxSALT_REPLY:
     {
-      char *md5Salt = packet.UnpackStringBE();
+      string md5Salt = packet.unpackShortStringBE();
       CPU_NewLogon* p;
       {
         Licq::OwnerReadGuard o(LICQ_PPID);
@@ -4808,7 +4749,6 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       }
       gLog.info(tr("Sending md5 hashed password."));
       SendEvent_Server(p);
-      delete [] md5Salt;
       m_bNeedSalt = false;
       break;
     }
@@ -4831,8 +4771,8 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
         break;
       }
 
-      char *szJPEG = packet.UnpackStringTLV(0x0002);
- 
+      string jpeg = packet.unpackTlvString(0x0002);
+
       // Save it in a file
       string filename = Licq::gDaemon.baseDir() + "Licq_verify.jpg";
       FILE* fp = fopen(filename.c_str(), "w");
@@ -4842,8 +4782,8 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
             filename.c_str(), strerror(errno));
         break;
       }
-      
-      fwrite(szJPEG, packet.getTLVLen(0x0002), 1, fp);
+
+      fwrite(jpeg.c_str(), packet.getTLVLen(0x0002), 1, fp);
       fclose(fp);
       
       // Push a signal to the plugin to load the file
@@ -4884,7 +4824,7 @@ void IcqProtocol::ProcessUserList()
     {
       Licq::gUserManager.addUser(userId, true, false, Licq::gUserManager.GetGroupFromID(data->groupId)); // Don't notify server
       gLog.info(tr("Added %s (%s) to list from server."),
-          (data->newAlias ? data->newAlias.get() : userId.toString().c_str()), userId.toString().c_str());
+          (!data->newAlias.empty() ? data->newAlias.c_str() : userId.toString().c_str()), userId.toString().c_str());
     }
 
     Licq::UserWriteGuard u(userId);
@@ -4895,8 +4835,8 @@ void IcqProtocol::ProcessUserList()
     // for the 0x0066 TLV, SMS number if it has the 0x013A TLV, etc
     u->SetTLVList(data->tlvs);
 
-    if (data->newAlias != NULL && !u->m_bKeepAliasOnUpdate)
-      u->setAlias(data->newAlias.get());
+    if (!u->m_bKeepAliasOnUpdate)
+      u->setAlias(data->newAlias);
 
     u->SetSID(data->normalSid);
     u->SetGSID(data->groupId);
@@ -4917,12 +4857,7 @@ void IcqProtocol::ProcessUserList()
       u->SetNewUser(false);
     }
 
-    if (data->newCellular != NULL)
-    {
-      const char* tmp = data->newCellular.get();
-      if (tmp != NULL)
-        u->setUserInfoString("CellularNumber", gTranslator.fromUnicode(tmp));
-    }
+    u->setUserInfoString("CellularNumber", data->newCellular);
 
     // Save GSID, SID and group memberships
     u->save(Licq::User::SaveLicqInfo);
@@ -5091,37 +5026,36 @@ bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
     return false;
   }
 
-  char *szNewServer = packet.UnpackStringTLV(0x0005);
-  char *szCookie = packet.UnpackStringTLV(0x0006);
+  string newServer = packet.unpackTlvString(0x0005);
+  string cookie = packet.unpackTlvString(0x0006);
   int nCookieLen = packet.getTLVLen(0x0006);
 
-  if (!szNewServer || !szCookie)
+  if (newServer.empty() || cookie.empty())
   {
     gLog.error(tr("Unable to sign on: NewServer: %s, cookie: %s."),
-               szNewServer ? szNewServer : "(null)", szCookie ? szCookie : "(null)");
-    if (szNewServer) delete [] szNewServer;
-    if (szCookie) delete [] szCookie;
+        newServer.c_str(), cookie.c_str());
     m_eStatus = STATUS_OFFLINE_FORCED;
     m_bLoggingOn = false;
     return false;
   }
 
-  char* ptr;
-  if ( (ptr = strchr(szNewServer, ':')))
-    *ptr++ = '\0';
+  size_t pos = newServer.find(':');
+  int port = 5190;
+  if (pos != string::npos)
+  {
+    port = atoi(newServer.c_str() + pos + 1);
+    newServer.resize(pos);
+  }
 
-  gLog.info(tr("Authenticated. Connecting to %s port %s."), szNewServer, ptr);
+  gLog.info(tr("Authenticated. Connecting to %s port %i."), newServer.c_str(), port);
 
   // Connect to the new server here and send our cookie
-  ConnectToServer(szNewServer, ptr ? atoi(ptr) : 5190);
+  ConnectToServer(newServer, port);
 
   // Send our cookie
-  string cookie(szCookie, nCookieLen);
+  cookie.resize(nCookieLen);
   CPU_SendCookie *p = new CPU_SendCookie(cookie);
   SendEvent_Server(p);
-
-  delete [] szNewServer;
-  delete [] szCookie;
 
   return true;
 }

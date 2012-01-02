@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -1787,8 +1799,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       {
           string msgUtf8 = gTranslator.toUtf8(message, u->userEncoding());
 
-        char szChatClients[1024];
-        packet.UnpackString(szChatClients, sizeof(szChatClients));
+          string chatClients = packet.unpackShortStringLE();
         packet.UnpackUnsignedLong(); // reversed port
         unsigned short nPort = packet.UnpackUnsignedLong();
             if (nInVersion < 6)
@@ -1812,7 +1823,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             gLog.info(tr("Chat request from %s (%s)."),
                 u->getAlias().c_str(), userId.toString().c_str());
 
-          Licq::EventChat* e = new Licq::EventChat(msgUtf8, szChatClients, nPort, theSequence,
+          Licq::EventChat* e = new Licq::EventChat(msgUtf8, chatClients, nPort, theSequence,
               Licq::EventChat::TimeNow, nMask | licqVersion);
 
         // Add the user to our list if they are new
@@ -1837,11 +1848,9 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
       {
           string msgUtf8 = gTranslator.toUtf8(message, u->userEncoding());
 
-        unsigned short nLenFilename;
         unsigned long nFileLength;
-        packet >> junkLong
-               >> nLenFilename;
-          string filename = packet.unpackRawString(nLenFilename);
+          packet.UnpackUnsignedLong();
+          string filename = packet.unpackShortStringLE();
         packet >> nFileLength
                >> junkLong;
             if (nInVersion < 6)
@@ -1892,17 +1901,13 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 			case ICQ_CMDxSUB_ICBM:
 			{
 				unsigned short nLen;
-				unsigned long nLongLen;
-
 				packet >> nLen;
 				packet.incDataPosRead(18);
-				packet >> nLongLen; // plugin name len
 
-          string plugin = packet.unpackRawString(nLongLen);
+          string plugin = packet.unpackLongStringLE();
 
-				packet.incDataPosRead(nLen - 22 - nLongLen);
+				packet.incDataPosRead(nLen - 22 - plugin.size());
 				packet.incDataPosRead(4); // bytes left in packet
-				packet >> nLongLen; // message len
 
 				int nICBMCommand = 0;
           if (plugin.find("File") != string::npos)
@@ -1919,7 +1924,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
             break;
           }
 
-            string icbmMessage = packet.unpackRawString(nLongLen);
+            string icbmMessage = packet.unpackLongStringLE();
 
 				switch (nICBMCommand)
 				{
@@ -1930,8 +1935,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 					unsigned long nFileSize;
 					packet.incDataPosRead(2); // port (BE)
 					packet.incDataPosRead(2); // unknown
-					packet >> nLen; // filename len, including NULL
-                string filename = packet.unpackRawString(nLen);
+                string filename = packet.unpackShortStringLE();
 					packet >> nFileSize;
 					packet.incDataPosRead(2); // reversed port (BE)
 
@@ -1960,9 +1964,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               case ICQ_CMDxSUB_CHAT:
               {
                 icbmMessage = gTranslator.toUtf8(icbmMessage, u->userEncoding());
-
-					char szChatClients[1024];
- 					packet.UnpackString(szChatClients, sizeof(szChatClients));
+                string chatClients = packet.unpackShortStringLE();
 					nPort = packet.UnpackUnsignedShortBE();
 					packet >> nPortReversed;
 
@@ -1972,7 +1974,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               gLog.info(tr("Chat request from %s (%s)."),
                   u->getAlias().c_str(), userId.toString().c_str());
 
-                Licq::EventChat* e = new Licq::EventChat(icbmMessage, szChatClients, nPort,
+                Licq::EventChat* e = new Licq::EventChat(icbmMessage, chatClients, nPort,
                     theSequence, Licq::EventChat::TimeNow, nMask);
 					if (bNewUser)
 					{
@@ -2212,8 +2214,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
       case ICQ_CMDxSUB_CHAT:
       {
-        char ul[1024];
-        packet.UnpackString(ul, sizeof(ul));
+        string ul = packet.unpackShortStringLE();
         packet >> nPortReversed   // port backwards
                >> nPort;    // port to connect to for chat
             if (nInVersion < 6)
@@ -2270,15 +2271,11 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 		  case ICQ_CMDxSUB_ICBM:
 			{
 				unsigned short nLen;
-				unsigned long nLongLen;
-
 				packet >> nLen;
 				packet.incDataPosRead(18); // eh?
-				packet >> nLongLen; // Plugin name len
+          string plugin = packet.unpackLongStringLE();
 
-          string plugin = packet.unpackRawString(nLongLen);
-
-				packet.incDataPosRead(nLen - 22 - nLongLen);
+          packet.incDataPosRead(nLen - 22 - plugin.size());
 				packet.incDataPosRead(4); // left in packet
 
 				int nICBMCommand = 0;
@@ -2302,8 +2299,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 					return true;
 				}
 
-				packet >> nLongLen;
-          string msg = packet.unpackRawString(nLongLen);
+          string msg = packet.unpackLongStringLE();
 
 				switch (nICBMCommand)
 				{
@@ -2325,8 +2321,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
               }
 				case ICQ_CMDxSUB_CHAT:
 				{
-					char ul[1024];
-					packet.UnpackString(ul, sizeof(ul));
+                string ul = packet.unpackShortStringLE();
 					nPort = packet.UnpackUnsignedShortBE();
 					packet >> nPortReversed;
 
@@ -2842,11 +2837,8 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
             {
               packet.incDataPosRead(GUID_LENGTH); // GUID of plugin
               packet.incDataPosRead(4); //Unknown
-              unsigned long nLen = packet.UnpackUnsignedLong();
-                    string name = packet.unpackRawString(nLen);
-
-              nLen = packet.UnpackUnsignedLong();
-                    string fullName = packet.unpackRawString(nLen);
+                    string name = packet.unpackLongStringLE();
+                    string fullName = packet.unpackLongStringLE();
 
               packet.incDataPosRead(4); //Unknown (always 0?)
 
@@ -3170,11 +3162,8 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
           {
             packet.incDataPosRead(GUID_LENGTH); // GUID of plugin
             packet.incDataPosRead(4); //Unknown
-            unsigned long nLen = packet.UnpackUnsignedLong();
-                string name = packet.unpackRawString(nLen);
-
-            nLen = packet.UnpackUnsignedLong();
-                string fullName = packet.unpackRawString(nLen);
+                string name = packet.unpackLongStringLE();
+                string fullName = packet.unpackLongStringLE();
 
             packet.incDataPosRead(4); //Unknown (always 0?)
 

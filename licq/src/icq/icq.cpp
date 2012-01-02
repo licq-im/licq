@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -1082,12 +1094,10 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
     break;
   }
 
-  case ICQ_CMDxSUB_CHAT:
-  {
-    char szChatClients[1024];
+    case ICQ_CMDxSUB_CHAT:
+    {
+      string chatClients = packet.unpackShortStringLE();
     unsigned short nPortReversed;
-
-    packet.UnpackString(szChatClients, sizeof(szChatClients));
     nPortReversed = packet.UnpackUnsignedShortBE();
     packet.incDataPosRead(2);
     nPort = packet.UnpackUnsignedShort();
@@ -1097,7 +1107,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
 
     if (!bIsAck)
     {
-        Licq::EventChat* e = new Licq::EventChat(message, szChatClients, nPort,
+        Licq::EventChat* e = new Licq::EventChat(message, chatClients, nPort,
             nSequence, Licq::EventChat::TimeNow, nFlags, 0, nMsgID[0], nMsgID[1]);
         onEventType = OnEventData::OnEventChat;
       pEvent = e;
@@ -1109,7 +1119,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
 
   case ICQ_CMDxSUB_FILE:
   {
-    unsigned short nFilenameLen;
     unsigned long nFileSize;
 
     // Port reversed: garbage when the request is refused
@@ -1117,11 +1126,10 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
 
     packet.UnpackUnsignedShort();
 
-    packet >> nFilenameLen;
+      string filename = packet.unpackLongStringLE();
+      packet >> nFileSize;
     if (!bIsAck)
     {
-        string filename = packet.unpackRawString(nFilenameLen);
-      packet >> nFileSize;
         list<string> filelist;
         filelist.push_back(filename);
 
@@ -1131,8 +1139,6 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
         onEventType = OnEventData::OnEventFile;
       pEvent = e;
     }
-    else
-      packet.incDataPosRead(nFilenameLen + 4);
 
     packet >> nPort;
 
@@ -1214,15 +1220,13 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
   case ICQ_CMDxSUB_ICBM:
   {
     unsigned short nLen;
-    unsigned long nLongLen;
 
     packet >> nLen;
     packet.incDataPosRead(18);
-    packet >> nLongLen; // plugin len
-      string plugin = packet.unpackRawString(nLongLen);
+      string plugin = packet.unpackLongStringLE();
 
-    packet.incDataPosRead(nLen - 22 - nLongLen); // unknown
-    packet >> nLongLen; // bytes remaining
+      packet.incDataPosRead(nLen - 22 - plugin.size()); // unknown
+      packet.UnpackUnsignedLong();
 
     int nCommand = 0;
       if (plugin.find("File") != string::npos)
@@ -1240,8 +1244,7 @@ void IcqProtocol::ProcessMessage(Licq::User *u, CBuffer &packet, const string& m
         return;
       }
 
-    packet >> nLongLen;
-      string msg2 = packet.unpackRawString(nLongLen);
+      string msg2 = packet.unpackLongStringLE();
 
     /* if the auto response is non empty then this is a decline and we want
        to show the auto response rather than our original message */

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010,2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,21 +128,45 @@ public:
 
   /**
    * Get a string from the buffer
-   * Length of string is a 16 bit word at beginning of data
+   * Length of string is a 8 bit byte at beginning of data
    *
    * @return String read
    */
-  std::string unpackString();
+  std::string unpackByteString();
 
-   char *UnpackRaw(char *, unsigned short);
-   char *UnpackBinBlock(char *, unsigned short);
-   char *UnpackString(char *, unsigned short);
-   char *UnpackString();                // Need to delete[] returned string
-   char *UnpackStringBE(char *, unsigned short);
-   char *UnpackStringBE();              // Need to delete[] returned string
-   char *UnpackUserString();            // Need to delete[] returned string
+  /**
+   * Get a string from the buffer
+   * Length of string is a 16 bit little endian word at beginning of data
+   *
+   * @return String read
+   */
+  std::string unpackShortStringLE();
+
+  /**
+   * Get a string from the buffer
+   * Length of string is a 16 bit big endian word at beginning of data
+   *
+   * @return String read
+   */
+  std::string unpackShortStringBE();
+
+  /**
+   * Get a string from the buffer
+   * Length of string is a 32 bit little endian word at beginning of data
+   *
+   * @return String read
+   */
+  std::string unpackLongStringLE();
+
+  /**
+   * Get a string from the buffer
+   * Length of string is a 32 bit big endian word at beginning of data
+   *
+   * @return String read
+   */
+  std::string unpackLongStringBE();
+
    unsigned long UnpackUnsignedLong();
-   unsigned long UnpackUinString();
    unsigned short UnpackUnsignedShort();
    char UnpackChar();
 
@@ -151,6 +175,12 @@ public:
    char *getDataPosWrite() const        { return m_pDataPosWrite; };
    unsigned long getDataSize() const    { return m_pDataPosWrite - m_pDataStart; };
    unsigned long getDataMaxSize() const { return m_nDataSize; };
+
+  /**
+   * Get number of available bytes left to read
+   */
+  size_t remainingDataToRead() const
+  { return m_pDataPosWrite - m_pDataPosRead; }
 
    void setDataSize(unsigned long _nDataSize)  { m_nDataSize = _nDataSize; };
    void setDataPosWrite(char *_pDataPosWrite)  { m_pDataPosWrite = _pDataPosWrite; };
@@ -172,8 +202,7 @@ public:
    unsigned long UnpackUnsignedLongTLV(unsigned short);
    unsigned short UnpackUnsignedShortTLV(unsigned short);
    unsigned char UnpackCharTLV(unsigned short);
-   char *UnpackStringTLV(unsigned short); // Need to delete[] returned string
-   //std::string UnpackStringTLV(unsigned short);
+  std::string unpackTlvString(int type);
   Buffer UnpackTLV(unsigned short);
 
   TlvList getTlvList();

@@ -102,7 +102,7 @@ CPChat_Color::CPChat_Color(CBuffer &b)
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   myUserId = Licq::UserId(szUin, LICQ_PPID);
-  myName = b.unpackString();
+  myName = b.unpackShortStringLE();
   m_nPort = b.UnpackUnsignedShort();
   m_nPort = (m_nPort >> 8) + (m_nPort << 8);
   m_nColorForeRed = (unsigned char)b.UnpackChar();
@@ -368,7 +368,7 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   myUserId = Licq::UserId(szUin, LICQ_PPID);
-  myName = b.unpackString();
+  myName = b.unpackShortStringLE();
   m_nColorForeRed = (unsigned char)b.UnpackChar();
   m_nColorForeGreen = (unsigned char)b.UnpackChar();
   m_nColorForeBlue = (unsigned char)b.UnpackChar();
@@ -386,7 +386,7 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   m_nSession = b.UnpackUnsignedShort();
   m_nFontSize = b.UnpackUnsignedLong();
   m_nFontFace = b.UnpackUnsignedLong();
-  myFontFamily = b.unpackString();
+  myFontFamily = b.unpackShortStringLE();
   m_nFontEncoding = b.UnpackChar();
   m_nFontStyle = b.UnpackChar();
 
@@ -448,7 +448,7 @@ CPChat_Font::CPChat_Font(CBuffer &b)
   m_nSession = b.UnpackUnsignedShort();
   m_nFontSize = b.UnpackUnsignedLong();
   m_nFontFace = b.UnpackUnsignedLong();
-  myFontFamily = b.unpackString();
+  myFontFamily = b.unpackShortStringLE();
   m_nFontEncoding = b.UnpackChar();
   m_nFontStyle = b.UnpackChar();
 }
@@ -479,7 +479,7 @@ CPChat_ChangeFontFamily::CPChat_ChangeFontFamily(const string& fontFamily)
 CPChat_ChangeFontFamily::CPChat_ChangeFontFamily(CBuffer &b)
 {
   //b.UnpackChar(); // CHAT_CHANGExFONT
-  myFontFamily = b.unpackString();
+  myFontFamily = b.unpackShortStringLE();
   b.UnpackUnsignedShort();  // Charset?
 }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,15 +53,13 @@ using Licq::gUserManager;
 
 void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 {
-  char szCommand[4];
   CMSNPacket *pReply;
   
 //while (!m_pPacketBuf->End())
   {
     pReply = 0;
-    packet->UnpackRaw(szCommand, 3);
-    string strCmd(szCommand);
-    
+    string strCmd = packet->unpackRawString(3);
+
     if (strCmd == "VER")
     {
       // Don't really care about this packet's data.

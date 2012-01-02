@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2010 Licq developers
+ * Copyright (C) 2008-2010,2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,8 +51,8 @@ public:
   unsigned long SendEvent(const Licq::UserId& userId, unsigned short SubType, bool Request);
   void ClearQueue();
 
-  void SetConnectCredential(char *Server, unsigned short Port,
-                            char *Cookie, unsigned short CookieLen);
+  void setConnectCredential(const std::string& server, unsigned short port,
+      const std::string& cookie);
   void ChangeStatus(EOscarServiceStatus s);
   int GetSocketDesc() { return mySocketDesc; }
   void ResetSocket() { mySocketDesc = -1; }
@@ -63,8 +63,8 @@ protected:
   int mySocketDesc;
   Licq::Proxy* myProxy;
   EOscarServiceStatus myStatus;
-  char *myServer;
-  boost::shared_array<char> myCookie;
+  std::string myServer;
+  std::string myCookie;
   unsigned short myPort, myCookieLen;
   std::list<Licq::Event*> mySendQueue;
   pthread_mutex_t mutex_sendqueue;

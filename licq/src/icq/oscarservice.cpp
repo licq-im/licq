@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 2007-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "oscarservice.h"
@@ -42,7 +54,6 @@ COscarService::COscarService(unsigned short Fam)
   mySocketDesc = -1;
   myProxy = NULL;
   myStatus = STATUS_UNINITIALIZED;
-  myServer = NULL;
   pthread_mutex_init(&mutex_sendqueue, NULL);
   pthread_cond_init(&cond_sendqueue, NULL);
   pthread_mutex_init(&mutex_status, NULL);
@@ -52,7 +63,6 @@ COscarService::COscarService(unsigned short Fam)
 COscarService::~COscarService()
 {
   if (myProxy) delete myProxy;
-  if (myServer) free(myServer);
 }
 
 void COscarService::ChangeStatus(EOscarServiceStatus s)
@@ -87,15 +97,12 @@ bool COscarService::WaitForStatus(EOscarServiceStatus s)
   return false;
 }
 
-void COscarService::SetConnectCredential(char *Server, unsigned short Port,
-                                         char *Cookie, unsigned short CookieLen)
+void COscarService::setConnectCredential(const string& server,
+    unsigned short port, const string& cookie)
 {
-  if (myServer) free(myServer);
-  myServer = strdup(Server);
-  myPort = Port;
-  myCookie.reset(new char[CookieLen]);
-  memcpy(myCookie.get(), Cookie, CookieLen);
-  myCookieLen = CookieLen;
+  myServer = server;
+  myPort = port;
+  myCookie = cookie;
 }
 
 bool COscarService::SendPacket(CPacket *p)
@@ -342,16 +349,14 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
 
     case ICQ_SNACxBART_DOWNLOADxREPLY:
     {
-      char *Id = packet.UnpackUserString();
-      Licq::UserId userId(Id, LICQ_PPID);
+      string id = packet.unpackByteString();
+      Licq::UserId userId(id, LICQ_PPID);
       Licq::UserWriteGuard u(userId);
       if (!u.isLocked())
       {
-        gLog.warning(tr("Buddy icon for unknown user (%s)."), Id);
-        delete [] Id;
+        gLog.warning(tr("Buddy icon for unknown user (%s)."), id.c_str());
         break;
       }
-      delete [] Id;
 
       unsigned short IconType = packet.UnpackUnsignedShortBE();
       char HashType = packet.UnpackChar();                     
@@ -383,9 +388,8 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
                 break;
               }
 
-              boost::scoped_array<char> Icon(new char[IconLen]);
-              packet.UnpackBinBlock(Icon.get(), IconLen);
-              write(FD, Icon.get(), IconLen);
+              string icon = packet.unpackRawString(IconLen);
+              write(FD, icon.c_str(), IconLen);
               close(FD);
 
               u->SetEnableSave(false);
@@ -459,7 +463,7 @@ bool COscarService::Initialize()
     if (myProxy == NULL)
       myProxy = gDaemon.createProxy();
   }
-  if (!s->connectTo(string(myServer), myPort, myProxy))
+  if (!s->connectTo(myServer, myPort, myProxy))
   {
     gLog.warning(tr("Can't establish service 0x%02X socket."), myFam);
     ChangeStatus(STATUS_UNINITIALIZED);
@@ -471,8 +475,7 @@ bool COscarService::Initialize()
   // Alert the select thread that there is a new socket
   gIcqProtocol.myNewSocketPipe.putChar('S');
 
-  string cookie(myCookie.get(), myCookieLen);
-  CPU_SendCookie *p1 = new CPU_SendCookie(cookie, myFam);
+  CPU_SendCookie* p1 = new CPU_SendCookie(myCookie, myFam);
   gLog.info(tr("Sending cookie for service 0x%02X."), myFam);
   if (!SendPacket(p1))
   {

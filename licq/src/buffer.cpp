@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -207,96 +219,41 @@ Buffer& Buffer::operator>>(unsigned long& in)
 
 string Buffer::unpackRawString(size_t size)
 {
-  char* c = new char[size];
-  for (size_t i = 0; i < size; ++i)
-    *this >> c[i];
-  string ret(c, size);
-  delete [] c;
+  if (size > remainingDataToRead())
+    size = remainingDataToRead();
+  string ret(getDataPosRead(), size);
+  incDataPosRead(size);
   return ret;
 }
 
-char* Buffer::UnpackRaw(char* sz, unsigned short _nSize)
+string Buffer::unpackByteString()
 {
-  for (unsigned short i = 0; i < _nSize; i++) *this >> sz[i];
-  sz[_nSize] = '\0';
-  return sz;
+  uint8_t len = UnpackChar();
+  return unpackRawString(len);
 }
 
-char* Buffer::UnpackBinBlock(char* sz, unsigned short _nSize)
+string Buffer::unpackShortStringLE()
 {
-  for (unsigned short i = 0; i < _nSize; i++) *this >> sz[i];
-  return sz;
+  uint16_t len = UnpackUnsignedShort();
+  return unpackRawString(len);
 }
 
-char* Buffer::UnpackStringBE(char* sz, unsigned short _usiSize)
+string Buffer::unpackShortStringBE()
 {
-  unsigned short nLen;
-  sz[0] = '\0';
-  *this >> nLen;
-  nLen = BSWAP_16(nLen);
-  nLen = nLen < _usiSize ? nLen : _usiSize - 1;
-  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
-  sz[nLen] = '\0';
-  return sz;
+  uint16_t len = UnpackUnsignedShortBE();
+  return unpackRawString(len);
 }
 
-// Need to delete[] returned string
-char* Buffer::UnpackStringBE()
+string Buffer::unpackLongStringLE()
 {
-  unsigned short nLen;
-  *this >> nLen;
-  nLen = BSWAP_16(nLen);
-  char *sz = new char[nLen+1];
-  sz[0] = '\0';
-  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
-  sz[nLen] = '\0';
-  return sz;
+  uint32_t len = UnpackUnsignedLong();
+  return unpackRawString(len);
 }
 
-char* Buffer::UnpackString(char* sz, unsigned short _usiSize)
+string Buffer::unpackLongStringBE()
 {
-  unsigned short nLen;
-  sz[0] = '\0';
-  *this >> nLen;
-  nLen = nLen < _usiSize ? nLen : _usiSize - 1;
-  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
-  sz[nLen] = '\0';
-  return sz;
-}
-
-string Buffer::unpackString()
-{
-  unsigned short nLen;
-  *this >> nLen;
-  char* sz = new char[nLen+1];
-  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
-  string ret(sz, nLen);
-  delete[] sz;
-  return ret;
-}
-
-// Need to delete[] returned string
-char* Buffer::UnpackString()
-{
-  unsigned short nLen;
-  *this >> nLen;
-  char* sz = new char[nLen+1];
-  sz[0] = '\0';
-  for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
-  sz[nLen] = '\0';
-  return sz;
-}
-
-// Need to dlete[] returned string
-char* Buffer::UnpackUserString()
-{
-  unsigned char nLen;
-  *this >> nLen;
-  char *sz = new char[nLen+1];
-  sz[0] = '\0';
-  for (unsigned char i = 0; i < nLen; i++) *this >> sz[i];
-  sz[nLen] = '\0';
-  return sz;
+  uint32_t len = UnpackUnsignedLongBE();
+  return unpackRawString(len);
 }
 
 unsigned long Buffer::UnpackUnsignedLong()
@@ -304,21 +261,6 @@ unsigned long Buffer::UnpackUnsignedLong()
   unsigned long n;
   *this >> n;
   return n;
-}
-
-unsigned long Buffer::UnpackUinString()
-{
-  unsigned char nUinLen;
-  char uin[20];
-  *this >> nUinLen;
-  if (nUinLen > 15) return 0;
-
-  char* ptr = uin;
-  while (nUinLen--)
-    *ptr++ = UnpackChar();
-  *ptr = '\0';
-
-  return atoi(uin);
 }
 
 unsigned long Buffer::UnpackUnsignedLongBE()
@@ -709,50 +651,19 @@ unsigned char Buffer::UnpackCharTLV(unsigned short nType)
   return nRet;
 }
 
-// Need to delete[] returned string
-char* Buffer::UnpackStringTLV(unsigned short nType)
+string Buffer::unpackTlvString(int type)
 {
-  char *str = 0;
-
   try
   {
-    TlvPtr tlv = getTLV(nType);
-    str = new char[tlv->myLen+1];
-    memcpy(str, tlv->myData.get(), tlv->myLen);
-    *(str+tlv->myLen) = '\0';
-  }
-  catch (...)
-  {
-    if (str)
-    {
-      delete [] str;
-      str = 0;
-    }
-  }
-
-  return str;
-}
-
-#if 0
-//TODO Add this function and use it everywhere so we don't have to
-// constanly remember to call delete[]
-std::string Buffer::UnpackStringTLV(unsigned short nType)
-{
-  std::string str;
-
-  try
-  {
-    TlvPtr tlv = getTLV(nType);
-    str.assign(tlv->myData.get(), tlv->myLen);
+    TlvPtr tlv = getTLV(type);
+    return string((const char*)(tlv->myData.get()), tlv->myLen);
   }
   catch (...)
   {
     // TODO Throw an exception
   }
-
-  return str;
+  return "";
 }
-#endif
 
 Buffer Buffer::UnpackTLV(unsigned short nType)
 {
