@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /* Socket routine descriptions */
@@ -505,7 +517,7 @@ bool INetSocket::RecvRaw()
     return (false);
   }
   myRecvBuffer.Create(nBytesReceived);
-  myRecvBuffer.Pack(buffer, nBytesReceived);
+  myRecvBuffer.packRaw(buffer, nBytesReceived);
   delete[] buffer;
 
   // Print the packet
@@ -630,7 +642,7 @@ bool SrvSocket::RecvPacket()
 #endif
   // push the 6 bytes at the beginning of the packet again..
   myRecvBuffer.Create(nLen + 6);
-  myRecvBuffer.Pack(buffer, 6);
+  myRecvBuffer.packRaw(buffer, 6);
   delete[] buffer;
 
   while (!myRecvBuffer.Full())
@@ -1065,7 +1077,7 @@ bool TCPSocket::SSLRecv()
     return (false);
   }
   myRecvBuffer.Create(nBytesReceived);
-  myRecvBuffer.Pack(buffer, nBytesReceived);
+  myRecvBuffer.packRaw(buffer, nBytesReceived);
   delete[] buffer;
 
   // Print the packet

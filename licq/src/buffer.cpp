@@ -402,69 +402,43 @@ void Buffer::packInt8(int8_t data)
   incDataPosWrite(1);
 }
 
-char* Buffer::Pack(const char* data, int size)
+void Buffer::packRaw(const void* data, size_t length)
 {
-  return Pack(reinterpret_cast<const uint8_t*>(data), size);
-}
-
-char* Buffer::Pack(const uint8_t* data, int size)
-{
-  if ( getDataSize() + size > getDataMaxSize() )
+  if (data == NULL)
+    return;
+  if (remainingDataToWrite() < length)
   {
-    gLog.warning(tr("Pack(): Trying to pack more data than "
-        "Licq::Buffer can hold!"));
-    return getDataPosWrite();
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
   }
-  if (!size) return getDataPosWrite();
-  memcpy(getDataPosWrite(), data, size);
-  incDataPosWrite(size);
-  return getDataPosWrite() - size;
+  memcpy(getDataPosWrite(), data, length);
+  incDataPosWrite(length);
 }
 
-char* Buffer::Pack(Buffer* buf)
+void Buffer::packShortNullStringLE(const string& data)
+{
+  if (remainingDataToWrite() < data.size() + 3)
+  {
+    gLog.warning(tr("Trying to pack more data than Licq::Buffer can hold!"));
+    return;
+  }
+
+  *(uint16_t*)getDataPosWrite() = LE_16(data.size()+1);
+  incDataPosWrite(2);
+  memcpy(getDataPosWrite(), data.c_str(), data.size()+1);
+  incDataPosWrite(data.size());
+}
+
+void Buffer::Pack(Buffer* buf)
 {
   if ( getDataSize() + buf->getDataSize() > getDataMaxSize() )
   {
     gLog.warning(tr("Pack(): Trying to pack more data than "
         "Licq::Buffer can hold!"));
-    return getDataPosWrite();
+    return;
   }
   memcpy(getDataPosWrite(), buf->getDataStart(), buf->getDataSize());
   incDataPosWrite(buf->getDataSize());
-  return getDataPosWrite() - buf->getDataSize();
-}
-
-char* Buffer::PackLNTS(const char* data)
-{
-  int size = (data == NULL ? 1 : strlen(data) + 1);
-  packUInt16LE(size);
-  if (data != NULL)
-    Pack(data, size);
-  else
-    packInt8('\0');
-  return getDataPosWrite() - size;
-}
-
-char* Buffer::PackString(const char* data, unsigned short max)
-{
-  unsigned short n = (data == NULL ? 0 : strlen(data));
-  if (max > 0 && n > max) n = max;
-  if ( getDataSize()  + n + 1 > getDataMaxSize() )
-  {
-    gLog.warning(tr("PackString(): Trying to pack more data than "
-        "Licq::Buffer can hold!"));
-    return getDataPosWrite();
-  }
-  *(uint16_t*)getDataPosWrite() = LE_16(n + 1);
-  incDataPosWrite(2);
-  if (n)
-  {
-    memcpy(getDataPosWrite(), data, n);
-    incDataPosWrite(n);
-  }
-  *getDataPosWrite() = '\0';
-  incDataPosWrite(1);
-  return getDataPosWrite() - 2 - n - 1;
 }
 
 //-----TLV----------------------------------------------------------------------
@@ -533,7 +507,7 @@ void Buffer::PackTLV(unsigned short nType, unsigned short nSize,
 {
   packUInt16BE(nType);
   packUInt16BE(nSize);
-  Pack(data, nSize);
+  packRaw(data, nSize);
 }
 
 void Buffer::PackTLV(unsigned short nType, unsigned short nSize, Buffer* b)
@@ -547,7 +521,7 @@ void Buffer::PackTLV(const TlvPtr& tlv)
 {
   packUInt16BE(tlv->myType);
   packUInt16BE(tlv->myLen);
-  Pack(reinterpret_cast<const char *>(tlv->myData.get()), tlv->myLen);
+  packRaw(tlv->myData.get(), tlv->myLen);
 }
 
 #if 0
@@ -643,7 +617,7 @@ Buffer Buffer::UnpackTLV(unsigned short nType)
   {
     TlvPtr tlv = getTLV(nType);
     Buffer cbuf(tlv->myLen);
-    cbuf.Pack(reinterpret_cast<const char *>(tlv->myData.get()), tlv->myLen);
+    cbuf.packRaw(tlv->myData.get(), tlv->myLen);
     cbuf.Reset();
 
     return cbuf;

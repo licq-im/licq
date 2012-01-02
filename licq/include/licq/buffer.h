@@ -70,23 +70,6 @@ public:
   Buffer& operator+=(Buffer&);
   friend Buffer operator+(Buffer&, Buffer&);
 
-   //-- Big Endian --
-  char* PackBE(Buffer*);
-   char *PackBE(const char *data, int size);
-   char *PackStringBE(const char *data, unsigned short max = 0);
-
-  char* Pack(Buffer*);
-  char* Pack(const char* data, int size);
-  char* Pack(const uint8_t* data, int size);
-
-  char* pack(const std::string& data)
-  { return Pack(data.c_str(), data.size()); }
-
-   char *PackLNTS(const char *);
-   char *PackString(const char *data, unsigned short max = 0);
-  char* packString(const std::string& data, unsigned short max = 0)
-  { return PackString(data.c_str(), max); }
-
   /// Add an unsigned 32 bit little endian integer from the buffer
   void packUInt32LE(uint32_t data);
 
@@ -105,6 +88,15 @@ public:
   /// Add an signed 8 bit integer from the buffer
   void packInt8(int8_t data);
 
+  /// Add binary data
+  void packRaw(const void* data, size_t length);
+  void packRaw(const std::string& data) { packRaw(data.c_str(), data.size()); }
+
+  /// Add a null terminated string preceded by a 16bit little endian length
+  void packShortNullStringLE(const std::string& data);
+
+  void Pack(Buffer*);
+
   void Copy(Buffer*);
 
   // Deprecated add functions
@@ -113,6 +105,11 @@ public:
   void PackUnsignedShort(unsigned short data) { packUInt16LE(data); }
   void PackUnsignedShortBE(unsigned short data) { packUInt16BE(data); }
   void PackChar(char data) { packInt8(data); }
+  void Pack(const char* data, int size) { packRaw(data, size); }
+  void Pack(const uint8_t* data, int size) { packRaw(data, size); }
+  void pack(const std::string& data) { packRaw(data); }
+  void PackString(const char *data) { packShortNullStringLE(data); }
+  void packString(const std::string& data) { packShortNullStringLE(data); }
 
    /**
     * Log the packet with the given message.

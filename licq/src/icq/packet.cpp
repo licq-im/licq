@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -698,7 +710,7 @@ CPU_Register::CPU_Register(const string& password)
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0);//x82270000);
   for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
-  buffer->PackLNTS(password.c_str());
+  buffer->packShortNullStringLE(password);
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0xf2070000);
 }
@@ -739,7 +751,7 @@ CPU_SendVerification::CPU_SendVerification(const string& password, const string&
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0);//x82270000);
   for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
-  buffer->PackLNTS(password.c_str());
+  buffer->packShortNullStringLE(password);
   buffer->PackUnsignedLongBE(0);//x82270000);
   buffer->PackUnsignedLongBE(0xf2070000);
   // Verification TLV
@@ -1510,7 +1522,7 @@ CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
       tlvData.PackUnsignedLong(gUserManager.icqOwnerUin());
 		tlvData.PackChar(msgType);
 		tlvData.PackChar(0); // message flags
-      tlvData.PackLNTS(message.c_str());
+      tlvData.packShortNullStringLE(message);
       break;
   }
 
@@ -3273,7 +3285,7 @@ void CPU_SearchWhitePages::packSearch(unsigned short nCmd, const string& field)
   {
     buffer->PackUnsignedShortBE(nCmd);
     buffer->PackUnsignedShort(nLenField + 2);
-    buffer->PackLNTS(field.c_str());
+    buffer->packShortNullStringLE(field);
   }
 }
 
@@ -3303,9 +3315,9 @@ CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
 //-----UpdatePersonalInfo-------------------------------------------------------
 CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const string& alias,
     const string& firstName, const string& lastName, const string& email, bool bAuthorization)
-  : CPacketUdp(ICQ_CMDxSND_UPDATExBASIC)
+  : CPacketUdp(ICQ_CMDxSND_UPDATExBASIC),
+    myAlias(alias), myFirstName(firstName), myLastName(lastName), myEmail(email)
 {
-
   m_nAuthorization = bAuthorization ? 0 : 1;
 
   m_nSize += 15 + alias.size() + firstName.size() + lastName.size() + email.size();
@@ -3315,10 +3327,10 @@ CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const string& alias,
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
 
-  myAlias = buffer->packString(alias);
-  myFirstName = buffer->packString(firstName);
-  myLastName = buffer->packString(lastName);
-  myEmail = buffer->packString(email);
+  buffer->packShortNullStringLE(alias);
+  buffer->packShortNullStringLE(firstName);
+  buffer->packShortNullStringLE(lastName);
+  buffer->packShortNullStringLE(email);
   buffer->PackChar(m_nAuthorization);
 
 }
@@ -3328,7 +3340,8 @@ CPU_UpdatePersonalBasicInfo::CPU_UpdatePersonalBasicInfo(const string& alias,
 CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const string& city,
     unsigned short nCountry, const string& state, unsigned short nAge, char cSex,
     const string& phone, const string& homepage, const string& about, unsigned long nZipcode)
-  : CPacketUdp(ICQ_CMDxSND_UPDATExDETAIL)
+  : CPacketUdp(ICQ_CMDxSND_UPDATExDETAIL),
+    myCity(city), myState(state), myPhone(phone), myHomepage(homepage), myAbout(about)
 {
 
   m_nCountry = nCountry;
@@ -3336,6 +3349,8 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const string& city,
   m_nAge = nAge;
   m_cSex = cSex;
   m_nZipcode = nZipcode;
+  if (myState.size() > 5)
+    myState.resize(5);
 
   m_nSize += city.size() + state.size() + phone.size() + homepage.size() + about.size() + 27;
   InitBuffer();
@@ -3344,15 +3359,15 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const string& city,
   buffer->PackUnsignedShort(m_nSubSequence);
 #endif
 
-  myCity = buffer->packString(city);
+  buffer->packShortNullStringLE(city);
   buffer->PackUnsignedShort(m_nCountry);
   buffer->PackChar(m_cTimezone);
-  myState = buffer->packString(state, 5);
+  buffer->packShortNullStringLE(myState);
   buffer->PackUnsignedShort(m_nAge);
   buffer->PackChar(m_cSex);
-  myPhone = buffer->packString(phone);
-  myHomepage = buffer->packString(homepage);
-  myAbout = buffer->packString(about);
+  buffer->packShortNullStringLE(phone);
+  buffer->packShortNullStringLE(homepage);
+  buffer->packShortNullStringLE(about);
   buffer->PackUnsignedLong(m_nZipcode);
 
 }
@@ -3417,7 +3432,8 @@ CPU_Authorize::CPU_Authorize(const string& accountId)
 
 //------SetPassword---------------------------------------------------------
 CPU_SetPassword::CPU_SetPassword(const string& password)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA),
+    myPassword(password)
 {
   m_nSubCommand = ICQ_CMDxMETA_PASSWORDxSET;
 
@@ -3435,7 +3451,7 @@ CPU_SetPassword::CPU_SetPassword(const string& password)
 
   // LNTS, but we want the password in this class
   //buffer->PackUnsignedShort(nDataLen - 19);
-  myPassword = buffer->PackLNTS(password.c_str());//buffer->PackString(szPassword);
+  buffer->packShortNullStringLE(password);
   //buffer->PackChar(0x00);
 }
 
@@ -3536,7 +3552,11 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
     const string& city, const string& state, const string& phoneNumber,
     const string& faxNumber, const string& address, const string& cellularNumber,
     const string& zipCode, unsigned short nCountryCode, bool bHideEmail)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA),
+    myAlias(alias), myFirstName(firstName), myLastName(lastName),
+    myEmailPrimary(emailPrimary), myCity(city), myState(state),
+    myPhoneNumber(phoneNumber), myFaxNumber(faxNumber), myAddress(address),
+    myCellularNumber(cellularNumber), myZipCode(zipCode)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
@@ -3564,48 +3584,48 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
   
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxALIAS);
   buffer->PackUnsignedShort(alias.size()+3);
-  myAlias = buffer->packString(alias);
+  buffer->packShortNullStringLE(alias);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxFNAME);
   buffer->PackUnsignedShort(firstName.size()+3);
-  myFirstName = buffer->packString(firstName);
+  buffer->packShortNullStringLE(firstName);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxLNAME);
   buffer->PackUnsignedShort(lastName.size()+3);
-  myLastName = buffer->packString(lastName);
+  buffer->packShortNullStringLE(lastName);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxEMAIL);
   buffer->PackUnsignedShort(emailPrimary.size()+3);
-  myEmailPrimary = buffer->packString(emailPrimary);
+  buffer->packShortNullStringLE(emailPrimary);
   buffer->PackChar(m_nHideEmail);
   
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCITY);
   buffer->PackUnsignedShort(city.size()+3);
-  myCity = buffer->packString(city);
+  buffer->packShortNullStringLE(city);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxSTATE);
   buffer->PackUnsignedShort(state.size()+3);
-  myState = buffer->packString(state);
+  buffer->packShortNullStringLE(state);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExHOME);
   buffer->PackUnsignedShort(phoneNumber.size()+3);
-  myPhoneNumber = buffer->packString(phoneNumber);
+  buffer->packShortNullStringLE(phoneNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_FAX);
   buffer->PackUnsignedShort(faxNumber.size()+3);
-  myFaxNumber = buffer->packString(faxNumber);
+  buffer->packShortNullStringLE(faxNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ADDR);
   buffer->PackUnsignedShort(address.size()+3);
-  myAddress = buffer->packString(address);
+  buffer->packShortNullStringLE(address);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExCELL);
   buffer->PackUnsignedShort(cellularNumber.size()+3);
-  myCellularNumber = buffer->packString(cellularNumber);
+  buffer->packShortNullStringLE(cellularNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ZIP);
   buffer->PackUnsignedShort(zipCode.size()+3);
-  myZipCode = buffer->packString(zipCode);
+  buffer->packShortNullStringLE(zipCode);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOUNTRY);
   buffer->PackUnsignedShort(0x0002);
@@ -3623,7 +3643,8 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
 
 //-----Meta_SetEmailInfo------------------------------------------------------
 CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo(const string& emailSecondary, const string& emailOld)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA),
+    myEmailSecondary(emailSecondary), myEmailOld(emailOld)
 {
   m_nMetaCommand = ICQ_CMDxMETA_EMAILxINFOxSET;
 
@@ -3643,16 +3664,17 @@ CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo(const string& emailSecondary, const
 
   buffer->PackChar(2);
   buffer->PackChar(0);
-  myEmailSecondary = buffer->packString(emailSecondary);
+  buffer->packShortNullStringLE(emailSecondary);
   buffer->PackChar(0);
-  myEmailOld = buffer->packString(emailOld);
+  buffer->packShortNullStringLE(emailOld);
 }
 
 //-----Meta_SetMoreInfo------------------------------------------------------
 CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge, char nGender,
     const string& homepage, unsigned short nBirthYear, char nBirthMonth,
     char nBirthDay, char nLanguage1, char nLanguage2, char nLanguage3)
-  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA),
+    myHomepage(homepage)
 {
   m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
@@ -3688,7 +3710,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge, char nGender,
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOMEPAGE);
   buffer->PackUnsignedShort(homepage.size()+3);
-  myHomepage = buffer->packString(homepage);
+  buffer->packShortNullStringLE(homepage);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxBIRTHDAY);
   buffer->PackUnsignedShort(0x0006);
@@ -3821,27 +3843,27 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& sta
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_CITY);
   buffer->PackUnsignedShort(city.size()+3);
-  myCity = buffer->packString(city);
+  buffer->packShortNullStringLE(city);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_STATE);
   buffer->PackUnsignedShort(statebuf.size()+3);
-  myState = buffer->packString(statebuf);
+  buffer->packShortNullStringLE(statebuf);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_PHONE);
   buffer->PackUnsignedShort(phoneNumber.size()+3);
-  myPhoneNumber = buffer->packString(phoneNumber);
+  buffer->packShortNullStringLE(phoneNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_FAX);
   buffer->PackUnsignedShort(faxNumber.size()+3);
-  myFaxNumber = buffer->packString(faxNumber);
+  buffer->packShortNullStringLE(faxNumber);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ADDR);
   buffer->PackUnsignedShort(address.size()+3);
-  myAddress = buffer->packString(address);
+  buffer->packShortNullStringLE(address);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ZIP);
   buffer->PackUnsignedShort(zip.size()+3);
-  myZip = buffer->packString(zip);
+  buffer->packShortNullStringLE(zip);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_COUNTRY);
   buffer->PackUnsignedShort(0x0002);
@@ -3849,15 +3871,15 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& sta
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOMPANY);
   buffer->PackUnsignedShort(name.size()+3);
-  myName = buffer->packString(name);
+  buffer->packShortNullStringLE(name);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCODEPT);
   buffer->PackUnsignedShort(department.size()+3);
-  myDepartment = buffer->packString(department);
+  buffer->packShortNullStringLE(department);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOPOS);
   buffer->PackUnsignedShort(position.size()+3);
-  myPosition = buffer->packString(position);
+  buffer->packShortNullStringLE(position);
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxOCCUP);
   buffer->PackUnsignedShort(0x0002);
@@ -3865,7 +3887,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& sta
 
   buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_URL);
   buffer->PackUnsignedShort(homepage.size()+3);
-  myHomepage = buffer->packString(homepage);
+  buffer->packShortNullStringLE(homepage);
 }
 
 //-----Meta_SetAbout---------------------------------------------------------
