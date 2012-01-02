@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -371,7 +371,7 @@ public:
   void SendLaugh();
   void SendNewline();
   void SendBackspace();
-  void SendCharacter(char);
+  void sendText(const std::string& text);
   void SendKick(const char* id);
   void SendKickNoVote(const char* id);
   void SendVoteYes(unsigned long);
@@ -435,6 +435,9 @@ protected:
   bool SendBufferToClient(Licq::Buffer*, unsigned char, CChatUser *);
   void SendBuffer_Raw(Licq::Buffer*);
   //void SendPacket(Licq::Packet*);
+
+  std::string getEncoding(int chatEncoding);
+  std::string userEncoding(const CChatUser* u);
 
 friend void *ChatManager_tep(void *);
 friend void *ChatWaitForSignal_tep(void *);

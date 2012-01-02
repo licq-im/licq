@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -27,6 +39,7 @@
 using namespace std;
 using Licq::gDaemon;
 using Licq::gLog;
+using Licq::gTranslator;
 
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
@@ -1165,7 +1178,8 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
     {
       case CHAT_NEWLINE:   // new line
         // add to irc window
-        PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, u->myLinebuf));
+        PushChatEvent(new CChatEvent(CHAT_NEWLINE, u,
+            gTranslator.toUtf8(u->myLinebuf, userEncoding(u))));
         u->myLinebuf.clear();
         u->chatQueue.pop_front();
         break;
@@ -1221,15 +1235,10 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       case CHAT_FONTxFAMILY: // change font type
       {
          if (u->chatQueue.size() < 3) return true;
-         unsigned short sizeFontName, i;
+         unsigned short sizeFontName;
          sizeFontName = u->chatQueue[1] | (u->chatQueue[2] << 8);
          if (u->chatQueue.size() < (unsigned long)(sizeFontName + 2 + 3)) return true;
-         char* nameFont = new char[sizeFontName + 1];
-         for (i = 0; i < sizeFontName; i++)
-            nameFont[i] = u->chatQueue[i + 3];
-         nameFont[sizeFontName] = '\0';
-         u->myFontFamily = nameFont;
-         delete [] nameFont;
+         u->myFontFamily = gTranslator.toUtf8(string((const char*)(&u->chatQueue[3]), sizeFontName), userEncoding(u));
          u->fontEncoding = u->chatQueue[sizeFontName + 3];
          u->fontStyle = u->chatQueue[sizeFontName + 4];
 
@@ -1459,18 +1468,21 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
       {
         if (!iscntrl((int)(unsigned char)chatChar))
         {
-          char tempStr[2] = { chatChar, '\0' };
+          string tempStr;
+          // If there are multiple chars, get them all
+          do {
+            tempStr += *u->chatQueue.begin();
+            u->chatQueue.pop_front();
+          } while (u->chatQueue.size() > 0 && !iscntrl((int)(unsigned char)(*u->chatQueue.begin())));
+
           // Add to the users irc line buffer
           u->myLinebuf += tempStr;
-          PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, tempStr));
-          if (u->myLinebuf.size() > 1000) // stop a little early
-          {
-            u->myLinebuf.erase(1000);
-            PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, u->myLinebuf));
-            u->myLinebuf.clear();
-          }
+          PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, gTranslator.toUtf8(tempStr, userEncoding(u))));
         }
-        u->chatQueue.pop_front();
+        else
+        {
+          u->chatQueue.pop_front();
+        }
         break;
       }
     } // switch
@@ -1537,14 +1549,9 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
 
         case CHAT_FONTxFAMILY: // change font type
         {
-           unsigned short sizeFontName, i;
+           unsigned short sizeFontName;
            sizeFontName = u->chatQueue[0] | (u->chatQueue[1] << 8);
-           char* nameFont = new char [sizeFontName + 1];
-           for (i = 0; i < sizeFontName; i++)
-              nameFont[i] = u->chatQueue[i + 2];
-           nameFont[sizeFontName] = '\0';
-           u->myFontFamily = nameFont;
-           delete [] nameFont;
+          u->myFontFamily = gTranslator.toUtf8(string((const char*)(&u->chatQueue[2]), sizeFontName), userEncoding(u));
            u->fontEncoding = u->chatQueue[sizeFontName + 2];
            u->fontStyle = u->chatQueue[sizeFontName + 3];
 
@@ -1749,8 +1756,9 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
       {
         case CHAT_NEWLINE:   // new line
           // add to irc window
-          PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, u->myLinebuf));
+          PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, gTranslator.toUtf8(u->myLinebuf, userEncoding(u))));
           u->myLinebuf.clear();
+          u->chatQueue.pop_front();
           break;
 
         case CHAT_BACKSPACE:   // backspace
@@ -1758,6 +1766,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
           if (u->myLinebuf.size() > 0)
             u->myLinebuf.erase(u->myLinebuf.size() - 1);
           PushChatEvent(new CChatEvent(CHAT_BACKSPACE, u));
+          u->chatQueue.pop_front();
           break;
         }
 
@@ -1765,22 +1774,24 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
         {
           if (!iscntrl((int)(unsigned char)chatChar))
           {
-            char tempStr[2] = { chatChar, '\0' };
+            string tempStr;
+            // If there are multiple chars, get them all
+            do {
+              tempStr += *u->chatQueue.begin();
+              u->chatQueue.pop_front();
+            } while (u->chatQueue.size() > 0 && !iscntrl((int)(unsigned char)(*u->chatQueue.begin())));
+
             // Add to the users irc line buffer
             u->myLinebuf += tempStr;
-            PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, tempStr));
-            if (u->myLinebuf.size() > 1000) // stop a little early
-            {
-              u->myLinebuf.erase(1000);
-              PushChatEvent(new CChatEvent(CHAT_NEWLINE, u, u->myLinebuf));
-              u->myLinebuf.clear();
-            }
+            PushChatEvent(new CChatEvent(CHAT_CHARACTER, u, gTranslator.toUtf8(tempStr, userEncoding(u))));
+          }
+          else
+          {
+            u->chatQueue.pop_front();
           }
           break;
         }
       }
-      // Remove the character
-      u->chatQueue.pop_front();
     }
 
   }
@@ -1944,11 +1955,10 @@ void CChatManager::SendLaugh()
   SendBuffer(&buf, CHAT_LAUGH);
 }
 
-
-void CChatManager::SendCharacter(char c)
+void CChatManager::sendText(const string& text)
 {
-  CBuffer buf(1);
-  buf.PackChar(c);
+  CBuffer buf(text.size());
+  buf.pack(gTranslator.fromUtf8(text, getEncoding(m_nFontEncoding)));
   SendBuffer_Raw(&buf);
 }
 
@@ -2258,7 +2268,29 @@ string CChatManager::clientsString() const
   return sz;
 }
 
+string CChatManager::getEncoding(int chatEncoding)
+{
+  switch (chatEncoding) {
+    case ENCODING_ANSI: return "CP 1252";
+    case ENCODING_SHIFTJIS: return "Shift-JIS";
+    case ENCODING_GB2312: return "GBK";
+    case ENCODING_CHINESEBIG5: return "Big5";
+    case ENCODING_GREEK: return "CP 1253";
+    case ENCODING_TURKISH: return "CP 1254";
+    case ENCODING_HEBREW: return "CP 1255";
+    case ENCODING_ARABIC: return "CP 1256";
+    case ENCODING_BALTIC: return "CP 1257";
+    case ENCODING_RUSSIAN: return "CP 1251";
+    case ENCODING_THAI: return "TIS-620";
+    case ENCODING_EASTEUROPE: return "CP 1250";
+    default: return "UTF-8";
+  }
+}
 
+string CChatManager::userEncoding(const CChatUser* u)
+{
+  return getEncoding(u->fontEncoding);
+}
 
 void *ChatManager_tep(void *arg)
 {

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,6 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QSocketNotifier>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QToolBar>
 #include <QToolButton>
@@ -70,7 +69,6 @@
 #include "core/messagebox.h"
 
 #include "helpers/support.h"
-#include "helpers/usercodec.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ChatDlg */
@@ -279,42 +277,31 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
 
   barChat->addSeparator();
 
-  codec = QTextCodec::codecForLocale();
-
-  QString codec_name = QString::fromLatin1( codec->name() ).toLower(); // TODO: determine best codec
   QMenu* popupEncoding = new QMenu;
   QActionGroup* encodingsGroup = new QActionGroup(this);
   connect(encodingsGroup, SIGNAL(triggered(QAction*)), SLOT(setEncoding(QAction*)));
 
-  // populate the popup menu
-  for (UserCodec::encoding_t* it = &UserCodec::m_encodings[0]; it->encoding != NULL; ++it)
-  {
-    QTextCodec* check_codec = QTextCodec::codecForName(it->encoding);
+  QAction* a;
+#define ADD_ENCODING(id, name) \
+    a = new QAction(name, encodingsGroup); \
+    a->setData(id);
 
-    bool currentCodec = check_codec != NULL && QString::fromLatin1(check_codec->name()).toLower() == codec_name;
-
-    if (!currentCodec && !Config::Chat::instance()->showAllEncodings() && !it->isMinimal)
-      continue;
-
-    QAction* a = new QAction(UserCodec::nameForEncoding(it->encoding), encodingsGroup);
-    a->setCheckable(true);
-    a->setData(it->mib);
-
-    if (currentCodec)
-      a->setChecked(true);
-
-    if (currentCodec && !Config::Chat::instance()->showAllEncodings() && !it->isMinimal)
-    {
-      // if the current encoding does not appear in the minimal list
-      popupEncoding->insertSeparator(popupEncoding->actions()[0]);
-      popupEncoding->insertAction(popupEncoding->actions()[0], a);
-    }
-    else
-    {
-      popupEncoding->addAction(a);
-    }
-  }
-
+  ADD_ENCODING(ENCODING_DEFAULT,        tr("Default (UTF-8)"))
+  a->setChecked(true);
+  ADD_ENCODING(ENCODING_ANSI,           tr("Western Europe (CP 1252)"))
+  ADD_ENCODING(ENCODING_SHIFTJIS,       tr("Shift-JIS"))
+  ADD_ENCODING(ENCODING_GB2312,         tr("Chinese (GBK)"))
+  ADD_ENCODING(ENCODING_CHINESEBIG5,    tr("Chinese Traditional (Big5)"))
+  ADD_ENCODING(ENCODING_GREEK,          tr("Greek (CP 1253)"))
+  ADD_ENCODING(ENCODING_TURKISH,        tr("Turkish (CP 1254)"))
+  ADD_ENCODING(ENCODING_HEBREW,         tr("Hebrew (CP 1255)"))
+  ADD_ENCODING(ENCODING_ARABIC,         tr("Arabic (CP 1256)"))
+  ADD_ENCODING(ENCODING_BALTIC,         tr("Baltic (CP 1257)"))
+  ADD_ENCODING(ENCODING_RUSSIAN,        tr("Russian (CP 1251)"))
+  ADD_ENCODING(ENCODING_THAI,           tr("Thai (TIS-620)"))
+  ADD_ENCODING(ENCODING_EASTEUROPE,     tr("Central European (CP 1250)"))
+#undef ADD_ENCODING
+  myChatEncoding = ENCODING_DEFAULT;
 
   tbtEncoding = barChat->addAction(IconManager::instance()->getIcon(IconManager::EncodingIcon), tr("Set Encoding"));
   tbtEncoding->setMenu(popupEncoding);
@@ -346,10 +333,9 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
   else
     style |= STYLE_VARIABLExPITCH;
 
-  unsigned char encoding = UserCodec::charsetForName(codec->name());
   //TODO in daemon
   chatman = new CChatManager(
-      myId.toULong(), fi.family().toLocal8Bit().constData(), encoding, style,
+      myId.toULong(), fi.family().toUtf8().constData(), myChatEncoding, style,
       fi.pointSize(), fi.bold(), fi.italic(), fi.underline(), fi.strikeOut());
 
   sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
@@ -456,9 +442,7 @@ void ChatDlg::sendFontInfo()
   else
     style |= STYLE_VARIABLExPITCH;
 
-  unsigned char encoding = UserCodec::charsetForName(codec->name());
-
-  chatman->changeFontFamily(fi.family().toLocal8Bit().constData(), encoding, style);
+  chatman->changeFontFamily(fi.family().toUtf8().constData(), myChatEncoding, style);
 }
 
 // -----------------------------------------------------------------------------
@@ -581,7 +565,7 @@ void ChatDlg::updateRemoteStyle()
         f.setStyleHint(QFont::AnyStyle);
         break;
       }
-      f.setFamily(iter->u->fontFamily().c_str());
+      f.setFamily(QString::fromUtf8(iter->u->fontFamily().c_str()));
       f.setPointSize(iter->u->FontSize());
       f.setBold(iter->u->FontBold());
       f.setItalic(iter->u->FontItalic());
@@ -626,17 +610,14 @@ void ChatDlg::chatSend(QKeyEvent* e)
       if (m_nMode == CHAT_IRC) {
          QString text = mleIRCLocal->toPlainText();
          if (text.right(1) == "\n") text.truncate(text.length()-1);
-         QByteArray encoded = codec->fromUnicode(text);
          // send the data over the wire
-         char* c;
-         for (c = encoded.data(); *c; c++)
-            chatman->SendCharacter(*c);
+         chatman->sendText(text.toUtf8().constData());
 
          // even if the pane didn't trigger the event,
          // we need to keep it updated
          mlePaneLocal->appendNoNewLine("\n");
          // so you'll get some idea what your buddy sees (encoding-wise)
-         mleIRCRemote->append(chatname + "> " + codec->toUnicode(encoded));
+         mleIRCRemote->append(chatname + "> " + text);
          mleIRCRemote->GotoEnd();
 
          mleIRCLocal->clear();
@@ -666,18 +647,14 @@ void ChatDlg::chatSend(QKeyEvent* e)
 
     default:
     {
-      QByteArray encoded = codec->fromUnicode(e->text());
-
       // if in pane mode, send right away
       if (m_nMode == CHAT_PANE) {
          // for multibyte encodings
-         char* c;
-         for (c = encoded.data(); *c; c++)
-            chatman->SendCharacter(*c);
+         chatman->sendText(e->text().toUtf8().constData());
       } else {
          // if the pane is not what triggered the key press, it still needs
          // to be updated
-         mlePaneLocal->appendNoNewLine(codec->toUnicode(encoded));
+         mlePaneLocal->appendNoNewLine(e->text());
       }
 
       break;
@@ -729,7 +706,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_DISCONNECTION:
       {
-        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->name().c_str());
+        QString n = QString::fromUtf8(u->name().c_str());
 
         if (n.isEmpty())
           n = u->userId().toString().c_str();
@@ -740,7 +717,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_CONNECTION:
       {
-        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->name().c_str());
+        QString n = QString::fromUtf8(u->name().c_str());
 
         // Add the user to the listbox
         lstUsers->addItem(n);
@@ -773,10 +750,10 @@ void ChatDlg::slot_chat()
 
       case CHAT_NEWLINE:
       {
-        QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->name().c_str());
+        QString n = QString::fromUtf8(u->name().c_str());
 
         // add to IRC box
-        mleIRCRemote->append(n + QString::fromLatin1("> ") + UserCodec::codecForCChatUser(u)->toUnicode(e->data().c_str()));
+        mleIRCRemote->append(n + QString::fromLatin1("> ") + QString::fromUtf8(e->data().c_str()));
         mleIRCRemote->GotoEnd();
         GetWindow(u)->appendNoNewLine("\n");
         GetWindow(u)->GotoEnd();
@@ -851,7 +828,7 @@ void ChatDlg::slot_chat()
             break;
           }
 
-          f.setFamily(u->fontFamily().c_str());
+          f.setFamily(QString::fromUtf8(u->fontFamily().c_str()));
 
           GetWindow(u)->setFont(f);
         }
@@ -894,7 +871,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_CHARACTER:
       {
-        GetWindow(u)->appendNoNewLine(UserCodec::codecForCChatUser(u)->toUnicode(e->data().c_str()));
+        GetWindow(u)->appendNoNewLine(QString::fromUtf8(e->data().c_str()));
         break;
       }
 
@@ -946,7 +923,7 @@ void ChatDlg::chatClose(CChatUser* u)
     // Remove the user from the list box
     for (int i = 0; i < lstUsers->count(); i++)
     {
-      if (lstUsers->item(i)->text() == u->name().c_str())
+      if (lstUsers->item(i)->text() == QString::fromUtf8(u->name().c_str()))
       {
         lstUsers->removeItemWidget(lstUsers->item(i));
         break;
@@ -1029,12 +1006,12 @@ void ChatDlg::UpdateRemotePane()
 
 QString ChatDlg::ChatClients()
 {
-  return chatman->clientsString().c_str();
+  return QString::fromUtf8(chatman->clientsString().c_str());
 }
 
 QString ChatDlg::ChatName()
 {
-  return chatman->name().c_str();
+  return QString::fromUtf8(chatman->name().c_str());
 }
 
 
@@ -1090,25 +1067,10 @@ unsigned short ChatDlg::LocalPort()
 
 void ChatDlg::setEncoding(QAction* action)
 {
-  int encodingMib = action->data().toUInt();
+  myChatEncoding = action->data().toUInt();
 
-  /* initialize a codec according to the encoding menu item id */
-  QString encoding( UserCodec::encodingForMib(encodingMib) );
-
-  if (!encoding.isNull()) {
-    QTextCodec* _codec = QTextCodec::codecForName(encoding.toLatin1());
-    if (_codec == NULL)
-    {
-      WarnUser(this, QString(tr("Unable to load encoding <b>%1</b>. Message contents may appear garbled.")).arg(encoding));
-      return;
-    }
-    codec = _codec;
-
-    // transmit to remote
-    sendFontInfo();
-
-    emit encodingChanged();
-  }
+  // transmit to remote
+  sendFontInfo();
 }
 
 // -----------------------------------------------------------------------------

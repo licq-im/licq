@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2010,2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ class QListWidget;
 class QMenu;
 class QPixmap;
 class QSocketNotifier;
-class QTextCodec;
 class QToolButton;
 
 class CChatManager;
@@ -119,9 +118,6 @@ public:
 
   static ChatDlgList chatDlgs;
 
-signals:
-  void encodingChanged();
-
 private:
   CChatManager* chatman;
 
@@ -163,7 +159,7 @@ private:
   unsigned long myPpid;
   QSocketNotifier* sn;
   bool myAudio;
-  QTextCodec* codec;
+  int myChatEncoding;
 
   virtual void closeEvent(QCloseEvent*);
   ChatWindow* GetWindow(CChatUser* u);
