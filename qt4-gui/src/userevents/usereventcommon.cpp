@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,6 +124,8 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
   myEncodingsMenu = new QMenu(this);
   myEncoding = myToolBar->addAction(tr("Encoding"), this, SLOT(showEncodingsMenu()));
   myEncoding->setMenu(myEncodingsMenu);
+  if (!(mySendFuncs & Licq::ProtocolPlugin::CanVaryEncoding))
+    myEncoding->setVisible(false);
 
   myToolBar->addSeparator();
 

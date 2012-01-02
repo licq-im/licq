@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ unsigned long IcqProtocolPlugin::capabilities() const
       ProtocolPlugin::CanSendContact | ProtocolPlugin::CanSendAuth |
       ProtocolPlugin::CanSendAuthReq | ProtocolPlugin::CanSendSms |
       ProtocolPlugin::CanSendSecure | ProtocolPlugin::CanSendDirect |
-      ProtocolPlugin::CanHoldStatusMsg;
+      ProtocolPlugin::CanHoldStatusMsg | ProtocolPlugin::CanVaryEncoding;
 }
 
 std::string IcqProtocolPlugin::defaultServerHost() const
