@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2001-2011 Licq developers
+ * Copyright (C) 2001-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,177 +20,70 @@
 #include "usercodec.h"
 
 #include <QApplication>
-#include <QTextCodec>
-
-#include <licq/contactlist/user.h>
-#include <licq/contactlist/usermanager.h>
-#include <licq/icq/chat.h>
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserCodec */
 
 UserCodec::encoding_t UserCodec::m_encodings[] = {
-  { QT_TR_NOOP("Unicode"), "UTF-8", 106, ENCODING_DEFAULT, true },
-  { QT_TR_NOOP("Unicode-16"), "ISO-10646-UCS-2", 1000 , ENCODING_DEFAULT, true },
+  { QT_TR_NOOP("Unicode"), "UTF-8", true },
+  { QT_TR_NOOP("Unicode-16"), "ISO-10646-UCS-2", true },
 
-  { QT_TR_NOOP("Arabic"), "ISO 8859-6", 82, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Arabic"), "CP 1256", 2256, ENCODING_ARABIC, true },
+  { QT_TR_NOOP("Arabic"), "ISO 8859-6", false },
+  { QT_TR_NOOP("Arabic"), "CP 1256", true },
 
-  { QT_TR_NOOP("Baltic"), "ISO 8859-13", 109, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Baltic"), "CP 1257", 2257, ENCODING_BALTIC, true },
+  { QT_TR_NOOP("Baltic"), "ISO 8859-13", false },
+  { QT_TR_NOOP("Baltic"), "CP 1257", true },
 
-  { QT_TR_NOOP("Central European"), "ISO 8859-2", 5, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Central European"), "CP 1250", 2250, ENCODING_EASTEUROPE, true },
+  { QT_TR_NOOP("Central European"), "ISO 8859-2", false },
+  { QT_TR_NOOP("Central European"), "CP 1250", true },
 
-  { QT_TR_NOOP("Chinese"), "GBK", -2025, ENCODING_GB2312, false },
-  { QT_TR_NOOP("Chinese Traditional"), "Big5", 2026, ENCODING_CHINESEBIG5, true },
+  { QT_TR_NOOP("Chinese"), "GBK", false },
+  { QT_TR_NOOP("Chinese Traditional"), "Big5", true },
 
-  { QT_TR_NOOP("Cyrillic"), "ISO 8859-5", 8, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Cyrillic"), "KOI8-R", 2084, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Cyrillic"), "CP 1251", 2251, ENCODING_RUSSIAN, true },
+  { QT_TR_NOOP("Cyrillic"), "ISO 8859-5", false },
+  { QT_TR_NOOP("Cyrillic"), "KOI8-R", false },
+  { QT_TR_NOOP("Cyrillic"), "CP 1251", true },
 
-  { QT_TR_NOOP("Esperanto"), "ISO 8859-3", 6, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Esperanto"), "ISO 8859-3", false },
 
-  { QT_TR_NOOP("Greek"), "ISO 8859-7", 10, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Greek"), "CP 1253", 2253, ENCODING_GREEK, true },
+  { QT_TR_NOOP("Greek"), "ISO 8859-7", false },
+  { QT_TR_NOOP("Greek"), "CP 1253", true },
 
   // Visual Hebrew is avoided on purpose -- its not usable for communications
-  { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I", 85, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Hebrew"), "CP 1255", 2255, ENCODING_HEBREW, true },
+  { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I", false },
+  { QT_TR_NOOP("Hebrew"), "CP 1255", true },
 
-  { QT_TR_NOOP("Japanese"), "Shift-JIS", 17, ENCODING_SHIFTJIS, true },
-  { QT_TR_NOOP("Japanese"), "JIS7", 16, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Japanese"), "eucJP", 18, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Japanese"), "Shift-JIS", true },
+  { QT_TR_NOOP("Japanese"), "JIS7", false },
+  { QT_TR_NOOP("Japanese"), "eucJP", false },
 
-  { QT_TR_NOOP("Korean"), "eucKR", 38, ENCODING_DEFAULT, true },
+  { QT_TR_NOOP("Korean"), "eucKR", true },
 
-  { QT_TR_NOOP("Western European"), "ISO 8859-1", 4, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Western European"), "ISO 8859-15", 111, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Western European"), "CP 1252", 2252, ENCODING_ANSI, true },
+  { QT_TR_NOOP("Western European"), "ISO 8859-1", false },
+  { QT_TR_NOOP("Western European"), "ISO 8859-15", false },
+  { QT_TR_NOOP("Western European"), "CP 1252", true },
 
-  { QT_TR_NOOP("Tamil"), "TSCII", 2028, ENCODING_DEFAULT, true },
+  { QT_TR_NOOP("Tamil"), "TSCII", true },
 
-  { QT_TR_NOOP("Thai"), "TIS-620", 2259, ENCODING_THAI, true },
+  { QT_TR_NOOP("Thai"), "TIS-620", true },
 
-  { QT_TR_NOOP("Turkish"), "ISO 8859-9", 12, ENCODING_DEFAULT, false },
-  { QT_TR_NOOP("Turkish"), "CP 1254", 2254, ENCODING_TURKISH, true },
+  { QT_TR_NOOP("Turkish"), "ISO 8859-9", false },
+  { QT_TR_NOOP("Turkish"), "CP 1254", true },
 
-  { QT_TR_NOOP("Ukrainian"), "KOI8-U", 2088, ENCODING_DEFAULT, false },
+  { QT_TR_NOOP("Ukrainian"), "KOI8-U", false },
 
-  { 0, 0, 0, 0, false } // end marker
+  { 0, 0, false } // end marker
 };
 
-const QTextCodec* UserCodec::defaultEncoding()
+QString UserCodec::nameForEncoding(int i)
 {
-  const QTextCodec* codec = QTextCodec::codecForName(Licq::gUserManager.defaultUserEncoding().c_str());
-
-  if (codec != NULL)
-    return codec;
-
-  return QTextCodec::codecForLocale();
+  return qApp->translate("UserCodec", m_encodings[i].script) + " ( " + m_encodings[i].encoding + " )";
 }
 
-const QTextCodec* UserCodec::codecForUser(const Licq::User* u)
+int UserCodec::encodingForName(const QString& name)
 {
-  const char* preferred_encoding = u->userEncoding().c_str();
-
-  if (preferred_encoding && *preferred_encoding)
-  {
-    const QTextCodec* codec = QTextCodec::codecForName(preferred_encoding);
-
-    if (codec != NULL)
-      return codec;
-  }
-
-  return defaultEncoding();
-}
-
-const QTextCodec* UserCodec::codecForUserId(const Licq::UserId& userId)
-{
-  const QTextCodec* codec = defaultEncoding();
-
-  Licq::UserReadGuard u(userId);
-  if (u.isLocked())
-    codec = UserCodec::codecForUser(*u);
-
-  return codec;
-}
-
-const QTextCodec* UserCodec::codecForCChatUser(CChatUser* u)
-{
-  if (u == NULL)
-    return defaultEncoding();
-
-  QByteArray name = nameForCharset(u->FontEncoding());
-
-  if (!name.isNull())
-    return QTextCodec::codecForName(name);
-
-  // return default encoding
-  return codecForUserId(u->userId());
-}
-
-QByteArray UserCodec::encodingForMib(int mib)
-{
-  encoding_t* it = m_encodings;
-
-  while (it->encoding != NULL)
-  {
-    if (it->mib == mib)
-      return it->encoding;
-    it++;
-  }
-
-  return QByteArray();
-}
-
-QString UserCodec::nameForEncoding(const QByteArray& encoding)
-{
-  encoding_t* it = m_encodings;
-
-  while (it->encoding != NULL)
-  {
-    if (it->encoding == encoding)
-      return qApp->translate("UserCodec", it->script) + " ( " + it->encoding + " )";
-    it++;
-  }
-
-  return QString::null;
-}
-
-QByteArray UserCodec::encodingForName(const QString& descriptiveName)
-{
-  int left = descriptiveName.indexOf(" ( ");
-  return descriptiveName.mid(left + 3, descriptiveName.indexOf(" )", left) - left - 3).toAscii();
-}
-
-unsigned char UserCodec::charsetForName(QByteArray name)
-{
-  encoding_t* it = m_encodings;
-
-  while (it->encoding != NULL)
-  {
-    if (it->encoding == name)
-      return it->charset;
-    it++;
-  }
-
-  return ENCODING_DEFAULT;
-}
-
-QByteArray UserCodec::nameForCharset(unsigned char charset)
-{
-  if (charset == ENCODING_DEFAULT)
-    return QByteArray();
-
-  encoding_t* it = m_encodings;
-
-  while (it->encoding != NULL)
-  {
-    if (it->charset == charset)
-      return it->encoding;
-    it++;
-  }
-
-  return QByteArray();
+  for (int i = 0; m_encodings[i].encoding != NULL; ++i)
+    if (m_encodings[i].encoding == name)
+      return i;
+  return 0;
 }

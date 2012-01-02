@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,14 +175,8 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myDefaultEncodingCombo = new QComboBox();
   myDefaultEncodingCombo->addItem(tr("System default (%1)").arg(
       QString(QTextCodec::codecForLocale()->name())));
-  {
-    UserCodec::encoding_t* it = &UserCodec::m_encodings[0];
-    while (it->encoding != NULL)
-    {
-      myDefaultEncodingCombo->addItem(UserCodec::nameForEncoding(it->encoding));
-      ++it;
-    }
-  }
+  for (int i = 0; UserCodec::m_encodings[i].encoding != NULL; ++i)
+    myDefaultEncodingCombo->addItem(UserCodec::nameForEncoding(i));
   myDefaultEncodingCombo->setToolTip(myDefaultEncodingLabel->toolTip());
   myDefaultEncodingLabel->setBuddy(myDefaultEncodingCombo);
   defaultEncodingLayout->addWidget(myDefaultEncodingCombo);
@@ -577,20 +571,11 @@ void Settings::Chat::load()
 
   mySendTNCheck->setChecked(Licq::gDaemon.sendTypingNotification());
 
-  QByteArray defaultEncoding = Licq::gUserManager.defaultUserEncoding().c_str();
+  QString defaultEncoding = Licq::gUserManager.defaultUserEncoding().c_str();
   if (defaultEncoding.isEmpty())
     myDefaultEncodingCombo->setCurrentIndex(0);
   else
-  {
-    for (int i = 1; i < myDefaultEncodingCombo->count(); i++)
-    {
-      if (UserCodec::encodingForName(myDefaultEncodingCombo->itemText(i)) == defaultEncoding)
-      {
-        myDefaultEncodingCombo->setCurrentIndex(i);
-        break;
-      }
-    }
-  }
+    myDefaultEncodingCombo->setCurrentIndex(1 + UserCodec::encodingForName(defaultEncoding));
   myShowAllEncodingsCheck->setChecked(chatConfig->showAllEncodings());
 
   myTerminalEdit->setText(Licq::gDaemon.terminal().empty() ?
@@ -649,8 +634,9 @@ void Settings::Chat::apply()
 
   Licq::gDaemon.setTerminal(myTerminalEdit->text().toLocal8Bit().constData());
 
-  if (myDefaultEncodingCombo->currentIndex() > 0)
-    Licq::gUserManager.setDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()).data());
+  int encIndex = myDefaultEncodingCombo->currentIndex();
+  if (encIndex > 0)
+    Licq::gUserManager.setDefaultUserEncoding(UserCodec::m_encodings[encIndex-1].encoding);
   else
     Licq::gUserManager.setDefaultUserEncoding("");
   chatConfig->setShowAllEncodings(myShowAllEncodingsCheck->isChecked());

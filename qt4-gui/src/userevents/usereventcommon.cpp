@@ -166,16 +166,17 @@ UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, co
   connect(myEncodingsGroup, SIGNAL(triggered(QAction*)), SLOT(setEncoding(QAction*)));
 
   // populate the popup menu
-  for (UserCodec::encoding_t* it = &UserCodec::m_encodings[0]; it->encoding != NULL; ++it)
+  for (int i = 0; UserCodec::m_encodings[i].encoding != NULL; ++i)
   {
+    UserCodec::encoding_t* it = &UserCodec::m_encodings[i];
     bool currentCodec = it->encoding == userEncoding;
 
     if (!currentCodec && !Config::Chat::instance()->showAllEncodings() && !it->isMinimal)
       continue;
 
-    QAction* a = new QAction(UserCodec::nameForEncoding(it->encoding), myEncodingsGroup);
+    QAction* a = new QAction(UserCodec::nameForEncoding(i), myEncodingsGroup);
     a->setCheckable(true);
-    a->setData(it->mib);
+    a->setData(i);
 
     if (currentCodec)
       a->setChecked(true);
@@ -354,10 +355,10 @@ void UserEventCommon::connectSignal()
 
 void UserEventCommon::setEncoding(QAction* action)
 {
-  int encodingMib = action->data().toUInt();
+  int index = action->data().toUInt();
 
   /* initialize a codec according to the encoding menu item id */
-  QString encoding(UserCodec::encodingForMib(encodingMib));
+  QString encoding = UserCodec::nameForEncoding(index);
 
   if (!encoding.isNull())
   {
