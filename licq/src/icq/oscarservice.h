@@ -21,6 +21,7 @@
 #define LICQDAEMON_ICQ_OSCARSERVICE_H
 
 #include <list>
+#include <string>
 #include <pthread.h>
 
 #include <boost/shared_array.hpp>
