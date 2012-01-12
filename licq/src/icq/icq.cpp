@@ -1847,9 +1847,7 @@ CReverseConnectToUserData::~CReverseConnectToUserData()
 }
 
 CUserProperties::CUserProperties()
-  : newAlias(NULL),
-    newCellular(NULL),
-    normalSid(0),
+  : normalSid(0),
     groupId(0),
     visibleSid(0),
     invisibleSid(0),
