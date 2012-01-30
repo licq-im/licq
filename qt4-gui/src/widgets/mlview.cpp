@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2002-2011 Licq developers
+ * Copyright (C) 2002-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QContextMenuEvent>
+#include <QTextBlock>
 #include <QTextDocumentFragment>
 #include <QMenu>
 #include <QRegExp>
@@ -60,6 +61,19 @@ void MLView::append(const QString& s, bool richText)
   QTextCursor tc = textCursor();
   int anchor = tc.anchor();
   int pos = tc.position();
+
+  QTextDocument* doc = document();
+  if (doc->maximumBlockCount() > 0 && doc->blockCount() == doc->maximumBlockCount())
+  {
+    // The insert below will delete the first block so recalculate cursor position
+    QTextBlock first = doc->firstBlock();
+    anchor -= first.length();
+    if (anchor < 0)
+      anchor = 0;
+    pos -= first.length();
+    if (pos < 0)
+      pos = 0;
+  }
 
   tc.movePosition(QTextCursor::End);
   if (richText)
