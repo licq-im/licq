@@ -426,7 +426,7 @@ void Buffer::packShortNullStringLE(const string& data)
   *(uint16_t*)getDataPosWrite() = LE_16(data.size()+1);
   incDataPosWrite(2);
   memcpy(getDataPosWrite(), data.c_str(), data.size()+1);
-  incDataPosWrite(data.size());
+  incDataPosWrite(data.size()+1);
 }
 
 void Buffer::Pack(Buffer* buf)
