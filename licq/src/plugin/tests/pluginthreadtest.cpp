@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010,2012 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 #include <gtest/gtest.h>
 
 using namespace LicqDaemon;
+
+namespace LicqTest {
 
 struct PluginThreadFixture : public ::testing::Test
 {
@@ -103,3 +105,5 @@ TEST(PluginThread, createWithCurrentThread)
   EXPECT_FALSE(::pthread_equal(mainThreadId, ::pthread_self()));
   EXPECT_TRUE(::pthread_equal(pluginThreadId, ::pthread_self()));
 }
+
+} // namespace LicqTest

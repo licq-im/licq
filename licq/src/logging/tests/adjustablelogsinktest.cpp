@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010,2012 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -27,6 +27,8 @@
 
 using namespace LicqDaemon;
 using Licq::Log;
+
+namespace LicqTest {
 
 class AdjustableLogSinkTest : public AdjustableLogSink
 {
@@ -123,3 +125,5 @@ TEST(AdjustableLogSink, bitmaskWorksAsExpected)
   EXPECT_FALSE(sink.isLogging(Log::Info));
   EXPECT_FALSE(sink.isLogging(Log::Debug));
 }
+
+} // namespace LicqTest

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2010,2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ extern "C" int testfunc()
 }
 
 using namespace LicqDaemon;
+
+namespace LicqTest {
 
 TEST(DynamicLibrary, loadLib)
 {
@@ -88,3 +90,5 @@ TEST(DynamicLibrary, exceptionGetSystemError)
     EXPECT_FALSE(error.empty());
   }
 }
+
+} // namespace LicqTest

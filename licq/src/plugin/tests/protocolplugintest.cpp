@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,8 @@ public:
 
 using LicqDaemon::ProtocolPluginTest;
 
+namespace LicqTest {
+
 struct ProtocolPluginFixture : public ::testing::Test
 {
   DynamicLibrary::Ptr myLib;
@@ -172,3 +174,5 @@ TEST_F(ProtocolPluginFixture, popSignalEmpty)
 {
   EXPECT_EQ(static_cast<Licq::ProtocolSignal*>(NULL), plugin.popSignal());
 }
+
+} // namespace LicqTest

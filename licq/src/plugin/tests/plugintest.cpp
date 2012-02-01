@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,8 @@ public:
 } // namespace LicqDaemon
 
 using LicqDaemon::PluginTest;
+
+namespace LicqTest {
 
 struct PluginFixture : public ::testing::Test
 {
@@ -172,3 +174,5 @@ TEST_F(PluginFixture, shutdown)
   plugin.shutdown();
   EXPECT_EQ('X', getPipeChar());
 }
+
+} // namespace LicqTest

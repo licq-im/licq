@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2011-2012 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -22,6 +22,8 @@
 
 #include <licq/logging/log.h>
 
+namespace LicqTest {
+
 class LogDummy : public Licq::Log
 {
 public:
@@ -31,10 +33,12 @@ public:
               const std::string& /*msg*/) {}
 };
 
+} // namespace LicqTest
+
 Licq::ThreadLog Licq::gLog;
 
 Licq::Log* Licq::ThreadLog::getLog()
 {
-  static LogDummy log;
+  static LicqTest::LogDummy log;
   return &log;
 }

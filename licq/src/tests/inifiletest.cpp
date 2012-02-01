@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq Developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 using namespace std;
 using Licq::IniFile;
 
+namespace LicqTest {
 
 TEST(IniFile, rawConfigAccess)
 {
@@ -280,3 +281,5 @@ TEST(IniFile, hexData)
   EXPECT_TRUE(ini.setHex("param", string("\0\xFE\xDC\xBA\x98\x76\x54\x32\x10\0", 10)));
   EXPECT_EQ("[Section]\nparam=00FEDCBA987654321000\n", ini.getRawConfiguration());
 }
+
+} // namespace LicqTest
