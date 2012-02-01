@@ -1496,10 +1496,7 @@ void IcqProtocol::icqLogoff()
   m_eStatus = STATUS_OFFLINE_MANUAL;
 
   if (nSD == -1 && !m_bLoggingOn)
-  {
-    gLog.warning(tr("Attempt to logoff while not logged on."));
     return;
-  }
 
   m_bLoggingOn = false;
 
