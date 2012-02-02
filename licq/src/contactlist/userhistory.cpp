@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2011 Licq developers
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include "userhistory.h"
 
 #include <boost/foreach.hpp>
+#include <boost/regex.hpp>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
@@ -101,31 +102,32 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
     }
   }
 
+  // Expression to match message headers
+  boost::regex headRegex("\\[ ([SR]) \\| (\\d+) \\| (\\d+) \\| (\\d+) \\| (\\d+) \\].*");
+
   // Now read in a line at a time
   char sz[4096], *szResult;
-  unsigned long nFlags;
-  unsigned short nCommand, nSubCommand;
-  time_t tTime;
-  char cDir;
-  Licq::UserEvent* e;
   szResult = fgets(sz, sizeof(sz), f);
   while(true)
   {
     while (szResult != NULL && sz[0] != '[')
       szResult = fgets(sz, sizeof(sz), f);
     if (szResult == NULL) break;
-    // Zero unused part of sz to avoid interpreting garbage if sz is too
-    // short
-    memset(sz + strlen(sz) + 1, '\0', sizeof(sz) - strlen(sz) - 1);
-    //"[ C | 0000 | 0000 | 0000 | 000... ]"
-    cDir = sz[2];
-    // Stick some \0's in to terminate strings
-    sz[0] = sz[10] = sz[17] = sz[24] = '\0';
-    // Read out the relevant values
-    nSubCommand = atoi(&sz[6]);
-    nCommand = atoi(&sz[13]);
-    nFlags = atoi(&sz[20]) << 16;
-    tTime = (time_t)atoi(&sz[27]);
+
+    // Validate header line and extract fields
+    boost::cmatch headMatch;
+    if (!boost::regex_match(sz, headMatch, headRegex))
+    {
+      // No match, ignore it and move on
+      szResult = fgets(sz, sizeof(sz), f);
+      continue;
+    }
+
+    char cDir = *headMatch[1].first;
+    int nSubCommand = atoi(headMatch[2].first);
+    int nCommand = atoi(headMatch[3].first);
+    unsigned long nFlags = atol(headMatch[4].first);
+    time_t tTime = (time_t)atol(headMatch[5].first);
 
     // nCommand == Licq::UserEvent::CommandDirect => FlagDirect (already present in flags)
     // nCommand == Licq::UserEvent::CommandSent => FlagSender (present in cDir)
@@ -145,7 +147,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
     }
 
     // Now read in the message
-    e = NULL;
+    Licq::UserEvent* e = NULL;
     switch (nSubCommand)
     {
       case Licq::UserEvent::TypeMessage:
