@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ public:
     FlagEncrypted       = 0x00100000,
     FlagSender          = 0x00200000,
     FlagOffline         = 0x00400000,
-    FlagUnicode         = 0x40000000,   // Only used in history files for UTF8 encoded messages
+    FlagUnicode         = 0x00800000,   // Only used in history files for UTF8 encoded messages
     FlagUnknown         = 0x80000000,
   };
 

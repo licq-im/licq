@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ string UserEvent::historyHeader(bool isReceiver) const
   buf << m_nCommand;
   buf << " | ";
   buf.width(4);
-  buf << (((unsigned short)((m_nFlags | FlagUnicode) >> 16)) & 0xC01F);
+  buf << (((unsigned short)((m_nFlags | FlagUnicode) >> 16)) & 0x809F);
   buf << " | ";
   buf.width(1);
   buf << (unsigned long)m_tTime << " ]\n";
