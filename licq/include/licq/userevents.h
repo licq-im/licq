@@ -77,8 +77,8 @@ public:
     TypeEmailPager      = 0x000E,
     TypeContactList     = 0x0013,
     TypeSms             = 0x001A,
-    TypeEmailAlert      = 0x00EC,
-    TypeUnknownSys      = 0xFFFF,
+    TypeEmailAlert      = 0x001C,
+    TypeUnknownSys      = 0x001F,
   };
 
   // Only used for history files, must be same as ICQ protocol commands

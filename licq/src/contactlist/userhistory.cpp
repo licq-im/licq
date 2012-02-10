@@ -347,6 +347,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
         break;
       }
       case Licq::UserEvent::TypeEmailAlert:
+      case 0x00EC: // ICQ constant used in versions < 1.7.0
       {
         string name, email, message;
         GET_VALID_LINE_OR_BREAK(name);
