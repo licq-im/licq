@@ -211,16 +211,25 @@ int FilterManager::filterEvent(const Licq::User* user, const Licq::UserEvent* ev
 
   // Check if user is in list
   bool userInList = false;
+  bool ignoreUser = false;
   if (userId == user->id())
   {
     userInList = !user->NotInList();
+    ignoreUser = user->IgnoreList();
   }
   else
   {
     Licq::UserReadGuard u(userId);
-    if (u.isLocked() && !user->NotInList())
-      userInList = true;
+    if (u.isLocked())
+    {
+      userInList = !user->NotInList();
+      ignoreUser = user->IgnoreList();
+    }
   }
+
+  // Users in ignore list are ignore silently
+  if (ignoreUser)
+    return FilterRule::ActionSilent;
 
   // Always accept users that are already in list
   if (userInList)

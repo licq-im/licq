@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -371,8 +371,7 @@ bool Daemon::addUserEvent(Licq::User* u, Licq::UserEvent* e)
   }
 
   // Don't log a user event if this user is on the ignore list
-  if (u->IgnoreList() ||
-      (e->IsMultiRec() && ignoreType(IgnoreMassMsg)) ||
+  if ((e->IsMultiRec() && ignoreType(IgnoreMassMsg)) ||
       (e->eventType() == Licq::UserEvent::TypeEmailPager && ignoreType(IgnoreEmailPager)) ||
       (e->eventType() == Licq::UserEvent::TypeWebPanel && ignoreType(IgnoreWebPanel)) )
   {
