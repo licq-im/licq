@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ public:
   int filterEvent(const Licq::User* user, const Licq::UserEvent* event);
 
   // From Licq::FilterManager
-  Licq::FilterRules getRules();
+  void getRules(Licq::FilterRules& rules);
   void setRules(const Licq::FilterRules& newRules);
 
 private:

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,10 +110,11 @@ void FilterManager::initialize()
   }
 }
 
-FilterRules FilterManager::getRules()
+void FilterManager::getRules(FilterRules& rules)
 {
+  rules.clear();
   Licq::MutexLocker lock(myDataMutex);
-  return myRules;
+  rules = myRules;
 }
 
 void FilterManager::setRules(const FilterRules& newRules)

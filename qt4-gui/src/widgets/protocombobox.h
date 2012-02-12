@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,9 +41,11 @@ public:
    * Constructor
    *
    * @param filter Which protocols to include
+   * @param extra Text of additional selection (will use ppid=0)
    * @param parent Parent widget
    */
-  ProtoComboBox(unsigned filter = FilterIncludeAll, QWidget* parent = 0);
+  ProtoComboBox(unsigned filter = FilterIncludeAll,
+      const QString& extra = QString(), QWidget* parent = 0);
 
   unsigned long currentPpid() const;
   bool setCurrentPpid(unsigned long ppid);

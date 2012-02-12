@@ -12,6 +12,7 @@ set(dialogs_SRCS
   editfilelistdlg.cpp
   editgrpdlg.cpp
   filedlg.cpp
+  filterruledlg.cpp
   forwarddlg.cpp
   gpgkeymanager.cpp
   gpgkeyselect.cpp

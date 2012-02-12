@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,21 +21,30 @@
 
 #include "config.h"
 
+#include <boost/foreach.hpp>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <QPushButton>
+#include <QTreeWidget>
 #include <QVBoxLayout>
 
 #include <licq/contactlist/owner.h>
 #include <licq/daemon.h>
+#include <licq/filter.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/oneventmanager.h>
+#include <licq/userevents.h>
 
 #include "config/chat.h"
 #include "config/contactlist.h"
 #include "config/general.h"
 #include "config/shortcuts.h"
+#include "dialogs/filterruledlg.h"
+#include "dialogs/hintsdlg.h"
 #include "widgets/shortcutedit.h"
 
 #include "oneventbox.h"
@@ -54,6 +63,8 @@ Settings::Events::Events(SettingsDlg* parent)
       tr("Events"));
   parent->addPage(SettingsDlg::SoundsPage, createPageSounds(parent),
       tr("Sounds"), SettingsDlg::OnEventPage);
+  parent->addPage(SettingsDlg::FilterPage, createPageFilter(parent),
+      tr("Filter"), SettingsDlg::OnEventPage);
 
   load();
 }
@@ -177,6 +188,61 @@ QWidget* Settings::Events::createPageSounds(QWidget* parent)
   return w;
 }
 
+QWidget* Settings::Events::createPageFilter(QWidget* parent)
+{
+  QWidget* w = new QWidget(parent);
+  QVBoxLayout* pageFilterLayout = new QVBoxLayout(w);
+  pageFilterLayout->setContentsMargins(0, 0, 0, 0);
+
+  QGroupBox* filterRulesBox = new QGroupBox(tr("Rules for Incoming Events"));
+  pageFilterLayout->addWidget(filterRulesBox);
+  QVBoxLayout* filterRulesLayout = new QVBoxLayout(filterRulesBox);
+
+  myRulesList = new QTreeWidget();
+  QStringList headers;
+  headers << tr("Enabled") << tr("Action") << tr("Protocol") << tr("Event Type") << tr("Expression");
+  myRulesList->setHeaderLabels(headers);
+  myRulesList->setIndentation(0);
+  myRulesList->setAllColumnsShowFocus(true);
+  filterRulesLayout->addWidget(myRulesList);
+
+  QHBoxLayout* buttons = new QHBoxLayout();
+
+  QPushButton* ruleHintsButton = new QPushButton(tr("Hints"));
+  buttons->addWidget(ruleHintsButton);
+
+  myRuleAddButton = new QPushButton(tr("Add"));
+  buttons->addWidget(myRuleAddButton);
+
+  myRuleRemoveButton = new QPushButton(tr("Remove"));
+  buttons->addWidget(myRuleRemoveButton);
+
+  myRuleEditButton = new QPushButton(tr("Modify"));
+  buttons->addWidget(myRuleEditButton);
+
+  myRuleUpButton = new QPushButton(tr("Move Up"));
+  buttons->addWidget(myRuleUpButton);
+
+  myRuleDownButton = new QPushButton(tr("Move Down"));
+  buttons->addWidget(myRuleDownButton);
+
+  filterRulesLayout->addLayout(buttons);
+
+  myRuleEditor = NULL;
+
+  connect(myRulesList, SIGNAL(itemSelectionChanged()), SLOT(updateRuleButtons()));
+  connect(myRulesList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+      SLOT(editRule(QTreeWidgetItem*,int)));
+  connect(ruleHintsButton, SIGNAL(clicked()), SLOT(showRuleHints()));
+  connect(myRuleAddButton, SIGNAL(clicked()), SLOT(insertRule()));
+  connect(myRuleRemoveButton, SIGNAL(clicked()), SLOT(removeRule()));
+  connect(myRuleEditButton, SIGNAL(clicked()), SLOT(editRule()));
+  connect(myRuleUpButton, SIGNAL(clicked()), SLOT(moveRuleUp()));
+  connect(myRuleDownButton, SIGNAL(clicked()), SLOT(moveRuleDown()));
+
+  return w;
+}
+
 void Settings::Events::load()
 {
   Config::Chat* chatConfig = Config::Chat::instance();
@@ -209,6 +275,9 @@ void Settings::Events::load()
   const OnEventData* eventData = gOnEventManager.lockGlobal();
   myOnEventBox->load(eventData, NULL);
   gOnEventManager.unlock(eventData);
+
+  Licq::gFilterManager.getRules(myFilterRules);
+  updateRulesList();
 }
 
 void Settings::Events::apply()
@@ -250,7 +319,217 @@ void Settings::Events::apply()
   myOnEventBox->apply(eventData);
   gOnEventManager.unlock(eventData, true);
 
+  Licq::gFilterManager.setRules(myFilterRules);
+
   chatConfig->blockUpdates(false);
   contactListConfig->blockUpdates(false);
   generalConfig->blockUpdates(false);
+}
+
+void Settings::Events::updateRulesList()
+{
+  myRulesList->clear();
+  BOOST_FOREACH(const Licq::FilterRule& rule, myFilterRules)
+  {
+    QTreeWidgetItem* item = new QTreeWidgetItem(myRulesList);
+
+    item->setText(0, (rule.isEnabled ? tr("Yes") : tr("No")));
+
+    QString actionStr;
+    switch (rule.action)
+    {
+      case Licq::FilterRule::ActionAccept: actionStr = tr("Accept"); break;
+      case Licq::FilterRule::ActionSilent: actionStr = tr("Silent"); break;
+      case Licq::FilterRule::ActionIgnore: actionStr = tr("Ignore"); break;
+    }
+    item->setText(1, actionStr);
+
+    if (rule.protocolId == 0)
+    {
+      item->setText(2, tr("Any"));
+    }
+    else
+    {
+      Licq::ProtocolPlugin::Ptr proto = Licq::gPluginManager.getProtocolPlugin(rule.protocolId);
+      if (proto.get() != 0)
+        item->setText(2, QString::fromLocal8Bit(proto->name().c_str()));
+    }
+
+    QString eventName;
+    for (int i = 0; i < 32; ++i)
+    {
+      if ((rule.eventMask & (1<<i)) == 0)
+        continue;
+      if (eventName.isEmpty())
+      {
+        eventName = QString::fromLocal8Bit(Licq::UserEvent::eventName(i).c_str());
+      }
+      else
+      {
+        eventName = tr("(Multiple)");
+        break;
+      }
+    }
+    item->setText(3, eventName);
+
+    item->setText(4, QString::fromUtf8(rule.expression.c_str()));
+  }
+
+  myRulesList->resizeColumnToContents(0);
+  myRulesList->resizeColumnToContents(1);
+  myRulesList->resizeColumnToContents(2);
+  myRulesList->resizeColumnToContents(3);
+  myRulesList->resizeColumnToContents(4);
+  updateRuleButtons();
+}
+
+void Settings::Events::updateRuleButtons()
+{
+  QTreeWidgetItem* item = myRulesList->currentItem();
+  int pos = (item == NULL ? -1 : myRulesList->indexOfTopLevelItem(item));
+  bool editing = (myRuleEditor != NULL);
+  myRuleAddButton->setEnabled(!editing);
+  myRuleRemoveButton->setEnabled(item != NULL && !editing);
+  myRuleEditButton->setEnabled(item != NULL && !editing);
+  myRuleUpButton->setEnabled(item != NULL && !editing && pos > 0);
+  myRuleDownButton->setEnabled(item != NULL && !editing &&
+      pos < myRulesList->topLevelItemCount() - 1);
+}
+
+void Settings::Events::showRuleHints()
+{
+  QString h = tr(
+      "<h2>Hints for Event Filter Rules</h2>"
+      "<p>Incoming events are run through the list of rules to decide how to"
+      " handle them. The first rule to match decides the action and if no rule"
+      " matches the default action is to accept the event. (To override the"
+      " default, add a rule last with another action that matches all event"
+      " types and has an empty expression.)</p>"
+      "<p>Any event from a user already in the contact list is always accepted"
+      " (unless they're in the ignore list). The event filter is only applied"
+      " to events from unknown users.</p>"
+      "<p>The following actions are available:</p><ul>"
+      "<li>Accept - the event as handled as normal and on events performed.</li>"
+      "<li>Silent - the event is written to history but otherwise ignored.</li>"
+      "<li>Ignore - the event is completely ignored.</li>"
+      "</ul>"
+      "<p>If the expression is empty, it will match any event. Otherwise it is"
+      " applied as a regular expression to any message in the event. "
+      "The expression must match the entire message text. (To match only part"
+      " of a message, enter it as \".*part.*\".)</p>"
+      "<p>The filter has a default set of rules that will block some common"
+      " spam messages. The defaults can be restored by removing the file"
+      " \"~/.licq/filter.conf\" while Licq is NOT running.</p>"
+      );
+  new HintsDlg(h, dynamic_cast<QWidget*>(parent()));
+}
+
+void Settings::Events::editRule(QTreeWidgetItem* item, int /* index */)
+{
+  if (myRuleEditor != NULL || item == NULL)
+    return;
+
+  myRuleEditIndex = myRulesList->indexOfTopLevelItem(item);
+  if (myRuleEditIndex < 0)
+    return;
+
+  myRuleEditor = new FilterRuleDlg(&myFilterRules[myRuleEditIndex]);
+  connect(myRuleEditor, SIGNAL(finished(int)), SLOT(editRuleDone(int)));
+
+  updateRuleButtons();
+}
+
+void Settings::Events::editRule()
+{
+  editRule(myRulesList->currentItem(), 0);
+}
+
+void Settings::Events::insertRule()
+{
+  myRuleEditIndex = -1;
+  myRuleEditor = new FilterRuleDlg();
+  connect(myRuleEditor, SIGNAL(finished(int)), SLOT(editRuleDone(int)));
+
+  updateRuleButtons();
+}
+
+void Settings::Events::editRuleDone(int dialogCode)
+{
+  if (dialogCode == QDialog::Rejected)
+  {
+    // User pressed cancel
+    myRuleEditor = NULL;
+    updateRuleButtons();
+    return;
+  }
+
+  if (myRuleEditIndex == -1)
+  {
+    // Rule is added, make room for it in list
+    myRuleEditIndex = myFilterRules.size();
+    myFilterRules.resize(myRuleEditIndex + 1);
+  }
+
+  myRuleEditor->getFilterRule(myFilterRules[myRuleEditIndex]);
+  myRuleEditor = NULL;
+
+  updateRulesList();
+}
+
+void Settings::Events::removeRule()
+{
+  QTreeWidgetItem* item = myRulesList->currentItem();
+  if (item == NULL)
+    return;
+
+  int pos = myRulesList->indexOfTopLevelItem(item);
+  if (pos < 0)
+    return;
+
+  for (int i = pos; i < (int)myFilterRules.size() - 1; ++i)
+    myFilterRules[i] = myFilterRules[i+1];
+  myFilterRules.erase(--myFilterRules.end());
+
+  // Drop the list item instead of reloading entire list
+  delete item;
+}
+
+void Settings::Events::moveRuleUp()
+{
+  QTreeWidgetItem* item = myRulesList->currentItem();
+  if (item == NULL)
+    return;
+
+  int pos = myRulesList->indexOfTopLevelItem(item);
+  if (pos <= 0)
+    return;
+
+  Licq::FilterRule tempRule = myFilterRules[pos];
+  myFilterRules[pos] = myFilterRules[pos - 1];
+  myFilterRules[pos - 1] = tempRule;
+
+  // Swap the list items instead of reloading entire list
+  myRulesList->takeTopLevelItem(pos);
+  myRulesList->insertTopLevelItem(pos-1, item);
+  myRulesList->setCurrentItem(item);
+}
+
+void Settings::Events::moveRuleDown()
+{
+  QTreeWidgetItem* item = myRulesList->currentItem();
+  if (item == NULL)
+    return;
+
+  int pos = myRulesList->indexOfTopLevelItem(item);
+  if (pos < 0 || pos >= myRulesList->topLevelItemCount() - 1)
+    return;
+
+  Licq::FilterRule tempRule = myFilterRules[pos];
+  myFilterRules[pos] = myFilterRules[pos + 1];
+  myFilterRules[pos + 1] = tempRule;
+
+  // Swap the list items instead of reloading entire list
+  myRulesList->takeTopLevelItem(pos);
+  myRulesList->insertTopLevelItem(pos+1, item);
+  myRulesList->setCurrentItem(item);
 }

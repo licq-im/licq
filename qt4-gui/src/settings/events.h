@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,17 +24,23 @@
 
 #include <QObject>
 
+#include <licq/filter.h>
+
 class QCheckBox;
 class QComboBox;
 class QGridLayout;
 class QGroupBox;
 class QLabel;
+class QPushButton;
+class QTreeWidget;
+class QTreeWidgetItem;
 class QVBoxLayout;
 class QWidget;
 
 
 namespace LicqQtGui
 {
+class FilterRuleDlg;
 class SettingsDlg;
 class ShortcutEdit;
 class OnEventBox;
@@ -52,6 +58,18 @@ public:
   void load();
   void apply();
 
+private slots:
+  void updateRulesList();
+  void updateRuleButtons();
+  void showRuleHints();
+  void editRule(QTreeWidgetItem* item, int index);
+  void insertRule();
+  void removeRule();
+  void editRule();
+  void moveRuleUp();
+  void moveRuleDown();
+  void editRuleDone(int dialogCode);
+
 private:
   /**
    * Setup the events page.
@@ -59,6 +77,13 @@ private:
    * @return a widget with the event settings
    */
   QWidget* createPageOnEvent(QWidget* parent);
+
+  /**
+   * Setup the filter page.
+   *
+   * @return a widget with the filter settings
+   */
+  QWidget* createPageFilter(QWidget* parent);
 
   /**
    * Setup the sound page.
@@ -95,6 +120,18 @@ private:
   // Widget for sounds settings
   QVBoxLayout* myPageSoundsLayout;
   OnEventBox* myOnEventBox;
+
+  // Filter settings
+  QVBoxLayout* myPageFilterLayout;
+  QTreeWidget* myRulesList;
+  QPushButton* myRuleAddButton;
+  QPushButton* myRuleRemoveButton;
+  QPushButton* myRuleEditButton;
+  QPushButton* myRuleUpButton;
+  QPushButton* myRuleDownButton;
+  Licq::FilterRules myFilterRules;
+  FilterRuleDlg* myRuleEditor;
+  int myRuleEditIndex;
 };
 
 } // namespace Settings

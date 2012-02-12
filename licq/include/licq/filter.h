@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2011 Licq developers
+ * Copyright (C) 2011-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #define LICQ_FILTER_H
 
 #include <boost/noncopyable.hpp>
-#include <list>
+#include <vector>
 #include <string>
 
 namespace Licq
@@ -54,7 +54,7 @@ struct FilterRule
   int action;
 };
 
-typedef std::list<FilterRule> FilterRules;
+typedef std::vector<FilterRule> FilterRules;
 
 /**
  * Manager for event filter
@@ -71,9 +71,9 @@ public:
   /**
    * Get the list of filter rules
    *
-   * @return The currently active filter rules
+   * @param rules List to populate with the currently active rules
    */
-  virtual FilterRules getRules() = 0;
+  virtual void getRules(FilterRules& rules) = 0;
 
   /**
    * Set filter rules
