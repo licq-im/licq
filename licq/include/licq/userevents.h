@@ -93,6 +93,9 @@ public:
 
   static const time_t TimeNow = 0;
 
+  /// Return translated event name for an event type
+  static std::string eventName(unsigned eventType);
+
   UserEvent(EventType eventType,
               unsigned short _nSequence, time_t _tTime,
               unsigned long _nFlags, unsigned long _nConvoId = 0);
@@ -127,7 +130,8 @@ public:
   unsigned eventType() const { return myEventType; }
 
   /// Returns translated event name
-  virtual std::string eventName() const = 0;
+  std::string eventName() const
+  { return eventName(eventType()); }
 
   int Id() const { return m_nId; }
   bool IsDirect() const { return m_nFlags & FlagDirect; }
@@ -215,7 +219,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myMessage;
 };
@@ -240,7 +243,6 @@ public:
   const unsigned long* MessageID() const { return m_nMsgID; }
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myFilename;
   std::string myFileDescription;
@@ -263,7 +265,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myUrl;
   std::string myUrlDescription;
@@ -288,7 +289,6 @@ public:
   const unsigned long* MessageID() const { return m_nMsgID; }
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myReason;
   std::string myClients;
@@ -310,7 +310,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   UserId myUserId;
   std::string myAlias;
@@ -335,7 +334,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   UserId myUserId;
   std::string myAlias;
@@ -359,7 +357,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   UserId myUserId;
   std::string myMessage;
@@ -379,7 +376,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   UserId myUserId;
   std::string myMessage;
@@ -398,7 +394,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myName;
   std::string myEmail;
@@ -418,7 +413,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myName;
   std::string myEmail;
@@ -455,7 +449,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   ContactList m_vszFields;
 };
@@ -474,7 +467,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myNumber;
   std::string myMessage;
@@ -492,7 +484,6 @@ public:
 
 protected:
  void CreateDescription() const;
-  std::string eventName() const;
 
   std::string myName;
   std::string myEmail;
@@ -528,7 +519,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   // Info
   std::string myName;
@@ -560,7 +550,6 @@ public:
 
 protected:
   void CreateDescription() const;
-  std::string eventName() const;
 
   unsigned short m_nCommand;
   unsigned short m_nSubCommand;

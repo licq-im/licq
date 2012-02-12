@@ -43,6 +43,29 @@ using Licq::UserId;
 
 int UserEvent::s_nId = 1;
 
+string UserEvent::eventName(unsigned eventType)
+{
+  switch (eventType)
+  {
+    case TypeMessage:           return tr("Message");
+    case TypeFile:              return tr("File Transfer");
+    case TypeUrl:               return tr("URL");
+    case TypeChat:              return tr("Chat Request");
+    case TypeAdded:             return tr("Added to Contact List");
+    case TypeAuthRequest:       return tr("Authorization Request");
+    case TypeAuthGranted:       return tr("Authorization Granted");
+    case TypeAuthRefused:       return tr("Authorization Refused");
+    case TypeWebPanel:          return tr("Web Panel");
+    case TypeEmailPager:        return tr("Email Pager");
+    case TypeContactList:       return tr("Contact List");
+    case TypeSms:               return tr("SMS");
+    case TypeMsgServer:         return tr("Server Message");
+    case TypeEmailAlert:        return tr("Email Alert");
+    case TypeUnknownSys:        return tr("Unknown Event");
+    default:                    return "";
+  }
+}
+
 //----CUserEvent::constructor---------------------------------------------------
 UserEvent::UserEvent(EventType eventType,
                        unsigned short nSequence, time_t tTime,
@@ -190,11 +213,6 @@ void Licq::EventMsg::CreateDescription() const
   myText = myMessage;
 }
 
-std::string Licq::EventMsg::eventName() const
-{
-  return tr("Message");
-}
-
 Licq::EventMsg* Licq::EventMsg::Copy() const
 {
   EventMsg* e = new EventMsg(myMessage, m_tTime, m_nFlags);
@@ -238,11 +256,6 @@ void Licq::EventFile::CreateDescription() const
   myText = buf.str();
 }
 
-std::string Licq::EventFile::eventName() const
-{
-  return tr("File Transfer");
-}
-
 Licq::EventFile* Licq::EventFile::Copy() const
 {
   EventFile* e = new EventFile(myFilename, myFileDescription,
@@ -282,11 +295,6 @@ void Licq::EventUrl::CreateDescription() const
   buf << gTranslator.toUtf8(tr("Url")) << ": " <<  myUrl << '\n';
   buf << gTranslator.toUtf8(tr("Description")) << ":\n" << myUrlDescription << '\n';
   myText = buf.str();
-}
-
-std::string Licq::EventUrl::eventName() const
-{
-  return tr("URL");
 }
 
 Licq::EventUrl* Licq::EventUrl::Copy() const
@@ -341,11 +349,6 @@ void Licq::EventChat::CreateDescription() const
     myText = myReason + "\n--------------------\n" + gTranslator.toUtf8(tr("Multiparty")) + ":\n" + myClients;
 }
 
-std::string Licq::EventChat::eventName() const
-{
-  return tr("Chat Request");
-}
-
 Licq::EventChat* Licq::EventChat::Copy() const
 {
   EventChat* e = new EventChat(myText, myClients, m_nPort,
@@ -385,11 +388,6 @@ void Licq::EventAdded::CreateDescription() const
   buf << gTranslator.toUtf8(tr("Name")) << ": " << myFirstName << ' ' << myLastName << '\n';
   buf << gTranslator.toUtf8(tr("Email")) << ": " << myEmail << '\n';
   myText = buf.str();
-}
-
-std::string Licq::EventAdded::eventName() const
-{
-  return tr("Added to Contact List");
 }
 
 Licq::EventAdded* Licq::EventAdded::Copy() const
@@ -441,11 +439,6 @@ void Licq::EventAuthRequest::CreateDescription() const
   myText = buf.str();
 }
 
-std::string Licq::EventAuthRequest::eventName() const
-{
-  return tr("Authorization Request");
-}
-
 Licq::EventAuthRequest* Licq::EventAuthRequest::Copy() const
 {
   EventAuthRequest* e = new EventAuthRequest(myUserId, myAlias, myFirstName,
@@ -490,11 +483,6 @@ void Licq::EventAuthGranted::CreateDescription() const
   myText = buf.str();
 }
 
-std::string Licq::EventAuthGranted::eventName() const
-{
-  return tr("Authorization Granted");
-}
-
 Licq::EventAuthGranted* Licq::EventAuthGranted::Copy() const
 {
   EventAuthGranted* e = new EventAuthGranted(myUserId, myMessage,
@@ -537,11 +525,6 @@ void Licq::EventAuthRefused::CreateDescription() const
   myText = buf.str();
 }
 
-std::string Licq::EventAuthRefused::eventName() const
-{
-  return tr("Authorization Refused");
-}
-
 Licq::EventAuthRefused* Licq::EventAuthRefused::Copy() const
 {
   EventAuthRefused* e = new EventAuthRefused(myUserId, myMessage, m_tTime, m_nFlags);
@@ -582,11 +565,6 @@ void Licq::EventWebPanel::CreateDescription() const
   myText = buf.str();
 }
 
-std::string Licq::EventWebPanel::eventName() const
-{
-  return tr("Web Panel");
-}
-
 Licq::EventWebPanel* Licq::EventWebPanel::Copy() const
 {
   EventWebPanel* e = new EventWebPanel(myName, myEmail, myMessage,
@@ -624,11 +602,6 @@ void Licq::EventEmailPager::CreateDescription() const
       << ')' << gTranslator.toUtf8(tr(" through email pager")) << ":\n";
   buf << myMessage << '\n';
   myText = buf.str();
-}
-
-std::string Licq::EventEmailPager::eventName() const
-{
-  return tr("Email Pager");
 }
 
 Licq::EventEmailPager* Licq::EventEmailPager::Copy() const
@@ -680,11 +653,6 @@ void Licq::EventContactList::CreateDescription() const
   myText = buf.str();
 }
 
-std::string Licq::EventContactList::eventName() const
-{
-  return tr("Contact List");
-}
-
 Licq::EventContactList::~EventContactList()
 {
   ContactList::iterator iter;
@@ -733,11 +701,6 @@ void Licq::EventSms::CreateDescription() const
   myText += '\n';
 }
 
-std::string Licq::EventSms::eventName() const
-{
-  return tr("SMS");
-}
-
 Licq::EventSms* Licq::EventSms::Copy() const
 {
   EventSms* e = new EventSms(myNumber, myMessage, m_tTime, m_nFlags);
@@ -777,11 +740,6 @@ void Licq::EventServerMessage::CreateDescription() const
   myText += "):\n";
   myText += myMessage;
   myText += '\n';
-}
-
-std::string Licq::EventServerMessage::eventName() const
-{
-  return tr("Server Message");
 }
 
 Licq::EventServerMessage* Licq::EventServerMessage::Copy() const
@@ -837,11 +795,6 @@ void Licq::EventEmailAlert::CreateDescription() const
   myText += '\n';
 }
 
-std::string Licq::EventEmailAlert::eventName() const
-{
-  return tr("Email Alert");
-}
-
 Licq::EventEmailAlert* Licq::EventEmailAlert::Copy() const
 {
   EventEmailAlert* e = new EventEmailAlert(myName, myTo, myEmail,
@@ -885,11 +838,6 @@ void Licq::EventUnknownSysMsg::CreateDescription() const
   buf << ") " << gTranslator.toUtf8(tr("from")) << ' ' << myUserId.toString() << ":\n";
   buf << myMessage << '\n';
   myText = buf.str();
-}
-
-std::string Licq::EventUnknownSysMsg::eventName() const
-{
-  return tr("Unknown Event");
 }
 
 Licq::EventUnknownSysMsg* Licq::EventUnknownSysMsg::Copy() const
