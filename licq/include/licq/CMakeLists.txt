@@ -7,6 +7,7 @@ set(licq_HEADERS
   conversation.h
   daemon.h
   event.h
+  filter.h
   gpghelper.h
   inifile.h
   macro.h
