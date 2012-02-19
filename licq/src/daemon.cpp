@@ -71,7 +71,8 @@ const char* const Daemon::TranslationDir = "translations";
 const char* const Daemon::UtilityDir = "utilities";
 
 Daemon::Daemon() :
-  licq(NULL)
+    myLicqConf("licq.conf"),
+    licq(NULL)
 {
   // Set static variables based on compile time constants
   myLibDir = INSTALL_LIBDIR;
@@ -102,8 +103,7 @@ void Daemon::initialize()
   myShuttingDown = false;
 
   // Begin parsing the config file
-  Licq::IniFile licqConf("licq.conf");
-  licqConf.loadFile();
+  Licq::IniFile& licqConf(getLicqConf());
 
   licqConf.setSection("network");
 
@@ -150,6 +150,8 @@ void Daemon::initialize()
   licqConf.get("SendTypingNotification", mySendTypingNotification, true);
   licqConf.get("IgnoreTypes", myIgnoreTypes, 0);
 
+  releaseLicqConf();
+
   // Initialize the random number generator
   srand(time(NULL));
 
@@ -177,7 +179,7 @@ pthread_t* Daemon::Shutdown()
 
 void Daemon::SaveConf()
 {
-  Licq::IniFile licqConf("licq.conf");
+  Licq::IniFile& licqConf(getLicqConf());
   if (!licqConf.loadFile())
     return;
 
@@ -234,6 +236,7 @@ void Daemon::SaveConf()
   gIcqProtocol.save(licqConf);
 
   licqConf.writeFile();
+  releaseLicqConf();
 }
 
 bool Licq::Daemon::haveGpgSupport() const

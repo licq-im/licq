@@ -23,12 +23,12 @@
 #include <cstdio> // sprintf
 
 #include <licq/logging/log.h>
-#include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
 
+#include "../daemon.h"
 #include "../gettext.h"
 #include "../icq/icq.h"
 #include "../protocolmanager.h"
@@ -50,7 +50,6 @@ using Licq::UserId;
 using Licq::UserGroupList;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
-using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gPluginManager;
 using namespace LicqDaemon;
@@ -114,8 +113,7 @@ bool UserManager::Load()
   gLog.info(tr("Loading user configuration"));
 
   // Load the group info from licq.conf
-  Licq::IniFile licqConf("licq.conf");
-  licqConf.loadFile();
+  Licq::IniFile& licqConf(gDaemon.getLicqConf());
 
   unsigned nOwners;
   licqConf.setSection("owners");
@@ -125,7 +123,7 @@ bool UserManager::Load()
 
   //TODO Check for loaded plugins before the owner, so we can see
   //which owner(s) to load
-  myOwnerListMutex.lockWrite();
+  list<UserId> owners;
   for (unsigned short i = 1; i <= nOwners; i++)
   {
     char sOwnerIDKey[20], sOwnerPPIDKey[20];
@@ -136,12 +134,8 @@ bool UserManager::Load()
     licqConf.get(sOwnerPPIDKey, ppidStr);
     unsigned long protocolId = (ppidStr[0] << 24) | (ppidStr[1] << 16) | (ppidStr[2] << 8) | (ppidStr[3]);
 
-    UserId ownerId(accountId, protocolId);
-    Owner* o = new Owner(ownerId);
-
-    myOwners[protocolId] = o;
+    owners.push_back(UserId(accountId, protocolId));
   }
-  myOwnerListMutex.unlockWrite();
 
   unsigned int nGroups;
   licqConf.setSection("groups");
@@ -205,6 +199,17 @@ bool UserManager::Load()
 
   licqConf.setSection("network");
   licqConf.get("DefaultUserEncoding", myDefaultEncoding, "");
+
+  gDaemon.releaseLicqConf();
+
+  // Create owner objects
+  myOwnerListMutex.lockWrite();
+  BOOST_FOREACH(Licq::UserId& ownerId, owners)
+  {
+    Owner* o = new Owner(ownerId);
+    myOwners[ownerId.protocolId()] = o;
+  }
+  myOwnerListMutex.unlockWrite();
 
   // Load users from users.conf
   Licq::IniFile usersConf("users.conf");
@@ -788,7 +793,7 @@ void UserManager::SaveGroups()
   if (!m_bAllowSave) return;
 
   // Load the group info from licq.conf
-  Licq::IniFile licqConf("licq.conf");
+  Licq::IniFile& licqConf(gDaemon.getLicqConf());
   licqConf.loadFile();
 
   licqConf.setSection("groups");
@@ -805,6 +810,7 @@ void UserManager::SaveGroups()
   }
 
   licqConf.writeFile();
+  gDaemon.releaseLicqConf();
 }
 
 int UserManager::GetGroupFromID(unsigned short icqGroupId)

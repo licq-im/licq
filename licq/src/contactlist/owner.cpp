@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,15 +27,14 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <licq/daemon.h>
 #include <licq/plugin/pluginmanager.h>
 
+#include "../daemon.h"
 #include "gettext.h"
 #include <licq/logging/log.h>
 
 using std::string;
 using Licq::UserId;
-using Licq::gDaemon;
 using Licq::gLog;
 using namespace LicqDaemon;
 
@@ -95,11 +94,11 @@ Owner::Owner(const UserId& id)
     {
       case LICQ_PPID:
       {
-        Licq::IniFile conf("licq.conf");
-        conf.loadFile();
+        Licq::IniFile& conf(gDaemon.getLicqConf());
         conf.setSection("network");
         conf.get("ICQServer", myServerHost, defaultHost);
         conf.get("ICQServerPort", myServerPort, defaultPort);
+        gDaemon.releaseLicqConf();
         break;
       }
       case MSN_PPID:

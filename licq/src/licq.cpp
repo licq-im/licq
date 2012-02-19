@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -491,10 +503,11 @@ bool CLicq::Init(int argc, char **argv)
   }
 
   // Open the config file
-  Licq::IniFile licqConf("licq.conf");
+  Licq::IniFile& licqConf(gDaemon.getLicqConf());
   if (!licqConf.loadFile())
   {
     gLog.error("Could not load config file '%s'", licqConf.filename().c_str());
+    gDaemon.releaseLicqConf();
     return false;
   }
 
@@ -511,6 +524,7 @@ bool CLicq::Init(int argc, char **argv)
     {
       gLog.error("Upgrade failed. Please save your licq directory and "
                  "report this as a bug.");
+      gDaemon.releaseLicqConf();
       return false;
     }
   }
@@ -535,7 +549,10 @@ bool CLicq::Init(int argc, char **argv)
         if (!licqConf.get(szKey, pluginName))
           continue;
         if (!LoadProtoPlugin(pluginName.c_str()))
+        {
+          gDaemon.releaseLicqConf();
           return false;
+        }
       }
     }
   }
@@ -569,7 +586,10 @@ bool CLicq::Init(int argc, char **argv)
         }
 
         if (!loaded)
+        {
+          gDaemon.releaseLicqConf();
           return false;
+        }
       }
     }
     else  // If no plugins, try some defaults one by one
@@ -581,9 +601,14 @@ bool CLicq::Init(int argc, char **argv)
       while (i < size && !plugin)
         plugin = LoadPlugin(plugins[i++], argc, argv);
       if (!plugin)
+      {
+        gDaemon.releaseLicqConf();
         return false;
+      }
     }
   }
+
+  gDaemon.releaseLicqConf();
 
 #ifdef USE_OPENSSL
   // Initialize SSL

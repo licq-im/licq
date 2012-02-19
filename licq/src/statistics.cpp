@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #endif
 #include <licq/thread/mutexlocker.h>
 
+#include "daemon.h"
 #include "gettext.h"
 
 using namespace LicqDaemon;
@@ -58,8 +59,7 @@ Statistics::~Statistics()
 void Statistics::initialize()
 {
 #ifdef SAVE_STATS
-  Licq::IniFile licqConf("licq.conf");
-  licqConf.loadFile();
+  Licq::IniFile& licqConf(gDaemon.getLicqConf());
   licqConf.setSection("stats");
 
   // Use temporary as time_t type might vary and not work with IniFile
@@ -72,6 +72,7 @@ void Statistics::initialize()
     myTodayCounters[i] = 0;
     licqConf.get(CounterTags[i], myTotalCounters[i], 0);
   }
+  gDaemon.releaseLicqConf();
 #else
   myResetTime = myStartTime;
   for (int i = 0; i < NumCounters; ++i)
@@ -93,7 +94,7 @@ void Statistics::flush()
 void Statistics::writeCounters()
 {
 #ifdef SAVE_STATS
-  Licq::IniFile licqConf("licq.conf");
+  Licq::IniFile& licqConf(gDaemon.getLicqConf());
   licqConf.loadFile();
   licqConf.setSection("stats");
   licqConf.set("Reset", static_cast<unsigned long>(myResetTime));
@@ -101,6 +102,7 @@ void Statistics::writeCounters()
     licqConf.set(CounterTags[i], myTotalCounters[i]);
   if (licqConf.writeFile())
     myWriteNeeded = false;
+  gDaemon.releaseLicqConf();
 #else
   myWriteNeeded = false;
 #endif

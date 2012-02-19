@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/daemon.h>
 #include <licq/inifile.h>
 #include <licq/thread/mutexlocker.h>
 
@@ -31,10 +30,11 @@
 #include <ctime> // time
 #include <sstream>
 
+#include "daemon.h"
+
 using namespace std;
 using namespace LicqDaemon;
 using Licq::UserId;
-using Licq::gDaemon;
 using Licq::gUserManager;
 
 const char* const Licq::OnEventData::Default = "default";
@@ -193,11 +193,11 @@ void OnEventManager::initialize()
   if (!conf.loadFile())
   {
     // Failed to read configuration, try migrating old configuration
-    Licq::IniFile licqConf("licq.conf");
-    licqConf.loadFile();
+    Licq::IniFile& licqConf(gDaemon.getLicqConf());
 
     licqConf.setSection("onevent");
     myGlobalData.load(licqConf);
+    gDaemon.releaseLicqConf();
     return;
   }
 
