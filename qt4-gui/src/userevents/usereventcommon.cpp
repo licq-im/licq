@@ -358,7 +358,7 @@ void UserEventCommon::setEncoding(QAction* action)
   int index = action->data().toUInt();
 
   /* initialize a codec according to the encoding menu item id */
-  QString encoding = UserCodec::nameForEncoding(index);
+  QString encoding = UserCodec::m_encodings[index].encoding;
 
   if (!encoding.isNull())
   {
@@ -368,7 +368,7 @@ void UserEventCommon::setEncoding(QAction* action)
       if (u.isLocked())
       {
         u->SetEnableSave(false);
-        u->setUserEncoding(encoding.toLatin1().constData());
+        u->setUserEncoding(encoding.toLocal8Bit().constData());
         u->SetEnableSave(true);
         u->save(Licq::User::SaveLicqInfo);
       }
