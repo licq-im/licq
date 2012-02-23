@@ -282,6 +282,22 @@ void UserManager::saveUserList() const
   usersConf.writeFile();
 }
 
+bool UserManager::allowUnloadProtocol(unsigned long protocolId)
+{
+  Licq::OwnerReadGuard owner(protocolId);
+  if (owner.isLocked())
+  {
+    // If owner is online, don't allow unloading the protocol
+    if (owner->status() != Owner::OfflineStatus)
+    {
+      gLog.warning(tr("Protocol must be offline to be unloaded"));
+      return false;
+    }
+  }
+
+  return true;
+}
+
 bool UserManager::addUser(const UserId& uid,
     bool permanent, bool addToServer, unsigned short groupId)
 {

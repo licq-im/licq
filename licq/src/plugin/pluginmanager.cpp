@@ -40,6 +40,7 @@
 #include <iterator>
 #include <glob.h>
 
+#include "../contactlist/usermanager.h"
 #include "../utils/dynamiclibrary.h"
 #include "generalplugin.h"
 #include "plugin.h"
@@ -269,6 +270,10 @@ void PluginManager::unloadGeneralPlugin(GeneralPlugin::Ptr plugin)
 
 void PluginManager::unloadProtocolPlugin(ProtocolPlugin::Ptr plugin)
 {
+  // Check with user manager first if unloading is allowed
+  if (!gUserManager.allowUnloadProtocol(plugin->protocolId()))
+    return;
+
   plugin->shutdown();
 }
 
