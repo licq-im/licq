@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,8 +226,10 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SLOT(updateStatus()));
   connect(gGuiSignalManager, SIGNAL(logon()),
       SLOT(slot_logon()));
-  connect(gGuiSignalManager, SIGNAL(protocolPlugin(unsigned long)),
+  connect(gGuiSignalManager, SIGNAL(protocolPluginLoaded(unsigned long)),
       SLOT(slot_protocolPlugin(unsigned long)));
+  connect(gGuiSignalManager, SIGNAL(protocolPluginUnloaded(unsigned long)),
+      SLOT(slot_pluginUnloaded(unsigned long)));
   connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)),
       mySystemMenu, SLOT(addOwner(const Licq::UserId&)));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)),

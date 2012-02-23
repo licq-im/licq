@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,8 +49,9 @@ public:
     SignalVerifyImage   = 1<<17,        // A registration verification image is available as basedir/verify.jpg
     SignalNewOwner      = 1<<18,        // Registration complete, userId is new owner
     SignalPluginEvent   = 1<<19,        // Event to perform in a plugin, subtype specifies event
+    SignalRemoveProtocol= 1<<20,        // A protocol plugin has been unloaded, subtype is protocolId
 
-    SignalAll           = 0x000e039f,   // Mask for all known signals
+    SignalAll           = 0x001e039f,   // Mask for all known signals
   };
 
   enum ListSubSignal

@@ -232,12 +232,6 @@ void PluginDlg::slot_protocol(QTableWidgetItem* item)
     }
     else if (plugin.get() != NULL)
     {
-      unsigned long protocolId = plugin->protocolId();
-
-      // Daemon doesn't notify when plugins are unloaded
-      // so tell mainwin directly from here
-      gMainWindow->slot_pluginUnloaded(protocolId);
-
       gPluginManager.unloadProtocolPlugin(plugin);
     }
   }

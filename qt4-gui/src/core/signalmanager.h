@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,19 @@ signals:
    */
   void ui_hideuserlist();
 
-  void protocolPlugin(unsigned long);
+  /**
+   * A new protocol plugin has been loaded
+   *
+   * @param protocolId Id of protocol
+   */
+  void protocolPluginLoaded(unsigned long protocolId);
+
+  /**
+   * A protocol plugin has been unloaded
+   *
+   * @param protocolId Id of protocol
+   */
+  void protocolPluginUnloaded(unsigned long protocolId);
 
   /**
    * A conversation id has been associated with a user

@@ -397,6 +397,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
       return exitId;
     }
   }
+  generalLocker.unlock();
 
   // Then check protocol plugins
   for (Licq::ProtocolPluginsList::iterator plugin = myProtocolPlugins.begin();
@@ -404,10 +405,16 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
   {
     if ((*plugin)->id() == exitId)
     {
+      unsigned long protocolId = (*plugin)->protocolId();
       int result = (*plugin)->basePrivate()->joinThread();
       gLog.info(tr("Protocol plugin %s exited with code %d"),
           (*plugin)->name().c_str(), result);
       myProtocolPlugins.erase(plugin);
+
+      // Notify plugins about the removed protocol
+      pushPluginSignal(new Licq::PluginSignal(
+          Licq::PluginSignal::SignalRemoveProtocol, protocolId));
+
       return exitId;
     }
   }

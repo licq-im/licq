@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,10 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   connect(closeButton, SIGNAL(clicked()), SLOT(close()));
   connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateOwners()));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateOwners()));
-  connect(gGuiSignalManager, SIGNAL(protocolPlugin(unsigned long)), SLOT(updateProtocols()));
+  connect(gGuiSignalManager, SIGNAL(protocolPluginLoaded(unsigned long)),
+      SLOT(updateProtocols()));
+  connect(gGuiSignalManager, SIGNAL(protocolPluginUnloaded(unsigned long)),
+      SLOT(updateProtocols()));
 
   // Add the owners to the list now
   updateOwners();
