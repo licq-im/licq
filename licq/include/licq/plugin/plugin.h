@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,9 +73,6 @@ public:
   /// Get the name of the library from where the plugin was loaded.
   const std::string& libraryName() const;
 
-  /// Ask the plugin to shutdown.
-  void shutdown();
-
   /**
    * Check if a thread belongs to this plugin
    * Called by anyone
@@ -142,6 +139,12 @@ protected:
    * @param c A character, will be received by plugin through it's read pipe
    */
   void notify(char c);
+
+  /**
+   * Tell a plugin to shut down
+   * Called from PluginManager
+   */
+  void shutdown();
 
 private:
   LICQ_DECLARE_PRIVATE();

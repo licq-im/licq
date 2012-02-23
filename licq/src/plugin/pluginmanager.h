@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,6 +89,8 @@ public:
 
   bool startGeneralPlugin(const std::string& name, int argc, char** argv);
   bool startProtocolPlugin(const std::string& name);
+  void unloadGeneralPlugin(Licq::GeneralPlugin::Ptr plugin);
+  void unloadProtocolPlugin(Licq::ProtocolPlugin::Ptr plugin);
   void pushPluginEvent(Licq::Event* event);
   void pushPluginSignal(Licq::PluginSignal* signal);
   void pushProtocolSignal(Licq::ProtocolSignal* signal, unsigned long protocolId);

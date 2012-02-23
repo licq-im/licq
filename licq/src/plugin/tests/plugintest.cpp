@@ -75,6 +75,7 @@ public:
 
   // Un-protect functions so we can test them without being the PluginManager
   using Plugin::getReadPipe;
+  using Plugin::shutdown;
 };
 
 } // namespace LicqDaemon

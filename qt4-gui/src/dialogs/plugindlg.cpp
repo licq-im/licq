@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -185,7 +185,7 @@ void PluginDlg::slot_standard(QTableWidgetItem* item)
     }
     else if (plugin.get() != NULL)
     {
-      plugin->shutdown();
+      gPluginManager.unloadGeneralPlugin(plugin);
     }
   }
   else if (nCol == 4 && plugin.get() != NULL)
@@ -238,7 +238,7 @@ void PluginDlg::slot_protocol(QTableWidgetItem* item)
       // so tell mainwin directly from here
       gMainWindow->slot_pluginUnloaded(protocolId);
 
-      plugin->shutdown();
+      gPluginManager.unloadProtocolPlugin(plugin);
     }
   }
 
