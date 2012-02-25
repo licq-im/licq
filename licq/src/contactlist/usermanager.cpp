@@ -104,6 +104,11 @@ void UserManager::addOwner(const UserId& userId)
 
   saveOwnerList();
 
+  // Create section for this owner in users.conf
+  myUserListMutex.lockRead();
+  saveUserList(userId);
+  myUserListMutex.unlockRead();
+
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListOwnerAdded, userId));
 }
@@ -214,46 +219,81 @@ bool UserManager::Load()
   }
   myOwnerListMutex.unlockWrite();
 
+  BOOST_FOREACH(Licq::UserId& ownerId, owners)
+    loadUserList(ownerId);
+
+  return true;
+}
+
+void UserManager::loadUserList(const UserId& ownerId)
+{
   // Load users from users.conf
   Licq::IniFile usersConf("users.conf");
   usersConf.loadFile();
 
-  unsigned nUsers;
-  usersConf.setSection("users");
-  usersConf.get("NumOfUsers", nUsers);
-  gLog.info(tr("Loading %d users"), nUsers);
+  string ppidStr = Licq::protocolId_toString(ownerId.protocolId());
 
-  // TODO: We need to only load users of protocol plugins that are loaded!
   myUserListMutex.lockWrite();
-  for (unsigned short i = 1; i<= nUsers; i++)
-  {
-    string userFile;
-    char sUserKey[20];
-    sprintf(sUserKey, "User%d", i);
-    if (!usersConf.get(sUserKey, userFile, ""))
-    {
-      gLog.warning(tr("Skipping user %i, empty key"), i);
-      continue;
-    }
-    size_t sz = userFile.rfind('.');
-    if (sz == string::npos)
-    {
-      gLog.error(tr("Fatal error reading protocol information for User%d with ID '%s'\n"
-          "Please check \"%s/users.conf\""), i,
-          userFile.c_str(), gDaemon.baseDir().c_str());
-      exit(1);
-    }
-    string accountId = userFile.substr(0, sz);
-    unsigned long protocolId = (userFile[sz+1] << 24) | (userFile[sz+2] << 16) | (userFile[sz+3] << 8) | userFile[sz+4];
 
-    UserId userId(accountId, protocolId);
-    User* u = new User(userId);
-    u->AddToContactList();
-    myUsers[userId] = u;
+  if (usersConf.setSection(ownerId.accountId() + "." + ppidStr, false))
+  {
+    int numUsers;
+    usersConf.get("NumUsers", numUsers);
+    gLog.info(tr("Loading %i users for %s"), numUsers, ownerId.toString().c_str());
+
+    for (int i = 1; i <= numUsers; ++i)
+    {
+      char key[20];
+      sprintf(key, "User%i", i);
+      string accountId;
+      usersConf.get(key, accountId);
+      if (accountId.empty())
+      {
+        gLog.warning(tr("Skipping user %i, invalid key"), i);
+        continue;
+      }
+      UserId userId(accountId, ownerId.protocolId());
+      User* u = new User(userId);
+      u->AddToContactList();
+      myUsers[userId] = u;
+    }
+  }
+  else
+  {
+    // Owner specific section is missing, migrate users from old section (pre Licq 1.7.0)
+    usersConf.setSection("users");
+    int numUsers;
+    usersConf.get("NumOfUsers", numUsers);
+
+    for (int i = 1; i <= numUsers; ++i)
+    {
+      char key[20];
+      sprintf(key, "User%i", i);
+      string userFile;
+      usersConf.get(key, userFile);
+
+      size_t sz = userFile.rfind('.');
+      if (sz == string::npos)
+      {
+        gLog.error(tr("Skipping user %i, invalid key"), i);
+        continue;
+      }
+
+      if (userFile.substr(sz+1) != ppidStr)
+        // Not a user for this protocol
+        continue;
+
+      string accountId = userFile.substr(0, sz);
+      UserId userId(accountId, ownerId.protocolId());
+      User* u = new User(userId);
+      u->AddToContactList();
+      myUsers[userId] = u;
+    }
+
+    // Write new section so we don't have to migrate more than once
+    saveUserList(ownerId);
   }
   myUserListMutex.unlockWrite();
-
-  return true;
 }
 
 void UserManager::saveOwnerList()
@@ -287,11 +327,12 @@ void UserManager::saveOwnerList()
   myOwnerListMutex.unlockRead();
 }
 
-void UserManager::saveUserList() const
+void UserManager::saveUserList(const UserId& ownerId)
 {
   Licq::IniFile usersConf("users.conf");
   usersConf.loadFile();
-  usersConf.setSection("users");
+  string ppidStr = Licq::protocolId_toString(ownerId.protocolId());
+  usersConf.setSection(ownerId.accountId() + "." + ppidStr);
 
   int count = 0;
   for (UserMap::const_iterator i = myUsers.begin(); i != myUsers.end(); ++i)
@@ -302,17 +343,16 @@ void UserManager::saveUserList() const
     unsigned long ppid = i->second->protocolId();
     i->second->unlockRead();
 
-    // Only save users that's been permanently added
-    if (temporary)
+    // Only save users for this owner that's been permanently added
+    if (temporary || ppid != ownerId.protocolId())
       continue;
     ++count;
 
     char key[20];
     sprintf(key, "User%i", count);
-
-    usersConf.set(key, accountId + "." + Licq::protocolId_toString(ppid));
+    usersConf.set(key, accountId);
   }
-  usersConf.set("NumOfUsers", count);
+  usersConf.set("NumUsers", count);
   usersConf.writeFile();
 }
 
@@ -368,7 +408,11 @@ bool UserManager::addUser(const UserId& uid,
   pUser->unlockWrite();
 
   if (permanent)
-    saveUserList();
+  {
+    UserId ownerId = ownerUserId(uid.protocolId());
+    if (ownerId.isValid())
+      saveUserList(ownerId);
+  }
 
   myUserListMutex.unlockWrite();
 
@@ -410,7 +454,9 @@ bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
   }
 
   // Save local user list to disk
-  saveUserList();
+  UserId ownerId = ownerUserId(userId.protocolId());
+  if (ownerId.isValid())
+    saveUserList(ownerId);
 
   // Add user to server side list
   if (addToServer)
@@ -445,7 +491,10 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
   if (!u->NotInList())
   {
     u->RemoveFiles();
-    saveUserList();
+
+    UserId ownerId = ownerUserId(userId.protocolId());
+    if (ownerId.isValid())
+      saveUserList(ownerId);
   }
   myUserListMutex.unlockWrite();
   u->unlockWrite();

@@ -52,12 +52,6 @@ public:
   bool Load();
 
   /**
-   * Save user list to configuration file
-   * Note: This function assumes that the user list is already locked.
-   */
-  void saveUserList() const;
-
-  /**
    * Check if protocol unloading should be allowed
    *
    * @param protocolId Id of protocol to be unloaded
@@ -176,7 +170,23 @@ public:
   unsigned int NumGroups();
 
 private:
+  /**
+   * Load user list from configuration file
+   *
+   * @param ownerId Owner to load users for
+   */
+  void loadUserList(const Licq::UserId& ownerId);
+
   void saveOwnerList();
+
+  /**
+   * Save user list to configuration file
+   * Note: This function assumes that the user list is already locked.
+   *
+   * @param ownerId Owner to save user list for
+   */
+  void saveUserList(const Licq::UserId& ownerId);
+
   void SaveGroups();
 
   Licq::ReadWriteMutex myGroupListMutex;
