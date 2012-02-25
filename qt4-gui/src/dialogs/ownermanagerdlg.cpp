@@ -278,5 +278,4 @@ void OwnerManagerDlg::removeOwner()
     return;
 
   Licq::gUserManager.RemoveOwner(item->data(0, Qt::UserRole).toString().toULong());
-  Licq::gDaemon.SaveConf();
 }

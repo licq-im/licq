@@ -101,6 +101,8 @@ void UserManager::addOwner(const UserId& userId)
   myOwners[userId.protocolId()] = o;
   myOwnerListMutex.unlockWrite();
 
+  saveOwnerList();
+
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListOwnerAdded, userId));
 }
@@ -251,6 +253,37 @@ bool UserManager::Load()
   myUserListMutex.unlockWrite();
 
   return true;
+}
+
+void UserManager::saveOwnerList()
+{
+  myOwnerListMutex.lockRead();
+
+  Licq::IniFile& licqConf(gDaemon.getLicqConf());
+
+  licqConf.setSection("owners");
+  licqConf.set("NumOfOwners", (unsigned long)myOwners.size());
+
+  int count = 0;
+  {
+    OwnerListGuard ownerList;
+    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+    {
+      ++count;
+
+      char key[14];
+      sprintf(key, "Owner%d.Id", count);
+      licqConf.set(key, owner->accountId());
+
+      sprintf(key, "Owner%d.PPID", count);
+      licqConf.set(key, Licq::protocolId_toString(owner->protocolId()));
+    }
+  }
+
+  licqConf.writeFile();
+  gDaemon.releaseLicqConf();
+
+  myOwnerListMutex.unlockRead();
 }
 
 void UserManager::saveUserList() const
@@ -422,7 +455,6 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
       PluginSignal::ListUserRemoved, userId));
 }
 
-// Need to call CICQDaemon::SaveConf() after this
 void UserManager::RemoveOwner(unsigned long ppid)
 {
   // List should only be locked when not holding any user lock to avoid
@@ -452,6 +484,8 @@ void UserManager::RemoveOwner(unsigned long ppid)
   myOwnerListMutex.unlockWrite();
   o->unlockWrite();
   delete o;
+
+  saveOwnerList();
 
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListOwnerRemoved, id));

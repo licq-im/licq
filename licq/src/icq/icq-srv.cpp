@@ -4716,10 +4716,12 @@ void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       {
         Licq::OwnerWriteGuard o(LICQ_PPID);
         if (o.isLocked())
+        {
           o->setPassword(myRegisterPasswd);
+          o->save(Licq::Owner::SaveOwnerInfo);
+        }
       }
       myRegisterPasswd = "";
-      gDaemon.SaveConf();
 
       gPluginManager.pushPluginSignal(new Licq::PluginSignal(
           Licq::PluginSignal::SignalNewOwner,

@@ -3032,8 +3032,8 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             {
               Licq::OwnerWriteGuard o(LICQ_PPID);
               o->setPassword(data->szPassword1);
+              o->save(Licq::Owner::SaveOwnerInfo);
             }
-            Licq::gDaemon.SaveConf();
 
             winMain->wprintf("Save password? (y/N) ");
             winMain->state = STATE_QUERY;

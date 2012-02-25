@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@
 
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
-#include <licq/daemon.h>
 #include <licq/plugin/pluginmanager.h>
 
 #include "config/iconmanager.h"
@@ -154,9 +153,8 @@ void OwnerEditDlg::slot_ok()
     o->setPassword(pwd.toLocal8Bit().constData());
     o->SetSavePassword(chkSave->isChecked());
     o->setServer(myHostEdit->text().toLatin1().constData(), myPortSpin->value());
+    o->save(Licq::Owner::SaveOwnerInfo);
   }
-
-  Licq::gDaemon.SaveConf();
 
   close();
 }

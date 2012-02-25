@@ -178,6 +178,7 @@ public:
   unsigned int NumGroups();
 
 private:
+  void saveOwnerList();
   void SaveGroups();
 
   Licq::ReadWriteMutex myGroupListMutex;

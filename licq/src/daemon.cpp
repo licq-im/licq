@@ -210,29 +210,6 @@ void Daemon::SaveConf()
 
   licqConf.set("DefaultUserEncoding", gUserManager.defaultUserEncoding());
 
-  licqConf.setSection("owners");
-  licqConf.set("NumOfOwners", (unsigned long)gUserManager.NumOwners());
-
-  int n = 1;
-  {
-    Licq::OwnerListGuard ownerList;
-    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-    {
-      Licq::OwnerWriteGuard o(owner);
-
-      char szOwnerId[12], szOwnerPPID[14];
-      sprintf(szOwnerId, "Owner%d.Id", n);
-      sprintf(szOwnerPPID, "Owner%d.PPID", n++);
-
-      o->save(Licq::User::SaveOwnerInfo);
-      if (o->accountId() != "0")
-      {
-        licqConf.set(szOwnerId, o->accountId());
-        licqConf.set(szOwnerPPID, Licq::protocolId_toString(o->protocolId()));
-      }
-    }
-  }
-
   gIcqProtocol.save(licqConf);
 
   licqConf.writeFile();
