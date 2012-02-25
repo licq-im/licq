@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,10 +59,9 @@ public:
 protected:
   bool upgradeLicq128(Licq::IniFile& licqConf);
 
-  Licq::GeneralPlugin::Ptr
-  LoadPlugin(const char *, int, char **, bool keep = true);
-  Licq::ProtocolPlugin::Ptr
-  LoadProtoPlugin(const char *, bool keep = true);
+  Licq::GeneralPlugin::Ptr LoadPlugin(const std::string& name, int argc,
+      char** argv, bool keep = true);
+  Licq::ProtocolPlugin::Ptr LoadProtoPlugin(const std::string& name, bool keep = true);
 
 private:
   boost::shared_ptr<LicqDaemon::StreamLogSink> myConsoleLog;

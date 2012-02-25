@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2011 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 1998-2012 Licq Developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -52,7 +52,7 @@ static void licq_handle_sigabrt(int);
 static void licq_handle_sigchld(int);
 
 // licq.cpp
-void displayFatalError(const char* error, int useLicqLog);
+void displayFatalError(const string& error, int useLicqLog);
 void handleExitSignal(int signal);
 
 void licq_install_signal_handlers()
