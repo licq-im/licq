@@ -274,11 +274,23 @@ void PluginManager::unloadProtocolPlugin(ProtocolPlugin::Ptr plugin)
   if (!gUserManager.allowUnloadProtocol(plugin->protocolId()))
     return;
 
+  gUserManager.unloadProtocol(plugin->protocolId());
   plugin->shutdown();
 }
 
 void PluginManager::startAllPlugins()
 {
+  list<unsigned long> ppids;
+  {
+    MutexLocker protocolLocker(myProtocolPluginsMutex);
+    BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
+      ppids.push_back(plugin->protocolId());
+  }
+
+  // Must call loadProtocol without holding mutex
+  BOOST_FOREACH(unsigned long protocolId, ppids)
+    gUserManager.loadProtocol(protocolId);
+
   MutexLocker generalLocker(myGeneralPluginsMutex);
   MutexLocker protocolLocker(myProtocolPluginsMutex);
 
@@ -409,6 +421,11 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
       int result = (*plugin)->basePrivate()->joinThread();
       gLog.info(tr("Protocol plugin %s exited with code %d"),
           (*plugin)->name().c_str(), result);
+
+      // Should already been done, but if protocol exited by itself clean it up here
+      gUserManager.unloadProtocol(protocolId);
+
+      // Remove plugin from list, if this was only reference it will unload library
       myProtocolPlugins.erase(plugin);
 
       // Notify plugins about the removed protocol
@@ -560,6 +577,9 @@ bool PluginManager::startProtocolPlugin(const std::string& name)
   ProtocolPlugin::Ptr plugin = loadProtocolPlugin(name);
   if (plugin)
   {
+    // Load contacts and owners for the new protocol
+    gUserManager.loadProtocol(plugin->protocolId());
+
     MutexLocker locker(myProtocolPluginsMutex);
     startPlugin(plugin);
     return true;

@@ -96,10 +96,20 @@ void UserManager::shutdown()
 
 void UserManager::addOwner(const UserId& userId)
 {
+  myOwnerListMutex.lockWrite();
+
+  // Make sure owner isn't already in configuration
+  if (myConfiguredOwners.count(userId) > 0)
+  {
+    myOwnerListMutex.unlockWrite();
+    return;
+  }
+
   Owner* o = new Owner(userId);
 
-  myOwnerListMutex.lockWrite();
+  myConfiguredOwners.insert(userId);
   myOwners[userId.protocolId()] = o;
+
   myOwnerListMutex.unlockWrite();
 
   saveOwnerList();
@@ -127,11 +137,7 @@ bool UserManager::Load()
   licqConf.setSection("owners");
   licqConf.get("NumOfOwners", nOwners, 0);
 
-  m_bAllowSave = false;
-
-  //TODO Check for loaded plugins before the owner, so we can see
-  //which owner(s) to load
-  list<UserId> owners;
+  myOwnerListMutex.lockWrite();
   for (unsigned short i = 1; i <= nOwners; i++)
   {
     char sOwnerIDKey[20], sOwnerPPIDKey[20];
@@ -142,8 +148,9 @@ bool UserManager::Load()
     licqConf.get(sOwnerPPIDKey, ppidStr);
     unsigned long protocolId = (ppidStr[0] << 24) | (ppidStr[1] << 16) | (ppidStr[2] << 8) | (ppidStr[3]);
 
-    owners.push_back(UserId(accountId, protocolId));
+    myConfiguredOwners.insert(UserId(accountId, protocolId));
   }
+  myOwnerListMutex.unlockWrite();
 
   unsigned int nGroups;
   licqConf.setSection("groups");
@@ -209,18 +216,6 @@ bool UserManager::Load()
   licqConf.get("DefaultUserEncoding", myDefaultEncoding, "");
 
   gDaemon.releaseLicqConf();
-
-  // Create owner objects
-  myOwnerListMutex.lockWrite();
-  BOOST_FOREACH(Licq::UserId& ownerId, owners)
-  {
-    Owner* o = new Owner(ownerId);
-    myOwners[ownerId.protocolId()] = o;
-  }
-  myOwnerListMutex.unlockWrite();
-
-  BOOST_FOREACH(Licq::UserId& ownerId, owners)
-    loadUserList(ownerId);
 
   return true;
 }
@@ -296,6 +291,78 @@ void UserManager::loadUserList(const UserId& ownerId)
   myUserListMutex.unlockWrite();
 }
 
+void UserManager::loadProtocol(unsigned long protocolId)
+{
+  myOwnerListMutex.lockWrite();
+  BOOST_FOREACH(const UserId& ownerId, myConfiguredOwners)
+  {
+    if (ownerId.protocolId() != protocolId)
+      continue;
+
+    // Load owner
+    Owner* o = new Owner(ownerId);
+    myOwners[ownerId.protocolId()] = o;
+
+    // Notify plugins that the owner has been added
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
+        PluginSignal::ListOwnerAdded, ownerId));
+
+    // Load all users for owner
+    loadUserList(ownerId);
+
+    // We currently only support one owner per protocol
+    break;
+  }
+  myOwnerListMutex.unlockWrite();
+
+  // Notify plugins that the users have been added
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
+      PluginSignal::ListInvalidate));
+}
+
+void UserManager::unloadProtocol(unsigned long protocolId)
+{
+  // Delete all user objects using this protocol
+  myUserListMutex.lockWrite();
+  for (UserMap::iterator i = myUsers.begin(); i != myUsers.end(); )
+  {
+    if (i->first.protocolId() != protocolId)
+    {
+      ++i;
+      continue;
+    }
+
+    User* u = i->second;
+    u->lockWrite();
+    myUsers.erase(i++);
+    u->unlockWrite();
+    delete u;
+  }
+  myUserListMutex.unlockWrite();
+
+  // Delete owner object for this protocol
+  myOwnerListMutex.lockWrite();
+  OwnerMap::iterator i = myOwners.find(protocolId);
+  if (i != myOwners.end())
+  {
+    Owner* o = i->second;
+    UserId ownerId = o->id();
+    o->lockWrite();
+    myOwners.erase(i);
+    o->unlockWrite();
+    delete o;
+
+    // Notify plugins that an owner has been removed
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
+        PluginSignal::ListOwnerRemoved, ownerId));
+  }
+  myOwnerListMutex.unlockWrite();
+
+  // Notify plugins that the users have been removed
+  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
+      PluginSignal::ListInvalidate));
+}
+
 void UserManager::saveOwnerList()
 {
   myOwnerListMutex.lockRead();
@@ -307,17 +374,16 @@ void UserManager::saveOwnerList()
 
   int count = 0;
   {
-    OwnerListGuard ownerList;
-    BOOST_FOREACH(Licq::Owner* owner, **ownerList)
+    BOOST_FOREACH(const UserId& ownerId, myConfiguredOwners)
     {
       ++count;
 
       char key[14];
       sprintf(key, "Owner%d.Id", count);
-      licqConf.set(key, owner->accountId());
+      licqConf.set(key, ownerId.accountId());
 
       sprintf(key, "Owner%d.PPID", count);
-      licqConf.set(key, Licq::protocolId_toString(owner->protocolId()));
+      licqConf.set(key, Licq::protocolId_toString(ownerId.protocolId()));
     }
   }
 
@@ -531,6 +597,7 @@ void UserManager::RemoveOwner(unsigned long ppid)
   myOwners.erase(iter);
   o->RemoveFiles();
   UserId id = o->id();
+  myConfiguredOwners.erase(id);
   myOwnerListMutex.unlockWrite();
   o->unlockWrite();
   delete o;

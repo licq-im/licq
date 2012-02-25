@@ -23,6 +23,7 @@
 #include <licq/contactlist/usermanager.h>
 
 #include <map>
+#include <set>
 
 #include <licq/thread/readwritemutex.h>
 #include <licq/userid.h>
@@ -52,12 +53,29 @@ public:
   bool Load();
 
   /**
+   * Load owners and users for a protocol
+   * Called by ProtocolManager when protocol is loaded
+   *
+   * @param protocolId Protocol to load contacts for
+   */
+  void loadProtocol(unsigned long protocolId);
+
+  /**
    * Check if protocol unloading should be allowed
+   * Called by ProtocolManager before protocol is unloaded
    *
    * @param protocolId Id of protocol to be unloaded
    * @return False if unloading should be aborted
    */
   bool allowUnloadProtocol(unsigned long protocolId);
+
+  /**
+   * Prepare to unload a protocol
+   * Called by ProtocolManager when protocol is unloaded
+   *
+   * @param protocolId Protocol to be unloaded
+   */
+  void unloadProtocol(unsigned long protocolId);
 
   /**
    * Fetch and lock the user list map
@@ -196,6 +214,7 @@ private:
   GroupMap myGroups;
   UserMap myUsers;
   OwnerMap myOwners;
+  std::set<Licq::UserId> myConfiguredOwners;
   bool m_bAllowSave;
   std::string myDefaultEncoding;
 };
