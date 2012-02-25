@@ -1,6 +1,7 @@
 Change log for Licq.
 
 New in 1.6.1
+o Save user list when adding a Not In List user to list
 o ICQ: Fix packets not being sent for sequence numbers above 0x7fff
 o Qt4-Gui: Handle meta key in global hotkeys
 o Qt4-Gui: Fix global hotkeys to work with Caps-/Numlock active
