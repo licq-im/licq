@@ -22,8 +22,10 @@
 #include <boost/foreach.hpp>
 #include <cstdio> // sprintf
 
-#include <licq/logging/log.h>
+#include <licq/contactlist/owner.h>
+#include <licq/contactlist/user.h>
 #include <licq/inifile.h>
+#include <licq/logging/log.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
@@ -33,7 +35,6 @@
 #include "../icq/icq.h"
 #include "../protocolmanager.h"
 #include "group.h"
-#include "owner.h"
 #include "user.h"
 
 using std::list;
@@ -41,10 +42,12 @@ using std::string;
 using Licq::GroupListGuard;
 using Licq::GroupReadGuard;
 using Licq::GroupWriteGuard;
+using Licq::Owner;
 using Licq::OwnerListGuard;
 using Licq::OwnerReadGuard;
 using Licq::OwnerWriteGuard;
 using Licq::PluginSignal;
+using Licq::User;
 using Licq::UserListGuard;
 using Licq::UserId;
 using Licq::UserGroupList;
@@ -249,7 +252,7 @@ void UserManager::loadUserList(const UserId& ownerId)
       }
       UserId userId(accountId, ownerId.protocolId());
       User* u = new User(userId);
-      u->AddToContactList();
+      u->myPrivate->addToContactList();
       myUsers[userId] = u;
     }
   }
@@ -281,7 +284,7 @@ void UserManager::loadUserList(const UserId& ownerId)
       string accountId = userFile.substr(0, sz);
       UserId userId(accountId, ownerId.protocolId());
       User* u = new User(userId);
-      u->AddToContactList();
+      u->myPrivate->addToContactList();
       myUsers[userId] = u;
     }
 
@@ -463,7 +466,7 @@ bool UserManager::addUser(const UserId& uid,
   if (permanent)
   {
     // Set this user to be on the contact list
-    pUser->AddToContactList();
+    pUser->myPrivate->addToContactList();
     //pUser->SetEnableSave(true);
     pUser->save(User::SaveAll);
   }
@@ -516,7 +519,7 @@ bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
     if (!user->NotInList())
       return false;
 
-    dynamic_cast<User*>(*user)->SetPermanent();
+    user->myPrivate->setPermanent();
   }
 
   // Save local user list to disk
@@ -556,7 +559,7 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
   myUsers.erase(iter);
   if (!u->NotInList())
   {
-    u->RemoveFiles();
+    u->myPrivate->removeFiles();
 
     UserId ownerId = ownerUserId(userId.protocolId());
     if (ownerId.isValid())
@@ -569,6 +572,11 @@ void UserManager::removeUser(const UserId& userId, bool removeFromServer)
   // Notify plugins about the removed user
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
       PluginSignal::ListUserRemoved, userId));
+}
+
+void UserManager::writeToUserHistory(Licq::User* user, const string& text)
+{
+  user->myPrivate->writeToHistory(text);
 }
 
 void UserManager::RemoveOwner(unsigned long ppid)
@@ -595,7 +603,7 @@ void UserManager::RemoveOwner(unsigned long ppid)
   }
 
   myOwners.erase(iter);
-  o->RemoveFiles();
+  o->myPrivate->removeFiles();
   UserId id = o->id();
   myConfiguredOwners.erase(id);
   myOwnerListMutex.unlockWrite();

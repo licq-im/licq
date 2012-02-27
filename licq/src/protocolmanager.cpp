@@ -38,6 +38,7 @@ using namespace LicqDaemon;
 using Licq::OwnerReadGuard;
 using Licq::OwnerWriteGuard;
 using Licq::PluginSignal;
+using Licq::User;
 using Licq::UserId;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;

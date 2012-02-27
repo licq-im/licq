@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,62 +29,30 @@
 
 #include "userhistory.h"
 
-namespace LicqDaemon
+namespace Licq
 {
 typedef std::map<std::string, boost::any> PropertyMap;
 
-class User : public virtual Licq::User
+class User::Private
 {
 public:
-  static const char* const ConfigDir;
-  static const char* const HistoryDir;
-  static const char* const HistoryExt;
-  static const char* const HistoryOldExt;
-
-  /**
-   * Constructor to create a user object for a new contact
-   *
-   * @param id User id
-   * @param temporary False if user is added permanently to list
-   * @param isOwner True if this is an owner
-   */
-  User(const Licq::UserId& id, bool temporary = false, bool isOwner = false);
-
-  ~User();
+  Private(User* user, const UserId& id);
+  ~Private();
 
   void writeToHistory(const std::string& text);
 
-  // From Licq::User
-  void save(unsigned group);
-  void RemoveFiles();
-  std::string getUserInfoString(const std::string& key) const;
-  unsigned int getUserInfoUint(const std::string& key) const;
-  bool getUserInfoBool(const std::string& key) const;
-  void setUserInfoString(const std::string& key, const std::string& value);
-  void setUserInfoUint(const std::string& key, unsigned int value);
-  void setUserInfoBool(const std::string& key, bool value);
-  void SetPermanent();
-  int GetHistory(Licq::HistoryList& history) const;
-  const std::string& historyName() const;
-  const std::string& historyFile() const;
-  void SetDefaults();
-  void AddToContactList();
+  void removeFiles();
 
-protected:
-  virtual void saveLicqInfo();
-  virtual void saveUserInfo();
-  virtual void saveOwnerInfo();
-  virtual void saveNewMessagesInfo();
-  virtual void savePictureInfo();
+  void setPermanent();
+
+  void setDefaults();
+
+  void addToContactList();
 
   void setHistoryFile(const std::string& file);
-  void LoadLicqInfo();
-  void LoadPhoneBookInfo();
-  void LoadPictureInfo();
 
-  Licq::IniFile myConf;
-
-private:
+  void loadLicqInfo();
+  void loadPictureInfo();
   void loadUserInfo();
 
   /**
@@ -103,18 +71,23 @@ private:
    */
   void loadCategory(Licq::UserCategoryMap& category, const std::string& key);
 
+private:
   /**
    * Initialize all user object. Contains common code for all constructors
    */
   void Init();
 
-  UserHistory myHistory;
+  User* const myUser;
+  const UserId myId;
+  IniFile myConf;
+  LicqDaemon::UserHistory myHistory;
 
   // myUserInfo holds user information like email, address, homepage etc...
   PropertyMap myUserInfo;
 
+  friend class User;
 };
 
-} // namespace LicqDaemon
+} // namespace Licq
 
 #endif

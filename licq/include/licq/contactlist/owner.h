@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,13 @@ public:
 
   virtual bool isUser() const                   { return false; }
 protected:
-  virtual ~Owner() { /* Empty */ }
+  /// Constructor
+  Owner(const UserId& id);
+
+  /// Destructor
+  virtual ~Owner();
+
+  virtual void saveOwnerInfo();
 
   std::string myPassword;
   unsigned myStartupStatus;
@@ -102,6 +108,11 @@ protected:
   unsigned mySsCount;
   time_t m_nSSTime;
   unsigned myPDINFO;
+
+private:
+
+  // Allow the user manager to access private members
+  friend class LicqDaemon::UserManager;
 };
 
 /**

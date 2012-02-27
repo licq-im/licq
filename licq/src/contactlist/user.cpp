@@ -53,23 +53,13 @@ using std::map;
 using std::string;
 using std::stringstream;
 using std::vector;
-using Licq::ICQUserPhoneBook;
-using Licq::IniFile;
-using Licq::OnEventData;
-using Licq::PluginSignal;
-using Licq::ProtocolPlugin;
-using Licq::UserId;
-using Licq::gDaemon;
-using Licq::gLog;
-using Licq::gOnEventManager;
-using Licq::gPluginManager;
-using Licq::gUserManager;
-using namespace LicqDaemon;
+using LicqDaemon::UserHistory;
+using namespace Licq;
 
-const char* const User::ConfigDir = "users/";
-const char* const User::HistoryDir = "history/";
-const char* const User::HistoryExt = ".history";
-const char* const User::HistoryOldExt = ".removed";
+static const char* const ConfigDir = "users/";
+static const char* const HistoryDir = "history/";
+static const char* const HistoryExt = ".history";
+static const char* const HistoryOldExt = ".removed";
 
 
 ICQUserPhoneBook::ICQUserPhoneBook()
@@ -242,10 +232,25 @@ unsigned short Licq::User::s_nNumUserEvents = 0;
 pthread_mutex_t Licq::User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
 
-User::User(const UserId& id, bool temporary, bool isOwner)
-  : myHistory(id.protocolId())
+User::Private::Private(User* user, const UserId& id)
+  : myUser(user),
+    myId(id),
+    myHistory(myId.protocolId())
 {
-  myId = id;
+  // Empty
+}
+
+User::Private::~Private()
+{
+  // Empty
+}
+
+User::User(const UserId& id, bool temporary, bool isOwner)
+  : myId(id),
+    m_bNotInList(temporary),
+    myPrivate(new Private(this, id))
+{
+  LICQ_D();
 
   myServerGroup = 0;
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myId.protocolId());
@@ -256,8 +261,7 @@ User::User(const UserId& id, bool temporary, bool isOwner)
       myServerGroup = -1;
   }
 
-  Init();
-  m_bNotInList = temporary;
+  d->Init();
 
   // Build filename for user properties
   string filename;
@@ -273,38 +277,45 @@ User::User(const UserId& id, bool temporary, bool isOwner)
     filename += ".";
     filename += Licq::protocolId_toString(myId.protocolId());
   }
-  myConf.setFilename(filename);
+  d->myConf.setFilename(filename);
 
   if (m_bNotInList)
   {
-    SetDefaults();
+    d->setDefaults();
     return;
   }
 
 
   // Make sure we have a file so load won't fail
-  if (!myConf.loadFile())
+  if (!d->myConf.loadFile())
   {
-    myConf.setSection("user");
-    if (!myConf.writeFile())
-      gLog.error(tr("Error opening '%s' for writing."), myConf.filename().c_str());
-    SetDefaults();
+    d->myConf.setSection("user");
+    if (!d->myConf.writeFile())
+      gLog.error(tr("Error opening '%s' for writing."), d->myConf.filename().c_str());
+    d->setDefaults();
   }
   else
   {
-    myConf.setSection("user");
+    d->myConf.setSection("user");
   }
 
-  loadUserInfo();
-  LoadPhoneBookInfo();
-  LoadPictureInfo();
-  LoadLicqInfo();
+  d->loadUserInfo();
+  m_PhoneBook->LoadFromDisk(d->myConf);
+  d->loadPictureInfo();
+  d->loadLicqInfo();
 }
 
-void User::AddToContactList()
+IniFile& User::userConf()
 {
-  m_bOnContactList = m_bEnableSave = true;
-  m_bNotInList = false;
+  LICQ_D();
+  return d->myConf;
+}
+
+void User::Private::addToContactList()
+{
+  myUser->m_bOnContactList = true;
+  myUser->m_bEnableSave = true;
+  myUser->m_bNotInList = false;
 
   // Check for old history file
   if (access(myHistory.filename().c_str(), F_OK) == -1)
@@ -321,41 +332,36 @@ void User::AddToContactList()
   }
 }
 
-void User::loadUserInfo()
+void User::Private::loadUserInfo()
 {
   // read in the fields, checking for errors each time
   myConf.setSection("user");
-  myConf.get("Alias", myAlias, tr("Unknown"));
+  myConf.get("Alias", myUser->myAlias, tr("Unknown"));
   int timezone;
   myConf.get("Timezone", timezone, TimezoneUnknown);
-  m_nTimezone = timezone;
-  myConf.get("Authorization", m_bAuthorization, false);
+  myUser->m_nTimezone = timezone;
+  myConf.get("Authorization", myUser->m_bAuthorization, false);
 
   PropertyMap::iterator i;
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
     myConf.get(i->first, i->second);
 
-  loadCategory(myInterests, "Interests");
-  loadCategory(myBackgrounds, "Backgrounds");
-  loadCategory(myOrganizations, "Organizations");
+  loadCategory(myUser->myInterests, "Interests");
+  loadCategory(myUser->myBackgrounds, "Backgrounds");
+  loadCategory(myUser->myOrganizations, "Organizations");
 }
 
-void User::LoadPhoneBookInfo()
-{
-  m_PhoneBook->LoadFromDisk(myConf);
-}
-
-void User::LoadPictureInfo()
+void User::Private::loadPictureInfo()
 {
   myConf.setSection("user");
-  myConf.get("PicturePresent", m_bPicturePresent, false);
-  myConf.get("BuddyIconType", myBuddyIconType, 0);
-  myConf.get("BuddyIconHashType", myBuddyIconHashType, 0);
-  myConf.getHex("BuddyIconHash", myBuddyIconHash, "");
-  myConf.getHex("OurBuddyIconHash", myOurBuddyIconHash, "");
+  myConf.get("PicturePresent", myUser->m_bPicturePresent, false);
+  myConf.get("BuddyIconType", myUser->myBuddyIconType, 0);
+  myConf.get("BuddyIconHashType", myUser->myBuddyIconHashType, 0);
+  myConf.getHex("BuddyIconHash", myUser->myBuddyIconHash, "");
+  myConf.getHex("OurBuddyIconHash", myUser->myOurBuddyIconHash, "");
 }
 
-void User::LoadLicqInfo()
+void User::Private::loadLicqInfo()
 {
   // read in the fields, checking for errors each time
   string temp;
@@ -368,86 +374,86 @@ void User::LoadLicqInfo()
   unsigned long oldSystemGroups;
   myConf.get("Groups.System", oldSystemGroups, 0);
 
-  myConf.get("OnVisibleList", myOnVisibleList, oldSystemGroups & 1<<1);
-  myConf.get("OnInvisibleList", myOnInvisibleList, oldSystemGroups & 1<<2);
-  myConf.get("OnIgnoreList", myOnIgnoreList, oldSystemGroups & 1<<3);
-  myConf.get("OnlineNotify", myOnlineNotify, oldSystemGroups & 1<<0);
-  myConf.get("NewUser", myNewUser, oldSystemGroups & 1<<4);
+  myConf.get("OnVisibleList", myUser->myOnVisibleList, oldSystemGroups & 1<<1);
+  myConf.get("OnInvisibleList", myUser->myOnInvisibleList, oldSystemGroups & 1<<2);
+  myConf.get("OnIgnoreList", myUser->myOnIgnoreList, oldSystemGroups & 1<<3);
+  myConf.get("OnlineNotify", myUser->myOnlineNotify, oldSystemGroups & 1<<0);
+  myConf.get("NewUser", myUser->myNewUser, oldSystemGroups & 1<<4);
   myConf.get("Ip", temp, "0.0.0.0");
   struct in_addr in;
-  m_nIp = inet_pton(AF_INET, temp.c_str(), &in);
-  if (m_nIp > 0)
-    m_nIp = in.s_addr;
+  myUser->m_nIp = inet_pton(AF_INET, temp.c_str(), &in);
+  if (myUser->m_nIp > 0)
+    myUser->m_nIp = in.s_addr;
   myConf.get("IntIp", temp, "0.0.0.0");
-  m_nIntIp = inet_pton(AF_INET, temp.c_str(), &in);
-  if (m_nIntIp > 0)
-    m_nIntIp = in.s_addr;
-  myConf.get("Port", m_nPort, 0);
+  myUser->m_nIntIp = inet_pton(AF_INET, temp.c_str(), &in);
+  if (myUser->m_nIntIp > 0)
+    myUser->m_nIntIp = in.s_addr;
+  myConf.get("Port", myUser->m_nPort, 0);
   myConf.get("NewMessages", nNewMessages, 0);
   myConf.get("LastOnline", nLast, 0);
-  m_nLastCounters[Licq::LAST_ONLINE] = nLast;
+  myUser->m_nLastCounters[Licq::LAST_ONLINE] = nLast;
   myConf.get("LastSent", nLast, 0);
-  m_nLastCounters[Licq::LAST_SENT_EVENT] = nLast;
+  myUser->m_nLastCounters[Licq::LAST_SENT_EVENT] = nLast;
   myConf.get("LastRecv", nLast, 0);
-  m_nLastCounters[Licq::LAST_RECV_EVENT] = nLast;
+  myUser->m_nLastCounters[Licq::LAST_RECV_EVENT] = nLast;
   myConf.get("LastCheckedAR", nLast, 0);
-  m_nLastCounters[Licq::LAST_CHECKED_AR] = nLast;
+  myUser->m_nLastCounters[Licq::LAST_CHECKED_AR] = nLast;
   myConf.get("RegisteredTime", nLast, 0);
-  m_nRegisteredTime = nLast;
+  myUser->m_nRegisteredTime = nLast;
 
   unsigned autoAcceptFlags;
   myConf.get("AutoAccept", autoAcceptFlags, 0);
-  myAcceptInAway                = (autoAcceptFlags & 0x0001);
-  myAcceptInNotAvailable        = (autoAcceptFlags & 0x0002);
-  myAcceptInOccupied            = (autoAcceptFlags & 0x0004);
-  myAcceptInDoNotDisturb        = (autoAcceptFlags & 0x0008);
-  myAutoAcceptChat              = (autoAcceptFlags & 0x0100);
-  myAutoAcceptFile              = (autoAcceptFlags & 0x0200);
-  myAutoSecure                  = (autoAcceptFlags & 0x0400);
+  myUser->myAcceptInAway                = (autoAcceptFlags & 0x0001);
+  myUser->myAcceptInNotAvailable        = (autoAcceptFlags & 0x0002);
+  myUser->myAcceptInOccupied            = (autoAcceptFlags & 0x0004);
+  myUser->myAcceptInDoNotDisturb        = (autoAcceptFlags & 0x0008);
+  myUser->myAutoAcceptChat              = (autoAcceptFlags & 0x0100);
+  myUser->myAutoAcceptFile              = (autoAcceptFlags & 0x0200);
+  myUser->myAutoSecure                  = (autoAcceptFlags & 0x0400);
 
   unsigned icqStatusToUser;
   myConf.get("StatusToUser", icqStatusToUser, 0xFFFF);
   if (icqStatusToUser == 0xFFFF)
-    myStatusToUser = OfflineStatus;
+    myUser->myStatusToUser = OfflineStatus;
   else
   {
-    myStatusToUser = OnlineStatus;
-    if (icqStatusToUser & 0x0002)       myStatusToUser |= DoNotDisturbStatus;
-    else if (icqStatusToUser & 0x0010)  myStatusToUser |= OccupiedStatus;
-    else if (icqStatusToUser & 0x0004)  myStatusToUser |= NotAvailableStatus;
-    else if (icqStatusToUser & 0x0001)  myStatusToUser |= AwayStatus;
-    else if (icqStatusToUser & 0x0020)  myStatusToUser |= FreeForChatStatus;
-    if (icqStatusToUser & 0x0100)       myStatusToUser |= InvisibleStatus;
+    myUser->myStatusToUser = OnlineStatus;
+    if (icqStatusToUser & 0x0002)       myUser->myStatusToUser |= DoNotDisturbStatus;
+    else if (icqStatusToUser & 0x0010)  myUser->myStatusToUser |= OccupiedStatus;
+    else if (icqStatusToUser & 0x0004)  myUser->myStatusToUser |= NotAvailableStatus;
+    else if (icqStatusToUser & 0x0001)  myUser->myStatusToUser |= AwayStatus;
+    else if (icqStatusToUser & 0x0020)  myUser->myStatusToUser |= FreeForChatStatus;
+    if (icqStatusToUser & 0x0100)       myUser->myStatusToUser |= InvisibleStatus;
   }
 
-  if (isUser()) // Only allow to keep a modified alias for user uins
-    myConf.get("KeepAliasOnUpdate", m_bKeepAliasOnUpdate, false);
+  if (myUser->isUser()) // Only allow to keep a modified alias for user uins
+    myConf.get("KeepAliasOnUpdate", myUser->m_bKeepAliasOnUpdate, false);
   else
-    m_bKeepAliasOnUpdate = false;
-  myConf.get("CustomAutoRsp", myCustomAutoResponse, "");
-  myConf.get("SendIntIp", m_bSendIntIp, false);
-  myConf.get( "UserEncoding", myEncoding, "");
+    myUser->m_bKeepAliasOnUpdate = false;
+  myConf.get("CustomAutoRsp", myUser->myCustomAutoResponse, "");
+  myConf.get("SendIntIp", myUser->m_bSendIntIp, false);
+  myConf.get("UserEncoding", myUser->myEncoding, "");
   myConf.get("History", temp, "default");
   if (temp.empty())
     temp = "default";
   setHistoryFile(temp);
-  myConf.get("AwaitingAuth", m_bAwaitingAuth, false);
-  myConf.get("SID", m_nSID[Licq::NORMAL_SID], 0);
-  myConf.get("InvisibleSID", m_nSID[Licq::INV_SID], 0);
-  myConf.get("VisibleSID", m_nSID[Licq::VIS_SID], 0);
-  myConf.get("GSID", m_nGSID, 0);
-  myConf.get("ClientTimestamp", m_nClientTimestamp, 0);
-  myConf.get("ClientInfoTimestamp", m_nClientInfoTimestamp, 0);
-  myConf.get("ClientStatusTimestamp", m_nClientStatusTimestamp, 0);
-  myConf.get("OurClientTimestamp", m_nOurClientTimestamp, 0);
-  myConf.get("OurClientInfoTimestamp", m_nOurClientInfoTimestamp, 0);
-  myConf.get("OurClientStatusTimestamp", m_nOurClientStatusTimestamp, 0);
-  myConf.get("PhoneFollowMeStatus", myPhoneFollowMeStatus, CICQDaemon::IcqPluginInactive);
-  myConf.get("ICQphoneStatus", myIcqPhoneStatus, CICQDaemon::IcqPluginInactive);
-  myConf.get("SharedFilesStatus", mySharedFilesStatus, CICQDaemon::IcqPluginInactive);
-  myConf.get("UseGPG", m_bUseGPG, false );
-  myConf.get("GPGKey", myGpgKey, "");
-  myConf.get("SendServer", m_bSendServer, false);
+  myConf.get("AwaitingAuth", myUser->m_bAwaitingAuth, false);
+  myConf.get("SID", myUser->m_nSID[Licq::NORMAL_SID], 0);
+  myConf.get("InvisibleSID", myUser->m_nSID[Licq::INV_SID], 0);
+  myConf.get("VisibleSID", myUser->m_nSID[Licq::VIS_SID], 0);
+  myConf.get("GSID", myUser->m_nGSID, 0);
+  myConf.get("ClientTimestamp", myUser->m_nClientTimestamp, 0);
+  myConf.get("ClientInfoTimestamp", myUser->m_nClientInfoTimestamp, 0);
+  myConf.get("ClientStatusTimestamp", myUser->m_nClientStatusTimestamp, 0);
+  myConf.get("OurClientTimestamp", myUser->m_nOurClientTimestamp, 0);
+  myConf.get("OurClientInfoTimestamp", myUser->m_nOurClientInfoTimestamp, 0);
+  myConf.get("OurClientStatusTimestamp", myUser->m_nOurClientStatusTimestamp, 0);
+  myConf.get("PhoneFollowMeStatus", myUser->myPhoneFollowMeStatus, CICQDaemon::IcqPluginInactive);
+  myConf.get("ICQphoneStatus", myUser->myIcqPhoneStatus, CICQDaemon::IcqPluginInactive);
+  myConf.get("SharedFilesStatus", myUser->mySharedFilesStatus, CICQDaemon::IcqPluginInactive);
+  myConf.get("UseGPG", myUser->m_bUseGPG, false );
+  myConf.get("GPGKey", myUser->myGpgKey, "");
+  myConf.get("SendServer", myUser->m_bSendServer, false);
   myConf.get("PPFieldCount", nPPFieldCount, 0);
   for (unsigned i = 0; i < nPPFieldCount; i++)
   {
@@ -460,14 +466,14 @@ void User::LoadLicqInfo()
       sprintf(szBuf, "PPField%d.Value", i+1);
       myConf.get(szBuf, tempValue, "");
       if (!tempValue.empty())
-        m_mPPFields[tempName] = tempValue;
+        myUser->m_mPPFields[tempName] = tempValue;
     }
   }
 
-  if (myServerGroup > -1)
+  if (myUser->myServerGroup > -1)
   {
-    if (!myConf.get("ServerGroup", myServerGroup, 0) && myId.protocolId() == LICQ_PPID)
-      myServerGroup = gUserManager.getGroupFromServerId(LICQ_PPID, m_nGSID);
+    if (!myConf.get("ServerGroup", myUser->myServerGroup, 0) && myId.protocolId() == LICQ_PPID)
+      myUser->myServerGroup = gUserManager.getGroupFromServerId(LICQ_PPID, myUser->m_nGSID);
   }
 
   unsigned int userGroupCount;
@@ -480,7 +486,7 @@ void User::LoadLicqInfo()
       int groupId;
       myConf.get(szTemp, groupId, 0);
       if (groupId > 0)
-        addToGroup(groupId);
+        myUser->addToGroup(groupId);
     }
   }
   else
@@ -490,15 +496,15 @@ void User::LoadLicqInfo()
     myConf.get("Groups.User", oldGroups, 0);
     for (int i = 0; i <= 31; ++i)
       if (oldGroups & (1L << i))
-        addToGroup(i+1);
+        myUser->addToGroup(i+1);
   }
 
-  m_bSupportsUTF8 = false;
+  myUser->m_bSupportsUTF8 = false;
 
   if (nNewMessages > 0)
   {
     Licq::HistoryList hist;
-    if (GetHistory(hist))
+    if (myUser->GetHistory(hist))
     {
       Licq::HistoryList::iterator it;
       if (hist.size() < nNewMessages)
@@ -514,12 +520,12 @@ void User::LoadLicqInfo()
       }
       while (it != hist.end())
       {
-        m_vcMessages.push_back( (*it)->Copy() );
-        incNumUserEvents();
+        myUser->m_vcMessages.push_back( (*it)->Copy() );
+        myUser->incNumUserEvents();
         it++;
       }
     }
-    ClearHistory(hist);
+    myUser->ClearHistory(hist);
   }
 }
 
@@ -549,9 +555,11 @@ User::~User()
     nResult = pthread_mutex_destroy(&mutex);
   } while (nResult != 0);
 */
+
+  delete myPrivate;
 }
 
-void User::RemoveFiles()
+void User::Private::removeFiles()
 {
   remove(myConf.filename().c_str());
 
@@ -569,18 +577,19 @@ void User::RemoveFiles()
   }
 }
 
-void User::Init()
+void User::Private::Init()
 {
-  //SetOnContactList(false);
-  m_bOnContactList = m_bEnableSave = false;
-  myAutoResponse = "";
-  myEncoding = "";
-  m_bSecure = false;
+  //myUser->SetOnContactList(false);
+  myUser->m_bOnContactList = false;
+  myUser->m_bEnableSave = false;
+  myUser->myAutoResponse = "";
+  myUser->myEncoding = "";
+  myUser->m_bSecure = false;
 
   // TODO: Only user data fields valid for protocol should be populated
 
   // General Info
-  myAlias = string();
+  myUser->myAlias = string();
   myUserInfo["FirstName"] = string();
   myUserInfo["LastName"] = string();
   myUserInfo["Email1"] = string(); // Primary email
@@ -595,11 +604,11 @@ void User::Init()
   myUserInfo["Zipcode"] = string();
   myUserInfo["Country"] = (unsigned int)COUNTRY_UNSPECIFIED;
   myUserInfo["HideEmail"] = false;
-  m_nTimezone = TimezoneUnknown;
-  m_bAuthorization = false;
-  myIsTyping = false;
-  m_bNotInList = false;
-  myOnEventsBlocked = false;
+  myUser->m_nTimezone = TimezoneUnknown;
+  myUser->m_bAuthorization = false;
+  myUser->myIsTyping = false;
+  myUser->m_bNotInList = false;
+  myUser->myOnEventsBlocked = false;
 
   // More Info
   myUserInfo["Age"] = (unsigned int)0xffff;
@@ -619,9 +628,9 @@ void User::Init()
   myUserInfo["ICQHomepagePresent"] = false;
 
   // More2
-  myInterests.clear();
-  myBackgrounds.clear();
-  myOrganizations.clear();
+  myUser->myInterests.clear();
+  myUser->myBackgrounds.clear();
+  myUser->myOrganizations.clear();
 
   // Work Info
   myUserInfo["CompanyCity"] = string();
@@ -641,79 +650,81 @@ void User::Init()
   myUserInfo["About"] = string();
 
   // Phone Book
-  m_PhoneBook = new ICQUserPhoneBook();
+  myUser->m_PhoneBook = new ICQUserPhoneBook();
 
   // Picture
-  m_bPicturePresent = false;
-  myBuddyIconType = 0;
-  myBuddyIconHashType = 0;
-  myBuddyIconHash.clear();
-  myOurBuddyIconHash.clear();
+  myUser->m_bPicturePresent = false;
+  myUser->myBuddyIconType = 0;
+  myUser->myBuddyIconHashType = 0;
+  myUser->myBuddyIconHash.clear();
+  myUser->myOurBuddyIconHash.clear();
 
-  myPictureFileName = gDaemon.baseDir() + ConfigDir + myId.accountId() + ".pic";
+  myUser->myPictureFileName = gDaemon.baseDir() + ConfigDir + myId.accountId() + ".pic";
 
   // GPG key
-  myGpgKey = "";
+  myUser->myGpgKey = "";
 
   // gui plugin compat
-  myStatus = OfflineStatus;
-  myAutoResponse = "";
-  SetSendServer(false);
-  SetSendIntIp(false);
-  SetShowAwayMsg(false);
-  SetSequence(static_cast<unsigned short>(-1)); // set all bits 0xFFFF
-  SetOfflineOnDisconnect(false);
-  clearAllSocketDesc();
-  m_nIp = m_nPort = m_nIntIp = 0;
-  myDirectMode = true;
-  m_nVersion = 0;
-  m_nCookie = 0;
-  m_nClientTimestamp = 0;
-  m_nClientInfoTimestamp = 0;
-  m_nClientStatusTimestamp = 0;
-  m_nOurClientTimestamp = 0;
-  m_nOurClientInfoTimestamp = 0;
-  m_nOurClientStatusTimestamp = 0;
-  m_bUserUpdated = false;
-  myPhoneFollowMeStatus = CICQDaemon::IcqPluginInactive;
-  myIcqPhoneStatus = CICQDaemon::IcqPluginInactive;
-  mySharedFilesStatus = CICQDaemon::IcqPluginInactive;
-  myWebPresence = false;
-  myHideIp = false;
-  myBirthdayFlag = false;
-  myHomepageFlag = false;
-  myDirectFlag = DirectAnyone;
-  mySecureChannelSupport = SecureChannelUnknown;
-  Touch();
+  myUser->myStatus = OfflineStatus;
+  myUser->myAutoResponse = "";
+  myUser->SetSendServer(false);
+  myUser->SetSendIntIp(false);
+  myUser->SetShowAwayMsg(false);
+  myUser->SetSequence(static_cast<unsigned short>(-1)); // set all bits 0xFFFF
+  myUser->SetOfflineOnDisconnect(false);
+  myUser->clearAllSocketDesc();
+  myUser->m_nIp = 0;
+  myUser->m_nPort = 0;
+  myUser->m_nIntIp = 0;
+  myUser->myDirectMode = true;
+  myUser->m_nVersion = 0;
+  myUser->m_nCookie = 0;
+  myUser->m_nClientTimestamp = 0;
+  myUser->m_nClientInfoTimestamp = 0;
+  myUser->m_nClientStatusTimestamp = 0;
+  myUser->m_nOurClientTimestamp = 0;
+  myUser->m_nOurClientInfoTimestamp = 0;
+  myUser->m_nOurClientStatusTimestamp = 0;
+  myUser->m_bUserUpdated = false;
+  myUser->myPhoneFollowMeStatus = CICQDaemon::IcqPluginInactive;
+  myUser->myIcqPhoneStatus = CICQDaemon::IcqPluginInactive;
+  myUser->mySharedFilesStatus = CICQDaemon::IcqPluginInactive;
+  myUser->myWebPresence = false;
+  myUser->myHideIp = false;
+  myUser->myBirthdayFlag = false;
+  myUser->myHomepageFlag = false;
+  myUser->myDirectFlag = DirectAnyone;
+  myUser->mySecureChannelSupport = SecureChannelUnknown;
+  myUser->Touch();
   for (unsigned short i = 0; i < 4; i++)
-    m_nLastCounters[i] = 0;
-  m_nOnlineSince = 0;
-  m_nIdleSince = 0;
-  myAwaySince = 0;
-  m_nRegisteredTime = 0;
-  myStatusToUser = OfflineStatus;
-  m_bKeepAliasOnUpdate = false;
-  myAutoAcceptChat = false;
-  myAutoAcceptFile = false;
-  myAutoSecure = false;
-  myAcceptInAway = false;
-  myAcceptInNotAvailable = false;
-  myAcceptInOccupied = false;
-  myAcceptInDoNotDisturb = false;
-  myCustomAutoResponse = "";
-  m_bConnectionInProgress = false;
-  m_bAwaitingAuth = false;
-  m_nSID[0] = m_nSID[1] = m_nSID[2] = 0;
-  m_nGSID = 0;
-  myClientInfo = "";
+    myUser->m_nLastCounters[i] = 0;
+  myUser->m_nOnlineSince = 0;
+  myUser->m_nIdleSince = 0;
+  myUser->myAwaySince = 0;
+  myUser->m_nRegisteredTime = 0;
+  myUser->myStatusToUser = OfflineStatus;
+  myUser->m_bKeepAliasOnUpdate = false;
+  myUser->myAutoAcceptChat = false;
+  myUser->myAutoAcceptFile = false;
+  myUser->myAutoSecure = false;
+  myUser->myAcceptInAway = false;
+  myUser->myAcceptInNotAvailable = false;
+  myUser->myAcceptInOccupied = false;
+  myUser->myAcceptInDoNotDisturb = false;
+  myUser->myCustomAutoResponse = "";
+  myUser->m_bConnectionInProgress = false;
+  myUser->m_bAwaitingAuth = false;
+  myUser->m_nSID[0] = myUser->m_nSID[1] = myUser->m_nSID[2] = 0;
+  myUser->m_nGSID = 0;
+  myUser->myClientInfo = "";
 
-  myMutex.setName(myId.toString());
+  myUser->myMutex.setName(myId.toString());
 }
 
-void User::SetPermanent()
+void User::Private::setPermanent()
 {
   // Set the flags and check for history file to recover
-  AddToContactList();
+  addToContactList();
 
   // Create file so save will have something to write in
   if (!myConf.loadFile())
@@ -725,34 +736,36 @@ void User::SetPermanent()
 
 
   // Save all the info now
-  save(SaveAll);
+  myUser->save(SaveAll);
 
   // Notify the plugins of the change
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
       PluginSignal::UserSettings, myId, 0));
 }
 
-void User::SetDefaults()
+void User::Private::setDefaults()
 {
-  setAlias(myId.accountId());
+  myUser->setAlias(myId.accountId());
   setHistoryFile("default");
-  myOnVisibleList = false;
-  myOnInvisibleList = false;
-  myOnIgnoreList = false;
-  myGroups.clear();
-  SetNewUser(true);
-  SetAuthorization(false);
-  myOnlineNotify = false;
+  myUser->myOnVisibleList = false;
+  myUser->myOnInvisibleList = false;
+  myUser->myOnIgnoreList = false;
+  myUser->myGroups.clear();
+  myUser->SetNewUser(true);
+  myUser->SetAuthorization(false);
+  myUser->myOnlineNotify = false;
 
-  clearCustomAutoResponse();
+  myUser->clearCustomAutoResponse();
 }
 
 string User::getUserInfoString(const string& key) const
 {
+  LICQ_D();
+
   try
   {
-    PropertyMap::const_iterator i = myUserInfo.find(key);
-    if (i != myUserInfo.end())
+    PropertyMap::const_iterator i = d->myUserInfo.find(key);
+    if (i != d->myUserInfo.end())
       // Try to cast value to a string
       return any_cast<string>(i->second);
   }
@@ -765,10 +778,12 @@ string User::getUserInfoString(const string& key) const
 
 unsigned int User::getUserInfoUint(const string& key) const
 {
+  LICQ_D();
+
   try
   {
-    PropertyMap::const_iterator i = myUserInfo.find(key);
-    if (i != myUserInfo.end())
+    PropertyMap::const_iterator i = d->myUserInfo.find(key);
+    if (i != d->myUserInfo.end())
       // Try to cast value to an unsigned int
       return any_cast<unsigned int>(i->second);
   }
@@ -781,10 +796,12 @@ unsigned int User::getUserInfoUint(const string& key) const
 
 bool User::getUserInfoBool(const string& key) const
 {
+  LICQ_D();
+
   try
   {
-    PropertyMap::const_iterator i = myUserInfo.find(key);
-    if (i != myUserInfo.end())
+    PropertyMap::const_iterator i = d->myUserInfo.find(key);
+    if (i != d->myUserInfo.end())
       // Try to cast value to a bool
       return any_cast<bool>(i->second);
   }
@@ -797,11 +814,11 @@ bool User::getUserInfoBool(const string& key) const
 
 void User::setUserInfoString(const string& key, const string& value)
 {
-  PropertyMap::iterator i = myUserInfo.find(key);
-  if (i == myUserInfo.end() || i->second.type() != typeid(string))
-{
+  LICQ_D();
+
+  PropertyMap::iterator i = d->myUserInfo.find(key);
+  if (i == d->myUserInfo.end() || i->second.type() != typeid(string))
     return;
-}
 
   i->second = value;
   save(SaveUserInfo);
@@ -809,11 +826,11 @@ void User::setUserInfoString(const string& key, const string& value)
 
 void User::setUserInfoUint(const string& key, unsigned int value)
 {
-  PropertyMap::iterator i = myUserInfo.find(key);
-  if (i == myUserInfo.end() || i->second.type() != typeid(unsigned int))
-{
+  LICQ_D();
+
+  PropertyMap::iterator i = d->myUserInfo.find(key);
+  if (i == d->myUserInfo.end() || i->second.type() != typeid(unsigned int))
     return;
-}
 
   i->second = value;
   save(SaveUserInfo);
@@ -821,11 +838,11 @@ void User::setUserInfoUint(const string& key, unsigned int value)
 
 void User::setUserInfoBool(const string& key, bool value)
 {
-  PropertyMap::iterator i = myUserInfo.find(key);
-  if (i == myUserInfo.end() || i->second.type() != typeid(bool))
-{
+  LICQ_D();
+
+  PropertyMap::iterator i = d->myUserInfo.find(key);
+  if (i == d->myUserInfo.end() || i->second.type() != typeid(bool))
     return;
-}
 
   i->second = value;
   save(SaveUserInfo);
@@ -995,10 +1012,16 @@ void Licq::User::setAlias(const string& alias)
   save(SaveUserInfo);
 }
 
-void User::setHistoryFile(const std::string& file)
+void User::Private::setHistoryFile(const std::string& file)
 {
   string realFile;
-  if (file == "default")
+
+  if (!myUser->isUser())
+  {
+    realFile = gDaemon.baseDir() + HistoryDir + "owner." + myId.accountId() +
+        "." + protocolId_toString(myId.protocolId()) + HistoryExt;
+  }
+  else if (file == "default")
   {
     realFile = gDaemon.baseDir() + HistoryDir + myId.accountId() + '.' +
         Licq::protocolId_toString(myId.protocolId()) + HistoryExt;
@@ -1010,12 +1033,14 @@ void User::setHistoryFile(const std::string& file)
   }
 
   myHistory.setFile(realFile, file);
-  save(SaveLicqInfo);
+  myUser->save(SaveLicqInfo);
 }
 
 int User::GetHistory(Licq::HistoryList& history) const
 {
-  return myHistory.load(history, userEncoding());
+  LICQ_D();
+
+  return d->myHistory.load(history, userEncoding());
 }
 
 void Licq::User::ClearHistory(HistoryList& h)
@@ -1025,12 +1050,16 @@ void Licq::User::ClearHistory(HistoryList& h)
 
 const string& User::historyName() const
 {
-  return myHistory.description();
+  LICQ_D();
+
+  return d->myHistory.description();
 }
 
 const string& User::historyFile() const
 {
-  return myHistory.filename();
+  LICQ_D();
+
+  return d->myHistory.filename();
 }
 
 void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
@@ -1657,21 +1686,23 @@ string UserId::normalizeId(const string& accountId, unsigned long ppid)
 
 void User::saveUserInfo()
 {
-  myConf.set("Alias", myAlias);
-  myConf.set("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
-  myConf.set("Timezone", m_nTimezone);
-  myConf.set("Authorization", m_bAuthorization);
+  LICQ_D();
+
+  d->myConf.set("Alias", myAlias);
+  d->myConf.set("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
+  d->myConf.set("Timezone", m_nTimezone);
+  d->myConf.set("Authorization", m_bAuthorization);
 
   PropertyMap::const_iterator i;
-  for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
-    myConf.set(i->first, i->second);
+  for (i = d->myUserInfo.begin(); i != d->myUserInfo.end(); ++i)
+    d->myConf.set(i->first, i->second);
 
-  saveCategory(myInterests, "Interests");
-  saveCategory(myBackgrounds, "Backgrounds");
-  saveCategory(myOrganizations, "Organizations");
+  d->saveCategory(myInterests, "Interests");
+  d->saveCategory(myBackgrounds, "Backgrounds");
+  d->saveCategory(myOrganizations, "Organizations");
 }
 
-void User::saveCategory(const Licq::UserCategoryMap& category, const string& key)
+void User::Private::saveCategory(const UserCategoryMap& category, const string& key)
 {
   myConf.set(key + 'N', category.size());
 
@@ -1687,7 +1718,7 @@ void User::saveCategory(const Licq::UserCategoryMap& category, const string& key
   }
 }
 
-void User::loadCategory(Licq::UserCategoryMap& category, const string& key)
+void User::Private::loadCategory(UserCategoryMap& category, const string& key)
 {
   category.clear();
   unsigned int count;
@@ -1718,31 +1749,35 @@ void User::loadCategory(Licq::UserCategoryMap& category, const string& key)
 
 void User::savePictureInfo()
 {
-  myConf.set("PicturePresent", m_bPicturePresent);
-  myConf.set("BuddyIconType", myBuddyIconType);
-  myConf.set("BuddyIconHashType", myBuddyIconHashType);
-  myConf.setHex("BuddyIconHash", myBuddyIconHash);
-  myConf.setHex("OurBuddyIconHash", myOurBuddyIconHash);
+  LICQ_D();
+
+  d->myConf.set("PicturePresent", m_bPicturePresent);
+  d->myConf.set("BuddyIconType", myBuddyIconType);
+  d->myConf.set("BuddyIconHashType", myBuddyIconHashType);
+  d->myConf.setHex("BuddyIconHash", myBuddyIconHash);
+  d->myConf.setHex("OurBuddyIconHash", myOurBuddyIconHash);
 }
 
 void User::saveLicqInfo()
 {
+  LICQ_D();
+
    char buf[64];
-  myConf.set("History", historyName());
-  myConf.set("OnVisibleList", myOnVisibleList);
-  myConf.set("OnInvisibleList", myOnInvisibleList);
-  myConf.set("OnIgnoreList", myOnIgnoreList);
-  myConf.set("OnlineNotify", myOnlineNotify);
-  myConf.set("NewUser", myNewUser);
-  myConf.set("Ip", Licq::ip_ntoa(m_nIp, buf));
-  myConf.set("IntIp", Licq::ip_ntoa(m_nIntIp, buf));
-  myConf.set("Port", Port());
-  myConf.set("NewMessages", NewMessages());
-  myConf.set("LastOnline", (unsigned long)LastOnline());
-  myConf.set("LastSent", (unsigned long)LastSentEvent());
-  myConf.set("LastRecv", (unsigned long)LastReceivedEvent());
-  myConf.set("LastCheckedAR", (unsigned long)LastCheckedAutoResponse());
-  myConf.set("RegisteredTime", (unsigned long)RegisteredTime());
+  d->myConf.set("History", historyName());
+  d->myConf.set("OnVisibleList", myOnVisibleList);
+  d->myConf.set("OnInvisibleList", myOnInvisibleList);
+  d->myConf.set("OnIgnoreList", myOnIgnoreList);
+  d->myConf.set("OnlineNotify", myOnlineNotify);
+  d->myConf.set("NewUser", myNewUser);
+  d->myConf.set("Ip", Licq::ip_ntoa(m_nIp, buf));
+  d->myConf.set("IntIp", Licq::ip_ntoa(m_nIntIp, buf));
+  d->myConf.set("Port", Port());
+  d->myConf.set("NewMessages", NewMessages());
+  d->myConf.set("LastOnline", (unsigned long)LastOnline());
+  d->myConf.set("LastSent", (unsigned long)LastSentEvent());
+  d->myConf.set("LastRecv", (unsigned long)LastReceivedEvent());
+  d->myConf.set("LastCheckedAR", (unsigned long)LastCheckedAutoResponse());
+  d->myConf.set("RegisteredTime", (unsigned long)RegisteredTime());
 
   unsigned autoAcceptFlags = 0;
   if (myAcceptInAway)           autoAcceptFlags |= 0x0001;
@@ -1752,7 +1787,7 @@ void User::saveLicqInfo()
   if (myAutoAcceptChat)         autoAcceptFlags |= 0x0100;
   if (myAutoAcceptFile)         autoAcceptFlags |= 0x0200;
   if (myAutoSecure)             autoAcceptFlags |= 0x0400;
-  myConf.set("AutoAccept", autoAcceptFlags);
+  d->myConf.set("AutoAccept", autoAcceptFlags);
 
   unsigned icqStatusToUser = 0xFFFF;
   if (myStatusToUser & OnlineStatus)
@@ -1765,29 +1800,29 @@ void User::saveLicqInfo()
     else                                          icqStatusToUser = 0;
     if (myStatusToUser & InvisibleStatus)         icqStatusToUser |= 0x0100;
   }
-  myConf.set("StatusToUser", icqStatusToUser);
+  d->myConf.set("StatusToUser", icqStatusToUser);
 
-  myConf.set("CustomAutoRsp", customAutoResponse());
-  myConf.set("SendIntIp", m_bSendIntIp);
-  myConf.set("UserEncoding", myEncoding);
-  myConf.set("AwaitingAuth", m_bAwaitingAuth);
-  myConf.set("SID", m_nSID[Licq::NORMAL_SID]);
-  myConf.set("InvisibleSID", m_nSID[Licq::INV_SID]);
-  myConf.set("VisibleSID", m_nSID[Licq::VIS_SID]);
-  myConf.set("GSID", m_nGSID);
-  myConf.set("ClientTimestamp", m_nClientTimestamp);
-  myConf.set("ClientInfoTimestamp", m_nClientInfoTimestamp);
-  myConf.set("ClientStatusTimestamp", m_nClientStatusTimestamp);
-  myConf.set("OurClientTimestamp", m_nOurClientTimestamp);
-  myConf.set("OurClientInfoTimestamp", m_nOurClientInfoTimestamp);
-  myConf.set("OurClientStatusTimestamp", m_nOurClientStatusTimestamp);
-  myConf.set("PhoneFollowMeStatus", myPhoneFollowMeStatus);
-  myConf.set("ICQphoneStatus", myIcqPhoneStatus);
-  myConf.set("SharedFilesStatus", mySharedFilesStatus);
-  myConf.set("UseGPG", m_bUseGPG );
-  myConf.set("GPGKey", myGpgKey );
-  myConf.set("SendServer", m_bSendServer);
-  myConf.set("PPFieldCount", (unsigned short)m_mPPFields.size());
+  d->myConf.set("CustomAutoRsp", customAutoResponse());
+  d->myConf.set("SendIntIp", m_bSendIntIp);
+  d->myConf.set("UserEncoding", myEncoding);
+  d->myConf.set("AwaitingAuth", m_bAwaitingAuth);
+  d->myConf.set("SID", m_nSID[Licq::NORMAL_SID]);
+  d->myConf.set("InvisibleSID", m_nSID[Licq::INV_SID]);
+  d->myConf.set("VisibleSID", m_nSID[Licq::VIS_SID]);
+  d->myConf.set("GSID", m_nGSID);
+  d->myConf.set("ClientTimestamp", m_nClientTimestamp);
+  d->myConf.set("ClientInfoTimestamp", m_nClientInfoTimestamp);
+  d->myConf.set("ClientStatusTimestamp", m_nClientStatusTimestamp);
+  d->myConf.set("OurClientTimestamp", m_nOurClientTimestamp);
+  d->myConf.set("OurClientInfoTimestamp", m_nOurClientInfoTimestamp);
+  d->myConf.set("OurClientStatusTimestamp", m_nOurClientStatusTimestamp);
+  d->myConf.set("PhoneFollowMeStatus", myPhoneFollowMeStatus);
+  d->myConf.set("ICQphoneStatus", myIcqPhoneStatus);
+  d->myConf.set("SharedFilesStatus", mySharedFilesStatus);
+  d->myConf.set("UseGPG", m_bUseGPG );
+  d->myConf.set("GPGKey", myGpgKey );
+  d->myConf.set("SendServer", m_bSendServer);
+  d->myConf.set("PPFieldCount", (unsigned short)m_mPPFields.size());
 
    map<string,string>::iterator iter;
    int i = 0;
@@ -1795,26 +1830,28 @@ void User::saveLicqInfo()
    {
      char szBuf[25];
      sprintf(szBuf, "PPField%d.Name", ++i);
-      myConf.set(szBuf, iter->first);
+    d->myConf.set(szBuf, iter->first);
      sprintf(szBuf, "PPField%d.Value", i);
-      myConf.set(szBuf, iter->second);
+    d->myConf.set(szBuf, iter->second);
    }
 
   if (myServerGroup > -1)
-    myConf.set("ServerGroup", myServerGroup);
-  myConf.set("GroupCount", static_cast<unsigned int>(myGroups.size()));
+    d->myConf.set("ServerGroup", myServerGroup);
+  d->myConf.set("GroupCount", static_cast<unsigned int>(myGroups.size()));
   i = 1;
   for (Licq::UserGroupList::iterator g = myGroups.begin(); g != myGroups.end(); ++g)
   {
     sprintf(buf, "Group%u", i);
-    myConf.set(buf, *g);
+    d->myConf.set(buf, *g);
     ++i;
   }
 }
 
 void User::saveNewMessagesInfo()
 {
-  myConf.set("NewMessages", NewMessages());
+  LICQ_D();
+
+  d->myConf.set("NewMessages", NewMessages());
 }
 
 void User::saveOwnerInfo()
@@ -1827,14 +1864,16 @@ void User::save(unsigned group)
   if (!EnableSave())
     return;
 
-  if (!myConf.loadFile())
+  LICQ_D();
+
+  if (!d->myConf.loadFile())
   {
     gLog.error(tr("Error opening '%s' for reading. See log for details."),
-        myConf.filename().c_str());
+        d->myConf.filename().c_str());
     return;
   }
 
-  myConf.setSection("user");
+  d->myConf.setSection("user");
 
   if (group & SaveUserInfo)
     saveUserInfo();
@@ -1847,11 +1886,11 @@ void User::save(unsigned group)
   if (group & SavePictureInfo)
     savePictureInfo();
   if (group & SavePhoneBook)
-    m_PhoneBook->SaveToDisk(myConf);
+    m_PhoneBook->SaveToDisk(d->myConf);
 
-  if (!myConf.writeFile())
+  if (!d->myConf.writeFile())
     gLog.error(tr("Error opening '%s' for writing. See log for details."),
-        myConf.filename().c_str());
+        d->myConf.filename().c_str());
 }
 
 void Licq::User::EventPush(Licq::UserEvent *e)
@@ -1866,7 +1905,7 @@ void Licq::User::EventPush(Licq::UserEvent *e)
       PluginSignal::UserEvents, myId, e->Id(), e->ConvoId()));
 }
 
-void User::writeToHistory(const string& text)
+void User::Private::writeToHistory(const string& text)
 {
   myHistory.append(text);
 }

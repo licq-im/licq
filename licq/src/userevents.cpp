@@ -24,10 +24,11 @@
 #include <cstdlib>
 #include <sstream>
 
+#include <licq/contactlist/user.h>
 #include <licq/gpghelper.h>
 #include <licq/translator.h>
 
-#include "contactlist/user.h"
+#include "contactlist/usermanager.h"
 #include "gettext.h"
 
 #ifdef USE_HEBREW
@@ -187,7 +188,7 @@ void UserEvent::writeUserHistory(User* u, const string& text) const
   if (u == NULL)
     return;
 
-  dynamic_cast<LicqDaemon::User*>(u)->writeToHistory(text);
+  LicqDaemon::gUserManager.writeToUserHistory(u, text);
 }
 
 

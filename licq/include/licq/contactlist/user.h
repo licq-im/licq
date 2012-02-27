@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "../buffer.h"
+#include "../macro.h"
 #include "../thread/lockable.h"
 #include "../userid.h"
 
@@ -50,7 +51,6 @@ class Plugin;
 
 namespace LicqDaemon
 {
-class User;
 class UserManager;
 }
 
@@ -149,7 +149,7 @@ private:
 
   std::vector<struct PhoneBookEntry> PhoneBookVector;
 
-  friend class LicqDaemon::User;
+  friend class User;
 };
 
 
@@ -194,7 +194,7 @@ public:
    *
    * @param group Sub part of data to update (from SaveGroups above)
    */
-  virtual void save(unsigned group = SaveAll) = 0;
+  void save(unsigned group = SaveAll);
 
   /**
    * Get id for user. This is an id used locally by Licq and is persistant for
@@ -374,7 +374,7 @@ public:
    * @param key Name of property to get
    * @return Property value if string, otherwise empty
    */
-  virtual std::string getUserInfoString(const std::string& key) const = 0;
+  std::string getUserInfoString(const std::string& key) const;
 
   /**
    * Get numeric user info
@@ -382,7 +382,7 @@ public:
    * @param key Name of property to get
    * @return Property value if unsigned int, otherwise 0
    */
-  virtual unsigned int getUserInfoUint(const std::string& key) const = 0;
+  unsigned int getUserInfoUint(const std::string& key) const;
 
   /**
    * Get boolean user info
@@ -390,7 +390,7 @@ public:
    * @param key Name of property to get
    * @return Property value if bool, otherwise false
    */
-  virtual bool getUserInfoBool(const std::string& key) const = 0;
+  bool getUserInfoBool(const std::string& key) const;
 
   /**
    * Set string user info
@@ -398,7 +398,7 @@ public:
    * @param key Name of property to set, must already exist
    * @param value New value for property
    */
-  virtual void setUserInfoString(const std::string& key, const std::string& value) = 0;
+  void setUserInfoString(const std::string& key, const std::string& value);
 
   /**
    * Set numeric user info
@@ -406,7 +406,7 @@ public:
    * @param key Name of property to set, must already exist
    * @param value New value for property
    */
-  virtual void setUserInfoUint(const std::string& key, unsigned int value) = 0;
+  void setUserInfoUint(const std::string& key, unsigned int value);
 
   /**
    * Set bool user info
@@ -414,7 +414,7 @@ public:
    * @param key Name of property to set, must already exist
    * @param value New value for property
    */
-  virtual void setUserInfoBool(const std::string& key, bool value) = 0;
+  void setUserInfoBool(const std::string& key, bool value);
 
   // Picture info
   void SetPicturePresent(bool b)      { m_bPicturePresent = b; save(SavePictureInfo); }
@@ -630,10 +630,10 @@ public:
   void EventClear(unsigned short);
   void EventClearId(int);
   void EventPush(UserEvent *);
-  virtual int GetHistory(HistoryList& history) const = 0;
+  int GetHistory(HistoryList& history) const;
   static void ClearHistory(HistoryList& h);
-  virtual const std::string& historyName() const = 0;
-  virtual const std::string& historyFile() const = 0;
+  const std::string& historyName() const;
+  const std::string& historyFile() const;
 
   /**
    * Get user groups this user is member of
@@ -790,7 +790,20 @@ public:
   virtual bool isUser() const                   { return true; }
 
 protected:
-  virtual ~User() { /* Empty */ }
+  /// Constructor
+  User(const UserId& id, bool temporary = false, bool isOwner = false);
+
+  /// Destructor
+  virtual ~User();
+
+  /// Get the config file for this user
+  IniFile& userConf();
+
+  virtual void saveLicqInfo();
+  virtual void saveUserInfo();
+  virtual void saveOwnerInfo();
+  virtual void saveNewMessagesInfo();
+  virtual void savePictureInfo();
 
   void SetSecure(bool s) { m_bSecure = s; }
   bool ConnectionInProgress() const { return m_bConnectionInProgress; }
@@ -914,6 +927,12 @@ protected:
   friend void* LicqIcq::MonitorSockets_func();
   friend class LicqMsn::CMSN;
   friend class LicqJabber::Plugin;
+
+private:
+  LICQ_DECLARE_PRIVATE();
+
+  // Allow the user manager to access private members
+  friend class LicqDaemon::UserManager;
 };
 
 

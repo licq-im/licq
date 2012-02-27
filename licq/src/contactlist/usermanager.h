@@ -32,12 +32,10 @@
 namespace LicqDaemon
 {
 class Group;
-class Owner;
-class User;
 
-typedef std::map<Licq::UserId, User*> UserMap;
+typedef std::map<Licq::UserId, Licq::User*> UserMap;
 typedef std::map<int, Group*> GroupMap;
-typedef std::map<unsigned long, Owner*> OwnerMap;
+typedef std::map<unsigned long, Licq::Owner*> OwnerMap;
 
 class UserManager : public Licq::UserManager
 {
@@ -51,6 +49,7 @@ public:
   void shutdown();
 
   bool Load();
+  void writeToUserHistory(Licq::User* user, const std::string& text);
 
   /**
    * Load owners and users for a protocol
