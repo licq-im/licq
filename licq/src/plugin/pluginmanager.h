@@ -34,6 +34,13 @@
 #include "../utils/dynamiclibrary.h"
 #include "pluginthread.h"
 
+namespace Licq
+{
+class Owner;
+class User;
+class UserId;
+}
+
 namespace LicqDaemon
 {
 
@@ -77,6 +84,26 @@ public:
   void cancelAllPlugins();
 
   size_t getGeneralPluginsCount() const;
+
+  /**
+   * Create a protocol specific user object
+   * Wrapper so ProtocolPlugin doesn't have to friend UserManager
+   * Called by UserManager
+   *
+   * @param id User id
+   * @param temporary True if user isn't added permanently to contact list
+   * @return A newly created user object
+   */
+  Licq::User* createProtocolUser(const Licq::UserId& id, bool temporary = false);
+
+  /**
+   * Create a protocol specific owner object
+   * Wrapper so ProtocolPlugin doesn't have to friend UserManager
+   *
+   * @param id Owner user id
+   * @return A newly created owner object
+   */
+  Licq::Owner* createProtocolOwner(const Licq::UserId& id);
 
   // From Licq::PluginManager
   void getGeneralPluginsList(Licq::GeneralPluginsList& plugins) const;

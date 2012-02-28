@@ -26,13 +26,13 @@
 #include <licq/contactlist/user.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
-#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
 
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../icq/icq.h"
+#include "../plugin/pluginmanager.h"
 #include "../protocolmanager.h"
 #include "group.h"
 #include "user.h"
@@ -54,7 +54,6 @@ using Licq::UserGroupList;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
 using Licq::gLog;
-using Licq::gPluginManager;
 using LicqIcq::gIcqProtocol;
 using namespace LicqDaemon;
 
@@ -108,7 +107,7 @@ void UserManager::addOwner(const UserId& userId)
     return;
   }
 
-  Owner* o = new Owner(userId);
+  Owner* o = createOwner(userId);
 
   myConfiguredOwners.insert(userId);
   myOwners[userId.protocolId()] = o;
@@ -251,7 +250,7 @@ void UserManager::loadUserList(const UserId& ownerId)
         continue;
       }
       UserId userId(accountId, ownerId.protocolId());
-      User* u = new User(userId);
+      User* u = createUser(userId);
       u->myPrivate->addToContactList();
       myUsers[userId] = u;
     }
@@ -283,7 +282,7 @@ void UserManager::loadUserList(const UserId& ownerId)
 
       string accountId = userFile.substr(0, sz);
       UserId userId(accountId, ownerId.protocolId());
-      User* u = new User(userId);
+      User* u = createUser(userId);
       u->myPrivate->addToContactList();
       myUsers[userId] = u;
     }
@@ -303,7 +302,7 @@ void UserManager::loadProtocol(unsigned long protocolId)
       continue;
 
     // Load owner
-    Owner* o = new Owner(ownerId);
+    Owner* o = createOwner(ownerId);
     myOwners[ownerId.protocolId()] = o;
 
     // Notify plugins that the owner has been added
@@ -460,7 +459,7 @@ bool UserManager::addUser(const UserId& uid,
     return false;
   }
 
-  User* pUser = new User(uid, !permanent);
+  User* pUser = createUser(uid, !permanent);
   pUser->lockWrite();
 
   if (permanent)
@@ -659,7 +658,7 @@ Licq::User* UserManager::fetchUser(const UserId& userId,
     if (user == NULL && addUser)
     {
       // Create a temporary user
-      user = new User(userId, true);
+      user = createUser(userId, true);
 
       // Store the user in the lookup map
       myUsers[userId] = user;
@@ -735,6 +734,28 @@ bool UserManager::isOwner(const UserId& userId)
   myOwnerListMutex.unlockRead();
 
   return exists;
+}
+
+User* UserManager::createUser(const UserId& userId, bool temporary)
+{
+  User* u = gPluginManager.createProtocolUser(userId, temporary);
+
+  if (u == NULL)
+    // Protocol hasn't subclassed the user class, create from Licq::User instead
+    u = new User(userId, temporary);
+
+  return u;
+}
+
+Owner* UserManager::createOwner(const UserId& ownerId)
+{
+  Owner* o = gPluginManager.createProtocolOwner(ownerId);
+
+  if (o == NULL)
+    // Protocol hasn't subclassed the owner class, create from Licq::Owner instead
+    o = new Owner(ownerId);
+
+  return o;
 }
 
 unsigned long UserManager::icqOwnerUin()

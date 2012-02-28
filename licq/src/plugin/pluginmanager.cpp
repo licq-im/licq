@@ -49,9 +49,12 @@
 
 using Licq::GeneralPlugin;
 using Licq::MutexLocker;
+using Licq::Owner;
 using Licq::Plugin;
 using Licq::ProtocolPlugin;
 using Licq::StringList;
+using Licq::User;
+using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gLogService;
@@ -686,4 +689,22 @@ void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* signal,
 
   Licq::gLog.error(tr("Invalid protocol plugin requested (%ld)"), protocolId);
   delete signal;
+}
+
+User* PluginManager::createProtocolUser(const UserId& id, bool temporary)
+{
+  ProtocolPlugin::Ptr plugin = getProtocolPlugin(id.protocolId());
+  if (plugin.get() == NULL)
+    return NULL;
+
+  return plugin->createUser(id, temporary);
+}
+
+Owner* PluginManager::createProtocolOwner(const UserId& id)
+{
+  ProtocolPlugin::Ptr plugin = getProtocolPlugin(id.protocolId());
+  if (plugin.get() == NULL)
+    return NULL;
+
+  return plugin->createOwner(id);
 }

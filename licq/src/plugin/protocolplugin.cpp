@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,5 +61,18 @@ ProtocolSignal* ProtocolPlugin::popSignal()
     d->mySignals.pop();
     return signal;
   }
+  return NULL;
+}
+
+User* ProtocolPlugin::createUser(const UserId& /* id */, bool /* temporary */)
+{
+  // Only UserManager is allowed to create instances of Licq::User so either
+  // we need to call a UserManager function to create a default user from here
+  // or we just return NULL back to the UserManager to make it create it itself
+  return NULL;
+}
+
+Owner* ProtocolPlugin::createOwner(const UserId& /* id */)
+{
   return NULL;
 }

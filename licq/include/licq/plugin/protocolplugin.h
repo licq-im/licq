@@ -28,7 +28,10 @@
 
 namespace Licq
 {
+class Owner;
 class ProtocolSignal;
+class User;
+class UserId;
 
 /**
  * Base class for protocol plugins implementing support for an IM protocol
@@ -101,6 +104,27 @@ protected:
 
   /// Destructor
   virtual ~ProtocolPlugin();
+
+  /**
+   * Create a user object
+   * Called by UserManager when users are loaded or added
+   * Override this if protocol has subclassed Licq::User
+   *
+   * @param id User id
+   * @param temporary True if user isn't permanently added to contact list
+   * @return A newly created user object
+   */
+  virtual User* createUser(const UserId& id, bool temporary = false);
+
+  /**
+   * Create an owner object
+   * Called by UserManager when owner is loaded or added
+   * Override this if protocol has subclassed Licq::Owner (or Licq::User)
+   *
+   * @param id User id of owner
+   * @return A newly created owner object
+   */
+  virtual Owner* createOwner(const UserId& id);
 
   /**
    * Get a signal from the signal queue

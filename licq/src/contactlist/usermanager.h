@@ -206,6 +206,23 @@ private:
 
   void SaveGroups();
 
+  /**
+   * Create a user object, either Licq::User or protocol subclass
+   *
+   * @param id User id
+   * @param temporary True if user isn't premanently added to contact list
+   * @return A created Licq::User
+   */
+  Licq::User* createUser(const Licq::UserId& id, bool temporary = false);
+
+  /**
+   * Create an owner object, either Licq::Owner or protocol subclass
+   *
+   * @param id Owner user id
+   * @return a created Licq::Owner
+   */
+  Licq::Owner* createOwner(const Licq::UserId& id);
+
   Licq::ReadWriteMutex myGroupListMutex;
   Licq::ReadWriteMutex myUserListMutex;
   Licq::ReadWriteMutex myOwnerListMutex;
