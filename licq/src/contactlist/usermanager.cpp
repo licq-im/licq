@@ -1136,13 +1136,22 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
   // Notify server
   if (updateServer)
   {
-    if (userId.protocolId() == LICQ_PPID)
+    bool ownerIsOnline = false;
     {
-      if (inGroup) // Server group can only be changed, not removed
-        gIcqProtocol.icqChangeGroup(userId, groupId, gsid);
+      OwnerReadGuard owner(userId.protocolId());
+      ownerIsOnline = (owner.isLocked() && owner->isOnline());
     }
-    else
-      gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId), userId.protocolId());
+
+    if (ownerIsOnline)
+    {
+      if (userId.protocolId() == LICQ_PPID)
+      {
+        if (inGroup) // Server group can only be changed, not removed
+          gIcqProtocol.icqChangeGroup(userId, groupId, gsid);
+      }
+      else
+        gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId), userId.protocolId());
+    }
   }
 
   // Notify plugins

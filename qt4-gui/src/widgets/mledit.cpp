@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -257,28 +257,31 @@ void MLEdit::contextMenuEvent(QContextMenuEvent* event)
   if (!isReadOnly())
   {
 #ifdef HAVE_HUNSPELL
-    // Save position so we know which word to replace
-    myMenuPos = event->pos();
-
-    // Get word under cursor
-    QTextCursor cr = cursorForPosition(myMenuPos);
-    cr.select(QTextCursor::WordUnderCursor);
-    QString word = cr.selectedText();
-    if (!word.isEmpty())
+    if (mySpellChecker != NULL)
     {
-      // Get spelling suggestions
-      QStringList suggestions = mySpellChecker->getSuggestions(word);
-      if (!suggestions.isEmpty())
+      // Save position so we know which word to replace
+      myMenuPos = event->pos();
+
+      // Get word under cursor
+      QTextCursor cr = cursorForPosition(myMenuPos);
+      cr.select(QTextCursor::WordUnderCursor);
+      QString word = cr.selectedText();
+      if (!word.isEmpty())
       {
-        // Add spelling suggestions at the top of the menu
-        QAction* firstAction = menu->actions().first();
-        foreach (QString w, suggestions)
+        // Get spelling suggestions
+        QStringList suggestions = mySpellChecker->getSuggestions(word);
+        if (!suggestions.isEmpty())
         {
-          QAction* a = new QAction(w, menu);
-          connect(a, SIGNAL(triggered()), SLOT(replaceWord()));
-          menu->insertAction(firstAction, a);
+          // Add spelling suggestions at the top of the menu
+          QAction* firstAction = menu->actions().first();
+          foreach (QString w, suggestions)
+          {
+            QAction* a = new QAction(w, menu);
+            connect(a, SIGNAL(triggered()), SLOT(replaceWord()));
+            menu->insertAction(firstAction, a);
+          }
+          menu->insertSeparator(firstAction);
         }
-        menu->insertSeparator(firstAction);
       }
     }
 #endif
