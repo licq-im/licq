@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,12 +172,13 @@ public:
   virtual void ModifyGroupID(int groupId, unsigned short icqGroupId) = 0;
 
   /**
-   * Get group id from ICQ server group id
+   * Get local group id from server group id
    *
-   * @param icqGroupId ICQ server group id
+   * @param protocolId Protocol server id is valid for
+   * @param serverId Server group id to find local group for
    * @return Id for group or 0 if not found
    */
-  virtual int GetGroupFromID(unsigned short icqGroupId) = 0;
+  virtual int getGroupFromServerId(unsigned long protocolId, unsigned long serverId) = 0;
 
   /**
    * Find id for group with a given name

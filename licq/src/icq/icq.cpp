@@ -1776,6 +1776,11 @@ string IcqProtocol::getUserEncoding(const Licq::UserId& userId)
     return Licq::gUserManager.defaultUserEncoding();
 }
 
+int IcqProtocol::getGroupFromId(unsigned short gsid)
+{
+  return Licq::gUserManager.getGroupFromServerId(LICQ_PPID, gsid);
+}
+
 void IcqProtocol::splitFE(vector<string>& ret, const string& s, int maxcount,
     const string& userEncoding)
 {

@@ -165,7 +165,7 @@ public:
   bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
   void ModifyGroupSorting(int groupId, int newIndex);
   void ModifyGroupID(int groupId, unsigned short icqGroupId);
-  int GetGroupFromID(unsigned short icqGroupId);
+  int getGroupFromServerId(unsigned long protocolId, unsigned long serverId);
   int GetGroupFromName(const std::string& name);
   std::string GetGroupNameFromGroup(int groupId);
   void setUserInGroup(const Licq::UserId& userId, int groupId,

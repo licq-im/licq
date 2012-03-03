@@ -863,7 +863,7 @@ void UserManager::SaveGroups()
   gDaemon.releaseLicqConf();
 }
 
-int UserManager::GetGroupFromID(unsigned short icqGroupId)
+int UserManager::getGroupFromServerId(unsigned long protocolId, unsigned long serverId)
 {
   myGroupListMutex.lockRead();
   GroupMap::const_iterator iter;
@@ -871,7 +871,7 @@ int UserManager::GetGroupFromID(unsigned short icqGroupId)
   for (iter = myGroups.begin(); iter != myGroups.end(); ++iter)
   {
     iter->second->lockRead();
-    if (iter->second->serverId(LICQ_PPID) == icqGroupId)
+    if (iter->second->serverId(protocolId) == serverId)
       groupId = iter->first;
     iter->second->unlockRead();
   }
@@ -1042,7 +1042,7 @@ bool UserManager::UpdateUsersInGroups()
     unsigned short nGSID = u->GetGSID();
     if (nGSID)
     {
-      int nInGroup = gUserManager.GetGroupFromID(nGSID);
+      int nInGroup = gUserManager.getGroupFromServerId(user->protocolId(), nGSID);
       if (nInGroup != 0)
       {
         u->addToGroup(nInGroup);
@@ -1126,7 +1126,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
     gsid = u->GetGSID();
 
     // Don't remove user from local group if member of the same server group
-    if (!inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
+    if (!inGroup && u->GetSID() != 0 && getGroupFromServerId(u->protocolId(), gsid) == groupId)
       return;
 
     // Update user object

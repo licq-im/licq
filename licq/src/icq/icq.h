@@ -328,6 +328,8 @@ public:
   static unsigned statusFromIcqStatus(unsigned short icqStatus);
   static unsigned long addStatusFlags(unsigned long nStatus, const Licq::User* u);
 
+  static int getGroupFromId(unsigned short gsid);
+
   static std::string parseDigits(const std::string& number);
   static std::string parseRtf(const std::string& rtf);
 

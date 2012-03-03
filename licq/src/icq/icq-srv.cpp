@@ -3290,7 +3290,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             if (id[0] != '\0' && nTag != 0)
             {
               // Rename the group if we have it already or else add it
-              unsigned short nGroup = Licq::gUserManager.GetGroupFromID(nTag);
+              int nGroup = getGroupFromId(nTag);
 
               if (nGroup == 0)
               {
@@ -3405,9 +3405,9 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       {
         // First update their gsid/sid
         u->SetSID(sid);
-        u->removeFromGroup(Licq::gUserManager.GetGroupFromID(u->GetGSID()));
+        u->removeFromGroup(getGroupFromId(u->GetGSID()));
         u->SetGSID(gsid);
-        u->addToGroup(Licq::gUserManager.GetGroupFromID(gsid));
+        u->addToGroup(getGroupFromId(gsid));
 
         // Now the the tlv of attributes to attach to the user
         Licq::TlvList tlvList = packet.getTlvList();
@@ -3516,7 +3516,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             if (bHandled == false)
             {
               bHandled = true;
-              int n = Licq::gUserManager.GetGroupFromID(e->ExtraInfo());
+              int n = getGroupFromId(e->ExtraInfo());
               if (n < 1 && e->ExtraInfo() != 0)
                 break;
 
@@ -3564,7 +3564,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               Licq::UserWriteGuard u(Licq::UserId(pending.c_str(), LICQ_PPID));
               if (u.isLocked())
               {
-                u->addToGroup(Licq::gUserManager.GetGroupFromID(e->ExtraInfo()));
+                u->addToGroup(getGroupFromId(e->ExtraInfo()));
                 gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                     Licq::PluginSignal::SignalAddedToServer, 0, u->id()));
               }
@@ -4818,10 +4818,11 @@ void IcqProtocol::ProcessUserList()
     }
 
     bool isOnList = Licq::gUserManager.userExists(userId);
+    int groupId = getGroupFromId(data->groupId);
 
     if (!isOnList)
     {
-      Licq::gUserManager.addUser(userId, true, false, Licq::gUserManager.GetGroupFromID(data->groupId)); // Don't notify server
+      Licq::gUserManager.addUser(userId, true, false, groupId); // Don't notify server
       gLog.info(tr("Added %s (%s) to list from server."),
           (!data->newAlias.empty() ? data->newAlias.c_str() : userId.toString().c_str()), userId.toString().c_str());
     }
@@ -4846,7 +4847,7 @@ void IcqProtocol::ProcessUserList()
     u->SetIgnoreList(data->inIgnoreList);
 
     if (isOnList)
-      u->addToGroup(Licq::gUserManager.GetGroupFromID(data->groupId));
+      u->addToGroup(groupId);
 
     u->SetAwaitingAuth(data->awaitingAuth);
 

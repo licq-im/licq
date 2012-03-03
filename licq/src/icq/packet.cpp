@@ -2654,7 +2654,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
         if (m_nGSID == 0)
           m_nGSID = 1; // Must never actually reach this point
 
-        u->addToGroup(gUserManager.GetGroupFromID(m_nGSID));
+        u->addToGroup(IcqProtocol::getGroupFromId(m_nGSID));
       }
 
       u->SetGSID(m_nGSID);
@@ -2830,7 +2830,7 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
-      u->addToGroup(gUserManager.GetGroupFromID(m_nGSID));
+      u->addToGroup(IcqProtocol::getGroupFromId(m_nGSID));
 
       break;
     }

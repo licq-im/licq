@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2011 Licq developers
+ * Copyright (C) 2008-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,7 +306,7 @@ void UserPages::Settings::load(const Licq::User* user)
 
   myGroupsTable->clearContents();
   myGroupsTable->setRowCount(0);
-  int serverGroup = (user->GetSID() ? Licq::gUserManager.GetGroupFromID(user->GetGSID()) : 0);
+  int serverGroup = (user->GetSID() ? Licq::gUserManager.getGroupFromServerId(user->protocolId(), user->GetGSID()) : 0);
   int i = 0;
   Licq::GroupListGuard groups;
   BOOST_FOREACH(const Licq::Group* group, **groups)
@@ -411,7 +411,7 @@ void UserPages::Settings::apply2(const Licq::UserId& userId)
 
    // Get current group memberships so we only set those that have actually changed
     if (u->GetSID() != 0)
-      serverGroup = Licq::gUserManager.GetGroupFromID(u->GetGSID());
+      serverGroup = Licq::gUserManager.getGroupFromServerId(u->protocolId(), u->GetGSID());
     userGroups = u->GetGroups();
     visibleList = u->VisibleList();
     invisibleList = u->InvisibleList();
