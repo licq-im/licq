@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ using Licq::ICQUserPhoneBook;
 using Licq::IniFile;
 using Licq::OnEventData;
 using Licq::PluginSignal;
+using Licq::ProtocolPlugin;
 using Licq::UserId;
 using Licq::gDaemon;
 using Licq::gLog;
@@ -245,6 +246,15 @@ User::User(const UserId& id, bool temporary, bool isOwner)
   : myHistory(id.protocolId())
 {
   myId = id;
+
+  myServerGroup = 0;
+  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myId.protocolId());
+  if (protocol.get() != NULL)
+  {
+    if ((protocol->capabilities() & ProtocolPlugin::CanSingleGroup) == 0)
+      // Protocol handles multiple groups or no groups at all
+      myServerGroup = -1;
+  }
 
   Init();
   m_bNotInList = temporary;
@@ -452,6 +462,12 @@ void User::LoadLicqInfo()
       if (!tempValue.empty())
         m_mPPFields[tempName] = tempValue;
     }
+  }
+
+  if (myServerGroup > -1)
+  {
+    if (!myConf.get("ServerGroup", myServerGroup, 0) && myId.protocolId() == LICQ_PPID)
+      myServerGroup = gUserManager.getGroupFromServerId(LICQ_PPID, m_nGSID);
   }
 
   unsigned int userGroupCount;
@@ -1784,6 +1800,8 @@ void User::saveLicqInfo()
       myConf.set(szBuf, iter->second);
    }
 
+  if (myServerGroup > -1)
+    myConf.set("ServerGroup", myServerGroup);
   myConf.set("GroupCount", static_cast<unsigned int>(myGroups.size()));
   i = 1;
   for (Licq::UserGroupList::iterator g = myGroups.begin(); g != myGroups.end(); ++g)
@@ -1973,6 +1991,12 @@ bool Licq::User::removeFromGroup(int groupId)
   bool inGroup = myGroups.erase(groupId);
   save(SaveLicqInfo);
   return inGroup;
+}
+
+void Licq::User::SetGSID(unsigned short s)
+{
+  m_nGSID = s;
+  setServerGroup(gUserManager.getGroupFromServerId(protocolId(), s));
 }
 
 unsigned short Licq::User::getNumUserEvents()

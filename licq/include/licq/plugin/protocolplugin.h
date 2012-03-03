@@ -55,6 +55,7 @@ public:
     CanSendDirect       = 1<<9,
     CanHoldStatusMsg     = 1<<10,
     CanVaryEncoding     = 1<<11,
+    CanSingleGroup      = 1<<12,    // Contacts have only a single group in server list
   };
 
   /// A smart pointer to a ProtocolPlugin instance

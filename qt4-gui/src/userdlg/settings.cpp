@@ -238,15 +238,12 @@ QWidget* UserPages::Settings::createPageGroups(QWidget* parent)
   myGroupsBox = new QGroupBox(tr("Groups"));
   myGroupsLayout = new QVBoxLayout(myGroupsBox);
 
-  myGroupsTable = new QTableWidget(0, 3);
+  myGroupsTable = new QTableWidget(0, 2);
   myGroupsTable->setShowGrid(false);
   myGroupsTable->setSelectionMode(QTableWidget::NoSelection);
   myGroupsTable->setEditTriggers(QTableWidget::NoEditTriggers);
   myGroupsLayout->addWidget(myGroupsTable);
 
-  QStringList headerLabels;
-  headerLabels << tr("Group") << tr("Local") << tr("Server");
-  myGroupsTable->setHorizontalHeaderLabels(headerLabels);
   myGroupsTable->verticalHeader()->hide();
 
   myPageGroupsLayout->addWidget(myGroupsBox);
@@ -306,7 +303,17 @@ void UserPages::Settings::load(const Licq::User* user)
 
   myGroupsTable->clearContents();
   myGroupsTable->setRowCount(0);
-  int serverGroup = (user->GetSID() ? Licq::gUserManager.getGroupFromServerId(user->protocolId(), user->GetGSID()) : 0);
+
+  int serverGroup = user->serverGroup();
+  myGroupsTable->setColumnCount(serverGroup > -1 ? 3 : 2);
+  QStringList headerLabels;
+  headerLabels << tr("Group");
+  if (serverGroup > -1)
+    headerLabels << tr("Local") << tr("Server");
+  else
+    headerLabels << tr("Member");
+  myGroupsTable->setHorizontalHeaderLabels(headerLabels);
+
   int i = 0;
   Licq::GroupListGuard groups;
   BOOST_FOREACH(const Licq::Group* group, **groups)
@@ -323,19 +330,22 @@ void UserPages::Settings::load(const Licq::User* user)
 
     QCheckBox* localCheck = new QCheckBox("");
     myGroupsTable->setCellWidget(i, 1, localCheck);
-
-    QRadioButton* serverRadio = new QRadioButton("");
-    myGroupsTable->setCellWidget(i, 2, serverRadio);
-
-    // User must be member of group locally if member of the serve group
-    // Disable the local checkbox for the current server group and make sure
-    // the local group is checked when selecting a server group. This works
-    // since clicked() isn't called when radio button looses checked state
-    connect(serverRadio, SIGNAL(toggled(bool)), localCheck, SLOT(setDisabled(bool)));
-    connect(serverRadio, SIGNAL(clicked(bool)), localCheck, SLOT(setChecked(bool)));
-
     localCheck->setChecked(user->isInGroup(gid));
-    serverRadio->setChecked(gid == serverGroup);
+
+    if (serverGroup > -1)
+    {
+      QRadioButton* serverRadio = new QRadioButton("");
+      myGroupsTable->setCellWidget(i, 2, serverRadio);
+
+      // User must be member of group locally if member of the server group
+      // Disable the local checkbox for the current server group and make sure
+      // the local group is checked when selecting a server group. This works
+      // since clicked() isn't called when radio button looses checked state
+      connect(serverRadio, SIGNAL(toggled(bool)), localCheck, SLOT(setDisabled(bool)));
+      connect(serverRadio, SIGNAL(clicked(bool)), localCheck, SLOT(setChecked(bool)));
+
+      serverRadio->setChecked(gid == serverGroup);
+    }
 
     ++i;
   }
@@ -410,23 +420,25 @@ void UserPages::Settings::apply2(const Licq::UserId& userId)
       return;
 
    // Get current group memberships so we only set those that have actually changed
-    if (u->GetSID() != 0)
-      serverGroup = Licq::gUserManager.getGroupFromServerId(u->protocolId(), u->GetGSID());
+    serverGroup = u->serverGroup();
     userGroups = u->GetGroups();
     visibleList = u->VisibleList();
     invisibleList = u->InvisibleList();
     ignoreList = u->IgnoreList();
   }
 
-  // First set server group
-  for (int i = 0; i < myGroupsTable->rowCount(); ++i)
+  if (serverGroup > -1)
   {
-    int gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toInt();
-
-    if (dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked())
+    // First set server group
+    for (int i = 0; i < myGroupsTable->rowCount(); ++i)
     {
-      if (gid != serverGroup)
-        Licq::gUserManager.setUserInGroup(userId, gid, true, true);
+      int gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toInt();
+
+      if (dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked())
+      {
+        if (gid != serverGroup)
+          Licq::gUserManager.setUserInGroup(userId, gid, true, true);
+      }
     }
   }
 

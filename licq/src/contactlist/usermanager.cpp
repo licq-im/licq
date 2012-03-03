@@ -1030,30 +1030,6 @@ void UserManager::SaveAllUsers()
   }
 }
 
-bool UserManager::UpdateUsersInGroups()
-{
-  bool bDid = false;
-
-  Licq::UserListGuard userList(LICQ_PPID);
-  BOOST_FOREACH(Licq::User* user, **userList)
-  {
-    Licq::UserWriteGuard u(user);
-
-    unsigned short nGSID = u->GetGSID();
-    if (nGSID)
-    {
-      int nInGroup = gUserManager.getGroupFromServerId(user->protocolId(), nGSID);
-      if (nInGroup != 0)
-      {
-        u->addToGroup(nInGroup);
-        bDid = true;
-      }
-    }
-  }
-
-  return bDid;
-}
-
 unsigned short UserManager::NumUsers()
 {
   //myUserListMutex.lockRead();
@@ -1116,25 +1092,27 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
   if (groupId == 0)
     return;
 
-  int gsid;
+  int serverGroup;
 
   {
     Licq::UserWriteGuard u(userId);
     if (!u.isLocked())
       return;
 
-    gsid = u->GetGSID();
+    serverGroup = u->serverGroup();
 
     // Don't remove user from local group if member of the same server group
-    if (!inGroup && u->GetSID() != 0 && getGroupFromServerId(u->protocolId(), gsid) == groupId)
+    if (!inGroup && serverGroup == groupId)
       return;
 
     // Update user object
     u->setInGroup(groupId, inGroup);
+
+    // Server group is set by protocol after performing the actual change
   }
 
   // Notify server
-  if (updateServer)
+  if (serverGroup == -1 || updateServer)
   {
     bool ownerIsOnline = false;
     {
@@ -1147,7 +1125,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
       if (userId.protocolId() == LICQ_PPID)
       {
         if (inGroup) // Server group can only be changed, not removed
-          gIcqProtocol.icqChangeGroup(userId, groupId, gsid);
+          gIcqProtocol.icqChangeGroup(userId);
       }
       else
         gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId), userId.protocolId());

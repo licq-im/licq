@@ -197,12 +197,12 @@ public:
   virtual std::string GetGroupNameFromGroup(int groupId) = 0;
 
   /**
-   * Set user group membership and (optionally) update server
+   * Set user group membership
    *
    * @param userId Id of user
    * @param groupId Id of user group
    * @param inGroup True to add user to group or false to remove
-   * @param updateServer True if server list should be updated
+   * @param updateServer True to also change single server group
    */
   virtual void setUserInGroup(const UserId& userId, int groupId,
       bool inGroup, bool updateServer = true) = 0;

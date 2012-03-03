@@ -362,7 +362,7 @@ void UserMenu::aboutToShowMenu()
     myViewEventAction->setShortcut(QKeySequence());
   }
 
-  int serverGroup = (u->GetSID() ? Licq::gUserManager.getGroupFromServerId(u->protocolId(), u->GetGSID()) : 0);
+  int serverGroup = u->serverGroup();
 
   // Update group memberships
   foreach (QAction* a, myUserGroupActions->actions())
@@ -374,6 +374,7 @@ void UserMenu::aboutToShowMenu()
     // Don't allow leaving group if contact is member of the same group at the server side
     a->setEnabled(!inGroup || gid != serverGroup);
   }
+  myServerGroupsMenu->menuAction()->setVisible(serverGroup > -1);
   foreach (QAction* a, myServerGroupActions->actions())
     a->setChecked(a->data().toInt() == serverGroup);
 }

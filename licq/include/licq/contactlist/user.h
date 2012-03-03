@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -419,7 +419,7 @@ public:
   void SetSID(unsigned short s)       { m_nSID[NORMAL_SID] = s; }
   void SetInvisibleSID(unsigned short s) { m_nSID[INV_SID] = s; }
   void SetVisibleSID(unsigned short s){ m_nSID[VIS_SID] = s; }
-  void SetGSID(unsigned short s)      { m_nGSID = s; }
+  void SetGSID(unsigned short s);
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; save(SaveLicqInfo); }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
@@ -671,6 +671,22 @@ public:
    */
   bool removeFromGroup(int groupId);
 
+  /**
+   * Get server group
+   *
+   * @return Current server group or -1 if protocol allows multiple groups
+   */
+  int serverGroup() const
+  { return myServerGroup; }
+
+  /**
+   * Set server group
+   *
+   * @param groupId New server group for user
+   */
+  void setServerGroup(int groupId)
+  { if (myServerGroup > -1) myServerGroup = groupId; }
+
   // Short cuts to above functions
   bool InvisibleList() const    { return myOnInvisibleList; }
   bool VisibleList() const      { return myOnVisibleList; }
@@ -799,6 +815,7 @@ protected:
   bool myIsTyping;
   unsigned myStatus;
   UserGroupList myGroups;               /**< List of user groups */
+  int myServerGroup;
   unsigned short m_nSequence;
   unsigned myPhoneFollowMeStatus, myIcqPhoneStatus, mySharedFilesStatus;
   bool myWebPresence;

@@ -51,7 +51,6 @@ public:
 
   bool Load();
   unsigned short GenerateSID();
-  bool UpdateUsersInGroups();
 
   /**
    * Save user list to configuration file

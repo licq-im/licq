@@ -75,7 +75,8 @@ unsigned long IcqProtocolPlugin::capabilities() const
       ProtocolPlugin::CanSendContact | ProtocolPlugin::CanSendAuth |
       ProtocolPlugin::CanSendAuthReq | ProtocolPlugin::CanSendSms |
       ProtocolPlugin::CanSendSecure | ProtocolPlugin::CanSendDirect |
-      ProtocolPlugin::CanHoldStatusMsg | ProtocolPlugin::CanVaryEncoding;
+      ProtocolPlugin::CanHoldStatusMsg | ProtocolPlugin::CanVaryEncoding |
+      ProtocolPlugin::CanSingleGroup;
 }
 
 std::string IcqProtocolPlugin::defaultServerHost() const

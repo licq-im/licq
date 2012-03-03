@@ -242,24 +242,22 @@ void IcqProtocol::icqAddGroup(const string& groupName)
   SendExpectEvent_Server(pAdd, NULL);
 }
 
-void IcqProtocol::icqChangeGroup(const Licq::UserId& userId,
-    unsigned short _nNewGroup, unsigned short _nOldGSID)
+void IcqProtocol::icqChangeGroup(const Licq::UserId& userId)
 {
   if (!UseServerContactList())
     return;
 
-  if (_nNewGroup == 0)
-  {
-    gLog.warning(tr("Protocol prohibits for users to be in the root group. "
-        "Aborting group change attempt for %s."), userId.accountId().c_str());
-    return;
-  }
-
   // Get their old SID
   int nSID;
+  int oldGSID;
+  int newGroup;
   {
     Licq::UserReadGuard u(userId);
     nSID = u->GetSID();
+    oldGSID = u->GetGSID();
+    newGroup = u->serverGroup();
+    if (newGroup <= 0)
+      return;
     gLog.info(tr("Changing group on server list for %s (%s)..."),
         u->getAlias().c_str(), userId.accountId().c_str());
   }
@@ -270,17 +268,17 @@ void IcqProtocol::icqChangeGroup(const Licq::UserId& userId,
   SendEvent_Server(pStart);
 
   // Delete the user
-  if (_nOldGSID != 0)
+  if (oldGSID != 0)
   {
     // Don't attempt removing users from the root group, they can't be there
     CSrvPacketTcp* pRemove =
-        new CPU_RemoveFromServerList(userId.accountId(), _nOldGSID, nSID, ICQ_ROSTxNORMAL);
+        new CPU_RemoveFromServerList(userId.accountId(), oldGSID, nSID, ICQ_ROSTxNORMAL);
     addToModifyUsers(pRemove->SubSequence(), userId.accountId());
     SendExpectEvent_Server(pRemove, NULL);
   }
 
   // Add the user, with the new group
-  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxNORMAL, _nNewGroup);
+  CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxNORMAL, newGroup);
   addToModifyUsers(pAdd->SubSequence(), userId.accountId());
   SendExpectEvent_Server(pAdd, NULL);
 }
@@ -3305,16 +3303,6 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               {
                 Licq::gUserManager.RenameGroup(nGroup, id, false);
               }
-
-              // This is bad, i don't think we want to call this at all..
-              // it will add users to different groups that they werent even
-              // assigned to
-              //if (Licq::gUserManager.UpdateUsersInGroups())
-              //{
-              //  gPluginManager.pushPluginSignal(new Licq::PluginSignal(
-              //      Licq::PluginSignal::SignalList,
-              //      Licq::PluginSignal::ListInvalidate, 0));
-              //}
             }
             else
             {
