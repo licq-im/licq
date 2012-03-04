@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,14 +70,14 @@ SystemMenu::SystemMenu(QWidget* parent)
   QAction* a;
 
   // Sub menu System Functions
-  myOwnerAdmMenu = new QMenu(tr("S&ystem Functions"));
+  myOwnerAdmMenu = new QMenu(tr("S&ystem Functions"), this);
   myOwnerAdmMenu->addAction(tr("&View System Messages..."), gLicqGui, SLOT(showAllOwnerEvents()));
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmSeparator = myOwnerAdmMenu->addSeparator();
   myAccountManagerAction = myOwnerAdmMenu->addAction(tr("&Account Manager..."), this, SLOT(showOwnerManagerDlg()));
 
   // Sub menu User Functions
-  myUserAdmMenu = new QMenu(tr("User &Functions"));
+  myUserAdmMenu = new QMenu(tr("User &Functions"), this);
   myUserAdmMenu->addAction(tr("&Add User..."), this, SLOT(showAddUserDlg()));
   myAddGroupAction = myUserAdmMenu->addAction(tr("A&dd Group..."), this, SLOT(showAddGroupDlg()));
   myUserSearchAction = myUserAdmMenu->addAction(tr("S&earch for User..."), this, SLOT(showSearchUserDlg()));
@@ -94,7 +94,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserAdmMenu->addAction(tr("&Save All Users"), this, SLOT(saveAllUsers()));
 
   // Sub menu Follow Me
-  myFollowMeMenu = new QMenu(tr("ICQ Phone \"Follow Me\""));
+  myFollowMeMenu = new QMenu(tr("ICQ Phone \"Follow Me\""), this);
   myFollowMeActions = new QActionGroup(this);
   connect(myFollowMeActions, SIGNAL(triggered(QAction*)), SLOT(setFollowMeStatus(QAction*)));
 #define ADD_PFM(text, data) \
@@ -108,7 +108,7 @@ SystemMenu::SystemMenu(QWidget* parent)
 #undef ADD_PFM
 
   // Sub menu Status
-  myStatusMenu = new QMenu(tr("&Status"));
+  myStatusMenu = new QMenu(tr("&Status"), this);
   myStatusActions = new QActionGroup(this);
   connect(myStatusActions, SIGNAL(triggered(QAction*)), SLOT(setMainStatus(QAction*)));
   myStatusSeparator = myStatusMenu->addSeparator();
@@ -133,7 +133,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myStatusInvisibleAction->setCheckable(true);
 
   // Sub menu Group
-  myGroupMenu = new QMenu(tr("&Group"));
+  myGroupMenu = new QMenu(tr("&Group"), this);
   myUserGroupActions = new QActionGroup(this);
   connect(myGroupMenu, SIGNAL(aboutToShow()), SLOT(aboutToShowGroupMenu()));
   connect(myUserGroupActions, SIGNAL(triggered(QAction*)), SLOT(setCurrentGroup(QAction*)));
@@ -153,7 +153,7 @@ SystemMenu::SystemMenu(QWidget* parent)
 #undef ADD_SYSTEMGROUP
 
   // Sub menu Help
-  myHelpMenu = new QMenu(tr("&Help"));
+  myHelpMenu = new QMenu(tr("&Help"), this);
   myHelpMenu->addAction(tr("&Hints..."), gMainWindow, SLOT(showHints()));
   myHelpMenu->addAction(tr("&About..."), gMainWindow, SLOT(showAboutBox()));
   myHelpMenu->addAction(tr("&Statistics..."), gMainWindow, SLOT(showStats()));

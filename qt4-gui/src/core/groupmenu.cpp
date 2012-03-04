@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2010 Licq developers
+ * Copyright (C) 2008-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ GroupMenu::GroupMenu(QWidget* parent)
   QAction* a;
 
   // Sub menu Add to Group
-  myGroupsMenu = new QMenu(tr("Add Users to"));
+  myGroupsMenu = new QMenu(tr("Add Users to"), this);
   myUserGroupActions = new QActionGroup(this);
   myUserGroupActions->setExclusive(false);
   connect(myUserGroupActions, SIGNAL(triggered(QAction*)), SLOT(addUsersToGroup(QAction*)));
