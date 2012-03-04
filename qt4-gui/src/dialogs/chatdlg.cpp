@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,14 +157,19 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
   lay->setColumnStretch(0, 1);
 
   // Generic setup
-  mnuMain = new QMenu(tr("Chat"));
+  QMenuBar* menuBar = new QMenuBar(this);
+
+  mnuMain = new QMenu(tr("Chat"), menuBar);
+  menuBar->addMenu(mnuMain);
   QAction* chatAudio = mnuMain->addAction(tr("&Audio"), this, SLOT(slot_audio(bool)), Qt::ALT + Qt::Key_A);
   chatAudio->setCheckable(true);
   chatAudio->setChecked(myAudio);
   mnuMain->addAction(tr("&Save Chat"), this, SLOT(slot_save()), Qt::ALT + Qt::Key_S);
   mnuMain->addSeparator();
   mnuMain->addAction(tr("&Close Chat"), this, SLOT(close()), Qt::ALT + Qt::Key_Q);
-  mnuMode = new QMenu(tr("Mode"));
+
+  mnuMode = new QMenu(tr("Mode"), menuBar);
+  menuBar->addMenu(mnuMode);
   QActionGroup* modeGroup = new QActionGroup(this);
   QAction* paneModeAction = modeGroup->addAction(tr("&Pane Mode"));
   connect(paneModeAction, SIGNAL(triggered()), SLOT(SwitchToPaneMode()));
@@ -174,10 +179,6 @@ ChatDlg::ChatDlg(const Licq::UserId& userId, QWidget* parent)
   connect(ircModeAction, SIGNAL(triggered()), SLOT(SwitchToIRCMode()));
   ircModeAction->setCheckable(true);
   mnuMode->addActions(modeGroup->actions());
-
-  QMenuBar* menuBar = new QMenuBar(this);
-  menuBar->addMenu(mnuMain);
-  menuBar->addMenu(mnuMode);
 
   // Toolbar
   QToolBar* barChat = new QToolBar("label", this);

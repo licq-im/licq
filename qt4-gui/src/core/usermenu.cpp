@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ UserMenu::UserMenu(QWidget* parent)
   QAction* a;
 
   // Sub menu Send
-  mySendMenu = new QMenu(tr("Send"));
+  mySendMenu = new QMenu(tr("Send"), this);
   connect(mySendMenu, SIGNAL(triggered(QAction*)), SLOT(send(QAction*)));
 #define ADD_SEND(text, data) \
     a = mySendMenu->addAction(text); \
@@ -94,7 +94,7 @@ UserMenu::UserMenu(QWidget* parent)
 #undef ADD_SEND
 
   // Sub menu Misc Modes
-  myMiscModesMenu = new QMenu(tr("Misc Modes"));
+  myMiscModesMenu = new QMenu(tr("Misc Modes"), this);
   connect(myMiscModesMenu, SIGNAL(triggered(QAction*)), SLOT(toggleMiscMode(QAction*)));
 #define ADD_MISCMODE(text, data) \
     a = myMiscModesMenu->addAction(text); \
@@ -121,7 +121,7 @@ UserMenu::UserMenu(QWidget* parent)
 #undef ADD_MISCMODE
 
   // Sub menu Utilities
-  myUtilitiesMenu = new QMenu(tr("U&tilities"));
+  myUtilitiesMenu = new QMenu(tr("U&tilities"), this);
   connect(myUtilitiesMenu, SIGNAL(triggered(QAction*)), SLOT(utility(QAction*)));
   for (int i = 0; i < Licq::gUtilityManager.numUtilities(); ++i)
   {
@@ -129,7 +129,7 @@ UserMenu::UserMenu(QWidget* parent)
   }
 
   // Sub menu User Group
-  myGroupsMenu = new QMenu(tr("Edit User Group"));
+  myGroupsMenu = new QMenu(tr("Edit User Group"), this);
   myUserGroupActions = new QActionGroup(this);
   myUserGroupActions->setExclusive(false);
   connect(myUserGroupActions, SIGNAL(triggered(QAction*)), SLOT(toggleUserGroup(QAction*)));
@@ -152,7 +152,7 @@ UserMenu::UserMenu(QWidget* parent)
   ADD_SYSTEMGROUP(ContactListModel::NewUsersGroupId, ModeNewUser);
 #undef ADD_SYSTEMGROUP
 
-  myServerGroupsMenu = new QMenu(tr("Server Group"));
+  myServerGroupsMenu = new QMenu(tr("Server Group"), myGroupsMenu);
   myGroupsMenu->addMenu(myServerGroupsMenu);
   myGroupsMenu->addSeparator();
   myGroupSeparator = myGroupsMenu->addSeparator();
