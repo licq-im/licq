@@ -50,7 +50,6 @@ public:
   void shutdown();
 
   bool Load();
-  unsigned short GenerateSID();
 
   /**
    * Save user list to configuration file

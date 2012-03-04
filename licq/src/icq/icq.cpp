@@ -25,9 +25,11 @@
 #include <cassert>
 #include <cerrno>
 #include <cstdio>
+#include <cstdlib>
 #include <ctime>
 #include <sys/stat.h>
 
+#include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
@@ -1779,6 +1781,78 @@ string IcqProtocol::getUserEncoding(const Licq::UserId& userId)
 int IcqProtocol::getGroupFromId(unsigned short gsid)
 {
   return Licq::gUserManager.getGroupFromServerId(LICQ_PPID, gsid);
+}
+
+unsigned short IcqProtocol::generateSid()
+{
+  unsigned short ownerPDINFO;
+  {
+    Licq::OwnerReadGuard o(LICQ_PPID);
+    ownerPDINFO = o->GetPDINFO();
+  }
+
+  // Generate a SID
+  srand(time(NULL));
+  int sid = 1+(int)(65535.0*rand()/(RAND_MAX+1.0));
+
+  sid &= 0x7FFF; // server limit it looks like
+
+  // Make sure we have a unique number - a map would be better
+  bool done;
+  do
+  {
+    done = true;
+    bool checkGroup = true;
+
+    if (sid == 0)
+      ++sid;
+    if (sid == ownerPDINFO)
+      sid++;
+
+    {
+      Licq::UserListGuard userList(LICQ_PPID);
+      BOOST_FOREACH(const Licq::User* user, **userList)
+      {
+        Licq::UserReadGuard u(user);
+
+        if (u->GetSID() == sid || u->GetInvisibleSID() == sid ||
+          u->GetVisibleSID() == sid)
+        {
+          if (sid == 0x7FFF)
+            sid = 1;
+          else
+            ++sid;
+          done = false;	// Restart
+          checkGroup = false;	// Don't waste time now
+          break;
+        }
+      }
+    }
+
+    if (checkGroup)
+    {
+      // Check our groups too!
+      Licq::GroupListGuard groupList;
+      BOOST_FOREACH(const Licq::Group* group, **groupList)
+      {
+        Licq::GroupReadGuard g(group);
+
+        unsigned short icqGroupId = g->serverId(LICQ_PPID);
+        if (icqGroupId == sid)
+        {
+          if (sid == 0x7FFF)
+            sid = 1;
+          else
+            ++sid;
+          done = false;
+          break;
+        }
+      }
+    }
+
+  } while (!done);
+
+  return sid;
 }
 
 void IcqProtocol::splitFE(vector<string>& ret, const string& s, int maxcount,

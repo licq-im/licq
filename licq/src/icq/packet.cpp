@@ -2597,7 +2597,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     int nLen;
     string unicodeName;
 
-    m_nSID = gUserManager.GenerateSID();
+    m_nSID = IcqProtocol::generateSid();
 
     // Save the SID
     Licq::UserWriteGuard u(*i);
@@ -2707,7 +2707,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
 
   for (g = groups.begin(); g != groups.end(); g++)
   {
-    nGSID = gUserManager.GenerateSID();
+    nGSID = IcqProtocol::generateSid();
 
     gUserManager.ModifyGroupID(g->first, nGSID);
 
@@ -2727,7 +2727,7 @@ CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD), m_nSID(0),
     m_nGSID(0)
 {
-  m_nSID = gUserManager.GenerateSID();
+  m_nSID = IcqProtocol::generateSid();
   m_nSize += 15;
   InitBuffer();
 
@@ -2759,7 +2759,7 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
   Licq::TlvList tlvs;
   CBuffer tlvBuffer;
 
-  m_nSID = gUserManager.GenerateSID();
+  m_nSID = IcqProtocol::generateSid();
 
   switch (_nType)
   {

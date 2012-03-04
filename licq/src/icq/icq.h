@@ -330,6 +330,8 @@ public:
 
   static int getGroupFromId(unsigned short gsid);
 
+  static unsigned short generateSid();
+
   static std::string parseDigits(const std::string& number);
   static std::string parseRtf(const std::string& rtf);
 
