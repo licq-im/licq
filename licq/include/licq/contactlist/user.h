@@ -32,13 +32,17 @@
 #include "../thread/lockable.h"
 #include "../userid.h"
 
-class CMSN;
 namespace Jabber { class Plugin; }
 
 namespace LicqIcq
 {
 class IcqProtocol;
 void* MonitorSockets_func();
+}
+
+namespace LicqMsn
+{
+class CMSN;
 }
 
 namespace LicqDaemon
@@ -905,7 +909,7 @@ protected:
 
   friend class LicqIcq::IcqProtocol;
   friend void* LicqIcq::MonitorSockets_func();
-  friend class ::CMSN;
+  friend class LicqMsn::CMSN;
   friend class Jabber::Plugin;
 };
 

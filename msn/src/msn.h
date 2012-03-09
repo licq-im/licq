@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __MSN_H
-#define __MSN_H
+#ifndef LICQMSN_MSN_H
+#define LICQMSN_MSN_H
 
 #include <licq/plugin/protocolplugin.h>
 
@@ -37,6 +37,9 @@ namespace Licq
 {
 class Event;
 }
+
+namespace LicqMsn
+{
 
 const char CONTACT_LIST[] = "FL";
 const char ALLOW_LIST[] = "AL";
@@ -208,6 +211,8 @@ private:
   friend class CMSNDataEvent;
 };
 
+} // namespace LicqMsn
+
 extern Licq::SocketManager gSocketMan;
 
-#endif // __MSN_H
+#endif

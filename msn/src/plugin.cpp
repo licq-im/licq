@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 Licq::ProtocolPlugin* MsnPluginFactory(Licq::ProtocolPlugin::Params& p)
 {
-  return new CMSN(p);
+  return new LicqMsn::CMSN(p);
 }
 
 LICQ_PROTOCOL_PLUGIN_DATA(&MsnPluginFactory);

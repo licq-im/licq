@@ -31,6 +31,7 @@
 #include "pluginversion.h"
 
 using namespace std;
+using namespace LicqMsn;
 
 static inline bool is_base64(unsigned char c)
 {

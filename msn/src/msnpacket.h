@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __MSNPACKET_H
-#define __MSNPACKET_H
+#ifndef LICQMSN_MSNPACKET_H
+#define LICQMSN_MSNPACKET_H
 
 #include <cstdlib>
 #include <pthread.h>
@@ -27,6 +27,9 @@
 #include <licq/packet.h>
 
 #include "msnbuffer.h"
+
+namespace LicqMsn
+{
 
 static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -327,5 +330,6 @@ public:
 		unsigned long nDataSizeLO);
 };
 
-#endif // __MSNPACKET_H
+} // namespace LicqMsn
 
+#endif

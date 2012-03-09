@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __MSNBUFFER_H
-#define __MSNBUFFER_H
+#ifndef LICQMSN_MSNBUFFER_H
+#define LICQMSN_MSNBUFFER_H
 
 #include <licq/buffer.h>
 
 #include <string>
 #include <list>
+
+namespace LicqMsn
+{
 
 struct SHeader
 {
@@ -58,5 +61,7 @@ private:
   std::list<SHeader*> m_lHeader;
 };
 
-#endif // __MSNBUFFER_H
+} // namespace LicqMsn
+
+#endif
 

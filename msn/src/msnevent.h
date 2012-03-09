@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2005-2010 Licq developers
+ * Copyright (C) 2005-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __MSNDATAEVENT_H
-#define __MSNDATAEVENT_H
+#ifndef LICQMSN_MSNEVENT_H
+#define LICQMSN_MSNEVENT_H
 
 #include <string>
 
@@ -28,6 +28,9 @@ namespace Licq
 {
 class UserId;
 }
+
+namespace LicqMsn
+{
 
 class CMSN;
 
@@ -79,4 +82,6 @@ protected:
   unsigned long m_nDataSize[2];
 };
 
-#endif // __MSNDATAEVENT_H
+} // namespace LicqMsn
+
+#endif

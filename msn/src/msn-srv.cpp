@@ -43,6 +43,7 @@
 #include <licq/userevents.h>
 
 using namespace std;
+using namespace LicqMsn;
 using Licq::OnEventData;
 using Licq::User;
 using Licq::UserId;
