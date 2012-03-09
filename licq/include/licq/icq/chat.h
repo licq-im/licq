@@ -35,6 +35,10 @@ class User;
 class UserId;
 }
 
+namespace LicqIcq
+{
+class CPChat_ColorFont;
+}
 
 /*----------------------
  * Licq Chat Module
@@ -233,7 +237,7 @@ protected:
   CChatClient(Licq::Buffer&);
   bool LoadFromBuffer(Licq::Buffer&);
 
-friend class CPChat_ColorFont;
+  friend class LicqIcq::CPChat_ColorFont;
 };
 
 typedef std::list<CChatClient> ChatClientList;

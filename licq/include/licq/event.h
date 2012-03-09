@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,16 @@
 #include "userid.h"
 
 class CMSN;
+namespace Jabber { class Plugin; }
+
+namespace LicqIcq
+{
 class COscarService;
 class IcqProtocol;
-namespace Jabber { class Plugin; }
 void* ProcessRunningEvent_Client_tep(void* p);
 void* ProcessRunningEvent_Server_tep(void* p);
 void* OscarServiceSendQueue_tep(void* p);
+}
 
 namespace LicqDaemon
 {
@@ -71,7 +75,7 @@ protected:
   unsigned short myPort;
   std::string myResponse;
 
-  friend class ::IcqProtocol;
+  friend class LicqIcq::IcqProtocol;
 };
 
 
@@ -139,7 +143,7 @@ protected:
   char myAge;
   char myAuth;
 
-  friend class ::IcqProtocol;
+  friend class LicqIcq::IcqProtocol;
 };
 
 
@@ -298,14 +302,14 @@ protected:
 
   unsigned long  m_nEventId;
 
-  friend class ::COscarService;
+  friend class LicqIcq::COscarService;
+  friend class LicqIcq::IcqProtocol;
+  friend void* LicqIcq::ProcessRunningEvent_Client_tep(void* p);
+  friend void* LicqIcq::ProcessRunningEvent_Server_tep(void* p);
+  friend void* LicqIcq::OscarServiceSendQueue_tep(void* p);
   friend class ::CMSN;
-  friend class ::IcqProtocol;
   friend class Jabber::Plugin;
   friend class LicqDaemon::PluginManager;
-  friend void* ::ProcessRunningEvent_Client_tep(void* p);
-  friend void* ::ProcessRunningEvent_Server_tep(void* p);
-  friend void* ::OscarServiceSendQueue_tep(void* p);
 };
 
 } // namespace Licq

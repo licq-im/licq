@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQDAEMON_ICQ_H
-#define LICQDAEMON_ICQ_H
+#ifndef LICQICQ_ICQ_H
+#define LICQICQ_ICQ_H
 
 #include <licq/icq/icq.h>
 
@@ -35,10 +35,6 @@
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
 
-class COscarService;
-class CPacketTcp;
-class CSrvPacketTcp;
-
 namespace Licq
 {
 class EventContactList;
@@ -53,9 +49,21 @@ class User;
 class UserEvent;
 }
 
+class CChatManager;
+class CFileTransferManager;
+
+namespace LicqIcq
+{
+class COscarService;
+class CPacketTcp;
+class CSrvPacketTcp;
+
 // To keep old code working
 typedef std::map<int, std::string> GroupNameMap;
 
+void* Ping_tep(void* p);
+void* UpdateUsers_tep(void* p);
+void* MonitorSockets_func();
 void *ProcessRunningEvent_Client_tep(void *p);
 void *ProcessRunningEvent_Server_tep(void *p);
 void *ReverseConnectToUser_tep(void *p);
@@ -477,11 +485,13 @@ private:
   friend void *ProcessRunningEvent_Server_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend class COscarService;
-  friend class CChatManager;
-  friend class CFileTransferManager;
+  friend class ::CChatManager;
+  friend class ::CFileTransferManager;
 };
 
 extern IcqProtocol gIcqProtocol;
+
+} // namespace LicqIcq
 
 extern Licq::SocketManager gSocketManager;
 

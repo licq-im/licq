@@ -839,7 +839,7 @@ std::string RTF2HTML::Parse(const char *rtf)
     return s;
 }
 
-std::string IcqProtocol::parseRtf(const std::string& rtf)
+std::string LicqIcq::IcqProtocol::parseRtf(const std::string& rtf)
 {
     std::string str;
     char _RTF[] = "{\\rtf";

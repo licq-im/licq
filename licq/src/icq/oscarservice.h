@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQDAEMON_ICQ_OSCARSERVICE_H
-#define LICQDAEMON_ICQ_OSCARSERVICE_H
+#ifndef LICQICQ_OSCARSERVICE_H
+#define LICQICQ_OSCARSERVICE_H
 
 #include <list>
 #include <string>
@@ -34,6 +34,9 @@ class Packet;
 class Proxy;
 class UserId;
 }
+
+namespace LicqIcq
+{
 
 enum EOscarServiceStatus {STATUS_UNINITIALIZED, STATUS_SERVICE_REQ_SENT,
                           STATUS_SERVICE_REQ_ACKED, STATUS_CONNECTED,
@@ -83,5 +86,7 @@ protected:
 
   friend void *OscarServiceSendQueue_tep(void *p);
 };
+
+} // namespace LicqIcq
 
 #endif

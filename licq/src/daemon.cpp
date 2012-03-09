@@ -173,7 +173,11 @@ pthread_t* Daemon::Shutdown()
     return(&thread_shutdown);
   myShuttingDown = true;
   // Small race condition here if multiple plugins call shutdown at the same time
-  pthread_create (&thread_shutdown, NULL, &Shutdown_tep, this);
+
+  // Send shutdown signal to all the plugins
+  licq->ShutdownPlugins();
+
+  pthread_create (&thread_shutdown, NULL, &LicqIcq::Shutdown_tep, this);
   return (&thread_shutdown);
 }
 
@@ -210,7 +214,7 @@ void Daemon::SaveConf()
 
   licqConf.set("DefaultUserEncoding", gUserManager.defaultUserEncoding());
 
-  gIcqProtocol.save(licqConf);
+  LicqIcq::gIcqProtocol.save(licqConf);
 
   licqConf.writeFile();
   releaseLicqConf();
@@ -390,17 +394,12 @@ void Daemon::rejectEvent(const UserId& userId, Licq::UserEvent* e)
 
 void Licq::Daemon::cancelEvent(unsigned long eventId)
 {
-  gIcqProtocol.CancelEvent(eventId);
+  LicqIcq::gIcqProtocol.CancelEvent(eventId);
 }
 
 void Licq::Daemon::cancelEvent(Licq::Event* event)
 {
-  gIcqProtocol.CancelEvent(event);
-}
-
-void Daemon::shutdownPlugins()
-{
-  licq->ShutdownPlugins();
+  LicqIcq::gIcqProtocol.CancelEvent(event);
 }
 
 void Daemon::autoLogon()

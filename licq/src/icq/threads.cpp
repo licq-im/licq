@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "icq.h"
@@ -34,7 +46,19 @@
 #define DEBUG_THREADS(x)
 //#define DEBUG_THREADS(x) gLog.info(x)
 
+namespace LicqIcq
+{
+void* ProcessRunningEvent_Server_tep(void* p);
+void* ProcessRunningEvent_Client_tep(void* p);
+void* ReverseConnectToUser_tep(void* v);
+void* Ping_tep(void* p);
+void* MonitorSockets_func();
+void* Shutdown_tep(void* p);
+void* UpdateUsers_tep(void* p);
+}
+
 using namespace std;
+using namespace LicqIcq;
 using Licq::gLog;
 
 void cleanup_mutex(void *m)
@@ -82,7 +106,7 @@ void *ConnectToServer_tep(void *s)
  * now popped off the send queue to prevent packets being sent out of order
  * which is a severe error with OSCAR.
  *----------------------------------------------------------------------------*/
-void *ProcessRunningEvent_Server_tep(void* /* p */)
+void* LicqIcq::ProcessRunningEvent_Server_tep(void* /* p */)
 {
   pthread_detach(pthread_self());
 
@@ -365,7 +389,7 @@ exit_server_thread:
 }
 
 
-void *ProcessRunningEvent_Client_tep(void *p)
+void* LicqIcq::ProcessRunningEvent_Client_tep(void *p)
 {
   pthread_detach(pthread_self());
 
@@ -602,7 +626,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
  * Creates a new TCPSocket and connects it to a given user.  Adds the socket
  * to the global socket manager and to the user.
  *----------------------------------------------------------------------------*/
-void *ReverseConnectToUser_tep(void *v)
+void* LicqIcq::ReverseConnectToUser_tep(void* v)
 {
   pthread_detach(pthread_self());
 
@@ -627,7 +651,7 @@ void *ReverseConnectToUser_tep(void *v)
  *
  * Thread entry point to ping the server every n minutes.
  *----------------------------------------------------------------------------*/
-void *Ping_tep(void * /*p*/)
+void* LicqIcq::Ping_tep(void * /*p*/)
 {
   pthread_detach(pthread_self());
 
@@ -669,7 +693,7 @@ void *Ping_tep(void * /*p*/)
  * The server thread lives here.  The main guy who waits on socket activity
  * and processes incoming packets.
  *----------------------------------------------------------------------------*/
-void *MonitorSockets_func()
+void* LicqIcq::MonitorSockets_func()
 {
   fd_set f;
   int nSocketsAvailable, nServiceSocket, l;
@@ -934,13 +958,10 @@ void *MonitorSockets_func()
  *
  * Shutdown the daemon and all the plugins.
  *----------------------------------------------------------------------------*/
-void *Shutdown_tep(void* /* p */)
+void* LicqIcq::Shutdown_tep(void* /* p */)
 {
   // Shutdown
   gLog.info(tr("Shutting down daemon"));
-
-  // Send shutdown signal to all the plugins
-  LicqDaemon::gDaemon.shutdownPlugins();
 
   // Cancel the monitor sockets thread (deferred until ready)
   gIcqProtocol.myNewSocketPipe.putChar('X');
@@ -970,7 +991,7 @@ void *Shutdown_tep(void* /* p */)
   return NULL;
 }
 
-void *UpdateUsers_tep(void *p)
+void* LicqIcq::UpdateUsers_tep(void *p)
 {
   pthread_detach(pthread_self());
 

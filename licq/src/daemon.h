@@ -53,11 +53,6 @@ public:
   unsigned long getNextEventId();
 
   /**
-   * Only called by Shutdown_tep
-   */
-  void shutdownPlugins();
-
-  /**
    * Set dir variable
    * Only called once during startup
    */

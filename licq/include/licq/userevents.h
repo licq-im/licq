@@ -28,8 +28,12 @@
 #include "userid.h"
 
 class CMSN;
-class IcqProtocol;
 namespace Jabber { class Plugin; }
+
+namespace LicqIcq
+{
+class IcqProtocol;
+}
 
 namespace LicqDaemon
 {
@@ -198,7 +202,7 @@ protected:
   Color myColor;
    unsigned long  m_nConvoId;
 
-  friend class ::IcqProtocol;
+  friend class LicqIcq::IcqProtocol;
   friend class LicqDaemon::Daemon;
   friend class ::CMSN;
   friend class Jabber::Plugin;

@@ -44,6 +44,7 @@ using Licq::UserWriteGuard;
 using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gUserManager;
+using LicqIcq::gIcqProtocol;
 
 
 // Declare global PluginManager (internal for daemon)

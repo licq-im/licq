@@ -24,6 +24,9 @@
 
 #define LicqProtocolPluginData IcqProtocolPluginData
 
+namespace LicqIcq
+{
+
 class IcqProtocolPlugin : public Licq::ProtocolPlugin
 {
 public:
@@ -107,9 +110,11 @@ void IcqProtocolPlugin::destructor()
   delete this;
 }
 
+} // namespace LicqIcq
+
 Licq::ProtocolPlugin* IcqPluginFactory(Licq::ProtocolPlugin::Params& p)
 {
-  return new IcqProtocolPlugin(p);
+  return new LicqIcq::IcqProtocolPlugin(p);
 }
 
 struct Licq::ProtocolPluginData IcqProtocolPluginData = {

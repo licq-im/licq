@@ -44,6 +44,7 @@
 #include "packet.h"
 
 using namespace std;
+using namespace LicqIcq;
 using Licq::Buffer;
 using Licq::gLog;
 using LicqDaemon::gDaemon;
@@ -554,7 +555,7 @@ bool COscarService::Initialize()
   return true;
 }
 
-void *OscarServiceSendQueue_tep(void *p)
+void* LicqIcq::OscarServiceSendQueue_tep(void *p)
 {
   pthread_detach(pthread_self());
   

@@ -58,6 +58,7 @@
 #include "packet.h"
 
 using namespace std;
+using namespace LicqIcq;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::StringList;

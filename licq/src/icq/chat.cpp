@@ -37,6 +37,7 @@
 #include "../gettext.h"
 
 using namespace std;
+using namespace LicqIcq;
 using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gTranslator;

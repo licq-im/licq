@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef LICQDAEMON_ICQ_PACKET_H
-#define LICQDAEMON_ICQ_PACKET_H
+#ifndef LICQICQ_PACKET_H
+#define LICQICQ_PACKET_H
 
 #include <cstring>
 #include <list>
@@ -42,6 +42,9 @@ class Color;
 class INetSocket;
 }
 
+namespace LicqIcq
+{
+
 typedef Licq::Buffer CBuffer;
 typedef Licq::Packet CPacket;
 
@@ -55,17 +58,6 @@ const unsigned short ServerStatusPluginRequest   = 4;
 
 const unsigned short GUID_LENGTH                 = 18;
 const unsigned short CAP_LENGTH                  = 16;
-
-// list of plugins we currently support
-struct PluginList
-{
-  const char* const name;
-  const uint8_t* const guid;
-  const char* const description;
-};
-
-extern const struct PluginList info_plugins[];
-extern const struct PluginList status_plugins[];
 
 unsigned short ReversePort(unsigned short p);
 size_t lengthField(const std::string& field);
@@ -1998,5 +1990,7 @@ public:
   CPChat_Beep();
 };
 */
+
+} // namespace LicqIcq
 
 #endif

@@ -52,6 +52,7 @@ using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
 using Licq::gLog;
 using Licq::gPluginManager;
+using LicqIcq::gIcqProtocol;
 using namespace LicqDaemon;
 
 // Declare global UserManager (internal for daemon)

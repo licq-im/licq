@@ -50,6 +50,7 @@
 #include "packet.h"
 
 using namespace std;
+using namespace LicqIcq;
 using Licq::Group;
 using Licq::StringList;
 using Licq::UserCategoryMap;
@@ -65,12 +66,12 @@ typedef Licq::Owner ICQOwner;
 typedef Licq::User ICQUser;
 
 
-unsigned short ReversePort(unsigned short p)
+unsigned short LicqIcq::ReversePort(unsigned short p)
 {
   return ((p >> 8) & 0xFF) + ((p & 0xFF) << 8);
 }
 
-size_t lengthField(const string& field)
+size_t LicqIcq::lengthField(const string& field)
 {
   // By SC 27434326
   // Auxiliary function for whitepage search
@@ -273,6 +274,14 @@ void Encrypt_Server(CBuffer* /* buffer */)
 #endif
 }
 
+// list of plugins we currently support
+struct PluginList
+{
+  const char* const name;
+  const uint8_t* const guid;
+  const char* const description;
+};
+
 const struct PluginList info_plugins[] =
 {
   { "Picture"   , PLUGIN_PICTURE   , "Picture"                          },
@@ -353,7 +362,7 @@ static unsigned char client_check_data[] = {
 };
 
 
-void Encrypt_Client(CBuffer *pkt, unsigned long version)
+void LicqIcq::Encrypt_Client(CBuffer* pkt, unsigned long version)
 {
   unsigned long B1, M1, check;
   unsigned int i;
@@ -427,7 +436,7 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
 }
 
 
-bool Decrypt_Client(CBuffer *pkt, unsigned long version)
+bool LicqIcq::Decrypt_Client(CBuffer* pkt, unsigned long version)
 {
   unsigned long hex, key, B1, M1, check;
   unsigned int i;
@@ -4759,7 +4768,7 @@ CPT_CloseSecureChannel::CPT_CloseSecureChannel(ICQUser *_cUser)
 
 
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-string pipeInput(const string& message)
+string LicqIcq::pipeInput(const string& message)
 {
   string m(message);
   size_t posPipe = 0;

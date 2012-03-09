@@ -51,13 +51,15 @@
 #include "packet.h"
 
 using namespace std;
-using namespace LicqDaemon;
+using namespace LicqIcq;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gPluginManager;
 using Licq::gTranslator;
+using LicqDaemon::Daemon;
+using LicqDaemon::gDaemon;
 
 
 std::list <CReverseConnectToUserData *> IcqProtocol::m_lReverseConnect;
@@ -66,7 +68,7 @@ pthread_cond_t IcqProtocol::cond_reverseconnect_done = PTHREAD_COND_INITIALIZER;
 
 
 CICQDaemon *gLicqDaemon = NULL;
-IcqProtocol gIcqProtocol;
+LicqIcq::IcqProtocol LicqIcq::gIcqProtocol;
 Licq::SocketManager gSocketManager;
 
 IcqProtocol::IcqProtocol()

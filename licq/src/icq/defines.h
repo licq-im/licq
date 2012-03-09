@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,11 @@
  */
 
 // ICQ definitions:
-#ifndef LICQ_ICQDEFINES_H
-#define LICQ_ICQDEFINES_H
+#ifndef LICQICQ_DEFINES_H
+#define LICQICQ_DEFINES_H
+
+namespace LicqIcq
+{
 
 // Version constants
 #define MODE_DIRECT 0x04
@@ -625,5 +628,7 @@ const uint8_t XtraAwayCaps[XTRA_AWAY_COUNT][0x10] =
   { 0xB7, 0x08, 0x67, 0xF5, 0x38, 0x25, 0x43, 0x27, 0xA1, 0xFF, 0xCF, 0x4C, 0xC1, 0x93, 0x97, 0x97 },
   { 0xDD, 0xCF, 0x0E, 0xA9, 0x71, 0x95, 0x40, 0x48, 0xA9, 0xC6, 0x41, 0x32, 0x06, 0xD6, 0xF2, 0x80 }
 };
+
+} // namespace LicqIcq
 
 #endif

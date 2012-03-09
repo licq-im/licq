@@ -33,11 +33,13 @@
 #include "../userid.h"
 
 class CMSN;
-class CSocketManager;
-class IcqProtocol;
 namespace Jabber { class Plugin; }
-void* MonitorSockets_func();
 
+namespace LicqIcq
+{
+class IcqProtocol;
+void* MonitorSockets_func();
+}
 
 namespace LicqDaemon
 {
@@ -901,10 +903,10 @@ protected:
 
   static pthread_mutex_t mutex_nNumUserEvents;
 
+  friend class LicqIcq::IcqProtocol;
+  friend void* LicqIcq::MonitorSockets_func();
   friend class ::CMSN;
-  friend class ::IcqProtocol;
   friend class Jabber::Plugin;
-  friend void* ::MonitorSockets_func();
 };
 
 
