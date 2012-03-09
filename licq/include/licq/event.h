@@ -25,8 +25,6 @@
 
 #include "userid.h"
 
-namespace Jabber { class Plugin; }
-
 namespace LicqIcq
 {
 class COscarService;
@@ -39,6 +37,11 @@ void* OscarServiceSendQueue_tep(void* p);
 namespace LicqMsn
 {
 class CMSN;
+}
+
+namespace LicqJabber
+{
+class Plugin;
 }
 
 namespace LicqDaemon
@@ -312,7 +315,7 @@ protected:
   friend void* LicqIcq::ProcessRunningEvent_Server_tep(void* p);
   friend void* LicqIcq::OscarServiceSendQueue_tep(void* p);
   friend class LicqMsn::CMSN;
-  friend class Jabber::Plugin;
+  friend class LicqJabber::Plugin;
   friend class LicqDaemon::PluginManager;
 };
 

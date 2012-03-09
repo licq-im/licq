@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef JABBER_CONFIG_H
-#define JABBER_CONFIG_H
+#ifndef LICQJABBER_CONFIG_H
+#define LICQJABBER_CONFIG_H
 
 #include <gloox/gloox.h>
 #include <string>
@@ -31,7 +31,7 @@ namespace Licq
 class IniFile;
 }
 
-namespace Jabber
+namespace LicqJabber
 {
 
 class Config
@@ -51,6 +51,6 @@ private:
   std::string myResource;
 };
 
-} // namespace Jabber
+} // namespace LicqJabber
 
 #endif

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -27,7 +27,7 @@
 
 Licq::ProtocolPlugin* JabberPluginFactory(Licq::ProtocolPlugin::Params& p)
 {
-  return new Jabber::Plugin(p);
+  return new LicqJabber::Plugin(p);
 }
 
 LICQ_PROTOCOL_PLUGIN_DATA(&JabberPluginFactory);

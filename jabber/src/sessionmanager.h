@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq Developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Please refer to the COPYRIGHT file distributed with this source
  * distribution for the names of the individual contributors.
@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef JABBER_SESSIONMANAGER_H
-#define JABBER_SESSIONMANAGER_H
+#ifndef LICQJABBER_SESSIONMANAGER_H
+#define LICQJABBER_SESSIONMANAGER_H
 
 #include <boost/noncopyable.hpp>
 #include <gloox/chatstatehandler.h>
@@ -35,7 +35,7 @@ class ChatStateFilter;
 class Client;
 }
 
-namespace Jabber
+namespace LicqJabber
 {
 
 class Handler;
@@ -79,6 +79,6 @@ private:
   Session& findSession(const std::string& user);
 };
 
-} // namespace Jabber
+} // namespace LicqJabber
 
 #endif
