@@ -25,7 +25,6 @@
 #include <unistd.h>
 
 #include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/pluginsignal.h>
@@ -41,6 +40,7 @@
 #include "defines.h"
 #include "oscarservice.h"
 #include "packet.h"
+#include "user.h"
 
 #define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
@@ -419,7 +419,7 @@ void* LicqIcq::ProcessRunningEvent_Client_tep(void *p)
     unsigned short nRemotePort;
     bool bSendIntIp;
     {
-      Licq::UserReadGuard u(userId);
+      UserReadGuard u(userId);
       if (!u.isLocked())
       {
         if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
@@ -1006,7 +1006,7 @@ void* LicqIcq::UpdateUsers_tep(void *p)
       Licq::UserListGuard userList(LICQ_PPID);
       BOOST_FOREACH(Licq::User* user, **userList)
       {
-        Licq::UserWriteGuard pUser(user);
+        UserWriteGuard pUser(dynamic_cast<User*>(user));
         bool bSent = false;
         bool bBART = false;
 

@@ -57,6 +57,7 @@ namespace LicqIcq
 class COscarService;
 class CPacketTcp;
 class CSrvPacketTcp;
+class User;
 
 // To keep old code working
 typedef std::map<int, std::string> GroupNameMap;
@@ -153,7 +154,7 @@ public:
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
   unsigned long icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPhoneBook(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqRequestPicture(const Licq::UserId& userId, bool bServer, size_t iconHashSize);
+  unsigned long icqRequestPicture(const Licq::UserId& userId);
   unsigned long icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer = false);
@@ -276,7 +277,7 @@ public:
   Licq::Event* DoneExtendedEvent(Licq::Event*, Licq::Event::ResultType);
   Licq::Event* DoneExtendedEvent(unsigned long tag, Licq::Event::ResultType _eResult);
 
-  bool processPluginMessage(Licq::Buffer& packet, Licq::User* user, int channel,
+  bool processPluginMessage(Licq::Buffer& packet, User* user, int channel,
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
      Licq::TCPSocket* pSock);
@@ -304,8 +305,8 @@ public:
   bool ProcessTcpPacket(Licq::TCPSocket*);
   bool ProcessTcpHandshake(Licq::TCPSocket*);
 
-  unsigned long icqRequestInfoPlugin(Licq::User* user, bool, const uint8_t*);
-  unsigned long icqRequestStatusPlugin(Licq::User* user, bool, const uint8_t*);
+  unsigned long icqRequestInfoPlugin(User* user, bool, const uint8_t*);
+  unsigned long icqRequestStatusPlugin(User* user, bool, const uint8_t*);
   void icqUpdateInfoTimestamp(const uint8_t*);
 
   static bool handshake_Send(Licq::TCPSocket*, const Licq::UserId& userId, unsigned short,
@@ -334,7 +335,7 @@ public:
 
   static unsigned short icqStatusFromStatus(unsigned status);
   static unsigned statusFromIcqStatus(unsigned short icqStatus);
-  static unsigned long addStatusFlags(unsigned long nStatus, const Licq::User* u);
+  static unsigned long addStatusFlags(unsigned long nStatus, const User* u);
 
   static int getGroupFromId(unsigned short gsid);
 
@@ -405,7 +406,7 @@ private:
       const Licq::UserId& userId, std::string& message, time_t timeSent,
       unsigned long flags);
 
-  void ChangeUserStatus(Licq::User* u, unsigned long s, time_t onlineSince = 0);
+  void ChangeUserStatus(User* u, unsigned long s, time_t onlineSince = 0);
   std::string findUserByCellular(const std::string& cellular);
   bool hasServerEvent(unsigned long subSequence) const;
   void StupidChatLinkageFix();

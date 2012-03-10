@@ -34,8 +34,6 @@
 #include <langinfo.h>
 
 #include <licq/byteorder.h>
-#include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/gpghelper.h>
@@ -55,7 +53,9 @@
 #include "../daemon.h"
 #include "../gettext.h"
 #include "oscarservice.h"
+#include "owner.h"
 #include "packet.h"
+#include "user.h"
 
 using namespace std;
 using namespace LicqIcq;
@@ -135,7 +135,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
         m, e, nCharset);
   }
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
 
   if (flags & Licq::ProtocolSignal::SendDirect)
   {
@@ -177,7 +177,7 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool
     return eventId;
   }
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
 
   if (bServer)
   {
@@ -244,7 +244,7 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
         ICQ_CMDxSUB_URL | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
 
   if (flags & Licq::ProtocolSignal::SendDirect)
   {
@@ -276,7 +276,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   if (Licq::gUserManager.isOwner(userId))
     return;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
 
@@ -407,7 +407,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
       m, e);
   }
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (flags & Licq::ProtocolSignal::SendDirect)
   {
     if (!u.isLocked())
@@ -435,7 +435,7 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
 }
 
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------
-unsigned long IcqProtocol::icqRequestInfoPlugin(Licq::User* u, bool bServer,
+unsigned long IcqProtocol::icqRequestInfoPlugin(User* u, bool bServer,
                                                const uint8_t* GUID)
 {
   Licq::Event* result = NULL;
@@ -461,7 +461,7 @@ unsigned long IcqProtocol::icqRequestInfoPluginList(const Licq::UserId& userId, 
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
 
@@ -481,7 +481,7 @@ unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId, bool 
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
 
@@ -496,18 +496,28 @@ unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId, bool 
 }
 
 //-----CICQDaemon::sendPictureReq-----------------------------------------------
-unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId, bool bServer, size_t iconHashSize)
+unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId)
 {
+  size_t iconHashSize;
+  {
+    UserReadGuard user(userId);
+    if (!user.isLocked())
+      return 0;
+
+    iconHashSize = user->buddyIconHash().size();
+  }
+
   if (UseServerSideBuddyIcons() && iconHashSize > 0)
     return m_xBARTService->SendEvent(userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
 
   if (Licq::gUserManager.isOwner(userId))
      return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
 
+  bool bServer = (u->infoSocketDesc() < 0);
   if (bServer)
     gLog.info(tr("Requesting Picture from %s through server."), u->getAlias().c_str());
   else
@@ -517,7 +527,7 @@ unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId, bool bS
 }
 
 //-----CICQDaemon::sendStatusPluginReq------------------------------------------
-unsigned long IcqProtocol::icqRequestStatusPlugin(Licq::User* u, bool bServer,
+unsigned long IcqProtocol::icqRequestStatusPlugin(User* u, bool bServer,
                                                  const uint8_t* GUID)
 {
   Licq::Event* result = NULL;
@@ -543,7 +553,7 @@ unsigned long IcqProtocol::icqRequestStatusPluginList(const Licq::UserId& userId
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
 
@@ -563,7 +573,7 @@ unsigned long IcqProtocol::icqRequestSharedFiles(const Licq::UserId& userId, boo
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
 
@@ -583,7 +593,7 @@ unsigned long IcqProtocol::icqRequestPhoneFollowMe(const Licq::UserId& userId, b
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
 
@@ -603,7 +613,7 @@ unsigned long IcqProtocol::icqRequestICQphone(const Licq::UserId& userId, bool b
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
 
@@ -620,7 +630,7 @@ unsigned long IcqProtocol::icqRequestICQphone(const Licq::UserId& userId, bool b
 void IcqProtocol::icqFileTransferCancel(const Licq::UserId& userId, unsigned short nSequence)
 {
   // add to history ??
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
   gLog.info(tr("Cancelling file transfer to %s (#%d)."), u->getAlias().c_str(), -nSequence);
@@ -633,7 +643,7 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
     const string& message, const string& filename, unsigned long nFileSize)
 {
    // basically a fancy tcp ack packet which is sent late
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
   gLog.info(tr("Accepting file transfer from %s (#%d)."), u->getAlias().c_str(), -nSequence);
@@ -655,7 +665,7 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
     unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer)
 {
    // add to history ??
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
   string reasonDos = gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding());
@@ -687,7 +697,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return 0;
   string reasonDos = gTranslator.toUtf8(gTranslator.returnToDos(reason), u->userEncoding());
@@ -753,7 +763,7 @@ unsigned long IcqProtocol::icqMultiPartyChatRequest(const Licq::UserId& userId,
 
 void IcqProtocol::icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence)
 {
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
   gLog.info(tr("Cancelling chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
@@ -765,7 +775,7 @@ void IcqProtocol::icqChatRequestRefuse(const Licq::UserId& userId, const string&
     unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
   // add to history ??
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
   gLog.info(tr("Refusing chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
@@ -789,7 +799,7 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
 {
   // basically a fancy tcp ack packet which is sent late
   // add to history ??
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
   gLog.info(tr("Accepting chat request with %s (#%d)."), u->getAlias().c_str(), -nSequence);
@@ -813,7 +823,7 @@ void IcqProtocol::icqChatRequestAccept(const Licq::UserId& userId, unsigned shor
 void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId)
 {
 #ifdef USE_OPENSSL
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
 
@@ -833,7 +843,7 @@ void IcqProtocol::icqOpenSecureChannel(unsigned long eventId, const Licq::UserId
 void IcqProtocol::icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId)
 {
 #ifdef USE_OPENSSL
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (!u.isLocked())
     return;
 
@@ -1427,7 +1437,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
 
   // find which user was sent
   bool bNewUser = false;
-  Licq::UserWriteGuard u(userId, true, &bNewUser);
+  UserWriteGuard u(userId, true, &bNewUser);
   if (bNewUser)
     u->setSocketDesc(pSock);
 
@@ -2652,7 +2662,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
   return !errorOccured;
 }
 
-bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
+bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
     int channel,
                                       bool bIsAck,
                                       unsigned long nMsgID1,
@@ -2918,13 +2928,13 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
             }
 
             u->SetEnableSave(false);
-            u->GetPhoneBook()->Clean();
+                u->GetPhoneBook().Clean();
             for (unsigned long i = 0; i < nEntries; i++)
             {
-              u->GetPhoneBook()->AddEntry(&pb[i]);
-            }
+                  u->GetPhoneBook().AddEntry(&pb[i]);
+                }
             u->SetEnableSave(true);
-                u->save(Licq::User::SavePhoneBook);
+                u->save(User::SaveUserInfo);
                   delete [] pb;
 
                 Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
@@ -3048,7 +3058,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
           gLog.info(tr("File server status request from %s."), u->getAlias().c_str());
         unsigned long nStatus;
         {
-          Licq::OwnerReadGuard o(LICQ_PPID);
+          OwnerReadGuard o;
           switch (o->sharedFilesStatus())
           {
             case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
@@ -3073,7 +3083,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
           gLog.info(tr("ICQphone status request from %s."), u->getAlias().c_str());
         unsigned long nStatus;
         {
-          Licq::OwnerReadGuard o(LICQ_PPID);
+          OwnerReadGuard o;
           switch (o->icqPhoneStatus())
           {
             case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
@@ -3098,7 +3108,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, Licq::User* u,
           gLog.info(tr("Phone \"Follow Me\" status request from %s."), u->getAlias().c_str());
         unsigned long nStatus;
         {
-          Licq::OwnerReadGuard o(LICQ_PPID);
+          OwnerReadGuard o;
           switch (o->phoneFollowMeStatus())
           {
             case IcqPluginActive: nStatus = ICQ_PLUGIN_STATUSxACTIVE; break;
@@ -3366,7 +3376,7 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
 
       unsigned long nCookie;
       {
-        Licq::UserReadGuard u(userId);
+        UserReadGuard u(userId);
         if (!u.isLocked() && !bChat)
         {
           gLog.warning(tr("Connection from unknown user."));
@@ -3461,7 +3471,7 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
 
       unsigned long nCookie;
       {
-        Licq::UserReadGuard u(userId);
+        UserReadGuard u(userId);
         if (!u.isLocked())
         {
           gLog.warning(tr("Connection from unknown user."));

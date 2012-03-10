@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-#include <licq/contactlist/user.h>
+#include <licq/icq/user.h>
 
 #include "userdlg.h"
 
@@ -143,7 +143,7 @@ private slots:
    * @param pbe Data for entry
    * @param nEntry Position in list to update
    */
-  void phoneBookUpdated(struct Licq::PhoneBookEntry pbe, int nEntry);
+  void phoneBookUpdated(struct Licq::PhoneBookEntry& pbe, int nEntry);
 
   /**
    * Open dialog to edit phone entry
@@ -244,14 +244,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageMore2(const Licq::User* user);
+  void loadPageMore2(const Licq::IcqUser* user);
 
   /**
    * Save user data for more2 page
    *
    * @param user User to write data to
    */
-  void savePageMore2(Licq::User* user);
+  void savePageMore2(Licq::IcqUser* user);
 
   /**
    * Split interest, organization or background string for presentation
@@ -327,14 +327,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPagePhoneBook(const Licq::User* user);
+  void loadPagePhoneBook(const Licq::IcqUser* user);
 
   /**
    * Save user data for phone book
    *
    * @param user User to write data to
    */
-  void savePagePhoneBook(Licq::User* user);
+  void savePagePhoneBook(Licq::IcqUser* user);
 
   /**
    * Update data in phone book widget

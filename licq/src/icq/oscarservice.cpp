@@ -42,6 +42,7 @@
 #include "../gettext.h"
 #include "icq.h"
 #include "packet.h"
+#include "user.h"
 
 using namespace std;
 using namespace LicqIcq;
@@ -169,7 +170,7 @@ bool COscarService::SendBARTFam(Licq::Event* e)
     {
       CPU_RequestBuddyIcon* p;
       {
-        Licq::UserReadGuard u(e->userId());
+        UserReadGuard u(e->userId());
         if (!u.isLocked())
           return false;
         p = new CPU_RequestBuddyIcon(u->accountId(),
@@ -351,8 +352,7 @@ void COscarService::ProcessBARTFam(Buffer& packet, unsigned short SubType,
     case ICQ_SNACxBART_DOWNLOADxREPLY:
     {
       string id = packet.unpackByteString();
-      Licq::UserId userId(id, LICQ_PPID);
-      Licq::UserWriteGuard u(userId);
+      UserWriteGuard u(id);
       if (!u.isLocked())
       {
         gLog.warning(tr("Buddy icon for unknown user (%s)."), id.c_str());

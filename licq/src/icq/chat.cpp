@@ -34,6 +34,7 @@
 
 #include "icq.h"
 #include "packet.h"
+#include "user.h"
 #include "../gettext.h"
 
 using namespace std;
@@ -130,7 +131,7 @@ CChatClient::CChatClient()
 }
 
 
-CChatClient::CChatClient(const Licq::User* u)
+CChatClient::CChatClient(const User* u)
 {
   m_nVersion = u->Version();
   myUserId = u->id();
@@ -730,7 +731,7 @@ void CChatManager::StartAsClient(unsigned short nPort)
   if (!StartChatServer()) return;
 
   {
-    Licq::UserReadGuard u(myUserId);
+    UserReadGuard u(myUserId);
     if (!u.isLocked())
       return;
     m_pChatClient = new CChatClient(*u);
@@ -759,7 +760,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   bool bResult = false;
 
   {
-    Licq::UserReadGuard temp_user(u->myUserId);
+    UserReadGuard temp_user(u->myUserId);
     if (temp_user.isLocked())
     {
       bSendIntIp = temp_user->SendIntIp();

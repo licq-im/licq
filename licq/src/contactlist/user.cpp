@@ -62,172 +62,6 @@ static const char* const HistoryExt = ".history";
 static const char* const HistoryOldExt = ".removed";
 
 
-ICQUserPhoneBook::ICQUserPhoneBook()
-{
-}
-
-ICQUserPhoneBook::~ICQUserPhoneBook()
-{
-  Clean();
-}
-
-void ICQUserPhoneBook::AddEntry(const struct PhoneBookEntry *entry)
-{
-  struct PhoneBookEntry new_entry = *entry;
-
-  PhoneBookVector.push_back(new_entry);
-}
-
-void ICQUserPhoneBook::SetEntry(const struct PhoneBookEntry *entry,
-                                unsigned long nEntry)
-{
-  if (nEntry >= PhoneBookVector.size())
-  {
-    AddEntry(entry);
-    return;
-  }
-
-  PhoneBookVector[nEntry] = *entry;
-}
-
-void ICQUserPhoneBook::ClearEntry(unsigned long nEntry)
-{
-  if (nEntry >= PhoneBookVector.size())
-    return;
-
-  vector<struct PhoneBookEntry>::iterator i = PhoneBookVector.begin();
-  for (;nEntry > 0; nEntry--, ++i)
-    ;
-
-  PhoneBookVector.erase(i);
-}
-
-void ICQUserPhoneBook::Clean()
-{
-  while (PhoneBookVector.size() > 0)
-    ClearEntry(PhoneBookVector.size() - 1);
-}
-
-void ICQUserPhoneBook::SetActive(long nEntry)
-{
-  vector<struct PhoneBookEntry>::iterator iter;
-  long i;
-  for (i = 0, iter = PhoneBookVector.begin(); iter != PhoneBookVector.end()
-                                                 ; i++, ++iter)
-    (*iter).nActive = (i == nEntry);
-}
-
-bool ICQUserPhoneBook::Get(unsigned long nEntry,
-    const struct PhoneBookEntry **entry) const
-{
-  if (nEntry >= PhoneBookVector.size())
-    return false;
-
-  *entry = &PhoneBookVector[nEntry];
-  return true;
-}
-
-bool ICQUserPhoneBook::SaveToDisk(IniFile& conf)
-{
-  char buff[40];
-
-  conf.set("PhoneEntries", (unsigned long)PhoneBookVector.size());
-
-  for (unsigned long i = 0 ; i < PhoneBookVector.size(); i++)
-  {
-    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
-    conf.set(buff, PhoneBookVector[i].description);
-
-    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
-    conf.set(buff, PhoneBookVector[i].areaCode);
-
-    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
-    conf.set(buff, PhoneBookVector[i].phoneNumber);
-
-    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
-    conf.set(buff, PhoneBookVector[i].extension);
-
-    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
-    conf.set(buff, PhoneBookVector[i].country);
-
-    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
-    conf.set(buff, PhoneBookVector[i].nActive);
-
-    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
-    conf.set(buff, PhoneBookVector[i].nType);
-
-    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
-    conf.set(buff, PhoneBookVector[i].gateway);
-
-    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
-    conf.set(buff, PhoneBookVector[i].nGatewayType);
-
-    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
-    conf.set(buff, PhoneBookVector[i].nSmsAvailable);
-
-    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
-    conf.set(buff, PhoneBookVector[i].nRemoveLeading0s);
-
-    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
-    conf.set(buff, PhoneBookVector[i].nPublish);
-  }
-
-  return true;
-}
-
-bool ICQUserPhoneBook::LoadFromDisk(IniFile& conf)
-{
-  char buff[40];
-  struct PhoneBookEntry entry;
-
-  Clean();
-
-  unsigned long nNumEntries;
-  conf.get("PhoneEntries", nNumEntries);
-  for (unsigned long i = 0; i < nNumEntries; i++)
-  {
-    snprintf(buff, sizeof(buff), "PhoneDescription%lu", i);
-    conf.get(buff, entry.description, "");
-
-    snprintf(buff, sizeof(buff), "PhoneAreaCode%lu", i);
-    conf.get(buff, entry.areaCode, "");
-
-    snprintf(buff, sizeof(buff), "PhoneNumber%lu", i);
-    conf.get(buff, entry.phoneNumber, "");
-
-    snprintf(buff, sizeof(buff), "PhoneExtension%lu", i);
-    conf.get(buff, entry.extension, "");
-
-    snprintf(buff, sizeof(buff), "PhoneCountry%lu", i);
-    conf.get(buff, entry.country, "");
-
-    snprintf(buff, sizeof(buff), "PhoneActive%lu", i);
-    conf.get(buff, entry.nActive, 0);
-
-    snprintf(buff, sizeof(buff), "PhoneType%lu", i);
-    conf.get(buff, entry.nType, 0);
-
-    snprintf(buff, sizeof(buff), "PhoneGateway%lu", i);
-    conf.get(buff, entry.gateway, "");
-
-    snprintf(buff, sizeof(buff), "PhoneGatewayType%lu", i);
-    conf.get(buff, entry.nGatewayType, 1);
-
-    snprintf(buff, sizeof(buff), "PhoneSmsAvailable%lu", i);
-    conf.get(buff, entry.nSmsAvailable, 0);
-
-    snprintf(buff, sizeof(buff), "PhoneRemoveLeading0s%lu", i);
-    conf.get(buff, entry.nRemoveLeading0s, 1);
-
-    snprintf(buff, sizeof(buff), "PhonePublish%lu", i);
-    conf.get(buff, entry.nPublish, 2);
-
-    AddEntry(&entry);
-  }
-
-  return true;
-}
-
 unsigned short Licq::User::s_nNumUserEvents = 0;
 pthread_mutex_t Licq::User::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
@@ -301,7 +135,6 @@ User::User(const UserId& id, bool temporary, bool isOwner)
   }
 
   d->loadUserInfo();
-  m_PhoneBook->LoadFromDisk(d->myConf);
   d->loadPictureInfo();
   d->loadLicqInfo();
 }
@@ -346,20 +179,12 @@ void User::Private::loadUserInfo()
   PropertyMap::iterator i;
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
     myConf.get(i->first, i->second);
-
-  loadCategory(myUser->myInterests, "Interests");
-  loadCategory(myUser->myBackgrounds, "Backgrounds");
-  loadCategory(myUser->myOrganizations, "Organizations");
 }
 
 void User::Private::loadPictureInfo()
 {
   myConf.setSection("user");
   myConf.get("PicturePresent", myUser->m_bPicturePresent, false);
-  myConf.get("BuddyIconType", myUser->myBuddyIconType, 0);
-  myConf.get("BuddyIconHashType", myUser->myBuddyIconHashType, 0);
-  myConf.getHex("BuddyIconHash", myUser->myBuddyIconHash, "");
-  myConf.getHex("OurBuddyIconHash", myUser->myOurBuddyIconHash, "");
 }
 
 void User::Private::loadLicqInfo()
@@ -438,19 +263,6 @@ void User::Private::loadLicqInfo()
     temp = "default";
   setHistoryFile(temp);
   myConf.get("AwaitingAuth", myUser->m_bAwaitingAuth, false);
-  myConf.get("SID", myUser->m_nSID[Licq::NORMAL_SID], 0);
-  myConf.get("InvisibleSID", myUser->m_nSID[Licq::INV_SID], 0);
-  myConf.get("VisibleSID", myUser->m_nSID[Licq::VIS_SID], 0);
-  myConf.get("GSID", myUser->m_nGSID, 0);
-  myConf.get("ClientTimestamp", myUser->m_nClientTimestamp, 0);
-  myConf.get("ClientInfoTimestamp", myUser->m_nClientInfoTimestamp, 0);
-  myConf.get("ClientStatusTimestamp", myUser->m_nClientStatusTimestamp, 0);
-  myConf.get("OurClientTimestamp", myUser->m_nOurClientTimestamp, 0);
-  myConf.get("OurClientInfoTimestamp", myUser->m_nOurClientInfoTimestamp, 0);
-  myConf.get("OurClientStatusTimestamp", myUser->m_nOurClientStatusTimestamp, 0);
-  myConf.get("PhoneFollowMeStatus", myUser->myPhoneFollowMeStatus, CICQDaemon::IcqPluginInactive);
-  myConf.get("ICQphoneStatus", myUser->myIcqPhoneStatus, CICQDaemon::IcqPluginInactive);
-  myConf.get("SharedFilesStatus", myUser->mySharedFilesStatus, CICQDaemon::IcqPluginInactive);
   myConf.get("UseGPG", myUser->m_bUseGPG, false );
   myConf.get("GPGKey", myUser->myGpgKey, "");
   myConf.get("SendServer", myUser->m_bSendServer, false);
@@ -458,7 +270,11 @@ void User::Private::loadLicqInfo()
   if (myUser->myServerGroup > -1)
   {
     if (!myConf.get("ServerGroup", myUser->myServerGroup, 0) && myId.protocolId() == LICQ_PPID)
-      myUser->myServerGroup = gUserManager.getGroupFromServerId(LICQ_PPID, myUser->m_nGSID);
+    {
+      unsigned gsid;
+      myConf.get("GSID", gsid, 0);
+      myUser->myServerGroup = gUserManager.getGroupFromServerId(LICQ_PPID, gsid);
+    }
   }
 
   unsigned int userGroupCount;
@@ -483,8 +299,6 @@ void User::Private::loadLicqInfo()
       if (oldGroups & (1L << i))
         myUser->addToGroup(i+1);
   }
-
-  myUser->m_bSupportsUTF8 = false;
 
   if (nNewMessages > 0)
   {
@@ -528,18 +342,6 @@ User::~User()
     gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
         PluginSignal::UserEvents, myId, nId));
   }
-
-  delete m_PhoneBook;
-/*
-  // Destroy the mutex
-  int nResult = 0;
-  do
-  {
-    pthread_mutex_lock(&mutex);
-    pthread_mutex_unlock(&mutex);
-    nResult = pthread_mutex_destroy(&mutex);
-  } while (nResult != 0);
-*/
 
   delete myPrivate;
 }
@@ -612,11 +414,6 @@ void User::Private::Init()
   myUserInfo["HomepageDesc"] = string();
   myUserInfo["ICQHomepagePresent"] = false;
 
-  // More2
-  myUser->myInterests.clear();
-  myUser->myBackgrounds.clear();
-  myUser->myOrganizations.clear();
-
   // Work Info
   myUserInfo["CompanyCity"] = string();
   myUserInfo["CompanyState"] = string();
@@ -634,16 +431,8 @@ void User::Private::Init()
   // About
   myUserInfo["About"] = string();
 
-  // Phone Book
-  myUser->m_PhoneBook = new ICQUserPhoneBook();
-
   // Picture
   myUser->m_bPicturePresent = false;
-  myUser->myBuddyIconType = 0;
-  myUser->myBuddyIconHashType = 0;
-  myUser->myBuddyIconHash.clear();
-  myUser->myOurBuddyIconHash.clear();
-
   myUser->myPictureFileName = gDaemon.baseDir() + ConfigDir + myId.accountId() + ".pic";
 
   // GPG key
@@ -655,30 +444,17 @@ void User::Private::Init()
   myUser->SetSendServer(false);
   myUser->SetSendIntIp(false);
   myUser->SetShowAwayMsg(false);
-  myUser->SetSequence(static_cast<unsigned short>(-1)); // set all bits 0xFFFF
   myUser->SetOfflineOnDisconnect(false);
   myUser->clearAllSocketDesc();
   myUser->m_nIp = 0;
   myUser->m_nPort = 0;
   myUser->m_nIntIp = 0;
-  myUser->myDirectMode = true;
   myUser->m_nVersion = 0;
-  myUser->m_nCookie = 0;
-  myUser->m_nClientTimestamp = 0;
-  myUser->m_nClientInfoTimestamp = 0;
-  myUser->m_nClientStatusTimestamp = 0;
-  myUser->m_nOurClientTimestamp = 0;
-  myUser->m_nOurClientInfoTimestamp = 0;
-  myUser->m_nOurClientStatusTimestamp = 0;
   myUser->m_bUserUpdated = false;
-  myUser->myPhoneFollowMeStatus = CICQDaemon::IcqPluginInactive;
-  myUser->myIcqPhoneStatus = CICQDaemon::IcqPluginInactive;
-  myUser->mySharedFilesStatus = CICQDaemon::IcqPluginInactive;
   myUser->myWebPresence = false;
   myUser->myHideIp = false;
   myUser->myBirthdayFlag = false;
   myUser->myHomepageFlag = false;
-  myUser->myDirectFlag = DirectAnyone;
   myUser->mySecureChannelSupport = SecureChannelUnknown;
   myUser->Touch();
   for (unsigned short i = 0; i < 4; i++)
@@ -699,8 +475,6 @@ void User::Private::Init()
   myUser->myCustomAutoResponse = "";
   myUser->m_bConnectionInProgress = false;
   myUser->m_bAwaitingAuth = false;
-  myUser->m_nSID[0] = myUser->m_nSID[1] = myUser->m_nSID[2] = 0;
-  myUser->m_nGSID = 0;
   myUser->myClientInfo = "";
 
   myUser->myMutex.setName(myId.toString());
@@ -965,14 +739,6 @@ int Licq::User::Birthday(unsigned short nRange) const
   return nDays;
 }
 
-unsigned short Licq::User::Sequence(bool increment)
-{
-   if (increment)
-      return (m_nSequence--);
-   else
-      return (m_nSequence);
-}
-
 void Licq::User::setAlias(const string& alias)
 {
   if (alias.empty())
@@ -985,14 +751,6 @@ void Licq::User::setAlias(const string& alias)
   }
   else
     myAlias = alias;
-
-  // If there is a valid alias, set the server side list alias as well.
-  if (!myAlias.empty())
-  {
-    size_t aliasLen = myAlias.size();
-    Licq::TlvPtr aliasTLV(new Licq::OscarTlv(0x131, aliasLen, myAlias.c_str()));
-    AddTLV(aliasTLV);
-  }
 
   save(SaveUserInfo);
 }
@@ -1681,55 +1439,6 @@ void User::saveUserInfo()
   PropertyMap::const_iterator i;
   for (i = d->myUserInfo.begin(); i != d->myUserInfo.end(); ++i)
     d->myConf.set(i->first, i->second);
-
-  d->saveCategory(myInterests, "Interests");
-  d->saveCategory(myBackgrounds, "Backgrounds");
-  d->saveCategory(myOrganizations, "Organizations");
-}
-
-void User::Private::saveCategory(const UserCategoryMap& category, const string& key)
-{
-  myConf.set(key + 'N', category.size());
-
-  Licq::UserCategoryMap::const_iterator i;
-  unsigned int count = 0;
-  for (i = category.begin(); i != category.end(); ++i)
-  {
-    char n[10];
-    snprintf(n, sizeof(n), "%04X", count);
-    myConf.set(key + "Cat" + n, i->first);
-    myConf.set(key + "Desc" + n, i->second);
-    ++count;
-  }
-}
-
-void User::Private::loadCategory(UserCategoryMap& category, const string& key)
-{
-  category.clear();
-  unsigned int count;
-  myConf.get(key + 'N', count, 0);
-
-  if (count > Licq::MAX_CATEGORIES)
-  {
-    gLog.warning(tr("Trying to load more categories than the max limit. Truncating."));
-    count = Licq::MAX_CATEGORIES;
-  }
-
-  for (unsigned int i = 0; i < count; ++i)
-  {
-    char n[10];
-    snprintf(n, sizeof(n), "%04X", i);
-
-    unsigned int cat;
-    if (!myConf.get(key + "Cat" + n, cat))
-      continue;
-
-    string descr;
-    if (!myConf.get(key + "Desc" + n, descr))
-      continue;
-
-    category[cat] = descr;
-  }
 }
 
 void User::savePictureInfo()
@@ -1737,10 +1446,6 @@ void User::savePictureInfo()
   LICQ_D();
 
   d->myConf.set("PicturePresent", m_bPicturePresent);
-  d->myConf.set("BuddyIconType", myBuddyIconType);
-  d->myConf.set("BuddyIconHashType", myBuddyIconHashType);
-  d->myConf.setHex("BuddyIconHash", myBuddyIconHash);
-  d->myConf.setHex("OurBuddyIconHash", myOurBuddyIconHash);
 }
 
 void User::saveLicqInfo()
@@ -1791,19 +1496,6 @@ void User::saveLicqInfo()
   d->myConf.set("SendIntIp", m_bSendIntIp);
   d->myConf.set("UserEncoding", myEncoding);
   d->myConf.set("AwaitingAuth", m_bAwaitingAuth);
-  d->myConf.set("SID", m_nSID[Licq::NORMAL_SID]);
-  d->myConf.set("InvisibleSID", m_nSID[Licq::INV_SID]);
-  d->myConf.set("VisibleSID", m_nSID[Licq::VIS_SID]);
-  d->myConf.set("GSID", m_nGSID);
-  d->myConf.set("ClientTimestamp", m_nClientTimestamp);
-  d->myConf.set("ClientInfoTimestamp", m_nClientInfoTimestamp);
-  d->myConf.set("ClientStatusTimestamp", m_nClientStatusTimestamp);
-  d->myConf.set("OurClientTimestamp", m_nOurClientTimestamp);
-  d->myConf.set("OurClientInfoTimestamp", m_nOurClientInfoTimestamp);
-  d->myConf.set("OurClientStatusTimestamp", m_nOurClientStatusTimestamp);
-  d->myConf.set("PhoneFollowMeStatus", myPhoneFollowMeStatus);
-  d->myConf.set("ICQphoneStatus", myIcqPhoneStatus);
-  d->myConf.set("SharedFilesStatus", mySharedFilesStatus);
   d->myConf.set("UseGPG", m_bUseGPG );
   d->myConf.set("GPGKey", myGpgKey );
   d->myConf.set("SendServer", m_bSendServer);
@@ -1858,8 +1550,6 @@ void User::save(unsigned group)
     saveNewMessagesInfo();
   if (group & SavePictureInfo)
     savePictureInfo();
-  if (group & SavePhoneBook)
-    m_PhoneBook->SaveToDisk(d->myConf);
 
   if (!d->myConf.writeFile())
     gLog.error(tr("Error opening '%s' for writing. See log for details."),
@@ -2005,12 +1695,6 @@ bool Licq::User::removeFromGroup(int groupId)
   return inGroup;
 }
 
-void Licq::User::SetGSID(unsigned short s)
-{
-  m_nGSID = s;
-  setServerGroup(gUserManager.getGroupFromServerId(protocolId(), s));
-}
-
 unsigned short Licq::User::getNumUserEvents()
 {
   pthread_mutex_lock(&mutex_nNumUserEvents);
@@ -2032,22 +1716,3 @@ void Licq::User::decNumUserEvents()
   s_nNumUserEvents--;
   pthread_mutex_unlock(&mutex_nNumUserEvents);
 }
-
-void Licq::User::AddTLV(Licq::TlvPtr tlv)
-{
-  myTLVs[tlv->getType()] = tlv;
-}
-
-void Licq::User::RemoveTLV(unsigned long type)
-{
-  myTLVs.erase(type);
-}
-
-void Licq::User::SetTLVList(Licq::TlvList& tlvs)
-{
-  myTLVs.clear();
-
-  for (Licq::TlvList::iterator it = tlvs.begin(); it != tlvs.end(); it++)
-    myTLVs[it->first] = it->second;
-}
-

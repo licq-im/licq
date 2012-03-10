@@ -30,6 +30,7 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/icq/icq.h>
+#include <licq/icq/owner.h>
 #include <licq/plugin/pluginmanager.h>
 
 #include "config/contactlist.h"
@@ -394,7 +395,7 @@ void SystemMenu::aboutToShowMenu()
 
 void SystemMenu::aboutToShowFollowMeMenu()
 {
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  Licq::IcqOwnerReadGuard o;
   if (!o.isLocked())
     return;
 

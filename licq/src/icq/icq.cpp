@@ -30,7 +30,6 @@
 #include <sys/stat.h>
 
 #include <licq/contactlist/group.h>
-#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
@@ -49,6 +48,7 @@
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet.h"
+#include "user.h"
 
 using namespace std;
 using namespace LicqIcq;
@@ -267,7 +267,7 @@ void IcqProtocol::SetUseServerSideBuddyIcons(bool b)
     m_bUseBART = b;
 }
 
-void IcqProtocol::ChangeUserStatus(Licq::User* u, unsigned long s, time_t onlineSince)
+void IcqProtocol::ChangeUserStatus(User* u, unsigned long s, time_t onlineSince)
 {
   //This is the v6 way of telling us phone follow me status
   if (s & ICQ_STATUS_FxPFM)
@@ -286,13 +286,13 @@ void IcqProtocol::ChangeUserStatus(Licq::User* u, unsigned long s, time_t online
   u->setHomepageFlag(s & ICQ_STATUS_FxICQxHOMEPAGE);
 
   if (s & ICQ_STATUS_FxDIRECTxDISABLED)
-    u->setDirectFlag(Licq::User::DirectDisabled);
+    u->setDirectFlag(User::DirectDisabled);
   else if (s & ICQ_STATUS_FxDIRECTxLISTED)
-    u->setDirectFlag(Licq::User::DirectListed);
+    u->setDirectFlag(User::DirectListed);
   else if (s & ICQ_STATUS_FxDIRECTxAUTH)
-    u->setDirectFlag(Licq::User::DirectAuth);
+    u->setDirectFlag(User::DirectAuth);
   else
-    u->setDirectFlag(Licq::User::DirectAnyone);
+    u->setDirectFlag(User::DirectAnyone);
 
   u->statusChanged(statusFromIcqStatus(s), onlineSince);
 }
@@ -1737,7 +1737,7 @@ unsigned IcqProtocol::statusFromIcqStatus(unsigned short icqStatus)
   return status;
 }
 
-unsigned long IcqProtocol::addStatusFlags(unsigned long s, const Licq::User* u)
+unsigned long IcqProtocol::addStatusFlags(unsigned long s, const User* u)
 {
   s &= 0x0000FFFF;
 
@@ -1757,13 +1757,13 @@ unsigned long IcqProtocol::addStatusFlags(unsigned long s, const Licq::User* u)
 
   switch (u->directFlag())
   {
-    case Licq::User::DirectDisabled:
+    case User::DirectDisabled:
       s |= ICQ_STATUS_FxDIRECTxDISABLED;
       break;
-    case Licq::User::DirectListed:
+    case User::DirectListed:
       s |= ICQ_STATUS_FxDIRECTxLISTED;
       break;
-    case Licq::User::DirectAuth:
+    case User::DirectAuth:
       s |= ICQ_STATUS_FxDIRECTxAUTH;
       break;
   }
@@ -1815,7 +1815,7 @@ unsigned short IcqProtocol::generateSid()
       Licq::UserListGuard userList(LICQ_PPID);
       BOOST_FOREACH(const Licq::User* user, **userList)
       {
-        Licq::UserReadGuard u(user);
+        UserReadGuard u(dynamic_cast<const User*>(user));
 
         if (u->GetSID() == sid || u->GetInvisibleSID() == sid ||
           u->GetVisibleSID() == sid)

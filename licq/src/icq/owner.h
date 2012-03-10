@@ -21,6 +21,7 @@
 #define LICQICQ_OWNER_H
 
 #include <licq/icq/owner.h>
+#include "user.h"
 
 #include <ctime>
 
@@ -31,7 +32,7 @@ namespace LicqIcq
 /**
  * An ICQ protocol account
  */
-class Owner : public Licq::IcqOwner
+class Owner : public Licq::IcqOwner, public User
 {
 public:
   /// Constructor

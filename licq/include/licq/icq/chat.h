@@ -31,12 +31,12 @@
 
 namespace Licq
 {
-class User;
 class UserId;
 }
 
 namespace LicqIcq
 {
+class User;
 class CPChat_ColorFont;
 }
 
@@ -211,7 +211,7 @@ class CChatClient
 {
 public:
   CChatClient();
-  CChatClient(const Licq::User* u);
+  CChatClient(const LicqIcq::User* u);
   CChatClient(const CChatClient &);
   CChatClient& operator=(const CChatClient &);
   ~CChatClient();

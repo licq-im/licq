@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2010 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 #include <QDialog>
 
-#include <licq/contactlist/user.h>
+#include <licq/icq/user.h>
 
 class QComboBox;
 class QLineEdit;

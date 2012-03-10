@@ -26,7 +26,6 @@
 #include <pthread.h>
 #include <string>
 
-#include <licq/contactlist/user.h>
 #include <licq/icq/chat.h> // ChatClientList
 #include <licq/userid.h>
 #include <licq/packet.h>
@@ -815,7 +814,7 @@ public:
 class CPU_AckFileAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckFileAccept(const Licq::User* u, const unsigned long nMsgID[],
+  CPU_AckFileAccept(const User* u, const unsigned long nMsgID[],
       unsigned short nSequence, unsigned short nPort, const std::string& desc,
       const std::string& file, unsigned long nFileSize);
 };
@@ -824,7 +823,7 @@ public:
 class CPU_AckFileRefuse : public CPU_AckThroughServer
 {
 public:
-  CPU_AckFileRefuse(const Licq::User* u, const unsigned long nMsgID[],
+  CPU_AckFileRefuse(const User* u, const unsigned long nMsgID[],
       unsigned short nSequence, const std::string& message);
 };
 
@@ -832,7 +831,7 @@ public:
 class CPU_AckChatAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckChatAccept(const Licq::User* u, const std::string& clients,
+  CPU_AckChatAccept(const User* u, const std::string& clients,
       const unsigned long nMsgID[], unsigned short nSequence, unsigned short nPort);
 };
 
@@ -840,7 +839,7 @@ public:
 class CPU_AckChatRefuse : public CPU_AckThroughServer
 {
 public:
-  CPU_AckChatRefuse(const Licq::User* u, const unsigned long nMsgID[],
+  CPU_AckChatRefuse(const User* u, const unsigned long nMsgID[],
       unsigned short nSequence, const std::string& message);
 };
 
@@ -1335,7 +1334,7 @@ public:
 protected:
   CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int channel,
       const std::string& message, bool _bAccept, unsigned short nLevel,
-      Licq::User* _cUser);
+      User* user);
    void InitBuffer();
    void PostBuffer();
    void InitBuffer_v2();
@@ -1370,7 +1369,7 @@ class CPT_Message : public CPacketTcp
 {
 public:
    CPT_Message(const std::string& message, unsigned short nLevel, bool bMR,
-      const Licq::Color* pColor, Licq::User* pUser, bool isUtf8);
+      const Licq::Color* pColor, User* pUser, bool isUtf8);
 };
 
 
@@ -1382,7 +1381,7 @@ class CPT_Url : public CPacketTcp
 {
 public:
   CPT_Url(const std::string& message, unsigned short nLevel, bool bMR,
-      const Licq::Color* pColor, Licq::User *pUser);
+      const Licq::Color* pColor, User *pUser);
 };
 
 
@@ -1390,7 +1389,7 @@ class CPT_ContactList : public CPacketTcp
 {
 public:
   CPT_ContactList(const std::string& message, unsigned short nLevel, bool bMR,
-      const Licq::Color* pColor, Licq::User* pUser);
+      const Licq::Color* pColor, User* pUser);
 };
 
 
@@ -1400,7 +1399,7 @@ public:
 class CPT_ReadAwayMessage : public CPacketTcp
 {
 public:
-  CPT_ReadAwayMessage(Licq::User* _cUser);
+  CPT_ReadAwayMessage(User* _cUser);
    /* 76 1E 3F 00 03 00 EE 07 00 00 76 1E 3F 00 E8 03 01 00 00 81 61 1D 9D 81 61
       1D 9D C9 05 00 00 04 00 00 10 00 FE FF FF FF */
 };
@@ -1414,7 +1413,7 @@ class CPT_ChatRequest : public CPacketTcp
 {
 public:
   CPT_ChatRequest(const std::string& message, const std::string& chatUsers, unsigned short nPort,
-      unsigned short nLevel, Licq::User* pUser, bool bICBM);
+      unsigned short nLevel, User* pUser, bool bICBM);
 };
 
 
@@ -1423,7 +1422,7 @@ class CPT_FileTransfer : public CPacketTcp, public CPX_FileTransfer
 {
 public:
   CPT_FileTransfer(const std::list<std::string>& lFileList, const std::string& filename,
-      const std::string& description, unsigned short nLevel, Licq::User* pUser);
+      const std::string& description, unsigned short nLevel, User* pUser);
   const std::string& description() { return myMessage; }
 protected:
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 03 00 0F 00 74 68 69 73 20 69
@@ -1437,14 +1436,14 @@ protected:
 class CPT_OpenSecureChannel : public CPacketTcp
 {
 public:
-  CPT_OpenSecureChannel(Licq::User* pUser);
+  CPT_OpenSecureChannel(User* pUser);
 };
 
 
 class CPT_CloseSecureChannel : public CPacketTcp
 {
 public:
-  CPT_CloseSecureChannel(Licq::User* pUser);
+  CPT_CloseSecureChannel(User* pUser);
 };
 
 
@@ -1457,7 +1456,7 @@ class CPT_Ack : public CPacketTcp
 {
 protected:
   CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
-      bool _bAccept, bool _bUrgent, Licq::User* _cUser);
+      bool _bAccept, bool _bUrgent, User* _cUser);
   virtual ~CPT_Ack();
 };
 
@@ -1467,7 +1466,7 @@ class CPT_AckGeneral : public CPT_Ack
 {
 public:
   CPT_AckGeneral(unsigned short nSubCommand, unsigned short nSequence,
-      bool bAccept, bool bUrgent, Licq::User* pUser);
+      bool bAccept, bool bUrgent, User* pUser);
 };
 
 
@@ -1475,7 +1474,7 @@ public:
 class CPT_AckOldSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckOldSecureChannel(unsigned short nSequence, Licq::User* pUser);
+  CPT_AckOldSecureChannel(unsigned short nSequence, User* pUser);
 };
 
 
@@ -1483,7 +1482,7 @@ public:
 class CPT_AckOpenSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckOpenSecureChannel(unsigned short nSequence, bool ok, Licq::User* pUser);
+  CPT_AckOpenSecureChannel(unsigned short nSequence, bool ok, User* pUser);
 };
 
 
@@ -1491,7 +1490,7 @@ public:
 class CPT_AckCloseSecureChannel : public CPT_Ack
 {
 public:
-  CPT_AckCloseSecureChannel(unsigned short nSequence, Licq::User* pUser);
+  CPT_AckCloseSecureChannel(unsigned short nSequence, User* pUser);
 };
 
 
@@ -1500,7 +1499,7 @@ public:
 class CPT_AckMessage : public CPT_Ack
 {
 public:
-  CPT_AckMessage(unsigned short _nSequence, bool _bAccept, bool _bUrgent, Licq::User* _cUser);
+  CPT_AckMessage(unsigned short _nSequence, bool _bAccept, bool _bUrgent, User* _cUser);
 };
 
 
@@ -1509,7 +1508,7 @@ class CPT_AckReadAwayMessage : public CPT_Ack
 {
 public:
    CPT_AckReadAwayMessage(unsigned short _nSubCommand, unsigned short _nSequence,
-      bool _bAccept, Licq::User* _cUser);
+      bool _bAccept, User* _cUser);
 };
 
 
@@ -1517,7 +1516,7 @@ public:
 class CPT_AckUrl : public CPT_Ack
 {
 public:
-  CPT_AckUrl(unsigned short _nSequence, bool _bAccept, bool _bUrgent, Licq::User* _cUser);
+  CPT_AckUrl(unsigned short _nSequence, bool _bAccept, bool _bUrgent, User* _cUser);
 };
 
 
@@ -1526,7 +1525,7 @@ class CPT_AckContactList : public CPT_Ack
 {
 public:
   CPT_AckContactList(unsigned short _nSequence, bool _bAccept, bool _bUrgent,
-      Licq::User* _cUser);
+      User* _cUser);
 };
 #endif
 
@@ -1534,7 +1533,7 @@ public:
 class CPT_AckChatRefuse : public CPT_Ack
 {
 public:
-  CPT_AckChatRefuse(const std::string& reason, unsigned short _nSequence, Licq::User* _cUser);
+  CPT_AckChatRefuse(const std::string& reason, unsigned short _nSequence, User* _cUser);
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 03 00 6E 6F 00 CF 60 AD
       95 CF 60 AD 95 1E 3C 00 00 04 01 00 00 00 01 00 00 00 00 00 00 00 00 00
       00 01 00 00 00 */
@@ -1546,7 +1545,7 @@ class CPT_AckChatAccept : public CPT_Ack
 {
 public:
   CPT_AckChatAccept(unsigned short _nPort, const std::string& clients,
-      unsigned short _nSequence, Licq::User* _cUser, bool bICBM);
+      unsigned short _nSequence, User* _cUser, bool bICBM);
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD 95 CF
       60 AD 95 1E 3C 00 00 04 00 00 00 00 01 00 00 40 78 00 00 78 40 00 00 02
       00 00 00 */
@@ -1560,7 +1559,7 @@ class CPT_AckFileAccept : public CPT_Ack
 {
 public:
   CPT_AckFileAccept(unsigned short _nPort, unsigned short _nSequence,
-      Licq::User* _cUser);
+      User* _cUser);
 protected:
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 01 00 00 D1 EF 04 9F 7F
       00 00 01 4A 1F 00 00 04 00 00 00 00 20 3A 00 00 01 00 00 00 00 00 00 3A
@@ -1576,7 +1575,7 @@ protected:
 class CPT_AckFileRefuse : public CPT_Ack
 {
 public:
-  CPT_AckFileRefuse(const std::string& reason, unsigned short _nSequence, Licq::User* _cUser);
+  CPT_AckFileRefuse(const std::string& reason, unsigned short _nSequence, User* _cUser);
 protected:
    /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 0A 00 6E 6F 20 74 68 61
       6E 6B 73 00 D1 EF 04 9F 7F 00 00 01 4A 1F 00 00 04 01 00 00 00 00 00 00
@@ -1589,7 +1588,7 @@ class CPT_Cancel : public CPacketTcp
 {
 protected:
    CPT_Cancel(unsigned short _nSubCommand, unsigned short _nSequence,
-      Licq::User* _cUser);
+      User* _cUser);
 };
 
 
@@ -1597,7 +1596,7 @@ protected:
 class CPT_CancelChat : public CPT_Cancel
 {
 public:
-  CPT_CancelChat(unsigned short _nSequence, Licq::User* _cUser);
+  CPT_CancelChat(unsigned short _nSequence, User* _cUser);
    /* 50 A5 82 00 03 00 D0 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD D3 CF
       60 AD D3 28 12 00 00 04 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 06
       00 00 00 */
@@ -1608,7 +1607,7 @@ public:
 class CPT_CancelFile : public CPT_Cancel
 {
 public:
-  CPT_CancelFile(unsigned short _nSequence, Licq::User* _cUser);
+  CPT_CancelFile(unsigned short _nSequence, User* _cUser);
    /* 50 A5 82 00 03 00 D0 07 00 00 50 A5 82 00 02 00 01 00 00 CF 60 AD D3 CF
       60 AD D3 28 12 00 00 04 00 00 00 00 01 00 00 00 00 00 00 00 00 00 00 06
       00 00 00 */
@@ -1618,7 +1617,7 @@ public:
 class CPT_PluginError : public CPacketTcp
 {
 public:
-  CPT_PluginError(Licq::User* _cUser, unsigned short nSequence,
+  CPT_PluginError(User* _cUser, unsigned short nSequence,
       int channel);
 };
 
@@ -1626,7 +1625,7 @@ public:
 class CPT_InfoPluginReq : public CPacketTcp
 {
 public:
-  CPT_InfoPluginReq(Licq::User* _cUser, const uint8_t* GUID, unsigned long int nTime);
+  CPT_InfoPluginReq(User* _cUser, const uint8_t* GUID, unsigned long int nTime);
    virtual const char *RequestGUID()        { return m_ReqGUID; }
    virtual unsigned short ExtraInfo() { return DirectInfoPluginRequest; }
 
@@ -1638,28 +1637,28 @@ protected:
 class CPT_InfoPhoneBookResp : public CPacketTcp
 {
 public:
-  CPT_InfoPhoneBookResp(Licq::User* _cUser, unsigned short nSequence);
+  CPT_InfoPhoneBookResp(User* _cUser, unsigned short nSequence);
 };
 
 //-----Response to picture request----------------------------------------------
 class CPT_InfoPictureResp : public CPacketTcp
 {
 public:
-  CPT_InfoPictureResp(Licq::User* _cUser, unsigned short nSequence);
+  CPT_InfoPictureResp(User* _cUser, unsigned short nSequence);
 };
 
 //----Response to info plugin list request--------------------------------------
 class CPT_InfoPluginListResp : public CPacketTcp
 {
 public:
-  CPT_InfoPluginListResp(Licq::User* _cUser, unsigned short nSequence);
+  CPT_InfoPluginListResp(User* _cUser, unsigned short nSequence);
 };
 
 //----Send status plugin request------------------------------------------------
 class CPT_StatusPluginReq : public CPacketTcp
 {
 public:
-  CPT_StatusPluginReq(Licq::User* _cUser, const uint8_t* GUID, unsigned long nTime);
+  CPT_StatusPluginReq(User* _cUser, const uint8_t* GUID, unsigned long nTime);
    virtual unsigned short ExtraInfo() { return DirectStatusPluginRequest;}
    virtual const char *RequestGUID() { return m_ReqGUID; }
 
@@ -1671,14 +1670,14 @@ protected:
 class CPT_StatusPluginListResp : public CPacketTcp
 {
 public:
-  CPT_StatusPluginListResp(Licq::User* _cUser, unsigned short nSequence);
+  CPT_StatusPluginListResp(User* _cUser, unsigned short nSequence);
 };
 
 //----Response to status request------------------------------------------------
 class CPT_StatusPluginResp : public CPacketTcp
 {
 public:
-  CPT_StatusPluginResp(Licq::User* _cUser, unsigned short nSequence,
+  CPT_StatusPluginResp(User* _cUser, unsigned short nSequence,
                        unsigned long nStatus);
 };
 

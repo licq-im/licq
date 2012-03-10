@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,6 @@ public:
   virtual unsigned long icqRequestInfoPluginList(const Licq::UserId& userId,
      bool bServer = false) = 0;
   virtual unsigned long icqRequestPhoneBook(const Licq::UserId& userId, bool bServer = false) = 0;
-  virtual unsigned long icqRequestPicture(const Licq::UserId& userId, bool bServer, size_t iconHashSize) = 0;
   virtual unsigned long icqRequestStatusPluginList(const Licq::UserId& userId,
      bool bServer = false) = 0;
   virtual unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false) = 0;

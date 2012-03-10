@@ -410,21 +410,10 @@ unsigned long ProtocolManager::requestUserPicture(const UserId& userId)
   if (!isProtocolConnected(userId))
     return 0;
 
-  size_t iconHashSize;
-  bool sendServer;
-  {
-    UserReadGuard user(userId);
-    if (!user.isLocked())
-      return 0;
-
-    iconHashSize = user->buddyIconHash().size();
-    sendServer = (user->infoSocketDesc() < 0);
-  }
-
   unsigned long eventId = 0;
 
   if (userId.protocolId() == LICQ_PPID)
-    eventId = gIcqProtocol.icqRequestPicture(userId, sendServer, iconHashSize);
+    eventId = gIcqProtocol.icqRequestPicture(userId);
   else
     pushProtoSignal(new Licq::ProtoRequestPicture(userId), userId);
 

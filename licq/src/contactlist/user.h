@@ -55,22 +55,6 @@ public:
   void loadPictureInfo();
   void loadUserInfo();
 
-  /**
-   * Save a category list
-   *
-   * @param category The category map to save
-   * @param key Base name of key in file for entries
-   */
-  void saveCategory(const Licq::UserCategoryMap& category, const std::string& key);
-
-  /**
-   * Load a category list
-   *
-   * @param category The category map to save
-   * @param key Base name of key in file for entries
-   */
-  void loadCategory(Licq::UserCategoryMap& category, const std::string& key);
-
 private:
   /**
    * Initialize all user object. Contains common code for all constructors

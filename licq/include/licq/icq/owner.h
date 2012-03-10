@@ -21,6 +21,7 @@
 #define LICQ_ICQ_OWNER_H
 
 #include "../contactlist/owner.h"
+#include "user.h"
 
 namespace Licq
 {
@@ -28,7 +29,7 @@ namespace Licq
 /**
  * An ICQ protocol account
  */
-class IcqOwner : public Owner
+class IcqOwner : public Owner, public virtual IcqUser
 {
 public:
   void SetWebAware(bool b)     {  m_bWebAware = b; save(SaveOwnerInfo); }

@@ -28,7 +28,7 @@ using Licq::IniFile;
 using Licq::gLog;
 
 IcqOwner::IcqOwner(const Licq::UserId& id)
-  : Licq::User(id, false, true), Licq::Owner(id)
+  : Licq::User(id, false, true), Licq::IcqUser(id, false, true), Licq::Owner(id)
 {
   // Empty
 }
@@ -39,7 +39,8 @@ IcqOwner::~IcqOwner()
 }
 
 Owner::Owner(const Licq::UserId& id)
-  : Licq::User(id, false, true), Licq::IcqOwner(id)
+  : Licq::User(id, false, true), Licq::IcqUser(id, false, true),
+    Licq::IcqOwner(id), User(id, false, true)
 {
   IniFile& conf(userConf());
   conf.setSection("user");

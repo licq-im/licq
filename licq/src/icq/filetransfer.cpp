@@ -34,11 +34,11 @@
 
 #include <licq/logging/log.h>
 #include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
 #include <licq/daemon.h>
 
 #include "icq.h"
 #include "packet.h"
+#include "user.h"
 #include "../gettext.h"
 
 #define DEBUG_THREADS(x)
@@ -342,7 +342,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   bool bTryDirect;
   bool bSendIntIp;
   {
-    Licq::UserReadGuard u(myUserId);
+    UserReadGuard u(myUserId);
     if (!u.isLocked())
       return false;
 

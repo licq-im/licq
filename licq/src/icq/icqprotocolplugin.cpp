@@ -22,6 +22,7 @@
 #include <licq/version.h>
 #include "icq.h"
 #include "owner.h"
+#include "user.h"
 
 #define LicqProtocolPluginData IcqProtocolPluginData
 
@@ -46,6 +47,7 @@ protected:
   bool init(int, char**);
   int run();
   void destructor();
+  Licq::User* createUser(const Licq::UserId& id, bool temporary = false);
   Licq::Owner* createOwner(const Licq::UserId& id);
 
 private:
@@ -110,6 +112,11 @@ int IcqProtocolPlugin::run()
 void IcqProtocolPlugin::destructor()
 {
   delete this;
+}
+
+Licq::User* IcqProtocolPlugin::createUser(const Licq::UserId& id, bool temporary)
+{
+  return new User(id, temporary);
 }
 
 Licq::Owner* IcqProtocolPlugin::createOwner(const Licq::UserId& id)

@@ -37,7 +37,6 @@
 
 #include <licq/byteorder.h>
 #include <licq/contactlist/group.h>
-#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/icq/chat.h>
@@ -58,13 +57,13 @@
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet.h"
+#include "user.h"
 
 using namespace std;
 using namespace LicqIcq;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::StringList;
-using Licq::User;
 using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gOnEventManager;
@@ -136,7 +135,7 @@ void IcqProtocol::CheckExport()
     Licq::UserListGuard userList(LICQ_PPID);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
-      Licq::UserReadGuard u(user);
+      UserReadGuard u(dynamic_cast<const User*>(user));
       // If they aren't a current server user and not in the ignore list,
       // let's import them!
       if (u->GetSID() == 0 && !u->IgnoreList())
@@ -156,7 +155,7 @@ void IcqProtocol::CheckExport()
     Licq::UserListGuard userList(LICQ_PPID);
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
-      Licq::UserReadGuard pUser(user);
+      UserReadGuard pUser(dynamic_cast<const User*>(user));
       if (pUser->IgnoreList() && pUser->GetSID() == 0)
       {
         ignoredUsers.push_back(pUser->id());
@@ -252,7 +251,7 @@ void IcqProtocol::icqChangeGroup(const Licq::UserId& userId)
   int oldGSID;
   int newGroup;
   {
-    Licq::UserReadGuard u(userId);
+    UserReadGuard u(userId);
     nSID = u->GetSID();
     oldGSID = u->GetGSID();
     newGroup = u->serverGroup();
@@ -327,7 +326,7 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
     unsigned short nInvisibleSID;
     bool bIgnored;
     {
-      Licq::UserWriteGuard u(userId);
+      UserWriteGuard u(userId);
       // When we remove a user, we remove them from all parts of the list:
       // Visible, Invisible and Ignore lists as well.
       nGSID = u->GetGSID();
@@ -560,7 +559,7 @@ void IcqProtocol::icqRelogon()
 
   if (m_eStatus == STATUS_ONLINE)
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     status = addStatusFlags(icqStatusFromStatus(o->status()), *o);
   }
   else
@@ -922,7 +921,7 @@ void IcqProtocol::icqUpdatePhoneBookTimestamp()
 {
   bool bOffline;
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
+    OwnerWriteGuard o;
     o->SetClientInfoTimestamp(time(NULL));
     bOffline = !o->isOnline();
   }
@@ -936,7 +935,7 @@ void IcqProtocol::icqUpdatePictureTimestamp()
 {
   bool bOffline;
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
+    OwnerWriteGuard o;
     o->SetClientInfoTimestamp(time(NULL));
     bOffline = !o->isOnline();
   }
@@ -950,7 +949,7 @@ void IcqProtocol::icqSetPhoneFollowMeStatus(unsigned newStatus)
 {
   bool bOffline;
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
+    OwnerWriteGuard o;
     o->SetClientStatusTimestamp(time(NULL));
     o->setPhoneFollowMeStatus(newStatus);
     bOffline = !o->isOnline();
@@ -1098,7 +1097,7 @@ void IcqProtocol::icqRemoveFromVisibleList(const Licq::UserId& userId)
 
   if (UseServerContactList())
   {
-    Licq::UserReadGuard u(userId);
+    UserReadGuard u(userId);
     if (u.isLocked())
     {
       CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(userId.accountId(), 0, u->GetVisibleSID(),
@@ -1145,7 +1144,7 @@ void IcqProtocol::icqRemoveFromInvisibleList(const Licq::UserId& userId)
 
   if (UseServerContactList())
   {
-    Licq::UserReadGuard u(userId);
+    UserReadGuard u(userId);
     if (u.isLocked())
     {
       CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(userId.accountId(), 0, u->GetInvisibleSID(),
@@ -1221,7 +1220,7 @@ void IcqProtocol::icqClearServerList()
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       {
-        Licq::UserReadGuard pUser(user);
+        UserReadGuard pUser(dynamic_cast<const User*>(user));
         if (pUser->GetInvisibleSID())
         {
           n++;
@@ -1256,7 +1255,7 @@ void IcqProtocol::icqClearServerList()
     BOOST_FOREACH(const Licq::User* user, **userList)
     {
       {
-        Licq::UserReadGuard pUser(user);
+        UserReadGuard pUser(dynamic_cast<const User*>(user));
         if (pUser->GetVisibleSID())
         {
           n++;
@@ -1437,8 +1436,8 @@ unsigned long IcqProtocol::logon(unsigned logonStatus)
     return 0;
   }
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
-    if (!o.isLocked() || o->accountId().empty())
+    OwnerReadGuard o;
+    if (!o.isLocked())
     {
       gLog.error(tr("No registered user, unable to process logon attempt."));
       return 0;
@@ -2014,7 +2013,7 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     if (packet.getTLVLen(0x0003) == 4)
       nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
 
-      Licq::OwnerWriteGuard o(LICQ_PPID);
+      OwnerWriteGuard o;
       unsigned pfm = o->phoneFollowMeStatus();
     // Workaround for the ICQ4.0 problem of it not liking the PFM flags
     m_nDesiredStatus &= ~(ICQ_STATUS_FxPFM | ICQ_STATUS_FxPFMxAVAILABLE);
@@ -2150,7 +2149,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
 //     userIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
 //      userIP = BSWAP_32(userIP);
-      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+      UserWriteGuard u(id);
       if (!u.isLocked())
       {
         gLog.warning(tr("Unknown user (%s) changed status."), id.c_str());
@@ -2533,7 +2532,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         break;
       }
 
-      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+      UserWriteGuard u(id);
       if (!u.isLocked())
       {
         gLog.warning(tr("Unknown user (%s) has gone offline."), id.c_str());
@@ -2763,7 +2762,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         bUTF8 = true;
 
           {
-            Licq::UserWriteGuard u(userId);
+            UserWriteGuard u(userId);
             if (u.isLocked())
               u->SetSupportsUTF8(bUTF8);
           }
@@ -2828,7 +2827,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
               channel = Licq::TCPSocket::ChannelUnknown;
 
         bool bNewUser = false;
-            Licq::UserWriteGuard u(userId, true, &bNewUser);
+            UserWriteGuard u(userId, true, &bNewUser);
 
             processPluginMessage(advMsg, *u, channel, bIsAck, nMsgID[0], nMsgID[1],
                              nSequence, NULL);
@@ -2988,7 +2987,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
 		packet.UnpackUnsignedShortBE(); // Format
       string id = packet.unpackByteString();
 
-      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+      UserWriteGuard u(id);
       if (!u.isLocked())
       {
         gLog.warning(tr("Unexpected new user in subtype 0x%04x."), nSubtype);
@@ -3388,7 +3387,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         break;
       }
 
-      Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+      UserWriteGuard u(id);
       if (u.isLocked())
       {
         // First update their gsid/sid
@@ -3634,7 +3633,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       {
         eEvent = new Licq::EventAuthGranted(userId, msg, time(0), 0);
 
-        Licq::UserWriteGuard u(userId);
+        UserWriteGuard u(userId);
         if (u.isLocked())
         {
            u->SetAwaitingAuth(false);
@@ -3927,7 +3926,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           CPU_Meta_SetInterestsInfo *p =
                            (CPU_Meta_SetInterestsInfo *)pEvent->m_pPacket;
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              OwnerWriteGuard o;
           o->SetEnableSave(false);
               o->getInterests().clear();
               UserCategoryMap::iterator i;
@@ -4001,7 +4000,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           {
             CPU_Meta_SetOrgBackInfo *p =
                              (CPU_Meta_SetOrgBackInfo *)pEvent->m_pPacket;
-            Licq::OwnerWriteGuard o(LICQ_PPID);
+                OwnerWriteGuard o;
             o->SetEnableSave(false);
                 o->getOrganizations().clear();
                 UserCategoryMap::iterator i;
@@ -4127,7 +4126,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           bool bNewUser = false;
 
               {
-                Licq::UserWriteGuard u(userId, true, &bNewUser);
+                UserWriteGuard u(userId, true, &bNewUser);
 
           msg.UnpackUnsignedShort(); // chat group
 
@@ -4285,7 +4284,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             }
 
             userId = e->userId();
-            Licq::UserWriteGuard u(userId, true);
+            UserWriteGuard u(userId, true);
 
             gLog.info(tr("Received extended information for %s (%s)."),
                 u->getAlias().c_str(), userId.toString().c_str());
@@ -4815,7 +4814,7 @@ void IcqProtocol::ProcessUserList()
           (!data->newAlias.empty() ? data->newAlias.c_str() : userId.toString().c_str()), userId.toString().c_str());
     }
 
-    Licq::UserWriteGuard u(userId);
+    UserWriteGuard u(userId);
     if (!u.isLocked())
       continue;
 

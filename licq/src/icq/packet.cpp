@@ -48,6 +48,7 @@
 #include "icq.h"
 #include "owner.h"
 #include "packet.h"
+#include "user.h"
 
 using namespace std;
 using namespace LicqIcq;
@@ -62,7 +63,6 @@ using LicqDaemon::GroupMap;
 using LicqDaemon::gUserManager;
 
 // TODO: Remove when no longer needed
-typedef Licq::Owner ICQOwner;
 typedef Licq::User ICQUser;
 
 
@@ -1164,7 +1164,7 @@ void CPU_SetStatusFamily::InitBuffer()
   
   /* should eventually switch to some other way to identify licq, probably
      use capabilities */
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  OwnerReadGuard o;
 #ifdef USE_OPENSSL
    buffer->PackUnsignedLongBE(LICQ_WITHSSL | LICQ_VERSION);
 #else
@@ -1189,7 +1189,7 @@ CPU_UpdateInfoTimestamp::CPU_UpdateInfoTimestamp(const uint8_t* GUID)
 {
   unsigned long timestamp;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     m_nNewStatus = IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
     timestamp = o->ClientInfoTimestamp();
   }
@@ -1216,7 +1216,7 @@ CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const uint8_t* GUID,
 {
   unsigned long clientTime;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     m_nNewStatus = nStatus != ICQ_STATUS_OFFLINE ? nStatus :
         IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
     clientTime = o->ClientStatusTimestamp();
@@ -1244,7 +1244,7 @@ CPU_UpdateStatusTimestamp::CPU_UpdateStatusTimestamp(const uint8_t* GUID,
 CPU_UpdateTimestamp::CPU_UpdateTimestamp()
   : CPU_SetStatusFamily()
 {
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  OwnerReadGuard o;
   m_nNewStatus = IcqProtocol::addStatusFlags(IcqProtocol::icqStatusFromStatus(o->status()), *o);
 
   m_nSize += 4 + 1 + 4;
@@ -1751,7 +1751,7 @@ CPU_InfoPluginListResp::CPU_InfoPluginListResp(const ICQUser *u,
   buffer->PackUnsignedShort(1);
 
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     buffer->PackUnsignedLong(o->ClientInfoTimestamp());
   }
   buffer->PackUnsignedLong(nLen);
@@ -1786,13 +1786,13 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-  Licq::OwnerReadGuard o(LICQ_PPID);
-  const Licq::ICQUserPhoneBook* book = o->GetPhoneBook();
+  OwnerReadGuard o;
+  const Licq::ICQUserPhoneBook& book = o->GetPhoneBook();
 
   unsigned long num_entries;
   unsigned long nLen = 4 + 4;
   const struct Licq::PhoneBookEntry* entry;
-  for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
+  for (num_entries = 0; book.Get(num_entries, &entry); num_entries++)
   {
     nLen += 4 + entry->description.size() + 4 + entry->areaCode.size()
         + 4 + entry->phoneNumber.size() + 4 + entry->extension.size()
@@ -1812,7 +1812,7 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
 
   buffer->PackUnsignedLong(num_entries);
 
-  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  for (unsigned long i = 0; book.Get(i, &entry); i++)
   {
     buffer->PackUnsignedLong(entry->description.size());
     buffer->pack(entry->description);
@@ -1832,7 +1832,7 @@ CPU_InfoPhoneBookResp::CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMs
     buffer->PackUnsignedLong(entry->nActive);
   }
 
-  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  for (unsigned long i = 0; book.Get(i, &entry); i++)
   {
     unsigned long sLen = entry->gateway.size();
     buffer->PackUnsignedLong(4 + 4 + sLen + 4 + 4 + 4 + 4);
@@ -1856,7 +1856,7 @@ CPU_InfoPictureResp::CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1
  : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  OwnerReadGuard o;
   string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
@@ -1990,7 +1990,7 @@ CPU_StatusPluginListResp::CPU_StatusPluginListResp(const ICQUser* u,
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackChar(1);            //Unknown
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
@@ -2036,7 +2036,7 @@ CPU_StatusPluginResp::CPU_StatusPluginResp(const ICQUser* u, unsigned long nMsgI
   buffer->PackUnsignedShort(1);   //Unknown
 
   buffer->PackUnsignedLong(nStatus);
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  OwnerReadGuard o;
   buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   buffer->PackChar(1);            //Unknown
 }
@@ -2365,7 +2365,7 @@ CPU_AckGeneral::CPU_AckGeneral(const ICQUser* u, unsigned long nMsgID1,
 
 
 //-----AckFileAccept-----------------------------------------------------------
-CPU_AckFileAccept::CPU_AckFileAccept(const ICQUser* u,//unsigned long nUin,
+CPU_AckFileAccept::CPU_AckFileAccept(const User* u,
     const unsigned long nMsgID[2], unsigned short nSequence, unsigned short nPort,
     const string& desc, const string& file, unsigned long nFileSize)
    : CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true, nSequence, nMsgID[0],
@@ -2398,7 +2398,7 @@ CPU_AckFileAccept::CPU_AckFileAccept(const ICQUser* u,//unsigned long nUin,
 
 
 //-----AckFileRefuse-----------------------------------------------------------
-CPU_AckFileRefuse::CPU_AckFileRefuse(const ICQUser* u, const unsigned long nMsgID[2],
+CPU_AckFileRefuse::CPU_AckFileRefuse(const User* u, const unsigned long nMsgID[2],
     unsigned short nSequence, const string& message)
   : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
       ICQ_CMDxSUB_FILE, false, 0, PLUGIN_NORMAL)
@@ -2415,7 +2415,7 @@ CPU_AckFileRefuse::CPU_AckFileRefuse(const ICQUser* u, const unsigned long nMsgI
 }
 
 //-----AckChatAccept-----------------------------------------------------------
-CPU_AckChatAccept::CPU_AckChatAccept(const ICQUser* u, const string& clients,
+CPU_AckChatAccept::CPU_AckChatAccept(const User* u, const string& clients,
     const unsigned long nMsgID[2], unsigned short nSequence,
                                           unsigned short nPort)
 	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_CHAT, 0, true, nSequence,
@@ -2431,7 +2431,7 @@ CPU_AckChatAccept::CPU_AckChatAccept(const ICQUser* u, const string& clients,
 }
 
 //-----AckChatRefuse-----------------------------------------------------------
-CPU_AckChatRefuse::CPU_AckChatRefuse(const ICQUser* u, const unsigned long nMsgID[2],
+CPU_AckChatRefuse::CPU_AckChatRefuse(const User* u, const unsigned long nMsgID[2],
     unsigned short nSequence, const string& message)
   : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
       ICQ_CMDxSUB_CHAT, false, 0, PLUGIN_NORMAL)
@@ -2609,7 +2609,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
     m_nSID = IcqProtocol::generateSid();
 
     // Save the SID
-    Licq::UserWriteGuard u(*i);
+    UserWriteGuard u(*i);
     if (!u.isLocked())
     {
       gLog.warning(tr("Trying to export invalid user %s to server"),
@@ -2775,7 +2775,7 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
     case ICQ_ROSTxNORMAL:
     {
       // Save the SID
-      Licq::UserWriteGuard u(userId);
+      UserWriteGuard u(userId);
       u->SetSID(m_nSID);
       u->SetAwaitingAuth(_bAuthReq);
 
@@ -2871,7 +2871,7 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
     {
       m_nGSID = 0;
 
-      Licq::UserWriteGuard u(userId);
+      UserWriteGuard u(userId);
       if (_nType == ICQ_ROSTxIGNORE)
       {
         u->SetSID(m_nSID);
@@ -2944,7 +2944,7 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const string& name,
 
   if (_nType == ICQ_ROSTxNORMAL)
   {
-    Licq::UserReadGuard u(userId);
+    UserReadGuard u(userId);
     if (u.isLocked())
     {
       Licq::TlvList tlvs = u->GetTLVList();
@@ -3016,7 +3016,7 @@ CPU_ClearServerList::CPU_ClearServerList(const StringList& uins,
   for (i = uins.begin(); i != uins.end(); i++)
   {
     UserId userId(*i, LICQ_PPID);
-    Licq::UserWriteGuard pUser(userId);
+    UserWriteGuard pUser(userId);
     if (pUser.isLocked())
     {
       bool bAuthReq = pUser->GetAwaitingAuth();
@@ -3075,7 +3075,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
   {
     case ICQ_ROSTxNORMAL:
     {
-      Licq::UserReadGuard u(userId);
+      UserReadGuard u(userId);
       if (u.isLocked())
       {
         if (u->GetAwaitingAuth())
@@ -3131,7 +3131,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
         Licq::UserListGuard userList;
         BOOST_FOREACH(const Licq::User* user, **userList)
         {
-          Licq::UserReadGuard pUser(user);
+          UserReadGuard pUser(dynamic_cast<const User*>(user));
           if (pUser->GetGSID() == nGSID)
             nExtraLen += 2;
         }
@@ -3176,7 +3176,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
         Licq::UserListGuard userList;
         BOOST_FOREACH(const Licq::User* user, **userList)
         {
-          Licq::UserReadGuard pUser(user);
+          UserReadGuard pUser(dynamic_cast<const User*>(user));
           if (pUser->GetGSID() == nGSID)
             buffer->PackUnsignedShortBE(pUser->GetSID());
         }
@@ -4094,7 +4094,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   char id[16];
   snprintf(id, 16, "%lu", nDestinationUin);
   UserId userId(id, LICQ_PPID);
-  Licq::UserReadGuard u(userId);
+  UserReadGuard u(userId);
   if (u.isLocked())
   {
     buffer->PackUnsignedLong(u->Cookie());
@@ -4153,7 +4153,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   char id[16];
   snprintf(id, 16, "%lu", nDestinationUin);
   UserId userId(id, LICQ_PPID);
-  Licq::UserReadGuard u(userId);
+  UserReadGuard u(userId);
   if (u.isLocked())
   {
     buffer->PackUnsignedLong(u->Cookie());
@@ -4281,7 +4281,7 @@ Licq::Buffer* CPacketTcp::Finalize(Licq::INetSocket *s)
 }
 
 CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int channel,
-    const string& message, bool _bAccept, unsigned short nLevel, Licq::User* user)
+    const string& message, bool _bAccept, unsigned short nLevel, User* user)
   : myChannel(channel)
 {
   // Setup the message type and status fields using our online status
@@ -4559,7 +4559,7 @@ void CPacketTcp::PostBuffer_v7()
 
 //-----Message------------------------------------------------------------------
 CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
-    const Licq::Color* pColor, ICQUser *pUser, bool isUtf8)
+    const Licq::Color* pColor, User* pUser, bool isUtf8)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
         Licq::TCPSocket::ChannelNormal,
@@ -4590,7 +4590,7 @@ CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
 
 //-----Url----------------------------------------------------------------------
 CPT_Url::CPT_Url(const string& message, unsigned short nLevel, bool bMR,
-    const Licq::Color* pColor, ICQUser *pUser)
+    const Licq::Color* pColor, User* pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_URL | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
         Licq::TCPSocket::ChannelNormal,
@@ -4616,7 +4616,7 @@ CPT_Url::CPT_Url(const string& message, unsigned short nLevel, bool bMR,
 
 //-----ContactList-----------------------------------------------------------
 CPT_ContactList::CPT_ContactList(const string& message, unsigned short nLevel, bool bMR,
-    const Licq::Color* pColor, ICQUser *pUser)
+    const Licq::Color* pColor, User* pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_CONTACTxLIST | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
         Licq::TCPSocket::ChannelNormal,
@@ -4641,7 +4641,7 @@ CPT_ContactList::CPT_ContactList(const string& message, unsigned short nLevel, b
 
 
 //-----ReadAwayMessage----------------------------------------------------------
-CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
+CPT_ReadAwayMessage::CPT_ReadAwayMessage(User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG,
         Licq::TCPSocket::ChannelNormal, "", true, ICQ_TCPxMSG_AUTOxREPLY, _cUser)
 {
@@ -4671,7 +4671,7 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
 
 //-----ChatRequest--------------------------------------------------------------
 CPT_ChatRequest::CPT_ChatRequest(const string& message, const string& chatUsers,
-   unsigned short nPort, unsigned short nLevel, ICQUser *pUser, bool bICBM)
+   unsigned short nPort, unsigned short nLevel, User* pUser, bool bICBM)
   : CPacketTcp(ICQ_CMDxTCP_START, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
         Licq::TCPSocket::ChannelNormal,
         bICBM ? "" : message, true, nLevel, pUser)
@@ -4727,7 +4727,7 @@ CPT_ChatRequest::CPT_ChatRequest(const string& message, const string& chatUsers,
 
 //-----FileTransfer--------------------------------------------------------------
 CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const string& filename,
-    const string& description, unsigned short nLevel, ICQUser *_cUser)
+    const string& description, unsigned short nLevel, User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, Licq::TCPSocket::ChannelNormal,
         description, true, nLevel, _cUser),
     CPX_FileTransfer(lFileList, filename)
@@ -4747,7 +4747,7 @@ CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const string& 
 
 
 //-----Key------------------------------------------------------------------
-CPT_OpenSecureChannel::CPT_OpenSecureChannel(ICQUser *_cUser)
+CPT_OpenSecureChannel::CPT_OpenSecureChannel(User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExOPEN,
         Licq::TCPSocket::ChannelNormal,
        "", true, ICQ_TCPxMSG_NORMAL, _cUser)
@@ -4757,7 +4757,7 @@ CPT_OpenSecureChannel::CPT_OpenSecureChannel(ICQUser *_cUser)
 }
 
 
-CPT_CloseSecureChannel::CPT_CloseSecureChannel(ICQUser *_cUser)
+CPT_CloseSecureChannel::CPT_CloseSecureChannel(User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExCLOSE,
         Licq::TCPSocket::ChannelNormal,
        "", true, ICQ_TCPxMSG_NORMAL, _cUser)
@@ -4827,7 +4827,7 @@ string LicqIcq::pipeInput(const string& message)
 
 
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
-                bool _bAccept, bool l, ICQUser *pUser)
+    bool _bAccept, bool l, User* pUser)
   : CPacketTcp(ICQ_CMDxTCP_ACK, _nSubCommand, Licq::TCPSocket::ChannelNormal,
       "", _bAccept, l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
 {
@@ -4868,7 +4868,7 @@ CPT_Ack::~CPT_Ack()
 
 //-----AckGeneral---------------------------------------------------------------
 CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned short nSequence,
-   bool bAccept, bool nLevel, ICQUser *pUser)
+    bool bAccept, bool nLevel, User* pUser)
   : CPT_Ack(nCmd, nSequence, bAccept, nLevel, pUser)
 {
   InitBuffer();
@@ -4889,7 +4889,7 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned short nSequence,
 
 //-----AckKey---------------------------------------------------------------
 CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned short nSequence,
-   bool ok, ICQUser *pUser)
+    bool ok, User* pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
   m_nSize -= myMessage.size();
@@ -4902,7 +4902,7 @@ CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned short nSequence,
 
 
 CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned short nSequence,
-   ICQUser *pUser)
+    User* pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
   m_nSize -= myMessage.size();
@@ -4920,7 +4920,7 @@ CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned short nSequence,
 
 
 CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned short nSequence,
-   ICQUser *pUser)
+    User* pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExCLOSE, nSequence, true, true, pUser)
 {
   m_nSize -= myMessage.size();
@@ -4936,7 +4936,7 @@ CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned short nSequence,
 #if 0
 //-----AckMessage---------------------------------------------------------------
 CPT_AckMessage::CPT_AckMessage(unsigned short _nSequence, bool _bAccept,
-                               bool nLevel, ICQUser *_cUser)
+    bool nLevel, User* _cUser)
   : CPT_Ack(ICQ_CMDxSUB_MSG, _nSequence, _bAccept, nLevel, _cUser)
 {
   InitBuffer();
@@ -4947,8 +4947,7 @@ CPT_AckMessage::CPT_AckMessage(unsigned short _nSequence, bool _bAccept,
 
 //-----AckReadAwayMessage-------------------------------------------------------
 CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
-                                               unsigned short _nSequence,
-                                               bool _bAccept, ICQUser *_cUser)
+    unsigned short _nSequence, bool _bAccept, User* _cUser)
   : CPT_Ack(_nSubCommand, _nSequence, _bAccept, false, _cUser)
 {
   InitBuffer();
@@ -4958,7 +4957,7 @@ CPT_AckReadAwayMessage::CPT_AckReadAwayMessage(unsigned short _nSubCommand,
 
 //-----AckUrl-------------------------------------------------------------------
 CPT_AckUrl::CPT_AckUrl(unsigned short _nSequence, bool _bAccept, bool nLevel,
-                      ICQUser *_cUser)
+    User* _cUser)
   : CPT_Ack(ICQ_CMDxSUB_URL, _nSequence, _bAccept, nLevel, _cUser)
 {
   InitBuffer();
@@ -4968,7 +4967,7 @@ CPT_AckUrl::CPT_AckUrl(unsigned short _nSequence, bool _bAccept, bool nLevel,
 
 //-----AckContactList--------------------------------------------------------
 CPT_AckContactList::CPT_AckContactList(unsigned short _nSequence, bool _bAccept,
-                                       bool nLevel, ICQUser *_cUser)
+    bool nLevel, User* _cUser)
   : CPT_Ack(ICQ_CMDxSUB_CONTACTxLIST, _nSequence, _bAccept, nLevel, _cUser)
 {
   InitBuffer();
@@ -4978,7 +4977,7 @@ CPT_AckContactList::CPT_AckContactList(unsigned short _nSequence, bool _bAccept,
 
 //-----AckChatRefuse------------------------------------------------------------
 CPT_AckChatRefuse::CPT_AckChatRefuse(const string& reason,
-   unsigned short _nSequence, ICQUser *_cUser)
+    unsigned short _nSequence, User *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, false, _cUser)
 {
   myMessage = reason;
@@ -4993,8 +4992,7 @@ CPT_AckChatRefuse::CPT_AckChatRefuse(const string& reason,
 
 //-----AckChatAccept------------------------------------------------------------
 CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const string& clients,
-                                    unsigned short _nSequence, ICQUser *_cUser,
-                                    bool bICBM)
+    unsigned short _nSequence, User* _cUser, bool bICBM)
   : CPT_Ack(bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT, _nSequence, true, true, _cUser)
 {
   m_nPort = _nPort;
@@ -5048,7 +5046,7 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const string& client
 
 //-----AckFileRefuse------------------------------------------------------------
 CPT_AckFileRefuse::CPT_AckFileRefuse(const string& reason,
-                                    unsigned short _nSequence, ICQUser *_cUser)
+    unsigned short _nSequence, User* _cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, false, false, _cUser)
 {
   myMessage = reason;
@@ -5067,7 +5065,7 @@ CPT_AckFileRefuse::CPT_AckFileRefuse(const string& reason,
 
 //-----AckFileAccept------------------------------------------------------------
 CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
-                                    unsigned short _nSequence, ICQUser *_cUser)
+    unsigned short _nSequence, User* _cUser)
   : CPT_Ack(ICQ_CMDxSUB_FILE, _nSequence, true, true, _cUser)
 {
   m_nFileSize = 0;
@@ -5088,7 +5086,7 @@ CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
 
 //+++++Cancel+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned short _nSequence,
-                      ICQUser *_cUser)
+    User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_CANCEL, _nSubCommand, Licq::TCPSocket::ChannelNormal, "", true, 0, _cUser)
 {
   m_nSequence = _nSequence;
@@ -5097,7 +5095,7 @@ CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned short _nSequence,
 
 
 //-----CancelChat---------------------------------------------------------------
-CPT_CancelChat::CPT_CancelChat(unsigned short _nSequence, ICQUser *_cUser)
+CPT_CancelChat::CPT_CancelChat(unsigned short _nSequence, User* _cUser)
   : CPT_Cancel(ICQ_CMDxSUB_CHAT, _nSequence, _cUser)
 {
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -5110,7 +5108,7 @@ CPT_CancelChat::CPT_CancelChat(unsigned short _nSequence, ICQUser *_cUser)
 
 
 //-----CancelFile---------------------------------------------------------------
-CPT_CancelFile::CPT_CancelFile(unsigned short _nSequence, ICQUser *_cUser)
+CPT_CancelFile::CPT_CancelFile(unsigned short _nSequence, User* _cUser)
   : CPT_Cancel(ICQ_CMDxSUB_FILE, _nSequence, _cUser)
 {
   m_nSize += 15;
@@ -5125,7 +5123,7 @@ CPT_CancelFile::CPT_CancelFile(unsigned short _nSequence, ICQUser *_cUser)
 }
 
 //-----Send error reply------------------------------------------------------
-CPT_PluginError::CPT_PluginError(ICQUser *_cUser, unsigned short nSequence,
+CPT_PluginError::CPT_PluginError(User* _cUser, unsigned short nSequence,
     int channel)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, channel, "\x03", true, 0, _cUser)
 {
@@ -5136,7 +5134,7 @@ CPT_PluginError::CPT_PluginError(ICQUser *_cUser, unsigned short nSequence,
 }
 
 //-----Send info plugin request------------------------------------------------
-CPT_InfoPluginReq::CPT_InfoPluginReq(ICQUser *_cUser, const uint8_t* GUID,
+CPT_InfoPluginReq::CPT_InfoPluginReq(User* _cUser, const uint8_t* GUID,
   unsigned long nTime)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelInfo, "", true, 0, _cUser)
 {
@@ -5153,17 +5151,17 @@ CPT_InfoPluginReq::CPT_InfoPluginReq(ICQUser *_cUser, const uint8_t* GUID,
 }
 
 //----Reply to phone book request-----------------------------------------------
-CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
+CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(User* _cUser,
   unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-  Licq::OwnerReadGuard o(LICQ_PPID);
-  const Licq::ICQUserPhoneBook* book = o->GetPhoneBook();
+  OwnerReadGuard o;
+  const Licq::ICQUserPhoneBook& book = o->GetPhoneBook();
 
   unsigned long num_entries;
   unsigned long nLen = 4 + 4;
   const struct Licq::PhoneBookEntry* entry;
-  for (num_entries = 0; book->Get(num_entries, &entry); num_entries++)
+  for (num_entries = 0; book.Get(num_entries, &entry); num_entries++)
   {
     nLen += 4 + entry->description.size() + 4 + entry->areaCode.size()
         + 4 + entry->phoneNumber.size() + 4 + entry->extension.size()
@@ -5184,7 +5182,7 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
 
   buffer->PackUnsignedLong(num_entries);
 
-  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  for (unsigned long i = 0; book.Get(i, &entry); i++)
   {
     buffer->PackUnsignedLong(entry->description.size());
     buffer->pack(entry->description);
@@ -5204,7 +5202,7 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
     buffer->PackUnsignedLong(entry->nActive);
   }
 
-  for (unsigned long i = 0; book->Get(i, &entry); i++)
+  for (unsigned long i = 0; book.Get(i, &entry); i++)
   {
     unsigned long sLen = entry->gateway.size();
     buffer->PackUnsignedLong(4 + 4 + sLen + 4 + 4 + 4 + 4);
@@ -5224,11 +5222,10 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(ICQUser *_cUser,
 }
 
 //----Reply to picture request--------------------------------------------------
-CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
-  unsigned short nSequence)
+CPT_InfoPictureResp::CPT_InfoPictureResp(User* _cUser, unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  OwnerReadGuard o;
   string filename = o->pictureFileName();
   unsigned long nLen = 0, nFileLen = 0;
   int fd = -1;
@@ -5316,8 +5313,7 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(ICQUser *_cUser,
 }
 
 //----Reply to plugin list request----------------------------------------------
-CPT_InfoPluginListResp::CPT_InfoPluginListResp(ICQUser *_cUser,
-  unsigned short nSequence)
+CPT_InfoPluginListResp::CPT_InfoPluginListResp(User* _cUser, unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
   unsigned long num_plugins = sizeof(info_plugins)/sizeof(struct PluginList);
@@ -5342,7 +5338,7 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(ICQUser *_cUser,
   buffer->PackUnsignedShort(0);   //Unknown
   buffer->PackUnsignedShort(1);   //Unknown
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     buffer->PackUnsignedLong(o->ClientInfoTimestamp());
   }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
@@ -5372,7 +5368,7 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(ICQUser *_cUser,
 }
 
 //-----Send status plugin request----------------------------------------------
-CPT_StatusPluginReq::CPT_StatusPluginReq(ICQUser *_cUser, const uint8_t* GUID,
+CPT_StatusPluginReq::CPT_StatusPluginReq(User* _cUser, const uint8_t* GUID,
   unsigned long nTime)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelStatus, "", true, 0, _cUser)
 {
@@ -5389,8 +5385,7 @@ CPT_StatusPluginReq::CPT_StatusPluginReq(ICQUser *_cUser, const uint8_t* GUID,
 }
 
 //----Reply to plugin list request----------------------------------------------
-CPT_StatusPluginListResp::CPT_StatusPluginListResp(ICQUser *_cUser,
-  unsigned short nSequence)
+CPT_StatusPluginListResp::CPT_StatusPluginListResp(User* _cUser, unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelStatus, "\x01", true, 0, _cUser)
 {
   unsigned long num_plugins = sizeof(status_plugins)/sizeof(struct PluginList);
@@ -5418,7 +5413,7 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(ICQUser *_cUser,
   buffer->PackUnsignedLong(0);    //Unknown
   buffer->PackChar(1);            //Unknown
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   }
   buffer->PackUnsignedLong(nLen);  //Bytes remaining in packet
@@ -5448,7 +5443,7 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(ICQUser *_cUser,
 }
 
 //----Reply to status request--------------------------------------------------
-CPT_StatusPluginResp::CPT_StatusPluginResp(ICQUser *_cUser,
+CPT_StatusPluginResp::CPT_StatusPluginResp(User* _cUser,
   unsigned short nSequence,
   unsigned long nStatus)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelStatus, "\x02", true, 0, _cUser)
@@ -5461,7 +5456,7 @@ CPT_StatusPluginResp::CPT_StatusPluginResp(ICQUser *_cUser,
   buffer->PackUnsignedShort(1);   //Unknown
   buffer->PackUnsignedLong(nStatus);
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     buffer->PackUnsignedLong(o->ClientStatusTimestamp());
   }
   buffer->PackChar(1);            //Unknown

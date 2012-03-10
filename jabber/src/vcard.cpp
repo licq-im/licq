@@ -25,6 +25,7 @@
 #include <gloox/vcard.h>
 #include <licq/contactlist/user.h>
 
+#include <cstdlib>
 #include <iomanip>
 #include <sstream>
 

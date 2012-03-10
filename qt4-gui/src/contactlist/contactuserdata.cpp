@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 // Licq
 #include <licq/contactlist/user.h>
 #include <licq/icq/icq.h>
+#include <licq/icq/user.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>
@@ -143,12 +144,6 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
   if (subSignal == 0 || subSignal == Licq::PluginSignal::UserTyping)
     myStatusTyping = u->isTyping();
 
-  if (subSignal == 0 || subSignal == Licq::PluginSignal::UserPluginStatus)
-  {
-    myPhoneFollowMeStatus = u->phoneFollowMeStatus();
-    myIcqPhoneStatus = u->icqPhoneStatus();
-    mySharedFilesStatus = u->sharedFilesStatus();
-  }
 
   if (subSignal == 0 || subSignal == Licq::PluginSignal::UserInfo)
   {
@@ -174,6 +169,18 @@ void ContactUserData::update(const Licq::User* u, unsigned long subSignal)
     myInOnlineNotify = u->OnlineNotify();
     myInInvisibleList = u->InvisibleList();
     myInVisibleList = u->VisibleList();
+  }
+
+  if (myUserId.protocolId() == LICQ_PPID)
+  {
+    const Licq::IcqUser* icquser = dynamic_cast<const Licq::IcqUser*>(u);
+
+    if (subSignal == 0 || subSignal == Licq::PluginSignal::UserPluginStatus)
+    {
+      myPhoneFollowMeStatus = icquser->phoneFollowMeStatus();
+      myIcqPhoneStatus = icquser->icqPhoneStatus();
+      mySharedFilesStatus = icquser->sharedFilesStatus();
+    }
   }
 
   updateExtendedStatus();

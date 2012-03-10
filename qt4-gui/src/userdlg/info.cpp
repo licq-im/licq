@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,8 @@
 #include <licq/contactlist/user.h>
 #include <licq/icq/icq.h>
 #include <licq/icq/codes.h>
+#include <licq/icq/owner.h>
+#include <licq/icq/user.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
 #include <licq/logging/log.h>
@@ -119,11 +121,12 @@ void UserPages::Info::load(const Licq::User* user)
   loadPageGeneral(user);
   if (myPpid == LICQ_PPID)
   {
+    const Licq::IcqUser* icquser = dynamic_cast<const Licq::IcqUser*>(user);
     loadPageMore(user);
-    loadPageMore2(user);
+    loadPageMore2(icquser);
     loadPageWork(user);
     loadPageAbout(user);
-    loadPagePhoneBook(user);
+    loadPagePhoneBook(icquser);
   }
   loadPagePicture(user);
   loadPageCounters(user);
@@ -137,11 +140,12 @@ void UserPages::Info::apply(Licq::User* user)
   savePageGeneral(user);
   if (myPpid == LICQ_PPID)
   {
+    Licq::IcqUser* icquser = dynamic_cast<Licq::IcqUser*>(user);
     savePageMore(user);
-    savePageMore2(user);
+    savePageMore2(icquser);
     savePageWork(user);
     savePageAbout(user);
-    savePagePhoneBook(user);
+    savePagePhoneBook(icquser);
   }
   savePagePicture(user);
 }
@@ -722,7 +726,7 @@ int UserPages::Info::splitCategory(QTreeWidgetItem* parent, const char* descr)
   return 0;
 }
 
-void UserPages::Info::loadPageMore2(const Licq::User* u)
+void UserPages::Info::loadPageMore2(const Licq::IcqUser* u)
 {
   myInterests = u->getInterests();
   updateMore2Info(Licq::CAT_INTERESTS, myInterests);
@@ -787,7 +791,7 @@ void UserPages::Info::updateMore2Info(Licq::UserCat cat, const Licq::UserCategor
   }
 }
 
-void UserPages::Info::savePageMore2(Licq::User* u)
+void UserPages::Info::savePageMore2(Licq::IcqUser* u)
 {
   u->getInterests() = myInterests;
   u->getOrganizations() = myOrganizations;
@@ -1048,14 +1052,14 @@ QWidget* UserPages::Info::createPagePhoneBook(QWidget* parent)
   return w;
 }
 
-void UserPages::Info::loadPagePhoneBook(const Licq::User* u)
+void UserPages::Info::loadPagePhoneBook(const Licq::IcqUser* u)
 {
   if (m_PhoneBook != NULL)
     delete m_PhoneBook;
 
   m_PhoneBook = new Licq::ICQUserPhoneBook();
   const struct Licq::PhoneBookEntry* entry;
-  for (unsigned long i = 0; u->GetPhoneBook()->Get(i, &entry); i++)
+  for (unsigned long i = 0; u->GetPhoneBook().Get(i, &entry); i++)
     m_PhoneBook->AddEntry(entry);
 
   updatePhoneBook();
@@ -1178,12 +1182,12 @@ void UserPages::Info::updatePhoneBook()
     lsvPhoneBook->resizeColumnToContents(i);
 }
 
-void UserPages::Info::savePagePhoneBook(Licq::User* u)
+void UserPages::Info::savePagePhoneBook(Licq::IcqUser* u)
 {
-  u->GetPhoneBook()->Clean();
+  u->GetPhoneBook().Clean();
   const struct Licq::PhoneBookEntry* entry;
   for (unsigned long i = 0; m_PhoneBook->Get(i, &entry); i++)
-    u->GetPhoneBook()->AddEntry(entry);
+    u->GetPhoneBook().AddEntry(entry);
 }
 
 void UserPages::Info::clearPhone()
@@ -1453,7 +1457,7 @@ void UserPages::Info::setCategory(Licq::UserCat cat, const Licq::UserCategoryMap
   updateMore2Info(cat, category);
 }
 
-void UserPages::Info::phoneBookUpdated(struct Licq::PhoneBookEntry pbe, int entryNum)
+void UserPages::Info::phoneBookUpdated(struct Licq::PhoneBookEntry& pbe, int entryNum)
 {
   // FIXME implement this
   pbe.nActive = 0;
@@ -1475,8 +1479,8 @@ void UserPages::Info::editPhoneEntry(QTreeWidgetItem* selected)
   m_PhoneBook->Get(nSelection, &entry);
 
   EditPhoneDlg* epd = new EditPhoneDlg(dynamic_cast<UserDlg*>(parent()), entry, nSelection);
-  connect(epd, SIGNAL(updated(struct Licq::PhoneBookEntry, int)),
-      SLOT(phoneBookUpdated(struct Licq::PhoneBookEntry, int)));
+  connect(epd, SIGNAL(updated(struct Licq::PhoneBookEntry&, int)),
+      SLOT(phoneBookUpdated(struct Licq::PhoneBookEntry&, int)));
   epd->show();
 }
 
@@ -1631,7 +1635,7 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
     case UserDlg::PhonePage:
     {
       {
-        Licq::OwnerWriteGuard o(myPpid);
+        Licq::IcqOwnerWriteGuard o;
         savePagePhoneBook(*o);
       }
       gLicqDaemon->icqUpdatePhoneBookTimestamp();
@@ -1724,11 +1728,12 @@ void UserPages::Info::userUpdated(const Licq::User* user, unsigned long subSigna
     case Licq::PluginSignal::UserInfo:
       if (myPpid == LICQ_PPID)
       {
+        const Licq::IcqUser* icquser = dynamic_cast<const Licq::IcqUser*>(user);
         loadPageMore(user);
-        loadPageMore2(user);
+        loadPageMore2(icquser);
         loadPageWork(user);
         loadPageAbout(user);
-        loadPagePhoneBook(user);
+        loadPagePhoneBook(icquser);
       }
       // fall through
     case Licq::PluginSignal::UserBasic:
