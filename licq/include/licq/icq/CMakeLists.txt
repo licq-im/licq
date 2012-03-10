@@ -3,6 +3,7 @@ set(licq_HEADERS
   codes.h
   filetransfer.h
   icq.h
+  owner.h
 )
 
 install(FILES ${licq_HEADERS} DESTINATION "${Licq_INCLUDE_DIR}/licq/icq")

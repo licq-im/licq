@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq/contactlist/owner.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/icq/owner.h>
 
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
@@ -48,7 +48,7 @@ SecurityDlg::SecurityDlg(QWidget* parent)
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(title);
 
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  Licq::IcqOwnerReadGuard o;
   if (!o.isLocked())
   {
     InformUser(this, tr("No ICQ owner found.\nPlease create one first."));
@@ -97,7 +97,7 @@ void SecurityDlg::ok()
   bool auth, web, ip;
   bool changed;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    Licq::IcqOwnerReadGuard o;
 
     if (!o.isLocked())
     {

@@ -30,7 +30,6 @@
 #include <sys/stat.h>
 
 #include <licq/contactlist/group.h>
-#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
@@ -48,6 +47,7 @@
 #include "../gettext.h"
 #include "defines.h"
 #include "oscarservice.h"
+#include "owner.h"
 #include "packet.h"
 
 using namespace std;
@@ -1789,7 +1789,7 @@ unsigned short IcqProtocol::generateSid()
 {
   unsigned short ownerPDINFO;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     ownerPDINFO = o->GetPDINFO();
   }
 

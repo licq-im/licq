@@ -45,7 +45,6 @@ Owner::Owner(const UserId& id)
 
   m_bSavePassword = true;
   myPassword = "";
-  myPDINFO = 0;
 
   myPictureFileName = gDaemon.baseDir() + "owner.pic";
 
@@ -63,9 +62,6 @@ Owner::Owner(const UserId& id)
   if (myEncoding.empty())
     myEncoding = "UTF-8";
   conf.get("Password", myPassword, "");
-  conf.get("WebPresence", m_bWebAware, false);
-  conf.get("HideIP", m_bHideIp, false);
-  conf.get("RCG", myRandomChatGroup, 0);
   conf.get("AutoResponse", myAutoResponse, "");
   string statusStr;
   conf.get("StartupStatus", statusStr, "");
@@ -123,12 +119,6 @@ Owner::Owner(const UserId& id)
     }
   }
 
-  unsigned long sstime;
-  conf.get("SSTime", sstime, 0);
-  m_nSSTime = sstime;
-  conf.get("SSCount", mySsCount, 0);
-  conf.get("PDINFO", myPDINFO, 0);
-
   gLog.info(tr("Loading owner configuration for %s"), myId.toString().c_str());
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TimezoneUnknown)
@@ -142,42 +132,17 @@ Owner::Owner(const UserId& id)
 
 Owner::~Owner()
 {
-  IniFile& conf(userConf());
-
-  // Save the current auto response
-  if (!conf.loadFile())
-  {
-     gLog.error("Error opening '%s' for reading. See log for details.",
-         conf.filename().c_str());
-     return;
-  }
-  conf.setSection("user");
-  conf.set("SSTime", (unsigned long)m_nSSTime);
-  conf.set("SSCount", mySsCount);
-  conf.set("PDINFO", myPDINFO);
-  if (!conf.writeFile())
-  {
-    gLog.error("Error opening '%s' for writing. See log for details.",
-        conf.filename().c_str());
-    return;
-  }
+  // Empty
 }
 
 void Owner::saveOwnerInfo()
 {
   IniFile& conf(userConf());
 
-  conf.set("Uin", accountId());
-  conf.set("WebPresence", WebAware());
-  conf.set("HideIP", HideIp());
   conf.set("Authorization", GetAuthorization());
   conf.set("StartupStatus", User::statusToString(myStartupStatus));
   conf.set("ServerHost", myServerHost);
   conf.set("ServerPort", myServerPort);
-  conf.set("RCG", myRandomChatGroup);
-  conf.set("SSTime", (unsigned long)m_nSSTime);
-  conf.set("SSCount", mySsCount);
-  conf.set("PDINFO", myPDINFO);
   conf.set("AutoResponse", myAutoResponse);
 
   if (m_bSavePassword)

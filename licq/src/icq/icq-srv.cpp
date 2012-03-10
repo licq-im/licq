@@ -37,7 +37,6 @@
 
 #include <licq/byteorder.h>
 #include <licq/contactlist/group.h>
-#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
@@ -57,13 +56,13 @@
 #include "../daemon.h"
 #include "../gettext.h"
 #include "oscarservice.h"
+#include "owner.h"
 #include "packet.h"
 
 using namespace std;
 using namespace LicqIcq;
 using Licq::Log;
 using Licq::OnEventData;
-using Licq::Owner;
 using Licq::StringList;
 using Licq::User;
 using Licq::gLog;
@@ -627,7 +626,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
   bool isLogon;
   int nPDINFO;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     s = addStatusFlags(newStatus, *o);
     pfm = o->phoneFollowMeStatus();
     Invisible = o->isInvisible();
@@ -640,7 +639,7 @@ unsigned long IcqProtocol::icqSetStatus(unsigned short newStatus)
   {
     icqCreatePDINFO();
 
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     nPDINFO = o->GetPDINFO();
   }
 
@@ -833,7 +832,7 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, boo
   // assumed that the set security info packet works.
   unsigned short s;
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
+    OwnerWriteGuard o;
     o->SetEnableSave(false);
     o->SetAuthorization(bAuthorize);
     o->SetWebAware(bWebAware);
@@ -3317,7 +3316,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           {
             unsigned char cPrivacySettings = packet.UnpackCharTLV(0x00CA);
 
-            Licq::OwnerWriteGuard o(LICQ_PPID);
+            OwnerWriteGuard o;
             gLog.info(tr("Got Privacy Setting."));
             o->SetPDINFO(nID);
             if (cPrivacySettings == ICQ_PRIVACY_ALLOW_FOLLOWING)
@@ -3337,7 +3336,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       // Update local info about contact list
       unsigned long nTime = packet.UnpackUnsignedLongBE();
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        OwnerWriteGuard o;
         o->SetSSTime(nTime);
         o->SetSSCount(nCount);
       }
@@ -3442,7 +3441,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
       unsigned long nListTime;
       {
-        Licq::OwnerWriteGuard o(LICQ_PPID);
+        OwnerWriteGuard o;
         nListTime = o->GetSSTime();
         o->SetSSTime(time(0));
       }
@@ -4107,7 +4106,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
-              Licq::OwnerWriteGuard o(LICQ_PPID);
+              OwnerWriteGuard o;
               o->setRandomChatGroup(((CPU_SetRandomChatGroup *)pEvent->m_pPacket)->Group());
             }
           }

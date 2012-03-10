@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,11 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/icq/owner.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -174,7 +174,7 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
   connect(myOkButton, SIGNAL(clicked()), SLOT(okPressed()));
   connect(myCancelButton, SIGNAL(clicked()), SLOT(close()));
 
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  Licq::IcqOwnerReadGuard o;
   if (!o.isLocked())
   {
     close();

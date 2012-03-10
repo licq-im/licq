@@ -34,7 +34,6 @@
 
 #include <licq/byteorder.h>
 #include <licq/color.h>
-#include <licq/contactlist/owner.h>
 #include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
@@ -47,6 +46,7 @@
 #include "../gettext.h"
 #include "defines.h"
 #include "icq.h"
+#include "owner.h"
 #include "packet.h"
 
 using namespace std;
@@ -1081,7 +1081,7 @@ CPU_SetPrivacy::CPU_SetPrivacy(unsigned char _cPrivacy)
 
   unsigned short nPDINFO;
   {
-    Licq::OwnerReadGuard o(LICQ_PPID);
+    OwnerReadGuard o;
     nPDINFO = o->GetPDINFO();
   }
 
@@ -2559,7 +2559,7 @@ CPU_RequestList::CPU_RequestList()
   m_nSize += 6;
   InitBuffer();
 
-  Licq::OwnerReadGuard o(LICQ_PPID);
+  OwnerReadGuard o;
   buffer->PackUnsignedLongBE(o->GetSSTime());
   buffer->PackUnsignedShortBE(o->GetSSCount());
 }
@@ -2740,7 +2740,7 @@ CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
   m_nSize += 15;
   InitBuffer();
 
-  Licq::OwnerWriteGuard o(LICQ_PPID);
+  OwnerWriteGuard o;
   o->SetPDINFO(m_nSID);
 
   buffer->PackUnsignedShortBE(0);

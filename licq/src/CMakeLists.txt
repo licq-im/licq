@@ -60,6 +60,7 @@ set(licq_SRCS
   icq/icq.cpp
   icq/icqprotocolplugin.cpp
   icq/oscarservice.cpp
+  icq/owner.cpp
   icq/packet.cpp
   icq/rtf.cc
   icq/threads.cpp
