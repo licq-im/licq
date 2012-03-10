@@ -247,6 +247,7 @@ User::Private::~Private()
 
 User::User(const UserId& id, bool temporary, bool isOwner)
   : myId(id),
+    myIsOwner(isOwner),
     m_bNotInList(temporary),
     myPrivate(new Private(this, id))
 {

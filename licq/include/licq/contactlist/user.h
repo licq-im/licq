@@ -787,7 +787,8 @@ public:
   void SetOfflineOnDisconnect(bool b) { m_bOfflineOnDisconnect = b; }
   bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
 
-  virtual bool isUser() const                   { return true; }
+  bool isUser() const
+  { return !myIsOwner; }
 
 protected:
   /// Constructor
@@ -816,7 +817,8 @@ protected:
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 
-  UserId myId;
+  const UserId myId;
+  const bool myIsOwner;
 
   int myNormalSocketDesc;
   int myInfoSocketDesc;

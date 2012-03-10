@@ -87,7 +87,6 @@ public:
 
   void SetPicture(const char *f);
 
-  virtual bool isUser() const                   { return false; }
 protected:
   /// Constructor
   Owner(const UserId& id);
