@@ -368,7 +368,6 @@ void User::Private::loadLicqInfo()
   string temp;
   unsigned nNewMessages;
   unsigned long nLast;
-  unsigned nPPFieldCount;
   myConf.setSection("user");
 
   // Get deprecated parameter and use as default if new values aren't available
@@ -455,21 +454,6 @@ void User::Private::loadLicqInfo()
   myConf.get("UseGPG", myUser->m_bUseGPG, false );
   myConf.get("GPGKey", myUser->myGpgKey, "");
   myConf.get("SendServer", myUser->m_bSendServer, false);
-  myConf.get("PPFieldCount", nPPFieldCount, 0);
-  for (unsigned i = 0; i < nPPFieldCount; i++)
-  {
-    char szBuf[15];
-    string tempName, tempValue;
-    sprintf(szBuf, "PPField%d.Name", i+1);
-    myConf.get(szBuf, tempName, "");
-    if (!tempName.empty())
-    {
-      sprintf(szBuf, "PPField%d.Value", i+1);
-      myConf.get(szBuf, tempValue, "");
-      if (!tempValue.empty())
-        myUser->m_mPPFields[tempName] = tempValue;
-    }
-  }
 
   if (myUser->myServerGroup > -1)
   {
@@ -1823,23 +1807,11 @@ void User::saveLicqInfo()
   d->myConf.set("UseGPG", m_bUseGPG );
   d->myConf.set("GPGKey", myGpgKey );
   d->myConf.set("SendServer", m_bSendServer);
-  d->myConf.set("PPFieldCount", (unsigned short)m_mPPFields.size());
-
-   map<string,string>::iterator iter;
-   int i = 0;
-   for (iter = m_mPPFields.begin(); iter != m_mPPFields.end(); ++iter)
-   {
-     char szBuf[25];
-     sprintf(szBuf, "PPField%d.Name", ++i);
-    d->myConf.set(szBuf, iter->first);
-     sprintf(szBuf, "PPField%d.Value", i);
-    d->myConf.set(szBuf, iter->second);
-   }
 
   if (myServerGroup > -1)
     d->myConf.set("ServerGroup", myServerGroup);
   d->myConf.set("GroupCount", static_cast<unsigned int>(myGroups.size()));
-  i = 1;
+  int i = 1;
   for (Licq::UserGroupList::iterator g = myGroups.begin(); g != myGroups.end(); ++g)
   {
     sprintf(buf, "Group%u", i);
@@ -2059,21 +2031,6 @@ void Licq::User::decNumUserEvents()
   pthread_mutex_lock(&mutex_nNumUserEvents);
   s_nNumUserEvents--;
   pthread_mutex_unlock(&mutex_nNumUserEvents);
-}
-
-bool Licq::User::SetPPField(const string &_sName, const string &_sValue)
-{
-  m_mPPFields[_sName] = _sValue;
-  return true;
-}
-
-string Licq::User::GetPPField(const string &_sName)
-{
-  map<string,string>::iterator iter = m_mPPFields.find(_sName);
-  if (iter != m_mPPFields.end())
-    return iter->second;
-
-  return string("");
 }
 
 void Licq::User::AddTLV(Licq::TlvPtr tlv)

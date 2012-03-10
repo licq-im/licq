@@ -31,16 +31,15 @@
 
 #include <licq/logging/log.h>
 #include <licq/socket.h>
-#include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
 #include <licq/conversation.h>
 #include <licq/event.h>
-#include <licq/inifile.h>
 #include <licq/protocolsignal.h>
 
 #include "msn.h"
 #include "msnpacket.h"
+#include "owner.h"
 #include "pluginversion.h"
+#include "user.h"
 
 using namespace std;
 using namespace LicqMsn;
@@ -99,8 +98,6 @@ CMSN::~CMSN()
     delete m_pPacketBuf;
   if (m_szUserName)
     free(m_szUserName);
-
-  saveConfig();
 }
 
 std::string CMSN::name() const
@@ -138,17 +135,6 @@ int CMSN::defaultServerPort() const
 bool CMSN::init(int, char**)
 {
   return true;
-}
-
-
-void CMSN::saveConfig()
-{
-  // Config file
-  Licq::IniFile msnConf("licq_msn.conf");
-  msnConf.loadFile();
-  msnConf.setSection("network");
-  msnConf.set("ListVersion", m_nListVersion);
-  msnConf.writeFile();
 }
 
 void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
@@ -413,12 +399,6 @@ int CMSN::run()
   int nCurrent; 
   fd_set f;
 
-  // Config file
-  Licq::IniFile msnConf("licq_msn.conf");
-  msnConf.loadFile();
-  msnConf.setSection("network");
-  msnConf.get("ListVersion", m_nListVersion, 0);
-
   pthread_mutex_init(&mutex_StartList, 0);
   pthread_mutex_init(&mutex_MSNEventList, 0);
   pthread_mutex_init(&mutex_ServerSocket, 0);
@@ -566,6 +546,16 @@ int CMSN::run()
 void CMSN::destructor()
 {
   delete this;
+}
+
+Licq::User* CMSN::createUser(const Licq::UserId& id, bool temporary)
+{
+  return new User(id, temporary);
+}
+
+Licq::Owner* CMSN::createOwner(const Licq::UserId& id)
+{
+  return new Owner(id);
 }
 
 void CMSN::ProcessPipe()

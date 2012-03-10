@@ -281,9 +281,6 @@ public:
    */
   const std::string& pictureFileName() const    { return myPictureFileName; }
 
-  // Dynamic info fields for protocol plugins
-  std::string GetPPField(const std::string &);
-
   // Licq Info
   bool GetAwaitingAuth() const                  { return m_bAwaitingAuth; }
   unsigned short GetSID() const                 { return m_nSID[NORMAL_SID]; }
@@ -461,9 +458,6 @@ public:
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void setCustomAutoResponse(const std::string& s) { myCustomAutoResponse = s; save(SaveLicqInfo); }
   void clearCustomAutoResponse()            { setCustomAutoResponse(""); }
-
-  // Dynamic info fields for protocol plugins
-  bool SetPPField(const std::string &, const std::string &);
 
   /**
    * Is user writing a message?
@@ -904,9 +898,6 @@ protected:
   unsigned myBuddyIconHashType;
   std::string myBuddyIconHash;
   std::string myOurBuddyIconHash;
-
-  // Dynamic info fields for protocol plugins
-  std::map<std::string, std::string> m_mPPFields;
 
   // Server Side ID, Group SID
   bool m_bAwaitingAuth;

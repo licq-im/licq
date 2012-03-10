@@ -112,13 +112,10 @@ protected:
   bool init(int, char**);
   int run();
   void destructor();
+  Licq::User* createUser(const Licq::UserId& id, bool temporary = false);
+  Licq::Owner* createOwner(const Licq::UserId& id);
 
 private:
-  /**
-   * Write configuration to file
-   */
-  void saveConfig();
-
   void ProcessSignal(Licq::ProtocolSignal* s);
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer *);
@@ -173,9 +170,6 @@ private:
    * @param sock Socket to clear conversations for
    */
   void killConversation(int sock);
-
-  // Config
-  unsigned long m_nListVersion;
 
   // Variables
   bool m_bExit;

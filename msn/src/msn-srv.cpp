@@ -29,8 +29,6 @@
 #include <unistd.h>
 #include <vector>
 
-#include <licq/contactlist/owner.h>
-#include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
 #include <licq/event.h>
@@ -42,10 +40,12 @@
 #include <licq/socket.h>
 #include <licq/userevents.h>
 
+#include "owner.h"
+#include "user.h"
+
 using namespace std;
 using namespace LicqMsn;
 using Licq::OnEventData;
-using Licq::User;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gOnEventManager;
@@ -115,9 +115,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         gLog.info("%s logged in", strDecodedNick.c_str());
        
         // Set our alias here
+        unsigned long listVersion;
         {
-          Licq::OwnerWriteGuard o(MSN_PPID);
+          OwnerWriteGuard o;
           o->setAlias(strDecodedNick);
+          listVersion = o->listVersion();
         }
 
         // This cookie doesn't work anymore now that we are online
@@ -127,7 +129,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           m_szCookie = 0;
         }
 
-        pReply = new CPS_MSNSync(m_nListVersion);
+        pReply = new CPS_MSNSync(listVersion);
       }
       else
       {
@@ -152,8 +154,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     {
       packet->SkipParameter();
       string strVersion = packet->GetParameter();
-      m_nListVersion = atol(strVersion.c_str());
-      saveConfig();
+      unsigned long newListVersion = atol(strVersion.c_str());
+      {
+        OwnerWriteGuard o;
+        o->setListVersion(newListVersion);
+      }
 
       MSNChangeStatus(myStatus);
 
@@ -222,9 +227,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strUser = packet->GetParameter();
       UserId userId(strUser, MSN_PPID);
       string strNick = packet->GetParameter();
-      m_nListVersion = atol(strVersion.c_str());
-      saveConfig();
-      
+
+      unsigned long newListVersion = atol(strVersion.c_str());
+      {
+        OwnerWriteGuard o;
+        o->setListVersion(newListVersion);
+      }
+
       if (strList == "RL")
       {
         gLog.info("Authorization request from %s", strUser.c_str());
@@ -263,8 +272,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       packet->SkipParameter(); // list
       string strVersion = packet->GetParameter();
       string strUser = packet->GetParameter();
-      m_nListVersion = atol(strVersion.c_str());
-      saveConfig();
+
+      unsigned long newListVersion = atol(strVersion.c_str());
+      {
+        OwnerWriteGuard o;
+        o->setListVersion(newListVersion);
+      }
+
       gLog.info("Removed %s from contact list", strUser.c_str()); 
     }
     else if (strCmd == "REA")
@@ -273,9 +287,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strVersion = packet->GetParameter();
       string strUser = packet->GetParameter();
       string strNick = packet->GetParameter();
-      
-      m_nListVersion = atol(strVersion.c_str());
-      saveConfig();
+
+      unsigned long newListVersion = atol(strVersion.c_str());
+      {
+        OwnerWriteGuard o;
+        o->setListVersion(newListVersion);
+      }
+
       if (strcmp(m_szUserName, strUser.c_str()) == 0)
       {
         Licq::OwnerWriteGuard o(MSN_PPID);
@@ -331,7 +349,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       else
         status = User::OnlineStatus | User::AwayStatus;
 
-      Licq::UserWriteGuard u(UserId(strUser, MSN_PPID));
+      UserWriteGuard u(UserId(strUser, MSN_PPID));
       if (u.isLocked())
       {
         u->SetSendServer(true); // no direct connections
@@ -346,9 +364,10 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         }
 
 	// Get the display picture here, so it can be shown with the notify
-	if (strDecodedObject != u->GetPPField("MSNObject_DP"))
-	{
-	  u->SetPPField("MSNObject_DP", strDecodedObject);
+        if (strDecodedObject != u->pictureObject())
+        {
+          // TODO: User shouldn't be updated until the new picture is actually received
+          u->setPictureObject(strDecodedObject);
 	  if (strDecodedObject.size())
             MSNGetDisplayPicture(u->id(), strDecodedObject);
 	}
