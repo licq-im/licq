@@ -34,10 +34,7 @@ using namespace LicqIcq;
 using Licq::ICQUserPhoneBook;
 using Licq::IcqUser;
 using Licq::IniFile;
-using Licq::OscarTlv;
 using Licq::PhoneBookEntry;
-using Licq::TlvList;
-using Licq::TlvPtr;
 using Licq::gLog;
 
 

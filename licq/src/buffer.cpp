@@ -17,17 +17,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <licq/buffer.h>
+
 #include "config.h"
 
 #include <cstdlib>
 #include <cstdio>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <ctype.h>
 #include <cstring>
 
-#include <licq/buffer.h>
 #include <licq/byteorder.h>
 #include <licq/logging/log.h>
 
@@ -35,37 +33,6 @@
 
 using namespace std;
 using Licq::Buffer;
-using Licq::OscarTlv;
-using Licq::TlvList;
-using Licq::TlvPtr;
-
-OscarTlv::OscarTlv(unsigned short type, unsigned short length, const char* data)
-  : myType(type), myLen(length)
-{
-  if (myLen > 0)
-  {
-    myData = boost::shared_array<unsigned char>(new  unsigned char[myLen]);
-    memcpy(myData.get(), data, myLen);
-  }
-}
-
-OscarTlv::OscarTlv(const OscarTlv& c)
-{
-  myType = c.myType;
-  myLen = c.myLen;
-  myData = boost::shared_array<unsigned char>(new unsigned char[c.myLen]);
-  memcpy(myData.get(), c.myData.get(), c.myLen);
-}
-
-void OscarTlv::setData(unsigned char* data, unsigned short length)
-{
-  if (length > 0)
-  {
-    myLen = length;
-    myData = boost::shared_array<unsigned char>(new unsigned char[length]);
-    memcpy(myData.get(), data, length);
-  }
-}
 
 
 Buffer::Buffer()
@@ -120,7 +87,7 @@ Buffer::Buffer(Buffer* b)
 }
 #endif
 
-Buffer& Buffer::operator=(Buffer& b)
+Buffer& Buffer::operator=(const Buffer& b)
 {
    if (m_pDataStart != NULL) delete [] m_pDataStart;
    m_nDataSize = b.getDataSize();
@@ -133,12 +100,11 @@ Buffer& Buffer::operator=(Buffer& b)
      m_pDataStart = NULL;
    m_pDataPosRead = m_pDataStart + (b.getDataPosRead() - b.getDataStart());
    m_pDataPosWrite = m_pDataStart + (b.getDataPosWrite() - b.getDataStart());
-   myTLVs = b.myTLVs;
 
    return (*this);
 }
 
-Buffer Licq::operator+(Buffer& b0, Buffer& b1)
+Buffer Licq::operator+(const Buffer& b0, const Buffer& b1)
 {
    unsigned long nB0Size = b0.getDataPosWrite() - b0.getDataStart();
    unsigned long nB1Size = b1.getDataPosWrite() - b1.getDataStart();
@@ -152,7 +118,7 @@ Buffer Licq::operator+(Buffer& b0, Buffer& b1)
    return bCat;
 }
 
-Buffer& Buffer::operator+=(Buffer& b)
+Buffer& Buffer::operator+=(const Buffer& b)
 {
   Buffer buf = *this + b;
   *this = buf;
@@ -297,7 +263,6 @@ int8_t Buffer::unpackInt8()
 void Buffer::Clear()
 {
   if (m_pDataStart != NULL) delete[] m_pDataStart;
-  myTLVs.clear();
   m_pDataStart = m_pDataPosRead = m_pDataPosWrite = NULL;
   m_nDataSize = 0;
 }
@@ -439,210 +404,6 @@ void Buffer::Pack(Buffer* buf)
   }
   memcpy(getDataPosWrite(), buf->getDataStart(), buf->getDataSize());
   incDataPosWrite(buf->getDataSize());
-}
-
-//-----TLV----------------------------------------------------------------------
-
-bool Buffer::readTLV(int nCount, int nBytes)
-{
-  if (!nCount) return false;
-
-  // Clear the list if we already have some TLVs
-  if (myTLVs.size() > 0)
-    myTLVs.clear();
-
-  int num = 0;
-  int nCurBytes = 0;
-
-  // Keep reading until it is impossible for any TLV headers to be found
-  while(getDataPosRead() + 4 <= (getDataStart() + getDataSize())) {
-    TlvPtr tlv(new OscarTlv);
-
-    *this >> tlv->myType;
-    *this >> tlv->myLen;
-
-    tlv->myType = BSWAP_16(tlv->myType);
-    tlv->myLen = BSWAP_16(tlv->myLen);
-
-    nCurBytes += 4 + tlv->myLen;
-
-    if(getDataPosRead() + tlv->myLen > (getDataStart() + getDataSize()) ||
-       tlv->myLen < 1) {
-      tlv->myLen = 0;
-    }
-    else {
-      tlv->myData.reset(new unsigned char[tlv->myLen]);
-      memcpy(tlv->myData.get(), m_pDataPosRead, tlv->myLen);
-      m_pDataPosRead += tlv->myLen;
-    }
-
-    // Save it in the map
-    myTLVs[tlv->myType] = tlv;
-
-    ++num;
-    if ((nCount > 0 && num == nCount) ||
-        (nBytes > 0 && nCurBytes == nBytes) )
-      return true;
-
-    if (nBytes > 0 && nCurBytes > nBytes)
-    {
-      gLog.warning(tr("Read too much TLV data!"));
-      return true;
-    }
-  }
-
-  // Finish off the number of bytes we wanted
-  if (nCurBytes < nBytes)
-  {
-    gLog.warning(tr("Unable to read requested amount of TLV data!"));
-    for (; nCurBytes < nBytes; nCurBytes++)
-      unpackInt8();
-  }
-
-  return true;
-}
-
-void Buffer::PackTLV(unsigned short nType, unsigned short nSize,
-		       const char *data)
-{
-  packUInt16BE(nType);
-  packUInt16BE(nSize);
-  packRaw(data, nSize);
-}
-
-void Buffer::PackTLV(unsigned short nType, unsigned short nSize, Buffer* b)
-{
-  packUInt16BE(nType);
-  packUInt16BE(nSize);
-  Pack(b);
-}
-
-void Buffer::PackTLV(const TlvPtr& tlv)
-{
-  packUInt16BE(tlv->myType);
-  packUInt16BE(tlv->myLen);
-  packRaw(tlv->myData.get(), tlv->myLen);
-}
-
-#if 0
-void Buffer::PackFNACHeader(unsigned short nFamily, unsigned short nSubtype,
-			     char nFlag1, char nFlag2, unsigned long nSeq)
-{
-  packUInt16BE(nFamily);
-  packUInt16BE(nSubtype);
-  packInt8(nFlag1);
-  packInt8(nFlag2);
-  packUInt32BE(nSeq);
-}
-#endif
-
-unsigned short Buffer::getTLVLen(unsigned short nType)
-{
-  unsigned short len = 0;
-  TlvList::iterator iter = myTLVs.find(nType);
-  if (iter != myTLVs.end())
-    len = iter->second->myLen;
-  return len;
-}
-
-bool Buffer::hasTLV(unsigned short nType)
-{
-  TlvList::iterator iter = myTLVs.find(nType);
-  bool found = (iter != myTLVs.end());
-  return found;
-}
-
-uint32_t Buffer::unpackTlvUInt32(int type)
-{
-  try
-  {
-    TlvPtr tlv = getTLV(type);
-    if (tlv->myLen >= 4)
-      return BE_32(*(uint32_t*)(tlv->myData.get()));
-  }
-  catch (...)
-  {
-    // TODO Throw an exception
-  }
-  return 0;
-}
-
-uint16_t Buffer::unpackTlvUInt16(int type)
-{
-  try
-  {
-    TlvPtr tlv = getTLV(type);
-    if (tlv->myLen >= 2)
-      return BE_16(*(uint16_t*)(tlv->myData.get()));
-  }
-  catch (...)
-  {
-    // TODO Throw an exception
-  }
-  return 0;
-}
-
-uint8_t Buffer::unpackTlvUInt8(int type)
-{
-  try
-  {
-    TlvPtr tlv = getTLV(type);
-    if (tlv->myLen >= 1)
-      return *(uint8_t*)(tlv->myData.get());
-  }
-  catch (...)
-  {
-    // TODO Throw an exception
-  }
-  return 0;
-}
-
-string Buffer::unpackTlvString(int type)
-{
-  try
-  {
-    TlvPtr tlv = getTLV(type);
-    return string((const char*)(tlv->myData.get()), tlv->myLen);
-  }
-  catch (...)
-  {
-    // TODO Throw an exception
-  }
-  return "";
-}
-
-Buffer Buffer::UnpackTLV(unsigned short nType)
-{
-  try
-  {
-    TlvPtr tlv = getTLV(nType);
-    Buffer cbuf(tlv->myLen);
-    cbuf.packRaw(tlv->myData.get(), tlv->myLen);
-    cbuf.Reset();
-
-    return cbuf;
-  }
-  catch (...)
-  {
-    return Buffer(0);
-  }
-}
-
-TlvPtr Buffer::getTLV(unsigned short nType)
-{
-  if (myTLVs.empty())
-    throw std::exception();
-
-  TlvList::iterator iter = myTLVs.find(nType);
-  if (iter == myTLVs.end())
-    throw std::exception();
-
-  return iter->second;
-}
-
-TlvList Buffer::getTlvList()
-{
-  return myTLVs;
 }
 
 void Buffer::log(Log::Level level, const char* format, ...)

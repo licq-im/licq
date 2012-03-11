@@ -37,6 +37,7 @@
 #include "../licq.h"
 #include "../statistics.h"
 #include "../plugin/pluginmanager.h"
+#include "buffer.h"
 #include "defines.h"
 #include "oscarservice.h"
 #include "packet.h"
@@ -785,7 +786,7 @@ void* LicqIcq::MonitorSockets_func()
         // DAW FIXME error handling when socket is closed..
         if (srvTCP->Recv())
         {
-          Licq::Buffer packet(srvTCP->RecvBuffer());
+          Buffer packet(srvTCP->RecvBuffer());
           srvTCP->ClearRecvBuffer();
           gSocketManager.DropSocket(srvTCP);
           if (!gIcqProtocol.ProcessSrvPacket(packet))
@@ -821,7 +822,7 @@ void* LicqIcq::MonitorSockets_func()
         }
         if (sock_svc->Recv())
         {
-          Licq::Buffer packet(sock_svc->RecvBuffer());
+          Buffer packet(sock_svc->RecvBuffer());
           sock_svc->ClearRecvBuffer();
           gSocketManager.DropSocket(sock_svc);
           if (!svc->ProcessPacket(packet))

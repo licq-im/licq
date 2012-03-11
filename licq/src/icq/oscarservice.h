@@ -28,7 +28,6 @@
 
 namespace Licq
 {
-class Buffer;
 class Event;
 class Packet;
 class Proxy;
@@ -37,6 +36,7 @@ class UserId;
 
 namespace LicqIcq
 {
+class Buffer;
 
 enum EOscarServiceStatus {STATUS_UNINITIALIZED, STATUS_SERVICE_REQ_SENT,
                           STATUS_SERVICE_REQ_ACKED, STATUS_CONNECTED,
@@ -51,7 +51,7 @@ public:
   COscarService(unsigned short Fam);
   ~COscarService();
   bool Initialize();
-  bool ProcessPacket(Licq::Buffer& packet);
+  bool ProcessPacket(Buffer& packet);
   unsigned long SendEvent(const Licq::UserId& userId, unsigned short SubType, bool Request);
   void ClearQueue();
 
@@ -79,10 +79,10 @@ protected:
   bool SendPacket(Licq::Packet* packet);
   bool WaitForStatus(EOscarServiceStatus s);
   bool SendBARTFam(Licq::Event* event);
-  void ProcessNewChannel(Licq::Buffer& packet);
-  void ProcessDataChannel(Licq::Buffer& packet);
-  void ProcessServiceFam(Licq::Buffer& packet, unsigned short SubType, unsigned long RequestId);
-  void ProcessBARTFam(Licq::Buffer& packet, unsigned short SubType, unsigned long RequestId);
+  void ProcessNewChannel(Buffer& packet);
+  void ProcessDataChannel(Buffer& packet);
+  void ProcessServiceFam(Buffer& packet, unsigned short SubType, unsigned long RequestId);
+  void ProcessBARTFam(Buffer& packet, unsigned short SubType, unsigned long RequestId);
 
   friend void *OscarServiceSendQueue_tep(void *p);
 };

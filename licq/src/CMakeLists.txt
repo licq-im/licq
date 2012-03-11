@@ -52,6 +52,7 @@ set(licq_SRCS
   contactlist/userhistory.cpp
   contactlist/usermanager.cpp
 
+  icq/buffer.cpp
   icq/chat.cpp
   icq/codes.c
   icq/filetransfer.cpp

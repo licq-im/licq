@@ -44,6 +44,7 @@
 #include "../contactlist/group.h"
 #include "../contactlist/usermanager.h"
 #include "../gettext.h"
+#include "buffer.h"
 #include "defines.h"
 #include "icq.h"
 #include "owner.h"
@@ -342,7 +343,7 @@ void CSrvPacketTcp::InitBuffer()
   s_nSequence[m_nService] &= 0xffff;
   pthread_mutex_unlock(&s_xMutex);
 
-  buffer = new CBuffer(m_nSize+6);
+  buffer = new Buffer(m_nSize+6);
   buffer->PackChar(0x2a);
   buffer->PackChar(myIcqChannel);
   m_szSequenceOffset = buffer->getDataPosWrite();
@@ -1471,7 +1472,7 @@ CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
   int msgLen = message.size();
   unsigned short nFormat = 0;
   int nTypeLen = 0, nTLVType = 0;
-  CBuffer tlvData;
+  Buffer tlvData;
 
   switch (msgType)
   {
@@ -2765,8 +2766,8 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
   unsigned short nStrLen = name.size();
   unsigned short nExportSize = 0;
   string unicodeName;
-  Licq::TlvList tlvs;
-  CBuffer tlvBuffer;
+  TlvList tlvs;
+  Buffer tlvBuffer;
 
   m_nSID = IcqProtocol::generateSid();
 
@@ -2826,7 +2827,7 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
 
       // We need to iterate two times since we don't have a dynamic CBuffer
       unsigned short extraTlvSize = 0;
-      Licq::TlvList::iterator tlv_iter;
+      TlvList::iterator tlv_iter;
       for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
         extraTlvSize += tlv_iter->second->getLength() + 4;
 
@@ -2940,17 +2941,17 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const string& name,
   UserId userId(name, LICQ_PPID);
   int nNameLen = name.size();
   string unicodeName;
-  CBuffer tlvBuffer;
+  Buffer tlvBuffer;
 
   if (_nType == ICQ_ROSTxNORMAL)
   {
     UserReadGuard u(userId);
     if (u.isLocked())
     {
-      Licq::TlvList tlvs = u->GetTLVList();
+      TlvList tlvs = u->GetTLVList();
 
       unsigned short extraTlvSize = 0;
-      Licq::TlvList::iterator tlv_iter;
+      TlvList::iterator tlv_iter;
       for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
         extraTlvSize += tlv_iter->second->getLength() + 4;
 
@@ -3067,7 +3068,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
   unsigned short nExtraLen = 0;
   unsigned short nNameLen = name.size();
   string unicodeName;
-  CBuffer tlvBuffer;
+  Buffer tlvBuffer;
 
   list<unsigned long> groupIds;
 
@@ -3083,11 +3084,11 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
 
         // Get all the TLV's attached to this user, otherwise the server will delete
         // all of the ones that we don't send
-        Licq::TlvList tlvs = u->GetTLVList();
+        TlvList tlvs = u->GetTLVList();
 
         // We need to iterate two times since we don't have a dynamic CBuffer
         unsigned short extraTlvSize = 0;
-        Licq::TlvList::iterator tlv_iter;
+        TlvList::iterator tlv_iter;
         for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
           extraTlvSize += tlv_iter->second->getLength() + 4;
 

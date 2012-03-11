@@ -22,7 +22,7 @@
 
 #include <licq/icq/user.h>
 
-#include <licq/buffer.h>
+#include "buffer.h"
 
 namespace LicqIcq
 {
@@ -109,11 +109,11 @@ public:
   void SetCookie(unsigned long cookie)          { myCookie = cookie; }
 
   // User TLV List handling
-  void AddTLV(Licq::TlvPtr);
+  void AddTLV(TlvPtr);
   void RemoveTLV(unsigned long);
-  void SetTLVList(Licq::TlvList& tlvs);
-  Licq::TlvList GetTLVList()                    { return myTLVs; }
-  const Licq::TlvList GetTLVList() const        { return myTLVs; }
+  void SetTLVList(TlvList& tlvs);
+  TlvList GetTLVList()                          { return myTLVs; }
+  const TlvList GetTLVList() const              { return myTLVs; }
 
 private:
   /**
@@ -169,7 +169,7 @@ private:
   // We use a map to allow fast access to the TLV by type, even though the
   // actual type is in SOscarTLV as well. Which should make it obvious
   // that the TLV handling should be fixed in licq_buffer.h/buffer.cpp
-  Licq::TlvList myTLVs;
+  TlvList myTLVs;
 };
 
 

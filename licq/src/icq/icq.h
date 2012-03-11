@@ -28,12 +28,13 @@
 #include <vector>
 #include <pthread.h>
 
-#include <licq/buffer.h>
 #include <licq/event.h>
 #include <licq/oneventmanager.h>
 #include <licq/pipe.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
+
+#include "buffer.h"
 
 namespace Licq
 {
@@ -91,7 +92,7 @@ private:
 
   bool awaitingAuth;
 
-  Licq::TlvList tlvs;
+  TlvList tlvs;
 
 friend class CICQDaemon;
   friend class IcqProtocol;
@@ -282,21 +283,21 @@ public:
      unsigned long nMsgID2, unsigned short nSequence,
      Licq::TCPSocket* pSock);
   void ProcessDoneEvent(Licq::Event*);
-  bool ProcessSrvPacket(Licq::Buffer&);
+  bool ProcessSrvPacket(Buffer& packet);
 
   //--- Channels ---------
-  bool ProcessCloseChannel(Licq::Buffer&);
-  void ProcessDataChannel(Licq::Buffer&);
+  bool ProcessCloseChannel(Buffer& packet);
+  void ProcessDataChannel(Buffer& packet);
 
   //--- Families ---------
-  void ProcessServiceFam(Licq::Buffer&, unsigned short);
-  void ProcessLocationFam(Licq::Buffer&, unsigned short);
-  void ProcessBuddyFam(Licq::Buffer&, unsigned short);
-  void ProcessMessageFam(Licq::Buffer&, unsigned short);
-  void ProcessVariousFam(Licq::Buffer&, unsigned short);
-  void ProcessBOSFam(Licq::Buffer&, unsigned short);
-  void ProcessListFam(Licq::Buffer&, unsigned short);
-  void ProcessAuthFam(Licq::Buffer&, unsigned short);
+  void ProcessServiceFam(Buffer& packet, unsigned short);
+  void ProcessLocationFam(Buffer& packet, unsigned short);
+  void ProcessBuddyFam(Buffer& packet, unsigned short);
+  void ProcessMessageFam(Buffer& packet, unsigned short);
+  void ProcessVariousFam(Buffer& packet, unsigned short);
+  void ProcessBOSFam(Buffer& packet, unsigned short);
+  void ProcessListFam(Buffer& packet, unsigned short);
+  void ProcessAuthFam(Buffer& packet, unsigned short);
 
   void ProcessUserList();
 

@@ -103,6 +103,8 @@ class CSrvPacketTcp : public CPacket
 public:
   virtual ~CSrvPacketTcp();
 
+  virtual Licq::Buffer* getBuffer() { return buffer; }
+
   // Packet details
   unsigned char icqChannel() const { return myIcqChannel; }
   virtual unsigned short Sequence()    { return m_nSequence; }
@@ -135,6 +137,8 @@ protected:
   unsigned short m_nService;
 
   char *m_szSequenceOffset;
+
+  Buffer* buffer;
 };
 
 //=====UDP======================================================================
@@ -144,6 +148,8 @@ class CPacketUdp : public CPacket
 {
 public:
    virtual ~CPacketUdp();
+
+  virtual Licq::Buffer* getBuffer() { return buffer; }
 
    virtual CBuffer *Finalize(Licq::INetSocket*);
    virtual unsigned short Sequence() { return m_nSequence; }
@@ -181,6 +187,8 @@ protected:
    static unsigned short s_nSequence;
    static unsigned short s_nSubSequence;
    static unsigned long  s_nSessionId;
+
+  Licq::Buffer* buffer;
 };
 
 class CPU_ConnectStart : public CSrvPacketTcp
@@ -1195,16 +1203,21 @@ protected:
 
 
 //=====TCP======================================================================
-bool Decrypt_Client(CBuffer *pkt, unsigned long version);
-void Encrypt_Client(CBuffer *pkt, unsigned long version);
+bool Decrypt_Client(Licq::Buffer* pkt, unsigned long version);
+void Encrypt_Client(Licq::Buffer* pkt, unsigned long version);
 
 //-----PacketTcp_Handshake------------------------------------------------------
 class CPacketTcp_Handshake : public CPacket
 {
 public:
+  virtual Licq::Buffer* getBuffer() { return buffer; }
+
   virtual unsigned short Sequence()   { return 0; }
   virtual unsigned short SubSequence()   { return 0; }
   virtual unsigned short SubCommand() { return 0; }
+
+protected:
+  Licq::Buffer* buffer;
 };
 
 //-----PacketTcp_Handshake------------------------------------------------------
@@ -1322,6 +1335,8 @@ class CPacketTcp : public CPacket
 public:
    virtual ~CPacketTcp();
 
+  virtual Licq::Buffer* getBuffer() { return buffer; }
+
    virtual CBuffer *Finalize(Licq::INetSocket*);
   int channel() const { return myChannel; }
    virtual unsigned short Sequence()   { return m_nSequence; }
@@ -1361,6 +1376,8 @@ protected:
    char *m_szLocalPortOffset;
    unsigned short m_nLevel;
    unsigned short m_nVersion;
+
+  Licq::Buffer* buffer;
 };
 
 
@@ -1689,11 +1706,15 @@ public:
   CPacketFile();
   virtual ~CPacketFile();
 
+  virtual Licq::Buffer* getBuffer() { return buffer; }
+
   virtual unsigned short Sequence()    { return 0; };
   virtual unsigned short SubSequence() { return 0; };
   virtual unsigned short SubCommand()  { return 0; };
 protected:
    void InitBuffer()   { buffer = new CBuffer(m_nSize); };
+
+  Licq::Buffer* buffer;
 };
 
 //-----File_InitClient----------------------------------------------------------
@@ -1762,11 +1783,15 @@ public:
 class CPacketChat : public Licq::Packet
 {
 public:
+  virtual Licq::Buffer* getBuffer() { return buffer; }
+
   virtual unsigned short Sequence()   { return 0; };
   virtual unsigned short SubSequence()   { return 0; };
   virtual unsigned short SubCommand() { return 0; };
 protected:
    void InitBuffer();
+
+  Licq::Buffer* buffer;
 };
 
 

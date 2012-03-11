@@ -46,7 +46,6 @@
 
 using namespace std;
 using namespace LicqIcq;
-using Licq::Buffer;
 using Licq::gLog;
 using LicqDaemon::gDaemon;
 
@@ -111,7 +110,7 @@ bool COscarService::SendPacket(CPacket *p)
 {
   Licq::INetSocket* s = gSocketManager.FetchSocket(mySocketDesc);
   if (s == NULL) return false;
-  Buffer *b = p->Finalize(s);
+  Licq::Buffer* b = p->Finalize(s);
   if (!s->Send(b))
   {
     gLog.warning(tr("Error sending event (FAM #%02X, Subtype #%02X, Sequence #%hu): %s."),

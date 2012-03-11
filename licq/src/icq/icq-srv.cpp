@@ -1742,7 +1742,7 @@ string IcqProtocol::findUserByCellular(const string& cellular)
 }
 
 //-----ProcessSrvPacket---------------------------------------------------------
-bool IcqProtocol::ProcessSrvPacket(CBuffer& packet)
+bool IcqProtocol::ProcessSrvPacket(Buffer& packet)
 {
   unsigned short nLen;
   unsigned short  nSequence;
@@ -1807,7 +1807,7 @@ bool IcqProtocol::ProcessSrvPacket(CBuffer& packet)
 
 //--------ProcessServiceFam----------------------------------------------------
 
-void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
 {
   unsigned short snacFlags = packet.UnpackUnsignedShortBE(); // flags
   packet.UnpackUnsignedLongBE(); // sequence
@@ -2049,7 +2049,7 @@ void IcqProtocol::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessLocationFam-----------------------------------------------
-void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessLocationFam(Buffer& packet, unsigned short nSubtype)
 {
   /*unsigned short nFlags = */packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
@@ -2124,7 +2124,7 @@ void IcqProtocol::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessBuddyFam--------------------------------------------------
-void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessBuddyFam(Buffer& packet, unsigned short nSubtype)
 {
   switch (nSubtype)
   {
@@ -2567,7 +2567,7 @@ void IcqProtocol::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessMessageFam------------------------------------------------
-void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
 {
   /*unsigned short Flags =*/ packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
@@ -2663,9 +2663,9 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
     switch (mFormat)
     {
-    case 1:
-    {
-      CBuffer msg = packet.UnpackTLV(0x0002);
+        case 1:
+        {
+          Buffer msg = packet.UnpackTLV(0x0002);
 
       // TLVs in TLV
       // type: 05 01: ???
@@ -2734,7 +2734,7 @@ void IcqProtocol::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     case 2: // OSCAR's "Add ICBM parameter" message
     {
       //I must admit, any server that does anything like this is a pile of shit
-      CBuffer msgTxt = packet.UnpackTLV(5);
+          Buffer msgTxt = packet.UnpackTLV(5);
       if (msgTxt.getDataSize() == 0) break;
 
       unsigned short nCancel = msgTxt.UnpackUnsignedShort();
@@ -3168,7 +3168,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
 }
 
 //--------ProcessListFam--------------------------------------------
-void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
 {
   unsigned short nFlags = packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
@@ -3242,8 +3242,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
             CUserProperties* data = iter->second;
 
-            Licq::TlvList list = packet.getTlvList();
-            for (Licq::TlvList::iterator it = list.begin(); it != list.end(); it++)
+            TlvList list = packet.getTlvList();
+            for (TlvList::iterator it = list.begin(); it != list.end(); it++)
               data->tlvs[it->first] = it->second;
 
 #define COPYTLV(type, var) \
@@ -3397,8 +3397,8 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         u->addToGroup(getGroupFromId(gsid));
 
         // Now the the tlv of attributes to attach to the user
-        Licq::TlvList tlvList = packet.getTlvList();
-        Licq::TlvList::iterator iter;
+        TlvList tlvList = packet.getTlvList();
+        TlvList::iterator iter;
         for (iter = tlvList.begin(); iter != tlvList.end(); ++iter)
           u->AddTLV(iter->second);
 
@@ -3688,7 +3688,7 @@ void IcqProtocol::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessBosFam---------------------------------------------
-void IcqProtocol::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
+void IcqProtocol::ProcessBOSFam(Buffer& /* packet */, unsigned short nSubtype)
 {
   switch (nSubtype)
   {
@@ -3724,7 +3724,7 @@ void IcqProtocol::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
 }
 
 //--------ProcessVariousFam-----------------------------------------
-void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessVariousFam(Buffer& packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
@@ -4630,7 +4630,7 @@ void IcqProtocol::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessAuthFam----------------------------------------------------
-void IcqProtocol::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
+void IcqProtocol::ProcessAuthFam(Buffer& packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
@@ -4864,7 +4864,7 @@ void IcqProtocol::ProcessUserList()
 
 //--------ProcessDataChannel---------------------------------------------------
 
-void IcqProtocol::ProcessDataChannel(CBuffer &packet)
+void IcqProtocol::ProcessDataChannel(Buffer& packet)
 {
   unsigned short nFamily, nSubtype;
 
@@ -4914,7 +4914,7 @@ void IcqProtocol::ProcessDataChannel(CBuffer &packet)
 
 //--------ProcessCloseChannel--------------------------------------------------
 
-bool IcqProtocol::ProcessCloseChannel(CBuffer &packet)
+bool IcqProtocol::ProcessCloseChannel(Buffer& packet)
 {
   int nSD = m_nTCPSrvSocketDesc;
   if (nSD < 0) {

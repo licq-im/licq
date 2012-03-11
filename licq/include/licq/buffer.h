@@ -22,41 +22,11 @@
 
 #include "logging/log.h"
 
-#include <map>
 #include <string>
-
-#include <boost/shared_array.hpp>
-#include <boost/shared_ptr.hpp>
 
 
 namespace Licq
 {
-
-class OscarTlv
-{
-public:
-  OscarTlv(unsigned short type = 0, unsigned short length = 0, const char* data = NULL);
-
-  OscarTlv(const OscarTlv& c);
-
-  unsigned short getType() const                     { return myType; }
-  unsigned short getLength() const                   { return myLen; }
-  boost::shared_array<unsigned char> getData() const { return myData; }
-
-  void setType(unsigned short type) { myType = type; }
-  void setData(unsigned char* data, unsigned short length);
-
-private:
-  unsigned short myType;
-  unsigned short myLen;
-  boost::shared_array<unsigned char> myData;
-
-  friend class Buffer;
-};
-
-typedef boost::shared_ptr<OscarTlv> TlvPtr;
-typedef std::map<unsigned short, TlvPtr> TlvList;
-
 
 class Buffer
 {
@@ -64,11 +34,11 @@ public:
   Buffer();
   Buffer(unsigned long _nSize);
   Buffer(const Buffer&);
-  ~Buffer();
+  virtual ~Buffer();
 
-  Buffer& operator=(Buffer&);
-  Buffer& operator+=(Buffer&);
-  friend Buffer operator+(Buffer&, Buffer&);
+  virtual Buffer& operator=(const Buffer&);
+  Buffer& operator+=(const Buffer&);
+  friend Buffer operator+(const Buffer&, const Buffer&);
 
   /// Add an unsigned 32 bit little endian integer from the buffer
   void packUInt32LE(uint32_t data);
@@ -120,7 +90,7 @@ public:
 #endif
    ;
 
-   void Clear();
+  virtual void Clear();
    void Reset();
    bool Empty() const;
    bool Full() const;
@@ -229,44 +199,15 @@ public:
    void incDataPosWrite(unsigned long c)  { m_pDataPosWrite += c; };
    void incDataPosRead(unsigned long c)  { m_pDataPosRead += c; };
 
-   //--- OSCAR Related Functions ------
-
-   bool readTLV(int count = -1, int bytes = -1); // This should be called automatically if m_pTLV == 0
-
-   void PackTLV(unsigned short, unsigned short, const char *);
-  void PackTLV(unsigned short, unsigned short, Buffer*);
-  void PackTLV(const TlvPtr&);
-
-   unsigned short getTLVLen(unsigned short);
-   bool hasTLV(unsigned short);
-
-  uint32_t unpackTlvUInt32(int type);
-  uint16_t unpackTlvUInt16(int type);
-  uint8_t unpackTlvUInt8(int type);
-  std::string unpackTlvString(int type);
-  Buffer UnpackTLV(unsigned short);
-
-  TlvList getTlvList();
-  TlvPtr getTLV(unsigned short _nType);
-
-  // Deprecated TLV access functions
-  unsigned long UnpackUnsignedLongTLV(unsigned short type) { return unpackTlvUInt32(type); }
-  unsigned short UnpackUnsignedShortTLV(unsigned short type) { return unpackTlvUInt16(type); }
-  unsigned char UnpackCharTLV(unsigned short type) { return unpackTlvUInt8(type); }
-
-private:
-  Buffer& operator=(const Buffer&);
-
 protected:
 
    char *m_pDataStart,
         *m_pDataPosWrite,
         *m_pDataPosRead;
    unsigned long m_nDataSize;
-  TlvList myTLVs;
 };
 
-Buffer operator+(Buffer& b0, Buffer& b1);
+Buffer operator+(const Buffer& b0, const Buffer& b1);
 
 } // namespace Licq
 

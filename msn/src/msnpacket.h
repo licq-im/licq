@@ -41,8 +41,8 @@ class CMSNPacket : public Licq::Packet
 public:
   CMSNPacket(bool = false);
   virtual ~CMSNPacket() { if (m_pBuffer) delete m_pBuffer; if (m_szCommand) free(m_szCommand); }
-  CMSNBuffer *getBuffer() { return m_pBuffer; }
-  
+  Licq::Buffer* getBuffer() { return m_pBuffer; }
+
   unsigned short Command() { return 0; }
   unsigned short SubSequence() { return 0; }
   unsigned short SubCommand() { return 0; }
