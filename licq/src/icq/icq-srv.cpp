@@ -45,7 +45,6 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
-#include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
@@ -57,6 +56,7 @@
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet.h"
+#include "socket.h"
 #include "user.h"
 
 using namespace std;
@@ -1663,7 +1663,7 @@ int IcqProtocol::ConnectToLoginServer()
 
 int IcqProtocol::ConnectToServer(const string& server, unsigned short port)
 {
-  Licq::SrvSocket* s = new Licq::SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  SrvSocket* s = new SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
 
   if (gDaemon.proxyEnabled())
   {

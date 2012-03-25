@@ -35,13 +35,13 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
-#include <licq/socket.h>
 #include <licq/logging/log.h>
 
 #include "../daemon.h"
 #include "../gettext.h"
 #include "icq.h"
 #include "packet.h"
+#include "socket.h"
 #include "user.h"
 
 using namespace std;
@@ -448,7 +448,7 @@ bool COscarService::Initialize()
   }
 
   ChangeStatus(STATUS_CONNECTED);
-  Licq::SrvSocket* s = new Licq::SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
+  SrvSocket* s = new SrvSocket(Licq::gUserManager.ownerUserId(LICQ_PPID));
   gLog.info(tr("Connecting to separate server for service 0x%02X."), myFam);
   if (gLicqDaemon->GetProxy() == NULL)
   {

@@ -536,7 +536,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 void CMSN::SendPacket(CMSNPacket *p)
 {
   Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
-  Licq::SrvSocket* sock = static_cast<Licq::SrvSocket*>(s);
+  Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
   assert(sock != NULL);
   if (!sock->SendRaw(p->getBuffer()))
     MSNLogoff(true);
@@ -568,7 +568,7 @@ void CMSN::Logon(unsigned status, string host, int port)
       port = o->serverPort();
   }
 
-  Licq::SrvSocket* sock = new Licq::SrvSocket(myOwnerId);
+  Licq::TCPSocket* sock = new Licq::TCPSocket(myOwnerId);
   gLog.info("Server found at %s:%d", host.c_str(), port);
 
   if (!sock->connectTo(host, port))

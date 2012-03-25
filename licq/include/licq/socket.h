@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -275,24 +275,6 @@ protected:
   void* m_p_SSL;
   pthread_mutex_t mutex_ssl;
   int myChannel;
-};
-
-
-class SrvSocket : public INetSocket
-{
-public:
-  SrvSocket(const UserId& userId);
-  virtual ~SrvSocket();
-
-  // Abstract base class overloads
-  virtual bool Send(Buffer* b)
-    { return SendPacket(b); }
-  virtual bool Recv()
-    { return RecvPacket(); }
-
-  // Functions specific to Server TCP communication
-  bool SendPacket(Buffer* b);
-  bool RecvPacket();
 };
 
 

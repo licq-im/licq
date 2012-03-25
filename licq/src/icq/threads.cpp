@@ -28,7 +28,6 @@
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
 #include <licq/pluginsignal.h>
-#include <licq/socket.h>
 #include <licq/logging/log.h>
 
 #include "../daemon.h"
@@ -41,6 +40,7 @@
 #include "defines.h"
 #include "oscarservice.h"
 #include "packet.h"
+#include "socket.h"
 #include "user.h"
 
 #define MAX_CONNECTS  256
@@ -775,7 +775,7 @@ void* LicqIcq::MonitorSockets_func()
       if (nCurrentSocket == gIcqProtocol.m_nTCPSrvSocketDesc)
       {
         DEBUG_THREADS("[MonitorSockets_tep] Data on TCP server socket.\n");
-        Licq::SrvSocket* srvTCP = dynamic_cast<Licq::SrvSocket*>(s);
+        SrvSocket* srvTCP = dynamic_cast<SrvSocket*>(s);
         if (srvTCP == NULL)
         {
           gLog.warning(tr("Invalid server socket in set."));
@@ -813,7 +813,7 @@ void* LicqIcq::MonitorSockets_func()
       {
         DEBUG_THREADS("[MonitorSockets_tep] Data on BART service socket.\n");
         COscarService *svc = gIcqProtocol.m_xBARTService;
-        Licq::SrvSocket* sock_svc = dynamic_cast<Licq::SrvSocket*>(s);
+        SrvSocket* sock_svc = dynamic_cast<SrvSocket*>(s);
         if (sock_svc == NULL)
         {
           gLog.warning(tr("Invalid BART service socket in set."));
