@@ -21,7 +21,7 @@
  * These functions attempt to identify the user client based on published
  * capabilities and signatures
  *
- * Most of this is taken from Miranda IcqOscar protocol 0.9.25
+ * Most of this is taken from Miranda IcqOscar protocol 0.9.47
  */
 
 #include "icq.h"
@@ -241,6 +241,13 @@ static string detectFromCapSign(const char* caps, int capSize, unsigned ts1, uns
     else if (memcmp(cap, "\x7A\x7B\x7C\x7D\x7E\x7F\x0A\x03\x0B\x04\x01\x53", 12) == 0)
     {
       buf << "QIP 2010";
+      if (ts1 != 0)
+        buf << " (" << ts1 << ')';
+      return buf.str();
+    }
+    else if (memcmp(cap, "\x7F\x7F\x7C\x7D\x7E\x7F\x0A\x03\x0B\x04\x01\x53", 12) == 0)
+    {
+      buf << "QIP 2012";
       if (ts1 != 0)
         buf << " (" << ts1 << ')';
       return buf.str();
