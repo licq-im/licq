@@ -304,11 +304,11 @@ void HistoryView::addMsg(bool isReceiver, bool fromHistory,
   switch (myMsgStyle)
   {
     case 0:
-      s = QString("%1<font color=\"%2\"><b>%3%4 [%5] %6:</b></font><br>")
+      s = QString("%1<font color=\"%2\"><b>%3[%4] %5:</b></font><br>")
           .arg(anchor)
           .arg(color)
-          .arg(eventDescription)
-          .arg(dateString)
+          .arg(dateString.isEmpty() && eventDescription.isEmpty() ? "" :
+              QString("%1%2").arg(eventDescription).arg(dateString))
           .arg(flags)
           .arg(contactName);
       s.append(QString("<font color=\"%1\">%2</font>")
@@ -316,11 +316,11 @@ void HistoryView::addMsg(bool isReceiver, bool fromHistory,
           .arg(messageText));
       break;
     case 1:
-      s = QString("%1<font color=\"%2\"><b>(%3%4) [%5] %6: </b></font>")
+      s = QString("%1<font color=\"%2\"><b>%3[%4] %5: </b></font>")
           .arg(anchor)
           .arg(color)
-          .arg(eventDescription)
-          .arg(dateString)
+          .arg(dateString.isEmpty() && eventDescription.isEmpty() ? "" :
+              QString("(%1%2) ").arg(eventDescription).arg(dateString))
           .arg(flags)
           .arg(contactName);
       s.append(QString("<font color=\"%1\">%2</font>")
@@ -328,23 +328,23 @@ void HistoryView::addMsg(bool isReceiver, bool fromHistory,
           .arg(messageText));
       break;
     case 2:
-      s = QString("%1<font color=\"%2\"><b>%3%4 - %5: </b></font>")
+      s = QString("%1<font color=\"%2\"><b>%3%4: </b></font>")
           .arg(anchor)
           .arg(color)
-          .arg(eventDescription)
-          .arg(dateString)
+          .arg(dateString.isEmpty() && eventDescription.isEmpty() ? "" :
+              QString("%1%2 - ").arg(eventDescription).arg(dateString))
           .arg(contactName);
       s.append(QString("<font color=\"%1\">%2</font>")
           .arg(color)
           .arg(messageText));
       break;
     case 3:
-      s = QString("%1<table border=\"1\"><tr><td><b><font color=\"%2\">%3%4</font><b><td><b><font color=\"%5\">%6</font></b></font></td>")
+      s = QString("%1<table border=\"1\"><tr>%3<td><b><font color=\"%2\">%4</font></b></font></td>")
           .arg(anchor)
           .arg(color)
-          .arg(eventDescription)
-          .arg(dateString)
-          .arg(color)
+          .arg(dateString.isEmpty() && eventDescription.isEmpty() ? "" :
+              QString("<td><b><font color=\"%2\">%3%4</font></b></td>")
+              .arg(color).arg(eventDescription).arg(dateString))
           .arg(contactName);
       s.append(QString("<td><font color=\"%1\">%2</font></td></tr></table>")
           .arg(color)
