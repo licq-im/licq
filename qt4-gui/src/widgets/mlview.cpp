@@ -58,37 +58,32 @@ void MLView::append(const QString& s, bool richText)
   QScrollBar* scrollBar = verticalScrollBar();
   bool wasAtEnd = (scrollBar->value() == scrollBar->maximum());
 
-  QTextCursor tc = textCursor();
-  int anchor = tc.anchor();
-  int pos = tc.position();
-
   QTextDocument* doc = document();
-  if (doc->maximumBlockCount() > 0 && doc->blockCount() == doc->maximumBlockCount())
-  {
-    // The insert below will delete the first block so recalculate cursor position
-    QTextBlock first = doc->firstBlock();
-    anchor -= first.length();
-    if (anchor < 0)
-      anchor = 0;
-    pos -= first.length();
-    if (pos < 0)
-      pos = 0;
-  }
-
+  QTextCursor tc(doc);
   tc.movePosition(QTextCursor::End);
   if (richText)
   {
-    tc.insertBlock(tc.blockFormat(), tc.charFormat());
+    bool firstBlock = doc->isEmpty();
+
+    tc.beginEditBlock();
+    if (!s.startsWith("<hr>"))
+      tc.insertBlock(tc.blockFormat(), tc.charFormat());
     tc.insertHtml(s);
+    tc.endEditBlock();
+
+    if (firstBlock)
+    {
+      // We just added the first real block, remove the default dummy block so
+      // we don't get an extra empty line at the top
+      tc.movePosition(QTextCursor::Start);
+      tc.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor, 1);
+      tc.removeSelectedText();
+    }
   }
   else
   {
     tc.insertText(s);
   }
-
-  // Restore selection (if any)
-  tc.setPosition(anchor, QTextCursor::MoveAnchor);
-  tc.setPosition(pos, QTextCursor::KeepAnchor);
 
   // Scroll window down to tail output but only if user hasn't moved it
   if (wasAtEnd)
