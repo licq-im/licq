@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ void Config::Chat::loadConfiguration(Licq::IniFile& iniFile)
   iniFile.get("ShowUserPic", myShowUserPic, false);
   iniFile.get("ShowUserPicHidden", myShowUserPicHidden, false);
   iniFile.get("NoSoundInActiveChat", myNoSoundInActiveChat, false);
+  iniFile.get("ChatDateHeader", myChatDateHeader, true);
   GET_QSTRING("DateFormat", myChatDateFormat, "hh:mm:ss");
   iniFile.get("HistoryMessageStyle", myHistMsgStyle, 0);
   iniFile.get("HistoryVerticalSpacing", myHistVertSpacing, true);
@@ -145,6 +146,7 @@ void Config::Chat::saveConfiguration(Licq::IniFile& iniFile) const
   iniFile.set("ShowUserPic", myShowUserPic);
   iniFile.set("ShowUserPicHidden", myShowUserPicHidden);
   iniFile.set("NoSoundInActiveChat", myNoSoundInActiveChat);
+  iniFile.set("ChatDateHeader", myChatDateHeader);
 
   iniFile.set("ChatMessageStyle", myChatMsgStyle);
   iniFile.set("ChatVerticalSpacing", myChatVertSpacing);
@@ -421,6 +423,14 @@ void Config::Chat::setNoSoundInActiveChat(bool noSoundInActiveChat)
     return;
 
   myNoSoundInActiveChat = noSoundInActiveChat;
+}
+
+void Config::Chat::setChatDateHeader(bool b)
+{
+  if (b == myChatDateHeader)
+    return;
+
+  myChatDateHeader = b;
 }
 
 void Config::Chat::setChatMsgStyle(int chatMsgStyle)

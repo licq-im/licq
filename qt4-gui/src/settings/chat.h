@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,6 +128,7 @@ private:
   QLabel* myChatDateFormatLabel;
   QComboBox* myChatStyleCombo;
   QComboBox* myChatDateFormatCombo;
+  QCheckBox* myChatDateHeaderCheck;
   QCheckBox* myChatVertSpacingCheck;
   QCheckBox* myChatLineBreakCheck;
   QLabel* myHistoryCountLabel1;

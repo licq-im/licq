@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ HistoryView::HistoryView(bool historyMode, const Licq::UserId& userId, QWidget* 
   {
     setChatConfig(chatConfig->chatMsgStyle(), chatConfig->chatDateFormat(),
         chatConfig->chatVertSpacing(), chatConfig->chatAppendLineBreak(),
-        chatConfig->showNotices());
+        chatConfig->showNotices(), chatConfig->chatDateHeader());
   }
 
   setColors();
@@ -99,10 +99,11 @@ void HistoryView::setHistoryConfig(int msgStyle,
   myReverse = reverse;
   myAppendLineBreak = false;
   myShowNotices = false;
+  myAddDateHeader = false;
 }
 
 void HistoryView::setChatConfig(int msgStyle, const QString& dateFormat,
-    bool extraSpacing, bool appendLineBreak, bool showNotices)
+    bool extraSpacing, bool appendLineBreak, bool showNotices, bool dateHeader)
 {
   myUseBuffer = false;
   myMsgStyle = msgStyle;
@@ -111,6 +112,7 @@ void HistoryView::setChatConfig(int msgStyle, const QString& dateFormat,
   myReverse = false;
   myAppendLineBreak = appendLineBreak;
   myShowNotices = showNotices;
+  myAddDateHeader = dateHeader;
 }
 
 void HistoryView::setColors(const QString& back, const QString& rcv, const QString& snt,
@@ -155,6 +157,7 @@ void HistoryView::setOwner(const Licq::UserId& userId)
 void HistoryView::clear()
 {
   MLView::clear();
+  myLastDate = QDate();
 
   myBuffer = "";
 
@@ -190,7 +193,7 @@ void HistoryView::updateContent()
   setText(myBuffer);
 }
 
-void HistoryView::internalAddMsg(QString s)
+void HistoryView::internalAddMsg(QString s, const QDate& date)
 {
   if (myExtraSpacing)
   {
@@ -212,13 +215,21 @@ void HistoryView::internalAddMsg(QString s)
     }
   }
 
+  if (myAddDateHeader && date != myLastDate)
+  {
+    s.prepend(QString("<hr><center><b>%1</b></center>")
+        .arg(date.toString(Qt::DefaultLocaleLongDate)));
+  }
+  else if (myAppendLineBreak)
+  {
+    s.prepend("<hr>");
+  }
+  myLastDate = date;
+
   if (myUseBuffer)
   {
     if (!myExtraSpacing && myMsgStyle != 5)
       s.append("<br>");
-
-    if (myAppendLineBreak)
-      s.append("<hr>");
 
     if (myReverse)
       myBuffer.prepend(s);
@@ -227,9 +238,6 @@ void HistoryView::internalAddMsg(QString s)
   }
   else
   {
-    if (myAppendLineBreak)
-      s.append("<hr>");
-
     append(s);
   }
 }
@@ -374,7 +382,7 @@ void HistoryView::addMsg(bool isReceiver, bool fromHistory,
       break;
   }
 
-  internalAddMsg(s);
+  internalAddMsg(s, date.date());
 }
 
 void HistoryView::addMsg(const Licq::UserEvent* event, const Licq::UserId& uid)
@@ -494,5 +502,5 @@ void HistoryView::addNotice(const QDateTime& dt, QString messageText)
       break;
   }
 
-  internalAddMsg(s);
+  internalAddMsg(s, dt.date());
 }

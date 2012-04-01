@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #define HISTORYVIEW_H
 
 #include "mlview.h"
+
+#include <QDate>
 
 #include <licq/userid.h>
 
@@ -52,7 +54,7 @@ public:
   void setHistoryConfig(int msgStyle, const QString& dateFormat,
       bool extraSpacing, bool reverse);
   void setChatConfig(int msgStyle, const QString& dateFormat,
-      bool extraSpacing, bool appendLineBreak, bool showNotices);
+      bool extraSpacing, bool appendLineBreak, bool showNotices, bool dateHeader);
   void setColors(const QString& back, const QString& rcv, const QString& snt,
       const QString& rcvHist = QString(), const QString& sntHist = QString(),
       const QString& notice = QString());
@@ -83,7 +85,7 @@ signals:
   void messageAdded();
 
 private:
-  void internalAddMsg(QString s);
+  void internalAddMsg(QString s, const QDate& date);
 
   Licq::UserId myUserId;
   int myMsgStyle;
@@ -93,12 +95,14 @@ private:
   bool myAppendLineBreak;
   bool myUseBuffer;
   bool myShowNotices;
+  bool myAddDateHeader;
   QString myColorRcvHistory;
   QString myColorSntHistory;
   QString myColorRcv;
   QString myColorSnt;
   QString myColorNotice;
   QString myBuffer;
+  QDate myLastDate;
 };
 
 } // namespace LicqQtGui

@@ -285,6 +285,11 @@ QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
   myChatLayoutDateFormat->addWidget(myChatDateFormatCombo);
   myChatDispLayout->addLayout(myChatLayoutDateFormat);
 
+  myChatDateHeaderCheck = new QCheckBox(tr("Use header to separate days"));
+  connect(myChatDateHeaderCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
+  myChatDateHeaderCheck->setToolTip(tr("Add a separating header before first message each day"));
+  myChatDispLayout->addWidget(myChatDateHeaderCheck);
+
   myChatVertSpacingCheck = new QCheckBox(tr("Insert vertical spacing"));
   connect(myChatVertSpacingCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
   myChatVertSpacingCheck->setToolTip(tr("Insert extra space between messages."));
@@ -481,7 +486,8 @@ void Settings::Chat::updatePreviews()
   };
 
   myChatView->setChatConfig(myChatStyleCombo->currentIndex(), myChatDateFormatCombo->currentText(),
-      myChatVertSpacingCheck->isChecked(), myChatLineBreakCheck->isChecked(), myShowNoticesCheck->isChecked());
+      myChatVertSpacingCheck->isChecked(), myChatLineBreakCheck->isChecked(),
+      myShowNoticesCheck->isChecked(), myChatDateHeaderCheck->isChecked());
 
   myChatView->setColors(myColorChatBkgButton->colorName(), myColorRcvButton->colorName(),
       myColorSntButton->colorName(), myColorRcvHistoryButton->colorName(),
@@ -496,8 +502,12 @@ void Settings::Chat::updatePreviews()
   myHistoryView->clear();
 
   QDateTime msgDate = date;
+  msgDate = msgDate.addDays(-1);
   for (unsigned int i = 0; i<7; i++)
   {
+    if (i == 2)
+      msgDate = msgDate.addDays(1);
+
     if (i < 2 && static_cast<unsigned int>(myHistoryCountSpin->value()) < 2-i)
       continue;
 
@@ -534,6 +544,7 @@ void Settings::Chat::load()
   mySendFromClipboardCheck->setChecked(chatConfig->sendFromClipboard());
   myMsgChatViewCheck->setChecked(chatConfig->msgChatView());
   myChatDateFormatCombo->lineEdit()->setText(chatConfig->chatDateFormat());
+  myChatDateHeaderCheck->setChecked(chatConfig->chatDateHeader());
   myChatVertSpacingCheck->setChecked(chatConfig->chatVertSpacing());
   myChatLineBreakCheck->setChecked(chatConfig->chatAppendLineBreak());
   myChatStyleCombo->setCurrentIndex(chatConfig->chatMsgStyle());
@@ -596,6 +607,7 @@ void Settings::Chat::apply()
   chatConfig->setAutoClose(myAutoCloseCheck->isChecked());
   chatConfig->setSendFromClipboard(mySendFromClipboardCheck->isChecked());
   chatConfig->setMsgChatView(myMsgChatViewCheck->isChecked());
+  chatConfig->setChatDateHeader(myChatDateHeaderCheck->isChecked());
   chatConfig->setChatVertSpacing(myChatVertSpacingCheck->isChecked());
   chatConfig->setChatAppendLineBreak(myChatLineBreakCheck->isChecked());
   chatConfig->setChatMsgStyle(myChatStyleCombo->currentIndex());

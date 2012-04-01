@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ public:
   bool histVertSpacing() const { return myHistVertSpacing; }
   bool reverseHistory() const { return myReverseHistory; }
   bool noSoundInActiveChat() const { return myNoSoundInActiveChat; }
+  bool chatDateHeader() const { return myChatDateHeader; }
   int chatMsgStyle() const { return myChatMsgStyle; }
   int histMsgStyle() const { return myHistMsgStyle; }
   const QString& chatDateFormat() const { return myChatDateFormat; }
@@ -154,6 +155,7 @@ public slots:
   void setHistVertSpacing(bool histVertSpacing);
   void setReverseHistory(bool reverseHistory);
   void setNoSoundInActiveChat(bool noSoundInActiveChat);
+  void setChatDateHeader(bool chatDateHeader);
   void setChatMsgStyle(int chatMsgStyle);
   void setHistMsgStyle(int histMsgStyle);
   void setChatDateFormat(const QString& chatDateFormat);
@@ -210,6 +212,7 @@ private:
   bool myPopupAutoResponse;
   bool myUseCustomUrlBrowser;
   bool myNoSoundInActiveChat;
+  bool myChatDateHeader;
 
   int myChatMsgStyle;
   int myHistMsgStyle;
