@@ -75,6 +75,8 @@ void UserHistory::setFile(const string& filename, const string& description)
   { \
     while ((szResult = fgets(sz, sizeof(sz), f)) != NULL && sz[0] == ':') \
       dest.append(sz+1); \
+    /* Don't include the final line break */ \
+    dest.resize(dest.size() - 1); \
   }
 
 #define SKIP_VALID_LINES \
