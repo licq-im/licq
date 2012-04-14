@@ -84,6 +84,7 @@ public:
 
   /**
    * Add a user to the contact list
+   * If user already exist as "not in list" it will be added if permanent is set
    *
    * @param userId User to add
    * @param permanent True if user should be added permanently to list and saved to disk
@@ -93,17 +94,6 @@ public:
    */
   virtual bool addUser(const UserId& userId, bool permanent = true,
       bool addToServer = true, unsigned short groupId = 0) = 0;
-
-  /**
-   * Add a temporary user to the list
-   * Will change the user to permanent and optionally add to server side list
-   *
-   * @param userId User to add
-   * @param addToServer True if server should be notified
-   * @param groupId Initial group to place user in or zero for no group
-   * @return True if user exists and was temporary, otherwise false
-   */
-  virtual bool makeUserPermanent(const UserId& userId, bool addToServer = true, int groupId = 0) = 0;
 
   /**
    * Remove a user from the list

@@ -493,13 +493,8 @@ void User::Private::setPermanent()
       gLog.error(tr("Error opening '%s' for writing."), myConf.filename().c_str());
   }
 
-
   // Save all the info now
   myUser->save(SaveAll);
-
-  // Notify the plugins of the change
-  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
-      PluginSignal::UserSettings, myId, 0));
 }
 
 void User::Private::setDefaults()

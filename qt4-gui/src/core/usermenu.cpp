@@ -416,7 +416,7 @@ void UserMenu::customAutoResponse()
 
 void UserMenu::makePermanent()
 {
-  Licq::gUserManager.makeUserPermanent(myUserId);
+  Licq::gUserManager.addUser(myUserId, true, true);
 }
 
 void UserMenu::toggleFloaty()

@@ -451,29 +451,48 @@ bool UserManager::addUser(const UserId& uid,
 
   myUserListMutex.lockWrite();
 
-  // Make sure user isn't already in the list
+  User* user;
+  bool created;
   UserMap::const_iterator iter = myUsers.find(uid);
   if (iter != myUsers.end())
   {
-    myUserListMutex.unlockWrite();
-    return false;
+    user = iter->second;
+    created = false;
+
+    // If user already is in list only continue if it should be made permanent
+    if (!user->NotInList() || !permanent)
+    {
+      myUserListMutex.unlockWrite();
+      return false;
+    }
+  }
+  else
+  {
+    user = createUser(uid, !permanent);
+    created = true;
   }
 
-  User* pUser = createUser(uid, !permanent);
-  pUser->lockWrite();
+  user->lockWrite();
 
   if (permanent)
   {
     // Set this user to be on the contact list
-    pUser->myPrivate->addToContactList();
-    //pUser->SetEnableSave(true);
-    pUser->save(User::SaveAll);
+    if (created)
+    {
+      user->myPrivate->addToContactList();
+      user->save(User::SaveAll);
+    }
+    else
+    {
+      user->myPrivate->setPermanent();
+    }
   }
 
   // Store the user in the lookup map
-  myUsers[uid] = pUser;
+  if (created)
+    myUsers[uid] = user;
 
-  pUser->unlockWrite();
+  user->unlockWrite();
 
   if (permanent)
   {
@@ -486,8 +505,12 @@ bool UserManager::addUser(const UserId& uid,
 
   // Notify plugins that user was added
   // Send this before adding user to server side as protocol code may generate updated signals
-  gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
-      PluginSignal::ListUserAdded, uid, groupId));
+  if (created)
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
+        PluginSignal::ListUserAdded, uid, groupId));
+  else if (permanent)
+    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
+        PluginSignal::UserSettings, uid, 0));
 
   // Set initial group membership but let add signal below update the server
   if (groupId != 0)
@@ -496,43 +519,6 @@ bool UserManager::addUser(const UserId& uid,
   // Add user to server side list
   if (permanent && addToServer)
     gProtocolManager.addUser(uid, groupId);
-
-  return true;
-}
-
-bool UserManager::makeUserPermanent(const UserId& userId, bool addToServer,
-    int groupId)
-{
-  if (!userId.isValid())
-    return false;
-
-  if (isOwner(userId))
-    return false;
-
-  {
-    Licq::UserWriteGuard user(userId);
-    if (!user.isLocked())
-      return false;
-
-    // Check if user is already permanent
-    if (!user->NotInList())
-      return false;
-
-    user->myPrivate->setPermanent();
-  }
-
-  // Save local user list to disk
-  UserId ownerId = ownerUserId(userId.protocolId());
-  if (ownerId.isValid())
-    saveUserList(ownerId);
-
-  // Add user to server side list
-  if (addToServer)
-    gProtocolManager.addUser(userId, groupId);
-
-  // Set initial group membership, also sets server group for user
-  if (groupId != 0)
-    setUserInGroup(userId, groupId, true, addToServer);
 
   return true;
 }
