@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,10 +101,9 @@ public:
    *
    * @param fcn Tab to show
    * @param userId Contact id
-   * @param toggle True to close dialog if already open
    * @param updateNow True to make the dialog contents update
    */
-  void showInfoDialog(int fcn, const Licq::UserId& userId, bool toggle = false, bool updateNow = false);
+  void showInfoDialog(int fcn, const Licq::UserId& userId, bool updateNow = false);
 
   /**
    * Show contact view event dialog (used when chat mode is disabled)

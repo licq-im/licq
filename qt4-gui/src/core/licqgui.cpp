@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -640,7 +640,7 @@ bool LicqGui::removeUserFromList(const Licq::UserId& userId, QWidget* parent)
   return false;
 }
 
-void LicqGui::showInfoDialog(int /* fcn */, const Licq::UserId& userId, bool toggle, bool updateNow)
+void LicqGui::showInfoDialog(int /* fcn */, const Licq::UserId& userId, bool updateNow)
 {
   if (!userId.isValid())
     return;
@@ -659,30 +659,17 @@ void LicqGui::showInfoDialog(int /* fcn */, const Licq::UserId& userId, bool tog
 
   UserDlg::UserPage tab = UserDlg::GeneralPage;
 
-  if (f != NULL)
-  {
-    if (toggle && f->currentPage() == tab)
-    {
-      delete f; // will notify us about deletion
-      return;
-    }
-    else
-    {
-      f->show();
-      f->raise();
-    }
-  }
-  else
+  if (f == NULL)
   {
     f = new UserDlg(userId);
     connect(f, SIGNAL(finished(UserDlg*)), SLOT(userDlgFinished(UserDlg*)));
-    f->show();
     myUserDlgList.append(f);
   }
 
   f->showPage(tab);
   f->show();
   f->raise();
+  f->activateWindow();
   if (updateNow)
     f->retrieveSettings();
 }

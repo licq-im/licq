@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -428,7 +428,7 @@ void SearchUserDlg::viewInfo()
     Licq::UserId userId = current->data(0, Qt::UserRole).value<Licq::UserId>();
 
     Licq::gUserManager.addUser(userId, false);
-    gLicqGui->showInfoDialog(mnuUserGeneral, userId, false, true);
+    gLicqGui->showInfoDialog(mnuUserGeneral, userId, true);
   }
 }
 

@@ -390,7 +390,7 @@ void UserEventCommon::showHistory()
 
 void UserEventCommon::showUserInfo()
 {
-  gLicqGui->showInfoDialog(mnuUserGeneral, myUsers.front(), true);
+  gLicqGui->showInfoDialog(mnuUserGeneral, myUsers.front());
 }
 
 void UserEventCommon::switchSecurity()
