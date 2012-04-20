@@ -28,7 +28,6 @@
 
 #include <licq/plugin/generalplugin.h>
 #include <licq/plugin/protocolplugin.h>
-#include <licq/thread/condition.h>
 #include <licq/thread/mutex.h>
 
 #include "../utils/dynamiclibrary.h"
@@ -69,20 +68,18 @@ public:
   void pluginHasExited(unsigned short id);
 
   /**
-   * Wait for a plugin to exit.
-   *
-   * @param timeout If a plugin has not exited in @a timeout seconds, a
-   *        Licq::Exception is thrown.
-   * @throw Licq::Exception if there are no plugins to wait for or if the
-   *        timeout expires before a plugin exits.
-   * @return The id of the plugin that exited, or DaemonId for the daemon.
+   * Remove a plugin that has exited
+   * Called by main thread when notified about a plugin termination
    */
-  unsigned short waitForPluginExit(unsigned int timeout = 0);
+  void reapPlugin();
 
   /// Cancel all plugins' threads.
   void cancelAllPlugins();
 
   size_t getGeneralPluginsCount() const;
+
+  /// Get number of plugins (general and protocol)
+  size_t pluginCount() const;
 
   /**
    * Create a protocol specific user object
@@ -148,7 +145,6 @@ private:
   mutable Licq::Mutex myProtocolPluginsMutex;
 
   Licq::Mutex myExitListMutex;
-  Licq::Condition myExitListSignal;
   std::queue<unsigned short> myExitList;
 };
 

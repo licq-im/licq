@@ -32,7 +32,7 @@ public:
   DaemonDummy() { }
 
   // From Licq::Daemon
-  pthread_t* Shutdown() { return NULL; }
+  void Shutdown() { /* Empty */ }
   const char* Version() const { return NULL; }
   void SaveConf() { }
   bool addUserEvent(Licq::User*, Licq::UserEvent*) { return false; }

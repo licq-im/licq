@@ -27,6 +27,7 @@
 
 #include <licq/plugin/generalplugin.h>
 #include <licq/plugin/protocolplugin.h>
+#include <licq/pipe.h>
 
 extern char **global_argv;
 extern int global_argc;
@@ -50,11 +51,23 @@ public:
   int Main();
   const char *Version();
 
-  void ShutdownPlugins();
+  void shutdown();
 
   void PrintUsage();
   bool Install();
   void SaveLoadedPlugins();
+
+  // Notifications that can be sent to main thread
+  static const char NotifyReapPlugin = 'P';
+  static const char NotifyShuttingDown = 'X';
+
+  /**
+   * Send a notification to the main thread
+   *
+   * @param c A character
+   */
+  void notify(char c)
+  { myPipe.putChar(c); }
 
 protected:
   bool upgradeLicq128(Licq::IniFile& licqConf);
@@ -66,6 +79,7 @@ protected:
 private:
   boost::shared_ptr<LicqDaemon::StreamLogSink> myConsoleLog;
   int myConsoleLogLevel;
+  Licq::Pipe myPipe;
 };
 
 #endif

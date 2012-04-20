@@ -79,8 +79,11 @@ public:
   void releaseLicqConf()
   { myLicqConfMutex.unlock(); }
 
+  /// Notify main thread that a plugin has exited
+  void notifyPluginExited();
+
   // From Licq::Daemon
-  pthread_t* Shutdown();
+  void Shutdown();
   const char* Version() const;
   void SaveConf();
   bool addUserEvent(Licq::User* u, Licq::UserEvent* e);

@@ -21,7 +21,6 @@
 #include "gettext.h"
 
 #include <licq/logging/log.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/exceptions/exception.h>
 #include <licq/logging/logservice.h>
@@ -41,6 +40,7 @@
 #include <glob.h>
 
 #include "../contactlist/usermanager.h"
+#include "../daemon.h"
 #include "../utils/dynamiclibrary.h"
 #include "generalplugin.h"
 #include "plugin.h"
@@ -55,7 +55,6 @@ using Licq::ProtocolPlugin;
 using Licq::StringList;
 using Licq::User;
 using Licq::UserId;
-using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gLogService;
 using namespace LicqDaemon;
@@ -331,7 +330,7 @@ void PluginManager::pluginHasExited(unsigned short id)
 {
   MutexLocker locker(myExitListMutex);
   myExitList.push(id);
-  myExitListSignal.signal();
+  gDaemon.notifyPluginExited();
 }
 
 void PluginManager::deleteGeneralPlugin(GeneralPlugin* plugin)
@@ -364,37 +363,13 @@ void PluginManager::deleteProtocolPlugin(ProtocolPlugin* plugin)
   //   pointer go out of scope and delete itself.
 }
 
-unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
+void PluginManager::reapPlugin()
 {
+  unsigned short exitId = myExitList.front();
+  myExitList.pop();
+
   MutexLocker generalLocker(myGeneralPluginsMutex);
   MutexLocker protocolLocker(myProtocolPluginsMutex);
-
-  if (myGeneralPlugins.empty() && myProtocolPlugins.empty())
-    LICQ_THROW(Licq::Exception());
-
-  protocolLocker.unlock();
-  generalLocker.unlock();
-
-  unsigned short exitId;
-  {
-    MutexLocker exitListLocker(myExitListMutex);
-    while (myExitList.empty())
-    {
-      if (timeout)
-      {
-        if (!myExitListSignal.wait(myExitListMutex, timeout * 1000))
-          LICQ_THROW(Licq::Exception());
-      }
-      else
-        myExitListSignal.wait(myExitListMutex);
-    }
-
-    exitId = myExitList.front();
-    myExitList.pop();
-  }
-
-  generalLocker.relock();
-  protocolLocker.relock();
 
   // Check general plugins first
   for (Licq::GeneralPluginsList::iterator plugin = myGeneralPlugins.begin();
@@ -406,7 +381,7 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
       gLog.info(tr("Plugin %s exited with code %d"),
           (*plugin)->name().c_str(), result);
       myGeneralPlugins.erase(plugin);
-      return exitId;
+      return;
     }
   }
   generalLocker.unlock();
@@ -432,12 +407,11 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
       pushPluginSignal(new Licq::PluginSignal(
           Licq::PluginSignal::SignalRemoveProtocol, protocolId));
 
-      return exitId;
+      return;
     }
   }
 
   gLog.error(tr("Invalid plugin id (%d) in exit signal"), exitId);
-  return 0;
 }
 
 void PluginManager::cancelAllPlugins()
@@ -465,6 +439,13 @@ size_t PluginManager::getGeneralPluginsCount() const
 {
   MutexLocker locker(myGeneralPluginsMutex);
   return myGeneralPlugins.size();
+}
+
+size_t PluginManager::pluginCount() const
+{
+  MutexLocker generalLocker(myGeneralPluginsMutex);
+  MutexLocker protocolLocker(myProtocolPluginsMutex);
+  return myGeneralPlugins.size() + myProtocolPlugins.size();
 }
 
 void PluginManager::

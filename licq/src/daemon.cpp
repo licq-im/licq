@@ -167,10 +167,10 @@ const char* Daemon::Version() const
   return licq->Version();
 }
 
-pthread_t* Daemon::Shutdown()
+void Daemon::Shutdown()
 {
   if (myShuttingDown)
-    return(&thread_shutdown);
+    return;
   myShuttingDown = true;
   // Small race condition here if multiple plugins call shutdown at the same time
 
@@ -178,12 +178,10 @@ pthread_t* Daemon::Shutdown()
   gLog.info(tr("Shutting down daemon"));
 
   // Send shutdown signal to all the plugins
-  licq->ShutdownPlugins();
+  licq->shutdown();
 
   // Send shutdown signal to ICQ plugin
   LicqIcq::gIcqProtocol.shutdown();
-
-  return (&thread_shutdown);
 }
 
 void Daemon::SaveConf()
@@ -424,4 +422,9 @@ void Daemon::autoLogon()
   map<UserId, unsigned>::const_iterator iter;
   for (iter = logonStatuses.begin(); iter != logonStatuses.end(); ++iter)
     Licq::gProtocolManager.setStatus(iter->first, iter->second);
+}
+
+void Daemon::notifyPluginExited()
+{
+  licq->notify(CLicq::NotifyReapPlugin);
 }

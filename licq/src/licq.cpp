@@ -21,6 +21,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/scoped_array.hpp>
+#include <cassert>
 #include <cerrno>
 #include <csignal>
 #include <cstdlib>
@@ -30,6 +31,7 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <iostream>
+#include <poll.h>
 #include <pwd.h>
 #include <string>
 #include <sys/stat.h>
@@ -785,15 +787,20 @@ ProtocolPlugin::Ptr CLicq::LoadProtoPlugin(const string& name, bool keep)
 
 int CLicq::Main()
 {
-  int nResult = 0;
-
   if (gPluginManager.getGeneralPluginsCount() == 0)
   {
     gLog.warning(tr("No plugins specified on the command-line (-p option).\n"
                     "See the README for more information."));
-    return nResult;
+    return 0;
   }
 
+  // Setup file descriptors to manage
+  struct pollfd fds[1];
+  int numfds = 1;
+  fds[0].fd = myPipe.getReadFd();
+  fds[0].events = POLLIN;
+
+  // Init the fifo
   gFifo.initialize();
 
   // Run the plugins
@@ -806,23 +813,44 @@ int CLicq::Main()
   // Logon all protocols according to owner configuration
   gDaemon.autoLogon();
 
-  try
+  bool shuttingDown = false;
+  int timeout = -1;
+  while (true)
   {
-    while (true)
+    int ret = poll(fds, numfds, timeout);
+    if (ret < 0)
     {
-      gPluginManager.waitForPluginExit(
-          gDaemon.shuttingDown() ? PluginManager::MAX_WAIT_PLUGIN : 0);
+      // Interrupted by a signal is ok, anything else is bad
+      assert(errno == EINTR);
+      continue;
     }
-  }
-  catch (const Licq::Exception&)
-  {
-    // Empty
+
+    if (shuttingDown && ret == 0)
+      break;
+
+    if (fds[0].revents & POLLIN)
+    {
+      char c = myPipe.getChar();
+      if (c == NotifyReapPlugin)
+      {
+        gPluginManager.reapPlugin();
+
+        // Exit when there are no plugins left running
+        if (gPluginManager.pluginCount() == 0)
+          break;
+      }
+
+      if (c == NotifyShuttingDown)
+      {
+        shuttingDown = true;
+        timeout = PluginManager::MAX_WAIT_PLUGIN * 1000;
+      }
+    }
   }
 
   gPluginManager.cancelAllPlugins();
 
-  pthread_t* t = gDaemon.Shutdown();
-  pthread_join(*t, NULL);
+  gDaemon.Shutdown();
 
   gUserManager.shutdown();
 
@@ -897,13 +925,15 @@ void CLicq::SaveLoadedPlugins()
 }
 
 
-void CLicq::ShutdownPlugins()
+void CLicq::shutdown()
 {
   // Save plugins
   if (gPluginManager.getGeneralPluginsCount() > 0)
     SaveLoadedPlugins();
 
   gPluginManager.shutdownAllPlugins();
+
+  notify(NotifyShuttingDown);
 }
 
 

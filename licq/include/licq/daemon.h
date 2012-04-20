@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ class UserId;
 class Daemon : private boost::noncopyable
 {
 public:
-  virtual pthread_t* Shutdown() = 0;
+  virtual void Shutdown() = 0;
   virtual const char* Version() const = 0;
   virtual void SaveConf() = 0;
 
