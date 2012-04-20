@@ -34,7 +34,6 @@
 #include "../daemon.h"
 #include "../gettext.h"
 #include "../licq.h"
-#include "../statistics.h"
 #include "buffer.h"
 #include "defines.h"
 #include "oscarservice.h"
@@ -659,7 +658,6 @@ void* LicqIcq::Ping_tep(void * /*p*/)
   while (true)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    LicqDaemon::gStatistics.flush();
     switch (gIcqProtocol.Status())
     {
     case STATUS_ONLINE:

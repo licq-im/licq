@@ -826,7 +826,7 @@ int CLicq::Main()
   gDaemon.autoLogon();
 
   bool shuttingDown = false;
-  int timeout = -1;
+  int timeout = 60 * 1000;
   while (true)
   {
     int ret = poll(fds, numfds, timeout);
@@ -839,6 +839,9 @@ int CLicq::Main()
 
     if (shuttingDown && ret == 0)
       break;
+
+    // Flush statistics data regulary
+    gStatistics.flush();
 
     if (fds[0].revents & POLLIN)
     {
