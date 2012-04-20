@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ public:
    * Process data received on fifo socket
    * Called by MonitorSockets_tep
    */
-  void process(const std::string& buf);
+  void process();
 
   // These are used directly by MonitorSockets_tep
   int fifo_fd;

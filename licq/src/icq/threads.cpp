@@ -32,7 +32,6 @@
 #include <licq/logging/log.h>
 
 #include "../daemon.h"
-#include "../fifo.h"
 #include "../gettext.h"
 #include "../licq.h"
 #include "../statistics.h"
@@ -708,14 +707,6 @@ void* LicqIcq::MonitorSockets_func()
     if (gIcqProtocol.myNewSocketPipe.getReadFd() >= l)
       l = gIcqProtocol.myNewSocketPipe.getReadFd() + 1;
 
-    // Add the fifo descriptor
-    if (LicqDaemon::gFifo.fifo_fd != -1)
-    {
-      FD_SET(LicqDaemon::gFifo.fifo_fd, &f);
-      if (LicqDaemon::gFifo.fifo_fd >= l)
-        l = LicqDaemon::gFifo.fifo_fd + 1;
-    }
-
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
 
     if (gIcqProtocol.m_xBARTService)
@@ -747,16 +738,6 @@ void* LicqIcq::MonitorSockets_func()
           DEBUG_THREADS("[MonitorSockets_tep] Exiting.\n");
           return NULL;
         }
-      }
-
-      // Fifo event ----------------------------------------------------------
-      if (nCurrentSocket == LicqDaemon::gFifo.fifo_fd)
-      {
-        DEBUG_THREADS("[MonitorSockets_tep] Data on FIFO.\n");
-        char buf[1024];
-        fgets(buf, 1024, LicqDaemon::gFifo.fifo_fs);
-        LicqDaemon::gFifo.process(buf);
-        continue;
       }
 
       Licq::INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);

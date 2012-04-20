@@ -985,7 +985,6 @@ Fifo::~Fifo()
 
 void Fifo::initialize()
 {
-#ifdef USE_FIFO
   string filename = gDaemon.baseDir() + "licq_fifo";
 
   // Open the fifo
@@ -1017,10 +1016,6 @@ void Fifo::initialize()
     else
       fifo_fs = fdopen(fifo_fd, "r");
   }
-#else
-  fifo_fs = NULL;
-  fifo_fd = -1;
-#endif
 }
 
 void Fifo::shutdown()
@@ -1032,15 +1027,13 @@ void Fifo::shutdown()
   }
 }
 
-void Fifo::process(const string& buf)
+void Fifo::process()
 {
-#ifdef USE_FIFO
+  char szBuf[1024];
+  fgets(szBuf, 1024, fifo_fs);
+
   int argc, index;
   const char* argv[MAX_ARGV];
-  char *szBuf = strdup(buf.c_str());
-
-  if( szBuf == NULL )
-    return ;
 
   gLog.info(tr("%sReceived string: %s"), L_FIFOxSTR, szBuf);
   line2argv(szBuf, argv, &argc, sizeof(argv) / sizeof(argv[0]) );
@@ -1060,8 +1053,4 @@ void Fifo::process(const string& buf)
         fifocmd_table[index].fnc(argc, argv);
       break;
   }
-  
-  free( szBuf );
-
-#endif //USE_FIFO
 }

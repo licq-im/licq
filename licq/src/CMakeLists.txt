@@ -26,7 +26,6 @@ set(licq_SRCS
   color.cpp
   daemon.cpp
   event.cpp
-  fifo.cpp
   filter.cpp
   gpghelper.cpp
   hebrev.c
@@ -108,6 +107,10 @@ set(test_SRCS
 
   ${tested_SRCS}
 )
+
+if (USE_FIFO)
+  list(APPEND licq_SRCS fifo.cpp)
+endif (USE_FIFO)
 
 add_executable(licq ${licq_SRCS})
 

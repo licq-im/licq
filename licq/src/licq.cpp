@@ -49,7 +49,6 @@
 
 #include "contactlist/usermanager.h"
 #include "daemon.h"
-#include "fifo.h"
 #include "filter.h"
 #include "gettext.h"
 #include "logging/logservice.h"
@@ -59,13 +58,19 @@
 #include "sarmanager.h"
 #include "statistics.h"
 
+#ifdef USE_FIFO
+#include "fifo.h"
+#endif
+
 using namespace std;
 using Licq::GeneralPlugin;
 using Licq::ProtocolPlugin;
 using LicqDaemon::Daemon;
 using LicqDaemon::PluginManager;
 using LicqDaemon::gDaemon;
+#ifdef USE_FIFO
 using LicqDaemon::gFifo;
+#endif
 using LicqDaemon::gFilterManager;
 using LicqDaemon::gLogService;
 using LicqDaemon::gOnEventManager;
@@ -639,7 +644,9 @@ bool CLicq::Init(int argc, char **argv)
 
 CLicq::~CLicq()
 {
+#ifdef USE_FIFO
   gFifo.shutdown();
+#endif
 
   gLogService.unregisterLogSink(myConsoleLog);
 }
@@ -795,13 +802,18 @@ int CLicq::Main()
   }
 
   // Setup file descriptors to manage
-  struct pollfd fds[1];
+  struct pollfd fds[2];
   int numfds = 1;
   fds[0].fd = myPipe.getReadFd();
   fds[0].events = POLLIN;
 
+#ifdef USE_FIFO
   // Init the fifo
   gFifo.initialize();
+  struct pollfd *const fds_fifo = &fds[numfds++];
+  fds_fifo->fd = gFifo.fifo_fd;
+  fds_fifo->events = POLLIN;
+#endif
 
   // Run the plugins
   gPluginManager.startAllPlugins();
@@ -846,6 +858,11 @@ int CLicq::Main()
         timeout = PluginManager::MAX_WAIT_PLUGIN * 1000;
       }
     }
+
+#ifdef USE_FIFO
+    if (fds_fifo->revents & POLLIN)
+      gFifo.process();
+#endif
   }
 
   gPluginManager.cancelAllPlugins();
