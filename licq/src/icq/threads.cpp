@@ -27,6 +27,7 @@
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/event.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/logging/log.h>
 
@@ -35,7 +36,6 @@
 #include "../gettext.h"
 #include "../licq.h"
 #include "../statistics.h"
-#include "../plugin/pluginmanager.h"
 #include "buffer.h"
 #include "defines.h"
 #include "oscarservice.h"
@@ -54,7 +54,6 @@ void* ProcessRunningEvent_Client_tep(void* p);
 void* ReverseConnectToUser_tep(void* v);
 void* Ping_tep(void* p);
 void* MonitorSockets_func();
-void* Shutdown_tep(void* p);
 void* UpdateUsers_tep(void* p);
 }
 
@@ -949,46 +948,6 @@ void* LicqIcq::MonitorSockets_func()
       }
     }
   }
-  return NULL;
-}
-
-
-
-/*------------------------------------------------------------------------------
- * Shutdown_tep
- *
- * Shutdown the daemon and all the plugins.
- *----------------------------------------------------------------------------*/
-void* LicqIcq::Shutdown_tep(void* /* p */)
-{
-  // Shutdown
-  gLog.info(tr("Shutting down daemon"));
-
-  // Cancel the monitor sockets thread (deferred until ready)
-  gIcqProtocol.myNewSocketPipe.putChar('X');
-
-  // Cancel the ping thread
-  pthread_cancel(gIcqProtocol.thread_ping);
-
-  // Cancel the update users thread
-  pthread_cancel(gIcqProtocol.thread_updateusers);
-
-  // Cancel the BART service thread
-  if (gIcqProtocol.m_xBARTService)
-    pthread_cancel(gIcqProtocol.thread_ssbiservice);
-
-  if (gIcqProtocol.m_nTCPSrvSocketDesc != -1 )
-    gIcqProtocol.icqLogoff();
-  if (gIcqProtocol.m_nTCPSocketDesc != -1)
-    gSocketManager.CloseSocket(gIcqProtocol.m_nTCPSocketDesc);
-
-  // Flush the stats
-  LicqDaemon::gStatistics.flush();
-
-  // Signal that we are shutdown
-  LicqDaemon::gPluginManager.pluginHasExited(
-      LicqDaemon::PluginManager::DAEMON_ID);
-
   return NULL;
 }
 

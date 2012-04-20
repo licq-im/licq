@@ -808,20 +808,10 @@ int CLicq::Main()
 
   try
   {
-    bool bDaemonShutdown = false;
-
     while (true)
     {
-      if (bDaemonShutdown)
-        gPluginManager.waitForPluginExit(PluginManager::MAX_WAIT_PLUGIN);
-      else
-      {
-        if (gPluginManager.waitForPluginExit() == PluginManager::DAEMON_ID)
-        {
-          bDaemonShutdown = true;
-          continue;
-        }
-      }
+      gPluginManager.waitForPluginExit(
+          gDaemon.shuttingDown() ? PluginManager::MAX_WAIT_PLUGIN : 0);
     }
   }
   catch (const Licq::Exception&)
@@ -835,6 +825,9 @@ int CLicq::Main()
   pthread_join(*t, NULL);
 
   gUserManager.shutdown();
+
+  // Flush statistics counters
+  gStatistics.flush();
 
   return gPluginManager.getGeneralPluginsCount();
 }

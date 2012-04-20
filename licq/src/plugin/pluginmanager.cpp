@@ -69,7 +69,7 @@ Licq::PluginManager& Licq::gPluginManager(LicqDaemon::gPluginManager);
 
 
 PluginManager::PluginManager() :
-  myNextPluginId(DAEMON_ID + 1)
+  myNextPluginId(1)
 {
   // Empty
 }
@@ -392,9 +392,6 @@ unsigned short PluginManager::waitForPluginExit(unsigned int timeout)
     exitId = myExitList.front();
     myExitList.pop();
   }
-
-  if (exitId == DAEMON_ID)
-    return DAEMON_ID;
 
   generalLocker.relock();
   protocolLocker.relock();

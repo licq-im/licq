@@ -174,10 +174,15 @@ pthread_t* Daemon::Shutdown()
   myShuttingDown = true;
   // Small race condition here if multiple plugins call shutdown at the same time
 
+  // Shutdown
+  gLog.info(tr("Shutting down daemon"));
+
   // Send shutdown signal to all the plugins
   licq->ShutdownPlugins();
 
-  pthread_create (&thread_shutdown, NULL, &LicqIcq::Shutdown_tep, this);
+  // Send shutdown signal to ICQ plugin
+  LicqIcq::gIcqProtocol.shutdown();
+
   return (&thread_shutdown);
 }
 

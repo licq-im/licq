@@ -193,6 +193,22 @@ bool IcqProtocol::start()
   }
 
   MonitorSockets_func();
+
+  // Cancel the ping thread
+  pthread_cancel(thread_ping);
+
+  // Cancel the update users thread
+  pthread_cancel(thread_updateusers);
+
+  // Cancel the BART service thread
+  if (m_xBARTService)
+    pthread_cancel(thread_ssbiservice);
+
+  if (m_nTCPSrvSocketDesc != -1 )
+    icqLogoff();
+  if (m_nTCPSocketDesc != -1)
+    gSocketManager.CloseSocket(m_nTCPSocketDesc);
+
   return true;
 }
 

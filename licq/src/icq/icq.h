@@ -69,7 +69,6 @@ void* MonitorSockets_func();
 void *ProcessRunningEvent_Client_tep(void *p);
 void *ProcessRunningEvent_Server_tep(void *p);
 void *ReverseConnectToUser_tep(void *p);
-void *Shutdown_tep(void *p);
 
 /**
  * Internal template class for storing and processing received contact list.
@@ -135,6 +134,10 @@ public:
   void initialize();
   bool start();
   void save(Licq::IniFile& licqConf);
+
+  /// Tell ICQ main thread to shut down
+  void shutdown()
+  { myNewSocketPipe.putChar('X'); }
 
   void SetUseServerSideBuddyIcons(bool b);
 
@@ -485,7 +488,6 @@ private:
   friend void *MonitorSockets_func();
   friend void *ProcessRunningEvent_Client_tep(void *p);
   friend void *ProcessRunningEvent_Server_tep(void *p);
-  friend void *Shutdown_tep(void *p);
   friend class COscarService;
   friend class ::CChatManager;
   friend class ::CFileTransferManager;

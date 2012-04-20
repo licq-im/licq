@@ -48,7 +48,6 @@ class PluginManager : public Licq::PluginManager
 {
 public:
   static const unsigned int MAX_WAIT_PLUGIN = 10;
-  static const unsigned short DAEMON_ID = 0;
 
   PluginManager();
   ~PluginManager();
