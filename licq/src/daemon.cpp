@@ -49,7 +49,6 @@
 #include "gettext.h"
 #include "gpghelper.h"
 #include "filter.h"
-#include "icq/icq.h"
 #include "licq.h"
 #include "logging/filelogsink.h"
 #include "plugin/pluginmanager.h"
@@ -182,9 +181,6 @@ void Daemon::Shutdown()
 
   // Send shutdown signal to all the plugins
   licq->shutdown();
-
-  // Send shutdown signal to ICQ plugin
-  LicqIcq::gIcqProtocol.shutdown();
 }
 
 void Daemon::SaveConf()

@@ -35,6 +35,7 @@
 #include "../gettext.h"
 #include "buffer.h"
 #include "defines.h"
+#include "icqprotocolplugin.h"
 #include "oscarservice.h"
 #include "owner.h"
 #include "packet-srv.h"
@@ -702,6 +703,11 @@ void* LicqIcq::MonitorSockets_func()
     if (gIcqProtocol.myNewSocketPipe.getReadFd() >= l)
       l = gIcqProtocol.myNewSocketPipe.getReadFd() + 1;
 
+    // Add plugin notification pipe
+    FD_SET(gIcqProtocolPlugin->getReadPipe(), &f);
+    if (gIcqProtocolPlugin->getReadPipe() >= l)
+      l = gIcqProtocolPlugin->getReadPipe() + 1;
+
     nSocketsAvailable = select(l, &f, NULL, NULL, NULL);
 
     if (gIcqProtocol.m_xBARTService)
@@ -733,6 +739,12 @@ void* LicqIcq::MonitorSockets_func()
           DEBUG_THREADS("[MonitorSockets_tep] Exiting.\n");
           return NULL;
         }
+      }
+
+      if (nCurrentSocket == gIcqProtocolPlugin->getReadPipe())
+      {
+        gIcqProtocolPlugin->processPipe();
+        continue;
       }
 
       Licq::INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
