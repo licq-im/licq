@@ -34,6 +34,7 @@
 
 #include <licq/byteorder.h>
 #include <licq/color.h>
+#include <licq/contactlist/group.h>
 #include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
@@ -41,7 +42,6 @@
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../contactlist/group.h"
 #include "../contactlist/usermanager.h"
 #include "../gettext.h"
 #include "buffer.h"

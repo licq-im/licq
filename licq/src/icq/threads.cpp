@@ -31,9 +31,7 @@
 #include <licq/pluginsignal.h>
 #include <licq/logging/log.h>
 
-#include "../daemon.h"
 #include "../gettext.h"
-#include "../licq.h"
 #include "buffer.h"
 #include "defines.h"
 #include "oscarservice.h"
