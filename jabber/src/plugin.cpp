@@ -280,12 +280,6 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalSendReply:
       gLog.info("SignalSendReply not implemented");
       break;
-    case Licq::ProtocolSignal::SignalOpenedWindow:
-      gLog.info("SignalOpenedWindow not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalClosedWindow:
-      gLog.info("SignalClosedWindow not implemented");
-      break;
     case Licq::ProtocolSignal::SignalOpenSecure:
       gLog.info("SignalOpenSecure not implemented");
       break;

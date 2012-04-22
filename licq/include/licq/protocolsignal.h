@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,6 @@ public:
     SignalSendChat      = 22,   // Send chat request
     SignalCancelEvent   = 23,   // Cancel an event (chat, secure, file, etc.)
     SignalSendReply     = 24,   // Accept/refuse file/chat request
-    SignalOpenedWindow  = 25,   // Chat window has been opened for a user
-    SignalClosedWindow  = 26,   // Chat window has been closed for a user
     SignalOpenSecure    = 27,   // Request secure channel with user
     SignalCloseSecure   = 28,   // Close secure channel with user
     SignalRequestAuth   = 29,   // Request authorization from user
@@ -410,22 +408,6 @@ private:
   unsigned long myFlag1;
   unsigned long myFlag2;
   bool myDirect;
-};
-
-class ProtoOpenedWindowSignal : public ProtocolSignal
-{
-public:
-  ProtoOpenedWindowSignal(const UserId& userId)
-    : ProtocolSignal(SignalOpenedWindow, userId)
-  { /* Empty */ }
-};
-
-class ProtoClosedWindowSignal : public ProtocolSignal
-{
-public:
-  ProtoClosedWindowSignal(const UserId& userId)
-    : ProtocolSignal(SignalClosedWindow, userId)
-  { /* Empty */ }
 };
 
 class ProtoOpenSecureSignal : public ProtocolSignal
