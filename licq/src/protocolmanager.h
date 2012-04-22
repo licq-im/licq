@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,6 @@ public:
   void fileTransferRefuse(const Licq::UserId& userId, const std::string& message,
       unsigned long eventId, unsigned long flag1, unsigned long flag2,
       bool viaServer = true);
-  void fileTransferCancel(const Licq::UserId& userId, unsigned long eventId);
   void fileTransferAccept(const Licq::UserId& userId, unsigned short port,
       unsigned long eventId = 0, unsigned long flag1 = 0, unsigned long flag2 = 0,
       const std::string& message = "", const std::string filename = "",
@@ -83,7 +82,7 @@ public:
   unsigned long requestUserPicture(const Licq::UserId& userId);
   unsigned long secureChannelOpen(const Licq::UserId& userId);
   unsigned long secureChannelClose(const Licq::UserId& userId);
-  void secureChannelCancelOpen(const Licq::UserId& userId, unsigned long eventId);
+  void cancelEvent(const Licq::UserId& userId, unsigned long eventId);
   void visibleListSet(const Licq::UserId& userId, bool visible);
   void invisibleListSet(const Licq::UserId& userId, bool invisible);
   void ignoreListSet(const Licq::UserId& userId, bool ignore);

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@
 #include <QVBoxLayout>
 
 #include <licq/contactlist/user.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
+#include <licq/protocolmanager.h>
 
 #include "core/signalmanager.h"
 
@@ -109,7 +109,7 @@ ShowAwayMsgDlg::~ShowAwayMsgDlg()
   }
 
   if (icqEventTag != 0)
-    Licq::gDaemon.cancelEvent(icqEventTag);
+    Licq::gProtocolManager.cancelEvent(myUserId, icqEventTag);
 }
 
 void ShowAwayMsgDlg::doneEvent(const Licq::Event* e)

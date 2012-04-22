@@ -262,17 +262,6 @@ unsigned long ProtocolManager::fileTransferPropose(const UserId& userId,
   return eventId;
 }
 
-void ProtocolManager::fileTransferCancel(const UserId& userId, unsigned long eventId)
-{
-  if (!isProtocolConnected(userId))
-    return;
-
-  if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqFileTransferCancel(userId, (unsigned short)eventId);
-  else
-    pushProtoSignal(new Licq::ProtoCancelEventSignal(userId, eventId), userId);
-}
-
 void ProtocolManager::fileTransferAccept(const UserId& userId, unsigned short port,
     unsigned long eventId, unsigned long flag1, unsigned long flag2,
     const string& message, const string filename, unsigned long filesize,
@@ -489,13 +478,13 @@ unsigned long ProtocolManager::secureChannelClose(const UserId& userId)
   return eventId;
 }
 
-void ProtocolManager::secureChannelCancelOpen(const UserId& userId, unsigned long eventId)
+void ProtocolManager::cancelEvent(const UserId& userId, unsigned long eventId)
 {
   if (!isProtocolConnected(userId))
     return;
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqOpenSecureChannelCancel(userId, (unsigned short)eventId);
+    gIcqProtocol.CancelEvent(eventId);
   else
     pushProtoSignal(new Licq::ProtoCancelEventSignal(userId, eventId), userId);
 }

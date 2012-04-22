@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@
 #include <QVBoxLayout>
 
 #include <licq/contactlist/user.h>
-#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
 #include <licq/protocolmanager.h>
@@ -269,7 +268,7 @@ MMSendDlg::~MMSendDlg()
 {
   if (icqEventTag != 0)
   {
-    Licq::gDaemon.cancelEvent(icqEventTag);
+    gProtocolManager.cancelEvent(*mmv->contacts().begin(), icqEventTag);
     icqEventTag = 0;
   }
 }
@@ -278,7 +277,7 @@ void MMSendDlg::slot_cancel()
 {
   if (icqEventTag != 0)
   {
-    Licq::gDaemon.cancelEvent(icqEventTag);
+    gProtocolManager.cancelEvent(*mmv->contacts().begin(), icqEventTag);
     icqEventTag = 0;
   }
   //disconnect(sigman, SIGNAL(doneUserFcn(const Licq::Event*)), SLOT(slot_done(const Licq::Event*)));

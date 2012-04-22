@@ -1526,6 +1526,7 @@ void CLicqConsole::InputInfo(int cIn)
       winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
           winMain->event = gProtocolManager.requestUserInfo(data->userId);
+          winMain->eventUserId = data->userId;
       winMain->state = STATE_PENDING;
       return;
         }
@@ -1684,6 +1685,7 @@ void CLicqConsole::UserCommand_FetchAutoResponse(const Licq::UserId& userId, cha
   }
 
   winMain->event = gLicqDaemon->icqFetchAutoResponse(userId);
+  winMain->eventUserId = userId;
   // InputMessage just to catch the cancel key
   winMain->fProcessInput = &CLicqConsole::InputMessage;
   winMain->data = NULL;
@@ -1882,7 +1884,7 @@ void CLicqConsole::InputMessage(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-        Licq::gDaemon.cancelEvent(winMain->event);
+        gProtocolManager.cancelEvent(winMain->eventUserId, winMain->event);
     return;
 
   case STATE_MLE:
@@ -1922,6 +1924,7 @@ void CLicqConsole::InputMessage(int cIn)
                        !bDirect ? "through the server" : "direct");
         winMain->event = gProtocolManager.sendMessage(data->userId,
             Licq::gTranslator.toUtf8(data->szMsg), flags);
+        winMain->eventUserId = data->userId;
       winMain->state = STATE_PENDING;
       break;
     }
@@ -1937,6 +1940,7 @@ void CLicqConsole::InputMessage(int cIn)
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
         winMain->event = gProtocolManager.sendMessage(data->userId,
             Licq::gTranslator.toUtf8(data->szMsg));
+        winMain->eventUserId = data->userId;
       winMain->state = STATE_PENDING;
     }
     else
@@ -1982,7 +1986,7 @@ void CLicqConsole::InputSendFile(int cIn)
   {
   case STATE_PENDING:
     if(cIn == CANCEL_KEY)
-        Licq::gDaemon.cancelEvent(winMain->event);
+        gProtocolManager.cancelEvent(winMain->eventUserId, winMain->event);
     return;
 
   case STATE_LE:
@@ -2059,6 +2063,7 @@ void CLicqConsole::InputSendFile(int cIn)
       winMain->event = gProtocolManager.fileTransferPropose(data->userId,
           data->szFileName, Licq::gTranslator.toUtf8(data->szDescription),
           lFileList, flags);
+      winMain->eventUserId = data->userId;
       break;
     }
   case STATE_QUERY:
@@ -2157,7 +2162,7 @@ void CLicqConsole::InputUrl(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-        Licq::gDaemon.cancelEvent(winMain->event);
+        gProtocolManager.cancelEvent(winMain->eventUserId, winMain->event);
     return;
 
   case STATE_LE:
@@ -2208,6 +2213,7 @@ void CLicqConsole::InputUrl(int cIn)
       winMain->event = gProtocolManager.sendUrl(data->userId,
           Licq::gTranslator.toUtf8(data->szUrl),
           Licq::gTranslator.toUtf8(data->szDesc), flags);
+      winMain->eventUserId = data->userId;
       winMain->state = STATE_PENDING;
       break;
     }
@@ -2224,6 +2230,7 @@ void CLicqConsole::InputUrl(int cIn)
         winMain->event = gProtocolManager.sendUrl(data->userId,
             Licq::gTranslator.toUtf8(data->szUrl),
             Licq::gTranslator.toUtf8(data->szDesc));
+        winMain->eventUserId = data->userId;
       winMain->state = STATE_PENDING;
     }
     else
@@ -2271,7 +2278,7 @@ void CLicqConsole::InputSms(int cIn)
   {
   case STATE_PENDING:
     if (cIn == CANCEL_KEY)
-        Licq::gDaemon.cancelEvent(winMain->event);
+        gProtocolManager.cancelEvent(winMain->eventUserId, winMain->event);
     return;
 
   case STATE_MLE:
@@ -2302,6 +2309,7 @@ void CLicqConsole::InputSms(int cIn)
           m_cColorInfo->nAttr, u->getCellularNumber().c_str());
       winMain->event = gLicqDaemon->icqSendSms(data->userId,
           u->getCellularNumber(), data->szMsg);
+      winMain->eventUserId = data->userId;
       winMain->state = STATE_PENDING;
       break;
     }
@@ -2357,6 +2365,7 @@ void CLicqConsole::InputAuthorize(int cIn)
       }
       winMain->event = gProtocolManager.authorizeReply(data->userId, data->bUrgent,
           Licq::gTranslator.toUtf8(data->szMsg));
+      winMain->eventUserId = data->userId;
 
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       if (winMain->data != NULL)                           
@@ -2563,7 +2572,7 @@ void CLicqConsole::InputSearch(int cIn)
       if (cIn == CANCEL_KEY)
       {
         if (winMain->event != 0)
-          Licq::gDaemon.cancelEvent(winMain->event);
+          gProtocolManager.cancelEvent(winMain->eventUserId, winMain->event);
       }
       return;
     }
@@ -2590,6 +2599,7 @@ void CLicqConsole::InputSearch(int cIn)
                              m_cColorInfo->nColor, m_cColorInfo->nAttr);
 
             winMain->event = gLicqDaemon->icqSearchByUin(strtoul(data->szId, (char **)NULL, 10));
+            winMain->eventUserId = Licq::UserId(data->szId, LICQ_PPID);
             winMain->state = STATE_PENDING;
 
             return;
@@ -2868,6 +2878,7 @@ void CLicqConsole::InputSearch(int cIn)
                            data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
                            data->szCity, data->szState, data->nCountryCode,
                            data->szCoName, data->szCoDept, data->szCoPos, "", data->bOnlineOnly);
+          winMain->eventUserId = Licq::UserId("0000", LICQ_PPID);
           winMain->state = STATE_PENDING;
 
           return;
@@ -2915,7 +2926,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
       if(cIn == CANCEL_KEY)
       {
         if(winMain->event != 0)
-          Licq::gDaemon.cancelEvent(winMain->event);
+          gProtocolManager.cancelEvent(winMain->eventUserId, winMain->event);
       }
       return;
     }
@@ -3219,6 +3230,7 @@ void CLicqConsole::UserCommand_Secure(const Licq::UserId& userId, char *szStatus
         u->getAlias().c_str());
     u.unlock();
     winMain->event = gProtocolManager.secureChannelOpen(userId);
+    winMain->eventUserId = userId;
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
@@ -3226,6 +3238,7 @@ void CLicqConsole::UserCommand_Secure(const Licq::UserId& userId, char *szStatus
         u->getAlias().c_str());
     u.unlock();
     winMain->event = gProtocolManager.secureChannelClose(userId);
+    winMain->eventUserId = userId;
   }
   else
   {

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,14 +130,6 @@ public:
       bool viaServer = true) = 0;
 
   /**
-   * Cancel a file transfer
-   *
-   * @param userId User to cancel transfer for
-   * @param eventId Event id of transfer to cancel
-   */
-  virtual void fileTransferCancel(const UserId& userId, unsigned long eventId) = 0;
-
-  /**
    * Accept a proposed file transfer
    *
    * @param userId User to accept file transfer from
@@ -214,12 +206,12 @@ public:
   virtual unsigned long secureChannelClose(const UserId& userId) = 0;
 
   /**
-   * Cancel encrypted communication about to be enabled
+   * Cancel a request to file transfer / chat / secure channel
    *
    * @param userId User to cancel encryption for
-   * @param eventId Event of open request to cancel
+   * @param eventId Event of request to cancel
    */
-  virtual void secureChannelCancelOpen(const UserId& userId, unsigned long eventId) = 0;
+  virtual void cancelEvent(const UserId& userId, unsigned long eventId) = 0;
 
   /**
    * Add/remove a user to/from visible list

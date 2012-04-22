@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1667,7 +1667,7 @@ void UserSendEvent::cancelSend()
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
     tabDlg->setWindowTitle(myTitle);
 
-  Licq::gDaemon.cancelEvent(icqEventTag);
+  gProtocolManager.cancelEvent(myUsers.front(), icqEventTag);
 }
 
 void UserSendEvent::changeEventType(QAction* action)

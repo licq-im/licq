@@ -391,16 +391,6 @@ void Daemon::rejectEvent(const UserId& userId, Licq::UserEvent* e)
   Licq::gStatistics.increase(Licq::Statistics::EventsRejectedCounter);
 }
 
-void Licq::Daemon::cancelEvent(unsigned long eventId)
-{
-  LicqIcq::gIcqProtocol.CancelEvent(eventId);
-}
-
-void Licq::Daemon::cancelEvent(Licq::Event* event)
-{
-  LicqIcq::gIcqProtocol.CancelEvent(event);
-}
-
 void Daemon::autoLogon()
 {
   map<UserId, unsigned> logonStatuses;
