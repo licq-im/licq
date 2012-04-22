@@ -45,6 +45,14 @@ class EventUrl;
 class INetSocket;
 class IniFile;
 class Packet;
+class ProtoRefuseAuthSignal;
+class ProtoRemoveGroupSignal;
+class ProtoRenameGroupSignal;
+class ProtoSendEventReplySignal;
+class ProtoSendFileSignal;
+class ProtoSendMessageSignal;
+class ProtoSendUrlSignal;
+class ProtocolSignal;
 class Proxy;
 class TCPSocket;
 class User;
@@ -151,6 +159,9 @@ public:
   void shutdown()
   { myNewSocketPipe.putChar('X'); }
 
+  /// Process a protocol signal from daemon
+  void processSignal(Licq::ProtocolSignal* s);
+
   bool UseServerSideBuddyIcons() const { return m_bUseBART; }
   void SetUseServerSideBuddyIcons(bool b);
 
@@ -203,8 +214,8 @@ public:
       unsigned short countryCode, const std::string& coName, const std::string& coDept,
       const std::string& coPos, const std::string& keyword, bool onlineOnly);
   unsigned long icqSearchByUin(unsigned long);
-  void icqAuthorizeGrant(unsigned long eventId, const Licq::UserId& userId, const std::string& message);
-  void icqAuthorizeRefuse(unsigned long eventId, const Licq::UserId& userId, const std::string& message);
+  void icqAuthorizeGrant(unsigned long eventId, const Licq::UserId& userId);
+  void icqAuthorizeRefuse(const Licq::ProtoRefuseAuthSignal* ps);
   void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
   void icqUpdatePhoneBookTimestamp();
@@ -214,18 +225,12 @@ public:
   void icqCheckInvisible(const Licq::UserId& userId);
   unsigned long icqSendSms(const Licq::UserId& userId, const std::string& number, const std::string& message);
 
-  void icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const std::string& message,
-      unsigned flags = 0, const Licq::Color* pColor = NULL);
-  void icqSendUrl(unsigned long eventId, const Licq::UserId& userId, const std::string& url,
-      const std::string& message, unsigned flags = 0, const Licq::Color* pColor = NULL);
-  void icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
-      const std::string& message, const std::list<std::string>& fileList, unsigned flags = 0);
-  void icqFileTransferRefuse(const Licq::UserId& userId, const std::string& message,
-      unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer);
+  void icqSendMessage(const Licq::ProtoSendMessageSignal* ps);
+  void icqSendUrl(const Licq::ProtoSendUrlSignal* ps);
+  void icqFileTransfer(const Licq::ProtoSendFileSignal* ps);
+  void icqFileTransferRefuse(const Licq::ProtoSendEventReplySignal* ps);
   void icqFileTransferCancel(const Licq::UserId& userId, unsigned short nSequence);
-  void icqFileTransferAccept(const Licq::UserId& userId, unsigned short nPort,
-      unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer,
-      const std::string& message, const std::string& filename, unsigned long nFileSize);
+  void icqFileTransferAccept(const Licq::ProtoSendEventReplySignal* ps);
   void icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId);
   void icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId);
   void icqOpenSecureChannelCancel(const Licq::UserId& userId, unsigned short nSequence);
@@ -241,9 +246,9 @@ public:
   void icqAddUser(const Licq::UserId& userId, bool _bAuthReq = false);
   void icqAddUserServer(const Licq::UserId& userId, bool _bAuthReq, unsigned short groupId = 0);
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
-  void icqRemoveGroup(unsigned short serverId, const std::string& groupName);
+  void icqRemoveGroup(const Licq::ProtoRemoveGroupSignal* ps);
   void icqChangeGroup(const Licq::UserId& userId);
-  void icqRenameGroup(int groupId);
+  void icqRenameGroup(const Licq::ProtoRenameGroupSignal* ps);
   void icqRenameUser(const Licq::UserId& userId);
   void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);

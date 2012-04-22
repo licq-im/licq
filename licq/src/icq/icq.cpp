@@ -40,6 +40,7 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
@@ -213,6 +214,128 @@ bool IcqProtocol::start()
     gSocketManager.CloseSocket(m_nTCPSocketDesc);
 
   return true;
+}
+
+void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
+{
+  assert(s != NULL);
+  switch (s->signal())
+  {
+    case Licq::ProtocolSignal::SignalLogon:
+    {
+      Licq::ProtoLogonSignal* sig = dynamic_cast<Licq::ProtoLogonSignal*>(s);
+      logon(sig->status());
+      break;
+    }
+    case Licq::ProtocolSignal::SignalLogoff:
+      icqLogoff();
+      break;
+    case Licq::ProtocolSignal::SignalChangeStatus:
+    {
+      Licq::ProtoChangeStatusSignal* sig = dynamic_cast<Licq::ProtoChangeStatusSignal*>(s);
+      setStatus(sig->status());
+      break;
+    }
+    case Licq::ProtocolSignal::SignalAddUser:
+      icqAddUser(s->userId(), false);
+      break;
+    case Licq::ProtocolSignal::SignalRemoveUser:
+      icqRemoveUser(s->userId());
+      Licq::gUserManager.removeLocalUser(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalRenameUser:
+      icqRenameUser(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalChangeUserGroups:
+      icqChangeGroup(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalSendMessage:
+      icqSendMessage(dynamic_cast<Licq::ProtoSendMessageSignal*>(s));
+      break;
+    case Licq::ProtocolSignal::SignalNotifyTyping:
+    {
+      Licq::ProtoTypingNotificationSignal* sig = dynamic_cast<Licq::ProtoTypingNotificationSignal*>(s);
+      icqTypingNotification(s->userId(), sig->active());
+      break;
+    }
+    case Licq::ProtocolSignal::SignalGrantAuth:
+      icqAuthorizeGrant(s->eventId(), s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalRefuseAuth:
+      icqAuthorizeRefuse(dynamic_cast<Licq::ProtoRefuseAuthSignal*>(s));
+      break;
+    case Licq::ProtocolSignal::SignalRequestInfo:
+      icqRequestMetaInfo(s->userId(), s->eventId());
+      break;
+    case Licq::ProtocolSignal::SignalUpdateInfo:
+      icqSetGeneralInfo(s->eventId(), s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalRequestPicture:
+      icqRequestPicture(s->eventId(), s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalBlockUser:
+      icqAddToInvisibleList(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalUnblockUser:
+      icqRemoveFromInvisibleList(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalAcceptUser:
+      icqAddToVisibleList(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalUnacceptUser:
+      icqRemoveFromVisibleList(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalIgnoreUser:
+      icqAddToIgnoreList(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalUnignoreUser:
+      icqRemoveFromIgnoreList(s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalSendFile:
+      icqFileTransfer(dynamic_cast<Licq::ProtoSendFileSignal*>(s));
+      break;
+    case Licq::ProtocolSignal::SignalCancelEvent:
+      CancelEvent(s->eventId());
+      break;
+    case Licq::ProtocolSignal::SignalSendReply:
+    {
+      Licq::ProtoSendEventReplySignal* sig = dynamic_cast<Licq::ProtoSendEventReplySignal*>(s);
+      if (sig->accept())
+        icqFileTransferAccept(sig);
+      else
+        icqFileTransferRefuse(sig);
+      break;
+    }
+    case Licq::ProtocolSignal::SignalOpenSecure:
+      icqOpenSecureChannel(s->eventId(), s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalCloseSecure:
+      icqCloseSecureChannel(s->eventId(), s->userId());
+      break;
+    case Licq::ProtocolSignal::SignalRequestAuth:
+    {
+      Licq::ProtoRequestAuthSignal* sig = dynamic_cast<Licq::ProtoRequestAuthSignal*>(s);
+      icqRequestAuth(s->userId(), sig->message());
+      break;
+    }
+    case Licq::ProtocolSignal::SignalRenameGroup:
+      gIcqProtocol.icqRenameGroup(dynamic_cast<Licq::ProtoRenameGroupSignal*>(s));
+      break;
+    case Licq::ProtocolSignal::SignalRemoveGroup:
+      gIcqProtocol.icqRemoveGroup(dynamic_cast<Licq::ProtoRemoveGroupSignal*>(s));
+      break;
+    case Licq::ProtocolSignal::SignalSendUrl:
+      icqSendUrl(dynamic_cast<Licq::ProtoSendUrlSignal*>(s));
+      break;
+    default:
+    {
+      /* Unsupported action, if it has an eventId, cancel it */
+      if (s->eventId() != 0)
+        Licq::gPluginManager.pushPluginEvent(
+            new Licq::Event(s, Licq::Event::ResultUnsupported));
+      break;
+    }
+  }
 }
 
 bool IcqProtocol::directMode() const

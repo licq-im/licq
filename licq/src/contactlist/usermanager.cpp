@@ -31,7 +31,6 @@
 
 #include "../daemon.h"
 #include "../gettext.h"
-#include "../icq/icq.h"
 #include "../plugin/pluginmanager.h"
 #include "../protocolmanager.h"
 #include "group.h"
@@ -54,7 +53,6 @@ using Licq::UserGroupList;
 using Licq::UserReadGuard;
 using Licq::UserWriteGuard;
 using Licq::gLog;
-using LicqIcq::gIcqProtocol;
 using namespace LicqDaemon;
 
 // Declare global UserManager (internal for daemon)
@@ -535,12 +533,6 @@ void UserManager::removeUser(const UserId& userId)
   // Remove the user from the server side list first in case protocol needs any
   // data from the user object. The protocol will call removeLocalUser() when
   // it is finished.
-  if (userId.protocolId() == LICQ_PPID)
-  {
-    gIcqProtocol.icqRemoveUser(userId);
-    gUserManager.removeLocalUser(userId);
-  }
-  else
   gPluginManager.pushProtocolSignal(new Licq::ProtoRemoveUserSignal(userId));
 }
 
@@ -878,10 +870,6 @@ void UserManager::RemoveGroup(int groupId)
       {
         int newServerGroup = TODO find another group
         u->setServerGroup(newServerGroup);
-        if (u->protocolId() == LICQ_PPID)
-          // FIXME: Can't call icq protocol here while holding locks
-          gIcqProtocol.icqChangeGroup(u->id());
-        else
         changeServer = true;
         notify = true;
       }
@@ -899,10 +887,6 @@ void UserManager::RemoveGroup(int groupId)
   myOwnerListMutex.lockRead();
   for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
   {
-    // ICQ protocol doesn't have it's own thread (yet) so don't call it while holding locks
-    if (i->first == LICQ_PPID)
-      continue;
-
     i->second->lockRead();
     bool isOnline = i->second->isOnline();
     i->second->unlockRead();
@@ -914,9 +898,6 @@ void UserManager::RemoveGroup(int groupId)
         i->second->id(), groupId, group->serverId(i->first), group->name()));
   }
   myOwnerListMutex.unlockRead();
-
-  // Must be called when there are no locks on group or group list
-  gIcqProtocol.icqRemoveGroup(group->serverId(LICQ_PPID), group->name());
 
   // Send signal to let plugins know of the removed group
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
@@ -1007,10 +988,6 @@ bool UserManager::RenameGroup(int groupId, const string& name, unsigned long ski
     if (i->first == skipProtocolId)
       continue;
 
-    // ICQ protocol doesn't have it's own thread (yet) so don't call it while holding locks
-    if (i->first == LICQ_PPID)
-      continue;
-
     i->second->lockRead();
     bool isOnline = i->second->isOnline();
     i->second->unlockRead();
@@ -1020,10 +997,6 @@ bool UserManager::RenameGroup(int groupId, const string& name, unsigned long ski
     gPluginManager.pushProtocolSignal(new Licq::ProtoRenameGroupSignal(i->second->id(), groupId));
   }
   myOwnerListMutex.unlockRead();
-
-  // Call ICQ protocol without holding any locks
-  if (skipProtocolId != LICQ_PPID)
-    gIcqProtocol.icqRenameGroup(groupId);
 
   // Send signal to let plugins know the group has changed
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
@@ -1244,15 +1217,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
     }
 
     if (ownerIsOnline)
-    {
-      if (userId.protocolId() == LICQ_PPID)
-      {
-        if (inGroup) // Server group can only be changed, not removed
-          gIcqProtocol.icqChangeGroup(userId);
-      }
-      else
       gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId));
-    }
   }
 
   // Notify plugins

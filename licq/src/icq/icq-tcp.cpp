@@ -74,11 +74,13 @@ using Licq::gOnEventManager;
 using Licq::gTranslator;
 
 
-void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const string& message,
-    unsigned flags, const Licq::Color* pColor)
+void IcqProtocol::icqSendMessage(const Licq::ProtoSendMessageSignal* ps)
 {
+  const Licq::UserId& userId(ps->userId());
+  unsigned flags(ps->flags());
+  const Licq::Color* pColor(ps->color());
   const string accountId = userId.accountId();
-  string m = gTranslator.returnToDos(message);
+  string m = gTranslator.returnToDos(ps->message());
 
   bool bUserOffline = true;
   Licq::EventMsg* e = NULL;
@@ -128,14 +130,14 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       m = gTranslator.fromUtf8(m, "UCS-2BE");
     }
 
-    e = new Licq::EventMsg(message, Licq::EventMsg::TimeNow, f);
+    e = new Licq::EventMsg(ps->message(), Licq::EventMsg::TimeNow, f);
      unsigned short nMaxSize = bUserOffline ? MaxOfflineMessageSize : MaxMessageSize;
     if (m.size() > nMaxSize)
     {
       gLog.warning(tr("Truncating message to %d characters to send through server."), nMaxSize);
       m.resize(nMaxSize);
     }
-     icqSendThroughServer(eventId, userId,
+    icqSendThroughServer(ps->eventId(), userId,
         ICQ_CMDxSUB_MSG | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0),
         m, e, nCharset);
   }
@@ -150,14 +152,14 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
       return;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    e = new Licq::EventMsg(message, Licq::EventMsg::TimeNow, f);
+    e = new Licq::EventMsg(ps->message(), Licq::EventMsg::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Message* p = new CPT_Message(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple,
         pColor, *u, !gTranslator.isAscii(m));
     gLog.info(tr("Sending %smessage to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
-    SendExpectEvent_Client(eventId, *u, p, e);
+    SendExpectEvent_Client(ps->eventId(), *u, p, e);
   }
 
   if (u.isLocked())
@@ -202,22 +204,24 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId)
   return eventId;
 }
 
-void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, const string& url,
-    const string& message, unsigned flags, const Licq::Color* pColor)
+void IcqProtocol::icqSendUrl(const Licq::ProtoSendUrlSignal* ps)
 {
-  if (Licq::gUserManager.isOwner(userId))
+  if (Licq::gUserManager.isOwner(ps->userId()))
     return;
 
-  string userEncoding = getUserEncoding(userId);
+  string userEncoding = getUserEncoding(ps->userId());
+  const Licq::UserId& userId(ps->userId());
+  unsigned flags(ps->flags());
+  const Licq::Color* pColor(ps->color());
   const string accountId = userId.accountId();
 
   // make the URL info string
-  string m = gTranslator.fromUtf8(gTranslator.returnToDos(message), userEncoding);
-  int n = url.size() + m.size() + 2;
+  string m = gTranslator.fromUtf8(gTranslator.returnToDos(ps->message()), userEncoding);
+  int n = ps->url().size() + m.size() + 2;
   if ((flags & Licq::ProtocolSignal::SendDirect) == 0 && n > MaxMessageSize)
-    m.erase(MaxMessageSize - url.size() - 2);
+    m.erase(MaxMessageSize - ps->url().size() - 2);
   m += '\xFE';
-  m += gTranslator.fromUtf8(url, userEncoding);
+  m += gTranslator.fromUtf8(ps->url(), userEncoding);
 
   unsigned long f = Licq::EventUrl::FlagLicqVerMask | Licq::EventUrl::FlagSender;
   unsigned short nLevel = ICQ_TCPxMSG_NORMAL;
@@ -244,8 +248,8 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
         nCharset = 3;
     }
 
-    Licq::EventUrl* e = new Licq::EventUrl(url, message, Licq::EventUrl::TimeNow, f);
-    icqSendThroughServer(eventId, userId,
+    Licq::EventUrl* e = new Licq::EventUrl(ps->url(), ps->message(), Licq::EventUrl::TimeNow, f);
+    icqSendThroughServer(ps->eventId(), userId,
         ICQ_CMDxSUB_URL | ((flags & Licq::ProtocolSignal::SendToMultiple) ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
   }
 
@@ -257,13 +261,13 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
       return;
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
-    Licq::EventUrl* e = new Licq::EventUrl(url, message, Licq::EventUrl::TimeNow, f);
+    Licq::EventUrl* e = new Licq::EventUrl(ps->url(), ps->message(), Licq::EventUrl::TimeNow, f);
     if (pColor != NULL) e->SetColor(pColor);
     CPT_Url* p = new CPT_Url(m, nLevel, flags & Licq::ProtocolSignal::SendToMultiple, pColor, *u);
     gLog.info(tr("Sending %sURL to %s (#%d)."),
         (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
         u->getAlias().c_str(), -p->Sequence());
-    SendExpectEvent_Client(eventId, *u, p, e);
+    SendExpectEvent_Client(ps->eventId(), *u, p, e);
   }
   if (u.isLocked())
   {
@@ -275,9 +279,11 @@ void IcqProtocol::icqSendUrl(unsigned long eventId, const Licq::UserId& userId, 
     Licq::Color::setDefaultColors(pColor);
 }
 
-void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const string& filename,
-    const string& message, const list<string>& lFileList, unsigned flags)
+void IcqProtocol::icqFileTransfer(const Licq::ProtoSendFileSignal* ps)
 {
+  const Licq::UserId& userId(ps->userId());
+  unsigned flags(ps->flags());
+
   if (Licq::gUserManager.isOwner(userId))
     return;
 
@@ -285,7 +291,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
   if (!u.isLocked())
     return;
 
-  string dosDesc = gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding());
+  string dosDesc = gTranslator.fromUtf8(gTranslator.returnToDos(ps->message()), u->userEncoding());
 
   unsigned short nLevel;
 
@@ -303,7 +309,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     else
       nLevel = ICQ_TCPxMSG_NORMAL2;
 
-    CPU_FileTransfer* p = new CPU_FileTransfer(*u, lFileList, filename,
+    CPU_FileTransfer* p = new CPU_FileTransfer(*u, ps->files(), ps->filename(),
         dosDesc, nLevel, (u->Version() > 7));
 
     if (!p->IsValid())
@@ -312,8 +318,8 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      Licq::EventFile* e = new Licq::EventFile(filename, message, p->GetFileSize(),
-          lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
+      Licq::EventFile* e = new Licq::EventFile(ps->filename(), ps->message(), p->GetFileSize(),
+          ps->files(), p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("Sending file transfer to %s (#%d)."),
           u->getAlias().c_str(), -p->Sequence());
 
@@ -336,7 +342,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     if (u->Secure())
       f |= Licq::UserEvent::FlagEncrypted;
 
-    CPT_FileTransfer* p = new CPT_FileTransfer(lFileList, filename, dosDesc, nLevel, *u);
+    CPT_FileTransfer* p = new CPT_FileTransfer(ps->files(), ps->filename(), dosDesc, nLevel, *u);
 
     if (!p->IsValid())
     {
@@ -344,13 +350,13 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
     }
     else
     {
-      Licq::EventFile* e = new Licq::EventFile(filename, message, p->GetFileSize(),
-          lFileList, p->Sequence(), Licq::EventFile::TimeNow, f);
+      Licq::EventFile* e = new Licq::EventFile(ps->filename(), ps->message(), p->GetFileSize(),
+          ps->files(), p->Sequence(), Licq::EventFile::TimeNow, f);
       gLog.info(tr("Sending %sfile transfer to %s (#%d)."),
           (flags & Licq::ProtocolSignal::SendUrgent) ? tr("urgent ") : "",
           u->getAlias().c_str(), -p->Sequence());
 
-      SendExpectEvent_Client(eventId, *u, p, e);
+      SendExpectEvent_Client(ps->eventId(), *u, p, e);
     }
   }
 
@@ -650,50 +656,46 @@ void IcqProtocol::icqFileTransferCancel(const Licq::UserId& userId, unsigned sho
   AckTCP(p, u->normalSocketDesc());
 }
 
-void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned short nPort,
-    unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer,
-    const string& message, const string& filename, unsigned long nFileSize)
+void IcqProtocol::icqFileTransferAccept(const Licq::ProtoSendEventReplySignal* ps)
 {
    // basically a fancy tcp ack packet which is sent late
-  UserWriteGuard u(userId);
+  UserWriteGuard u(ps->userId());
   if (!u.isLocked())
     return;
-  gLog.info(tr("Accepting file transfer from %s (#%d)."), u->getAlias().c_str(), -nSequence);
-  if (!viaServer)
+  gLog.info(tr("Accepting file transfer from %s (#%lu)."), u->getAlias().c_str(), ps->eventId());
+  if (ps->direct())
   {
-    CPT_AckFileAccept p(nPort, nSequence, *u);
+    CPT_AckFileAccept p(ps->port(), ps->eventId(), *u);
     AckTCP(p, u->normalSocketDesc());
   }
   else
   {
-    unsigned long nMsgID[2] = { flag1, flag2 };
-    CPU_AckFileAccept *p = new CPU_AckFileAccept(*u, nMsgID, nSequence, nPort,
-        gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding()),
-        filename, nFileSize);
+    unsigned long msgId[2] = { ps->flag1(), ps->flag2() };
+    CPU_AckFileAccept *p = new CPU_AckFileAccept(*u, msgId, ps->eventId(), ps->port(),
+        gTranslator.fromUtf8(gTranslator.returnToDos(ps->message()), u->userEncoding()),
+        ps->filename(), ps->filesize());
     SendEvent_Server(p);
   }
 }
 
-void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string& message,
-    unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer)
+void IcqProtocol::icqFileTransferRefuse(const Licq::ProtoSendEventReplySignal* ps)
 {
    // add to history ??
-  UserWriteGuard u(userId);
+  UserWriteGuard u(ps->userId());
   if (!u.isLocked())
     return;
-  string reasonDos = gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding());
-  gLog.info(tr("Refusing file transfer from %s (#%d)."), u->getAlias().c_str(), -nSequence);
+  string reasonDos = gTranslator.fromUtf8(gTranslator.returnToDos(ps->message()), u->userEncoding());
+  gLog.info(tr("Refusing file transfer from %s (#%lu)."), u->getAlias().c_str(), ps->eventId());
 
-  if (!viaServer)
+  if (ps->direct())
   {
-    CPT_AckFileRefuse p(reasonDos, nSequence, *u);
+    CPT_AckFileRefuse p(reasonDos, ps->eventId(), *u);
     AckTCP(p, u->normalSocketDesc());
   }
   else
   {
-    unsigned long nMsgID[2] = { flag1, flag2 };
-    CPU_AckFileRefuse *p = new CPU_AckFileRefuse(*u, nMsgID, nSequence,
-        reasonDos);
+    unsigned long msgId[2] = { ps->flag1(), ps->flag2() };
+    CPU_AckFileRefuse *p = new CPU_AckFileRefuse(*u, msgId, ps->eventId(), reasonDos);
     SendEvent_Server(p);
   }
 }

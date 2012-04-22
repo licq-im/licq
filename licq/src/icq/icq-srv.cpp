@@ -46,6 +46,7 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
+#include <licq/protocolsignal.h>
 #include <licq/proxy.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
@@ -398,7 +399,7 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
 }
 
 //-----icqRemoveGroup----------------------------------------------------------
-void IcqProtocol::icqRemoveGroup(unsigned short serverId, const string& groupName)
+void IcqProtocol::icqRemoveGroup(const Licq::ProtoRemoveGroupSignal* ps)
 {
   if (!UseServerContactList()) return;
 
@@ -406,15 +407,15 @@ void IcqProtocol::icqRemoveGroup(unsigned short serverId, const string& groupNam
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(groupName,
-      serverId, 0, ICQ_ROSTxGROUP);
-  gLog.info(tr("Removing group from server side list (%s)..."), groupName.c_str());
-  addToModifyUsers(pRemove->SubSequence(), groupName);
+  CSrvPacketTcp* pRemove = new CPU_RemoveFromServerList(ps->groupName(),
+      ps->groupServerId(), 0, ICQ_ROSTxGROUP);
+  gLog.info(tr("Removing group from server side list (%s)..."), ps->groupName().c_str());
+  addToModifyUsers(pRemove->SubSequence(), ps->groupName());
   SendExpectEvent_Server(pRemove, NULL);
 }
 
 //-----icqRenameGroup----------------------------------------------------------
-void IcqProtocol::icqRenameGroup(int groupId)
+void IcqProtocol::icqRenameGroup(const Licq::ProtoRenameGroupSignal* ps)
 {
   if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1)
     return;
@@ -422,7 +423,7 @@ void IcqProtocol::icqRenameGroup(int groupId)
   string newName;
   unsigned short serverId;
   {
-    Licq::GroupReadGuard group(groupId);
+    Licq::GroupReadGuard group(ps->groupId());
     if (!group.isLocked())
       return;
     newName = group->name();
@@ -838,23 +839,22 @@ unsigned long IcqProtocol::icqSetAbout(const string& about)
 }
 
 void IcqProtocol::icqAuthorizeGrant(unsigned long eventId,
-    const Licq::UserId& userId, const string& /* message */)
+    const Licq::UserId& userId)
 {
   CPU_Authorize* p = new CPU_Authorize(userId.accountId());
   gLog.info(tr("Authorizing user %s."), userId.accountId().c_str());
   SendEvent_Server(p, eventId);
 }
 
-void IcqProtocol::icqAuthorizeRefuse(unsigned long eventId,
-    const Licq::UserId& userId, const string& message)
+void IcqProtocol::icqAuthorizeRefuse(const Licq::ProtoRefuseAuthSignal* ps)
 {
-  string userEncoding = getUserEncoding(userId);
-  CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), ICQ_CMDxSUB_AUTHxREFUSED,
-      gTranslator.returnToDos(gTranslator.fromUtf8(message)));
+  string userEncoding = getUserEncoding(ps->userId());
+  CPU_ThroughServer* p = new CPU_ThroughServer(ps->userId().accountId(), ICQ_CMDxSUB_AUTHxREFUSED,
+      gTranslator.returnToDos(gTranslator.fromUtf8(ps->message())));
   gLog.info(tr("Refusing authorization to user %s (#%hu)..."),
-      userId.accountId().c_str(), p->Sequence());
+      ps->userId().accountId().c_str(), p->Sequence());
 
-  SendExpectEvent_Server(eventId, p, NULL);
+  SendExpectEvent_Server(ps->eventId(), p, NULL);
 }
 
 void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const string& message)

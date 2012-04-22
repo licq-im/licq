@@ -20,6 +20,7 @@
 #include "icqprotocolplugin.h"
 
 #include <licq/logging/log.h>
+#include <licq/protocolsignal.h>
 #include <licq/version.h>
 #include "icq.h"
 #include "owner.h"
@@ -108,6 +109,13 @@ void IcqProtocolPlugin::processPipe()
   read(getReadPipe(), &c, 1);
   switch (c)
   {
+    case Licq::ProtocolPlugin::PipeSignal:
+    {
+      Licq::ProtocolSignal* s = popSignal();
+      gIcqProtocol.processSignal(s);
+      delete s;
+      break;
+    }
     case Licq::ProtocolPlugin::PipeShutdown:
       gIcqProtocol.shutdown();
       break;
