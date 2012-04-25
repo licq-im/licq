@@ -33,6 +33,7 @@
 #include <licq/logging/log.h>
 #include <licq/logging/logservice.h>
 #include <licq/logging/logutils.h>
+#include <licq/color.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
 #include <licq/inifile.h>
@@ -150,6 +151,12 @@ void Daemon::initialize()
   licqConf.get("SendTypingNotification", mySendTypingNotification, true);
   licqConf.get("IgnoreTypes", myIgnoreTypes, 0);
 
+  unsigned long color;
+  licqConf.get("ForegroundColor", color, 0x00000000);
+  Licq::Color::setDefaultForeground(color);
+  licqConf.get("BackgroundColor", color, 0x00FFFFFF);
+  Licq::Color::setDefaultBackground(color);
+
   releaseLicqConf();
 
   // Initialize the random number generator
@@ -215,9 +222,10 @@ void Daemon::SaveConf()
   licqConf.set("SendTypingNotification", mySendTypingNotification);
   licqConf.set("IgnoreTypes", myIgnoreTypes);
 
-  licqConf.set("DefaultUserEncoding", gUserManager.defaultUserEncoding());
+  licqConf.set("ForegroundColor", Licq::Color::defaultForeground());
+  licqConf.set("BackgroundColor", Licq::Color::defaultBackground());
 
-  LicqIcq::gIcqProtocol.save(licqConf);
+  licqConf.set("DefaultUserEncoding", gUserManager.defaultUserEncoding());
 
   licqConf.writeFile();
   releaseLicqConf();

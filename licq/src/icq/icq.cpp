@@ -87,8 +87,6 @@ void IcqProtocol::initialize()
   gLicqDaemon = this;
 
   // Initialise the data values
-  m_bAutoUpdateInfo = m_bAutoUpdateInfoPlugins = m_bAutoUpdateStatusPlugins
-                    = true;
   m_nTCPSocketDesc = -1;
   m_nTCPSrvSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
@@ -104,32 +102,13 @@ void IcqProtocol::initialize()
 
   receivedUserList.clear();
 
-  // Begin parsing the config file
-  Licq::IniFile licqConf("licq.conf");
-  licqConf.loadFile();
-
-  licqConf.setSection("network");
-
-  licqConf.get("MaxUsersPerPacket", myMaxUsersPerPacket, 100);
-  licqConf.get("AutoUpdateInfo", m_bAutoUpdateInfo, true);
-  licqConf.get("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins, true);
-  licqConf.get("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins, true);
-  unsigned long nColor;
-  licqConf.get("ForegroundColor", nColor, 0x00000000);
-  Licq::Color::setDefaultForeground(nColor);
-  licqConf.get("BackgroundColor", nColor, 0x00FFFFFF);
-  Licq::Color::setDefaultBackground(nColor);
+  myMaxUsersPerPacket = 100;
 
   // Proxy
   m_xProxy = NULL;
 
   // Services
   m_xBARTService = NULL;
-
-  // Misc
-  licqConf.get("UseSS", m_bUseSS, true); // server side list
-  licqConf.get("UseBART", m_bUseBART, true); // server side buddy icons
-  licqConf.get("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
 
   // Start up our threads
   pthread_mutex_init(&mutex_runningevents, NULL);
@@ -153,12 +132,14 @@ bool IcqProtocol::start()
     return false;
   }
   gSocketManager.AddSocket(s);
+  bool useBart = false;
   {
-    Licq::OwnerWriteGuard o(LICQ_PPID);
+    OwnerWriteGuard o;
     if (o.isLocked())
     {
       o->SetIntIp(s->getLocalIpInt());
       o->SetPort(s->getLocalPort());
+      useBart = o->useBart();
     }
   }
   CPacket::SetLocalPort(s->getLocalPort());
@@ -180,7 +161,7 @@ bool IcqProtocol::start()
     return false;
   }
 
-  if (UseServerSideBuddyIcons())
+  if (useBart)
   {
     m_xBARTService = new COscarService(ICQ_SNACxFAM_BART);
     nResult = pthread_create(&thread_ssbiservice, NULL,
@@ -210,23 +191,6 @@ bool IcqProtocol::start()
     gSocketManager.CloseSocket(m_nTCPSocketDesc);
 
   return true;
-}
-
-void IcqProtocol::save(Licq::IniFile& licqConf)
-{
-  licqConf.setSection("network");
-
-  licqConf.set("MaxUsersPerPacket", myMaxUsersPerPacket);
-  licqConf.set("AutoUpdateInfo", m_bAutoUpdateInfo);
-  licqConf.set("AutoUpdateInfoPlugins", m_bAutoUpdateInfoPlugins);
-  licqConf.set("AutoUpdateStatusPlugins", m_bAutoUpdateStatusPlugins);
-  licqConf.set("ForegroundColor", Licq::Color::defaultForeground());
-  licqConf.set("BackgroundColor", Licq::Color::defaultBackground());
-
-  // Misc
-  licqConf.set("UseSS", m_bUseSS); // server side list
-  licqConf.set("UseBART", m_bUseBART); // server side buddy icons
-  licqConf.set("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
 }
 
 bool IcqProtocol::directMode() const
@@ -276,11 +240,10 @@ void IcqProtocol::SetUseServerSideBuddyIcons(bool b)
     {
       gLog.error(tr("Unable to start BART service thread:%s."), strerror(nResult));
     }
-    else
-      m_bUseBART = true;
   }
-  else
-    m_bUseBART = b;
+
+  OwnerWriteGuard o;
+  o->setUseBart(b);
 }
 
 void IcqProtocol::ChangeUserStatus(User* u, unsigned long s, time_t onlineSince)
@@ -1794,6 +1757,12 @@ string IcqProtocol::getUserEncoding(const Licq::UserId& userId)
     return u->userEncoding();
   else
     return Licq::gUserManager.defaultUserEncoding();
+}
+
+bool IcqProtocol::UseServerContactList() const
+{
+  OwnerReadGuard o;
+  return o->useServerContactList();
 }
 
 int IcqProtocol::getGroupFromId(unsigned short gsid)

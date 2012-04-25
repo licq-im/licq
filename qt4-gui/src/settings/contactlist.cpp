@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 # include <QStyleFactory>
 #endif
 
-#include <licq/icq/icq.h>
+#include <licq/icq/owner.h>
 
 #include "config/chat.h"
 #include "config/contactlist.h"
@@ -437,7 +437,6 @@ void Settings::ContactList::load()
   myPopupLocalTimeCheck->setChecked(contactListConfig->popupLocalTime());
   myPopupIdCheck->setChecked(contactListConfig->popupID());
 
-  mySSListCheck->setChecked(gLicqDaemon->UseServerContactList());
   myTransparentCheck->setChecked(Config::Skin::active()->frame.transparent);
   myFrameStyleEdit->setText(QString::number(static_cast<int>(Config::Skin::active()->frame.frameStyle)));
 
@@ -448,9 +447,22 @@ void Settings::ContactList::load()
       myGuiStyleCombo->setCurrentIndex(i);
 #endif
 
-  myAutoUpdateInfoCheck->setChecked(gLicqDaemon->AutoUpdateInfo());
-  myAutoUpdateInfoPluginsCheck->setChecked(gLicqDaemon->AutoUpdateInfoPlugins());
-  myAutoUpdateStatusPluginsCheck->setChecked(gLicqDaemon->AutoUpdateStatusPlugins());
+  {
+    Licq::IcqOwnerReadGuard o;
+    if (o.isLocked())
+    {
+      mySSListCheck->setChecked(o->useServerContactList());
+      myAutoUpdateInfoCheck->setChecked(o->autoUpdateInfo());
+      myAutoUpdateInfoPluginsCheck->setChecked(o->autoUpdateInfoPlugins());
+      myAutoUpdateStatusPluginsCheck->setChecked(o->autoUpdateStatusPlugins());
+    }
+    else
+    {
+      mySSListCheck->setChecked(true);
+      mySSListCheck->setEnabled(false);
+      myAutoUpdateBox->setVisible(false);
+    }
+  }
 }
 
 void Settings::ContactList::apply()
@@ -515,7 +527,6 @@ void Settings::ContactList::apply()
   contactListConfig->setPopupLocalTime(myPopupLocalTimeCheck->isChecked());
   contactListConfig->setPopupID(myPopupIdCheck->isChecked());
 
-  gLicqDaemon->SetUseServerContactList(mySSListCheck->isChecked());
   Config::Skin::active()->setFrameTransparent(myTransparentCheck->isChecked());
   Config::Skin::active()->setFrameStyle(myFrameStyleEdit->text().toUShort());
 
@@ -523,9 +534,16 @@ void Settings::ContactList::apply()
   generalConfig->setGuiStyle(myGuiStyleCombo->currentText());
 #endif
 
-  gLicqDaemon->SetAutoUpdateInfo(myAutoUpdateInfoCheck->isChecked());
-  gLicqDaemon->SetAutoUpdateInfoPlugins(myAutoUpdateInfoPluginsCheck->isChecked());
-  gLicqDaemon->SetAutoUpdateStatusPlugins(myAutoUpdateStatusPluginsCheck->isChecked());
+  {
+    Licq::IcqOwnerWriteGuard o;
+    if (o.isLocked())
+    {
+      o->setUseServerContactList(mySSListCheck->isChecked());
+      o->setAutoUpdateInfo(myAutoUpdateInfoCheck->isChecked());
+      o->setAutoUpdateInfoPlugins(myAutoUpdateInfoPluginsCheck->isChecked());
+      o->setAutoUpdateStatusPlugins(myAutoUpdateStatusPluginsCheck->isChecked());
+    }
+  }
 
   chatConfig->blockUpdates(false);
   contactListConfig->blockUpdates(false);

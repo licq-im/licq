@@ -164,38 +164,20 @@ public:
   void InitProxy();
   Licq::Proxy* GetProxy() {  return m_xProxy;  }
 
-  bool AutoUpdateInfo() const                   { return m_bAutoUpdateInfo; }
-  bool AutoUpdateInfoPlugins() const            { return m_bAutoUpdateInfoPlugins; }
-  bool AutoUpdateStatusPlugins() const          { return m_bAutoUpdateStatusPlugins; }
-
-  void SetAutoUpdateInfo(bool b)          { m_bAutoUpdateInfo = b; }
-  void SetAutoUpdateInfoPlugins(bool b)   { m_bAutoUpdateInfoPlugins = b; }
-  void SetAutoUpdateStatusPlugins(bool b) { m_bAutoUpdateStatusPlugins = b; }
-
   // ICQ options
-  bool UseServerContactList() const             { return m_bUseSS; }
   bool UseServerSideBuddyIcons() const          { return m_bUseBART; }
-
-  void SetUseServerContactList(bool b)    { m_bUseSS = b; }
   virtual void SetUseServerSideBuddyIcons(bool b) = 0;
 
-  // Misc functions
-  bool ReconnectAfterUinClash() const           { return m_bReconnectAfterUinClash; }
-  void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
   static std::string getXmlTag(const std::string& xmlSource, const std::string& tagName);
 
 protected:
   virtual ~CICQDaemon() { /* Empty */ }
 
-  bool m_bAutoUpdateInfo, m_bAutoUpdateInfoPlugins, m_bAutoUpdateStatusPlugins;
-
   // Proxy
   Licq::Proxy* m_xProxy;
 
   // Misc
-  bool m_bUseSS; // server side list
   bool m_bUseBART; // server side buddy icons
-  bool m_bReconnectAfterUinClash; // reconnect after uin has been used from another location?
 
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);

@@ -75,6 +75,7 @@ extern "C"
 #include <licq/contactlist/user.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/daemon.h>
+#include <licq/icq/owner.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolmanager.h>
@@ -361,6 +362,12 @@ void LicqGui::saveConfig()
 {
   // Tell the daemon to save its options
   Licq::gDaemon.SaveConf();
+
+  {
+    Licq::IcqOwnerWriteGuard o;
+    if (o.isLocked())
+      o->save(Licq::Owner::SaveOwnerInfo);
+  }
 
   // Save all our options
   Licq::IniFile guiConf(QTGUI_CONFIGFILE);

@@ -35,6 +35,7 @@
 #include "buffer.h"
 #include "defines.h"
 #include "oscarservice.h"
+#include "owner.h"
 #include "packet.h"
 #include "socket.h"
 #include "user.h"
@@ -928,17 +929,26 @@ void* LicqIcq::MonitorSockets_func()
   return NULL;
 }
 
-void* LicqIcq::UpdateUsers_tep(void *p)
+void* LicqIcq::UpdateUsers_tep(void* /* p */)
 {
   pthread_detach(pthread_self());
 
-  CICQDaemon *d = (CICQDaemon *)p;
   struct timeval tv;
 
   while (true)
   {
     if (gIcqProtocol.Status() == STATUS_ONLINE)
     {
+      bool useBart;
+      bool autoInfo, autoInfoPlugins, autoStatusPlugins;
+      {
+        OwnerReadGuard o;
+        useBart = o->useBart();
+        autoInfo = o->autoUpdateInfo();
+        autoInfoPlugins = o->autoUpdateInfoPlugins();
+        autoStatusPlugins = o->autoUpdateStatusPlugins();
+      }
+
       pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
       Licq::UserListGuard userList(LICQ_PPID);
       BOOST_FOREACH(Licq::User* user, **userList)
@@ -947,7 +957,7 @@ void* LicqIcq::UpdateUsers_tep(void *p)
         bool bSent = false;
         bool bBART = false;
 
-        if (d->AutoUpdateInfo() && !pUser->UserUpdated() &&
+        if (autoInfo && !pUser->UserUpdated() &&
             pUser->ClientTimestamp() != pUser->OurClientTimestamp()
             && pUser->ClientTimestamp() != 0)
         {
@@ -955,8 +965,7 @@ void* LicqIcq::UpdateUsers_tep(void *p)
           bSent = true;
         }
 
-        if (d->UseServerSideBuddyIcons() && d->AutoUpdateInfo() &&
-            pUser->buddyIconHash().size() > 0 &&
+        if (useBart && autoInfo && pUser->buddyIconHash().size() > 0 &&
             pUser->buddyIconHash() != pUser->ourBuddyIconHash())
         {
           gIcqProtocol.m_xBARTService->SendEvent(pUser->id(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
@@ -985,9 +994,8 @@ void* LicqIcq::UpdateUsers_tep(void *p)
             pUser->ClientTimestamp() != 0x3BFF8C98 //IGA
            )
         {
-          if (d->AutoUpdateInfoPlugins() &&
-              pUser->ClientInfoTimestamp() != pUser->OurClientInfoTimestamp() &&
-              pUser->ClientInfoTimestamp() != 0)
+          if (autoInfoPlugins && pUser->ClientInfoTimestamp() != 0 &&
+              pUser->ClientInfoTimestamp() != pUser->OurClientInfoTimestamp())
           {
             gLog.info(tr("Updating %s's info plugins."), pUser->getAlias().c_str());
             gIcqProtocol.icqRequestInfoPlugin(*pUser, true, PLUGIN_QUERYxINFO);
@@ -997,9 +1005,8 @@ void* LicqIcq::UpdateUsers_tep(void *p)
             bSent = true;
           }
 
-          if (d->AutoUpdateStatusPlugins() &&
-             pUser->ClientStatusTimestamp() != pUser->OurClientStatusTimestamp()
-              && pUser->ClientStatusTimestamp() != 0)
+          if (autoStatusPlugins && pUser->ClientStatusTimestamp() != 0 &&
+             pUser->ClientStatusTimestamp() != pUser->OurClientStatusTimestamp())
           {
             gLog.info(tr("Updating %s's status plugins."), pUser->getAlias().c_str());
             gIcqProtocol.icqRequestStatusPlugin(*pUser, true, PLUGIN_QUERYxSTATUS);

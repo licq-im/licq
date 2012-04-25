@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #include <QVBoxLayout>
 
 #include <licq/daemon.h>
-#include <licq/icq/icq.h>
+#include <licq/icq/owner.h>
 
 #include "settingsdlg.h"
 
@@ -226,7 +226,13 @@ void Settings::Network::load()
   myProxyLoginEdit->setText(Licq::gDaemon.proxyLogin().c_str());
   myProxyPasswdEdit->setText(Licq::gDaemon.proxyPasswd().c_str());
 
-  myReconnectAfterUinClashCheck->setChecked(gLicqDaemon->ReconnectAfterUinClash());
+  {
+    Licq::IcqOwnerReadGuard o;
+    if (o.isLocked())
+      myReconnectAfterUinClashCheck->setChecked(o->reconnectAfterUinClash());
+    else
+      myIcqConnectionBox->setVisible(false);
+  }
 
   if (!Licq::gDaemon.proxyEnabled())
   {
@@ -256,5 +262,9 @@ void Settings::Network::apply()
   Licq::gDaemon.setProxyLogin(myProxyLoginEdit->text().toLocal8Bit().constData());
   Licq::gDaemon.setProxyPasswd(myProxyPasswdEdit->text().toLocal8Bit().constData());
 
-  gLicqDaemon->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
+  {
+    Licq::IcqOwnerWriteGuard o;
+    if (o.isLocked())
+      o->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
+  }
 }

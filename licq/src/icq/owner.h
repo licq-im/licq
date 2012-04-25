@@ -52,6 +52,9 @@ public:
   unsigned short GetPDINFO() const              { return myPDINFO; }
   void SetPDINFO(unsigned short n)              { myPDINFO = n; save(SaveOwnerInfo); }
 
+  bool useBart() const                          { return myUseBart; }
+  void setUseBart(bool b)                       { myUseBart = b; }
+
 private:
   virtual void saveOwnerInfo();
 
@@ -61,6 +64,7 @@ private:
   unsigned mySsCount;
   time_t m_nSSTime;
   unsigned myPDINFO;
+  bool myUseBart;
 };
 
 /**

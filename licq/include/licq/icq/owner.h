@@ -41,6 +41,19 @@ public:
   /// Current random chat group (0=none)
   unsigned randomChatGroup() const              { return myRandomChatGroup; }
 
+  bool autoUpdateInfo() const                   { return myAutoUpdateInfo; }
+  bool autoUpdateInfoPlugins() const            { return myAutoUpdateInfoPlugins; }
+  bool autoUpdateStatusPlugins() const          { return myAutoUpdateStatusPlugins; }
+  void setAutoUpdateInfo(bool b)                { myAutoUpdateInfo = b; }
+  void setAutoUpdateInfoPlugins(bool b)         { myAutoUpdateInfoPlugins = b; }
+  void setAutoUpdateStatusPlugins(bool b)       { myAutoUpdateStatusPlugins = b; }
+
+  bool useServerContactList() const             { return myUseServerContactList; }
+  void setUseServerContactList(bool b)          { myUseServerContactList = b; }
+
+  bool reconnectAfterUinClash() const           { return myReconnectAfterUinClash; }
+  void setReconnectAfterUinClash(bool b)        { myReconnectAfterUinClash = b; }
+
 protected:
   /// Constructor
   IcqOwner(const UserId& id);
@@ -51,6 +64,12 @@ protected:
   bool m_bWebAware;
   bool m_bHideIp;
   unsigned myRandomChatGroup;
+
+  bool myAutoUpdateInfo;
+  bool myAutoUpdateInfoPlugins;
+  bool myAutoUpdateStatusPlugins;
+  bool myUseServerContactList;
+  bool myReconnectAfterUinClash;
 };
 
 /**

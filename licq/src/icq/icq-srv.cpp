@@ -4985,9 +4985,11 @@ bool IcqProtocol::ProcessCloseChannel(Buffer& packet)
   nError = packet.UnpackUnsignedShortTLV(0x0009);
   switch (nError)
   {
-  case 0x0001:
-    if (ReconnectAfterUinClash())
+    case 0x0001:
     {
+      OwnerReadGuard o;
+      if (o->reconnectAfterUinClash())
+      {
         gLog.error(tr("Your ICQ number is used from another location."));
       m_eStatus = STATUS_OFFLINE_FORCED; // will try to reconnect
     }
@@ -4997,8 +4999,8 @@ bool IcqProtocol::ProcessCloseChannel(Buffer& packet)
             "Automatic reconnect is disabled."));
       m_eStatus = STATUS_OFFLINE_MANUAL; // don't reconnect
     }
-    break;
-
+      break;
+    }
   case 0:
     break;
 

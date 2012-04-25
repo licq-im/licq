@@ -54,6 +54,23 @@ Owner::Owner(const Licq::UserId& id)
   m_nSSTime = sstime;
   conf.get("SSCount", mySsCount, 0);
   conf.get("PDINFO", myPDINFO, 0);
+
+  // These parameters used to be in licq.conf (Licq 1.6.x or older)
+  IniFile licqConf("licq.conf");
+  IniFile* conf2 = &conf;
+  if (!conf.get("AutoUpdateInfo", myAutoUpdateInfo, true))
+  {
+    // Not found in owner config, try migrating from licq.conf
+    licqConf.loadFile();
+    licqConf.setSection("network");
+    conf2 = &licqConf;
+    conf2->get("AutoUpdateInfo", myAutoUpdateInfo, true);
+  }
+  conf2->get("AutoUpdateInfoPlugins", myAutoUpdateInfoPlugins, true);
+  conf2->get("AutoUpdateStatusPlugins", myAutoUpdateStatusPlugins, true);
+  conf2->get("UseSS", myUseServerContactList, true);
+  conf2->get("UseBART", myUseBart, true);
+  conf2->get("ReconnectAfterUinClash", myReconnectAfterUinClash, false);
 }
 
 Owner::~Owner()
@@ -91,4 +108,11 @@ void Owner::saveOwnerInfo()
   conf.set("SSTime", (unsigned long)m_nSSTime);
   conf.set("SSCount", mySsCount);
   conf.set("PDINFO", myPDINFO);
+
+  conf.set("AutoUpdateInfo", myAutoUpdateInfo);
+  conf.set("AutoUpdateInfoPlugins", myAutoUpdateInfoPlugins);
+  conf.set("AutoUpdateStatusPlugins", myAutoUpdateStatusPlugins);
+  conf.set("UseSS", myUseServerContactList);
+  conf.set("UseBART", myUseBart);
+  conf.set("ReconnectAfterUinClash", myReconnectAfterUinClash);
 }

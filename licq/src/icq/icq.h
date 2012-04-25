@@ -332,6 +332,8 @@ public:
   void PushEvent(Licq::Event*);
   void PushExtendedEvent(Licq::Event*);
 
+  bool UseServerContactList() const;
+
   EDaemonStatus Status() const                  { return m_eStatus; }
 
   bool directMode() const;

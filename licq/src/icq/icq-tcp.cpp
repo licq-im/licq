@@ -498,6 +498,12 @@ unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId, bool 
 //-----CICQDaemon::sendPictureReq-----------------------------------------------
 unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId)
 {
+  bool useBart;
+  {
+    OwnerReadGuard o;
+    useBart = o->useBart();
+  }
+
   size_t iconHashSize;
   {
     UserReadGuard user(userId);
@@ -507,7 +513,7 @@ unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId)
     iconHashSize = user->buddyIconHash().size();
   }
 
-  if (UseServerSideBuddyIcons() && iconHashSize > 0)
+  if (useBart && iconHashSize > 0)
     return m_xBARTService->SendEvent(userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
 
   if (Licq::gUserManager.isOwner(userId))
