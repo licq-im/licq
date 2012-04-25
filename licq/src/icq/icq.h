@@ -334,8 +334,7 @@ public:
 
   EDaemonStatus Status() const                  { return m_eStatus; }
 
-  void setDirectMode();
-  bool directMode() const { return myDirectMode; }
+  bool directMode() const;
 
   static unsigned short icqStatusFromStatus(unsigned status);
   static unsigned statusFromIcqStatus(unsigned short icqStatus);

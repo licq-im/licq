@@ -271,18 +271,6 @@ int Licq::Daemon::StartTCPServer(TCPSocket *s)
   return s->Descriptor();
 }
 
-void Licq::Daemon::setTcpEnabled(bool b)
-{
-  myTcpEnabled = b;
-  gLicqDaemon->setDirectMode();
-}
-
-void Licq::Daemon::setBehindFirewall(bool b)
-{
-  myBehindFirewall = b;
-  gLicqDaemon->setDirectMode();
-}
-
 void Licq::Daemon::setTcpPorts(unsigned lowPort, unsigned highPort)
 {
   myTcpPortsLow = lowPort;

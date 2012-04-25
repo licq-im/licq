@@ -64,9 +64,9 @@ public:
 
   // Firewall options
   bool tcpEnabled() const                       { return myTcpEnabled; }
-  void setTcpEnabled(bool b);
+  void setTcpEnabled(bool b)                    { myTcpEnabled = b; }
   bool behindFirewall() const                   { return myBehindFirewall; }
-  void setBehindFirewall(bool b);
+  void setBehindFirewall(bool b)                { myBehindFirewall = b; }
   unsigned tcpPortsLow() const                  { return myTcpPortsLow; }
   unsigned tcpPortsHigh() const                 { return myTcpPortsHigh; }
   void setTcpPorts(unsigned lowPort, unsigned highPort);

@@ -160,9 +160,6 @@ public:
   virtual unsigned long icqSendSms(const Licq::UserId& userId,
       const std::string& number, const std::string& message) = 0;
 
-  // Firewall options
-  virtual void setDirectMode() = 0;
-
   // Proxy options
   void InitProxy();
   Licq::Proxy* GetProxy() {  return m_xProxy;  }

@@ -229,9 +229,9 @@ void IcqProtocol::save(Licq::IniFile& licqConf)
   licqConf.set("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
 }
 
-void IcqProtocol::setDirectMode()
+bool IcqProtocol::directMode() const
 {
-  myDirectMode = (!gDaemon.behindFirewall() || (gDaemon.behindFirewall() && gDaemon.tcpEnabled()));
+  return (!gDaemon.behindFirewall() || (gDaemon.behindFirewall() && gDaemon.tcpEnabled()));
 }
 
 void CICQDaemon::InitProxy()
