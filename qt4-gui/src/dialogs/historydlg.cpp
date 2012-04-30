@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,19 +163,11 @@ HistoryDlg::HistoryDlg(const Licq::UserId& userId, QWidget* parent)
   {
     Licq::UserReadGuard u(myUserId);
 
-    QString name = tr("INVALID USER");
     myContactCodec = QTextCodec::codecForLocale();
-
     if (u.isLocked())
-    {
       myContactCodec = UserCodec::codecForUser(*u);
 
-      name = myContactCodec->toUnicode(u->getFullName().c_str());
-      if (!name.isEmpty())
-        name = " (" + name + ")";
-      name.prepend(QString::fromUtf8(u->getAlias().c_str()));
-    }
-    setWindowTitle(tr("Licq - History ") + name);
+    setTitle(*u);
 
     bool validHistory = false;
 
@@ -285,6 +277,29 @@ void HistoryDlg::updatedUser(const Licq::UserId& userId, unsigned long subSignal
     if (event != NULL && argument > 0 && argument > (*(--myHistoryList.end()))->Id())
       addMsg(event);
   }
+  else if (subSignal == Licq::PluginSignal::UserBasic)
+  {
+    Licq::UserReadGuard u(myUserId);
+    setTitle(*u);
+  }
+}
+
+void HistoryDlg::setTitle(const Licq::User* user)
+{
+  QString name;
+  if (user == NULL)
+  {
+    name = tr("INVALID USER");
+  }
+  else
+  {
+    name = myContactCodec->toUnicode(user->getFullName().c_str());
+    if (!name.isEmpty())
+      name = " (" + name + ")";
+    name.prepend(QString::fromUtf8(user->getAlias().c_str()));
+  }
+
+  setWindowTitle(tr("Licq - History ") + name);
 }
 
 void HistoryDlg::eventSent(const Licq::Event* event)

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2011 Licq developers
+ * Copyright (C) 2008-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,19 +104,10 @@ UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
      Licq::UserReadGuard user(myUserId);
     if (user.isLocked())
     {
-      const QTextCodec* codec = UserCodec::codecForUser(*user);
-      QString name = codec->toUnicode(user->getFullName().c_str());
-      if (!name.isEmpty())
-        name = " (" + name + ")";
-      myBasicTitle = tr("Licq - Info ") + QString::fromUtf8(user->getAlias().c_str()) + name;
-
       myUserInfo->load(*user);
       myUserSettings->load(*user);
     }
-    else
-    {
-      myBasicTitle = tr("Licq - Info ") + tr("INVALID USER");
-    }
+    setBasicTitle(*user);
   }
   resetCaption();
 
@@ -235,8 +226,34 @@ void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
   if (!user.isLocked())
     return;
 
+  if (subSignal == Licq::PluginSignal::UserBasic)
+    setBasicTitle(*user);
+
   myUserInfo->userUpdated(*user, subSignal);
   myUserSettings->userUpdated(*user, subSignal);
+}
+
+void UserDlg::setBasicTitle(const Licq::User* user)
+{
+  bool wasBasicTitle = (windowTitle() == myBasicTitle);
+
+  QString name;
+  if (user == NULL)
+  {
+    name = tr("INVALID USER");
+  }
+  else
+  {
+    const QTextCodec* codec = UserCodec::codecForUser(user);
+    name = codec->toUnicode(user->getFullName().c_str());
+    if (!name.isEmpty())
+      name = " (" + name + ")";
+    name.prepend(QString::fromUtf8(user->getAlias().c_str()));
+  }
+
+  myBasicTitle = tr("Licq - Info ") + name;
+  if (wasBasicTitle)
+    resetCaption();
 }
 
 void UserDlg::doneFunction(const Licq::Event* event)
