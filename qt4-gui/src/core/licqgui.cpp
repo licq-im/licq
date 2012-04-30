@@ -53,6 +53,7 @@
 extern "C"
 {
 #include <X11/X.h>
+#include <X11/XKBlib.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -504,7 +505,7 @@ bool LicqGui::x11EventFilter(XEvent* event)
   {
     Display* dsp = QX11Info::display();
     unsigned int mod = event->xkey.state & (ControlMask | ShiftMask | Mod1Mask | Mod4Mask);
-    unsigned int keysym = XKeycodeToKeysym(dsp, event->xkey.keycode, 0);
+    unsigned int keysym = XkbKeycodeToKeysym(dsp, event->xkey.keycode, 0, 0);
 
     if (keysym == Support::keyToXSym(myPopupMessageKey) &&
         mod == Support::keyToXMod(myPopupMessageKey))

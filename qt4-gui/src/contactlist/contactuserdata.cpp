@@ -31,6 +31,7 @@
 #include <licq/contactlist/user.h>
 #include <licq/icq/icq.h>
 #include <licq/icq/user.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/socket.h>
 #include <licq/userevents.h>
@@ -499,12 +500,10 @@ bool ContactUserData::setData(const QVariant& value, int role)
     u->SetKeepAliasOnUpdate(true);
     u->setAlias(myAlias.toUtf8().data());
 
-    // Daemon doesn't send signal when alias is changed so trigger update from here
-    updateText(*u);
-    updateSorting();
+    Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
+        Licq::PluginSignal::SignalUser, Licq::PluginSignal::UserBasic, myUserId));
   }
 
-  emit dataChanged(this);
   return true;
 }
 

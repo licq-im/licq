@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2010 Licq developers
+ * Copyright (C) 2008-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 namespace Licq
 {
 class Event;
+class User;
 }
 
 namespace LicqQtGui
@@ -176,6 +177,13 @@ private slots:
   void resetCaption();
 
 private:
+  /**
+   * Update base part of window title
+   *
+   * @param @user The user object
+   */
+  void setBasicTitle(const Licq::User* user);
+
   Licq::UserId myUserId;
   bool myIsOwner;
   unsigned long myIcqEventTag;
