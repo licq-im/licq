@@ -1,8 +1,11 @@
 Change log for Licq.
 
 New in 1.7.0
-o Fifo: Added commands to show/hide UI contact list window
-o Icq: Fixed several memory leaks
+o Always save history as UTF-8 to avoid mixing encodings
+o Fifo: Add commands to show/hide UI contact list window
+o ICQ: Fix several memory leaks
+o Plugin API: Allow subclassed user/owner for each protocol
+o Plugin API: Use UTF-8 for all event messages and user data
 o Qt4-Gui: Moved debug level menu to log window
 o Qt4-Gui: Add settings page for editing event filter rules
 o Qt4-Gui: Add a header in chat history for each new day
