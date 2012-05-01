@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,6 +509,15 @@ void MainWindow::saveGeometry()
 {
   Config::General* conf = Config::General::instance();
   QRect geom = geometry();
+
+  // When first showing window, we may get a rect without frame which will be
+  // become wrong if used for a window with a frame
+  if (geom == frameGeometry())
+    return;
+
+  // For setGeometry to get it right we need position including frame but
+  // size without frame
+  geom.moveTo(frameGeometry().topLeft());
 
   if (myInMiniMode)
     geom.setHeight(conf->mainwinRect().height());
