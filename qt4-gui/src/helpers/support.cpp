@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2006-2011 Licq developers
+ * Copyright (C) 2006-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,53 +112,6 @@ void Support::setWidgetProps(QWidget* widget, const QString& name)
     XFree(classHint.res_class);
   }
 #endif
-}
-
-char* Support::netWindowManagerName()
-{
-  char* name = NULL;
-
-#if defined(Q_WS_X11)
-  Display* dsp = QX11Info::display();
-  WId root = DefaultRootWindow(dsp);
-
-  unsigned char* retValue1 = NULL;
-  unsigned char* retValue2 = NULL;
-
-  retValue1 = getWindowProperty(root, "_NET_SUPPORTING_WM_CHECK");
-  if (retValue1 == NULL)
-    return NULL;
-
-  WId win = *(reinterpret_cast<unsigned long*>(retValue1));
-
-  retValue2 = getWindowProperty(win, "_NET_SUPPORTING_WM_CHECK");
-  if (retValue2 == NULL)
-  {
-    XFree(retValue1);
-    return NULL;
-  }
-
-  if (win != *(reinterpret_cast<unsigned long*>(retValue2)))
-  {
-    XFree(retValue1);
-    XFree(retValue2);
-    return NULL;
-  }
-
-  XFree(retValue2);
-  retValue2 = NULL;
-
-  retValue2 = getWindowProperty(win, "_NET_WM_NAME");
-  XFree(retValue1);
-  if (retValue2 == NULL)
-    return NULL;
-
-  name = strdup(reinterpret_cast<const char*>(retValue2));
-
-  XFree(retValue2);
-#endif
-
-  return name;
 }
 
 void Support::ghostWindow(WId win)

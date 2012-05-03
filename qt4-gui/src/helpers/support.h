@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2006-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2006-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,11 +51,6 @@ public:
    * @param name The name to be set
    */
   static void setWidgetProps(QWidget* widget, const QString& name);
-
-  /**
-   * Gets the name of the running window manager
-   */
-  static char* netWindowManagerName();
 
   /**
    * Hides the window from the pager and taskbar
