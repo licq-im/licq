@@ -6,6 +6,7 @@ set(settings_SRCS
   general.cpp
   network.cpp
   oneventbox.cpp
+  plugins.cpp
   settingsdlg.cpp
   shortcuts.cpp
   skin.cpp

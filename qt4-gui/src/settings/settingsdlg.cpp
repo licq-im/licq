@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
 #include "events.h"
 #include "general.h"
 #include "network.h"
+#include "plugins.h"
 #include "shortcuts.h"
 #include "skin.h"
 #include "status.h"
@@ -87,6 +88,7 @@ SettingsDlg::SettingsDlg(QWidget* parent)
   mySkinSettings = new Settings::Skin(this);
   myStatusSettings = new Settings::Status(this);
   myShortcutsSettings = new Settings::Shortcuts(this);
+  myPluginsSettings = new Settings::Plugins(this);
 
   QDialog::show();
 }

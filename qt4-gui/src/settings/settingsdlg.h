@@ -36,6 +36,7 @@ namespace Settings
   class Events;
   class General;
   class Network;
+  class Plugins;
   class Shortcuts;
   class Skin;
   class Status;
@@ -68,7 +69,8 @@ public:
     FilterPage,
     NetworkPage,
     StatusPage,
-    RespMsgPage
+    RespMsgPage,
+    PluginsPage,
   };
 
   /**
@@ -133,6 +135,7 @@ private:
   Settings::Events* myEventsSettings;
   Settings::General* myGeneralSettings;
   Settings::Network* myNetworkSettings;
+  Settings::Plugins* myPluginsSettings;
   Settings::Shortcuts* myShortcutsSettings;
   Settings::Skin* mySkinSettings;
   Settings::Status* myStatusSettings;
