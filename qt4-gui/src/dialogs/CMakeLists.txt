@@ -26,7 +26,6 @@ set(dialogs_SRCS
   ownereditdlg.cpp
   ownermanagerdlg.cpp
   phonedlg.cpp
-  plugindlg.cpp
   randomchatdlg.cpp
   refusedlg.cpp
   registeruser.cpp

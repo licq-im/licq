@@ -48,7 +48,6 @@
 #include "dialogs/historydlg.h"
 #include "dialogs/logwindow.h"
 #include "dialogs/ownermanagerdlg.h"
-#include "dialogs/plugindlg.h"
 #include "dialogs/randomchatdlg.h"
 #include "dialogs/searchuserdlg.h"
 #include "dialogs/securitydlg.h"
@@ -174,7 +173,6 @@ SystemMenu::SystemMenu(QWidget* parent)
   myShowEmptyGroupsAction = addAction(tr("Sh&ow Empty Groups"), Config::ContactList::instance(), SLOT(setShowEmptyGroups(bool)));
   myShowEmptyGroupsAction->setCheckable(true);
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
-  myPluginManagerAction = addAction(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
   myKeyManagerAction = addAction(tr("GPG &Key Manager..."), this, SLOT(showGPGKeyManager()));
   if (!Licq::gDaemon.haveGpgSupport())
     myKeyManagerAction->setVisible(false);
@@ -518,11 +516,6 @@ void SystemMenu::showRandomChatSearchDlg()
 void SystemMenu::showSettingsDlg()
 {
   SettingsDlg::show();
-}
-
-void SystemMenu::showPluginDlg()
-{
-  PluginDlg::showPluginDlg();
 }
 
 void SystemMenu::showGPGKeyManager()
