@@ -25,9 +25,7 @@
 
 #include <QAction>
 #include <QDialogButtonBox>
-#include <QMenu>
 #include <QPushButton>
-#include <QStringList>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
@@ -37,6 +35,8 @@
 #include <licq/plugin/pluginmanager.h>
 
 #include "config/iconmanager.h"
+
+#include "contactlist/contactlist.h"
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -63,7 +63,9 @@ void OwnerManagerDlg::showOwnerManagerDlg()
 
 OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   : QDialog(parent),
-    registerUserDlg(NULL)
+    registerUserDlg(NULL),
+    myPendingAdd(false),
+    myPendingRegister(false)
 {
   setAttribute(Qt::WA_DeleteOnClose, true);
   Support::setWidgetProps(this, "AccountDialog");
@@ -72,53 +74,50 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   QVBoxLayout* toplay = new QVBoxLayout(this);
 
   // Add the list box
-  ownerView = new QTreeWidget();
-  QStringList headers;
-  headers << tr("Protocol") << tr("User ID");
-  ownerView->setHeaderLabels(headers);
-  ownerView->setIndentation(0);
-  toplay->addWidget(ownerView);
+  myOwnerView = new QTreeWidget();
+  myOwnerView->setHeaderHidden(true);
+  myOwnerView->setItemsExpandable(false);
+  toplay->addWidget(myOwnerView);
 
   // Add the buttons now
   QDialogButtonBox* buttons = new QDialogButtonBox();
   toplay->addWidget(buttons);
 
-  myAddMenu = new QMenu(this);
-
-  myAddButton = new QPushButton(tr("&Add"));
-  myAddButton->setMenu(myAddMenu);
+  myAddButton = new QPushButton(tr("&Add..."));
   buttons->addButton(myAddButton, QDialogButtonBox::ActionRole);
 
-  registerButton = new QPushButton(tr("&Register..."));
-  buttons->addButton(registerButton, QDialogButtonBox::ActionRole);
+  myRegisterButton = new QPushButton(tr("&Register..."));
+  buttons->addButton(myRegisterButton, QDialogButtonBox::ActionRole);
 
-  modifyButton = new QPushButton(tr("&Modify..."));
-  buttons->addButton(modifyButton, QDialogButtonBox::ActionRole);
+  myModifyButton = new QPushButton(tr("&Modify..."));
+  buttons->addButton(myModifyButton, QDialogButtonBox::ActionRole);
 
-  removeButton = new QPushButton(tr("D&elete..."));
-  buttons->addButton(removeButton, QDialogButtonBox::ActionRole);
+  myRemoveButton = new QPushButton(tr("R&emove..."));
+  buttons->addButton(myRemoveButton, QDialogButtonBox::ActionRole);
 
   closeButton = new QPushButton(tr("&Done"));
   buttons->addButton(closeButton, QDialogButtonBox::RejectRole);
 
   // Connect all the signals
-  connect(ownerView, SIGNAL(itemSelectionChanged()), SLOT(listSelectionChanged()));
-  connect(ownerView, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
-      SLOT(modifyOwner(QTreeWidgetItem*, int)));
-  connect(registerButton, SIGNAL(clicked()), SLOT(registerOwner()));
-  connect(modifyButton, SIGNAL(clicked()), SLOT(modifyOwner()));
-  connect(removeButton, SIGNAL(clicked()), SLOT(removeOwner()));
+  connect(myOwnerView, SIGNAL(itemSelectionChanged()), SLOT(listSelectionChanged()));
+  connect(myOwnerView, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
+      SLOT(itemDoubleClicked(QTreeWidgetItem*, int)));
+  connect(myAddButton, SIGNAL(clicked()), SLOT(addPressed()));
+  connect(myRegisterButton, SIGNAL(clicked()), SLOT(registerPressed()));
+  connect(myModifyButton, SIGNAL(clicked()), SLOT(modify()));
+  connect(myRemoveButton, SIGNAL(clicked()), SLOT(remove()));
   connect(closeButton, SIGNAL(clicked()), SLOT(close()));
-  connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateOwners()));
-  connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateOwners()));
+  connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateList()));
+  connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateList()));
   connect(gGuiSignalManager, SIGNAL(protocolPluginLoaded(unsigned long)),
-      SLOT(updateProtocols()));
+      SLOT(protocolLoaded(unsigned long)));
   connect(gGuiSignalManager, SIGNAL(protocolPluginUnloaded(unsigned long)),
-      SLOT(updateProtocols()));
+      SLOT(updateList()));
+  connect(gGuiSignalManager, SIGNAL(updatedStatus(unsigned long)),
+      SLOT(updateList()));
 
-  // Add the owners to the list now
-  updateOwners();
-  listSelectionChanged();
+  // Add the protocals and owners to the list
+  updateList();
 
   // Show information to the user
   if (Licq::gUserManager.NumOwners() == 0)
@@ -135,90 +134,164 @@ OwnerManagerDlg::~OwnerManagerDlg()
   myInstance = NULL;
 }
 
-void OwnerManagerDlg::updateOwners()
+void OwnerManagerDlg::updateList()
 {
-  ownerView->clear();
+  myOwnerView->clear();
 
-  if (Licq::gUserManager.NumOwners() != 0)
-  {
-    IconManager* iconman = IconManager::instance();
+  IconManager* iconman = IconManager::instance();
 
-    Licq::OwnerListGuard ownerList;
-    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
-    {
-      QString id = owner->accountId().c_str();
-      unsigned long ppid = owner->protocolId();
-      QString proto;
-      Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
-      if (protocol.get() != NULL)
-        proto = protocol->name().c_str();
-
-      QTreeWidgetItem* item = new QTreeWidgetItem(ownerView);
-      item->setIcon(0, iconman->iconForStatus(Licq::User::OnlineStatus, owner->id()));
-      item->setText(0, proto.isNull() ? tr("(Invalid Protocol)") : proto);
-      item->setData(0, Qt::UserRole, QString::number(ppid));
-      item->setText(1, id.isNull() ? tr("(Invalid ID)") : id);
-    }
-  }
-
-  ownerView->resizeColumnToContents(0);
-  ownerView->resizeColumnToContents(1);
-  ownerView->sortByColumn(0, Qt::AscendingOrder);
-
-  updateProtocols();
-}
-
-void OwnerManagerDlg::updateProtocols()
-{
-  bool enableAdd = false;
-  bool enableRegister = false;
-  myAddMenu->clear();
-
+  // Get currently active protocols
   Licq::ProtocolPluginsList protocols;
   Licq::gPluginManager.getProtocolPluginsList(protocols);
   BOOST_FOREACH(Licq::ProtocolPlugin::Ptr protocol, protocols)
   {
     unsigned long ppid = protocol->protocolId();
-    Licq::UserId userId = Licq::gUserManager.ownerUserId(ppid);
 
-    if (ppid == LICQ_PPID)
-      // ICQ protocol found, allow registering if there is no owner
-      enableRegister = !userId.isValid();
+    QTreeWidgetItem* protoItem = new QTreeWidgetItem(myOwnerView);
+    protoItem->setIcon(0, iconman->iconForProtocol(ppid));
+    protoItem->setText(0, QString(tr("%1 (Version: %2)")).arg(protocol->name().c_str())
+        .arg(protocol->version().c_str()));
+    protoItem->setData(0, Qt::UserRole, (unsigned int)ppid);
 
-    if (userId.isValid())
-      // Owner exists, don't allow adding another
-      continue;
+    // Currently only one owner per protocol
+    Licq::UserId ownerId = Licq::gUserManager.ownerUserId(ppid);
+    if (ownerId.isValid())
+    {
+      Licq::OwnerReadGuard owner(ownerId);
 
-    enableAdd = true;
-
-    QAction* a = myAddMenu->addAction(QString::fromLocal8Bit(protocol->name().c_str()) + "...", this, SLOT(addOwner()));
-    a->setIcon(IconManager::instance()->iconForProtocol(ppid));
-    a->setData(QString::number(ppid));
+      QTreeWidgetItem* ownerItem = new QTreeWidgetItem(protoItem);
+      ownerItem->setIcon(0, iconman->iconForStatus(owner->status(), ownerId));
+      ownerItem->setText(0, QString("%1 (%2)")
+          .arg(QString::fromUtf8(ownerId.accountId().c_str()))
+          .arg(owner->statusString(true, false).c_str()));
+      ownerItem->setData(0, Qt::UserRole, QVariant::fromValue(ownerId));
+      ownerItem->setData(0, Qt::UserRole+1, owner->status());
+    }
   }
 
-  myAddButton->setEnabled(enableAdd);
-  registerButton->setEnabled(enableRegister);
+  std::list<std::string> unloadedProtocols;
+  Licq::gPluginManager.getAvailableProtocolPlugins(unloadedProtocols, false);
+  BOOST_FOREACH(std::string protocol, unloadedProtocols)
+  {
+    // Guess protocol id based on name (default is same as ICQ)
+    unsigned long ppid = LICQ_PPID;
+    if (protocol == "msn")
+      ppid = MSN_PPID;
+    else if (protocol == "jabber")
+      ppid = JABBER_PPID;
+
+    QTreeWidgetItem* protoItem = new QTreeWidgetItem(myOwnerView);
+    protoItem->setIcon(0, iconman->iconForStatus(Licq::User::OfflineStatus, Licq::UserId("1", ppid)));
+    protoItem->setText(0, QString(tr("%1 (Not loaded)").arg(protocol.c_str())));
+    protoItem->setData(0, Qt::UserRole, protocol.c_str());
+  }
+
+  myOwnerView->expandAll();
+  myOwnerView->sortByColumn(0, Qt::AscendingOrder);
+
+  listSelectionChanged();
 }
 
 void OwnerManagerDlg::listSelectionChanged()
 {
-  bool hasSelection = !ownerView->selectedItems().isEmpty();
-
-  modifyButton->setEnabled(hasSelection);
-  removeButton->setEnabled(hasSelection);
-}
-
-void OwnerManagerDlg::addOwner()
-{
-  QAction* a = qobject_cast<QAction*>(sender());
-  if (a == NULL)
+  if (myOwnerView->selectedItems().isEmpty())
+  {
+    myAddButton->setEnabled(false);
+    myRegisterButton->setEnabled(false);
+    myModifyButton->setEnabled(false);
+    myRemoveButton->setEnabled(false);
     return;
+  }
 
-  unsigned long ppid = a->data().toUInt();
-  new OwnerEditDlg(ppid, this);
+  const QTreeWidgetItem* item = myOwnerView->selectedItems().front();
+  QVariant data = item->data(0, Qt::UserRole);
+  bool hasChildren = (item->childCount() > 0);
+  switch (data.type())
+  {
+    case QVariant::String: // data is name of unloaded protocol
+      myAddButton->setEnabled(true);
+      myRegisterButton->setEnabled(data.toString() == "icq");
+      myModifyButton->setEnabled(false);
+      myRemoveButton->setEnabled(false);
+      break;
+    case QVariant::UInt: // data is id of loaded protocol
+      myAddButton->setEnabled(!hasChildren);
+      myRegisterButton->setEnabled(!hasChildren && data.toUInt() == LICQ_PPID);
+      myModifyButton->setEnabled(false);
+      myRemoveButton->setEnabled(!hasChildren);
+      break;
+    default: // data is id of owner
+      myAddButton->setEnabled(false);
+      myRegisterButton->setEnabled(false);
+      myModifyButton->setEnabled(true);
+      myRemoveButton->setEnabled(item->data(0, Qt::UserRole+1).toUInt() == Licq::Owner::OfflineStatus);
+  }
 }
 
-void OwnerManagerDlg::registerOwner()
+void OwnerManagerDlg::protocolLoaded(unsigned long protocolId)
+{
+  updateList();
+
+  // We don't have a good way of matching the name of an unloaded protocol
+  // with the new ppid so just assume the first one we get is the right one.
+  if (myPendingAdd)
+  {
+    myPendingAdd = false;
+    addOwner(protocolId);
+  }
+  if (myPendingRegister)
+  {
+    myPendingRegister = false;
+    registerOwner(protocolId);
+  }
+}
+
+void OwnerManagerDlg::addPressed()
+{
+  const QTreeWidgetItem* item = myOwnerView->currentItem();
+  if (item == NULL)
+    return;
+  QVariant data = item->data(0, Qt::UserRole);
+
+  if (data.type() == QVariant::String)
+  {
+    // Protocol needs to be loaded before owner can be added
+    myPendingAdd = true;
+    Licq::gPluginManager.startProtocolPlugin(data.toString().toLatin1().constData());
+  }
+  else
+  {
+    // Protocol is already loaded
+    addOwner(data.toUInt());
+  }
+}
+
+void OwnerManagerDlg::addOwner(unsigned long protocolId)
+{
+  new OwnerEditDlg(protocolId, this);
+}
+
+void OwnerManagerDlg::registerPressed()
+{
+  const QTreeWidgetItem* item = myOwnerView->currentItem();
+  if (item == NULL)
+    return;
+  QVariant data = item->data(0, Qt::UserRole);
+
+  if (data.type() == QVariant::String)
+  {
+    // Protocol needs to be loaded before owner can be registered
+    myPendingRegister = true;
+    Licq::gPluginManager.startProtocolPlugin(data.toString().toLatin1().constData());
+  }
+  else
+  {
+    // Protocol is already loaded
+    registerOwner(data.toUInt());
+  }
+}
+
+void OwnerManagerDlg::registerOwner(unsigned long /* protocolId */)
 {
   Licq::UserId oldOwnerId = Licq::gUserManager.ownerUserId(LICQ_PPID);
   if (oldOwnerId.isValid())
@@ -253,29 +326,55 @@ void OwnerManagerDlg::registerDone(bool success, const Licq::UserId& userId)
   }
 }
 
-void OwnerManagerDlg::modifyOwner()
+void OwnerManagerDlg::modify()
 {
-  modifyOwner(ownerView->currentItem());
+  const QTreeWidgetItem* item = myOwnerView->currentItem();
+  if (item == NULL)
+    return;
+  Licq::UserId ownerId = item->data(0, Qt::UserRole).value<Licq::UserId>();
+  new OwnerEditDlg(ownerId.protocolId(), this);
 }
 
-void OwnerManagerDlg::modifyOwner(QTreeWidgetItem* item, int /* column */)
+void OwnerManagerDlg::itemDoubleClicked(QTreeWidgetItem* item, int /* column */)
 {
   if (item == NULL)
     return;
-
-  OwnerEditDlg* editDlg = new OwnerEditDlg(
-      item->data(0, Qt::UserRole).toString().toULong(), this);
-  connect(editDlg, SIGNAL(destroyed()), SLOT(updateOwners()));
+  QVariant data = item->data(0, Qt::UserRole);
+  switch (data.type())
+  {
+    case QVariant::String: // Unloaded protocol - Load it
+      Licq::gPluginManager.startProtocolPlugin(data.toString().toLatin1().constData());
+      break;
+    case QVariant::UInt: // Loaded protocol - Add owner
+      if (item->childCount() == 0)
+        new OwnerEditDlg(data.toUInt(), this);
+      break;
+    default: // Owner - Modify
+      Licq::UserId ownerId = data.value<Licq::UserId>();
+      new OwnerEditDlg(ownerId.protocolId(), this);
+  }
 }
 
-void OwnerManagerDlg::removeOwner()
+void OwnerManagerDlg::remove()
 {
-  QTreeWidgetItem* item = ownerView->currentItem();
+  const QTreeWidgetItem* item = myOwnerView->currentItem();
   if (item == NULL)
     return;
+  QVariant data = item->data(0, Qt::UserRole);
 
-  if (!QueryYesNo(this, tr("Do you really want to remove account %1?").arg(item->text(1))))
-    return;
+  if (data.type() == QVariant::UInt)
+  {
+    // This is a protocol, unload it
+    Licq::ProtocolPlugin::Ptr plugin = Licq::gPluginManager.getProtocolPlugin(data.toUInt());
+    Licq::gPluginManager.unloadProtocolPlugin(plugin);
+  }
+  else
+  {
+    // Remove owner after checking with user
+    if (!QueryYesNo(this, tr("Do you really want to remove account %1?").arg(item->text(1))))
+      return;
 
-  Licq::gUserManager.RemoveOwner(item->data(0, Qt::UserRole).toString().toULong());
+    Licq::UserId ownerId = data.value<Licq::UserId>();
+    Licq::gUserManager.RemoveOwner(ownerId.protocolId());
+  }
 }

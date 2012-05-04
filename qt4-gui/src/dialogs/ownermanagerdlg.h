@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2004-2011 Licq developers
+ * Copyright (C) 2004-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 
 #include <QDialog>
 
-class QMenu;
 class QPushButton;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -57,13 +56,17 @@ private slots:
 
   /**
    * Add an existing account
+   *
+   * @param protocolId Id of protocol to add owner for
    */
-  void addOwner();
+  void addOwner(unsigned long protocolId);
 
   /**
    * Register a new account
+   *
+   * @param protocolId Id of protocol to register owner with
    */
-  void registerOwner();
+  void registerOwner(unsigned long protocolId);
 
   /**
    * Registration dialog has finished
@@ -76,28 +79,42 @@ private slots:
   /**
    * Edit currently selected account
    */
-  void modifyOwner();
+  void modify();
 
   /**
-   * Edit an account
+   * An item was double clicked
    *
-   * @param item Account item, from list, to edit
+   * @param item Protocol or account item from list
    * @param column List column, not used
    */
-  void modifyOwner(QTreeWidgetItem* item, int column = 0);
+  void itemDoubleClicked(QTreeWidgetItem* item, int column = 0);
 
   /**
-   * Remove currently select account
+   * Remove currently select account or plugin
    */
-  void removeOwner();
+  void remove();
 
   /**
-   * Refresh account list
+   * Refresh list of protocols and accounts
    */
-  void updateOwners();
+  void updateList();
 
-  /// Refresh protocol list
-  void updateProtocols();
+  /**
+   * A protocol has been loaded
+   *
+   * @param protocolId Id of loaded protocol
+   */
+  void protocolLoaded(unsigned long protocolId);
+
+  /**
+   * Add button was pressed
+   */
+  void addPressed();
+
+  /**
+   * Register button was pressed
+   */
+  void registerPressed();
 
 private:
   static OwnerManagerDlg* myInstance;
@@ -117,13 +134,15 @@ private:
 
   RegisterUserDlg* registerUserDlg;
 
-  QTreeWidget* ownerView;
-  QMenu* myAddMenu;
+  QTreeWidget* myOwnerView;
   QPushButton* myAddButton;
-  QPushButton* registerButton;
-  QPushButton* modifyButton;
-  QPushButton* removeButton;
+  QPushButton* myRegisterButton;
+  QPushButton* myModifyButton;
+  QPushButton* myRemoveButton;
   QPushButton* closeButton;
+
+  bool myPendingAdd;
+  bool myPendingRegister;
 };
 
 } // namespace LicqQtGui
