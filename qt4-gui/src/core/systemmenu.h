@@ -156,12 +156,10 @@ private:
   QAction* myShowOfflineAction;
   QAction* myShowEmptyGroupsAction;
   QAction* myOptionsAction;
+  QAction* myAccountManagerAction;
   QAction* myKeyManagerAction;
   QAction* mySaveOptionsAction;
   QAction* myShutdownAction;
-
-  // Actions on system menu
-  QAction* myAccountManagerAction;
 
   // Actions on user menu
   QAction* myAddGroupAction;
@@ -201,7 +199,6 @@ private:
   QActionGroup* myUserGroupActions;
   QActionGroup* myFollowMeActions;
 
-  QAction* myOwnerAdmSeparator;
   QAction* myGroupSeparator;
   QAction* myStatusSeparator;
   QAction* myIcqFollowMeSeparator;

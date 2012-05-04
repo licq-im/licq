@@ -73,8 +73,6 @@ SystemMenu::SystemMenu(QWidget* parent)
   myOwnerAdmMenu = new QMenu(tr("S&ystem Functions"), this);
   myOwnerAdmMenu->addAction(tr("&View System Messages..."), gLicqGui, SLOT(showAllOwnerEvents()));
   myOwnerAdmMenu->addSeparator();
-  myOwnerAdmSeparator = myOwnerAdmMenu->addSeparator();
-  myAccountManagerAction = myOwnerAdmMenu->addAction(tr("&Account Manager..."), this, SLOT(showOwnerManagerDlg()));
 
   // Sub menu User Functions
   myUserAdmMenu = new QMenu(tr("User &Functions"), this);
@@ -173,6 +171,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myShowEmptyGroupsAction = addAction(tr("Sh&ow Empty Groups"), Config::ContactList::instance(), SLOT(setShowEmptyGroups(bool)));
   myShowEmptyGroupsAction->setCheckable(true);
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
+  myAccountManagerAction = addAction(tr("&Accounts..."), this, SLOT(showOwnerManagerDlg()));
   myKeyManagerAction = addAction(tr("GPG &Key Manager..."), this, SLOT(showGPGKeyManager()));
   if (!Licq::gDaemon.haveGpgSupport())
     myKeyManagerAction->setVisible(false);
@@ -317,7 +316,7 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
       protocol->capabilities(), this);
   QMenu* ownerAdmin = newOwner->getOwnerAdmMenu();
   QMenu* ownerStatus = newOwner->getStatusMenu();
-  myOwnerAdmMenu->insertMenu(myOwnerAdmSeparator, ownerAdmin);
+  myOwnerAdmMenu->addMenu(ownerAdmin);
   myStatusMenu->insertMenu(myStatusSeparator, ownerStatus);
 
   if (myOwnerData.size() < 1)
@@ -327,7 +326,7 @@ void SystemMenu::addOwner(const Licq::UserId& userId)
     ownerAdmin->menuAction()->setVisible(false);
 
     foreach (QAction* a, ownerAdmin->actions())
-      myOwnerAdmMenu->insertAction(myOwnerAdmSeparator, a);
+      myOwnerAdmMenu->addAction(a);
   }
 
   if (myOwnerData.size() == 1)
@@ -371,7 +370,7 @@ void SystemMenu::removeOwner(const Licq::UserId& userId)
     QMenu* lastOwnerAdm = lastOwner->getOwnerAdmMenu();
     lastOwnerAdm->menuAction()->setVisible(false);
     foreach (QAction* a, lastOwnerAdm->actions())
-      myOwnerAdmMenu->insertAction(myOwnerAdmSeparator, a);
+      myOwnerAdmMenu->addAction(a);
   }
 }
 
