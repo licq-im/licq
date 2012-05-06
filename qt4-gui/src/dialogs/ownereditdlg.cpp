@@ -87,6 +87,8 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
 
 #undef ADDWIDGET
 
+  lay->setRowStretch(i++, 2);
+
   QDialogButtonBox* buttons = new QDialogButtonBox();
   buttons->addButton(QDialogButtonBox::Ok);
   buttons->addButton(QDialogButtonBox::Cancel);
