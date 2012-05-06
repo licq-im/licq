@@ -34,9 +34,7 @@ class IcqOwner : public Owner, public virtual IcqUser
 public:
   void SetWebAware(bool b)     {  m_bWebAware = b; save(SaveOwnerInfo); }
   void SetWebAwareStatus(char c)                { SetWebAware(c); }
-  void SetHideIp(bool b)       {  m_bHideIp = b; save(SaveOwnerInfo); }
   bool WebAware() const                         { return m_bWebAware; }
-  bool HideIp() const                           { return m_bHideIp; }
 
   /// Current random chat group (0=none)
   unsigned randomChatGroup() const              { return myRandomChatGroup; }
@@ -62,7 +60,6 @@ protected:
   virtual ~IcqOwner();
 
   bool m_bWebAware;
-  bool m_bHideIp;
   unsigned myRandomChatGroup;
 
   bool myAutoUpdateInfo;

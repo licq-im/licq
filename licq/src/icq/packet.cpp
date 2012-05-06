@@ -3931,13 +3931,11 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const string& about)
 //-----Meta_SetSecurityInfo--------------------------------------------------
 CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
     bool bAuthorization,
-    bool bHideIp,
     bool bWebAware)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_SECURITYxSET;
   m_nAuthorization = bAuthorization ? 0 : 1;
-  m_nHideIp =  bHideIp ? 1 : 0;
   m_nWebAware = bWebAware ? 1 : 0;
 
 

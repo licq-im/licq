@@ -72,9 +72,6 @@ SecurityDlg::SecurityDlg(QWidget* parent)
         "their contact list."), o->GetAuthorization());
   ADD_CHECK(chkWebAware, tr("&Web Presence"), tr("Web Presence allows users to"
         " see\nif you are online through your web indicator."), o->WebAware());
-  ADD_CHECK(chkHideIp, tr("&Hide IP"), tr("Hide IP stops users from seeing your"
-        " IP address.\nIt doesn't guarantee it will be hidden though."),
-      o->HideIp());
 #undef ADD_CHECK
 
   top_lay->addWidget(boxOptions);
@@ -94,7 +91,7 @@ SecurityDlg::SecurityDlg(QWidget* parent)
 
 void SecurityDlg::ok()
 {
-  bool auth, web, ip;
+  bool auth, web;
   bool changed;
   {
     Licq::IcqOwnerReadGuard o;
@@ -116,9 +113,8 @@ void SecurityDlg::ok()
 
     auth = chkAuthorization->isChecked();
     web = chkWebAware->isChecked();
-    ip = chkHideIp->isChecked();
 
-    changed = (auth != o->GetAuthorization() || web != o->WebAware() || ip != o->HideIp());
+    changed = (auth != o->GetAuthorization() || web != o->WebAware());
   }
 
   if (changed)
@@ -130,7 +126,7 @@ void SecurityDlg::ok()
 
     setWindowTitle(title + " [" + tr("Setting...") + "]");
 
-    eSecurityInfo = gLicqDaemon->icqSetSecurityInfo(auth, ip, web);
+    eSecurityInfo = gLicqDaemon->icqSetSecurityInfo(auth, web);
 
     return; // prevents the dialog from closing
   }

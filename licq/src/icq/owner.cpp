@@ -46,7 +46,6 @@ Owner::Owner(const Licq::UserId& id)
   conf.setSection("user");
 
   conf.get("WebPresence", m_bWebAware, false);
-  conf.get("HideIP", m_bHideIp, false);
   conf.get("RCG", myRandomChatGroup, 0);
 
   unsigned long sstime;
@@ -103,7 +102,6 @@ void Owner::saveOwnerInfo()
   IniFile& conf(userConf());
 
   conf.set("WebPresence", WebAware());
-  conf.set("HideIP", HideIp());
   conf.set("RCG", myRandomChatGroup);
   conf.set("SSTime", (unsigned long)m_nSSTime);
   conf.set("SSCount", mySsCount);

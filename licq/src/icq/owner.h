@@ -59,7 +59,6 @@ private:
   virtual void saveOwnerInfo();
 
   bool m_bWebAware;
-  bool m_bHideIp;
   unsigned myRandomChatGroup;
   unsigned mySsCount;
   time_t m_nSSTime;

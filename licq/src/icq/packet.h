@@ -1161,17 +1161,14 @@ class CPU_Meta_SetSecurityInfo : public CPU_CommonFamily
 {
 public:
   CPU_Meta_SetSecurityInfo(bool bAuthorization,
-                           bool bHideIp,
                            bool bWebAware);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 
   bool Authorization()  { return m_nAuthorization == 0; }
-  bool HideIp()         { return m_nHideIp == 1; }
   bool WebAware()       { return m_nWebAware == 1; }
 protected:
   unsigned short m_nMetaCommand;
   char m_nAuthorization;
-  char m_nHideIp;
   char m_nWebAware;
 };
 

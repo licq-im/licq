@@ -180,7 +180,7 @@ public:
   unsigned long icqSetMoreInfo(unsigned short age, char gender,
       const std::string& homepage, unsigned short birthYear, char birthMonth,
       char birthDay, char language1, char language2, char language3);
-  unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
+  unsigned long icqSetSecurityInfo(bool bAuthorize, bool bWebAware);
   unsigned long icqSetInterestsInfo(const Licq::UserCategoryMap& interests);
   unsigned long icqSetOrgBackInfo(const Licq::UserCategoryMap& orgs,
       const Licq::UserCategoryMap& background);

@@ -825,7 +825,7 @@ void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const string& messa
 }
 
 //-----icqSetSecurityInfo----------------------------------------------------
-unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
+unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bWebAware)
 {
   // Since ICQ5.1, the status change packet is sent first, which means it is
   // assumed that the set security info packet works.
@@ -835,7 +835,6 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, boo
     o->SetEnableSave(false);
     o->SetAuthorization(bAuthorize);
     o->SetWebAware(bWebAware);
-    o->SetHideIp(bHideIp);
     o->SetEnableSave(true);
     o->save(Licq::User::SaveLicqInfo);
     s = addStatusFlags(icqStatusFromStatus(o->status()), *o);
@@ -844,7 +843,7 @@ unsigned long IcqProtocol::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, boo
   icqSetStatus(s);
 
   // Now send the set security info packet
-    CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
+    CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bWebAware);
   gLog.info(tr("Updating security info (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
   Licq::Event* e = SendExpectEvent_Server(p, NULL);
     if (e != NULL)

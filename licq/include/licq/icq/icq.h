@@ -113,7 +113,7 @@ public:
   virtual unsigned long icqSetMoreInfo(unsigned short age, char gender,
       const std::string& homepage, unsigned short birthYear, char birthMonth,
       char birthDay, char language1, char language2, char language3) = 0;
-  virtual unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware) = 0;
+  virtual unsigned long icqSetSecurityInfo(bool bAuthorize, bool bWebAware) = 0;
   virtual unsigned long icqSetInterestsInfo(const Licq::UserCategoryMap& interests) = 0;
   virtual unsigned long icqSetOrgBackInfo(const Licq::UserCategoryMap& orgs,
       const Licq::UserCategoryMap& background) = 0;
