@@ -69,7 +69,6 @@ public:
     FilterPage,
     NetworkPage,
     StatusPage,
-    RespMsgPage,
     PluginsPage,
   };
 

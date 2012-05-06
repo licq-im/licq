@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -301,7 +301,7 @@ void AwayMsgDlg::selectMessage()
   QString text = a->data().toString();
 
   if (text.isNull()) // User chose "Edit Items"
-    SettingsDlg::show(SettingsDlg::RespMsgPage);
+    SettingsDlg::show(SettingsDlg::StatusPage);
   else
     myAwayMsg->setText(text);
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2010 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,8 @@
 
 #include <config.h>
 
-#include <map>
 #include <QObject>
 
-class QCheckBox;
 class QComboBox;
 class QGridLayout;
 class QGroupBox;
@@ -78,13 +76,8 @@ private:
   // Widgets for status settings
   QGroupBox* myGeneralBox;
   QVBoxLayout* myGeneralLayout;
-  QVBoxLayout* myPageStatusLayout;
-  QGroupBox* myAutoLogonBox;
   QGroupBox* myAutoAwayBox;
-  QGridLayout* myAutoLogonLayout;
   QGridLayout* myAutoAwayLayout;
-  std::map<unsigned long, QComboBox*> myAutoLogonCombo;
-  std::map<unsigned long, QCheckBox*> myAutoLogonInvisibleCheck;
   QLabel* myAutoAwayLabel;
   QLabel* myAutoNaLabel;
   QLabel* myAutoOfflineLabel;
@@ -95,7 +88,6 @@ private:
   QComboBox* myAutoNaMessCombo;
 
   // Widgets for response message settings
-  QVBoxLayout* myPageRespMsgLayout;
   QGroupBox* myDefRespMsgBox;
   QGridLayout* myDefRespMsgLayout;
   QLabel* mySarGroupLabel;

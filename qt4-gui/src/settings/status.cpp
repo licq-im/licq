@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 
 #include <boost/foreach.hpp>
 
-#include <QCheckBox>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QGroupBox>
@@ -33,10 +32,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-#include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
-#include <licq/contactlist/usermanager.h>
-#include <licq/plugin/pluginmanager.h>
 #include <licq/sarmanager.h>
 
 #include "config/general.h"
@@ -58,59 +54,12 @@ Settings::Status::Status(SettingsDlg* parent)
 {
   parent->addPage(SettingsDlg::StatusPage, createPageStatus(parent),
       tr("Status"));
-  parent->addPage(SettingsDlg::RespMsgPage, createPageRespMsg(parent),
-      tr("Auto Response"), SettingsDlg::StatusPage);
 
   load();
 }
 
 QWidget* Settings::Status::createPageStatus(QWidget* parent)
 {
-  QWidget* w = new QWidget(parent);
-  myPageStatusLayout = new QVBoxLayout(w);
-  myPageStatusLayout->setContentsMargins(0, 0, 0, 0);
-
-  myAutoLogonBox = new QGroupBox(tr("Startup"));
-  myAutoLogonLayout = new QGridLayout(myAutoLogonBox);
-
-  {
-    Licq::OwnerListGuard ownerList;
-    int line = 0;
-    BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
-    {
-      unsigned long protocolId = owner->protocolId();
-      Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(protocolId);
-      if (protocol.get() == NULL)
-        continue;
-
-      QLabel* autoLogonLabel = new QLabel(QString(protocol->name().c_str()) + ": ");
-      myAutoLogonLayout->addWidget(autoLogonLabel, line, 0);
-
-#define ADD_STATUS(status, cond) \
-      if (cond) \
-        myAutoLogonCombo[protocolId]->addItem(User::statusToString(status).c_str(), status);
-
-      myAutoLogonCombo[protocolId] = new QComboBox();
-      ADD_STATUS(User::OfflineStatus, true);
-      ADD_STATUS(User::OnlineStatus, true);
-      ADD_STATUS(User::OnlineStatus | User::AwayStatus, true);
-      ADD_STATUS(User::OnlineStatus | User::NotAvailableStatus, protocolId != MSN_PPID);
-      ADD_STATUS(User::OnlineStatus | User::OccupiedStatus, protocolId != JABBER_PPID);
-      ADD_STATUS(User::OnlineStatus | User::DoNotDisturbStatus, protocolId != MSN_PPID);
-      ADD_STATUS(User::OnlineStatus | User::FreeForChatStatus, protocolId != MSN_PPID);
-#undef ADD_STATUS
-      myAutoLogonCombo[protocolId]->setToolTip(tr("Automatically log on when first starting up."));
-      myAutoLogonLayout->addWidget(myAutoLogonCombo[protocolId], line, 1);
-
-      myAutoLogonInvisibleCheck[protocolId] = new QCheckBox(tr("Invisible"));
-      if (protocolId == JABBER_PPID)
-        myAutoLogonInvisibleCheck[protocolId]->setEnabled(false);
-      myAutoLogonLayout->addWidget(myAutoLogonInvisibleCheck[protocolId], line, 2);
-
-      ++line;
-    }
-  }
-
   myAutoAwayBox = new QGroupBox(tr("Auto Change Status"));
   myAutoAwayLayout = new QGridLayout(myAutoAwayBox);
   myAutoAwayLayout->setColumnMinimumWidth(2, 20);
@@ -150,22 +99,8 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
 
   buildAutoStatusCombos(1);
 
-  myPageStatusLayout->addWidget(myAutoLogonBox);
-  myPageStatusLayout->addWidget(myAutoAwayBox);
-  myPageStatusLayout->addStretch(1);
-
-  return w;
-}
-
-QWidget* Settings::Status::createPageRespMsg(QWidget* parent)
-{
-  QWidget* w = new QWidget(parent);
-  myPageRespMsgLayout = new QVBoxLayout(w);
-  myPageRespMsgLayout->setContentsMargins(0, 0, 0, 0);
 
   myDefRespMsgBox = new QGroupBox(tr("Default Auto Response Messages"));
-  myPageRespMsgLayout->addWidget(myDefRespMsgBox);
-
   myDefRespMsgLayout = new QGridLayout(myDefRespMsgBox);
 
   mySarGroupLabel = new QLabel(tr("Status:"));
@@ -210,6 +145,12 @@ QWidget* Settings::Status::createPageRespMsg(QWidget* parent)
 
   sarGroupChanged(SarManager::AwayList);
 
+
+  QWidget* w = new QWidget(parent);
+  QVBoxLayout* mainLayout = new QVBoxLayout(w);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->addWidget(myAutoAwayBox);
+  mainLayout->addWidget(myDefRespMsgBox);
   return w;
 }
 
@@ -298,21 +239,6 @@ void Settings::Status::load()
   myAutoOfflineSpin->setValue(generalConfig->autoOfflineTime());
   myAutoAwayMessCombo->setCurrentIndex(generalConfig->autoAwayMess());
   myAutoNaMessCombo->setCurrentIndex(generalConfig->autoNaMess());
-
-  Licq::OwnerListGuard ownerList;
-  BOOST_FOREACH(const Licq::Owner* owner, **ownerList)
-  {
-    Licq::OwnerReadGuard o(owner);
-    unsigned long protocolId = o->protocolId();
-
-    // In case someone added an owner since we created the page
-    if (myAutoLogonCombo.find(protocolId) == myAutoLogonCombo.end())
-      continue;
-
-    int item = myAutoLogonCombo[protocolId]->findData(o->startupStatus() & ~User::InvisibleStatus);
-    myAutoLogonCombo[protocolId]->setCurrentIndex(item);
-    myAutoLogonInvisibleCheck[protocolId]->setChecked(o->startupStatus() & User::InvisibleStatus);
-  }
 }
 
 void Settings::Status::apply()
@@ -328,27 +254,4 @@ void Settings::Status::apply()
   generalConfig->setAutoNaMess(myAutoNaMessCombo->currentIndex());
 
   generalConfig->blockUpdates(false);
-
-  Licq::OwnerListGuard ownerList;
-  BOOST_FOREACH(Licq::Owner* owner, **ownerList)
-  {
-    Licq::OwnerWriteGuard o(owner);
-    unsigned long protocolId = o->protocolId();
-
-    // In case someone added an owner since we created the page
-    if (myAutoLogonCombo.find(protocolId) == myAutoLogonCombo.end())
-      continue;
-
-    int index = myAutoLogonCombo[protocolId]->currentIndex();
-    unsigned long status = myAutoLogonCombo[protocolId]->itemData(index).toUInt();
-    if (status != User::OfflineStatus && myAutoLogonInvisibleCheck[protocolId]->isChecked())
-      status |= User::InvisibleStatus;
-
-    // Don't trigger unnecessary updates
-    if (status == o->startupStatus())
-      continue;
-
-    o->setStartupStatus(status);
-    o->save(Licq::Owner::SaveOwnerInfo);
-  }
 }
