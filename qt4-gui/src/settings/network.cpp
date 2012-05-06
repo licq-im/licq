@@ -31,7 +31,6 @@
 #include <QVBoxLayout>
 
 #include <licq/daemon.h>
-#include <licq/icq/owner.h>
 
 #include "settingsdlg.h"
 
@@ -139,21 +138,8 @@ QWidget* Settings::Network::createPageNetwork(QWidget* parent)
   connect(myProxyAuthEnabledCheck, SIGNAL(toggled(bool)), myProxyPasswdEdit, SLOT(setEnabled(bool)));
 
 
-  myIcqConnectionBox = new QGroupBox(tr("Connection"));
-  myIcqConnectionLayout = new QVBoxLayout(myIcqConnectionBox);
-
-  myReconnectAfterUinClashCheck = new QCheckBox(tr("Reconnect after Uin clash"));
-  myReconnectAfterUinClashCheck->setToolTip(tr("Licq can reconnect you when you got "
-        "disconnected because your Uin was used "
-        "from another location. Check this if you "
-        "want Licq to reconnect automatically."));
-
-  myIcqConnectionLayout->addWidget(myReconnectAfterUinClashCheck);
-
-
   myPageNetworkLayout->addWidget(myFirewallBox);
   myPageNetworkLayout->addWidget(myProxyBox);
-  myPageNetworkLayout->addWidget(myIcqConnectionBox);
   myPageNetworkLayout->addStretch(1);
 
   return w;
@@ -226,14 +212,6 @@ void Settings::Network::load()
   myProxyLoginEdit->setText(Licq::gDaemon.proxyLogin().c_str());
   myProxyPasswdEdit->setText(Licq::gDaemon.proxyPasswd().c_str());
 
-  {
-    Licq::IcqOwnerReadGuard o;
-    if (o.isLocked())
-      myReconnectAfterUinClashCheck->setChecked(o->reconnectAfterUinClash());
-    else
-      myIcqConnectionBox->setVisible(false);
-  }
-
   if (!Licq::gDaemon.proxyEnabled())
   {
     myProxyTypeCombo->setEnabled(false);
@@ -261,10 +239,4 @@ void Settings::Network::apply()
   Licq::gDaemon.setProxyAuthEnabled(myProxyAuthEnabledCheck->isChecked());
   Licq::gDaemon.setProxyLogin(myProxyLoginEdit->text().toLocal8Bit().constData());
   Licq::gDaemon.setProxyPasswd(myProxyPasswdEdit->text().toLocal8Bit().constData());
-
-  {
-    Licq::IcqOwnerWriteGuard o;
-    if (o.isLocked())
-      o->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
-  }
 }

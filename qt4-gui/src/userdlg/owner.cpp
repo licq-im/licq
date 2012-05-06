@@ -28,6 +28,7 @@
 #include <QVBoxLayout>
 
 #include <licq/contactlist/owner.h>
+#include <licq/icq/owner.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 
@@ -104,6 +105,37 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   accountLayout->addWidget(myAutoLogonInvisibleCheck, 3, 2);
 
 
+  QGroupBox* icqBox;
+  if (myProtocolId == LICQ_PPID)
+  {
+    icqBox = new QGroupBox(tr("ICQ"));
+    QGridLayout* icqLayout = new QGridLayout(icqBox);
+
+    mySSListCheck = new QCheckBox(tr("Use server side contact list"));
+    mySSListCheck->setToolTip(tr("Store your contacts on the server so they are accessible from different locations and/or programs"));
+    icqLayout->addWidget(mySSListCheck, 0, 0);
+
+    myReconnectAfterUinClashCheck = new QCheckBox(tr("Reconnect after Uin clash"));
+    myReconnectAfterUinClashCheck->setToolTip(tr("Licq can reconnect you when you got "
+        "disconnected because your Uin was used "
+        "from another location. Check this if you "
+        "want Licq to reconnect automatically."));
+    icqLayout->addWidget(myReconnectAfterUinClashCheck, 1, 0);
+
+    myAutoUpdateInfoCheck = new QCheckBox(tr("Auto update contact information"));
+    myAutoUpdateInfoCheck->setToolTip(tr("Automatically update users' server stored information."));
+    icqLayout->addWidget(myAutoUpdateInfoCheck, 0, 1);
+
+    myAutoUpdateInfoPluginsCheck = new QCheckBox(tr("Auto update info plugins"));
+    myAutoUpdateInfoPluginsCheck->setToolTip(tr("Automatically update users' Phone Book and Picture."));
+    icqLayout->addWidget(myAutoUpdateInfoPluginsCheck, 1, 1);
+
+    myAutoUpdateStatusPluginsCheck = new QCheckBox(tr("Auto update status plugins"));
+    myAutoUpdateStatusPluginsCheck->setToolTip(tr("Automatically update users' Phone \"Follow Me\", File Server and ICQphone status."));
+    icqLayout->addWidget(myAutoUpdateStatusPluginsCheck, 2, 1);
+  }
+
+
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myProtocolId);
   if (protocol.get() != NULL)
   {
@@ -116,6 +148,8 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   QVBoxLayout* mainLayout = new QVBoxLayout(w);
   mainLayout->setContentsMargins(0, 0, 0, 0);
   mainLayout->addWidget(accountBox);
+  if (myProtocolId == LICQ_PPID)
+    mainLayout->addWidget(icqBox);
   mainLayout->addStretch(1);
   return w;
 }
@@ -134,6 +168,16 @@ void UserPages::Owner::load(const Licq::User* user)
   int item = myAutoLogonCombo->findData(owner->startupStatus() & ~User::InvisibleStatus);
   myAutoLogonCombo->setCurrentIndex(item);
   myAutoLogonInvisibleCheck->setChecked(owner->startupStatus() & User::InvisibleStatus);
+
+  if (myProtocolId == LICQ_PPID)
+  {
+    const Licq::IcqOwner* icqowner = dynamic_cast<const Licq::IcqOwner*>(owner);
+    mySSListCheck->setChecked(icqowner->useServerContactList());
+    myReconnectAfterUinClashCheck->setChecked(icqowner->reconnectAfterUinClash());
+    myAutoUpdateInfoCheck->setChecked(icqowner->autoUpdateInfo());
+    myAutoUpdateInfoPluginsCheck->setChecked(icqowner->autoUpdateInfoPlugins());
+    myAutoUpdateStatusPluginsCheck->setChecked(icqowner->autoUpdateStatusPlugins());
+  }
 }
 
 void UserPages::Owner::apply(Licq::User* user)
@@ -149,6 +193,16 @@ void UserPages::Owner::apply(Licq::User* user)
   if (status != User::OfflineStatus && myAutoLogonInvisibleCheck->isChecked())
     status |= User::InvisibleStatus;
   owner->setStartupStatus(status);
+
+  if (myProtocolId == LICQ_PPID)
+  {
+    Licq::IcqOwner* icqowner = dynamic_cast<Licq::IcqOwner*>(owner);
+    icqowner->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
+    icqowner->setUseServerContactList(mySSListCheck->isChecked());
+    icqowner->setAutoUpdateInfo(myAutoUpdateInfoCheck->isChecked());
+    icqowner->setAutoUpdateInfoPlugins(myAutoUpdateInfoPluginsCheck->isChecked());
+    icqowner->setAutoUpdateStatusPlugins(myAutoUpdateStatusPluginsCheck->isChecked());
+  }
 }
 
 void UserPages::Owner::userUpdated(const Licq::User* user, unsigned long subSignal)

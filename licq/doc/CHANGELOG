@@ -9,6 +9,7 @@ o Plugin API: Use UTF-8 for all event messages and user data
 o Qt4-Gui: Moved debug level menu to log window
 o Qt4-Gui: Add settings page for editing event filter rules
 o Qt4-Gui: Add a header in chat history for each new day
+o Qt4-Gui: Move per-account settings to user dialog
 
 
 New in 1.6.1

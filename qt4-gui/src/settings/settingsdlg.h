@@ -55,7 +55,6 @@ public:
     UnknownPage = -1,
     ContactListPage,
     SkinPage,
-    ColumnsPage,
     DockingPage,
     FontsPage,
     MainwinShortcutsPage,

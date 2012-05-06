@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2009,2011 Licq developers
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,13 +67,6 @@ private:
   QWidget* createPageContactList(QWidget* parent);
 
   /**
-   * Setup the contact list columns page.
-   *
-   * @return a widget with the columns settings
-   */
-  QWidget* createPageColumns(QWidget* parent);
-
-  /**
    * Setup the contact info page.
    *
    * @return a widget with the contact info settings
@@ -90,7 +83,6 @@ private:
   QLabel* mySortByLabel;
   QLineEdit* myFrameStyleEdit;
   QComboBox* mySortByCombo;
-  QCheckBox* mySSListCheck;
   QCheckBox* myGridLinesCheck;
   QCheckBox* myHeaderCheck;
   QCheckBox* myShowDividersCheck;
@@ -116,7 +108,6 @@ private:
 #endif
 
   // Widgets for contact list column settings
-  QVBoxLayout* myPageColumnsLayout;
   QGroupBox* myColumnsBox;
   QGridLayout* myColumnsLayout;
   QLabel* myColWidthLabel;
@@ -130,11 +121,8 @@ private:
   QLineEdit* myColFormatEdit[MAX_COLUMNCOUNT];
 
   // Widgets for contact info settings
-  QVBoxLayout* myPageContactInfoLayout;
   QGroupBox* myPopupBox;
-  QGroupBox* myAutoUpdateBox;
   QGridLayout* myPopupLayout;
-  QVBoxLayout* myAutoUpdateLayout;
   QCheckBox* myPopupPictureCheck;
   QCheckBox* myPopupAliasCheck;
   QCheckBox* myPopupAuthCheck;
@@ -150,9 +138,6 @@ private:
   QCheckBox* myPopupIdleTimeCheck;
   QCheckBox* myPopupLocalTimeCheck;
   QCheckBox* myPopupIdCheck;
-  QCheckBox* myAutoUpdateInfoCheck;
-  QCheckBox* myAutoUpdateInfoPluginsCheck;
-  QCheckBox* myAutoUpdateStatusPluginsCheck;
 };
 
 } // namespace Settings

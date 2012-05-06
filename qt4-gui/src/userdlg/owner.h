@@ -69,7 +69,7 @@ private:
 
   unsigned long myProtocolId;
 
-  // Settings page
+  // Account Settings
   QLineEdit* myAccountEdit;
   QLineEdit* myPasswordEdit;
   QCheckBox* mySavePwdCheck;
@@ -77,6 +77,13 @@ private:
   QSpinBox* myServerPortSpin;
   QComboBox* myAutoLogonCombo;
   QCheckBox* myAutoLogonInvisibleCheck;
+
+  // ICQ Settings
+  QCheckBox* myReconnectAfterUinClashCheck;
+  QCheckBox* mySSListCheck;
+  QCheckBox* myAutoUpdateInfoCheck;
+  QCheckBox* myAutoUpdateInfoPluginsCheck;
+  QCheckBox* myAutoUpdateStatusPluginsCheck;
 };
 
 } // namespace UserPages
