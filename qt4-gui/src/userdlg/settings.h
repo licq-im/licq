@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2008-2010 Licq developers
+ * Copyright (C) 2008-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ class Settings : public QObject
   Q_OBJECT
 
 public:
-  Settings(bool isOwner, UserDlg* parent);
+  Settings(UserDlg* parent);
   virtual ~Settings() {}
 
   void load(const Licq::User* user);
@@ -109,8 +109,6 @@ private:
    * @return a widget with the groups selection
    */
   QWidget* createPageGroups(QWidget* parent);
-
-  bool myIsOwner;
 
   // Widgets for on modes page
   QGridLayout* myPageModesLayout;

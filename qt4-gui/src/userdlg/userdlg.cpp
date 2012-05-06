@@ -122,14 +122,18 @@ UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
   top_lay->addLayout(buttonsLayout);
 
   myUserInfo = new UserPages::Info(myIsOwner, myUserId.protocolId(), this);
-  myUserSettings = new UserPages::Settings(myIsOwner, this);
+  if (!myIsOwner)
+    myUserSettings = new UserPages::Settings(this);
+  else
+    myUserSettings = NULL;
 
   {
      Licq::UserReadGuard user(myUserId);
     if (user.isLocked())
     {
       myUserInfo->load(*user);
-      myUserSettings->load(*user);
+      if (!myIsOwner)
+        myUserSettings->load(*user);
     }
     setBasicTitle(*user);
   }
@@ -224,7 +228,8 @@ void UserDlg::apply()
     user->SetEnableSave(false);
 
     myUserInfo->apply(*user);
-    myUserSettings->apply(*user);
+    if (!myIsOwner)
+      myUserSettings->apply(*user);
 
     user->SetEnableSave(true);
     user->save(Licq::User::SaveAll);
@@ -232,7 +237,8 @@ void UserDlg::apply()
 
   // Special stuff that must be called without holding lock
   myUserInfo->apply2(myUserId);
-  myUserSettings->apply2(myUserId);
+  if (!myIsOwner)
+    myUserSettings->apply2(myUserId);
 
   // Notify all plugins (including ourselves)
   Licq::gUserManager.notifyUserUpdated(myUserId, Licq::PluginSignal::UserBasic);
@@ -254,7 +260,8 @@ void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
     setBasicTitle(*user);
 
   myUserInfo->userUpdated(*user, subSignal);
-  myUserSettings->userUpdated(*user, subSignal);
+  if (!myIsOwner)
+    myUserSettings->userUpdated(*user, subSignal);
 }
 
 void UserDlg::listUpdated(unsigned long subSignal, int /* argument */,

@@ -54,14 +54,9 @@ using Licq::User;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserPages::Settings */
 
-UserPages::Settings::Settings(bool isOwner, UserDlg* parent)
-  : QObject(parent),
-    myIsOwner(isOwner)
+UserPages::Settings::Settings(UserDlg* parent)
+  : QObject(parent)
 {
-  // No settings here for owner so don't create anything
-  if (myIsOwner)
-    return;
-
   parent->addPage(UserDlg::SettingsPage, createPageSettings(parent),
       tr("Settings"));
   parent->addPage(UserDlg::StatusPage, createPageStatus(parent),
@@ -253,9 +248,6 @@ QWidget* UserPages::Settings::createPageGroups(QWidget* parent)
 
 void UserPages::Settings::load(const Licq::User* user)
 {
-  if (myIsOwner)
-    return;
-
   myAcceptInAwayCheck->setChecked(user->AcceptInAway());
   myAcceptInNaCheck->setChecked(user->AcceptInNA());
   myAcceptInOccupiedCheck->setChecked(user->AcceptInOccupied());
@@ -363,9 +355,6 @@ void UserPages::Settings::load(const Licq::User* user)
 
 void UserPages::Settings::apply(Licq::User* user)
 {
-  if (myIsOwner)
-    return;
-
   // Set misc modes
   user->SetAcceptInAway(myAcceptInAwayCheck->isChecked());
   user->SetAcceptInNA(myAcceptInNaCheck->isChecked());
@@ -406,9 +395,6 @@ void UserPages::Settings::apply(Licq::User* user)
 
 void UserPages::Settings::apply2(const Licq::UserId& userId)
 {
-  if (myIsOwner)
-    return;
-
   int serverGroup = 0;
   Licq::UserGroupList userGroups;
   bool visibleList;
