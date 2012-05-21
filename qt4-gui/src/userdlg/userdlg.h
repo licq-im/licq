@@ -41,6 +41,7 @@ class TreePager;
 namespace UserPages
 {
   class Info;
+  class Owner;
   class Settings;
 }
 
@@ -68,6 +69,7 @@ public:
     StatusPage,
     OnEventPage,
     GroupsPage,
+    OwnerPage,
   };
 
   /**
@@ -199,6 +201,7 @@ private:
 
   UserPages::Info* myUserInfo;
   UserPages::Settings* myUserSettings;
+  UserPages::Owner* myOwnerSettings;
 };
 
 } // namespace LicqQtGui

@@ -1,6 +1,7 @@
 # User dialog
 set(userdlg_SRCS
   info.cpp
+  owner.cpp
   settings.cpp
   userdlg.cpp
 )

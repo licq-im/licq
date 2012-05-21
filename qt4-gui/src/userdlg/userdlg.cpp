@@ -38,6 +38,7 @@
 #include "widgets/treepager.h"
 
 #include "info.h"
+#include "owner.h"
 #include "settings.h"
 
 using namespace LicqQtGui;
@@ -123,9 +124,15 @@ UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
 
   myUserInfo = new UserPages::Info(myIsOwner, myUserId.protocolId(), this);
   if (!myIsOwner)
+  {
     myUserSettings = new UserPages::Settings(this);
+    myOwnerSettings = NULL;
+  }
   else
+  {
     myUserSettings = NULL;
+    myOwnerSettings = new UserPages::Owner(myUserId.protocolId(), this);
+  }
 
   {
      Licq::UserReadGuard user(myUserId);
@@ -134,6 +141,8 @@ UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
       myUserInfo->load(*user);
       if (!myIsOwner)
         myUserSettings->load(*user);
+      else
+        myOwnerSettings->load(*user);
     }
     setBasicTitle(*user);
   }
@@ -230,6 +239,8 @@ void UserDlg::apply()
     myUserInfo->apply(*user);
     if (!myIsOwner)
       myUserSettings->apply(*user);
+    else
+      myOwnerSettings->apply(*user);
 
     user->SetEnableSave(true);
     user->save(Licq::User::SaveAll);
@@ -262,6 +273,8 @@ void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
   myUserInfo->userUpdated(*user, subSignal);
   if (!myIsOwner)
     myUserSettings->userUpdated(*user, subSignal);
+  else
+    myOwnerSettings->userUpdated(*user, subSignal);
 }
 
 void UserDlg::listUpdated(unsigned long subSignal, int /* argument */,
