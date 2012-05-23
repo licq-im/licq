@@ -139,7 +139,6 @@ private:
   QPushButton* myRegisterButton;
   QPushButton* myModifyButton;
   QPushButton* myRemoveButton;
-  QPushButton* closeButton;
 
   bool myPendingAdd;
   bool myPendingRegister;

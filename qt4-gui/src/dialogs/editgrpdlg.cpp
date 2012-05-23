@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2011 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,6 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   QDialogButtonBox* buttons = new QDialogButtonBox();
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
   btnDone = buttons->addButton(QDialogButtonBox::Close);
-  btnDone->setText(tr("&Done"));
   lay->addWidget(buttons);
 
   RefreshList();

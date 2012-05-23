@@ -95,8 +95,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   myRemoveButton = new QPushButton(tr("R&emove..."));
   buttons->addButton(myRemoveButton, QDialogButtonBox::ActionRole);
 
-  closeButton = new QPushButton(tr("&Done"));
-  buttons->addButton(closeButton, QDialogButtonBox::RejectRole);
+  buttons->addButton(QDialogButtonBox::Close);
 
   // Connect all the signals
   connect(myOwnerView, SIGNAL(itemSelectionChanged()), SLOT(listSelectionChanged()));
@@ -106,7 +105,7 @@ OwnerManagerDlg::OwnerManagerDlg(QWidget* parent)
   connect(myRegisterButton, SIGNAL(clicked()), SLOT(registerPressed()));
   connect(myModifyButton, SIGNAL(clicked()), SLOT(modify()));
   connect(myRemoveButton, SIGNAL(clicked()), SLOT(remove()));
-  connect(closeButton, SIGNAL(clicked()), SLOT(close()));
+  connect(buttons, SIGNAL(rejected()), SLOT(close()));
   connect(gGuiSignalManager, SIGNAL(ownerAdded(const Licq::UserId&)), SLOT(updateList()));
   connect(gGuiSignalManager, SIGNAL(ownerRemoved(const Licq::UserId&)), SLOT(updateList()));
   connect(gGuiSignalManager, SIGNAL(protocolPluginLoaded(unsigned long)),
