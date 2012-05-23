@@ -27,6 +27,7 @@
 class QCheckBox;
 class QComboBox;
 class QLineEdit;
+class QListWidget;
 class QSpinBox;
 class QWidget;
 
@@ -79,6 +80,9 @@ private:
   /// Create ICQ security settings page
   QWidget* createPageIcqSecurity(QWidget* parent);
 
+  /// Create ICQ random chat group setting page
+  QWidget* createPageIcqChatGroup(QWidget* parent);
+
   unsigned long myProtocolId;
 
   // Account Settings
@@ -100,6 +104,9 @@ private:
   // ICQ Security Settings
   QCheckBox* myIcqRequireAuthCheck;
   QCheckBox* myIcqWebAwareCheck;
+
+  // ICQ Random Chat Group
+  QListWidget* myIcqChatGroupList;
 };
 
 } // namespace UserPages

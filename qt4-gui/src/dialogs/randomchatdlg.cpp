@@ -22,7 +22,6 @@
 #include "config.h"
 
 #include <QDialogButtonBox>
-#include <QHBoxLayout>
 #include <QListWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -31,7 +30,6 @@
 #include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/icq.h>
-#include <licq/icq/owner.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -143,89 +141,4 @@ void RandomChatDlg::userEventDone(const Licq::Event* event)
       return;
   }
 
-}
-
-//=====SetRandomChatGroupDlg================================================
-
-SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
-  : QDialog(parent),
-    myTag(0)
-{
-  Support::setWidgetProps(this, "SetRandomChatGroupDlg");
-  setWindowTitle(tr("Set Random Chat Group"));
-
-  QVBoxLayout* topLayout = new QVBoxLayout(this);
-  myGroupsList = new QListWidget(this);
-  topLayout->addWidget(myGroupsList);
-
-  QHBoxLayout* lay = new QHBoxLayout();
-
-  lay->addStretch(2);
-  myOkButton = new QPushButton(tr("&Set"), this);
-  lay->addWidget(myOkButton);
-
-  lay->addSpacing(10);
-  myCancelButton = new QPushButton(tr("&Close"), this);
-  lay->addWidget(myCancelButton);
-  lay->addStretch(2);
-
-  topLayout->addLayout(lay);
-
-  connect(myOkButton, SIGNAL(clicked()), SLOT(okPressed()));
-  connect(myCancelButton, SIGNAL(clicked()), SLOT(close()));
-
-  Licq::IcqOwnerReadGuard o;
-  if (!o.isLocked())
-  {
-    close();
-    return;
-  }
-
-  // Fill in the combo box
-  RandomChatDlg::fillGroupsList(myGroupsList, true, o->randomChatGroup());
-
-  show();
-}
-
-SetRandomChatGroupDlg::~SetRandomChatGroupDlg()
-{
-  if (myTag != 0)
-    Licq::gDaemon.cancelEvent(myTag);
-}
-
-void SetRandomChatGroupDlg::okPressed()
-{
-  myOkButton->setEnabled(false);
-  myCancelButton = new QPushButton(tr("&Cancel"), this);
-  connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
-      SLOT(userEventDone(const Licq::Event*)));
-  unsigned chatGroup = myGroupsList->currentItem()->data(Qt::UserRole).toInt();
-  myTag = gLicqDaemon->setRandomChatGroup(chatGroup);
-  setWindowTitle(tr("Setting Random Chat Group..."));
-}
-
-void SetRandomChatGroupDlg::userEventDone(const Licq::Event* event)
-{
-  if (!event->Equals(myTag))
-    return;
-
-  myOkButton->setEnabled(true);
-  myCancelButton = new QPushButton(tr("&Close"), this);
-  myTag = 0;
-
-  switch (event->Result())
-  {
-    case Licq::Event::ResultFailed:
-      setWindowTitle(windowTitle() + tr("failed"));
-      break;
-    case Licq::Event::ResultTimedout:
-      setWindowTitle(windowTitle() + tr("timed out"));
-      break;
-    case Licq::Event::ResultError:
-      setWindowTitle(windowTitle() + tr("error"));
-      break;
-    default:
-      setWindowTitle(windowTitle() + tr("done"));
-      break;
-  }
 }

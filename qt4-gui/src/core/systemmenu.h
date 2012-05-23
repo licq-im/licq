@@ -275,7 +275,6 @@ private slots:
   void viewInfo();
   void viewHistory();
   void showSettingsDlg();
-  void showRandomChatGroupDlg();
   void setStatus(QAction* action);
   void toggleInvisibleStatus();
 

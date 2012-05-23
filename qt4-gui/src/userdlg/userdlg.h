@@ -71,6 +71,7 @@ public:
     GroupsPage,
     OwnerPage,
     OwnerSecurityPage,
+    OwnerChatGroupPage,
   };
 
   /**

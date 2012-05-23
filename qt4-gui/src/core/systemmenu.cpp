@@ -537,10 +537,6 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
   myOwnerAdmInfoAction = myOwnerAdmMenu->addAction(tr("&Info..."), this, SLOT(viewInfo()));
   myOwnerAdmHistoryAction = myOwnerAdmMenu->addAction(tr("View &History..."), this, SLOT(viewHistory()));
   myOwnerAdmSettingsAction = myOwnerAdmMenu->addAction(tr("&Settings..."), this, SLOT(showSettingsDlg()));
-  if (ppid == LICQ_PPID)
-  {
-    myOwnerAdmMenu->addAction(tr("&Random Chat Group..."), this, SLOT(showRandomChatGroupDlg()));
-  }
 
   // Status sub menu
   myStatusMenu = new QMenu(protoName);
@@ -645,11 +641,6 @@ void OwnerData::showSettingsDlg()
 void OwnerData::viewHistory()
 {
   new HistoryDlg(myUserId);
-}
-
-void OwnerData::showRandomChatGroupDlg()
-{
-  new SetRandomChatGroupDlg();
 }
 
 void OwnerData::setStatus(QAction* action)

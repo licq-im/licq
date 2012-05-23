@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,25 +43,6 @@ public:
   ~RandomChatDlg();
 
   static void fillGroupsList(QListWidget* list, bool addNone, unsigned def);
-
-private:
-  QListWidget* myGroupsList;
-  QPushButton* myOkButton;
-  QPushButton* myCancelButton;
-  unsigned long myTag;
-
-private slots:
-  void okPressed();
-  void userEventDone(const Licq::Event* event);
-};
-
-class SetRandomChatGroupDlg : public QDialog
-{
-  Q_OBJECT
-
-public:
-  SetRandomChatGroupDlg(QWidget* parent = 0);
-  ~SetRandomChatGroupDlg();
 
 private:
   QListWidget* myGroupsList;

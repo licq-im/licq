@@ -24,6 +24,7 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <QListWidget>
 #include <QSpinBox>
 #include <QVBoxLayout>
 
@@ -34,6 +35,7 @@
 #include <licq/pluginsignal.h>
 
 #include "config/iconmanager.h"
+#include "dialogs/randomchatdlg.h"
 #include "widgets/infofield.h"
 #include "widgets/skinnablelabel.h"
 
@@ -54,6 +56,8 @@ UserPages::Owner::Owner(unsigned long protocolId, UserDlg* parent)
   {
     parent->addPage(UserDlg::OwnerSecurityPage, createPageIcqSecurity(parent),
         tr("ICQ Security"), UserDlg::OwnerPage);
+    parent->addPage(UserDlg::OwnerChatGroupPage, createPageIcqChatGroup(parent),
+        tr("ICQ Random Chat Group"), UserDlg::OwnerPage);
   }
 }
 
@@ -184,6 +188,24 @@ QWidget* UserPages::Owner::createPageIcqSecurity(QWidget* parent)
   return w;
 }
 
+QWidget* UserPages::Owner::createPageIcqChatGroup(QWidget* parent)
+{
+  QGroupBox* icqChatGroupBox = new QGroupBox(tr("ICQ Random Chat Group"));
+  QVBoxLayout* icqChatGroupLayout = new QVBoxLayout(icqChatGroupBox);
+
+  myIcqChatGroupList = new QListWidget();
+  icqChatGroupLayout->addWidget(myIcqChatGroupList);
+
+  RandomChatDlg::fillGroupsList(myIcqChatGroupList, true, 0);
+
+  QWidget* w = new QWidget(parent);
+  QVBoxLayout* mainLayout = new QVBoxLayout(w);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->addWidget(icqChatGroupBox);
+  mainLayout->addStretch(1);
+  return w;
+}
+
 void UserPages::Owner::load(const Licq::User* user)
 {
   const Licq::Owner* owner = dynamic_cast<const Licq::Owner*>(user);
@@ -210,6 +232,14 @@ void UserPages::Owner::load(const Licq::User* user)
 
     myIcqRequireAuthCheck->setChecked(icqowner->GetAuthorization());
     myIcqWebAwareCheck->setChecked(icqowner->WebAware());
+
+    unsigned chatGroup = icqowner->randomChatGroup();
+    for (int i = 0; i < myIcqChatGroupList->count(); ++i)
+      if (chatGroup == myIcqChatGroupList->item(i)->data(Qt::UserRole).toUInt())
+      {
+        myIcqChatGroupList->setCurrentRow(i);
+        break;
+      }
   }
 }
 
@@ -245,6 +275,12 @@ unsigned long UserPages::Owner::send(UserDlg::UserPage page)
     return gLicqDaemon->icqSetSecurityInfo(
         myIcqRequireAuthCheck->isChecked(),
         myIcqWebAwareCheck->isChecked());
+  }
+
+  if (page == UserDlg::OwnerChatGroupPage && myProtocolId == LICQ_PPID)
+  {
+    unsigned chatGroup = myIcqChatGroupList->currentItem()->data(Qt::UserRole).toUInt();
+    return gLicqDaemon->setRandomChatGroup(chatGroup);
   }
 
   return 0;
