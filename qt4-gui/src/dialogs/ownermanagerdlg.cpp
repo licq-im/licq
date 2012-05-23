@@ -330,7 +330,8 @@ void OwnerManagerDlg::modify()
   if (item == NULL)
     return;
   Licq::UserId ownerId = item->data(0, Qt::UserRole).value<Licq::UserId>();
-  new OwnerEditDlg(ownerId.protocolId(), this);
+
+  UserDlg::showDialog(ownerId, UserDlg::OwnerPage);
 }
 
 void OwnerManagerDlg::itemDoubleClicked(QTreeWidgetItem* item, int /* column */)
@@ -349,7 +350,7 @@ void OwnerManagerDlg::itemDoubleClicked(QTreeWidgetItem* item, int /* column */)
       break;
     default: // Owner - Modify
       Licq::UserId ownerId = data.value<Licq::UserId>();
-      new OwnerEditDlg(ownerId.protocolId(), this);
+      UserDlg::showDialog(ownerId, UserDlg::OwnerPage);
   }
 }
 
