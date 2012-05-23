@@ -537,6 +537,7 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
   myOwnerAdmMenu = new QMenu(protoName);
   myOwnerAdmInfoAction = myOwnerAdmMenu->addAction(tr("&Info..."), this, SLOT(viewInfo()));
   myOwnerAdmHistoryAction = myOwnerAdmMenu->addAction(tr("View &History..."), this, SLOT(viewHistory()));
+  myOwnerAdmSettingsAction = myOwnerAdmMenu->addAction(tr("&Settings..."), this, SLOT(showSettingsDlg()));
   if (ppid == LICQ_PPID)
   {
     myOwnerAdmMenu->addAction(tr("&Security Options..."), this, SLOT(showSecurityDlg()));
@@ -636,6 +637,11 @@ void OwnerData::aboutToShowStatusMenu()
 void OwnerData::viewInfo()
 {
   UserDlg::showDialog(myUserId, UserDlg::GeneralPage);
+}
+
+void OwnerData::showSettingsDlg()
+{
+  UserDlg::showDialog(myUserId, UserDlg::OwnerPage);
 }
 
 void OwnerData::viewHistory()

@@ -274,6 +274,7 @@ private slots:
   void aboutToShowStatusMenu();
   void viewInfo();
   void viewHistory();
+  void showSettingsDlg();
   void showSecurityDlg();
   void showRandomChatGroupDlg();
   void setStatus(QAction* action);
@@ -290,6 +291,7 @@ private:
   // Actions on owner menu
   QAction* myOwnerAdmInfoAction;
   QAction* myOwnerAdmHistoryAction;
+  QAction* myOwnerAdmSettingsAction;
 
   // Actions on status menu
   QAction* myStatusOnlineAction;
