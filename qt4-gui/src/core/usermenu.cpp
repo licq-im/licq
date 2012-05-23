@@ -47,6 +47,7 @@
 #include "dialogs/keyrequestdlg.h"
 #include "dialogs/showawaymsgdlg.h"
 #include "dialogs/utilitydlg.h"
+#include "userdlg/userdlg.h"
 
 #include "gui-defines.h"
 #include "licqgui.h"
@@ -452,7 +453,7 @@ void UserMenu::viewHistory()
 
 void UserMenu::viewInfoGeneral()
 {
-  gLicqGui->showInfoDialog(mnuUserGeneral, myUserId);
+  UserDlg::showDialog(myUserId);
 }
 
 void UserMenu::send(QAction* action)

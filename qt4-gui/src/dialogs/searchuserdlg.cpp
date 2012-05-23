@@ -42,13 +42,14 @@
 #include "contactlist/contactlist.h"
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
 #include "dialogs/adduserdlg.h"
 
 #include "helpers/support.h"
+
+#include "userdlg/userdlg.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::SearchUserDlg */
@@ -428,7 +429,7 @@ void SearchUserDlg::viewInfo()
     Licq::UserId userId = current->data(0, Qt::UserRole).value<Licq::UserId>();
 
     Licq::gUserManager.addUser(userId, false);
-    gLicqGui->showInfoDialog(mnuUserGeneral, userId, true);
+    UserDlg::showDialog(userId, UserDlg::GeneralPage, true);
   }
 }
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1999-2010 Licq developers
+ * Copyright (C) 1999-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,10 +59,6 @@ enum EventType
   ContactEvent,
   SmsEvent,
 };
-
-// Constant used to select opening page when calling LicqGui::showInfoDialog
-// Leave it for now as the fcn parameter may be needed when user info dialog has been remade
-static const int mnuUserGeneral = 0;
 
 } // namespace LicqQtGui
 

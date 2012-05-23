@@ -47,6 +47,7 @@
 
 #include "dialogs/historydlg.h"
 #include "dialogs/keyrequestdlg.h"
+#include "userdlg/userdlg.h"
 
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
@@ -390,7 +391,7 @@ void UserEventCommon::showHistory()
 
 void UserEventCommon::showUserInfo()
 {
-  gLicqGui->showInfoDialog(mnuUserGeneral, myUsers.front());
+  UserDlg::showDialog(myUsers.front());
 }
 
 void UserEventCommon::switchSecurity()

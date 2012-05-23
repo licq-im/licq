@@ -55,6 +55,8 @@
 
 #include "settings/settingsdlg.h"
 
+#include "userdlg/userdlg.h"
+
 #include "licqgui.h"
 #include "mainwin.h"
 
@@ -633,7 +635,7 @@ void OwnerData::aboutToShowStatusMenu()
 
 void OwnerData::viewInfo()
 {
-  gLicqGui->showInfoDialog(mnuUserGeneral, myUserId);
+  UserDlg::showDialog(myUserId, UserDlg::GeneralPage);
 }
 
 void OwnerData::viewHistory()

@@ -60,6 +60,7 @@
 #include "dialogs/forwarddlg.h"
 #include "dialogs/joinchatdlg.h"
 #include "dialogs/refusedlg.h"
+#include "userdlg/userdlg.h"
 
 #include "widgets/messagelist.h"
 #include "widgets/mlview.h"
@@ -601,7 +602,7 @@ void UserViewEvent::read4()
         Licq::UserReadGuard u(userId, true);
       }
 
-      gLicqGui->showInfoDialog(mnuUserGeneral, userId, true);
+      UserDlg::showDialog(userId, UserDlg::GeneralPage, true);
       break;
     }
   } // switch

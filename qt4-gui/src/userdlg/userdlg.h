@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef SETTINGSDLG_H
-#define SETTINGSDLG_H
+#ifndef USERDLG_H
+#define USERDLG_H
 
 #include <config.h>
 
@@ -71,36 +71,14 @@ public:
   };
 
   /**
-   * Constructor
+   * Open user dialog or bring up existing dialog for a user
    *
-   * @param userId User id
-   * @param parent Parent widget
+   * @param userId User to open dialog for
+   * @param page Page to open or UnknownPage to not set
+   * @param updateNow True to fetch info from server for current page
    */
-  UserDlg(const Licq::UserId& userId, QWidget* parent = 0);
-
-  /**
-   * Destructor
-   */
-  virtual ~UserDlg();
-
-  /**
-   * Select page to show
-   *
-   * @param page Page to show
-   */
-  void showPage(UserPage page);
-
-  /**
-   * Get currenty visible page
-   *
-   * @return Current page
-   */
-  UserPage currentPage() const;
-
-  /**
-   * Retrive info for current page from server
-   */
-  void retrieveSettings() { retrieve(); }
+  static void showDialog(const Licq::UserId& userId,
+      UserPage page = UnknownPage, bool updateNow = false);
 
   /**
    * Add page to user dialog
@@ -111,16 +89,6 @@ public:
    * @param parent Parent page if not a top level page
    */
   void addPage(UserPage page, QWidget* widget, const QString& title, UserPage parent = UnknownPage);
-
-  /**
-   * Get user id for dialog
-   *
-   * @ return User id
-   */
-  const Licq::UserId& userId() const { return myUserId; }
-
-signals:
-  void finished(UserDlg* userDlg);
 
 private slots:
   /**
@@ -159,6 +127,10 @@ private slots:
    */
   void userUpdated(const Licq::UserId& userId, unsigned long subSignal);
 
+  /// Contact list has changed
+  void listUpdated(unsigned long subSignal, int argument,
+      const Licq::UserId& userId);
+
   /**
    * Server request has finished
    *
@@ -177,6 +149,35 @@ private slots:
   void resetCaption();
 
 private:
+  static QMap<Licq::UserId, UserDlg*> myDialogs;
+
+  /**
+   * Constructor
+   *
+   * @param userId User id
+   * @param parent Parent widget
+   */
+  UserDlg(const Licq::UserId& userId, QWidget* parent = 0);
+
+  /**
+   * Destructor
+   */
+  virtual ~UserDlg();
+
+  /**
+   * Get currenty visible page
+   *
+   * @return Current page
+   */
+  UserPage currentPage() const;
+
+  /**
+   * Select page to show
+   *
+   * @param page Page to show
+   */
+  void showPage(UserPage page);
+
   /**
    * Update base part of window title
    *

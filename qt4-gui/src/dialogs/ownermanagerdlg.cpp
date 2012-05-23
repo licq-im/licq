@@ -39,11 +39,11 @@
 #include "contactlist/contactlist.h"
 
 #include "core/gui-defines.h"
-#include "core/licqgui.h"
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
 #include "helpers/support.h"
+#include "userdlg/userdlg.h"
 
 #include "ownereditdlg.h"
 #include "registeruser.h"
@@ -321,9 +321,7 @@ void OwnerManagerDlg::registerDone(bool success, const Licq::UserId& userId)
   registerUserDlg = 0;
 
   if (success)
-  {
-    gLicqGui->showInfoDialog(mnuUserGeneral, userId);
-  }
+    UserDlg::showDialog(userId);
 }
 
 void OwnerManagerDlg::modify()

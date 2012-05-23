@@ -104,8 +104,6 @@ extern "C"
 
 #include "helpers/support.h"
 
-#include "userdlg/userdlg.h"
-
 #include "userevents/usereventcommon.h"
 #include "userevents/usereventtabdlg.h"
 #include "userevents/usersendevent.h"
@@ -648,40 +646,6 @@ bool LicqGui::removeUserFromList(const Licq::UserId& userId, QWidget* parent)
   return false;
 }
 
-void LicqGui::showInfoDialog(int /* fcn */, const Licq::UserId& userId, bool updateNow)
-{
-  if (!userId.isValid())
-    return;
-
-  UserDlg* f = NULL;
-
-  for (int i = 0; i < myUserDlgList.size(); ++i)
-  {
-    UserDlg* item = myUserDlgList.at(i);
-    if (item->userId() == userId)
-    {
-      f = item;
-      break;
-    }
-  }
-
-  UserDlg::UserPage tab = UserDlg::GeneralPage;
-
-  if (f == NULL)
-  {
-    f = new UserDlg(userId);
-    connect(f, SIGNAL(finished(UserDlg*)), SLOT(userDlgFinished(UserDlg*)));
-    myUserDlgList.append(f);
-  }
-
-  f->showPage(tab);
-  f->show();
-  f->raise();
-  f->activateWindow();
-  if (updateNow)
-    f->retrieveSettings();
-}
-
 UserViewEvent* LicqGui::showViewEventDialog(const Licq::UserId& userId)
 {
   if (!userId.isValid())
@@ -998,15 +962,6 @@ void LicqGui::viewUrl(const QString& url)
 #endif
 }
 
-void LicqGui::userDlgFinished(UserDlg* dialog)
-{
-  if (myUserDlgList.removeAll(dialog) > 0)
-    return;
-
-  gLog.warning("User Info finished signal for user with no window (%s)",
-      dialog->userId().toString().c_str());
-}
-
 void LicqGui::userEventTabDlgDone()
 {
   myUserEventTabDlg = NULL;
@@ -1288,17 +1243,6 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const Lic
         {
           item->close();
           myUserViewList.removeAll(item);
-          break;
-        }
-      }
-      // if their info box is open, kill it
-      for (int i = 0; i < myUserDlgList.size(); ++i)
-      {
-        UserDlg* item = myUserDlgList.at(i);
-        if (item->userId() == userId)
-        {
-          item->close();
-          myUserDlgList.removeAll(item);
           break;
         }
       }

@@ -43,6 +43,32 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserDlg */
 
+QMap<Licq::UserId, UserDlg*> UserDlg::myDialogs;
+
+void UserDlg::showDialog(const Licq::UserId& userId, UserPage page,
+    bool updateNow)
+{
+  if (!userId.isValid())
+    return;
+
+  UserDlg* dialog = myDialogs.value(userId);
+  if (dialog == NULL)
+  {
+    dialog = new UserDlg(userId);
+    myDialogs.insert(userId, dialog);
+  }
+
+  if (page != UnknownPage)
+    dialog->showPage(page);
+
+  dialog->show();
+  dialog->raise();
+  dialog->activateWindow();
+
+  if (updateNow)
+    dialog->retrieve();
+}
+
 UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
     myUserId(userId),
@@ -118,7 +144,7 @@ UserDlg::UserDlg(const Licq::UserId& userId, QWidget* parent)
 
 UserDlg::~UserDlg()
 {
-  emit finished(this);
+  myDialogs.remove(myUserId);
 }
 
 void UserDlg::addPage(UserPage page, QWidget* widget, const QString& title, UserPage parent)
@@ -229,6 +255,26 @@ void UserDlg::userUpdated(const Licq::UserId& userId, unsigned long subSignal)
 
   myUserInfo->userUpdated(*user, subSignal);
   myUserSettings->userUpdated(*user, subSignal);
+}
+
+void UserDlg::listUpdated(unsigned long subSignal, int /* argument */,
+    const Licq::UserId& userId)
+{
+  if (userId != myUserId)
+    return;
+
+  switch (subSignal)
+  {
+    case Licq::PluginSignal::ListInvalidate:
+      if (Licq::gUserManager.userExists(myUserId))
+        break;
+      // User no longer exists, fall through to handle the removed user
+
+    case Licq::PluginSignal::ListUserRemoved:
+    case Licq::PluginSignal::ListOwnerRemoved:
+      close();
+      break;
+  }
 }
 
 void UserDlg::setBasicTitle(const Licq::User* user)
