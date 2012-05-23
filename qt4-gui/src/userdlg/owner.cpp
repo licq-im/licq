@@ -28,6 +28,7 @@
 #include <QVBoxLayout>
 
 #include <licq/contactlist/owner.h>
+#include <licq/icq/icq.h>
 #include <licq/icq/owner.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
@@ -48,6 +49,12 @@ UserPages::Owner::Owner(unsigned long protocolId, UserDlg* parent)
 {
   parent->addPage(UserDlg::OwnerPage, createPageSettings(parent),
       tr("Settings"));
+
+  if (myProtocolId == LICQ_PPID)
+  {
+    parent->addPage(UserDlg::OwnerSecurityPage, createPageIcqSecurity(parent),
+        tr("ICQ Security"), UserDlg::OwnerPage);
+  }
 }
 
 QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
@@ -154,6 +161,29 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   return w;
 }
 
+QWidget* UserPages::Owner::createPageIcqSecurity(QWidget* parent)
+{
+  QGroupBox* icqSecurityBox = new QGroupBox(tr("ICQ Security Settings"));
+  QVBoxLayout* icqSecurityLayout = new QVBoxLayout(icqSecurityBox);
+
+  myIcqRequireAuthCheck = new QCheckBox(tr("Authorization Required"));
+  myIcqRequireAuthCheck->setToolTip(tr("Determines whether regular ICQ clients "
+      "require your authorization to add you to their contact list."));
+  icqSecurityLayout->addWidget(myIcqRequireAuthCheck);
+
+  myIcqWebAwareCheck = new QCheckBox(tr("Web Presence"));
+  myIcqWebAwareCheck->setToolTip(tr("Web Presence allows users to see if you "
+      "are online through your web indicator."));
+  icqSecurityLayout->addWidget(myIcqWebAwareCheck);
+
+  QWidget* w = new QWidget(parent);
+  QVBoxLayout* mainLayout = new QVBoxLayout(w);
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->addWidget(icqSecurityBox);
+  mainLayout->addStretch(1);
+  return w;
+}
+
 void UserPages::Owner::load(const Licq::User* user)
 {
   const Licq::Owner* owner = dynamic_cast<const Licq::Owner*>(user);
@@ -177,6 +207,9 @@ void UserPages::Owner::load(const Licq::User* user)
     myAutoUpdateInfoCheck->setChecked(icqowner->autoUpdateInfo());
     myAutoUpdateInfoPluginsCheck->setChecked(icqowner->autoUpdateInfoPlugins());
     myAutoUpdateStatusPluginsCheck->setChecked(icqowner->autoUpdateStatusPlugins());
+
+    myIcqRequireAuthCheck->setChecked(icqowner->GetAuthorization());
+    myIcqWebAwareCheck->setChecked(icqowner->WebAware());
   }
 }
 
@@ -203,6 +236,18 @@ void UserPages::Owner::apply(Licq::User* user)
     icqowner->setAutoUpdateInfoPlugins(myAutoUpdateInfoPluginsCheck->isChecked());
     icqowner->setAutoUpdateStatusPlugins(myAutoUpdateStatusPluginsCheck->isChecked());
   }
+}
+
+unsigned long UserPages::Owner::send(UserDlg::UserPage page)
+{
+  if (page == UserDlg::OwnerSecurityPage && myProtocolId == LICQ_PPID)
+  {
+    return gLicqDaemon->icqSetSecurityInfo(
+        myIcqRequireAuthCheck->isChecked(),
+        myIcqWebAwareCheck->isChecked());
+  }
+
+  return 0;
 }
 
 void UserPages::Owner::userUpdated(const Licq::User* user, unsigned long subSignal)

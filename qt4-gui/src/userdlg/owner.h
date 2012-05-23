@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include "userdlg.h"
+
 class QCheckBox;
 class QComboBox;
 class QLineEdit;
@@ -36,7 +38,6 @@ class UserId;
 
 namespace LicqQtGui
 {
-class UserDlg;
 
 namespace UserPages
 {
@@ -59,6 +60,14 @@ public:
    */
   void userUpdated(const Licq::User* user, unsigned long subSignal);
 
+  /**
+   * Send settings to server
+   *
+   * @param page to send settings for
+   * @return Event tag for sent request
+   */
+  unsigned long send(UserDlg::UserPage page);
+
 private:
   /**
    * Create the settings page
@@ -66,6 +75,9 @@ private:
    * @return a widget with the settings
    */
   QWidget* createPageSettings(QWidget* parent);
+
+  /// Create ICQ security settings page
+  QWidget* createPageIcqSecurity(QWidget* parent);
 
   unsigned long myProtocolId;
 
@@ -84,6 +96,10 @@ private:
   QCheckBox* myAutoUpdateInfoCheck;
   QCheckBox* myAutoUpdateInfoPluginsCheck;
   QCheckBox* myAutoUpdateStatusPluginsCheck;
+
+  // ICQ Security Settings
+  QCheckBox* myIcqRequireAuthCheck;
+  QCheckBox* myIcqWebAwareCheck;
 };
 
 } // namespace UserPages

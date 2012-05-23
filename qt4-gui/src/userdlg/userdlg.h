@@ -70,6 +70,7 @@ public:
     OnEventPage,
     GroupsPage,
     OwnerPage,
+    OwnerSecurityPage,
   };
 
   /**

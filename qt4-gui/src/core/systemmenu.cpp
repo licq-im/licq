@@ -50,7 +50,6 @@
 #include "dialogs/ownermanagerdlg.h"
 #include "dialogs/randomchatdlg.h"
 #include "dialogs/searchuserdlg.h"
-#include "dialogs/securitydlg.h"
 #include "dialogs/gpgkeymanager.h"
 
 #include "settings/settingsdlg.h"
@@ -540,7 +539,6 @@ OwnerData::OwnerData(unsigned long ppid, const QString& protoName,
   myOwnerAdmSettingsAction = myOwnerAdmMenu->addAction(tr("&Settings..."), this, SLOT(showSettingsDlg()));
   if (ppid == LICQ_PPID)
   {
-    myOwnerAdmMenu->addAction(tr("&Security Options..."), this, SLOT(showSecurityDlg()));
     myOwnerAdmMenu->addAction(tr("&Random Chat Group..."), this, SLOT(showRandomChatGroupDlg()));
   }
 
@@ -647,11 +645,6 @@ void OwnerData::showSettingsDlg()
 void OwnerData::viewHistory()
 {
   new HistoryDlg(myUserId);
-}
-
-void OwnerData::showSecurityDlg()
-{
-  new SecurityDlg();
 }
 
 void OwnerData::showRandomChatGroupDlg()

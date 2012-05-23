@@ -190,7 +190,7 @@ void UserDlg::pageChanged(QWidget* widget)
 
   myRetrieveButton->setEnabled(infoPage);
   if (myIsOwner)
-    mySendButton->setEnabled(infoPage);
+    mySendButton->setEnabled(infoPage || page == OwnerSecurityPage);
 }
 
 void UserDlg::retrieve()
@@ -209,7 +209,22 @@ void UserDlg::retrieve()
 
 void UserDlg::send()
 {
-  myIcqEventTag = myUserInfo->send(currentPage());
+  switch (currentPage())
+  {
+    case SettingsPage:
+    case StatusPage:
+    case OnEventPage:
+    case GroupsPage:
+    case OwnerPage:
+      return;
+
+    case OwnerSecurityPage:
+      myIcqEventTag = myOwnerSettings->send(currentPage());
+      break;
+
+    default:
+      myIcqEventTag = myUserInfo->send(currentPage());
+  }
 
   if (myIcqEventTag != 0)
   {

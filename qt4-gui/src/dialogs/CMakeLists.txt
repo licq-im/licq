@@ -30,7 +30,6 @@ set(dialogs_SRCS
   refusedlg.cpp
   registeruser.cpp
   searchuserdlg.cpp
-  securitydlg.cpp
   showawaymsgdlg.cpp
   statsdlg.cpp
   userselectdlg.cpp
