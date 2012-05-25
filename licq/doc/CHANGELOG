@@ -19,6 +19,7 @@ o Qt4-Gui: Handle meta key in global hotkeys
 o Qt4-Gui: Fix global hotkeys to work with Caps-/Numlock active
 o Qt4-Gui: Fix crash on message right click without spell checking
 o Qt4-Gui: Update title of user dialogs when alias/name changes
+o Qt4-Gui: Compensate for decoractions when saving window geometries
 
 
 New in 1.6.0

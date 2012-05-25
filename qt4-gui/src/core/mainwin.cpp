@@ -515,6 +515,15 @@ void MainWindow::saveGeometry()
   Config::General* conf = Config::General::instance();
   QRect geom = geometry();
 
+  // When first showing window, we may get a rect without frame which will be
+  // become wrong if used for a window with a frame
+  if (geom == frameGeometry())
+    return;
+
+  // For setGeometry to get it right we need position including frame but
+  // size without frame
+  geom.moveTo(frameGeometry().topLeft());
+
   if (myInMiniMode)
     geom.setHeight(conf->mainwinRect().height());
 
