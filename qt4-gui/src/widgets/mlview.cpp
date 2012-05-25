@@ -73,9 +73,9 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML, Q
   {
     reURL.setPattern(
       "(?:(https?|ftp)://(.+(:.+)?@)?|www\\d?\\.)"  // protocoll://[user[:password]@] or www[digit].
-      "[a-z0-9.-]+\\.([a-z]+|[0-9]+)"               // hostname.tld or ip address
+      "([\\w.\\-]+|\\[[\\da-fA-F:.]+\\])"           // dotted hostname/ipv4 or [ipv6 address]
       "(:[0-9]+)?"                                  // optional port
-      "(/(([-\\w%{}|\\\\^~`;/?:@=&$_.+!*'(),#]|\\[|\\])*[^.,:;?!\\s])*)?");
+      "(/[-\\w%{}|\\\\^~`;/?:@=&$_.+!*'(),#\\[\\]]*)?");
     reURL.setMinimal(false);
     reURL.setCaseSensitivity(Qt::CaseInsensitive);
 
