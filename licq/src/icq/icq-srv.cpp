@@ -72,11 +72,17 @@ using LicqDaemon::Daemon;
 using LicqDaemon::gDaemon;
 
 //-----icqAddUser----------------------------------------------------------
-void IcqProtocol::icqAddUser(const Licq::UserId& userId, bool _bAuthRequired, unsigned short groupId)
+void IcqProtocol::icqAddUser(const Licq::UserId& userId, bool _bAuthRequired)
 {
   CSrvPacketTcp* p = new CPU_GenericUinList(userId.accountId(), ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
   gLog.info(tr("Alerting server to new user (#%hu)..."), p->Sequence());
   SendExpectEvent_Server(userId, p, NULL);
+
+  int groupId;
+  {
+    UserReadGuard u(userId);
+    groupId = u->serverGroup();
+  }
 
   // Server side list add, and update of group
   if (UseServerContactList())
@@ -313,6 +319,12 @@ void IcqProtocol::icqCreatePDINFO()
 
 void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
 {
+  {
+    UserReadGuard u(userId);
+    if (u->NotInList())
+      return;
+  }
+
   // Remove from the SSList and update groups
   if (UseServerContactList())
   {
@@ -415,9 +427,15 @@ void IcqProtocol::icqRenameGroup(const string& newName, unsigned short _nGSID)
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
-void IcqProtocol::icqRenameUser(const Licq::UserId& userId, const string& newAlias)
+void IcqProtocol::icqRenameUser(const Licq::UserId& userId)
 {
   if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1) return;
+
+  string newAlias;
+  {
+    UserReadGuard u(userId);
+    newAlias = u->getAlias();
+  }
 
   CSrvPacketTcp* pUpdate = new CPU_UpdateToServerList(userId.accountId(), ICQ_ROSTxNORMAL);
   gLog.info(tr("Renaming %s to %s..."), userId.accountId().c_str(), newAlias.c_str());
@@ -688,12 +706,33 @@ unsigned long IcqProtocol::icqSetPassword(const string& password)
   return 0;
 }
 
-unsigned long IcqProtocol::icqSetGeneralInfo(const string& alias, const string& firstName,
-      const string& lastName, const string& emailPrimary, const string& city,
-      const string& state, const string& phoneNumber, const string& faxNumber,
-      const string& address, const string& cellularNumber, const string& zipCode,
-      unsigned short countryCode, bool hideEmail)
+unsigned long IcqProtocol::icqSetGeneralInfo(const Licq::UserId& ownerId)
 {
+  string alias, firstName, lastName, emailPrimary, address, city, state, zipCode;
+  string phoneNumber, faxNumber, cellularNumber;
+  unsigned short countryCode;
+  bool hideEmail;
+
+  {
+    OwnerReadGuard owner(ownerId);
+    if (!owner.isLocked())
+      return 0;
+
+    alias = owner->getAlias();
+    firstName = owner->getFirstName();
+    lastName = owner->getLastName();
+    emailPrimary = owner->getUserInfoString("Email1");
+    address = owner->getUserInfoString("Address");
+    city = owner->getUserInfoString("City");
+    state = owner->getUserInfoString("State");
+    zipCode = owner->getUserInfoString("Zipcode");
+    phoneNumber = owner->getUserInfoString("PhoneNumber");
+    faxNumber = owner->getUserInfoString("FaxNumber");
+    cellularNumber = owner->getUserInfoString("CellularNumber");
+    countryCode = owner->getUserInfoUint("Country");
+    hideEmail = owner->getUserInfoBool("HideEmail");
+  }
+
   CPU_Meta_SetGeneralInfo* p = new CPU_Meta_SetGeneralInfo(alias, firstName,
       lastName, emailPrimary, city, state, phoneNumber,
       faxNumber, address, cellularNumber, zipCode, countryCode, hideEmail);

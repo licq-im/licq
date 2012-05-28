@@ -42,9 +42,8 @@ public:
    * Plugins should call gUserManager.addUser() instead
    *
    * @param userId User to add
-   * @param groupId Initial group, only used for ICQ contacts
    */
-  void addUser(const Licq::UserId& userId, int groupId);
+  void addUser(const Licq::UserId& userId);
 
   /**
    * Remove a user from the server side list

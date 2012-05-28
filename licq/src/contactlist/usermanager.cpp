@@ -518,7 +518,7 @@ bool UserManager::addUser(const UserId& uid,
 
   // Add user to server side list
   if (permanent && addToServer)
-    gProtocolManager.addUser(uid, groupId);
+    gProtocolManager.addUser(uid);
 
   return true;
 }

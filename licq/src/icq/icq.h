@@ -171,11 +171,7 @@ public:
       const std::string& zip, unsigned short companyCountry, const std::string& name,
       const std::string& department, const std::string& position, unsigned short companyOccupation,
       const std::string& homepage);
-  unsigned long icqSetGeneralInfo(const std::string& alias, const std::string& firstName,
-      const std::string& lastName, const std::string& emailPrimary, const std::string& city,
-      const std::string& state, const std::string& phoneNumber, const std::string& faxNumber,
-      const std::string& address, const std::string& cellularNumber, const std::string& zipCode,
-      unsigned short countryCode, bool hideEmail);
+  unsigned long icqSetGeneralInfo(const Licq::UserId& ownerId);
   unsigned long icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld);
   unsigned long icqSetMoreInfo(unsigned short age, char gender,
       const std::string& homepage, unsigned short birthYear, char birthMonth,
@@ -212,10 +208,10 @@ public:
   void icqFileTransfer(unsigned long eventId, const Licq::UserId& userId, const std::string& filename,
       const std::string& message, const std::list<std::string>& fileList, unsigned flags = 0);
   void icqFileTransferRefuse(const Licq::UserId& userId, const std::string& message,
-      unsigned short nSequence, const unsigned long nMsgID[], bool viaServer);
+      unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer);
   void icqFileTransferCancel(const Licq::UserId& userId, unsigned short nSequence);
   void icqFileTransferAccept(const Licq::UserId& userId, unsigned short nPort,
-      unsigned short nSequence, const unsigned long nMsgID[], bool viaServer,
+      unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer,
       const std::string& message, const std::string& filename, unsigned long nFileSize);
   void icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId);
   void icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId);
@@ -229,14 +225,14 @@ public:
   void icqLogoff();
   void postLogoff(int nSD, Licq::Event* cancelledEvent);
   void icqRelogon();
-  void icqAddUser(const Licq::UserId& userId, bool _bAuthReq = false, unsigned short groupId = 0);
+  void icqAddUser(const Licq::UserId& userId, bool _bAuthReq = false);
   void icqAddUserServer(const Licq::UserId& userId, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddGroup(const std::string& groupName);
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
   void icqRemoveGroup(int groupId);
   void icqChangeGroup(const Licq::UserId& userId);
   void icqRenameGroup(const std::string& newName, unsigned short _nGSID);
-  void icqRenameUser(const Licq::UserId& userId, const std::string& newAlias);
+  void icqRenameUser(const Licq::UserId& userId);
   void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();

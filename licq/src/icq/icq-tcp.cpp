@@ -645,7 +645,7 @@ void IcqProtocol::icqFileTransferCancel(const Licq::UserId& userId, unsigned sho
 }
 
 void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned short nPort,
-    unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer,
+    unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer,
     const string& message, const string& filename, unsigned long nFileSize)
 {
    // basically a fancy tcp ack packet which is sent late
@@ -660,6 +660,7 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
   }
   else
   {
+    unsigned long nMsgID[2] = { flag1, flag2 };
     CPU_AckFileAccept *p = new CPU_AckFileAccept(*u, nMsgID, nSequence, nPort,
         gTranslator.fromUtf8(gTranslator.returnToDos(message), u->userEncoding()),
         filename, nFileSize);
@@ -668,7 +669,7 @@ void IcqProtocol::icqFileTransferAccept(const Licq::UserId& userId, unsigned sho
 }
 
 void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string& message,
-    unsigned short nSequence, const unsigned long nMsgID[2], bool viaServer)
+    unsigned short nSequence, unsigned long flag1, unsigned long flag2, bool viaServer)
 {
    // add to history ??
   UserWriteGuard u(userId);
@@ -684,6 +685,7 @@ void IcqProtocol::icqFileTransferRefuse(const Licq::UserId& userId, const string
   }
   else
   {
+    unsigned long nMsgID[2] = { flag1, flag2 };
     CPU_AckFileRefuse *p = new CPU_AckFileRefuse(*u, nMsgID, nSequence,
         reasonDos);
     SendEvent_Server(p);

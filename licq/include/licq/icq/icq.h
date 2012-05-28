@@ -104,11 +104,6 @@ public:
       const std::string& zip, unsigned short companyCountry, const std::string& name,
       const std::string& department, const std::string& position, unsigned short companyOccupation,
       const std::string& homepage) = 0;
-  virtual unsigned long icqSetGeneralInfo(const std::string& alias, const std::string& firstName,
-      const std::string& lastName, const std::string& emailPrimary, const std::string& city,
-      const std::string& state, const std::string& phoneNumber, const std::string& faxNumber,
-      const std::string& address, const std::string& cellularNumber, const std::string& zipCode,
-      unsigned short countryCode, bool hdeEmail) = 0;
   virtual unsigned long icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld) = 0;
   virtual unsigned long icqSetMoreInfo(unsigned short age, char gender,
       const std::string& homepage, unsigned short birthYear, char birthMonth,

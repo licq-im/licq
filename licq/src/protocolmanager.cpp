@@ -84,13 +84,13 @@ void ProtocolManager::pushProtoSignal(Licq::ProtocolSignal* s, const UserId& use
   gPluginManager.pushProtocolSignal(s, userId.protocolId());
 }
 
-void ProtocolManager::addUser(const UserId& userId, int groupId)
+void ProtocolManager::addUser(const UserId& userId)
 {
   if (!isProtocolConnected(userId))
     return;
 
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqAddUser(userId, false, groupId);
+    gIcqProtocol.icqAddUser(userId, false);
   else
     pushProtoSignal(new Licq::ProtoAddUserSignal(userId, false), userId);
 }
@@ -100,21 +100,8 @@ void ProtocolManager::removeUser(const UserId& userId)
   if (!isProtocolConnected(userId))
     return;
 
-  bool tempUser;
-
-  {
-    UserReadGuard user(userId);
-    if (!user.isLocked())
-      return;
-
-    tempUser = user->NotInList();
-  }
-
   if (userId.protocolId() == LICQ_PPID)
-  {
-    if (!tempUser)
-      gIcqProtocol.icqRemoveUser(userId);
-  }
+    gIcqProtocol.icqRemoveUser(userId);
   else
     pushProtoSignal(new Licq::ProtoRemoveUserSignal(userId), userId);
 }
@@ -124,18 +111,8 @@ void ProtocolManager::updateUserAlias(const UserId& userId)
   if (!isProtocolConnected(userId))
     return;
 
-  string newAlias;
-
-  {
-    UserReadGuard user(userId);
-    if (!user.isLocked())
-      return;
-
-    newAlias = user->getAlias();
-  }
-
   if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqRenameUser(userId, newAlias);
+    gIcqProtocol.icqRenameUser(userId);
   else
     pushProtoSignal(new Licq::ProtoRenameUserSignal(userId), userId);
 }
@@ -271,11 +248,8 @@ void ProtocolManager::fileTransferAccept(const UserId& userId, unsigned short po
     return;
 
   if (userId.protocolId() == LICQ_PPID)
-  {
-    unsigned long nMsgId[] = { flag1, flag2 };
     gIcqProtocol.icqFileTransferAccept(userId, port, (unsigned short)eventId,
-        nMsgId, viaServer, message, filename, filesize);
-  }
+        flag1, flag2, viaServer, message, filename, filesize);
   else
     pushProtoSignal(new Licq::ProtoSendEventReplySignal(userId, string(), true, port,
         eventId, flag1, flag2, !viaServer), userId);
@@ -288,10 +262,7 @@ void ProtocolManager::fileTransferRefuse(const UserId& userId, const string& mes
     return;
 
   if (userId.protocolId() == LICQ_PPID)
-  {
-    unsigned long msgId[] = { flag1, flag2 };
-    gIcqProtocol.icqFileTransferRefuse(userId, message, (unsigned short)eventId, msgId, viaServer);
-  }
+    gIcqProtocol.icqFileTransferRefuse(userId, message, (unsigned short)eventId, flag1, flag2, viaServer);
   else
     pushProtoSignal(new Licq::ProtoSendEventReplySignal(userId, message, false,
         eventId, flag1, flag2, !viaServer), userId);
@@ -357,37 +328,7 @@ unsigned long ProtocolManager::updateOwnerInfo(const UserId& ownerId)
   unsigned long eventId = 0;
 
   if (ownerId.protocolId() == LICQ_PPID)
-  {
-    string alias, firstName, lastName, email, address, city, state, zipCode;
-    string phoneNumber, faxNumber, cellNumber;
-    unsigned short countryCode;
-    bool hideEmail;
-
-    {
-      OwnerReadGuard owner(ownerId);
-      if (!owner.isLocked())
-        return 0;
-
-      alias = owner->getAlias();
-      firstName = owner->getFirstName();
-      lastName = owner->getLastName();
-      email = owner->getUserInfoString("Email1");
-      address = owner->getUserInfoString("Address");
-      city = owner->getUserInfoString("City");
-      state = owner->getUserInfoString("State");
-      zipCode = owner->getUserInfoString("Zipcode");
-      phoneNumber = owner->getUserInfoString("PhoneNumber");
-      faxNumber = owner->getUserInfoString("FaxNumber");
-      cellNumber = owner->getUserInfoString("CellularNumber");
-      countryCode = owner->getUserInfoUint("Country");
-      hideEmail = owner->getUserInfoBool("HideEmail");
-    }
-
-    eventId = gIcqProtocol.icqSetGeneralInfo(alias.c_str(), firstName.c_str(),
-        lastName.c_str(), email.c_str(), city.c_str(), state.c_str(),
-        phoneNumber.c_str(), faxNumber.c_str(), address.c_str(),
-        cellNumber.c_str(), zipCode.c_str(), countryCode, hideEmail);
-  }
+    eventId = gIcqProtocol.icqSetGeneralInfo(ownerId);
   else
     pushProtoSignal(new Licq::ProtoUpdateInfoSignal(), ownerId);
 
