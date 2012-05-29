@@ -595,7 +595,7 @@ void IcqProtocol::icqRelogon()
 }
 
 //-----icqRequestMetaInfo----------------------------------------------------
-unsigned long IcqProtocol::icqRequestMetaInfo(const Licq::UserId& userId)
+void IcqProtocol::icqRequestMetaInfo(const Licq::UserId& userId, unsigned long eventId)
 {
   CPU_CommonFamily *p = 0;
   bool bIsAIM = isalpha(userId.accountId()[0]);
@@ -605,10 +605,7 @@ unsigned long IcqProtocol::icqRequestMetaInfo(const Licq::UserId& userId)
     p = new CPU_Meta_RequestAllInfo(userId.accountId());
   gLog.info(tr("Requesting meta info for %s (#%hu/#%d)..."),
       userId.toString().c_str(), p->Sequence(), p->SubSequence());
-  Licq::Event* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(eventId, userId, p, NULL, !bIsAIM);
 }
 
 //-----icqRequestService--------------------------------------------------------
@@ -706,7 +703,7 @@ unsigned long IcqProtocol::icqSetPassword(const string& password)
   return 0;
 }
 
-unsigned long IcqProtocol::icqSetGeneralInfo(const Licq::UserId& ownerId)
+void IcqProtocol::icqSetGeneralInfo(unsigned long eventId, const Licq::UserId& ownerId)
 {
   string alias, firstName, lastName, emailPrimary, address, city, state, zipCode;
   string phoneNumber, faxNumber, cellularNumber;
@@ -716,7 +713,7 @@ unsigned long IcqProtocol::icqSetGeneralInfo(const Licq::UserId& ownerId)
   {
     OwnerReadGuard owner(ownerId);
     if (!owner.isLocked())
-      return 0;
+      return;
 
     alias = owner->getAlias();
     firstName = owner->getFirstName();
@@ -739,10 +736,7 @@ unsigned long IcqProtocol::icqSetGeneralInfo(const Licq::UserId& ownerId)
 
   gLog.info(tr("Updating general info (#%hu/#%d)..."), p->Sequence(), p->SubSequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(eventId, p, NULL);
 }
 
 //-----icqSetEmailInfo---------------------------------------------------------
@@ -832,16 +826,16 @@ unsigned long IcqProtocol::icqSetAbout(const string& about)
   return 0;
 }
 
-unsigned long IcqProtocol::icqAuthorizeGrant(const Licq::UserId& userId, const string& /* message */)
+void IcqProtocol::icqAuthorizeGrant(unsigned long eventId,
+    const Licq::UserId& userId, const string& /* message */)
 {
   CPU_Authorize* p = new CPU_Authorize(userId.accountId());
   gLog.info(tr("Authorizing user %s."), userId.accountId().c_str());
-  SendEvent_Server(p);
-
-  return 0;
+  SendEvent_Server(p, eventId);
 }
 
-unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const string& message)
+void IcqProtocol::icqAuthorizeRefuse(unsigned long eventId,
+    const Licq::UserId& userId, const string& message)
 {
   string userEncoding = getUserEncoding(userId);
   CPU_ThroughServer* p = new CPU_ThroughServer(userId.accountId(), ICQ_CMDxSUB_AUTHxREFUSED,
@@ -849,10 +843,7 @@ unsigned long IcqProtocol::icqAuthorizeRefuse(const Licq::UserId& userId, const 
   gLog.info(tr("Refusing authorization to user %s (#%hu)..."),
       userId.accountId().c_str(), p->Sequence());
 
-  Licq::Event* e = SendExpectEvent_Server(p, NULL);
-  if (e != NULL)
-    return e->EventId();
-  return 0;
+  SendExpectEvent_Server(eventId, p, NULL);
 }
 
 void IcqProtocol::icqRequestAuth(const Licq::UserId& userId, const string& message)

@@ -31,6 +31,7 @@
 #include <licq/pluginsignal.h>
 #include <licq/logging/log.h>
 
+#include "../daemon.h"
 #include "../gettext.h"
 #include "buffer.h"
 #include "defines.h"
@@ -56,6 +57,7 @@ void* UpdateUsers_tep(void* p);
 
 using namespace std;
 using namespace LicqIcq;
+using LicqDaemon::gDaemon;
 using Licq::gLog;
 
 void cleanup_mutex(void *m)
@@ -968,7 +970,8 @@ void* LicqIcq::UpdateUsers_tep(void* /* p */)
         if (useBart && autoInfo && pUser->buddyIconHash().size() > 0 &&
             pUser->buddyIconHash() != pUser->ourBuddyIconHash())
         {
-          gIcqProtocol.m_xBARTService->SendEvent(pUser->id(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
+          unsigned long eventId = gDaemon.getNextEventId();
+          gIcqProtocol.m_xBARTService->SendEvent(eventId, pUser->id(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
           bSent = true;
           bBART = true;
         }

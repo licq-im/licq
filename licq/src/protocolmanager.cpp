@@ -146,14 +146,14 @@ unsigned long ProtocolManager::setStatus(const UserId& ownerId,
   else if(isOffline)
   {
     if (ownerId.protocolId() == LICQ_PPID)
-      eventId = gIcqProtocol.logon(newStatus);
+      gIcqProtocol.logon(newStatus);
     else
       pushProtoSignal(new Licq::ProtoLogonSignal(newStatus), ownerId);
   }
   else
   {
     if (ownerId.protocolId() == LICQ_PPID)
-      eventId = gIcqProtocol.setStatus(newStatus);
+      gIcqProtocol.setStatus(newStatus);
     else
       pushProtoSignal(new Licq::ProtoChangeStatusSignal(newStatus), ownerId);
   }
@@ -273,21 +273,21 @@ unsigned long ProtocolManager::authorizeReply(const UserId& userId, bool grant, 
   if (!isProtocolConnected(userId))
     return 0;
 
-  unsigned long eventId = 0;
+  unsigned long eventId = getNextEventId();
 
   if (grant)
   {
     if (userId.protocolId() == LICQ_PPID)
-      eventId = gIcqProtocol.icqAuthorizeGrant(userId, message);
+      gIcqProtocol.icqAuthorizeGrant(eventId, userId, message);
     else
-      pushProtoSignal(new Licq::ProtoGrantAuthSignal(userId, message), userId);
+      pushProtoSignal(new Licq::ProtoGrantAuthSignal(eventId, userId, message), userId);
   }
   else
   {
     if (userId.protocolId() == LICQ_PPID)
-      eventId = gIcqProtocol.icqAuthorizeRefuse(userId, message);
+      gIcqProtocol.icqAuthorizeRefuse(eventId, userId, message);
     else
-      pushProtoSignal(new Licq::ProtoRefuseAuthSignal(userId, message), userId);
+      pushProtoSignal(new Licq::ProtoRefuseAuthSignal(eventId, userId, message), userId);
   }
 
   return eventId;
@@ -310,12 +310,12 @@ unsigned long ProtocolManager::requestUserInfo(const UserId& userId)
   if (!isProtocolConnected(userId))
     return 0;
 
-  unsigned long eventId = 0;
+  unsigned long eventId = getNextEventId();
 
   if (userId.protocolId() == LICQ_PPID)
-    eventId = gIcqProtocol.icqRequestMetaInfo(userId);
+    gIcqProtocol.icqRequestMetaInfo(userId, eventId);
   else
-    pushProtoSignal(new Licq::ProtoRequestInfo(userId), userId);
+    pushProtoSignal(new Licq::ProtoRequestInfo(eventId, userId), userId);
 
   return eventId;
 }
@@ -325,12 +325,12 @@ unsigned long ProtocolManager::updateOwnerInfo(const UserId& ownerId)
   if (!isProtocolConnected(ownerId))
     return 0;
 
-  unsigned long eventId = 0;
+  unsigned long eventId = getNextEventId();
 
   if (ownerId.protocolId() == LICQ_PPID)
-    eventId = gIcqProtocol.icqSetGeneralInfo(ownerId);
+    gIcqProtocol.icqSetGeneralInfo(eventId, ownerId);
   else
-    pushProtoSignal(new Licq::ProtoUpdateInfoSignal(), ownerId);
+    pushProtoSignal(new Licq::ProtoUpdateInfoSignal(eventId, ownerId), ownerId);
 
   return eventId;
 }
@@ -340,12 +340,12 @@ unsigned long ProtocolManager::requestUserPicture(const UserId& userId)
   if (!isProtocolConnected(userId))
     return 0;
 
-  unsigned long eventId = 0;
+  unsigned long eventId = getNextEventId();
 
   if (userId.protocolId() == LICQ_PPID)
-    eventId = gIcqProtocol.icqRequestPicture(userId);
+    gIcqProtocol.icqRequestPicture(eventId, userId);
   else
-    pushProtoSignal(new Licq::ProtoRequestPicture(userId), userId);
+    pushProtoSignal(new Licq::ProtoRequestPicture(eventId, userId), userId);
 
   return eventId;
 }

@@ -230,8 +230,8 @@ private:
 class ProtoGrantAuthSignal : public ProtocolSignal
 {
 public:
-  ProtoGrantAuthSignal(const UserId& userId, const std::string& message)
-    : ProtocolSignal(SignalGrantAuth, userId),
+  ProtoGrantAuthSignal(unsigned long eventId, const UserId& userId, const std::string& message)
+    : ProtocolSignal(SignalGrantAuth, userId, eventId),
       myMessage(message)
   { /* Empty */ }
 
@@ -244,8 +244,8 @@ private:
 class ProtoRefuseAuthSignal : public ProtocolSignal
 {
 public:
-  ProtoRefuseAuthSignal(const UserId& userId, const std::string& message)
-    : ProtocolSignal(SignalRefuseAuth, userId),
+  ProtoRefuseAuthSignal(unsigned long eventId, const UserId& userId, const std::string& message)
+    : ProtocolSignal(SignalRefuseAuth, userId, eventId),
       myMessage(message)
   { /* Empty */ }
 
@@ -258,24 +258,24 @@ private:
 class ProtoRequestInfo : public ProtocolSignal
 {
 public:
-  ProtoRequestInfo(const UserId& userId)
-    : ProtocolSignal(SignalRequestInfo, userId)
+  ProtoRequestInfo(unsigned long eventId, const UserId& userId)
+    : ProtocolSignal(SignalRequestInfo, userId, eventId)
   { /* Empty */ }
 };
 
 class ProtoUpdateInfoSignal : public ProtocolSignal
 {
 public:
-  ProtoUpdateInfoSignal()
-    : ProtocolSignal(SignalUpdateInfo)
+  ProtoUpdateInfoSignal(unsigned long eventId, const UserId& ownerId)
+    : ProtocolSignal(SignalUpdateInfo, ownerId, eventId)
   { /* Empty */ }
 };
 
 class ProtoRequestPicture : public ProtocolSignal
 {
 public:
-  ProtoRequestPicture(const UserId& userId)
-    : ProtocolSignal(SignalRequestPicture, userId)
+  ProtoRequestPicture(unsigned long eventId, const UserId& userId)
+    : ProtocolSignal(SignalRequestPicture, userId, eventId)
   { /* Empty */ }
 };
 

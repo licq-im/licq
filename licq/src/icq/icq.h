@@ -158,7 +158,7 @@ public:
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
   unsigned long icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPhoneBook(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqRequestPicture(const Licq::UserId& userId);
+  void icqRequestPicture(unsigned long eventId, const Licq::UserId& userId);
   unsigned long icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer = false);
@@ -171,7 +171,7 @@ public:
       const std::string& zip, unsigned short companyCountry, const std::string& name,
       const std::string& department, const std::string& position, unsigned short companyOccupation,
       const std::string& homepage);
-  unsigned long icqSetGeneralInfo(const Licq::UserId& ownerId);
+  void icqSetGeneralInfo(unsigned long eventId, const Licq::UserId& ownerId);
   unsigned long icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld);
   unsigned long icqSetMoreInfo(unsigned short age, char gender,
       const std::string& homepage, unsigned short birthYear, char birthMonth,
@@ -190,8 +190,8 @@ public:
       unsigned short countryCode, const std::string& coName, const std::string& coDept,
       const std::string& coPos, const std::string& keyword, bool onlineOnly);
   unsigned long icqSearchByUin(unsigned long);
-  unsigned long icqAuthorizeGrant(const Licq::UserId& userId, const std::string& message);
-  unsigned long icqAuthorizeRefuse(const Licq::UserId& userId, const std::string& message);
+  void icqAuthorizeGrant(unsigned long eventId, const Licq::UserId& userId, const std::string& message);
+  void icqAuthorizeRefuse(unsigned long eventId, const Licq::UserId& userId, const std::string& message);
   void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
   void icqUpdatePhoneBookTimestamp();
@@ -220,7 +220,7 @@ public:
   unsigned long logon(unsigned logonStatus);
   unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const Licq::UserId& userId);
-  unsigned long icqRequestMetaInfo(const Licq::UserId& userId);
+  void icqRequestMetaInfo(const Licq::UserId& userId, unsigned long eventId = 0);
   unsigned long setStatus(unsigned newStatus);
   void icqLogoff();
   void postLogoff(int nSD, Licq::Event* cancelledEvent);
@@ -305,7 +305,7 @@ public:
   bool ProcessTcpPacket(Licq::TCPSocket*);
   bool ProcessTcpHandshake(Licq::TCPSocket*);
 
-  unsigned long icqRequestInfoPlugin(User* user, bool, const uint8_t*);
+  unsigned long icqRequestInfoPlugin(User* user, bool, const uint8_t*, unsigned long eventId = 0);
   unsigned long icqRequestStatusPlugin(User* user, bool, const uint8_t*);
   void icqUpdateInfoTimestamp(const uint8_t*);
 
@@ -353,7 +353,7 @@ private:
 
   bool SendEvent(int nSD, Licq::Packet &, bool);
   bool SendEvent(Licq::INetSocket *, Licq::Packet &, bool);
-  void SendEvent_Server(Licq::Packet *packet);
+  void SendEvent_Server(Licq::Packet *packet, unsigned long eventId = 0);
   Licq::Event* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, CSrvPacketTcp*, Licq::UserEvent*, bool = false);
   Licq::Event* SendExpectEvent_Server(const Licq::UserId& userId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false);
 

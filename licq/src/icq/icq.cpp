@@ -297,10 +297,11 @@ unsigned IcqProtocol::eventCommandFromPacket(Licq::Packet* p)
  * Sends an event without expecting a reply.
  *--------------------------------------------------------------------------*/
 
-void IcqProtocol::SendEvent_Server(CPacket *packet)
+void IcqProtocol::SendEvent_Server(CPacket *packet, unsigned long eventId)
 {
 #if 1
-  unsigned long eventId = gDaemon.getNextEventId();
+  if (eventId == 0)
+    eventId = gDaemon.getNextEventId();
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer);
   e->myCommand = eventCommandFromPacket(packet);
 
@@ -331,6 +332,9 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
     if (ue != NULL) delete ue;
     return NULL;
   }
+
+  if (eventId == 0)
+    eventId = gDaemon.getNextEventId();
 
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer, userId, ue);
   e->myCommand = eventCommandFromPacket(packet);

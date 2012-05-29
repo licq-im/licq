@@ -119,8 +119,6 @@ public:
       unsigned short countryCode, const std::string& coName, const std::string& coDept,
       const std::string& coPos, const std::string& keyword, bool onlineOnly) = 0;
   virtual unsigned long icqSearchByUin(unsigned long) = 0;
-  virtual unsigned long icqAuthorizeGrant(const Licq::UserId& userId, const std::string& message) = 0;
-  virtual unsigned long icqAuthorizeRefuse(const Licq::UserId& userId, const std::string& message) = 0;
   virtual void icqRequestAuth(const Licq::UserId& userId, const std::string& message) = 0;
   virtual void icqAlertUser(const Licq::UserId& userId) = 0;
   virtual void icqUpdatePhoneBookTimestamp() = 0;

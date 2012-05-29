@@ -143,10 +143,9 @@ void COscarService::ClearQueue()
   pthread_mutex_unlock(&mutex_sendqueue);
 }
 
-unsigned long COscarService::SendEvent(const Licq::UserId& userId,
-                                       unsigned short SubType, bool Request)
+void COscarService::SendEvent(unsigned long eventId,
+    const Licq::UserId& userId, unsigned short SubType, bool Request)
 {
-  unsigned long eventId = gDaemon.getNextEventId();
   Licq::Event* e = new Licq::Event(eventId, mySocketDesc, NULL, Licq::Event::ConnectServer, userId);
   e->SetSubType(SubType);
   if (Request)
@@ -157,8 +156,6 @@ unsigned long COscarService::SendEvent(const Licq::UserId& userId,
   mySendQueue.push_back(e);
   pthread_cond_signal(&cond_sendqueue);
   pthread_mutex_unlock(&mutex_sendqueue);
-
-  return eventId;
 }
 
 bool COscarService::SendBARTFam(Licq::Event* e)

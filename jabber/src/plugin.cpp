@@ -357,12 +357,14 @@ void Plugin::doGetInfo(Licq::ProtoRequestInfo* signal)
 {
   assert(myClient != NULL);
   myClient->getVCard(signal->userId().accountId());
+
+  Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
-void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
+void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* signal)
 {
   assert(myClient != NULL);
-  Licq::OwnerReadGuard owner(JABBER_PPID);
+  Licq::OwnerReadGuard owner(signal->userId());
   if (!owner.isLocked())
   {
     gLog.error("No owner set");
@@ -371,6 +373,8 @@ void Plugin::doUpdateInfo(Licq::ProtoUpdateInfoSignal* /*signal*/)
 
   UserToVCard vcard(*owner);
   myClient->setOwnerVCard(vcard);
+
+  Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
 void Plugin::doAddUser(Licq::ProtoAddUserSignal* signal)
@@ -430,12 +434,16 @@ void Plugin::doGrantAuth(Licq::ProtoGrantAuthSignal* signal)
 {
   assert(myClient != NULL);
   myClient->grantAuthorization(signal->userId().accountId());
+
+  Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
 void Plugin::doRefuseAuth(Licq::ProtoRefuseAuthSignal* signal)
 {
   assert(myClient != NULL);
   myClient->refuseAuthorization(signal->userId().accountId());
+
+  Licq::gPluginManager.pushPluginEvent(new Licq::Event(signal));
 }
 
 void Plugin::doRequestAuth(Licq::ProtoRequestAuthSignal* signal)

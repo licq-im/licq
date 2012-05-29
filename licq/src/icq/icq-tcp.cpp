@@ -436,18 +436,18 @@ unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
 
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------
 unsigned long IcqProtocol::icqRequestInfoPlugin(User* u, bool bServer,
-                                               const uint8_t* GUID)
+    const uint8_t* GUID, unsigned long eventId)
 {
   Licq::Event* result = NULL;
   if (bServer)
   {
     CPU_InfoPluginReq *p = new CPU_InfoPluginReq(u, GUID, 0);
-    result = SendExpectEvent_Server(u->id(), p, NULL);
+    result = SendExpectEvent_Server(eventId, u->id(), p, NULL);
   }
   else
   {
     CPT_InfoPluginReq *p = new CPT_InfoPluginReq(u, GUID, 0);
-    result = SendExpectEvent_Client(u, p, NULL);
+    result = SendExpectEvent_Client(eventId, u, p, NULL);
   }
 
   if (result != NULL)
@@ -496,7 +496,7 @@ unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId, bool 
 }
 
 //-----CICQDaemon::sendPictureReq-----------------------------------------------
-unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId)
+void IcqProtocol::icqRequestPicture(unsigned long eventId, const Licq::UserId& userId)
 {
   bool useBart;
   {
@@ -508,20 +508,20 @@ unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId)
   {
     UserReadGuard user(userId);
     if (!user.isLocked())
-      return 0;
+      return;
 
     iconHashSize = user->buddyIconHash().size();
   }
 
   if (useBart && iconHashSize > 0)
-    return m_xBARTService->SendEvent(userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
+    return m_xBARTService->SendEvent(eventId, userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
 
   if (Licq::gUserManager.isOwner(userId))
-     return 0;
+     return;
 
   UserWriteGuard u(userId);
   if (!u.isLocked())
-    return 0;
+    return;
 
   bool bServer = (u->infoSocketDesc() < 0);
   if (bServer)
@@ -529,7 +529,7 @@ unsigned long IcqProtocol::icqRequestPicture(const Licq::UserId& userId)
   else
     gLog.info(tr("Requesting Picture from %s."), u->getAlias().c_str());
 
-  return icqRequestInfoPlugin(*u, bServer, PLUGIN_PICTURE);
+  icqRequestInfoPlugin(*u, bServer, PLUGIN_PICTURE, eventId);
 }
 
 //-----CICQDaemon::sendStatusPluginReq------------------------------------------

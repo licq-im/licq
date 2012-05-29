@@ -644,27 +644,19 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
     {
       Licq::ProtoGrantAuthSignal* sig = static_cast<Licq::ProtoGrantAuthSignal*>(s);
       MSNGrantAuth(sig->userId());
-      break;
-    }
-    case Licq::ProtocolSignal::SignalRefuseAuth:
-    {
-//      Licq::ProtoRefuseAuthSignal* sig = static_cast<Licq::ProtoRefuseAuthSignal*>(s);
-      break;
-    }
-    case Licq::ProtocolSignal::SignalRequestInfo:
-    {
-//      Licq::ProtoRequestInfo* sig = static_cast<Licq::ProtoRequestInfo*>(s);
+      Licq::gPluginManager.pushPluginEvent(new Licq::Event(s));
       break;
     }
     case Licq::ProtocolSignal::SignalUpdateInfo:
     {
       string newAlias;
       {
-        Licq::OwnerReadGuard o(MSN_PPID);
-        if (o.isLocked())
+        Licq::OwnerReadGuard o(s->userId());
+        if (!o.isLocked())
           newAlias = o->getAlias();
       }
       MSNUpdateUser(newAlias);
+      Licq::gPluginManager.pushPluginEvent(new Licq::Event(s));
       break;
     }
     case Licq::ProtocolSignal::SignalBlockUser:
