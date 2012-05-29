@@ -129,6 +129,7 @@ void ShowAwayMsgDlg::doneEvent(const Licq::Event* e)
     switch (e->Result())
     {
       case Licq::Event::ResultFailed:
+      case Licq::Event::ResultUnsupported:
       result = tr("failed");
         break;
       case Licq::Event::ResultTimedout:

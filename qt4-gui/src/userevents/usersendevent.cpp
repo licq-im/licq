@@ -1462,6 +1462,7 @@ void UserSendEvent::eventDoneReceived(const Licq::Event* e)
       result = tr("cancelled");
       break;
     case Licq::Event::ResultFailed:
+    case Licq::Event::ResultUnsupported:
       result = tr("failed");
       break;
     case Licq::Event::ResultTimedout:

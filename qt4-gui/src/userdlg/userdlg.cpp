@@ -353,6 +353,7 @@ void UserDlg::doneFunction(const Licq::Event* event)
       result = tr("done");
         break;
       case Licq::Event::ResultFailed:
+      case Licq::Event::ResultUnsupported:
       result = tr("failed");
         break;
       case Licq::Event::ResultTimedout:

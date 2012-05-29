@@ -247,50 +247,15 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalUpdateInfo:
       doUpdateInfo(static_cast<Licq::ProtoUpdateInfoSignal*>(signal));
       break;
-    case Licq::ProtocolSignal::SignalRequestPicture:
-      gLog.info("SignalRequestPicture not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalBlockUser:
-      gLog.info("SignalBlockUser not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalUnblockUser:
-      gLog.info("SignalUnblockUser not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalAcceptUser:
-      gLog.info("SignalAcceptUser not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalUnacceptUser:
-      gLog.info("SignalUnacceptUser not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalIgnoreUser:
-      gLog.info("SignalIgnoreUser not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalUnignoreUser:
-      gLog.info("SignalUnignoreUser not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalSendFile:
-      gLog.info("SignalSendFile not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalSendChat:
-      gLog.info("SignalSendChat not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalCancelEvent:
-      gLog.info("SignalCancelEvent not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalSendReply:
-      gLog.info("SignalSendReply not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalOpenSecure:
-      gLog.info("SignalOpenSecure not implemented");
-      break;
-    case Licq::ProtocolSignal::SignalCloseSecure:
-      gLog.info("SignalCloseSecure not implemented");
-      break;
     case Licq::ProtocolSignal::SignalRequestAuth:
       doRequestAuth(static_cast<Licq::ProtoRequestAuthSignal*>(signal));
       break;
     default:
       gLog.error("Unknown signal %u", signal->signal());
+      /* Unsupported action, if it has an eventId, cancel it */
+      if (signal->eventId() != 0)
+        Licq::gPluginManager.pushPluginEvent(
+            new Licq::Event(signal, Licq::Event::ResultUnsupported));
       break;
   }
 }
@@ -362,11 +327,8 @@ void Plugin::doSendMessage(Licq::ProtoSendMessageSignal* signal)
   Licq::EventMsg* message = new Licq::EventMsg(
       signal->message().c_str(), Licq::EventMsg::TimeNow, Licq::EventMsg::FlagSender);
 
-  Licq::Event* event = new Licq::Event(signal->eventId(), 0, NULL,
-      Licq::Event::ConnectServer, signal->userId(), message);
+  Licq::Event* event = new Licq::Event(signal, Licq::Event::ResultAcked, message);
   event->myCommand = Licq::Event::CommandMessage;
-  event->thread_plugin = signal->callerThread();
-  event->m_eResult = Licq::Event::ResultAcked;
 
   if (event->m_pUserEvent)
   {

@@ -181,6 +181,7 @@ void KeyRequestDlg::doneEvent(const Licq::Event* e)
         text = tr("Remote client does not support OpenSSL.");
         break;
       case Licq::Event::ResultError: // could not connect to remote host (or out of memory)
+      case Licq::Event::ResultUnsupported:
         text = tr("Could not connect to remote client.");
         break;
       case Licq::Event::ResultSuccess:

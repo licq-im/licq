@@ -130,6 +130,7 @@ void RandomChatDlg::userEventDone(const Licq::Event* event)
       WarnUser(this, tr("Random chat search timed out."));
       break;
     case Licq::Event::ResultError:
+    case Licq::Event::ResultUnsupported:
       WarnUser(this, tr("Random chat search had an error."));
       break;
     default:

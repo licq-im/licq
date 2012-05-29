@@ -33,6 +33,7 @@
 #include <licq/socket.h>
 #include <licq/conversation.h>
 #include <licq/event.h>
+#include <licq/plugin/pluginmanager.h>
 #include <licq/protocolsignal.h>
 
 #include "msn.h"
@@ -680,7 +681,13 @@ void CMSN::ProcessSignal(Licq::ProtocolSignal* s)
     }
    
     default:
-      break;  //Do nothing now...
+    {
+      /* Unsupported action, if it has an eventId, cancel it */
+      if (s->eventId() != 0)
+        Licq::gPluginManager.pushPluginEvent(
+            new Licq::Event(s, Licq::Event::ResultUnsupported));
+      break;
+    }
   }
 
   delete s;

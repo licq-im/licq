@@ -52,6 +52,7 @@ class PluginManager;
 namespace Licq
 {
 class Packet;
+class ProtocolSignal;
 class UserEvent;
 
 //-----CExtendedAck----------------------------------------------------------
@@ -179,6 +180,7 @@ public:
     ResultTimedout      = 4,    // Time out while communicating with remote socket
     ResultError         = 5,    // Other error
     ResultCancelled     = 6,    // Event cancelled by the user
+    ResultUnsupported   = 7,    // Event is unsupported
   };
 
   enum SubResultType
@@ -263,6 +265,7 @@ public:
   ~Event();
 
 protected:
+  Event(ProtocolSignal* ps, ResultType result = ResultSuccess, UserEvent* ue = NULL);
   Event(unsigned long id, int _nSocketDesc, Packet* p, ConnectType _eConnect,
       const UserId& userId = UserId(), UserEvent* e = NULL);
   Event(const Event* e);

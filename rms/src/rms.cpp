@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -691,6 +691,7 @@ bool CRMSClient::ProcessEvent(Licq::Event* e)
       szr = "timed out";
       break;
     case Licq::Event::ResultFailed:
+    case Licq::Event::ResultUnsupported:
       nCode = CODE_EVENTxFAILED;
       szr = "failed";
       break;

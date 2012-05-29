@@ -787,6 +787,7 @@ void CLicqConsole::ProcessDoneEvent(Licq::Event* e)
       win->wprintf("%A%Cfailed\n", m_cColorError->nAttr, m_cColorError->nColor);
         break;
       case Licq::Event::ResultError:
+      case Licq::Event::ResultUnsupported:
       win->wprintf("%A%Cerror\n", m_cColorError->nAttr, m_cColorError->nColor);
         break;
       case Licq::Event::ResultCancelled:
