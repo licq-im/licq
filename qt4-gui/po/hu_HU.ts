@@ -175,47 +175,47 @@ Hagyhatsz üzenetet.
 <context>
     <name>LicqQtGui::ChatDlg</name>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="194"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="195"/>
         <source>Beep</source>
         <translation>Csipog</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="233"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="234"/>
         <source>Bold</source>
         <translation>Félkövér</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="160"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="162"/>
         <source>Chat</source>
         <translation>Csevegés</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="167"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="171"/>
         <source>Mode</source>
         <translation>Mód</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="234"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="235"/>
         <source>Toggles Bold font</source>
         <translation>Félkövér betű beállítása</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="319"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="320"/>
         <source>Set Encoding</source>
         <translation>Kódolás beállítása</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="190"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="191"/>
         <source>Ignores user color settings</source>
         <translation>Felhasználói színek mellőzése</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="239"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="240"/>
         <source>Toggles Italic font</source>
         <translation>Dőlt betű beállítása</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="601"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="602"/>
         <source>Remote - Waiting for joiners...</source>
         <translation>Távoli gép - Belépőkre várva...</translation>
     </message>
@@ -225,97 +225,97 @@ Hagyhatsz üzenetet.
         <translation>Licq - Chat</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="161"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="164"/>
         <source>&amp;Audio</source>
         <translation>&amp;Audio</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="195"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="196"/>
         <source>Sends a Beep to all recipients</source>
         <translation>Csipogás küldése minden címzettnek</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1062"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1063"/>
         <source>Failed to open file:
 %1</source>
         <translation>Nem sikerült megnyitni a következő fájlt:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="724"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="725"/>
         <source>Unable to create new thread.
 See Network Window for details.</source>
         <translation>Nem sikerült létrehozni a folyamatot.
 Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="169"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="174"/>
         <source>&amp;Pane Mode</source>
         <translation>&amp;Panel mód</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="238"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="239"/>
         <source>Italic</source>
         <translation>Dőlt</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="986"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="987"/>
         <source>Do you want to save the chat session?</source>
         <translation>El akarod menteni ezt a csevegést?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1014"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1015"/>
         <source>Licq - Chat %1</source>
         <translation>Licq - Chat %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="173"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="178"/>
         <source>&amp;IRC Mode</source>
         <translation>&amp;IRC mód</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="201"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="202"/>
         <source>Changes the foreground color</source>
         <translation>Előtér szín beállítása</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1102"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1103"/>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
         <translation>Nem sikerült betölteni a kódolást &lt;b&gt;%1&lt;/b&gt;. A üzenetek valószínűleg olvashatatlanok lesznek.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="207"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="208"/>
         <source>Background color</source>
         <translation>Háttér szín</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="373"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="374"/>
         <source>Local - %1</source>
         <translation>Local - %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1048"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1049"/>
         <source>/%1.chat</source>
         <translation>/%1.chat</translation>
     </message>
     <message>
         <location filename="../src/dialogs/chatdlg.cpp" line="125"/>
-        <location filename="../src/dialogs/chatdlg.cpp" line="977"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="978"/>
         <source>Remote - Not connected</source>
         <translation>Távoli gép - Nincs kapcsolat</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="248"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="249"/>
         <source>StrikeOut</source>
         <translation>Áthúzott</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="166"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="169"/>
         <source>&amp;Close Chat</source>
         <translation>&amp;Csevegés bezárása</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="792"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="793"/>
         <source>
 &lt;--BEEP--&gt;
 </source>
@@ -324,68 +324,68 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="793"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="794"/>
         <source>&gt; &lt;--BEEP--&gt;
 </source>
         <translation>&gt; &lt;--CSIPP--&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="249"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="250"/>
         <source>Toggles StrikeOut font</source>
         <translation>Áthúzott betű beállítása</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="243"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="244"/>
         <source>Underline</source>
         <translation>Aláhúzott</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="737"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="738"/>
         <source>%1 closed connection.</source>
         <translation>%1 megszakította a kapcsolatot.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="611"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="612"/>
         <source>Remote - Connecting...</source>
         <translation>Távoli gép - Csatlakozás...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="164"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="167"/>
         <source>&amp;Save Chat</source>
         <translation>&amp;Csevegés mentése</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="208"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="209"/>
         <source>Changes the background color</source>
         <translation>Háttér szín beállítása</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="200"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="201"/>
         <source>Foreground color</source>
         <translation>Előtér szín</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="708"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="709"/>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
         <translation>Nem sikerült megnyitni a portot.
 Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="189"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="190"/>
         <source>Ignore user settings</source>
         <translation>Felhasználói beállítások mellőzése</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="716"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="717"/>
         <source>Unable to connect to the remote chat.
 See Network Window for details.</source>
         <translation>Nem sikerült megnyitni a távoli csevegést.
 Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="244"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="245"/>
         <source>Toggles Underline font</source>
         <translation type="unfinished"></translation>
     </message>
@@ -459,112 +459,112 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
 <context>
     <name>LicqQtGui::ContactUserData</name>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="715"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="714"/>
         <source>Birthday Today!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="720"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="719"/>
         <source>Typing a message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="722"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="721"/>
         <source>Phone &amp;quot;Follow Me&amp;quot;: Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="724"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="723"/>
         <source>Phone &amp;quot;Follow Me&amp;quot;: Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="727"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="726"/>
         <source>ICQphone: Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="729"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="728"/>
         <source>ICQphone: Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="732"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="731"/>
         <source>File Server: Enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="736"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="735"/>
         <source>Secure connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="739"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="738"/>
         <source>Custom Auto Response</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="748"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="747"/>
         <source>Auto Response:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="756"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="755"/>
         <source>E: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="760"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="759"/>
         <source>P: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="763"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="762"/>
         <source>C: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="769"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="768"/>
         <source>F: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="776"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="775"/>
         <source>Ip: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="788"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="787"/>
         <source>O: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="792"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="791"/>
         <source>Logged In: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="795"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
         <source>Away: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="798"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="797"/>
         <source>Idle: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="801"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="800"/>
         <source>Local time: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="804"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="803"/>
         <source>ID: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="742"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="741"/>
         <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1451,49 +1451,49 @@ The key isn&apos;t deleted from your keyring.</source>
         <translation type="unfinished">&amp;Menü</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="166"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="292"/>
         <source>INVALID USER</source>
         <translation type="unfinished">ÉRVÉNYTELEN FELHASZNÁLÓ</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="178"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="302"/>
         <source>Licq - History </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="184"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="176"/>
         <source>Invalid user requested</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="190"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="182"/>
         <source>Error loading history file: %1
 Description: %2</source>
         <translation type="unfinished">Hiba az előzmények betöltése közben: %1
 Leírás: %2</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="193"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="185"/>
         <source>Sorry, history is disabled for this person</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="198"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="190"/>
         <source>History is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="217"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="209"/>
         <source>server</source>
         <translation type="unfinished">szerver</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="473"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="488"/>
         <source>Search returned no matches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="480"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="495"/>
         <source>Search wrapped around</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1733,7 +1733,7 @@ Ez így nem fog menni.</translation>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="648"/>
+        <location filename="../src/core/licqgui.cpp" line="641"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1742,7 +1742,7 @@ from your contact list?</source>
  a Felhasználó Listádból?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="269"/>
+        <location filename="../src/core/licqgui.cpp" line="270"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation type="unfinished"></translation>
@@ -1782,7 +1782,7 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MLEdit</name>
     <message>
-        <location filename="../src/widgets/mledit.cpp" line="286"/>
+        <location filename="../src/widgets/mledit.cpp" line="289"/>
         <source>Allow Tabulations</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1903,69 +1903,69 @@ Double click - Set auto response</source>
 Dupla klikk - Azonnali válasz beállítása</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="652"/>
+        <location filename="../src/core/mainwin.cpp" line="661"/>
         <source>Error! No owner set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="721"/>
+        <location filename="../src/core/mainwin.cpp" line="730"/>
         <source>SysMsg</source>
         <translation type="unfinished">Rendszerüzenet</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="722"/>
+        <location filename="../src/core/mainwin.cpp" line="731"/>
         <source>System Message</source>
         <translation type="unfinished">Rendszerüzenet</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="730"/>
+        <location filename="../src/core/mainwin.cpp" line="739"/>
         <source>%1 msg%2</source>
         <translation type="unfinished">%1 üzenet%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="730"/>
-        <location filename="../src/core/mainwin.cpp" line="731"/>
+        <location filename="../src/core/mainwin.cpp" line="739"/>
+        <location filename="../src/core/mainwin.cpp" line="740"/>
         <source> </source>
         <translation type="unfinished"> </translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="730"/>
-        <location filename="../src/core/mainwin.cpp" line="731"/>
+        <location filename="../src/core/mainwin.cpp" line="739"/>
+        <location filename="../src/core/mainwin.cpp" line="740"/>
         <source>s</source>
         <translation type="unfinished">s</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="731"/>
+        <location filename="../src/core/mainwin.cpp" line="740"/>
         <source>%1 message%2</source>
         <translation type="unfinished">%1 üzenet%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="747"/>
+        <location filename="../src/core/mainwin.cpp" line="756"/>
         <source>No msgs</source>
         <translation type="unfinished">Nincs üzenet</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="748"/>
+        <location filename="../src/core/mainwin.cpp" line="757"/>
         <source>No messages</source>
         <translation type="unfinished">Nincs üzenet</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="680"/>
+        <location filename="../src/core/mainwin.cpp" line="689"/>
         <source>is online</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1099"/>
+        <location filename="../src/core/mainwin.cpp" line="1108"/>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq %1 Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1132"/>
+        <location filename="../src/core/mainwin.cpp" line="1141"/>
         <source>Qt URL handling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1149"/>
+        <location filename="../src/core/mainwin.cpp" line="1158"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -5404,44 +5404,43 @@ reset your statistics?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="111"/>
-        <location filename="../src/userdlg/userdlg.cpp" line="118"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="254"/>
         <source>Licq - Info </source>
         <translation type="unfinished">Licq - Info</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="118"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="243"/>
         <source>INVALID USER</source>
         <translation type="unfinished">ÉRVÉNYTELEN FELHASZNÁLÓ</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="175"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="166"/>
         <source>Updating...</source>
         <translation type="unfinished">Frissítés...</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="188"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="179"/>
         <source>Updating server...</source>
         <translation type="unfinished">Szerver frissítése...</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="249"/>
-        <location filename="../src/userdlg/userdlg.cpp" line="265"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="266"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="282"/>
         <source>error</source>
         <translation type="unfinished">hiba</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="256"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="273"/>
         <source>done</source>
         <translation type="unfinished">kész</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="259"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="276"/>
         <source>failed</source>
         <translation type="unfinished">hiba</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/userdlg.cpp" line="262"/>
+        <location filename="../src/userdlg/userdlg.cpp" line="279"/>
         <source>timed out</source>
         <translation type="unfinished">időtúllépés</translation>
     </message>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2011-10-25 19:02+0200\n"
+"POT-Creation-Date: 2012-06-02 17:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -248,7 +248,7 @@ msgstr ""
 msgid "%s (%s) requested auto response [Licq %s]."
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:1652 src/icq/icq.cpp:1201
+#: src/icq/icq.cpp:1201 src/icq/icq-tcp.cpp:1652
 #, c-format
 msgid "%s (%s) requested auto response."
 msgstr ""
@@ -348,7 +348,7 @@ msgstr ""
 msgid "%s refused our request."
 msgstr ""
 
-#: src/icq/packet.cpp:4798
+#: src/icq/packet.cpp:4809
 #, c-format
 msgid "%s returned abnormally: exit code %d."
 msgstr ""
@@ -770,8 +770,8 @@ msgstr ""
 msgid "Ack for unknown event from %s."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3404 src/icq/icq-srv.cpp:3491 src/icq/icq-tcp.cpp:2595
-#: src/icq/icq.cpp:1197 src/icq/icq.cpp:1290
+#: src/icq/icq.cpp:1197 src/icq/icq.cpp:1290 src/icq/icq-srv.cpp:3404
+#: src/icq/icq-srv.cpp:3491 src/icq/icq-tcp.cpp:2595
 msgid "Ack for unknown event."
 msgstr ""
 
@@ -797,7 +797,7 @@ msgstr ""
 msgid "Added %s (%s) to list from server."
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:630
+#: src/contactlist/usermanager.cpp:633
 #, c-format
 msgid "Added group %s (%u) to list from server"
 msgstr ""
@@ -1529,7 +1529,7 @@ msgstr ""
 msgid "Auto response from %s (#%hu)%s."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3457 src/icq/icq.cpp:1187
+#: src/icq/icq.cpp:1187 src/icq/icq-srv.cpp:3457
 #, c-format
 msgid "Auto response from %s (#%lu)."
 msgstr ""
@@ -2409,7 +2409,7 @@ msgstr ""
 msgid "Changing status to %s (#%hu)..."
 msgstr ""
 
-#: src/icq/packet.cpp:4208
+#: src/icq/packet.cpp:4216
 #, c-format
 msgid "Channel %u is not implemented"
 msgstr ""
@@ -2898,7 +2898,7 @@ msgstr ""
 msgid "Colombia"
 msgstr ""
 
-#: src/icq/packet.cpp:1478
+#: src/icq/packet.cpp:1486
 #, c-format
 msgid "Command not implemented yet (%04X)."
 msgstr ""
@@ -3715,7 +3715,7 @@ msgstr ""
 msgid "Cote d'Ivoire"
 msgstr ""
 
-#: src/icq/packet.cpp:4783
+#: src/icq/packet.cpp:4794
 #, c-format
 msgid "Could not execute \"%s\" for auto-response."
 msgstr ""
@@ -3829,7 +3829,7 @@ msgstr ""
 msgid "Danish"
 msgstr ""
 
-#: src/icq/packet.cpp:500
+#: src/icq/packet.cpp:516
 #, c-format
 msgid "Decrypted (ICQ) TCP Packet (%lu bytes)"
 msgstr ""
@@ -4115,7 +4115,7 @@ msgstr ""
 msgid "Failed to load plugin (%s): %s"
 msgstr ""
 
-#: src/icq/packet.cpp:1900 src/icq/packet.cpp:5275
+#: src/icq/packet.cpp:1908 src/icq/packet.cpp:5286
 #, c-format
 msgid "Failed to read file (%s): %s."
 msgstr ""
@@ -9015,12 +9015,12 @@ msgstr ""
 msgid "Grenada"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:601
+#: src/contactlist/usermanager.cpp:604
 #, c-format
 msgid "Group %s is already in list"
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:753
+#: src/contactlist/usermanager.cpp:756
 #, c-format
 msgid "Group name %s is already in list"
 msgstr ""
@@ -10799,7 +10799,7 @@ msgid ""
 "Internal error: FileTransferManager::ProcessPacket(), invalid state (%d)."
 msgstr ""
 
-#: src/icq/icq-srv.cpp:1396 src/icq/icq.cpp:816
+#: src/icq/icq.cpp:816 src/icq/icq-srv.cpp:1396
 #, c-format
 msgid ""
 "Internal error: ProcessDoneEvents(): Invalid result for extended event (%d)."
@@ -12519,7 +12519,7 @@ msgstr ""
 msgid "Medical/Health"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3036 src/icq/icq-srv.cpp:4218 src/icq/icq.cpp:1078
+#: src/icq/icq.cpp:1078 src/icq/icq-srv.cpp:3036 src/icq/icq-srv.cpp:4218
 #: src/userevents.cpp:191
 msgid "Message"
 msgstr ""
@@ -14923,7 +14923,7 @@ msgstr ""
 msgid "Occ"
 msgstr ""
 
-#: src/contactlist/user.cpp:1202 src/icq/icq-tcp.cpp:2569
+#: src/icq/icq-tcp.cpp:2569 src/contactlist/user.cpp:1202
 msgid "Occupied"
 msgstr ""
 
@@ -15533,7 +15533,7 @@ msgstr ""
 msgid "Password change"
 msgstr ""
 
-#: src/icq/packet.cpp:789 src/icq/packet.cpp:837
+#: src/icq/packet.cpp:801 src/icq/packet.cpp:849
 msgid "Password too long, truncated to 8 Characters!"
 msgstr ""
 
@@ -15640,7 +15640,7 @@ msgstr ""
 msgid "Portuguese"
 msgstr ""
 
-#: src/icq/packet.cpp:1906 src/icq/packet.cpp:5281
+#: src/icq/packet.cpp:1914 src/icq/packet.cpp:5292
 #, c-format
 msgid "Premature end of file (%s): %s."
 msgstr ""
@@ -15866,7 +15866,7 @@ msgstr ""
 msgid "Renaming group with id %d to %s..."
 msgstr ""
 
-#: src/contactlist/usermanager.cpp:760
+#: src/contactlist/usermanager.cpp:763
 #, c-format
 msgid "Renaming request for invalid group %u"
 msgstr ""
@@ -18427,12 +18427,12 @@ msgstr ""
 msgid "Truncating message to %d characters to send through server."
 msgstr ""
 
-#: src/icq/packet.cpp:2599
+#: src/icq/packet.cpp:2607
 #, c-format
 msgid "Trying to export invalid user %s to server"
 msgstr ""
 
-#: src/icq/packet.cpp:2606
+#: src/icq/packet.cpp:2614
 #, c-format
 msgid "Trying to export non ICQ user %s to ICQ server."
 msgstr ""
@@ -18475,7 +18475,7 @@ msgstr ""
 msgid "UIN: %lu Evil: %04hx"
 msgstr ""
 
-#: src/icq/icq-srv.cpp:3049 src/icq/icq-srv.cpp:4231 src/icq/icq.cpp:1154
+#: src/icq/icq.cpp:1154 src/icq/icq-srv.cpp:3049 src/icq/icq-srv.cpp:4231
 #: src/userevents.cpp:289
 msgid "URL"
 msgstr ""
@@ -19233,7 +19233,7 @@ msgid "Unable to open history file (%s): %s."
 msgstr ""
 
 #: src/icq/icq-tcp.cpp:2988 src/icq/oscarservice.cpp:381
-#: src/icq/packet.cpp:1851 src/icq/packet.cpp:5225
+#: src/icq/packet.cpp:1859 src/icq/packet.cpp:5236
 #, c-format
 msgid "Unable to open picture file (%s): %s."
 msgstr ""
@@ -19287,12 +19287,12 @@ msgstr ""
 msgid "Unable to start users update thread: %s."
 msgstr ""
 
-#: src/icq/packet.cpp:1859
+#: src/icq/packet.cpp:1867
 #, c-format
 msgid "Unable to stat picture file (%s): %s."
 msgstr ""
 
-#: src/icq/packet.cpp:5233
+#: src/icq/packet.cpp:5244
 #, c-format
 msgid "Unable to stat picture file (%s):%s."
 msgstr ""
@@ -19301,16 +19301,16 @@ msgstr ""
 msgid "Undeliverable SMS."
 msgstr ""
 
-#: src/icq/packet.cpp:366
+#: src/icq/packet.cpp:382
 #, c-format
 msgid "Unencrypted (ICQ) TCP Packet (%lu bytes)"
 msgstr ""
 
-#: src/icq/packet.cpp:156
+#: src/icq/packet.cpp:168
 msgid "Unencrypted Packet"
 msgstr ""
 
-#: src/icq/packet.cpp:211
+#: src/icq/packet.cpp:223
 #, c-format
 msgid "Unencrypted Packet (%lu bytes)"
 msgstr ""
@@ -19375,7 +19375,7 @@ msgstr ""
 msgid "Unknown ICBM error: 0x%04x"
 msgstr ""
 
-#: src/icq/icq-tcp.cpp:1939 src/icq/icq.cpp:1245
+#: src/icq/icq.cpp:1245 src/icq/icq-tcp.cpp:1939
 #, c-format
 msgid "Unknown ICBM plugin type: %s"
 msgstr ""
@@ -19439,7 +19439,7 @@ msgstr ""
 msgid "Unknown channel %u."
 msgstr ""
 
-#: src/icq/packet.cpp:4247
+#: src/icq/packet.cpp:4255
 msgid "Unknown channel GUID."
 msgstr ""
 
