@@ -4564,6 +4564,9 @@ CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
         Licq::TCPSocket::ChannelNormal,
         message, true, nLevel, pUser)
 {
+  if (m_nVersion >= 6 && isUtf8)
+    m_nSize += 4 + sizeof(ICQ_CAPABILITY_UTF8_STR)-1;
+
   InitBuffer();
   if (m_nVersion >= 6)
   {
