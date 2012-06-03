@@ -55,44 +55,6 @@ const unsigned short DirectStatusPluginRequest   = 2;
 const unsigned short ServerInfoPluginRequest     = 3;
 const unsigned short ServerStatusPluginRequest   = 4;
 
-const unsigned short GUID_LENGTH                 = 18;
-const unsigned short CAP_LENGTH                  = 16;
-
-unsigned short ReversePort(unsigned short p);
-size_t lengthField(const std::string& field);
-std::string pipeInput(const std::string& message);
-
-
-//
-// These classes, CPX_*, are general classes for different packets that do the
-// same function that may be sent through the server or directly to the client.
-// This gives the direct and server packets a multiple inheritence.
-//
-
-//-----FileTransfer------------------------------------------------------------
-class CPX_FileTransfer
-{
-public:
-  CPX_FileTransfer(const std::list<std::string>& lFileList, const std::string& fileName);
-  virtual ~CPX_FileTransfer();
-
-  bool IsValid()                { return m_bValid; }
-  const std::list<std::string>& GetFileList() const { return m_lFileList; }
-  const std::string& filename() const { return myFilename; }
-  const std::string& description() const { return myDesc; }
-  unsigned long GetFileSize()   { return m_nFileSize; }
-
-protected:
-  CPX_FileTransfer();
-
-  bool          m_bValid;
-  std::string myDesc;
-  std::string myFilename;
-  std::list<std::string> m_lFileList;
-  unsigned long m_nFileSize;
-};
-
-
 
 //=====ServerTCP===============================================================
 
@@ -777,11 +739,24 @@ public:
 };
 
 //-----FileTransfer------------------------------------------------------------
-class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
+class CPU_FileTransfer : public CPU_AdvancedMessage
 {
 public:
   CPU_FileTransfer(const Licq::User* u, const std::list<std::string>& lFileList,
       const std::string& file, const std::string& desc, unsigned short nLevel, bool bICBM);
+
+  bool IsValid()                { return m_bValid; }
+  const std::list<std::string>& GetFileList() const { return m_lFileList; }
+  const std::string& filename() const { return myFilename; }
+  const std::string& description() const { return myDesc; }
+  unsigned long GetFileSize()   { return m_nFileSize; }
+
+private:
+  bool          m_bValid;
+  std::string myDesc;
+  std::string myFilename;
+  std::list<std::string> m_lFileList;
+  unsigned long m_nFileSize;
 };
 
 //-----NoManager--------------------------------------------------------
@@ -1432,13 +1407,25 @@ public:
 
 
 //-----FileTransfer-------------------------------------------------------------
-class CPT_FileTransfer : public CPacketTcp, public CPX_FileTransfer
+class CPT_FileTransfer : public CPacketTcp
 {
 public:
   CPT_FileTransfer(const std::list<std::string>& lFileList, const std::string& filename,
       const std::string& description, unsigned short nLevel, User* pUser);
   const std::string& description() { return myMessage; }
-protected:
+  bool IsValid()                { return m_bValid; }
+  const std::list<std::string>& GetFileList() const { return m_lFileList; }
+  const std::string& filename() const { return myFilename; }
+  const std::string& description() const { return myDesc; }
+  unsigned long GetFileSize()   { return m_nFileSize; }
+
+private:
+  bool          m_bValid;
+  std::string myDesc;
+  std::string myFilename;
+  std::list<std::string> m_lFileList;
+  unsigned long m_nFileSize;
+
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 03 00 0F 00 74 68 69 73 20 69
       73 20 61 20 66 69 6C 65 00 CF 60 AD D3 CF 60 AD D3 60 12 00 00 04 00 00
       10 00 00 00 00 00 09 00 4D 61 6B 65 66 69 6C 65 00 55 0C 00 00 00 00 00

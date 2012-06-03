@@ -21,6 +21,8 @@
 #ifndef LICQICQ_DEFINES_H
 #define LICQICQ_DEFINES_H
 
+#include <stdint.h>
+
 namespace LicqIcq
 {
 
@@ -501,6 +503,9 @@ const unsigned short CHARSET_CUSTOM  = 0x0003;
 const unsigned short BART_TYPExBUDDY_ICON_SMALL = 0x0000;
 const unsigned short BART_TYPExBUDDY_ICON       = 0x0001;
 const unsigned short BART_TYPExSTATUS_STR       = 0x0002;
+
+const int GUID_LENGTH = 18;
+const int CAP_LENGTH = 16;
 
 //actual plugins
 const uint8_t PLUGIN_PHONExBOOK[]     = { 0x90, 0x7C, 0x21, 0x2C, 0x91, 0x4D,

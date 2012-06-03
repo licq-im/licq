@@ -83,7 +83,7 @@ CPChat_Color::CPChat_Color(const string& localName, unsigned short _nLocalPort,
   buffer->PackUnsignedLong(-ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nUin);
   buffer->PackString(localName.c_str());
-  buffer->PackUnsignedShort(ReversePort(_nLocalPort));
+  buffer->packUInt16BE(_nLocalPort);
   buffer->PackChar(nColorForeRed);
   buffer->PackChar(nColorForeGreen);
   buffer->PackChar(nColorForeBlue);

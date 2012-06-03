@@ -41,6 +41,7 @@
 #include <licq/proxy.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
+#include <licq/utility.h>
 
 #include "../daemon.h"
 #include "../gettext.h"
@@ -60,6 +61,21 @@ using Licq::gPluginManager;
 using Licq::gTranslator;
 using LicqDaemon::Daemon;
 using LicqDaemon::gDaemon;
+
+
+// list of plugins we currently support
+const struct PluginList IcqProtocol::info_plugins[] =
+{
+  { "Picture"   , PLUGIN_PICTURE   , "Picture"                          },
+  { "Phone Book", PLUGIN_PHONExBOOK, "Phone Book / Phone \"Follow Me\"" }
+};
+
+const struct PluginList IcqProtocol::status_plugins[] =
+{
+  {"Phone \"Follow Me\"", PLUGIN_FOLLOWxME, "Phone Book / Phone \"Follow Me\""},
+  { "Shared Files Directory", PLUGIN_FILExSERVER, "Shared Files Directory" },
+  { "ICQphone Status"       , PLUGIN_ICQxPHONE  , "ICQphone Status"        }
+};
 
 
 std::list <CReverseConnectToUserData *> IcqProtocol::m_lReverseConnect;
@@ -1899,6 +1915,61 @@ Licq::EventContactList* IcqProtocol::parseContactEvent(const string& s,
   return new Licq::EventContactList(vc, false, timeSent, flags);
 }
 
+string IcqProtocol::pipeInput(const string& message)
+{
+  string m(message);
+  size_t posPipe = 0;
+
+  while (true)
+  {
+    posPipe = m.find('|', posPipe);
+    if (posPipe == string::npos)
+      break;
+
+    if (posPipe != 0 && m[posPipe-1] != '\n')
+    {
+      // Pipe char isn't at begining of a line, ignore it
+      ++posPipe;
+      continue;
+    }
+
+    // Find end of command
+    size_t posEnd = m.find('\r', posPipe+1);
+    if (posEnd == string::npos)
+      posEnd = m.size();
+    size_t cmdLen = posEnd - posPipe - 2;
+
+    string cmd(m, posPipe+1, cmdLen);
+    string cmdOutput;
+    Licq::UtilityInternalWindow win;
+    if (!win.POpen(cmd))
+    {
+      gLog.warning(tr("Could not execute \"%s\" for auto-response."), cmd.c_str());
+    }
+    else
+    {
+      int c;
+      while ((c = fgetc(win.StdOut())) != EOF)
+      {
+        if (c == '\n')
+          cmdOutput += '\r';
+        cmdOutput += c;
+      }
+
+      int i;
+      if ((i = win.PClose()) != 0)
+      {
+        gLog.warning(tr("%s returned abnormally: exit code %d."), cmd.c_str(), i);
+        // do anything to cmdOutput ???
+      }
+    }
+
+    m.replace(posPipe, cmdLen + 1, cmdOutput);
+    posPipe += cmdOutput.size() + 1;
+  }
+
+  return m;
+}
 
 CReverseConnectToUserData::CReverseConnectToUserData(const char* idString, unsigned long id,
       unsigned long data, unsigned long ip, unsigned short port,

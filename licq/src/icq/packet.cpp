@@ -21,7 +21,7 @@
 
 #include <boost/foreach.hpp>
 #include <ctime>
-#include <stdio.h>
+#include <cstdio>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
@@ -30,15 +30,12 @@
 
 #include <cerrno>
 
-#include <boost/scoped_array.hpp>
-
 #include <licq/byteorder.h>
 #include <licq/color.h>
 #include <licq/contactlist/group.h>
 #include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
-#include <licq/utility.h>
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
@@ -60,19 +57,13 @@ using Licq::UserGroupList;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gTranslator;
-using LicqDaemon::GroupMap;
 using LicqDaemon::gUserManager;
 
 // TODO: Remove when no longer needed
 typedef Licq::User ICQUser;
 
 
-unsigned short LicqIcq::ReversePort(unsigned short p)
-{
-  return ((p >> 8) & 0xFF) + ((p & 0xFF) << 8);
-}
-
-size_t LicqIcq::lengthField(const string& field)
+static size_t lengthField(const string& field)
 {
   // By SC 27434326
   // Auxiliary function for whitepage search
@@ -274,27 +265,6 @@ void Encrypt_Server(CBuffer* /* buffer */)
 
 #endif
 }
-
-// list of plugins we currently support
-struct PluginList
-{
-  const char* const name;
-  const uint8_t* const guid;
-  const char* const description;
-};
-
-const struct PluginList info_plugins[] =
-{
-  { "Picture"   , PLUGIN_PICTURE   , "Picture"                          },
-  { "Phone Book", PLUGIN_PHONExBOOK, "Phone Book / Phone \"Follow Me\"" }
-};
-
-const struct PluginList status_plugins[] =
-{
-  {"Phone \"Follow Me\"", PLUGIN_FOLLOWxME, "Phone Book / Phone \"Follow Me\""},
-  { "Shared Files Directory", PLUGIN_FILExSERVER, "Shared Files Directory" },
-  { "ICQphone Status"       , PLUGIN_ICQxPHONE  , "ICQphone Status"        }
-};
 
 //======Server TCP============================================================
 bool CSrvPacketTcp::s_bRegistered = false;
@@ -1729,7 +1699,7 @@ CPU_InfoPluginListResp::CPU_InfoPluginListResp(const ICQUser *u,
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          ICQ_TCPxMSG_URGENT2, PLUGIN_INFOxMANAGER)
 {
-  unsigned long num_plugins = sizeof(info_plugins)/sizeof(struct PluginList);
+  unsigned long num_plugins = sizeof(IcqProtocol::info_plugins)/sizeof(struct PluginList);
 
   unsigned long nLen;
   if (num_plugins == 0)
@@ -1739,8 +1709,8 @@ CPU_InfoPluginListResp::CPU_InfoPluginListResp(const ICQUser *u,
     nLen = 4 + 4;
     for (unsigned long i = 0; i < num_plugins; i ++)
     {
-      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(info_plugins[i].name)
-              + 4 + strlen(info_plugins[i].description) + 4;
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(IcqProtocol::info_plugins[i].name)
+          + 4 + strlen(IcqProtocol::info_plugins[i].description) + 4;
     }
   }
 
@@ -1762,18 +1732,16 @@ CPU_InfoPluginListResp::CPU_InfoPluginListResp(const ICQUser *u,
     buffer->PackUnsignedLong(num_plugins);
     for (unsigned long i = 0; i < num_plugins; i++)
     {
-      buffer->Pack(info_plugins[i].guid, GUID_LENGTH);
+      buffer->packRaw(IcqProtocol::info_plugins[i].guid, GUID_LENGTH);
 
       buffer->PackUnsignedShort(0); //Unknown
       buffer->PackUnsignedShort(1); //Unknown
 
-      unsigned int l = strlen(info_plugins[i].name);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(info_plugins[i].name, l);
+      buffer->packString32LE(IcqProtocol::info_plugins[i].name,
+          strlen(IcqProtocol::info_plugins[i].name));
 
-      l = strlen(info_plugins[i].description);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(info_plugins[i].description, l);
+      buffer->packString32LE(IcqProtocol::info_plugins[i].description,
+          strlen(IcqProtocol::info_plugins[i].description));
 
       buffer->PackUnsignedLong(0);  //Unknown
     }
@@ -1967,7 +1935,7 @@ CPU_StatusPluginListResp::CPU_StatusPluginListResp(const ICQUser* u,
   : CPU_AckThroughServer(u, nMsgID1, nMsgID2, nSequence, 0, true,
                          0, PLUGIN_STATUSxMANAGER)
 {
-  unsigned long num_plugins = sizeof(status_plugins)/sizeof(struct PluginList);
+  unsigned long num_plugins = sizeof(IcqProtocol::status_plugins)/sizeof(struct PluginList);
 
   unsigned long nLen;
   if (num_plugins == 0)
@@ -1977,8 +1945,8 @@ CPU_StatusPluginListResp::CPU_StatusPluginListResp(const ICQUser* u,
     nLen = 4 + 4;
     for (unsigned long i = 0; i < num_plugins; i ++)
     {
-      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(status_plugins[i].name) 
-              + 4 + strlen(status_plugins[i].description) + 4;
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(IcqProtocol::status_plugins[i].name)
+          + 4 + strlen(IcqProtocol::status_plugins[i].description) + 4;
     }
   }
 
@@ -2002,18 +1970,16 @@ CPU_StatusPluginListResp::CPU_StatusPluginListResp(const ICQUser* u,
     buffer->PackUnsignedLong(num_plugins);
     for (unsigned long i = 0; i < num_plugins; i++)
     {
-      buffer->Pack(status_plugins[i].guid, GUID_LENGTH);
+      buffer->packRaw(IcqProtocol::status_plugins[i].guid, GUID_LENGTH);
 
       buffer->PackUnsignedShort(0); //Unknown
       buffer->PackUnsignedShort(1); //Unknown
 
-      unsigned int l = strlen(status_plugins[i].name);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(status_plugins[i].name, l);
+      buffer->packString32LE(IcqProtocol::status_plugins[i].name,
+          strlen(IcqProtocol::status_plugins[i].name));
 
-      l = strlen(status_plugins[i].description);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(status_plugins[i].description, l);
+      buffer->packString32LE(IcqProtocol::status_plugins[i].description,
+          strlen(IcqProtocol::status_plugins[i].description));
 
       buffer->PackUnsignedLong(0);  //Unknown
     }
@@ -2165,8 +2131,29 @@ CPU_FileTransfer::CPU_FileTransfer(const Licq::User* u, const list<string>& lFil
     const string& file, const string& desc, unsigned short nLevel, bool bICBM)
   : CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, nLevel,
                         false, 0),
-    CPX_FileTransfer(lFileList, file)
+    m_lFileList(lFileList.begin(), lFileList.end())
 {
+  m_bValid = false;
+  m_nFileSize = 0;
+
+  list<string>::iterator it;
+  for (it = m_lFileList.begin(); it != m_lFileList.end(); ++it)
+  {
+    // Check file exists and get size
+    struct stat buf;
+    if (!(it->empty() || stat(it->c_str(), &buf) < 0))
+    {
+       m_nFileSize += buf.st_size;
+       m_bValid = true;
+    }
+  }
+
+  // Remove path from filename (if it exists)
+  myFilename = file;
+  size_t posSlash = myFilename.rfind('/');
+  if (posSlash != string::npos)
+    myFilename.erase(0, posSlash+1);
+
 	if (!m_bValid)  return;
 
   myDesc = desc;
@@ -2304,7 +2291,7 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
     else
       myMessage.clear();
 
-    myMessage = pipeInput(myMessage);
+    myMessage = IcqProtocol::pipeInput(myMessage);
 
     // If message is 8099 characters or longer the server will disconnect us so better to truncate
     if (myMessage.size() >= 8099)
@@ -2391,7 +2378,8 @@ CPU_AckFileAccept::CPU_AckFileAccept(const User* u,
   buffer->PackUnsignedLong(19 + desc.size() + file.size());
   buffer->PackUnsignedLong(desc.size()); // file desc - is 4 bytes
   buffer->pack(desc); // file desc
-	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
+  buffer->packUInt16BE(nPort); // port reversed
+  buffer->packUInt16BE(0);
   buffer->packString(file); // filename
 	buffer->PackUnsignedLong(nFileSize); // filesize
 	buffer->PackUnsignedLong(nPort); // port
@@ -2427,7 +2415,8 @@ CPU_AckChatAccept::CPU_AckChatAccept(const User* u, const string& clients,
 	InitBuffer();
 
   buffer->packString(clients);
-	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
+  buffer->packUInt16BE(nPort); // port reversed
+  buffer->packUInt16BE(0);
 	buffer->PackUnsignedLong(nPort);
 }
 
@@ -4719,7 +4708,8 @@ CPT_ChatRequest::CPT_ChatRequest(const string& message, const string& chatUsers,
   else
   {
     buffer->packString(chatUsers);
-    buffer->PackUnsignedLong(ReversePort(nPort));
+    buffer->packUInt16BE(nPort);
+    buffer->packUInt16BE(0);
     buffer->PackUnsignedLong(nPort);
   }
 
@@ -4732,8 +4722,29 @@ CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const string& 
     const string& description, unsigned short nLevel, User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, Licq::TCPSocket::ChannelNormal,
         description, true, nLevel, _cUser),
-    CPX_FileTransfer(lFileList, filename)
+    m_lFileList(lFileList.begin(), lFileList.end())
 {
+  m_bValid = false;
+  m_nFileSize = 0;
+
+  list<string>::iterator it;
+  for (it = m_lFileList.begin(); it != m_lFileList.end(); ++it)
+  {
+    // Check file exists and get size
+    struct stat buf;
+    if (!(it->empty() || stat(it->c_str(), &buf) < 0))
+    {
+       m_nFileSize += buf.st_size;
+       m_bValid = true;
+    }
+  }
+
+  // Remove path from filename (if it exists)
+  myFilename = filename;
+  size_t posSlash = myFilename.rfind('/');
+  if (posSlash != string::npos)
+    myFilename.erase(0, posSlash+1);
+
 	if (!m_bValid)  return;
 
   m_nSize += 15 + myFilename.size();
@@ -4768,66 +4779,6 @@ CPT_CloseSecureChannel::CPT_CloseSecureChannel(User* _cUser)
   PostBuffer();
 }
 
-
-//+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-string LicqIcq::pipeInput(const string& message)
-{
-  string m(message);
-  size_t posPipe = 0;
-
-  while (true)
-  {
-    posPipe = m.find('|', posPipe);
-    if (posPipe == string::npos)
-      break;
-
-    if (posPipe != 0 && m[posPipe-1] != '\n')
-    {
-      // Pipe char isn't at begining of a line, ignore it
-      ++posPipe;
-      continue;
-    }
-
-    // Find end of command
-    size_t posEnd = m.find('\r', posPipe+1);
-    if (posEnd == string::npos)
-      posEnd = m.size();
-    size_t cmdLen = posEnd - posPipe - 2;
-
-    string cmd(m, posPipe+1, cmdLen);
-    string cmdOutput;
-    Licq::UtilityInternalWindow win;
-    if (!win.POpen(cmd))
-    {
-      gLog.warning(tr("Could not execute \"%s\" for auto-response."), cmd.c_str());
-    }
-    else
-    {
-      int c;
-      while ((c = fgetc(win.StdOut())) != EOF)
-      {
-        if (c == '\n')
-          cmdOutput += '\r';
-        cmdOutput += c;
-      }
-
-      int i;
-      if ((i = win.PClose()) != 0)
-      {
-        gLog.warning(tr("%s returned abnormally: exit code %d."), cmd.c_str(), i);
-        // do anything to cmdOutput ???
-      }
-    }
-
-    m.replace(posPipe, cmdLen + 1, cmdOutput);
-    posPipe += cmdOutput.size() + 1;
-  }
-
-  return m;
-}
-
-
-
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
     bool _bAccept, bool l, User* pUser)
   : CPacketTcp(ICQ_CMDxTCP_ACK, _nSubCommand, Licq::TCPSocket::ChannelNormal,
@@ -4858,7 +4809,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
   else
     myMessage.clear();
 
-  myMessage = pipeInput(myMessage);
+  myMessage = IcqProtocol::pipeInput(myMessage);
 
   m_nSize += myMessage.size();
 }
@@ -5038,7 +4989,8 @@ CPT_AckChatAccept::CPT_AckChatAccept(unsigned short _nPort, const string& client
   else
   {
     buffer->PackString("");
-    buffer->PackUnsignedLong(ReversePort(m_nPort));
+    buffer->packUInt16BE(m_nPort);
+    buffer->packUInt16BE(0);
     buffer->PackUnsignedLong(m_nPort);
   }
 
@@ -5077,7 +5029,8 @@ CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
   m_nSize += 15;
   InitBuffer();
 
-  buffer->PackUnsignedLong(ReversePort(m_nPort));
+  buffer->packUInt16BE(m_nPort);
+  buffer->packUInt16BE(0);
   buffer->PackString("");
   buffer->PackUnsignedLong(m_nFileSize);
   buffer->PackUnsignedLong(m_nPort);
@@ -5318,7 +5271,7 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(User* _cUser, unsigned short nSequence)
 CPT_InfoPluginListResp::CPT_InfoPluginListResp(User* _cUser, unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
-  unsigned long num_plugins = sizeof(info_plugins)/sizeof(struct PluginList);
+  unsigned long num_plugins = sizeof(IcqProtocol::info_plugins)/sizeof(struct PluginList);
 
   unsigned long nLen;
   if (num_plugins == 0)
@@ -5328,8 +5281,8 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(User* _cUser, unsigned short nSeq
     nLen = 4 + 4;
     for (unsigned long i = 0; i < num_plugins; i ++)
     {
-      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(info_plugins[i].name) 
-              + 4 + strlen(info_plugins[i].description) + 4;
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(IcqProtocol::info_plugins[i].name)
+          + 4 + strlen(IcqProtocol::info_plugins[i].description) + 4;
     }
   }
 
@@ -5350,18 +5303,16 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(User* _cUser, unsigned short nSeq
     buffer->PackUnsignedLong(num_plugins);
     for (unsigned long i = 0; i < num_plugins; i++)
     {
-      buffer->Pack(info_plugins[i].guid, GUID_LENGTH);
+      buffer->packRaw(IcqProtocol::info_plugins[i].guid, GUID_LENGTH);
 
       buffer->PackUnsignedShort(0); //Unknown
       buffer->PackUnsignedShort(1); //Unknown
 
-      unsigned int l = strlen(info_plugins[i].name);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(info_plugins[i].name, l);
+      buffer->packString32LE(IcqProtocol::info_plugins[i].name,
+          strlen(IcqProtocol::info_plugins[i].name));
 
-      l = strlen(info_plugins[i].description);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(info_plugins[i].description, l);
+      buffer->packString32LE(IcqProtocol::info_plugins[i].description,
+          strlen(IcqProtocol::info_plugins[i].description));
 
       buffer->PackUnsignedLong(0);  //Unknown
     }
@@ -5390,7 +5341,7 @@ CPT_StatusPluginReq::CPT_StatusPluginReq(User* _cUser, const uint8_t* GUID,
 CPT_StatusPluginListResp::CPT_StatusPluginListResp(User* _cUser, unsigned short nSequence)
   : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelStatus, "\x01", true, 0, _cUser)
 {
-  unsigned long num_plugins = sizeof(status_plugins)/sizeof(struct PluginList);
+  unsigned long num_plugins = sizeof(IcqProtocol::status_plugins)/sizeof(struct PluginList);
 
   unsigned long nLen;
   if (num_plugins == 0)
@@ -5400,8 +5351,8 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(User* _cUser, unsigned short 
     nLen = 4 + 4;
     for (unsigned long i = 0; i < num_plugins; i ++)
     {
-      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(status_plugins[i].name) 
-              + 4 + strlen(status_plugins[i].description) + 4;
+      nLen += GUID_LENGTH + 2 + 2 + 4 + strlen(IcqProtocol::status_plugins[i].name)
+          + 4 + strlen(IcqProtocol::status_plugins[i].description) + 4;
     }
   }
 
@@ -5425,18 +5376,16 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(User* _cUser, unsigned short 
     buffer->PackUnsignedLong(num_plugins);
     for (unsigned long i = 0; i < num_plugins; i++)
     {
-      buffer->Pack(status_plugins[i].guid, GUID_LENGTH);
+      buffer->packRaw(IcqProtocol::status_plugins[i].guid, GUID_LENGTH);
 
       buffer->PackUnsignedShort(0); //Unknown
       buffer->PackUnsignedShort(1); //Unknown
 
-      unsigned int l = strlen(status_plugins[i].name);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(status_plugins[i].name, l);
+      buffer->packString32LE(IcqProtocol::status_plugins[i].name,
+          strlen(IcqProtocol::status_plugins[i].name));
 
-      l = strlen(status_plugins[i].description);
-      buffer->PackUnsignedLong(l);
-      buffer->Pack(status_plugins[i].description, l);
+      buffer->packString32LE(IcqProtocol::status_plugins[i].description,
+          strlen(IcqProtocol::status_plugins[i].description));
 
       buffer->PackUnsignedLong(0);  //Unknown
     }
@@ -5464,37 +5413,4 @@ CPT_StatusPluginResp::CPT_StatusPluginResp(User* _cUser,
   buffer->PackChar(1);            //Unknown
 
   PostBuffer();
-}
-
-// Connection independent base classes
-
-//-----FileTransfer------------------------------------------------------------
-CPX_FileTransfer::CPX_FileTransfer(const list<string>& lFileList, const string& filename)
-  : m_lFileList(lFileList.begin(), lFileList.end())
-{
-  m_bValid = false;
-  m_nFileSize = 0;
-
-  list<string>::iterator it;
-  for (it = m_lFileList.begin(); it != m_lFileList.end(); ++it)
-  {
-    // Check file exists and get size
-    struct stat buf;
-    if (!(it->empty() || stat(it->c_str(), &buf) < 0))
-    {
-       m_nFileSize += buf.st_size;
-       m_bValid = true;
-    }
-  }
-
-  // Remove path from filename (if it exists)
-  myFilename = filename;
-  size_t posSlash = myFilename.rfind('/');
-  if (posSlash != string::npos)
-    myFilename.erase(0, posSlash+1);
-}
-
-CPX_FileTransfer::~CPX_FileTransfer()
-{
-  // Empty
 }

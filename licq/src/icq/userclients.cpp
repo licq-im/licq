@@ -35,8 +35,6 @@ using std::string;
 using std::stringstream;
 using namespace LicqIcq;
 
-const int CAP_LENGTH = 16;
-
 const char* findCapability(const char* caps, int capSize,
                            const uint8_t* needle, int needleSize = CAP_LENGTH)
 {

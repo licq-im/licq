@@ -65,6 +65,11 @@ public:
   /// Add a null terminated string preceded by a 16bit little endian length
   void packShortNullStringLE(const std::string& data);
 
+  /// Add a string preceded by a 32bit little endian length
+  void packString32LE(const char* data, size_t length);
+  void packString32LE(const std::string& data)
+  { packString32LE(data.c_str(), data.size()); }
+
   void Pack(Buffer*);
 
   void Copy(Buffer*);

@@ -70,6 +70,13 @@ void *ProcessRunningEvent_Client_tep(void *p);
 void *ProcessRunningEvent_Server_tep(void *p);
 void *ReverseConnectToUser_tep(void *p);
 
+struct PluginList
+{
+  const char* const name;
+  const uint8_t* const guid;
+  const char* const description;
+};
+
 /**
  * Internal template class for storing and processing received contact list.
  */
@@ -128,6 +135,9 @@ enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED 
 class IcqProtocol : public CICQDaemon
 {
 public:
+  static const struct PluginList info_plugins[2];
+  static const struct PluginList status_plugins[3];
+
   IcqProtocol();
   ~IcqProtocol();
 
@@ -344,6 +354,7 @@ public:
 
   static std::string parseDigits(const std::string& number);
   static std::string parseRtf(const std::string& rtf);
+  static std::string pipeInput(const std::string& message);
 
 private:
   static const int PingFrequency = 60;
