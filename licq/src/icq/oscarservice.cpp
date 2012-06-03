@@ -40,7 +40,7 @@
 #include "../daemon.h"
 #include "../gettext.h"
 #include "icq.h"
-#include "packet.h"
+#include "packet-srv.h"
 #include "socket.h"
 #include "user.h"
 

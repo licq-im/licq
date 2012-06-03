@@ -55,7 +55,7 @@
 #include "../gettext.h"
 #include "oscarservice.h"
 #include "owner.h"
-#include "packet.h"
+#include "packet-srv.h"
 #include "socket.h"
 #include "user.h"
 

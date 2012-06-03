@@ -33,7 +33,7 @@
 #include <licq/translator.h>
 
 #include "icq.h"
-#include "packet.h"
+#include "packet-tcp.h"
 #include "user.h"
 #include "../gettext.h"
 

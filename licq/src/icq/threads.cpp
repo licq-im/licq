@@ -37,7 +37,8 @@
 #include "defines.h"
 #include "oscarservice.h"
 #include "owner.h"
-#include "packet.h"
+#include "packet-srv.h"
+#include "packet-tcp.h"
 #include "socket.h"
 #include "user.h"
 
