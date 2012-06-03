@@ -24,6 +24,7 @@
 #include <list>
 #include <string>
 
+#include <licq/buffer.h>
 #include <licq/icq/chat.h> // ChatClientList
 #include <licq/userid.h>
 #include <licq/packet.h>
@@ -32,7 +33,6 @@
 
 namespace Licq
 {
-class Buffer;
 class Color;
 class INetSocket;
 }

@@ -30,6 +30,7 @@
 
 #include <cerrno>
 
+#include <licq/byteorder.h>
 #include <licq/color.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
@@ -72,10 +73,10 @@ void LicqIcq::Encrypt_Client(CBuffer* pkt, unsigned long version)
   unsigned long B1, M1, check;
   unsigned int i;
   unsigned char X1, X2, X3;
-  unsigned char *buf = (unsigned char*)pkt->getDataStart();
+  unsigned char* buf = (unsigned char*)pkt->getDataStart() + 2;
   unsigned char bak[6];
   unsigned long offset;
-  unsigned long size = pkt->getDataSize();
+  unsigned long size = pkt->getDataSize() - 2;
 
   if (version < 4)
     return;  // no encryption necessary.
@@ -236,8 +237,9 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 {
   m_nLocalPort = nLocalPort;
 
-  m_nSize = 26;
+  m_nSize = 28;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
@@ -254,8 +256,9 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
 {
   m_nLocalPort = nLocalPort;
 
-  m_nSize = 26;
+  m_nSize = 28;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
@@ -274,8 +277,9 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
 {
   m_nDestinationUin = nDestinationUin;
 
-  m_nSize = 44;
+  m_nSize = 46;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
@@ -333,8 +337,9 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
 {
   m_nDestinationUin = nDestinationUin;
 
-  m_nSize = 48;
+  m_nSize = 50;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
@@ -391,8 +396,10 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(CBuffer *inbuf)
 
 CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
 {
-  m_nSize = 4;
-  buffer = new CBuffer(4);
+  m_nSize = 6;
+  buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
+
   buffer->PackUnsignedLong(1);
 }
 
@@ -400,8 +407,9 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(int channel,
   unsigned short nSequence)
   : myChannel(channel)
 {
-  m_nSize = 33;
+  m_nSize = 35;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   const uint8_t* GUID;
   unsigned long nOurId;
@@ -636,16 +644,18 @@ void CPacketTcp::PostBuffer()
   {
     gLog.warning(tr("Packet length (%lu) different than expected (%i)"),
         buffer->getDataSize(), m_nSize);
+    *((uint16_t*)buffer->getDataStart()) = LE_16(buffer->getDataSize() - 2);
   }
 }
 
 
 void CPacketTcp::InitBuffer_v2()
 {
-  m_nSize += 33 + myMessage.size() + 4;
+  m_nSize += 35 + myMessage.size() + 4;
   if (m_nVersion != 2)
     m_nSize += 3;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(m_nVersion == 2 ? 2 : ICQ_VERSION_TCP);
@@ -676,8 +686,9 @@ void CPacketTcp::PostBuffer_v2()
 
 void CPacketTcp::InitBuffer_v4()
 {
-  m_nSize += 37 + myMessage.size() + 7;
+  m_nSize += 39 + myMessage.size() + 7;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
@@ -705,8 +716,9 @@ void CPacketTcp::PostBuffer_v4()
 
 void CPacketTcp::InitBuffer_v6()
 {
-  m_nSize += 30 + myMessage.size() + 0;
+  m_nSize += 32 + myMessage.size() + 0;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackUnsignedLong(0); // Checksum
   buffer->PackUnsignedShort(m_nCommand);
@@ -733,12 +745,13 @@ void CPacketTcp::PostBuffer_v6()
 
 void CPacketTcp::InitBuffer_v7()
 {
-  m_nSize += 29;
+  m_nSize += 31;
   if (channel() == Licq::TCPSocket::ChannelNormal)
     m_nSize += 2 + myMessage.size();
   else
     m_nSize += 3;
   buffer = new CBuffer(m_nSize);
+  buffer->packUInt16LE(m_nSize-2); // Packet length
 
   buffer->PackChar(0x02);
   buffer->PackUnsignedLong(0); // Checksum

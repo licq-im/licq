@@ -625,38 +625,12 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
  *---------------------------------------------------------------------------*/
 bool TCPSocket::SendPacket(Buffer *b_in)
 {
-  char *pcSize = new char[2];
   Buffer *b = b_in;
-
-  pcSize[0] = (b->getDataSize()) & 0xFF;
-  pcSize[1] = (b->getDataSize() >> 8) & 0xFF;
 
 #ifdef USE_OPENSSL
   if (m_pSSL != NULL)
   {
     int i, j;
-    ERR_clear_error();
-    pthread_mutex_lock(&mutex_ssl);
-    i = SSL_write(m_pSSL, pcSize, 2);
-    j = SSL_get_error(m_pSSL, i);
-    pthread_mutex_unlock(&mutex_ssl);
-    if (j != SSL_ERROR_NONE)
-    {
-      const char *file; int line;
-      unsigned long err;
-      switch (j)
-      {
-        case SSL_ERROR_SSL:
-          err = ERR_get_error_line(&file, &line);
-          gLog.error("SSL_write error = %lx, %s:%i", err, file, line);
-          ERR_clear_error();
-          break;
-        default:
-          gLog.error("SSL_write error %d, SSL_%d", i, j);
-          break;
-      }
-    }
-
     ERR_clear_error();
     pthread_mutex_lock(&mutex_ssl);
     i = SSL_write(m_pSSL, b->getDataStart(), b->getDataSize());
@@ -686,20 +660,6 @@ bool TCPSocket::SendPacket(Buffer *b_in)
   unsigned long nTotalBytesSent = 0;
   int nBytesSent = 0;
 
-  //  send the length of the packet, close the connection and return false if unable to send
-  while (nTotalBytesSent < 2) {
-    nBytesSent = send(myDescriptor, pcSize + nTotalBytesSent, 2 - nTotalBytesSent, 0);
-    if (nBytesSent <= 0) {
-      delete[] pcSize;
-      if (b != b_in) delete b;
-      myErrorType = ErrorErrno;
-      return (false);
-    }
-    nTotalBytesSent += nBytesSent;
-  }
-  delete[] pcSize;
-
-  // send the rest of the packet
   nTotalBytesSent = 0;
   while (nTotalBytesSent < b->getDataSize())
   {
