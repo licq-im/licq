@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include <licq/icq/chat.h>
+#include "chat.h"
 
 #include <cctype>
 #include <cstdio>
@@ -598,6 +598,16 @@ CPChat_Beep::CPChat_Beep()
 //=====ChatUser==============================================================
 CChatUser::CChatUser()
 {
+  // Empty
+}
+
+CChatUser::~CChatUser()
+{
+  // Empty
+}
+
+ChatUser::ChatUser()
+{
   nToKick = 0;
   state = CHAT_STATE_DISCONNECTED;
   colorFore[0] = colorFore[1] = colorFore[2] = 0x00;
@@ -614,11 +624,12 @@ CChatUser::CChatUser()
   pthread_mutex_init(&mutex, NULL);
 }
 
-CChatUser::~CChatUser()
+ChatUser::~ChatUser()
 {
+  // Empty
 }
 
-CChatEvent::CChatEvent(unsigned char nCommand, CChatUser *u, const string& data)
+CChatEvent::CChatEvent(unsigned char nCommand, ChatUser* u, const string& data)
   : myData(data)
 {
   m_nCommand = nCommand;
@@ -633,6 +644,10 @@ CChatEvent::~CChatEvent()
     pthread_mutex_unlock(&m_pUser->mutex);
 }
 
+CChatUser* CChatEvent::Client()
+{
+  return m_pUser;
+}
 
 //=====ChatManager===========================================================
 ChatManagerList CChatManager::cmList;
@@ -750,7 +765,7 @@ void CChatManager::StartAsClient(unsigned short nPort)
 //-----CChatManager::ConnectToChat-------------------------------------------
 bool CChatManager::ConnectToChat(CChatClient *c)
 {
-  CChatUser *u = new CChatUser;
+  ChatUser* u = new ChatUser;
   u->m_pClient = c;
   u->m_pClient->m_nSession = m_nSession;
   u->myUserId = c->myUserId;
@@ -816,7 +831,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   return bResult;
 }
 
-bool CChatManager::SendChatHandshake(CChatUser *u)
+bool CChatManager::SendChatHandshake(ChatUser* u)
 {
   CChatClient *c = u->m_pClient;
 
@@ -847,7 +862,7 @@ bool CChatManager::SendChatHandshake(CChatUser *u)
 //-----CChatManager::AcceptReverseConnection---------------------------------
 void CChatManager::AcceptReverseConnection(Licq::TCPSocket* s)
 {
-  CChatUser *u = new CChatUser;
+  ChatUser* u = new ChatUser;
   u->sock.TransferConnectionFrom(*s);
 
   u->m_pClient = new CChatClient();
@@ -876,7 +891,7 @@ void CChatManager::AcceptReverseConnection(Licq::TCPSocket* s)
 
 
 //-----CChatManager::FindChatUser--------------------------------------------
-CChatUser *CChatManager::FindChatUser(int sd)
+ChatUser* CChatManager::FindChatUser(int sd)
 {
   // Find the right user (possible race condition, but we ignore it for now)
   ChatUserList::iterator iter;
@@ -891,7 +906,7 @@ CChatUser *CChatManager::FindChatUser(int sd)
 
 
 //-----CChatManager::ProcessPacket-------------------------------------------
-bool CChatManager::ProcessPacket(CChatUser *u)
+bool CChatManager::ProcessPacket(ChatUser* u)
 {
   if (!u->sock.RecvPacket())
   {
@@ -1148,7 +1163,7 @@ void CChatManager::PushChatEvent(CChatEvent *e)
 
 
 //-----CChatManager::ProcessRaw----------------------------------------------
-bool CChatManager::ProcessRaw(CChatUser *u)
+bool CChatManager::ProcessRaw(ChatUser* u)
 {
   if (!u->sock.RecvRaw())
   {
@@ -1170,7 +1185,7 @@ bool CChatManager::ProcessRaw(CChatUser *u)
 }
 
 
-bool CChatManager::ProcessRaw_v2(CChatUser *u)
+bool CChatManager::ProcessRaw_v2(ChatUser* u)
 {
   char chatChar;
   while (u->chatQueue.size() > 0)
@@ -1494,7 +1509,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
 }
 
 
-bool CChatManager::ProcessRaw_v6(CChatUser *u)
+bool CChatManager::ProcessRaw_v6(ChatUser* u)
 {
   char chatChar;
   unsigned long chatSize = 0;
@@ -1865,7 +1880,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
 }
 
 
-bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *u)
+bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, ChatUser* u)
 {
   CBuffer b_out(128);
 
@@ -1904,7 +1919,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
 void CChatManager::SendBuffer_Raw(CBuffer *b)
 {
   ChatUserList::iterator iter;
-  CChatUser *u = NULL;
+  ChatUser* u = NULL;
   bool ok = false;
   while (!ok)
   {
@@ -2165,7 +2180,7 @@ void CChatManager::CloseChat()
     pthread_join(thread_chat, NULL);
   m_bThreadCreated = false;
 
-  CChatUser *u = NULL;
+  ChatUser* u = NULL;
   CBuffer buf;
   SendBuffer(&buf, CHAT_DISCONNECTION);
   while (chatUsers.size() > 0)
@@ -2231,7 +2246,7 @@ void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
 
 
 //----CChatManager::CloseClient----------------------------------------------
-void CChatManager::CloseClient(CChatUser *u)
+void CChatManager::CloseClient(ChatUser* u)
 {
   // Remove the user from the user list
   ChatUserList::iterator iter;
@@ -2289,7 +2304,7 @@ string CChatManager::getEncoding(int chatEncoding)
   }
 }
 
-string CChatManager::userEncoding(const CChatUser* u)
+string CChatManager::userEncoding(const ChatUser* u)
 {
   return getEncoding(u->fontEncoding);
 }
@@ -2353,7 +2368,7 @@ void *ChatManager_tep(void *arg)
           }
           else
           {
-            CChatUser *u = new CChatUser;
+            ChatUser* u = new ChatUser;
             u->m_pClient = new CChatClient;
 
             if (chatman->chatServer.RecvConnection(u->sock))
@@ -2376,7 +2391,7 @@ void *ChatManager_tep(void *arg)
         // Message from connected socket----------------------------------------
         else
         {
-          CChatUser *u = chatman->FindChatUser(nCurrentSocket);
+          ChatUser* u = chatman->FindChatUser(nCurrentSocket);
           if (u == NULL)
           {
             gLog.warning(tr("Chat: No user owns socket %d."), nCurrentSocket);
@@ -2591,7 +2606,7 @@ CChatManager::~CChatManager()
   CloseChat();
 
   // Delete all the users
-  CChatUser *u = NULL;
+  ChatUser* u = NULL;
   while (chatUsersClosed.size() > 0)
   {
     u = chatUsersClosed.front();
