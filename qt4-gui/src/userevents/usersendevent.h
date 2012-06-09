@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,6 +221,9 @@ private slots:
   /// File edit button was pressed
   void fileEditList();
 
+  /// Update label for file transfer
+  void fileUpdateLabel(unsigned count);
+
   /// Update counter for remaining SMS characters
   void smsCount();
 
@@ -230,9 +233,6 @@ private:
 
   /// Common base part of send function
   void sendBase();
-
-  /// Update label for file transfer
-  void fileUpdateLabel(unsigned count);
 
 
   QString myTitle;
