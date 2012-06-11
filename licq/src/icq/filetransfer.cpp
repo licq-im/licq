@@ -528,6 +528,7 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_WAITxFORxCLIENTxINIT:
     {
+      b.unpackUInt16LE(); // Packet length
       unsigned char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
@@ -575,6 +576,7 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_WAITxFORxFILExINFO:
     {
+      b.unpackUInt16LE(); // Packet length
       unsigned char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
@@ -582,7 +584,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.info(tr("File Transfer: Speed set to %ld%%."), nSpeed);
         break;
       }
-      if (nCmd == 0x06 && b.getDataSize() == 1)
+      if (nCmd == 0x06 && b.getDataSize() == 3)
       {
         gLog.info(tr("File Transfer: Ignoring a possible erroneous packet."));
         break;
@@ -639,6 +641,7 @@ bool CFileTransferManager::ProcessPacket()
       }
 
       // Write the new data to the file and empty the buffer
+      b.unpackUInt16LE(); // Packet length
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
@@ -655,8 +658,8 @@ bool CFileTransferManager::ProcessPacket()
       }
 
       errno = 0;
-      size_t nBytesWritten = write(m_nFileDesc, b.getDataPosRead(), b.getDataSize() - 1);
-      if (nBytesWritten != b.getDataSize() - 1)
+      size_t nBytesWritten = write(m_nFileDesc, b.getDataPosRead(), b.getDataSize() - 3);
+      if (nBytesWritten != b.getDataSize() - 3)
       {
         gLog.error(tr("File Transfer: Write error: %s."),
             errno == 0 ? "Disk full (?)" : strerror(errno));
@@ -710,6 +713,7 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_WAITxFORxSERVERxINIT:
     {
+      b.unpackUInt16LE(); // Packet length
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
@@ -756,6 +760,7 @@ bool CFileTransferManager::ProcessPacket()
     case FT_STATE_WAITxFORxSTART:
     {
       // contains the seek value
+      b.unpackUInt16LE(); // Packet length
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
@@ -798,6 +803,7 @@ bool CFileTransferManager::ProcessPacket()
 
     case FT_STATE_SENDINGxFILE:
     {
+      b.unpackUInt16LE(); // Packet length
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {

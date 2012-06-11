@@ -98,6 +98,7 @@ CPChat_Color::CPChat_Color(const string& localName, unsigned short _nLocalPort,
 
 CPChat_Color::CPChat_Color(CBuffer &b)
 {
+  b.unpackUInt16LE(); // Packet length
   b.UnpackUnsignedLong();
   b.UnpackUnsignedLong();
   unsigned long m_nUin = b.UnpackUnsignedLong();
@@ -200,6 +201,7 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
 bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
 {
   b.Reset();
+  b.unpackUInt16LE(); // Packet length
 
   if ((unsigned char)b.UnpackChar() != ICQ_CMDxTCP_HANDSHAKE) return false;
 
@@ -225,6 +227,7 @@ bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
 bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
 {
   b.Reset();
+  b.unpackUInt16LE(); // Packet length
 
   if ((unsigned char)b.UnpackChar() != ICQ_CMDxTCP_HANDSHAKE) return false;
 
@@ -365,6 +368,7 @@ CPChat_ColorFont::CPChat_ColorFont(const string& localName, unsigned short nLoca
 
 CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
 {
+  b.unpackUInt16LE(); // Packet length
   b.UnpackUnsignedLong();
   unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
@@ -442,6 +446,7 @@ CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
 
 CPChat_Font::CPChat_Font(CBuffer &b)
 {
+  b.unpackUInt16LE(); // Packet length
   b.UnpackUnsignedLong();
   m_nPort = b.UnpackUnsignedLong();
   b.UnpackUnsignedLong();

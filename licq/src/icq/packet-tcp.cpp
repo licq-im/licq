@@ -147,9 +147,9 @@ bool LicqIcq::Decrypt_Client(CBuffer* pkt, unsigned long version)
   unsigned long hex, key, B1, M1, check;
   unsigned int i;
   unsigned char X1, X2, X3;
-  unsigned char *buf = (unsigned char*)pkt->getDataStart();
+  unsigned char* buf = (unsigned char*)pkt->getDataStart() + 2;
   unsigned char bak[6];
-  unsigned long size = pkt->getDataSize();
+  unsigned long size = pkt->getDataSize() - 2;
   unsigned long offset;
 
   if(version < 4)
@@ -315,6 +315,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
 
 CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(CBuffer *inbuf)
 {
+  inbuf->unpackUInt16LE(); // Packet length
   m_nHandshake = inbuf->UnpackChar();
   m_nVersionMajor = inbuf->UnpackUnsignedShort();
   m_nVersionMinor = inbuf->UnpackUnsignedShort();
@@ -377,6 +378,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
 
 CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(CBuffer *inbuf)
 {
+  inbuf->unpackUInt16LE(); // Packet length
   m_nHandshake = inbuf->UnpackChar();
   m_nVersionMajor = inbuf->UnpackUnsignedShort();
   inbuf->UnpackUnsignedShort();  // Length

@@ -694,7 +694,8 @@ bool TCPSocket::RecvPacket()
       nTwoBytes += nBytesReceived;
     }
     myRecvBuffer.Create(((unsigned char)buffer[0]) +
-                         (((unsigned char)buffer[1]) << 8 ));
+                         (((unsigned char)buffer[1]) << 8 ) + 2);
+    myRecvBuffer.packRaw(buffer, 2);
     delete[] buffer;
   }
 

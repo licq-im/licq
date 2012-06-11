@@ -924,6 +924,7 @@ bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
       {
         if (!s->RecvPacket()) goto sock_error;
       } while (!s->RecvBufferFull());
+      s->RecvBuffer().unpackUInt16LE(); // Packet length
       unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
       s->ClearRecvBuffer();
       if (nOk != 1)
@@ -967,6 +968,7 @@ bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
       {
         if (!s->RecvPacket()) goto sock_error;
       } while (!s->RecvBufferFull());
+      s->RecvBuffer().unpackUInt16LE(); // Packet length
       unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
       s->ClearRecvBuffer();
       if (nOk != 1)
@@ -1327,6 +1329,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
     case 2:
     case 3:
     {
+      packet.unpackUInt16LE(); // Packet length
       unsigned long nUin;
       packet >> nUin
              >> version
@@ -1349,6 +1352,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet.log(Log::Unknown, "Invalid TCPv4 encryption");
         return false;
       }
+      packet.unpackUInt16LE(); // Packet length
       unsigned long nUin;
       packet >> nUin
              >> version
@@ -1372,6 +1376,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet.log(Log::Unknown, "Invalid TCPv6 encryption");
         return false;
       }
+      packet.unpackUInt16LE(); // Packet length
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
       packet.UnpackUnsignedShort(); // 0x000E
@@ -1393,7 +1398,7 @@ bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
         packet.log(Log::Unknown, "Unknown TCPv%d packet", nInVersion);
         break;
       }
-
+      packet.unpackUInt16LE(); // Packet length
       packet.UnpackChar(); // 0x02
       packet.UnpackUnsignedLong(); // Checksum
       command = packet.UnpackUnsignedShort(); // Command
@@ -3371,6 +3376,7 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
   char cHandshake;
   unsigned short nVersionMajor, nVersionMinor;
   CBuffer &b = s->RecvBuffer();
+  b.unpackUInt16LE(); // Packet length
   b >> cHandshake >> nVersionMajor >> nVersionMinor;
 
   unsigned long nUin = 0;
@@ -3423,13 +3429,14 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
       {
         if (!s->RecvPacket()) goto sock_error;
       } while (!s->RecvBufferFull());
-      
-      if (s->RecvBuffer().getDataSize() != 4)
+
+      if (s->RecvBuffer().getDataSize() != 6)
       {
         gLog.warning(tr("Handshake ack not the right size."));
         return false;
       }
 
+      s->RecvBuffer().unpackUInt16LE(); // Packet length
       unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
       if (nOk != 1)
       {
@@ -3520,6 +3527,7 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
       {
         if (!s->RecvPacket()) goto sock_error;
       } while (!s->RecvBufferFull());
+      s->RecvBuffer().unpackUInt16LE(); // Packet length
       unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
       s->ClearRecvBuffer();
       if (nOk != 1)
@@ -3695,11 +3703,12 @@ bool IcqProtocol::Handshake_RecvConfirm_v7(Licq::TCPSocket* s)
 
   { // damn scoping
     CBuffer &b = s->RecvBuffer();
-    if (b.getDataSize() != 33)
+    if (b.getDataSize() != 35)
     {
       gLog.warning(tr("Handshake confirm not the right size."));
       return false;
     }
+    b.unpackUInt16LE(); // Packet length
     unsigned char c = b.UnpackChar();
     unsigned long l = b.UnpackUnsignedLong();
     if (c != 0x03 || l != 0x0000000A)
