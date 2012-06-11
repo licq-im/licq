@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,8 @@
 #include <licq/socket.h>
 #include <licq/socketmanager.h>
 #include <licq/userid.h>
+
+#include "../macro.h"
 
 namespace Licq
 {
@@ -189,7 +191,9 @@ public:
   void AcceptReverseConnection(Licq::TCPSocket*);
   static CFileTransferManager *FindByPort(unsigned short);
 
-protected:
+private:
+  LICQ_DECLARE_PRIVATE();
+
   static FileTransferManagerList ftmList;
 
   static pthread_mutex_t thread_cancel_mutex;
@@ -224,7 +228,7 @@ protected:
   std::list<std::string>::iterator myPathNameIter;
   bool m_bThreadCreated;
 
-  Licq::TCPSocket ftSock, ftServer;
+  Licq::TCPSocket ftServer;
 
   Licq::SocketManager sockman;
 

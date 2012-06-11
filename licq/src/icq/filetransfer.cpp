@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include <licq/icq//filetransfer.h>
+#include "filetransfer.h"
 
 #include <cstdio>
 #include <ctype.h>
@@ -203,7 +203,8 @@ pthread_mutex_t CFileTransferManager::thread_cancel_mutex
                                                    = PTHREAD_MUTEX_INITIALIZER;
 
 CFileTransferManager::CFileTransferManager(const Licq::UserId& userId)
-  : m_bThreadRunning(false),
+  : myPrivate(new Private()),
+    m_bThreadRunning(false),
     myUserId(userId)
 {
   m_nSession = rand();
@@ -339,6 +340,8 @@ void CFileTransferManager::sendFiles(const list<string>& pathNames, unsigned sho
 //-----CFileTransferManager::ConnectToFileServer-----------------------------
 bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 {
+  LICQ_D();
+
   bool bTryDirect;
   bool bSendIntIp;
   {
@@ -354,7 +357,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   if (bTryDirect)
   {
     gLog.info(tr("File Transfer: Connecting to server."));
-    bSuccess = gIcqProtocol.openConnectionToUser(myUserId, &ftSock, nPort);
+    bSuccess = gIcqProtocol.openConnectionToUser(myUserId, &d->mySock, nPort);
    }
 
   bool bResult = false;
@@ -390,6 +393,8 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 
 bool CFileTransferManager::SendFileHandshake()
 {
+  LICQ_D();
+
   gLog.info(tr("File Transfer: Shaking hands."));
 
   // Send handshake packet:
@@ -398,7 +403,7 @@ bool CFileTransferManager::SendFileHandshake()
     Licq::UserReadGuard u(myUserId);
     nVersion = u->ConnectionVersion();
   }
-  if (!IcqProtocol::handshake_Send(&ftSock, myUserId, LocalPort(), nVersion, false))
+  if (!IcqProtocol::handshake_Send(&d->mySock, myUserId, LocalPort(), nVersion, false))
     return false;
 
   // Send init packet:
@@ -409,8 +414,8 @@ bool CFileTransferManager::SendFileHandshake()
 
   m_nState = FT_STATE_WAITxFORxSERVERxINIT;
 
-  sockman.AddSocket(&ftSock);
-  sockman.DropSocket(&ftSock);
+  sockman.AddSocket(&d->mySock);
+  sockman.DropSocket(&d->mySock);
 
   return true;
 }
@@ -419,15 +424,17 @@ bool CFileTransferManager::SendFileHandshake()
 //-----CFileTransferManager::AcceptReverseConnection-------------------------
 void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
 {
-  if (ftSock.Descriptor() != -1)
+  LICQ_D();
+
+  if (d->mySock.Descriptor() != -1)
   {
     gLog.warning(tr("File Transfer: Attempted reverse connection when already connected."));
     return;
   }
 
-  ftSock.TransferConnectionFrom(*s);
-  sockman.AddSocket(&ftSock);
-  sockman.DropSocket(&ftSock);
+  d->mySock.TransferConnectionFrom(*s);
+  sockman.AddSocket(&d->mySock);
+  sockman.DropSocket(&d->mySock);
 
   m_nState = FT_STATE_WAITxFORxCLIENTxINIT;
 
@@ -441,12 +448,14 @@ void CFileTransferManager::AcceptReverseConnection(Licq::TCPSocket* s)
 //-----CFileTransferManager::ProcessPacket-------------------------------------------
 bool CFileTransferManager::ProcessPacket()
 {
-  if (!ftSock.RecvPacket())
+  LICQ_D();
+
+  if (!d->mySock.RecvPacket())
   {
-    if (ftSock.Error() == 0)
+    if (d->mySock.Error() == 0)
       gLog.info(tr("File Transfer: Remote end disconnected."));
     else
-      gLog.warning(tr("File Transfer: Lost remote end: %s"), ftSock.errorStr().c_str());
+      gLog.warning(tr("File Transfer: Lost remote end: %s"), d->mySock.errorStr().c_str());
     if (m_nState == FT_STATE_WAITxFORxFILExINFO)
       m_nResult = FT_DONExBATCH;
     else
@@ -454,8 +463,9 @@ bool CFileTransferManager::ProcessPacket()
     return false;
   }
 
-  if (!ftSock.RecvBufferFull()) return true;
-  CBuffer &b = ftSock.RecvBuffer();
+  if (!d->mySock.RecvBufferFull())
+    return true;
+  CBuffer& b = d->mySock.RecvBuffer();
 
   switch(m_nState)
   {
@@ -465,12 +475,12 @@ bool CFileTransferManager::ProcessPacket()
     {
       CBuffer tmp(b); // we need to save a copy for later
 
-      if (!IcqProtocol::Handshake_Recv(&ftSock, LocalPort(), false))
+      if (!IcqProtocol::Handshake_Recv(&d->mySock, LocalPort(), false))
         break;
       gLog.info(tr("File Transfer: Received handshake."));
 
       unsigned long nId = 0;
-      if (ftSock.Version() == 7 || ftSock.Version() == 8)
+      if (d->mySock.Version() == 7 || d->mySock.Version() == 8)
       {
         CPacketTcp_Handshake_v7 hand(&tmp);
         nId = hand.Id();
@@ -629,7 +639,6 @@ bool CFileTransferManager::ProcessPacket()
       }
 
       // Write the new data to the file and empty the buffer
-      CBuffer &b = ftSock.RecvBuffer();
       char nCmd = b.UnpackChar();
       if (nCmd == 0x05)
       {
@@ -810,7 +819,7 @@ bool CFileTransferManager::ProcessPacket()
 
   } // switch
 
-  ftSock.ClearRecvBuffer();
+  d->mySock.ClearRecvBuffer();
 
   return true;
 }
@@ -1019,9 +1028,11 @@ bool CFileTransferManager::SendPacket(CPacket *p)
 //-----CFileTransferManager::SendBuffer----------------------------------------------
 bool CFileTransferManager::SendBuffer(CBuffer *b)
 {
-  if (!ftSock.send(*b))
+  LICQ_D();
+
+  if (!d->mySock.send(*b))
   {
-    gLog.warning(tr("File Transfer: Send error: %s"), ftSock.errorStr().c_str());
+    gLog.warning(tr("File Transfer: Send error: %s"), d->mySock.errorStr().c_str());
     return false;
   }
   return true;
@@ -1059,8 +1070,10 @@ void CFileTransferManager::CloseFileTransfer()
 //----CFileTransferManager::CloseConnection----------------------------------
 void CFileTransferManager::CloseConnection()
 {
+  LICQ_D();
+
   sockman.CloseSocket(ftServer.Descriptor(), false, false);
-  sockman.CloseSocket(ftSock.Descriptor(), false, false);
+  sockman.CloseSocket(d->mySock.Descriptor(), false, false);
   m_nState = FT_STATE_DISCONNECTED;
 
   if (m_nFileDesc != -1)
@@ -1075,6 +1088,7 @@ void CFileTransferManager::CloseConnection()
 void *FileTransferManager_tep(void *arg)
 {
   CFileTransferManager *ftman = (CFileTransferManager *)arg;
+  CFileTransferManager::Private* const d = ftman->myPrivate;
 
   fd_set f_recv, f_send;
   struct timeval *tv;
@@ -1106,8 +1120,8 @@ void *FileTransferManager_tep(void *arg)
     FD_ZERO(&f_send);
     if (ftman->m_nState == FT_STATE_SENDINGxFILE)
     {
-      FD_SET(ftman->ftSock.Descriptor(), &f_send);
-      // No need to check "l" as ftSock is already in the read list
+      FD_SET(d->mySock.Descriptor(), &f_send);
+      // No need to check "l" as mySock is already in the read list
     }
 
     // Prepare max timeout if necessary
@@ -1166,7 +1180,7 @@ void *FileTransferManager_tep(void *arg)
         // Connection on the server port ---------------------------------------
         else if (nCurrentSocket == ftman->ftServer.Descriptor())
         {
-          if (ftman->ftSock.Descriptor() != -1)
+          if (d->mySock.Descriptor() != -1)
           {
             gLog.warning(tr("File Transfer: Receiving repeat incoming connection."));
 
@@ -1177,10 +1191,10 @@ void *FileTransferManager_tep(void *arg)
           }
           else
           {
-            if (ftman->ftServer.RecvConnection(ftman->ftSock))
+            if (ftman->ftServer.RecvConnection(d->mySock))
             {
-              ftman->sockman.AddSocket(&ftman->ftSock);
-              ftman->sockman.DropSocket(&ftman->ftSock);
+              ftman->sockman.AddSocket(&d->mySock);
+              ftman->sockman.DropSocket(&d->mySock);
 
               ftman->m_nState = FT_STATE_HANDSHAKE;
               gLog.info(tr("File Transfer: Received connection."));
@@ -1193,11 +1207,11 @@ void *FileTransferManager_tep(void *arg)
         }
 
         // Message from connected socket----------------------------------------
-        else if (nCurrentSocket == ftman->ftSock.Descriptor())
+        else if (nCurrentSocket == d->mySock.Descriptor())
         {
-          ftman->ftSock.Lock();
+          d->mySock.Lock();
           bool ok = ftman->ProcessPacket();
-          ftman->ftSock.Unlock();
+          d->mySock.Unlock();
           if (!ok)
           {
             ftman->CloseConnection();
@@ -1214,11 +1228,11 @@ void *FileTransferManager_tep(void *arg)
       }
       else if (FD_ISSET(nCurrentSocket, &f_send))
       {
-        if (nCurrentSocket == ftman->ftSock.Descriptor())
+        if (nCurrentSocket == d->mySock.Descriptor())
         {
-          ftman->ftSock.Lock();
+          d->mySock.Lock();
           bool ok = ftman->SendFilePacket();
-          ftman->ftSock.Unlock();
+          d->mySock.Unlock();
           if (!ok)
           {
             ftman->CloseConnection();
@@ -1287,13 +1301,13 @@ void *FileWaitForSignal_tep(void *arg)
 
   if (bConnected)
   {
-    if (rc->m->ftSock.Descriptor() != -1)
+    if (rc->m->myPrivate->mySock.Descriptor() != -1)
     {
       gLog.warning(tr("File Transfer: Attempted connection when already connected."));
     }
     else
     {
-      rc->m->ftSock.TransferConnectionFrom(s);
+      rc->m->myPrivate->mySock.TransferConnectionFrom(s);
       bConnected = rc->m->SendFileHandshake();
       rc->m->myThreadPipe.putChar('R');
     }
@@ -1353,5 +1367,7 @@ CFileTransferManager::~CFileTransferManager()
     if (*fiter == this) break;
   }
   if (fiter != ftmList.end()) ftmList.erase(fiter);
+
+  delete myPrivate;
 }
 
