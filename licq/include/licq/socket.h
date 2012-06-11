@@ -140,10 +140,18 @@ public:
 
   void CloseConnection();
   bool StartServer(unsigned int _nPort);
-  bool SendRaw(Buffer *b);
+
+  /**
+   * Send one "packet"
+   * Writes the contents of a buffer to the socket
+   *
+   * @param b Buffer with packet to send
+   * @return False on any failure
+   */
+  virtual bool send(Buffer& b);
+
   bool RecvRaw();
 
-  virtual bool Send(Buffer* b) = 0;
   virtual bool Recv() = 0;
 
   void Lock();
@@ -239,18 +247,17 @@ public:
   virtual ~TCPSocket();
 
   // Abstract base class overloads
-  virtual bool Send(Buffer* b)
-    { return SendPacket(b); }
   virtual bool Recv()
     { return RecvPacket(); }
 
   // Functions specific to TCP
-  bool SendPacket(Buffer* b);
   bool RecvPacket();
   bool RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
 
-  bool SSLSend(Buffer* b);
+  /// Overloaded to add SSL support
+  bool send(Buffer& b);
+
   bool SSLRecv();
 
   bool Secure() { return m_p_SSL != NULL; }
@@ -286,8 +293,6 @@ public:
   virtual ~UDPSocket();
 
   // Abstract base class overloads
-  virtual bool Send(Buffer *b)
-    { return SendRaw(b); }
   virtual bool Recv()
     { return RecvRaw(); }
 };

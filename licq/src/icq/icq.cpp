@@ -476,7 +476,7 @@ bool IcqProtocol::SendEvent(int nSD, CPacket &p, bool d)
 bool IcqProtocol::SendEvent(Licq::INetSocket* pSock, CPacket &p, bool d)
 {
   CBuffer *buf = p.Finalize(pSock);
-  pSock->Send(buf);
+  pSock->send(*buf);
   if (d) delete buf;
   return true;
 }

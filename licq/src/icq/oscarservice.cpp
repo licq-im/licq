@@ -111,7 +111,7 @@ bool COscarService::SendPacket(CPacket *p)
   Licq::INetSocket* s = gSocketManager.FetchSocket(mySocketDesc);
   if (s == NULL) return false;
   Licq::Buffer* b = p->Finalize(s);
-  if (!s->Send(b))
+  if (!s->send(*b))
   {
     gLog.warning(tr("Error sending event (FAM #%02X, Subtype #%02X, Sequence #%hu): %s."),
         (unsigned short)((p->SNAC() >> 16) & 0xffff), (unsigned short)(p->SNAC() & 0xffff),

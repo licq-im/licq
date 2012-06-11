@@ -32,13 +32,10 @@ public:
   virtual ~SrvSocket();
 
   // Abstract base class overloads
-  virtual bool Send(Licq::Buffer* b)
-    { return SendPacket(b); }
   virtual bool Recv()
     { return RecvPacket(); }
 
   // Functions specific to Server TCP communication
-  bool SendPacket(Licq::Buffer* b);
   bool RecvPacket();
 };
 

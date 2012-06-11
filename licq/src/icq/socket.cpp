@@ -44,42 +44,6 @@ SrvSocket::~SrvSocket()
   // Empty
 }
 
-
-/*-----SrvSocket::SendPacket---------------------------------------------------
- * Sends a packet on a socket.  The socket is blocking, so we are guaranteed
- * that the entire packet will be sent, however, it may block if the tcp
- * buffer is full.  This should not be a problem unless we are sending a huge
- * packet.
- *---------------------------------------------------------------------------*/
-
-bool SrvSocket::SendPacket(Buffer* b)
-{
-  unsigned long nTotalBytesSent = 0;
-  int nBytesSent = 0;
-
-  // send the packet
-  nTotalBytesSent = 0;
-  errno = 0;
-  while (nTotalBytesSent < b->getDataSize())
-  {
-    nBytesSent = send(myDescriptor, b->getDataStart() + nTotalBytesSent,
-                      b->getDataSize() - nTotalBytesSent, 0);
-    if (nBytesSent <= 0)
-    {
-      if (nBytesSent < 0 && errno == EINTR)
-        continue;
-      myErrorType = ErrorErrno;
-      return false;
-    }
-    nTotalBytesSent += nBytesSent;
-  }
-
-  // Print the packet
-  DumpPacket(b, false);
-
-  return true;
-}
-
 /*-----SrvSocket::ReceivePacket------------------------------------------------
  * Receive data on the socket.  Checks the buffer to see if it is empty, if
  * so, then it will create it using either the size read in from the socket

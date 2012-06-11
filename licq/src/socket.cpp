@@ -477,26 +477,27 @@ void INetSocket::CloseConnection()
   }
 }
 
-//-----INetSocket::SendRaw------------------------------------------------------
-bool INetSocket::SendRaw(Buffer *b)
+bool INetSocket::send(Buffer& buf)
 {
   // send the packet
-  int nBytesSent;
-  unsigned long nTotalBytesSent = 0;
-  while (nTotalBytesSent < b->getDataSize())
+  int bytesLeft = buf.getDataSize();
+  char* dataPos = buf.getDataStart();
+  while (bytesLeft > 0)
   {
-    nBytesSent = send(myDescriptor, b->getDataStart() + nTotalBytesSent,
-                      b->getDataSize() - nTotalBytesSent, 0);
-    if (nBytesSent < 0)
+    ssize_t bytesSent = ::send(myDescriptor, dataPos, bytesLeft, 0);
+    if (bytesSent < 0)
     {
+      if (errno == EINTR)
+        continue;
       myErrorType = ErrorErrno;
       return(false);
     }
-    nTotalBytesSent += nBytesSent;
+    bytesLeft -= bytesSent;
+    dataPos += bytesSent;
   }
 
   // Print the packet
-  DumpPacket(b, false);
+  DumpPacket(&buf, false);
   return (true);
 }
 
@@ -616,75 +617,6 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   from.myDescriptor = -1;
   from.CloseConnection();
 }
-
-/*-----TCPSocket::SendPacket---------------------------------------------------
- * Sends a packet on a socket.  The socket is blocking, so we are guaranteed
- * that the entire packet will be sent, however, it may block if the tcp
- * buffer is full.  This should not be a problem unless we are sending a huge
- * packet.
- *---------------------------------------------------------------------------*/
-bool TCPSocket::SendPacket(Buffer *b_in)
-{
-  Buffer *b = b_in;
-
-#ifdef USE_OPENSSL
-  if (m_pSSL != NULL)
-  {
-    int i, j;
-    ERR_clear_error();
-    pthread_mutex_lock(&mutex_ssl);
-    i = SSL_write(m_pSSL, b->getDataStart(), b->getDataSize());
-    j = SSL_get_error(m_pSSL, i);
-    pthread_mutex_unlock(&mutex_ssl);
-    if (j != SSL_ERROR_NONE)
-    {
-      const char *file; int line;
-      unsigned long err;
-      switch (j)
-      {
-        case SSL_ERROR_SSL:
-          err = ERR_get_error_line(&file, &line);
-          gLog.error("SSL_write error = %lx, %s:%i", err, file, line);
-          ERR_clear_error();
-          break;
-        default:
-          gLog.error("SSL_write error %d, SSL_%d\n", i, j);
-          break;
-      }
-    }
-  }
-  else
-  {
-#endif
-
-  unsigned long nTotalBytesSent = 0;
-  int nBytesSent = 0;
-
-  nTotalBytesSent = 0;
-  while (nTotalBytesSent < b->getDataSize())
-  {
-    nBytesSent = send(myDescriptor, b->getDataStart() + nTotalBytesSent,
-                      b->getDataSize() - nTotalBytesSent, 0);
-    if (nBytesSent <= 0)
-    {
-      myErrorType = ErrorErrno;
-      if (b != b_in) delete b;
-      return(false);
-    }
-    nTotalBytesSent += nBytesSent;
-  }
-
-#ifdef USE_OPENSSL
-  }
-#endif
-
-  // Print the packet
-  DumpPacket(b, false);
-
-  if (b != b_in) delete b;
-  return (true);
-}
-
 
 /*-----TCPSocket::ReceivePacket------------------------------------------------
  * Receive data on the socket.  Checks the buffer to see if it is empty, if
@@ -821,16 +753,22 @@ bool TCPSocket::RecvPacket()
   return (true);
 }
 
-
-bool TCPSocket::SSLSend(Buffer *b_in)
+/*-----TCPSocket::SendPacket---------------------------------------------------
+ * Sends a packet on a socket.  The socket is blocking, so we are guaranteed
+ * that the entire packet will be sent, however, it may block if the tcp
+ * buffer is full.  This should not be a problem unless we are sending a huge
+ * packet.
+ *---------------------------------------------------------------------------*/
+bool TCPSocket::send(Buffer& buf)
 {
-#ifdef USE_OPENSSL
-  if (m_pSSL == 0) return false;
+  if (m_pSSL == NULL)
+    return INetSocket::send(buf);
 
+#ifdef USE_OPENSSL
   int i, j;
   ERR_clear_error();
   pthread_mutex_lock(&mutex_ssl);
-  i = SSL_write(m_pSSL, b_in->getDataStart(), b_in->getDataSize());
+  i = SSL_write(m_pSSL, buf.getDataStart(), buf.getDataSize());
   j = SSL_get_error(m_pSSL, i);
   pthread_mutex_unlock(&mutex_ssl);
   if (j != SSL_ERROR_NONE)
@@ -850,11 +788,9 @@ bool TCPSocket::SSLSend(Buffer *b_in)
     }
   }
 
-  DumpPacket(b_in, false);
+  DumpPacket(&buf, false);
 
   return true;
-#else
-  return false;
 #endif
 }
 

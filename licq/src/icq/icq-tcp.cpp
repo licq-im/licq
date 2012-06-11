@@ -900,21 +900,24 @@ bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
     case 3:
     {
       CPacketTcp_Handshake_v2 p(s->getLocalPort());
-      if (!s->SendPacket(p.getBuffer())) goto sock_error;
+      if (!s->send(*p.getBuffer()))
+        goto sock_error;
       break;
     }
     case 4:
     case 5:
     {
       CPacketTcp_Handshake_v4 p(s->getLocalPort());
-      if (!s->SendPacket(p.getBuffer())) goto sock_error;
+      if (!s->send(*p.getBuffer()))
+        goto sock_error;
       break;
     }
     case 6:
     {
       // Send the hanshake
       CPacketTcp_Handshake_v6 p(nUin, 0, nPort);
-      if (!s->SendPacket(p.getBuffer())) goto sock_error;
+      if (!s->send(*p.getBuffer()))
+        goto sock_error;
 
       // Wait for the handshake ack
       do
@@ -945,7 +948,8 @@ bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
 
       // Send the hanshake ack
       CPacketTcp_Handshake_Ack p_ack;
-      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+      if (!s->send(*p_ack.getBuffer()))
+        goto sock_error;
 
       break;
     }
@@ -955,7 +959,8 @@ bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
     {
       // Send the hanshake
       CPacketTcp_Handshake_v7 p(nUin, 0, nPort, nId);
-      if (!s->SendPacket(p.getBuffer())) goto sock_error;
+      if (!s->send(*p.getBuffer()))
+        goto sock_error;
 
       // Wait for the handshake ack
       do
@@ -986,7 +991,8 @@ bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
 
       // Send the hanshake ack
       CPacketTcp_Handshake_Ack p_ack;
-      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+      if (!s->send(*p_ack.getBuffer()))
+        goto sock_error;
 
 			// Files and chats don't get this.
 			// They do in icq2002a but for some reason icq2002a does not
@@ -3403,11 +3409,13 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
 
       // Send the ack
       CPacketTcp_Handshake_Ack p_ack;
-      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+      if (!s->send(*p_ack.getBuffer()))
+        goto sock_error;
 
       // Send the handshake
       CPacketTcp_Handshake_v7 p_out(nUin, p_in.SessionId(), nPort);
-      if (!s->SendPacket(p_out.getBuffer())) goto sock_error;
+      if (!s->send(*p_out.getBuffer()))
+        goto sock_error;
 
       // Wait for the ack (this is very bad form...blocking recv here)
       s->ClearRecvBuffer();
@@ -3498,11 +3506,13 @@ bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool 
 
       // Send the ack
       CPacketTcp_Handshake_Ack p_ack;
-      if (!s->SendPacket(p_ack.getBuffer())) goto sock_error;
+      if (!s->send(*p_ack.getBuffer()))
+        goto sock_error;
 
       // Send the handshake
       CPacketTcp_Handshake_v6 p_out(nUin, p_in.SessionId(), nPort);
-      if (!s->SendPacket(p_out.getBuffer())) goto sock_error;
+      if (!s->send(*p_out.getBuffer()))
+        goto sock_error;
 
       // Wait for the ack (this is very bad form...blocking recv here)
       s->ClearRecvBuffer();
@@ -3659,7 +3669,7 @@ bool IcqProtocol::Handshake_SendConfirm_v7(Licq::TCPSocket* s)
 {
   // Send handshake accepted
   CPacketTcp_Handshake_Confirm p_confirm(s->channel(), 0);
-  if (!s->SendPacket(p_confirm.getBuffer()))
+  if (!s->send(*p_confirm.getBuffer()))
     return false;
 
   // Wait for reverse handshake accepted
@@ -3712,7 +3722,7 @@ bool IcqProtocol::Handshake_RecvConfirm_v7(Licq::TCPSocket* s)
     CPacketTcp_Handshake_Confirm p_confirm_out(p_confirm_in.channel(),
                                                        p_confirm_in.Id());
 
-    if (s->SendPacket(p_confirm_out.getBuffer()))
+    if (s->send(*p_confirm_out.getBuffer()))
       return true;
   }
  

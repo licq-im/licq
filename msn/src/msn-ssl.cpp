@@ -179,7 +179,7 @@ void CMSN::MSNGetServer()
   gSocketMan.AddSocket(sock);
   m_nNexusSocket = sock->Descriptor();
   CMSNPacket *pHello = new CPS_MSNGetServer();
-  sock->SSLSend(pHello->getBuffer());
+  sock->send(*pHello->getBuffer());
   gSocketMan.DropSocket(sock);
 }
 
@@ -205,7 +205,7 @@ void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strPa
   gSocketMan.AddSocket(sock);
   m_nSSLSocket = sock->Descriptor();
   CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), m_szCookie);
-  sock->SSLSend(pHello->getBuffer());
+  sock->send(*pHello->getBuffer());
   gSocketMan.DropSocket(sock);
 }
 
@@ -236,7 +236,7 @@ void CMSN::MSNAuthenticate(char *szCookie)
   gSocketMan.AddSocket(sock);
   m_nSSLSocket = sock->Descriptor();
   CMSNPacket *pHello = new CPS_MSNAuthenticate(m_szUserName, myPassword.c_str(), szCookie);
-  sock->SSLSend(pHello->getBuffer());
+  sock->send(*pHello->getBuffer());
   gSocketMan.DropSocket(sock);
 }
 

@@ -316,7 +316,7 @@ void* LicqIcq::ProcessRunningEvent_Server_tep(void* /* p */)
     pthread_mutex_unlock(&gIcqProtocol.mutex_cancelthread);
       pthread_cleanup_pop(0); //mutex_cancelthread
 
-      sent = s->Send(buf);
+  sent = s->send(*buf);
       delete buf;
 
       if (!sent)
@@ -577,7 +577,7 @@ void* LicqIcq::ProcessRunningEvent_Client_tep(void *p)
   pthread_mutex_unlock(&gIcqProtocol.mutex_cancelthread);
     pthread_cleanup_pop(0);
 
-    sent = s->Send(buf);
+  sent = s->send(*buf);
 
     if (!sent)
       errorStr = s->errorStr();

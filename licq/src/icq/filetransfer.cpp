@@ -1019,7 +1019,7 @@ bool CFileTransferManager::SendPacket(CPacket *p)
 //-----CFileTransferManager::SendBuffer----------------------------------------------
 bool CFileTransferManager::SendBuffer(CBuffer *b)
 {
-  if (!ftSock.SendPacket(b))
+  if (!ftSock.send(*b))
   {
     gLog.warning(tr("File Transfer: Send error: %s"), ftSock.errorStr().c_str());
     return false;

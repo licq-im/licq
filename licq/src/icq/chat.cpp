@@ -831,7 +831,7 @@ bool CChatManager::SendChatHandshake(CChatUser *u)
   CPChat_Color p_color(myName, LocalPort(),
      m_nColorFore[0], m_nColorFore[1], m_nColorFore[2],
      m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
-  u->sock.SendPacket(p_color.getBuffer());
+  u->sock.send(*p_color.getBuffer());
 
   gLog.info(tr("Chat: Waiting for color/font response."));
 
@@ -965,7 +965,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
         CPChat_Color p_color(myName, LocalPort(),
         m_nColorFore[0], m_nColorFore[1], m_nColorFore[2],
         m_nColorBack[0], m_nColorBack[1], m_nColorBack[2]);
-        u->sock.SendPacket(p_color.getBuffer());
+        u->sock.send(*p_color.getBuffer());
 
         gLog.info(tr("Chat: Waiting for color/font response."));
 
@@ -1014,7 +1014,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
          m_nFontSize, m_nFontFace & FONT_BOLD, m_nFontFace & FONT_ITALIC,
          m_nFontFace & FONT_UNDERLINE, m_nFontFace & FONT_STRIKEOUT,
           myFontFamily, m_nFontEncoding, m_nFontStyle, l);
-      if (!u->sock.SendPacket(p_colorfont.getBuffer()))
+      if (!u->sock.send(*p_colorfont.getBuffer()))
       {
         gLog.error(tr("Chat: Send error (color/font packet): %s"), u->sock.errorStr().c_str());
         return false;
@@ -1094,7 +1094,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
          m_nFontSize, m_nFontFace & FONT_BOLD, m_nFontFace & FONT_ITALIC,
          m_nFontFace & FONT_UNDERLINE, m_nFontFace & FONT_STRIKEOUT,
           myFontFamily, m_nFontEncoding, m_nFontStyle);
-      if (!u->sock.SendPacket(p_font.getBuffer()))
+      if (!u->sock.send(*p_font.getBuffer()))
       {
         gLog.error(tr("Chat: Send error (font packet): %s"), u->sock.errorStr().c_str());
         return false;
@@ -1887,7 +1887,7 @@ bool CChatManager::SendBufferToClient(CBuffer *b, unsigned char cmd, CChatUser *
     b_out.Pack(b->getDataStart(), b->getDataSize());
   }
 
-  if (!u->sock.SendRaw(&b_out))
+  if (!u->sock.send(b_out))
   {
     gLog.warning(tr("Chat: Send error: %s"), u->sock.errorStr().c_str());
     CloseClient(u);
@@ -1916,7 +1916,7 @@ void CChatManager::SendBuffer_Raw(CBuffer *b)
       // If the socket was closed, ignore the key event
       if (u->state != CHAT_STATE_CONNECTED || u->sock.Descriptor() == -1) continue;
 
-      if (!u->sock.SendRaw(b))
+      if (!u->sock.send(*b))
       {
         gLog.warning(tr("Chat: Send error: %s"), u->sock.errorStr().c_str());
         CloseClient(u);

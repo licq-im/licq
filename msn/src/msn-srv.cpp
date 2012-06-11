@@ -538,7 +538,7 @@ void CMSN::SendPacket(CMSNPacket *p)
   Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
   Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
   assert(sock != NULL);
-  if (!sock->SendRaw(p->getBuffer()))
+  if (!sock->send(*p->getBuffer()))
     MSNLogoff(true);
   else
     gSocketMan.DropSocket(sock);
