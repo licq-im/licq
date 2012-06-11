@@ -577,8 +577,8 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
   // don't increment the sequence if this is an ack and cancel packet
   if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = user->Sequence(true);
 
-  // v4,6 packets are smaller then v2 so we just set the size based on a v2 packet
-  m_nSize = 18 + myMessage.size()+1 + 25;
+  // Buffer and size are set by InitBuffer
+  m_nSize = 0;
   buffer = NULL;
 }
 
@@ -631,12 +631,21 @@ void CPacketTcp::PostBuffer()
       PostBuffer_v2();
       break;
   }
+
+  if (buffer->getDataSize() != m_nSize)
+  {
+    gLog.warning(tr("Packet length (%lu) different than expected (%i)"),
+        buffer->getDataSize(), m_nSize);
+  }
 }
 
 
 void CPacketTcp::InitBuffer_v2()
 {
-  buffer = new CBuffer(m_nSize + 4);
+  m_nSize += 33 + myMessage.size() + 4;
+  if (m_nVersion != 2)
+    m_nSize += 3;
+  buffer = new CBuffer(m_nSize);
 
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(m_nVersion == 2 ? 2 : ICQ_VERSION_TCP);
@@ -667,7 +676,8 @@ void CPacketTcp::PostBuffer_v2()
 
 void CPacketTcp::InitBuffer_v4()
 {
-  buffer = new CBuffer(m_nSize + 8);
+  m_nSize += 37 + myMessage.size() + 7;
+  buffer = new CBuffer(m_nSize);
 
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
@@ -695,7 +705,8 @@ void CPacketTcp::PostBuffer_v4()
 
 void CPacketTcp::InitBuffer_v6()
 {
-  buffer = new CBuffer(m_nSize + 4);
+  m_nSize += 30 + myMessage.size() + 0;
+  buffer = new CBuffer(m_nSize);
 
   buffer->PackUnsignedLong(0); // Checksum
   buffer->PackUnsignedShort(m_nCommand);
@@ -722,7 +733,12 @@ void CPacketTcp::PostBuffer_v6()
 
 void CPacketTcp::InitBuffer_v7()
 {
-  buffer = new CBuffer(m_nSize + 4);
+  m_nSize += 29;
+  if (channel() == Licq::TCPSocket::ChannelNormal)
+    m_nSize += 2 + myMessage.size();
+  else
+    m_nSize += 3;
+  buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(0x02);
   buffer->PackUnsignedLong(0); // Checksum
@@ -763,9 +779,12 @@ CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
         Licq::TCPSocket::ChannelNormal,
         message, true, nLevel, pUser)
 {
-  if (m_nVersion >= 6 && isUtf8)
-    m_nSize += 4 + sizeof(ICQ_CAPABILITY_UTF8_STR)-1;
-
+  if (m_nVersion >= 6)
+  {
+    m_nSize += 8;
+    if (isUtf8)
+      m_nSize += 4 + sizeof(ICQ_CAPABILITY_UTF8_STR)-1;
+  }
   InitBuffer();
   if (m_nVersion >= 6)
   {
@@ -797,8 +816,10 @@ CPT_Url::CPT_Url(const string& message, unsigned short nLevel, bool bMR,
         Licq::TCPSocket::ChannelNormal,
         message, true, nLevel, pUser)
 {
+  if (m_nVersion >= 6)
+    m_nSize += 8;
   InitBuffer();
-  if (m_nVersion == 6)
+  if (m_nVersion >= 6)
   {
     if (pColor == NULL)
     {
@@ -823,8 +844,10 @@ CPT_ContactList::CPT_ContactList(const string& message, unsigned short nLevel, b
         Licq::TCPSocket::ChannelNormal,
         message, true, nLevel, pUser)
 {
+  if (m_nVersion >= 6)
+    m_nSize += 8;
   InitBuffer();
-  if (m_nVersion == 6)
+  if (m_nVersion >= 6)
   {
     if (pColor == NULL)
     {
@@ -861,6 +884,8 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(User* _cUser)
   else
     m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG;
 
+  if (m_nVersion == 6)
+    m_nSize += 8;
   InitBuffer();
   if (m_nVersion == 6)
   {
@@ -1000,8 +1025,6 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
   m_nSequence = _nSequence;
   Licq::OwnerReadGuard o(LICQ_PPID);
 
-  m_nSize -= myMessage.size();
-
   // don't sent out AutoResponse if we're online
   // it could contain stuff the other site shouldn't be able to read
   // also some clients always pop up the auto response
@@ -1023,8 +1046,6 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
     myMessage.clear();
 
   myMessage = IcqProtocol::pipeInput(myMessage);
-
-  m_nSize += myMessage.size();
 }
 
 CPT_Ack::~CPT_Ack()
@@ -1037,6 +1058,8 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned short nSequence,
     bool bAccept, bool nLevel, User* pUser)
   : CPT_Ack(nCmd, nSequence, bAccept, nLevel, pUser)
 {
+  if (m_nVersion >= 6)
+    m_nSize += 8;
   InitBuffer();
   if (m_nVersion == 6)
   {
@@ -1058,10 +1081,7 @@ CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned short nSequence,
     bool ok, User* pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
-  m_nSize -= myMessage.size();
   myMessage = (ok ? "1" : "");
-  m_nSize += myMessage.size()+1;
-
   InitBuffer();
   PostBuffer();
 }
@@ -1071,9 +1091,9 @@ CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned short nSequence,
     User* pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExOPEN, nSequence, true, true, pUser)
 {
-  m_nSize -= myMessage.size();
   myMessage.clear();
-  m_nSize += myMessage.size() + 1;
+  if (m_nVersion == 6)
+    m_nSize += 8;
 
   InitBuffer();
   if (m_nVersion == 6)
@@ -1089,10 +1109,7 @@ CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned short nSequence,
     User* pUser)
   : CPT_Ack(ICQ_CMDxSUB_SECURExCLOSE, nSequence, true, true, pUser)
 {
-  m_nSize -= myMessage.size();
   myMessage.clear();
-  m_nSize += myMessage.size() + 1;
-
   InitBuffer();
   PostBuffer();
 }
@@ -1149,7 +1166,7 @@ CPT_AckChatRefuse::CPT_AckChatRefuse(const string& reason,
   myMessage = reason;
   char temp_1[11] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-  m_nSize += 11 + myMessage.size();
+  m_nSize += 11;
   InitBuffer();
   buffer->Pack(temp_1, 11);
   PostBuffer();
@@ -1218,7 +1235,7 @@ CPT_AckFileRefuse::CPT_AckFileRefuse(const string& reason,
 {
   myMessage = reason;
 
-  m_nSize += 15 + myMessage.size();
+  m_nSize += 15;
   InitBuffer();
 
   buffer->PackUnsignedLong(0);
@@ -1306,7 +1323,7 @@ CPT_InfoPluginReq::CPT_InfoPluginReq(User* _cUser, const uint8_t* GUID,
   unsigned long nTime)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelInfo, "", true, 0, _cUser)
 {
-  m_nSize += 22;
+  m_nSize += GUID_LENGTH + 4;
   memcpy(m_ReqGUID, GUID, GUID_LENGTH);
 
   InitBuffer();
@@ -1538,7 +1555,7 @@ CPT_StatusPluginReq::CPT_StatusPluginReq(User* _cUser, const uint8_t* GUID,
   unsigned long nTime)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelStatus, "", true, 0, _cUser)
 {
-  m_nSize += 22;
+  m_nSize += GUID_LENGTH + 4;
   memcpy(m_ReqGUID, GUID, GUID_LENGTH);
 
   InitBuffer();
