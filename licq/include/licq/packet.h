@@ -21,11 +21,10 @@
 
 #include <cstdlib> // NULL
 
-class INetSocket;
-
 namespace Licq
 {
 class Buffer;
+class INetSocket;
 
 class Packet
 {
