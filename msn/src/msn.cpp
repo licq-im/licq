@@ -454,12 +454,10 @@ int CMSN::run()
         
         else if (nCurrent == m_nServerSocket)
         {
-          Licq::INetSocket* s = gSocketMan.FetchSocket(m_nServerSocket);
-          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
-          if (sock->RecvRaw())
+          Licq::INetSocket* sock = gSocketMan.FetchSocket(m_nServerSocket);
+          CMSNBuffer packet;
+          if (sock->receive(packet))
           {
-            CMSNBuffer packet(sock->RecvBuffer());
-            sock->ClearRecvBuffer();
             gSocketMan.DropSocket(sock);
 
             HandlePacket(m_nServerSocket, packet, m_szUserName);
@@ -479,12 +477,10 @@ int CMSN::run()
         
         else if (nCurrent == m_nNexusSocket)
         {
-          Licq::INetSocket* s = gSocketMan.FetchSocket(m_nNexusSocket);
-          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
-          if (sock->SSLRecv())
+          Licq::INetSocket* sock = gSocketMan.FetchSocket(m_nNexusSocket);
+          CMSNBuffer packet;
+          if (sock->receive(packet))
           {
-            CMSNBuffer packet(sock->RecvBuffer());
-            sock->ClearRecvBuffer();
             gSocketMan.DropSocket(sock);
             ProcessNexusPacket(packet);
           }
@@ -492,12 +488,10 @@ int CMSN::run()
 
         else if (nCurrent == m_nSSLSocket)
         {
-          Licq::INetSocket* s = gSocketMan.FetchSocket(m_nSSLSocket);
-          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
-          if (sock->SSLRecv())
+          Licq::INetSocket* sock = gSocketMan.FetchSocket(m_nSSLSocket);
+          CMSNBuffer packet;
+          if (sock->receive(packet))
           {
-            CMSNBuffer packet(sock->RecvBuffer());
-            sock->ClearRecvBuffer();
             gSocketMan.DropSocket(sock);
             ProcessSSLServerPacket(packet);
           }
@@ -506,12 +500,10 @@ int CMSN::run()
         else
         {
           //SB socket
-          Licq::INetSocket* s = gSocketMan.FetchSocket(nCurrent);
-          Licq::TCPSocket* sock = static_cast<Licq::TCPSocket*>(s);
-          if (sock && sock->RecvRaw())
+          Licq::INetSocket* sock = gSocketMan.FetchSocket(nCurrent);
+          CMSNBuffer packet;
+          if (sock && sock->receive(packet))
           {
-            CMSNBuffer packet(sock->RecvBuffer());
-            sock->ClearRecvBuffer();
             char *szUser = strdup(sock->userId().accountId().c_str());
             gSocketMan.DropSocket(sock);
 

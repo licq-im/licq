@@ -22,6 +22,8 @@
 
 #include <licq/socket.h>
 
+#include <licq/buffer.h>
+
 namespace LicqIcq
 {
 
@@ -31,12 +33,8 @@ public:
   SrvSocket(const Licq::UserId& userId);
   virtual ~SrvSocket();
 
-  // Abstract base class overloads
-  virtual bool Recv()
-    { return RecvPacket(); }
-
-  // Functions specific to Server TCP communication
-  bool RecvPacket();
+  /// Receive a FLAP packet
+  bool receiveFlap(Licq::Buffer& buf);
 };
 
 } // namespace LicqIcq

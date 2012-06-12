@@ -79,11 +79,6 @@ char* Licq::ip_ntoa(unsigned long in, char *buf)
 }
 
 
-//=====Constants================================================================
-const unsigned long MAX_RECV_SIZE = 4096;
-
-
-
 //=====INetSocket===============================================================
 
 string INetSocket::addrToString(const struct sockaddr* addr)
@@ -501,27 +496,36 @@ bool INetSocket::send(Buffer& buf)
   return (true);
 }
 
-
-/*-----INetSocket::RecvRaw---------------------------------------------------
- * Receive data on the socket.
- *---------------------------------------------------------------------------*/
-bool INetSocket::RecvRaw()
+bool INetSocket::receive(Buffer& buf, size_t maxlength, bool dump)
 {
-  char *buffer = new char[MAX_RECV_SIZE];
+  // Don't try to read more than the buffer has room for
+  if (buf.Full())
+    return true;
+  if (!buf.Empty() && maxlength > buf.remainingDataToWrite())
+    maxlength = buf.remainingDataToWrite();
+
+  char* buffer = new char[maxlength];
   errno = 0;
-  int nBytesReceived = recv(myDescriptor, buffer, MAX_RECV_SIZE, 0);
-  if (nBytesReceived <= 0)
+  int f = fcntl(myDescriptor, F_GETFL);
+  fcntl(myDescriptor, F_SETFL, f | O_NONBLOCK);
+  ssize_t bytesReceived = recv(myDescriptor, buffer, maxlength, 0);
+  fcntl(myDescriptor, F_SETFL, f & ~O_NONBLOCK);
+  if (bytesReceived <= 0)
   {
     delete[] buffer;
     myErrorType = ErrorErrno;
+    if (errno == EAGAIN || errno == EWOULDBLOCK)
+      return true;
     return (false);
   }
-  myRecvBuffer.Create(nBytesReceived);
-  myRecvBuffer.packRaw(buffer, nBytesReceived);
+  if (buf.Empty())
+    buf.Create(bytesReceived);
+  buf.packRaw(buffer, bytesReceived);
   delete[] buffer;
 
   // Print the packet
-  DumpPacket(&myRecvBuffer, true);
+  if (dump)
+    DumpPacket(&buf, true);
 
   return (true);
 }
@@ -795,16 +799,22 @@ bool TCPSocket::send(Buffer& buf)
 #endif
 }
 
-
-bool TCPSocket::SSLRecv()
+bool TCPSocket::receive(Buffer& buf, size_t maxlength, bool dump)
 {
-#ifdef USE_OPENSSL
-  if (m_pSSL == 0) return false;
+  // If SSL not enabled for this socket, use normal receive
+  if (m_pSSL == NULL)
+    return INetSocket::receive(buf, maxlength, dump);
 
-  char *buffer = new char[MAX_RECV_SIZE];
+#ifdef USE_OPENSSL
+  if (buf.Full())
+    return true;
+  if (!buf.Empty() && maxlength > buf.remainingDataToWrite())
+    maxlength = buf.remainingDataToWrite();
+
+  char* buffer = new char[maxlength];
   errno = 0;
   pthread_mutex_lock(&mutex_ssl);
-  int nBytesReceived = SSL_read(m_pSSL, buffer, MAX_RECV_SIZE);
+  int nBytesReceived = SSL_read(m_pSSL, buffer, maxlength);
   int tmp = SSL_get_error(m_pSSL, nBytesReceived);
   pthread_mutex_unlock(&mutex_ssl);
   switch (tmp)
@@ -832,16 +842,16 @@ bool TCPSocket::SSLRecv()
     myErrorType = ErrorErrno;
     return (false);
   }
-  myRecvBuffer.Create(nBytesReceived);
-  myRecvBuffer.packRaw(buffer, nBytesReceived);
+  if (buf.Empty())
+    buf.Create(nBytesReceived);
+  buf.packRaw(buffer, nBytesReceived);
   delete[] buffer;
 
   // Print the packet
-  DumpPacket(&myRecvBuffer, true);
+  if (dump)
+    DumpPacket(&buf, true);
 
   return (true);
-#else
-  return false;
 #endif
 }
 

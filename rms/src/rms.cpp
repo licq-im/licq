@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <cerrno>
 
+#include <licq/buffer.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -716,14 +717,15 @@ bool CRMSClient::ProcessEvent(Licq::Event* e)
  *-------------------------------------------------------------------------*/
 int CRMSClient::Activity()
 {
-  if (!sock.RecvRaw())
+  Licq::Buffer buf;
+  if (!sock.receive(buf))
   {
     gLog.info("Client %s disconnected", sock.getRemoteIpString().c_str());
     return -1;
   }
 
-  char *in = sock.RecvBuffer().getDataStart();
-  char *last = sock.RecvBuffer().getDataPosWrite();
+  char* in = buf.getDataStart();
+  char* last = buf.getDataPosWrite();
 
   do
   {
@@ -746,8 +748,6 @@ int CRMSClient::Activity()
   } while (in != last);
 
   data_line[data_line_pos] = '\0';
-
-  sock.ClearRecvBuffer();
 
   return 0;
 }

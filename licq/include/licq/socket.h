@@ -52,6 +52,8 @@ char *ip_ntoa(unsigned long in, char *buf);
 class INetSocket
 {
 public:
+  static const size_t MAX_RECV_SIZE = 4096;
+
   INetSocket(int sockType, const std::string& logId, const UserId& userId);
   virtual ~INetSocket();
 
@@ -150,9 +152,16 @@ public:
    */
   virtual bool send(Buffer& b);
 
-  bool RecvRaw();
-
-  virtual bool Recv() = 0;
+  /**
+   * Receive one "packet"
+   * Makes a single read from the socket
+   *
+   * @param b Buffer to store data in (will be created if empty)
+   * @param maxlength Maximum packet length to read
+   * @param dump True to dump packet for debugging if buffer was filled
+   * @return False on any failure otherwise true regardless of data length
+   */
+  virtual bool receive(Buffer& b, size_t maxlength = MAX_RECV_SIZE, bool dump = true);
 
   void Lock();
   void Unlock();
@@ -246,10 +255,6 @@ public:
   TCPSocket();
   virtual ~TCPSocket();
 
-  // Abstract base class overloads
-  virtual bool Recv()
-    { return RecvPacket(); }
-
   // Functions specific to TCP
   bool RecvPacket();
   bool RecvConnection(TCPSocket &newSocket);
@@ -258,7 +263,8 @@ public:
   /// Overloaded to add SSL support
   bool send(Buffer& b);
 
-  bool SSLRecv();
+  /// Overloaded to add SSL support
+  bool receive(Buffer& b, size_t maxlength = MAX_RECV_SIZE, bool dump = true);
 
   bool Secure() { return m_p_SSL != NULL; }
   bool SSL_Pending();
@@ -291,10 +297,6 @@ class UDPSocket : public INetSocket
 public:
   UDPSocket(const UserId& userId);
   virtual ~UDPSocket();
-
-  // Abstract base class overloads
-  virtual bool Recv()
-    { return RecvRaw(); }
 };
 
 } // namespace Licq

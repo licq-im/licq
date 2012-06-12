@@ -764,10 +764,9 @@ void* LicqIcq::MonitorSockets_func()
         }
 
         // DAW FIXME error handling when socket is closed..
-        if (srvTCP->Recv())
+        Buffer packet;
+        if (srvTCP->receiveFlap(packet))
         {
-          Buffer packet(srvTCP->RecvBuffer());
-          srvTCP->ClearRecvBuffer();
           gSocketManager.DropSocket(srvTCP);
           if (!gIcqProtocol.ProcessSrvPacket(packet))
           {} // gIcqProtocol.icqRelogon();
@@ -800,10 +799,9 @@ void* LicqIcq::MonitorSockets_func()
           close(nCurrentSocket);
           continue;
         }
-        if (sock_svc->Recv())
+        Buffer packet;
+        if (sock_svc->receiveFlap(packet))
         {
-          Buffer packet(sock_svc->RecvBuffer());
-          sock_svc->ClearRecvBuffer();
           gSocketManager.DropSocket(sock_svc);
           if (!svc->ProcessPacket(packet))
           {

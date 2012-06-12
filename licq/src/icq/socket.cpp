@@ -49,12 +49,12 @@ SrvSocket::~SrvSocket()
  * so, then it will create it using either the size read in from the socket
  * (the first two bytes available) or the given size.
  *---------------------------------------------------------------------------*/
-bool SrvSocket::RecvPacket()
+bool SrvSocket::receiveFlap(Licq::Buffer& buf)
 {
-  if (!myRecvBuffer.Empty())
+  if (!buf.Empty())
   {
     gLog.error("Internal error: SrvSocket::RecvPacket(): Called with full buffer (%lu bytes).",
-        myRecvBuffer.getDataSize());
+        buf.getDataSize());
     return true;
   }
 
@@ -97,38 +97,24 @@ bool SrvSocket::RecvPacket()
   // DAW maybe verify sequence number ?
 
   unsigned short nLen = ((unsigned char)buffer[5]) + (((unsigned char)buffer[4]) << 8);
-#if 0
-  // JON Recv size does not matter here i believe, m_xRevBuffer can create
-  // a large enough packet, if there is enough memory.  It is not a static
-  // buffer like RecvRaw
-  if (nLen >= MAX_RECV_SIZE) {
-    gLog.warning(tr("Server send bad packet with suspiciously large size: %d."), nLen);
-    myErrorType = ErrorErrno;
-    delete[] buffer;
-    return false;
-  }
-#endif
+
   // push the 6 bytes at the beginning of the packet again..
-  myRecvBuffer.Create(nLen + 6);
-  myRecvBuffer.packRaw(buffer, 6);
+  buf.Create(nLen + 6);
+  buf.packRaw(buffer, 6);
   delete[] buffer;
 
-  while (!myRecvBuffer.Full())
+  while (!buf.Full())
   {
-    // Determine the number of bytes left to be read into the buffer
-    unsigned long nBytesLeft = myRecvBuffer.getDataStart() +
-        myRecvBuffer.getDataMaxSize() - myRecvBuffer.getDataPosWrite();
-
-    nBytesReceived = read(myDescriptor, myRecvBuffer.getDataPosWrite(), nBytesLeft);
-    if (nBytesReceived == 0 || (nBytesReceived < 0 && errno != EINTR))
+    ssize_t bytesReceived = read(myDescriptor, buf.getDataPosWrite(), buf.remainingDataToWrite());
+    if (bytesReceived == 0 || (bytesReceived < 0 && errno != EINTR))
     {
       myErrorType = ErrorErrno;
       return false;
     }
-    myRecvBuffer.incDataPosWrite(nBytesReceived);
+    buf.incDataPosWrite(bytesReceived);
   }
 
-  DumpPacket(&myRecvBuffer, true);
+  DumpPacket(&buf, true);
 
   return true;
 }

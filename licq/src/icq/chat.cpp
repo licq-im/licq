@@ -1170,7 +1170,8 @@ void CChatManager::PushChatEvent(CChatEvent *e)
 //-----CChatManager::ProcessRaw----------------------------------------------
 bool CChatManager::ProcessRaw(ChatUser* u)
 {
-  if (!u->sock.RecvRaw())
+  Licq::Buffer buf;
+  if (!u->sock.receive(buf))
   {
     if (u->sock.Error() == 0)
       gLog.info(tr("Chat: Remote end disconnected."));
@@ -1179,9 +1180,8 @@ bool CChatManager::ProcessRaw(ChatUser* u)
     return false;
   }
 
-  while (!u->sock.RecvBuffer().End())
-    u->chatQueue.push_back(u->sock.RecvBuffer().UnpackChar());
-  u->sock.ClearRecvBuffer();
+  while (!buf.End())
+    u->chatQueue.push_back(buf.unpackUInt8());
 
   if (u->sock.Version() >= 6)
     return ProcessRaw_v6(u);
