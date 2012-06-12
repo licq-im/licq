@@ -37,6 +37,37 @@ public:
   bool receiveFlap(Licq::Buffer& buf);
 };
 
+
+/**
+ * Socket for Direct Connections (Client-to-Client)
+ */
+class DcSocket : public Licq::TCPSocket
+{
+public:
+  DcSocket();
+  DcSocket(const Licq::UserId& userId);
+
+  /**
+   * Receive a packet without blocking
+   * Check RecvBufferFull() on return to determine if packet is complete
+   *
+   * @return False on any error
+   */
+  bool RecvPacket();
+
+  void ClearRecvBuffer()
+  { myRecvBuffer.Clear(); };
+
+  bool RecvBufferFull() const
+  { return myRecvBuffer.Full(); };
+
+  Licq::Buffer& RecvBuffer()
+  { return myRecvBuffer; };
+
+private:
+  Licq::Buffer myRecvBuffer;
+};
+
 } // namespace LicqIcq
 
 #endif

@@ -58,6 +58,7 @@ namespace LicqIcq
 class COscarService;
 class CPacketTcp;
 class CSrvPacketTcp;
+class DcSocket;
 class User;
 
 // To keep old code working
@@ -312,18 +313,18 @@ public:
 
   void ProcessSystemMessage(Licq::Buffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(Licq::Buffer &packet, unsigned short nMetaCommand, Licq::Event* e);
-  bool ProcessTcpPacket(Licq::TCPSocket*);
-  bool ProcessTcpHandshake(Licq::TCPSocket*);
+  bool ProcessTcpPacket(DcSocket*);
+  bool ProcessTcpHandshake(DcSocket*);
 
   unsigned long icqRequestInfoPlugin(User* user, bool, const uint8_t*, unsigned long eventId = 0);
   unsigned long icqRequestStatusPlugin(User* user, bool, const uint8_t*);
   void icqUpdateInfoTimestamp(const uint8_t*);
 
-  static bool handshake_Send(Licq::TCPSocket*, const Licq::UserId& userId, unsigned short,
+  static bool handshake_Send(DcSocket* s, const Licq::UserId& userId, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
-  static bool Handshake_SendConfirm_v7(Licq::TCPSocket*);
-  static bool Handshake_Recv(Licq::TCPSocket*, unsigned short, bool = true, bool = false);
-  static bool Handshake_RecvConfirm_v7(Licq::TCPSocket*);
+  static bool Handshake_SendConfirm_v7(DcSocket*);
+  static bool Handshake_Recv(DcSocket*, unsigned short, bool = true, bool = false);
+  static bool Handshake_RecvConfirm_v7(DcSocket*);
 
   int ConnectToServer(const std::string& server, unsigned short port);
   int ConnectToLoginServer();

@@ -118,3 +118,52 @@ bool SrvSocket::receiveFlap(Licq::Buffer& buf)
 
   return true;
 }
+
+DcSocket::DcSocket(const Licq::UserId& userId)
+  : TCPSocket(userId)
+{
+  // Empty
+}
+
+DcSocket::DcSocket()
+{
+  // Empty
+}
+
+bool DcSocket::RecvPacket()
+{
+  if (myRecvBuffer.Full())
+    return true;
+
+  if (myRecvBuffer.Empty() || myRecvBuffer.getDataSize() < 2)
+  {
+    // Get header for next packet
+    if (!receive(myRecvBuffer, 2, false))
+      return false;
+
+    if (myRecvBuffer.getDataSize() < 2)
+    {
+      // Didn't get a full header, retry later
+      return true;
+    }
+
+    // Parse packet header
+    int length = myRecvBuffer.unpackUInt16LE();
+
+    // Handle empty packets in case we ever get one
+    if (length == 0)
+    {
+      DumpPacket(&myRecvBuffer, true);
+      return true;
+    }
+
+    // Resize buffer to hold entire packet including the header
+    myRecvBuffer.Create(length + 2);
+    myRecvBuffer.packUInt16LE(length);
+  }
+
+  if (!receive(myRecvBuffer, myRecvBuffer.remainingDataToWrite()))
+    return false;
+
+  return true;
+}

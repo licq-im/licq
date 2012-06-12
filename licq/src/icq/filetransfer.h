@@ -22,13 +22,13 @@
 
 #include <licq/icq/filetransfer.h>
 
-#include <licq/socket.h>
+#include "socket.h"
 
 
 class CFileTransferManager::Private
 {
 public:
-  Licq::TCPSocket mySock;
+  LicqIcq::DcSocket mySock;
 };
 
 #endif

@@ -26,8 +26,7 @@
 #include <pthread.h>
 #include <string>
 
-#include <licq/socket.h>
-
+#include "socket.h"
 
 namespace LicqIcq
 {
@@ -39,7 +38,7 @@ public:
   ~ChatUser();
 
   CChatClient* m_pClient;
-  Licq::TCPSocket sock;
+  DcSocket sock;
   std::deque<unsigned char> chatQueue;
   unsigned short state;
   std::string myLinebuf;

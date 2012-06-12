@@ -59,6 +59,7 @@ extern "C" {
   #define socklen_t SOCKS5_OPTLEN
 #endif
 
+#include <licq/buffer.h>
 #include <licq/proxy.h>
 #include <licq/logging/log.h>
 
@@ -463,7 +464,6 @@ bool INetSocket::StartServer(unsigned int _nPort)
 //-----INetSocket::CloseConnection-------------------------------------------
 void INetSocket::CloseConnection()
 {
-  myRecvBuffer.Clear();
   if (myDescriptor != -1)
   {
     ::shutdown(myDescriptor, 2);
@@ -617,145 +617,8 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   }
   else
     m_p_SSL = NULL;
-  ClearRecvBuffer();
   from.myDescriptor = -1;
   from.CloseConnection();
-}
-
-/*-----TCPSocket::ReceivePacket------------------------------------------------
- * Receive data on the socket.  Checks the buffer to see if it is empty, if
- * so, then it will create it using either the size read in from the socket
- * (the first two bytes available) or the given size.  Then determine the
- * number of bytes needed to fill the buffer and call recv with this amount.
- * Note if the buffer is not filled, then the next call to this function will
- * append more bytes until the buffer is full.  If more bytes are available
- * then we take, then the socket will still be readable after we end.  Also
- * note that it is the responsibility of the calling procedure to reset the
- * RecvBuffer if it is full as this is not done here.
- *---------------------------------------------------------------------------*/
-bool TCPSocket::RecvPacket()
-{
-  if (myRecvBuffer.Full())
-  {
-    gLog.warning(tr("Internal error: TCPSocket::RecvPacket(): Called with full buffer (%lu bytes)."),
-        myRecvBuffer.getDataSize());
-    return (true);
-  }
-
-  int nBytesReceived = 0;
-  errno = 0;
-
-  // Check if the buffer is empty
-  if (myRecvBuffer.Empty())
-  {
-    char *buffer = new char[2];
-    int nTwoBytes = 0;
-    while (nTwoBytes != 2)
-    {
-#ifdef USE_OPENSSL
-      if (m_pSSL)
-      {
-        pthread_mutex_lock(&mutex_ssl);
-        nBytesReceived = SSL_read(m_pSSL, buffer, 2);
-        int tmp = SSL_get_error(m_pSSL, nBytesReceived);
-        pthread_mutex_unlock(&mutex_ssl);
-        switch (tmp)
-        {
-          case SSL_ERROR_NONE:
-            break;
-          case SSL_ERROR_WANT_READ:
-          case SSL_ERROR_WANT_WRITE:
-          case SSL_ERROR_WANT_X509_LOOKUP:
-            break;
-          case SSL_ERROR_ZERO_RETURN:
-            myErrorType = ErrorErrno;
-            errno = 0;
-            delete[] buffer;
-            return (false);
-          case SSL_ERROR_SYSCALL:
-            myErrorType = ErrorErrno;
-            delete[] buffer;
-            return (false);
-          case SSL_ERROR_SSL:
-            myErrorType = ErrorInternal;
-            delete[] buffer;
-            return (false);
-        }
-      }
-      else
-      {
-#endif
-      nBytesReceived = recv(myDescriptor, buffer + nTwoBytes, 2 - nTwoBytes, 0);
-      if (nBytesReceived <= 0)
-      {
-        myErrorType = ErrorErrno;
-        delete[] buffer;
-        return (false);
-      }
-#ifdef USE_OPENSSL
-      }
-#endif
-      nTwoBytes += nBytesReceived;
-    }
-    myRecvBuffer.Create(((unsigned char)buffer[0]) +
-                         (((unsigned char)buffer[1]) << 8 ) + 2);
-    myRecvBuffer.packRaw(buffer, 2);
-    delete[] buffer;
-  }
-
-  // Determine the number of bytes left to be read into the buffer
-  unsigned long nBytesLeft = myRecvBuffer.getDataStart() +
-      myRecvBuffer.getDataMaxSize() - myRecvBuffer.getDataPosWrite();
-#ifdef USE_OPENSSL
-  if (m_pSSL != NULL)
-  {
-    pthread_mutex_lock(&mutex_ssl);
-    nBytesReceived = SSL_read(m_pSSL, myRecvBuffer.getDataPosWrite(), nBytesLeft);
-    int tmp = SSL_get_error(m_pSSL, nBytesReceived);
-    pthread_mutex_unlock(&mutex_ssl);
-    switch (tmp)
-    {
-      case SSL_ERROR_NONE:
-        break;
-      case SSL_ERROR_WANT_READ:
-      case SSL_ERROR_WANT_WRITE:
-      case SSL_ERROR_WANT_X509_LOOKUP:
-        return (true);
-      case SSL_ERROR_ZERO_RETURN:
-        myErrorType = ErrorErrno;
-        errno = 0;
-        return (false);
-      case SSL_ERROR_SYSCALL:
-        myErrorType = ErrorErrno;
-        return (false);
-      case SSL_ERROR_SSL:
-        myErrorType = ErrorInternal;
-        return (false);
-    }
-  }
-  else
-  {
-#endif
-  int f = fcntl(myDescriptor, F_GETFL);
-  fcntl(myDescriptor, F_SETFL, f | O_NONBLOCK);
-  nBytesReceived = recv(myDescriptor, myRecvBuffer.getDataPosWrite(), nBytesLeft, 0);
-  fcntl(myDescriptor, F_SETFL, f & ~O_NONBLOCK);
-  if (nBytesReceived <= 0)
-  {
-    myErrorType = ErrorErrno;
-    if (errno == EAGAIN || errno == EWOULDBLOCK) return (true);
-    return (false);
-  }
-#ifdef USE_OPENSSL
-  }
-#endif
-  myRecvBuffer.incDataPosWrite(nBytesReceived);
-
-  // Print the packet if it's full
-  if (myRecvBuffer.Full())
-    DumpPacket(&myRecvBuffer, true);
-
-  return (true);
 }
 
 /*-----TCPSocket::SendPacket---------------------------------------------------

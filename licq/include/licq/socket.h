@@ -24,7 +24,6 @@
 #include <string>
 #include <sys/socket.h> // AF_UNSPEC, struct sockaddr
 
-#include "buffer.h"
 #include "thread/mutex.h"
 #include "userid.h"
 
@@ -36,6 +35,7 @@
 
 namespace Licq
 {
+class Buffer;
 class Proxy;
 
 
@@ -113,9 +113,6 @@ public:
   uint16_t getRemotePort() const        { return getAddrPort(&myRemoteAddr); };
 
   void ResetSocket();
-  void ClearRecvBuffer()  { myRecvBuffer.Clear(); };
-  bool RecvBufferFull() const { return myRecvBuffer.Full(); };
-  Buffer& RecvBuffer()   { return myRecvBuffer; };
 
   /**
    * Connect to a remote host
@@ -237,7 +234,6 @@ protected:
 
   int myDescriptor;
   std::string myRemoteName;
-  Buffer myRecvBuffer;
   std::string myLogId;
   int mySockType;
   unsigned short myVersion;
@@ -255,8 +251,6 @@ public:
   TCPSocket();
   virtual ~TCPSocket();
 
-  // Functions specific to TCP
-  bool RecvPacket();
   bool RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
 

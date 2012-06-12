@@ -43,7 +43,6 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
-#include <licq/socket.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
@@ -56,6 +55,7 @@
 #include "owner.h"
 #include "packet-srv.h"
 #include "packet-tcp.h"
+#include "socket.h"
 #include "user.h"
 
 using namespace std;
@@ -885,7 +885,7 @@ void IcqProtocol::icqOpenSecureChannelCancel(const Licq::UserId& userId,
  *
  * Shake hands on the given socket with the given user.
  *-------------------------------------------------------------------------*/
-bool IcqProtocol::handshake_Send(Licq::TCPSocket* s, const Licq::UserId& userId,
+bool IcqProtocol::handshake_Send(DcSocket* s, const Licq::UserId& userId,
    unsigned short nPort, unsigned short nVersion, bool bConfirm,
    unsigned long nId)
 {
@@ -1086,7 +1086,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, int channel)
     nVersion = u->ConnectionVersion();
   }
 
-  Licq::TCPSocket* s = new Licq::TCPSocket(userId);
+  DcSocket* s = new DcSocket(userId);
   if (!openConnectionToUser(userId, s, nPort))
   {
     Licq::UserWriteGuard u(userId);
@@ -1240,7 +1240,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
     return -1;
   }
 
-  Licq::TCPSocket* s = new Licq::TCPSocket(userId);
+  DcSocket* s = new DcSocket(userId);
   char buf[32];
 
   gLog.info(tr("Reverse connecting to %s at %s:%d."), userId.toString().c_str(),
@@ -1305,7 +1305,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
   return nSD;
 }
 
-bool IcqProtocol::ProcessTcpPacket(Licq::TCPSocket* pSock)
+bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
 {
   unsigned long senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
@@ -3370,8 +3370,7 @@ void IcqProtocol::AckTCP(CPacketTcp &p, Licq::TCPSocket* tcp)
 #endif
 }
 
-
-bool IcqProtocol::Handshake_Recv(Licq::TCPSocket* s, unsigned short nPort, bool bConfirm, bool bChat)
+bool IcqProtocol::Handshake_Recv(DcSocket* s, unsigned short nPort, bool bConfirm, bool bChat)
 {
   char cHandshake;
   unsigned short nVersionMajor, nVersionMinor;
@@ -3673,7 +3672,7 @@ sock_error:
   return false;
 }
 
-bool IcqProtocol::Handshake_SendConfirm_v7(Licq::TCPSocket* s)
+bool IcqProtocol::Handshake_SendConfirm_v7(DcSocket* s)
 {
   // Send handshake accepted
   CPacketTcp_Handshake_Confirm p_confirm(s->channel(), 0);
@@ -3692,7 +3691,7 @@ bool IcqProtocol::Handshake_SendConfirm_v7(Licq::TCPSocket* s)
   return true;
 }
 
-bool IcqProtocol::Handshake_RecvConfirm_v7(Licq::TCPSocket* s)
+bool IcqProtocol::Handshake_RecvConfirm_v7(DcSocket* s)
 {
   // Get handshake confirmation
   s->ClearRecvBuffer();
@@ -3749,7 +3748,7 @@ bool IcqProtocol::Handshake_RecvConfirm_v7(Licq::TCPSocket* s)
  * Takes the first buffer from a socket and parses it as a icq handshake.
  * Does not check that the given user already has a socket or not.
  *----------------------------------------------------------------------------*/
-bool IcqProtocol::ProcessTcpHandshake(Licq::TCPSocket* s)
+bool IcqProtocol::ProcessTcpHandshake(DcSocket* s)
 {
   if (!Handshake_Recv(s, 0)) return false;
   Licq::UserId userId = s->userId();

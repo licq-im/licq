@@ -860,7 +860,7 @@ void* LicqIcq::MonitorSockets_func()
 
       ssl_recv:
 
-        Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(s);
+        DcSocket* tcp = dynamic_cast<DcSocket*>(s);
 
         // If tcp is NULL then the socket is no longer in the set, hence it
         // must have been closed by us and we can ignore it.
