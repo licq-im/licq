@@ -834,7 +834,7 @@ void* LicqIcq::MonitorSockets_func()
           continue;
         }
 
-        Licq::TCPSocket* newSocket = new Licq::TCPSocket();
+        DcSocket* newSocket = new DcSocket();
         bool ok = tcp->RecvConnection(*newSocket);
         gSocketManager.DropSocket(tcp);
 

@@ -50,6 +50,7 @@
 #include "owner.h"
 #include "packet-srv.h"
 #include "packet-tcp.h"
+#include "socket.h"
 #include "user.h"
 
 using namespace std;
@@ -141,7 +142,7 @@ bool IcqProtocol::start()
 {
   int nResult = 0;
 
-  Licq::TCPSocket* s = new Licq::TCPSocket();
+  DcSocket* s = new DcSocket();
   m_nTCPSocketDesc = gDaemon.StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {
