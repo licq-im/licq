@@ -116,7 +116,7 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   accountLayout->addWidget(myAutoLogonInvisibleCheck, 3, 2);
 
 
-  QGroupBox* icqBox;
+  QGroupBox* icqBox = NULL;
   if (myProtocolId == LICQ_PPID)
   {
     icqBox = new QGroupBox(tr("ICQ"));
@@ -159,7 +159,7 @@ QWidget* UserPages::Owner::createPageSettings(QWidget* parent)
   QVBoxLayout* mainLayout = new QVBoxLayout(w);
   mainLayout->setContentsMargins(0, 0, 0, 0);
   mainLayout->addWidget(accountBox);
-  if (myProtocolId == LICQ_PPID)
+  if (icqBox != NULL)
     mainLayout->addWidget(icqBox);
   mainLayout->addStretch(1);
   return w;
