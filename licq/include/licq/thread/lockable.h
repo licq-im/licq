@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2009-2010 Licq developers
+ * Copyright (C) 2009-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ public:
   ReadMutexGuard(const T* object, bool locked = false)
     : myObject(object)
   {
-    if (!locked)
+    if (myObject != NULL && !locked)
       myObject->lockRead();
   }
 
@@ -162,7 +162,7 @@ public:
   WriteMutexGuard(T* object, bool locked = false)
     : myObject(object)
   {
-    if (!locked)
+    if (myObject != NULL && !locked)
       myObject->lockWrite();
   }
 
