@@ -3123,6 +3123,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
         Licq::UserListGuard userList;
         BOOST_FOREACH(const Licq::User* user, **userList)
         {
+          if (user->protocolId() != LICQ_PPID)
+            continue;
           Licq::UserReadGuard pUser(user);
           if (pUser->GetGSID() == nGSID)
             nExtraLen += 2;
@@ -3168,6 +3170,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const string& name,
         Licq::UserListGuard userList;
         BOOST_FOREACH(const Licq::User* user, **userList)
         {
+          if (user->protocolId() != LICQ_PPID)
+            continue;
           Licq::UserReadGuard pUser(user);
           if (pUser->GetGSID() == nGSID)
             buffer->PackUnsignedShortBE(pUser->GetSID());
