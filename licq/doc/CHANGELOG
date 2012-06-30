@@ -1,5 +1,9 @@
 Change log for Licq.
 
+New in 1.6.2
+o Forwarder: Write default configuration file to correct directory
+
+
 New in 1.6.1
 o Save user list when adding a Not In List user to list
 o ICQ: Fix packets not being sent for sequence numbers above 0x7fff
