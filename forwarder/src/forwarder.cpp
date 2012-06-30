@@ -153,13 +153,13 @@ int CLicqForwarder::run()
   Licq::IniFile conf(filename);
   if (!conf.loadFile())
   {
-    if(!CreateDefaultConfig())
+    conf.loadRawConfiguration(FORWARDER_CONF);
+    if (!conf.writeFile())
     {
       gLog.error("Could not create default configuration file: %s", filename.c_str());
       return 1;
     }
     gLog.info("A default configuration file has been created: %s", filename.c_str());
-    conf.loadFile();
   }
   conf.setSection("Forward");
   conf.get("Type", m_nForwardType, FORWARD_EMAIL);
@@ -228,20 +228,6 @@ int CLicqForwarder::run()
 void CLicqForwarder::destructor()
 {
   delete this;
-}
-
-/*---------------------------------------------------------------------------
- * CLicqForwarder::CreateDefaultConfig
- *-------------------------------------------------------------------------*/
-bool CLicqForwarder::CreateDefaultConfig()
-{
-  // Create licq_forwarder.conf
-  FILE* f = fopen(configFile().c_str(), "w");
-  if (f == NULL)
-    return false;
-  fprintf(f, "%s", FORWARDER_CONF);
-  fclose(f);
-  return true;
 }
 
 /*---------------------------------------------------------------------------

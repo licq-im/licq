@@ -178,8 +178,8 @@ void IniFile::loadRawConfiguration(const string& rawConfig)
 
   // TODO: Validate the config data so we can reject broken config files
 
-  // We currently have no changes to write
-  myIsModified = false;
+  // The raw configuration is most likely not in sync with the file
+  myIsModified = true;
   myLastTimestamp = 0;
 }
 
