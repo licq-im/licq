@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
 #include <cerrno>
 
 #include "forwarder.h"
-#include "forwarder.conf.h"
 #include <licq/logging/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -48,6 +47,8 @@ using Licq::gLog;
 using Licq::gProtocolManager;
 using Licq::gUserManager;
 using Licq::UserId;
+
+extern const char* const FORWARDER_CONF;
 
 const unsigned short SUBJ_CHARS = 20;
 
