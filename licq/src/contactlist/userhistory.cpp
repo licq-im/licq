@@ -128,7 +128,7 @@ bool UserHistory::load(Licq::HistoryList& lHistory, const string& userEncoding) 
     char cDir = *headMatch[1].first;
     int nSubCommand = atoi(headMatch[2].first);
     int nCommand = atoi(headMatch[3].first);
-    unsigned long nFlags = atol(headMatch[4].first);
+    unsigned long nFlags = atol(headMatch[4].first) << 16;
     time_t tTime = (time_t)atol(headMatch[5].first);
 
     // nCommand == Licq::UserEvent::CommandDirect => FlagDirect (already present in flags)
