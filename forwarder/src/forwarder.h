@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2000-2011 Licq developers
+ * Copyright (C) 2000-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class UserEvent;
 }
 
 #define FORWARD_EMAIL 0
-#define FORWARD_ICQ 1
+#define FORWARD_LICQ 1
 
 class CLicqForwarder : public Licq::GeneralPlugin
 {
@@ -81,7 +81,7 @@ public:
 
   void ProcessUserEvent(const Licq::UserId& userId, unsigned long nId);
   bool ForwardEvent(const Licq::User* u, const Licq::UserEvent* e);
-  bool ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent* e);
+  bool ForwardEvent_Licq(const Licq::User* u, const Licq::UserEvent* e);
   bool ForwardEvent_Email(const Licq::User* u, const Licq::UserEvent* e);
 
 private:

@@ -24,8 +24,8 @@ daemon and can run either on it's own on along with an interface plugin
 This program is distributed under the GPL, see the accompanying COPYING
 file for more information.
 Any events (messages, urls...) received while the plugin is enabled will
-be forwarded either via standard SMTP to a given email account or via ICQ
-to a given UIN.  The resulting message will appear as follows if sent via
+be forwarded either via standard SMTP to a given email account or via Licq
+to a user.  The resulting message will appear as follows if sent via
 email:
 
 -----------------------------------------------------------
@@ -82,8 +82,3 @@ CONFIGURING
 The plugin uses a small configuration file (~/.licq/licq_forwarder.conf) which must
 be set up by hand.  A sample is included with the source, and includes help on
 the various settings.
-
-
-PROBLEMS
-
-If there are any problems, report them to jon@licq.org.

@@ -3,6 +3,7 @@ Change log for Licq.
 New in 1.7.0
 o Always save history as UTF-8 to avoid mixing encodings
 o Fifo: Add commands to show/hide UI contact list window
+o Forwarder: Support for MSN and Jabber protocols
 o ICQ: Fix several memory leaks
 o Plugin API: Allow subclassed user/owner for each protocol
 o Plugin API: Use UTF-8 for all event messages and user data

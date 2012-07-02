@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "forwarder.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -27,7 +29,6 @@
 #include <unistd.h>
 #include <cerrno>
 
-#include "forwarder.h"
 #include <licq/logging/log.h>
 #include <licq/contactlist/owner.h>
 #include <licq/contactlist/user.h>
@@ -75,7 +76,7 @@ CLicqForwarder::~CLicqForwarder()
 
 std::string CLicqForwarder::name() const
 {
-  return "ICQ Forwarder";
+  return "Forwarder";
 }
 
 std::string CLicqForwarder::version() const
@@ -85,7 +86,7 @@ std::string CLicqForwarder::version() const
 
 std::string CLicqForwarder::description() const
 {
-  return "ICQ message forwarder to email/icq";
+  return "Message forwarder";
 }
 
 std::string CLicqForwarder::usage() const
@@ -173,21 +174,54 @@ int CLicqForwarder::run()
       conf.get("From", mySmtpFrom);
       conf.get("Domain", mySmtpDomain);
       break;
-    case FORWARD_ICQ:
+    case FORWARD_LICQ:
     {
-      conf.setSection("ICQ");
+      conf.setSection("Licq");
       string accountId;
-      conf.get("Uin", accountId, "");
+      conf.get("UserId", accountId);
+      string protocol;
+      conf.get("Protocol", protocol);
+
+      if (protocol.empty() && conf.setSection("ICQ", false))
+      {
+        // Migrate old ICQ setting
+        conf.get("Uin", accountId);
+        if (accountId.empty() || accountId == "0")
+        {
+          gLog.error("Invalid ICQ forward UIN: %s", accountId.c_str());
+          return 1;
+        }
+
+        myUserId = UserId(accountId, LICQ_PPID);
+
+        conf.setSection("Licq");
+        conf.set("Protocol", "ICQ");
+        conf.set("UserId", accountId);
+        conf.writeFile();
+        break;
+      }
+
       if (accountId.empty())
       {
-        gLog.error("Invalid ICQ forward UIN: %s", accountId.c_str());
+        gLog.error("Missing user id");
         return 1;
       }
-      myUserId = UserId(accountId, LICQ_PPID);
+
+      if (protocol == "ICQ")
+        myUserId = UserId(accountId, LICQ_PPID);
+      else if (protocol == "MSN")
+        myUserId = UserId(accountId, MSN_PPID);
+      else if (protocol == "Jabber" || protocol == "XMPP")
+        myUserId = UserId(accountId, JABBER_PPID);
+      else
+      {
+        gLog.error("Invalid protocol: %s", protocol.c_str());
+        return 1;
+      }
       break;
     }
     default:
-      gLog.error("Invalid forward type: %d",  m_nForwardType);
+      gLog.error("Invalid forward type: %d", m_nForwardType);
       return 1;
       break;
   }
@@ -372,15 +406,15 @@ bool CLicqForwarder::ForwardEvent(const Licq::User* u, const Licq::UserEvent* e)
     case FORWARD_EMAIL:
       s = ForwardEvent_Email(u, e);
       break;
-    case FORWARD_ICQ:
-      s = ForwardEvent_ICQ(u, e);
+    case FORWARD_LICQ:
+      s = ForwardEvent_Licq(u, e);
       break;
   }
   return s;
 }
 
 
-bool CLicqForwarder::ForwardEvent_ICQ(const Licq::User* u, const Licq::UserEvent* e)
+bool CLicqForwarder::ForwardEvent_Licq(const Licq::User* u, const Licq::UserEvent* e)
 {
   char szTime[64];
   time_t t = e->Time();
@@ -410,8 +444,15 @@ bool CLicqForwarder::ForwardEvent_Email(const Licq::User* u, const Licq::UserEve
   if (!u->isUser())
   {
     headTo = "To: " + u->getAlias() + " <" + mySmtpTo + ">";
-    headFrom = "From: ICQ System Message <support@icq.com>";
-    headReplyTo = "Reply-To: Mirabilis <support@icq.com>";
+    if (u->protocolId() == LICQ_PPID)
+    {
+      headFrom = "From: ICQ System Message <support@icq.com>";
+      headReplyTo = "Reply-To: Mirabilis <support@icq.com>";
+    }
+    else
+    {
+      headFrom = "From: System Message <" + u->getEmail() + ">";
+    }
   }
   else
   {
