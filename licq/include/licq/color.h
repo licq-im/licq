@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,14 @@ namespace Licq
 class Color
 {
 public:
+  /// Default constructor
   Color();
+
+  /// Copy constructor
+  Color(const Color& c);
+
+  /// Copy constructor, acts as default if c is NULL
+  Color(const Color* c);
 
   static unsigned redPart(unsigned color) { return color & 0xff; }
   static unsigned greenPart(unsigned color) { return (color >> 8) & 0xff; }

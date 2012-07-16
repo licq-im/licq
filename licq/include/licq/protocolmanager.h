@@ -100,14 +100,6 @@ public:
       const std::string& message, unsigned flags = 0, const Color* color = NULL) = 0;
 
   /**
-   * Request user auto response from server
-   *
-   * @param userId User to fetch auto response for
-   * @return Event id
-   */
-  virtual unsigned long requestUserAutoResponse(const UserId& userId) = 0;
-
-  /**
    * Initiate a file transfer to a user
    *
    * @param userId User to send file to

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 1998-2010 Licq developers
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "config.h"
+#include <cstdlib>
 
 #include <licq/color.h>
 
@@ -29,6 +29,20 @@ unsigned Color::myDefaultBackground = 0xffffff;
 Color::Color()
   : myForeground(0x000000),
     myBackground(0xffffff)
+{
+  // Empty
+}
+
+Color::Color(const Color& c)
+  : myForeground(c.myForeground),
+    myBackground(c.myBackground)
+{
+  // Empty
+}
+
+Color::Color(const Color* c)
+  : myForeground(c != NULL ? c->myForeground : 0x000000),
+    myBackground(c != NULL ? c->myBackground : 0xffffff)
 {
   // Empty
 }

@@ -92,7 +92,7 @@ void ProtocolManager::addUser(const UserId& userId)
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqAddUser(userId, false);
   else
-  gPluginManager.pushProtocolSignal(new Licq::ProtoAddUserSignal(userId, false));
+  gPluginManager.pushProtocolSignal(new Licq::ProtoAddUserSignal(userId));
 }
 
 void ProtocolManager::updateUserAlias(const UserId& userId)
@@ -176,7 +176,7 @@ unsigned long ProtocolManager::sendMessage(const UserId& userId, const string& m
     gIcqProtocol.icqSendMessage(eventId, userId, message, flags, color);
   else
   gPluginManager.pushProtocolSignal(new Licq::ProtoSendMessageSignal(
-        eventId, userId, message, flags, convoId));
+      eventId, userId, message, flags, color, convoId));
 
   return eventId;
 }
@@ -192,22 +192,8 @@ unsigned long ProtocolManager::sendUrl(const UserId& userId, const string& url,
   if (userId.protocolId() == LICQ_PPID)
     gIcqProtocol.icqSendUrl(eventId, userId, url, message, flags, color);
   else
-    eventId = 0;
-
-  return eventId;
-}
-
-unsigned long ProtocolManager::requestUserAutoResponse(const UserId& userId)
-{
-  if (!isProtocolConnected(userId))
-    return 0;
-
-  unsigned long eventId = getNextEventId();
-
-  if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqFetchAutoResponseServer(eventId, userId);
-  else
-    eventId = 0;
+  gPluginManager.pushProtocolSignal(new Licq::ProtoSendUrlSignal(
+      eventId, userId, url, message, flags, color));
 
   return eventId;
 }
@@ -225,7 +211,7 @@ unsigned long ProtocolManager::fileTransferPropose(const UserId& userId,
     gIcqProtocol.icqFileTransfer(eventId, userId, filename, message, files, flags);
   else
   gPluginManager.pushProtocolSignal(new Licq::ProtoSendFileSignal(
-      eventId, userId, filename, message, files));
+      eventId, userId, filename, message, files, flags));
 
   return eventId;
 }
@@ -243,7 +229,7 @@ void ProtocolManager::fileTransferAccept(const UserId& userId, unsigned short po
         flag1, flag2, viaServer, message, filename, filesize);
   else
   gPluginManager.pushProtocolSignal(new Licq::ProtoSendEventReplySignal(
-      userId, string(), true, port, eventId, flag1, flag2, !viaServer));
+      userId, message, true, port, eventId, flag1, flag2, !viaServer, filename, filesize));
 }
 
 void ProtocolManager::fileTransferRefuse(const UserId& userId, const string& message,
@@ -256,7 +242,7 @@ void ProtocolManager::fileTransferRefuse(const UserId& userId, const string& mes
     gIcqProtocol.icqFileTransferRefuse(userId, message, (unsigned short)eventId, flag1, flag2, viaServer);
   else
   gPluginManager.pushProtocolSignal(new Licq::ProtoSendEventReplySignal(
-      userId, message, false, eventId, flag1, flag2, !viaServer));
+      userId, message, false, 0, eventId, flag1, flag2, !viaServer));
 }
 
 unsigned long ProtocolManager::authorizeReply(const UserId& userId, bool grant, const string& message)
