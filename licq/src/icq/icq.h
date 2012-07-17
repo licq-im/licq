@@ -306,6 +306,7 @@ public:
   void ProcessMessageFam(Buffer& packet, unsigned short);
   void ProcessVariousFam(Buffer& packet, unsigned short);
   void ProcessBOSFam(Buffer& packet, unsigned short);
+  void processStatsFam(Buffer& packet, int subType);
   void ProcessListFam(Buffer& packet, unsigned short);
   void ProcessAuthFam(Buffer& packet, unsigned short);
 

@@ -53,6 +53,7 @@ const unsigned short ICQ_SNACxFAM_LOCATION         = 0x0002;
 const unsigned short ICQ_SNACxFAM_BUDDY            = 0x0003;
 const unsigned short ICQ_SNACxFAM_MESSAGE          = 0x0004;
 const unsigned short ICQ_SNACxFAM_BOS              = 0x0009;
+const uint16_t ICQ_SNACxFAM_STATS               = 0x000B;
 const unsigned short ICQ_SNACxFAM_BART             = 0x0010;
 const unsigned short ICQ_SNACxFAM_LIST             = 0x0013;
 const unsigned short ICQ_SNACxFAM_VARIOUS          = 0x0015;
@@ -73,9 +74,12 @@ const unsigned short ICQ_SNACxSUB_RESUME           = 0x000d; // server
 const unsigned short ICQ_SNACxSRV_GETxUSERxINFO    = 0x000e; // client
 const unsigned short ICQ_SNACxRCV_NAMExINFO        = 0x000f; // server
 const unsigned short ICQ_SNACxSND_NAMExINFOxACK    = 0x0011; // client
+const uint16_t ICQ_SNACxSRV_MOTD                = 0x0013; // server
+const uint16_t ICQ_SNACxSRV_URLS                = 0x0015; // server
 const unsigned short ICQ_SNACxSRV_IMxICQ           = 0x0017; // client
 const unsigned short ICQ_SNACxSRV_ACKxIMxICQ       = 0x0018; // server
 const unsigned short ICQ_SNACxSRV_SETxSTATUS       = 0x001e; // client
+const uint16_t ICQ_SNACxSRV_EXTSTATUS           = 0x0021; // server
 
 // Subtypes for location family
 const unsigned short ICQ_SNACxLOC_REQUESTxRIGHTS   = 0x0002; // client
@@ -127,6 +131,13 @@ const unsigned short ICQ_SNACxAUTHxREQUEST_SALT    = 0x0006; // client
 const unsigned short ICQ_SNACxAUTHxSALT_REPLY      = 0x0007; // server
 const unsigned short ICQ_SNACxREQUEST_IMAGE        = 0x000C; // client
 const unsigned short ICQ_SNACxSEND_IMAGE           = 0x000D; // server
+
+// Subtypes for Stats family
+const uint16_t ICQ_SNACxSTATS_ERROR             = 0x0001; // server
+const uint16_t ICQ_SNACxSTATS_REPORT_INTERVAL   = 0x0002; // server
+const uint16_t ICQ_SNACxSTATS_REPORT            = 0x0003; // client
+const uint16_t ICQ_SNACxSTATS_REPORT_ACK        = 0x0004; // server
+
 
 // Subtypes for BART family
 const unsigned short ICQ_SNACxBART_ERROR           = 0x0001; // server
@@ -503,6 +514,9 @@ const unsigned short CHARSET_CUSTOM  = 0x0003;
 const unsigned short BART_TYPExBUDDY_ICON_SMALL = 0x0000;
 const unsigned short BART_TYPExBUDDY_ICON       = 0x0001;
 const unsigned short BART_TYPExSTATUS_STR       = 0x0002;
+const uint16_t BART_TYPExBUDDY_ICON_FLASH       = 0x0008;
+const uint16_t BART_TYPExBUDDY_ICON_PHOTO       = 0x000C;
+const uint16_t BART_TYPExSTATUS_MOOD            = 0x000E;
 
 const int GUID_LENGTH = 18;
 const int CAP_LENGTH = 16;

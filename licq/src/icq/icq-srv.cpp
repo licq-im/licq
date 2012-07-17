@@ -2070,6 +2070,82 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
     icqRelogon();
     break;
   }
+    case ICQ_SNACxSRV_MOTD:
+    {
+      // MOTD from server, and some unknown flags
+#if 0
+      int type = packet.unpackUInt16BE();
+      if (!packet.readTLV())
+      {
+        gLog.warning(tr("Error parsing MOTD packet!"));
+        break;
+      }
+      if (packet.getTLVLen(0x0002) == 2)
+        ; // Unknown
+      if (packet.getTLVLen(0x0003) == 2)
+        ; // Unknown
+      if (packet.hasTLV(0x000B))
+        string motd = packet.unpackTlvString(0x000B);
+#endif
+      break;
+    }
+
+    case ICQ_SNACxSRV_URLS:
+    {
+      // Server sends a bunch of ICQ URLs at logon, just ignore them
+#if 0
+      if (!packet.readTLV())
+      {
+        gLog.warning(tr("Error parsing URL packet!"));
+        break;
+      }
+      // Each TLV contains an URL as a string for various ICQ web services
+#endif
+      break;
+    }
+    case ICQ_SNACxSRV_EXTSTATUS:
+    {
+      while (packet.remainingDataToRead() >= 4)
+      {
+        int type = packet.unpackUInt16BE();
+        int flags = packet.unpackUInt8();
+        int length = packet.unpackUInt8();
+
+        switch (type)
+        {
+          case BART_TYPExBUDDY_ICON_PHOTO:
+          {
+            // TODO: Handle photo item
+            packet.incDataPosRead(length);
+            break;
+          }
+          case BART_TYPExBUDDY_ICON:
+          case BART_TYPExBUDDY_ICON_FLASH:
+          {
+            // TODO: Handle avatar item (length should be 0x10 and data is hash)
+            packet.incDataPosRead(length);
+            break;
+          }
+          case BART_TYPExSTATUS_STR:
+          {
+            string statusMsg = packet.unpackRawString(length);
+            //TODO: Handle status string
+            break;
+          }
+          case BART_TYPExSTATUS_MOOD:
+          {
+            // TODO: Handle status mood item
+            packet.incDataPosRead(length);
+            break;
+          }
+          default:
+            gLog.warning(tr("Unknown Extended Status Data type %04x flags %02x length %02x"),
+                type, flags, length);
+            packet.incDataPosRead(length);
+        }
+      }
+      break;
+    }
 
   default:
     gLog.warning(tr("Unknown Service Family Subtype: %04hx"), nSubtype);
@@ -3192,6 +3268,34 @@ However it seems to always think contact is online instead of away/occupied/etc.
   }
     default:
       gLog.warning(tr("Unknown Message Family Subtype: %04hx"), nSubtype);
+      break;
+  }
+}
+
+void IcqProtocol::processStatsFam(Buffer& packet, int subType)
+{
+  switch (subType)
+  {
+    case ICQ_SNACxSTATS_ERROR:
+    {
+      int errorCode = packet.unpackUInt16BE();
+      gLog.warning(tr("Got server error for stats: 0x%02x"), errorCode);
+      break;
+    }
+    case ICQ_SNACxSTATS_REPORT_INTERVAL:
+    {
+#if 0
+      int interval = packet.unpackUInt16BE();
+      gLog.info(tr("Server wants stats reports every %i hours"), interval);
+#endif
+      break;
+    }
+    case ICQ_SNACxSTATS_REPORT_ACK:
+      // Server ack for stats data sent by us, no data
+      break;
+
+    default:
+      gLog.warning(tr("Unknown Message Stats Subtype: 0x%04x"), subType);
       break;
   }
 }
@@ -4918,6 +5022,10 @@ void IcqProtocol::ProcessDataChannel(Buffer& packet)
   case ICQ_SNACxFAM_MESSAGE:
     ProcessMessageFam(packet, nSubtype);
     break;
+
+    case ICQ_SNACxFAM_STATS:
+      processStatsFam(packet, nSubtype);
+      break;
 
   case ICQ_SNACxFAM_LIST:
     ProcessListFam(packet, nSubtype);
