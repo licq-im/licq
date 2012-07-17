@@ -3429,7 +3429,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
                 {
                   nGroup = Licq::gUserManager.GetGroupFromName(id);
                   if (nGroup != 0)
-                    Licq::gUserManager.ModifyGroupID(nGroup, nTag);
+                    Licq::gUserManager.setGroupServerId(nGroup, LICQ_PPID, nTag);
                 }
               }
               else

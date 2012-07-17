@@ -1793,6 +1793,11 @@ int IcqProtocol::getGroupFromId(unsigned short gsid)
   return Licq::gUserManager.getGroupFromServerId(LICQ_PPID, gsid);
 }
 
+unsigned long IcqProtocol::icqOwnerUin()
+{
+  return strtoul(Licq::gUserManager.ownerUserId(LICQ_PPID).accountId().c_str(), (char**)NULL, 10);
+}
+
 unsigned short IcqProtocol::generateSid()
 {
   unsigned short ownerPDINFO;

@@ -162,7 +162,6 @@ public:
   bool userExists(const Licq::UserId& userId);
   Licq::UserId ownerUserId(unsigned long ppid);
   bool isOwner(const Licq::UserId& userId);
-  unsigned long icqOwnerUin();
   void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);
   bool addUser(const Licq::UserId& userId, bool permanent = true,
       bool addToServer = true, unsigned short groupId = 0);
@@ -172,7 +171,7 @@ public:
   void RemoveGroup(int groupId);
   bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
   void ModifyGroupSorting(int groupId, int newIndex);
-  void ModifyGroupID(int groupId, unsigned short icqGroupId);
+  void setGroupServerId(int groupId, unsigned long protocolId, unsigned long serverId);
   int getGroupFromServerId(unsigned long protocolId, unsigned long serverId);
   int GetGroupFromName(const std::string& name);
   std::string GetGroupNameFromGroup(int groupId);

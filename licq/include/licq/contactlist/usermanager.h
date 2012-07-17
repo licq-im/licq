@@ -67,14 +67,6 @@ public:
   virtual bool isOwner(const UserId& userId) = 0;
 
   /**
-   * Convenience function to get icq owner as an unsigned long
-   * Only meant to be used internally for icq protocol functions
-   *
-   * @return Icq owner
-   */
-  virtual unsigned long icqOwnerUin() = 0;
-
-  /**
    * Notify plugins about changes for a user
    *
    * @param userId User that has changed
@@ -157,9 +149,10 @@ public:
    * Change ICQ server group id for a user group
    *
    * @param groupId Id of group to change
-   * @param icqGroupId ICQ server group id to set
+   * @param protocolId Protocol to change server id for
+   * @param serverId New server id for group
    */
-  virtual void ModifyGroupID(int groupId, unsigned short icqGroupId) = 0;
+  virtual void setGroupServerId(int groupId, unsigned long protocolId, unsigned long serverId) = 0;
 
   /**
    * Get local group id from server group id

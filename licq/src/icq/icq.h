@@ -354,6 +354,8 @@ public:
 
   static unsigned short generateSid();
 
+  static unsigned long icqOwnerUin();
+
   static std::string parseDigits(const std::string& number);
   static std::string parseRtf(const std::string& rtf);
   static std::string pipeInput(const std::string& message);

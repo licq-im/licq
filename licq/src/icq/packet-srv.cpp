@@ -34,13 +34,13 @@
 
 #include <licq/byteorder.h>
 #include <licq/contactlist/group.h>
+#include <licq/contactlist/usermanager.h>
 #include <licq/md5.h>
 #include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../contactlist/usermanager.h"
 #include "../gettext.h"
 #include "buffer.h"
 #include "defines.h"
@@ -57,7 +57,7 @@ using Licq::UserGroupList;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gTranslator;
-using LicqDaemon::gUserManager;
+using Licq::gUserManager;
 
 // TODO: Remove when no longer needed
 typedef Licq::User ICQUser;
@@ -397,7 +397,7 @@ void CPacketUdp::InitBuffer()
   buffer->PackUnsignedShort(m_nVersion);
   buffer->PackUnsignedShort(m_nCommand);
   buffer->PackUnsignedShort(m_nSequence);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
 #elif ICQ_VERSION == 4
   buffer->add(m_nVersion);
   buffer->add(m_nRandom);
@@ -405,12 +405,12 @@ void CPacketUdp::InitBuffer()
   buffer->add(m_nCommand);
   buffer->add(m_nSequence);
   buffer->add(m_nSubSequence);
-  buffer->add(gUserManager.icqOwnerUin());
+  buffer->add(gIcqProtocol.icqOwnerUin());
   buffer->add(m_nCheckSum);
 #elif ICQ_VERSION == 5
   buffer->PackUnsignedShort(m_nVersion);
   buffer->PackUnsignedLong(m_nZero);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedLong(m_nSessionId);
   buffer->PackUnsignedShort(m_nCommand);
   buffer->PackUnsignedShort(m_nSequence);
@@ -1321,7 +1321,7 @@ CPU_ThroughServer::CPU_ThroughServer(const string& accountId,
 	case 4:
  		nTLVType = 0x05;
 
-      tlvData.PackUnsignedLong(gUserManager.icqOwnerUin());
+      tlvData.PackUnsignedLong(gIcqProtocol.icqOwnerUin());
 		tlvData.PackChar(msgType);
 		tlvData.PackChar(0); // message flags
       tlvData.packShortNullStringLE(message);
@@ -1417,7 +1417,7 @@ CPU_ReverseConnect::CPU_ReverseConnect(const ICQUser* u, unsigned long nLocalIP,
 
   CPU_Type2Message::InitBuffer();
 
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedLong(nLocalIP);
   buffer->PackUnsignedLong(nLocalPort);
   buffer->PackChar(MODE_DIRECT); /* why would you set it to anything else?
@@ -1448,7 +1448,7 @@ CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(const string& accountId,
   buffer->PackChar(accountId.size());
   buffer->pack(accountId);
   buffer->PackUnsignedShortBE(0x0003);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedLong(nFailedPort);
   buffer->PackUnsignedLong(nOurPort);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
@@ -2291,7 +2291,7 @@ CPU_SendSms::CPU_SendSms(const string& number, const string& message)
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 		// subtype
@@ -2530,7 +2530,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& g
   {
     nGSID = IcqProtocol::generateSid();
 
-    gUserManager.ModifyGroupID(g->first, nGSID);
+    Licq::gUserManager.setGroupServerId(g->first, LICQ_PPID, nGSID);
 
     string unicodeName = gTranslator.toUnicode(g->second);
 
@@ -2672,7 +2672,7 @@ CPU_AddToServerList::CPU_AddToServerList(const string& name,
       {
         int groupId = Licq::gUserManager.GetGroupFromName(name);
         if (groupId != 0)
-          Licq::gUserManager.ModifyGroupID(groupId, m_nGSID);
+          Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, m_nGSID);
       }
       break;
     }
@@ -3050,7 +3050,7 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const string& firstName, const string
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(16 + nDataLen - 4);
   buffer->PackUnsignedShort(16 + nDataLen - 6);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xd007);
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand);
@@ -3127,7 +3127,7 @@ CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(nPacketSize - 4);
   buffer->PackUnsignedShort(nPacketSize - 6); // bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // sub type
@@ -3269,7 +3269,7 @@ CPU_SetPassword::CPU_SetPassword(const string& password)
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(nDataLen - 4);
   buffer->PackUnsignedShort(nDataLen - 6);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xd007);
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(ICQ_CMDxMETA_PASSWORDxSET);
@@ -3291,7 +3291,7 @@ CPU_RequestSysMsg::CPU_RequestSysMsg()
 
   buffer->PackUnsignedLongBE(0x0001000a); // TLV
   buffer->PackUnsignedShort(8);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShort(ICQ_CMDxSND_SYSxMSGxREQ);
   buffer->PackUnsignedShortBE(0x0200);
 }
@@ -3307,7 +3307,7 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short nId)
 
   buffer->PackUnsignedLongBE(0x0001000a); // TLV
   buffer->PackUnsignedShort(0x0008); // len again
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShort(ICQ_CMDxSND_SYSxMSGxDONExACK);
   buffer->PackUnsignedShortBE(nId);
 }
@@ -3329,7 +3329,7 @@ CPU_SetRandomChatGroup::CPU_SetRandomChatGroup(unsigned long nGroup)
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(nPacketSize - 4);
   buffer->PackUnsignedShort(nPacketSize - 6); // bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // sub type
@@ -3364,7 +3364,7 @@ CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(nPacketSize - 4);
   buffer->PackUnsignedShort(nPacketSize - 6); //bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // sub type
@@ -3398,7 +3398,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const string& alias,
   buffer->PackUnsignedShortBE(1);
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
@@ -3482,7 +3482,7 @@ CPU_Meta_SetEmailInfo::CPU_Meta_SetEmailInfo(const string& emailSecondary, const
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
@@ -3520,7 +3520,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge, char nGender,
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
@@ -3577,7 +3577,7 @@ CPU_Meta_SetInterestsInfo::CPU_Meta_SetInterestsInfo(const UserCategoryMap& inte
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
@@ -3617,7 +3617,7 @@ CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(const UserCategoryMap& orgs,
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
@@ -3661,7 +3661,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(const string& city, const string& sta
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
@@ -3733,7 +3733,7 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const string& about)
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
@@ -3762,7 +3762,7 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
   buffer->PackUnsignedShortBE(packetSize-2-2); // TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); // bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
@@ -3795,7 +3795,7 @@ CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const string& accountId)
   buffer->PackUnsignedShortBE(packetSize-2-2); // TLV 1
 
   buffer->PackUnsignedShort(packetSize-2-2-2); // bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
@@ -3816,7 +3816,7 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const string& accountId)
   buffer->PackUnsignedLongBE(0x0001000e); // TLV
 
   buffer->PackUnsignedShort(0x000c); // Bytes remaining
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nSubSequence);
   buffer->PackUnsignedLong(strtoul(myAccountId.c_str(), (char **)NULL, 10));

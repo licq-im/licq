@@ -744,11 +744,6 @@ Owner* UserManager::createOwner(const UserId& ownerId)
   return o;
 }
 
-unsigned long UserManager::icqOwnerUin()
-{
-  return strtoul(ownerUserId(LICQ_PPID).accountId().c_str(), (char**)NULL, 10);
-}
-
 void UserManager::notifyUserUpdated(const UserId& userId, unsigned long subSignal)
 {
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser, subSignal, userId));
@@ -1046,13 +1041,14 @@ std::string UserManager::GetGroupNameFromGroup(int groupId)
   return name;
 }
 
-void UserManager::ModifyGroupID(int groupId, unsigned short icqGroupId)
+void UserManager::setGroupServerId(int groupId, unsigned long protocolId,
+    unsigned long serverId)
 {
   Group* group = fetchGroup(groupId, true);
   if (group == NULL)
     return;
 
-  group->setServerId(LICQ_PPID, icqGroupId);
+  group->setServerId(protocolId, serverId);
   group->unlockWrite();
 
   myGroupListMutex.lockRead();

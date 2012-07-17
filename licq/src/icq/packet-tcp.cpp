@@ -37,7 +37,6 @@
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../contactlist/usermanager.h"
 #include "../gettext.h"
 #include "buffer.h"
 #include "defines.h"
@@ -50,7 +49,6 @@ using namespace LicqIcq;
 using Licq::UserId;
 using Licq::gLog;
 using Licq::gTranslator;
-using LicqDaemon::gUserManager;
 
 
 //=====TCP===================================================================
@@ -244,7 +242,7 @@ CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nLocalPort);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
@@ -263,7 +261,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(0x00000000);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp); // maybe should be 0
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
@@ -287,7 +285,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedLong(nLocalPort);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
@@ -348,7 +346,7 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   buffer->PackUnsignedLong(m_nDestinationUin);
   buffer->PackUnsignedShort(0);
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
-  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
+  buffer->PackUnsignedLong(gIcqProtocol.icqOwnerUin());
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackChar(gIcqProtocol.directMode() ? MODE_DIRECT : MODE_INDIRECT);
@@ -578,7 +576,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand, int
   }
   o.unlock();
 
-  m_nSourceUin = gUserManager.icqOwnerUin();
+  m_nSourceUin = gIcqProtocol.icqOwnerUin();
   m_nCommand = _nCommand;
   m_nSubCommand = _nSubCommand;
   myMessage = message;
