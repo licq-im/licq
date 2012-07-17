@@ -31,13 +31,13 @@
 #include <licq/buffer.h>
 #include <licq/contactlist/usermanager.h>
 #include <licq/byteorder.h>
+#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/proxy.h>
 #include <licq/logging/log.h>
 
-#include "../daemon.h"
 #include "../gettext.h"
 #include "icq.h"
 #include "packet-srv.h"
@@ -47,7 +47,7 @@
 using namespace std;
 using namespace LicqIcq;
 using Licq::gLog;
-using LicqDaemon::gDaemon;
+using Licq::gDaemon;
 
 COscarService::COscarService(unsigned short Fam)
 {

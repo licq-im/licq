@@ -26,6 +26,7 @@
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
 #include <licq/protocolsignal.h>
+#include <licq/thread/mutexlocker.h>
 #include <licq/userid.h>
 
 #include "contactlist/user.h"
@@ -58,6 +59,7 @@ const char* const Licq::ProtocolManager::KeepAutoResponse = "__unset__";
 
 
 ProtocolManager::ProtocolManager()
+  : myNextEventId(1)
 {
   // Empty
 }
@@ -67,10 +69,13 @@ ProtocolManager::~ProtocolManager()
   // Empty
 }
 
-inline unsigned long ProtocolManager::getNextEventId()
+unsigned long ProtocolManager::getNextEventId()
 {
-  // Event id generation is still owned by daemon as it's used directly by some ICQ functions
-  return gDaemon.getNextEventId();
+  Licq::MutexLocker eventIdGuard(myNextEventIdMutex);
+  unsigned long eventId = myNextEventId;
+  if (++myNextEventId == 0)
+    ++myNextEventId;
+  return eventId;
 }
 
 bool ProtocolManager::isProtocolConnected(const UserId& userId)

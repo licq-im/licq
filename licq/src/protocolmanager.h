@@ -22,6 +22,8 @@
 
 #include <licq/protocolmanager.h>
 
+#include <licq/thread/mutex.h>
+
 namespace Licq
 {
 class ProtocolSignal;
@@ -55,6 +57,7 @@ public:
   void removeUser(const Licq::UserId& userId);
 
   // From Licq::ProtocolManager
+  unsigned long getNextEventId();
   void updateUserAlias(const Licq::UserId& userId);
   unsigned long setStatus(const Licq::UserId& ownerId,
       unsigned newStatus, const std::string& message = KeepAutoResponse);
@@ -88,16 +91,14 @@ public:
 
 private:
   /**
-   * Get next available id to use for an event
-   */
-  unsigned long getNextEventId();
-
-  /**
    * @return true if the protocol is connected
    */
   bool isProtocolConnected(const Licq::UserId& userId);
 
   void pushProtoSignal(Licq::ProtocolSignal* s, const Licq::UserId& userId);
+
+  unsigned long myNextEventId;
+  Licq::Mutex myNextEventIdMutex;
 };
 
 extern ProtocolManager gProtocolManager;

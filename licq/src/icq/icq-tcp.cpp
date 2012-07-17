@@ -35,6 +35,7 @@
 
 #include <licq/byteorder.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/gpghelper.h>
 #include <licq/icq/chat.h>
@@ -42,6 +43,7 @@
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolmanager.h>
 #include <licq/protocolsignal.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
@@ -49,7 +51,6 @@
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../daemon.h"
 #include "../gettext.h"
 #include "oscarservice.h"
 #include "owner.h"
@@ -60,14 +61,14 @@
 
 using namespace std;
 using namespace LicqIcq;
+using Licq::Daemon;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::StringList;
+using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
-using LicqDaemon::Daemon;
-using LicqDaemon::gDaemon;
 
 
 void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& userId, const string& message,
@@ -168,7 +169,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
 
 unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool bServer)
 {
-  unsigned long eventId = gDaemon.getNextEventId();
+  unsigned long eventId = Licq::gProtocolManager.getNextEventId();
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 
@@ -358,7 +359,7 @@ void IcqProtocol::icqFileTransfer(unsigned long eventId, const Licq::UserId& use
 unsigned long IcqProtocol::icqSendContactList(const Licq::UserId& userId,
    const StringList& users, unsigned flags, const Licq::Color* pColor)
 {
-  unsigned long eventId = gDaemon.getNextEventId();
+  unsigned long eventId = Licq::gProtocolManager.getNextEventId();
   if (Licq::gUserManager.isOwner(userId))
     return 0;
 

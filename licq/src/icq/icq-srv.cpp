@@ -38,12 +38,14 @@
 #include <licq/byteorder.h>
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/icq/chat.h>
 #include <licq/icq/filetransfer.h>
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolmanager.h>
 #include <licq/proxy.h>
 #include <licq/statistics.h>
 #include <licq/translator.h>
@@ -51,7 +53,6 @@
 #include <licq/logging/log.h>
 #include <licq/version.h>
 
-#include "../daemon.h"
 #include "../gettext.h"
 #include "oscarservice.h"
 #include "owner.h"
@@ -61,15 +62,15 @@
 
 using namespace std;
 using namespace LicqIcq;
+using Licq::Daemon;
 using Licq::Log;
 using Licq::OnEventData;
 using Licq::StringList;
+using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gPluginManager;
 using Licq::gOnEventManager;
 using Licq::gTranslator;
-using LicqDaemon::Daemon;
-using LicqDaemon::gDaemon;
 
 //-----icqAddUser----------------------------------------------------------
 void IcqProtocol::icqAddUser(const Licq::UserId& userId, bool _bAuthRequired)
@@ -1532,7 +1533,7 @@ void IcqProtocol::icqLogoff()
   if (nSD != -1)
   {
     CPU_Logoff p;
-    unsigned long eventId = gDaemon.getNextEventId();
+    unsigned long eventId = Licq::gProtocolManager.getNextEventId();
     cancelledEvent = new Licq::Event(eventId, nSD, &p, Licq::Event::ConnectServer);
     cancelledEvent->m_pPacket = NULL;
     cancelledEvent->m_bCancelled = true;

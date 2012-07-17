@@ -42,7 +42,6 @@
 #include <licq/proxy.h>
 #include <licq/socket.h>
 #include <licq/statistics.h>
-#include <licq/thread/mutexlocker.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
@@ -164,9 +163,6 @@ void Daemon::initialize()
 
   // start GPG helper
   LicqDaemon::gGpgHelper.Start();
-
-  // Init event id counter
-  myNextEventId = 1;
 }
 
 const char* Daemon::Version() const
@@ -321,15 +317,6 @@ Licq::Proxy* Licq::Daemon::createProxy()
   }
 
   return Proxy;
-}
-
-unsigned long Daemon::getNextEventId()
-{
-  Licq::MutexLocker eventIdGuard(myNextEventIdMutex);
-  unsigned long eventId = myNextEventId;
-  if (++myNextEventId == 0)
-    ++myNextEventId;
-  return eventId;
 }
 
 bool Daemon::addUserEvent(Licq::User* u, Licq::UserEvent* e)

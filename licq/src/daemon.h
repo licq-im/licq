@@ -47,12 +47,6 @@ public:
   void initialize();
 
   /**
-   * Get next available id to use for an event
-   * TODO: Move to ProtocolManager when no longer used directy by ICQ code
-   */
-  unsigned long getNextEventId();
-
-  /**
    * Set dir variable
    * Only called once during startup
    */
@@ -90,8 +84,6 @@ public:
   void rejectEvent(const Licq::UserId& userId, Licq::UserEvent* e);
 
 private:
-  unsigned long myNextEventId;
-  Licq::Mutex myNextEventIdMutex;
   std::string myRejectFile;
   unsigned myErrorTypes;
   std::string myErrorFile;

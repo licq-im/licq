@@ -31,6 +31,7 @@
 
 #include <licq/contactlist/group.h>
 #include <licq/contactlist/usermanager.h>
+#include <licq/daemon.h>
 #include <licq/event.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
@@ -38,12 +39,12 @@
 #include <licq/oneventmanager.h>
 #include <licq/plugin/pluginmanager.h>
 #include <licq/pluginsignal.h>
+#include <licq/protocolmanager.h>
 #include <licq/proxy.h>
 #include <licq/translator.h>
 #include <licq/userevents.h>
 #include <licq/utility.h>
 
-#include "../daemon.h"
 #include "../gettext.h"
 #include "defines.h"
 #include "oscarservice.h"
@@ -55,14 +56,14 @@
 
 using namespace std;
 using namespace LicqIcq;
+using Licq::Daemon;
 using Licq::Log;
 using Licq::OnEventData;
+using Licq::gDaemon;
 using Licq::gLog;
 using Licq::gOnEventManager;
 using Licq::gPluginManager;
 using Licq::gTranslator;
-using LicqDaemon::Daemon;
-using LicqDaemon::gDaemon;
 
 
 // list of plugins we currently support
@@ -319,7 +320,7 @@ void IcqProtocol::SendEvent_Server(CPacket *packet, unsigned long eventId)
 {
 #if 1
   if (eventId == 0)
-    eventId = gDaemon.getNextEventId();
+    eventId = Licq::gProtocolManager.getNextEventId();
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer);
   e->myCommand = eventCommandFromPacket(packet);
 
@@ -352,7 +353,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
   }
 
   if (eventId == 0)
-    eventId = gDaemon.getNextEventId();
+    eventId = Licq::gProtocolManager.getNextEventId();
 
   Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer, userId, ue);
   e->myCommand = eventCommandFromPacket(packet);
@@ -1665,17 +1666,17 @@ done:
 
 Licq::Event* IcqProtocol::SendExpectEvent_Server(const Licq::UserId& userId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent)
 {
-  return SendExpectEvent_Server(gDaemon.getNextEventId(), userId, packet, ue, extendedEvent);
+  return SendExpectEvent_Server(Licq::gProtocolManager.getNextEventId(), userId, packet, ue, extendedEvent);
 }
 
 Licq::Event* IcqProtocol::SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent)
 {
-  return SendExpectEvent_Server(gDaemon.getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
+  return SendExpectEvent_Server(Licq::gProtocolManager.getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
 }
 
 Licq::Event* IcqProtocol::SendExpectEvent_Client(const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue)
 {
-  return SendExpectEvent_Client(gDaemon.getNextEventId(), user, packet, ue);
+  return SendExpectEvent_Client(Licq::gProtocolManager.getNextEventId(), user, packet, ue);
 }
 
 string CICQDaemon::getXmlTag(const string& xmlSource, const string& tagName)

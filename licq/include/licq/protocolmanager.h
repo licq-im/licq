@@ -40,6 +40,12 @@ public:
   static const char* const KeepAutoResponse;
 
   /**
+   * Get next available id to use for an event
+   * For use by protocols only
+   */
+  virtual unsigned long getNextEventId() = 0;
+
+  /**
    * Update user alias on server contact list
    * Alias is taken from local contact list
    *
