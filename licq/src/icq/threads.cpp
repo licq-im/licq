@@ -977,7 +977,8 @@ void* LicqIcq::UpdateUsers_tep(void* /* p */)
             pUser->buddyIconHash() != pUser->ourBuddyIconHash())
         {
           unsigned long eventId = Licq::gProtocolManager.getNextEventId();
-          gIcqProtocol.m_xBARTService->SendEvent(eventId, pUser->id(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
+          gIcqProtocol.m_xBARTService->SendEvent(pthread_self(), eventId, pUser->id(),
+              ICQ_SNACxBART_DOWNLOADxREQUEST, true);
           bSent = true;
           bBART = true;
         }

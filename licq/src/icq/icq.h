@@ -182,7 +182,7 @@ public:
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
   unsigned long icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPhoneBook(const Licq::UserId& userId);
-  void icqRequestPicture(unsigned long eventId, const Licq::UserId& userId);
+  void icqRequestPicture(const Licq::ProtocolSignal* ps);
   unsigned long icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestPhoneFollowMe(const Licq::UserId& userId, bool bServer = false);
@@ -195,7 +195,7 @@ public:
       const std::string& zip, unsigned short companyCountry, const std::string& name,
       const std::string& department, const std::string& position, unsigned short companyOccupation,
       const std::string& homepage);
-  void icqSetGeneralInfo(unsigned long eventId, const Licq::UserId& ownerId);
+  void icqSetGeneralInfo(const Licq::ProtocolSignal* ps);
   unsigned long icqSetEmailInfo(const std::string& emailSecondary, const std::string& emailOld);
   unsigned long icqSetMoreInfo(unsigned short age, char gender,
       const std::string& homepage, unsigned short birthYear, char birthMonth,
@@ -214,7 +214,7 @@ public:
       unsigned short countryCode, const std::string& coName, const std::string& coDept,
       const std::string& coPos, const std::string& keyword, bool onlineOnly);
   unsigned long icqSearchByUin(unsigned long);
-  void icqAuthorizeGrant(unsigned long eventId, const Licq::UserId& userId);
+  void icqAuthorizeGrant(const Licq::ProtocolSignal* ps);
   void icqAuthorizeRefuse(const Licq::ProtoRefuseAuthSignal* ps);
   void icqRequestAuth(const Licq::UserId& userId, const std::string& message);
   void icqAlertUser(const Licq::UserId& userId);
@@ -231,14 +231,14 @@ public:
   void icqFileTransferRefuse(const Licq::ProtoSendEventReplySignal* ps);
   void icqFileTransferCancel(const Licq::UserId& userId, unsigned short nSequence);
   void icqFileTransferAccept(const Licq::ProtoSendEventReplySignal* ps);
-  void icqOpenSecureChannel(unsigned long eventId, const Licq::UserId& userId);
-  void icqCloseSecureChannel(unsigned long eventId, const Licq::UserId& userId);
+  void icqOpenSecureChannel(const Licq::ProtocolSignal* ps);
+  void icqCloseSecureChannel(const Licq::ProtocolSignal* ps);
   void icqOpenSecureChannelCancel(const Licq::UserId& userId, unsigned short nSequence);
-  void icqFetchAutoResponseServer(unsigned long eventId, const Licq::UserId& userId);
+  unsigned long icqFetchAutoResponseServer(const Licq::UserId& userId);
   unsigned long logon(unsigned logonStatus);
   unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const Licq::UserId& userId);
-  void icqRequestMetaInfo(const Licq::UserId& userId, unsigned long eventId = 0);
+  void icqRequestMetaInfo(const Licq::UserId& userId, const Licq::ProtocolSignal* ps = NULL);
   unsigned long setStatus(unsigned newStatus);
   void icqLogoff();
   void postLogoff(int nSD, Licq::Event* cancelledEvent);
@@ -269,9 +269,9 @@ public:
   void icqSendInvisibleList();
   void icqCreatePDINFO();
   void icqRequestSystemMsg();
-  Licq::Event* icqSendThroughServer(unsigned long eventId, const Licq::UserId& userId,
-      unsigned char format, const std::string& message, Licq::UserEvent*,
-      unsigned short = 0);
+  Licq::Event* icqSendThroughServer(pthread_t caller, unsigned long eventId,
+      const Licq::UserId& userId, unsigned char format, const std::string& message,
+      Licq::UserEvent*, unsigned short = 0);
 
   void CheckExport();
   bool openConnectionToUser(const Licq::UserId& userId, Licq::TCPSocket* sock,
@@ -323,7 +323,8 @@ public:
   bool ProcessTcpPacket(DcSocket*);
   bool ProcessTcpHandshake(DcSocket*);
 
-  unsigned long icqRequestInfoPlugin(User* user, bool, const uint8_t*, unsigned long eventId = 0);
+  unsigned long icqRequestInfoPlugin(User* user, bool, const uint8_t*,
+      const Licq::ProtocolSignal* ps = NULL);
   unsigned long icqRequestStatusPlugin(User* user, bool, const uint8_t*);
   void icqUpdateInfoTimestamp(const uint8_t*);
 
@@ -382,16 +383,26 @@ private:
 
   bool SendEvent(int nSD, Licq::Packet &, bool);
   bool SendEvent(Licq::INetSocket *, Licq::Packet &, bool);
-  void SendEvent_Server(Licq::Packet *packet, unsigned long eventId = 0);
-  Licq::Event* SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId, CSrvPacketTcp*, Licq::UserEvent*, bool = false);
-  Licq::Event* SendExpectEvent_Server(const Licq::UserId& userId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false);
+  void SendEvent_Server(Licq::Packet *packet, const Licq::ProtocolSignal* ps = NULL);
+  Licq::Event* SendExpectEvent_Server(const Licq::ProtocolSignal* ps, const Licq::UserId& userId,
+      CSrvPacketTcp*, Licq::UserEvent*, bool = false);
 
-  Licq::Event* SendExpectEvent_Server(unsigned long eventId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false)
-  { return SendExpectEvent_Server(eventId, Licq::UserId(), packet, ue, extendedEvent); }
+  Licq::Event* SendExpectEvent_Server(const Licq::UserId& userId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false)
+  { return SendExpectEvent_Server(NULL, userId, packet, ue, extendedEvent); }
 
-  Licq::Event* SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false);
-  Licq::Event* SendExpectEvent_Client(unsigned long eventId, const User* user, CPacketTcp* packet, Licq::UserEvent* ue);
-  Licq::Event* SendExpectEvent_Client(const User* user, CPacketTcp* packet, Licq::UserEvent* ue);
+  Licq::Event* SendExpectEvent_Server(const Licq::ProtocolSignal* ps, CSrvPacketTcp* packet,
+      Licq::UserEvent* ue, bool extendedEvent = false)
+  { return SendExpectEvent_Server(ps, Licq::UserId(), packet, ue, extendedEvent); }
+
+  Licq::Event* SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false)
+  { return SendExpectEvent_Server(NULL, Licq::UserId(), packet, ue, extendedEvent); }
+
+  Licq::Event* SendExpectEvent_Client(const Licq::ProtocolSignal* ps,
+      const User* user, CPacketTcp* packet, Licq::UserEvent* ue);
+
+  Licq::Event* SendExpectEvent_Client(const User* user, CPacketTcp* packet, Licq::UserEvent* ue)
+  { return SendExpectEvent_Client(NULL, user, packet, ue); }
+
   Licq::Event* SendExpectEvent(Licq::Event*, void *(*fcn)(void *));
   unsigned eventCommandFromPacket(Licq::Packet* p);
 
@@ -399,6 +410,8 @@ private:
   void AckTCP(CPacketTcp &, Licq::TCPSocket*);
 
   static std::string getUserEncoding(const Licq::UserId& userId);
+
+  void setEventThread(unsigned long eventId, pthread_t plugin_thread);
 
   /**
    * Split a string into parts delimited by 0xFE

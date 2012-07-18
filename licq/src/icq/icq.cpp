@@ -259,19 +259,19 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
       break;
     }
     case Licq::ProtocolSignal::SignalGrantAuth:
-      icqAuthorizeGrant(s->eventId(), s->userId());
+      icqAuthorizeGrant(s);
       break;
     case Licq::ProtocolSignal::SignalRefuseAuth:
       icqAuthorizeRefuse(dynamic_cast<Licq::ProtoRefuseAuthSignal*>(s));
       break;
     case Licq::ProtocolSignal::SignalRequestInfo:
-      icqRequestMetaInfo(s->userId(), s->eventId());
+      icqRequestMetaInfo(s->userId(), s);
       break;
     case Licq::ProtocolSignal::SignalUpdateInfo:
-      icqSetGeneralInfo(s->eventId(), s->userId());
+      icqSetGeneralInfo(s);
       break;
     case Licq::ProtocolSignal::SignalRequestPicture:
-      icqRequestPicture(s->eventId(), s->userId());
+      icqRequestPicture(s);
       break;
     case Licq::ProtocolSignal::SignalBlockUser:
       icqAddToInvisibleList(s->userId());
@@ -307,10 +307,10 @@ void IcqProtocol::processSignal(Licq::ProtocolSignal* s)
       break;
     }
     case Licq::ProtocolSignal::SignalOpenSecure:
-      icqOpenSecureChannel(s->eventId(), s->userId());
+      icqOpenSecureChannel(s);
       break;
     case Licq::ProtocolSignal::SignalCloseSecure:
-      icqCloseSecureChannel(s->eventId(), s->userId());
+      icqCloseSecureChannel(s);
       break;
     case Licq::ProtocolSignal::SignalRequestAuth:
     {
@@ -442,12 +442,14 @@ unsigned IcqProtocol::eventCommandFromPacket(Licq::Packet* p)
  * Sends an event without expecting a reply.
  *--------------------------------------------------------------------------*/
 
-void IcqProtocol::SendEvent_Server(CPacket *packet, unsigned long eventId)
+void IcqProtocol::SendEvent_Server(CPacket *packet, const Licq::ProtocolSignal* ps)
 {
 #if 1
-  if (eventId == 0)
-    eventId = Licq::gProtocolManager.getNextEventId();
-  Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer);
+  Licq::Event* e;
+  if (ps == NULL)
+    e = new Licq::Event(m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer);
+  else
+    e = new Licq::Event(ps->callerThread(), ps->eventId(), m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer);
   e->myCommand = eventCommandFromPacket(packet);
 
   pthread_mutex_lock(&mutex_sendqueue_server);
@@ -467,8 +469,8 @@ void IcqProtocol::SendEvent_Server(CPacket *packet, unsigned long eventId)
 #endif
 }
 
-Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Licq::UserId& userId,
-    CSrvPacketTcp *packet, Licq::UserEvent *ue, bool bExtendedEvent)
+Licq::Event* IcqProtocol::SendExpectEvent_Server(const Licq::ProtocolSignal* ps,
+    const Licq::UserId& userId, CSrvPacketTcp *packet, Licq::UserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
   if (gDaemon.shuttingDown())
@@ -478,10 +480,12 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
     return NULL;
   }
 
-  if (eventId == 0)
-    eventId = Licq::gProtocolManager.getNextEventId();
-
-  Licq::Event* e = new Licq::Event(eventId, m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer, userId, ue);
+  Licq::Event* e;
+  if (ps == NULL)
+    e = new Licq::Event(m_nTCPSrvSocketDesc, packet, Licq::Event::ConnectServer, userId, ue);
+  else
+    e = new Licq::Event(ps->callerThread(), ps->eventId(), m_nTCPSrvSocketDesc, packet,
+        Licq::Event::ConnectServer, userId, ue);
   e->myCommand = eventCommandFromPacket(packet);
 
   if (bExtendedEvent) PushExtendedEvent(e);
@@ -507,7 +511,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
   return result;
 }
 
-Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const User* pUser,
+Licq::Event* IcqProtocol::SendExpectEvent_Client(const Licq::ProtocolSignal* ps, const User* pUser,
     CPacketTcp* packet, Licq::UserEvent *ue)
 {
   // If we are already shutting down, don't start any events
@@ -518,8 +522,13 @@ Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Us
     return NULL;
   }
 
-  Licq::Event* e = new Licq::Event(eventId, pUser->socketDesc(packet->channel()), packet,
-      Licq::Event::ConnectUser, pUser->id(), ue);
+  Licq::Event* e;
+  if (ps == NULL)
+    e = new Licq::Event(pUser->socketDesc(packet->channel()), packet, Licq::Event::ConnectUser,
+        pUser->id(), ue);
+  else
+    e = new Licq::Event(ps->callerThread(), ps->eventId(), pUser->socketDesc(packet->channel()),
+        packet, Licq::Event::ConnectUser, pUser->id(), ue);
   e->myCommand = eventCommandFromPacket(packet);
   e->myFlags |= Licq::Event::FlagDirect;
 
@@ -1788,21 +1797,6 @@ bool IcqProtocol::waitForReverseConnection(unsigned short id, const Licq::UserId
 done:
   pthread_mutex_unlock(&mutex_reverseconnect);
   return bSuccess;
-}
-
-Licq::Event* IcqProtocol::SendExpectEvent_Server(const Licq::UserId& userId, CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent)
-{
-  return SendExpectEvent_Server(Licq::gProtocolManager.getNextEventId(), userId, packet, ue, extendedEvent);
-}
-
-Licq::Event* IcqProtocol::SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent)
-{
-  return SendExpectEvent_Server(Licq::gProtocolManager.getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
-}
-
-Licq::Event* IcqProtocol::SendExpectEvent_Client(const User* user, CPacketTcp* packet, Licq::UserEvent* ue)
-{
-  return SendExpectEvent_Client(Licq::gProtocolManager.getNextEventId(), user, packet, ue);
 }
 
 string IcqProtocol::getXmlTag(const string& xmlSource, const string& tagName)

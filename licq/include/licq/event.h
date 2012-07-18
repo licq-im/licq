@@ -266,8 +266,10 @@ public:
 
 protected:
   Event(ProtocolSignal* ps, ResultType result = ResultSuccess, UserEvent* ue = NULL);
-  Event(unsigned long id, int _nSocketDesc, Packet* p, ConnectType _eConnect,
+  Event(pthread_t caller, unsigned long id, int _nSocketDesc, Packet* p, ConnectType _eConnect,
       const UserId& userId = UserId(), UserEvent* e = NULL);
+  Event(int _nSocketDesc, Packet* p, ConnectType _eConnect, const UserId& userId = UserId(),
+      UserEvent* e = NULL);
   Event(const Event* e);
 
   // Daemon only

@@ -52,7 +52,8 @@ public:
   ~COscarService();
   bool Initialize();
   bool ProcessPacket(Buffer& packet);
-  void SendEvent(unsigned long eventId, const Licq::UserId& userId, unsigned short SubType, bool Request);
+  void SendEvent(pthread_t caller, unsigned long eventId, const Licq::UserId& userId,
+      unsigned short SubType, bool Request);
   void ClearQueue();
 
   void setConnectCredential(const std::string& server, unsigned short port,

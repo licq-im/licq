@@ -143,10 +143,10 @@ void COscarService::ClearQueue()
   pthread_mutex_unlock(&mutex_sendqueue);
 }
 
-void COscarService::SendEvent(unsigned long eventId,
+void COscarService::SendEvent(pthread_t caller, unsigned long eventId,
     const Licq::UserId& userId, unsigned short SubType, bool Request)
 {
-  Licq::Event* e = new Licq::Event(eventId, mySocketDesc, NULL, Licq::Event::ConnectServer, userId);
+  Licq::Event* e = new Licq::Event(caller, eventId, mySocketDesc, NULL, Licq::Event::ConnectServer, userId);
   e->SetSubType(SubType);
   if (Request)
     gIcqProtocol.PushEvent(e);
