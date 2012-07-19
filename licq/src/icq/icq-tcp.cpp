@@ -1,8 +1,20 @@
-/* ----------------------------------------------------------------------------
- * Licq - A ICQ Client for Unix
- * Copyright (C) 1998-2011 Licq developers
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1998-2012 Licq developers <licq-dev@googlegroups.com>
  *
- * This program is licensed under the terms found in the LICENSE file.
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include "config.h"
@@ -1200,19 +1212,8 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
    unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
    unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2)
 {
-  // Find which socket this is for
-  Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(gSocketManager.FetchSocket(m_nTCPSocketDesc));
-  unsigned short tcpPort = tcp != NULL ? tcp->getLocalPort() : 0;
-  gSocketManager.DropSocket(tcp);
-
   CFileTransferManager *ftm = CFileTransferManager::FindByPort(nFailedPort);
   CChatManager *cm = CChatManager::FindByPort(nFailedPort);
-
-  if (nFailedPort != tcpPort && nFailedPort != 0 && cm == NULL && ftm == NULL)
-  {
-    gLog.warning(tr("Reverse connection to unknown port (%d)."), nFailedPort);
-    return -1;
-  }
 
   Licq::TCPSocket* s = new Licq::TCPSocket(userId);
   char buf[32];
