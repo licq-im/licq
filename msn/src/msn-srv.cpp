@@ -681,6 +681,7 @@ void CMSN::MSNRemoveUser(const UserId& userId)
 {
   CMSNPacket* pSend = new CPS_MSNRemoveUser(userId.accountId().c_str(), CONTACT_LIST);
   SendPacket(pSend);
+  Licq::gUserManager.removeLocalUser(userId);
 }
 
 void CMSN::MSNRenameUser(const UserId& userId)

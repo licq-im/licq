@@ -523,12 +523,29 @@ bool UserManager::addUser(const UserId& uid,
   return true;
 }
 
-void UserManager::removeUser(const UserId& userId, bool removeFromServer)
+void UserManager::removeUser(const UserId& userId)
 {
-  // Remove the user from the server side list first
-  if (removeFromServer)
-    gProtocolManager.removeUser(userId);
+  {
+    // Only allow removing a user if the protocol is available
+    OwnerReadGuard owner(userId.protocolId());
+    if (!owner.isLocked() || !owner->isOnline())
+      return;
+  }
 
+  // Remove the user from the server side list first in case protocol needs any
+  // data from the user object. The protocol will call removeLocalUser() when
+  // it is finished.
+  if (userId.protocolId() == LICQ_PPID)
+  {
+    gIcqProtocol.icqRemoveUser(userId);
+    gUserManager.removeLocalUser(userId);
+  }
+  else
+    gPluginManager.pushProtocolSignal(new Licq::ProtoRemoveUserSignal(userId), userId.protocolId());
+}
+
+void UserManager::removeLocalUser(const UserId& userId)
+{
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call fetchUser here.
   myUserListMutex.lockWrite();

@@ -2315,7 +2315,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
             if (bNewUser)
             {
               u.unlock();
-              Licq::gUserManager.removeUser(userId, false);
+              Licq::gUserManager.removeLocalUser(userId);
             }
 					return true;
 				}
@@ -2414,7 +2414,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
             u->SetSecure(false);
               u.unlock();
               if (bNewUser)
-                Licq::gUserManager.removeUser(userId, false);
+                Licq::gUserManager.removeLocalUser(userId);
               Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                   Licq::PluginSignal::SignalUser,
                   Licq::PluginSignal::UserSecurity, userId, 0));
@@ -2441,7 +2441,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
           e->mySubResult = Licq::Event::SubResultAccept;
           u.unlock();
           if (bNewUser)
-            Licq::gUserManager.removeUser(userId, false);
+            Licq::gUserManager.removeLocalUser(userId);
         ProcessDoneEvent(e);
 
         // get out of here now as we don't want standard ack processing
@@ -2480,7 +2480,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
             if (bNewUser)
             {
               u.unlock();
-              Licq::gUserManager.removeUser(userId, false);
+              Licq::gUserManager.removeLocalUser(userId);
             }
           delete e;
           return false;
@@ -2494,7 +2494,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
 
           u.unlock();
           if (bNewUser)
-            Licq::gUserManager.removeUser(userId, false);
+            Licq::gUserManager.removeLocalUser(userId);
 
           // finish up
           e->mySubResult = Licq::Event::SubResultAccept;
@@ -2575,7 +2575,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
 
         u.unlock();
         if (bNewUser)
-          Licq::gUserManager.removeUser(userId, false);
+          Licq::gUserManager.removeLocalUser(userId);
 
       ProcessDoneEvent(e);
       return true;
@@ -2666,7 +2666,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
   if (bNewUser)
   {
     u.unlock();
-    Licq::gUserManager.removeUser(userId, false);
+    Licq::gUserManager.removeLocalUser(userId);
     return false;
   }
   return !errorOccured;

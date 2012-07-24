@@ -2954,7 +2954,7 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
         if (bNewUser)
             {
               u.unlock();
-              Licq::gUserManager.removeUser(userId, false);
+              Licq::gUserManager.removeLocalUser(userId);
             }
 
             break;
@@ -3025,7 +3025,7 @@ However it seems to always think contact is online instead of away/occupied/etc.
           u.unlock();
       if (bNewUser) // can be changed in ProcessMessage
       {
-        Licq::gUserManager.removeUser(userId, false);
+        Licq::gUserManager.removeLocalUser(userId);
         break;
       }
 

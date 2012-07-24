@@ -47,15 +47,6 @@ public:
    */
   void addUser(const Licq::UserId& userId);
 
-  /**
-   * Remove a user from the server side list
-   * Used by UserManager before removing user from local list.
-   * Plugins should call gUserManageer.removeUser() instead
-   *
-   * @param userId Id of user to remove
-   */
-  void removeUser(const Licq::UserId& userId);
-
   // From Licq::ProtocolManager
   unsigned long getNextEventId();
   void updateUserAlias(const Licq::UserId& userId);

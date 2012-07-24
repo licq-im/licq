@@ -414,6 +414,7 @@ void Plugin::doRemoveUser(Licq::ProtoRemoveUserSignal* signal)
 {
   assert(myClient != NULL);
   myClient->removeUser(signal->userId().accountId());
+  Licq::gUserManager.removeLocalUser(signal->userId());
 }
 
 void Plugin::doRenameUser(Licq::ProtoRenameUserSignal* signal)

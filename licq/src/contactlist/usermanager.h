@@ -165,7 +165,8 @@ public:
   void notifyUserUpdated(const Licq::UserId& userId, unsigned long subSignal);
   bool addUser(const Licq::UserId& userId, bool permanent = true,
       bool addToServer = true, unsigned short groupId = 0);
-  void removeUser(const Licq::UserId& userId, bool removeFromServer = true);
+  void removeUser(const Licq::UserId& userId);
+  void removeLocalUser(const Licq::UserId& userId);
   bool groupExists(int groupId);
   int AddGroup(const std::string& name);
   void RemoveGroup(int groupId);

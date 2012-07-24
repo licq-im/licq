@@ -164,7 +164,7 @@ void Handler::onUserRemoved(const string& id)
 {
   TRACE();
 
-  gUserManager.removeUser(UserId(id, JABBER_PPID), false);
+  Licq::gUserManager.removeLocalUser(UserId(id, JABBER_PPID));
 }
 
 void Handler::onUserStatusChange(
@@ -225,7 +225,7 @@ void Handler::onRosterReceived(const std::set<string>& ids)
   }
 
   for (it = todel.begin(); it != todel.end(); ++it)
-    gUserManager.removeUser(*it, false);
+    Licq::gUserManager.removeLocalUser(*it);
 }
 
 void Handler::onUserAuthorizationRequest(

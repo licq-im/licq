@@ -92,7 +92,14 @@ public:
    *
    * @param userId Id of user to remove
    */
-  virtual void removeUser(const UserId& userId, bool removeFromServer = true) = 0;
+  virtual void removeUser(const UserId& userId) = 0;
+
+  /**
+   * Called by protocol to remove a local user and notify plugins
+   *
+   * @param userId Id of user to remove
+   */
+  virtual void removeLocalUser(const UserId& userId) = 0;
 
   /**
    * Check if a group id is valid

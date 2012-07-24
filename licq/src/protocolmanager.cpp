@@ -100,17 +100,6 @@ void ProtocolManager::addUser(const UserId& userId)
     pushProtoSignal(new Licq::ProtoAddUserSignal(userId, false), userId);
 }
 
-void ProtocolManager::removeUser(const UserId& userId)
-{
-  if (!isProtocolConnected(userId))
-    return;
-
-  if (userId.protocolId() == LICQ_PPID)
-    gIcqProtocol.icqRemoveUser(userId);
-  else
-    pushProtoSignal(new Licq::ProtoRemoveUserSignal(userId), userId);
-}
-
 void ProtocolManager::updateUserAlias(const UserId& userId)
 {
   if (!isProtocolConnected(userId))
