@@ -3,6 +3,7 @@ Change log for Licq.
 New in 1.6.2
 o Forwarder: Write default configuration file to correct directory
 o ICQ: Do reverse direct connects even if port number is wrong
+o ICQ: Fix removing groups from server side list
 
 
 New in 1.6.1

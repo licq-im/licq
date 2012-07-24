@@ -390,7 +390,7 @@ void IcqProtocol::icqRemoveGroup(int groupId)
   unsigned short serverId;
   {
     Licq::GroupReadGuard group(groupId);
-    if (group.isLocked())
+    if (!group.isLocked())
       return;
     groupName = group->name();
     serverId = group->serverId(LICQ_PPID);
