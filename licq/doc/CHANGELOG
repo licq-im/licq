@@ -13,6 +13,12 @@ o Qt4-Gui: Add a header in chat history for each new day
 o Qt4-Gui: Move per-account settings to user dialog
 
 
+New in 1.6.2
+o Forwarder: Write default configuration file to correct directory
+o ICQ: Do reverse direct connects even if port number is wrong
+o ICQ: Fix removing groups from server side list
+
+
 New in 1.6.1
 o Save user list when adding a Not In List user to list
 o ICQ: Fix packets not being sent for sequence numbers above 0x7fff

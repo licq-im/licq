@@ -85,7 +85,6 @@ public:
   bool ForwardEvent_Email(const Licq::User* u, const Licq::UserEvent* e);
 
 private:
-  bool CreateDefaultConfig();
 
 };
 

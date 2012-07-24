@@ -400,7 +400,7 @@ void IcqProtocol::icqRemoveGroup(int groupId)
   unsigned short serverId;
   {
     Licq::GroupReadGuard group(groupId);
-    if (group.isLocked())
+    if (!group.isLocked())
       return;
     groupName = group->name();
     serverId = group->serverId(LICQ_PPID);
@@ -2891,6 +2891,15 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
 
         char id[16];
         snprintf(id, 15, "%lu", nUin);
+
+        {
+          Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+          if (u.isLocked())
+          {
+            u->SetPort(nPort);
+            u->SetIp(nIp);
+          }
+        }
 
         pthread_t t;
         CReverseConnectToUserData *data = new CReverseConnectToUserData(

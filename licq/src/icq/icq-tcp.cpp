@@ -1227,19 +1227,8 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
    unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
    unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2)
 {
-  // Find which socket this is for
-  Licq::TCPSocket* tcp = dynamic_cast<Licq::TCPSocket*>(gSocketManager.FetchSocket(m_nTCPSocketDesc));
-  unsigned short tcpPort = tcp != NULL ? tcp->getLocalPort() : 0;
-  gSocketManager.DropSocket(tcp);
-
   CFileTransferManager *ftm = CFileTransferManager::FindByPort(nFailedPort);
   CChatManager *cm = CChatManager::FindByPort(nFailedPort);
-
-  if (nFailedPort != tcpPort && nFailedPort != 0 && cm == NULL && ftm == NULL)
-  {
-    gLog.warning(tr("Reverse connection to unknown port (%d)."), nFailedPort);
-    return -1;
-  }
 
   DcSocket* s = new DcSocket(userId);
   char buf[32];

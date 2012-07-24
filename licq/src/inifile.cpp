@@ -123,6 +123,9 @@ bool IniFile::loadFile()
 
   loadRawConfiguration(buffer);
   delete [] buffer;
+
+  // We currently have no changes to write
+  myIsModified = false;
   myLastTimestamp = st.st_mtime;
   return true;
 }
