@@ -238,7 +238,6 @@ public:
   void icqRelogon();
   void icqAddUser(const Licq::UserId& userId, bool _bAuthReq = false);
   void icqAddUserServer(const Licq::UserId& userId, bool _bAuthReq, unsigned short groupId = 0);
-  void icqAddGroup(const std::string& groupName);
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
   void icqRemoveGroup(int groupId);
   void icqChangeGroup(const Licq::UserId& userId);

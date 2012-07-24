@@ -167,7 +167,7 @@ public:
       bool addToServer = true, unsigned short groupId = 0);
   void removeUser(const Licq::UserId& userId, bool removeFromServer = true);
   bool groupExists(int groupId);
-  int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
+  int AddGroup(const std::string& name);
   void RemoveGroup(int groupId);
   bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
   void ModifyGroupSorting(int groupId, int newIndex);

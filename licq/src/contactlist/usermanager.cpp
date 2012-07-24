@@ -775,7 +775,7 @@ bool UserManager::groupExists(int groupId)
   return found;
 }
 
-int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
+int UserManager::AddGroup(const string& name)
 {
   if (name.empty())
     return 0;
@@ -795,25 +795,11 @@ int UserManager::AddGroup(const string& name, unsigned short icqGroupId)
     ;
 
   Group* newGroup = new Group(gid, name);
-  newGroup->setServerId(LICQ_PPID, icqGroupId);
   newGroup->setSortIndex(myGroups.size());
   myGroups[gid] = newGroup;
 
   SaveGroups();
   myGroupListMutex.unlockWrite();
-
-  bool icqOnline = false;
-  {
-    Licq::OwnerReadGuard icqOwner(LICQ_PPID);
-    if (icqOwner.isLocked())
-      icqOnline = icqOwner->isOnline();
-  }
-
-  if (icqGroupId == 0 && icqOnline)
-    gIcqProtocol.icqAddGroup(name);
-  else
-    gLog.info(tr("Added group %s (%u) to list from server"),
-        name.c_str(), icqGroupId);
 
   // Send signal to let plugins know of the new group
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,

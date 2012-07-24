@@ -106,10 +106,9 @@ public:
    * Add a user group
    *
    * @param name Group name, must be unique
-   * @param icqGroupId ICQ server group id
    * @return Id of new group or zero if group could not be created
    */
-  virtual int AddGroup(const std::string& name, unsigned short icqGroupId = 0) = 0;
+  virtual int AddGroup(const std::string& name) = 0;
 
   /**
    * Remove a user group

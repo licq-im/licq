@@ -107,6 +107,26 @@ void IcqProtocol::icqAddUserServer(const Licq::UserId& userId, bool _bAuthRequir
       ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
+  // Create group if it doesn't already exist in server list
+  bool serverGroupExists = false;
+  string groupName;
+  {
+    Licq::GroupReadGuard group(groupId);
+    if (group.isLocked())
+    {
+      serverGroupExists = (group->serverId(LICQ_PPID) != 0);
+      groupName = group->name();
+    }
+  }
+  if (!serverGroupExists)
+  {
+    CPU_AddToServerList* pAdd = new CPU_AddToServerList(groupName, ICQ_ROSTxGROUP);
+    int nGSID = pAdd->GetGSID();
+    gLog.info(tr("Adding group %s (%d) to server list ..."), groupName.c_str(), nGSID);
+    addToModifyUsers(pAdd->SubSequence(), groupName);
+    SendExpectEvent_Server(pAdd, NULL);
+  }
+
   CPU_AddToServerList* pAdd = new CPU_AddToServerList(userId.accountId(), ICQ_ROSTxNORMAL,
     groupId, _bAuthRequired);
   gLog.info(tr("Adding %s to server list..."), userId.accountId().c_str());
@@ -230,22 +250,6 @@ void IcqProtocol::icqUpdateServerGroups()
       SendExpectEvent_Server(pReply, NULL);
     }
   }
-}
-
-//-----icqAddGroup--------------------------------------------------------------
-void IcqProtocol::icqAddGroup(const string& groupName)
-{
-  if (!UseServerContactList())  return;
-
-  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-    ICQ_SNACxLIST_ROSTxEDITxSTART);
-  SendEvent_Server(pStart);
-
-  CPU_AddToServerList* pAdd = new CPU_AddToServerList(groupName, ICQ_ROSTxGROUP);
-  int nGSID = pAdd->GetGSID();
-  gLog.info(tr("Adding group %s (%d) to server list ..."), groupName.c_str(), nGSID);
-  addToModifyUsers(pAdd->SubSequence(), groupName);
-  SendExpectEvent_Server(pAdd, NULL);
 }
 
 void IcqProtocol::icqChangeGroup(const Licq::UserId& userId)
@@ -3429,21 +3433,28 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
 
             if (id[0] != '\0' && nTag != 0)
             {
-              // Rename the group if we have it already or else add it
-              int nGroup = getGroupFromId(nTag);
-
-              if (nGroup == 0)
+              int groupId = getGroupFromId(nTag);
+              if (groupId != 0)
               {
-                if (!Licq::gUserManager.AddGroup(id, nTag))
-                {
-                  nGroup = Licq::gUserManager.GetGroupFromName(id);
-                  if (nGroup != 0)
-                    Licq::gUserManager.setGroupServerId(nGroup, LICQ_PPID, nTag);
-                }
+                // Group exist, make sure it has the correct name
+                Licq::gUserManager.RenameGroup(groupId, id, false);
+                break;
               }
-              else
+
+              groupId = Licq::gUserManager.GetGroupFromName(id);
+              if (groupId != 0)
               {
-                Licq::gUserManager.RenameGroup(nGroup, id, false);
+                // A local group has same name, save the server id for it
+                Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, nTag);
+                break;
+              }
+
+              groupId = Licq::gUserManager.AddGroup(id);
+              if (groupId != 0)
+              {
+                // Local group created, save the server id for it
+                Licq::gUserManager.setGroupServerId(groupId, LICQ_PPID, nTag);
+                gLog.info(tr("Added group %s (%u) to list from server"), id.c_str(), nTag);
               }
             }
             else
