@@ -1148,7 +1148,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
       bool inGroup, bool updateServer)
 {
   // User group 0 is invalid
-  if (groupId == 0)
+  if (groupId <= 0)
     return;
 
   int serverGroup;
@@ -1184,10 +1184,11 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
       if (userId.protocolId() == LICQ_PPID)
       {
         if (inGroup) // Server group can only be changed, not removed
-          gIcqProtocol.icqChangeGroup(userId);
+          gIcqProtocol.icqChangeGroup(userId, groupId);
       }
       else
-        gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId), userId.protocolId());
+        gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId, groupId),
+            userId.protocolId());
     }
   }
 

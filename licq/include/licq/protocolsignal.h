@@ -179,9 +179,14 @@ public:
 class ProtoChangeUserGroupsSignal : public ProtocolSignal
 {
 public:
-  ProtoChangeUserGroupsSignal(const UserId& userId)
-    : ProtocolSignal(SignalChangeUserGroups, userId)
+  ProtoChangeUserGroupsSignal(const UserId& userId, int groupId)
+    : ProtocolSignal(SignalChangeUserGroups, userId),
+      myGroupId(groupId)
   { /* Empty */ }
+
+  int groupId() const { return myGroupId; }
+private:
+  int myGroupId;
 };
 
 class ProtoSendMessageSignal : public ProtocolSignal

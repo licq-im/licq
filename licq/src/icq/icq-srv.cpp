@@ -252,7 +252,7 @@ void IcqProtocol::icqUpdateServerGroups()
   }
 }
 
-void IcqProtocol::icqChangeGroup(const Licq::UserId& userId)
+void IcqProtocol::icqChangeGroup(const Licq::UserId& userId, int newGroup)
 {
   if (!UseServerContactList())
     return;
@@ -260,14 +260,10 @@ void IcqProtocol::icqChangeGroup(const Licq::UserId& userId)
   // Get their old SID
   int nSID;
   int oldGSID;
-  int newGroup;
   {
     UserReadGuard u(userId);
     nSID = u->GetSID();
     oldGSID = u->GetGSID();
-    newGroup = u->serverGroup();
-    if (newGroup <= 0)
-      return;
     gLog.info(tr("Changing group on server list for %s (%s)..."),
         u->getAlias().c_str(), userId.accountId().c_str());
   }
