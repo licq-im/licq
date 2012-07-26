@@ -129,10 +129,10 @@ public:
    *
    * @param groupId Id of group to rename
    * @param name New group name, must be unique
-   * @param sendUpdate True if server group should be updated
+   * @param skipProtocolId Id of protocol to not notify
    * @return True if group was successfully renamed
    */
-  virtual bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true) = 0;
+  virtual bool RenameGroup(int groupId, const std::string& name, unsigned long skipProtocolId = 0) = 0;
 
   /**
    * Get number of user groups

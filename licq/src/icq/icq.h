@@ -241,7 +241,7 @@ public:
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
   void icqRemoveGroup(int groupId);
   void icqChangeGroup(const Licq::UserId& userId, int groupId);
-  void icqRenameGroup(const std::string& newName, unsigned short _nGSID);
+  void icqRenameGroup(int groupId);
   void icqRenameUser(const Licq::UserId& userId);
   void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);

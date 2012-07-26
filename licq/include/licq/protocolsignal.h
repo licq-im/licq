@@ -61,6 +61,7 @@ public:
     SignalOpenSecure    = 27,   // Request secure channel with user
     SignalCloseSecure   = 28,   // Close secure channel with user
     SignalRequestAuth   = 29,   // Request authorization from user
+    SignalRenameGroup   = 30,   // Rename a user group
   };
 
   // Flags for send events
@@ -443,6 +444,20 @@ public:
 
 private:
   std::string myMessage;
+};
+
+class ProtoRenameGroupSignal : public ProtocolSignal
+{
+public:
+  ProtoRenameGroupSignal(const UserId& ownerId, int groupId)
+    : ProtocolSignal(SignalRenameGroup, ownerId),
+      myGroupId(groupId)
+  { /* Empty */ }
+
+  int groupId() const { return myGroupId; }
+
+private:
+  int myGroupId;
 };
 
 } // namespace Licq

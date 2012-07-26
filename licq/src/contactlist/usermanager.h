@@ -170,7 +170,7 @@ public:
   bool groupExists(int groupId);
   int AddGroup(const std::string& name);
   void RemoveGroup(int groupId);
-  bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
+  bool RenameGroup(int groupId, const std::string& name, unsigned long skipProtocolId = 0);
   void ModifyGroupSorting(int groupId, int newIndex);
   void setGroupServerId(int groupId, unsigned long protocolId, unsigned long serverId);
   int getGroupFromServerId(unsigned long protocolId, unsigned long serverId);

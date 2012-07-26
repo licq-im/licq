@@ -250,6 +250,9 @@ void Plugin::processSignal(Licq::ProtocolSignal* signal)
     case Licq::ProtocolSignal::SignalRequestAuth:
       doRequestAuth(static_cast<Licq::ProtoRequestAuthSignal*>(signal));
       break;
+    case Licq::ProtocolSignal::SignalRenameGroup:
+      doRenameGroup(static_cast<Licq::ProtoRenameGroupSignal*>(signal));
+      break;
     default:
       gLog.error("Unknown signal %u", signal->signal());
       /* Unsupported action, if it has an eventId, cancel it */
@@ -452,4 +455,27 @@ void Plugin::doRequestAuth(Licq::ProtoRequestAuthSignal* signal)
   assert(myClient != NULL);
   myClient->requestAuthorization(
       signal->userId().accountId(), signal->message());
+}
+
+void Plugin::doRenameGroup(Licq::ProtoRenameGroupSignal* s)
+{
+  Licq::UserListGuard userList(JABBER_PPID);
+  BOOST_FOREACH(Licq::User* licqUser, **userList)
+  {
+    Licq::UserReadGuard user(licqUser);
+
+    if (!user->isInGroup(s->groupId()))
+      continue;
+
+    // User is member of renamed group, get complete group list and update server
+    gloox::StringList groupNames;
+    const Licq::UserGroupList groups = user->GetGroups();
+    BOOST_FOREACH(int groupId, groups)
+    {
+      string groupName = Licq::gUserManager.GetGroupNameFromGroup(groupId);
+      if (!groupName.empty())
+        groupNames.push_back(groupName);
+    }
+    myClient->changeUserGroups(user->id().accountId(), groupNames);
+  }
 }

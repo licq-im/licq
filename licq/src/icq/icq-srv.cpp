@@ -418,12 +418,26 @@ void IcqProtocol::icqRemoveGroup(int groupId)
 }
 
 //-----icqRenameGroup----------------------------------------------------------
-void IcqProtocol::icqRenameGroup(const string& newName, unsigned short _nGSID)
+void IcqProtocol::icqRenameGroup(int groupId)
 {
-  if (!UseServerContactList() || !_nGSID || m_nTCPSrvSocketDesc == -1) return;
+  if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1)
+    return;
 
-  CSrvPacketTcp* pUpdate = new CPU_UpdateToServerList(newName, ICQ_ROSTxGROUP, _nGSID);
-  gLog.info(tr("Renaming group with id %d to %s..."), _nGSID, newName.c_str());
+  string newName;
+  unsigned short serverId;
+  {
+    Licq::GroupReadGuard group(groupId);
+    if (!group.isLocked())
+      return;
+    newName = group->name();
+    serverId = group->serverId(LICQ_PPID);
+  }
+
+  if (serverId == 0)
+    return;
+
+  CSrvPacketTcp* pUpdate = new CPU_UpdateToServerList(newName, ICQ_ROSTxGROUP, serverId);
+  gLog.info(tr("Renaming group with id %d to %s..."), serverId, newName.c_str());
   addToModifyUsers(pUpdate->SubSequence(), newName);
   SendExpectEvent_Server(pUpdate, NULL);
 }
@@ -3430,7 +3444,7 @@ void IcqProtocol::ProcessListFam(Buffer& packet, unsigned short nSubtype)
               if (groupId != 0)
               {
                 // Group exist, make sure it has the correct name
-                Licq::gUserManager.RenameGroup(groupId, id, false);
+                Licq::gUserManager.RenameGroup(groupId, id, LICQ_PPID);
                 break;
               }
 

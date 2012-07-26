@@ -927,7 +927,7 @@ void UserManager::ModifyGroupSorting(int groupId, int newIndex)
       PluginSignal::ListGroupsReordered));
 }
 
-bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
+bool UserManager::RenameGroup(int groupId, const string& name, unsigned long skipProtocolId)
 {
   int foundGroupId = GetGroupFromName(name);
 
@@ -950,16 +950,36 @@ bool UserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
   }
 
   group->setName(name);
-  unsigned short icqGroupId = group->serverId(LICQ_PPID);
   group->unlockWrite();
 
   myGroupListMutex.lockRead();
   SaveGroups();
   myGroupListMutex.unlockRead();
 
-  // If we rename a group on logon, don't send the rename packet
-  if (sendUpdate)
-    gIcqProtocol.icqRenameGroup(name, icqGroupId);
+  myOwnerListMutex.lockRead();
+  for (OwnerMap::const_iterator i = myOwners.begin(); i != myOwners.end(); ++i)
+  {
+    // Don't notify the protocol that called us
+    if (i->first == skipProtocolId)
+      continue;
+
+    // ICQ protocol doesn't have it's own thread (yet) so don't call it while holding locks
+    if (i->first == LICQ_PPID)
+      continue;
+
+    i->second->lockRead();
+    bool isOnline = i->second->isOnline();
+    i->second->unlockRead();
+    if (!isOnline)
+      continue;
+
+    gPluginManager.pushProtocolSignal(new Licq::ProtoRenameGroupSignal(i->second->id(), groupId));
+  }
+  myOwnerListMutex.unlockRead();
+
+  // Call ICQ protocol without holding any locks
+  if (skipProtocolId != LICQ_PPID)
+    gIcqProtocol.icqRenameGroup(groupId);
 
   // Send signal to let plugins know the group has changed
   gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalList,
