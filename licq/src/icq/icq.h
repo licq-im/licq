@@ -239,8 +239,8 @@ public:
   void icqAddUser(const Licq::UserId& userId, bool _bAuthReq = false);
   void icqAddUserServer(const Licq::UserId& userId, bool _bAuthReq, unsigned short groupId = 0);
   void icqRemoveUser(const Licq::UserId& userId, bool ignored = false);
-  void icqRemoveGroup(int groupId);
-  void icqChangeGroup(const Licq::UserId& userId, int groupId);
+  void icqRemoveGroup(unsigned short serverId, const std::string& groupName);
+  void icqChangeGroup(const Licq::UserId& userId);
   void icqRenameGroup(int groupId);
   void icqRenameUser(const Licq::UserId& userId);
   void icqExportUsers(const std::list<Licq::UserId>& users, unsigned short);

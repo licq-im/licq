@@ -62,6 +62,7 @@ public:
     SignalCloseSecure   = 28,   // Close secure channel with user
     SignalRequestAuth   = 29,   // Request authorization from user
     SignalRenameGroup   = 30,   // Rename a user group
+    SignalRemoveGroup   = 31,   // Remove a user group
   };
 
   // Flags for send events
@@ -180,14 +181,9 @@ public:
 class ProtoChangeUserGroupsSignal : public ProtocolSignal
 {
 public:
-  ProtoChangeUserGroupsSignal(const UserId& userId, int groupId)
-    : ProtocolSignal(SignalChangeUserGroups, userId),
-      myGroupId(groupId)
+  ProtoChangeUserGroupsSignal(const UserId& userId)
+    : ProtocolSignal(SignalChangeUserGroups, userId)
   { /* Empty */ }
-
-  int groupId() const { return myGroupId; }
-private:
-  int myGroupId;
 };
 
 class ProtoSendMessageSignal : public ProtocolSignal
@@ -458,6 +454,27 @@ public:
 
 private:
   int myGroupId;
+};
+
+class ProtoRemoveGroupSignal : public ProtocolSignal
+{
+public:
+  ProtoRemoveGroupSignal(const UserId& ownerId, int groupId, unsigned long groupServerId,
+      const std::string& groupName)
+    : ProtocolSignal(SignalRemoveGroup, ownerId),
+      myGroupId(groupId),
+      myGroupServerId(groupServerId),
+      myGroupName(groupName)
+  { /* Empty */ }
+
+  int groupId() const { return myGroupId; }
+  unsigned long groupServerId() const { return myGroupServerId; }
+  const std::string& groupName() const { return myGroupName; }
+
+private:
+  int myGroupId;
+  unsigned long myGroupServerId;
+  std::string myGroupName;
 };
 
 } // namespace Licq

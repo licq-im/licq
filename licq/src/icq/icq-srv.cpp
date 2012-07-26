@@ -252,7 +252,7 @@ void IcqProtocol::icqUpdateServerGroups()
   }
 }
 
-void IcqProtocol::icqChangeGroup(const Licq::UserId& userId, int newGroup)
+void IcqProtocol::icqChangeGroup(const Licq::UserId& userId)
 {
   if (!UseServerContactList())
     return;
@@ -260,10 +260,12 @@ void IcqProtocol::icqChangeGroup(const Licq::UserId& userId, int newGroup)
   // Get their old SID
   int nSID;
   int oldGSID;
+  int newGroup;
   {
     UserReadGuard u(userId);
     nSID = u->GetSID();
     oldGSID = u->GetGSID();
+    newGroup = u->serverGroup();
     gLog.info(tr("Changing group on server list for %s (%s)..."),
         u->getAlias().c_str(), userId.accountId().c_str());
   }
@@ -392,19 +394,9 @@ void IcqProtocol::icqRemoveUser(const Licq::UserId& userId, bool ignored)
 }
 
 //-----icqRemoveGroup----------------------------------------------------------
-void IcqProtocol::icqRemoveGroup(int groupId)
+void IcqProtocol::icqRemoveGroup(unsigned short serverId, const string& groupName)
 {
   if (!UseServerContactList()) return;
-
-  string groupName;
-  unsigned short serverId;
-  {
-    Licq::GroupReadGuard group(groupId);
-    if (!group.isLocked())
-      return;
-    groupName = group->name();
-    serverId = group->serverId(LICQ_PPID);
-  }
 
   CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
     ICQ_SNACxLIST_ROSTxEDITxSTART);
