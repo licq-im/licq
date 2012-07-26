@@ -652,9 +652,10 @@ void PluginManager::pushPluginSignal(Licq::PluginSignal* signal)
   delete signal;
 }
 
-void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* signal,
-    unsigned long protocolId)
+void PluginManager::pushProtocolSignal(Licq::ProtocolSignal* signal)
 {
+  unsigned long protocolId = signal->userId().protocolId();
+
   MutexLocker locker(myProtocolPluginsMutex);
   BOOST_FOREACH(ProtocolPlugin::Ptr plugin, myProtocolPlugins)
   {

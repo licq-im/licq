@@ -541,7 +541,7 @@ void UserManager::removeUser(const UserId& userId)
     gUserManager.removeLocalUser(userId);
   }
   else
-    gPluginManager.pushProtocolSignal(new Licq::ProtoRemoveUserSignal(userId), userId.protocolId());
+  gPluginManager.pushProtocolSignal(new Licq::ProtoRemoveUserSignal(userId));
 }
 
 void UserManager::removeLocalUser(const UserId& userId)
@@ -1187,8 +1187,7 @@ void UserManager::setUserInGroup(const UserId& userId, int groupId,
           gIcqProtocol.icqChangeGroup(userId, groupId);
       }
       else
-        gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId, groupId),
-            userId.protocolId());
+      gPluginManager.pushProtocolSignal(new Licq::ProtoChangeUserGroupsSignal(userId, groupId));
     }
   }
 

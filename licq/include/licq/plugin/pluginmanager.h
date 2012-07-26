@@ -163,12 +163,11 @@ public:
    * Send a signal to a protocol plugin
    *
    * Note: This function will return immediately. The event will be processed
-   * by the plugin asynchrony
+   * by the plugin asynchronously
    *
    * @param signal Signal to forward to the plugin, will be deleted by receiver
-   * @param protocolId Protocol to forward signal to
    */
-  virtual void pushProtocolSignal(ProtocolSignal* signal, unsigned long protocolId) = 0;
+  virtual void pushProtocolSignal(ProtocolSignal* signal) = 0;
 
 protected:
   virtual ~PluginManager() { /* Empty */ }

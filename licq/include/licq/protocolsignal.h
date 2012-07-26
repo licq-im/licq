@@ -72,7 +72,7 @@ public:
     SendToMultiple      = 8,    // Message is sent to multiple recipients
   };
 
-  ProtocolSignal(SignalType signal, const UserId& userId = UserId(), unsigned long eventId = 0)
+  ProtocolSignal(SignalType signal, const UserId& userId, unsigned long eventId = 0)
     : mySignal(signal),
       myUserId(userId),
       myEventId(eventId),
@@ -110,8 +110,8 @@ private:
 class ProtoLogonSignal : public ProtocolSignal
 {
 public:
-  ProtoLogonSignal(unsigned status)
-    : ProtocolSignal(SignalLogon),
+  ProtoLogonSignal(const UserId& ownerId, unsigned status)
+    : ProtocolSignal(SignalLogon, ownerId),
       myStatus(status)
   { /* Empty */ }
 
@@ -125,16 +125,16 @@ private:
 class ProtoLogoffSignal : public ProtocolSignal
 {
 public:
-  ProtoLogoffSignal()
-    : ProtocolSignal(SignalLogoff)
+  ProtoLogoffSignal(const UserId& ownerId)
+    : ProtocolSignal(SignalLogoff, ownerId)
   { /* Empty */ }
 };
 
 class ProtoChangeStatusSignal : public ProtocolSignal
 {
 public:
-  ProtoChangeStatusSignal(unsigned status)
-    : ProtocolSignal(SignalChangeStatus),
+  ProtoChangeStatusSignal(const UserId& ownerId, unsigned status)
+    : ProtocolSignal(SignalChangeStatus, ownerId),
       myStatus(status)
   { /* Empty */ }
 

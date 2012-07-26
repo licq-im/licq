@@ -86,8 +86,6 @@ private:
    */
   bool isProtocolConnected(const Licq::UserId& userId);
 
-  void pushProtoSignal(Licq::ProtocolSignal* s, const Licq::UserId& userId);
-
   unsigned long myNextEventId;
   Licq::Mutex myNextEventIdMutex;
 };

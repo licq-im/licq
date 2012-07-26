@@ -116,7 +116,7 @@ public:
   void unloadProtocolPlugin(Licq::ProtocolPlugin::Ptr plugin);
   void pushPluginEvent(Licq::Event* event);
   void pushPluginSignal(Licq::PluginSignal* signal);
-  void pushProtocolSignal(Licq::ProtocolSignal* signal, unsigned long protocolId);
+  void pushProtocolSignal(Licq::ProtocolSignal* signal);
 
 private:
   /// Helper function to delete a general plugin and close library in the correct order
