@@ -134,6 +134,9 @@ public:
   unsigned long protocolId() const
   { return myId.protocolId(); }
 
+  /// Capabilities for protocol (cached here for convenience)
+  unsigned long protocolCapabilities() const { return myProtocolCapabilities; }
+
   // General Info
   //!Retrieves the user's alias.
   const std::string& getAlias() const           { return myAlias; }
@@ -648,6 +651,7 @@ protected:
 
   const UserId myId;
   const bool myIsOwner;
+  unsigned long myProtocolCapabilities;
 
   int myNormalSocketDesc;
   int myInfoSocketDesc;

@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2007-2011 Licq developers <licq-dev@googlegroups.com>
+ * Copyright (C) 2007-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,6 @@ public:
    * @return (First) user associated with with dialog
    */
   const Licq::UserId& userId() const { return myUsers.front(); }
-  const QString& id() const { return myId; }
   unsigned long ppid() const { return myPpid; }
   unsigned long convoId() { return myConvoId; }
   const std::list<Licq::UserId>& convoUsers() const { return myUsers; }
@@ -100,7 +99,6 @@ protected:
   // which events we already processed in the ctor.
   int myHighestEventId;
 
-  QString myId;
   QString myBaseTitle;
   QString myProgressMsg;
 

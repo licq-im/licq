@@ -284,11 +284,7 @@ void UserPages::Settings::load(const Licq::User* user)
 
   myAutoRespEdit->setText(QString::fromUtf8(user->customAutoResponse().c_str()));
 
-  unsigned long sendFuncs = 0;
-  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(ppid);
-  if (protocol.get() != NULL)
-    sendFuncs = protocol->capabilities();
-
+  unsigned long sendFuncs = user->protocolCapabilities();
   myAutoAcceptFileCheck->setEnabled(sendFuncs & Licq::ProtocolPlugin::CanSendFile);
   myAutoAcceptChatCheck->setEnabled(sendFuncs & Licq::ProtocolPlugin::CanSendChat);
   myAutoSecureCheck->setEnabled(Licq::gDaemon.haveCryptoSupport() && (sendFuncs & Licq::ProtocolPlugin::CanSendSecure));

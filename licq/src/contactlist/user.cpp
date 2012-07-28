@@ -87,14 +87,14 @@ User::User(const UserId& id, bool temporary, bool isOwner)
 {
   LICQ_D();
 
-  myServerGroup = 0;
+  // Cache protocol capabilities as a convenience
   Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myId.protocolId());
-  if (protocol.get() != NULL)
-  {
-    if ((protocol->capabilities() & ProtocolPlugin::CanSingleGroup) == 0)
-      // Protocol handles multiple groups or no groups at all
-      myServerGroup = -1;
-  }
+  myProtocolCapabilities = (protocol.get() != NULL ? protocol->capabilities() : 0);
+
+  myServerGroup = 0;
+  if ((myProtocolCapabilities & ProtocolPlugin::CanSingleGroup) == 0)
+    // Protocol handles multiple groups or no groups at all
+    myServerGroup = -1;
 
   d->Init();
 

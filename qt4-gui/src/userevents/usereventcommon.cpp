@@ -64,20 +64,13 @@ using std::string;
 
 UserEventCommon::UserEventCommon(const Licq::UserId& userId, QWidget* parent, const char* name)
   : QWidget(parent),
+    myPpid(userId.protocolId()),
     myHighestEventId(-1)
 {
   Support::setWidgetProps(this, name);
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   myUsers.push_back(userId);
-  {
-    Licq::UserReadGuard user(userId);
-    if (user.isLocked())
-    {
-      myId = user->accountId().c_str();
-      myPpid = user->protocolId();
-    }
-  }
 
   // Find out what's supported for the protocol
   mySendFuncs = 0;

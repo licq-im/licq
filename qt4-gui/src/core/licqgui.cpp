@@ -990,7 +990,7 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
     return;
 
   QString id = userId.accountId().c_str();
-  unsigned long ppid = userId.protocolId();
+  unsigned long sendFuncs = 0;
 
   bool send;
   int convoId = -1;
@@ -998,6 +998,9 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
     Licq::UserReadGuard u(userId);
     if (!u.isLocked())
       return;
+
+    // Get message types supported for this protocol
+    sendFuncs = u->protocolCapabilities();
 
     // set default function to read or send depending on whether or not
     // there are new messages
@@ -1037,12 +1040,6 @@ void LicqGui::showDefaultEventDialog(const Licq::UserId& userId)
       mode = QClipboard::Selection;
       c = clip->text(mode);
     }
-
-    // Check which message types are supported for this protocol
-    unsigned long sendFuncs = 0;
-    Licq::ProtocolPlugin::Ptr protocol = gPluginManager.getProtocolPlugin(ppid);
-    if (protocol.get() != NULL)
-      sendFuncs = protocol->capabilities();
 
     if (sendFuncs & Licq::ProtocolPlugin::CanSendUrl &&
         (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))

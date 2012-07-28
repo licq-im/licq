@@ -295,12 +295,8 @@ void UserMenu::aboutToShowMenu()
     mySendActions[SendKey]->setIcon(IconManager::instance()->getIcon(IconManager::SecureOffIcon));
   }
 
-  unsigned long sendFuncs = 0;
+  unsigned long sendFuncs = u->protocolCapabilities();
   bool isIcq = myPpid == LICQ_PPID;
-
-  Licq::ProtocolPlugin::Ptr protocol = Licq::gPluginManager.getProtocolPlugin(myPpid);
-  if (protocol.get() != NULL)
-    sendFuncs = protocol->capabilities();
 
   mySendActions[SendMessage]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendMsg);
   mySendActions[SendUrl]->setVisible(sendFuncs & Licq::ProtocolPlugin::CanSendUrl);
