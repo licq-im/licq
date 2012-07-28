@@ -155,7 +155,7 @@ public:
   unsigned long icqSendContactList(const Licq::UserId& userId, const Licq::StringList& users,
       unsigned flags = 0, const Licq::Color* pColor = NULL);
 
-  unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false);
+  unsigned long icqFetchAutoResponse(const Licq::UserId& userId);
   unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
       unsigned flags);
   unsigned long icqMultiPartyChatRequest(const Licq::UserId& userId,
@@ -168,7 +168,7 @@ public:
       const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(const Licq::UserId& userId, unsigned short nSequence);
   unsigned long icqRequestInfoPluginList(const Licq::UserId& userId, bool bServer = false);
-  unsigned long icqRequestPhoneBook(const Licq::UserId& userId, bool bServer = false);
+  unsigned long icqRequestPhoneBook(const Licq::UserId& userId);
   void icqRequestPicture(unsigned long eventId, const Licq::UserId& userId);
   unsigned long icqRequestStatusPluginList(const Licq::UserId& userId, bool bServer = false);
   unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false);

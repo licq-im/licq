@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,6 +138,14 @@ public:
    * @return Conversation if found, otherwise NULL
    */
   virtual Conversation* getFromSocket(int socketId) = 0;
+
+  /**
+   * Get a conversation for a user
+   *
+   * @param userId User to find a conversation for
+   * @return Conversation if found, otherwise NULL
+   */
+  virtual Conversation* getFromUser(const UserId& userId) = 0;
 
 protected:
   virtual ~ConversationManager() { /* Empty */ }

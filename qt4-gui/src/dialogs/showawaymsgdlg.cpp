@@ -75,7 +75,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
   lay->addWidget(buttons);
 
-  bool bSendServer = true;
   {
     Licq::UserReadGuard u(myUserId);
     chkShowAgain->setChecked(u->ShowAwayMsg());
@@ -84,9 +83,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
         .arg(u->statusString(true, false).c_str())
         .arg(QString::fromUtf8(u->getAlias().c_str())));
 
-    if (fetch)
-      bSendServer = (u->normalSocketDesc() <= 0 && u->Version() > 6);
-    else
+    if (!fetch)
       mleAwayMsg->setText(QString::fromUtf8(u->autoResponse().c_str()));
   }
 
@@ -95,7 +92,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const Licq::UserId& userId, bool fetch, QWidget* 
     mleAwayMsg->setEnabled(false);
     connect(gGuiSignalManager, SIGNAL(doneUserFcn(const Licq::Event*)),
         SLOT(doneEvent(const Licq::Event*)));
-    icqEventTag = gLicqDaemon->icqFetchAutoResponse(myUserId, bSendServer);
+    icqEventTag = gLicqDaemon->icqFetchAutoResponse(myUserId);
   }
 
   show();

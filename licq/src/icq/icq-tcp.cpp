@@ -167,7 +167,7 @@ void IcqProtocol::icqSendMessage(unsigned long eventId, const Licq::UserId& user
     Licq::Color::setDefaultColors(pColor);
 }
 
-unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool bServer)
+unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId)
 {
   unsigned long eventId = Licq::gProtocolManager.getNextEventId();
   if (Licq::gUserManager.isOwner(userId))
@@ -181,7 +181,7 @@ unsigned long IcqProtocol::icqFetchAutoResponse(const Licq::UserId& userId, bool
 
   UserWriteGuard u(userId);
 
-  if (bServer)
+  if (u->normalSocketDesc() <= 0 && u->Version() > 6)
   {
     // Generic read, gets changed in constructor
     CSrvPacketTcp *s = new CPU_AdvancedMessage(*u, ICQ_CMDxTCP_READxAWAYxMSG, 0, false, 0, 0, 0);
@@ -478,7 +478,7 @@ unsigned long IcqProtocol::icqRequestInfoPluginList(const Licq::UserId& userId, 
 }
 
 //-----CICQDaemon::sendPhoneBookReq--------------------------------------------
-unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId, bool bServer)
+unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId)
 {
   if (Licq::gUserManager.isOwner(userId))
     return 0;
@@ -487,6 +487,7 @@ unsigned long IcqProtocol::icqRequestPhoneBook(const Licq::UserId& userId, bool 
   if (!u.isLocked())
     return 0;
 
+  bool bServer = (u->infoSocketDesc() < 0);
   if (bServer)
     gLog.info(tr("Requesting Phone Book from %s through server."), u->getAlias().c_str());
   else

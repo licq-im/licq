@@ -1531,14 +1531,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   unsigned long icqEventTag;
   if (page == UserDlg::PhonePage)
   {
-    bool bSendServer;
-    {
-      Licq::UserReadGuard u(myUserId);
-      if (!u.isLocked())
-        return 0;
-      bSendServer = (u->infoSocketDesc() < 0);
-    }
-    icqEventTag = gLicqDaemon->icqRequestPhoneBook(myUserId, bSendServer);
+    icqEventTag = gLicqDaemon->icqRequestPhoneBook(myUserId);
   }
   else if (page == UserDlg::PicturePage)
   {

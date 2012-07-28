@@ -800,6 +800,20 @@ const string& User::historyFile() const
   return d->myHistory.filename();
 }
 
+bool User::canSendDirect() const
+{
+  if ((myProtocolCapabilities & Licq::ProtocolPlugin::CanSendDirect) == 0)
+    // Protocol can't send direct at all
+    return false;
+
+  if (!isOnline() || InvisibleList())
+    // Don't connect to offline user and don't reveal invisible list
+    return false;
+
+  // Even if ip/port are missing a reverse connect via server might be possible
+  return true;
+}
+
 void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 {
   if ((myNormalSocketDesc != -1 || myInfoSocketDesc != -1 || myStatusSocketDesc != -1) &&

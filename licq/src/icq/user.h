@@ -78,6 +78,9 @@ public:
 
   bool directMode() const                       { return myDirectMode; }
 
+  /// Overridden to check for existing connections
+  bool canSendDirect() const;
+
   unsigned long ClientTimestamp() const         { return myClientTimestamp; }
   unsigned long OurClientTimestamp() const      { return myOurClientTimestamp; }
   unsigned long ClientInfoTimestamp() const     { return myClientInfoTimestamp; }

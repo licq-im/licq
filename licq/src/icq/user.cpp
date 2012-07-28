@@ -420,3 +420,16 @@ void User::setAlias(const string& alias)
 
   IcqUser::setAlias(alias);
 }
+
+bool User::canSendDirect() const
+{
+  if (myNormalSocketDesc != -1)
+    // We already have a connection
+    return true;
+
+  if (!isOnline() || InvisibleList())
+    // Don't connect to offline user and don't reveal invisible list
+    return false;
+
+  return true;
+}

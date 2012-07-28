@@ -171,17 +171,14 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
   mySendServerCheck = myToolBar->addAction(tr("Send through server"));
   mySendServerCheck->setCheckable(true);
 
-  bool canSendDirect = (mySendFuncs & Licq::ProtocolPlugin::CanSendDirect);
+  bool canSendDirect = false;
 
   {
     Licq::UserReadGuard u(myUsers.front());
     if (u.isLocked())
     {
-      mySendServerCheck->setChecked(u->SendServer() ||
-          (!u->isOnline() && u->normalSocketDesc() == -1));
-
-      if (u->InvisibleList() || (u->Port() == 0 && u->normalSocketDesc() == -1))
-        canSendDirect = false;
+      mySendServerCheck->setChecked(u->SendServer());
+      canSendDirect = u->canSendDirect();
     }
   }
   if (!canSendDirect)
@@ -228,7 +225,6 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
     connect(myHistoryView, SIGNAL(messageAdded()), SLOT(messageAdded()));
 
     Licq::UserReadGuard u(myUsers.front());
-    int userSocketDesc = (u.isLocked() ? u->normalSocketDesc() : -1);
     int historyCount = Config::Chat::instance()->showHistoryCount();
     int historyTime = Config::Chat::instance()->showHistoryTime();
     if (u.isLocked() && (historyCount > 0 || historyTime > 0))
@@ -378,9 +374,9 @@ UserSendEvent::UserSendEvent(int type, const Licq::UserId& userId, QWidget* pare
     }
 
     // Do we already have an open socket?
-    if (myConvoId == 0 && userSocketDesc != 1)
+    if (myConvoId == 0)
     {
-      Licq::Conversation* convo = gConvoManager.getFromSocket(userSocketDesc);
+      Licq::Conversation* convo = gConvoManager.getFromUser(myUsers.front());
       if (convo != NULL)
         myConvoId = convo->id();
     }

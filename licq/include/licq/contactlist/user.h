@@ -594,6 +594,13 @@ public:
   std::string internalIpToString() const;
   std::string portToString() const;
 
+  /**
+   * Check if a direct connection might be possible
+   *
+   * @return False if direct connection can't or shouldn't be done
+   */
+  virtual bool canSendDirect() const;
+
   int socketDesc(int channel) const;
   void clearSocketDesc(int channel);
   void clearAllSocketDesc();

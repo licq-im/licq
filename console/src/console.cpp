@@ -1859,8 +1859,7 @@ static bool SendDirect(const Licq::UserId& userId, char c)
   Licq::UserReadGuard u(userId);
   if (u.isLocked())
   {
-    if (u->normalSocketDesc() == -1 &&
-        (u->Ip() == 0 || u->Port() == 0 || !u->isOnline()))
+    if (!u->canSendDirect())
       bDirect = false;
     else if (u->SendServer() && c != 'd' && c != 'u')
       bDirect = false;

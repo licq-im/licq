@@ -70,7 +70,7 @@ public:
       unsigned flags = 0, const Licq::Color* pColor = NULL) = 0;
 
   // Auto Response
-  virtual unsigned long icqFetchAutoResponse(const Licq::UserId& userId, bool bServer = false) = 0;
+  virtual unsigned long icqFetchAutoResponse(const Licq::UserId& userId) = 0;
   // Chat Request
   virtual unsigned long icqChatRequest(const Licq::UserId& userId, const std::string& reason,
       unsigned flags = 0) = 0;
@@ -87,7 +87,7 @@ public:
   // Plugins
   virtual unsigned long icqRequestInfoPluginList(const Licq::UserId& userId,
      bool bServer = false) = 0;
-  virtual unsigned long icqRequestPhoneBook(const Licq::UserId& userId, bool bServer = false) = 0;
+  virtual unsigned long icqRequestPhoneBook(const Licq::UserId& userId) = 0;
   virtual unsigned long icqRequestStatusPluginList(const Licq::UserId& userId,
      bool bServer = false) = 0;
   virtual unsigned long icqRequestSharedFiles(const Licq::UserId& userId, bool bServer = false) = 0;

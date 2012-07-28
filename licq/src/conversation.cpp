@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,6 +169,16 @@ Licq::Conversation* ConversationManager::getFromSocket(int socketId)
   std::map<int, Conversation*>::iterator i;
   for (i = myConversations.begin(); i != myConversations.end(); ++i)
     if (i->second->socketId() == socketId)
+      return i->second;
+  return NULL;
+}
+
+Licq::Conversation* ConversationManager::getFromUser(const UserId& userId)
+{
+  MutexLocker lock(myMutex);
+  map<int, Conversation*>::iterator i;
+  for (i = myConversations.begin(); i != myConversations.end(); ++i)
+    if (i->second->hasUser(userId))
       return i->second;
   return NULL;
 }
