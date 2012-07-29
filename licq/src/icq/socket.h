@@ -44,6 +44,14 @@ public:
 class DcSocket : public Licq::TCPSocket
 {
 public:
+  enum ChannelType
+  {
+    ChannelUnknown      = 0,
+    ChannelNormal       = 1,
+    ChannelInfo         = 2,
+    ChannelStatus       = 3,
+  };
+
   DcSocket();
   DcSocket(const Licq::UserId& userId);
 
@@ -64,8 +72,12 @@ public:
   Licq::Buffer& RecvBuffer()
   { return myRecvBuffer; };
 
+  void setChannel(int channel) { myChannel = channel; }
+  int channel() const { return myChannel; }
+
 private:
   Licq::Buffer myRecvBuffer;
+  int myChannel;
 };
 
 } // namespace LicqIcq

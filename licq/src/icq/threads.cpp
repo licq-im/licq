@@ -410,7 +410,7 @@ void* LicqIcq::ProcessRunningEvent_Client_tep(void *p)
     Licq::UserId userId = e->userId();
     string id = userId.accountId();
     CPacketTcp* packetTcp = dynamic_cast<CPacketTcp*>(e->m_pPacket);
-    int channel = (packetTcp != NULL ? packetTcp->channel() : Licq::TCPSocket::ChannelNormal);
+    int channel = (packetTcp != NULL ? packetTcp->channel() : DcSocket::ChannelNormal);
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     unsigned long nVersion;

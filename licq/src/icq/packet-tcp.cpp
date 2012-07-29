@@ -32,7 +32,6 @@
 
 #include <licq/byteorder.h>
 #include <licq/color.h>
-#include <licq/socket.h>
 #include <licq/translator.h>
 #include <licq/logging/log.h>
 #include <licq/version.h>
@@ -41,6 +40,7 @@
 #include "buffer.h"
 #include "defines.h"
 #include "icq.h"
+#include "socket.h"
 #include "owner.h"
 #include "user.h"
 
@@ -415,15 +415,15 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(int channel,
   unsigned long nOurId;
   switch (channel)
   {
-    case Licq::TCPSocket::ChannelNormal:
+    case DcSocket::ChannelNormal:
     nOurId = 0x00000001;
     GUID = PLUGIN_NORMAL;
       break;
-    case Licq::TCPSocket::ChannelInfo:
+    case DcSocket::ChannelInfo:
     nOurId = 0x000003EB;
     GUID = PLUGIN_INFOxMANAGER;
       break;
-    case Licq::TCPSocket::ChannelStatus:
+    case DcSocket::ChannelStatus:
     nOurId = 0x000003EA;
     GUID = PLUGIN_STATUSxMANAGER;
     break;
@@ -460,15 +460,15 @@ CPacketTcp_Handshake_Confirm::CPacketTcp_Handshake_Confirm(CBuffer *inbuf)
     (*inbuf) >> GUID[i];
 
   if (memcmp(GUID, PLUGIN_NORMAL, 16) == 0)
-    myChannel = Licq::TCPSocket::ChannelNormal;
+    myChannel = DcSocket::ChannelNormal;
   else if (memcmp(GUID, PLUGIN_INFOxMANAGER, 16) == 0)
-    myChannel = Licq::TCPSocket::ChannelInfo;
+    myChannel = DcSocket::ChannelInfo;
   else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, 16) == 0)
-    myChannel = Licq::TCPSocket::ChannelStatus;
+    myChannel = DcSocket::ChannelStatus;
   else
   {
     gLog.warning(tr("Unknown channel GUID."));
-    myChannel = Licq::TCPSocket::ChannelUnknown;
+    myChannel = DcSocket::ChannelUnknown;
   }
 }
 
@@ -746,7 +746,7 @@ void CPacketTcp::PostBuffer_v6()
 void CPacketTcp::InitBuffer_v7()
 {
   m_nSize += 31;
-  if (channel() == Licq::TCPSocket::ChannelNormal)
+  if (channel() == DcSocket::ChannelNormal)
     m_nSize += 2 + myMessage.size();
   else
     m_nSize += 3;
@@ -756,16 +756,16 @@ void CPacketTcp::InitBuffer_v7()
   buffer->PackChar(0x02);
   buffer->PackUnsignedLong(0); // Checksum
   buffer->PackUnsignedShort(m_nCommand);
-  buffer->PackUnsignedShort((channel() == Licq::TCPSocket::ChannelNormal) ? 0x000E : 0x0012);
+  buffer->PackUnsignedShort((channel() == DcSocket::ChannelNormal) ? 0x000E : 0x0012);
   buffer->PackUnsignedShort(m_nSequence);
   buffer->PackUnsignedLong(0);
   buffer->PackUnsignedLong(0);
   buffer->PackUnsignedLong(0);
   buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
-  buffer->PackUnsignedShort((channel() == Licq::TCPSocket::ChannelNormal) ? m_nMsgType : m_nLevel);
+  buffer->PackUnsignedShort((channel() == DcSocket::ChannelNormal) ? m_nMsgType : m_nLevel);
 
-  if (channel() == Licq::TCPSocket::ChannelNormal)
+  if (channel() == DcSocket::ChannelNormal)
   {
     buffer->PackUnsignedShort(myMessage.size());
     buffer->pack(myMessage);
@@ -789,7 +789,7 @@ CPT_Message::CPT_Message(const string& message, unsigned short nLevel, bool bMR,
     const Licq::Color* pColor, User* pUser, bool isUtf8)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-        Licq::TCPSocket::ChannelNormal,
+        DcSocket::ChannelNormal,
         message, true, nLevel, pUser)
 {
   if (m_nVersion >= 6)
@@ -826,7 +826,7 @@ CPT_Url::CPT_Url(const string& message, unsigned short nLevel, bool bMR,
     const Licq::Color* pColor, User* pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_URL | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-        Licq::TCPSocket::ChannelNormal,
+        DcSocket::ChannelNormal,
         message, true, nLevel, pUser)
 {
   if (m_nVersion >= 6)
@@ -854,7 +854,7 @@ CPT_ContactList::CPT_ContactList(const string& message, unsigned short nLevel, b
     const Licq::Color* pColor, User* pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_CONTACTxLIST | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-        Licq::TCPSocket::ChannelNormal,
+        DcSocket::ChannelNormal,
         message, true, nLevel, pUser)
 {
   if (m_nVersion >= 6)
@@ -880,7 +880,7 @@ CPT_ContactList::CPT_ContactList(const string& message, unsigned short nLevel, b
 //-----ReadAwayMessage----------------------------------------------------------
 CPT_ReadAwayMessage::CPT_ReadAwayMessage(User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG,
-        Licq::TCPSocket::ChannelNormal, "", true, ICQ_TCPxMSG_AUTOxREPLY, _cUser)
+        DcSocket::ChannelNormal, "", true, ICQ_TCPxMSG_AUTOxREPLY, _cUser)
 {
   // Properly set the subcommand to get the correct away message
   unsigned status = _cUser->status();
@@ -912,7 +912,7 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(User* _cUser)
 CPT_ChatRequest::CPT_ChatRequest(const string& message, const string& chatUsers,
    unsigned short nPort, unsigned short nLevel, User* pUser, bool bICBM)
   : CPacketTcp(ICQ_CMDxTCP_START, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_CHAT,
-        Licq::TCPSocket::ChannelNormal,
+        DcSocket::ChannelNormal,
         bICBM ? "" : message, true, nLevel, pUser)
 {
   m_nSize += 2 + chatUsers.size() + 1 + 8;
@@ -968,7 +968,7 @@ CPT_ChatRequest::CPT_ChatRequest(const string& message, const string& chatUsers,
 //-----FileTransfer--------------------------------------------------------------
 CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const string& filename,
     const string& description, unsigned short nLevel, User* _cUser)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, Licq::TCPSocket::ChannelNormal,
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, DcSocket::ChannelNormal,
         description, true, nLevel, _cUser),
     m_lFileList(lFileList.begin(), lFileList.end())
 {
@@ -1010,7 +1010,7 @@ CPT_FileTransfer::CPT_FileTransfer(const list<string>& lFileList, const string& 
 //-----Key------------------------------------------------------------------
 CPT_OpenSecureChannel::CPT_OpenSecureChannel(User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExOPEN,
-        Licq::TCPSocket::ChannelNormal,
+        DcSocket::ChannelNormal,
        "", true, ICQ_TCPxMSG_NORMAL, _cUser)
 {
   InitBuffer();
@@ -1020,7 +1020,7 @@ CPT_OpenSecureChannel::CPT_OpenSecureChannel(User* _cUser)
 
 CPT_CloseSecureChannel::CPT_CloseSecureChannel(User* _cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_SECURExCLOSE,
-        Licq::TCPSocket::ChannelNormal,
+        DcSocket::ChannelNormal,
        "", true, ICQ_TCPxMSG_NORMAL, _cUser)
 {
   InitBuffer();
@@ -1032,7 +1032,7 @@ CPT_CloseSecureChannel::CPT_CloseSecureChannel(User* _cUser)
 
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
     bool _bAccept, bool l, User* pUser)
-  : CPacketTcp(ICQ_CMDxTCP_ACK, _nSubCommand, Licq::TCPSocket::ChannelNormal,
+  : CPacketTcp(ICQ_CMDxTCP_ACK, _nSubCommand, DcSocket::ChannelNormal,
       "", _bAccept, l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
 {
   m_nSequence = _nSequence;
@@ -1285,7 +1285,7 @@ CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
 //+++++Cancel+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned short _nSequence,
     User* _cUser)
-  : CPacketTcp(ICQ_CMDxTCP_CANCEL, _nSubCommand, Licq::TCPSocket::ChannelNormal, "", true, 0, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_CANCEL, _nSubCommand, DcSocket::ChannelNormal, "", true, 0, _cUser)
 {
   m_nSequence = _nSequence;
 }
@@ -1334,7 +1334,7 @@ CPT_PluginError::CPT_PluginError(User* _cUser, unsigned short nSequence,
 //-----Send info plugin request------------------------------------------------
 CPT_InfoPluginReq::CPT_InfoPluginReq(User* _cUser, const uint8_t* GUID,
   unsigned long nTime)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelInfo, "", true, 0, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, DcSocket::ChannelInfo, "", true, 0, _cUser)
 {
   m_nSize += GUID_LENGTH + 4;
   memcpy(m_ReqGUID, GUID, GUID_LENGTH);
@@ -1351,7 +1351,7 @@ CPT_InfoPluginReq::CPT_InfoPluginReq(User* _cUser, const uint8_t* GUID,
 //----Reply to phone book request-----------------------------------------------
 CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(User* _cUser,
   unsigned short nSequence)
-  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, DcSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
   OwnerReadGuard o;
   const Licq::ICQUserPhoneBook& book = o->GetPhoneBook();
@@ -1421,7 +1421,7 @@ CPT_InfoPhoneBookResp::CPT_InfoPhoneBookResp(User* _cUser,
 
 //----Reply to picture request--------------------------------------------------
 CPT_InfoPictureResp::CPT_InfoPictureResp(User* _cUser, unsigned short nSequence)
-  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, DcSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
   OwnerReadGuard o;
   string filename = o->pictureFileName();
@@ -1512,7 +1512,7 @@ CPT_InfoPictureResp::CPT_InfoPictureResp(User* _cUser, unsigned short nSequence)
 
 //----Reply to plugin list request----------------------------------------------
 CPT_InfoPluginListResp::CPT_InfoPluginListResp(User* _cUser, unsigned short nSequence)
-  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, DcSocket::ChannelInfo, "\x01", true, ICQ_TCPxMSG_URGENT2, _cUser)
 {
   unsigned long num_plugins = sizeof(IcqProtocol::info_plugins)/sizeof(struct PluginList);
 
@@ -1566,7 +1566,7 @@ CPT_InfoPluginListResp::CPT_InfoPluginListResp(User* _cUser, unsigned short nSeq
 //-----Send status plugin request----------------------------------------------
 CPT_StatusPluginReq::CPT_StatusPluginReq(User* _cUser, const uint8_t* GUID,
   unsigned long nTime)
-  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, Licq::TCPSocket::ChannelStatus, "", true, 0, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, DcSocket::ChannelStatus, "", true, 0, _cUser)
 {
   m_nSize += GUID_LENGTH + 4;
   memcpy(m_ReqGUID, GUID, GUID_LENGTH);
@@ -1582,7 +1582,7 @@ CPT_StatusPluginReq::CPT_StatusPluginReq(User* _cUser, const uint8_t* GUID,
 
 //----Reply to plugin list request----------------------------------------------
 CPT_StatusPluginListResp::CPT_StatusPluginListResp(User* _cUser, unsigned short nSequence)
-  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelStatus, "\x01", true, 0, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, DcSocket::ChannelStatus, "\x01", true, 0, _cUser)
 {
   unsigned long num_plugins = sizeof(IcqProtocol::status_plugins)/sizeof(struct PluginList);
 
@@ -1640,7 +1640,7 @@ CPT_StatusPluginListResp::CPT_StatusPluginListResp(User* _cUser, unsigned short 
 CPT_StatusPluginResp::CPT_StatusPluginResp(User* _cUser,
   unsigned short nSequence,
   unsigned long nStatus)
-  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, Licq::TCPSocket::ChannelStatus, "\x02", true, 0, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_ACK, 0, DcSocket::ChannelStatus, "\x02", true, 0, _cUser)
 {
   m_nSize += 2 + 2 + 4 + 4 + 1;
   m_nSequence = nSequence;

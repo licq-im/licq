@@ -1398,7 +1398,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
       packet.incDataPosRead(headerLen - 2);
       newCommand = packet.UnpackUnsignedShort();
 
-      if (pSock->channel() == Licq::TCPSocket::ChannelNormal)
+      if (pSock->channel() == DcSocket::ChannelNormal)
       {
         ackFlags = packet.UnpackUnsignedShort();
         msgFlags = packet.UnpackUnsignedShort();
@@ -1460,7 +1460,7 @@ bool IcqProtocol::ProcessTcpPacket(DcSocket* pSock)
               u->socketDesc(pSock->channel()), sockfd);
   }
 
-  if (pSock->channel() != Licq::TCPSocket::ChannelNormal)
+  if (pSock->channel() != DcSocket::ChannelNormal)
   {
     errorOccured = processPluginMessage(packet, *u, pSock->channel(),
                                         command == ICQ_CMDxTCP_ACK,
@@ -2685,7 +2685,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
 
   switch (channel)
   {
-    case Licq::TCPSocket::ChannelInfo:
+    case DcSocket::ChannelInfo:
     {
     packet.incDataPosRead(2);
     char error_level = packet.UnpackChar();
@@ -2754,7 +2754,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
           gLog.warning(tr("Unknown info request from %s."), u->getAlias().c_str());
         if (pSock)
         {
-            CPT_PluginError p(u, nSequence, Licq::TCPSocket::ChannelInfo);
+            CPT_PluginError p(u, nSequence, DcSocket::ChannelInfo);
           AckTCP(p, pSock);
         }
         else
@@ -2803,7 +2803,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
           {
             GUID = ((CPU_InfoPluginReq *)e->m_pPacket)->RequestGUID();
               }
-              else if (packetTcp != NULL && packetTcp->channel() == Licq::TCPSocket::ChannelInfo &&
+              else if (packetTcp != NULL && packetTcp->channel() == DcSocket::ChannelInfo &&
                    e->ExtraInfo() == DirectInfoPluginRequest)
           {
             GUID = ((CPT_InfoPluginReq *)e->m_pPacket)->RequestGUID();
@@ -3030,7 +3030,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
 
       break;
     }
-    case Licq::TCPSocket::ChannelStatus:
+    case DcSocket::ChannelStatus:
     {
     packet.incDataPosRead(2);
     char error_level = packet.UnpackChar();
@@ -3144,7 +3144,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
           gLog.warning(tr("Unknown status request from %s."), u->getAlias().c_str());
         if (pSock)
         {
-            CPT_PluginError p(u, nSequence, Licq::TCPSocket::ChannelStatus);
+            CPT_PluginError p(u, nSequence, DcSocket::ChannelStatus);
           AckTCP(p, pSock);
         }
         else
@@ -3216,7 +3216,7 @@ bool IcqProtocol::processPluginMessage(CBuffer &packet, User* u,
         {
           GUID = ((CPU_StatusPluginReq *)e->m_pPacket)->RequestGUID();
             }
-            else if (packetTcp != NULL && packetTcp->channel() == Licq::TCPSocket::ChannelInfo &&
+            else if (packetTcp != NULL && packetTcp->channel() == DcSocket::ChannelInfo &&
                  e->ExtraInfo() == DirectStatusPluginRequest)
         {
           GUID = ((CPT_StatusPluginReq *)e->m_pPacket)->RequestGUID();
@@ -3708,7 +3708,7 @@ bool IcqProtocol::Handshake_RecvConfirm_v7(DcSocket* s)
     }
     b.Reset();
     CPacketTcp_Handshake_Confirm p_confirm_in(&b);
-    if (p_confirm_in.channel() != Licq::TCPSocket::ChannelUnknown)
+    if (p_confirm_in.channel() != DcSocket::ChannelUnknown)
       s->setChannel(p_confirm_in.channel());
     else
     {

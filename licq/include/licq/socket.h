@@ -267,21 +267,9 @@ public:
   bool SecureListen();
   void SecureStop();
 
-  enum ChannelType
-  {
-    ChannelUnknown      = 0,
-    ChannelNormal       = 1,
-    ChannelInfo         = 2,
-    ChannelStatus       = 3,
-  };
-
-  void setChannel(int channel) { myChannel = channel; }
-  int channel() const { return myChannel; }
-
 protected:
   void* m_p_SSL;
   pthread_mutex_t mutex_ssl;
-  int myChannel;
 };
 
 

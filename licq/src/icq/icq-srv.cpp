@@ -2900,7 +2900,7 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
 
         pthread_t t;
         CReverseConnectToUserData *data = new CReverseConnectToUserData(
-                id, nId, Licq::TCPSocket::ChannelUnknown, nIp, nPort,
+                id, nId, DcSocket::ChannelUnknown, nIp, nPort,
                                nVersion, nFailedPort, nMsgID[0], nMsgID[1]);
         pthread_create(&t, NULL, &ReverseConnectToUser_tep, data);
         break;
@@ -2932,11 +2932,11 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
       {
             int channel;
         if (memcmp(GUID, PLUGIN_INFOxMANAGER, GUID_LENGTH) == 0)
-              channel = Licq::TCPSocket::ChannelInfo;
+              channel = DcSocket::ChannelInfo;
         else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, GUID_LENGTH) == 0)
-              channel = Licq::TCPSocket::ChannelStatus;
+              channel = DcSocket::ChannelStatus;
             else
-              channel = Licq::TCPSocket::ChannelUnknown;
+              channel = DcSocket::ChannelUnknown;
 
         bool bNewUser = false;
             UserWriteGuard u(userId, true, &bNewUser);
@@ -3168,11 +3168,11 @@ However it seems to always think contact is online instead of away/occupied/etc.
     {
         int channel;
       if (memcmp(GUID, PLUGIN_INFOxMANAGER, GUID_LENGTH) == 0)
-          channel = Licq::TCPSocket::ChannelInfo;
+          channel = DcSocket::ChannelInfo;
       else if (memcmp(GUID, PLUGIN_STATUSxMANAGER, GUID_LENGTH) == 0)
-          channel = Licq::TCPSocket::ChannelStatus;
+          channel = DcSocket::ChannelStatus;
         else
-          channel = Licq::TCPSocket::ChannelUnknown;
+          channel = DcSocket::ChannelUnknown;
 
         processPluginMessage(packet, *u, channel, true, 0, nMsgID, nSequence, 0);
 

@@ -533,15 +533,13 @@ bool INetSocket::receive(Buffer& buf, size_t maxlength, bool dump)
 
 //=====TCPSocket===============================================================
 TCPSocket::TCPSocket(const UserId& userId)
-  : INetSocket(SOCK_STREAM, "TCP", userId),
-    myChannel(ChannelNormal)
+  : INetSocket(SOCK_STREAM, "TCP", userId)
 {
   m_p_SSL = NULL;
 }
 
 TCPSocket::TCPSocket()
-  : INetSocket(SOCK_STREAM, "TCP", UserId()),
-    myChannel(ChannelNormal)
+  : INetSocket(SOCK_STREAM, "TCP", UserId())
 {
   m_p_SSL = NULL;
 }
