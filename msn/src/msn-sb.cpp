@@ -39,6 +39,8 @@
 #include <licq/translator.h>
 #include <licq/userevents.h>
 
+#include "user.h"
+
 using namespace std;
 using namespace LicqMsn;
 using Licq::UserId;
@@ -351,7 +353,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       int nThisSock = -1;
 
       {
-        Licq::UserWriteGuard u(userId);
+        UserWriteGuard u(userId);
         if (u.isLocked())
         {
           u->clearNormalSocketDesc();
@@ -415,7 +417,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
   int nSock = nSocket;
   if (nSocket == -1)
   {
-    Licq::UserReadGuard u(userId);
+    UserReadGuard u(userId);
     if (!u.isLocked())
       return;
     nSock = u->normalSocketDesc();
@@ -438,7 +440,7 @@ void CMSN::Send_SB_Packet(const UserId& userId, CMSNPacket *p, int nSocket, bool
       convo->removeUser(userId);
 
     {
-      Licq::UserWriteGuard u(userId);
+      UserWriteGuard u(userId);
       if (u.isLocked())
         u->clearNormalSocketDesc();
     }
@@ -510,12 +512,13 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   gSocketMan.AddSocket(sock);
 
   {
-    Licq::UserWriteGuard u(pStart->userId);
+    UserWriteGuard u(pStart->userId);
     if (u.isLocked())
     {
       if (pStart->m_bDataConnection)
-        sock->setChannel(Licq::TCPSocket::ChannelInfo);
-      u->setSocketDesc(sock);
+        u->setInfoSocketDesc(sock);
+      else
+        u->setNormalSocketDesc(sock);
     }
   }
   gSocketMan.DropSocket(sock);
@@ -564,8 +567,8 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
 
   {
     bool newUser = false;
-    Licq::UserWriteGuard u(userId, true, &newUser);
-    u->setSocketDesc(sock);
+    UserWriteGuard u(userId, true, &newUser);
+    u->setNormalSocketDesc(sock);
     if (newUser)
     {
       u->SetEnableSave(false);
@@ -687,7 +690,7 @@ void CMSN::killConversation(int sock)
       convo->removeUser(userId);
 
       // Clear socket from user if it's still is associated with this conversation
-      Licq::UserWriteGuard u(userId);
+      UserWriteGuard u(userId);
       if (u.isLocked() && u->normalSocketDesc() == sock)
         u->clearNormalSocketDesc();
     }

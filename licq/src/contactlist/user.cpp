@@ -45,8 +45,6 @@
 #include <licq/socket.h>
 #include <licq/userevents.h>
 
-#include "../icq/icq.h" // For gSocketManager
-
 using boost::any_cast;
 using boost::bad_any_cast;
 using std::map;
@@ -445,7 +443,6 @@ void User::Private::Init()
   myUser->SetSendIntIp(false);
   myUser->SetShowAwayMsg(false);
   myUser->SetOfflineOnDisconnect(false);
-  myUser->clearAllSocketDesc();
   myUser->m_nIp = 0;
   myUser->m_nPort = 0;
   myUser->m_nIntIp = 0;
@@ -816,108 +813,14 @@ bool User::canSendDirect() const
 
 void Licq::User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 {
-  if ((myNormalSocketDesc != -1 || myInfoSocketDesc != -1 || myStatusSocketDesc != -1) &&
-      ( (Ip() != 0 && Ip() != _nIp) || (Port() != 0 && Port() != _nPort)) )
-  {
-    // Close our socket, but don't let socket manager try and clear
-    // our socket descriptor
-    if (myNormalSocketDesc != -1)
-      gSocketManager.CloseSocket(myNormalSocketDesc, false);
-    if (myInfoSocketDesc != -1)
-      gSocketManager.CloseSocket(myInfoSocketDesc, false);
-    if (myStatusSocketDesc != -1)
-      gSocketManager.CloseSocket(myStatusSocketDesc, false);
-    clearAllSocketDesc();
-  }
   m_nIp = _nIp;
   m_nPort = _nPort;
   save(SaveLicqInfo);
 }
 
-int Licq::User::socketDesc(int channel) const
+void Licq::User::clearSocketDesc(INetSocket* /* s */)
 {
-  switch (channel)
-  {
-    case TCPSocket::ChannelNormal:
-      return myNormalSocketDesc;
-    case TCPSocket::ChannelInfo:
-      return myInfoSocketDesc;
-    case TCPSocket::ChannelStatus:
-      return myStatusSocketDesc;
-  }
-  gLog.warning(tr("Unknown channel type %u."), channel);
-
-  return 0;
-}
-
-void Licq::User::setSocketDesc(Licq::TCPSocket* s)
-{
-  if (s->channel() == TCPSocket::ChannelNormal)
-    myNormalSocketDesc = s->Descriptor();
-  else if (s->channel() == TCPSocket::ChannelInfo)
-    myInfoSocketDesc = s->Descriptor();
-  else if (s->channel() == TCPSocket::ChannelStatus)
-    myStatusSocketDesc = s->Descriptor();
-  m_nLocalPort = s->getLocalPort();
-  m_nConnectionVersion = s->Version();
-  if (m_bSecure != s->Secure())
-  {
-    m_bSecure = s->Secure();
-    if (m_bOnContactList)
-      gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
-          PluginSignal::UserSecurity, myId, m_bSecure ? 1 : 0));
-  }
-
-  if (m_nIntIp == 0)
-    m_nIntIp = s->getRemoteIpInt();
-  if (m_nPort == 0)
-    m_nPort = s->getRemotePort();
-  SetSendServer(false);
-}
-
-void Licq::User::clearSocketDesc(int channel)
-{
-  switch (channel)
-  {
-    case TCPSocket::ChannelNormal:
-      myNormalSocketDesc = -1;
-      break;
-    case TCPSocket::ChannelInfo:
-      myInfoSocketDesc = -1;
-      break;
-    case TCPSocket::ChannelStatus:
-      myStatusSocketDesc = -1;
-      break;
-    case -1: // Used as default value to clear all socket descriptors
-      myNormalSocketDesc = -1;
-      myInfoSocketDesc = -1;
-      myStatusSocketDesc = -1;
-      break;
-    default:
-      gLog.info(tr("Unknown channel %u."), channel);
-      return;
-  }
-
-  if (myStatusSocketDesc == -1 && myInfoSocketDesc == -1 && myNormalSocketDesc == -1)
-  {
-    m_nLocalPort = 0;
-    m_nConnectionVersion = 0;
-    m_bSecure = false;
-  }
-
-  if (m_bOnContactList)
-    gPluginManager.pushPluginSignal(new PluginSignal(PluginSignal::SignalUser,
-        PluginSignal::UserSecurity, myId, 0));
-}
-
-void Licq::User::clearAllSocketDesc()
-{
-  clearSocketDesc(-1);
-}
-
-void Licq::User::clearNormalSocketDesc()
-{
-  clearSocketDesc(TCPSocket::ChannelNormal);
+  /* Empty, reimplemented in subclasses as needed */
 }
 
 unsigned short Licq::User::ConnectionVersion() const
@@ -1077,7 +980,6 @@ string Licq::User::ipToString() const
     return ip;
 }
 
-
 string Licq::User::portToString() const
 {
   if (Port() > 0)               // Default to the given port
@@ -1092,34 +994,13 @@ string Licq::User::portToString() const
 
 string Licq::User::internalIpToString() const
 {
-  int socket = myNormalSocketDesc;
-  if (socket < 0)
-    socket = myInfoSocketDesc;
-  if (socket < 0)
-    socket = myStatusSocketDesc;
-
-  if (socket > 0)		// First check if we are connected
+  if (IntIp() > 0)		// Default to the given ip
   {
-    Licq::INetSocket *s = gSocketManager.FetchSocket(socket);
-    if (s != NULL)
-    {
-      string ret = s->getRemoteIpString();
-      gSocketManager.DropSocket(s);
-      return ret;
-    }
-    else
-      return tr("Invalid");
+    char buf[32];
+    return ip_ntoa(m_nIntIp, buf);
   }
-  else
-  {
-    if (IntIp() > 0)		// Default to the given ip
-    {
-      char buf[32];
-      return ip_ntoa(m_nIntIp, buf);
-    }
-    else			// Otherwise we don't know
-      return "";
-  }
+  else			// Otherwise we don't know
+    return "";
 }
 
 string Licq::User::usprintf(const string& format, int quotes, bool toDos, bool allowFieldWidth) const

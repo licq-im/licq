@@ -1,6 +1,6 @@
 /*
  * This file is part of Licq, an instant messaging client for UNIX.
- * Copyright (C) 2010-2011 Licq developers
+ * Copyright (C) 2010-2012 Licq developers <licq-dev@googlegroups.com>
  *
  * Licq is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -208,10 +208,6 @@ void SocketManager::CloseSocket(int nSd, bool bClearUser, bool bDelete)
   if (s == NULL)
     return;
 
-  UserId userId = s->userId();
-  TCPSocket *ts = dynamic_cast<TCPSocket*>(s);
-  int channel = (ts != NULL ? ts->channel() : TCPSocket::ChannelNormal);
-
   // First remove the socket from the hash table so it won't be fetched anymore
   m_hSockets.Remove(nSd);
 
@@ -221,16 +217,18 @@ void SocketManager::CloseSocket(int nSd, bool bClearUser, bool bDelete)
   // before removing it from the hash table, and once removed from the has
   // table, no one can get a lock again.
   s->CloseConnection();
-  if (bDelete) delete s;
 
   if (bClearUser)
   {
-    Licq::UserWriteGuard u(userId);
+    Licq::UserWriteGuard u(s->userId());
     if (u.isLocked())
     {
-      u->clearSocketDesc(channel);
+      u->clearSocketDesc(s);
       if (u->OfflineOnDisconnect())
         u->statusChanged(Licq::User::OfflineStatus);
     }
   }
+
+  if (bDelete)
+    delete s;
 }

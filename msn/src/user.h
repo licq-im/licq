@@ -22,6 +22,8 @@
 
 #include <licq/contactlist/user.h>
 
+#include <licq/socket.h>
+
 namespace LicqMsn
 {
 
@@ -45,11 +47,21 @@ public:
   void setPictureObject(const std::string& s)
   { myPictureObject = s; save(SavePictureInfo); }
 
+  void setNormalSocketDesc(Licq::INetSocket* s) { myNormalSocketDesc = s->Descriptor(); }
+  void setInfoSocketDesc(Licq::INetSocket* s) { myInfoSocketDesc = s->Descriptor(); }
+  void clearSocketDesc(Licq::INetSocket* s);
+  void clearAllSocketDesc() { clearSocketDesc(NULL); }
+  int normalSocketDesc() const { return myNormalSocketDesc; }
+  void clearNormalSocketDesc() { myNormalSocketDesc = -1; }
+
 private:
   /// Inherited from Licq::User to save local additions
   virtual void savePictureInfo();
 
   std::string myPictureObject;
+
+  int myNormalSocketDesc;
+  int myInfoSocketDesc;
 };
 
 

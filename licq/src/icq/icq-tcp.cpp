@@ -1045,7 +1045,7 @@ sock_error:
 int IcqProtocol::connectToUser(const Licq::UserId& userId, int channel)
 {
   {
-    Licq::UserReadGuard u(userId);
+    UserReadGuard u(userId);
     if (!u.isLocked())
       return -1;
 
@@ -1076,7 +1076,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, int channel)
   unsigned nVersion;
 
   {
-    Licq::UserWriteGuard u(userId);
+    UserWriteGuard u(userId);
     int sd = u->normalSocketDesc();
     if (sd == -1)
       u->SetConnectionInProgress(true);
@@ -1116,7 +1116,7 @@ int IcqProtocol::connectToUser(const Licq::UserId& userId, int channel)
 
   // Set the socket descriptor in the user
   {
-    Licq::UserWriteGuard u(userId);
+    UserWriteGuard u(userId);
     if (!u.isLocked())
       return -1;
     u->setSocketDesc(s);
@@ -1282,7 +1282,7 @@ int IcqProtocol::reverseConnectToUser(const Licq::UserId& userId, unsigned long 
   {
     // Set the socket descriptor in the user if this user is on our list
     {
-      Licq::UserWriteGuard u(userId);
+      UserWriteGuard u(userId);
       if (u.isLocked())
         u->setSocketDesc(s);
     }
@@ -3746,7 +3746,7 @@ bool IcqProtocol::ProcessTcpHandshake(DcSocket* s)
   if (!userId.isValid())
     return false;
 
-  Licq::UserWriteGuard u(userId);
+  UserWriteGuard u(userId);
   if (u.isLocked())
   {
     gLog.info(tr("Connection from %s (%s) [v%ld]."),
@@ -3759,7 +3759,7 @@ bool IcqProtocol::ProcessTcpHandshake(DcSocket* s)
             u->getAlias().c_str(), userId.toString().c_str());
         return true;
 /*        gSocketManager.CloseSocket(u->socketDesc(s->channel()), false);
-        u->clearSocketDesc(s->channel());*/
+        u->clearSocketDesc(s);*/
       }
       u->setSocketDesc(s);
     }

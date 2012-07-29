@@ -375,8 +375,8 @@ private:
   { return SendExpectEvent_Server(eventId, Licq::UserId(), packet, ue, extendedEvent); }
 
   Licq::Event* SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::UserEvent* ue, bool extendedEvent = false);
-  Licq::Event* SendExpectEvent_Client(unsigned long eventId, const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue);
-  Licq::Event* SendExpectEvent_Client(const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue);
+  Licq::Event* SendExpectEvent_Client(unsigned long eventId, const User* user, CPacketTcp* packet, Licq::UserEvent* ue);
+  Licq::Event* SendExpectEvent_Client(const User* user, CPacketTcp* packet, Licq::UserEvent* ue);
   Licq::Event* SendExpectEvent(Licq::Event*, void *(*fcn)(void *));
   unsigned eventCommandFromPacket(Licq::Packet* p);
 

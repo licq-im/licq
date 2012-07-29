@@ -644,7 +644,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
     Licq::UserListGuard userList(MSN_PPID);
     BOOST_FOREACH(Licq::User* user, **userList)
     {
-      Licq::UserWriteGuard u(user);
+      UserWriteGuard u(dynamic_cast<User*>(user));
       if (u->normalSocketDesc() != -1)
       {
         gSocketMan.CloseSocket(u->normalSocketDesc(), false, true);

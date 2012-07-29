@@ -26,6 +26,7 @@
 
 namespace LicqIcq
 {
+class DcSocket;
 
 /**
  * An ICQ protocol contact
@@ -118,6 +119,16 @@ public:
   TlvList GetTLVList()                          { return myTLVs; }
   const TlvList GetTLVList() const              { return myTLVs; }
 
+  void SetIpPort(unsigned long nIp, unsigned short nPort);
+  std::string internalIpToString() const;
+
+  int socketDesc(int channel) const;
+  void setSocketDesc(DcSocket* s);
+  void clearSocketDesc(Licq::INetSocket* s);
+  void clearAllSocketDesc() { clearSocketDesc(NULL); }
+  int normalSocketDesc() const { return myNormalSocketDesc; }
+  int infoSocketDesc() const { return myInfoSocketDesc; }
+
 private:
   /**
    * Save a category list
@@ -173,6 +184,11 @@ private:
   // actual type is in SOscarTLV as well. Which should make it obvious
   // that the TLV handling should be fixed in licq_buffer.h/buffer.cpp
   TlvList myTLVs;
+
+  // Socket descriptors for direct connections
+  int myNormalSocketDesc;
+  int myInfoSocketDesc;
+  int myStatusSocketDesc;
 };
 
 

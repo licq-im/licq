@@ -54,8 +54,8 @@ class UserManager;
 
 namespace Licq
 {
+class INetSocket;
 class IniFile;
-class TCPSocket;
 class UserEvent;
 
 const unsigned short LAST_ONLINE        = 0;
@@ -576,7 +576,7 @@ public:
   unsigned long IntIp() const                   { return m_nIntIp; }
   unsigned short Port() const                   { return m_nPort; }
   unsigned short LocalPort() const              { return m_nLocalPort; }
-  void SetIpPort(unsigned long nIp, unsigned short nPort);
+  virtual void SetIpPort(unsigned long nIp, unsigned short nPort);
   void SetIp(unsigned long nIp)                 { SetIpPort(nIp, Port()); }
   void SetPort(unsigned short nPort)            { SetIpPort(Ip(), nPort); }
   void SetIntIp(unsigned long s)                { m_nIntIp = s; }
@@ -591,7 +591,7 @@ public:
   void SetSendRealIp(bool s)      { SetSendIntIp(s); }
 
   std::string ipToString() const;
-  std::string internalIpToString() const;
+  virtual std::string internalIpToString() const;
   std::string portToString() const;
 
   /**
@@ -601,15 +601,14 @@ public:
    */
   virtual bool canSendDirect() const;
 
-  int socketDesc(int channel) const;
-  void clearSocketDesc(int channel);
-  void clearAllSocketDesc();
-  void setSocketDesc(TCPSocket* s);
-
-  // Convenience functions so plugins don't need to know TCPSocket::ChannelTypes
-  int normalSocketDesc() const                  { return myNormalSocketDesc; }
-  int infoSocketDesc() const                    { return myInfoSocketDesc; }
-  void clearNormalSocketDesc();
+  /**
+   * Clear a user specific socket descriptor
+   * Called by socket manager when a socket is closed
+   * Base implementation does nothing, reimplement in subclass if needed
+   *
+   * @param s Socket that was closed and is about to be deleted
+   */
+  virtual void clearSocketDesc(INetSocket* s);
 
   // Events functions
   static unsigned short getNumUserEvents();
@@ -660,9 +659,6 @@ protected:
   const bool myIsOwner;
   unsigned long myProtocolCapabilities;
 
-  int myNormalSocketDesc;
-  int myInfoSocketDesc;
-  int myStatusSocketDesc;
   time_t m_nTouched;
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;

@@ -453,7 +453,7 @@ void* LicqIcq::ProcessRunningEvent_Client_tep(void *p)
       if (nId != -1)
       {
         gIcqProtocol.waitForReverseConnection(nId, userId);
-        Licq::UserReadGuard u(userId);
+        UserReadGuard u(userId);
         if (!u.isLocked())
         {
           if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
@@ -495,7 +495,7 @@ void* LicqIcq::ProcessRunningEvent_Client_tep(void *p)
         if (nId != -1)
         {
           gIcqProtocol.waitForReverseConnection(nId, userId);
-          Licq::UserReadGuard u(userId);
+          UserReadGuard u(userId);
           if (!u.isLocked())
           {
             if (gIcqProtocol.DoneEvent(e, Licq::Event::ResultError) != NULL)
@@ -879,7 +879,7 @@ void* LicqIcq::MonitorSockets_func()
             Licq::UserWriteGuard u(tcp->userId());
             if (u.isLocked() && u->Secure())
             {
-              u->clearNormalSocketDesc();
+              u->clearSocketDesc(tcp);
               u->SetSecure(false);
               Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(
                   Licq::PluginSignal::SignalUser,

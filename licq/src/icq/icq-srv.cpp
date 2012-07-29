@@ -2032,7 +2032,7 @@ void IcqProtocol::ProcessServiceFam(Buffer& packet, unsigned short nSubtype)
       realIP = BE_32(packet.UnpackUnsignedLongTLV(0x000a));
       CPacket::SetRealIp(LE_32(realIP));
         {
-          Licq::OwnerWriteGuard o(LICQ_PPID);
+          OwnerWriteGuard o;
           o->SetIp(realIP);
         }
 
@@ -2893,12 +2893,9 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
         snprintf(id, 15, "%lu", nUin);
 
         {
-          Licq::UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
+          UserWriteGuard u(Licq::UserId(id, LICQ_PPID));
           if (u.isLocked())
-          {
-            u->SetPort(nPort);
-            u->SetIp(nIp);
-          }
+            u->SetIpPort(nIp, nPort);
         }
 
         pthread_t t;
@@ -2983,7 +2980,7 @@ void IcqProtocol::ProcessMessageFam(Buffer& packet, unsigned short nSubtype)
           char* szMsg = strdup(parseRtf(szTmpMsg).c_str());
 
       bool bNewUser = false;
-          Licq::UserWriteGuard u(userId, true, &bNewUser);
+          UserWriteGuard u(userId, true, &bNewUser);
 
           u->setIsTyping(false);
 

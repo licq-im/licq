@@ -25,8 +25,13 @@
 #include <licq/icq/icq.h>
 #include <licq/inifile.h>
 #include <licq/logging/log.h>
+#include <licq/plugin/pluginmanager.h>
+#include <licq/pluginsignal.h>
 
 #include "../gettext.h"
+
+#include "icq.h"
+#include "socket.h"
 
 using std::string;
 using std::vector;
@@ -223,6 +228,7 @@ User::User(const Licq::UserId& id, bool temporary, bool isOwner)
   myDirectMode = true;
   myDirectFlag = DirectAnyone;
   myCookie = 0;
+  clearAllSocketDesc();
 
   if (temporary)
   {
@@ -432,4 +438,112 @@ bool User::canSendDirect() const
     return false;
 
   return true;
+}
+
+string User::internalIpToString() const
+{
+  int socket = myNormalSocketDesc;
+  if (socket < 0)
+    socket = myInfoSocketDesc;
+  if (socket < 0)
+    socket = myStatusSocketDesc;
+
+  if (socket > 0)		// First check if we are connected
+  {
+    Licq::INetSocket *s = gSocketManager.FetchSocket(socket);
+    if (s != NULL)
+    {
+      string ret = s->getRemoteIpString();
+      gSocketManager.DropSocket(s);
+      return ret;
+    }
+    else
+      return tr("Invalid");
+  }
+  else
+    return Licq::User::internalIpToString();
+}
+
+void User::SetIpPort(unsigned long _nIp, unsigned short _nPort)
+{
+  if ((myNormalSocketDesc != -1 || myInfoSocketDesc != -1 || myStatusSocketDesc != -1) &&
+      ( (Ip() != 0 && Ip() != _nIp) || (Port() != 0 && Port() != _nPort)) )
+  {
+    // Close our socket, but don't let socket manager try and clear
+    // our socket descriptor
+    if (myNormalSocketDesc != -1)
+      gSocketManager.CloseSocket(myNormalSocketDesc, false);
+    if (myInfoSocketDesc != -1)
+      gSocketManager.CloseSocket(myInfoSocketDesc, false);
+    if (myStatusSocketDesc != -1)
+      gSocketManager.CloseSocket(myStatusSocketDesc, false);
+    clearAllSocketDesc();
+  }
+
+  Licq::User::SetIpPort(_nIp, _nPort);
+}
+
+int User::socketDesc(int channel) const
+{
+  switch (channel)
+  {
+    case DcSocket::ChannelNormal:
+      return myNormalSocketDesc;
+    case DcSocket::ChannelInfo:
+      return myInfoSocketDesc;
+    case DcSocket::ChannelStatus:
+      return myStatusSocketDesc;
+  }
+  gLog.warning(tr("Unknown channel type %u."), channel);
+
+  return -1;
+}
+
+void User::setSocketDesc(DcSocket* s)
+{
+  if (s->channel() == DcSocket::ChannelNormal)
+    myNormalSocketDesc = s->Descriptor();
+  else if (s->channel() == DcSocket::ChannelInfo)
+    myInfoSocketDesc = s->Descriptor();
+  else if (s->channel() == DcSocket::ChannelStatus)
+    myStatusSocketDesc = s->Descriptor();
+  m_nLocalPort = s->getLocalPort();
+  m_nConnectionVersion = s->Version();
+  if (m_bSecure != s->Secure())
+  {
+    m_bSecure = s->Secure();
+    if (m_bOnContactList)
+      Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+          Licq::PluginSignal::UserSecurity, myId, m_bSecure ? 1 : 0));
+  }
+
+  if (m_nIntIp == 0)
+    m_nIntIp = s->getRemoteIpInt();
+  if (m_nPort == 0)
+    m_nPort = s->getRemotePort();
+  SetSendServer(false);
+}
+
+void User::clearSocketDesc(Licq::INetSocket* s)
+{
+  if (s == NULL || s->Descriptor() == myNormalSocketDesc)
+    myNormalSocketDesc = -1;
+  if (s == NULL || s->Descriptor() == myInfoSocketDesc)
+    myInfoSocketDesc = -1;
+  if (s == NULL || s->Descriptor() == myStatusSocketDesc)
+    myStatusSocketDesc = -1;
+
+  if (myStatusSocketDesc == -1 && myInfoSocketDesc == -1 && myNormalSocketDesc == -1)
+  {
+    m_nLocalPort = 0;
+    m_nConnectionVersion = 0;
+
+    if (m_bSecure)
+    {
+      m_bSecure = false;
+      if (m_bOnContactList)
+        Licq::gPluginManager.pushPluginSignal(new Licq::PluginSignal(Licq::PluginSignal::SignalUser,
+            Licq::PluginSignal::UserSecurity, myId, 0));
+    }
+  }
 }

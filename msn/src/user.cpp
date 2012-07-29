@@ -20,11 +20,14 @@
 #include "user.h"
 
 #include <licq/inifile.h>
+#include <licq/socket.h>
 
 using namespace LicqMsn;
 
 User::User(const Licq::UserId& id, bool temporary, bool isOwner)
-  : Licq::User(id, temporary, isOwner)
+  : Licq::User(id, temporary, isOwner),
+    myNormalSocketDesc(-1),
+    myInfoSocketDesc(-1)
 {
   Licq::IniFile& conf(userConf());
   conf.get("PictureObject", myPictureObject);
@@ -41,4 +44,12 @@ void User::savePictureInfo()
 
   Licq::IniFile& conf(userConf());
   conf.set("PictureObject", myPictureObject);
+}
+
+void User::clearSocketDesc(Licq::INetSocket* s)
+{
+  if (s == NULL || s->Descriptor() == myNormalSocketDesc)
+    myNormalSocketDesc = -1;
+  if (s == NULL || s->Descriptor() == myInfoSocketDesc)
+    myInfoSocketDesc = -1;
 }

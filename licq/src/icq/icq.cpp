@@ -381,7 +381,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(unsigned long eventId, const Li
   return result;
 }
 
-Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const Licq::User* pUser,
+Licq::Event* IcqProtocol::SendExpectEvent_Client(unsigned long eventId, const User* pUser,
     CPacketTcp* packet, Licq::UserEvent *ue)
 {
   // If we are already shutting down, don't start any events
@@ -1674,7 +1674,7 @@ Licq::Event* IcqProtocol::SendExpectEvent_Server(CSrvPacketTcp* packet, Licq::Us
   return SendExpectEvent_Server(Licq::gProtocolManager.getNextEventId(), Licq::UserId(), packet, ue, extendedEvent);
 }
 
-Licq::Event* IcqProtocol::SendExpectEvent_Client(const Licq::User* user, CPacketTcp* packet, Licq::UserEvent* ue)
+Licq::Event* IcqProtocol::SendExpectEvent_Client(const User* user, CPacketTcp* packet, Licq::UserEvent* ue)
 {
   return SendExpectEvent_Client(Licq::gProtocolManager.getNextEventId(), user, packet, ue);
 }
