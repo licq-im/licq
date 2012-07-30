@@ -9,7 +9,7 @@ set(forwarder_SRCS
 file(READ ${PROJECT_SOURCE_DIR}/licq_forwarder.conf config_raw)
 string(REPLACE "\"" "\\\"" config_escaped ${config_raw})
 string(REGEX REPLACE "\n" "\\\\n\"\n\"" config_quoted ${config_escaped})
-file(WRITE ${CMAKE_BINARY_DIR}/src/default_config.cpp
+file(WRITE ${PROJECT_BINARY_DIR}/src/default_config.cpp
     "extern const char* const FORWARDER_CONF =\n\"${config_quoted}\";\n")
 
 licq_add_plugin(licq_forwarder ${forwarder_SRCS})
