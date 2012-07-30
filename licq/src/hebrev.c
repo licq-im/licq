@@ -1,6 +1,6 @@
 /* ----------------------------------------------------------------------------
  * Licq - A ICQ Client for Unix
- * Copyright (C) 1998 - 2009 Licq developers
+ * Copyright (C) 1998 - 2009, 2012 Licq developers
  *
  * This program is licensed under the terms found in the LICENSE file.
  */
@@ -122,7 +122,7 @@ char *strhebpatch(char *dest, const char *src)
 	return dest;
 }
 
-char *hebrew(char *pszStr)
+char *hebrew(const char *pszStr)
 {
 	char* temp_str = NULL, *temp = NULL;
 
@@ -137,7 +137,7 @@ char *hebrew(char *pszStr)
  	return temp;
 	
 }
-char* GetArg(char* input, int index)
+char* GetArg(const char* input, int index)
 {
 	char *temp=NULL, *tmp=NULL;
 	char *arg=NULL, *arg2=NULL;
@@ -162,7 +162,7 @@ char* GetArg(char* input, int index)
 	return arg2;
 }
 
-char* hebrev(char* src)
+char* hebrev(const char* src)
 {
         char* temp_str = NULL;
 	char* temp = NULL;

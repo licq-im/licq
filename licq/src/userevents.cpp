@@ -33,7 +33,7 @@
 
 #ifdef USE_HEBREW
 extern "C" {
-extern char *hebrev (char* pszStr);
+extern char *hebrev (const char* pszStr);
 }
 #endif
 
